@@ -5,10 +5,17 @@
   "license": "MIT",
   "scripts": {
     "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
+    "lint" : "eslint --ext .ts src",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.4.0",
+    "eslint": "^8.0.1",
+    "eslint-config-standard-with-typescript": "^39.0.0",
+    "eslint-plugin-import": "^2.25.2",
+    "eslint-plugin-n": "^15.0.0 || ^16.0.0 ",
+    "eslint-plugin-promise": "^6.0.0",
     "tsup": "^7.2.0",
-    "typescript": "^5.2.2"
+    "typescript": "*"
   }
 }
