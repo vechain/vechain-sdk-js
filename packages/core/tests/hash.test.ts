@@ -27,7 +27,7 @@ describe('Hash', () => {
   /**
      * Test each hash function
      */
-  HASH_FUNCTIONS.map(hashFunction => {
+  HASH_FUNCTIONS.forEach(hashFunction => {
     describe(`Function ${hashFunction.hashFunction.name}`, () => {
       // Correctness of hash function
       test('Hash is correct', () => {
@@ -53,11 +53,6 @@ describe('Hash', () => {
         for (let i = 0; i < hashes.length; ++i) {
           for (let j = i + 1; j < hashes.length; ++j) { if (i != j) expect(hashes[i]).toBe(hashes[j]) }
         }
-      })
-
-      // Input data is not valid
-      test('Input data is not valid', () => {
-
       })
     })
   })
