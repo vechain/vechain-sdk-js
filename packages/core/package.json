@@ -5,8 +5,8 @@
   "license": "MIT",
   "scripts": {
     "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
-    "lint" : "eslint --ext .ts src",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint --ext .ts src",
+    "test": "echo \"Warn: no test specified\" && exit 0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^6.4.0",
