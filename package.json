@@ -12,9 +12,9 @@
     "test": "turbo test"
   },
   "private": true,
-    "workspaces": [
-        "packages/*"
-    ],
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
     "turbo": "^1.10.14"
   }
