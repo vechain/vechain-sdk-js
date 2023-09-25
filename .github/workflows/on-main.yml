@@ -1,4 +1,4 @@
-name: Run tests on main
+name: main-ci
 
 on:
     push:
