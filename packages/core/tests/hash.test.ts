@@ -51,7 +51,7 @@ describe('Hash', () => {
 
         // All hashes are the same
         for (let i = 0; i < hashes.length; ++i) {
-          for (let j = i + 1; j < hashes.length; ++j) { if (i != j) expect(hashes[i]).toBe(hashes[j]) }
+          for (let j = i + 1; j < hashes.length; ++j) { if (i !== j) expect(hashes[i]).toBe(hashes[j]) }
         }
       })
     })
