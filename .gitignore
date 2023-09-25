@@ -3,5 +3,6 @@ packages/**/dist
 packages/**/.turbo
 packages/**/node_modules
 
+yarn-error.log
 # Code coverage folder for tests
 coverage

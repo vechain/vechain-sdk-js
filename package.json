@@ -16,6 +16,14 @@
     "packages/*"
   ],
   "devDependencies": {
+    "@commitlint/cli": "^17.7.1",
+    "@commitlint/config-conventional": "^17.7.0",
+    "husky": "^8.0.0",
     "turbo": "^1.10.14"
+  },
+  "scripts": {
+    "postinstall": "husky install",
+    "test": "yarn workspaces run test",
+    "lint": "yarn workspaces run lint"
   }
 }
