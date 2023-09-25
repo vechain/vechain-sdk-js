@@ -7,6 +7,7 @@
   "author": "vechain Foundation",
   "license": "MIT",
   "scripts": {
+    "postinstall": "husky install",
     "build": "turbo build",
     "lint": "turbo lint",
     "test": "turbo test"
@@ -20,10 +21,5 @@
     "@commitlint/config-conventional": "^17.7.0",
     "husky": "^8.0.0",
     "turbo": "^1.10.14"
-  },
-  "scripts": {
-    "postinstall": "husky install",
-    "test": "yarn workspaces run test",
-    "lint": "yarn workspaces run lint"
   }
 }
