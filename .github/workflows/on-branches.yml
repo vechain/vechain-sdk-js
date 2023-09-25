@@ -1,0 +1,15 @@
+name: Run tests on branches
+
+on:
+  push:
+    branches:
+      - '**'
+      - '!main*'
+
+jobs:
+    install-build:
+        uses: ./.github/workflows/build-lint.yml
+        secrets: inherit
+    unit-test:
+        uses: ./.github/workflows/unit-test.yml
+        secrets: inherit
