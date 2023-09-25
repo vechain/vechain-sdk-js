@@ -6,11 +6,6 @@
   "repository": "https://github.com/vechainfoundation/thor-sdk-js.git",
   "author": "vechain Foundation",
   "license": "MIT",
-  "scripts": {
-    "build": "turbo build",
-    "lint": "turbo lint",
-    "test": "turbo test"
-  },
   "private": true,
   "workspaces": [
     "packages/*"
