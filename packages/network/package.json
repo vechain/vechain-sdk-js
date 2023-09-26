@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
-    "lint": "eslint --ext .ts src",
+    "lint": "eslint --ext .ts src --ext .ts tests",
     "test": "rm -rf ./coverage && jest --coverage"
   },
   "devDependencies": {
