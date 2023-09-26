@@ -87,7 +87,7 @@ function sign (msgHash: Buffer, privKey: Buffer): Buffer {
    * @param msgHash hash of message
    * @param sig signature
    */
-function recover (msgHash: Buffer, sig: Buffer): any {
+function recover (msgHash: Buffer, sig: Buffer): Buffer {
   if (!isValidMessageHash(msgHash)) {
     throw new Error(ERRORS.SECP256K1.INVALID_MESSAGE_HASH)
   }
