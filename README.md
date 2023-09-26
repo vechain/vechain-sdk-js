@@ -2,6 +2,8 @@
 The official JavaScript SDK for vechain.
 
 [![main-ci](https://github.com/vechainfoundation/thor-sdk-js/actions/workflows/on-main.yml/badge.svg)](https://github.com/vechainfoundation/thor-sdk-js/actions/workflows/on-main.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=vechainfoundation_thor-sdk-js&metric=alert_status&token=0e94ce34f24ef54d43c15c0d4b38f2c645c92b42)](https://sonarcloud.io/summary/new_code?id=vechainfoundation_thor-sdk-js)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=vechainfoundation_thor-sdk-js&metric=coverage&token=0e94ce34f24ef54d43c15c0d4b38f2c645c92b42)](https://sonarcloud.io/summary/new_code?id=vechainfoundation_thor-sdk-js)
 
 # Repo structure
 * `./demos` Demo projects
