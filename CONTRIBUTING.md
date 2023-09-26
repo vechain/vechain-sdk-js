@@ -1,6 +1,6 @@
 # Introduction
 
-Thank you for considering contributing to the thor-sdk-js project. This SDK is an important part of the Vechain ecosystem and your contributions are greatly appreciated. This document outlines the process and guidelines for contributing.
+Thank you for considering contributing to the thor-sdk-js project. This SDK is an important part of the vechain ecosystem and your contributions are greatly appreciated. This document outlines the process and guidelines for contributing.
 
 # Getting Started
 
