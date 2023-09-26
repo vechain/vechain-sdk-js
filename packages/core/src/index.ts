@@ -1,1 +1,1 @@
-console.log('Hello from core package')
+console.log('Hello from core package');
