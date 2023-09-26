@@ -7,6 +7,7 @@
   "author": "vechain Foundation",
   "license": "MIT",
   "scripts": {
+    "postinstall": "husky install",
     "build": "turbo build",
     "lint": "turbo lint",
     "test": "turbo test"
