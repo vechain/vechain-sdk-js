@@ -99,8 +99,11 @@ function recover (msgHash: Buffer, sig: Buffer): Buffer {
     throw new Error(ERRORS.SECP256K1.INVALID_SIGNATURE_RECOVERY)
   }
 
-  const r = sig.slice(0, 32)
-  const s = sig.slice(32, 64)
+  const rCopy = Uint8Array.from(sig)
+  const r = rCopy.slice(0, 32)
+
+  const sCopy = Uint8Array.from(sig)
+  const s = sCopy.slice(32, 64)
 
   return Buffer.from(curve.recoverPubKey(
     msgHash,
