@@ -1,6 +1,8 @@
 # thor-sdk-js
 The official JavaScript SDK for vechain.
 
+[![main-ci](https://github.com/vechainfoundation/thor-sdk-js/actions/workflows/on-main.yml/badge.svg)](https://github.com/vechainfoundation/thor-sdk-js/actions/workflows/on-main.yml)
+
 # Repo structure
 * `./demos` Demo projects
 * `./packages` Packages of monorepo
