@@ -13,3 +13,7 @@ jobs:
     unit-test:
         uses: ./.github/workflows/unit-test.yml
         secrets: inherit
+    sonar-scan:
+      uses: ./.github/workflows/sonar.yml
+      secrets: inherit
+      needs: unit-test
