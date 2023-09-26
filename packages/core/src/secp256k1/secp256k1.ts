@@ -1,9 +1,3 @@
-// Switch to https://github.com/paulmillr/noble-secp256k1
-// https://github.com/ethers-io/ethers.js/issues/3719
-// @TODO SOLVE JEST ISSUE
-// import * as __secp256k1 from '@noble/secp256k1';
-
-// OLD
 import { randomBytes } from 'crypto'
 import { ERRORS } from '../utils/errors'
 // eslint-disable-next-line
@@ -17,15 +11,6 @@ const N = Buffer.from('fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd
 
 // Zero value
 const ZERO = Buffer.alloc(32, 0)
-
-/**
- * Secp256k1 Namespace.
- * It contains basic functions of secp256k1.
- */
-
-// export function testWithNewLibrary() {
-//     return __secp256k1.utils.randomPrivateKey()
-// }
 
 /**
    * Validate message hash
