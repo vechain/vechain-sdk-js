@@ -103,9 +103,4 @@ describe('Secp256k1', () => {
     invalidSignatureRecovery[64] = 8
     expect(() => secp256k1.recover(messageHashBuffer, Buffer.from(invalidSignatureRecovery))).toThrowError(ERRORS.SECP256K1.INVALID_SIGNATURE_RECOVERY)
   })
-
-  // @TODO view if can integrate this test for new secp256k1 library
-  // test('test with new secp256k1 library', () => {
-  //     secp256k1.testWithNewLibrary()
-  // })
 })
