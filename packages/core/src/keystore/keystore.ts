@@ -27,7 +27,6 @@ export declare interface PBKDF2SHA256Params {
     prf: 'hmac-sha256';
     salt: Uint8Array | string;
 }
-export declare type HexString = string;
 export interface Keystore {
     crypto: {
         cipher: Cipher;
@@ -37,7 +36,7 @@ export interface Keystore {
         };
         kdf: 'pbkdf2' | 'scrypt';
         kdfparams: ScryptParams | PBKDF2SHA256Params;
-        mac: HexString;
+        mac: string;
     };
     id: string;
     version: 3;
