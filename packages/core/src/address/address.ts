@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import { ERRORS } from '../utils/errors';
 
 /**
  * derive Address from public key, note that the public key is uncompressed
@@ -22,7 +23,7 @@ function test(addressToVerify: string): boolean {
  */
 function toChecksumed(address: string): string {
     if (!test(address)) {
-        throw new Error('invalid address');
+        throw new Error(ERRORS.ADDRESS.INVALID_ADDRESS);
     }
     return ethers.getAddress(address);
 }
