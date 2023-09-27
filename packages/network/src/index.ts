@@ -1,1 +1,1 @@
-console.log('Hello from core network')
+console.log('Hello from core network');

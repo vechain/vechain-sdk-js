@@ -10,7 +10,8 @@
     "postinstall": "husky install",
     "build": "turbo build",
     "lint": "turbo lint",
-    "test": "turbo test"
+    "test": "turbo test",
+    "format": "turbo format"
   },
   "private": true,
   "workspaces": [
