@@ -10,16 +10,16 @@ const xprivPrefix = Buffer.from('0488ade4000000000000000000', 'hex');
 const curve = new EC('secp256k1');
 
 /** BIP32 hierarchical deterministic node */
-export interface iHDNode {
+export interface IHDNode {
     readonly publicKey: Buffer;
     readonly privateKey: Buffer | null;
     readonly chainCode: Buffer;
     readonly address: string;
-    derive: (index: number) => iHDNode;
+    derive: (index: number) => IHDNode;
 }
 
 /** create node from mnemonic words */
-function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): iHDNode {
+function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
     // normalize words to lowercase
     const joinedWords = words.join(' ').toLowerCase();
     const node = ethers.HDNodeWallet.fromMnemonic(
@@ -34,7 +34,7 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): iHDNode {
  * @param pub public key
  * @param chainCode chain code
  */
-function fromPublicKey(pub: Buffer, chainCode: Buffer): iHDNode {
+function fromPublicKey(pub: Buffer, chainCode: Buffer): IHDNode {
     const compressed = curve.keyFromPublic(pub).getPublic(true, 'array');
     const key = Buffer.concat([xpubPrefix, chainCode, Buffer.from(compressed)]);
     const checksum = sha256(sha256(key));
@@ -51,7 +51,7 @@ function fromPublicKey(pub: Buffer, chainCode: Buffer): iHDNode {
  * @param priv private key
  * @param chainCode chain code
  */
-function fromPrivateKey(priv: Buffer, chainCode: Buffer): iHDNode {
+function fromPrivateKey(priv: Buffer, chainCode: Buffer): IHDNode {
     const key = Buffer.concat([xprivPrefix, chainCode, Buffer.from([0]), priv]);
     const checksum = sha256(sha256(key));
     const slicedChecksum = checksum.subarray(0, 4);
@@ -62,7 +62,7 @@ function fromPrivateKey(priv: Buffer, chainCode: Buffer): iHDNode {
     return createHDNode(node);
 }
 
-function createHDNode(ethersNode: ethers.HDNodeWallet): iHDNode {
+function createHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
     const pub = Buffer.from(
         curve
             .keyFromPublic(ethersNode.publicKey.slice(2), 'hex')
