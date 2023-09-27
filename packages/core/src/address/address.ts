@@ -1,30 +1,30 @@
-import { ethers } from 'ethers'
+import { ethers } from 'ethers';
 
 /**
  * derive Address from public key, note that the public key is uncompressed
  * @param pub the public key
  */
-export function fromPublicKey (pub: Buffer): string {
-  return ethers.computeAddress('0x' + pub.toString('hex'))
+function fromPublicKey(publicKey: Buffer): string {
+    return ethers.computeAddress('0x' + publicKey.toString('hex'));
 }
 
 /**
  * to check if a value presents an address
  * @param v the value to be checked
  */
-export function test (v: any): v is string {
-  return typeof v === 'string' && /^0x[0-9a-f]{40}$/i.test(v)
+function test(addressToVerify: string): boolean {
+    return /^0x[0-9a-fA-F]{40}$/i.test(addressToVerify);
 }
 
 /**
  * encode the address to checksumed address that is compatible with eip-55
  * @param address input address
  */
-export function toChecksumed (addr: string): string {
-  if (!test(addr)) {
-    throw new Error('invalid address')
-  }
-  return ethers.getAddress(addr)
+function toChecksumed(address: string): string {
+    if (!test(address)) {
+        throw new Error('invalid address');
+    }
+    return ethers.getAddress(address);
 }
 
-export const address = { fromPublicKey, test, toChecksumed }
+export const address = { fromPublicKey, test, toChecksumed };
