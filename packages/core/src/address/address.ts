@@ -13,7 +13,7 @@ function fromPublicKey(publicKey: Buffer): string {
  * @param v the value to be checked
  */
 function test(addressToVerify: string): boolean {
-    return /^0x[0-9a-fA-F]{40}$/i.test(addressToVerify);
+    return /^0x[0-9a-f]{40}$/i.test(addressToVerify);
 }
 
 /**
