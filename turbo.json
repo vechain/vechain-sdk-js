@@ -7,6 +7,7 @@
         "test": {
             "outputs": ["coverage/**"]
         },
-        "lint": {}
+        "lint": {},
+        "format": {}
     }
 }
