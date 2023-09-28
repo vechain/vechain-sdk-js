@@ -34,7 +34,8 @@ const ERRORS = {
     HDNODE: {
         INVALID_PUBLICKEY: 'Invalid public key',
         INVALID_PRIVATEKEY: 'Invalid private key',
-        INVALID_CHAINCODE: 'Invalid chain code'
+        INVALID_CHAINCODE: 'Invalid chain code',
+        INVALID_MNEMONICS: 'Invalid mnemonics'
     }
 };
 

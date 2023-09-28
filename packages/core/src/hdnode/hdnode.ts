@@ -21,6 +21,9 @@ export interface IHDNode {
 
 /** create node from mnemonic words */
 function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
+    if (words.length !== 12) {
+        throw new Error(ERRORS.HDNODE.INVALID_MNEMONICS);
+    }
     // normalize words to lowercase
     const joinedWords = words.join(' ').toLowerCase();
     const node = ethers.HDNodeWallet.fromMnemonic(

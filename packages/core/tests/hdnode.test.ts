@@ -2,10 +2,15 @@ import { describe, expect, test } from '@jest/globals';
 import { HDNode } from '../src/hdnode/hdnode';
 import { address } from '../src/address/address';
 import { secp256k1 } from '../src/secp256k1/secp256k1';
+import { ERRORS } from '../src/utils/errors';
 
 describe('mnemonic', () => {
     const words =
         'ignore empty bird silly journey junior ripple have guard waste between tenant'.split(
+            ' '
+        );
+    const wrongWords =
+        'ignore empty bird silly journey junior ripple have guard waste between'.split(
             ' '
         );
 
@@ -60,5 +65,11 @@ describe('mnemonic', () => {
         // non-lowercase
         const node2 = HDNode.fromMnemonic(words.map((w) => w.toUpperCase()));
         expect(node.address === node2.address);
+    });
+
+    test('invalid mnemonic', () => {
+        expect(() => HDNode.fromMnemonic(wrongWords)).toThrow(
+            ERRORS.HDNODE.INVALID_MNEMONICS
+        );
     });
 });
