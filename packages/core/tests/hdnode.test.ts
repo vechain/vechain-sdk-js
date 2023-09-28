@@ -72,4 +72,28 @@ describe('mnemonic', () => {
             ERRORS.HDNODE.INVALID_MNEMONICS
         );
     });
+
+    test('invalid private key', () => {
+        expect(() =>
+            HDNode.fromPrivateKey(Buffer.alloc(31), Buffer.alloc(32))
+        ).toThrow(ERRORS.HDNODE.INVALID_PRIVATEKEY);
+    });
+
+    test('invalid public key', () => {
+        expect(() =>
+            HDNode.fromPublicKey(Buffer.alloc(31), Buffer.alloc(32))
+        ).toThrow(ERRORS.HDNODE.INVALID_PUBLICKEY);
+    });
+
+    test('invalid chain code private key', () => {
+        expect(() =>
+            HDNode.fromPrivateKey(Buffer.alloc(32), Buffer.alloc(31))
+        ).toThrow(ERRORS.HDNODE.INVALID_CHAINCODE);
+    });
+
+    test('invalid chain code public key', () => {
+        expect(() =>
+            HDNode.fromPublicKey(Buffer.alloc(65), Buffer.alloc(31))
+        ).toThrow(ERRORS.HDNODE.INVALID_CHAINCODE);
+    });
 });
