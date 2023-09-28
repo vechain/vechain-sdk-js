@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { address } from '../src/address/address';
 import { secp256k1 } from '../src/secp256k1/secp256k1';
+import { ERRORS } from '../src/utils/errors';
 
 describe('address.test', () => {
     test('validate address', () => {
@@ -30,7 +31,7 @@ describe('derive', () => {
 
     // Invalid private key to derive public key
     expect(() => secp256k1.derive(invalidPrivateKey)).toThrow(
-        'Invalid private key'
+        ERRORS.SECP256K1.INVALID_PRIVATE_KEY
     );
 });
 
@@ -38,10 +39,10 @@ describe('address.toChecksumed', () => {
     test('invalid input should throw error', () => {
         expect(() => {
             address.toChecksumed('invalid data');
-        }).toThrow('invalid address');
+        }).toThrow(ERRORS.ADDRESS.INVALID_ADDRESS);
         expect(() => {
             address.toChecksumed('52908400098527886E0F7030069857D2E4169EE7');
-        }).toThrow('invalid address');
+        }).toThrow(ERRORS.ADDRESS.INVALID_ADDRESS);
     });
 
     test('valid input', () => {
