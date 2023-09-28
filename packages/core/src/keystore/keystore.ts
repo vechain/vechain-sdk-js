@@ -2,57 +2,11 @@
  * This file implements **JSON Keystore v3 Wallet**
  * encryption, decryption and validation.
  */
-// NOTE: We will use web3 in order to do better low-level stuffs
-// import * as web3 from 'web3'
 import { address } from '../address/address';
 import { secp256k1 } from '../secp256k1/secp256k1';
 import { ethers } from 'ethers';
 import { ERRORS } from '../utils/errors';
-
-/**
- * Keystore types
- */
-// Encrypt types
-export declare type Cipher = 'aes-128-ctr' | 'aes-128-cbc' | 'aes-256-cbc';
-export declare interface ScryptParams {
-    dklen: number;
-    n: number;
-    p: number;
-    r: number;
-    salt: Uint8Array | string;
-}
-export declare interface PBKDF2SHA256Params {
-    c: number;
-    dklen: number;
-    prf: 'hmac-sha256';
-    salt: Uint8Array | string;
-}
-export interface Keystore {
-    crypto: {
-        cipher: Cipher;
-        ciphertext: string;
-        cipherparams: {
-            iv: string;
-        };
-        kdf: 'pbkdf2' | 'scrypt';
-        kdfparams: ScryptParams | PBKDF2SHA256Params;
-        mac: string;
-    };
-    id: string;
-    version: 3;
-    address: string;
-}
-
-// Decrypt types
-export interface KeystoreAccount {
-    address: string;
-    privateKey: string;
-    mnemonic?: {
-        path?: string;
-        locale?: string;
-        entropy: string;
-    };
-}
+import { type Keystore, type KeystoreAccount } from './types';
 
 /**
  * Encrypt private key to keystore with given password

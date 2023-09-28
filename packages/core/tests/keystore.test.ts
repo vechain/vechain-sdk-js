@@ -1,10 +1,9 @@
 import { describe, test, expect } from '@jest/globals';
-import { type Keystore, keystore } from '../src/keystore/keystore';
 import { secp256k1 } from '../src/secp256k1/secp256k1';
 import { address } from '../src/address/address';
 import { ERRORS } from '../src/utils/errors';
-// import { secp256k1 } from '../src/secp256k1/secp256k1';
-// import { secp256k1 } from '../src/secp256k1/secp256k1'
+import { keystore } from '../src/keystore/keystore';
+import { type Keystore } from '../src/keystore/types';
 
 /**
  * Password for encryption
