@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import { ec as EC } from 'elliptic';
 import { createHash } from 'crypto';
 import { address } from '../address/address';
+import { ERRORS } from '../utils/errors';
 
 // see https://github.com/satoshilabs/slips/blob/master/slip-0044.md
 const VET_DERIVATION_PATH = `m/44'/818'/0'/0`;
@@ -35,6 +36,13 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
  * @param chainCode chain code
  */
 function fromPublicKey(pub: Buffer, chainCode: Buffer): IHDNode {
+    if (pub.length !== 65) {
+        throw new Error(ERRORS.HDNODE.INVALID_PUBLICKEY);
+    }
+    if (chainCode.length !== 32) {
+        throw new Error(ERRORS.HDNODE.INVALID_CHAINCODE);
+    }
+
     const compressed = curve.keyFromPublic(pub).getPublic(true, 'array');
     const key = Buffer.concat([xpubPrefix, chainCode, Buffer.from(compressed)]);
     const checksum = sha256(sha256(key));
@@ -52,6 +60,13 @@ function fromPublicKey(pub: Buffer, chainCode: Buffer): IHDNode {
  * @param chainCode chain code
  */
 function fromPrivateKey(priv: Buffer, chainCode: Buffer): IHDNode {
+    if (priv.length !== 32) {
+        throw new Error(ERRORS.HDNODE.INVALID_PRIVATEKEY);
+    }
+    if (chainCode.length !== 32) {
+        throw new Error(ERRORS.HDNODE.INVALID_CHAINCODE);
+    }
+
     const key = Buffer.concat([xprivPrefix, chainCode, Buffer.from([0]), priv]);
     const checksum = sha256(sha256(key));
     const slicedChecksum = checksum.subarray(0, 4);
