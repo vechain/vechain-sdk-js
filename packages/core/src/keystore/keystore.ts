@@ -7,6 +7,7 @@ import { secp256k1 } from '../secp256k1/secp256k1';
 import { ethers } from 'ethers';
 import { ERRORS } from '../utils/errors';
 import { type Keystore, type KeystoreAccount } from './types';
+import { SCRYPT_PARAMS } from '../utils';
 
 /**
  * Encrypt private key to keystore with given password
@@ -32,9 +33,9 @@ async function encrypt(
     // Scrypt options
     const encryptOptions: ethers.EncryptOptions = {
         scrypt: {
-            N: 131072,
-            r: 8,
-            p: 1
+            N: SCRYPT_PARAMS.N,
+            r: SCRYPT_PARAMS.r,
+            p: SCRYPT_PARAMS.p
         }
     };
 
