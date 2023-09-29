@@ -23,7 +23,7 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
         ethers.Mnemonic.fromPhrase(joinedWords),
         path
     );
-    return createHDNode(node);
+    return ethersNodeToOurHDNode(node);
 }
 
 /**
@@ -53,7 +53,7 @@ function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
     const node = ethers.HDNodeWallet.fromExtendedKey(
         ethers.encodeBase58(Buffer.concat([key, slicedChecksum]))
     ) as ethers.HDNodeWallet;
-    return createHDNode(node);
+    return ethersNodeToOurHDNode(node);
 }
 
 /**
@@ -83,7 +83,7 @@ function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
     const node = ethers.HDNodeWallet.fromExtendedKey(
         ethers.encodeBase58(Buffer.concat([key, slicedChecksum]))
     ) as ethers.HDNodeWallet;
-    return createHDNode(node);
+    return ethersNodeToOurHDNode(node);
 }
 
 /**
@@ -92,7 +92,7 @@ function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
  * @param ethersNode Node in ethers format
  * @returns Our HDNode format
  */
-function createHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
+function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
     const pub = Buffer.from(
         secp256k1.extendedPublicKeyToArray(
             Buffer.from(ethersNode.publicKey.slice(2), 'hex'),
@@ -118,7 +118,7 @@ function createHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
             return addr;
         },
         derive(index) {
-            return createHDNode(ethersNode.deriveChild(index));
+            return ethersNodeToOurHDNode(ethersNode.deriveChild(index));
         }
     };
 }
@@ -139,6 +139,5 @@ function sha256AppliedToABuffer(data: Buffer): Buffer {
 export const HDNode = {
     fromMnemonic,
     fromPublicKey,
-    fromPrivateKey,
-    createHDNode
+    fromPrivateKey
 };
