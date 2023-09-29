@@ -39,10 +39,13 @@ describe('mnemonic', () => {
                 addresses[i]
             );
             expect(child.address).toEqual('0x' + addresses[i]);
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            expect(secp256k1.derive(child.privateKey!).toString('hex')).toEqual(
-                child.publicKey.toString('hex')
-            );
+            if (child.privateKey !== null) {
+                expect(
+                    secp256k1.derive(child.privateKey).toString('hex')
+                ).toEqual(child.publicKey.toString('hex'));
+            } else {
+                expect(child.privateKey).toEqual(null);
+            }
         }
 
         const xprivNode = HDNode.fromPrivateKey(
@@ -56,10 +59,13 @@ describe('mnemonic', () => {
                 addresses[i]
             );
             expect(child.address).toEqual('0x' + addresses[i]);
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            expect(secp256k1.derive(child.privateKey!).toString('hex')).toEqual(
-                child.publicKey.toString('hex')
-            );
+            if (child.privateKey !== null) {
+                expect(
+                    secp256k1.derive(child.privateKey).toString('hex')
+                ).toEqual(child.publicKey.toString('hex'));
+            } else {
+                expect(child.privateKey).toEqual(null);
+            }
         }
 
         const xpubNode = HDNode.fromPublicKey(node.publicKey, node.chainCode);
