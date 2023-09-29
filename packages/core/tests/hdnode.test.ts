@@ -1,8 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { HDNode } from '../src/hdnode/hdnode';
-import { address } from '../src/address/address';
-import { secp256k1 } from '../src/secp256k1/secp256k1';
-import { ERRORS } from '../src/utils/errors';
+import { ERRORS, HDNode, address, secp256k1 } from '../src';
 
 describe('mnemonic', () => {
     const words =
@@ -29,15 +26,14 @@ describe('mnemonic', () => {
                 addresses[i]
             );
             expect(child.address).toEqual('0x' + addresses[i]);
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            expect(secp256k1.derive(child.privateKey!).toString('hex')).toEqual(
-                child.publicKey.toString('hex')
-            );
+            expect(
+                secp256k1
+                    .derive(child.privateKey ?? Buffer.alloc(0))
+                    .toString('hex')
+            ).toEqual(child.publicKey.toString('hex'));
         }
-
         const xprivNode = HDNode.fromPrivateKey(
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            node.privateKey!,
+            node.privateKey ?? Buffer.alloc(0),
             node.chainCode
         );
         for (let i = 0; i < 5; i++) {
@@ -46,12 +42,12 @@ describe('mnemonic', () => {
                 addresses[i]
             );
             expect(child.address).toEqual('0x' + addresses[i]);
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            expect(secp256k1.derive(child.privateKey!).toString('hex')).toEqual(
-                child.publicKey.toString('hex')
-            );
+            expect(
+                secp256k1
+                    .derive(child.privateKey ?? Buffer.alloc(0))
+                    .toString('hex')
+            ).toEqual(child.publicKey.toString('hex'));
         }
-
         const xpubNode = HDNode.fromPublicKey(node.publicKey, node.chainCode);
         for (let i = 0; i < 5; i++) {
             const child = xpubNode.derive(i);
@@ -61,7 +57,6 @@ describe('mnemonic', () => {
             expect(child.address).toEqual('0x' + addresses[i]);
             expect(child.privateKey).toEqual(null);
         }
-
         // non-lowercase
         const node2 = HDNode.fromMnemonic(words.map((w) => w.toUpperCase()));
         expect(node.address === node2.address);
