@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { ERRORS, HDNode, address, secp256k1 } from '../src';
+import { ERRORS, HDNode, ZERO_BUFFER, address, secp256k1 } from '../src';
 
 describe('mnemonic', () => {
     const words =
@@ -28,12 +28,12 @@ describe('mnemonic', () => {
             expect(child.address).toEqual('0x' + addresses[i]);
             expect(
                 secp256k1
-                    .derive(child.privateKey ?? Buffer.alloc(0))
+                    .derive(child.privateKey ?? ZERO_BUFFER(0))
                     .toString('hex')
             ).toEqual(child.publicKey.toString('hex'));
         }
         const xprivNode = HDNode.fromPrivateKey(
-            node.privateKey ?? Buffer.alloc(0),
+            node.privateKey ?? ZERO_BUFFER(0),
             node.chainCode
         );
         for (let i = 0; i < 5; i++) {
@@ -44,7 +44,7 @@ describe('mnemonic', () => {
             expect(child.address).toEqual('0x' + addresses[i]);
             expect(
                 secp256k1
-                    .derive(child.privateKey ?? Buffer.alloc(0))
+                    .derive(child.privateKey ?? ZERO_BUFFER(0))
                     .toString('hex')
             ).toEqual(child.publicKey.toString('hex'));
         }
@@ -70,25 +70,25 @@ describe('mnemonic', () => {
 
     test('invalid private key', () => {
         expect(() =>
-            HDNode.fromPrivateKey(Buffer.alloc(31), Buffer.alloc(32))
+            HDNode.fromPrivateKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
         ).toThrow(ERRORS.HDNODE.INVALID_PRIVATEKEY);
     });
 
     test('invalid public key', () => {
         expect(() =>
-            HDNode.fromPublicKey(Buffer.alloc(31), Buffer.alloc(32))
+            HDNode.fromPublicKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
         ).toThrow(ERRORS.HDNODE.INVALID_PUBLICKEY);
     });
 
     test('invalid chain code private key', () => {
         expect(() =>
-            HDNode.fromPrivateKey(Buffer.alloc(32), Buffer.alloc(31))
+            HDNode.fromPrivateKey(ZERO_BUFFER(32), ZERO_BUFFER(31))
         ).toThrow(ERRORS.HDNODE.INVALID_CHAINCODE);
     });
 
     test('invalid chain code public key', () => {
         expect(() =>
-            HDNode.fromPublicKey(Buffer.alloc(65), Buffer.alloc(31))
+            HDNode.fromPublicKey(ZERO_BUFFER(65), ZERO_BUFFER(31))
         ).toThrow(ERRORS.HDNODE.INVALID_CHAINCODE);
     });
 });

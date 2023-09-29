@@ -2,6 +2,7 @@ import { describe, test, expect } from '@jest/globals';
 import { secp256k1 } from '../src/secp256k1/secp256k1';
 import { keccak256 } from '../src/hash/keccak256';
 import { ERRORS } from '../src/utils/errors';
+import { ZERO_BUFFER } from '../src';
 
 // Constants
 const privateKey = Buffer.from(
@@ -42,7 +43,7 @@ describe('Secp256k1', () => {
                 'fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141',
                 'hex'
             ),
-            Buffer.alloc(32, 0), // 00...00,
+            ZERO_BUFFER(32), // 00...00,
             Buffer.from('some_invalid_stuff', 'hex')
         ];
         validPrivateKeys.forEach((privateKey: Buffer) => {
@@ -96,7 +97,7 @@ describe('Secp256k1', () => {
         expect(secp256k1.derive(privateKey).length).toBe(65);
 
         // Invalid private key
-        expect(() => secp256k1.derive(Buffer.alloc(32, 0))).toThrowError(
+        expect(() => secp256k1.derive(ZERO_BUFFER(32))).toThrowError(
             ERRORS.SECP256K1.INVALID_PRIVATE_KEY
         );
     });

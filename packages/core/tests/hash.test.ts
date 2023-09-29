@@ -2,7 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { keccak256 } from '../src/hash/keccak256';
 import { ethers } from 'ethers';
 import { blake2b256 } from '../src/hash/blake2b256';
-import { sha256 } from '../src';
+import { ZERO_BUFFER, sha256 } from '../src';
 
 /**
  * Hash functions to test
@@ -51,7 +51,7 @@ describe('Hash', () => {
                 );
 
                 // Zero bytes hash
-                expect(hashFunction.hashFunction(Buffer.alloc(0))).toBe(
+                expect(hashFunction.hashFunction(ZERO_BUFFER(0))).toBe(
                     hashFunction.results.ZERO_BUFFER_HASH_VALUE
                 );
             });
