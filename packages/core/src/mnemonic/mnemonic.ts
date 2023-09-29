@@ -1,11 +1,14 @@
 import { ethers } from 'ethers';
 import { randomBytes } from 'crypto';
 import { HDNode } from '../hdnode/hdnode';
+import { ZERO_BUFFER } from '../utils';
 
 /**
- * generate BIP39 mnemonic words
+ * Generate BIP39 mnemonic words
+ *
  * @param rng the optional random number generator, which generates 16~32 (step 4) random bytes.
  * Every 4 bytes produce 3 words.
+ * @returns Mnemonic words
  */
 function generate(rng?: () => Buffer): ethers.Mnemonic {
     rng = rng ?? (() => randomBytes(128 / 8));
@@ -13,20 +16,25 @@ function generate(rng?: () => Buffer): ethers.Mnemonic {
 }
 
 /**
- * check if the given mnemonic words have valid checksum
- * @param words mnemonic words
+ * Check if the given mnemonic words have valid checksum
+ *
+ * @param words Mnemonic words
+ * @returns If mnemonic words are valid or not
  */
 function validate(words: string[]): boolean {
     return ethers.Mnemonic.isValidMnemonic(words.join(' '));
 }
 
 /**
- * derive private key at index 0 from mnemonic words according to BIP32.
+ * Derive private key at index 0 from mnemonic words according to BIP32.
  * the derivation path is defined at https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+ *
+ * @param words Mnemonic words
+ * @returns Private key
  */
 function derivePrivateKey(words: string[]): Buffer {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return HDNode.fromMnemonic(words).derive(0).privateKey!;
+    // NOTE: Here we use the ?? in order to avoid lint errors.
+    return HDNode.fromMnemonic(words).derive(0).privateKey ?? ZERO_BUFFER(64);
 }
 
 export const mnemonic = {
