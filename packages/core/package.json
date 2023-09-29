@@ -26,11 +26,11 @@
         "typescript": "*"
     },
     "dependencies": {
+        "@ethereumjs/rlp": "^5.0.0",
         "@noble/secp256k1": "^2.0.0",
         "@types/elliptic": "^6.4.15",
         "blakejs": "^1.2.1",
         "elliptic": "^6.5.4",
-        "ethers": "^6.7.1",
-    "rlp": "^3.0.0"
+        "ethers": "^6.7.1"
     }
 }

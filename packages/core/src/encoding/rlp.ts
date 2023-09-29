@@ -1,4 +1,4 @@
-import * as rlp from 'rlp';
+import { RLP as rlp } from '@ethereumjs/rlp';
 import { type RLPInput, type RLPOutput } from './types';
 
 /**
