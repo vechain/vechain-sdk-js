@@ -160,4 +160,17 @@ describe('Secp256k1', () => {
             )
         ).toThrowError(ERRORS.SECP256K1.INVALID_SIGNATURE_RECOVERY);
     });
+
+    /**
+     * Public key format conversion
+     */
+    test('public key format conversion', () => {
+        expect(
+            secp256k1.extendedPublicKeyToArray(publicKey, true)
+        ).toStrictEqual([
+            3, 185, 14, 155, 178, 97, 115, 135, 235, 164, 80, 44, 115, 13, 230,
+            90, 51, 135, 142, 243, 132, 164, 111, 16, 150, 216, 111, 45, 161,
+            144, 67, 48, 74
+        ]);
+    });
 });

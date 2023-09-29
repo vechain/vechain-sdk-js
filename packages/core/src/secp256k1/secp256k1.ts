@@ -1,5 +1,5 @@
 import { randomBytes } from 'crypto';
-import { ERRORS } from '../utils/errors';
+import { ERRORS } from '../utils';
 import { ec as EC } from 'elliptic';
 
 // Cureve algorithm
@@ -118,11 +118,25 @@ function recover(msgHash: Buffer, sig: Buffer): Buffer {
     );
 }
 
+/**
+ * Convert extended public key to array public key (compressed or uncompressed)
+ *
+ * @param extendedPublicKey extended public key
+ * @returns array public key
+ */
+function extendedPublicKeyToArray(
+    extendedPublicKey: Buffer,
+    compact: boolean
+): number[] {
+    return curve.keyFromPublic(extendedPublicKey).getPublic(compact, 'array');
+}
+
 export const secp256k1 = {
     isValidMessageHash,
     isValidPrivateKey,
     generate,
     derive,
     sign,
-    recover
+    recover,
+    extendedPublicKeyToArray
 };
