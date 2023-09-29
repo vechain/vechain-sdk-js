@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { ERRORS } from '../utils/errors';
+import { ERRORS } from '../utils';
 
 /**
  * derive Address from public key, note that the public key is uncompressed
