@@ -3,6 +3,7 @@ import { mnemonic } from '../src/mnemonic/mnemonic';
 import { HDNode } from '../src/hdnode/hdnode';
 import { address } from '../src/address/address';
 import { secp256k1 } from '../src/secp256k1/secp256k1';
+import { ZERO_BUFFER } from '../src';
 
 describe('mnemonic', () => {
     const words =
@@ -49,8 +50,7 @@ describe('mnemonic', () => {
         }
 
         const xprivNode = HDNode.fromPrivateKey(
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            node.privateKey!,
+            node.privateKey ?? ZERO_BUFFER(64),
             node.chainCode
         );
         for (let i = 0; i < 5; i++) {
