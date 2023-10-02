@@ -9,7 +9,7 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Checkout repository
-              uses: actions/checkout@v3
+              uses: actions/checkout@v4
 
             - name: Setup Node
               uses: actions/setup-node@v3
@@ -23,7 +23,7 @@ jobs:
               run: yarn test
 
             - name: Archive coverage
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v3
               with:
                 name: coverage-results
                 path: |

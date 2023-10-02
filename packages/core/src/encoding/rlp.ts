@@ -1,11 +1,12 @@
-import * as rlp from 'rlp';
+import { RLP as rlp } from '@ethereumjs/rlp';
+import { type RLPInput, type RLPOutput } from './types';
 
 /**
  * Encodes data using the Ethereumjs RLP library.
  * @param data - The data to be encoded.
  * @returns The encoded data as a Buffer.
  */
-function encode(data: rlp.Input): Buffer {
+function encode(data: RLPInput): Buffer {
     const encodedData = rlp.encode(data);
     return Buffer.from(encodedData);
 }
@@ -15,7 +16,7 @@ function encode(data: rlp.Input): Buffer {
  * @param encodedData - The RLP-encoded data as a Buffer.
  * @returns The decoded data or null if decoding fails.
  */
-function decode(encodedData: Buffer): Uint8Array | rlp.NestedUint8Array {
+function decode(encodedData: Buffer): RLPOutput {
     const decodedData = rlp.decode(encodedData);
     return decodedData;
 }

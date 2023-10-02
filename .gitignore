@@ -6,3 +6,4 @@ packages/**/node_modules
 yarn-error.log
 # Code coverage folder for tests
 coverage
+**/.DS_Store
