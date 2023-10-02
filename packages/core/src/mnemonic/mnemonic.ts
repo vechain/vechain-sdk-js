@@ -1,7 +1,6 @@
 import { ethers } from 'ethers';
 import { randomBytes } from 'crypto';
 import { HDNode } from '../hdnode/hdnode';
-import { ZERO_BUFFER } from '../utils';
 
 /**
  * Generate BIP39 mnemonic words
@@ -34,7 +33,7 @@ function validate(words: string[]): boolean {
  */
 function derivePrivateKey(words: string[]): Buffer {
     // NOTE: Here we use the ?? in order to avoid lint errors.
-    return HDNode.fromMnemonic(words).derive(0).privateKey ?? ZERO_BUFFER(64);
+    return HDNode.fromMnemonic(words).derive(0).privateKey as Buffer;
 }
 
 export const mnemonic = {
