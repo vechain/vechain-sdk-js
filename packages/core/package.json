@@ -31,6 +31,7 @@
         "@types/elliptic": "^6.4.15",
         "blakejs": "^1.2.1",
         "elliptic": "^6.5.4",
-        "ethers": "^6.7.1"
+        "ethers": "^6.7.1",
+        "web3": "^4.1.2"
     }
 }
