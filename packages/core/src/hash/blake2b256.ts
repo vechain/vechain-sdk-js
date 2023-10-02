@@ -1,11 +1,11 @@
 import blake from 'blakejs';
-import { type ethers } from 'ethers';
+import { type HashInput } from './types';
 
 /**
  * computes blake2b 256bit hash of given data
  * @param data one or more Buffer | string
  */
-function blake2b256(data: ethers.BytesLike): string {
+function blake2b256(data: HashInput): string {
     // Convert BytesLike to Buffer
     const dataBytesLike = [data] as Array<Buffer | string>;
 

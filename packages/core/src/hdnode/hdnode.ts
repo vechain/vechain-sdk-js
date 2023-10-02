@@ -1,25 +1,18 @@
 import { ethers } from 'ethers';
-import { ec as EC } from 'elliptic';
-import { createHash } from 'crypto';
-import { address } from '../address/address';
-import { ERRORS } from '../utils/errors';
+import {
+    ERRORS,
+    VET_DERIVATION_PATH,
+    X_PRIV_PREFIX,
+    X_PUB_PREFIX
+} from '../utils';
+import { type IHDNode } from './types';
+import { address } from '../address';
+import { sha256 } from '../hash';
+import { secp256k1 } from '../secp256k1';
 
-// see https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-const VET_DERIVATION_PATH = `m/44'/818'/0'/0`;
-const xpubPrefix = Buffer.from('0488b21e000000000000000000', 'hex');
-const xprivPrefix = Buffer.from('0488ade4000000000000000000', 'hex');
-const curve = new EC('secp256k1');
-
-/** BIP32 hierarchical deterministic node */
-export interface IHDNode {
-    readonly publicKey: Buffer;
-    readonly privateKey: Buffer | null;
-    readonly chainCode: Buffer;
-    readonly address: string;
-    derive: (index: number) => IHDNode;
-}
-
-/** create node from mnemonic words */
+/**
+ * Create node from mnemonic words
+ */
 function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
     if (words.length !== 12) {
         throw new Error(ERRORS.HDNODE.INVALID_MNEMONICS);
@@ -30,66 +23,82 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
         ethers.Mnemonic.fromPhrase(joinedWords),
         path
     );
-    return createHDNode(node);
+    return ethersNodeToOurHDNode(node);
 }
 
 /**
- * create node from xpub
+ * Create node from extended public key
+ *
  * @param pub public key
  * @param chainCode chain code
  */
-function fromPublicKey(pub: Buffer, chainCode: Buffer): IHDNode {
-    if (pub.length !== 65) {
+function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
+    // Invalid public key
+    if (publicKey.length !== 65)
         throw new Error(ERRORS.HDNODE.INVALID_PUBLICKEY);
-    }
-    if (chainCode.length !== 32) {
-        throw new Error(ERRORS.HDNODE.INVALID_CHAINCODE);
-    }
 
-    const compressed = curve.keyFromPublic(pub).getPublic(true, 'array');
-    const key = Buffer.concat([xpubPrefix, chainCode, Buffer.from(compressed)]);
-    const checksum = sha256(sha256(key));
+    // Invalid chain code
+    if (chainCode.length !== 32)
+        throw new Error(ERRORS.HDNODE.INVALID_CHAINCODE);
+
+    const compressed = secp256k1.extendedPublicKeyToArray(publicKey, true);
+    const key = Buffer.concat([
+        X_PUB_PREFIX,
+        chainCode,
+        Buffer.from(compressed)
+    ]);
+    const checksum = sha256AppliedToABuffer(sha256AppliedToABuffer(key));
     const slicedChecksum = checksum.subarray(0, 4);
 
     const node = ethers.HDNodeWallet.fromExtendedKey(
         ethers.encodeBase58(Buffer.concat([key, slicedChecksum]))
     ) as ethers.HDNodeWallet;
-    return createHDNode(node);
+    return ethersNodeToOurHDNode(node);
 }
 
 /**
- * create node from xpriv
+ * Create node from xpriv
+ *
  * @param priv private key
  * @param chainCode chain code
  */
-function fromPrivateKey(priv: Buffer, chainCode: Buffer): IHDNode {
-    if (priv.length !== 32) {
+function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
+    // Invalid private key
+    if (privateKey.length !== 32)
         throw new Error(ERRORS.HDNODE.INVALID_PRIVATEKEY);
-    }
-    if (chainCode.length !== 32) {
-        throw new Error(ERRORS.HDNODE.INVALID_CHAINCODE);
-    }
 
-    const key = Buffer.concat([xprivPrefix, chainCode, Buffer.from([0]), priv]);
-    const checksum = sha256(sha256(key));
+    // Invalid chain code
+    if (chainCode.length !== 32)
+        throw new Error(ERRORS.HDNODE.INVALID_CHAINCODE);
+
+    const key = Buffer.concat([
+        X_PRIV_PREFIX,
+        chainCode,
+        Buffer.from([0]),
+        privateKey
+    ]);
+    const checksum = sha256AppliedToABuffer(sha256AppliedToABuffer(key));
     const slicedChecksum = checksum.subarray(0, 4);
 
     const node = ethers.HDNodeWallet.fromExtendedKey(
         ethers.encodeBase58(Buffer.concat([key, slicedChecksum]))
     ) as ethers.HDNodeWallet;
-    return createHDNode(node);
+    return ethersNodeToOurHDNode(node);
 }
 
-function createHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
+/**
+ * Create a HDNode from an ethers HDNode
+ *
+ * @param ethersNode Node in ethers format
+ * @returns Our HDNode format
+ */
+function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
     const pub = Buffer.from(
-        curve
-            .keyFromPublic(ethersNode.publicKey.slice(2), 'hex')
-            .getPublic(false, 'array')
+        secp256k1.extendedPublicKeyToArray(
+            Buffer.from(ethersNode.publicKey.slice(2), 'hex'),
+            false
+        )
     );
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    const priv = ethersNode.privateKey
-        ? Buffer.from(ethersNode.privateKey.slice(2), 'hex')
-        : null;
     const cc = Buffer.from(ethersNode.chainCode.slice(2), 'hex');
     const addr = address.fromPublicKey(pub);
 
@@ -98,7 +107,9 @@ function createHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
             return pub;
         },
         get privateKey() {
-            return priv;
+            if (ethersNode.privateKey !== undefined)
+                return Buffer.from(ethersNode.privateKey.slice(2), 'hex');
+            return null;
         },
         get chainCode() {
             return cc;
@@ -107,19 +118,26 @@ function createHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
             return addr;
         },
         derive(index) {
-            return createHDNode(ethersNode.deriveChild(index));
+            return ethersNodeToOurHDNode(ethersNode.deriveChild(index));
         }
     };
 }
 
-function sha256(data: Buffer): Buffer {
-    return createHash('sha256').update(data).digest();
+/**
+ * Calculate sha256 hash of data expressed as buffer
+ *
+ * @param data Data to hash as buffer
+ * @returns Sha256 hash of data as buffer
+ */
+function sha256AppliedToABuffer(data: Buffer): Buffer {
+    const dataAsString = `0x${data.toString('hex')}`;
+    const hashAsString = sha256(dataAsString);
+
+    return Buffer.from(hashAsString.slice(2), 'hex');
 }
 
 export const HDNode = {
     fromMnemonic,
     fromPublicKey,
-    fromPrivateKey,
-    createHDNode,
-    sha256
+    fromPrivateKey
 };

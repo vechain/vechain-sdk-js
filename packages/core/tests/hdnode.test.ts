@@ -1,8 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { HDNode } from '../src/hdnode/hdnode';
-import { address } from '../src/address/address';
-import { secp256k1 } from '../src/secp256k1/secp256k1';
-import { ERRORS } from '../src/utils/errors';
+import { ERRORS, HDNode, ZERO_BUFFER, address, secp256k1 } from '../src';
 
 describe('mnemonic', () => {
     const words =
@@ -29,15 +26,14 @@ describe('mnemonic', () => {
                 addresses[i]
             );
             expect(child.address).toEqual('0x' + addresses[i]);
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            expect(secp256k1.derive(child.privateKey!).toString('hex')).toEqual(
-                child.publicKey.toString('hex')
-            );
+            expect(
+                secp256k1
+                    .derive(child.privateKey ?? ZERO_BUFFER(0))
+                    .toString('hex')
+            ).toEqual(child.publicKey.toString('hex'));
         }
-
         const xprivNode = HDNode.fromPrivateKey(
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            node.privateKey!,
+            node.privateKey ?? ZERO_BUFFER(0),
             node.chainCode
         );
         for (let i = 0; i < 5; i++) {
@@ -46,12 +42,12 @@ describe('mnemonic', () => {
                 addresses[i]
             );
             expect(child.address).toEqual('0x' + addresses[i]);
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            expect(secp256k1.derive(child.privateKey!).toString('hex')).toEqual(
-                child.publicKey.toString('hex')
-            );
+            expect(
+                secp256k1
+                    .derive(child.privateKey ?? ZERO_BUFFER(0))
+                    .toString('hex')
+            ).toEqual(child.publicKey.toString('hex'));
         }
-
         const xpubNode = HDNode.fromPublicKey(node.publicKey, node.chainCode);
         for (let i = 0; i < 5; i++) {
             const child = xpubNode.derive(i);
@@ -61,7 +57,6 @@ describe('mnemonic', () => {
             expect(child.address).toEqual('0x' + addresses[i]);
             expect(child.privateKey).toEqual(null);
         }
-
         // non-lowercase
         const node2 = HDNode.fromMnemonic(words.map((w) => w.toUpperCase()));
         expect(node.address === node2.address);
@@ -75,25 +70,25 @@ describe('mnemonic', () => {
 
     test('invalid private key', () => {
         expect(() =>
-            HDNode.fromPrivateKey(Buffer.alloc(31), Buffer.alloc(32))
+            HDNode.fromPrivateKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
         ).toThrow(ERRORS.HDNODE.INVALID_PRIVATEKEY);
     });
 
     test('invalid public key', () => {
         expect(() =>
-            HDNode.fromPublicKey(Buffer.alloc(31), Buffer.alloc(32))
+            HDNode.fromPublicKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
         ).toThrow(ERRORS.HDNODE.INVALID_PUBLICKEY);
     });
 
     test('invalid chain code private key', () => {
         expect(() =>
-            HDNode.fromPrivateKey(Buffer.alloc(32), Buffer.alloc(31))
+            HDNode.fromPrivateKey(ZERO_BUFFER(32), ZERO_BUFFER(31))
         ).toThrow(ERRORS.HDNODE.INVALID_CHAINCODE);
     });
 
     test('invalid chain code public key', () => {
         expect(() =>
-            HDNode.fromPublicKey(Buffer.alloc(65), Buffer.alloc(31))
+            HDNode.fromPublicKey(ZERO_BUFFER(65), ZERO_BUFFER(31))
         ).toThrow(ERRORS.HDNODE.INVALID_CHAINCODE);
     });
 });

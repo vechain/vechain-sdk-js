@@ -1,18 +1,9 @@
 import { randomBytes } from 'crypto';
-import { ERRORS } from '../utils/errors';
+import { ERRORS, PRIVATE_KEY_MAX_VALUE, ZERO_BUFFER } from '../utils';
 import { ec as EC } from 'elliptic';
 
 // Cureve algorithm
 const curve = new EC('secp256k1');
-
-// Max value
-const N = Buffer.from(
-    'fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141',
-    'hex'
-);
-
-// Zero value
-const ZERO = Buffer.alloc(32, 0);
 
 /**
  * Validate message hash
@@ -31,8 +22,8 @@ function isValidPrivateKey(key: Buffer): boolean {
     return (
         Buffer.isBuffer(key) &&
         key.length === 32 &&
-        !key.equals(ZERO) &&
-        key.compare(N) < 0
+        !key.equals(ZERO_BUFFER(32)) &&
+        key.compare(PRIVATE_KEY_MAX_VALUE) < 0
     );
 }
 
@@ -118,11 +109,25 @@ function recover(msgHash: Buffer, sig: Buffer): Buffer {
     );
 }
 
+/**
+ * Convert extended public key to array public key (compressed or uncompressed)
+ *
+ * @param extendedPublicKey extended public key
+ * @returns array public key
+ */
+function extendedPublicKeyToArray(
+    extendedPublicKey: Buffer,
+    compact: boolean
+): number[] {
+    return curve.keyFromPublic(extendedPublicKey).getPublic(compact, 'array');
+}
+
 export const secp256k1 = {
     isValidMessageHash,
     isValidPrivateKey,
     generate,
     derive,
     sign,
-    recover
+    recover,
+    extendedPublicKeyToArray
 };
