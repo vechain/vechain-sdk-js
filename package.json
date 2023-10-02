@@ -1,8 +1,8 @@
 {
-  "name": "thor-sdk-js",
+  "name": "vechain-sdk",
   "version": "1.0.0",
   "description": "The official JavaScript SDK for vechain",
-  "repository": "https://github.com/vechainfoundation/thor-sdk-js.git",
+  "repository": "https://github.com/vechainfoundation/vechain-sdk.git",
   "author": "vechain Foundation",
   "license": "MIT",
   "scripts": {
