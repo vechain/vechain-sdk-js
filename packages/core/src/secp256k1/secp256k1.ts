@@ -74,7 +74,7 @@ function sign(msgHash: Buffer, privKey: Buffer): Buffer {
     const r = Buffer.from(sig.r.toArray('be', 32));
     const s = Buffer.from(sig.s.toArray('be', 32));
 
-    return Buffer.concat([r, s, Buffer.from([sig.recoveryParam ?? 0])]);
+    return Buffer.concat([r, s, Buffer.from([sig.recoveryParam as number])]);
 }
 
 /**
