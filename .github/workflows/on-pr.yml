@@ -19,6 +19,8 @@ jobs:
                 yarn install
                 cd docs
                 yarn install
+            - name: Build
+              run: yarn build
             - name: Run examples
               run: |
                 cd docs
