@@ -32,14 +32,11 @@ To lint all packages use `yarn lint` command.
 ... TBD ...
 
 # Examples
-The `./docs` folder contains multiple real examples
+The `./docs` folder contains multiple real code examples
 
-These are written as executable examples, and can be executed with:
+These are written as executable examples
 
-```bash
-cd docs
-yarn install
-yarn runme
-```
+[More Details](./docs/README.md)
+
 
 
