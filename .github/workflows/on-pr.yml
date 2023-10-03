@@ -16,6 +16,7 @@ jobs:
                 node-version-file: .nvmrc
             - name: Install
               run:  |
+                yarn install
                 cd docs
                 yarn install
             - name: Run examples
