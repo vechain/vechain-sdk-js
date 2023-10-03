@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "runme": "npx runme run --all --category example --skip-prompts"
+    "rundocs": "npx runme run --all --category example --skip-prompts"
   },
   "devDependencies": {
     "core": "link:../packages/core/dist",
