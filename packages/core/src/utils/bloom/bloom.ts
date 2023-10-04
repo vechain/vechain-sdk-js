@@ -1,5 +1,5 @@
 import { bloom as bloomInstance } from '../../bloom';
-import { isHexString, removePrefix } from '../data';
+import { dataUtils } from '../data';
 import { ERRORS } from '../errors';
 import { type HexString } from '../types';
 import { address } from '../../address';
@@ -68,7 +68,7 @@ const isInBloom = (bloom: HexString, k: number, data: HexString): boolean => {
         throw new Error(ERRORS.BLOOM.INVALID_BLOOM);
     }
 
-    if (!isHexString(data)) {
+    if (!dataUtils.isHexString(data)) {
         throw new Error(ERRORS.DATA.INVALID_DATA_TYPE('a hexadecimal string'));
     }
 
@@ -81,9 +81,9 @@ const isInBloom = (bloom: HexString, k: number, data: HexString): boolean => {
     }
 
     // Ensure data is a Buffer
-    const dataBuffer = Buffer.from(removePrefix(data), 'hex');
+    const dataBuffer = Buffer.from(dataUtils.removePrefix(data), 'hex');
 
-    const bloomBuffer = Buffer.from(removePrefix(bloom), 'hex');
+    const bloomBuffer = Buffer.from(dataUtils.removePrefix(bloom), 'hex');
     const bloomFilter = new bloomInstance.Filter(bloomBuffer, k);
 
     return bloomFilter.contains(dataBuffer);
@@ -109,7 +109,7 @@ const isInBloom = (bloom: HexString, k: number, data: HexString): boolean => {
  * @throws
  * - Will throw an error if `bloom` is not a valid Bloom filter format.
  * - Will throw an error if `k` is not a positive integer.
- * - Will throw an error if `addressToCheck` is not a valid Ethereum address format.
+ * - Will throw an error if `addressToCheck` is not a valid vechain thor address format.
  *
  * @example
  * ```typescript
@@ -134,4 +134,4 @@ const isAddressInBloom = (
     return isInBloom(bloom, k, addressToCheck);
 };
 
-export { isBloom, isInBloom, isAddressInBloom };
+export const bloomUtils = { isBloom, isInBloom, isAddressInBloom };

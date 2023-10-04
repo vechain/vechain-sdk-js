@@ -1,37 +1,33 @@
 import { describe, expect, test } from '@jest/globals';
-import {
-    ERRORS,
-    isAddressInBloom,
-    isBloom,
-    isInBloom,
-    toHexString
-} from '../../src/utils';
+import { ERRORS, dataUtils, bloomUtils } from '../../src/utils';
 
 describe('utils/bloom', () => {
     test('isBloom', () => {
-        expect(isBloom('0x00000000000000000')).toBe(true);
+        expect(bloomUtils.isBloom('0x00000000000000000')).toBe(true);
 
-        expect(isBloom('00000000000000000')).toBe(true);
+        expect(bloomUtils.isBloom('00000000000000000')).toBe(true);
 
-        expect(isBloom('cceeeeeeeeee2e02')).toBe(true);
+        expect(bloomUtils.isBloom('cceeeeeeeeee2e02')).toBe(true);
 
-        expect(isBloom('0xcceeefaf544356660001123123eeeeeee2e02')).toBe(true);
+        expect(
+            bloomUtils.isBloom('0xcceeefaf544356660001123123eeeeeee2e02')
+        ).toBe(true);
 
-        expect(isBloom('0xABCDEF01230431334')).toBe(true);
+        expect(bloomUtils.isBloom('0xABCDEF01230431334')).toBe(true);
 
-        expect(isBloom('0xABCdef01230431334')).toBe(false);
+        expect(bloomUtils.isBloom('0xABCdef01230431334')).toBe(false);
 
-        expect(isBloom('0x')).toBe(false);
+        expect(bloomUtils.isBloom('0x')).toBe(false);
 
-        expect(isBloom('')).toBe(false);
+        expect(bloomUtils.isBloom('')).toBe(false);
 
-        expect(isBloom('0x+ò8nbas')).toBe(false);
+        expect(bloomUtils.isBloom('0x+ò8nbas')).toBe(false);
 
         // @ts-expect-error: Testing error scenario
-        expect(isBloom(123)).toBe(false);
+        expect(bloomUtils.isBloom(123)).toBe(false);
     });
 
-    describe('isInBloom', () => {
+    describe('bloomUtils.isInBloom', () => {
         const testCases = [
             {
                 bloom: 'c207aca13ca010db8b5f89b3689318',
@@ -65,7 +61,7 @@ describe('utils/bloom', () => {
 
         testCases.forEach(({ bloom, k, data, expected, description }) => {
             test(`returns ${expected} for ${description}`, () => {
-                expect(isInBloom(bloom, k, data)).toBe(expected);
+                expect(bloomUtils.isInBloom(bloom, k, data)).toBe(expected);
             });
         });
 
@@ -73,21 +69,21 @@ describe('utils/bloom', () => {
             {
                 bloom: 'a4d641159d68d829345f86f40d50676cf042f6265072075a94',
                 k: 13,
-                data: toHexString('key1'),
+                data: dataUtils.toHexString('key1'),
                 expected: true,
                 description: 'regular string'
             },
             {
                 bloom: '1190199325088200',
                 k: 6,
-                data: toHexString('\x00\x01\x02'),
+                data: dataUtils.toHexString('\x00\x01\x02'),
                 expected: true,
                 description: 'binary data'
             },
             {
                 bloom: '0x1190199325088200',
                 k: 6,
-                data: toHexString('🚀'),
+                data: dataUtils.toHexString('🚀'),
                 expected: true,
                 description: 'emoji'
             }
@@ -95,21 +91,21 @@ describe('utils/bloom', () => {
 
         valueTypeCases.forEach(({ bloom, k, data, expected, description }) => {
             test(`returns ${expected} for ${description} type inside hex bloom`, () => {
-                expect(isInBloom(bloom, k, data)).toBe(expected);
+                expect(bloomUtils.isInBloom(bloom, k, data)).toBe(expected);
             });
         });
 
         // Test for invalid bloom filter format
         test('should throw an error for invalid bloom filter format', () => {
             expect(() => {
-                isInBloom('0xINVALIDBLOOM', 3, '0x1234');
+                bloomUtils.isInBloom('0xINVALIDBLOOM', 3, '0x1234');
             }).toThrowError(ERRORS.BLOOM.INVALID_BLOOM);
         });
 
         // Test for non-hexadecimal data string
         test('should throw an error for non-hexadecimal data string', () => {
             expect(() => {
-                isInBloom('0x000000000000000000', 3, 'INVALIDHEX');
+                bloomUtils.isInBloom('0x000000000000000000', 3, 'INVALIDHEX');
             }).toThrowError(
                 ERRORS.DATA.INVALID_DATA_TYPE('a hexadecimal string')
             );
@@ -118,14 +114,14 @@ describe('utils/bloom', () => {
         // Test for non-positive integer k
         test('should throw an error for non-positive integer k', () => {
             expect(() => {
-                isInBloom('0x000000000000000000', -3, '0x1234');
+                bloomUtils.isInBloom('0x000000000000000000', -3, '0x1234');
             }).toThrowError(ERRORS.BLOOM.INVALID_K);
         });
 
         // Test for non-integer k
         test('should throw an error for non-integer k', () => {
             expect(() => {
-                isInBloom('0x000000000000000000', 3.5, '0x1234');
+                bloomUtils.isInBloom('0x000000000000000000', 3.5, '0x1234');
             }).toThrowError(ERRORS.BLOOM.INVALID_K);
         });
 
@@ -133,12 +129,12 @@ describe('utils/bloom', () => {
         test('should throw an error for data that is not a string', () => {
             expect(() => {
                 // @ts-expect-error: Intentionally passing a number to test error handling
-                isInBloom('0x000000000000000000', 3, 1234);
+                bloomUtils.isInBloom('0x000000000000000000', 3, 1234);
             }).toThrowError(ERRORS.DATA.INVALID_DATA_TYPE('a string'));
         });
     });
 
-    describe('isAddressInBloom', () => {
+    describe('bloomUtils.isAddressInBloom', () => {
         const invalidAddressTestCases = [
             {
                 bloom: 'c207aca13ca010db8b5f89b3689318',
@@ -167,7 +163,7 @@ describe('utils/bloom', () => {
             ({ bloom, k, address, expected, description }) => {
                 test(`should throw an error for ${description}`, () => {
                     expect(() => {
-                        isAddressInBloom(bloom, k, address);
+                        bloomUtils.isAddressInBloom(bloom, k, address);
                     }).toThrowError(expected);
                 });
             }
@@ -193,7 +189,9 @@ describe('utils/bloom', () => {
         validAddressTestCases.forEach(
             ({ bloom, k, address, expected, description }) => {
                 test(`should return ${expected} for ${description}`, () => {
-                    expect(isAddressInBloom(bloom, k, address)).toBe(expected);
+                    expect(bloomUtils.isAddressInBloom(bloom, k, address)).toBe(
+                        expected
+                    );
                 });
             }
         );

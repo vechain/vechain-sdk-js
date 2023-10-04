@@ -71,4 +71,4 @@ const removePrefix = (hex: HexString): string => {
     return hex;
 };
 
-export { toHexString, isHexString, removePrefix };
+export const dataUtils = { toHexString, isHexString, removePrefix };
