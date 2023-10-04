@@ -25,19 +25,37 @@ function validate(words: string[]): boolean {
 }
 
 /**
- * Derive private key at index 0 from mnemonic words according to BIP32.
+ * Derive private key at a specific index from mnemonic words according to BIP32. The default index is 0.
  * the derivation path is defined at https://github.com/satoshilabs/slips/blob/master/slip-0044.md
  *
  * @param words Mnemonic words
+ * @param derivationPath Derivation path starting from the current HD node (e.g. "0/2" if starting from the vechain sdk default derivation path)
  * @returns Private key
  */
-function derivePrivateKey(words: string[]): Buffer {
+function derivePrivateKey(
+    words: string[],
+    derivationPath: string = '0'
+): Buffer {
     // NOTE: Here we use the ?? in order to avoid lint errors.
-    return HDNode.fromMnemonic(words).derive(0).privateKey as Buffer;
+    return HDNode.fromMnemonic(words).derivePath(derivationPath)
+        .privateKey as Buffer;
+}
+
+/**
+ *
+ * Derive address at a specific index from mnemonic words. The default index is 0.
+ *
+ * @param words Mnemonic words
+ * @param derivationPath Derivation path starting from the current HD node (e.g. "0/2" if starting from the vechain sdk default derivation path)
+ * @returns Address
+ */
+function deriveAddress(words: string[], derivationPath: string = '0'): string {
+    return HDNode.fromMnemonic(words).derivePath(derivationPath).address;
 }
 
 export const mnemonic = {
     generate,
     validate,
-    derivePrivateKey
+    derivePrivateKey,
+    deriveAddress
 };
