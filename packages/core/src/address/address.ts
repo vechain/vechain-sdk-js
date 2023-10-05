@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { ERRORS, HEX_ADDRESS_REGEX } from '../utils';
 
 /**
- * Derives an vechain thor address from a public key.
+ * Derives a vechain thor address from a public key.
  *
  * @remarks
  * This function generates a vechain thor address by utilizing the ethers.js library's `computeAddress` function.
