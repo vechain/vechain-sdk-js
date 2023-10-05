@@ -29,15 +29,15 @@ function validate(words: string[]): boolean {
  * the derivation path is defined at https://github.com/satoshilabs/slips/blob/master/slip-0044.md
  *
  * @param words Mnemonic words
- * @param derivationPath Derivation path starting from the current HD node (e.g. "0/2" if starting from the vechain sdk default derivation path)
+ * @param derivationPathFromCurrentNode Derivation path starting from the current HD node (e.g. "0/2" if starting from the vechain sdk default derivation path)
  * @returns Private key
  */
 function derivePrivateKey(
     words: string[],
-    derivationPath: string = '0'
+    derivationPathFromCurrentNode: string = '0'
 ): Buffer {
     // NOTE: Here we use the ?? in order to avoid lint errors.
-    return HDNode.fromMnemonic(words).derivePath(derivationPath)
+    return HDNode.fromMnemonic(words).derivePath(derivationPathFromCurrentNode)
         .privateKey as Buffer;
 }
 
@@ -46,11 +46,15 @@ function derivePrivateKey(
  * Derive address at a specific index from mnemonic words. The default index is 0.
  *
  * @param words Mnemonic words
- * @param derivationPath Derivation path starting from the current HD node (e.g. "0/2" if starting from the vechain sdk default derivation path)
+ * @param derivationPathFromCurrentNode Derivation path starting from the current HD node (e.g. "0/2" if starting from the vechain sdk default derivation path)
  * @returns Address
  */
-function deriveAddress(words: string[], derivationPath: string = '0'): string {
-    return HDNode.fromMnemonic(words).derivePath(derivationPath).address;
+function deriveAddress(
+    words: string[],
+    derivationPathFromCurrentNode: string = '0'
+): string {
+    return HDNode.fromMnemonic(words).derivePath(derivationPathFromCurrentNode)
+        .address;
 }
 
 export const mnemonic = {
