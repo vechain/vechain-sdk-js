@@ -15,7 +15,7 @@ import { Buffer } from 'buffer';
  * This class represents a Bloom filter with its associated bit array and
  * a specified number (k) of hash functions.
  */
-export class Filter {
+class Filter {
     public readonly bits: Buffer;
     public readonly k: number;
 
@@ -113,7 +113,7 @@ function distribute(
  * It allows keys to be added, internally hashes them, and provides
  * a method to generate a Bloom filter based on the added keys.
  */
-export class Generator {
+class Generator {
     private readonly hashes = new Map<number, boolean>();
 
     /**
@@ -167,8 +167,14 @@ export class Generator {
  * @param bitsPerKey - The number of bits per key.
  * @returns The calculated optimal `k` value.
  */
-export function calculateK(bitsPerKey: number): number {
+function calculateK(bitsPerKey: number): number {
     const k = Math.floor((bitsPerKey * 69) / 100); // bitsPerKey * ln(2),  0.69 =~ ln(2)
     if (k < 1) return 1;
     return k > 30 ? 30 : k;
 }
+
+export const bloom = {
+    Generator,
+    Filter,
+    calculateK
+};
