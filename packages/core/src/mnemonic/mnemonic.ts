@@ -29,7 +29,10 @@ function validate(words: string[]): boolean {
  * the derivation path is defined at https://github.com/satoshilabs/slips/blob/master/slip-0044.md
  *
  * @param words Mnemonic words
- * @param derivationPathFromCurrentNode Derivation path starting from the current HD node (e.g. "0/2" if starting from the vechain sdk default derivation path)
+ * @param derivationPathFromCurrentNode Derivation path starting from the current HD node
+ * @example `0` (default)
+ * @example `0/2`
+ * @example `0/2/4/6`
  * @returns Private key
  */
 function derivePrivateKey(
@@ -45,7 +48,10 @@ function derivePrivateKey(
  * Derive address at a specific index from mnemonic words. The default index is 0.
  *
  * @param words Mnemonic words
- * @param derivationPathFromCurrentNode Derivation path starting from the current HD node (e.g. "0/2" if starting from the vechain sdk default derivation path)
+ * @param derivationPathFromCurrentNode Derivation path starting from the current HD node
+ * @example `0` (default)
+ * @example `0/2`
+ * @example `0/2/4/6`
  * @returns Address
  */
 function deriveAddress(
