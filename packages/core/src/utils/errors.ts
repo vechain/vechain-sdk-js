@@ -36,6 +36,24 @@ const ERRORS = {
         INVALID_PRIVATEKEY: 'Invalid private key',
         INVALID_CHAINCODE: 'Invalid chain code',
         INVALID_MNEMONICS: 'Invalid mnemonics'
+    },
+
+    /**
+     * Bloom filter error messages
+     */
+    BLOOM: {
+        INVALID_BLOOM:
+            'Invalid Bloom filter format. Bloom filters must adhere to the format 0x[0-9a-fA-F]{16,}.',
+        INVALID_K: 'Invalid k. It should be a positive integer.'
+    },
+
+    /**
+     * Data error messages
+     */
+    DATA: {
+        INVALID_DATA_TYPE: function (format: string): string {
+            return `Invalid data type. Data should be ${format}.`;
+        }
     }
 };
 

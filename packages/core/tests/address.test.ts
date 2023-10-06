@@ -5,12 +5,12 @@ import { ERRORS } from '../src/utils/errors';
 
 describe('address.test', () => {
     test('validate address', () => {
-        expect(address.test('not an address')).toEqual(false);
+        expect(address.isAddress('not an address')).toEqual(false);
         expect(
-            address.test('52908400098527886E0F7030069857D2E4169EE7')
+            address.isAddress('52908400098527886E0F7030069857D2E4169EE7')
         ).toEqual(false);
         expect(
-            address.test('0x52908400098527886E0F7030069857D2E4169EE7')
+            address.isAddress('0x52908400098527886E0F7030069857D2E4169EE7')
         ).toEqual(true);
     });
 });
