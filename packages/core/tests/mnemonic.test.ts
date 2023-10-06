@@ -42,6 +42,9 @@ describe('mnemonic', () => {
             '66962cecff67bea483935c87fd33c6b6a524f06cc46430fa9591350bbd9f4999'
         );
     });
+    test('try to derive private key with a wrong deep derivation path', () => {
+        expect(() => mnemonic.derivePrivateKey(words, '0/1/4/2/4/h')).toThrow();
+    });
     test('derive address', () => {
         expect(mnemonic.deriveAddress(words)).toEqual(
             '0x339Fb3C438606519E2C75bbf531fb43a0F449A70'
@@ -61,6 +64,9 @@ describe('mnemonic', () => {
         expect(mnemonic.deriveAddress(words, '0/1/4/2/4/3')).toEqual(
             '0x0b41c56e19c5151122568873a039fEa090937Fe2'
         );
+    });
+    test('try to derive address with a wrong deep derivation path', () => {
+        expect(() => mnemonic.deriveAddress(words, '0/1/4/2/4/h')).toThrow();
     });
     test('hdNode', () => {
         const node = HDNode.fromMnemonic(words);
