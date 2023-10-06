@@ -3,6 +3,7 @@ import { dataUtils } from '../data';
 import { ERRORS } from '../errors';
 import { type HexString } from '../types';
 import { address } from '../../address';
+import { BLOOM_REGEX_LOWERCASE, BLOOM_REGEX_UPPERCASE } from '../const';
 
 /**
  * Checks if a given string adheres to the Bloom filter format.
@@ -29,8 +30,8 @@ const isBloom = (bloom: string): boolean => {
 
     // At least 16 characters besides '0x' both all lowercase and all uppercase
     if (
-        /^(0x)?[0-9a-f]{16,}$/.test(bloom) ||
-        /^(0x)?[0-9A-F]{16,}$/.test(bloom)
+        BLOOM_REGEX_LOWERCASE.test(bloom) ||
+        BLOOM_REGEX_UPPERCASE.test(bloom)
     ) {
         return true;
     }

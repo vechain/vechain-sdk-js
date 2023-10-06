@@ -46,6 +46,9 @@ const HEX_REGEX = /^(0x)?[0-9a-fA-F]*$/;
 
 const HEX_ADDRESS_REGEX = /^0x[0-9a-f]{40}$/i;
 
+const BLOOM_REGEX_UPPERCASE = /^(0x)?[0-9A-F]{16,}$/;
+const BLOOM_REGEX_LOWERCASE = /^(0x)?[0-9a-f]{16,}$/;
+
 export {
     VET_DERIVATION_PATH,
     X_PUB_PREFIX,
@@ -54,5 +57,7 @@ export {
     ZERO_BUFFER,
     PRIVATE_KEY_MAX_VALUE,
     HEX_REGEX,
-    HEX_ADDRESS_REGEX
+    HEX_ADDRESS_REGEX,
+    BLOOM_REGEX_LOWERCASE,
+    BLOOM_REGEX_UPPERCASE
 };
