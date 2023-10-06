@@ -36,7 +36,6 @@ function derivePrivateKey(
     words: string[],
     derivationPathFromCurrentNode: string = '0'
 ): Buffer {
-    // NOTE: Here we use the ?? in order to avoid lint errors.
     return HDNode.fromMnemonic(words).derivePath(derivationPathFromCurrentNode)
         .privateKey as Buffer;
 }
