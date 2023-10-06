@@ -11,7 +11,7 @@
     },
     "devDependencies": {
         "@jest/globals": "^29.7.0",
-        "@typescript-eslint/eslint-plugin": "^6.7.3",
+        "@typescript-eslint/eslint-plugin": "^6.7.4",
         "eslint": "^8.0.1",
         "eslint-config-prettier": "^9.0.0",
         "eslint-config-standard-with-typescript": "^39.0.0",
@@ -31,7 +31,7 @@
         "@types/elliptic": "^6.4.15",
         "blakejs": "^1.2.1",
         "elliptic": "^6.5.4",
-        "ethers": "^6.7.1",
+        "ethers": "6.7.1",
         "web3": "^4.1.2"
     }
 }

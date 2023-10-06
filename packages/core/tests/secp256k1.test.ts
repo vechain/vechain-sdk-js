@@ -2,7 +2,7 @@ import { describe, test, expect } from '@jest/globals';
 import { secp256k1 } from '../src/secp256k1/secp256k1';
 import { keccak256 } from '../src/hash/keccak256';
 import { ERRORS } from '../src/utils/errors';
-import { ZERO_BUFFER } from '../src';
+import { ZERO_BUFFER } from '../src/utils';
 
 // Constants
 const privateKey = Buffer.from(

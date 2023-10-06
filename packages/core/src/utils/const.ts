@@ -38,11 +38,26 @@ const PRIVATE_KEY_MAX_VALUE = Buffer.from(
     'hex'
 );
 
+/**
+ * Regular expression for validating hexadecimal strings.
+ * Allows optional "0x" prefix and validates both lower and uppercase hex characters.
+ */
+const HEX_REGEX = /^(0x)?[0-9a-fA-F]*$/;
+
+const HEX_ADDRESS_REGEX = /^0x[0-9a-f]{40}$/i;
+
+const BLOOM_REGEX_UPPERCASE = /^(0x)?[0-9A-F]{16,}$/;
+const BLOOM_REGEX_LOWERCASE = /^(0x)?[0-9a-f]{16,}$/;
+
 export {
     VET_DERIVATION_PATH,
     X_PUB_PREFIX,
     X_PRIV_PREFIX,
     SCRYPT_PARAMS,
     ZERO_BUFFER,
-    PRIVATE_KEY_MAX_VALUE
+    PRIVATE_KEY_MAX_VALUE,
+    HEX_REGEX,
+    HEX_ADDRESS_REGEX,
+    BLOOM_REGEX_LOWERCASE,
+    BLOOM_REGEX_UPPERCASE
 };
