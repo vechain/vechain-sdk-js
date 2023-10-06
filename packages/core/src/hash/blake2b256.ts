@@ -38,4 +38,4 @@ function blake2b256(data: HashInput): string {
     return `0x${_blake2b256(...dataBytesLike).toString('hex')}`;
 }
 
-export { _blake2b256, blake2b256 };
+export { blake2b256 };

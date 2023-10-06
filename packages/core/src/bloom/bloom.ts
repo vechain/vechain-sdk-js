@@ -8,8 +8,9 @@
  * Reference: https://github.com/vechain/thor/blob/master/thor/bloom/bloom.go
  */
 
-import { _blake2b256 } from '../hash';
+import { blake2b256 } from '../hash';
 import { Buffer } from 'buffer';
+import { dataUtils } from '../utils';
 
 /**
  * This class represents a Bloom filter with its associated bit array and
@@ -69,8 +70,14 @@ function addWithUInt32Wrap(a: number, b: number): number {
  * @returns The hash value.
  */
 function hash(key: Buffer): number {
-    const hashBuffer = _blake2b256(key);
-    return hashBuffer.readUInt32BE(0);
+    // Convert key to Uint8Array
+    const uint8ArrayKey = new Uint8Array(key);
+
+    // Compute hash using blake2b256
+    const hash = blake2b256(uint8ArrayKey);
+    const newCorrectHash = Buffer.from(dataUtils.removePrefix(hash), 'hex');
+
+    return newCorrectHash.readUInt32BE(0);
 }
 
 /**
