@@ -18,6 +18,82 @@ To ensure consistency throughout the source code, please adhere to the following
 3. Write tests for new features and bug fixes.
 4. We follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for commit messages.
 
+# Commenting Guidelines
+
+## Class Commenting
+Provide an overview of the class's purpose, how it should be used, and in which subsystem it belongs if applicable.
+```typescript
+/**
+ * Represents a statistical utility that provides methods to compute 
+ * common statistical metrics.
+ *
+ * @remarks
+ * This class provides static methods and adheres to the immutability and statelessness principles. 
+ * It is a part of the {@link vechain-sdk#Statistics | Statistics subsystem}.
+ */
+export class Statistics {
+  ...
+}
+```
+
+## Method Commenting
+Document the purpose, parameters, return values, and usage examples of methods, as well as any exceptions they might throw.
+```typescript
+/**
+ * Computes the average of two numbers.
+ *
+ * @remarks
+ * This method is designed for two numbers only and returns the exact arithmetic mean.
+ * It is a part of the {@link vechain-sdk#Statistics | Statistics subsystem}.
+ *
+ * @param x - The first input number.
+ * @param y - The second input number.
+ * @returns The arithmetic mean of `x` and `y`.
+ *
+ * @example
+ * ```
+ * const average = Statistics.getAverage(5, 3); 
+ * console.log(average); // Outputs: 4
+ * ```
+ */
+public static getAverage(x: number, y: number): number {
+  return (x + y) / 2.0;
+}
+```
+
+## Property Commenting
+Explain the purpose of properties and any noteworthy characteristics about them.
+```typescript
+/**
+ * The total count of instances created from this class.
+ * 
+ * @remarks
+ * This property is static and reflects the total count across all instances.
+ */
+public static instanceCount: number = 0;
+```
+
+## Exception Commenting
+Describe under what conditions methods throw exceptions.
+```typescript
+/**
+ * Parses a string and returns its integer representation.
+ * 
+ * @param s - The string to parse.
+ * @returns The integer representation of the string.
+ * 
+ * @throws {NumberFormatException}
+ * Thrown when the provided string does not have a valid integer format.
+ */
+public static parseInteger(s: string): number {
+  const result = parseInt(s, 10);
+  if (isNaN(result)) {
+    throw new NumberFormatException(`Invalid number format: ${s}`);
+  }
+  return result;
+}
+```
+
 # Submitting a Pull Request
 
 Before submitting a pull request, please make sure the following is done:
