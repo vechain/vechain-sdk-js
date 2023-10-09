@@ -1,24 +1,49 @@
 import { RLP as rlp } from '@ethereumjs/rlp';
-import { type RLPInput, type RLPOutput } from './types';
+import {
+    type RLPProfile,
+    ScalarKind,
+    type RLPInput,
+    type RLPValidObect
+} from './types';
+import { ERRORS } from '../utils';
 
-/**
- * Encodes data using the Ethereumjs RLP library.
- * @param data - The data to be encoded.
- * @returns The encoded data as a Buffer.
- */
-function encode(data: RLPInput): Buffer {
-    const encodedData = rlp.encode(data);
-    return Buffer.from(encodedData);
+export class RLP {
+    constructor(readonly profile: RLPProfile) {}
+
+    public encode(data: RLPValidObect): Buffer {
+        const packedData = this.pack(data, this.profile, '');
+        return Buffer.from(rlp.encode(packedData));
+    }
+
+    private pack(
+        obj: RLPValidObect,
+        profile: RLPProfile,
+        ctx: string
+    ): RLPInput {
+        ctx = ctx !== '' ? ctx + '.' + profile.name : profile.name;
+        const kind = profile.kind;
+
+        if (kind instanceof ScalarKind) {
+            return kind.data(obj, ctx).encode();
+        }
+
+        if (Array.isArray(kind) && !Array.isArray(obj)) {
+            return kind.map((k) =>
+                this.pack(obj[k.name] as RLPValidObect, k, ctx)
+            );
+        }
+
+        if (Array.isArray(obj) && 'item' in kind) {
+            const item = kind.item;
+            return obj.map((part, i) =>
+                this.pack(
+                    part as RLPValidObect,
+                    { name: '#' + i, kind: item },
+                    ctx
+                )
+            );
+        }
+
+        throw new Error(ERRORS.RLP.INVALID_RLP(ctx, 'unexpected input'));
+    }
 }
-
-/**
- * Decodes RLP-encoded data using the Ethereumjs RLP library.
- * @param encodedData - The RLP-encoded data as a Buffer.
- * @returns The decoded data or null if decoding fails.
- */
-function decode(encodedData: Buffer): RLPOutput {
-    const decodedData = rlp.decode(encodedData);
-    return decodedData;
-}
-
-export const RLP = { encode, decode };

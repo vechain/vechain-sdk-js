@@ -54,6 +54,12 @@ const ERRORS = {
         INVALID_DATA_TYPE: function (format: string): string {
             return `Invalid data type. Data should be ${format}.`;
         }
+    },
+
+    RLP: {
+        INVALID_RLP: function (context: string, message: string): string {
+            return `${context}: ${message}`;
+        }
     }
 };
 
