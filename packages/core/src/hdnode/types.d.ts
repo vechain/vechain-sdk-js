@@ -8,4 +8,5 @@ export interface IHDNode {
     readonly chainCode: Buffer;
     readonly address: string;
     derive: (index: number) => IHDNode;
+    derivePath: (path: string) => IHDNode;
 }
