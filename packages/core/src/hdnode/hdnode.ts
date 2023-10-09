@@ -119,6 +119,9 @@ function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
         },
         derive(index) {
             return ethersNodeToOurHDNode(ethersNode.deriveChild(index));
+        },
+        derivePath(path: string) {
+            return ethersNodeToOurHDNode(ethersNode.derivePath(path));
         }
     };
 }
