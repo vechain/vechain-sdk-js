@@ -9,9 +9,9 @@ import {
 } from './fixtures/abi/abi';
 
 /**
- * ABI tests
+ * ABI tests - Low level
  */
-describe('abi', () => {
+describe('Abi - Low level', () => {
     /**
      * Encode and Decode parameter
      */
