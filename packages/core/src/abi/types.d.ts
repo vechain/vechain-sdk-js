@@ -1,5 +1,5 @@
-import { type web3 } from 'web3';
+import { type ethers } from 'ethers';
 
-type AbiInput = web3.AbiInput;
+type ParamType = ethers.ParamType;
 
-export type { AbiInput };
+export type { ParamType };
