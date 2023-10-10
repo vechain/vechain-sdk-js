@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { events, functions } from './fixture';
-import { abi } from '../../src/abi';
+import { type FormatType, abi } from '../../src/abi';
 
 /**
  * ABI tests - High level
@@ -67,6 +67,23 @@ describe('Abi - High level', () => {
                         // Create a function from the format without any problems
                         const myFunction = new abi.highLevel.Function(
                             functionFormat.format
+                        );
+
+                        // Expect to have a signature in each format
+                        expect(myFunction.signature('full')).toBeDefined();
+                        expect(myFunction.signature('minimal')).toBeDefined();
+                        expect(myFunction.signature('sighash')).toBeDefined();
+                        expect(myFunction.signature('json')).toBeDefined();
+
+                        // Expect to have a signature in each format
+                        ['full', 'minimal', 'json', 'sighash'].forEach(
+                            (sigFormat: string) => {
+                                expect(() =>
+                                    myFunction.signature(
+                                        sigFormat as FormatType
+                                    )
+                                ).toBeDefined();
+                            }
                         );
 
                         // Verify signature hash
@@ -155,6 +172,12 @@ describe('Abi - High level', () => {
                         const myEvent = new abi.highLevel.Event(
                             eventFormat.format
                         );
+
+                        // Expect to have a signature in each format
+                        expect(myEvent.signature('full')).toBeDefined();
+                        expect(myEvent.signature('minimal')).toBeDefined();
+                        expect(myEvent.signature('sighash')).toBeDefined();
+                        expect(myEvent.signature('json')).toBeDefined();
 
                         // Verify signature hash
                         expect(myEvent.signatureHash()).toBe(
