@@ -31,4 +31,18 @@ type Result = ethers.Result;
  */
 type BytesLike = ethers.BytesLike;
 
-export type { ParamType, FunctionFragment, Interface, Result, BytesLike };
+/**
+ * Represents a wrapped FormatType for ethers.js types.
+ * It is used to represents the format of the signature of a function.
+ * @public
+ */
+type FormatType = ethers.FormatType;
+
+export type {
+    ParamType,
+    FunctionFragment,
+    Interface,
+    Result,
+    BytesLike,
+    FormatType
+};

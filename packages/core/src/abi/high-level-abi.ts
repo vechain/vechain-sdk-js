@@ -1,5 +1,10 @@
 import { ethers } from 'ethers';
-import { type Interface, type FunctionFragment, type Result } from './types';
+import {
+    type Interface,
+    type FunctionFragment,
+    type Result,
+    type FormatType
+} from './types';
 
 /**
  * Represents a function call in the high-level ABI.
@@ -40,7 +45,7 @@ class Function<ABIType> {
      * @param formatType - The format type of the signature: 'sighash', 'minimal', 'full', or 'json'.
      * @returns The signature of the function.
      */
-    public signature(formatType: ethers.FormatType): string {
+    public signature(formatType: FormatType): string {
         return this.fragment.format(formatType);
     }
 
@@ -102,7 +107,7 @@ class Event<ABIType> {
      * @param formatType - The format type of the signature: 'sighash', 'minimal', 'full', or 'json'.
      * @returns The signature of the event.
      */
-    public signature(formatType: ethers.FormatType): string {
+    public signature(formatType: FormatType): string {
         return this.fragment.format(formatType);
     }
 
