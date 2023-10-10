@@ -4,8 +4,7 @@ import { ParamType, type ethers } from 'ethers';
 import {
     encodedDecodedInvalidValues,
     encodedDecodedValues,
-    function2,
-    function2SimpleParametersData
+    functions
 } from './fixture';
 
 /**
@@ -70,11 +69,25 @@ describe('Abi - Low level', () => {
                 identity: string;
                 active: boolean;
             }>
-        >(ParamType.from(function2.outputs[0]), function2SimpleParametersData);
+        >(
+            ParamType.from(functions[1].objectAbi.outputs[0]),
+            functions[1].simpleParametersData as Array<{
+                master: string;
+                endorsor: string;
+                identity: string;
+                active: boolean;
+            }>
+        );
+
+        // @NOTE: you can use encode and avoid types gymnastics.
+        // const encoded = abi.lowLevel.encode(
+        //     ParamType.from(functions[1].objectAbi.outputs[0]),
+        //     functions[1].simpleParametersData
+        // );
 
         // Decode function 2 stuffs
         const decoded = abi.lowLevel.decode<ethers.Result[][]>(
-            ParamType.from(function2.outputs[0]),
+            ParamType.from(functions[1].objectAbi.outputs[0]),
             encoded
         );
 
