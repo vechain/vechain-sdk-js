@@ -4,15 +4,16 @@ import { ParamType, type ethers } from 'ethers';
 import {
     encodedDecodedInvalidValues,
     encodedDecodedValues,
-    functions
+    functions,
+    simpleParametersDataForFunction2
 } from './fixture';
 
 /**
- * ABI tests - Low level
+ * Tests for low-level ABI functions.
  */
 describe('Abi - Low level', () => {
     /**
-     * Encode and Decode parameter
+     * Test the encoding and decoding of a single parameter.
      */
     test('encode / decode single parameter', () => {
         // Encode and Decode - NO Errors
@@ -58,10 +59,10 @@ describe('Abi - Low level', () => {
     });
 
     /**
-     * Encode and Decode parameters
+     * Test encoding and decoding of multiple parameters.
      */
     test('encode/decode more parameters', () => {
-        // Encode function 2 stuffs
+        // Example encode of function 2 parameters
         const encoded = abi.lowLevel.encode<
             Array<{
                 master: string;
@@ -71,21 +72,16 @@ describe('Abi - Low level', () => {
             }>
         >(
             ParamType.from(functions[1].objectAbi.outputs[0]),
-            functions[1].simpleParametersData as Array<{
-                master: string;
-                endorsor: string;
-                identity: string;
-                active: boolean;
-            }>
+            simpleParametersDataForFunction2
         );
 
         // @NOTE: you can use encode and avoid types gymnastics.
         // const encoded = abi.lowLevel.encode(
         //     ParamType.from(functions[1].objectAbi.outputs[0]),
-        //     functions[1].simpleParametersData
+        //     simpleParametersDataForFunction2
         // );
 
-        // Decode function 2 stuffs
+        // Example decode of function 2 parameters
         const decoded = abi.lowLevel.decode<ethers.Result[][]>(
             ParamType.from(functions[1].objectAbi.outputs[0]),
             encoded
