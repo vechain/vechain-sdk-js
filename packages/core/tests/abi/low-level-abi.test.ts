@@ -1,12 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
-import { abi } from '../src/abi';
+import { abi } from '../../src/abi';
 import { ParamType, type ethers } from 'ethers';
 import {
     encodedDecodedInvalidValues,
     encodedDecodedValues,
     function2,
     function2SimpleParametersData
-} from './fixtures/abi/abi';
+} from './fixture';
 
 /**
  * ABI tests - Low level

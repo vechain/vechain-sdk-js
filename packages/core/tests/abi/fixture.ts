@@ -1,4 +1,4 @@
-import { address } from '../../../src';
+import { address } from '../../src';
 
 /**
  * Simple functions
