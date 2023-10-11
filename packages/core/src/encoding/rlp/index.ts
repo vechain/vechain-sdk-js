@@ -13,6 +13,7 @@ export * from './helpers';
  * - `encode` - Encodes data using the Ethereumjs RLP library.
  * - `decode` - Decodes RLP-encoded data using the Ethereumjs RLP library.
  * - `Profiler` - Class handling the profiling of RLP encoded/decoded objects.
+ * - `ScalarKind` - Abstract class for scalar types.
  * - `BufferKind` - Class managing buffers and ensuring type safety with encode/decode methods.
  * - `NumericKind` - Class managing numerical data ensuring it adheres to specific constraints.
  */
