@@ -63,10 +63,16 @@ const ERRORS = {
         HIGH_LEVEL: {
             INVALID_FUNCTION: 'Invalid function',
             INVALID_EVENT: 'Invalid event',
-            INVALID_DATA_TO_DECODE: 'Invalid data to decode',
-            INVALID_DATA_TO_ENCODE: 'Invalid data to encode',
+            INVALID_DATA_TO_DECODE:
+                'Invalid data to decode into function or event',
+            INVALID_DATA_TO_ENCODE:
+                'Invalid data to encode into function or event',
             INVALID_FORMAT_TYPE:
                 "Invalid format type. Format type should be one of 'sighash', 'minimal', 'full', or 'json'."
+        },
+        LOW_LEVEL: {
+            INVALID_DATA_TO_DECODE: 'Invalid data to decode',
+            INVALID_DATA_TO_ENCODE: 'Invalid data to encode'
         }
     }
 };

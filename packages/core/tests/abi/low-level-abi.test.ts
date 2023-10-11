@@ -7,6 +7,7 @@ import {
     functions,
     simpleParametersDataForFunction2
 } from './fixture';
+import { ERRORS } from '../../src';
 
 /**
  * Tests for low-level ABI functions.
@@ -47,14 +48,14 @@ describe('Abi - Low level', () => {
                     encodedDecodedValue.type,
                     encodedDecodedValue.value
                 )
-            ).toThrow();
+            ).toThrowError(ERRORS.ABI.LOW_LEVEL.INVALID_DATA_TO_ENCODE);
 
             expect(() =>
                 abi.lowLevel.decode(
                     encodedDecodedValue.type,
                     encodedDecodedValue.encoded
                 )
-            ).toThrow();
+            ).toThrow(ERRORS.ABI.LOW_LEVEL.INVALID_DATA_TO_DECODE);
         });
     });
 
