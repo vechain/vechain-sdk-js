@@ -2,6 +2,9 @@ node_modules
 packages/**/dist
 packages/**/.turbo
 packages/**/node_modules
+apps/**/dist
+apps/**/.turbo
+apps/**/node_modules
 
 yarn-error.log
 # Code coverage folder for tests
