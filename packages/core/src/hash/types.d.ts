@@ -1,7 +1,9 @@
 import { type BytesLike } from 'ethers';
 
 /**
- * Input to hash function
+ * Input to hash function.
+ *
+ * @public
  */
 type HashInput = BytesLike;
 
