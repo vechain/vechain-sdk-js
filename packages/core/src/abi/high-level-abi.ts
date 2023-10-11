@@ -5,6 +5,7 @@ import {
     type Result,
     type FormatType
 } from './types';
+import { ERRORS } from '../utils';
 
 /**
  * Represents a function call in the high-level ABI.
@@ -28,8 +29,12 @@ class Function<ABIType> {
      * @param source - ABI fragment to use.
      */
     constructor(source: ABIType) {
-        this.fragment = ethers.FunctionFragment.from(source);
-        this.iface = new ethers.Interface([this.fragment]);
+        try {
+            this.fragment = ethers.FunctionFragment.from(source);
+            this.iface = new ethers.Interface([this.fragment]);
+        } catch {
+            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_FUNCTION);
+        }
     }
 
     /**
@@ -46,6 +51,9 @@ class Function<ABIType> {
      * @returns The signature of the function.
      */
     public signature(formatType: FormatType): string {
+        if (!['sighash', 'minimal', 'full', 'json'].includes(formatType))
+            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_FORMAT_TYPE);
+
         return this.fragment.format(formatType);
     }
 
@@ -55,7 +63,11 @@ class Function<ABIType> {
      * @returns Decoding results.
      */
     public decodeOutput(data: string): Result {
-        return this.iface.decodeFunctionData(this.fragment, data);
+        try {
+            return this.iface.decodeFunctionData(this.fragment, data);
+        } catch {
+            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_DECODE);
+        }
     }
 
     /**
@@ -64,7 +76,11 @@ class Function<ABIType> {
      * @returns Encoded data.
      */
     public encodeInput<TValue>(dataToEncode: TValue[]): string {
-        return this.iface.encodeFunctionData(this.fragment, dataToEncode);
+        try {
+            return this.iface.encodeFunctionData(this.fragment, dataToEncode);
+        } catch {
+            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_ENCODE);
+        }
     }
 }
 
@@ -90,8 +106,12 @@ class Event<ABIType> {
      * @param source - ABI fragment to use.
      */
     constructor(source: ABIType) {
-        this.fragment = ethers.EventFragment.from(source);
-        this.iface = new ethers.Interface([this.fragment]);
+        try {
+            this.fragment = ethers.EventFragment.from(source);
+            this.iface = new ethers.Interface([this.fragment]);
+        } catch {
+            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_EVENT);
+        }
     }
 
     /**
@@ -108,6 +128,9 @@ class Event<ABIType> {
      * @returns The signature of the event.
      */
     public signature(formatType: FormatType): string {
+        if (!['sighash', 'minimal', 'full', 'json'].includes(formatType))
+            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_FORMAT_TYPE);
+
         return this.fragment.format(formatType);
     }
 
@@ -117,7 +140,15 @@ class Event<ABIType> {
      * @returns Decoding results.
      */
     public decodeEventLog(data: { data: string; topics: string[] }): Result {
-        return this.iface.decodeEventLog(this.fragment, data.data, data.topics);
+        try {
+            return this.iface.decodeEventLog(
+                this.fragment,
+                data.data,
+                data.topics
+            );
+        } catch {
+            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_DECODE);
+        }
     }
 
     /**
@@ -129,7 +160,11 @@ class Event<ABIType> {
         data: string;
         topics: string[];
     } {
-        return this.iface.encodeEventLog(this.fragment, dataToEncode);
+        try {
+            return this.iface.encodeEventLog(this.fragment, dataToEncode);
+        } catch {
+            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_ENCODE);
+        }
     }
 }
 
