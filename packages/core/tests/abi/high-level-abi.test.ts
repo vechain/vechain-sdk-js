@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { events, functions } from './fixture';
 import { type FormatType, abi } from '../../src/abi';
+import { ERRORS } from '../../src';
 
 /**
  * ABI tests - High level
@@ -111,6 +112,43 @@ describe('Abi - High level', () => {
                     });
                 });
         });
+
+        /**
+         * Invalid function
+         */
+        test('Invalid function', () => {
+            expect(
+                () => new abi.highLevel.Function('INVALID_VALUE')
+            ).toThrowError(ERRORS.ABI.HIGH_LEVEL.INVALID_FUNCTION);
+        });
+
+        /**
+         * Invalid decode and encode
+         */
+        test('Invalid decode and encode', () => {
+            const myFunction = new abi.highLevel.Function(functions[0].full);
+
+            // Encode
+            expect(() =>
+                myFunction.encodeInput([1, 2, 'INVALID'])
+            ).toThrowError(ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_ENCODE);
+
+            // Decode
+            expect(() => myFunction.decodeOutput('INVALID')).toThrowError(
+                ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_DECODE
+            );
+        });
+
+        /**
+         * Invalid sighash
+         */
+        test('Invalid signature format type', () => {
+            const myFunction = new abi.highLevel.Function(functions[0].full);
+            const invalidFormat = 'invalid' as FormatType;
+            expect(() => myFunction.signature(invalidFormat)).toThrowError(
+                ERRORS.ABI.HIGH_LEVEL.INVALID_FORMAT_TYPE
+            );
+        });
     });
 
     /**
@@ -202,6 +240,46 @@ describe('Abi - High level', () => {
                         );
                     });
                 });
+        });
+
+        /**
+         * Invalid event
+         */
+        test('Invalid event', () => {
+            expect(() => new abi.highLevel.Event('INVALID_VALUE')).toThrowError(
+                ERRORS.ABI.HIGH_LEVEL.INVALID_EVENT
+            );
+        });
+
+        /**
+         * Invalid decode and encode
+         */
+        test('Invalid decode and encode', () => {
+            const myEvent = new abi.highLevel.Event(events[0].full);
+
+            // Encode
+            expect(() =>
+                myEvent.encodeEventLog([1, 2, 'INVALID'])
+            ).toThrowError(ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_ENCODE);
+
+            // Decode
+            expect(() =>
+                myEvent.decodeEventLog({
+                    data: 'INVALID',
+                    topics: ['INVALID_1', 'INVALID_2']
+                })
+            ).toThrowError(ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_DECODE);
+        });
+
+        /**
+         * Invalid sighash
+         */
+        test('Invalid signature format type', () => {
+            const myEvent = new abi.highLevel.Event(events[0].full);
+            const invalidFormat = 'invalid' as FormatType;
+            expect(() => myEvent.signature(invalidFormat)).toThrowError(
+                ERRORS.ABI.HIGH_LEVEL.INVALID_FORMAT_TYPE
+            );
         });
     });
 });
