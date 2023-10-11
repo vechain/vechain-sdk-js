@@ -1,4 +1,4 @@
-import { ethers } from 'ethers';
+import { type Fragment, ethers } from 'ethers';
 import {
     type Interface,
     type FunctionFragment,
@@ -6,6 +6,21 @@ import {
     type FormatType
 } from './types';
 import { ERRORS } from '../utils';
+
+/**
+ * Generic implementation of a function that returns a signature.
+ * Used to avoid code dupliaction.
+ *
+ * @param fragment - Fragment to use.
+ * @param formatType - Format type of the signature.
+ * @returns The signature.
+ */
+function getSignature(fragment: Fragment, formatType: FormatType): string {
+    if (!['sighash', 'minimal', 'full', 'json'].includes(formatType))
+        throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_FORMAT_TYPE);
+
+    return fragment.format(formatType);
+}
 
 /**
  * Represents a function call in the high-level ABI.
@@ -51,10 +66,7 @@ class Function<ABIType> {
      * @returns The signature of the function.
      */
     public signature(formatType: FormatType): string {
-        if (!['sighash', 'minimal', 'full', 'json'].includes(formatType))
-            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_FORMAT_TYPE);
-
-        return this.fragment.format(formatType);
+        return getSignature(this.fragment, formatType);
     }
 
     /**
@@ -128,10 +140,7 @@ class Event<ABIType> {
      * @returns The signature of the event.
      */
     public signature(formatType: FormatType): string {
-        if (!['sighash', 'minimal', 'full', 'json'].includes(formatType))
-            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_FORMAT_TYPE);
-
-        return this.fragment.format(formatType);
+        return getSignature(this.fragment, formatType);
     }
 
     /**

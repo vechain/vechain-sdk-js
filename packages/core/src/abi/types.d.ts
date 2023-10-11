@@ -38,6 +38,13 @@ type BytesLike = ethers.BytesLike;
  */
 type FormatType = ethers.FormatType;
 
+/**
+ * Represents a wrapped Fragment for ethers.js types.
+ * It is used to represents a fragment of a function, event and so on...
+ * @public
+ */
+type Fragment = ethers.Fragment;
+
 export type {
     ParamType,
     FunctionFragment,
