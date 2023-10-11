@@ -8,6 +8,13 @@ import {
 import { ERRORS } from '../utils';
 
 /**
+ * Allowed formats for the signature.
+ *
+ * @private
+ */
+const allowedSignatureFormats = ['sighash', 'minimal', 'full', 'json'];
+
+/**
  * Generic implementation of a function that returns a signature.
  * Used to avoid code dupliaction.
  *
@@ -16,7 +23,7 @@ import { ERRORS } from '../utils';
  * @returns The signature.
  */
 function getSignature(fragment: Fragment, formatType: FormatType): string {
-    if (!['sighash', 'minimal', 'full', 'json'].includes(formatType))
+    if (!allowedSignatureFormats.includes(formatType))
         throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_FORMAT_TYPE);
 
     return fragment.format(formatType);
@@ -24,23 +31,27 @@ function getSignature(fragment: Fragment, formatType: FormatType): string {
 
 /**
  * Represents a function call in the high-level ABI.
+ *
  * @template ABIType - The ABI fragment type.
  */
 class Function<ABIType> {
     /**
      * The main fragment handled by ethers.js.
+     *
      * @public
      */
     public fragment: FunctionFragment;
 
     /**
      * The main interface handled by ethers.js.
+     *
      * @public
      */
     public iface: Interface;
 
     /**
      * Creates a new Function instance from an ABI fragment.
+     *
      * @param source - ABI fragment to use.
      */
     constructor(source: ABIType) {
@@ -54,6 +65,7 @@ class Function<ABIType> {
 
     /**
      * Get the signature hash of the function.
+     *
      * @returns The signature hash of the function.
      */
     public signatureHash(): string {
@@ -62,6 +74,7 @@ class Function<ABIType> {
 
     /**
      * Get the signature of the function.
+     *
      * @param formatType - The format type of the signature: 'sighash', 'minimal', 'full', or 'json'.
      * @returns The signature of the function.
      */
@@ -71,6 +84,7 @@ class Function<ABIType> {
 
     /**
      * Decode data using the function's ABI.
+     *
      * @param data - Data to decode.
      * @returns Decoding results.
      */
@@ -84,6 +98,7 @@ class Function<ABIType> {
 
     /**
      * Encode data using the function's ABI.
+     *
      * @param dataToEncode - Data to encode.
      * @returns Encoded data.
      */
@@ -98,23 +113,27 @@ class Function<ABIType> {
 
 /**
  * Represents an event call in the high-level ABI.
+ *
  * @template ABIType - The ABI fragment type.
  */
 class Event<ABIType> {
     /**
      * The main fragment handled by ethers.js.
+     *
      * @public
      */
     public fragment: ethers.EventFragment;
 
     /**
      * The main interface handled by ethers.js.
+     *
      * @public
      */
     public iface: Interface;
 
     /**
      * Creates a new Event instance from an ABI fragment.
+     *
      * @param source - ABI fragment to use.
      */
     constructor(source: ABIType) {
@@ -128,6 +147,7 @@ class Event<ABIType> {
 
     /**
      * Get the signature hash of the event.
+     *
      * @returns The signature hash of the event.
      */
     public signatureHash(): string {
@@ -136,6 +156,7 @@ class Event<ABIType> {
 
     /**
      * Get the signature of the event.
+     *
      * @param formatType - The format type of the signature: 'sighash', 'minimal', 'full', or 'json'.
      * @returns The signature of the event.
      */
@@ -145,6 +166,7 @@ class Event<ABIType> {
 
     /**
      * Decode event log data using the event's ABI.
+     *
      * @param data - Data to decode.
      * @returns Decoding results.
      */
@@ -162,6 +184,7 @@ class Event<ABIType> {
 
     /**
      * Encode event log data using the event's ABI.
+     *
      * @param dataToEncode - Data to encode.
      * @returns Encoded data along with topics.
      */
