@@ -1,45 +1,55 @@
 import { ethers } from 'ethers';
-import { type ParamType } from './types';
+import { type ParamType, type BytesLike } from './types';
+import { ERRORS } from '../utils';
 
 /**
- * Default coder
+ * Default AbiCoder instance from ethers.js.
  */
 const ethersCoder = new ethers.AbiCoder();
 
 /**
- * Encode parameter
+ * Encodes a parameter value.
  *
- * @note ValueType is used to make explicit the type of the value to encode.
+ * @note `ValueType` is used to explicitly specify the type of the value to encode.
  *
- * @param types Types of parameters
- * @param values Values of parameters
- * @returns Encoded parameters
+ * @param type - Type of the parameter.
+ * @param value - Value to encode.
+ * @returns Encoded parameter as a hexadecimal string.
  */
 function encode<ValueType>(type: string | ParamType, value: ValueType): string {
-    const encoded = ethersCoder.encode([type], [value]);
-    return encoded;
+    try {
+        const encoded = ethersCoder.encode([type], [value]);
+        return encoded;
+    } catch {
+        throw new Error(ERRORS.ABI.LOW_LEVEL.INVALID_DATA_TO_ENCODE);
+    }
 }
 
 /**
- * Decode parameter
+ * Decodes a parameter value.
  *
- * @note ReturnType is used to make explicit the return type of the function (the decoded value).
+ * @note `ReturnType` is used to explicitly specify the return type (the decoded value) of the function.
  *
- * @param types Types of parameters
- * @param data Data to decode
- * @returns Decoded parameters
+ * @param types - Types of parameters.
+ * @param data - Data to decode.
+ * @returns Decoded parameter value.
  */
 function decode<ReturnType>(
     types: string | ParamType,
-    data: ethers.BytesLike
+    data: BytesLike
 ): ReturnType {
-    const decoded = ethersCoder.decode([types], data).toArray();
-    return decoded[0] as ReturnType;
+    try {
+        const decoded = ethersCoder.decode([types], data).toArray();
+        return decoded[0] as ReturnType;
+    } catch {
+        throw new Error(ERRORS.ABI.LOW_LEVEL.INVALID_DATA_TO_DECODE);
+    }
 }
 
-// Low level functionalities
+// Low-level functionalities
 const lowLevel = {
     encode,
     decode
 };
+
 export { lowLevel };

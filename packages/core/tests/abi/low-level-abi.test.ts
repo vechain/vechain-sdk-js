@@ -1,19 +1,20 @@
 import { describe, expect, test } from '@jest/globals';
-import { abi } from '../src/abi';
+import { abi } from '../../src/abi';
 import { ParamType, type ethers } from 'ethers';
 import {
     encodedDecodedInvalidValues,
     encodedDecodedValues,
-    function2,
-    function2SimpleParametersData
-} from './fixtures/abi/abi';
+    functions,
+    simpleParametersDataForFunction2
+} from './fixture';
+import { ERRORS } from '../../src';
 
 /**
- * ABI tests - Low level
+ * Tests for low-level ABI functions.
  */
 describe('Abi - Low level', () => {
     /**
-     * Encode and Decode parameter
+     * Test the encoding and decoding of a single parameter.
      */
     test('encode / decode single parameter', () => {
         // Encode and Decode - NO Errors
@@ -47,22 +48,22 @@ describe('Abi - Low level', () => {
                     encodedDecodedValue.type,
                     encodedDecodedValue.value
                 )
-            ).toThrow();
+            ).toThrowError(ERRORS.ABI.LOW_LEVEL.INVALID_DATA_TO_ENCODE);
 
             expect(() =>
                 abi.lowLevel.decode(
                     encodedDecodedValue.type,
                     encodedDecodedValue.encoded
                 )
-            ).toThrow();
+            ).toThrow(ERRORS.ABI.LOW_LEVEL.INVALID_DATA_TO_DECODE);
         });
     });
 
     /**
-     * Encode and Decode parameters
+     * Test encoding and decoding of multiple parameters.
      */
     test('encode/decode more parameters', () => {
-        // Encode function 2 stuffs
+        // Example encode of function 2 parameters
         const encoded = abi.lowLevel.encode<
             Array<{
                 master: string;
@@ -70,11 +71,20 @@ describe('Abi - Low level', () => {
                 identity: string;
                 active: boolean;
             }>
-        >(ParamType.from(function2.outputs[0]), function2SimpleParametersData);
+        >(
+            ParamType.from(functions[1].objectAbi.outputs[0]),
+            simpleParametersDataForFunction2
+        );
 
-        // Decode function 2 stuffs
+        // @NOTE: you can use encode and avoid types gymnastics.
+        // const encoded = abi.lowLevel.encode(
+        //     ParamType.from(functions[1].objectAbi.outputs[0]),
+        //     simpleParametersDataForFunction2
+        // );
+
+        // Example decode of function 2 parameters
         const decoded = abi.lowLevel.decode<ethers.Result[][]>(
-            ParamType.from(function2.outputs[0]),
+            ParamType.from(functions[1].objectAbi.outputs[0]),
             encoded
         );
 
