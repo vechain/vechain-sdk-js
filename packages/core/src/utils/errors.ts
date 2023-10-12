@@ -1,9 +1,10 @@
 /**
- * Error messages
+ * Collection of error messages grouped by domain.
+ * @constant
  */
 const ERRORS = {
     /**
-     * Secp256k1 error messages
+     * Error messages related to Secp256k1 cryptographic operations.
      */
     SECP256K1: {
         INVALID_PRIVATE_KEY: 'Invalid private key',
@@ -13,7 +14,7 @@ const ERRORS = {
     },
 
     /**
-     * Address error messages
+     * Error messages associated with Ethereum addresses.
      */
     ADDRESS: {
         INVALID_ADDRESS: 'Invalid address',
@@ -21,7 +22,7 @@ const ERRORS = {
     },
 
     /**
-     * Keystore error messages
+     * Error messages concerning operations with keystores.
      */
     KEYSTORE: {
         INVALID_KEYSTORE: 'Invalid keystore',
@@ -29,7 +30,7 @@ const ERRORS = {
     },
 
     /**
-     * HDNode error messages
+     * Error messages pertaining to HDNode (Hierarchical Deterministic Node) operations.
      */
     HDNODE: {
         INVALID_PUBLICKEY: 'Invalid public key',
@@ -39,7 +40,7 @@ const ERRORS = {
     },
 
     /**
-     * Bloom filter error messages
+     * Error messages associated with Bloom filters.
      */
     BLOOM: {
         INVALID_BLOOM:
@@ -48,7 +49,7 @@ const ERRORS = {
     },
 
     /**
-     * Data error messages
+     * Error messages related to data validations.
      */
     DATA: {
         INVALID_DATA_TYPE: function (format: string): string {
@@ -57,7 +58,7 @@ const ERRORS = {
     },
 
     /**
-     * Abi error messages
+     * Error messages corresponding to ABI (Application Binary Interface) operations, both high-level and low-level.
      */
     ABI: {
         HIGH_LEVEL: {

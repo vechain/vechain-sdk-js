@@ -11,7 +11,12 @@ import { sha256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 
 /**
- * Create node from mnemonic words
+ * Generates an HDNode instance using mnemonic words.
+ *
+ * @param words - The mnemonic words.
+ * @param path - The derivation path (default is VET_DERIVATION_PATH).
+ * @returns An IHDNode instance derived from the given mnemonic.
+ * @throws {Error} When the mnemonic words are invalid.
  */
 function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
     if (words.length !== 12) {
@@ -27,10 +32,12 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
 }
 
 /**
- * Create node from extended public key
+ * Generates an HDNode instance using an extended public key.
  *
- * @param pub public key
- * @param chainCode chain code
+ * @param publicKey - The extended public key.
+ * @param chainCode - The associated chain code.
+ * @returns An IHDNode instance derived from the given public key and chain code.
+ * @throws {Error} When the public key or chain code is invalid.
  */
 function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
     // Invalid public key
@@ -57,10 +64,12 @@ function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
 }
 
 /**
- * Create node from xpriv
+ * Generates an HDNode instance using an extended private key (xpriv).
  *
- * @param priv private key
- * @param chainCode chain code
+ * @param privateKey - The private key.
+ * @param chainCode - The associated chain code.
+ * @returns An IHDNode instance derived from the given private key and chain code.
+ * @throws {Error} When the private key or chain code is invalid.
  */
 function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
     // Invalid private key
@@ -87,10 +96,10 @@ function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
 }
 
 /**
- * Create a HDNode from an ethers HDNode
+ * Converts an `ethers` HDNode to a custom HDNode format.
  *
- * @param ethersNode Node in ethers format
- * @returns Our HDNode format
+ * @param ethersNode - The HDNode instance from the `ethers` library.
+ * @returns An IHDNode instance in the custom format.
  */
 function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
     const pub = Buffer.from(
@@ -127,10 +136,10 @@ function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
 }
 
 /**
- * Calculate sha256 hash of data expressed as buffer
+ * Calculates the SHA256 hash of the provided data buffer.
  *
- * @param data Data to hash as buffer
- * @returns Sha256 hash of data as buffer
+ * @param data - The data buffer to hash.
+ * @returns The SHA256 hash of the given data as a buffer.
  */
 function sha256AppliedToABuffer(data: Buffer): Buffer {
     const dataAsString = `0x${data.toString('hex')}`;

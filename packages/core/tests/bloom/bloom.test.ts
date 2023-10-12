@@ -1,22 +1,29 @@
 import { describe, expect, test } from '@jest/globals';
-import { bloom } from '../src/bloom';
+import { bloom } from '../../src/bloom';
+import { bloomKTestCases } from './fixture';
 
+/**
+ * Bloom filter tests
+ *
+ * @NOTE different from ../utils/bloom/bloom.test.ts.
+ * This tests bloom functionality, not the utils.
+ */
 describe('Bloom Filter', () => {
-    test('calculateK', () => {
-        expect(bloom.calculateK(1)).toBe(1);
-        expect(bloom.calculateK(2)).toBe(1);
-        expect(bloom.calculateK(4)).toBe(2);
-        expect(bloom.calculateK(8)).toBe(5);
-        expect(bloom.calculateK(16)).toBe(11);
-        expect(bloom.calculateK(20)).toBe(13);
-        expect(bloom.calculateK(32)).toBe(22);
-        expect(bloom.calculateK(64)).toBe(30);
-        expect(bloom.calculateK(128)).toBe(30);
-        expect(bloom.calculateK(256)).toBe(30);
-        expect(bloom.calculateK(512)).toBe(30);
-        expect(bloom.calculateK(1024)).toBe(30);
+    /**
+     * Test estimate K function
+     */
+    test('Estimate K', () => {
+        bloomKTestCases.forEach((bloomKTestCase) => {
+            expect(bloom.calculateK(bloomKTestCase.calculateK)).toBe(
+                bloomKTestCase.estimatedK
+            );
+        });
     });
-    test('should generate correct bloom filter', () => {
+
+    /**
+     * Bloom filter generator tests - Correct case
+     */
+    test('Should generate correct bloom filter', () => {
         const generator = new bloom.Generator();
 
         const keys = ['key1', 'key2', 'key3'];
@@ -44,6 +51,10 @@ describe('Bloom Filter', () => {
         // Assuming 'falseKey1' does not exist in the filter
         expect(filter.contains(Buffer.from('falseKey1'))).toBe(false);
     });
+
+    /**
+     * Bloom filter generator tests - No keys case
+     */
     test('Should generate empty bloom filter when no keys are added', () => {
         const generator = new bloom.Generator();
 
@@ -57,6 +68,10 @@ describe('Bloom Filter', () => {
         expect(filter.k).toBe(k);
         expect(filter.bits.toString('hex')).toBe('0000000000000000'); // 16 groups of 4 bits, all 0 -> 64 bits
     });
+
+    /**
+     * Bloom filter generator tests - Large number of keys case
+     */
     test('Should generate bloom filter with byte length higher than 8 for large number of keys', () => {
         const generator = new bloom.Generator();
 
@@ -96,6 +111,10 @@ describe('Bloom Filter', () => {
             expect(filter.contains(Buffer.from(key))).toBe(true);
         });
     });
+
+    /**
+     * Bloom filter generator tests - Non-ASCII and binary data case
+     */
     test('Should correctly handle non-ASCII and binary data', () => {
         const generator = new bloom.Generator();
 
@@ -120,6 +139,10 @@ describe('Bloom Filter', () => {
             expect(filter.contains(Buffer.from(key))).toBe(true);
         });
     });
+
+    /**
+     * Bloom filter generator tests - Empty string case
+     */
     test('Should correctly handle empty string', () => {
         const generator = new bloom.Generator();
 
@@ -132,6 +155,10 @@ describe('Bloom Filter', () => {
 
         expect(filter.contains(Buffer.from(''))).toBe(true);
     });
+
+    /**
+     * Bloom filter generator tests - False positive rate case
+     */
     test('Should maintain a reasonable false positive rate', () => {
         const generator = new bloom.Generator();
         const numKeys = 1000;
