@@ -1,25 +1,27 @@
 {
-  "name": "vechain-sdk",
-  "version": "1.0.0",
-  "description": "The official JavaScript SDK for vechain",
-  "repository": "https://github.com/vechainfoundation/vechain-sdk.git",
-  "author": "vechain Foundation",
-  "license": "MIT",
-  "scripts": {
-    "postinstall": "husky install",
-    "build": "turbo build",
-    "lint": "turbo lint",
-    "test": "turbo test",
-    "format": "turbo format"
-  },
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
-  "devDependencies": {
-    "@commitlint/cli": "^17.7.2",
-    "@commitlint/config-conventional": "^17.7.0",
-    "husky": "^8.0.0",
-    "turbo": "^1.10.15"
-  }
+    "name": "vechain-sdk",
+    "version": "1.0.0",
+    "description": "The official JavaScript SDK for vechain",
+    "repository": "https://github.com/vechainfoundation/vechain-sdk.git",
+    "author": "vechain Foundation",
+    "license": "MIT",
+    "scripts": {
+        "postinstall": "husky install",
+        "build": "turbo build",
+        "lint": "turbo lint",
+        "test": "turbo test",
+        "format": "turbo format"
+    },
+    "private": true,
+    "workspaces": [
+        "packages/*",
+        "apps/*",
+        "docs"
+    ],
+    "devDependencies": {
+        "@commitlint/cli": "^17.7.2",
+        "@commitlint/config-conventional": "^17.7.0",
+        "husky": "^8.0.0",
+        "turbo": "^1.10.15"
+    }
 }

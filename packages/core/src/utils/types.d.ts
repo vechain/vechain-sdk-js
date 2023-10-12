@@ -3,6 +3,8 @@
  *  of case-agnostic hexadecimal characters.
  *
  *  It must match the regular expression ``/(0x)?[0-9A-Fa-f]*\/``.
+ *
+ * @public
  */
 type HexString = string;
 

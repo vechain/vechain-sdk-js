@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { type HashInput } from './types';
 
 /**
- * keccak256 hash function implementation.
+ * Keccak256 hash function implementation.
  * It uses last version of ethers.js library.
  *
  * @param data Data to hash

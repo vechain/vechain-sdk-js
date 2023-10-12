@@ -1,6 +1,5 @@
 /**
- * This file implements **JSON Keystore v3 Wallet**
- * encryption, decryption and validation.
+ * Implements the JSON Keystore v3 Wallet encryption, decryption, and validation functionality.
  */
 import { address } from '../address/address';
 import { secp256k1 } from '../secp256k1/secp256k1';
@@ -10,11 +9,11 @@ import { type Keystore, type KeystoreAccount } from './types';
 import { SCRYPT_PARAMS } from '../utils';
 
 /**
- * Encrypt private key to keystore with given password
+ * Encrypts a given private key into a keystore format using the specified password.
  *
- * @param privateKey Private key to be encrypted
- * @param password Password to encrypt the private key
- * @returns The keystore
+ * @param privateKey - The private key to be encrypted.
+ * @param password - The password used for the encryption.
+ * @returns A Promise that resolves to the encrypted keystore.
  */
 async function encrypt(
     privateKey: Buffer,
@@ -50,11 +49,11 @@ async function encrypt(
 }
 
 /**
- * Decrypt private key from keystore
+ * Decrypts a keystore to obtain the private key using the given password.
  *
- * @param keystore Keystore to be decrypted
- * @param password Password used to decrypt keystore
- * @returns Keystore account
+ * @param keystore - The keystore containing the encrypted private key.
+ * @param password - The password used to decrypt the keystore.
+ * @returns A Promise that resolves to the decrypted KeystoreAccount or rejects if the keystore or password is invalid.
  */
 async function decrypt(
     keystore: Keystore,
@@ -80,14 +79,17 @@ async function decrypt(
 }
 
 /**
- * Check if the keystore is valid
+ * Validates if the provided keystore adheres to the expected format and structure.
  *
- * @param keystore Key store to be validated
- * @returns If the keystore is valid
+ * @param keystore - The keystore to be validated.
+ * @returns A boolean indicating whether the keystore is valid or not.
  */
 function isValid(keystore: Keystore): boolean {
     return ethers.isKeystoreJson(JSON.stringify(keystore));
 }
 
+/**
+ * Exports the keystore functions for encryption, decryption, and validation.
+ */
 const keystore = { encrypt, decrypt, isValid };
 export { keystore };
