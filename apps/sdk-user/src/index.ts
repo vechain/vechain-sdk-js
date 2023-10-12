@@ -1,6 +1,6 @@
-import { core, mnemonic } from "@vechain-sdk/core";
+import { core, mnemonic } from '@vechain-sdk/core';
 
 const phrase = mnemonic.generate();
-console.log(phrase)
+console.log(phrase);
 const phrase2 = core.mnemonic.generate();
-console.log(phrase2)
+console.log(phrase2);
