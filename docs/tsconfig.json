@@ -1,0 +1,10 @@
+{
+  "ts-node": {
+    "compilerOptions": {
+      "esModuleInterop": true,
+      "module": "ESNext",
+      "moduleResolution": "Node",
+    },
+    "esm": true
+  }
+}

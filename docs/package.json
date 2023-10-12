@@ -1,0 +1,17 @@
+{
+  "name": "docs",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "rundocs": "npx runme run --all --category example --skip-prompts"
+  },
+  "dependencies": {
+    "@vechain-sdk/core": "*"
+  },
+  "devDependencies": {
+    "expect": "^29.7.0",
+    "runme": "^3.0.2",
+    "ts-node": "^10.9.1"
+  }
+}

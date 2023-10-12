@@ -31,9 +31,12 @@ To lint all packages use `yarn lint` command.
 ## Publish
 ... TBD ...
 
-# Demo examples
-This section explains how to use demo examples, to understand well the SDK.
+# Examples
+The `./docs` folder contains multiple real code examples
 
-Demo examples are Javascript and Typescript projects that execute some demo snapshots of SDK packages.
+These are written as executable examples
 
-## ... TBD ...
+[More Details](./docs/README.md)
+
+
+
