@@ -18,6 +18,7 @@
         "project": "./tsconfig.json"
     },
     "plugins": ["@typescript-eslint"],
+    "ignorePatterns": ["node_modules/", "dist/", "coverage/"],
     "rules": {
         "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
         "@typescript-eslint/explicit-function-return-type": "error",
