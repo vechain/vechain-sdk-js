@@ -1,0 +1,13 @@
+{
+    "name": "sdk-user",
+    "version": "1.0.0",
+    "main": "index.js",
+    "license": "MIT",
+    "scripts": {
+        "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts"
+    },
+    "dependencies": {
+        "@vechain-sdk/core": "*",
+        "typescript": "^5.2.2"
+    }
+}
