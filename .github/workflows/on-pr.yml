@@ -1,11 +1,11 @@
-name: Run tests on Pull Request
+name: PR Checks
 
 on:
     pull_request:
 
 jobs:
     doc-tests:
-        name: Run documentation
+        name: Docs Tests
         runs-on: ubuntu-latest
         steps:
             - name: Checkout repository
