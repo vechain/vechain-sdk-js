@@ -36,6 +36,44 @@ const ERRORS = {
         INVALID_PRIVATEKEY: 'Invalid private key',
         INVALID_CHAINCODE: 'Invalid chain code',
         INVALID_MNEMONICS: 'Invalid mnemonics'
+    },
+
+    /**
+     * Bloom filter error messages
+     */
+    BLOOM: {
+        INVALID_BLOOM:
+            'Invalid Bloom filter format. Bloom filters must adhere to the format 0x[0-9a-fA-F]{16,}.',
+        INVALID_K: 'Invalid k. It should be a positive integer.'
+    },
+
+    /**
+     * Data error messages
+     */
+    DATA: {
+        INVALID_DATA_TYPE: function (format: string): string {
+            return `Invalid data type. Data should be ${format}.`;
+        }
+    },
+
+    /**
+     * Abi error messages
+     */
+    ABI: {
+        HIGH_LEVEL: {
+            INVALID_FUNCTION: 'Invalid function',
+            INVALID_EVENT: 'Invalid event',
+            INVALID_DATA_TO_DECODE:
+                'Invalid data to decode into function or event',
+            INVALID_DATA_TO_ENCODE:
+                'Invalid data to encode into function or event',
+            INVALID_FORMAT_TYPE:
+                "Invalid format type. Format type should be one of 'sighash', 'minimal', 'full', or 'json'."
+        },
+        LOW_LEVEL: {
+            INVALID_DATA_TO_DECODE: 'Invalid data to decode',
+            INVALID_DATA_TO_ENCODE: 'Invalid data to encode'
+        }
     }
 };
 
