@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { type HashInput } from './types';
 
 /**
- * sha256 hash function implementation.
+ * Sha256 hash function implementation.
  * It uses last version of ethers.js library.
  *
  * @param data Data to hash

@@ -1,12 +1,18 @@
 import { describe, expect, test } from '@jest/globals';
-import { RLP, type RLPInput } from '../src';
+import { RLP, type RLPInput } from '../../src';
 
+/**
+ * RLP tests
+ */
 describe('RLP', () => {
     /**
      * Encoding tests
      */
     describe('encode', () => {
-        test('should encode an array correctly', () => {
+        /**
+         * Array encoding tests
+         */
+        test('Should encode an array correctly', () => {
             const dataToEncode = [1, 2, 3, [4, 5]];
             const encodedData = RLP.encode(dataToEncode);
             const expectedHex = 'c6010203c20405'; // The expected hexadecimal encoding
@@ -15,7 +21,10 @@ describe('RLP', () => {
             expect(encodedData.toString('hex')).toEqual(expectedHex);
         });
 
-        test('should encode a single value correctly', () => {
+        /**
+         * Single value encoding tests
+         */
+        test('Should encode a single value correctly', () => {
             const dataToEncode = 42;
             const encodedData = RLP.encode(dataToEncode);
             const expectedHex = '2a'; // The expected hexadecimal encoding
@@ -24,7 +33,10 @@ describe('RLP', () => {
             expect(encodedData.toString('hex')).toEqual(expectedHex);
         });
 
-        test('should encode an empty array correctly', () => {
+        /**
+         * Empty array encoding tests
+         */
+        test('Should encode an empty array correctly', () => {
             const dataToEncode: RLPInput = [];
             const encodedData = RLP.encode(dataToEncode);
             const expectedHex = 'c0'; // The expected hexadecimal encoding
@@ -38,7 +50,10 @@ describe('RLP', () => {
      * Decoding tests
      */
     describe('decode', () => {
-        test('should decode an encoded single value correctly', () => {
+        /**
+         * Array decoding tests
+         */
+        test('Should decode an encoded single value correctly', () => {
             const encodedHex = '2a';
             const encodedData = Buffer.from(encodedHex, 'hex');
             const decodedData = RLP.decode(encodedData);
@@ -50,7 +65,10 @@ describe('RLP', () => {
             expect(decodedData).toEqual(expectedDecodedData);
         });
 
-        test('should decode an empty encoded array correctly', () => {
+        /**
+         * Empty array decoding tests
+         */
+        test('Should decode an empty encoded array correctly', () => {
             const encodedHex = 'c0';
             const encodedData = Buffer.from(encodedHex, 'hex');
             const decodedData = RLP.decode(encodedData);
