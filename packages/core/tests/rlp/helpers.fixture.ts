@@ -1,15 +1,13 @@
-import BigNumber from 'bignumber.js';
-
 const validateNumberTestCases = [
     {
         number: 123,
         context: 'testContext',
-        expected: new BigNumber(123)
+        expected: 123n
     },
     {
         number: '123',
         context: 'testContext',
-        expected: new BigNumber('123')
+        expected: 123n
     }
 ];
 

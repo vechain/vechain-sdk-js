@@ -14,9 +14,10 @@ import {
 describe('test NumericKind helpers', () => {
     describe('validateNumericKindData', () => {
         validateNumberTestCases.forEach(({ number, context, expected }) => {
-            test(`should return BigNumber when data is a valid number ${number}`, () => {
+            test(`should return BigInt when data is a valid number ${number}`, () => {
                 const result = validateNumericKindData(number, context);
-                expect(result).toEqual(expected);
+                // NOTE: Jest doesn't like BigInt. So se use toStrictEqual instead of toBe
+                expect(result).toStrictEqual(expected);
             });
         });
 

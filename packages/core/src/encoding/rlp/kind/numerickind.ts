@@ -2,7 +2,7 @@ import { ScalarKind } from './skalarkind.abstract';
 import {
     assertValidNumericKindBuffer,
     decodeBufferToNumberOrHex,
-    encodeBigNumberToBuffer,
+    encodeBigIntToBuffer,
     validateNumericKindData
 } from '../helpers';
 import { type BufferOutput, type DataOutput, type RLPInput } from '../types';
@@ -19,13 +19,13 @@ class NumericKind extends ScalarKind {
     }
 
     public data(data: RLPInput, context: string): DataOutput {
-        // Validate and convert the numeric data to a BigNumber instance.
-        const dataBN = validateNumericKindData(data, context);
+        // Validate and convert the numeric data to a BigInt instance.
+        const dataBI = validateNumericKindData(data, context);
 
         return {
             encode: () =>
-                // Encode the BigNumber instance into a Buffer.
-                encodeBigNumberToBuffer(dataBN, this.maxBytes, context)
+                // Encode the BigInt instance into a Buffer.
+                encodeBigIntToBuffer(dataBI, this.maxBytes, context)
         };
     }
 

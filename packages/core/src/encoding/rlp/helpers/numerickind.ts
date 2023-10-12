@@ -1,4 +1,3 @@
-import BigNumber from 'bignumber.js';
 import {
     ERRORS,
     HEX_REGEX_WITH_PREFIX_CASE_INSENSITIVE,
@@ -7,18 +6,15 @@ import {
 import { type RLPInput } from '../types';
 
 /**
- * Validates and converts the input data to a BigNumber.
+ * Validates and converts the input data to a BigInt.
  *
  * @param data - Either a number or a string representing a non-negative integer.
  * @param context - A string representing the context in which this function is used,
  *                 to create meaningful error messages.
- * @returns The input data converted to a BigNumber.
+ * @returns The input data converted to a BigInt.
  * @throws Will throw an error if the data is invalid (not a number or non-negative integer string).
  */
-const validateNumericKindData = (
-    data: RLPInput,
-    context: string
-): BigNumber => {
+const validateNumericKindData = (data: RLPInput, context: string): bigint => {
     if (typeof data === 'number') {
         validateNumericKindNumber(data, context);
     } else if (typeof data === 'string') {
@@ -29,7 +25,7 @@ const validateNumericKindData = (
         );
     }
 
-    const bn = new BigNumber(data);
+    const bn = BigInt(data);
 
     return bn;
 };
