@@ -5,7 +5,7 @@ Examples of using hash functions
 ## blake2b256
 
 ```typescript { name=blake2b256, category=example }
-    import { blake2b256, type HashInput } from 'core';
+    import { blake2b256, type HashInput } from '@vechain-sdk/core';
     import { expect } from 'expect';
 
     const toHash: HashInput = 'hello world';
@@ -16,7 +16,7 @@ Examples of using hash functions
 ## keccak256
 
 ```typescript { name=keccak256, category=example }
-    import { keccak256, type HashInput } from 'core';
+    import { keccak256, type HashInput } from '@vechain-sdk/core';
     import { expect } from 'expect';
 
     const toHash: HashInput = 'hello world';

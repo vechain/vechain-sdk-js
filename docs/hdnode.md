@@ -4,7 +4,7 @@ Examples of using HDNode
 
 
 ```typescript { name=hdnode, category=example }
-    import { HDNode } from 'core';
+    import { HDNode } from '@vechain-sdk/core';
     import { expect } from 'expect';
 
     const mnemonic = 'denial kitchen pet squirrel other broom bar gas better priority spoil cross';

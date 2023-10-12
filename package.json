@@ -15,7 +15,8 @@
     "private": true,
     "workspaces": [
         "packages/*",
-        "apps/*"
+        "apps/*",
+        "docs"
     ],
     "devDependencies": {
         "@commitlint/cli": "^17.7.2",
