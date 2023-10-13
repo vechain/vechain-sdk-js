@@ -16,9 +16,9 @@ import { type RLPInput } from '../types';
  */
 const validateNumericKindData = (data: RLPInput, context: string): bigint => {
     if (typeof data === 'number') {
-        validateNumericKindNumber(data, context);
+        _validateNumericKindNumber(data, context);
     } else if (typeof data === 'string') {
-        validateNumericKindString(data, context);
+        _validateNumericKindString(data, context);
     } else {
         throw new Error(
             ERRORS.RLP.INVALID_RLP(context, 'expected string or number')
@@ -42,7 +42,7 @@ const validateNumericKindData = (data: RLPInput, context: string): bigint => {
  * @param context - A string indicating the context, used for error messaging.
  * @throws Will throw an error if the number is not a non-negative safe integer.
  */
-const validateNumericKindNumber = (num: number, context: string): void => {
+const _validateNumericKindNumber = (num: number, context: string): void => {
     if (!Number.isSafeInteger(num) || num < 0) {
         throw new Error(
             ERRORS.RLP.INVALID_RLP(
@@ -62,8 +62,10 @@ const validateNumericKindNumber = (num: number, context: string): void => {
  * @param str - A string expected to represent a non-negative integer.
  * @param context - A string indicating the context, for creating meaningful error messages.
  * @throws Will throw an error if the string does not represent a valid non-negative integer.
+ *
+ * @private
  */
-const validateNumericKindString = (str: string, context: string): void => {
+const _validateNumericKindString = (str: string, context: string): void => {
     const isHex = HEX_REGEX_WITH_PREFIX_CASE_INSENSITIVE.test(str);
     const isDecimal = dataUtils.isDecimalString(str);
 
@@ -93,6 +95,8 @@ const validateNumericKindString = (str: string, context: string): void => {
  * @param maxBytes - [Optional] An integer representing the maximum allowed length
  *                   of the buffer. If provided, an error will be thrown if buf is longer.
  * @throws Will throw an error if the buffer does not adhere to the constraints.
+ *
+ * @private
  */
 const assertValidNumericKindBuffer = (
     buf: Buffer,

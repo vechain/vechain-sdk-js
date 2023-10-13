@@ -41,7 +41,7 @@ class Profiler {
      * @returns - Encoded data as a Buffer.
      */
     public encodeObject(data: RLPValidObject): Buffer {
-        const packedData = packData(data, this.profile, '');
+        const packedData = _packData(data, this.profile, '');
         return Buffer.from(rlp.encode(packedData));
     }
 
@@ -52,7 +52,7 @@ class Profiler {
      */
     public decodeObject(encodedData: Buffer): RLPValueType {
         const packedData = rlp.decode(encodedData);
-        return unpackData(packedData, this.profile, '');
+        return _unpackData(packedData, this.profile, '');
     }
 }
 
@@ -64,8 +64,12 @@ class Profiler {
  * @param profile - RLP profile for encoding structures.
  * @param context - Encoding context for error tracing.
  * @returns Packed data as RLPInput.
+ *
+ * @throws Throws error if the object data is not valid.
+ *
+ * @private
  */
-const packData = (
+const _packData = (
     obj: RLPValidObject,
     profile: RLPProfile,
     context: string
@@ -81,7 +85,7 @@ const packData = (
     // StructKind: recursively pack each struct member based on its profile.
     if (Array.isArray(kind)) {
         return kind.map((k) =>
-            packData(obj[k.name] as RLPValidObject, k, context)
+            _packData(obj[k.name] as RLPValidObject, k, context)
         );
     }
 
@@ -91,7 +95,7 @@ const packData = (
     if ('item' in kind) {
         const item = kind.item;
         return obj.map((part, i) =>
-            packData(
+            _packData(
                 part as RLPValidObject,
                 { name: '#' + i, kind: item },
                 context
@@ -108,8 +112,12 @@ const packData = (
  * @param profile - RLP profile for decoding structures.
  * @param context - Decoding context for error tracing.
  * @returns Unpacked data as RLPValueType.
+ *
+ * @throws Throws error if the packed data is not valid.
+ *
+ * @private
  */
-const unpackData = (
+const _unpackData = (
     packed: RLPInput,
     profile: RLPProfile,
     context: string
@@ -140,7 +148,7 @@ const unpackData = (
 
         return kind.reduce(
             (obj: RLPValidObject, profile: RLPProfile, index: number) => {
-                obj[profile.name] = unpackData(parts[index], profile, context);
+                obj[profile.name] = _unpackData(parts[index], profile, context);
 
                 return obj;
             },
@@ -155,7 +163,7 @@ const unpackData = (
         const item = kind.item;
 
         return packed.map((part, index) =>
-            unpackData(part, { name: '#' + index, kind: item }, context)
+            _unpackData(part, { name: '#' + index, kind: item }, context)
         ) as RLPValueType;
     }
 };
