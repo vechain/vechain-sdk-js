@@ -18,7 +18,7 @@ import {
  * The numeric kinds are validated both as numbers and buffers, ensuring correctness
  * and throwing errors for invalid inputs.
  */
-describe('test NumericKind helpers', () => {
+describe('NumericKind helpers', () => {
     /**
      * Test subset for `validateNumericKindData` function.
      *
