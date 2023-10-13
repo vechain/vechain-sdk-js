@@ -33,6 +33,10 @@ function decode(encodedData: Buffer): RLPOutput {
  * Provides methods to encode and decode objects based on a provided RLP profile.
  */
 class Profiler {
+    /**
+     * Creates a new Profiler instance.
+     * @param profile - RLP profile for encoding/decoding structures.
+     */
     constructor(readonly profile: RLPProfile) {}
 
     /**
