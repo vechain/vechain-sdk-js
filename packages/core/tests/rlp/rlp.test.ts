@@ -1,81 +1,191 @@
 import { describe, expect, test } from '@jest/globals';
-import { RLP, type RLPInput } from '../../src';
+import { RLP } from '../../src';
+import {
+    decodeBufferProfileTestCases,
+    decodeNumericProfileTestCases,
+    decodeTestCases,
+    encodeBufferProfileTestCases,
+    encodeNumericProfileTestCases,
+    encodeTestCases,
+    invalidBufferKindDecodeTestCases,
+    invalidDecodeObjectTestCases,
+    invalidEncodeObjectTestCases,
+    invalidNumericKindDecodeTestCases,
+    invalidNumericKindEncodeTestCases,
+    numericKindDecodeTestCases,
+    numericKindEncodeTestCases
+} from './rlp.fixture';
 
-/**
- * RLP tests
- */
 describe('RLP', () => {
-    /**
-     * Encoding tests
-     */
+    // Testing RLP encoding functionality
     describe('encode', () => {
-        /**
-         * Array encoding tests
-         */
-        test('Should encode an array correctly', () => {
-            const dataToEncode = [1, 2, 3, [4, 5]];
-            const encodedData = RLP.encode(dataToEncode);
-            const expectedHex = 'c6010203c20405'; // The expected hexadecimal encoding
-
-            // Assert that the encoded data matches the expected value
-            expect(encodedData.toString('hex')).toEqual(expectedHex);
-        });
-
-        /**
-         * Single value encoding tests
-         */
-        test('Should encode a single value correctly', () => {
-            const dataToEncode = 42;
-            const encodedData = RLP.encode(dataToEncode);
-            const expectedHex = '2a'; // The expected hexadecimal encoding
-
-            // Assert that the encoded data matches the expected value
-            expect(encodedData.toString('hex')).toEqual(expectedHex);
-        });
-
-        /**
-         * Empty array encoding tests
-         */
-        test('Should encode an empty array correctly', () => {
-            const dataToEncode: RLPInput = [];
-            const encodedData = RLP.encode(dataToEncode);
-            const expectedHex = 'c0'; // The expected hexadecimal encoding
-
-            // Assert that the encoded data matches the expected value
-            expect(encodedData.toString('hex')).toEqual(expectedHex);
+        encodeTestCases.forEach(({ input, expected, description }) => {
+            test(description, () => {
+                expect(RLP.encode(input).toString('hex')).toEqual(expected);
+            });
         });
     });
 
-    /**
-     * Decoding tests
-     */
+    // Testing RLP decoding functionality
     describe('decode', () => {
-        /**
-         * Array decoding tests
-         */
-        test('Should decode an encoded single value correctly', () => {
-            const encodedHex = '2a';
-            const encodedData = Buffer.from(encodedHex, 'hex');
-            const decodedData = RLP.decode(encodedData);
+        decodeTestCases.forEach(({ input, expected, description }) => {
+            test(description, () => {
+                expect(RLP.decode(Buffer.from(input, 'hex'))).toEqual(expected);
+            });
+        });
+    });
 
-            // Adjust the expected decoded data to match the received Buffer
-            const expectedDecodedData = Buffer.from([42]);
+    describe('BufferKind', () => {
+        // Testing BufferKind decoding functionality
+        describe('BufferKind decode', () => {
+            invalidBufferKindDecodeTestCases.forEach(
+                ({ kind, data, description, throws }) => {
+                    test(description, () => {
+                        expect(() => {
+                            // @ts-expect-error - invalid input
+                            kind.buffer(data, '').decode();
+                        }).toThrowError(throws);
+                    });
+                }
+            );
+        });
+    });
 
-            // Assert that the decoded data matches the expected value
-            expect(decodedData).toEqual(expectedDecodedData);
+    // Testing NumericKind functionality (both encoding and decoding)
+    describe('NumericKind', () => {
+        describe('NumericKind encode', () => {
+            numericKindEncodeTestCases.forEach(
+                ({ kind, data, expected, description }) => {
+                    test(description, () => {
+                        expect(
+                            kind.data(data, '').encode().toString('hex')
+                        ).toEqual(expected);
+                    });
+                }
+            );
+
+            invalidNumericKindEncodeTestCases.forEach(
+                ({ kind, data, description, throws }) => {
+                    test(description, () => {
+                        expect(() => {
+                            // @ts-expect-error - invalid input
+                            kind.data(data, '').encode();
+                        }).toThrowError(throws);
+                    });
+                }
+            );
         });
 
-        /**
-         * Empty array decoding tests
-         */
-        test('Should decode an empty encoded array correctly', () => {
-            const encodedHex = 'c0';
-            const encodedData = Buffer.from(encodedHex, 'hex');
-            const decodedData = RLP.decode(encodedData);
-            const expectedDecodedData: RLPInput = []; // The expected decoded data
+        describe('NumericKind decode', () => {
+            numericKindDecodeTestCases.forEach(
+                ({ kind, data, description, expected }) => {
+                    test(description, () => {
+                        expect(kind.buffer(data, '').decode()).toEqual(
+                            expected
+                        );
+                    });
+                }
+            );
 
-            // Assert that the decoded data matches the expected value
-            expect(decodedData).toEqual(expectedDecodedData);
+            invalidNumericKindDecodeTestCases.forEach(
+                ({ kind, data, description, throws }) => {
+                    test(description, () => {
+                        expect(() => {
+                            kind.buffer(data, '').decode();
+                        }).toThrowError(throws);
+                    });
+                }
+            );
+        });
+    });
+
+    // // Testing encodeObject functionality of Profiler
+    describe('Profiler encodeObject', () => {
+        describe('encodeObject encodes buffer profile', () => {
+            encodeBufferProfileTestCases.forEach(
+                ({ profile, data, expected, description }) => {
+                    test(description, () => {
+                        const rlp = new RLP.Profiler(profile);
+
+                        const encoded = rlp.encodeObject(data);
+
+                        expect(encoded.toString('hex')).toBe(expected);
+                    });
+                }
+            );
+        });
+
+        describe('encodeObject encodes numeric profile', () => {
+            encodeNumericProfileTestCases.forEach(
+                ({ profile, data, expected, description }) => {
+                    test(description, () => {
+                        const rlp = new RLP.Profiler(profile);
+
+                        const encoded = rlp.encodeObject(data);
+
+                        expect(encoded.toString('hex')).toBe(expected);
+                    });
+                }
+            );
+        });
+
+        describe("encodeObject throws if profile doesn't match data", () => {
+            invalidEncodeObjectTestCases.forEach(
+                ({ profile, data, description, throws }) => {
+                    test(description, () => {
+                        const rlp = new RLP.Profiler(profile);
+
+                        expect(() => {
+                            rlp.encodeObject(data);
+                        }).toThrowError(throws);
+                    });
+                }
+            );
+        });
+    });
+
+    // Testing decodeObject functionality of Profiler
+    describe('Profiler decodeObject', () => {
+        describe('decodeObject decodes buffer profile', () => {
+            decodeBufferProfileTestCases.forEach(
+                ({ profile, data, expected, description }) => {
+                    test(description, () => {
+                        const rlp = new RLP.Profiler(profile);
+
+                        const decoded = rlp.decodeObject(data);
+
+                        expect(decoded).toEqual(expected);
+                    });
+                }
+            );
+        });
+
+        describe('decodeObject decodes numeric profile', () => {
+            decodeNumericProfileTestCases.forEach(
+                ({ profile, data, expected, description }) => {
+                    test(description, () => {
+                        const rlp = new RLP.Profiler(profile);
+
+                        const decoded = rlp.decodeObject(data);
+
+                        expect(decoded).toEqual(expected);
+                    });
+                }
+            );
+        });
+
+        describe("decodeObject throws if data doesn't match profile", () => {
+            invalidDecodeObjectTestCases.forEach(
+                ({ profile, data, description, throws }) => {
+                    test(description, () => {
+                        const rlp = new RLP.Profiler(profile);
+
+                        expect(() => {
+                            rlp.decodeObject(data);
+                        }).toThrowError(throws);
+                    });
+                }
+            );
         });
     });
 });

@@ -43,6 +43,7 @@ const PRIVATE_KEY_MAX_VALUE = Buffer.from(
  * Allows optional "0x" prefix and validates both lower and uppercase hex characters.
  */
 const HEX_REGEX = /^(0x)?[0-9a-fA-F]*$/;
+const HEX_REGEX_WITH_PREFIX_CASE_INSENSITIVE = /^0x[0-9a-f]*$/i;
 
 const HEX_ADDRESS_REGEX = /^0x[0-9a-f]{40}$/i;
 
@@ -58,6 +59,7 @@ export {
     PRIVATE_KEY_MAX_VALUE,
     HEX_REGEX,
     HEX_ADDRESS_REGEX,
+    HEX_REGEX_WITH_PREFIX_CASE_INSENSITIVE,
     BLOOM_REGEX_LOWERCASE,
     BLOOM_REGEX_UPPERCASE
 };
