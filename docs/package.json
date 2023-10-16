@@ -4,7 +4,8 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
-    "rundocs": "npx runme run --all --category ci --skip-prompts"
+    "rundocs": "npx runme run --all --category ci --skip-prompts",
+    "test": "ts-node-test src/"
   },
   "dependencies": {
     "@vechain-sdk/core": "*"
@@ -12,6 +13,8 @@
   "devDependencies": {
     "expect": "^29.7.0",
     "runme": "^3.0.2",
-    "ts-node": "^10.9.1"
+    "thor-devkit": "^2.0.9",
+    "ts-node": "^10.9.1",
+    "ts-node-test": "^0.4.3"
   }
 }
