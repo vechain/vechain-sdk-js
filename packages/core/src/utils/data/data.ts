@@ -49,6 +49,10 @@ const isHexString = (data: string): boolean => {
     return HEX_REGEX.test(data);
 };
 
+const isDecimalString = (data: string): boolean => {
+    return /^\d+$/.test(data);
+};
+
 /**
  * Remove the '0x' prefix from a hexadecimal string.
  *
@@ -71,4 +75,9 @@ const removePrefix = (hex: HexString): string => {
     return hex;
 };
 
-export const dataUtils = { toHexString, isHexString, removePrefix };
+export const dataUtils = {
+    toHexString,
+    isHexString,
+    removePrefix,
+    isDecimalString
+};
