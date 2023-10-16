@@ -32,12 +32,11 @@ function isValidPrivateKey(key: Buffer): boolean {
  */
 function generate(entropy?: () => Buffer): Buffer {
     entropy = entropy ?? ((): Buffer => randomBytes(32));
-    for (;;) {
-        const privKey = entropy();
-        if (isValidPrivateKey(privKey)) {
-            return privKey;
-        }
-    }
+    let privKey: Buffer;
+    do {
+        privKey = entropy();
+    } while (!isValidPrivateKey(privKey));
+    return privKey;
 }
 
 /**
