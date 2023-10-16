@@ -31,8 +31,7 @@ export class SimpleNet implements Net {
             const resp = await this.axios.request({
                 method,
                 url: path,
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                data: params.body,
+                data: params.body as unknown,
                 headers: params.headers,
                 params: params.query
             });

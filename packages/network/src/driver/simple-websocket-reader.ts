@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import WebSocket from 'isomorphic-ws';
 import { type Net } from './interfaces';
 
@@ -63,7 +62,7 @@ export class SimpleWebSocketReader implements Net.WebSocketReader {
     }
 
     public close(): void {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         this.ws.close();
     }
 
