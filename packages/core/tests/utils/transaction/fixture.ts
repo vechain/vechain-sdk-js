@@ -1,5 +1,5 @@
 import { ERRORS, TRANSACTIONS_GAS_CONSTANTS } from '../../../src';
-import { type Clause } from '../../../src/transaction/types';
+import { type TransactionClause } from '../../../src/transaction';
 
 /**
  * Invalid clauses data fixture
@@ -57,7 +57,7 @@ const normalTransactions = [
 const smartContractTransactions = (
     numberOfZeroBytes: number,
     numberOfNonZeroBytes: number
-): Array<{ clauses: Clause[]; expected: number }> => [
+): Array<{ clauses: TransactionClause[]; expected: number }> => [
     // Empty data contract creation
     {
         clauses: [

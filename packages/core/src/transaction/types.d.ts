@@ -2,7 +2,7 @@
  * Simple type for transaction clause.
  * @public
  */
-interface Clause {
+interface TransactionClause {
     /**
      * Destination address where:
      * * transfer token to or
@@ -27,7 +27,7 @@ interface Clause {
  * Type for transaction body.
  * @public
  */
-interface Body {
+interface TransactionBody {
     /**
      * Last byte of genesis block ID
      */
@@ -80,4 +80,5 @@ interface Body {
         unused?: Buffer[];
     };
 }
-export type { Clause };
+
+export type { TransactionBody, TransactionClause };

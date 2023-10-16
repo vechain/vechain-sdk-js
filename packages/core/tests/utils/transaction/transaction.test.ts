@@ -6,7 +6,7 @@ import {
     normalTransactions,
     smartContractTransactions
 } from './fixture';
-import { type Clause } from '../../../src/transaction/types';
+import { type TransactionClause } from '../../../src/transaction';
 
 /**
  * Transaction utils test
@@ -44,8 +44,8 @@ describe('Transaction utils', () => {
      */
     test('Should calculate intrinsic gas for a normal call transaction ("to" field is NOT null)', () => {
         normalTransactions.forEach((normalTransaction) => {
-            const clauses: Clause[] = normalTransaction.clauses.map(
-                (clause: Clause) => {
+            const clauses: TransactionClause[] = normalTransaction.clauses.map(
+                (clause: TransactionClause) => {
                     return {
                         to: clause.to,
                         value: clause.value,
@@ -63,7 +63,7 @@ describe('Transaction utils', () => {
     test('Should calculate intrinsic gas for a smart contract transaction ("to" field is null)', () => {
         smartContractTransactions(100, 100).forEach(
             (smartContractTransaction: {
-                clauses: Clause[];
+                clauses: TransactionClause[];
                 expected: number;
             }) => {
                 expect(intrinsicGas(smartContractTransaction.clauses)).toBe(

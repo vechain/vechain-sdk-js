@@ -1,5 +1,5 @@
 import { address } from '../../address';
-import { type Clause } from '../../transaction/types';
+import { type TransactionClause } from '../../transaction';
 import { TRANSACTIONS_GAS_CONSTANTS } from '../const';
 import { dataUtils } from '../data';
 import { ERRORS } from '../errors';
@@ -12,7 +12,7 @@ import { ERRORS } from '../errors';
  * @param clauses Transaction clauses
  * @returns Intrinsic gasof a set of clauses
  */
-function intrinsicGas(clauses: Clause[]): number {
+function intrinsicGas(clauses: TransactionClause[]): number {
     // No clauses
     if (clauses.length === 0) {
         return (
@@ -22,7 +22,7 @@ function intrinsicGas(clauses: Clause[]): number {
     }
 
     // Some clauses
-    return clauses.reduce((sum, clause: Clause) => {
+    return clauses.reduce((sum, clause: TransactionClause) => {
         if (clause.to !== null) {
             // Invalid address
             if (!address.isAddress(clause.to)) {
