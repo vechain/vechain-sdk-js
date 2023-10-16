@@ -1,5 +1,6 @@
-import { SimpleNet } from './driver/simple-net';
+import { SimpleNet } from './driver';
 
 console.log('Hello from core network');
 
-SimpleNet('http://localhost:8669');
+// eslint-disable-next-line no-new
+new SimpleNet('http://localhost:8669');
