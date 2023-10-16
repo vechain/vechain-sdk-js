@@ -1,4 +1,4 @@
-import WebSocket from 'isomorphic-ws';
+import * as WebSocket from 'isomorphic-ws';
 import { type Net } from './interfaces';
 
 export class SimpleWebSocketReader implements Net.WebSocketReader {
@@ -10,9 +10,8 @@ export class SimpleWebSocketReader implements Net.WebSocketReader {
         url: string,
         private readonly timeout = 30 * 1000
     ) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
-        this.ws = new WebSocket(url);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        this.ws = new WebSocket(url) as WebSocket;
         this.ws.onmessage = (ev: MessageEvent) => {
             try {
                 const cbs = this.callbacks;
@@ -22,18 +21,12 @@ export class SimpleWebSocketReader implements Net.WebSocketReader {
                 });
             } catch (err) {
                 this.setError(err as Error);
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
                 this.ws.close();
             }
         };
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         this.ws.onerror = () => {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-            // this.setError(ev.error);
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
             this.ws.close();
         };
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         this.ws.onclose = () => {
             this.setError(new Error('closed'));
         };
@@ -62,7 +55,6 @@ export class SimpleWebSocketReader implements Net.WebSocketReader {
     }
 
     public close(): void {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
         this.ws.close();
     }
 

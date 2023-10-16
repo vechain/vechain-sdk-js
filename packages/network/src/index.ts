@@ -1,8 +1,5 @@
-import { SimpleNet } from './driver';
+import * as network from './network';
 
-console.log('Hello from core network');
+export { network };
 
-// eslint-disable-next-line no-new
-new SimpleNet('http://localhost:8669');
-
-console.log('Hello from core network 2');
+export * from './network';
