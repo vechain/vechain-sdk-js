@@ -64,7 +64,9 @@ interface TransactionBody {
     dependsOn: string | null;
 
     /**
-     * Nonce value for various purposes
+     * Nonce value for various purposes.
+     * Basic is to prevent replay attack by make transaction unique.
+     * Every transaction with same chainTag, blockRef, ... must have different nonce.
      */
     nonce: string | number;
 
