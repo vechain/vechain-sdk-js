@@ -9,8 +9,13 @@ import { type NetWebSocketReader } from './interfaces';
  * @public
  */
 export class SimpleWebSocketReader implements NetWebSocketReader {
+    // The WebSocket connection used for communication.
     private readonly ws: WebSocket;
+
+    // Callbacks to handle incoming data and potential errors.
     private callbacks = [] as Array<(data: unknown, error?: Error) => void>;
+
+    // An optional error that can be set if an error occurs during WebSocket operations.
     private error?: Error;
 
     /**
@@ -24,11 +29,10 @@ export class SimpleWebSocketReader implements NetWebSocketReader {
         private readonly timeout = 30 * 1000
     ) {
         // Establish a WebSocket connection.
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-        this.ws = new WebSocket(url) as WebSocket;
+        this.ws = new WebSocket(url);
 
         // Define WebSocket event handlers.
-        this.ws.onmessage = (ev: MessageEvent) => {
+        this.ws.onmessage = (ev: WebSocket.MessageEvent) => {
             try {
                 const cbs = this.callbacks;
                 this.callbacks = [];
@@ -82,10 +86,20 @@ export class SimpleWebSocketReader implements NetWebSocketReader {
         this.ws.close();
     }
 
+    /**
+     * Set the internal error state and trigger error callbacks.
+     *
+     * This method is used to set an error state, close the WebSocket connection, and inform any pending read
+     * operations about the error.
+     *
+     * @param err - The error that occurred.
+     */
     private setError(err: Error): void {
-        if (this.error !== null && this.error !== undefined) {
+        // If an error is already set, ignore the new error and only trigger callbacks.
+        if (this.error != null) {
             this.error = err;
 
+            // Trigger error callbacks with the provided error.
             const cbs = this.callbacks;
             this.callbacks = [];
             cbs.forEach((cb) => {

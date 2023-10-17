@@ -1132,6 +1132,13 @@
   resolved "https://registry.npmjs.org/@types/stack-utils/-/stack-utils-2.0.1.tgz"
   integrity sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==
 
+"@types/ws@^8.5.7":
+  version "8.5.7"
+  resolved "https://registry.yarnpkg.com/@types/ws/-/ws-8.5.7.tgz#1ca585074fe5d2c81dec7a3d451f244a2a6d83cb"
+  integrity sha512-6UrLjiDUvn40CMrAubXuIVtj2PEfKDffJS7ychvnPU44j+KVeXmdHHTgqcM/dxLUTHxlXHiFM8Skmb8ozGdTnQ==
+  dependencies:
+    "@types/node" "*"
+
 "@types/yargs-parser@*":
   version "21.0.1"
   resolved "https://registry.npmjs.org/@types/yargs-parser/-/yargs-parser-21.0.1.tgz"
@@ -1818,6 +1825,11 @@ concat-map@0.0.1:
   version "0.0.1"
   resolved "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz"
   integrity sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
+
+console-spy@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/console-spy/-/console-spy-4.0.0.tgz#587cdfd001b16ded4e14f56e668fb3588139461e"
+  integrity sha512-fQ+wV4uj7oqYVQMnW3j9u8yvBdLgmDnp6OBjgpkT3mBL41fYhiypnleZ494aWF2Exl/hkYoOoB6XUW5o3l4GSA==
 
 conventional-changelog-angular@^6.0.0:
   version "6.0.0"

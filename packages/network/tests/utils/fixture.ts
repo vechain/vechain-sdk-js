@@ -1,4 +1,4 @@
-export const testnetUrl = 'https://testnet.vechain.org/';
+export const testnetUrl = 'https://testnet.vechain.org';
 
 export const firstTestnetBlock = {
     number: 1,
@@ -23,4 +23,31 @@ export const firstTestnetBlock = {
     isTrunk: true,
     isFinalized: true,
     transactions: []
+};
+
+export const testBlock =
+    '0x00ff96a04c916f714d31ff8a73ceb32e3267ce1f60526d80ecb19b33a37c0203';
+
+export const subscriptionBlockExpectedResponse = {
+    number: 16750241,
+    id: '0x00ff96a1e34d5ce4a4c46589a5a1760cba677a7dbb05208360e95a3c1a28d407',
+    size: 361,
+    parentID:
+        '0x00ff96a04c916f714d31ff8a73ceb32e3267ce1f60526d80ecb19b33a37c0203',
+    timestamp: 1697533780,
+    gasLimit: 30000000,
+    beneficiary: '0xb4094c25f86d628fdd571afc4077f0d0196afb48',
+    gasUsed: 0,
+    totalScore: 129054846,
+    txsRoot:
+        '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
+    txsFeatures: 1,
+    stateRoot:
+        '0x1fec5cd04106effbed3dc56fd005d7d8ac1bd544cae17b09e405393bb58531d6',
+    receiptsRoot:
+        '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
+    com: true,
+    signer: '0x0771bc0fe8b6dcf72372440c79a309e92ffb93e8',
+    transactions: [],
+    obsolete: false
 };
