@@ -52,12 +52,31 @@ const PRIVATE_KEY_MAX_VALUE = Buffer.from(
  * Allows optional "0x" prefix and validates both lower and uppercase hex characters.
  * @public
  */
-const HEX_REGEX = /^(0x)?[0-9a-fA-F]*$/;
-const HEX_REGEX_WITH_PREFIX_CASE_INSENSITIVE = /^0x[0-9a-f]*$/i;
+const HEX_REGEX_OPTIONAL_PREFIX = /^(0x)?[0-9a-fA-F]*$/;
 
+/**
+ * Regular expression for validating hexadecimal strings. Must have "0x" prefix.
+ */
+const HEX_REGEX = /^0x[0-9a-f]*$/i;
+
+/**
+ * Regular expression for validating hexadecimal addresses. Must have "0x" prefix. Must be 40 characters long.
+ */
 const HEX_ADDRESS_REGEX = /^0x[0-9a-f]{40}$/i;
 
+/**
+ * Regular expression for validating decimal strings.
+ */
+const DECIMAL_REGEX = /^\d+$/;
+
+/**
+ * Regular expression for validating in hexadecimal strings uppercase.
+ */
 const BLOOM_REGEX_UPPERCASE = /^(0x)?[0-9A-F]{16,}$/;
+
+/**
+ * Regular expression for validating in hexadecimal strings lowercase.
+ */
 const BLOOM_REGEX_LOWERCASE = /^(0x)?[0-9a-f]{16,}$/;
 
 /**
@@ -180,10 +199,11 @@ export {
     PRIVATE_KEY_MAX_VALUE,
     HEX_REGEX,
     HEX_ADDRESS_REGEX,
-    HEX_REGEX_WITH_PREFIX_CASE_INSENSITIVE,
+    HEX_REGEX_OPTIONAL_PREFIX,
     BLOOM_REGEX_LOWERCASE,
     BLOOM_REGEX_UPPERCASE,
     TRANSACTIONS_GAS_CONSTANTS,
     UNSIGNED_TRANSACTION_RLP,
-    SIGNED_TRANSACTION_RLP
+    SIGNED_TRANSACTION_RLP,
+    DECIMAL_REGEX
 };
