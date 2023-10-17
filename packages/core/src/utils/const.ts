@@ -123,7 +123,10 @@ const TRANSACTION_FIELDS = [
     /**
      * Block reference. It represents the last block of the chain the transaction is sent to.
      */
-    // { name: 'blockRef', kind: new RLP.CompactFixedBlobKind(8) },
+    {
+        name: 'blockRef',
+        kind: new RLP.CompactFixedHexBlobKind(8)
+    },
 
     /**
      * Expiration. It represents the expiration date of the transaction.
@@ -137,9 +140,9 @@ const TRANSACTION_FIELDS = [
         name: 'clauses',
         kind: {
             item: [
-                // { name: 'to', kind: new RLP.NullableFixedBlobKind(20) },
-                { name: 'value', kind: new RLP.NumericKind(32) }
-                // { name: 'data', kind: new RLP.BlobKind() }
+                { name: 'to', kind: new RLP.OptionalFixedHexBlobKind(20) },
+                { name: 'value', kind: new RLP.NumericKind(32) },
+                { name: 'data', kind: new RLP.HexBlobKind() }
             ]
         }
     },
@@ -157,7 +160,7 @@ const TRANSACTION_FIELDS = [
     /**
      * Depends on. It represents the hash of the transaction the current transaction depends on.
      */
-    // { name: 'dependsOn', kind: new RLP.NullableFixedBlobKind(32) },
+    { name: 'dependsOn', kind: new RLP.OptionalFixedHexBlobKind(32) },
 
     /**
      * Nonce. It represents the nonce of the transaction.
@@ -185,6 +188,8 @@ const UNSIGNED_TRANSACTION_RLP = new RLP.Profiler({
  */
 const SIGNED_TRANSACTION_RLP = new RLP.Profiler({
     name: 'tx',
+
+    // Add signature to the transaction fields
     kind: TRANSACTION_FIELDS.concat([
         { name: 'signature', kind: new RLP.BufferKind() }
     ])
