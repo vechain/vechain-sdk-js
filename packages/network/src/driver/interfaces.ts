@@ -23,7 +23,7 @@ export interface Net {
     http: (
         method: 'GET' | 'POST',
         path: string,
-        params?: Net.Params
+        params?: NetParams
     ) => Promise<unknown>;
 
     /**
@@ -32,66 +32,56 @@ export interface Net {
      * @param path - The path to open a WebSocket connection.
      * @returns The WebSocket reader instance for the provided path.
      */
-    openWebSocketReader: (path: string) => Net.WebSocketReader;
+    openWebSocketReader: (path: string) => NetWebSocketReader;
 }
 
 /**
- * The `Net` namespace contains interfaces and definitions related to network communication.
- * It includes the `Params` interface for configuring HTTP requests and the `WebSocketReader`
- * interface for reading data from WebSocket connections.
+ * Interface representing parameters for making HTTP requests.
+ *
+ * This interface defines options for configuring an HTTP request, including query parameters,
+ * request body, custom headers, and a function to validate response headers.
  *
  * @public
  */
-// eslint-disable-next-line @typescript-eslint/no-namespace
-export declare namespace Net {
+export interface NetParams {
     /**
-     * Interface representing parameters for making HTTP requests.
-     *
-     * This interface defines options for configuring an HTTP request, including query parameters,
-     * request body, custom headers, and a function to validate response headers.
-     *
-     * @public
+     * Query parameters to include in the request.
      */
-    interface Params {
-        /**
-         * Query parameters to include in the request.
-         */
-        query?: Record<string, string>;
-
-        /**
-         * The request body, which can be of any type.
-         */
-        body?: unknown;
-
-        /**
-         * Custom headers to be included in the request.
-         */
-        headers?: Record<string, string>;
-
-        /**
-         * A callback function to validate response headers.
-         * @param headers - The response headers to validate.
-         */
-        validateResponseHeader?: (headers: Record<string, string>) => void;
-    }
+    query: Record<string, string>;
 
     /**
-     * Interface representing a WebSocket reader.
-     * WebSocket readers allow you to read data from a WebSocket connection.
-     *
-     * @public
+     * The request body, which can be of any type.
      */
-    interface WebSocketReader {
-        /**
-         * Read data from the WebSocket connection.
-         *
-         * @returns A promise that resolves with the data read from the WebSocket.
-         */
-        read: () => Promise<unknown>;
+    body: unknown;
 
-        /**
-         * Close the WebSocket reader and terminate the connection.
-         */
-        close: () => void;
-    }
+    /**
+     * Custom headers to be included in the request.
+     */
+    headers: Record<string, string>;
+
+    /**
+     * A callback function to validate response headers.
+     * @param headers - The response headers to validate.
+     */
+    validateResponseHeader: (headers: Record<string, string>) => void;
+}
+
+/**
+ * Interface representing a WebSocket reader.
+ * WebSocket readers allow you to read data from a WebSocket connection.
+ *
+ * @public
+ */
+export interface NetWebSocketReader {
+    /**
+     * Read data from the WebSocket connection.
+     *
+     * @returns A promise that resolves with the data read from the WebSocket.
+     */
+    read: () => Promise<unknown>;
+
+    /**
+     * Close the WebSocket reader and terminate the connection.
+     */
+    close: () => void;
 }

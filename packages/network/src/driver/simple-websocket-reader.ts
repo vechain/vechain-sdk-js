@@ -1,5 +1,5 @@
 import WebSocket from 'isomorphic-ws';
-import { type Net } from './interfaces';
+import { type NetWebSocketReader } from './interfaces';
 
 /**
  * A concrete implementation of the `Net.WebSocketReader` interface for reading data from a WebSocket connection.
@@ -8,7 +8,7 @@ import { type Net } from './interfaces';
  *
  * @public
  */
-export class SimpleWebSocketReader implements Net.WebSocketReader {
+export class SimpleWebSocketReader implements NetWebSocketReader {
     private readonly ws: WebSocket;
     private callbacks = [] as Array<(data: unknown, error?: Error) => void>;
     private error?: Error;

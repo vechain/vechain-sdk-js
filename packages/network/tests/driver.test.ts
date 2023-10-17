@@ -12,32 +12,32 @@ describe('SimpleNet', () => {
             headers: {}
         });
 
-        const net = new SimpleNet('http://localhost:8669');
+        const net = new SimpleNet('https://testnet.vechain.org/');
         const response = await net.http('GET', '/blocks/1?expanded=false');
 
         expect(JSON.stringify(response)).toEqual(
             JSON.stringify({
                 number: 1,
-                id: '0x00000001da951e6d3eb8ed62891a79c843978f1ec3194e761df85b6627f1ba16',
-                size: 358,
+                id: '0x000000019015bbd98fc1c9088d793ba9add53896a29cd9aa3a4dcabd1f561c38',
+                size: 236,
                 parentID:
-                    '0x00000000c05a20fbca2bf6ae3affba6af4a74b800b585bf7a4988aba7aea69f6',
-                timestamp: 1697470610,
-                gasLimit: 10000000000000,
-                beneficiary: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
+                    '0x000000000b2bce3c70bc649a02749e8687721b09ed2e15997f466536b20bb127',
+                timestamp: 1530014410,
+                gasLimit: 10000000,
+                beneficiary: '0xb4094c25f86d628fdd571afc4077f0d0196afb48',
                 gasUsed: 0,
                 totalScore: 1,
                 txsRoot:
                     '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
-                txsFeatures: 1,
+                txsFeatures: 0,
                 stateRoot:
-                    '0x93de0ffb1f33bc0af053abc2a87c4af44594f5dcb1cb879dd823686a15d68550',
+                    '0x4ec3af0acbad1ae467ad569337d2fe8576fe303928d35b8cdd91de47e9ac84bb',
                 receiptsRoot:
                     '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
                 com: false,
-                signer: '0xf077b491b355e64048ce21e3a6fc4751eeea77fa',
+                signer: '0x25ae0ef84da4a76d5a1dfe80d3789c2c46fee30a',
                 isTrunk: true,
-                isFinalized: false,
+                isFinalized: true,
                 transactions: []
             })
         );
@@ -51,7 +51,7 @@ describe('SimpleNet', () => {
         const axiosRequest = jest.spyOn(axios, 'request');
         axiosRequest.mockRejectedValue(new Error('Test Error'));
 
-        const net = new SimpleNet('http://localhost:8669');
+        const net = new SimpleNet('https://testnet.vechain.org/');
 
         await expect(net.http('GET', '/error-test-path')).rejects.toThrow(
             '404 get /error-test-path: 404 page not found'

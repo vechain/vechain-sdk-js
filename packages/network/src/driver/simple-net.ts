@@ -1,4 +1,8 @@
-import { type Net } from './interfaces';
+import {
+    type Net,
+    type NetParams,
+    type NetWebSocketReader
+} from './interfaces';
 import Axios, { type AxiosInstance, type AxiosError } from 'axios';
 import { SimpleWebSocketReader } from './simple-websocket-reader';
 import { Agent as HttpAgent } from 'http';
@@ -47,19 +51,19 @@ export class SimpleNet implements Net {
     public async http(
         method: 'GET' | 'POST',
         path: string,
-        params?: Net.Params
+        params?: NetParams
     ): Promise<unknown> {
-        params = params ?? {};
+        params = params ?? undefined;
         try {
             const resp = await this.axios.request({
                 method,
                 url: path,
-                data: params.body,
-                headers: params.headers,
-                params: params.query
+                data: params?.body,
+                headers: params?.headers,
+                params: params?.query
             });
 
-            if (params.validateResponseHeader != null) {
+            if (params?.validateResponseHeader != null) {
                 const responseHeaders: Record<string, string> = {};
 
                 for (const key in resp.headers) {
@@ -93,7 +97,7 @@ export class SimpleNet implements Net {
      * @param path - The path to open a WebSocket connection.
      * @returns A WebSocket reader for the provided path.
      */
-    public openWebSocketReader(path: string): Net.WebSocketReader {
+    public openWebSocketReader(path: string): NetWebSocketReader {
         const url = new URL(this.baseURL, path)
             .toString()
             .replace(/^http:/i, 'ws:')
