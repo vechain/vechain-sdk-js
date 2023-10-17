@@ -14,6 +14,7 @@ Mnemonics represent a standard human-readable approach to generate private keys.
 
 ```typescript { name=bip39, category=accounts,ci }
 import { mnemonic } from '@vechain-sdk/core';
+import { expect } from 'expect';
 
 // Generate BIP39 mnemonic words, default to 12 words(128bit strength)
 const rndMnemonic = mnemonic.generate();
@@ -26,7 +27,7 @@ console.log(privateKey.toString('hex'));
 
 // In recovery process, validation is recommended
 const ok = mnemonic.validate(rndMnemonic.phrase.split(' '));
-console.log(ok);
+expect(ok).toBeTruthy();
 // true
 ```
 
@@ -91,6 +92,7 @@ Through the use of mnemonics and keystore, VeChain SDK ensures secure and user-f
 
 ```typescript { name=keystore, category=accounts,ci }
 import { keystore, secp256k1 } from '@vechain-sdk/core';
+import { expect } from 'expect';
 
 async function example(): Promise<void> {
     // Create private key
@@ -118,7 +120,7 @@ async function example(): Promise<void> {
 
     // Roughly check keystore format
     const ok = keystore.isValid(newKeyStore);
-    console.log('Key store ok', ok);
+    expect(ok).toBeTruthy();
     // Key store ok true
 }
 await example();

@@ -12,6 +12,7 @@ VeChain SDK provides functionality to interact with smart contracts on the Vecha
 
 ```typescript { name=abi, category=abi,ci }
 import { abi } from '@vechain-sdk/core';
+import { expect } from 'expect';
 
 // Create a new function
 const simpleAbiFunction = new abi.highLevel.Function({
@@ -44,8 +45,15 @@ const simpleAbiFunction = new abi.highLevel.Function({
 
 // Encode function
 const data = simpleAbiFunction.encodeInput([1, 'foo']);
-console.log(data);
-
+// Check encoding
+const expected =
+    // eslint-disable-next-line no-multi-str
+    '0x27fcbb2f0000000000000000000000000000000000000000000000000000\
+00000000000100000000000000000000000000000000000000000000000000\
+00000000000040000000000000000000000000000000000000000000000000\
+0000000000000003666f6f0000000000000000000000000000000000000000\
+000000000000000000';
+expect(data).toBe(expected);
 ```
 
 ## RLP Encoding
