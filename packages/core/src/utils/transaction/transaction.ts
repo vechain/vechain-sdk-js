@@ -9,8 +9,8 @@ import { ERRORS } from '../errors';
  *
  * @note see the folloging link for more details: https://docs.vechain.org/core-concepts/transactions/transaction-calculation
  *
- * @param clauses Transaction clauses
- * @returns Intrinsic gasof a set of clauses
+ * @param clauses - Transaction clauses
+ * @returns Intrinsic gas of a set of clauses
  */
 function intrinsicGas(clauses: TransactionClause[]): number {
     // No clauses
