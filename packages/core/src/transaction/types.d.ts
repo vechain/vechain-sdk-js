@@ -46,7 +46,7 @@ interface TransactionBody {
     /**
      * Array of clauses
      */
-    clauses: Clause[];
+    clauses: TransactionClause[];
 
     /**
      * Coefficient applied to base gas price [0,255]
