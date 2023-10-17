@@ -47,7 +47,7 @@ const HEX_REGEX_OPTIONAL_PREFIX = /^(0x)?[0-9a-fA-F]*$/;
 /**
  * Regular expression for validating hexadecimal strings. Must have "0x" prefix.
  */
-const HEX_REGEX = /^0x[0-9A-Fa-f]*$/i;
+const HEX_REGEX = /^0x[0-9a-f]*$/i;
 
 /**
  * Regular expression for validating hexadecimal addresses. Must have "0x" prefix. Must be 40 characters long.
