@@ -5,7 +5,8 @@
   "version": "1.0.0",
   "scripts": {
     "rundocs": "npx runme run --all --category ci --skip-prompts",
-    "test": "ts-node-test examples/"
+    "test:examples": "ts-node-test examples/",
+    "build:docs": "rm build/*.md && python build_docs.py"
   },
   "dependencies": {
     "@vechain-sdk/core": "*"
