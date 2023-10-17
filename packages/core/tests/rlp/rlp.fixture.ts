@@ -182,6 +182,172 @@ const invalidNumericKindDecodeTestCases = [
     }
 ];
 
+/* Hex Blob Kind encode tests */
+const hexBlobKindEncodeTestCases = [
+    {
+        kind: new RLP.HexBlobKind(),
+        data: '0x010203',
+        expected: '010203',
+        description: 'hex string'
+    }
+];
+
+const invalidHexBlobKindEncodeTestCases = [
+    {
+        kind: new RLP.HexBlobKind(),
+        data: '0x123z',
+        description: 'invalid hex string',
+        throws: ERRORS.RLP.INVALID_RLP('', 'expected hex string')
+    },
+    {
+        kind: new RLP.HexBlobKind(),
+        data: {},
+        description: 'invalid object',
+        throws: ERRORS.RLP.INVALID_RLP('', 'expected string')
+    },
+    {
+        kind: new RLP.HexBlobKind(),
+        data: '0x123',
+        description: 'invalid hex string',
+        throws: ERRORS.RLP.INVALID_RLP('', 'expected even length string')
+    }
+];
+
+/* Fixed Hex Blob Kind encode tests */
+const fixedHexBlobKindEncodeTestCases = [
+    {
+        kind: new RLP.FixedHexBlobKind(1),
+        data: '0x01',
+        expected: '01',
+        description: 'hex string'
+    }
+];
+
+const invalidFixedHexBlobEncodeTestCases = [
+    {
+        kind: new RLP.FixedHexBlobKind(1),
+        data: '0x123z',
+        description: 'invalid hex string',
+        throws: ERRORS.RLP.INVALID_RLP('', 'expected hex string')
+    },
+    {
+        kind: new RLP.FixedHexBlobKind(1),
+        data: {},
+        description: 'invalid data type',
+        throws: ERRORS.RLP.INVALID_RLP('', 'expected string')
+    },
+    {
+        kind: new RLP.FixedHexBlobKind(1),
+        data: '0x123',
+        description: 'invalid hex string',
+        throws: ERRORS.RLP.INVALID_RLP('', 'expected even length string')
+    },
+    {
+        kind: new RLP.FixedHexBlobKind(1),
+        data: '0x012345',
+        description: 'overflow hex string',
+        throws: ERRORS.RLP.INVALID_RLP('', 'expected hex string to be 1 bytes')
+    }
+];
+
+/* Hex Blob Kind decode tests */
+const hexBlobKindDecodeTestCases = [
+    {
+        kind: new RLP.HexBlobKind(),
+        data: Buffer.alloc(0),
+        description: 'empty buffer',
+        expected: '0x'
+    },
+    {
+        kind: new RLP.HexBlobKind(),
+        data: Buffer.from([1, 2, 3]),
+        description: 'buffer with data',
+        expected: '0x010203'
+    },
+    {
+        kind: new RLP.HexBlobKind(),
+        data: Buffer.from([1, 2, 3, 4, 5]),
+        description: 'buffer with data',
+        expected: '0x0102030405'
+    }
+];
+
+const invalidHexBlobKindDecodeTestCases = [
+    {
+        kind: new RLP.HexBlobKind(),
+        data: 42,
+        description: 'invalid data',
+        throws: ERRORS.RLP.INVALID_RLP('', 'expected buffer')
+    }
+];
+
+/* Fixed Hex Blob Kind decode tests */
+const fixedHexBlobKindDecodeTestCases = [
+    {
+        kind: new RLP.FixedHexBlobKind(3),
+        data: Buffer.from([1, 2, 3]),
+        description: 'buffer with data',
+        expected: '0x010203'
+    },
+    {
+        kind: new RLP.FixedHexBlobKind(1),
+        data: Buffer.from([1]),
+        description: 'buffer with data',
+        expected: '0x01'
+    }
+];
+
+const invalidFixedBlobKindDecodeTestCases = [
+    {
+        kind: new RLP.FixedHexBlobKind(3),
+        data: Buffer.from([1, 2]),
+        description: 'buffer with data',
+        throws: ERRORS.RLP.INVALID_RLP('', 'expected buffer to be 3 bytes')
+    },
+    {
+        kind: new RLP.FixedHexBlobKind(1),
+        data: Buffer.from([1, 2]),
+        description: 'buffer with data',
+        throws: ERRORS.RLP.INVALID_RLP('', 'expected buffer to be 1 bytes')
+    },
+    {
+        kind: new RLP.FixedHexBlobKind(1),
+        data: '0x123',
+        description: 'invalid data buffer',
+        throws: ERRORS.RLP.INVALID_RLP('', 'expected buffer')
+    }
+];
+
+const compactFixedHexBlobKindEncodeTestCases = [
+    {
+        kind: new RLP.CompactFixedHexBlobKind(4),
+        data: '0x00112233',
+        description: 'buffer with data',
+        expected: '112233'
+    },
+    {
+        kind: new RLP.CompactFixedHexBlobKind(1),
+        data: '0x00',
+        description: 'buffer with data',
+        expected: ''
+    }
+];
+
+const compactFixedHexBlobKindDecodeTestCases = [
+    {
+        kind: new RLP.CompactFixedHexBlobKind(4),
+        data: Buffer.from([1, 2, 3]),
+        description: 'buffer with data',
+        expected: '0x00010203'
+    },
+    {
+        kind: new RLP.CompactFixedHexBlobKind(1),
+        data: Buffer.from([1]),
+        description: 'buffer with data',
+        expected: '0x01'
+    }
+];
+
 /* ------ RLP Profile Objects & Data ------- */
 const [bufferProfile, bufferData, invalidBufferData]: [
     RLPProfile,
@@ -325,6 +491,179 @@ const [
     }
 ];
 
+const [hexBlobProfile, hexBlobData, hexBlobDataWithInvalidHex]: [
+    RLPProfile,
+    RLPValidObject,
+    RLPValidObject
+] = [
+    {
+        name: '',
+        kind: [
+            { name: 'foo', kind: new RLP.HexBlobKind() },
+            { name: 'bar', kind: new RLP.HexBlobKind() }
+        ]
+    },
+    {
+        foo: '0x010203',
+        bar: '0x040506'
+    },
+    {
+        foo: '0x010203',
+        bar: '0x0405z6'
+    }
+];
+
+const [fixedHexBlobProfile, fixedHexBlobData]: [RLPProfile, RLPValidObject] = [
+    {
+        name: '',
+        kind: [
+            { name: 'foo', kind: new RLP.FixedHexBlobKind(1) },
+            { name: 'bar', kind: new RLP.FixedHexBlobKind(3) }
+        ]
+    },
+    {
+        foo: '0x01',
+        bar: '0x010203'
+    }
+];
+
+const [
+    optionalFixedHexBlobProfile,
+    optionalFixedHexBlobData,
+    optionalFixedHexBlobDataNull,
+    optionalFixedHexBlobDataMixed,
+    optionalFixedHexBlobDataMixed2,
+    optionalFixedHexBlobDataMixed3
+]: [
+    RLPProfile,
+    RLPValidObject,
+    RLPValidObject,
+    RLPValidObject,
+    RLPValidObject,
+    RLPValidObject
+] = [
+    {
+        name: '',
+        kind: [
+            { name: 'foo', kind: new RLP.OptionalFixedHexBlobKind(1) },
+            { name: 'bar', kind: new RLP.OptionalFixedHexBlobKind(3) }
+        ]
+    },
+    {
+        foo: '0x01',
+        bar: '0x010203'
+    },
+    {
+        foo: null,
+        bar: null
+    },
+    {
+        foo: '0x01',
+        bar: null
+    },
+    {
+        foo: null,
+        bar: '0x010203'
+    },
+    {
+        foo: null,
+        bar: undefined
+    }
+];
+
+const [compactFixedHexBlobProfile, compactFixedHexBlobData]: [
+    RLPProfile,
+    RLPValidObject
+] = [
+    {
+        name: '',
+        kind: [
+            { name: 'foo', kind: new RLP.CompactFixedHexBlobKind(1) },
+            { name: 'bar', kind: new RLP.CompactFixedHexBlobKind(3) }
+        ]
+    },
+    {
+        foo: '0x01',
+        bar: '0x010203'
+    }
+];
+
+const [mixedKindProfile1, mixedKindData1]: [RLPProfile, RLPValidObject] = [
+    {
+        name: '',
+        kind: [
+            { name: 'foo', kind: new RLP.NumericKind() },
+            { name: 'bar', kind: new RLP.FixedHexBlobKind(4) },
+            {
+                name: 'baz',
+                kind: {
+                    item: [
+                        { name: 'x', kind: new RLP.HexBlobKind() },
+                        { name: 'y', kind: new RLP.NumericKind() }
+                    ]
+                }
+            }
+        ]
+    },
+    {
+        foo: 123,
+        bar: '0x12345678',
+        baz: [
+            { x: '0x11', y: 1234 },
+            { x: '0x12', y: 5678 }
+        ]
+    }
+];
+
+const [mixedKindProfile2, mixedKindData2]: [RLPProfile, RLPValidObject] = [
+    {
+        name: 'tx',
+        kind: [
+            { name: 'chainTag', kind: new RLP.NumericKind(1) },
+            { name: 'blockRef', kind: new RLP.CompactFixedHexBlobKind(8) },
+            { name: 'expiration', kind: new RLP.NumericKind(4) },
+            {
+                name: 'clauses',
+                kind: {
+                    item: [
+                        {
+                            name: 'to',
+                            kind: new RLP.OptionalFixedHexBlobKind(20)
+                        },
+                        { name: 'value', kind: new RLP.NumericKind(32) },
+                        { name: 'data', kind: new RLP.HexBlobKind() }
+                    ]
+                }
+            },
+            { name: 'gasPriceCoef', kind: new RLP.NumericKind(1) },
+            { name: 'gas', kind: new RLP.NumericKind(8) },
+            { name: 'dependsOn', kind: new RLP.OptionalFixedHexBlobKind(32) },
+            { name: 'nonce', kind: new RLP.NumericKind(8) }
+        ]
+    },
+    {
+        chainTag: 1,
+        blockRef: '0x00000000aabbccdd',
+        expiration: 32,
+        clauses: [
+            {
+                to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+                value: 10000,
+                data: '0x000000606060'
+            },
+            {
+                to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+                value: 20000,
+                data: '0x000000606060'
+            }
+        ],
+        gasPriceCoef: 128,
+        gas: 21000,
+        dependsOn: null,
+        nonce: 12345678
+    }
+];
+
 /* ------ RLP Profile Encode Tests ------- */
 const encodeNumericProfileTestCases = [
     {
@@ -356,6 +695,82 @@ const encodeBufferProfileTestCases = [
     }
 ];
 
+const encodeHexBlobProfileTestCases = [
+    {
+        profile: hexBlobProfile,
+        data: hexBlobData,
+        expected: 'c88301020383040506',
+        description: 'encode hex blob profile'
+    }
+];
+
+const encodeFixedHexBlobProfileTestCases = [
+    {
+        profile: fixedHexBlobProfile,
+        data: fixedHexBlobData,
+        expected: 'c50183010203',
+        description: 'encode fixed hex blob profile'
+    }
+];
+
+const encodeOptionalFixedHexBlobProfileTestCases = [
+    {
+        profile: optionalFixedHexBlobProfile,
+        data: optionalFixedHexBlobData,
+        expected: 'c50183010203',
+        description: 'encode nullable fixed hex blob profile'
+    },
+    {
+        profile: optionalFixedHexBlobProfile,
+        data: optionalFixedHexBlobDataNull,
+        expected: 'c28080',
+        description: 'encode nullable fixed hex blob profile with null'
+    },
+    {
+        profile: optionalFixedHexBlobProfile,
+        data: optionalFixedHexBlobDataMixed,
+        expected: 'c20180',
+        description: 'encode nullable fixed hex blob profile with mixed data'
+    },
+    {
+        profile: optionalFixedHexBlobProfile,
+        data: optionalFixedHexBlobDataMixed2,
+        expected: 'c58083010203',
+        description: 'encode nullable fixed hex blob profile with mixed data 2'
+    },
+    {
+        profile: optionalFixedHexBlobProfile,
+        data: optionalFixedHexBlobDataMixed3,
+        expected: 'c28080',
+        description: 'encode nullable fixed hex blob profile with mixed data 3'
+    }
+];
+
+const encodeCompactFixedHexBlobProfileTestCases = [
+    {
+        profile: compactFixedHexBlobProfile,
+        data: compactFixedHexBlobData,
+        expected: 'c50183010203',
+        description: 'encode compact fixed hex blob profile'
+    }
+];
+
+const encodeMixedKindProfileTestCases = [
+    {
+        profile: mixedKindProfile1,
+        data: mixedKindData1,
+        expected: 'd17b8412345678cac4118204d2c41282162e',
+        description: 'encode mixed kind profile'
+    },
+    {
+        profile: mixedKindProfile2,
+        data: mixedKindData2,
+        expected:
+            'f8530184aabbccdd20f840df947567d83b7b8d80addcb281a71d54fc7b3364ffed82271086000000606060df947567d83b7b8d80addcb281a71d54fc7b3364ffed824e208600000060606081808252088083bc614e',
+        description: 'encode mixed kind profile with transaction like data'
+    }
+];
+
 const invalidEncodeObjectTestCases = [
     {
         profile: bufferProfile,
@@ -374,6 +789,12 @@ const invalidEncodeObjectTestCases = [
         data: numericDataWithByteOverflow,
         description: 'encode numeric profile with byte overflow',
         throws: new Error('foo: expected number in 1 bytes')
+    },
+    {
+        profile: hexBlobProfile,
+        data: hexBlobDataWithInvalidHex,
+        description: 'encode hex blob profile with invalid hex',
+        throws: new Error('bar: expected hex string')
     }
 ];
 
@@ -423,6 +844,42 @@ const decodeNumericProfileTestCases = [
     }
 ];
 
+const decodeHexBlobProfileTestCases = [
+    {
+        profile: hexBlobProfile,
+        data: Buffer.from('c88301020383040506', 'hex'),
+        expected: hexBlobData,
+        description: 'decode hex blob profile'
+    }
+];
+
+const decodeCompactFixedHexBlobProfileTestCases = [
+    {
+        profile: compactFixedHexBlobProfile,
+        data: Buffer.from('c50183010203', 'hex'),
+        expected: compactFixedHexBlobData,
+        description: 'decode compact fixed hex blob profile'
+    }
+];
+
+const decodeMixedKindProfileTestCases = [
+    {
+        profile: mixedKindProfile1,
+        data: Buffer.from('d17b8412345678cac4118204d2c41282162e', 'hex'),
+        expected: mixedKindData1,
+        description: 'decode mixed kind profile'
+    },
+    {
+        profile: mixedKindProfile2,
+        data: Buffer.from(
+            'f8530184aabbccdd20f840df947567d83b7b8d80addcb281a71d54fc7b3364ffed82271086000000606060df947567d83b7b8d80addcb281a71d54fc7b3364ffed824e208600000060606081808252088083bc614e',
+            'hex'
+        ),
+        expected: mixedKindData2,
+        description: 'decode mixed kind profile with transaction like data'
+    }
+];
+
 export {
     encodeTestCases,
     decodeTestCases,
@@ -446,5 +903,27 @@ export {
     invalidEncodeObjectTestCases,
     decodeBufferProfileTestCases,
     invalidDecodeObjectTestCases,
-    decodeNumericProfileTestCases
+    hexBlobKindEncodeTestCases,
+    decodeNumericProfileTestCases,
+    decodeHexBlobProfileTestCases,
+    hexBlobProfile,
+    hexBlobData,
+    encodeHexBlobProfileTestCases,
+    invalidHexBlobKindEncodeTestCases,
+    hexBlobKindDecodeTestCases,
+    invalidHexBlobKindDecodeTestCases,
+    fixedHexBlobProfile,
+    fixedHexBlobData,
+    encodeFixedHexBlobProfileTestCases,
+    fixedHexBlobKindEncodeTestCases,
+    invalidFixedHexBlobEncodeTestCases,
+    fixedHexBlobKindDecodeTestCases,
+    invalidFixedBlobKindDecodeTestCases,
+    encodeOptionalFixedHexBlobProfileTestCases,
+    encodeCompactFixedHexBlobProfileTestCases,
+    decodeCompactFixedHexBlobProfileTestCases,
+    encodeMixedKindProfileTestCases,
+    decodeMixedKindProfileTestCases,
+    compactFixedHexBlobKindEncodeTestCases,
+    compactFixedHexBlobKindDecodeTestCases
 };
