@@ -1,12 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
 import { TRANSACTIONS_GAS_CONSTANTS } from '../../../src';
-import { intrinsicGas } from '../../../src/utils/transaction';
 import {
     invalidData,
     normalTransactions,
     smartContractTransactions
 } from './fixture';
 import { type TransactionClause } from '../../../src/transaction';
+import { transactionUtils } from '../../../src/utils/transaction';
 
 /**
  * Transaction utils test
@@ -18,7 +18,7 @@ describe('Transaction utils', () => {
     test('Should throw errors for invalid clauses data', () => {
         invalidData.forEach((invalidClause) => {
             expect(() => {
-                intrinsicGas([
+                transactionUtils.intrinsicGas([
                     {
                         to: invalidClause.to,
                         value: invalidClause.value,
@@ -33,7 +33,7 @@ describe('Transaction utils', () => {
      * Intrinsic gas - No clauses
      */
     test('Should calculate intrinsic gas for a transaction with no clauses', () => {
-        expect(intrinsicGas([])).toBe(
+        expect(transactionUtils.intrinsicGas([])).toBe(
             TRANSACTIONS_GAS_CONSTANTS.TX_GAS +
                 TRANSACTIONS_GAS_CONSTANTS.CLAUSE_GAS
         );
@@ -53,7 +53,9 @@ describe('Transaction utils', () => {
                     };
                 }
             );
-            expect(intrinsicGas(clauses)).toBe(normalTransaction.expected);
+            expect(transactionUtils.intrinsicGas(clauses)).toBe(
+                normalTransaction.expected
+            );
         });
     });
 
@@ -66,9 +68,11 @@ describe('Transaction utils', () => {
                 clauses: TransactionClause[];
                 expected: number;
             }) => {
-                expect(intrinsicGas(smartContractTransaction.clauses)).toBe(
-                    smartContractTransaction.expected
-                );
+                expect(
+                    transactionUtils.intrinsicGas(
+                        smartContractTransaction.clauses
+                    )
+                ).toBe(smartContractTransaction.expected);
             }
         );
     });

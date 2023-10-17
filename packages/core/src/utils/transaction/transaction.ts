@@ -61,4 +61,5 @@ function _calculateDataUsedGas(data: string): number {
     return sum;
 }
 
-export { intrinsicGas };
+const transactionUtils = { intrinsicGas };
+export { transactionUtils };
