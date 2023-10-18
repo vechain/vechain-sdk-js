@@ -1,9 +1,6 @@
-import {
-    ERRORS,
-    HEX_REGEX_WITH_PREFIX_CASE_INSENSITIVE,
-    dataUtils
-} from '../../../utils';
+import { ERRORS, dataUtils } from '../../../utils';
 import { type RLPInput } from '../types';
+import { createRlpError } from './profiles';
 
 /**
  * Validates and converts the input data to a BigInt.
@@ -66,7 +63,7 @@ const _validateNumericKindNumber = (num: number, context: string): void => {
  * @private
  */
 const _validateNumericKindString = (str: string, context: string): void => {
-    const isHex = HEX_REGEX_WITH_PREFIX_CASE_INSENSITIVE.test(str);
+    const isHex = dataUtils.isHexString(str);
     const isDecimal = dataUtils.isDecimalString(str);
 
     if (!isHex && !isDecimal) {
@@ -105,23 +102,65 @@ const assertValidNumericKindBuffer = (
 ): void => {
     // If maxBytes is defined, ensure buffer length is within bounds.
     if (maxBytes !== undefined && buf.length > maxBytes) {
-        throw new Error(
-            ERRORS.RLP.INVALID_RLP(
-                context,
-                `expected less than ${maxBytes} bytes`
-            )
-        );
+        throw createRlpError(context, `expected less than ${maxBytes} bytes`);
     }
 
     // Ensure the buffer does not have leading zeros, as it's not canonical in integer representation.
     if (buf[0] === 0) {
-        throw new Error(
-            ERRORS.RLP.INVALID_RLP(
-                context,
-                `expected canonical integer (no leading zero bytes)`
-            )
+        throw createRlpError(
+            context,
+            'expected canonical integer (no leading zero bytes)'
         );
     }
 };
 
-export { validateNumericKindData, assertValidNumericKindBuffer };
+/**
+ * Encode a BigInt instance into a Buffer, ensuring it adheres to specific constraints.
+ * @param bi - BigInt instance to encode.
+ * @param maxBytes - Maximum byte length allowed for the encoding. If undefined, no byte size limit is imposed.
+ * @param context - Contextual information for error messages.
+ * @returns A Buffer instance containing the encoded data.
+ * @throws Will throw an error if the encoded data exceeds the defined `maxBytes`.
+ */
+const encodeBigIntToBuffer = (
+    bi: bigint,
+    maxBytes: number | undefined,
+    context: string
+): Buffer => {
+    if (bi === 0n) return Buffer.alloc(0);
+
+    let hex = bi.toString(16);
+
+    // Ensure hex string has an even length
+    if (hex.length % 2 !== 0) {
+        hex = '0' + hex;
+    }
+
+    if (maxBytes !== undefined && hex.length > maxBytes * 2) {
+        throw createRlpError(context, `expected number in ${maxBytes} bytes`);
+    }
+
+    return Buffer.from(hex, 'hex');
+};
+
+/**
+ * Decode a Buffer into a number or hexadecimal string.
+ * @param buffer - Buffer instance to decode.
+ * @returns A number if the decoded BigInt is a safe integer, otherwise returns a hexadecimal string.
+ */
+const decodeBufferToNumberOrHex = (buffer: Buffer): number | string => {
+    if (buffer.length === 0) return 0;
+
+    const bi = BigInt('0x' + buffer.toString('hex'));
+    const num = Number(bi);
+
+    // Return number or hex based on integer safety
+    return Number.isSafeInteger(num) ? num : '0x' + bi.toString(16);
+};
+
+export {
+    validateNumericKindData,
+    assertValidNumericKindBuffer,
+    encodeBigIntToBuffer,
+    decodeBufferToNumberOrHex
+};

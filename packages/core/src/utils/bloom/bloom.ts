@@ -14,14 +14,6 @@ import { BLOOM_REGEX_LOWERCASE, BLOOM_REGEX_UPPERCASE } from '../const';
  * @param bloom - The string to validate.
  * @returns A boolean indicating whether the provided string adheres to the Bloom filter format.
  *
- * @example
- * ```typescript
- * const bloomValid: string = "0x5522cbe5f76c5e8a9994b6f7c967d3aefa4d31e409cfc07308aeb2853c";
- * const bloomInvalid: string = "0x5522cbe5f76c5g8a"; // Contains an invalid character 'g'
- *
- * console.log(isBloom(bloomValid)); // Expected output: true
- * console.log(isBloom(bloomInvalid)); // Expected output: false
- * ```
  */
 const isBloom = (bloom: string): boolean => {
     if (typeof bloom !== 'string') {
@@ -54,22 +46,13 @@ const isBloom = (bloom: string): boolean => {
  * - Will throw an error if `bloom` is not in a valid Bloom filter format.
  * - Will throw an error if `data` is not a valid hexadecimal string.
  * - Will throw an error if `k` is not a positive integer.
- *
- * @example
- * ```typescript
- * const bloom: HexString = "0x5522cbe5310cdaa96c5e8a9994b6f7c967d3aefa4d31e409cfc07308aeb2853c";
- * const k: number = 3;
- * const dataToCheck: string = "Hello world";
- *
- * const mayBeInSet: boolean = isInBloom(bloom, k, toHexString(dataToCheck));
- * ```
  */
 const isInBloom = (bloom: HexString, k: number, data: HexString): boolean => {
     if (!isBloom(bloom)) {
         throw new Error(ERRORS.BLOOM.INVALID_BLOOM);
     }
 
-    if (!dataUtils.isHexString(data)) {
+    if (!dataUtils.isHexString(data, false)) {
         throw new Error(ERRORS.DATA.INVALID_DATA_TYPE('a hexadecimal string'));
     }
 
@@ -111,16 +94,6 @@ const isInBloom = (bloom: HexString, k: number, data: HexString): boolean => {
  * - Will throw an error if `bloom` is not a valid Bloom filter format.
  * - Will throw an error if `k` is not a positive integer.
  * - Will throw an error if `addressToCheck` is not a valid vechain thor address format.
- *
- * @example
- * ```typescript
- * const bloom: HexString = "0x1c111c0c92a9413c38db871299fd72155b79d99b39c819";
- * const k: number = 13;
- * const addressToCheck: HexString = "0xDafCA4A51eA97B3b5F21171A95DAbF540894a55A";
- *
- * const mayBeInSet: boolean = isAddressInBloom(bloom, k, addressToCheck); // true
- * const isNotInSet: boolean = isAddressInBloom(bloom, k, "0x742d35Cc6634C0532925a3b844Bc454e4438f44e"); // false
- *
  * ```
  */
 const isAddressInBloom = (
