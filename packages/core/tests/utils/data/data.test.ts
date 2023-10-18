@@ -48,13 +48,13 @@ describe('utils/hex', () => {
     describe('Hex string verification', () => {
         validHexStrings.forEach((hex) => {
             test(`should return true for valid hex string: ${hex}`, () => {
-                expect(dataUtils.isHexString(hex)).toBe(true);
+                expect(dataUtils.isHexString(hex, false)).toBe(true);
             });
         });
 
         invalidHexStrings.forEach((hex) => {
             test(`should return false for invalid hex string: ${hex}`, () => {
-                expect(dataUtils.isHexString(hex)).toBe(false);
+                expect(dataUtils.isHexString(hex, false)).toBe(false);
             });
         });
     });

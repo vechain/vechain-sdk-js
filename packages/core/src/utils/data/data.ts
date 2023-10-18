@@ -1,4 +1,4 @@
-import { HEX_REGEX } from '../const';
+import { DECIMAL_REGEX, HEX_REGEX, HEX_REGEX_OPTIONAL_PREFIX } from '../const';
 import { type HexString } from '../types';
 import { type HexConfig } from './types';
 
@@ -8,13 +8,6 @@ import { type HexConfig } from './types';
  * @remarks
  * This function takes a `string` or `Uint8Array` and converts it into a hexadecimal string.
  * The resulting string can optionally be prefixed with '0x' based on the configuration provided.
- *
- * @example
- * ```
- * toHexString("Hello World"); // "48656c6c6f20576f726c64"
- * toHexString("Hello World", { withPrefix: true }); // "0x48656c6c6f20576f726c64"
- * toHexString(new Uint8Array([72, 101, 108, 108, 111])); // "48656c6c6f"
- * ```
  *
  * @param data - The input data to be converted, either a string or a Uint8Array.
  * @param config - An optional configuration object that may include a `withPrefix` boolean, which if true, prefixes the resulting string with '0x'.
@@ -30,23 +23,32 @@ const toHexString = (
 };
 
 /**
- * Validate whether the provided data is a hexadecimal string.
+ * Checks whether the provided data is a valid hexadecimal string.
  *
  * @remarks
- * This function uses a regular expression to validate whether the input string is a valid hexadecimal string.
- * A valid hexadecimal string may optionally start with the '0x' prefix.
+ * The check can optionally validate the presence of a '0x' prefix.
  *
- * @example
- * ```
- * isHexString("0x48656c6c6f"); // true
- * isHexString("G56c6c6f"); // false
- * ```
- *
- * @param data - The string to be validated.
- * @returns A boolean indicating whether the provided string is a valid hexadecimal string.
+ * @param data - The string data to check.
+ * @param checkPrefix - A boolean determining whether to validate the '0x' prefix (default: false).
+ * @returns A boolean indicating whether the input is a valid hexadecimal string.
  */
-const isHexString = (data: string): boolean => {
-    return HEX_REGEX.test(data);
+const isHexString = (data: string, checkPrefix: boolean = true): boolean => {
+    return checkPrefix
+        ? HEX_REGEX.test(data)
+        : HEX_REGEX_OPTIONAL_PREFIX.test(data);
+};
+
+/**
+ * Checks whether the provided data is a valid decimal string.
+ *
+ * @remarks
+ * Validation is performed based on a regular expression for decimal values.
+ *
+ * @param data - The string data to check.
+ * @returns A boolean indicating whether the input is a valid decimal string.
+ */
+const isDecimalString = (data: string): boolean => {
+    return DECIMAL_REGEX.test(data);
 };
 
 /**
@@ -54,12 +56,6 @@ const isHexString = (data: string): boolean => {
  *
  * @remarks
  * If the input hexadecimal string starts with '0x', it is removed. If the input string does not start with '0x', it is returned unmodified.
- *
- * @example
- * ```
- * removePrefix("0x48656c6c6f"); // "48656c6c6f"
- * removePrefix("48656c6c6f"); // "48656c6c6f"
- * ```
  *
  * @param hex - The input hexadecimal string.
  * @returns The hexadecimal string without the '0x' prefix.
@@ -71,4 +67,9 @@ const removePrefix = (hex: HexString): string => {
     return hex;
 };
 
-export const dataUtils = { toHexString, isHexString, removePrefix };
+export const dataUtils = {
+    toHexString,
+    isHexString,
+    removePrefix,
+    isDecimalString
+};
