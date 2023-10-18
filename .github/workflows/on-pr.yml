@@ -4,8 +4,8 @@ on:
     pull_request:
 
 jobs:
-    run-doc-examples:
-        name: Execute examples
+    doc-examples:
+        name: Execute doc examples
         runs-on: ubuntu-latest
         steps:
             - name: Checkout repository
@@ -20,8 +20,9 @@ jobs:
                 yarn build
                 cd docs
                 yarn install
-            - name: Run examples
+            - name: Test docs
               run: |
                 cd docs
-                yarn test:examples
+                yarn test:docs
+            
     
