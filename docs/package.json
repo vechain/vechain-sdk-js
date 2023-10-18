@@ -4,9 +4,9 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
-    "rundocs": "npx runme run --all --category ci --skip-prompts",
+    "test:docs": "npx runme run --all --category examples --skip-prompts",
     "test:examples": "ts-node-test examples/",
-    "build:docs": "rm build/*.md && python build_docs.py"
+    "build:docs": "find . -name \"*.md\" -type f -maxdepth 1 ! -name \"README.md\" -delete && python build_docs.py"
   },
   "dependencies": {
     "@vechain-sdk/core": "*"
