@@ -10,7 +10,51 @@ VeChain SDK extends its support to handle both Application Binary Interface (ABI
 
 VeChain SDK provides functionality to interact with smart contracts on the VechainThor blockchain using ABI's. An ABI is a standardised interface format that defines the method signatures, input parameters, and output types of smart contract functions. With VeChain SDK, developers can conveniently encode and decode data for interacting with smart contracts, making it easier to call contract functions and process their results.
 
-[example](examples/encoding/abi.ts)
+```typescript { name=abi, category=abi,ci }
+import { abi } from '@vechain-sdk/core';
+import { expect } from 'expect';
+
+// Create a new function
+const simpleAbiFunction = new abi.highLevel.Function({
+    constant: false,
+    inputs: [
+        {
+            name: 'a1',
+            type: 'uint256'
+        },
+        {
+            name: 'a2',
+            type: 'string'
+        }
+    ],
+    name: 'f1',
+    outputs: [
+        {
+            name: 'r1',
+            type: 'address'
+        },
+        {
+            name: 'r2',
+            type: 'bytes'
+        }
+    ],
+    payable: false,
+    stateMutability: 'nonpayable',
+    type: 'function'
+});
+
+// Encode function
+const data = simpleAbiFunction.encodeInput([1, 'foo']);
+// Check encoding
+const expected =
+    // eslint-disable-next-line no-multi-str
+    '0x27fcbb2f0000000000000000000000000000000000000000000000000000\
+00000000000100000000000000000000000000000000000000000000000000\
+00000000000040000000000000000000000000000000000000000000000000\
+0000000000000003666f6f0000000000000000000000000000000000000000\
+000000000000000000';
+expect(data).toBe(expected);
+```
 
 ## RLP Encoding
 
