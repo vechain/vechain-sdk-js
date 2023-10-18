@@ -24,3 +24,5 @@ export const firstTestnetBlock = {
     isFinalized: true,
     transactions: []
 };
+
+export const testAccount = '0x5034aa590125b64023a0262112b98d72e3c8e40e';
