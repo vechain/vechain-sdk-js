@@ -1,12 +1,13 @@
-import { RLP } from 'thor-devkit';
+import { RLP } from '@vechain-sdk/core';
+import { expect } from 'expect';
 
 // Define the profile for tx clause structure
 const profile = {
     name: 'clause',
     kind: [
-        { name: 'to', kind: new RLP.NullableFixedBlobKind(20) },
+        { name: 'to', kind: new RLP.OptionalFixedHexBlobKind(20) },
         { name: 'value', kind: new RLP.NumericKind(32) },
-        { name: 'data', kind: new RLP.BlobKind() }
+        { name: 'data', kind: new RLP.HexBlobKind() }
     ]
 };
 
@@ -18,13 +19,13 @@ const clause = {
 };
 
 // Instace RLP
-const rlp = new RLP(profile);
+const rlp = new RLP.Profiler(profile);
 
 // Encoding and Decoding
-const data = rlp.encode(clause);
-console.log(data.toString('hex'));
-// d7947567d83b7b8d80addcb281a71d54fc7b3364ffed0a80
+const data = rlp.encodeObject(clause);
+expect(data.toString('hex')).toBe(
+    'd7947567d83b7b8d80addcb281a71d54fc7b3364ffed0a80'
+);
 
-const obj = rlp.decode(data);
-console.log(JSON.stringify(obj) === JSON.stringify(clause));
-// `obj` should be identical to `clause`s -> true
+const obj = rlp.decodeObject(data);
+expect(JSON.stringify(obj)).toBe(JSON.stringify(clause));

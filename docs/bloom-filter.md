@@ -24,8 +24,9 @@ It is important to emphasise that the bloom filter's design is intentionally eng
 
 By employing bloom filters in this manner, the VechainThor blockchain significantly reduces the computational burden associated with address and block lookup operations, resulting in improved responsiveness and heightened scalability. This, in turn, positively impacts the overall user experience and facilitates seamless integration with various applications and services built on the blockchain platform.
 
-```typescript { name=bloom, category=bloomfilter,ci }
+```typescript { name=bloom, category=example }
 import { bloom } from '@vechain-sdk/core';
+import { expect } from 'expect';
 
 // Get best value of k (number of hash functions) depending on the number of elements in the filter
 const k = bloom.calculateK(100);
@@ -44,9 +45,12 @@ const bloomFilter = bloomGenerator.generate(100, k);
 
 // Positive case (number from 0 to 99 must be present in the bloom filter)
 for (let i = 0; i < 100; i++) {
-    bloomFilter.contains(Buffer.from(i + '', 'utf8')); // All true
+    const inFilter = bloomFilter.contains(Buffer.from(i + '', 'utf8')); // All true
+    expect(inFilter).toBeTruthy();
 }
 
 // Negative case (number from 100 must not be present in the bloom filter)
-bloomFilter.contains(Buffer.from('100', 'utf8')); // False
+const notInFilter = bloomFilter.contains(Buffer.from('100', 'utf8')); // False
+expect(notInFilter).toBeFalsy();
+
 ```
