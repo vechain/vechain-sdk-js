@@ -1826,11 +1826,6 @@ concat-map@0.0.1:
   resolved "https://registry.npmjs.org/concat-map/-/concat-map-0.0.1.tgz"
   integrity sha512-/Srv4dswyQNBfohGpz9o6Yb3Gz3SrUDqBH5rTuhGR7ahtlbYKnVxw2bCFMRljaA7EXHaXZ8wsHdodFvbkhKmqg==
 
-console-spy@^4.0.0:
-  version "4.0.0"
-  resolved "https://registry.yarnpkg.com/console-spy/-/console-spy-4.0.0.tgz#587cdfd001b16ded4e14f56e668fb3588139461e"
-  integrity sha512-fQ+wV4uj7oqYVQMnW3j9u8yvBdLgmDnp6OBjgpkT3mBL41fYhiypnleZ494aWF2Exl/hkYoOoB6XUW5o3l4GSA==
-
 conventional-changelog-angular@^6.0.0:
   version "6.0.0"
   resolved "https://registry.npmjs.org/conventional-changelog-angular/-/conventional-changelog-angular-6.0.0.tgz"

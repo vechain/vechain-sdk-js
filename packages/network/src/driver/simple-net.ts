@@ -106,13 +106,9 @@ export class SimpleNet implements Net {
             throw new Error('path is empty');
         }
 
-        console.log('this.baseURL', this.baseURL);
-        console.log('path', path);
-
         const url = (this.baseURL + path)
             .replace(/^http:/i, 'ws:')
             .replace(/^https:/i, 'wss:');
-        console.log('url', url);
         return new SimpleWebSocketReader(url, this.wsTimeout);
     }
 }
