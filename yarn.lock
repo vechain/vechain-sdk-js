@@ -1052,10 +1052,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/elliptic@^6.4.15":
-  version "6.4.15"
-  resolved "https://registry.yarnpkg.com/@types/elliptic/-/elliptic-6.4.15.tgz#992ae323fd04ab03d884da7122e5dac1665c75ff"
-  integrity sha512-tW9Z/mrlymYEbx/WWcO/Kkly0VxqPNaf/p3KcZTYKI282ZX+50efZvY/p6FoMuTpFq+QMyABQNfs6OXvdmVUhQ==
+"@types/elliptic@^6.4.16":
+  version "6.4.16"
+  resolved "https://registry.yarnpkg.com/@types/elliptic/-/elliptic-6.4.16.tgz#3a28a7d14e26f9e786d71f2a895ac493e7c8a3be"
+  integrity sha512-MSN6m9BR51W1/umzcsX0K9dAmJ59ECKxOjZ3XsjvsZAt+q0mTmKlzEdwtU+u4i+Om231d8TuY3xK6FAGIs5MbA==
   dependencies:
     "@types/bn.js" "*"
 
