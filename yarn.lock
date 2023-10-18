@@ -923,11 +923,6 @@
   resolved "https://registry.yarnpkg.com/@noble/secp256k1/-/secp256k1-1.7.1.tgz#b251c70f824ce3ca7f8dc3df08d58f005cc0507c"
   integrity sha512-hOUk6AyBFmqVrv7k5WAw/LpszxVbj9gGN4JRkIX52fdFAj1UA61KXmZDvqVEm+pOyec3+fIeZB02LYa/pWOArw==
 
-"@noble/secp256k1@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@noble/secp256k1/-/secp256k1-2.0.0.tgz#c214269d45e0233ad6a8ae5104655453636e253d"
-  integrity sha512-rUGBd95e2a45rlmFTqQJYEFA4/gdIARFfuTuTqLglz0PZ6AKyzyXsEZZq7UZn8hZsvaBgpCzKKBJizT2cJERXw==
-
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"
@@ -1057,10 +1052,10 @@
   dependencies:
     "@types/node" "*"
 
-"@types/elliptic@^6.4.15":
-  version "6.4.15"
-  resolved "https://registry.yarnpkg.com/@types/elliptic/-/elliptic-6.4.15.tgz#992ae323fd04ab03d884da7122e5dac1665c75ff"
-  integrity sha512-tW9Z/mrlymYEbx/WWcO/Kkly0VxqPNaf/p3KcZTYKI282ZX+50efZvY/p6FoMuTpFq+QMyABQNfs6OXvdmVUhQ==
+"@types/elliptic@^6.4.16":
+  version "6.4.16"
+  resolved "https://registry.yarnpkg.com/@types/elliptic/-/elliptic-6.4.16.tgz#3a28a7d14e26f9e786d71f2a895ac493e7c8a3be"
+  integrity sha512-MSN6m9BR51W1/umzcsX0K9dAmJ59ECKxOjZ3XsjvsZAt+q0mTmKlzEdwtU+u4i+Om231d8TuY3xK6FAGIs5MbA==
   dependencies:
     "@types/bn.js" "*"
 
