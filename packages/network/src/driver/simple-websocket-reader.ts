@@ -18,16 +18,19 @@ export class SimpleWebSocketReader implements NetWebSocketReader {
     // An optional error that can be set if an error occurs during WebSocket operations.
     private error?: Error;
 
+    // Timeout for reading data from the WebSocket (default: 30 seconds).
+    private readonly timeout: number;
+
     /**
      * Creates a new `SimpleWebSocketReader` instance for the specified URL and timeout.
      *
      * @param url - The WebSocket URL to connect to.
      * @param timeout - The timeout for reading data from the WebSocket (default: 30 seconds).
      */
-    constructor(
-        url: string,
-        private readonly timeout = 30 * 1000
-    ) {
+    constructor(url: string, timeout?: number) {
+        // Use the provided timeout or a default value if not provided
+        this.timeout = timeout ?? 30000; // 30 seconds by default
+
         // Establish a WebSocket connection.
         this.ws = new WebSocket(url);
 

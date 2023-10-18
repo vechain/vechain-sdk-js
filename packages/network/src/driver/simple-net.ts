@@ -19,6 +19,7 @@ import { convertError } from './utils/errors';
  */
 export class SimpleNet implements Net {
     private readonly axios: AxiosInstance;
+    private readonly wsTimeout: number;
 
     /**
      * Creates a new `SimpleNet` instance with the specified base URL, HTTP timeout, and WebSocket timeout.
@@ -30,8 +31,11 @@ export class SimpleNet implements Net {
     constructor(
         readonly baseURL: string,
         timeout: number = 30 * 1000,
-        private readonly wsTimeout = 30 * 1000
+        wsTimeout?: number
     ) {
+        // Use the provided wsTimeout or a default value if not provided
+        this.wsTimeout = wsTimeout ?? 30000; // 30 seconds by default
+
         this.axios = Axios.create({
             httpAgent: new HttpAgent({ keepAlive: true }),
             httpsAgent: new HttpsAgent({ keepAlive: true }),
