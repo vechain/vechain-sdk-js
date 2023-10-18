@@ -77,6 +77,12 @@ describe('SimpleWebSocketReader', () => {
         reader.close();
     }, 10000);
 
+    test('Should open a WebSocket reader', () => {
+        const path = '/node/network/peers';
+        const reader = net.openWebSocketReader(path);
+        reader.close();
+    });
+
     test('Should log an error if the path is empty', () => {
         const path = '';
         let reader;
