@@ -183,6 +183,23 @@ const UNSIGNED_TRANSACTION_RLP = new RLP.Profiler({
 });
 
 /**
+ * Kind for transaction features
+ * @public
+ */
+const TRANSACTION_FEATURES_KIND = {
+    name: 'reserved.features',
+    kind: new RLP.NumericKind(4)
+};
+
+/**
+ * Kind for transaction signature
+ */
+const TRANSACTION_SIGNATURE_KIND = {
+    name: 'signature',
+    kind: new RLP.BufferKind()
+};
+
+/**
  * RLP profiler for simple signed transactions
  * @public
  */
@@ -190,10 +207,13 @@ const SIGNED_TRANSACTION_RLP = new RLP.Profiler({
     name: 'tx',
 
     // Add signature to the transaction fields
-    kind: TRANSACTION_FIELDS.concat([
-        { name: 'signature', kind: new RLP.BufferKind() }
-    ])
+    kind: TRANSACTION_FIELDS.concat([TRANSACTION_SIGNATURE_KIND])
 });
+
+/**
+ * Signature length
+ */
+const SIGNATURE_LENGTH = 65;
 
 export {
     VET_DERIVATION_PATH,
@@ -210,5 +230,8 @@ export {
     TRANSACTIONS_GAS_CONSTANTS,
     UNSIGNED_TRANSACTION_RLP,
     SIGNED_TRANSACTION_RLP,
-    DECIMAL_REGEX
+    DECIMAL_REGEX,
+    TRANSACTION_FEATURES_KIND,
+    TRANSACTION_SIGNATURE_KIND,
+    SIGNATURE_LENGTH
 };
