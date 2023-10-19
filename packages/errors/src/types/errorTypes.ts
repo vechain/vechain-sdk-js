@@ -27,24 +27,25 @@ export type DefaultErrorData = Record<string, unknown>;
 
 export const ERROR_CODES = { SECP256K1, ADDRESS };
 
-export type DataType<T extends ErrorCode> =
-    T extends SECP256K1.INVALID_PRIVATE_KEY
+export type DataType<KErrorCode extends ErrorCode> =
+    KErrorCode extends SECP256K1.INVALID_PRIVATE_KEY
         ? InvalidPrivateKeyErrorData
         : DefaultErrorData;
 
-export type ErrorType<T> = T extends SECP256K1.INVALID_PRIVATE_KEY
-    ? InvalidPrivateKeyError
-    : T extends SECP256K1.INVALID_MESSAGE_HASH
-    ? InvalidMessageHashError
-    : T extends SECP256K1.INVALID_SIGNATURE
-    ? InvalidSignatureError
-    : T extends SECP256K1.INVALID_SIGNATURE_RECOVERY
-    ? InvalidSignatureRecoveryError
-    : T extends ADDRESS.INVALID_ADDRESS
-    ? InvalidAddressError
-    : T extends ADDRESS.INVALID_CHECKSUM
-    ? InvalidChecksumError
-    : never;
+export type ErrorType<KErrorCode> =
+    KErrorCode extends SECP256K1.INVALID_PRIVATE_KEY
+        ? InvalidPrivateKeyError
+        : KErrorCode extends SECP256K1.INVALID_MESSAGE_HASH
+        ? InvalidMessageHashError
+        : KErrorCode extends SECP256K1.INVALID_SIGNATURE
+        ? InvalidSignatureError
+        : KErrorCode extends SECP256K1.INVALID_SIGNATURE_RECOVERY
+        ? InvalidSignatureRecoveryError
+        : KErrorCode extends ADDRESS.INVALID_ADDRESS
+        ? InvalidAddressError
+        : KErrorCode extends ADDRESS.INVALID_CHECKSUM
+        ? InvalidChecksumError
+        : never;
 
 export const ErrorClassMap = new Map<
     ErrorCode,

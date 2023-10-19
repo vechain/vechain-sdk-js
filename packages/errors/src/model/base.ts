@@ -1,17 +1,17 @@
 import type { ErrorCode } from '../types/errorTypes';
 
-export class ErrorBase<T extends ErrorCode, K> extends Error {
-    code: T;
+export class ErrorBase<KErrorCode extends ErrorCode, TDataType> extends Error {
+    code: KErrorCode;
     message: string;
-    data: K;
+    data: TDataType;
     constructor({
         code,
         message,
         data
     }: {
-        code: T;
+        code: KErrorCode;
         message: string;
-        data: K;
+        data: TDataType;
     }) {
         super();
         this.code = code;
