@@ -1,11 +1,12 @@
 import { address } from '../address';
-import { RLP, type RLPValidObject } from '../encoding';
+import { type RLPValidObject } from '../encoding';
 import { blake2b256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import {
     ERRORS,
     SIGNATURE_LENGTH,
     SIGNED_TRANSACTION_RLP,
+    TRANSACTION_FEATURES_KIND,
     UNSIGNED_TRANSACTION_RLP
 } from '../utils';
 import { TransactionUtils } from '../utils/transaction';
@@ -259,12 +260,12 @@ class Transaction {
         const reserved = this.body.reserved ?? {};
 
         // Init kind for futures
-        const featuresKind = new RLP.NumericKind(4);
+        const featuresKind = TRANSACTION_FEATURES_KIND.kind;
 
         // Features list
         const featuresList = [
             featuresKind
-                .data(reserved.features ?? 0, 'reserved.features')
+                .data(reserved.features ?? 0, TRANSACTION_FEATURES_KIND.name)
                 .encode(),
             ...(reserved.unused ?? [])
         ];
