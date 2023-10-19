@@ -6,7 +6,7 @@ import {
     smartContractTransactions
 } from './fixture';
 import { type TransactionClause } from '../../../src/transaction';
-import { transactionUtils } from '../../../src/utils/transaction';
+import { TransactionUtils } from '../../../src/utils/transaction';
 
 /**
  * Transaction utils test
@@ -18,7 +18,7 @@ describe('Transaction utils', () => {
     test('Should throw errors for invalid clauses data', () => {
         invalidData.forEach((invalidClause) => {
             expect(() => {
-                transactionUtils.intrinsicGas([
+                TransactionUtils.intrinsicGas([
                     {
                         to: invalidClause.to,
                         value: invalidClause.value,
@@ -33,7 +33,7 @@ describe('Transaction utils', () => {
      * Intrinsic gas - No clauses
      */
     test('Should calculate intrinsic gas for a transaction with no clauses', () => {
-        expect(transactionUtils.intrinsicGas([])).toBe(
+        expect(TransactionUtils.intrinsicGas([])).toBe(
             TRANSACTIONS_GAS_CONSTANTS.TX_GAS +
                 TRANSACTIONS_GAS_CONSTANTS.CLAUSE_GAS
         );
@@ -53,7 +53,7 @@ describe('Transaction utils', () => {
                     };
                 }
             );
-            expect(transactionUtils.intrinsicGas(clauses)).toBe(
+            expect(TransactionUtils.intrinsicGas(clauses)).toBe(
                 normalTransaction.expected
             );
         });
@@ -69,7 +69,7 @@ describe('Transaction utils', () => {
                 expected: number;
             }) => {
                 expect(
-                    transactionUtils.intrinsicGas(
+                    TransactionUtils.intrinsicGas(
                         smartContractTransaction.clauses
                     )
                 ).toBe(smartContractTransaction.expected);
