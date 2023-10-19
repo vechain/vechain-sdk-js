@@ -92,6 +92,16 @@ const ERRORS = {
         INVALID_RLP: function (context: string, message: string): string {
             return `${context}: ${message}`;
         }
+    },
+
+    /**
+     * Error messages related to transactions.
+     */
+    TRANSACTION: {
+        ALREADY_SIGN: 'Transaction is already signed',
+        NOT_SIGNED: 'Transaction is not signed',
+        INVALID_SIGNATURE: 'Invalid signature',
+        NOT_DELEGATED: 'Transaction is not delegated'
     }
 };
 
