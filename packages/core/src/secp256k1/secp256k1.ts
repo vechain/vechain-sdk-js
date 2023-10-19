@@ -1,5 +1,10 @@
 import { randomBytes } from 'crypto';
-import { ERRORS, PRIVATE_KEY_MAX_VALUE, ZERO_BUFFER } from '../utils';
+import {
+    ERRORS,
+    PRIVATE_KEY_MAX_VALUE,
+    SIGNATURE_LENGTH,
+    ZERO_BUFFER
+} from '../utils';
 import { ec as EC } from 'elliptic';
 
 // Cureve algorithm
@@ -45,7 +50,7 @@ function generate(entropy?: () => Buffer): Buffer {
  * @param privateKey Private key used to genrate public key
  * @returns Public key
  */
-function derive(privateKey: Buffer): Buffer {
+function derivePublicKey(privateKey: Buffer): Buffer {
     if (!isValidPrivateKey(privateKey)) {
         throw new Error(ERRORS.SECP256K1.INVALID_PRIVATE_KEY);
     }
@@ -85,7 +90,7 @@ function recover(msgHash: Buffer, sig: Buffer): Buffer {
     if (!isValidMessageHash(msgHash)) {
         throw new Error(ERRORS.SECP256K1.INVALID_MESSAGE_HASH);
     }
-    if (!Buffer.isBuffer(sig) || sig.length !== 65) {
+    if (!Buffer.isBuffer(sig) || sig.length !== SIGNATURE_LENGTH) {
         throw new Error(ERRORS.SECP256K1.INVALID_SIGNATURE);
     }
     const recovery = sig[64];
@@ -125,7 +130,7 @@ export const secp256k1 = {
     isValidMessageHash,
     isValidPrivateKey,
     generate,
-    derive,
+    derivePublicKey,
     sign,
     recover,
     extendedPublicKeyToArray

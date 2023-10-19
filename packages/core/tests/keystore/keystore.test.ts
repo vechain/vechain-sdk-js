@@ -27,7 +27,7 @@ describe('Keystore', () => {
         expect(myKeystore.version).toBe(3);
         const keyStoreAddress = address.toChecksumed(`0x` + myKeystore.address);
         const addressFromPrivateKey = address.fromPublicKey(
-            secp256k1.derive(privateKey)
+            secp256k1.derivePublicKey(privateKey)
         );
         expect(keyStoreAddress).toEqual(addressFromPrivateKey);
     });

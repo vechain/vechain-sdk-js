@@ -58,15 +58,15 @@ describe('Secp256k1', () => {
      */
     test('derive', () => {
         // Correct derivation
-        expect(secp256k1.derive(privateKey).toString('hex')).toBe(
+        expect(secp256k1.derivePublicKey(privateKey).toString('hex')).toBe(
             publicKey.toString('hex')
         );
 
         // Corrext public key length (65 bytes because first byte is 0)
-        expect(secp256k1.derive(privateKey).length).toBe(65);
+        expect(secp256k1.derivePublicKey(privateKey).length).toBe(65);
 
         // Invalid private key
-        expect(() => secp256k1.derive(ZERO_BUFFER(32))).toThrowError(
+        expect(() => secp256k1.derivePublicKey(ZERO_BUFFER(32))).toThrowError(
             ERRORS.SECP256K1.INVALID_PRIVATE_KEY
         );
     });
