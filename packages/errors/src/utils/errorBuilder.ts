@@ -3,9 +3,9 @@ import type { DataType, ErrorCode, ErrorType } from '../types/errorTypes';
 import { ErrorClassMap } from '../types/errorTypes';
 
 export function buildError<
-    KErrorCode extends ErrorCode,
-    SDataType extends DataType<KErrorCode>
->(code: KErrorCode, message: string, data: SDataType): ErrorType<KErrorCode> {
+    ErrorCodeT extends ErrorCode,
+    DataTypeT extends DataType<ErrorCodeT>
+>(code: ErrorCodeT, message: string, data: DataTypeT): ErrorType<ErrorCodeT> {
     const ErrorClass = ErrorClassMap.get(code);
 
     if (ErrorClass === undefined || ErrorClass === null) {
@@ -13,5 +13,5 @@ export function buildError<
     }
     const error = new ErrorClass({ code, message, data });
 
-    return error as ErrorType<KErrorCode>;
+    return error as ErrorType<ErrorCodeT>;
 }

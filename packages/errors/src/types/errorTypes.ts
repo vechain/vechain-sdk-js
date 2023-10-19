@@ -27,23 +27,23 @@ export type DefaultErrorData = Record<string, unknown>;
 
 export const ERROR_CODES = { SECP256K1, ADDRESS };
 
-export type DataType<KErrorCode extends ErrorCode> =
-    KErrorCode extends SECP256K1.INVALID_PRIVATE_KEY
+export type DataType<ErrorCodeT extends ErrorCode> =
+    ErrorCodeT extends SECP256K1.INVALID_PRIVATE_KEY
         ? InvalidPrivateKeyErrorData
         : DefaultErrorData;
 
-export type ErrorType<KErrorCode> =
-    KErrorCode extends SECP256K1.INVALID_PRIVATE_KEY
+export type ErrorType<ErrorCodeT> =
+    ErrorCodeT extends SECP256K1.INVALID_PRIVATE_KEY
         ? InvalidPrivateKeyError
-        : KErrorCode extends SECP256K1.INVALID_MESSAGE_HASH
+        : ErrorCodeT extends SECP256K1.INVALID_MESSAGE_HASH
         ? InvalidMessageHashError
-        : KErrorCode extends SECP256K1.INVALID_SIGNATURE
+        : ErrorCodeT extends SECP256K1.INVALID_SIGNATURE
         ? InvalidSignatureError
-        : KErrorCode extends SECP256K1.INVALID_SIGNATURE_RECOVERY
+        : ErrorCodeT extends SECP256K1.INVALID_SIGNATURE_RECOVERY
         ? InvalidSignatureRecoveryError
-        : KErrorCode extends ADDRESS.INVALID_ADDRESS
+        : ErrorCodeT extends ADDRESS.INVALID_ADDRESS
         ? InvalidAddressError
-        : KErrorCode extends ADDRESS.INVALID_CHECKSUM
+        : ErrorCodeT extends ADDRESS.INVALID_CHECKSUM
         ? InvalidChecksumError
         : never;
 
