@@ -10,9 +10,14 @@ import {
 import {
     correctTransactionBody,
     delegatedCorrectTransactionBody,
+    delegatedCorrectTransactionBodyReservedField,
     delegatorPrivateKey,
+    encodedDelegatedUnsignedExpected,
+    encodedSignedExpected,
+    encodedUnsignedExpected,
     signerPrivateKey
 } from './fixture';
+
 /**
  * Transaction handler tests
  */
@@ -143,8 +148,141 @@ describe('Transaction handler', () => {
      * Testing decoding of a transaction
      */
     describe('Decode', () => {
-        test('Should be able to decode a transaction', () => {
-            expect(true).toBe(true);
+        /**
+         * Decode a transaction not delegated
+         */
+        test('Should be able to decode a transaction - NOT DELEGATED', () => {
+            const decodedUnsigned = TransactionHandler.decode(
+                encodedUnsignedExpected,
+                false
+            );
+            expect(decodedUnsigned.body).toEqual(correctTransactionBody);
+            expect(decodedUnsigned.signature).toBeUndefined();
+            expect(() => decodedUnsigned.origin).toThrow(
+                ERRORS.TRANSACTION.NOT_SIGNED
+            );
+            expect(() => decodedUnsigned.delegator).toThrow(
+                ERRORS.TRANSACTION.NOT_DELEGATED
+            );
+            expect(decodedUnsigned.isDelegated).toBe(false);
+            expect(() => decodedUnsigned.id).toThrow(
+                ERRORS.TRANSACTION.NOT_SIGNED
+            );
+            expect(decodedUnsigned.isSigned).toBe(false);
+            expect(decodedUnsigned.getSignatureHash()).toBeDefined();
+            expect(decodedUnsigned.getSignatureHash().length).toBe(32);
+            expect(decodedUnsigned.encoded).toBeDefined();
+            expect(decodedUnsigned.encoded.toString('hex')).toBe(
+                encodedUnsignedExpected.toString('hex')
+            );
+
+            const decodedSigned = TransactionHandler.decode(
+                encodedSignedExpected,
+                true
+            );
+            expect(decodedSigned.body).toEqual(correctTransactionBody);
+            expect(decodedSigned.signature).toBeDefined();
+            expect(() => decodedSigned.origin).toBeDefined();
+            expect(() => decodedSigned.delegator).toBeDefined();
+            expect(decodedSigned.isDelegated).toBe(false);
+            expect(() => decodedSigned.id).toBeDefined();
+            expect(decodedSigned.isSigned).toBe(true);
+            expect(decodedSigned.getSignatureHash()).toBeDefined();
+            expect(decodedSigned.getSignatureHash().length).toBe(32);
+            expect(decodedSigned.encoded).toBeDefined();
+            expect(decodedSigned.encoded.toString('hex')).toBe(
+                encodedSignedExpected.toString('hex')
+            );
+            expect(decodedSigned.signature?.length).toBe(SIGNATURE_LENGTH);
+        });
+
+        /**
+         * Decode a transaction delegated
+         */
+        test('Should be able to decode a transaction - NOT DELEGATED', () => {
+            const decodedUnsigned = TransactionHandler.decode(
+                encodedDelegatedUnsignedExpected,
+                false
+            );
+            expect(decodedUnsigned.body).toEqual(
+                delegatedCorrectTransactionBody
+            );
+            expect(decodedUnsigned.signature).toBeUndefined();
+            expect(() => decodedUnsigned.origin).toThrow(
+                ERRORS.TRANSACTION.NOT_SIGNED
+            );
+            expect(() => decodedUnsigned.delegator).toThrow(
+                ERRORS.TRANSACTION.NOT_SIGNED
+            );
+            expect(decodedUnsigned.isDelegated).toBe(true);
+            expect(() => decodedUnsigned.id).toThrow(
+                ERRORS.TRANSACTION.NOT_SIGNED
+            );
+            expect(decodedUnsigned.isSigned).toBe(false);
+            expect(decodedUnsigned.getSignatureHash()).toBeDefined();
+            expect(decodedUnsigned.getSignatureHash().length).toBe(32);
+            expect(decodedUnsigned.encoded).toBeDefined();
+            expect(decodedUnsigned.encoded.toString('hex')).toBe(
+                encodedDelegatedUnsignedExpected.toString('hex')
+            );
+
+            const encodedSignedDelegated = TransactionHandler.signWithDelegator(
+                new Transaction(delegatedCorrectTransactionBody),
+                signerPrivateKey,
+                delegatorPrivateKey
+            );
+            const decodedSigned = TransactionHandler.decode(
+                encodedSignedDelegated.encoded,
+                true
+            );
+            expect(decodedSigned.body).toEqual(encodedSignedDelegated.body);
+            expect(decodedSigned.signature).toBeDefined();
+            expect(() => decodedSigned.origin).toBeDefined();
+            expect(decodedSigned.origin).toBe(
+                address.fromPublicKey(
+                    secp256k1.derivePublicKey(signerPrivateKey)
+                )
+            );
+            expect(() => decodedSigned.delegator).toBeDefined();
+            expect(decodedSigned.delegator).toBe(
+                address.fromPublicKey(
+                    secp256k1.derivePublicKey(delegatorPrivateKey)
+                )
+            );
+            expect(decodedSigned.isDelegated).toBe(true);
+            expect(() => decodedSigned.id).toBeDefined();
+            expect(decodedSigned.isSigned).toBe(true);
+            expect(decodedSigned.getSignatureHash()).toBeDefined();
+            expect(decodedSigned.getSignatureHash().length).toBe(32);
+            expect(decodedSigned.encoded).toBeDefined();
+            expect(decodedSigned.encoded.toString('hex')).toBe(
+                encodedSignedDelegated.encoded.toString('hex')
+            );
+            expect(decodedSigned.signature).toBeDefined();
+            expect(decodedSigned.signature?.length).toBe(SIGNATURE_LENGTH * 2);
+
+            // Encoded correctly reserved field
+            const encoded = new Transaction(
+                delegatedCorrectTransactionBodyReservedField
+            );
+            const delegatedWithReservedFields = TransactionHandler.decode(
+                encoded.encoded,
+                false
+            );
+            expect(delegatedWithReservedFields.body.reserved).toBeDefined();
+            expect(
+                delegatedWithReservedFields.body.reserved?.features
+            ).toBeDefined();
+            expect(delegatedWithReservedFields.body.reserved?.features).toBe(1);
+            expect(
+                delegatedWithReservedFields.body.reserved?.unused
+            ).toBeDefined();
+            expect(
+                delegatedWithReservedFields.body.reserved?.unused?.length
+            ).toBe(2);
+            expect(delegatedWithReservedFields.body.reserved).toEqual(
+                delegatedWithReservedFields.body.reserved
+            );
         });
     });
 });

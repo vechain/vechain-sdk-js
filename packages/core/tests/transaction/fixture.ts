@@ -36,6 +36,17 @@ const delegatedCorrectTransactionBody: TransactionBody = {
 };
 
 /**
+ * Simple correct transaction body fixture with reserved field fixture
+ */
+const delegatedCorrectTransactionBodyReservedField: TransactionBody = {
+    ...correctTransactionBody,
+    reserved: {
+        features: 1,
+        unused: [Buffer.from('0x000'), Buffer.from('0x000')]
+    }
+};
+
+/**
  * Encoding of unsigned transaction taked from correctTransactionBody fixture
  */
 const encodedUnsignedExpected = Buffer.from(
@@ -88,5 +99,6 @@ export {
     signerPrivateKey,
     delegatorPrivateKey,
     invalidSignerPrivateKey,
-    encodedSignedExpected
+    encodedSignedExpected,
+    delegatedCorrectTransactionBodyReservedField
 };
