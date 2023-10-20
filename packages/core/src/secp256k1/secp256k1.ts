@@ -33,9 +33,11 @@ function isValidPrivateKey(key: Buffer): boolean {
 }
 
 /**
- * Generate a random secure private key
+ * Generate private key using elliptic curve algorithm on the curve secp256k1
+ * @param entropy - entropy function
+ * @returns Private key generated
  */
-function generate(entropy?: () => Buffer): Buffer {
+function generatePrivateKey(entropy?: () => Buffer): Buffer {
     entropy = entropy ?? ((): Buffer => randomBytes(32));
     let privKey: Buffer;
     do {
@@ -45,10 +47,10 @@ function generate(entropy?: () => Buffer): Buffer {
 }
 
 /**
- * Generate public key from private key
+ * Derive public key from private key using elliptic curve algorithm on the curve secp256k1
  *
- * @param privateKey Private key used to genrate public key
- * @returns Public key
+ * @param privateKey - private key to derive public key from
+ * @returns Public key derived from private key
  */
 function derivePublicKey(privateKey: Buffer): Buffer {
     if (!isValidPrivateKey(privateKey)) {
@@ -129,7 +131,7 @@ function extendedPublicKeyToArray(
 export const secp256k1 = {
     isValidMessageHash,
     isValidPrivateKey,
-    generate,
+    generatePrivateKey,
     derivePublicKey,
     sign,
     recover,

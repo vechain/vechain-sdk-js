@@ -44,7 +44,7 @@ describe('Secp256k1', () => {
      * Generate a random secure private key
      */
     test('generate', () => {
-        const randomPrivateKey = secp256k1.generate();
+        const randomPrivateKey = secp256k1.generatePrivateKey();
 
         // Length of private key should be 32 bytes
         expect(randomPrivateKey.length).toBe(32);
