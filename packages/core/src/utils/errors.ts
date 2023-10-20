@@ -101,7 +101,8 @@ const ERRORS = {
         ALREADY_SIGN: 'Transaction is already signed',
         NOT_SIGNED: 'Transaction is not signed',
         INVALID_SIGNATURE: 'Invalid signature',
-        NOT_DELEGATED: 'Transaction is not delegated'
+        NOT_DELEGATED: 'Transaction is not delegated',
+        INVALID_SIGNATURE_PRIVATE_KEY: 'Invalid signature private key'
     }
 };
 
