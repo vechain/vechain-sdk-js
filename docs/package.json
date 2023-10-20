@@ -6,7 +6,7 @@
   "scripts": {
     "test:docs": "npx runme run --all --category example --skip-prompts",
     "test:examples": "ts-node-test examples/",
-    "build:docs": "find . -name \"*.md\" -type f -maxdepth 1 ! -name \"README.md\" -delete && python build_docs.py"
+    "build:docs": "find . -name \"*.md\" -type f -maxdepth 1 ! -name \"README.md\" -delete && yarn ts-node builddocs.ts"
   },
   "dependencies": {
     "@vechain-sdk/core": "*"
