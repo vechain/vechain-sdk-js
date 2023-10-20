@@ -8,6 +8,7 @@ import { encryptionPassword } from './fixture';
 
 /**
  * Keystore tests
+ * @group unit/keystore
  */
 describe('Keystore', () => {
     /**

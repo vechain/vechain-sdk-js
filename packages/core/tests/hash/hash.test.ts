@@ -3,6 +3,10 @@ import { hashFunctionsToTest } from './fixture';
 import { ZERO_BUFFER } from '../../src';
 import { ethers } from 'ethers';
 
+/**
+ * Test hash functions
+ * @group unit/hash
+ */
 describe('Hash', () => {
     /**
      * Test each hash function

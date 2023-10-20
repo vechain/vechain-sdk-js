@@ -14,6 +14,7 @@ import {
 
 /**
  * Secp256k1 tests
+ * @group unit/secp256k1
  */
 describe('Secp256k1', () => {
     /**
