@@ -23,15 +23,29 @@ export enum ADDRESS {
 
 export type ErrorCode = SECP256K1 | ADDRESS;
 
+/**
+ * Default error data type. it accepts any object.
+ * @param ErrorCodeT - The error code type from the error types enum.
+ */
 export type DefaultErrorData = Record<string, unknown>;
 
 export const ERROR_CODES = { SECP256K1, ADDRESS };
 
+/**
+ * Conditional type to get the error data type from the error code.
+ * The type is used to specify the data type of the error builder.
+ * @param ErrorCodeT - The error code type from the error types enum.
+ */
 export type DataType<ErrorCodeT extends ErrorCode> =
     ErrorCodeT extends SECP256K1.INVALID_PRIVATE_KEY
         ? InvalidPrivateKeyErrorData
         : DefaultErrorData;
 
+/**
+ * Conditional type to get the error type from the error code.
+ * The type is used to specify the return type of the error builder.
+ * @param ErrorCodeT - The error code type from the error types enum.
+ */
 export type ErrorType<ErrorCodeT> =
     ErrorCodeT extends SECP256K1.INVALID_PRIVATE_KEY
         ? InvalidPrivateKeyError
@@ -47,6 +61,11 @@ export type ErrorType<ErrorCodeT> =
         ? InvalidChecksumError
         : never;
 
+/**
+ * Map to get the error class from the error code.
+ * The class is used to construct the error object.
+ * @param ErrorCodeT - The error code type from the error types enum.
+ */
 export const ErrorClassMap = new Map<
     ErrorCode,
     typeof ErrorBase<ErrorCode, DataType<ErrorCode>>
