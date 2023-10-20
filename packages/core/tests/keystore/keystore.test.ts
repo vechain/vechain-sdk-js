@@ -15,7 +15,7 @@ describe('Keystore', () => {
      */
     test('encrypt', async () => {
         // Generate a random private key
-        const privateKey = secp256k1.generate();
+        const privateKey = secp256k1.generatePrivateKey();
 
         //  Create keystore
         const myKeystore = await keystore.encrypt(
@@ -27,7 +27,7 @@ describe('Keystore', () => {
         expect(myKeystore.version).toBe(3);
         const keyStoreAddress = address.toChecksumed(`0x` + myKeystore.address);
         const addressFromPrivateKey = address.fromPublicKey(
-            secp256k1.derive(privateKey)
+            secp256k1.derivePublicKey(privateKey)
         );
         expect(keyStoreAddress).toEqual(addressFromPrivateKey);
     });
@@ -51,7 +51,7 @@ describe('Keystore', () => {
      */
     test('decrypt', async () => {
         // Generate a random private key
-        const privateKey = secp256k1.generate();
+        const privateKey = secp256k1.generatePrivateKey();
 
         //  Create keystore
         const myKeystore = await keystore.encrypt(
@@ -76,7 +76,7 @@ describe('Keystore', () => {
      */
     test('decrypt with invalid password', async () => {
         // Generate a random private key
-        const privateKey = secp256k1.generate();
+        const privateKey = secp256k1.generatePrivateKey();
 
         //  Create keystore
         const myKeystore = await keystore.encrypt(
@@ -99,7 +99,7 @@ describe('Keystore', () => {
      */
     test('decrypt invalid keystore', async () => {
         // Generate a random private key
-        const privateKey = secp256k1.generate();
+        const privateKey = secp256k1.generatePrivateKey();
 
         //  Create keystore
         const myKeystore = await keystore.encrypt(
@@ -128,7 +128,7 @@ describe('Keystore', () => {
      */
     test('validation', async () => {
         // Generate a random private key
-        const privateKey = secp256k1.generate();
+        const privateKey = secp256k1.generatePrivateKey();
 
         //  Create keystore
         const myKeystore = await keystore.encrypt(
