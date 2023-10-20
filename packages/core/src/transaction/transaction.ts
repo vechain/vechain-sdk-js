@@ -125,6 +125,39 @@ class Transaction {
      *  - No 'delegateFor': return txHash
      * - 'delegateFor' return thHash +  hash('delegateFor' address)
      *
+     * @remarks
+     * delegateFor is used to sign a transaction on behalf of another account.
+     * In fact when the delegator sign the transaction, delegator will add the address
+     * of who send the transaction to sign (in this case the 'delegateFor' address parameter)
+     *
+     * @example
+     * A is transaction origin
+     * B is the delegator
+     * TX is the transaction
+     *
+     * A send a TX (signed by A) to B to who add his signature to TX using delegateFor parameter (that is A address)
+     * on signing hash of TX computation.
+     *
+     * Mathematically:
+     *
+     * ```
+     * final_signature = concat_buffer(
+     *      sign(TX.signingHash(), A.privateKey),
+     *      sign(TX.signingHash(A.address), B.privateKey)
+     * )
+     * ```
+     *
+     * Where:
+     *
+     * ```
+     * TX.signatureHash() = blake2b256(TX.encoded)
+     * TX.signingHash(A.address) = blake2b256(
+     *      concat(
+     *              blake2b256(TX.encoded),
+     *              A.address
+     * )
+     * ```
+     *
      * @param transaction - Transaction of which we want to compute the signing hash
      * @param delegateFor - Address of the delegator
      * @returns Signing hash of the transaction
