@@ -1,7 +1,11 @@
-import { sign, signWithDelegator } from './handlers/sign';
+import { sign, signWithDelegator, decode } from './handlers';
 
 const TransactionHandler = {
+    // Sign transaction
     sign,
-    signWithDelegator
+    signWithDelegator,
+
+    // Decode transaction
+    decode
 };
 export { TransactionHandler };
