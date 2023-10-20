@@ -87,11 +87,6 @@ export class SimpleNet implements Net {
             if (axiosError.isAxiosError) {
                 throw convertError(err as AxiosError<string>);
             }
-            throw new Error(
-                `${method} ${new URL(path, this.baseURL).toString()}: ${
-                    (err as Error).message
-                }`
-            );
         }
     }
 
