@@ -36,7 +36,6 @@ describe('Transaction handler', () => {
                 transactionToSign,
                 signerPrivateKey
             );
-
             expect(signedTransaction.isSigned).toBe(true);
             expect(signedTransaction.signature).toBeDefined();
             expect(signedTransaction.signature?.length).toBe(SIGNATURE_LENGTH);
@@ -51,7 +50,6 @@ describe('Transaction handler', () => {
             );
             expect(signedTransaction.isDelegated).toBe(false);
             expect(signedTransaction.id).toBeDefined();
-
             // Invalid private key
             expect(() => {
                 TransactionHandler.sign(
@@ -59,13 +57,11 @@ describe('Transaction handler', () => {
                     Buffer.from('INVALID', 'hex')
                 );
             }).toThrowError(ERRORS.TRANSACTION.INVALID_SIGNATURE_PRIVATE_KEY);
-
             // Sign already signed transaction
             expect(() =>
                 TransactionHandler.sign(signedTransaction, signerPrivateKey)
             ).toThrowError(ERRORS.TRANSACTION.ALREADY_SIGN);
         });
-
         /**
          * Sign a transaction with a delegator
          */
@@ -98,7 +94,6 @@ describe('Transaction handler', () => {
             );
             expect(signedTransaction.isDelegated).toBe(true);
             expect(signedTransaction.id).toBeDefined();
-
             // Invalid private keys
             expect(() => {
                 TransactionHandler.signWithDelegator(
@@ -107,7 +102,6 @@ describe('Transaction handler', () => {
                     delegatorPrivateKey
                 );
             }).toThrowError(ERRORS.TRANSACTION.INVALID_SIGNATURE_PRIVATE_KEY);
-
             expect(() => {
                 TransactionHandler.signWithDelegator(
                     transactionToSign,
@@ -115,7 +109,6 @@ describe('Transaction handler', () => {
                     Buffer.from('INVALID', 'hex')
                 );
             }).toThrowError(ERRORS.TRANSACTION.INVALID_SIGNATURE_PRIVATE_KEY);
-
             expect(() => {
                 TransactionHandler.signWithDelegator(
                     transactionToSign,
@@ -123,7 +116,6 @@ describe('Transaction handler', () => {
                     Buffer.from('INVALID', 'hex')
                 );
             }).toThrowError(ERRORS.TRANSACTION.INVALID_SIGNATURE_PRIVATE_KEY);
-
             // Sign already signed transaction
             expect(() =>
                 TransactionHandler.signWithDelegator(
@@ -132,7 +124,6 @@ describe('Transaction handler', () => {
                     delegatorPrivateKey
                 )
             ).toThrowError(ERRORS.TRANSACTION.ALREADY_SIGN);
-
             // Sign a non-delegated transaction with delegator
             expect(() =>
                 TransactionHandler.signWithDelegator(
@@ -143,7 +134,6 @@ describe('Transaction handler', () => {
             ).toThrowError(ERRORS.TRANSACTION.NOT_DELEGATED);
         });
     });
-
     /**
      * Testing decoding of a transaction
      */
@@ -175,7 +165,6 @@ describe('Transaction handler', () => {
             expect(decodedUnsigned.encoded.toString('hex')).toBe(
                 encodedUnsignedExpected.toString('hex')
             );
-
             const decodedSigned = TransactionHandler.decode(
                 encodedSignedExpected,
                 true
@@ -195,7 +184,6 @@ describe('Transaction handler', () => {
             );
             expect(decodedSigned.signature?.length).toBe(SIGNATURE_LENGTH);
         });
-
         /**
          * Decode a transaction delegated
          */
@@ -225,7 +213,6 @@ describe('Transaction handler', () => {
             expect(decodedUnsigned.encoded.toString('hex')).toBe(
                 encodedDelegatedUnsignedExpected.toString('hex')
             );
-
             const encodedSignedDelegated = TransactionHandler.signWithDelegator(
                 new Transaction(delegatedCorrectTransactionBody),
                 signerPrivateKey,
@@ -260,7 +247,6 @@ describe('Transaction handler', () => {
             );
             expect(decodedSigned.signature).toBeDefined();
             expect(decodedSigned.signature?.length).toBe(SIGNATURE_LENGTH * 2);
-
             // Encoded correctly reserved field
             const encoded = new Transaction(
                 delegatedCorrectTransactionBodyReservedField
@@ -282,6 +268,17 @@ describe('Transaction handler', () => {
             ).toBe(2);
             expect(delegatedWithReservedFields.body.reserved).toEqual(
                 delegatedWithReservedFields.body.reserved
+            );
+
+            // Not trimmed reserved field error
+            const invalidDecode = Buffer.from(
+                'f8560184aabbccdd20f840df947567d83b7b8d80addcb281a71d54fc7b3364ffed82271086000000606060df947567d83b7b8d80addcb281a71d54fc7b3364ffed824e208600000060606081808252088083bc614ec28080',
+                'hex'
+            );
+            expect(() =>
+                TransactionHandler.decode(invalidDecode, false)
+            ).toThrowError(
+                ERRORS.TRANSACTION.INVALID_RESERVED_NOT_TRIMMED_FIELDS
             );
         });
     });
