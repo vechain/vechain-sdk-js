@@ -1,10 +1,5 @@
-import {
-    type Net,
-    type NetParams,
-    type NetWebSocketReader
-} from './interfaces';
+import { type Net, type NetParams } from './interfaces';
 import Axios, { type AxiosInstance, type AxiosError } from 'axios';
-import { SimpleWebSocketReader } from './simple-websocket-reader';
 import { Agent as HttpAgent } from 'http';
 import { Agent as HttpsAgent } from 'https';
 import { convertError } from './utils/errors';
@@ -19,23 +14,17 @@ import { convertError } from './utils/errors';
  */
 export class SimpleNet implements Net {
     private readonly axios: AxiosInstance;
-    private readonly wsTimeout: number;
 
     /**
      * Creates a new `SimpleNet` instance with the specified base URL, HTTP timeout, and WebSocket timeout.
      *
      * @param baseURL - The base URL for all network requests.
      * @param timeout - The HTTP request timeout in milliseconds (default: 30 seconds).
-     * @param wsTimeout - The WebSocket connection timeout in milliseconds (default: 30 seconds).
      */
     constructor(
         readonly baseURL: string,
-        timeout: number = 30 * 1000,
-        wsTimeout?: number
+        timeout: number = 30 * 1000
     ) {
-        // Use the provided wsTimeout or a default value if not provided
-        this.wsTimeout = wsTimeout ?? 30000; // 30 seconds by default
-
         this.axios = Axios.create({
             httpAgent: new HttpAgent({ keepAlive: true }),
             httpsAgent: new HttpsAgent({ keepAlive: true }),
@@ -88,26 +77,5 @@ export class SimpleNet implements Net {
                 throw convertError(err as AxiosError<string>);
             }
         }
-    }
-
-    /**
-     * Open a WebSocket reader for the specified path.
-     *
-     * @param path - The path to open a WebSocket connection.
-     * @returns A WebSocket reader for the provided path.
-     */
-    public openWebSocketReader(path: string): NetWebSocketReader {
-        // Ensure that this.baseURL and path are not empty
-        if (this.baseURL === '') {
-            throw new Error('baseURL is empty');
-        }
-        if (path === '') {
-            throw new Error('path is empty');
-        }
-
-        const url = (this.baseURL + path)
-            .replace(/^http:/i, 'ws:')
-            .replace(/^https:/i, 'wss:');
-        return new SimpleWebSocketReader(url, this.wsTimeout);
     }
 }

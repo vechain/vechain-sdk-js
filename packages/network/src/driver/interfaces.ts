@@ -25,14 +25,6 @@ export interface Net {
         path: string,
         params?: NetParams
     ) => Promise<unknown>;
-
-    /**
-     * Opens a WebSocket reader for the specified path.
-     *
-     * @param path - The path to open a WebSocket connection.
-     * @returns The WebSocket reader instance for the provided path.
-     */
-    openWebSocketReader: (path: string) => NetWebSocketReader;
 }
 
 /**
