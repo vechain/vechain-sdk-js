@@ -4,6 +4,7 @@ import { derivationPaths, words, wrongDerivationPath } from './fixture';
 
 /**
  * Mnemonic tests
+ * @group unit/mnemonic
  */
 describe('Mnemonic', () => {
     /**

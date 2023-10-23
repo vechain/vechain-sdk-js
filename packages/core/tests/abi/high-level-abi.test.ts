@@ -5,6 +5,7 @@ import { ERRORS } from '../../src';
 
 /**
  * ABI tests - High level
+ * @group unit/high-level-abi
  */
 describe('Abi - High level', () => {
     /**

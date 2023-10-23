@@ -7,6 +7,7 @@ import { bloomKTestCases } from './fixture';
  *
  * @NOTE different from ../utils/bloom/bloom.test.ts.
  * This tests bloom functionality, not the utils.
+ * @group unit/bloom
  */
 describe('Bloom Filter', () => {
     /**
