@@ -1,142 +1,101 @@
 import { describe, expect, test } from '@jest/globals';
 import {
     correctTransactionBody,
-    delegatedCorrectTransactionBody,
-    delegatorPrivateKey,
-    encodedDelegatedUnsignedExpected,
-    encodedSignedExpected,
-    encodedUnsignedExpected,
-    signerPrivateKey
+    signer,
+    delegator,
+    transactions
 } from './fixture';
-import { ERRORS, Transaction, address, secp256k1 } from '../../src';
+import { ERRORS, Transaction, TransactionHandler } from '../../src';
 
 /**
- * Test transaction module - Creation
+ * Test transaction module
  */
-describe('Transaction creation tests', () => {
+describe('Transaction', () => {
     /**
      * Not delegated transactions
      */
     describe('Not delegated transactions', () => {
         /**
-         * Testing the creation
+         * Testing creation of unsigned transaction
          */
-        test('Should be able to create transactions', () => {
-            // Simple creation of unsigned transaction (signature should be undefined)
-            const unsignedTransaction = new Transaction(correctTransactionBody);
-            expect(unsignedTransaction.signature).toBeUndefined();
-            expect(unsignedTransaction.isDelegated).toEqual(false);
-            expect(unsignedTransaction.isSigned).toEqual(false);
-            expect(
-                unsignedTransaction.getSignatureHash().toString('hex')
-            ).toEqual(
-                '2a1c25ce0d66f45276a5f308b99bf410e2fc7d5b6ea37a49f2ab9f1da9446478'
-            );
+        test('Should be able to create unsigned transactions', () => {
+            transactions.undelegated.forEach((transaction) => {
+                // Init unsigned transaction from body
+                const unsignedTransaction = new Transaction(transaction.body);
 
-            // Get id from unsigned transaction (should throw error)
-            expect(() => unsignedTransaction.id).toThrowError(
-                ERRORS.TRANSACTION.NOT_SIGNED
-            );
+                // Checks
+                expect(unsignedTransaction.signature).toBeUndefined();
+                expect(unsignedTransaction.isSigned).toEqual(false);
+                expect(unsignedTransaction.isDelegated).toEqual(false);
+                expect(
+                    unsignedTransaction.getSignatureHash().toString('hex')
+                ).toEqual(transaction.signatureHashExpected);
 
-            // Get origin form unsigned transaction (should throw error)
-            expect(() => unsignedTransaction.origin).toThrowError(
-                ERRORS.TRANSACTION.NOT_SIGNED
-            );
+                // Get id from unsigned transaction (should throw error)
+                expect(() => unsignedTransaction.id).toThrowError(
+                    ERRORS.TRANSACTION.NOT_SIGNED
+                );
 
-            // Get delegator form undelegeted transaction (should throw error)
-            expect(() => unsignedTransaction.delegator).toThrowError(
-                ERRORS.TRANSACTION.NOT_DELEGATED
-            );
+                // Get origin form unsigned transaction (should throw error)
+                expect(() => unsignedTransaction.origin).toThrowError(
+                    ERRORS.TRANSACTION.NOT_SIGNED
+                );
 
-            // Simple creation of signed transaction (signature should be defined) @note Don't do this from scratch in real use. We have TransactionHandler for this. (THIS IS ONLY FOR TESTING PURPOSE)
-            const transactionToSign = new Transaction(correctTransactionBody);
-            const signature = secp256k1.sign(
-                transactionToSign.getSignatureHash(),
-                signerPrivateKey
-            );
-            const signedTransaction = new Transaction(
-                correctTransactionBody,
-                signature
-            );
-            expect(signedTransaction.signature).toBeDefined();
-            expect(signedTransaction.isSigned).toEqual(true);
-            expect(signedTransaction.isDelegated).toEqual(false);
-            expect(
-                signedTransaction.getSignatureHash().toString('hex')
-            ).toEqual(
-                '2a1c25ce0d66f45276a5f308b99bf410e2fc7d5b6ea37a49f2ab9f1da9446478'
-            );
-            expect(signedTransaction.origin).toEqual(
-                address.fromPublicKey(
-                    secp256k1.derivePublicKey(signerPrivateKey)
-                )
-            );
-            expect(signedTransaction.id).toEqual(
-                '0xda90eaea52980bc4bb8d40cb2ff84d78433b3b4a6e7d50b75736c5e3e77b71ec'
-            );
+                // Get delegator form unsigned and undelegated transaction (should throw error)
+                expect(() => unsignedTransaction.delegator).toThrowError(
+                    ERRORS.TRANSACTION.NOT_DELEGATED
+                );
 
-            // Simple creation of transaction with INVALID signature (should throw error)
-            expect(
-                () =>
-                    new Transaction(
-                        correctTransactionBody,
-                        Buffer.from('INVALID_SIGNATURE')
-                    )
-            ).toThrowError(ERRORS.TRANSACTION.INVALID_SIGNATURE);
+                // Encoding
+                expect(unsignedTransaction.encoded).toEqual(
+                    transaction.encodedUnsignedExpected
+                );
 
-            // Invalid transaction body (should throw error)
-            expect(
-                () =>
-                    new Transaction({
-                        ...correctTransactionBody,
-                        blockRef: 'INVALID_BLOCK_REF'
-                    })
-            ).toThrowError(ERRORS.TRANSACTION.INVALID_TRANSACTION_BODY);
+                // Intrinsic gas
+                expect(unsignedTransaction.intrinsicGas).toBe(37432);
+
+                // Try to get signature hash with invalid address
+                expect(() =>
+                    unsignedTransaction.getSignatureHash('INVALID_ADDRESS')
+                ).toThrowError(ERRORS.ADDRESS.INVALID_ADDRESS);
+            });
         });
 
         /**
-         * Should be able to get signature hash
+         * Testing creation of signed transaction
          */
-        test('Should be able to get signature hash', () => {
-            // Correct transaction
-            const unsignedTransaction = new Transaction(correctTransactionBody);
-            expect(
-                unsignedTransaction.getSignatureHash().toString('hex')
-            ).toEqual(
-                '2a1c25ce0d66f45276a5f308b99bf410e2fc7d5b6ea37a49f2ab9f1da9446478'
-            );
-        });
+        test('Should be able to create signed transactions', () => {
+            transactions.undelegated.forEach((transaction) => {
+                // Init unsigned transaction from body
+                const signedTransaction = TransactionHandler.sign(
+                    new Transaction(transaction.body),
+                    signer.privateKey
+                );
 
-        /**
-         * Test delegation
-         */
-        test('Should be able to get delegation', () => {
-            // Undelegate transaction
-            const unsignedTransaction = new Transaction(correctTransactionBody);
-            expect(unsignedTransaction.isDelegated).toEqual(false);
-        });
+                // Checks on signature
+                expect(signedTransaction.signature).toBeDefined();
+                expect(signedTransaction.isSigned).toEqual(true);
+                expect(signedTransaction.isDelegated).toEqual(false);
+                expect(
+                    signedTransaction.getSignatureHash().toString('hex')
+                ).toEqual(transaction.signatureHashExpected);
 
-        /**
-         * Should be able to encode transactions
-         */
-        test('Should be able to encode transactions', () => {
-            // Unsigend transaction
-            const unsignedTransaction = new Transaction(correctTransactionBody);
-            expect(unsignedTransaction.encoded).toEqual(
-                encodedUnsignedExpected
-            );
+                // Checks on origin, id and delegator
+                expect(signedTransaction.origin).toEqual(signer.address);
+                expect(signedTransaction.id).toEqual(
+                    transaction.signedTransactionIdExpected
+                );
 
-            // Signed transaction @note Don't do this from scratch in real use. We have TransactionHandler for this. (THIS IS ONLY FOR TESTING PURPOSE)
-            const transactionToSign = new Transaction(correctTransactionBody);
-            const signature = secp256k1.sign(
-                transactionToSign.getSignatureHash(),
-                signerPrivateKey
-            );
-            const signedTransaction = new Transaction(
-                correctTransactionBody,
-                signature
-            );
-            expect(signedTransaction.encoded).toEqual(encodedSignedExpected);
+                // Get delegator form undelegeted signed transaction (should throw error)
+                expect(() => signedTransaction.delegator).toThrowError(
+                    ERRORS.TRANSACTION.NOT_DELEGATED
+                );
+
+                // Encoding
+                expect(signedTransaction.encoded).toEqual(
+                    transaction.encodedSignedExpected
+                );
+            });
         });
     });
 
@@ -145,151 +104,100 @@ describe('Transaction creation tests', () => {
      */
     describe('Delegated transactions', () => {
         /**
-         * Testing the creation
+         * Testing creation of unsigned transaction
          */
-        test('Should be able to create transactions', () => {
-            // Simple creation of unsigned transaction (signature should be undefined)
-            const unsignedTransaction = new Transaction(
-                delegatedCorrectTransactionBody
-            );
-            expect(unsignedTransaction.signature).toBeUndefined();
-            expect(unsignedTransaction.isSigned).toEqual(false);
-            expect(unsignedTransaction.isDelegated).toEqual(true);
+        test('Should be able to create unsigned transactions', () => {
+            transactions.delegated.forEach((transaction) => {
+                // Init unsigned transaction from body
+                const unsignedTransaction = new Transaction(transaction.body);
 
-            // Can't get delegator from unsigned transaction (should throw error)
-            expect(() => unsignedTransaction.delegator).toThrowError(
-                ERRORS.TRANSACTION.NOT_SIGNED
-            );
+                // Checks
+                expect(unsignedTransaction.signature).toBeUndefined();
+                expect(unsignedTransaction.isSigned).toEqual(false);
+                expect(unsignedTransaction.isDelegated).toEqual(true);
+                expect(
+                    unsignedTransaction.getSignatureHash().toString('hex')
+                ).toEqual(transaction.signatureHashExpected);
 
-            // Simple creation of signed transaction (signature should be defined) @note Don't do this from scratch in real use. We have TransactionHandler for this. (THIS IS ONLY FOR TESTING PURPOSE)
-            const transactionToSign = new Transaction(
-                delegatedCorrectTransactionBody
-            );
+                // Get id from unsigned transaction (should throw error)
+                expect(() => unsignedTransaction.id).toThrowError(
+                    ERRORS.TRANSACTION.NOT_SIGNED
+                );
 
-            const transactionHash = transactionToSign.getSignatureHash();
-            const delegatedHash = transactionToSign.getSignatureHash(
-                address.fromPublicKey(
-                    secp256k1.derivePublicKey(signerPrivateKey)
-                )
-            );
-            const signature = Buffer.concat([
-                secp256k1.sign(transactionHash, signerPrivateKey),
-                secp256k1.sign(delegatedHash, delegatorPrivateKey)
-            ]);
-            const signedTransaction = new Transaction(
-                delegatedCorrectTransactionBody,
-                signature
-            );
-            expect(signedTransaction.isSigned).toEqual(true);
-            expect(signedTransaction.isDelegated).toEqual(true);
-            expect(signedTransaction.signature).toBeDefined();
+                // Get origin form unsigned transaction (should throw error)
+                expect(() => unsignedTransaction.origin).toThrowError(
+                    ERRORS.TRANSACTION.NOT_SIGNED
+                );
 
-            // Can get origin from signed transaction
-            expect(signedTransaction.origin).toEqual(
-                address.fromPublicKey(
-                    secp256k1.derivePublicKey(signerPrivateKey)
-                )
-            );
+                // Get delegator form unsigned transaction (should throw error)
+                expect(() => unsignedTransaction.delegator).toThrowError(
+                    ERRORS.TRANSACTION.NOT_SIGNED
+                );
 
-            // Can get delegator from signed transaction
-            expect(signedTransaction.delegator).toEqual(
-                address.fromPublicKey(
-                    secp256k1.derivePublicKey(delegatorPrivateKey)
-                )
-            );
+                // Encoding
+                expect(unsignedTransaction.encoded).toEqual(
+                    transaction.encodedUnsignedExpected
+                );
 
-            // Simple creation of transaction with INVALID signature (should throw error)
-            expect(
-                () =>
-                    new Transaction(
-                        delegatedCorrectTransactionBody,
-                        Buffer.from('INVALID_SIGNATURE')
-                    )
-            ).toThrowError(ERRORS.TRANSACTION.INVALID_SIGNATURE);
+                // Intrinsic gas
+                expect(unsignedTransaction.intrinsicGas).toBe(37432);
+            });
         });
 
         /**
-         * Should be able to get signature hash
+         * Testing creation of signed transaction
          */
-        test('Should be able to get signature hash', () => {
-            // Correct transaction
-            const unsignedTransaction = new Transaction(
-                delegatedCorrectTransactionBody
-            );
-            const transactionHash = unsignedTransaction.getSignatureHash();
-            const delegatorHash = unsignedTransaction.getSignatureHash(
-                address.fromPublicKey(
-                    secp256k1.derivePublicKey(delegatorPrivateKey)
-                )
-            );
+        test('Should be able to create signed transactions', () => {
+            transactions.delegated.forEach((transaction) => {
+                const signedTransaction = TransactionHandler.signWithDelegator(
+                    new Transaction(transaction.body),
+                    signer.privateKey,
+                    delegator.privateKey
+                );
 
-            // Both hash should be defined
-            expect(transactionHash).toBeDefined();
-            expect(delegatorHash).toBeDefined();
+                // Checks on signature
+                expect(signedTransaction.signature).toBeDefined();
+                expect(signedTransaction.isSigned).toEqual(true);
+                expect(signedTransaction.isDelegated).toEqual(true);
+                expect(
+                    signedTransaction.getSignatureHash().toString('hex')
+                ).toEqual(transaction.signatureHashExpected);
 
-            // Different hash
-            expect(transactionHash.toString('hex')).not.toEqual(
-                delegatorHash.toString('hex')
-            );
+                // Checks on origin, id and delegator
+                expect(signedTransaction.origin).toEqual(signer.address);
+                expect(signedTransaction.delegator).toEqual(delegator.address);
+                expect(signedTransaction.id).toEqual(
+                    transaction.signedTransactionIdExpected
+                );
 
-            // Try to get signature harh with invalid address
-            expect(() =>
-                unsignedTransaction.getSignatureHash('INVALID_ADDRESS')
-            ).toThrowError(ERRORS.ADDRESS.INVALID_ADDRESS);
-        });
-
-        /**
-         * Test delegation
-         */
-        test('Should be able to get delegation', () => {
-            // Undelegate transaction
-            const unsignedTransaction = new Transaction(
-                delegatedCorrectTransactionBody
-            );
-            expect(unsignedTransaction.isDelegated).toEqual(true);
-        });
-
-        /**
-         * Should be able to encode transactions
-         */
-        test('Should be able to encode transactions', () => {
-            // Unsigend transaction
-            const unsignedTransaction = new Transaction(
-                delegatedCorrectTransactionBody
-            );
-            expect(unsignedTransaction.encoded).toEqual(
-                encodedDelegatedUnsignedExpected
-            );
-
-            // Signed transaction @note Don't do this from scratch in real use. We have TransactionHandler for this. (THIS IS ONLY FOR TESTING PURPOSE)
-            const transactionToSign = new Transaction(
-                delegatedCorrectTransactionBody
-            );
-
-            const transactionHash = transactionToSign.getSignatureHash();
-            const delegatedHash = transactionToSign.getSignatureHash(
-                address.fromPublicKey(
-                    secp256k1.derivePublicKey(signerPrivateKey)
-                )
-            );
-            const signature = Buffer.concat([
-                secp256k1.sign(transactionHash, signerPrivateKey),
-                secp256k1.sign(delegatedHash, delegatorPrivateKey)
-            ]);
-            const signedTransaction = new Transaction(
-                delegatedCorrectTransactionBody,
-                signature
-            );
-            expect(signedTransaction.encoded).toBeDefined();
-            expect(signedTransaction.signature).toBeDefined();
+                // Encoding
+                expect(signedTransaction.encoded).toEqual(
+                    transaction.encodedSignedExpected
+                );
+            });
         });
     });
 
     /**
-     * Intrinsics gas calculation
+     * Invalid transactions
      */
-    test('Should be able to calculate intrinsics gas', () => {
-        const tx = new Transaction(correctTransactionBody);
-        expect(tx.intrinsicGas).toBe(37432);
+    test('Invalid transactios', () => {
+        // Invalid signature (should throw error)
+        expect(
+            () =>
+                new Transaction(
+                    correctTransactionBody,
+                    Buffer.from('INVALID_SIGNATURE')
+                )
+        ).toThrowError(ERRORS.TRANSACTION.INVALID_SIGNATURE);
+
+        // Invalid transaction body (should throw error)
+        expect(
+            () =>
+                new Transaction({
+                    ...correctTransactionBody,
+                    blockRef: 'INVALID_BLOCK_REF'
+                })
+        ).toThrowError(ERRORS.TRANSACTION.INVALID_TRANSACTION_BODY);
     });
 });
