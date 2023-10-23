@@ -10,6 +10,7 @@
         "build": "turbo build",
         "lint": "turbo lint",
         "test": "turbo test",
+        "test:unit": "turbo test:unit",
         "format": "turbo format"
     },
     "private": true,

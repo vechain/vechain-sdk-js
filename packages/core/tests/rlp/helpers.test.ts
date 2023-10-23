@@ -32,6 +32,7 @@ import {
  * This suite contains tests for helper functions meant to validate and manipulate numeric kinds.
  * The numeric kinds are validated both as numbers and buffers, ensuring correctness
  * and throwing errors for invalid inputs.
+ * @group unit/numerickind-helpers
  */
 describe('NumericKind helpers', () => {
     /**
@@ -121,6 +122,7 @@ describe('NumericKind helpers', () => {
  * Test suite for HexBlobKind helpers.
  *
  * This suite contains tests for helper functions meant to validate and manipulate hex blob kinds.
+ * @group unit/hexblobkind-helpers
  */
 describe('HexBlobKind helpers', () => {
     /**
@@ -179,6 +181,7 @@ describe('HexBlobKind helpers', () => {
  * Test suite for FixedHexBlobKind helpers.
  *
  * This suite contains tests for helper functions meant to validate and manipulate fixed hex blob kinds.
+ * @group unit/fixedhexblobkind-helpers
  */
 describe('FixedHexBlobKind helpers', () => {
     /**
@@ -240,6 +243,7 @@ describe('FixedHexBlobKind helpers', () => {
  * Test suite for CompactFixedHexBlobKind helpers.
  *
  * This suite contains tests for helper functions meant to validate and manipulate compact fixed hex blob kinds.
+ * @group unit/compactfixedhexblobkind-helpers
  */
 describe('CompactFixedHexBlobKind helpers', () => {
     describe('assertCompactFixedHexBlobBuffer', () => {

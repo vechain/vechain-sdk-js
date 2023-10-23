@@ -8,6 +8,7 @@ import {
 
 /**
  * Hex data tests
+ * @group unit/utils-data
  */
 describe('utils/hex', () => {
     /**

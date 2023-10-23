@@ -4,8 +4,9 @@ import { addresses, words, wrongWords } from './fixture';
 
 /**
  * Mnemonic tests
+ * @group unit/nhdnode
  */
-describe('Mnemonic', () => {
+describe('Hdnode', () => {
     /**
      * Test HD Node
      */
