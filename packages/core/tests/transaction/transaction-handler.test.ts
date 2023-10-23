@@ -14,6 +14,7 @@ import {
 
 /**
  * Transaction handler tests
+ * @group unit/transaction-handler
  */
 describe('Transaction handler', () => {
     /**

@@ -4,6 +4,7 @@ import { ERRORS, Transaction, TransactionHandler } from '../../src';
 
 /**
  * Test transaction module
+ * @group unit/transaction
  */
 describe('Transaction', () => {
     /**
