@@ -3,11 +3,13 @@ import { type RLPValidObject } from '../encoding';
 import { blake2b256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import {
+    BLOCKREF_LENGTH,
     ERRORS,
     SIGNATURE_LENGTH,
     SIGNED_TRANSACTION_RLP,
     TRANSACTION_FEATURES_KIND,
-    UNSIGNED_TRANSACTION_RLP
+    UNSIGNED_TRANSACTION_RLP,
+    dataUtils
 } from '../utils';
 import { TransactionUtils } from '../utils/transaction';
 import { type TransactionBody } from './types';
@@ -45,7 +47,8 @@ class Transaction {
      */
     constructor(body: TransactionBody, signature?: Buffer) {
         // Body
-        this.body = body;
+        if (this._isValidBody(body)) this.body = body;
+        else throw new Error(ERRORS.TRANSACTION.INVALID_TRANSACTION_BODY);
 
         // User passed a signature
         if (signature !== undefined) {
@@ -367,6 +370,39 @@ class Transaction {
                 reserved: this._encodeReservedField()
             },
             isSigned
+        );
+    }
+
+    /**
+     * Private utility function to check transaction body
+     * @private
+     *
+     * @param body Transaction body to check
+     */
+    private _isValidBody(body: TransactionBody): boolean {
+        // Check if body is valid
+        return (
+            // Chain tag
+            body.chainTag !== undefined &&
+            body.chainTag >= 0 &&
+            body.chainTag <= 255 &&
+            // Block reference
+            body.blockRef !== undefined &&
+            dataUtils.isHexString(body.blockRef) &&
+            Buffer.from(body.blockRef.slice(2), 'hex').length ===
+                BLOCKREF_LENGTH &&
+            // Expiration
+            body.expiration !== undefined &&
+            // Clauses
+            body.clauses !== undefined &&
+            // Gas price coef
+            body.gasPriceCoef !== undefined &&
+            // Gas
+            body.gas !== undefined &&
+            // Depends on
+            body.dependsOn !== undefined &&
+            // Nonce
+            body.nonce !== undefined
         );
     }
 }

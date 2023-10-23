@@ -83,6 +83,15 @@ describe('Transaction creation tests', () => {
                         Buffer.from('INVALID_SIGNATURE')
                     )
             ).toThrowError(ERRORS.TRANSACTION.INVALID_SIGNATURE);
+
+            // Invalid transaction body (should throw error)
+            expect(
+                () =>
+                    new Transaction({
+                        ...correctTransactionBody,
+                        blockRef: 'INVALID_BLOCK_REF'
+                    })
+            ).toThrowError(ERRORS.TRANSACTION.INVALID_TRANSACTION_BODY);
         });
 
         /**
