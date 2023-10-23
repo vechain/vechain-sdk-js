@@ -7,4 +7,6 @@ import { type BytesLike } from 'ethers';
  */
 type HashInput = BytesLike;
 
-export { type HashInput };
+type ReturnType = 'buffer' | 'hex';
+
+export { type HashInput, type ReturnType };
