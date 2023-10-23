@@ -3,7 +3,7 @@ import { address, secp256k1, type TransactionBody } from '../../src';
 /**
  * Simple correct transaction body fixture
  */
-const correctTransactionBody: TransactionBody = {
+const _correctTransactionBody: TransactionBody = {
     chainTag: 1,
     blockRef: '0x00000000aabbccdd',
     expiration: 32,
@@ -31,7 +31,7 @@ const correctTransactionBody: TransactionBody = {
 const transactions = {
     undelegated: [
         {
-            body: correctTransactionBody,
+            body: _correctTransactionBody,
             signatureHashExpected:
                 '2a1c25ce0d66f45276a5f308b99bf410e2fc7d5b6ea37a49f2ab9f1da9446478',
             signedTransactionIdExpected:
@@ -51,7 +51,7 @@ const transactions = {
         // Delegated transaction
         {
             body: {
-                ...correctTransactionBody,
+                ..._correctTransactionBody,
                 reserved: {
                     features: 1
                 }
@@ -72,7 +72,7 @@ const transactions = {
         // Delegate transaction with unused field
         {
             body: {
-                ...correctTransactionBody,
+                ..._correctTransactionBody,
                 reserved: {
                     features: 1,
                     unused: [Buffer.from('0x000'), Buffer.from('0x000')]
@@ -97,26 +97,26 @@ const transactions = {
 /**
  * Simple private key fixture
  */
-const signerPrivateKey = Buffer.from(
+const _signerPrivateKey = Buffer.from(
     '7582be841ca040aa940fff6c05773129e135623e41acce3e0b8ba520dc1ae26a',
     'hex'
 );
 const signer = {
-    privateKey: signerPrivateKey,
-    address: address.fromPublicKey(secp256k1.derivePublicKey(signerPrivateKey))
+    privateKey: _signerPrivateKey,
+    address: address.fromPublicKey(secp256k1.derivePublicKey(_signerPrivateKey))
 };
 
 /**
  * Simple private key of transaction delegator fixture
  */
-const delegatorPrivateKey = Buffer.from(
+const _delegatorPrivateKey = Buffer.from(
     '40de805e918403683fb9a6081c3fba072cdc5c88232c62a9509165122488dab7',
     'hex'
 );
 const delegator = {
-    privateKey: delegatorPrivateKey,
+    privateKey: _delegatorPrivateKey,
     address: address.fromPublicKey(
-        secp256k1.derivePublicKey(delegatorPrivateKey)
+        secp256k1.derivePublicKey(_delegatorPrivateKey)
     )
 };
 
@@ -128,12 +128,4 @@ const invalidDecodedNotTrimmedReserved = Buffer.from(
     'hex'
 );
 
-export {
-    correctTransactionBody,
-    signerPrivateKey,
-    delegatorPrivateKey,
-    transactions,
-    signer,
-    delegator,
-    invalidDecodedNotTrimmedReserved
-};
+export { transactions, signer, delegator, invalidDecodedNotTrimmedReserved };

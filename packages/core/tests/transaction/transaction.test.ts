@@ -1,10 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import {
-    correctTransactionBody,
-    signer,
-    delegator,
-    transactions
-} from './fixture';
+import { signer, delegator, transactions } from './fixture';
 import { ERRORS, Transaction, TransactionHandler } from '../../src';
 
 /**
@@ -186,7 +181,7 @@ describe('Transaction', () => {
         expect(
             () =>
                 new Transaction(
-                    correctTransactionBody,
+                    transactions.delegated[0].body,
                     Buffer.from('INVALID_SIGNATURE')
                 )
         ).toThrowError(ERRORS.TRANSACTION.INVALID_SIGNATURE);
@@ -195,7 +190,7 @@ describe('Transaction', () => {
         expect(
             () =>
                 new Transaction({
-                    ...correctTransactionBody,
+                    ...transactions.delegated[0].body,
                     blockRef: 'INVALID_BLOCK_REF'
                 })
         ).toThrowError(ERRORS.TRANSACTION.INVALID_TRANSACTION_BODY);
