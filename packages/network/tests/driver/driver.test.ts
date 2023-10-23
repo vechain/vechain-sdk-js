@@ -1,15 +1,17 @@
 import { describe, expect, test } from '@jest/globals';
-import { SimpleNet } from '../src/driver/simple-net';
-import { firstTestnetBlock, testnetUrl, testAccount } from './utils/fixture';
-import { type NetParams } from '../src/driver/interfaces';
+import { type NetParams } from '../../src';
+import { firstTestnetBlock, network, testAccount } from './fixture';
 
-describe('SimpleNet', () => {
+/**
+ * SimpleNet class tests
+ */
+describe('Test SimpleNet class', () => {
+    /**
+     * HTTP Request tests
+     */
     test('Should perform an HTTP GET request and resolve with response data', async () => {
-        // Create a new instance of SimpleNet with the testnet URL
-        const net = new SimpleNet(testnetUrl);
-
         // Perform an HTTP GET request using the SimpleNet instance
-        const response = await net.http('GET', '/blocks/1?expanded=false');
+        const response = await network.http('GET', '/blocks/1?expanded=false');
 
         // Assert that the response matches the expected firstTestnetBlock
         expect(JSON.stringify(response)).toEqual(
@@ -17,20 +19,20 @@ describe('SimpleNet', () => {
         );
     });
 
+    /**
+     * HTTP Request tests rejecting with an error
+     */
     test('Should reject with an error if the HTTP request fails', async () => {
-        // Create a new instance of SimpleNet with the testnet URL
-        const net = new SimpleNet(testnetUrl);
-
         // Assert that the HTTP request fails with an error
-        await expect(net.http('GET', '/error-test-path')).rejects.toThrow(
+        await expect(network.http('GET', '/error-test-path')).rejects.toThrow(
             '404 get /error-test-path: 404 page not found'
         );
     });
 
+    /**
+     * Request params validation
+     */
     test('Should validate response headers', async () => {
-        // Create a new instance of SimpleNet with the testnet URL
-        const net = new SimpleNet(testnetUrl);
-
         const customParams: NetParams = {
             query: {},
             body: {},
@@ -45,7 +47,7 @@ describe('SimpleNet', () => {
         };
 
         // Make an actual HTTP GET request and pass the validateResponseHeaders function
-        const response = await net.http(
+        const response = await network.http(
             'GET',
             '/accounts/' + testAccount,
             customParams
