@@ -9,6 +9,8 @@
             "outputs": ["coverage/**"]
         },
         "lint": {},
-        "format": {}
+        "format": {},
+        "test:docs": {},
+        "test:examples": {}
     }
 }

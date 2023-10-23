@@ -10,7 +10,9 @@
         "build": "turbo build",
         "lint": "turbo lint",
         "test": "turbo test",
-        "format": "turbo format"
+        "format": "turbo format",
+        "test:docs": "turbo test:docs",
+        "test:examples": "turbo test:examples"
     },
     "private": true,
     "workspaces": [
