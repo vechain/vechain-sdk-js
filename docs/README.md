@@ -27,7 +27,7 @@ Note: links that are to be expanded must have text \[example]
 
 * To execute the scripts within `/examples` as tests: `yarn test:examples`
 * To build the documentation by expanding examples: `yarn build`
-* To execute code from the built documentation (build check): `yarn test`
+* To execute code from the built documentation (build check): `yarn test:docs`
 
 
 
