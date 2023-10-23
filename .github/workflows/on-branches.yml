@@ -10,7 +10,7 @@ jobs:
     install-build:
         uses: ./.github/workflows/build-lint.yml
         secrets: inherit
-    unit-test:
+    unit-integration-test:
         uses: ./.github/workflows/unit-test.yml
         secrets: inherit
     sonar-scan:

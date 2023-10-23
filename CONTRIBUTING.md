@@ -94,6 +94,35 @@ public static parseInteger(s: string): number {
 }
 ```
 
+# Test Group Tagging
+
+When adding new tests or modifying existing ones, please make use of the `@group` tag to indicate the nature of the test:
+
+- For unit tests, use `@group unit`.
+- For integration tests, use `@group int`.
+```typescript
+/**
+ * Bloom filter tests
+ *
+ * @NOTE different from ../utils/bloom/bloom.test.ts.
+ * This tests bloom functionality, not the utils.
+ * @group unit/bloom
+ */
+describe('Bloom Filter', () => {
+  /**
+    * Test estimate K function
+    */
+  test('Estimate K', () => {
+      bloomKTestCases.forEach((bloomKTestCase) => {
+          expect(bloom.calculateK(bloomKTestCase.calculateK)).toBe(
+              bloomKTestCase.estimatedK
+          );
+      });
+  });
+});
+```
+These tags help us categorize and run specific types of tests when needed. This ensures that our test suite remains well-organized and efficient.
+
 # Submitting a Pull Request
 
 Before submitting a pull request, please make sure the following is done:
