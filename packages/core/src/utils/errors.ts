@@ -105,7 +105,8 @@ const ERRORS = {
         INVALID_SIGNATURE_PRIVATE_KEY: 'Invalid signature private key',
         INVALID_RESERVED_NOT_TRIMMED_FIELDS:
             'Invalid reserved field. Fields must be trimmed',
-        INVALID_TRANSACTION_BODY: 'Invalid transaction body'
+        INVALID_TRANSACTION_BODY: 'Invalid transaction body',
+        DELEGATED: 'Transaction is delegated'
     }
 };
 

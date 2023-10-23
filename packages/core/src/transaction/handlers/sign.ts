@@ -22,6 +22,10 @@ function sign(
     if (transactionToSign.isSigned)
         throw new Error(ERRORS.TRANSACTION.ALREADY_SIGN);
 
+    // Transaction is delegated
+    if (transactionToSign.isDelegated)
+        throw new Error(ERRORS.TRANSACTION.DELEGATED);
+
     // Sign transaction
     const signature = secp256k1.sign(
         transactionToSign.getSignatureHash(),
