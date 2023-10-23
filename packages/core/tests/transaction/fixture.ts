@@ -127,6 +127,7 @@ const invalidDecodedNotTrimmedReserved = Buffer.from(
     'f8560184aabbccdd20f840df947567d83b7b8d80addcb281a71d54fc7b3364ffed82271086000000606060df947567d83b7b8d80addcb281a71d54fc7b3364ffed824e208600000060606081808252088083bc614ec28080',
     'hex'
 );
+
 export {
     correctTransactionBody,
     signerPrivateKey,
