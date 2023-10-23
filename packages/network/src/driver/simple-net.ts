@@ -1,8 +1,8 @@
-import { type Net, type NetParams } from './interfaces';
 import Axios, { type AxiosInstance, type AxiosError } from 'axios';
 import { Agent as HttpAgent } from 'http';
 import { Agent as HttpsAgent } from 'https';
-import { convertError } from './utils/errors';
+import { type Net, type NetParams } from './interfaces';
+import { convertError } from '../utils';
 
 /**
  * Represents a concrete implementation of the `Net` interface, providing methods for making HTTP requests and
@@ -12,7 +12,7 @@ import { convertError } from './utils/errors';
  *
  * @public
  */
-export class SimpleNet implements Net {
+class SimpleNet implements Net {
     private readonly axios: AxiosInstance;
 
     /**
@@ -79,3 +79,5 @@ export class SimpleNet implements Net {
         }
     }
 }
+
+export { SimpleNet };

@@ -6,7 +6,7 @@
  *
  * @public
  */
-export interface Net {
+interface Net {
     /**
      * The base URL
      */
@@ -35,7 +35,7 @@ export interface Net {
  *
  * @public
  */
-export interface NetParams {
+interface NetParams {
     /**
      * Query parameters to include in the request.
      */
@@ -64,7 +64,7 @@ export interface NetParams {
  *
  * @public
  */
-export interface NetWebSocketReader {
+interface NetWebSocketReader {
     /**
      * Read data from the WebSocket connection.
      *
@@ -77,3 +77,5 @@ export interface NetWebSocketReader {
      */
     close: () => void;
 }
+
+export type { Net, NetParams, NetWebSocketReader };
