@@ -171,22 +171,15 @@ class Transaction {
             throw new Error(ERRORS.ADDRESS.INVALID_ADDRESS);
 
         // Encode transaction
-        const transactionHash = Buffer.from(
-            // @note: we encode the transaction without the signature
-            blake2b256(this._encode(false)).slice(2),
-            'hex'
-        );
+        const transactionHash = blake2b256(this._encode(false));
 
         // There is a delegateFor address (@note we already know that it is a valid address)
         if (delegateFor !== undefined) {
-            const hash = Buffer.from(
-                blake2b256(
-                    Buffer.concat([
-                        transactionHash,
-                        Buffer.from(delegateFor.slice(2), 'hex')
-                    ])
-                ).slice(2),
-                'hex'
+            const hash = blake2b256(
+                Buffer.concat([
+                    transactionHash,
+                    Buffer.from(delegateFor.slice(2), 'hex')
+                ])
             );
             return hash;
         }
@@ -239,7 +232,8 @@ class Transaction {
             Buffer.concat([
                 this.getSignatureHash(),
                 Buffer.from(this.origin.slice(2), 'hex')
-            ])
+            ]),
+            'hex'
         );
     }
 
