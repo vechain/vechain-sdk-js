@@ -26,7 +26,7 @@ describe('Hdnode', () => {
             // Correct pulic key
             expect(
                 secp256k1
-                    .derive(child.privateKey ?? ZERO_BUFFER(0))
+                    .derivePublicKey(child.privateKey ?? ZERO_BUFFER(0))
                     .toString('hex')
             ).toEqual(child.publicKey.toString('hex'));
         }
@@ -47,7 +47,7 @@ describe('Hdnode', () => {
             // Correct public key
             expect(
                 secp256k1
-                    .derive(child.privateKey ?? ZERO_BUFFER(0))
+                    .derivePublicKey(child.privateKey ?? ZERO_BUFFER(0))
                     .toString('hex')
             ).toEqual(child.publicKey.toString('hex'));
         }

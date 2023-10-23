@@ -40,13 +40,15 @@ describe('Address', () => {
          */
         test('derive public key from private key', () => {
             // Correct private key / public key / address derivation
-            expect(secp256k1.derive(simplePrivateKey)).toEqual(simplePublicKey);
+            expect(secp256k1.derivePublicKey(simplePrivateKey)).toEqual(
+                simplePublicKey
+            );
             expect(address.fromPublicKey(simplePublicKey)).toEqual(
                 simpleAddress
             );
 
             // Invalid private key to derive public key
-            expect(() => secp256k1.derive(invalidPrivateKey)).toThrow(
+            expect(() => secp256k1.derivePublicKey(invalidPrivateKey)).toThrow(
                 ERRORS.SECP256K1.INVALID_PRIVATE_KEY
             );
         });
