@@ -177,7 +177,7 @@ describe('Transaction', () => {
     /**
      * Invalid transactions
      */
-    test('Invalid transactios', () => {
+    test('Invalid transactions', () => {
         // Invalid signature (should throw error)
         expect(
             () =>
