@@ -95,15 +95,6 @@ const TRANSACTION_FIELDS = [
 ];
 
 /**
- * RLP profiler for simple unsigned transactions
- * @public
- */
-const UNSIGNED_TRANSACTION_RLP = new RLP.Profiler({
-    name: 'tx',
-    kind: TRANSACTION_FIELDS
-});
-
-/**
  * Kind for transaction features
  * @public
  */
@@ -119,6 +110,15 @@ const TRANSACTION_SIGNATURE_KIND = {
     name: 'signature',
     kind: new RLP.BufferKind()
 };
+
+/**
+ * RLP profiler for simple unsigned transactions
+ * @public
+ */
+const UNSIGNED_TRANSACTION_RLP = new RLP.Profiler({
+    name: 'tx',
+    kind: TRANSACTION_FIELDS
+});
 
 /**
  * RLP profiler for simple signed transactions

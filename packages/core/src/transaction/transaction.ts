@@ -78,9 +78,9 @@ class Transaction {
     }
 
     /**
-     * Get transaction delegator from signature.
+     * Get transaction delegator address from signature.
      *
-     * @returns Transaction delegator
+     * @returns Transaction delegator address
      */
     public get delegator(): string {
         // Undelegated transaction
@@ -90,7 +90,8 @@ class Transaction {
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
         if (!this.isSigned) throw new Error(ERRORS.TRANSACTION.NOT_SIGNED);
 
-        // Slice signature
+        // Slice signature needed to recover public key
+        // Obtains the recovery param from the signature
         const signatureSliced = (this.signature as Buffer).subarray(
             65,
             this.signature?.length
@@ -108,7 +109,6 @@ class Transaction {
 
     /**
      * Determines whether the transaction is signed or not.
-     * @private
      *
      * @param transaction - Transaction to check
      * @returns If transaction is signed or not
@@ -126,7 +126,7 @@ class Transaction {
      *
      * Mainly:
      *  - No 'delegateFor': return txHash
-     * - 'delegateFor' return thHash +  hash('delegateFor' address)
+     * - 'delegateFor' return txHash +  hash('delegateFor' address)
      *
      * @remarks
      * delegateFor is used to sign a transaction on behalf of another account.
@@ -190,14 +190,14 @@ class Transaction {
     /**
      * Encode a transaction
      *
-     * @returns Encoding of transaction
+     * @returns The transaction encoded
      */
     public get encoded(): Buffer {
         return this._encode(this.isSigned);
     }
 
     /**
-     * Get transaction origin from signature.
+     * Get transaction origin address from signature.
      *
      * @returns Transaction origin
      */
@@ -206,6 +206,7 @@ class Transaction {
         if (!this.isSigned) throw new Error(ERRORS.TRANSACTION.NOT_SIGNED);
 
         // Slice signature
+        // Obtains the concatenated signature (r, s) of ECDSA digital signature
         const signatureSliced = (this.signature as Buffer).subarray(0, 65);
 
         // Recover public key
@@ -254,7 +255,7 @@ class Transaction {
         // Features
         const features = reserved.features ?? 0;
 
-        // Fashion bitwise way to check is a number is even or not
+        // Fashion bitwise way to check if a number is even or not
         return (features & 1) === 1;
     }
 
@@ -280,7 +281,7 @@ class Transaction {
      *
      * Due to the fact that reserved field is optional in TransactionBody,
      * BUT mandatory in RLPProfiler, we need to have it in every encoding.
-     * Fot this reason this function come in help.
+     * Fot this reason this function is needed.
      * @private
      *
      * @returns Encoding of reserved field
@@ -289,7 +290,7 @@ class Transaction {
         // Check if is reserved or not
         const reserved = this.body.reserved ?? {};
 
-        // Init kind for futures
+        // Init kind for features
         const featuresKind = TRANSACTION_FEATURES_KIND.kind;
 
         // Features list
