@@ -10,7 +10,6 @@
 
 import { blake2b256 } from '../hash';
 import { Buffer } from 'buffer';
-import { dataUtils } from '../utils';
 
 /**
  * This class represents a Bloom filter with its associated bit array and
@@ -75,9 +74,8 @@ function hash(key: Buffer): number {
 
     // Compute hash using blake2b256
     const hash = blake2b256(uint8ArrayKey);
-    const newCorrectHash = Buffer.from(dataUtils.removePrefix(hash), 'hex');
 
-    return newCorrectHash.readUInt32BE(0);
+    return hash.readUInt32BE(0);
 }
 
 /**

@@ -54,7 +54,7 @@ function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
         chainCode,
         Buffer.from(compressed)
     ]);
-    const checksum = sha256AppliedToABuffer(sha256AppliedToABuffer(key));
+    const checksum = sha256(sha256(key));
     const slicedChecksum = checksum.subarray(0, 4);
 
     const node = ethers.HDNodeWallet.fromExtendedKey(
@@ -86,7 +86,7 @@ function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
         Buffer.from([0]),
         privateKey
     ]);
-    const checksum = sha256AppliedToABuffer(sha256AppliedToABuffer(key));
+    const checksum = sha256(sha256(key));
     const slicedChecksum = checksum.subarray(0, 4);
 
     const node = ethers.HDNodeWallet.fromExtendedKey(
@@ -133,19 +133,6 @@ function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
             return ethersNodeToOurHDNode(ethersNode.derivePath(path));
         }
     };
-}
-
-/**
- * Calculates the SHA256 hash of the provided data buffer.
- *
- * @param data - The data buffer to hash.
- * @returns The SHA256 hash of the given data as a buffer.
- */
-function sha256AppliedToABuffer(data: Buffer): Buffer {
-    const dataAsString = `0x${data.toString('hex')}`;
-    const hashAsString = sha256(dataAsString);
-
-    return Buffer.from(hashAsString.slice(2), 'hex');
 }
 
 export const HDNode = {
