@@ -105,7 +105,7 @@ async function example(): Promise<void> {
     // const privateKey = mnemonic.derivePrivateKey(words)
 
     // Secp256k1
-    const privateKey = secp256k1.generate();
+    const privateKey = secp256k1.generatePrivateKey();
 
     // ...
 
