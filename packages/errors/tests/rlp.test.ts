@@ -6,7 +6,9 @@ import { InvalidRLPError } from '../src/model/rlp';
 describe('RLP errors', () => {
     test('buildInvalidRLPError', () => {
         expect(
-            buildError(ERROR_CODES.RLP.INVALID_RLP, 'Invalid RLP Error')
+            buildError(ERROR_CODES.RLP.INVALID_RLP, 'Invalid RLP Error', {
+                context: 'test'
+            })
         ).toBeInstanceOf(InvalidRLPError);
     });
 });
