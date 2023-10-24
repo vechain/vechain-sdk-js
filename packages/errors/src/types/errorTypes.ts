@@ -40,14 +40,14 @@ export enum ADDRESS {
 
 export enum KEYSTORE {
     INVALID_KEYSTORE = 'INVALID_KEYSTORE',
-    INVALID_PASSWORD = 'Invalid password'
+    INVALID_PASSWORD = 'INVALID_PASSWORD'
 }
 
 export enum HDNODE {
-    INVALID_PUBLICKEY = 'Invalid public key',
-    INVALID_PRIVATEKEY = 'Invalid private key',
-    INVALID_CHAINCODE = 'Invalid chain code',
-    INVALID_MNEMONICS = 'Invalid mnemonics'
+    INVALID_PUBLICKEY = 'INVALID_PUBLICKEY',
+    INVALID_PRIVATEKEY = 'INVALID_PRIVATEKEY',
+    INVALID_CHAINCODE = 'INVALID_CHAINCODE',
+    INVALID_MNEMONICS = 'INVALID_MNEMONICS'
 }
 
 export enum BLOOM {
