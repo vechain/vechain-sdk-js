@@ -1,7 +1,7 @@
 import { bloom } from '@vechain-sdk/core';
 import { expect } from 'expect';
 
-// Get best value of k (number of hash functions) depending on the number of elements in the filter
+// Get best value of k (bits per key)
 const k = bloom.calculateK(100);
 console.log(k);
 
