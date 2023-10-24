@@ -21,12 +21,12 @@ const rndMnemonic = mnemonic.generate();
 
 // Derive private key from mnemonic words according to BIP32, using the path `m/44'/818'/0'/0`.
 // Defined for VET at https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-const privateKey = mnemonic.derivePrivateKey(rndMnemonic.phrase.split(' '));
+const privateKey = mnemonic.derivePrivateKey(rndMnemonic);
 console.log(privateKey.toString('hex'));
 // ...SOME PRIVATE KEY...
 
 // In recovery process, validation is recommended
-const ok = mnemonic.validate(rndMnemonic.phrase.split(' '));
+const ok = mnemonic.validate(rndMnemonic);
 expect(ok).toBeTruthy();
 // true
 
@@ -39,11 +39,11 @@ import { mnemonic, HDNode } from '@vechain-sdk/core';
 
 // Generate BIP39 mnemonic words, default to 12 words(128bit strength)
 const rndMnemonic = mnemonic.generate();
-console.log('Mnemonic words', rndMnemonic.phrase.split(' '));
+console.log('Mnemonic words', rndMnemonic);
 // Mnemonic words: "w1 w2 ... w12"
 
 // Create BIP32 HD node from mnemonic words
-const hdnode = HDNode.fromMnemonic(rndMnemonic.phrase.split(' '));
+const hdnode = HDNode.fromMnemonic(rndMnemonic);
 
 // Derive 5 child private keys
 for (let i = 0; i < 5; i++) {
