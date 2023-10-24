@@ -11,7 +11,7 @@ describe('Mnemonic', () => {
      * Mnemonic words generation
      */
     test('Generation', () => {
-        expect(mnemonic.generate().phrase.split(' ').length).toEqual(12);
+        expect(mnemonic.generate().length).toEqual(12);
     });
 
     /**
@@ -19,9 +19,7 @@ describe('Mnemonic', () => {
      */
     test('Validation', () => {
         expect(mnemonic.validate(['hello', 'world'])).toEqual(false);
-        expect(
-            mnemonic.validate(mnemonic.generate().phrase.split(' '))
-        ).toEqual(true);
+        expect(mnemonic.validate(mnemonic.generate())).toEqual(true);
     });
 
     /**

@@ -9,9 +9,9 @@ import { HDNode } from '../hdnode/hdnode';
  * Every 4 bytes produce 3 words.
  * @returns Mnemonic words
  */
-function generate(rng?: () => Buffer): ethers.Mnemonic {
+function generate(rng?: () => Buffer): string[] {
     rng = rng ?? (() => randomBytes(128 / 8));
-    return ethers.Mnemonic.fromEntropy(rng());
+    return ethers.Mnemonic.fromEntropy(rng()).phrase.split(' ');
 }
 
 /**
