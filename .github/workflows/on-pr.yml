@@ -22,6 +22,7 @@ jobs:
                 yarn install
             - name: Test docs
               run: |
+                cd docs
                 yarn test:docs
             
     
