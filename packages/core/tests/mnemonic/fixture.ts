@@ -1,7 +1,4 @@
-import {
-    type WordListRandomGeneratorSizeInBytes,
-    type WordlistSizeType
-} from '../../src';
+import { type WordListRandomGeneratorSizeInBytes } from '../../src';
 import { randomBytes } from 'crypto';
 
 /**
@@ -11,11 +8,6 @@ const words =
     'ignore empty bird silly journey junior ripple have guard waste between tenant'.split(
         ' '
     );
-
-/**
- * Different lengths of mnemonic words fixture.
- */
-const lenghtsMnemonicWords: WordlistSizeType[] = [12, 15, 18, 21, 24];
 
 /**
  * Custom random generator with XOR
@@ -71,6 +63,5 @@ export {
     words,
     derivationPaths,
     wrongDerivationPath,
-    lenghtsMnemonicWords,
     customRandomGeneratorWithXor
 };

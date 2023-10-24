@@ -3,11 +3,15 @@ import { mnemonic } from '../../src/mnemonic/mnemonic';
 import {
     customRandomGeneratorWithXor,
     derivationPaths,
-    lenghtsMnemonicWords,
     words,
     wrongDerivationPath
 } from './fixture';
-import { address, secp256k1, type WordlistSizeType } from '../../src';
+import {
+    address,
+    MNEMONIC_WORDLIST_ALLOWED_SIZES,
+    secp256k1,
+    type WordlistSizeType
+} from '../../src';
 import { randomBytes } from 'crypto';
 
 /**
@@ -32,7 +36,7 @@ describe('Mnemonic', () => {
      */
     test('Custom generation parameters', () => {
         // Custom lengths
-        lenghtsMnemonicWords.forEach((length: WordlistSizeType) => {
+        MNEMONIC_WORDLIST_ALLOWED_SIZES.forEach((length: WordlistSizeType) => {
             // Custom random generators
             [customRandomGeneratorWithXor, randomBytes, undefined].forEach(
                 (randomGenerator) => {

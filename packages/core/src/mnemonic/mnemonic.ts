@@ -5,7 +5,7 @@ import {
     type WordListRandomGeneratorSizeInBytes,
     type WordlistSizeType
 } from './types';
-import { ERRORS } from '../utils';
+import { ERRORS, MNEMONIC_WORDLIST_ALLOWED_SIZES } from '../utils';
 
 /* --- Overloaded functions start --- */
 
@@ -52,7 +52,7 @@ function generate(
     // Strange edge case in wordlist size
     if (
         wordlistSize !== undefined &&
-        ![12, 15, 18, 21, 24].includes(wordlistSize)
+        !MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(wordlistSize)
     ) {
         throw new Error(ERRORS.MNEMONIC.INVALID_MNEMONIC_SIZE);
     }
