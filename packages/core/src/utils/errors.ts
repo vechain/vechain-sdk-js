@@ -59,6 +59,15 @@ const ERRORS = {
          */
         INVALID_DATA_TYPE: function (format: string): string {
             return `Invalid data type. Data should be ${format}.`;
+        },
+
+        /**
+         * Error message for invalid return type
+         * @param format - The expected return type
+         * @returns The error message
+         */
+        INVALID_RETURN_TYPE: function (format: string): string {
+            return `Invalid return type. Return type should be ${format}.`;
         }
     },
 
@@ -92,6 +101,21 @@ const ERRORS = {
         INVALID_RLP: function (context: string, message: string): string {
             return `${context}: ${message}`;
         }
+    },
+
+    /**
+     * Error messages related to transactions.
+     */
+    TRANSACTION: {
+        ALREADY_SIGN: 'Transaction is already signed',
+        NOT_SIGNED: 'Transaction is not signed',
+        INVALID_SIGNATURE: 'Invalid signature',
+        NOT_DELEGATED: 'Transaction is not delegated',
+        INVALID_SIGNATURE_PRIVATE_KEY: 'Invalid signature private key',
+        INVALID_RESERVED_NOT_TRIMMED_FIELDS:
+            'Invalid reserved field. Fields must be trimmed',
+        INVALID_TRANSACTION_BODY: 'Invalid transaction body',
+        DELEGATED: 'Transaction is delegated'
     }
 };
 

@@ -10,6 +10,7 @@ import {
 
 /**
  * Bloom utils tests
+ * @group unit/utils-bloom
  */
 describe('utils/bloom', () => {
     /**

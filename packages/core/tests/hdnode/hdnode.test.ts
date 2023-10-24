@@ -4,8 +4,9 @@ import { addresses, words, wrongWords } from './fixture';
 
 /**
  * Mnemonic tests
+ * @group unit/nhdnode
  */
-describe('Mnemonic', () => {
+describe('Hdnode', () => {
     /**
      * Test HD Node
      */
@@ -25,7 +26,7 @@ describe('Mnemonic', () => {
             // Correct pulic key
             expect(
                 secp256k1
-                    .derive(child.privateKey ?? ZERO_BUFFER(0))
+                    .derivePublicKey(child.privateKey ?? ZERO_BUFFER(0))
                     .toString('hex')
             ).toEqual(child.publicKey.toString('hex'));
         }
@@ -46,7 +47,7 @@ describe('Mnemonic', () => {
             // Correct public key
             expect(
                 secp256k1
-                    .derive(child.privateKey ?? ZERO_BUFFER(0))
+                    .derivePublicKey(child.privateKey ?? ZERO_BUFFER(0))
                     .toString('hex')
             ).toEqual(child.publicKey.toString('hex'));
         }

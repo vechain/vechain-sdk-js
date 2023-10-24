@@ -10,7 +10,8 @@ import {
 import { ERRORS } from '../../src';
 
 /**
- * Tests for low-level ABI functions.
+ * Tests for low-level ABI functions
+ * @group unit/low-level-abi
  */
 describe('Abi - Low level', () => {
     /**

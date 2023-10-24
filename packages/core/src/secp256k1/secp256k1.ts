@@ -1,5 +1,10 @@
 import { randomBytes } from 'crypto';
-import { ERRORS, PRIVATE_KEY_MAX_VALUE, ZERO_BUFFER } from '../utils';
+import {
+    ERRORS,
+    PRIVATE_KEY_MAX_VALUE,
+    SIGNATURE_LENGTH,
+    ZERO_BUFFER
+} from '../utils';
 import { ec as EC } from 'elliptic';
 
 // Cureve algorithm
@@ -28,9 +33,11 @@ function isValidPrivateKey(key: Buffer): boolean {
 }
 
 /**
- * Generate a random secure private key
+ * Generate private key using elliptic curve algorithm on the curve secp256k1
+ * @param entropy - entropy function
+ * @returns Private key generated
  */
-function generate(entropy?: () => Buffer): Buffer {
+function generatePrivateKey(entropy?: () => Buffer): Buffer {
     entropy = entropy ?? ((): Buffer => randomBytes(32));
     let privKey: Buffer;
     do {
@@ -40,12 +47,12 @@ function generate(entropy?: () => Buffer): Buffer {
 }
 
 /**
- * Generate public key from private key
+ * Derive public key from private key using elliptic curve algorithm on the curve secp256k1
  *
- * @param privateKey Private key used to genrate public key
- * @returns Public key
+ * @param privateKey - private key to derive public key from
+ * @returns Public key derived from private key
  */
-function derive(privateKey: Buffer): Buffer {
+function derivePublicKey(privateKey: Buffer): Buffer {
     if (!isValidPrivateKey(privateKey)) {
         throw new Error(ERRORS.SECP256K1.INVALID_PRIVATE_KEY);
     }
@@ -85,7 +92,7 @@ function recover(msgHash: Buffer, sig: Buffer): Buffer {
     if (!isValidMessageHash(msgHash)) {
         throw new Error(ERRORS.SECP256K1.INVALID_MESSAGE_HASH);
     }
-    if (!Buffer.isBuffer(sig) || sig.length !== 65) {
+    if (!Buffer.isBuffer(sig) || sig.length !== SIGNATURE_LENGTH) {
         throw new Error(ERRORS.SECP256K1.INVALID_SIGNATURE);
     }
     const recovery = sig[64];
@@ -124,8 +131,8 @@ function extendedPublicKeyToArray(
 export const secp256k1 = {
     isValidMessageHash,
     isValidPrivateKey,
-    generate,
-    derive,
+    generatePrivateKey,
+    derivePublicKey,
     sign,
     recover,
     extendedPublicKeyToArray

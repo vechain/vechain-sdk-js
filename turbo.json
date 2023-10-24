@@ -8,6 +8,9 @@
         "test": {
             "outputs": ["coverage/**"]
         },
+        "test:unit": {
+            "outputs": ["coverage/**"]
+        },
         "lint": {},
         "format": {},
         "test:docs": {},

@@ -10,6 +10,7 @@
         "build": "turbo build",
         "lint": "turbo lint",
         "test": "turbo test",
+        "test:unit": "turbo test:unit",
         "format": "turbo format",
         "test:docs": "turbo test:docs",
         "test:examples": "turbo test:examples"
@@ -22,7 +23,7 @@
     ],
     "devDependencies": {
         "@commitlint/cli": "^17.8.0",
-        "@commitlint/config-conventional": "^17.7.0",
+        "@commitlint/config-conventional": "^17.8.0",
         "husky": "^8.0.0",
         "turbo": "^1.10.15"
     }
