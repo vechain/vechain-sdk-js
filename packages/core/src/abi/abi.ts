@@ -3,9 +3,55 @@ import {
     type Interface,
     type FunctionFragment,
     type Result,
-    type FormatType
+    type FormatType,
+    type ParamType,
+    type BytesLike
 } from './types';
 import { ERRORS } from '../utils';
+
+/**
+ * Default AbiCoder instance from ethers.js.
+ */
+const ethersCoder = new ethers.AbiCoder();
+
+/**
+ * Encodes a parameter value.
+ *
+ * @note `ValueType` is used to explicitly specify the type of the value to encode.
+ *
+ * @param type - Type of the parameter.
+ * @param value - Value to encode.
+ * @returns Encoded parameter as a hexadecimal string.
+ */
+function encode<ValueType>(type: string | ParamType, value: ValueType): string {
+    try {
+        const encoded = ethersCoder.encode([type], [value]);
+        return encoded;
+    } catch {
+        throw new Error(ERRORS.ABI.INVALID_DATA_TO_ENCODE);
+    }
+}
+
+/**
+ * Decodes a parameter value.
+ *
+ * @note `ReturnType` is used to explicitly specify the return type (the decoded value) of the function.
+ *
+ * @param types - Types of parameters.
+ * @param data - Data to decode.
+ * @returns Decoded parameter value.
+ */
+function decode<ReturnType>(
+    types: string | ParamType,
+    data: BytesLike
+): ReturnType {
+    try {
+        const decoded = ethersCoder.decode([types], data).toArray();
+        return decoded[0] as ReturnType;
+    } catch {
+        throw new Error(ERRORS.ABI.INVALID_DATA_TO_DECODE);
+    }
+}
 
 /**
  * Allowed formats for the signature.
@@ -24,7 +70,7 @@ const allowedSignatureFormats = ['sighash', 'minimal', 'full', 'json'];
  */
 function getSignature(fragment: Fragment, formatType: FormatType): string {
     if (!allowedSignatureFormats.includes(formatType))
-        throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_FORMAT_TYPE);
+        throw new Error(ERRORS.ABI.INVALID_FORMAT_TYPE);
 
     return fragment.format(formatType);
 }
@@ -59,7 +105,7 @@ class Function<ABIType> {
             this.fragment = ethers.FunctionFragment.from(source);
             this.iface = new ethers.Interface([this.fragment]);
         } catch {
-            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_FUNCTION);
+            throw new Error(ERRORS.ABI.INVALID_FUNCTION);
         }
     }
 
@@ -92,7 +138,7 @@ class Function<ABIType> {
         try {
             return this.iface.decodeFunctionData(this.fragment, data);
         } catch {
-            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_DECODE);
+            throw new Error(ERRORS.ABI.INVALID_DATA_TO_DECODE);
         }
     }
 
@@ -106,7 +152,7 @@ class Function<ABIType> {
         try {
             return this.iface.encodeFunctionData(this.fragment, dataToEncode);
         } catch {
-            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_ENCODE);
+            throw new Error(ERRORS.ABI.INVALID_DATA_TO_ENCODE);
         }
     }
 }
@@ -141,7 +187,7 @@ class Event<ABIType> {
             this.fragment = ethers.EventFragment.from(source);
             this.iface = new ethers.Interface([this.fragment]);
         } catch {
-            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_EVENT);
+            throw new Error(ERRORS.ABI.INVALID_EVENT);
         }
     }
 
@@ -178,7 +224,7 @@ class Event<ABIType> {
                 data.topics
             );
         } catch {
-            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_DECODE);
+            throw new Error(ERRORS.ABI.INVALID_DATA_TO_DECODE);
         }
     }
 
@@ -195,7 +241,7 @@ class Event<ABIType> {
         try {
             return this.iface.encodeEventLog(this.fragment, dataToEncode);
         } catch {
-            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_ENCODE);
+            throw new Error(ERRORS.ABI.INVALID_DATA_TO_ENCODE);
         }
     }
 }
@@ -203,9 +249,11 @@ class Event<ABIType> {
 /**
  * Object containing high-level ABI representations.
  */
-const highLevel = {
+const abi = {
     Function,
-    Event
+    Event,
+    encode,
+    decode
 };
 
-export { highLevel };
+export { abi };
