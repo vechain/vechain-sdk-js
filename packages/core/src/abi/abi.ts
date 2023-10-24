@@ -76,7 +76,7 @@ function getSignature(fragment: Fragment, formatType: FormatType): string {
 }
 
 /**
- * Represents a function call in the high-level ABI.
+ * Represents a function call in the Event/Function ABI.
  *
  * @template ABIType - The ABI fragment type.
  */
@@ -158,7 +158,7 @@ class Function<ABIType> {
 }
 
 /**
- * Represents an event call in the high-level ABI.
+ * Represents an event call in the Event/Function ABI.
  *
  * @template ABIType - The ABI fragment type.
  */
@@ -247,7 +247,7 @@ class Event<ABIType> {
 }
 
 /**
- * Object containing high-level ABI representations.
+ * Object containing ABI representations.
  */
 const abi = {
     Function,

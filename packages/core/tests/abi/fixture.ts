@@ -93,7 +93,7 @@ const functions = [
 
 /**
  * Simple parameters for function 2 (functions[1]) fixture.
- * Used to test encoding and decoding of multiple parameters in low level abi tests.
+ * Used to test encoding and decoding of multiple parameters in encode/decode abi tests.
  */
 const simpleParametersDataForFunction2 = [
     {
