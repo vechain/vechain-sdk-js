@@ -4,8 +4,8 @@ on:
     pull_request:
 
 jobs:
-    doc-tests:
-        name: Docs Tests
+    doc-examples:
+        name: Execute doc examples
         runs-on: ubuntu-latest
         steps:
             - name: Checkout repository
@@ -14,15 +14,14 @@ jobs:
               uses: actions/setup-node@v3
               with:
                 node-version-file: .nvmrc
-            - name: Install
+            - name: Build SDK
               run:  |
+                rm -rf ./**/node_modules/
                 yarn install
-                cd docs
-                yarn install
-            - name: Build
-              run: yarn build
-            - name: Run examples
+                yarn build
+            - name: Test docs
               run: |
                 cd docs
-                yarn rundocs
+                yarn test:docs
+            
     

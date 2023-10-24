@@ -13,3 +13,6 @@ coverage
 
 # Turborepo
 .turbo
+
+# docs
+docs/build/*.md
