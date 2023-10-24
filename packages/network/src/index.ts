@@ -1,1 +1,5 @@
-console.log('Hello from core network');
+import * as network from './network';
+
+export { network };
+
+export * from './network';
