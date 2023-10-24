@@ -1,6 +1,7 @@
-import { ethers } from 'ethers';
 import { type ParamType, type BytesLike } from './types';
+import { ethers } from 'ethers';
 import { ERRORS } from '../utils';
+import { fragment } from './fragment';
 
 /**
  * Default AbiCoder instance from ethers.js.
@@ -21,7 +22,7 @@ function encode<ValueType>(type: string | ParamType, value: ValueType): string {
         const encoded = ethersCoder.encode([type], [value]);
         return encoded;
     } catch {
-        throw new Error(ERRORS.ABI.LOW_LEVEL.INVALID_DATA_TO_ENCODE);
+        throw new Error(ERRORS.ABI.INVALID_DATA_TO_ENCODE);
     }
 }
 
@@ -42,14 +43,17 @@ function decode<ReturnType>(
         const decoded = ethersCoder.decode([types], data).toArray();
         return decoded[0] as ReturnType;
     } catch {
-        throw new Error(ERRORS.ABI.LOW_LEVEL.INVALID_DATA_TO_DECODE);
+        throw new Error(ERRORS.ABI.INVALID_DATA_TO_DECODE);
     }
 }
 
-// Low-level functionalities
-const lowLevel = {
+/**
+ * Object containing ABI representations.
+ */
+const abi = {
+    ...fragment,
     encode,
     decode
 };
 
-export { lowLevel };
+export { abi };

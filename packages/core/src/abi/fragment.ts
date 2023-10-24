@@ -24,13 +24,13 @@ const allowedSignatureFormats = ['sighash', 'minimal', 'full', 'json'];
  */
 function getSignature(fragment: Fragment, formatType: FormatType): string {
     if (!allowedSignatureFormats.includes(formatType))
-        throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_FORMAT_TYPE);
+        throw new Error(ERRORS.ABI.INVALID_FORMAT_TYPE);
 
     return fragment.format(formatType);
 }
 
 /**
- * Represents a function call in the high-level ABI.
+ * Represents a function call in the Event/Function ABI.
  *
  * @template ABIType - The ABI fragment type.
  */
@@ -59,7 +59,7 @@ class Function<ABIType> {
             this.fragment = ethers.FunctionFragment.from(source);
             this.iface = new ethers.Interface([this.fragment]);
         } catch {
-            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_FUNCTION);
+            throw new Error(ERRORS.ABI.INVALID_FUNCTION);
         }
     }
 
@@ -92,7 +92,7 @@ class Function<ABIType> {
         try {
             return this.iface.decodeFunctionData(this.fragment, data);
         } catch {
-            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_DECODE);
+            throw new Error(ERRORS.ABI.INVALID_DATA_TO_DECODE);
         }
     }
 
@@ -106,13 +106,13 @@ class Function<ABIType> {
         try {
             return this.iface.encodeFunctionData(this.fragment, dataToEncode);
         } catch {
-            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_ENCODE);
+            throw new Error(ERRORS.ABI.INVALID_DATA_TO_ENCODE);
         }
     }
 }
 
 /**
- * Represents an event call in the high-level ABI.
+ * Represents an event call in the Event/Function ABI.
  *
  * @template ABIType - The ABI fragment type.
  */
@@ -141,7 +141,7 @@ class Event<ABIType> {
             this.fragment = ethers.EventFragment.from(source);
             this.iface = new ethers.Interface([this.fragment]);
         } catch {
-            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_EVENT);
+            throw new Error(ERRORS.ABI.INVALID_EVENT);
         }
     }
 
@@ -178,7 +178,7 @@ class Event<ABIType> {
                 data.topics
             );
         } catch {
-            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_DECODE);
+            throw new Error(ERRORS.ABI.INVALID_DATA_TO_DECODE);
         }
     }
 
@@ -195,17 +195,17 @@ class Event<ABIType> {
         try {
             return this.iface.encodeEventLog(this.fragment, dataToEncode);
         } catch {
-            throw new Error(ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_ENCODE);
+            throw new Error(ERRORS.ABI.INVALID_DATA_TO_ENCODE);
         }
     }
 }
 
 /**
- * Object containing high-level ABI representations.
+ * Object containing ABI representations.
  */
-const highLevel = {
+const fragment = {
     Function,
     Event
 };
 
-export { highLevel };
+export { fragment };

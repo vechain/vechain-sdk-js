@@ -1,13 +1,118 @@
 import { describe, expect, test } from '@jest/globals';
-import { events, functions } from './fixture';
+import {
+    events,
+    functions,
+    encodedDecodedInvalidValues,
+    encodedDecodedValues,
+    simpleParametersDataForFunction2
+} from './fixture';
 import { type FormatType, abi } from '../../src/abi';
 import { ERRORS } from '../../src';
+import { ParamType, type ethers } from 'ethers';
 
 /**
- * ABI tests - High level
- * @group unit/high-level-abi
+ * ABI tests - encode & decode
+ * @group unit/encode-decode
  */
-describe('Abi - High level', () => {
+describe('Abi - encode & decode', () => {
+    /**
+     * Test the encoding and decoding of a single parameter.
+     */
+    test('encode / decode single parameter', () => {
+        // Encode and Decode - NO Errors
+        encodedDecodedValues.forEach((encodedDecodedValue) => {
+            const encoded = abi.encode<string | string[]>(
+                encodedDecodedValue.type,
+                encodedDecodedValue.value
+            );
+
+            const decoded = abi.decode<bigint | string | object>(
+                encodedDecodedValue.type,
+                encodedDecodedValue.encoded
+            );
+
+            expect(encoded).toBe(encodedDecodedValue.encoded);
+
+            // @NOTE: this is used to avoid JEST error: 'TypeError: Do not know how to serialize a BigInt'
+            if (typeof decoded !== 'bigint') {
+                expect(decoded).toStrictEqual(encodedDecodedValue.value);
+            } else {
+                expect(decoded).toBe(
+                    BigInt(encodedDecodedValue.value as string)
+                );
+            }
+        });
+
+        // Encode and Decode - Errors
+        encodedDecodedInvalidValues.forEach((encodedDecodedValue) => {
+            expect(() =>
+                abi.encode(encodedDecodedValue.type, encodedDecodedValue.value)
+            ).toThrowError(ERRORS.ABI.INVALID_DATA_TO_ENCODE);
+
+            expect(() =>
+                abi.decode(
+                    encodedDecodedValue.type,
+                    encodedDecodedValue.encoded
+                )
+            ).toThrow(ERRORS.ABI.INVALID_DATA_TO_DECODE);
+        });
+    });
+
+    /**
+     * Test encoding and decoding of multiple parameters.
+     */
+    test('encode/decode more parameters', () => {
+        // Example encode of function 2 parameters
+        const encoded = abi.encode<
+            Array<{
+                master: string;
+                endorsor: string;
+                identity: string;
+                active: boolean;
+            }>
+        >(
+            ParamType.from(functions[1].objectAbi.outputs[0]),
+            simpleParametersDataForFunction2
+        );
+
+        // @NOTE: you can use encode and avoid types gymnastics.
+        // const encoded = abi.encode(
+        //     ParamType.from(functions[1].objectAbi.outputs[0]),
+        //     simpleParametersDataForFunction2
+        // );
+
+        // Example decode of function 2 parameters
+        const decoded = abi.decode<ethers.Result[][]>(
+            ParamType.from(functions[1].objectAbi.outputs[0]),
+            encoded
+        );
+
+        expect(encoded).toBe(
+            '0x000000000000000000000000000000000000000000000000000000000000002000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000e8fd586e022f825a109848832d7e552132bc332000000000000000000000000224626926a7a12225a60e127cec119c939db4a5cdbf2712e19af00dc4d376728f7cb06cc215c8e7c53b94cb47cefb4a26ada2a6c00000000000000000000000000000000000000000000000000000000000000000000000000000000000000004977d68df97bb313b23238520580d8d3a59939bf0000000000000000000000007ad1d568b3fe5bad3fc264aca70bc7bcd5e4a6ff83b137cf7e30864b8a4e56453eb1f094b4434685d86895de38ac2edcf5d3f5340000000000000000000000000000000000000000000000000000000000000000'
+        );
+
+        expect(decoded).toStrictEqual([
+            [
+                '0x0E8FD586E022F825A109848832D7E552132bC332',
+                '0x224626926A7A12225A60E127CEC119c939db4A5C',
+                '0xdbf2712e19af00dc4d376728f7cb06cc215c8e7c53b94cb47cefb4a26ada2a6c',
+                false
+            ],
+            [
+                '0x4977d68df97bb313B23238520580D8D3a59939BF',
+                '0x7Ad1D568B3fE5BAd3fC264AcA70Bc7Bcd5e4a6fF',
+                '0x83b137cf7e30864b8a4e56453eb1f094b4434685d86895de38ac2edcf5d3f534',
+                false
+            ]
+        ]);
+    });
+});
+
+/**
+ * ABI tests - Function & Event
+ * @group unit/function-event
+ */
+describe('Abi - Function & Event', () => {
     /**
      * Functions
      */
@@ -60,14 +165,11 @@ describe('Abi - High level', () => {
                     functionMultiformat.forEach((functionFormat) => {
                         // Create a function from the format without any problems
                         expect(
-                            () =>
-                                new abi.highLevel.Function(
-                                    functionFormat.format
-                                )
+                            () => new abi.Function(functionFormat.format)
                         ).not.toThrow();
 
                         // Create a function from the format without any problems
-                        const myFunction = new abi.highLevel.Function(
+                        const myFunction = new abi.Function(
                             functionFormat.format
                         );
 
@@ -118,25 +220,25 @@ describe('Abi - High level', () => {
          * Invalid function
          */
         test('Invalid function', () => {
-            expect(
-                () => new abi.highLevel.Function('INVALID_VALUE')
-            ).toThrowError(ERRORS.ABI.HIGH_LEVEL.INVALID_FUNCTION);
+            expect(() => new abi.Function('INVALID_VALUE')).toThrowError(
+                ERRORS.ABI.INVALID_FUNCTION
+            );
         });
 
         /**
          * Invalid decode and encode
          */
         test('Invalid decode and encode', () => {
-            const myFunction = new abi.highLevel.Function(functions[0].full);
+            const myFunction = new abi.Function(functions[0].full);
 
             // Encode
             expect(() =>
                 myFunction.encodeInput([1, 2, 'INVALID'])
-            ).toThrowError(ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_ENCODE);
+            ).toThrowError(ERRORS.ABI.INVALID_DATA_TO_ENCODE);
 
             // Decode
             expect(() => myFunction.decodeOutput('INVALID')).toThrowError(
-                ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_DECODE
+                ERRORS.ABI.INVALID_DATA_TO_DECODE
             );
         });
 
@@ -144,10 +246,10 @@ describe('Abi - High level', () => {
          * Invalid sighash
          */
         test('Invalid signature format type', () => {
-            const myFunction = new abi.highLevel.Function(functions[0].full);
+            const myFunction = new abi.Function(functions[0].full);
             const invalidFormat = 'invalid' as FormatType;
             expect(() => myFunction.signature(invalidFormat)).toThrowError(
-                ERRORS.ABI.HIGH_LEVEL.INVALID_FORMAT_TYPE
+                ERRORS.ABI.INVALID_FORMAT_TYPE
             );
         });
     });
@@ -204,13 +306,11 @@ describe('Abi - High level', () => {
                     eventMultiformat.forEach((eventFormat) => {
                         // Create an event from the format without any problems
                         expect(
-                            () => new abi.highLevel.Event(eventFormat.format)
+                            () => new abi.Event(eventFormat.format)
                         ).not.toThrow();
 
                         // Create an event from the format without any problems
-                        const myEvent = new abi.highLevel.Event(
-                            eventFormat.format
-                        );
+                        const myEvent = new abi.Event(eventFormat.format);
 
                         // Expect to have a signature in each format
                         expect(myEvent.signature('full')).toBeDefined();
@@ -247,8 +347,8 @@ describe('Abi - High level', () => {
          * Invalid event
          */
         test('Invalid event', () => {
-            expect(() => new abi.highLevel.Event('INVALID_VALUE')).toThrowError(
-                ERRORS.ABI.HIGH_LEVEL.INVALID_EVENT
+            expect(() => new abi.Event('INVALID_VALUE')).toThrowError(
+                ERRORS.ABI.INVALID_EVENT
             );
         });
 
@@ -256,12 +356,12 @@ describe('Abi - High level', () => {
          * Invalid decode and encode
          */
         test('Invalid decode and encode', () => {
-            const myEvent = new abi.highLevel.Event(events[0].full);
+            const myEvent = new abi.Event(events[0].full);
 
             // Encode
             expect(() =>
                 myEvent.encodeEventLog([1, 2, 'INVALID'])
-            ).toThrowError(ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_ENCODE);
+            ).toThrowError(ERRORS.ABI.INVALID_DATA_TO_ENCODE);
 
             // Decode
             expect(() =>
@@ -269,17 +369,17 @@ describe('Abi - High level', () => {
                     data: 'INVALID',
                     topics: ['INVALID_1', 'INVALID_2']
                 })
-            ).toThrowError(ERRORS.ABI.HIGH_LEVEL.INVALID_DATA_TO_DECODE);
+            ).toThrowError(ERRORS.ABI.INVALID_DATA_TO_DECODE);
         });
 
         /**
          * Invalid sighash
          */
         test('Invalid signature format type', () => {
-            const myEvent = new abi.highLevel.Event(events[0].full);
+            const myEvent = new abi.Event(events[0].full);
             const invalidFormat = 'invalid' as FormatType;
             expect(() => myEvent.signature(invalidFormat)).toThrowError(
-                ERRORS.ABI.HIGH_LEVEL.INVALID_FORMAT_TYPE
+                ERRORS.ABI.INVALID_FORMAT_TYPE
             );
         });
     });
