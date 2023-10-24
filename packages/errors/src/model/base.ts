@@ -12,7 +12,7 @@ import type { ErrorCode } from '../types/errorTypes';
 export class ErrorBase<ErrorCodeT extends ErrorCode, DataTypeT> extends Error {
     code: ErrorCodeT;
     message: string;
-    data: DataTypeT;
+    data?: DataTypeT;
     constructor({
         code,
         message,
@@ -20,7 +20,7 @@ export class ErrorBase<ErrorCodeT extends ErrorCode, DataTypeT> extends Error {
     }: {
         code: ErrorCodeT;
         message: string;
-        data: DataTypeT;
+        data?: DataTypeT;
     }) {
         super();
         this.code = code;
