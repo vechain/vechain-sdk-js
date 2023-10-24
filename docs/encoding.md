@@ -15,7 +15,7 @@ import { abi } from '@vechain-sdk/core';
 import { expect } from 'expect';
 
 // Create a new function
-const simpleAbiFunction = new abi.highLevel.Function({
+const simpleAbiFunction = new abi.Function({
     constant: false,
     inputs: [
         {
