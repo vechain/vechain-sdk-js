@@ -1,3 +1,9 @@
+import {
+    type WordListRandomGeneratorSizeInBytes,
+    type WordlistSizeType
+} from '../../src';
+import { randomBytes } from 'crypto';
+
 /**
  * Mnemonic words fixture.
  */
@@ -5,6 +11,22 @@ const words =
     'ignore empty bird silly journey junior ripple have guard waste between tenant'.split(
         ' '
     );
+
+/**
+ * Different lengths of mnemonic words fixture.
+ */
+const lenghtsMnemonicWords: WordlistSizeType[] = [12, 15, 18, 21, 24];
+
+/**
+ * Custom random generator with XOR
+ */
+const customRandomGeneratorWithXor = (
+    numberOfBytes: WordListRandomGeneratorSizeInBytes
+): Buffer => {
+    const r1 = randomBytes(numberOfBytes);
+    const r2 = randomBytes(numberOfBytes);
+    return Buffer.from(r1.map((byte, index) => byte ^ r2[index]));
+};
 
 /**
  * Derivation path fixture (using the words fixture above)
@@ -45,4 +67,10 @@ const derivationPaths = [
  */
 const wrongDerivationPath = '0/1/4/2/4/h';
 
-export { words, derivationPaths, wrongDerivationPath };
+export {
+    words,
+    derivationPaths,
+    wrongDerivationPath,
+    lenghtsMnemonicWords,
+    customRandomGeneratorWithXor
+};
