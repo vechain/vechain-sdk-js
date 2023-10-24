@@ -161,7 +161,7 @@ export type ErrorType<ErrorCodeT> =
  * The class is used to construct the error object.
  * @param ErrorCodeT - The error code type from the error types enum.
  */
-const ErrorClassMap = new Map<
+export const ErrorClassMap = new Map<
     ErrorCode,
     typeof ErrorBase<ErrorCode, DataType<ErrorCode>>
 >([
@@ -187,13 +187,3 @@ const ErrorClassMap = new Map<
     [RLP.INVALID_RLP, InvalidRLPError],
     [DATA.INVALID_DATA_TYPE, InvalidDataTypeError]
 ]);
-
-export function ErrorClassConstructor(
-    errorCode: ErrorCode
-): typeof ErrorBase<ErrorCode, DataType<ErrorCode>> {
-    const ErrorClass = ErrorClassMap.get(errorCode);
-    if (ErrorClass === undefined || ErrorClass === null) {
-        throw new Error('Unknown error code');
-    }
-    return ErrorClass;
-}
