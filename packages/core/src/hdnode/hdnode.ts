@@ -19,7 +19,7 @@ import { secp256k1 } from '../secp256k1';
  * @throws {Error} When the mnemonic words are invalid.
  */
 function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
-    if (words.length !== 12) {
+    if (![12, 15, 18, 21, 24].includes(words.length)) {
         throw new Error(ERRORS.HDNODE.INVALID_MNEMONICS);
     }
     // normalize words to lowercase
