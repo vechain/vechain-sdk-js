@@ -18,7 +18,7 @@ import { ERRORS } from '../utils';
  * @returns Mnemonic words
  */
 function generate(
-    wordlistSize?: 12 | 15 | 18 | 21 | 24,
+    wordlistSize?: WordlistSizeType,
     randomGenerator?: (
         numberOfBytes: WordListRandomGeneratorSizeInBytes
     ) => Buffer
@@ -31,7 +31,7 @@ function generate(
  * @param wordlistSize - Wordlist size expected. Every 4 bytes produce 3 words.
  * @returns Mnemonic words
  */
-function generate(wordlistSize?: 12 | 15 | 18 | 21 | 24): string[];
+function generate(wordlistSize?: WordlistSizeType): string[];
 
 /* --- Overloaded functions end --- */
 
