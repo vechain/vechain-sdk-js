@@ -18,15 +18,13 @@ import {
     InvalidKeystoreError,
     InvalidKeystorePasswordError
 } from '../model/keystore';
-import { InvalidRLPError } from '../model/rlp';
+import { InvalidRLPError, type InvalidRLPErrorData } from '../model/rlp';
 import {
     InvalidMessageHashError,
     InvalidPrivateKeyError,
     InvalidSignatureError,
     InvalidSignatureRecoveryError
 } from '../model/secp256k1';
-
-import type { InvalidPrivateKeyErrorData } from '../model/secp256k1';
 
 export enum SECP256K1 {
     INVALID_PRIVATE_KEY = 'INVALID_PRIVATE_KEY',
@@ -106,9 +104,7 @@ export const ERROR_CODES = {
  * @param ErrorCodeT - The error code type from the error types enum.
  */
 export type DataType<ErrorCodeT extends ErrorCode> =
-    ErrorCodeT extends SECP256K1.INVALID_PRIVATE_KEY
-        ? InvalidPrivateKeyErrorData
-        : DefaultErrorData;
+    ErrorCodeT extends RLP.INVALID_RLP ? InvalidRLPErrorData : DefaultErrorData;
 
 /**
  * Conditional type to get the error type from the error code.

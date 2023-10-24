@@ -1,10 +1,6 @@
 import { ErrorBase } from '.';
 import type { DefaultErrorData, SECP256K1 } from '../types';
 
-export interface InvalidPrivateKeyErrorData {
-    reason: string;
-}
-
 /**
  * Error to be thrown when the private key is invalid.
  * @param code - The error code from the error types enum.
@@ -14,7 +10,7 @@ export interface InvalidPrivateKeyErrorData {
  */
 export class InvalidPrivateKeyError extends ErrorBase<
     SECP256K1.INVALID_PRIVATE_KEY,
-    InvalidPrivateKeyErrorData
+    DefaultErrorData
 > {}
 
 /**

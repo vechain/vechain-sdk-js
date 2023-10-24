@@ -1,5 +1,9 @@
-import type { DefaultErrorData, RLP } from '../types';
+import type { RLP } from '../types';
 import { ErrorBase } from './base';
+
+export interface InvalidRLPErrorData {
+    context: string;
+}
 
 /**
  * Invalid RLP error to be thrown when an invalid RLP is detected.
@@ -10,5 +14,5 @@ import { ErrorBase } from './base';
  */
 export class InvalidRLPError extends ErrorBase<
     RLP.INVALID_RLP,
-    DefaultErrorData
+    InvalidRLPErrorData
 > {}
