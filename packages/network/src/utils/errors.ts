@@ -9,7 +9,7 @@ import { type AxiosError } from 'axios';
  * @param error - The AxiosError to convert into an Error.
  * @returns A standard Error with a descriptive message.
  */
-function convertError(error: AxiosError): Error {
+const convertError = (error: AxiosError): Error => {
     if (error.response != null) {
         const resp = error.response;
         if (typeof resp.data === 'string') {
@@ -30,6 +30,6 @@ function convertError(error: AxiosError): Error {
             `${error.config?.method} ${error.config?.url}: ${error.message}`
         );
     }
-}
+};
 
 export { convertError };
