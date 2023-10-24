@@ -14,7 +14,7 @@ describe('Abi errors', () => {
         expect(
             buildError(
                 ERROR_CODES.ABI.INVALID_DATA_TO_DECODE,
-                'Invalid abi high level data to decode'
+                'Invalid abi data to decode'
             )
         ).toBeInstanceOf(InvalidAbiDataToDecodeError);
     });
@@ -22,32 +22,26 @@ describe('Abi errors', () => {
         expect(
             buildError(
                 ERROR_CODES.ABI.INVALID_DATA_TO_ENCODE,
-                'Invalid abi high level data to encode'
+                'Invalid abi data to encode'
             )
         ).toBeInstanceOf(InvalidAbiDataToEncodeError);
     });
     test('buildInvalidAbiEventError', () => {
         expect(
-            buildError(
-                ERROR_CODES.ABI.INVALID_EVENT,
-                'Invalid abi high level event'
-            )
+            buildError(ERROR_CODES.ABI.INVALID_EVENT, 'Invalid abi event')
         ).toBeInstanceOf(InvalidAbiEventError);
     });
     test('buildInvalidAbiFormatTypeError', () => {
         expect(
             buildError(
                 ERROR_CODES.ABI.INVALID_FORMAT_TYPE,
-                'Invalid abi high level format type'
+                'Invalid abi format type'
             )
         ).toBeInstanceOf(InvalidAbiFormatTypeError);
     });
     test('buildInvalidAbiFunctionError', () => {
         expect(
-            buildError(
-                ERROR_CODES.ABI.INVALID_FUNCTION,
-                'Invalid abi high level function'
-            )
+            buildError(ERROR_CODES.ABI.INVALID_FUNCTION, 'Invalid abi function')
         ).toBeInstanceOf(InvalidAbiFunctionError);
     });
 });

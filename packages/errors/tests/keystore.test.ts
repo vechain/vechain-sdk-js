@@ -6,7 +6,7 @@ import {
     InvalidKeystorePasswordError
 } from '../src/model/keystore';
 
-describe('Address errors', () => {
+describe('Keystore errors', () => {
     test('buildInvalidKeystoreError', () => {
         expect(
             buildError(
