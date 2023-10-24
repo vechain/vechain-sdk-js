@@ -16,10 +16,9 @@ jobs:
                 node-version-file: .nvmrc
             - name: Build SDK
               run:  |
+                rm -rf ./**/node_modules/
                 yarn install
                 yarn build
-                cd docs
-                yarn install
             - name: Test docs
               run: |
                 cd docs
