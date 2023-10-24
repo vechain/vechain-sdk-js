@@ -1,4 +1,4 @@
-import type { ABI_HIGH_LEVEL, ABI_LOW_LEVEL, DefaultErrorData } from '../types';
+import type { ABI, DefaultErrorData } from '../types';
 import { ErrorBase } from './base';
 
 /**
@@ -8,8 +8,8 @@ import { ErrorBase } from './base';
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidAbiHighLevelDataToDecodeError extends ErrorBase<
-    ABI_HIGH_LEVEL.INVALID_DATA_TO_DECODE,
+export class InvalidAbiDataToDecodeError extends ErrorBase<
+    ABI.INVALID_DATA_TO_DECODE,
     DefaultErrorData
 > {}
 
@@ -20,8 +20,8 @@ export class InvalidAbiHighLevelDataToDecodeError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidAbiHighLevelDataToEncodeError extends ErrorBase<
-    ABI_HIGH_LEVEL.INVALID_DATA_TO_ENCODE,
+export class InvalidAbiDataToEncodeError extends ErrorBase<
+    ABI.INVALID_DATA_TO_ENCODE,
     DefaultErrorData
 > {}
 
@@ -33,7 +33,7 @@ export class InvalidAbiHighLevelDataToEncodeError extends ErrorBase<
  * @returns The error object.
  */
 export class InvalidAbiEventError extends ErrorBase<
-    ABI_HIGH_LEVEL.INVALID_EVENT,
+    ABI.INVALID_EVENT,
     DefaultErrorData
 > {}
 
@@ -45,7 +45,7 @@ export class InvalidAbiEventError extends ErrorBase<
  * @returns The error object.
  */
 export class InvalidAbiFormatTypeError extends ErrorBase<
-    ABI_HIGH_LEVEL.INVALID_FORMAT_TYPE,
+    ABI.INVALID_FORMAT_TYPE,
     DefaultErrorData
 > {}
 
@@ -57,30 +57,6 @@ export class InvalidAbiFormatTypeError extends ErrorBase<
  * @returns The error object.
  */
 export class InvalidAbiFunctionError extends ErrorBase<
-    ABI_HIGH_LEVEL.INVALID_FUNCTION,
-    DefaultErrorData
-> {}
-
-/**
- * Invalid function error to be thrown when an invalid function is detected.
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @returns The error object.
- */
-export class InvalidAbiLowLevelDataToDecodeError extends ErrorBase<
-    ABI_LOW_LEVEL.INVALID_DATA_TO_DECODE,
-    DefaultErrorData
-> {}
-
-/**
- * Invalid data to encode error to be thrown when an invalid data is detected during encoding.
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @returns The error object.
- */
-export class InvalidAbiLowLevelDataToEncodeError extends ErrorBase<
-    ABI_LOW_LEVEL.INVALID_DATA_TO_ENCODE,
+    ABI.INVALID_FUNCTION,
     DefaultErrorData
 > {}

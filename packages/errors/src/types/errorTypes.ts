@@ -3,9 +3,8 @@ import {
     InvalidAbiEventError,
     InvalidAbiFormatTypeError,
     InvalidAbiFunctionError,
-    InvalidAbiHighLevelDataToDecodeError,
-    InvalidAbiHighLevelDataToEncodeError,
-    InvalidAbiLowLevelDataToDecodeError
+    InvalidAbiDataToEncodeError,
+    InvalidAbiDataToDecodeError
 } from '../model/abi';
 import { InvalidAddressError, InvalidChecksumError } from '../model/address';
 import { InvalidBloomError, InvalidKError } from '../model/bloom';
@@ -58,17 +57,12 @@ export enum BLOOM {
     INVALID_K = 'INVALID_K'
 }
 
-export enum ABI_HIGH_LEVEL {
+export enum ABI {
     INVALID_FUNCTION = 'INVALID_FUNCTION',
     INVALID_EVENT = 'INVALID_EVENT',
     INVALID_DATA_TO_DECODE = 'INVALID_DATA_TO_DECODE',
     INVALID_DATA_TO_ENCODE = 'INVALID_DATA_TO_ENCODE',
     INVALID_FORMAT_TYPE = 'INVALID_FORMAT_TYPE'
-}
-
-export enum ABI_LOW_LEVEL {
-    INVALID_DATA_TO_DECODE = 'INVALID_DATA_TO_DECODE',
-    INVALID_DATA_TO_ENCODE = 'INVALID_DATA_TO_ENCODE'
 }
 
 export enum RLP {
@@ -85,8 +79,7 @@ export type ErrorCode =
     | KEYSTORE
     | HDNODE
     | BLOOM
-    | ABI_HIGH_LEVEL
-    | ABI_LOW_LEVEL
+    | ABI
     | RLP
     | DATA;
 
@@ -96,7 +89,16 @@ export type ErrorCode =
  */
 export type DefaultErrorData = Record<string, unknown>;
 
-export const ERROR_CODES = { SECP256K1, ADDRESS };
+export const ERROR_CODES = {
+    SECP256K1,
+    ADDRESS,
+    KEYSTORE,
+    HDNODE,
+    BLOOM,
+    ABI,
+    RLP,
+    DATA
+};
 
 /**
  * Conditional type to get the error data type from the error code.
@@ -142,20 +144,16 @@ export type ErrorType<ErrorCodeT> =
         ? InvalidBloomError
         : ErrorCodeT extends BLOOM.INVALID_K
         ? InvalidKError
-        : ErrorCodeT extends ABI_HIGH_LEVEL.INVALID_EVENT
+        : ErrorCodeT extends ABI.INVALID_EVENT
         ? InvalidAbiEventError
-        : ErrorCodeT extends ABI_HIGH_LEVEL.INVALID_DATA_TO_DECODE
-        ? InvalidAbiHighLevelDataToDecodeError
-        : ErrorCodeT extends ABI_HIGH_LEVEL.INVALID_DATA_TO_ENCODE
-        ? InvalidAbiHighLevelDataToEncodeError
-        : ErrorCodeT extends ABI_HIGH_LEVEL.INVALID_FORMAT_TYPE
+        : ErrorCodeT extends ABI.INVALID_DATA_TO_DECODE
+        ? InvalidAbiDataToDecodeError
+        : ErrorCodeT extends ABI.INVALID_DATA_TO_ENCODE
+        ? InvalidAbiDataToEncodeError
+        : ErrorCodeT extends ABI.INVALID_FORMAT_TYPE
         ? InvalidAbiFormatTypeError
-        : ErrorCodeT extends ABI_HIGH_LEVEL.INVALID_FUNCTION
+        : ErrorCodeT extends ABI.INVALID_FUNCTION
         ? InvalidAbiFunctionError
-        : ErrorCodeT extends ABI_LOW_LEVEL.INVALID_DATA_TO_DECODE
-        ? InvalidAbiLowLevelDataToDecodeError
-        : ErrorCodeT extends ABI_LOW_LEVEL.INVALID_DATA_TO_ENCODE
-        ? InvalidAbiHighLevelDataToEncodeError
         : ErrorCodeT extends RLP.INVALID_RLP
         ? InvalidRLPError
         : ErrorCodeT extends DATA.INVALID_DATA_TYPE
@@ -185,22 +183,11 @@ export const ErrorClassMap = new Map<
     [HDNODE.INVALID_PUBLICKEY, InvalidPublicKeyError],
     [BLOOM.INVALID_BLOOM, InvalidBloomError],
     [BLOOM.INVALID_K, InvalidKError],
-    [ABI_HIGH_LEVEL.INVALID_EVENT, InvalidAbiEventError],
-    [
-        ABI_HIGH_LEVEL.INVALID_DATA_TO_DECODE,
-        InvalidAbiHighLevelDataToDecodeError
-    ],
-    [
-        ABI_HIGH_LEVEL.INVALID_DATA_TO_ENCODE,
-        InvalidAbiHighLevelDataToEncodeError
-    ],
-    [ABI_HIGH_LEVEL.INVALID_FORMAT_TYPE, InvalidAbiFormatTypeError],
-    [ABI_HIGH_LEVEL.INVALID_FUNCTION, InvalidAbiFunctionError],
-    [ABI_LOW_LEVEL.INVALID_DATA_TO_DECODE, InvalidAbiLowLevelDataToDecodeError],
-    [
-        ABI_LOW_LEVEL.INVALID_DATA_TO_ENCODE,
-        InvalidAbiHighLevelDataToEncodeError
-    ],
+    [ABI.INVALID_EVENT, InvalidAbiEventError],
+    [ABI.INVALID_DATA_TO_DECODE, InvalidAbiDataToDecodeError],
+    [ABI.INVALID_DATA_TO_ENCODE, InvalidAbiDataToEncodeError],
+    [ABI.INVALID_FORMAT_TYPE, InvalidAbiFormatTypeError],
+    [ABI.INVALID_FUNCTION, InvalidAbiFunctionError],
     [RLP.INVALID_RLP, InvalidRLPError],
     [DATA.INVALID_DATA_TYPE, InvalidDataTypeError]
 ]);
