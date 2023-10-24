@@ -13,7 +13,7 @@ import { convertError } from '../utils';
  * @public
  */
 class SimpleNet implements Net {
-    private readonly axios: AxiosInstance;
+    protected readonly axios: AxiosInstance;
 
     /**
      * Creates a new `SimpleNet` instance with the specified base URL, HTTP timeout, and WebSocket timeout.
@@ -60,7 +60,7 @@ class SimpleNet implements Net {
                 const responseHeaders: Record<string, string> = {};
 
                 for (const key in resp.headers) {
-                    const value = resp.headers[key] as string;
+                    const value: unknown = resp.headers[key];
 
                     if (typeof value === 'string') {
                         responseHeaders[key] = value;
