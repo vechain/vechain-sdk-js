@@ -9,7 +9,7 @@ The official JavaScript SDK for vechain.
 * `./demos` Demo projects
 * `./packages` Packages of monorepo
    * `./packages/core` Core module. It contains all core SDK operations (Hash, cryptography, ...)
-   * `./packages/network` Network module. It contains all network SDK operations (Transaction spread, Blockchain interaztion, ...)  
+   * `./packages/network` Network module. It contains all network SDK operations (Transaction spread, Blockchain interaction, ...)  
 
 # SDK Development
 This section explains how to work with SDK.
@@ -20,7 +20,7 @@ After forking the repository, first install all dependencies with `yarn` command
 This command will install all dependencies and you will be ready to [build](#build), [test](#test), [lint](#lint) and [publish](#publish)
 
 ## Build
-This project uses yarn and turporepo. You can build project with `yarn build` command.
+This project uses yarn and turporepo. You can build the project with `yarn build` command.
 
 ## Test
 To perform all tests use `yarn test` command.
@@ -32,9 +32,9 @@ To lint all packages use `yarn lint` command.
 ... TBD ...
 
 # Examples
-The `./docs` folder contains multiple real code examples
+The `./docs` folder contains multiple real code examples.
 
-These are written as executable examples
+These are written as executable examples.
 
 [More Details](./docs/README.md)
 
