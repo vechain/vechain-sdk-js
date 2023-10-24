@@ -23,6 +23,11 @@ describe('Tests of convertError function', () => {
                     currentConvertError.customAxiosError
                 );
 
+                // Assert that the returned Error has the expected properties
+                expect(
+                    currentConvertError.customAxiosError.toJSON()
+                ).toStrictEqual({});
+
                 // Assert that the returned Error message matches the expected format
                 expect(error.message).toBe(currentConvertError.expected);
             });
