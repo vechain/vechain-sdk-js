@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import {
     ERRORS,
+    MNEMONIC_WORDLIST_ALLOWED_SIZES,
     VET_DERIVATION_PATH,
     X_PRIV_PREFIX,
     X_PUB_PREFIX
@@ -9,6 +10,7 @@ import { type IHDNode } from './types';
 import { address } from '../address';
 import { sha256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
+import { type WordlistSizeType } from '../mnemonic';
 
 /**
  * Generates an HDNode instance using mnemonic words.
@@ -19,7 +21,11 @@ import { secp256k1 } from '../secp256k1';
  * @throws {Error} When the mnemonic words are invalid.
  */
 function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
-    if (words.length !== 12) {
+    if (
+        !MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(
+            words.length as WordlistSizeType
+        )
+    ) {
         throw new Error(ERRORS.HDNODE.INVALID_MNEMONICS);
     }
     // normalize words to lowercase
