@@ -18,7 +18,7 @@ describe('Test SimpleNet class on Testnet', () => {
         expect(JSON.stringify(response)).toEqual(
             JSON.stringify(firstTestnetBlock)
         );
-    });
+    }, 10000);
 
     /**
      * HTTP Request tests rejecting with an error
@@ -28,7 +28,7 @@ describe('Test SimpleNet class on Testnet', () => {
         await expect(network.http('GET', '/error-test-path')).rejects.toThrow(
             '404 get /error-test-path: 404 page not found'
         );
-    });
+    }, 10000);
 
     /**
      * Request params validation
@@ -56,5 +56,5 @@ describe('Test SimpleNet class on Testnet', () => {
 
         // You can also check the response data if needed
         expect(response).toBeDefined();
-    });
+    }, 10000);
 });
