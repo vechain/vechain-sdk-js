@@ -14,3 +14,6 @@ coverage/lcov.info
 
 # Turborepo
 .turbo
+
+# docs
+docs/build/*.md

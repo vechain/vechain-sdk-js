@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { randomBytes } from 'crypto';
-import { HDNode } from '../hdnode/hdnode';
+import { HDNode } from '../hdnode';
 import {
     type WordListRandomGeneratorSizeInBytes,
     type WordlistSizeType

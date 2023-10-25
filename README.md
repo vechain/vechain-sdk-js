@@ -17,7 +17,7 @@ This section explains how to work with SDK.
 ## Installation
 After forking the repository, first install all dependencies with `yarn` command.
 
-This command will install all dependencies and you will be ready to [build](#build), [test](#test), [lint](#lint) and [publish](#publish)
+This command will install all dependencies, and you will be ready to [build](#build), [test](#test), [lint](#lint) and [publish](#publish)
 
 ## Build
 This project uses yarn and turporepo. You can build the project with `yarn build` command.

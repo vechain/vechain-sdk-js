@@ -58,24 +58,4 @@ interface NetParams {
     validateResponseHeader: (headers: Record<string, string>) => void;
 }
 
-/**
- * Interface representing a WebSocket reader.
- * WebSocket readers allow you to read data from a WebSocket connection.
- *
- * @public
- */
-interface NetWebSocketReader {
-    /**
-     * Read data from the WebSocket connection.
-     *
-     * @returns A promise that resolves with the data read from the WebSocket.
-     */
-    read: () => Promise<unknown>;
-
-    /**
-     * Close the WebSocket reader and terminate the connection.
-     */
-    close: () => void;
-}
-
-export type { Net, NetParams, NetWebSocketReader };
+export type { Net, NetParams };

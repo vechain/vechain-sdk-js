@@ -15,6 +15,12 @@
             "outputs": ["coverage/**"]
         },
         "lint": {},
-        "format": {}
+        "format": {},
+        "test:docs": {
+            "dependsOn": ["^build"]
+        },
+        "test:examples": {
+            "dependsOn": ["^build"]
+        }
     }
 }

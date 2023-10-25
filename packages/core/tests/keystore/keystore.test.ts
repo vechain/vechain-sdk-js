@@ -1,9 +1,6 @@
 import { describe, test, expect } from '@jest/globals';
-import { secp256k1 } from '../../src/secp256k1/secp256k1';
-import { address } from '../../src/address/address';
-import { ERRORS } from '../../src/utils/errors';
-import { keystore } from '../../src/keystore/keystore';
-import { type Keystore } from '../../src/keystore/types';
+import { secp256k1, address, ERRORS, keystore } from '../../src';
+import { type Keystore } from '../../src';
 import { encryptionPassword } from './fixture';
 
 /**
