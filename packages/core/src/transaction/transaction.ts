@@ -9,9 +9,9 @@ import {
     SIGNATURE_LENGTH,
     SIGNED_TRANSACTION_RLP,
     TRANSACTION_FEATURES_KIND,
-    UNSIGNED_TRANSACTION_RLP
+    UNSIGNED_TRANSACTION_RLP,
+    TransactionUtils
 } from '../utils';
-import { TransactionUtils } from '../utils/transaction';
 import { type TransactionBody } from './types';
 
 /**
@@ -110,7 +110,6 @@ class Transaction {
     /**
      * Determines whether the transaction is signed or not.
      *
-     * @param transaction - Transaction to check
      * @returns If transaction is signed or not
      */
     public get isSigned(): boolean {
@@ -161,7 +160,6 @@ class Transaction {
      * )
      * ```
      *
-     * @param transaction - Transaction of which we want to compute the signing hash
      * @param delegateFor - Address of the delegator
      * @returns Signing hash of the transaction
      */

@@ -9,8 +9,8 @@ import { ERRORS } from '../utils';
  * This function allows hashing multiple data items (Buffers or strings) in a single hash context,
  * aggregating the hash of all these items into a single result.
  *
- * @param ...data - One or more data items (either Buffer or string) to be hashed.
- * @returns A Buffer containing the 256-bit blake2b hash of the provided data.
+ * @param data - One or more data items (either Buffer or string) to be hashed.
+ * @returns {Buffer} A Buffer containing the 256-bit blake2b hash of the provided data.
  */
 function _blake2b256(...data: Array<Buffer | string>): Buffer {
     const ctx = blake.blake2bInit(32);
@@ -40,7 +40,8 @@ function blake2b256(data: HashInput): Buffer;
  * Returns the hash as a Buffer.
  *
  * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
- * @returns A Buffer containing the 256-bit blake2b hash of the provided data.
+ * @param returnType - The format in which to return the hash. Either 'buffer' or 'hex'.
+ * @returns {Buffer} A Buffer containing the 256-bit blake2b hash of the provided data.
  */
 function blake2b256(data: HashInput, returnType: 'buffer'): Buffer;
 
@@ -49,7 +50,8 @@ function blake2b256(data: HashInput, returnType: 'buffer'): Buffer;
  * Returns the hash as a hex string, prefixed with `0x`.
  *
  * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
- * @returns A string representing the hexadecimal format of the 256-bit blake2b hash, prefixed with `0x`.
+ * @param returnType - The format in which to return the hash. Either 'hex' or 'buffer'.
+ * @returns {string} A string representing the hexadecimal format of the 256-bit blake2b hash, prefixed with `0x`.
  */
 function blake2b256(data: HashInput, returnType: 'hex'): string;
 

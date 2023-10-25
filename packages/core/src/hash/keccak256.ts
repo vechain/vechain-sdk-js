@@ -19,7 +19,8 @@ function keccak256(data: HashInput): Buffer;
  * Returns the hash as a Buffer.
  *
  * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
- * @returns A Buffer containing the 256-bit keccak256 hash of the provided data.
+ * @param returnType - The format in which to return the hash. Either 'buffer' or 'hex'.
+ * @returns {Buffer} A Buffer containing the 256-bit keccak256 hash of the provided data.
  */
 function keccak256(data: HashInput, returnType: 'buffer'): Buffer;
 
@@ -28,7 +29,8 @@ function keccak256(data: HashInput, returnType: 'buffer'): Buffer;
  * Returns the hash as a hex string, prefixed with `0x`.
  *
  * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
- * @returns A string representing the hexadecimal format of the 256-bit keccak256 hash, prefixed with `0x`.
+ * @param returnType - The format in which to return the hash. Either 'hex' or 'buffer'.
+ * @returns {string} A string representing the hexadecimal format of the 256-bit keccak256 hash, prefixed with `0x`.
  */
 function keccak256(data: HashInput, returnType: 'hex'): string;
 

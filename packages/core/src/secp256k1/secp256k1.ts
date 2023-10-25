@@ -119,6 +119,7 @@ function recover(msgHash: Buffer, sig: Buffer): Buffer {
  * Convert extended public key to array public key (compressed or uncompressed)
  *
  * @param extendedPublicKey extended public key
+ * @param compact if public key should be compressed or not
  * @returns array public key
  */
 function extendedPublicKeyToArray(
