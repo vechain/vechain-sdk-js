@@ -4,8 +4,9 @@ import { firstTestnetBlock, network, testAccount } from './fixture';
 
 /**
  * SimpleNet class tests
+ * @group integration/network
  */
-describe('Test SimpleNet class', () => {
+describe('Test SimpleNet class on Testnet', () => {
     /**
      * HTTP Request tests
      */
