@@ -27,4 +27,4 @@ jobs:
               with:
                 name: coverage-results
                 path: |
-                  packages/**/lcov.info
+                  coverage/lcov.info
