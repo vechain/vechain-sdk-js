@@ -24,7 +24,7 @@ interface Net {
         method: 'GET' | 'POST',
         path: string,
         params?: NetParams
-    ) => Promise<unknown>;
+    ) => Promise<Connex.Thor.Block | null | undefined>;
 }
 
 /**
@@ -58,24 +58,21 @@ interface NetParams {
     validateResponseHeader: (headers: Record<string, string>) => void;
 }
 
-/**
- * Interface representing a WebSocket reader.
- * WebSocket readers allow you to read data from a WebSocket connection.
- *
- * @public
- */
-interface NetWebSocketReader {
-    /**
-     * Read data from the WebSocket connection.
-     *
-     * @returns A promise that resolves with the data read from the WebSocket.
-     */
-    read: () => Promise<unknown>;
-
-    /**
-     * Close the WebSocket reader and terminate the connection.
-     */
-    close: () => void;
+/** Wallet interface manages private keys */
+interface Wallet {
+    /** list all keys */
+    readonly list: WalletKey[];
 }
 
-export type { Net, NetParams, NetWebSocketReader };
+interface WalletKey {
+    /** address derived from key */
+    address: string;
+    /**
+     * sign message hash
+     * @param msgHash message hash
+     * @returns signature
+     */
+    sign: (msgHash: Buffer) => Promise<Buffer>;
+}
+
+export type { Net, NetParams, Wallet, WalletKey };

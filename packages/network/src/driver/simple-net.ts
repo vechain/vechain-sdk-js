@@ -46,7 +46,7 @@ class SimpleNet implements Net {
         method: 'GET' | 'POST',
         path: string,
         params?: NetParams
-    ): Promise<unknown> {
+    ): Promise<Connex.Thor.Block | undefined> {
         try {
             const resp = await this.axios.request({
                 method,
@@ -70,7 +70,7 @@ class SimpleNet implements Net {
                 params.validateResponseHeader(responseHeaders);
             }
 
-            return resp.data as unknown;
+            return resp.data as Connex.Thor.Block;
         } catch (err) {
             const axiosError = err as AxiosError<string>;
             if (axiosError.isAxiosError) {
