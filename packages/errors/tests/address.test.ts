@@ -1,7 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
-import { buildError } from '../src/utils';
-import { ERROR_CODES } from '../src/types/errorTypes';
-import { InvalidAddressError, InvalidChecksumError } from '../src';
+import {
+    buildError,
+    InvalidAddressError,
+    InvalidChecksumError,
+    ERROR_CODES
+} from '../src';
 
 /**
  * Address errors
