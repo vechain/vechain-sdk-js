@@ -1,4 +1,4 @@
-import { type ParamType, type BytesLike } from './types';
+import { type BytesLike, type ParamType } from './types';
 import { ethers } from 'ethers';
 import { ERRORS } from '../utils';
 import { fragment } from './fragment';
@@ -19,8 +19,7 @@ const ethersCoder = new ethers.AbiCoder();
  */
 function encode<ValueType>(type: string | ParamType, value: ValueType): string {
     try {
-        const encoded = ethersCoder.encode([type], [value]);
-        return encoded;
+        return ethersCoder.encode([type], [value]);
     } catch {
         throw new Error(ERRORS.ABI.INVALID_DATA_TO_ENCODE);
     }
