@@ -11,6 +11,9 @@
         "test:unit": {
             "outputs": ["coverage/**"]
         },
+        "test:integration":{
+            "outputs": ["coverage/**"]
+        },
         "lint": {},
         "format": {}
     }
