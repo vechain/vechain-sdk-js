@@ -66,11 +66,10 @@ async function decrypt(
         );
 
     try {
-        const decrypted = (await ethers.decryptKeystoreJson(
+        return (await ethers.decryptKeystoreJson(
             JSON.stringify(keystore),
             password
         )) as KeystoreAccount;
-        return decrypted;
     } catch (e) {
         return await Promise.reject(
             new Error(ERRORS.KEYSTORE.INVALID_PASSWORD)
