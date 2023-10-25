@@ -13,7 +13,11 @@
         },
         "lint": {},
         "format": {},
-        "test:docs": {},
-        "test:examples": {}
+        "test:docs": {
+            "dependsOn": ["^build"]
+        },
+        "test:examples": {
+            "dependsOn": ["^build"]
+        }
     }
 }
