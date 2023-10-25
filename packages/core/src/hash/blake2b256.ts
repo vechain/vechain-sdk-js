@@ -4,13 +4,13 @@ import { isValidReturnType } from './helpers';
 import { ERRORS } from '../utils';
 
 /**
- * Internal function to compute the blake2b 256-bit hash of the given data.
+ * Internal function to compute the blake2b256 256-bit hash of the given data.
  *
  * This function allows hashing multiple data items (Buffers or strings) in a single hash context,
  * aggregating the hash of all these items into a single result.
  *
  * @param data - One or more data items (either Buffer or string) to be hashed.
- * @returns {Buffer} A Buffer containing the 256-bit blake2b hash of the provided data.
+ * @returns {Buffer} A Buffer containing the 256-bit blake2b256 hash of the provided data.
  */
 function _blake2b256(...data: Array<Buffer | string>): Buffer {
     const ctx = blake.blake2bInit(32);
@@ -27,44 +27,44 @@ function _blake2b256(...data: Array<Buffer | string>): Buffer {
 /* --- Overloaded functions start --- */
 
 /**
- * Computes the blake2b 256-bit hash of the given data.
+ * Computes the blake2b256 256-bit hash of the given data.
  * Returns the hash as a Buffer.
  *
  * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
- * @returns A Buffer containing the 256-bit blake2b hash of the provided data.
+ * @returns A Buffer containing the 256-bit blake2b256 hash of the provided data.
  */
 function blake2b256(data: HashInput): Buffer;
 
 /**
- * Computes the blake2b 256-bit hash of the given data.
+ * Computes the blake2b256 256-bit hash of the given data.
  * Returns the hash as a Buffer.
  *
  * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
  * @param returnType - The format in which to return the hash. Either 'buffer' or 'hex'.
- * @returns {Buffer} A Buffer containing the 256-bit blake2b hash of the provided data.
+ * @returns {Buffer} A Buffer containing the 256-bit blake2b256 hash of the provided data.
  */
 function blake2b256(data: HashInput, returnType: 'buffer'): Buffer;
 
 /**
- * Computes the blake2b 256-bit hash of the given data.
+ * Computes the blake2b256 256-bit hash of the given data.
  * Returns the hash as a hex string, prefixed with `0x`.
  *
  * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
  * @param returnType - The format in which to return the hash. Either 'hex' or 'buffer'.
- * @returns {string} A string representing the hexadecimal format of the 256-bit blake2b hash, prefixed with `0x`.
+ * @returns {string} A string representing the hexadecimal format of the 256-bit blake2b256 hash, prefixed with `0x`.
  */
 function blake2b256(data: HashInput, returnType: 'hex'): string;
 
 /* --- Overloaded functions end --- */
 
 /**
- * Computes the blake2b 256-bit hash of the given data and returns the hash based on the returnType specified.
+ * Computes the blake2b256 256-bit hash of the given data and returns the hash based on the returnType specified.
  * Defaults to returning a Buffer if returnType is not provided.
  *
  * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
  * @param returnType - The format in which to return the hash. Either 'buffer' or 'hex'.
  *                    Defaults to 'buffer' if not provided.
- * @returns A Buffer or a string representing the 256-bit blake2b hash of the provided data,
+ * @returns A Buffer or a string representing the 256-bit blake2b256 hash of the provided data,
  *          based on the returnType specified.
  *
  * @throws Will throw an error if an invalid returnType is provided.
