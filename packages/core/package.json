@@ -7,8 +7,8 @@
     "scripts": {
         "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
         "lint": "eslint --ext .ts src --ext .ts tests",
-        "test": "rm -rf ./coverage && jest --coverage",
-        "test:unit": "rm -rf ./coverage && jest --coverage --group=unit",
+        "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
+        "test": "yarn test:unit",
         "format": "prettier --write src/**/*.ts tests/**/*.ts"
     },
     "devDependencies": {
