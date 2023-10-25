@@ -8,7 +8,7 @@ import { ErrorBase } from './base';
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidAddressError extends ErrorBase<
+class InvalidAddressError extends ErrorBase<
     ADDRESS.INVALID_ADDRESS,
     DefaultErrorData
 > {}
@@ -20,7 +20,9 @@ export class InvalidAddressError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidChecksumError extends ErrorBase<
+class InvalidChecksumError extends ErrorBase<
     ADDRESS.INVALID_CHECKSUM,
     DefaultErrorData
 > {}
+
+export { InvalidAddressError, InvalidChecksumError };

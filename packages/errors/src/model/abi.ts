@@ -8,7 +8,7 @@ import { ErrorBase } from './base';
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidAbiDataToDecodeError extends ErrorBase<
+class InvalidAbiDataToDecodeError extends ErrorBase<
     ABI.INVALID_DATA_TO_DECODE,
     DefaultErrorData
 > {}
@@ -20,7 +20,7 @@ export class InvalidAbiDataToDecodeError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidAbiDataToEncodeError extends ErrorBase<
+class InvalidAbiDataToEncodeError extends ErrorBase<
     ABI.INVALID_DATA_TO_ENCODE,
     DefaultErrorData
 > {}
@@ -32,7 +32,7 @@ export class InvalidAbiDataToEncodeError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidAbiEventError extends ErrorBase<
+class InvalidAbiEventError extends ErrorBase<
     ABI.INVALID_EVENT,
     DefaultErrorData
 > {}
@@ -44,7 +44,7 @@ export class InvalidAbiEventError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidAbiFormatTypeError extends ErrorBase<
+class InvalidAbiFormatTypeError extends ErrorBase<
     ABI.INVALID_FORMAT_TYPE,
     DefaultErrorData
 > {}
@@ -56,7 +56,15 @@ export class InvalidAbiFormatTypeError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidAbiFunctionError extends ErrorBase<
+class InvalidAbiFunctionError extends ErrorBase<
     ABI.INVALID_FUNCTION,
     DefaultErrorData
 > {}
+
+export {
+    InvalidAbiDataToDecodeError,
+    InvalidAbiDataToEncodeError,
+    InvalidAbiEventError,
+    InvalidAbiFormatTypeError,
+    InvalidAbiFunctionError
+};

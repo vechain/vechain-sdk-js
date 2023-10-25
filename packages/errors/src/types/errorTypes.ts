@@ -26,36 +26,36 @@ import {
     InvalidSignatureRecoveryError
 } from '../model/secp256k1';
 
-export enum SECP256K1 {
+enum SECP256K1 {
     INVALID_PRIVATE_KEY = 'INVALID_PRIVATE_KEY',
     INVALID_MESSAGE_HASH = 'INVALID_MESSAGE_HASH',
     INVALID_SIGNATURE = 'INVALID_SIGNATURE',
     INVALID_SIGNATURE_RECOVERY = 'INVALID_SIGNATURE_RECOVERY'
 }
 
-export enum ADDRESS {
+enum ADDRESS {
     INVALID_ADDRESS = 'INVALID_ADDRESS',
     INVALID_CHECKSUM = 'INVALID_CHECKSUM'
 }
 
-export enum KEYSTORE {
+enum KEYSTORE {
     INVALID_KEYSTORE = 'INVALID_KEYSTORE',
     INVALID_PASSWORD = 'INVALID_PASSWORD'
 }
 
-export enum HDNODE {
+enum HDNODE {
     INVALID_PUBLICKEY = 'INVALID_PUBLICKEY',
     INVALID_PRIVATEKEY = 'INVALID_PRIVATEKEY',
     INVALID_CHAINCODE = 'INVALID_CHAINCODE',
     INVALID_MNEMONICS = 'INVALID_MNEMONICS'
 }
 
-export enum BLOOM {
+enum BLOOM {
     INVALID_BLOOM = 'INVALID_BLOOM',
     INVALID_K = 'INVALID_K'
 }
 
-export enum ABI {
+enum ABI {
     INVALID_FUNCTION = 'INVALID_FUNCTION',
     INVALID_EVENT = 'INVALID_EVENT',
     INVALID_DATA_TO_DECODE = 'INVALID_DATA_TO_DECODE',
@@ -63,15 +63,15 @@ export enum ABI {
     INVALID_FORMAT_TYPE = 'INVALID_FORMAT_TYPE'
 }
 
-export enum RLP {
+enum RLP {
     INVALID_RLP = 'INVALID_RLP'
 }
 
-export enum DATA {
+enum DATA {
     INVALID_DATA_TYPE = 'INVALID_DATA_TYPE'
 }
 
-export type ErrorCode =
+type ErrorCode =
     | SECP256K1
     | ADDRESS
     | KEYSTORE
@@ -85,9 +85,9 @@ export type ErrorCode =
  * Default error data type. it accepts any object.
  * @param ErrorCodeT - The error code type from the error types enum.
  */
-export type DefaultErrorData = Record<string, unknown>;
+type DefaultErrorData = Record<string, unknown>;
 
-export const ERROR_CODES = {
+const ERROR_CODES = {
     SECP256K1,
     ADDRESS,
     KEYSTORE,
@@ -103,65 +103,65 @@ export const ERROR_CODES = {
  * The type is used to specify the data type of the error builder.
  * @param ErrorCodeT - The error code type from the error types enum.
  */
-export type DataType<ErrorCodeT extends ErrorCode> =
-    ErrorCodeT extends RLP.INVALID_RLP ? InvalidRLPErrorData : DefaultErrorData;
+type DataType<ErrorCodeT extends ErrorCode> = ErrorCodeT extends RLP.INVALID_RLP
+    ? InvalidRLPErrorData
+    : DefaultErrorData;
 
 /**
  * Conditional type to get the error type from the error code.
  * The type is used to specify the return type of the error builder.
  * @param ErrorCodeT - The error code type from the error types enum.
  */
-export type ErrorType<ErrorCodeT> =
-    ErrorCodeT extends SECP256K1.INVALID_PRIVATE_KEY
-        ? InvalidPrivateKeyError
-        : ErrorCodeT extends SECP256K1.INVALID_MESSAGE_HASH
-        ? InvalidMessageHashError
-        : ErrorCodeT extends SECP256K1.INVALID_SIGNATURE
-        ? InvalidSignatureError
-        : ErrorCodeT extends SECP256K1.INVALID_SIGNATURE_RECOVERY
-        ? InvalidSignatureRecoveryError
-        : ErrorCodeT extends ADDRESS.INVALID_ADDRESS
-        ? InvalidAddressError
-        : ErrorCodeT extends ADDRESS.INVALID_CHECKSUM
-        ? InvalidChecksumError
-        : ErrorCodeT extends KEYSTORE.INVALID_KEYSTORE
-        ? InvalidKeystoreError
-        : ErrorCodeT extends KEYSTORE.INVALID_PASSWORD
-        ? InvalidKeystorePasswordError
-        : ErrorCodeT extends HDNODE.INVALID_CHAINCODE
-        ? InvalidChaincodeError
-        : ErrorCodeT extends HDNODE.INVALID_MNEMONICS
-        ? InvalidMnemonicsError
-        : ErrorCodeT extends HDNODE.INVALID_PRIVATEKEY
-        ? InvalidPrivateKeyError
-        : ErrorCodeT extends HDNODE.INVALID_PUBLICKEY
-        ? InvalidPublicKeyError
-        : ErrorCodeT extends BLOOM.INVALID_BLOOM
-        ? InvalidBloomError
-        : ErrorCodeT extends BLOOM.INVALID_K
-        ? InvalidKError
-        : ErrorCodeT extends ABI.INVALID_EVENT
-        ? InvalidAbiEventError
-        : ErrorCodeT extends ABI.INVALID_DATA_TO_DECODE
-        ? InvalidAbiDataToDecodeError
-        : ErrorCodeT extends ABI.INVALID_DATA_TO_ENCODE
-        ? InvalidAbiDataToEncodeError
-        : ErrorCodeT extends ABI.INVALID_FORMAT_TYPE
-        ? InvalidAbiFormatTypeError
-        : ErrorCodeT extends ABI.INVALID_FUNCTION
-        ? InvalidAbiFunctionError
-        : ErrorCodeT extends RLP.INVALID_RLP
-        ? InvalidRLPError
-        : ErrorCodeT extends DATA.INVALID_DATA_TYPE
-        ? InvalidDataTypeError
-        : never;
+type ErrorType<ErrorCodeT> = ErrorCodeT extends SECP256K1.INVALID_PRIVATE_KEY
+    ? InvalidPrivateKeyError
+    : ErrorCodeT extends SECP256K1.INVALID_MESSAGE_HASH
+    ? InvalidMessageHashError
+    : ErrorCodeT extends SECP256K1.INVALID_SIGNATURE
+    ? InvalidSignatureError
+    : ErrorCodeT extends SECP256K1.INVALID_SIGNATURE_RECOVERY
+    ? InvalidSignatureRecoveryError
+    : ErrorCodeT extends ADDRESS.INVALID_ADDRESS
+    ? InvalidAddressError
+    : ErrorCodeT extends ADDRESS.INVALID_CHECKSUM
+    ? InvalidChecksumError
+    : ErrorCodeT extends KEYSTORE.INVALID_KEYSTORE
+    ? InvalidKeystoreError
+    : ErrorCodeT extends KEYSTORE.INVALID_PASSWORD
+    ? InvalidKeystorePasswordError
+    : ErrorCodeT extends HDNODE.INVALID_CHAINCODE
+    ? InvalidChaincodeError
+    : ErrorCodeT extends HDNODE.INVALID_MNEMONICS
+    ? InvalidMnemonicsError
+    : ErrorCodeT extends HDNODE.INVALID_PRIVATEKEY
+    ? InvalidPrivateKeyError
+    : ErrorCodeT extends HDNODE.INVALID_PUBLICKEY
+    ? InvalidPublicKeyError
+    : ErrorCodeT extends BLOOM.INVALID_BLOOM
+    ? InvalidBloomError
+    : ErrorCodeT extends BLOOM.INVALID_K
+    ? InvalidKError
+    : ErrorCodeT extends ABI.INVALID_EVENT
+    ? InvalidAbiEventError
+    : ErrorCodeT extends ABI.INVALID_DATA_TO_DECODE
+    ? InvalidAbiDataToDecodeError
+    : ErrorCodeT extends ABI.INVALID_DATA_TO_ENCODE
+    ? InvalidAbiDataToEncodeError
+    : ErrorCodeT extends ABI.INVALID_FORMAT_TYPE
+    ? InvalidAbiFormatTypeError
+    : ErrorCodeT extends ABI.INVALID_FUNCTION
+    ? InvalidAbiFunctionError
+    : ErrorCodeT extends RLP.INVALID_RLP
+    ? InvalidRLPError
+    : ErrorCodeT extends DATA.INVALID_DATA_TYPE
+    ? InvalidDataTypeError
+    : never;
 
 /**
  * Map to get the error class from the error code.
  * The class is used to construct the error object.
  * @param ErrorCodeT - The error code type from the error types enum.
  */
-export const ErrorClassMap = new Map<
+const ErrorClassMap = new Map<
     ErrorCode,
     typeof ErrorBase<ErrorCode, DataType<ErrorCode>>
 >([
@@ -187,3 +187,20 @@ export const ErrorClassMap = new Map<
     [RLP.INVALID_RLP, InvalidRLPError],
     [DATA.INVALID_DATA_TYPE, InvalidDataTypeError]
 ]);
+
+export {
+    type ErrorType,
+    type DataType,
+    type DefaultErrorData,
+    type ErrorCode,
+    ErrorClassMap,
+    ERROR_CODES,
+    SECP256K1,
+    ADDRESS,
+    KEYSTORE,
+    HDNODE,
+    BLOOM,
+    ABI,
+    RLP,
+    DATA
+};

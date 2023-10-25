@@ -10,7 +10,7 @@ import { ErrorClassMap } from '../types/errorTypes';
  * @param data
  * @returns the error object.
  */
-export function buildError<
+function buildError<
     ErrorCodeT extends ErrorCode,
     DataTypeT extends DataType<ErrorCodeT>
 >(code: ErrorCodeT, message: string, data?: DataTypeT): ErrorType<ErrorCodeT> {
@@ -23,3 +23,5 @@ export function buildError<
 
     return error as ErrorType<ErrorCodeT>;
 }
+
+export { buildError };

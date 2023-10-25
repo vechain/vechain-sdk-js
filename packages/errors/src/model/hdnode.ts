@@ -8,7 +8,7 @@ import { ErrorBase } from './base';
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidChaincodeError extends ErrorBase<
+class InvalidChaincodeError extends ErrorBase<
     HDNODE.INVALID_CHAINCODE,
     DefaultErrorData
 > {}
@@ -20,7 +20,7 @@ export class InvalidChaincodeError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidMnemonicsError extends ErrorBase<
+class InvalidMnemonicsError extends ErrorBase<
     HDNODE.INVALID_MNEMONICS,
     DefaultErrorData
 > {}
@@ -32,7 +32,7 @@ export class InvalidMnemonicsError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidPrivateKeyError extends ErrorBase<
+class InvalidPrivateKeyError extends ErrorBase<
     HDNODE.INVALID_PRIVATEKEY,
     DefaultErrorData
 > {}
@@ -44,7 +44,14 @@ export class InvalidPrivateKeyError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidPublicKeyError extends ErrorBase<
+class InvalidPublicKeyError extends ErrorBase<
     HDNODE.INVALID_PUBLICKEY,
     DefaultErrorData
 > {}
+
+export {
+    InvalidChaincodeError,
+    InvalidMnemonicsError,
+    InvalidPrivateKeyError,
+    InvalidPublicKeyError
+};

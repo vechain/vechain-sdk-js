@@ -8,7 +8,7 @@ import { ErrorBase } from './base';
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidKeystoreError extends ErrorBase<
+class InvalidKeystoreError extends ErrorBase<
     KEYSTORE.INVALID_KEYSTORE,
     DefaultErrorData
 > {}
@@ -20,7 +20,9 @@ export class InvalidKeystoreError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidKeystorePasswordError extends ErrorBase<
+class InvalidKeystorePasswordError extends ErrorBase<
     KEYSTORE.INVALID_PASSWORD,
     DefaultErrorData
 > {}
+
+export { InvalidKeystoreError, InvalidKeystorePasswordError };

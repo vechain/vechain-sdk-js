@@ -1,7 +1,7 @@
 import type { RLP } from '../types';
 import { ErrorBase } from './base';
 
-export interface InvalidRLPErrorData {
+interface InvalidRLPErrorData {
     context: string;
 }
 
@@ -12,7 +12,6 @@ export interface InvalidRLPErrorData {
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidRLPError extends ErrorBase<
-    RLP.INVALID_RLP,
-    InvalidRLPErrorData
-> {}
+class InvalidRLPError extends ErrorBase<RLP.INVALID_RLP, InvalidRLPErrorData> {}
+
+export { InvalidRLPError, type InvalidRLPErrorData };

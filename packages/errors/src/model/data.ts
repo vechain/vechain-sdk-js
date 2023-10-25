@@ -8,7 +8,9 @@ import { ErrorBase } from './base';
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidDataTypeError extends ErrorBase<
+class InvalidDataTypeError extends ErrorBase<
     DATA.INVALID_DATA_TYPE,
     DefaultErrorData
 > {}
+
+export { InvalidDataTypeError };

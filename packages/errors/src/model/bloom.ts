@@ -8,7 +8,7 @@ import { ErrorBase } from './base';
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidBloomError extends ErrorBase<
+class InvalidBloomError extends ErrorBase<
     BLOOM.INVALID_BLOOM,
     DefaultErrorData
 > {}
@@ -20,7 +20,6 @@ export class InvalidBloomError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidKError extends ErrorBase<
-    BLOOM.INVALID_K,
-    DefaultErrorData
-> {}
+class InvalidKError extends ErrorBase<BLOOM.INVALID_K, DefaultErrorData> {}
+
+export { InvalidBloomError, InvalidKError };

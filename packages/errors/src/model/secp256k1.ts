@@ -8,7 +8,7 @@ import type { DefaultErrorData, SECP256K1 } from '../types';
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidPrivateKeyError extends ErrorBase<
+class InvalidPrivateKeyError extends ErrorBase<
     SECP256K1.INVALID_PRIVATE_KEY,
     DefaultErrorData
 > {}
@@ -20,7 +20,7 @@ export class InvalidPrivateKeyError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidMessageHashError extends ErrorBase<
+class InvalidMessageHashError extends ErrorBase<
     SECP256K1.INVALID_MESSAGE_HASH,
     DefaultErrorData
 > {}
@@ -32,7 +32,7 @@ export class InvalidMessageHashError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidSignatureError extends ErrorBase<
+class InvalidSignatureError extends ErrorBase<
     SECP256K1.INVALID_SIGNATURE,
     DefaultErrorData
 > {}
@@ -44,7 +44,14 @@ export class InvalidSignatureError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-export class InvalidSignatureRecoveryError extends ErrorBase<
+class InvalidSignatureRecoveryError extends ErrorBase<
     SECP256K1.INVALID_SIGNATURE_RECOVERY,
     DefaultErrorData
 > {}
+
+export {
+    InvalidPrivateKeyError,
+    InvalidMessageHashError,
+    InvalidSignatureError,
+    InvalidSignatureRecoveryError
+};

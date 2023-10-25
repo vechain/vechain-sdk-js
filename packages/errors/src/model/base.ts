@@ -9,7 +9,7 @@ import type { ErrorCode } from '../types/errorTypes';
  * @param data - The error data.
  * @returns The error object.
  */
-export class ErrorBase<ErrorCodeT extends ErrorCode, DataTypeT> extends Error {
+class ErrorBase<ErrorCodeT extends ErrorCode, DataTypeT> extends Error {
     code: ErrorCodeT;
     message: string;
     data?: DataTypeT;
@@ -28,3 +28,5 @@ export class ErrorBase<ErrorCodeT extends ErrorCode, DataTypeT> extends Error {
         this.data = data;
     }
 }
+
+export { ErrorBase };
