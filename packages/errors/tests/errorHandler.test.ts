@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { throwError } from '../src/utils';
-import { ERROR_CODES } from '../src/types/errorTypes';
+import { throwError, ERROR_CODES } from '../src';
 import { InvalidKeystoreError } from '../src/model/keystore';
 import { InvalidRLPError } from '../src/model/rlp';
 

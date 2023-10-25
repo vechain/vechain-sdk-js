@@ -4,14 +4,14 @@ import { blake2b256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import {
     BLOCKREF_LENGTH,
+    dataUtils,
     ERRORS,
     SIGNATURE_LENGTH,
     SIGNED_TRANSACTION_RLP,
     TRANSACTION_FEATURES_KIND,
     UNSIGNED_TRANSACTION_RLP,
-    dataUtils
+    TransactionUtils
 } from '../utils';
-import { TransactionUtils } from '../utils/transaction';
 import { type TransactionBody } from './types';
 
 /**
@@ -110,7 +110,6 @@ class Transaction {
     /**
      * Determines whether the transaction is signed or not.
      *
-     * @param transaction - Transaction to check
      * @returns If transaction is signed or not
      */
     public get isSigned(): boolean {
@@ -161,7 +160,6 @@ class Transaction {
      * )
      * ```
      *
-     * @param transaction - Transaction of which we want to compute the signing hash
      * @param delegateFor - Address of the delegator
      * @returns Signing hash of the transaction
      */
@@ -175,13 +173,12 @@ class Transaction {
 
         // There is a delegateFor address (@note we already know that it is a valid address)
         if (delegateFor !== undefined) {
-            const hash = blake2b256(
+            return blake2b256(
                 Buffer.concat([
                     transactionHash,
                     Buffer.from(delegateFor.slice(2), 'hex')
                 ])
             );
-            return hash;
         }
 
         return transactionHash;

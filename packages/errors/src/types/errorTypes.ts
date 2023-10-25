@@ -6,7 +6,14 @@ import {
     InvalidAbiDataToEncodeError,
     InvalidAbiDataToDecodeError
 } from '../model/abi';
-import { InvalidAddressError, InvalidChecksumError } from '../model/address';
+import {
+    InvalidAddressError,
+    InvalidChecksumError,
+    InvalidMessageHashError,
+    InvalidPrivateKeyError,
+    InvalidSignatureError,
+    InvalidSignatureRecoveryError
+} from '../model';
 import { InvalidBloomError, InvalidKError } from '../model/bloom';
 import { InvalidDataTypeError } from '../model/data';
 import {
@@ -19,12 +26,6 @@ import {
     InvalidKeystorePasswordError
 } from '../model/keystore';
 import { InvalidRLPError, type InvalidRLPErrorData } from '../model/rlp';
-import {
-    InvalidMessageHashError,
-    InvalidPrivateKeyError,
-    InvalidSignatureError,
-    InvalidSignatureRecoveryError
-} from '../model/secp256k1';
 
 enum SECP256K1 {
     INVALID_PRIVATE_KEY = 'INVALID_PRIVATE_KEY',

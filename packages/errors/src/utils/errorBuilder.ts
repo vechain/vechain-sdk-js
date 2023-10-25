@@ -1,9 +1,9 @@
-import type { DataType, ErrorCode, ErrorType } from '../types/errorTypes';
+import type { DataType, ErrorCode, ErrorType } from '../types';
 
-import { ErrorClassMap } from '../types/errorTypes';
+import { ErrorClassMap } from '../types';
 
 /**
- * Build error object according to the the error code provided.
+ * Build error object according to the error code provided.
  * The error code determines the error type returned and the data type to be provided.
  * @param code
  * @param message

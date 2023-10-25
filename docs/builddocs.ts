@@ -13,8 +13,7 @@ function getSnippetFilePath(tagLine: string): string {
         .replace('(', '')
         .replace(')', '')
         .trim();
-    const snippetFileAbsPath = path.join(CURRENT_DIR, snippetFileRelPath);
-    return snippetFileAbsPath;
+    return path.join(CURRENT_DIR, snippetFileRelPath);
 }
 
 function getSnippetName(tagLine: string): string {
@@ -25,8 +24,7 @@ function getSnippetName(tagLine: string): string {
 function getSnippetContent(tagLine: string): string {
     console.log(`\t\tGetting snippet from: ${tagLine}`);
     const snippetFileAbsPath = getSnippetFilePath(tagLine);
-    const snippetContent = fs.readFileSync(snippetFileAbsPath, 'utf8');
-    return snippetContent;
+    return fs.readFileSync(snippetFileAbsPath, 'utf8');
 }
 
 function buildTemplate(templateFileName: string): void {
