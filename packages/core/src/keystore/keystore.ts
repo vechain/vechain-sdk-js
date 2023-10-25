@@ -1,12 +1,11 @@
 /**
  * Implements the JSON Keystore v3 Wallet encryption, decryption, and validation functionality.
  */
-import { address } from '../address/address';
-import { secp256k1 } from '../secp256k1/secp256k1';
+import { address } from '../address';
+import { secp256k1 } from '../secp256k1';
 import { ethers } from 'ethers';
-import { ERRORS } from '../utils/errors';
+import { ERRORS, SCRYPT_PARAMS } from '../utils';
 import { type Keystore, type KeystoreAccount } from './types';
-import { SCRYPT_PARAMS } from '../utils';
 
 /**
  * Encrypts a given private key into a keystore format using the specified password.
@@ -60,10 +59,7 @@ async function decrypt(
     password: string
 ): Promise<KeystoreAccount> {
     // Invalid keystore
-    if (!isValid(keystore))
-        return await Promise.reject(
-            new Error(ERRORS.KEYSTORE.INVALID_KEYSTORE)
-        );
+    if (!isValid(keystore)) throw new Error(ERRORS.KEYSTORE.INVALID_KEYSTORE);
 
     try {
         return (await ethers.decryptKeystoreJson(
@@ -71,9 +67,7 @@ async function decrypt(
             password
         )) as KeystoreAccount;
     } catch (e) {
-        return await Promise.reject(
-            new Error(ERRORS.KEYSTORE.INVALID_PASSWORD)
-        );
+        throw new Error(ERRORS.KEYSTORE.INVALID_PASSWORD);
     }
 }
 
