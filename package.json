@@ -9,9 +9,11 @@
         "postinstall": "husky install",
         "build": "turbo build",
         "lint": "turbo lint",
-        "test": "turbo test",
+        "test": "turbo test && yarn merge-coverage",
         "test:unit": "turbo test:unit",
-        "format": "turbo format"
+        "test:integration": "turbo test:integration",
+        "format": "turbo format",
+        "merge-coverage": "lcov-result-merger 'packages/*/coverage*/lcov.info' > coverage/lcov.info"
     },
     "private": true,
     "workspaces": [
@@ -23,6 +25,7 @@
         "@commitlint/cli": "^17.8.0",
         "@commitlint/config-conventional": "^17.8.0",
         "husky": "^8.0.3",
+        "lcov-result-merger": "^4.1.0",
         "turbo": "^1.10.15"
     }
 }
