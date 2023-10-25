@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  thor-solo:
+    image: vechain/thor:v2.0.0
+    container_name: thor-solo
+    # Install curl for our healthcheck, then start thor solo
+    # We use on-demand mode so that thor will create a new block when there is pending transaction
+    entrypoint:
+      [
+        "/bin/sh",
+        "-c",
+        "apk update && apk upgrade && apk add curl && thor solo --on-demand --data-dir /data/thor --api-addr 0.0.0.0:8669 --api-cors '*' --api-backtrace-limit -1 --verbosity 4",
+      ]
+    ports:
+      - "8669:8669"
+      - "11235:11235"
+    healthcheck:
+      test: curl --fail 0.0.0.0:8669/blocks/0 || exit 1 # Check if thor is running by checking if we can get the genesis block
+      interval: "2s"
+      retries: 30
