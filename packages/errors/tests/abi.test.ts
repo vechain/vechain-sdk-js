@@ -9,8 +9,14 @@ import {
     InvalidAbiDataToEncodeError
 } from '../src/model/abi';
 
+/**
+ * ABI errors
+ */
 describe('Abi errors', () => {
-    test('buildInvalidAbiHighLevelDataToDecodeError', () => {
+    /**
+     * Verify that the error is an instance of the expected error InvalidAbiDataToDecodeError
+     */
+    test('Check that the constructed error is an instance of InvalidAbiDataToDecodeError', () => {
         expect(
             buildError(
                 ERROR_CODES.ABI.INVALID_DATA_TO_DECODE,
@@ -18,7 +24,10 @@ describe('Abi errors', () => {
             )
         ).toBeInstanceOf(InvalidAbiDataToDecodeError);
     });
-    test('buildInvalidAbiHighLevelDataToEncodeError', () => {
+    /**
+     * Verify that the error is an instance of the expected error InvalidAbiDataToDecodeError
+     */
+    test('Check that the constructed error is an instance of InvalidAbiDataToEncodeError', () => {
         expect(
             buildError(
                 ERROR_CODES.ABI.INVALID_DATA_TO_ENCODE,
@@ -26,12 +35,18 @@ describe('Abi errors', () => {
             )
         ).toBeInstanceOf(InvalidAbiDataToEncodeError);
     });
-    test('buildInvalidAbiEventError', () => {
+    /**
+     * Verify that the error is an instance of the expected error InvalidAbiDataToDecodeError
+     */
+    test('Check that the constructed error is an instance of InvalidAbiEventError', () => {
         expect(
             buildError(ERROR_CODES.ABI.INVALID_EVENT, 'Invalid abi event')
         ).toBeInstanceOf(InvalidAbiEventError);
     });
-    test('buildInvalidAbiFormatTypeError', () => {
+    /**
+     * Verify that the error is an instance of the expected error InvalidAbiDataToDecodeError
+     */
+    test('Check that the constructed error is an instance of InvalidAbiFormatTypeError', () => {
         expect(
             buildError(
                 ERROR_CODES.ABI.INVALID_FORMAT_TYPE,
@@ -39,7 +54,10 @@ describe('Abi errors', () => {
             )
         ).toBeInstanceOf(InvalidAbiFormatTypeError);
     });
-    test('buildInvalidAbiFunctionError', () => {
+    /**
+     * Verify that the error is an instance of the expected error InvalidAbiDataToDecodeError
+     */
+    test('Check that the constructed error is an instance of InvalidAbiFunctionError', () => {
         expect(
             buildError(ERROR_CODES.ABI.INVALID_FUNCTION, 'Invalid abi function')
         ).toBeInstanceOf(InvalidAbiFunctionError);

@@ -4,7 +4,10 @@ import { ERROR_CODES } from '../src/types/errorTypes';
 import { InvalidDataTypeError } from '../src/model/data';
 
 describe('Data errors', () => {
-    test('buildInvalidDataTypeError', () => {
+    /**
+     * Verify that the error is an instance of the expected error InvalidDataTypeError
+     */
+    test('Check that the constructed error is an instance of InvalidDataTypeError', () => {
         expect(
             buildError(
                 ERROR_CODES.DATA.INVALID_DATA_TYPE,

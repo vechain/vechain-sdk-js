@@ -6,8 +6,14 @@ import {
     InvalidKeystorePasswordError
 } from '../src/model/keystore';
 
+/**
+ * Keystore errors
+ */
 describe('Keystore errors', () => {
-    test('buildInvalidKeystoreError', () => {
+    /**
+     * Verify that the error is an instance of the expected error InvalidKeystoreError
+     */
+    test('Check that the constructed error is an instance of InvalidKeystoreError', () => {
         expect(
             buildError(
                 ERROR_CODES.KEYSTORE.INVALID_KEYSTORE,
@@ -15,7 +21,10 @@ describe('Keystore errors', () => {
             )
         ).toBeInstanceOf(InvalidKeystoreError);
     });
-    test('buildInvalidKeystorePasswordError', () => {
+    /**
+     * Verify that the error is an instance of the expected error InvalidKeystorePasswordError
+     */
+    test('Check that the constructed error is an instance of InvalidKeystorePasswordError', () => {
         expect(
             buildError(
                 ERROR_CODES.KEYSTORE.INVALID_PASSWORD,

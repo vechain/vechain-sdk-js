@@ -8,8 +8,14 @@ import {
 } from '../src/model/hdnode';
 import { InvalidPrivateKeyError } from '../src';
 
+/**
+ * HD node errors
+ */
 describe('HD node errors', () => {
-    test('buildInvalidChaincodeError', () => {
+    /**
+     * Verify that the error is an instance of the expected error InvalidChaincodeError
+     */
+    test('Check that the constructed error is an instance of InvalidChaincodeError', () => {
         expect(
             buildError(
                 ERROR_CODES.HDNODE.INVALID_CHAINCODE,
@@ -17,7 +23,10 @@ describe('HD node errors', () => {
             )
         ).toBeInstanceOf(InvalidChaincodeError);
     });
-    test('buildInvalidMnemonicsError', () => {
+    /**
+     * Verify that the error is an instance of the expected error InvalidMnemonicsError
+     */
+    test('Check that the constructed error is an instance of InvalidMnemonicsError', () => {
         expect(
             buildError(
                 ERROR_CODES.HDNODE.INVALID_MNEMONICS,
@@ -25,7 +34,10 @@ describe('HD node errors', () => {
             )
         ).toBeInstanceOf(InvalidMnemonicsError);
     });
-    test('buildInvalidPrivateKeyError', () => {
+    /**
+     * Verify that the error is an instance of the expected error InvalidPrivateKeyError
+     */
+    test('Check that the constructed error is an instance of InvalidPrivateKeyError', () => {
         expect(
             buildError(
                 ERROR_CODES.HDNODE.INVALID_PRIVATEKEY,
@@ -33,7 +45,10 @@ describe('HD node errors', () => {
             )
         ).toBeInstanceOf(InvalidPrivateKeyError);
     });
-    test('buildInvalidPublicKeyError', () => {
+    /**
+     * Verify that the error is an instance of the expected error InvalidPublicKeyError
+     */
+    test('Check that the constructed error is an instance of InvalidPublicKeyError', () => {
         expect(
             buildError(
                 ERROR_CODES.HDNODE.INVALID_PUBLICKEY,

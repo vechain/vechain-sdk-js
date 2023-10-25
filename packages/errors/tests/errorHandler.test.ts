@@ -4,7 +4,13 @@ import { ERROR_CODES } from '../src/types/errorTypes';
 import { InvalidKeystoreError } from '../src/model/keystore';
 import { InvalidRLPError } from '../src/model/rlp';
 
+/**
+ * Error handler test
+ */
 describe('Error handler test', () => {
+    /**
+     * Verify that the error without additional data thrown is an instance of the expected error InvalidKeystoreError
+     */
     test('Throw Invalid Keystore Exception without data', () => {
         expect(() =>
             throwError(
@@ -13,6 +19,9 @@ describe('Error handler test', () => {
             )
         ).toThrowError(InvalidKeystoreError);
     });
+    /**
+     * Verify that the error with additional data thrown is an instance of the expected error InvalidKeystoreError
+     */
     test('Throw Invalid Keystore Exception with data', () => {
         try {
             throwError(
@@ -25,6 +34,10 @@ describe('Error handler test', () => {
             expect(invalidKeystoreError.data).toBeDefined();
         }
     });
+    /**
+     * Verify that the error with additional data thrown is an instance of the expected error InvalidRLPError and
+     * that the additional data has the expected fields
+     */
     test('Throw Invalid RLP Exception with data', () => {
         try {
             throwError(ERROR_CODES.RLP.INVALID_RLP, 'Invalid Keystore', {
