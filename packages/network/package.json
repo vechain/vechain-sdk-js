@@ -7,8 +7,9 @@
     "scripts": {
         "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
         "lint": "eslint --ext .ts src --ext .ts tests",
-        "test": "rm -rf ./coverage && jest --coverage",
-        "test:unit": "rm -rf ./coverage && jest --coverage --group=unit"
+        "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
+        "test:integration": "export JEST_INTEGRATION=true; rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
+        "test": "yarn test:integration && yarn test:unit"
     },
     "devDependencies": {
         "@jest/globals": "^29.7.0",
@@ -28,6 +29,6 @@
     "dependencies": {
         "axios": "^1.5.1",
         "isomorphic-ws": "^5.0.0",
-        "ws": "^8.14.2"
+        "testcontainers": "^10.2.1"
     }
 }
