@@ -8,8 +8,9 @@ apps/**/node_modules
 
 yarn-error.log
 # Code coverage folder for tests
-packages/**/coverage*
-coverage/lcov.info
+packages/**/coverageUnit
+packages/**/coverageIntegration
+packages/**/coverage/*
 **/.DS_Store
 
 # Turborepo
