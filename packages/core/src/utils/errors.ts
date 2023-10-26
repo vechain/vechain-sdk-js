@@ -14,13 +14,6 @@ const ERRORS = {
     },
 
     /**
-     * Error messages associated with Ethereum addresses.
-     */
-    ADDRESS: {
-        INVALID_ADDRESS: 'Invalid address'
-    },
-
-    /**
      * Error messages concerning operations with keystores.
      */
     KEYSTORE: {

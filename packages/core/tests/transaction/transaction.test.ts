@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { signer, delegator, transactions } from './fixture';
 import { ERRORS, Transaction, TransactionHandler } from '../../src';
+import { InvalidAddressError } from '@vechain-sdk/errors';
 
 /**
  * Test transaction module
@@ -53,7 +54,7 @@ describe('Transaction', () => {
                 // Try to get signature hash with invalid address
                 expect(() =>
                     unsignedTransaction.getSignatureHash('INVALID_ADDRESS')
-                ).toThrowError(ERRORS.ADDRESS.INVALID_ADDRESS);
+                ).toThrowError(InvalidAddressError);
             });
         });
 

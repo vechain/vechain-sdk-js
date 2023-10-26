@@ -7,6 +7,7 @@ import {
     simplePrivateKey,
     simplePublicKey
 } from './fixture';
+import { InvalidAddressError } from '@vechain-sdk/errors';
 
 /**
  * Test address module
@@ -48,9 +49,9 @@ describe('Address', () => {
             );
 
             // Invalid private key to derive public key
-            expect(() => secp256k1.derivePublicKey(invalidPrivateKey)).toThrow(
-                ERRORS.SECP256K1.INVALID_PRIVATE_KEY
-            );
+            expect(() =>
+                secp256k1.derivePublicKey(invalidPrivateKey)
+            ).toThrowError(ERRORS.SECP256K1.INVALID_PRIVATE_KEY);
         });
     });
 
@@ -64,12 +65,12 @@ describe('Address', () => {
         test('invalid input should throw error', () => {
             expect(() => {
                 address.toChecksumed('invalid data');
-            }).toThrow(ERRORS.ADDRESS.INVALID_ADDRESS);
+            }).toThrowError(InvalidAddressError);
             expect(() => {
                 address.toChecksumed(
                     '52908400098527886E0F7030069857D2E4169EE7'
                 );
-            }).toThrow(ERRORS.ADDRESS.INVALID_ADDRESS);
+            }).toThrowError(InvalidAddressError);
         });
 
         /**

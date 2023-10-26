@@ -13,6 +13,7 @@ import {
     TransactionUtils
 } from '../utils';
 import { type TransactionBody } from './types';
+import { ADDRESS, buildError } from '@vechain-sdk/errors';
 
 /**
  * Represents an immutable transaction entity.
@@ -166,7 +167,10 @@ class Transaction {
     public getSignatureHash(delegateFor?: string): Buffer {
         // Correct delegateFor address
         if (delegateFor !== undefined && !address.isAddress(delegateFor))
-            throw new Error(ERRORS.ADDRESS.INVALID_ADDRESS);
+            throw buildError(
+                ADDRESS.INVALID_ADDRESS,
+                'Invalid address given as input as delegateFor parameter.'
+            );
 
         // Encode transaction
         const transactionHash = blake2b256(this._encode(false));

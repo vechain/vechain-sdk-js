@@ -4,6 +4,7 @@ import { ERRORS } from '../errors';
 import { type HexString } from '../types';
 import { address } from '../../address';
 import { BLOOM_REGEX_LOWERCASE, BLOOM_REGEX_UPPERCASE } from '../const';
+import { ADDRESS, buildError } from '@vechain-sdk/errors';
 
 /**
  * Checks if a given string adheres to the Bloom filter format.
@@ -97,7 +98,10 @@ const isAddressInBloom = (
     addressToCheck: HexString
 ): boolean => {
     if (!address.isAddress(addressToCheck)) {
-        throw new Error(ERRORS.ADDRESS.INVALID_ADDRESS);
+        throw buildError(
+            ADDRESS.INVALID_ADDRESS,
+            'Invalid address given as input in Bloom filter.'
+        );
     }
 
     return isInBloom(bloom, k, addressToCheck);
