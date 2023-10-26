@@ -10,6 +10,7 @@ import {
 
 /**
  * Test address module
+ * @group unit/address
  */
 describe('Address', () => {
     /**

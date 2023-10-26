@@ -40,6 +40,14 @@ const ERRORS = {
     },
 
     /**
+     * Error messages related to mnemonic operations.
+     */
+    MNEMONIC: {
+        INVALID_MNEMONIC_SIZE:
+            'Invalid mnemonic size. It must be 12, 15, 18, 21, or 24.'
+    },
+
+    /**
      * Error messages associated with Bloom filters.
      */
     BLOOM: {
@@ -59,6 +67,15 @@ const ERRORS = {
          */
         INVALID_DATA_TYPE: function (format: string): string {
             return `Invalid data type. Data should be ${format}.`;
+        },
+
+        /**
+         * Error message for invalid return type
+         * @param format - The expected return type
+         * @returns The error message
+         */
+        INVALID_RETURN_TYPE: function (format: string): string {
+            return `Invalid return type. Return type should be ${format}.`;
         }
     },
 
@@ -66,20 +83,12 @@ const ERRORS = {
      * Error messages corresponding to ABI (Application Binary Interface) operations, both high-level and low-level.
      */
     ABI: {
-        HIGH_LEVEL: {
-            INVALID_FUNCTION: 'Invalid function',
-            INVALID_EVENT: 'Invalid event',
-            INVALID_DATA_TO_DECODE:
-                'Invalid data to decode into function or event',
-            INVALID_DATA_TO_ENCODE:
-                'Invalid data to encode into function or event',
-            INVALID_FORMAT_TYPE:
-                "Invalid format type. Format type should be one of 'sighash', 'minimal', 'full', or 'json'."
-        },
-        LOW_LEVEL: {
-            INVALID_DATA_TO_DECODE: 'Invalid data to decode',
-            INVALID_DATA_TO_ENCODE: 'Invalid data to encode'
-        }
+        INVALID_FUNCTION: 'Invalid function',
+        INVALID_EVENT: 'Invalid event',
+        INVALID_DATA_TO_DECODE: 'Invalid data to decode into function',
+        INVALID_DATA_TO_ENCODE: 'Invalid data to encode into function',
+        INVALID_FORMAT_TYPE:
+            "Invalid format type. Format type should be one of 'sighash', 'minimal', 'full', or 'json'."
     },
 
     RLP: {
@@ -92,6 +101,21 @@ const ERRORS = {
         INVALID_RLP: function (context: string, message: string): string {
             return `${context}: ${message}`;
         }
+    },
+
+    /**
+     * Error messages related to transactions.
+     */
+    TRANSACTION: {
+        ALREADY_SIGN: 'Transaction is already signed',
+        NOT_SIGNED: 'Transaction is not signed',
+        INVALID_SIGNATURE: 'Invalid signature',
+        NOT_DELEGATED: 'Transaction is not delegated',
+        INVALID_SIGNATURE_PRIVATE_KEY: 'Invalid signature private key',
+        INVALID_RESERVED_NOT_TRIMMED_FIELDS:
+            'Invalid reserved field. Fields must be trimmed',
+        INVALID_TRANSACTION_BODY: 'Invalid transaction body',
+        DELEGATED: 'Transaction is delegated'
     }
 };
 

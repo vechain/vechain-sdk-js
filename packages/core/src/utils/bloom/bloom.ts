@@ -21,14 +21,9 @@ const isBloom = (bloom: string): boolean => {
     }
 
     // At least 16 characters besides '0x' both all lowercase and all uppercase
-    if (
-        BLOOM_REGEX_LOWERCASE.test(bloom) ||
-        BLOOM_REGEX_UPPERCASE.test(bloom)
-    ) {
-        return true;
-    }
-
-    return false;
+    return (
+        BLOOM_REGEX_LOWERCASE.test(bloom) || BLOOM_REGEX_UPPERCASE.test(bloom)
+    );
 };
 
 /**

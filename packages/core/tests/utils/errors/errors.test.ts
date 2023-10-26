@@ -3,8 +3,9 @@ import { ERRORS } from '../../../src';
 
 /**
  * Data errors
+ * @group unit/utils-errors
  */
-describe('DATA Errors', () => {
+describe('Data Errors', () => {
     /**
      * Data format
      */

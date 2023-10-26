@@ -35,7 +35,8 @@ import {
 } from './rlp.fixture';
 
 /**
- * Test suite for RLP encoding/decoding functionality.
+ * Test suite for RLP encoding/decoding functionality
+ * @group unit/rlp
  */
 describe('RLP', () => {
     // Testing RLP encoding functionality

@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import {
     ERRORS,
+    MNEMONIC_WORDLIST_ALLOWED_SIZES,
     VET_DERIVATION_PATH,
     X_PRIV_PREFIX,
     X_PUB_PREFIX
@@ -9,6 +10,7 @@ import { type IHDNode } from './types';
 import { address } from '../address';
 import { sha256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
+import { type WordlistSizeType } from '../mnemonic';
 
 /**
  * Generates an HDNode instance using mnemonic words.
@@ -19,7 +21,11 @@ import { secp256k1 } from '../secp256k1';
  * @throws {Error} When the mnemonic words are invalid.
  */
 function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
-    if (words.length !== 12) {
+    if (
+        !MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(
+            words.length as WordlistSizeType
+        )
+    ) {
         throw new Error(ERRORS.HDNODE.INVALID_MNEMONICS);
     }
     // normalize words to lowercase
@@ -54,7 +60,7 @@ function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
         chainCode,
         Buffer.from(compressed)
     ]);
-    const checksum = sha256AppliedToABuffer(sha256AppliedToABuffer(key));
+    const checksum = sha256(sha256(key));
     const slicedChecksum = checksum.subarray(0, 4);
 
     const node = ethers.HDNodeWallet.fromExtendedKey(
@@ -86,7 +92,7 @@ function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
         Buffer.from([0]),
         privateKey
     ]);
-    const checksum = sha256AppliedToABuffer(sha256AppliedToABuffer(key));
+    const checksum = sha256(sha256(key));
     const slicedChecksum = checksum.subarray(0, 4);
 
     const node = ethers.HDNodeWallet.fromExtendedKey(
@@ -133,19 +139,6 @@ function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
             return ethersNodeToOurHDNode(ethersNode.derivePath(path));
         }
     };
-}
-
-/**
- * Calculates the SHA256 hash of the provided data buffer.
- *
- * @param data - The data buffer to hash.
- * @returns The SHA256 hash of the given data as a buffer.
- */
-function sha256AppliedToABuffer(data: Buffer): Buffer {
-    const dataAsString = `0x${data.toString('hex')}`;
-    const hashAsString = sha256(dataAsString);
-
-    return Buffer.from(hashAsString.slice(2), 'hex');
 }
 
 export const HDNode = {

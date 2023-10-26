@@ -1,5 +1,10 @@
 import { randomBytes } from 'crypto';
-import { ERRORS, PRIVATE_KEY_MAX_VALUE, ZERO_BUFFER } from '../utils';
+import {
+    ERRORS,
+    PRIVATE_KEY_MAX_VALUE,
+    SIGNATURE_LENGTH,
+    ZERO_BUFFER
+} from '../utils';
 import { ec as EC } from 'elliptic';
 
 // Cureve algorithm
@@ -87,7 +92,7 @@ function recover(msgHash: Buffer, sig: Buffer): Buffer {
     if (!isValidMessageHash(msgHash)) {
         throw new Error(ERRORS.SECP256K1.INVALID_MESSAGE_HASH);
     }
-    if (!Buffer.isBuffer(sig) || sig.length !== 65) {
+    if (!Buffer.isBuffer(sig) || sig.length !== SIGNATURE_LENGTH) {
         throw new Error(ERRORS.SECP256K1.INVALID_SIGNATURE);
     }
     const recovery = sig[64];
@@ -114,6 +119,7 @@ function recover(msgHash: Buffer, sig: Buffer): Buffer {
  * Convert extended public key to array public key (compressed or uncompressed)
  *
  * @param extendedPublicKey extended public key
+ * @param compact if public key should be compressed or not
  * @returns array public key
  */
 function extendedPublicKeyToArray(

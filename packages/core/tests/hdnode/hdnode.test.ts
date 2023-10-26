@@ -1,11 +1,20 @@
 import { describe, expect, test } from '@jest/globals';
-import { ERRORS, HDNode, ZERO_BUFFER, address, secp256k1 } from '../../src';
+import {
+    ERRORS,
+    HDNode,
+    type WordlistSizeType,
+    ZERO_BUFFER,
+    address,
+    mnemonic,
+    secp256k1
+} from '../../src';
 import { addresses, words, wrongWords } from './fixture';
 
 /**
  * Mnemonic tests
+ * @group unit/nhdnode
  */
-describe('Mnemonic', () => {
+describe('Hdnode', () => {
     /**
      * Test HD Node
      */
@@ -22,7 +31,7 @@ describe('Mnemonic', () => {
             );
             expect(child.address).toEqual('0x' + addresses[i]);
 
-            // Correct pulic key
+            // Correct public key
             expect(
                 secp256k1
                     .derivePublicKey(child.privateKey ?? ZERO_BUFFER(0))
@@ -68,6 +77,39 @@ describe('Mnemonic', () => {
         // non-lowercase
         const node2 = HDNode.fromMnemonic(words.map((w) => w.toUpperCase()));
         expect(node.address === node2.address);
+    });
+
+    /**
+     * Test HD Node from mnemonics with custom lengths
+     */
+    test('HD Node from mnemonics with custom lengths', () => {
+        // Default lengths
+        new Array<WordlistSizeType>(12, 15, 18, 21, 24).forEach(
+            (length: WordlistSizeType) => {
+                const currentHdnode = HDNode.fromMnemonic(
+                    mnemonic.generate(length)
+                );
+                // Private key
+                expect(currentHdnode.privateKey).toBeDefined();
+                expect(
+                    secp256k1.isValidPrivateKey(
+                        currentHdnode.privateKey as Buffer
+                    )
+                ).toBe(true);
+
+                // Public key
+                expect(currentHdnode.publicKey).toBeDefined();
+                expect(
+                    secp256k1.derivePublicKey(
+                        currentHdnode.privateKey as Buffer
+                    )
+                ).toEqual(currentHdnode.publicKey);
+
+                // Address
+                expect(currentHdnode.address).toBeDefined();
+                address.isAddress(currentHdnode.address);
+            }
+        );
     });
 
     /**

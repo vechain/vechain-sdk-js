@@ -1,17 +1,77 @@
 import { ethers } from 'ethers';
 import { randomBytes } from 'crypto';
-import { HDNode } from '../hdnode/hdnode';
+import { HDNode } from '../hdnode';
+import {
+    type WordListRandomGeneratorSizeInBytes,
+    type WordlistSizeType
+} from './types';
+import { ERRORS, MNEMONIC_WORDLIST_ALLOWED_SIZES } from '../utils';
+
+/* --- Overloaded functions start --- */
 
 /**
  * Generate BIP39 mnemonic words
+ * We can have 12, 15, 18, 21, 24 words
  *
- * @param rng the optional random number generator, which generates 16~32 (step 4) random bytes.
- * Every 4 bytes produce 3 words.
+ * @param wordlistSize - Wordlist size expected. Every 4 bytes produce 3 words.
+ * @param randomGenerator - The optional random number generator to use.
  * @returns Mnemonic words
  */
-function generate(rng?: () => Buffer): ethers.Mnemonic {
-    rng = rng ?? (() => randomBytes(128 / 8));
-    return ethers.Mnemonic.fromEntropy(rng());
+function generate(
+    wordlistSize?: WordlistSizeType,
+    randomGenerator?: (
+        numberOfBytes: WordListRandomGeneratorSizeInBytes
+    ) => Buffer
+): string[];
+
+/**
+ * Generate BIP39 mnemonic words
+ * We can have 12, 15, 18, 21, 24 words
+ *
+ * @param wordlistSize - Wordlist size expected. Every 4 bytes produce 3 words.
+ * @returns Mnemonic words
+ */
+function generate(wordlistSize?: WordlistSizeType): string[];
+
+/* --- Overloaded functions end --- */
+
+/**
+ * Generate BIP39 mnemonic words
+ * We can have 12, 15, 18, 21, 24 words
+ *
+ * @param wordlistSize - Wordlist size expected. Every 4 bytes produce 3 words.
+ * @param randomGenerator - The optional random number generator to use.
+ * @returns Mnemonic words
+ */
+function generate(
+    wordlistSize?: WordlistSizeType,
+    randomGenerator?: (
+        numberOfBytes: WordListRandomGeneratorSizeInBytes
+    ) => Buffer
+): string[] {
+    // Strange edge case in wordlist size
+    if (
+        wordlistSize !== undefined &&
+        !MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(wordlistSize)
+    ) {
+        throw new Error(ERRORS.MNEMONIC.INVALID_MNEMONIC_SIZE);
+    }
+
+    // Use randomBytes as default random generator if not provided
+    randomGenerator =
+        randomGenerator ??
+        // Default random generator
+        ((numberOfBytes: number) => randomBytes(numberOfBytes));
+
+    // Worldlist size
+    const wordlistSizeToUse = wordlistSize ?? 12;
+
+    // Generate entropy
+    return ethers.Mnemonic.fromEntropy(
+        randomGenerator(
+            ((wordlistSizeToUse / 3) * 4) as WordListRandomGeneratorSizeInBytes
+        )
+    ).phrase.split(' ');
 }
 
 /**
