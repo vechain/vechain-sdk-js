@@ -3,21 +3,8 @@ import { blake2b256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Buffer } from 'buffer';
-
-/**
- * Represents a client-side self-signed certificate.
- */
-export interface Certificate {
-    purpose: string; // The purpose of the certificate.
-    payload: {
-        type: string; // The type of payload.
-        content: string; // The content of the payload.
-    };
-    domain: string; // The domain for which the certificate is issued.
-    timestamp: number; // The timestamp when the certificate was created.
-    signer: string; // The public key of the signer.
-    signature?: string; // The digital signature of the certificate (optional).
-}
+import { dataUtils } from '../utils';
+import { type Certificate } from './types';
 
 /**
  * Converts a string to lowercase safely. If the input is not a string, it's returned as is.
@@ -48,7 +35,7 @@ function verify(cert: Certificate): void {
     }
 
     const { signature } = cert;
-    if (!/^0x[0-9a-f]+$/i.test(signature) || signature.length % 2 !== 0) {
+    if (!dataUtils.isHexString(signature) || signature.length % 2 !== 0) {
         throw new Error('Invalid signature format.');
     }
 
