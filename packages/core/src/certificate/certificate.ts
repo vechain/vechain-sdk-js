@@ -63,4 +63,4 @@ function verify(cert: Certificate): void {
     }
 }
 
-export { encode, verify };
+export const certificate = { encode, verify };
