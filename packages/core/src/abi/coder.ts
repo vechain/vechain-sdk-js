@@ -1,7 +1,7 @@
 import { type BytesLike, type ParamType } from './types';
 import { ethers } from 'ethers';
-import { ERRORS } from '../utils';
 import { fragment } from './fragment';
+import { ABI, buildError } from '@vechain-sdk/errors';
 
 /**
  * Default AbiCoder instance from ethers.js.
@@ -21,7 +21,10 @@ function encode<ValueType>(type: string | ParamType, value: ValueType): string {
     try {
         return ethersCoder.encode([type], [value]);
     } catch {
-        throw new Error(ERRORS.ABI.INVALID_DATA_TO_ENCODE);
+        throw buildError(
+            ABI.INVALID_DATA_TO_ENCODE,
+            'Invalid data to encode. Data should be a valid ABI type. You need a valid type and valid data to encode.'
+        );
     }
 }
 
@@ -42,7 +45,10 @@ function decode<ReturnType>(
         const decoded = ethersCoder.decode([types], data).toArray();
         return decoded[0] as ReturnType;
     } catch {
-        throw new Error(ERRORS.ABI.INVALID_DATA_TO_DECODE);
+        throw buildError(
+            ABI.INVALID_DATA_TO_DECODE,
+            'Invalid data to decode. Data should be an hex valid string that encodes a valid ABI type.'
+        );
     }
 }
 
