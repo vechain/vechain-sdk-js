@@ -4,6 +4,6 @@ module.exports = {
     globalTeardown: '<rootDir>/jest.teardown.ts',
     preset: 'ts-jest',
     testEnvironment: 'node',
-    coverageReporters: ['html', 'lcov', 'json'],
+    coverageReporters: ['html', 'lcov'],
     runner: 'groups'
 };
