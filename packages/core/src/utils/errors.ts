@@ -40,15 +40,6 @@ const ERRORS = {
     },
 
     /**
-     * Error messages associated with Bloom filters.
-     */
-    BLOOM: {
-        INVALID_BLOOM:
-            'Invalid Bloom filter format. Bloom filters must adhere to the format 0x[0-9a-fA-F]{16,}.',
-        INVALID_K: 'Invalid k. It should be a positive integer.'
-    },
-
-    /**
      * Error messages related to data validations.
      */
     DATA: {
