@@ -1,12 +1,12 @@
 import { secp256k1 } from '../../src/secp256k1';
 import { address } from '../../src/address';
 
-export const privKey = Buffer.from(
+const privKey = Buffer.from(
     '7582be841ca040aa940fff6c05773129e135623e41acce3e0b8ba520dc1ae26a',
     'hex'
 );
 
-export const cert = {
+const cert = {
     purpose: 'identification',
     payload: {
         type: 'text',
@@ -17,7 +17,7 @@ export const cert = {
     signer: address.fromPublicKey(secp256k1.derivePublicKey(privKey))
 };
 
-export const cert2 = {
+const cert2 = {
     domain: 'localhost',
     timestamp: 1545035330,
     purpose: 'identification',
@@ -27,3 +27,5 @@ export const cert2 = {
         type: 'text'
     }
 };
+
+export { privKey, cert, cert2 };

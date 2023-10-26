@@ -24,9 +24,6 @@ export interface Certificate {
  * If input is not a string, it's returned as is.
  * @param str The string to be converted
  */
-function safeToLowerCase(str: string): string {
-    return typeof str === 'string' ? str.toLowerCase() : str;
-}
 
 /**
  * Deterministically encode certificate into JSON
@@ -35,11 +32,8 @@ function safeToLowerCase(str: string): string {
 function encode(cert: Certificate): string {
     return fastJsonStableStringify({
         ...cert,
-        signer: safeToLowerCase(cert.signer),
-        signature:
-            cert.signature != null
-                ? safeToLowerCase(cert.signature)
-                : cert.signature
+        signer: cert.signer,
+        signature: cert.signature
     });
 }
 
@@ -64,11 +58,7 @@ function verify(cert: Certificate): void {
         Buffer.from(signature.slice(2), 'hex')
     );
 
-    console.log('pubKey', pubKey);
-    console.log('address.fromPublicKey(pubKey)', address.fromPublicKey(pubKey));
-    console.log('safeToLowerCase(cert.signer)', safeToLowerCase(cert.signer));
-
-    if (address.fromPublicKey(pubKey) !== safeToLowerCase(cert.signer)) {
+    if (address.fromPublicKey(pubKey) !== cert.signer) {
         throw new Error('signature does not match with signer');
     }
 }
