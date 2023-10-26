@@ -1,5 +1,10 @@
 import { ErrorBase } from './base';
 
+/**
+ * Invalid RLP error data interface.
+ *
+ * @public
+ */
 interface InvalidRLPErrorData {
     context: string;
 }
