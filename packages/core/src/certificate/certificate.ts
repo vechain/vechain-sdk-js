@@ -5,29 +5,29 @@ import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Buffer } from 'buffer';
 
 /**
- * Client side self-signed certificate
+ * Represents a client-side self-signed certificate.
  */
 export interface Certificate {
-    purpose: string;
+    purpose: string; // The purpose of the certificate.
     payload: {
-        type: string;
-        content: string;
+        type: string; // The type of payload.
+        content: string; // The content of the payload.
     };
-    domain: string;
-    timestamp: number;
-    signer: string;
-    signature?: string;
+    domain: string; // The domain for which the certificate is issued.
+    timestamp: number; // The timestamp when the certificate was created.
+    signer: string; // The public key of the signer.
+    signature?: string; // The digital signature of the certificate (optional).
 }
 
 /**
- * Convert string to lowercase safely.
- * If input is not a string, it's returned as is.
- * @param str The string to be converted
+ * Converts a string to lowercase safely. If the input is not a string, it's returned as is.
+ * @param str - The string to be converted to lowercase.
  */
 
 /**
- * Deterministically encode certificate into JSON
- * @param cert The certificate object
+ * Deterministically encodes a certificate into a JSON string.
+ * @param cert - The certificate object to be encoded.
+ * @returns A JSON string representation of the certificate.
  */
 function encode(cert: Certificate): string {
     return fastJsonStableStringify({
@@ -38,17 +38,18 @@ function encode(cert: Certificate): string {
 }
 
 /**
- * Verify the certificate's validity
- * @param cert Certificate object with a signature
+ * Verifies the validity of a certificate.
+ * @param cert - The certificate object with a digital signature.
+ * @throws {Error} If the signature is missing, invalid, or doesn't match the signer's public key.
  */
 function verify(cert: Certificate): void {
     if (cert.signature == null) {
-        throw new Error('signature missing');
+        throw new Error('Signature is missing.');
     }
 
     const { signature } = cert;
     if (!/^0x[0-9a-f]+$/i.test(signature) || signature.length % 2 !== 0) {
-        throw new Error('invalid signature');
+        throw new Error('Invalid signature format.');
     }
 
     const encoded = encode({ ...cert, signature: undefined });
@@ -59,8 +60,13 @@ function verify(cert: Certificate): void {
     );
 
     if (address.fromPublicKey(pubKey) !== cert.signer) {
-        throw new Error('signature does not match with signer');
+        throw new Error(
+            "Signature does not match with the signer's public key."
+        );
     }
 }
 
+/**
+ * Exposes the certificate encoding and verification functions.
+ */
 export const certificate = { encode, verify };

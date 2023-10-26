@@ -5,7 +5,7 @@ import { certificate } from '../../src/certificate/certificate';
 import { cert, cert2, privKey } from './fixture';
 
 /**
- * Certificate tests
+ * Unit tests for the Certificate module.
  *
  * @group unit/certificate
  */
@@ -47,7 +47,7 @@ describe('Certificate Tests', () => {
             });
         }).not.toThrow();
 
-        // Expecting failure due to incorrect signer address
+        // Expecting failure due to an incorrect signer address
         expect(() => {
             certificate.verify({
                 ...cert,
@@ -70,7 +70,7 @@ describe('Certificate Tests', () => {
             });
         }).toThrow();
 
-        // Expecting failure due to missing signature
+        // Expecting failure due to a missing signature
         expect(() => {
             certificate.verify({ ...cert, signer: '0x' });
         }).toThrow();
