@@ -60,9 +60,13 @@ function verify(cert: Certificate): void {
     const encoded = encode({ ...cert, signature: undefined });
     const signingHash = blake2b256(encoded);
     const pubKey = secp256k1.recover(
-        Buffer.from(signingHash, 'hex'),
+        signingHash,
         Buffer.from(signature.slice(2), 'hex')
     );
+
+    console.log('pubKey', pubKey);
+    console.log('address.fromPublicKey(pubKey)', address.fromPublicKey(pubKey));
+    console.log('safeToLowerCase(cert.signer)', safeToLowerCase(cert.signer));
 
     if (address.fromPublicKey(pubKey) !== safeToLowerCase(cert.signer)) {
         throw new Error('signature does not match with signer');
