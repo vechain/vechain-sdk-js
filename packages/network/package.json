@@ -9,8 +9,8 @@
         "lint": "eslint --ext .ts src --ext .ts tests",
         "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
         "test:integration": "export JEST_INTEGRATION=true; rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
-        "test": "yarn test:integration && yarn test:unit && yarn merge-coverage",
-        "merge-coverage": "ts-node ../../scripts/merge-coverage.ts"
+        "test": "export JEST_INTEGRATION=true; rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
+        "format": "prettier --write src/**/*.ts tests/**/*.ts"
     },
     "dependencies": {
         "axios": "^1.5.1",
