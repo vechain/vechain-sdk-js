@@ -1,37 +1,34 @@
-import type { ErrorBase } from '../model';
 import {
     InvalidAbiEventError,
     InvalidAbiFormatTypeError,
     InvalidAbiFunctionError,
     InvalidAbiDataToEncodeError,
-    InvalidAbiDataToDecodeError
-} from '../model/abi';
-import {
+    InvalidAbiDataToDecodeError,
     InvalidAddressError,
     InvalidChecksumError,
-    InvalidMessageHashError,
-    InvalidPrivateKeyError,
-    InvalidSignatureError,
-    InvalidSignatureRecoveryError
-} from '../model';
-import { InvalidBloomError, InvalidKError } from '../model/bloom';
-import { InvalidDataTypeError } from '../model/data';
-import {
-    InvalidChaincodeError,
-    InvalidMnemonicsError,
-    InvalidPublicKeyError
-} from '../model/hdnode';
-import {
+    InvalidSecp256k1MessageHashError,
+    InvalidHDNodePrivateKeyError,
+    InvalidSecp256k1SignatureError,
+    InvalidSecp256k1SignatureRecoveryError,
+    InvalidBloomError,
+    InvalidKError,
+    InvalidDataTypeError,
+    InvalidHDNodeChaincodeError,
+    InvalidHDNodeMnemonicsError,
+    InvalidHDNodePublicKeyError,
     InvalidKeystoreError,
-    InvalidKeystorePasswordError
-} from '../model/keystore';
-import { InvalidRLPError, type InvalidRLPErrorData } from '../model/rlp';
+    InvalidKeystorePasswordError,
+    InvalidRLPError,
+    InvalidSecp256k1PrivateKeyError,
+    type InvalidRLPErrorData,
+    type ErrorBase
+} from '../model';
 
 enum SECP256K1 {
-    INVALID_PRIVATE_KEY = 'INVALID_PRIVATE_KEY',
-    INVALID_MESSAGE_HASH = 'INVALID_MESSAGE_HASH',
-    INVALID_SIGNATURE = 'INVALID_SIGNATURE',
-    INVALID_SIGNATURE_RECOVERY = 'INVALID_SIGNATURE_RECOVERY'
+    INVALID_SECP256k1_PRIVATE_KEY = 'INVALID_SECP256k1_PRIVATE_KEY',
+    INVALID_SECP256k1_MESSAGE_HASH = 'INVALID_SECP256k1_MESSAGE_HASH',
+    INVALID_SECP256k1_SIGNATURE = 'INVALID_SECP256k1_SIGNATURE',
+    INVALID_SECP256k1_SIGNATURE_RECOVERY = 'INVALID_SECP256k1_SIGNATURE_RECOVERY'
 }
 
 enum ADDRESS {
@@ -45,10 +42,10 @@ enum KEYSTORE {
 }
 
 enum HDNODE {
-    INVALID_PUBLICKEY = 'INVALID_PUBLICKEY',
-    INVALID_PRIVATEKEY = 'INVALID_PRIVATEKEY',
-    INVALID_CHAINCODE = 'INVALID_CHAINCODE',
-    INVALID_MNEMONICS = 'INVALID_MNEMONICS'
+    INVALID_HDNODE_PUBLIC_KEY = 'INVALID_HDNODE_PUBLIC_KEY',
+    INVALID_HDNODE_PRIVATE_KEY = 'INVALID_HDNODE_PRIVATE_KEY',
+    INVALID_HDNODE_CHAIN_CODE = 'INVALID_HDNODE_CHAIN_CODE',
+    INVALID_HDNODE_MNEMONICS = 'INVALID_HDNODE_MNEMONICS'
 }
 
 enum BLOOM {
@@ -109,57 +106,68 @@ type DataType<ErrorCodeT extends ErrorCode> = ErrorCodeT extends RLP.INVALID_RLP
     : DefaultErrorData;
 
 /**
+ * NOTE: ADD YOUR NEW FANCY ERRORS BELOW!
+ */
+
+/**
  * Conditional type to get the error type from the error code.
  * The type is used to specify the return type of the error builder.
+ *
+ * @note When adding a new error, add the error code and the error class to the type.
+ *
  * @param ErrorCodeT - The error code type from the error types enum.
  */
-type ErrorType<ErrorCodeT> = ErrorCodeT extends SECP256K1.INVALID_PRIVATE_KEY
-    ? InvalidPrivateKeyError
-    : ErrorCodeT extends SECP256K1.INVALID_MESSAGE_HASH
-    ? InvalidMessageHashError
-    : ErrorCodeT extends SECP256K1.INVALID_SIGNATURE
-    ? InvalidSignatureError
-    : ErrorCodeT extends SECP256K1.INVALID_SIGNATURE_RECOVERY
-    ? InvalidSignatureRecoveryError
-    : ErrorCodeT extends ADDRESS.INVALID_ADDRESS
-    ? InvalidAddressError
-    : ErrorCodeT extends ADDRESS.INVALID_CHECKSUM
-    ? InvalidChecksumError
-    : ErrorCodeT extends KEYSTORE.INVALID_KEYSTORE
-    ? InvalidKeystoreError
-    : ErrorCodeT extends KEYSTORE.INVALID_PASSWORD
-    ? InvalidKeystorePasswordError
-    : ErrorCodeT extends HDNODE.INVALID_CHAINCODE
-    ? InvalidChaincodeError
-    : ErrorCodeT extends HDNODE.INVALID_MNEMONICS
-    ? InvalidMnemonicsError
-    : ErrorCodeT extends HDNODE.INVALID_PRIVATEKEY
-    ? InvalidPrivateKeyError
-    : ErrorCodeT extends HDNODE.INVALID_PUBLICKEY
-    ? InvalidPublicKeyError
-    : ErrorCodeT extends BLOOM.INVALID_BLOOM
-    ? InvalidBloomError
-    : ErrorCodeT extends BLOOM.INVALID_K
-    ? InvalidKError
-    : ErrorCodeT extends ABI.INVALID_EVENT
-    ? InvalidAbiEventError
-    : ErrorCodeT extends ABI.INVALID_DATA_TO_DECODE
-    ? InvalidAbiDataToDecodeError
-    : ErrorCodeT extends ABI.INVALID_DATA_TO_ENCODE
-    ? InvalidAbiDataToEncodeError
-    : ErrorCodeT extends ABI.INVALID_FORMAT_TYPE
-    ? InvalidAbiFormatTypeError
-    : ErrorCodeT extends ABI.INVALID_FUNCTION
-    ? InvalidAbiFunctionError
-    : ErrorCodeT extends RLP.INVALID_RLP
-    ? InvalidRLPError
-    : ErrorCodeT extends DATA.INVALID_DATA_TYPE
-    ? InvalidDataTypeError
-    : never;
+type ErrorType<ErrorCodeT> =
+    ErrorCodeT extends SECP256K1.INVALID_SECP256k1_PRIVATE_KEY
+        ? InvalidSecp256k1PrivateKeyError
+        : ErrorCodeT extends SECP256K1.INVALID_SECP256k1_MESSAGE_HASH
+        ? InvalidSecp256k1MessageHashError
+        : ErrorCodeT extends SECP256K1.INVALID_SECP256k1_SIGNATURE
+        ? InvalidSecp256k1SignatureError
+        : ErrorCodeT extends SECP256K1.INVALID_SECP256k1_SIGNATURE_RECOVERY
+        ? InvalidSecp256k1SignatureRecoveryError
+        : ErrorCodeT extends ADDRESS.INVALID_ADDRESS
+        ? InvalidAddressError
+        : ErrorCodeT extends ADDRESS.INVALID_CHECKSUM
+        ? InvalidChecksumError
+        : ErrorCodeT extends KEYSTORE.INVALID_KEYSTORE
+        ? InvalidKeystoreError
+        : ErrorCodeT extends KEYSTORE.INVALID_PASSWORD
+        ? InvalidKeystorePasswordError
+        : ErrorCodeT extends HDNODE.INVALID_HDNODE_CHAIN_CODE
+        ? InvalidHDNodeChaincodeError
+        : ErrorCodeT extends HDNODE.INVALID_HDNODE_MNEMONICS
+        ? InvalidHDNodeMnemonicsError
+        : ErrorCodeT extends HDNODE.INVALID_HDNODE_PRIVATE_KEY
+        ? InvalidHDNodePrivateKeyError
+        : ErrorCodeT extends HDNODE.INVALID_HDNODE_PUBLIC_KEY
+        ? InvalidHDNodePublicKeyError
+        : ErrorCodeT extends BLOOM.INVALID_BLOOM
+        ? InvalidBloomError
+        : ErrorCodeT extends BLOOM.INVALID_K
+        ? InvalidKError
+        : ErrorCodeT extends ABI.INVALID_EVENT
+        ? InvalidAbiEventError
+        : ErrorCodeT extends ABI.INVALID_DATA_TO_DECODE
+        ? InvalidAbiDataToDecodeError
+        : ErrorCodeT extends ABI.INVALID_DATA_TO_ENCODE
+        ? InvalidAbiDataToEncodeError
+        : ErrorCodeT extends ABI.INVALID_FORMAT_TYPE
+        ? InvalidAbiFormatTypeError
+        : ErrorCodeT extends ABI.INVALID_FUNCTION
+        ? InvalidAbiFunctionError
+        : ErrorCodeT extends RLP.INVALID_RLP
+        ? InvalidRLPError
+        : ErrorCodeT extends DATA.INVALID_DATA_TYPE
+        ? InvalidDataTypeError
+        : never;
 
 /**
  * Map to get the error class from the error code.
  * The class is used to construct the error object.
+ *
+ * @note When adding a new error, add the error code and the error class to the map.
+ *
  * @param ErrorCodeT - The error code type from the error types enum.
  */
 const ErrorClassMap = new Map<
@@ -168,16 +176,22 @@ const ErrorClassMap = new Map<
 >([
     [ADDRESS.INVALID_ADDRESS, InvalidAddressError],
     [ADDRESS.INVALID_CHECKSUM, InvalidChecksumError],
-    [SECP256K1.INVALID_PRIVATE_KEY, InvalidPrivateKeyError],
-    [SECP256K1.INVALID_MESSAGE_HASH, InvalidMessageHashError],
-    [SECP256K1.INVALID_SIGNATURE, InvalidSignatureError],
-    [SECP256K1.INVALID_SIGNATURE_RECOVERY, InvalidSignatureRecoveryError],
+    [SECP256K1.INVALID_SECP256k1_PRIVATE_KEY, InvalidSecp256k1PrivateKeyError],
+    [
+        SECP256K1.INVALID_SECP256k1_MESSAGE_HASH,
+        InvalidSecp256k1MessageHashError
+    ],
+    [SECP256K1.INVALID_SECP256k1_SIGNATURE, InvalidSecp256k1SignatureError],
+    [
+        SECP256K1.INVALID_SECP256k1_SIGNATURE_RECOVERY,
+        InvalidSecp256k1SignatureRecoveryError
+    ],
     [KEYSTORE.INVALID_KEYSTORE, InvalidKeystoreError],
     [KEYSTORE.INVALID_PASSWORD, InvalidKeystorePasswordError],
-    [HDNODE.INVALID_CHAINCODE, InvalidChaincodeError],
-    [HDNODE.INVALID_MNEMONICS, InvalidMnemonicsError],
-    [HDNODE.INVALID_PRIVATEKEY, InvalidPrivateKeyError],
-    [HDNODE.INVALID_PUBLICKEY, InvalidPublicKeyError],
+    [HDNODE.INVALID_HDNODE_CHAIN_CODE, InvalidHDNodeChaincodeError],
+    [HDNODE.INVALID_HDNODE_MNEMONICS, InvalidHDNodeMnemonicsError],
+    [HDNODE.INVALID_HDNODE_PRIVATE_KEY, InvalidHDNodePrivateKeyError],
+    [HDNODE.INVALID_HDNODE_PUBLIC_KEY, InvalidHDNodePublicKeyError],
     [BLOOM.INVALID_BLOOM, InvalidBloomError],
     [BLOOM.INVALID_K, InvalidKError],
     [ABI.INVALID_EVENT, InvalidAbiEventError],

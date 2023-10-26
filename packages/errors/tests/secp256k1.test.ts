@@ -2,10 +2,10 @@ import { describe, expect, test } from '@jest/globals';
 import {
     buildError,
     ERROR_CODES,
-    InvalidMessageHashError,
-    InvalidPrivateKeyError,
-    InvalidSignatureError,
-    InvalidSignatureRecoveryError
+    InvalidSecp256k1MessageHashError,
+    InvalidSecp256k1PrivateKeyError,
+    InvalidSecp256k1SignatureError,
+    InvalidSecp256k1SignatureRecoveryError
 } from '../src';
 
 /**
@@ -15,45 +15,45 @@ describe('SECP256K1 errors', () => {
     /**
      * Verify that the error is an instance of the expected error InvalidMessageHashError
      */
-    test('Check that the constructed error is an instance of InvalidMessageHashError', () => {
+    test('Check that the constructed error is an instance of InvalidSecp256k1MessageHashError', () => {
         expect(
             buildError(
-                ERROR_CODES.SECP256K1.INVALID_MESSAGE_HASH,
+                ERROR_CODES.SECP256K1.INVALID_SECP256k1_MESSAGE_HASH,
                 'Invalid Message Hash'
             )
-        ).toBeInstanceOf(InvalidMessageHashError);
+        ).toBeInstanceOf(InvalidSecp256k1MessageHashError);
     });
     /**
      * Verify that the error is an instance of the expected error InvalidPrivateKeyError
      */
-    test('Check that the constructed error is an instance of InvalidPrivateKeyError', () => {
+    test('Check that the constructed error is an instance of InvalidSecp256k1PrivateKeyError', () => {
         expect(
             buildError(
-                ERROR_CODES.SECP256K1.INVALID_PRIVATE_KEY,
+                ERROR_CODES.SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
                 'Invalid Private Key'
             )
-        ).toBeInstanceOf(InvalidPrivateKeyError);
+        ).toBeInstanceOf(InvalidSecp256k1PrivateKeyError);
     });
     /**
      * Verify that the error is an instance of the expected error InvalidSignatureError
      */
-    test('Check that the constructed error is an instance of InvalidSignatureError', () => {
+    test('Check that the constructed error is an instance of InvalidSecp256k1SignatureError', () => {
         expect(
             buildError(
-                ERROR_CODES.SECP256K1.INVALID_SIGNATURE,
+                ERROR_CODES.SECP256K1.INVALID_SECP256k1_SIGNATURE,
                 'Invalid Signature'
             )
-        ).toBeInstanceOf(InvalidSignatureError);
+        ).toBeInstanceOf(InvalidSecp256k1SignatureError);
     });
     /**
      * Verify that the error is an instance of the expected error InvalidSignatureRecoveryError
      */
-    test('Check that the constructed error is an instance of InvalidSignatureRecoveryError', () => {
+    test('Check that the constructed error is an instance of InvalidSecp256k1SignatureRecoveryError', () => {
         expect(
             buildError(
-                ERROR_CODES.SECP256K1.INVALID_SIGNATURE_RECOVERY,
+                ERROR_CODES.SECP256K1.INVALID_SECP256k1_SIGNATURE_RECOVERY,
                 'Invalid Signature Recovery'
             )
-        ).toBeInstanceOf(InvalidSignatureRecoveryError);
+        ).toBeInstanceOf(InvalidSecp256k1SignatureRecoveryError);
     });
 });
