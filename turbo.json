@@ -6,9 +6,11 @@
             "outputs": ["dist/**"]
         },
         "test": {
+            "dependsOn": ["^build"],
             "outputs": ["coverage/**"]
         },
         "test:unit": {
+            "dependsOn": ["^build"],
             "outputs": ["coverage/**"]
         },
         "lint": {},
