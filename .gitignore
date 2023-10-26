@@ -8,8 +8,7 @@ apps/**/node_modules
 
 yarn-error.log
 # Code coverage folder for tests
-packages/**/coverage*
-packages/**/.nyc_output
+coverage
 **/.DS_Store
 
 # Turborepo
