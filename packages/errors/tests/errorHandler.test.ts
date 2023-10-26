@@ -3,7 +3,8 @@ import {
     ERROR_CODES,
     buildError,
     InvalidKeystoreError,
-    InvalidRLPError
+    InvalidRLPError,
+    ErrorClassMap
 } from '../src';
 
 /**
@@ -50,5 +51,14 @@ describe('Error handler test', () => {
             expect(InvalidRLPErrorObject.data?.context).toBeDefined();
             expect(InvalidRLPErrorObject).toBeInstanceOf(InvalidRLPError);
         }
+    });
+
+    /**
+     * Verify all error codes and classes
+     */
+    test('Verify all error codes and classes', () => {
+        ErrorClassMap.forEach((errorClass, errorCode) => {
+            expect(buildError(errorCode, 'test')).toBeInstanceOf(errorClass);
+        });
     });
 });
