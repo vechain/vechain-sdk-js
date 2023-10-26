@@ -8,9 +8,7 @@ apps/**/node_modules
 
 yarn-error.log
 # Code coverage folder for tests
-packages/**/coverageUnit
-packages/**/coverageIntegration
-packages/**/coverage/*
+packages/**/coverage*
 packages/**/.nyc_output
 **/.DS_Store
 
