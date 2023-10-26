@@ -5,7 +5,6 @@ import {
     InvalidAbiDataToEncodeError,
     InvalidAbiDataToDecodeError,
     InvalidAddressError,
-    InvalidChecksumError,
     InvalidSecp256k1MessageHashError,
     InvalidHDNodePrivateKeyError,
     InvalidSecp256k1SignatureError,
@@ -107,8 +106,6 @@ type ErrorType<ErrorCodeT> =
         ? InvalidSecp256k1SignatureRecoveryError
         : ErrorCodeT extends ADDRESS.INVALID_ADDRESS
         ? InvalidAddressError
-        : ErrorCodeT extends ADDRESS.INVALID_CHECKSUM
-        ? InvalidChecksumError
         : ErrorCodeT extends KEYSTORE.INVALID_KEYSTORE
         ? InvalidKeystoreError
         : ErrorCodeT extends KEYSTORE.INVALID_PASSWORD
@@ -156,7 +153,6 @@ const ErrorClassMap = new Map<
     typeof ErrorBase<ErrorCode, DataType<ErrorCode>>
 >([
     [ADDRESS.INVALID_ADDRESS, InvalidAddressError],
-    [ADDRESS.INVALID_CHECKSUM, InvalidChecksumError],
     [SECP256K1.INVALID_SECP256k1_PRIVATE_KEY, InvalidSecp256k1PrivateKeyError],
     [
         SECP256K1.INVALID_SECP256k1_MESSAGE_HASH,

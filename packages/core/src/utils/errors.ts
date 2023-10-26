@@ -17,8 +17,7 @@ const ERRORS = {
      * Error messages associated with Ethereum addresses.
      */
     ADDRESS: {
-        INVALID_ADDRESS: 'Invalid address',
-        INVALID_CHECKSUM: 'Invalid checksum'
+        INVALID_ADDRESS: 'Invalid address'
     },
 
     /**

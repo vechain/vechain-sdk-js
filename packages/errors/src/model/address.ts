@@ -14,25 +14,12 @@ class InvalidAddressError extends ErrorBase<
 > {}
 
 /**
- * Invalid address error to be thrown when an invalid checksum is provided.
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @returns The error object.
- */
-class InvalidChecksumError extends ErrorBase<
-    ADDRESS.INVALID_CHECKSUM,
-    DefaultErrorData
-> {}
-
-/**
  * Errors enum.
  *
  * @public
  */
 enum ADDRESS {
-    INVALID_ADDRESS = 'INVALID_ADDRESS',
-    INVALID_CHECKSUM = 'INVALID_CHECKSUM'
+    INVALID_ADDRESS = 'INVALID_ADDRESS'
 }
 
-export { InvalidAddressError, InvalidChecksumError, ADDRESS };
+export { InvalidAddressError, ADDRESS };
