@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { buildError, ERROR_CODES } from '../src';
-import { InvalidRLPError } from '../src/model/rlp';
+import { buildError, ERROR_CODES, InvalidRLPError } from '../src';
 
 /**
  * RLP errors

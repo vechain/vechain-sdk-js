@@ -1,6 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
-import { buildError, ERROR_CODES } from '../src';
-import { InvalidBloomError, InvalidKError } from '../src/model/bloom';
+import {
+    buildError,
+    ERROR_CODES,
+    InvalidBloomError,
+    InvalidKError
+} from '../src';
 
 /**
  * Bloom errors

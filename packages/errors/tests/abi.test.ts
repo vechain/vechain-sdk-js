@@ -1,12 +1,13 @@
 import { describe, expect, test } from '@jest/globals';
-import { buildError, ERROR_CODES } from '../src';
 import {
+    buildError,
+    ERROR_CODES,
     InvalidAbiEventError,
     InvalidAbiFormatTypeError,
     InvalidAbiFunctionError,
     InvalidAbiDataToDecodeError,
     InvalidAbiDataToEncodeError
-} from '../src/model/abi';
+} from '../src';
 
 /**
  * ABI errors

@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { buildError, ERROR_CODES } from '../src';
-import { InvalidDataTypeError } from '../src/model/data';
+import { buildError, ERROR_CODES, InvalidDataTypeError } from '../src';
 
 describe('Data errors', () => {
     /**

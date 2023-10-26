@@ -1,9 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
-import { buildError, ERROR_CODES } from '../src';
 import {
+    buildError,
+    ERROR_CODES,
     InvalidKeystoreError,
     InvalidKeystorePasswordError
-} from '../src/model/keystore';
+} from '../src';
 
 /**
  * Keystore errors
