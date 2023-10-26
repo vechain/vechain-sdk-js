@@ -1,4 +1,4 @@
-import type { ADDRESS, DefaultErrorData } from '../types';
+import type { DefaultErrorData } from '../types';
 import { ErrorBase } from './base';
 
 /**
@@ -25,4 +25,14 @@ class InvalidChecksumError extends ErrorBase<
     DefaultErrorData
 > {}
 
-export { InvalidAddressError, InvalidChecksumError };
+/**
+ * Errors enum.
+ *
+ * @public
+ */
+enum ADDRESS {
+    INVALID_ADDRESS = 'INVALID_ADDRESS',
+    INVALID_CHECKSUM = 'INVALID_CHECKSUM'
+}
+
+export { InvalidAddressError, InvalidChecksumError, ADDRESS };

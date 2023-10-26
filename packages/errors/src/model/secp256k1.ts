@@ -1,5 +1,5 @@
 import { ErrorBase } from '.';
-import type { DefaultErrorData, SECP256K1 } from '../types';
+import type { DefaultErrorData } from '../types';
 
 /**
  * Error to be thrown when the private key is invalid.
@@ -49,9 +49,22 @@ class InvalidSecp256k1SignatureRecoveryError extends ErrorBase<
     DefaultErrorData
 > {}
 
+/**
+ * Errors enum.
+ *
+ * @public
+ */
+enum SECP256K1 {
+    INVALID_SECP256k1_PRIVATE_KEY = 'INVALID_SECP256k1_PRIVATE_KEY',
+    INVALID_SECP256k1_MESSAGE_HASH = 'INVALID_SECP256k1_MESSAGE_HASH',
+    INVALID_SECP256k1_SIGNATURE = 'INVALID_SECP256k1_SIGNATURE',
+    INVALID_SECP256k1_SIGNATURE_RECOVERY = 'INVALID_SECP256k1_SIGNATURE_RECOVERY'
+}
+
 export {
     InvalidSecp256k1PrivateKeyError,
     InvalidSecp256k1MessageHashError,
     InvalidSecp256k1SignatureError,
-    InvalidSecp256k1SignatureRecoveryError
+    InvalidSecp256k1SignatureRecoveryError,
+    SECP256K1
 };

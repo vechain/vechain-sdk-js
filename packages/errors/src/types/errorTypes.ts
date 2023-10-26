@@ -21,54 +21,33 @@ import {
     InvalidRLPError,
     InvalidSecp256k1PrivateKeyError,
     type InvalidRLPErrorData,
-    type ErrorBase
+    type ErrorBase,
+    ABI,
+    ADDRESS,
+    SECP256K1,
+    KEYSTORE,
+    HDNODE,
+    BLOOM,
+    RLP,
+    DATA
 } from '../model';
 
-enum SECP256K1 {
-    INVALID_SECP256k1_PRIVATE_KEY = 'INVALID_SECP256k1_PRIVATE_KEY',
-    INVALID_SECP256k1_MESSAGE_HASH = 'INVALID_SECP256k1_MESSAGE_HASH',
-    INVALID_SECP256k1_SIGNATURE = 'INVALID_SECP256k1_SIGNATURE',
-    INVALID_SECP256k1_SIGNATURE_RECOVERY = 'INVALID_SECP256k1_SIGNATURE_RECOVERY'
-}
+/**
+ * @note: REGISTER YOUR NEW FANCY ERRORS BELOW!
+ */
 
-enum ADDRESS {
-    INVALID_ADDRESS = 'INVALID_ADDRESS',
-    INVALID_CHECKSUM = 'INVALID_CHECKSUM'
-}
+/**
+ * Default error data type. it accepts any object.
+ *
+ * @param ErrorCodeT - The error code type from the error types enum.
+ */
+type DefaultErrorData = Record<string, unknown>;
 
-enum KEYSTORE {
-    INVALID_KEYSTORE = 'INVALID_KEYSTORE',
-    INVALID_PASSWORD = 'INVALID_PASSWORD'
-}
-
-enum HDNODE {
-    INVALID_HDNODE_PUBLIC_KEY = 'INVALID_HDNODE_PUBLIC_KEY',
-    INVALID_HDNODE_PRIVATE_KEY = 'INVALID_HDNODE_PRIVATE_KEY',
-    INVALID_HDNODE_CHAIN_CODE = 'INVALID_HDNODE_CHAIN_CODE',
-    INVALID_HDNODE_MNEMONICS = 'INVALID_HDNODE_MNEMONICS'
-}
-
-enum BLOOM {
-    INVALID_BLOOM = 'INVALID_BLOOM',
-    INVALID_K = 'INVALID_K'
-}
-
-enum ABI {
-    INVALID_FUNCTION = 'INVALID_FUNCTION',
-    INVALID_EVENT = 'INVALID_EVENT',
-    INVALID_DATA_TO_DECODE = 'INVALID_DATA_TO_DECODE',
-    INVALID_DATA_TO_ENCODE = 'INVALID_DATA_TO_ENCODE',
-    INVALID_FORMAT_TYPE = 'INVALID_FORMAT_TYPE'
-}
-
-enum RLP {
-    INVALID_RLP = 'INVALID_RLP'
-}
-
-enum DATA {
-    INVALID_DATA_TYPE = 'INVALID_DATA_TYPE'
-}
-
+/**
+ * Error code type.
+ *
+ * @public
+ */
 type ErrorCode =
     | SECP256K1
     | ADDRESS
@@ -80,11 +59,22 @@ type ErrorCode =
     | DATA;
 
 /**
- * Default error data type. it accepts any object.
+ * Conditional type to get the error data type from the error code.
+ * The type is used to specify the data type of the error builder.
+ *
  * @param ErrorCodeT - The error code type from the error types enum.
+ *
+ * @public
  */
-type DefaultErrorData = Record<string, unknown>;
+type DataType<ErrorCodeT extends ErrorCode> = ErrorCodeT extends RLP.INVALID_RLP
+    ? InvalidRLPErrorData
+    : DefaultErrorData;
 
+/**
+ * Default error codes.
+ *
+ * @public
+ */
 const ERROR_CODES = {
     SECP256K1,
     ADDRESS,
@@ -97,25 +87,14 @@ const ERROR_CODES = {
 };
 
 /**
- * Conditional type to get the error data type from the error code.
- * The type is used to specify the data type of the error builder.
- * @param ErrorCodeT - The error code type from the error types enum.
- */
-type DataType<ErrorCodeT extends ErrorCode> = ErrorCodeT extends RLP.INVALID_RLP
-    ? InvalidRLPErrorData
-    : DefaultErrorData;
-
-/**
- * NOTE: ADD YOUR NEW FANCY ERRORS BELOW!
- */
-
-/**
  * Conditional type to get the error type from the error code.
  * The type is used to specify the return type of the error builder.
  *
  * @note When adding a new error, add the error code and the error class to the type.
  *
  * @param ErrorCodeT - The error code type from the error types enum.
+ *
+ * @public
  */
 type ErrorType<ErrorCodeT> =
     ErrorCodeT extends SECP256K1.INVALID_SECP256k1_PRIVATE_KEY
@@ -169,6 +148,8 @@ type ErrorType<ErrorCodeT> =
  * @note When adding a new error, add the error code and the error class to the map.
  *
  * @param ErrorCodeT - The error code type from the error types enum.
+ *
+ * @public
  */
 const ErrorClassMap = new Map<
     ErrorCode,
@@ -209,13 +190,5 @@ export {
     type DefaultErrorData,
     type ErrorCode,
     ErrorClassMap,
-    ERROR_CODES,
-    SECP256K1,
-    ADDRESS,
-    KEYSTORE,
-    HDNODE,
-    BLOOM,
-    ABI,
-    RLP,
-    DATA
+    ERROR_CODES
 };

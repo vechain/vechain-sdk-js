@@ -1,4 +1,4 @@
-import type { DefaultErrorData, DATA } from '../types';
+import type { DefaultErrorData } from '../types';
 import { ErrorBase } from './base';
 
 /**
@@ -13,4 +13,13 @@ class InvalidDataTypeError extends ErrorBase<
     DefaultErrorData
 > {}
 
-export { InvalidDataTypeError };
+/**
+ * Errors enum.
+ *
+ * @public
+ */
+enum DATA {
+    INVALID_DATA_TYPE = 'INVALID_DATA_TYPE'
+}
+
+export { InvalidDataTypeError, DATA };

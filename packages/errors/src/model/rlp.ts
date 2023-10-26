@@ -1,4 +1,3 @@
-import type { RLP } from '../types';
 import { ErrorBase } from './base';
 
 interface InvalidRLPErrorData {
@@ -14,4 +13,12 @@ interface InvalidRLPErrorData {
  */
 class InvalidRLPError extends ErrorBase<RLP.INVALID_RLP, InvalidRLPErrorData> {}
 
-export { InvalidRLPError, type InvalidRLPErrorData };
+/**
+ * Errors enum.
+ *
+ * @public
+ */
+enum RLP {
+    INVALID_RLP = 'INVALID_RLP'
+}
+export { InvalidRLPError, type InvalidRLPErrorData, RLP };

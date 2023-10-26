@@ -1,4 +1,4 @@
-import type { DefaultErrorData, HDNODE } from '../types';
+import type { DefaultErrorData } from '../types';
 import { ErrorBase } from './base';
 
 /**
@@ -49,9 +49,22 @@ class InvalidHDNodePublicKeyError extends ErrorBase<
     DefaultErrorData
 > {}
 
+/**
+ * Errors enum.
+ *
+ * @public
+ */
+enum HDNODE {
+    INVALID_HDNODE_PUBLIC_KEY = 'INVALID_HDNODE_PUBLIC_KEY',
+    INVALID_HDNODE_PRIVATE_KEY = 'INVALID_HDNODE_PRIVATE_KEY',
+    INVALID_HDNODE_CHAIN_CODE = 'INVALID_HDNODE_CHAIN_CODE',
+    INVALID_HDNODE_MNEMONICS = 'INVALID_HDNODE_MNEMONICS'
+}
+
 export {
     InvalidHDNodeChaincodeError,
     InvalidHDNodeMnemonicsError,
     InvalidHDNodePrivateKeyError,
-    InvalidHDNodePublicKeyError
+    InvalidHDNodePublicKeyError,
+    HDNODE
 };

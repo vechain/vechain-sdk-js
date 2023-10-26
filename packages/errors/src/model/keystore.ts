@@ -1,4 +1,4 @@
-import type { DefaultErrorData, KEYSTORE } from '../types';
+import type { DefaultErrorData } from '../types';
 import { ErrorBase } from './base';
 
 /**
@@ -25,4 +25,14 @@ class InvalidKeystorePasswordError extends ErrorBase<
     DefaultErrorData
 > {}
 
-export { InvalidKeystoreError, InvalidKeystorePasswordError };
+/**
+ * Errors enum.
+ *
+ * @public
+ */
+enum KEYSTORE {
+    INVALID_KEYSTORE = 'INVALID_KEYSTORE',
+    INVALID_PASSWORD = 'INVALID_PASSWORD'
+}
+
+export { InvalidKeystoreError, InvalidKeystorePasswordError, KEYSTORE };
