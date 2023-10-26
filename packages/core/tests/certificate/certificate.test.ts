@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { blake2b256 } from '../../src/hash';
 import { secp256k1 } from '../../src/secp256k1';
-import { certificate } from '../../src/certificate/certificate';
+import { certificate } from '../../src/certificate';
 import { cert, cert2, privKey } from './fixture';
 
 /**
@@ -11,7 +11,9 @@ import { cert, cert2, privKey } from './fixture';
  */
 describe('Certificate Tests', () => {
     test('Should produce consistent encoding for two certificates', () => {
-        expect(certificate.encode(cert)).toEqual(certificate.encode(cert2));
+        expect(certificate.encode(cert)).toStrictEqual(
+            certificate.encode(cert2)
+        );
 
         const sig =
             '0x' +
