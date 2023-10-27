@@ -62,18 +62,6 @@ const ERRORS = {
         }
     },
 
-    RLP: {
-        /**
-         * Error message for invalid RLP
-         * @param context - The context of the error
-         * @param message - The error message
-         * @returns The error message
-         */
-        INVALID_RLP: function (context: string, message: string): string {
-            return `${context}: ${message}`;
-        }
-    },
-
     /**
      * Error messages related to transactions.
      */

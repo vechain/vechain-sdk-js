@@ -33,6 +33,7 @@ import {
     compactFixedHexBlobKindEncodeTestCases,
     compactFixedHexBlobKindDecodeTestCases
 } from './rlp.fixture';
+import { InvalidRLPError } from '@vechain-sdk/errors';
 
 /**
  * Test suite for RLP encoding/decoding functionality
@@ -64,12 +65,12 @@ describe('RLP', () => {
         // Testing BufferKind decoding functionality
         describe('BufferKind decode', () => {
             invalidBufferKindDecodeTestCases.forEach(
-                ({ kind, data, description, throws }) => {
+                ({ kind, data, description }) => {
                     test(description, () => {
                         expect(() => {
                             // @ts-expect-error - invalid input
                             kind.buffer(data, '').decode();
-                        }).toThrowError(throws);
+                        }).toThrowError(InvalidRLPError);
                     });
                 }
             );
@@ -92,12 +93,12 @@ describe('RLP', () => {
             );
 
             invalidNumericKindEncodeTestCases.forEach(
-                ({ kind, data, description, throws }) => {
+                ({ kind, data, description }) => {
                     test(description, () => {
                         expect(() => {
                             // @ts-expect-error - invalid input
                             kind.data(data, '').encode();
-                        }).toThrowError(throws);
+                        }).toThrowError(InvalidRLPError);
                     });
                 }
             );
@@ -115,11 +116,11 @@ describe('RLP', () => {
             );
 
             invalidNumericKindDecodeTestCases.forEach(
-                ({ kind, data, description, throws }) => {
+                ({ kind, data, description }) => {
                     test(description, () => {
                         expect(() => {
                             kind.buffer(data, '').decode();
-                        }).toThrowError(throws);
+                        }).toThrowError(InvalidRLPError);
                     });
                 }
             );
@@ -143,12 +144,12 @@ describe('RLP', () => {
             );
 
             invalidHexBlobKindEncodeTestCases.forEach(
-                ({ kind, data, description, throws }) => {
+                ({ kind, data, description }) => {
                     test(description, () => {
                         expect(() => {
                             // @ts-expect-error - invalid input
                             kind.data(data, '').encode();
-                        }).toThrowError(throws);
+                        }).toThrowError(InvalidRLPError);
                     });
                 }
             );
@@ -166,12 +167,12 @@ describe('RLP', () => {
             );
 
             invalidHexBlobKindDecodeTestCases.forEach(
-                ({ kind, data, description, throws }) => {
+                ({ kind, data, description }) => {
                     test(description, () => {
                         expect(() => {
                             // @ts-expect-error - invalid input
                             kind.buffer(data, '').decode();
-                        }).toThrowError(throws);
+                        }).toThrowError(InvalidRLPError);
                     });
                 }
             );
@@ -195,12 +196,12 @@ describe('RLP', () => {
             );
 
             invalidFixedHexBlobEncodeTestCases.forEach(
-                ({ kind, data, description, throws }) => {
+                ({ kind, data, description }) => {
                     test(description, () => {
                         expect(() => {
                             // @ts-expect-error - invalid input
                             kind.data(data, '').encode();
-                        }).toThrowError(throws);
+                        }).toThrowError(InvalidRLPError);
                     });
                 }
             );
@@ -219,12 +220,12 @@ describe('RLP', () => {
             );
 
             invalidFixedBlobKindDecodeTestCases.forEach(
-                ({ kind, data, description, throws }) => {
+                ({ kind, data, description }) => {
                     test(description, () => {
                         expect(() => {
                             // @ts-expect-error - invalid input
                             kind.buffer(data, '').decode();
-                        }).toThrowError(throws);
+                        }).toThrowError(InvalidRLPError);
                     });
                 }
             );
@@ -373,13 +374,13 @@ describe('RLP', () => {
         // Testing encodeObject throws if data doesn't match profile
         describe("encodeObject throws if profile doesn't match data", () => {
             invalidEncodeObjectTestCases.forEach(
-                ({ profile, data, description, throws }) => {
+                ({ profile, data, description }) => {
                     test(description, () => {
                         const rlp = new RLP.Profiler(profile);
 
                         expect(() => {
                             rlp.encodeObject(data);
-                        }).toThrowError(throws);
+                        }).toThrowError(InvalidRLPError);
                     });
                 }
             );
@@ -468,13 +469,13 @@ describe('RLP', () => {
         // Testing decodeObject throws if data doesn't match profile
         describe("decodeObject throws if data doesn't match profile", () => {
             invalidDecodeObjectTestCases.forEach(
-                ({ profile, data, description, throws }) => {
+                ({ profile, data, description }) => {
                     test(description, () => {
                         const rlp = new RLP.Profiler(profile);
 
                         expect(() => {
                             rlp.decodeObject(data);
-                        }).toThrowError(throws);
+                        }).toThrowError(InvalidRLPError);
                     });
                 }
             );

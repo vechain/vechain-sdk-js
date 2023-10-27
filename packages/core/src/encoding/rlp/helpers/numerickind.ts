@@ -1,4 +1,4 @@
-import { dataUtils, ERRORS } from '../../../utils';
+import { dataUtils } from '../../../utils';
 import { type RLPInput } from '../types';
 import { createRlpError } from './profiles';
 
@@ -17,9 +17,7 @@ const validateNumericKindData = (data: RLPInput, context: string): bigint => {
     } else if (typeof data === 'string') {
         _validateNumericKindString(data, context);
     } else {
-        throw new Error(
-            ERRORS.RLP.INVALID_RLP(context, 'expected string or number')
-        );
+        throw createRlpError(context, 'expected string or number');
     }
 
     return BigInt(data);
@@ -39,12 +37,7 @@ const validateNumericKindData = (data: RLPInput, context: string): bigint => {
  */
 const _validateNumericKindNumber = (num: number, context: string): void => {
     if (!Number.isSafeInteger(num) || num < 0) {
-        throw new Error(
-            ERRORS.RLP.INVALID_RLP(
-                context,
-                'expected non-negative safe integer'
-            )
-        );
+        throw createRlpError(context, 'expected non-negative safe integer');
     }
 };
 
@@ -65,19 +58,15 @@ const _validateNumericKindString = (str: string, context: string): void => {
     const isDecimal = dataUtils.isDecimalString(str);
 
     if (!isHex && !isDecimal) {
-        throw new Error(
-            ERRORS.RLP.INVALID_RLP(
-                context,
-                'expected non-negative integer in hex or dec string'
-            )
+        throw createRlpError(
+            context,
+            'expected non-negative integer in hex or dec string'
         );
     }
 
     // Ensure hex numbers are of a valid length.
     if (isHex && str.length <= 2) {
-        throw new Error(
-            ERRORS.RLP.INVALID_RLP(context, 'expected valid hex string number')
-        );
+        throw createRlpError(context, 'expected valid hex string number');
     }
 };
 

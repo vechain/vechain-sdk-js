@@ -14,33 +14,27 @@ const validateNumberTestCases = [
 const invalidNumberTestCases = [
     {
         number: {},
-        context: 'testContext',
-        expected: 'expected string or number'
+        context: 'testContext'
     },
     {
         number: -1,
-        context: 'testContext',
-        expected: 'expected non-negative safe integer'
+        context: 'testContext'
     },
     {
         number: Number.MAX_SAFE_INTEGER + 1,
-        context: 'testContext',
-        expected: 'expected non-negative safe integer'
+        context: 'testContext'
     },
     {
         number: 'zgy',
-        context: 'testContext',
-        expected: 'expected non-negative integer in hex or dec string'
+        context: 'testContext'
     },
     {
         number: '0x',
-        context: 'testContext',
-        expected: 'expected valid hex string number'
+        context: 'testContext'
     },
     {
         number: '-123',
-        context: 'testContext',
-        expected: 'expected non-negative integer in hex or dec string'
+        context: 'testContext'
     }
 ];
 
@@ -71,20 +65,17 @@ const invalidNumericBufferTestCases = [
     {
         buffer: Buffer.from([1, 2, 3, 4]),
         context: 'testContext',
-        maxBytes: 3,
-        expected: 'expected less than 3 bytes'
+        maxBytes: 3
     },
     {
         buffer: Buffer.from([0, 2, 3]),
         context: 'testContext',
-        maxBytes: undefined,
-        expected: 'expected canonical integer (no leading zero bytes)'
+        maxBytes: undefined
     },
     {
         buffer: Buffer.from([0]),
         context: 'testContext',
-        maxBytes: 1,
-        expected: 'expected canonical integer (no leading zero bytes)'
+        maxBytes: 1
     }
 ];
 
@@ -136,13 +127,11 @@ const validHexBlobKindBufferTestCases = [
 const invalidHexBlobKindBufferTestCases = [
     {
         buffer: '0x123',
-        context: 'testContext',
-        expected: 'expected buffer'
+        context: 'testContext'
     },
     {
         buffer: {},
-        context: 'testContext',
-        expected: 'expected buffer'
+        context: 'testContext'
     }
 ];
 
@@ -163,8 +152,7 @@ const invalidFixedHexBlobKindDataTestCases = [
     {
         data: '0x1234567890',
         context: 'testContext',
-        bytes: 1,
-        expected: 'expected hex string to be 1 bytes'
+        bytes: 1
     }
 ];
 
@@ -185,8 +173,7 @@ const invalidFixedHexBlobKindBufferTestCases = [
     {
         buffer: Buffer.from([1, 2]),
         context: 'testContext',
-        bytes: 1,
-        expected: 'expected buffer to be 1 bytes'
+        bytes: 1
     }
 ];
 
@@ -212,14 +199,12 @@ const invalidCompactFixedHexBlobKindBufferTestCases = [
     {
         buffer: Buffer.from([1, 2, 3]),
         context: 'testContext',
-        bytes: 2,
-        expected: 'expected buffer to be at most 2 bytes'
+        bytes: 2
     },
     {
         buffer: Buffer.from([0, 2, 3]),
         context: 'testContext',
-        bytes: 3,
-        expected: 'expected no leading zero bytes'
+        bytes: 3
     }
 ];
 
