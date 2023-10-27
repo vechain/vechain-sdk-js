@@ -1,16 +1,18 @@
 import { describe, expect, test } from '@jest/globals';
-import {
-    ERRORS,
-    SIGNATURE_LENGTH,
-    Transaction,
-    TransactionHandler
-} from '../../src';
+import { SIGNATURE_LENGTH, Transaction, TransactionHandler } from '../../src';
 import {
     transactions,
     invalidDecodedNotTrimmedReserved,
     signer,
     delegator
 } from './fixture';
+import {
+    InvalidSecp256k1PrivateKeyError,
+    TransactionAlreadySignedError,
+    TransactionBodyError,
+    TransactionDelegationError,
+    TransactionNotSignedError
+} from '@vechain-sdk/errors';
 
 /**
  * Transaction handler tests
@@ -37,7 +39,7 @@ describe('Transaction handler', () => {
                         signedTransaction,
                         signer.privateKey
                     )
-                ).toThrowError(ERRORS.TRANSACTION.ALREADY_SIGN);
+                ).toThrowError(TransactionAlreadySignedError);
 
                 // Sign a non-delegated transaction with delegator
                 expect(() =>
@@ -46,7 +48,7 @@ describe('Transaction handler', () => {
                         signer.privateKey,
                         delegator.privateKey
                     )
-                ).toThrowError(ERRORS.TRANSACTION.NOT_DELEGATED);
+                ).toThrowError(TransactionDelegationError);
 
                 // Checks on signature
                 expect(signedTransaction.isSigned).toBe(true);
@@ -59,8 +61,8 @@ describe('Transaction handler', () => {
                 expect(signedTransaction.origin).toBeDefined();
                 expect(signedTransaction.origin).toBe(signer.address);
 
-                expect(() => signedTransaction.delegator).toThrow(
-                    ERRORS.TRANSACTION.NOT_DELEGATED
+                expect(() => signedTransaction.delegator).toThrowError(
+                    TransactionDelegationError
                 );
                 expect(signedTransaction.isDelegated).toBe(false);
                 expect(signedTransaction.id).toBeDefined();
@@ -85,7 +87,7 @@ describe('Transaction handler', () => {
                         signer.privateKey,
                         delegator.privateKey
                     )
-                ).toThrowError(ERRORS.TRANSACTION.ALREADY_SIGN);
+                ).toThrowError(TransactionAlreadySignedError);
 
                 // Sign normally a delegated transaction
                 expect(() =>
@@ -93,14 +95,14 @@ describe('Transaction handler', () => {
                         new Transaction(transaction.body),
                         signer.privateKey
                     )
-                ).toThrowError(ERRORS.TRANSACTION.DELEGATED);
+                ).toThrowError(TransactionDelegationError);
 
                 expect(() =>
                     TransactionHandler.sign(
                         new Transaction(transaction.body),
                         delegator.privateKey
                     )
-                ).toThrowError(ERRORS.TRANSACTION.DELEGATED);
+                ).toThrowError(TransactionDelegationError);
 
                 // Checks on signature
                 expect(signedTransaction.isSigned).toBe(true);
@@ -129,7 +131,7 @@ describe('Transaction handler', () => {
                     new Transaction(transactions.undelegated[0].body),
                     Buffer.from('INVALID', 'hex')
                 );
-            }).toThrowError(ERRORS.TRANSACTION.INVALID_SIGNATURE_PRIVATE_KEY);
+            }).toThrowError(InvalidSecp256k1PrivateKeyError);
 
             // Invalid private keys - delegated
             expect(() => {
@@ -138,7 +140,7 @@ describe('Transaction handler', () => {
                     Buffer.from('INVALID', 'hex'),
                     delegator.privateKey
                 );
-            }).toThrowError(ERRORS.TRANSACTION.INVALID_SIGNATURE_PRIVATE_KEY);
+            }).toThrowError(InvalidSecp256k1PrivateKeyError);
 
             expect(() => {
                 TransactionHandler.signWithDelegator(
@@ -146,7 +148,7 @@ describe('Transaction handler', () => {
                     signer.privateKey,
                     Buffer.from('INVALID', 'hex')
                 );
-            }).toThrowError(ERRORS.TRANSACTION.INVALID_SIGNATURE_PRIVATE_KEY);
+            }).toThrowError(InvalidSecp256k1PrivateKeyError);
 
             expect(() => {
                 TransactionHandler.signWithDelegator(
@@ -154,7 +156,7 @@ describe('Transaction handler', () => {
                     Buffer.from('INVALID', 'hex'),
                     Buffer.from('INVALID', 'hex')
                 );
-            }).toThrowError(ERRORS.TRANSACTION.INVALID_SIGNATURE_PRIVATE_KEY);
+            }).toThrowError(InvalidSecp256k1PrivateKeyError);
         });
     });
 
@@ -178,15 +180,15 @@ describe('Transaction handler', () => {
                     transactions.undelegated[0].body
                 );
                 expect(decodedUnsigned.signature).toBeUndefined();
-                expect(() => decodedUnsigned.origin).toThrow(
-                    ERRORS.TRANSACTION.NOT_SIGNED
+                expect(() => decodedUnsigned.origin).toThrowError(
+                    TransactionNotSignedError
                 );
-                expect(() => decodedUnsigned.delegator).toThrow(
-                    ERRORS.TRANSACTION.NOT_DELEGATED
+                expect(() => decodedUnsigned.delegator).toThrowError(
+                    TransactionDelegationError
                 );
                 expect(decodedUnsigned.isDelegated).toBe(false);
-                expect(() => decodedUnsigned.id).toThrow(
-                    ERRORS.TRANSACTION.NOT_SIGNED
+                expect(() => decodedUnsigned.id).toThrowError(
+                    TransactionNotSignedError
                 );
                 expect(decodedUnsigned.isSigned).toBe(false);
                 expect(decodedUnsigned.getSignatureHash()).toBeDefined();
@@ -240,15 +242,15 @@ describe('Transaction handler', () => {
                 // Checks on decoded unsigned transaction
                 expect(decodedUnsigned.body).toEqual(transaction.body);
                 expect(decodedUnsigned.signature).toBeUndefined();
-                expect(() => decodedUnsigned.origin).toThrow(
-                    ERRORS.TRANSACTION.NOT_SIGNED
+                expect(() => decodedUnsigned.origin).toThrowError(
+                    TransactionNotSignedError
                 );
-                expect(() => decodedUnsigned.delegator).toThrow(
-                    ERRORS.TRANSACTION.NOT_SIGNED
+                expect(() => decodedUnsigned.delegator).toThrowError(
+                    TransactionNotSignedError
                 );
                 expect(decodedUnsigned.isDelegated).toBe(true);
-                expect(() => decodedUnsigned.id).toThrow(
-                    ERRORS.TRANSACTION.NOT_SIGNED
+                expect(() => decodedUnsigned.id).toThrowError(
+                    TransactionNotSignedError
                 );
                 expect(decodedUnsigned.isSigned).toBe(false);
                 expect(decodedUnsigned.getSignatureHash()).toBeDefined();
@@ -303,9 +305,7 @@ describe('Transaction handler', () => {
                     invalidDecodedNotTrimmedReserved,
                     false
                 )
-            ).toThrowError(
-                ERRORS.TRANSACTION.INVALID_RESERVED_NOT_TRIMMED_FIELDS
-            );
+            ).toThrowError(TransactionBodyError);
         });
     });
 });

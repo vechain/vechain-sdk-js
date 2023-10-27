@@ -1,12 +1,12 @@
 import { type RLPValidObject } from '../../encoding';
 import {
-    ERRORS,
     SIGNED_TRANSACTION_RLP,
     TRANSACTION_FEATURES_KIND,
     UNSIGNED_TRANSACTION_RLP
 } from '../../utils';
 import { Transaction } from '../transaction';
 import { type TransactionBody } from '../types';
+import { buildError, TRANSACTION } from '@vechain-sdk/errors';
 
 /**
  * Decode a raw transaction.
@@ -75,7 +75,10 @@ function _decodeReservedField(reserved: Buffer[]): {
 } {
     // Not trimmed reserved field
     if (reserved[reserved.length - 1].length === 0)
-        throw new Error(ERRORS.TRANSACTION.INVALID_RESERVED_NOT_TRIMMED_FIELDS);
+        throw buildError(
+            TRANSACTION.INVALID_TRANSACTION_BODY,
+            'Invalid reserved field. Fields must be trimmed'
+        );
 
     // Get features field
     const featuresField = TRANSACTION_FEATURES_KIND.kind

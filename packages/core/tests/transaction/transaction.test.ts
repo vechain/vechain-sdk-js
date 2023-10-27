@@ -1,7 +1,13 @@
 import { describe, expect, test } from '@jest/globals';
 import { signer, delegator, transactions } from './fixture';
-import { ERRORS, Transaction, TransactionHandler } from '../../src';
-import { InvalidAddressError } from '@vechain-sdk/errors';
+import { Transaction, TransactionHandler } from '../../src';
+import {
+    InvalidAddressError,
+    InvalidSecp256k1SignatureError,
+    TransactionBodyError,
+    TransactionDelegationError,
+    TransactionNotSignedError
+} from '@vechain-sdk/errors';
 
 /**
  * Test transaction module
@@ -30,17 +36,17 @@ describe('Transaction', () => {
 
                 // Get id from unsigned transaction (should throw error)
                 expect(() => unsignedTransaction.id).toThrowError(
-                    ERRORS.TRANSACTION.NOT_SIGNED
+                    TransactionNotSignedError
                 );
 
                 // Get origin form unsigned transaction (should throw error)
                 expect(() => unsignedTransaction.origin).toThrowError(
-                    ERRORS.TRANSACTION.NOT_SIGNED
+                    TransactionNotSignedError
                 );
 
                 // Get delegator form unsigned and undelegated transaction (should throw error)
                 expect(() => unsignedTransaction.delegator).toThrowError(
-                    ERRORS.TRANSACTION.NOT_DELEGATED
+                    TransactionDelegationError
                 );
 
                 // Encoding
@@ -85,7 +91,7 @@ describe('Transaction', () => {
 
                 // Get delegator form undelegeted signed transaction (should throw error)
                 expect(() => signedTransaction.delegator).toThrowError(
-                    ERRORS.TRANSACTION.NOT_DELEGATED
+                    TransactionDelegationError
                 );
 
                 // Encoding
@@ -118,17 +124,17 @@ describe('Transaction', () => {
 
                 // Get id from unsigned transaction (should throw error)
                 expect(() => unsignedTransaction.id).toThrowError(
-                    ERRORS.TRANSACTION.NOT_SIGNED
+                    TransactionNotSignedError
                 );
 
                 // Get origin form unsigned transaction (should throw error)
                 expect(() => unsignedTransaction.origin).toThrowError(
-                    ERRORS.TRANSACTION.NOT_SIGNED
+                    TransactionNotSignedError
                 );
 
                 // Get delegator form unsigned transaction (should throw error)
                 expect(() => unsignedTransaction.delegator).toThrowError(
-                    ERRORS.TRANSACTION.NOT_SIGNED
+                    TransactionNotSignedError
                 );
 
                 // Encoding
@@ -186,7 +192,7 @@ describe('Transaction', () => {
                     transactions.delegated[0].body,
                     Buffer.from('INVALID_SIGNATURE')
                 )
-        ).toThrowError(ERRORS.TRANSACTION.INVALID_SIGNATURE);
+        ).toThrowError(InvalidSecp256k1SignatureError);
 
         // Invalid transaction body (should throw error)
         expect(
@@ -195,6 +201,6 @@ describe('Transaction', () => {
                     ...transactions.delegated[0].body,
                     blockRef: 'INVALID_BLOCK_REF'
                 })
-        ).toThrowError(ERRORS.TRANSACTION.INVALID_TRANSACTION_BODY);
+        ).toThrowError(TransactionBodyError);
     });
 });

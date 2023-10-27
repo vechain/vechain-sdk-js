@@ -20,6 +20,10 @@ import {
     InvalidKeystorePasswordError,
     InvalidRLPError,
     InvalidSecp256k1PrivateKeyError,
+    TransactionAlreadySignedError,
+    TransactionNotSignedError,
+    TransactionBodyError,
+    TransactionDelegationError,
     type InvalidRLPErrorData,
     type ErrorBase,
     ABI,
@@ -29,7 +33,8 @@ import {
     HDNODE,
     BLOOM,
     RLP,
-    DATA
+    DATA,
+    TRANSACTION
 } from '../model';
 
 /**
@@ -56,7 +61,8 @@ type ErrorCode =
     | BLOOM
     | ABI
     | RLP
-    | DATA;
+    | DATA
+    | TRANSACTION;
 
 /**
  * Conditional type to get the error data type from the error code.
@@ -83,7 +89,8 @@ const ERROR_CODES = {
     BLOOM,
     ABI,
     RLP,
-    DATA
+    DATA,
+    TRANSACTION
 };
 
 /**
@@ -139,6 +146,14 @@ type ErrorType<ErrorCodeT> =
         ? InvalidDataTypeError
         : ErrorCodeT extends DATA.INVALID_DATA_RETURN_TYPE
         ? InvalidDataReturnTypeError
+        : ErrorCodeT extends TRANSACTION.ALREADY_SIGNED
+        ? TransactionAlreadySignedError
+        : ErrorCodeT extends TRANSACTION.NOT_SIGNED
+        ? TransactionNotSignedError
+        : ErrorCodeT extends TRANSACTION.INVALID_TRANSACTION_BODY
+        ? TransactionBodyError
+        : ErrorCodeT extends TRANSACTION.INVALID_DELEGATION
+        ? TransactionDelegationError
         : never;
 
 /**
@@ -181,7 +196,11 @@ const ErrorClassMap = new Map<
     [ABI.INVALID_FUNCTION, InvalidAbiFunctionError],
     [RLP.INVALID_RLP, InvalidRLPError],
     [DATA.INVALID_DATA_TYPE, InvalidDataTypeError],
-    [DATA.INVALID_DATA_RETURN_TYPE, InvalidDataReturnTypeError]
+    [DATA.INVALID_DATA_RETURN_TYPE, InvalidDataReturnTypeError],
+    [TRANSACTION.ALREADY_SIGNED, TransactionAlreadySignedError],
+    [TRANSACTION.NOT_SIGNED, TransactionNotSignedError],
+    [TRANSACTION.INVALID_TRANSACTION_BODY, TransactionBodyError],
+    [TRANSACTION.INVALID_DELEGATION, TransactionDelegationError]
 ]);
 
 export {
