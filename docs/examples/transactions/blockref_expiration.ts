@@ -8,6 +8,9 @@ import {
 } from '@vechain-sdk/core';
 import { expect } from 'expect';
 
+// In this example a transaction is created that
+// has its expiry set to a specified block height
+
 // Define clause
 const clauses: TransactionClause[] = [
     {

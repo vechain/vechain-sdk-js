@@ -8,6 +8,9 @@ import {
 } from '@vechain-sdk/core';
 import { expect } from 'expect';
 
+// In this example a simple single clause transaction is
+// created, signed, encoded and then decoded
+
 // Define clauses
 const clauses: TransactionClause[] = [
     {

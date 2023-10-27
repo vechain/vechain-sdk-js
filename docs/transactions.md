@@ -26,6 +26,9 @@ import {
 } from '@vechain-sdk/core';
 import { expect } from 'expect';
 
+// In this example a simple single clause transaction is
+// created, signed, encoded and then decoded
+
 // Define clauses
 const clauses: TransactionClause[] = [
     {
@@ -81,6 +84,9 @@ import {
     type TransactionBody
 } from '@vechain-sdk/core';
 import { expect } from 'expect';
+
+// In this example a multiple clause transaction is
+// created, signed, encoded and then decoded
 
 // Define multiple clauses
 const clauses: TransactionClause[] = [
@@ -145,6 +151,9 @@ import {
 } from '@vechain-sdk/core';
 import { expect } from 'expect';
 
+// In this example a fee delegated transaction is
+// created, signed (by both parties), encoded and then decoded
+
 // Define clause
 const clauses: TransactionClause[] = [
     {
@@ -206,6 +215,9 @@ import {
     type TransactionBody
 } from '@vechain-sdk/core';
 import { expect } from 'expect';
+
+// In this example a transaction is created that
+// has its expiry set to a specified block height
 
 // Define clause
 const clauses: TransactionClause[] = [

@@ -10,6 +10,9 @@ import {
 } from '@vechain-sdk/core';
 import { expect } from 'expect';
 
+// In this example a fee delegated transaction is
+// created, signed (by both parties), encoded and then decoded
+
 // Define clause
 const clauses: TransactionClause[] = [
     {
