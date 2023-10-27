@@ -7,11 +7,6 @@ import { dataUtils } from '../utils';
 import { type Certificate } from './types';
 
 /**
- * Converts a string to lowercase safely. If the input is not a string, it's returned as is.
- * @param str - The string to be converted to lowercase.
- */
-
-/**
  * Deterministically encodes a certificate into a JSON string.
  * @param cert - The certificate object to be encoded.
  * @returns A JSON string representation of the certificate.
