@@ -1,21 +1,28 @@
 import { describe, expect, test } from '@jest/globals';
+import {
+    ZERO_ADDRESS,
+    soloNetwork,
+    testAccount,
+    zeroAddressAccountDetails
+} from './fixture';
 import { type NetParams } from '../../src';
-import { firstTestnetBlock, network, testAccount } from './fixture';
 
 /**
  * SimpleNet class tests
+ * @group integration/network
  */
-describe('Test SimpleNet class', () => {
+describe('Test SimpleNet class on Solo', () => {
     /**
      * HTTP Request tests
      */
     test('Should perform an HTTP GET request and resolve with response data', async () => {
-        // Perform an HTTP GET request using the SimpleNet instance
-        const response = await network.http('GET', '/blocks/1?expanded=false');
+        const response = await soloNetwork.http(
+            'GET',
+            `/accounts/${ZERO_ADDRESS}`
+        );
 
-        // Assert that the response matches the expected firstTestnetBlock
         expect(JSON.stringify(response)).toEqual(
-            JSON.stringify(firstTestnetBlock)
+            JSON.stringify(zeroAddressAccountDetails)
         );
     });
 
@@ -24,9 +31,9 @@ describe('Test SimpleNet class', () => {
      */
     test('Should reject with an error if the HTTP request fails', async () => {
         // Assert that the HTTP request fails with an error
-        await expect(network.http('GET', '/error-test-path')).rejects.toThrow(
-            '404 get /error-test-path: 404 page not found'
-        );
+        await expect(
+            soloNetwork.http('GET', '/error-test-path')
+        ).rejects.toThrow('404 get /error-test-path: 404 page not found');
     });
 
     /**
@@ -47,7 +54,7 @@ describe('Test SimpleNet class', () => {
         };
 
         // Make an actual HTTP GET request and pass the validateResponseHeaders function
-        const response = await network.http(
+        const response = await soloNetwork.http(
             'GET',
             '/accounts/' + testAccount,
             customParams
