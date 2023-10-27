@@ -1,4 +1,10 @@
 import { LRUCache } from 'lru-cache';
+import {
+    type Block,
+    type ThorStatus,
+    type Transaction,
+    type TransactionReceipt
+} from '../types';
 
 /**
  * Constant that defines the window length used for determining irreversibility.
@@ -8,11 +14,11 @@ const WINDOW_LEN = 12;
 /**
  * Represents a Slot in the cache, combining information about a block, accounts, transactions, receipts, and a tied map.
  */
-type Slot = Connex.Thor.Status['head'] & {
-    block?: Connex.Thor.Block; // Holds a reference to a blockchain block if available.
+type Slot = ThorStatus['head'] & {
+    block?: Block; // Holds a reference to a blockchain block if available.
     accounts: Map<string, Account>; // Maps account addresses to Account objects.
-    txs: Map<string, Connex.Thor.Transaction>; // Maps transaction IDs to Transaction objects.
-    receipts: Map<string, Connex.Thor.Transaction.Receipt>; // Maps transaction IDs to Transaction Receipt objects.
+    txs: Map<string, Transaction>; // Maps transaction IDs to Transaction objects.
+    receipts: Map<string, TransactionReceipt>; // Maps transaction IDs to Transaction Receipt objects.
     tied: Map<string, never>; // An empty map for a specific purpose.
 };
 
@@ -24,13 +30,13 @@ class Cache {
      * Irreversible cache for blocks, transactions, and receipts using LRUCache.
      */
     private readonly irreversible = {
-        blocks: new LRUCache<number | string, Connex.Thor.Block>({
+        blocks: new LRUCache<number | string, Block>({
             max: 256
         }), // Cache for storing blockchain blocks.
-        txs: new LRUCache<string, Connex.Thor.Transaction>({
+        txs: new LRUCache<string, Transaction>({
             max: 512
         }), // Cache for storing transactions.
-        receipts: new LRUCache<string, Connex.Thor.Transaction.Receipt>({
+        receipts: new LRUCache<string, TransactionReceipt>({
             max: 512
         }) // Cache for storing transaction receipts.
     };
@@ -49,8 +55,8 @@ class Cache {
      */
     public async getBlock(
         revision: number | string,
-        fetch: () => Promise<Connex.Thor.Block | null | undefined>
-    ): Promise<Connex.Thor.Block | null | undefined> {
+        fetch: () => Promise<Block | null | undefined>
+    ): Promise<Block | null | undefined> {
         let block = this.irreversible.blocks.get(revision) ?? null;
 
         // If the block is found in the irreversible cache, return it.
@@ -122,7 +128,7 @@ class Cache {
  */
 class Account {
     constructor(
-        readonly obj: Connex.Thor.Account,
+        readonly obj: Account,
         readonly initTimestamp: number
     ) {}
 }

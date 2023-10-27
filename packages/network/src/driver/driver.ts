@@ -1,5 +1,6 @@
 import { DriverNoVendor } from './driver-no-vendor';
 import { type Net, type Wallet } from './interfaces';
+import { type Block, type ThorStatus } from '../types';
 
 /**
  * Driver class fully implements DriverInterface and extends DriverNoVendor.
@@ -16,13 +17,10 @@ export class Driver extends DriverNoVendor {
      */
     public static async connect(net: Net, wallet?: Wallet): Promise<Driver> {
         // Fetch the genesis block from the network
-        const genesis: Connex.Thor.Block = (await net.http(
-            'GET',
-            'blocks/0'
-        )) as Connex.Thor.Block;
+        const genesis: Block = (await net.http('GET', 'blocks/0')) as Block;
 
         // Fetch the best block from the network, validating 'x-genesis-id' in the response header
-        const best: Connex.Thor.Block = (await net.http('GET', 'blocks/best', {
+        const best: Block = (await net.http('GET', 'blocks/best', {
             query: {},
             body: {},
             headers: {
@@ -36,7 +34,7 @@ export class Driver extends DriverNoVendor {
                     );
                 }
             }
-        })) as Connex.Thor.Block;
+        })) as Block;
 
         return new Driver(
             net,
@@ -62,8 +60,8 @@ export class Driver extends DriverNoVendor {
      */
     constructor(
         net: Net,
-        genesis: Connex.Thor.Block,
-        initialHead?: Connex.Thor.Status['head'],
+        genesis: Block,
+        initialHead?: ThorStatus['head'],
         private readonly wallet?: Wallet
     ) {
         super(net, genesis, initialHead);

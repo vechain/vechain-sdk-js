@@ -3,6 +3,7 @@ import { Agent as HttpAgent } from 'http';
 import { Agent as HttpsAgent } from 'https';
 import { type Net, type NetParams } from './interfaces';
 import { convertError } from '../utils';
+import { type Block } from '../types';
 
 /**
  * Represents a concrete implementation of the `Net` interface, providing methods for making HTTP requests and
@@ -46,7 +47,7 @@ class SimpleNet implements Net {
         method: 'GET' | 'POST',
         path: string,
         params?: NetParams
-    ): Promise<Connex.Thor.Block | undefined> {
+    ): Promise<Block | undefined> {
         try {
             const resp = await this.axios.request({
                 method,
@@ -70,7 +71,7 @@ class SimpleNet implements Net {
                 params.validateResponseHeader(responseHeaders);
             }
 
-            return resp.data as Connex.Thor.Block;
+            return resp.data as Block;
         } catch (err) {
             const axiosError = err as AxiosError<string>;
             if (axiosError.isAxiosError) {

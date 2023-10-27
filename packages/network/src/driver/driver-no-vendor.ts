@@ -1,15 +1,16 @@
 import { type Net } from './interfaces';
 import { Cache } from './cache';
+import { type Block, type ThorStatus } from '../types';
 
 // DriverNoVendor class for handling network requests and caching
 class DriverNoVendor {
-    public head: Connex.Thor.Status['head']; // Current blockchain head status
+    public head: ThorStatus['head']; // Current blockchain head status
 
     private readonly cache = new Cache(); // Cache for storing network responses
     // To merge concurrent identical remote requests
     private readonly pendingRequests: Record<
         string,
-        Promise<Connex.Thor.Block | null | undefined>
+        Promise<Block | null | undefined>
     > = {};
 
     /**
@@ -20,8 +21,8 @@ class DriverNoVendor {
      */
     constructor(
         protected readonly net: Net,
-        readonly genesis: Connex.Thor.Block,
-        initialHead?: Connex.Thor.Status['head']
+        readonly genesis: Block,
+        initialHead?: ThorStatus['head']
     ) {
         if (initialHead != null) {
             this.head = initialHead;
@@ -44,7 +45,7 @@ class DriverNoVendor {
      */
     public async getBlock(
         revision: string | number
-    ): Promise<Connex.Thor.Block | null | undefined> {
+    ): Promise<Block | null | undefined> {
         return await this.cache.getBlock(
             revision,
             async () => await this.httpGet(`blocks/${revision}`)
@@ -58,9 +59,9 @@ class DriverNoVendor {
      * @returns A promise that resolves to the merged request result.
      */
     protected async mergeRequest(
-        req: () => Promise<Connex.Thor.Block | null | undefined>,
+        req: () => Promise<Block | null | undefined>,
         ...keyParts: unknown[]
-    ): Promise<Connex.Thor.Block | null | undefined> {
+    ): Promise<Block | null | undefined> {
         const key = JSON.stringify(keyParts);
         const pending = this.pendingRequests[key];
 
@@ -87,7 +88,7 @@ class DriverNoVendor {
     protected async httpGet(
         path: string,
         query?: Record<string, string>
-    ): Promise<Connex.Thor.Block | null | undefined> {
+    ): Promise<Block | null | undefined> {
         return await this.mergeRequest(
             async () => {
                 query = query ?? {};

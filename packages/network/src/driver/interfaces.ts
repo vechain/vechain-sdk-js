@@ -1,3 +1,5 @@
+import { type Block } from '../types';
+
 /**
  * Represents the core networking interface for making HTTP requests and opening WebSocket readers.
  *
@@ -24,7 +26,7 @@ interface Net {
         method: 'GET' | 'POST',
         path: string,
         params?: NetParams
-    ) => Promise<Connex.Thor.Block | null | undefined>;
+    ) => Promise<Block | null | undefined>;
 }
 
 /**
