@@ -1,7 +1,6 @@
 import blake from 'blakejs';
 import { type HashInput, type ReturnType } from './types';
-import { isValidReturnType } from './helpers';
-import { ERRORS } from '../utils';
+import { createInvalidReturnTypeError, isValidReturnType } from './helpers';
 
 /**
  * Internal function to compute the blake2b256 256-bit hash of the given data.
@@ -74,9 +73,7 @@ function blake2b256(
     returnType: ReturnType = 'buffer'
 ): Buffer | string {
     if (!isValidReturnType(returnType)) {
-        throw new Error(
-            ERRORS.DATA.INVALID_RETURN_TYPE("either 'buffer' or 'hex'")
-        );
+        throw createInvalidReturnTypeError();
     }
 
     // Converts the data to an array of Buffer or string

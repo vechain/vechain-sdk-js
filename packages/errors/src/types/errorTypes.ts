@@ -12,6 +12,7 @@ import {
     InvalidBloomError,
     InvalidKError,
     InvalidDataTypeError,
+    InvalidDataReturnTypeError,
     InvalidHDNodeChaincodeError,
     InvalidHDNodeMnemonicsError,
     InvalidHDNodePublicKeyError,
@@ -136,6 +137,8 @@ type ErrorType<ErrorCodeT> =
         ? InvalidRLPError
         : ErrorCodeT extends DATA.INVALID_DATA_TYPE
         ? InvalidDataTypeError
+        : ErrorCodeT extends DATA.INVALID_DATA_RETURN_TYPE
+        ? InvalidDataReturnTypeError
         : never;
 
 /**
@@ -177,7 +180,8 @@ const ErrorClassMap = new Map<
     [ABI.INVALID_FORMAT_TYPE, InvalidAbiFormatTypeError],
     [ABI.INVALID_FUNCTION, InvalidAbiFunctionError],
     [RLP.INVALID_RLP, InvalidRLPError],
-    [DATA.INVALID_DATA_TYPE, InvalidDataTypeError]
+    [DATA.INVALID_DATA_TYPE, InvalidDataTypeError],
+    [DATA.INVALID_DATA_RETURN_TYPE, InvalidDataReturnTypeError]
 ]);
 
 export {

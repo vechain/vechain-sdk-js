@@ -1,7 +1,6 @@
 import { ethers } from 'ethers';
 import { type ReturnType, type HashInput } from './types';
-import { isValidReturnType } from './helpers';
-import { ERRORS } from '../utils';
+import { createInvalidReturnTypeError, isValidReturnType } from './helpers';
 
 /* --- Overloaded functions start --- */
 
@@ -52,9 +51,7 @@ function sha256(
     returnType: ReturnType = 'buffer'
 ): Buffer | string {
     if (!isValidReturnType(returnType)) {
-        throw new Error(
-            ERRORS.DATA.INVALID_RETURN_TYPE("either 'buffer' or 'hex'")
-        );
+        throw createInvalidReturnTypeError();
     }
 
     const hash = ethers.isBytesLike(data)

@@ -50,15 +50,6 @@ const ERRORS = {
          */
         INVALID_DATA_TYPE: function (format: string): string {
             return `Invalid data type. Data should be ${format}.`;
-        },
-
-        /**
-         * Error message for invalid return type
-         * @param format - The expected return type
-         * @returns The error message
-         */
-        INVALID_RETURN_TYPE: function (format: string): string {
-            return `Invalid return type. Return type should be ${format}.`;
         }
     },
 
