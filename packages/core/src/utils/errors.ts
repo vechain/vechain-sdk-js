@@ -22,16 +22,6 @@ const ERRORS = {
     },
 
     /**
-     * Error messages pertaining to HDNode (Hierarchical Deterministic Node) operations.
-     */
-    HDNODE: {
-        INVALID_PUBLICKEY: 'Invalid public key',
-        INVALID_PRIVATEKEY: 'Invalid private key',
-        INVALID_CHAINCODE: 'Invalid chain code',
-        INVALID_MNEMONICS: 'Invalid mnemonics'
-    },
-
-    /**
      * Error messages related to mnemonic operations.
      */
     MNEMONIC: {
