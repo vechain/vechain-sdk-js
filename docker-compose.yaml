@@ -11,7 +11,7 @@ services:
       - --on-demand # create new block when there is pending transaction
       - --api-addr=0.0.0.0:8669 # Enable remote connections
       - --api-cors=* # comma separated list of domains to accept cross origin requests to API
-      - --gas-limit=10000000000000 
+      - --gas-limit=10000000000000 # block gas limit
       - --api-call-gas-limit=10000000000000 # limit contract call gas
       - --txpool-limit=100000000000  # limit txpool size
       - --txpool-limit-per-account=256 # limit txpool size per account
