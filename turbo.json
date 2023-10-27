@@ -6,12 +6,16 @@
             "outputs": ["dist/**"]
         },
         "test": {
-            "dependsOn": ["^build"],
-            "outputs": ["coverage/**"]
+            "outputs": ["coverage/**"],
+            "dependsOn": ["^build"]
         },
         "test:unit": {
-            "dependsOn": ["^build"],
-            "outputs": ["coverage/**"]
+            "outputs": ["coverage/**"],
+            "dependsOn": ["^build"]
+        },
+        "test:integration":{
+            "outputs": ["coverage/**"],
+            "dependsOn": ["^build"]
         },
         "lint": {
             "dependsOn": ["^build"]

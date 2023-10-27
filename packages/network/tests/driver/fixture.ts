@@ -6,9 +6,19 @@ import { SimpleNet } from '../../src';
 const _testnetUrl = 'https://testnet.vechain.org';
 
 /**
+ * Url of the solo network fixture
+ */
+const _soloUrl = 'http://localhost:8669';
+
+/**
  * Network instance fixture
  */
 const network = new SimpleNet(_testnetUrl);
+
+/**
+ * Solo network instance fixture
+ */
+const soloNetwork = new SimpleNet(_soloUrl);
 
 /**
  * First testnet block fixture
@@ -39,8 +49,29 @@ const firstTestnetBlock = {
 };
 
 /**
+ * Zero address account details fixture
+ */
+const zeroAddressAccountDetails = {
+    balance: '0x0',
+    energy: '0x0',
+    hasCode: false
+};
+
+/**
  * Simple test account fixture
  */
 const testAccount = '0x5034aa590125b64023a0262112b98d72e3c8e40e';
 
-export { network, firstTestnetBlock, testAccount };
+/**
+ * Zero address fixture
+ */
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
+
+export {
+    network,
+    soloNetwork,
+    firstTestnetBlock,
+    testAccount,
+    zeroAddressAccountDetails,
+    ZERO_ADDRESS
+};
