@@ -6,7 +6,7 @@ import {
     encodedDecodedValues,
     simpleParametersDataForFunction2
 } from './fixture';
-import { type FormatType, abi } from '../../src/abi';
+import { type FormatType, abi } from '../../src';
 import { ERRORS } from '../../src';
 import { ParamType, type ethers } from 'ethers';
 

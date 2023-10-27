@@ -10,7 +10,7 @@ import { type HexConfig } from './types';
  * The resulting string can optionally be prefixed with '0x' based on the configuration provided.
  *
  * @param data - The input data to be converted, either a string or a Uint8Array.
- * @param config - An optional configuration object that may include a `withPrefix` boolean, which if true, prefixes the resulting string with '0x'.
+ * @param config - An optional configuration object that may include a `withPrefix` boolean, which, if true, prefixes the resulting string with '0x'.
  * @returns The hexadecimal string representation of the input data.
  */
 const toHexString = (

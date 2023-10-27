@@ -7,9 +7,7 @@
  * @returns A boolean indicating whether the return type is valid
  */
 const isValidReturnType = (value: string): boolean => {
-    if (value !== 'buffer' && value !== 'hex') return false;
-
-    return true;
+    return !(value !== 'buffer' && value !== 'hex');
 };
 
 export { isValidReturnType };
