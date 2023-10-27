@@ -1,6 +1,5 @@
 import { ethers } from 'ethers';
 import {
-    ERRORS,
     MNEMONIC_WORDLIST_ALLOWED_SIZES,
     VET_DERIVATION_PATH,
     X_PRIV_PREFIX,
@@ -11,6 +10,7 @@ import { address } from '../address';
 import { sha256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import { type WordlistSizeType } from '../mnemonic';
+import { buildError, HDNODE } from '@vechain-sdk/errors';
 
 /**
  * Generates an HDNode instance using mnemonic words.
@@ -26,7 +26,10 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
             words.length as WordlistSizeType
         )
     ) {
-        throw new Error(ERRORS.HDNODE.INVALID_MNEMONICS);
+        throw buildError(
+            HDNODE.INVALID_HDNODE_MNEMONICS,
+            'Invalid mnemonic size. It must be 12, 15, 18, 21, or 24.'
+        );
     }
     // normalize words to lowercase
     const joinedWords = words.join(' ').toLowerCase();
@@ -48,11 +51,17 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
 function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
     // Invalid public key
     if (publicKey.length !== 65)
-        throw new Error(ERRORS.HDNODE.INVALID_PUBLICKEY);
+        throw buildError(
+            HDNODE.INVALID_HDNODE_PUBLIC_KEY,
+            'Invalid public key. Length must be 65 bytes.'
+        );
 
     // Invalid chain code
     if (chainCode.length !== 32)
-        throw new Error(ERRORS.HDNODE.INVALID_CHAINCODE);
+        throw buildError(
+            HDNODE.INVALID_HDNODE_CHAIN_CODE,
+            'Invalid chain code. Length must be 32 bytes.'
+        );
 
     const compressed = secp256k1.extendedPublicKeyToArray(publicKey, true);
     const key = Buffer.concat([
@@ -80,11 +89,17 @@ function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
 function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
     // Invalid private key
     if (privateKey.length !== 32)
-        throw new Error(ERRORS.HDNODE.INVALID_PRIVATEKEY);
+        throw buildError(
+            HDNODE.INVALID_HDNODE_PRIVATE_KEY,
+            'Invalid private key. Length must be 32 bytes.'
+        );
 
     // Invalid chain code
     if (chainCode.length !== 32)
-        throw new Error(ERRORS.HDNODE.INVALID_CHAINCODE);
+        throw buildError(
+            HDNODE.INVALID_HDNODE_CHAIN_CODE,
+            'Invalid chain code. Length must be 32 bytes.'
+        );
 
     const key = Buffer.concat([
         X_PRIV_PREFIX,
