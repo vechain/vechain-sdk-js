@@ -107,7 +107,7 @@ class Transaction {
         if (!this.isSigned)
             throw buildError(
                 TRANSACTION.NOT_SIGNED,
-                'Cannot get delegator from unsigned transaction.'
+                'Cannot get delegator from unsigned transaction. Sign the transaction first.'
             );
 
         // Slice signature needed to recover public key
@@ -226,7 +226,7 @@ class Transaction {
         if (!this.isSigned)
             throw buildError(
                 TRANSACTION.NOT_SIGNED,
-                'Cannot get origin from unsigned transaction.'
+                'Cannot get origin from unsigned transaction. Sign the transaction first-'
             );
 
         // Slice signature
@@ -253,7 +253,7 @@ class Transaction {
         if (!this.isSigned)
             throw buildError(
                 TRANSACTION.NOT_SIGNED,
-                'Cannot get transaction id from unsigned transaction.'
+                'Cannot get transaction id from unsigned transaction. Sign the transaction first'
             );
         // Return transaction ID
         return blake2b256(

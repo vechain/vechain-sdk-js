@@ -102,7 +102,7 @@ class Function<ABIType> {
         } catch {
             throw buildError(
                 ABI.INVALID_DATA_TO_DECODE,
-                'Cannot decode following data. Data should be an hex valid string that encodes a valid ABI type.'
+                'Cannot decode. Data should be a valid hex string that encodes a valid ABI type.'
             );
         }
     }
@@ -119,7 +119,7 @@ class Function<ABIType> {
         } catch {
             throw buildError(
                 ABI.INVALID_DATA_TO_ENCODE,
-                'Cannot encode following data. Incorrect Function format.'
+                'Cannot encode. Incorrect Function format.'
             );
         }
     }
@@ -197,7 +197,7 @@ class Event<ABIType> {
         } catch {
             throw buildError(
                 ABI.INVALID_DATA_TO_DECODE,
-                'Cannot decode following data. Incorrect data or topics.'
+                'Cannot decode. Incorrect data or topics.'
             );
         }
     }
@@ -217,7 +217,7 @@ class Event<ABIType> {
         } catch {
             throw buildError(
                 ABI.INVALID_DATA_TO_ENCODE,
-                'Cannot encode following data. Incorrect Event format.'
+                'Cannot encode. Incorrect Event format.'
             );
         }
     }

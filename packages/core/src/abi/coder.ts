@@ -47,7 +47,7 @@ function decode<ReturnType>(
     } catch {
         throw buildError(
             ABI.INVALID_DATA_TO_DECODE,
-            'Invalid data to decode. Data should be an hex valid string that encodes a valid ABI type.'
+            'Invalid data to decode. Data should be a valid hex string that encodes a valid ABI type.'
         );
     }
 }
