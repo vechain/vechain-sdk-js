@@ -2,6 +2,7 @@ import { describe, test, expect } from '@jest/globals';
 import { secp256k1, address, ERRORS, keystore } from '../../src';
 import { type Keystore } from '../../src';
 import { encryptionPassword } from './fixture';
+import { InvalidSecp256k1PrivateKeyError } from '@vechain-sdk/errors';
 
 /**
  * Keystore tests
@@ -41,7 +42,7 @@ describe('Keystore', () => {
                     Buffer.from('wrong private key', 'hex'),
                     encryptionPassword
                 )
-        ).rejects.toThrowError(ERRORS.SECP256K1.INVALID_PRIVATE_KEY);
+        ).rejects.toThrowError(InvalidSecp256k1PrivateKeyError);
     });
 
     /**

@@ -4,16 +4,6 @@
  */
 const ERRORS = {
     /**
-     * Error messages related to Secp256k1 cryptographic operations.
-     */
-    SECP256K1: {
-        INVALID_PRIVATE_KEY: 'Invalid private key',
-        INVALID_MESSAGE_HASH: 'Invalid message hash',
-        INVALID_SIGNATURE: 'Invalid signature',
-        INVALID_SIGNATURE_RECOVERY: 'Invalid signature recovery'
-    },
-
-    /**
      * Error messages concerning operations with keystores.
      */
     KEYSTORE: {

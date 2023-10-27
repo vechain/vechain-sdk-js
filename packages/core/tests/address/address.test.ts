@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { ERRORS, address, secp256k1 } from '../../src';
+import { address, secp256k1 } from '../../src';
 import {
     checksumedAndUnchecksumedAddresses,
     invalidPrivateKey,
@@ -7,7 +7,10 @@ import {
     simplePrivateKey,
     simplePublicKey
 } from './fixture';
-import { InvalidAddressError } from '@vechain-sdk/errors';
+import {
+    InvalidAddressError,
+    InvalidSecp256k1PrivateKeyError
+} from '@vechain-sdk/errors';
 
 /**
  * Test address module
@@ -51,7 +54,7 @@ describe('Address', () => {
             // Invalid private key to derive public key
             expect(() =>
                 secp256k1.derivePublicKey(invalidPrivateKey)
-            ).toThrowError(ERRORS.SECP256K1.INVALID_PRIVATE_KEY);
+            ).toThrowError(InvalidSecp256k1PrivateKeyError);
         });
     });
 
