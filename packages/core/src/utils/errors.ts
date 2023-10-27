@@ -4,14 +4,6 @@
  */
 const ERRORS = {
     /**
-     * Error messages related to mnemonic operations.
-     */
-    MNEMONIC: {
-        INVALID_MNEMONIC_SIZE:
-            'Invalid mnemonic size. It must be 12, 15, 18, 21, or 24.'
-    },
-
-    /**
      * Error messages related to data validations.
      */
     DATA: {

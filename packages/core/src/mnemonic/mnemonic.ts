@@ -5,7 +5,8 @@ import {
     type WordListRandomGeneratorSizeInBytes,
     type WordlistSizeType
 } from './types';
-import { ERRORS, MNEMONIC_WORDLIST_ALLOWED_SIZES } from '../utils';
+import { MNEMONIC_WORDLIST_ALLOWED_SIZES } from '../utils';
+import { buildError, HDNODE } from '@vechain-sdk/errors';
 
 /* --- Overloaded functions start --- */
 
@@ -54,7 +55,10 @@ function generate(
         wordlistSize !== undefined &&
         !MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(wordlistSize)
     ) {
-        throw new Error(ERRORS.MNEMONIC.INVALID_MNEMONIC_SIZE);
+        throw buildError(
+            HDNODE.INVALID_HDNODE_MNEMONICS,
+            'Invalid wordlist size given as input. Allowed sizes are 12, 15, 18, 21, 24'
+        );
     }
 
     // Use randomBytes as default random generator if not provided
