@@ -18,7 +18,7 @@
         "project": "./tsconfig.json"
     },
     "plugins": ["@typescript-eslint"],
-    "ignorePatterns": ["node_modules/", "dist/", "coverage/", "docs/examples"],
+    "ignorePatterns": ["node_modules/", "dist/", "coverage/"],
     "rules": {
         "@typescript-eslint/no-unused-vars": ["error", { "argsIgnorePattern": "^_" }],
         "@typescript-eslint/explicit-function-return-type": "error",
@@ -28,6 +28,7 @@
         "@typescript-eslint/prefer-nullish-coalescing": "error",
         "@typescript-eslint/prefer-optional-chain": "error",
         "prettier/prettier": ["error", { "singleQuote": true, "trailingComma": "none", "tabWidth": 4 }],
-        "no-warning-comments": "error"
+        "no-warning-comments": "error",
+        "no-multi-str": "off"
     }
 }
