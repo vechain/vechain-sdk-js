@@ -1,16 +1,23 @@
 import { type Net } from './interfaces';
 import { Cache } from './cache';
 
+// DriverNoVendor class for handling network requests and caching
 class DriverNoVendor {
-    public head: Connex.Thor.Status['head'];
+    public head: Connex.Thor.Status['head']; // Current blockchain head status
 
-    private readonly cache = new Cache();
-    // to merge concurrent identical remote requests
+    private readonly cache = new Cache(); // Cache for storing network responses
+    // To merge concurrent identical remote requests
     private readonly pendingRequests: Record<
         string,
         Promise<Connex.Thor.Block | null | undefined>
     > = {};
 
+    /**
+     * Creates an instance of DriverNoVendor.
+     * @param net - The network interface to use for making HTTP requests.
+     * @param genesis - The genesis block of the blockchain.
+     * @param initialHead - (Optional) Initial blockchain head status.
+     */
     constructor(
         protected readonly net: Net,
         readonly genesis: Connex.Thor.Block,
@@ -30,6 +37,11 @@ class DriverNoVendor {
         }
     }
 
+    /**
+     * Retrieve a block by revision.
+     * @param revision - The block revision (number or ID).
+     * @returns A promise that resolves to the requested block.
+     */
     public async getBlock(
         revision: string | number
     ): Promise<Connex.Thor.Block | null | undefined> {
@@ -39,6 +51,12 @@ class DriverNoVendor {
         );
     }
 
+    /**
+     * Merge concurrent requests with the same key.
+     * @param req - The request function to execute.
+     * @param keyParts - Parts of the key used to merge requests.
+     * @returns A promise that resolves to the merged request result.
+     */
     protected async mergeRequest(
         req: () => Promise<Connex.Thor.Block | null | undefined>,
         ...keyParts: unknown[]
@@ -53,12 +71,19 @@ class DriverNoVendor {
             try {
                 return await req();
             } finally {
+                // Remove the request from the pending queue after completion
                 // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
                 delete this.pendingRequests[key];
             }
         })());
     }
 
+    /**
+     * Make an HTTP GET request with optional query parameters.
+     * @param path - The path to the resource.
+     * @param query - (Optional) Query parameters for the request.
+     * @returns A promise that resolves to the HTTP response data.
+     */
     protected async httpGet(
         path: string,
         query?: Record<string, string>
@@ -80,11 +105,14 @@ class DriverNoVendor {
         );
     }
 
+    // Validate the response header to ensure it matches the genesis block's ID
     private get headerValidator() {
         return (headers: Record<string, string>) => {
             const xgid = headers['x-genesis-id'];
             if (xgid != null && xgid !== this.genesis.id) {
-                throw new Error(`responded 'x-genesis-id' not matched`);
+                throw new Error(
+                    `Responded 'x-genesis-id' does not match the expected genesis ID`
+                );
             }
         };
     }
