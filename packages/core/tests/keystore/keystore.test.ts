@@ -1,8 +1,12 @@
 import { describe, test, expect } from '@jest/globals';
-import { secp256k1, address, ERRORS, keystore } from '../../src';
+import { secp256k1, address, keystore } from '../../src';
 import { type Keystore } from '../../src';
 import { encryptionPassword } from './fixture';
-import { InvalidSecp256k1PrivateKeyError } from '@vechain-sdk/errors';
+import {
+    InvalidKeystoreError,
+    InvalidKeystorePasswordError,
+    InvalidSecp256k1PrivateKeyError
+} from '@vechain-sdk/errors';
 
 /**
  * Keystore tests
@@ -90,7 +94,7 @@ describe('Keystore', () => {
                     myKeystore,
                     `WRONG_${encryptionPassword}`
                 )
-        ).rejects.toThrowError(ERRORS.KEYSTORE.INVALID_PASSWORD);
+        ).rejects.toThrowError(InvalidKeystorePasswordError);
     });
 
     /**
@@ -119,7 +123,7 @@ describe('Keystore', () => {
                     JSON.parse(invalidKeystore) as Keystore,
                     encryptionPassword
                 )
-        ).rejects.toThrowError(ERRORS.KEYSTORE.INVALID_KEYSTORE);
+        ).rejects.toThrowError(InvalidKeystoreError);
     });
 
     /**

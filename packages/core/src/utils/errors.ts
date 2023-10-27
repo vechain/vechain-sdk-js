@@ -4,14 +4,6 @@
  */
 const ERRORS = {
     /**
-     * Error messages concerning operations with keystores.
-     */
-    KEYSTORE: {
-        INVALID_KEYSTORE: 'Invalid keystore',
-        INVALID_PASSWORD: 'Invalid password'
-    },
-
-    /**
      * Error messages related to mnemonic operations.
      */
     MNEMONIC: {
