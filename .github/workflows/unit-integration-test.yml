@@ -33,4 +33,12 @@ jobs:
                 name: coverage-results
                 path: |
                   packages/**/coverage/lcov.info
+
+            - name: Archive coverage root
+              uses: actions/upload-artifact@v3
+              with:
+                name: coverage-results-root
+                path: |
                   coverage/coverage-summary.json
+
+              
