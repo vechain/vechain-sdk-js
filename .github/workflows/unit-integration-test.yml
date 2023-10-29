@@ -22,6 +22,11 @@ jobs:
             - name: Test
               run: yarn test
 
+            - name: Jest Coverage Comment
+              uses: MishaKav/jest-coverage-comment@main
+              with:
+                coverage-summary-path: ./coverage/coverage-summary.json
+
             - name: Archive coverage
               uses: actions/upload-artifact@v3
               with:
