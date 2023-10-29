@@ -25,6 +25,13 @@ jobs:
             - name: Jest Coverage Comment
               uses: MishaKav/jest-coverage-comment@main
               with:
+                title: Test Coverage
+                summary-title: Summary
+                badge-title: Coverage
+                hide-comment: false
+                create-new-comment: false
+                hide-summary: false
+                coverage-title: Coverage
                 coverage-summary-path: coverage/coverage-summary.json
 
             - name: Archive coverage
@@ -33,12 +40,5 @@ jobs:
                 name: coverage-results
                 path: |
                   packages/**/coverage/lcov.info
-
-            - name: Archive coverage root
-              uses: actions/upload-artifact@v3
-              with:
-                name: coverage-results-root
-                path: |
-                  coverage/coverage-summary.json
 
               

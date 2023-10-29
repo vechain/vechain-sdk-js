@@ -75,8 +75,7 @@ const mergeCoverage = (): void => {
     run([
         `nyc merge ${FINAL_DIR} && mv coverage.json .nyc_output/out.json`,
         `nyc report --reporter lcov --reporter json-summary --report-dir ${FINAL_DIR}`,
-        'rm -rf .nyc_output',
-        'ls -a coverage/'
+        'rm -rf .nyc_output'
     ]);
 };
 
