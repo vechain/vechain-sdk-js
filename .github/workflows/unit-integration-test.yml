@@ -33,3 +33,4 @@ jobs:
                 name: coverage-results
                 path: |
                   packages/**/coverage/lcov.info
+                  coverage/coverage-summary.json
