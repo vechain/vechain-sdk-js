@@ -25,7 +25,7 @@ jobs:
             - name: Jest Coverage Comment
               uses: MishaKav/jest-coverage-comment@main
               with:
-                coverage-summary-path: ./coverage/coverage-summary.json
+                coverage-summary-path: coverage/coverage-summary.json
 
             - name: Archive coverage
               uses: actions/upload-artifact@v3
