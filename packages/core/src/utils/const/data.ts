@@ -24,14 +24,14 @@ const HEX_REGEX = /^0x[0-9a-f]*$/i;
 const HEX_ADDRESS_REGEX = /^0x[0-9a-f]{40}$/i;
 
 /**
- * Regular expression for validating decimal strings.
+ * Regular expression for validating base 10 integer number format strings.
  */
-const DECIMAL_REGEX = /^\d+$/;
+const DECIMAL_INTEGER_REGEX = /^\d+$/;
 
 export {
     ZERO_BUFFER,
     HEX_REGEX,
     HEX_ADDRESS_REGEX,
     HEX_REGEX_OPTIONAL_PREFIX,
-    DECIMAL_REGEX
+    DECIMAL_INTEGER_REGEX
 };

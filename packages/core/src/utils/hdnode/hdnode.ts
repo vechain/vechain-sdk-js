@@ -1,3 +1,5 @@
+import { DECIMAL_INTEGER_REGEX } from '../const';
+
 /**
  * Checks if derivation path single component is valid
  *
@@ -15,9 +17,10 @@ function _checkDerivationPathSingleComponentValid(
         // m
         (index === 0 ? component === 'm' : false) ||
         // "number"
-        /\d+/gm.test(component) ||
+        DECIMAL_INTEGER_REGEX.test(component) ||
         // "number'"
-        /\d+'/gm.test(component)
+        (DECIMAL_INTEGER_REGEX.test(component.slice(0, -1)) &&
+            component.endsWith("'"))
     );
 }
 
