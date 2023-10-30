@@ -1,5 +1,4 @@
-import { secp256k1, address, blake2b256 } from '../../src';
-import { certificate } from '../../src/certificate';
+import { secp256k1, address, blake2b256, certificate } from '../../src';
 
 /**
  * Private Key used for digital signature during certificate creation

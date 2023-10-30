@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { certificate } from '../../src/certificate';
+import { certificate } from '../../src';
 import { cert, cert2, invalidSignature, sig, sig2 } from './fixture';
 import {
     CertificateInvalidSignatureFormatError,
