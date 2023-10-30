@@ -10,6 +10,7 @@ import {
 
 /**
  * SECP256K1 errors
+ * @group unit/errors/secp256k1
  */
 describe('SECP256K1 errors', () => {
     /**

@@ -4,6 +4,7 @@ import { InvalidBloomError, InvalidKError } from '../src/model/bloom';
 
 /**
  * Bloom errors
+ * @group unit/errors/bloom
  */
 describe('Bloom errors', () => {
     /**

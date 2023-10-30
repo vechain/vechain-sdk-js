@@ -22,9 +22,27 @@ jobs:
             - name: Test
               run: yarn test
 
+            - name: Jest Coverage Comment
+              uses: MishaKav/jest-coverage-comment@main
+              with:
+                title: Test Coverage
+                summary-title: Summary
+                badge-title: Coverage
+                hide-comment: false
+                create-new-comment: false
+                hide-summary: false
+                coverage-title: Coverage
+                coverage-summary-path: coverage/coverage-summary.json
+                multiple-junitxml-files: |
+                  core, packages/core/junit.xml
+                  network, packages/network/junit.xml
+                  errors, packages/errors/junit.xml
+
             - name: Archive coverage
               uses: actions/upload-artifact@v3
               with:
                 name: coverage-results
                 path: |
                   packages/**/coverage/lcov.info
+
+              
