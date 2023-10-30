@@ -5,6 +5,7 @@ import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Buffer } from 'buffer';
 import { dataUtils } from '../utils';
 import { type Certificate } from './types';
+import { buildError, CERTIFICATE } from '@vechain-sdk/errors';
 
 /**
  * Deterministically encodes a certificate into a JSON string.
@@ -25,24 +26,37 @@ function encode(cert: Certificate): string {
  * @throws {Error} If the signature is missing, invalid, or doesn't match the signer's public key.
  */
 function verify(cert: Certificate): void {
-    if (cert.signature == null) {
-        throw new Error('Signature is missing.');
+    // No signature
+    if (cert.signature === undefined || cert.signature === null) {
+        throw buildError(
+            CERTIFICATE.CERTIFICATE_NOT_SIGNED,
+            'The certificate not signed.'
+        );
     }
 
-    const { signature } = cert;
-    if (!dataUtils.isHexString(signature) || signature.length % 2 !== 0) {
-        throw new Error('Invalid signature format.');
+    // Invalid signature
+    if (
+        !dataUtils.isHexString(cert.signature) ||
+        cert.signature.length % 2 !== 0
+    ) {
+        throw buildError(
+            CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT,
+            'Invalid signature format.'
+        );
     }
 
+    // Encode the certificate without the signature and get signing hash
     const encoded = encode({ ...cert, signature: undefined });
     const signingHash = blake2b256(encoded);
     const pubKey = secp256k1.recover(
         signingHash,
-        Buffer.from(signature.slice(2), 'hex')
+        Buffer.from(cert.signature.slice(2), 'hex')
     );
 
+    // Signature does not match with the signer's public key
     if (address.fromPublicKey(pubKey) !== cert.signer) {
-        throw new Error(
+        throw buildError(
+            CERTIFICATE.CERTIFICATE_INVALID_SIGNER,
             "Signature does not match with the signer's public key."
         );
     }

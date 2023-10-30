@@ -5,6 +5,10 @@ import {
     DATA,
     HDNODE,
     RLP,
+    KEYSTORE,
+    SECP256K1,
+    TRANSACTION,
+    CERTIFICATE,
     InvalidAbiDataToDecodeError,
     InvalidAbiDataToEncodeError,
     InvalidAbiEventError,
@@ -26,14 +30,14 @@ import {
     InvalidSecp256k1PrivateKeyError,
     InvalidSecp256k1SignatureError,
     InvalidSecp256k1SignatureRecoveryError,
-    KEYSTORE,
-    SECP256K1,
-    TRANSACTION,
     TransactionAlreadySignedError,
     TransactionBodyError,
     TransactionDelegationError,
     TransactionNotSignedError,
-    InvalidHDNodeDerivationPathError
+    InvalidHDNodeDerivationPathError,
+    CertificateNotSignedError,
+    CertificateInvalidSignatureFormatError,
+    CertificateInvalidSignerError
 } from '../src';
 
 /**
@@ -48,6 +52,23 @@ const ErrorsCodeAndClassesMapsFixture = [
             {
                 errorCode: ADDRESS.INVALID_ADDRESS,
                 classExpected: InvalidAddressError
+            }
+        ]
+    },
+    {
+        name: 'Certificate',
+        elements: [
+            {
+                errorCode: CERTIFICATE.CERTIFICATE_NOT_SIGNED,
+                classExpected: CertificateNotSignedError
+            },
+            {
+                errorCode: CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT,
+                classExpected: CertificateInvalidSignatureFormatError
+            },
+            {
+                errorCode: CERTIFICATE.CERTIFICATE_INVALID_SIGNER,
+                classExpected: CertificateInvalidSignerError
             }
         ]
     },

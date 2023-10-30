@@ -11,6 +11,9 @@ import {
     InvalidSecp256k1SignatureRecoveryError,
     InvalidBloomError,
     InvalidKError,
+    CertificateNotSignedError,
+    CertificateInvalidSignatureFormatError,
+    CertificateInvalidSignerError,
     InvalidDataTypeError,
     InvalidDataReturnTypeError,
     InvalidHDNodeChaincodeError,
@@ -35,7 +38,8 @@ import {
     BLOOM,
     RLP,
     DATA,
-    TRANSACTION
+    TRANSACTION,
+    CERTIFICATE
 } from '../model';
 
 /**
@@ -60,6 +64,7 @@ type ErrorCode =
     | KEYSTORE
     | HDNODE
     | BLOOM
+    | CERTIFICATE
     | ABI
     | RLP
     | DATA
@@ -88,6 +93,7 @@ const ERROR_CODES = {
     KEYSTORE,
     HDNODE,
     BLOOM,
+    CERTIFICATE,
     ABI,
     RLP,
     DATA,
@@ -133,6 +139,12 @@ type ErrorType<ErrorCodeT> =
         ? InvalidBloomError
         : ErrorCodeT extends BLOOM.INVALID_K
         ? InvalidKError
+        : ErrorCodeT extends CERTIFICATE.CERTIFICATE_NOT_SIGNED
+        ? CertificateNotSignedError
+        : ErrorCodeT extends CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT
+        ? CertificateInvalidSignatureFormatError
+        : ErrorCodeT extends CERTIFICATE.CERTIFICATE_INVALID_SIGNER
+        ? CertificateInvalidSignerError
         : ErrorCodeT extends ABI.INVALID_EVENT
         ? InvalidAbiEventError
         : ErrorCodeT extends ABI.INVALID_DATA_TO_DECODE
@@ -193,6 +205,12 @@ const ErrorClassMap = new Map<
     [HDNODE.INVALID_HDNODE_DERIVATION_PATH, InvalidHDNodeDerivationPathError],
     [BLOOM.INVALID_BLOOM, InvalidBloomError],
     [BLOOM.INVALID_K, InvalidKError],
+    [CERTIFICATE.CERTIFICATE_NOT_SIGNED, CertificateNotSignedError],
+    [
+        CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT,
+        CertificateInvalidSignatureFormatError
+    ],
+    [CERTIFICATE.CERTIFICATE_INVALID_SIGNER, CertificateInvalidSignerError],
     [ABI.INVALID_EVENT, InvalidAbiEventError],
     [ABI.INVALID_DATA_TO_DECODE, InvalidAbiDataToDecodeError],
     [ABI.INVALID_DATA_TO_ENCODE, InvalidAbiDataToEncodeError],
