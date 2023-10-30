@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { type ReturnType, type HashInput } from './types';
-import { createInvalidReturnTypeError, isValidReturnType } from './helpers';
+import { isValidReturnType } from './helpers';
+import { buildError, DATA } from '@vechain-sdk/errors';
 
 /* --- Overloaded functions start --- */
 
@@ -51,7 +52,10 @@ function sha256(
     returnType: ReturnType = 'buffer'
 ): Buffer | string {
     if (!isValidReturnType(returnType)) {
-        throw createInvalidReturnTypeError();
+        throw buildError(
+            DATA.INVALID_DATA_RETURN_TYPE,
+            "Invalid return type. Return type should be either 'buffer' or 'hex'"
+        );
     }
 
     const hash = ethers.isBytesLike(data)
