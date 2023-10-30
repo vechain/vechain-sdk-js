@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import {
+    isDerivationPathValid,
     MNEMONIC_WORDLIST_ALLOWED_SIZES,
     VET_DERIVATION_PATH,
     X_PRIV_PREFIX,
@@ -21,6 +22,7 @@ import { buildError, HDNODE } from '@vechain-sdk/errors';
  * @throws {Error} When the mnemonic words are invalid.
  */
 function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
+    // Invalid mnemonic words
     if (
         !MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(
             words.length as WordlistSizeType
@@ -31,6 +33,15 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
             'Invalid mnemonic size. It must be 12, 15, 18, 21, or 24.'
         );
     }
+
+    // Invalid derivation path
+    if (!isDerivationPathValid(path)) {
+        throw buildError(
+            HDNODE.INVALID_HDNODE_DERIVATION_PATH,
+            'Invalid derivation path.'
+        );
+    }
+
     // normalize words to lowercase
     const joinedWords = words.join(' ').toLowerCase();
     const node = ethers.HDNodeWallet.fromMnemonic(
@@ -151,6 +162,14 @@ function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
             return ethersNodeToOurHDNode(ethersNode.deriveChild(index));
         },
         derivePath(path: string) {
+            // Invalid derivation path
+            if (!isDerivationPathValid(path)) {
+                throw buildError(
+                    HDNODE.INVALID_HDNODE_DERIVATION_PATH,
+                    'Invalid derivation path given as input.'
+                );
+            }
+
             return ethersNodeToOurHDNode(ethersNode.derivePath(path));
         }
     };

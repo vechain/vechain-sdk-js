@@ -10,6 +10,7 @@ import {
 import { addresses, words, wrongWords } from './fixture';
 import {
     InvalidHDNodeChaincodeError,
+    InvalidHDNodeDerivationPathError,
     InvalidHDNodeMnemonicsError,
     InvalidHDNodePrivateKeyError,
     InvalidHDNodePublicKeyError
@@ -123,6 +124,15 @@ describe('Hdnode', () => {
     test('Invalid mnemonic', () => {
         expect(() => HDNode.fromMnemonic(wrongWords)).toThrowError(
             InvalidHDNodeMnemonicsError
+        );
+    });
+
+    /**
+     * Test invalid derivation path
+     */
+    test('Invalid derivation path', () => {
+        expect(() => HDNode.fromMnemonic(words, 'INVALID')).toThrowError(
+            InvalidHDNodeDerivationPathError
         );
     });
 
