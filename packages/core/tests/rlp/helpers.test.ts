@@ -93,7 +93,7 @@ describe('NumericKind helpers', () => {
             )}`, () => {
                 expect(() => {
                     assertValidNumericKindBuffer(buffer, context, maxBytes);
-                }).not.toThrow();
+                }).not.toThrowError();
             });
         });
 
@@ -133,7 +133,7 @@ describe('HexBlobKind helpers', () => {
             test(`should not throw error when data is valid ${data}`, () => {
                 expect(() => {
                     assertValidHexBlobKindData(data, context);
-                }).not.toThrow();
+                }).not.toThrowError();
             });
         });
 
@@ -156,7 +156,7 @@ describe('HexBlobKind helpers', () => {
             )}`, () => {
                 expect(() => {
                     assertValidHexBlobKindBuffer(buffer, context);
-                }).not.toThrow();
+                }).not.toThrowError();
             });
         });
 
@@ -189,7 +189,7 @@ describe('FixedHexBlobKind helpers', () => {
                 test(`should not throw error when data is valid ${data}`, () => {
                     expect(() => {
                         assertFixedHexBlobKindData(data, context, bytes);
-                    }).not.toThrow();
+                    }).not.toThrowError();
                 });
             }
         );
@@ -216,7 +216,7 @@ describe('FixedHexBlobKind helpers', () => {
                 )}`, () => {
                     expect(() => {
                         assertFixedHexBlobKindBuffer(buffer, context, bytes);
-                    }).not.toThrow();
+                    }).not.toThrowError();
                 });
             }
         );
@@ -250,7 +250,7 @@ describe('CompactFixedHexBlobKind helpers', () => {
                 )}`, () => {
                     expect(() => {
                         assertCompactFixedHexBlobBuffer(buffer, context, bytes);
-                    }).not.toThrow();
+                    }).not.toThrowError();
                 });
             }
         );

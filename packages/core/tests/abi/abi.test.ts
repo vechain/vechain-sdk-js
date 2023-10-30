@@ -172,7 +172,7 @@ describe('Abi - Function & Event', () => {
                         // Create a function from the format without any problems
                         expect(
                             () => new abi.Function(functionFormat.format)
-                        ).not.toThrow();
+                        ).not.toThrowError();
 
                         // Create a function from the format without any problems
                         const myFunction = new abi.Function(
@@ -313,7 +313,7 @@ describe('Abi - Function & Event', () => {
                         // Create an event from the format without any problems
                         expect(
                             () => new abi.Event(eventFormat.format)
-                        ).not.toThrow();
+                        ).not.toThrowError();
 
                         // Create an event from the format without any problems
                         const myEvent = new abi.Event(eventFormat.format);
