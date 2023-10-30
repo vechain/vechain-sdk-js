@@ -16,6 +16,7 @@ import {
     InvalidHDNodeChaincodeError,
     InvalidHDNodeMnemonicsError,
     InvalidHDNodePublicKeyError,
+    InvalidHDNodeDerivationPathError,
     InvalidKeystoreError,
     InvalidKeystorePasswordError,
     InvalidRLPError,
@@ -126,6 +127,8 @@ type ErrorType<ErrorCodeT> =
         ? InvalidHDNodePrivateKeyError
         : ErrorCodeT extends HDNODE.INVALID_HDNODE_PUBLIC_KEY
         ? InvalidHDNodePublicKeyError
+        : ErrorCodeT extends HDNODE.INVALID_HDNODE_DERIVATION_PATH
+        ? InvalidHDNodeDerivationPathError
         : ErrorCodeT extends BLOOM.INVALID_BLOOM
         ? InvalidBloomError
         : ErrorCodeT extends BLOOM.INVALID_K
@@ -187,6 +190,7 @@ const ErrorClassMap = new Map<
     [HDNODE.INVALID_HDNODE_MNEMONICS, InvalidHDNodeMnemonicsError],
     [HDNODE.INVALID_HDNODE_PRIVATE_KEY, InvalidHDNodePrivateKeyError],
     [HDNODE.INVALID_HDNODE_PUBLIC_KEY, InvalidHDNodePublicKeyError],
+    [HDNODE.INVALID_HDNODE_DERIVATION_PATH, InvalidHDNodeDerivationPathError],
     [BLOOM.INVALID_BLOOM, InvalidBloomError],
     [BLOOM.INVALID_K, InvalidKError],
     [ABI.INVALID_EVENT, InvalidAbiEventError],

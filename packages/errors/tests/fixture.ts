@@ -102,6 +102,10 @@ const ErrorsCodeAndClassesMapsFixture = [
             {
                 errorCode: HDNODE.INVALID_HDNODE_PUBLIC_KEY,
                 classExpected: InvalidHDNodePublicKeyError
+            },
+            {
+                errorCode: HDNODE.INVALID_HDNODE_DERIVATION_PATH,
+                classExpected: InvalidHDNodeChaincodeError
             }
         ]
     },
