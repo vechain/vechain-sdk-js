@@ -7,8 +7,10 @@ apps/**/.turbo
 apps/**/node_modules
 
 yarn-error.log
-# Code coverage folder for tests
+# Code coverage folders and files
 coverage*
+junit.xml
+
 **/.DS_Store
 
 # Turborepo

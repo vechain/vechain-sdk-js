@@ -5,38 +5,58 @@ The official JavaScript SDK for vechain.
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=vechainfoundation_thor-sdk-js&metric=alert_status&token=0e94ce34f24ef54d43c15c0d4b38f2c645c92b42)](https://sonarcloud.io/summary/new_code?id=vechainfoundation_thor-sdk-js)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=vechainfoundation_thor-sdk-js&metric=coverage&token=0e94ce34f24ef54d43c15c0d4b38f2c645c92b42)](https://sonarcloud.io/summary/new_code?id=vechainfoundation_thor-sdk-js)
 
-# Repo structure
-* `./demos` Demo projects
-* `./packages` Packages of monorepo
-   * `./packages/core` Core module. It contains all core SDK operations (Hash, cryptography, ...)
-   * `./packages/network` Network module. It contains all network SDK operations (Transaction spread, Blockchain interaction, ...)  
+## Repository Structure
+- `./demos`: Demonstrative projects
+- `./packages`: Monorepo packages
+   - `./packages/core`: Core module encompassing all fundamental SDK operations such as hashing and cryptography.
+   - `./packages/network`: Network module facilitating all network-related SDK operations including transaction dissemination and blockchain interaction.
 
-# SDK Development
-This section explains how to work with SDK.
+## SDK Development
 
-## Installation
-After forking the repository, first install all dependencies with `yarn` command.
+### Prerequisites
+- Fork the repository to your GitHub account.
+- Ensure [Yarn](https://classic.yarnpkg.com/en/docs/install) is installed on your machine.
+- [Docker](https://docs.docker.com/get-docker/) is required for setting up a local thor-solo node for integration testing.
 
-This command will install all dependencies, and you will be ready to [build](#build), [test](#test), [lint](#lint) and [publish](#publish)
+### Getting Started
+1. Clone your forked repository.
+2. Navigate to the project directory.
+3. Run `yarn install` to install all dependencies.
 
-## Build
-This project uses yarn and turporepo. You can build the project with `yarn build` command.
+### Commands
+- **Build**: Execute `yarn build` to build the project.
+- **Test**: Execute `yarn test` to run all tests.
+- **Lint**: Execute `yarn lint` to lint all packages.
 
-## Test
-To perform all tests use `yarn test` command.
+### Integration Testing
+Ensure Docker is running on your machine. The integration tests are performed against a local thor-solo node.
 
-## Lint
-To lint all packages use `yarn lint` command.
-
-## Publish
-... TBD ...
-
-# Examples
-The `./docs` folder contains multiple real code examples.
-
-These are written as executable examples.
-
-[More Details](./docs/README.md)
+## Documentation and Examples
+- The `./docs` directory houses extensive code examples written as executable demonstrations.
+- Dive into the [examples](./docs/README.md) for a hands-on understanding of the SDK capabilities.
 
 
+## Contributing
 
+We appreciate your contributions and suggestions to improve the VeChain SDK. Whether it's a bug report, new feature, correction, or additional documentation, we greatly value your feedback. To get started with contributing, please review our [Contributing Guidelines](CONTRIBUTING.md).
+
+
+## Publishing
+... To Be Detailed ...
+
+
+                              @@@@@@@@@@@@@@                     /@@@@@                   
+                               @@@@@@@@@@@@@@@@                 @@@@@@                    
+                                @@@@@@     @@@@@               @@@@@                      
+                                  @@@@@     @@@@@             @@@@@                       
+                                   @@@@@     @@@@@&          @@@@@                        
+                                    @@@@@     @@@@@@       %@@@@@                         
+                                     @@@@@      @@@@@     @@@@@%                          
+                                      @@@@@@     @@@@@   @@@@@                            
+                                        @@@@@     @@@   @@@@@                             
+                                         @@@@@     @   @@@@@                              
+                                          @@@@@      @@@@@@                               
+                                           @@@@@    @@@@@#                                
+                                            @@@@@@ @@@@@                                  
+                                              @@@@@@@@@                                   
+                                               @@@@@@@                                    

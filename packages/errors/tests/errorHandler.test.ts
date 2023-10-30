@@ -9,6 +9,7 @@ import { ErrorsCodeAndClassesMapsFixture } from './fixture';
 
 /**
  * Error handler test
+ * @group unit/errors/error-handler
  */
 describe('Error handler test', () => {
     /**
