@@ -135,7 +135,7 @@ describe('Hash', () => {
                 expect(() =>
                     // @ts-expect-error: Invalid return type
                     hashFunction.hashFunction('hello world', 'foo')
-                ).toThrow(InvalidDataReturnTypeError);
+                ).toThrowError(InvalidDataReturnTypeError);
             });
         });
     });
