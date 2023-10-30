@@ -3,5 +3,6 @@ module.exports = {
     preset: 'ts-jest',
     testEnvironment: 'node',
     coverageReporters: ['html', 'lcov', 'json'],
-    runner: 'groups'
+    runner: 'groups',
+    reporters: ['jest-junit']
 };
