@@ -6,6 +6,8 @@ import { convertErrors } from './fixture';
 /**
  * ConvertError function tests.
  * Testing the conversion of our error from AxiosError.
+ *
+ * @group unit/utils
  */
 describe('Tests of convertError function', () => {
     /**

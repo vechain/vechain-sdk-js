@@ -1,12 +1,11 @@
 import { describe, expect, test } from '@jest/globals';
-import { TRANSACTIONS_GAS_CONSTANTS } from '../../../src';
+import { TRANSACTIONS_GAS_CONSTANTS, TransactionUtils } from '../../../src';
 import {
     invalidData,
     normalTransactions,
     smartContractTransactions
 } from './fixture';
-import { type TransactionClause } from '../../../src/transaction';
-import { TransactionUtils } from '../../../src/utils/transaction';
+import { type TransactionClause } from '../../../src';
 
 /**
  * Transaction utils test

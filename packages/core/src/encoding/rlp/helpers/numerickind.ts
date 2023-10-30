@@ -1,4 +1,4 @@
-import { ERRORS, dataUtils } from '../../../utils';
+import { dataUtils, ERRORS } from '../../../utils';
 import { type RLPInput } from '../types';
 import { createRlpError } from './profiles';
 
@@ -22,9 +22,7 @@ const validateNumericKindData = (data: RLPInput, context: string): bigint => {
         );
     }
 
-    const bn = BigInt(data);
-
-    return bn;
+    return BigInt(data);
 };
 
 /**

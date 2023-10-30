@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { ERRORS, bloomUtils } from '../../../src/utils';
+import { ERRORS, bloomUtils } from '../../../src';
 import {
     bloomTestCases,
     blooms,

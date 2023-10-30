@@ -31,7 +31,7 @@ describe('Hdnode', () => {
             );
             expect(child.address).toEqual('0x' + addresses[i]);
 
-            // Correct pulic key
+            // Correct public key
             expect(
                 secp256k1
                     .derivePublicKey(child.privateKey ?? ZERO_BUFFER(0))

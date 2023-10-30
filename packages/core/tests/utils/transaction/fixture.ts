@@ -1,5 +1,5 @@
 import { ERRORS, TRANSACTIONS_GAS_CONSTANTS } from '../../../src';
-import { type TransactionClause } from '../../../src/transaction';
+import { type TransactionClause } from '../../../src';
 
 /**
  * Invalid clauses data fixture

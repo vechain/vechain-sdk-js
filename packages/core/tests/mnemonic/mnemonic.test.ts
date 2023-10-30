@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { mnemonic } from '../../src/mnemonic/mnemonic';
+import { mnemonic } from '../../src';
 import {
     customRandomGeneratorWithXor,
     derivationPaths,

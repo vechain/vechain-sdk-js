@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { bloom } from '../../src/bloom';
+import { bloom } from '../../src';
 import { bloomKTestCases } from './fixture';
 
 /**
