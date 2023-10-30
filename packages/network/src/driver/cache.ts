@@ -16,10 +16,6 @@ const WINDOW_LEN = 12;
  */
 type Slot = ThorStatus['head'] & {
     block?: Block; // Holds a reference to a blockchain block if available.
-    accounts: Map<string, Account>; // Maps account addresses to Account objects.
-    txs: Map<string, Transaction>; // Maps transaction IDs to Transaction objects.
-    receipts: Map<string, TransactionReceipt>; // Maps transaction IDs to Transaction Receipt objects.
-    tied: Map<string, never>; // An empty map for a specific purpose.
 };
 
 /**
@@ -121,16 +117,6 @@ class Cache {
         }
         return false;
     }
-}
-
-/**
- * Represents an Account with Thor account data and an initialization timestamp.
- */
-class Account {
-    constructor(
-        readonly obj: Account,
-        readonly initTimestamp: number
-    ) {}
 }
 
 export { Cache };
