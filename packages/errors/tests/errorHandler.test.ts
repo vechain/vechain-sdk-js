@@ -5,6 +5,7 @@ import { InvalidRLPError } from '../src/model/rlp';
 
 /**
  * Error handler test
+ * @group unit/errors/error-handler
  */
 describe('Error handler test', () => {
     /**

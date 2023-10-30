@@ -8,6 +8,7 @@ import {
 
 /**
  * Address errors
+ * @group unit/errors/address
  */
 describe('Address errors', () => {
     /**

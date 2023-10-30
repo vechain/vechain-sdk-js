@@ -4,6 +4,7 @@ import { InvalidRLPError } from '../src/model/rlp';
 
 /**
  * RLP errors
+ * @group unit/errors/rlp
  */
 describe('RLP errors', () => {
     /**

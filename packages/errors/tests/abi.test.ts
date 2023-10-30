@@ -10,6 +10,7 @@ import {
 
 /**
  * ABI errors
+ * @group unit/errors/abi
  */
 describe('Abi errors', () => {
     /**
