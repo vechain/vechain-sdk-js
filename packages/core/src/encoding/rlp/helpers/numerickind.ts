@@ -1,6 +1,6 @@
 import { dataUtils } from '../../../utils';
 import { type RLPInput } from '../types';
-import { createRlpError } from './profiles';
+import { buildError, RLP } from '@vechain-sdk/errors';
 
 /**
  * Validates and converts the input data to a BigInt.
@@ -17,7 +17,9 @@ const validateNumericKindData = (data: RLPInput, context: string): bigint => {
     } else if (typeof data === 'string') {
         _validateNumericKindString(data, context);
     } else {
-        throw createRlpError(context, 'expected string or number');
+        throw buildError(RLP.INVALID_RLP, 'expected string or number', {
+            context
+        });
     }
 
     return BigInt(data);
@@ -37,7 +39,11 @@ const validateNumericKindData = (data: RLPInput, context: string): bigint => {
  */
 const _validateNumericKindNumber = (num: number, context: string): void => {
     if (!Number.isSafeInteger(num) || num < 0) {
-        throw createRlpError(context, 'expected non-negative safe integer');
+        throw buildError(
+            RLP.INVALID_RLP,
+            'expected non-negative safe integer',
+            { context }
+        );
     }
 };
 
@@ -58,15 +64,18 @@ const _validateNumericKindString = (str: string, context: string): void => {
     const isDecimal = dataUtils.isDecimalString(str);
 
     if (!isHex && !isDecimal) {
-        throw createRlpError(
-            context,
-            'expected non-negative integer in hex or dec string'
+        throw buildError(
+            RLP.INVALID_RLP,
+            'expected non-negative integer in hex or dec string',
+            { context }
         );
     }
 
     // Ensure hex numbers are of a valid length.
     if (isHex && str.length <= 2) {
-        throw createRlpError(context, 'expected valid hex string number');
+        throw buildError(RLP.INVALID_RLP, 'expected valid hex string number', {
+            context
+        });
     }
 };
 
@@ -89,14 +98,19 @@ const assertValidNumericKindBuffer = (
 ): void => {
     // If maxBytes is defined, ensure buffer length is within bounds.
     if (maxBytes !== undefined && buf.length > maxBytes) {
-        throw createRlpError(context, `expected less than ${maxBytes} bytes`);
+        throw buildError(
+            RLP.INVALID_RLP,
+            `expected less than ${maxBytes} bytes`,
+            { context }
+        );
     }
 
     // Ensure the buffer does not have leading zeros, as it's not canonical in integer representation.
     if (buf[0] === 0) {
-        throw createRlpError(
-            context,
-            'expected canonical integer (no leading zero bytes)'
+        throw buildError(
+            RLP.INVALID_RLP,
+            'expected canonical integer (no leading zero bytes)',
+            { context }
         );
     }
 };
@@ -124,7 +138,11 @@ const encodeBigIntToBuffer = (
     }
 
     if (maxBytes !== undefined && hex.length > maxBytes * 2) {
-        throw createRlpError(context, `expected number in ${maxBytes} bytes`);
+        throw buildError(
+            RLP.INVALID_RLP,
+            `expected number in ${maxBytes} bytes`,
+            { context }
+        );
     }
 
     return Buffer.from(hex, 'hex');

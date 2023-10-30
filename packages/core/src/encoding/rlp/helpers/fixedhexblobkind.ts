@@ -1,4 +1,4 @@
-import { createRlpError } from './profiles';
+import { buildError, RLP } from '@vechain-sdk/errors';
 
 /**
  * Asserts that the data is a hex string of the correct length.
@@ -14,9 +14,10 @@ const assertFixedHexBlobKindData = (
     bytes: number
 ): void => {
     if (data.length !== bytes * 2 + 2)
-        throw createRlpError(
-            context,
-            `expected hex string to be ${bytes} bytes`
+        throw buildError(
+            RLP.INVALID_RLP,
+            `expected hex string to be ${bytes} bytes`,
+            { context }
         );
 };
 
@@ -34,7 +35,11 @@ const assertFixedHexBlobKindBuffer = (
     bytes: number
 ): void => {
     if (buffer.length !== bytes)
-        throw createRlpError(context, `expected buffer to be ${bytes} bytes`);
+        throw buildError(
+            RLP.INVALID_RLP,
+            `expected buffer to be ${bytes} bytes`,
+            { context }
+        );
 };
 
 export { assertFixedHexBlobKindData, assertFixedHexBlobKindBuffer };

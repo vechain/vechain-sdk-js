@@ -6,7 +6,8 @@ import {
     type RLPValidObject,
     type RLPValueType
 } from './types';
-import { createRlpError, RLP } from '.';
+import { RLP } from '.';
+import { RLP as RLPError, buildError } from '@vechain-sdk/errors';
 
 /**
  * Encodes data using the Ethereumjs RLP library.
@@ -92,7 +93,8 @@ const _packData = (
         );
     }
 
-    if (!Array.isArray(obj)) throw createRlpError(context, 'expected array');
+    if (!Array.isArray(obj))
+        throw buildError(RLPError.INVALID_RLP, 'expected array', { context });
 
     // ArrayKind: recursively pack each array item based on the shared item profile.
     if ('item' in kind) {
@@ -132,7 +134,9 @@ const _unpackData = (
     // ScalarKind: Direct decoding using the provided method.
     if (kind instanceof RLP.ScalarKind) {
         if (!Buffer.isBuffer(packed) && !(packed instanceof Uint8Array))
-            throw createRlpError(context, 'expected buffer');
+            throw buildError(RLPError.INVALID_RLP, 'expected buffer', {
+                context
+            });
 
         if (packed instanceof Uint8Array) packed = Buffer.from(packed);
 
@@ -144,9 +148,10 @@ const _unpackData = (
         const parts = packed;
 
         if (parts.length !== kind.length)
-            throw createRlpError(
-                context,
-                `expected ${kind.length} items, but got ${parts.length}`
+            throw buildError(
+                RLPError.INVALID_RLP,
+                `expected ${kind.length} items, but got ${parts.length}`,
+                { context }
             );
 
         return kind.reduce(
@@ -159,7 +164,8 @@ const _unpackData = (
         );
     }
 
-    if (!Array.isArray(packed)) throw createRlpError(context, 'expected array');
+    if (!Array.isArray(packed))
+        throw buildError(RLPError.INVALID_RLP, 'expected array', { context });
 
     // ArrayKind: Recursively unpack each array item based on the shared item profile.
     if ('item' in kind) {
