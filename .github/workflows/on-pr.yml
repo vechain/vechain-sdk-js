@@ -1,7 +1,9 @@
 name: PR Checks
 
 on:
-    pull_request:
+  pull_request:
+    branches:
+      - main
 
 jobs:
     doc-examples:
@@ -23,5 +25,18 @@ jobs:
               run: |
                 cd docs
                 yarn test:docs
+
+    install-build:
+        uses: ./.github/workflows/build-lint.yml
+        secrets: inherit
+
+    unit-integration-test:
+        uses: ./.github/workflows/unit-integration-test.yml
+        secrets: inherit
+
+    sonar-scan:
+      uses: ./.github/workflows/sonar.yml
+      secrets: inherit
+      needs: unit-integration-test
             
     
