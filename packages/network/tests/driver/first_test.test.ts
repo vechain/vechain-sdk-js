@@ -1,12 +1,15 @@
 import { describe, expect, test } from '@jest/globals';
-import { SimpleNet } from '../../src';
 import { Driver } from '../../src/driver/driver';
-
+import { network } from './fixture';
+/**
+ * Driver class tests
+ * @group integration/driver
+ */
 describe('Driver', () => {
-    // this is just an example, not a real test
+    // this is just an example, to be completed
     test('test', async () => {
-        const net = new SimpleNet('https://testnet.vechain.org');
-        const driver = await Driver.connect(net);
-        expect(driver).toBe('a'); // should give error
+        const driver = await Driver.connect(network);
+        const block = await driver.getBlock(1);
+        expect(block).toBeDefined();
     });
 });
