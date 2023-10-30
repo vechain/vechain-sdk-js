@@ -10,7 +10,12 @@ import { cert, cert2, privKey } from './fixture';
  * @group unit/certificate
  */
 describe('Certificate Tests', () => {
-    test('Should produce consistent encoding for two certificates', () => {
+    /**
+     * Test Encoding  of Certificate
+     */
+    test('Should produce consistent encoding for two identical certificates', () => {
+        // verifies that the encoding of two identical certificates is the same
+
         expect(certificate.encode(cert)).toStrictEqual(
             certificate.encode(cert2)
         );
@@ -20,15 +25,22 @@ describe('Certificate Tests', () => {
             secp256k1
                 .sign(blake2b256(certificate.encode(cert)), privKey)
                 .toString('hex');
-
+        const sig2 =
+            '0x' +
+            secp256k1
+                .sign(blake2b256(certificate.encode(cert2)), privKey)
+                .toString('hex');
+        // verifies that the encoding of two identical certificates is the same after applying the signature
         expect(certificate.encode({ ...cert, signature: sig })).toEqual(
             certificate.encode({
-                ...cert,
-                signature: sig
+                ...cert2,
+                signature: sig2
             })
         );
     });
-
+    /**
+     * Test Verification of Certificate
+     */
     test('Should correctly verify the certificate', () => {
         const sig =
             '0x' +
@@ -64,6 +76,8 @@ describe('Certificate Tests', () => {
             secp256k1
                 .sign(blake2b256(certificate.encode(cert)), privKey)
                 .toString('hex');
+
+        // Expecting failure due to an invalid signature
         expect(() => {
             certificate.verify({
                 ...cert,
