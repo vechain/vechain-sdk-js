@@ -32,7 +32,8 @@ import {
     TransactionAlreadySignedError,
     TransactionBodyError,
     TransactionDelegationError,
-    TransactionNotSignedError
+    TransactionNotSignedError,
+    InvalidHDNodeDerivationPathError
 } from '../src';
 
 /**
@@ -105,7 +106,7 @@ const ErrorsCodeAndClassesMapsFixture = [
             },
             {
                 errorCode: HDNODE.INVALID_HDNODE_DERIVATION_PATH,
-                classExpected: InvalidHDNodeChaincodeError
+                classExpected: InvalidHDNodeDerivationPathError
             }
         ]
     },
