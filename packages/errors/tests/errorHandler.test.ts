@@ -3,9 +3,9 @@ import {
     ERROR_CODES,
     buildError,
     InvalidKeystoreError,
-    InvalidRLPError,
-    ErrorClassMap
+    InvalidRLPError
 } from '../src';
+import { ErrorsCodeAndClassesMapsFixture } from './fixture';
 
 /**
  * Error handler test
@@ -56,9 +56,19 @@ describe('Error handler test', () => {
     /**
      * Verify all error codes and classes
      */
-    test('Verify all error codes and classes', () => {
-        ErrorClassMap.forEach((errorClass, errorCode) => {
-            expect(buildError(errorCode, 'test')).toBeInstanceOf(errorClass);
+    ErrorsCodeAndClassesMapsFixture.forEach((errorType) => {
+        /**
+         * Test for each model
+         */
+        test(`Verify all error codes and classes for ${errorType.name}`, () => {
+            /**
+             * Each error code and class
+             */
+            errorType.elements.forEach((element) => {
+                expect(
+                    buildError(element.errorCode, 'SOME_MESSAGE')
+                ).toBeInstanceOf(element.classExpected);
+            });
         });
     });
 });
