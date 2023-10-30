@@ -181,5 +181,7 @@ function calculateK(bitsPerKey: number): number {
 export const bloom = {
     Generator,
     Filter,
-    calculateK
+    calculateK,
+    distribute,
+    hash
 };
