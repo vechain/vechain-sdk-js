@@ -47,7 +47,7 @@ class DriverNoVendor {
             let attemptWs = false;
             try {
                 const best = await this.int.wrap<Block>(
-                    this.httpGet('blocks/best')
+                    this.httpGet('blocks/best') as Promise<Block>
                 );
                 if (
                     best.id !== this.head.id &&
