@@ -1,106 +1,163 @@
+import { type FilterCriteria, type ThorFilter } from './filter';
 import { type Transaction } from './transaction';
-import { type ThorFilter, type FilterCriteria } from './filter';
 import { type VendorTxSigningService } from './vendor';
 import { type VMOutput } from './vm';
 
-/** the account model */
+/**
+ * Represents an account's attributes including balance, energy, and code presence.
+ */
 interface Account {
-    /** balance (VET) in hex string */
-    balance: string;
-    /** energy (VTHO) in hex string */
-    energy: string;
-    /** whether the account has code */
-    hasCode: boolean;
+    balance: string; // The balance in VET represented as a hex string.
+    energy: string; // The energy in VTHO represented as a hex string.
+    hasCode: boolean; // Indicates whether the account has associated code.
 }
 
-/** the account visitor interface */
+/**
+ * Represents an account visitor interface for querying account-related information.
+ */
 interface AccountVisitor {
-    /** the account address to be visited */
-    readonly address: string;
+    address: string; // The account address to be visited.
 
-    /** query the account */
+    /**
+     * Queries the account's basic attributes.
+     * @returns A promise that resolves to an Account object.
+     */
     get: () => Promise<Account>;
 
-    /** query the account code */
+    /**
+     * Queries the account's code.
+     * @returns A promise that resolves to a Code object.
+     */
     getCode: () => Promise<Code>;
 
     /**
-     * query the account storage
-     * @param key storage key
-     * @returns the storage entry
+     * Queries the account's storage entry for a specific key.
+     * @param key - The storage key.
+     * @returns A promise that resolves to a Storage object representing the storage entry.
      */
     getStorage: (key: string) => Promise<Storage>;
 
     /**
-     * Create a method object, to perform contract call, or build vm clause
-     * @param abi method's JSON ABI object
-     * @returns method object
+     * Creates a method object for performing contract calls or building VM clauses.
+     * @param abi - The method's JSON ABI object.
+     * @returns An AccountMethod object.
      */
     method: (abi: object) => AccountMethod;
 
     /**
-     * Create an object to visit events associated to this account
-     * @param abi event's JSON ABI object
-     * @returns event visitor
+     * Creates an object to visit events associated with this account.
+     * @param abi - The event's JSON ABI object.
+     * @returns An AccountEvent object.
      */
     event: (abi: object) => AccountEvent;
 }
 
-/** the account method interface */
+/**
+ * Represents an account method interface for configuring contract method calls.
+ */
 interface AccountMethod {
-    /** set VET amount to transfer in unit WEI, presented by hex/dec string or number type */
+    /**
+     * Set the value (VET amount) to transfer in unit WEI.
+     * @param val - The value presented as a hex/decimal string or number type.
+     * @returns The updated AccountMethod object.
+     */
     value: (val: string | number) => this;
 
-    /** set method caller (msg.sender) */
+    /**
+     * Set the method caller (msg.sender).
+     * @param addr - The caller's address.
+     * @returns The updated AccountMethod object.
+     */
     caller: (addr: string) => this;
 
-    /** set max allowed gas */
+    /**
+     * Set the maximum allowed gas for the method.
+     * @param gas - The maximum gas allowed.
+     * @returns The updated AccountMethod object.
+     */
     gas: (gas: number) => this;
 
-    /** set gas price, presented by hex/dec string or number type */
+    /**
+     * Set the gas price presented as a hex/decimal string or number type.
+     * @param gp - The gas price.
+     * @returns The updated AccountMethod object.
+     */
     gasPrice: (gp: string | number) => this;
 
-    /** set gas payer */
+    /**
+     * Set the gas payer's address.
+     * @param addr - The gas payer's address.
+     * @returns The updated AccountMethod object.
+     */
     gasPayer: (addr: string) => this;
 
     /**
-     * turn on call result cache
-     * @param hints a set of addresses, as the condition of cache invalidation
+     * Enable call result caching with specified cache invalidation hints.
+     * @param hints - A set of addresses as cache invalidation conditions.
+     * @returns The updated AccountMethod object.
      */
     cache: (hints: string[]) => this;
 
-    /** encode arguments into clause */
+    /**
+     * Encode arguments into a VM clause for the method.
+     * @param args - The arguments to be encoded.
+     * @returns A VM clause representing the encoded arguments.
+     */
     asClause: (...args: unknown[]) => Transaction['clauses'][0];
 
-    /** call the method (dry-run, without altering blockchain) */
-    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+    /**
+     * Call the method (dry-run) without altering the blockchain.
+     * @param args - The arguments to be passed to the method.
+     * @returns A promise that resolves to the VM output and decoded result.
+     */
     call: (...args: unknown[]) => Promise<VMOutput & WithDecoded>;
 
-    /** initiate a signing service to commit this method as a transaction */
+    /**
+     * Initiate a signing service to commit the method call as a transaction.
+     * @param args - The arguments to be passed to the method.
+     * @returns A VendorTxSigningService for transaction commitment.
+     */
     transact: (...args: unknown[]) => VendorTxSigningService;
 }
 
-/** the interface to visit account associated events */
+/**
+ * Represents an interface for visiting events associated with an account.
+ */
 interface AccountEvent {
-    /** encode indexed event args into Criteria */
+    /**
+     * Encode indexed event arguments into FilterCriteria.
+     * @param indexed - Indexed event arguments.
+     * @returns FilterCriteria for event filtering.
+     */
     asCriteria: (indexed: object) => FilterCriteria<'event'>;
 
-    /** create a filter with a set of Criteria encoded by a set of indexed event args */
+    /**
+     * Create a filter with a set of Criteria encoded by a set of indexed event arguments.
+     * @param indexedSet - An array of indexed event argument objects.
+     * @returns A ThorFilter for filtering events.
+     */
     filter: (indexedSet: object[]) => ThorFilter<'event', WithDecoded>;
 }
 
-/** storage entry */
+/**
+ * Represents a storage entry.
+ */
 interface Storage {
-    value: string;
+    value: string; // The value of the storage entry.
 }
 
-/** code entry */
+/**
+ * Represents a code entry.
+ */
 interface Code {
-    code: string;
+    code: string; // The code associated with the account.
 }
 
+/**
+ * Represents an object with decoded information.
+ */
 interface WithDecoded {
-    decoded: Record<string | number, unknown>;
+    decoded: Record<string | number, unknown>; // Decoded information associated with the object.
 }
 
 export type { Account, AccountVisitor, AccountMethod, AccountEvent };

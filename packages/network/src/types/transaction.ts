@@ -1,63 +1,80 @@
 import { type VMEvent, type VMTransfer } from './vm';
 
-/** the transaction model */
+/**
+ * Represents the model for a transaction.
+ */
 interface Transaction {
-    id: string;
-    chainTag: number;
-    blockRef: string;
-    expiration: number;
+    id: string; // Transaction ID.
+    chainTag: number; // Chain tag.
+    blockRef: string; // Block reference.
+    expiration: number; // Transaction expiration.
     clauses: Array<{
-        to: string | null;
-        value: string;
-        data: string;
+        to: string | null; // Recipient address (or null).
+        value: string; // Value in hex string.
+        data: string; // Transaction data in hex string.
     }>;
-    gasPriceCoef: number;
-    gas: number;
-    origin: string;
-    delegator?: string | null;
-    nonce: string;
-    dependsOn: string | null;
-    size: number;
+    gasPriceCoef: number; // Gas price coefficient.
+    gas: number; // Gas limit.
+    origin: string; // Transaction origin.
+    delegator?: string | null; // Delegator address (or null).
+    nonce: string; // Transaction nonce.
+    dependsOn: string | null; // Dependent transaction ID (or null).
+    size: number; // Transaction size.
     meta: {
-        blockID: string;
-        blockNumber: number;
-        blockTimestamp: number;
+        blockID: string; // Block ID.
+        blockNumber: number; // Block number.
+        blockTimestamp: number; // Block timestamp.
     };
 }
 
-/** the transaction visitor interface */
+/**
+ * The transaction visitor interface for querying transactions and their receipts.
+ */
 interface TransactionVisitor {
-    /** the transaction id to be visited */
+    /**
+     * The ID of the transaction to be visited.
+     */
     readonly id: string;
 
-    /** allow the queried tx be in pending state. a pending tx has null 'meta'. */
+    /**
+     * Allows the queried transaction to be in a pending state. A pending transaction has a null 'meta'.
+     * @returns The updated TransactionVisitor object.
+     */
     allowPending: () => this;
 
-    /** query the transaction */
+    /**
+     * Query the transaction.
+     * @returns A promise that resolves to the transaction or null if not found.
+     */
     get: () => Promise<Transaction | null>;
 
-    /** query the receipt */
+    /**
+     * Query the transaction receipt.
+     * @returns A promise that resolves to the transaction receipt or null if not found.
+     */
     getReceipt: () => Promise<TransactionReceipt | null>;
 }
 
-/** the transaction receipt model */
+/**
+ * Represents the model for a transaction receipt.
+ */
 interface TransactionReceipt {
-    gasUsed: number;
-    gasPayer: string;
-    paid: string;
-    reward: string;
-    reverted: boolean;
+    gasUsed: number; // Gas used.
+    gasPayer: string; // Gas payer's address.
+    paid: string; // Amount paid in hex string.
+    reward: string; // Transaction reward in hex string.
+    reverted: boolean; // Indicates if the transaction was reverted.
     outputs: Array<{
-        contractAddress: string | null;
-        events: VMEvent[];
-        transfers: VMTransfer[];
+        contractAddress: string | null; // Contract address (or null).
+        events: VMEvent[]; // Array of virtual machine (VM) events.
+        transfers: VMTransfer[]; // Array of virtual machine (VM) transfers.
     }>;
     meta: {
-        blockID: string;
-        blockNumber: number;
-        blockTimestamp: number;
-        txID: string;
-        txOrigin: string;
+        blockID: string; // Block ID.
+        blockNumber: number; // Block number.
+        blockTimestamp: number; // Block timestamp.
+        txID: string; // Transaction ID.
+        txOrigin: string; // Transaction origin.
     };
 }
 

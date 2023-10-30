@@ -4,76 +4,112 @@ import { type VMClause, type VMExplainer } from './vm';
 import { type ThorFilter, type FilterCriteria } from './filter';
 import { type AccountVisitor } from './account';
 
-/** the interface of Thor module, for accessing VeChain accounts/blocks/txs/logs etc. */
+/**
+ * The `Thor` interface represents the Thor module, providing access to VeChain accounts, blocks, transactions, logs, and more.
+ */
 interface Thor {
-    /** the genesis block */
+    /**
+     * The genesis block of the blockchain.
+     */
     readonly genesis: Block;
-    /** current status of VeChain */
+
+    /**
+     * The current status of the VeChain network.
+     */
     readonly status: ThorStatus;
 
-    /** create a ticker to watch new blocks */
+    /**
+     * Create a ticker to watch for new blocks.
+     * @returns A Ticker object for monitoring new block events.
+     */
     ticker: () => Ticker;
 
     /**
-     * create a visitor to the account specified by the given address
-     * @param addr account address
+     * Create a visitor for the account specified by the given address.
+     * @param addr - The account address.
+     * @returns An AccountVisitor for interacting with the account.
      */
     account: (addr: string) => AccountVisitor;
 
     /**
-     * create a visitor to the block specified by the given revision
-     * @param revision block id or number, defaults to current value of status.head.id
+     * Create a visitor for the block specified by the given revision (block ID or number).
+     * @param revision - (Optional) The block ID or number (defaults to the current value of status.head.id).
+     * @returns A BlockVisitor for accessing block information.
      */
     block: (revision?: string | number) => BlockVisitor;
 
     /**
-     * create a visitor to the transaction specified by the given id
-     * @param id tx id
+     * Create a visitor for the transaction specified by the given transaction ID.
+     * @param id - The transaction ID.
+     * @returns A TransactionVisitor for interacting with the transaction.
      */
     transaction: (id: string) => TransactionVisitor;
 
-    /** create an event logs filter */
+    /**
+     * Create an event logs filter with specified criteria.
+     * @param kind - The kind of filter ('event').
+     * @param criteria - An array of criteria for filtering events.
+     * @returns A ThorFilter for event logs filtering.
+     */
     filterEvent: (
         kind: 'event',
         criteria: Array<FilterCriteria<'event'>>
     ) => ThorFilter<'event'>;
 
-    /** create an transfer logs filter */
+    /**
+     * Create a transfer logs filter with specified criteria.
+     * @param kind - The kind of filter ('transfer').
+     * @param criteria - An array of criteria for filtering transfers.
+     * @returns A ThorFilter for transfer logs filtering.
+     */
     filterTransfer: (
         kind: 'transfer',
         criteria: Array<FilterCriteria<'transfer'>>
     ) => ThorFilter<'transfer'>;
 
-    /** create an explainer to simulate tx execution */
+    /**
+     * Create an explainer to simulate the execution of a transaction.
+     * @param clauses - An array of VM clauses representing the transaction.
+     * @returns A VMExplainer for simulating transaction execution.
+     */
     explain: (clauses: VMClause[]) => VMExplainer;
 }
 
-/** describes the status of VeChain */
+/**
+ * Describes the status of the VeChain network.
+ */
 interface ThorStatus {
-    /** progress of synchronization. From 0 to 1, 1 means fully synchronized. */
+    /**
+     * The progress of synchronization, ranging from 0 to 1. A value of 1 indicates full synchronization.
+     */
     progress: number;
-    /** summary of head block */
+
+    /**
+     * Summary of the head block.
+     */
     head: {
-        /** block id */
-        id: string;
-        /** block number */
-        number: number;
-        /** block timestamp */
-        timestamp: number;
-        /** parent block id */
-        parentID: string;
-        /** bits of supported txs features */
-        txsFeatures?: number;
-        /** block gas limit */
-        gasLimit: number;
+        id: string; // Block ID.
+        number: number; // Block number.
+        timestamp: number; // Block timestamp.
+        parentID: string; // Parent block ID.
+        txsFeatures?: number; // Bits of supported transaction features.
+        gasLimit: number; // Block gas limit.
     };
-    /** id of finalized block */
+
+    /**
+     * ID of the finalized block.
+     */
     finalized: string;
 }
 
-/** the ticker interface, to watch new blocks */
+/**
+ * The `Ticker` interface is used to watch for new blocks on the blockchain.
+ */
 interface Ticker {
-    /** returns a Promise of new head block summary, which is resolved once a new block produced */
+    /**
+     * Returns a promise of the new head block summary, which is resolved once a new block is produced.
+     * @returns A promise that resolves to the head block summary.
+     */
     next: () => Promise<ThorStatus['head']>;
 }
 

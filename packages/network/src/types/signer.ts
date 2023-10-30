@@ -6,40 +6,61 @@ import {
 } from './vendor';
 
 /**
- * signer defines the interfaces needs be to implemented of a wallet.
- * it is the driver of vendor, exposing the interface for any possible
- * wallet implementing a custom signer
+ * The `Signer` interface defines the methods that need to be implemented by a wallet.
+ * It serves as the driver for a vendor, exposing the interface for any wallet that implements a custom signer.
  */
 interface Signer {
+    /**
+     * Signs a transaction message and returns the signed transaction response.
+     * @param msg - The transaction message to sign.
+     * @param options - Additional options for signing the transaction.
+     * @returns A promise that resolves to the signed transaction response.
+     */
     signTx: (
         msg: VendorTxMessage,
         options: SignerTxOptions
     ) => Promise<VendorTxResponse>;
+
+    /**
+     * Signs a certificate message and returns the signed certificate response.
+     * @param msg - The certificate message to sign.
+     * @param options - Additional options for signing the certificate.
+     * @returns A promise that resolves to the signed certificate response.
+     */
     signCert: (
         msg: VendorCertMessage,
         options: SignerCertOptions
     ) => Promise<VendorCertResponse>;
 }
 
+/**
+ * Options for signing a transaction.
+ */
 interface SignerTxOptions {
-    signer?: string;
-    gas?: number;
-    dependsOn?: string;
-    link?: string;
-    comment?: string;
+    signer?: string; // The signer's address.
+    gas?: number; // The gas limit for the transaction.
+    dependsOn?: string; // The identifier of a dependent transaction.
+    link?: string; // A related transaction link.
+    comment?: string; // A comment or note for the transaction.
     delegator?: {
-        url: string;
-        signer?: string;
+        url: string; // The delegator's URL.
+        signer?: string; // The delegator's signer address.
     };
-    onAccepted?: () => void;
-}
-interface SignerCertOptions {
-    signer?: string;
-    link?: string;
-    onAccepted?: () => void;
+    onAccepted?: () => void; // Callback function when the transaction is accepted.
 }
 
-// NewSigner creates a singer with genesis id.
+/**
+ * Options for signing a certificate.
+ */
+interface SignerCertOptions {
+    signer?: string; // The signer's address.
+    link?: string; // A related certificate link.
+    onAccepted?: () => void; // Callback function when the certificate is accepted.
+}
+
+/**
+ * The `NewSigner` type represents a function that creates a signer with a specified genesis ID.
+ */
 type NewSigner = (genesisId: string) => Promise<Signer>;
 
 export type { Signer, SignerTxOptions, SignerCertOptions, NewSigner };

@@ -1,93 +1,153 @@
 import { type VMClause } from './vm';
 
-/** the vendor interface to interact with wallets */
+/**
+ * The `Vendor` interface provides a way to interact with wallets for transaction and certificate signing.
+ */
 interface Vendor {
-    /** create the tx signing service */
+    /**
+     * Create a transaction signing service.
+     * @param kind - The kind of signing service ('tx').
+     * @param msg - The transaction message to sign.
+     * @returns A VendorTxSigningService for signing transactions.
+     */
     sign: ((kind: 'tx', msg: VendorTxMessage) => VendorTxSigningService) &
         ((kind: 'cert', msg: VendorCertMessage) => VendorCertSigningService);
 }
 
-/** the interface is for requesting user wallet to sign transactions */
+/**
+ * The interface for requesting a user's wallet to sign transactions.
+ */
 interface VendorTxSigningService {
-    /** designate the signer address */
+    /**
+     * Designate the signer's address.
+     * @param addr - The signer's address.
+     * @returns The updated VendorTxSigningService object.
+     */
     signer: (addr: string) => this;
 
-    /** set the max allowed gas */
+    /**
+     * Set the maximum allowed gas for the transaction.
+     * @param gas - The gas limit.
+     * @returns The updated VendorTxSigningService object.
+     */
     gas: (gas: number) => this;
 
-    /** set another txid as dependency */
+    /**
+     * Set another transaction ID as a dependency.
+     * @param txid - The transaction ID to depend on.
+     * @returns The updated VendorTxSigningService object.
+     */
     dependsOn: (txid: string) => this;
 
     /**
-     * provides the url of web page to reveal tx related information.
-     * first appearance of slice '{txid}' in the given link url will be replaced with txid.
+     * Provides the URL of a web page to reveal transaction-related information.
+     * The first appearance of the slice '{txid}' in the given link URL will be replaced with the transaction ID.
+     * @param url - The URL of the web page.
+     * @returns The updated VendorTxSigningService object.
      */
     link: (url: string) => this;
 
-    /** set comment for the tx content */
+    /**
+     * Set a comment for the transaction content.
+     * @param text - The comment text.
+     * @returns The updated VendorTxSigningService object.
+     */
     comment: (text: string) => this;
 
     /**
-     * enable VIP-191 by providing url of web api, which provides delegation service
-     * @param url the url of web api
-     * @param signer hint of the delegator address
+     * Enable VIP-191 by providing the URL of a web API that offers delegation service.
+     * @param url - The URL of the web API.
+     * @param signer - A hint of the delegator address.
+     * @returns The updated VendorTxSigningService object.
      */
     delegate: (url: string, signer?: string) => this;
 
-    /** register a callback function fired when the request is accepted by user wallet */
+    /**
+     * Register a callback function fired when the request is accepted by the user's wallet.
+     * @param cb - The callback function.
+     * @returns The updated VendorTxSigningService object.
+     */
     accepted: (cb: () => void) => this;
 
-    /** send the request */
+    /**
+     * Send the request to the user's wallet.
+     * @returns A promise that resolves to the VendorTxResponse.
+     */
     request: () => Promise<VendorTxResponse>;
 }
 
-/** the interface is for requesting user wallet to sign certificates */
+/**
+ * The interface for requesting a user's wallet to sign certificates.
+ */
 interface VendorCertSigningService {
-    /** designate the signer address */
+    /**
+     * Designate the signer's address.
+     * @param addr - The signer's address.
+     * @returns The updated VendorCertSigningService object.
+     */
     signer: (addr: string) => this;
 
     /**
-     * provides the url of web page to reveal cert related information.
-     * first appearance of slice '{certid}' in the given link url will be replaced with certid.
+     * Provides the URL of a web page to reveal certificate-related information.
+     * The first appearance of the slice '{certid}' in the given link URL will be replaced with the certificate ID.
+     * @param url - The URL of the web page.
+     * @returns The updated VendorCertSigningService object.
      */
     link: (url: string) => this;
 
-    /** register a callback function fired when the request is accepted by user wallet */
+    /**
+     * Register a callback function fired when the request is accepted by the user's wallet.
+     * @param cb - The callback function.
+     * @returns The updated VendorCertSigningService object.
+     */
     accepted: (cb: () => void) => this;
 
-    /** send the request */
+    /**
+     * Send the request to the user's wallet.
+     * @returns A promise that resolves to the VendorCertResponse.
+     */
     request: () => Promise<VendorCertResponse>;
 }
 
+/**
+ * Represents a message for transaction signing.
+ */
 type VendorTxMessage = Array<
     VMClause & {
-        /** comment to the clause */
-        comment?: string;
-        /** as the hint for wallet to decode clause data */
-        abi?: object;
+        comment?: string; // Comment for the clause.
+        abi?: object; // ABI hint for wallet to decode clause data.
     }
 >;
 
+/**
+ * Represents a message for certificate signing.
+ */
 interface VendorCertMessage {
-    purpose: 'identification' | 'agreement';
+    purpose: 'identification' | 'agreement'; // The purpose of the certificate.
     payload: {
-        type: 'text';
-        content: string;
+        type: 'text'; // The type of payload.
+        content: string; // The content of the certificate.
     };
 }
 
+/**
+ * Represents the response for a transaction signing request.
+ */
 interface VendorTxResponse {
-    txid: string;
-    signer: string;
+    txid: string; // Transaction ID.
+    signer: string; // Signer's address.
 }
 
+/**
+ * Represents the response for a certificate signing request.
+ */
 interface VendorCertResponse {
     annex: {
-        domain: string;
-        timestamp: number;
-        signer: string;
+        domain: string; // Domain of the certificate.
+        timestamp: number; // Timestamp of the certificate.
+        signer: string; // Signer's address.
     };
-    signature: string;
+    signature: string; // Certificate signature.
 }
 
 export type {
