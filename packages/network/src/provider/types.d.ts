@@ -133,8 +133,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      * calls should be made to this provider after calling this.
      *
      * ----- TEMPORARY COMMENT -----
-     * destroy needs to be implemented by the hardhat plugin.
-     * And it will remove any resources that are used by the plugin.
+     * destroy needs to be implemented by the hardhat plugin or any other class that implements the Provider interface.
      * -----------------------------
      */
     destroy: () => void;
@@ -271,6 +270,8 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      * broadcastTransaction is the same as sendTransaction as it does eth_sendRawTransaction in hardhat ethers plugin but returns a TransactionResponse.
      * This time we are receiving a raw tx instead of the TransactionBody object. Which means we are broadcasting the tx already signed and encoded.
      *
+     * can use sendTx of connex's driver
+     *
      * @TODO - typesafety
      * -----------------------------
      */
@@ -336,7 +337,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      *  Resolves to the result returned by the executions of %%hash%%.
      *
      * ----- TEMPORARY COMMENT -----
-     * This method is not implemented by hardhat ethers plugin.
+     * This method is not implemented by hardhat ethers plugin. And it's about tracing transactions and is not supported by vechain as far as I know.
      * -----------------------------
      */
     getTransactionResult: (hash: string) => Promise<null | string>;
@@ -384,7 +385,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      *  confirmations.
      *
      * ----- TEMPORARY COMMENT -----
-     * This method is not implemented by hardhat ethers plugin.
+     * This method is not implemented by hardhat ethers plugin. We can make an improved implementation to the one in ethers' abstract-signer
      * -----------------------------
      */
     waitForTransaction: (
@@ -402,7 +403,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      *  the ``currentBlockNumber + N``.
      *
      * ----- TEMPORARY COMMENT -----
-     * This method is not implemented by hardhat ethers plugin.
+     * This method is not implemented by hardhat ethers plugin. Nore is it implemented by ethers' abstract-provider.
      * -----------------------------
      */
     waitForBlock: (blockTag?: BlockTag) => Promise<Block>;
