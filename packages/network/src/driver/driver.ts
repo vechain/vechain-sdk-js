@@ -23,9 +23,7 @@ export class Driver extends DriverNoVendor {
         const best: Block = (await net.http('GET', 'blocks/best', {
             query: {},
             body: {},
-            headers: {
-                'X-Custom-Header': 'custom-value'
-            },
+            headers: {},
             validateResponseHeader: (headers) => {
                 const xgid = headers['x-genesis-id'];
                 if (xgid.length > 0 && xgid !== genesis.id) {
