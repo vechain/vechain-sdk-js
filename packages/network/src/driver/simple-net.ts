@@ -1,11 +1,9 @@
 import Axios, { type AxiosInstance, type AxiosError } from 'axios';
 import { Agent as HttpAgent } from 'http';
 import { Agent as HttpsAgent } from 'https';
-import { type WebSocketReader, type Net, type NetParams } from './interfaces';
+import { type Net, type NetParams } from './interfaces';
 import { convertError } from '../utils';
 import { type Block } from '../types';
-import { URL } from 'url';
-import { SimpleWebSocketReader } from './simple-websocket-reader';
 
 /**
  * Represents a concrete implementation of the `Net` interface, providing methods for making HTTP requests and
@@ -81,15 +79,6 @@ class SimpleNet implements Net {
                 throw convertError(err as AxiosError<string>);
             }
         }
-    }
-
-    public openWebSocketReader(path: string): WebSocketReader {
-        const baseUrl = new URL(this.baseURL, path);
-        const url = baseUrl
-            .toString()
-            .replace(/^http:/i, 'ws:')
-            .replace(/^https:/i, 'wss:');
-        return new SimpleWebSocketReader(url, this.wsTimeout);
     }
 }
 

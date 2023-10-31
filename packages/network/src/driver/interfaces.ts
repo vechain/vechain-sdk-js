@@ -27,12 +27,6 @@ interface Net {
         path: string,
         params?: NetParams
     ) => Promise<Block | null | undefined>;
-
-    /**
-     * open websocket reader on path
-     * @param path
-     */
-    openWebSocketReader: (path: string) => WebSocketReader;
 }
 
 /**
@@ -66,12 +60,6 @@ interface NetParams {
     validateResponseHeader: (headers: Record<string, string>) => void;
 }
 
-interface WebSocketReader {
-    /** read data */
-    read: () => Promise<unknown>;
-    close: () => void;
-}
-
 /** Wallet interface manages private keys */
 interface Wallet {
     /** list all keys */
@@ -89,4 +77,4 @@ interface WalletKey {
     sign: (msgHash: Buffer) => Promise<Buffer>;
 }
 
-export type { Net, NetParams, Wallet, WalletKey, WebSocketReader };
+export type { Net, NetParams, Wallet, WalletKey };
