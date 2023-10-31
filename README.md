@@ -38,7 +38,7 @@ Ensure Docker is running on your machine. The integration tests are performed ag
 
 ## Contributing
 
-We appreciate your contributions and suggestions to improve the VeChain SDK. Whether it's a bug report, new feature, correction, or additional documentation, we greatly value your feedback. To get started with contributing, please review our [Contributing Guidelines](CONTRIBUTING.md).
+We appreciate your contributions and suggestions to improve the vechain SDK. Whether it's a bug report, new feature, correction, or additional documentation, we greatly value your feedback. To get started with contributing, please review our [Contributing Guidelines](CONTRIBUTING.md).
 
 
 ## Publishing
