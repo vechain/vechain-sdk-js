@@ -61,10 +61,23 @@ class InvalidAbiFunctionError extends ErrorBase<
     DefaultErrorData
 > {}
 
+/**
+ * Invalid function error to be thrown when an invalid function is detected.
+ * @param code - The error code from the error types enum.
+ * @param message - The error message.
+ * @param data - The error data.
+ * @returns The error object.
+ */
+class ContractInterfaceError extends ErrorBase<
+    ABI.CONTRACT_INTERFACE_ERROR,
+    DefaultErrorData
+> {}
+
 export {
     InvalidAbiDataToDecodeError,
     InvalidAbiDataToEncodeError,
     InvalidAbiEventError,
     InvalidAbiFormatTypeError,
-    InvalidAbiFunctionError
+    InvalidAbiFunctionError,
+    ContractInterfaceError
 };

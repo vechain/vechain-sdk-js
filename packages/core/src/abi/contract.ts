@@ -11,7 +11,7 @@ function createInterface(abi: InterfaceAbi): Interface {
     try {
         return new EthersInterface(abi);
     } catch {
-        throw new Error('Invalid ABI');
+        throw new Error('Invalid create interface');
     }
 }
 

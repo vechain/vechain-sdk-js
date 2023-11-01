@@ -5,7 +5,8 @@ import {
     InvalidAbiFormatTypeError,
     InvalidAbiFunctionError,
     InvalidAbiDataToDecodeError,
-    InvalidAbiDataToEncodeError
+    InvalidAbiDataToEncodeError,
+    ContractInterfaceError
 } from '../src/model/abi';
 
 /**
@@ -61,5 +62,17 @@ describe('Abi errors', () => {
         expect(
             buildError(ERROR_CODES.ABI.INVALID_FUNCTION, 'Invalid abi function')
         ).toBeInstanceOf(InvalidAbiFunctionError);
+    });
+
+    /**
+     * Verify that the error is an instance of the expected error InvalidAbiDataToDecodeError
+     */
+    test('Check that the constructed error is an instance of ContractInterfaceError', () => {
+        expect(
+            buildError(
+                ERROR_CODES.ABI.CONTRACT_INTERFACE_ERROR,
+                'Invalid contract interface'
+            )
+        ).toBeInstanceOf(ContractInterfaceError);
     });
 });

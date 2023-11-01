@@ -4,7 +4,8 @@ import {
     InvalidAbiFormatTypeError,
     InvalidAbiFunctionError,
     InvalidAbiDataToEncodeError,
-    InvalidAbiDataToDecodeError
+    InvalidAbiDataToDecodeError,
+    ContractInterfaceError
 } from '../model/abi';
 import {
     InvalidAddressError,
@@ -61,7 +62,8 @@ enum ABI {
     INVALID_EVENT = 'INVALID_EVENT',
     INVALID_DATA_TO_DECODE = 'INVALID_DATA_TO_DECODE',
     INVALID_DATA_TO_ENCODE = 'INVALID_DATA_TO_ENCODE',
-    INVALID_FORMAT_TYPE = 'INVALID_FORMAT_TYPE'
+    INVALID_FORMAT_TYPE = 'INVALID_FORMAT_TYPE',
+    CONTRACT_INTERFACE_ERROR = 'CONTRACT_INTERFACE_ERROR'
 }
 
 enum RLP {
@@ -151,6 +153,8 @@ type ErrorType<ErrorCodeT> = ErrorCodeT extends SECP256K1.INVALID_PRIVATE_KEY
     ? InvalidAbiFormatTypeError
     : ErrorCodeT extends ABI.INVALID_FUNCTION
     ? InvalidAbiFunctionError
+    : ErrorCodeT extends ABI.CONTRACT_INTERFACE_ERROR
+    ? ContractInterfaceError
     : ErrorCodeT extends RLP.INVALID_RLP
     ? InvalidRLPError
     : ErrorCodeT extends DATA.INVALID_DATA_TYPE
@@ -185,6 +189,7 @@ const ErrorClassMap = new Map<
     [ABI.INVALID_DATA_TO_ENCODE, InvalidAbiDataToEncodeError],
     [ABI.INVALID_FORMAT_TYPE, InvalidAbiFormatTypeError],
     [ABI.INVALID_FUNCTION, InvalidAbiFunctionError],
+    [ABI.CONTRACT_INTERFACE_ERROR, ContractInterfaceError],
     [RLP.INVALID_RLP, InvalidRLPError],
     [DATA.INVALID_DATA_TYPE, InvalidDataTypeError]
 ]);
