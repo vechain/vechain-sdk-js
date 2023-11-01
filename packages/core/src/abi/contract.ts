@@ -60,10 +60,56 @@ function decodeFunctionInput(
     }
 }
 
+/**
+ * Encode event log data.
+ * @param abi ABI in a compatible format
+ * @param functionName The name of the function defined in the ABI.
+ * @param functionData The data to pass to the function.
+ * @returns The encoded data that can be used to send a transaction.
+ */
+function encodeEventLog(
+    interfaceABI: InterfaceAbi,
+    eventName: string,
+    dataToEncode: unknown[]
+): { data: string; topics: string[] } {
+    try {
+        const contractInterface = createInterface(interfaceABI);
+        return new abi.Event(
+            contractInterface.getEvent(eventName)
+        ).encodeEventLog(dataToEncode);
+    } catch (e) {
+        throw new Error('Invalid event log data to encode');
+    }
+}
+
+/**
+ * Decode event log data
+ * @param abi ABI in a compatible format
+ * @param functionName The name of the function defined in the ABI.
+ * @param encodedFunction The encoded function data.
+ * @returns an array of the decoded function data
+ */
+function decodeEventLog(
+    interfaceABI: InterfaceAbi,
+    eventName: string,
+    dataToDecode: { data: string; topics: string[] }
+): Result {
+    try {
+        const contractInterface = createInterface(interfaceABI);
+        return new abi.Event(
+            contractInterface.getEvent(eventName)
+        ).decodeEventLog(dataToDecode);
+    } catch {
+        throw new Error('Invalid event log data to decode');
+    }
+}
+
 const contract = {
     createInterface,
     encodeFunctionInput,
-    decodeFunctionInput
+    decodeFunctionInput,
+    encodeEventLog,
+    decodeEventLog
 };
 
 export { contract };

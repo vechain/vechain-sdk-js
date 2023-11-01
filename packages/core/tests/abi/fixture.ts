@@ -283,11 +283,67 @@ const contractABI = JSON.stringify([
     }
 ]);
 
+const contractABIWithEvents = JSON.stringify([
+    {
+        constant: false,
+        inputs: [
+            {
+                name: 'value',
+                type: 'uint256'
+            }
+        ],
+        name: 'setValue',
+        outputs: [],
+        payable: false,
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        constant: true,
+        inputs: [],
+        name: 'getValue',
+        outputs: [
+            {
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: false,
+                name: 'sender',
+                type: 'address'
+            },
+            {
+                indexed: false,
+                name: 'value',
+                type: 'uint256'
+            }
+        ],
+        name: 'ValueChanged',
+        type: 'event'
+    }
+]);
+
+// Event data
+const ValueChangedEventData = {
+    sender: '0x1234567890123456789012345678901234567890', // Replace with the actual address
+    value: 100 // Replace with the actual balance value
+};
+
 export {
     events,
     functions,
     simpleParametersDataForFunction2,
     encodedDecodedValues,
     encodedDecodedInvalidValues,
-    contractABI
+    contractABI,
+    contractABIWithEvents,
+    ValueChangedEventData
 };
