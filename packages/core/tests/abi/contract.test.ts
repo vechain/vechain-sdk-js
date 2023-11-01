@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { contractABI } from './fixture';
 import { contract } from '../../src/abi/contract';
+import { abi } from '../../src';
 
 /**
  * Contract tests - encode & decode
@@ -33,9 +34,14 @@ describe('Contract interface for ABI encoding/decoding', () => {
         const contractInterface = contract.createInterface(contractABI);
 
         expect(
-            contract.encodeFunctionData(contractABI, 'setValue', [123])
-        ).toEqual(contractInterface.encodeFunctionData('setValue', [123]));
-        expect(contract.encodeFunctionData(contractABI, 'getValue')).toEqual(
+            contract.encodeFunctionInput(contractABI, 'setValue', [123])
+        ).toEqual(
+            new abi.Function(
+                contractInterface.getFunction('setValue')
+            ).encodeInput([123])
+        );
+
+        expect(contract.encodeFunctionInput(contractABI, 'getValue')).toEqual(
             contractInterface.encodeFunctionData('getValue')
         );
     });
@@ -49,7 +55,11 @@ describe('Contract interface for ABI encoding/decoding', () => {
             123
         ]);
         const decodedData = String(
-            contract.decodeFunctionData(contractABI, 'setValue', encodedData)[0]
+            contract.decodeFunctionInput(
+                contractABI,
+                'setValue',
+                encodedData
+            )[0]
         );
         expect(decodedData).toEqual('123');
     });

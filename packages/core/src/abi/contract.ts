@@ -1,5 +1,6 @@
 import { type InterfaceAbi, Interface as EthersInterface } from 'ethers';
-import type { Interface, Result } from './types';
+import type { BytesLike, Interface, Result } from './types';
+import { abi } from './coder';
 
 /**
  * Creates a new Interface instance from an ABI fragment.
@@ -22,14 +23,16 @@ function createInterface(abi: InterfaceAbi): Interface {
  * @param functionData The data to pass to the function.
  * @returns The encoded data that can be used to send a transaction.
  */
-function encodeFunctionData(
-    abi: InterfaceAbi,
+function encodeFunctionInput(
+    interfaceABI: InterfaceAbi,
     functionName: string,
     functionData?: unknown[]
 ): string {
     try {
-        const contractInterface = createInterface(abi);
-        return contractInterface.encodeFunctionData(functionName, functionData);
+        const contractInterface = createInterface(interfaceABI);
+        return new abi.Function(
+            contractInterface.getFunction(functionName)
+        ).encodeInput(functionData);
     } catch {
         throw new Error('Invalid data to encode');
     }
@@ -42,17 +45,16 @@ function encodeFunctionData(
  * @param encodedFunction The encoded function data.
  * @returns an array of the decoded function data
  */
-function decodeFunctionData(
-    abi: InterfaceAbi,
+function decodeFunctionInput(
+    interfaceABI: InterfaceAbi,
     functionName: string,
-    encodedFunction: string
+    encodedFunction: BytesLike
 ): Result {
     try {
-        const contractInterface = createInterface(abi);
-        return contractInterface.decodeFunctionData(
-            functionName,
-            encodedFunction
-        );
+        const contractInterface = createInterface(interfaceABI);
+        return new abi.Function(
+            contractInterface.getFunction(functionName)
+        ).decodeInput(encodedFunction);
     } catch {
         throw new Error('Invalid data to decode');
     }
@@ -60,8 +62,8 @@ function decodeFunctionData(
 
 const contract = {
     createInterface,
-    encodeFunctionData,
-    decodeFunctionData
+    encodeFunctionInput,
+    decodeFunctionInput
 };
 
 export { contract };

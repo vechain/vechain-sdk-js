@@ -3,7 +3,8 @@ import {
     type Interface,
     type FunctionFragment,
     type Result,
-    type FormatType
+    type FormatType,
+    type BytesLike
 } from './types';
 import { ERRORS } from '../utils';
 
@@ -88,7 +89,7 @@ class Function<ABIType> {
      * @param data - Data to decode.
      * @returns Decoding results.
      */
-    public decodeOutput(data: string): Result {
+    public decodeInput(data: BytesLike): Result {
         try {
             return this.iface.decodeFunctionData(this.fragment, data);
         } catch {
@@ -102,7 +103,7 @@ class Function<ABIType> {
      * @param dataToEncode - Data to encode.
      * @returns Encoded data.
      */
-    public encodeInput<TValue>(dataToEncode: TValue[]): string {
+    public encodeInput<TValue>(dataToEncode?: TValue[]): string {
         try {
             return this.iface.encodeFunctionData(this.fragment, dataToEncode);
         } catch {

@@ -121,7 +121,7 @@ describe('Abi - Function & Event', () => {
          * Encode and Decode.
          * Test with each function in each format.
          */
-        test('Encode inputs AND Decode outputs', () => {
+        test('Encode AND Decode', () => {
             // Create a function from each format and compare between format (test if conversions are correct)
             functions
                 .map((fixtureFunction) => {
@@ -204,11 +204,10 @@ describe('Abi - Function & Event', () => {
 
                                 expect(encoded).toBeDefined();
 
-                                // Decode output
-                                const decoded =
-                                    myFunction.decodeOutput(encoded);
+                                // Decode input
+                                const decoded = myFunction.decodeInput(encoded);
 
-                                // Encoded input will be equal to decoded output
+                                // Encoded input will be equal to decoded input
                                 expect(decoded).toStrictEqual(encodingInput);
                             }
                         );
@@ -237,7 +236,7 @@ describe('Abi - Function & Event', () => {
             ).toThrowError(ERRORS.ABI.INVALID_DATA_TO_ENCODE);
 
             // Decode
-            expect(() => myFunction.decodeOutput('INVALID')).toThrowError(
+            expect(() => myFunction.decodeInput('INVALID')).toThrowError(
                 ERRORS.ABI.INVALID_DATA_TO_DECODE
             );
         });
