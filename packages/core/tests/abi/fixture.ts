@@ -252,10 +252,42 @@ const encodedDecodedInvalidValues = [
     }
 ];
 
+const contractABI = JSON.stringify([
+    {
+        constant: false,
+        inputs: [
+            {
+                name: 'value',
+                type: 'uint256'
+            }
+        ],
+        name: 'setValue',
+        outputs: [],
+        payable: false,
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        constant: true,
+        inputs: [],
+        name: 'getValue',
+        outputs: [
+            {
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function'
+    }
+]);
+
 export {
     events,
     functions,
     simpleParametersDataForFunction2,
     encodedDecodedValues,
-    encodedDecodedInvalidValues
+    encodedDecodedInvalidValues,
+    contractABI
 };
