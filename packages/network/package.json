@@ -16,8 +16,6 @@
         "@types/ws": "^8.5.8",
         "@vechain-sdk/core": "*",
         "axios": "^1.5.1",
-        "isomorphic-ws": "^5.0.0",
-        "lru-cache": "^10.0.1",
-        "testcontainers": "^10.2.1"
+        "testcontainers": "^10.2.2"
     }
 }
