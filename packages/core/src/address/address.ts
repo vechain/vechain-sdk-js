@@ -36,11 +36,9 @@ function isAddress(addressToVerify: string): boolean {
  * This function validates and then converts an address into its EIP-55 compliant checksum form using ethers.js’s `getAddress` function.
  * Throws an error if the input string is not a valid vechain thor address.
  *
+ * @throws{InvalidAddressError}
  * @param address - The input vechain thor address string to be checksummed.
  * @returns The checksum address string, compliant with EIP-55.
- *
- * @throws
- * - Will throw an error if the provided address string is not a valid vechain thor address.
  */
 function toChecksumed(address: string): string {
     if (!isAddress(address)) {
