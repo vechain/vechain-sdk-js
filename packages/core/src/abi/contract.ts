@@ -10,14 +10,7 @@ import { ERROR_CODES, buildError } from '@vechain-sdk/errors';
  * @throws Will throw an error if the ABI is invalid.
  */
 function createInterface(abi: InterfaceAbi): Interface {
-    try {
-        return new EthersInterface(abi);
-    } catch {
-        throw buildError(
-            ERROR_CODES.ABI.CONTRACT_INTERFACE_ERROR,
-            'Invalid contract interface'
-        );
-    }
+    return new EthersInterface(abi);
 }
 
 /**
