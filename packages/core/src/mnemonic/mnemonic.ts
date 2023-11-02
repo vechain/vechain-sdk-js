@@ -40,6 +40,7 @@ function generate(wordlistSize?: WordlistSizeType): string[];
  * Generate BIP39 mnemonic words
  * We can have 12, 15, 18, 21, 24 words
  *
+ * @throws{InvalidHDNodeMnemonicsError}
  * @param wordlistSize - Wordlist size expected. Every 4 bytes produce 3 words.
  * @param randomGenerator - The optional random number generator to use.
  * @returns Mnemonic words
