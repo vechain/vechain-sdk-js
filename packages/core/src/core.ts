@@ -11,3 +11,4 @@ export * from './secp256k1';
 export * from './transaction';
 export * from './utils';
 export * from './bloom';
+export * from './certificate';
