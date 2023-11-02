@@ -6,6 +6,7 @@ import { buildError, SECP256K1, TRANSACTION } from '@vechain-sdk/errors';
 /**
  * Sign a transaction with a given private key
  *
+ * @throws{InvalidSecp256k1PrivateKeyError, TransactionAlreadySignedError, TransactionDelegationError}
  * @param transactionToSign - Transaction to sign
  * @param signerPrivateKey - Private key used to sign the transaction
  * @returns Signed transaction
@@ -48,6 +49,7 @@ function sign(
 /**
  * Sign a transaction with signer and delegator private keys
  *
+ * @throws{InvalidSecp256k1PrivateKeyError, TransactionAlreadySignedError, TransactionDelegationError}
  * @param transactionToSign - Transaction to sign
  * @param signerPrivateKey - Signer private key (the origin)
  * @param delegatorPrivateKey - Delegate private key (the delegator)
