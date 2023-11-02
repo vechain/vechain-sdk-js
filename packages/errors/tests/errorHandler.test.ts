@@ -70,6 +70,34 @@ describe('Error handler test', () => {
     });
 
     /**
+     * Verify that the inner error is undefined when not provided
+     */
+    test('Verify that the inner error is undefined', () => {
+        expect(
+            buildError(
+                ERROR_CODES.ABI.CONTRACT_INTERFACE_ERROR,
+                'test',
+                undefined,
+                undefined
+            ).innerError
+        ).toBeUndefined();
+    });
+
+    /**
+     * Verify that the inner error is defined when provided
+     */
+    test('Verify that the inner error is defined', () => {
+        expect(
+            buildError(
+                ERROR_CODES.ABI.CONTRACT_INTERFACE_ERROR,
+                'test',
+                undefined,
+                new Error('test')
+            ).innerError
+        ).toBeDefined();
+    });
+
+    /**
      * Verify all error codes and classes
      */
     ErrorsCodeAndClassesMapsFixture.forEach((errorType) => {
