@@ -22,8 +22,9 @@ function encode(cert: Certificate): string {
 
 /**
  * Verifies the validity of a certificate.
+ *
+ * @throws {CertificateNotSignedError, CertificateInvalidSignerError, CertificateInvalidSignatureFormatError}
  * @param cert - The certificate object with a digital signature.
- * @throws {Error} If the signature is missing, invalid, or doesn't match the signer's public key.
  */
 function verify(cert: Certificate): void {
     // No signature
