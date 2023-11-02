@@ -37,7 +37,7 @@ const isBloom = (bloom: string): boolean => {
  * @param data - Hex string of the data to check against the Bloom filter.
  * @returns True if the data may be in the set represented by the Bloom filter; false otherwise.
  *
- * @throws
+ * @throws{InvalidBloomError, InvalidDataTypeError, InvalidKError}
  * - Will throw an error if `bloom` is not in a valid Bloom filter format.
  * - Will throw an error if `data` is not a valid hexadecimal string.
  * - Will throw an error if `k` is not a positive integer.
@@ -97,7 +97,7 @@ const isInBloom = (bloom: HexString, k: number, data: HexString): boolean => {
  * @param addressToCheck - The address in hexadecimal string format to be checked against the Bloom filter.
  * @returns A boolean indicating whether the address may be part of the set represented by the Bloom filter.
  *
- * @throws
+ * @throws{InvalidAddressError}
  * - Will throw an error if `bloom` is not a valid Bloom filter format.
  * - Will throw an error if `k` is not a positive integer.
  * - Will throw an error if `addressToCheck` is not a valid vechain thor address format.
