@@ -41,11 +41,10 @@ function sha256(data: HashInput, returnType: 'hex'): string;
  * Returns the hash as a Buffer or hex string, depending on the returnType.
  * If no returnType is provided, the hash is returned as a Buffer.
  *
+ * @throws{InvalidDataReturnTypeError}
  * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
  * @param returnType - The type of the return value. Either 'buffer' or 'hex'. Defaults to 'buffer'.
  * @returns A Buffer or string representing the 256-bit sha256 hash.
- *
- * @throws Will throw an error if an invalid returnType is provided.
  */
 function sha256(
     data: HashInput,

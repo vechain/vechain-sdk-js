@@ -40,13 +40,12 @@ function keccak256(data: HashInput, returnType: 'hex'): string;
  * Computes the keccak256 hash of the given data and returns the hash based on the returnType specified.
  * Defaults to returning a Buffer if returnType is not provided.
  *
+ * @throws{InvalidDataReturnTypeError}
  * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
  * @param returnType - The format in which to return the hash. Either 'buffer' or 'hex'.
  *                   Defaults to 'buffer' if not provided.
  * @returns A Buffer or a string representing the 256-bit keccak256 hash of the provided data,
  *         based on the returnType specified.
- *
- * @throws Will throw an error if an invalid returnType is provided.
  */
 function keccak256(
     data: HashInput,
