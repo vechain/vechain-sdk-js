@@ -1,5 +1,5 @@
 import { describe, test, expect } from '@jest/globals';
-import { ERRORS, ZERO_BUFFER, secp256k1 } from '../../src';
+import { ZERO_BUFFER, secp256k1 } from '../../src';
 import {
     invalidMessageHashes,
     invalidPrivateKeys,
@@ -11,6 +11,12 @@ import {
     validMessageHashes,
     validPrivateKeys
 } from './fixture';
+import {
+    InvalidSecp256k1MessageHashError,
+    InvalidSecp256k1PrivateKeyError,
+    InvalidSecp256k1SignatureError,
+    InvalidSecp256k1SignatureRecoveryError
+} from '@vechain-sdk/errors';
 
 /**
  * Secp256k1 tests
@@ -68,7 +74,7 @@ describe('Secp256k1', () => {
 
         // Invalid private key
         expect(() => secp256k1.derivePublicKey(ZERO_BUFFER(32))).toThrowError(
-            ERRORS.SECP256K1.INVALID_PRIVATE_KEY
+            InvalidSecp256k1PrivateKeyError
         );
     });
 
@@ -83,7 +89,7 @@ describe('Secp256k1', () => {
         // Invalid message hash
         expect(() =>
             secp256k1.sign(Buffer.from('some_invalid_stuff', 'hex'), privateKey)
-        ).toThrowError(ERRORS.SECP256K1.INVALID_MESSAGE_HASH);
+        ).toThrowError(InvalidSecp256k1MessageHashError);
 
         // Invalid private key
         expect(() =>
@@ -94,7 +100,7 @@ describe('Secp256k1', () => {
                     'hex'
                 )
             )
-        ).toThrowError(ERRORS.SECP256K1.INVALID_PRIVATE_KEY);
+        ).toThrowError(InvalidSecp256k1PrivateKeyError);
     });
 
     /**
@@ -111,7 +117,7 @@ describe('Secp256k1', () => {
                 Buffer.from('some_invalid_stuff', 'hex'),
                 signature
             )
-        ).toThrowError(ERRORS.SECP256K1.INVALID_MESSAGE_HASH);
+        ).toThrowError(InvalidSecp256k1MessageHashError);
 
         // Invalid signature
         expect(() =>
@@ -119,7 +125,7 @@ describe('Secp256k1', () => {
                 messageHashBuffer,
                 Buffer.from('some_invalid_stuff', 'hex')
             )
-        ).toThrowError(ERRORS.SECP256K1.INVALID_SIGNATURE);
+        ).toThrowError(InvalidSecp256k1SignatureError);
 
         // Invalid signature recovery
         const invalidSignatureRecovery = new Uint8Array(signature);
@@ -129,7 +135,7 @@ describe('Secp256k1', () => {
                 messageHashBuffer,
                 Buffer.from(invalidSignatureRecovery)
             )
-        ).toThrowError(ERRORS.SECP256K1.INVALID_SIGNATURE_RECOVERY);
+        ).toThrowError(InvalidSecp256k1SignatureRecoveryError);
     });
 
     /**

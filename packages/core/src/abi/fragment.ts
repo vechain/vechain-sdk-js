@@ -6,7 +6,7 @@ import {
     type FormatType,
     type BytesLike
 } from './types';
-import { ERRORS } from '../utils';
+import { ABI, buildError } from '@vechain-sdk/errors';
 
 /**
  * Allowed formats for the signature.
@@ -17,15 +17,21 @@ const allowedSignatureFormats = ['sighash', 'minimal', 'full', 'json'];
 
 /**
  * Generic implementation of a function that returns a signature.
- * Used to avoid code dupliaction.
+ * Used to avoid code duplication.
  *
+ * @throws{InvalidAbiFormatTypeError}
  * @param fragment - Fragment to use.
  * @param formatType - Format type of the signature.
  * @returns The signature.
  */
 function getSignature(fragment: Fragment, formatType: FormatType): string {
     if (!allowedSignatureFormats.includes(formatType))
-        throw new Error(ERRORS.ABI.INVALID_FORMAT_TYPE);
+        throw buildError(
+            ABI.INVALID_FORMAT_TYPE,
+            `Invalid format type. Allowed formats are: ${allowedSignatureFormats.join(
+                ', '
+            )}`
+        );
 
     return fragment.format(formatType);
 }
@@ -53,6 +59,7 @@ class Function<ABIType> {
     /**
      * Creates a new Function instance from an ABI fragment.
      *
+     * @throws{InvalidAbiFunctionError}
      * @param source - ABI fragment to use.
      */
     constructor(source: ABIType) {
@@ -60,7 +67,10 @@ class Function<ABIType> {
             this.fragment = ethers.FunctionFragment.from(source);
             this.iface = new ethers.Interface([this.fragment]);
         } catch {
-            throw new Error(ERRORS.ABI.INVALID_FUNCTION);
+            throw buildError(
+                ABI.INVALID_FUNCTION,
+                'Invalid Function format. Cannot create Function fragment.'
+            );
         }
     }
 
@@ -86,6 +96,7 @@ class Function<ABIType> {
     /**
      * Decode data using the function's ABI.
      *
+     * @throws{InvalidAbiDataToDecodeError}
      * @param data - Data to decode.
      * @returns Decoding results.
      */
@@ -93,13 +104,17 @@ class Function<ABIType> {
         try {
             return this.iface.decodeFunctionData(this.fragment, data);
         } catch {
-            throw new Error(ERRORS.ABI.INVALID_DATA_TO_DECODE);
+            throw buildError(
+                ABI.INVALID_DATA_TO_DECODE,
+                'Cannot decode. Data should be a valid hex string that encodes a valid ABI type.'
+            );
         }
     }
 
     /**
      * Encode data using the function's ABI.
      *
+     * @throws{InvalidAbiDataToEncodeError}
      * @param dataToEncode - Data to encode.
      * @returns Encoded data.
      */
@@ -107,7 +122,10 @@ class Function<ABIType> {
         try {
             return this.iface.encodeFunctionData(this.fragment, dataToEncode);
         } catch {
-            throw new Error(ERRORS.ABI.INVALID_DATA_TO_ENCODE);
+            throw buildError(
+                ABI.INVALID_DATA_TO_ENCODE,
+                'Cannot encode. Incorrect Function format.'
+            );
         }
     }
 }
@@ -135,6 +153,7 @@ class Event<ABIType> {
     /**
      * Creates a new Event instance from an ABI fragment.
      *
+     * @throws{InvalidAbiEventError}
      * @param source - ABI fragment to use.
      */
     constructor(source: ABIType) {
@@ -142,7 +161,10 @@ class Event<ABIType> {
             this.fragment = ethers.EventFragment.from(source);
             this.iface = new ethers.Interface([this.fragment]);
         } catch {
-            throw new Error(ERRORS.ABI.INVALID_EVENT);
+            throw buildError(
+                ABI.INVALID_EVENT,
+                'Invalid Event format. Cannot create Event fragment.'
+            );
         }
     }
 
@@ -168,6 +190,7 @@ class Event<ABIType> {
     /**
      * Decode event log data using the event's ABI.
      *
+     * @throws{InvalidAbiDataToDecodeError}
      * @param data - Data to decode.
      * @returns Decoding results.
      */
@@ -179,13 +202,17 @@ class Event<ABIType> {
                 data.topics
             );
         } catch {
-            throw new Error(ERRORS.ABI.INVALID_DATA_TO_DECODE);
+            throw buildError(
+                ABI.INVALID_DATA_TO_DECODE,
+                'Cannot decode. Incorrect data or topics.'
+            );
         }
     }
 
     /**
      * Encode event log data using the event's ABI.
      *
+     * @throws{InvalidAbiDataToEncodeError}
      * @param dataToEncode - Data to encode.
      * @returns Encoded data along with topics.
      */
@@ -196,7 +223,10 @@ class Event<ABIType> {
         try {
             return this.iface.encodeEventLog(this.fragment, dataToEncode);
         } catch {
-            throw new Error(ERRORS.ABI.INVALID_DATA_TO_ENCODE);
+            throw buildError(
+                ABI.INVALID_DATA_TO_ENCODE,
+                'Cannot encode. Incorrect Event format.'
+            );
         }
     }
 }

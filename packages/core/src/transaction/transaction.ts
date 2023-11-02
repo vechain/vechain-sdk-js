@@ -5,14 +5,19 @@ import { secp256k1 } from '../secp256k1';
 import {
     BLOCKREF_LENGTH,
     dataUtils,
-    ERRORS,
     SIGNATURE_LENGTH,
     SIGNED_TRANSACTION_RLP,
     TRANSACTION_FEATURES_KIND,
-    UNSIGNED_TRANSACTION_RLP,
-    TransactionUtils
+    TransactionUtils,
+    UNSIGNED_TRANSACTION_RLP
 } from '../utils';
 import { type TransactionBody } from './types';
+import {
+    ADDRESS,
+    buildError,
+    SECP256K1,
+    TRANSACTION
+} from '@vechain-sdk/errors';
 
 /**
  * Represents an immutable transaction entity.
@@ -42,18 +47,27 @@ class Transaction {
      * Constructor with parameters.
      * This constructor creates a transaction immutable object.
      *
+     * @throws{TransactionBodyError, InvalidSecp256k1SignatureError}
      * @param body - Transaction body
      * @param signature - Optional signature for the transaction
      */
     constructor(body: TransactionBody, signature?: Buffer) {
         // Body
         if (this._isValidBody(body)) this.body = body;
-        else throw new Error(ERRORS.TRANSACTION.INVALID_TRANSACTION_BODY);
+        else
+            throw buildError(
+                TRANSACTION.INVALID_TRANSACTION_BODY,
+                'Transaction body is not valid'
+            );
 
         // User passed a signature
         if (signature !== undefined) {
             if (this._isSignatureValid(signature)) this.signature = signature;
-            else throw new Error(ERRORS.TRANSACTION.INVALID_SIGNATURE);
+            else
+                throw buildError(
+                    SECP256K1.INVALID_SECP256k1_SIGNATURE,
+                    'Invalid transaction signature'
+                );
         }
     }
 
@@ -80,15 +94,23 @@ class Transaction {
     /**
      * Get transaction delegator address from signature.
      *
+     * @throws{TransactionDelegationError, TransactionNotSignedError}
      * @returns Transaction delegator address
      */
     public get delegator(): string {
         // Undelegated transaction
         if (!this.isDelegated)
-            throw new Error(ERRORS.TRANSACTION.NOT_DELEGATED);
+            throw buildError(
+                TRANSACTION.INVALID_DELEGATION,
+                'Transaction is not delegated'
+            );
 
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
-        if (!this.isSigned) throw new Error(ERRORS.TRANSACTION.NOT_SIGNED);
+        if (!this.isSigned)
+            throw buildError(
+                TRANSACTION.NOT_SIGNED,
+                'Cannot get delegator from unsigned transaction. Sign the transaction first.'
+            );
 
         // Slice signature needed to recover public key
         // Obtains the recovery param from the signature
@@ -160,13 +182,17 @@ class Transaction {
      * )
      * ```
      *
+     * @throws{InvalidAddressError}
      * @param delegateFor - Address of the delegator
      * @returns Signing hash of the transaction
      */
     public getSignatureHash(delegateFor?: string): Buffer {
         // Correct delegateFor address
         if (delegateFor !== undefined && !address.isAddress(delegateFor))
-            throw new Error(ERRORS.ADDRESS.INVALID_ADDRESS);
+            throw buildError(
+                ADDRESS.INVALID_ADDRESS,
+                'Invalid address given as input as delegateFor parameter.'
+            );
 
         // Encode transaction
         const transactionHash = blake2b256(this._encode(false));
@@ -196,11 +222,16 @@ class Transaction {
     /**
      * Get transaction origin address from signature.
      *
+     * @throws{TransactionNotSignedError}
      * @returns Transaction origin
      */
     public get origin(): string {
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
-        if (!this.isSigned) throw new Error(ERRORS.TRANSACTION.NOT_SIGNED);
+        if (!this.isSigned)
+            throw buildError(
+                TRANSACTION.NOT_SIGNED,
+                'Cannot get origin from unsigned transaction. Sign the transaction first-'
+            );
 
         // Slice signature
         // Obtains the concatenated signature (r, s) of ECDSA digital signature
@@ -219,12 +250,16 @@ class Transaction {
     /**
      * Get transaction ID from signature.
      *
+     * @throws{TransactionNotSignedError}
      * @returns Transaction ID
      */
     get id(): string {
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
-        if (!this.isSigned) throw new Error(ERRORS.TRANSACTION.NOT_SIGNED);
-
+        if (!this.isSigned)
+            throw buildError(
+                TRANSACTION.NOT_SIGNED,
+                'Cannot get transaction id from unsigned transaction. Sign the transaction first'
+            );
         // Return transaction ID
         return blake2b256(
             Buffer.concat([

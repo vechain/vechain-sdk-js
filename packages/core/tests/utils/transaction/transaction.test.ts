@@ -9,6 +9,7 @@ import { type TransactionClause } from '../../../src';
 
 /**
  * Transaction utils test
+ * @group unit/utils-transaction
  */
 describe('Transaction utils', () => {
     /**

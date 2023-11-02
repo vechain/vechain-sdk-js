@@ -1,4 +1,4 @@
-import type { DefaultErrorData, HDNODE } from '../types';
+import type { DefaultErrorData } from '../types';
 import { ErrorBase } from './base';
 
 /**
@@ -8,8 +8,8 @@ import { ErrorBase } from './base';
  * @param data - The error data.
  * @returns The error object.
  */
-class InvalidChaincodeError extends ErrorBase<
-    HDNODE.INVALID_CHAINCODE,
+class InvalidHDNodeChaincodeError extends ErrorBase<
+    HDNODE.INVALID_HDNODE_CHAIN_CODE,
     DefaultErrorData
 > {}
 
@@ -20,8 +20,8 @@ class InvalidChaincodeError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-class InvalidMnemonicsError extends ErrorBase<
-    HDNODE.INVALID_MNEMONICS,
+class InvalidHDNodeMnemonicsError extends ErrorBase<
+    HDNODE.INVALID_HDNODE_MNEMONICS,
     DefaultErrorData
 > {}
 
@@ -32,8 +32,8 @@ class InvalidMnemonicsError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-class InvalidPrivateKeyError extends ErrorBase<
-    HDNODE.INVALID_PRIVATEKEY,
+class InvalidHDNodePrivateKeyError extends ErrorBase<
+    HDNODE.INVALID_HDNODE_PRIVATE_KEY,
     DefaultErrorData
 > {}
 
@@ -44,14 +44,41 @@ class InvalidPrivateKeyError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-class InvalidPublicKeyError extends ErrorBase<
-    HDNODE.INVALID_PUBLICKEY,
+class InvalidHDNodePublicKeyError extends ErrorBase<
+    HDNODE.INVALID_HDNODE_PUBLIC_KEY,
     DefaultErrorData
 > {}
 
+/**
+ * Invalid derivation path error to be thrown when an invalid derivation path is detected.
+ * @param code - The error code from the error types enum.
+ * @param message - The error message.
+ * @param data - The error data.
+ * @returns The error object.
+ */
+class InvalidHDNodeDerivationPathError extends ErrorBase<
+    HDNODE.INVALID_HDNODE_DERIVATION_PATH,
+    DefaultErrorData
+> {}
+
+/**
+ * Errors enum.
+ *
+ * @public
+ */
+enum HDNODE {
+    INVALID_HDNODE_PUBLIC_KEY = 'INVALID_HDNODE_PUBLIC_KEY',
+    INVALID_HDNODE_PRIVATE_KEY = 'INVALID_HDNODE_PRIVATE_KEY',
+    INVALID_HDNODE_CHAIN_CODE = 'INVALID_HDNODE_CHAIN_CODE',
+    INVALID_HDNODE_MNEMONICS = 'INVALID_HDNODE_MNEMONICS',
+    INVALID_HDNODE_DERIVATION_PATH = 'INVALID_HDNODE_DERIVATION_PATH'
+}
+
 export {
-    InvalidChaincodeError,
-    InvalidMnemonicsError,
-    InvalidPrivateKeyError,
-    InvalidPublicKeyError
+    InvalidHDNodeChaincodeError,
+    InvalidHDNodeMnemonicsError,
+    InvalidHDNodePrivateKeyError,
+    InvalidHDNodePublicKeyError,
+    InvalidHDNodeDerivationPathError,
+    HDNODE
 };

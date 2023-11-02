@@ -1,5 +1,4 @@
-import { secp256k1 } from '../../src/secp256k1';
-import { address } from '../../src/address';
+import { secp256k1, address, blake2b256, certificate } from '../../src';
 
 /**
  * Private Key used for digital signature during certificate creation
@@ -37,4 +36,31 @@ const cert2 = {
     }
 };
 
-export { privKey, cert, cert2 };
+/**
+ * Signature of Certificate n.1
+ */
+const sig =
+    '0x' +
+    secp256k1
+        .sign(blake2b256(certificate.encode(cert)), privKey)
+        .toString('hex');
+
+/**
+ * Signature of Certificate n.2
+ */
+const sig2 =
+    '0x' +
+    secp256k1
+        .sign(blake2b256(certificate.encode(cert2)), privKey)
+        .toString('hex');
+
+/**
+ * Invalid Signature of Certificate n.1
+ */
+const invalidSignature =
+    '0xBAD' +
+    secp256k1
+        .sign(blake2b256(certificate.encode(cert)), privKey)
+        .toString('hex');
+
+export { privKey, cert, cert2, sig, sig2, invalidSignature };

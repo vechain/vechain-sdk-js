@@ -1,4 +1,4 @@
-import type { ABI, DefaultErrorData } from '../types';
+import type { DefaultErrorData } from '../types';
 import { ErrorBase } from './base';
 
 /**
@@ -73,11 +73,26 @@ class ContractInterfaceError extends ErrorBase<
     DefaultErrorData
 > {}
 
+/**
+ * Errors enum.
+ *
+ * @public
+ */
+enum ABI {
+    INVALID_FUNCTION = 'INVALID_FUNCTION',
+    INVALID_EVENT = 'INVALID_EVENT',
+    INVALID_DATA_TO_DECODE = 'INVALID_DATA_TO_DECODE',
+    INVALID_DATA_TO_ENCODE = 'INVALID_DATA_TO_ENCODE',
+    INVALID_FORMAT_TYPE = 'INVALID_FORMAT_TYPE',
+    CONTRACT_INTERFACE_ERROR = 'CONTRACT_INTERFACE_ERROR'
+}
+
 export {
     InvalidAbiDataToDecodeError,
     InvalidAbiDataToEncodeError,
     InvalidAbiEventError,
     InvalidAbiFormatTypeError,
     InvalidAbiFunctionError,
-    ContractInterfaceError
+    ContractInterfaceError,
+    ABI
 };

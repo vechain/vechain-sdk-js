@@ -1,4 +1,5 @@
-import { ERRORS, dataUtils } from '../../../src';
+import { dataUtils } from '../../../src';
+import { InvalidAddressError } from '@vechain-sdk/errors';
 
 /**
  * Blooms filter used to check if "it is a bloom filter or not" verification works
@@ -84,21 +85,21 @@ const invalidAddressBloomTestCases = [
         bloom: 'c207aca13ca010db8b5f89b3689318',
         k: 13,
         address: '0xINVALIDADDRESS',
-        expected: ERRORS.ADDRESS.INVALID_ADDRESS,
+        expected: InvalidAddressError,
         description: 'invalid address'
     },
     {
         bloom: 'c207aca13ca010db8b5f89b3689318',
         k: 13,
         address: 'INVALIDADDRESS',
-        expected: ERRORS.ADDRESS.INVALID_ADDRESS,
+        expected: InvalidAddressError,
         description: 'invalid address without 0x prefix'
     },
     {
         bloom: 'c207aca13ca010db8b5f89b3689318',
         k: 13,
         address: '0xc9318',
-        expected: ERRORS.ADDRESS.INVALID_ADDRESS,
+        expected: InvalidAddressError,
         description: 'invalid address too short'
     }
 ];

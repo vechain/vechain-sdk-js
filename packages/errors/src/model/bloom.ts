@@ -1,4 +1,4 @@
-import type { BLOOM, DefaultErrorData } from '../types';
+import type { DefaultErrorData } from '../types';
 import { ErrorBase } from './base';
 
 /**
@@ -22,4 +22,14 @@ class InvalidBloomError extends ErrorBase<
  */
 class InvalidKError extends ErrorBase<BLOOM.INVALID_K, DefaultErrorData> {}
 
-export { InvalidBloomError, InvalidKError };
+/**
+ * Errors enum.
+ *
+ * @public
+ */
+enum BLOOM {
+    INVALID_BLOOM = 'INVALID_BLOOM',
+    INVALID_K = 'INVALID_K'
+}
+
+export { InvalidBloomError, InvalidKError, BLOOM };

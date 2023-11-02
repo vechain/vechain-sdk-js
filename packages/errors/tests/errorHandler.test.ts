@@ -1,7 +1,11 @@
 import { describe, expect, test } from '@jest/globals';
-import { throwError, ERROR_CODES } from '../src';
-import { InvalidKeystoreError } from '../src/model/keystore';
-import { InvalidRLPError } from '../src/model/rlp';
+import {
+    ERROR_CODES,
+    buildError,
+    InvalidKeystoreError,
+    InvalidRLPError
+} from '../src';
+import { ErrorsCodeAndClassesMapsFixture } from './fixture';
 
 /**
  * Error handler test
@@ -12,19 +16,19 @@ describe('Error handler test', () => {
      * Verify that the error without additional data thrown is an instance of the expected error InvalidKeystoreError
      */
     test('Throw Invalid Keystore Exception without data', () => {
-        expect(() =>
-            throwError(
+        expect(() => {
+            throw buildError(
                 ERROR_CODES.KEYSTORE.INVALID_KEYSTORE,
                 'Invalid Keystore'
-            )
-        ).toThrowError(InvalidKeystoreError);
+            );
+        }).toThrowError(InvalidKeystoreError);
     });
     /**
      * Verify that the error with additional data thrown is an instance of the expected error InvalidKeystoreError
      */
     test('Throw Invalid Keystore Exception with data', () => {
         try {
-            throwError(
+            throw buildError(
                 ERROR_CODES.KEYSTORE.INVALID_KEYSTORE,
                 'Invalid Keystore',
                 { test: 'test' }
@@ -40,7 +44,7 @@ describe('Error handler test', () => {
      */
     test('Throw Invalid RLP Exception with data', () => {
         try {
-            throwError(ERROR_CODES.RLP.INVALID_RLP, 'Invalid Keystore', {
+            throw buildError(ERROR_CODES.RLP.INVALID_RLP, 'Invalid Keystore', {
                 context: 'test'
             });
         } catch (error) {
@@ -48,5 +52,24 @@ describe('Error handler test', () => {
             expect(InvalidRLPErrorObject.data?.context).toBeDefined();
             expect(InvalidRLPErrorObject).toBeInstanceOf(InvalidRLPError);
         }
+    });
+
+    /**
+     * Verify all error codes and classes
+     */
+    ErrorsCodeAndClassesMapsFixture.forEach((errorType) => {
+        /**
+         * Test for each model
+         */
+        test(`Verify all error codes and classes for ${errorType.name}`, () => {
+            /**
+             * Each error code and class
+             */
+            errorType.elements.forEach((element) => {
+                expect(
+                    buildError(element.errorCode, 'SOME_MESSAGE')
+                ).toBeInstanceOf(element.classExpected);
+            });
+        });
     });
 });
