@@ -17,5 +17,8 @@
         "@vechain-sdk/core": "*",
         "axios": "^1.5.1",
         "testcontainers": "^10.2.2"
+    },
+    "devDependencies": {
+        "lru-cache": "^10.0.1"
     }
 }

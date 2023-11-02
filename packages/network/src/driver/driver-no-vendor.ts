@@ -44,12 +44,17 @@ class DriverNoVendor {
      * @returns A promise that resolves to the requested block.
      */
     public async getBlock(
-        revision: string | number
+        revision: string | number,
+        useCache?: boolean
     ): Promise<Block | null | undefined> {
-        return await this.cache.getBlock(
-            revision,
-            async () => await this.httpGet(`blocks/${revision}`)
-        );
+        if (useCache === true) {
+            return await this.cache.getBlock(
+                revision,
+                async () => await this.httpGet(`blocks/${revision}`)
+            );
+        } else {
+            return await this.httpGet(`blocks/${revision}`);
+        }
     }
 
     /**
