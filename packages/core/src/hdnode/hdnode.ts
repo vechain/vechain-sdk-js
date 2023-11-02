@@ -16,10 +16,10 @@ import { buildError, HDNODE } from '@vechain-sdk/errors';
 /**
  * Generates an HDNode instance using mnemonic words.
  *
+ * @throws {InvalidHDNodeMnemonicsError, InvalidHDNodeDerivationPathError}
  * @param words - The mnemonic words.
  * @param path - The derivation path (default is VET_DERIVATION_PATH).
  * @returns An IHDNode instance derived from the given mnemonic.
- * @throws {Error} When the mnemonic words are invalid.
  */
 function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
     // Invalid mnemonic words
@@ -54,10 +54,10 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
 /**
  * Generates an HDNode instance using an extended public key.
  *
+ * @throws{InvalidHDNodePublicKeyError, InvalidHDNodeChaincodeError}
  * @param publicKey - The extended public key.
  * @param chainCode - The associated chain code.
  * @returns An IHDNode instance derived from the given public key and chain code.
- * @throws {Error} When the public key or chain code is invalid.
  */
 function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
     // Invalid public key
@@ -92,10 +92,10 @@ function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
 /**
  * Generates an HDNode instance using an extended private key (xpriv).
  *
+ * @throws{InvalidHDNodePrivateKeyError, InvalidHDNodeChaincodeError}
  * @param privateKey - The private key.
  * @param chainCode - The associated chain code.
  * @returns An IHDNode instance derived from the given private key and chain code.
- * @throws {Error} When the private key or chain code is invalid.
  */
 function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
     // Invalid private key
@@ -130,6 +130,7 @@ function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
 /**
  * Converts an `ethers` HDNode to a custom HDNode format.
  *
+ * @throws{InvalidHDNodeDerivationPathError}
  * @param ethersNode - The HDNode instance from the `ethers` library.
  * @returns An IHDNode instance in the custom format.
  */
