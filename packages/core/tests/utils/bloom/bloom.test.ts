@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { ERRORS, bloomUtils } from '../../../src';
+import { bloomUtils } from '../../../src';
 import {
     bloomTestCases,
     blooms,
@@ -7,6 +7,11 @@ import {
     validAddressBloomTestCases,
     valueTypeBloomTestCases
 } from './fixture';
+import {
+    InvalidBloomError,
+    InvalidDataTypeError,
+    InvalidKError
+} from '@vechain-sdk/errors';
 
 /**
  * Bloom utils tests
@@ -49,7 +54,7 @@ describe('utils/bloom', () => {
         test('Should throw an error for invalid bloom filter format', () => {
             expect(() => {
                 bloomUtils.isInBloom('0xINVALIDBLOOM', 3, '0x1234');
-            }).toThrowError(ERRORS.BLOOM.INVALID_BLOOM);
+            }).toThrowError(InvalidBloomError);
         });
 
         /*
@@ -58,9 +63,7 @@ describe('utils/bloom', () => {
         test('Should throw an error for non-hexadecimal data string', () => {
             expect(() => {
                 bloomUtils.isInBloom('0x000000000000000000', 3, 'INVALIDHEX');
-            }).toThrowError(
-                ERRORS.DATA.INVALID_DATA_TYPE('a hexadecimal string')
-            );
+            }).toThrowError(InvalidDataTypeError);
         });
 
         /**
@@ -69,7 +72,7 @@ describe('utils/bloom', () => {
         test('Should throw an error for non-positive integer k', () => {
             expect(() => {
                 bloomUtils.isInBloom('0x000000000000000000', -3, '0x1234');
-            }).toThrowError(ERRORS.BLOOM.INVALID_K);
+            }).toThrowError(InvalidKError);
         });
 
         /**
@@ -78,7 +81,7 @@ describe('utils/bloom', () => {
         test('Should throw an error for non-integer k', () => {
             expect(() => {
                 bloomUtils.isInBloom('0x000000000000000000', 3.5, '0x1234');
-            }).toThrowError(ERRORS.BLOOM.INVALID_K);
+            }).toThrowError(InvalidKError);
         });
 
         /**
@@ -88,7 +91,7 @@ describe('utils/bloom', () => {
             expect(() => {
                 // @ts-expect-error: Intentionally passing a number to test error handling
                 bloomUtils.isInBloom('0x000000000000000000', 3, 1234);
-            }).toThrowError(ERRORS.DATA.INVALID_DATA_TYPE('a string'));
+            }).toThrowError(InvalidDataTypeError);
         });
     });
 

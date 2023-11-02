@@ -1,5 +1,8 @@
-import { ERRORS, TRANSACTIONS_GAS_CONSTANTS } from '../../../src';
-import { type TransactionClause } from '../../../src';
+import {
+    TRANSACTIONS_GAS_CONSTANTS,
+    type TransactionClause
+} from '../../../src';
+import { InvalidDataTypeError } from '@vechain-sdk/errors';
 
 /**
  * Invalid clauses data fixture
@@ -10,14 +13,14 @@ const invalidData = [
         to: 'INVALID_ADDRESS',
         value: 0,
         data: '',
-        errorToThrow: ERRORS.DATA.INVALID_DATA_TYPE('an address')
+        errorToThrow: InvalidDataTypeError
     },
     // Invalid data field format for smart contract creation
     {
         to: null,
         value: 0,
         data: 'INVALID_DATA_FORMAT',
-        errorToThrow: ERRORS.DATA.INVALID_DATA_TYPE('a hexadecimal string')
+        errorToThrow: InvalidDataTypeError
     }
 ];
 

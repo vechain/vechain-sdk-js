@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-    ERRORS,
     HDNode,
     type WordlistSizeType,
     ZERO_BUFFER,
@@ -9,6 +8,13 @@ import {
     secp256k1
 } from '../../src';
 import { addresses, words, wrongWords } from './fixture';
+import {
+    InvalidHDNodeChaincodeError,
+    InvalidHDNodeDerivationPathError,
+    InvalidHDNodeMnemonicsError,
+    InvalidHDNodePrivateKeyError,
+    InvalidHDNodePublicKeyError
+} from '@vechain-sdk/errors';
 
 /**
  * Mnemonic tests
@@ -116,8 +122,17 @@ describe('Hdnode', () => {
      * Test invalid mnemonic
      */
     test('Invalid mnemonic', () => {
-        expect(() => HDNode.fromMnemonic(wrongWords)).toThrow(
-            ERRORS.HDNODE.INVALID_MNEMONICS
+        expect(() => HDNode.fromMnemonic(wrongWords)).toThrowError(
+            InvalidHDNodeMnemonicsError
+        );
+    });
+
+    /**
+     * Test invalid derivation path
+     */
+    test('Invalid derivation path', () => {
+        expect(() => HDNode.fromMnemonic(words, 'INVALID')).toThrowError(
+            InvalidHDNodeDerivationPathError
         );
     });
 
@@ -127,7 +142,7 @@ describe('Hdnode', () => {
     test('Invalid private key', () => {
         expect(() =>
             HDNode.fromPrivateKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
-        ).toThrow(ERRORS.HDNODE.INVALID_PRIVATEKEY);
+        ).toThrowError(InvalidHDNodePrivateKeyError);
     });
 
     /**
@@ -136,7 +151,7 @@ describe('Hdnode', () => {
     test('Invalid public key', () => {
         expect(() =>
             HDNode.fromPublicKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
-        ).toThrow(ERRORS.HDNODE.INVALID_PUBLICKEY);
+        ).toThrowError(InvalidHDNodePublicKeyError);
     });
 
     /**
@@ -145,7 +160,7 @@ describe('Hdnode', () => {
     test('Invalid chain code private key', () => {
         expect(() =>
             HDNode.fromPrivateKey(ZERO_BUFFER(32), ZERO_BUFFER(31))
-        ).toThrow(ERRORS.HDNODE.INVALID_CHAINCODE);
+        ).toThrowError(InvalidHDNodeChaincodeError);
     });
 
     /**
@@ -154,6 +169,6 @@ describe('Hdnode', () => {
     test('Invalid chain code public key', () => {
         expect(() =>
             HDNode.fromPublicKey(ZERO_BUFFER(65), ZERO_BUFFER(31))
-        ).toThrow(ERRORS.HDNODE.INVALID_CHAINCODE);
+        ).toThrowError(InvalidHDNodeChaincodeError);
     });
 });

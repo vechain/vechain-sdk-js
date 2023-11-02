@@ -1,192 +1,228 @@
-import type { ErrorBase } from '../model';
 import {
     InvalidAbiEventError,
     InvalidAbiFormatTypeError,
     InvalidAbiFunctionError,
     InvalidAbiDataToEncodeError,
-    InvalidAbiDataToDecodeError
-} from '../model/abi';
-import {
+    InvalidAbiDataToDecodeError,
     InvalidAddressError,
-    InvalidChecksumError,
-    InvalidMessageHashError,
-    InvalidPrivateKeyError,
-    InvalidSignatureError,
-    InvalidSignatureRecoveryError
-} from '../model';
-import { InvalidBloomError, InvalidKError } from '../model/bloom';
-import { InvalidDataTypeError } from '../model/data';
-import {
-    InvalidChaincodeError,
-    InvalidMnemonicsError,
-    InvalidPublicKeyError
-} from '../model/hdnode';
-import {
+    InvalidSecp256k1MessageHashError,
+    InvalidHDNodePrivateKeyError,
+    InvalidSecp256k1SignatureError,
+    InvalidSecp256k1SignatureRecoveryError,
+    InvalidBloomError,
+    InvalidKError,
+    CertificateNotSignedError,
+    CertificateInvalidSignatureFormatError,
+    CertificateInvalidSignerError,
+    InvalidDataTypeError,
+    InvalidDataReturnTypeError,
+    InvalidHDNodeChaincodeError,
+    InvalidHDNodeMnemonicsError,
+    InvalidHDNodePublicKeyError,
+    InvalidHDNodeDerivationPathError,
     InvalidKeystoreError,
-    InvalidKeystorePasswordError
-} from '../model/keystore';
-import { InvalidRLPError, type InvalidRLPErrorData } from '../model/rlp';
+    InvalidKeystorePasswordError,
+    InvalidRLPError,
+    InvalidSecp256k1PrivateKeyError,
+    TransactionAlreadySignedError,
+    TransactionNotSignedError,
+    TransactionBodyError,
+    TransactionDelegationError,
+    type InvalidRLPErrorData,
+    type ErrorBase,
+    ABI,
+    ADDRESS,
+    SECP256K1,
+    KEYSTORE,
+    HDNODE,
+    BLOOM,
+    RLP,
+    DATA,
+    TRANSACTION,
+    CERTIFICATE
+} from '../model';
 
-enum SECP256K1 {
-    INVALID_PRIVATE_KEY = 'INVALID_PRIVATE_KEY',
-    INVALID_MESSAGE_HASH = 'INVALID_MESSAGE_HASH',
-    INVALID_SIGNATURE = 'INVALID_SIGNATURE',
-    INVALID_SIGNATURE_RECOVERY = 'INVALID_SIGNATURE_RECOVERY'
-}
+/**
+ * @note: REGISTER YOUR NEW FANCY ERRORS BELOW!
+ */
 
-enum ADDRESS {
-    INVALID_ADDRESS = 'INVALID_ADDRESS',
-    INVALID_CHECKSUM = 'INVALID_CHECKSUM'
-}
+/**
+ * Default error data type. it accepts any object.
+ *
+ * @param ErrorCodeT - The error code type from the error types enum.
+ */
+type DefaultErrorData = Record<string, unknown>;
 
-enum KEYSTORE {
-    INVALID_KEYSTORE = 'INVALID_KEYSTORE',
-    INVALID_PASSWORD = 'INVALID_PASSWORD'
-}
-
-enum HDNODE {
-    INVALID_PUBLICKEY = 'INVALID_PUBLICKEY',
-    INVALID_PRIVATEKEY = 'INVALID_PRIVATEKEY',
-    INVALID_CHAINCODE = 'INVALID_CHAINCODE',
-    INVALID_MNEMONICS = 'INVALID_MNEMONICS'
-}
-
-enum BLOOM {
-    INVALID_BLOOM = 'INVALID_BLOOM',
-    INVALID_K = 'INVALID_K'
-}
-
-enum ABI {
-    INVALID_FUNCTION = 'INVALID_FUNCTION',
-    INVALID_EVENT = 'INVALID_EVENT',
-    INVALID_DATA_TO_DECODE = 'INVALID_DATA_TO_DECODE',
-    INVALID_DATA_TO_ENCODE = 'INVALID_DATA_TO_ENCODE',
-    INVALID_FORMAT_TYPE = 'INVALID_FORMAT_TYPE'
-}
-
-enum RLP {
-    INVALID_RLP = 'INVALID_RLP'
-}
-
-enum DATA {
-    INVALID_DATA_TYPE = 'INVALID_DATA_TYPE'
-}
-
+/**
+ * Error code type.
+ *
+ * @public
+ */
 type ErrorCode =
     | SECP256K1
     | ADDRESS
     | KEYSTORE
     | HDNODE
     | BLOOM
+    | CERTIFICATE
     | ABI
     | RLP
-    | DATA;
-
-/**
- * Default error data type. it accepts any object.
- * @param ErrorCodeT - The error code type from the error types enum.
- */
-type DefaultErrorData = Record<string, unknown>;
-
-const ERROR_CODES = {
-    SECP256K1,
-    ADDRESS,
-    KEYSTORE,
-    HDNODE,
-    BLOOM,
-    ABI,
-    RLP,
-    DATA
-};
+    | DATA
+    | TRANSACTION;
 
 /**
  * Conditional type to get the error data type from the error code.
  * The type is used to specify the data type of the error builder.
+ *
  * @param ErrorCodeT - The error code type from the error types enum.
+ *
+ * @public
  */
 type DataType<ErrorCodeT extends ErrorCode> = ErrorCodeT extends RLP.INVALID_RLP
     ? InvalidRLPErrorData
     : DefaultErrorData;
 
 /**
+ * Default error codes.
+ *
+ * @public
+ */
+const ERROR_CODES = {
+    SECP256K1,
+    ADDRESS,
+    KEYSTORE,
+    HDNODE,
+    BLOOM,
+    CERTIFICATE,
+    ABI,
+    RLP,
+    DATA,
+    TRANSACTION
+};
+
+/**
  * Conditional type to get the error type from the error code.
  * The type is used to specify the return type of the error builder.
+ *
+ * @note When adding a new error, add the error code and the error class to the type.
+ *
  * @param ErrorCodeT - The error code type from the error types enum.
+ *
+ * @public
  */
-type ErrorType<ErrorCodeT> = ErrorCodeT extends SECP256K1.INVALID_PRIVATE_KEY
-    ? InvalidPrivateKeyError
-    : ErrorCodeT extends SECP256K1.INVALID_MESSAGE_HASH
-    ? InvalidMessageHashError
-    : ErrorCodeT extends SECP256K1.INVALID_SIGNATURE
-    ? InvalidSignatureError
-    : ErrorCodeT extends SECP256K1.INVALID_SIGNATURE_RECOVERY
-    ? InvalidSignatureRecoveryError
-    : ErrorCodeT extends ADDRESS.INVALID_ADDRESS
-    ? InvalidAddressError
-    : ErrorCodeT extends ADDRESS.INVALID_CHECKSUM
-    ? InvalidChecksumError
-    : ErrorCodeT extends KEYSTORE.INVALID_KEYSTORE
-    ? InvalidKeystoreError
-    : ErrorCodeT extends KEYSTORE.INVALID_PASSWORD
-    ? InvalidKeystorePasswordError
-    : ErrorCodeT extends HDNODE.INVALID_CHAINCODE
-    ? InvalidChaincodeError
-    : ErrorCodeT extends HDNODE.INVALID_MNEMONICS
-    ? InvalidMnemonicsError
-    : ErrorCodeT extends HDNODE.INVALID_PRIVATEKEY
-    ? InvalidPrivateKeyError
-    : ErrorCodeT extends HDNODE.INVALID_PUBLICKEY
-    ? InvalidPublicKeyError
-    : ErrorCodeT extends BLOOM.INVALID_BLOOM
-    ? InvalidBloomError
-    : ErrorCodeT extends BLOOM.INVALID_K
-    ? InvalidKError
-    : ErrorCodeT extends ABI.INVALID_EVENT
-    ? InvalidAbiEventError
-    : ErrorCodeT extends ABI.INVALID_DATA_TO_DECODE
-    ? InvalidAbiDataToDecodeError
-    : ErrorCodeT extends ABI.INVALID_DATA_TO_ENCODE
-    ? InvalidAbiDataToEncodeError
-    : ErrorCodeT extends ABI.INVALID_FORMAT_TYPE
-    ? InvalidAbiFormatTypeError
-    : ErrorCodeT extends ABI.INVALID_FUNCTION
-    ? InvalidAbiFunctionError
-    : ErrorCodeT extends RLP.INVALID_RLP
-    ? InvalidRLPError
-    : ErrorCodeT extends DATA.INVALID_DATA_TYPE
-    ? InvalidDataTypeError
-    : never;
+type ErrorType<ErrorCodeT> =
+    ErrorCodeT extends SECP256K1.INVALID_SECP256k1_PRIVATE_KEY
+        ? InvalidSecp256k1PrivateKeyError
+        : ErrorCodeT extends SECP256K1.INVALID_SECP256k1_MESSAGE_HASH
+        ? InvalidSecp256k1MessageHashError
+        : ErrorCodeT extends SECP256K1.INVALID_SECP256k1_SIGNATURE
+        ? InvalidSecp256k1SignatureError
+        : ErrorCodeT extends SECP256K1.INVALID_SECP256k1_SIGNATURE_RECOVERY
+        ? InvalidSecp256k1SignatureRecoveryError
+        : ErrorCodeT extends ADDRESS.INVALID_ADDRESS
+        ? InvalidAddressError
+        : ErrorCodeT extends KEYSTORE.INVALID_KEYSTORE
+        ? InvalidKeystoreError
+        : ErrorCodeT extends KEYSTORE.INVALID_PASSWORD
+        ? InvalidKeystorePasswordError
+        : ErrorCodeT extends HDNODE.INVALID_HDNODE_CHAIN_CODE
+        ? InvalidHDNodeChaincodeError
+        : ErrorCodeT extends HDNODE.INVALID_HDNODE_MNEMONICS
+        ? InvalidHDNodeMnemonicsError
+        : ErrorCodeT extends HDNODE.INVALID_HDNODE_PRIVATE_KEY
+        ? InvalidHDNodePrivateKeyError
+        : ErrorCodeT extends HDNODE.INVALID_HDNODE_PUBLIC_KEY
+        ? InvalidHDNodePublicKeyError
+        : ErrorCodeT extends HDNODE.INVALID_HDNODE_DERIVATION_PATH
+        ? InvalidHDNodeDerivationPathError
+        : ErrorCodeT extends BLOOM.INVALID_BLOOM
+        ? InvalidBloomError
+        : ErrorCodeT extends BLOOM.INVALID_K
+        ? InvalidKError
+        : ErrorCodeT extends CERTIFICATE.CERTIFICATE_NOT_SIGNED
+        ? CertificateNotSignedError
+        : ErrorCodeT extends CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT
+        ? CertificateInvalidSignatureFormatError
+        : ErrorCodeT extends CERTIFICATE.CERTIFICATE_INVALID_SIGNER
+        ? CertificateInvalidSignerError
+        : ErrorCodeT extends ABI.INVALID_EVENT
+        ? InvalidAbiEventError
+        : ErrorCodeT extends ABI.INVALID_DATA_TO_DECODE
+        ? InvalidAbiDataToDecodeError
+        : ErrorCodeT extends ABI.INVALID_DATA_TO_ENCODE
+        ? InvalidAbiDataToEncodeError
+        : ErrorCodeT extends ABI.INVALID_FORMAT_TYPE
+        ? InvalidAbiFormatTypeError
+        : ErrorCodeT extends ABI.INVALID_FUNCTION
+        ? InvalidAbiFunctionError
+        : ErrorCodeT extends RLP.INVALID_RLP
+        ? InvalidRLPError
+        : ErrorCodeT extends DATA.INVALID_DATA_TYPE
+        ? InvalidDataTypeError
+        : ErrorCodeT extends DATA.INVALID_DATA_RETURN_TYPE
+        ? InvalidDataReturnTypeError
+        : ErrorCodeT extends TRANSACTION.ALREADY_SIGNED
+        ? TransactionAlreadySignedError
+        : ErrorCodeT extends TRANSACTION.NOT_SIGNED
+        ? TransactionNotSignedError
+        : ErrorCodeT extends TRANSACTION.INVALID_TRANSACTION_BODY
+        ? TransactionBodyError
+        : ErrorCodeT extends TRANSACTION.INVALID_DELEGATION
+        ? TransactionDelegationError
+        : never;
 
 /**
  * Map to get the error class from the error code.
  * The class is used to construct the error object.
+ *
+ * @note When adding a new error, add the error code and the error class to the map.
+ *
  * @param ErrorCodeT - The error code type from the error types enum.
+ *
+ * @public
  */
 const ErrorClassMap = new Map<
     ErrorCode,
     typeof ErrorBase<ErrorCode, DataType<ErrorCode>>
 >([
     [ADDRESS.INVALID_ADDRESS, InvalidAddressError],
-    [ADDRESS.INVALID_CHECKSUM, InvalidChecksumError],
-    [SECP256K1.INVALID_PRIVATE_KEY, InvalidPrivateKeyError],
-    [SECP256K1.INVALID_MESSAGE_HASH, InvalidMessageHashError],
-    [SECP256K1.INVALID_SIGNATURE, InvalidSignatureError],
-    [SECP256K1.INVALID_SIGNATURE_RECOVERY, InvalidSignatureRecoveryError],
+    [SECP256K1.INVALID_SECP256k1_PRIVATE_KEY, InvalidSecp256k1PrivateKeyError],
+    [
+        SECP256K1.INVALID_SECP256k1_MESSAGE_HASH,
+        InvalidSecp256k1MessageHashError
+    ],
+    [SECP256K1.INVALID_SECP256k1_SIGNATURE, InvalidSecp256k1SignatureError],
+    [
+        SECP256K1.INVALID_SECP256k1_SIGNATURE_RECOVERY,
+        InvalidSecp256k1SignatureRecoveryError
+    ],
     [KEYSTORE.INVALID_KEYSTORE, InvalidKeystoreError],
     [KEYSTORE.INVALID_PASSWORD, InvalidKeystorePasswordError],
-    [HDNODE.INVALID_CHAINCODE, InvalidChaincodeError],
-    [HDNODE.INVALID_MNEMONICS, InvalidMnemonicsError],
-    [HDNODE.INVALID_PRIVATEKEY, InvalidPrivateKeyError],
-    [HDNODE.INVALID_PUBLICKEY, InvalidPublicKeyError],
+    [HDNODE.INVALID_HDNODE_CHAIN_CODE, InvalidHDNodeChaincodeError],
+    [HDNODE.INVALID_HDNODE_MNEMONICS, InvalidHDNodeMnemonicsError],
+    [HDNODE.INVALID_HDNODE_PRIVATE_KEY, InvalidHDNodePrivateKeyError],
+    [HDNODE.INVALID_HDNODE_PUBLIC_KEY, InvalidHDNodePublicKeyError],
+    [HDNODE.INVALID_HDNODE_DERIVATION_PATH, InvalidHDNodeDerivationPathError],
     [BLOOM.INVALID_BLOOM, InvalidBloomError],
     [BLOOM.INVALID_K, InvalidKError],
+    [CERTIFICATE.CERTIFICATE_NOT_SIGNED, CertificateNotSignedError],
+    [
+        CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT,
+        CertificateInvalidSignatureFormatError
+    ],
+    [CERTIFICATE.CERTIFICATE_INVALID_SIGNER, CertificateInvalidSignerError],
     [ABI.INVALID_EVENT, InvalidAbiEventError],
     [ABI.INVALID_DATA_TO_DECODE, InvalidAbiDataToDecodeError],
     [ABI.INVALID_DATA_TO_ENCODE, InvalidAbiDataToEncodeError],
     [ABI.INVALID_FORMAT_TYPE, InvalidAbiFormatTypeError],
     [ABI.INVALID_FUNCTION, InvalidAbiFunctionError],
     [RLP.INVALID_RLP, InvalidRLPError],
-    [DATA.INVALID_DATA_TYPE, InvalidDataTypeError]
+    [DATA.INVALID_DATA_TYPE, InvalidDataTypeError],
+    [DATA.INVALID_DATA_RETURN_TYPE, InvalidDataReturnTypeError],
+    [TRANSACTION.ALREADY_SIGNED, TransactionAlreadySignedError],
+    [TRANSACTION.NOT_SIGNED, TransactionNotSignedError],
+    [TRANSACTION.INVALID_TRANSACTION_BODY, TransactionBodyError],
+    [TRANSACTION.INVALID_DELEGATION, TransactionDelegationError]
 ]);
 
 export {
@@ -195,13 +231,5 @@ export {
     type DefaultErrorData,
     type ErrorCode,
     ErrorClassMap,
-    ERROR_CODES,
-    SECP256K1,
-    ADDRESS,
-    KEYSTORE,
-    HDNODE,
-    BLOOM,
-    ABI,
-    RLP,
-    DATA
+    ERROR_CODES
 };

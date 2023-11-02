@@ -33,7 +33,7 @@ describe('Test SimpleNet class on Solo', () => {
         // Assert that the HTTP request fails with an error
         await expect(
             soloNetwork.http('GET', '/error-test-path')
-        ).rejects.toThrow('404 get /error-test-path: 404 page not found');
+        ).rejects.toThrowError('404 get /error-test-path: 404 page not found');
     });
 
     /**

@@ -13,6 +13,10 @@ import {
     type WordlistSizeType
 } from '../../src';
 import { randomBytes } from 'crypto';
+import {
+    InvalidHDNodeDerivationPathError,
+    InvalidHDNodeMnemonicsError
+} from '@vechain-sdk/errors';
 
 /**
  * Mnemonic tests
@@ -28,7 +32,9 @@ describe('Mnemonic', () => {
 
         // Wrong length
         // @ts-expect-error - Wrong length error for testing purposes
-        expect(() => mnemonic.generate(13)).toThrow();
+        expect(() => mnemonic.generate(13)).toThrowError(
+            InvalidHDNodeMnemonicsError
+        );
     });
 
     /**
@@ -125,7 +131,7 @@ describe('Mnemonic', () => {
         test('Try to derive private key with a wrong deep derivation path', () => {
             expect(() =>
                 mnemonic.derivePrivateKey(words, wrongDerivationPath)
-            ).toThrow();
+            ).toThrowError(InvalidHDNodeDerivationPathError);
         });
 
         /**
@@ -134,7 +140,7 @@ describe('Mnemonic', () => {
         test('try to derive address with a wrong deep derivation path', () => {
             expect(() =>
                 mnemonic.deriveAddress(words, wrongDerivationPath)
-            ).toThrow();
+            ).toThrowError(InvalidHDNodeDerivationPathError);
         });
     });
 });

@@ -1,5 +1,5 @@
 import { ErrorBase } from '.';
-import type { DefaultErrorData, SECP256K1 } from '../types';
+import type { DefaultErrorData } from '../types';
 
 /**
  * Error to be thrown when the private key is invalid.
@@ -8,8 +8,8 @@ import type { DefaultErrorData, SECP256K1 } from '../types';
  * @param data - The error data.
  * @returns The error object.
  */
-class InvalidPrivateKeyError extends ErrorBase<
-    SECP256K1.INVALID_PRIVATE_KEY,
+class InvalidSecp256k1PrivateKeyError extends ErrorBase<
+    SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
     DefaultErrorData
 > {}
 
@@ -20,8 +20,8 @@ class InvalidPrivateKeyError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-class InvalidMessageHashError extends ErrorBase<
-    SECP256K1.INVALID_MESSAGE_HASH,
+class InvalidSecp256k1MessageHashError extends ErrorBase<
+    SECP256K1.INVALID_SECP256k1_MESSAGE_HASH,
     DefaultErrorData
 > {}
 
@@ -32,8 +32,8 @@ class InvalidMessageHashError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-class InvalidSignatureError extends ErrorBase<
-    SECP256K1.INVALID_SIGNATURE,
+class InvalidSecp256k1SignatureError extends ErrorBase<
+    SECP256K1.INVALID_SECP256k1_SIGNATURE,
     DefaultErrorData
 > {}
 
@@ -44,14 +44,27 @@ class InvalidSignatureError extends ErrorBase<
  * @param data - The error data.
  * @returns The error object.
  */
-class InvalidSignatureRecoveryError extends ErrorBase<
-    SECP256K1.INVALID_SIGNATURE_RECOVERY,
+class InvalidSecp256k1SignatureRecoveryError extends ErrorBase<
+    SECP256K1.INVALID_SECP256k1_SIGNATURE_RECOVERY,
     DefaultErrorData
 > {}
 
+/**
+ * Errors enum.
+ *
+ * @public
+ */
+enum SECP256K1 {
+    INVALID_SECP256k1_PRIVATE_KEY = 'INVALID_SECP256k1_PRIVATE_KEY',
+    INVALID_SECP256k1_MESSAGE_HASH = 'INVALID_SECP256k1_MESSAGE_HASH',
+    INVALID_SECP256k1_SIGNATURE = 'INVALID_SECP256k1_SIGNATURE',
+    INVALID_SECP256k1_SIGNATURE_RECOVERY = 'INVALID_SECP256k1_SIGNATURE_RECOVERY'
+}
+
 export {
-    InvalidPrivateKeyError,
-    InvalidMessageHashError,
-    InvalidSignatureError,
-    InvalidSignatureRecoveryError
+    InvalidSecp256k1PrivateKeyError,
+    InvalidSecp256k1MessageHashError,
+    InvalidSecp256k1SignatureError,
+    InvalidSecp256k1SignatureRecoveryError,
+    SECP256K1
 };

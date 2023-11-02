@@ -13,6 +13,7 @@
         "format": "prettier --write src/**/*.ts tests/**/*.ts"
     },
     "dependencies": {
+        "@vechain-sdk/errors": "*",
         "@ethereumjs/rlp": "^5.0.0",
         "@types/elliptic": "^6.4.16",
         "blakejs": "^1.2.1",

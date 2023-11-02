@@ -6,7 +6,8 @@ import {
     type RLPValidObject,
     type RLPValueType
 } from './types';
-import { createRlpError, RLP } from '.';
+import { RLP } from '.';
+import { RLP as RLPError, buildError } from '@vechain-sdk/errors';
 
 /**
  * Encodes data using the Ethereumjs RLP library.
@@ -63,12 +64,11 @@ class Profiler {
  * Handles the RLP packing of data.
  * Recursively processes through object properties or array elements to prepare data for RLP encoding.
  *
+ * @throws{InvalidRLPError}
  * @param obj - The object data to be packed.
  * @param profile - RLP profile for encoding structures.
  * @param context - Encoding context for error tracing.
  * @returns Packed data as RLPInput.
- *
- * @throws Throws error if the object data is not valid.
  *
  * @private
  */
@@ -92,7 +92,8 @@ const _packData = (
         );
     }
 
-    if (!Array.isArray(obj)) throw createRlpError(context, 'expected array');
+    if (!Array.isArray(obj))
+        throw buildError(RLPError.INVALID_RLP, 'expected array', { context });
 
     // ArrayKind: recursively pack each array item based on the shared item profile.
     if ('item' in kind) {
@@ -111,12 +112,11 @@ const _packData = (
  * Handles the RLP unpacking of data.
  * Recursively processes through packed properties or elements to prepare data post RLP decoding.
  *
+ * @throws{InvalidRLPError}
  * @param packed - The packed data to be unpacked.
  * @param profile - RLP profile for decoding structures.
  * @param context - Decoding context for error tracing.
  * @returns Unpacked data as RLPValueType.
- *
- * @throws Throws error if the packed data is not valid.
  *
  * @private
  */
@@ -132,7 +132,9 @@ const _unpackData = (
     // ScalarKind: Direct decoding using the provided method.
     if (kind instanceof RLP.ScalarKind) {
         if (!Buffer.isBuffer(packed) && !(packed instanceof Uint8Array))
-            throw createRlpError(context, 'expected buffer');
+            throw buildError(RLPError.INVALID_RLP, 'expected buffer', {
+                context
+            });
 
         if (packed instanceof Uint8Array) packed = Buffer.from(packed);
 
@@ -144,9 +146,10 @@ const _unpackData = (
         const parts = packed;
 
         if (parts.length !== kind.length)
-            throw createRlpError(
-                context,
-                `expected ${kind.length} items, but got ${parts.length}`
+            throw buildError(
+                RLPError.INVALID_RLP,
+                `expected ${kind.length} items, but got ${parts.length}`,
+                { context }
             );
 
         return kind.reduce(
@@ -159,7 +162,8 @@ const _unpackData = (
         );
     }
 
-    if (!Array.isArray(packed)) throw createRlpError(context, 'expected array');
+    if (!Array.isArray(packed))
+        throw buildError(RLPError.INVALID_RLP, 'expected array', { context });
 
     // ArrayKind: Recursively unpack each array item based on the shared item profile.
     if ('item' in kind) {

@@ -7,8 +7,14 @@ import {
     simpleParametersDataForFunction2
 } from './fixture';
 import { type FormatType, abi } from '../../src';
-import { ERRORS } from '../../src';
 import { ParamType, type ethers } from 'ethers';
+import {
+    InvalidAbiDataToDecodeError,
+    InvalidAbiDataToEncodeError,
+    InvalidAbiEventError,
+    InvalidAbiFormatTypeError,
+    InvalidAbiFunctionError
+} from '@vechain-sdk/errors';
 
 /**
  * ABI tests - encode & decode
@@ -47,14 +53,14 @@ describe('Abi - encode & decode', () => {
         encodedDecodedInvalidValues.forEach((encodedDecodedValue) => {
             expect(() =>
                 abi.encode(encodedDecodedValue.type, encodedDecodedValue.value)
-            ).toThrowError(ERRORS.ABI.INVALID_DATA_TO_ENCODE);
+            ).toThrowError(InvalidAbiDataToEncodeError);
 
             expect(() =>
                 abi.decode(
                     encodedDecodedValue.type,
                     encodedDecodedValue.encoded
                 )
-            ).toThrow(ERRORS.ABI.INVALID_DATA_TO_DECODE);
+            ).toThrowError(InvalidAbiDataToDecodeError);
         });
     });
 
@@ -166,7 +172,7 @@ describe('Abi - Function & Event', () => {
                         // Create a function from the format without any problems
                         expect(
                             () => new abi.Function(functionFormat.format)
-                        ).not.toThrow();
+                        ).not.toThrowError();
 
                         // Create a function from the format without any problems
                         const myFunction = new abi.Function(
@@ -221,7 +227,7 @@ describe('Abi - Function & Event', () => {
          */
         test('Invalid function', () => {
             expect(() => new abi.Function('INVALID_VALUE')).toThrowError(
-                ERRORS.ABI.INVALID_FUNCTION
+                InvalidAbiFunctionError
             );
         });
 
@@ -234,11 +240,11 @@ describe('Abi - Function & Event', () => {
             // Encode
             expect(() =>
                 myFunction.encodeInput([1, 2, 'INVALID'])
-            ).toThrowError(ERRORS.ABI.INVALID_DATA_TO_ENCODE);
+            ).toThrowError(InvalidAbiDataToEncodeError);
 
             // Decode
             expect(() => myFunction.decodeOutput('INVALID')).toThrowError(
-                ERRORS.ABI.INVALID_DATA_TO_DECODE
+                InvalidAbiDataToDecodeError
             );
         });
 
@@ -249,7 +255,7 @@ describe('Abi - Function & Event', () => {
             const myFunction = new abi.Function(functions[0].full);
             const invalidFormat = 'invalid' as FormatType;
             expect(() => myFunction.signature(invalidFormat)).toThrowError(
-                ERRORS.ABI.INVALID_FORMAT_TYPE
+                InvalidAbiFormatTypeError
             );
         });
     });
@@ -307,7 +313,7 @@ describe('Abi - Function & Event', () => {
                         // Create an event from the format without any problems
                         expect(
                             () => new abi.Event(eventFormat.format)
-                        ).not.toThrow();
+                        ).not.toThrowError();
 
                         // Create an event from the format without any problems
                         const myEvent = new abi.Event(eventFormat.format);
@@ -348,7 +354,7 @@ describe('Abi - Function & Event', () => {
          */
         test('Invalid event', () => {
             expect(() => new abi.Event('INVALID_VALUE')).toThrowError(
-                ERRORS.ABI.INVALID_EVENT
+                InvalidAbiEventError
             );
         });
 
@@ -361,7 +367,7 @@ describe('Abi - Function & Event', () => {
             // Encode
             expect(() =>
                 myEvent.encodeEventLog([1, 2, 'INVALID'])
-            ).toThrowError(ERRORS.ABI.INVALID_DATA_TO_ENCODE);
+            ).toThrowError(InvalidAbiDataToEncodeError);
 
             // Decode
             expect(() =>
@@ -369,7 +375,7 @@ describe('Abi - Function & Event', () => {
                     data: 'INVALID',
                     topics: ['INVALID_1', 'INVALID_2']
                 })
-            ).toThrowError(ERRORS.ABI.INVALID_DATA_TO_DECODE);
+            ).toThrowError(InvalidAbiDataToDecodeError);
         });
 
         /**
@@ -379,7 +385,7 @@ describe('Abi - Function & Event', () => {
             const myEvent = new abi.Event(events[0].full);
             const invalidFormat = 'invalid' as FormatType;
             expect(() => myEvent.signature(invalidFormat)).toThrowError(
-                ERRORS.ABI.INVALID_FORMAT_TYPE
+                InvalidAbiFormatTypeError
             );
         });
     });

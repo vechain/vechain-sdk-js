@@ -42,7 +42,9 @@ describe('Test SimpleNet class on Testnet', () => {
             // Assert that the HTTP request fails with an error
             await expect(
                 network.http('GET', '/error-test-path')
-            ).rejects.toThrow('404 get /error-test-path: 404 page not found');
+            ).rejects.toThrowError(
+                '404 get /error-test-path: 404 page not found'
+            );
         },
         TIMEOUT
     );
