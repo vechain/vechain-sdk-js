@@ -16,8 +16,9 @@ const allowedSignatureFormats = ['sighash', 'minimal', 'full', 'json'];
 
 /**
  * Generic implementation of a function that returns a signature.
- * Used to avoid code dupliaction.
+ * Used to avoid code duplication.
  *
+ * @throws{InvalidAbiFormatTypeError}
  * @param fragment - Fragment to use.
  * @param formatType - Format type of the signature.
  * @returns The signature.
@@ -57,6 +58,7 @@ class Function<ABIType> {
     /**
      * Creates a new Function instance from an ABI fragment.
      *
+     * @throws{InvalidAbiFunctionError}
      * @param source - ABI fragment to use.
      */
     constructor(source: ABIType) {
@@ -93,6 +95,7 @@ class Function<ABIType> {
     /**
      * Decode data using the function's ABI.
      *
+     * @throws{InvalidAbiDataToDecodeError}
      * @param data - Data to decode.
      * @returns Decoding results.
      */
@@ -110,6 +113,7 @@ class Function<ABIType> {
     /**
      * Encode data using the function's ABI.
      *
+     * @throws{InvalidAbiDataToEncodeError}
      * @param dataToEncode - Data to encode.
      * @returns Encoded data.
      */
@@ -148,6 +152,7 @@ class Event<ABIType> {
     /**
      * Creates a new Event instance from an ABI fragment.
      *
+     * @throws{InvalidAbiEventError}
      * @param source - ABI fragment to use.
      */
     constructor(source: ABIType) {
@@ -184,6 +189,7 @@ class Event<ABIType> {
     /**
      * Decode event log data using the event's ABI.
      *
+     * @throws{InvalidAbiDataToDecodeError}
      * @param data - Data to decode.
      * @returns Decoding results.
      */
@@ -205,6 +211,7 @@ class Event<ABIType> {
     /**
      * Encode event log data using the event's ABI.
      *
+     * @throws{InvalidAbiDataToEncodeError}
      * @param dataToEncode - Data to encode.
      * @returns Encoded data along with topics.
      */

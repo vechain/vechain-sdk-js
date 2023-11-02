@@ -13,6 +13,7 @@ const ethersCoder = new ethers.AbiCoder();
  *
  * @note `ValueType` is used to explicitly specify the type of the value to encode.
  *
+ * @throws{InvalidAbiDataToEncodeError}
  * @param type - Type of the parameter.
  * @param value - Value to encode.
  * @returns Encoded parameter as a hexadecimal string.
@@ -33,6 +34,7 @@ function encode<ValueType>(type: string | ParamType, value: ValueType): string {
  *
  * @note `ReturnType` is used to explicitly specify the return type (the decoded value) of the function.
  *
+ * @throws{InvalidAbiDataToDecodeError}
  * @param types - Types of parameters.
  * @param data - Data to decode.
  * @returns Decoded parameter value.
