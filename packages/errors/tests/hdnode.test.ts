@@ -8,6 +8,7 @@ import {
 
 /**
  * HD node errors
+ * @group unit/errors/hdnode
  */
 describe('HD node errors', () => {
     /**

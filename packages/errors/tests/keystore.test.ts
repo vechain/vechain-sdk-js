@@ -7,6 +7,7 @@ import {
 
 /**
  * Keystore errors
+ * @group unit/errors/keystore
  */
 describe('Keystore errors', () => {
     /**
