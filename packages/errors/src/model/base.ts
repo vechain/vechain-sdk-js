@@ -13,19 +13,23 @@ class ErrorBase<ErrorCodeT extends ErrorCode, DataTypeT> extends Error {
     code: ErrorCodeT;
     message: string;
     data?: DataTypeT;
+    innerError?: Error;
     constructor({
         code,
         message,
-        data
+        data,
+        innerError
     }: {
         code: ErrorCodeT;
         message: string;
         data?: DataTypeT;
+        innerError?: Error;
     }) {
         super();
         this.code = code;
         this.message = message;
         this.data = data;
+        this.innerError = innerError;
     }
 }
 

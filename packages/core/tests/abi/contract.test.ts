@@ -7,6 +7,7 @@ import {
 import { contract } from '../../src/abi/contract';
 import { abi } from '../../src';
 import { ethers } from 'ethers';
+import { ContractInterfaceError } from '@vechain-sdk/errors';
 
 /**
  * Contract tests - encode & decode
@@ -18,6 +19,45 @@ describe('Contract interface for ABI encoding/decoding', () => {
      */
     test('Create a contract interface from an ABI json', () => {
         expect(contract.createInterface(contractABI)).toBeDefined();
+    });
+
+    /**
+     * Test the failed encoding of a function input.
+     */
+    test('Fail to encode a contract function input', () => {
+        expect(() =>
+            contract.encodeFunctionInput(contractABI, 'undefined', [123])
+        ).toThrowError(ContractInterfaceError);
+    });
+
+    /**
+     * Test the failed decoding of a function input.
+     */
+    test('Fail to decode a contract function input', () => {
+        expect(() =>
+            contract.decodeFunctionInput(contractABI, 'setValue', '0x123')
+        ).toThrowError(ContractInterfaceError);
+    });
+
+    /**
+     * Test the failed encoding of an event log.
+     */
+    test('Fail to encode a contract event log', () => {
+        expect(() =>
+            contract.encodeEventLog(contractABI, 'undefined', [])
+        ).toThrowError(ContractInterfaceError);
+    });
+
+    /**
+     * Test the failed decoding of an event log.
+     */
+    test('Fail to decode a contract function input', () => {
+        expect(() =>
+            contract.decodeEventLog(contractABI, 'ValueChanged', {
+                data: '0x123',
+                topics: []
+            })
+        ).toThrowError(ContractInterfaceError);
     });
 
     /**

@@ -52,7 +52,7 @@ import {
  *
  * @param ErrorCodeT - The error code type from the error types enum.
  */
-type DefaultErrorData = Record<string, unknown>;
+type DefaultErrorData = Record<string, unknown> | { innerError: Error };
 
 /**
  * Error code type.
@@ -156,6 +156,8 @@ type ErrorType<ErrorCodeT> =
         ? InvalidAbiFormatTypeError
         : ErrorCodeT extends ABI.INVALID_FUNCTION
         ? InvalidAbiFunctionError
+        : ErrorCodeT extends ABI.CONTRACT_INTERFACE_ERROR
+        ? ContractInterfaceError
         : ErrorCodeT extends RLP.INVALID_RLP
         ? InvalidRLPError
         : ErrorCodeT extends DATA.INVALID_DATA_TYPE

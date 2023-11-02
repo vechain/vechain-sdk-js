@@ -1,6 +1,7 @@
 import { type InterfaceAbi, Interface as EthersInterface } from 'ethers';
 import type { BytesLike, Interface, Result } from './types';
 import { abi } from './coder';
+import { ERROR_CODES, buildError } from '@vechain-sdk/errors';
 
 /**
  * Creates a new Interface instance from an ABI fragment.
@@ -12,7 +13,10 @@ function createInterface(abi: InterfaceAbi): Interface {
     try {
         return new EthersInterface(abi);
     } catch {
-        throw new Error('Invalid create interface');
+        throw buildError(
+            ERROR_CODES.ABI.CONTRACT_INTERFACE_ERROR,
+            'Invalid contract interface'
+        );
     }
 }
 
@@ -33,8 +37,13 @@ function encodeFunctionInput(
         return new abi.Function(
             contractInterface.getFunction(functionName)
         ).encodeInput(functionData);
-    } catch {
-        throw new Error('Invalid data to encode');
+    } catch (e) {
+        throw buildError(
+            ERROR_CODES.ABI.CONTRACT_INTERFACE_ERROR,
+            'Cannot encode the input of the function',
+            { functionName, functionData },
+            e
+        );
     }
 }
 
@@ -55,8 +64,13 @@ function decodeFunctionInput(
         return new abi.Function(
             contractInterface.getFunction(functionName)
         ).decodeInput(encodedFunction);
-    } catch {
-        throw new Error('Invalid data to decode');
+    } catch (e) {
+        throw buildError(
+            ERROR_CODES.ABI.CONTRACT_INTERFACE_ERROR,
+            'Cannot decode the input of the function',
+            { functionName },
+            e
+        );
     }
 }
 
@@ -78,7 +92,12 @@ function encodeEventLog(
             contractInterface.getEvent(eventName)
         ).encodeEventLog(dataToEncode);
     } catch (e) {
-        throw new Error('Invalid event log data to encode');
+        throw buildError(
+            ERROR_CODES.ABI.CONTRACT_INTERFACE_ERROR,
+            'Cannot encode the input of the event log',
+            { eventName },
+            e
+        );
     }
 }
 
@@ -99,8 +118,13 @@ function decodeEventLog(
         return new abi.Event(
             contractInterface.getEvent(eventName)
         ).decodeEventLog(dataToDecode);
-    } catch {
-        throw new Error('Invalid event log data to decode');
+    } catch (e) {
+        throw buildError(
+            ERROR_CODES.ABI.CONTRACT_INTERFACE_ERROR,
+            'Cannot decode the input of the event log',
+            { eventName },
+            e
+        );
     }
 }
 

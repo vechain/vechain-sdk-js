@@ -3,7 +3,8 @@ import {
     ERROR_CODES,
     buildError,
     InvalidKeystoreError,
-    InvalidRLPError
+    InvalidRLPError,
+    assertInnerError
 } from '../src';
 import { ErrorsCodeAndClassesMapsFixture } from './fixture';
 
@@ -52,6 +53,20 @@ describe('Error handler test', () => {
             expect(InvalidRLPErrorObject.data?.context).toBeDefined();
             expect(InvalidRLPErrorObject).toBeInstanceOf(InvalidRLPError);
         }
+    });
+
+    /**
+     * Verify that the object is an instance of error
+     */
+    test('Assert valid error', () => {
+        expect(assertInnerError(new Error('test'))).toBeDefined();
+    });
+
+    /**
+     * Verify that the object is not a valid instance of error
+     */
+    test('Assert invalid error', () => {
+        expect(() => assertInnerError({})).toThrowError();
     });
 
     /**
