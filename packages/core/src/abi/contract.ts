@@ -7,7 +7,6 @@ import { ERROR_CODES, buildError } from '@vechain-sdk/errors';
  * Creates a new Interface instance from an ABI fragment.
  * @param abi - ABI in a compatible format
  * @returns The Interface instance.
- * @throws Will throw an error if the ABI is invalid.
  */
 function createInterface(abi: InterfaceAbi): Interface {
     return new EthersInterface(abi);
@@ -19,6 +18,7 @@ function createInterface(abi: InterfaceAbi): Interface {
  * @param functionName The name of the function defined in the ABI.
  * @param functionData The data to pass to the function.
  * @returns The encoded data that can be used to send a transaction.
+ * @throws {ContractInterfaceError}
  */
 function encodeFunctionInput(
     interfaceABI: InterfaceAbi,
@@ -46,6 +46,7 @@ function encodeFunctionInput(
  * @param functionName The name of the function defined in the ABI.
  * @param encodedFunction The encoded function data.
  * @returns an array of the decoded function data
+ * @throws {ContractInterfaceError}
  */
 function decodeFunctionInput(
     interfaceABI: InterfaceAbi,
@@ -73,6 +74,7 @@ function decodeFunctionInput(
  * @param functionName The name of the function defined in the ABI.
  * @param functionData The data to pass to the function.
  * @returns The encoded data that can be used to send a transaction.
+ * @throws {ContractInterfaceError}
  */
 function encodeEventLog(
     interfaceABI: InterfaceAbi,
@@ -100,6 +102,7 @@ function encodeEventLog(
  * @param functionName The name of the function defined in the ABI.
  * @param encodedFunction The encoded function data.
  * @returns an array of the decoded function data
+ * @throws {ContractInterfaceError}
  */
 function decodeEventLog(
     interfaceABI: InterfaceAbi,
