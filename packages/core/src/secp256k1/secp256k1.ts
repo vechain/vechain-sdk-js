@@ -45,6 +45,7 @@ function generatePrivateKey(entropy?: () => Buffer): Buffer {
 /**
  * Derive public key from private key using elliptic curve algorithm on the curve secp256k1
  *
+ * @throws{InvalidSecp256k1PrivateKeyError}
  * @param privateKey - private key to derive public key from
  * @returns Public key derived from private key
  */
@@ -61,6 +62,8 @@ function derivePublicKey(privateKey: Buffer): Buffer {
 
 /**
  * sign a message using elliptic curve algorithm on the curve secp256k1
+ *
+ * @throws{InvalidSecp256k1PrivateKeyError, InvalidSecp256k1MessageHashError}
  * @param msgHash hash of message
  * @param privKey serialized private key
  */
@@ -89,7 +92,9 @@ function sign(msgHash: Buffer, privKey: Buffer): Buffer {
 }
 
 /**
- * recovery signature to public key
+ * Recovery signature to public key
+ *
+ * @throws{InvalidSecp256k1MessageHashError, InvalidSecp256k1SignatureError, InvalidSecp256k1SignatureRecoveryError}
  * @param msgHash hash of message
  * @param sig signature
  */
