@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
-import { type NetParams } from '../../src';
-import { firstTestnetBlock, network, testAccount } from './fixture';
+import { type HttpParams } from '../../src';
+import { testnetGenesisBlock, network, testAccount } from './fixture';
 
 /**
  * Timeout for each test.
@@ -22,12 +22,12 @@ describe('Test SimpleNet class on Testnet', () => {
             // Perform an HTTP GET request using the SimpleNet instance
             const response = await network.http(
                 'GET',
-                '/blocks/1?expanded=false'
+                '/blocks/0?expanded=false'
             );
 
             // Assert that the response matches the expected firstTestnetBlock
             expect(JSON.stringify(response)).toEqual(
-                JSON.stringify(firstTestnetBlock)
+                JSON.stringify(testnetGenesisBlock)
             );
         },
         TIMEOUT
@@ -55,7 +55,7 @@ describe('Test SimpleNet class on Testnet', () => {
     test(
         'Should validate response headers',
         async () => {
-            const customParams: NetParams = {
+            const customParams: HttpParams = {
                 query: {},
                 body: {},
                 headers: {
@@ -80,4 +80,24 @@ describe('Test SimpleNet class on Testnet', () => {
         },
         TIMEOUT
     );
+
+    /**
+     * Request params validation rejecting with an error
+     */
+    test('Should throw error for invalid header response', async () => {
+        const customParams: HttpParams = {
+            query: {},
+            body: {},
+            headers: {
+                'X-Custom-Header': 'custom-value'
+            },
+            validateResponseHeader: function (): void {
+                throw new Error(`Forcing error on header validation`);
+            }
+        };
+
+        await expect(
+            network.http('GET', '/accounts/' + testAccount, customParams)
+        ).rejects.toThrowError(`Forcing error on header validation`);
+    });
 });
