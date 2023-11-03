@@ -5,7 +5,7 @@ import {
     testAccount,
     zeroAddressAccountDetails
 } from './fixture';
-import { type NetParams } from '../../src';
+import { type HttpParams } from '../../src';
 
 /**
  * SimpleNet class tests
@@ -40,7 +40,7 @@ describe('Test SimpleNet class on Solo', () => {
      * Request params validation
      */
     test('Should validate response headers', async () => {
-        const customParams: NetParams = {
+        const customParams: HttpParams = {
             query: {},
             body: {},
             headers: {
