@@ -22,45 +22,6 @@ describe('Contract interface for ABI encoding/decoding', () => {
     });
 
     /**
-     * Test the failed encoding of a function input.
-     */
-    test('Fail to encode a contract function input', () => {
-        expect(() =>
-            contract.encodeFunctionInput(contractABI, 'undefined', [123])
-        ).toThrowError(ContractInterfaceError);
-    });
-
-    /**
-     * Test the failed decoding of a function input.
-     */
-    test('Fail to decode a contract function input', () => {
-        expect(() =>
-            contract.decodeFunctionInput(contractABI, 'setValue', '0x123')
-        ).toThrowError(ContractInterfaceError);
-    });
-
-    /**
-     * Test the failed encoding of an event log.
-     */
-    test('Fail to encode a contract event log', () => {
-        expect(() =>
-            contract.encodeEventLog(contractABI, 'undefined', [])
-        ).toThrowError(ContractInterfaceError);
-    });
-
-    /**
-     * Test the failed decoding of an event log.
-     */
-    test('Fail to decode a contract function input', () => {
-        expect(() =>
-            contract.decodeEventLog(contractABI, 'ValueChanged', {
-                data: '0x123',
-                topics: []
-            })
-        ).toThrowError(ContractInterfaceError);
-    });
-
-    /**
      * Test the encoding of a function fragment.
      */
     test('get a function fragment and encode it', () => {
@@ -92,6 +53,15 @@ describe('Contract interface for ABI encoding/decoding', () => {
     });
 
     /**
+     * Test the failed encoding of a function input.
+     */
+    test('Fail to encode a contract function input', () => {
+        expect(() =>
+            contract.encodeFunctionInput(contractABI, 'undefined', [123])
+        ).toThrowError(ContractInterfaceError);
+    });
+
+    /**
      * Test the decoding of a function fragment data with the custom decoding data method
      */
     test('decode a function fragment data', () => {
@@ -107,6 +77,15 @@ describe('Contract interface for ABI encoding/decoding', () => {
             )[0]
         );
         expect(decodedData).toEqual('123');
+    });
+
+    /**
+     * Test the failed decoding of a function input.
+     */
+    test('Fail to decode a contract function input', () => {
+        expect(() =>
+            contract.decodeFunctionInput(contractABI, 'setValue', '0x123')
+        ).toThrowError(ContractInterfaceError);
     });
 
     /**
@@ -126,6 +105,15 @@ describe('Contract interface for ABI encoding/decoding', () => {
                 ValueChangedEventData.value
             ])
         );
+    });
+
+    /**
+     * Test the failed encoding of an event log.
+     */
+    test('Fail to encode a contract event log', () => {
+        expect(() =>
+            contract.encodeEventLog(contractABI, 'undefined', [])
+        ).toThrowError(ContractInterfaceError);
     });
 
     /**
@@ -152,5 +140,17 @@ describe('Contract interface for ABI encoding/decoding', () => {
                 encodedEventLog.topics
             )
         );
+    });
+
+    /**
+     * Test the failed decoding of an event log.
+     */
+    test('Fail to decode a contract function input', () => {
+        expect(() =>
+            contract.decodeEventLog(contractABI, 'ValueChanged', {
+                data: '0x123',
+                topics: []
+            })
+        ).toThrowError(ContractInterfaceError);
     });
 });
