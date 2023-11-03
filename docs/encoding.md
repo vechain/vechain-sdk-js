@@ -62,7 +62,7 @@ The contract interface is used to provide a higher level of abstraction to allow
 
 ```typescript { name=contract, category=example }
 import { contract } from '@vechain-sdk/core';
-import expect from 'expect';
+import { expect } from 'expect';
 
 const contractABI = JSON.stringify([
     {
