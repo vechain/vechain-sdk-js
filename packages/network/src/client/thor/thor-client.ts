@@ -1,4 +1,4 @@
-import { type Block } from '../../types/block';
+import { type Block } from './types';
 import { type HttpClient } from '../http';
 import { ThorReadonlyClient } from './thor-readonly-client';
 

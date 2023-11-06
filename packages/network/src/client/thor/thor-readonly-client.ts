@@ -1,7 +1,5 @@
 import { type IHttpClient } from '../http';
-import { type Account } from '../../types/account';
-import { type Block } from '../../types/block';
-import { type Status } from '../../types/status';
+import { type Account, type Block, type Status } from './types';
 
 /**
  * Represents a client with read-only capabilities to interact with a VeChain Thor blockchain.
