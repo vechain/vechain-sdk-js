@@ -21,7 +21,6 @@ env:
 
 jobs:
   build-api-docs:
-    name: Sonar Scan
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
