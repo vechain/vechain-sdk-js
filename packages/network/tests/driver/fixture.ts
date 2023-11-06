@@ -63,6 +63,11 @@ const zeroAddressAccountDetails = {
 const testAccount = '0x5034aa590125b64023a0262112b98d72e3c8e40e';
 
 /**
+ * Simple revision account fixture (can be block number or ID, best block is assumed if omitted)
+ */
+const revision = '100';
+
+/**
  * Zero address fixture
  */
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -72,6 +77,7 @@ export {
     soloNetwork,
     testnetGenesisBlock,
     testAccount,
+    revision,
     zeroAddressAccountDetails,
     ZERO_ADDRESS
 };
