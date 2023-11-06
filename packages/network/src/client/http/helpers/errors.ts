@@ -18,32 +18,18 @@ const convertError = (error: AxiosError): HTTPClientError => {
     // Error has a response
     if (error.response != null) {
         const resp = error.response;
-        if (typeof resp.data === 'string') {
-            let text = resp.data.trim();
-            if (text.length > 50) {
-                text = text.slice(0, 50) + '...';
+
+        return buildError(
+            HTTP_CLIENT.INVALID_HTTP_REQUEST,
+            `An error occurred while performing http request ${error.config?.url}`,
+            {
+                status: resp.status,
+                method: error.config?.method,
+                url: error.config?.url,
+                text:
+                    typeof resp.data === 'string' ? resp.data.trim() : undefined
             }
-            return buildError(
-                HTTP_CLIENT.INVALID_HTTP_REQUEST,
-                `An error occurred while performing http request ${error.config?.url}`,
-                {
-                    status: resp.status,
-                    method: error.config?.method,
-                    url: error.config?.url,
-                    text
-                }
-            );
-        } else {
-            return buildError(
-                HTTP_CLIENT.INVALID_HTTP_REQUEST,
-                `An error occurred while performing http request ${error.config?.url}`,
-                {
-                    status: resp.status,
-                    method: error.config?.method,
-                    url: error.config?.url
-                }
-            );
-        }
+        );
     }
     // Error does not have a response
     else {
