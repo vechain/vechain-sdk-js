@@ -6,8 +6,7 @@ import {
     type HttpParams,
     type HttpClientOptions
 } from './types';
-import { convertError } from './helpers';
-import { DEFAULT_HTTP_TIMEOUT } from '../../utils';
+import { convertError, DEFAULT_HTTP_TIMEOUT } from '../../utils';
 import { buildError, HTTP_CLIENT } from '@vechain-sdk/errors';
 
 /**
