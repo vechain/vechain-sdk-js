@@ -16,7 +16,6 @@ describe('Tests of convertError function', () => {
     convertErrors.forEach(
         (currentConvertError: {
             customAxiosError: AxiosError<unknown, unknown>;
-            expected: string;
             testName: string;
         }) => {
             test(currentConvertError.testName, () => {
@@ -31,7 +30,14 @@ describe('Tests of convertError function', () => {
                 ).toStrictEqual({});
 
                 // Assert that the returned Error message matches the expected format
-                expect(error.message).toBe(currentConvertError.expected);
+                expect(error.message).toBe(
+                    'An error occurred while performing http request http://localhost:3000'
+                );
+                expect(error.code).toBe('INVALID_HTTP_REQUEST');
+                expect(error.data).toBeDefined();
+                expect(error.data?.status).toBe(
+                    currentConvertError.customAxiosError.response?.status
+                );
             });
         }
     );

@@ -8,6 +8,7 @@ import {
 } from './types';
 import { convertError } from './helpers';
 import { DEFAULT_HTTP_TIMEOUT } from '../../utils';
+import { buildError, HTTP_CLIENT } from '@vechain-sdk/errors';
 
 /**
  * Represents a concrete implementation of the `IHttpClient` interface, providing methods for making HTTP requests.
@@ -47,7 +48,7 @@ class HttpClient implements IHttpClient {
      * @param path - The path to access on the server relative to the base URL.
      * @param params - (Optional) Additional request parameters such as query parameters, request body, and custom headers.
      * @returns A promise that resolves to the response data from the HTTP request.
-     * @throws Will throw an error if the request fails, with more detailed information if the error is Axios-specific.
+     * @throws {HTTPClientError} Will throw an error if the request fails, with more detailed information if the error is Axios-specific.
      */
     public async http(
         method: 'GET' | 'POST',
@@ -70,7 +71,13 @@ class HttpClient implements IHttpClient {
             if (Axios.isAxiosError(err)) {
                 throw convertError(err);
             }
-            throw err; // If it's not an Axios error, re-throw the original error
+            // If it's not an Axios error, re-throw the original error
+            throw buildError(
+                HTTP_CLIENT.INVALID_HTTP_REQUEST,
+                `An error occurred while performing http request ${JSON.stringify(
+                    err
+                )}`
+            );
         }
     }
 

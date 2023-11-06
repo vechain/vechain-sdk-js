@@ -6,6 +6,7 @@ import {
     zeroAddressAccountDetails
 } from './fixture';
 import { type HttpParams } from '../../src';
+import { HTTPClientError } from '@vechain-sdk/errors';
 
 /**
  * SimpleNet class tests
@@ -33,7 +34,7 @@ describe('Test SimpleNet class on Solo', () => {
         // Assert that the HTTP request fails with an error
         await expect(
             soloNetwork.http('GET', '/error-test-path')
-        ).rejects.toThrowError('404 get /error-test-path: 404 page not found');
+        ).rejects.toThrowError(HTTPClientError);
     });
 
     /**

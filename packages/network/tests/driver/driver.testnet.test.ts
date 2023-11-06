@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { type HttpParams } from '../../src';
 import { testnetGenesisBlock, network, testAccount } from './fixture';
+import { buildError, HTTP_CLIENT, HTTPClientError } from '@vechain-sdk/errors';
 
 /**
  * Timeout for each test.
@@ -42,9 +43,7 @@ describe('Test SimpleNet class on Testnet', () => {
             // Assert that the HTTP request fails with an error
             await expect(
                 network.http('GET', '/error-test-path')
-            ).rejects.toThrowError(
-                '404 get /error-test-path: 404 page not found'
-            );
+            ).rejects.toThrowError(HTTPClientError);
         },
         TIMEOUT
     );
@@ -92,12 +91,15 @@ describe('Test SimpleNet class on Testnet', () => {
                 'X-Custom-Header': 'custom-value'
             },
             validateResponseHeader: function (): void {
-                throw new Error(`Forcing error on header validation`);
+                throw buildError(
+                    HTTP_CLIENT.INVALID_HTTP_REQUEST,
+                    `Forcing error on header validation`
+                );
             }
         };
 
         await expect(
             network.http('GET', '/accounts/' + testAccount, customParams)
-        ).rejects.toThrowError(`Forcing error on header validation`);
+        ).rejects.toThrowError(HTTPClientError);
     });
 });

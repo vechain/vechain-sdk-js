@@ -1,4 +1,9 @@
 import { type AxiosError } from 'axios';
+import {
+    buildError,
+    HTTP_CLIENT,
+    type HTTPClientError
+} from '@vechain-sdk/errors';
 
 /**
  * Converts an AxiosError into a standard Error.
@@ -11,7 +16,8 @@ import { type AxiosError } from 'axios';
  *
  * @TODO - Refactor using our error system (https://github.com/vechainfoundation/vechain-sdk/issues/192)
  */
-const convertError = (error: AxiosError): Error => {
+const convertError = (error: AxiosError): HTTPClientError => {
+    // Error has a response
     if (error.response != null) {
         const resp = error.response;
         if (typeof resp.data === 'string') {
@@ -19,17 +25,38 @@ const convertError = (error: AxiosError): Error => {
             if (text.length > 50) {
                 text = text.slice(0, 50) + '...';
             }
-            return new Error(
-                `${resp.status} ${error.config?.method} ${error.config?.url}: ${text}`
+            return buildError(
+                HTTP_CLIENT.INVALID_HTTP_REQUEST,
+                `An error occurred while performing http request ${error.config?.url}`,
+                {
+                    status: resp.status,
+                    method: error.config?.method,
+                    url: error.config?.url,
+                    text
+                }
             );
         } else {
-            return new Error(
-                `${resp.status} ${error.config?.method} ${error.config?.url}`
+            return buildError(
+                HTTP_CLIENT.INVALID_HTTP_REQUEST,
+                `An error occurred while performing http request ${error.config?.url}`,
+                {
+                    status: resp.status,
+                    method: error.config?.method,
+                    url: error.config?.url
+                }
             );
         }
-    } else {
-        return new Error(
-            `${error.config?.method} ${error.config?.url}: ${error.message}`
+    }
+    // Error does not have a response
+    else {
+        return buildError(
+            HTTP_CLIENT.INVALID_HTTP_REQUEST,
+            `An error occurred while performing http request ${error.config?.url}`,
+            {
+                method: error.config?.method,
+                url: error.config?.url,
+                message: error.message
+            }
         );
     }
 };
