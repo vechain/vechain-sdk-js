@@ -27,4 +27,18 @@ describe('Account', () => {
             '400 get /accounts/wrong-address: address: invalid length'
         );
     });
+
+    test('Should retrieve account code successfully', async () => {
+        const client = await ThorClient.connect(network);
+        const accountCode = await client.getCode(testAccount);
+        expect(accountCode).toBeDefined();
+    });
+
+    test('Should retrieve account storage successfully', async () => {
+        const client = await ThorClient.connect(network);
+        const storageKey =
+            '0x0000000000000000000000000000000000000000000000000000000000000001';
+        const accountStorage = await client.getStorage(testAccount, storageKey);
+        expect(accountStorage).toBeDefined();
+    });
 });

@@ -17,6 +17,30 @@ interface Account {
 }
 
 /**
+ * Represents the code associated with a blockchain account.
+ *
+ * This interface defines the structure of code associated with a blockchain account.
+ *
+ * @public
+ */
+interface AccountCode {
+    // The code associated with the account
+    code: string;
+}
+
+/**
+ * Represents the storage value associated with a blockchain account.
+ *
+ * This interface defines the structure of storage values associated with a blockchain account.
+ *
+ * @public
+ */
+interface AccountStorage {
+    // The value stored in the account's storage
+    value: string;
+}
+
+/**
  * Represents a blockchain block.
  *
  * This interface defines the structure of a blockchain block, including its properties such as ID, number, size, timestamp, and more.
@@ -121,4 +145,4 @@ interface Status {
     finalized: string;
 }
 
-export type { Account, Block, Status };
+export type { Account, AccountCode, AccountStorage, Block, Status };

@@ -1,5 +1,11 @@
 import { type IHttpClient } from '../http';
-import { type Account, type Block, type Status } from './types';
+import {
+    type AccountCode,
+    type Account,
+    type Block,
+    type Status,
+    type AccountStorage
+} from './types';
 
 /**
  * Represents a client with read-only capabilities to interact with a VeChain Thor blockchain.
@@ -51,6 +57,46 @@ class ThorReadonlyClient {
         return (await this.httpClient.http('GET', `/accounts/${addr}`, {
             revision
         })) as Account;
+    }
+
+    /**
+     * Retrieves the code associated with a blockchain account.
+     *
+     * @param addr - The address of the account to retrieve the code for.
+     * @param revision - (Optional) The revision of the account state to retrieve.
+     * @returns A promise that resolves to the account code information.
+     */
+    public async getCode(
+        addr: string,
+        revision?: string
+    ): Promise<AccountCode> {
+        // Send an HTTP GET request to fetch the code associated with the provided account address and optional revision.
+        // The result is a promise that resolves to the account code information.
+        return (await this.httpClient.http('GET', `accounts/${addr}/code`, {
+            revision
+        })) as AccountCode;
+    }
+
+    /**
+     * Retrieves storage value associated with a blockchain account and a specific storage key.
+     *
+     * @param addr - The address of the account to retrieve the storage value for.
+     * @param key - The storage key associated with the account.
+     * @param revision - (Optional) The revision of the account state to retrieve.
+     * @returns A promise that resolves to the account storage value information.
+     */
+    public async getStorage(
+        addr: string,
+        key: string,
+        revision?: string
+    ): Promise<AccountStorage> {
+        // Send an HTTP GET request to fetch the storage value associated with the provided account address, storage key, and optional revision.
+        // The result is a promise that resolves to the account storage value information.
+        return (await this.httpClient.http(
+            'GET',
+            `accounts/${addr}/storage/${key}`,
+            { revision }
+        )) as AccountStorage;
     }
 }
 
