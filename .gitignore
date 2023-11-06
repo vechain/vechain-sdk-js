@@ -18,3 +18,4 @@ junit.xml
 
 # docs
 docs/build/*.md
+api-docs/
