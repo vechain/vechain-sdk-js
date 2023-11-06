@@ -57,7 +57,7 @@ interface HttpParams {
      * A callback function to validate response headers.
      * @param headers - The response headers to validate.
      */
-    validateResponseHeader: (headers: Record<string, string>) => void;
+    validateResponseHeader?: (headers: Record<string, string>) => void;
 }
 
 /**
