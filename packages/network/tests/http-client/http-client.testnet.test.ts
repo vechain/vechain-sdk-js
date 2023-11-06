@@ -10,17 +10,18 @@ import { buildError, HTTP_CLIENT, HTTPClientError } from '@vechain-sdk/errors';
 const TIMEOUT = 10000;
 
 /**
- * SimpleNet class tests
+ * HttpClient class tests.
+ *
  * @group integration/network
  */
-describe('Test SimpleNet class on Testnet', () => {
+describe('Test HttpClient class on Testnet', () => {
     /**
      * HTTP Request tests
      */
     test(
         'Should perform an HTTP GET request and resolve with response data',
         async () => {
-            // Perform an HTTP GET request using the SimpleNet instance
+            // Perform an HTTP GET request using the HttpClient instance
             const response = await network.http(
                 'GET',
                 '/blocks/0?expanded=false'

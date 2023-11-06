@@ -9,10 +9,11 @@ import { type HttpParams } from '../../src';
 import { HTTPClientError } from '@vechain-sdk/errors';
 
 /**
- * SimpleNet class tests
+ * HttpClient class tests.
+ *
  * @group integration/network
  */
-describe('Test SimpleNet class on Solo', () => {
+describe('Test HttpClient class on Solo node', () => {
     /**
      * HTTP Request tests
      */
