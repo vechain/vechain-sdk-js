@@ -1,5 +1,5 @@
-import type { DefaultErrorData } from '../types';
-import { ErrorBase } from './base';
+import { type DefaultErrorData } from '../../types';
+import { ErrorBase } from '../base';
 
 /**
  * Invalid chaincode error to be thrown when an invalid chaincode is detected.

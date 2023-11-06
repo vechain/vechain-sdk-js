@@ -18,7 +18,7 @@ const config = {
  */
 const convertErrors: Array<{
     customAxiosError: AxiosError<unknown, unknown>;
-    expected: string;
+
     testName: string;
 }> = [
     {
@@ -36,7 +36,7 @@ const convertErrors: Array<{
             name: 'AxiosError',
             message: 'AxiosError: Request failed with status code 200'
         },
-        expected: '200 undefined http://localhost:3000',
+
         testName:
             'Should convert AxiosError with response data to Error with data'
     },
@@ -55,7 +55,7 @@ const convertErrors: Array<{
             name: 'AxiosError',
             message: 'AxiosError: Request failed with status code 200'
         },
-        expected: '200 undefined http://localhost:3000',
+
         testName:
             'Should convert AxiosError with response data to Error with data'
     },
@@ -67,8 +67,6 @@ const convertErrors: Array<{
             name: 'AxiosError',
             message: 'AxiosError: Request failed with status code 404'
         },
-        expected:
-            'undefined http://localhost:3000: AxiosError: Request failed with status code 404',
         testName:
             'Should convert AxiosError without response data to Error with a basic message'
     },
@@ -87,7 +85,6 @@ const convertErrors: Array<{
             name: 'AxiosError',
             message: 'AxiosError: Request failed with no status code'
         },
-        expected: '200 undefined http://localhost:3000: Not found',
         testName: 'Should convert AxiosError to Error with a basic message'
     },
     {
@@ -107,8 +104,6 @@ const convertErrors: Array<{
             name: 'AxiosError',
             message: 'AxiosError: Request failed with status code 404'
         },
-        expected:
-            '404 undefined http://localhost:3000: Lorem ipsum dolor sit amet, consectetur adipiscing...',
         testName: 'Should convert AxiosError with a long response data message'
     }
 ];

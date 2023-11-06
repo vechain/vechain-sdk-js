@@ -1,4 +1,4 @@
-import type { ErrorCode } from '../types';
+import { type ErrorCode } from '../types';
 
 /**
  * Base error class to construct all other errors from.

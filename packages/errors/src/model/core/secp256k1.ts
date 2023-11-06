@@ -1,5 +1,5 @@
-import { ErrorBase } from '.';
-import type { DefaultErrorData } from '../types';
+import { type DefaultErrorData } from '../../types';
+import { ErrorBase } from '../base';
 
 /**
  * Error to be thrown when the private key is invalid.

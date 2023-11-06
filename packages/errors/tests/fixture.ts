@@ -38,7 +38,9 @@ import {
     CertificateNotSignedError,
     CertificateInvalidSignatureFormatError,
     CertificateInvalidSignerError,
-    ContractInterfaceError
+    ContractInterfaceError,
+    HTTP_CLIENT,
+    HTTPClientError
 } from '../src';
 
 /**
@@ -214,6 +216,15 @@ const ErrorsCodeAndClassesMapsFixture = [
             {
                 errorCode: TRANSACTION.INVALID_DELEGATION,
                 classExpected: TransactionDelegationError
+            }
+        ]
+    },
+    {
+        name: 'HTTP Client',
+        elements: [
+            {
+                errorCode: HTTP_CLIENT.INVALID_HTTP_REQUEST,
+                classExpected: HTTPClientError
             }
         ]
     }

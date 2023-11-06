@@ -1,46 +1,49 @@
 import {
+    ABI,
+    ADDRESS,
+    BLOOM,
+    CERTIFICATE,
+    CertificateInvalidSignatureFormatError,
+    CertificateInvalidSignerError,
+    CertificateNotSignedError,
+    ContractInterfaceError,
+    DATA,
+    type ErrorBase,
+    HDNODE,
+    HTTP_CLIENT,
+    HTTPClientError,
+    type HTTPClientErrorData,
+    InvalidAbiDataToDecodeError,
+    InvalidAbiDataToEncodeError,
     InvalidAbiEventError,
     InvalidAbiFormatTypeError,
     InvalidAbiFunctionError,
-    InvalidAbiDataToEncodeError,
-    InvalidAbiDataToDecodeError,
-    ContractInterfaceError,
     InvalidAddressError,
-    InvalidSecp256k1MessageHashError,
-    InvalidHDNodePrivateKeyError,
-    InvalidSecp256k1SignatureError,
-    InvalidSecp256k1SignatureRecoveryError,
     InvalidBloomError,
-    InvalidKError,
-    CertificateNotSignedError,
-    CertificateInvalidSignatureFormatError,
-    CertificateInvalidSignerError,
-    InvalidDataTypeError,
     InvalidDataReturnTypeError,
+    InvalidDataTypeError,
     InvalidHDNodeChaincodeError,
-    InvalidHDNodeMnemonicsError,
-    InvalidHDNodePublicKeyError,
     InvalidHDNodeDerivationPathError,
+    InvalidHDNodeMnemonicsError,
+    InvalidHDNodePrivateKeyError,
+    InvalidHDNodePublicKeyError,
+    InvalidKError,
     InvalidKeystoreError,
     InvalidKeystorePasswordError,
     InvalidRLPError,
+    type InvalidRLPErrorData,
+    InvalidSecp256k1MessageHashError,
     InvalidSecp256k1PrivateKeyError,
+    InvalidSecp256k1SignatureError,
+    InvalidSecp256k1SignatureRecoveryError,
+    KEYSTORE,
+    RLP,
+    SECP256K1,
+    TRANSACTION,
     TransactionAlreadySignedError,
-    TransactionNotSignedError,
     TransactionBodyError,
     TransactionDelegationError,
-    type InvalidRLPErrorData,
-    type ErrorBase,
-    ABI,
-    ADDRESS,
-    SECP256K1,
-    KEYSTORE,
-    HDNODE,
-    BLOOM,
-    RLP,
-    DATA,
-    TRANSACTION,
-    CERTIFICATE
+    TransactionNotSignedError
 } from '../model';
 
 /**
@@ -69,7 +72,8 @@ type ErrorCode =
     | ABI
     | RLP
     | DATA
-    | TRANSACTION;
+    | TRANSACTION
+    | HTTP_CLIENT;
 
 /**
  * Conditional type to get the error data type from the error code.
@@ -81,6 +85,8 @@ type ErrorCode =
  */
 type DataType<ErrorCodeT extends ErrorCode> = ErrorCodeT extends RLP.INVALID_RLP
     ? InvalidRLPErrorData
+    : ErrorCodeT extends HTTP_CLIENT.INVALID_HTTP_REQUEST
+    ? HTTPClientErrorData
     : DefaultErrorData;
 
 /**
@@ -98,7 +104,8 @@ const ERROR_CODES = {
     ABI,
     RLP,
     DATA,
-    TRANSACTION
+    TRANSACTION,
+    HTTP_CLIENT
 };
 
 /**
@@ -172,6 +179,8 @@ type ErrorType<ErrorCodeT> =
         ? TransactionBodyError
         : ErrorCodeT extends TRANSACTION.INVALID_DELEGATION
         ? TransactionDelegationError
+        : ErrorCodeT extends HTTP_CLIENT.INVALID_HTTP_REQUEST
+        ? HTTPClientError
         : never;
 
 /**
@@ -226,7 +235,8 @@ const ErrorClassMap = new Map<
     [TRANSACTION.ALREADY_SIGNED, TransactionAlreadySignedError],
     [TRANSACTION.NOT_SIGNED, TransactionNotSignedError],
     [TRANSACTION.INVALID_TRANSACTION_BODY, TransactionBodyError],
-    [TRANSACTION.INVALID_DELEGATION, TransactionDelegationError]
+    [TRANSACTION.INVALID_DELEGATION, TransactionDelegationError],
+    [HTTP_CLIENT.INVALID_HTTP_REQUEST, HTTPClientError]
 ]);
 
 export {

@@ -1,4 +1,4 @@
-import { ErrorBase } from './base';
+import { ErrorBase } from '../base';
 
 /**
  * Invalid RLP error data interface.
