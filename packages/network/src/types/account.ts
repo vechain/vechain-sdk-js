@@ -1,9 +1,14 @@
+/**
+ * Represents a blockchain account
+ */
 interface Account {
-    /** balance (VET) in hex string */
+    // Balance of the account in VET as a hexadecimal string
     balance: string;
-    /** energy (VTHO) in hex string */
+
+    // Energy of the account in VTHO as a hexadecimal string
     energy: string;
-    /** whether the account has code */
+
+    // Indicates whether the account has associated code
     hasCode: boolean;
 }
 

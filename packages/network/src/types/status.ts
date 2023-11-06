@@ -1,22 +1,38 @@
+/**
+ * Represents the status of blockchain synchronization
+ */
 interface Status {
-    /** progress of synchronization. From 0 to 1, 1 means fully synchronized. */
+    /**
+     * Progress of blockchain synchronization, ranging from 0 to 1 where 1 indicates full synchronization.
+     * */
     progress: number;
-    /** summary of head block */
+
+    /**
+     * Summary of the head block
+     * */
     head: {
-        /** block id */
+        // Unique identifier for the head block
         id: string;
-        /** block number */
+
+        // Block number of the head block
         number: number;
-        /** block timestamp */
+
+        // Timestamp of the head block
         timestamp: number;
-        /** parent block id */
+
+        // Identifier of the parent block of the head block
         parentID: string;
-        /** bits of supported txs features */
+
+        // Optional bits representing supported transaction features in the head block
         txsFeatures?: number;
-        /** block gas limit */
+
+        // Gas limit of the head block
         gasLimit: number;
     };
-    /** id of finalized block */
+
+    /**
+     * Identifier of the finalized block
+     * */
     finalized: string;
 }
 
