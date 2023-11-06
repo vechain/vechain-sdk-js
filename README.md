@@ -11,7 +11,7 @@ The official JavaScript SDK for vechain.
    - `./packages/core`: Core module encompassing all fundamental SDK operations such as hashing and cryptography.
    - `./packages/network`: Network module facilitating all network-related SDK operations including transaction dissemination and blockchain interaction.
 
-## SDK Development
+## SDK Development 
 
 ### Prerequisites
 - Fork the repository to your GitHub account.
