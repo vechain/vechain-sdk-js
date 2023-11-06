@@ -50,6 +50,9 @@ async function isHealthy(URL: string): Promise<boolean> {
 
 /**
  * Performs basic validation on the provided URL to avoid unnecessary HTTP requests.
+ * @remarks
+ * This function throws an error if the URL is null, undefined, or empty.
+ * @throws An error if the URL is null, undefined, or empty.
  * @param URL
  */
 const validateURL = (URL: string): void => {
@@ -58,6 +61,17 @@ const validateURL = (URL: string): void => {
     }
 };
 
+/**
+ * Extracts the timestamp from the block
+ * @remarks
+ * This function throws an error if the timestamp key does not exist in the response from the API call to the node
+ * @param response the response from the API call to the node
+ * @returns the timestamp from the block
+ * @throws An error if the timestamp key does not exist in the response from the API call to the node
+ * @throws An error if the timestamp key exists in the response from the API call to the node but the value is not a number
+ * @throws An error if the response from the API call to the node is not an object
+ * @throws An error if the response from the API call to the node is null or undefined
+ */
 const getTimestampFromBlock = (response: unknown): number => {
     /**
      * Type assertion to check that the timestamp key exists in the response from the API call to the node
