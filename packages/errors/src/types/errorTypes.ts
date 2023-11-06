@@ -4,6 +4,7 @@ import {
     InvalidAbiFunctionError,
     InvalidAbiDataToEncodeError,
     InvalidAbiDataToDecodeError,
+    ContractInterfaceError,
     InvalidAddressError,
     InvalidSecp256k1MessageHashError,
     InvalidHDNodePrivateKeyError,
@@ -51,7 +52,7 @@ import {
  *
  * @param ErrorCodeT - The error code type from the error types enum.
  */
-type DefaultErrorData = Record<string, unknown>;
+type DefaultErrorData = Record<string, unknown> | { innerError: Error };
 
 /**
  * Error code type.
@@ -155,6 +156,8 @@ type ErrorType<ErrorCodeT> =
         ? InvalidAbiFormatTypeError
         : ErrorCodeT extends ABI.INVALID_FUNCTION
         ? InvalidAbiFunctionError
+        : ErrorCodeT extends ABI.CONTRACT_INTERFACE_ERROR
+        ? ContractInterfaceError
         : ErrorCodeT extends RLP.INVALID_RLP
         ? InvalidRLPError
         : ErrorCodeT extends DATA.INVALID_DATA_TYPE
@@ -216,6 +219,7 @@ const ErrorClassMap = new Map<
     [ABI.INVALID_DATA_TO_ENCODE, InvalidAbiDataToEncodeError],
     [ABI.INVALID_FORMAT_TYPE, InvalidAbiFormatTypeError],
     [ABI.INVALID_FUNCTION, InvalidAbiFunctionError],
+    [ABI.CONTRACT_INTERFACE_ERROR, ContractInterfaceError],
     [RLP.INVALID_RLP, InvalidRLPError],
     [DATA.INVALID_DATA_TYPE, InvalidDataTypeError],
     [DATA.INVALID_DATA_RETURN_TYPE, InvalidDataReturnTypeError],

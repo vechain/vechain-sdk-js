@@ -37,7 +37,8 @@ import {
     InvalidHDNodeDerivationPathError,
     CertificateNotSignedError,
     CertificateInvalidSignatureFormatError,
-    CertificateInvalidSignerError
+    CertificateInvalidSignerError,
+    ContractInterfaceError
 } from '../src';
 
 /**
@@ -166,6 +167,10 @@ const ErrorsCodeAndClassesMapsFixture = [
             {
                 errorCode: ABI.INVALID_FUNCTION,
                 classExpected: InvalidAbiFunctionError
+            },
+            {
+                errorCode: ABI.CONTRACT_INTERFACE_ERROR,
+                classExpected: ContractInterfaceError
             }
         ]
     },

@@ -3,7 +3,8 @@ import {
     ERROR_CODES,
     buildError,
     InvalidKeystoreError,
-    InvalidRLPError
+    InvalidRLPError,
+    assertInnerError
 } from '../src';
 import { ErrorsCodeAndClassesMapsFixture } from './fixture';
 
@@ -52,6 +53,48 @@ describe('Error handler test', () => {
             expect(InvalidRLPErrorObject.data?.context).toBeDefined();
             expect(InvalidRLPErrorObject).toBeInstanceOf(InvalidRLPError);
         }
+    });
+
+    /**
+     * Verify that the object is an instance of error
+     */
+    test('Assert valid error', () => {
+        expect(assertInnerError(new Error('test'))).toBeDefined();
+    });
+
+    /**
+     * Verify that the object is not a valid instance of error
+     */
+    test('Assert invalid error', () => {
+        expect(() => assertInnerError({})).toThrowError();
+    });
+
+    /**
+     * Verify that the inner error is undefined when not provided
+     */
+    test('Verify that the inner error is undefined', () => {
+        expect(
+            buildError(
+                ERROR_CODES.ABI.CONTRACT_INTERFACE_ERROR,
+                'test',
+                undefined,
+                undefined
+            ).innerError
+        ).toBeUndefined();
+    });
+
+    /**
+     * Verify that the inner error is defined when provided
+     */
+    test('Verify that the inner error is defined', () => {
+        expect(
+            buildError(
+                ERROR_CODES.ABI.CONTRACT_INTERFACE_ERROR,
+                'test',
+                undefined,
+                new Error('test')
+            ).innerError
+        ).toBeDefined();
     });
 
     /**

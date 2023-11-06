@@ -56,9 +56,60 @@ expect(data).toBe(expected);
 
 ```
 
+## Contract
+
+The contract interface is used to provide a higher level of abstraction to allow direct interaction with a smart contract. To create a contract interface is necessary to have a compatible smart contract ABI. Vechain SDK provides a full implementation of the Contract interface as well as some methods to encode directly a specific fragment of the smart contract (until now only functions and events fragments are supported). Encoding and decoding are based on the ABI one.
+
+```typescript { name=contract, category=example }
+import { contract } from '@vechain-sdk/core';
+import { expect } from 'expect';
+
+const contractABI = JSON.stringify([
+    {
+        constant: false,
+        inputs: [
+            {
+                name: 'value',
+                type: 'uint256'
+            }
+        ],
+        name: 'setValue',
+        outputs: [],
+        payable: false,
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        constant: true,
+        inputs: [],
+        name: 'getValue',
+        outputs: [
+            {
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        payable: false,
+        stateMutability: 'view',
+        type: 'function'
+    }
+]);
+
+const encodedData = contract.encodeFunctionInput(contractABI, 'setValue', [
+    123
+]); // encode the function input, ready to be used to send a tx
+
+const decodedData = String(
+    contract.decodeFunctionInput(contractABI, 'setValue', encodedData)[0]
+); // decode the function input data
+
+expect(decodedData).toEqual('123');
+
+```
+
 ## RLP Encoding
 
-RLP is a serialisation technique used on the VechainThor blockchain.  It is used to efficiently encode and decode data structures for storage and transmission on the blockchain. VeChain SDK includes dedicated methods for RLP encoding and decoding, enabling developers to handle data serialization and deserialization with ease.
+RLP is a serialisation technique used on the VechainThor blockchain. It is used to efficiently encode and decode data structures for storage and transmission on the blockchain. VeChain SDK includes dedicated methods for RLP encoding and decoding, enabling developers to handle data serialization and deserialization with ease.
 
 By supporting ABI and RLP encoding handling, VeChain SDK equips developers with the necessary tools to interact with smart contracts and handle data efficiently on the VechainThor blockchain. This further enhances the library's capabilities and contributes to the seamless development of decentralised applications on the platform.
 
@@ -96,3 +147,4 @@ const obj = rlp.decodeObject(data);
 expect(JSON.stringify(obj)).toBe(JSON.stringify(clause));
 
 ```
+

@@ -12,9 +12,15 @@ VeChain SDK provides functionality to interact with smart contracts on the Vecha
 
 [example](examples/encoding/abi.ts)
 
+## Contract
+
+The contract interface is used to provide a higher level of abstraction to allow direct interaction with a smart contract. To create a contract interface is necessary to have a compatible smart contract ABI. Vechain SDK provides a full implementation of the Contract interface as well as some methods to encode directly a specific fragment of the smart contract (until now only functions and events fragments are supported). Encoding and decoding are based on the ABI one.
+
+[example](examples/encoding/contract.ts)
+
 ## RLP Encoding
 
-RLP is a serialisation technique used on the VechainThor blockchain.  It is used to efficiently encode and decode data structures for storage and transmission on the blockchain. VeChain SDK includes dedicated methods for RLP encoding and decoding, enabling developers to handle data serialization and deserialization with ease.
+RLP is a serialisation technique used on the VechainThor blockchain. It is used to efficiently encode and decode data structures for storage and transmission on the blockchain. VeChain SDK includes dedicated methods for RLP encoding and decoding, enabling developers to handle data serialization and deserialization with ease.
 
 By supporting ABI and RLP encoding handling, VeChain SDK equips developers with the necessary tools to interact with smart contracts and handle data efficiently on the VechainThor blockchain. This further enhances the library's capabilities and contributes to the seamless development of decentralised applications on the platform.
 
