@@ -3,6 +3,7 @@ export * from './address';
 export * from './base';
 export * from './bloom';
 export * from './certificate';
+export * from './http-client';
 export * from './data';
 export * from './hdnode';
 export * from './keystore';
