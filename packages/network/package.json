@@ -13,6 +13,7 @@
         "format": "prettier --write src/**/*.ts tests/**/*.ts"
     },
     "dependencies": {
+        "@vechain-sdk/errors": "*",
         "axios": "^1.5.1",
         "testcontainers": "^10.2.2"
     }

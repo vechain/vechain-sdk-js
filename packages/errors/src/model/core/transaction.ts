@@ -1,5 +1,5 @@
-import { ErrorBase } from './base';
-import { type DefaultErrorData } from '../types';
+import { type DefaultErrorData } from '../../types';
+import { ErrorBase } from '../base';
 
 /**
  * Invalid Transaction to sign. It is already signed.
