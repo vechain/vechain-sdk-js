@@ -1,4 +1,4 @@
-import { ErrorBase } from './base';
+import { ErrorBase } from '../base';
 
 /**
  * HTTP Client Error.

@@ -1,5 +1,5 @@
-import type { DefaultErrorData } from '../types';
-import { ErrorBase } from './base';
+import { type DefaultErrorData } from '../../types';
+import { ErrorBase } from '../base';
 
 /**
  * Certificate not signed.
