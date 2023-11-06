@@ -1,5 +1,7 @@
 {
     "$schema": "https://typedoc.org/schema.json",
-    "entryPoints": ["./packages/index.ts", "./src/secondary-entry.ts"],
-    "out": "doc"
+    "entryPoints": ["./packages/*"],
+    "entryPointStrategy": "packages",
+    "out": "./api-docs",
+    "readme": "none"
 }
