@@ -1,9 +1,9 @@
 import { bloom as bloomInstance } from '../../bloom';
 import { dataUtils } from '../data';
-import { ERRORS } from '../errors';
 import { type HexString } from '../types';
 import { address } from '../../address';
 import { BLOOM_REGEX_LOWERCASE, BLOOM_REGEX_UPPERCASE } from '../const';
+import { ADDRESS, BLOOM, buildError, DATA } from '@vechain-sdk/errors';
 
 /**
  * Checks if a given string adheres to the Bloom filter format.
@@ -37,26 +37,38 @@ const isBloom = (bloom: string): boolean => {
  * @param data - Hex string of the data to check against the Bloom filter.
  * @returns True if the data may be in the set represented by the Bloom filter; false otherwise.
  *
- * @throws
+ * @throws{InvalidBloomError, InvalidDataTypeError, InvalidKError}
  * - Will throw an error if `bloom` is not in a valid Bloom filter format.
  * - Will throw an error if `data` is not a valid hexadecimal string.
  * - Will throw an error if `k` is not a positive integer.
  */
 const isInBloom = (bloom: HexString, k: number, data: HexString): boolean => {
     if (!isBloom(bloom)) {
-        throw new Error(ERRORS.BLOOM.INVALID_BLOOM);
+        throw buildError(
+            BLOOM.INVALID_BLOOM,
+            'Invalid bloom filter format. Bloom filters must adhere to the format 0x[0-9a-fA-F]{16,}.'
+        );
     }
 
     if (!dataUtils.isHexString(data, false)) {
-        throw new Error(ERRORS.DATA.INVALID_DATA_TYPE('a hexadecimal string'));
+        throw buildError(
+            DATA.INVALID_DATA_TYPE,
+            'Invalid data type. Data should be an hexadecimal string'
+        );
     }
 
     if (!Number.isInteger(k) || k <= 0) {
-        throw new Error(ERRORS.BLOOM.INVALID_K);
+        throw buildError(
+            BLOOM.INVALID_K,
+            'Invalid k. It should be a positive integer.'
+        );
     }
 
     if (typeof data !== 'string') {
-        throw new Error(ERRORS.DATA.INVALID_DATA_TYPE('a string'));
+        throw buildError(
+            DATA.INVALID_DATA_TYPE,
+            'Invalid data type. Data should be a string'
+        );
     }
 
     // Ensure data is a Buffer
@@ -85,7 +97,7 @@ const isInBloom = (bloom: HexString, k: number, data: HexString): boolean => {
  * @param addressToCheck - The address in hexadecimal string format to be checked against the Bloom filter.
  * @returns A boolean indicating whether the address may be part of the set represented by the Bloom filter.
  *
- * @throws
+ * @throws{InvalidAddressError}
  * - Will throw an error if `bloom` is not a valid Bloom filter format.
  * - Will throw an error if `k` is not a positive integer.
  * - Will throw an error if `addressToCheck` is not a valid vechain thor address format.
@@ -97,7 +109,10 @@ const isAddressInBloom = (
     addressToCheck: HexString
 ): boolean => {
     if (!address.isAddress(addressToCheck)) {
-        throw new Error(ERRORS.ADDRESS.INVALID_ADDRESS);
+        throw buildError(
+            ADDRESS.INVALID_ADDRESS,
+            'Invalid address given as input in Bloom filter.'
+        );
     }
 
     return isInBloom(bloom, k, addressToCheck);

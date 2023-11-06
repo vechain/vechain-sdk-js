@@ -1,4 +1,4 @@
-import { SimpleNet } from '../../src';
+import { HttpClient } from '../../src';
 
 /**
  * Url of the testnet fixture
@@ -13,27 +13,27 @@ const _soloUrl = 'http://localhost:8669';
 /**
  * Network instance fixture
  */
-const network = new SimpleNet(_testnetUrl);
+const network = new HttpClient(_testnetUrl);
 
 /**
  * Solo network instance fixture
  */
-const soloNetwork = new SimpleNet(_soloUrl);
+const soloNetwork = new HttpClient(_soloUrl);
 
 /**
  * First testnet block fixture
  */
-const firstTestnetBlock = {
-    number: 1,
-    id: '0x000000019015bbd98fc1c9088d793ba9add53896a29cd9aa3a4dcabd1f561c38',
-    size: 236,
+const testnetGenesisBlock = {
+    number: 0,
+    id: '0x000000000b2bce3c70bc649a02749e8687721b09ed2e15997f466536b20bb127',
+    size: 170,
     parentID:
-        '0x000000000b2bce3c70bc649a02749e8687721b09ed2e15997f466536b20bb127',
-    timestamp: 1530014410,
+        '0xffffffff00000000000000000000000000000000000000000000000000000000',
+    timestamp: 1530014400,
     gasLimit: 10000000,
-    beneficiary: '0xb4094c25f86d628fdd571afc4077f0d0196afb48',
+    beneficiary: '0x0000000000000000000000000000000000000000',
     gasUsed: 0,
-    totalScore: 1,
+    totalScore: 0,
     txsRoot:
         '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
     txsFeatures: 0,
@@ -42,7 +42,7 @@ const firstTestnetBlock = {
     receiptsRoot:
         '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
     com: false,
-    signer: '0x25ae0ef84da4a76d5a1dfe80d3789c2c46fee30a',
+    signer: '0x0000000000000000000000000000000000000000',
     isTrunk: true,
     isFinalized: true,
     transactions: []
@@ -70,7 +70,7 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 export {
     network,
     soloNetwork,
-    firstTestnetBlock,
+    testnetGenesisBlock,
     testAccount,
     zeroAddressAccountDetails,
     ZERO_ADDRESS

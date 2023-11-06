@@ -1,4 +1,8 @@
-import { DECIMAL_REGEX, HEX_REGEX, HEX_REGEX_OPTIONAL_PREFIX } from '../const';
+import {
+    DECIMAL_INTEGER_REGEX,
+    HEX_REGEX,
+    HEX_REGEX_OPTIONAL_PREFIX
+} from '../const';
 import { type HexString } from '../types';
 import { type HexConfig } from './types';
 
@@ -48,7 +52,7 @@ const isHexString = (data: string, checkPrefix: boolean = true): boolean => {
  * @returns A boolean indicating whether the input is a valid decimal string.
  */
 const isDecimalString = (data: string): boolean => {
-    return DECIMAL_REGEX.test(data);
+    return DECIMAL_INTEGER_REGEX.test(data);
 };
 
 /**

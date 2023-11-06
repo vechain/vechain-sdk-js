@@ -1,4 +1,4 @@
-import { ERRORS, RLP, type RLPValidObject, type RLPProfile } from '../../src';
+import { RLP, type RLPValidObject, type RLPProfile } from '../../src';
 
 /* Simple RLP encode */
 const encodeTestCases = [
@@ -83,47 +83,37 @@ const invalidNumericKindEncodeTestCases = [
     {
         kind: new RLP.NumericKind(8),
         data: '0x123z',
-        description: 'invalid hex string',
-        throws: ERRORS.RLP.INVALID_RLP(
-            '',
-            'expected non-negative integer in hex or dec string'
-        )
+        description: 'invalid hex string'
     },
     {
         kind: new RLP.NumericKind(8),
         data: {},
-        description: 'invalid object',
-        throws: ERRORS.RLP.INVALID_RLP('', 'expected string or number')
+        description: 'invalid object'
     },
     {
         kind: new RLP.NumericKind(8),
         data: '0x',
-        description: 'invalid hex string',
-        throws: ERRORS.RLP.INVALID_RLP('', 'expected valid hex string number')
+        description: 'invalid hex string'
     },
     {
         kind: new RLP.NumericKind(8),
         data: -1,
-        description: 'negative number',
-        throws: ERRORS.RLP.INVALID_RLP('', 'expected non-negative safe integer')
+        description: 'negative number'
     },
     {
         kind: new RLP.NumericKind(8),
         data: '0x12345678123456780',
-        description: 'number overflow',
-        throws: ERRORS.RLP.INVALID_RLP('', 'expected number in 8 bytes')
+        description: 'number overflow'
     },
     {
         kind: new RLP.NumericKind(8),
         data: 2 ** 64,
-        description: 'number overflow',
-        throws: ERRORS.RLP.INVALID_RLP('', 'expected non-negative safe integer')
+        description: 'number overflow'
     },
     {
         kind: new RLP.NumericKind(1),
         data: 256,
-        description: 'number overflow',
-        throws: ERRORS.RLP.INVALID_RLP('', 'expected number in 1 bytes')
+        description: 'number overflow'
     }
 ];
 
@@ -159,8 +149,7 @@ const invalidBufferKindDecodeTestCases = [
     {
         kind: new RLP.BufferKind(),
         data: 42,
-        description: 'invalid data',
-        throws: ERRORS.RLP.INVALID_RLP('', 'expected buffer')
+        description: 'invalid data'
     }
 ];
 
@@ -168,17 +157,12 @@ const invalidNumericKindDecodeTestCases = [
     {
         kind: new RLP.NumericKind(8),
         data: Buffer.alloc(9, 1),
-        description: 'buffer exceeds max bytes',
-        throws: ERRORS.RLP.INVALID_RLP('', 'expected less than 8 bytes')
+        description: 'buffer exceeds max bytes'
     },
     {
         kind: new RLP.NumericKind(8),
         data: Buffer.from([0, 1]),
-        description: 'buffer with leading zero',
-        throws: ERRORS.RLP.INVALID_RLP(
-            '',
-            'expected canonical integer (no leading zero bytes)'
-        )
+        description: 'buffer with leading zero'
     }
 ];
 
@@ -196,20 +180,17 @@ const invalidHexBlobKindEncodeTestCases = [
     {
         kind: new RLP.HexBlobKind(),
         data: '0x123z',
-        description: 'invalid hex string',
-        throws: ERRORS.RLP.INVALID_RLP('', 'expected hex string')
+        description: 'invalid hex string'
     },
     {
         kind: new RLP.HexBlobKind(),
         data: {},
-        description: 'invalid object',
-        throws: ERRORS.RLP.INVALID_RLP('', 'expected string')
+        description: 'invalid object'
     },
     {
         kind: new RLP.HexBlobKind(),
         data: '0x123',
-        description: 'invalid hex string',
-        throws: ERRORS.RLP.INVALID_RLP('', 'expected even length string')
+        description: 'invalid hex string'
     }
 ];
 
@@ -227,26 +208,22 @@ const invalidFixedHexBlobEncodeTestCases = [
     {
         kind: new RLP.FixedHexBlobKind(1),
         data: '0x123z',
-        description: 'invalid hex string',
-        throws: ERRORS.RLP.INVALID_RLP('', 'expected hex string')
+        description: 'invalid hex string'
     },
     {
         kind: new RLP.FixedHexBlobKind(1),
         data: {},
-        description: 'invalid data type',
-        throws: ERRORS.RLP.INVALID_RLP('', 'expected string')
+        description: 'invalid data type'
     },
     {
         kind: new RLP.FixedHexBlobKind(1),
         data: '0x123',
-        description: 'invalid hex string',
-        throws: ERRORS.RLP.INVALID_RLP('', 'expected even length string')
+        description: 'invalid hex string'
     },
     {
         kind: new RLP.FixedHexBlobKind(1),
         data: '0x012345',
-        description: 'overflow hex string',
-        throws: ERRORS.RLP.INVALID_RLP('', 'expected hex string to be 1 bytes')
+        description: 'overflow hex string'
     }
 ];
 
@@ -276,8 +253,7 @@ const invalidHexBlobKindDecodeTestCases = [
     {
         kind: new RLP.HexBlobKind(),
         data: 42,
-        description: 'invalid data',
-        throws: ERRORS.RLP.INVALID_RLP('', 'expected buffer')
+        description: 'invalid data'
     }
 ];
 
@@ -301,20 +277,17 @@ const invalidFixedBlobKindDecodeTestCases = [
     {
         kind: new RLP.FixedHexBlobKind(3),
         data: Buffer.from([1, 2]),
-        description: 'buffer with data',
-        throws: ERRORS.RLP.INVALID_RLP('', 'expected buffer to be 3 bytes')
+        description: 'buffer with data'
     },
     {
         kind: new RLP.FixedHexBlobKind(1),
         data: Buffer.from([1, 2]),
-        description: 'buffer with data',
-        throws: ERRORS.RLP.INVALID_RLP('', 'expected buffer to be 1 bytes')
+        description: 'buffer with data'
     },
     {
         kind: new RLP.FixedHexBlobKind(1),
         data: '0x123',
-        description: 'invalid data buffer',
-        throws: ERRORS.RLP.INVALID_RLP('', 'expected buffer')
+        description: 'invalid data buffer'
     }
 ];
 
@@ -775,26 +748,22 @@ const invalidEncodeObjectTestCases = [
     {
         profile: bufferProfile,
         data: invalidBufferData,
-        description: 'encode buffer profile with invalid data',
-        throws: new Error('bar: expected buffer')
+        description: 'encode buffer profile with invalid data'
     },
     {
         profile: numericProfileWithMaxBytes,
         data: numericDataInvalidArray,
-        description: 'encode numeric profile with invalid array',
-        throws: new Error('baz: expected array')
+        description: 'encode numeric profile with invalid array'
     },
     {
         profile: numericProfileWithMaxBytes,
         data: numericDataWithByteOverflow,
-        description: 'encode numeric profile with byte overflow',
-        throws: new Error('foo: expected number in 1 bytes')
+        description: 'encode numeric profile with byte overflow'
     },
     {
         profile: hexBlobProfile,
         data: hexBlobDataWithInvalidHex,
-        description: 'encode hex blob profile with invalid hex',
-        throws: new Error('bar: expected hex string')
+        description: 'encode hex blob profile with invalid hex'
     }
 ];
 
@@ -812,20 +781,17 @@ const invalidDecodeObjectTestCases = [
     {
         profile: numericProfile,
         data: Buffer.from('c60102c3c20304', 'hex'),
-        description: 'decode buffer profile with invalid data',
-        throws: new Error('baz.#0: expected 3 items, but got 2')
+        description: 'decode buffer profile with invalid data'
     },
     {
         profile: numericProfile,
         data: Buffer.from('c3010202', 'hex'),
-        description: 'decode buffer profile with invalid data',
-        throws: new Error('baz: expected array')
+        description: 'decode buffer profile with invalid data'
     },
     {
         profile: numericProfile,
         data: Buffer.from('d1c7c60304c3c2070802c7c60304c3c20708', 'hex'),
-        description: 'decode buffer profile with invalid data',
-        throws: new Error('foo: expected buffer')
+        description: 'decode buffer profile with invalid data'
     }
 ];
 

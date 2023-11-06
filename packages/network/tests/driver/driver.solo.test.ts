@@ -5,7 +5,7 @@ import {
     testAccount,
     zeroAddressAccountDetails
 } from './fixture';
-import { type NetParams } from '../../src';
+import { type HttpParams } from '../../src';
 
 /**
  * SimpleNet class tests
@@ -33,14 +33,14 @@ describe('Test SimpleNet class on Solo', () => {
         // Assert that the HTTP request fails with an error
         await expect(
             soloNetwork.http('GET', '/error-test-path')
-        ).rejects.toThrow('404 get /error-test-path: 404 page not found');
+        ).rejects.toThrowError('404 get /error-test-path: 404 page not found');
     });
 
     /**
      * Request params validation
      */
     test('Should validate response headers', async () => {
-        const customParams: NetParams = {
+        const customParams: HttpParams = {
             query: {},
             body: {},
             headers: {

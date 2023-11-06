@@ -1,4 +1,4 @@
-import type { ABI, DefaultErrorData } from '../types';
+import type { DefaultErrorData } from '../types';
 import { ErrorBase } from './base';
 
 /**
@@ -61,10 +61,38 @@ class InvalidAbiFunctionError extends ErrorBase<
     DefaultErrorData
 > {}
 
+/**
+ * Invalid function error to be thrown when an invalid function is detected.
+ * @param code - The error code from the error types enum.
+ * @param message - The error message.
+ * @param data - The error data.
+ * @returns The error object.
+ */
+class ContractInterfaceError extends ErrorBase<
+    ABI.CONTRACT_INTERFACE_ERROR,
+    DefaultErrorData
+> {}
+
+/**
+ * Errors enum.
+ *
+ * @public
+ */
+enum ABI {
+    INVALID_FUNCTION = 'INVALID_FUNCTION',
+    INVALID_EVENT = 'INVALID_EVENT',
+    INVALID_DATA_TO_DECODE = 'INVALID_DATA_TO_DECODE',
+    INVALID_DATA_TO_ENCODE = 'INVALID_DATA_TO_ENCODE',
+    INVALID_FORMAT_TYPE = 'INVALID_FORMAT_TYPE',
+    CONTRACT_INTERFACE_ERROR = 'CONTRACT_INTERFACE_ERROR'
+}
+
 export {
     InvalidAbiDataToDecodeError,
     InvalidAbiDataToEncodeError,
     InvalidAbiEventError,
     InvalidAbiFormatTypeError,
-    InvalidAbiFunctionError
+    InvalidAbiFunctionError,
+    ContractInterfaceError,
+    ABI
 };

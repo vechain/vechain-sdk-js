@@ -28,7 +28,7 @@
         "@typescript-eslint/prefer-nullish-coalescing": "error",
         "@typescript-eslint/prefer-optional-chain": "error",
         "prettier/prettier": ["error", { "singleQuote": true, "trailingComma": "none", "tabWidth": 4 }],
-        "no-warning-comments": "error",
+        "no-warning-comments": "warn",
         "no-multi-str": "off"
     }
 }

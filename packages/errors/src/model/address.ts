@@ -1,4 +1,4 @@
-import type { ADDRESS, DefaultErrorData } from '../types';
+import type { DefaultErrorData } from '../types';
 import { ErrorBase } from './base';
 
 /**
@@ -14,15 +14,12 @@ class InvalidAddressError extends ErrorBase<
 > {}
 
 /**
- * Invalid address error to be thrown when an invalid checksum is provided.
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @returns The error object.
+ * Errors enum.
+ *
+ * @public
  */
-class InvalidChecksumError extends ErrorBase<
-    ADDRESS.INVALID_CHECKSUM,
-    DefaultErrorData
-> {}
+enum ADDRESS {
+    INVALID_ADDRESS = 'INVALID_ADDRESS'
+}
 
-export { InvalidAddressError, InvalidChecksumError };
+export { InvalidAddressError, ADDRESS };

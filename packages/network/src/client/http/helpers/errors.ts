@@ -8,6 +8,8 @@ import { type AxiosError } from 'axios';
  *
  * @param error - The AxiosError to convert into an Error.
  * @returns A standard Error with a descriptive message.
+ *
+ * @TODO - Refactor using our error system (https://github.com/vechainfoundation/vechain-sdk/issues/192)
  */
 const convertError = (error: AxiosError): Error => {
     if (error.response != null) {
