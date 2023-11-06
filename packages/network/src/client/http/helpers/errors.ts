@@ -13,8 +13,6 @@ import {
  *
  * @param error - The AxiosError to convert into an Error.
  * @returns A standard Error with a descriptive message.
- *
- * @TODO - Refactor using our error system (https://github.com/vechainfoundation/vechain-sdk/issues/192)
  */
 const convertError = (error: AxiosError): HTTPClientError => {
     // Error has a response
