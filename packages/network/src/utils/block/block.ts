@@ -10,7 +10,8 @@ import { dataUtils } from '@vechain-sdk/core';
 const isBlockRevision = (revision: string): boolean => {
     if (
         !dataUtils.isHexString(revision) &&
-        !dataUtils.isDecimalString(revision)
+        !dataUtils.isDecimalString(revision) &&
+        revision !== 'best'
     ) {
         return false;
     }
