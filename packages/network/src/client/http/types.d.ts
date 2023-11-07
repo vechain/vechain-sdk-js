@@ -41,23 +41,23 @@ interface HttpParams {
     /**
      * Query parameters to include in the request.
      */
-    query: Record<string, string>;
+    query?: Record<string, string>;
 
     /**
      * The request body, which can be of any type.
      */
-    body: unknown;
+    body?: unknown;
 
     /**
      * Custom headers to be included in the request.
      */
-    headers: Record<string, string>;
+    headers?: Record<string, string>;
 
     /**
      * A callback function to validate response headers.
      * @param headers - The response headers to validate.
      */
-    validateResponseHeader: (headers: Record<string, string>) => void;
+    validateResponseHeader?: (headers: Record<string, string>) => void;
 }
 
 /**

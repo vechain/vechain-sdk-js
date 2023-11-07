@@ -37,7 +37,10 @@ import {
     InvalidHDNodeDerivationPathError,
     CertificateNotSignedError,
     CertificateInvalidSignatureFormatError,
-    CertificateInvalidSignerError
+    CertificateInvalidSignerError,
+    ContractInterfaceError,
+    HTTP_CLIENT,
+    HTTPClientError
 } from '../src';
 
 /**
@@ -166,6 +169,10 @@ const ErrorsCodeAndClassesMapsFixture = [
             {
                 errorCode: ABI.INVALID_FUNCTION,
                 classExpected: InvalidAbiFunctionError
+            },
+            {
+                errorCode: ABI.CONTRACT_INTERFACE_ERROR,
+                classExpected: ContractInterfaceError
             }
         ]
     },
@@ -209,6 +216,15 @@ const ErrorsCodeAndClassesMapsFixture = [
             {
                 errorCode: TRANSACTION.INVALID_DELEGATION,
                 classExpected: TransactionDelegationError
+            }
+        ]
+    },
+    {
+        name: 'HTTP Client',
+        elements: [
+            {
+                errorCode: HTTP_CLIENT.INVALID_HTTP_REQUEST,
+                classExpected: HTTPClientError
             }
         ]
     }

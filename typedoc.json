@@ -1,0 +1,13 @@
+{
+    "$schema": "https://typedoc.org/schema.json",
+    "entryPoints": ["./packages/*"],
+    "entryPointStrategy": "packages",
+    "out": "./api-docs",
+    "readme": "README.md",
+    "name": "vechain-sdk",
+    "navigationLinks": {
+        "vechain": "https://www.vechain.org/",
+        "docs": "https://docs.vechain.org/",
+        "github": "https://github.com/vechainfoundation"
+    }
+}

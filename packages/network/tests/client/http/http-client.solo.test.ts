@@ -1,17 +1,15 @@
 import { describe, expect, test } from '@jest/globals';
-import {
-    ZERO_ADDRESS,
-    soloNetwork,
-    testAccount,
-    zeroAddressAccountDetails
-} from './fixture';
-import { type HttpParams } from '../../src';
+import { ZERO_ADDRESS, zeroAddressAccountDetails } from './fixture';
+import { type HttpParams } from '../../../src';
+import { soloNetwork, testAccount } from '../../fixture';
+import { HTTPClientError } from '@vechain-sdk/errors';
 
 /**
- * SimpleNet class tests
+ * HttpClient class tests.
+ *
  * @group integration/network
  */
-describe('Test SimpleNet class on Solo', () => {
+describe('Test HttpClient class on Solo node', () => {
     /**
      * HTTP Request tests
      */
@@ -33,7 +31,7 @@ describe('Test SimpleNet class on Solo', () => {
         // Assert that the HTTP request fails with an error
         await expect(
             soloNetwork.http('GET', '/error-test-path')
-        ).rejects.toThrowError('404 get /error-test-path: 404 page not found');
+        ).rejects.toThrowError(HTTPClientError);
     });
 
     /**

@@ -1,5 +1,5 @@
-import type { DefaultErrorData } from '../types';
-import { ErrorBase } from './base';
+import { type DefaultErrorData } from '../../types';
+import { ErrorBase } from '../base';
 
 /**
  * Invalid bloom error to be thrown when an invalid bloom is detected.
