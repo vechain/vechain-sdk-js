@@ -1,4 +1,4 @@
-import { address, secp256k1, type TransactionBody } from '../../src';
+import { addressUtils, secp256k1, type TransactionBody } from '../../src';
 
 /**
  * Simple correct transaction body fixture
@@ -103,7 +103,9 @@ const _signerPrivateKey = Buffer.from(
 );
 const signer = {
     privateKey: _signerPrivateKey,
-    address: address.fromPublicKey(secp256k1.derivePublicKey(_signerPrivateKey))
+    address: addressUtils.fromPublicKey(
+        secp256k1.derivePublicKey(_signerPrivateKey)
+    )
 };
 
 /**
@@ -115,7 +117,7 @@ const _delegatorPrivateKey = Buffer.from(
 );
 const delegator = {
     privateKey: _delegatorPrivateKey,
-    address: address.fromPublicKey(
+    address: addressUtils.fromPublicKey(
         secp256k1.derivePublicKey(_delegatorPrivateKey)
     )
 };

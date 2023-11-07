@@ -3,13 +3,14 @@ import {
     NULL_STORAGE_SLOT,
     getAccountWithRevisionTestCases,
     getBytecodeTestCases,
+    invalidGetAccountTests,
+    invalidGetBytecodeTests,
     invalidGetStorageAtTests,
     testSmartContract,
     testStoragePositionKey,
     thorClient
 } from './fixture';
 import { testAccount } from '../../fixture';
-import { InvalidDataTypeError } from '@vechain-sdk/errors';
 
 /**
  * ThorClient class tests
@@ -49,13 +50,17 @@ describe('ThorClient', () => {
         });
 
         /**
-         * getAccount with invalid revision
+         * getAccount with invalid revision & address
          */
-        test('get account with invalid revision', async () => {
-            await expect(
-                thorClient.getAccount(testAccount, 'invalid-revision')
-            ).rejects.toThrowError(InvalidDataTypeError);
-        });
+        invalidGetAccountTests.forEach(
+            ({ description, address, revision, expectedError }) => {
+                test(description, async () => {
+                    await expect(
+                        thorClient.getAccount(address, revision)
+                    ).rejects.toThrowError(expectedError);
+                });
+            }
+        );
     });
 
     /**
@@ -78,13 +83,17 @@ describe('ThorClient', () => {
         );
 
         /**
-         * Tests invalid revision
+         * Tests invalid revision & address
          */
-        test('invalid revision should throw an error', async () => {
-            await expect(
-                thorClient.getBytecode(testAccount, 'invalid-revision')
-            ).rejects.toThrowError(InvalidDataTypeError);
-        });
+        invalidGetBytecodeTests.forEach(
+            ({ description, address, revision, expectedError }) => {
+                test(description, async () => {
+                    await expect(
+                        thorClient.getBytecode(address, revision)
+                    ).rejects.toThrowError(expectedError);
+                });
+            }
+        );
     });
 
     /**
@@ -122,14 +131,10 @@ describe('ThorClient', () => {
          * Tests invalid position & revisions
          */
         invalidGetStorageAtTests.forEach(
-            ({ description, position, revision, expectedError }) => {
+            ({ description, address, position, revision, expectedError }) => {
                 test(description, async () => {
                     await expect(
-                        thorClient.getStorageAt(
-                            testSmartContract,
-                            position,
-                            revision
-                        )
+                        thorClient.getStorageAt(address, position, revision)
                     ).rejects.toThrowError(expectedError);
                 });
             }

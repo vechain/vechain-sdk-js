@@ -137,6 +137,39 @@ const invalidGetStorageAtTests = [
     }
 ];
 
+/**
+ * Invalid getAccount test cases for invalid data types
+ */
+const invalidGetAccountTests = [
+    {
+        description: 'Should throw error for invalid revision',
+        address: testAccount,
+        revision: 'invalid-revision',
+        expectedError: InvalidDataTypeError
+    },
+    {
+        description: 'Should throw error for invalid address',
+        address: 'invalid-address',
+        revision: '1',
+        expectedError: InvalidDataTypeError
+    }
+];
+
+const invalidGetBytecodeTests = [
+    {
+        description: 'Should throw error for invalid revision',
+        address: testSmartContract,
+        revision: 'invalid-revision',
+        expectedError: InvalidDataTypeError
+    },
+    {
+        description: 'Should throw error for invalid address',
+        address: 'invalid-address',
+        revision: '1',
+        expectedError: InvalidDataTypeError
+    }
+];
+
 export {
     thorClient,
     getAccountWithRevisionTestCases,
@@ -144,5 +177,7 @@ export {
     testSmartContract,
     testStoragePositionKey,
     NULL_STORAGE_SLOT,
-    invalidGetStorageAtTests
+    invalidGetStorageAtTests,
+    invalidGetAccountTests,
+    invalidGetBytecodeTests
 };

@@ -13,7 +13,7 @@ import {
     type IAccountClient,
     type ResponseStorage
 } from './types';
-import { dataUtils } from '@vechain-sdk/core';
+import { dataUtils, addressUtils } from '@vechain-sdk/core';
 
 /**
  * The `AccountClient` class provides methods to interact with account-related endpoints
@@ -34,12 +34,20 @@ class AccountClient implements IAccountClient {
      * @param revision - (Optional) The block number or ID to reference the state of the account.
      * @returns A promise that resolves to an object containing the account details (balance, energy, hasCode).
      *
-     * @throws {InvalidDataTypeError} - Will throw an error if the revision is not a valid block number or ID.
+     * @throws {InvalidDataTypeError} - Will throw an error if the revision is not a valid block number or ID
+     *         or if the address is not a valid address.
      */
     public async getAccount(
         address: string,
         revision?: string
     ): Promise<AccountDetail> {
+        if (!addressUtils.isAddress(address)) {
+            throw buildError(
+                DATA.INVALID_DATA_TYPE,
+                'Invalid address. The address must be 20 bytes (a 42 characters hex string with a `0x` prefix.)'
+            );
+        }
+
         if (revision != null && !blockUtils.isBlockRevision(revision))
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
@@ -62,12 +70,20 @@ class AccountClient implements IAccountClient {
      * @param revision - (Optional) The block number or ID to reference the bytecode version.
      * @returns A promise that resolves to the contract bytecode as a string.
      *
-     * @throws {InvalidDataTypeError} - Will throw an error if the revision is not a valid block number or ID.
+     * @throws {InvalidDataTypeError} - Will throw an error if the revision is not a valid block number or ID
+     *         or if the address is not a valid address.
      */
     public async getBytecode(
         address: string,
         revision?: string
     ): Promise<string> {
+        if (!addressUtils.isAddress(address)) {
+            throw buildError(
+                DATA.INVALID_DATA_TYPE,
+                'Invalid address. The address must be 20 bytes (a 42 characters hex string with a `0x` prefix.)'
+            );
+        }
+
         if (revision != null && !blockUtils.isBlockRevision(revision))
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
@@ -94,13 +110,20 @@ class AccountClient implements IAccountClient {
      * @returns A promise that resolves to the storage value in hex string format.
      *
      * @throws {InvalidDataTypeError} - Will throw an error if the revision is not a valid block number or ID
-     *         or if the position is not a 32 bytes hex string.
+     *         or if the position is not a 32 bytes hex string or if the address is not a valid address.
      */
     public async getStorageAt(
         address: string,
         position: string,
         revision?: string
     ): Promise<string> {
+        if (!addressUtils.isAddress(address)) {
+            throw buildError(
+                DATA.INVALID_DATA_TYPE,
+                'Invalid address. The address must be 20 bytes (a 42 characters hex string with a `0x` prefix.)'
+            );
+        }
+
         if (revision != null && !blockUtils.isBlockRevision(revision))
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
