@@ -1,15 +1,9 @@
 import { DATA, buildError } from '@vechain-sdk/errors';
-import { blockUtils, buildQuery } from '../../../utils';
+import { blockUtils, buildQuery, thorest } from '../../../utils';
 import { type HttpClient } from '../../http';
-import {
-    GET_ACCOUNT_BYTECODE_ENDPOINT,
-    GET_ACCOUNT_DETAIL_ENDPOINT,
-    GET_STORAGE_AT_ENDPOINT
-} from '../api';
 import {
     type ResponseBytecode,
     type AccountDetail,
-    type IAccountClient,
     type ResponseStorage
 } from './types';
 import { dataUtils, addressUtils } from '@vechain-sdk/core';
@@ -19,7 +13,7 @@ import { dataUtils, addressUtils } from '@vechain-sdk/core';
  * of the VechainThor blockchain. It allows fetching details, bytecode, and storage data
  * for a specific blockchain account.
  */
-class AccountClient implements IAccountClient {
+class AccountClient {
     /**
      * Initializes a new instance of the `AccountClient` class.
      * @param httpClient - The HTTP client instance used for making HTTP requests.
@@ -55,7 +49,7 @@ class AccountClient implements IAccountClient {
 
         return (await this.httpClient.http(
             'GET',
-            GET_ACCOUNT_DETAIL_ENDPOINT(address),
+            thorest.account.ACCOUNT_DETAIL(address),
             {
                 query: buildQuery({ revision })
             }
@@ -91,7 +85,7 @@ class AccountClient implements IAccountClient {
 
         const result = (await this.httpClient.http(
             'GET',
-            GET_ACCOUNT_BYTECODE_ENDPOINT(address),
+            thorest.account.ACCOUNT_BYTECODE(address),
             {
                 query: buildQuery({ revision })
             }
@@ -138,7 +132,7 @@ class AccountClient implements IAccountClient {
 
         const result = (await this.httpClient.http(
             'GET',
-            GET_STORAGE_AT_ENDPOINT(address, position),
+            thorest.account.STORAGE_AT(address, position),
             {
                 query: buildQuery({ position, revision })
             }
