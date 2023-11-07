@@ -1,12 +1,11 @@
 import { DATA, buildError } from '@vechain-sdk/errors';
-import { blockUtils } from '../../../utils';
+import { blockUtils, buildQuery } from '../../../utils';
 import { type HttpClient } from '../../http';
 import {
     GET_ACCOUNT_BYTECODE_ENDPOINT,
     GET_ACCOUNT_DETAIL_ENDPOINT,
     GET_STORAGE_AT_ENDPOINT
 } from '../api';
-import { buildQuery } from '../helpers';
 import {
     type ResponseBytecode,
     type AccountDetail,
