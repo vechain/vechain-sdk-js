@@ -1,7 +1,7 @@
 /**
  * Implements the JSON Keystore v3 Wallet encryption, decryption, and validation functionality.
  */
-import { address } from '../address';
+import { addressUtils } from '../address';
 import { secp256k1 } from '../secp256k1';
 import { ethers } from 'ethers';
 import { SCRYPT_PARAMS } from '../utils';
@@ -21,7 +21,7 @@ async function encrypt(
 ): Promise<Keystore> {
     // Public and Address are derived from private key
     const derivePublicKey = secp256k1.derivePublicKey(privateKey);
-    const deriveAddress = address.fromPublicKey(derivePublicKey);
+    const deriveAddress = addressUtils.fromPublicKey(derivePublicKey);
 
     // Create keystore account compatible with ethers
     const keystoreAccount: ethers.KeystoreAccount = {

@@ -3,7 +3,7 @@ import {
     certificate,
     secp256k1,
     blake2b256,
-    address
+    addressUtils
 } from '@vechain-sdk/core';
 
 // In this example we create a certificate and
@@ -12,7 +12,7 @@ import {
 // Generate a private key and address for the signer
 const privateKey = secp256k1.generatePrivateKey();
 const publicKey = secp256k1.derivePublicKey(privateKey);
-const signerAddress = address.fromPublicKey(publicKey);
+const signerAddress = addressUtils.fromPublicKey(publicKey);
 
 // Create a certificate
 const cert: Certificate = {

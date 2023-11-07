@@ -1,24 +1,4 @@
-import { HttpClient } from '../../src';
-
-/**
- * Url of the testnet fixture
- */
-const _testnetUrl = 'https://testnet.vechain.org';
-
-/**
- * Url of the solo network fixture
- */
-const _soloUrl = 'http://localhost:8669';
-
-/**
- * Network instance fixture
- */
-const network = new HttpClient(_testnetUrl);
-
-/**
- * Solo network instance fixture
- */
-const soloNetwork = new HttpClient(_soloUrl);
+import { ZERO_ADDRESS } from '../../fixture';
 
 /**
  * First testnet block fixture
@@ -31,7 +11,7 @@ const testnetGenesisBlock = {
         '0xffffffff00000000000000000000000000000000000000000000000000000000',
     timestamp: 1530014400,
     gasLimit: 10000000,
-    beneficiary: '0x0000000000000000000000000000000000000000',
+    beneficiary: ZERO_ADDRESS,
     gasUsed: 0,
     totalScore: 0,
     txsRoot:
@@ -42,7 +22,7 @@ const testnetGenesisBlock = {
     receiptsRoot:
         '0x45b0cfc220ceec5b7c1c62c4d4193d38e4eba48e8815729ce75f9c0ab0e4c1c0',
     com: false,
-    signer: '0x0000000000000000000000000000000000000000',
+    signer: ZERO_ADDRESS,
     isTrunk: true,
     isFinalized: true,
     transactions: []
@@ -57,21 +37,4 @@ const zeroAddressAccountDetails = {
     hasCode: false
 };
 
-/**
- * Simple test account fixture
- */
-const testAccount = '0x5034aa590125b64023a0262112b98d72e3c8e40e';
-
-/**
- * Zero address fixture
- */
-const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
-
-export {
-    network,
-    soloNetwork,
-    testnetGenesisBlock,
-    testAccount,
-    zeroAddressAccountDetails,
-    ZERO_ADDRESS
-};
+export { testnetGenesisBlock, zeroAddressAccountDetails, ZERO_ADDRESS };

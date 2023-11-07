@@ -1,4 +1,4 @@
-import { address } from '../address';
+import { addressUtils } from '../address';
 import { type RLPValidObject } from '../encoding';
 import { blake2b256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
@@ -126,7 +126,7 @@ class Transaction {
         );
 
         // Address from public key
-        return address.fromPublicKey(delegatorPublicKey);
+        return addressUtils.fromPublicKey(delegatorPublicKey);
     }
 
     /**
@@ -188,7 +188,7 @@ class Transaction {
      */
     public getSignatureHash(delegateFor?: string): Buffer {
         // Correct delegateFor address
-        if (delegateFor !== undefined && !address.isAddress(delegateFor))
+        if (delegateFor !== undefined && !addressUtils.isAddress(delegateFor))
             throw buildError(
                 ADDRESS.INVALID_ADDRESS,
                 'Invalid address given as input as delegateFor parameter.'
@@ -244,7 +244,7 @@ class Transaction {
         );
 
         // Address from public key
-        return address.fromPublicKey(originPublicKey);
+        return addressUtils.fromPublicKey(originPublicKey);
     }
 
     /**

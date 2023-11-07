@@ -3,7 +3,7 @@ import {
     HDNode,
     type WordlistSizeType,
     ZERO_BUFFER,
-    address,
+    addressUtils,
     mnemonic,
     secp256k1
 } from '../../src';
@@ -32,9 +32,9 @@ describe('Hdnode', () => {
             const child = node.derive(i);
 
             // Correct address
-            expect(address.fromPublicKey(child.publicKey).slice(2)).toEqual(
-                addresses[i]
-            );
+            expect(
+                addressUtils.fromPublicKey(child.publicKey).slice(2)
+            ).toEqual(addresses[i]);
             expect(child.address).toEqual('0x' + addresses[i]);
 
             // Correct public key
@@ -53,9 +53,9 @@ describe('Hdnode', () => {
         for (let i = 0; i < 5; i++) {
             const child = xprivNode.derive(i);
             // Correct address
-            expect(address.fromPublicKey(child.publicKey).slice(2)).toEqual(
-                addresses[i]
-            );
+            expect(
+                addressUtils.fromPublicKey(child.publicKey).slice(2)
+            ).toEqual(addresses[i]);
             expect(child.address).toEqual('0x' + addresses[i]);
 
             // Correct public key
@@ -71,9 +71,9 @@ describe('Hdnode', () => {
         for (let i = 0; i < 5; i++) {
             const child = xpubNode.derive(i);
             // Correct address
-            expect(address.fromPublicKey(child.publicKey).slice(2)).toEqual(
-                addresses[i]
-            );
+            expect(
+                addressUtils.fromPublicKey(child.publicKey).slice(2)
+            ).toEqual(addresses[i]);
             expect(child.address).toEqual('0x' + addresses[i]);
 
             // Null private key
@@ -113,7 +113,7 @@ describe('Hdnode', () => {
 
                 // Address
                 expect(currentHdnode.address).toBeDefined();
-                address.isAddress(currentHdnode.address);
+                addressUtils.isAddress(currentHdnode.address);
             }
         );
     });

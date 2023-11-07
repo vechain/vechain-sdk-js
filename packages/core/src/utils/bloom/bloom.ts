@@ -1,7 +1,7 @@
 import { bloom as bloomInstance } from '../../bloom';
 import { dataUtils } from '../data';
 import { type HexString } from '../types';
-import { address } from '../../address';
+import { addressUtils } from '../../address';
 import { BLOOM_REGEX_LOWERCASE, BLOOM_REGEX_UPPERCASE } from '../const';
 import { ADDRESS, BLOOM, buildError, DATA } from '@vechain-sdk/errors';
 
@@ -108,7 +108,7 @@ const isAddressInBloom = (
     k: number,
     addressToCheck: HexString
 ): boolean => {
-    if (!address.isAddress(addressToCheck)) {
+    if (!addressUtils.isAddress(addressToCheck)) {
         throw buildError(
             ADDRESS.INVALID_ADDRESS,
             'Invalid address given as input in Bloom filter.'

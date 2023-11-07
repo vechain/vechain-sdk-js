@@ -7,7 +7,7 @@ import {
     X_PUB_PREFIX
 } from '../utils';
 import { type IHDNode } from './types';
-import { address } from '../address';
+import { addressUtils } from '../address';
 import { sha256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import { type WordlistSizeType } from '../mnemonic';
@@ -142,7 +142,7 @@ function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
         )
     );
     const cc = Buffer.from(ethersNode.chainCode.slice(2), 'hex');
-    const addr = address.fromPublicKey(pub);
+    const addr = addressUtils.fromPublicKey(pub);
 
     return {
         get publicKey() {

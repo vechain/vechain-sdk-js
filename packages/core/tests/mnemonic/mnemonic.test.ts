@@ -7,7 +7,7 @@ import {
     wrongDerivationPath
 } from './fixture';
 import {
-    address,
+    addressUtils,
     MNEMONIC_WORDLIST_ALLOWED_SIZES,
     secp256k1,
     type WordlistSizeType
@@ -66,7 +66,7 @@ describe('Mnemonic', () => {
                     expect(mnemonic.deriveAddress(words)).toBeDefined();
                     expect(mnemonic.deriveAddress(words).length).toEqual(42);
                     expect(
-                        address.isAddress(mnemonic.deriveAddress(words))
+                        addressUtils.isAddress(mnemonic.deriveAddress(words))
                     ).toBe(true);
                 }
             );

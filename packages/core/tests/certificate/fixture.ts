@@ -1,4 +1,4 @@
-import { secp256k1, address, blake2b256, certificate } from '../../src';
+import { secp256k1, addressUtils, blake2b256, certificate } from '../../src';
 
 /**
  * Private Key used for digital signature during certificate creation
@@ -19,7 +19,7 @@ const cert = {
     },
     domain: 'localhost',
     timestamp: 1545035330,
-    signer: address.fromPublicKey(secp256k1.derivePublicKey(privKey))
+    signer: addressUtils.fromPublicKey(secp256k1.derivePublicKey(privKey))
 };
 
 /**
