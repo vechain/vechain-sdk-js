@@ -20,5 +20,8 @@ describe('blockUtils', () => {
 
         // Test if a valid decimal string is a valid block revision
         expect(blockUtils.isBlockRevision('100')).toBe(true);
+
+        // Test if an invalid hex string is a valid block revision
+        expect(blockUtils.isBlockRevision('0xG8656c6c6f')).toBe(false);
     });
 });
