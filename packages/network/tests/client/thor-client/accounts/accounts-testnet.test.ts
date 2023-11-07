@@ -7,17 +7,16 @@ import {
     invalidGetBytecodeTests,
     invalidGetStorageAtTests,
     testSmartContract,
-    testStoragePositionKey,
-    thorClient
+    testStoragePositionKey
 } from './fixture';
-import { testAccount } from '../../fixture';
+import { testAccount, thorClient } from '../../../fixture';
 
 /**
  * ThorClient class tests
  *
  * @group integration/client/thor
  */
-describe('ThorClient', () => {
+describe('ThorClient - Acounts', () => {
     /**
      * getAccount tests
      */

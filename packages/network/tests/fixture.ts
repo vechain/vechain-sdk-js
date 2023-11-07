@@ -1,4 +1,4 @@
-import { HttpClient } from '../src';
+import { HttpClient, ThorClient } from '../src';
 
 /**
  * Url of the testnet fixture
@@ -30,4 +30,9 @@ const testAccount = '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa';
  */
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-export { testNetwork, soloNetwork, ZERO_ADDRESS, testAccount };
+/**
+ * Thor client instance fixture
+ */
+const thorClient = new ThorClient(testNetwork);
+
+export { testNetwork, soloNetwork, ZERO_ADDRESS, testAccount, thorClient };
