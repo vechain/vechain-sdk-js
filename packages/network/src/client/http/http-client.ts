@@ -1,11 +1,7 @@
 import Axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
 import { Agent as HttpAgent } from 'http';
 import { Agent as HttpsAgent } from 'https';
-import {
-    type IHttpClient,
-    type HttpParams,
-    type HttpClientOptions
-} from './types';
+import { type HttpParams, type HttpClientOptions } from './types';
 import { convertError, DEFAULT_HTTP_TIMEOUT } from '../../utils';
 import { buildError, HTTP_CLIENT } from '@vechain-sdk/errors';
 
@@ -17,7 +13,7 @@ import { buildError, HTTP_CLIENT } from '@vechain-sdk/errors';
  *
  * @public
  */
-class HttpClient implements IHttpClient {
+class HttpClient {
     protected readonly axios: AxiosInstance;
 
     /**

@@ -50,4 +50,4 @@ function toChecksumed(address: string): string {
     return ethers.getAddress(address);
 }
 
-export const address = { fromPublicKey, isAddress, toChecksumed };
+export const addressUtils = { fromPublicKey, isAddress, toChecksumed };

@@ -1,4 +1,4 @@
-import { address } from '../../address';
+import { addressUtils } from '../../address';
 import { secp256k1 } from '../../secp256k1';
 import { Transaction } from '../transaction';
 import { buildError, SECP256K1, TRANSACTION } from '@vechain-sdk/errors';
@@ -88,7 +88,7 @@ function signWithDelegator(
 
     const transactionHash = transactionToSign.getSignatureHash();
     const delegatedHash = transactionToSign.getSignatureHash(
-        address.fromPublicKey(secp256k1.derivePublicKey(signerPrivateKey))
+        addressUtils.fromPublicKey(secp256k1.derivePublicKey(signerPrivateKey))
     );
     const signature = Buffer.concat([
         secp256k1.sign(transactionHash, signerPrivateKey),

@@ -1,4 +1,4 @@
-import { address } from '../address';
+import { addressUtils } from '../address';
 import { blake2b256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
@@ -55,7 +55,7 @@ function verify(cert: Certificate): void {
     );
 
     // Signature does not match with the signer's public key
-    if (address.fromPublicKey(pubKey) !== cert.signer) {
+    if (addressUtils.fromPublicKey(pubKey) !== cert.signer) {
         throw buildError(
             CERTIFICATE.CERTIFICATE_INVALID_SIGNER,
             "Signature does not match with the signer's public key."

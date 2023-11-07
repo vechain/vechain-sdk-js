@@ -1,7 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
-import { type HttpParams } from '../../src';
-import { testnetGenesisBlock, network, testAccount } from './fixture';
-import { buildError, HTTP_CLIENT, HTTPClientError } from '@vechain-sdk/errors';
+import { type HttpParams } from '../../../src';
+import { testnetGenesisBlock } from './fixture';
+import { testAccount, testNetwork } from '../../fixture';
+import { HTTPClientError, HTTP_CLIENT, buildError } from '@vechain-sdk/errors';
 
 /**
  * Timeout for each test.
@@ -22,7 +23,7 @@ describe('Test HttpClient class on Testnet', () => {
         'Should perform an HTTP GET request and resolve with response data',
         async () => {
             // Perform an HTTP GET request using the HttpClient instance
-            const response = await network.http(
+            const response = await testNetwork.http(
                 'GET',
                 '/blocks/0?expanded=false'
             );
@@ -43,7 +44,7 @@ describe('Test HttpClient class on Testnet', () => {
         async () => {
             // Assert that the HTTP request fails with an error
             await expect(
-                network.http('GET', '/error-test-path')
+                testNetwork.http('GET', '/error-test-path')
             ).rejects.toThrowError(HTTPClientError);
         },
         TIMEOUT
@@ -69,7 +70,7 @@ describe('Test HttpClient class on Testnet', () => {
             };
 
             // Make an actual HTTP GET request and pass the validateResponseHeaders function
-            const response = await network.http(
+            const response = await testNetwork.http(
                 'GET',
                 '/accounts/' + testAccount,
                 customParams
@@ -100,7 +101,7 @@ describe('Test HttpClient class on Testnet', () => {
         };
 
         await expect(
-            network.http('GET', '/accounts/' + testAccount, customParams)
+            testNetwork.http('GET', '/accounts/' + testAccount, customParams)
         ).rejects.toThrowError(HTTPClientError);
     });
 });

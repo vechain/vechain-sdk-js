@@ -1,5 +1,5 @@
 import { describe, test, expect } from '@jest/globals';
-import { secp256k1, address, keystore } from '../../src';
+import { secp256k1, addressUtils, keystore } from '../../src';
 import { type Keystore } from '../../src';
 import { encryptionPassword } from './fixture';
 import {
@@ -28,8 +28,10 @@ describe('Keystore', () => {
 
         // Verify keystore
         expect(myKeystore.version).toBe(3);
-        const keyStoreAddress = address.toChecksumed(`0x` + myKeystore.address);
-        const addressFromPrivateKey = address.fromPublicKey(
+        const keyStoreAddress = addressUtils.toChecksumed(
+            `0x` + myKeystore.address
+        );
+        const addressFromPrivateKey = addressUtils.fromPublicKey(
             secp256k1.derivePublicKey(privateKey)
         );
         expect(keyStoreAddress).toEqual(addressFromPrivateKey);

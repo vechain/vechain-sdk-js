@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { address, secp256k1 } from '../../src';
+import { addressUtils, secp256k1 } from '../../src';
 import {
     checksumedAndUnchecksumedAddresses,
     invalidPrivateKey,
@@ -25,12 +25,16 @@ describe('Address', () => {
          * Valid and invalid address check
          */
         test('validate address', () => {
-            expect(address.isAddress('not an address')).toEqual(false);
+            expect(addressUtils.isAddress('not an address')).toEqual(false);
             expect(
-                address.isAddress('52908400098527886E0F7030069857D2E4169EE7')
+                addressUtils.isAddress(
+                    '52908400098527886E0F7030069857D2E4169EE7'
+                )
             ).toEqual(false);
             expect(
-                address.isAddress('0x52908400098527886E0F7030069857D2E4169EE7')
+                addressUtils.isAddress(
+                    '0x52908400098527886E0F7030069857D2E4169EE7'
+                )
             ).toEqual(true);
         });
     });
@@ -47,7 +51,7 @@ describe('Address', () => {
             expect(secp256k1.derivePublicKey(simplePrivateKey)).toEqual(
                 simplePublicKey
             );
-            expect(address.fromPublicKey(simplePublicKey)).toEqual(
+            expect(addressUtils.fromPublicKey(simplePublicKey)).toEqual(
                 simpleAddress
             );
 
@@ -67,10 +71,10 @@ describe('Address', () => {
          */
         test('invalid input should throw error', () => {
             expect(() => {
-                address.toChecksumed('invalid data');
+                addressUtils.toChecksumed('invalid data');
             }).toThrowError(InvalidAddressError);
             expect(() => {
-                address.toChecksumed(
+                addressUtils.toChecksumed(
                     '52908400098527886E0F7030069857D2E4169EE7'
                 );
             }).toThrowError(InvalidAddressError);
@@ -81,9 +85,9 @@ describe('Address', () => {
          */
         test('valid input', () => {
             checksumedAndUnchecksumedAddresses.forEach((addressPair) => {
-                expect(address.toChecksumed(addressPair.unchecksumed)).toEqual(
-                    addressPair.checksumed
-                );
+                expect(
+                    addressUtils.toChecksumed(addressPair.unchecksumed)
+                ).toEqual(addressPair.checksumed);
             });
         });
     });

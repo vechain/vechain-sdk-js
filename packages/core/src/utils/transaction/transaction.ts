@@ -1,4 +1,4 @@
-import { address } from '../../address';
+import { addressUtils } from '../../address';
 import { type TransactionClause } from '../../transaction';
 import { TRANSACTIONS_GAS_CONSTANTS } from '../const';
 import { dataUtils } from '../data';
@@ -26,7 +26,7 @@ function intrinsicGas(clauses: TransactionClause[]): number {
     return clauses.reduce((sum, clause: TransactionClause) => {
         if (clause.to !== null) {
             // Invalid address
-            if (!address.isAddress(clause.to)) {
+            if (!addressUtils.isAddress(clause.to)) {
                 throw buildError(
                     DATA.INVALID_DATA_TYPE,
                     'Invalid data type. Data should be an address.'

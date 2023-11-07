@@ -58,7 +58,7 @@ Secp256k1 is mainly used for generating public and private key pairs in cryptogr
 import {
     keccak256,
     secp256k1,
-    address,
+    addressUtils,
     type HashInput
 } from '@vechain-sdk/core';
 import { expect } from 'expect';
@@ -70,7 +70,7 @@ console.log('Private key:', privateKey.toString('hex'));
 
 // Public key and address from private key
 const publicKey = secp256k1.derivePublicKey(privateKey);
-const userAddress = address.fromPublicKey(publicKey);
+const userAddress = addressUtils.fromPublicKey(publicKey);
 console.log('User address:', userAddress);
 // User address: 0x...SOME_ADDRESS...
 
