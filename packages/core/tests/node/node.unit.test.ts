@@ -1,27 +1,43 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test, jest } from '@jest/globals';
 import { node } from '../../src';
+import { HttpClient } from '@vechain-sdk/network/src';
+import { blockWithOldTimeStamp } from './fixture';
 
 /**
  * Node unit tests
  * @group unit/node
  */
 describe('Unit tests to check the Node health check is working for different scenarios', () => {
-    test('valid URL but not an accessible vechain node', async () => {
-        await expect(node.isHealthy('www.google.ie')).rejects.toThrowError();
-    });
-
-    // TODO:need to mock 'network'?
     test('null or empty URL or blank URL', async () => {
         await expect(node.isHealthy('')).rejects.toThrowError();
-        await expect(node.isHealthy(' ')).rejects.toThrowError();
+        await expect(node.isHealthy('   ')).rejects.toThrowError();
     });
 
-    // TODO: mock the response and move this to a unit test - e.g. test a 500 response
-    test('valid URL/node but node is down', async () => {});
+    test('valid URL/node but Error is thrown by network provide', async () => {
+        // Must provide a well-formed URL to ensure we get to the axios call
+        const URL = 'http://example.com';
 
-    // TODO: mock the response and move this to a unit test to test for null object repsonse, non object response, timestamp non-existent, timestamp not a number
+        // TODO: check if spyOn has any disadvantages compared to a mock implementation. It appears easier to use
+        jest.spyOn(HttpClient.prototype, 'http').mockImplementation(() => {
+            throw new Error();
+        });
+
+        await expect(node.isHealthy(URL)).rejects.toThrowError();
+    });
+
+    // TODO: mock the response to test for null object repsonse, non object response, timestamp non-existent, timestamp not a number
     test('valid/available node but invalid block format', async () => {});
 
-    // TODO: mock the response and move this to a unit test to force the JSON response to be out of sync
-    test('valid/available node but node is out of sync', async () => {});
+    test('valid & available node but node is out of sync', async () => {
+        // Must provide a well-formed URL to ensure we get to the axios call
+        const URL = 'http://example.com';
+
+        // mock the response to force the JSON response to be out of sync (i.e. > 30 seconds)
+        // TODO: check if spuOn has any disadvantages compared to a mock implementation. It appears easier to use
+        jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce(
+            blockWithOldTimeStamp
+        );
+
+        await expect(node.isHealthy(URL)).resolves.toBe(false);
+    });
 });

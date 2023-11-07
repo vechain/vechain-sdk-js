@@ -1,4 +1,4 @@
-import { HttpClient } from '@vechain-sdk/network';
+import { HttpClient } from '@vechain-sdk/network/src';
 
 /**
  * path to Thorest API to retrieve last block
@@ -31,13 +31,13 @@ interface Block {
  * @throws An error if the request fails due to an invalid URL, a network error, an unavailable node, or an invalid block format.
  */
 async function isHealthy(URL: string): Promise<boolean> {
-    validateURL(URL);
+    isEmpyOrBlank(URL);
 
     const network = new HttpClient(URL);
     /**
      * Perform an HTTP GET request using the SimpleNet instance to get the latest block
      */
-    const response = await network.http('GET', URL + LAST_BLOCK_PATH);
+    const response = await network.http('GET', LAST_BLOCK_PATH);
     const lastBlockTimestamp: number = getTimestampFromBlock(response);
 
     const secondsSinceLastBlock =
@@ -55,7 +55,7 @@ async function isHealthy(URL: string): Promise<boolean> {
  * @throws An error if the URL is null, undefined, or empty.
  * @param URL
  */
-const validateURL = (URL: string): void => {
+const isEmpyOrBlank = (URL: string): void => {
     if (URL?.trim() === '') {
         throw new Error('URL cannot be null, undefined, or empty.');
     }
