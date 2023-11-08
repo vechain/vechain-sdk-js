@@ -23,5 +23,11 @@ describe('blockUtils', () => {
 
         // Test if an invalid hex string is a valid block revision
         expect(blockUtils.isBlockRevision('0xG8656c6c6f')).toBe(false);
+
+        // Test if 'best' string is a valid block revision
+        expect(blockUtils.isBlockRevision('best')).toBe(true);
+
+        // Test if 'finalizes' string is a valid block revision
+        expect(blockUtils.isBlockRevision('finalized')).toBe(true);
     });
 });
