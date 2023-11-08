@@ -1,0 +1,2 @@
+export const VECHAIN_MAINNET_CHAIN_TAG = 0x4a;
+export const VECHAIN_TESTNET_CHAIN_TAG = 0x27;

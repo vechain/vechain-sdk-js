@@ -1,3 +1,4 @@
+import { VECHAIN_MAINNET_CHAIN_TAG } from '@vechain-sdk/core';
 import {
     Transaction,
     secp256k1,
@@ -22,7 +23,7 @@ const clauses: TransactionClause[] = [
 
 // Body of transaction
 const body: TransactionBody = {
-    chainTag: 0x9a,
+    chainTag: VECHAIN_MAINNET_CHAIN_TAG,
     blockRef: '0x00ffecb8ac3142c4', // first 8 bytes of block id from block #16772280
     expiration: 32, // tx will expire after block #16772280 + 32
     clauses,

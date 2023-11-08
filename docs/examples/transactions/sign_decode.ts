@@ -1,3 +1,4 @@
+import { VECHAIN_MAINNET_CHAIN_TAG } from '@vechain-sdk/core';
 import {
     Transaction,
     secp256k1,
@@ -25,7 +26,7 @@ const gas = TransactionUtils.intrinsicGas(clauses);
 
 // Body of transaction
 const body: TransactionBody = {
-    chainTag: 0x9a,
+    chainTag: VECHAIN_MAINNET_CHAIN_TAG,
     blockRef: '0x0000000000000000',
     expiration: 0,
     clauses,
