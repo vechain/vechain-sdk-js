@@ -1,5 +1,5 @@
 import { type HttpClient } from '../../http';
-import { thorest } from '../../../utils';
+import { buildQuery, thorest } from '../../../utils';
 import { type BlockDetail } from './types';
 
 /**
@@ -17,12 +17,19 @@ class BlockClient {
      * Retrieves details of a specific block identified by its revision (block number or ID).
      *
      * @param revision - The block number or ID to query details for.
+     * @param expanded - Whether the returned block is expanded.
      * @returns A promise that resolves to an object containing the block details.
      */
-    public async getBlock(revision: string | number): Promise<BlockDetail> {
+    public async getBlock(
+        revision: string | number,
+        expanded?: boolean
+    ): Promise<BlockDetail> {
         return (await this.httpClient.http(
             'GET',
-            thorest.blocks.BLOCK_DETAIL(revision)
+            thorest.blocks.BLOCK_DETAIL(revision),
+            {
+                query: buildQuery({ expanded })
+            }
         )) as BlockDetail;
     }
 }

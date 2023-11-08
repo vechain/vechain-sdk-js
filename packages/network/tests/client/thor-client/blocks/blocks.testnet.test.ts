@@ -15,9 +15,12 @@ describe('ThorClient - Blocks', () => {
         /**
          * getBlock tests with revision block number or block id
          */
-        blockRevisions.forEach(({ revision, expected }) => {
+        blockRevisions.forEach(({ revision, expanded, expected }) => {
             test(revision, async () => {
-                const blockDetails = await thorClient.blocks.getBlock(revision);
+                const blockDetails = await thorClient.blocks.getBlock(
+                    revision,
+                    expanded
+                );
                 expect(blockDetails).toEqual(expected);
             });
         });
