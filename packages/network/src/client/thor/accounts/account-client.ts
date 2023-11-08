@@ -41,11 +41,12 @@ class AccountClient {
             );
         }
 
-        if (revision != null && !blockUtils.isBlockRevision(revision))
+        if (revision != null && !blockUtils.isBlockRevision(revision)) {
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
                 'Invalid revision. The revision must be a string representing a block number or block id.'
             );
+        }
 
         return (await this.httpClient.http(
             'GET',

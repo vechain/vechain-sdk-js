@@ -4,8 +4,7 @@
  * @param revision - The block number or ID for which to fetch details.
  * @returns The URL endpoint to fetch block details.
  */
-const BLOCK_DETAIL = (revision: string | number): string =>
-    `/blocks/${revision}`;
+const BLOCK_DETAIL = (revision: string): string => `/blocks/${revision}`;
 
 export const blocks = {
     BLOCK_DETAIL
