@@ -1,4 +1,6 @@
-const blockRevisions = [
+import { InvalidDataTypeError } from '@vechain-sdk/errors';
+
+const validBlockRevisions = [
     {
         revision: '1',
         expected: {
@@ -112,4 +114,12 @@ const blockRevisions = [
     }
 ];
 
-export { blockRevisions };
+const invalidBlockRevisions = [
+    {
+        description: 'Should throw error for invalid revision',
+        revision: 'invalid-revision',
+        expectedError: InvalidDataTypeError
+    }
+];
+
+export { validBlockRevisions, invalidBlockRevisions };
