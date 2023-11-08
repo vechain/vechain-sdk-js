@@ -22,7 +22,7 @@ class BlockClient {
     public async getBlock(revision: string | number): Promise<BlockDetail> {
         return (await this.httpClient.http(
             'GET',
-            thorest.block.BLOCK_DETAIL(revision)
+            thorest.blocks.BLOCK_DETAIL(revision)
         )) as BlockDetail;
     }
 }

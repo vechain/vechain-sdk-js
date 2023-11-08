@@ -7,6 +7,6 @@
 const BLOCK_DETAIL = (revision: string | number): string =>
     `/blocks/${revision}`;
 
-export const block = {
+export const blocks = {
     BLOCK_DETAIL
 };

@@ -1,7 +1,7 @@
 import { account } from './account';
-import { block } from './block';
+import { blocks } from './block';
 
 export const thorest = {
     account,
-    block
+    blocks
 };
