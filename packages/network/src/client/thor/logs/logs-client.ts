@@ -6,6 +6,10 @@ import {
     type TransferLogs
 } from './types';
 
+/**
+ * The `LogsClient` class provides methods to interact with log-related endpoints
+ * of the VechainThor blockchain. It allows filtering event and transfer logs.
+ */
 class LogsClient {
     /**
      * Initializes a new instance of the `LogsClient` class.
@@ -13,6 +17,12 @@ class LogsClient {
      */
     constructor(protected readonly httpClient: HttpClient) {}
 
+    /**
+     * Filters event logs based on the provided criteria.
+     *
+     * @param arg - An object specifying filtering criteria for event logs.
+     * @returns A promise that resolves to filtered event logs.
+     */
     public async filterEventLogs(arg: FilterEventLogsArg): Promise<EventLogs> {
         return (await this.httpClient.http('POST', '/logs/event', {
             query: {},
@@ -21,6 +31,12 @@ class LogsClient {
         })) as EventLogs;
     }
 
+    /**
+     * Filters transfer logs based on the provided criteria.
+     *
+     * @param arg - An object specifying filtering criteria for transfer logs.
+     * @returns A promise that resolves to filtered transfer logs.
+     */
     public async filterTransferLogs(
         arg: FilterTransferLogsArg
     ): Promise<TransferLogs> {
