@@ -31,23 +31,22 @@ interface WithMeta {
     };
 }
 
-// Definition of the Criteria type, which can be for 'event' or 'transfer'.
-type Criteria<T extends 'event' | 'transfer'> = T extends 'event'
-    ? {
-          address?: string; // Address filter for event criteria.
-          topic0?: string; // Event topic filter.
-          topic1?: string;
-          topic2?: string;
-          topic3?: string;
-          topic4?: string;
-      }
-    : T extends 'transfer'
-    ? {
-          txOrigin?: string; // Transaction origin filter for transfer criteria.
-          sender?: string; // Sender's address filter.
-          recipient?: string; // Recipient's address filter.
-      }
-    : never;
+// Definition of the Criteria interface for filtering logs.
+interface EventCriteria {
+    address?: string; // Address filter for event criteria.
+    topic0?: string; // Event topic filter.
+    topic1?: string;
+    topic2?: string;
+    topic3?: string;
+    topic4?: string;
+}
+
+// Definition of the Criteria interface for filtering logs.
+interface TransferCriteria {
+    txOrigin?: string; // Transaction origin filter for transfer criteria.
+    sender?: string; // Sender's address filter.
+    recipient?: string; // Recipient's address filter.
+}
 
 // Definition of the FilterEventLogsArg interface for filtering event logs.
 interface FilterEventLogsArg {
@@ -56,7 +55,7 @@ interface FilterEventLogsArg {
         offset: number; // Offset for pagination.
         limit: number; // Limit for the number of results to return.
     };
-    criteriaSet: Array<Criteria<'event'>>; // Criteria set for event logs.
+    criteriaSet: EventCriteria[]; // Criteria set for event logs.
     order: 'asc' | 'desc'; // Order for sorting (ascending or descending).
 }
 
@@ -67,7 +66,7 @@ interface FilterTransferLogsArg {
         offset: number; // Offset for pagination.
         limit: number; // Limit for the number of results to return.
     };
-    criteriaSet: Array<Criteria<'transfer'>>; // Criteria set for transfer logs.
+    criteriaSet: TransferCriteria[]; // Criteria set for transfer logs.
     order: 'asc' | 'desc'; // Order for sorting (ascending or descending).
 }
 
