@@ -22,7 +22,7 @@ class BlockClient {
      * @returns A promise that resolves to an object containing the block details.
      */
     public async getBlock(
-        revision: string,
+        revision: string | number,
         expanded?: boolean
     ): Promise<BlockDetail> {
         if (revision != null && !blockUtils.isBlockRevision(revision)) {
