@@ -1,24 +1,34 @@
+import { randomBytes } from 'ethers';
 import { contract } from '../abi';
 import {
     Transaction,
     type TransactionBody,
     type TransactionClause
 } from '../transaction';
-import { networkInfo } from '../transaction/constants';
-import { TransactionUtils } from '../utils';
+import { networkInfo } from '../utils/const/network';
+import { TransactionUtils, dataUtils } from '../utils';
+
+interface TransactionBodyOverride {
+    nonce: number;
+    chainTag: number;
+    blockRef: string;
+    expiration: number;
+    gasPriceCoef: number;
+    dependsOn: string | null;
+}
 
 /**
  * Builds a transaction for deploying a smart contract on the blockchain.
  *
  * @param contractBytecode - The bytecode of the smart contract.
  * @param useSponsor - A boolean indicating whether to use a sponsor for the transaction.
- * @param transactionBody - (Optional) Custom transaction body to override default settings.
+ * @param transactionBodyOverride - (Optional) Custom transaction body to override default settings.
  * @returns A Transaction object representing the deploy contract transaction.
  */
 function buildDeployContractTransaction(
     contractBytecode: string,
     useSponsor: boolean,
-    transactionBody?: TransactionBody
+    transactionBodyOverride?: TransactionBodyOverride
 ): Transaction {
     const clauses: TransactionClause[] = [
         {
@@ -27,21 +37,7 @@ function buildDeployContractTransaction(
             data: contractBytecode
         }
     ];
-
-    let body: TransactionBody;
-
-    if (transactionBody !== undefined) {
-        body = {
-            ...transactionBody,
-            clauses
-        };
-    } else {
-        body = getCommonTransactionBody(clauses);
-    }
-
-    const transaction = new Transaction(body);
-
-    return transaction;
+    return buildTransactionBody(clauses, transactionBodyOverride);
 }
 
 /**
@@ -51,13 +47,15 @@ function buildDeployContractTransaction(
  * @param contractAbi - The ABI (Application Binary Interface) of the smart contract.
  * @param functionName - The name of the function to call.
  * @param args - An array of arguments to pass to the function.
+ * @param transactionBodyOverride - (Optional) Custom transaction body to override default settings.
  * @returns A Transaction object representing the function call transaction.
  */
 function buildCallContractTransaction(
     contractAddress: string,
     contractAbi: string,
     functionName: string,
-    args: unknown[]
+    args: unknown[],
+    transactionBodyOverride?: TransactionBodyOverride
 ): Transaction {
     const clauses: TransactionClause[] = [
         {
@@ -67,10 +65,33 @@ function buildCallContractTransaction(
         }
     ];
 
-    const body: TransactionBody = getCommonTransactionBody(clauses);
+    return buildTransactionBody(clauses, transactionBodyOverride);
+}
 
-    const transaction = new Transaction(body);
-    return transaction;
+/**
+ * Builds a transaction body using provided clauses and optional overrides.
+ *
+ * @param clauses - An array of transaction clauses.
+ * @param transactionBodyOverride - (Optional) Custom transaction body to override default settings.
+ * @returns A Transaction object representing the transaction.
+ */
+function buildTransactionBody(
+    clauses: TransactionClause[],
+    transactionBodyOverride?: TransactionBodyOverride
+): Transaction {
+    let body: TransactionBody;
+
+    if (transactionBodyOverride !== undefined) {
+        body = {
+            ...transactionBodyOverride,
+            gas: TransactionUtils.intrinsicGas(clauses),
+            clauses
+        };
+    } else {
+        body = getCommonTransactionBody(clauses);
+    }
+
+    return new Transaction(body);
 }
 
 /**
@@ -83,8 +104,8 @@ function getCommonTransactionBody(
     clauses: TransactionClause[]
 ): TransactionBody {
     const body = {
-        nonce: 1, // TODO generate random nonce
-        chainTag: networkInfo.mainnet.chainTag, // TODO compute chainTag
+        nonce: '0x' + dataUtils.toHexString(randomBytes(8)),
+        chainTag: networkInfo.mainnet.chainTag,
         blockRef: '0x00ffecb8ac3142c4', // TODO first 8 bytes of block id from block #N
         expiration: 32, // tx will expire after block #N + 32
         clauses,
@@ -96,4 +117,8 @@ function getCommonTransactionBody(
     return body;
 }
 
-export { buildDeployContractTransaction, buildCallContractTransaction };
+export {
+    buildDeployContractTransaction,
+    buildCallContractTransaction,
+    type TransactionBodyOverride
+};
