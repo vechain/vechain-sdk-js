@@ -4,7 +4,7 @@ import { TEST_ACCOUNTS, thorSoloClient } from '../../../fixture';
 /**
  * Prolong timeout due to block time which sometimes exceeds jest's default timeout of 5 seconds.
  */
-const TIMEOUT = 10000;
+const TIMEOUT = 20000;
 
 /**
  * ThorClient class tests
