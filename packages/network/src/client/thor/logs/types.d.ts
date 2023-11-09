@@ -50,8 +50,8 @@ interface TransferCriteria {
 
 // Definition of the FilterEventLogsArg interface for filtering event logs.
 interface FilterEventLogsArg {
-    range: Range; // Range of data to filter.
-    options: {
+    range?: Range; // Range of data to filter.
+    options?: {
         offset: number; // Offset for pagination.
         limit: number; // Limit for the number of results to return.
     };
@@ -61,8 +61,8 @@ interface FilterEventLogsArg {
 
 // Definition of the FilterTransferLogsArg interface for filtering transfer logs.
 interface FilterTransferLogsArg {
-    range: Range; // Range of data to filter.
-    options: {
+    range?: Range; // Range of data to filter.
+    options?: {
         offset: number; // Offset for pagination.
         limit: number; // Limit for the number of results to return.
     };
