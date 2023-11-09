@@ -1,6 +1,6 @@
 import { describe, expect, test, jest } from '@jest/globals';
-import { node } from '../../src';
-import { HttpClient } from '@vechain-sdk/network/src';
+import { node } from '../../../src/utils';
+import { HttpClient } from '../../../src';
 import { blockWithOldTimeStamp } from './fixture';
 
 /**
@@ -18,6 +18,7 @@ describe('Unit tests to check the Node health check is working for different sce
         const URL = 'http://example.com';
 
         // TODO: check if spyOn has any disadvantages compared to a mock implementation. It appears easier to use
+        // Mock an error on the HTTPClient
         jest.spyOn(HttpClient.prototype, 'http').mockImplementation(() => {
             throw new Error();
         });
@@ -32,7 +33,7 @@ describe('Unit tests to check the Node health check is working for different sce
         // Must provide a well-formed URL to ensure we get to the axios call
         const URL = 'http://example.com';
 
-        // mock the response to force the JSON response to be out of sync (i.e. > 30 seconds)
+        // Mock the response to force the JSON response to be out of sync (i.e. > 30 seconds)
         // TODO: check if spuOn has any disadvantages compared to a mock implementation. It appears easier to use
         jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce(
             blockWithOldTimeStamp

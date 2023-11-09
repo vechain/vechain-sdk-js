@@ -12,4 +12,3 @@ export * from './transaction';
 export * from './utils';
 export * from './bloom';
 export * from './certificate';
-export * from './node';

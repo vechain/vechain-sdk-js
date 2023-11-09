@@ -1,4 +1,4 @@
-import { HttpClient } from '@vechain-sdk/network/src';
+import { HttpClient } from '../../../src';
 
 /**
  * path to Thorest API to retrieve last block
@@ -30,7 +30,7 @@ interface Block {
  * @returns A boolean indicating whether the node is healthy.
  * @throws An error if the request fails due to an invalid URL, a network error, an unavailable node, or an invalid block format.
  */
-async function isHealthy(URL: string): Promise<boolean> {
+const isHealthy = async (URL: string): Promise<boolean> => {
     isEmpyOrBlank(URL);
 
     const network = new HttpClient(URL);
@@ -46,7 +46,7 @@ async function isHealthy(URL: string): Promise<boolean> {
     return (
         Math.abs(secondsSinceLastBlock) < NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS
     );
-}
+};
 
 /**
  * Performs basic validation on the provided URL to avoid unnecessary HTTP requests.

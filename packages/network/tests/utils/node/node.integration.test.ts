@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { node } from '../../src';
+import { node } from '../../../src/utils';
 
 /**
  * Node integration tests
