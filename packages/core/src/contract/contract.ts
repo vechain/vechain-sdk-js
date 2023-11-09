@@ -4,7 +4,7 @@ import {
     type TransactionBody,
     type TransactionClause
 } from '../transaction';
-import { VECHAIN_MAINNET_CHAIN_TAG } from '../transaction/constants';
+import { networkInfo } from '../transaction/constants';
 import { TransactionUtils } from '../utils';
 
 /**
@@ -84,7 +84,7 @@ function getCommonTransactionBody(
 ): TransactionBody {
     const body = {
         nonce: 1, // TODO generate random nonce
-        chainTag: VECHAIN_MAINNET_CHAIN_TAG, // TODO compute chainTag
+        chainTag: networkInfo.mainnet.chainTag, // TODO compute chainTag
         blockRef: '0x00ffecb8ac3142c4', // TODO first 8 bytes of block id from block #N
         expiration: 32, // tx will expire after block #N + 32
         clauses,

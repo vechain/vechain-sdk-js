@@ -1,4 +1,4 @@
-import { VECHAIN_MAINNET_CHAIN_TAG } from '@vechain-sdk/core';
+import { networkInfo } from '@vechain-sdk/core';
 import {
     Transaction,
     secp256k1,
@@ -31,7 +31,7 @@ const txBClauses: TransactionClause[] = [
 // Define transaction A with no dependencies
 // Note: This transaction has nonce = 1
 const txABody: TransactionBody = {
-    chainTag: VECHAIN_MAINNET_CHAIN_TAG,
+    chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x0000000000000000',
     expiration: 0,
     clauses: txAClauses,
@@ -44,7 +44,7 @@ const txABody: TransactionBody = {
 // Define transaction B with nonce = 2
 // Note at the moment dependsOn is null
 const txBBody: TransactionBody = {
-    chainTag: VECHAIN_MAINNET_CHAIN_TAG,
+    chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x0000000000000000',
     expiration: 0,
     clauses: txBClauses,
