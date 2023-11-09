@@ -48,6 +48,7 @@ const genesisBlocks = {
     }
 };
 
+/** @ignore */
 const networkInfo = {
     mainnet: {
         genesisBlock: genesisBlocks.main,
