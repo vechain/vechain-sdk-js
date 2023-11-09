@@ -1,23 +1,26 @@
 import { describe, expect, test, jest } from '@jest/globals';
 import { node } from '../../../src/utils';
 import { HttpClient } from '../../../src';
-import { blockWithOldTimeStamp } from './fixture';
+import {
+    blockWithMissingTimeStamp,
+    blockWithOldTimeStamp,
+    blockWithInvalidTimeStampFormat
+} from './fixture';
 
 /**
  * Node unit tests
  * @group unit/node
  */
 describe('Unit tests to check the Node health check is working for different scenarios', () => {
+    // Must provide a well-formed URL to ensure we get to the axios call in the node health check
+    const URL = 'http://example.com';
+
     test('null or empty URL or blank URL', async () => {
         await expect(node.isHealthy('')).rejects.toThrowError();
         await expect(node.isHealthy('   ')).rejects.toThrowError();
     });
 
     test('valid URL/node but Error is thrown by network provide', async () => {
-        // Must provide a well-formed URL to ensure we get to the axios call
-        const URL = 'http://example.com';
-
-        // TODO: check if spyOn has any disadvantages compared to a mock implementation. It appears easier to use
         // Mock an error on the HTTPClient
         jest.spyOn(HttpClient.prototype, 'http').mockImplementation(() => {
             throw new Error();
@@ -26,15 +29,32 @@ describe('Unit tests to check the Node health check is working for different sce
         await expect(node.isHealthy(URL)).rejects.toThrowError();
     });
 
-    // TODO: mock the response to test for null object repsonse, non object response, timestamp non-existent, timestamp not a number
-    test('valid/available node but invalid block format', async () => {});
+    test('valid/available node but invalid block format', async () => {
+        // Mock the response to force the JSON response to be null
+        jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce({});
+        await expect(node.isHealthy(URL)).rejects.toThrowError();
+
+        // Mock the response to force the JSON response to not be an object
+        jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce({
+            invalidKey: 1
+        });
+        await expect(node.isHealthy(URL)).rejects.toThrowError();
+
+        // Mock the response to force the JSON response to have a timestamp non-existent
+        jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce(
+            blockWithMissingTimeStamp
+        );
+        await expect(node.isHealthy(URL)).rejects.toThrowError();
+
+        // Mock the response to force the JSON response to have a timestamp not a number
+        jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce(
+            blockWithInvalidTimeStampFormat
+        );
+        await expect(node.isHealthy(URL)).rejects.toThrowError();
+    });
 
     test('valid & available node but node is out of sync', async () => {
-        // Must provide a well-formed URL to ensure we get to the axios call
-        const URL = 'http://example.com';
-
         // Mock the response to force the JSON response to be out of sync (i.e. > 30 seconds)
-        // TODO: check if spuOn has any disadvantages compared to a mock implementation. It appears easier to use
         jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce(
             blockWithOldTimeStamp
         );
