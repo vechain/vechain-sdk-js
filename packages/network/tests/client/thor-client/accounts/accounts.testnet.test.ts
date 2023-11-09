@@ -16,7 +16,7 @@ import { testAccount, thorClient } from '../../../fixture';
  *
  * @group integration/client/thor/accounts
  */
-describe('ThorClient - Acounts', () => {
+describe('ThorClient - Accounts', () => {
     /**
      * getAccount tests
      */

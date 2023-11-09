@@ -5,7 +5,7 @@
  * @returns An object containing only the defined query parameters.
  */
 const buildQuery = (
-    params: Record<string, string | undefined>
+    params: Record<string, string | boolean | undefined>
 ): Record<string, string> => {
     const definedParams: Record<string, string> = {};
 
