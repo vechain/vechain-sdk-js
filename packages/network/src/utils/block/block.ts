@@ -11,13 +11,15 @@ import { dataUtils } from '@vechain-sdk/core';
  * @param revision - The string to be validated as a block revision.
  * @returns `true` if the string is a valid block revision, otherwise `false`.
  */
-const isBlockRevision = (revision: string): boolean => {
+const isBlockRevision = (revision: string | number): boolean => {
     return (
         revision === 'best' ||
         revision === 'finalized' ||
-        dataUtils.isHexString(revision) ||
-        dataUtils.isDecimalString(revision)
+        (typeof revision === 'string' && dataUtils.isHexString(revision)) ||
+        (typeof revision === 'string' && dataUtils.isDecimalString(revision)) ||
+        (typeof revision === 'number' && revision >= 0)
     );
+    // check if revision is tring
 };
 
 /**
