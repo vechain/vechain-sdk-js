@@ -98,7 +98,6 @@ const ALL_ACCOUNTS = [
     {
         privateKey:
             'adc81265b0909dec70235ec973b1758e45ce5ce7cfe92eb96b79cd0ef07bc6bc',
-
         address: '0x3e3d79163b08502a086213cd09660721740443d7'
     },
     /* ----------- THOR SOLO GENESIS ACCOUNTS ----------- */
