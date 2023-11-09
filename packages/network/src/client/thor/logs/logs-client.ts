@@ -1,5 +1,10 @@
 import { type HttpClient } from '../../http';
-import { type FilterEventLogsArg, type EventLogs } from './types';
+import {
+    type FilterEventLogsArg,
+    type EventLogs,
+    type FilterTransferLogsArg,
+    type TransferLogs
+} from './types';
 
 class LogsClient {
     /**
@@ -8,12 +13,22 @@ class LogsClient {
      */
     constructor(protected readonly httpClient: HttpClient) {}
 
-    public async filterEventLogs(args: FilterEventLogsArg): Promise<EventLogs> {
+    public async filterEventLogs(arg: FilterEventLogsArg): Promise<EventLogs> {
         return (await this.httpClient.http('POST', '/logs/event', {
             query: {},
-            body: args,
+            body: arg,
             headers: {}
         })) as EventLogs;
+    }
+
+    public async filterTransferLogs(
+        arg: FilterTransferLogsArg
+    ): Promise<TransferLogs> {
+        return (await this.httpClient.http('POST', '/logs/transfer', {
+            query: {},
+            body: arg,
+            headers: {}
+        })) as TransferLogs;
     }
 }
 

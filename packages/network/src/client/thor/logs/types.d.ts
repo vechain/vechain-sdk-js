@@ -72,4 +72,9 @@ interface TransferLogs extends Transfer {
     meta: WithMeta;
 }
 
-export type { FilterEventLogsArg, EventLogs };
+export type {
+    FilterEventLogsArg,
+    EventLogs,
+    FilterTransferLogsArg,
+    TransferLogs
+};
