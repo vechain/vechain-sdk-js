@@ -27,7 +27,6 @@ interface TransactionBodyOverride {
  */
 function buildDeployContractTransaction(
     contractBytecode: string,
-    useSponsor: boolean,
     transactionBodyOverride?: TransactionBodyOverride
 ): Transaction {
     const clauses: TransactionClause[] = [

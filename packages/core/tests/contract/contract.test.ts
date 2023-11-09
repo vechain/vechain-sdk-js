@@ -19,8 +19,7 @@ describe('Contract', () => {
             'Example'
         );
         const transaction = buildDeployContractTransaction(
-            compiledContract.bytecode,
-            false
+            compiledContract.bytecode
         );
         expect(transaction.body.clauses[0].data).toEqual(
             compiledContract.bytecode
@@ -44,7 +43,6 @@ describe('Contract', () => {
 
         const transaction = buildDeployContractTransaction(
             compiledContract.bytecode,
-            false,
             transactionBody
         );
         expect(transaction.body.clauses[0].data).toEqual(
