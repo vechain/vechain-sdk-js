@@ -9,7 +9,7 @@ import { thorClient } from '../../../fixture';
  */
 describe('ThorClient - Blocks', () => {
     /**
-     * getAccount tests
+     * getBlock tests
      */
     describe('getBlock', () => {
         /**
