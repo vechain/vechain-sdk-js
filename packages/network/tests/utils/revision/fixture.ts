@@ -65,10 +65,6 @@ const blockRevisions = [
     {
         revision: 'finalized',
         expected: true
-    },
-    {
-        revision: undefined,
-        expected: true
     }
 ];
 

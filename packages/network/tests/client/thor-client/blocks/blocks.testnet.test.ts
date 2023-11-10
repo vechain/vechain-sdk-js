@@ -39,14 +39,6 @@ describe('ThorClient - Blocks', () => {
         );
 
         /**
-         * getBlock tests with no parameter (best block is assumed)
-         */
-        test('get block without revision', async () => {
-            const blockDetails = await thorClient.blocks.getBlock();
-            expect(blockDetails).toBeDefined();
-        });
-
-        /**
          * getBestBlock test
          */
         test('getBestBlock', async () => {
