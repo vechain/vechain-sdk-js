@@ -1,5 +1,5 @@
 import { DATA, buildError } from '@vechain-sdk/errors';
-import { blockUtils, buildQuery, thorest } from '../../../utils';
+import { revisionUtils, buildQuery, thorest } from '../../../utils';
 import { type HttpClient } from '../../http';
 import { type BlockDetail } from './types';
 
@@ -25,7 +25,7 @@ class BlockClient {
         revision: string | number,
         expanded?: boolean
     ): Promise<BlockDetail> {
-        if (revision != null && !blockUtils.isBlockRevision(revision)) {
+        if (revision != null && !revisionUtils.isRevisionBlock(revision)) {
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
                 'Invalid revision. The revision must be a string representing a block number or block id.'
@@ -39,6 +39,24 @@ class BlockClient {
                 query: buildQuery({ expanded })
             }
         )) as BlockDetail;
+    }
+
+    /**
+     * Retrieves details of the latest block.
+     *
+     * @returns A promise that resolves to an object containing the block details.
+     */
+    public async getBestBlock(): Promise<BlockDetail> {
+        return await this.getBlock('best');
+    }
+
+    /**
+     * Retrieves details of the finalized block.
+     *
+     * @returns A promise that resolves to an object containing the block details.
+     */
+    public async getFinalBlock(): Promise<BlockDetail> {
+        return await this.getBlock('finalized');
     }
 }
 
