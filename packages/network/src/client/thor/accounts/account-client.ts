@@ -1,5 +1,5 @@
 import { DATA, buildError } from '@vechain-sdk/errors';
-import { blockUtils, buildQuery, thorest } from '../../../utils';
+import { revisionUtils, buildQuery, thorest } from '../../../utils';
 import { type HttpClient } from '../../http';
 import {
     type ResponseBytecode,
@@ -41,7 +41,7 @@ class AccountClient {
             );
         }
 
-        if (revision != null && !blockUtils.isBlockRevision(revision)) {
+        if (revision != null && !revisionUtils.isRevisionAccount(revision)) {
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
                 'Invalid revision. The revision must be a string representing a block number or block id.'
@@ -78,7 +78,7 @@ class AccountClient {
             );
         }
 
-        if (revision != null && !blockUtils.isBlockRevision(revision))
+        if (revision != null && !revisionUtils.isRevisionAccount(revision))
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
                 'Invalid revision. The revision must be a string representing a block number or block id.'
@@ -118,7 +118,7 @@ class AccountClient {
             );
         }
 
-        if (revision != null && !blockUtils.isBlockRevision(revision))
+        if (revision != null && !revisionUtils.isRevisionAccount(revision))
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
                 'Invalid `revision`. The revision must be a string representing a block number or block id.'
