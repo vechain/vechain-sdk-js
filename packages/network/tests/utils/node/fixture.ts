@@ -1,3 +1,7 @@
+/**
+ * @internal
+ * Block with a timestamp much older than the current time
+ */
 const blockWithOldTimeStamp = {
     number: 16935885,
     id: '0x01026bcde286e4c5b55507477edc666bb79b41ea97b6e78d65726fe557131533',
@@ -23,6 +27,10 @@ const blockWithOldTimeStamp = {
     transactions: []
 };
 
+/**
+ * @internal
+ * Block with a missing timestamp
+ */
 const blockWithMissingTimeStamp = {
     number: 16935885,
     id: '0x01026bcde286e4c5b55507477edc666bb79b41ea97b6e78d65726fe557131533',
@@ -47,6 +55,10 @@ const blockWithMissingTimeStamp = {
     transactions: []
 };
 
+/**
+ * @internal
+ * Block with an invalid timestamp format
+ */
 const blockWithInvalidTimeStampFormat = {
     number: 16935885,
     id: '0x01026bcde286e4c5b55507477edc666bb79b41ea97b6e78d65726fe557131533',

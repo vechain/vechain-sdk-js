@@ -13,6 +13,9 @@ const NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS = 30;
  */
 const BLOCK_TIMESTAMP_KEY = 'timestamp';
 
+/**
+ * Interface for the block object returned from the node
+ */
 interface Block {
     timestamp: number;
 }
