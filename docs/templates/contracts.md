@@ -4,7 +4,7 @@
 
 ### Overview
 
-This example showcases the process of building a smart contract transaction using the VeChain SDK.
+This example showcases the process of building a smart contract transaction using the Vechain SDK.
 
 [example](examples/contracts/contract-deploy.ts)
 
@@ -18,13 +18,13 @@ This example showcases the process of building a smart contract transaction usin
 
 ### Conclusion
 
-This example provides a practical demonstration of utilizing the VeChain SDK to build a transaction to deploy a smart contract.
+This example provides a practical demonstration of utilizing the Vechain SDK to build a transaction to deploy a smart contract.
 
 ## Build a Contract Function Call
 
 ### Overview
 
-This example demonstrates the process of building a transaction to call a function on a deployed smart contract using the VeChain SDK.
+This example demonstrates the process of building a transaction to call a function on a deployed smart contract using the Vechain SDK.
 
 [example](examples/contracts/contract-function-call.ts)
 
@@ -38,4 +38,4 @@ This example demonstrates the process of building a transaction to call a functi
 
 ### Conclusion
 
-This example illustrates the process of interacting with a deployed smart contract on VeChain by building a transaction to call a specific function. The use of the VeChain SDK streamlines the development process.
+This example illustrates the process of interacting with a deployed smart contract on Vechain by building a transaction to call a specific function. The use of the Vechain SDK streamlines the development process.
