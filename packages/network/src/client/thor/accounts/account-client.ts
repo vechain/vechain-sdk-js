@@ -50,7 +50,7 @@ class AccountClient {
 
         return (await this.httpClient.http(
             'GET',
-            thorest.account.ACCOUNT_DETAIL(address),
+            thorest.accounts.get.ACCOUNT_DETAIL(address),
             {
                 query: buildQuery({ revision })
             }
@@ -86,7 +86,7 @@ class AccountClient {
 
         const result = (await this.httpClient.http(
             'GET',
-            thorest.account.ACCOUNT_BYTECODE(address),
+            thorest.accounts.get.ACCOUNT_BYTECODE(address),
             {
                 query: buildQuery({ revision })
             }
@@ -133,13 +133,38 @@ class AccountClient {
 
         const result = (await this.httpClient.http(
             'GET',
-            thorest.account.STORAGE_AT(address, position),
+            thorest.accounts.get.STORAGE_AT(address, position),
             {
                 query: buildQuery({ position, revision })
             }
         )) as ResponseStorage;
 
         return result.value;
+    }
+
+    public async simulateTransactionCall(revision: string): Promise<unknown> {
+        return await this.httpClient.http(
+            'POST',
+            thorest.accounts.post.ACCOUNT(revision),
+            {
+                body: {
+                    clauses: [
+                        {
+                            to: '0x5034aa590125b64023a0262112b98d72e3c8e40e',
+                            value: '0xde0b6b3a7640000',
+                            data: '0x5665436861696e2054686f72'
+                        }
+                    ],
+                    gas: 50000,
+                    gasPrice: '1000000000000000',
+                    caller: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+                    provedWork: '1000',
+                    gasPayer: '0xd3ae78222beadb038203be21ed5ce7c9b1bff602',
+                    expiration: 1000,
+                    blockRef: '0x00000000851caf3c'
+                }
+            }
+        );
     }
 }
 

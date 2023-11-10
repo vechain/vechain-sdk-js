@@ -34,7 +34,7 @@ class BlockClient {
 
         return (await this.httpClient.http(
             'GET',
-            thorest.blocks.BLOCK_DETAIL(revision),
+            thorest.blocks.get.BLOCK_DETAIL(revision),
             {
                 query: buildQuery({ expanded })
             }
