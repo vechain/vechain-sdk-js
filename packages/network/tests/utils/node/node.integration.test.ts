@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { node } from '../../../src/utils';
-import { _soloUrl } from '../../fixture';
+import { soloUrl } from '../../fixture';
 
 /**
  * Node integration tests
@@ -16,6 +16,6 @@ describe('Integration tests to check the Node health check is working for differ
     });
 
     test('valid/available node & synchronised node', async () => {
-        await expect(node.isHealthy(_soloUrl)).resolves.toBe(true);
+        await expect(node.isHealthy(soloUrl)).resolves.toBe(true);
     });
 });
