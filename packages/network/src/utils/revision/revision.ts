@@ -12,13 +12,7 @@ import { dataUtils } from '@vechain-sdk/core';
  * @returns `true` if the string is a valid block revision, otherwise `false`.
  */
 const isRevisionBlock = (revision: string | number): boolean => {
-    return (
-        revision === 'best' ||
-        revision === 'finalized' ||
-        (typeof revision === 'string' && dataUtils.isHexString(revision)) ||
-        (typeof revision === 'string' && dataUtils.isDecimalString(revision)) ||
-        (typeof revision === 'number' && revision >= 0)
-    );
+    return revision === 'finalized' || isRevisionAccount(revision);
 };
 
 /**
