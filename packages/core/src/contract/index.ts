@@ -1,2 +1,2 @@
 export * from './contract';
-export * from './compiler';
+export * from '../../tests/contract/compiler';

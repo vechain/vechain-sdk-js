@@ -1,5 +1,5 @@
 import { describe, test, expect } from '@jest/globals';
-import { compileContract } from '../../src/contract/compiler';
+import { compileContract } from './compiler';
 import {
     type TransactionBodyOverride,
     buildCallContractTransaction,
