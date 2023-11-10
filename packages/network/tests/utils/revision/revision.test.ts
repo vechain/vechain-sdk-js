@@ -13,7 +13,6 @@ describe('blockUtils', () => {
      */
     test('isBlockRevision', () => {
         blockRevisions.forEach(({ revision, expected }) => {
-            console.log(revision, expected);
             expect(revisionUtils.isRevisionBlock(revision)).toBe(expected);
         });
     });
