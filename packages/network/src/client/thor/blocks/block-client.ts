@@ -40,6 +40,24 @@ class BlockClient {
             }
         )) as BlockDetail;
     }
+
+    /**
+     * Retrieves details of the latest block.
+     *
+     * @returns A promise that resolves to an object containing the block details.
+     */
+    public async getBestBlock(): Promise<BlockDetail> {
+        return await this.getBlock('best');
+    }
+
+    /**
+     * Retrieves details of the finalized block.
+     *
+     * @returns A promise that resolves to an object containing the block details.
+     */
+    public async getFinalBlock(): Promise<BlockDetail> {
+        return await this.getBlock('finalized');
+    }
 }
 
 export { BlockClient };
