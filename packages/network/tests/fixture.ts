@@ -41,7 +41,7 @@ const thorClient = new ThorClient(testNetwork);
 const thorSoloClient = new ThorClient(soloNetwork);
 
 /**
- * Accounts for testing account related operations.
+ * All available accounts for testing purposes
  */
 const ALL_ACCOUNTS = [
     /* ----------- NEW ACCOUNTS ----------- */
