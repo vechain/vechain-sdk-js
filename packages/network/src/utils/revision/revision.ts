@@ -11,7 +11,10 @@ import { dataUtils } from '@vechain-sdk/core';
  * @param revision - The string to be validated as a block revision.
  * @returns `true` if the string is a valid block revision, otherwise `false`.
  */
-const isRevisionBlock = (revision: string | number): boolean => {
+const isRevisionBlock = (revision?: string | number): boolean => {
+    if (revision === undefined) {
+        return true;
+    }
     return (
         revision === 'best' ||
         revision === 'finalized' ||
