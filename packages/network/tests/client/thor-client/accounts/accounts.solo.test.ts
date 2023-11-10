@@ -7,7 +7,7 @@ import { TEST_ACCOUNTS, thorSoloClient } from '../../../fixture';
 const TIMEOUT = 20000;
 
 /**
- * ThorClient class tests
+ * ThorClient - AccountClient class tests
  *
  * @group integration/client/thor/accounts
  */

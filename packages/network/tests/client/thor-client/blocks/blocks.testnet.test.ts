@@ -3,7 +3,7 @@ import { validBlockRevisions, invalidBlockRevisions } from './fixture';
 import { thorClient } from '../../../fixture';
 
 /**
- * ThorClient class tests
+ * ThorClient - BlockClient class tests
  *
  * @group integration/client/thor/blocks
  */
