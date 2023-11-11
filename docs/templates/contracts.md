@@ -10,7 +10,7 @@ This example showcases the process of building a smart contract transaction usin
 
 ### Code Explanation
 
--   The `buildDeployContractTransaction` function from `@vechain-sdk/core` is employed to construct a deployment transaction.
+-   The `buildDeployContractTransaction` function from `@vechain-sdk/core` is employed to construct a deploy contract transaction.
 
 -   The smart contract bytecode is represented by the `contractBytecode` variable.
 
