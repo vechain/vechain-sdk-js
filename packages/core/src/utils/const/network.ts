@@ -1,11 +1,21 @@
-// Constants defining VeChain mainnet and testnet chain tags. The chain tag is the last byte of the genesis block ID
-const VECHAIN_MAINNET_CHAIN_TAG = 0x4a; // Mainnet chain tag
-const VECHAIN_TESTNET_CHAIN_TAG = 0x27; // Testnet chain tag
+/**
+ * Constants defining Vechain mainnet chain tag. The chain tag is the last byte of the genesis block ID
+ */
+const VECHAIN_MAINNET_CHAIN_TAG = 0x4a;
 
-// Constant representing the zero address in hexadecimal format
+/**
+ * Constants defining Vechain testnet chain tag. The chain tag is the last byte of the genesis block ID
+ */
+const VECHAIN_TESTNET_CHAIN_TAG = 0x27;
+
+/**
+ * Constant representing the zero address in hexadecimal format
+ */
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
-// Constants defining the genesis blocks for VeChain mainnet and testnet
+/**
+ * Constants defining the genesis blocks for Vechain mainnet and testnet
+ */
 const genesisBlocks = {
     main: {
         number: 0,
@@ -53,7 +63,10 @@ const genesisBlocks = {
     }
 };
 
-/** @ignore */
+/**
+ * @ignore
+ * Constants defining Vechain mainnet and testnet network information
+ */
 const networkInfo = {
     mainnet: {
         genesisBlock: genesisBlocks.main,
