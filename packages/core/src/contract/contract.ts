@@ -31,7 +31,7 @@ function buildDeployContractTransaction(
 ): Transaction {
     const clauses: TransactionClause[] = [
         {
-            to: '0x0000000000000000000000000000000000000000',
+            to: networkInfo.mainnet.zeroAddress,
             value: 0,
             data: contractBytecode
         }

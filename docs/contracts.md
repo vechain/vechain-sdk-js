@@ -37,6 +37,7 @@ This example provides a practical demonstration of utilizing the Vechain SDK to 
 This example demonstrates the process of building a transaction to call a function on a deployed smart contract using the Vechain SDK.
 
 ```typescript { name=contract-function-call, category=example }
+import { networkInfo } from '@vechain-sdk/core';
 import { buildCallContractTransaction } from '@vechain-sdk/core';
 import { expect } from 'expect';
 
@@ -78,7 +79,21 @@ const transaction = buildCallContractTransaction(
     [123]
 );
 
-expect(transaction).toBeDefined();
+// check the parameters of the transaction
+expect(transaction.body.clauses[0].to).toBe(
+    '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'
+);
+expect(transaction.body.clauses[0].value).toBe(0);
+expect(transaction.body.clauses[0].data).toBeDefined();
+expect(transaction.body.nonce).toBeDefined();
+expect(transaction.body.chainTag).toBe(networkInfo.mainnet.chainTag);
+expect(transaction.body.blockRef).toBeDefined();
+expect(transaction.body.expiration).toBeDefined();
+expect(transaction.body.gasPriceCoef).toBeDefined();
+expect(transaction.body.gas).toBeDefined();
+expect(transaction.body.dependsOn).toBeNull();
+expect(transaction.body.gas).toBeGreaterThan(0);
+expect(transaction.body.gasPriceCoef).toBeDefined();
 
 ```
 

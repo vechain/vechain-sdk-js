@@ -28,10 +28,20 @@ describe('Contract', () => {
             compiledContract.bytecode
         );
 
-        // Ensure the transaction body contains the compiled bytecode
         expect(transaction.body.clauses[0].data).toEqual(
             compiledContract.bytecode
         );
+        expect(transaction.body.clauses[0].value).toBe(0);
+        expect(transaction.body.clauses[0].to).toBe(
+            networkInfo.mainnet.zeroAddress
+        );
+        expect(transaction.body.nonce).toBeDefined();
+        expect(transaction.body.chainTag).toBe(networkInfo.mainnet.chainTag);
+        expect(transaction.body.blockRef).toBeDefined();
+        expect(transaction.body.expiration).toBeDefined();
+        expect(transaction.body.gasPriceCoef).toBeDefined();
+        expect(transaction.body.gas).toBeDefined();
+        expect(transaction.body.dependsOn).toBeNull();
     });
 
     /**
@@ -68,6 +78,7 @@ describe('Contract', () => {
         expect(transaction.body.blockRef).toEqual('0x00ffecb8ac3142c4');
         expect(transaction.body.expiration).toEqual(32);
         expect(transaction.body.nonce).toEqual(1);
+        expect(transaction.body.gas).toBeGreaterThan(0);
         expect(transaction.body.gasPriceCoef).toEqual(0);
         expect(transaction.body.dependsOn).toEqual(null);
     });
@@ -92,7 +103,20 @@ describe('Contract', () => {
         );
 
         // Ensure the transaction body contains data for the function call
+        expect(callFunctionTransaction.body.clauses[0].to).toBe(
+            '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
+        );
+        expect(callFunctionTransaction.body.clauses[0].value).toBe(0);
         expect(callFunctionTransaction.body.clauses[0].data).toBeDefined();
+        expect(callFunctionTransaction.body.nonce).toBeDefined();
+        expect(callFunctionTransaction.body.chainTag).toBe(
+            networkInfo.mainnet.chainTag
+        );
+        expect(callFunctionTransaction.body.blockRef).toBeDefined();
+        expect(callFunctionTransaction.body.expiration).toBeDefined();
+        expect(callFunctionTransaction.body.gasPriceCoef).toBeDefined();
+        expect(callFunctionTransaction.body.gas).toBeGreaterThan(0);
+        expect(callFunctionTransaction.body.dependsOn).toBeNull();
     });
 
     /**
