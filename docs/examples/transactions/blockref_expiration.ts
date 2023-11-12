@@ -4,7 +4,8 @@ import {
     TransactionUtils,
     TransactionHandler,
     type TransactionClause,
-    type TransactionBody
+    type TransactionBody,
+    unitsUtils
 } from '@vechain-sdk/core';
 import { expect } from 'expect';
 
@@ -15,7 +16,7 @@ import { expect } from 'expect';
 const clauses: TransactionClause[] = [
     {
         to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: 10000, // VET transfer transaction
+        value: unitsUtils.parseVET('1000').toString(), // VET transfer transaction
         data: '0x'
     }
 ];
