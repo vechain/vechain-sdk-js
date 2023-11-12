@@ -1,7 +1,8 @@
 import {
     DECIMAL_INTEGER_REGEX,
     HEX_REGEX,
-    HEX_REGEX_OPTIONAL_PREFIX
+    HEX_REGEX_OPTIONAL_PREFIX,
+    NUMERIC_REGEX
 } from '../const';
 import { type HexString } from '../types';
 import { type HexConfig } from './types';
@@ -71,9 +72,21 @@ const removePrefix = (hex: HexString): string => {
     return hex;
 };
 
+/**
+ * Checks whether the provided string is a valid decimal numeric string.
+ * @param value - The string to check.
+ * @returns - A boolean indicating whether the input is a valid numeric string.
+ */
+const isNumeric = (value: string): boolean => {
+    if (typeof value !== 'string') return false;
+
+    return NUMERIC_REGEX.test(value);
+};
+
 export const dataUtils = {
     toHexString,
     isHexString,
     removePrefix,
-    isDecimalString
+    isDecimalString,
+    isNumeric
 };
