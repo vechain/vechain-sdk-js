@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { TEST_ACCOUNTS, thorSoloClient } from '../../../fixture';
 import {
+    dataUtils,
     Transaction,
     TransactionHandler,
     TransactionUtils
@@ -64,6 +65,8 @@ describe('ThorClient - Transactions', () => {
                 `0x${raw.toString('hex')}`
             );
             expect(send).toBeDefined();
+            expect(send).toHaveProperty('id');
+            expect(dataUtils.isHexString(send.id)).toBe(true);
         });
 
         /**
