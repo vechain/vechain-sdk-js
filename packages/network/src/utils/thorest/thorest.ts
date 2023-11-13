@@ -1,5 +1,5 @@
 /**
- * Endpoints for the Theta REST API.
+ * Endpoints for the REST API.
  *
  * @public
  */
