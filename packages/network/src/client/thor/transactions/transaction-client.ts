@@ -1,10 +1,6 @@
 import { type HttpClient } from '../../http';
 import { buildQuery, thorest } from '../../../utils';
-import {
-    dataUtils,
-    transactionDataUtils,
-    TransactionHandler
-} from '@vechain-sdk/core';
+import { dataUtils, TransactionHandler } from '@vechain-sdk/core';
 import {
     type TransactionDetail,
     type TransactionReceipt,
@@ -34,17 +30,14 @@ class TransactionClient {
         pending?: boolean
     ): Promise<TransactionDetail> {
         // Invalid transaction ID
-        if (!transactionDataUtils.isTransactionId(id, true))
+        if (!dataUtils.isThorId(id, true))
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
                 'Invalid transaction ID given as input. Input must be an hex string of length 64.'
             );
 
         // Invalid head
-        if (
-            head !== undefined &&
-            !transactionDataUtils.isTransactionHead(head, true)
-        )
+        if (head !== undefined && !dataUtils.isThorId(head, true))
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
                 'Invalid head given as input. Input must be an hex string of length 64.'
@@ -70,17 +63,14 @@ class TransactionClient {
         head?: string
     ): Promise<TransactionReceipt> {
         // Invalid transaction ID
-        if (!transactionDataUtils.isTransactionId(id, true))
+        if (!dataUtils.isThorId(id, true))
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
                 'Invalid transaction ID given as input. Input must be an hex string of length 64.'
             );
 
         // Invalid head
-        if (
-            head !== undefined &&
-            !transactionDataUtils.isTransactionHead(head, true)
-        )
+        if (head !== undefined && !dataUtils.isThorId(head, true))
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
                 'Invalid head given as input. Input must be an hex string of length 64.'

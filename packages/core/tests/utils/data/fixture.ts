@@ -14,6 +14,34 @@ const invalidHexStrings = [
 ];
 
 /**
+ * Valid thor IDs.
+ */
+const validThorIDs = [
+    {
+        value: '0x271f7db20141001975f71deb8fca90d6b22b8d6610dfb5a3e0bbeaf78b5a4891',
+        checkPrefix: true
+    },
+    {
+        value: '271f7db20141001975f71deb8fca90d6b22b8d6610dfb5a3e0bbeaf78b5a4891',
+        checkPrefix: false
+    }
+];
+
+/**
+ * Invalid thor IDs.
+ */
+const invalidThorIDs = [
+    {
+        value: '0x271f7db20141001975f71deb8fca90d6b22b8d6610d',
+        checkPrefix: true
+    },
+    {
+        value: '0xInvalidThorID',
+        checkPrefix: false
+    }
+];
+
+/**
  * Prefixd and unprefixed strings
  */
 const prefixedAndUnprefixedStrings: Array<{
@@ -132,6 +160,8 @@ const isNumericTestCases = [
 export {
     validHexStrings,
     invalidHexStrings,
+    validThorIDs,
+    invalidThorIDs,
     prefixedAndUnprefixedStrings,
     isNumericTestCases
 };

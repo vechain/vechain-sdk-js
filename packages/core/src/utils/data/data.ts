@@ -2,7 +2,8 @@ import {
     DECIMAL_INTEGER_REGEX,
     HEX_REGEX,
     HEX_REGEX_OPTIONAL_PREFIX,
-    NUMERIC_REGEX
+    NUMERIC_REGEX,
+    TRANSACTION_HEAD_LENGTH
 } from '../const';
 import { type HexString } from '../types';
 import { type HexConfig } from './types';
@@ -83,10 +84,32 @@ const isNumeric = (value: string): boolean => {
     return NUMERIC_REGEX.test(value);
 };
 
+/**
+ * Checks whether the provided data is a valid transaction thor id.
+ * Thor id is a 64 characters long hexadecimal string.
+ * It is used to identify a transaction id, a block id, ....
+ *
+ * @remarks
+ * The check can optionally validate the presence of a '0x' prefix.
+ *
+ * @param data - The string data to check.
+ * @param checkPrefix - A boolean determining whether to validate the '0x' prefix (default: false).
+ * @returns A boolean indicating whether the input is a valid hexadecimal string.
+ */
+const isThorId = (data: string, checkPrefix: boolean = true): boolean => {
+    return (
+        isHexString(data, checkPrefix) &&
+        (checkPrefix
+            ? data.length === TRANSACTION_HEAD_LENGTH + 2 // +2 for '0x'
+            : data.length === TRANSACTION_HEAD_LENGTH)
+    );
+};
+
 export const dataUtils = {
     toHexString,
     isHexString,
     removePrefix,
     isDecimalString,
-    isNumeric
+    isNumeric,
+    isThorId
 };
