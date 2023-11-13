@@ -24,7 +24,7 @@ const isTransactionId = (
 };
 
 /**
- * Checks whether the provided data is a valid transaction Heas.
+ * Checks whether the provided data is a valid transaction Head.
  *
  * @remarks
  * The check can optionally validate the presence of a '0x' prefix.
