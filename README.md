@@ -1,9 +1,15 @@
-# vechain-sdk
-The official JavaScript SDK for vechain.
-
-[![main-ci](https://github.com/vechainfoundation/vechain-sdk/actions/workflows/on-main.yml/badge.svg)](https://github.com/vechainfoundation/vechain-sdk/actions/workflows/on-main.yml)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=vechainfoundation_thor-sdk-js&metric=alert_status&token=0e94ce34f24ef54d43c15c0d4b38f2c645c92b42)](https://sonarcloud.io/summary/new_code?id=vechainfoundation_thor-sdk-js)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=vechainfoundation_thor-sdk-js&metric=coverage&token=0e94ce34f24ef54d43c15c0d4b38f2c645c92b42)](https://sonarcloud.io/summary/new_code?id=vechainfoundation_thor-sdk-js)
+<div align="center">
+  <h1><code>vechain-sdk</code></h1>
+  <p>
+    <strong>The official JavaScript SDK for vechain.</strong>
+  </p>
+  <p>
+    <a href="https://github.com/vechainfoundation/vechain-sdk/actions/workflows/on-main.yml"><img src="https://github.com/vechainfoundation/vechain-sdk/actions/workflows/on-main.yml/badge.svg" alt="main-ci"></a>
+    <a href="https://sonarcloud.io/summary/new_code?id=vechainfoundation_thor-sdk-js"><img src="https://sonarcloud.io/api/project_badges/measure?project=vechainfoundation_thor-sdk-js&metric=alert_status&token=0e94ce34f24ef54d43c15c0d4b38f2c645c92b42" alt="Quality Gate Status"></a>
+    <a href="https://sonarcloud.io/summary/new_code?id=vechainfoundation_thor-sdk-js"><img src="https://sonarcloud.io/api/project_badges/measure?project=vechainfoundation_thor-sdk-js&metric=coverage&token=0e94ce34f24ef54d43c15c0d4b38f2c645c92b42" alt="Coverage"></a>
+    <a href="https://github.com/vechainfoundation/vechain-sdk/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+  </p>
+</div>
 
 ## Repository Structure
 - `./demos`: Demonstrative projects
