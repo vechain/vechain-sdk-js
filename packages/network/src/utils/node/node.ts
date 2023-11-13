@@ -1,9 +1,6 @@
 import { HttpClient } from '../../../src';
+import { thorest } from '../thorest';
 
-/**
- * path to Thorest API to retrieve last block
- */
-const LAST_BLOCK_PATH = '/blocks/best';
 /**
  * tolerance in seconds. When set to 30, it means that we consider a node healthy even when it's off-sync by roughly 3 blocks
  */
@@ -40,7 +37,7 @@ const isHealthy = async (URL: string): Promise<boolean> => {
     /**
      * Perform an HTTP GET request using the SimpleNet instance to get the latest block
      */
-    const response = await network.http('GET', LAST_BLOCK_PATH);
+    const response = await network.http('GET', thorest.blocks.LAST_BLOCK_PATH);
     const lastBlockTimestamp: number = getTimestampFromBlock(response);
 
     const secondsSinceLastBlock =

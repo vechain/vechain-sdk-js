@@ -7,6 +7,12 @@
 const BLOCK_DETAIL = (revision: string | number): string =>
     `/blocks/${revision}`;
 
+/**
+ * path to Thorest API to retrieve last block
+ */
+const LAST_BLOCK_PATH = '/blocks/best';
+
 export const blocks = {
-    BLOCK_DETAIL
+    BLOCK_DETAIL,
+    LAST_BLOCK_PATH
 };
