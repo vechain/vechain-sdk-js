@@ -1,5 +1,6 @@
 import { HttpClient } from '../../../src';
 import { thorest } from '../thorest';
+import { type BlockDetail } from '../../client/thor/blocks';
 
 /**
  * tolerance in seconds. When set to 30, it means that we consider a node healthy even when it's off-sync by roughly 3 blocks
@@ -9,13 +10,6 @@ const NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS = 30;
  * the name of the atttribute we are looking for to extract the block timestamp information
  */
 const BLOCK_TIMESTAMP_KEY = 'timestamp';
-
-/**
- * Interface for the block object returned from the node
- */
-interface Block {
-    timestamp: number;
-}
 
 /**
  * Checks the health of a node using the following algorithm:
@@ -76,7 +70,9 @@ const getTimestampFromBlock = (response: unknown): number => {
     /**
      * Type assertion to check that the timestamp key exists in the response from the API call to the node
      */
-    type checkTimestampKeyExists = (value: unknown) => asserts value is Block;
+    type checkTimestampKeyExists = (
+        value: unknown
+    ) => asserts value is BlockDetail;
 
     /**
      * Checks that the timestamp key exists in the response from the API call to the node
