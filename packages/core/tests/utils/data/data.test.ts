@@ -2,6 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { dataUtils } from '../../../src';
 import {
     invalidHexStrings,
+    isNumericTestCases,
     prefixedAndUnprefixedStrings,
     validHexStrings
 } from './fixture';
@@ -72,6 +73,23 @@ describe('utils/hex', () => {
                 expect(dataUtils.removePrefix(prefixAndUnprefix.prefixed)).toBe(
                     prefixAndUnprefix.unprefixed
                 );
+            });
+        });
+    });
+
+    /**
+     * Verification of numbers in string format
+     */
+    describe('isNumeric', () => {
+        /**
+         * Test cases for isNumeric function.
+         */
+        isNumericTestCases.forEach(({ value, expected }) => {
+            test(`should return ${expected} for ${JSON.stringify(
+                value
+            )}`, () => {
+                // @ts-expect-error - invalid value types are included in test cases
+                expect(dataUtils.isNumeric(value)).toBe(expected);
             });
         });
     });
