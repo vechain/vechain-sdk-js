@@ -22,6 +22,9 @@ const validThorIDs = [
         checkPrefix: true
     },
     {
+        value: '0x271f7db20141001975f71deb8fca90d6b22b8d6610dfb5a3e0bbeaf78b5a4891'
+    },
+    {
         value: '271f7db20141001975f71deb8fca90d6b22b8d6610dfb5a3e0bbeaf78b5a4891',
         checkPrefix: false
     }
@@ -38,6 +41,9 @@ const invalidThorIDs = [
     {
         value: '0xInvalidThorID',
         checkPrefix: false
+    },
+    {
+        value: '0xInvalidThorID'
     }
 ];
 
