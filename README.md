@@ -74,3 +74,7 @@ This project is licensed under the [MIT license](LICENSE.md).
                                             @@@@@@ @@@@@                                  
                                               @@@@@@@@@                                   
                                                @@@@@@@                                    
+
+## Contact information
+- Discord https://discord.com/invite/vechain #support
+- Support https://support.vechain.org
