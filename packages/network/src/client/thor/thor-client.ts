@@ -20,12 +20,12 @@ class ThorClient {
     public readonly blocks: BlockClient;
 
     /**
-     * The `LogsClient` instance used for interacting with block-related endpoints.
+     * The `LogsClient` instance used for interacting with log-related endpoints.
      */
     public readonly logs: LogsClient;
 
     /**
-     * The `TransactionClient` instance used for interacting with block-related endpoints.
+     * The `TransactionClient` instance used for interacting with transaction-related endpoints.
      */
     public readonly transactions: TransactionClient;
 
