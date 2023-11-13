@@ -86,8 +86,8 @@ type ErrorCode =
 type DataType<ErrorCodeT extends ErrorCode> = ErrorCodeT extends RLP.INVALID_RLP
     ? InvalidRLPErrorData
     : ErrorCodeT extends HTTP_CLIENT.INVALID_HTTP_REQUEST
-    ? HTTPClientErrorData
-    : DefaultErrorData;
+      ? HTTPClientErrorData
+      : DefaultErrorData;
 
 /**
  * Default error codes.
@@ -122,66 +122,66 @@ type ErrorType<ErrorCodeT> =
     ErrorCodeT extends SECP256K1.INVALID_SECP256k1_PRIVATE_KEY
         ? InvalidSecp256k1PrivateKeyError
         : ErrorCodeT extends SECP256K1.INVALID_SECP256k1_MESSAGE_HASH
-        ? InvalidSecp256k1MessageHashError
-        : ErrorCodeT extends SECP256K1.INVALID_SECP256k1_SIGNATURE
-        ? InvalidSecp256k1SignatureError
-        : ErrorCodeT extends SECP256K1.INVALID_SECP256k1_SIGNATURE_RECOVERY
-        ? InvalidSecp256k1SignatureRecoveryError
-        : ErrorCodeT extends ADDRESS.INVALID_ADDRESS
-        ? InvalidAddressError
-        : ErrorCodeT extends KEYSTORE.INVALID_KEYSTORE
-        ? InvalidKeystoreError
-        : ErrorCodeT extends KEYSTORE.INVALID_PASSWORD
-        ? InvalidKeystorePasswordError
-        : ErrorCodeT extends HDNODE.INVALID_HDNODE_CHAIN_CODE
-        ? InvalidHDNodeChaincodeError
-        : ErrorCodeT extends HDNODE.INVALID_HDNODE_MNEMONICS
-        ? InvalidHDNodeMnemonicsError
-        : ErrorCodeT extends HDNODE.INVALID_HDNODE_PRIVATE_KEY
-        ? InvalidHDNodePrivateKeyError
-        : ErrorCodeT extends HDNODE.INVALID_HDNODE_PUBLIC_KEY
-        ? InvalidHDNodePublicKeyError
-        : ErrorCodeT extends HDNODE.INVALID_HDNODE_DERIVATION_PATH
-        ? InvalidHDNodeDerivationPathError
-        : ErrorCodeT extends BLOOM.INVALID_BLOOM
-        ? InvalidBloomError
-        : ErrorCodeT extends BLOOM.INVALID_K
-        ? InvalidKError
-        : ErrorCodeT extends CERTIFICATE.CERTIFICATE_NOT_SIGNED
-        ? CertificateNotSignedError
-        : ErrorCodeT extends CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT
-        ? CertificateInvalidSignatureFormatError
-        : ErrorCodeT extends CERTIFICATE.CERTIFICATE_INVALID_SIGNER
-        ? CertificateInvalidSignerError
-        : ErrorCodeT extends ABI.INVALID_EVENT
-        ? InvalidAbiEventError
-        : ErrorCodeT extends ABI.INVALID_DATA_TO_DECODE
-        ? InvalidAbiDataToDecodeError
-        : ErrorCodeT extends ABI.INVALID_DATA_TO_ENCODE
-        ? InvalidAbiDataToEncodeError
-        : ErrorCodeT extends ABI.INVALID_FORMAT_TYPE
-        ? InvalidAbiFormatTypeError
-        : ErrorCodeT extends ABI.INVALID_FUNCTION
-        ? InvalidAbiFunctionError
-        : ErrorCodeT extends ABI.CONTRACT_INTERFACE_ERROR
-        ? ContractInterfaceError
-        : ErrorCodeT extends RLP.INVALID_RLP
-        ? InvalidRLPError
-        : ErrorCodeT extends DATA.INVALID_DATA_TYPE
-        ? InvalidDataTypeError
-        : ErrorCodeT extends DATA.INVALID_DATA_RETURN_TYPE
-        ? InvalidDataReturnTypeError
-        : ErrorCodeT extends TRANSACTION.ALREADY_SIGNED
-        ? TransactionAlreadySignedError
-        : ErrorCodeT extends TRANSACTION.NOT_SIGNED
-        ? TransactionNotSignedError
-        : ErrorCodeT extends TRANSACTION.INVALID_TRANSACTION_BODY
-        ? TransactionBodyError
-        : ErrorCodeT extends TRANSACTION.INVALID_DELEGATION
-        ? TransactionDelegationError
-        : ErrorCodeT extends HTTP_CLIENT.INVALID_HTTP_REQUEST
-        ? HTTPClientError
-        : never;
+          ? InvalidSecp256k1MessageHashError
+          : ErrorCodeT extends SECP256K1.INVALID_SECP256k1_SIGNATURE
+            ? InvalidSecp256k1SignatureError
+            : ErrorCodeT extends SECP256K1.INVALID_SECP256k1_SIGNATURE_RECOVERY
+              ? InvalidSecp256k1SignatureRecoveryError
+              : ErrorCodeT extends ADDRESS.INVALID_ADDRESS
+                ? InvalidAddressError
+                : ErrorCodeT extends KEYSTORE.INVALID_KEYSTORE
+                  ? InvalidKeystoreError
+                  : ErrorCodeT extends KEYSTORE.INVALID_PASSWORD
+                    ? InvalidKeystorePasswordError
+                    : ErrorCodeT extends HDNODE.INVALID_HDNODE_CHAIN_CODE
+                      ? InvalidHDNodeChaincodeError
+                      : ErrorCodeT extends HDNODE.INVALID_HDNODE_MNEMONICS
+                        ? InvalidHDNodeMnemonicsError
+                        : ErrorCodeT extends HDNODE.INVALID_HDNODE_PRIVATE_KEY
+                          ? InvalidHDNodePrivateKeyError
+                          : ErrorCodeT extends HDNODE.INVALID_HDNODE_PUBLIC_KEY
+                            ? InvalidHDNodePublicKeyError
+                            : ErrorCodeT extends HDNODE.INVALID_HDNODE_DERIVATION_PATH
+                              ? InvalidHDNodeDerivationPathError
+                              : ErrorCodeT extends BLOOM.INVALID_BLOOM
+                                ? InvalidBloomError
+                                : ErrorCodeT extends BLOOM.INVALID_K
+                                  ? InvalidKError
+                                  : ErrorCodeT extends CERTIFICATE.CERTIFICATE_NOT_SIGNED
+                                    ? CertificateNotSignedError
+                                    : ErrorCodeT extends CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT
+                                      ? CertificateInvalidSignatureFormatError
+                                      : ErrorCodeT extends CERTIFICATE.CERTIFICATE_INVALID_SIGNER
+                                        ? CertificateInvalidSignerError
+                                        : ErrorCodeT extends ABI.INVALID_EVENT
+                                          ? InvalidAbiEventError
+                                          : ErrorCodeT extends ABI.INVALID_DATA_TO_DECODE
+                                            ? InvalidAbiDataToDecodeError
+                                            : ErrorCodeT extends ABI.INVALID_DATA_TO_ENCODE
+                                              ? InvalidAbiDataToEncodeError
+                                              : ErrorCodeT extends ABI.INVALID_FORMAT_TYPE
+                                                ? InvalidAbiFormatTypeError
+                                                : ErrorCodeT extends ABI.INVALID_FUNCTION
+                                                  ? InvalidAbiFunctionError
+                                                  : ErrorCodeT extends ABI.CONTRACT_INTERFACE_ERROR
+                                                    ? ContractInterfaceError
+                                                    : ErrorCodeT extends RLP.INVALID_RLP
+                                                      ? InvalidRLPError
+                                                      : ErrorCodeT extends DATA.INVALID_DATA_TYPE
+                                                        ? InvalidDataTypeError
+                                                        : ErrorCodeT extends DATA.INVALID_DATA_RETURN_TYPE
+                                                          ? InvalidDataReturnTypeError
+                                                          : ErrorCodeT extends TRANSACTION.ALREADY_SIGNED
+                                                            ? TransactionAlreadySignedError
+                                                            : ErrorCodeT extends TRANSACTION.NOT_SIGNED
+                                                              ? TransactionNotSignedError
+                                                              : ErrorCodeT extends TRANSACTION.INVALID_TRANSACTION_BODY
+                                                                ? TransactionBodyError
+                                                                : ErrorCodeT extends TRANSACTION.INVALID_DELEGATION
+                                                                  ? TransactionDelegationError
+                                                                  : ErrorCodeT extends HTTP_CLIENT.INVALID_HTTP_REQUEST
+                                                                    ? HTTPClientError
+                                                                    : never;
 
 /**
  * Map to get the error class from the error code.
