@@ -42,11 +42,7 @@ type TransactionTransfersType = Array<{
  */
 interface TransactionDetailRaw {
     raw: string;
-    meta: {
-        blockID: string;
-        blockNumber: number;
-        blockTimestamp: number;
-    };
+    meta: Omit<TransactionMetadata, 'txID' | 'txOrigin'>;
 }
 
 /**
