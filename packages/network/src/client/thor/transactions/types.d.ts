@@ -112,9 +112,9 @@ interface TransactionSendResult {
     id: string;
 }
 
-export type {
-    TransactionReceipt,
-    TransactionDetail,
-    TransactionCallSimulation,
-    TransactionSendResult
+export {
+    type TransactionReceipt,
+    type TransactionDetail,
+    type TransactionCallSimulation,
+    type TransactionSendResult
 };
