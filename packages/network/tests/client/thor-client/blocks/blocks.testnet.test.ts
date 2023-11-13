@@ -3,7 +3,7 @@ import { validBlockRevisions, invalidBlockRevisions } from './fixture';
 import { thorClient } from '../../../fixture';
 
 /**
- * ThorClient class tests
+ * ThorClient - BlockClient class tests
  *
  * @group integration/client/thor/blocks
  */
@@ -39,18 +39,18 @@ describe('ThorClient - Blocks', () => {
         );
 
         /**
-         * getBlock tests with 'best' as revision
+         * getBestBlock test
          */
-        test('best', async () => {
-            const blockDetails = await thorClient.blocks.getBlock('best');
+        test('getBestBlock', async () => {
+            const blockDetails = await thorClient.blocks.getBestBlock();
             expect(blockDetails).toBeDefined();
         });
 
         /**
-         * getBlock tests with 'finalized' as revision
+         * getFinalBlock test
          */
-        test('finalized', async () => {
-            const blockDetails = await thorClient.blocks.getBlock('finalized');
+        test('getFinalBlock', async () => {
+            const blockDetails = await thorClient.blocks.getFinalBlock();
             expect(blockDetails).toBeDefined();
         });
     });

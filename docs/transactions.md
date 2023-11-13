@@ -22,7 +22,8 @@ import {
     TransactionUtils,
     TransactionHandler,
     type TransactionClause,
-    type TransactionBody
+    type TransactionBody,
+    unitsUtils
 } from '@vechain-sdk/core';
 import { expect } from 'expect';
 
@@ -33,7 +34,7 @@ import { expect } from 'expect';
 const clauses: TransactionClause[] = [
     {
         to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: 10000,
+        value: unitsUtils.parseVET('10000').toString(),
         data: '0x'
     }
 ];
@@ -81,7 +82,8 @@ import {
     TransactionUtils,
     TransactionHandler,
     type TransactionClause,
-    type TransactionBody
+    type TransactionBody,
+    unitsUtils
 } from '@vechain-sdk/core';
 import { expect } from 'expect';
 
@@ -92,7 +94,7 @@ import { expect } from 'expect';
 const clauses: TransactionClause[] = [
     {
         to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: 10000, // VET transfer clause
+        value: unitsUtils.parseVET('10000').toString(), // VET transfer clause
         data: '0x'
     },
     {
@@ -147,7 +149,8 @@ import {
     HDNode,
     type TransactionClause,
     type TransactionBody,
-    mnemonic
+    mnemonic,
+    unitsUtils
 } from '@vechain-sdk/core';
 import { expect } from 'expect';
 
@@ -158,7 +161,7 @@ import { expect } from 'expect';
 const clauses: TransactionClause[] = [
     {
         to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: 10000, // VET transfer transaction
+        value: unitsUtils.parseVET('10000').toString(), // VET transfer transaction
         data: '0x'
     }
 ];
@@ -212,7 +215,8 @@ import {
     TransactionUtils,
     TransactionHandler,
     type TransactionClause,
-    type TransactionBody
+    type TransactionBody,
+    unitsUtils
 } from '@vechain-sdk/core';
 import { expect } from 'expect';
 
@@ -223,7 +227,7 @@ import { expect } from 'expect';
 const clauses: TransactionClause[] = [
     {
         to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: 10000, // VET transfer transaction
+        value: unitsUtils.parseVET('1000').toString(), // VET transfer transaction
         data: '0x'
     }
 ];
@@ -265,7 +269,8 @@ import {
     TransactionUtils,
     TransactionHandler,
     type TransactionClause,
-    type TransactionBody
+    type TransactionBody,
+    unitsUtils
 } from '@vechain-sdk/core';
 import { expect } from 'expect';
 
@@ -276,7 +281,7 @@ import { expect } from 'expect';
 const txAClauses: TransactionClause[] = [
     {
         to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: 1000, // VET transfer transaction
+        value: unitsUtils.parseVET('1000').toString(), // VET transfer transaction
         data: '0x'
     }
 ];

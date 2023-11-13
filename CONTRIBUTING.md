@@ -16,7 +16,8 @@ To ensure consistency throughout the source code, please adhere to the following
 1. Follow the coding style used throughout the project. The project includes an ESLint configuration, so consider installing an ESLint plugin for your text editor for real-time linting.
 2. All public API methods must be documented.
 3. Write tests for new features and bug fixes.
-4. We follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for commit messages.
+4. For integration tests using thor-solo, if needed, use a `TEST_ACCOUNT` in order to isolate previous integration tests.
+5. We follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for commit messages.
 
 # Commenting Guidelines
 
