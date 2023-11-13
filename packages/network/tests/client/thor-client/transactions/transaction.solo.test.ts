@@ -95,6 +95,19 @@ describe('ThorClient - Transactions', () => {
                     expect(send).toBeDefined();
                     expect(send).toHaveProperty('id');
                     expect(dataUtils.isHexString(send.id)).toBe(true);
+
+                    // 3 - Get transaction AND transaction receipt
+                    const transaction =
+                        await thorSoloClient.transactions.getTransaction(
+                            send.id
+                        );
+                    const transactionReceipt =
+                        await thorSoloClient.transactions.getTransactionReceipt(
+                            send.id
+                        );
+
+                    expect(transaction).toBeDefined();
+                    expect(transactionReceipt).toBeDefined();
                 }
             });
         });
