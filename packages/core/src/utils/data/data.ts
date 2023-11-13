@@ -3,7 +3,7 @@ import {
     HEX_REGEX,
     HEX_REGEX_OPTIONAL_PREFIX,
     NUMERIC_REGEX,
-    TRANSACTION_HEAD_LENGTH
+    THOR_ID_LENGTH
 } from '../const';
 import { type HexString } from '../types';
 import { type HexConfig } from './types';
@@ -96,12 +96,12 @@ const isNumeric = (value: string): boolean => {
  * @param checkPrefix - A boolean determining whether to validate the '0x' prefix (default: false).
  * @returns A boolean indicating whether the input is a valid hexadecimal string.
  */
-const isThorId = (data: string, checkPrefix: boolean = true): boolean => {
+const isThorId = (data: string, checkPrefix: boolean = false): boolean => {
     return (
         isHexString(data, checkPrefix) &&
         (checkPrefix
-            ? data.length === TRANSACTION_HEAD_LENGTH + 2 // +2 for '0x'
-            : data.length === TRANSACTION_HEAD_LENGTH)
+            ? data.length === THOR_ID_LENGTH + 2 // +2 for '0x'
+            : data.length === THOR_ID_LENGTH)
     );
 };
 

@@ -35,11 +35,19 @@ const DECIMAL_INTEGER_REGEX = /^\d+$/;
  */
 const NUMERIC_REGEX = /^-?\d*(\.\d+)?$/;
 
+/**
+ * Default length of thor id hex string.
+ * Thor id is a 64 characters long hexadecimal string.
+ * This is used to validate thor id strings (block ids, transaction ids, ...).
+ */
+const THOR_ID_LENGTH = 64;
+
 export {
     ZERO_BUFFER,
     HEX_REGEX,
     HEX_ADDRESS_REGEX,
     HEX_REGEX_OPTIONAL_PREFIX,
     DECIMAL_INTEGER_REGEX,
-    NUMERIC_REGEX
+    NUMERIC_REGEX,
+    THOR_ID_LENGTH
 };
