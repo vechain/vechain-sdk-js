@@ -37,8 +37,7 @@ This example provides a practical demonstration of utilizing the Vechain SDK to 
 This example demonstrates the process of building a transaction to call a function on a deployed smart contract using the Vechain SDK.
 
 ```typescript { name=contract-function-call, category=example }
-import { networkInfo } from '@vechain-sdk/core';
-import { buildCallContractTransaction } from '@vechain-sdk/core';
+import { networkInfo, buildCallContractTransaction } from '@vechain-sdk/core';
 import { expect } from 'expect';
 
 const contractABI = JSON.stringify([
@@ -73,7 +72,7 @@ const contractABI = JSON.stringify([
 ]);
 
 const transaction = buildCallContractTransaction(
-    '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+    '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed', // just a sample deployed contract address
     contractABI,
     'setValue',
     [123]
