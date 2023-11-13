@@ -1,5 +1,4 @@
-import { networkInfo } from '@vechain-sdk/core';
-import { buildCallContractTransaction } from '@vechain-sdk/core';
+import { networkInfo, buildCallContractTransaction } from '@vechain-sdk/core';
 import { expect } from 'expect';
 
 const contractABI = JSON.stringify([
@@ -34,7 +33,7 @@ const contractABI = JSON.stringify([
 ]);
 
 const transaction = buildCallContractTransaction(
-    '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+    '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed', // just a sample deployed contract address
     contractABI,
     'setValue',
     [123]
