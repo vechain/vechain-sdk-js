@@ -1,12 +1,7 @@
 import { type HttpClient } from '../../http';
 import { buildQuery, thorest } from '../../../utils';
+import { dataUtils, TransactionHandler } from '@vechain-sdk/core';
 import {
-    dataUtils,
-    type TransactionClause,
-    TransactionHandler
-} from '@vechain-sdk/core';
-import {
-    type TransactionCallSimulation,
     type TransactionDetail,
     type TransactionReceipt,
     type TransactionSendResult
@@ -142,35 +137,37 @@ class TransactionClient {
      * @param expiration - The expiration of transaction.
      * @param blockRef - The block reference.
      * @returns A promise that resolves to the result of the simulated transaction.
+     *
+     * @NOTE: Define better parameters and gas estimation
      */
-    public async simulateTransactionCall(
-        revision: string,
-        clauses: TransactionClause[],
-        gas: string | number,
-        gasPrice: string | number,
-        caller: string,
-        provedWork: string | number,
-        gasPayer: string,
-        expiration: number,
-        blockRef: string
-    ): Promise<TransactionCallSimulation> {
-        return (await this.httpClient.http(
-            'POST',
-            thorest.accounts.post.ACCOUNT(revision),
-            {
-                body: {
-                    clauses,
-                    gas,
-                    gasPrice,
-                    caller,
-                    provedWork,
-                    gasPayer,
-                    expiration,
-                    blockRef
-                }
-            }
-        )) as TransactionCallSimulation;
-    }
+    // public async simulateTransactionCall(
+    //     revision: string,
+    //     clauses: TransactionClause[],
+    //     gas: string | number,
+    //     gasPrice: string | number,
+    //     caller: string,
+    //     provedWork: string | number,
+    //     gasPayer: string,
+    //     expiration: number,
+    //     blockRef: string
+    // ): Promise<TransactionCallSimulation> {
+    //     return (await this.httpClient.http(
+    //         'POST',
+    //         thorest.accounts.post.ACCOUNT(revision),
+    //         {
+    //             body: {
+    //                 clauses,
+    //                 gas,
+    //                 gasPrice,
+    //                 caller,
+    //                 provedWork,
+    //                 gasPayer,
+    //                 expiration,
+    //                 blockRef
+    //             }
+    //         }
+    //     )) as TransactionCallSimulation;
+    // }
 }
 
 export { TransactionClient };

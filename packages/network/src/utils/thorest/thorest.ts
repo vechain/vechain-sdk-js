@@ -14,11 +14,12 @@ const thorest = {
                 `/accounts/${address}/code`,
             STORAGE_AT: (address: string, position: string): string =>
                 `/accounts/${address}/storage/${position}`
-        },
-        post: {
-            ACCOUNT: (revision: string): string =>
-                `/accounts/*?revision=${revision}`
         }
+        // @NOTE: Define better parameters and gas estimation
+        // post: {
+        //     ACCOUNT: (revision: string): string =>
+        //         `/accounts/*?revision=${revision}`
+        // }
     },
 
     /**
