@@ -3,4 +3,4 @@ export * from './const';
 export * from './helpers';
 export * from './revision';
 export * from './thorest';
-export * from './node';
+export * from '../client/thor/node';

@@ -1,6 +1,5 @@
 import { describe, expect, test, jest } from '@jest/globals';
-import { node } from '../../../src/utils';
-import { HttpClient } from '../../../src';
+import { HttpClient, ThorClient } from '../../../../src';
 import {
     blockWithMissingTimeStamp,
     blockWithOldTimeStamp,
@@ -16,8 +15,10 @@ describe('Unit tests to check the Node health check is working for different sce
     const URL = 'http://example.com';
 
     test('null or empty URL or blank URL', async () => {
-        await expect(node.isHealthy('')).rejects.toThrowError();
-        await expect(node.isHealthy('   ')).rejects.toThrowError();
+        let thorClient = new ThorClient(new HttpClient(''));
+        await expect(thorClient.node.isHealthy()).rejects.toThrowError();
+        thorClient = new ThorClient(new HttpClient('   '));
+        await expect(thorClient.node.isHealthy()).rejects.toThrowError();
     });
 
     test('valid URL/node but Error is thrown by network provide', async () => {
@@ -26,31 +27,36 @@ describe('Unit tests to check the Node health check is working for different sce
             throw new Error();
         });
 
-        await expect(node.isHealthy(URL)).rejects.toThrowError();
+        const thorClient = new ThorClient(new HttpClient(URL));
+        await expect(thorClient.node.isHealthy()).rejects.toThrowError();
     });
 
     test('valid/available node but invalid block format', async () => {
         // Mock the response to force the JSON response to be null
         jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce({});
-        await expect(node.isHealthy(URL)).rejects.toThrowError();
+        let thorClient = new ThorClient(new HttpClient(URL));
+        await expect(thorClient.node.isHealthy()).rejects.toThrowError();
 
         // Mock the response to force the JSON response to not be an object
         jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce({
             invalidKey: 1
         });
-        await expect(node.isHealthy(URL)).rejects.toThrowError();
+        thorClient = new ThorClient(new HttpClient(URL));
+        await expect(thorClient.node.isHealthy()).rejects.toThrowError();
 
         // Mock the response to force the JSON response to have a timestamp non-existent
         jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce(
             blockWithMissingTimeStamp
         );
-        await expect(node.isHealthy(URL)).rejects.toThrowError();
+        thorClient = new ThorClient(new HttpClient(URL));
+        await expect(thorClient.node.isHealthy()).rejects.toThrowError();
 
         // Mock the response to force the JSON response to have a timestamp not a number
         jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce(
             blockWithInvalidTimeStampFormat
         );
-        await expect(node.isHealthy(URL)).rejects.toThrowError();
+        thorClient = new ThorClient(new HttpClient(URL));
+        await expect(thorClient.node.isHealthy()).rejects.toThrowError();
     });
 
     test('valid & available node but node is out of sync', async () => {
@@ -58,7 +64,7 @@ describe('Unit tests to check the Node health check is working for different sce
         jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce(
             blockWithOldTimeStamp
         );
-
-        await expect(node.isHealthy(URL)).resolves.toBe(false);
+        const thorClient = new ThorClient(new HttpClient(URL));
+        await expect(thorClient.node.isHealthy()).resolves.toBe(false);
     });
 });

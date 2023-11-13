@@ -8,7 +8,7 @@ const _testnetUrl = 'https://testnet.vechain.org';
 /**
  * Url of the solo network fixture
  */
-const soloUrl = 'http://localhost:8669';
+const _soloUrl = 'http://localhost:8669';
 
 /**
  * Network instance fixture
@@ -18,7 +18,7 @@ const testNetwork = new HttpClient(_testnetUrl);
 /**
  * Solo network instance fixture
  */
-const soloNetwork = new HttpClient(soloUrl);
+const soloNetwork = new HttpClient(_soloUrl);
 
 /**
  * Simple test account fixture
@@ -176,6 +176,5 @@ export {
     thorClient,
     thorSoloClient,
     TEST_ACCOUNTS,
-    ALL_ACCOUNTS,
-    soloUrl
+    ALL_ACCOUNTS
 };
