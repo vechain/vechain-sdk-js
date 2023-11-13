@@ -43,7 +43,7 @@ Ensure Docker is running on your machine. The integration tests are performed ag
 
 ## Documentation and Examples
 - The `./docs` directory houses extensive code examples written as executable demonstrations.
-- Dive into the [examples](./docs/README.md) for a hands-on understanding of the SDK capabilities.
+- Dive into the [examples](../docs/README.md) for a hands-on understanding of the SDK capabilities.
 
 ## Contributing
 
@@ -56,7 +56,11 @@ For more details and guidelines on how to contribute, refer to [CONTRIBUTING](CO
 This project is licensed under the [MIT license](LICENSE.md).
 
 ## Publishing
-... To Be Detailed ...
+... To Be Detailed ...     
+
+## Contact information
+- Discord https://discord.com/invite/vechain
+- Support https://support.vechain.org
 
 
                               @@@@@@@@@@@@@@                     /@@@@@                   
@@ -73,8 +77,4 @@ This project is licensed under the [MIT license](LICENSE.md).
                                            @@@@@    @@@@@#                                
                                             @@@@@@ @@@@@                                  
                                               @@@@@@@@@                                   
-                                               @@@@@@@                                    
-
-## Contact information
-- Discord https://discord.com/invite/vechain #support
-- Support https://support.vechain.org
+                                               @@@@@@@                               
