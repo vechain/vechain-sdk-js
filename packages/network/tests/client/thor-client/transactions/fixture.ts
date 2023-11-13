@@ -1,4 +1,5 @@
 import { InvalidDataTypeError } from '@vechain-sdk/errors';
+import { TEST_ACCOUNTS } from '../../../fixture';
 
 /**
  * Transaction details function fixture.
@@ -151,23 +152,58 @@ const transactionReceipts = {
 /**
  * Send transaction function errors fixture.
  */
-const sendTransactionErrors = [
-    {
-        testName:
-            'Should throw error when invalid encoded raw transaction hex string is given',
-        transaction: {
-            raw: 'INVALID_HEX_STRING'
+const sendTransactionErrors = {
+    correct: [
+        {
+            testName: 'Should be able to send a transaction with 1 clause',
+            transaction: {
+                clauses: [
+                    {
+                        to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
+                            .address,
+                        value: 1000000,
+                        data: '0x'
+                    }
+                ]
+            }
         },
-        expected: InvalidDataTypeError
-    },
-    {
-        testName:
-            'Should throw error when invalid encoded raw transaction is given',
-        transaction: {
-            raw: '0x123456789abcdef'
+        {
+            testName: 'Should be able to send a transaction with more clauses',
+            transaction: {
+                clauses: [
+                    {
+                        to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
+                            .address,
+                        value: 1000000,
+                        data: '0x'
+                    },
+                    {
+                        to: TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                        value: 1000000,
+                        data: '0x'
+                    }
+                ]
+            }
+        }
+    ],
+    errors: [
+        {
+            testName:
+                'Should throw error when invalid encoded raw transaction hex string is given',
+            transaction: {
+                raw: 'INVALID_HEX_STRING'
+            },
+            expected: InvalidDataTypeError
         },
-        expected: InvalidDataTypeError
-    }
-];
+        {
+            testName:
+                'Should throw error when invalid encoded raw transaction is given',
+            transaction: {
+                raw: '0x123456789abcdef'
+            },
+            expected: InvalidDataTypeError
+        }
+    ]
+};
 
 export { transactionDetails, transactionReceipts, sendTransactionErrors };

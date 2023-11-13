@@ -23,56 +23,86 @@ describe('ThorClient - Transactions', () => {
         /**
          * SendTransaction - correct cases
          */
-        test('Should be able to send a transaction', async () => {
-            // 1- Init transaction
-            // Clauses
-            const clauses = [
-                {
-                    to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                    value: 1000000,
-                    data: '0x'
+        sendTransactionErrors.correct.forEach((testCase) => {
+            test(testCase.testName, async () => {
+                // 1- Init transaction
+
+                // Get latest block
+                const latestBlock =
+                    await thorSoloClient.blocks.getBlock('best');
+
+                // Get gas @NOTE it is approximation. This part must be improved.
+                const gas =
+                    5000 +
+                    TransactionUtils.intrinsicGas(
+                        testCase.transaction.clauses
+                    ) *
+                        5;
+
+                // Create transactions
+                const transaction = new Transaction({
+                    chainTag: 0xf6,
+                    blockRef: latestBlock.id.slice(0, 18),
+                    expiration: 32,
+                    clauses: testCase.transaction.clauses,
+                    gasPriceCoef: 128,
+                    gas,
+                    dependsOn: null,
+                    nonce: 12345678
+                });
+
+                const delegatedTransaction = new Transaction({
+                    chainTag: 0xf6,
+                    blockRef: latestBlock.id.slice(0, 18),
+                    expiration: 32,
+                    clauses: testCase.transaction.clauses,
+                    gasPriceCoef: 128,
+                    gas,
+                    dependsOn: null,
+                    nonce: 12345678,
+                    reserved: {
+                        features: 1
+                    }
+                });
+
+                // Normal signature and delegation signature
+                const rawNormalSigned = TransactionHandler.sign(
+                    transaction,
+                    Buffer.from(
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
+                        'hex'
+                    )
+                ).encoded;
+
+                const rawDelegatedSigned = TransactionHandler.signWithDelegator(
+                    delegatedTransaction,
+                    Buffer.from(
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
+                        'hex'
+                    ),
+                    Buffer.from(
+                        TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey,
+                        'hex'
+                    )
+                ).encoded;
+
+                // 2 - Send transaction
+                for (const raw of [rawNormalSigned, rawDelegatedSigned]) {
+                    const send =
+                        await thorSoloClient.transactions.sendTransaction(
+                            `0x${raw.toString('hex')}`
+                        );
+                    expect(send).toBeDefined();
+                    expect(send).toHaveProperty('id');
+                    expect(dataUtils.isHexString(send.id)).toBe(true);
                 }
-            ];
-
-            // Get latest block
-            const latestBlock = await thorSoloClient.blocks.getBlock('best');
-
-            // Get gas @NOTE it is approximation. This part must be improved.
-            const gas = 5000 + TransactionUtils.intrinsicGas(clauses) * 5;
-
-            // Create transaction
-            const transaction = new Transaction({
-                chainTag: 0xf6,
-                blockRef: latestBlock.id.slice(0, 18),
-                expiration: 32,
-                clauses,
-                gasPriceCoef: 128,
-                gas,
-                dependsOn: null,
-                nonce: 12345678
             });
-
-            const raw = TransactionHandler.sign(
-                transaction,
-                Buffer.from(
-                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
-                    'hex'
-                )
-            ).encoded;
-
-            // 2 - Send transaction
-            const send = await thorSoloClient.transactions.sendTransaction(
-                `0x${raw.toString('hex')}`
-            );
-            expect(send).toBeDefined();
-            expect(send).toHaveProperty('id');
-            expect(dataUtils.isHexString(send.id)).toBe(true);
         });
 
         /**
          * SendTransaction - error cases
          */
-        sendTransactionErrors.forEach((testCase) => {
+        sendTransactionErrors.errors.forEach((testCase) => {
             test(testCase.testName, async () => {
                 await expect(
                     thorSoloClient.transactions.sendTransaction(
