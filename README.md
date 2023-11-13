@@ -43,17 +43,17 @@ Ensure Docker is running on your machine. The integration tests are performed ag
 
 ## Documentation and Examples
 - The `./docs` directory houses extensive code examples written as executable demonstrations.
-- Dive into the [examples](../docs/README.md) for a hands-on understanding of the SDK capabilities.
+- Dive into the [examples](./docs/README.md) for a hands-on understanding of the SDK capabilities.
 
 ## Contributing
 
 If you want to contribute to this project and make it better, your help is very welcome. Contributing is also a great way to learn more about social coding on Github, new technologies and and their ecosystems and how to make constructive, helpful bug reports, feature requests and the noblest of all contributions: a good, clean pull request.
 
-For more details and guidelines on how to contribute, refer to [CONTRIBUTING](CONTRIBUTING.md).
+For more details and guidelines on how to contribute, refer to [CONTRIBUTING](./.github/CONTRIBUTING.md).
 
 ## License
 
-This project is licensed under the [MIT license](LICENSE.md).
+This project is licensed under the [MIT license](./.github/LICENSE.md).
 
 ## Publishing
 ... To Be Detailed ...     
