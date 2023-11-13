@@ -137,6 +137,16 @@ const SIGNED_TRANSACTION_RLP = new RLP.Profiler({
 const SIGNATURE_LENGTH = 65;
 
 /**
+ * Transaction id length
+ */
+const TRANSACTION_ID_LENGTH = 64;
+
+/**
+ * Transaction head length
+ */
+const TRANSACTION_HEAD_LENGTH = 64;
+
+/**
  * Block ref field length
  */
 const BLOCK_REF_LENGTH = 8;
@@ -148,5 +158,7 @@ export {
     TRANSACTION_FEATURES_KIND,
     TRANSACTION_SIGNATURE_KIND,
     SIGNATURE_LENGTH,
+    TRANSACTION_ID_LENGTH,
+    TRANSACTION_HEAD_LENGTH,
     BLOCK_REF_LENGTH
 };
