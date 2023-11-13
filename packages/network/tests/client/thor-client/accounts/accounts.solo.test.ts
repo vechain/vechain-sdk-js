@@ -1,5 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { TEST_ACCOUNTS, thorSoloClient } from '../../../fixture';
+import { unitsUtils } from '@vechain-sdk/core';
 
 /**
  * Prolong timeout due to block time which sometimes exceeds jest's default timeout of 5 seconds.
@@ -28,11 +29,14 @@ describe('ThorClient - Accounts', () => {
                 );
 
                 expect(accountBefore).toBeDefined();
-                expect(accountBefore.balance).toEqual(
-                    '0x19d971e4fe8401e74000000'
+
+                // Thor-solo is being initialized with 500000000 VET
+                // And at least 500000000 VTHO
+                expect(unitsUtils.formatVET(accountBefore.balance)).toEqual(
+                    '500000000.0'
                 );
                 expect(Number(accountBefore.energy)).toBeGreaterThan(
-                    500000000 * 10 ** 18
+                    unitsUtils.parseVET('500000000')
                 );
 
                 const currentBlock =
