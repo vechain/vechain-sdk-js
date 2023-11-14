@@ -1,2 +1,2 @@
 export * from './types.d';
-export * from './block-client';
+export * from './blocks-client';
