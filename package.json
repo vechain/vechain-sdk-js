@@ -13,7 +13,6 @@
         "test:unit": "turbo test:unit",
         "test:integration": "turbo test:integration",
         "format": "turbo format",
-        "test:docs": "turbo test:docs",
         "test:examples": "turbo test:examples",
         "merge-coverage": "ts-node scripts/merge-coverage.ts",
         "generate:apidocs": "typedoc --options typedoc.json --logLevel Verbose"

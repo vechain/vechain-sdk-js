@@ -14,7 +14,7 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@v4
               with:
-                  node-version-file: .nvmrc
+                  node-version: lts/*
 
             - name: Install & Patch packages
               run: yarn install

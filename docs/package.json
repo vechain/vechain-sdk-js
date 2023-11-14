@@ -4,9 +4,8 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
-    "test:docs": "npx runme run --all --category example --skip-prompts",
     "test:examples": "ts-node-test examples/",
-    "build": "find . -name \"*.md\" -type f -maxdepth 1 ! -name \"README.md\" -delete && yarn ts-node builddocs.ts"
+    "build": "find . -name \"*.md\" -type f -maxdepth 1 ! -name \"README.md\" -delete && tsup builddocs.ts && node dist/builddocs.cjs"
   },
   "dependencies": {
     "@vechain-sdk/core": "*",
@@ -14,9 +13,6 @@
   },
   "devDependencies": {
     "expect": "^29.7.0",
-    "runme": "^3.0.2",
-    "thor-devkit": "^2.0.9",
-    "ts-node": "^10.9.1",
     "ts-node-test": "^0.4.3"
   }
 }
