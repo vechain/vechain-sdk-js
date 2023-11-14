@@ -22,13 +22,14 @@ class TransactionClient {
      * @param raw - (Optional) If true, returns the raw transaction data instead of the parsed transaction object.
      * @param head - (Optional) The block number or ID to reference the transaction.
      * @param pending - (Optional) If true, returns the pending transaction details instead of the final transaction details.
+     * @returns A promise that resolves to the details of the transaction.
      */
     public async getTransaction(
         id: string,
         raw?: boolean,
         head?: string,
         pending?: boolean
-    ): Promise<TransactionDetail> {
+    ): Promise<TransactionDetail | null> {
         // Invalid transaction ID
         if (!dataUtils.isThorId(id, true))
             throw buildError(
@@ -57,11 +58,12 @@ class TransactionClient {
      *
      * @param id - Transaction ID of the transaction to retrieve.
      * @param head - (Optional) The block number or ID to reference the transaction.
+     * @returns A promise that resolves to the receipt of the transaction.
      */
     public async getTransactionReceipt(
         id: string,
         head?: string
-    ): Promise<TransactionReceipt> {
+    ): Promise<TransactionReceipt | null> {
         // Invalid transaction ID
         if (!dataUtils.isThorId(id, true))
             throw buildError(
@@ -90,6 +92,7 @@ class TransactionClient {
      *
      * @param id - Transaction ID of the transaction to retrieve.
      * @param head - (Optional) The block number or ID to reference the transaction.
+     * @returns The transaction id of send transaction.
      */
     public async sendTransaction(raw: string): Promise<TransactionSendResult> {
         // Validate raw transaction
