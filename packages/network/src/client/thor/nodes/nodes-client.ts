@@ -6,7 +6,7 @@ import { buildError, DATA } from '@vechain-sdk/errors';
 /**
  * Provides utility method for checking the health of a node.
  */
-class NodeClient {
+class NodesClient {
     /**
      * Initializes a new instance of the `NodeClient` class.
      * @param httpClient - The HTTP client instance used for making HTTP requests.
@@ -63,7 +63,7 @@ class NodeClient {
 
         return (
             Math.abs(secondsSinceLastBlock) <
-            NodeClient.NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS
+            NodesClient.NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS
         );
     }
 
@@ -96,7 +96,7 @@ class NodeClient {
                 value === null ||
                 value === undefined ||
                 typeof value !== 'object' ||
-                !(NodeClient.BLOCK_TIMESTAMP_KEY in value) ||
+                !(NodesClient.BLOCK_TIMESTAMP_KEY in value) ||
                 typeof value.timestamp !== 'number'
             ) {
                 throw buildError(
@@ -111,4 +111,4 @@ class NodeClient {
     };
 }
 
-export { NodeClient };
+export { NodesClient };

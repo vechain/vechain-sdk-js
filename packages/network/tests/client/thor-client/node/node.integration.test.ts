@@ -14,7 +14,7 @@ describe('Integration tests to check the Node health check for different scenari
          *  @internal
          */
         const thorClient = new ThorClient(new HttpClient('www.google.ie'));
-        await expect(thorClient.node.isHealthy()).rejects.toThrowError(
+        await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             HTTPClientError
         );
     });
@@ -25,22 +25,23 @@ describe('Integration tests to check the Node health check for different scenari
          *  @internal
          */
         const thorClient = new ThorClient(new HttpClient('INVALID_URL'));
-        await expect(thorClient.node.isHealthy()).rejects.toThrowError(
+        await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             HTTPClientError
         );
     });
 
     test('valid and available synchronized node', async () => {
-        await expect(thorSoloClient.node.isHealthy()).resolves.toBe(true);
+        const healtyNode = await thorSoloClient.nodes.isHealthy();
+        expect(healtyNode).toBe(true);
     });
 
     test('null or empty URL or blank URL', async () => {
         let thorClient = new ThorClient(new HttpClient(''));
-        await expect(thorClient.node.isHealthy()).rejects.toThrowError(
+        await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             HTTPClientError
         );
         thorClient = new ThorClient(new HttpClient('   '));
-        await expect(thorClient.node.isHealthy()).rejects.toThrowError(
+        await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             HTTPClientError
         );
     });

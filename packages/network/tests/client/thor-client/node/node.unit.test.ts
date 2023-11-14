@@ -29,14 +29,14 @@ describe('Unit tests to check the Node health check is working for different sce
          *  @internal
          */
         const thorClient = new ThorClient(new HttpClient(URL));
-        await expect(thorClient.node.isHealthy()).rejects.toThrowError();
+        await expect(thorClient.nodes.isHealthy()).rejects.toThrowError();
     });
 
     test('valid/available node but invalid block format', async () => {
         // Mock the response to force the JSON response to be null
         jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce({});
         let thorClient = new ThorClient(new HttpClient(URL));
-        await expect(thorClient.node.isHealthy()).rejects.toThrowError(
+        await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             InvalidDataTypeError
         );
 
@@ -45,7 +45,7 @@ describe('Unit tests to check the Node health check is working for different sce
             invalidKey: 1
         });
         thorClient = new ThorClient(new HttpClient(URL));
-        await expect(thorClient.node.isHealthy()).rejects.toThrowError(
+        await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             InvalidDataTypeError
         );
 
@@ -54,7 +54,7 @@ describe('Unit tests to check the Node health check is working for different sce
             blockWithMissingTimeStamp
         );
         thorClient = new ThorClient(new HttpClient(URL));
-        await expect(thorClient.node.isHealthy()).rejects.toThrowError(
+        await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             InvalidDataTypeError
         );
 
@@ -63,7 +63,7 @@ describe('Unit tests to check the Node health check is working for different sce
             blockWithInvalidTimeStampFormat
         );
         thorClient = new ThorClient(new HttpClient(URL));
-        await expect(thorClient.node.isHealthy()).rejects.toThrowError(
+        await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             InvalidDataTypeError
         );
     });
@@ -74,6 +74,6 @@ describe('Unit tests to check the Node health check is working for different sce
             blockWithOldTimeStamp
         );
         const thorClient = new ThorClient(new HttpClient(URL));
-        await expect(thorClient.node.isHealthy()).resolves.toBe(false);
+        await expect(thorClient.nodes.isHealthy()).resolves.toBe(false);
     });
 });
