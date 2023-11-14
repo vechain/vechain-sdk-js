@@ -34,14 +34,16 @@ class TransactionClient {
         if (!dataUtils.isThorId(id, true))
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
-                'Invalid transaction ID given as input. Input must be an hex string of length 64.'
+                'Invalid transaction ID given as input. Input must be an hex string of length 64.',
+                { id }
             );
 
         // Invalid head
         if (head !== undefined && !dataUtils.isThorId(head, true))
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
-                'Invalid head given as input. Input must be an hex string of length 64.'
+                'Invalid head given as input. Input must be an hex string of length 64.',
+                { head }
             );
 
         return (await this.httpClient.http(
@@ -68,14 +70,16 @@ class TransactionClient {
         if (!dataUtils.isThorId(id, true))
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
-                'Invalid transaction ID given as input. Input must be an hex string of length 64.'
+                'Invalid transaction ID given as input. Input must be an hex string of length 64.',
+                { id }
             );
 
         // Invalid head
         if (head !== undefined && !dataUtils.isThorId(head, true))
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
-                'Invalid head given as input. Input must be an hex string of length 64.'
+                'Invalid head given as input. Input must be an hex string of length 64.',
+                { head }
             );
 
         return (await this.httpClient.http(
@@ -90,8 +94,7 @@ class TransactionClient {
     /**
      * Retrieves the receipt of a transaction.
      *
-     * @param id - Transaction ID of the transaction to retrieve.
-     * @param head - (Optional) The block number or ID to reference the transaction.
+     * @param raw - The raw transaction.
      * @returns The transaction id of send transaction.
      */
     public async sendTransaction(raw: string): Promise<TransactionSendResult> {
@@ -99,7 +102,8 @@ class TransactionClient {
         if (!dataUtils.isHexString(raw))
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
-                'Invalid raw transaction given as input. Input must be an hex string'
+                'Invalid raw transaction given as input. Input must be an hex string',
+                { raw }
             );
 
         // Decode raw transaction to check if raw is ok
@@ -108,7 +112,8 @@ class TransactionClient {
         } catch (error) {
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
-                'Invalid raw transaction given as input. Input must be a valid raw transaction. Error occurs while decoding the transaction.'
+                'Invalid raw transaction given as input. Input must be a valid raw transaction. Error occurs while decoding the transaction.',
+                { raw }
             );
         }
 

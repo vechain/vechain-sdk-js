@@ -28,7 +28,8 @@ class BlockClient {
         if (revision != null && !revisionUtils.isRevisionBlock(revision)) {
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
-                'Invalid revision. The revision must be a string representing a block number or block id.'
+                'Invalid revision. The revision must be a string representing a block number or block id.',
+                { revision }
             );
         }
 
