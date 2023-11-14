@@ -1,6 +1,7 @@
 import { type HttpClient } from '../../http';
 import { type BlockDetail, BlocksClient } from '../blocks';
 import { buildError, DATA } from '@vechain-sdk/errors';
+import { NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS } from '../../../utils';
 
 /**
  * Provides utility method for checking the health of a node.
@@ -18,16 +19,6 @@ class NodesClient {
     constructor(readonly httpClient: HttpClient) {
         this.blocksClient = new BlocksClient(httpClient);
     }
-
-    /**
-     * the name of the attribute we are looking for to extract the block timestamp information
-     */
-    private static readonly BLOCK_TIMESTAMP_KEY = 'timestamp';
-
-    /**
-     * tolerance in seconds. When set to 30, it means that we consider a node healthy even when it's off-sync by roughly 3 blocks
-     */
-    private static readonly NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS = 30;
 
     /**
      * Checks the health of a node using the following algorithm:
@@ -66,7 +57,7 @@ class NodesClient {
 
         return (
             Math.abs(secondsSinceLastBlock) <
-            NodesClient.NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS
+            NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS
         );
     }
 
@@ -81,35 +72,22 @@ class NodesClient {
      * @throws {InvalidDataTypeError} - if the response from the API call to the node is not an object
      * @throws {InvalidDataTypeError} - if the response from the API call to the node is null or undefined
      */
-    private readonly getTimestampFromBlock = (response: unknown): number => {
-        /**
-         * Type assertion to check that the timestamp key exists in the response from the API call to the node
-         */
-        type checkTimestampKeyExists = (
-            value: unknown
-        ) => asserts value is BlockDetail;
+    private readonly getTimestampFromBlock = (
+        response: BlockDetail | null
+    ): number => {
+        if (
+            response === null ||
+            response === undefined ||
+            typeof response !== 'object' ||
+            !('timestamp' in response) ||
+            typeof response.timestamp !== 'number'
+        ) {
+            throw buildError(
+                DATA.INVALID_DATA_TYPE,
+                'Invalid block format returned from node. The block must be an object with a timestamp key present of type number'
+            );
+        }
 
-        /**
-         * Checks that the timestamp key exists in the response from the API call to the node
-         * @param value the response from the API call to the node
-         * @internal
-         */
-        const doesTimestampKeyExist: checkTimestampKeyExists = (value) => {
-            if (
-                value === null ||
-                value === undefined ||
-                typeof value !== 'object' ||
-                !(NodesClient.BLOCK_TIMESTAMP_KEY in value) ||
-                typeof value.timestamp !== 'number'
-            ) {
-                throw buildError(
-                    DATA.INVALID_DATA_TYPE,
-                    'Invalid block format returned from node. The block must be an object with a timestamp key present of type number'
-                );
-            }
-        };
-
-        doesTimestampKeyExist(response);
         return response.timestamp;
     };
 }
