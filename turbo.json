@@ -21,9 +21,6 @@
             "dependsOn": ["^build"]
         },
         "format": {},
-        "test:docs": {
-            "dependsOn": ["^build"]
-        },
         "test:examples": {
             "dependsOn": ["^build"]
         }

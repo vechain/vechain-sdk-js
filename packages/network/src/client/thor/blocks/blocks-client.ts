@@ -7,7 +7,7 @@ import { type BlockDetail } from './types';
  * The `BlockClient` class provides methods to interact with block-related endpoints
  * of the VechainThor blockchain. It allows fetching details of a specific blockchain block.
  */
-class BlockClient {
+class BlocksClient {
     /**
      * Initializes a new instance of the `BlockClient` class.
      * @param httpClient - The HTTP client instance used for making HTTP requests.
@@ -61,4 +61,4 @@ class BlockClient {
     }
 }
 
-export { BlockClient };
+export { BlocksClient };

@@ -15,16 +15,16 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@v4
               with:
-                node-version-file: .nvmrc
+                node-version: lts/*
             - name: Build SDK
               run:  |
                 rm -rf ./**/node_modules/
                 yarn install
                 yarn build
-            - name: Test docs
+            - name: Test docs examples
               run: |
                 cd docs
-                yarn test:docs
+                yarn test:examples
 
     install-build:
         uses: ./.github/workflows/build-lint.yml
