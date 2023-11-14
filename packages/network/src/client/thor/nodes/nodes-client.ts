@@ -1,6 +1,5 @@
 import { type HttpClient } from '../../http';
-import { thorest } from '../../../utils';
-import { type BlockDetail } from '../blocks';
+import { type BlockDetail, BlocksClient } from '../blocks';
 import { buildError, DATA } from '@vechain-sdk/errors';
 
 /**
@@ -8,10 +7,17 @@ import { buildError, DATA } from '@vechain-sdk/errors';
  */
 class NodesClient {
     /**
+     * Internal blocks client instance used for interacting with block-related endpoints.
+     */
+    private readonly blocksClient: BlocksClient;
+
+    /**
      * Initializes a new instance of the `NodeClient` class.
      * @param httpClient - The HTTP client instance used for making HTTP requests.
      */
-    constructor(protected readonly httpClient: HttpClient) {}
+    constructor(readonly httpClient: HttpClient) {
+        this.blocksClient = new BlocksClient(httpClient);
+    }
 
     /**
      * the name of the attribute we are looking for to extract the block timestamp information
@@ -43,10 +49,7 @@ class NodesClient {
          * @internal
          * Perform an HTTP GET request using the SimpleNet instance to get the latest block
          */
-        const response = await this.httpClient.http(
-            'GET',
-            thorest.blocks.get.LAST_BLOCK_PATH()
-        );
+        const response = await this.blocksClient.getBestBlock();
 
         /**
          * timestamp from the last block
