@@ -15,7 +15,7 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@v4
               with:
-                node-version-file: .nvmrc
+                node-version: lts/*
             - name: Build SDK
               run:  |
                 rm -rf ./**/node_modules/
