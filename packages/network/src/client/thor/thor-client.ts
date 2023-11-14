@@ -4,7 +4,7 @@ import { BlockClient } from './blocks';
 import { LogsClient } from './logs';
 
 /**
- * The `ThorClient` class serves as an interface to interact with the VeChain Thor blockchain.
+ * The `ThorClient` class serves as an interface to interact with the Vechain Thor blockchain.
  * It provides methods for accessing account details, contract bytecode, and storage.
  */
 class ThorClient {
