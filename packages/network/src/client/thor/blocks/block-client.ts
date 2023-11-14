@@ -24,7 +24,7 @@ class BlockClient {
     public async getBlock(
         revision: string | number,
         expanded?: boolean
-    ): Promise<BlockDetail> {
+    ): Promise<BlockDetail | null> {
         if (revision != null && !revisionUtils.isRevisionBlock(revision)) {
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
@@ -46,7 +46,7 @@ class BlockClient {
      *
      * @returns A promise that resolves to an object containing the block details.
      */
-    public async getBestBlock(): Promise<BlockDetail> {
+    public async getBestBlock(): Promise<BlockDetail | null> {
         return await this.getBlock('best');
     }
 
@@ -55,7 +55,7 @@ class BlockClient {
      *
      * @returns A promise that resolves to an object containing the block details.
      */
-    public async getFinalBlock(): Promise<BlockDetail> {
+    public async getFinalBlock(): Promise<BlockDetail | null> {
         return await this.getBlock('finalized');
     }
 }
