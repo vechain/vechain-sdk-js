@@ -5,7 +5,7 @@ import {
     Transaction,
     TransactionHandler,
     TransactionUtils
-} from '@vechainfoundation/core';
+} from '@vechainfoundation/vechain-sdk-core';
 import { sendTransactionErrors } from './fixture';
 
 /**

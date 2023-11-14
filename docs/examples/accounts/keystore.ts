@@ -1,4 +1,4 @@
-import { keystore, secp256k1 } from '@vechainfoundation/core';
+import { keystore, secp256k1 } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
 async function example(): Promise<void> {

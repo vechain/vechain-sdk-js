@@ -17,7 +17,7 @@ import {
     buildError,
     SECP256K1,
     TRANSACTION
-} from '@vechainfoundation/errors';
+} from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Represents an immutable transaction entity.

@@ -1,4 +1,4 @@
-import { InvalidDataTypeError } from '@vechainfoundation/errors';
+import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Test cases for parseUnits

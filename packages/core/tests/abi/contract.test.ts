@@ -7,7 +7,7 @@ import {
 import { contract } from '../../src/abi/contract';
 import { abi } from '../../src';
 import { ethers } from 'ethers';
-import { ContractInterfaceError } from '@vechainfoundation/errors';
+import { ContractInterfaceError } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Contract tests - encode & decode

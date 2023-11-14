@@ -3,7 +3,7 @@ import { Agent as HttpAgent } from 'http';
 import { Agent as HttpsAgent } from 'https';
 import { type HttpParams, type HttpClientOptions } from './types';
 import { convertError, DEFAULT_HTTP_TIMEOUT } from '../../utils';
-import { buildError, HTTP_CLIENT } from '@vechainfoundation/errors';
+import { buildError, HTTP_CLIENT } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Represents a concrete implementation of the `IHttpClient` interface, providing methods for making HTTP requests.

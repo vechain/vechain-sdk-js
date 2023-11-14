@@ -1,5 +1,5 @@
 {
-    "name": "@vechainfoundation/errors",
+    "name": "@vechainfoundation/vechain-sdk-errors",
     "version": "1.0.0",
     "private": false,
     "main": "dist/index.js",

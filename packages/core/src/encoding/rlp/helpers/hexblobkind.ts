@@ -1,6 +1,6 @@
 import { dataUtils } from '../../../utils';
 import { type RLPInput } from '../types';
-import { buildError, RLP } from '@vechainfoundation/errors';
+import { buildError, RLP } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Validates if the input is a proper hex string for HexBlobKind.

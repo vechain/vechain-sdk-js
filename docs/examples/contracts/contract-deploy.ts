@@ -1,4 +1,4 @@
-import { buildDeployContractTransaction } from '@vechainfoundation/core';
+import { buildDeployContractTransaction } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
 const contractBytecode =

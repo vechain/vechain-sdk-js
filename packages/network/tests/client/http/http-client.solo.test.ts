@@ -2,7 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { ZERO_ADDRESS, zeroAddressAccountDetails } from './fixture';
 import { type HttpParams } from '../../../src';
 import { soloNetwork, testAccount } from '../../fixture';
-import { HTTPClientError } from '@vechainfoundation/errors';
+import { HTTPClientError } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * HttpClient class tests.

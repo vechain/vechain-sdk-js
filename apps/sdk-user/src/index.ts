@@ -1,4 +1,4 @@
-import { core, mnemonic } from '@vechainfoundation/core';
+import { core, mnemonic } from '@vechainfoundation/vechain-sdk-core';
 
 const phrase = mnemonic.generate();
 console.log(phrase);

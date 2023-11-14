@@ -1,4 +1,4 @@
-import { HDNode } from '@vechainfoundation/core';
+import { HDNode } from '@vechainfoundation/vechain-sdk-core';
 
 // Create HD node from xpub
 const xpub = Buffer.from(

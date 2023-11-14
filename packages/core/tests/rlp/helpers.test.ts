@@ -24,7 +24,7 @@ import {
     validNumericBufferTestCases,
     validateNumberTestCases
 } from './helpers.fixture';
-import { InvalidRLPError } from '@vechainfoundation/errors';
+import { InvalidRLPError } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Test suite for NumericKind helpers.

@@ -7,7 +7,7 @@
 This example showcases the process of building a smart contract transaction using the Vechain SDK.
 
 ```typescript { name=contract-deploy, category=example }
-import { buildDeployContractTransaction } from '@vechainfoundation/core';
+import { buildDeployContractTransaction } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
 const contractBytecode =
@@ -20,7 +20,7 @@ expect(transaction.body.clauses[0].data).toEqual(contractBytecode);
 
 ### Code Explanation
 
--   The `buildDeployContractTransaction` function from `@vechainfoundation/core` is employed to construct a deploy contract transaction.
+-   The `buildDeployContractTransaction` function from `@vechainfoundation/vechain-sdk-core` is employed to construct a deploy contract transaction.
 
 -   The smart contract bytecode is represented by the `contractBytecode` variable.
 
@@ -37,7 +37,7 @@ This example provides a practical demonstration of utilizing the Vechain SDK to 
 This example demonstrates the process of building a transaction to call a function on a deployed smart contract using the Vechain SDK.
 
 ```typescript { name=contract-function-call, category=example }
-import { networkInfo, buildCallContractTransaction } from '@vechainfoundation/core';
+import { networkInfo, buildCallContractTransaction } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
 const contractABI = JSON.stringify([
@@ -100,7 +100,7 @@ expect(transaction.body.gasPriceCoef).toBeDefined();
 
 -   The example involves a smart contract with an ABI (Application Binary Interface) defined in JSON format. The ABI describes the functions and their parameters in the contract.
 
--   The `buildCallContractTransaction` function from `@vechainfoundation/core` is used to create a transaction for calling a specific function on the smart contract.
+-   The `buildCallContractTransaction` function from `@vechainfoundation/vechain-sdk-core` is used to create a transaction for calling a specific function on the smart contract.
 
 -   The function `setValue` is called with an argument of 123, representing the value to be set in the smart contract.
 

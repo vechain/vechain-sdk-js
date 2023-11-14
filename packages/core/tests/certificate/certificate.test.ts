@@ -5,7 +5,7 @@ import {
     CertificateInvalidSignatureFormatError,
     CertificateInvalidSignerError,
     CertificateNotSignedError
-} from '@vechainfoundation/errors';
+} from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Unit tests for the Certificate module.

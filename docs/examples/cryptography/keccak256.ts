@@ -1,4 +1,4 @@
-import { keccak256, type HashInput } from '@vechainfoundation/core';
+import { keccak256, type HashInput } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
 const toHash: HashInput = 'hello world';

@@ -10,7 +10,7 @@ import {
 import {
     InvalidAddressError,
     InvalidSecp256k1PrivateKeyError
-} from '@vechainfoundation/errors';
+} from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Test address module

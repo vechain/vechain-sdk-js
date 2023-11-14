@@ -13,7 +13,7 @@ Mnemonics represent a standard human-readable approach to generate private keys.
 ### BIP-39
 
 ```typescript { name=bip39, category=example }
-import { mnemonic } from '@vechainfoundation/core';
+import { mnemonic } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
 // Generate BIP39 mnemonic words, default to 12 words(128bit strength)
@@ -35,7 +35,7 @@ expect(ok).toBeTruthy();
 ### BIP-32
 
 ```typescript { name=bip32, category=example }
-import { mnemonic, HDNode } from '@vechainfoundation/core';
+import { mnemonic, HDNode } from '@vechainfoundation/vechain-sdk-core';
 
 // Generate BIP39 mnemonic words, default to 12 words(128bit strength)
 const rndMnemonic = mnemonic.generate();
@@ -60,7 +60,7 @@ for (let i = 0; i < 5; i++) {
 ### From Public Key
 
 ```typescript { name=pubkey, category=example }
-import { HDNode } from '@vechainfoundation/core';
+import { HDNode } from '@vechainfoundation/vechain-sdk-core';
 
 // Create HD node from xpub
 const xpub = Buffer.from(
@@ -94,7 +94,7 @@ On the other hand, Keystore is employed for encrypting private keys in accordanc
 Through the use of mnemonics and keystore, Vechain SDK ensures secure and user-friendly account handling. Mnemonics allow for easy generation of private keys, while keystore provides an additional layer of protection by encrypting the private keys in a standardized manner as per Ethereum's security practices. These functionalities collectively contribute to a robust and secure approach to managing accounts within the Thor ecosystem.
 
 ```typescript { name=keystore, category=example }
-import { keystore, secp256k1 } from '@vechainfoundation/core';
+import { keystore, secp256k1 } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
 async function example(): Promise<void> {

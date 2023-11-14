@@ -1,4 +1,4 @@
-import { contract } from '@vechainfoundation/core';
+import { contract } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
 const contractABI = JSON.stringify([

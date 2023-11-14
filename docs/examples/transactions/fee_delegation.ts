@@ -1,4 +1,4 @@
-import { networkInfo } from '@vechainfoundation/core';
+import { networkInfo } from '@vechainfoundation/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -9,7 +9,7 @@ import {
     type TransactionBody,
     mnemonic,
     unitsUtils
-} from '@vechainfoundation/core';
+} from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
 // In this example a fee delegated transaction is

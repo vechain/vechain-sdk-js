@@ -6,7 +6,7 @@ import {
     HTTPClientError,
     HTTP_CLIENT,
     buildError
-} from '@vechainfoundation/errors';
+} from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Timeout for each test.

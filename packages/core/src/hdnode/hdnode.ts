@@ -11,7 +11,7 @@ import { addressUtils } from '../address';
 import { sha256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import { type WordlistSizeType } from '../mnemonic';
-import { buildError, HDNODE } from '@vechainfoundation/errors';
+import { buildError, HDNODE } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Generates an HDNode instance using mnemonic words.

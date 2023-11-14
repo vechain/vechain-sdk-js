@@ -4,7 +4,7 @@ import {
     secp256k1,
     blake2b256,
     addressUtils
-} from '@vechainfoundation/core';
+} from '@vechainfoundation/vechain-sdk-core';
 
 // In this example we create a certificate and
 // sign it, and then call verify to verify the signature

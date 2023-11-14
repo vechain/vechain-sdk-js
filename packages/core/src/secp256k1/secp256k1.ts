@@ -1,7 +1,7 @@
 import { randomBytes } from 'crypto';
 import { PRIVATE_KEY_MAX_VALUE, SIGNATURE_LENGTH, ZERO_BUFFER } from '../utils';
 import { ec as EC } from 'elliptic';
-import { buildError, SECP256K1 } from '@vechainfoundation/errors';
+import { buildError, SECP256K1 } from '@vechainfoundation/vechain-sdk-errors';
 
 // Cureve algorithm
 const curve = new EC('secp256k1');
