@@ -3,7 +3,7 @@ import { type RLPValidObject } from '../encoding';
 import { blake2b256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import {
-    BLOCKREF_LENGTH,
+    BLOCK_REF_LENGTH,
     dataUtils,
     SIGNATURE_LENGTH,
     SIGNED_TRANSACTION_RLP,
@@ -417,7 +417,7 @@ class Transaction {
             body.blockRef !== undefined &&
             dataUtils.isHexString(body.blockRef) &&
             Buffer.from(body.blockRef.slice(2), 'hex').length ===
-                BLOCKREF_LENGTH &&
+                BLOCK_REF_LENGTH &&
             // Expiration
             body.expiration !== undefined &&
             // Clauses

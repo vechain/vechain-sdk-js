@@ -2,9 +2,11 @@ import { describe, expect, test } from '@jest/globals';
 import { dataUtils } from '../../../src';
 import {
     invalidHexStrings,
+    invalidThorIDs,
     isNumericTestCases,
     prefixedAndUnprefixedStrings,
-    validHexStrings
+    validHexStrings,
+    validThorIDs
 } from './fixture';
 
 /**
@@ -57,6 +59,25 @@ describe('utils/hex', () => {
         invalidHexStrings.forEach((hex) => {
             test(`should return false for invalid hex string: ${hex}`, () => {
                 expect(dataUtils.isHexString(hex, false)).toBe(false);
+            });
+        });
+    });
+
+    /**
+     * Thor id verification
+     */
+    describe('Thor id verification', () => {
+        validThorIDs.forEach((id) => {
+            test(`Should return true for valid thor id string: ${id.value}`, () => {
+                expect(dataUtils.isThorId(id.value, id.checkPrefix)).toBe(true);
+            });
+        });
+
+        invalidThorIDs.forEach((id) => {
+            test(`Should return false for valid thor id string: ${id.value}`, () => {
+                expect(dataUtils.isThorId(id.value, id.checkPrefix)).toBe(
+                    false
+                );
             });
         });
     });
