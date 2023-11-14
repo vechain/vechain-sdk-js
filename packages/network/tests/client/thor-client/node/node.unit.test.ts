@@ -11,7 +11,10 @@ import {
  * @group unit/node
  */
 describe('Unit tests to check the Node health check is working for different scenarios', () => {
-    // Must provide a well-formed URL to ensure we get to the axios call in the node health check
+    /**
+     *  @internal
+     *  a well-formed URL to ensure we get to the axios call in the node health check
+     */
     const URL = 'http://example.com';
 
     test('null or empty URL or blank URL', async () => {
@@ -27,6 +30,10 @@ describe('Unit tests to check the Node health check is working for different sce
             throw new Error();
         });
 
+        /**
+         *  client required to access a node
+         *  @internal
+         */
         const thorClient = new ThorClient(new HttpClient(URL));
         await expect(thorClient.node.isHealthy()).rejects.toThrowError();
     });

@@ -8,11 +8,19 @@ import { HttpClient, ThorClient } from '../../../../src';
  */
 describe('Integration tests to check the Node health check for different scenarios', () => {
     test('valid URL but inaccessible VeChain node', async () => {
+        /**
+         *  client required to access a node
+         *  @internal
+         */
         const thorClient = new ThorClient(new HttpClient('www.google.ie'));
         await expect(thorClient.node.isHealthy()).rejects.toThrowError();
     });
 
     test('invalid URL', async () => {
+        /**
+         *  client required to access a node
+         *  @internal
+         */
         const thorClient = new ThorClient(new HttpClient('INVALID_URL'));
         await expect(thorClient.node.isHealthy()).rejects.toThrowError();
     });

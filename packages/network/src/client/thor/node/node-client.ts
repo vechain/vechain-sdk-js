@@ -36,14 +36,24 @@ class NodeClient {
      */
     public async isHealthy(): Promise<boolean> {
         /**
+         * @internal
          * Perform an HTTP GET request using the SimpleNet instance to get the latest block
          */
         const response = await this.httpClient.http(
             'GET',
             thorest.blocks.LAST_BLOCK_PATH
         );
+
+        /**
+         * timestamp from the last block
+         * @internal
+         */
         const lastBlockTimestamp: number = this.getTimestampFromBlock(response);
 
+        /**
+         * seconds elapsed since the timestamp of the last block
+         * @internal
+         */
         const secondsSinceLastBlock =
             Math.floor(Date.now() / 1000) - lastBlockTimestamp;
 
@@ -75,6 +85,7 @@ class NodeClient {
         /**
          * Checks that the timestamp key exists in the response from the API call to the node
          * @param value the response from the API call to the node
+         * @internal
          */
         const doesTimestampKeyExist: checkTimestampKeyExists = (value) => {
             if (
