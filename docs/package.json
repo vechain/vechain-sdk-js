@@ -4,7 +4,6 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
-    "test:docs": "yarn runme run --all --category example --skip-prompts",
     "test:examples": "ts-node-test examples/",
     "build": "find . -name \"*.md\" -type f -maxdepth 1 ! -name \"README.md\" -delete && tsup builddocs.ts && node dist/builddocs.cjs"
   },
@@ -14,7 +13,6 @@
   },
   "devDependencies": {
     "expect": "^29.7.0",
-    "runme": "^3.0.2",
     "ts-node-test": "^0.4.3"
   }
 }
