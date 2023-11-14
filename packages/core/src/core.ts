@@ -3,6 +3,7 @@ export * from './address';
 export * from './bloom';
 export * from './certificate';
 export * from './encoding';
+export * from './contract';
 export * from './hash';
 export * from './hdnode';
 export * from './keystore';

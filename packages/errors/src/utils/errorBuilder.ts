@@ -36,6 +36,11 @@ function buildError<
     return error as ErrorType<ErrorCodeT>;
 }
 
+/**
+ * Assert that the inner error object is an instance of Error
+ * @param error an unknown object to be asserted as an instance of Error
+ * @returns an Error object
+ */
 function assertInnerError(error: unknown): Error {
     if (error instanceof Error) {
         return error;

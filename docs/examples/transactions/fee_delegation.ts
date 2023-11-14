@@ -1,3 +1,4 @@
+import { networkInfo } from '@vechain-sdk/core';
 import {
     Transaction,
     secp256k1,
@@ -25,7 +26,7 @@ const clauses: TransactionClause[] = [
 
 // Body of transaction
 const body: TransactionBody = {
-    chainTag: 0x9a,
+    chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x0000000000000000',
     expiration: 0,
     clauses,

@@ -9,7 +9,7 @@
         "postinstall": "husky install",
         "build": "turbo build",
         "lint": "turbo lint",
-        "test": "turbo test && yarn merge-coverage",
+        "test": "turbo test --force && yarn merge-coverage",
         "test:unit": "turbo test:unit",
         "test:integration": "turbo test:integration",
         "format": "turbo format",
