@@ -1,6 +1,7 @@
 import { type HttpClient } from '../../http';
 import { thorest } from '../../../utils';
 import { type BlockDetail } from '../blocks';
+import { buildError, DATA } from '@vechain-sdk/errors';
 
 /**
  * Provides utility method for checking the health of a node.
@@ -95,7 +96,10 @@ class NodeClient {
                 !(NodeClient.BLOCK_TIMESTAMP_KEY in value) ||
                 typeof value.timestamp !== 'number'
             ) {
-                throw new Error('Invalid block format returned from node.');
+                throw buildError(
+                    DATA.INVALID_DATA_TYPE,
+                    'Invalid block format returned from node. The block must be an object with a timestamp key present of type number'
+                );
             }
         };
 
