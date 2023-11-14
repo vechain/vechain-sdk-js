@@ -1,4 +1,4 @@
-import { type BlockDetail } from '@vechain-sdk/network/src/client/thor/blocks';
+import { type BlockDetail } from '@vechainfoundation/network/src/client/thor/blocks';
 
 /**
  * Constants defining Vechain mainnet chain tag. The chain tag is the last byte of the genesis block ID

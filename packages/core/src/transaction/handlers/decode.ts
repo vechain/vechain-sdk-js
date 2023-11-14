@@ -6,7 +6,7 @@ import {
 } from '../../utils';
 import { Transaction } from '../transaction';
 import { type TransactionBody } from '../types';
-import { buildError, TRANSACTION } from '@vechain-sdk/errors';
+import { buildError, TRANSACTION } from '@vechainfoundation/errors';
 
 /**
  * Decode a raw transaction.

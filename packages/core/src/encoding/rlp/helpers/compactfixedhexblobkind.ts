@@ -1,4 +1,4 @@
-import { buildError, RLP } from '@vechain-sdk/errors';
+import { buildError, RLP } from '@vechainfoundation/errors';
 
 /**
  * Asserts that the provided buffer is of a specific length and does not contain leading zeros.

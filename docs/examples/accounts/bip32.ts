@@ -1,4 +1,4 @@
-import { mnemonic, HDNode } from '@vechain-sdk/core';
+import { mnemonic, HDNode } from '@vechainfoundation/core';
 
 // Generate BIP39 mnemonic words, default to 12 words(128bit strength)
 const rndMnemonic = mnemonic.generate();

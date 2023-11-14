@@ -1,6 +1,6 @@
 import { dataUtils } from '../../../utils';
 import { type RLPInput } from '../types';
-import { buildError, RLP } from '@vechain-sdk/errors';
+import { buildError, RLP } from '@vechainfoundation/errors';
 
 /**
  * Validates and converts the input data to a BigInt.

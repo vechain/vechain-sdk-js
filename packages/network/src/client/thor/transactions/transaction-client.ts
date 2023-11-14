@@ -1,12 +1,12 @@
 import { type HttpClient } from '../../http';
 import { buildQuery, thorest } from '../../../utils';
-import { dataUtils, TransactionHandler } from '@vechain-sdk/core';
+import { dataUtils, TransactionHandler } from '@vechainfoundation/core';
 import {
     type TransactionDetail,
     type TransactionReceipt,
     type TransactionSendResult
 } from './types';
-import { buildError, DATA } from '@vechain-sdk/errors';
+import { buildError, DATA } from '@vechainfoundation/errors';
 
 class TransactionClient {
     /**

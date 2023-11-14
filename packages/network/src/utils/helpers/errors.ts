@@ -3,7 +3,7 @@ import {
     buildError,
     HTTP_CLIENT,
     type HTTPClientError
-} from '@vechain-sdk/errors';
+} from '@vechainfoundation/errors';
 
 /**
  * Converts an AxiosError into a standard Error.

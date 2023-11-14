@@ -7,7 +7,7 @@ import {
     type RLPValueType
 } from './types';
 import { RLP } from '.';
-import { RLP as RLPError, buildError } from '@vechain-sdk/errors';
+import { RLP as RLPError, buildError } from '@vechainfoundation/errors';
 
 /**
  * Encodes data using the Ethereumjs RLP library.

@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { type ReturnType, type HashInput } from './types';
 import { isValidReturnType } from './helpers';
-import { buildError, DATA } from '@vechain-sdk/errors';
+import { buildError, DATA } from '@vechainfoundation/errors';
 
 /* --- Overloaded functions start --- */
 

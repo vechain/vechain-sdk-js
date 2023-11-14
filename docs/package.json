@@ -9,7 +9,7 @@
     "build": "find . -name \"*.md\" -type f -maxdepth 1 ! -name \"README.md\" -delete && yarn ts-node builddocs.ts"
   },
   "dependencies": {
-    "@vechain-sdk/core": "*",
+    "@vechainfoundation/core": "*",
     "typescript": "^5.2.2"
   },
   "devDependencies": {

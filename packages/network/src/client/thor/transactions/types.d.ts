@@ -1,4 +1,4 @@
-import { type TransactionBody } from '@vechain-sdk/core/src';
+import { type TransactionBody } from '@vechainfoundation/core/src';
 
 /**
  * Transaction Metadata interface.

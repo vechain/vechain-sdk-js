@@ -1,7 +1,7 @@
 import { type InterfaceAbi, Interface as EthersInterface } from 'ethers';
 import type { BytesLike, Interface, Result } from './types';
 import { abi } from './coder';
-import { ERROR_CODES, buildError } from '@vechain-sdk/errors';
+import { ERROR_CODES, buildError } from '@vechainfoundation/errors';
 
 /**
  * Creates a new Interface instance from an ABI fragment.

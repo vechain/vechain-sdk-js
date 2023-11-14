@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { HEX_ADDRESS_REGEX } from '../utils';
-import { ADDRESS, buildError } from '@vechain-sdk/errors';
+import { ADDRESS, buildError } from '@vechainfoundation/errors';
 
 /**
  * Derives a vechain thor address from a public key.

@@ -1,6 +1,6 @@
 import { ScalarKind } from './scalarkind.abstract';
 import { type BufferOutput, type DataOutput, type RLPInput } from '../types';
-import { buildError, RLP } from '@vechain-sdk/errors';
+import { buildError, RLP } from '@vechainfoundation/errors';
 
 /**
  * Represents a scalar kind with Buffer functionality.

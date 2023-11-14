@@ -16,7 +16,7 @@ import {
     InvalidSecp256k1PrivateKeyError,
     InvalidSecp256k1SignatureError,
     InvalidSecp256k1SignatureRecoveryError
-} from '@vechain-sdk/errors';
+} from '@vechainfoundation/errors';
 
 /**
  * Secp256k1 tests

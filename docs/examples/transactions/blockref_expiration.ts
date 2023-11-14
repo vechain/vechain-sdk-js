@@ -7,7 +7,7 @@ import {
     type TransactionClause,
     type TransactionBody,
     unitsUtils
-} from '@vechain-sdk/core';
+} from '@vechainfoundation/core';
 import { expect } from 'expect';
 
 // In this example a transaction is created that

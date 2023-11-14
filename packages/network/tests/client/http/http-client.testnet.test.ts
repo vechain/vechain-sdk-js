@@ -2,7 +2,11 @@ import { describe, expect, test } from '@jest/globals';
 import { type HttpParams } from '../../../src';
 import { testnetGenesisBlock } from './fixture';
 import { testAccount, testNetwork } from '../../fixture';
-import { HTTPClientError, HTTP_CLIENT, buildError } from '@vechain-sdk/errors';
+import {
+    HTTPClientError,
+    HTTP_CLIENT,
+    buildError
+} from '@vechainfoundation/errors';
 
 /**
  * Timeout for each test.

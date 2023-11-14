@@ -1,7 +1,7 @@
 import { addressUtils } from '../../address';
 import { secp256k1 } from '../../secp256k1';
 import { Transaction } from '../transaction';
-import { buildError, SECP256K1, TRANSACTION } from '@vechain-sdk/errors';
+import { buildError, SECP256K1, TRANSACTION } from '@vechainfoundation/errors';
 
 /**
  * Sign a transaction with a given private key

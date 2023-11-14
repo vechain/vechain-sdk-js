@@ -33,7 +33,7 @@ import {
     compactFixedHexBlobKindEncodeTestCases,
     compactFixedHexBlobKindDecodeTestCases
 } from './rlp.fixture';
-import { InvalidRLPError } from '@vechain-sdk/errors';
+import { InvalidRLPError } from '@vechainfoundation/errors';
 
 /**
  * Test suite for RLP encoding/decoding functionality

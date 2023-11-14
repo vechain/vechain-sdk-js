@@ -6,7 +6,7 @@ import {
     type FormatType,
     type BytesLike
 } from './types';
-import { ABI, buildError } from '@vechain-sdk/errors';
+import { ABI, buildError } from '@vechainfoundation/errors';
 
 /**
  * Allowed formats for the signature.

@@ -1,4 +1,4 @@
-import { blake2b256, type HashInput } from '@vechain-sdk/core';
+import { blake2b256, type HashInput } from '@vechainfoundation/core';
 import { expect } from 'expect';
 
 const toHash: HashInput = 'hello world';

@@ -1,4 +1,4 @@
-import { networkInfo } from '@vechain-sdk/core';
+import { networkInfo } from '@vechainfoundation/core';
 import {
     Transaction,
     secp256k1,
@@ -7,7 +7,7 @@ import {
     type TransactionClause,
     type TransactionBody,
     unitsUtils
-} from '@vechain-sdk/core';
+} from '@vechainfoundation/core';
 import { expect } from 'expect';
 
 // In this example a multiple clause transaction is

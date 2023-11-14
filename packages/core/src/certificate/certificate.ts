@@ -5,7 +5,7 @@ import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Buffer } from 'buffer';
 import { dataUtils } from '../utils';
 import { type Certificate } from './types';
-import { buildError, CERTIFICATE } from '@vechain-sdk/errors';
+import { buildError, CERTIFICATE } from '@vechainfoundation/errors';
 
 /**
  * Deterministically encodes a certificate into a JSON string.

@@ -6,7 +6,7 @@ import {
     type WordlistSizeType
 } from './types';
 import { MNEMONIC_WORDLIST_ALLOWED_SIZES } from '../utils';
-import { buildError, HDNODE } from '@vechain-sdk/errors';
+import { buildError, HDNODE } from '@vechainfoundation/errors';
 
 /* --- Overloaded functions start --- */
 
