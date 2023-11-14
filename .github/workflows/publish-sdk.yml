@@ -1,0 +1,33 @@
+name: Publish NPM package
+
+on:
+    push:
+        tags:
+            - '*'
+
+permissions:
+    contents: read
+    packages: write
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            packages: write
+        strategy:
+            matrix:
+                package: [core, errors, network]
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version-file: .nvmrc
+            - run: yarn install
+            - run: yarn build
+            - run: |
+                  cd packages/${{ matrix.package }}
+                  yarn version --no-git-tag-version --new-version ${{ github.ref_name }}
+                  yarn publish
+              env:
+                  NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
