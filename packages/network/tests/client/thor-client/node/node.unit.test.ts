@@ -5,7 +5,7 @@ import {
     blockWithOldTimeStamp,
     blockWithInvalidTimeStampFormat
 } from './fixture';
-import { HTTPClientError, InvalidDataTypeError } from '@vechain-sdk/errors';
+import { InvalidDataTypeError } from '@vechain-sdk/errors';
 
 /**
  * Node unit tests
@@ -17,17 +17,6 @@ describe('Unit tests to check the Node health check is working for different sce
      *  a well-formed URL to ensure we get to the axios call in the node health check
      */
     const URL = 'http://example.com';
-
-    test('null or empty URL or blank URL', async () => {
-        let thorClient = new ThorClient(new HttpClient(''));
-        await expect(thorClient.node.isHealthy()).rejects.toThrowError(
-            HTTPClientError
-        );
-        thorClient = new ThorClient(new HttpClient('   '));
-        await expect(thorClient.node.isHealthy()).rejects.toThrowError(
-            HTTPClientError
-        );
-    });
 
     test('valid URL/node but Error is thrown by network provider', async () => {
         // Mock an error on the HTTPClient

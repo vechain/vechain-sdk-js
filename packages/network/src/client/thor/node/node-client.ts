@@ -26,14 +26,17 @@ class NodeClient {
     /**
      * Checks the health of a node using the following algorithm:
      * 1. Make an HTTP GET request to retrieve the last block timestamp.
-     * 2. Calculate the difference between the current time and the last block timestamp.
+     * 2. Calculates the difference between the current time and the last block timestamp.
      * 3. If the difference is less than the tolerance, the node is healthy.
      * Note, we could also check '/node/network/peers since' but the difficulty with this approach is
      * if you consider a scenario where the node is connected to 20+ peers, which is healthy, and it receives the new blocks as expected.
      * But what if the node's disk is full, and it's not writing the new blocks to its database? In this case the node is off-sync even
      * though it's technically alive and connected
      * @returns A boolean indicating whether the node is healthy.
-     * @throws An error if the request fails due to an invalid URL, a network error, an unavailable node, or an invalid block format.
+     * @throws {InvalidDataTypeError} - if the timestamp key does not exist in the response from the API call to the node
+     * @throws {InvalidDataTypeError} - if the timestamp key exists in the response from the API call to the node but the value is not a number
+     * @throws {InvalidDataTypeError} - if the response from the API call to the node is not an object
+     * @throws {InvalidDataTypeError} - if the response from the API call to the node is null or undefined
      */
     public async isHealthy(): Promise<boolean> {
         /**
@@ -70,10 +73,10 @@ class NodeClient {
      * This function throws an error if the timestamp key does not exist in the response from the API call to the node
      * @param response the response from the API call to the node
      * @returns the timestamp from the block
-     * @throws An error if the timestamp key does not exist in the response from the API call to the node
-     * @throws An error if the timestamp key exists in the response from the API call to the node but the value is not a number
-     * @throws An error if the response from the API call to the node is not an object
-     * @throws An error if the response from the API call to the node is null or undefined
+     * @throws {InvalidDataTypeError} - if the timestamp key does not exist in the response from the API call to the node
+     * @throws {InvalidDataTypeError} - if the timestamp key exists in the response from the API call to the node but the value is not a number
+     * @throws {InvalidDataTypeError} - if the response from the API call to the node is not an object
+     * @throws {InvalidDataTypeError} - if the response from the API call to the node is null or undefined
      */
     private readonly getTimestampFromBlock = (response: unknown): number => {
         /**

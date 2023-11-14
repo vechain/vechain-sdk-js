@@ -33,4 +33,15 @@ describe('Integration tests to check the Node health check for different scenari
     test('valid and available synchronized node', async () => {
         await expect(thorSoloClient.node.isHealthy()).resolves.toBe(true);
     });
+
+    test('null or empty URL or blank URL', async () => {
+        let thorClient = new ThorClient(new HttpClient(''));
+        await expect(thorClient.node.isHealthy()).rejects.toThrowError(
+            HTTPClientError
+        );
+        thorClient = new ThorClient(new HttpClient('   '));
+        await expect(thorClient.node.isHealthy()).rejects.toThrowError(
+            HTTPClientError
+        );
+    });
 });
