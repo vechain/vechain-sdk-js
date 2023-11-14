@@ -45,7 +45,7 @@ class NodeClient {
          */
         const response = await this.httpClient.http(
             'GET',
-            thorest.blocks.LAST_BLOCK_PATH
+            thorest.blocks.get.LAST_BLOCK_PATH()
         );
 
         /**

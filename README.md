@@ -1,9 +1,15 @@
-# vechain-sdk
-The official JavaScript SDK for vechain.
-
-[![main-ci](https://github.com/vechainfoundation/vechain-sdk/actions/workflows/on-main.yml/badge.svg)](https://github.com/vechainfoundation/vechain-sdk/actions/workflows/on-main.yml)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=vechainfoundation_thor-sdk-js&metric=alert_status&token=0e94ce34f24ef54d43c15c0d4b38f2c645c92b42)](https://sonarcloud.io/summary/new_code?id=vechainfoundation_thor-sdk-js)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=vechainfoundation_thor-sdk-js&metric=coverage&token=0e94ce34f24ef54d43c15c0d4b38f2c645c92b42)](https://sonarcloud.io/summary/new_code?id=vechainfoundation_thor-sdk-js)
+<div align="center">
+  <h1><code>vechain-sdk</code></h1>
+  <p>
+    <strong>The official JavaScript SDK for vechain.</strong>
+  </p>
+  <p>
+    <a href="https://github.com/vechainfoundation/vechain-sdk/actions/workflows/on-main.yml"><img src="https://github.com/vechainfoundation/vechain-sdk/actions/workflows/on-main.yml/badge.svg" alt="main-ci"></a>
+    <a href="https://sonarcloud.io/summary/new_code?id=vechainfoundation_thor-sdk-js"><img src="https://sonarcloud.io/api/project_badges/measure?project=vechainfoundation_thor-sdk-js&metric=alert_status&token=0e94ce34f24ef54d43c15c0d4b38f2c645c92b42" alt="Quality Gate Status"></a>
+    <a href="https://sonarcloud.io/summary/new_code?id=vechainfoundation_thor-sdk-js"><img src="https://sonarcloud.io/api/project_badges/measure?project=vechainfoundation_thor-sdk-js&metric=coverage&token=0e94ce34f24ef54d43c15c0d4b38f2c645c92b42" alt="Coverage"></a>
+    <a href="https://github.com/vechainfoundation/vechain-sdk/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+  </p>
+</div>
 
 ## Repository Structure
 - `./demos`: Demonstrative projects
@@ -14,9 +20,12 @@ The official JavaScript SDK for vechain.
 ## SDK Development
 
 ### Prerequisites
-- Fork the repository to your GitHub account.
-- Ensure [Yarn](https://classic.yarnpkg.com/en/docs/install) is installed on your machine.
-- [Docker](https://docs.docker.com/get-docker/) is required for setting up a local thor-solo node for integration testing.
+> **Note** <br />
+> Docker is required for setting up a local thor-solo node for integration testing.
+ - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+ - [Node.js](https://nodejs.org/en)
+ - [Yarn](https://classic.yarnpkg.com/en/docs/install)
+ - [Docker](https://docs.docker.com/get-docker/)
 
 ### Getting Started
 1. Clone your forked repository.
@@ -27,6 +36,7 @@ The official JavaScript SDK for vechain.
 - **Build**: Execute `yarn build` to build the project.
 - **Test**: Execute `yarn test` to run all tests.
 - **Lint**: Execute `yarn lint` to lint all packages.
+- **Format**: Execute `yarn format` to format all packages.
 
 ### Integration Testing
 Ensure Docker is running on your machine. The integration tests are performed against a local thor-solo node.
@@ -35,14 +45,22 @@ Ensure Docker is running on your machine. The integration tests are performed ag
 - The `./docs` directory houses extensive code examples written as executable demonstrations.
 - Dive into the [examples](./docs/README.md) for a hands-on understanding of the SDK capabilities.
 
-
 ## Contributing
 
-We appreciate your contributions and suggestions to improve the vechain SDK. Whether it's a bug report, new feature, correction, or additional documentation, we greatly value your feedback. To get started with contributing, please review our [Contributing Guidelines](CONTRIBUTING.md).
+If you want to contribute to this project and make it better, your help is very welcome. Contributing is also a great way to learn more about social coding on Github, new technologies and and their ecosystems and how to make constructive, helpful bug reports, feature requests and the noblest of all contributions: a good, clean pull request.
 
+For more details and guidelines on how to contribute, refer to [CONTRIBUTING](./.github/CONTRIBUTING.md).
+
+## License
+
+This project is licensed under the [MIT license](./.github/LICENSE.md).
 
 ## Publishing
-... To Be Detailed ...
+... To Be Detailed ...     
+
+## Contact information
+- Discord https://discord.com/invite/vechain
+- Support https://support.vechain.org
 
 
                               @@@@@@@@@@@@@@                     /@@@@@                   
@@ -59,4 +77,4 @@ We appreciate your contributions and suggestions to improve the vechain SDK. Whe
                                            @@@@@    @@@@@#                                
                                             @@@@@@ @@@@@                                  
                                               @@@@@@@@@                                   
-                                               @@@@@@@                                    
+                                               @@@@@@@                               

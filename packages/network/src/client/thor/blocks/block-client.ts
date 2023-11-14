@@ -24,21 +24,22 @@ class BlockClient {
     public async getBlock(
         revision: string | number,
         expanded?: boolean
-    ): Promise<BlockDetail> {
+    ): Promise<BlockDetail | null> {
         if (revision != null && !revisionUtils.isRevisionBlock(revision)) {
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
-                'Invalid revision. The revision must be a string representing a block number or block id.'
+                'Invalid revision. The revision must be a string representing a block number or block id.',
+                { revision }
             );
         }
 
         return (await this.httpClient.http(
             'GET',
-            thorest.blocks.BLOCK_DETAIL(revision),
+            thorest.blocks.get.BLOCK_DETAIL(revision),
             {
                 query: buildQuery({ expanded })
             }
-        )) as BlockDetail;
+        )) as BlockDetail | null;
     }
 
     /**
@@ -46,7 +47,7 @@ class BlockClient {
      *
      * @returns A promise that resolves to an object containing the block details.
      */
-    public async getBestBlock(): Promise<BlockDetail> {
+    public async getBestBlock(): Promise<BlockDetail | null> {
         return await this.getBlock('best');
     }
 
@@ -55,7 +56,7 @@ class BlockClient {
      *
      * @returns A promise that resolves to an object containing the block details.
      */
-    public async getFinalBlock(): Promise<BlockDetail> {
+    public async getFinalBlock(): Promise<BlockDetail | null> {
         return await this.getBlock('finalized');
     }
 }

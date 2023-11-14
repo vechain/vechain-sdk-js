@@ -25,7 +25,7 @@ describe('ThorClient - Accounts', () => {
             'Get account returns fixed VET balance and increased VTHO balance with block number increase',
             async () => {
                 const accountBefore = await thorSoloClient.accounts.getAccount(
-                    TEST_ACCOUNTS.account.address
+                    TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
                 );
 
                 expect(accountBefore).toBeDefined();
@@ -42,16 +42,24 @@ describe('ThorClient - Accounts', () => {
                 const currentBlock =
                     await thorSoloClient.blocks.getBlock('best');
 
-                let latestBlock;
+                if (currentBlock !== null) {
+                    let latestBlock;
 
-                // Wait for a block greater than currentBlock
-                do {
-                    latestBlock = await thorSoloClient.blocks.getBlock('best');
-                    await new Promise((resolve) => setTimeout(resolve, 1000));
-                } while (currentBlock.number === latestBlock.number);
+                    // Wait for a block greater than currentBlock
+                    do {
+                        latestBlock =
+                            await thorSoloClient.blocks.getBlock('best');
+                        await new Promise((resolve) =>
+                            setTimeout(resolve, 1000)
+                        );
+                    } while (
+                        latestBlock !== null &&
+                        currentBlock.number === latestBlock.number
+                    );
+                }
 
                 const accountAfter = await thorSoloClient.accounts.getAccount(
-                    TEST_ACCOUNTS.account.address
+                    TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
                 );
 
                 expect(accountAfter).toBeDefined();

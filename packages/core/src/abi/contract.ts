@@ -124,12 +124,10 @@ function decodeEventLog(
     }
 }
 
-const contract = {
+export const contract = {
     createInterface,
     encodeFunctionInput,
     decodeFunctionInput,
     encodeEventLog,
     decodeEventLog
 };
-
-export { contract };
