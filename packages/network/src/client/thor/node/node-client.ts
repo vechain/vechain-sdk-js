@@ -3,16 +3,6 @@ import { thorest } from '../../../utils';
 import { type BlockDetail } from '../blocks';
 
 /**
- * tolerance in seconds. When set to 30, it means that we consider a node healthy even when it's off-sync by roughly 3 blocks
- */
-const NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS = 30;
-
-/**
- * the name of the attribute we are looking for to extract the block timestamp information
- */
-const BLOCK_TIMESTAMP_KEY = 'timestamp';
-
-/**
  * Provides utility method for checking the health of a node.
  */
 class NodeClient {
@@ -21,6 +11,16 @@ class NodeClient {
      * @param httpClient - The HTTP client instance used for making HTTP requests.
      */
     constructor(protected readonly httpClient: HttpClient) {}
+
+    /**
+     * the name of the attribute we are looking for to extract the block timestamp information
+     */
+    private static readonly BLOCK_TIMESTAMP_KEY = 'timestamp';
+
+    /**
+     * tolerance in seconds. When set to 30, it means that we consider a node healthy even when it's off-sync by roughly 3 blocks
+     */
+    private static readonly NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS = 30;
 
     /**
      * Checks the health of a node using the following algorithm:
@@ -49,7 +49,7 @@ class NodeClient {
 
         return (
             Math.abs(secondsSinceLastBlock) <
-            NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS
+            NodeClient.NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS
         );
     }
 
@@ -81,7 +81,7 @@ class NodeClient {
                 value === null ||
                 value === undefined ||
                 typeof value !== 'object' ||
-                !(BLOCK_TIMESTAMP_KEY in value) ||
+                !(NodeClient.BLOCK_TIMESTAMP_KEY in value) ||
                 typeof value.timestamp !== 'number'
             ) {
                 throw new Error('Invalid block format returned from node.');
