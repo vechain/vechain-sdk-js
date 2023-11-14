@@ -15,7 +15,6 @@
   "devDependencies": {
     "expect": "^29.7.0",
     "runme": "^3.0.2",
-    "ts-node": "^10.9.1",
     "ts-node-test": "^0.4.3"
   }
 }
