@@ -84,7 +84,8 @@ class NodesClient {
         ) {
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
-                'Invalid block format returned from node. The block must be an object with a timestamp key present of type number'
+                'Invalid block format returned from node. The block must be an object with a timestamp key present of type number',
+                { response }
             );
         }
 
