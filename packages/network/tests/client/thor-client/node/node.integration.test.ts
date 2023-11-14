@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { thorSoloClient } from '../../../fixture';
 import { HttpClient, ThorClient } from '../../../../src';
+import { HTTPClientError } from '@vechain-sdk/errors';
 
 /**
  * Node integration tests
@@ -13,7 +14,9 @@ describe('Integration tests to check the Node health check for different scenari
          *  @internal
          */
         const thorClient = new ThorClient(new HttpClient('www.google.ie'));
-        await expect(thorClient.node.isHealthy()).rejects.toThrowError();
+        await expect(thorClient.node.isHealthy()).rejects.toThrowError(
+            HTTPClientError
+        );
     });
 
     test('invalid URL', async () => {
@@ -22,7 +25,9 @@ describe('Integration tests to check the Node health check for different scenari
          *  @internal
          */
         const thorClient = new ThorClient(new HttpClient('INVALID_URL'));
-        await expect(thorClient.node.isHealthy()).rejects.toThrowError();
+        await expect(thorClient.node.isHealthy()).rejects.toThrowError(
+            HTTPClientError
+        );
     });
 
     test('valid and available synchronized node', async () => {
