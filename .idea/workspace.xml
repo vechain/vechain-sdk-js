@@ -5,95 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="8ff569ec-4059-4e8a-976c-d833640fcc36" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/apps/sdk-user/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/apps/sdk-user/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/apps/sdk-user/src/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/apps/sdk-user/src/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/accounts.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/accounts.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/bloom-filter.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/bloom-filter.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/certificates.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/certificates.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/contracts.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/contracts.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/cryptography.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/cryptography.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/encoding.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/encoding.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/accounts/bip32.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/accounts/bip32.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/accounts/bip39.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/accounts/bip39.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/accounts/keystore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/accounts/keystore.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/accounts/pubkey.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/accounts/pubkey.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/bloom/bloom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/bloom/bloom.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/certificates/sign_verify.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/certificates/sign_verify.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/contracts/contract-deploy.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/contracts/contract-deploy.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/contracts/contract-function-call.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/contracts/contract-function-call.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/cryptography/blake2b256.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/cryptography/blake2b256.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/cryptography/keccak256.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/cryptography/keccak256.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/cryptography/secp256k1.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/cryptography/secp256k1.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/encoding/abi.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/encoding/abi.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/encoding/contract.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/encoding/contract.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/encoding/rlp.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/encoding/rlp.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/transactions/blockref_expiration.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/transactions/blockref_expiration.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/transactions/fee_delegation.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/transactions/fee_delegation.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/transactions/multiple_clauses.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/transactions/multiple_clauses.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/transactions/sign_decode.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/transactions/sign_decode.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/examples/transactions/tx_dependency.ts" beforeDir="false" afterPath="$PROJECT_DIR$/docs/examples/transactions/tx_dependency.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/docs/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/templates/contracts.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/templates/contracts.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/transactions.md" beforeDir="false" afterPath="$PROJECT_DIR$/docs/transactions.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/abi/coder.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/abi/coder.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/abi/contract.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/abi/contract.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/abi/fragment.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/abi/fragment.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/address/address.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/address/address.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/certificate/certificate.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/certificate/certificate.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/encoding/rlp/helpers/compactfixedhexblobkind.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/encoding/rlp/helpers/compactfixedhexblobkind.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/encoding/rlp/helpers/fixedhexblobkind.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/encoding/rlp/helpers/fixedhexblobkind.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/encoding/rlp/helpers/hexblobkind.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/encoding/rlp/helpers/hexblobkind.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/encoding/rlp/helpers/numerickind.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/encoding/rlp/helpers/numerickind.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/encoding/rlp/kind/bufferkind.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/encoding/rlp/kind/bufferkind.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/encoding/rlp/rlp.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/encoding/rlp/rlp.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/hash/blake2b256.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/hash/blake2b256.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/hash/keccak256.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/hash/keccak256.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/hash/sha256.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/hash/sha256.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/hdnode/hdnode.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/hdnode/hdnode.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/keystore/keystore.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/keystore/keystore.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/mnemonic/mnemonic.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/mnemonic/mnemonic.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/secp256k1/secp256k1.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/secp256k1/secp256k1.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/transaction/handlers/decode.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/transaction/handlers/decode.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/transaction/handlers/sign.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/transaction/handlers/sign.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/transaction/transaction.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/transaction/transaction.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/utils/bloom/bloom.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/utils/bloom/bloom.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/utils/const/network.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/utils/const/network.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/utils/transaction/transaction.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/utils/transaction/transaction.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/src/utils/units/units.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/src/utils/units/units.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/tests/abi/abi.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/tests/abi/abi.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/tests/abi/contract.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/tests/abi/contract.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/tests/address/address.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/tests/address/address.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/tests/certificate/certificate.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/tests/certificate/certificate.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/tests/hash/hash.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/tests/hash/hash.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/tests/hdnode/hdnode.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/tests/hdnode/hdnode.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/tests/keystore/keystore.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/tests/keystore/keystore.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/tests/mnemonic/mnemonic.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/tests/mnemonic/mnemonic.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/tests/rlp/helpers.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/tests/rlp/helpers.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/tests/rlp/rlp.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/tests/rlp/rlp.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/tests/secp256k1/secp256k1.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/tests/secp256k1/secp256k1.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/tests/transaction/transaction-handler.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/tests/transaction/transaction-handler.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/tests/transaction/transaction.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/tests/transaction/transaction.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/tests/utils/bloom/bloom.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/tests/utils/bloom/bloom.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/tests/utils/bloom/fixture.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/tests/utils/bloom/fixture.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/tests/utils/transaction/fixture.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/tests/utils/transaction/fixture.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/core/tests/utils/units/fixture.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/core/tests/utils/units/fixture.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/errors/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/errors/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/network/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/packages/network/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/network/src/client/http/http-client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/network/src/client/http/http-client.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/network/src/client/thor/accounts/account-client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/network/src/client/thor/accounts/account-client.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/network/src/client/thor/blocks/block-client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/network/src/client/thor/blocks/block-client.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/network/src/client/thor/transactions/transaction-client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/network/src/client/thor/transactions/transaction-client.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/network/src/client/thor/transactions/types.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/network/src/client/thor/transactions/types.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/network/src/utils/helpers/errors.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/network/src/utils/helpers/errors.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/network/src/utils/revision/revision.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/network/src/utils/revision/revision.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/network/tests/client/http/http-client.solo.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/network/tests/client/http/http-client.solo.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/network/tests/client/http/http-client.testnet.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/network/tests/client/http/http-client.testnet.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/network/tests/client/thor-client/accounts/accounts.solo.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/network/tests/client/thor-client/accounts/accounts.solo.test.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/network/tests/client/thor-client/accounts/fixture.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/network/tests/client/thor-client/accounts/fixture.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/network/tests/client/thor-client/blocks/fixture.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/network/tests/client/thor-client/blocks/fixture.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/network/tests/client/thor-client/transactions/fixture.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/network/tests/client/thor-client/transactions/fixture.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/packages/network/tests/client/thor-client/transactions/transaction.solo.test.ts" beforeDir="false" afterPath="$PROJECT_DIR$/packages/network/tests/client/thor-client/transactions/transaction.solo.test.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/publish-sdk.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/publish-sdk.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -171,7 +83,7 @@
       <workItem from="1699030943501" duration="723000" />
       <workItem from="1699214215396" duration="100000" />
       <workItem from="1699353943492" duration="13000" />
-      <workItem from="1699971200750" duration="907000" />
+      <workItem from="1699971200750" duration="1134000" />
     </task>
     <servers />
   </component>

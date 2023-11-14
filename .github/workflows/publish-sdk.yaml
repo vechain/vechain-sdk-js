@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: 18
           registry-url: https://npm.pkg.github.com/
-      - run: yarn install:all
+      - run: yarn install
       - run: yarn build
       - run: |
           cd packages/${{ matrix.package }}
