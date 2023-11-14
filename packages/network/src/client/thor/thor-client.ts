@@ -1,8 +1,9 @@
 import { type HttpClient } from '../http';
 import { AccountClient } from './accounts';
-import { BlockClient } from './blocks';
+import { BlocksClient } from './blocks';
 import { LogsClient } from './logs';
 import { TransactionClient } from './transactions';
+import { NodesClient } from './nodes';
 
 /**
  * The `ThorClient` class serves as an interface to interact with the Vechain Thor blockchain.
@@ -17,7 +18,7 @@ class ThorClient {
     /**
      * The `BlockClient` instance used for interacting with block-related endpoints.
      */
-    public readonly blocks: BlockClient;
+    public readonly blocks: BlocksClient;
 
     /**
      * The `LogsClient` instance used for interacting with log-related endpoints.
@@ -30,13 +31,19 @@ class ThorClient {
     public readonly transactions: TransactionClient;
 
     /**
+     * The `NodeClient` instance used for interacting with node-related endpoints.
+     */
+    public readonly nodes: NodesClient;
+
+    /**
      * Constructs a new `ThorClient` instance with a given HTTP client.
      * @param httpClient - The HTTP client instance used for making network requests.
      */
     constructor(protected readonly httpClient: HttpClient) {
         this.accounts = new AccountClient(httpClient);
-        this.blocks = new BlockClient(httpClient);
+        this.blocks = new BlocksClient(httpClient);
         this.logs = new LogsClient(httpClient);
+        this.nodes = new NodesClient(httpClient);
         this.transactions = new TransactionClient(httpClient);
     }
 }
