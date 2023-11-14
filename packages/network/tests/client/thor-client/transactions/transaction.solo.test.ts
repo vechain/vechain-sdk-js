@@ -42,7 +42,10 @@ describe('ThorClient - Transactions', () => {
                 // Create transactions
                 const transaction = new Transaction({
                     chainTag: 0xf6,
-                    blockRef: latestBlock.id.slice(0, 18),
+                    blockRef:
+                        latestBlock !== null
+                            ? latestBlock.id.slice(0, 18)
+                            : '0x0',
                     expiration: 32,
                     clauses: testCase.transaction.clauses,
                     gasPriceCoef: 128,
@@ -53,7 +56,10 @@ describe('ThorClient - Transactions', () => {
 
                 const delegatedTransaction = new Transaction({
                     chainTag: 0xf6,
-                    blockRef: latestBlock.id.slice(0, 18),
+                    blockRef:
+                        latestBlock !== null
+                            ? latestBlock.id.slice(0, 18)
+                            : '0x0',
                     expiration: 32,
                     clauses: testCase.transaction.clauses,
                     gasPriceCoef: 128,
