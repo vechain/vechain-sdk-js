@@ -28,8 +28,7 @@ const thorest = {
     blocks: {
         get: {
             BLOCK_DETAIL: (revision: string | number): string =>
-                `/blocks/${revision}`,
-            LAST_BLOCK_PATH: (): string => `/blocks/best`
+                `/blocks/${revision}`
         }
     },
 
