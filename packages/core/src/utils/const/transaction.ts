@@ -137,9 +137,9 @@ const SIGNED_TRANSACTION_RLP = new RLP.Profiler({
 const SIGNATURE_LENGTH = 65;
 
 /**
- * Blockref field length
+ * Block ref field length
  */
-const BLOCKREF_LENGTH = 8;
+const BLOCK_REF_LENGTH = 8;
 
 export {
     TRANSACTIONS_GAS_CONSTANTS,
@@ -148,5 +148,5 @@ export {
     TRANSACTION_FEATURES_KIND,
     TRANSACTION_SIGNATURE_KIND,
     SIGNATURE_LENGTH,
-    BLOCKREF_LENGTH
+    BLOCK_REF_LENGTH
 };

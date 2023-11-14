@@ -3,6 +3,7 @@ import {
     secp256k1,
     TransactionUtils,
     TransactionHandler,
+    networkInfo,
     type TransactionClause,
     type TransactionBody,
     unitsUtils
@@ -23,7 +24,7 @@ const clauses: TransactionClause[] = [
 
 // Body of transaction
 const body: TransactionBody = {
-    chainTag: 0x9a,
+    chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x00ffecb8ac3142c4', // first 8 bytes of block id from block #16772280
     expiration: 32, // tx will expire after block #16772280 + 32
     clauses,

@@ -50,7 +50,7 @@ class AccountClient {
 
         return (await this.httpClient.http(
             'GET',
-            thorest.account.ACCOUNT_DETAIL(address),
+            thorest.accounts.get.ACCOUNT_DETAIL(address),
             {
                 query: buildQuery({ revision })
             }
@@ -86,7 +86,7 @@ class AccountClient {
 
         const result = (await this.httpClient.http(
             'GET',
-            thorest.account.ACCOUNT_BYTECODE(address),
+            thorest.accounts.get.ACCOUNT_BYTECODE(address),
             {
                 query: buildQuery({ revision })
             }
@@ -133,7 +133,7 @@ class AccountClient {
 
         const result = (await this.httpClient.http(
             'GET',
-            thorest.account.STORAGE_AT(address, position),
+            thorest.accounts.get.STORAGE_AT(address, position),
             {
                 query: buildQuery({ position, revision })
             }

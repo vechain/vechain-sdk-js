@@ -16,6 +16,7 @@ To break it down:
 In this example a simple transaction with a single clause is created, signed, encoded and then decoded
 
 ```typescript { name=sign_decode, category=example }
+import { networkInfo } from '@vechain-sdk/core';
 import {
     Transaction,
     secp256k1,
@@ -44,7 +45,7 @@ const gas = TransactionUtils.intrinsicGas(clauses);
 
 // Body of transaction
 const body: TransactionBody = {
-    chainTag: 0x9a,
+    chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x0000000000000000',
     expiration: 0,
     clauses,
@@ -76,6 +77,7 @@ In VechainThor blockchain a transaction can be composed of multiple clauses. \
 Clauses allow to send multiple payloads to different recipients within a single transaction.
 
 ```typescript { name=multiple_clauses, category=example }
+import { networkInfo } from '@vechain-sdk/core';
 import {
     Transaction,
     secp256k1,
@@ -111,7 +113,7 @@ const gas = TransactionUtils.intrinsicGas(clauses);
 
 // Body of transaction
 const body: TransactionBody = {
-    chainTag: 0x9a,
+    chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x0000000000000000',
     expiration: 32,
     clauses,
@@ -141,6 +143,7 @@ expect(decodedTx.body.clauses.length).toBe(clauses.length);
 Fee delegation is a feature on the VechainThor blockchain which enables the transaction sender to request another entity, a sponsor, to pay for the transaction fee on the sender's behalf.
 
 ```typescript { name=fee_delegation, category=example }
+import { networkInfo } from '@vechain-sdk/core';
 import {
     Transaction,
     secp256k1,
@@ -168,7 +171,7 @@ const clauses: TransactionClause[] = [
 
 // Body of transaction
 const body: TransactionBody = {
-    chainTag: 0x9a,
+    chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x0000000000000000',
     expiration: 0,
     clauses,
@@ -214,6 +217,7 @@ import {
     secp256k1,
     TransactionUtils,
     TransactionHandler,
+    networkInfo,
     type TransactionClause,
     type TransactionBody,
     unitsUtils
@@ -234,7 +238,7 @@ const clauses: TransactionClause[] = [
 
 // Body of transaction
 const body: TransactionBody = {
-    chainTag: 0x9a,
+    chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x00ffecb8ac3142c4', // first 8 bytes of block id from block #16772280
     expiration: 32, // tx will expire after block #16772280 + 32
     clauses,
@@ -263,6 +267,7 @@ expect(decodedTx.body.expiration).toBe(body.expiration);
 A transaction can be set to only be processed after another transaction, therefore defining an execution order for transactions. The _DependsOn_ field is the Id of the transaction on which the current transaction depends on. If the transaction does not depend on others _DependsOn_ can be set to _null_
 
 ```typescript { name=tx_dependency, category=example }
+import { networkInfo } from '@vechain-sdk/core';
 import {
     Transaction,
     secp256k1,
@@ -296,7 +301,7 @@ const txBClauses: TransactionClause[] = [
 // Define transaction A with no dependencies
 // Note: This transaction has nonce = 1
 const txABody: TransactionBody = {
-    chainTag: 0x9a,
+    chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x0000000000000000',
     expiration: 0,
     clauses: txAClauses,
@@ -309,7 +314,7 @@ const txABody: TransactionBody = {
 // Define transaction B with nonce = 2
 // Note at the moment dependsOn is null
 const txBBody: TransactionBody = {
-    chainTag: 0x9a,
+    chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x0000000000000000',
     expiration: 0,
     clauses: txBClauses,

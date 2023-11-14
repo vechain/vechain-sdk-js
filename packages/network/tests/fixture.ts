@@ -165,7 +165,18 @@ const TEST_ACCOUNTS = {
     /**
      * Accounts dedicated for testing account related operations.
      */
-    account: ALL_ACCOUNTS[0]
+    ACCOUNT: {
+        SIMPLE_ACCOUNT: ALL_ACCOUNTS[0]
+    },
+
+    /**
+     * Accounts dedicated for testing transaction related operations.
+     */
+    TRANSACTION: {
+        TRANSACTION_SENDER: ALL_ACCOUNTS[1],
+        TRANSACTION_RECEIVER: ALL_ACCOUNTS[2],
+        DELEGATOR: ALL_ACCOUNTS[3]
+    }
 };
 
 export {
