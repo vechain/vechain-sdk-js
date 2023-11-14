@@ -4,9 +4,9 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
-    "test:docs": "npx runme run --all --category example --skip-prompts",
+    "test:docs": "yarn runme run --all --category example --skip-prompts",
     "test:examples": "ts-node-test examples/",
-    "build": "find . -name \"*.md\" -type f -maxdepth 1 ! -name \"README.md\" -delete && node --loader ts-node/esm builddocs.ts"
+    "build": "find . -name \"*.md\" -type f -maxdepth 1 ! -name \"README.md\" -delete && tsup builddocs.ts && node dist/builddocs.cjs"
   },
   "dependencies": {
     "@vechain-sdk/core": "*",
