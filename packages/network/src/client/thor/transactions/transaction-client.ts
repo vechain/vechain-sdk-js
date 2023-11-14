@@ -50,7 +50,7 @@ class TransactionClient {
             {
                 query: buildQuery({ raw, head, pending })
             }
-        )) as TransactionDetail;
+        )) as TransactionDetail | null;
     }
 
     /**
@@ -84,7 +84,7 @@ class TransactionClient {
             {
                 query: buildQuery({ head })
             }
-        )) as TransactionReceipt;
+        )) as TransactionReceipt | null;
     }
 
     /**

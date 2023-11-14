@@ -38,7 +38,7 @@ class BlockClient {
             {
                 query: buildQuery({ expanded })
             }
-        )) as BlockDetail;
+        )) as BlockDetail | null;
     }
 
     /**
