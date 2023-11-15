@@ -7,6 +7,9 @@ jobs:
     build:
         name: Build & Lint
         runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node: [18, lts/*, latest]
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
@@ -14,7 +17,7 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@v4
               with:
-                  node-version: lts/*
+                  node-version: ${{ matrix.node }}
 
             - name: Install & Patch packages
               run: yarn install
@@ -23,6 +26,7 @@ jobs:
               run: yarn test
 
             - name: Jest Coverage Comment
+              if: matrix.node == 'lts/*'
               uses: MishaKav/jest-coverage-comment@main
               with:
                 title: Test Coverage
@@ -39,6 +43,7 @@ jobs:
                   errors, packages/errors/junit.xml
 
             - name: Archive coverage
+              if: matrix.node == 'lts/*'
               uses: actions/upload-artifact@v3
               with:
                 name: coverage-results
