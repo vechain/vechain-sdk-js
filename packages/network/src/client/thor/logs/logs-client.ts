@@ -5,6 +5,7 @@ import {
     type FilterTransferLogsArg,
     type TransferLogs
 } from './types';
+import { thorest } from '../../../utils';
 
 /**
  * The `LogsClient` class provides methods to interact with log-related endpoints
@@ -24,11 +25,15 @@ class LogsClient {
      * @returns A promise that resolves to filtered event logs.
      */
     public async filterEventLogs(arg: FilterEventLogsArg): Promise<EventLogs> {
-        return (await this.httpClient.http('POST', '/logs/event', {
-            query: {},
-            body: arg,
-            headers: {}
-        })) as EventLogs;
+        return (await this.httpClient.http(
+            'POST',
+            thorest.logs.post.EVENT_LOGS(),
+            {
+                query: {},
+                body: arg,
+                headers: {}
+            }
+        )) as EventLogs;
     }
 
     /**
@@ -40,11 +45,15 @@ class LogsClient {
     public async filterTransferLogs(
         arg: FilterTransferLogsArg
     ): Promise<TransferLogs> {
-        return (await this.httpClient.http('POST', '/logs/transfer', {
-            query: {},
-            body: arg,
-            headers: {}
-        })) as TransferLogs;
+        return (await this.httpClient.http(
+            'POST',
+            thorest.logs.post.TRANSFER_LOGS(),
+            {
+                query: {},
+                body: arg,
+                headers: {}
+            }
+        )) as TransferLogs;
     }
 }
 

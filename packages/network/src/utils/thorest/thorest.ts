@@ -33,6 +33,16 @@ const thorest = {
     },
 
     /**
+     * Log related endpoints.
+     */
+    logs: {
+        post: {
+            EVENT_LOGS: (): string => '/logs/event',
+            TRANSFER_LOGS: (): string => '/logs/transfer'
+        }
+    },
+
+    /**
      * Transaction related endpoints.
      */
     transactions: {
