@@ -54,4 +54,14 @@ describe('ThorClient - Blocks', () => {
             expect(blockDetails).toBeDefined();
         });
     });
+
+    /**
+     * waitForBlock tests
+     */
+    test('waitForBlock', async () => {
+        const bestBlock = await thorClient.blocks.getBestBlock();
+        const waitForBlock = bestBlock != null ? bestBlock.number + 2 : 2;
+        const blockDetails = await thorClient.blocks.waitForBlock(waitForBlock);
+        expect(blockDetails.number).toBe(waitForBlock);
+    }, 20000);
 });
