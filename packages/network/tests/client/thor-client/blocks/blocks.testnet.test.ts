@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { validBlockRevisions, invalidBlockRevisions } from './fixture';
 import { thorClient } from '../../../fixture';
+import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * ThorClient - BlockClient class tests
@@ -56,7 +57,7 @@ describe('ThorClient - Blocks', () => {
     });
 
     /**
-     * waitForBlock tests
+     * waitForBlock tests with valid revision
      */
     test('waitForBlock', async () => {
         const bestBlock = await thorClient.blocks.getBestBlock();
@@ -64,4 +65,13 @@ describe('ThorClient - Blocks', () => {
         const blockDetails = await thorClient.blocks.waitForBlock(waitForBlock);
         expect(blockDetails.number).toBe(waitForBlock);
     }, 20000);
+
+    /**
+     * waitForBlock tests with invalid revision
+     */
+    test('waitForBlock with invalid revision', async () => {
+        await expect(thorClient.blocks.waitForBlock('a')).rejects.toThrowError(
+            InvalidDataTypeError
+        );
+    });
 });
