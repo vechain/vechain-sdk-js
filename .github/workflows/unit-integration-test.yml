@@ -26,6 +26,7 @@ jobs:
               run: yarn test
 
             - name: Jest Coverage Comment
+              if: matrix.node == 'lts/*'
               uses: MishaKav/jest-coverage-comment@main
               with:
                 title: Test Coverage
@@ -42,6 +43,7 @@ jobs:
                   errors, packages/errors/junit.xml
 
             - name: Archive coverage
+              if: matrix.node == 'lts/*'
               uses: actions/upload-artifact@v3
               with:
                 name: coverage-results
