@@ -16,7 +16,7 @@
     "dependencies": {
         "@vechainfoundation/vechain-sdk-errors": "*",
         "@vechainfoundation/vechain-sdk-core": "*",
-        "axios": "^1.5.1",
+        "axios": "^1.6.2",
         "testcontainers": "^10.2.2"
     }
 }
