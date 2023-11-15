@@ -30,10 +30,13 @@ class AccountClient {
      * @throws {InvalidDataTypeError} - Will throw an error if the revision is not a valid block number or ID
      *         or if the address is not a valid address.
      */
-    public async getAccount(
-        address: string,
-        revision?: string
-    ): Promise<AccountDetail> {
+    public async getAccount({
+        address,
+        revision
+    }: {
+        address: string;
+        revision?: string;
+    }): Promise<AccountDetail> {
         if (!addressUtils.isAddress(address)) {
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
@@ -67,10 +70,13 @@ class AccountClient {
      * @throws {InvalidDataTypeError} - Will throw an error if the revision is not a valid block number or ID
      *         or if the address is not a valid address.
      */
-    public async getBytecode(
-        address: string,
-        revision?: string
-    ): Promise<string> {
+    public async getBytecode({
+        address,
+        revision
+    }: {
+        address: string;
+        revision?: string;
+    }): Promise<string> {
         if (!addressUtils.isAddress(address)) {
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
@@ -106,11 +112,15 @@ class AccountClient {
      * @throws {InvalidDataTypeError} - Will throw an error if the revision is not a valid block number or ID
      *         or if the position is not a 32 bytes hex string or if the address is not a valid address.
      */
-    public async getStorageAt(
-        address: string,
-        position: string,
-        revision?: string
-    ): Promise<string> {
+    public async getStorageAt({
+        address,
+        position,
+        revision
+    }: {
+        address: string;
+        position: string;
+        revision?: string;
+    }): Promise<string> {
         if (!addressUtils.isAddress(address)) {
             throw buildError(
                 DATA.INVALID_DATA_TYPE,

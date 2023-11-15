@@ -24,9 +24,9 @@ describe('ThorClient - Accounts', () => {
         test(
             'Get account returns fixed VET balance and increased VTHO balance with block number increase',
             async () => {
-                const accountBefore = await thorSoloClient.accounts.getAccount(
-                    TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
-                );
+                const accountBefore = await thorSoloClient.accounts.getAccount({
+                    address: TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
+                });
 
                 expect(accountBefore).toBeDefined();
 
@@ -58,9 +58,9 @@ describe('ThorClient - Accounts', () => {
                     );
                 }
 
-                const accountAfter = await thorSoloClient.accounts.getAccount(
-                    TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
-                );
+                const accountAfter = await thorSoloClient.accounts.getAccount({
+                    address: TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
+                });
 
                 expect(accountAfter).toBeDefined();
                 expect(accountAfter.balance).toEqual(accountBefore.balance);
