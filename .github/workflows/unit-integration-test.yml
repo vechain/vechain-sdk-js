@@ -34,7 +34,7 @@ jobs:
                 hide-comment: false
                 create-new-comment: false
                 hide-summary: false
-                coverage-title: Coverage-node-${{ matrix.node }}
+                coverage-title: Coverage
                 coverage-summary-path: coverage/coverage-summary.json
                 multiple-junitxml-files: |
                   core, packages/core/junit.xml
