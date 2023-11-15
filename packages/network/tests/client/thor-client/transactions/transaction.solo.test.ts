@@ -28,8 +28,9 @@ describe('ThorClient - Transactions', () => {
                 // 1- Init transaction
 
                 // Get latest block
-                const latestBlock =
-                    await thorSoloClient.blocks.getBlock('best');
+                const latestBlock = await thorSoloClient.blocks.getBlock({
+                    revision: 'best'
+                });
 
                 // Get gas @NOTE it is approximation. This part must be improved.
                 const gas =

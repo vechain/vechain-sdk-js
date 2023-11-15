@@ -39,16 +39,18 @@ describe('ThorClient - Accounts', () => {
                     unitsUtils.parseVET('500000000')
                 );
 
-                const currentBlock =
-                    await thorSoloClient.blocks.getBlock('best');
+                const currentBlock = await thorSoloClient.blocks.getBlock({
+                    revision: 'best'
+                });
 
                 if (currentBlock !== null) {
                     let latestBlock;
 
                     // Wait for a block greater than currentBlock
                     do {
-                        latestBlock =
-                            await thorSoloClient.blocks.getBlock('best');
+                        latestBlock = await thorSoloClient.blocks.getBlock({
+                            revision: 'best'
+                        });
                         await new Promise((resolve) =>
                             setTimeout(resolve, 1000)
                         );
