@@ -26,6 +26,6 @@
         "typescript": "*"
     },
     "dependencies": {
-        "ethers": "6.7.1"
+        "ethers": "6.8.1"
     }
 }
