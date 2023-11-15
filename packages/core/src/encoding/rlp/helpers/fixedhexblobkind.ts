@@ -1,4 +1,4 @@
-import { buildError, RLP } from '@vechain-sdk/errors';
+import { buildError, RLP } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Asserts that the data is a hex string of the correct length.

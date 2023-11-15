@@ -1,4 +1,4 @@
-import { DATA, buildError } from '@vechain-sdk/errors';
+import { DATA, buildError } from '@vechainfoundation/vechain-sdk-errors';
 import { revisionUtils, buildQuery, thorest } from '../../../utils';
 import { type HttpClient } from '../../http';
 import {
@@ -6,7 +6,7 @@ import {
     type AccountDetail,
     type ResponseStorage
 } from './types';
-import { dataUtils, addressUtils } from '@vechain-sdk/core';
+import { dataUtils, addressUtils } from '@vechainfoundation/vechain-sdk-core';
 
 /**
  * The `AccountClient` class provides methods to interact with account-related endpoints

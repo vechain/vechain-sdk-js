@@ -8,7 +8,7 @@
     "build": "find . -name \"*.md\" -type f -maxdepth 1 ! -name \"README.md\" -delete && tsup builddocs.ts && node dist/builddocs.cjs"
   },
   "dependencies": {
-    "@vechain-sdk/core": "*",
+    "@vechainfoundation/vechain-sdk-core": "*",
     "typescript": "^5.2.2"
   },
   "devDependencies": {

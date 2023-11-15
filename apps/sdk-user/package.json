@@ -7,7 +7,7 @@
         "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts"
     },
     "dependencies": {
-        "@vechain-sdk/core": "*",
+        "@vechainfoundation/vechain-sdk-core": "*",
         "typescript": "^5.2.2"
     }
 }

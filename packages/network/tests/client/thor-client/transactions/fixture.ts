@@ -1,4 +1,4 @@
-import { InvalidDataTypeError } from '@vechain-sdk/errors';
+import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
 import { TEST_ACCOUNTS } from '../../../fixture';
 
 /**

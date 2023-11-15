@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { TEST_ACCOUNTS, thorSoloClient } from '../../../fixture';
-import { unitsUtils } from '@vechain-sdk/core';
+import { unitsUtils } from '@vechainfoundation/vechain-sdk-core';
 
 /**
  * Prolong timeout due to block time which sometimes exceeds jest's default timeout of 5 seconds.

@@ -1,6 +1,6 @@
 import { type HttpClient } from '../../http';
 import { type BlockDetail, BlocksClient } from '../blocks';
-import { buildError, DATA } from '@vechain-sdk/errors';
+import { buildError, DATA } from '@vechainfoundation/vechain-sdk-errors';
 import { NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS } from '../../../utils';
 
 /**

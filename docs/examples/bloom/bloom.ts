@@ -1,4 +1,4 @@
-import { bloom } from '@vechain-sdk/core';
+import { bloom } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
 // Get best value of k (bits per key)

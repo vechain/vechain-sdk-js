@@ -5,7 +5,7 @@ import {
     blockWithOldTimeStamp,
     blockWithInvalidTimeStampFormat
 } from './fixture';
-import { InvalidDataTypeError } from '@vechain-sdk/errors';
+import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Node unit tests

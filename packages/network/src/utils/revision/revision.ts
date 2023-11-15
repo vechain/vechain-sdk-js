@@ -1,4 +1,4 @@
-import { dataUtils } from '@vechain-sdk/core';
+import { dataUtils } from '@vechainfoundation/vechain-sdk-core';
 
 /**
  * Determines whether the provided revision is a valid for blocks functions.

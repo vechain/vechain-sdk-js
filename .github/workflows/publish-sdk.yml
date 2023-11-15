@@ -1,0 +1,50 @@
+name: Publish NPM package
+
+on:
+    push:
+        tags:
+            - '*'
+
+permissions:
+    contents: read
+    packages: write
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: actions/setup-node@v3
+              with:
+                  node-version-file: .nvmrc
+                  registry-url: 'https://npm.pkg.github.com/'
+            - run: yarn install
+
+            - run: yarn build
+
+            - name: Run Unit & Integration tests
+              run: yarn test
+
+            - name: Publish errors
+              run: |
+                  cd packages/errors
+                  yarn version --no-git-tag-version --new-version ${{ github.ref_name }}
+                  yarn publish
+              env:
+                  NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+            - name: Publish core
+              run: |
+                  cd packages/core
+                  yarn version --no-git-tag-version --new-version ${{ github.ref_name }}
+                  yarn publish
+              env:
+                  NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+                  
+            - name: Publish network
+              run: |
+                  cd packages/network
+                  yarn version --no-git-tag-version --new-version ${{ github.ref_name }}
+                  yarn publish
+              env:
+                  NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}

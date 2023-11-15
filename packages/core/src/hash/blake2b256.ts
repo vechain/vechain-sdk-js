@@ -1,7 +1,7 @@
 import blake from 'blakejs';
 import { type HashInput, type ReturnType } from './types';
 import { isValidReturnType } from './helpers';
-import { buildError, DATA } from '@vechain-sdk/errors';
+import { buildError, DATA } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Internal function to compute the blake2b256 256-bit hash of the given data.

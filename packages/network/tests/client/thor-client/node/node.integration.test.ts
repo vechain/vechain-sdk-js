@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { thorSoloClient } from '../../../fixture';
 import { HttpClient, ThorClient } from '../../../../src';
-import { HTTPClientError } from '@vechain-sdk/errors';
+import { HTTPClientError } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Node integration tests

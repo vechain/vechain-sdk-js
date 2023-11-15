@@ -1,4 +1,4 @@
-import { abi } from '@vechain-sdk/core';
+import { abi } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
 // Create a new function
