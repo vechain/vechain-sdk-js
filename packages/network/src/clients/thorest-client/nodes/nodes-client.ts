@@ -43,7 +43,7 @@ class NodesClient {
         const response = await this.blocksClient.getBestBlock();
 
         /**
-         * timestamp from the last block
+         * timestamp from the last block and, eventually handle errors
          * @internal
          */
         const lastBlockTimestamp: number = this.getTimestampFromBlock(response);
