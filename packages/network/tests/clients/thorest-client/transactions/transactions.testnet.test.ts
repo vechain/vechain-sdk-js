@@ -1,15 +1,15 @@
 import { describe, expect, test } from '@jest/globals';
-import { thorClient } from '../../../fixture';
+import { thorestClient } from '../../../fixture';
 import { transactionDetails, transactionReceipts } from './fixture';
 
 /**
- * ThorClient class tests
+ * ThorestClient class tests
  *
  * @NOTE: This test suite run on testnet network because it contains read only tests.
  *
  * @group integration/clients/thorest-client/transactions
  */
-describe('ThorClient - Transactions', () => {
+describe('ThorestClient - Transactions', () => {
     /**
      * getTransaction tests
      */
@@ -20,12 +20,12 @@ describe('ThorClient - Transactions', () => {
         transactionDetails.correct.forEach((testCase) => {
             test(testCase.testName, async () => {
                 // Check block number
-                const latestBlock = await thorClient.blocks.getFinalBlock();
+                const latestBlock = await thorestClient.blocks.getFinalBlock();
 
                 // Check transaction block. If undefined, it is the 'best' block.
                 for (const blockNumber of [latestBlock, undefined]) {
                     const transaction =
-                        await thorClient.transactions.getTransaction(
+                        await thorestClient.transactions.getTransaction(
                             testCase.transaction.id,
                             {
                                 raw: testCase.transaction.raw,
@@ -44,7 +44,7 @@ describe('ThorClient - Transactions', () => {
         transactionDetails.errors.forEach((testCase) => {
             test(testCase.testName, async () => {
                 await expect(
-                    thorClient.transactions.getTransaction(
+                    thorestClient.transactions.getTransaction(
                         testCase.transaction.id,
                         {
                             raw: testCase.transaction.raw,
@@ -66,12 +66,12 @@ describe('ThorClient - Transactions', () => {
         transactionReceipts.correct.forEach((testCase) => {
             test(testCase.testName, async () => {
                 // Check block number
-                const latestBlock = await thorClient.blocks.getFinalBlock();
+                const latestBlock = await thorestClient.blocks.getFinalBlock();
 
                 // Check transaction block. If undefined, it is the 'best' block.
                 for (const blockNumber of [latestBlock, undefined]) {
                     const transaction =
-                        await thorClient.transactions.getTransactionReceipt(
+                        await thorestClient.transactions.getTransactionReceipt(
                             testCase.transaction.id,
                             { head: blockNumber?.id }
                         );
@@ -86,7 +86,7 @@ describe('ThorClient - Transactions', () => {
         transactionReceipts.errors.forEach((testCase) => {
             test(testCase.testName, async () => {
                 await expect(
-                    thorClient.transactions.getTransactionReceipt(
+                    thorestClient.transactions.getTransactionReceipt(
                         testCase.transaction.id,
                         { head: testCase.transaction.head }
                     )

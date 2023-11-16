@@ -1,15 +1,17 @@
 import { describe, expect, test, jest } from '@jest/globals';
-import { HttpClient, ThorClient } from '../../../../src';
+import { HttpClient } from '../../../../src';
 import {
     blockWithMissingTimeStamp,
     blockWithOldTimeStamp,
     blockWithInvalidTimeStampFormat
 } from './fixture';
 import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
+import { ThorClient } from '../../../../src/clients/thor-client';
 
 /**
  * Node unit tests
- * @group unit/node
+ * @group unit/clients/thor-client/nodes
+ *
  */
 describe('Unit tests to check the Node health check is working for different scenarios', () => {
     /**

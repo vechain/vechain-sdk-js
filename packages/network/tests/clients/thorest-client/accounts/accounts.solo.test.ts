@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { TEST_ACCOUNTS, thorSoloClient } from '../../../fixture';
+import { TEST_ACCOUNTS, thorestSoloClient } from '../../../fixture';
 import { unitsUtils } from '@vechainfoundation/vechain-sdk-core';
 
 /**
@@ -8,11 +8,11 @@ import { unitsUtils } from '@vechainfoundation/vechain-sdk-core';
 const TIMEOUT = 20000;
 
 /**
- * ThorClient - AccountClient class tests
+ * ThorestClient - AccountClient class tests
  *
  * @group integration/clients/thorest-client/accounts
  */
-describe('ThorClient - Accounts', () => {
+describe('ThorestClient - Accounts', () => {
     /**
      * getAccount tests
      */
@@ -24,9 +24,10 @@ describe('ThorClient - Accounts', () => {
         test(
             'Get account returns fixed VET balance and increased VTHO balance with block number increase',
             async () => {
-                const accountBefore = await thorSoloClient.accounts.getAccount(
-                    TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
-                );
+                const accountBefore =
+                    await thorestSoloClient.accounts.getAccount(
+                        TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
+                    );
 
                 expect(accountBefore).toBeDefined();
 
@@ -40,7 +41,7 @@ describe('ThorClient - Accounts', () => {
                 );
 
                 const currentBlock =
-                    await thorSoloClient.blocks.getBlock('best');
+                    await thorestSoloClient.blocks.getBlock('best');
 
                 if (currentBlock !== null) {
                     let latestBlock;
@@ -48,7 +49,7 @@ describe('ThorClient - Accounts', () => {
                     // Wait for a block greater than currentBlock
                     do {
                         latestBlock =
-                            await thorSoloClient.blocks.getBlock('best');
+                            await thorestSoloClient.blocks.getBlock('best');
                         await new Promise((resolve) =>
                             setTimeout(resolve, 1000)
                         );
@@ -58,9 +59,10 @@ describe('ThorClient - Accounts', () => {
                     );
                 }
 
-                const accountAfter = await thorSoloClient.accounts.getAccount(
-                    TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
-                );
+                const accountAfter =
+                    await thorestSoloClient.accounts.getAccount(
+                        TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
+                    );
 
                 expect(accountAfter).toBeDefined();
                 expect(accountAfter.balance).toEqual(accountBefore.balance);

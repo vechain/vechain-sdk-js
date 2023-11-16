@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { thorClient } from '../../../fixture';
+import { thorestClient } from '../../../fixture';
 import {
     argFilterEventLogs,
     argFilterTransferLogs,
@@ -8,17 +8,17 @@ import {
 } from './fixture';
 
 /**
- * ThorClient class tests
+ * ThorestClient class tests
  *
  * @group integration/clients/thorest-client/logs
  */
-describe('ThorClient - Logs', () => {
+describe('ThorestClient - Logs', () => {
     /**
      * filterEventLogs tests
      */
     test('filterEventLogs', async () => {
         const eventLogs =
-            await thorClient.logs.filterEventLogs(argFilterEventLogs);
+            await thorestClient.logs.filterEventLogs(argFilterEventLogs);
         expect(eventLogs).toStrictEqual(expectedFilterEventLogs);
     });
 
@@ -26,7 +26,7 @@ describe('ThorClient - Logs', () => {
      * filterTransferLogs tests
      */
     test('filterTransferLogs', async () => {
-        const transferLogs = await thorClient.logs.filterTransferLogs(
+        const transferLogs = await thorestClient.logs.filterTransferLogs(
             argFilterTransferLogs
         );
         expect(transferLogs).toStrictEqual(expectedFilterTransferLogs);

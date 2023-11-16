@@ -1,4 +1,4 @@
-import { type HttpClient } from '../../utils/http';
+import { type HttpClient } from '../../utils';
 import { AccountClient } from './accounts';
 import { BlocksClient } from './blocks';
 import { LogsClient } from './logs';
@@ -6,10 +6,11 @@ import { TransactionClient } from './transactions';
 import { NodesClient } from './nodes';
 
 /**
- * The `ThorClient` class serves as an interface to interact with the Vechain Thor blockchain.
- * It provides methods for accessing account details, contract bytecode, and storage.
+ * The `ThorestClient` class serves as an interface to interact with the Vechain Thorest blockchain API.
+ * It provides methods for accessing account details, contract bytecode, and storage by using Thorest API.
+ * Basically it can be considered a wrapper of Thorest API.
  */
-class ThorClient {
+class ThorestClient {
     /**
      * The `AccountClient` instance used for interacting with account-related endpoints.
      */
@@ -48,4 +49,4 @@ class ThorClient {
     }
 }
 
-export { ThorClient };
+export { ThorestClient };

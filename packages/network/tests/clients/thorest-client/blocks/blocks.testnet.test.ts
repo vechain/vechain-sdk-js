@@ -1,13 +1,13 @@
 import { describe, expect, test } from '@jest/globals';
 import { validBlockRevisions, invalidBlockRevisions } from './fixture';
-import { thorClient } from '../../../fixture';
+import { thorestClient } from '../../../fixture';
 
 /**
- * ThorClient - BlockClient class tests
+ * ThorestClient - BlockClient class tests
  *
  * @group integration/clients/thorest-client/blocks
  */
-describe('ThorClient - Blocks', () => {
+describe('ThorestClient - Blocks', () => {
     /**
      * getBlock tests
      */
@@ -17,7 +17,7 @@ describe('ThorClient - Blocks', () => {
          */
         validBlockRevisions.forEach(({ revision, expanded, expected }) => {
             test(revision, async () => {
-                const blockDetails = await thorClient.blocks.getBlock(
+                const blockDetails = await thorestClient.blocks.getBlock(
                     revision,
                     {
                         expanded
@@ -34,7 +34,7 @@ describe('ThorClient - Blocks', () => {
             ({ description, revision, expectedError }) => {
                 test(description, async () => {
                     await expect(
-                        thorClient.blocks.getBlock(revision)
+                        thorestClient.blocks.getBlock(revision)
                     ).rejects.toThrowError(expectedError);
                 });
             }
@@ -44,7 +44,7 @@ describe('ThorClient - Blocks', () => {
          * getBestBlock test
          */
         test('getBestBlock', async () => {
-            const blockDetails = await thorClient.blocks.getBestBlock();
+            const blockDetails = await thorestClient.blocks.getBestBlock();
             expect(blockDetails).toBeDefined();
         });
 
@@ -52,7 +52,7 @@ describe('ThorClient - Blocks', () => {
          * getFinalBlock test
          */
         test('getFinalBlock', async () => {
-            const blockDetails = await thorClient.blocks.getFinalBlock();
+            const blockDetails = await thorestClient.blocks.getFinalBlock();
             expect(blockDetails).toBeDefined();
         });
     });

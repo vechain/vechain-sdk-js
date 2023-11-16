@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { TEST_ACCOUNTS, thorSoloClient } from '../../../fixture';
+import { TEST_ACCOUNTS, thorestSoloClient } from '../../../fixture';
 import {
     dataUtils,
     Transaction,
@@ -9,13 +9,13 @@ import {
 import { sendTransactionErrors } from './fixture';
 
 /**
- * ThorClient class tests.
+ * ThorestClient class tests.
  *
  * @NOTE: This test suite run on solo network because it requires to send transactions.
  *
  * @group integration/clients/thorest-client/transactions
  */
-describe('ThorClient - Transactions', () => {
+describe('ThorestClient - Transactions', () => {
     /**
      * sendTransaction tests
      */
@@ -28,7 +28,8 @@ describe('ThorClient - Transactions', () => {
                 // 1- Init transaction
 
                 // Get latest block
-                const latestBlock = await thorSoloClient.blocks.getBestBlock();
+                const latestBlock =
+                    await thorestSoloClient.blocks.getBestBlock();
 
                 // Get gas @NOTE it is approximation. This part must be improved.
                 const gas =
@@ -94,7 +95,7 @@ describe('ThorClient - Transactions', () => {
                 // 2 - Send transaction
                 for (const raw of [rawNormalSigned, rawDelegatedSigned]) {
                     const send =
-                        await thorSoloClient.transactions.sendTransaction(
+                        await thorestSoloClient.transactions.sendTransaction(
                             `0x${raw.toString('hex')}`
                         );
                     expect(send).toBeDefined();
@@ -103,11 +104,11 @@ describe('ThorClient - Transactions', () => {
 
                     // 3 - Get transaction AND transaction receipt
                     const transaction =
-                        await thorSoloClient.transactions.getTransaction(
+                        await thorestSoloClient.transactions.getTransaction(
                             send.id
                         );
                     const transactionReceipt =
-                        await thorSoloClient.transactions.getTransactionReceipt(
+                        await thorestSoloClient.transactions.getTransactionReceipt(
                             send.id
                         );
 
@@ -123,7 +124,7 @@ describe('ThorClient - Transactions', () => {
         sendTransactionErrors.errors.forEach((testCase) => {
             test(testCase.testName, async () => {
                 await expect(
-                    thorSoloClient.transactions.sendTransaction(
+                    thorestSoloClient.transactions.sendTransaction(
                         testCase.transaction.raw
                     )
                 ).rejects.toThrow(testCase.expected);

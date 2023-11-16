@@ -1,11 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
 import { thorSoloClient } from '../../../fixture';
-import { HttpClient, ThorClient } from '../../../../src';
+import { HttpClient } from '../../../../src';
 import { HTTPClientError } from '@vechainfoundation/vechain-sdk-errors';
+import { ThorClient } from '../../../../src/clients/thor-client';
 
 /**
  * Node integration tests
- * @group integration/node
+ * @group integration/clients/thor-client/nodes
  */
 describe('Integration tests to check the Node health check for different scenarios', () => {
     test('valid URL but inaccessible VeChain node', async () => {
