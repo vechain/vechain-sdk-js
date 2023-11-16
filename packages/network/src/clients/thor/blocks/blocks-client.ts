@@ -1,6 +1,6 @@
 import { DATA, buildError } from '@vechainfoundation/vechain-sdk-errors';
 import { revisionUtils, buildQuery, thorest } from '../../../utils';
-import { type HttpClient } from '../../http';
+import { type HttpClient } from '../../../utils/http';
 import { type BlockDetail } from './types';
 
 /**

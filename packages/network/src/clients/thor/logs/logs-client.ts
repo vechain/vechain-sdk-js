@@ -1,4 +1,4 @@
-import { type HttpClient } from '../../http';
+import { type HttpClient } from '../../../utils/http';
 import {
     type FilterEventLogsArg,
     type EventLogs,

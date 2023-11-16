@@ -1,2 +1,2 @@
-export * from './http';
+export * from '../utils/http';
 export * from './thor';

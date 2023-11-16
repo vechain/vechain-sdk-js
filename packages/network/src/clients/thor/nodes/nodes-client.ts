@@ -1,4 +1,4 @@
-import { type HttpClient } from '../../http';
+import { type HttpClient } from '../../../utils/http';
 import { type BlockDetail, BlocksClient } from '../blocks';
 import { buildError, DATA } from '@vechainfoundation/vechain-sdk-errors';
 import { NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS } from '../../../utils';

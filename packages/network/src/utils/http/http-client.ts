@@ -2,7 +2,7 @@ import Axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
 import { Agent as HttpAgent } from 'http';
 import { Agent as HttpsAgent } from 'https';
 import { type HttpParams, type HttpClientOptions } from './types';
-import { convertError, DEFAULT_HTTP_TIMEOUT } from '../../utils';
+import { convertError, DEFAULT_HTTP_TIMEOUT } from '../index';
 import { buildError, HTTP_CLIENT } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
