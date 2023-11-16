@@ -138,6 +138,75 @@ const validBlockRevisions = [
             isFinalized: true,
             transactions: []
         }
+    },
+    {
+        revision:
+            '0x01038ee9f989843a7beb3897232f4fd9ac0bc4897545b9c3151f82ece45c9628',
+        expanded: true,
+        expected: {
+            number: 17010409,
+            id: '0x01038ee9f989843a7beb3897232f4fd9ac0bc4897545b9c3151f82ece45c9628',
+            size: 494,
+            parentID:
+                '0x01038ee8daf9f3094b55fda706f17ba74845eaa57fb5247d2a9997c374906509',
+            timestamp: 1700135460,
+            gasLimit: 30000000,
+            beneficiary: '0xb4094c25f86d628fdd571afc4077f0d0196afb48',
+            gasUsed: 21000,
+            totalScore: 132697198,
+            txsRoot:
+                '0x21f1dc5a129d3ce558a1cbd6abd9b6baabd024e1deba7c6b285ade1b71762a9f',
+            txsFeatures: 1,
+            stateRoot:
+                '0xd5793ff22938f2d875ae4c33b6d95356450397225bfc69e97b5f1b8f26eedb0f',
+            receiptsRoot:
+                '0xc49772fc8a4013db440de4014b4492dec2516f8ae878d69c6e4a1fd8e8018c75',
+            com: true,
+            signer: '0xab7b27fc9e7d29f9f2e5bd361747a5515d0cc2d1',
+            isTrunk: true,
+            isFinalized: true,
+            transactions: [
+                {
+                    id: '0x42720d768659aabff05c456acdd4e1f5c5672740a3728fbc0681117e4868167f',
+                    chainTag: 39,
+                    blockRef: '0x01038ee704383133',
+                    expiration: 2000,
+                    clauses: [
+                        {
+                            to: '0x9840acbcd7417ceee8117da585a3c3f6642c8a52',
+                            value: '0xde0b6b3a7640000',
+                            data: '0x'
+                        }
+                    ],
+                    gasPriceCoef: 0,
+                    gas: 21000,
+                    origin: '0x6b8d66568cbc7944798268aca153f426596d250a',
+                    delegator: null,
+                    nonce: '0x4ec144ad97b4b079',
+                    dependsOn: null,
+                    size: 130,
+                    gasUsed: 21000,
+                    gasPayer: '0x6b8d66568cbc7944798268aca153f426596d250a',
+                    paid: '0x2ea11e32ad50000',
+                    reward: '0xdfd22a8cd98000',
+                    reverted: false,
+                    outputs: [
+                        {
+                            contractAddress: null,
+                            events: [],
+                            transfers: [
+                                {
+                                    sender: '0x6b8d66568cbc7944798268aca153f426596d250a',
+                                    recipient:
+                                        '0x9840acbcd7417ceee8117da585a3c3f6642c8a52',
+                                    amount: '0xde0b6b3a7640000'
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
     }
 ];
 

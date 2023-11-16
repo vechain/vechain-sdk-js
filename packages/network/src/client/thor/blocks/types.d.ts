@@ -45,7 +45,7 @@ interface BlockDetail {
     signer: string;
 
     // Array of transaction IDs or hashes in the block.
-    transactions: string[];
+    transactions: TransactionsExpandedBlockDetail[];
 
     // Indicates if the block contains a community fund (com).
     com?: boolean;
@@ -57,4 +57,93 @@ interface BlockDetail {
     isTrunk: boolean;
 }
 
-export type { BlockDetail };
+/**
+ * Clauses represent the individual conditions or terms in a blockchain transaction.
+ */
+type Clauses = Array<{
+    to: string;
+    value: string;
+    data: string;
+}>;
+
+/**
+ * Outputs represent the results or consequences of a blockchain transaction.
+ */
+type Outputs = Array<{
+    contractAddress: string | null;
+    events: [
+        {
+            address: string;
+            topics: string[];
+            data: string;
+        }
+    ];
+    transfers: [
+        {
+            sender: string;
+            recipient: string;
+            amount: string;
+        }
+    ];
+}>;
+
+/**
+ * TransactionsExpandedBlockDetail is an interface representing detailed information about transactions in a blockchain block.
+ */
+interface TransactionsExpandedBlockDetail {
+    // Unique identifier for the transaction.
+    id: string;
+
+    // Chain tag of the blockchain.
+    chainTag: string;
+
+    // Reference to the block.
+    blockRef: string;
+
+    // Expiration timestamp of the transaction.
+    expiration: number;
+
+    // Clauses represent the individual conditions or terms in a blockchain transaction.
+    clauses: Clauses;
+
+    // Gas price coefficient for the transaction.
+    gasPriceCoef: number;
+
+    // Gas limit for the transaction.
+    gas: number;
+
+    // Origin (sender) of the transaction.
+    origin: string;
+
+    // Delegator associated with the transaction.
+    delegator: string;
+
+    // Nonce value for preventing replay attacks.
+    nonce: string;
+
+    // Transaction dependency.
+    dependsOn: string;
+
+    // Size of the transaction in bytes.
+    size: number;
+
+    // Gas used by the transaction.
+    gasUsed: number;
+
+    // Account paying for the gas.
+    gasPayer: string;
+
+    // Amount paid for the transaction.
+    paid: string;
+
+    // Reward associated with the transaction.
+    reward: string;
+
+    // Indicates if the transaction is reverted.
+    reverted: boolean;
+
+    // Outputs represent the results or consequences of a blockchain transaction.
+    outputs: Outputs;
+}
+
+export type { BlockDetail, TransactionsExpandedBlockDetail };
