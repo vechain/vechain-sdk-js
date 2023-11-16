@@ -14,7 +14,7 @@ import { testAccount, thorClient } from '../../../fixture';
 /**
  * ThorClient class tests
  *
- * @group integration/client/thor/accounts
+ * @group integration/clients/thorest-client/accounts
  */
 describe('ThorClient - Accounts', () => {
     /**

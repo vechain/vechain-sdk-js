@@ -13,7 +13,7 @@ import { sendTransactionErrors } from './fixture';
  *
  * @NOTE: This test suite run on solo network because it requires to send transactions.
  *
- * @group integration/client/thor/transactions
+ * @group integration/clients/thorest-client/transactions
  */
 describe('ThorClient - Transactions', () => {
     /**

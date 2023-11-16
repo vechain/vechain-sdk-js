@@ -7,7 +7,7 @@ import { transactionDetails, transactionReceipts } from './fixture';
  *
  * @NOTE: This test suite run on testnet network because it contains read only tests.
  *
- * @group integration/client/thor/transactions
+ * @group integration/clients/thorest-client/transactions
  */
 describe('ThorClient - Transactions', () => {
     /**

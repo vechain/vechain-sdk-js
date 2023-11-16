@@ -10,7 +10,7 @@ import {
 /**
  * ThorClient class tests
  *
- * @group integration/client/thor/logs
+ * @group integration/clients/thorest-client/logs
  */
 describe('ThorClient - Logs', () => {
     /**

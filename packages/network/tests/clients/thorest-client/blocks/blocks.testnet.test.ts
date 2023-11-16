@@ -5,7 +5,7 @@ import { thorClient } from '../../../fixture';
 /**
  * ThorClient - BlockClient class tests
  *
- * @group integration/client/thor/blocks
+ * @group integration/clients/thorest-client/blocks
  */
 describe('ThorClient - Blocks', () => {
     /**

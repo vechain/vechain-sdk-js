@@ -10,7 +10,7 @@ const TIMEOUT = 20000;
 /**
  * ThorClient - AccountClient class tests
  *
- * @group integration/client/thor/accounts
+ * @group integration/clients/thorest-client/accounts
  */
 describe('ThorClient - Accounts', () => {
     /**
