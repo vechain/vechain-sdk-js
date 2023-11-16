@@ -1,8 +1,8 @@
 import { type HttpClient } from '../../../utils/http';
 import {
-    type FilterEventLogsArg,
+    type FilterEventLogsOptions,
     type EventLogs,
-    type FilterTransferLogsArg,
+    type FilterTransferLogsOptions,
     type TransferLogs
 } from './types';
 import { thorest } from '../../../utils';
@@ -21,16 +21,18 @@ class LogsClient {
     /**
      * Filters event logs based on the provided criteria.
      *
-     * @param arg - An object specifying filtering criteria for event logs.
+     * @param filterOptions - An object specifying filtering criteria for event logs.
      * @returns A promise that resolves to filtered event logs.
      */
-    public async filterEventLogs(arg: FilterEventLogsArg): Promise<EventLogs> {
+    public async filterEventLogs(
+        filterOptions: FilterEventLogsOptions
+    ): Promise<EventLogs> {
         return (await this.httpClient.http(
             'POST',
             thorest.logs.post.EVENT_LOGS(),
             {
                 query: {},
-                body: arg,
+                body: filterOptions,
                 headers: {}
             }
         )) as EventLogs;
@@ -39,18 +41,18 @@ class LogsClient {
     /**
      * Filters transfer logs based on the provided criteria.
      *
-     * @param arg - An object specifying filtering criteria for transfer logs.
+     * @param filterOptions - An object specifying filtering criteria for transfer logs.
      * @returns A promise that resolves to filtered transfer logs.
      */
     public async filterTransferLogs(
-        arg: FilterTransferLogsArg
+        filterOptions: FilterTransferLogsOptions
     ): Promise<TransferLogs> {
         return (await this.httpClient.http(
             'POST',
             thorest.logs.post.TRANSFER_LOGS(),
             {
                 query: {},
-                body: arg,
+                body: filterOptions,
                 headers: {}
             }
         )) as TransferLogs;

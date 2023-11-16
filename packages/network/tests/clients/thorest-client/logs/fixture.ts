@@ -1,9 +1,9 @@
 import {
-    type FilterEventLogsArg,
-    type FilterTransferLogsArg
+    type FilterEventLogsOptions,
+    type FilterTransferLogsOptions
 } from '../../../../src';
 
-const argFilterEventLogs: FilterEventLogsArg = {
+const argFilterEventLogs: FilterEventLogsOptions = {
     range: {
         unit: 'block',
         from: 0,
@@ -23,7 +23,7 @@ const argFilterEventLogs: FilterEventLogsArg = {
     order: 'asc'
 };
 
-const argFilterTransferLogs: FilterTransferLogsArg = {
+const argFilterTransferLogs: FilterTransferLogsOptions = {
     range: {
         unit: 'block',
         from: 0,
