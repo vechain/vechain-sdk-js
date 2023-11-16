@@ -1,3 +1,21 @@
+// ********* INPUTS OPTIONS *********
+
+/**
+ * Input options for:
+ * * getAccount
+ * * getBytecode
+ * * getStorage
+ * Methods
+ *
+ * @public
+ */
+interface AccountInputOptions {
+    /**
+     * (Optional) The block number or ID to reference the bytecode version.
+     */
+    revision?: string;
+}
+
 /**
  * The account details represent the balance, energy & whether the account is a smart contract.
  */
@@ -34,4 +52,9 @@ interface ResponseStorage {
     value: string;
 }
 
-export type { AccountDetail, ResponseBytecode, ResponseStorage };
+export type {
+    AccountInputOptions,
+    AccountDetail,
+    ResponseBytecode,
+    ResponseStorage
+};

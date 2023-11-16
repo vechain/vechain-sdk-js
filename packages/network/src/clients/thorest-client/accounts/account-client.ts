@@ -4,7 +4,8 @@ import { type HttpClient } from '../../../utils/http';
 import {
     type ResponseBytecode,
     type AccountDetail,
-    type ResponseStorage
+    type ResponseStorage,
+    type AccountInputOptions
 } from './types';
 import { dataUtils, addressUtils } from '@vechainfoundation/vechain-sdk-core';
 
@@ -24,19 +25,16 @@ class AccountClient {
      * Retrieves account details such as balance of VET, VTHO, and if the address is a smart contract.
      *
      * @param address - The account address to query details for.
-     * @param revision - (Optional) The block number or ID to reference the state of the account.
+     * @param options - (Optional) Other optional parameters for the request.
      * @returns A promise that resolves to an object containing the account details (balance, energy, hasCode).
      *
      * @throws {InvalidDataTypeError} - Will throw an error if the revision is not a valid block number or ID
      *         or if the address is not a valid address.
      */
-    public async getAccount({
-        address,
-        revision
-    }: {
-        address: string;
-        revision?: string;
-    }): Promise<AccountDetail> {
+    public async getAccount(
+        address: string,
+        options?: AccountInputOptions
+    ): Promise<AccountDetail> {
         if (!addressUtils.isAddress(address)) {
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
@@ -44,7 +42,10 @@ class AccountClient {
             );
         }
 
-        if (revision != null && !revisionUtils.isRevisionAccount(revision)) {
+        if (
+            options?.revision != null &&
+            !revisionUtils.isRevisionAccount(options.revision)
+        ) {
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
                 'Invalid revision. The revision must be a string representing a block number or block id.'
@@ -55,7 +56,7 @@ class AccountClient {
             'GET',
             thorest.accounts.get.ACCOUNT_DETAIL(address),
             {
-                query: buildQuery({ revision })
+                query: buildQuery({ revision: options?.revision })
             }
         )) as AccountDetail;
     }
@@ -64,19 +65,16 @@ class AccountClient {
      * Fetches the bytecode of a contract at a given address.
      *
      * @param address - The contract address to get the bytecode for.
-     * @param revision - (Optional) The block number or ID to reference the bytecode version.
+     * @param options - (Optional) Other optional parameters for the request.
      * @returns A promise that resolves to the contract bytecode as a string.
      *
      * @throws {InvalidDataTypeError} - Will throw an error if the revision is not a valid block number or ID
      *         or if the address is not a valid address.
      */
-    public async getBytecode({
-        address,
-        revision
-    }: {
-        address: string;
-        revision?: string;
-    }): Promise<string> {
+    public async getBytecode(
+        address: string,
+        options?: AccountInputOptions
+    ): Promise<string> {
         if (!addressUtils.isAddress(address)) {
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
@@ -84,7 +82,10 @@ class AccountClient {
             );
         }
 
-        if (revision != null && !revisionUtils.isRevisionAccount(revision))
+        if (
+            options?.revision != null &&
+            !revisionUtils.isRevisionAccount(options?.revision)
+        )
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
                 'Invalid revision. The revision must be a string representing a block number or block id.'
@@ -94,7 +95,7 @@ class AccountClient {
             'GET',
             thorest.accounts.get.ACCOUNT_BYTECODE(address),
             {
-                query: buildQuery({ revision })
+                query: buildQuery({ revision: options?.revision })
             }
         )) as ResponseBytecode;
 
@@ -106,21 +107,17 @@ class AccountClient {
      *
      * @param address - The contract address to query storage from.
      * @param position - The position in the storage to retrieve the value from. Must be a 32 bytes hex string (66 characters including `0x` prefix).
-     * @param revision - (Optional) The block number or ID to reference the storage state.
+     * @param options - (Optional) Other optional parameters for the request.
      * @returns A promise that resolves to the storage value in hex string format.
      *
      * @throws {InvalidDataTypeError} - Will throw an error if the revision is not a valid block number or ID
      *         or if the position is not a 32 bytes hex string or if the address is not a valid address.
      */
-    public async getStorageAt({
-        address,
-        position,
-        revision
-    }: {
-        address: string;
-        position: string;
-        revision?: string;
-    }): Promise<string> {
+    public async getStorageAt(
+        address: string,
+        position: string,
+        options?: AccountInputOptions
+    ): Promise<string> {
         if (!addressUtils.isAddress(address)) {
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
@@ -128,7 +125,10 @@ class AccountClient {
             );
         }
 
-        if (revision != null && !revisionUtils.isRevisionAccount(revision))
+        if (
+            options?.revision != null &&
+            !revisionUtils.isRevisionAccount(options?.revision)
+        )
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
                 'Invalid `revision`. The revision must be a string representing a block number or block id.'
@@ -145,7 +145,7 @@ class AccountClient {
             'GET',
             thorest.accounts.get.STORAGE_AT(address, position),
             {
-                query: buildQuery({ position, revision })
+                query: buildQuery({ position, revision: options?.revision })
             }
         )) as ResponseStorage;
 
