@@ -27,9 +27,11 @@ describe('ThorClient - Transactions', () => {
                     const transaction =
                         await thorClient.transactions.getTransaction(
                             testCase.transaction.id,
-                            testCase.transaction.raw,
-                            blockNumber?.id,
-                            testCase.transaction.pending
+                            {
+                                raw: testCase.transaction.raw,
+                                head: blockNumber?.id,
+                                pending: testCase.transaction.pending
+                            }
                         );
                     expect(transaction).toEqual(testCase.expected);
                 }
@@ -44,8 +46,10 @@ describe('ThorClient - Transactions', () => {
                 await expect(
                     thorClient.transactions.getTransaction(
                         testCase.transaction.id,
-                        testCase.transaction.raw,
-                        testCase.transaction.head
+                        {
+                            raw: testCase.transaction.raw,
+                            head: testCase.transaction.head
+                        }
                     )
                 ).rejects.toThrow(testCase.expected);
             });
@@ -69,7 +73,7 @@ describe('ThorClient - Transactions', () => {
                     const transaction =
                         await thorClient.transactions.getTransactionReceipt(
                             testCase.transaction.id,
-                            blockNumber?.id
+                            { head: blockNumber?.id }
                         );
                     expect(transaction).toEqual(testCase.expected);
                 }
@@ -84,7 +88,7 @@ describe('ThorClient - Transactions', () => {
                 await expect(
                     thorClient.transactions.getTransactionReceipt(
                         testCase.transaction.id,
-                        testCase.transaction.head
+                        { head: testCase.transaction.head }
                     )
                 ).rejects.toThrow(testCase.expected);
             });

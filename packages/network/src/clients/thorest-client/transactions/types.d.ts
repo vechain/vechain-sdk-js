@@ -1,5 +1,44 @@
 import { type TransactionBody } from '@vechainfoundation/vechain-sdk-core/src';
 
+/* --- Input options start --- */
+
+/**
+ * Input options for:
+ * * getTransactionReceipt
+ * Methods
+ *
+ * @public
+ */
+interface GetTransactionReceiptInputOptions {
+    /**
+     * (Optional) The block number or ID to reference the transaction.
+     */
+    head?: string;
+}
+
+/**
+ * Input options for:
+ * * getTransaction
+ * Methods
+ *
+ * @public
+ */
+type GetTransactionInputOptions = GetTransactionReceiptInputOptions & {
+    /**
+     * (Optional) If true, returns the raw transaction data instead of the parsed transaction object.
+     */
+    raw?: boolean;
+
+    /**
+     * (Optional) If true, returns the pending transaction details instead of the final transaction details.
+     */
+    pending?: boolean;
+};
+
+/* --- Input options end --- */
+
+/* --- Responses Outputs start --- */
+
 /**
  * Transaction Metadata interface.
  *
@@ -112,7 +151,11 @@ interface TransactionSendResult {
     id: string;
 }
 
+/* --- Responses Outputs end --- */
+
 export {
+    type GetTransactionInputOptions,
+    type GetTransactionReceiptInputOptions,
     type TransactionReceipt,
     type TransactionDetail,
     type TransactionCallSimulation,

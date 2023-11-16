@@ -5,6 +5,8 @@ import {
     TransactionHandler
 } from '@vechainfoundation/vechain-sdk-core';
 import {
+    type GetTransactionInputOptions,
+    type GetTransactionReceiptInputOptions,
     type TransactionDetail,
     type TransactionReceipt,
     type TransactionSendResult
@@ -22,16 +24,12 @@ class TransactionClient {
      * Retrieves the details of a transaction.
      *
      * @param id - Transaction ID of the transaction to retrieve.
-     * @param raw - (Optional) If true, returns the raw transaction data instead of the parsed transaction object.
-     * @param head - (Optional) The block number or ID to reference the transaction.
-     * @param pending - (Optional) If true, returns the pending transaction details instead of the final transaction details.
+     * @param options - (Optional) Other optional parameters for the request.
      * @returns A promise that resolves to the details of the transaction.
      */
     public async getTransaction(
         id: string,
-        raw?: boolean,
-        head?: string,
-        pending?: boolean
+        options?: GetTransactionInputOptions
     ): Promise<TransactionDetail | null> {
         // Invalid transaction ID
         if (!dataUtils.isThorId(id, true))
@@ -42,18 +40,25 @@ class TransactionClient {
             );
 
         // Invalid head
-        if (head !== undefined && !dataUtils.isThorId(head, true))
+        if (
+            options?.head !== undefined &&
+            !dataUtils.isThorId(options?.head, true)
+        )
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
                 'Invalid head given as input. Input must be an hex string of length 64.',
-                { head }
+                { head: options?.head }
             );
 
         return (await this.httpClient.http(
             'GET',
             thorest.transactions.get.TRANSACTION(id),
             {
-                query: buildQuery({ raw, head, pending })
+                query: buildQuery({
+                    raw: options?.raw,
+                    head: options?.head,
+                    options: options?.pending
+                })
             }
         )) as TransactionDetail | null;
     }
@@ -62,12 +67,12 @@ class TransactionClient {
      * Retrieves the receipt of a transaction.
      *
      * @param id - Transaction ID of the transaction to retrieve.
-     * @param head - (Optional) The block number or ID to reference the transaction.
+     * @param options - (Optional) Other optional parameters for the request.
      * @returns A promise that resolves to the receipt of the transaction.
      */
     public async getTransactionReceipt(
         id: string,
-        head?: string
+        options?: GetTransactionReceiptInputOptions
     ): Promise<TransactionReceipt | null> {
         // Invalid transaction ID
         if (!dataUtils.isThorId(id, true))
@@ -78,18 +83,21 @@ class TransactionClient {
             );
 
         // Invalid head
-        if (head !== undefined && !dataUtils.isThorId(head, true))
+        if (
+            options?.head !== undefined &&
+            !dataUtils.isThorId(options?.head, true)
+        )
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
                 'Invalid head given as input. Input must be an hex string of length 64.',
-                { head }
+                { head: options?.head }
             );
 
         return (await this.httpClient.http(
             'GET',
             thorest.transactions.get.TRANSACTION_RECEIPT(id),
             {
-                query: buildQuery({ head })
+                query: buildQuery({ head: options?.head })
             }
         )) as TransactionReceipt | null;
     }
