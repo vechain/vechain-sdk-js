@@ -1,6 +1,8 @@
-import { type HttpClient } from '../../../utils';
+import {
+    type HttpClient,
+    NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS
+} from '../../../utils';
 import { buildError, DATA } from '@vechainfoundation/vechain-sdk-errors';
-import { NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS } from '../../../utils';
 import { type BlockDetail, BlocksClient } from '../../thorest-client';
 
 /**
