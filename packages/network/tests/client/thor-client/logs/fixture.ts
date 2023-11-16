@@ -1,7 +1,7 @@
 import {
     type FilterEventLogsArg,
     type FilterTransferLogsArg
-} from '../../../../src/client/thor/logs';
+} from '../../../../src';
 
 const argFilterEventLogs: FilterEventLogsArg = {
     range: {
