@@ -1,7 +1,7 @@
 import { DATA, buildError } from '@vechainfoundation/vechain-sdk-errors';
 import { revisionUtils, buildQuery, thorest } from '../../../utils';
 import { type HttpClient } from '../../../utils/http';
-import { type BlockDetail } from './types';
+import { type BlockDetail, type BlockInputOptions } from './types';
 
 /**
  * The `BlockClient` class provides methods to interact with block-related endpoints
@@ -18,16 +18,13 @@ class BlocksClient {
      * Retrieves details of a specific block identified by its revision (block number or ID).
      *
      * @param revision - The block number or ID to query details for.
-     * @param expanded - Whether the returned block is expanded.
+     * @param options - (Optional) Other optional parameters for the request.
      * @returns A promise that resolves to an object containing the block details.
      */
-    public async getBlock({
-        revision,
-        expanded
-    }: {
-        revision: string | number;
-        expanded?: boolean;
-    }): Promise<BlockDetail | null> {
+    public async getBlock(
+        revision: string | number,
+        options?: BlockInputOptions
+    ): Promise<BlockDetail | null> {
         if (revision != null && !revisionUtils.isRevisionBlock(revision)) {
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
@@ -40,7 +37,7 @@ class BlocksClient {
             'GET',
             thorest.blocks.get.BLOCK_DETAIL(revision),
             {
-                query: buildQuery({ expanded })
+                query: buildQuery({ expanded: options?.expanded })
             }
         )) as BlockDetail | null;
     }
@@ -51,7 +48,7 @@ class BlocksClient {
      * @returns A promise that resolves to an object containing the block details.
      */
     public async getBestBlock(): Promise<BlockDetail | null> {
-        return await this.getBlock({ revision: 'best' });
+        return await this.getBlock('best');
     }
 
     /**
@@ -60,7 +57,7 @@ class BlocksClient {
      * @returns A promise that resolves to an object containing the block details.
      */
     public async getFinalBlock(): Promise<BlockDetail | null> {
-        return await this.getBlock({ revision: 'finalized' });
+        return await this.getBlock('finalized');
     }
 }
 

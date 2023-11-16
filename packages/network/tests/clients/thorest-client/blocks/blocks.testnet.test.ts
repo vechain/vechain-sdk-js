@@ -17,10 +17,12 @@ describe('ThorClient - Blocks', () => {
          */
         validBlockRevisions.forEach(({ revision, expanded, expected }) => {
             test(revision, async () => {
-                const blockDetails = await thorClient.blocks.getBlock({
+                const blockDetails = await thorClient.blocks.getBlock(
                     revision,
-                    expanded
-                });
+                    {
+                        expanded
+                    }
+                );
                 expect(blockDetails).toEqual(expected);
             });
         });
@@ -32,7 +34,7 @@ describe('ThorClient - Blocks', () => {
             ({ description, revision, expectedError }) => {
                 test(description, async () => {
                     await expect(
-                        thorClient.blocks.getBlock({ revision })
+                        thorClient.blocks.getBlock(revision)
                     ).rejects.toThrowError(expectedError);
                 });
             }

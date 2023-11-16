@@ -1,3 +1,25 @@
+/* --- Input options start --- */
+
+/**
+ * Input options for:
+ * * getAccount
+ * * getBytecode
+ * * getStorage
+ * Methods
+ *
+ * @public
+ */
+interface BlockInputOptions {
+    /**
+     * (Optional) Whether the returned block is expanded.
+     */
+    expanded?: boolean;
+}
+
+/* --- Input options end --- */
+
+/* --- Responses Outputs start --- */
+
 /**
  * BlockDetail is an interface representing detailed information about a blockchain block.
  */
@@ -57,4 +79,6 @@ interface BlockDetail {
     isTrunk: boolean;
 }
 
-export type { BlockDetail };
+/* --- Responses Outputs end --- */
+
+export { type BlockInputOptions, type BlockDetail };
