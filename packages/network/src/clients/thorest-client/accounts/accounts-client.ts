@@ -1,6 +1,10 @@
 import { DATA, buildError } from '@vechainfoundation/vechain-sdk-errors';
-import { revisionUtils, buildQuery, thorest } from '../../../utils';
-import { type HttpClient } from '../../../utils/http';
+import {
+    type HttpClient,
+    revisionUtils,
+    buildQuery,
+    thorest
+} from '../../../utils';
 import {
     type ResponseBytecode,
     type AccountDetail,
@@ -14,7 +18,7 @@ import { dataUtils, addressUtils } from '@vechainfoundation/vechain-sdk-core';
  * of the VechainThor blockchain. It allows fetching details, bytecode, and storage data
  * for a specific blockchain account.
  */
-class AccountClient {
+class AccountsClient {
     /**
      * Initializes a new instance of the `AccountClient` class.
      * @param httpClient - The HTTP client instance used for making HTTP requests.
@@ -153,4 +157,4 @@ class AccountClient {
     }
 }
 
-export { AccountClient };
+export { AccountsClient };

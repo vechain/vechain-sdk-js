@@ -1,4 +1,4 @@
-import { type HttpClient } from '../../../utils/http';
+import { type HttpClient } from '../../../utils';
 import { buildQuery, thorest } from '../../../utils';
 import {
     dataUtils,
@@ -13,7 +13,7 @@ import {
 } from './types';
 import { buildError, DATA } from '@vechainfoundation/vechain-sdk-errors';
 
-class TransactionClient {
+class TransactionsClient {
     /**
      * Initializes a new instance of the `TransactionClient` class.
      * @param httpClient - The HTTP client instance used for making HTTP requests.
@@ -183,4 +183,4 @@ class TransactionClient {
     // }
 }
 
-export { TransactionClient };
+export { TransactionsClient };

@@ -1,2 +1,2 @@
 export * from './types.d';
-export * from './account-client';
+export * from './accounts-client';

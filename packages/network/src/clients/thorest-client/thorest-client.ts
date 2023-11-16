@@ -1,8 +1,8 @@
 import { type HttpClient } from '../../utils';
-import { AccountClient } from './accounts';
+import { AccountsClient } from './accounts';
 import { BlocksClient } from './blocks';
 import { LogsClient } from './logs';
-import { TransactionClient } from './transactions';
+import { TransactionsClient } from './transactions';
 import { NodesClient } from './nodes';
 
 /**
@@ -14,7 +14,7 @@ class ThorestClient {
     /**
      * The `AccountClient` instance used for interacting with account-related endpoints.
      */
-    public readonly accounts: AccountClient;
+    public readonly accounts: AccountsClient;
 
     /**
      * The `BlockClient` instance used for interacting with block-related endpoints.
@@ -29,7 +29,7 @@ class ThorestClient {
     /**
      * The `TransactionClient` instance used for interacting with transaction-related endpoints.
      */
-    public readonly transactions: TransactionClient;
+    public readonly transactions: TransactionsClient;
 
     /**
      * The `NodeClient` instance used for interacting with node-related endpoints.
@@ -41,11 +41,11 @@ class ThorestClient {
      * @param httpClient - The HTTP client instance used for making network requests.
      */
     constructor(protected readonly httpClient: HttpClient) {
-        this.accounts = new AccountClient(httpClient);
+        this.accounts = new AccountsClient(httpClient);
         this.blocks = new BlocksClient(httpClient);
         this.logs = new LogsClient(httpClient);
         this.nodes = new NodesClient(httpClient);
-        this.transactions = new TransactionClient(httpClient);
+        this.transactions = new TransactionsClient(httpClient);
     }
 }
 
