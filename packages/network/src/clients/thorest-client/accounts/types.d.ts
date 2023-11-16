@@ -1,4 +1,4 @@
-// ********* INPUTS OPTIONS *********
+/* --- Input options start --- */
 
 /**
  * Input options for:
@@ -15,6 +15,10 @@ interface AccountInputOptions {
      */
     revision?: string;
 }
+
+/* --- Input options end --- */
+
+/* --- Responses Outputs start --- */
 
 /**
  * The account details represent the balance, energy & whether the account is a smart contract.
@@ -51,6 +55,8 @@ interface ResponseBytecode {
 interface ResponseStorage {
     value: string;
 }
+
+/* --- Responses Outputs end --- */
 
 export type {
     AccountInputOptions,
