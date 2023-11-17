@@ -168,14 +168,18 @@ interface Transfer {
  *
  * @public
  */
-type EventLogs = Event & EventMetadata;
+interface EventLogs extends Event {
+    meta: WithMeta; // Event logs with associated metadata.
+}
 
 /**
  * TransferLogs interface, combining Transfer and WithMeta.
  *
  * @public
  */
-type TransferLogs = Transfer & EventMetadata;
+interface TransferLogs extends Transfer {
+    meta: WithMeta; // Transfer logs with associated metadata.
+}
 
 /* --- Responses Outputs end --- */
 
