@@ -4,8 +4,8 @@ import {
     type TransactionBodyOverride,
     buildCallContractTransaction,
     buildDeployContractTransaction
-} from '../../src/contract/contract';
-import { contract, networkInfo } from '../../src/core';
+} from '../../src';
+import { contract, networkInfo } from '../../src';
 
 /**
  * Unit tests for building contract transactions.
@@ -81,6 +81,43 @@ describe('Contract', () => {
         expect(transaction.body.gas).toBeGreaterThan(0);
         expect(transaction.body.gasPriceCoef).toEqual(0);
         expect(transaction.body.dependsOn).toEqual(null);
+    });
+
+    /**
+     * Test to ensure the creation of a transaction to deploy a contract with a custom transaction body where only some parameters are overridden.
+     */
+    test('Build a transaction to deploy a contract with a custom transaction body where only some params are overridden', () => {
+        // Compile the contract from a sample file
+        const compiledContract = compileContract(
+            'tests/contract/sample',
+            'Example.sol',
+            'Example'
+        );
+
+        // Create a custom transaction body overriding only some parameters
+        const transactionBody: TransactionBodyOverride = {
+            nonce: 4,
+            chainTag: networkInfo.solo.chainTag,
+            gasPriceCoef: 0
+        };
+
+        // Build a transaction to deploy the compiled contract with the custom transaction body
+        const transaction = buildDeployContractTransaction(
+            compiledContract.bytecode,
+            transactionBody
+        );
+
+        // Ensure the transaction body and properties match the custom values
+        expect(transaction.body.clauses[0].data).toEqual(
+            compiledContract.bytecode
+        );
+        expect(transaction.body.blockRef).toEqual('0x00ffecb8ac3142c4');
+        expect(transaction.body.expiration).toEqual(32);
+        expect(transaction.body.nonce).toEqual(4);
+        expect(transaction.body.gas).toBeGreaterThan(0);
+        expect(transaction.body.gasPriceCoef).toEqual(0);
+        expect(transaction.body.dependsOn).toEqual(null);
+        expect(transaction.body.chainTag).toEqual(networkInfo.solo.chainTag);
     });
 
     /**
