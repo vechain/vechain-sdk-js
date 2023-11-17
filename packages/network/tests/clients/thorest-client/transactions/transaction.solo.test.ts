@@ -6,7 +6,8 @@ import {
     TransactionHandler,
     TransactionUtils
 } from '@vechainfoundation/vechain-sdk-core';
-import { sendTransactionErrors } from './fixture';
+import { sendTransactionErrors, simulateTransaction } from './fixture';
+import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * ThorestClient class tests.
@@ -129,6 +130,136 @@ describe('ThorestClient - Transactions', () => {
                     )
                 ).rejects.toThrow(testCase.expected);
             });
+        });
+    });
+
+    /**
+     * Test suite for transaction simulations
+     */
+    describe('simulateTransaction', () => {
+        /**
+         * Simulate transfer transactions
+         */
+        simulateTransaction.correct.transfer.forEach(
+            ({ testName, transaction, expected }) => {
+                test(testName, async () => {
+                    const simulatedTx =
+                        await thorestSoloClient.transactions.simulateTransaction(
+                            transaction.clauses,
+                            {
+                                ...transaction.simulateTransactionOptions
+                            }
+                        );
+
+                    expect(simulatedTx).toBeDefined();
+                    /**
+                     * The result of the simulation tx is an array of simulation results.
+                     * Each result represents the simulation of transaction clause.
+                     */
+                    expect(simulatedTx).toHaveLength(
+                        transaction.clauses.length
+                    );
+
+                    /**
+                     * Compare each simulation result with the expected result.
+                     */
+                    for (let i = 0; i < simulatedTx.length; i++) {
+                        expect(JSON.stringify(simulatedTx[i])).toStrictEqual(
+                            JSON.stringify(expected.simulationResults[i])
+                        );
+                    }
+                });
+            }
+        );
+
+        /**
+         * Simulate smart contract call transactions
+         */
+        simulateTransaction.correct.smartContractCall.forEach(
+            ({ testName, transaction, expected }) => {
+                test(testName, async () => {
+                    const simulatedTx =
+                        await thorestSoloClient.transactions.simulateTransaction(
+                            transaction.clauses,
+                            {
+                                ...transaction.simulateTransactionOptions
+                            }
+                        );
+
+                    expect(simulatedTx).toBeDefined();
+
+                    expect(simulatedTx).toHaveLength(1);
+
+                    expect(JSON.stringify(simulatedTx[0])).toStrictEqual(
+                        JSON.stringify(expected.simulationResults[0])
+                    );
+                });
+            }
+        );
+
+        /**
+         * Simulate smart contract deploy transactions
+         */
+        simulateTransaction.correct.deployContract.forEach(
+            ({ testName, transaction, expected }) => {
+                test(testName, async () => {
+                    const simulatedTx =
+                        await thorestSoloClient.transactions.simulateTransaction(
+                            transaction.clauses
+                        );
+
+                    expect(simulatedTx).toBeDefined();
+
+                    expect(simulatedTx).toHaveLength(1);
+
+                    expect(JSON.stringify(simulatedTx[0])).toStrictEqual(
+                        JSON.stringify(expected.simulationResults[0])
+                    );
+                });
+            }
+        );
+
+        /**
+         * Simulate transactions where an error is expected
+         */
+        simulateTransaction.errors.forEach(
+            ({ testName, transaction, vmError }) => {
+                test(testName, async () => {
+                    const simulatedTx =
+                        await thorestSoloClient.transactions.simulateTransaction(
+                            transaction.clauses,
+                            {
+                                ...transaction.simulateTransactionOptions
+                            }
+                        );
+
+                    expect(simulatedTx).toBeDefined();
+                    expect(simulatedTx).toHaveLength(1);
+                    expect(simulatedTx[0].vmError).toStrictEqual(vmError);
+                    expect(simulatedTx[0].reverted).toBe(true);
+                    expect(simulatedTx[0].transfers).toHaveLength(0);
+                    expect(simulatedTx[0].events).toHaveLength(0);
+                    expect(simulatedTx[0].data).toStrictEqual('0x');
+                });
+            }
+        );
+
+        /**
+         * Simulate transaction with invalid revision
+         */
+        test('simulateTransaction with invalid revision', async () => {
+            await expect(
+                thorestSoloClient.transactions.simulateTransaction(
+                    [
+                        {
+                            to: '0x',
+                            data: '0x',
+                            value: '0x0'
+                        }
+                    ],
+                    { revision: 'invalid-revision' }
+                )
+            ).rejects.toThrow(InvalidDataTypeError);
         });
     });
 });

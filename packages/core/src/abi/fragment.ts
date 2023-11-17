@@ -72,10 +72,12 @@ class Function<ABIType> {
         try {
             this.fragment = ethers.FunctionFragment.from(source);
             this.iface = new ethers.Interface([this.fragment]);
-        } catch {
+        } catch (e) {
             throw buildError(
                 ABI.INVALID_FUNCTION,
-                'Invalid Function format. Cannot create Function fragment.'
+                'Invalid Function format. Cannot create Function fragment.',
+                { source },
+                e
             );
         }
     }
@@ -109,10 +111,12 @@ class Function<ABIType> {
     public decodeInput(data: BytesLike): Result {
         try {
             return this.iface.decodeFunctionData(this.fragment, data);
-        } catch {
+        } catch (e) {
             throw buildError(
                 ABI.INVALID_DATA_TO_DECODE,
-                'Cannot decode. Data should be a valid hex string that encodes a valid ABI type.'
+                'Cannot decode. Data should be a valid hex string that encodes a valid ABI type.',
+                { data },
+                e
             );
         }
     }
@@ -127,10 +131,12 @@ class Function<ABIType> {
     public encodeInput<TValue>(dataToEncode?: TValue[]): string {
         try {
             return this.iface.encodeFunctionData(this.fragment, dataToEncode);
-        } catch {
+        } catch (e) {
             throw buildError(
                 ABI.INVALID_DATA_TO_ENCODE,
-                'Cannot encode. Incorrect Function format.'
+                'Cannot encode. Incorrect Function format.',
+                { dataToEncode },
+                e
             );
         }
     }

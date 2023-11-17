@@ -1,14 +1,22 @@
-import { type HttpClient, buildQuery, thorest } from '../../../utils';
+import {
+    type HttpClient,
+    buildQuery,
+    thorest,
+    revisionUtils
+} from '../../../utils';
 import {
     dataUtils,
     TransactionHandler
 } from '@vechainfoundation/vechain-sdk-core';
 import {
+    type SimulateTransactionClause,
     type GetTransactionInputOptions,
     type GetTransactionReceiptInputOptions,
     type TransactionDetail,
     type TransactionReceipt,
-    type TransactionSendResult
+    type TransactionSendResult,
+    type SimulateTransactionOptions,
+    type TransactionSimulationResult
 } from './types';
 import { buildError, DATA } from '@vechainfoundation/vechain-sdk-errors';
 
@@ -137,49 +145,55 @@ class TransactionsClient {
     }
 
     /**
-     * Simulates a transaction call and returns the result.
+     * Simulates the execution of a transaction.
+     * Allows to estimate the gas cost of a transaction without sending it, as well as to retrieve the return value(s) of the transaction.
      *
-     * @param revision - The block number or ID to reference the state of the account.
-     * @param clauses - The clauses to simulate.
-     * @param gas - The gas limit for the transaction.
-     * @param gasPrice - The gas price for the transaction.
-     * @param caller - The caller address.
-     * @param provedWork - The proved work.
-     * @param gasPayer - The gas payer address.
-     * @param expiration - The expiration of transaction.
-     * @param blockRef - The block reference.
-     * @returns A promise that resolves to the result of the simulated transaction.
+     * @param clauses - The clauses of the transaction to simulate.
+     * @param simulateTransactionOptions - (Optional) The options for simulating the transaction.
      *
-     * @NOTE: Define better parameters and gas estimation
+     * @returns A promise that resolves to an array of simulation results.
+     *          Each element of the array represents the result of simulating a clause.
      */
-    // public async simulateTransactionCall(
-    //     revision: string,
-    //     clauses: TransactionClause[],
-    //     gas: string | number,
-    //     gasPrice: string | number,
-    //     caller: string,
-    //     provedWork: string | number,
-    //     gasPayer: string,
-    //     expiration: number,
-    //     blockRef: string
-    // ): Promise<TransactionCallSimulation> {
-    //     return (await this.httpClient.http(
-    //         'POST',
-    //         thorest.accounts.post.ACCOUNT(revision),
-    //         {
-    //             body: {
-    //                 clauses,
-    //                 gas,
-    //                 gasPrice,
-    //                 caller,
-    //                 provedWork,
-    //                 gasPayer,
-    //                 expiration,
-    //                 blockRef
-    //             }
-    //         }
-    //     )) as TransactionCallSimulation;
-    // }
+    public async simulateTransaction(
+        clauses: SimulateTransactionClause[],
+        options?: SimulateTransactionOptions
+    ): Promise<TransactionSimulationResult[]> {
+        const {
+            revision,
+            caller,
+            gasPrice,
+            gasPayer,
+            gas,
+            blockRef,
+            expiration,
+            provedWork
+        } = options ?? {};
+
+        if (revision != null && !revisionUtils.isRevisionAccount(revision))
+            throw buildError(
+                DATA.INVALID_DATA_TYPE,
+                'Invalid revision given as input. Input must be a valid revision (i.e., a block number or block ID).',
+                { revision }
+            );
+
+        return (await this.httpClient.http(
+            'POST',
+            thorest.accounts.post.SIMULATE_TRANSACTION(revision),
+            {
+                query: buildQuery({ revision }),
+                body: {
+                    clauses,
+                    gas,
+                    gasPrice,
+                    caller,
+                    provedWork,
+                    gasPayer,
+                    expiration,
+                    blockRef
+                }
+            }
+        )) as TransactionSimulationResult[];
+    }
 }
 
 export { TransactionsClient };

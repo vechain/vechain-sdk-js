@@ -1,10 +1,6 @@
 import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
 import { testAccount } from '../../../fixture';
-
-/**
- * VTHO contract address
- */
-const VTHO_CONTRACT_ADDRESS = '0x0000000000000000000000000000456e65726779';
+import { BUILT_IN_CONTRACTS } from '../../../built-in-fixture';
 
 /**
  * Bytecode of the VTHO deployed contract
@@ -55,19 +51,19 @@ const getAccountWithRevisionTestCases = [
 const getBytecodeTestCases = [
     {
         description: 'get bytecode of VTHO contract without revision',
-        address: VTHO_CONTRACT_ADDRESS,
+        address: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
         revision: undefined,
         expected: VTHO_CONTRACT_BYTECODE
     },
     {
         description: 'get bytecode of VTHO contract with block number revision',
-        address: VTHO_CONTRACT_ADDRESS,
+        address: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
         revision: '16000000',
         expected: VTHO_CONTRACT_BYTECODE
     },
     {
         description: 'get bytecode of VTHO contract with block id revision',
-        address: VTHO_CONTRACT_ADDRESS,
+        address: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
         revision:
             '0x00e4e1c0fbb78a30a5ae9549f8f5a0cf4ac4aab589803f2487b74261fffcbdf5',
         expected: VTHO_CONTRACT_BYTECODE
