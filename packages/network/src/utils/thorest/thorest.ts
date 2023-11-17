@@ -5,7 +5,7 @@
  */
 const thorest = {
     /**
-     * Account related endpoints.
+     * Accounts related endpoints.
      */
     accounts: {
         get: {
@@ -23,7 +23,7 @@ const thorest = {
     },
 
     /**
-     * Block related endpoints.
+     * Blocks related endpoints.
      */
     blocks: {
         get: {
@@ -33,7 +33,26 @@ const thorest = {
     },
 
     /**
-     * Transaction related endpoints.
+     * Nodes related endpoints.
+     */
+    nodes: {
+        get: {
+            NODES: (): string => '/node/network/peers'
+        }
+    },
+
+    /**
+     * Logs related endpoints.
+     */
+    logs: {
+        post: {
+            EVENT_LOGS: (): string => '/logs/event',
+            TRANSFER_LOGS: (): string => '/logs/transfer'
+        }
+    },
+
+    /**
+     * Transactions related endpoints.
      */
     transactions: {
         get: {
