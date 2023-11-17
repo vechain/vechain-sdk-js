@@ -122,7 +122,7 @@ interface TransferCriteria {
 /**
  * Event interface representing event data.
  *
- * @private
+ * @public
  */
 interface Event {
     /**
@@ -144,7 +144,7 @@ interface Event {
 /**
  * Transfer interface representing transfer data.
  *
- * @private
+ * @public
  */
 interface Transfer {
     /**
@@ -181,7 +181,9 @@ type TransferLogs = Transfer & EventMetadata;
 
 export type {
     FilterEventLogsOptions,
+    Event,
     EventLogs,
     FilterTransferLogsOptions,
+    Transfer,
     TransferLogs
 };

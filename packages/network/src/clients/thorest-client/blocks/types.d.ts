@@ -1,5 +1,7 @@
 /* --- Input options start --- */
 
+import { type Event, type Transfer } from '../logs';
+
 /**
  * Input options for:
  * * getAccount
@@ -93,20 +95,8 @@ type Clauses = Array<{
  */
 type Outputs = Array<{
     contractAddress: string | null;
-    events: [
-        {
-            address: string;
-            topics: string[];
-            data: string;
-        }
-    ];
-    transfers: [
-        {
-            sender: string;
-            recipient: string;
-            amount: string;
-        }
-    ];
+    events: Event;
+    transfers: Transfer;
 }>;
 
 /**
