@@ -95,8 +95,8 @@ type Clauses = Array<{
  */
 type Outputs = Array<{
     contractAddress: string | null;
-    events: Event;
-    transfers: Transfer;
+    events: Event[];
+    transfers: Transfer[];
 }>;
 
 /**
