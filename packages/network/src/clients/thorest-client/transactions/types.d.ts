@@ -67,10 +67,6 @@ interface SimulateTransactionOptions {
      */
     revision?: string;
     /**
-     * The address performing the transaction simulation
-     */
-    caller?: string;
-    /**
      * The offered gas for the transaction simulation
      */
     gas?: number;
