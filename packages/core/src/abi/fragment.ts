@@ -6,7 +6,11 @@ import {
     type FormatType,
     type BytesLike
 } from './types';
-import { ABI, buildError } from '@vechainfoundation/vechain-sdk-errors';
+import {
+    ABI,
+    buildError,
+    assertInput
+} from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Allowed formats for the signature.
@@ -25,13 +29,15 @@ const allowedSignatureFormats = ['sighash', 'minimal', 'full', 'json'];
  * @returns The signature.
  */
 function getSignature(fragment: Fragment, formatType: FormatType): string {
-    if (!allowedSignatureFormats.includes(formatType))
-        throw buildError(
-            ABI.INVALID_FORMAT_TYPE,
-            `Invalid format type. Allowed formats are: ${allowedSignatureFormats.join(
-                ', '
-            )}`
-        );
+    // If the formatType is not included in the allowed formats, throw an error.
+    assertInput(
+        allowedSignatureFormats.includes(formatType),
+        ABI.INVALID_FORMAT_TYPE,
+        `Invalid format type. Allowed formats are: ${allowedSignatureFormats.join(
+            ', '
+        )}`,
+        { formatType }
+    );
 
     return fragment.format(formatType);
 }

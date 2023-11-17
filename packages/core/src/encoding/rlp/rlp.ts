@@ -9,7 +9,7 @@ import {
 import { RLP } from '.';
 import {
     RLP as RLPError,
-    buildError
+    assertInput
 } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
@@ -95,11 +95,13 @@ const _packData = (
         );
     }
 
-    if (!Array.isArray(obj))
-        throw buildError(RLPError.INVALID_RLP, 'expected array', { context });
+    // Valid RLP array
+    assertInput(Array.isArray(obj), RLPError.INVALID_RLP, 'expected array', {
+        context
+    });
 
     // ArrayKind: recursively pack each array item based on the shared item profile.
-    if ('item' in kind) {
+    if ('item' in kind && Array.isArray(obj)) {
         const item = kind.item;
         return obj.map((part, i) =>
             _packData(
@@ -134,10 +136,12 @@ const _unpackData = (
 
     // ScalarKind: Direct decoding using the provided method.
     if (kind instanceof RLP.ScalarKind) {
-        if (!Buffer.isBuffer(packed) && !(packed instanceof Uint8Array))
-            throw buildError(RLPError.INVALID_RLP, 'expected buffer', {
-                context
-            });
+        assertInput(
+            !(!Buffer.isBuffer(packed) && !(packed instanceof Uint8Array)),
+            RLPError.INVALID_RLP,
+            'expected buffer',
+            { context }
+        );
 
         if (packed instanceof Uint8Array) packed = Buffer.from(packed);
 
@@ -148,12 +152,12 @@ const _unpackData = (
     if (Array.isArray(kind) && Array.isArray(packed)) {
         const parts = packed;
 
-        if (parts.length !== kind.length)
-            throw buildError(
-                RLPError.INVALID_RLP,
-                `expected ${kind.length} items, but got ${parts.length}`,
-                { context }
-            );
+        assertInput(
+            parts.length === kind.length,
+            RLPError.INVALID_RLP,
+            `expected ${kind.length} items, but got ${parts.length}`,
+            { context }
+        );
 
         return kind.reduce(
             (obj: RLPValidObject, profile: RLPProfile, index: number) => {
@@ -165,11 +169,12 @@ const _unpackData = (
         );
     }
 
-    if (!Array.isArray(packed))
-        throw buildError(RLPError.INVALID_RLP, 'expected array', { context });
+    assertInput(Array.isArray(packed), RLPError.INVALID_RLP, 'expected array', {
+        context
+    });
 
     // ArrayKind: Recursively unpack each array item based on the shared item profile.
-    if ('item' in kind) {
+    if ('item' in kind && Array.isArray(packed)) {
         const item = kind.item;
 
         return packed.map((part, index) =>
