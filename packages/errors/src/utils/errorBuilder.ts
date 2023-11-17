@@ -5,9 +5,10 @@ import { ErrorClassMap } from '../types';
 /**
  * Build error object according to the error code provided.
  * The error code determines the error type returned and the data type to be provided.
- * @param code
- * @param message
- * @param data
+ * @param code - The error code from the error types enum.
+ * @param message - The error message.
+ * @param data - The error data.
+ * @param innerError - The inner error.
  * @returns the error object.
  */
 function buildError<
