@@ -139,6 +139,8 @@ const encodeBytes32String = (
  *
  * @param value - The bytes32 hex string to decode.
  * @returns The decoded string.
+ *
+ * @throws If the value cannot be decoded to string. (e.g. if the value is not a valid hex string or it is not 64 characters long)
  */
 const decodeBytes32String = (value: string): string => {
     if (!isHexString(value) || removePrefix(value).length !== 64) {
