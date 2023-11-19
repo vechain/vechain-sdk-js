@@ -165,6 +165,9 @@ const isNumericTestCases = [
     }
 ];
 
+/**
+ * Test cases for encodeBytes32String function.
+ */
 const encodeBytes32StringTestCases = [
     {
         value: 'Hello',
@@ -211,6 +214,9 @@ const encodeBytes32StringTestCases = [
     }
 ];
 
+/**
+ * Test cases for invalid encodeBytes32String function.
+ */
 const invalidEncodeBytes32StringTestCases = [
     {
         value: 'Too-many-characters-Too-many-characters-Too-many-characters-Too-many-characters-Too-many-characters-Too-many-characters-Too-many-characters',
@@ -219,6 +225,9 @@ const invalidEncodeBytes32StringTestCases = [
     }
 ];
 
+/**
+ * Test cases for decodeBytes32String function.
+ */
 const decodeBytes32StringTestCases = [
     {
         value: '0x00000000000000000000000000000000000000000000000000000048656c6c6f',
@@ -238,6 +247,9 @@ const decodeBytes32StringTestCases = [
     }
 ];
 
+/**
+ * Test cases for invalid decodeBytes32String function.
+ */
 const invalidDecodeBytes32StringTestCases = [
     {
         value: 'non-hex-string',
