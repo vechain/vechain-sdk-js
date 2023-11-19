@@ -119,7 +119,13 @@ describe('utils/hex', () => {
         });
     });
 
+    /**
+     * Encode bytes32 string
+     */
     describe('encodeBytes32String', () => {
+        /**
+         * Test cases for encodeBytes32String function.
+         */
         encodeBytes32StringTestCases.forEach(({ value, padLeft, expected }) => {
             test(`should return ${expected} for ${JSON.stringify(
                 value
@@ -130,6 +136,9 @@ describe('utils/hex', () => {
             });
         });
 
+        /**
+         * Test cases for invalid encodeBytes32String function.
+         */
         invalidEncodeBytes32StringTestCases.forEach(
             ({ value, padLeft, expectedError }) => {
                 test(`should throw for ${JSON.stringify(value)}`, () => {
@@ -141,7 +150,13 @@ describe('utils/hex', () => {
         );
     });
 
+    /**
+     * Decode bytes32 string
+     */
     describe('decodeBytes32String', () => {
+        /**
+         * Test cases for decodeBytes32String function.
+         */
         decodeBytes32StringTestCases.forEach(({ value, expected }) => {
             test(`should return ${expected} for ${JSON.stringify(
                 value
@@ -150,6 +165,9 @@ describe('utils/hex', () => {
             });
         });
 
+        /**
+         * Test cases for invalid decodeBytes32String function.
+         */
         invalidDecodeBytes32StringTestCases.forEach(
             ({ value, expectedError }) => {
                 test(`should throw for ${JSON.stringify(value)}`, () => {
