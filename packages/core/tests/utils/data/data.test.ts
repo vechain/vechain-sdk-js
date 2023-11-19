@@ -1,6 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
 import { dataUtils } from '../../../src';
 import {
+    decodeBytes32StringTestCases,
+    encodeBytes32StringTestCases,
+    invalidDecodeBytes32StringTestCases,
+    invalidEncodeBytes32StringTestCases,
     invalidHexStrings,
     invalidThorIDs,
     isNumericTestCases,
@@ -113,5 +117,47 @@ describe('utils/hex', () => {
                 expect(dataUtils.isNumeric(value)).toBe(expected);
             });
         });
+    });
+
+    describe('encodeBytes32String', () => {
+        encodeBytes32StringTestCases.forEach(({ value, padLeft, expected }) => {
+            test(`should return ${expected} for ${JSON.stringify(
+                value
+            )}`, () => {
+                expect(dataUtils.encodeBytes32String(value, padLeft)).toBe(
+                    expected
+                );
+            });
+        });
+
+        invalidEncodeBytes32StringTestCases.forEach(
+            ({ value, padLeft, expectedError }) => {
+                test(`should throw for ${JSON.stringify(value)}`, () => {
+                    expect(() =>
+                        dataUtils.encodeBytes32String(value, padLeft)
+                    ).toThrowError(expectedError);
+                });
+            }
+        );
+    });
+
+    describe('decodeBytes32String', () => {
+        decodeBytes32StringTestCases.forEach(({ value, expected }) => {
+            test(`should return ${expected} for ${JSON.stringify(
+                value
+            )}`, () => {
+                expect(dataUtils.decodeBytes32String(value)).toBe(expected);
+            });
+        });
+
+        invalidDecodeBytes32StringTestCases.forEach(
+            ({ value, expectedError }) => {
+                test(`should throw for ${JSON.stringify(value)}`, () => {
+                    expect(() =>
+                        dataUtils.decodeBytes32String(value)
+                    ).toThrowError(expectedError);
+                });
+            }
+        );
     });
 });
