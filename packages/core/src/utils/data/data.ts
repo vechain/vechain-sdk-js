@@ -7,7 +7,11 @@ import {
     THOR_ID_LENGTH
 } from '../const';
 import { type HexConfig } from './types';
-import { DATA, buildError } from '@vechainfoundation/vechain-sdk-errors';
+import {
+    DATA,
+    buildError,
+    assert
+} from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Convert data to a hexadecimal string representation.
@@ -143,12 +147,12 @@ const encodeBytes32String = (
  * @throws If the value cannot be decoded to string. (e.g. if the value is not a valid hex string or it is not 64 characters long)
  */
 const decodeBytes32String = (value: string): string => {
-    if (!isHexString(value) || removePrefix(value).length !== 64) {
-        throw buildError(
-            DATA.INVALID_DATA_TYPE,
-            `Failed to decode value ${value} to string. Value is not a valid hex string or it is not 64 characters long`
-        );
-    }
+    assert(
+        isHexString(value) && removePrefix(value).length === 64,
+        DATA.INVALID_DATA_TYPE,
+        `Failed to decode value ${value} to string. Value is not a valid hex string or it is not 64 characters long`,
+        { value }
+    );
 
     const valueInBytes = Buffer.from(removePrefix(value), 'hex');
 
