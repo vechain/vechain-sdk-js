@@ -68,7 +68,7 @@ function buildTransactionBody(
     const body = {
         nonce: '0x' + dataUtils.toHexString(randomBytes(8)),
         chainTag: networkInfo.mainnet.chainTag,
-        blockRef: '0x00ffecb8ac3142c4', // must implement a method to get the block ref
+        blockRef: '0x00ffecb8ac3142c4', // in the online part, replace with the result of a method that interacts with the blockchain
         expiration: 32, // tx will expire after block #N + 32
         clauses,
         gasPriceCoef: 128,
