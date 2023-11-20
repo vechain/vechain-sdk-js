@@ -2,5 +2,5 @@
 . "$(dirname -- "$0")/_/husky.sh"
 
 yarn build
-yarn lint && git add docs
-yarn test:unit
+yarn lint
+yarn test:unit && git add docs
