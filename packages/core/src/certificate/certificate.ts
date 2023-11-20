@@ -59,7 +59,7 @@ function verify(cert: Certificate): void {
 
     // Signature does not match with the signer's public key
     assertInput(
-        !(addressUtils.fromPublicKey(pubKey) !== cert.signer),
+        addressUtils.fromPublicKey(pubKey) === cert.signer,
         CERTIFICATE.CERTIFICATE_INVALID_SIGNER,
         "Signature does not match with the signer's public key.",
         { pubKey, cert }
