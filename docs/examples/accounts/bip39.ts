@@ -10,7 +10,7 @@ const privateKey = mnemonic.derivePrivateKey(rndMnemonic);
 console.log(privateKey.toString('hex'));
 // ...SOME PRIVATE KEY...
 
-// In recovery process, validation is recommended
+// In recovery process, validation is recommendeddd
 const ok = mnemonic.validate(rndMnemonic);
 expect(ok).toBeTruthy();
 // true
