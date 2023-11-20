@@ -6,7 +6,11 @@ import { secp256k1 } from '../secp256k1';
 import { ethers } from 'ethers';
 import { SCRYPT_PARAMS } from '../utils';
 import { type Keystore, type KeystoreAccount } from './types';
-import { buildError, KEYSTORE } from '@vechainfoundation/vechain-sdk-errors';
+import {
+    assertInput,
+    buildError,
+    KEYSTORE
+} from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Encrypts a given private key into a keystore format using the specified password.
@@ -61,8 +65,12 @@ async function decrypt(
     password: string
 ): Promise<KeystoreAccount> {
     // Invalid keystore
-    if (!isValid(keystore))
-        throw buildError(KEYSTORE.INVALID_KEYSTORE, 'Invalid keystore');
+    assertInput(
+        isValid(keystore),
+        KEYSTORE.INVALID_KEYSTORE,
+        'Invalid keystore',
+        { keystore }
+    );
 
     try {
         return (await ethers.decryptKeystoreJson(
