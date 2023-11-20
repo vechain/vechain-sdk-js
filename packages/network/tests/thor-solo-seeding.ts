@@ -34,7 +34,7 @@ const CLAUSES_VTHO = ALL_ACCOUNTS.slice(0, 10).map((account) => ({
  */
 const CLAUSES_VET = ALL_ACCOUNTS.slice(0, 10).map((account) => ({
     to: account.address,
-    value: Number(unitsUtils.parseVET('500000000')),
+    value: `0x${unitsUtils.parseVET('500000000').toString(16)}`,
     data: '0x'
 }));
 
