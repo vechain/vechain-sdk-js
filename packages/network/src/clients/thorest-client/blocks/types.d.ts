@@ -50,7 +50,12 @@ interface BlockDetail {
     // Total gas used by transactions in the block.
     gasUsed: number;
 
-    // Total score associated with the block.
+    /**
+     * Represents the Accumulated Witness Number (AWN) of the block.
+     * It is used when selecting the trunk block in the VeChainThor consensus algorithm.
+     *
+     * @link see [VechainThor Trunk](https://docs.vechain.org/introduction-to-vechain/about-the-vechain-blockchain/consensus-deep-dive#meta-transaction-features-3)
+     */
     totalScore: number;
 
     // Root hash of the transactions in the block.
@@ -77,27 +82,51 @@ interface BlockDetail {
     // Indicates if the block is finalized (optional).
     isFinalized?: boolean;
 
-    // Indicates if the block is part of the blockchain trunk.
+    /**
+     * Since there is no computational competition in PoA, the “longest chain” rule does not apply.
+     * Instead, we consider the better branch as the one witnessed by more AMs (Authority Masternodes).
+     *
+     * @link see [VechainThor Trunk](https://docs.vechain.org/introduction-to-vechain/about-the-vechain-blockchain/consensus-deep-dive#meta-transaction-features-3)
+     */
     isTrunk: boolean;
 }
 
 /**
- * Clauses represent the individual conditions or terms in a blockchain transaction.
+ * Clause represents the individual operation in a blockchain transaction.
  */
-type Clauses = Array<{
-    to: string;
+interface Clause {
+    /**
+     * Destination or contract address of the clause.
+     */
+    to: string | null;
+    /**
+     * Amount of VET transferred in the clause. Zero value if no VET is transferred and we are
+     * performing a smart contract transaction.
+     */
     value: string;
+    /**
+     * Data sent along with the clause. Zero value if no data is sent.
+     */
     data: string;
-}>;
+}
 
 /**
- * Outputs represent the results or consequences of a blockchain transaction.
+ * Output represent the result or consequence of a blockchain transaction.
  */
-type Outputs = Array<{
+interface Output {
+    /**
+     * address of the contract involved in the clause output.
+     */
     contractAddress: string | null;
+    /**
+     * Events emitted by executing the clause.
+     */
     events: Event[];
+    /**
+     * Transfers of VET or VIP180 tokens that occur from the clause.
+     */
     transfers: Transfer[];
-}>;
+}
 
 /**
  * TransactionsExpandedBlockDetail is an interface representing detailed information about transactions in a blockchain block.
@@ -116,7 +145,7 @@ interface TransactionsExpandedBlockDetail {
     expiration: number;
 
     // Clauses represent the individual conditions or terms in a blockchain transaction.
-    clauses: Clauses;
+    clauses: Clause[];
 
     // Gas price coefficient for the transaction.
     gasPriceCoef: number;
@@ -155,7 +184,7 @@ interface TransactionsExpandedBlockDetail {
     reverted: boolean;
 
     // Outputs represent the results or consequences of a blockchain transaction.
-    outputs: Outputs;
+    outputs: Output[];
 }
 
 /* --- Responses Outputs end --- */
@@ -163,5 +192,7 @@ interface TransactionsExpandedBlockDetail {
 export {
     type BlockInputOptions,
     type BlockDetail,
-    type TransactionsExpandedBlockDetail
+    type TransactionsExpandedBlockDetail,
+    type Clause,
+    type Output
 };
