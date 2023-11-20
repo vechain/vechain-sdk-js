@@ -72,7 +72,7 @@ function buildTransactionBody(
         expiration: 32, // tx will expire after block #N + 32
         clauses,
         gasPriceCoef: 128,
-        gas: 5000 + TransactionUtils.intrinsicGas(clauses) * 5,
+        gas: TransactionUtils.intrinsicGas(clauses),
         dependsOn: null,
         ...transactionBodyOverride
     };
