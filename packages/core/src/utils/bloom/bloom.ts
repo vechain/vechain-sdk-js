@@ -5,8 +5,8 @@ import { addressUtils } from '../../address';
 import { BLOOM_REGEX_LOWERCASE, BLOOM_REGEX_UPPERCASE } from '../const';
 import {
     ADDRESS,
+    assertInput,
     BLOOM,
-    buildError,
     DATA
 } from '@vechainfoundation/vechain-sdk-errors';
 
@@ -48,33 +48,34 @@ const isBloom = (bloom: string): boolean => {
  * - Will throw an error if `k` is not a positive integer.
  */
 const isInBloom = (bloom: HexString, k: number, data: HexString): boolean => {
-    if (!isBloom(bloom)) {
-        throw buildError(
-            BLOOM.INVALID_BLOOM,
-            'Invalid bloom filter format. Bloom filters must adhere to the format 0x[0-9a-fA-F]{16,}.'
-        );
-    }
+    assertInput(
+        isBloom(bloom),
+        BLOOM.INVALID_BLOOM,
+        'Invalid bloom filter format. Bloom filters must adhere to the format 0x[0-9a-fA-F]{16,}.',
+        { bloom }
+    );
 
-    if (!dataUtils.isHexString(data, false)) {
-        throw buildError(
-            DATA.INVALID_DATA_TYPE,
-            'Invalid data type. Data should be an hexadecimal string'
-        );
-    }
+    assertInput(
+        dataUtils.isHexString(data, false),
+        DATA.INVALID_DATA_TYPE,
+        'Invalid data type. Data should be an hexadecimal string',
+        { data }
+    );
 
-    if (!Number.isInteger(k) || k <= 0) {
-        throw buildError(
-            BLOOM.INVALID_K,
-            'Invalid k. It should be a positive integer.'
-        );
-    }
+    assertInput(
+        !(!Number.isInteger(k) || k <= 0),
+        BLOOM.INVALID_K,
+        'Invalid k. It should be a positive integer.',
+        { k }
+    );
 
-    if (typeof data !== 'string') {
-        throw buildError(
-            DATA.INVALID_DATA_TYPE,
-            'Invalid data type. Data should be a string'
-        );
-    }
+    // Ensure data is a string
+    assertInput(
+        typeof data === 'string',
+        DATA.INVALID_DATA_TYPE,
+        'Invalid data type. Data should be a string',
+        { data }
+    );
 
     // Ensure data is a Buffer
     const dataBuffer = Buffer.from(dataUtils.removePrefix(data), 'hex');
@@ -113,12 +114,12 @@ const isAddressInBloom = (
     k: number,
     addressToCheck: HexString
 ): boolean => {
-    if (!addressUtils.isAddress(addressToCheck)) {
-        throw buildError(
-            ADDRESS.INVALID_ADDRESS,
-            'Invalid address given as input in Bloom filter.'
-        );
-    }
+    assertInput(
+        addressUtils.isAddress(addressToCheck),
+        ADDRESS.INVALID_ADDRESS,
+        'Invalid address given as input in Bloom filter.',
+        { addressToCheck }
+    );
 
     return isInBloom(bloom, k, addressToCheck);
 };

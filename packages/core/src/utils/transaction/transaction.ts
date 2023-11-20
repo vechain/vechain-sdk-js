@@ -2,7 +2,7 @@ import { addressUtils } from '../../address';
 import { type TransactionClause } from '../../transaction';
 import { TRANSACTIONS_GAS_CONSTANTS } from '../const';
 import { dataUtils } from '../data';
-import { buildError, DATA } from '@vechainfoundation/vechain-sdk-errors';
+import { assertInput, DATA } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Calculates intrinsic gas that a tx costs with the given set of clauses.
@@ -26,12 +26,12 @@ function intrinsicGas(clauses: TransactionClause[]): number {
     return clauses.reduce((sum, clause: TransactionClause) => {
         if (clause.to !== null) {
             // Invalid address
-            if (!addressUtils.isAddress(clause.to)) {
-                throw buildError(
-                    DATA.INVALID_DATA_TYPE,
-                    'Invalid data type. Data should be an address.'
-                );
-            }
+            assertInput(
+                addressUtils.isAddress(clause.to),
+                DATA.INVALID_DATA_TYPE,
+                'Invalid data type. Data should be an address.',
+                { clause }
+            );
 
             sum += TRANSACTIONS_GAS_CONSTANTS.CLAUSE_GAS;
         } else {
@@ -51,12 +51,12 @@ function intrinsicGas(clauses: TransactionClause[]): number {
  */
 function _calculateDataUsedGas(data: string): number {
     // Invalid data
-    if (data !== '' && !dataUtils.isHexString(data)) {
-        throw buildError(
-            DATA.INVALID_DATA_TYPE,
-            'Invalid data type. Data should be an hexadecimal string.'
-        );
-    }
+    assertInput(
+        !(data !== '' && !dataUtils.isHexString(data)),
+        DATA.INVALID_DATA_TYPE,
+        'Invalid data type. Data should be an hexadecimal string.',
+        { data }
+    );
 
     let sum = 0;
     for (let i = 2; i < data.length; i += 2) {

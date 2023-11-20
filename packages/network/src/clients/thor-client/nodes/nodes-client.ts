@@ -2,7 +2,7 @@ import {
     type HttpClient,
     NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS
 } from '../../../utils';
-import { buildError, DATA } from '@vechainfoundation/vechain-sdk-errors';
+import { assertInput, DATA } from '@vechainfoundation/vechain-sdk-errors';
 import { type BlockDetail, BlocksClient } from '../../thorest-client';
 
 /**
@@ -77,21 +77,20 @@ class NodesClient {
     private readonly getTimestampFromBlock = (
         response: BlockDetail | null
     ): number => {
-        if (
-            response === null ||
-            response === undefined ||
-            typeof response !== 'object' ||
-            !('timestamp' in response) ||
-            typeof response.timestamp !== 'number'
-        ) {
-            throw buildError(
-                DATA.INVALID_DATA_TYPE,
-                'Invalid block format returned from node. The block must be an object with a timestamp key present of type number',
-                { response }
-            );
-        }
+        assertInput(
+            !(
+                response === null ||
+                response === undefined ||
+                typeof response !== 'object' ||
+                !('timestamp' in response) ||
+                typeof response.timestamp !== 'number'
+            ),
+            DATA.INVALID_DATA_TYPE,
+            'Invalid block format returned from node. The block must be an object with a timestamp key present of type number',
+            { response }
+        );
 
-        return response.timestamp;
+        return response?.timestamp as number;
     };
 }
 

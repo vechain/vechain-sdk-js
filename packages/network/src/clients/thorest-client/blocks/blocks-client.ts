@@ -1,6 +1,10 @@
-import { DATA, buildError } from '@vechainfoundation/vechain-sdk-errors';
-import { revisionUtils, buildQuery, thorest } from '../../../utils';
-import { type HttpClient } from '../../../utils/http';
+import { DATA, assertInput } from '@vechainfoundation/vechain-sdk-errors';
+import {
+    revisionUtils,
+    buildQuery,
+    thorest,
+    type HttpClient
+} from '../../../utils';
 import { type BlockDetail, type BlockInputOptions } from './types';
 
 /**
@@ -25,13 +29,12 @@ class BlocksClient {
         revision: string | number,
         options?: BlockInputOptions
     ): Promise<BlockDetail | null> {
-        if (revision != null && !revisionUtils.isRevisionBlock(revision)) {
-            throw buildError(
-                DATA.INVALID_DATA_TYPE,
-                'Invalid revision. The revision must be a string representing a block number or block id.',
-                { revision }
-            );
-        }
+        assertInput(
+            !(revision != null && !revisionUtils.isRevisionBlock(revision)),
+            DATA.INVALID_DATA_TYPE,
+            'Invalid revision. The revision must be a string representing a block number or block id.',
+            { revision }
+        );
 
         return (await this.httpClient.http(
             'GET',
