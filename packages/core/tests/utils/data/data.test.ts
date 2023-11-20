@@ -126,24 +126,26 @@ describe('utils/hex', () => {
         /**
          * Test cases for encodeBytes32String function.
          */
-        encodeBytes32StringTestCases.forEach(({ value, padLeft, expected }) => {
-            test(`should return ${expected} for ${JSON.stringify(
-                value
-            )}`, () => {
-                expect(dataUtils.encodeBytes32String(value, padLeft)).toBe(
-                    expected
-                );
-            });
-        });
+        encodeBytes32StringTestCases.forEach(
+            ({ value, zeroPadding, expected }) => {
+                test(`should return ${expected} for ${JSON.stringify(
+                    value
+                )}`, () => {
+                    expect(
+                        dataUtils.encodeBytes32String(value, zeroPadding)
+                    ).toBe(expected);
+                });
+            }
+        );
 
         /**
          * Test cases for invalid encodeBytes32String function.
          */
         invalidEncodeBytes32StringTestCases.forEach(
-            ({ value, padLeft, expectedError }) => {
+            ({ value, zeroPadding, expectedError }) => {
                 test(`should throw for ${JSON.stringify(value)}`, () => {
                     expect(() =>
-                        dataUtils.encodeBytes32String(value, padLeft)
+                        dataUtils.encodeBytes32String(value, zeroPadding)
                     ).toThrowError(expectedError);
                 });
             }

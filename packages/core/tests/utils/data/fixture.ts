@@ -168,47 +168,51 @@ const isNumericTestCases = [
 /**
  * Test cases for encodeBytes32String function.
  */
-const encodeBytes32StringTestCases = [
+const encodeBytes32StringTestCases: Array<{
+    value: string;
+    zeroPadding?: 'left' | 'right';
+    expected: string;
+}> = [
     {
         value: 'Hello',
-        padLeft: true,
+        zeroPadding: 'left',
         expected:
             '0x00000000000000000000000000000000000000000000000000000048656c6c6f'
     },
     {
         value: 'Hello',
-        padLeft: false,
+        zeroPadding: 'right',
         expected:
             '0x48656c6c6f000000000000000000000000000000000000000000000000000000'
     },
     {
         value: "Hello World! I'm  with  32 bytes",
-        padLeft: true,
+        zeroPadding: 'left',
         expected:
             '0x48656c6c6f20576f726c64212049276d20207769746820203332206279746573'
     },
     {
         value: "Hello World! I'm  with  32 bytes",
-        padLeft: false,
+        zeroPadding: 'right',
         expected:
             '0x48656c6c6f20576f726c64212049276d20207769746820203332206279746573'
     },
     {
         value: 'base-gas-price',
-        padLeft: true,
+        zeroPadding: 'left',
         expected:
             '0x000000000000000000000000000000000000626173652d6761732d7072696365'
     },
 
     {
         value: 'base-gas-price',
-        padLeft: undefined,
+        zeroPadding: undefined,
         expected:
             '0x000000000000000000000000000000000000626173652d6761732d7072696365'
     },
     {
         value: 'base-gas-price',
-        padLeft: false,
+        zeroPadding: 'right',
         expected:
             '0x626173652d6761732d7072696365000000000000000000000000000000000000'
     }
@@ -217,10 +221,14 @@ const encodeBytes32StringTestCases = [
 /**
  * Test cases for invalid encodeBytes32String function.
  */
-const invalidEncodeBytes32StringTestCases = [
+const invalidEncodeBytes32StringTestCases: Array<{
+    value: string;
+    zeroPadding?: 'left' | 'right';
+    expectedError: typeof InvalidDataTypeError;
+}> = [
     {
         value: 'Too-many-characters-Too-many-characters-Too-many-characters-Too-many-characters-Too-many-characters-Too-many-characters-Too-many-characters',
-        padLeft: true,
+        zeroPadding: 'left',
         expectedError: InvalidDataTypeError // value exceeds 32 bytes
     }
 ];

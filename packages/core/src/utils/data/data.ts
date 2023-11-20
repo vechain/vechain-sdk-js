@@ -116,18 +116,18 @@ const isThorId = (data: string, checkPrefix: boolean = false): boolean => {
  */
 const encodeBytes32String = (
     value: string,
-    padLeft: boolean = true
+    zeroPadding: 'left' | 'right' = 'left'
 ): string => {
     try {
         const valueInBytes = ethers.toUtf8Bytes(value);
-        return padLeft
+        return zeroPadding === 'left'
             ? ethers.zeroPadValue(valueInBytes, 32) // calls internal `zeroPad` ethers method which pads zeros to the left
             : ethers.zeroPadBytes(valueInBytes, 32); // calls internal `zeroPad` ethers method which pads zeros to the right
     } catch (e) {
         throw buildError(
             DATA.INVALID_DATA_TYPE,
             `Failed to encode value ${value} to bytes32 string`,
-            { value, padLeft },
+            { value, zeroPadding },
             e
         );
     }
@@ -146,7 +146,8 @@ const decodeBytes32String = (value: string): string => {
     if (!isHexString(value) || removePrefix(value).length !== 64) {
         throw buildError(
             DATA.INVALID_DATA_TYPE,
-            `Failed to decode value ${value} to string. Value is not a valid hex string or it is not 64 characters long`
+            `Failed to decode value ${value} to string. Value is not a valid hex string or it is not 64 characters long`,
+            { value }
         );
     }
 
