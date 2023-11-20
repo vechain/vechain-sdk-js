@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { type ReturnType, type HashInput } from './types';
 import { isValidReturnType } from './helpers';
-import { buildError, DATA } from '@vechainfoundation/vechain-sdk-errors';
+import { assertInput, DATA } from '@vechainfoundation/vechain-sdk-errors';
 
 /* --- Overloaded functions start --- */
 
@@ -51,12 +51,12 @@ function keccak256(
     data: HashInput,
     returnType: ReturnType = 'buffer'
 ): Buffer | string {
-    if (!isValidReturnType(returnType)) {
-        throw buildError(
-            DATA.INVALID_DATA_RETURN_TYPE,
-            "Invalid return type. Return type should be either 'buffer' or 'hex'"
-        );
-    }
+    assertInput(
+        isValidReturnType(returnType),
+        DATA.INVALID_DATA_RETURN_TYPE,
+        "Invalid return type. Return type should be either 'buffer' or 'hex'",
+        { returnType }
+    );
 
     const hash = ethers.isBytesLike(data)
         ? ethers.keccak256(data)
