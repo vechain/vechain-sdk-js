@@ -55,7 +55,7 @@ const isInBloom = (bloom: string, k: number, data: string): boolean => {
     );
 
     assert(
-        !!dataUtils.isHexString(data, false),
+        dataUtils.isHexString(data, false),
         DATA.INVALID_DATA_TYPE,
         'Invalid data type. Data should be an hexadecimal string',
         { data }
