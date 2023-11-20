@@ -9,6 +9,11 @@ const VECHAIN_MAINNET_CHAIN_TAG = 0x4a;
 const VECHAIN_TESTNET_CHAIN_TAG = 0x27;
 
 /**
+ * Constants defining Vechain testnet chain tag. The chain tag is the last byte of the genesis block ID
+ */
+const VECHAIN_SOLO_CHAIN_TAG = 0xf6;
+
+/**
  * Constant representing the zero address in hexadecimal format
  */
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
@@ -108,7 +113,7 @@ const networkInfo = {
     },
     solo: {
         genesisBlock: soloGenesisBlock,
-        chainTag: VECHAIN_TESTNET_CHAIN_TAG,
+        chainTag: VECHAIN_SOLO_CHAIN_TAG,
         zeroAddress: ZERO_ADDRESS
     }
 };
