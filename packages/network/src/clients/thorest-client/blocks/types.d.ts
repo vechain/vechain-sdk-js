@@ -69,7 +69,7 @@ interface BlockDetail {
     signer: string;
 
     // Array of transaction IDs or hashes in the block.
-    transactions: TransactionsExpandedBlockDetail[];
+    transactions: string[] | TransactionsExpandedBlockDetail[];
 
     // Indicates if the block contains a community fund (com).
     com?: boolean;
