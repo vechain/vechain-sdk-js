@@ -1,4 +1,4 @@
-import { buildError, RLP } from '@vechainfoundation/vechain-sdk-errors';
+import { assertInput, RLP } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Asserts that the provided buffer is of a specific length and does not contain leading zeros.
@@ -13,19 +13,22 @@ const assertCompactFixedHexBlobBuffer = (
     context: string,
     bytes: number
 ): void => {
-    if (buffer.length > bytes) {
-        throw buildError(
-            RLP.INVALID_RLP,
-            `expected buffer to be at most ${bytes} bytes`,
-            { context }
-        );
-    }
+    assertInput(
+        buffer.length <= bytes,
+        RLP.INVALID_RLP,
+        `expected buffer to be at most ${bytes} bytes`,
+        { buffer, context }
+    );
 
-    if (buffer.length !== 0 && buffer[0] === 0) {
-        throw buildError(RLP.INVALID_RLP, 'expected no leading zero bytes', {
+    assertInput(
+        !(buffer.length !== 0 && buffer[0] === 0),
+        RLP.INVALID_RLP,
+        'expected no leading zero bytes',
+        {
+            buffer,
             context
-        });
-    }
+        }
+    );
 };
 
 /**

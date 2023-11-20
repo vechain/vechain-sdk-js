@@ -1,6 +1,6 @@
 import { ScalarKind } from './scalarkind.abstract';
 import { type BufferOutput, type DataOutput, type RLPInput } from '../types';
-import { buildError, RLP } from '@vechainfoundation/vechain-sdk-errors';
+import { assertInput, RLP } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Represents a scalar kind with Buffer functionality.
@@ -17,12 +17,13 @@ class BufferKind extends ScalarKind {
      */
     public data(data: RLPInput, context: string): DataOutput {
         // Ensure that the data is indeed a Buffer before encoding.
-        if (!Buffer.isBuffer(data)) {
-            throw buildError(RLP.INVALID_RLP, 'expected buffer', { context });
-        }
+        assertInput(Buffer.isBuffer(data), RLP.INVALID_RLP, 'expected buffer', {
+            data,
+            context
+        });
 
         return {
-            encode: () => data // Data is already a Buffer, so return as-is.
+            encode: () => data as Buffer // Data is already a Buffer, so return as-is.
         };
     }
 
@@ -36,9 +37,12 @@ class BufferKind extends ScalarKind {
      */
     public buffer(buffer: Buffer, context: string): BufferOutput {
         // Ensure that the provided parameter is indeed a Buffer before decoding.
-        if (!Buffer.isBuffer(buffer)) {
-            throw buildError(RLP.INVALID_RLP, 'expected buffer', { context });
-        }
+        assertInput(
+            Buffer.isBuffer(buffer),
+            RLP.INVALID_RLP,
+            'expected buffer',
+            { buffer, context }
+        );
 
         return {
             decode: () => buffer // Buffer is already in the correct format, so return as-is.
