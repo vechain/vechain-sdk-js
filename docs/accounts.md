@@ -25,7 +25,7 @@ const privateKey = mnemonic.derivePrivateKey(rndMnemonic);
 console.log(privateKey.toString('hex'));
 // ...SOME PRIVATE KEY...
 
-// In recovery process, validation is recommendeddd
+// In recovery process, validation is recommended
 const ok = mnemonic.validate(rndMnemonic);
 expect(ok).toBeTruthy();
 // true
@@ -45,7 +45,7 @@ console.log('Mnemonic words', rndMnemonic);
 // Create BIP32 HD node from mnemonic words
 const hdnode = HDNode.fromMnemonic(rndMnemonic);
 
-// Derive 5 child private keysss
+// Derive 5 child private keys
 for (let i = 0; i < 5; i++) {
     const child = hdnode.derive(i);
     console.log(`children ${i}`, child.address);
