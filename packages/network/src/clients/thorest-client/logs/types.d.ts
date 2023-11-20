@@ -99,7 +99,7 @@ interface FilterTransferLogsOptions {
  *
  * @private
  */
-interface EventMetadata {
+interface Metadata {
     blockID: string; // Block identifier associated with the entity.
     blockNumber: number; // Block number associated with the entity.
     blockTimestamp: number; // Timestamp of the block.
@@ -169,7 +169,7 @@ interface Transfer {
  * @public
  */
 interface EventLogs extends Event {
-    meta: WithMeta; // Event logs with associated metadata.
+    meta: Metadata; // Event logs with associated metadata.
 }
 
 /**
@@ -178,7 +178,7 @@ interface EventLogs extends Event {
  * @public
  */
 interface TransferLogs extends Transfer {
-    meta: WithMeta; // Transfer logs with associated metadata.
+    meta: Metadata; // Transfer logs with associated metadata.
 }
 
 /* --- Responses Outputs end --- */
