@@ -1,7 +1,11 @@
 import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
 import { TEST_ACCOUNTS, ZERO_ADDRESS } from '../../../fixture';
 import { BUILT_IN_CONTRACTS } from '../../../built-in-fixture';
-import { contract, unitsUtils } from '@vechainfoundation/vechain-sdk-core';
+import {
+    contract,
+    unitsUtils,
+    dataUtils
+} from '@vechainfoundation/vechain-sdk-core';
 
 /**
  * Transaction details function fixture.
@@ -316,11 +320,9 @@ const simulateTransaction = {
                                 BUILT_IN_CONTRACTS.PARAMS_ABI,
                                 'get',
                                 [
-                                    // @TODO: core(Bytes32):: Encode/Decode Bytes32 strings (https://github.com/vechainfoundation/vechain-sdk/issues/254)
-                                    /* 
-                                        bytes32Utils.encodeBytes32String('base-gas-price')
-                                    */
-                                    '0x000000000000000000000000000000000000626173652d6761732d7072696365'
+                                    dataUtils.encodeBytes32String(
+                                        'base-gas-price'
+                                    )
                                 ]
                             )
                         }
