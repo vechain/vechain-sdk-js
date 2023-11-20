@@ -21,7 +21,7 @@ const assertCompactFixedHexBlobBuffer = (
     );
 
     assert(
-        !(buffer.length !== 0 && buffer[0] === 0),
+        buffer.length === 0 || buffer[0] !== 0,
         RLP.INVALID_RLP,
         'expected no leading zero bytes',
         {

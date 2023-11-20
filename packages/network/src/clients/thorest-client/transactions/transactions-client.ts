@@ -52,10 +52,8 @@ class TransactionsClient {
 
         // Invalid head
         assert(
-            !(
-                options?.head !== undefined &&
-                !dataUtils.isThorId(options?.head, true)
-            ),
+            options?.head === undefined ||
+                dataUtils.isThorId(options?.head, true),
             DATA.INVALID_DATA_TYPE,
             'Invalid head given as input. Input must be an hex string of length 64.',
             { head: options?.head }
@@ -95,10 +93,8 @@ class TransactionsClient {
 
         // Invalid head
         assert(
-            !(
-                options?.head !== undefined &&
-                !dataUtils.isThorId(options?.head, true)
-            ),
+            options?.head === undefined ||
+                dataUtils.isThorId(options?.head, true),
             DATA.INVALID_DATA_TYPE,
             'Invalid head given as input. Input must be an hex string of length 64.',
             { head: options?.head }
@@ -174,7 +170,9 @@ class TransactionsClient {
         } = options ?? {};
 
         assert(
-            !(revision != null && !revisionUtils.isRevisionAccount(revision)),
+            revision === undefined ||
+                revision === null ||
+                revisionUtils.isRevisionAccount(revision),
             DATA.INVALID_DATA_TYPE,
             'Invalid revision given as input. Input must be a valid revision (i.e., a block number or block ID).',
             { revision }

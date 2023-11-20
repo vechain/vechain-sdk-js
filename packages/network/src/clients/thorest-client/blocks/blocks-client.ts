@@ -30,7 +30,9 @@ class BlocksClient {
         options?: BlockInputOptions
     ): Promise<BlockDetail | null> {
         assert(
-            !(revision != null && !revisionUtils.isRevisionBlock(revision)),
+            revision === undefined ||
+                revision === null ||
+                revisionUtils.isRevisionBlock(revision),
             DATA.INVALID_DATA_TYPE,
             'Invalid revision. The revision must be a string representing a block number or block id.',
             { revision }

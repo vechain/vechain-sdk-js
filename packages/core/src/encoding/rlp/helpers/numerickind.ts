@@ -43,7 +43,7 @@ const validateNumericKindData = (data: RLPInput, context: string): bigint => {
  */
 const _validateNumericKindNumber = (num: number, context: string): void => {
     assert(
-        !(!Number.isSafeInteger(num) || num < 0),
+        Number.isSafeInteger(num) && num >= 0,
         RLP.INVALID_RLP,
         'expected integer',
         {
@@ -71,7 +71,7 @@ const _validateNumericKindString = (str: string, context: string): void => {
 
     // Ensure the string is either a hex or decimal number.
     assert(
-        !(!isHex && !isDecimal),
+        isHex || isDecimal,
         RLP.INVALID_RLP,
         'expected non-negative integer in hex or dec string',
         { str, context }
@@ -79,7 +79,7 @@ const _validateNumericKindString = (str: string, context: string): void => {
 
     // Ensure hex numbers are of a valid length.
     assert(
-        !(isHex && str.length <= 2),
+        !isHex || str.length > 2,
         RLP.INVALID_RLP,
         'expected valid hex string number',
         { str, context }
@@ -105,7 +105,7 @@ const assertValidNumericKindBuffer = (
 ): void => {
     // If maxBytes is defined, ensure buffer length is within bounds.
     assert(
-        !(maxBytes !== undefined && buf.length > maxBytes),
+        maxBytes === undefined || buf.length <= maxBytes,
         RLP.INVALID_RLP,
         `expected less than ${maxBytes} bytes`,
         { maxBytes, context }
@@ -144,7 +144,7 @@ const encodeBigIntToBuffer = (
     }
 
     assert(
-        !(maxBytes !== undefined && hex.length > maxBytes * 2),
+        maxBytes === undefined || hex.length <= maxBytes * 2,
         RLP.INVALID_RLP,
         `expected number in ${maxBytes} bytes`,
         { maxBytes, hex, context }

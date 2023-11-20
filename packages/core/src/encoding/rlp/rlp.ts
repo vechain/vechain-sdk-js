@@ -134,7 +134,7 @@ const _unpackData = (
     // ScalarKind: Direct decoding using the provided method.
     if (kind instanceof RLP.ScalarKind) {
         assert(
-            !(!Buffer.isBuffer(packed) && !(packed instanceof Uint8Array)),
+            Buffer.isBuffer(packed) || packed instanceof Uint8Array,
             RLPError.INVALID_RLP,
             'expected buffer',
             { context }

@@ -47,10 +47,9 @@ class AccountsClient {
         );
 
         assert(
-            !(
-                options?.revision != null &&
-                !revisionUtils.isRevisionAccount(options.revision)
-            ),
+            options?.revision === undefined ||
+                options?.revision === null ||
+                revisionUtils.isRevisionAccount(options.revision),
             DATA.INVALID_DATA_TYPE,
             'Invalid revision. The revision must be a string representing a block number or block id.',
             { revision: options?.revision }
@@ -87,10 +86,9 @@ class AccountsClient {
         );
 
         assert(
-            !(
-                options?.revision != null &&
-                !revisionUtils.isRevisionAccount(options.revision)
-            ),
+            options?.revision === undefined ||
+                options?.revision === null ||
+                revisionUtils.isRevisionAccount(options.revision),
             DATA.INVALID_DATA_TYPE,
             'Invalid revision. The revision must be a string representing a block number or block id.',
             { revision: options?.revision }
@@ -131,10 +129,9 @@ class AccountsClient {
         );
 
         assert(
-            !(
-                options?.revision != null &&
-                !revisionUtils.isRevisionAccount(options.revision)
-            ),
+            options?.revision === undefined ||
+                options?.revision === null ||
+                revisionUtils.isRevisionAccount(options.revision),
             DATA.INVALID_DATA_TYPE,
             'Invalid revision. The revision must be a string representing a block number or block id.',
             { revision: options?.revision }
@@ -142,7 +139,7 @@ class AccountsClient {
 
         // The position represents a slot in the VM storage. Each slot is 32 bytes.
         assert(
-            !(!dataUtils.isHexString(position) || position.length !== 66),
+            dataUtils.isHexString(position) && position.length === 66,
             DATA.INVALID_DATA_TYPE,
             'Invalid `position`. The position must be a hex string of 32 bytes (66 characters including `0x` prefix).',
             { position }

@@ -148,7 +148,7 @@ const encodeBytes32String = (
  */
 const decodeBytes32String = (value: string): string => {
     assert(
-        !(!isHexString(value) || removePrefix(value).length !== 64),
+        isHexString(value) && removePrefix(value).length === 64,
         DATA.INVALID_DATA_TYPE,
         `Failed to decode value ${value} to string. Value is not a valid hex string or it is not 64 characters long`,
         { value }

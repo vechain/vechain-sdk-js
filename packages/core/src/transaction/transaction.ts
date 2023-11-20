@@ -192,10 +192,7 @@ class Transaction {
     public getSignatureHash(delegateFor?: string): Buffer {
         // Correct delegateFor address
         assert(
-            !(
-                delegateFor !== undefined &&
-                !addressUtils.isAddress(delegateFor)
-            ),
+            delegateFor === undefined || addressUtils.isAddress(delegateFor),
             ADDRESS.INVALID_ADDRESS,
             'Invalid address given as input as delegateFor parameter.',
             { delegateFor }

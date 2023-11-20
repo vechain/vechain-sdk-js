@@ -53,10 +53,8 @@ function generate(
 ): string[] {
     // Strange edge case in wordlist size
     assert(
-        !(
-            wordlistSize !== undefined &&
-            !MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(wordlistSize)
-        ),
+        wordlistSize === undefined ||
+            MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(wordlistSize),
         HDNODE.INVALID_HDNODE_MNEMONICS,
         'Invalid wordlist size given as input. Allowed sizes are 12, 15, 18, 21, 24',
         { wordlistSize }

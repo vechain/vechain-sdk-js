@@ -29,18 +29,16 @@ function encode(cert: Certificate): string {
 function verify(cert: Certificate): void {
     // No signature
     assert(
-        !(cert.signature === undefined || cert.signature === null),
+        cert.signature !== undefined && cert.signature !== null,
         CERTIFICATE.CERTIFICATE_NOT_SIGNED,
-        'The certificate not signed.',
+        "Can't verify the certificate, signature not found",
         { cert }
     );
 
     // Invalid signature
     assert(
-        !(
-            !dataUtils.isHexString(cert.signature as string) ||
-            (cert.signature as string).length % 2 !== 0
-        ),
+        dataUtils.isHexString(cert.signature as string) &&
+            (cert.signature as string).length % 2 === 0,
         CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT,
         'Invalid signature format.',
         { cert }

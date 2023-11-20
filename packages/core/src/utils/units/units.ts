@@ -21,7 +21,7 @@ const parseUnits = (
     decimals: WEI_UNITS | number | bigint
 ): bigint => {
     assert(
-        !(typeof value === 'string' && !dataUtils.isNumeric(value)),
+        typeof value !== 'string' || dataUtils.isNumeric(value),
         DATA.INVALID_DATA_TYPE,
         `The value "${value}" is not a valid hexadecimal string.`,
         { value }

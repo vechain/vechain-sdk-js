@@ -52,7 +52,7 @@ function intrinsicGas(clauses: TransactionClause[]): number {
 function _calculateDataUsedGas(data: string): number {
     // Invalid data
     assert(
-        !(data !== '' && !dataUtils.isHexString(data)),
+        data === '' || dataUtils.isHexString(data),
         DATA.INVALID_DATA_TYPE,
         'Invalid data type. Data should be an hexadecimal string.',
         { data }

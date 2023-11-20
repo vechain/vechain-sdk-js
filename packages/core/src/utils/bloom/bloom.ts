@@ -62,7 +62,7 @@ const isInBloom = (bloom: string, k: number, data: string): boolean => {
     );
 
     assert(
-        !(!Number.isInteger(k) || k <= 0),
+        Number.isInteger(k) && k > 0,
         BLOOM.INVALID_K,
         'Invalid k. It should be a positive integer.',
         { k }
