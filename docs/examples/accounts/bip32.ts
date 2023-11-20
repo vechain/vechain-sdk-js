@@ -8,7 +8,7 @@ console.log('Mnemonic words', rndMnemonic);
 // Create BIP32 HD node from mnemonic words
 const hdnode = HDNode.fromMnemonic(rndMnemonic);
 
-// Derive 5 child private keys
+// Derive 5 child private keyss
 for (let i = 0; i < 5; i++) {
     const child = hdnode.derive(i);
     console.log(`children ${i}`, child.address);
