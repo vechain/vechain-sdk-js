@@ -108,8 +108,8 @@ const isThorId = (data: string, checkPrefix: boolean = false): boolean => {
  * An example of usage is to encode a string to bytes32 string to be used as a parameter for a smart contract function.
  *
  * @param value - The string to encode.
- * @param padLeft - A boolean determining whether to pad zeros to the left or to the right (default: true).
- *                  Padding is necessary in order to have a fixed length of 32 bytes.
+ * @param zeroPadding - The zero padding direction. Represents on which side of the encoded bytes32 string the zeros will be padded.
+ *                      The default value is 'left'.
  * @returns The encoded bytes32 string as a hex string.
  *
  * @throws If the value cannot be encoded to bytes32 string. (e.g. if the value is longer than 32 bytes)
