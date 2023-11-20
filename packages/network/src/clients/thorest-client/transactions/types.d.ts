@@ -1,25 +1,12 @@
 import { type TransactionBody } from '@vechainfoundation/vechain-sdk-core/src';
+import { type Output, type Clause } from '../blocks';
 
 /**
  * Transaction clause type for transaction simulation having value only string.
  *
  * @public
  */
-interface SimulateTransactionClause {
-    /**
-     * Destination or contract address of the clause.
-     */
-    to: string | null;
-    /**
-     * Amount of VET transferred in the clause. Zero value if no VET is transferred and we are
-     * performing a smart contract transaction.
-     */
-    value: string;
-    /**
-     * Data sent along with the clause. Zero value if no data is sent.
-     */
-    data: string;
-}
+type SimulateTransactionClause = Clause;
 
 /* --- Input options start --- */
 
@@ -122,27 +109,6 @@ interface TransactionMetadata {
 }
 
 /**
- * Type for transaction events.
- *
- * @private
- */
-type TransactionEventsType = Array<{
-    address: string;
-    topics: string[];
-    data: string;
-}>;
-
-/**
- * Type for transaction transfers.
- *
- * @private
- */
-type TransactionTransfersType = Array<{
-    sender: string;
-    recipient: string;
-    amount: string;
-}>;
-/**
  * Type for RAW transaction detail.
  * It is the response of `getTransaction` with `raw` set to `true`.
  *
@@ -185,13 +151,7 @@ interface TransactionReceipt {
     paid: string;
     reward: string;
     reverted: boolean;
-    outputs: [
-        {
-            contractAddress: string | null;
-            events: TransactionEventsType;
-            transfers: TransactionTransfersType;
-        }
-    ];
+    outputs: Output[];
     meta: TransactionMetadata;
 }
 
