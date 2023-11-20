@@ -1,6 +1,5 @@
 import { bloom as bloomInstance } from '../../bloom';
 import { dataUtils } from '../data';
-import { type HexString } from '../types';
 import { addressUtils } from '../../address';
 import { BLOOM_REGEX_LOWERCASE, BLOOM_REGEX_UPPERCASE } from '../const';
 import {
@@ -47,7 +46,7 @@ const isBloom = (bloom: string): boolean => {
  * - Will throw an error if `data` is not a valid hexadecimal string.
  * - Will throw an error if `k` is not a positive integer.
  */
-const isInBloom = (bloom: HexString, k: number, data: HexString): boolean => {
+const isInBloom = (bloom: string, k: number, data: string): boolean => {
     assert(
         isBloom(bloom),
         BLOOM.INVALID_BLOOM,
@@ -56,7 +55,7 @@ const isInBloom = (bloom: HexString, k: number, data: HexString): boolean => {
     );
 
     assert(
-        dataUtils.isHexString(data, false),
+        !!dataUtils.isHexString(data, false),
         DATA.INVALID_DATA_TYPE,
         'Invalid data type. Data should be an hexadecimal string',
         { data }
@@ -69,7 +68,6 @@ const isInBloom = (bloom: HexString, k: number, data: HexString): boolean => {
         { k }
     );
 
-    // Ensure data is a string
     assert(
         typeof data === 'string',
         DATA.INVALID_DATA_TYPE,
@@ -110,9 +108,9 @@ const isInBloom = (bloom: HexString, k: number, data: HexString): boolean => {
  * ```
  */
 const isAddressInBloom = (
-    bloom: HexString,
+    bloom: string,
     k: number,
-    addressToCheck: HexString
+    addressToCheck: string
 ): boolean => {
     assert(
         addressUtils.isAddress(addressToCheck),

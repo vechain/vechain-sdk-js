@@ -21,32 +21,34 @@ interface TransactionBodyOverride {
     /**
      * A random number set by the wallet / user;
      */
-    nonce: number;
+    nonce?: number;
 
     /**
      * Last byte of the genesis block ID which is used to identify a blockchain
      * to prevent the cross-chain replay attack;
      */
-    chainTag: number;
+    chainTag?: number;
 
     /**
      * reference to a specific block;
      */
-    blockRef: string;
+    blockRef?: string;
 
     /**
      * How long, in terms of the number of blocks, the transaction will be allowed to be mined in VechainThor;
      * It helps prevent transactions from being included in blocks after a certain time.
      */
-    expiration: number;
+    expiration?: number;
 
     /**
      *  Coefficient used to calculate the gas price for the transaction.
      */
-    gasPriceCoef: number;
+    gasPriceCoef?: number;
 
     /**
      * ID of the transaction on which the current transaction depends. If null, the transaction is independent.
      */
-    dependsOn: string | null;
+    dependsOn?: string | null;
 }
+
+export type { TransactionBodyOverride };
