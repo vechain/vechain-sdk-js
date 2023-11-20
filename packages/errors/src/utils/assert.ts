@@ -1,4 +1,4 @@
-import { type DataType, type ErrorCode } from '../types';
+import { type DataType, type ErrorCode, type ErrorType } from '../types';
 import { buildError } from './errorBuilder';
 
 /**
@@ -20,9 +20,15 @@ function assertInput<
     data?: DataTypeT,
     innerError?: unknown
 ): void {
-    if (!condition) {
-        throw buildError(code, message, data, innerError) as Error;
-    }
+    // Error to throw if the condition is false.
+    const error = buildError(
+        code,
+        message,
+        data,
+        innerError
+    ) as ErrorType<ErrorCodeT> as Error;
+
+    if (!condition && typeof error === 'object') throw error;
 }
 
 export { assertInput };
