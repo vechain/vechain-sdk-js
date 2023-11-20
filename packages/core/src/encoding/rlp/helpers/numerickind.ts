@@ -1,6 +1,6 @@
 import { dataUtils } from '../../../utils';
 import { type RLPInput } from '../types';
-import { assertInput, RLP } from '@vechainfoundation/vechain-sdk-errors';
+import { assert, RLP } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Validates and converts the input data to a BigInt.
@@ -13,7 +13,7 @@ import { assertInput, RLP } from '@vechainfoundation/vechain-sdk-errors';
  */
 const validateNumericKindData = (data: RLPInput, context: string): bigint => {
     // Input data must be either a number or a string.
-    assertInput(
+    assert(
         typeof data === 'number' || typeof data === 'string',
         RLP.INVALID_RLP,
         'expected string or number',
@@ -42,7 +42,7 @@ const validateNumericKindData = (data: RLPInput, context: string): bigint => {
  * @param context - A string indicating the context, used for error messaging.
  */
 const _validateNumericKindNumber = (num: number, context: string): void => {
-    assertInput(
+    assert(
         !(!Number.isSafeInteger(num) || num < 0),
         RLP.INVALID_RLP,
         'expected integer',
@@ -70,7 +70,7 @@ const _validateNumericKindString = (str: string, context: string): void => {
     const isDecimal = dataUtils.isDecimalString(str);
 
     // Ensure the string is either a hex or decimal number.
-    assertInput(
+    assert(
         !(!isHex && !isDecimal),
         RLP.INVALID_RLP,
         'expected non-negative integer in hex or dec string',
@@ -78,7 +78,7 @@ const _validateNumericKindString = (str: string, context: string): void => {
     );
 
     // Ensure hex numbers are of a valid length.
-    assertInput(
+    assert(
         !(isHex && str.length <= 2),
         RLP.INVALID_RLP,
         'expected valid hex string number',
@@ -104,7 +104,7 @@ const assertValidNumericKindBuffer = (
     maxBytes?: number
 ): void => {
     // If maxBytes is defined, ensure buffer length is within bounds.
-    assertInput(
+    assert(
         !(maxBytes !== undefined && buf.length > maxBytes),
         RLP.INVALID_RLP,
         `expected less than ${maxBytes} bytes`,
@@ -112,7 +112,7 @@ const assertValidNumericKindBuffer = (
     );
 
     // Ensure the buffer does not have leading zeros, as it's not canonical in integer representation.
-    assertInput(
+    assert(
         buf[0] !== 0,
         RLP.INVALID_RLP,
         'expected canonical integer (no leading zero bytes)',
@@ -143,7 +143,7 @@ const encodeBigIntToBuffer = (
         hex = '0' + hex;
     }
 
-    assertInput(
+    assert(
         !(maxBytes !== undefined && hex.length > maxBytes * 2),
         RLP.INVALID_RLP,
         `expected number in ${maxBytes} bytes`,

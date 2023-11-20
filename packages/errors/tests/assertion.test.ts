@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { assertInput } from '../src';
+import { assert } from '../src';
 import { ErrorsCodeAndClassesMapsFixture } from './fixture';
 
 /**
@@ -20,7 +20,7 @@ describe('Assertion test', () => {
              */
             errorType.elements.forEach((element) => {
                 expect(() => {
-                    assertInput(false, element.errorCode, 'SOME_MESSAGE');
+                    assert(false, element.errorCode, 'SOME_MESSAGE');
                 }).toThrowError(element.classExpected);
             });
         });

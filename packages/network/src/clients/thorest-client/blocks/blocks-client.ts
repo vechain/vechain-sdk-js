@@ -1,4 +1,4 @@
-import { DATA, assertInput } from '@vechainfoundation/vechain-sdk-errors';
+import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
 import {
     revisionUtils,
     buildQuery,
@@ -29,7 +29,7 @@ class BlocksClient {
         revision: string | number,
         options?: BlockInputOptions
     ): Promise<BlockDetail | null> {
-        assertInput(
+        assert(
             !(revision != null && !revisionUtils.isRevisionBlock(revision)),
             DATA.INVALID_DATA_TYPE,
             'Invalid revision. The revision must be a string representing a block number or block id.',

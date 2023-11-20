@@ -7,10 +7,7 @@ import {
     type RLPValueType
 } from './types';
 import { RLP } from '.';
-import {
-    RLP as RLPError,
-    assertInput
-} from '@vechainfoundation/vechain-sdk-errors';
+import { RLP as RLPError, assert } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Encodes data using the Ethereumjs RLP library.
@@ -96,7 +93,7 @@ const _packData = (
     }
 
     // Valid RLP array
-    assertInput(Array.isArray(obj), RLPError.INVALID_RLP, 'expected array', {
+    assert(Array.isArray(obj), RLPError.INVALID_RLP, 'expected array', {
         context
     });
 
@@ -136,7 +133,7 @@ const _unpackData = (
 
     // ScalarKind: Direct decoding using the provided method.
     if (kind instanceof RLP.ScalarKind) {
-        assertInput(
+        assert(
             !(!Buffer.isBuffer(packed) && !(packed instanceof Uint8Array)),
             RLPError.INVALID_RLP,
             'expected buffer',
@@ -152,7 +149,7 @@ const _unpackData = (
     if (Array.isArray(kind) && Array.isArray(packed)) {
         const parts = packed;
 
-        assertInput(
+        assert(
             parts.length === kind.length,
             RLPError.INVALID_RLP,
             `expected ${kind.length} items, but got ${parts.length}`,
@@ -169,7 +166,7 @@ const _unpackData = (
         );
     }
 
-    assertInput(Array.isArray(packed), RLPError.INVALID_RLP, 'expected array', {
+    assert(Array.isArray(packed), RLPError.INVALID_RLP, 'expected array', {
         context
     });
 

@@ -2,7 +2,7 @@ import { addressUtils } from '../../address';
 import { secp256k1 } from '../../secp256k1';
 import { Transaction } from '../transaction';
 import {
-    assertInput,
+    assert,
     SECP256K1,
     TRANSACTION
 } from '@vechainfoundation/vechain-sdk-errors';
@@ -20,7 +20,7 @@ function sign(
     signerPrivateKey: Buffer
 ): Transaction {
     // Invalid private key
-    assertInput(
+    assert(
         secp256k1.isValidPrivateKey(signerPrivateKey),
         SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
         'Invalid private key used to sign the transaction.',
@@ -28,7 +28,7 @@ function sign(
     );
 
     // Transaction is already signed
-    assertInput(
+    assert(
         !transactionToSign.isSigned,
         TRANSACTION.ALREADY_SIGNED,
         'Cannot sign Transaction. It is already signed.',
@@ -36,7 +36,7 @@ function sign(
     );
 
     // Transaction is delegated
-    assertInput(
+    assert(
         !transactionToSign.isDelegated,
         TRANSACTION.INVALID_DELEGATION,
         'Transaction is delegated. Use signWithDelegator method instead.',
@@ -68,13 +68,13 @@ function signWithDelegator(
     delegatorPrivateKey: Buffer
 ): Transaction {
     // Invalid private keys (signer and delegator)
-    assertInput(
+    assert(
         secp256k1.isValidPrivateKey(signerPrivateKey),
         SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
         'Invalid signer private key used to sign the transaction.',
         { signerPrivateKey }
     );
-    assertInput(
+    assert(
         secp256k1.isValidPrivateKey(delegatorPrivateKey),
         SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
         'Invalid delegator private key used to sign the transaction.',
@@ -82,7 +82,7 @@ function signWithDelegator(
     );
 
     // Transaction is already signed
-    assertInput(
+    assert(
         !transactionToSign.isSigned,
         TRANSACTION.ALREADY_SIGNED,
         'Cannot sign Transaction. It is already signed.',
@@ -90,7 +90,7 @@ function signWithDelegator(
     );
 
     // Transaction is not delegated
-    assertInput(
+    assert(
         transactionToSign.isDelegated,
         TRANSACTION.INVALID_DELEGATION,
         'Transaction is not delegated. You are using the wrong method. Use sign method instead.',

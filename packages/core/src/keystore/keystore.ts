@@ -7,7 +7,7 @@ import { ethers } from 'ethers';
 import { SCRYPT_PARAMS } from '../utils';
 import { type Keystore, type KeystoreAccount } from './types';
 import {
-    assertInput,
+    assert,
     buildError,
     KEYSTORE
 } from '@vechainfoundation/vechain-sdk-errors';
@@ -65,12 +65,9 @@ async function decrypt(
     password: string
 ): Promise<KeystoreAccount> {
     // Invalid keystore
-    assertInput(
-        isValid(keystore),
-        KEYSTORE.INVALID_KEYSTORE,
-        'Invalid keystore',
-        { keystore }
-    );
+    assert(isValid(keystore), KEYSTORE.INVALID_KEYSTORE, 'Invalid keystore', {
+        keystore
+    });
 
     try {
         return (await ethers.decryptKeystoreJson(

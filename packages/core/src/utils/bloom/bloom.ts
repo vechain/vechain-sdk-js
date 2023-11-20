@@ -5,7 +5,7 @@ import { addressUtils } from '../../address';
 import { BLOOM_REGEX_LOWERCASE, BLOOM_REGEX_UPPERCASE } from '../const';
 import {
     ADDRESS,
-    assertInput,
+    assert,
     BLOOM,
     DATA
 } from '@vechainfoundation/vechain-sdk-errors';
@@ -48,21 +48,21 @@ const isBloom = (bloom: string): boolean => {
  * - Will throw an error if `k` is not a positive integer.
  */
 const isInBloom = (bloom: HexString, k: number, data: HexString): boolean => {
-    assertInput(
+    assert(
         isBloom(bloom),
         BLOOM.INVALID_BLOOM,
         'Invalid bloom filter format. Bloom filters must adhere to the format 0x[0-9a-fA-F]{16,}.',
         { bloom }
     );
 
-    assertInput(
+    assert(
         dataUtils.isHexString(data, false),
         DATA.INVALID_DATA_TYPE,
         'Invalid data type. Data should be an hexadecimal string',
         { data }
     );
 
-    assertInput(
+    assert(
         !(!Number.isInteger(k) || k <= 0),
         BLOOM.INVALID_K,
         'Invalid k. It should be a positive integer.',
@@ -70,7 +70,7 @@ const isInBloom = (bloom: HexString, k: number, data: HexString): boolean => {
     );
 
     // Ensure data is a string
-    assertInput(
+    assert(
         typeof data === 'string',
         DATA.INVALID_DATA_TYPE,
         'Invalid data type. Data should be a string',
@@ -114,7 +114,7 @@ const isAddressInBloom = (
     k: number,
     addressToCheck: HexString
 ): boolean => {
-    assertInput(
+    assert(
         addressUtils.isAddress(addressToCheck),
         ADDRESS.INVALID_ADDRESS,
         'Invalid address given as input in Bloom filter.',

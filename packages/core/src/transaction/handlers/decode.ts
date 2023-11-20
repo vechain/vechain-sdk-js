@@ -6,10 +6,7 @@ import {
 } from '../../utils';
 import { Transaction } from '../transaction';
 import { type TransactionBody } from '../types';
-import {
-    assertInput,
-    TRANSACTION
-} from '@vechainfoundation/vechain-sdk-errors';
+import { assert, TRANSACTION } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Decode a raw transaction.
@@ -78,7 +75,7 @@ function _decodeReservedField(reserved: Buffer[]): {
     unused?: Buffer[];
 } {
     // Not trimmed reserved field
-    assertInput(
+    assert(
         reserved[reserved.length - 1].length !== 0,
         TRANSACTION.INVALID_TRANSACTION_BODY,
         'Invalid reserved field. Fields must be trimmed',

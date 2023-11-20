@@ -1,7 +1,7 @@
 import { randomBytes } from 'crypto';
 import { PRIVATE_KEY_MAX_VALUE, SIGNATURE_LENGTH, ZERO_BUFFER } from '../utils';
 import { ec as EC } from 'elliptic';
-import { assertInput, SECP256K1 } from '@vechainfoundation/vechain-sdk-errors';
+import { assert, SECP256K1 } from '@vechainfoundation/vechain-sdk-errors';
 
 // Cureve algorithm
 const curve = new EC('secp256k1');
@@ -50,7 +50,7 @@ function generatePrivateKey(entropy?: () => Buffer): Buffer {
  * @returns Public key derived from private key
  */
 function derivePublicKey(privateKey: Buffer): Buffer {
-    assertInput(
+    assert(
         isValidPrivateKey(privateKey),
         SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
         'Invalid private key given as input. Length must be 32 bytes',
@@ -68,14 +68,14 @@ function derivePublicKey(privateKey: Buffer): Buffer {
  * @param privKey serialized private key
  */
 function sign(msgHash: Buffer, privKey: Buffer): Buffer {
-    assertInput(
+    assert(
         isValidMessageHash(msgHash),
         SECP256K1.INVALID_SECP256k1_MESSAGE_HASH,
         'Invalid message hash given as input. Length must be 32 bytes',
         { msgHash }
     );
 
-    assertInput(
+    assert(
         isValidPrivateKey(privKey),
         SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
         'Invalid private key given as input. Length must be 32 bytes',
@@ -99,14 +99,14 @@ function sign(msgHash: Buffer, privKey: Buffer): Buffer {
  * @param sig signature
  */
 function recover(msgHash: Buffer, sig: Buffer): Buffer {
-    assertInput(
+    assert(
         isValidMessageHash(msgHash),
         SECP256K1.INVALID_SECP256k1_MESSAGE_HASH,
         'Invalid message hash given as input. Length must be 32 bytes',
         { msgHash }
     );
 
-    assertInput(
+    assert(
         !(!Buffer.isBuffer(sig) || sig.length !== SIGNATURE_LENGTH),
         SECP256K1.INVALID_SECP256k1_SIGNATURE,
         'Invalid signature given as input. Length must be 65 bytes',
@@ -114,7 +114,7 @@ function recover(msgHash: Buffer, sig: Buffer): Buffer {
     );
 
     const recovery = sig[64];
-    assertInput(
+    assert(
         !(recovery !== 0 && recovery !== 1),
         SECP256K1.INVALID_SECP256k1_SIGNATURE_RECOVERY,
         'Invalid signature recovery given as input. Signature bytes in position 64 must be 0 or 1',

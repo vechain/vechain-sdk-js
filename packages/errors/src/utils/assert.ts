@@ -10,7 +10,7 @@ import { buildError } from './errorBuilder';
  * @param data - The error data.
  * @param innerError - The inner error.
  */
-function assertInput<
+function assert<
     ErrorCodeT extends ErrorCode,
     DataTypeT extends DataType<ErrorCodeT>
 >(
@@ -31,4 +31,4 @@ function assertInput<
     if (!condition && typeof error === 'object') throw error;
 }
 
-export { assertInput };
+export { assert };

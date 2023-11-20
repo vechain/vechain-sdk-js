@@ -11,7 +11,7 @@ import { addressUtils } from '../address';
 import { sha256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import { type WordlistSizeType } from '../mnemonic';
-import { assertInput, HDNODE } from '@vechainfoundation/vechain-sdk-errors';
+import { assert, HDNODE } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Generates an HDNode instance using mnemonic words.
@@ -23,7 +23,7 @@ import { assertInput, HDNODE } from '@vechainfoundation/vechain-sdk-errors';
  */
 function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
     // Invalid mnemonic words
-    assertInput(
+    assert(
         MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(
             words.length as WordlistSizeType
         ),
@@ -33,7 +33,7 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
     );
 
     // Invalid derivation path
-    assertInput(
+    assert(
         isDerivationPathValid(path),
         HDNODE.INVALID_HDNODE_DERIVATION_PATH,
         'Invalid derivation path.',
@@ -59,7 +59,7 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
  */
 function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
     // Invalid public key
-    assertInput(
+    assert(
         publicKey.length === 65,
         HDNODE.INVALID_HDNODE_PUBLIC_KEY,
         'Invalid public key. Length must be 65 bytes.',
@@ -67,7 +67,7 @@ function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
     );
 
     // Invalid chain code
-    assertInput(
+    assert(
         chainCode.length === 32,
         HDNODE.INVALID_HDNODE_CHAIN_CODE,
         'Invalid chain code. Length must be 32 bytes.',
@@ -99,7 +99,7 @@ function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
  */
 function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
     // Invalid private key
-    assertInput(
+    assert(
         privateKey.length === 32,
         HDNODE.INVALID_HDNODE_PRIVATE_KEY,
         'Invalid private key. Length must be 32 bytes.',
@@ -107,7 +107,7 @@ function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
     );
 
     // Invalid chain code
-    assertInput(
+    assert(
         chainCode.length === 32,
         HDNODE.INVALID_HDNODE_CHAIN_CODE,
         'Invalid chain code. Length must be 32 bytes.',
@@ -166,7 +166,7 @@ function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
         },
         derivePath(path: string) {
             // Invalid derivation path
-            assertInput(
+            assert(
                 isDerivationPathValid(path),
                 HDNODE.INVALID_HDNODE_DERIVATION_PATH,
                 'Invalid derivation path given as input.',

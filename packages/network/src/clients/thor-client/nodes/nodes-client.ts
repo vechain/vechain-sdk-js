@@ -2,7 +2,7 @@ import {
     type HttpClient,
     NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS
 } from '../../../utils';
-import { assertInput, DATA } from '@vechainfoundation/vechain-sdk-errors';
+import { assert, DATA } from '@vechainfoundation/vechain-sdk-errors';
 import { type BlockDetail, BlocksClient } from '../../thorest-client';
 
 /**
@@ -77,7 +77,7 @@ class NodesClient {
     private readonly getTimestampFromBlock = (
         response: BlockDetail | null
     ): number => {
-        assertInput(
+        assert(
             !(
                 response === null ||
                 response === undefined ||

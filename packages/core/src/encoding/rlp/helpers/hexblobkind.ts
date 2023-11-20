@@ -1,6 +1,6 @@
 import { dataUtils } from '../../../utils';
 import { type RLPInput } from '../types';
-import { assertInput, RLP } from '@vechainfoundation/vechain-sdk-errors';
+import { assert, RLP } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Validates if the input is a proper hex string for HexBlobKind.
@@ -10,13 +10,13 @@ import { assertInput, RLP } from '@vechainfoundation/vechain-sdk-errors';
  * @param context - Additional context for error handling.
  */
 const assertValidHexBlobKindData = (data: RLPInput, context: string): void => {
-    assertInput(typeof data === 'string', RLP.INVALID_RLP, 'expected string', {
+    assert(typeof data === 'string', RLP.INVALID_RLP, 'expected string', {
         data,
         context
     });
 
     // Check if data is a valid hex string with '0x' prefix.
-    assertInput(
+    assert(
         dataUtils.isHexString(data as string, true),
         RLP.INVALID_RLP,
         'expected hex string',
@@ -24,7 +24,7 @@ const assertValidHexBlobKindData = (data: RLPInput, context: string): void => {
     );
 
     // Ensure the hex string length is even.
-    assertInput(
+    assert(
         (data as string).length % 2 === 0,
         RLP.INVALID_RLP,
         'expected even length string',
@@ -43,7 +43,7 @@ const assertValidHexBlobKindBuffer = (
     buffer: Buffer,
     context: string
 ): void => {
-    assertInput(Buffer.isBuffer(buffer), RLP.INVALID_RLP, 'expected buffer', {
+    assert(Buffer.isBuffer(buffer), RLP.INVALID_RLP, 'expected buffer', {
         buffer,
         context
     });

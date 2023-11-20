@@ -19,7 +19,7 @@ import {
     type TransactionSimulationResult
 } from './types';
 import {
-    assertInput,
+    assert,
     buildError,
     DATA
 } from '@vechainfoundation/vechain-sdk-errors';
@@ -43,7 +43,7 @@ class TransactionsClient {
         options?: GetTransactionInputOptions
     ): Promise<TransactionDetail | null> {
         // Invalid transaction ID
-        assertInput(
+        assert(
             dataUtils.isThorId(id, true),
             DATA.INVALID_DATA_TYPE,
             'Invalid transaction ID given as input. Input must be an hex string of length 64.',
@@ -51,7 +51,7 @@ class TransactionsClient {
         );
 
         // Invalid head
-        assertInput(
+        assert(
             !(
                 options?.head !== undefined &&
                 !dataUtils.isThorId(options?.head, true)
@@ -86,7 +86,7 @@ class TransactionsClient {
         options?: GetTransactionReceiptInputOptions
     ): Promise<TransactionReceipt | null> {
         // Invalid transaction ID
-        assertInput(
+        assert(
             dataUtils.isThorId(id, true),
             DATA.INVALID_DATA_TYPE,
             'Invalid transaction ID given as input. Input must be an hex string of length 64.',
@@ -94,7 +94,7 @@ class TransactionsClient {
         );
 
         // Invalid head
-        assertInput(
+        assert(
             !(
                 options?.head !== undefined &&
                 !dataUtils.isThorId(options?.head, true)
@@ -121,7 +121,7 @@ class TransactionsClient {
      */
     public async sendTransaction(raw: string): Promise<TransactionSendResult> {
         // Validate raw transaction
-        assertInput(
+        assert(
             dataUtils.isHexString(raw),
             DATA.INVALID_DATA_TYPE,
             'Invalid raw transaction given as input. Input must be an hex string',
@@ -173,7 +173,7 @@ class TransactionsClient {
             provedWork
         } = options ?? {};
 
-        assertInput(
+        assert(
             !(revision != null && !revisionUtils.isRevisionAccount(revision)),
             DATA.INVALID_DATA_TYPE,
             'Invalid revision given as input. Input must be a valid revision (i.e., a block number or block ID).',

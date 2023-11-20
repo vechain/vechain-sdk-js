@@ -1,4 +1,4 @@
-import { DATA, assertInput } from '@vechainfoundation/vechain-sdk-errors';
+import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
 import {
     type HttpClient,
     revisionUtils,
@@ -39,14 +39,14 @@ class AccountsClient {
         address: string,
         options?: AccountInputOptions
     ): Promise<AccountDetail> {
-        assertInput(
+        assert(
             addressUtils.isAddress(address),
             DATA.INVALID_DATA_TYPE,
             'Invalid address. The address must be 20 bytes (a 42 characters hex string with a `0x` prefix.)',
             { address }
         );
 
-        assertInput(
+        assert(
             !(
                 options?.revision != null &&
                 !revisionUtils.isRevisionAccount(options.revision)
@@ -79,14 +79,14 @@ class AccountsClient {
         address: string,
         options?: AccountInputOptions
     ): Promise<string> {
-        assertInput(
+        assert(
             addressUtils.isAddress(address),
             DATA.INVALID_DATA_TYPE,
             'Invalid address. The address must be 20 bytes (a 42 characters hex string with a `0x` prefix.)',
             { address }
         );
 
-        assertInput(
+        assert(
             !(
                 options?.revision != null &&
                 !revisionUtils.isRevisionAccount(options.revision)
@@ -123,14 +123,14 @@ class AccountsClient {
         position: string,
         options?: AccountInputOptions
     ): Promise<string> {
-        assertInput(
+        assert(
             addressUtils.isAddress(address),
             DATA.INVALID_DATA_TYPE,
             'Invalid address. The address must be 20 bytes (a 42 characters hex string with a `0x` prefix.)',
             { address }
         );
 
-        assertInput(
+        assert(
             !(
                 options?.revision != null &&
                 !revisionUtils.isRevisionAccount(options.revision)
@@ -141,7 +141,7 @@ class AccountsClient {
         );
 
         // The position represents a slot in the VM storage. Each slot is 32 bytes.
-        assertInput(
+        assert(
             !(!dataUtils.isHexString(position) || position.length !== 66),
             DATA.INVALID_DATA_TYPE,
             'Invalid `position`. The position must be a hex string of 32 bytes (66 characters including `0x` prefix).',

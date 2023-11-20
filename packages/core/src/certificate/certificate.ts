@@ -5,10 +5,7 @@ import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Buffer } from 'buffer';
 import { dataUtils } from '../utils';
 import { type Certificate } from './types';
-import {
-    assertInput,
-    CERTIFICATE
-} from '@vechainfoundation/vechain-sdk-errors';
+import { assert, CERTIFICATE } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Deterministically encodes a certificate into a JSON string.
@@ -31,7 +28,7 @@ function encode(cert: Certificate): string {
  */
 function verify(cert: Certificate): void {
     // No signature
-    assertInput(
+    assert(
         !(cert.signature === undefined || cert.signature === null),
         CERTIFICATE.CERTIFICATE_NOT_SIGNED,
         'The certificate not signed.',
@@ -39,7 +36,7 @@ function verify(cert: Certificate): void {
     );
 
     // Invalid signature
-    assertInput(
+    assert(
         !(
             !dataUtils.isHexString(cert.signature as string) ||
             (cert.signature as string).length % 2 !== 0
@@ -58,7 +55,7 @@ function verify(cert: Certificate): void {
     );
 
     // Signature does not match with the signer's public key
-    assertInput(
+    assert(
         addressUtils.fromPublicKey(pubKey) === cert.signer,
         CERTIFICATE.CERTIFICATE_INVALID_SIGNER,
         "Signature does not match with the signer's public key.",

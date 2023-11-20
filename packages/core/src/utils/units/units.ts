@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { type BigNumberish, type WEI_UNITS } from './types';
 import { dataUtils } from '..';
-import { DATA, assertInput } from '@vechainfoundation/vechain-sdk-errors';
+import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Parse a string number to a string with the specified number of decimals
@@ -20,7 +20,7 @@ const parseUnits = (
     value: string,
     decimals: WEI_UNITS | number | bigint
 ): bigint => {
-    assertInput(
+    assert(
         !(typeof value === 'string' && !dataUtils.isNumeric(value)),
         DATA.INVALID_DATA_TYPE,
         `The value "${value}" is not a valid hexadecimal string.`,

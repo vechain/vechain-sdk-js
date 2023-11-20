@@ -14,7 +14,7 @@ import {
 import { type TransactionBody } from './types';
 import {
     ADDRESS,
-    assertInput,
+    assert,
     SECP256K1,
     TRANSACTION
 } from '@vechainfoundation/vechain-sdk-errors';
@@ -53,7 +53,7 @@ class Transaction {
      */
     constructor(body: TransactionBody, signature?: Buffer) {
         // Body
-        assertInput(
+        assert(
             this._isValidBody(body),
             TRANSACTION.INVALID_TRANSACTION_BODY,
             'Invalid transaction body',
@@ -63,7 +63,7 @@ class Transaction {
 
         // User passed a signature
         if (signature !== undefined) {
-            assertInput(
+            assert(
                 this._isSignatureValid(signature),
                 SECP256K1.INVALID_SECP256k1_SIGNATURE,
                 'Invalid transaction signature',
@@ -102,14 +102,14 @@ class Transaction {
      */
     public get delegator(): string {
         // Undelegated transaction
-        assertInput(
+        assert(
             this.isDelegated,
             TRANSACTION.INVALID_DELEGATION,
             'Transaction is not delegated'
         );
 
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
-        assertInput(
+        assert(
             this.isSigned,
             TRANSACTION.NOT_SIGNED,
             'Cannot get delegator from unsigned transaction. Sign the transaction first.'
@@ -191,7 +191,7 @@ class Transaction {
      */
     public getSignatureHash(delegateFor?: string): Buffer {
         // Correct delegateFor address
-        assertInput(
+        assert(
             !(
                 delegateFor !== undefined &&
                 !addressUtils.isAddress(delegateFor)
@@ -234,7 +234,7 @@ class Transaction {
      */
     public get origin(): string {
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
-        assertInput(
+        assert(
             this.isSigned,
             TRANSACTION.NOT_SIGNED,
             'Cannot get origin from unsigned transaction. Sign the transaction first.'
@@ -262,7 +262,7 @@ class Transaction {
      */
     get id(): string {
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
-        assertInput(
+        assert(
             this.isSigned,
             TRANSACTION.NOT_SIGNED,
             'Cannot get transaction id from unsigned transaction. Sign the transaction first'

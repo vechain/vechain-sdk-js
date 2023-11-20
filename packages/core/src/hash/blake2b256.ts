@@ -1,7 +1,7 @@
 import blake from 'blakejs';
 import { type HashInput, type ReturnType } from './types';
 import { isValidReturnType } from './helpers';
-import { assertInput, DATA } from '@vechainfoundation/vechain-sdk-errors';
+import { assert, DATA } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Internal function to compute the blake2b256 256-bit hash of the given data.
@@ -72,7 +72,7 @@ function blake2b256(
     data: HashInput,
     returnType: ReturnType = 'buffer'
 ): Buffer | string {
-    assertInput(
+    assert(
         isValidReturnType(returnType),
         DATA.INVALID_DATA_RETURN_TYPE,
         "Invalid return type. Return type should be either 'buffer' or 'hex'",

@@ -6,7 +6,7 @@ import {
     type WordlistSizeType
 } from './types';
 import { MNEMONIC_WORDLIST_ALLOWED_SIZES } from '../utils';
-import { assertInput, HDNODE } from '@vechainfoundation/vechain-sdk-errors';
+import { assert, HDNODE } from '@vechainfoundation/vechain-sdk-errors';
 
 /* --- Overloaded functions start --- */
 
@@ -52,7 +52,7 @@ function generate(
     ) => Buffer
 ): string[] {
     // Strange edge case in wordlist size
-    assertInput(
+    assert(
         !(
             wordlistSize !== undefined &&
             !MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(wordlistSize)
