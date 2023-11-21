@@ -2,7 +2,7 @@ import { addressUtils } from '../../address';
 import { secp256k1 } from '../../secp256k1';
 import { Transaction } from '../transaction';
 import {
-    buildError,
+    assert,
     SECP256K1,
     TRANSACTION
 } from '@vechainfoundation/vechain-sdk-errors';
@@ -20,25 +20,28 @@ function sign(
     signerPrivateKey: Buffer
 ): Transaction {
     // Invalid private key
-    if (!secp256k1.isValidPrivateKey(signerPrivateKey))
-        throw buildError(
-            SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
-            'Invalid private key used to sign the transaction.'
-        );
+    assert(
+        secp256k1.isValidPrivateKey(signerPrivateKey),
+        SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
+        'Invalid private key used to sign the transaction.',
+        { signerPrivateKey }
+    );
 
     // Transaction is already signed
-    if (transactionToSign.isSigned)
-        throw buildError(
-            TRANSACTION.ALREADY_SIGNED,
-            'Cannot sign Transaction. It is already signed.'
-        );
+    assert(
+        !transactionToSign.isSigned,
+        TRANSACTION.ALREADY_SIGNED,
+        'Cannot sign Transaction. It is already signed.',
+        { transactionToSign }
+    );
 
     // Transaction is delegated
-    if (transactionToSign.isDelegated)
-        throw buildError(
-            TRANSACTION.INVALID_DELEGATION,
-            'Transaction is already delegated. Use signWithDelegator method instead.'
-        );
+    assert(
+        !transactionToSign.isDelegated,
+        TRANSACTION.INVALID_DELEGATION,
+        'Transaction is delegated. Use signWithDelegator method instead.',
+        { transactionToSign }
+    );
 
     // Sign transaction
     const signature = secp256k1.sign(
@@ -64,31 +67,35 @@ function signWithDelegator(
     signerPrivateKey: Buffer,
     delegatorPrivateKey: Buffer
 ): Transaction {
-    // Invalid private keys
-    if (!secp256k1.isValidPrivateKey(signerPrivateKey))
-        throw buildError(
-            SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
-            'Invalid signer private key used to sign the transaction.'
-        );
-    if (!secp256k1.isValidPrivateKey(delegatorPrivateKey))
-        throw buildError(
-            SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
-            'Invalid delegator private key used to sign the transaction.'
-        );
+    // Invalid private keys (signer and delegator)
+    assert(
+        secp256k1.isValidPrivateKey(signerPrivateKey),
+        SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
+        'Invalid signer private key used to sign the transaction.',
+        { signerPrivateKey }
+    );
+    assert(
+        secp256k1.isValidPrivateKey(delegatorPrivateKey),
+        SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
+        'Invalid delegator private key used to sign the transaction.',
+        { delegatorPrivateKey }
+    );
 
     // Transaction is already signed
-    if (transactionToSign.isSigned)
-        throw buildError(
-            TRANSACTION.ALREADY_SIGNED,
-            'Transaction is already signed.'
-        );
+    assert(
+        !transactionToSign.isSigned,
+        TRANSACTION.ALREADY_SIGNED,
+        'Cannot sign Transaction. It is already signed.',
+        { transactionToSign }
+    );
 
     // Transaction is not delegated
-    if (!transactionToSign.isDelegated)
-        throw buildError(
-            TRANSACTION.INVALID_DELEGATION,
-            'Transaction is not delegated. You are using the wrong method. Use sign method instead.'
-        );
+    assert(
+        transactionToSign.isDelegated,
+        TRANSACTION.INVALID_DELEGATION,
+        'Transaction is not delegated. You are using the wrong method. Use sign method instead.',
+        { transactionToSign }
+    );
 
     const transactionHash = transactionToSign.getSignatureHash();
     const delegatedHash = transactionToSign.getSignatureHash(
