@@ -60,6 +60,7 @@ For advanced testing scenarios, you may require a custom data starting point wit
 
 2. **Perform Transactions**:
    - Execute the necessary transactions or operations in thor-solo. These transactions will be recorded in the specified data directory.
+   - An example of transactions performed to seed the 20 accounts is found in the `thor-solo-seeding.ts` file
 
 3. **Export LevelDB**:
    - Once you've completed the transactions, use a tool like `docker cp` to export the LevelDB directory (i.e., `instance-a4988aba7aea69f6-v3`) from the Docker container.
