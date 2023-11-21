@@ -18,7 +18,11 @@ import {
     type SimulateTransactionOptions,
     type TransactionSimulationResult
 } from './types';
-import { buildError, DATA } from '@vechainfoundation/vechain-sdk-errors';
+import {
+    assert,
+    buildError,
+    DATA
+} from '@vechainfoundation/vechain-sdk-errors';
 
 class TransactionsClient {
     /**
@@ -39,23 +43,21 @@ class TransactionsClient {
         options?: GetTransactionInputOptions
     ): Promise<TransactionDetail | null> {
         // Invalid transaction ID
-        if (!dataUtils.isThorId(id, true))
-            throw buildError(
-                DATA.INVALID_DATA_TYPE,
-                'Invalid transaction ID given as input. Input must be an hex string of length 64.',
-                { id }
-            );
+        assert(
+            dataUtils.isThorId(id, true),
+            DATA.INVALID_DATA_TYPE,
+            'Invalid transaction ID given as input. Input must be an hex string of length 64.',
+            { id }
+        );
 
         // Invalid head
-        if (
-            options?.head !== undefined &&
-            !dataUtils.isThorId(options?.head, true)
-        )
-            throw buildError(
-                DATA.INVALID_DATA_TYPE,
-                'Invalid head given as input. Input must be an hex string of length 64.',
-                { head: options?.head }
-            );
+        assert(
+            options?.head === undefined ||
+                dataUtils.isThorId(options?.head, true),
+            DATA.INVALID_DATA_TYPE,
+            'Invalid head given as input. Input must be an hex string of length 64.',
+            { head: options?.head }
+        );
 
         return (await this.httpClient.http(
             'GET',
@@ -82,23 +84,21 @@ class TransactionsClient {
         options?: GetTransactionReceiptInputOptions
     ): Promise<TransactionReceipt | null> {
         // Invalid transaction ID
-        if (!dataUtils.isThorId(id, true))
-            throw buildError(
-                DATA.INVALID_DATA_TYPE,
-                'Invalid transaction ID given as input. Input must be an hex string of length 64.',
-                { id }
-            );
+        assert(
+            dataUtils.isThorId(id, true),
+            DATA.INVALID_DATA_TYPE,
+            'Invalid transaction ID given as input. Input must be an hex string of length 64.',
+            { id }
+        );
 
         // Invalid head
-        if (
-            options?.head !== undefined &&
-            !dataUtils.isThorId(options?.head, true)
-        )
-            throw buildError(
-                DATA.INVALID_DATA_TYPE,
-                'Invalid head given as input. Input must be an hex string of length 64.',
-                { head: options?.head }
-            );
+        assert(
+            options?.head === undefined ||
+                dataUtils.isThorId(options?.head, true),
+            DATA.INVALID_DATA_TYPE,
+            'Invalid head given as input. Input must be an hex string of length 64.',
+            { head: options?.head }
+        );
 
         return (await this.httpClient.http(
             'GET',
@@ -117,12 +117,12 @@ class TransactionsClient {
      */
     public async sendTransaction(raw: string): Promise<TransactionSendResult> {
         // Validate raw transaction
-        if (!dataUtils.isHexString(raw))
-            throw buildError(
-                DATA.INVALID_DATA_TYPE,
-                'Invalid raw transaction given as input. Input must be an hex string',
-                { raw }
-            );
+        assert(
+            dataUtils.isHexString(raw),
+            DATA.INVALID_DATA_TYPE,
+            'Invalid raw transaction given as input. Input must be an hex string',
+            { raw }
+        );
 
         // Decode raw transaction to check if raw is ok
         try {
@@ -149,7 +149,7 @@ class TransactionsClient {
      * Allows to estimate the gas cost of a transaction without sending it, as well as to retrieve the return value(s) of the transaction.
      *
      * @param clauses - The clauses of the transaction to simulate.
-     * @param simulateTransactionOptions - (Optional) The options for simulating the transaction.
+     * @param options - (Optional) The options for simulating the transaction.
      *
      * @returns A promise that resolves to an array of simulation results.
      *          Each element of the array represents the result of simulating a clause.
@@ -169,12 +169,14 @@ class TransactionsClient {
             provedWork
         } = options ?? {};
 
-        if (revision != null && !revisionUtils.isRevisionAccount(revision))
-            throw buildError(
-                DATA.INVALID_DATA_TYPE,
-                'Invalid revision given as input. Input must be a valid revision (i.e., a block number or block ID).',
-                { revision }
-            );
+        assert(
+            revision === undefined ||
+                revision === null ||
+                revisionUtils.isRevisionAccount(revision),
+            DATA.INVALID_DATA_TYPE,
+            'Invalid revision given as input. Input must be a valid revision (i.e., a block number or block ID).',
+            { revision }
+        );
 
         return (await this.httpClient.http(
             'POST',

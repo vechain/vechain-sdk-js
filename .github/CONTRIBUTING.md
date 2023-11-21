@@ -142,6 +142,23 @@ All submissions, including submissions by project members, require review. We us
 
 If you find a bug or want to request a new feature, please open a new issue. When filing a bug report, please provide a clear description of the problem, including the expected behavior and the actual behavior.
 
+# Errors handling conventions
+Errors handling is delegated to `errors` pacakge.
+Follow all code snapshots and convetion related to it.
+
+Below a brief description of main conventions:
+
+## Input validation
+The typical flow to handle errors is the following:
+
+```typescript
+import { errors } from 'vechain-sdk';
+
+function some_function(input: any) {
+  assert(valid_input(input), ERROR_CODE, ERROR_MESSAGE);
+}
+```
+
 # Code of Conduct
 
 We are committed to providing a welcoming and inclusive environment for everyone who contributes to or interacts with the vechain SDK project. To ensure a positive experience for our community, we have established a [Code of Conduct](CODE_OF_CONDUCT.md) that outlines our expectations for behavior. We encourage all contributors, maintainers, and users to familiarize themselves with this code, as it reflects our commitment to creating a diverse and respectful community. Thank you for helping us maintain a welcoming and collaborative space for all.
