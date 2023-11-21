@@ -26,7 +26,7 @@ class InvalidKeystorePasswordError extends ErrorBase<
 > {}
 
 /**
- * Errors  enum.
+ * Errors enum.
  *
  * @public
  */
