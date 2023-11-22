@@ -189,3 +189,35 @@ The `filterEventLogs` method simplifies the process of retrieving event logs fro
     ): Promise<TransferLogs>
 
 The `filterTransferLogs` method provides a streamlined way to retrieve transfer logs from the VechainThor network. Developers can define criteria, including the block range, pagination options, and filters for transaction origin, sender, and recipient. The method returns an array of transfer logs that meet the specified criteria.
+
+## Nodes
+
+The Thorest-client allows developers to interact with nodes on the VechainThor network, providing information about connected peers. The following code demonstrates how to use the Thorest-client to retrieve connected peers of a node:
+
+```typescript { name=nodes, category=example }
+import {
+    HttpClient,
+    ThorestClient
+} from '@vechainfoundation/vechain-sdk-network';
+
+// Url of the testnet network
+const _testnetUrl = 'https://testnet.vechain.org/';
+
+// Testnet network instance
+const testNetwork = new HttpClient(_testnetUrl);
+
+// Thorest client testnet instance
+const thorestTestnetClient = new ThorestClient(testNetwork);
+
+// Retrieves connected peers of a node.
+const peerNodes = await thorestTestnetClient.nodes.getNodes();
+console.log(peerNodes);
+
+```
+
+In this example, the code initializes a Thorest client for the VechainThor testnet network and utilizes the `getNodes` method to retrieve information about connected peers.
+
+ - getNodes(): Promise<ConnectedPeer | null>
+
+The `getNodes` method simplifies the process of obtaining details about connected peers of a node in the VechainThor network. The method returns information about the connected peers, allowing developers to monitor and analyze the network's node connectivity.
+
