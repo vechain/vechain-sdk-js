@@ -40,4 +40,4 @@ yarn build
 
 Feel free to explore the examples and templates, and don't hesitate to reach out if you have any questions or need further assistance.
 
-Happy coding!
+Happy coding with the vechain SDK!

@@ -11,11 +11,20 @@
   </p>
 </div>
 
+## Introduction
+
+🚀 Welcome to the **vechain SDK**, your passport to the dazzling universe of decentralized wonders on the vechain blockchain. Brace yourself for a coding adventure like no other! Whether you're a blockchain bard or a coding wizard, our SDK is your key to unlocking the mysteries of secure and seamless blockchain development. Join us in this epic journey, where lines of code transform into spells of innovation, and every commit propels you deeper into the enchanted realms of VechainThor. Ready to embark on a coding odyssey? Let the vechain SDK be your guide! 🌌🔮
+
 ## Repository Structure
-- `./demos`: Demonstrative projects
-- `./packages`: Monorepo packages
-   - `./packages/core`: Core module encompassing all fundamental SDK operations such as hashing and cryptography.
-   - `./packages/network`: Network module facilitating all network-related SDK operations including transaction dissemination and blockchain interaction.
+Welcome to the Vechain SDK repository! Here's a breakdown of our organized structure:
+
+- `./docs`: Your go-to destination for comprehensive documentation. Explore demonstrative examples showcasing the prowess of our SDK. Knowledge is power, and our docs are here to enlighten your path.
+- `./packages`: A hub for our monorepo packages, each serving a distinct purpose:
+   - `./packages/core`: The heart of the SDK, housing essential modules for fundamental operations like hashing and cryptography. Dive into the core for the building blocks of your decentralized dreams.
+   - `./packages/network`: Embark on a journey through the network module, your gateway to all things related to blockchain interaction and transaction dissemination. Here, the vechain SDK connects you seamlessly to the VechainThor blockchain.
+   - `./packages/errors`: Delve into the world of error handling with the errors package. This module is dedicated to managing and customizing errors within the SDK, ensuring your development experience remains resilient and smooth.
+
+Explore, experiment, and let the vechain SDK empower your blockchain adventures!
 
 ## SDK Development
 
@@ -23,7 +32,7 @@
 > **Note** <br />
 > Docker is required for setting up a local thor-solo node for integration testing.
  - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
- - [Node.js](https://nodejs.org/en)
+ - [Node.js](https://nodejs.org/en): versions 18, 19, 20 (LTS), 21 (latest)
  - [Yarn](https://classic.yarnpkg.com/en/docs/install)
  - [Docker](https://docs.docker.com/get-docker/)
 
@@ -96,20 +105,3 @@ This project is licensed under the [MIT license](./.github/LICENSE.md).
 ## Contact information
 - Discord https://discord.com/invite/vechain
 - Support https://support.vechain.org
-
-
-                              @@@@@@@@@@@@@@                     /@@@@@                   
-                               @@@@@@@@@@@@@@@@                 @@@@@@                    
-                                @@@@@@     @@@@@               @@@@@                      
-                                  @@@@@     @@@@@             @@@@@                       
-                                   @@@@@     @@@@@&          @@@@@                        
-                                    @@@@@     @@@@@@       %@@@@@                         
-                                     @@@@@      @@@@@     @@@@@%                          
-                                      @@@@@@     @@@@@   @@@@@                            
-                                        @@@@@     @@@   @@@@@                             
-                                         @@@@@     @   @@@@@                              
-                                          @@@@@      @@@@@@                               
-                                           @@@@@    @@@@@#                                
-                                            @@@@@@ @@@@@                                  
-                                              @@@@@@@@@                                   
-                                               @@@@@@@                               
