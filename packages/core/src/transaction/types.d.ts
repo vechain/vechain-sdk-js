@@ -1,6 +1,5 @@
 /**
  * Simple type for transaction clause.
- * @public
  */
 interface TransactionClause {
     /**
@@ -25,7 +24,6 @@ interface TransactionClause {
 
 /**
  * Type for transaction body.
- * @public
  */
 interface TransactionBody {
     /**

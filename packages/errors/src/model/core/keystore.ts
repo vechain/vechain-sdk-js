@@ -27,8 +27,6 @@ class InvalidKeystorePasswordError extends ErrorBase<
 
 /**
  * Errors enum.
- *
- * @public
  */
 enum KEYSTORE {
     INVALID_KEYSTORE = 'INVALID_KEYSTORE',

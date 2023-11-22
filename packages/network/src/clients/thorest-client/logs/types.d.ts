@@ -60,8 +60,6 @@ type EventDisplayOrder = 'asc' | 'desc';
 
 /**
  * FilterEventLogsArg interface for filtering event logs.
- *
- * @public
  */
 interface FilterEventLogsOptions {
     /**
@@ -84,8 +82,6 @@ interface FilterEventLogsOptions {
 
 /**
  * FilterTransferLogsArg interface for filtering transfer logs.
- *
- * @public
  */
 interface FilterTransferLogsOptions {
     /**
@@ -151,8 +147,6 @@ interface TransferCriteria {
 
 /**
  * Event interface representing event data.
- *
- * @public
  */
 interface Event {
     /**
@@ -173,8 +167,6 @@ interface Event {
 
 /**
  * Transfer interface representing transfer data.
- *
- * @public
  */
 interface Transfer {
     /**
@@ -195,8 +187,6 @@ interface Transfer {
 
 /**
  * EventLogs interface, combining Event and EventMetadata.
- *
- * @public
  */
 interface EventLogs extends Event {
     /**
@@ -207,8 +197,6 @@ interface EventLogs extends Event {
 
 /**
  * TransferLogs interface, combining Transfer and WithMeta.
- *
- * @public
  */
 interface TransferLogs extends Transfer {
     /**

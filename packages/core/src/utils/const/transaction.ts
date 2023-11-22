@@ -2,7 +2,6 @@ import { RLP } from '../../encoding';
 
 /**
  * Transaction gas constants
- * @public
  */
 const TRANSACTIONS_GAS_CONSTANTS = {
     /**

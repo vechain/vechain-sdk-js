@@ -3,8 +3,6 @@ import { type Output, type Clause } from '../blocks';
 
 /**
  * Transaction clause type for transaction simulation having value only string.
- *
- * @public
  */
 type SimulateTransactionClause = Clause;
 
@@ -14,8 +12,6 @@ type SimulateTransactionClause = Clause;
  * Input options for:
  * * getTransactionReceipt
  * Methods
- *
- * @public
  */
 interface GetTransactionReceiptInputOptions {
     /**
@@ -28,8 +24,6 @@ interface GetTransactionReceiptInputOptions {
  * Input options for:
  * * getTransaction
  * Methods
- *
- * @public
  */
 type GetTransactionInputOptions = GetTransactionReceiptInputOptions & {
     /**
@@ -45,8 +39,6 @@ type GetTransactionInputOptions = GetTransactionReceiptInputOptions & {
 
 /**
  * Type for transaction simulation options.
- *
- * @public
  */
 interface SimulateTransactionOptions {
     /**
@@ -109,8 +101,6 @@ interface TransactionMetadata {
 /**
  * Type for RAW transaction detail.
  * It is the response of `getTransaction` with `raw` set to `true`.
- *
- * @public
  */
 interface TransactionDetailRaw {
     /**
@@ -126,8 +116,6 @@ interface TransactionDetailRaw {
 /**
  * Type for NO RAW transaction detail.
  * It is the response of `getTransaction` with `raw` set to `false`.
- *
- * @public
  */
 type TransactionDetailNoRaw = TransactionBody & {
     id: string;
@@ -139,15 +127,11 @@ type TransactionDetailNoRaw = TransactionBody & {
 
 /**
  * Type for transaction detail.
- *
- * @public
  */
 type TransactionDetail = TransactionDetailRaw | TransactionDetailNoRaw;
 
 /**
  * Type for transaction receipt.
- *
- * @public
  */
 interface TransactionReceipt {
     /**
@@ -182,8 +166,6 @@ interface TransactionReceipt {
 
 /**
  * Type for transaction call simulation.
- *
- * @public
  */
 type TransactionCallSimulation = [
     {
@@ -216,8 +198,6 @@ type TransactionCallSimulation = [
 
 /**
  * Type for transaction send result.
- *
- * @public
  */
 interface TransactionSendResult {
     /**
@@ -228,8 +208,6 @@ interface TransactionSendResult {
 
 /**
  * Type for transaction call simulation result.
- *
- * @public
  */
 interface TransactionSimulationResult {
     /**

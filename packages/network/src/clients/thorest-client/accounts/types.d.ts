@@ -6,8 +6,6 @@
  * * getBytecode
  * * getStorage
  * Methods
- *
- * @public
  */
 interface AccountInputOptions {
     /**

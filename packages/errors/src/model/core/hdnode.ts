@@ -63,8 +63,6 @@ class InvalidHDNodeDerivationPathError extends ErrorBase<
 
 /**
  * Errors enum.
- *
- * @public
  */
 enum HDNODE {
     INVALID_HDNODE_PUBLIC_KEY = 'INVALID_HDNODE_PUBLIC_KEY',
