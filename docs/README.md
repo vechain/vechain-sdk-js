@@ -27,14 +27,14 @@ Note: links that are to be expanded must have text \[example]
 ### Execute Examples as Tests
 
 To run the scripts within /examples as tests, use:
-```
+``` bash
 yarn test:examples
 ```
 
 ### Build Documentation
 
 To build the documentation, expanding examples into code snippets, use:
-```
+``` bash
 yarn build
 ```
 
