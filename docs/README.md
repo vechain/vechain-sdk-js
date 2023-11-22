@@ -1,6 +1,6 @@
 # Code Examples & Documentation
 
-Welcome to the `/docs` folder, your go-to resource for comprehensive SDK documentation and executable code examples. We've designed these examples not just for learning purposes but also as integration tests, ensuring that the provided code snippets are always functional and up-to-date.
+Welcome to the `/docs` folder, your go-to resource for comprehensive **SDK documentation** and executable code examples. We've designed these examples not just for learning purposes but also as integration tests, ensuring that the provided code snippets are always functional and up-to-date.
 
 ## Structure
 
