@@ -54,3 +54,43 @@ Fetches details of the latest block on the VechainThor network, representing the
 Retrieves details of the finalized block, which is the latest block confirmed by the network consensus.
 
 These methods demonstrate how the Thorest-client simplifies the process of fetching block-related information, providing developers with straightforward ways to integrate VechainThor blockchain data into their applications.
+
+## Accounts
+
+The Thorest-client extends its functionality to provide seamless access to account-related information on the VechainThor network. The following code exemplifies how developers can utilize the Thorest-client to interact with accounts:
+
+```typescript { name=accounts, category=example }
+import {
+    HttpClient,
+    ThorestClient
+} from '@vechainfoundation/vechain-sdk-network';
+
+// Url of the testnet network
+const _testnetUrl = 'https://testnet.vechain.org/';
+
+// Testnet network instance
+const testNetwork = new HttpClient(_testnetUrl);
+
+// Thorest client testnet instance
+const thorestTestnetClient = new ThorestClient(testNetwork);
+
+// Get account details
+const accountDetails = await thorestTestnetClient.accounts.getAccount(
+    '0x5034aa590125b64023a0262112b98d72e3c8e40e'
+);
+console.log(accountDetails);
+
+// Get account code
+const accountCode = await thorestTestnetClient.accounts.getBytecode(
+    '0x5034aa590125b64023a0262112b98d72e3c8e40e'
+);
+console.log(accountCode);
+
+// Get account storage
+const accountStorage = await thorestTestnetClient.accounts.getStorageAt(
+    '0x5034aa590125b64023a0262112b98d72e3c8e40e',
+    '0x0000000000000000000000000000000000000000000000000000000000000001'
+);
+console.log(accountStorage);
+
+```

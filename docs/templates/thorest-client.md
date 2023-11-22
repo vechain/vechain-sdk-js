@@ -27,3 +27,9 @@ Fetches details of the latest block on the VechainThor network, representing the
 Retrieves details of the finalized block, which is the latest block confirmed by the network consensus.
 
 These methods demonstrate how the Thorest-client simplifies the process of fetching block-related information, providing developers with straightforward ways to integrate VechainThor blockchain data into their applications.
+
+## Accounts
+
+The Thorest-client extends its functionality to provide seamless access to account-related information on the VechainThor network. The following code exemplifies how developers can utilize the Thorest-client to interact with accounts:
+
+[example](examples/thorest-client/accounts.ts)
