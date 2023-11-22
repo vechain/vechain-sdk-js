@@ -3,13 +3,13 @@ import {
     ThorestClient
 } from '@vechainfoundation/vechain-sdk-network';
 
-// Url of the solo network
+// Url of the testnet network
 const _testnetUrl = 'https://testnet.vechain.org/';
 
-// Solo network instance
+// Testnet network instance
 const testNetwork = new HttpClient(_testnetUrl);
 
-// Thorest client solo instance
+// Thorest client testnet instance
 const thorestTestnetClient = new ThorestClient(testNetwork);
 
 // Get block details
