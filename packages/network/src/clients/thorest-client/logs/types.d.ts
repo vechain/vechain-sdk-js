@@ -2,8 +2,6 @@
 
 /**
  * Range interface for specifying a range of data.
- *
- * @private
  */
 interface Range {
     /**
@@ -24,8 +22,6 @@ interface Range {
 
 /**
  * Options interface for specifying Pagination Options (offset and limits).
- *
- * @private
  */
 interface PaginationOptions {
     /**
@@ -41,8 +37,6 @@ interface PaginationOptions {
 
 /**
  * EventCriteria interface for filtering event logs.
- *
- * @private
  */
 interface EventCriteria {
     /**
@@ -61,8 +55,6 @@ interface EventCriteria {
 
 /**
  * Order interface for filtering event logs.
- *
- * @private
  */
 type EventDisplayOrder = 'asc' | 'desc';
 
@@ -72,9 +64,21 @@ type EventDisplayOrder = 'asc' | 'desc';
  * @public
  */
 interface FilterEventLogsOptions {
+    /**
+     * Block range
+     */
     range?: Range;
+    /**
+     * Pagination options
+     */
     options?: PaginationOptions;
+    /**
+     * Event filters
+     */
     criteriaSet: EventCriteria[];
+    /**
+     * Sorting order
+     */
     order: EventDisplayOrder;
 }
 
@@ -84,9 +88,21 @@ interface FilterEventLogsOptions {
  * @public
  */
 interface FilterTransferLogsOptions {
+    /**
+     * Block range to query
+     */
     range?: Range;
+    /**
+     * Pagination options
+     */
     options?: PaginationOptions;
+    /**
+     * Criteria to filter transfers by
+     */
     criteriaSet: TransferCriteria[];
+    /**
+     * Ordering of results
+     */
     order: EventDisplayOrder;
 }
 
@@ -96,22 +112,36 @@ interface FilterTransferLogsOptions {
 
 /**
  * Event metadata for an entity.
- *
- * @private
  */
 interface Metadata {
-    blockID: string; // Block identifier associated with the entity.
-    blockNumber: number; // Block number associated with the entity.
-    blockTimestamp: number; // Timestamp of the block.
-    txID: string; // Transaction ID associated with the entity.
-    txOrigin: string; // Transaction origin information.
-    clauseIndex: number; // Index of the clause.
+    /**
+     * Block identifier associated with the entity
+     */
+    blockID: string;
+    /**
+     * Block number associated with the entity
+     */
+    blockNumber: number;
+    /**
+     * Timestamp of the block
+     */
+    blockTimestamp: number;
+    /**
+     * Transaction ID associated with the entity
+     */
+    txID: string;
+    /**
+     * Transaction origin information
+     */
+    txOrigin: string;
+    /**
+     * Index of the clause
+     */
+    clauseIndex: number;
 }
 
 /**
  * TransferCriteria interface for filtering transfer logs.
- *
- * @private
  */
 interface TransferCriteria {
     txOrigin?: string; // Transaction origin filter for transfer criteria.
@@ -169,7 +199,10 @@ interface Transfer {
  * @public
  */
 interface EventLogs extends Event {
-    meta: Metadata; // Event logs with associated metadata.
+    /**
+     * // Event logs with associated metadata
+     */
+    meta: Metadata;
 }
 
 /**
@@ -178,7 +211,10 @@ interface EventLogs extends Event {
  * @public
  */
 interface TransferLogs extends Transfer {
-    meta: Metadata; // Transfer logs with associated metadata.
+    /**
+     * Transfer logs with associated metadata
+     */
+    meta: Metadata;
 }
 
 /* --- Responses Outputs end --- */

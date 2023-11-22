@@ -7,33 +7,38 @@ import { RLP } from '../../encoding';
 const TRANSACTIONS_GAS_CONSTANTS = {
     /**
      * Default gas for a transaction
+     * @internal
      */
     TX_GAS: 5000,
 
     /**
      * Default gas for a clause
+     * @internal
      */
     CLAUSE_GAS: 16000,
 
     /**
      * Default gas for a contract creation clause
+     * @internal
      */
     CLAUSE_GAS_CONTRACT_CREATION: 48000,
 
     /**
      * Zero gas data
+     * @internal
      */
     ZERO_GAS_DATA: 4,
 
     /**
      * Non-zero gas data
+     * @internal
      */
     NON_ZERO_GAS_DATA: 68
 };
 
 /**
  * Main transaction fields
- * @private
+ * @internal
  */
 const TRANSACTION_FIELDS = [
     /**
@@ -96,7 +101,7 @@ const TRANSACTION_FIELDS = [
 
 /**
  * Kind for transaction features
- * @public
+ * @internal
  */
 const TRANSACTION_FEATURES_KIND = {
     name: 'reserved.features',
@@ -105,6 +110,7 @@ const TRANSACTION_FEATURES_KIND = {
 
 /**
  * Kind for transaction signature
+ * @internal
  */
 const TRANSACTION_SIGNATURE_KIND = {
     name: 'signature',
@@ -113,7 +119,7 @@ const TRANSACTION_SIGNATURE_KIND = {
 
 /**
  * RLP profiler for simple unsigned transactions
- * @public
+ * @internal
  */
 const UNSIGNED_TRANSACTION_RLP = new RLP.Profiler({
     name: 'tx',
@@ -122,7 +128,7 @@ const UNSIGNED_TRANSACTION_RLP = new RLP.Profiler({
 
 /**
  * RLP profiler for simple signed transactions
- * @public
+ * @internal
  */
 const SIGNED_TRANSACTION_RLP = new RLP.Profiler({
     name: 'tx',
@@ -133,11 +139,13 @@ const SIGNED_TRANSACTION_RLP = new RLP.Profiler({
 
 /**
  * Signature length
+ * @internal
  */
 const SIGNATURE_LENGTH = 65;
 
 /**
  * Block ref field length
+ * @internal
  */
 const BLOCK_REF_LENGTH = 8;
 

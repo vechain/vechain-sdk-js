@@ -97,8 +97,6 @@ interface SimulateTransactionOptions {
 
 /**
  * Transaction Metadata interface.
- *
- * @private
  */
 interface TransactionMetadata {
     blockID: string;
@@ -112,10 +110,16 @@ interface TransactionMetadata {
  * Type for RAW transaction detail.
  * It is the response of `getTransaction` with `raw` set to `true`.
  *
- * @private
+ * @public
  */
 interface TransactionDetailRaw {
+    /**
+     * Raw data
+     */
     raw: string;
+    /**
+     * Transaction meta data
+     */
     meta: Omit<TransactionMetadata, 'txID' | 'txOrigin'>;
 }
 
@@ -123,7 +127,7 @@ interface TransactionDetailRaw {
  * Type for NO RAW transaction detail.
  * It is the response of `getTransaction` with `raw` set to `false`.
  *
- * @private
+ * @public
  */
 type TransactionDetailNoRaw = TransactionBody & {
     id: string;
@@ -146,12 +150,33 @@ type TransactionDetail = TransactionDetailRaw | TransactionDetailNoRaw;
  * @public
  */
 interface TransactionReceipt {
+    /**
+     * Gas used in the transaction
+     */
     gasUsed: number;
+    /**
+     * For delegated transactions the gas payer
+     * */
     gasPayer: string;
+    /**
+     * Energy paid for used gas
+     */
     paid: string;
+    /**
+     * Energy reward given to block proposer
+     */
     reward: string;
+    /**
+     * If the transaction has been reverted
+     */
     reverted: boolean;
+    /**
+     * Outputs of the transaction, e.g. contract, events, transfers
+     */
     outputs: Output[];
+    /**
+     * Data associated with the transaction e.g. blockID, blockNumber, txID
+     */
     meta: TransactionMetadata;
 }
 
@@ -162,11 +187,29 @@ interface TransactionReceipt {
  */
 type TransactionCallSimulation = [
     {
+        /**
+         * Returned data from the simulation
+         */
         data: string;
+        /**
+         * Events from the siluation
+         */
         events: TransactionEventsType;
+        /**
+         * Details of transfers from the simulation
+         */
         transfers: TransactionTransfersType;
+        /**
+         * Gas used from the simulation
+         */
         gasUsed: number;
+        /**
+         * If the transaction would be reverted
+         */
         reverted: boolean;
+        /**
+         * Details of any VM errors
+         */
         vmError: string;
     }
 ];
@@ -177,6 +220,9 @@ type TransactionCallSimulation = [
  * @public
  */
 interface TransactionSendResult {
+    /**
+     * Transaction id
+     */
     id: string;
 }
 

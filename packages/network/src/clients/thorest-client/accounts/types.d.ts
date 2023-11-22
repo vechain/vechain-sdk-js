@@ -45,6 +45,9 @@ interface AccountDetail {
  * The bytecode is represented in hex string.
  */
 interface ResponseBytecode {
+    /**
+     * Bytecode of the smart contract
+     */
     code: string;
 }
 
@@ -53,6 +56,9 @@ interface ResponseBytecode {
  * The storage data is represented in hex string.
  */
 interface ResponseStorage {
+    /**
+     * Hex string of the storage data
+     */
     value: string;
 }
 

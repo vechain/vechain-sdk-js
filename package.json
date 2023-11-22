@@ -15,7 +15,8 @@
         "format": "turbo format",
         "test:examples": "turbo test:examples",
         "merge-coverage": "ts-node scripts/merge-coverage.ts",
-        "generate:apidocs": "typedoc --options typedoc.json --logLevel Verbose"
+        "generate:apidocs": "typedoc --options typedoc.json --logLevel Error",
+        "generate:apidocs-debug": "typedoc --options typedoc.json --logLevel Verbose --plugin typedoc-plugin-missing-exports --validation.notDocumented"
     },
     "private": true,
     "workspaces": [
@@ -50,6 +51,7 @@
         "tsup": "^7.2.0",
         "turbo": "^1.10.15",
         "typedoc": "^0.25.3",
+        "typedoc-plugin-missing-exports": "^2.1.0",
         "typescript": "*"
     }
 }

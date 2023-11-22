@@ -14,6 +14,9 @@ import { buildError, HTTP_CLIENT } from '@vechainfoundation/vechain-sdk-errors';
  * @public
  */
 class HttpClient {
+    /**
+     * Axios instance to make http requests
+     */
     protected readonly axios: AxiosInstance;
 
     /**

@@ -105,6 +105,9 @@ interface TransactionBody {
          * Tx feature bits
          */
         features?: number;
+        /**
+         * Unused
+         */
         unused?: Buffer[];
     };
 }
