@@ -221,3 +221,53 @@ In this example, the code initializes a Thorest client for the VechainThor testn
 
 The `getNodes` method simplifies the process of obtaining details about connected peers of a node in the VechainThor network. The method returns information about the connected peers, allowing developers to monitor and analyze the network's node connectivity.
 
+## Transactions
+
+The Thorest-client provides methods for developers to interact with transactions on the VechainThor network, allowing retrieval of transaction details and transaction receipts. The following code illustrates how to use the Thorest-client to fetch information about a specific transaction:
+
+```typescript { name=transactions, category=example }
+import {
+    HttpClient,
+    ThorestClient
+} from '@vechainfoundation/vechain-sdk-network';
+
+// Url of the testnet network
+const _testnetUrl = 'https://testnet.vechain.org/';
+
+// Testnet network instance
+const testNetwork = new HttpClient(_testnetUrl);
+
+// Thorest client testnet instance
+const thorestTestnetClient = new ThorestClient(testNetwork);
+
+// Retrieves the details of a transaction.
+const transactionDetails =
+    await thorestTestnetClient.transactions.getTransaction(
+        '0x46d195f69e1ac3922d42c207e4705a3d1642883d97e58f7efc72f179ea326adb'
+    );
+console.log(transactionDetails);
+
+// Retrieves the receipt of a transaction.
+const transactionReceipt =
+    await thorestTestnetClient.transactions.getTransactionReceipt(
+        '0x46d195f69e1ac3922d42c207e4705a3d1642883d97e58f7efc72f179ea326adb'
+    );
+console.log(transactionReceipt);
+
+```
+
+In this example, the code initializes a Thorest client for the VechainThor testnet network and showcases two essential methods for interacting with transactions:
+
+ - getTransaction(
+        id: string,
+        options?: GetTransactionInputOptions
+    ): Promise<TransactionDetail | null>
+
+The `getTransaction` method facilitates the retrieval of detailed information about a specific transaction on the VechainThor network. Developers can use this method to access data such as the sender, recipient, amount, and other transaction details.
+
+ - getTransactionReceipt(
+        id: string,
+        options?: GetTransactionReceiptInputOptions
+    ): Promise<TransactionReceipt | null> 
+
+The `getTransactionReceipt` method allows developers to retrieve the receipt of a specific transaction on the VechainThor network. This includes information such as the transaction status, block number, and gas used.
