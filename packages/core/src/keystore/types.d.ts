@@ -1,14 +1,10 @@
 /**
  * Types of ciphers for keystore encryption
- *
- * @public
  */
 type Cipher = 'aes-128-ctr' | 'aes-128-cbc' | 'aes-256-cbc';
 
 /**
  * Scrypt parameters for keystore encryption
- *
- * @public
  */
 interface ScryptParams {
     dklen: number;
@@ -20,8 +16,6 @@ interface ScryptParams {
 
 /**
  * PBKDF2SHA256 parameters for keystore encryption
- *
- * @public
  */
 interface PBKDF2SHA256Params {
     c: number;
@@ -33,8 +27,6 @@ interface PBKDF2SHA256Params {
 /**
  * Keystore type.
  * Output of encryption function.
- *
- * @public
  */
 interface Keystore {
     crypto: {
@@ -55,8 +47,6 @@ interface Keystore {
 /**
  * Keystore account type
  * Output of decryption function.
- *
- * @public
  */
 interface KeystoreAccount {
     address: string;

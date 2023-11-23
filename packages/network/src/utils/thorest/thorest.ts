@@ -1,7 +1,5 @@
 /**
  * Endpoints for the REST API.
- *
- * @public
  */
 const thorest = {
     /**

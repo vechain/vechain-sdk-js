@@ -24,6 +24,9 @@ import {
     DATA
 } from '@vechainfoundation/vechain-sdk-errors';
 
+/**
+ * Client for reading and creating transactions
+ */
 class TransactionsClient {
     /**
      * Initializes a new instance of the `TransactionClient` class.

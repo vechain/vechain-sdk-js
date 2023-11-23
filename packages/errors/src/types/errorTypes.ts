@@ -59,8 +59,6 @@ type DefaultErrorData = Record<string, unknown> | { innerError: Error };
 
 /**
  * Error code type.
- *
- * @public
  */
 type ErrorCode =
     | SECP256K1
@@ -80,8 +78,6 @@ type ErrorCode =
  * The type is used to specify the data type of the error builder.
  *
  * @param ErrorCodeT - The error code type from the error types enum.
- *
- * @public
  */
 type DataType<ErrorCodeT extends ErrorCode> = ErrorCodeT extends RLP.INVALID_RLP
     ? InvalidRLPErrorData
@@ -91,8 +87,6 @@ type DataType<ErrorCodeT extends ErrorCode> = ErrorCodeT extends RLP.INVALID_RLP
 
 /**
  * Default error codes.
- *
- * @public
  */
 const ERROR_CODES = {
     SECP256K1,
@@ -115,8 +109,6 @@ const ERROR_CODES = {
  * @note When adding a new error, add the error code and the error class to the type.
  *
  * @param ErrorCodeT - The error code type from the error types enum.
- *
- * @public
  */
 type ErrorType<ErrorCodeT> =
     ErrorCodeT extends SECP256K1.INVALID_SECP256k1_PRIVATE_KEY
@@ -190,8 +182,6 @@ type ErrorType<ErrorCodeT> =
  * @note When adding a new error, add the error code and the error class to the map.
  *
  * @param ErrorCodeT - The error code type from the error types enum.
- *
- * @public
  */
 const ErrorClassMap = new Map<
     ErrorCode,

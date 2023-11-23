@@ -15,8 +15,6 @@ class InvalidAddressError extends ErrorBase<
 
 /**
  * Errors enum.
- *
- * @public
  */
 enum ADDRESS {
     INVALID_ADDRESS = 'INVALID_ADDRESS'
