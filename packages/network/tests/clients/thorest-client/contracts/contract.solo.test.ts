@@ -5,7 +5,7 @@ import {
     thorSoloClient
 } from '../../../fixture';
 import { contractBytecode } from './fixture';
-import { networkInfo } from '@vechainfoundation/vechain-sdk-core';
+import { addressUtils, networkInfo } from '@vechainfoundation/vechain-sdk-core';
 import type { TransactionSendResult } from '../../../../src';
 
 /**
@@ -40,11 +40,14 @@ describe('ThorClient - Contracts', () => {
                         );
                 }
 
+                const contractAddress =
+                    transactionReceipt.outputs[0].contractAddress;
                 expect(transactionReceipt.reverted).toBe(false);
                 expect(transactionReceipt.outputs).toHaveLength(1);
-                expect(
-                    transactionReceipt.outputs[0].contractAddress
-                ).toBeDefined();
+                expect(contractAddress).not.toBeNull();
+                expect(addressUtils.isAddress(contractAddress as string)).toBe(
+                    true
+                );
             } catch (error) {
                 console.log('error', error);
             }

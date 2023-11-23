@@ -1,7 +1,7 @@
 import {
     TransactionsClient,
     type TransactionSendResult
-} from '../../thorest-client/transactions';
+} from '../../thorest-client';
 import type { HttpClient } from '../../../utils';
 import {
     buildDeployContractTransaction,
