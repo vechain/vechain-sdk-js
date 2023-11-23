@@ -1,9 +1,10 @@
 import { type SyncPollInputOptions } from './types';
+import { assert, DATA } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Sleep for a given amount of time (in milliseconds).
  *
- * @param delay - The amount of time to sleep in milliseconds.
+ * @param delayInMilliseconds - The amount of time to sleep in milliseconds.
  */
 async function sleep(delayInMilliseconds: number): Promise<void> {
     await new Promise((resolve) => setTimeout(resolve, delayInMilliseconds));
@@ -34,6 +35,24 @@ function SyncPoll<TReturnType>(
         condition: (data: TReturnType) => boolean
     ) => Promise<TReturnType>;
 } {
+    // Positive nuber for request interval
+    assert(
+        options?.requestIntervalInMilliseconds === undefined ||
+            options?.requestIntervalInMilliseconds > 0,
+        DATA.INVALID_DATA_TYPE,
+        'options.requestIntervalInMilliseconds must be a positive number',
+        { options }
+    );
+
+    // Positive nuber for maximum iterations
+    assert(
+        options?.maximumIterations === undefined ||
+            options?.maximumIterations > 0,
+        DATA.INVALID_DATA_TYPE,
+        'options.maximumIterations must be a positive number',
+        { options }
+    );
+
     // Number of iterations
     let currentIteration = 0;
 
