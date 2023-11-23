@@ -29,5 +29,5 @@ describe('Synchronous poll tests - Testnet', () => {
         expect(newBlock?.number).toBeGreaterThan(
             currentBlock?.number as number
         );
-    }, 100000);
+    }, 30000);
 });

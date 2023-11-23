@@ -103,5 +103,5 @@ describe('Synchronous poll tests - Solo', () => {
         expect(newBalanceReceiver).toBeDefined();
         expect(newBalanceSender).not.toBe(senderBalanceBefore);
         expect(newBalanceReceiver).not.toBe(receiverBalanceBefore);
-    }, 100000);
+    }, 30000);
 });
