@@ -18,7 +18,7 @@ function buildDeployContractTransaction(
 ): Transaction {
     const clauses: TransactionClause[] = [
         {
-            to: networkInfo.mainnet.zeroAddress,
+            to: null,
             value: 0,
             data: contractBytecode
         }
@@ -72,7 +72,7 @@ function buildTransactionBody(
         expiration: 32, // tx will expire after block #N + 32
         clauses,
         gasPriceCoef: 128,
-        gas: TransactionUtils.intrinsicGas(clauses),
+        gas: 5000 + TransactionUtils.intrinsicGas(clauses) * 5,
         dependsOn: null,
         ...transactionBodyOverride
     };

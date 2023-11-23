@@ -32,9 +32,7 @@ describe('Contract', () => {
             compiledContract.bytecode
         );
         expect(transaction.body.clauses[0].value).toBe(0);
-        expect(transaction.body.clauses[0].to).toBe(
-            networkInfo.mainnet.zeroAddress
-        );
+        expect(transaction.body.clauses[0].to).toBe(null);
         expect(transaction.body.nonce).toBeDefined();
         expect(transaction.body.chainTag).toBe(networkInfo.mainnet.chainTag);
         expect(transaction.body.blockRef).toBeDefined();
