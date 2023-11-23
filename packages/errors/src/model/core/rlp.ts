@@ -2,8 +2,6 @@ import { ErrorBase } from '../base';
 
 /**
  * Invalid RLP error data interface.
- *
- * @public
  */
 interface InvalidRLPErrorData {
     context: string;
@@ -20,8 +18,6 @@ class InvalidRLPError extends ErrorBase<RLP.INVALID_RLP, InvalidRLPErrorData> {}
 
 /**
  * Errors enum.
- *
- * @public
  */
 enum RLP {
     INVALID_RLP = 'INVALID_RLP'

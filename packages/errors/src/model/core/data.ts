@@ -27,8 +27,6 @@ class InvalidDataReturnTypeError extends ErrorBase<
 
 /**
  * Errors enum.
- *
- * @public
  */
 enum DATA {
     INVALID_DATA_TYPE = 'INVALID_DATA_TYPE',
