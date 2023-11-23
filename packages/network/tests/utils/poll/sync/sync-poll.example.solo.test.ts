@@ -1,17 +1,17 @@
 import { describe, expect, test } from '@jest/globals';
-import { TEST_ACCOUNTS, thorestSoloClient } from '../../fixture';
-import { Poll } from '../../../src/utils/poll';
+import { TEST_ACCOUNTS, thorestSoloClient } from '../../../fixture';
+import { Poll } from '../../../../src/utils/poll';
 import {
     dataUtils,
     Transaction,
     TransactionHandler,
     TransactionUtils
 } from '@vechainfoundation/vechain-sdk-core';
-import { sendTransactionErrors } from '../../clients/thorest-client/transactions/fixture';
+import { sendTransactionErrors } from '../../../clients/thorest-client/transactions/fixture';
 
 /**
  * Test the Synchronous poll on Solo node
- * @group integration/utils/sync-poll
+ * @group integration/utils/sync-poll-example-solo
  */
 describe('Synchronous poll tests - Solo', () => {
     /**
@@ -75,26 +75,24 @@ describe('Synchronous poll tests - Solo', () => {
         expect(dataUtils.isHexString(send.id)).toBe(true);
 
         // 4 -Wait until balance is updated
-        const newBalanceSender = await Poll.syncPoll(
+        const newBalanceSender = await Poll.SyncPoll(
             async () =>
                 (
                     await thorestSoloClient.accounts.getAccount(
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
                     )
-                ).balance,
-            1000
+                ).balance
         ).waitUntil((newBalance) => {
             return newBalance !== senderBalanceBefore;
         });
 
-        const newBalanceReceiver = await Poll.syncPoll(
+        const newBalanceReceiver = await Poll.SyncPoll(
             async () =>
                 (
                     await thorestSoloClient.accounts.getAccount(
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
                     )
-                ).balance,
-            1000
+                ).balance
         ).waitUntil((newBalance) => {
             return newBalance !== receiverBalanceBefore;
         });
