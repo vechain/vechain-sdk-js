@@ -82,7 +82,8 @@ class AccountsClient {
         if (!addressUtils.isAddress(address)) {
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
-                'Invalid address. The address must be 20 bytes (a 42 characters hex string with a `0x` prefix.)'
+                'Invalid address. The address must be 20 bytes (a 42 characters hex string with a `0x` prefix.)',
+                { address }
             );
         }
 
@@ -92,7 +93,8 @@ class AccountsClient {
         )
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
-                'Invalid revision. The revision must be a string representing a block number or block id.'
+                'Invalid revision. The revision must be a string representing a block number or block id.',
+                { revision: options?.revision }
             );
 
         const result = (await this.httpClient.http(

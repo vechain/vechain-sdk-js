@@ -14,7 +14,7 @@ function createInterface(abi: InterfaceAbi): Interface {
 
 /**
  * Encode function data that can be used to send a transaction.
- * @param abi ABI in a compatible format
+ * @param interfaceABI ABI in a compatible format
  * @param functionName The name of the function defined in the ABI.
  * @param functionData The data to pass to the function.
  * @returns The encoded data that can be used to send a transaction.
