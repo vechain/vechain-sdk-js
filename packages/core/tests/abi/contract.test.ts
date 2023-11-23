@@ -4,10 +4,13 @@ import {
     contractABI,
     contractABIWithEvents
 } from './fixture';
-import { contract } from '../../src/abi/contract';
-import { abi } from '../../src';
+import { contract, abi } from '../../src';
 import { ethers } from 'ethers';
-import { ContractInterfaceError } from '@vechainfoundation/vechain-sdk-errors';
+import {
+    InvalidAbiDataToDecodeError,
+    InvalidAbiDataToEncodeError,
+    InvalidAbiEventError
+} from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Contract tests - encode & decode
@@ -58,7 +61,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
     test('Fail to encode a contract function input', () => {
         expect(() =>
             contract.encodeFunctionInput(contractABI, 'undefined', [123])
-        ).toThrowError(ContractInterfaceError);
+        ).toThrowError(InvalidAbiDataToEncodeError);
     });
 
     /**
@@ -85,7 +88,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
     test('Fail to decode a contract function input', () => {
         expect(() =>
             contract.decodeFunctionInput(contractABI, 'setValue', '0x123')
-        ).toThrowError(ContractInterfaceError);
+        ).toThrowError(InvalidAbiDataToDecodeError);
     });
 
     /**
@@ -113,7 +116,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
     test('Fail to encode a contract event log', () => {
         expect(() =>
             contract.encodeEventLog(contractABI, 'undefined', [])
-        ).toThrowError(ContractInterfaceError);
+        ).toThrowError(InvalidAbiEventError);
     });
 
     /**
@@ -151,6 +154,6 @@ describe('Contract interface for ABI encoding/decoding', () => {
                 data: '0x123',
                 topics: []
             })
-        ).toThrowError(ContractInterfaceError);
+        ).toThrowError(InvalidAbiEventError);
     });
 });
