@@ -105,3 +105,20 @@ This project is licensed under the [MIT license](./.github/LICENSE.md).
 ## Contact information
 - Discord https://discord.com/invite/vechain
 - Support https://support.vechain.org
+
+
+                              @@@@@@@@@@@@@@                     /@@@@@                   
+                               @@@@@@@@@@@@@@@@                 @@@@@@                    
+                                @@@@@@     @@@@@               @@@@@                      
+                                  @@@@@     @@@@@             @@@@@                       
+                                   @@@@@     @@@@@&          @@@@@                        
+                                    @@@@@     @@@@@@       %@@@@@                         
+                                     @@@@@      @@@@@     @@@@@%                          
+                                      @@@@@@     @@@@@   @@@@@                            
+                                        @@@@@     @@@   @@@@@                             
+                                         @@@@@     @   @@@@@                              
+                                          @@@@@      @@@@@@                               
+                                           @@@@@    @@@@@#                                
+                                            @@@@@@ @@@@@                                  
+                                              @@@@@@@@@                                   
+                                               @@@@@@@                       
