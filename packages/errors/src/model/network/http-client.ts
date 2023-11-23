@@ -2,8 +2,6 @@ import { ErrorBase } from '../base';
 
 /**
  * HTTP Client Error.
- *
- * @public
  */
 interface HTTPClientErrorData {
     status?: number;
@@ -29,8 +27,6 @@ class HTTPClientError extends ErrorBase<
 
 /**
  * Errors enum.
- *
- * @public
  */
 enum HTTP_CLIENT {
     INVALID_HTTP_REQUEST = 'INVALID_HTTP_REQUEST'

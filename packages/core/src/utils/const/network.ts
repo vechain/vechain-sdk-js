@@ -97,8 +97,8 @@ const soloGenesisBlock = {
 };
 
 /**
- * @ignore since no relevant information is displayed in the documentation
  * Constants defining Vechain mainnet and testnet network information
+ * @internal
  */
 const networkInfo = {
     mainnet: {

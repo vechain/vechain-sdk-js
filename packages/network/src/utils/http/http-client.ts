@@ -10,10 +10,11 @@ import { buildError, HTTP_CLIENT } from '@vechainfoundation/vechain-sdk-errors';
  *
  * This class leverages Axios for handling HTTP requests and allows for interaction with HTTP services.
  * It is configured with a base URL and request timeout upon instantiation.
- *
- * @public
  */
 class HttpClient {
+    /**
+     * Axios instance to make http requests
+     */
     protected readonly axios: AxiosInstance;
 
     /**

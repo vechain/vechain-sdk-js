@@ -75,8 +75,6 @@ class ContractInterfaceError extends ErrorBase<
 
 /**
  * Errors enum.
- *
- * @public
  */
 enum ABI {
     INVALID_FUNCTION = 'INVALID_FUNCTION',

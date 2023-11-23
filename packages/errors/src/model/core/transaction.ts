@@ -55,8 +55,6 @@ class TransactionDelegationError extends ErrorBase<
 
 /**
  * Errors enum.
- *
- * @public
  */
 enum TRANSACTION {
     ALREADY_SIGNED = 'ALREADY_SIGNED',

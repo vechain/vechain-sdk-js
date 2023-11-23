@@ -1,40 +1,24 @@
 # @vechainfoundation/vechain-sdk-errors
 
-This is the **errors** package of the vechain SDK.
+Welcome to the **errors package** of the vechain SDK!
 
-## Build
+## Introduction
 
-To build this package, run the following command in your terminal:
-``` bash
-yarn build
-```
+The vechain SDK Error package is specifically designed to handle custom errors seamlessly integrated into the Core and Network packages. It serves as a dedicated solution for managing and communicating errors within these essential components, ensuring a streamlined and robust development experience. By leveraging vechain SDK Error, developers can enhance error handling and reporting, contributing to the overall reliability and resilience of the Core and Network functionalities within the vechain SDK ecosystem.
 
-## Scripts
+## Commands
 
-This package includes the following scripts:
-
-### lint
-
-Runs ESLint on the source code.
-
-### format
-
-Formats the source code using Prettier.
-
-### test:unit
-
-Runs the unit tests.
-
-### test:integration
-
-Runs the integration tests.
-
-### test
-
-Runs both unit and integration tests.
-
-You can run these scripts with `yarn <script-name>`. For example, to run the tests, you would use `yarn test`.
+- **Build**: Execute `yarn build` to build the package.
+- **Lint**: Execute `yarn lint` to lint the package.
+- **Format**: Execute `yarn format` to format the package.
+- **Test:unit**: Execute `yarn test:unit` to run unit tests.
+- **Test:integration**: Execute `yarn test:integration` to run integration tests.
+- **Test**: Execute `yarn test` to run all tests on the package.
 
 ## Usage
 
-Examples of usage can be found at [vechain SDK examples](https://github.com/vechainfoundation/vechain-sdk/tree/main/docs/examples)
+Explore examples of how to use this package in real-world scenarios at [vechain SDK examples](https://github.com/vechainfoundation/vechain-sdk/tree/main/docs/examples).
+
+Feel free to leverage these resources and don't hesitate to reach out if you have any questions or need further assistance.
+
+Happy coding with the vechain SDK!

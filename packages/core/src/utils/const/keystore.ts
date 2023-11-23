@@ -1,6 +1,5 @@
 /**
  * Keystore Scrypt params
- * @public
  */
 const SCRYPT_PARAMS = {
     N: 131072,
