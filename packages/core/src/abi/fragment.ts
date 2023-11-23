@@ -6,7 +6,7 @@ import {
     type FormatType,
     type BytesLike
 } from './types';
-import { ABI, buildError } from '@vechainfoundation/vechain-sdk-errors';
+import { ABI, buildError, assert } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Allowed formats for the signature.
@@ -25,13 +25,15 @@ const allowedSignatureFormats = ['sighash', 'minimal', 'full', 'json'];
  * @returns The signature.
  */
 function getSignature(fragment: Fragment, formatType: FormatType): string {
-    if (!allowedSignatureFormats.includes(formatType))
-        throw buildError(
-            ABI.INVALID_FORMAT_TYPE,
-            `Invalid format type. Allowed formats are: ${allowedSignatureFormats.join(
-                ', '
-            )}`
-        );
+    // If the formatType is not included in the allowed formats, throw an error.
+    assert(
+        allowedSignatureFormats.includes(formatType),
+        ABI.INVALID_FORMAT_TYPE,
+        `Invalid format type. Allowed formats are: ${allowedSignatureFormats.join(
+            ', '
+        )}`,
+        { formatType }
+    );
 
     return fragment.format(formatType);
 }
@@ -45,14 +47,11 @@ class Function<ABIType> {
     /**
      * The main fragment handled by ethers.js.
      *
-     * @public
      */
     public fragment: FunctionFragment;
 
     /**
      * The main interface handled by ethers.js.
-     *
-     * @public
      */
     public iface: Interface;
 
@@ -144,15 +143,11 @@ class Function<ABIType> {
 class Event<ABIType> {
     /**
      * The main fragment handled by ethers.js.
-     *
-     * @public
      */
     public fragment: ethers.EventFragment;
 
     /**
      * The main interface handled by ethers.js.
-     *
-     * @public
      */
     public iface: Interface;
 

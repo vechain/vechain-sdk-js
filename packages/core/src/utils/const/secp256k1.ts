@@ -1,6 +1,6 @@
 /**
  * Biggest value of private key
- * @public
+ * @internal
  */
 const PRIVATE_KEY_MAX_VALUE = Buffer.from(
     'fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141',

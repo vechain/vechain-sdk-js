@@ -51,8 +51,6 @@ class InvalidSecp256k1SignatureRecoveryError extends ErrorBase<
 
 /**
  * Errors enum.
- *
- * @public
  */
 enum SECP256K1 {
     INVALID_SECP256k1_PRIVATE_KEY = 'INVALID_SECP256k1_PRIVATE_KEY',

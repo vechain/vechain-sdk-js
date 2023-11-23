@@ -1,4 +1,4 @@
-import { DATA, buildError } from '@vechainfoundation/vechain-sdk-errors';
+import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
 import {
     type HttpClient,
     revisionUtils,
@@ -39,22 +39,21 @@ class AccountsClient {
         address: string,
         options?: AccountInputOptions
     ): Promise<AccountDetail> {
-        if (!addressUtils.isAddress(address)) {
-            throw buildError(
-                DATA.INVALID_DATA_TYPE,
-                'Invalid address. The address must be 20 bytes (a 42 characters hex string with a `0x` prefix.)'
-            );
-        }
+        assert(
+            addressUtils.isAddress(address),
+            DATA.INVALID_DATA_TYPE,
+            'Invalid address. The address must be 20 bytes (a 42 characters hex string with a `0x` prefix.)',
+            { address }
+        );
 
-        if (
-            options?.revision != null &&
-            !revisionUtils.isRevisionAccount(options.revision)
-        ) {
-            throw buildError(
-                DATA.INVALID_DATA_TYPE,
-                'Invalid revision. The revision must be a string representing a block number or block id.'
-            );
-        }
+        assert(
+            options?.revision === undefined ||
+                options?.revision === null ||
+                revisionUtils.isRevisionAccount(options.revision),
+            DATA.INVALID_DATA_TYPE,
+            'Invalid revision. The revision must be a string representing a block number or block id.',
+            { revision: options?.revision }
+        );
 
         return (await this.httpClient.http(
             'GET',
@@ -79,23 +78,21 @@ class AccountsClient {
         address: string,
         options?: AccountInputOptions
     ): Promise<string> {
-        if (!addressUtils.isAddress(address)) {
-            throw buildError(
-                DATA.INVALID_DATA_TYPE,
-                'Invalid address. The address must be 20 bytes (a 42 characters hex string with a `0x` prefix.)',
-                { address }
-            );
-        }
+        assert(
+            addressUtils.isAddress(address),
+            DATA.INVALID_DATA_TYPE,
+            'Invalid address. The address must be 20 bytes (a 42 characters hex string with a `0x` prefix.)',
+            { address }
+        );
 
-        if (
-            options?.revision != null &&
-            !revisionUtils.isRevisionAccount(options?.revision)
-        )
-            throw buildError(
-                DATA.INVALID_DATA_TYPE,
-                'Invalid revision. The revision must be a string representing a block number or block id.',
-                { revision: options?.revision }
-            );
+        assert(
+            options?.revision === undefined ||
+                options?.revision === null ||
+                revisionUtils.isRevisionAccount(options.revision),
+            DATA.INVALID_DATA_TYPE,
+            'Invalid revision. The revision must be a string representing a block number or block id.',
+            { revision: options?.revision }
+        );
 
         const result = (await this.httpClient.http(
             'GET',
@@ -124,28 +121,29 @@ class AccountsClient {
         position: string,
         options?: AccountInputOptions
     ): Promise<string> {
-        if (!addressUtils.isAddress(address)) {
-            throw buildError(
-                DATA.INVALID_DATA_TYPE,
-                'Invalid address. The address must be 20 bytes (a 42 characters hex string with a `0x` prefix.)'
-            );
-        }
+        assert(
+            addressUtils.isAddress(address),
+            DATA.INVALID_DATA_TYPE,
+            'Invalid address. The address must be 20 bytes (a 42 characters hex string with a `0x` prefix.)',
+            { address }
+        );
 
-        if (
-            options?.revision != null &&
-            !revisionUtils.isRevisionAccount(options?.revision)
-        )
-            throw buildError(
-                DATA.INVALID_DATA_TYPE,
-                'Invalid `revision`. The revision must be a string representing a block number or block id.'
-            );
+        assert(
+            options?.revision === undefined ||
+                options?.revision === null ||
+                revisionUtils.isRevisionAccount(options.revision),
+            DATA.INVALID_DATA_TYPE,
+            'Invalid revision. The revision must be a string representing a block number or block id.',
+            { revision: options?.revision }
+        );
 
         // The position represents a slot in the VM storage. Each slot is 32 bytes.
-        if (!dataUtils.isHexString(position) || position.length !== 66)
-            throw buildError(
-                DATA.INVALID_DATA_TYPE,
-                'Invalid `position`. The position must be a hex string of 32 bytes (66 characters including `0x` prefix).'
-            );
+        assert(
+            dataUtils.isHexString(position) && position.length === 66,
+            DATA.INVALID_DATA_TYPE,
+            'Invalid `position`. The position must be a hex string of 32 bytes (66 characters including `0x` prefix).',
+            { position }
+        );
 
         const result = (await this.httpClient.http(
             'GET',

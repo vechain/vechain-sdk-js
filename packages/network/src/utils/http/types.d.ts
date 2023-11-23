@@ -5,8 +5,6 @@ import { type AxiosInstance } from 'axios';
  *
  * This interface specifies options for configuring an HTTP request, including query parameters,
  * request body, custom headers, and a function to validate response headers.
- *
- * @public
  */
 interface HttpParams {
     /**
@@ -33,7 +31,6 @@ interface HttpParams {
 
 /**
  * Represents the options for configuring an HTTP client.
- * @public
  */
 interface HttpClientOptions {
     /**

@@ -24,8 +24,6 @@ class InvalidKError extends ErrorBase<BLOOM.INVALID_K, DefaultErrorData> {}
 
 /**
  * Errors enum.
- *
- * @public
  */
 enum BLOOM {
     INVALID_BLOOM = 'INVALID_BLOOM',
