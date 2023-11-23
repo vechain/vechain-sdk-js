@@ -1,10 +1,20 @@
-import { sleep } from './common';
+import { type SyncPollInputOptions } from './types';
+
+/**
+ * Sleep for a given amount of time (in milliseconds).
+ *
+ * @param delay - The amount of time to sleep in milliseconds.
+ */
+async function sleep(delayInMilliseconds: number): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve, delayInMilliseconds));
+}
 
 /**
  * Poll until the condition is met.
  *
- * @note: Be careful, this function is synchronous and will block the thread until the condition is met.
+ * @note: Be careful!, this function is synchronous and will block the thread until the condition is met.
  * Thus mean it can run forever if the condition is never met.
+ * To avoid infinite loop, you can use the `options.maximumIterations` parameter.
  *
  * @example It can be used to wait until:
  *  - A balance is updated after a transaction is send
@@ -13,17 +23,26 @@ import { sleep } from './common';
  *  ...
  *
  * @param callBack - The function to be called.
- * @param requestIntervalInMilliseconds - The interval of time (in milliseconds) between each request.
+ * @param options - Polling options. @see{SyncPollInputOptions} type.
  * @returns An object with a `waitUntil` method. It blocks execution until the condition is met. When the condition is met, it returns the result of the poll.
  */
-function syncPoll<TReturnType>(
+function SyncPoll<TReturnType>(
     callBack: () => Promise<TReturnType>,
-    requestIntervalInMilliseconds: number
+    options?: SyncPollInputOptions
 ): {
     waitUntil: (
         condition: (data: TReturnType) => boolean
     ) => Promise<TReturnType>;
 } {
+    // Number of iterations
+    let currentIteration = 0;
+
+    // Current result
+    let currentResult: TReturnType;
+
+    // Polling condition
+    let pollingCondition: boolean = false;
+
     return {
         /**
          * Poll until the condition is met.
@@ -34,18 +53,37 @@ function syncPoll<TReturnType>(
         waitUntil: async (
             condition: (data: TReturnType) => boolean
         ): Promise<TReturnType> => {
-            let result: TReturnType;
             do {
-                // Fetch the result of promise
-                result = await callBack();
+                // 1 - Fetch the result of promise
+                currentResult = await callBack();
 
-                // Sleep for the interval
-                await sleep(requestIntervalInMilliseconds);
-            } while (!condition(result));
+                // 2 - Sleep for the interval (in a synchronous way)
+                await sleep(
+                    options?.requestIntervalInMilliseconds !== undefined
+                        ? options.requestIntervalInMilliseconds
+                        : 1000
+                );
 
-            return result;
+                // 3 - Increment the current iteration
+                currentIteration = currentIteration + 1;
+
+                // 4 - Check if the poll should be stopped (in a forced way OR not)
+                // 4.1 - If the condition is met or not
+                const notConditionSatisfied = !condition(currentResult);
+
+                // 4.2 - Stop forced on iterations
+                const mustStopForcedOnIterations =
+                    options?.maximumIterations !== undefined
+                        ? currentIteration >= options.maximumIterations
+                        : false;
+
+                pollingCondition =
+                    notConditionSatisfied && !mustStopForcedOnIterations;
+            } while (pollingCondition);
+
+            return currentResult;
         }
     };
 }
 
-export { syncPoll };
+export { SyncPoll };
