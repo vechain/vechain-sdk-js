@@ -42,8 +42,6 @@ class CertificateInvalidSignerError extends ErrorBase<
 
 /**
  * Errors enum.
- *
- * @public
  */
 enum CERTIFICATE {
     CERTIFICATE_NOT_SIGNED = 'CERTIFICATE_NOT_SIGNED',

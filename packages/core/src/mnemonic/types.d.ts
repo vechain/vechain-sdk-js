@@ -1,7 +1,6 @@
 /**
  * Type of the wordlist size.
  * Every 4 bytes produce 3 words.
- * @public
  */
 type WordlistSizeType = 12 | 15 | 18 | 21 | 24;
 

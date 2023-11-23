@@ -8,8 +8,6 @@ import { type Event, type Transfer } from '../logs';
  * * getBytecode
  * * getStorage
  * Methods
- *
- * @public
  */
 interface BlockInputOptions {
     /**

@@ -1,6 +1,6 @@
 /**
  * Zero buffer
- * @public
+ * @internal
  *
  * @example ZERO_BUFFER(8) -> 0x00000000 , ... , ZERO_BUFFER(n) -> 0x0...0
  */
@@ -9,7 +9,6 @@ const ZERO_BUFFER = (size: number): Buffer => Buffer.alloc(size, 0);
 /**
  * Regular expression for validating hexadecimal strings.
  * Allows optional "0x" prefix and validates both lower and uppercase hex characters.
- * @public
  */
 const HEX_REGEX_OPTIONAL_PREFIX = /^(0x)?[0-9a-fA-F]*$/;
 

@@ -47,14 +47,11 @@ class Function<ABIType> {
     /**
      * The main fragment handled by ethers.js.
      *
-     * @public
      */
     public fragment: FunctionFragment;
 
     /**
      * The main interface handled by ethers.js.
-     *
-     * @public
      */
     public iface: Interface;
 
@@ -146,15 +143,11 @@ class Function<ABIType> {
 class Event<ABIType> {
     /**
      * The main fragment handled by ethers.js.
-     *
-     * @public
      */
     public fragment: ethers.EventFragment;
 
     /**
      * The main interface handled by ethers.js.
-     *
-     * @public
      */
     public iface: Interface;
 
