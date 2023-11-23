@@ -3,7 +3,7 @@ import { thorestClient } from '../../../fixture';
 import { Poll } from '../../../../src/utils/poll';
 
 /**
- * Test the Synchronous
+ * Test the Synchronous with real world example
  * @group integration/utils/sync-poll-example-testnet
  */
 describe('Synchronous poll tests - Testnet', () => {

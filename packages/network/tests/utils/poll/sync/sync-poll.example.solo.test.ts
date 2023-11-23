@@ -10,7 +10,7 @@ import {
 import { sendTransactionErrors } from '../../../clients/thorest-client/transactions/fixture';
 
 /**
- * Test the Synchronous poll on Solo node
+ * Test the Synchronous poll on Solo node with real world example
  * @group integration/utils/sync-poll-example-solo
  */
 describe('Synchronous poll tests - Solo', () => {
