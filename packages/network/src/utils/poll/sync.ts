@@ -1,5 +1,10 @@
 import { type SyncPollInputOptions } from './types';
-import { assert, DATA } from '@vechainfoundation/vechain-sdk-errors';
+import {
+    assert,
+    DATA,
+    buildError,
+    POLL_ERROR
+} from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Sleep for a given amount of time (in milliseconds).
@@ -72,35 +77,44 @@ function SyncPoll<TReturnType>(
         waitUntil: async (
             condition: (data: TReturnType) => boolean
         ): Promise<TReturnType> => {
-            do {
-                // 1 - Fetch the result of promise
-                currentResult = await callBack();
+            try {
+                do {
+                    // 1 - Fetch the result of promise
+                    currentResult = await callBack();
 
-                // 2 - Sleep for the interval (in a synchronous way)
-                await sleep(
-                    options?.requestIntervalInMilliseconds !== undefined
-                        ? options.requestIntervalInMilliseconds
-                        : 1000
+                    // 2 - Sleep for the interval (in a synchronous way)
+                    await sleep(
+                        options?.requestIntervalInMilliseconds !== undefined
+                            ? options.requestIntervalInMilliseconds
+                            : 1000
+                    );
+
+                    // 3 - Increment the current iteration
+                    currentIteration = currentIteration + 1;
+
+                    // 4 - Check if the poll should be stopped (in a forced way OR not)
+                    // 4.1 - If the condition is met or not
+                    const notConditionSatisfied = !condition(currentResult);
+
+                    // 4.2 - Stop forced on iterations
+                    const mustStopForcedOnIterations =
+                        options?.maximumIterations !== undefined
+                            ? currentIteration >= options.maximumIterations
+                            : false;
+
+                    pollingCondition =
+                        notConditionSatisfied && !mustStopForcedOnIterations;
+                } while (pollingCondition);
+
+                return currentResult;
+            } catch (error) {
+                throw buildError(
+                    POLL_ERROR.POOLL_EXECUTION_ERROR,
+                    'Error on function execution',
+                    { functionName: callBack.name },
+                    error
                 );
-
-                // 3 - Increment the current iteration
-                currentIteration = currentIteration + 1;
-
-                // 4 - Check if the poll should be stopped (in a forced way OR not)
-                // 4.1 - If the condition is met or not
-                const notConditionSatisfied = !condition(currentResult);
-
-                // 4.2 - Stop forced on iterations
-                const mustStopForcedOnIterations =
-                    options?.maximumIterations !== undefined
-                        ? currentIteration >= options.maximumIterations
-                        : false;
-
-                pollingCondition =
-                    notConditionSatisfied && !mustStopForcedOnIterations;
-            } while (pollingCondition);
-
-            return currentResult;
+            }
         }
     };
 }

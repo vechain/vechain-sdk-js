@@ -1,12 +1,30 @@
-import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
+import {
+    buildError,
+    DATA,
+    InvalidDataTypeError
+} from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Simple increment function fixture
  */
-const simpleIncrementFunction = (initialValue: number, max: number): number => {
+const simpleIncrementFunction = async (
+    initialValue: number,
+    max: number
+): Promise<number> => {
     if (initialValue < max)
-        return simpleIncrementFunction(initialValue + 1, max);
+        return await simpleIncrementFunction(initialValue + 1, max);
     return initialValue;
+};
+
+/**
+ * Simple throw error function fixture
+ */
+const simpleThrowErrorFunctionIfInputIs10 = async (
+    a: number
+): Promise<number> => {
+    if (a === 10)
+        throw buildError(DATA.INVALID_DATA_RETURN_TYPE, 'a cannot be 10');
+    return await simpleIncrementFunction(a, a + 1);
 };
 
 /**
@@ -34,4 +52,8 @@ const invalidOptionsParameters = [
         expectedError: InvalidDataTypeError
     }
 ];
-export { simpleIncrementFunction, invalidOptionsParameters };
+export {
+    simpleIncrementFunction,
+    invalidOptionsParameters,
+    simpleThrowErrorFunctionIfInputIs10
+};

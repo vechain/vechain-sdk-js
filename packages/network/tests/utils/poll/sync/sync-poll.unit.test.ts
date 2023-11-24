@@ -1,6 +1,11 @@
 import { describe, expect, test } from '@jest/globals';
 import { Poll } from '../../../../src/utils/poll';
-import { invalidOptionsParameters, simpleIncrementFunction } from './fixture';
+import {
+    invalidOptionsParameters,
+    simpleIncrementFunction,
+    simpleThrowErrorFunctionIfInputIs10
+} from './fixture';
+import { PoolExecutionError } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Test the Synchronous poll functionalities side
@@ -17,8 +22,7 @@ describe('Synchronous poll unit tests', () => {
         test('Sync poll without blocking execution on steps', async () => {
             for (const requestInterval of [undefined, 100, 1000]) {
                 const result = await Poll.SyncPoll(
-                    async () =>
-                        await Promise.resolve(simpleIncrementFunction(0, 10)),
+                    async () => await simpleIncrementFunction(0, 10),
                     {
                         requestIntervalInMilliseconds: requestInterval
                     }
@@ -38,8 +42,7 @@ describe('Synchronous poll unit tests', () => {
             // Sync poll - Set or not the request interval
             for (const requestInterval of [undefined, 100]) {
                 const result = await Poll.SyncPoll(
-                    async () =>
-                        await Promise.resolve(simpleIncrementFunction(0, 10)),
+                    async () => await simpleIncrementFunction(0, 10),
                     {
                         requestIntervalInMilliseconds: requestInterval,
                         // Stop after 3 iterations
@@ -62,10 +65,7 @@ describe('Synchronous poll unit tests', () => {
             for (const invalidParameter of invalidOptionsParameters) {
                 await expect(async () => {
                     await Poll.SyncPoll(
-                        async () =>
-                            await Promise.resolve(
-                                simpleIncrementFunction(0, 10)
-                            ),
+                        async () => await simpleIncrementFunction(0, 10),
                         {
                             // Invalids
                             requestIntervalInMilliseconds:
@@ -78,6 +78,34 @@ describe('Synchronous poll unit tests', () => {
                         return result === 10;
                     });
                 }).rejects.toThrowError(invalidParameter.expectedError);
+            }
+        });
+    });
+
+    /**
+     * Tests when errors are thrown
+     */
+    describe('Throw error', () => {
+        /**
+         * Test with blocking execution on steps
+         */
+        test('Throw error', async () => {
+            // Sync poll - Set or not the request interval
+            for (const requestInterval of [undefined, 100]) {
+                await expect(async () => {
+                    await Poll.SyncPoll(
+                        async () =>
+                            await simpleThrowErrorFunctionIfInputIs10(10),
+                        {
+                            requestIntervalInMilliseconds: requestInterval,
+                            // Stop after 3 iterations
+                            maximumIterations: 3
+                        }
+                    ).waitUntil((result) => {
+                        // @IMPORTANT: Here this simple function will never reach 11. But who cares, we know that it will throw an error. And after throwing an error, it will stop.
+                        return result === 11;
+                    });
+                }).rejects.toThrowError(PoolExecutionError);
             }
         });
     });
