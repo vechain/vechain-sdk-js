@@ -4,6 +4,8 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
+    "test:before": "docker compose up -d",
+    "test:after": "docker compose down",
     "test:examples": "ts-node-test examples/",
     "build": "find . -name \"*.md\" -type f -maxdepth 1 ! -name \"README.md\" -delete && tsup builddocs.ts && node dist/builddocs.cjs"
   },
