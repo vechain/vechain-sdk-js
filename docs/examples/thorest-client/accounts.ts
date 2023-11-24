@@ -2,6 +2,7 @@ import {
     HttpClient,
     ThorestClient
 } from '@vechainfoundation/vechain-sdk-network';
+import { expect } from 'expect';
 
 // Url of the testnet network
 const _testnetUrl = 'https://testnet.vechain.org/';
@@ -16,17 +17,19 @@ const thorestTestnetClient = new ThorestClient(testNetwork);
 const accountDetails = await thorestTestnetClient.accounts.getAccount(
     '0x5034aa590125b64023a0262112b98d72e3c8e40e'
 );
-console.log(accountDetails);
+expect(accountDetails).toBeDefined();
 
 // Get account code
 const accountCode = await thorestTestnetClient.accounts.getBytecode(
     '0x5034aa590125b64023a0262112b98d72e3c8e40e'
 );
-console.log(accountCode);
+expect(accountCode).toEqual('0x');
 
 // Get account storage
 const accountStorage = await thorestTestnetClient.accounts.getStorageAt(
     '0x5034aa590125b64023a0262112b98d72e3c8e40e',
     '0x0000000000000000000000000000000000000000000000000000000000000001'
 );
-console.log(accountStorage);
+expect(accountStorage).toEqual(
+    '0x0000000000000000000000000000000000000000000000000000000000000000'
+);

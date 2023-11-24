@@ -2,6 +2,7 @@ import {
     HttpClient,
     ThorestClient
 } from '@vechainfoundation/vechain-sdk-network';
+import { expect } from 'expect';
 
 // Url of the testnet network
 const _testnetUrl = 'https://testnet.vechain.org/';
@@ -38,7 +39,7 @@ const eventLogs = await thorestTestnetClient.logs.filterEventLogs({
     // Specify the order in which logs should be retrieved (ascending in this case)
     order: 'asc'
 });
-console.log(eventLogs);
+expect(eventLogs).toBeDefined();
 
 // Filters transfer logs based on the provided criteria.
 const transferLogs = await thorestTestnetClient.logs.filterTransferLogs({
@@ -65,4 +66,4 @@ const transferLogs = await thorestTestnetClient.logs.filterTransferLogs({
     // Specify the order in which transfer logs should be retrieved (ascending in this case)
     order: 'asc'
 });
-console.log(transferLogs);
+expect(transferLogs).toBeDefined();
