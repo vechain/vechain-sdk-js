@@ -1,4 +1,5 @@
 import { EventEmitter } from 'events';
+import { assert, DATA } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Poll in an event based way.
@@ -13,8 +14,26 @@ import { EventEmitter } from 'events';
  *  ...
  */
 class EventPoll<TReturnType> extends EventEmitter {
+    /**
+     * The function to be called.
+     */
     private readonly callBack: () => Promise<TReturnType>;
+
+    /**
+     * The interval of time (in milliseconds) between each request.
+     */
     private readonly requestIntervalInMilliseconds: number;
+
+    /**
+     * The current iteration. It counts how many iterations have been done.
+     * This parameter is useful to know how many iterations have been done.
+     * For example, it can be used to stop the poll after a certain number of iterations.
+     */
+    private currentIteration: number = 0;
+
+    /**
+     * The interval used to poll.
+     */
     private intervalId?: NodeJS.Timeout;
 
     /**
@@ -29,25 +48,149 @@ class EventPoll<TReturnType> extends EventEmitter {
     ) {
         super();
         this.callBack = callBack;
+
+        // Positive nuber for request interval
+        assert(
+            requestIntervalInMilliseconds > 0,
+            DATA.INVALID_DATA_TYPE,
+            'requestIntervalInMilliseconds must be a positive number',
+            { requestIntervalInMilliseconds }
+        );
+
         this.requestIntervalInMilliseconds = requestIntervalInMilliseconds;
     }
 
+    /**
+     * Start listening to the event.
+     */
     startListen(): void {
+        // Start listening
+        this.emit('start', { eventPoll: this });
+
+        // Create an interval
         this.intervalId = setInterval(() => {
+            // Call the promise callback
             this.callBack()
+                // Emit the data
                 .then((data) => {
-                    this.emit('data', data, this);
+                    this.emit('data', { data, eventPoll: this });
                 })
+                // Emit the error (if any) and stop listening
                 .catch((error) => {
                     this.emit('error', error);
                     this.stopListen();
                 });
+
+            // Increment the iteration
+            this.currentIteration = this.currentIteration + 1;
         }, this.requestIntervalInMilliseconds);
     }
 
+    /**
+     * Stop listening to the event.
+     */
     stopListen(): void {
         clearInterval(this.intervalId);
+        this.emit('stop', { eventPoll: this });
     }
+
+    /**
+     * Get how many iterations have been done.
+     *
+     * @returns The number of iterations.
+     */
+    public get getCurrentIteration(): number {
+        return this.currentIteration;
+    }
+
+    /* --- Overloaded of 'on' event emitter start --- */
+
+    /**
+     * Listen to the 'data' event.
+     * This method is the redefinition of the EventEmitter.on method.
+     * Because the EventEmitter.on method does not allow to specify the type of the data.
+     * And we must be type safe.
+     *
+     * This is equivalent to:
+     *
+     * ```typescript
+     * eventPoll.on('data', (data) => { ... });
+     * ```
+     * @param onDataCallback - The callback to be called when the event is emitted.
+     */
+    public onData(
+        onDataCallback: (
+            data: TReturnType,
+            eventPoll: EventPoll<TReturnType>
+        ) => void
+    ): void {
+        this.on('data', (data) => {
+            onDataCallback(
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                data.data as TReturnType,
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                data.eventPoll as EventPoll<TReturnType>
+            );
+        });
+    }
+
+    /**
+     * Listen to the 'error' event.
+     * This method is the redefinition of the EventEmitter.on method.
+     * Because the EventEmitter.on method does not allow to specify the type of the data.
+     * And we must be type safe.
+     *
+     * This is equivalent to:
+     *
+     * ```typescript
+     * eventPoll.on('error', (data) => { ... });
+     * ```
+     * @param onErrorCallback - The callback to be called when the event is emitted.
+     */
+    public onError(onErrorCallback: (error: Error) => void): void {
+        this.on('data', (data) => {
+            onErrorCallback(
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                data.error as Error
+            );
+        });
+    }
+
+    /**
+     * Listen to the 'start' event.
+     * This happens when the poll is stopped.
+     *
+     * @param onStartCallback - The callback to be called when the event is emitted.
+     */
+    public onStart(
+        onStartCallback: (eventPoll: EventPoll<TReturnType>) => void
+    ): void {
+        this.on('start', (data) => {
+            onStartCallback(
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                data.eventPoll as EventPoll<TReturnType>
+            );
+        });
+    }
+
+    /**
+     * Listen to the 'stop' event.
+     * This happens when the poll is stopped.
+     *
+     * @param onStopCallback - The callback to be called when the event is emitted.
+     */
+    public onStop(
+        onStopCallback: (eventPoll: EventPoll<TReturnType>) => void
+    ): void {
+        this.on('stop', (data) => {
+            onStopCallback(
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                data.eventPoll as EventPoll<TReturnType>
+            );
+        });
+    }
+
+    /* --- Overloaded of 'on' event emitter end --- */
 }
 
 export { EventPoll };
