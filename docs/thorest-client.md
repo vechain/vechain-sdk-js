@@ -437,7 +437,7 @@ The `getTransactionReceipt` method allows developers to retrieve the receipt of 
 
 Fee delegation is a feature on the VechainThor blockchain which enables the transaction sender to request another entity, a sponsor, to pay for the transaction fee on the sender's behalf. Fee delegation greatly improves the user experience, especially in the case of onboarding new users by removing the necessity of the user having to first acquire cryptocurrency assets before being able to interact on-chain.
 
-The following code demonstrates how to use the Thorest-client woth the fee delegation feature:
+The following code demonstrates how to use the Thorest-client with the fee delegation feature:
 
 ```typescript { name=delegated-transactions, category=example }
 import {
