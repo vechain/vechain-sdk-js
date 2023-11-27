@@ -107,7 +107,11 @@ describe('Events poll unit tests', () => {
         /**
          * Test the error event
          */
-        test('Test the error event', () => {
+        test('Test the error event', async () => {
+            jest.useFakeTimers({
+                legacyFakeTimers: true
+            });
+
             // Create event poll
             const eventPoll = createEventPoll(
                 async () => await simpleThrowErrorFunctionIfInputIs10(10),
@@ -118,6 +122,8 @@ describe('Events poll unit tests', () => {
             });
 
             eventPoll.startListen();
+
+            await advanceTimersByTimeAndTick(1000);
         });
     });
 });
