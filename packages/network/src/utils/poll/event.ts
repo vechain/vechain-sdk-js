@@ -88,7 +88,7 @@ class EventPoll<TReturnType> extends EventEmitter {
                 'Error during the execution of the poll',
                 {
                     message: (error as Error).message,
-                    functionName: this.pollingFunction.name
+                    functionName: this.pollingFunction.name ?? 'anonymous'
                 }
             );
 
