@@ -31,7 +31,7 @@ const simpleThrowErrorFunctionIfInputIs10 = async (
 /**
  * Simple invalid parameters fixture
  */
-const invalidOptionsParametersForSyncPollTest = [
+const invalidOptionsParametersForPollTests = [
     {
         requestIntervalInMilliseconds: -1,
         maximumIterations: 3,
@@ -51,10 +51,20 @@ const invalidOptionsParametersForSyncPollTest = [
         requestIntervalInMilliseconds: 1,
         maximumIterations: -3,
         expectedError: InvalidDataTypeError
+    },
+    {
+        requestIntervalInMilliseconds: 0.5,
+        maximumIterations: 1,
+        expectedError: InvalidDataTypeError
+    },
+    {
+        requestIntervalInMilliseconds: 5,
+        maximumIterations: 1.7,
+        expectedError: InvalidDataTypeError
     }
 ];
 export {
     simpleIncrementFunction,
-    invalidOptionsParametersForSyncPollTest,
+    invalidOptionsParametersForPollTests,
     simpleThrowErrorFunctionIfInputIs10
 };

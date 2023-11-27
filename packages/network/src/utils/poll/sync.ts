@@ -43,7 +43,8 @@ function SyncPoll<TReturnType>(
     // Positive number for request interval
     assert(
         options?.requestIntervalInMilliseconds === undefined ||
-            options?.requestIntervalInMilliseconds > 0,
+            (options?.requestIntervalInMilliseconds > 0 &&
+                Number.isInteger(options?.requestIntervalInMilliseconds)),
         DATA.INVALID_DATA_TYPE,
         'options.requestIntervalInMilliseconds must be a positive number',
         { options }
@@ -52,7 +53,8 @@ function SyncPoll<TReturnType>(
     // Positive number for maximum iterations
     assert(
         options?.maximumIterations === undefined ||
-            options?.maximumIterations > 0,
+            (options?.maximumIterations > 0 &&
+                Number.isInteger(options?.maximumIterations)),
         DATA.INVALID_DATA_TYPE,
         'options.maximumIterations must be a positive number',
         { options }

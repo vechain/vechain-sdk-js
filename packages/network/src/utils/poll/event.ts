@@ -61,7 +61,8 @@ class EventPoll<TReturnType> extends EventEmitter {
 
         // Positive number for request interval
         assert(
-            requestIntervalInMilliseconds > 0,
+            requestIntervalInMilliseconds > 0 &&
+                Number.isInteger(requestIntervalInMilliseconds),
             DATA.INVALID_DATA_TYPE,
             'requestIntervalInMilliseconds must be a positive number',
             { requestIntervalInMilliseconds }

@@ -1,13 +1,11 @@
 import { afterEach, describe, expect, jest, test } from '@jest/globals';
 import { createEventPoll } from '../../../../src/utils/poll/event';
 import {
+    invalidOptionsParametersForPollTests,
     simpleIncrementFunction,
     simpleThrowErrorFunctionIfInputIs10
 } from '../fixture';
-import {
-    InvalidDataTypeError,
-    PollExecutionError
-} from '@vechainfoundation/vechain-sdk-errors';
+import { PollExecutionError } from '@vechainfoundation/vechain-sdk-errors';
 import { advanceTimersByTimeAndTick } from '../../../test-utils';
 
 /**
@@ -143,12 +141,20 @@ describe('Events poll unit tests', () => {
          * Invalid request interval
          */
         test('Invalid request interval', () => {
-            expect(() => {
-                createEventPoll(
-                    async () => await simpleThrowErrorFunctionIfInputIs10(9),
-                    -1
-                );
-            }).toThrowError(InvalidDataTypeError);
+            for (const invalidParameter of invalidOptionsParametersForPollTests.filter(
+                // Remove cases that are valid for sync poll
+                (value) =>
+                    !Number.isInteger(value.requestIntervalInMilliseconds) ||
+                    value.requestIntervalInMilliseconds <= 0
+            )) {
+                expect(() => {
+                    createEventPoll(
+                        async () =>
+                            await simpleThrowErrorFunctionIfInputIs10(9),
+                        invalidParameter.requestIntervalInMilliseconds
+                    );
+                }).toThrowError(invalidParameter.expectedError);
+            }
         });
     });
 });
