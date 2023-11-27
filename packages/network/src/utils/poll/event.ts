@@ -110,8 +110,10 @@ class EventPoll<TReturnType> extends EventEmitter {
         this.emit('start', { eventPoll: this });
 
         // Create an interval
-        this.intervalId = setInterval((): void => {
-            void this._intervalLoop().then();
+        this.intervalId = setInterval(() => {
+            void (async () => {
+                await this._intervalLoop();
+            })();
         }, this.requestIntervalInMilliseconds);
     }
 

@@ -1,11 +1,11 @@
-import { describe, expect, test } from '@jest/globals';
+import { afterEach, describe, expect, jest, test } from '@jest/globals';
 import { createEventPoll } from '../../../../src/utils/poll/event';
-
 import {
     simpleIncrementFunction,
     simpleThrowErrorFunctionIfInputIs10
 } from '../fixture';
 import { PoolExecutionError } from '@vechainfoundation/vechain-sdk-errors';
+import { advanceTimersByTimeAndTick } from '../../../test-utils';
 
 /**
  * Test the Asynchronous Event poll functionalities side
@@ -16,10 +16,18 @@ describe('Events poll unit tests', () => {
      * Correct cases
      */
     describe('Correct cases', () => {
+        afterEach(() => {
+            jest.useRealTimers();
+        });
+
         /**
          * Simple start and stop of an event poll
          */
-        test('Simple start and stop', () => {
+        test('Simple start and stop', async () => {
+            jest.useFakeTimers({
+                legacyFakeTimers: true
+            });
+
             // Create event poll
             const eventPoll = createEventPoll(
                 async () => await simpleIncrementFunction(0, 10),
@@ -39,6 +47,9 @@ describe('Events poll unit tests', () => {
             // Start listening and continue the execution flow
             eventPoll.startListen();
 
+            // Advance timers by the specified interval & tick
+            await advanceTimersByTimeAndTick(1000);
+
             // Stop listening
             eventPoll.stopListen();
         });
@@ -46,11 +57,15 @@ describe('Events poll unit tests', () => {
         /**
          * Simple start and stop of an event poll and test asynchronicity
          */
-        test('Create event poll and test asynchronicity', () => {
+        test('Create event poll and test asynchronicity', async () => {
+            jest.useFakeTimers({
+                legacyFakeTimers: true
+            });
+
             // Create event poll
             const eventPoll = createEventPoll(
                 async () => await simpleIncrementFunction(0, 10),
-                100
+                1000
             )
                 .onData((data, eventPoll) => {
                     expect(data).toBe(10);
@@ -69,6 +84,19 @@ describe('Events poll unit tests', () => {
 
             // Test "Asynchronicity". Code must be executed after the eventPoll.startListen() call
             expect(true).toBe(true);
+
+            // Advance timers by the specified interval & tick
+            await advanceTimersByTimeAndTick(1000);
+
+            expect(eventPoll.getCurrentIteration).toBe(1);
+
+            await advanceTimersByTimeAndTick(1000);
+
+            expect(eventPoll.getCurrentIteration).toBe(2);
+
+            await advanceTimersByTimeAndTick(1000);
+
+            expect(eventPoll.getCurrentIteration).toBe(3);
         }, 5000);
     });
 
