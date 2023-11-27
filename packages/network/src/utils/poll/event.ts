@@ -152,7 +152,7 @@ class EventPoll<TReturnType> extends EventEmitter {
             data: TReturnType,
             eventPoll: EventPoll<TReturnType>
         ) => void
-    ): EventPoll<TReturnType> {
+    ): this {
         this.on('data', (data) => {
             onDataCallback(
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -173,7 +173,7 @@ class EventPoll<TReturnType> extends EventEmitter {
      */
     public onStart(
         onStartCallback: (eventPoll: EventPoll<TReturnType>) => void
-    ): EventPoll<TReturnType> {
+    ): this {
         this.on('start', (data) => {
             onStartCallback(
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -197,9 +197,7 @@ class EventPoll<TReturnType> extends EventEmitter {
      * ```
      * @param onErrorCallback - The callback to be called when the event is emitted.
      */
-    public onError(
-        onErrorCallback: (error: Error) => void
-    ): EventPoll<TReturnType> {
+    public onError(onErrorCallback: (error: Error) => void): this {
         this.on('err', (error) => {
             onErrorCallback(
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -218,7 +216,7 @@ class EventPoll<TReturnType> extends EventEmitter {
      */
     public onStop(
         onStopCallback: (eventPoll: EventPoll<TReturnType>) => void
-    ): EventPoll<TReturnType> {
+    ): this {
         this.on('stop', (data) => {
             onStopCallback(
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
