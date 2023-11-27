@@ -134,7 +134,8 @@ class TransactionsClient {
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
                 'Invalid raw transaction given as input. Input must be a valid raw transaction. Error occurs while decoding the transaction.',
-                { raw }
+                { raw },
+                error
             );
         }
 

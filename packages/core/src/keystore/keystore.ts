@@ -75,7 +75,15 @@ async function decrypt(
             password
         )) as KeystoreAccount;
     } catch (e) {
-        throw buildError(KEYSTORE.INVALID_PASSWORD, 'Invalid password');
+        throw buildError(
+            KEYSTORE.INVALID_PASSWORD,
+            'Invalid password',
+            {
+                keystore,
+                password
+            },
+            e
+        );
     }
 }
 
