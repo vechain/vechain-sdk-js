@@ -348,19 +348,13 @@ import {
 } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-/**
- * Url of the solo network
- */
+// Url of the solo network
 const _soloUrl = 'http://localhost:8669';
 
-/**
- * Solo network instance
- */
+// Solo network instance
 const soloNetwork = new HttpClient(_soloUrl);
 
-/**
- * Thorest client solo instance
- */
+// Thorest client solo instance
 const thorestSoloClient = new ThorestClient(soloNetwork);
 
 // Get latest block
@@ -458,19 +452,13 @@ import {
 } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-/**
- * Url of the solo network
- */
+// Url of the solo network
 const _soloUrl = 'http://localhost:8669';
 
-/**
- * Solo network instance
- */
+// Solo network instance
 const soloNetwork = new HttpClient(_soloUrl);
 
-/**
- * Thorest client solo instance
- */
+// Thorest client solo instance
 const thorestSoloClient = new ThorestClient(soloNetwork);
 
 // Get latest block
