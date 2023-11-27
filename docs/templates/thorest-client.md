@@ -107,3 +107,11 @@ The `getTransaction` method facilitates the retrieval of detailed information ab
     ): Promise<TransactionReceipt | null> 
 
 The `getTransactionReceipt` method allows developers to retrieve the receipt of a specific transaction on the VechainThor network. This includes information such as the transaction status, block number, and gas used.
+
+### Fee Delegation
+
+Fee delegation is a feature on the VechainThor blockchain which enables the transaction sender to request another entity, a sponsor, to pay for the transaction fee on the sender's behalf. Fee delegation greatly improves the user experience, especially in the case of onboarding new users by removing the necessity of the user having to first acquire cryptocurrency assets before being able to interact on-chain.
+
+The following code demonstrates how to use the Thorest-client woth the fee delegation feature:
+
+[example](examples/thorest-client/delegated-transactions.ts)
