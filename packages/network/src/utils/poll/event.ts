@@ -92,7 +92,7 @@ class EventPoll<TReturnType> extends EventEmitter {
             );
 
             // Emit the error
-            this.emit('err', { error: this.error });
+            this.emit('error', { error: this.error });
 
             // Stop listening
             this.stopListen();
@@ -195,12 +195,12 @@ class EventPoll<TReturnType> extends EventEmitter {
      * This is equivalent to:
      *
      * ```typescript
-     * eventPoll.on('err', (data) => { ... });
+     * eventPoll.on('error', (data) => { ... });
      * ```
      * @param onErrorCallback - The callback to be called when the event is emitted.
      */
     public onError(onErrorCallback: (error: Error) => void): this {
-        this.on('err', (error) => {
+        this.on('error', (error) => {
             onErrorCallback(
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 error.error as Error
