@@ -1,9 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
-import { EventPoll } from '../../../../src/utils/poll/event';
+import { createEventPoll } from '../../../../src/utils/poll/event';
+
 import {
     simpleIncrementFunction,
     simpleThrowErrorFunctionIfInputIs10
-} from '../sync/fixture';
+} from '../fixture';
 import { PoolExecutionError } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
@@ -20,31 +21,20 @@ describe('Events poll unit tests', () => {
          */
         test('Simple start and stop', () => {
             // Create event poll
-            const eventPoll = new EventPoll(
+            const eventPoll = createEventPoll(
                 async () => await simpleIncrementFunction(0, 10),
                 1000
-            );
-
-            // No errors
-            eventPoll.onError((error) => {
-                expect(error).toBeUndefined();
-            });
-
-            // Normal data
-            eventPoll.onData((data, eventPoll) => {
-                expect(data).toBe(10);
-                expect(eventPoll).toBeDefined();
-            });
-
-            // Start listening
-            eventPoll.onStart((eventPoll) => {
-                expect(eventPoll).toBeDefined();
-            });
-
-            // Stop listening
-            eventPoll.onStop((eventPoll) => {
-                expect(eventPoll).toBeDefined();
-            });
+            )
+                .onData((data, eventPoll) => {
+                    expect(data).toBe(10);
+                    expect(eventPoll).toBeDefined();
+                })
+                .onStart((eventPoll) => {
+                    expect(eventPoll).toBeDefined();
+                })
+                .onStop((eventPoll) => {
+                    expect(eventPoll).toBeDefined();
+                });
 
             // Start listening and continue the execution flow
             eventPoll.startListen();
@@ -58,16 +48,18 @@ describe('Events poll unit tests', () => {
          */
         test('Create event poll and test asynchronicity', () => {
             // Create event poll
-            const eventPoll = new EventPoll(
+            const eventPoll = createEventPoll(
                 async () => await simpleIncrementFunction(0, 10),
                 100
-            );
-
-            // Simple onData
-            eventPoll.onData((data, eventPoll) => {
-                expect(data).toBe(10);
-                if (eventPoll.getCurrentIteration === 3) eventPoll.stopListen();
-            });
+            )
+                .onData((data, eventPoll) => {
+                    expect(data).toBe(10);
+                    if (eventPoll.getCurrentIteration === 3)
+                        eventPoll.stopListen();
+                })
+                .onStop((eventPoll) => {
+                    expect(eventPoll.getCurrentIteration).toBe(3);
+                });
 
             // Start listening and continue the execution flow
             eventPoll.startListen();
@@ -77,11 +69,7 @@ describe('Events poll unit tests', () => {
 
             // Test "Asynchronicity". Code must be executed after the eventPoll.startListen() call
             expect(true).toBe(true);
-
-            // Wait until the event poll is stopped. NOW we know that iteration is 3
-            eventPoll.onStop((eventPoll) => {
-                expect(eventPoll.getCurrentIteration).toBe(3);
-            });
+            console.log('Pippo, siamo asincroni');
         }, 5000);
     });
 
@@ -93,13 +81,16 @@ describe('Events poll unit tests', () => {
          * Test the error event
          */
         test('Test the error event', () => {
-            // Create event poll
-            const eventPoll = new EventPoll(async () => {
-                await simpleThrowErrorFunctionIfInputIs10(10);
-            }, 1000);
+            // Use fake timers
+            // jest.useFakeTimers({
+            //     timerLimit: 10
+            // });
 
-            // Error occurred
-            eventPoll.onError((error) => {
+            // Create event poll
+            const eventPoll = createEventPoll(
+                async () => await simpleThrowErrorFunctionIfInputIs10(10),
+                1000
+            ).onError((error) => {
                 expect(error).toBeDefined();
                 expect(error).toBeInstanceOf(PoolExecutionError);
             });

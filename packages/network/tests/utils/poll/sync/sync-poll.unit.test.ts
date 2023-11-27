@@ -1,11 +1,11 @@
 import { describe, expect, test } from '@jest/globals';
 import { Poll } from '../../../../src/utils/poll';
+import { PoolExecutionError } from '@vechainfoundation/vechain-sdk-errors';
 import {
-    invalidOptionsParameters,
+    invalidOptionsParametersForSyncPollTest,
     simpleIncrementFunction,
     simpleThrowErrorFunctionIfInputIs10
-} from './fixture';
-import { PoolExecutionError } from '@vechainfoundation/vechain-sdk-errors';
+} from '../fixture';
 
 /**
  * Test the Synchronous poll functionalities side
@@ -62,7 +62,7 @@ describe('Synchronous poll unit tests', () => {
          * Test with blocking execution on steps
          */
         test('Invalid parameters given as input', async () => {
-            for (const invalidParameter of invalidOptionsParameters) {
+            for (const invalidParameter of invalidOptionsParametersForSyncPollTest) {
                 await expect(async () => {
                     await Poll.SyncPoll(
                         async () => await simpleIncrementFunction(0, 10),

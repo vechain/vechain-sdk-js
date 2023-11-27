@@ -18,6 +18,7 @@ const simpleIncrementFunction = async (
 
 /**
  * Simple throw error function fixture
+ * It throws an error if the input is 10
  */
 const simpleThrowErrorFunctionIfInputIs10 = async (
     a: number
@@ -30,7 +31,7 @@ const simpleThrowErrorFunctionIfInputIs10 = async (
 /**
  * Simple invalid parameters fixture
  */
-const invalidOptionsParameters = [
+const invalidOptionsParametersForSyncPollTest = [
     {
         requestIntervalInMilliseconds: -1,
         maximumIterations: 3,
@@ -54,6 +55,6 @@ const invalidOptionsParameters = [
 ];
 export {
     simpleIncrementFunction,
-    invalidOptionsParameters,
+    invalidOptionsParametersForSyncPollTest,
     simpleThrowErrorFunctionIfInputIs10
 };
