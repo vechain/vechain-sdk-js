@@ -76,14 +76,11 @@ class EventPoll<TReturnType> extends EventEmitter {
      * It calls the promise and emit the event.
      */
     private async _intervalLoop(): Promise<void> {
-        console.log('interval loop');
         try {
-            console.log('try');
             // Get data and emit the event
             const data = await this.callBack();
             this.emit('data', { data, eventPoll: this });
         } catch (error) {
-            console.log('error');
             // Set error
             this.error = buildError(
                 POLL_ERROR.POOLL_EXECUTION_ERROR,
@@ -95,8 +92,7 @@ class EventPoll<TReturnType> extends EventEmitter {
             );
 
             // Emit the error
-            if (this.emit('err', { error: this.error }))
-                console.log('error emitted');
+            this.emit('err', { error: this.error });
 
             // Stop listening
             this.stopListen();

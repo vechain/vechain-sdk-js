@@ -69,7 +69,6 @@ describe('Events poll unit tests', () => {
 
             // Test "Asynchronicity". Code must be executed after the eventPoll.startListen() call
             expect(true).toBe(true);
-            console.log('Pippo, siamo asincroni');
         }, 5000);
     });
 
