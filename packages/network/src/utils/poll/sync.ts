@@ -28,19 +28,19 @@ async function sleep(delayInMilliseconds: number): Promise<void> {
  *  - A block is mined
  *  ...
  *
- * @param callBack - The function to be called.
- * @param options - Polling options. @see{SyncPollInputOptions} type.
+ * @param pollingFunction - The function to be called.
+ * @param options - Polling options. @see{SyncPollInputOptions} type. If not specified, the default values are used. In particular: `requestIntervalInMilliseconds` is 1000 and `maximumIterations` is not specified.
  * @returns An object with a `waitUntil` method. It blocks execution until the condition is met. When the condition is met, it returns the result of the poll.
  */
 function SyncPoll<TReturnType>(
-    callBack: () => Promise<TReturnType>,
+    pollingFunction: () => Promise<TReturnType>,
     options?: SyncPollInputOptions
 ): {
     waitUntil: (
         condition: (data: TReturnType) => boolean
     ) => Promise<TReturnType>;
 } {
-    // Positive nuber for request interval
+    // Positive number for request interval
     assert(
         options?.requestIntervalInMilliseconds === undefined ||
             options?.requestIntervalInMilliseconds > 0,
@@ -49,7 +49,7 @@ function SyncPoll<TReturnType>(
         { options }
     );
 
-    // Positive nuber for maximum iterations
+    // Positive number for maximum iterations
     assert(
         options?.maximumIterations === undefined ||
             options?.maximumIterations > 0,
@@ -80,7 +80,7 @@ function SyncPoll<TReturnType>(
             try {
                 do {
                     // 1 - Fetch the result of promise
-                    currentResult = await callBack();
+                    currentResult = await pollingFunction();
 
                     // 2 - Sleep for the interval (in a synchronous way)
                     await sleep(
@@ -111,7 +111,7 @@ function SyncPoll<TReturnType>(
                 throw buildError(
                     POLL_ERROR.POOLL_EXECUTION_ERROR,
                     'Error on function execution',
-                    { functionName: callBack.name },
+                    { functionName: pollingFunction.name },
                     error
                 );
             }

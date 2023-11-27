@@ -17,7 +17,7 @@ interface PollErrorData {
  *
  * @returns The error object.
  */
-class PoolExecutionError extends ErrorBase<
+class PollExecutionError extends ErrorBase<
     POLL_ERROR.POOLL_EXECUTION_ERROR,
     PollErrorData
 > {}
@@ -29,4 +29,4 @@ enum POLL_ERROR {
     POOLL_EXECUTION_ERROR = 'POOLL_EXECUTION_ERROR'
 }
 
-export { type PollErrorData, PoolExecutionError, POLL_ERROR };
+export { type PollErrorData, PollExecutionError, POLL_ERROR };

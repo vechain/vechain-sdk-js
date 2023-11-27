@@ -22,7 +22,7 @@ class EventPoll<TReturnType> extends EventEmitter {
     /**
      * The function to be called.
      */
-    private readonly callBack: () => Promise<TReturnType>;
+    private readonly pollingFunction: () => Promise<TReturnType>;
 
     /**
      * The interval of time (in milliseconds) between each request.
@@ -49,17 +49,17 @@ class EventPoll<TReturnType> extends EventEmitter {
     /**
      * Create a new eventPoll.
      *
-     * @param callBack - The function to be called.
+     * @param pollingFunction - The function to be called.
      * @param requestIntervalInMilliseconds - The interval of time (in milliseconds) between each request.
      */
     constructor(
-        callBack: () => Promise<TReturnType>,
+        pollingFunction: () => Promise<TReturnType>,
         requestIntervalInMilliseconds: number
     ) {
         super();
-        this.callBack = callBack;
+        this.pollingFunction = pollingFunction;
 
-        // Positive nuber for request interval
+        // Positive number for request interval
         assert(
             requestIntervalInMilliseconds > 0,
             DATA.INVALID_DATA_TYPE,
@@ -78,7 +78,7 @@ class EventPoll<TReturnType> extends EventEmitter {
     private async _intervalLoop(): Promise<void> {
         try {
             // Get data and emit the event
-            const data = await this.callBack();
+            const data = await this.pollingFunction();
             this.emit('data', { data, eventPoll: this });
         } catch (error) {
             // Set error
@@ -87,7 +87,7 @@ class EventPoll<TReturnType> extends EventEmitter {
                 'Error during the execution of the poll',
                 {
                     message: (error as Error).message,
-                    functionName: this.callBack.name
+                    functionName: this.pollingFunction.name
                 }
             );
 

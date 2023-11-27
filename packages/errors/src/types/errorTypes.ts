@@ -32,7 +32,7 @@ import {
     InvalidKeystoreError,
     InvalidKeystorePasswordError,
     InvalidRLPError,
-    PoolExecutionError,
+    PollExecutionError,
     type InvalidRLPErrorData,
     type PollErrorData,
     InvalidSecp256k1MessageHashError,
@@ -181,7 +181,7 @@ type ErrorType<ErrorCodeT> =
                                                                   : ErrorCodeT extends HTTP_CLIENT.INVALID_HTTP_REQUEST
                                                                     ? HTTPClientError
                                                                     : ErrorCodeT extends POLL_ERROR.POOLL_EXECUTION_ERROR
-                                                                      ? PoolExecutionError
+                                                                      ? PollExecutionError
                                                                       : never;
 
 /**
@@ -236,7 +236,7 @@ const ErrorClassMap = new Map<
     [TRANSACTION.INVALID_TRANSACTION_BODY, TransactionBodyError],
     [TRANSACTION.INVALID_DELEGATION, TransactionDelegationError],
     [HTTP_CLIENT.INVALID_HTTP_REQUEST, HTTPClientError],
-    [POLL_ERROR.POOLL_EXECUTION_ERROR, PoolExecutionError]
+    [POLL_ERROR.POOLL_EXECUTION_ERROR, PollExecutionError]
 ]);
 
 export {

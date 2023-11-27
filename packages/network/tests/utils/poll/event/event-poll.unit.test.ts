@@ -6,7 +6,7 @@ import {
 } from '../fixture';
 import {
     InvalidDataTypeError,
-    PoolExecutionError
+    PollExecutionError
 } from '@vechainfoundation/vechain-sdk-errors';
 import { advanceTimersByTimeAndTick } from '../../../test-utils';
 
@@ -131,7 +131,7 @@ describe('Events poll unit tests', () => {
                 1000
             ).onError((error) => {
                 expect(error).toBeDefined();
-                expect(error).toBeInstanceOf(PoolExecutionError);
+                expect(error).toBeInstanceOf(PollExecutionError);
             });
 
             eventPoll.startListen();
