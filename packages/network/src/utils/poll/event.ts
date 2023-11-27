@@ -1,5 +1,10 @@
 import { EventEmitter } from 'events';
-import { assert, DATA } from '@vechainfoundation/vechain-sdk-errors';
+import {
+    assert,
+    buildError,
+    DATA,
+    POLL_ERROR
+} from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Poll in an event based way.
@@ -37,6 +42,11 @@ class EventPoll<TReturnType> extends EventEmitter {
     private intervalId?: NodeJS.Timeout;
 
     /**
+     * Error thrown during the execution of the poll.
+     */
+    private error?: Error;
+
+    /**
      * Create a new eventPoll.
      *
      * @param callBack - The function to be called.
@@ -61,6 +71,42 @@ class EventPoll<TReturnType> extends EventEmitter {
     }
 
     /**
+     * Basic interval loop function.
+     * This function must be called into setInterval.
+     * It calls the promise and emit the event.
+     */
+    private async _intervalLoop(): Promise<void> {
+        console.log('interval loop');
+        try {
+            console.log('try');
+            // Get data and emit the event
+            const data = await this.callBack();
+            this.emit('data', { data, eventPoll: this });
+        } catch (error) {
+            console.log('error');
+            // Set error
+            this.error = buildError(
+                POLL_ERROR.POOLL_EXECUTION_ERROR,
+                'Error during the execution of the poll',
+                {
+                    message: (error as Error).message,
+                    functionName: this.callBack.name
+                }
+            );
+
+            // Emit the error
+            if (this.emit('err', { error: this.error }))
+                console.log('error emitted');
+
+            // Stop listening
+            this.stopListen();
+        }
+
+        // Increment the iteration
+        this.currentIteration = this.currentIteration + 1;
+    }
+
+    /**
      * Start listening to the event.
      */
     startListen(): void {
@@ -68,21 +114,8 @@ class EventPoll<TReturnType> extends EventEmitter {
         this.emit('start', { eventPoll: this });
 
         // Create an interval
-        this.intervalId = setInterval(() => {
-            // Call the promise callback
-            this.callBack()
-                // Emit the data
-                .then((data) => {
-                    this.emit('data', { data, eventPoll: this });
-                })
-                // Emit the error (if any) and stop listening
-                .catch((error) => {
-                    this.emit('error', error);
-                    this.stopListen();
-                });
-
-            // Increment the iteration
-            this.currentIteration = this.currentIteration + 1;
+        this.intervalId = setInterval((): void => {
+            void this._intervalLoop().then();
         }, this.requestIntervalInMilliseconds);
     }
 
@@ -123,7 +156,7 @@ class EventPoll<TReturnType> extends EventEmitter {
             data: TReturnType,
             eventPoll: EventPoll<TReturnType>
         ) => void
-    ): void {
+    ): EventPoll<TReturnType> {
         this.on('data', (data) => {
             onDataCallback(
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -132,6 +165,27 @@ class EventPoll<TReturnType> extends EventEmitter {
                 data.eventPoll as EventPoll<TReturnType>
             );
         });
+
+        return this;
+    }
+
+    /**
+     * Listen to the 'start' event.
+     * This happens when the poll is stopped.
+     *
+     * @param onStartCallback - The callback to be called when the event is emitted.
+     */
+    public onStart(
+        onStartCallback: (eventPoll: EventPoll<TReturnType>) => void
+    ): EventPoll<TReturnType> {
+        this.on('start', (data) => {
+            onStartCallback(
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                data.eventPoll as EventPoll<TReturnType>
+            );
+        });
+
+        return this;
     }
 
     /**
@@ -143,34 +197,21 @@ class EventPoll<TReturnType> extends EventEmitter {
      * This is equivalent to:
      *
      * ```typescript
-     * eventPoll.on('error', (data) => { ... });
+     * eventPoll.on('err', (data) => { ... });
      * ```
      * @param onErrorCallback - The callback to be called when the event is emitted.
      */
-    public onError(onErrorCallback: (error: Error) => void): void {
-        this.on('data', (data) => {
+    public onError(
+        onErrorCallback: (error: Error) => void
+    ): EventPoll<TReturnType> {
+        this.on('err', (error) => {
             onErrorCallback(
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                data.error as Error
+                error.error as Error
             );
         });
-    }
 
-    /**
-     * Listen to the 'start' event.
-     * This happens when the poll is stopped.
-     *
-     * @param onStartCallback - The callback to be called when the event is emitted.
-     */
-    public onStart(
-        onStartCallback: (eventPoll: EventPoll<TReturnType>) => void
-    ): void {
-        this.on('start', (data) => {
-            onStartCallback(
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                data.eventPoll as EventPoll<TReturnType>
-            );
-        });
+        return this;
     }
 
     /**
@@ -181,16 +222,32 @@ class EventPoll<TReturnType> extends EventEmitter {
      */
     public onStop(
         onStopCallback: (eventPoll: EventPoll<TReturnType>) => void
-    ): void {
+    ): EventPoll<TReturnType> {
         this.on('stop', (data) => {
             onStopCallback(
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 data.eventPoll as EventPoll<TReturnType>
             );
         });
+
+        return this;
     }
 
     /* --- Overloaded of 'on' event emitter end --- */
 }
 
-export { EventPoll };
+/**
+ * Create an event poll factory method.
+ * This method is useful to create an event poll in a more readable way.
+ *
+ * @param callBack - The function to be called.
+ * @param requestIntervalInMilliseconds - The interval of time (in milliseconds) between each request.
+ */
+function createEventPoll<TReturnType>(
+    callBack: () => Promise<TReturnType>,
+    requestIntervalInMilliseconds: number
+): EventPoll<TReturnType> {
+    return new EventPoll<TReturnType>(callBack, requestIntervalInMilliseconds);
+}
+
+export { EventPoll, createEventPoll };
