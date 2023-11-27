@@ -16,6 +16,9 @@ describe('Events poll unit tests', () => {
      * Correct cases
      */
     describe('Correct cases', () => {
+        /**
+         * Restore to the real timers
+         */
         afterEach(() => {
             jest.useRealTimers();
         });
@@ -24,6 +27,7 @@ describe('Events poll unit tests', () => {
          * Simple start and stop of an event poll
          */
         test('Simple start and stop', async () => {
+            // To mock setTimeouts we need to use jest fake timers which allow to manpilate time and test asynchronicity
             jest.useFakeTimers({
                 legacyFakeTimers: true
             });
@@ -104,6 +108,12 @@ describe('Events poll unit tests', () => {
      * Error cases
      */
     describe('Error cases', () => {
+        /**
+         * Restore to the real timers
+         */
+        afterEach(() => {
+            jest.useRealTimers();
+        });
         /**
          * Test the error event
          */
