@@ -4,7 +4,10 @@ import {
     simpleIncrementFunction,
     simpleThrowErrorFunctionIfInputIs10
 } from '../fixture';
-import { PoolExecutionError } from '@vechainfoundation/vechain-sdk-errors';
+import {
+    InvalidDataTypeError,
+    PoolExecutionError
+} from '@vechainfoundation/vechain-sdk-errors';
 import { advanceTimersByTimeAndTick } from '../../../test-utils';
 
 /**
@@ -134,6 +137,18 @@ describe('Events poll unit tests', () => {
             eventPoll.startListen();
 
             await advanceTimersByTimeAndTick(1000);
+        });
+
+        /**
+         * Invalid request interval
+         */
+        test('Invalid request interval', () => {
+            expect(() => {
+                createEventPoll(
+                    async () => await simpleThrowErrorFunctionIfInputIs10(9),
+                    -1
+                );
+            }).toThrowError(InvalidDataTypeError);
         });
     });
 });
