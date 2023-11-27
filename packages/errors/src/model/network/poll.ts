@@ -10,12 +10,6 @@ interface PollErrorData {
 
 /**
  * Client error to be thrown when an http request fails.
- *
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- *
- * @returns The error object.
  */
 class PollExecutionError extends ErrorBase<
     POLL_ERROR.POOLL_EXECUTION_ERROR,

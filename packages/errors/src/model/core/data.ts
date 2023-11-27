@@ -3,10 +3,6 @@ import { ErrorBase } from '../base';
 
 /**
  * Invalid data error to be thrown when an invalid data is detected.
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @returns The error object.
  */
 class InvalidDataTypeError extends ErrorBase<
     DATA.INVALID_DATA_TYPE,
@@ -15,10 +11,6 @@ class InvalidDataTypeError extends ErrorBase<
 
 /**
  * Invalid return type given as input.
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @returns The error object.
  */
 class InvalidDataReturnTypeError extends ErrorBase<
     DATA.INVALID_DATA_RETURN_TYPE,
