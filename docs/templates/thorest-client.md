@@ -88,7 +88,11 @@ The Thorest-client provides methods for developers to interact with transactions
 
 [example](examples/thorest-client/transactions.ts)
 
-In this example, the code initializes a Thorest client for the VechainThor testnet network and showcases two essential methods for interacting with transactions:
+In this example, the code initializes a Thorest client for the VechainThor testnet network and showcases three essential methods for interacting with transactions:
+
+ - sendTransaction(raw: string): Promise<TransactionSendResult>
+
+The `sendTransaction` method enables developers to broadcast a raw transaction to the VechainThor network. This method is crucial for initiating new transactions and executing smart contract functions.
 
  - getTransaction(
         id: string,
