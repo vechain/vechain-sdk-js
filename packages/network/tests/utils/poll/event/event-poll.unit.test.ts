@@ -80,11 +80,6 @@ describe('Events poll unit tests', () => {
          * Test the error event
          */
         test('Test the error event', () => {
-            // Use fake timers
-            // jest.useFakeTimers({
-            //     timerLimit: 10
-            // });
-
             // Create event poll
             const eventPoll = createEventPoll(
                 async () => await simpleThrowErrorFunctionIfInputIs10(10),
