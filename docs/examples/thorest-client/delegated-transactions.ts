@@ -2,7 +2,8 @@ import {
     Transaction,
     TransactionUtils,
     TransactionHandler,
-    dataUtils
+    dataUtils,
+    unitsUtils
 } from '@vechainfoundation/vechain-sdk-core';
 import {
     HttpClient,
@@ -26,7 +27,7 @@ const latestBlock = await thorestSoloClient.blocks.getBestBlock();
 const clauses = [
     {
         to: '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-        value: 1000000,
+        value: unitsUtils.parseVET('10000').toString(), // VET transfer transaction
         data: '0x'
     }
 ];
@@ -49,17 +50,21 @@ const delegatedTransaction = new Transaction({
     }
 });
 
+// Private keys of sender
+const pkSender =
+    'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5';
+
+/** Private key of delegate
+ * @NOTE The delegate account must have enough VET and VTHO to pay for the gas
+ */
+const pkDelegate =
+    '432f38bcf338c374523e83fdb2ebe1030aba63c7f1e81f7d76c5f53f4d42e766';
+
 // Normal signature and delegation signature
 const rawDelegatedSigned = TransactionHandler.signWithDelegator(
     delegatedTransaction,
-    Buffer.from(
-        'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5',
-        'hex'
-    ),
-    Buffer.from(
-        '432f38bcf338c374523e83fdb2ebe1030aba63c7f1e81f7d76c5f53f4d42e766',
-        'hex'
-    )
+    Buffer.from(pkSender, 'hex'),
+    Buffer.from(pkDelegate, 'hex')
 ).encoded;
 
 // Send transaction

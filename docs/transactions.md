@@ -186,10 +186,10 @@ const body: TransactionBody = {
 
 // Create private keys of sender and delegate
 const pkSender = secp256k1.generatePrivateKey();
-const nodeDelgate = HDNode.fromMnemonic(mnemonic.generate());
-const pkDelegate = nodeDelgate.privateKey;
+const nodeDelegate = HDNode.fromMnemonic(mnemonic.generate());
+const pkDelegate = nodeDelegate.privateKey;
 // Get address of delegate
-const addrDelegate = nodeDelgate.address;
+const addrDelegate = nodeDelegate.address;
 
 // Sign transaction as sender and delegate
 const unsignedTx = new Transaction(body);
