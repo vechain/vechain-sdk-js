@@ -1,6 +1,5 @@
 import { ethers } from 'ethers';
 import {
-    isDerivationPathValid,
     MNEMONIC_WORDLIST_ALLOWED_SIZES,
     VET_DERIVATION_PATH,
     X_PRIV_PREFIX,
@@ -12,6 +11,10 @@ import { sha256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import { type WordlistSizeType } from '../mnemonic';
 import { assert, HDNODE } from '@vechainfoundation/vechain-sdk-errors';
+import {
+    assertInvalidHdNodeChainCode,
+    assertInvalidHdNodeDerivationPath
+} from './helpers/assertions';
 
 /**
  * Generates an HDNode instance using mnemonic words.
@@ -33,12 +36,7 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
     );
 
     // Invalid derivation path
-    assert(
-        isDerivationPathValid(path),
-        HDNODE.INVALID_HDNODE_DERIVATION_PATH,
-        'Invalid derivation path.',
-        { path }
-    );
+    assertInvalidHdNodeDerivationPath(path);
 
     // normalize words to lowercase
     const joinedWords = words.join(' ').toLowerCase();
@@ -67,12 +65,7 @@ function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
     );
 
     // Invalid chain code
-    assert(
-        chainCode.length === 32,
-        HDNODE.INVALID_HDNODE_CHAIN_CODE,
-        'Invalid chain code. Length must be 32 bytes.',
-        { chainCode }
-    );
+    assertInvalidHdNodeChainCode(chainCode);
 
     const compressed = secp256k1.extendedPublicKeyToArray(publicKey, true);
     const key = Buffer.concat([
@@ -107,12 +100,7 @@ function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
     );
 
     // Invalid chain code
-    assert(
-        chainCode.length === 32,
-        HDNODE.INVALID_HDNODE_CHAIN_CODE,
-        'Invalid chain code. Length must be 32 bytes.',
-        { chainCode }
-    );
+    assertInvalidHdNodeChainCode(chainCode);
 
     const key = Buffer.concat([
         X_PRIV_PREFIX,
@@ -166,12 +154,7 @@ function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
         },
         derivePath(path: string) {
             // Invalid derivation path
-            assert(
-                isDerivationPathValid(path),
-                HDNODE.INVALID_HDNODE_DERIVATION_PATH,
-                'Invalid derivation path given as input.',
-                { path }
-            );
+            assertInvalidHdNodeDerivationPath(path);
 
             return ethersNodeToOurHDNode(ethersNode.derivePath(path));
         }
