@@ -6,7 +6,7 @@ import { dataUtils } from '@vechainfoundation/vechain-sdk-core';
  *
  * @param transactionId - Transaction ID to assert
  */
-function assertInvalidTransactionId(transactionId: string): void {
+function assertValidTransactionID(transactionId: string): void {
     assert(
         dataUtils.isThorId(transactionId, true),
         DATA.INVALID_DATA_TYPE,
@@ -19,7 +19,7 @@ function assertInvalidTransactionId(transactionId: string): void {
  * Assert if transaction head is valid
  * @param head - Transaction head to assert
  */
-function assertInvalidTransactionHead(head?: string): void {
+function assertValidTransactionHead(head?: string): void {
     assert(
         head === undefined || dataUtils.isThorId(head, true),
         DATA.INVALID_DATA_TYPE,
@@ -28,4 +28,4 @@ function assertInvalidTransactionHead(head?: string): void {
     );
 }
 
-export { assertInvalidTransactionId, assertInvalidTransactionHead };
+export { assertValidTransactionID, assertValidTransactionHead };

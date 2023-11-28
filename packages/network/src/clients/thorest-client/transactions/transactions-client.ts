@@ -24,8 +24,8 @@ import {
     DATA
 } from '@vechainfoundation/vechain-sdk-errors';
 import {
-    assertInvalidTransactionHead,
-    assertInvalidTransactionId
+    assertValidTransactionHead,
+    assertValidTransactionID
 } from './helpers/assertions';
 
 /**
@@ -50,10 +50,10 @@ class TransactionsClient {
         options?: GetTransactionInputOptions
     ): Promise<TransactionDetail | null> {
         // Invalid transaction ID
-        assertInvalidTransactionId(id);
+        assertValidTransactionID(id);
 
         // Invalid head
-        assertInvalidTransactionHead(options?.head);
+        assertValidTransactionHead(options?.head);
 
         return (await this.httpClient.http(
             'GET',
@@ -80,10 +80,10 @@ class TransactionsClient {
         options?: GetTransactionReceiptInputOptions
     ): Promise<TransactionReceipt | null> {
         // Invalid transaction ID
-        assertInvalidTransactionId(id);
+        assertValidTransactionID(id);
 
         // Invalid head
-        assertInvalidTransactionHead(options?.head);
+        assertValidTransactionHead(options?.head);
 
         return (await this.httpClient.http(
             'GET',

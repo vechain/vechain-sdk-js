@@ -4,7 +4,7 @@ import { Transaction } from '../transaction';
 import { assert, TRANSACTION } from '@vechainfoundation/vechain-sdk-errors';
 import {
     assertIsValidTransactionSigningPrivateKey,
-    assertTransactionAlreadySigned
+    assertTransactionIsNotSigned
 } from '../helpers/assertions';
 
 /**
@@ -26,7 +26,7 @@ function sign(
     );
 
     // Transaction is already signed
-    assertTransactionAlreadySigned(transactionToSign);
+    assertTransactionIsNotSigned(transactionToSign);
 
     // Transaction is delegated
     assert(
@@ -73,7 +73,7 @@ function signWithDelegator(
     );
 
     // Transaction is already signed
-    assertTransactionAlreadySigned(transactionToSign);
+    assertTransactionIsNotSigned(transactionToSign);
 
     // Transaction is not delegated
     assert(

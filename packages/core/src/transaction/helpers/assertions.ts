@@ -30,7 +30,7 @@ function assertIsValidTransactionSigningPrivateKey(
  *
  * @param transaction - Transaction to assert
  */
-function assertTransactionAlreadySigned(transaction: Transaction): void {
+function assertTransactionIsNotSigned(transaction: Transaction): void {
     assert(
         !transaction.isSigned,
         TRANSACTION.ALREADY_SIGNED,
@@ -45,7 +45,7 @@ function assertTransactionAlreadySigned(transaction: Transaction): void {
  * @param transaction - Transaction to assert
  * @param fieldToGet - Field to get (e.g. delegator, origin, or id)
  */
-function assertTransactionIsNotSignedAntCannotGetField(
+function assertCantGetFieldOnUnsignedTransaction(
     transaction: Transaction,
     fieldToGet: string
 ): void {
@@ -58,6 +58,6 @@ function assertTransactionIsNotSignedAntCannotGetField(
 
 export {
     assertIsValidTransactionSigningPrivateKey,
-    assertTransactionAlreadySigned,
-    assertTransactionIsNotSignedAntCannotGetField
+    assertTransactionIsNotSigned,
+    assertCantGetFieldOnUnsignedTransaction
 };

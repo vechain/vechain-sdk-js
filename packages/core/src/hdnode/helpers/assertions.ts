@@ -6,7 +6,7 @@ import { isDerivationPathValid } from '../../utils';
  *
  * @param path - The derivation path to validate.
  */
-function assertInvalidHdNodeDerivationPath(path: string): void {
+function assertIsValidHdNodeDerivationPath(path: string): void {
     assert(
         isDerivationPathValid(path),
         HDNODE.INVALID_HDNODE_DERIVATION_PATH,
@@ -20,7 +20,7 @@ function assertInvalidHdNodeDerivationPath(path: string): void {
  *
  * @param chainCode - The chain code to validate.
  */
-function assertInvalidHdNodeChainCode(chainCode: Buffer): void {
+function assertIsValidHdNodeChainCode(chainCode: Buffer): void {
     assert(
         chainCode.length === 32,
         HDNODE.INVALID_HDNODE_CHAIN_CODE,
@@ -29,4 +29,4 @@ function assertInvalidHdNodeChainCode(chainCode: Buffer): void {
     );
 }
 
-export { assertInvalidHdNodeDerivationPath, assertInvalidHdNodeChainCode };
+export { assertIsValidHdNodeDerivationPath, assertIsValidHdNodeChainCode };
