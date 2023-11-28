@@ -1,7 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { HttpClient } from '../../../../src';
-import { ThorClient } from '../../../../src/clients/thor-client';
-import { thorestClient } from '../../../fixture';
+import { thorClient, thorestClient } from '../../../fixture';
 
 /**
  * Blocks integration tests
@@ -12,10 +10,6 @@ describe('ThorClient - Blocks', () => {
     test('waitForBlock - valid', async () => {
         // Get best block
         const bestBlock = await thorestClient.blocks.getBestBlock();
-        // Create ThorClient
-        const thorClient = new ThorClient(
-            new HttpClient('https://testnet.vechain.org/')
-        );
         if (bestBlock != null) {
             const expectedBlock = await thorClient.blocks.waitForBlock(
                 bestBlock?.number + 2
@@ -26,9 +20,6 @@ describe('ThorClient - Blocks', () => {
 
     test('waitForBlock - invalid blockNumber', async () => {
         // Create ThorClient
-        const thorClient = new ThorClient(
-            new HttpClient('https://testnet.vechain.org/')
-        );
         await expect(
             async () => await thorClient.blocks.waitForBlock(1)
         ).rejects.toThrowError(
