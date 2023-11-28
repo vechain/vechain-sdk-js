@@ -114,7 +114,7 @@ function SyncPoll<TReturnType>(
                     POLL_ERROR.POOLL_EXECUTION_ERROR,
                     'Error on function execution',
                     {
-                        functionName: pollingFunction.name ?? 'anonymous'
+                        functionName: pollingFunction.name
                     },
                     error
                 );
