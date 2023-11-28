@@ -32,8 +32,8 @@ describe('Integration tests to check the Node health check for different scenari
     });
 
     test('valid and available synchronized node', async () => {
-        const healtyNode = await thorSoloClient.nodes.isHealthy();
-        expect(healtyNode).toBe(true);
+        const healthyNode = await thorSoloClient.nodes.isHealthy();
+        expect(healthyNode).toBe(true);
     });
 
     test('null or empty URL or blank URL', async () => {
