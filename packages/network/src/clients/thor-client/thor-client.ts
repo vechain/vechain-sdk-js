@@ -1,5 +1,5 @@
 import { type HttpClient } from '../../utils';
-import { NodesClient } from './nodes';
+import { NodesThorClient } from './nodes';
 import { BlocksThorClient } from './blocks';
 
 /**
@@ -11,7 +11,7 @@ class ThorClient {
     /**
      * The `NodeClient` instance
      */
-    public readonly nodes: NodesClient;
+    public readonly nodes: NodesThorClient;
 
     /**
      * The `BlocksClient` instance
@@ -23,7 +23,7 @@ class ThorClient {
      * @param httpClient - The HTTP client instance used for making network requests.
      */
     constructor(protected readonly httpClient: HttpClient) {
-        this.nodes = new NodesClient(httpClient);
+        this.nodes = new NodesThorClient(httpClient);
         this.blocks = new BlocksThorClient(httpClient);
     }
 }

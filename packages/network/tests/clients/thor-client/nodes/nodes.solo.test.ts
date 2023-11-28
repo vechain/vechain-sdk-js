@@ -9,11 +9,11 @@ import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
 import { ThorClient } from '../../../../src/clients/thor-client';
 
 /**
- * Node unit tests
- * @group unit/clients/thor-client/nodes
+ * Node integration tests
+ * @group integration/clients/thor-client/nodes
  *
  */
-describe('Unit tests to check the Node health check is working for different scenarios', () => {
+describe('Integration tests to check the Node health check is working for different scenarios', () => {
     /**
      *  @internal
      *  a well-formed URL to ensure we get to the axios call in the node health check

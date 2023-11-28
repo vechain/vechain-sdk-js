@@ -8,7 +8,7 @@ import { type BlockDetail, BlocksClient } from '../../thorest-client';
 /**
  * Provides utility methods for checking the health of a node.
  */
-class NodesClient {
+class NodesThorClient {
     /**
      * Internal blocks client instance used for interacting with block-related endpoints.
      */
@@ -92,4 +92,4 @@ class NodesClient {
     };
 }
 
-export { NodesClient };
+export { NodesThorClient };
