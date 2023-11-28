@@ -6,9 +6,9 @@ import { assert, DATA } from '@vechainfoundation/vechain-sdk-errors';
 import { type BlockDetail, BlocksClient } from '../../thorest-client';
 
 /**
- * Provides utility method for checking the health of a node.
+ * The `NodesModule` class serves as a module for node-related functionality, for example, checking the health of a node.
  */
-class NodesClient {
+class NodesModule {
     /**
      * Internal blocks client instance used for interacting with block-related endpoints.
      */
@@ -92,4 +92,4 @@ class NodesClient {
     };
 }
 
-export { NodesClient };
+export { NodesModule };
