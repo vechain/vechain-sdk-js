@@ -3,11 +3,6 @@ import { ErrorBase } from '../base';
 
 /**
  * Invalid Transaction to sign. It is already signed.
- *
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @returns The error object.
  */
 class TransactionAlreadySignedError extends ErrorBase<
     TRANSACTION.ALREADY_SIGNED,
@@ -16,11 +11,6 @@ class TransactionAlreadySignedError extends ErrorBase<
 
 /**
  * Transaction not signed.
- *
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @returns The error object.
  */
 class TransactionNotSignedError extends ErrorBase<
     TRANSACTION.NOT_SIGNED,
@@ -29,11 +19,6 @@ class TransactionNotSignedError extends ErrorBase<
 
 /**
  * Invalid Transaction body.
- *
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @returns The error object.
  */
 class TransactionBodyError extends ErrorBase<
     TRANSACTION.INVALID_TRANSACTION_BODY,
@@ -42,11 +27,6 @@ class TransactionBodyError extends ErrorBase<
 
 /**
  * Invalid Delegation feature.
- *
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @returns The error object.
  */
 class TransactionDelegationError extends ErrorBase<
     TRANSACTION.INVALID_DELEGATION,

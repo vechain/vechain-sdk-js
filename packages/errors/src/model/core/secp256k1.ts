@@ -3,10 +3,6 @@ import { ErrorBase } from '../base';
 
 /**
  * Error to be thrown when the private key is invalid.
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @returns The error object.
  */
 class InvalidSecp256k1PrivateKeyError extends ErrorBase<
     SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
@@ -15,10 +11,6 @@ class InvalidSecp256k1PrivateKeyError extends ErrorBase<
 
 /**
  * Error to be thrown when the message hash is invalid.
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @returns The error object.
  */
 class InvalidSecp256k1MessageHashError extends ErrorBase<
     SECP256K1.INVALID_SECP256k1_MESSAGE_HASH,
@@ -27,10 +19,6 @@ class InvalidSecp256k1MessageHashError extends ErrorBase<
 
 /**
  * Error to be thrown when the signature is invalid.
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @returns The error object.
  */
 class InvalidSecp256k1SignatureError extends ErrorBase<
     SECP256K1.INVALID_SECP256k1_SIGNATURE,
@@ -39,10 +27,6 @@ class InvalidSecp256k1SignatureError extends ErrorBase<
 
 /**
  * Error to be thrown when the signature recovery is invalid.
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @returns The error object.
  */
 class InvalidSecp256k1SignatureRecoveryError extends ErrorBase<
     SECP256K1.INVALID_SECP256k1_SIGNATURE_RECOVERY,
