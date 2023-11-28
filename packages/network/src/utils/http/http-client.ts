@@ -70,9 +70,9 @@ class HttpClient {
             // If it's not an Axios error, re-throw the original error
             throw buildError(
                 HTTP_CLIENT.INVALID_HTTP_REQUEST,
-                `An error occurred while performing http request ${JSON.stringify(
-                    err
-                )}`
+                `An error occurred while performing http request`,
+                { method, path, params },
+                err
             );
         }
     }

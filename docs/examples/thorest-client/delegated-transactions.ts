@@ -32,31 +32,44 @@ const clauses = [
     }
 ];
 
-// Create transaction
-const transaction = new Transaction({
+// Get gas @NOTE this is an approximation
+const gas = 5000 + TransactionUtils.intrinsicGas(clauses) * 5;
+
+// Create delegated transaction
+const delegatedTransaction = new Transaction({
     chainTag: 0xf6,
     blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
     expiration: 32,
     clauses,
     gasPriceCoef: 128,
-    gas: 5000 + TransactionUtils.intrinsicGas(clauses) * 5,
+    gas,
     dependsOn: null,
-    nonce: 12345678
+    nonce: 12345678,
+    reserved: {
+        features: 1
+    }
 });
 
 // Private keys of sender
 const pkSender =
     'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5';
 
+/** Private key of delegate
+ * @NOTE The delegate account must have enough VET and VTHO to pay for the gas
+ */
+const pkDelegate =
+    '432f38bcf338c374523e83fdb2ebe1030aba63c7f1e81f7d76c5f53f4d42e766';
+
 // Normal signature and delegation signature
-const rawNormalSigned = TransactionHandler.sign(
-    transaction,
-    Buffer.from(pkSender, 'hex')
+const rawDelegatedSigned = TransactionHandler.signWithDelegator(
+    delegatedTransaction,
+    Buffer.from(pkSender, 'hex'),
+    Buffer.from(pkDelegate, 'hex')
 ).encoded;
 
 // Send transaction
 const send = await thorestSoloClient.transactions.sendTransaction(
-    `0x${rawNormalSigned.toString('hex')}`
+    `0x${rawDelegatedSigned.toString('hex')}`
 );
 expect(send).toBeDefined();
 expect(send).toHaveProperty('id');
