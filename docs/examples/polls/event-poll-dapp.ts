@@ -25,12 +25,10 @@ for (const account of accounts) {
         1000
     )
         .onStart((eventPoll) => {
-            console.log(`Start monitoring account ${account}`);
-            console.log('Event poll:', eventPoll);
+            console.log(`Start monitoring account ${account}`, eventPoll);
         })
         .onStop((eventPoll) => {
-            console.log(`Start monitoring account ${account}`);
-            console.log('Event poll:', eventPoll);
+            console.log(`Stop monitoring account ${account}`, eventPoll);
         })
         .onData((accountDetails, eventPoll) => {
             console.log(`Account details of ${account}:`, accountDetails);

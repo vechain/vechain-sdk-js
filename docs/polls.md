@@ -145,8 +145,6 @@ expect(sentedTransaction).toBeDefined();
 expect(sentedTransaction).toHaveProperty('id');
 expect(dataUtils.isHexString(sentedTransaction.id)).toBe(true);
 
-console.log('Transaction sent:', sentedTransaction);
-
 // 4 -Wait until balance is updated
 
 const newBalanceSender = await Poll.SyncPoll(
@@ -209,12 +207,10 @@ for (const account of accounts) {
         1000
     )
         .onStart((eventPoll) => {
-            console.log(`Start monitoring account ${account}`);
-            console.log('Event poll:', eventPoll);
+            console.log(`Start monitoring account ${account}`, eventPoll);
         })
         .onStop((eventPoll) => {
-            console.log(`Start monitoring account ${account}`);
-            console.log('Event poll:', eventPoll);
+            console.log(`Stop monitoring account ${account}`, eventPoll);
         })
         .onData((accountDetails, eventPoll) => {
             console.log(`Account details of ${account}:`, accountDetails);

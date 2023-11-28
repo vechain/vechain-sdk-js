@@ -93,8 +93,6 @@ expect(sentedTransaction).toBeDefined();
 expect(sentedTransaction).toHaveProperty('id');
 expect(dataUtils.isHexString(sentedTransaction.id)).toBe(true);
 
-console.log('Transaction sent:', sentedTransaction);
-
 // 4 -Wait until balance is updated
 
 const newBalanceSender = await Poll.SyncPoll(
