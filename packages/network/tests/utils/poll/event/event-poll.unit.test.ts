@@ -1,5 +1,4 @@
 import { afterEach, describe, expect, jest, test } from '@jest/globals';
-import { createEventPoll } from '../../../../src/utils/poll/event';
 import {
     invalidOptionsParametersForPollTests,
     simpleIncrementFunction,
@@ -7,6 +6,7 @@ import {
 } from '../fixture';
 import { PollExecutionError } from '@vechainfoundation/vechain-sdk-errors';
 import { advanceTimersByTimeAndTick } from '../../../test-utils';
+import { Poll } from '../../../../src';
 
 /**
  * Test the Asynchronous Event poll functionalities side
@@ -34,7 +34,7 @@ describe('Events poll unit tests', () => {
             });
 
             // Create event poll
-            const eventPoll = createEventPoll(
+            const eventPoll = Poll.createEventPoll(
                 async () => await simpleIncrementFunction(0, 10),
                 1000
             )
@@ -68,7 +68,7 @@ describe('Events poll unit tests', () => {
             });
 
             // Create event poll
-            const eventPoll = createEventPoll(
+            const eventPoll = Poll.createEventPoll(
                 async () => await simpleIncrementFunction(0, 10),
                 1000
             )
@@ -124,7 +124,7 @@ describe('Events poll unit tests', () => {
             });
 
             // Create event poll
-            const eventPoll = createEventPoll(
+            const eventPoll = Poll.createEventPoll(
                 async () => await simpleThrowErrorFunctionIfInputIs10(10),
                 1000
             ).onError((error) => {
@@ -148,7 +148,7 @@ describe('Events poll unit tests', () => {
                     value.requestIntervalInMilliseconds <= 0
             )) {
                 expect(() => {
-                    createEventPoll(
+                    Poll.createEventPoll(
                         async () =>
                             await simpleThrowErrorFunctionIfInputIs10(9),
                         invalidParameter.requestIntervalInMilliseconds
