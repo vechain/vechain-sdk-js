@@ -88,6 +88,7 @@ For advanced testing scenarios, you may require a custom data starting point wit
 ## Documentation and Examples
 - The `./docs` directory houses extensive code examples written as executable demonstrations.
 - Dive into the [examples](./docs/README.md) for a hands-on understanding of the SDK capabilities.
+- For a comprehensive overview of the package structure, please refer to our [Architecture Diagrams](./docs/architecture-diagrams/) located in the documentation directory.
 
 ## Contributing
 
