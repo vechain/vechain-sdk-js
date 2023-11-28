@@ -2,10 +2,10 @@ import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
 import { type HttpClient, Poll } from '../../../utils';
 import { type BlockDetail, BlocksClient } from '../../thorest-client';
 
-/** The `BlocksThorClient` class encapsulates functionality for interacting with blocks
+/** The `BlocksModule` class encapsulates functionality for interacting with blocks
  * on the VechainThor blockchain.
  */
-class BlocksThorClient {
+class BlocksModule {
     /**
      * Internal blocks client instance used for interacting with block-related endpoints.
      */
@@ -57,4 +57,4 @@ class BlocksThorClient {
     }
 }
 
-export { BlocksThorClient };
+export { BlocksModule };
