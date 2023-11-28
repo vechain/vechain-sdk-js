@@ -12,6 +12,7 @@ import {
     HDNODE,
     HTTP_CLIENT,
     HTTPClientError,
+    POLL_ERROR,
     type HTTPClientErrorData,
     InvalidAbiDataToDecodeError,
     InvalidAbiDataToEncodeError,
@@ -31,7 +32,9 @@ import {
     InvalidKeystoreError,
     InvalidKeystorePasswordError,
     InvalidRLPError,
+    PollExecutionError,
     type InvalidRLPErrorData,
+    type PollErrorData,
     InvalidSecp256k1MessageHashError,
     InvalidSecp256k1PrivateKeyError,
     InvalidSecp256k1SignatureError,
@@ -71,7 +74,8 @@ type ErrorCode =
     | RLP
     | DATA
     | TRANSACTION
-    | HTTP_CLIENT;
+    | HTTP_CLIENT
+    | POLL_ERROR;
 
 /**
  * Conditional type to get the error data type from the error code.
@@ -83,7 +87,9 @@ type DataType<ErrorCodeT extends ErrorCode> = ErrorCodeT extends RLP.INVALID_RLP
     ? InvalidRLPErrorData
     : ErrorCodeT extends HTTP_CLIENT.INVALID_HTTP_REQUEST
       ? HTTPClientErrorData
-      : DefaultErrorData;
+      : ErrorCodeT extends POLL_ERROR.POOLL_EXECUTION_ERROR
+        ? PollErrorData
+        : DefaultErrorData;
 
 /**
  * Default error codes.
@@ -99,7 +105,8 @@ const ERROR_CODES = {
     RLP,
     DATA,
     TRANSACTION,
-    HTTP_CLIENT
+    HTTP_CLIENT,
+    POLL_ERROR
 };
 
 /**
@@ -173,7 +180,9 @@ type ErrorType<ErrorCodeT> =
                                                                   ? TransactionDelegationError
                                                                   : ErrorCodeT extends HTTP_CLIENT.INVALID_HTTP_REQUEST
                                                                     ? HTTPClientError
-                                                                    : never;
+                                                                    : ErrorCodeT extends POLL_ERROR.POOLL_EXECUTION_ERROR
+                                                                      ? PollExecutionError
+                                                                      : never;
 
 /**
  * Map to get the error class from the error code.
@@ -226,7 +235,8 @@ const ErrorClassMap = new Map<
     [TRANSACTION.NOT_SIGNED, TransactionNotSignedError],
     [TRANSACTION.INVALID_TRANSACTION_BODY, TransactionBodyError],
     [TRANSACTION.INVALID_DELEGATION, TransactionDelegationError],
-    [HTTP_CLIENT.INVALID_HTTP_REQUEST, HTTPClientError]
+    [HTTP_CLIENT.INVALID_HTTP_REQUEST, HTTPClientError],
+    [POLL_ERROR.POOLL_EXECUTION_ERROR, PollExecutionError]
 ]);
 
 export {
