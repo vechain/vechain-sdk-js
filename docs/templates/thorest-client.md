@@ -88,7 +88,11 @@ The Thorest-client provides methods for developers to interact with transactions
 
 [example](examples/thorest-client/transactions.ts)
 
-In this example, the code initializes a Thorest client for the VechainThor testnet network and showcases two essential methods for interacting with transactions:
+In this example, the code initializes a Thorest client for the VechainThor testnet network and showcases three essential methods for interacting with transactions:
+
+ - sendTransaction(raw: string): Promise<TransactionSendResult>
+
+The `sendTransaction` method enables developers to broadcast a raw transaction to the VechainThor network. This method is crucial for initiating new transactions and executing smart contract functions.
 
  - getTransaction(
         id: string,
@@ -103,3 +107,11 @@ The `getTransaction` method facilitates the retrieval of detailed information ab
     ): Promise<TransactionReceipt | null> 
 
 The `getTransactionReceipt` method allows developers to retrieve the receipt of a specific transaction on the VechainThor network. This includes information such as the transaction status, block number, and gas used.
+
+### Fee Delegation
+
+Fee delegation is a feature on the VechainThor blockchain which enables the transaction sender to request another entity, a sponsor, to pay for the transaction fee on the sender's behalf. Fee delegation greatly improves the user experience, especially in the case of onboarding new users by removing the necessity of the user having to first acquire cryptocurrency assets before being able to interact on-chain.
+
+The following code demonstrates how to use the Thorest-client with the fee delegation feature:
+
+[example](examples/thorest-client/delegated-transactions.ts)

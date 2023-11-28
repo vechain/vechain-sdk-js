@@ -337,89 +337,86 @@ The Thorest-client provides methods for developers to interact with transactions
 
 ```typescript { name=transactions, category=example }
 import {
+    Transaction,
+    TransactionUtils,
+    TransactionHandler,
+    dataUtils,
+    unitsUtils
+} from '@vechainfoundation/vechain-sdk-core';
+import {
     HttpClient,
     ThorestClient
 } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-// Url of the testnet network
-const _testnetUrl = 'https://testnet.vechain.org/';
+// Url of the solo network
+const _soloUrl = 'http://localhost:8669';
 
-// Testnet network instance
-const testNetwork = new HttpClient(_testnetUrl);
+// Solo network instance
+const soloNetwork = new HttpClient(_soloUrl);
 
-// Thorest client testnet instance
-const thorestTestnetClient = new ThorestClient(testNetwork);
+// Thorest client solo instance
+const thorestSoloClient = new ThorestClient(soloNetwork);
 
-// Retrieves the details of a transaction.
-const transactionDetails =
-    await thorestTestnetClient.transactions.getTransaction(
-        '0x46d195f69e1ac3922d42c207e4705a3d1642883d97e58f7efc72f179ea326adb'
-    );
-expect(transactionDetails).toEqual({
-    id: '0x46d195f69e1ac3922d42c207e4705a3d1642883d97e58f7efc72f179ea326adb',
-    chainTag: 39,
-    blockRef: '0x010284a0b704e751',
-    expiration: 2000,
-    clauses: [
-        {
-            to: '0x5d57f07dfeb8c224121433d5b1b401c82bd88f3d',
-            value: '0x2ea11e32ad50000',
-            data: '0x'
-        }
-    ],
-    gasPriceCoef: 0,
-    gas: 41192,
-    origin: '0x2d4ed6b8abd00bc2ef0bdb2258a946c214d9d0af',
-    delegator: null,
-    nonce: '0x76eed751cef0e52d',
-    dependsOn: null,
-    size: 130,
-    meta: {
-        blockID:
-            '0x010284a1fea0635a2e47dd21f8a1761406df1013e5f4af79e311d8a27373980d',
-        blockNumber: 16942241,
-        blockTimestamp: 1699453780
+// Get latest block
+const latestBlock = await thorestSoloClient.blocks.getBestBlock();
+
+// Create clauses
+const clauses = [
+    {
+        to: '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+        value: unitsUtils.parseVET('10000').toString(), // VET transfer transaction
+        data: '0x'
     }
+];
+
+// Create transaction
+const transaction = new Transaction({
+    chainTag: 0xf6,
+    blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
+    expiration: 32,
+    clauses,
+    gasPriceCoef: 128,
+    gas: 5000 + TransactionUtils.intrinsicGas(clauses) * 5,
+    dependsOn: null,
+    nonce: 12345678
 });
 
-// Retrieves the receipt of a transaction.
+// Private keys of sender
+const pkSender =
+    'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5';
+
+// Normal signature and delegation signature
+const rawNormalSigned = TransactionHandler.sign(
+    transaction,
+    Buffer.from(pkSender, 'hex')
+).encoded;
+
+// Send transaction
+const send = await thorestSoloClient.transactions.sendTransaction(
+    `0x${rawNormalSigned.toString('hex')}`
+);
+expect(send).toBeDefined();
+expect(send).toHaveProperty('id');
+expect(dataUtils.isHexString(send.id)).toBe(true);
+
+// Get transaction details and receipt
+const transactionDetails = await thorestSoloClient.transactions.getTransaction(
+    send.id
+);
 const transactionReceipt =
-    await thorestTestnetClient.transactions.getTransactionReceipt(
-        '0x46d195f69e1ac3922d42c207e4705a3d1642883d97e58f7efc72f179ea326adb'
-    );
-expect(transactionReceipt).toEqual({
-    gasUsed: 21000,
-    gasPayer: '0x2d4ed6b8abd00bc2ef0bdb2258a946c214d9d0af',
-    paid: '0x2ea11e32ad50000',
-    reward: '0xdfd22a8cd98000',
-    reverted: false,
-    meta: {
-        blockID:
-            '0x010284a1fea0635a2e47dd21f8a1761406df1013e5f4af79e311d8a27373980d',
-        blockNumber: 16942241,
-        blockTimestamp: 1699453780,
-        txID: '0x46d195f69e1ac3922d42c207e4705a3d1642883d97e58f7efc72f179ea326adb',
-        txOrigin: '0x2d4ed6b8abd00bc2ef0bdb2258a946c214d9d0af'
-    },
-    outputs: [
-        {
-            contractAddress: null,
-            events: [],
-            transfers: [
-                {
-                    sender: '0x2d4ed6b8abd00bc2ef0bdb2258a946c214d9d0af',
-                    recipient: '0x5d57f07dfeb8c224121433d5b1b401c82bd88f3d',
-                    amount: '0x2ea11e32ad50000'
-                }
-            ]
-        }
-    ]
-});
+    await thorestSoloClient.transactions.getTransactionReceipt(send.id);
+
+expect(transactionDetails).toBeDefined();
+expect(transactionReceipt).toBeDefined();
 
 ```
 
-In this example, the code initializes a Thorest client for the VechainThor testnet network and showcases two essential methods for interacting with transactions:
+In this example, the code initializes a Thorest client for the VechainThor testnet network and showcases three essential methods for interacting with transactions:
+
+ - sendTransaction(raw: string): Promise<TransactionSendResult>
+
+The `sendTransaction` method enables developers to broadcast a raw transaction to the VechainThor network. This method is crucial for initiating new transactions and executing smart contract functions.
 
  - getTransaction(
         id: string,
@@ -434,3 +431,99 @@ The `getTransaction` method facilitates the retrieval of detailed information ab
     ): Promise<TransactionReceipt | null> 
 
 The `getTransactionReceipt` method allows developers to retrieve the receipt of a specific transaction on the VechainThor network. This includes information such as the transaction status, block number, and gas used.
+
+### Fee Delegation
+
+Fee delegation is a feature on the VechainThor blockchain which enables the transaction sender to request another entity, a sponsor, to pay for the transaction fee on the sender's behalf. Fee delegation greatly improves the user experience, especially in the case of onboarding new users by removing the necessity of the user having to first acquire cryptocurrency assets before being able to interact on-chain.
+
+The following code demonstrates how to use the Thorest-client with the fee delegation feature:
+
+```typescript { name=delegated-transactions, category=example }
+import {
+    Transaction,
+    TransactionUtils,
+    TransactionHandler,
+    dataUtils,
+    unitsUtils
+} from '@vechainfoundation/vechain-sdk-core';
+import {
+    HttpClient,
+    ThorestClient
+} from '@vechainfoundation/vechain-sdk-network';
+import { expect } from 'expect';
+
+// Url of the solo network
+const _soloUrl = 'http://localhost:8669';
+
+// Solo network instance
+const soloNetwork = new HttpClient(_soloUrl);
+
+// Thorest client solo instance
+const thorestSoloClient = new ThorestClient(soloNetwork);
+
+// Get latest block
+const latestBlock = await thorestSoloClient.blocks.getBestBlock();
+
+// Create clauses
+const clauses = [
+    {
+        to: '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+        value: unitsUtils.parseVET('10000').toString(), // VET transfer transaction
+        data: '0x'
+    }
+];
+
+// Get gas @NOTE this is an approximation
+const gas = 5000 + TransactionUtils.intrinsicGas(clauses) * 5;
+
+// Create delegated transaction
+const delegatedTransaction = new Transaction({
+    chainTag: 0xf6,
+    blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
+    expiration: 32,
+    clauses,
+    gasPriceCoef: 128,
+    gas,
+    dependsOn: null,
+    nonce: 12345678,
+    reserved: {
+        features: 1
+    }
+});
+
+// Private keys of sender
+const pkSender =
+    'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5';
+
+/** Private key of delegate
+ * @NOTE The delegate account must have enough VET and VTHO to pay for the gas
+ */
+const pkDelegate =
+    '432f38bcf338c374523e83fdb2ebe1030aba63c7f1e81f7d76c5f53f4d42e766';
+
+// Normal signature and delegation signature
+const rawDelegatedSigned = TransactionHandler.signWithDelegator(
+    delegatedTransaction,
+    Buffer.from(pkSender, 'hex'),
+    Buffer.from(pkDelegate, 'hex')
+).encoded;
+
+// Send transaction
+const send = await thorestSoloClient.transactions.sendTransaction(
+    `0x${rawDelegatedSigned.toString('hex')}`
+);
+expect(send).toBeDefined();
+expect(send).toHaveProperty('id');
+expect(dataUtils.isHexString(send.id)).toBe(true);
+
+// Get transaction details and receipt
+const transactionDetails = await thorestSoloClient.transactions.getTransaction(
+    send.id
+);
+const transactionReceipt =
+    await thorestSoloClient.transactions.getTransactionReceipt(send.id);
+
+expect(transactionDetails).toBeDefined();
+expect(transactionReceipt).toBeDefined();
+
+```
