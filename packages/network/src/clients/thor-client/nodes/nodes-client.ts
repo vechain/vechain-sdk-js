@@ -6,7 +6,7 @@ import { assert, DATA } from '@vechainfoundation/vechain-sdk-errors';
 import { type BlockDetail, BlocksClient } from '../../thorest-client';
 
 /**
- * Provides utility method for checking the health of a node.
+ * Provides utility methods for checking the health of a node.
  */
 class NodesClient {
     /**
