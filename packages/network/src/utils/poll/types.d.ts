@@ -16,6 +16,13 @@ interface SyncPollInputOptions {
      * @note If not specified a default value is given.
      */
     requestIntervalInMilliseconds?: number;
+
+    /**
+     * The maximum amount of time (in milliseconds) to wait for the condition to be met.
+     *
+     * @note If not specified limit on time is NOT given.
+     */
+    maximumWaitingTimeInMilliseconds?: number;
 }
 
 export { type SyncPollInputOptions };
