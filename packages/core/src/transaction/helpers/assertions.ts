@@ -39,7 +39,25 @@ function assertTransactionAlreadySigned(transaction: Transaction): void {
     );
 }
 
+/**
+ * Assert if transaction is not signed and cannot get field (e.g. delegator, origin, or id)
+ *
+ * @param transaction - Transaction to assert
+ * @param fieldToGet - Field to get (e.g. delegator, origin, or id)
+ */
+function assertTransactionIsNotSignedAntCannotGetField(
+    transaction: Transaction,
+    fieldToGet: string
+): void {
+    assert(
+        transaction.isSigned,
+        TRANSACTION.NOT_SIGNED,
+        `Cannot get ${fieldToGet} from unsigned transaction. Sign the transaction first.`
+    );
+}
+
 export {
     assertIsValidTransactionSigningPrivateKey,
-    assertTransactionAlreadySigned
+    assertTransactionAlreadySigned,
+    assertTransactionIsNotSignedAntCannotGetField
 };
