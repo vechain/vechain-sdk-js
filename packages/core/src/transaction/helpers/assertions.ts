@@ -10,6 +10,7 @@ import { type Transaction } from '../transaction';
  *
  * @param privateKey - Private key to assert
  * @param isValidPrivateKeyFunction - Function to assert private key
+ * @param role - Role of the private key (e.g. delegator, or signer)
  */
 function assertIsValidTransactionSigningPrivateKey(
     privateKey: Buffer,
