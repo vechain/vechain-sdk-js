@@ -72,7 +72,7 @@ const thorestSoloClient = new ThorestClient(soloNetwork);
 // 2- Init transaction
 
 // 2.1 - Get latest block
-const latestBlock = await thorestSoloClient.blocks.getFinalBlock();
+const latestBlock = await thorestSoloClient.blocks.getBestBlock();
 
 // 2.2 - Transaction sender and receiver
 const sender = {
