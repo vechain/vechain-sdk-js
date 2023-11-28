@@ -4,13 +4,12 @@ import { ThorClient } from '../../../../src/clients/thor-client';
 import { thorestClient } from '../../../fixture';
 
 /**
- * Node unit tests
+ * Blocks integration tests
  *
- * @group unit/clients/thor-client/blocks
+ * @group integration/clients/thor-client/blocks
  */
 describe('ThorClient - Blocks', () => {
-    // Test waitForBlock method
-    test('waitForBlock', async () => {
+    test('waitForBlock - valid', async () => {
         // Get best block
         const bestBlock = await thorestClient.blocks.getBestBlock();
         // Create ThorClient
@@ -24,4 +23,16 @@ describe('ThorClient - Blocks', () => {
             expect(expectedBlock?.number).toBe(bestBlock?.number + 2);
         }
     }, 25000);
+
+    test('waitForBlock - invalid blockNumber', async () => {
+        // Create ThorClient
+        const thorClient = new ThorClient(
+            new HttpClient('https://testnet.vechain.org/')
+        );
+        await expect(
+            async () => await thorClient.blocks.waitForBlock(1)
+        ).rejects.toThrowError(
+            'Invalid blockNumber. The blockNumber must be a number representing a block number in the future.'
+        );
+    });
 });

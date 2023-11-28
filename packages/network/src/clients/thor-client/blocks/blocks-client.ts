@@ -1,3 +1,4 @@
+import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
 import { type HttpClient, Poll } from '../../../utils';
 import { type BlockDetail, BlocksClient } from '../../thorest-client';
 
@@ -26,8 +27,20 @@ class BlocksThorClient {
      * @returns A promise that resolves to an object containing the block details.
      */
     public async waitForBlock(
-        revision: string | number
+        blockNumber: number
     ): Promise<BlockDetail | null> {
+        const bestBlock = await this.blocksClient.getBestBlock();
+        const bestBlockNumber = bestBlock != null ? bestBlock.number : 0;
+        assert(
+            blockNumber === undefined ||
+                blockNumber === null ||
+                typeof blockNumber !== 'number' ||
+                blockNumber > bestBlockNumber,
+            DATA.INVALID_DATA_TYPE,
+            'Invalid blockNumber. The blockNumber must be a number representing a block number in the future.',
+            { blockNumber }
+        );
+
         // Use the Poll.SyncPoll utility to repeatedly call getBestBlock with a specified interval
         const block = await Poll.SyncPoll(
             async () => await this.blocksClient.getBestBlock(),
@@ -37,7 +50,7 @@ class BlocksThorClient {
             }
         ).waitUntil((result) => {
             // Continue polling until the result's block number matches the specified revision
-            return result?.number === revision;
+            return result?.number === blockNumber;
         });
 
         return block;
