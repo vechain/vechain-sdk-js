@@ -5,12 +5,15 @@ import { thorestClient } from '../../../fixture';
 
 /**
  * Node unit tests
- * @group unit/clients/thor-client/blocks
  *
+ * @group unit/clients/thor-client/blocks
  */
 describe('ThorClient - Blocks', () => {
+    // Test waitForBlock method
     test('waitForBlock', async () => {
+        // Get best block
         const bestBlock = await thorestClient.blocks.getBestBlock();
+        // Create ThorClient
         const thorClient = new ThorClient(
             new HttpClient('https://testnet.vechain.org/')
         );
