@@ -286,9 +286,8 @@ const sendTransactionPoll = Poll.createEventPoll(
         // Stop after 3 iterations - EXIT CONDITION
         if (eventPoll.getCurrentIteration === 3) eventPoll.stopListen();
     })
-    .onError((error, eventPoll) => {
+    .onError((error) => {
         console.log('Error:', error);
-        console.log('Event poll (sender):', eventPoll);
     });
 
 sendTransactionPoll.startListen();
@@ -312,9 +311,8 @@ const verifyBalancePoll = Poll.createEventPoll(
         // Stop after 3 iterations - EXIT CONDITION
         if (eventPoll.getCurrentIteration === 3) eventPoll.stopListen();
     })
-    .onError((error, eventPoll) => {
+    .onError((error) => {
         console.log('Error:', error);
-        console.log('Event poll (receiver):', eventPoll);
     });
 
 verifyBalancePoll.startListen();
