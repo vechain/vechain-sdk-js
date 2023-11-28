@@ -1,4 +1,3 @@
-export * from './assertions';
 export * from './numerickind';
 export * from './hexblobkind';
 export * from './fixedhexblobkind';
