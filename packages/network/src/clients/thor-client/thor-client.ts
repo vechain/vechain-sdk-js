@@ -1,5 +1,6 @@
 import { type HttpClient } from '../../utils';
 import { NodesModule } from './nodes';
+import { TransactionsModule } from './transactions';
 
 /**
  * The `ThorClient` class serves as an interface to interact with the Vechain Thor blockchain.
@@ -8,16 +9,23 @@ import { NodesModule } from './nodes';
  */
 class ThorClient {
     /**
-     * The `NodeClient` instance
+     * The `NodesModule` instance
      */
     public readonly nodes: NodesModule;
 
     /**
+     * The `TransactionsModule` instance
+     */
+    public readonly transactions: TransactionsModule;
+
+    /**
      * Constructs a new `ThorClient` instance with a given HTTP client.
+     *
      * @param httpClient - The HTTP client instance used for making network requests.
      */
     constructor(protected readonly httpClient: HttpClient) {
         this.nodes = new NodesModule(httpClient);
+        this.transactions = new TransactionsModule(httpClient);
     }
 }
 
