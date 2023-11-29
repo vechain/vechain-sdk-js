@@ -12,7 +12,7 @@ class BlocksModule {
     private readonly blocksClient: BlocksClient;
 
     /**
-     * Initializes a new instance of the `NodeClient` class.
+     * Initializes a new instance of the `NodeModule` class.
      * @param httpClient - The HTTP client instance used for making HTTP requests.
      */
     constructor(readonly httpClient: HttpClient) {
@@ -21,7 +21,7 @@ class BlocksModule {
     }
 
     /**
-     * Asynchronously waits for a specific block revision using polling.
+     * Synchronously waits for a specific block revision using polling.
      *
      * @param revision - The block number or ID to wait for.
      * @returns A promise that resolves to an object containing the block details.

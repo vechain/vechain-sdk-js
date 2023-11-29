@@ -9,12 +9,12 @@ import { BlocksModule } from './blocks';
  */
 class ThorClient {
     /**
-     * The `NodeClient` instance
+     * The `NodeModule` instance
      */
     public readonly nodes: NodesModule;
 
     /**
-     * The `BlocksClient` instance
+     * The `BlocksModule` instance
      */
     public readonly blocks: BlocksModule;
 
