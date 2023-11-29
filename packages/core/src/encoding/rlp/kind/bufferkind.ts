@@ -1,6 +1,6 @@
 import { ScalarKind } from './scalarkind.abstract';
 import { type BufferOutput, type DataOutput, type RLPInput } from '../types';
-import { assertIsValidBuffer } from '../helpers';
+import { assertIsValidBuffer } from '../helpers/assertions';
 
 /**
  * Asserts that the data is a buffer.
