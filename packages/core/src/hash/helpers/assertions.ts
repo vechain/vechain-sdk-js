@@ -1,6 +1,17 @@
 import { assert, DATA } from '@vechainfoundation/vechain-sdk-errors';
 import { type ReturnType } from '../types';
-import { isValidReturnType } from './hashhelpers';
+
+/**
+ * Checks if the return type is valid
+ *
+ * Helper method needed to validate the return type of the hash function
+ *
+ * @param value - The return type
+ * @returns A boolean indicating whether the return type is valid
+ */
+const isValidReturnType = (value: string): boolean => {
+    return !(value !== 'buffer' && value !== 'hex');
+};
 
 /**
  * Asserts that the return type of hash is valid.

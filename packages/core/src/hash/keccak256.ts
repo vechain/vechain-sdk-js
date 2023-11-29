@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { type ReturnType, type HashInput } from './types';
-import { assertIsValidReturnType } from './helpers';
+import { assertIsValidReturnType } from './helpers/assertions';
 
 /* --- Overloaded functions start --- */
 

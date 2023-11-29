@@ -1,6 +1,6 @@
 import blake from 'blakejs';
 import { type HashInput, type ReturnType } from './types';
-import { assertIsValidReturnType } from './helpers';
+import { assertIsValidReturnType } from './helpers/assertions';
 
 /**
  * Internal function to compute the blake2b256 256-bit hash of the given data.
