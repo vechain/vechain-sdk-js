@@ -1,22 +1,49 @@
 import { describe, expect, test } from '@jest/globals';
 import { thorClient, thorestClient } from '../../../fixture';
+import { waitForBlockTestCases } from './fixture';
 
 /**
- * Blocks integration tests
+ * Blocks Module integration tests
  *
  * @group integration/clients/thor-client/blocks
  */
-describe('ThorClient - Blocks', () => {
-    test('waitForBlock - valid', async () => {
-        // Get best block
-        const bestBlock = await thorestClient.blocks.getBestBlock();
-        if (bestBlock != null) {
-            const expectedBlock = await thorClient.blocks.waitForBlock(
-                bestBlock?.number + 2
+describe('Blocks Module', () => {
+    // test('waitForBlock - valid', async () => {
+    //     // Get best block
+    //     const bestBlock = await thorestClient.blocks.getBestBlock();
+    //     if (bestBlock != null) {
+    //         const expectedBlock = await thorClient.blocks.waitForBlock(
+    //             bestBlock?.number + 2
+    //         );
+    //         expect(expectedBlock?.number).toBe(bestBlock?.number + 2);
+    //     }
+    // }, 25000);
+
+    /**
+     * Test suite for waitForBlock method
+     */
+    describe('waitForBlock', () => {
+        waitForBlockTestCases.forEach(({ description, options }) => {
+            test(
+                description,
+                async () => {
+                    // Get best block
+                    const bestBlock = await thorestClient.blocks.getBestBlock();
+                    if (bestBlock != null) {
+                        const expectedBlock =
+                            await thorClient.blocks.waitForBlock(
+                                bestBlock?.number + 1,
+                                options
+                            );
+                        expect(expectedBlock?.number).toBe(
+                            bestBlock?.number + 1
+                        );
+                    }
+                },
+                15000
             );
-            expect(expectedBlock?.number).toBe(bestBlock?.number + 2);
-        }
-    }, 25000);
+        });
+    });
 
     test('waitForBlock - invalid blockNumber', async () => {
         await expect(
@@ -32,7 +59,9 @@ describe('ThorClient - Blocks', () => {
         if (bestBlock != null) {
             const block = await thorClient.blocks.waitForBlock(
                 bestBlock?.number + 2,
-                1000
+                {
+                    timeoutMs: 1000
+                }
             );
             expect(block).toBeDefined();
         }

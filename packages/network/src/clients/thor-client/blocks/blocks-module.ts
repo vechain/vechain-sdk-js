@@ -1,6 +1,7 @@
 import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
 import { type HttpClient, Poll } from '../../../utils';
 import { type BlockDetail, BlocksClient } from '../../thorest-client';
+import { type WaitForBlockOptions } from './types';
 
 /** The `BlocksModule` class encapsulates functionality for interacting with blocks
  * on the VechainThor blockchain.
@@ -28,7 +29,7 @@ class BlocksModule {
      */
     public async waitForBlock(
         blockNumber: number,
-        maximumWaitingTimeInMilliseconds?: number
+        options?: WaitForBlockOptions
     ): Promise<BlockDetail | null> {
         assert(
             blockNumber === undefined ||
@@ -44,10 +45,8 @@ class BlocksModule {
         const block = await Poll.SyncPoll(
             async () => await this.blocksClient.getBestBlock(),
             {
-                // Set the interval for making requests in milliseconds
-                requestIntervalInMilliseconds: 1000,
-                // Set the maximum timeout for polling in milliseconds
-                maximumWaitingTimeInMilliseconds
+                requestIntervalInMilliseconds: options?.intervalMs,
+                maximumWaitingTimeInMilliseconds: options?.timeoutMs
             }
         ).waitUntil((result) => {
             // Continue polling until the result's block number matches the specified revision
