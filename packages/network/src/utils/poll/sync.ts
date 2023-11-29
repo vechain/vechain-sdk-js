@@ -49,13 +49,10 @@ function SyncPoll<TReturnType>(
         'options?.maximumIterations'
     );
 
-    assert(
-        options?.maximumWaitingTimeInMilliseconds === undefined ||
-            (options?.maximumWaitingTimeInMilliseconds > 0 &&
-                Number.isInteger(options?.maximumWaitingTimeInMilliseconds)),
-        DATA.INVALID_DATA_TYPE,
-        'options.maximumWaitingTimeInMilliseconds must be a positive number',
-        { options }
+    // Positive number for maximum waiting time
+    assertPositiveIntegerForPollOptions(
+        options?.maximumWaitingTimeInMilliseconds,
+        'options?.maximumWaitingTimeInMilliseconds'
     );
 
     // Number of iterations
