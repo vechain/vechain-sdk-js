@@ -1,4 +1,8 @@
-import { assert, RLP } from '@vechainfoundation/vechain-sdk-errors';
+import {
+    assert,
+    RLP as RLPError,
+    RLP
+} from '@vechainfoundation/vechain-sdk-errors';
 import { type RLPInput } from '../types';
 
 /**
@@ -19,4 +23,26 @@ function assertIsValidBuffer(
     });
 }
 
-export { assertIsValidBuffer };
+/**
+ * Asserts that the data is an array.
+ *
+ * @param arrayToCheck - The arrayToCheck to validate.
+ * @param context - Descriptive context for error messages.
+ *
+ * @throws{InvalidRLPError}
+ */
+function assertIsArray<ArrayType>(
+    arrayToCheck: ArrayType,
+    context: string
+): void {
+    assert(
+        Array.isArray(arrayToCheck),
+        RLPError.INVALID_RLP,
+        'expected array',
+        {
+            context
+        }
+    );
+}
+
+export { assertIsValidBuffer, assertIsArray };

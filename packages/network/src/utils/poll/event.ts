@@ -1,10 +1,6 @@
 import { EventEmitter } from 'events';
-import {
-    assert,
-    buildError,
-    DATA,
-    POLL_ERROR
-} from '@vechainfoundation/vechain-sdk-errors';
+import { buildError, POLL_ERROR } from '@vechainfoundation/vechain-sdk-errors';
+import { assertPositiveIntegerForPollOptions } from './helpers/assertions';
 
 /**
  * Poll in an event based way.
@@ -60,12 +56,9 @@ class EventPoll<TReturnType> extends EventEmitter {
         this.pollingFunction = pollingFunction;
 
         // Positive number for request interval
-        assert(
-            requestIntervalInMilliseconds > 0 &&
-                Number.isInteger(requestIntervalInMilliseconds),
-            DATA.INVALID_DATA_TYPE,
-            'requestIntervalInMilliseconds must be a positive number',
-            { requestIntervalInMilliseconds }
+        assertPositiveIntegerForPollOptions(
+            requestIntervalInMilliseconds,
+            'requestIntervalInMilliseconds'
         );
 
         this.requestIntervalInMilliseconds = requestIntervalInMilliseconds;

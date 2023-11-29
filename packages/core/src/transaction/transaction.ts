@@ -18,6 +18,7 @@ import {
     SECP256K1,
     TRANSACTION
 } from '@vechainfoundation/vechain-sdk-errors';
+import { assertCantGetFieldOnUnsignedTransaction } from './helpers/assertions';
 
 /**
  * Represents an immutable transaction entity.
@@ -109,11 +110,7 @@ class Transaction {
         );
 
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
-        assert(
-            this.isSigned,
-            TRANSACTION.NOT_SIGNED,
-            'Cannot get delegator from unsigned transaction. Sign the transaction first.'
-        );
+        assertCantGetFieldOnUnsignedTransaction(this, 'delegator');
 
         // Slice signature needed to recover public key
         // Obtains the recovery param from the signature
@@ -231,11 +228,7 @@ class Transaction {
      */
     public get origin(): string {
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
-        assert(
-            this.isSigned,
-            TRANSACTION.NOT_SIGNED,
-            'Cannot get origin from unsigned transaction. Sign the transaction first.'
-        );
+        assertCantGetFieldOnUnsignedTransaction(this, 'origin');
 
         // Slice signature
         // Obtains the concatenated signature (r, s) of ECDSA digital signature
@@ -259,11 +252,7 @@ class Transaction {
      */
     get id(): string {
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
-        assert(
-            this.isSigned,
-            TRANSACTION.NOT_SIGNED,
-            'Cannot get transaction id from unsigned transaction. Sign the transaction first'
-        );
+        assertCantGetFieldOnUnsignedTransaction(this, 'id');
 
         // Return transaction ID
         return blake2b256(

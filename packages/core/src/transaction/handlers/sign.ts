@@ -1,11 +1,11 @@
 import { addressUtils } from '../../address';
 import { secp256k1 } from '../../secp256k1';
 import { Transaction } from '../transaction';
+import { assert, TRANSACTION } from '@vechainfoundation/vechain-sdk-errors';
 import {
-    assert,
-    SECP256K1,
-    TRANSACTION
-} from '@vechainfoundation/vechain-sdk-errors';
+    assertIsValidTransactionSigningPrivateKey,
+    assertTransactionIsNotSigned
+} from '../helpers/assertions';
 
 /**
  * Sign a transaction with a given private key
@@ -20,20 +20,13 @@ function sign(
     signerPrivateKey: Buffer
 ): Transaction {
     // Invalid private key
-    assert(
-        secp256k1.isValidPrivateKey(signerPrivateKey),
-        SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
-        'Invalid private key used to sign the transaction.',
-        { signerPrivateKey }
+    assertIsValidTransactionSigningPrivateKey(
+        signerPrivateKey,
+        secp256k1.isValidPrivateKey
     );
 
     // Transaction is already signed
-    assert(
-        !transactionToSign.isSigned,
-        TRANSACTION.ALREADY_SIGNED,
-        'Cannot sign Transaction. It is already signed.',
-        { transactionToSign }
-    );
+    assertTransactionIsNotSigned(transactionToSign);
 
     // Transaction is delegated
     assert(
@@ -68,26 +61,19 @@ function signWithDelegator(
     delegatorPrivateKey: Buffer
 ): Transaction {
     // Invalid private keys (signer and delegator)
-    assert(
-        secp256k1.isValidPrivateKey(signerPrivateKey),
-        SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
-        'Invalid signer private key used to sign the transaction.',
-        { signerPrivateKey }
+    assertIsValidTransactionSigningPrivateKey(
+        signerPrivateKey,
+        secp256k1.isValidPrivateKey,
+        'signer'
     );
-    assert(
-        secp256k1.isValidPrivateKey(delegatorPrivateKey),
-        SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
-        'Invalid delegator private key used to sign the transaction.',
-        { delegatorPrivateKey }
+    assertIsValidTransactionSigningPrivateKey(
+        delegatorPrivateKey,
+        secp256k1.isValidPrivateKey,
+        'delegator'
     );
 
     // Transaction is already signed
-    assert(
-        !transactionToSign.isSigned,
-        TRANSACTION.ALREADY_SIGNED,
-        'Cannot sign Transaction. It is already signed.',
-        { transactionToSign }
-    );
+    assertTransactionIsNotSigned(transactionToSign);
 
     // Transaction is not delegated
     assert(
