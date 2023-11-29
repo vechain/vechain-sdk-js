@@ -80,6 +80,7 @@ class TransactionsClient {
      *
      * @param id - Transaction ID of the transaction to retrieve.
      * @param options - (Optional) Other optional parameters for the request.
+     *                  If `head` is not specified, the receipt of the transaction at the best block is returned.
      * @returns A promise that resolves to the receipt of the transaction.
      */
     public async getTransactionReceipt(
