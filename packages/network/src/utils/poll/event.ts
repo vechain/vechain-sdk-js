@@ -77,7 +77,7 @@ class EventPoll<TReturnType> extends EventEmitter {
         } catch (error) {
             // Set error
             this.error = buildError(
-                POLL_ERROR.POOLL_EXECUTION_ERROR,
+                POLL_ERROR.POLL_EXECUTION_ERROR,
                 'Error during the execution of the poll',
                 {
                     message: (error as Error).message,
