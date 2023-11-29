@@ -22,7 +22,7 @@ describe('ThorClient - Blocks', () => {
         await expect(
             async () => await thorClient.blocks.waitForBlock(0)
         ).rejects.toThrowError(
-            'Invalid blockNumber. The blockNumber must be a number representing a block number in the future.'
+            'Invalid blockNumber. The blockNumber must be a number representing a block number.'
         );
     });
 
