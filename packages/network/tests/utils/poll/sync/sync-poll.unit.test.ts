@@ -55,6 +55,28 @@ describe('Synchronous poll unit tests', () => {
                 expect(result).toBe(10);
             }
         });
+
+        /**
+         * Test with maximum waiting time
+         */
+        test('Sync poll with blocking execution on maximum waiting time', async () => {
+            const startTime = Date.now();
+
+            await Poll.SyncPoll(
+                async () => await simpleIncrementFunction(0, 10),
+                {
+                    requestIntervalInMilliseconds: 100,
+                    maximumWaitingTimeInMilliseconds: 1000 // Stop after 1000ms
+                }
+            ).waitUntil((result) => {
+                return result === 20; // Condition that will never be true because we will stop the poll before (after 1000ms)
+            });
+
+            const endTime = Date.now();
+
+            // We expect that the poll will stop after 1000ms
+            expect(endTime - startTime).toBeLessThan(2000);
+        });
     });
 
     describe('Invalid parameters', () => {
@@ -74,7 +96,6 @@ describe('Synchronous poll unit tests', () => {
                                 invalidParameter.maximumIterations
                         }
                     ).waitUntil((result) => {
-                        // @IMPORTANT: Here this simple function will never reach 11. This is a case where the maximum iterations is useful.
                         return result === 10;
                     });
                 }).rejects.toThrowError(invalidParameter.expectedError);

@@ -12,7 +12,7 @@ interface PollErrorData {
  * Client error to be thrown when an http request fails.
  */
 class PollExecutionError extends ErrorBase<
-    POLL_ERROR.POOLL_EXECUTION_ERROR,
+    POLL_ERROR.POLL_EXECUTION_ERROR,
     PollErrorData
 > {}
 
@@ -20,7 +20,7 @@ class PollExecutionError extends ErrorBase<
  * Errors enum.
  */
 enum POLL_ERROR {
-    POOLL_EXECUTION_ERROR = 'POOLL_EXECUTION_ERROR'
+    POLL_EXECUTION_ERROR = 'POLL_EXECUTION_ERROR'
 }
 
 export { type PollErrorData, PollExecutionError, POLL_ERROR };

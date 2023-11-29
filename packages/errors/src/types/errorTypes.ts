@@ -87,7 +87,7 @@ type DataType<ErrorCodeT extends ErrorCode> = ErrorCodeT extends RLP.INVALID_RLP
     ? InvalidRLPErrorData
     : ErrorCodeT extends HTTP_CLIENT.INVALID_HTTP_REQUEST
       ? HTTPClientErrorData
-      : ErrorCodeT extends POLL_ERROR.POOLL_EXECUTION_ERROR
+      : ErrorCodeT extends POLL_ERROR.POLL_EXECUTION_ERROR
         ? PollErrorData
         : DefaultErrorData;
 
@@ -180,7 +180,7 @@ type ErrorType<ErrorCodeT> =
                                                                   ? TransactionDelegationError
                                                                   : ErrorCodeT extends HTTP_CLIENT.INVALID_HTTP_REQUEST
                                                                     ? HTTPClientError
-                                                                    : ErrorCodeT extends POLL_ERROR.POOLL_EXECUTION_ERROR
+                                                                    : ErrorCodeT extends POLL_ERROR.POLL_EXECUTION_ERROR
                                                                       ? PollExecutionError
                                                                       : never;
 
@@ -236,7 +236,7 @@ const ErrorClassMap = new Map<
     [TRANSACTION.INVALID_TRANSACTION_BODY, TransactionBodyError],
     [TRANSACTION.INVALID_DELEGATION, TransactionDelegationError],
     [HTTP_CLIENT.INVALID_HTTP_REQUEST, HTTPClientError],
-    [POLL_ERROR.POOLL_EXECUTION_ERROR, PollExecutionError]
+    [POLL_ERROR.POLL_EXECUTION_ERROR, PollExecutionError]
 ]);
 
 export {
