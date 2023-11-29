@@ -1,10 +1,6 @@
 import { type SyncPollInputOptions } from './types';
-import {
-    assert,
-    DATA,
-    buildError,
-    POLL_ERROR
-} from '@vechainfoundation/vechain-sdk-errors';
+import { buildError, POLL_ERROR } from '@vechainfoundation/vechain-sdk-errors';
+import { assertPositiveIntegerForPollOptions } from './helpers/assertions';
 
 /**
  * Sleep for a given amount of time (in milliseconds).
@@ -29,7 +25,8 @@ async function sleep(delayInMilliseconds: number): Promise<void> {
  *  ...
  *
  * @param pollingFunction - The function to be called.
- * @param options - Polling options. @see{SyncPollInputOptions} type. If not specified, the default values are used. In particular: `requestIntervalInMilliseconds` is 1000 and `maximumIterations` is not specified.
+ * @param options - Polling options. @see {SyncPollInputOptions} type. If not specified, the default values are used. In particular: `requestIntervalInMilliseconds` is 1000, `maximumIterations` is not specified
+ *                  and `maximumWaitingTimeInMilliseconds` is not specified.
  * @returns An object with a `waitUntil` method. It blocks execution until the condition is met. When the condition is met, it returns the result of the poll.
  */
 function SyncPoll<TReturnType>(
@@ -41,23 +38,21 @@ function SyncPoll<TReturnType>(
     ) => Promise<TReturnType>;
 } {
     // Positive number for request interval
-    assert(
-        options?.requestIntervalInMilliseconds === undefined ||
-            (options?.requestIntervalInMilliseconds > 0 &&
-                Number.isInteger(options?.requestIntervalInMilliseconds)),
-        DATA.INVALID_DATA_TYPE,
-        'options.requestIntervalInMilliseconds must be a positive number',
-        { options }
+    assertPositiveIntegerForPollOptions(
+        options?.requestIntervalInMilliseconds,
+        'options?.requestIntervalInMilliseconds'
     );
 
     // Positive number for maximum iterations
-    assert(
-        options?.maximumIterations === undefined ||
-            (options?.maximumIterations > 0 &&
-                Number.isInteger(options?.maximumIterations)),
-        DATA.INVALID_DATA_TYPE,
-        'options.maximumIterations must be a positive number',
-        { options }
+    assertPositiveIntegerForPollOptions(
+        options?.maximumIterations,
+        'options?.maximumIterations'
+    );
+
+    // Positive number for maximum waiting time
+    assertPositiveIntegerForPollOptions(
+        options?.maximumWaitingTimeInMilliseconds,
+        'options?.maximumWaitingTimeInMilliseconds'
     );
 
     // Number of iterations
@@ -68,6 +63,9 @@ function SyncPoll<TReturnType>(
 
     // Polling condition
     let pollingCondition: boolean = false;
+
+    // Initialize the start time
+    const startTime = Date.now();
 
     return {
         /**
@@ -96,22 +94,33 @@ function SyncPoll<TReturnType>(
 
                     // 4 - Check if the poll should be stopped (in a forced way OR not)
                     // 4.1 - If the condition is met or not
-                    const notConditionSatisfied = !condition(currentResult);
+                    const isConditionSatisfied = condition(currentResult);
 
                     // 4.2 - Stop forced on iterations
-                    const mustStopForcedOnIterations =
+                    const isMaximumIterationsReached =
                         options?.maximumIterations !== undefined
                             ? currentIteration >= options.maximumIterations
                             : false;
 
-                    pollingCondition =
-                        notConditionSatisfied && !mustStopForcedOnIterations;
+                    // 4.3 - Stop forced on maximum waiting time
+                    const isTimeLimitReached =
+                        options?.maximumWaitingTimeInMilliseconds !==
+                            undefined &&
+                        Date.now() - startTime >=
+                            options.maximumWaitingTimeInMilliseconds;
+
+                    // Stop the polling if the condition is met OR the maximum iterations is reached OR the maximum waiting time is reached
+                    pollingCondition = !(
+                        isConditionSatisfied ||
+                        isMaximumIterationsReached ||
+                        isTimeLimitReached
+                    );
                 } while (pollingCondition);
 
                 return currentResult;
             } catch (error) {
                 throw buildError(
-                    POLL_ERROR.POOLL_EXECUTION_ERROR,
+                    POLL_ERROR.POLL_EXECUTION_ERROR,
                     'Error on function execution',
                     {
                         functionName: pollingFunction.name

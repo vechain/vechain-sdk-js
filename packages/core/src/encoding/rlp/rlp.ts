@@ -8,6 +8,7 @@ import {
 } from './types';
 import { RLP } from '.';
 import { RLP as RLPError, assert } from '@vechainfoundation/vechain-sdk-errors';
+import { assertIsArray } from './helpers/assertions';
 
 /**
  * Encodes data using the Ethereumjs RLP library.
@@ -93,9 +94,7 @@ const _packData = (
     }
 
     // Valid RLP array
-    assert(Array.isArray(obj), RLPError.INVALID_RLP, 'expected array', {
-        context
-    });
+    assertIsArray(obj, context);
 
     // ArrayKind: recursively pack each array item based on the shared item profile.
     if ('item' in kind && Array.isArray(obj)) {
@@ -166,9 +165,8 @@ const _unpackData = (
         );
     }
 
-    assert(Array.isArray(packed), RLPError.INVALID_RLP, 'expected array', {
-        context
-    });
+    // Valid RLP array
+    assertIsArray(packed, context);
 
     // ArrayKind: Recursively unpack each array item based on the shared item profile.
     if ('item' in kind && Array.isArray(packed)) {

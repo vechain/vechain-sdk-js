@@ -177,6 +177,11 @@ function some_function(input: any) {
 }
 ```
 
+### Common assertions
+It is often observed that certain assertions are applicable across various contexts. 
+Adhering to the principle of Don't Repeat Yourself (DRY), it is imperative that these assertions be consolidated in a universally accessible file. 
+This file shall be designated as `helpers/assertions.ts` and should be referenced by each module requiring its contents.
+
 # Code of Conduct
 
 We are committed to providing a welcoming and inclusive environment for everyone who contributes to or interacts with the vechain SDK project. To ensure a positive experience for our community, we have established a [Code of Conduct](CODE_OF_CONDUCT.md) that outlines our expectations for behavior. We encourage all contributors, maintainers, and users to familiarize themselves with this code, as it reflects our commitment to creating a diverse and respectful community. Thank you for helping us maintain a welcoming and collaborative space for all.
