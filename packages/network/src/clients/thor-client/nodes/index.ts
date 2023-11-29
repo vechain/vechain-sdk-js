@@ -1,1 +1,1 @@
-export * from './nodes-client';
+export * from './nodes-module';

@@ -3,10 +3,6 @@ import { ErrorBase } from '../base';
 
 /**
  * Invalid chaincode error to be thrown when an invalid chaincode is detected.
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @returns The error object.
  */
 class InvalidHDNodeChaincodeError extends ErrorBase<
     HDNODE.INVALID_HDNODE_CHAIN_CODE,
@@ -15,10 +11,6 @@ class InvalidHDNodeChaincodeError extends ErrorBase<
 
 /**
  * Invalid mnemonics error to be thrown when an invalid mnemonic is provided.
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @returns The error object.
  */
 class InvalidHDNodeMnemonicsError extends ErrorBase<
     HDNODE.INVALID_HDNODE_MNEMONICS,
@@ -27,10 +19,6 @@ class InvalidHDNodeMnemonicsError extends ErrorBase<
 
 /**
  * Invalid private key error to be thrown when an invalid private key is detected.
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @returns The error object.
  */
 class InvalidHDNodePrivateKeyError extends ErrorBase<
     HDNODE.INVALID_HDNODE_PRIVATE_KEY,
@@ -39,10 +27,6 @@ class InvalidHDNodePrivateKeyError extends ErrorBase<
 
 /**
  * Invalid public key error to be thrown when an invalid public key is detected.
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @returns The error object.
  */
 class InvalidHDNodePublicKeyError extends ErrorBase<
     HDNODE.INVALID_HDNODE_PUBLIC_KEY,
@@ -51,10 +35,6 @@ class InvalidHDNodePublicKeyError extends ErrorBase<
 
 /**
  * Invalid derivation path error to be thrown when an invalid derivation path is detected.
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @returns The error object.
  */
 class InvalidHDNodeDerivationPathError extends ErrorBase<
     HDNODE.INVALID_HDNODE_DERIVATION_PATH,

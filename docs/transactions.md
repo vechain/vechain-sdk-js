@@ -186,10 +186,10 @@ const body: TransactionBody = {
 
 // Create private keys of sender and delegate
 const pkSender = secp256k1.generatePrivateKey();
-const nodeDelgate = HDNode.fromMnemonic(mnemonic.generate());
-const pkDelegate = nodeDelgate.privateKey;
+const nodeDelegate = HDNode.fromMnemonic(mnemonic.generate());
+const pkDelegate = nodeDelegate.privateKey;
 // Get address of delegate
-const addrDelegate = nodeDelgate.address;
+const addrDelegate = nodeDelegate.address;
 
 // Sign transaction as sender and delegate
 const unsignedTx = new Transaction(body);
@@ -261,7 +261,6 @@ expect(decodedTx.body.blockRef).toBe(body.blockRef);
 expect(decodedTx.body.expiration).toBe(body.expiration);
 
 ```
-
 
 ## Example: Transaction Dependency
 A transaction can be set to only be processed after another transaction, therefore defining an execution order for transactions. The _DependsOn_ field is the Id of the transaction on which the current transaction depends on. If the transaction does not depend on others _DependsOn_ can be set to _null_

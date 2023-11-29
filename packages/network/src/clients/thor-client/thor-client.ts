@@ -1,5 +1,5 @@
 import { type HttpClient } from '../../utils';
-import { NodesClient } from './nodes';
+import { NodesModule } from './nodes';
 import { ContractsModule } from './contract/contracts-module';
 
 /**
@@ -11,7 +11,7 @@ class ThorClient {
     /**
      * The `NodeClient` instance
      */
-    public readonly nodes: NodesClient;
+    public readonly nodes: NodesModule;
 
     /**
      * The 'ContractClient' instance
@@ -23,7 +23,7 @@ class ThorClient {
      * @param httpClient - The HTTP client instance used for making network requests.
      */
     constructor(protected readonly httpClient: HttpClient) {
-        this.nodes = new NodesClient(httpClient);
+        this.nodes = new NodesModule(httpClient);
         this.contracts = new ContractsModule(httpClient);
     }
 }
