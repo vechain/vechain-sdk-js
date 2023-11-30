@@ -36,7 +36,7 @@ describe('Blocks Module', () => {
 
     test('waitForBlock - invalid blockNumber', async () => {
         await expect(
-            async () => await thorClient.blocks.waitForBlock(0)
+            async () => await thorClient.blocks.waitForBlock(-2)
         ).rejects.toThrowError(
             'Invalid blockNumber. The blockNumber must be a number representing a block number.'
         );
