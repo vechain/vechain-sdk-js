@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { thorSoloClient } from '../../../fixture';
+import { thorClient } from '../../../fixture';
 import { HttpClient } from '../../../../src';
 import { HTTPClientError } from '@vechainfoundation/vechain-sdk-errors';
 import { ThorClient } from '../../../../src/clients/thor-client';
@@ -32,8 +32,8 @@ describe('Integration tests to check the Node health check for different scenari
     });
 
     test('valid and available synchronized node', async () => {
-        const healtyNode = await thorSoloClient.nodes.isHealthy();
-        expect(healtyNode).toBe(true);
+        const healthyNode = await thorClient.nodes.isHealthy();
+        expect(healthyNode).toBe(true);
     });
 
     test('null or empty URL or blank URL', async () => {
