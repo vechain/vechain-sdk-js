@@ -6,8 +6,11 @@ import {
     type ResponseStorage,
     type AccountInputOptions
 } from './types';
-import { dataUtils } from '@vechainfoundation/vechain-sdk-core';
-import { assertIsAddress, assertIsRevision } from './helpers/assertions';
+import {
+    dataUtils,
+    assertIsAddress,
+    assertIsRevisionForAccount
+} from '@vechainfoundation/vechain-sdk-core';
 
 /**
  * The `AccountClient` class provides methods to interact with account-related endpoints
@@ -37,7 +40,7 @@ class AccountsClient {
     ): Promise<AccountDetail> {
         assertIsAddress(address);
 
-        assertIsRevision(options?.revision);
+        assertIsRevisionForAccount(options?.revision);
 
         return (await this.httpClient.http(
             'GET',
@@ -64,7 +67,7 @@ class AccountsClient {
     ): Promise<string> {
         assertIsAddress(address);
 
-        assertIsRevision(options?.revision);
+        assertIsRevisionForAccount(options?.revision);
 
         const result = (await this.httpClient.http(
             'GET',
@@ -95,7 +98,7 @@ class AccountsClient {
     ): Promise<string> {
         assertIsAddress(address);
 
-        assertIsRevision(options?.revision);
+        assertIsRevisionForAccount(options?.revision);
 
         // The position represents a slot in the VM storage. Each slot is 32 bytes.
         assert(
