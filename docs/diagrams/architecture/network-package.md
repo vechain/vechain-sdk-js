@@ -30,16 +30,5 @@ C4Context
         }
     }
 
-    Rel(nodes_module, nodes_client, "Utilizes")
-    Rel(contracts_module, transactions_client, "Interacts with")
-    Rel(contracts_module, accounts_client, "Interacts with")
-    
-    Rel(accounts_client, http_client, "Utilizes for network requests")
-    Rel(blocks_client, http_client, "Utilizes for network requests")
-    Rel(logs_client, http_client, "Utilizes for network requests")
-    Rel(transactions_client, http_client, "Utilizes for network requests")
-    Rel(nodes_client, http_client, "Utilizes for network requests")
-    BiRel(http_client, vechainthor, "Sends and receives data from")
-
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
 ```
