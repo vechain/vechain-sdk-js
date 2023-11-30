@@ -8,17 +8,6 @@ import { waitForBlockTestCases } from './fixture';
  * @group integration/clients/thor-client/blocks
  */
 describe('Blocks Module', () => {
-    // test('waitForBlock - valid', async () => {
-    //     // Get best block
-    //     const bestBlock = await thorestClient.blocks.getBestBlock();
-    //     if (bestBlock != null) {
-    //         const expectedBlock = await thorClient.blocks.waitForBlock(
-    //             bestBlock?.number + 2
-    //         );
-    //         expect(expectedBlock?.number).toBe(bestBlock?.number + 2);
-    //     }
-    // }, 25000);
-
     /**
      * Test suite for waitForBlock method
      */

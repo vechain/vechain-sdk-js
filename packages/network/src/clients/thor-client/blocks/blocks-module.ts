@@ -35,7 +35,7 @@ class BlocksModule {
             blockNumber === undefined ||
                 blockNumber === null ||
                 typeof blockNumber !== 'number' ||
-                blockNumber > 0,
+                blockNumber >= 0,
             DATA.INVALID_DATA_TYPE,
             'Invalid blockNumber. The blockNumber must be a number representing a block number.',
             { blockNumber }
