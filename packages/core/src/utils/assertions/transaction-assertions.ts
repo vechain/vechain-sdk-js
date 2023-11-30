@@ -1,5 +1,10 @@
-import { assert, DATA } from '@vechainfoundation/vechain-sdk-errors';
-import { dataUtils } from '@vechainfoundation/vechain-sdk-core';
+import {
+    DATA,
+    TRANSACTION,
+    assert
+} from '@vechainfoundation/vechain-sdk-errors';
+import { dataUtils } from '../data';
+import { type Transaction } from '../../transaction';
 
 /**
  * Assert if transaction ID is valid
@@ -28,4 +33,20 @@ function assertValidTransactionHead(head?: string): void {
     );
 }
 
-export { assertValidTransactionID, assertValidTransactionHead };
+/**
+ * Asserts that the given transaction is signed.
+ * @param tx - The transaction to check.
+ *
+ * @throws {InvalidTransactionError} if the transaction is not signed.
+ */
+const assertIsSignedTransaction = (tx: Transaction): void => {
+    assert(tx.isSigned, TRANSACTION.NOT_SIGNED, 'Transaction must be signed.', {
+        tx
+    });
+};
+
+export {
+    assertValidTransactionID,
+    assertValidTransactionHead,
+    assertIsSignedTransaction
+};
