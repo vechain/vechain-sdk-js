@@ -6,8 +6,11 @@ import {
     type ResponseStorage,
     type AccountInputOptions
 } from './types';
-import { dataUtils } from '@vechainfoundation/vechain-sdk-core';
-import { assertIsAddress, assertIsRevision } from './helpers/assertions';
+import {
+    dataUtils,
+    assertIsAddress,
+    assertIsRevision
+} from '@vechainfoundation/vechain-sdk-core';
 
 /**
  * The `AccountClient` class provides methods to interact with account-related endpoints

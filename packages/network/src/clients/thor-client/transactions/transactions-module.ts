@@ -1,11 +1,13 @@
-import { type Transaction } from '@vechainfoundation/vechain-sdk-core';
+import {
+    type Transaction,
+    assertIsSignedTx
+} from '@vechainfoundation/vechain-sdk-core';
 import { Poll, type HttpClient } from '../../../utils';
 import {
     type TransactionReceipt,
     TransactionsClient
 } from '../../thorest-client';
 import { type WaitForTransactionOptions } from './types';
-import { assertIsSignedTx } from './helpers';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides

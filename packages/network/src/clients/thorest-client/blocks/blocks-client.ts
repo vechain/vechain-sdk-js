@@ -1,11 +1,7 @@
 import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
-import {
-    revisionUtils,
-    buildQuery,
-    thorest,
-    type HttpClient
-} from '../../../utils';
+import { buildQuery, thorest, type HttpClient } from '../../../utils';
 import { type BlockDetail, type BlockInputOptions } from './types';
+import { revisionUtils } from '@vechainfoundation/vechain-sdk-core';
 
 /**
  * The `BlockClient` class provides methods to interact with block-related endpoints
