@@ -3,6 +3,15 @@ High level design of the project.
 
 ## Architecture
 
+Following chapter will give an overview of the architecture of the Vechain-SDK.
+Basically the Vechain-SDK is divided into three packages.
+
+* Network Package
+* Core Package
+* Error Package
+
+Each of these packages has its own responsibility and is described in the following chapters.
+
 ### Network Package
 The network package is the network interaction responsible package of the Vechain-SDK.
 It is responsible for all interactions with the VechainThor blockchain.

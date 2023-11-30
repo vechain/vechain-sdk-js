@@ -32,8 +32,8 @@ Accurate and up-to-date documentation is vital for the usability and maintainabi
 2. **Consistency**: Follow the existing format and style of the documentation. This includes using the same tense, person, and voice.
 3. **Markdown Formatting**: Use Markdown formatting appropriately to improve the readability of the document.
 
-#### Architecture Diagrams
-1. **Updating Diagrams**: In the `docs/architecture-diagrams` directory, update diagrams if there are significant changes to the system architecture or if you find any outdated diagrams.
+#### Diagrams
+1. **Updating Diagrams**: In the `docs/diagrams` directory, update diagrams if there are significant changes to the system architecture or if you find any outdated diagrams.
 2. **Tools**: Use mermaid markdown diagrams that produce clear, high-quality diagrams.
 3. **Documenting Changes**: Include a brief description of what was changed in the diagram and why in your pull request.
 
