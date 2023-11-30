@@ -39,7 +39,7 @@ function assertValidTransactionHead(head?: string): void {
  *
  * @throws {InvalidTransactionError} if the transaction is not signed.
  */
-const assertIsSignedTx = (tx: Transaction): void => {
+const assertIsSignedTransaction = (tx: Transaction): void => {
     assert(tx.isSigned, TRANSACTION.NOT_SIGNED, 'Transaction must be signed.', {
         tx
     });
@@ -48,5 +48,5 @@ const assertIsSignedTx = (tx: Transaction): void => {
 export {
     assertValidTransactionID,
     assertValidTransactionHead,
-    assertIsSignedTx
+    assertIsSignedTransaction
 };

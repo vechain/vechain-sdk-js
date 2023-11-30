@@ -1,6 +1,6 @@
 import {
     type Transaction,
-    assertIsSignedTx
+    assertIsSignedTransaction
 } from '@vechainfoundation/vechain-sdk-core';
 import { Poll, type HttpClient } from '../../../utils';
 import {
@@ -37,7 +37,7 @@ class TransactionsModule {
      * @throws an error if the transaction is not signed.
      */
     public async sendTransaction(signedTx: Transaction): Promise<string> {
-        assertIsSignedTx(signedTx);
+        assertIsSignedTransaction(signedTx);
 
         const rawTx = `0x${signedTx.encoded.toString('hex')}`;
 

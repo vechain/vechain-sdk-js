@@ -9,7 +9,7 @@ import {
 import {
     dataUtils,
     assertIsAddress,
-    assertIsRevision
+    assertIsRevisionForAccount
 } from '@vechainfoundation/vechain-sdk-core';
 
 /**
@@ -40,7 +40,7 @@ class AccountsClient {
     ): Promise<AccountDetail> {
         assertIsAddress(address);
 
-        assertIsRevision(options?.revision);
+        assertIsRevisionForAccount(options?.revision);
 
         return (await this.httpClient.http(
             'GET',
@@ -67,7 +67,7 @@ class AccountsClient {
     ): Promise<string> {
         assertIsAddress(address);
 
-        assertIsRevision(options?.revision);
+        assertIsRevisionForAccount(options?.revision);
 
         const result = (await this.httpClient.http(
             'GET',
@@ -98,7 +98,7 @@ class AccountsClient {
     ): Promise<string> {
         assertIsAddress(address);
 
-        assertIsRevision(options?.revision);
+        assertIsRevisionForAccount(options?.revision);
 
         // The position represents a slot in the VM storage. Each slot is 32 bytes.
         assert(
