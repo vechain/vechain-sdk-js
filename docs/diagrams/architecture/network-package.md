@@ -6,7 +6,7 @@ It represents the architecture of the network package with its most important co
 C4Context
     title "Vechain-SDK Architecture Overview - network package"
 
-    Boundary(b0, "Vechain-SDK Network Package") {
+    Boundary(b0, "network", "package") {
         Boundary(b1, "Thor Client") {
             System(nodes_module, "Nodes Module", "Manages node operations such as health checks and network status")
             System(contracts_module, "Contracts Module", "Handles smart contract interactions including deployment and execution")

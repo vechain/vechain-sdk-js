@@ -6,7 +6,7 @@ It represents the architecture of the core package with its most important compo
 C4Context
     title "Vechain-SDK Architecture Overview"
 
-    Boundary(b0, "Vechain-SDK Network Package") {
+    Boundary(b0, "network") {
         Boundary(b1, "Thor Client") {
             System(nodes_module, "Nodes Module", "Manages node operations such as health checks and network status")
             System(contracts_module, "Contracts Module", "Handles smart contract interactions including deployment and execution")
