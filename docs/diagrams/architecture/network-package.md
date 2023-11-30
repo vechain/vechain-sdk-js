@@ -4,7 +4,7 @@ It represents the architecture of the network package with its most important co
 
 ```mermaid
 C4Context
-    title "Vechain-SDK Architecture Overview - network package"
+    title "vechain-sdk Architecture Overview - network package"
 
     Boundary(b0, "network", "package") {
         Boundary(b1, "Thor Client") {
@@ -30,7 +30,7 @@ C4Context
         }
         
         Boundary(b4, "External Blockchain Interaction") {
-            System_Ext(vechainthor, "VechainThor Blockchain", "Represents the VechainThor blockchain platform with which the SDK interacts")
+            System_Ext(vechainthor, "Thor Blockchain", "Represents the blockchain platform with which the SDK interacts")
         }
     }
 
