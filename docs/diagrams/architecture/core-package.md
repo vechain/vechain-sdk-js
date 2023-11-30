@@ -4,35 +4,40 @@ It represents the architecture of the core package with its most important compo
 
 ```mermaid
 C4Context
-    title "Vechain-SDK Architecture Overview"
+    title "Vechain-SDK Architecture Overview - core package"
 
-    Boundary(b0, "network") {
-        Boundary(b1, "Thor Client") {
-            System(nodes_module, "Nodes Module", "Manages node operations such as health checks and network status")
-            System(contracts_module, "Contracts Module", "Handles smart contract interactions including deployment and execution")
-            System(module_N, "Module N", "Represents additional modular functionality being developed for Thor Client")
-        }
-        
-        Boundary(b2, "Thorest Client") {
-            System(accounts_client, "Accounts Client", "Provides API methods for account management")
-            System(blocks_client, "Blocks Client", "Enables querying and interacting with blockchain blocks")
-            System(logs_client, "Logs Client", "Facilitates retrieval and monitoring of transaction logs")
-            System(transactions_client, "Transactions Client", "Handles creation, signing, and broadcasting of transactions")
-            System(nodes_client, "Nodes Client", "Offers interfaces to node-specific data and actions")
+    Boundary(b0, "core", "package") {
+        Boundary(b1, "Core components") {
+            System(abi, "Abi module", "Handles all abi related operations")
+            System(address, "Address module", "Handles all address related operations")
+            System(bloom, "Bloom module", "Handles all bloom related operations")
+            System(certificate, "Certificate module", "Handles all certificate related operations")
+            System(contract, "Smart contract module", "Handles all smsrt contract related operations")
+            System(encoding, "RLP cncoding module", "Handles all RLP encoding related operations")
+            System(hash, "Hash module", "Handles all hash related operations")
+            System(hdnode, "HDnode module", "Handles all hdnode related operations")
+            System(keystore, "Keystore module", "Handles all keystore related operations")
+            System(mnemonic, "Mnemonic module", "Handles all mnemonic related operations")
+            System(secp256k1, "Secp256k1 module", "Handles all secp256k1 related operations")
+            System(transaction, "Transaction module", "Handles all transaction related operations")
         }
 
         Boundary(b3, "Utilities") {
-            System(http_client, "HTTP Client", "Customized HTTP client for efficient network request handling")
-            Boundary(b5, "Polling Utilities"){
-                System(sync_poll, "Synchronous Polling", "Performs blocking polling operations for synchronous processes")
-                System(async_poll, "Asynchronous Event Poll", "Implements event-driven polling for asynchronous workflows")
+
+            Boundary(b4, "Components utils") {
+                System(bloom, "Bloom utils", "Handles all utils constructs for bloom module")
+                System(hdnode, "Hdnode utils", "Handles all utils constructs for hdnode module")
+                System(transaction, "Transaction utils", "Handles all utils constructs for transaction module")
             }
-        }
-        
-        Boundary(b4, "External Blockchain Interaction") {
-            System_Ext(vechainthor, "VechainThor Blockchain", "Represents the VechainThor blockchain platform with which the SDK interacts")
+
+            Boundary(b5, "Generic utils") {
+                System(const, "Main constants utils", "Contains all core constants")
+                System(data, "Data utils", "Handles all data utils")
+                System(units, "Units utils", "Handles all units utils. Basic conversions.<br>e.g. Wei to Vet")
+            }
+
         }
     }
 
-    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
+    UpdateLayoutConfig($c4ShapeInRow="2", $c4BoundaryInRow="1")
 ```
