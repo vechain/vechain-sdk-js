@@ -1,6 +1,6 @@
-import { revisionUtils } from '../../../src/utils';
 import { describe, expect, test } from '@jest/globals';
 import { accountRevisions, blockRevisions } from './fixture';
+import { revisionUtils } from '../../../src';
 
 /**
  * Unit tests for the blockUtils module.
