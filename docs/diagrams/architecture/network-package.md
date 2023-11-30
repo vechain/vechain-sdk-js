@@ -1,3 +1,7 @@
+# Network Package C4 Architecture diagram
+Main diagram for the network package.
+It represents the architecture of the network package with its most important components.
+
 ```mermaid
 C4Context
     title "Vechain-SDK Architecture Overview"
