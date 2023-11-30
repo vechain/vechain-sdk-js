@@ -1,17 +1,13 @@
 import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
-import {
-    type HttpClient,
-    revisionUtils,
-    buildQuery,
-    thorest
-} from '../../../utils';
+import { type HttpClient, buildQuery, thorest } from '../../../utils';
 import {
     type ResponseBytecode,
     type AccountDetail,
     type ResponseStorage,
     type AccountInputOptions
 } from './types';
-import { dataUtils, addressUtils } from '@vechainfoundation/vechain-sdk-core';
+import { dataUtils } from '@vechainfoundation/vechain-sdk-core';
+import { assertIsAddress, assertIsRevision } from './helpers/assertions';
 
 /**
  * The `AccountClient` class provides methods to interact with account-related endpoints
@@ -39,21 +35,9 @@ class AccountsClient {
         address: string,
         options?: AccountInputOptions
     ): Promise<AccountDetail> {
-        assert(
-            addressUtils.isAddress(address),
-            DATA.INVALID_DATA_TYPE,
-            'Invalid address. The address must be 20 bytes (a 42 characters hex string with a `0x` prefix.)',
-            { address }
-        );
+        assertIsAddress(address);
 
-        assert(
-            options?.revision === undefined ||
-                options?.revision === null ||
-                revisionUtils.isRevisionAccount(options.revision),
-            DATA.INVALID_DATA_TYPE,
-            'Invalid revision. The revision must be a string representing a block number or block id.',
-            { revision: options?.revision }
-        );
+        assertIsRevision(options?.revision);
 
         return (await this.httpClient.http(
             'GET',
@@ -78,21 +62,9 @@ class AccountsClient {
         address: string,
         options?: AccountInputOptions
     ): Promise<string> {
-        assert(
-            addressUtils.isAddress(address),
-            DATA.INVALID_DATA_TYPE,
-            'Invalid address. The address must be 20 bytes (a 42 characters hex string with a `0x` prefix.)',
-            { address }
-        );
+        assertIsAddress(address);
 
-        assert(
-            options?.revision === undefined ||
-                options?.revision === null ||
-                revisionUtils.isRevisionAccount(options.revision),
-            DATA.INVALID_DATA_TYPE,
-            'Invalid revision. The revision must be a string representing a block number or block id.',
-            { revision: options?.revision }
-        );
+        assertIsRevision(options?.revision);
 
         const result = (await this.httpClient.http(
             'GET',
@@ -121,21 +93,9 @@ class AccountsClient {
         position: string,
         options?: AccountInputOptions
     ): Promise<string> {
-        assert(
-            addressUtils.isAddress(address),
-            DATA.INVALID_DATA_TYPE,
-            'Invalid address. The address must be 20 bytes (a 42 characters hex string with a `0x` prefix.)',
-            { address }
-        );
+        assertIsAddress(address);
 
-        assert(
-            options?.revision === undefined ||
-                options?.revision === null ||
-                revisionUtils.isRevisionAccount(options.revision),
-            DATA.INVALID_DATA_TYPE,
-            'Invalid revision. The revision must be a string representing a block number or block id.',
-            { revision: options?.revision }
-        );
+        assertIsRevision(options?.revision);
 
         // The position represents a slot in the VM storage. Each slot is 32 bytes.
         assert(

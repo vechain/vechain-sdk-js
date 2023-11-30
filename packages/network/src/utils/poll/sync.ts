@@ -1,10 +1,6 @@
 import { type SyncPollInputOptions } from './types';
-import {
-    assert,
-    DATA,
-    buildError,
-    POLL_ERROR
-} from '@vechainfoundation/vechain-sdk-errors';
+import { buildError, POLL_ERROR } from '@vechainfoundation/vechain-sdk-errors';
+import { assertPositiveIntegerForPollOptions } from './helpers/assertions';
 
 /**
  * Sleep for a given amount of time (in milliseconds).
@@ -42,32 +38,21 @@ function SyncPoll<TReturnType>(
     ) => Promise<TReturnType>;
 } {
     // Positive number for request interval
-    assert(
-        options?.requestIntervalInMilliseconds === undefined ||
-            (options?.requestIntervalInMilliseconds > 0 &&
-                Number.isInteger(options?.requestIntervalInMilliseconds)),
-        DATA.INVALID_DATA_TYPE,
-        'options.requestIntervalInMilliseconds must be a positive number',
-        { options }
+    assertPositiveIntegerForPollOptions(
+        options?.requestIntervalInMilliseconds,
+        'options?.requestIntervalInMilliseconds'
     );
 
     // Positive number for maximum iterations
-    assert(
-        options?.maximumIterations === undefined ||
-            (options?.maximumIterations > 0 &&
-                Number.isInteger(options?.maximumIterations)),
-        DATA.INVALID_DATA_TYPE,
-        'options.maximumIterations must be a positive number',
-        { options }
+    assertPositiveIntegerForPollOptions(
+        options?.maximumIterations,
+        'options?.maximumIterations'
     );
 
-    assert(
-        options?.maximumWaitingTimeInMilliseconds === undefined ||
-            (options?.maximumWaitingTimeInMilliseconds > 0 &&
-                Number.isInteger(options?.maximumWaitingTimeInMilliseconds)),
-        DATA.INVALID_DATA_TYPE,
-        'options.maximumWaitingTimeInMilliseconds must be a positive number',
-        { options }
+    // Positive number for maximum waiting time
+    assertPositiveIntegerForPollOptions(
+        options?.maximumWaitingTimeInMilliseconds,
+        'options?.maximumWaitingTimeInMilliseconds'
     );
 
     // Number of iterations

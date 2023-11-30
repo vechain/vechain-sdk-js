@@ -19,6 +19,24 @@ To ensure consistency throughout the source code, please adhere to the following
 4. For integration tests using thor-solo, if needed, use a `TEST_ACCOUNT` in order to isolate previous integration tests.
 5. We follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for commit messages.
 
+# Documentation Updates
+
+## Overview
+
+Accurate and up-to-date documentation is vital for the usability and maintainability of the vechain-sdk. We welcome contributions that improve or update the documentation.
+
+### Guidelines for Documentation Updates
+
+#### Textual Documentation
+1. **Clarity and Accuracy**: Ensure that the documentation is clear, accurate, and easy to understand. Avoid technical jargon where possible, or provide explanations for technical terms.
+2. **Consistency**: Follow the existing format and style of the documentation. This includes using the same tense, person, and voice.
+3. **Markdown Formatting**: Use Markdown formatting appropriately to improve the readability of the document.
+
+#### Architecture Diagrams
+1. **Updating Diagrams**: In the `docs/architecture-diagrams` directory, update diagrams if there are significant changes to the system architecture or if you find any outdated diagrams.
+2. **Tools**: Use mermaid markdown diagrams that produce clear, high-quality diagrams.
+3. **Documenting Changes**: Include a brief description of what was changed in the diagram and why in your pull request.
+
 # Commenting Guidelines
 
 ## Class Commenting
@@ -158,6 +176,11 @@ function some_function(input: any) {
   assert(valid_input(input), ERROR_CODE, ERROR_MESSAGE);
 }
 ```
+
+### Common assertions
+It is often observed that certain assertions are applicable across various contexts. 
+Adhering to the principle of Don't Repeat Yourself (DRY), it is imperative that these assertions be consolidated in a universally accessible file. 
+This file shall be designated as `helpers/assertions.ts` and should be referenced by each module requiring its contents.
 
 # Code of Conduct
 

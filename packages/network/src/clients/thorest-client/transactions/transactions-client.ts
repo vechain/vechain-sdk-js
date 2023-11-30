@@ -23,6 +23,10 @@ import {
     buildError,
     DATA
 } from '@vechainfoundation/vechain-sdk-errors';
+import {
+    assertValidTransactionHead,
+    assertValidTransactionID
+} from './helpers/assertions';
 
 /**
  * Client for reading and creating transactions
@@ -46,21 +50,10 @@ class TransactionsClient {
         options?: GetTransactionInputOptions
     ): Promise<TransactionDetail | null> {
         // Invalid transaction ID
-        assert(
-            dataUtils.isThorId(id, true),
-            DATA.INVALID_DATA_TYPE,
-            'Invalid transaction ID given as input. Input must be an hex string of length 64.',
-            { id }
-        );
+        assertValidTransactionID(id);
 
         // Invalid head
-        assert(
-            options?.head === undefined ||
-                dataUtils.isThorId(options?.head, true),
-            DATA.INVALID_DATA_TYPE,
-            'Invalid head given as input. Input must be an hex string of length 64.',
-            { head: options?.head }
-        );
+        assertValidTransactionHead(options?.head);
 
         return (await this.httpClient.http(
             'GET',
@@ -80,6 +73,7 @@ class TransactionsClient {
      *
      * @param id - Transaction ID of the transaction to retrieve.
      * @param options - (Optional) Other optional parameters for the request.
+     *                  If `head` is not specified, the receipt of the transaction at the best block is returned.
      * @returns A promise that resolves to the receipt of the transaction.
      */
     public async getTransactionReceipt(
@@ -87,21 +81,10 @@ class TransactionsClient {
         options?: GetTransactionReceiptInputOptions
     ): Promise<TransactionReceipt | null> {
         // Invalid transaction ID
-        assert(
-            dataUtils.isThorId(id, true),
-            DATA.INVALID_DATA_TYPE,
-            'Invalid transaction ID given as input. Input must be an hex string of length 64.',
-            { id }
-        );
+        assertValidTransactionID(id);
 
         // Invalid head
-        assert(
-            options?.head === undefined ||
-                dataUtils.isThorId(options?.head, true),
-            DATA.INVALID_DATA_TYPE,
-            'Invalid head given as input. Input must be an hex string of length 64.',
-            { head: options?.head }
-        );
+        assertValidTransactionHead(options?.head);
 
         return (await this.httpClient.http(
             'GET',
