@@ -4,7 +4,7 @@ It represents the architecture of the network package with its most important co
 
 ```mermaid
 C4Context
-    title "Vechain-SDK Architecture Overview"
+    title "Vechain-SDK Architecture Overview - network package"
 
     Boundary(b0, "Vechain-SDK Network Package") {
         Boundary(b1, "Thor Client") {
