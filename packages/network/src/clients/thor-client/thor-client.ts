@@ -1,5 +1,6 @@
 import { type HttpClient } from '../../utils';
 import { NodesModule } from './nodes';
+import { BlocksModule } from './blocks';
 import { ContractsModule } from './contract/contracts-module';
 import { TransactionsModule } from './transactions';
 
@@ -15,6 +16,11 @@ class ThorClient {
     public readonly nodes: NodesModule;
 
     /**
+     * The `BlocksModule` instance
+     */
+    public readonly blocks: BlocksModule;
+
+    /*
      * The `TransactionsModule` instance
      */
     public readonly transactions: TransactionsModule;
@@ -31,6 +37,7 @@ class ThorClient {
      */
     constructor(protected readonly httpClient: HttpClient) {
         this.nodes = new NodesModule(httpClient);
+        this.blocks = new BlocksModule(httpClient);
         this.transactions = new TransactionsModule(httpClient);
         this.contracts = new ContractsModule(httpClient);
     }

@@ -1,12 +1,14 @@
-import { type Transaction } from '@vechainfoundation/vechain-sdk-core';
-import { type HttpClient, Poll } from '../../../utils';
+import {
+    type Transaction,
+    assertIsSignedTransaction
+} from '@vechainfoundation/vechain-sdk-core';
+import { Poll, type HttpClient } from '../../../utils';
 import {
     type TransactionReceipt,
     TransactionsClient,
     type TransactionSimulationResult
 } from '../../thorest-client';
 import type { SendTransactionResult, WaitForTransactionOptions } from './types';
-import { assertIsSignedTx } from './helpers';
 import { decodeRevertReason } from './helpers/message';
 
 /**
@@ -39,7 +41,7 @@ class TransactionsModule {
     public async sendTransaction(
         signedTx: Transaction
     ): Promise<SendTransactionResult> {
-        assertIsSignedTx(signedTx);
+        assertIsSignedTransaction(signedTx);
 
         const simulatedTransaction =
             await this.transactionsClient.simulateTransaction(
