@@ -32,14 +32,10 @@ describe('ThorClient - Contracts', () => {
             const response = await deployExampleContract();
 
             // Poll until the transaction receipt is available
-            let transactionReceipt = null;
-            while (transactionReceipt == null) {
-                transactionReceipt =
-                    await thorestSoloClient.transactions.getTransactionReceipt(
-                        response.id
-                    );
-            }
-
+            const transactionReceipt =
+                (await thorSoloClient.transactions.waitForTransaction(
+                    response.id
+                )) as TransactionReceipt;
             // Extract the contract address from the transaction receipt
             const contractAddress =
                 transactionReceipt.outputs[0].contractAddress;
@@ -64,7 +60,10 @@ describe('ThorClient - Contracts', () => {
         const response = await deployExampleContract();
 
         // Poll until the transaction receipt is available
-        const transactionReceipt = await pollTransactionReceipt(response.id);
+        const transactionReceipt =
+            (await thorSoloClient.transactions.waitForTransaction(
+                response.id
+            )) as TransactionReceipt;
 
         // Extract the contract address from the transaction receipt
         const contractAddress = transactionReceipt.outputs[0].contractAddress;
@@ -103,7 +102,9 @@ describe('ThorClient - Contracts', () => {
 
             // Poll until the transaction receipt is available
             const transactionReceiptDeployContract =
-                await pollTransactionReceipt(response.id);
+                (await thorSoloClient.transactions.waitForTransaction(
+                    response.id
+                )) as TransactionReceipt;
 
             const contractAddress = transactionReceiptDeployContract.outputs[0]
                 .contractAddress as string;
@@ -124,7 +125,9 @@ describe('ThorClient - Contracts', () => {
                 );
 
             const transactionReceiptCallSetContract =
-                await pollTransactionReceipt(callFunctionSetResponse.id);
+                (await thorSoloClient.transactions.waitForTransaction(
+                    callFunctionSetResponse.id
+                )) as TransactionReceipt;
 
             expect(transactionReceiptCallSetContract.reverted).toBe(false);
 
@@ -167,17 +170,4 @@ async function deployExampleContract(): Promise<TransactionSendResult> {
             blockRef: bestBlock?.id.slice(0, 18)
         }
     );
-}
-
-async function pollTransactionReceipt(
-    transactionId: string
-): Promise<TransactionReceipt> {
-    let transactionReceipt = null;
-    while (transactionReceipt == null) {
-        transactionReceipt =
-            await thorestSoloClient.transactions.getTransactionReceipt(
-                transactionId
-            );
-    }
-    return transactionReceipt;
 }
