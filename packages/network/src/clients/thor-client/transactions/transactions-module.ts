@@ -2,13 +2,10 @@ import { type Transaction } from '@vechainfoundation/vechain-sdk-core';
 import { type HttpClient, Poll } from '../../../utils';
 import {
     type TransactionReceipt,
-    TransactionsClient
+    TransactionsClient,
+    type TransactionSimulationResult
 } from '../../thorest-client';
-import type {
-    ClauseResult,
-    SendTransactionResult,
-    WaitForTransactionOptions
-} from './types';
+import type { SendTransactionResult, WaitForTransactionOptions } from './types';
 import { assertIsSignedTx } from './helpers';
 import { decodeRevertReason } from './helpers/message';
 
@@ -49,20 +46,15 @@ class TransactionsModule {
                 signedTx.body.clauses
             );
 
-        const clauseResults: ClauseResult[] = simulatedTransaction.map(
-            (clause) => {
+        const clausesResults: TransactionSimulationResult[] =
+            simulatedTransaction.map((clause) => {
                 return {
-                    reverted: clause.reverted,
+                    ...clause,
                     data: clause.reverted
                         ? decodeRevertReason(clause.data)
-                        : clause.data,
-                    estimatedGasUsed: clause.gasUsed,
-                    events: clause.events,
-                    transfers: clause.transfers,
-                    vmError: clause.vmError
+                        : clause.data
                 };
-            }
-        );
+            });
 
         const rawTx = `0x${signedTx.encoded.toString('hex')}`;
 
@@ -70,7 +62,7 @@ class TransactionsModule {
 
         return {
             id: txID,
-            clauseResults
+            clausesResults
         };
     }
 
