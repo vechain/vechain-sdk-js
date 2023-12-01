@@ -65,9 +65,14 @@ async function decrypt(
     password: string
 ): Promise<KeystoreAccount> {
     // Invalid keystore
-    assert(isValid(keystore), KEYSTORE.INVALID_KEYSTORE, 'Invalid keystore', {
-        keystore
-    });
+    assert(
+        isValid(keystore),
+        KEYSTORE.INVALID_KEYSTORE,
+        'Invalid keystore. Ensure the keystore is properly formatted and contains the necessary data.',
+        {
+            keystore
+        }
+    );
 
     try {
         return (await ethers.decryptKeystoreJson(
@@ -77,7 +82,7 @@ async function decrypt(
     } catch (e) {
         throw buildError(
             KEYSTORE.INVALID_PASSWORD,
-            'Invalid password',
+            'Decryption failed: Invalid Password for the given keystore.',
             {
                 keystore,
                 password

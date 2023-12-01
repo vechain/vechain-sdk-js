@@ -106,7 +106,7 @@ class TransactionsClient {
         assert(
             dataUtils.isHexString(raw),
             DATA.INVALID_DATA_TYPE,
-            'Invalid raw transaction given as input. Input must be an hex string',
+            'Sending failed: Input must be a valid raw transaction in hex format.',
             { raw }
         );
 
@@ -116,7 +116,8 @@ class TransactionsClient {
         } catch (error) {
             throw buildError(
                 DATA.INVALID_DATA_TYPE,
-                'Invalid raw transaction given as input. Input must be a valid raw transaction. Error occurs while decoding the transaction.',
+                'Sending failed: Input must be a valid raw transaction in hex format. Decoding error encountered.',
+
                 { raw },
                 error
             );

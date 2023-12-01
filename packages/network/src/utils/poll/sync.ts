@@ -121,7 +121,7 @@ function SyncPoll<TReturnType>(
             } catch (error) {
                 throw buildError(
                     POLL_ERROR.POLL_EXECUTION_ERROR,
-                    'Error on function execution',
+                    'Polling failed: Function execution error encountered during synchronous polling.',
                     {
                         functionName: pollingFunction.name
                     },

@@ -17,10 +17,15 @@ function assertIsValidBuffer(
     bufferToCheck: Buffer | RLPInput,
     context: string
 ): void {
-    assert(Buffer.isBuffer(bufferToCheck), RLP.INVALID_RLP, 'expected buffer', {
-        bufferToCheck,
-        context
-    });
+    assert(
+        Buffer.isBuffer(bufferToCheck),
+        RLP.INVALID_RLP,
+        `Validation error: Expected a Buffer type in ${context}.`,
+        {
+            bufferToCheck,
+            context
+        }
+    );
 }
 
 /**
@@ -38,7 +43,7 @@ function assertIsArray<ArrayType>(
     assert(
         Array.isArray(arrayToCheck),
         RLPError.INVALID_RLP,
-        'expected array',
+        `Validation error: Expected an array in ${context}.`,
         {
             context
         }

@@ -57,7 +57,7 @@ class Transaction {
         assert(
             this._isValidBody(body),
             TRANSACTION.INVALID_TRANSACTION_BODY,
-            'Invalid transaction body',
+            'Invalid transaction body. Ensure all required fields are correctly formatted and present.',
             { body }
         );
         this.body = body;
@@ -67,7 +67,7 @@ class Transaction {
             assert(
                 this._isSignatureValid(signature),
                 SECP256K1.INVALID_SECP256k1_SIGNATURE,
-                'Invalid transaction signature',
+                'Invalid transaction signature. Ensure it is correctly formatted.',
                 { signature }
             );
 
@@ -106,7 +106,7 @@ class Transaction {
         assert(
             this.isDelegated,
             TRANSACTION.INVALID_DELEGATION,
-            'Transaction is not delegated'
+            'Transaction is not delegated. Delegator information is unavailable.'
         );
 
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
@@ -191,7 +191,7 @@ class Transaction {
         assert(
             delegateFor === undefined || addressUtils.isAddress(delegateFor),
             ADDRESS.INVALID_ADDRESS,
-            'Invalid address given as input as delegateFor parameter.',
+            'Invalid address given as input as delegateFor parameter. Ensure it is a valid address.',
             { delegateFor }
         );
 
