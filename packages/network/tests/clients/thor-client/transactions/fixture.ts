@@ -14,7 +14,7 @@ import { TEST_ACCOUNTS } from '../../../fixture';
 const transfer1VTHOClause = {
     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
     value: '0',
-    data: contract.encodeFunctionInput(
+    data: contract.coder.encodeFunctionInput(
         BUILT_IN_CONTRACTS.ENERGY_ABI,
         'transfer',
         [
@@ -30,7 +30,7 @@ const transfer1VTHOClause = {
 const transfer1VTHOClauseWithValueAsANumber = {
     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
     value: 0,
-    data: contract.encodeFunctionInput(
+    data: contract.coder.encodeFunctionInput(
         BUILT_IN_CONTRACTS.ENERGY_ABI,
         'transfer',
         [

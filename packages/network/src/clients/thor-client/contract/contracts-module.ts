@@ -6,8 +6,7 @@ import {
 } from '../../thorest-client';
 import type { HttpClient } from '../../../utils';
 import {
-    buildCallContractTransaction,
-    buildDeployContractTransaction,
+    contract,
     type InterfaceAbi,
     type TransactionBodyOverride,
     TransactionHandler
@@ -42,7 +41,7 @@ class ContractsModule {
         transactionBodyOverride?: TransactionBodyOverride
     ): Promise<TransactionSendResult> {
         // Build a transaction for deploying the smart contract
-        const transaction = buildDeployContractTransaction(
+        const transaction = contract.builder.buildDeployTransaction(
             contractBytecode,
             transactionBodyOverride
         );
@@ -95,7 +94,7 @@ class ContractsModule {
         transactionBodyOverride?: TransactionBodyOverride
     ): Promise<ContractCallResult[]> {
         // Build a read-only transaction to call the contract function
-        const transaction = buildCallContractTransaction(
+        const transaction = contract.builder.buildCallTransaction(
             contractAddress,
             contractABI,
             functionName,
@@ -133,7 +132,7 @@ class ContractsModule {
         transactionBodyOverride?: TransactionBodyOverride
     ): Promise<ContractTransactionResult> {
         // Build a transaction to call the contract function
-        const transaction = buildCallContractTransaction(
+        const transaction = contract.builder.buildCallTransaction(
             contractAddress,
             contractABI,
             functionName,

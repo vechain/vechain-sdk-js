@@ -1,11 +1,7 @@
 import { describe, test, expect } from '@jest/globals';
 import { compileContract } from './compiler';
-import {
-    type TransactionBodyOverride,
-    buildCallContractTransaction,
-    buildDeployContractTransaction
-} from '../../src';
-import { contract, networkInfo } from '../../src';
+import { type TransactionBodyOverride, contract } from '../../src';
+import { coder, networkInfo } from '../../src';
 
 /**
  * Unit tests for building contract transactions.
@@ -24,7 +20,7 @@ describe('Contract', () => {
         );
 
         // Build a transaction to deploy the compiled contract
-        const transaction = buildDeployContractTransaction(
+        const transaction = contract.builder.buildDeployTransaction(
             compiledContract.bytecode
         );
 
@@ -64,7 +60,7 @@ describe('Contract', () => {
         };
 
         // Build a transaction to deploy the compiled contract with the custom transaction body
-        const transaction = buildDeployContractTransaction(
+        const transaction = contract.builder.buildDeployTransaction(
             compiledContract.bytecode,
             transactionBody
         );
@@ -100,7 +96,7 @@ describe('Contract', () => {
         };
 
         // Build a transaction to deploy the compiled contract with the custom transaction body
-        const transaction = buildDeployContractTransaction(
+        const transaction = contract.builder.buildDeployTransaction(
             compiledContract.bytecode,
             transactionBody
         );
@@ -130,7 +126,7 @@ describe('Contract', () => {
         );
 
         // Build a transaction to call a function on the contract
-        const callFunctionTransaction = buildCallContractTransaction(
+        const callFunctionTransaction = contract.builder.buildCallTransaction(
             '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
             contractCompiled.abi,
             'set',
@@ -169,9 +165,7 @@ describe('Contract', () => {
         expect(contractCompiled).toBeDefined();
 
         // Create an instance of a Contract interface using the ABI
-        const contractInterface = contract.createInterface(
-            contractCompiled.abi
-        );
+        const contractInterface = coder.createInterface(contractCompiled.abi);
 
         // Ensure the contract interface is created successfully
         expect(contractInterface).toBeDefined();

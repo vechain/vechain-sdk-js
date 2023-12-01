@@ -10,11 +10,11 @@ This example showcases the process of building a smart contract transaction usin
 
 ### Code Explanation
 
--   The `buildDeployContractTransaction` function from `@vechainfoundation/vechain-sdk-core` is employed to construct a deploy contract transaction.
+-   The `buildDeployTransaction` function from `@vechainfoundation/vechain-sdk-core` is employed to construct a deploy contract transaction.
 
 -   The smart contract bytecode is represented by the `contractBytecode` variable.
 
--   The `buildDeployContractTransaction` function is invoked with the contract bytecode, resulting in the creation of a transaction object.
+-   The `buildDeployTransaction` function is invoked with the contract bytecode, resulting in the creation of a transaction object.
 
 ### Conclusion
 
@@ -32,7 +32,7 @@ This example demonstrates the process of building a transaction to call a functi
 
 -   The example involves a smart contract with an ABI (Application Binary Interface) defined in JSON format. The ABI describes the functions and their parameters in the contract.
 
--   The `buildCallContractTransaction` function from `@vechainfoundation/vechain-sdk-core` is used to create a transaction for calling a specific function on the smart contract.
+-   The `buildCallTransaction` function from `@vechainfoundation/vechain-sdk-core` is used to create a transaction for calling a specific function on the smart contract.
 
 -   The function `setValue` is called with an argument of 123, representing the value to be set in the smart contract.
 

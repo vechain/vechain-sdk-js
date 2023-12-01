@@ -1,6 +1,6 @@
 import { type InterfaceAbi, Interface as EthersInterface } from 'ethers';
-import type { BytesLike, Interface, Result } from './types';
-import { abi } from './coder';
+import type { BytesLike, Interface, Result } from '../abi';
+import { abi } from '../abi';
 import { ERROR_CODES, buildError } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
@@ -131,7 +131,7 @@ function decodeEventLog(
     }
 }
 
-export const contract = {
+export const coder = {
     createInterface,
     encodeFunctionInput,
     decodeFunctionInput,

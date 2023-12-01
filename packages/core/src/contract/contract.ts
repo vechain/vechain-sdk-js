@@ -1,5 +1,5 @@
 import { type InterfaceAbi, randomBytes } from 'ethers';
-import { contract } from '../abi';
+import { coder } from '../abi';
 import { Transaction, type TransactionClause } from '../transaction';
 import { networkInfo } from '../utils/const/network';
 import { TransactionUtils, dataUtils } from '../utils';
@@ -12,7 +12,7 @@ import type { TransactionBodyOverride } from './types';
  * @param transactionBodyOverride - (Optional) Custom transaction body to override default settings.
  * @returns A Transaction object representing the deploy contract transaction.
  */
-function buildDeployContractTransaction(
+function buildDeployTransaction(
     contractBytecode: string,
     transactionBodyOverride?: TransactionBodyOverride
 ): Transaction {
@@ -36,7 +36,7 @@ function buildDeployContractTransaction(
  * @param transactionBodyOverride - (Optional) Custom transaction body to override default settings.
  * @returns A Transaction object representing the function call transaction.
  */
-function buildCallContractTransaction(
+function buildCallTransaction(
     contractAddress: string,
     contractAbi: InterfaceAbi,
     functionName: string,
@@ -47,7 +47,7 @@ function buildCallContractTransaction(
         {
             to: contractAddress,
             value: 0,
-            data: contract.encodeFunctionInput(contractAbi, functionName, args)
+            data: coder.encodeFunctionInput(contractAbi, functionName, args)
         }
     ];
 
@@ -79,4 +79,7 @@ function buildTransactionBody(
     return new Transaction(body);
 }
 
-export { buildDeployContractTransaction, buildCallContractTransaction };
+export const builder = {
+    buildDeployTransaction,
+    buildCallTransaction
+};
