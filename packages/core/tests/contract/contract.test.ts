@@ -53,7 +53,7 @@ describe('Contract', () => {
         const transactionBody: TransactionBodyOverride = {
             nonce: 1,
             chainTag: networkInfo.mainnet.chainTag,
-            blockRef: '0x00ffecb8ac3142c4',
+            blockRef: '0x0000000000000000',
             expiration: 32,
             gasPriceCoef: 0,
             dependsOn: null
@@ -69,7 +69,7 @@ describe('Contract', () => {
         expect(transaction.body.clauses[0].data).toEqual(
             compiledContract.bytecode
         );
-        expect(transaction.body.blockRef).toEqual('0x00ffecb8ac3142c4');
+        expect(transaction.body.blockRef).toEqual('0x0000000000000000');
         expect(transaction.body.expiration).toEqual(32);
         expect(transaction.body.nonce).toEqual(1);
         expect(transaction.body.gas).toBeGreaterThan(0);
@@ -105,7 +105,7 @@ describe('Contract', () => {
         expect(transaction.body.clauses[0].data).toEqual(
             compiledContract.bytecode
         );
-        expect(transaction.body.blockRef).toEqual('0x00ffecb8ac3142c4');
+        expect(transaction.body.blockRef).toEqual('0x0000000000000000');
         expect(transaction.body.expiration).toEqual(32);
         expect(transaction.body.nonce).toEqual(4);
         expect(transaction.body.gas).toBeGreaterThan(0);
