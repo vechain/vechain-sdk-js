@@ -31,7 +31,7 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
             words.length as WordlistSizeType
         ),
         HDNODE.INVALID_HDNODE_MNEMONICS,
-        'Invalid mnemonic size. It must be 12, 15, 18, 21, or 24.',
+        'Invalid mnemonic size. Mnemonic must be 12, 15, 18, 21, or 24 words.',
         { words }
     );
 
@@ -60,7 +60,7 @@ function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
     assert(
         publicKey.length === 65,
         HDNODE.INVALID_HDNODE_PUBLIC_KEY,
-        'Invalid public key. Length must be 65 bytes.',
+        'Invalid public key. Length must be exactly 65 bytes.',
         { publicKey }
     );
 
@@ -95,7 +95,7 @@ function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
     assert(
         privateKey.length === 32,
         HDNODE.INVALID_HDNODE_PRIVATE_KEY,
-        'Invalid private key. Length must be 32 bytes.',
+        'Invalid private key. Length must be exactly 32 bytes.',
         { privateKey }
     );
 

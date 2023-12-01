@@ -135,7 +135,7 @@ const _unpackData = (
         assert(
             Buffer.isBuffer(packed) || packed instanceof Uint8Array,
             RLPError.INVALID_RLP,
-            'expected buffer',
+            'Unpacking error: Expected data type is Buffer.',
             { context }
         );
 
@@ -151,7 +151,7 @@ const _unpackData = (
         assert(
             parts.length === kind.length,
             RLPError.INVALID_RLP,
-            `expected ${kind.length} items, but got ${parts.length}`,
+            `Unpacking error: Expected ${kind.length} items, but got ${parts.length}.`,
             { context }
         );
 

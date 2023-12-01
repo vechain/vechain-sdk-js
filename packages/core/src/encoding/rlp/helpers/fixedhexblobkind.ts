@@ -16,7 +16,7 @@ const assertFixedHexBlobKindData = (
     assert(
         data.length === bytes * 2 + 2,
         RLP.INVALID_RLP,
-        `expected hex string to be ${bytes} bytes`,
+        `Validation error: Hex string in ${context} must be exactly ${bytes} bytes in length.`,
         { data, context }
     );
 };
@@ -38,7 +38,7 @@ const assertFixedHexBlobKindBuffer = (
     assert(
         buffer.length === bytes,
         RLP.INVALID_RLP,
-        `expected buffer to be ${bytes} bytes`,
+        `Validation error: Buffer in ${context} must be exactly ${bytes} bytes in length.`,
         { buffer, context }
     );
 };

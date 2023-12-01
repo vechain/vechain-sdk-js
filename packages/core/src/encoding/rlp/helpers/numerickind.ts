@@ -16,7 +16,7 @@ const validateNumericKindData = (data: RLPInput, context: string): bigint => {
     assert(
         typeof data === 'number' || typeof data === 'string',
         RLP.INVALID_RLP,
-        'expected string or number',
+        `Validation error: Input in ${context} must be a string or number.`,
         { data, context }
     );
 
@@ -45,7 +45,7 @@ const _validateNumericKindNumber = (num: number, context: string): void => {
     assert(
         Number.isSafeInteger(num) && num >= 0,
         RLP.INVALID_RLP,
-        'expected integer',
+        `Validation error: Number in ${context} must be a safe and non-negative integer.`,
         {
             num,
             context
@@ -73,7 +73,7 @@ const _validateNumericKindString = (str: string, context: string): void => {
     assert(
         isHex || isDecimal,
         RLP.INVALID_RLP,
-        'expected non-negative integer in hex or dec string',
+        `Validation error: String in ${context} must represent a non-negative integer in hex or decimal format.`,
         { str, context }
     );
 
@@ -81,7 +81,7 @@ const _validateNumericKindString = (str: string, context: string): void => {
     assert(
         !isHex || str.length > 2,
         RLP.INVALID_RLP,
-        'expected valid hex string number',
+        `Validation error: Hex string number in ${context} must be of valid length.`,
         { str, context }
     );
 };
@@ -107,7 +107,7 @@ const assertValidNumericKindBuffer = (
     assert(
         maxBytes === undefined || buf.length <= maxBytes,
         RLP.INVALID_RLP,
-        `expected less than ${maxBytes} bytes`,
+        `Validation error: Buffer in ${context} must be less than ${maxBytes} bytes.`,
         { maxBytes, context }
     );
 
@@ -115,7 +115,7 @@ const assertValidNumericKindBuffer = (
     assert(
         buf[0] !== 0,
         RLP.INVALID_RLP,
-        'expected canonical integer (no leading zero bytes)',
+        `Validation error: Buffer in ${context} must represent a canonical integer (no leading zeros).`,
         { buf, context }
     );
 };
@@ -146,7 +146,7 @@ const encodeBigIntToBuffer = (
     assert(
         maxBytes === undefined || hex.length <= maxBytes * 2,
         RLP.INVALID_RLP,
-        `expected number in ${maxBytes} bytes`,
+        `Validation error: Encoded number in ${context} must fit within ${maxBytes} bytes.`,
         { maxBytes, hex, context }
     );
 
