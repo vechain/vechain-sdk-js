@@ -1,5 +1,5 @@
 import { type Transaction } from '@vechainfoundation/vechain-sdk-core';
-import { Poll, type HttpClient } from '../../../utils';
+import { type HttpClient, Poll } from '../../../utils';
 import {
     type TransactionReceipt,
     TransactionsClient
@@ -88,7 +88,7 @@ class TransactionsModule {
         txID: string,
         options?: WaitForTransactionOptions
     ): Promise<TransactionReceipt | null> {
-        const result = await Poll.SyncPoll(
+        return await Poll.SyncPoll(
             async () =>
                 await this.transactionsClient.getTransactionReceipt(txID),
             {
@@ -98,8 +98,6 @@ class TransactionsModule {
         ).waitUntil((result) => {
             return result !== null;
         });
-
-        return result;
     }
 }
 
