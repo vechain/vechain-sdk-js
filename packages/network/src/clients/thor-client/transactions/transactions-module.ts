@@ -4,8 +4,13 @@ import {
     type TransactionReceipt,
     TransactionsClient
 } from '../../thorest-client';
-import { type WaitForTransactionOptions } from './types';
+import type {
+    ClauseResult,
+    SendTransactionResult,
+    WaitForTransactionOptions
+} from './types';
 import { assertIsSignedTx } from './helpers';
+import { decodeRevertReason } from './helpers/message';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -34,14 +39,39 @@ class TransactionsModule {
      *
      * @throws an error if the transaction is not signed.
      */
-    public async sendTransaction(signedTx: Transaction): Promise<string> {
+    public async sendTransaction(
+        signedTx: Transaction
+    ): Promise<SendTransactionResult> {
         assertIsSignedTx(signedTx);
+
+        const simulatedTransaction =
+            await this.transactionsClient.simulateTransaction(
+                signedTx.body.clauses
+            );
+
+        const clauseResults: ClauseResult[] = simulatedTransaction.map(
+            (clause) => {
+                return {
+                    reverted: clause.reverted,
+                    data: clause.reverted
+                        ? decodeRevertReason(clause.data)
+                        : clause.data,
+                    estimatedGasUsed: clause.gasUsed,
+                    events: clause.events,
+                    transfers: clause.transfers,
+                    vmError: clause.vmError
+                };
+            }
+        );
 
         const rawTx = `0x${signedTx.encoded.toString('hex')}`;
 
         const txID = (await this.transactionsClient.sendTransaction(rawTx)).id;
 
-        return txID;
+        return {
+            id: txID,
+            clauseResults
+        };
     }
 
     /**

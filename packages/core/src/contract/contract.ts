@@ -1,4 +1,4 @@
-import { randomBytes } from 'ethers';
+import { type InterfaceAbi, randomBytes } from 'ethers';
 import { contract } from '../abi';
 import { Transaction, type TransactionClause } from '../transaction';
 import { networkInfo } from '../utils/const/network';
@@ -38,7 +38,7 @@ function buildDeployContractTransaction(
  */
 function buildCallContractTransaction(
     contractAddress: string,
-    contractAbi: string,
+    contractAbi: InterfaceAbi,
     functionName: string,
     args: unknown[],
     transactionBodyOverride?: TransactionBodyOverride

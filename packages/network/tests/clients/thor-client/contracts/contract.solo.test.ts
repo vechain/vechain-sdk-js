@@ -4,9 +4,16 @@ import {
     thorestSoloClient,
     thorSoloClient
 } from '../../../fixture';
-import { contractBytecode, deployedContractBytecode } from './fixture';
+import {
+    contractBytecode,
+    deployedContractAbi,
+    deployedContractBytecode
+} from './fixture';
 import { addressUtils, networkInfo } from '@vechainfoundation/vechain-sdk-core';
-import type { TransactionSendResult } from '../../../../src';
+import type {
+    TransactionReceipt,
+    TransactionSendResult
+} from '../../../../src';
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.
@@ -47,7 +54,7 @@ describe('ThorClient - Contracts', () => {
         } catch (error) {
             console.log('error', error);
         }
-    }, 200000);
+    }, 10000);
 
     /**
      * Test case for retrieving the bytecode of a deployed smart contract.
@@ -57,13 +64,7 @@ describe('ThorClient - Contracts', () => {
         const response = await deployExampleContract();
 
         // Poll until the transaction receipt is available
-        let transactionReceipt = null;
-        while (transactionReceipt == null) {
-            transactionReceipt =
-                await thorestSoloClient.transactions.getTransactionReceipt(
-                    response.id
-                );
-        }
+        const transactionReceipt = await pollTransactionReceipt(response.id);
 
         // Extract the contract address from the transaction receipt
         const contractAddress = transactionReceipt.outputs[0].contractAddress;
@@ -91,6 +92,61 @@ describe('ThorClient - Contracts', () => {
         // Assertion: The response should be '0x' for a non-existent contract
         expect(contractBytecodeResponse).toBe('0x');
     });
+
+    /**
+     * Test case for deploying a smart contract using the deployContract method.
+     */
+    test('call a contract function', async () => {
+        try {
+            // Deploy an example contract and get the transaction response
+            const response = await deployExampleContract();
+
+            // Poll until the transaction receipt is available
+            const transactionReceiptDeployContract =
+                await pollTransactionReceipt(response.id);
+
+            const contractAddress = transactionReceiptDeployContract.outputs[0]
+                .contractAddress as string;
+
+            const bestBlock = await thorestSoloClient.blocks.getBlock('best');
+
+            const callFunctionSetResponse =
+                await thorSoloClient.contracts.executeContractTransaction(
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
+                    contractAddress,
+                    deployedContractAbi,
+                    'set',
+                    [123],
+                    {
+                        chainTag: networkInfo.solo.chainTag,
+                        blockRef: bestBlock?.id.slice(0, 18)
+                    }
+                );
+
+            const transactionReceiptCallSetContract =
+                await pollTransactionReceipt(callFunctionSetResponse.id);
+
+            expect(transactionReceiptCallSetContract.reverted).toBe(false);
+
+            const callFunctionGetResponse =
+                await thorSoloClient.contracts.executeContractCall(
+                    contractAddress,
+                    deployedContractAbi,
+                    'get',
+                    [],
+                    {
+                        chainTag: networkInfo.solo.chainTag,
+                        blockRef: bestBlock?.id.slice(0, 18)
+                    }
+                );
+
+            expect(callFunctionGetResponse).toHaveLength(1);
+            expect(callFunctionGetResponse[0].reverted).toBe(false);
+            expect(parseInt(callFunctionGetResponse[0].data)).toBe(123);
+        } catch (error) {
+            console.log('error', error);
+        }
+    }, 10000);
 });
 
 /**
@@ -104,11 +160,24 @@ async function deployExampleContract(): Promise<TransactionSendResult> {
 
     // Deploy the contract using the deployContract method
     return await thorSoloClient.contracts.deployContract(
-        contractBytecode,
         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
+        contractBytecode,
         {
             chainTag: networkInfo.solo.chainTag,
             blockRef: bestBlock?.id.slice(0, 18)
         }
     );
+}
+
+async function pollTransactionReceipt(
+    transactionId: string
+): Promise<TransactionReceipt> {
+    let transactionReceipt = null;
+    while (transactionReceipt == null) {
+        transactionReceipt =
+            await thorestSoloClient.transactions.getTransactionReceipt(
+                transactionId
+            );
+    }
+    return transactionReceipt;
 }

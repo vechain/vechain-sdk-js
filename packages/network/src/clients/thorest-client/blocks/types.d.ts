@@ -133,7 +133,7 @@ interface Clause {
      * Amount of VET transferred in the clause. Zero value if no VET is transferred and we are
      * performing a smart contract transaction.
      */
-    value: string;
+    value: string | number;
     /**
      * Data sent along with the clause. Zero value if no data is sent.
      */

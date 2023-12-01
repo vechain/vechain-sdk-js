@@ -25,11 +25,40 @@ const transfer1VTHOClause = {
 };
 
 /**
+ * Clause to transfer 1 VTHO to TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
+ */
+const transfer1VTHOClauseWithValueAsANumber = {
+    to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
+    value: 0,
+    data: contract.encodeFunctionInput(
+        BUILT_IN_CONTRACTS.ENERGY_ABI,
+        'transfer',
+        [
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+            unitsUtils.parseVET('1')
+        ]
+    )
+};
+
+/**
  * transaction body that transfers 1 VTHO to TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
  */
 const transferTransactionBody: Omit<TransactionBody, 'nonce'> = {
     gas: 5000 + TransactionUtils.intrinsicGas([transfer1VTHOClause]) * 5, // @NOTE it is a temporary gas offered solution. This part will be replaced with estimateGas
     clauses: [transfer1VTHOClause],
+    chainTag: networkInfo.solo.chainTag,
+    blockRef: networkInfo.solo.genesisBlock.id.slice(0, 18),
+    expiration: 1000,
+    gasPriceCoef: 128,
+    dependsOn: null
+};
+
+/**
+ * transaction body that transfers 1 VTHO to TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
+ */
+const transferTransactionBodyValueAsNumber: Omit<TransactionBody, 'nonce'> = {
+    gas: 5000 + TransactionUtils.intrinsicGas([transfer1VTHOClause]) * 5, // @NOTE it is a temporary gas offered solution. This part will be replaced with estimateGas
+    clauses: [transfer1VTHOClauseWithValueAsANumber],
     chainTag: networkInfo.solo.chainTag,
     blockRef: networkInfo.solo.genesisBlock.id.slice(0, 18),
     expiration: 1000,
@@ -120,5 +149,6 @@ export {
     waitForTransactionTestCases,
     invalidWaitForTransactionTestCases,
     transferTransactionBody,
+    transferTransactionBodyValueAsNumber,
     expectedReceipt
 };

@@ -6,6 +6,7 @@ import {
 } from '../../../utils';
 import {
     dataUtils,
+    type TransactionClause,
     TransactionHandler
 } from '@vechainfoundation/vechain-sdk-core';
 import {
@@ -27,6 +28,7 @@ import {
     assertValidTransactionHead,
     assertValidTransactionID
 } from './helpers/assertions';
+import type { Clause } from '../blocks';
 
 /**
  * Client for reading and creating transactions
@@ -171,7 +173,7 @@ class TransactionsClient {
             {
                 query: buildQuery({ revision }),
                 body: {
-                    clauses,
+                    clauses: this.convertClausesValuesToHexStrings(clauses),
                     gas,
                     gasPrice,
                     caller,
@@ -182,6 +184,22 @@ class TransactionsClient {
                 }
             }
         )) as TransactionSimulationResult[];
+    }
+
+    private convertClausesValuesToHexStrings(
+        clauses: TransactionClause[]
+    ): Clause[] {
+        return clauses.map((clause) => {
+            if (typeof clause.value === 'number') {
+                return {
+                    ...clause,
+                    value: '0x' + clause.value.toString(16)
+                };
+            }
+            return {
+                ...clause
+            };
+        });
     }
 }
 

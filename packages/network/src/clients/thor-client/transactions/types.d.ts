@@ -1,5 +1,7 @@
 /* --- Input options start --- */
 
+import type { Transfer } from '../../thorest-client';
+
 /**
  * Options for `waitForTransaction` method.
  */
@@ -16,6 +18,20 @@ interface WaitForTransactionOptions {
     intervalMs?: number;
 }
 
+interface ClauseResult {
+    reverted: boolean;
+    data: string;
+    estimatedGasUsed: number;
+    events: Event[];
+    transfers: Transfer[];
+    vmError: string;
+}
+
+interface SendTransactionResult {
+    id: string;
+    clauseResults: ClauseResult[];
+}
+
 /* --- Input options end --- */
 
-export type { WaitForTransactionOptions };
+export type { WaitForTransactionOptions, SendTransactionResult, ClauseResult };
