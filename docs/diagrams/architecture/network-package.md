@@ -1,8 +1,12 @@
+# Network Package C4 Architecture diagram
+Main diagram for the network package.
+It represents the architecture of the network package with its most important components.
+
 ```mermaid
 C4Context
-    title "vechain-SDK Architecture Overview - Network Package"
+    title "vechain-sdk architecture overview - network package"
 
-    Boundary(b0, "vechain-SDK Network Package") {
+    Boundary(b0, "network", "package") {
         Boundary(b1, "Thor Client") {
             System(nodes_module, "Nodes Module", "Manages node operations such as health checks and network status")
             System(contracts_module, "Contracts Module", "Handles smart contract interactions including deployment and execution")
@@ -26,20 +30,9 @@ C4Context
         }
         
         Boundary(b4, "External Blockchain Interaction") {
-            System_Ext(vechainthor, "VechainThor Blockchain", "Represents the VechainThor blockchain platform with which the SDK interacts")
+            System_Ext(vechainthor, "Thor Blockchain", "Represents the blockchain platform with which the SDK interacts")
         }
     }
-
-    Rel(nodes_module, nodes_client, "Utilizes")
-    Rel(contracts_module, transactions_client, "Interacts with")
-    Rel(contracts_module, accounts_client, "Interacts with")
-    
-    Rel(accounts_client, http_client, "Utilizes for network requests")
-    Rel(blocks_client, http_client, "Utilizes for network requests")
-    Rel(logs_client, http_client, "Utilizes for network requests")
-    Rel(transactions_client, http_client, "Utilizes for network requests")
-    Rel(nodes_client, http_client, "Utilizes for network requests")
-    BiRel(http_client, vechainthor, "Sends and receives data from")
 
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
 ```
