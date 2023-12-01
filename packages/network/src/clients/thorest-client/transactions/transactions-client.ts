@@ -1,12 +1,10 @@
-import {
-    type HttpClient,
-    buildQuery,
-    thorest,
-    revisionUtils
-} from '../../../utils';
+import { type HttpClient, buildQuery, thorest } from '../../../utils';
 import {
     dataUtils,
-    TransactionHandler
+    revisionUtils,
+    TransactionHandler,
+    assertValidTransactionID,
+    assertValidTransactionHead
 } from '@vechainfoundation/vechain-sdk-core';
 import {
     type SimulateTransactionClause,
@@ -23,10 +21,6 @@ import {
     buildError,
     DATA
 } from '@vechainfoundation/vechain-sdk-errors';
-import {
-    assertValidTransactionHead,
-    assertValidTransactionID
-} from './helpers/assertions';
 
 /**
  * Client for reading and creating transactions
