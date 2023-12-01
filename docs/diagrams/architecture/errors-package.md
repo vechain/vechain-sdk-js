@@ -1,6 +1,6 @@
 ```mermaid
 C4Context
-    title "vechain-SDK Architecture Overview - Errors Package"
+    title "vechain-sdk architecture overview - errors package"
 
     Boundary(b0, "vechain-SDK Errors Package") {
         Boundary(b1, "Model") {

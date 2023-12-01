@@ -4,7 +4,7 @@ It represents the architecture of the core package with its most important compo
 
 ```mermaid
 C4Context
-    title "vechain-sdk Architecture Overview - core package"
+    title "vechain-sdk architecture overview - core package"
 
     Boundary(b0, "core", "package") {
         Boundary(b1, "Core components") {

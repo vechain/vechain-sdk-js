@@ -28,4 +28,4 @@ The core package has the following [architecture](./diagrams/architecture/core-p
 The error package is the error handling responsible package of the vechain-sdk.
 It is responsible for all error handling of the vechain-sdk.
 
-The error package has the following [architecture](./diagrams/architecture/error-package.md).
+The error package has the following [architecture](./diagrams/architecture/errors-package.md).
