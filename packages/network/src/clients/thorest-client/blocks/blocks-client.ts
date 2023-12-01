@@ -1,11 +1,6 @@
-import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
-import {
-    revisionUtils,
-    buildQuery,
-    thorest,
-    type HttpClient
-} from '../../../utils';
+import { buildQuery, thorest, type HttpClient } from '../../../utils';
 import { type BlockDetail, type BlockInputOptions } from './types';
+import { assertIsRevisionForBlock } from '@vechainfoundation/vechain-sdk-core';
 
 /**
  * The `BlockClient` class provides methods to interact with block-related endpoints
@@ -29,14 +24,7 @@ class BlocksClient {
         revision: string | number,
         options?: BlockInputOptions
     ): Promise<BlockDetail | null> {
-        assert(
-            revision === undefined ||
-                revision === null ||
-                revisionUtils.isRevisionBlock(revision),
-            DATA.INVALID_DATA_TYPE,
-            'Invalid revision. The revision must be a string representing a block number or block id.',
-            { revision }
-        );
+        assertIsRevisionForBlock(revision);
 
         return (await this.httpClient.http(
             'GET',

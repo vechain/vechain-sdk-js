@@ -1,5 +1,3 @@
-import { testAccount } from '../../fixture';
-
 /**
  * Test cases for the `isRevisionAccount` function.
  */
@@ -13,7 +11,7 @@ const accountRevisions = [
         expected: false
     },
     {
-        revision: testAccount,
+        revision: '0x34123',
         expected: true
     },
     {
@@ -43,7 +41,7 @@ const blockRevisions = [
         expected: false
     },
     {
-        revision: testAccount,
+        revision: '0x542fd',
         expected: true
     },
     {
