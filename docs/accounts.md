@@ -115,7 +115,7 @@ import { expect } from 'expect';
 
 const privateKey = secp256k1.generatePrivateKey();
 
-// @NOTE you can use BIP 39 to!
+// @NOTE you can use BIP 39 too!
 // const words = mnemonic.generate()
 // const privateKey = mnemonic.derivePrivateKey(words)
 
