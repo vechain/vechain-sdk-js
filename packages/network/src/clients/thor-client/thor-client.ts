@@ -1,7 +1,7 @@
 import { type HttpClient } from '../../utils';
 import { NodesModule } from './nodes';
 import { BlocksModule } from './blocks';
-import { ContractsModule } from './contract/contracts-module';
+import { ContractsModule } from './contracts';
 import { TransactionsModule } from './transactions';
 
 /**
