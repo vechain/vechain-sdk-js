@@ -4,29 +4,28 @@ import {
 } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-// Url of the testnet network
-const _testnetUrl = 'https://testnet.vechain.org/';
+// 1 - Create client for testnet
 
-// Testnet network instance
+const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
+const thorestClient = new ThorestClient(testNetwork);
 
-// Thorest client testnet instance
-const thorestTestnetClient = new ThorestClient(testNetwork);
+// 2 - Get account details
 
-// Get account details
-const accountDetails = await thorestTestnetClient.accounts.getAccount(
+// Account details
+const accountDetails = await thorestClient.accounts.getAccount(
     '0x5034aa590125b64023a0262112b98d72e3c8e40e'
 );
 expect(accountDetails).toBeDefined();
 
-// Get account code
-const accountCode = await thorestTestnetClient.accounts.getBytecode(
+// Account code
+const accountCode = await thorestClient.accounts.getBytecode(
     '0x5034aa590125b64023a0262112b98d72e3c8e40e'
 );
 expect(accountCode).toEqual('0x');
 
 // Get account storage
-const accountStorage = await thorestTestnetClient.accounts.getStorageAt(
+const accountStorage = await thorestClient.accounts.getStorageAt(
     '0x5034aa590125b64023a0262112b98d72e3c8e40e',
     '0x0000000000000000000000000000000000000000000000000000000000000001'
 );

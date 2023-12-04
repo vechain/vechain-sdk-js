@@ -115,7 +115,7 @@ const isAddressInBloom = (
     assert(
         addressUtils.isAddress(addressToCheck),
         ADDRESS.INVALID_ADDRESS,
-        'Invalid address given as input in Bloom filter.',
+        'Invalid address given as input in Bloom filter. Ensure it is a valid vechain thor address.',
         { addressToCheck }
     );
 

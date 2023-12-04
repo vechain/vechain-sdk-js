@@ -95,6 +95,7 @@ expect(dataUtils.isHexString(sentedTransaction.id)).toBe(true);
 
 // 4 -Wait until balance is updated
 
+// New balance of sender (wait until the balance is updated)
 const newBalanceSender = await Poll.SyncPoll(
     async () =>
         (await thorestSoloClient.accounts.getAccount(sender.address)).balance
@@ -102,6 +103,7 @@ const newBalanceSender = await Poll.SyncPoll(
     return newBalance !== senderBalanceBefore;
 });
 
+// New balance of receiver (wait until the balance is updated)
 const newBalanceReceiver = await Poll.SyncPoll(
     async () =>
         (await thorestSoloClient.accounts.getAccount(receiver.address)).balance

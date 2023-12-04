@@ -79,7 +79,7 @@ function signWithDelegator(
     assert(
         transactionToSign.isDelegated,
         TRANSACTION.INVALID_DELEGATION,
-        'Transaction is not delegated. You are using the wrong method. Use sign method instead.',
+        'Transaction is not delegated. Use sign method instead.',
         { transactionToSign }
     );
 

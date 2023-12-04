@@ -4,17 +4,15 @@ import {
 } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-// Url of the testnet network
-const _testnetUrl = 'https://testnet.vechain.org/';
+// 1 - Create client for testnet
 
-// Testnet network instance
+const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
+const thorestClient = new ThorestClient(testNetwork);
 
-// Thorest client testnet instance
-const thorestTestnetClient = new ThorestClient(testNetwork);
+// 2 - Filter event logs based on the provided criteria. (EXAMPLE 1)
 
-// Filters event logs based on the provided criteria.
-const eventLogs = await thorestTestnetClient.logs.filterEventLogs({
+const eventLogs = await thorestClient.logs.filterEventLogs({
     // Specify the range of blocks to search for events
     range: {
         unit: 'block',
@@ -96,8 +94,9 @@ expect(eventLogs).toEqual([
     }
 ]);
 
-// Filters transfer logs based on the provided criteria.
-const transferLogs = await thorestTestnetClient.logs.filterTransferLogs({
+// 3 - Filter again event logs based on the provided criteria. (EXAMPLE 2)
+
+const transferLogs = await thorestClient.logs.filterTransferLogs({
     // Specify the range of blocks to search for transfer events
     range: {
         unit: 'block',

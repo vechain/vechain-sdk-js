@@ -130,7 +130,7 @@ const encodeBytes32String = (
     } catch (e) {
         throw buildError(
             DATA.INVALID_DATA_TYPE,
-            `Failed to encode value ${value} to bytes32 string`,
+            `Encoding to bytes32 failed: Value '${value}' exceeds 32 bytes or is otherwise invalid.`,
             { value, zeroPadding },
             e
         );

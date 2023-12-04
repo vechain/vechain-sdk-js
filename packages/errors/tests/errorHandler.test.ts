@@ -20,7 +20,7 @@ describe('Error handler test', () => {
         expect(() => {
             throw buildError(
                 ERROR_CODES.KEYSTORE.INVALID_KEYSTORE,
-                'Invalid Keystore'
+                'Invalid Keystore: Missing or malformed data'
             );
         }).toThrowError(InvalidKeystoreError);
     });
@@ -31,7 +31,7 @@ describe('Error handler test', () => {
         try {
             throw buildError(
                 ERROR_CODES.KEYSTORE.INVALID_KEYSTORE,
-                'Invalid Keystore',
+                'Invalid Keystore: Missing or malformed data',
                 { test: 'test' }
             );
         } catch (error) {
@@ -45,9 +45,13 @@ describe('Error handler test', () => {
      */
     test('Throw Invalid RLP Exception with data', () => {
         try {
-            throw buildError(ERROR_CODES.RLP.INVALID_RLP, 'Invalid Keystore', {
-                context: 'test'
-            });
+            throw buildError(
+                ERROR_CODES.RLP.INVALID_RLP,
+                'Invalid Keystore: Missing or malformed data',
+                {
+                    context: 'test'
+                }
+            );
         } catch (error) {
             const InvalidRLPErrorObject = error as InvalidRLPError;
             expect(InvalidRLPErrorObject.data?.context).toBeDefined();

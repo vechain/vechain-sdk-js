@@ -93,7 +93,7 @@ function recover(messageHash: Buffer, sig: Buffer): Buffer {
     assert(
         Buffer.isBuffer(sig) && sig.length === SIGNATURE_LENGTH,
         SECP256K1.INVALID_SECP256k1_SIGNATURE,
-        'Invalid signature given as input. Length must be 65 bytes',
+        'Invalid signature given as input. Length must be exactly 65 bytes.',
         { sig }
     );
 
@@ -101,7 +101,7 @@ function recover(messageHash: Buffer, sig: Buffer): Buffer {
     assert(
         recovery === 0 || recovery === 1,
         SECP256K1.INVALID_SECP256k1_SIGNATURE_RECOVERY,
-        'Invalid signature recovery given as input. Signature bytes in position 64 must be 0 or 1',
+        'Invalid signature recovery value. Signature bytes at position 64 must be 0 or 1.',
         { recovery }
     );
 

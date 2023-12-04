@@ -23,6 +23,7 @@ jobs:
               run: yarn install
 
             - name: Test
+              id: unit-test
               run: yarn test
 
             - name: Jest Coverage Comment
@@ -49,5 +50,19 @@ jobs:
                 name: coverage-results
                 path: |
                   packages/**/coverage/lcov.info
+            
+            - name: Post unit test results to slack
+              if: always()  && github.ref == 'refs/heads/main' && (steps.unit-test.outcome == 'failure')
+              uses: slackapi/slack-github-action@v1.24.0
+              with:
+                payload: |
+                  {
+                    "source": "GitHub",
+                    "repo": "${{ github.repository}}",
+                    "branch": "${{ github.head_ref || github.ref_name }}",
+                    "message": "unit tests failed"
+                  }
+              env:
+                SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
               

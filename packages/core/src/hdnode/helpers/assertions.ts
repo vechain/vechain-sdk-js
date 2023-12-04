@@ -10,7 +10,7 @@ function assertIsValidHdNodeDerivationPath(path: string): void {
     assert(
         isDerivationPathValid(path),
         HDNODE.INVALID_HDNODE_DERIVATION_PATH,
-        'Invalid derivation path.',
+        'Invalid derivation path. Ensure the path adheres to the standard format.',
         { path }
     );
 }
@@ -24,7 +24,7 @@ function assertIsValidHdNodeChainCode(chainCode: Buffer): void {
     assert(
         chainCode.length === 32,
         HDNODE.INVALID_HDNODE_CHAIN_CODE,
-        'Invalid chain code. Length must be 32 bytes.',
+        'Invalid chain code. Length must be exactly 32 bytes.',
         { chainCode }
     );
 }

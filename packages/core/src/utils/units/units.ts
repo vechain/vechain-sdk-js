@@ -23,7 +23,7 @@ const parseUnits = (
     assert(
         typeof value !== 'string' || dataUtils.isNumeric(value),
         DATA.INVALID_DATA_TYPE,
-        `The value "${value}" is not a valid hexadecimal string.`,
+        `Invalid value format. The value "${value}" must be a numeric string.`,
         { value }
     );
 
