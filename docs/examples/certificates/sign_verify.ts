@@ -6,15 +6,14 @@ import {
     addressUtils
 } from '@vechainfoundation/vechain-sdk-core';
 
-// In this example we create a certificate and
-// sign it, and then call verify to verify the signature
+// 1 - Generate a private key and address for the signer
 
-// Generate a private key and address for the signer
 const privateKey = secp256k1.generatePrivateKey();
 const publicKey = secp256k1.derivePublicKey(privateKey);
 const signerAddress = addressUtils.fromPublicKey(publicKey);
 
-// Create a certificate
+// 2 - Create a certificate
+
 const cert: Certificate = {
     purpose: 'identification',
     payload: {
@@ -26,7 +25,8 @@ const cert: Certificate = {
     signer: signerAddress
 };
 
-// Sign certificate
+// 3 - Sign certificate
+
 const jsonStr = certificate.encode(cert);
 const signature = secp256k1.sign(blake2b256(jsonStr), privateKey);
 
