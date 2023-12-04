@@ -21,7 +21,7 @@ function assertIsValidReturnType(returnType: ReturnType): void {
     assert(
         isValidReturnType(returnType),
         DATA.INVALID_DATA_RETURN_TYPE,
-        "Invalid return type. Return type should be either 'buffer' or 'hex'",
+        "Validation error: Invalid Return type. Return type in hash function must be 'buffer' or 'hex'.",
         { returnType }
     );
 }

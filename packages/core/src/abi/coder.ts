@@ -24,7 +24,7 @@ function encode<ValueType>(type: string | ParamType, value: ValueType): string {
     } catch {
         throw buildError(
             ABI.INVALID_DATA_TO_ENCODE,
-            'Invalid data to encode. Data should be a valid ABI type. You need a valid type and valid data to encode.'
+            'Encoding failed: Data must be a valid ABI type with corresponding valid data.'
         );
     }
 }
@@ -49,7 +49,7 @@ function decode<ReturnType>(
     } catch {
         throw buildError(
             ABI.INVALID_DATA_TO_DECODE,
-            'Invalid data to decode. Data should be a valid hex string that encodes a valid ABI type.'
+            'Decoding failed: Data must be a valid hex string that encodes a valid ABI type'
         );
     }
 }

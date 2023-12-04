@@ -29,7 +29,7 @@ function getSignature(fragment: Fragment, formatType: FormatType): string {
     assert(
         allowedSignatureFormats.includes(formatType),
         ABI.INVALID_FORMAT_TYPE,
-        `Invalid format type. Allowed formats are: ${allowedSignatureFormats.join(
+        `Signature format error: '${formatType}' is invalid. Allowed formats: ${allowedSignatureFormats.join(
             ', '
         )}`,
         { formatType }
@@ -68,7 +68,7 @@ class Function<ABIType> {
         } catch (e) {
             throw buildError(
                 ABI.INVALID_FUNCTION,
-                'Invalid Function format. Cannot create Function fragment.',
+                'Initialization failed: Cannot create Function fragment. Function format is invalid',
                 { source },
                 e
             );
@@ -107,7 +107,7 @@ class Function<ABIType> {
         } catch (e) {
             throw buildError(
                 ABI.INVALID_DATA_TO_DECODE,
-                'Cannot decode. Data should be a valid hex string that encodes a valid ABI type.',
+                'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
                 { data },
                 e
             );
@@ -127,7 +127,7 @@ class Function<ABIType> {
         } catch (e) {
             throw buildError(
                 ABI.INVALID_DATA_TO_ENCODE,
-                'Cannot encode. Incorrect Function format.',
+                'Encoding failed: Data format is invalid. Function data  match the expected format for ABI type encoding.',
                 { dataToEncode },
                 e
             );
@@ -164,7 +164,7 @@ class Event<ABIType> {
         } catch {
             throw buildError(
                 ABI.INVALID_EVENT,
-                'Invalid Event format. Cannot create Event fragment.'
+                'Initialization failed: Event fragment creation not possible due to invalid ABI data format.'
             );
         }
     }
@@ -205,7 +205,7 @@ class Event<ABIType> {
         } catch {
             throw buildError(
                 ABI.INVALID_DATA_TO_DECODE,
-                'Cannot decode. Incorrect data or topics.'
+                'Decoding failed: Data and topics must be correctly formatted for ABI-compliant decoding.'
             );
         }
     }
@@ -226,7 +226,7 @@ class Event<ABIType> {
         } catch {
             throw buildError(
                 ABI.INVALID_DATA_TO_ENCODE,
-                'Cannot encode. Incorrect Event format.'
+                'Encoding failed: Event data must be correctly formatted for ABI-compliant encoding.'
             );
         }
     }

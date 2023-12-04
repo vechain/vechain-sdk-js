@@ -24,7 +24,10 @@ const simpleThrowErrorFunctionIfInputIs10 = async (
     a: number
 ): Promise<number> => {
     if (a === 10)
-        throw buildError(DATA.INVALID_DATA_RETURN_TYPE, 'a cannot be 10');
+        throw buildError(
+            DATA.INVALID_DATA_RETURN_TYPE,
+            "Input value error: 'a' must not be 10"
+        );
     return await simpleIncrementFunction(a, a + 1);
 };
 

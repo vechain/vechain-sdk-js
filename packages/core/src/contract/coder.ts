@@ -1,7 +1,7 @@
 import { type InterfaceAbi, Interface as EthersInterface } from 'ethers';
-import type { BytesLike, Interface, Result } from '../abi';
-import { abi } from '../abi';
 import { ERROR_CODES, buildError } from '@vechainfoundation/vechain-sdk-errors';
+import type { Interface, BytesLike, Result } from '../abi';
+import { abi } from '../abi';
 
 /**
  * Creates a new Interface instance from an ABI fragment.
@@ -18,7 +18,7 @@ function createInterface(abi: InterfaceAbi): Interface {
  * @param functionName The name of the function defined in the ABI.
  * @param functionData The data to pass to the function.
  * @returns The encoded data that can be used to send a transaction.
- * @throws {InvalidAbiDataToEncodeError}
+ * @throws {InvalidAbiDataToDecodeError}
  */
 function encodeFunctionInput(
     interfaceABI: InterfaceAbi,
@@ -33,7 +33,7 @@ function encodeFunctionInput(
     } catch (e) {
         throw buildError(
             ERROR_CODES.ABI.INVALID_DATA_TO_ENCODE,
-            'Cannot encode the input of the function',
+            'Encoding failed: Function input must match ABI specifications and be correctly formatted',
             { functionName, functionData },
             e
         );
@@ -61,12 +61,13 @@ function decodeFunctionInput(
     } catch (e) {
         throw buildError(
             ERROR_CODES.ABI.INVALID_DATA_TO_DECODE,
-            'Cannot decode the input of the function',
+            'Decoding failed: Function input must be properly encoded per ABI specifications',
             { functionName },
             e
         );
     }
 }
+
 /**
  * Encodes event log data based on the provided contract interface ABI, event name, and data to encode.
  * @param interfaceABI - The ABI (Application Binary Interface) of the contract.
@@ -92,7 +93,7 @@ function encodeEventLog(
         // Handle errors and throw a custom error with relevant details
         throw buildError(
             ERROR_CODES.ABI.INVALID_EVENT,
-            'Cannot encode event log data',
+            'Encoding failed: Event log data must align with ABI specifications for encoding',
             { eventName },
             e
         );
@@ -124,7 +125,7 @@ function decodeEventLog(
         // Handle errors and throw a custom error with relevant details
         throw buildError(
             ERROR_CODES.ABI.INVALID_EVENT,
-            'Cannot decode event log data',
+            'Decoding failed: Event log data must be correctly encoded per ABI specifications',
             { eventName },
             e
         );

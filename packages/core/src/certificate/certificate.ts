@@ -31,7 +31,7 @@ function verify(cert: Certificate): void {
     assert(
         cert.signature !== undefined && cert.signature !== null,
         CERTIFICATE.CERTIFICATE_NOT_SIGNED,
-        "Can't verify the certificate, signature not found",
+        "Verification failed: Certificate's signature is missing.",
         { cert }
     );
 
@@ -40,7 +40,7 @@ function verify(cert: Certificate): void {
         dataUtils.isHexString(cert.signature as string) &&
             (cert.signature as string).length % 2 === 0,
         CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT,
-        'Invalid signature format.',
+        'Verification failed: Signature format is invalid.',
         { cert }
     );
 
@@ -56,7 +56,7 @@ function verify(cert: Certificate): void {
     assert(
         addressUtils.fromPublicKey(pubKey) === cert.signer,
         CERTIFICATE.CERTIFICATE_INVALID_SIGNER,
-        "Signature does not match with the signer's public key.",
+        "Verification failed: Signature does not correspond to the signer's public key.",
         { pubKey, cert }
     );
 }

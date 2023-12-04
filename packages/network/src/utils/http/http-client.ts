@@ -70,7 +70,7 @@ class HttpClient {
             // If it's not an Axios error, re-throw the original error
             throw buildError(
                 HTTP_CLIENT.INVALID_HTTP_REQUEST,
-                `An error occurred while performing http request`,
+                'HTTP request failed: Check method, path, and parameters for validity.',
                 { method, path, params },
                 err
             );
