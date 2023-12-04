@@ -33,7 +33,7 @@ function encodeFunctionInput(
     } catch (e) {
         throw buildError(
             ERROR_CODES.ABI.CONTRACT_INTERFACE_ERROR,
-            'Cannot encode the input of the function',
+            'Encoding failed: Function input must match ABI specifications and be correctly formatted',
             { functionName, functionData },
             e
         );
@@ -61,7 +61,7 @@ function decodeFunctionInput(
     } catch (e) {
         throw buildError(
             ERROR_CODES.ABI.CONTRACT_INTERFACE_ERROR,
-            'Cannot decode the input of the function',
+            'Decoding failed: Function input must be properly encoded per ABI specifications',
             { functionName },
             e
         );
@@ -89,7 +89,7 @@ function encodeEventLog(
     } catch (e) {
         throw buildError(
             ERROR_CODES.ABI.CONTRACT_INTERFACE_ERROR,
-            'Cannot encode the input of the event log',
+            'Encoding failed: Event log data must align with ABI specifications for encoding',
             { eventName },
             e
         );
@@ -117,7 +117,7 @@ function decodeEventLog(
     } catch (e) {
         throw buildError(
             ERROR_CODES.ABI.CONTRACT_INTERFACE_ERROR,
-            'Cannot decode the input of the event log',
+            'Decoding failed: Event log data must be correctly encoded per ABI specifications',
             { eventName },
             e
         );

@@ -10,10 +10,8 @@ import {
 } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
-// In this example transaction A is created with no dependencies
-// Transaction B is the created as being dependant on transaction A
+// 1 - Define transaction clauses
 
-// Define transaction clauses
 const txAClauses: TransactionClause[] = [
     {
         to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
@@ -29,8 +27,9 @@ const txBClauses: TransactionClause[] = [
     }
 ];
 
-// Define transaction A with no dependencies
-// Note: This transaction has nonce = 1
+// 2 - Define transaction A with no dependencies
+
+// @NOTE: This transaction has nonce = 1
 const txABody: TransactionBody = {
     chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x0000000000000000',
@@ -42,8 +41,9 @@ const txABody: TransactionBody = {
     nonce: 1
 };
 
-// Define transaction B with nonce = 2
-// Note at the moment dependsOn is null
+// 3 - Define transaction B with nonce = 2
+
+// @NOTE: at the moment dependsOn is null
 const txBBody: TransactionBody = {
     chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x0000000000000000',
@@ -56,25 +56,30 @@ const txBBody: TransactionBody = {
 };
 
 // Define the senders private key
-const pkSender = secp256k1.generatePrivateKey();
+const senderPrivateKey = secp256k1.generatePrivateKey();
 
 // To define transaction B as dependant on transaction A
 // We need to sign transaction A, and then get its Id
 // and set that Id into transaction B's dependsOn field
 
-// get tx A id
-const txAUnsigned = new Transaction(txABody);
-const txASigned = TransactionHandler.sign(txAUnsigned, pkSender);
-const txAId = txASigned.id;
-// set it inside tx B
-txBBody.dependsOn = txAId;
+// 4 - Get Tx A id
 
-// sign Tx B
+const txAUnsigned = new Transaction(txABody);
+const txASigned = TransactionHandler.sign(txAUnsigned, senderPrivateKey);
+
+// 5 - Set it inside tx B
+
+txBBody.dependsOn = txASigned.id;
+
+// 6 - Sign Tx B
+
 const txBUnsigned = new Transaction(txBBody);
-const txBSigned = TransactionHandler.sign(txBUnsigned, pkSender);
-// encode Tx B
+const txBSigned = TransactionHandler.sign(txBUnsigned, senderPrivateKey);
+
+// 7 - encode Tx B
+
 const rawTxB = txBSigned.encoded;
 
-// To check we can decode Tx B
+// Check (we can decode Tx B)
 const decodedTx = TransactionHandler.decode(rawTxB, true);
-expect(decodedTx.body.dependsOn).toBe(txAId);
+expect(decodedTx.body.dependsOn).toBe(txASigned.id);

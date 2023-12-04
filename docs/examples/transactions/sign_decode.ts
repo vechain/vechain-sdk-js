@@ -10,10 +10,8 @@ import {
 } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
-// In this example a simple single clause transaction is
-// created, signed, encoded and then decoded
+// 1 - Define clauses
 
-// Define clauses
 const clauses: TransactionClause[] = [
     {
         to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
@@ -22,10 +20,12 @@ const clauses: TransactionClause[] = [
     }
 ];
 
-// Calculate intrinsic gas of clauses
+// 2 - Calculate intrinsic gas of clauses
+
 const gas = TransactionUtils.intrinsicGas(clauses);
 
-// Body of transaction
+// 3 - Body of transaction
+
 const body: TransactionBody = {
     chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x0000000000000000',
@@ -40,14 +40,17 @@ const body: TransactionBody = {
 // Create private key
 const privateKey = secp256k1.generatePrivateKey();
 
-// Sign transaction
+// 4 - Sign transaction
+
 const unsignedTx = new Transaction(body);
 const signedTransaction = TransactionHandler.sign(unsignedTx, privateKey);
 
-// Encode transaction
+// 5 - Encode transaction
+
 const encodedRaw = signedTransaction.encoded;
 
-// Decode transaction and check
+// 6 - Decode transaction and check
+
 const decodedTx = TransactionHandler.decode(encodedRaw, true);
 expect(decodedTx.body.chainTag).toBe(body.chainTag);
 expect(decodedTx.body.nonce).toBe(body.nonce);

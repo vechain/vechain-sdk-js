@@ -44,7 +44,7 @@ function toChecksumed(address: string): string {
     assert(
         isAddress(address),
         ADDRESS.INVALID_ADDRESS,
-        'Invalid address given as input.',
+        'Checksum failed: Input must be a valid Vechain Thor address.',
         { address }
     );
 

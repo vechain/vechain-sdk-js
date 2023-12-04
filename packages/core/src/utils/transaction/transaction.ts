@@ -29,7 +29,7 @@ function intrinsicGas(clauses: TransactionClause[]): number {
             assert(
                 addressUtils.isAddress(clause.to),
                 DATA.INVALID_DATA_TYPE,
-                'Invalid data type. Data should be an address.',
+                `Invalid data type in clause. Each 'to' field must be a valid address.`,
                 { clause }
             );
 
@@ -54,7 +54,7 @@ function _calculateDataUsedGas(data: string): number {
     assert(
         data === '' || dataUtils.isHexString(data),
         DATA.INVALID_DATA_TYPE,
-        'Invalid data type. Data should be an hexadecimal string.',
+        'Invalid data type for gas calculation. Data should be a hexadecimal string.',
         { data }
     );
 

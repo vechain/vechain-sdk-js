@@ -13,7 +13,7 @@ function assertPositiveIntegerForPollOptions(
     assert(
         field === undefined || (field > 0 && Number.isInteger(field)),
         DATA.INVALID_DATA_TYPE,
-        `${fieldName} must be a positive number`,
+        `Invalid input for fieldname. ${fieldName} must be a positive number`,
         { field }
     );
 }
