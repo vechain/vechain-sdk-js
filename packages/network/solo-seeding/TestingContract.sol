@@ -27,7 +27,7 @@ contract TestingContract {
     mapping(address => uint) public balances;
 
     // Event example
-    event StateChanged(uint newValue);
+    event StateChanged(uint indexed newValue, uint indexed oldValue, address indexed sender, uint timestamp);
 
     // Modifier example
     modifier onlyPositive(uint _value) {
@@ -42,8 +42,9 @@ contract TestingContract {
     /// @notice Set the state variable
     /// @param _newValue The new value to set
     function setStateVariable(uint _newValue) public {
+        uint oldValue = stateVariable;
         stateVariable = _newValue;
-        emit StateChanged(_newValue);
+        emit StateChanged(_newValue, oldValue, msg.sender, block.timestamp);
     }
 
     /// @notice Deposit funds to the contract

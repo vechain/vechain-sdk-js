@@ -17,9 +17,27 @@ const TESTING_CONTRACT_ABI = JSON.stringify([
         anonymous: false,
         inputs: [
             {
-                indexed: false,
+                indexed: true,
                 internalType: 'uint256',
                 name: 'newValue',
+                type: 'uint256'
+            },
+            {
+                indexed: true,
+                internalType: 'uint256',
+                name: 'oldValue',
+                type: 'uint256'
+            },
+            {
+                indexed: true,
+                internalType: 'address',
+                name: 'sender',
+                type: 'address'
+            },
+            {
+                indexed: false,
+                internalType: 'uint256',
+                name: 'timestamp',
                 type: 'uint256'
             }
         ],
