@@ -8,14 +8,14 @@ import { thorClient } from '../../../fixture';
  */
 describe('ThorestClient', () => {
     test('getBestBlock method', async () => {
-        const bestBlock = await thorClient.thorest?.blocks.getBestBlock();
+        const bestBlock = await thorClient.thorest.blocks.getBestBlock();
         expect(bestBlock).toBeDefined();
     });
 
     test('getBlock method', async () => {
-        const bestBlock = await thorClient.thorest?.blocks.getBestBlock();
+        const bestBlock = await thorClient.thorest.blocks.getBestBlock();
         if (bestBlock != null) {
-            const block = await thorClient.thorest?.blocks.getBlock(
+            const block = await thorClient.thorest.blocks.getBlock(
                 bestBlock.number
             );
             expect(block?.number).toBe(bestBlock.number);

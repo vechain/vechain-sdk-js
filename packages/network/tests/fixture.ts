@@ -44,12 +44,12 @@ const thorestSoloClient = new ThorestClient(soloNetwork);
 /**
  * Thor client testnet instance fixture
  */
-const thorClient = new ThorClient(testNetwork, thorestClient);
+const thorClient = new ThorClient(thorestClient);
 
 /**
  * Thor client solo instance fixture
  */
-const thorSoloClient = new ThorClient(soloNetwork);
+const thorSoloClient = new ThorClient(thorestSoloClient);
 
 /**
  * All available accounts for testing purposes

@@ -1,3 +1,5 @@
+import { thorestClient } from '../../../fixture';
+
 /**
  * @internal
  * Block with a timestamp much older than the current time
@@ -87,5 +89,6 @@ const blockWithInvalidTimeStampFormat = {
 export {
     blockWithOldTimeStamp,
     blockWithMissingTimeStamp,
-    blockWithInvalidTimeStampFormat
+    blockWithInvalidTimeStampFormat,
+    thorestClient
 };

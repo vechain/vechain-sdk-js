@@ -1,5 +1,5 @@
 import { describe, expect, test, jest } from '@jest/globals';
-import { HttpClient } from '../../../../src';
+import { HttpClient, ThorestClient } from '../../../../src';
 import {
     blockWithMissingTimeStamp,
     blockWithOldTimeStamp,
@@ -30,14 +30,16 @@ describe('Integration tests to check the Node health check is working for differ
          *  client required to access a node
          *  @internal
          */
-        const thorClient = new ThorClient(new HttpClient(URL));
+        const httpClient = new HttpClient(URL);
+        const thorestClient = new ThorestClient(httpClient);
+        const thorClient = new ThorClient(thorestClient);
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError();
     });
 
     test('valid/available node but invalid block format', async () => {
         // Mock the response to force the JSON response to be null
         jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce({});
-        let thorClient = new ThorClient(new HttpClient(URL));
+        let thorClient = new ThorClient(new ThorestClient(new HttpClient(URL)));
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             InvalidDataTypeError
         );
@@ -46,7 +48,7 @@ describe('Integration tests to check the Node health check is working for differ
         jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce({
             invalidKey: 1
         });
-        thorClient = new ThorClient(new HttpClient(URL));
+        thorClient = new ThorClient(new ThorestClient(new HttpClient(URL)));
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             InvalidDataTypeError
         );
@@ -55,7 +57,7 @@ describe('Integration tests to check the Node health check is working for differ
         jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce(
             blockWithMissingTimeStamp
         );
-        thorClient = new ThorClient(new HttpClient(URL));
+        thorClient = new ThorClient(new ThorestClient(new HttpClient(URL)));
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             InvalidDataTypeError
         );
@@ -64,7 +66,7 @@ describe('Integration tests to check the Node health check is working for differ
         jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce(
             blockWithInvalidTimeStampFormat
         );
-        thorClient = new ThorClient(new HttpClient(URL));
+        thorClient = new ThorClient(new ThorestClient(new HttpClient(URL)));
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             InvalidDataTypeError
         );
@@ -75,7 +77,9 @@ describe('Integration tests to check the Node health check is working for differ
         jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce(
             blockWithOldTimeStamp
         );
-        const thorClient = new ThorClient(new HttpClient(URL));
+        const thorClient = new ThorClient(
+            new ThorestClient(new HttpClient(URL))
+        );
         await expect(thorClient.nodes.isHealthy()).resolves.toBe(false);
     });
 });

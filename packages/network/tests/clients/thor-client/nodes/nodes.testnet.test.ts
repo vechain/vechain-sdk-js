@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { thorClient } from '../../../fixture';
-import { HttpClient } from '../../../../src';
+import { HttpClient, ThorestClient } from '../../../../src';
 import { HTTPClientError } from '@vechainfoundation/vechain-sdk-errors';
 import { ThorClient } from '../../../../src/clients/thor-client';
 
@@ -14,7 +14,9 @@ describe('Integration tests to check the Node health check for different scenari
          *  client required to access a node
          *  @internal
          */
-        const thorClient = new ThorClient(new HttpClient('www.google.ie'));
+        const thorClient = new ThorClient(
+            new ThorestClient(new HttpClient('www.google.ie'))
+        );
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             HTTPClientError
         );
@@ -25,7 +27,9 @@ describe('Integration tests to check the Node health check for different scenari
          *  client required to access a node
          *  @internal
          */
-        const thorClient = new ThorClient(new HttpClient('INVALID_URL'));
+        const thorClient = new ThorClient(
+            new ThorestClient(new HttpClient('INVALID_URL'))
+        );
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             HTTPClientError
         );
@@ -37,11 +41,11 @@ describe('Integration tests to check the Node health check for different scenari
     });
 
     test('null or empty URL or blank URL', async () => {
-        let thorClient = new ThorClient(new HttpClient(''));
+        let thorClient = new ThorClient(new ThorestClient(new HttpClient('')));
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             HTTPClientError
         );
-        thorClient = new ThorClient(new HttpClient('   '));
+        thorClient = new ThorClient(new ThorestClient(new HttpClient('   ')));
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             HTTPClientError
         );

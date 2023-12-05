@@ -40,12 +40,13 @@ class ThorestClient {
      * Constructs a new `ThorClient` instance with a given HTTP client.
      * @param httpClient - The HTTP client instance used for making network requests.
      */
-    constructor(protected readonly httpClient: HttpClient) {
+    constructor(readonly httpClient: HttpClient) {
         this.accounts = new AccountsClient(httpClient);
         this.blocks = new BlocksClient(httpClient);
         this.logs = new LogsClient(httpClient);
         this.nodes = new NodesClient(httpClient);
         this.transactions = new TransactionsClient(httpClient);
+        this.httpClient = httpClient;
     }
 }
 

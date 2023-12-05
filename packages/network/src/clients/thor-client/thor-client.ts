@@ -1,4 +1,3 @@
-import { type HttpClient } from '../../utils';
 import { NodesModule } from './nodes';
 import { BlocksModule } from './blocks';
 import { TransactionsModule } from './transactions';
@@ -30,14 +29,10 @@ class ThorClient {
      *
      * @param httpClient - The HTTP client instance used for making network requests.
      */
-    constructor(
-        protected readonly httpClient: HttpClient,
-        readonly thorest?: ThorestClient
-    ) {
-        this.nodes = new NodesModule(httpClient);
-        this.blocks = new BlocksModule(httpClient);
-        this.transactions = new TransactionsModule(httpClient);
-        this.thorest = thorest;
+    constructor(readonly thorest: ThorestClient) {
+        this.nodes = new NodesModule(thorest.httpClient);
+        this.blocks = new BlocksModule(thorest.httpClient);
+        this.transactions = new TransactionsModule(thorest.httpClient);
     }
 }
 
