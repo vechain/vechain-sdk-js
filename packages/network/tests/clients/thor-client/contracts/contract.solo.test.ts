@@ -9,7 +9,11 @@ import {
     deployedContractAbi,
     deployedContractBytecode
 } from './fixture';
-import { addressUtils, networkInfo } from '@vechainfoundation/vechain-sdk-core';
+import {
+    addressUtils,
+    type DeployParams,
+    networkInfo
+} from '@vechainfoundation/vechain-sdk-core';
 import type {
     TransactionReceipt,
     TransactionSendResult
@@ -36,9 +40,20 @@ describe('ThorClient - Contracts', () => {
                 (await thorSoloClient.transactions.waitForTransaction(
                     response.id
                 )) as TransactionReceipt;
+
             // Extract the contract address from the transaction receipt
             const contractAddress =
                 transactionReceipt.outputs[0].contractAddress;
+
+            // Call the get function of the deployed contract to verify that the stored value is 100
+            const result = await thorSoloClient.contracts.executeContractCall(
+                contractAddress as string,
+                deployedContractAbi,
+                'get',
+                []
+            );
+
+            expect(parseInt(result[0].data)).toBe(100);
 
             // Assertions
             expect(transactionReceipt.reverted).toBe(false);
@@ -161,10 +176,13 @@ async function deployExampleContract(): Promise<TransactionSendResult> {
     // Get the best block information
     const bestBlock = await thorestSoloClient.blocks.getBlock('best');
 
+    const deployParams: DeployParams = { types: ['uint'], values: ['100'] };
+
     // Deploy the contract using the deployContract method
     return await thorSoloClient.contracts.deployContract(
         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
         contractBytecode,
+        deployParams,
         {
             chainTag: networkInfo.solo.chainTag,
             blockRef: bestBlock?.id.slice(0, 18)

@@ -1,13 +1,14 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-    events,
-    functions,
     encodedDecodedInvalidValues,
     encodedDecodedValues,
+    encodedParams,
+    events,
+    functions,
     simpleParametersDataForFunction2
 } from './fixture';
-import { type FormatType, abi } from '../../src';
-import { ParamType, type ethers } from 'ethers';
+import { abi, type FormatType } from '../../src';
+import { type ethers, ParamType } from 'ethers';
 import {
     InvalidAbiDataToDecodeError,
     InvalidAbiDataToEncodeError,
@@ -219,6 +220,26 @@ describe('Abi - Function & Event', () => {
                         );
                     });
                 });
+        });
+
+        /**
+         * Test case for encoding parameters using ABI.
+         *
+         * @test
+         */
+        test('encode parameters', () => {
+            /**
+             * Parameters to be encoded using ABI.
+             *
+             * @type {string}
+             */
+            const params = abi.encodeParams(
+                ['uint256', 'uint256'],
+                ['123', '234']
+            );
+
+            // Assert that the encoded parameters match the expected value.
+            expect(params).toBe(encodedParams);
         });
 
         /**

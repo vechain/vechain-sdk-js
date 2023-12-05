@@ -1,6 +1,10 @@
 import { describe, test, expect } from '@jest/globals';
 import { compileContract } from './compiler';
-import { type TransactionBodyOverride, contract } from '../../src';
+import {
+    type TransactionBodyOverride,
+    contract,
+    type DeployParams
+} from '../../src';
 import { coder, networkInfo } from '../../src';
 
 /**
@@ -39,6 +43,38 @@ describe('Contract', () => {
     });
 
     /**
+     * Test case for building a transaction to deploy a contract with deploy parameters.
+     */
+    test('Build a transaction to deploy a contract with deploy params', () => {
+        const compiledContract = compileContract(
+            'tests/contract/sample',
+            'Example.sol',
+            'Example'
+        );
+
+        const deployParams: DeployParams = {
+            types: ['uint256'],
+            values: ['100']
+        };
+
+        const transaction = contract.txBuilder.buildDeployTransaction(
+            compiledContract.bytecode,
+            deployParams
+        );
+
+        // Assertions for various properties of the built transaction.
+        expect(transaction.body.clauses[0].value).toBe(0);
+        expect(transaction.body.clauses[0].to).toBe(null);
+        expect(transaction.body.nonce).toBeDefined();
+        expect(transaction.body.chainTag).toBe(networkInfo.mainnet.chainTag);
+        expect(transaction.body.blockRef).toBeDefined();
+        expect(transaction.body.expiration).toBeDefined();
+        expect(transaction.body.gasPriceCoef).toBeDefined();
+        expect(transaction.body.gas).toBeDefined();
+        expect(transaction.body.dependsOn).toBeNull();
+    });
+
+    /**
      * Test to ensure building a transaction to deploy a contract with a custom transaction body.
      */
     test('Build a transaction to deploy a contract with a custom transaction body', () => {
@@ -62,6 +98,7 @@ describe('Contract', () => {
         // Build a transaction to deploy the compiled contract with the custom transaction body
         const transaction = contract.txBuilder.buildDeployTransaction(
             compiledContract.bytecode,
+            undefined,
             transactionBody
         );
 
@@ -98,6 +135,7 @@ describe('Contract', () => {
         // Build a transaction to deploy the compiled contract with the custom transaction body
         const transaction = contract.txBuilder.buildDeployTransaction(
             compiledContract.bytecode,
+            undefined,
             transactionBody
         );
 

@@ -6,6 +6,7 @@ import {
 import type { HttpClient } from '../../../utils';
 import {
     contract,
+    type DeployParams,
     type InterfaceAbi,
     type TransactionBodyOverride,
     TransactionHandler
@@ -16,6 +17,9 @@ import {
     TransactionsModule
 } from '../transactions';
 
+/**
+ * Represents a module for interacting with smart contracts on the blockchain.
+ */
 class ContractsModule {
     private readonly transactionsModule: TransactionsModule;
     private readonly transactionsClient: TransactionsClient;
@@ -34,17 +38,20 @@ class ContractsModule {
      *
      * @param privateKey - The private key of the account deploying the smart contract.
      * @param contractBytecode - The bytecode of the smart contract to be deployed.
+     * @param deployParams - The parameters to pass to the smart contract constructor.
      * @param transactionBodyOverride - (Optional) An object to override the default transaction body.
      * @returns A promise that resolves to a `TransactionSendResult` object representing the result of the deployment.
      */
     public async deployContract(
         privateKey: string,
         contractBytecode: string,
+        deployParams?: DeployParams,
         transactionBodyOverride?: TransactionBodyOverride
     ): Promise<SendTransactionResult> {
         // Build a transaction for deploying the smart contract
         const transaction = contract.txBuilder.buildDeployTransaction(
             contractBytecode,
+            deployParams,
             transactionBodyOverride
         );
 

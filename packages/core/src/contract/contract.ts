@@ -1,26 +1,35 @@
 import { type InterfaceAbi, randomBytes } from 'ethers';
-import { coder } from '../abi';
+import { abi, coder } from '../abi';
 import { Transaction, type TransactionClause } from '../transaction';
 import { networkInfo } from '../utils/const/network';
 import { TransactionUtils, dataUtils } from '../utils';
-import type { TransactionBodyOverride } from './types';
+import type { DeployParams, TransactionBodyOverride } from './types';
 
 /**
  * Builds a transaction for deploying a smart contract on the blockchain.
  *
  * @param contractBytecode - The bytecode of the smart contract.
+ * @param deployParams - The parameters to pass to the smart contract constructor.
  * @param transactionBodyOverride - (Optional) Custom transaction body to override default settings.
  * @returns A Transaction object representing the deploy contract transaction.
  */
 function buildDeployTransaction(
     contractBytecode: string,
+    deployParams?: DeployParams,
     transactionBodyOverride?: TransactionBodyOverride
 ): Transaction {
+    let encodedParams = '';
+    if (deployParams != null) {
+        encodedParams = abi
+            .encodeParams(deployParams.types, deployParams.values)
+            .replace('0x', '');
+    }
+
     const clauses: TransactionClause[] = [
         {
             to: null,
             value: 0,
-            data: contractBytecode
+            data: contractBytecode + encodedParams
         }
     ];
     return buildTransactionBody(clauses, transactionBodyOverride);
