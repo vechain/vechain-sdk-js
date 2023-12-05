@@ -1,8 +1,7 @@
 import {
     type AccountInputOptions,
     AccountsClient,
-    TransactionsClient,
-    type TransactionSendResult
+    TransactionsClient
 } from '../../thorest-client';
 import type { HttpClient } from '../../../utils';
 import {
@@ -12,7 +11,10 @@ import {
     TransactionHandler
 } from '@vechainfoundation/vechain-sdk-core';
 import type { ContractCallResult, ContractTransactionResult } from './types';
-import { TransactionsModule } from '../transactions';
+import {
+    type SendTransactionResult,
+    TransactionsModule
+} from '../transactions';
 
 class ContractsModule {
     private readonly transactionsModule: TransactionsModule;
@@ -39,7 +41,7 @@ class ContractsModule {
         privateKey: string,
         contractBytecode: string,
         transactionBodyOverride?: TransactionBodyOverride
-    ): Promise<TransactionSendResult> {
+    ): Promise<SendTransactionResult> {
         // Build a transaction for deploying the smart contract
         const transaction = contract.builder.buildDeployTransaction(
             contractBytecode,
