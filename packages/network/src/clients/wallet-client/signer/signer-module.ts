@@ -1,7 +1,7 @@
 import { type BuiltinSigner } from './types';
 
 class SignerModule {
-    public setSigner(signer: BuiltinSigner): string {
+    public connect(signer: BuiltinSigner): string {
         switch (signer) {
             case 'veworld':
                 if (window.vechain != null) {
@@ -14,6 +14,12 @@ class SignerModule {
                 throw new Error(`Unknown signer: ${signer as string}`);
         }
     }
+
+    public async disconnect(): Promise<void> {}
+
+    public async signTransaction(): Promise<void> {}
+
+    public async signCertificate(): Promise<void> {}
 }
 export { SignerModule };
 

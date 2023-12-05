@@ -5,7 +5,7 @@ class WalletClient {
     public readonly signer: SignerModule;
 
     constructor(protected readonly options: Options) {
-        this.signer = new SignerModule();
+        this.signer = new SignerModule(options);
     }
 }
 

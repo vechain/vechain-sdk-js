@@ -4,7 +4,7 @@ declare global {
     }
 }
 
-type BuiltinSigner = 'veworld' | 'sync2';
+type BuiltinSigner = 'veworld' | 'sync2' | 'sync';
 
 interface Options {
     node: string;
