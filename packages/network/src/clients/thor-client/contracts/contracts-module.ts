@@ -1,8 +1,4 @@
-import {
-    type AccountInputOptions,
-    AccountsClient,
-    TransactionsClient
-} from '../../thorest-client';
+import { AccountsClient, TransactionsClient } from '../../thorest-client';
 import type { HttpClient } from '../../../utils';
 import {
     contract,
@@ -63,26 +59,6 @@ class ContractsModule {
 
         // Send the signed transaction to the blockchain
         return await this.transactionsModule.sendTransaction(signedTx);
-    }
-
-    /**
-     * Retrieves the bytecode of a deployed smart contract.
-     *
-     * @param contractAddress - The address of the deployed smart contract.
-     * @param revision - The block number or ID to reference the bytecode version.
-     * @returns A promise that resolves to a string representing the bytecode of the deployed smart contract.
-     */
-    public async getContractBytecode(
-        contractAddress: string,
-        revision?: string
-    ): Promise<string> {
-        const accountInfoOptions: AccountInputOptions = { revision };
-
-        // Retrieve the bytecode of the smart contract from the blockchain
-        return await this.accountsClient.getBytecode(
-            contractAddress,
-            accountInfoOptions
-        );
     }
 
     /**

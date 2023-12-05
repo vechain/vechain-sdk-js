@@ -78,26 +78,12 @@ describe('ThorClient - Contracts', () => {
 
         // Retrieve the bytecode of the deployed contract
         const contractBytecodeResponse =
-            await thorSoloClient.contracts.getContractBytecode(
+            await thorestSoloClient.accounts.getBytecode(
                 contractAddress as string
             );
 
         // Assertion: Compare with the expected deployed contract bytecode
         expect(contractBytecodeResponse).toBe(deployedContractBytecode);
-    });
-
-    /**
-     * Test case for attempting to retrieve the bytecode of a non-existent contract.
-     */
-    test('input a wrong contract address', async () => {
-        // Attempt to retrieve the bytecode of a non-existent contract
-        const contractBytecodeResponse =
-            await thorSoloClient.contracts.getContractBytecode(
-                '0xa9C0cdEd336699547aaC4f9De5A11Ada979BC59a'
-            );
-
-        // Assertion: The response should be '0x' for a non-existent contract
-        expect(contractBytecodeResponse).toBe('0x');
     });
 
     /**
