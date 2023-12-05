@@ -56,13 +56,13 @@ class ContractsModule {
         );
 
         // Sign the transaction with the provided private key
-        const rawSigned = TransactionHandler.sign(
+        const signedTx = TransactionHandler.sign(
             transaction,
             Buffer.from(privateKey, 'hex')
         );
 
         // Send the signed transaction to the blockchain
-        return await this.transactionsModule.sendTransaction(rawSigned);
+        return await this.transactionsModule.sendTransaction(signedTx);
     }
 
     /**
@@ -160,14 +160,14 @@ class ContractsModule {
             ]);
 
         // Sign the transaction with the private key
-        const rawSigned = TransactionHandler.sign(
+        const signedTx = TransactionHandler.sign(
             transaction,
             Buffer.from(privateKey, 'hex')
         );
 
         // Send the signed transaction
         const sendResult =
-            await this.transactionsModule.sendTransaction(rawSigned);
+            await this.transactionsModule.sendTransaction(signedTx);
 
         // Retrieve the transaction ID and return the result
         const transactionId = sendResult.id;
