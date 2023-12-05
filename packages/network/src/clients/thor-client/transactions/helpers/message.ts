@@ -13,7 +13,7 @@ const panicSelector =
  *
  * @param data - Hex-encoded data containing revert information.
  * @returns Decoded revert reason or an error message if decoding fails.
- * @throws Throws a custom error if decoding the revert reason fails.
+ * @throws {InvalidAbiDataToDecodeError} Throws a custom error if decoding the revert reason fails.
  *
  * @example
  * ```typescript
@@ -46,7 +46,7 @@ export function decodeRevertReason(data: string): string {
     } catch (error) {
         // If an error occurs during decoding, throw a custom error
         throw buildError(
-            ERROR_CODES.TRANSACTION.INVALID_TRANSACTION_BODY,
+            ERROR_CODES.ABI.INVALID_DATA_TO_DECODE,
             'Cannot decode revert reason',
             { data },
             error
