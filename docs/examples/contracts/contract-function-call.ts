@@ -34,7 +34,7 @@ const contractABI = JSON.stringify([
 ]);
 
 // 2 - Create a transaction to call setValue(123)
-const transaction = contract.builder.buildCallTransaction(
+const transaction = contract.txBuilder.buildCallTransaction(
     '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed', // just a sample deployed contract address
     contractABI,
     'setValue',

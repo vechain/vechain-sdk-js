@@ -1,8 +1,8 @@
-import { builder } from './contract';
+import { txBuilder } from './contract';
 import { coder } from './coder';
 
 export const contract = {
-    builder,
+    txBuilder,
     coder
 };
 export * from './types.d';

@@ -79,7 +79,7 @@ function buildTransactionBody(
     return new Transaction(body);
 }
 
-export const builder = {
+export const txBuilder = {
     buildDeployTransaction,
     buildCallTransaction
 };

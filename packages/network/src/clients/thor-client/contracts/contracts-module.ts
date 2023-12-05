@@ -43,7 +43,7 @@ class ContractsModule {
         transactionBodyOverride?: TransactionBodyOverride
     ): Promise<SendTransactionResult> {
         // Build a transaction for deploying the smart contract
-        const transaction = contract.builder.buildDeployTransaction(
+        const transaction = contract.txBuilder.buildDeployTransaction(
             contractBytecode,
             transactionBodyOverride
         );
@@ -96,7 +96,7 @@ class ContractsModule {
         transactionBodyOverride?: TransactionBodyOverride
     ): Promise<ContractCallResult[]> {
         // Build a read-only transaction to call the contract function
-        const transaction = contract.builder.buildCallTransaction(
+        const transaction = contract.txBuilder.buildCallTransaction(
             contractAddress,
             contractABI,
             functionName,
@@ -134,7 +134,7 @@ class ContractsModule {
         transactionBodyOverride?: TransactionBodyOverride
     ): Promise<ContractTransactionResult> {
         // Build a transaction to call the contract function
-        const transaction = contract.builder.buildCallTransaction(
+        const transaction = contract.txBuilder.buildCallTransaction(
             contractAddress,
             contractABI,
             functionName,

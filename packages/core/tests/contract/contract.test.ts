@@ -20,7 +20,7 @@ describe('Contract', () => {
         );
 
         // Build a transaction to deploy the compiled contract
-        const transaction = contract.builder.buildDeployTransaction(
+        const transaction = contract.txBuilder.buildDeployTransaction(
             compiledContract.bytecode
         );
 
@@ -60,7 +60,7 @@ describe('Contract', () => {
         };
 
         // Build a transaction to deploy the compiled contract with the custom transaction body
-        const transaction = contract.builder.buildDeployTransaction(
+        const transaction = contract.txBuilder.buildDeployTransaction(
             compiledContract.bytecode,
             transactionBody
         );
@@ -96,7 +96,7 @@ describe('Contract', () => {
         };
 
         // Build a transaction to deploy the compiled contract with the custom transaction body
-        const transaction = contract.builder.buildDeployTransaction(
+        const transaction = contract.txBuilder.buildDeployTransaction(
             compiledContract.bytecode,
             transactionBody
         );
@@ -126,7 +126,7 @@ describe('Contract', () => {
         );
 
         // Build a transaction to call a function on the contract
-        const callFunctionTransaction = contract.builder.buildCallTransaction(
+        const callFunctionTransaction = contract.txBuilder.buildCallTransaction(
             '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
             contractCompiled.abi,
             'set',
