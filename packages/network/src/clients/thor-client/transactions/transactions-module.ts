@@ -49,12 +49,12 @@ class TransactionsModule {
             );
 
         const clausesResults: TransactionSimulationResult[] =
-            simulatedTransaction.map((clause) => {
+            simulatedTransaction.map((simulation) => {
                 return {
-                    ...clause,
-                    data: clause.reverted
-                        ? decodeRevertReason(clause.data)
-                        : clause.data
+                    ...simulation,
+                    data: simulation.reverted
+                        ? decodeRevertReason(simulation.data)
+                        : simulation.data
                 };
             });
 
