@@ -189,6 +189,11 @@ const TEST_ACCOUNTS = {
     }
 };
 
+/**
+ * `TestingContract.sol` deployed contract address on thor-solo snapshot.
+ */
+const TEST_CONTRACT_ADDRESS = '0x46412f2e2b2365753e27630e00fac6a0a27cde32';
+
 export {
     testNetwork,
     soloNetwork,
@@ -199,5 +204,6 @@ export {
     thorClient,
     thorSoloClient,
     TEST_ACCOUNTS,
-    ALL_ACCOUNTS
+    ALL_ACCOUNTS,
+    TEST_CONTRACT_ADDRESS
 };
