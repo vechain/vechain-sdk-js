@@ -37,6 +37,7 @@ const transactionBodyOverride: TransactionBodyOverride = {
 const result = await thorTestnetClient.contracts.deployContract(
     privateKeyDeployer,
     contractBytecode,
+    undefined,
     transactionBodyOverride
 );
 
