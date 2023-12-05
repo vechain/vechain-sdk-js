@@ -46,7 +46,7 @@ describe('ThorClient - Contracts', () => {
                 []
             );
 
-            expect(parseInt(result[0].data)).toBe(100);
+            expect(parseInt(result)).toBe(100);
 
             // Assertions
             expect(transactionReceipt.reverted).toBe(false);
@@ -139,7 +139,7 @@ describe('ThorClient - Contracts', () => {
 
             expect(transactionReceiptCallSetContract.reverted).toBe(false);
 
-            const callFunctionGetResponse =
+            const callFunctionGetResult =
                 await thorSoloClient.contracts.executeContractCall(
                     contractAddress,
                     deployedContractAbi,
@@ -151,9 +151,7 @@ describe('ThorClient - Contracts', () => {
                     }
                 );
 
-            expect(callFunctionGetResponse).toHaveLength(1);
-            expect(callFunctionGetResponse[0].reverted).toBe(false);
-            expect(parseInt(callFunctionGetResponse[0].data)).toBe(123);
+            expect(parseInt(callFunctionGetResult)).toBe(123);
         } catch (error) {
             console.log('error', error);
         }

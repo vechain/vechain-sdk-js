@@ -11,7 +11,7 @@ import {
     type TransactionBodyOverride,
     TransactionHandler
 } from '@vechainfoundation/vechain-sdk-core';
-import type { ContractCallResult, ContractTransactionResult } from './types';
+import type { ContractTransactionResult } from './types';
 import {
     type SendTransactionResult,
     TransactionsModule
@@ -93,7 +93,7 @@ class ContractsModule {
      * @param functionName - The name of the function to be called.
      * @param functionData - The input data for the function.
      * @param transactionBodyOverride - (Optional) Override for the transaction body.
-     * @returns A promise resolving to an array of ContractCallResult objects.
+     * @returns A promise resolving to a hex string representing the result of the contract call.
      */
     public async executeContractCall(
         contractAddress: string,
@@ -101,7 +101,7 @@ class ContractsModule {
         functionName: string,
         functionData: unknown[],
         transactionBodyOverride?: TransactionBodyOverride
-    ): Promise<ContractCallResult[]> {
+    ): Promise<string> {
         // Build a read-only transaction to call the contract function
         const transaction = contract.txBuilder.buildCallTransaction(
             contractAddress,
@@ -112,13 +112,16 @@ class ContractsModule {
         );
 
         // Simulate the transaction to get the result of the contract call
-        return await this.transactionsClient.simulateTransaction([
+        const txSimulated = await this.transactionsClient.simulateTransaction([
             {
                 to: contractAddress,
                 data: transaction.body.clauses[0].data,
                 value: transaction.body.clauses[0].value.toString(16)
             }
         ]);
+
+        // Return the result of the contract call
+        return txSimulated[0].data;
     }
 
     /**

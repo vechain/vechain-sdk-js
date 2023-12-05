@@ -16,10 +16,4 @@ interface ContractTransactionResult {
     clausesResults: TransactionSimulationResult[];
 }
 
-/**
- * Represents the result of a read-only call to a smart contract function,
- * inheriting from TransactionSimulationResult.
- */
-interface ContractCallResult extends TransactionSimulationResult {}
-
-export type { ContractTransactionResult, ContractCallResult };
+export type { ContractTransactionResult };
