@@ -4,7 +4,7 @@ import { TransactionsModule } from './transactions';
 import { type ThorestClient } from '../thorest-client';
 
 /**
- * The `ThorClient` class serves as an interface to interact with the Vechain Thor blockchain.
+ * The `ThorClient` class serves as an interface to interact with the vechain Thor blockchain.
  * It provides various methods.
  * Essentially it can be considered a layer on top of the `ThorestClient`.
  */
@@ -29,7 +29,7 @@ class ThorClient {
      *
      * @param httpClient - The HTTP client instance used for making network requests.
      */
-    constructor(readonly thorest: ThorestClient) {
+    constructor(private readonly thorest: ThorestClient) {
         this.nodes = new NodesModule(thorest);
         this.blocks = new BlocksModule(thorest);
         this.transactions = new TransactionsModule(thorest);
