@@ -40,7 +40,8 @@ function compileContract(
                 '*': {
                     '*': ['*']
                 }
-            }
+            },
+            evmVersion: 'istanbul'
         }
     };
 
