@@ -14,7 +14,8 @@ Vechain SDK provides functionality to interact with smart contracts on the Vecha
 import { abi } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
-// Create a new function
+// 1 - Create a simple function to encode into ABI
+
 const simpleAbiFunction = new abi.Function({
     constant: false,
     inputs: [
@@ -43,16 +44,19 @@ const simpleAbiFunction = new abi.Function({
     type: 'function'
 });
 
-// Encode function
-const data = simpleAbiFunction.encodeInput([1, 'foo']);
-// Check encoding
+// 2 - Encode function
+
+const encodedFunction = simpleAbiFunction.encodeInput([1, 'foo']);
+
+// 3 - Check encoding
+
 const expected =
     '0x27fcbb2f0000000000000000000000000000000000000000000000000000\
 00000000000100000000000000000000000000000000000000000000000000\
 00000000000040000000000000000000000000000000000000000000000000\
 0000000000000003666f6f0000000000000000000000000000000000000000\
 000000000000000000';
-expect(data).toBe(expected);
+expect(encodedFunction).toBe(expected);
 
 ```
 
@@ -63,6 +67,8 @@ The contract interface is used to provide a higher level of abstraction to allow
 ```typescript { name=contract, category=example }
 import { contract } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
+
+// 1 - Create a new function
 
 const contractABI = JSON.stringify([
     {
@@ -95,16 +101,19 @@ const contractABI = JSON.stringify([
     }
 ]);
 
+// 2 - Encode the function input, ready to be used to send a tx
 const encodedData = contract.coder.encodeFunctionInput(
     contractABI,
     'setValue',
     [123]
-); // encode the function input, ready to be used to send a tx
+);
 
+// 3 - Decode the function input data
 const decodedData = String(
     contract.coder.decodeFunctionInput(contractABI, 'setValue', encodedData)[0]
 ); // decode the function input data
 
+// Check the decoded data
 expect(decodedData).toEqual('123');
 
 ```
@@ -119,7 +128,8 @@ By supporting ABI and RLP encoding handling, Vechain SDK equips developers with 
 import { RLP } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
-// Define the profile for tx clause structure
+// 1 - Define the profile for tx clause structure
+
 const profile = {
     name: 'clause',
     kind: [
@@ -129,14 +139,16 @@ const profile = {
     ]
 };
 
-// Create clauses
+// 2 - Create clauses
+
 const clause = {
     to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
     value: 10,
     data: '0x'
 };
 
-// Instace RLP
+// 3 - RLP Instance to encode and decode
+
 const rlp = new RLP.Profiler(profile);
 
 // Encoding and Decoding
@@ -145,6 +157,7 @@ expect(data.toString('hex')).toBe(
     'd7947567d83b7b8d80addcb281a71d54fc7b3364ffed0a80'
 );
 
+// Decode the data
 const obj = rlp.decodeObject(data);
 expect(JSON.stringify(obj)).toBe(JSON.stringify(clause));
 

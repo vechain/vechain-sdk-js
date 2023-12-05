@@ -16,18 +16,23 @@ Mnemonics represent a standard human-readable approach to generate private keys.
 import { mnemonic } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
-// Generate BIP39 mnemonic words, default to 12 words(128bit strength)
-const rndMnemonic = mnemonic.generate();
+// 1 - Generate BIP39 mnemonic words, default to 12 words (128bit strength)
 
-// Derive private key from mnemonic words according to BIP32, using the path `m/44'/818'/0'/0`.
+const randomMnemonic = mnemonic.generate();
+
+console.log('Mnemonic words', randomMnemonic);
+// Mnemonic words: "w1 w2 ... w12"
+
+// 2 - Derive private key from mnemonic words according to BIP32, using the path `m/44'/818'/0'/0`.
+
 // Defined for VET at https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-const privateKey = mnemonic.derivePrivateKey(rndMnemonic);
+const privateKey = mnemonic.derivePrivateKey(randomMnemonic);
+
 console.log(privateKey.toString('hex'));
 // ...SOME PRIVATE KEY...
 
 // In recovery process, validation is recommended
-const ok = mnemonic.validate(rndMnemonic);
-expect(ok).toBeTruthy();
+expect(mnemonic.validate(randomMnemonic)).toBeTruthy();
 // true
 
 ```
@@ -37,15 +42,19 @@ expect(ok).toBeTruthy();
 ```typescript { name=bip32, category=example }
 import { mnemonic, HDNode } from '@vechainfoundation/vechain-sdk-core';
 
-// Generate BIP39 mnemonic words, default to 12 words(128bit strength)
-const rndMnemonic = mnemonic.generate();
-console.log('Mnemonic words', rndMnemonic);
+// 1 - Generate BIP39 mnemonic words, default to 12 words (128bit strength)
+
+const randomMnemonic = mnemonic.generate();
+
+console.log('Mnemonic words', randomMnemonic);
 // Mnemonic words: "w1 w2 ... w12"
 
-// Create BIP32 HD node from mnemonic words
-const hdnode = HDNode.fromMnemonic(rndMnemonic);
+// 2 - Create BIP32 HD node from mnemonic words
 
-// Derive 5 child private keys
+const hdnode = HDNode.fromMnemonic(randomMnemonic);
+
+// 3 - Derive 5 child private keys
+
 for (let i = 0; i < 5; i++) {
     const child = hdnode.derive(i);
     console.log(`children ${i}`, child.address);
@@ -62,22 +71,27 @@ for (let i = 0; i < 5; i++) {
 ```typescript { name=pubkey, category=example }
 import { HDNode } from '@vechainfoundation/vechain-sdk-core';
 
-// Create HD node from xpub
+// 1 - Create HD node from xpub (extended private key) and chain code
+
 const xpub = Buffer.from(
     '04dc40b4324626eb393dbf77b6930e915dcca6297b42508adb743674a8ad5c69a046010f801a62cb945a6cb137a050cefaba0572429fc4afc57df825bfca2f219a',
     'hex'
 );
+
 const chainCode = Buffer.from(
     '105da5578eb3228655a8abe70bf4c317e525c7f7bb333634f5b7d1f70e111a33',
     'hex'
 );
 
-// Create BIP32 HD node from xpub
+// 2 - Create BIP32 HD node from xpub
+
 const hdnode = HDNode.fromPublicKey(xpub, chainCode);
 
-// Derive 5 child public keys
+// 3 - Derive 5 child public keys
+
 for (let i = 0; i < 5; i++) {
     const child = hdnode.derive(i);
+
     console.log(`children ${i}`, child.address);
     // children 0 0x...
     // children 1 0x...
@@ -97,36 +111,34 @@ Through the use of mnemonics and keystore, Vechain SDK ensures secure and user-f
 import { keystore, secp256k1 } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
-async function example(): Promise<void> {
-    // Create private key
+// 1 - Create private key using Secp256k1
 
-    // BIP 39
-    // const words = mnemonic.generate()
-    // const privateKey = mnemonic.derivePrivateKey(words)
+const privateKey = secp256k1.generatePrivateKey();
 
-    // Secp256k1
-    const privateKey = secp256k1.generatePrivateKey();
+// @NOTE you can use BIP 39 too!
+// const words = mnemonic.generate()
+// const privateKey = mnemonic.derivePrivateKey(words)
 
-    // ...
+// ...
 
-    // Encrypt/decrypt private key using Ethereum's keystore scheme
-    const keyStorePassword = 'your password';
-    const newKeyStore = await keystore.encrypt(privateKey, keyStorePassword);
+// 2 - Encrypt/decrypt private key using Ethereum's keystore scheme
 
-    // Throw for wrong password
-    const recoveredPrivateKey = await keystore.decrypt(
-        newKeyStore,
-        keyStorePassword
-    );
-    console.log(recoveredPrivateKey.privateKey.toString());
-    // ...
+const keyStorePassword = 'your password';
+const newKeyStore = await keystore.encrypt(privateKey, keyStorePassword);
 
-    // Roughly check keystore format
-    const ok = keystore.isValid(newKeyStore);
-    expect(ok).toBeTruthy();
-    // Key store ok true
-}
-await example();
+// 3 - Throw for wrong password
+
+const recoveredPrivateKey = await keystore.decrypt(
+    newKeyStore,
+    keyStorePassword
+);
+
+console.log(recoveredPrivateKey.privateKey.toString());
+// 0x...
+
+// Roughly check keystore format
+expect(keystore.isValid(newKeyStore)).toBeTruthy();
+// Key store ok true
 
 ```
 
