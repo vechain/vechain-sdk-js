@@ -1,6 +1,4 @@
-import { HttpClient, ThorestClient } from '../src';
-import { ThorClient } from '../src/clients/thor-client';
-import { HDNode } from '@vechainfoundation/vechain-sdk-core';
+import { HttpClient, ThorestClient, ThorClient } from '../src';
 
 /**
  * Url of the testnet fixture
@@ -169,21 +167,6 @@ const ALL_ACCOUNTS = [
         address: '0x865306084235bf804c8bba8a8d56890940ca8f0b'
     }
 ];
-
-export const pk = HDNode.fromMnemonic([
-    'vivid',
-    'any',
-    'call',
-    'mammal',
-    'mosquito',
-    'budget',
-    'midnight',
-    'expose',
-    'spirit',
-    'approve',
-    'reject',
-    'system'
-]).derivePath('0').privateKey as Buffer;
 
 /**
  * Test accounts fixture
