@@ -11,9 +11,7 @@ class BlocksModule {
      * Initializes a new instance of the `Thorest` class.
      * @param thorest - The Thorest instance used to interact with the vechain Thorest blockchain API.
      */
-    constructor(readonly thorest: ThorestClient) {
-        this.thorest = thorest;
-    }
+    constructor(readonly thorest: ThorestClient) {}
 
     /**
      * Synchronously waits for a specific block revision using polling.
