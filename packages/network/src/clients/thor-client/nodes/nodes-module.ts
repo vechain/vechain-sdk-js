@@ -1,25 +1,17 @@
-import {
-    type HttpClient,
-    NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS
-} from '../../../utils';
+import { NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS } from '../../../utils';
 import { assert, DATA } from '@vechainfoundation/vechain-sdk-errors';
-import { type BlockDetail, BlocksClient } from '../../thorest-client';
+import { type BlockDetail, type ThorestClient } from '../../thorest-client';
 
 /**
  * The `NodesModule` class serves as a module for node-related functionality, for example, checking the health of a node.
  */
 class NodesModule {
     /**
-     * Internal blocks client instance used for interacting with block-related endpoints.
+     * Initializes a new instance of the `Thorest` class.
+     * @param thorest - The Thorest instance used to interact with the vechain Thorest blockchain API.
      */
-    private readonly blocksClient: BlocksClient;
-
-    /**
-     * Initializes a new instance of the `NodeClient` class.
-     * @param httpClient - The HTTP client instance used for making HTTP requests.
-     */
-    constructor(readonly httpClient: HttpClient) {
-        this.blocksClient = new BlocksClient(httpClient);
+    constructor(readonly thorest: ThorestClient) {
+        this.thorest = thorest;
     }
 
     /**
@@ -42,7 +34,7 @@ class NodesModule {
          * @internal
          * Perform an HTTP GET request using the SimpleNet instance to get the latest block
          */
-        const response = await this.blocksClient.getBestBlock();
+        const response = await this.thorest.blocks.getBestBlock();
 
         /**
          * timestamp from the last block and, eventually handle errors

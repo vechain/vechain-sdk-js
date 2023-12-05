@@ -2,10 +2,10 @@ import {
     type Transaction,
     assertIsSignedTransaction
 } from '@vechainfoundation/vechain-sdk-core';
-import { Poll, type HttpClient } from '../../../utils';
+import { Poll } from '../../../utils';
 import {
-    type TransactionReceipt,
-    TransactionsClient
+    type ThorestClient,
+    type TransactionReceipt
 } from '../../thorest-client';
 import { type WaitForTransactionOptions } from './types';
 
@@ -15,16 +15,11 @@ import { type WaitForTransactionOptions } from './types';
  */
 class TransactionsModule {
     /**
-     * Reference to the `TransactionsClient` instance.
+     * Initializes a new instance of the `Thorest` class.
+     * @param thorest - The Thorest instance used to interact with the vechain Thorest blockchain API.
      */
-    private readonly transactionsClient: TransactionsClient;
-
-    /**
-     * Initializes a new instance of the `TransactionsModule` class.
-     * @param httpClient - The HTTP client instance used for making HTTP requests.
-     */
-    constructor(readonly httpClient: HttpClient) {
-        this.transactionsClient = new TransactionsClient(httpClient);
+    constructor(readonly thorest: ThorestClient) {
+        this.thorest = thorest;
     }
 
     /**
@@ -41,7 +36,8 @@ class TransactionsModule {
 
         const rawTx = `0x${signedTx.encoded.toString('hex')}`;
 
-        const txID = (await this.transactionsClient.sendTransaction(rawTx)).id;
+        const txID = (await this.thorest.transactions.sendTransaction(rawTx))
+            .id;
 
         return txID;
     }
@@ -62,7 +58,7 @@ class TransactionsModule {
     ): Promise<TransactionReceipt | null> {
         const result = await Poll.SyncPoll(
             async () =>
-                await this.transactionsClient.getTransactionReceipt(txID),
+                await this.thorest.transactions.getTransactionReceipt(txID),
             {
                 requestIntervalInMilliseconds: options?.intervalMs,
                 maximumWaitingTimeInMilliseconds: options?.timeoutMs

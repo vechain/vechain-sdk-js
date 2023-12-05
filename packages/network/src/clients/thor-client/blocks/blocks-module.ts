@@ -1,6 +1,6 @@
 import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
-import { type HttpClient, Poll } from '../../../utils';
-import { type BlockDetail, BlocksClient } from '../../thorest-client';
+import { Poll } from '../../../utils';
+import { type BlockDetail, type ThorestClient } from '../../thorest-client';
 import { type WaitForBlockOptions } from './types';
 
 /** The `BlocksModule` class encapsulates functionality for interacting with blocks
@@ -8,17 +8,11 @@ import { type WaitForBlockOptions } from './types';
  */
 class BlocksModule {
     /**
-     * Internal blocks client instance used for interacting with block-related endpoints.
+     * Initializes a new instance of the `Thorest` class.
+     * @param thorest - The Thorest instance used to interact with the vechain Thorest blockchain API.
      */
-    private readonly blocksClient: BlocksClient;
-
-    /**
-     * Initializes a new instance of the `NodeModule` class.
-     * @param httpClient - The HTTP client instance used for making HTTP requests.
-     */
-    constructor(readonly httpClient: HttpClient) {
-        // Create an instance of BlocksClient using the provided HTTP client
-        this.blocksClient = new BlocksClient(httpClient);
+    constructor(readonly thorest: ThorestClient) {
+        this.thorest = thorest;
     }
 
     /**
@@ -43,7 +37,7 @@ class BlocksModule {
 
         // Use the Poll.SyncPoll utility to repeatedly call getBestBlock with a specified interval
         const block = await Poll.SyncPoll(
-            async () => await this.blocksClient.getBestBlock(),
+            async () => await this.thorest.blocks.getBestBlock(),
             {
                 requestIntervalInMilliseconds: options?.intervalMs,
                 maximumWaitingTimeInMilliseconds: options?.timeoutMs

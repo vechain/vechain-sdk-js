@@ -6,7 +6,7 @@ import { TransactionsClient } from './transactions';
 import { NodesClient } from './nodes';
 
 /**
- * The `ThorestClient` class serves as an interface to interact with the Vechain Thorest blockchain API.
+ * The `ThorestClient` class serves as an interface to interact with the vechain Thorest blockchain API.
  * It provides methods for accessing accounts, blocks, logs, transactions and nodes endpoints.
  * Basically it can be considered a wrapper of Thorest API.
  */
@@ -46,7 +46,6 @@ class ThorestClient {
         this.logs = new LogsClient(httpClient);
         this.nodes = new NodesClient(httpClient);
         this.transactions = new TransactionsClient(httpClient);
-        this.httpClient = httpClient;
     }
 }
 
