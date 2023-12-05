@@ -18,8 +18,24 @@ interface WaitForTransactionOptions {
     intervalMs?: number;
 }
 
+/**
+ * Represents the result of sending a transaction.
+ *
+ * @interface SendTransactionResult
+ */
 interface SendTransactionResult {
+    /**
+     * The unique identifier associated with the transaction.
+     *
+     * @type {string}
+     */
     id: string;
+
+    /**
+     * An array of results for each clause in the transaction.
+     *
+     * @type {TransactionSimulationResult[]}
+     */
     clausesResults: TransactionSimulationResult[];
 }
 
