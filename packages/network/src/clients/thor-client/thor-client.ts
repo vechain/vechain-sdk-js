@@ -32,7 +32,7 @@ class ThorClient {
      */
     constructor(
         protected readonly httpClient: HttpClient,
-        readonly thorest: ThorestClient
+        readonly thorest?: ThorestClient
     ) {
         this.nodes = new NodesModule(httpClient);
         this.blocks = new BlocksModule(httpClient);

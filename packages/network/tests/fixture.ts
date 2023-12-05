@@ -44,7 +44,7 @@ const thorestSoloClient = new ThorestClient(soloNetwork);
 /**
  * Thor client testnet instance fixture
  */
-const thorClient = new ThorClient(testNetwork);
+const thorClient = new ThorClient(testNetwork, thorestClient);
 
 /**
  * Thor client solo instance fixture
