@@ -29,7 +29,7 @@ class ThorClient {
      *
      * @param httpClient - The HTTP client instance used for making network requests.
      */
-    constructor(private readonly thorest: ThorestClient) {
+    constructor(readonly thorest: ThorestClient) {
         this.nodes = new NodesModule(thorest);
         this.blocks = new BlocksModule(thorest);
         this.transactions = new TransactionsModule(thorest);
