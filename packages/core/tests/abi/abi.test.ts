@@ -223,7 +223,7 @@ describe('Abi - Function & Event', () => {
         });
 
         /**
-         * Test case for encoding parameters using ABI.
+         * Test case for parameters encoding.
          *
          * @test
          */
@@ -240,6 +240,21 @@ describe('Abi - Function & Event', () => {
 
             // Assert that the encoded parameters match the expected value.
             expect(params).toBe(encodedParams);
+        });
+
+        /**
+         * Test case for failed parameters encoding.
+         *
+         * @test
+         */
+        test('should throw an error for invalid encoding', () => {
+            const abiTypes = ['uint256', 'address'];
+            const values = ['123', '0x1567890123456789012345678901234567890']; // the address is invalid
+
+            // Expect the function to throw an error with the specific message
+            expect(() => abi.encodeParams(abiTypes, values)).toThrowError(
+                InvalidAbiDataToEncodeError
+            );
         });
 
         /**
