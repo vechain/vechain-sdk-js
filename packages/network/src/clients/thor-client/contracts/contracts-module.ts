@@ -1,5 +1,4 @@
-import { TransactionsClient } from '../../thorest-client';
-import type { HttpClient } from '../../../utils';
+import { ThorestClient } from '../../thorest-client';
 import {
     contract,
     type DeployParams,
@@ -25,19 +24,11 @@ class ContractsModule {
     private readonly transactionsModule: TransactionsModule;
 
     /**
-     * An instance of the TransactionsClient
-     * @private
-     * @readonly
-     */
-    private readonly transactionsClient: TransactionsClient;
-
-    /**
      * Creates an instance of the ContractsModule.
-     * @param httpClient - An HTTP client for interacting with the blockchain.
+     * @param thorest - The Thorest instance used to interact with the vechain Thorest blockchain API.
      */
-    constructor(readonly httpClient: HttpClient) {
-        this.transactionsModule = new TransactionsModule(httpClient);
-        this.transactionsClient = new TransactionsClient(httpClient);
+    constructor(readonly thorest: ThorestClient) {
+        this.transactionsModule = new TransactionsModule(thorest);
     }
 
     /**
@@ -99,7 +90,7 @@ class ContractsModule {
         );
 
         // Simulate the transaction to get the result of the contract call
-        const txSimulated = await this.transactionsClient.simulateTransaction([
+        const txSimulated = await this.thorest.transactions.simulateTransaction([
             {
                 to: contractAddress,
                 data: transaction.body.clauses[0].data,
@@ -141,7 +132,7 @@ class ContractsModule {
 
         // Simulate the transaction to get the result of the contract call
         const simulatedTransaction =
-            await this.transactionsClient.simulateTransaction([
+            await this.thorest.transactions.simulateTransaction([
                 {
                     to: contractAddress,
                     data: transaction.body.clauses[0].data,
