@@ -1,5 +1,5 @@
 import { describe, expect, test, jest } from '@jest/globals';
-import { HttpClient, ThorestClient } from '../../../../src';
+import { HttpClient } from '../../../../src';
 import {
     blockWithMissingTimeStamp,
     blockWithOldTimeStamp,
@@ -7,7 +7,6 @@ import {
     createThorClient
 } from './fixture';
 import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
-import { ThorClient } from '../../../../src/clients/thor-client';
 
 /**
  * Node integration tests
@@ -74,9 +73,7 @@ describe('Integration tests to check the Node health check is working for differ
         jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce(
             blockWithOldTimeStamp
         );
-        const thorClient = new ThorClient(
-            new ThorestClient(new HttpClient(URL))
-        );
+        const thorClient = createThorClient(URL);
         await expect(thorClient.nodes.isHealthy()).resolves.toBe(false);
     });
 });
