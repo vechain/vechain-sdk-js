@@ -25,6 +25,7 @@
         "docs"
     ],
     "devDependencies": {
+        "@changesets/cli": "^2.27.1",
         "@commitlint/cli": "^18.2.0",
         "@commitlint/config-conventional": "^18.4.3",
         "@jest/globals": "^29.7.0",

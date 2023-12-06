@@ -101,7 +101,7 @@ For more details and guidelines on how to contribute, refer to [CONTRIBUTING](./
 This project is licensed under the [MIT license](./.github/LICENSE.md).
 
 ## Publishing
-... To Be Detailed ...     
+The vechain SDK uses `Changesets CLI`. Execute the `yarn changeset version` and `yarn changeset publish` commands to release a new package.
 
 ## Contact information
 - Discord https://discord.com/invite/vechain
