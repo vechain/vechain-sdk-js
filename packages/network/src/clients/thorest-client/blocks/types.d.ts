@@ -133,7 +133,7 @@ interface Clause {
      * Amount of VET transferred in the clause. Zero value if no VET is transferred and we are
      * performing a smart contract transaction.
      */
-    value: string | number;
+    value: string;
     /**
      * Data sent along with the clause. Zero value if no data is sent.
      */
@@ -185,7 +185,7 @@ interface TransactionsExpandedBlockDetail {
     /**
      * Clauses represent the individual conditions or terms in a blockchain transaction.
      */
-    clauses: Clauses;
+    clauses: Clause[];
 
     /**
      * Gas price coefficient for the transaction.

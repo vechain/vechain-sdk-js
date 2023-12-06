@@ -1,10 +1,11 @@
 import { type TransactionBody } from '@vechainfoundation/vechain-sdk-core/src';
-import { type Output, type Clause } from '../blocks';
+import { type Output } from '../blocks';
+import { type TransactionClause } from '@vechainfoundation/vechain-sdk-core';
 
 /**
  * Transaction clause type for transaction simulation having value only string.
  */
-type SimulateTransactionClause = Clause;
+type SimulateTransactionClause = TransactionClause;
 
 /* --- Input options start --- */
 

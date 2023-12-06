@@ -2,7 +2,6 @@ import { type HttpClient, buildQuery, thorest } from '../../../utils';
 import {
     dataUtils,
     revisionUtils,
-    type TransactionClause,
     TransactionHandler,
     assertValidTransactionID,
     assertValidTransactionHead
@@ -22,7 +21,6 @@ import {
     buildError,
     DATA
 } from '@vechainfoundation/vechain-sdk-errors';
-import type { Clause } from '../blocks';
 
 /**
  * Client for reading and creating transactions
@@ -168,7 +166,12 @@ class TransactionsClient {
             {
                 query: buildQuery({ revision }),
                 body: {
-                    clauses: this.convertClausesValuesToHexStrings(clauses),
+                    clauses: clauses.map((clause) => {
+                        return {
+                            ...clause,
+                            value: BigInt(clause.value).toString()
+                        };
+                    }),
                     gas,
                     gasPrice,
                     caller,
@@ -179,22 +182,6 @@ class TransactionsClient {
                 }
             }
         )) as TransactionSimulationResult[];
-    }
-
-    private convertClausesValuesToHexStrings(
-        clauses: TransactionClause[]
-    ): Clause[] {
-        return clauses.map((clause) => {
-            if (typeof clause.value === 'number') {
-                return {
-                    ...clause,
-                    value: '0x' + clause.value.toString(16)
-                };
-            }
-            return {
-                ...clause
-            };
-        });
     }
 }
 

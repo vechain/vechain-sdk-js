@@ -1,4 +1,4 @@
-import { AccountsClient, TransactionsClient } from '../../thorest-client';
+import { TransactionsClient } from '../../thorest-client';
 import type { HttpClient } from '../../../utils';
 import {
     contract,
@@ -17,16 +17,27 @@ import {
  * Represents a module for interacting with smart contracts on the blockchain.
  */
 class ContractsModule {
+    /**
+     * An instance of the TransactionsModule
+     * @private
+     * @readonly
+     */
     private readonly transactionsModule: TransactionsModule;
+
+    /**
+     * An instance of the TransactionsClient
+     * @private
+     * @readonly
+     */
     private readonly transactionsClient: TransactionsClient;
 
-    private readonly accountsClient: AccountsClient;
-
+    /**
+     * Creates an instance of the ContractsModule.
+     * @param httpClient - An HTTP client for interacting with the blockchain.
+     */
     constructor(readonly httpClient: HttpClient) {
         this.transactionsModule = new TransactionsModule(httpClient);
         this.transactionsClient = new TransactionsClient(httpClient);
-
-        this.accountsClient = new AccountsClient(httpClient);
     }
 
     /**
