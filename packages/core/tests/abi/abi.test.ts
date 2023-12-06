@@ -1,13 +1,14 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-    events,
-    functions,
     encodedDecodedInvalidValues,
     encodedDecodedValues,
+    encodedParams,
+    events,
+    functions,
     simpleParametersDataForFunction2
 } from './fixture';
-import { type FormatType, abi } from '../../src';
-import { ParamType, type ethers } from 'ethers';
+import { abi, type FormatType } from '../../src';
+import { type ethers, ParamType } from 'ethers';
 import {
     InvalidAbiDataToDecodeError,
     InvalidAbiDataToEncodeError,
@@ -219,6 +220,41 @@ describe('Abi - Function & Event', () => {
                         );
                     });
                 });
+        });
+
+        /**
+         * Test case for parameters encoding.
+         *
+         * @test
+         */
+        test('encode parameters', () => {
+            /**
+             * Parameters to be encoded using ABI.
+             *
+             * @type {string}
+             */
+            const params = abi.encodeParams(
+                ['uint256', 'uint256'],
+                ['123', '234']
+            );
+
+            // Assert that the encoded parameters match the expected value.
+            expect(params).toBe(encodedParams);
+        });
+
+        /**
+         * Test case for failed parameters encoding.
+         *
+         * @test
+         */
+        test('should throw an error for invalid encoding', () => {
+            const abiTypes = ['uint256', 'address'];
+            const values = ['123', '0x1567890123456789012345678901234567890']; // the address is invalid
+
+            // Expect the function to throw an error with the specific message
+            expect(() => abi.encodeParams(abiTypes, values)).toThrowError(
+                InvalidAbiDataToEncodeError
+            );
         });
 
         /**

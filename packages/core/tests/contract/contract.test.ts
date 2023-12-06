@@ -2,10 +2,10 @@ import { describe, test, expect } from '@jest/globals';
 import { compileContract } from './compiler';
 import {
     type TransactionBodyOverride,
-    buildCallContractTransaction,
-    buildDeployContractTransaction
+    contract,
+    type DeployParams
 } from '../../src';
-import { contract, networkInfo } from '../../src';
+import { coder, networkInfo } from '../../src';
 
 /**
  * Unit tests for building contract transactions.
@@ -24,7 +24,7 @@ describe('Contract', () => {
         );
 
         // Build a transaction to deploy the compiled contract
-        const transaction = buildDeployContractTransaction(
+        const transaction = contract.txBuilder.buildDeployTransaction(
             compiledContract.bytecode
         );
 
@@ -32,9 +32,39 @@ describe('Contract', () => {
             compiledContract.bytecode
         );
         expect(transaction.body.clauses[0].value).toBe(0);
-        expect(transaction.body.clauses[0].to).toBe(
-            networkInfo.mainnet.zeroAddress
+        expect(transaction.body.clauses[0].to).toBe(null);
+        expect(transaction.body.nonce).toBeDefined();
+        expect(transaction.body.chainTag).toBe(networkInfo.mainnet.chainTag);
+        expect(transaction.body.blockRef).toBeDefined();
+        expect(transaction.body.expiration).toBeDefined();
+        expect(transaction.body.gasPriceCoef).toBeDefined();
+        expect(transaction.body.gas).toBeDefined();
+        expect(transaction.body.dependsOn).toBeNull();
+    });
+
+    /**
+     * Test case for building a transaction to deploy a contract with deploy parameters.
+     */
+    test('Build a transaction to deploy a contract with deploy params', () => {
+        const compiledContract = compileContract(
+            'tests/contract/sample',
+            'Example.sol',
+            'Example'
         );
+
+        const deployParams: DeployParams = {
+            types: ['uint256'],
+            values: ['100']
+        };
+
+        const transaction = contract.txBuilder.buildDeployTransaction(
+            compiledContract.bytecode,
+            deployParams
+        );
+
+        // Assertions for various properties of the built transaction.
+        expect(transaction.body.clauses[0].value).toBe(0);
+        expect(transaction.body.clauses[0].to).toBe(null);
         expect(transaction.body.nonce).toBeDefined();
         expect(transaction.body.chainTag).toBe(networkInfo.mainnet.chainTag);
         expect(transaction.body.blockRef).toBeDefined();
@@ -59,15 +89,16 @@ describe('Contract', () => {
         const transactionBody: TransactionBodyOverride = {
             nonce: 1,
             chainTag: networkInfo.mainnet.chainTag,
-            blockRef: '0x00ffecb8ac3142c4',
+            blockRef: '0x0000000000000000',
             expiration: 32,
             gasPriceCoef: 0,
             dependsOn: null
         };
 
         // Build a transaction to deploy the compiled contract with the custom transaction body
-        const transaction = buildDeployContractTransaction(
+        const transaction = contract.txBuilder.buildDeployTransaction(
             compiledContract.bytecode,
+            undefined,
             transactionBody
         );
 
@@ -75,7 +106,7 @@ describe('Contract', () => {
         expect(transaction.body.clauses[0].data).toEqual(
             compiledContract.bytecode
         );
-        expect(transaction.body.blockRef).toEqual('0x00ffecb8ac3142c4');
+        expect(transaction.body.blockRef).toEqual('0x0000000000000000');
         expect(transaction.body.expiration).toEqual(32);
         expect(transaction.body.nonce).toEqual(1);
         expect(transaction.body.gas).toBeGreaterThan(0);
@@ -102,8 +133,9 @@ describe('Contract', () => {
         };
 
         // Build a transaction to deploy the compiled contract with the custom transaction body
-        const transaction = buildDeployContractTransaction(
+        const transaction = contract.txBuilder.buildDeployTransaction(
             compiledContract.bytecode,
+            undefined,
             transactionBody
         );
 
@@ -111,7 +143,7 @@ describe('Contract', () => {
         expect(transaction.body.clauses[0].data).toEqual(
             compiledContract.bytecode
         );
-        expect(transaction.body.blockRef).toEqual('0x00ffecb8ac3142c4');
+        expect(transaction.body.blockRef).toEqual('0x0000000000000000');
         expect(transaction.body.expiration).toEqual(32);
         expect(transaction.body.nonce).toEqual(4);
         expect(transaction.body.gas).toBeGreaterThan(0);
@@ -132,7 +164,7 @@ describe('Contract', () => {
         );
 
         // Build a transaction to call a function on the contract
-        const callFunctionTransaction = buildCallContractTransaction(
+        const callFunctionTransaction = contract.txBuilder.buildCallTransaction(
             '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
             contractCompiled.abi,
             'set',
@@ -171,9 +203,7 @@ describe('Contract', () => {
         expect(contractCompiled).toBeDefined();
 
         // Create an instance of a Contract interface using the ABI
-        const contractInterface = contract.createInterface(
-            contractCompiled.abi
-        );
+        const contractInterface = coder.createInterface(contractCompiled.abi);
 
         // Ensure the contract interface is created successfully
         expect(contractInterface).toBeDefined();

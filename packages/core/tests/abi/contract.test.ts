@@ -4,10 +4,13 @@ import {
     contractABI,
     contractABIWithEvents
 } from './fixture';
-import { contract } from '../../src/abi/contract';
-import { abi } from '../../src';
+import { coder, abi } from '../../src';
 import { ethers } from 'ethers';
-import { ContractInterfaceError } from '@vechainfoundation/vechain-sdk-errors';
+import {
+    InvalidAbiDataToDecodeError,
+    InvalidAbiDataToEncodeError,
+    InvalidAbiEventError
+} from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Contract tests - encode & decode
@@ -18,14 +21,14 @@ describe('Contract interface for ABI encoding/decoding', () => {
      * Test the creation of a contract interface.
      */
     test('Create a contract interface from an ABI json', () => {
-        expect(contract.createInterface(contractABI)).toBeDefined();
+        expect(coder.createInterface(contractABI)).toBeDefined();
     });
 
     /**
      * Test the encoding of a function fragment.
      */
     test('get a function fragment and encode it', () => {
-        const contractInterface = contract.createInterface(contractABI);
+        const contractInterface = coder.createInterface(contractABI);
 
         expect(
             contractInterface.encodeFunctionData('setValue', [123])
@@ -37,17 +40,17 @@ describe('Contract interface for ABI encoding/decoding', () => {
      * Test the encoding of a function fragment with the custom encoding function data method.
      */
     test('get a function fragment and encode it', () => {
-        const contractInterface = contract.createInterface(contractABI);
+        const contractInterface = coder.createInterface(contractABI);
 
         expect(
-            contract.encodeFunctionInput(contractABI, 'setValue', [123])
+            coder.encodeFunctionInput(contractABI, 'setValue', [123])
         ).toEqual(
             new abi.Function(
                 contractInterface.getFunction('setValue')
             ).encodeInput([123])
         );
 
-        expect(contract.encodeFunctionInput(contractABI, 'getValue')).toEqual(
+        expect(coder.encodeFunctionInput(contractABI, 'getValue')).toEqual(
             contractInterface.encodeFunctionData('getValue')
         );
     });
@@ -57,24 +60,20 @@ describe('Contract interface for ABI encoding/decoding', () => {
      */
     test('Fail to encode a contract function input', () => {
         expect(() =>
-            contract.encodeFunctionInput(contractABI, 'undefined', [123])
-        ).toThrowError(ContractInterfaceError);
+            coder.encodeFunctionInput(contractABI, 'undefined', [123])
+        ).toThrowError(InvalidAbiDataToEncodeError);
     });
 
     /**
      * Test the decoding of a function fragment data with the custom decoding data method
      */
     test('decode a function fragment data', () => {
-        const contractInterface = contract.createInterface(contractABI);
+        const contractInterface = coder.createInterface(contractABI);
         const encodedData = contractInterface.encodeFunctionData('setValue', [
             123
         ]);
         const decodedData = String(
-            contract.decodeFunctionInput(
-                contractABI,
-                'setValue',
-                encodedData
-            )[0]
+            coder.decodeFunctionInput(contractABI, 'setValue', encodedData)[0]
         );
         expect(decodedData).toEqual('123');
     });
@@ -84,8 +83,8 @@ describe('Contract interface for ABI encoding/decoding', () => {
      */
     test('Fail to decode a contract function input', () => {
         expect(() =>
-            contract.decodeFunctionInput(contractABI, 'setValue', '0x123')
-        ).toThrowError(ContractInterfaceError);
+            coder.decodeFunctionInput(contractABI, 'setValue', '0x123')
+        ).toThrowError(InvalidAbiDataToDecodeError);
     });
 
     /**
@@ -95,7 +94,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
         const contractInterface = new ethers.Interface(contractABIWithEvents);
 
         expect(
-            contract.encodeEventLog(contractABIWithEvents, 'ValueChanged', [
+            coder.encodeEventLog(contractABIWithEvents, 'ValueChanged', [
                 ValueChangedEventData.sender,
                 ValueChangedEventData.value
             ])
@@ -112,8 +111,8 @@ describe('Contract interface for ABI encoding/decoding', () => {
      */
     test('Fail to encode a contract event log', () => {
         expect(() =>
-            contract.encodeEventLog(contractABI, 'undefined', [])
-        ).toThrowError(ContractInterfaceError);
+            coder.encodeEventLog(contractABI, 'undefined', [])
+        ).toThrowError(InvalidAbiEventError);
     });
 
     /**
@@ -121,14 +120,14 @@ describe('Contract interface for ABI encoding/decoding', () => {
      */
     test('get an event fragment and decode it', () => {
         const contractInterface = new ethers.Interface(contractABIWithEvents);
-        const encodedEventLog = contract.encodeEventLog(
+        const encodedEventLog = coder.encodeEventLog(
             contractABIWithEvents,
             'ValueChanged',
             [ValueChangedEventData.sender, ValueChangedEventData.value]
         );
 
         expect(
-            contract.decodeEventLog(
+            coder.decodeEventLog(
                 contractABIWithEvents,
                 'ValueChanged',
                 encodedEventLog
@@ -147,10 +146,10 @@ describe('Contract interface for ABI encoding/decoding', () => {
      */
     test('Fail to decode a contract function input', () => {
         expect(() =>
-            contract.decodeEventLog(contractABI, 'ValueChanged', {
+            coder.decodeEventLog(contractABI, 'ValueChanged', {
                 data: '0x123',
                 topics: []
             })
-        ).toThrowError(ContractInterfaceError);
+        ).toThrowError(InvalidAbiEventError);
     });
 });
