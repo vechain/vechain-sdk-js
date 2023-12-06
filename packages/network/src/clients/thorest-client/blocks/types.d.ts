@@ -185,7 +185,7 @@ interface TransactionsExpandedBlockDetail {
     /**
      * Clauses represent the individual conditions or terms in a blockchain transaction.
      */
-    clauses: Clauses;
+    clauses: Clause[];
 
     /**
      * Gas price coefficient for the transaction.

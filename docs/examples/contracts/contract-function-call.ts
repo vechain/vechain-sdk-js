@@ -1,11 +1,7 @@
-import {
-    networkInfo,
-    buildCallContractTransaction
-} from '@vechainfoundation/vechain-sdk-core';
+import { networkInfo, contract } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Init a simple contract ABI
-
 const contractABI = JSON.stringify([
     {
         constant: false,
@@ -38,8 +34,7 @@ const contractABI = JSON.stringify([
 ]);
 
 // 2 - Create a transaction to call setValue(123)
-
-const transaction = buildCallContractTransaction(
+const transaction = contract.txBuilder.buildCallTransaction(
     '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed', // just a sample deployed contract address
     contractABI,
     'setValue',

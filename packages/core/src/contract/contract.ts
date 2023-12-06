@@ -1,26 +1,35 @@
-import { randomBytes } from 'ethers';
-import { contract } from '../abi';
+import { type InterfaceAbi, randomBytes } from 'ethers';
+import { abi, coder } from '../abi';
 import { Transaction, type TransactionClause } from '../transaction';
 import { networkInfo } from '../utils/const/network';
 import { TransactionUtils, dataUtils } from '../utils';
-import type { TransactionBodyOverride } from './types';
+import type { DeployParams, TransactionBodyOverride } from './types';
 
 /**
  * Builds a transaction for deploying a smart contract on the blockchain.
  *
  * @param contractBytecode - The bytecode of the smart contract.
+ * @param deployParams - The parameters to pass to the smart contract constructor.
  * @param transactionBodyOverride - (Optional) Custom transaction body to override default settings.
  * @returns A Transaction object representing the deploy contract transaction.
  */
-function buildDeployContractTransaction(
+function buildDeployTransaction(
     contractBytecode: string,
+    deployParams?: DeployParams,
     transactionBodyOverride?: TransactionBodyOverride
 ): Transaction {
+    let encodedParams = '';
+    if (deployParams != null) {
+        encodedParams = abi
+            .encodeParams(deployParams.types, deployParams.values)
+            .replace('0x', '');
+    }
+
     const clauses: TransactionClause[] = [
         {
-            to: networkInfo.mainnet.zeroAddress,
+            to: null,
             value: 0,
-            data: contractBytecode
+            data: contractBytecode + encodedParams
         }
     ];
     return buildTransactionBody(clauses, transactionBodyOverride);
@@ -36,9 +45,9 @@ function buildDeployContractTransaction(
  * @param transactionBodyOverride - (Optional) Custom transaction body to override default settings.
  * @returns A Transaction object representing the function call transaction.
  */
-function buildCallContractTransaction(
+function buildCallTransaction(
     contractAddress: string,
-    contractAbi: string,
+    contractAbi: InterfaceAbi,
     functionName: string,
     args: unknown[],
     transactionBodyOverride?: TransactionBodyOverride
@@ -47,7 +56,7 @@ function buildCallContractTransaction(
         {
             to: contractAddress,
             value: 0,
-            data: contract.encodeFunctionInput(contractAbi, functionName, args)
+            data: coder.encodeFunctionInput(contractAbi, functionName, args)
         }
     ];
 
@@ -68,15 +77,18 @@ function buildTransactionBody(
     const body = {
         nonce: '0x' + dataUtils.toHexString(randomBytes(8)),
         chainTag: networkInfo.mainnet.chainTag,
-        blockRef: '0x00ffecb8ac3142c4', // in the online part, replace with the result of a method that interacts with the blockchain
+        blockRef: '0x0000000000000000', // in the online part, replace with the result of a method that interacts with the blockchain
         expiration: 32, // tx will expire after block #N + 32
         clauses,
         gasPriceCoef: 128,
-        gas: TransactionUtils.intrinsicGas(clauses),
+        gas: 5000 + TransactionUtils.intrinsicGas(clauses) * 5,
         dependsOn: null,
         ...transactionBodyOverride
     };
     return new Transaction(body);
 }
 
-export { buildDeployContractTransaction, buildCallContractTransaction };
+export const txBuilder = {
+    buildDeployTransaction,
+    buildCallTransaction
+};

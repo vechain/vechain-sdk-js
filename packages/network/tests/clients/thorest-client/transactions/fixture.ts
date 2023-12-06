@@ -238,7 +238,7 @@ const simulateTransaction = {
                         {
                             to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                             value: '0',
-                            data: contract.encodeFunctionInput(
+                            data: contract.coder.encodeFunctionInput(
                                 BUILT_IN_CONTRACTS.ENERGY_ABI,
                                 'transfer',
                                 [
@@ -316,7 +316,7 @@ const simulateTransaction = {
                         {
                             to: BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
                             value: '0',
-                            data: contract.encodeFunctionInput(
+                            data: contract.coder.encodeFunctionInput(
                                 BUILT_IN_CONTRACTS.PARAMS_ABI,
                                 'get',
                                 [
@@ -363,7 +363,7 @@ const simulateTransaction = {
                             /**
                              * Checks the balance of VTHO of TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
                              */
-                            data: contract.encodeFunctionInput(
+                            data: contract.coder.encodeFunctionInput(
                                 BUILT_IN_CONTRACTS.ENERGY_ABI,
                                 'balanceOf',
                                 [
@@ -468,7 +468,7 @@ const simulateTransaction = {
                     {
                         to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                         value: '0',
-                        data: contract.encodeFunctionInput(
+                        data: contract.coder.encodeFunctionInput(
                             BUILT_IN_CONTRACTS.ENERGY_ABI,
                             'transfer',
                             [

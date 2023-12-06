@@ -16,6 +16,11 @@ type FunctionFragment = ethers.FunctionFragment;
 type Interface = ethers.Interface;
 
 /**
+ * Represents a wrapped InterfaceAbi for ethers.js types.
+ */
+type InterfaceAbi = ethers.InterfaceAbi;
+
+/**
  * Represents a wrapped Result for ethers.js types.
  * It represents the decoded data from a transaction (after decoding).
  */
@@ -36,6 +41,7 @@ export type {
     ParamType,
     FunctionFragment,
     Interface,
+    InterfaceAbi,
     Result,
     BytesLike,
     FormatType
