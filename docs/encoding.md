@@ -102,15 +102,15 @@ const contractABI = JSON.stringify([
 ]);
 
 // 2 - Encode the function input, ready to be used to send a tx
-
-const encodedData = contract.encodeFunctionInput(contractABI, 'setValue', [
-    123
-]);
+const encodedData = contract.coder.encodeFunctionInput(
+    contractABI,
+    'setValue',
+    [123]
+);
 
 // 3 - Decode the function input data
-
 const decodedData = String(
-    contract.decodeFunctionInput(contractABI, 'setValue', encodedData)[0]
+    contract.coder.decodeFunctionInput(contractABI, 'setValue', encodedData)[0]
 ); // decode the function input data
 
 // Check the decoded data

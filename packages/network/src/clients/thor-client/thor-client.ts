@@ -1,5 +1,6 @@
 import { NodesModule } from './nodes';
 import { BlocksModule } from './blocks';
+import { ContractsModule } from './contracts';
 import { TransactionsModule } from './transactions';
 import { type ThorestClient } from '../thorest-client';
 
@@ -25,6 +26,11 @@ class ThorClient {
     public readonly transactions: TransactionsModule;
 
     /**
+     * The 'ContractClient' instance
+     */
+    public readonly contracts: ContractsModule;
+
+    /**
      * Constructs a new `ThorClient` instance with a given HTTP client.
      *
      * @param httpClient - The HTTP client instance used for making network requests.
@@ -33,6 +39,7 @@ class ThorClient {
         this.nodes = new NodesModule(thorest);
         this.blocks = new BlocksModule(thorest);
         this.transactions = new TransactionsModule(thorest);
+        this.contracts = new ContractsModule(thorest);
     }
 }
 

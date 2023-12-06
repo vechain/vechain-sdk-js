@@ -5,9 +5,11 @@ import {
 import { Poll } from '../../../utils';
 import {
     type ThorestClient,
-    type TransactionReceipt
+    type TransactionReceipt,
+    type TransactionSimulationResult
 } from '../../thorest-client';
-import { type WaitForTransactionOptions } from './types';
+import type { SendTransactionResult, WaitForTransactionOptions } from './types';
+import { decodeRevertReason } from './helpers/message';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -29,15 +31,35 @@ class TransactionsModule {
      *
      * @throws an error if the transaction is not signed.
      */
-    public async sendTransaction(signedTx: Transaction): Promise<string> {
+    public async sendTransaction(
+        signedTx: Transaction
+    ): Promise<SendTransactionResult> {
         assertIsSignedTransaction(signedTx);
+
+        const simulatedTransaction =
+            await this.thorest.transactions.simulateTransaction(
+                signedTx.body.clauses
+            );
+
+        const clausesResults: TransactionSimulationResult[] =
+            simulatedTransaction.map((simulation) => {
+                return {
+                    ...simulation,
+                    data: simulation.reverted
+                        ? decodeRevertReason(simulation.data)
+                        : simulation.data
+                };
+            });
 
         const rawTx = `0x${signedTx.encoded.toString('hex')}`;
 
         const txID = (await this.thorest.transactions.sendTransaction(rawTx))
             .id;
 
-        return txID;
+        return {
+            id: txID,
+            clausesResults
+        };
     }
 
     /**
@@ -54,7 +76,7 @@ class TransactionsModule {
         txID: string,
         options?: WaitForTransactionOptions
     ): Promise<TransactionReceipt | null> {
-        const result = await Poll.SyncPoll(
+        return await Poll.SyncPoll(
             async () =>
                 await this.thorest.transactions.getTransactionReceipt(txID),
             {
@@ -64,8 +86,6 @@ class TransactionsModule {
         ).waitUntil((result) => {
             return result !== null;
         });
-
-        return result;
     }
 }
 
