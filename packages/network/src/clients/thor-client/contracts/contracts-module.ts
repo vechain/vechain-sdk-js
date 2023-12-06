@@ -1,4 +1,4 @@
-import { ThorestClient } from '../../thorest-client';
+import { type ThorestClient } from '../../thorest-client';
 import {
     contract,
     type DeployParams,
@@ -90,13 +90,15 @@ class ContractsModule {
         );
 
         // Simulate the transaction to get the result of the contract call
-        const txSimulated = await this.thorest.transactions.simulateTransaction([
-            {
-                to: contractAddress,
-                data: transaction.body.clauses[0].data,
-                value: transaction.body.clauses[0].value.toString(16)
-            }
-        ]);
+        const txSimulated = await this.thorest.transactions.simulateTransaction(
+            [
+                {
+                    to: contractAddress,
+                    data: transaction.body.clauses[0].data,
+                    value: transaction.body.clauses[0].value.toString(16)
+                }
+            ]
+        );
 
         // Return the result of the contract call
         return txSimulated[0].data;
