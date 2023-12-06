@@ -107,7 +107,7 @@ describe('ThorClient - Contracts', () => {
 
             const callFunctionSetResponse =
                 await thorSoloClient.contracts.executeContractTransaction(
-                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
+                    TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
                     contractAddress,
                     deployedContractAbi,
                     'set',
