@@ -37,3 +37,9 @@ Using the _BlockRef_ and _Expiration_ fields a transaction can be set to be proc
 A transaction can be set to only be processed after another transaction, therefore defining an execution order for transactions. The _DependsOn_ field is the Id of the transaction on which the current transaction depends on. If the transaction does not depend on others _DependsOn_ can be set to _null_
 
 [example](examples/transactions/tx_dependency.ts)
+
+## Example: Transaction Simulation
+Simulates the execution of a transaction and allows to estimate the gas cost of a transaction without sending it, as well as to check the return value/result(s) of the transaction.
+Note - the result of a transaction might be different depending on the state(block) you are executing against.
+
+[example](examples/transactions/simulation.ts)
