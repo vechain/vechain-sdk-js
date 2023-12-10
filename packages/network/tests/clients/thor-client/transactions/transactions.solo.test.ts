@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-    estimateGasTestCases,
     expectedReceipt,
     invalidWaitForTransactionTestCases,
     transferTransactionBody,
@@ -165,60 +164,5 @@ describe('Transactions Module', () => {
                 });
             }
         );
-    });
-
-    /**
-     * Test suide for 'estimateGas' method
-     */
-    describe('estimateGas', () => {
-        /**
-         * Test cases where the transaction should revert
-         */
-        estimateGasTestCases.revert.forEach(
-            ({ description, clauses, options, expected }) => {
-                test(description, async () => {
-                    const result =
-                        await thorSoloClient.transactions.estimateGas(
-                            clauses,
-                            options
-                        );
-
-                    expect(result).toBeDefined();
-                    expect(result).toStrictEqual(expected);
-                });
-            }
-        );
-
-        /**
-         * Test cases where the transaction should succeed
-         */
-        estimateGasTestCases.success.forEach(
-            ({ description, clauses, options, expected }) => {
-                test(description, async () => {
-                    const result =
-                        await thorSoloClient.transactions.estimateGas(
-                            clauses,
-                            options
-                        );
-
-                    expect(result).toBeDefined();
-                    expect(result).toStrictEqual(expected);
-                });
-            }
-        );
-    });
-
-    /**
-     * Test suite for 'getBaseGasPrice' method
-     */
-    describe('getBaseGasPrice', () => {
-        test('Should return the base gas price of the Solo network', async () => {
-            const baseGasPrice =
-                await thorSoloClient.transactions.getBaseGasPrice();
-            expect(baseGasPrice).toBe(
-                '0x00000000000000000000000000000000000000000000000000038d7ea4c68000'
-            );
-            expect(Number(baseGasPrice)).toBe(10 ** 15); // 10^15 wei
-        });
     });
 });

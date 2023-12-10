@@ -86,29 +86,23 @@ class ContractsModule {
         contractAddress: string,
         contractABI: InterfaceAbi,
         functionName: string,
-        functionData: unknown[],
-        transactionBodyOverride?: TransactionBodyOverride
+        functionData: unknown[]
     ): Promise<string> {
-        // Build a read-only transaction to call the contract function
-        const transaction = contract.txBuilder.buildCallTransaction(
-            contractAddress,
-            contractABI,
-            functionName,
-            functionData,
-            transactionBodyOverride
-        );
-
         // Simulate the transaction to get the result of the contract call
-        const txSimulated = await this.transactionsClient.simulateTransaction([
+        const response = await this.transactionsClient.simulateTransaction([
             {
                 to: contractAddress,
-                data: transaction.body.clauses[0].data,
-                value: transaction.body.clauses[0].value.toString(16)
+                value: '0',
+                data: contract.coder.encodeFunctionInput(
+                    contractABI,
+                    functionName,
+                    functionData
+                )
             }
         ]);
 
         // Return the result of the contract call
-        return txSimulated[0].data;
+        return response[0].data;
     }
 
     /**

@@ -4,14 +4,14 @@ import { thorClient } from '../../../fixture';
 /**
  * Transcations module tests suite.
  *
- * @group integration/clients/thor-client/transactions
+ * @group integration/clients/thor-client/gas
  */
-describe('Transactions Module', () => {
+describe('Gas Module', () => {
     /**
      * Validates the base gas price of the Testnet.
      */
     test('Should return the base gas price of the Testnet', async () => {
-        const baseGasPrice = await thorClient.transactions.getBaseGasPrice();
+        const baseGasPrice = await thorClient.gas.getBaseGasPrice();
         expect(baseGasPrice).toBe(
             '0x000000000000000000000000000000000000000000000000000009184e72a000'
         );
