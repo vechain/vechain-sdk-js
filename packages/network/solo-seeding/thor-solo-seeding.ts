@@ -11,6 +11,7 @@ import { BUILT_IN_CONTRACTS } from '../tests/built-in-fixture';
 import { type Clause, ThorestClient } from '../src';
 import { expect } from '@jest/globals';
 import { ThorClient } from '../src/clients/thor-client';
+import { TESTING_CONTRACT_BYTECODE } from './const';
 
 /**
  * Constructs clauses for transferring VTHO tokens.
@@ -87,27 +88,32 @@ const txs = unsignedTxs.map((unsignedTx, index) =>
  * @returns A signed transaction for deploying the `TestingContract.sol` contract.
  */
 const deployTestContractTransaction = (): Transaction => {
-    const compiledContract = compileContract(
-        'solo-seeding',
-        'TestingContract.sol',
-        'TestingContract'
-    );
+    try {
+        const tx = TransactionHandler.sign(
+            new Transaction({
+                ...txBody,
+                clauses: [
+                    {
+                        to: null,
+                        value: '0x0',
+                        data:
+                            TESTING_CONTRACT_BYTECODE ??
+                            compileContract(
+                                'solo-seeding',
+                                'TestingContract.sol',
+                                'TestingContract'
+                            ).bytecode
+                    }
+                ]
+            }),
+            Buffer.from(ALL_ACCOUNTS[4].privateKey, 'hex')
+        );
 
-    const tx = TransactionHandler.sign(
-        new Transaction({
-            ...txBody,
-            clauses: [
-                {
-                    to: null,
-                    value: '0x0',
-                    data: compiledContract.bytecode
-                }
-            ]
-        }),
-        Buffer.from(ALL_ACCOUNTS[4].privateKey, 'hex')
-    );
-
-    return tx;
+        return tx;
+    } catch (err) {
+        console.log('Error creating deploy testing contract tx:', err);
+        throw err;
+    }
 };
 
 /**
@@ -161,13 +167,12 @@ const seedThorSolo = async (): Promise<void> => {
     // Deploy the test contract
     const deployTx = deployTestContractTransaction();
 
-    const simulations =
-        await thorestSoloClient.transactions.simulateTransaction(
-            deployTx.body.clauses as Clause[],
-            {
-                caller: ALL_ACCOUNTS[4].address
-            }
-        );
+    const simulations = await thorSoloClient.transactions.estimateGas(
+        deployTx.body.clauses as Clause[],
+        {
+            caller: ALL_ACCOUNTS[4].address
+        }
+    );
 
     console.log('Deploy contract simulation: ', JSON.stringify(simulations));
 
