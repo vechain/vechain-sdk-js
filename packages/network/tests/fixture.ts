@@ -1,5 +1,4 @@
-import { HttpClient, ThorestClient } from '../src';
-import { ThorClient } from '../src/clients/thor-client';
+import { HttpClient, ThorestClient, ThorClient } from '../src';
 
 /**
  * Url of the testnet fixture
@@ -186,7 +185,8 @@ const TEST_ACCOUNTS = {
     TRANSACTION: {
         TRANSACTION_SENDER: ALL_ACCOUNTS[1],
         TRANSACTION_RECEIVER: ALL_ACCOUNTS[2],
-        DELEGATOR: ALL_ACCOUNTS[3]
+        DELEGATOR: ALL_ACCOUNTS[3],
+        CONTRACT_MANAGER: ALL_ACCOUNTS[4]
     }
 };
 

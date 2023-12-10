@@ -1,5 +1,7 @@
 /* --- Input options start --- */
 
+import type { TransactionSimulationResult } from '../../thorest-client';
+
 /**
  * Options for `waitForTransaction` method.
  */
@@ -14,6 +16,27 @@ interface WaitForTransactionOptions {
      * The method will check the transaction status every `intervalMs` milliseconds.
      */
     intervalMs?: number;
+}
+
+/**
+ * Represents the result of sending a transaction.
+ *
+ * @interface SendTransactionResult
+ */
+interface SendTransactionResult {
+    /**
+     * The unique identifier associated with the transaction.
+     *
+     * @type {string}
+     */
+    id: string;
+
+    /**
+     * An array of results for each clause in the transaction.
+     *
+     * @type {TransactionSimulationResult[]}
+     */
+    clausesResults: TransactionSimulationResult[];
 }
 
 /* --- Input options end --- */
@@ -52,4 +75,8 @@ interface EstimateGasResult {
 
 /* --- Responses Outputs end --- */
 
-export type { WaitForTransactionOptions, EstimateGasResult };
+export type {
+    WaitForTransactionOptions,
+    SendTransactionResult,
+    EstimateGasResult
+};

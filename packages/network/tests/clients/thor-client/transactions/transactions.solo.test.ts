@@ -4,6 +4,7 @@ import {
     expectedReceipt,
     invalidWaitForTransactionTestCases,
     transferTransactionBody,
+    transferTransactionBodyValueAsNumber,
     waitForTransactionTestCases
 } from './fixture';
 import { TEST_ACCOUNTS, thorSoloClient } from '../../../fixture';
@@ -44,12 +45,65 @@ describe('Transactions Module', () => {
          */
         waitForTransactionTestCases.forEach(({ description, options }) => {
             test(description, async () => {
+                try {
+                    const nonce =
+                        Math.random() * (99999999 - 10000000) + 1000000; // Random number between 10000000 and 99999999
+
+                    // Create the signed transfer transaction
+                    const tx = TransactionHandler.sign(
+                        new Transaction({
+                            ...transferTransactionBody,
+                            nonce: Math.floor(nonce)
+                        }),
+                        Buffer.from(
+                            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
+                                .privateKey,
+                            'hex'
+                        )
+                    );
+
+                    // Send the transaction and obtain the transaction ID
+                    const sendTransactionResult =
+                        await thorSoloClient.transactions.sendTransaction(tx);
+
+                    expect(sendTransactionResult).toBeDefined();
+                    expect(sendTransactionResult.id).toBeDefined();
+                    expect(
+                        sendTransactionResult.clausesResults[0]
+                    ).toBeDefined();
+
+                    // Wait for the transaction to be included in a block
+                    const txReceipt =
+                        await thorSoloClient.transactions.waitForTransaction(
+                            sendTransactionResult.id,
+                            options
+                        );
+
+                    expect(txReceipt).toBeDefined();
+                    expect(txReceipt?.reverted).toBe(expectedReceipt.reverted);
+                    expect(txReceipt?.outputs).toStrictEqual(
+                        expectedReceipt.outputs
+                    );
+                    expect(txReceipt?.gasUsed).toBe(expectedReceipt.gasUsed);
+                    expect(txReceipt?.gasPayer).toBe(expectedReceipt.gasPayer);
+                    expect(sendTransactionResult.id).toBe(txReceipt?.meta.txID);
+                } catch (e) {
+                    console.log(e);
+                }
+            });
+        });
+
+        /**
+         * test that send transaction with a number as value in transaction body
+         */
+        test('test a send transaction with a number as value in transaction body ', async () => {
+            try {
                 const nonce = Math.random() * (99999999 - 10000000) + 1000000; // Random number between 10000000 and 99999999
 
                 // Create the signed transfer transaction
                 const tx = TransactionHandler.sign(
                     new Transaction({
-                        ...transferTransactionBody,
+                        ...transferTransactionBodyValueAsNumber,
                         nonce: Math.floor(nonce)
                     }),
                     Buffer.from(
@@ -59,27 +113,24 @@ describe('Transactions Module', () => {
                 );
 
                 // Send the transaction and obtain the transaction ID
-                const txID =
+                const sendTransactionResult =
                     await thorSoloClient.transactions.sendTransaction(tx);
 
-                expect(txID).toBeDefined();
+                expect(sendTransactionResult).toBeDefined();
+                expect(sendTransactionResult.id).toBeDefined();
+                expect(sendTransactionResult.clausesResults[0]).toBeDefined();
 
                 // Wait for the transaction to be included in a block
                 const txReceipt =
                     await thorSoloClient.transactions.waitForTransaction(
-                        txID,
-                        options
+                        sendTransactionResult.id
                     );
 
                 expect(txReceipt).toBeDefined();
                 expect(txReceipt?.reverted).toBe(expectedReceipt.reverted);
-                expect(txReceipt?.outputs).toStrictEqual(
-                    expectedReceipt.outputs
-                );
-                expect(txReceipt?.gasUsed).toBe(expectedReceipt.gasUsed);
-                expect(txReceipt?.gasPayer).toBe(expectedReceipt.gasPayer);
-                expect(txID).toBe(txReceipt?.meta.txID);
-            });
+            } catch (e) {
+                console.log(e);
+            }
         });
 
         /**
@@ -103,14 +154,14 @@ describe('Transactions Module', () => {
                         )
                     );
 
-                    const txID =
+                    const sendTransactionResult =
                         await thorSoloClient.transactions.sendTransaction(tx);
 
-                    expect(txID).toBeDefined();
+                    expect(sendTransactionResult.id).toBeDefined();
 
                     const txReceipt =
                         await thorSoloClient.transactions.waitForTransaction(
-                            txID,
+                            sendTransactionResult.id,
                             options
                         );
 

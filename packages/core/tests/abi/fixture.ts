@@ -331,6 +331,9 @@ const contractABIWithEvents = JSON.stringify([
     }
 ]);
 
+export const encodedParams =
+    '0x000000000000000000000000000000000000000000000000000000000000007b00000000000000000000000000000000000000000000000000000000000000ea';
+
 // Event data
 const ValueChangedEventData = {
     sender: '0x1234567890123456789012345678901234567890', // Replace with the actual address

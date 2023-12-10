@@ -13,10 +13,10 @@ import {
     type TransactionReceipt,
     TransactionsClient,
     type SimulateTransactionOptions,
-    BlocksClient,
     type SimulateTransactionClause
 } from '../../thorest-client';
 import {
+    type SendTransactionResult,
     type EstimateGasResult,
     type WaitForTransactionOptions
 } from './types';
@@ -34,17 +34,11 @@ class TransactionsModule {
     private readonly transactionsClient: TransactionsClient;
 
     /**
-     * Reference to the `BlocksClient` instance.
-     */
-    private readonly blocksClient: BlocksClient;
-
-    /**
      * Initializes a new instance of the `TransactionsModule` class.
      * @param httpClient - The HTTP client instance used for making HTTP requests.
      */
     constructor(readonly httpClient: HttpClient) {
         this.transactionsClient = new TransactionsClient(httpClient);
-        this.blocksClient = new BlocksClient(httpClient);
     }
 
     /**
@@ -56,14 +50,34 @@ class TransactionsModule {
      *
      * @throws an error if the transaction is not signed or if the transaction object is invalid.
      */
-    public async sendTransaction(signedTx: Transaction): Promise<string> {
+    public async sendTransaction(
+        signedTx: Transaction
+    ): Promise<SendTransactionResult> {
         assertIsSignedTransaction(signedTx);
+
+        const simulatedTransaction =
+            await this.transactionsClient.simulateTransaction(
+                signedTx.body.clauses
+            );
+
+        const clausesResults: TransactionSimulationResult[] =
+            simulatedTransaction.map((simulation) => {
+                return {
+                    ...simulation,
+                    data: simulation.reverted
+                        ? decodeRevertReason(simulation.data)
+                        : simulation.data
+                };
+            });
 
         const rawTx = `0x${signedTx.encoded.toString('hex')}`;
 
         const txID = (await this.transactionsClient.sendTransaction(rawTx)).id;
 
-        return txID;
+        return {
+            id: txID,
+            clausesResults
+        };
     }
 
     /**
@@ -84,7 +98,7 @@ class TransactionsModule {
     ): Promise<TransactionReceipt | null> {
         assertValidTransactionID(txID);
 
-        const result = await Poll.SyncPoll(
+        return await Poll.SyncPoll(
             async () =>
                 await this.transactionsClient.getTransactionReceipt(txID),
             {
@@ -94,8 +108,6 @@ class TransactionsModule {
         ).waitUntil((result) => {
             return result !== null;
         });
-
-        return result;
     }
 
     /**
