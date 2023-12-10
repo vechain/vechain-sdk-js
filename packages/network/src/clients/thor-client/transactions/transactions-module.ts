@@ -55,29 +55,9 @@ class TransactionsModule {
     ): Promise<SendTransactionResult> {
         assertIsSignedTransaction(signedTx);
 
-        const simulatedTransaction =
-            await this.transactionsClient.simulateTransaction(
-                signedTx.body.clauses
-            );
-
-        const clausesResults: TransactionSimulationResult[] =
-            simulatedTransaction.map((simulation) => {
-                return {
-                    ...simulation,
-                    data: simulation.reverted
-                        ? decodeRevertReason(simulation.data)
-                        : simulation.data
-                };
-            });
-
         const rawTx = `0x${signedTx.encoded.toString('hex')}`;
 
-        const txID = (await this.transactionsClient.sendTransaction(rawTx)).id;
-
-        return {
-            id: txID,
-            clausesResults
-        };
+        return await this.transactionsClient.sendTransaction(rawTx);
     }
 
     /**
@@ -193,7 +173,7 @@ class TransactionsModule {
             {
                 to: PARAMS_ADDRESS,
                 value: '0',
-                data: contract.encodeFunctionInput(PARAMS_ABI, 'get', [
+                data: contract.coder.encodeFunctionInput(PARAMS_ABI, 'get', [
                     dataUtils.encodeBytes32String('base-gas-price')
                 ])
             }
