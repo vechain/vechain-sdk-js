@@ -57,6 +57,20 @@ interface SimulateTransactionOptions {
      * The caller of the transaction simulation. (i.e., the address that performs the transaction)
      */
     caller?: string;
+
+    // ------ EXTENDED EVM CONTEXT OPTIONS Start ------ //
+
+    /*
+        The following options are useful when simulating transactions that provide additional context to the EVM.
+        The additional context is handled by the built-in Extension-V2 Smart contract (https://docs.vechain.org/developer-resources/built-in-contracts#extension-v2-sol)
+
+        The contract allows for smart contract developers to obtain additional context about the transaction in their smart contrace code, for example:
+        - The expiration of the transaction
+        - The block reference of the transaction
+        - The gas payer of the transaction
+        - The proved work of the transaction (https://docs.vechain.org/core-concepts/transactions/transaction-calculation#proof-of-work)
+    */
+
     /**
      * The VechainThor blockchain allows for transaction-level proof of work (PoW) and converts the proved work into extra gas price that will be used by
      * the system to generate more reward to the block generator, the Authority Masternode, that validates the transaction.
@@ -81,6 +95,8 @@ interface SimulateTransactionOptions {
      * @link [VechainThor BlockRef](https://docs.vechain.org/core-concepts/transactions/meta-transaction-features/controllable-transaction-lifecycle)
      */
     blockRef?: string;
+
+    // ------ EXTENDED EVM CONTEXT OPTIONS Start ------ //
 }
 
 /* --- Input options end --- */
