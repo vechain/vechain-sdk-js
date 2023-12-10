@@ -158,7 +158,7 @@ const estimateGasTestCases = {
                 {
                     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                     value: '0',
-                    data: contract.encodeFunctionInput(
+                    data: contract.coder.encodeFunctionInput(
                         BUILT_IN_CONTRACTS.ENERGY_ABI,
                         'transfer',
                         [
@@ -186,7 +186,7 @@ const estimateGasTestCases = {
                 {
                     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                     value: '0',
-                    data: contract.encodeFunctionInput(
+                    data: contract.coder.encodeFunctionInput(
                         BUILT_IN_CONTRACTS.ENERGY_ABI,
                         'transfer',
                         [
@@ -219,7 +219,7 @@ const estimateGasTestCases = {
                 {
                     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                     value: '0',
-                    data: contract.encodeFunctionInput(
+                    data: contract.coder.encodeFunctionInput(
                         BUILT_IN_CONTRACTS.ENERGY_ABI,
                         'transfer',
                         [
@@ -252,7 +252,7 @@ const estimateGasTestCases = {
                 {
                     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                     value: '0',
-                    data: contract.encodeFunctionInput(
+                    data: contract.coder.encodeFunctionInput(
                         BUILT_IN_CONTRACTS.ENERGY_ABI,
                         'transfer',
                         [
@@ -265,7 +265,7 @@ const estimateGasTestCases = {
                 {
                     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                     value: '0',
-                    data: contract.encodeFunctionInput(
+                    data: contract.coder.encodeFunctionInput(
                         BUILT_IN_CONTRACTS.ENERGY_ABI,
                         'transfer',
                         [
@@ -278,7 +278,7 @@ const estimateGasTestCases = {
                 {
                     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                     value: '0',
-                    data: contract.encodeFunctionInput(
+                    data: contract.coder.encodeFunctionInput(
                         BUILT_IN_CONTRACTS.ENERGY_ABI,
                         'transfer',
                         [
@@ -306,7 +306,7 @@ const estimateGasTestCases = {
                 {
                     to: TEST_CONTRACT_ADDRESS,
                     value: '0',
-                    data: contract.encodeFunctionInput(
+                    data: contract.coder.encodeFunctionInput(
                         TESTING_CONTRACT_ABI,
                         'testAssertError',
                         [1] // Any number !== 0 will cause Panic error
@@ -363,7 +363,7 @@ const estimateGasTestCases = {
                 {
                     to: TEST_CONTRACT_ADDRESS,
                     value: '0',
-                    data: contract.encodeFunctionInput(
+                    data: contract.coder.encodeFunctionInput(
                         TESTING_CONTRACT_ABI,
                         'testAssertError',
                         [0] // Any number !== 0 will cause Panic error

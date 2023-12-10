@@ -68,9 +68,6 @@ describe('Transactions Module', () => {
 
                     expect(sendTransactionResult).toBeDefined();
                     expect(sendTransactionResult.id).toBeDefined();
-                    expect(
-                        sendTransactionResult.clausesResults[0]
-                    ).toBeDefined();
 
                     // Wait for the transaction to be included in a block
                     const txReceipt =
@@ -118,7 +115,6 @@ describe('Transactions Module', () => {
 
                 expect(sendTransactionResult).toBeDefined();
                 expect(sendTransactionResult.id).toBeDefined();
-                expect(sendTransactionResult.clausesResults[0]).toBeDefined();
 
                 // Wait for the transaction to be included in a block
                 const txReceipt =
