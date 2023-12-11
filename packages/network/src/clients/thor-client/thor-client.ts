@@ -3,6 +3,7 @@ import { BlocksModule } from './blocks';
 import { ContractsModule } from './contracts';
 import { TransactionsModule } from './transactions';
 import { type ThorestClient } from '../thorest-client';
+import { GasModule } from './gas';
 
 /**
  * The `ThorClient` class serves as an interface to interact with the vechain Thor blockchain.
@@ -31,6 +32,11 @@ class ThorClient {
     public readonly contracts: ContractsModule;
 
     /**
+     * The `GasModule` instance
+     */
+    public readonly gas: GasModule;
+
+    /**
      * Constructs a new `ThorClient` instance with a given HTTP client.
      *
      * @param httpClient - The HTTP client instance used for making network requests.
@@ -40,6 +46,7 @@ class ThorClient {
         this.blocks = new BlocksModule(thorest);
         this.transactions = new TransactionsModule(thorest);
         this.contracts = new ContractsModule(thorest);
+        this.gas = new GasModule(thorest);
     }
 }
 
