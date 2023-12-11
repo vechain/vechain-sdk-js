@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { thorClient, thorestClient } from '../../../fixture';
+import { thorClient } from '../../../fixture';
 import { waitForBlockTestCases } from './fixture';
 
 /**
@@ -17,7 +17,8 @@ describe('Blocks Module', () => {
                 description,
                 async () => {
                     // Get best block
-                    const bestBlock = await thorestClient.blocks.getBestBlock();
+                    const bestBlock =
+                        await thorClient.thorest.blocks.getBestBlock();
                     if (bestBlock != null) {
                         const expectedBlock =
                             await thorClient.blocks.waitForBlock(
@@ -44,7 +45,7 @@ describe('Blocks Module', () => {
 
     test('waitForBlock - maximumWaitingTimeInMilliseconds', async () => {
         // Get best block
-        const bestBlock = await thorestClient.blocks.getBestBlock();
+        const bestBlock = await thorClient.thorest.blocks.getBestBlock();
         if (bestBlock != null) {
             const block = await thorClient.blocks.waitForBlock(
                 bestBlock?.number + 2,
