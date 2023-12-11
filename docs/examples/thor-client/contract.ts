@@ -41,8 +41,6 @@ const result = await thorTestnetClient.contracts.deployContract(
     transactionBodyOverride
 );
 
-expect(result.clausesResults[0].reverted).toEqual(false);
-
 const receipt = await thorTestnetClient.transactions.waitForTransaction(
     result.id
 );

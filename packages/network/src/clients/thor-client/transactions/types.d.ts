@@ -1,7 +1,5 @@
 /* --- Input options start --- */
 
-import type { TransactionSimulationResult } from '../../thorest-client';
-
 /**
  * Options for `waitForTransaction` method.
  */
@@ -30,13 +28,6 @@ interface SendTransactionResult {
      * @type {string}
      */
     id: string;
-
-    /**
-     * An array of results for each clause in the transaction.
-     *
-     * @type {TransactionSimulationResult[]}
-     */
-    clausesResults: TransactionSimulationResult[];
 }
 
 /* --- Input options end --- */

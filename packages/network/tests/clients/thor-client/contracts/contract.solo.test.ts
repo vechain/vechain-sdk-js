@@ -130,11 +130,7 @@ describe('ThorClient - Contracts', () => {
                     contractAddress,
                     deployedContractAbi,
                     'get',
-                    [],
-                    {
-                        chainTag: networkInfo.solo.chainTag,
-                        blockRef: bestBlock?.id.slice(0, 18)
-                    }
+                    []
                 );
 
             expect(parseInt(callFunctionGetResult)).toBe(123);
