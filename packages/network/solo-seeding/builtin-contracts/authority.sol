@@ -17,7 +17,7 @@ interface Authority {
     /// @notice remove proposer '_signer' from the candidates lists.
     function revoke(address _signer) external;
 
-    /// @notice get infomation about proposer "_signer"
+    /// @notice get information about proposer "_signer"
     function get(address _signer) external view returns(bool listed, address endorsor, bytes32 identity, bool active);
     
     /// @notice get the first proposer in the candidates list.
