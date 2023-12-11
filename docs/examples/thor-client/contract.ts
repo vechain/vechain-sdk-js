@@ -15,11 +15,11 @@ const _testnetUrl = 'https://testnet.vechain.org/';
 // Testnet network instance
 const testNetwork = new HttpClient(_testnetUrl);
 
-// Thor client testnet instance
-const thorTestnetClient = new ThorClient(testNetwork);
-
 // Thorest client testnet instance
 const thorestTestnetClient = new ThorestClient(testNetwork);
+
+// Thor client testnet instance
+const thorTestnetClient = new ThorClient(thorestTestnetClient);
 
 const privateKeyDeployer =
     '909f14fa0b71266baeea5e046b947394f63a9cee4e4cb643834308bc7eef32be';

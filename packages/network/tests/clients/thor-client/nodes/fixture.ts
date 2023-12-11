@@ -1,3 +1,5 @@
+import { HttpClient, ThorClient, ThorestClient } from '../../../../src';
+
 /**
  * @internal
  * Block with a timestamp much older than the current time
@@ -84,8 +86,18 @@ const blockWithInvalidTimeStampFormat = {
     transactions: []
 };
 
+function createThorClient(url: string): ThorClient {
+    // HttpClient instance
+    const httpClient = new HttpClient(url);
+    // Thorest client instance
+    const thorestClient = new ThorestClient(httpClient);
+    // Thor client instance
+    return new ThorClient(thorestClient);
+}
+
 export {
     blockWithOldTimeStamp,
     blockWithMissingTimeStamp,
-    blockWithInvalidTimeStampFormat
+    blockWithInvalidTimeStampFormat,
+    createThorClient
 };
