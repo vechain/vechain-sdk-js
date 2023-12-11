@@ -6,10 +6,34 @@ declare global {
 
 type BuiltinSigner = 'veworld' | 'sync2' | 'sync';
 
-interface Options {
+interface WalletOptions {
     node: string;
     network?: string;
     signer?: BuiltinSigner;
 }
 
-export type { BuiltinSigner, Options };
+interface TransactionOptions {
+    signer?: string;
+    gas?: number;
+    dependsOn?: string;
+    link?: string;
+    comment?: string;
+    delegator?: {
+        url: string;
+        signer?: string;
+    };
+    onAccepted?: () => void;
+}
+
+interface CertificateOptions {
+    signer?: string;
+    link?: string;
+    onAccepted?: () => void;
+}
+
+interface SignerDetail {
+    TransactionOptions;
+    CertificateOptions;
+}
+
+export type { BuiltinSigner, WalletOptions, SignerDetail };

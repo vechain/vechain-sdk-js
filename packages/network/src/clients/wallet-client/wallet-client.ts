@@ -1,10 +1,10 @@
 import { SignerModule } from './signer';
-import { type Options } from './signer/types';
+import { type WalletOptions } from './signer/types';
 
 class WalletClient {
     public readonly signer: SignerModule;
 
-    constructor(protected readonly options: Options) {
+    constructor(protected readonly options: WalletOptions) {
         this.signer = new SignerModule(options);
     }
 }
