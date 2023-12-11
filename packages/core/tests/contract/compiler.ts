@@ -45,7 +45,6 @@ function compileContract(
         }
     };
 
-
     // Compile the contract
     const solcCompiledContract = solc.compile(JSON.stringify(input));
 

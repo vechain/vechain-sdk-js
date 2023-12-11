@@ -12,6 +12,7 @@ import {
     TransactionHandler
 } from '@vechainfoundation/vechain-sdk-core';
 import { TransactionNotSignedError } from '@vechainfoundation/vechain-sdk-errors';
+
 /**
  * Transactions module tests.
  *
