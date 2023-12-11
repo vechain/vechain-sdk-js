@@ -1,6 +1,7 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test, jest } from '@jest/globals';
 import { thorClient } from '../../../fixture';
 import { waitForBlockTestCases } from './fixture';
+import { advanceTimersByTimeAndTick } from '../../../test-utils';
 
 /**
  * Blocks Module integration tests
@@ -56,4 +57,22 @@ describe('Blocks Module', () => {
             expect(block).toBeDefined();
         }
     });
+
+    test('pollHeadBlock', async () => {
+        // To mock setTimeouts we need to use jest fake timers which allow to manpilate time and test asynchronicity
+        jest.useFakeTimers({
+            legacyFakeTimers: true
+        });
+        const headBlockFirst = thorClient.blocks.pollHeadBlock();
+        expect(headBlockFirst).toBeDefined();
+        console.log('headBlockFirst', headBlockFirst);
+
+        // Advance timers by the specified interval & tick
+        await advanceTimersByTimeAndTick(11000);
+
+        const headBlockSecond = thorClient.blocks.pollHeadBlock();
+        expect(headBlockSecond).toBeDefined();
+        console.log('headBlockSecond', headBlockSecond);
+        expect(headBlockFirst).not.toBe(headBlockSecond);
+    }, 12000);
 });

@@ -8,10 +8,25 @@ import { type WaitForBlockOptions } from './types';
  */
 class BlocksModule {
     /**
+     * The head block (best block)
+     * @private
+     */
+    private headBlock: BlockDetail | null = null;
+
+    /**
      * Initializes a new instance of the `Thorest` class.
      * @param thorest - The Thorest instance used to interact with the vechain Thorest blockchain API.
      */
-    constructor(readonly thorest: ThorestClient) {}
+    constructor(readonly thorest: ThorestClient) {
+        Poll.createEventPoll(
+            async () => await thorest.blocks.getBestBlock(),
+            1000
+        )
+            .onData((data) => {
+                this.headBlock = data;
+            })
+            .startListen();
+    }
 
     /**
      * Synchronously waits for a specific block revision using polling.
@@ -46,6 +61,10 @@ class BlocksModule {
         });
 
         return block;
+    }
+
+    public pollHeadBlock(): BlockDetail | null {
+        return this.headBlock;
     }
 }
 
