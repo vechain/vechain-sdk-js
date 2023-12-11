@@ -3,7 +3,8 @@ import {
     HttpClient,
     ThorestClient
 } from '@vechainfoundation/vechain-sdk-network';
-import {contract, dataUtils} from "@vechainfoundation/vechain-sdk-core";
+import { contract, dataUtils } from "@vechainfoundation/vechain-sdk-core";
+import { PARAMS_ABI, PARAMS_ADDRESS } from '@vechainfoundation/vechain-sdk-core';
 
 // TODO: reserve an account on Confluence for this test and change to use unreserved accounts and add constants for the addresses
 
@@ -66,76 +67,6 @@ expect(simulatedTx1[0].transfers).toEqual(expected1[0].transfers);
 // TODO: replace this ABI with a fixture reference?
 
 // In this next example we simulate a Simulate smart contract transaction
-const PARAMS_ABI = JSON.stringify([
-    {
-        constant: false,
-        inputs: [
-            {
-                name: '_key',
-                type: 'bytes32'
-            },
-            {
-                name: '_value',
-                type: 'uint256'
-            }
-        ],
-        name: 'set',
-        outputs: [],
-        payable: false,
-        stateMutability: 'nonpayable',
-        type: 'function'
-    },
-    {
-        constant: true,
-        inputs: [
-            {
-                name: '_key',
-                type: 'bytes32'
-            }
-        ],
-        name: 'get',
-        outputs: [
-            {
-                name: '',
-                type: 'uint256'
-            }
-        ],
-        payable: false,
-        stateMutability: 'view',
-        type: 'function'
-    },
-    {
-        constant: true,
-        inputs: [],
-        name: 'executor',
-        outputs: [
-            {
-                name: '',
-                type: 'address'
-            }
-        ],
-        payable: false,
-        stateMutability: 'view',
-        type: 'function'
-    },
-    {
-        anonymous: false,
-        inputs: [
-            {
-                indexed: true,
-                name: 'key',
-                type: 'bytes32'
-            },
-            {
-                indexed: false,
-                name: 'value',
-                type: 'uint256'
-            }
-        ],
-        name: 'Set',
-        type: 'event'
-    }
-]);
 
 // 1(a) - create the transaction for a VET transfer
 const transaction2 = {
@@ -145,7 +76,7 @@ const transaction2 = {
          * Passes "base-gas-price" encoded as bytes 32 as the parameter.
          */
         {
-            to: '0x0000000000000000000000000000506172616d73', //TODO: replace with fixture reference
+            to: PARAMS_ADDRESS,
             value: '0',
             data: contract.coder.encodeFunctionInput(
                 PARAMS_ABI,
