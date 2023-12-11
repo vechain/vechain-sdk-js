@@ -383,10 +383,11 @@ import {
     HttpClient,
     ThorestClient
 } from '@vechainfoundation/vechain-sdk-network';
-import { contract, dataUtils } from "@vechainfoundation/vechain-sdk-core";
-import { PARAMS_ABI, PARAMS_ADDRESS } from '@vechainfoundation/vechain-sdk-core';
-
-// TODO: reserve an account on Confluence for this test and change to use unreserved accounts and add constants for the addresses
+import {
+    contract,
+    dataUtils,
+    PARAMS_ABI,
+    PARAMS_ADDRESS } from "@vechainfoundation/vechain-sdk-core";
 
 // In this example we simulate a transaction of sending 1 VET to another account
 
@@ -399,13 +400,13 @@ const thorestSoloClient = new ThorestClient(soloNetwork);
 const transaction1 = {
     clauses: [
         {
-            to: '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+            to: '0xb717b660cd51109334bd10b2c168986055f58c1a',
             value: '1000000000000000000',
             data: '0x'
         }
     ],
     simulateTransactionOptions: {
-        caller: '0x2669514f9fe96bc7301177ba774d3da8a06cace4'
+        caller: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6'
     }
 }
 
@@ -416,9 +417,9 @@ const expected1 =
         events: [],
         transfers: [
             {
-                sender: '0x2669514f9fe96bc7301177ba774d3da8a06cace4',
+                sender: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6',
                 recipient:
-                    '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+                    '0xb717b660cd51109334bd10b2c168986055f58c1a',
                 amount: '0xde0b6b3a7640000'
             }
         ],
@@ -442,9 +443,6 @@ const simulatedTx1 =
 // Note: VET transfers do not consume gas (no EVM computation)
 expect(simulatedTx1[0].gasUsed).toEqual(expected1[0].gasUsed);
 expect(simulatedTx1[0].transfers).toEqual(expected1[0].transfers);
-
-// TODO: split into 2 test files??
-// TODO: replace this ABI with a fixture reference?
 
 // In this next example we simulate a Simulate smart contract transaction
 
