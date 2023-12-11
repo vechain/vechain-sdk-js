@@ -17,29 +17,28 @@ import {
 } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-// Url of the testnet network
-const _testnetUrl = 'https://testnet.vechain.org/';
+// 1 - Create client for testnet
 
-// Testnet network instance
+const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
+const thorestClient = new ThorestClient(testNetwork);
 
-// Thorest client testnet instance
-const thorestTestnetClient = new ThorestClient(testNetwork);
+// 2 - Get account details
 
-// Get account details
-const accountDetails = await thorestTestnetClient.accounts.getAccount(
+// Account details
+const accountDetails = await thorestClient.accounts.getAccount(
     '0x5034aa590125b64023a0262112b98d72e3c8e40e'
 );
 expect(accountDetails).toBeDefined();
 
-// Get account code
-const accountCode = await thorestTestnetClient.accounts.getBytecode(
+// Account code
+const accountCode = await thorestClient.accounts.getBytecode(
     '0x5034aa590125b64023a0262112b98d72e3c8e40e'
 );
 expect(accountCode).toEqual('0x');
 
 // Get account storage
-const accountStorage = await thorestTestnetClient.accounts.getStorageAt(
+const accountStorage = await thorestClient.accounts.getStorageAt(
     '0x5034aa590125b64023a0262112b98d72e3c8e40e',
     '0x0000000000000000000000000000000000000000000000000000000000000001'
 );
@@ -76,17 +75,16 @@ import {
 } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-// Url of the testnet network
-const _testnetUrl = 'https://testnet.vechain.org/';
+// 1 - Create client for testnet
 
-// Testnet network instance
+const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
+const thorestClient = new ThorestClient(testNetwork);
 
-// Thorest client testnet instance
-const thorestTestnetClient = new ThorestClient(testNetwork);
+// 2 - Get block details
 
-// Get block details
-const blockDetails = await thorestTestnetClient.blocks.getBlock(1);
+// Details of block
+const blockDetails = await thorestClient.blocks.getBlock(1);
 expect(blockDetails).toEqual({
     number: 1,
     id: '0x000000019015bbd98fc1c9088d793ba9add53896a29cd9aa3a4dcabd1f561c38',
@@ -112,12 +110,14 @@ expect(blockDetails).toEqual({
     transactions: []
 });
 
-// Get best block details
-const bestBlockDetails = await thorestTestnetClient.blocks.getBestBlock();
+// 3 - Get best block details
+
+const bestBlockDetails = await thorestClient.blocks.getBestBlock();
 expect(bestBlockDetails).toBeDefined();
 
-// Get finalizes block details
-const finalBlockDetails = await thorestTestnetClient.blocks.getFinalBlock();
+// 4 - Get finalizes block details
+
+const finalBlockDetails = await thorestClient.blocks.getFinalBlock();
 expect(finalBlockDetails).toBeDefined();
 
 ```
@@ -149,17 +149,15 @@ import {
 } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-// Url of the testnet network
-const _testnetUrl = 'https://testnet.vechain.org/';
+// 1 - Create client for testnet
 
-// Testnet network instance
+const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
+const thorestClient = new ThorestClient(testNetwork);
 
-// Thorest client testnet instance
-const thorestTestnetClient = new ThorestClient(testNetwork);
+// 2 - Filter event logs based on the provided criteria. (EXAMPLE 1)
 
-// Filters event logs based on the provided criteria.
-const eventLogs = await thorestTestnetClient.logs.filterEventLogs({
+const eventLogs = await thorestClient.logs.filterEventLogs({
     // Specify the range of blocks to search for events
     range: {
         unit: 'block',
@@ -241,8 +239,9 @@ expect(eventLogs).toEqual([
     }
 ]);
 
-// Filters transfer logs based on the provided criteria.
-const transferLogs = await thorestTestnetClient.logs.filterTransferLogs({
+// 3 - Filter again event logs based on the provided criteria. (EXAMPLE 2)
+
+const transferLogs = await thorestClient.logs.filterTransferLogs({
     // Specify the range of blocks to search for transfer events
     range: {
         unit: 'block',
@@ -310,17 +309,15 @@ import {
 } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-// Url of the testnet network
-const _testnetUrl = 'https://testnet.vechain.org/';
+// 1 - Create client for testnet
 
-// Testnet network instance
+const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
+const thorestClient = new ThorestClient(testNetwork);
 
-// Thorest client testnet instance
-const thorestTestnetClient = new ThorestClient(testNetwork);
+// 2 - Retrieves connected peers of a node
 
-// Retrieves connected peers of a node.
-const peerNodes = await thorestTestnetClient.nodes.getNodes();
+const peerNodes = await thorestClient.nodes.getNodes();
 expect(peerNodes).toBeDefined();
 
 ```
@@ -349,19 +346,18 @@ import {
 } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-// Url of the solo network
+// 1 - Create client for solo network
+
 const _soloUrl = 'http://localhost:8669';
-
-// Solo network instance
 const soloNetwork = new HttpClient(_soloUrl);
-
-// Thorest client solo instance
 const thorestSoloClient = new ThorestClient(soloNetwork);
 
-// Get latest block
+// 2 - Get latest block
+
 const latestBlock = await thorestSoloClient.blocks.getBestBlock();
 
-// Create clauses
+// 3 - Create clauses
+
 const clauses = [
     {
         to: '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
@@ -370,7 +366,8 @@ const clauses = [
     }
 ];
 
-// Create transaction
+// 4 - Create transaction
+
 const transaction = new Transaction({
     chainTag: 0xf6,
     blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
@@ -383,16 +380,18 @@ const transaction = new Transaction({
 });
 
 // Private keys of sender
-const pkSender =
+const senderPrivateKey =
     'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5';
 
-// Normal signature and delegation signature
+// 5 - Normal signature (NO delegation)
+
 const rawNormalSigned = TransactionHandler.sign(
     transaction,
-    Buffer.from(pkSender, 'hex')
+    Buffer.from(senderPrivateKey, 'hex')
 ).encoded;
 
-// Send transaction
+// 6 - Send transaction
+
 const send = await thorestSoloClient.transactions.sendTransaction(
     `0x${rawNormalSigned.toString('hex')}`
 );
@@ -400,7 +399,8 @@ expect(send).toBeDefined();
 expect(send).toHaveProperty('id');
 expect(dataUtils.isHexString(send.id)).toBe(true);
 
-// Get transaction details and receipt
+// 7 - Get transaction details and receipt
+
 const transactionDetails = await thorestSoloClient.transactions.getTransaction(
     send.id
 );
@@ -452,19 +452,18 @@ import {
 } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-// Url of the solo network
+// 1 - Create client for solo network
+
 const _soloUrl = 'http://localhost:8669';
-
-// Solo network instance
 const soloNetwork = new HttpClient(_soloUrl);
-
-// Thorest client solo instance
 const thorestSoloClient = new ThorestClient(soloNetwork);
 
-// Get latest block
+// 2 - Get latest block
+
 const latestBlock = await thorestSoloClient.blocks.getBestBlock();
 
-// Create clauses
+// 3 - Create transaction clauses
+
 const clauses = [
     {
         to: '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
@@ -476,7 +475,8 @@ const clauses = [
 // Get gas @NOTE this is an approximation
 const gas = 5000 + TransactionUtils.intrinsicGas(clauses) * 5;
 
-// Create delegated transaction
+//  4 - Create delegated transaction
+
 const delegatedTransaction = new Transaction({
     chainTag: 0xf6,
     blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
@@ -492,23 +492,25 @@ const delegatedTransaction = new Transaction({
 });
 
 // Private keys of sender
-const pkSender =
+const senderPrivateKey =
     'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5';
 
 /** Private key of delegate
  * @NOTE The delegate account must have enough VET and VTHO to pay for the gas
  */
-const pkDelegate =
+const delegatePrivateKey =
     '432f38bcf338c374523e83fdb2ebe1030aba63c7f1e81f7d76c5f53f4d42e766';
 
-// Normal signature and delegation signature
+// 5 - Normal signature and delegation signature
+
 const rawDelegatedSigned = TransactionHandler.signWithDelegator(
     delegatedTransaction,
-    Buffer.from(pkSender, 'hex'),
-    Buffer.from(pkDelegate, 'hex')
+    Buffer.from(senderPrivateKey, 'hex'),
+    Buffer.from(delegatePrivateKey, 'hex')
 ).encoded;
 
-// Send transaction
+// 6 - Send transaction
+
 const send = await thorestSoloClient.transactions.sendTransaction(
     `0x${rawDelegatedSigned.toString('hex')}`
 );
@@ -516,10 +518,14 @@ expect(send).toBeDefined();
 expect(send).toHaveProperty('id');
 expect(dataUtils.isHexString(send.id)).toBe(true);
 
-// Get transaction details and receipt
+// 7 - Get transaction details and receipt
+
+// Details of transaction
 const transactionDetails = await thorestSoloClient.transactions.getTransaction(
     send.id
 );
+
+// Receipt of transaction
 const transactionReceipt =
     await thorestSoloClient.transactions.getTransactionReceipt(send.id);
 

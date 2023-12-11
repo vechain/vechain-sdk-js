@@ -1,5 +1,4 @@
-import { HttpClient, ThorestClient } from '../src';
-import { ThorClient } from '../src/clients/thor-client';
+import { HttpClient, ThorestClient, ThorClient } from '../src';
 
 /**
  * Url of the testnet fixture
@@ -186,9 +185,15 @@ const TEST_ACCOUNTS = {
     TRANSACTION: {
         TRANSACTION_SENDER: ALL_ACCOUNTS[1],
         TRANSACTION_RECEIVER: ALL_ACCOUNTS[2],
-        DELEGATOR: ALL_ACCOUNTS[3]
+        DELEGATOR: ALL_ACCOUNTS[3],
+        CONTRACT_MANAGER: ALL_ACCOUNTS[4]
     }
 };
+
+/**
+ * `TestingContract.sol` deployed contract address on thor-solo snapshot.
+ */
+const TEST_CONTRACT_ADDRESS = '0x46412f2e2b2365753e27630e00fac6a0a27cde32';
 
 export {
     testNetwork,
@@ -200,5 +205,6 @@ export {
     thorClient,
     thorSoloClient,
     TEST_ACCOUNTS,
-    ALL_ACCOUNTS
+    ALL_ACCOUNTS,
+    TEST_CONTRACT_ADDRESS
 };

@@ -1,6 +1,11 @@
 import { describe, expect, test } from '@jest/globals';
-import { TEST_ACCOUNTS, thorestSoloClient } from '../../../fixture';
+import {
+    TEST_ACCOUNTS,
+    TEST_CONTRACT_ADDRESS,
+    thorestSoloClient
+} from '../../../fixture';
 import { unitsUtils } from '@vechainfoundation/vechain-sdk-core';
+import { TESTING_CONTRACT_BYTECODE } from './fixture';
 
 /**
  * Prolong timeout due to block time which sometimes exceeds jest's default timeout of 5 seconds.
@@ -72,5 +77,16 @@ describe('ThorestClient - Accounts', () => {
             },
             TIMEOUT
         );
+
+        /**
+         * Checks if the Testing Contract has been deployed and with the correct bytecode
+         */
+        test("Should return TestingContract.sol contract's bytecode", async () => {
+            const bytecode = await thorestSoloClient.accounts.getBytecode(
+                TEST_CONTRACT_ADDRESS
+            );
+
+            expect(bytecode).toEqual(TESTING_CONTRACT_BYTECODE);
+        });
     });
 });

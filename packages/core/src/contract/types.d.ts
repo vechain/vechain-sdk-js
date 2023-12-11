@@ -1,3 +1,5 @@
+import { type ParamType } from '../abi';
+
 /**
  * Represents the body of a transaction for VeChainThor blockchain.
  * This interface provides additional details to customize a transaction overriding the default settings.
@@ -51,4 +53,22 @@ interface TransactionBodyOverride {
     dependsOn?: string | null;
 }
 
-export type { TransactionBodyOverride };
+/**
+ * Represents the parameters required for deployment.
+ * @interface DeployParams
+ */
+interface DeployParams {
+    /**
+     * An array of types associated with the deployment parameters.
+     * @type {string[] | ParamType[]}
+     */
+    types: string[] | ParamType[];
+
+    /**
+     * An array of values corresponding to the deployment parameters.
+     * @type {string[]}
+     */
+    values: string[];
+}
+
+export type { TransactionBodyOverride, DeployParams };

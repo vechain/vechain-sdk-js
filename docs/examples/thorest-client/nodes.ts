@@ -4,15 +4,13 @@ import {
 } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-// Url of the testnet network
-const _testnetUrl = 'https://testnet.vechain.org/';
+// 1 - Create client for testnet
 
-// Testnet network instance
+const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
+const thorestClient = new ThorestClient(testNetwork);
 
-// Thorest client testnet instance
-const thorestTestnetClient = new ThorestClient(testNetwork);
+// 2 - Retrieves connected peers of a node
 
-// Retrieves connected peers of a node.
-const peerNodes = await thorestTestnetClient.nodes.getNodes();
+const peerNodes = await thorestClient.nodes.getNodes();
 expect(peerNodes).toBeDefined();

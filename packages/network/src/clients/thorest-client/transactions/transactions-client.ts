@@ -166,7 +166,12 @@ class TransactionsClient {
             {
                 query: buildQuery({ revision }),
                 body: {
-                    clauses,
+                    clauses: clauses.map((clause) => {
+                        return {
+                            ...clause,
+                            value: BigInt(clause.value).toString()
+                        };
+                    }),
                     gas,
                     gasPrice,
                     caller,

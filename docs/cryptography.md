@@ -15,10 +15,15 @@ vechain sdk supports blake2b256 and keccak256 hash functions.
 Blake2b256 is a specific type of hash function known for its speed and security. It takes any input data and generates a 256-bit (32-byte) hash value. The blake2b256 part refers to the specific design of the algorithm, and the 256 indicates the length of the resulting hash code. Blake2b256 is widely used in cryptographic applications, blockchain technologies, and secure data storage.
 
 ```typescript { name=blake2b256, category=example }
-import { blake2b256, type HashInput } from '@vechainfoundation/vechain-sdk-core';
+import {
+    blake2b256,
+    type HashInput
+} from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
+// Input of hash function (it can be a string or a Buffer)
 const toHash: HashInput = 'hello world';
+
 const hash = blake2b256(toHash);
 expect(hash.toString('hex')).toBe(
     '256c83b297114d201b30179f3f0ef0cace9783622da5974326b436178aeef610'
@@ -34,7 +39,9 @@ Keccak256 is another type of hash function, and it's particularly well-known for
 import { keccak256, type HashInput } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
+// Input of hash function (it can be a string or a Buffer)
 const toHash: HashInput = 'hello world';
+
 const hash = keccak256(toHash);
 expect(hash.toString('hex')).toBe(
     '47173285a8d7341e5e972fc677286384f802f8ef42a5ec5f03bbfa254cb01fad'
@@ -63,29 +70,33 @@ import {
 } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
-// Generate a private key
+// 1 - Generate a private key
+
 const privateKey = secp256k1.generatePrivateKey();
 console.log('Private key:', privateKey.toString('hex'));
 // Private key: ...SOME_PRIVATE_KEY...
 
-// Public key and address from private key
+// 2 - Derive public key and address from private key
+
 const publicKey = secp256k1.derivePublicKey(privateKey);
 const userAddress = addressUtils.fromPublicKey(publicKey);
 console.log('User address:', userAddress);
 // User address: 0x...SOME_ADDRESS...
 
-// Sign message
+// 3 - Sign message
+
 const messageToSign: HashInput = 'hello world';
 const hash = keccak256(messageToSign);
 console.log(`Hash: ${hash.toString()}`);
+
 const signature = secp256k1.sign(hash, privateKey);
 console.log('Signature:', signature.toString('hex'));
 // Signature: ...SOME_SIGNATURE...
 
-// Test recovery
-const recoveredPubKey = secp256k1.recover(hash, signature);
-const equals = publicKey.equals(recoveredPubKey);
-expect(equals).toBeTruthy();
+// 4 - Test recovery of public key
+
+const recoveredPublicKey = secp256k1.recover(hash, signature);
+expect(publicKey.equals(recoveredPublicKey)).toBeTruthy();
 // Recovered public key is correct: true
 
 ```

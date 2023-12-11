@@ -1,19 +1,23 @@
 import { bloom } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
-// Get best value of k (bits per key)
+// 1 - Get best value of k (bits per key)
+
 const k = bloom.calculateK(100);
 console.log(k);
 
-// Create a bloom filter with 14 bits
+// 2 - Create a bloom filter with 14 bits
+
 const bloomGenerator = new bloom.Generator();
 
-// Add number from 0 to 99 to the bloom gernator
+// 3 - Add number from 0 to 99 to the bloom gernator
+
 for (let i = 0; i < 100; i++) {
     bloomGenerator.add(Buffer.from(i + '', 'utf8'));
 }
 
-// Create the filter
+// 4 - Create the filter
+
 const bloomFilter = bloomGenerator.generate(100, k);
 
 // Positive case (number from 0 to 99 must be present in the bloom filter)

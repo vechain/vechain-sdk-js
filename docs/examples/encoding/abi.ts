@@ -1,7 +1,8 @@
 import { abi } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
-// Create a new function
+// 1 - Create a simple function to encode into ABI
+
 const simpleAbiFunction = new abi.Function({
     constant: false,
     inputs: [
@@ -30,13 +31,16 @@ const simpleAbiFunction = new abi.Function({
     type: 'function'
 });
 
-// Encode function
-const data = simpleAbiFunction.encodeInput([1, 'foo']);
-// Check encoding
+// 2 - Encode function
+
+const encodedFunction = simpleAbiFunction.encodeInput([1, 'foo']);
+
+// 3 - Check encoding
+
 const expected =
     '0x27fcbb2f0000000000000000000000000000000000000000000000000000\
 00000000000100000000000000000000000000000000000000000000000000\
 00000000000040000000000000000000000000000000000000000000000000\
 0000000000000003666f6f0000000000000000000000000000000000000000\
 000000000000000000';
-expect(data).toBe(expected);
+expect(encodedFunction).toBe(expected);

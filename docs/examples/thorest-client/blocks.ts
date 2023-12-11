@@ -4,17 +4,16 @@ import {
 } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-// Url of the testnet network
-const _testnetUrl = 'https://testnet.vechain.org/';
+// 1 - Create client for testnet
 
-// Testnet network instance
+const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
+const thorestClient = new ThorestClient(testNetwork);
 
-// Thorest client testnet instance
-const thorestTestnetClient = new ThorestClient(testNetwork);
+// 2 - Get block details
 
-// Get block details
-const blockDetails = await thorestTestnetClient.blocks.getBlock(1);
+// Details of block
+const blockDetails = await thorestClient.blocks.getBlock(1);
 expect(blockDetails).toEqual({
     number: 1,
     id: '0x000000019015bbd98fc1c9088d793ba9add53896a29cd9aa3a4dcabd1f561c38',
@@ -40,10 +39,12 @@ expect(blockDetails).toEqual({
     transactions: []
 });
 
-// Get best block details
-const bestBlockDetails = await thorestTestnetClient.blocks.getBestBlock();
+// 3 - Get best block details
+
+const bestBlockDetails = await thorestClient.blocks.getBestBlock();
 expect(bestBlockDetails).toBeDefined();
 
-// Get finalizes block details
-const finalBlockDetails = await thorestTestnetClient.blocks.getFinalBlock();
+// 4 - Get finalizes block details
+
+const finalBlockDetails = await thorestClient.blocks.getFinalBlock();
 expect(finalBlockDetails).toBeDefined();

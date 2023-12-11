@@ -1,7 +1,8 @@
 import { RLP } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
-// Define the profile for tx clause structure
+// 1 - Define the profile for tx clause structure
+
 const profile = {
     name: 'clause',
     kind: [
@@ -11,14 +12,16 @@ const profile = {
     ]
 };
 
-// Create clauses
+// 2 - Create clauses
+
 const clause = {
     to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
     value: 10,
     data: '0x'
 };
 
-// Instace RLP
+// 3 - RLP Instance to encode and decode
+
 const rlp = new RLP.Profiler(profile);
 
 // Encoding and Decoding
@@ -27,5 +30,6 @@ expect(data.toString('hex')).toBe(
     'd7947567d83b7b8d80addcb281a71d54fc7b3364ffed0a80'
 );
 
+// Decode the data
 const obj = rlp.decodeObject(data);
 expect(JSON.stringify(obj)).toBe(JSON.stringify(clause));
