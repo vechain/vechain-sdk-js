@@ -1,5 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity >=0.8.2 <0.9.0;
+pragma solidity 0.8.19;
+
+// Import the builtin contract to access extended EVM builtin functions
+import "./builtin-contracts/builtin.sol";
+
 
 /// @title TestingContract for vechain SDK Integration
 /// @notice This contract is designed for testing various data types, error handling, 
@@ -7,6 +11,11 @@ pragma solidity >=0.8.2 <0.9.0;
 contract TestingContract {
 
     // ---------------------------- State Variables & Custom Types ---------------------------- //
+
+    // Builtin contract to access extended EVM builtin functions
+    /// @dev This is a builtin contract that provides access to extended EVM builtin functions
+    /// @dev See: [Thor Built-ins](https://github.com/vechain/thor-builtins)
+    Extension extension = Builtin.getExtension();
     
     // Custom struct type
     struct ExampleStruct {
@@ -265,4 +274,64 @@ contract TestingContract {
     }
 
     // ------ Error Handling End ------ //
+
+    // ------ VechainThor EVM Extension functions Start ------ //
+
+    /// @notice Get the blockID of the given block number
+    /// @param blockNum The block number to query
+    function getBlockID(uint blockNum) public view returns (bytes32) {
+        return extension.blockID(blockNum);
+    }
+
+    /// @notice Get the block total score of the given block defined by the block number.
+    /// @dev The total score is the accumulated witness number (AWN) (https://docs.vechain.org/introduction-to-vechain/about-the-vechain-blockchain/consensus-deep-dive#meta-transaction-features-3)
+    /// @param blockNum The block number to query
+    function getBlockTotalScore(uint blockNum) public view returns (uint64) {
+        return extension.blockTotalScore(blockNum);
+    }
+
+    /// @notice Get the block time of the given block number
+    /// @param blockNum The block number to query
+    function getBlockTime(uint blockNum) public view returns (uint) {
+        return extension.blockTime(blockNum);
+    }
+
+    /// @notice Get the block signer of the given block number
+    /// @param blockNum The block number to query
+    function getBlockSigner(uint blockNum) public view returns (address) {
+        return extension.blockSigner(blockNum);
+    }
+
+    /// @notice Get total supply of VET
+    function getTotalSupply() public view returns (uint256) {
+        return extension.totalSupply();
+    }
+
+    /// @notice Get the `provedWork` of the current transaction
+    function getTxProvedWork() public view returns (uint256) {
+        return extension.txProvedWork();
+    }
+
+    /// @notice Get the transaction ID of the current transaction
+    function getTxID() public view returns (bytes32) {
+        return extension.txID();
+    }
+
+    /// @notice Get the `blockRef` of the current transaction
+    function getTxBlockRef() public view returns (bytes8) {
+        return extension.txBlockRef();
+    }
+
+    /// @notice Get the `expiration` of the current transaction
+    function getTxExpiration() public view returns (uint) {
+        return extension.txExpiration();
+    }
+
+    /// @notice Get the data hashed using Blake2b256
+    /// @param _data The data to hash
+    function calculateBlake2b256(bytes memory _data) public view returns (bytes32) {
+        return extension.blake2b256(_data);
+    }
+
+    // ------ VechainThor EVM Extension functions End ------ //
 }

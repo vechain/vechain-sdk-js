@@ -1,15 +1,17 @@
 import {
     type Transaction,
-    assertIsSignedTransaction
+    assertIsSignedTransaction,
+    assertValidTransactionID
 } from '@vechainfoundation/vechain-sdk-core';
 import { Poll } from '../../../utils';
 import {
     type ThorestClient,
-    type TransactionReceipt,
-    type TransactionSimulationResult
+    type TransactionReceipt
 } from '../../thorest-client';
-import type { SendTransactionResult, WaitForTransactionOptions } from './types';
-import { decodeRevertReason } from './helpers/message';
+import {
+    type SendTransactionResult,
+    type WaitForTransactionOptions
+} from './types';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -29,37 +31,16 @@ class TransactionsModule {
      *
      * @returns A promise that resolves to the transaction ID of the sent transaction.
      *
-     * @throws an error if the transaction is not signed.
+     * @throws an error if the transaction is not signed or if the transaction object is invalid.
      */
     public async sendTransaction(
         signedTx: Transaction
     ): Promise<SendTransactionResult> {
         assertIsSignedTransaction(signedTx);
 
-        const simulatedTransaction =
-            await this.thorest.transactions.simulateTransaction(
-                signedTx.body.clauses
-            );
-
-        const clausesResults: TransactionSimulationResult[] =
-            simulatedTransaction.map((simulation) => {
-                return {
-                    ...simulation,
-                    data: simulation.reverted
-                        ? decodeRevertReason(simulation.data)
-                        : simulation.data
-                };
-            });
-
         const rawTx = `0x${signedTx.encoded.toString('hex')}`;
 
-        const txID = (await this.thorest.transactions.sendTransaction(rawTx))
-            .id;
-
-        return {
-            id: txID,
-            clausesResults
-        };
+        return await this.thorest.transactions.sendTransaction(rawTx);
     }
 
     /**
@@ -71,11 +52,15 @@ class TransactionsModule {
      *
      * @returns A promise that resolves to the transaction receipt of the transaction. If the transaction is not included in a block before the timeout,
      *          the promise will resolve to `null`.
+     *
+     * @throws an error if the transaction ID is invalid.
      */
     public async waitForTransaction(
         txID: string,
         options?: WaitForTransactionOptions
     ): Promise<TransactionReceipt | null> {
+        assertValidTransactionID(txID);
+
         return await Poll.SyncPoll(
             async () =>
                 await this.thorest.transactions.getTransactionReceipt(txID),

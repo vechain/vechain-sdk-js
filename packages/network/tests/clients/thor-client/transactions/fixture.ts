@@ -150,5 +150,6 @@ export {
     invalidWaitForTransactionTestCases,
     transferTransactionBody,
     transferTransactionBodyValueAsNumber,
-    expectedReceipt
+    expectedReceipt,
+    transfer1VTHOClause
 };
