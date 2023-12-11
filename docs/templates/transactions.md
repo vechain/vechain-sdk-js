@@ -39,7 +39,7 @@ A transaction can be set to only be processed after another transaction, therefo
 [example](examples/transactions/tx_dependency.ts)
 
 ## Example: Transaction Simulation
-Simulates the execution of a transaction and allows to estimate the gas cost of a transaction without sending it, as well as to check the return value/result(s) of the transaction.
+Simulates the execution of a transaction and allows (1) to estimate the gas cost of a transaction without sending it and (2) to check the return value/result(s) of the transaction.
 Note - the result of a transaction might be different depending on the state(block) you are executing against.
 
 [example](examples/transactions/simulation.ts)

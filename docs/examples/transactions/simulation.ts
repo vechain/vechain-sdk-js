@@ -4,9 +4,8 @@ import {
     ThorestClient
 } from '@vechainfoundation/vechain-sdk-network';
 import {contract, dataUtils} from "@vechainfoundation/vechain-sdk-core";
-// import { BUILT_IN_CONTRACTS } from '@vechainfoundation/vechain-sdk-network';
 
-// TODO: figure out do I need to reserve an account on Confluence for this test and change to use unreserved accounts
+// TODO: reserve an account on Confluence for this test and change to use unreserved accounts and add constants for the addresses
 
 // In this example we simulate a transaction of sending 1 VET to another account
 
@@ -64,6 +63,8 @@ expect(simulatedTx1[0].gasUsed).toEqual(expected1[0].gasUsed);
 expect(simulatedTx1[0].transfers).toEqual(expected1[0].transfers);
 
 // TODO: split into 2 test files??
+// TODO: replace this ABI with a fixture reference?
+
 // In this next example we simulate a Simulate smart contract transaction
 const PARAMS_ABI = JSON.stringify([
     {
