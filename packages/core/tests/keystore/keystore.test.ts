@@ -1,7 +1,12 @@
 import { describe, test, expect } from '@jest/globals';
-import { secp256k1, address, ERRORS, keystore } from '../../src';
+import { secp256k1, addressUtils, keystore } from '../../src';
 import { type Keystore } from '../../src';
 import { encryptionPassword } from './fixture';
+import {
+    InvalidKeystoreError,
+    InvalidKeystorePasswordError,
+    InvalidSecp256k1PrivateKeyError
+} from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Keystore tests
@@ -23,8 +28,10 @@ describe('Keystore', () => {
 
         // Verify keystore
         expect(myKeystore.version).toBe(3);
-        const keyStoreAddress = address.toChecksumed(`0x` + myKeystore.address);
-        const addressFromPrivateKey = address.fromPublicKey(
+        const keyStoreAddress = addressUtils.toChecksumed(
+            `0x` + myKeystore.address
+        );
+        const addressFromPrivateKey = addressUtils.fromPublicKey(
             secp256k1.derivePublicKey(privateKey)
         );
         expect(keyStoreAddress).toEqual(addressFromPrivateKey);
@@ -41,7 +48,7 @@ describe('Keystore', () => {
                     Buffer.from('wrong private key', 'hex'),
                     encryptionPassword
                 )
-        ).rejects.toThrowError(ERRORS.SECP256K1.INVALID_PRIVATE_KEY);
+        ).rejects.toThrowError(InvalidSecp256k1PrivateKeyError);
     });
 
     /**
@@ -89,7 +96,7 @@ describe('Keystore', () => {
                     myKeystore,
                     `WRONG_${encryptionPassword}`
                 )
-        ).rejects.toThrowError(ERRORS.KEYSTORE.INVALID_PASSWORD);
+        ).rejects.toThrowError(InvalidKeystorePasswordError);
     });
 
     /**
@@ -118,7 +125,7 @@ describe('Keystore', () => {
                     JSON.parse(invalidKeystore) as Keystore,
                     encryptionPassword
                 )
-        ).rejects.toThrowError(ERRORS.KEYSTORE.INVALID_KEYSTORE);
+        ).rejects.toThrowError(InvalidKeystoreError);
     });
 
     /**

@@ -1,34 +1,43 @@
 # Code Examples & Documentation
 
-The `/docs` folder contains code examples to show how to achieve various operations with the SDK
+Welcome to the `/docs` folder, your go-to resource for comprehensive **SDK documentation** and executable code examples. We've designed these examples not just for learning purposes but also as integration tests, ensuring that the provided code snippets are always functional and up-to-date.
 
-These code examples are also executable integration tests, and the code snippets within the `/examples` folder are executed as tests. This ensures that code examples and documentation are always working and up to date.
+## Structure
+
+### Examples
+
+Our code examples reside in the `/examples` folder. Each example is a stand-alone script that showcases various operations achievable with the SDK.
 
 Some of the code examples require a Thor Solo node to be available.
 
-## Examples
+### Templates
 
-Code examples are written as stand-alone scripts within the `/examples` folder
+In the `/templates` folder, you'll find markdown files used to build our final documentation. These templates can include links to example files, dynamically expanded into code snippets during documentation generation.
 
-
-## Templates
-
-The `/templates` folder contains documentation markdown files that are used to build the final markdown documentation files. Templates can include a link to an example file, which when the documentation is build is expanded into a code snippet.
-
-For example the link:
+For instance:
 
 \[example](examples/accounts/bip39.ts)
 
-Will be expanded into a code snippet with the content of that file
+The above link, when processed during documentation build, expands into the content of the linked file, ensuring our documentation is as practical as possible.
 
 Note: links that are to be expanded must have text \[example]
 
-## Scripts
+## Usage
 
-* To execute the scripts within `/examples` as tests: `yarn test:examples`
-* To build the documentation by expanding examples: `yarn build`
-* To execute code from the built documentation (build check): `yarn test:docs`
+### Execute Examples as Tests
 
+To run the scripts within /examples as tests, use:
+``` bash
+yarn test:examples
+```
 
+### Build Documentation
 
+To build the documentation, expanding examples into code snippets, use:
+``` bash
+yarn build
+```
 
+Feel free to explore the examples and templates, and don't hesitate to reach out if you have any questions or need further assistance.
+
+Happy coding with the vechain SDK!

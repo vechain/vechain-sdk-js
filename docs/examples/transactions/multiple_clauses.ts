@@ -1,21 +1,21 @@
+import { networkInfo } from '@vechainfoundation/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
     TransactionUtils,
     TransactionHandler,
     type TransactionClause,
-    type TransactionBody
-} from '@vechain-sdk/core';
+    type TransactionBody,
+    unitsUtils
+} from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
-// In this example a multiple clause transaction is
-// created, signed, encoded and then decoded
+// 1 - Define multiple clauses
 
-// Define multiple clauses
 const clauses: TransactionClause[] = [
     {
         to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: 10000, // VET transfer clause
+        value: unitsUtils.parseVET('10000').toString(), // VET transfer clause
         data: '0x'
     },
     {
@@ -27,12 +27,14 @@ const clauses: TransactionClause[] = [
     }
 ];
 
-// Calculate intrinsic gas of both clauses
+// 2 - Calculate intrinsic gas of both clauses
+
 const gas = TransactionUtils.intrinsicGas(clauses);
 
-// Body of transaction
+// 3 - Body of transaction
+
 const body: TransactionBody = {
-    chainTag: 0x9a,
+    chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x0000000000000000',
     expiration: 32,
     clauses,
@@ -45,13 +47,16 @@ const body: TransactionBody = {
 // Create private key
 const privateKey = secp256k1.generatePrivateKey();
 
-// Sign transaction
+// 4 - Sign transaction
+
 const unsignedTx = new Transaction(body);
 const signedTransaction = TransactionHandler.sign(unsignedTx, privateKey);
 
-// Encode transaction
+// 5 - Encode transaction
+
 const encodedRaw = signedTransaction.encoded;
 
-// Decode transaction and check
+// 6 - Decode transaction and check
+
 const decodedTx = TransactionHandler.decode(encodedRaw, true);
 expect(decodedTx.body.clauses.length).toBe(clauses.length);

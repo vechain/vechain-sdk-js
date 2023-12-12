@@ -1,0 +1,15 @@
+{
+    "$schema": "https://typedoc.org/schema.json",
+    "compilerOptions":{
+      "strictNullChecks": false
+    },
+    "skipErrorChecking": true,
+    "excludeExternals": true,
+    "exclude": [ "**/*+(index|.spec|.e2e|test).ts" ],
+    "externalPattern": [
+      "**/node_modules/**"
+    ],
+    "readme": "none",
+    "excludePrivate": true,
+    "excludeInternal": true
+}

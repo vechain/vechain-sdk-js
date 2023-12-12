@@ -1,28 +1,34 @@
-import { createRlpError } from './profiles';
+import { assert, RLP } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Asserts that the provided buffer is of a specific length and does not contain leading zeros.
  *
+ * @throws{InvalidRLPError} - Will throw an error with a message containing the context if the buffer length is greater than the specified bytes OR if it has leading zero bytes.
  * @param buffer - The buffer to validate.
  * @param context - Descriptive context for error messages, usually representing the caller's identity.
  * @param bytes - The expected maximum number of bytes that the buffer can contain.
- * @throws Will throw an error with a message containing the context if the buffer length is greater than the specified bytes or if it has leading zero bytes.
  */
 const assertCompactFixedHexBlobBuffer = (
     buffer: Buffer,
     context: string,
     bytes: number
 ): void => {
-    if (buffer.length > bytes) {
-        throw createRlpError(
-            context,
-            `expected buffer to be at most ${bytes} bytes`
-        );
-    }
+    assert(
+        buffer.length <= bytes,
+        RLP.INVALID_RLP,
+        `Validation error: Buffer in ${context} must be at most ${bytes} bytes.`,
+        { buffer, context }
+    );
 
-    if (buffer.length !== 0 && buffer[0] === 0) {
-        throw createRlpError(context, 'expected no leading zero bytes');
-    }
+    assert(
+        buffer.length === 0 || buffer[0] !== 0,
+        RLP.INVALID_RLP,
+        `Validation error: Buffer in ${context} should not have leading zero bytes.`,
+        {
+            buffer,
+            context
+        }
+    );
 };
 
 /**

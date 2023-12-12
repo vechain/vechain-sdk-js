@@ -2,6 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { hashFunctionsToTest } from './fixture';
 import { ZERO_BUFFER } from '../../src';
 import { ethers } from 'ethers';
+import { InvalidDataReturnTypeError } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Test hash functions
@@ -134,9 +135,7 @@ describe('Hash', () => {
                 expect(() =>
                     // @ts-expect-error: Invalid return type
                     hashFunction.hashFunction('hello world', 'foo')
-                ).toThrow(
-                    "Invalid return type. Return type should be either 'buffer' or 'hex'."
-                );
+                ).toThrowError(InvalidDataReturnTypeError);
             });
         });
     });

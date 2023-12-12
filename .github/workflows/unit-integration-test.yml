@@ -7,6 +7,9 @@ jobs:
     build:
         name: Build & Lint
         runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                node: [18, lts/*, latest]
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
@@ -14,15 +17,17 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@v4
               with:
-                  node-version-file: .nvmrc
+                  node-version: ${{ matrix.node }}
 
             - name: Install & Patch packages
               run: yarn install
 
             - name: Test
+              id: unit-test
               run: yarn test
 
             - name: Jest Coverage Comment
+              if: matrix.node == 'lts/*'
               uses: MishaKav/jest-coverage-comment@main
               with:
                 title: Test Coverage
@@ -39,10 +44,25 @@ jobs:
                   errors, packages/errors/junit.xml
 
             - name: Archive coverage
+              if: matrix.node == 'lts/*'
               uses: actions/upload-artifact@v3
               with:
                 name: coverage-results
                 path: |
                   packages/**/coverage/lcov.info
+            
+            - name: Post unit test results to slack
+              if: always()  && github.ref == 'refs/heads/main' && (steps.unit-test.outcome == 'failure')
+              uses: slackapi/slack-github-action@v1.24.0
+              with:
+                payload: |
+                  {
+                    "source": "GitHub",
+                    "repo": "${{ github.repository}}",
+                    "branch": "${{ github.head_ref || github.ref_name }}",
+                    "message": "unit tests failed"
+                  }
+              env:
+                SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
               

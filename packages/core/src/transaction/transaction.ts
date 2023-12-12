@@ -1,18 +1,24 @@
-import { address } from '../address';
+import { addressUtils } from '../address';
 import { type RLPValidObject } from '../encoding';
 import { blake2b256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import {
-    BLOCKREF_LENGTH,
+    BLOCK_REF_LENGTH,
     dataUtils,
-    ERRORS,
     SIGNATURE_LENGTH,
     SIGNED_TRANSACTION_RLP,
     TRANSACTION_FEATURES_KIND,
-    UNSIGNED_TRANSACTION_RLP,
-    TransactionUtils
+    TransactionUtils,
+    UNSIGNED_TRANSACTION_RLP
 } from '../utils';
 import { type TransactionBody } from './types';
+import {
+    ADDRESS,
+    assert,
+    SECP256K1,
+    TRANSACTION
+} from '@vechainfoundation/vechain-sdk-errors';
+import { assertCantGetFieldOnUnsignedTransaction } from './helpers/assertions';
 
 /**
  * Represents an immutable transaction entity.
@@ -42,18 +48,30 @@ class Transaction {
      * Constructor with parameters.
      * This constructor creates a transaction immutable object.
      *
+     * @throws{TransactionBodyError, InvalidSecp256k1SignatureError}
      * @param body - Transaction body
      * @param signature - Optional signature for the transaction
      */
     constructor(body: TransactionBody, signature?: Buffer) {
         // Body
-        if (this._isValidBody(body)) this.body = body;
-        else throw new Error(ERRORS.TRANSACTION.INVALID_TRANSACTION_BODY);
+        assert(
+            this._isValidBody(body),
+            TRANSACTION.INVALID_TRANSACTION_BODY,
+            'Invalid transaction body. Ensure all required fields are correctly formatted and present.',
+            { body }
+        );
+        this.body = body;
 
         // User passed a signature
         if (signature !== undefined) {
-            if (this._isSignatureValid(signature)) this.signature = signature;
-            else throw new Error(ERRORS.TRANSACTION.INVALID_SIGNATURE);
+            assert(
+                this._isSignatureValid(signature),
+                SECP256K1.INVALID_SECP256k1_SIGNATURE,
+                'Invalid transaction signature. Ensure it is correctly formatted.',
+                { signature }
+            );
+
+            this.signature = signature;
         }
     }
 
@@ -80,15 +98,19 @@ class Transaction {
     /**
      * Get transaction delegator address from signature.
      *
+     * @throws{TransactionDelegationError, TransactionNotSignedError}
      * @returns Transaction delegator address
      */
     public get delegator(): string {
         // Undelegated transaction
-        if (!this.isDelegated)
-            throw new Error(ERRORS.TRANSACTION.NOT_DELEGATED);
+        assert(
+            this.isDelegated,
+            TRANSACTION.INVALID_DELEGATION,
+            'Transaction is not delegated. Delegator information is unavailable.'
+        );
 
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
-        if (!this.isSigned) throw new Error(ERRORS.TRANSACTION.NOT_SIGNED);
+        assertCantGetFieldOnUnsignedTransaction(this, 'delegator');
 
         // Slice signature needed to recover public key
         // Obtains the recovery param from the signature
@@ -104,7 +126,7 @@ class Transaction {
         );
 
         // Address from public key
-        return address.fromPublicKey(delegatorPublicKey);
+        return addressUtils.fromPublicKey(delegatorPublicKey);
     }
 
     /**
@@ -160,13 +182,18 @@ class Transaction {
      * )
      * ```
      *
+     * @throws{InvalidAddressError}
      * @param delegateFor - Address of the delegator
      * @returns Signing hash of the transaction
      */
     public getSignatureHash(delegateFor?: string): Buffer {
         // Correct delegateFor address
-        if (delegateFor !== undefined && !address.isAddress(delegateFor))
-            throw new Error(ERRORS.ADDRESS.INVALID_ADDRESS);
+        assert(
+            delegateFor === undefined || addressUtils.isAddress(delegateFor),
+            ADDRESS.INVALID_ADDRESS,
+            'Invalid address given as input as delegateFor parameter. Ensure it is a valid address.',
+            { delegateFor }
+        );
 
         // Encode transaction
         const transactionHash = blake2b256(this._encode(false));
@@ -196,11 +223,12 @@ class Transaction {
     /**
      * Get transaction origin address from signature.
      *
+     * @throws{TransactionNotSignedError}
      * @returns Transaction origin
      */
     public get origin(): string {
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
-        if (!this.isSigned) throw new Error(ERRORS.TRANSACTION.NOT_SIGNED);
+        assertCantGetFieldOnUnsignedTransaction(this, 'origin');
 
         // Slice signature
         // Obtains the concatenated signature (r, s) of ECDSA digital signature
@@ -213,17 +241,18 @@ class Transaction {
         );
 
         // Address from public key
-        return address.fromPublicKey(originPublicKey);
+        return addressUtils.fromPublicKey(originPublicKey);
     }
 
     /**
      * Get transaction ID from signature.
      *
+     * @throws{TransactionNotSignedError}
      * @returns Transaction ID
      */
     get id(): string {
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
-        if (!this.isSigned) throw new Error(ERRORS.TRANSACTION.NOT_SIGNED);
+        assertCantGetFieldOnUnsignedTransaction(this, 'id');
 
         // Return transaction ID
         return blake2b256(
@@ -382,7 +411,7 @@ class Transaction {
             body.blockRef !== undefined &&
             dataUtils.isHexString(body.blockRef) &&
             Buffer.from(body.blockRef.slice(2), 'hex').length ===
-                BLOCKREF_LENGTH &&
+                BLOCK_REF_LENGTH &&
             // Expiration
             body.expiration !== undefined &&
             // Clauses

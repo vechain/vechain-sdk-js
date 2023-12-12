@@ -3,9 +3,10 @@ import {
     type Interface,
     type FunctionFragment,
     type Result,
-    type FormatType
+    type FormatType,
+    type BytesLike
 } from './types';
-import { ERRORS } from '../utils';
+import { ABI, buildError, assert } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Allowed formats for the signature.
@@ -16,15 +17,23 @@ const allowedSignatureFormats = ['sighash', 'minimal', 'full', 'json'];
 
 /**
  * Generic implementation of a function that returns a signature.
- * Used to avoid code dupliaction.
+ * Used to avoid code duplication.
  *
+ * @throws{InvalidAbiFormatTypeError}
  * @param fragment - Fragment to use.
  * @param formatType - Format type of the signature.
  * @returns The signature.
  */
 function getSignature(fragment: Fragment, formatType: FormatType): string {
-    if (!allowedSignatureFormats.includes(formatType))
-        throw new Error(ERRORS.ABI.INVALID_FORMAT_TYPE);
+    // If the formatType is not included in the allowed formats, throw an error.
+    assert(
+        allowedSignatureFormats.includes(formatType),
+        ABI.INVALID_FORMAT_TYPE,
+        `Signature format error: '${formatType}' is invalid. Allowed formats: ${allowedSignatureFormats.join(
+            ', '
+        )}`,
+        { formatType }
+    );
 
     return fragment.format(formatType);
 }
@@ -38,28 +47,31 @@ class Function<ABIType> {
     /**
      * The main fragment handled by ethers.js.
      *
-     * @public
      */
     public fragment: FunctionFragment;
 
     /**
      * The main interface handled by ethers.js.
-     *
-     * @public
      */
     public iface: Interface;
 
     /**
      * Creates a new Function instance from an ABI fragment.
      *
+     * @throws{InvalidAbiFunctionError}
      * @param source - ABI fragment to use.
      */
     constructor(source: ABIType) {
         try {
             this.fragment = ethers.FunctionFragment.from(source);
             this.iface = new ethers.Interface([this.fragment]);
-        } catch {
-            throw new Error(ERRORS.ABI.INVALID_FUNCTION);
+        } catch (e) {
+            throw buildError(
+                ABI.INVALID_FUNCTION,
+                'Initialization failed: Cannot create Function fragment. Function format is invalid',
+                { source },
+                e
+            );
         }
     }
 
@@ -85,28 +97,40 @@ class Function<ABIType> {
     /**
      * Decode data using the function's ABI.
      *
+     * @throws{InvalidAbiDataToDecodeError}
      * @param data - Data to decode.
      * @returns Decoding results.
      */
-    public decodeOutput(data: string): Result {
+    public decodeInput(data: BytesLike): Result {
         try {
             return this.iface.decodeFunctionData(this.fragment, data);
-        } catch {
-            throw new Error(ERRORS.ABI.INVALID_DATA_TO_DECODE);
+        } catch (e) {
+            throw buildError(
+                ABI.INVALID_DATA_TO_DECODE,
+                'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
+                { data },
+                e
+            );
         }
     }
 
     /**
      * Encode data using the function's ABI.
      *
+     * @throws{InvalidAbiDataToEncodeError}
      * @param dataToEncode - Data to encode.
      * @returns Encoded data.
      */
-    public encodeInput<TValue>(dataToEncode: TValue[]): string {
+    public encodeInput<TValue>(dataToEncode?: TValue[]): string {
         try {
             return this.iface.encodeFunctionData(this.fragment, dataToEncode);
-        } catch {
-            throw new Error(ERRORS.ABI.INVALID_DATA_TO_ENCODE);
+        } catch (e) {
+            throw buildError(
+                ABI.INVALID_DATA_TO_ENCODE,
+                'Encoding failed: Data format is invalid. Function data  match the expected format for ABI type encoding.',
+                { dataToEncode },
+                e
+            );
         }
     }
 }
@@ -119,21 +143,18 @@ class Function<ABIType> {
 class Event<ABIType> {
     /**
      * The main fragment handled by ethers.js.
-     *
-     * @public
      */
     public fragment: ethers.EventFragment;
 
     /**
      * The main interface handled by ethers.js.
-     *
-     * @public
      */
     public iface: Interface;
 
     /**
      * Creates a new Event instance from an ABI fragment.
      *
+     * @throws{InvalidAbiEventError}
      * @param source - ABI fragment to use.
      */
     constructor(source: ABIType) {
@@ -141,7 +162,10 @@ class Event<ABIType> {
             this.fragment = ethers.EventFragment.from(source);
             this.iface = new ethers.Interface([this.fragment]);
         } catch {
-            throw new Error(ERRORS.ABI.INVALID_EVENT);
+            throw buildError(
+                ABI.INVALID_EVENT,
+                'Initialization failed: Event fragment creation not possible due to invalid ABI data format.'
+            );
         }
     }
 
@@ -167,6 +191,7 @@ class Event<ABIType> {
     /**
      * Decode event log data using the event's ABI.
      *
+     * @throws{InvalidAbiDataToDecodeError}
      * @param data - Data to decode.
      * @returns Decoding results.
      */
@@ -178,13 +203,17 @@ class Event<ABIType> {
                 data.topics
             );
         } catch {
-            throw new Error(ERRORS.ABI.INVALID_DATA_TO_DECODE);
+            throw buildError(
+                ABI.INVALID_DATA_TO_DECODE,
+                'Decoding failed: Data and topics must be correctly formatted for ABI-compliant decoding.'
+            );
         }
     }
 
     /**
      * Encode event log data using the event's ABI.
      *
+     * @throws{InvalidAbiDataToEncodeError}
      * @param dataToEncode - Data to encode.
      * @returns Encoded data along with topics.
      */
@@ -195,7 +224,10 @@ class Event<ABIType> {
         try {
             return this.iface.encodeEventLog(this.fragment, dataToEncode);
         } catch {
-            throw new Error(ERRORS.ABI.INVALID_DATA_TO_ENCODE);
+            throw buildError(
+                ABI.INVALID_DATA_TO_ENCODE,
+                'Encoding failed: Event data must be correctly formatted for ABI-compliant encoding.'
+            );
         }
     }
 }

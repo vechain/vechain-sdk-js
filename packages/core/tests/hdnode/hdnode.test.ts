@@ -1,14 +1,20 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-    ERRORS,
     HDNode,
     type WordlistSizeType,
     ZERO_BUFFER,
-    address,
+    addressUtils,
     mnemonic,
     secp256k1
 } from '../../src';
 import { addresses, words, wrongWords } from './fixture';
+import {
+    InvalidHDNodeChaincodeError,
+    InvalidHDNodeDerivationPathError,
+    InvalidHDNodeMnemonicsError,
+    InvalidHDNodePrivateKeyError,
+    InvalidHDNodePublicKeyError
+} from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Mnemonic tests
@@ -26,9 +32,9 @@ describe('Hdnode', () => {
             const child = node.derive(i);
 
             // Correct address
-            expect(address.fromPublicKey(child.publicKey).slice(2)).toEqual(
-                addresses[i]
-            );
+            expect(
+                addressUtils.fromPublicKey(child.publicKey).slice(2)
+            ).toEqual(addresses[i]);
             expect(child.address).toEqual('0x' + addresses[i]);
 
             // Correct public key
@@ -47,9 +53,9 @@ describe('Hdnode', () => {
         for (let i = 0; i < 5; i++) {
             const child = xprivNode.derive(i);
             // Correct address
-            expect(address.fromPublicKey(child.publicKey).slice(2)).toEqual(
-                addresses[i]
-            );
+            expect(
+                addressUtils.fromPublicKey(child.publicKey).slice(2)
+            ).toEqual(addresses[i]);
             expect(child.address).toEqual('0x' + addresses[i]);
 
             // Correct public key
@@ -65,9 +71,9 @@ describe('Hdnode', () => {
         for (let i = 0; i < 5; i++) {
             const child = xpubNode.derive(i);
             // Correct address
-            expect(address.fromPublicKey(child.publicKey).slice(2)).toEqual(
-                addresses[i]
-            );
+            expect(
+                addressUtils.fromPublicKey(child.publicKey).slice(2)
+            ).toEqual(addresses[i]);
             expect(child.address).toEqual('0x' + addresses[i]);
 
             // Null private key
@@ -107,7 +113,7 @@ describe('Hdnode', () => {
 
                 // Address
                 expect(currentHdnode.address).toBeDefined();
-                address.isAddress(currentHdnode.address);
+                addressUtils.isAddress(currentHdnode.address);
             }
         );
     });
@@ -116,8 +122,17 @@ describe('Hdnode', () => {
      * Test invalid mnemonic
      */
     test('Invalid mnemonic', () => {
-        expect(() => HDNode.fromMnemonic(wrongWords)).toThrow(
-            ERRORS.HDNODE.INVALID_MNEMONICS
+        expect(() => HDNode.fromMnemonic(wrongWords)).toThrowError(
+            InvalidHDNodeMnemonicsError
+        );
+    });
+
+    /**
+     * Test invalid derivation path
+     */
+    test('Invalid derivation path', () => {
+        expect(() => HDNode.fromMnemonic(words, 'INVALID')).toThrowError(
+            InvalidHDNodeDerivationPathError
         );
     });
 
@@ -127,7 +142,7 @@ describe('Hdnode', () => {
     test('Invalid private key', () => {
         expect(() =>
             HDNode.fromPrivateKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
-        ).toThrow(ERRORS.HDNODE.INVALID_PRIVATEKEY);
+        ).toThrowError(InvalidHDNodePrivateKeyError);
     });
 
     /**
@@ -136,7 +151,7 @@ describe('Hdnode', () => {
     test('Invalid public key', () => {
         expect(() =>
             HDNode.fromPublicKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
-        ).toThrow(ERRORS.HDNODE.INVALID_PUBLICKEY);
+        ).toThrowError(InvalidHDNodePublicKeyError);
     });
 
     /**
@@ -145,7 +160,7 @@ describe('Hdnode', () => {
     test('Invalid chain code private key', () => {
         expect(() =>
             HDNode.fromPrivateKey(ZERO_BUFFER(32), ZERO_BUFFER(31))
-        ).toThrow(ERRORS.HDNODE.INVALID_CHAINCODE);
+        ).toThrowError(InvalidHDNodeChaincodeError);
     });
 
     /**
@@ -154,6 +169,6 @@ describe('Hdnode', () => {
     test('Invalid chain code public key', () => {
         expect(() =>
             HDNode.fromPublicKey(ZERO_BUFFER(65), ZERO_BUFFER(31))
-        ).toThrow(ERRORS.HDNODE.INVALID_CHAINCODE);
+        ).toThrowError(InvalidHDNodeChaincodeError);
     });
 });

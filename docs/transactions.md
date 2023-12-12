@@ -16,34 +16,36 @@ To break it down:
 In this example a simple transaction with a single clause is created, signed, encoded and then decoded
 
 ```typescript { name=sign_decode, category=example }
+import { networkInfo } from '@vechainfoundation/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
     TransactionUtils,
     TransactionHandler,
     type TransactionClause,
-    type TransactionBody
-} from '@vechain-sdk/core';
+    type TransactionBody,
+    unitsUtils
+} from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
-// In this example a simple single clause transaction is
-// created, signed, encoded and then decoded
+// 1 - Define clauses
 
-// Define clauses
 const clauses: TransactionClause[] = [
     {
         to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: 10000,
+        value: unitsUtils.parseVET('10000').toString(),
         data: '0x'
     }
 ];
 
-// Calculate intrinsic gas of clauses
+// 2 - Calculate intrinsic gas of clauses
+
 const gas = TransactionUtils.intrinsicGas(clauses);
 
-// Body of transaction
+// 3 - Body of transaction
+
 const body: TransactionBody = {
-    chainTag: 0x9a,
+    chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x0000000000000000',
     expiration: 0,
     clauses,
@@ -56,14 +58,17 @@ const body: TransactionBody = {
 // Create private key
 const privateKey = secp256k1.generatePrivateKey();
 
-// Sign transaction
+// 4 - Sign transaction
+
 const unsignedTx = new Transaction(body);
 const signedTransaction = TransactionHandler.sign(unsignedTx, privateKey);
 
-// Encode transaction
+// 5 - Encode transaction
+
 const encodedRaw = signedTransaction.encoded;
 
-// Decode transaction and check
+// 6 - Decode transaction and check
+
 const decodedTx = TransactionHandler.decode(encodedRaw, true);
 expect(decodedTx.body.chainTag).toBe(body.chainTag);
 expect(decodedTx.body.nonce).toBe(body.nonce);
@@ -75,24 +80,24 @@ In VechainThor blockchain a transaction can be composed of multiple clauses. \
 Clauses allow to send multiple payloads to different recipients within a single transaction.
 
 ```typescript { name=multiple_clauses, category=example }
+import { networkInfo } from '@vechainfoundation/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
     TransactionUtils,
     TransactionHandler,
     type TransactionClause,
-    type TransactionBody
-} from '@vechain-sdk/core';
+    type TransactionBody,
+    unitsUtils
+} from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
-// In this example a multiple clause transaction is
-// created, signed, encoded and then decoded
+// 1 - Define multiple clauses
 
-// Define multiple clauses
 const clauses: TransactionClause[] = [
     {
         to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: 10000, // VET transfer clause
+        value: unitsUtils.parseVET('10000').toString(), // VET transfer clause
         data: '0x'
     },
     {
@@ -104,12 +109,14 @@ const clauses: TransactionClause[] = [
     }
 ];
 
-// Calculate intrinsic gas of both clauses
+// 2 - Calculate intrinsic gas of both clauses
+
 const gas = TransactionUtils.intrinsicGas(clauses);
 
-// Body of transaction
+// 3 - Body of transaction
+
 const body: TransactionBody = {
-    chainTag: 0x9a,
+    chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x0000000000000000',
     expiration: 32,
     clauses,
@@ -122,14 +129,17 @@ const body: TransactionBody = {
 // Create private key
 const privateKey = secp256k1.generatePrivateKey();
 
-// Sign transaction
+// 4 - Sign transaction
+
 const unsignedTx = new Transaction(body);
 const signedTransaction = TransactionHandler.sign(unsignedTx, privateKey);
 
-// Encode transaction
+// 5 - Encode transaction
+
 const encodedRaw = signedTransaction.encoded;
 
-// Decode transaction and check
+// 6 - Decode transaction and check
+
 const decodedTx = TransactionHandler.decode(encodedRaw, true);
 expect(decodedTx.body.clauses.length).toBe(clauses.length);
 
@@ -139,6 +149,7 @@ expect(decodedTx.body.clauses.length).toBe(clauses.length);
 Fee delegation is a feature on the VechainThor blockchain which enables the transaction sender to request another entity, a sponsor, to pay for the transaction fee on the sender's behalf.
 
 ```typescript { name=fee_delegation, category=example }
+import { networkInfo } from '@vechainfoundation/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -147,25 +158,25 @@ import {
     HDNode,
     type TransactionClause,
     type TransactionBody,
-    mnemonic
-} from '@vechain-sdk/core';
+    mnemonic,
+    unitsUtils
+} from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
-// In this example a fee delegated transaction is
-// created, signed (by both parties), encoded and then decoded
+// 1 - Define clause
 
-// Define clause
 const clauses: TransactionClause[] = [
     {
         to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: 10000, // VET transfer transaction
+        value: unitsUtils.parseVET('10000').toString(), // VET transfer transaction
         data: '0x'
     }
 ];
 
-// Body of transaction
+// 2 - Define transaction body
+
 const body: TransactionBody = {
-    chainTag: 0x9a,
+    chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x0000000000000000',
     expiration: 0,
     clauses,
@@ -178,27 +189,35 @@ const body: TransactionBody = {
     }
 };
 
-// Create private keys of sender and delegate
-const pkSender = secp256k1.generatePrivateKey();
-const nodeDelgate = HDNode.fromMnemonic(mnemonic.generate());
-const pkDelegate = nodeDelgate.privateKey;
-// Get address of delegate
-const addrDelegate = nodeDelgate.address;
+// 3 - Create private keys of sender and delegate
 
-// Sign transaction as sender and delegate
+const senderPrivateKey = secp256k1.generatePrivateKey();
+const nodeDelegate = HDNode.fromMnemonic(mnemonic.generate());
+
+const delegatorPrivateKey = nodeDelegate.privateKey;
+
+// 4 - Get address of delegate
+
+const delegatorAddress = nodeDelegate.address;
+
+// 5 - Sign transaction as sender and delegate
+
 const unsignedTx = new Transaction(body);
 const signedTransaction = TransactionHandler.signWithDelegator(
     unsignedTx,
-    pkSender,
-    pkDelegate
+    senderPrivateKey,
+    delegatorPrivateKey
 );
 
-// Encode transaction
+// 5 - Encode transaction
+
 const encodedRaw = signedTransaction.encoded;
-// Decode transaction and check
+
+// 6 - Decode transaction and check
+
 const decodedTx = TransactionHandler.decode(encodedRaw, true);
 expect(decodedTx.isDelegated).toBeTruthy();
-expect(decodedTx.delegator).toBe(addrDelegate);
+expect(decodedTx.delegator).toBe(delegatorAddress);
 
 ```
 
@@ -211,26 +230,27 @@ import {
     secp256k1,
     TransactionUtils,
     TransactionHandler,
+    networkInfo,
     type TransactionClause,
-    type TransactionBody
-} from '@vechain-sdk/core';
+    type TransactionBody,
+    unitsUtils
+} from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
-// In this example a transaction is created that
-// has its expiry set to a specified block height
+// 1 - Define clauses
 
-// Define clause
 const clauses: TransactionClause[] = [
     {
         to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: 10000, // VET transfer transaction
+        value: unitsUtils.parseVET('1000').toString(), // VET transfer transaction
         data: '0x'
     }
 ];
 
-// Body of transaction
+// 2 - Define transaction body
+
 const body: TransactionBody = {
-    chainTag: 0x9a,
+    chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x00ffecb8ac3142c4', // first 8 bytes of block id from block #16772280
     expiration: 32, // tx will expire after block #16772280 + 32
     clauses,
@@ -240,43 +260,49 @@ const body: TransactionBody = {
     nonce: 1
 };
 
-// Create private key
+// 3 - Create private key
+
 const privateKey = secp256k1.generatePrivateKey();
-// Sign transaction
+
+// 4 - Sign transaction
+
 const unsignedTx = new Transaction(body);
 const signedTransaction = TransactionHandler.sign(unsignedTx, privateKey);
-// Encode transaction
+
+// 5 - Encode transaction
+
 const encodedRaw = signedTransaction.encoded;
-// Decode transaction and check
+
+// 6 - Decode transaction and check
+
 const decodedTx = TransactionHandler.decode(encodedRaw, true);
 expect(decodedTx.body.blockRef).toBe(body.blockRef);
 expect(decodedTx.body.expiration).toBe(body.expiration);
 
 ```
 
-
 ## Example: Transaction Dependency
 A transaction can be set to only be processed after another transaction, therefore defining an execution order for transactions. The _DependsOn_ field is the Id of the transaction on which the current transaction depends on. If the transaction does not depend on others _DependsOn_ can be set to _null_
 
 ```typescript { name=tx_dependency, category=example }
+import { networkInfo } from '@vechainfoundation/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
     TransactionUtils,
     TransactionHandler,
     type TransactionClause,
-    type TransactionBody
-} from '@vechain-sdk/core';
+    type TransactionBody,
+    unitsUtils
+} from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
-// In this example transaction A is created with no dependencies
-// Transaction B is the created as being dependant on transaction A
+// 1 - Define transaction clauses
 
-// Define transaction clauses
 const txAClauses: TransactionClause[] = [
     {
         to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: 1000, // VET transfer transaction
+        value: unitsUtils.parseVET('1000').toString(), // VET transfer transaction
         data: '0x'
     }
 ];
@@ -288,10 +314,11 @@ const txBClauses: TransactionClause[] = [
     }
 ];
 
-// Define transaction A with no dependencies
-// Note: This transaction has nonce = 1
+// 2 - Define transaction A with no dependencies
+
+// @NOTE: This transaction has nonce = 1
 const txABody: TransactionBody = {
-    chainTag: 0x9a,
+    chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x0000000000000000',
     expiration: 0,
     clauses: txAClauses,
@@ -301,10 +328,11 @@ const txABody: TransactionBody = {
     nonce: 1
 };
 
-// Define transaction B with nonce = 2
-// Note at the moment dependsOn is null
+// 3 - Define transaction B with nonce = 2
+
+// @NOTE: at the moment dependsOn is null
 const txBBody: TransactionBody = {
-    chainTag: 0x9a,
+    chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x0000000000000000',
     expiration: 0,
     clauses: txBClauses,
@@ -315,28 +343,33 @@ const txBBody: TransactionBody = {
 };
 
 // Define the senders private key
-const pkSender = secp256k1.generatePrivateKey();
+const senderPrivateKey = secp256k1.generatePrivateKey();
 
 // To define transaction B as dependant on transaction A
 // We need to sign transaction A, and then get its Id
 // and set that Id into transaction B's dependsOn field
 
-// get tx A id
-const txAUnsigned = new Transaction(txABody);
-const txASigned = TransactionHandler.sign(txAUnsigned, pkSender);
-const txAId = txASigned.id;
-// set it inside tx B
-txBBody.dependsOn = txAId;
+// 4 - Get Tx A id
 
-// sign Tx B
+const txAUnsigned = new Transaction(txABody);
+const txASigned = TransactionHandler.sign(txAUnsigned, senderPrivateKey);
+
+// 5 - Set it inside tx B
+
+txBBody.dependsOn = txASigned.id;
+
+// 6 - Sign Tx B
+
 const txBUnsigned = new Transaction(txBBody);
-const txBSigned = TransactionHandler.sign(txBUnsigned, pkSender);
-// encode Tx B
+const txBSigned = TransactionHandler.sign(txBUnsigned, senderPrivateKey);
+
+// 7 - encode Tx B
+
 const rawTxB = txBSigned.encoded;
 
-// To check we can decode Tx B
+// Check (we can decode Tx B)
 const decodedTx = TransactionHandler.decode(rawTxB, true);
-expect(decodedTx.body.dependsOn).toBe(txAId);
+expect(decodedTx.body.dependsOn).toBe(txASigned.id);
 
 ```
 

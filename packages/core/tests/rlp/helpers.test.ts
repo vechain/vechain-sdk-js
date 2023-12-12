@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-    ERRORS,
     assertValidNumericKindBuffer,
     validateNumericKindData,
     assertValidHexBlobKindData,
@@ -25,6 +24,7 @@ import {
     validNumericBufferTestCases,
     validateNumberTestCases
 } from './helpers.fixture';
+import { InvalidRLPError } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Test suite for NumericKind helpers.
@@ -62,14 +62,14 @@ describe('NumericKind helpers', () => {
          * This test iterates over cases where the input number is considered invalid,
          * asserting that the function throws an error with a corresponding message.
          */
-        invalidNumberTestCases.forEach(({ number, context, expected }) => {
+        invalidNumberTestCases.forEach(({ number, context }) => {
             test(`should throw error when data is invalid ${JSON.stringify(
                 number
             )}`, () => {
                 expect(() => {
                     // @ts-expect-error - invalid input
                     validateNumericKindData(number, context);
-                }).toThrowError(ERRORS.RLP.INVALID_RLP(context, expected));
+                }).toThrowError(InvalidRLPError);
             });
         });
     });
@@ -93,7 +93,7 @@ describe('NumericKind helpers', () => {
             )}`, () => {
                 expect(() => {
                     assertValidNumericKindBuffer(buffer, context, maxBytes);
-                }).not.toThrow();
+                }).not.toThrowError();
             });
         });
 
@@ -105,13 +105,13 @@ describe('NumericKind helpers', () => {
          * aligns with expectations.
          */
         invalidNumericBufferTestCases.forEach(
-            ({ buffer, context, maxBytes, expected }) => {
+            ({ buffer, context, maxBytes }) => {
                 test(`should throw error when buffer is invalid ${buffer.toString(
                     'hex'
                 )}`, () => {
                     expect(() => {
                         assertValidNumericKindBuffer(buffer, context, maxBytes);
-                    }).toThrowError(ERRORS.RLP.INVALID_RLP(context, expected));
+                    }).toThrowError(InvalidRLPError);
                 });
             }
         );
@@ -133,19 +133,17 @@ describe('HexBlobKind helpers', () => {
             test(`should not throw error when data is valid ${data}`, () => {
                 expect(() => {
                     assertValidHexBlobKindData(data, context);
-                }).not.toThrow();
+                }).not.toThrowError();
             });
         });
 
-        invalidHexBlobKindDataTestCases.forEach(
-            ({ data, context, expected }) => {
-                test(`should throw error when data is invalid ${data}`, () => {
-                    expect(() => {
-                        assertValidHexBlobKindData(data, context);
-                    }).toThrowError(ERRORS.RLP.INVALID_RLP(context, expected));
-                });
-            }
-        );
+        invalidHexBlobKindDataTestCases.forEach(({ data, context }) => {
+            test(`should throw error when data is invalid ${data}`, () => {
+                expect(() => {
+                    assertValidHexBlobKindData(data, context);
+                }).toThrowError(InvalidRLPError);
+            });
+        });
     });
 
     /**
@@ -158,22 +156,20 @@ describe('HexBlobKind helpers', () => {
             )}`, () => {
                 expect(() => {
                     assertValidHexBlobKindBuffer(buffer, context);
-                }).not.toThrow();
+                }).not.toThrowError();
             });
         });
 
-        invalidHexBlobKindBufferTestCases.forEach(
-            ({ buffer, context, expected }) => {
-                test(`should throw error when buffer is invalid ${JSON.stringify(
-                    buffer
-                )}`, () => {
-                    expect(() => {
-                        // @ts-expect-error - invalid input
-                        assertValidHexBlobKindBuffer(buffer, context);
-                    }).toThrowError(ERRORS.RLP.INVALID_RLP(context, expected));
-                });
-            }
-        );
+        invalidHexBlobKindBufferTestCases.forEach(({ buffer, context }) => {
+            test(`should throw error when buffer is invalid ${JSON.stringify(
+                buffer
+            )}`, () => {
+                expect(() => {
+                    // @ts-expect-error - invalid input
+                    assertValidHexBlobKindBuffer(buffer, context);
+                }).toThrowError(InvalidRLPError);
+            });
+        });
     });
 });
 
@@ -193,17 +189,17 @@ describe('FixedHexBlobKind helpers', () => {
                 test(`should not throw error when data is valid ${data}`, () => {
                     expect(() => {
                         assertFixedHexBlobKindData(data, context, bytes);
-                    }).not.toThrow();
+                    }).not.toThrowError();
                 });
             }
         );
 
         invalidFixedHexBlobKindDataTestCases.forEach(
-            ({ data, context, bytes, expected }) => {
+            ({ data, context, bytes }) => {
                 test(`should throw error when data is invalid ${data}`, () => {
                     expect(() => {
                         assertFixedHexBlobKindData(data, context, bytes);
-                    }).toThrowError(ERRORS.RLP.INVALID_RLP(context, expected));
+                    }).toThrowError(InvalidRLPError);
                 });
             }
         );
@@ -220,19 +216,19 @@ describe('FixedHexBlobKind helpers', () => {
                 )}`, () => {
                     expect(() => {
                         assertFixedHexBlobKindBuffer(buffer, context, bytes);
-                    }).not.toThrow();
+                    }).not.toThrowError();
                 });
             }
         );
 
         invalidFixedHexBlobKindBufferTestCases.forEach(
-            ({ buffer, context, bytes, expected }) => {
+            ({ buffer, context, bytes }) => {
                 test(`should throw error when buffer is invalid ${JSON.stringify(
                     buffer
                 )}`, () => {
                     expect(() => {
                         assertFixedHexBlobKindBuffer(buffer, context, bytes);
-                    }).toThrowError(ERRORS.RLP.INVALID_RLP(context, expected));
+                    }).toThrowError(InvalidRLPError);
                 });
             }
         );
@@ -254,19 +250,19 @@ describe('CompactFixedHexBlobKind helpers', () => {
                 )}`, () => {
                     expect(() => {
                         assertCompactFixedHexBlobBuffer(buffer, context, bytes);
-                    }).not.toThrow();
+                    }).not.toThrowError();
                 });
             }
         );
 
         invalidCompactFixedHexBlobKindBufferTestCases.forEach(
-            ({ buffer, context, bytes, expected }) => {
+            ({ buffer, context, bytes }) => {
                 test(`should throw error when buffer is invalid ${JSON.stringify(
                     buffer
                 )}`, () => {
                     expect(() => {
                         assertCompactFixedHexBlobBuffer(buffer, context, bytes);
-                    }).toThrowError(ERRORS.RLP.INVALID_RLP(context, expected));
+                    }).toThrowError(InvalidRLPError);
                 });
             }
         );

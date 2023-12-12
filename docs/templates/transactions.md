@@ -33,7 +33,6 @@ Using the _BlockRef_ and _Expiration_ fields a transaction can be set to be proc
 
 [example](examples/transactions/blockref_expiration.ts)
 
-
 ## Example: Transaction Dependency
 A transaction can be set to only be processed after another transaction, therefore defining an execution order for transactions. The _DependsOn_ field is the Id of the transaction on which the current transaction depends on. If the transaction does not depend on others _DependsOn_ can be set to _null_
 

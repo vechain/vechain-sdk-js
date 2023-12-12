@@ -6,19 +6,21 @@
             "outputs": ["dist/**"]
         },
         "test": {
-            "outputs": ["coverage/**"]
-        },
-        "test:unit": {
-            "outputs": ["coverage/**"]
-        },
-        "test:integration":{
-            "outputs": ["coverage/**"]
-        },
-        "lint": {},
-        "format": {},
-        "test:docs": {
+            "outputs": ["coverage/**"],
             "dependsOn": ["^build"]
         },
+        "test:unit": {
+            "outputs": ["coverage/**"],
+            "dependsOn": ["^build"]
+        },
+        "test:integration":{
+            "outputs": ["coverage/**"],
+            "dependsOn": ["^build"]
+        },
+        "lint": {
+            "dependsOn": ["^build"]
+        },
+        "format": {},
         "test:examples": {
             "dependsOn": ["^build"]
         }

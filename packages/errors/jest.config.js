@@ -4,5 +4,5 @@ module.exports = {
     testEnvironment: 'node',
     coverageReporters: ['html', 'lcov', 'json'],
     runner: 'groups',
-    reporters: ['jest-junit']
+    reporters: ['default', 'jest-junit']
 };
