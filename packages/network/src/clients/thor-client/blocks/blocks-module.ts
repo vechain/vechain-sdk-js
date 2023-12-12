@@ -17,7 +17,10 @@ class BlocksModule {
      * Initializes a new instance of the `Thorest` class.
      * @param thorest - The Thorest instance used to interact with the vechain Thorest blockchain API.
      */
-    constructor(readonly thorest: ThorestClient) {
+    constructor(
+        readonly thorest: ThorestClient,
+        onBlockError?: (error: Error) => void
+    ) {
         Poll.createEventPoll(
             async () => await thorest.blocks.getBestBlock(),
             1000
@@ -25,6 +28,7 @@ class BlocksModule {
             .onData((data) => {
                 this.headBlock = data;
             })
+            .onError(onBlockError ?? ((_) => {}))
             .startListen();
     }
 

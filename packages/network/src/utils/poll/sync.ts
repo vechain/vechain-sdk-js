@@ -30,7 +30,7 @@ async function sleep(delayInMilliseconds: number): Promise<void> {
  * @returns An object with a `waitUntil` method. It blocks execution until the condition is met. When the condition is met, it returns the result of the poll.
  */
 function SyncPoll<TReturnType>(
-    pollingFunction: () => Promise<TReturnType>,
+    pollingFunction: () => Promise<TReturnType> | TReturnType,
     options?: SyncPollInputOptions
 ): {
     waitUntil: (

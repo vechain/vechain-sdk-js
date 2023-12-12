@@ -1,6 +1,7 @@
-import { describe, expect, test, jest } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import { thorClient } from '../../../fixture';
 import { waitForBlockTestCases } from './fixture';
+import { Poll } from '../../../../src';
 
 /**
  * Blocks Module integration tests
@@ -58,16 +59,17 @@ describe('Blocks Module', () => {
     });
 
     test('pollHeadBlock', async () => {
-        // To mock setTimeouts we need to use jest fake timers which allow to manpilate time and test asynchronicity
-        jest.useFakeTimers({
-            legacyFakeTimers: true
+        const headBlockFirst = await Poll.SyncPoll(() =>
+            thorClient.blocks.getHeadBlock()
+        ).waitUntil((result) => {
+            return result !== null;
         });
-        const headBlockFirst = thorClient.blocks.getHeadBlock();
+
         expect(headBlockFirst).toBeDefined();
         console.log('headBlockFirst', headBlockFirst);
 
-        // wait for 10 seconds with promise
-        await new Promise((resolve) => setTimeout(resolve, 10000));
+        // wait for 5 seconds with promise
+        await new Promise((resolve) => setTimeout(resolve, 5000));
 
         const headBlockSecond = thorClient.blocks.getHeadBlock();
         expect(headBlockSecond).toBeDefined();
