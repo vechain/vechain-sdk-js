@@ -67,7 +67,7 @@ class BlocksModule {
      * Polls the head block (best block).
      * @returns The head block (best block)
      */
-    public pollHeadBlock(): BlockDetail | null {
+    public getHeadBlock(): BlockDetail | null {
         return this.headBlock;
     }
 }

@@ -1,7 +1,6 @@
 import { describe, expect, test, jest } from '@jest/globals';
 import { thorClient } from '../../../fixture';
 import { waitForBlockTestCases } from './fixture';
-import { advanceTimersByTimeAndTick } from '../../../test-utils';
 
 /**
  * Blocks Module integration tests
@@ -63,16 +62,16 @@ describe('Blocks Module', () => {
         jest.useFakeTimers({
             legacyFakeTimers: true
         });
-        const headBlockFirst = thorClient.blocks.pollHeadBlock();
+        const headBlockFirst = thorClient.blocks.getHeadBlock();
         expect(headBlockFirst).toBeDefined();
         console.log('headBlockFirst', headBlockFirst);
 
-        // Advance timers by the specified interval & tick
-        await advanceTimersByTimeAndTick(11000);
+        // wait for 10 seconds with promise
+        await new Promise((resolve) => setTimeout(resolve, 10000));
 
-        const headBlockSecond = thorClient.blocks.pollHeadBlock();
+        const headBlockSecond = thorClient.blocks.getHeadBlock();
         expect(headBlockSecond).toBeDefined();
         console.log('headBlockSecond', headBlockSecond);
         expect(headBlockFirst).not.toBe(headBlockSecond);
-    }, 12000);
+    }, 20000);
 });
