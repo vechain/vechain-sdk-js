@@ -7,7 +7,9 @@ import {
     contract,
     dataUtils,
     PARAMS_ABI,
-    PARAMS_ADDRESS } from "@vechainfoundation/vechain-sdk-core";
+    PARAMS_ADDRESS,
+    unitsUtils
+} from "@vechainfoundation/vechain-sdk-core";
 
 // In this example we simulate a transaction of sending 1 VET to another account
 
@@ -21,10 +23,12 @@ const transaction1 = {
     clauses: [
         {
             to: '0xb717b660cd51109334bd10b2c168986055f58c1a',
-            value: '1000000000000000000',
+            value: unitsUtils.parseVET('1').toString(), // converts from 1 VET to wei
             data: '0x'
         }
     ],
+    // Please note - this field one of the optional fields that may be passed (see SimulateTransactionOptions),
+    // and is only required if you want to simulate a transaction
     simulateTransactionOptions: {
         caller: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6'
     }
@@ -40,7 +44,7 @@ const expected1 =
                 sender: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6',
                 recipient:
                     '0xb717b660cd51109334bd10b2c168986055f58c1a',
-                amount: '0xde0b6b3a7640000'
+                amount: '0xde0b6b3a7640000' //hex represenation of 1000000000000000000 wei (1 VET)
             }
         ],
         gasUsed: 0,
@@ -66,7 +70,7 @@ expect(simulatedTx1[0].transfers).toEqual(expected1[0].transfers);
 
 // In this next example we simulate a Simulate smart contract transaction
 
-// 1(a) - create the transaction for a VET transfer
+// 1(a) - create the transaction to simulate a smart contract call
 const transaction2 = {
     clauses: [
         /**
