@@ -9,6 +9,12 @@ interface Contract {
     bytecode: string;
 }
 
+export interface Sources {
+    [contractName: string]: { content: string };
+}
+
+// Main
+
 /**
  * Compile a Solidity contract located in a directory
  * @param dirname name of the directory where the contract is located
@@ -16,25 +22,11 @@ interface Contract {
  * @param contractName Name of the contract
  * @returns the name, abi, and bytecode of the contract
  */
-function compileContract(
-    dirname: string,
-    filename: string,
-    contractName: string
-): Contract {
-    // Specify the path to your Solidity contract file
-    const contractPath = path.resolve(dirname, filename);
-
-    // Read the Solidity source code from the file
-    const contractSourceCode = fs.readFileSync(contractPath, 'utf8');
-
+function compileContract(contractName: string, sources: Sources): Contract {
     // Define the Solidity input for the compiler
     const input = {
         language: 'Solidity',
-        sources: {
-            solidityContract: {
-                content: contractSourceCode
-            }
-        },
+        sources: sources,
         settings: {
             outputSelection: {
                 '*': {
@@ -50,11 +42,11 @@ function compileContract(
 
     // Extract the bytecode from the compiled contract
     const bytecode =
-        compiledContract.contracts['solidityContract'][contractName].evm
+        compiledContract.contracts[contractName + '.sol'][contractName].evm
             .bytecode.object;
 
     const abi = JSON.stringify(
-        compiledContract.contracts['solidityContract'][contractName].abi
+        compiledContract.contracts[contractName + '.sol'][contractName].abi
     );
 
     return {
