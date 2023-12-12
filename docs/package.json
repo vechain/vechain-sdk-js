@@ -4,7 +4,9 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
-    "test:examples": "ts-node-test examples/",
+    "test:before": "docker compose up -d",
+    "test:after": "docker compose down",
+    "test:examples": "yarn test:before && ts-node-test examples/ && yarn test:after",
     "build": "find . -name \"*.md\" -type f -maxdepth 1 ! -name \"README.md\" -delete && tsup ./build-scripts && node dist/builddocs.cjs"
   },
   "dependencies": {
