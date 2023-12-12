@@ -9,7 +9,7 @@
         "postinstall": "husky install",
         "build": "turbo build",
         "lint": "turbo lint",
-        "start-thor-solo": "echo 'Starting thor solo node ...\n' && docker compose up -d && echo '\nThor solo node started'",
+        "start-thor-solo": "echo 'Starting thor solo node ...\n' && docker compose up -d --wait && echo '\nThor solo node started'",
         "stop-thor-solo": "docker compose down && echo '\nThor solo node stopped'",
         "test": "yarn start-thor-solo && turbo test --force && yarn merge-coverage && yarn stop-thor-solo",
         "test:unit": "turbo test:unit",
