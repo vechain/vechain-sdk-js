@@ -58,7 +58,7 @@ describe('Blocks Module', () => {
         }
     });
 
-    test('pollHeadBlock', async () => {
+    test('getHeadBlock', async () => {
         const headBlockFirst = await Poll.SyncPoll(() =>
             thorClient.blocks.getHeadBlock()
         ).waitUntil((result) => {
