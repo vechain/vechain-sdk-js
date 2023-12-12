@@ -33,16 +33,24 @@ Certificates are used in various scenarios within the VechainThor blockchain, in
 
 It's important to note that certificates in the VechainThor blockchain are self-signed, which means that they are issued and signed by the same entity or user. The signature from the issuer's private key serves as proof of the certificate's authenticity.
 
-```javascript
-import { Certificate, secp256k1, blake2b256, address } from 'thor-devkit'
+```typescript { name=sign_verify, category=example }
+import {
+    type Certificate,
+    certificate,
+    secp256k1,
+    blake2b256,
+    addressUtils
+} from '@vechainfoundation/vechain-sdk-core';
 
-// Generate a private key and address for the signer
-const privateKey = secp256k1.generatePrivateKey()
-const publicKey = secp256k1.derivePublicKey(privateKey)
-const signerAddress = address.fromPublicKey(publicKey)
+// 1 - Generate a private key and address for the signer
 
-// Create a certificate
-const cert = {
+const privateKey = secp256k1.generatePrivateKey();
+const publicKey = secp256k1.derivePublicKey(privateKey);
+const signerAddress = addressUtils.fromPublicKey(publicKey);
+
+// 2 - Create a certificate
+
+const cert: Certificate = {
     purpose: 'identification',
     payload: {
         type: 'text',
@@ -51,20 +59,17 @@ const cert = {
     domain: 'localhost',
     timestamp: 1545035330,
     signer: signerAddress
-}
+};
 
-// Sign certificate
-const jsonStr = Certificate.encode(cert)
-const signature = secp256k1.sign(blake2b256(jsonStr), privateKey)
+// 3 - Sign certificate
+
+const jsonStr = certificate.encode(cert);
+const signature = secp256k1.sign(blake2b256(jsonStr), privateKey);
 
 // Add 0x to signature
-cert.signature = '0x' + signature.toString('hex')
+cert.signature = '0x' + signature.toString('hex');
 
 // Verify certificate
-Certificate.verify(cert)
+certificate.verify(cert);
 
-// Get certificate id
-const id = '0x' + blake2b256(Certificate.encode(cert)).toString('hex')
-console.log(id)
-// 0x0...
 ```

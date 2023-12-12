@@ -1,2 +1,2 @@
 export * from './errorBuilder';
-export * from './errorHandler';
+export * from './assert';

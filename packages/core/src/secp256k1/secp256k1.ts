@@ -1,11 +1,11 @@
 import { randomBytes } from 'crypto';
-import {
-    ERRORS,
-    PRIVATE_KEY_MAX_VALUE,
-    SIGNATURE_LENGTH,
-    ZERO_BUFFER
-} from '../utils';
+import { PRIVATE_KEY_MAX_VALUE, SIGNATURE_LENGTH, ZERO_BUFFER } from '../utils';
 import { ec as EC } from 'elliptic';
+import { assert, SECP256K1 } from '@vechainfoundation/vechain-sdk-errors';
+import {
+    assertIsValidPrivateKey,
+    assertIsValidSecp256k1MessageHash
+} from '../keystore/helpers/assertions';
 
 // Cureve algorithm
 const curve = new EC('secp256k1');
@@ -39,43 +39,40 @@ function isValidPrivateKey(key: Buffer): boolean {
  */
 function generatePrivateKey(entropy?: () => Buffer): Buffer {
     entropy = entropy ?? ((): Buffer => randomBytes(32));
-    let privKey: Buffer;
+    let privateKey: Buffer;
     do {
-        privKey = entropy();
-    } while (!isValidPrivateKey(privKey));
-    return privKey;
+        privateKey = entropy();
+    } while (!isValidPrivateKey(privateKey));
+    return privateKey;
 }
 
 /**
  * Derive public key from private key using elliptic curve algorithm on the curve secp256k1
  *
+ * @throws{InvalidSecp256k1PrivateKeyError}
  * @param privateKey - private key to derive public key from
  * @returns Public key derived from private key
  */
 function derivePublicKey(privateKey: Buffer): Buffer {
-    if (!isValidPrivateKey(privateKey)) {
-        throw new Error(ERRORS.SECP256K1.INVALID_PRIVATE_KEY);
-    }
+    assertIsValidPrivateKey(privateKey, isValidPrivateKey);
     const keyPair = curve.keyFromPrivate(privateKey);
     return Buffer.from(keyPair.getPublic().encode('array', false));
 }
 
 /**
  * sign a message using elliptic curve algorithm on the curve secp256k1
- * @param msgHash hash of message
- * @param privKey serialized private key
+ *
+ * @throws{InvalidSecp256k1PrivateKeyError, InvalidSecp256k1MessageHashError}
+ * @param messageHash hash of message
+ * @param privateKey serialized private key
  */
-function sign(msgHash: Buffer, privKey: Buffer): Buffer {
-    if (!isValidMessageHash(msgHash)) {
-        throw new Error(ERRORS.SECP256K1.INVALID_MESSAGE_HASH);
-    }
+function sign(messageHash: Buffer, privateKey: Buffer): Buffer {
+    assertIsValidSecp256k1MessageHash(messageHash, isValidMessageHash);
 
-    if (!isValidPrivateKey(privKey)) {
-        throw new Error(ERRORS.SECP256K1.INVALID_PRIVATE_KEY);
-    }
+    assertIsValidPrivateKey(privateKey, isValidPrivateKey);
 
-    const keyPair = curve.keyFromPrivate(privKey);
-    const sig = keyPair.sign(msgHash, { canonical: true });
+    const keyPair = curve.keyFromPrivate(privateKey);
+    const sig = keyPair.sign(messageHash, { canonical: true });
 
     const r = Buffer.from(sig.r.toArray('be', 32));
     const s = Buffer.from(sig.s.toArray('be', 32));
@@ -84,21 +81,29 @@ function sign(msgHash: Buffer, privKey: Buffer): Buffer {
 }
 
 /**
- * recovery signature to public key
- * @param msgHash hash of message
+ * Recovery signature to public key
+ *
+ * @throws{InvalidSecp256k1MessageHashError, InvalidSecp256k1SignatureError, InvalidSecp256k1SignatureRecoveryError}
+ * @param messageHash hash of message
  * @param sig signature
  */
-function recover(msgHash: Buffer, sig: Buffer): Buffer {
-    if (!isValidMessageHash(msgHash)) {
-        throw new Error(ERRORS.SECP256K1.INVALID_MESSAGE_HASH);
-    }
-    if (!Buffer.isBuffer(sig) || sig.length !== SIGNATURE_LENGTH) {
-        throw new Error(ERRORS.SECP256K1.INVALID_SIGNATURE);
-    }
+function recover(messageHash: Buffer, sig: Buffer): Buffer {
+    assertIsValidSecp256k1MessageHash(messageHash, isValidMessageHash);
+
+    assert(
+        Buffer.isBuffer(sig) && sig.length === SIGNATURE_LENGTH,
+        SECP256K1.INVALID_SECP256k1_SIGNATURE,
+        'Invalid signature given as input. Length must be exactly 65 bytes.',
+        { sig }
+    );
+
     const recovery = sig[64];
-    if (recovery !== 0 && recovery !== 1) {
-        throw new Error(ERRORS.SECP256K1.INVALID_SIGNATURE_RECOVERY);
-    }
+    assert(
+        recovery === 0 || recovery === 1,
+        SECP256K1.INVALID_SECP256k1_SIGNATURE_RECOVERY,
+        'Invalid signature recovery value. Signature bytes at position 64 must be 0 or 1.',
+        { recovery }
+    );
 
     const rCopy = Uint8Array.from(sig);
     const r = rCopy.slice(0, 32);
@@ -108,7 +113,7 @@ function recover(msgHash: Buffer, sig: Buffer): Buffer {
 
     return Buffer.from(
         (
-            curve.recoverPubKey(msgHash, { r, s }, recovery) as {
+            curve.recoverPubKey(messageHash, { r, s }, recovery) as {
                 encode: (enc: string, flag: boolean) => ArrayBuffer;
             }
         ).encode('array', false)

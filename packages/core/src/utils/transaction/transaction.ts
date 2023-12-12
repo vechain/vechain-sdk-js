@@ -1,14 +1,15 @@
-import { address } from '../../address';
+import { addressUtils } from '../../address';
 import { type TransactionClause } from '../../transaction';
 import { TRANSACTIONS_GAS_CONSTANTS } from '../const';
 import { dataUtils } from '../data';
-import { ERRORS } from '../errors';
+import { assert, DATA } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Calculates intrinsic gas that a tx costs with the given set of clauses.
  *
  * @note see the following link for more details: https://docs.vechain.org/core-concepts/transactions/transaction-calculation
  *
+ * @throws{InvalidDataTypeError}
  * @param clauses - Transaction clauses
  * @returns Intrinsic gas of a set of clauses
  */
@@ -25,9 +26,12 @@ function intrinsicGas(clauses: TransactionClause[]): number {
     return clauses.reduce((sum, clause: TransactionClause) => {
         if (clause.to !== null) {
             // Invalid address
-            if (!address.isAddress(clause.to)) {
-                throw new Error(ERRORS.DATA.INVALID_DATA_TYPE('an address'));
-            }
+            assert(
+                addressUtils.isAddress(clause.to),
+                DATA.INVALID_DATA_TYPE,
+                `Invalid data type in clause. Each 'to' field must be a valid address.`,
+                { clause }
+            );
 
             sum += TRANSACTIONS_GAS_CONSTANTS.CLAUSE_GAS;
         } else {
@@ -41,14 +45,18 @@ function intrinsicGas(clauses: TransactionClause[]): number {
 /**
  * Calculates gas used by data.
  *
+ * @throws{InvalidDataTypeError}
  * @param data Data to calculate gas
  * @returns Gas used by data
  */
 function _calculateDataUsedGas(data: string): number {
     // Invalid data
-    if (data !== '' && !dataUtils.isHexString(data)) {
-        throw new Error(ERRORS.DATA.INVALID_DATA_TYPE('a hexadecimal string'));
-    }
+    assert(
+        data === '' || dataUtils.isHexString(data),
+        DATA.INVALID_DATA_TYPE,
+        'Invalid data type for gas calculation. Data should be a hexadecimal string.',
+        { data }
+    );
 
     let sum = 0;
     for (let i = 2; i < data.length; i += 2) {

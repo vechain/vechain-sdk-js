@@ -1,7 +1,9 @@
 export * from './abi';
 export * from './address';
 export * from './bloom';
+export * from './certificate';
 export * from './encoding';
+export * from './contract';
 export * from './hash';
 export * from './hdnode';
 export * from './keystore';
@@ -10,3 +12,4 @@ export * from './secp256k1';
 export * from './transaction';
 export * from './utils';
 export * from './bloom';
+export * from './certificate';

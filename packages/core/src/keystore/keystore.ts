@@ -1,11 +1,16 @@
 /**
  * Implements the JSON Keystore v3 Wallet encryption, decryption, and validation functionality.
  */
-import { address } from '../address';
+import { addressUtils } from '../address';
 import { secp256k1 } from '../secp256k1';
 import { ethers } from 'ethers';
-import { ERRORS, SCRYPT_PARAMS } from '../utils';
+import { SCRYPT_PARAMS } from '../utils';
 import { type Keystore, type KeystoreAccount } from './types';
+import {
+    assert,
+    buildError,
+    KEYSTORE
+} from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Encrypts a given private key into a keystore format using the specified password.
@@ -20,7 +25,7 @@ async function encrypt(
 ): Promise<Keystore> {
     // Public and Address are derived from private key
     const derivePublicKey = secp256k1.derivePublicKey(privateKey);
-    const deriveAddress = address.fromPublicKey(derivePublicKey);
+    const deriveAddress = addressUtils.fromPublicKey(derivePublicKey);
 
     // Create keystore account compatible with ethers
     const keystoreAccount: ethers.KeystoreAccount = {
@@ -50,6 +55,7 @@ async function encrypt(
 /**
  * Decrypts a keystore to obtain the private key using the given password.
  *
+ * @throws{InvalidKeystoreError, InvalidKeystorePasswordError}
  * @param keystore - The keystore containing the encrypted private key.
  * @param password - The password used to decrypt the keystore.
  * @returns A Promise that resolves to the decrypted KeystoreAccount or rejects if the keystore or password is invalid.
@@ -59,7 +65,14 @@ async function decrypt(
     password: string
 ): Promise<KeystoreAccount> {
     // Invalid keystore
-    if (!isValid(keystore)) throw new Error(ERRORS.KEYSTORE.INVALID_KEYSTORE);
+    assert(
+        isValid(keystore),
+        KEYSTORE.INVALID_KEYSTORE,
+        'Invalid keystore. Ensure the keystore is properly formatted and contains the necessary data.',
+        {
+            keystore
+        }
+    );
 
     try {
         return (await ethers.decryptKeystoreJson(
@@ -67,7 +80,15 @@ async function decrypt(
             password
         )) as KeystoreAccount;
     } catch (e) {
-        throw new Error(ERRORS.KEYSTORE.INVALID_PASSWORD);
+        throw buildError(
+            KEYSTORE.INVALID_PASSWORD,
+            'Decryption failed: Invalid Password for the given keystore.',
+            {
+                keystore,
+                password
+            },
+            e
+        );
     }
 }
 

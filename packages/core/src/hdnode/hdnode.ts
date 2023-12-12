@@ -1,33 +1,43 @@
 import { ethers } from 'ethers';
 import {
-    ERRORS,
     MNEMONIC_WORDLIST_ALLOWED_SIZES,
     VET_DERIVATION_PATH,
     X_PRIV_PREFIX,
     X_PUB_PREFIX
 } from '../utils';
 import { type IHDNode } from './types';
-import { address } from '../address';
+import { addressUtils } from '../address';
 import { sha256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import { type WordlistSizeType } from '../mnemonic';
+import { assert, HDNODE } from '@vechainfoundation/vechain-sdk-errors';
+import {
+    assertIsValidHdNodeChainCode,
+    assertIsValidHdNodeDerivationPath
+} from './helpers/assertions';
 
 /**
  * Generates an HDNode instance using mnemonic words.
  *
+ * @throws {InvalidHDNodeMnemonicsError, InvalidHDNodeDerivationPathError}
  * @param words - The mnemonic words.
  * @param path - The derivation path (default is VET_DERIVATION_PATH).
  * @returns An IHDNode instance derived from the given mnemonic.
- * @throws {Error} When the mnemonic words are invalid.
  */
 function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
-    if (
-        !MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(
+    // Invalid mnemonic words
+    assert(
+        MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(
             words.length as WordlistSizeType
-        )
-    ) {
-        throw new Error(ERRORS.HDNODE.INVALID_MNEMONICS);
-    }
+        ),
+        HDNODE.INVALID_HDNODE_MNEMONICS,
+        'Invalid mnemonic size. Mnemonic must be 12, 15, 18, 21, or 24 words.',
+        { words }
+    );
+
+    // Invalid derivation path
+    assertIsValidHdNodeDerivationPath(path);
+
     // normalize words to lowercase
     const joinedWords = words.join(' ').toLowerCase();
     const node = ethers.HDNodeWallet.fromMnemonic(
@@ -40,19 +50,22 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
 /**
  * Generates an HDNode instance using an extended public key.
  *
+ * @throws{InvalidHDNodePublicKeyError, InvalidHDNodeChaincodeError}
  * @param publicKey - The extended public key.
  * @param chainCode - The associated chain code.
  * @returns An IHDNode instance derived from the given public key and chain code.
- * @throws {Error} When the public key or chain code is invalid.
  */
 function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
     // Invalid public key
-    if (publicKey.length !== 65)
-        throw new Error(ERRORS.HDNODE.INVALID_PUBLICKEY);
+    assert(
+        publicKey.length === 65,
+        HDNODE.INVALID_HDNODE_PUBLIC_KEY,
+        'Invalid public key. Length must be exactly 65 bytes.',
+        { publicKey }
+    );
 
     // Invalid chain code
-    if (chainCode.length !== 32)
-        throw new Error(ERRORS.HDNODE.INVALID_CHAINCODE);
+    assertIsValidHdNodeChainCode(chainCode);
 
     const compressed = secp256k1.extendedPublicKeyToArray(publicKey, true);
     const key = Buffer.concat([
@@ -72,19 +85,22 @@ function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
 /**
  * Generates an HDNode instance using an extended private key (xpriv).
  *
+ * @throws{InvalidHDNodePrivateKeyError, InvalidHDNodeChaincodeError}
  * @param privateKey - The private key.
  * @param chainCode - The associated chain code.
  * @returns An IHDNode instance derived from the given private key and chain code.
- * @throws {Error} When the private key or chain code is invalid.
  */
 function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
     // Invalid private key
-    if (privateKey.length !== 32)
-        throw new Error(ERRORS.HDNODE.INVALID_PRIVATEKEY);
+    assert(
+        privateKey.length === 32,
+        HDNODE.INVALID_HDNODE_PRIVATE_KEY,
+        'Invalid private key. Length must be exactly 32 bytes.',
+        { privateKey }
+    );
 
     // Invalid chain code
-    if (chainCode.length !== 32)
-        throw new Error(ERRORS.HDNODE.INVALID_CHAINCODE);
+    assertIsValidHdNodeChainCode(chainCode);
 
     const key = Buffer.concat([
         X_PRIV_PREFIX,
@@ -104,6 +120,7 @@ function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
 /**
  * Converts an `ethers` HDNode to a custom HDNode format.
  *
+ * @throws{InvalidHDNodeDerivationPathError}
  * @param ethersNode - The HDNode instance from the `ethers` library.
  * @returns An IHDNode instance in the custom format.
  */
@@ -115,7 +132,7 @@ function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
         )
     );
     const cc = Buffer.from(ethersNode.chainCode.slice(2), 'hex');
-    const addr = address.fromPublicKey(pub);
+    const addr = addressUtils.fromPublicKey(pub);
 
     return {
         get publicKey() {
@@ -136,6 +153,9 @@ function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
             return ethersNodeToOurHDNode(ethersNode.deriveChild(index));
         },
         derivePath(path: string) {
+            // Invalid derivation path
+            assertIsValidHdNodeDerivationPath(path);
+
             return ethersNodeToOurHDNode(ethersNode.derivePath(path));
         }
     };

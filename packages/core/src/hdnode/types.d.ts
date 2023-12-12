@@ -3,8 +3,6 @@
  *
  * BIP32 HD nodes allow for the derivation of child nodes from a master node,
  * enabling the generation of a tree structure of key pairs from a single seed.
- *
- * @public
  */
 interface IHDNode {
     /**

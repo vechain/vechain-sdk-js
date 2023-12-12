@@ -5,6 +5,7 @@ packages/**/node_modules
 apps/**/dist
 apps/**/.turbo
 apps/**/node_modules
+docs/**/dist
 
 yarn-error.log
 # Code coverage folders and files
@@ -18,3 +19,7 @@ junit.xml
 
 # docs
 docs/build/*.md
+api-docs/
+
+# IDE
+.idea

@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { ERRORS, address, secp256k1 } from '../../src';
+import { addressUtils, secp256k1 } from '../../src';
 import {
     checksumedAndUnchecksumedAddresses,
     invalidPrivateKey,
@@ -7,6 +7,10 @@ import {
     simplePrivateKey,
     simplePublicKey
 } from './fixture';
+import {
+    InvalidAddressError,
+    InvalidSecp256k1PrivateKeyError
+} from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Test address module
@@ -21,12 +25,16 @@ describe('Address', () => {
          * Valid and invalid address check
          */
         test('validate address', () => {
-            expect(address.isAddress('not an address')).toEqual(false);
+            expect(addressUtils.isAddress('not an address')).toEqual(false);
             expect(
-                address.isAddress('52908400098527886E0F7030069857D2E4169EE7')
+                addressUtils.isAddress(
+                    '52908400098527886E0F7030069857D2E4169EE7'
+                )
             ).toEqual(false);
             expect(
-                address.isAddress('0x52908400098527886E0F7030069857D2E4169EE7')
+                addressUtils.isAddress(
+                    '0x52908400098527886E0F7030069857D2E4169EE7'
+                )
             ).toEqual(true);
         });
     });
@@ -43,14 +51,14 @@ describe('Address', () => {
             expect(secp256k1.derivePublicKey(simplePrivateKey)).toEqual(
                 simplePublicKey
             );
-            expect(address.fromPublicKey(simplePublicKey)).toEqual(
+            expect(addressUtils.fromPublicKey(simplePublicKey)).toEqual(
                 simpleAddress
             );
 
             // Invalid private key to derive public key
-            expect(() => secp256k1.derivePublicKey(invalidPrivateKey)).toThrow(
-                ERRORS.SECP256K1.INVALID_PRIVATE_KEY
-            );
+            expect(() =>
+                secp256k1.derivePublicKey(invalidPrivateKey)
+            ).toThrowError(InvalidSecp256k1PrivateKeyError);
         });
     });
 
@@ -63,13 +71,13 @@ describe('Address', () => {
          */
         test('invalid input should throw error', () => {
             expect(() => {
-                address.toChecksumed('invalid data');
-            }).toThrow(ERRORS.ADDRESS.INVALID_ADDRESS);
+                addressUtils.toChecksumed('invalid data');
+            }).toThrowError(InvalidAddressError);
             expect(() => {
-                address.toChecksumed(
+                addressUtils.toChecksumed(
                     '52908400098527886E0F7030069857D2E4169EE7'
                 );
-            }).toThrow(ERRORS.ADDRESS.INVALID_ADDRESS);
+            }).toThrowError(InvalidAddressError);
         });
 
         /**
@@ -77,9 +85,9 @@ describe('Address', () => {
          */
         test('valid input', () => {
             checksumedAndUnchecksumedAddresses.forEach((addressPair) => {
-                expect(address.toChecksumed(addressPair.unchecksumed)).toEqual(
-                    addressPair.checksumed
-                );
+                expect(
+                    addressUtils.toChecksumed(addressPair.unchecksumed)
+                ).toEqual(addressPair.checksumed);
             });
         });
     });

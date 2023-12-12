@@ -1,0 +1,64 @@
+name: Publish TypeDoc
+
+on:
+    push:
+      branches:
+        - 'githubpages'
+    workflow_dispatch:
+
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+    contents: read
+    pages: write
+    id-token: write
+
+# Allow only one instance of wf to run at once
+concurrency:
+    group: "pages"
+    cancel-in-progress: false
+
+env:
+    BUILD_PATH: "./api-docs/"
+
+jobs:
+  build-api-docs:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        - name: Setup Node
+          uses: actions/setup-node@v4
+          with:
+              node-version: lts/*
+
+        - name: Install packages
+          run: yarn install
+        
+        - name: Build
+          run: yarn build
+        
+        - name: Generate api docs
+          run: yarn generate:apidocs 
+        
+        - name: Setup pages
+          uses: actions/configure-pages@v4
+
+        - name: Upload artifact
+          uses: actions/upload-pages-artifact@v2
+          with:
+            path: ${{ env.BUILD_PATH }}
+
+  deploy:
+    environment:
+        name: github-pages
+        url: ${{ steps.deployment.outputs.page_url }}
+    needs: build-api-docs
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+        - name: Deploy to GitHub Pages
+          id: deployment
+          uses: actions/deploy-pages@v3

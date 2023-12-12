@@ -1,3 +1,4 @@
+import { networkInfo } from '@vechainfoundation/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -6,25 +7,25 @@ import {
     HDNode,
     type TransactionClause,
     type TransactionBody,
-    mnemonic
-} from '@vechain-sdk/core';
+    mnemonic,
+    unitsUtils
+} from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
-// In this example a fee delegated transaction is
-// created, signed (by both parties), encoded and then decoded
+// 1 - Define clause
 
-// Define clause
 const clauses: TransactionClause[] = [
     {
         to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: 10000, // VET transfer transaction
+        value: unitsUtils.parseVET('10000').toString(), // VET transfer transaction
         data: '0x'
     }
 ];
 
-// Body of transaction
+// 2 - Define transaction body
+
 const body: TransactionBody = {
-    chainTag: 0x9a,
+    chainTag: networkInfo.mainnet.chainTag,
     blockRef: '0x0000000000000000',
     expiration: 0,
     clauses,
@@ -37,24 +38,32 @@ const body: TransactionBody = {
     }
 };
 
-// Create private keys of sender and delegate
-const pkSender = secp256k1.generatePrivateKey();
-const nodeDelgate = HDNode.fromMnemonic(mnemonic.generate());
-const pkDelegate = nodeDelgate.privateKey;
-// Get address of delegate
-const addrDelegate = nodeDelgate.address;
+// 3 - Create private keys of sender and delegate
 
-// Sign transaction as sender and delegate
+const senderPrivateKey = secp256k1.generatePrivateKey();
+const nodeDelegate = HDNode.fromMnemonic(mnemonic.generate());
+
+const delegatorPrivateKey = nodeDelegate.privateKey;
+
+// 4 - Get address of delegate
+
+const delegatorAddress = nodeDelegate.address;
+
+// 5 - Sign transaction as sender and delegate
+
 const unsignedTx = new Transaction(body);
 const signedTransaction = TransactionHandler.signWithDelegator(
     unsignedTx,
-    pkSender,
-    pkDelegate
+    senderPrivateKey,
+    delegatorPrivateKey
 );
 
-// Encode transaction
+// 5 - Encode transaction
+
 const encodedRaw = signedTransaction.encoded;
-// Decode transaction and check
+
+// 6 - Decode transaction and check
+
 const decodedTx = TransactionHandler.decode(encodedRaw, true);
 expect(decodedTx.isDelegated).toBeTruthy();
-expect(decodedTx.delegator).toBe(addrDelegate);
+expect(decodedTx.delegator).toBe(delegatorAddress);

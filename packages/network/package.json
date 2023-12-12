@@ -1,6 +1,7 @@
 {
-    "name": "@vechain-sdk/network",
+    "name": "@vechainfoundation/vechain-sdk-network",
     "version": "1.0.0",
+    "private": false,
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "license": "MIT",
@@ -13,7 +14,9 @@
         "format": "prettier --write src/**/*.ts tests/**/*.ts"
     },
     "dependencies": {
-        "axios": "^1.5.1",
-        "testcontainers": "^10.2.1"
+        "@vechainfoundation/vechain-sdk-errors": "*",
+        "@vechainfoundation/vechain-sdk-core": "*",
+        "axios": "^1.6.2",
+        "testcontainers": "^10.3.2"
     }
 }

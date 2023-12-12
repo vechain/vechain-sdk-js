@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
-import { ERRORS, HEX_ADDRESS_REGEX } from '../utils';
+import { HEX_ADDRESS_REGEX } from '../utils';
+import { ADDRESS, assert } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Derives a vechain thor address from a public key.
@@ -32,20 +33,22 @@ function isAddress(addressToVerify: string): boolean {
  * Converts a vechain thor address to its checksummed version.
  *
  * @remarks
- * This function validates and then converts an address into its EIP-55 compliant checksummed form using ethers.js’s `getAddress` function.
+ * This function validates and then converts an address into its EIP-55 compliant checksum form using ethers.js’s `getAddress` function.
  * Throws an error if the input string is not a valid vechain thor address.
  *
+ * @throws{InvalidAddressError}
  * @param address - The input vechain thor address string to be checksummed.
- * @returns The checksummed address string, compliant with EIP-55.
- *
- * @throws
- * - Will throw an error if the provided address string is not a valid vechain thor address.
+ * @returns The checksum address string, compliant with EIP-55.
  */
 function toChecksumed(address: string): string {
-    if (!isAddress(address)) {
-        throw new Error(ERRORS.ADDRESS.INVALID_ADDRESS);
-    }
+    assert(
+        isAddress(address),
+        ADDRESS.INVALID_ADDRESS,
+        'Checksum failed: Input must be a valid Vechain Thor address.',
+        { address }
+    );
+
     return ethers.getAddress(address);
 }
 
-export const address = { fromPublicKey, isAddress, toChecksumed };
+export const addressUtils = { fromPublicKey, isAddress, toChecksumed };

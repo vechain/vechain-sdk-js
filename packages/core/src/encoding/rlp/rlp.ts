@@ -6,7 +6,9 @@ import {
     type RLPValidObject,
     type RLPValueType
 } from './types';
-import { createRlpError, RLP } from '.';
+import { RLP } from '.';
+import { RLP as RLPError, assert } from '@vechainfoundation/vechain-sdk-errors';
+import { assertIsArray } from './helpers/assertions';
 
 /**
  * Encodes data using the Ethereumjs RLP library.
@@ -63,12 +65,11 @@ class Profiler {
  * Handles the RLP packing of data.
  * Recursively processes through object properties or array elements to prepare data for RLP encoding.
  *
+ * @throws{InvalidRLPError}
  * @param obj - The object data to be packed.
  * @param profile - RLP profile for encoding structures.
  * @param context - Encoding context for error tracing.
  * @returns Packed data as RLPInput.
- *
- * @throws Throws error if the object data is not valid.
  *
  * @private
  */
@@ -92,10 +93,11 @@ const _packData = (
         );
     }
 
-    if (!Array.isArray(obj)) throw createRlpError(context, 'expected array');
+    // Valid RLP array
+    assertIsArray(obj, context);
 
     // ArrayKind: recursively pack each array item based on the shared item profile.
-    if ('item' in kind) {
+    if ('item' in kind && Array.isArray(obj)) {
         const item = kind.item;
         return obj.map((part, i) =>
             _packData(
@@ -111,12 +113,11 @@ const _packData = (
  * Handles the RLP unpacking of data.
  * Recursively processes through packed properties or elements to prepare data post RLP decoding.
  *
+ * @throws{InvalidRLPError}
  * @param packed - The packed data to be unpacked.
  * @param profile - RLP profile for decoding structures.
  * @param context - Decoding context for error tracing.
  * @returns Unpacked data as RLPValueType.
- *
- * @throws Throws error if the packed data is not valid.
  *
  * @private
  */
@@ -131,8 +132,12 @@ const _unpackData = (
 
     // ScalarKind: Direct decoding using the provided method.
     if (kind instanceof RLP.ScalarKind) {
-        if (!Buffer.isBuffer(packed) && !(packed instanceof Uint8Array))
-            throw createRlpError(context, 'expected buffer');
+        assert(
+            Buffer.isBuffer(packed) || packed instanceof Uint8Array,
+            RLPError.INVALID_RLP,
+            'Unpacking error: Expected data type is Buffer.',
+            { context }
+        );
 
         if (packed instanceof Uint8Array) packed = Buffer.from(packed);
 
@@ -143,11 +148,12 @@ const _unpackData = (
     if (Array.isArray(kind) && Array.isArray(packed)) {
         const parts = packed;
 
-        if (parts.length !== kind.length)
-            throw createRlpError(
-                context,
-                `expected ${kind.length} items, but got ${parts.length}`
-            );
+        assert(
+            parts.length === kind.length,
+            RLPError.INVALID_RLP,
+            `Unpacking error: Expected ${kind.length} items, but got ${parts.length}.`,
+            { context }
+        );
 
         return kind.reduce(
             (obj: RLPValidObject, profile: RLPProfile, index: number) => {
@@ -159,10 +165,11 @@ const _unpackData = (
         );
     }
 
-    if (!Array.isArray(packed)) throw createRlpError(context, 'expected array');
+    // Valid RLP array
+    assertIsArray(packed, context);
 
     // ArrayKind: Recursively unpack each array item based on the shared item profile.
-    if ('item' in kind) {
+    if ('item' in kind && Array.isArray(packed)) {
         const item = kind.item;
 
         return packed.map((part, index) =>
