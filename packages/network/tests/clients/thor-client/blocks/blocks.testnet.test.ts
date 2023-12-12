@@ -66,14 +66,14 @@ describe('Blocks Module', () => {
         });
 
         expect(headBlockFirst).toBeDefined();
-        console.log('headBlockFirst', headBlockFirst);
 
-        // wait for 5 seconds with promise
+        // Wait for 5 seconds with promise
         await new Promise((resolve) => setTimeout(resolve, 5000));
 
         const headBlockSecond = thorClient.blocks.getHeadBlock();
         expect(headBlockSecond).toBeDefined();
-        console.log('headBlockSecond', headBlockSecond);
         expect(headBlockFirst).not.toBe(headBlockSecond);
-    }, 20000);
+
+        thorClient.blocks.destroy();
+    }, 12000);
 });
