@@ -77,7 +77,7 @@ interface ContractRunner {
      * @param tx - TransactionRequest can be refactored to our `TransactionBody` (core/src/transaction/types.d.ts)
      *             and then internally we perform all operations needed (e.g., creation of `Transaction` object and calculation of estimateGas)
      *
-     * @TODO - typesafety
+     * TO_MODIFY - typesafety
      * -----------------------------
      */
     estimateGas?: (tx: TransactionRequest) => Promise<bigint>;
@@ -89,7 +89,7 @@ interface ContractRunner {
      * call can be implemented by using call() of account-visitor.ts or compat.ts
      * This depends on driver-no-vendor that uses httpPost and creates a query for Simple net's `query` NetParam
      *
-     * @TODO - typesafety
+     * TO_MODIFY - typesafety
      * -----------------------------
      */
     call?: (tx: TransactionRequest) => Promise<string>;
@@ -101,7 +101,7 @@ interface ContractRunner {
      * resolveName will not be used in first release.
      * Maybe we can consider it in the future when VNS is supported.
      *
-     * @TODO - typesafety
+     * TO_MODIFY - typesafety
      * -----------------------------
      */
     resolveName?: (name: string) => Promise<null | string>;
@@ -116,7 +116,7 @@ interface ContractRunner {
      * @param tx - TransactionRequest can be refactored to our `Transaction` (core/src/transaction/types.d.ts)
      *             in this case we need to create a `Transaction` object that is signed.
      *
-     * @TODO - typesafety
+     * TO_MODIFY - typesafety
      * -----------------------------
      */
     sendTransaction?: (tx: TransactionRequest) => Promise<TransactionResponse>;
@@ -147,7 +147,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      * getBlockNumber will call `getBlockNumber` method which will be implemented in driver.
      * to retrieve the latest block there is the blocks/best endpoint.
      *
-     * @TODO - typesafety
+     * TO_MODIFY - typesafety
      * -----------------------------
      */
     getBlockNumber: () => Promise<number>;
@@ -159,7 +159,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      * We should return a Network object that contains at least the chainTag & network name
      * This must be looked into detail as we need to understand what hardhat requires exactly.
      *
-     * @TODO - typesafety
+     * TO_MODIFY - typesafety
      * -----------------------------
      */
     getNetwork: () => Promise<Network>;
@@ -171,7 +171,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      * FeeData in ethers contains gasPrice, maxFeePerGas, maxPriorityFeePerGas
      * In vechain we need to understand if these are the same or if we need to return something else.
      *
-     * @TODO - typesafety
+     * TO_MODIFY - typesafety
      * -----------------------------
      */
     getFeeData: () => Promise<FeeData>;
@@ -186,7 +186,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      * This methods does not exist in connex. It will need to call the /accounts/{address} endpoint.
      * The endpoint also allows to specify the revision which is the block number to get the balance for.
      *
-     * @TODO - typesafety
+     * TO_MODIFY - typesafety
      * -----------------------------
      */
     getBalance: (address: AddressLike, blockTag?: BlockTag) => Promise<bigint>;
@@ -201,7 +201,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      * ----- TEMPORARY COMMENT -----
      * This method is not needed as we do not have the incremental nonce logic as per Ethereum.
      *
-     * @TODO - typesafety
+     * TO_MODIFY - typesafety
      * -----------------------------
      */
     getTransactionCount: (
@@ -218,7 +218,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      * which returns the bytecode for the given address. You can also specify the revision which is the block number.
      * We will have to change the getCode signature with appropriate parameters.
      *
-     * @TODO - typesafety
+     * TO_MODIFY - typesafety
      * -----------------------------
      */
     getCode: (address: AddressLike, blockTag?: BlockTag) => Promise<string>;
@@ -232,7 +232,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      * which returns the storage value for the given address and key. You can also specify the revision which is the block number.
      * We will have to change the getStorage signature with appropriate parameters.
      *
-     * @TODO - typesafety
+     * TO_MODIFY - typesafety
      * -----------------------------
      */
     getStorage: (
@@ -247,7 +247,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      * ----- TEMPORARY COMMENT -----
      * See `ContractRunner` interface for details
      *
-     * @TODO - typesafety
+     * TO_MODIFY - typesafety
      * -----------------------------
      */
     estimateGas: (tx: TransactionRequest) => Promise<bigint>;
@@ -256,7 +256,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      * ----- TEMPORARY COMMENT -----
      * See `ContractRunner` interface for details
      *
-     * @TODO - typesafety
+     * TO_MODIFY - typesafety
      * -----------------------------
      */
     call: (tx: TransactionRequest) => Promise<string>;
@@ -272,7 +272,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      *
      * can use sendTx of connex's driver
      *
-     * @TODO - typesafety
+     * TO_MODIFY - typesafety
      * -----------------------------
      */
     broadcastTransaction: (signedTx: string) => Promise<TransactionResponse>;
@@ -293,14 +293,14 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      * Note that transactions of the block are always present, if expanded is true then the transaction details are also present.
      * Otherwise only the transaction hashes are present.
      *
-     * @TODO - typesafety
+     * TO_MODIFY - typesafety
      * -----------------------------
      */
     getBlock: (
         // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
         blockHashOrBlockTag: BlockTag | string,
         prefetchTxs?: boolea
-        // TODO Remove when typesafety is added
+        // TO_MODIFY Remove when typesafety is added
         // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     ) => Promise<null | Block>;
 
@@ -313,10 +313,10 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      * We can add the 'allowPending' parameter to specify whether to allow pending transactions or not.
      * A pending transaction might have meta attribute null.
      *
-     * @TODO - typesafety
+     * TO_MODIFY - typesafety
      * -----------------------------
      */
-    // TODO Remove when typesafety is added
+    // TO_MODIFY Remove when typesafety is added
     // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     getTransaction: (hash: string) => Promise<null | TransactionResponse>;
 
@@ -327,9 +327,9 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      * getTransactionReceipt will call `getReceipt` method which will be implemented in driver-no-vendor.
      * This method will call the /transactions/{id}/receipt endpoint.
      *
-     * @TODO - typesafety
+     * TO_MODIFY - typesafety
      */
-    // TODO Remove when typesafety is added
+    // TO_MODIFY Remove when typesafety is added
     // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     getTransactionReceipt: (hash: string) => Promise<null | TransactionReceipt>;
 
@@ -351,7 +351,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      * We do not use bloom for event logs.
      * -----------------------------
      */
-    // TODO Remove when typesafety is added
+    // TO_MODIFY Remove when typesafety is added
     // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     getLogs: (filter: Filter | FilterByBlockHash) => Promise<Log[]>;
 
@@ -392,7 +392,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
         hash: string,
         confirms?: number,
         timeout?: number
-        // TODO Remove when typesafety is added
+        // TO_MODIFY Remove when typesafety is added
         // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
     ) => Promise<null | TransactionReceipt>;
 
