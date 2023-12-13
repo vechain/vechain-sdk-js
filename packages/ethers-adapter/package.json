@@ -17,6 +17,6 @@
         "@vechainfoundation/vechain-sdk-errors": "*",
         "@vechainfoundation/vechain-sdk-core": "*",
         "@vechainfoundation/vechain-sdk-network": "*",
-        "axios": "^1.6.2"
+        "ethers": "6.9.0"
     }
 }
