@@ -38,7 +38,10 @@ function compileContract(contractName: string, sources: Sources): Contract {
     };
 
     // Compile the contract
-    const compiledContract = JSON.parse(solc.compile(JSON.stringify(input)));
+    const solcCompiledContract = solc.compile(JSON.stringify(input));
+
+    // Parse the compiled contract
+    const compiledContract = JSON.parse(solcCompiledContract);
 
     // Extract the bytecode from the compiled contract
     const bytecode =
