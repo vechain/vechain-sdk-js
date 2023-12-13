@@ -46,7 +46,9 @@ import {
     TransactionAlreadySignedError,
     TransactionBodyError,
     TransactionDelegationError,
-    TransactionNotSignedError
+    TransactionNotSignedError,
+    FUNCTION,
+    NotImplementedError
 } from '../model';
 
 /**
@@ -75,7 +77,8 @@ type ErrorCode =
     | DATA
     | TRANSACTION
     | HTTP_CLIENT
-    | POLL_ERROR;
+    | POLL_ERROR
+    | FUNCTION;
 
 /**
  * Conditional type to get the error data type from the error code.
@@ -106,7 +109,8 @@ const ERROR_CODES = {
     DATA,
     TRANSACTION,
     HTTP_CLIENT,
-    POLL_ERROR
+    POLL_ERROR,
+    FUNCTION
 };
 
 /**
@@ -182,7 +186,9 @@ type ErrorType<ErrorCodeT> =
                                                                     ? HTTPClientError
                                                                     : ErrorCodeT extends POLL_ERROR.POLL_EXECUTION_ERROR
                                                                       ? PollExecutionError
-                                                                      : never;
+                                                                      : ErrorCodeT extends FUNCTION.NOT_IMPLEMENTED
+                                                                        ? NotImplementedError
+                                                                        : never;
 
 /**
  * Map to get the error class from the error code.
@@ -236,7 +242,8 @@ const ErrorClassMap = new Map<
     [TRANSACTION.INVALID_TRANSACTION_BODY, TransactionBodyError],
     [TRANSACTION.INVALID_DELEGATION, TransactionDelegationError],
     [HTTP_CLIENT.INVALID_HTTP_REQUEST, HTTPClientError],
-    [POLL_ERROR.POLL_EXECUTION_ERROR, PollExecutionError]
+    [POLL_ERROR.POLL_EXECUTION_ERROR, PollExecutionError],
+    [FUNCTION.NOT_IMPLEMENTED, NotImplementedError]
 ]);
 
 export {
