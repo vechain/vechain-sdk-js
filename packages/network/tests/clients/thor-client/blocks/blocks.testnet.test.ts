@@ -1,7 +1,6 @@
-import { describe, expect, test } from '@jest/globals';
-import { thorClient } from '../../../fixture';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import { HttpClient, Poll, ThorClient, ThorestClient } from '../../../../src';
 import { waitForBlockTestCases } from './fixture';
-import { Poll } from '../../../../src';
 
 /**
  * Blocks Module integration tests
@@ -9,6 +8,18 @@ import { Poll } from '../../../../src';
  * @group integration/clients/thor-client/blocks
  */
 describe('Blocks Module', () => {
+    let thorClient: ThorClient;
+
+    beforeEach(() => {
+        const httpClient = new HttpClient('http://testnet.veblocks.net');
+        const thorestClient = new ThorestClient(httpClient);
+        thorClient = new ThorClient(thorestClient);
+    });
+
+    afterEach(() => {
+        thorClient.blocks.destroy();
+    });
+
     /**
      * Test suite for waitForBlock method
      */
@@ -73,7 +84,5 @@ describe('Blocks Module', () => {
         const headBlockSecond = thorClient.blocks.getHeadBlock();
         expect(headBlockSecond).toBeDefined();
         expect(headBlockFirst).not.toBe(headBlockSecond);
-
-        thorClient.blocks.destroy();
     }, 12000);
 });
