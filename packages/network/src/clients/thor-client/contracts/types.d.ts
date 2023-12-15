@@ -1,4 +1,7 @@
-import type { TransactionSimulationResult } from '../../thorest-client';
+import type {
+    SimulateTransactionOptions,
+    TransactionSimulationResult
+} from '../../thorest-client';
 
 /**
  * Represents the result of a transaction involving a smart contract, including its ID
@@ -16,4 +19,9 @@ interface ContractTransactionResult {
     clausesResults: TransactionSimulationResult[];
 }
 
-export type { ContractTransactionResult };
+/**
+ * Defines the options for executing a contract call within a blockchain environment.
+ */
+type ContractCallOptions = SimulateTransactionOptions;
+
+export type { ContractTransactionResult, ContractCallOptions };

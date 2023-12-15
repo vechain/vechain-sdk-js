@@ -1,12 +1,13 @@
 import { type ThorestClient } from '../../thorest-client';
 import {
+    addressUtils,
     contract,
     type DeployParams,
     type InterfaceAbi,
     type TransactionBodyOverride,
     TransactionHandler
 } from '@vechainfoundation/vechain-sdk-core';
-import type { ContractTransactionResult } from './types';
+import type { ContractCallOptions, ContractTransactionResult } from './types';
 import {
     type SendTransactionResult,
     TransactionsModule
@@ -70,27 +71,31 @@ class ContractsModule {
      * @param contractABI - The ABI (Application Binary Interface) of the smart contract.
      * @param functionName - The name of the function to be called.
      * @param functionData - The input data for the function.
-     * @param transactionBodyOverride - (Optional) Override for the transaction body.
+     * @param contractCallOptions - (Optional) Options for the contract call.
      * @returns A promise resolving to a hex string representing the result of the contract call.
      */
     public async executeContractCall(
         contractAddress: string,
         contractABI: InterfaceAbi,
         functionName: string,
-        functionData: unknown[]
+        functionData: unknown[],
+        contractCallOptions?: ContractCallOptions
     ): Promise<string> {
         // Simulate the transaction to get the result of the contract call
-        const response = await this.thorest.transactions.simulateTransaction([
-            {
-                to: contractAddress,
-                value: '0',
-                data: contract.coder.encodeFunctionInput(
-                    contractABI,
-                    functionName,
-                    functionData
-                )
-            }
-        ]);
+        const response = await this.thorest.transactions.simulateTransaction(
+            [
+                {
+                    to: contractAddress,
+                    value: '0',
+                    data: contract.coder.encodeFunctionInput(
+                        contractABI,
+                        functionName,
+                        functionData
+                    )
+                }
+            ],
+            contractCallOptions
+        );
 
         // Return the result of the contract call
         return response[0].data;
@@ -126,13 +131,20 @@ class ContractsModule {
 
         // Simulate the transaction to get the result of the contract call
         const simulatedTransaction =
-            await this.thorest.transactions.simulateTransaction([
+            await this.thorest.transactions.simulateTransaction(
+                [
+                    {
+                        to: contractAddress,
+                        data: transaction.body.clauses[0].data,
+                        value: transaction.body.clauses[0].value.toString(16)
+                    }
+                ],
                 {
-                    to: contractAddress,
-                    data: transaction.body.clauses[0].data,
-                    value: transaction.body.clauses[0].value.toString(16)
+                    caller: addressUtils.fromPrivateKey(
+                        Buffer.from(privateKey, 'hex')
+                    )
                 }
-            ]);
+            );
 
         // Sign the transaction with the private key
         const signedTx = TransactionHandler.sign(

@@ -1,6 +1,7 @@
 import { ethers } from 'ethers';
 import { HEX_ADDRESS_REGEX } from '../utils';
 import { ADDRESS, assert } from '@vechainfoundation/vechain-sdk-errors';
+import { secp256k1 } from '../secp256k1';
 
 /**
  * Derives a vechain thor address from a public key.
@@ -14,6 +15,23 @@ import { ADDRESS, assert } from '@vechainfoundation/vechain-sdk-errors';
  */
 function fromPublicKey(publicKey: Buffer): string {
     return ethers.computeAddress('0x' + publicKey.toString('hex'));
+}
+
+/**
+ * Derives an Ethereum address from a given private key.
+ *
+ * This function uses the `secp256k1` cryptographic function to derive the public key
+ * from the provided private key, and then converts this public
+ * key into a Vechain address.
+ *
+ * @param privateKey - The private key as a Buffer object for which the Vechain address
+ *                     will be derived. The private key must be a valid secp256k1 private key.
+ *
+ * @returns The Vechain address as a string, derived from the given private key.
+ *
+ */
+function fromPrivateKey(privateKey: Buffer): string {
+    return addressUtils.fromPublicKey(secp256k1.derivePublicKey(privateKey));
 }
 
 /**
@@ -51,4 +69,9 @@ function toChecksumed(address: string): string {
     return ethers.getAddress(address);
 }
 
-export const addressUtils = { fromPublicKey, isAddress, toChecksumed };
+export const addressUtils = {
+    fromPublicKey,
+    fromPrivateKey,
+    isAddress,
+    toChecksumed
+};
