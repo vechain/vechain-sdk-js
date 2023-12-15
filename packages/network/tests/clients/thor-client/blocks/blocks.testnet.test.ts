@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { HttpClient, Poll, ThorClient, ThorestClient } from '../../../../src';
+import { Poll, ThorClient } from '../../../../src';
 import { waitForBlockTestCases } from './fixture';
+import { thorestClient } from '../../../fixture';
 
 /**
  * Blocks Module integration tests
@@ -8,11 +9,10 @@ import { waitForBlockTestCases } from './fixture';
  * @group integration/clients/thor-client/blocks
  */
 describe('Blocks Module', () => {
+    // ThorClient instance
     let thorClient: ThorClient;
 
     beforeEach(() => {
-        const httpClient = new HttpClient('http://testnet.veblocks.net');
-        const thorestClient = new ThorestClient(httpClient);
         thorClient = new ThorClient(thorestClient);
     });
 
