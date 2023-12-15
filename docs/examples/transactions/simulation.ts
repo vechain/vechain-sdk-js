@@ -152,7 +152,7 @@ const expected3 = [
         events: [
             {
                 address:
-                    '0841a6556c524d47030762eb14dc4af897e605d9b',
+                    '0x841a6556c524d47030762eb14dc4af897e605d9bch',
                 topics: [
                     '0xb35bf4274d4295009f1ec66ed3f579db287889444366c03d3a695539372e8951'
                 ],
