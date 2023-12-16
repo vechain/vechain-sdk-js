@@ -3,14 +3,19 @@ import {
     contract,
     type DeployParams,
     type InterfaceAbi,
-    type TransactionBodyOverride,
-    TransactionHandler
+    TransactionHandler,
+    Transaction
 } from '@vechainfoundation/vechain-sdk-core';
-import type { ContractTransactionResult } from './types';
+import type { ContractTransactionOptions } from './types';
 import {
     type SendTransactionResult,
     TransactionsModule
 } from '../transactions';
+import {
+    PARAMS_ADDRESS,
+    PARAMS_ABI,
+    dataUtils
+} from '@vechainfoundation/vechain-sdk-core';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -37,25 +42,31 @@ class ContractsModule {
      * @param privateKey - The private key of the account deploying the smart contract.
      * @param contractBytecode - The bytecode of the smart contract to be deployed.
      * @param deployParams - The parameters to pass to the smart contract constructor.
-     * @param transactionBodyOverride - (Optional) An object to override the default transaction body.
+     * @param options - (Optional) An object containing options for the transaction body. Includes all options of the `buildTransactionBody` method
+     *                  besides `isDelegated`.
+     *
      * @returns A promise that resolves to a `TransactionSendResult` object representing the result of the deployment.
      */
     public async deployContract(
         privateKey: string,
         contractBytecode: string,
         deployParams?: DeployParams,
-        transactionBodyOverride?: TransactionBodyOverride
+        options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
         // Build a transaction for deploying the smart contract
-        const transaction = contract.txBuilder.buildDeployTransaction(
+        const deployContractClause = contract.clauseBuilder.deployContract(
             contractBytecode,
-            deployParams,
-            transactionBodyOverride
+            deployParams
+        );
+
+        const txBody = await this.transactionsModule.buildTransactionBody(
+            [deployContractClause],
+            options
         );
 
         // Sign the transaction with the provided private key
         const signedTx = TransactionHandler.sign(
-            transaction,
+            new Transaction(txBody),
             Buffer.from(privateKey, 'hex')
         );
 
@@ -104,7 +115,10 @@ class ContractsModule {
      * @param contractABI - The ABI (Application Binary Interface) of the smart contract.
      * @param functionName - The name of the function to be called.
      * @param functionData - The input data for the function.
-     * @param transactionBodyOverride - (Optional) Override for the transaction body.
+     * @param options - (Optional) An object containing options for the transaction body. Includes all options of the `buildTransactionBody` method
+     *                  besides `isDelegated`.
+     *                  @see {@link TransactionsModule.buildTransactionBody}
+     *
      * @returns A promise resolving to a ContractTransactionResult object.
      */
     public async executeContractTransaction(
@@ -113,44 +127,48 @@ class ContractsModule {
         contractABI: InterfaceAbi,
         functionName: string,
         functionData: unknown[],
-        transactionBodyOverride?: TransactionBodyOverride
-    ): Promise<ContractTransactionResult> {
-        // Build a transaction to call the contract function
-        const transaction = contract.txBuilder.buildCallTransaction(
+        options?: ContractTransactionOptions
+    ): Promise<SendTransactionResult> {
+        // Build a clause to interact with the contract function
+        const clause = contract.clauseBuilder.functionInteraction(
             contractAddress,
             contractABI,
             functionName,
-            functionData,
-            transactionBodyOverride
+            functionData
         );
 
-        // Simulate the transaction to get the result of the contract call
-        const simulatedTransaction =
-            await this.thorest.transactions.simulateTransaction([
-                {
-                    to: contractAddress,
-                    data: transaction.body.clauses[0].data,
-                    value: transaction.body.clauses[0].value.toString(16)
-                }
-            ]);
+        // Build a transaction for calling the contract function
+        const txBody = await this.transactionsModule.buildTransactionBody(
+            [clause],
+            options
+        );
 
         // Sign the transaction with the private key
         const signedTx = TransactionHandler.sign(
-            transaction,
+            new Transaction(txBody),
             Buffer.from(privateKey, 'hex')
         );
 
         // Send the signed transaction
-        const sendResult =
-            await this.transactionsModule.sendTransaction(signedTx);
+        return await this.transactionsModule.sendTransaction(signedTx);
+    }
 
-        // Retrieve the transaction ID and return the result
-        const transactionId = sendResult.id;
-
-        return {
-            id: transactionId,
-            clausesResults: simulatedTransaction
-        };
+    /**
+     * Gets the base gas price in wei.
+     * The base gas price is the minimum gas price that can be used for a transaction.
+     * It is used to obtain the VTHO (energy) cost of a transaction.
+     *
+     * @link [Total Gas Price](https://docs.vechain.org/core-concepts/transactions/transaction-calculation#total-gas-price)
+     *
+     * @returns The base gas price in wei.
+     */
+    public async getBaseGasPrice(): Promise<string> {
+        return await this.executeContractCall(
+            PARAMS_ADDRESS,
+            PARAMS_ABI,
+            'get',
+            [dataUtils.encodeBytes32String('base-gas-price')]
+        );
     }
 }
 
