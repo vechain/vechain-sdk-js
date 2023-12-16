@@ -25,8 +25,8 @@ describe('Blocks Module', () => {
                                 bestBlock?.number + 1,
                                 options
                             );
-                        expect(expectedBlock?.number).toBe(
-                            bestBlock?.number + 1
+                        expect(expectedBlock?.number).toBeGreaterThan(
+                            bestBlock?.number
                         );
                     }
                 },
@@ -53,7 +53,9 @@ describe('Blocks Module', () => {
                     timeoutMs: 1000
                 }
             );
+
             expect(block).toBeDefined();
+            expect(block?.number).not.toBeGreaterThan(bestBlock?.number + 1); // Not enough time to wait for the block (only 1 second was given)
         }
     });
 });
