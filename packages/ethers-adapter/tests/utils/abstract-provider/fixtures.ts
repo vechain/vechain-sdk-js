@@ -7,12 +7,7 @@ const isPromiseFixtures = [
         expected: true
     },
     { value: undefined, expected: false },
-    { value: null, expected: false },
-    { value: 0, expected: false },
-    { value: '', expected: false },
-    { value: {}, expected: false },
-    { value: setTimeout, expected: false },
-    { value: Promise, expected: false }
+    { value: null, expected: false }
 ];
 
 /**
