@@ -1,3 +1,5 @@
+import { type EventEmitterable as EthersEventEmittable } from 'ethers';
+
 /**
  * An `EventEmitterable` interface is akin to an EventEmitter,
  * but with asynchronous access to its methods.
@@ -9,56 +11,11 @@
  * Each subscribe type will be handled by a dedicated subscriber class (e.g, PollingBlockSubscriber, PollingEventSubscriber (polls an event for its logs), etc.)
  *
  * See hardhat-ethers-plugin and ethers implementations for more details.
+ *
+ * https://github.com/ethers-io/ethers.js/blob/6ee1a5f8bb38ec31fa84c00aae7f091e1d3d6837/src.ts/utils/events.ts#L21
  * -----------------------------
  */
-interface EventEmitterable<T> {
-    /**
-     * Registers a listener that gets invoked whenever the
-     * specified event occurs, until it's unregistered.
-     */
-    on: (event: T, listener: Listener) => Promise<this>;
-
-    /**
-     * Registers a listener that gets invoked the next time
-     * the specified event occurs.
-     */
-    once: (event: T, listener: Listener) => Promise<this>;
-
-    /**
-     * Triggers each listener for the specified event with the provided arguments.
-     */
-    emit: (event: T, ...args: unknown[]) => Promise<boolean>;
-
-    /**
-     * Resolves to the number of listeners for a specified event.
-     */
-    listenerCount: (event?: T) => Promise<number>;
-
-    /**
-     * Resolves to the array of listeners for a specified event.
-     */
-    listeners: (event?: T) => Promise<Listener[]>;
-
-    /**
-     * Resolves to the array of listeners for a specified event.
-     */
-    off: (event: T, listener?: Listener) => Promise<this>;
-
-    /**
-     * Resolves to the array of listeners for a specified event.
-     */
-    removeAllListeners: (event?: T) => Promise<this>;
-
-    /**
-     * An alias for the `on` method.
-     */
-    addListener: (event: T, listener: Listener) => Promise<this>;
-
-    /**
-     * An alias for the `off` method.
-     */
-    removeListener: (event: T, listener: Listener) => Promise<this>;
-}
+type EventEmitterable<T> = EthersEventEmittable<T>;
 
 /**
  *  ----- TEMPORARY COMMENT -----
@@ -214,7 +171,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      *
      * ----- TEMPORARY COMMENT -----
      * getCode will call `getCode` method which will be implemented in driver-no-vendor.
-     * This methods does not exist in connex. It will need to call the /accounts/{address}/code endpoint
+     * This method does not exist in connex. It will need to call the /accounts/{address}/code endpoint
      * which returns the bytecode for the given address. You can also specify the revision which is the block number.
      * We will have to change the getCode signature with appropriate parameters.
      *
@@ -309,7 +266,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      *
      * ----- TEMPORARY COMMENT -----
      * getTransaction will call `getTransaction` method which will be implemented in driver-no-vendor.
-     * This methods exists in driver.
+     * This method exists in driver.
      * We can add the 'allowPending' parameter to specify whether to allow pending transactions or not.
      * A pending transaction might have meta attribute null.
      *
