@@ -25,6 +25,8 @@ describe('buildTransactionBody with mocks', () => {
                 transferTransactionBody.clauses[0]
             ])
         ).rejects.toThrowError(TransactionBodyError);
+
+        thorSoloClient.destroy();
     });
 
     test('Should throw error when gest block is not found', async () => {
@@ -42,5 +44,7 @@ describe('buildTransactionBody with mocks', () => {
                 transferTransactionBody.clauses[0]
             ])
         ).rejects.toThrowError(TransactionBodyError);
+
+        thorSoloClient.destroy();
     });
 });

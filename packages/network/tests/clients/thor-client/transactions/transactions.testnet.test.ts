@@ -40,6 +40,7 @@ describe('Transactions module Testnet tests suite', () => {
                         expected.testnet.reserved
                     );
                     expect(txBody.chainTag).toBe(expected.testnet.chainTag);
+                    thorClient.destroy();
                 });
             }
         );
