@@ -8,4 +8,4 @@ import { createEventPoll, EventPoll } from './event';
 export * from './types.d';
 
 const Poll = { SyncPoll, EventPoll, createEventPoll };
-export { Poll };
+export { Poll, EventPoll };

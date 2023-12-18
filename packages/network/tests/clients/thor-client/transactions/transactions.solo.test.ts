@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import {
     expectedReceipt,
     invalidWaitForTransactionTestCases,
@@ -6,12 +6,13 @@ import {
     transferTransactionBodyValueAsNumber,
     waitForTransactionTestCases
 } from './fixture';
-import { TEST_ACCOUNTS, thorSoloClient } from '../../../fixture';
+import { TEST_ACCOUNTS, thorestSoloClient } from '../../../fixture';
 import {
     Transaction,
     TransactionHandler
 } from '@vechainfoundation/vechain-sdk-core';
 import { TransactionNotSignedError } from '@vechainfoundation/vechain-sdk-errors';
+import { ThorClient } from '../../../../src';
 
 /**
  * Transactions module tests.
@@ -19,6 +20,17 @@ import { TransactionNotSignedError } from '@vechainfoundation/vechain-sdk-errors
  * @group integration/clients/thor-client/transactions
  */
 describe('Transactions Module', () => {
+    // ThorClient instance
+    let thorSoloClient: ThorClient;
+
+    beforeEach(() => {
+        thorSoloClient = new ThorClient(thorestSoloClient);
+    });
+
+    afterEach(() => {
+        thorSoloClient.destroy();
+    });
+
     /**
      * Test suite for sendTransaction method
      * For further testing examples see tests/clients/thorest-client/transactions/*

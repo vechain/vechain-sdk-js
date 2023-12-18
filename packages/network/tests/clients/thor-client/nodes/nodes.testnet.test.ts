@@ -16,6 +16,8 @@ describe('Integration tests to check the Node health check for different scenari
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             HTTPClientError
         );
+
+        thorClient.destroy();
     });
 
     test('invalid URL', async () => {
@@ -27,12 +29,16 @@ describe('Integration tests to check the Node health check for different scenari
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             HTTPClientError
         );
+
+        thorClient.destroy();
     });
 
     test('valid and available synchronized node', async () => {
         const thorClient = createThorClient('https://testnet.vechain.org/');
         const healthyNode = await thorClient.nodes.isHealthy();
         expect(healthyNode).toBe(true);
+
+        thorClient.destroy();
     });
 
     test('null or empty URL or blank URL', async () => {
@@ -44,5 +50,7 @@ describe('Integration tests to check the Node health check for different scenari
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             HTTPClientError
         );
+
+        thorClient.destroy();
     });
 });

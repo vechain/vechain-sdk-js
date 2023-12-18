@@ -48,6 +48,14 @@ class ThorClient {
         this.contracts = new ContractsModule(thorest);
         this.gas = new GasModule(thorest);
     }
+
+    /**
+     * Destroys the `ThorClient` instance by stopping the event polling
+     * and any other cleanup.
+     */
+    public destroy(): void {
+        this.blocks.destroy();
+    }
 }
 
 export { ThorClient };

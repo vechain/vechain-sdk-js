@@ -1,16 +1,20 @@
-import { describe, expect, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import { TEST_ACCOUNTS, thorestSoloClient } from '../../../fixture';
 import {
-    TEST_ACCOUNTS,
-    thorestSoloClient,
-    thorSoloClient
-} from '../../../fixture';
-import {
+    contractBytecode,
     deployedContractAbi,
-    deployedContractBytecode,
-    deployExampleContract
+    deployedContractBytecode
 } from './fixture';
-import { addressUtils, networkInfo } from '@vechainfoundation/vechain-sdk-core';
-import type { TransactionReceipt } from '../../../../src';
+import {
+    addressUtils,
+    networkInfo,
+    type DeployParams
+} from '@vechainfoundation/vechain-sdk-core';
+import {
+    ThorClient,
+    type TransactionSendResult,
+    type TransactionReceipt
+} from '../../../../src';
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.
@@ -20,6 +24,40 @@ import type { TransactionReceipt } from '../../../../src';
  * @group integration/client/thor/contracts
  */
 describe('ThorClient - Contracts', () => {
+    // ThorClient instance
+    let thorSoloClient: ThorClient;
+
+    beforeEach(() => {
+        thorSoloClient = new ThorClient(thorestSoloClient);
+    });
+
+    afterEach(() => {
+        thorSoloClient.destroy();
+    });
+
+    /**
+     * Asynchronous function to deploy an example smart contract.
+     *
+     * @returns A promise that resolves to a `TransactionSendResult` object representing the result of the deployment.
+     */
+    async function deployExampleContract(): Promise<TransactionSendResult> {
+        // Get the best block information
+        const bestBlock = await thorestSoloClient.blocks.getBlock('best');
+
+        const deployParams: DeployParams = { types: ['uint'], values: ['100'] };
+
+        // Deploy the contract using the deployContract method
+        return await thorSoloClient.contracts.deployContract(
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
+            contractBytecode,
+            deployParams,
+            {
+                chainTag: networkInfo.solo.chainTag,
+                blockRef: bestBlock?.id.slice(0, 18)
+            }
+        );
+    }
+
     /**
      * Test case for deploying a smart contract using the deployContract method.
      */

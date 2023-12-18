@@ -1,5 +1,5 @@
 import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
-import { Poll } from '../../../utils';
+import { type EventPoll, Poll } from '../../../utils';
 import { type BlockDetail, type ThorestClient } from '../../thorest-client';
 import { type WaitForBlockOptions } from './types';
 
@@ -11,34 +11,32 @@ class BlocksModule {
      * The head block (best block)
      * @private
      */
-    private readonly headBlock: BlockDetail | null = null;
+    private headBlock: BlockDetail | null = null;
 
     /**
      * The Poll instance for event polling
      * @private
      */
-    // private readonly pollInstance: EventPoll<BlockDetail | null> | null;
+    private pollInstance: EventPoll<BlockDetail | null> | null = null;
 
     /**
      * Initializes a new instance of the `Thorest` class.
      * @param thorest - The Thorest instance used to interact with the vechain Thorest blockchain API.
      */
     constructor(
-        readonly thorest: ThorestClient
-        // onBlockError?: (error: Error) => void
+        readonly thorest: ThorestClient,
+        onBlockError?: (error: Error) => void
     ) {
-        // Create Poll instance
-        // this.pollInstance = Poll.createEventPoll(
-        //     async () => await thorest.blocks.getBestBlock(),
-        //     1000
-        // );
-        // Configure Poll instance
-        // this.pollInstance
-        //     .onData((data) => {
-        //         this.headBlock = data;
-        //     })
-        //     .onError(onBlockError ?? ((_) => {}))
-        //     .startListen();
+        this.pollInstance = Poll.createEventPoll(
+            async () => await thorest.blocks.getBestBlock(),
+            1000
+        )
+            .onData((data) => {
+                this.headBlock = data;
+            })
+            .onError(onBlockError ?? ((_) => {}));
+
+        this.pollInstance.startListen();
     }
 
     /**
@@ -87,12 +85,12 @@ class BlocksModule {
     /**
      * Destroys the instance by stopping the event poll.
      */
-    // public destroy(): void {
-    //     if (this.pollInstance != null) {
-    //         this.pollInstance.stopListen();
-    //         this.pollInstance = null;
-    //     }
-    // }
+    public destroy(): void {
+        if (this.pollInstance != null) {
+            this.pollInstance.stopListen();
+            this.pollInstance = null;
+        }
+    }
 }
 
 export { BlocksModule };

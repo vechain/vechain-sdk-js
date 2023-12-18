@@ -1,5 +1,6 @@
-import { describe, expect, test } from '@jest/globals';
-import { thorClient } from '../../../fixture';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import { thorestClient } from '../../../fixture';
+import { ThorClient } from '../../../../src';
 
 /**
  * ThorestClient integration tests
@@ -7,6 +8,17 @@ import { thorClient } from '../../../fixture';
  * @group integration/clients/thor-client/thorest
  */
 describe('ThorestClient', () => {
+    // ThorClient instance
+    let thorClient: ThorClient;
+
+    beforeEach(() => {
+        thorClient = new ThorClient(thorestClient);
+    });
+
+    afterEach(() => {
+        thorClient.destroy();
+    });
+
     test('getBestBlock method', async () => {
         const bestBlock = await thorClient.thorest.blocks.getBestBlock();
         expect(bestBlock).toBeDefined();

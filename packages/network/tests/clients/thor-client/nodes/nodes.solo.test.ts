@@ -1,5 +1,12 @@
-import { describe, expect, test, jest } from '@jest/globals';
-import { HttpClient } from '../../../../src';
+import {
+    describe,
+    expect,
+    test,
+    jest,
+    beforeEach,
+    afterEach
+} from '@jest/globals';
+import { HttpClient, type ThorClient } from '../../../../src';
 import {
     blockWithMissingTimeStamp,
     blockWithOldTimeStamp,
@@ -14,11 +21,21 @@ import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
  *
  */
 describe('Integration tests to check the Node health check is working for different scenarios', () => {
+    // ThorClient instance
+    let thorClient: ThorClient;
+
+    beforeEach(() => {
+        thorClient = createThorClient(URL);
+    });
+
+    afterEach(() => {
+        thorClient.destroy();
+    });
+
     /**
      *  @internal
      *  a well-formed URL to ensure we get to the axios call in the node health check
      */
-
     const URL = 'http://example.com';
 
     test('valid URL/node but Error is thrown by network provider', async () => {
@@ -31,14 +48,14 @@ describe('Integration tests to check the Node health check is working for differ
          *  client required to access a node
          *  @internal
          */
-        const thorClient = createThorClient(URL);
+
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError();
     });
 
     test('valid/available node but invalid block format', async () => {
         // Mock the response to force the JSON response to be null
         jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce({});
-        const thorClient = createThorClient(URL);
+
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             InvalidDataTypeError
         );
@@ -73,7 +90,7 @@ describe('Integration tests to check the Node health check is working for differ
         jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce(
             blockWithOldTimeStamp
         );
-        const thorClient = createThorClient(URL);
+
         await expect(thorClient.nodes.isHealthy()).resolves.toBe(false);
     });
 });

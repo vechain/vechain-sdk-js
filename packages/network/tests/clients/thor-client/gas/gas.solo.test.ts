@@ -1,6 +1,7 @@
-import { describe, expect, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { estimateGasTestCases } from './fixture';
-import { thorSoloClient } from '../../../fixture';
+import { ThorClient } from '../../../../src';
+import { thorestSoloClient } from '../../../fixture';
 
 /**
  * Gas module tests.
@@ -8,6 +9,17 @@ import { thorSoloClient } from '../../../fixture';
  * @group integration/clients/thor-client/gas
  */
 describe('Gas Module', () => {
+    // ThorClient instance
+    let thorSoloClient: ThorClient;
+
+    beforeEach(() => {
+        thorSoloClient = new ThorClient(thorestSoloClient);
+    });
+
+    afterEach(() => {
+        thorSoloClient.destroy();
+    });
+
     /**
      * Test suide for 'estimateGas' method
      */

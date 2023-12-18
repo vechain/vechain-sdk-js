@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, test } from '@jest/globals';
-import { ThorClient } from '../../../../src';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import { Poll, ThorClient } from '../../../../src';
 import { waitForBlockTestCases } from './fixture';
 import { thorestClient } from '../../../fixture';
 
@@ -16,9 +16,9 @@ describe('Blocks Module', () => {
         thorClient = new ThorClient(thorestClient);
     });
 
-    // afterEach(() => {
-    //     thorClient.blocks.destroy();
-    // });
+    afterEach(() => {
+        thorClient.destroy();
+    });
 
     /**
      * Test suite for waitForBlock method
@@ -71,20 +71,20 @@ describe('Blocks Module', () => {
         }
     });
 
-    // test('getHeadBlock', async () => {
-    //     const headBlockFirst = await Poll.SyncPoll(() =>
-    //         thorClient.blocks.getHeadBlock()
-    //     ).waitUntil((result) => {
-    //         return result !== null;
-    //     });
+    test('getHeadBlock', async () => {
+        const headBlockFirst = await Poll.SyncPoll(() =>
+            thorClient.blocks.getHeadBlock()
+        ).waitUntil((result) => {
+            return result !== null;
+        });
 
-    //     expect(headBlockFirst).toBeDefined();
+        expect(headBlockFirst).toBeDefined();
 
-    //     // Wait for 5 seconds with promise
-    //     await new Promise((resolve) => setTimeout(resolve, 5000));
+        // Wait for 5 seconds with promise
+        await new Promise((resolve) => setTimeout(resolve, 5000));
 
-    //     const headBlockSecond = thorClient.blocks.getHeadBlock();
-    //     expect(headBlockSecond).toBeDefined();
-    //     expect(headBlockFirst).not.toBe(headBlockSecond);
-    // }, 12000);
+        const headBlockSecond = thorClient.blocks.getHeadBlock();
+        expect(headBlockSecond).toBeDefined();
+        expect(headBlockFirst).not.toBe(headBlockSecond);
+    }, 12000);
 });

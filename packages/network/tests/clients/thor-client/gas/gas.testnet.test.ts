@@ -1,5 +1,6 @@
-import { describe, expect, test } from '@jest/globals';
-import { thorClient } from '../../../fixture';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import { thorestClient } from '../../../fixture';
+import { ThorClient } from '../../../../src';
 
 /**
  * Transcations module tests suite.
@@ -7,6 +8,16 @@ import { thorClient } from '../../../fixture';
  * @group integration/clients/thor-client/gas
  */
 describe('Gas Module', () => {
+    // ThorClient instance
+    let thorClient: ThorClient;
+
+    beforeEach(() => {
+        thorClient = new ThorClient(thorestClient);
+    });
+
+    afterEach(() => {
+        thorClient.destroy();
+    });
     /**
      * Validates the base gas price of the Testnet.
      */
