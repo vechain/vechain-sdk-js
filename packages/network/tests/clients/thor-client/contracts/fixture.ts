@@ -38,6 +38,7 @@ async function deployExampleContract(): Promise<TransactionSendResult> {
 
     // Deploy the contract using the deployContract method
     return await thorSoloClient.contracts.deployContract(
+        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
         contractBytecode,
         deployParams

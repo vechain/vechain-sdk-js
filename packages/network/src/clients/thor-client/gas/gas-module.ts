@@ -1,10 +1,9 @@
 import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
 import {
     type SimulateTransactionClause,
-    type SimulateTransactionOptions,
     type ThorestClient
 } from '../../thorest-client';
-import { type EstimateGasResult } from './types';
+import { type EstimateGasOptions, type EstimateGasResult } from './types';
 import { TransactionUtils } from '@vechainfoundation/vechain-sdk-core';
 import { decodeRevertReason } from './helpers/decode-evm-error';
 
@@ -23,6 +22,7 @@ class GasModule {
      * Simulates a transaction and returns an object containing information regarding the gas used and whether the transaction reverted.
      *
      * @param clauses - The clauses of the transaction to simulate.
+     * @param caller - The address of the account sending the transaction.
      * @param options - Optional parameters for the request. Includes all options of the `simulateTransaction` method.
      *                  @see {@link TransactionsClient#simulateTransaction}
      *
@@ -32,7 +32,8 @@ class GasModule {
      */
     public async estimateGas(
         clauses: SimulateTransactionClause[],
-        options?: SimulateTransactionOptions
+        caller: string,
+        options?: EstimateGasOptions
     ): Promise<EstimateGasResult> {
         // Clauses must be an array of clauses with at least one clause
         assert(
@@ -44,7 +45,10 @@ class GasModule {
         // Simulate the transaction to get the simulations of each clause
         const simulations = await this.thorest.transactions.simulateTransaction(
             clauses,
-            options
+            {
+                caller,
+                ...options
+            }
         );
 
         // If any of the clauses reverted, then the transaction reverted
