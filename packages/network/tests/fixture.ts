@@ -958,6 +958,7 @@ const TESTING_CONTRACT_ABI = JSON.stringify([
 ]);
 
 export {
+    _testnetUrl,
     testNetwork,
     soloNetwork,
     ZERO_ADDRESS,

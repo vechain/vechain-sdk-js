@@ -7,7 +7,6 @@ import {
 } from './fixture';
 import {
     addressUtils,
-    networkInfo,
     type DeployParams
 } from '@vechainfoundation/vechain-sdk-core';
 import {
@@ -41,20 +40,13 @@ describe('ThorClient - Contracts', () => {
      * @returns A promise that resolves to a `TransactionSendResult` object representing the result of the deployment.
      */
     async function deployExampleContract(): Promise<TransactionSendResult> {
-        // Get the best block information
-        const bestBlock = await thorestSoloClient.blocks.getBlock('best');
-
         const deployParams: DeployParams = { types: ['uint'], values: ['100'] };
 
         // Deploy the contract using the deployContract method
         return await thorSoloClient.contracts.deployContract(
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
             contractBytecode,
-            deployParams,
-            {
-                chainTag: networkInfo.solo.chainTag,
-                blockRef: bestBlock?.id.slice(0, 18)
-            }
+            deployParams
         );
     }
 

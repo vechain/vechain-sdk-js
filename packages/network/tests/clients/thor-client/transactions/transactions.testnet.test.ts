@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { buildTransactionBodyClausesTestCases } from './fixture';
-import { thorClient } from '../../../fixture';
+import { _testnetUrl } from '../../../fixture';
+import { createThorClient } from '../nodes/fixture';
 
 /**
  * Transactions module tests suite.
@@ -18,6 +19,7 @@ describe('Transactions module Testnet tests suite', () => {
         buildTransactionBodyClausesTestCases.forEach(
             ({ description, clauses, options, expected }) => {
                 test(description, async () => {
+                    const thorClient = createThorClient(_testnetUrl);
                     const txBody =
                         await thorClient.transactions.buildTransactionBody(
                             clauses,
