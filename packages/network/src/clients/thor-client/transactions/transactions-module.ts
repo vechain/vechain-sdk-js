@@ -129,7 +129,7 @@ class TransactionsModule {
             expiration: options?.expiration ?? 32,
             clauses,
             gasPriceCoef: options?.gasPriceCoef ?? 127,
-            gas: estimatedGas.totalGas * 3,
+            gas: estimatedGas.totalGas,
             dependsOn: options?.dependsOn ?? null,
             reserved:
                 options?.isDelegated === true ? { features: 1 } : undefined
