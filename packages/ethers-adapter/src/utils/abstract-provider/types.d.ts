@@ -1,8 +1,8 @@
 import { type ethers } from 'ethers';
 
 /**
- *  An **EventFilter** allows efficiently filtering logs (also known as
- *  events) using bloom filters included within blocks.
+ *  An **EventFilter** allows efficiently filtering logs (also known as events)
+ *  using bloom filters included within blocks.
  */
 type EventFilter = ethers.EventFilter;
 
@@ -33,8 +33,10 @@ type EventFilter = ethers.EventFilter;
 type ProviderEvent = ethers.ProviderEvent;
 
 /**
- * this type has a more explicit and type-safe list
+ * This type has a more explicit and type-safe list
  * of the events that we support
+ *
+ * @note `ethersToHardhatEvent` function is needed to convert ProviderEvent to HardhatEthersProviderEvent
  */
 type HardhatEthersProviderEvent =
     | {

@@ -9,19 +9,24 @@ import {
 /**
  * Type guard for Promise.
  *
+ * When ethers registers an event with an async value (e.g. address is a Signer or ENS name)
+ * ethers need to add it immediatly for the Event API,
+ *
  * @param value - The value to check.
  */
-function isPromise<T = unknown>(value: unknown): value is Promise<T> {
+function isPromise<T>(value: T | Promise<T>): value is Promise<T> {
     return (
-        Boolean(value) &&
-        value?.then !== undefined &&
-        value.then !== null &&
-        typeof value.then === 'function'
+        value !== undefined &&
+        value !== null &&
+        (value as Promise<T>).then !== undefined &&
+        typeof (value as Promise<T>).then === 'function'
     );
 }
 
 /**
  * Sorts and removes duplicates from an array of strings.
+ *
+ * Useful for de-duplicating event names.
  *
  * @param items - The array of strings to be sorted and de-duplicated.
  * @returns The sorted and de-duplicated array of strings.
@@ -35,6 +40,8 @@ function concisify(items: string[]): string[] {
 /**
  * Checks whether the provided string is a valid transaction hash.
  *
+ * Useful for checking during `ethersToHardhatEvent` function call
+ *
  * @param x - The string to check.
  */
 function isTransactionHash(x: string): boolean {
@@ -44,14 +51,12 @@ function isTransactionHash(x: string): boolean {
 /**
  * Type guard for EventFilter.
  *
+ * Useful for checking during `ethersToHardhatEvent` function call
+ *
  * @param x - The value to check.
  */
 function isEventFilter(x: ProviderEvent): x is EventFilter {
-    if (typeof x !== 'string' && !Array.isArray(x) && !('orphan' in x)) {
-        return true;
-    }
-
-    return false;
+    return typeof x !== 'string' && !Array.isArray(x) && !('orphan' in x);
 }
 
 /**
