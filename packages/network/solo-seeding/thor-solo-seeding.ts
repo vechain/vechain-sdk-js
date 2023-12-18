@@ -10,7 +10,7 @@ import { ALL_ACCOUNTS, soloNetwork } from '../tests/fixture';
 import { BUILT_IN_CONTRACTS } from '../tests/built-in-fixture';
 import { type Clause, ThorestClient } from '../src';
 import { expect } from '@jest/globals';
-import { ThorClient } from '../src/clients/thor-client';
+import { ThorClient } from '../src';
 import { TESTING_CONTRACT_BYTECODE } from './const';
 
 /**

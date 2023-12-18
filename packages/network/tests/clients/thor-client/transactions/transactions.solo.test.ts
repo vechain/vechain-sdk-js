@@ -1,5 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import {
+    buildTransactionBodyClausesTestCases,
     expectedReceipt,
     invalidWaitForTransactionTestCases,
     transferTransactionBody,
@@ -162,6 +163,41 @@ describe('Transactions Module', () => {
                         );
 
                     expect(txReceipt).toBeNull();
+                });
+            }
+        );
+    });
+
+    /**
+     * Test suite for buildTransactionBody method
+     */
+    describe('buildTransactionBody', () => {
+        /**
+         * buildTransactionBody test cases with different options
+         */
+        buildTransactionBodyClausesTestCases.forEach(
+            ({ description, clauses, options, expected }) => {
+                test(description, async () => {
+                    const txBody =
+                        await thorSoloClient.transactions.buildTransactionBody(
+                            clauses,
+                            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
+                                .address,
+                            options
+                        );
+
+                    expect(txBody).toBeDefined();
+                    expect(txBody.clauses).toStrictEqual(expected.solo.clauses);
+                    expect(txBody.expiration).toBe(expected.solo.expiration);
+                    expect(txBody.gas).toBe(expected.solo.gas);
+                    expect(txBody.dependsOn).toBe(expected.solo.dependsOn);
+                    expect(txBody.gasPriceCoef).toBe(
+                        expected.solo.gasPriceCoef
+                    );
+                    expect(txBody.reserved).toStrictEqual(
+                        expected.solo.reserved
+                    );
+                    expect(txBody.chainTag).toBe(expected.solo.chainTag);
                 });
             }
         );

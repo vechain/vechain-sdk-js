@@ -11,7 +11,7 @@ import {
     deployErc20Contract,
     deployExampleContract
 } from './fixture';
-import { addressUtils, networkInfo } from '@vechainfoundation/vechain-sdk-core';
+import { addressUtils } from '@vechainfoundation/vechain-sdk-core';
 import type { TransactionReceipt } from '../../../../src';
 
 /**
@@ -142,12 +142,7 @@ describe('ThorClient - Contracts', () => {
                 contractAddress as string,
                 deployedERC20Abi,
                 'transfer',
-                [TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address, 1000],
-                {
-                    chainTag: networkInfo.solo.chainTag,
-                    blockRef:
-                        (await thorestSoloClient.blocks.getBestBlockRef()) as string
-                }
+                [TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address, 1000]
             );
 
         // Wait for the transfer transaction to complete and obtain its receipt
@@ -172,7 +167,7 @@ describe('ThorClient - Contracts', () => {
             );
 
         // Ensure that the transfer transaction was successful and the balance is as expected
-        expect(transferResult.clausesResults[0].reverted).toBe(false);
+        expect(transactionReceiptTransfer.reverted).toBe(false);
         expect(parseInt(balanceOfResult)).toBe(1000);
     }, 10000); // Set a timeout of 10000ms for this test
 
@@ -219,20 +214,13 @@ describe('ThorClient - Contracts', () => {
             const contractAddress = transactionReceiptDeployContract.outputs[0]
                 .contractAddress as string;
 
-            const bestBlockRef =
-                (await thorestSoloClient.blocks.getBestBlockRef()) as string;
-
             const callFunctionSetResponse =
                 await thorSoloClient.contracts.executeContractTransaction(
                     TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
                     contractAddress,
                     deployedContractAbi,
                     'set',
-                    [123],
-                    {
-                        chainTag: networkInfo.solo.chainTag,
-                        blockRef: bestBlockRef
-                    }
+                    [123]
                 );
 
             const transactionReceiptCallSetContract =
@@ -255,4 +243,18 @@ describe('ThorClient - Contracts', () => {
             console.log('error', error);
         }
     }, 10000);
+
+    /**
+     * Test suite for 'getBaseGasPrice' method
+     */
+    describe('getBaseGasPrice', () => {
+        test('Should return the base gas price of the Solo network', async () => {
+            const baseGasPrice =
+                await thorSoloClient.contracts.getBaseGasPrice();
+            expect(baseGasPrice).toBe(
+                '0x00000000000000000000000000000000000000000000000000038d7ea4c68000'
+            );
+            expect(Number(baseGasPrice)).toBe(10 ** 15); // 10^15 wei
+        });
+    });
 });
