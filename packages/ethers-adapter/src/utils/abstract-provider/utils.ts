@@ -33,7 +33,7 @@ function isPromise<T>(value: T | Promise<T>): value is Promise<T> {
  */
 function concisify(items: string[]): string[] {
     items = Array.from(new Set(items).values());
-    items.sort();
+    items.sort((a, b) => a.localeCompare(b));
     return items;
 }
 

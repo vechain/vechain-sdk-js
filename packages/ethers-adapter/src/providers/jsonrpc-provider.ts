@@ -4,5 +4,4 @@
  *
  * This way also a json rpc wrapper (https://github.com/vechain/thorify) can be included in the sdk
  * ------------------------------
- * @TODO
  */
