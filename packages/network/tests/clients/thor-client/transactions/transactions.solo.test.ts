@@ -190,16 +190,24 @@ describe('Transactions Module', () => {
         buildTransactionBodyClausesTestCases.forEach(
             ({ description, clauses, options, expected }) => {
                 test(description, async () => {
+                    const gasResult = await thorSoloClient.gas.estimateGas(
+                        clauses,
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                    );
+
+                    expect(gasResult.totalGas).toBe(expected.solo.gas);
+
                     const txBody =
                         await thorSoloClient.transactions.buildTransactionBody(
                             clauses,
+                            gasResult.totalGas,
                             options
                         );
 
                     expect(txBody).toBeDefined();
                     expect(txBody.clauses).toStrictEqual(expected.solo.clauses);
                     expect(txBody.expiration).toBe(expected.solo.expiration);
-                    expect(txBody.gas).toBe(expected.solo.gas);
+                    expect(txBody.gas).toBe(gasResult.totalGas);
                     expect(txBody.dependsOn).toBe(expected.solo.dependsOn);
                     expect(txBody.gasPriceCoef).toBe(
                         expected.solo.gasPriceCoef

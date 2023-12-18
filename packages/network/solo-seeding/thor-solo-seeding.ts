@@ -8,7 +8,7 @@ import {
 } from '@vechainfoundation/vechain-sdk-core';
 import { ALL_ACCOUNTS, soloNetwork } from '../tests/fixture';
 import { BUILT_IN_CONTRACTS } from '../tests/built-in-fixture';
-import { type Clause, ThorestClient } from '../src';
+import { ThorestClient } from '../src';
 import { expect } from '@jest/globals';
 import { ThorClient } from '../src/clients/thor-client';
 import { TESTING_CONTRACT_BYTECODE } from './const';
@@ -23,7 +23,7 @@ import { TESTING_CONTRACT_BYTECODE } from './const';
 const CLAUSES_VTHO = ALL_ACCOUNTS.slice(0, 10).map((account) => ({
     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
     value: 0,
-    data: contract.encodeFunctionInput(
+    data: contract.coder.encodeFunctionInput(
         BUILT_IN_CONTRACTS.ENERGY_ABI,
         'transfer',
         [account.address, unitsUtils.parseVET('500000000')]
@@ -144,7 +144,7 @@ const seedThorSolo = async (): Promise<void> => {
         lastTxId = resp.id;
     }
 
-    const thorSoloClient = new ThorClient(soloNetwork);
+    const thorSoloClient = new ThorClient(thorestSoloClient);
 
     // Wait for the last transaction to be confirmed
     await thorSoloClient.transactions.waitForTransaction(lastTxId);
@@ -167,11 +167,9 @@ const seedThorSolo = async (): Promise<void> => {
     // Deploy the test contract
     const deployTx = deployTestContractTransaction();
 
-    const simulations = await thorSoloClient.transactions.estimateGas(
-        deployTx.body.clauses as Clause[],
-        {
-            caller: ALL_ACCOUNTS[4].address
-        }
+    const simulations = await thorSoloClient.gas.estimateGas(
+        deployTx.body.clauses,
+        ALL_ACCOUNTS[4].address
     );
 
     console.log('Deploy contract simulation: ', JSON.stringify(simulations));
