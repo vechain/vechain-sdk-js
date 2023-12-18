@@ -129,5 +129,13 @@ describe('Synchronous poll unit tests', () => {
                 }).rejects.toThrowError(PollExecutionError);
             }
         });
+
+        test('Test simpleThrowErrorFunctionIfInputIs10', () => {
+            const eventPoll = Poll.createEventPoll(
+                async () => await simpleThrowErrorFunctionIfInputIs10(9),
+                1000
+            );
+            expect(eventPoll).toBeDefined();
+        });
     });
 });
