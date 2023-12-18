@@ -1,3 +1,4 @@
+import { AccountsModule } from './accounts';
 import { NodesModule } from './nodes';
 import { BlocksModule } from './blocks';
 import { ContractsModule } from './contracts';
@@ -11,6 +12,11 @@ import { GasModule } from './gas';
  * Essentially it can be considered a layer on top of the `ThorestClient`.
  */
 class ThorClient {
+    /**
+     * The `AccountsModule` instance
+     */
+    public readonly accounts: AccountsModule;
+
     /**
      * The `NodesModule` instance
      */
@@ -42,6 +48,7 @@ class ThorClient {
      * @param httpClient - The HTTP client instance used for making network requests.
      */
     constructor(readonly thorest: ThorestClient) {
+        this.accounts = new AccountsModule(thorest.httpClient);
         this.nodes = new NodesModule(thorest);
         this.blocks = new BlocksModule(thorest);
         this.transactions = new TransactionsModule(thorest);

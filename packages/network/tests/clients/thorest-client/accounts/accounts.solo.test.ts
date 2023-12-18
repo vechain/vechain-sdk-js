@@ -2,6 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import {
     TEST_ACCOUNTS,
     TEST_CONTRACT_ADDRESS,
+    thorSoloClient,
     thorestSoloClient
 } from '../../../fixture';
 import { unitsUtils } from '@vechainfoundation/vechain-sdk-core';
@@ -29,10 +30,9 @@ describe('ThorestClient - Accounts', () => {
         test(
             'Get account returns fixed VET balance and increased VTHO balance with block number increase',
             async () => {
-                const accountBefore =
-                    await thorestSoloClient.accounts.getAccount(
-                        TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
-                    );
+                const accountBefore = await thorSoloClient.accounts.getAccount(
+                    TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
+                );
 
                 expect(accountBefore).toBeDefined();
 
@@ -64,10 +64,9 @@ describe('ThorestClient - Accounts', () => {
                     );
                 }
 
-                const accountAfter =
-                    await thorestSoloClient.accounts.getAccount(
-                        TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
-                    );
+                const accountAfter = await thorSoloClient.accounts.getAccount(
+                    TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
+                );
 
                 expect(accountAfter).toBeDefined();
                 expect(accountAfter.balance).toEqual(accountBefore.balance);
@@ -82,7 +81,7 @@ describe('ThorestClient - Accounts', () => {
          * Checks if the Testing Contract has been deployed and with the correct bytecode
          */
         test("Should return TestingContract.sol contract's bytecode", async () => {
-            const bytecode = await thorestSoloClient.accounts.getBytecode(
+            const bytecode = await thorSoloClient.accounts.getBytecode(
                 TEST_CONTRACT_ADDRESS
             );
 
