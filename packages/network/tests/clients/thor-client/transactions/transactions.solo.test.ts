@@ -20,7 +20,7 @@ import { ThorClient } from '../../../../src';
  * @group integration/clients/thor-client/transactions
  */
 describe('Transactions Module', () => {
-    // ThorClient instance
+    // ThorClient instance for the Solo network
     let thorSoloClient: ThorClient;
 
     beforeEach(() => {
