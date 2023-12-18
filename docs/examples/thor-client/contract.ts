@@ -36,4 +36,4 @@ const receipt = await thorSoloClient.transactions.waitForTransaction(result.id);
 expect(receipt.reverted).toEqual(false);
 expect(receipt.outputs[0].contractAddress).toBeDefined();
 
-thorTestnetClient.destroy();
+thorSoloClient.destroy();
