@@ -17,7 +17,6 @@ import {
     type WaitForTransactionOptions
 } from './types';
 import { randomBytes } from 'crypto';
-import { GasModule } from '../gas';
 import { TRANSACTION, buildError } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
@@ -26,17 +25,10 @@ import { TRANSACTION, buildError } from '@vechainfoundation/vechain-sdk-errors';
  */
 class TransactionsModule {
     /**
-     * The `GasModule` instance used for estimating gas.
-     */
-    private readonly gasModule: GasModule;
-
-    /**
      * Initializes a new instance of the `Thorest` class.
      * @param thorest - The Thorest instance used to interact with the vechain Thorest blockchain API.
      */
-    constructor(readonly thorest: ThorestClient) {
-        this.gasModule = new GasModule(thorest);
-    }
+    constructor(readonly thorest: ThorestClient) {}
 
     /**
      * Sends a signed transaction to the network.
@@ -92,6 +84,7 @@ class TransactionsModule {
      * specify the chainTag, expiration, gasPriceCoef, gas, dependsOn and reserved fields.
      *
      * @param clauses - The clauses of the transaction.
+     * @param gas - The gas to be used to perform the transaction.
      * @param options - Optional parameters for the request. Includes the expiration, gasPriceCoef, dependsOn and isDelegated fields.
      *                  If the `expiration` is not specified, the transaction will expire after 32 blocks.
      *                  If the `gasPriceCoef` is not specified, the transaction will use the default gas price coef of 127.
@@ -104,11 +97,9 @@ class TransactionsModule {
      */
     public async buildTransactionBody(
         clauses: TransactionClause[],
+        gas: number,
         options?: TransactionBodyOptions
     ): Promise<TransactionBody> {
-        // Estimate the gas needed for the transaction
-        const estimatedGas = await this.gasModule.estimateGas(clauses);
-
         // Get the genesis block to get the chainTag
         const genesisBlock = await this.thorest.blocks.getBlock(0);
 
@@ -125,7 +116,7 @@ class TransactionsModule {
             expiration: options?.expiration ?? 32,
             clauses,
             gasPriceCoef: options?.gasPriceCoef ?? 127,
-            gas: estimatedGas.totalGas,
+            gas,
             dependsOn: options?.dependsOn ?? null,
             reserved:
                 options?.isDelegated === true ? { features: 1 } : undefined
