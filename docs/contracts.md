@@ -33,13 +33,13 @@ expect(clause.data).toEqual(contractBytecode);
 
 ### Conclusion
 
-This example provides a practical demonstration of utilizing the Vechain SDK to build a clause which can be used to deploy a smart contract.
+This example provides a practical demonstration of utilizing the vechain SDK to build a clause which can be used to deploy a smart contract.
 
 ## Build a Contract Function Call clause
 
 ### Overview
 
-This example demonstrates the process of building a clause to call a function on a deployed smart contract using the Vechain SDK.
+This example demonstrates the process of building a clause to call a function on a deployed smart contract using the vechain SDK.
 
 ```typescript { name=contract-function-call, category=example }
 import { networkInfo, contract } from '@vechainfoundation/vechain-sdk-core';
@@ -103,7 +103,7 @@ expect(clause.data).toBeDefined();
 
 ### Conclusion
 
-This example illustrates the process of creating a clause that is useful for interacting with a deployed smart contract on Vechain.
+This example illustrates the process of creating a clause that is useful for interacting with a deployed smart contract on vechain.
 
    
 

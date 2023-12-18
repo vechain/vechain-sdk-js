@@ -4,18 +4,16 @@ import {
     type DeployParams,
     type InterfaceAbi,
     TransactionHandler,
-    Transaction
+    Transaction,
+    PARAMS_ADDRESS,
+    PARAMS_ABI,
+    dataUtils
 } from '@vechainfoundation/vechain-sdk-core';
 import type { ContractTransactionOptions } from './types';
 import {
     type SendTransactionResult,
     TransactionsModule
 } from '../transactions';
-import {
-    PARAMS_ADDRESS,
-    PARAMS_ABI,
-    dataUtils
-} from '@vechainfoundation/vechain-sdk-core';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
