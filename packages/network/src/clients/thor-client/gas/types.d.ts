@@ -1,3 +1,11 @@
+import { type SimulateTransactionOptions } from '../../thorest-client';
+
+/* --- Input options start --- */
+
+type EstimateGasOptions = Omit<SimulateTransactionOptions, 'caller'>;
+
+/* --- Input options end --- */
+
 /* --- Responses Outputs start --- */
 
 /**
@@ -32,4 +40,4 @@ interface EstimateGasResult {
 
 /* --- Responses Outputs end --- */
 
-export type { EstimateGasResult };
+export type { EstimateGasResult, EstimateGasOptions };

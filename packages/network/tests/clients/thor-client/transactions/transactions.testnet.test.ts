@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { buildTransactionBodyClausesTestCases } from './fixture';
-import { thorClient } from '../../../fixture';
+import { TEST_ACCOUNTS, thorClient } from '../../../fixture';
 
 /**
  * Transactions module tests suite.
@@ -18,7 +18,10 @@ describe('Transactions module Testnet tests suite', () => {
         buildTransactionBodyClausesTestCases.forEach(
             ({ description, clauses, options, expected }) => {
                 test(description, async () => {
-                    const gasResult = await thorClient.gas.estimateGas(clauses);
+                    const gasResult = await thorClient.gas.estimateGas(
+                        clauses,
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address // This address might not exist on testnet, thus the gasResult.reverted might be true
+                    );
 
                     expect(gasResult.totalGas).toBe(expected.testnet.gas);
 

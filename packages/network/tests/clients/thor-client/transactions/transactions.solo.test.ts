@@ -180,10 +180,7 @@ describe('Transactions Module', () => {
                 test(description, async () => {
                     const gasResult = await thorSoloClient.gas.estimateGas(
                         clauses,
-                        {
-                            caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
-                                .address
-                        }
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
                     );
 
                     expect(gasResult.totalGas).toBe(expected.solo.gas);

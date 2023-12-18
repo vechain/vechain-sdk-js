@@ -30,7 +30,7 @@ class ContractsModule {
     /**
      * An instance of the GasModule
      * @private
-     * @readonly
+     *
      */
     private readonly gasModule: GasModule;
 
@@ -71,9 +71,7 @@ class ContractsModule {
         // Estimate the gas cost of the transaction
         const gasResult = await this.gasModule.estimateGas(
             [deployContractClause],
-            {
-                caller: callerAddress
-            }
+            callerAddress
         );
 
         const txBody = await this.transactionsModule.buildTransactionBody(
@@ -158,9 +156,10 @@ class ContractsModule {
         );
 
         // Estimate the gas cost of the transaction
-        const gasResult = await this.gasModule.estimateGas([clause], {
-            caller: callerAddress
-        });
+        const gasResult = await this.gasModule.estimateGas(
+            [clause],
+            callerAddress
+        );
 
         // Build a transaction for calling the contract function
         const txBody = await this.transactionsModule.buildTransactionBody(
