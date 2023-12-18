@@ -354,14 +354,14 @@ const simulateTransaction = {
                 transaction: {
                     clauses: [
                         /**
-                         * Calls the PARAMS 'get(bytes32)' function.
-                         * Passes "base-gas-price" encoded as bytes 32 as the parameter.
+                         * Calls the ENERGY 'balanceOf' function.
+                         * Passes the address to check the balance of.
                          */
                         {
                             to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                             value: '0',
                             /**
-                             * Checks the balance of VTHO of TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
+                             * Checks the VTHO balance of TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
                              */
                             data: contract.coder.encodeFunctionInput(
                                 BUILT_IN_CONTRACTS.ENERGY_ABI,
