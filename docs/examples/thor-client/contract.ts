@@ -47,3 +47,5 @@ const receipt = await thorTestnetClient.transactions.waitForTransaction(
 
 expect(receipt.reverted).toEqual(false);
 expect(receipt.outputs[0].contractAddress).toBeDefined();
+
+thorTestnetClient.destroy();
