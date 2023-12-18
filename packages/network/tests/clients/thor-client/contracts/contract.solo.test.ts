@@ -141,19 +141,13 @@ describe('ThorClient - Contracts', () => {
             const contractAddress = transactionReceiptDeployContract.outputs[0]
                 .contractAddress as string;
 
-            const bestBlock = await thorestSoloClient.blocks.getBlock('best');
-
             const callFunctionSetResponse =
                 await thorSoloClient.contracts.executeContractTransaction(
                     TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
                     contractAddress,
                     deployedContractAbi,
                     'set',
-                    [123],
-                    {
-                        chainTag: networkInfo.solo.chainTag,
-                        blockRef: bestBlock?.id.slice(0, 18)
-                    }
+                    [123]
                 );
 
             const transactionReceiptCallSetContract =
@@ -176,4 +170,18 @@ describe('ThorClient - Contracts', () => {
             console.log('error', error);
         }
     }, 10000);
+
+    /**
+     * Test suite for 'getBaseGasPrice' method
+     */
+    describe('getBaseGasPrice', () => {
+        test('Should return the base gas price of the Solo network', async () => {
+            const baseGasPrice =
+                await thorSoloClient.contracts.getBaseGasPrice();
+            expect(baseGasPrice).toBe(
+                '0x00000000000000000000000000000000000000000000000000038d7ea4c68000'
+            );
+            expect(Number(baseGasPrice)).toBe(10 ** 15); // 10^15 wei
+        });
+    });
 });

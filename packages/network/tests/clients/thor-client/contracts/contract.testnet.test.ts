@@ -22,7 +22,7 @@ describe('Gas Module', () => {
      * Validates the base gas price of the Testnet.
      */
     test('Should return the base gas price of the Testnet', async () => {
-        const baseGasPrice = await thorClient.gas.getBaseGasPrice();
+        const baseGasPrice = await thorClient.contracts.getBaseGasPrice();
         expect(baseGasPrice).toBe(
             '0x000000000000000000000000000000000000000000000000000009184e72a000'
         );
