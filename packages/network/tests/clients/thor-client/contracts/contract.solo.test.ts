@@ -138,7 +138,6 @@ describe('ThorClient - Contracts', () => {
         // transferring a specified amount of tokens
         const transferResult =
             await thorSoloClient.contracts.executeContractTransaction(
-                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address,
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
                 contractAddress as string,
                 deployedERC20Abi,
@@ -217,7 +216,6 @@ describe('ThorClient - Contracts', () => {
 
             const callFunctionSetResponse =
                 await thorSoloClient.contracts.executeContractTransaction(
-                    TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address,
                     TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
                     contractAddress,
                     deployedContractAbi,

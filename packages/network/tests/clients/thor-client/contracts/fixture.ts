@@ -213,7 +213,6 @@ async function deployExampleContract(): Promise<TransactionSendResult> {
 
     // Deploy the contract using the deployContract method
     return await thorSoloClient.contracts.deployContract(
-        TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address,
         TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
         contractBytecode,
         deployParams
@@ -228,7 +227,6 @@ async function deployExampleContract(): Promise<TransactionSendResult> {
 async function deployErc20Contract(): Promise<TransactionSendResult> {
     // Deploy the contract using the deployContract method
     return await thorSoloClient.contracts.deployContract(
-        TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address,
         TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
         erc20ContractBytecode
     );

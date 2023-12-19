@@ -7,7 +7,8 @@ import {
     Transaction,
     PARAMS_ADDRESS,
     PARAMS_ABI,
-    dataUtils
+    dataUtils,
+    addressUtils
 } from '@vechainfoundation/vechain-sdk-core';
 import type { ContractCallOptions, ContractTransactionOptions } from './types';
 import {
@@ -46,7 +47,6 @@ class ContractsModule {
     /**
      * Deploys a smart contract to the blockchain.
      *
-     * @param callerAddress - The address of the account deploying the smart contract.
      * @param privateKey - The private key of the account deploying the smart contract.
      * @param contractBytecode - The bytecode of the smart contract to be deployed.
      * @param deployParams - The parameters to pass to the smart contract constructor.
@@ -56,7 +56,6 @@ class ContractsModule {
      * @returns A promise that resolves to a `TransactionSendResult` object representing the result of the deployment.
      */
     public async deployContract(
-        callerAddress: string,
         privateKey: string,
         contractBytecode: string,
         deployParams?: DeployParams,
@@ -71,7 +70,7 @@ class ContractsModule {
         // Estimate the gas cost of the transaction
         const gasResult = await this.gasModule.estimateGas(
             [deployContractClause],
-            callerAddress
+            addressUtils.fromPrivateKey(Buffer.from(privateKey, 'hex'))
         );
 
         const txBody = await this.transactionsModule.buildTransactionBody(
@@ -130,7 +129,6 @@ class ContractsModule {
     /**
      * Executes a transaction to interact with a smart contract function.
      *
-     * @param callerAddress - The address of the account calling the contract function.
      * @param privateKey - The private key for signing the transaction.
      * @param contractAddress - The address of the smart contract.
      * @param contractABI - The ABI (Application Binary Interface) of the smart contract.
@@ -143,7 +141,6 @@ class ContractsModule {
      * @returns A promise resolving to a ContractTransactionResult object.
      */
     public async executeContractTransaction(
-        callerAddress: string,
         privateKey: string,
         contractAddress: string,
         contractABI: InterfaceAbi,
@@ -162,7 +159,7 @@ class ContractsModule {
         // Estimate the gas cost of the transaction
         const gasResult = await this.gasModule.estimateGas(
             [clause],
-            callerAddress
+            addressUtils.fromPrivateKey(Buffer.from(privateKey, 'hex'))
         );
 
         // Build a transaction for calling the contract function
