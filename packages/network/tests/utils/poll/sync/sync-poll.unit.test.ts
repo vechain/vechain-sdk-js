@@ -131,11 +131,17 @@ describe('Synchronous poll unit tests', () => {
         });
 
         test('Test simpleThrowErrorFunctionIfInputIs10', () => {
-            const eventPoll = Poll.createEventPoll(
-                async () => await simpleThrowErrorFunctionIfInputIs10(9),
-                1000
-            );
-            expect(eventPoll).toBeDefined();
+            const poll = Poll.SyncPoll(
+                async () => await simpleThrowErrorFunctionIfInputIs10(7),
+                {
+                    requestIntervalInMilliseconds: 100,
+                    // Stop after 2 iterations
+                    maximumIterations: 2
+                }
+            ).waitUntil((result) => {
+                return result === 9;
+            });
+            expect(poll).toBeDefined();
         });
     });
 });
