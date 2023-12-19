@@ -20,10 +20,15 @@ describe('buildTransactionBody with mocks', () => {
 
         const thorSoloClient = new ThorClient(thorestSoloClient);
 
+        const gas = await thorSoloClient.gas.estimateGas(
+            [transferTransactionBody.clauses[0]],
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+        );
+
         await expect(
             thorSoloClient.transactions.buildTransactionBody(
                 [transferTransactionBody.clauses[0]],
-                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                gas.totalGas
             )
         ).rejects.toThrowError(TransactionBodyError);
     });
@@ -38,10 +43,15 @@ describe('buildTransactionBody with mocks', () => {
 
         const thorSoloClient = new ThorClient(thorestSoloClient);
 
+        const gas = await thorSoloClient.gas.estimateGas(
+            [transferTransactionBody.clauses[0]],
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+        );
+
         await expect(
             thorSoloClient.transactions.buildTransactionBody(
                 [transferTransactionBody.clauses[0]],
-                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                gas.totalGas
             )
         ).rejects.toThrowError(TransactionBodyError);
     });

@@ -16,10 +16,11 @@ describe('Gas Module', () => {
          * Test cases where the transaction should revert
          */
         estimateGasTestCases.revert.forEach(
-            ({ description, clauses, options, expected }) => {
+            ({ description, clauses, caller, options, expected }) => {
                 test(description, async () => {
                     const result = await thorSoloClient.gas.estimateGas(
                         clauses,
+                        caller,
                         options
                     );
 
@@ -33,10 +34,11 @@ describe('Gas Module', () => {
          * Test cases where the transaction should succeed
          */
         estimateGasTestCases.success.forEach(
-            ({ description, clauses, options, expected }) => {
+            ({ description, clauses, caller, options, expected }) => {
                 test(description, async () => {
                     const result = await thorSoloClient.gas.estimateGas(
                         clauses,
+                        caller,
                         options
                     );
 

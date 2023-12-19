@@ -18,11 +18,17 @@ describe('Transactions module Testnet tests suite', () => {
         buildTransactionBodyClausesTestCases.forEach(
             ({ description, clauses, options, expected }) => {
                 test(description, async () => {
+                    const gasResult = await thorClient.gas.estimateGas(
+                        clauses,
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address // This address might not exist on testnet, thus the gasResult.reverted might be true
+                    );
+
+                    expect(gasResult.totalGas).toBe(expected.testnet.gas);
+
                     const txBody =
                         await thorClient.transactions.buildTransactionBody(
                             clauses,
-                            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
-                                .address,
+                            gasResult.totalGas,
                             options
                         );
 
@@ -31,7 +37,7 @@ describe('Transactions module Testnet tests suite', () => {
                         expected.testnet.clauses
                     );
                     expect(txBody.expiration).toBe(expected.testnet.expiration);
-                    expect(txBody.gas).toBe(expected.testnet.gas);
+                    expect(txBody.gas).toBe(gasResult.totalGas);
                     expect(txBody.dependsOn).toBe(expected.testnet.dependsOn);
                     expect(txBody.gasPriceCoef).toBe(
                         expected.testnet.gasPriceCoef
