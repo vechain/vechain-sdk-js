@@ -14,6 +14,18 @@ class BlocksModule {
     private headBlock: BlockDetail | null = null;
 
     /**
+     * Timestamp of the previous block.
+     * @private
+     */
+    private prevBlockTimestamp: number | null = null;
+
+    /**
+     * Error handler for block-related errors.
+     * @private
+     */
+    private readonly onBlockError?: (error: Error) => void;
+
+    /**
      * The Poll instance for event polling
      * @private
      */
@@ -27,14 +39,49 @@ class BlocksModule {
         readonly thorest: ThorestClient,
         onBlockError?: (error: Error) => void
     ) {
+        this.onBlockError = onBlockError;
+
+        // Fetch the best block initially to get the timestamp
+        this.thorest.blocks
+            .getBestBlock()
+            .then((bestBlock) => {
+                if (bestBlock != null) {
+                    this.prevBlockTimestamp = bestBlock.timestamp;
+                    this.setupRegularPolling();
+                }
+            })
+            .catch((error) => {
+                if (this.onBlockError != null) {
+                    this.onBlockError(error as Error);
+                }
+            });
+    }
+
+    /**
+     * Sets up regular polling every 10 seconds based on the previous block timestamp.
+     * @private
+     */
+    private setupRegularPolling(): void {
+        // wait until the next block is mined
+        if (this.prevBlockTimestamp != null) {
+            setTimeout(() => {}, this.prevBlockTimestamp + 10000 - Date.now());
+        }
+
         this.pollInstance = Poll.createEventPoll(
-            async () => await thorest.blocks.getBestBlock(),
-            1000
+            async () => await this.thorest.blocks.getBestBlock(),
+            10000 // Poll every 10 seconds
         )
             .onData((data) => {
                 this.headBlock = data;
+                if (data != null) {
+                    this.prevBlockTimestamp = data.timestamp;
+                }
             })
-            .onError(onBlockError ?? ((_) => {}));
+            .onError((error) => {
+                if (this.onBlockError != null) {
+                    this.onBlockError(error);
+                }
+            });
 
         this.pollInstance.startListen();
     }
