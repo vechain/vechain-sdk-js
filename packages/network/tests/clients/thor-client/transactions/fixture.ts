@@ -169,7 +169,7 @@ const buildTransactionBodyClausesTestCases = [
                 ],
                 dependsOn: null,
                 expiration: 32,
-                gas: 24263,
+                gas: 36518,
                 gasPriceCoef: 127,
                 reserved: undefined
             },
@@ -184,7 +184,7 @@ const buildTransactionBodyClausesTestCases = [
                 ],
                 dependsOn: null,
                 expiration: 32,
-                gas: 51518,
+                gas: 24263,
                 gasPriceCoef: 127,
                 reserved: undefined
             }
@@ -246,7 +246,7 @@ const buildTransactionBodyClausesTestCases = [
                 dependsOn:
                     '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f',
                 expiration: 1000,
-                gas: 74855,
+                gas: 100954,
                 gasPriceCoef: 255,
                 reserved: { features: 1 }
             },
@@ -277,7 +277,7 @@ const buildTransactionBodyClausesTestCases = [
                 dependsOn:
                     '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f',
                 expiration: 1000,
-                gas: 115436,
+                gas: 74855,
                 gasPriceCoef: 255,
                 reserved: { features: 1 }
             }

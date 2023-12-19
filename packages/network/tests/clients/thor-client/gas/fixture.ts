@@ -30,9 +30,8 @@ const estimateGasTestCases = {
                     )
                 }
             ],
-            options: {
-                caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-            },
+            caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
+            options: {},
             expected: {
                 revertReasons: ['builtin: insufficient balance'],
                 reverted: true,
@@ -63,9 +62,8 @@ const estimateGasTestCases = {
                     data: '0x'
                 }
             ],
-            options: {
-                caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-            },
+            caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
+            options: {},
             expected: {
                 revertReasons: ['builtin: insufficient balance'],
                 reverted: true,
@@ -96,9 +94,8 @@ const estimateGasTestCases = {
                     data: '0x'
                 }
             ],
-            options: {
-                caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-            },
+            caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
+            options: {},
             expected: {
                 revertReasons: ['', ''],
                 reverted: true,
@@ -150,9 +147,8 @@ const estimateGasTestCases = {
                     )
                 }
             ],
-            options: {
-                caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-            },
+            caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
+            options: {},
             expected: {
                 revertReasons: ['', '', 'builtin: insufficient balance'],
                 reverted: true,
@@ -174,9 +170,8 @@ const estimateGasTestCases = {
                     )
                 }
             ],
-            options: {
-                caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-            },
+            caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
+            options: {},
             expected: {
                 revertReasons: ['Panic(0x01)'], // 0x01: If you call assert with an argument that evaluates to false.
                 reverted: true,
@@ -188,8 +183,8 @@ const estimateGasTestCases = {
             description:
                 'Should estimate gas cost of a transaction that reverts due to offered gas below the gas required',
             clauses: [transfer1VTHOClause],
+            caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
             options: {
-                caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
                 gas: 1000
             },
             expected: {
@@ -205,9 +200,8 @@ const estimateGasTestCases = {
             description:
                 'Should estimate gas cost of a transaction that transfers 1 VTHO',
             clauses: [transfer1VTHOClause],
-            options: {
-                caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-            },
+            caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
+            options: {},
             expected: {
                 reverted: false,
                 totalGas: 36518,
@@ -236,9 +230,8 @@ const estimateGasTestCases = {
                     data: '0x'
                 }
             ],
-            options: {
-                caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-            },
+            caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
+            options: {},
             expected: {
                 reverted: false,
                 totalGas: 100954,
@@ -250,8 +243,8 @@ const estimateGasTestCases = {
             description:
                 'Should estimate gas cost of a transaction with delegation context',
             clauses: [transfer1VTHOClause],
+            caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
             options: {
-                caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
                 gasPayer: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
             },
             expected: {
@@ -271,9 +264,8 @@ const estimateGasTestCases = {
                     data: '0x'
                 }
             ],
-            options: {
-                caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-            },
+            caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
+            options: {},
             expected: {
                 reverted: false,
                 totalGas: 21000,
@@ -296,9 +288,8 @@ const estimateGasTestCases = {
                     data: '0x'
                 }
             ],
-            options: {
-                caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-            },
+            caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
+            options: {},
             expected: {
                 reverted: false,
                 totalGas: 37000,
