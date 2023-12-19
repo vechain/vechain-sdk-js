@@ -22,12 +22,12 @@ function fromPublicKey(publicKey: Buffer): string {
  *
  * This function uses the `secp256k1` cryptographic function to derive the public key
  * from the provided private key, and then converts this public
- * key into a Vechain address.
+ * key into a vechain address.
  *
- * @param privateKey - The private key as a Buffer object for which the Vechain address
+ * @param privateKey - The private key as a Buffer object for which the vechain address
  *                     will be derived. The private key must be a valid secp256k1 private key.
  *
- * @returns The Vechain address as a string, derived from the given private key.
+ * @returns The vechain address as a string, derived from the given private key.
  *
  */
 function fromPrivateKey(privateKey: Buffer): string {
