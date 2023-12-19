@@ -42,7 +42,7 @@ describe('Blocks Module', () => {
                         );
                     }
                 },
-                15000
+                12000
             );
         });
     });
@@ -87,5 +87,5 @@ describe('Blocks Module', () => {
 
         expect(headBlockSecond).toBeDefined();
         expect(headBlockFirst).not.toBe(headBlockSecond);
-    }, 25000);
+    }, 23000);
 });
