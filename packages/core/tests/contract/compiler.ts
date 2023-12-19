@@ -9,7 +9,7 @@ interface Contract {
     bytecode: string;
 }
 
-export interface Sources {
+interface Sources {
     [contractName: string]: { content: string };
 }
 
@@ -83,4 +83,4 @@ function compileContract(contractName: string, sources: Sources): Contract {
     };
 }
 
-export { compileContract };
+export { compileContract, type Contract, type Sources };

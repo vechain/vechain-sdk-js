@@ -2,7 +2,10 @@ import { describe, test, expect } from '@jest/globals';
 import { compileContract, type Sources } from './compiler';
 import { contract, type DeployParams } from '../../src';
 import { coder } from '../../src';
-import { getContractSourceCode } from './fixture';
+import {
+    compileERC20SampleTokenContract,
+    getContractSourceCode
+} from './fixture';
 
 /**
  * Unit tests for building transaction clauses.
@@ -88,50 +91,7 @@ describe('Contract', () => {
      */
     test('Compile an ERC20 contract and create an interface from the abi', () => {
         try {
-            const erc20Sources: Sources = {
-                'SampleToken.sol': {
-                    content: getContractSourceCode(
-                        'tests/contract/sample',
-                        'SampleToken.sol'
-                    )
-                },
-                '@openzeppelin/contracts/token/ERC20/ERC20.sol': {
-                    content: getContractSourceCode(
-                        '../../node_modules/@openzeppelin/contracts/token/ERC20/',
-                        'ERC20.sol'
-                    )
-                },
-                '@openzeppelin/contracts/token/ERC20/IERC20.sol': {
-                    content: getContractSourceCode(
-                        '../../node_modules/@openzeppelin/contracts/token/ERC20/',
-                        'IERC20.sol'
-                    )
-                },
-                '@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol':
-                    {
-                        content: getContractSourceCode(
-                            '../../node_modules/@openzeppelin/contracts/token/ERC20/',
-                            'extensions/IERC20Metadata.sol'
-                        )
-                    },
-                '@openzeppelin/contracts/utils/Context.sol': {
-                    content: getContractSourceCode(
-                        '../../node_modules/@openzeppelin/contracts/utils/',
-                        'Context.sol'
-                    )
-                },
-                '@openzeppelin/contracts/interfaces/draft-IERC6093.sol': {
-                    content: getContractSourceCode(
-                        '../../node_modules/@openzeppelin/contracts/interfaces/',
-                        'draft-IERC6093.sol'
-                    )
-                }
-            };
-
-            const compiledContract = compileContract(
-                'SampleToken',
-                erc20Sources
-            );
+            const compiledContract = compileERC20SampleTokenContract();
 
             // Ensure the contract compilation is successful
             expect(compiledContract).toBeDefined();

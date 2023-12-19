@@ -41,3 +41,13 @@ This example demonstrates the process of building a clause to call a function on
 This example illustrates the process of creating a clause that is useful for interacting with a deployed smart contract on vechain.
 
    
+## Create a sample ERC20 token
+
+### Overview
+The ERC20 token standard is widely used for creating and issuing smart contracts on Ethereum blockchain. VeChain, being compatible with Ethereum's EVM, allows for the implementation of ERC20 tokens on its platform. This provides the benefits of VeChain's features, such as improved scalability and lower transaction costs, while maintaining the familiar ERC20 interface.
+
+### Example
+
+The vechain SDK allows to create a sample ERC20 token with a few lines of code. The example below shows how to create a sample ERC20 token with the name "SampleToken" and symbol "ST" with a total supply of 1000000000000000000000000.
+
+[example](examples/contracts/contract-create-ERC20-token.ts)

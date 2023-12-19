@@ -106,4 +106,66 @@ expect(clause.data).toBeDefined();
 This example illustrates the process of creating a clause that is useful for interacting with a deployed smart contract on vechain.
 
    
+## Create a sample ERC20 token
+
+### Overview
+The ERC20 token standard is widely used for creating and issuing smart contracts on Ethereum blockchain. VeChain, being compatible with Ethereum's EVM, allows for the implementation of ERC20 tokens on its platform. This provides the benefits of VeChain's features, such as improved scalability and lower transaction costs, while maintaining the familiar ERC20 interface.
+
+### Example
+
+The vechain SDK allows to create a sample ERC20 token with a few lines of code. The example below shows how to create a sample ERC20 token with the name "SampleToken" and symbol "ST" with a total supply of 1000000000000000000000000.
+
+```typescript { name=contract-create-erc20-token, category=example }
+// Importing necessary modules and classes from the Vechain SDK and the 'expect' assertion library
+import {
+    HttpClient,
+    ThorClient,
+    ThorestClient
+} from '@vechainfoundation/vechain-sdk-network';
+import { expect } from 'expect';
+import { erc20ContractABI, erc20ContractBytecode } from './fixture.js';
+import { addressUtils } from '@vechainfoundation/vechain-sdk-core';
+
+// Defining the private key for the deployer account, which has VTHO for deployment costs
+const privateKeyDeployer =
+    '706e6acd567fdc22db54aead12cb39db01c4832f149f95299aa8dd8bef7d28ff';
+
+// Setting the URL for the local solo network for testing purposes
+const _testnetUrl = 'http://localhost:8669/';
+
+// Creating an instance of HttpClient to interact with the solo network
+const soloNetwork = new HttpClient(_testnetUrl);
+
+// Initializing a ThorestClient for interacting with the Thor blockchain on the solo network
+const thorestSoloClient = new ThorestClient(soloNetwork);
+
+// Creating a ThorClient instance for contract deployment and transaction handling
+const thorSoloClient = new ThorClient(thorestSoloClient);
+
+// Deploying the ERC20 contract using the Thor client and the deployer's private key
+const transaction = await thorSoloClient.contracts.deployContract(
+    privateKeyDeployer,
+    erc20ContractBytecode
+);
+
+// Awaiting the transaction receipt to confirm successful contract deployment
+const receipt = await thorSoloClient.transactions.waitForTransaction(
+    transaction.id
+);
+
+// Asserting that the contract deployment didn't revert, indicating a successful deployment
+expect(receipt.reverted).toEqual(false);
+
+// Executing a contract call to get the balance of the account that deployed the contract
+const balance = await thorSoloClient.contracts.executeContractCall(
+    receipt.outputs[0].contractAddress,
+    erc20ContractABI,
+    'balanceOf',
+    [addressUtils.fromPrivateKey(Buffer.from(privateKeyDeployer, 'hex'))]
+);
+
+// Asserting that the initial balance of the deployer is the expected amount (1e24)
+expect(parseInt(balance, 16)).toEqual(1e24);
+
+```
 
