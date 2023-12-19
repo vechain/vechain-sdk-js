@@ -6,8 +6,40 @@ const isPromiseFixtures = [
         value: Promise.resolve(),
         expected: true
     },
-    { value: undefined, expected: false },
-    { value: null, expected: false }
+    {
+        value: new Promise(() => {}),
+        expected: true
+    },
+    {
+        value: { then: () => {} },
+        expected: true
+    },
+    {
+        value: new Promise((resolve) => resolve),
+        expected: true
+    },
+    {
+        value: new Promise((resolve, reject) => reject),
+        expected: true
+    },
+    {
+        value: new Promise(() => {
+            return 1;
+        }),
+        expected: true
+    },
+    {
+        value: undefined,
+        expected: false
+    },
+    {
+        value: null,
+        expected: false
+    },
+    {
+        value: { catch: () => {}, finally: () => {} },
+        expected: false
+    }
 ];
 
 /**
