@@ -136,6 +136,8 @@ class BlocksModule {
         if (this.pollInstance != null) {
             this.pollInstance.stopListen();
             this.pollInstance = null;
+            this.pollInstance = null;
+            this.prevBlockTimestamp = null;
         }
     }
 }
