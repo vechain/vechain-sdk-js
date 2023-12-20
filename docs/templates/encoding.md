@@ -22,6 +22,6 @@ The contract interface is used to provide a higher level of abstraction to allow
 
 RLP is a serialisation technique used on the VechainThor blockchain. It is used to efficiently encode and decode data structures for storage and transmission on the blockchain. Vechain SDK includes dedicated methods for RLP encoding and decoding, enabling developers to handle data serialization and deserialization with ease.
 
-By supporting ABI and RLP encoding handling, Vechain SDK equips developers with the necessary tools to interact with smart contracts and handle data efficiently on the VechainThor blockchain. This further enhances the library's capabilities and contributes to the seamless development of decentralised applications on the platform.
+By supporting ABI and RLP encoding handling, vechain SDK equips developers with the necessary tools to interact with smart contracts and handle data efficiently on the VechainThor blockchain. This further enhances the library's capabilities and contributes to the seamless development of decentralised applications on the platform.
 
 [example](examples/encoding/rlp.ts)

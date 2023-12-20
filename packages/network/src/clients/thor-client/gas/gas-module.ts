@@ -1,41 +1,28 @@
 import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
 import {
     type SimulateTransactionClause,
-    type SimulateTransactionOptions,
     type ThorestClient
 } from '../../thorest-client';
-import { ContractsModule } from '../contracts';
-import { type EstimateGasResult } from './types';
-import {
-    PARAMS_ABI,
-    PARAMS_ADDRESS,
-    TransactionUtils,
-    dataUtils
-} from '@vechainfoundation/vechain-sdk-core';
+import { type EstimateGasOptions, type EstimateGasResult } from './types';
+import { TransactionUtils } from '@vechainfoundation/vechain-sdk-core';
 import { decodeRevertReason } from './helpers/decode-evm-error';
 
 /**
  * The `GasModule` handles gas related operations and provides
- * convenient methods for estimating the gas cost of a transaction and getting the base gas price.
+ * convenient methods for estimating the gas cost of a transaction.
  */
 class GasModule {
-    /**
-     * Reference to the `ContractsModule` instance.
-     */
-    private readonly contractsModule: ContractsModule;
-
     /**
      * Initializes a new instance of the `TransactionsModule` class.
      * @param httpClient - The HTTP client instance used for making HTTP requests.
      */
-    constructor(readonly thorest: ThorestClient) {
-        this.contractsModule = new ContractsModule(thorest);
-    }
+    constructor(readonly thorest: ThorestClient) {}
 
     /**
      * Simulates a transaction and returns an object containing information regarding the gas used and whether the transaction reverted.
      *
      * @param clauses - The clauses of the transaction to simulate.
+     * @param caller - The address of the account sending the transaction.
      * @param options - Optional parameters for the request. Includes all options of the `simulateTransaction` method.
      *                  @see {@link TransactionsClient#simulateTransaction}
      *
@@ -45,7 +32,8 @@ class GasModule {
      */
     public async estimateGas(
         clauses: SimulateTransactionClause[],
-        options?: SimulateTransactionOptions
+        caller: string,
+        options?: EstimateGasOptions
     ): Promise<EstimateGasResult> {
         // Clauses must be an array of clauses with at least one clause
         assert(
@@ -57,7 +45,10 @@ class GasModule {
         // Simulate the transaction to get the simulations of each clause
         const simulations = await this.thorest.transactions.simulateTransaction(
             clauses,
-            options
+            {
+                caller,
+                ...options
+            }
         );
 
         // If any of the clauses reverted, then the transaction reverted
@@ -99,24 +90,6 @@ class GasModule {
                   revertReasons: [],
                   vmErrors: []
               };
-    }
-
-    /**
-     * Gets the base gas price in wei.
-     * The base gas price is the minimum gas price that can be used for a transaction.
-     * It is used to obtain the VTHO (energy) cost of a transaction.
-     *
-     * @link [Total Gas Price](https://docs.vechain.org/core-concepts/transactions/transaction-calculation#total-gas-price)
-     *
-     * @returns The base gas price in wei.
-     */
-    public async getBaseGasPrice(): Promise<string> {
-        return await this.contractsModule.executeContractCall(
-            PARAMS_ADDRESS,
-            PARAMS_ABI,
-            'get',
-            [dataUtils.encodeBytes32String('base-gas-price')]
-        );
     }
 }
 

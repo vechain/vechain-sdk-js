@@ -6,7 +6,11 @@ import {
     networkInfo
 } from '@vechainfoundation/vechain-sdk-core';
 import { BUILT_IN_CONTRACTS } from '../../../built-in-fixture';
-import { TEST_ACCOUNTS } from '../../../fixture';
+import {
+    TESTING_CONTRACT_ABI,
+    TEST_ACCOUNTS,
+    TEST_CONTRACT_ADDRESS
+} from '../../../fixture';
 
 /**
  * Clause to transfer 1 VTHO to TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
@@ -145,11 +149,148 @@ const invalidWaitForTransactionTestCases = [
     }
 ];
 
+/**
+ * buildTransactionBody test cases
+ */
+const buildTransactionBodyClausesTestCases = [
+    {
+        description: 'Should build transaction body that transfers 1 VTHO',
+        clauses: [transfer1VTHOClause],
+        options: {},
+        expected: {
+            solo: {
+                chainTag: 246,
+                clauses: [
+                    {
+                        data: '0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000',
+                        to: '0x0000000000000000000000000000456e65726779',
+                        value: '0'
+                    }
+                ],
+                dependsOn: null,
+                expiration: 32,
+                gas: 36518,
+                gasPriceCoef: 127,
+                reserved: undefined
+            },
+            testnet: {
+                chainTag: 39,
+                clauses: [
+                    {
+                        data: '0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000',
+                        to: '0x0000000000000000000000000000456e65726779',
+                        value: '0'
+                    }
+                ],
+                dependsOn: null,
+                expiration: 32,
+                gas: 24263,
+                gasPriceCoef: 127,
+                reserved: undefined
+            }
+        }
+    },
+    {
+        description:
+            'Should build transaction that executes many clauses and all options',
+        clauses: [
+            transfer1VTHOClause,
+            transfer1VTHOClause,
+            {
+                to: TEST_CONTRACT_ADDRESS,
+                value: '0',
+                data: contract.coder.encodeFunctionInput(
+                    TESTING_CONTRACT_ABI,
+                    'testAssertError',
+                    [0] // Any number !== 0 will cause Panic error
+                )
+            },
+            {
+                to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                value: unitsUtils.parseVET('1').toString(),
+                data: '0x'
+            }
+        ],
+        options: {
+            gasPriceCoef: 255,
+            expiration: 1000,
+            isDelegated: true,
+            dependsOn:
+                '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f' // Any valid tx id
+        },
+        expected: {
+            solo: {
+                chainTag: 246,
+                clauses: [
+                    {
+                        data: '0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000',
+                        to: '0x0000000000000000000000000000456e65726779',
+                        value: '0'
+                    },
+                    {
+                        data: '0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000',
+                        to: '0x0000000000000000000000000000456e65726779',
+                        value: '0'
+                    },
+                    {
+                        data: '0xc7bce69d0000000000000000000000000000000000000000000000000000000000000000',
+                        to: '0xb2c20a6de401003a671659b10629eb82ff254fb8',
+                        value: '0'
+                    },
+                    {
+                        data: '0x',
+                        to: '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+                        value: '1000000000000000000'
+                    }
+                ],
+                dependsOn:
+                    '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f',
+                expiration: 1000,
+                gas: 100954,
+                gasPriceCoef: 255,
+                reserved: { features: 1 }
+            },
+            testnet: {
+                chainTag: 39,
+                clauses: [
+                    {
+                        data: '0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000',
+                        to: '0x0000000000000000000000000000456e65726779',
+                        value: '0'
+                    },
+                    {
+                        data: '0xa9059cbb0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c390000000000000000000000000000000000000000000000000de0b6b3a7640000',
+                        to: '0x0000000000000000000000000000456e65726779',
+                        value: '0'
+                    },
+                    {
+                        data: '0xc7bce69d0000000000000000000000000000000000000000000000000000000000000000',
+                        to: '0xb2c20a6de401003a671659b10629eb82ff254fb8',
+                        value: '0'
+                    },
+                    {
+                        data: '0x',
+                        to: '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+                        value: '1000000000000000000'
+                    }
+                ],
+                dependsOn:
+                    '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f',
+                expiration: 1000,
+                gas: 74855,
+                gasPriceCoef: 255,
+                reserved: { features: 1 }
+            }
+        }
+    }
+];
+
 export {
     waitForTransactionTestCases,
     invalidWaitForTransactionTestCases,
     transferTransactionBody,
     transferTransactionBodyValueAsNumber,
     expectedReceipt,
-    transfer1VTHOClause
+    transfer1VTHOClause,
+    buildTransactionBodyClausesTestCases
 };

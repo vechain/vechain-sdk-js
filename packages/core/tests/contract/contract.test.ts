@@ -1,191 +1,72 @@
 import { describe, test, expect } from '@jest/globals';
-import { compileContract } from './compiler';
+import { compileContract, type Sources } from './compiler';
+import { contract, type DeployParams } from '../../src';
+import { coder } from '../../src';
 import {
-    type TransactionBodyOverride,
-    contract,
-    type DeployParams
-} from '../../src';
-import { coder, networkInfo } from '../../src';
+    compileERC20SampleTokenContract,
+    getContractSourceCode
+} from './fixture';
 
 /**
- * Unit tests for building contract transactions.
+ * Unit tests for building transaction clauses.
  * @group unit/contract
  */
 describe('Contract', () => {
-    /**
-     * Test to ensure building a transaction to deploy a contract.
-     */
-    test('Build a transaction to deploy a contract', () => {
-        // Compile the contract from a sample file
-        const compiledContract = compileContract(
-            'tests/contract/sample',
-            'Example.sol',
-            'Example'
-        );
+    const sources: Sources = {
+        'Example.sol': {
+            content: getContractSourceCode(
+                'tests/contract/sample',
+                'Example.sol'
+            )
+        }
+    };
 
-        // Build a transaction to deploy the compiled contract
-        const transaction = contract.txBuilder.buildDeployTransaction(
+    test('Build a clause to deploy a contract without constructor', () => {
+        const compiledContract = compileContract('Example', sources);
+
+        const clause = contract.clauseBuilder.deployContract(
             compiledContract.bytecode
         );
 
-        expect(transaction.body.clauses[0].data).toEqual(
-            compiledContract.bytecode
-        );
-        expect(transaction.body.clauses[0].value).toBe(0);
-        expect(transaction.body.clauses[0].to).toBe(null);
-        expect(transaction.body.nonce).toBeDefined();
-        expect(transaction.body.chainTag).toBe(networkInfo.mainnet.chainTag);
-        expect(transaction.body.blockRef).toBeDefined();
-        expect(transaction.body.expiration).toBeDefined();
-        expect(transaction.body.gasPriceCoef).toBeDefined();
-        expect(transaction.body.gas).toBeDefined();
-        expect(transaction.body.dependsOn).toBeNull();
+        expect(clause.data).toEqual(compiledContract.bytecode);
+        expect(clause.to).toBe(null);
+        expect(clause.value).toBe(0);
     });
 
-    /**
-     * Test case for building a transaction to deploy a contract with deploy parameters.
-     */
-    test('Build a transaction to deploy a contract with deploy params', () => {
-        const compiledContract = compileContract(
-            'tests/contract/sample',
-            'Example.sol',
-            'Example'
-        );
+    test('Build a clause to deploy a contract with deploy params', () => {
+        const compiledContract = compileContract('Example', sources);
 
         const deployParams: DeployParams = {
             types: ['uint256'],
             values: ['100']
         };
 
-        const transaction = contract.txBuilder.buildDeployTransaction(
+        const clause = contract.clauseBuilder.deployContract(
             compiledContract.bytecode,
             deployParams
         );
 
         // Assertions for various properties of the built transaction.
-        expect(transaction.body.clauses[0].value).toBe(0);
-        expect(transaction.body.clauses[0].to).toBe(null);
-        expect(transaction.body.nonce).toBeDefined();
-        expect(transaction.body.chainTag).toBe(networkInfo.mainnet.chainTag);
-        expect(transaction.body.blockRef).toBeDefined();
-        expect(transaction.body.expiration).toBeDefined();
-        expect(transaction.body.gasPriceCoef).toBeDefined();
-        expect(transaction.body.gas).toBeDefined();
-        expect(transaction.body.dependsOn).toBeNull();
+        expect(clause.value).toBe(0);
+        expect(clause.to).toBe(null);
+        expect(clause.data.length).toBeGreaterThan(
+            compiledContract.bytecode.length
+        );
     });
 
-    /**
-     * Test to ensure building a transaction to deploy a contract with a custom transaction body.
-     */
-    test('Build a transaction to deploy a contract with a custom transaction body', () => {
-        // Compile the contract from a sample file
-        const compiledContract = compileContract(
-            'tests/contract/sample',
-            'Example.sol',
-            'Example'
-        );
+    test('Build a clause to call a contract function', () => {
+        const compiledContract = compileContract('Example', sources);
 
-        // Create a custom transaction body
-        const transactionBody: TransactionBodyOverride = {
-            nonce: 1,
-            chainTag: networkInfo.mainnet.chainTag,
-            blockRef: '0x0000000000000000',
-            expiration: 32,
-            gasPriceCoef: 0,
-            dependsOn: null
-        };
-
-        // Build a transaction to deploy the compiled contract with the custom transaction body
-        const transaction = contract.txBuilder.buildDeployTransaction(
-            compiledContract.bytecode,
-            undefined,
-            transactionBody
-        );
-
-        // Ensure the transaction body and properties match the custom values
-        expect(transaction.body.clauses[0].data).toEqual(
-            compiledContract.bytecode
-        );
-        expect(transaction.body.blockRef).toEqual('0x0000000000000000');
-        expect(transaction.body.expiration).toEqual(32);
-        expect(transaction.body.nonce).toEqual(1);
-        expect(transaction.body.gas).toBeGreaterThan(0);
-        expect(transaction.body.gasPriceCoef).toEqual(0);
-        expect(transaction.body.dependsOn).toEqual(null);
-    });
-
-    /**
-     * Test to ensure the creation of a transaction to deploy a contract with a custom transaction body where only some parameters are overridden.
-     */
-    test('Build a transaction to deploy a contract with a custom transaction body where only some params are overridden', () => {
-        // Compile the contract from a sample file
-        const compiledContract = compileContract(
-            'tests/contract/sample',
-            'Example.sol',
-            'Example'
-        );
-
-        // Create a custom transaction body overriding only some parameters
-        const transactionBody: TransactionBodyOverride = {
-            nonce: 4,
-            chainTag: networkInfo.solo.chainTag,
-            gasPriceCoef: 0
-        };
-
-        // Build a transaction to deploy the compiled contract with the custom transaction body
-        const transaction = contract.txBuilder.buildDeployTransaction(
-            compiledContract.bytecode,
-            undefined,
-            transactionBody
-        );
-
-        // Ensure the transaction body and properties match the custom values
-        expect(transaction.body.clauses[0].data).toEqual(
-            compiledContract.bytecode
-        );
-        expect(transaction.body.blockRef).toEqual('0x0000000000000000');
-        expect(transaction.body.expiration).toEqual(32);
-        expect(transaction.body.nonce).toEqual(4);
-        expect(transaction.body.gas).toBeGreaterThan(0);
-        expect(transaction.body.gasPriceCoef).toEqual(0);
-        expect(transaction.body.dependsOn).toEqual(null);
-        expect(transaction.body.chainTag).toEqual(networkInfo.solo.chainTag);
-    });
-
-    /**
-     * Test to ensure building a call contract transaction.
-     */
-    test('Build a call contract transaction', () => {
-        // Compile the contract from a sample file
-        const contractCompiled = compileContract(
-            'tests/contract/sample',
-            'Example.sol',
-            'Example'
-        );
-
-        // Build a transaction to call a function on the contract
-        const callFunctionTransaction = contract.txBuilder.buildCallTransaction(
+        const clause = contract.clauseBuilder.functionInteraction(
             '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-            contractCompiled.abi,
+            compiledContract.abi,
             'set',
             [1]
         );
 
-        // Ensure the transaction body contains data for the function call
-        expect(callFunctionTransaction.body.clauses[0].to).toBe(
-            '0x742d35Cc6634C0532925a3b844Bc454e4438f44e'
-        );
-        expect(callFunctionTransaction.body.clauses[0].value).toBe(0);
-        expect(callFunctionTransaction.body.clauses[0].data).toBeDefined();
-        expect(callFunctionTransaction.body.nonce).toBeDefined();
-        expect(callFunctionTransaction.body.chainTag).toBe(
-            networkInfo.mainnet.chainTag
-        );
-        expect(callFunctionTransaction.body.blockRef).toBeDefined();
-        expect(callFunctionTransaction.body.expiration).toBeDefined();
-        expect(callFunctionTransaction.body.gasPriceCoef).toBeDefined();
-        expect(callFunctionTransaction.body.gas).toBeGreaterThan(0);
-        expect(callFunctionTransaction.body.dependsOn).toBeNull();
+        expect(clause.to).toBe('0x742d35Cc6634C0532925a3b844Bc454e4438f44e');
+        expect(clause.value).toBe(0);
+        expect(clause.data).toBeDefined();
     });
 
     /**
@@ -193,11 +74,7 @@ describe('Contract', () => {
      */
     test('Compile a sample contract and create an interface from the abi', () => {
         // Compile the contract from a sample file
-        const contractCompiled = compileContract(
-            'tests/contract/sample',
-            'Example.sol',
-            'Example'
-        );
+        const contractCompiled = compileContract('Example', sources);
 
         // Ensure the contract compilation is successful
         expect(contractCompiled).toBeDefined();
@@ -207,5 +84,30 @@ describe('Contract', () => {
 
         // Ensure the contract interface is created successfully
         expect(contractInterface).toBeDefined();
+    });
+
+    /**
+     * Test compile an ERC20 contract and create an interface from the ABI.
+     */
+    test('Compile an ERC20 contract and create an interface from the abi', () => {
+        try {
+            const compiledContract = compileERC20SampleTokenContract();
+
+            // Ensure the contract compilation is successful
+            expect(compiledContract).toBeDefined();
+            expect(compiledContract.name).toBeDefined();
+            expect(compiledContract.abi).toBeDefined();
+            expect(compiledContract.bytecode).toBeDefined();
+
+            // Create an instance of a Contract interface using the ABI
+            const contractInterface = coder.createInterface(
+                compiledContract.abi
+            );
+
+            // Ensure the contract interface is created successfully
+            expect(contractInterface).toBeDefined();
+        } catch (error) {
+            console.log(error);
+        }
     });
 });

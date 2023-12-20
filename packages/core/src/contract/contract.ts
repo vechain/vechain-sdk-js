@@ -1,23 +1,20 @@
-import { type InterfaceAbi, randomBytes } from 'ethers';
+import { type InterfaceAbi } from 'ethers';
 import { abi, coder } from '../abi';
-import { Transaction, type TransactionClause } from '../transaction';
-import { networkInfo } from '../utils/const/network';
-import { TransactionUtils, dataUtils } from '../utils';
-import type { DeployParams, TransactionBodyOverride } from './types';
+import { type TransactionClause } from '../transaction';
+import type { DeployParams } from './types';
 
 /**
- * Builds a transaction for deploying a smart contract on the blockchain.
+ * Builds a clause for deploying a smart contract.
  *
- * @param contractBytecode - The bytecode of the smart contract.
+ * @param contractBytecode - The bytecode of the smart contract to be deployed.
  * @param deployParams - The parameters to pass to the smart contract constructor.
- * @param transactionBodyOverride - (Optional) Custom transaction body to override default settings.
- * @returns A Transaction object representing the deploy contract transaction.
+ *
+ * @returns A clause for deploying a smart contract.
  */
-function buildDeployTransaction(
+function deployContract(
     contractBytecode: string,
-    deployParams?: DeployParams,
-    transactionBodyOverride?: TransactionBodyOverride
-): Transaction {
+    deployParams?: DeployParams
+): TransactionClause {
     let encodedParams = '';
     if (deployParams != null) {
         encodedParams = abi
@@ -25,70 +22,46 @@ function buildDeployTransaction(
             .replace('0x', '');
     }
 
-    const clauses: TransactionClause[] = [
-        {
-            to: null,
-            value: 0,
-            data: contractBytecode + encodedParams
-        }
-    ];
-    return buildTransactionBody(clauses, transactionBodyOverride);
+    const clause: TransactionClause = {
+        to: null,
+        value: 0,
+        data: contractBytecode + encodedParams
+    };
+
+    return clause;
 }
 
 /**
- * Builds a transaction for calling a function of a deployed smart contract.
+ * Builds a clause for interacting with a smart contract function.
  *
- * @param contractAddress - The address of the smart contract to interact with.
+ * @param contractAddress - The address of the smart contract.
  * @param contractAbi - The ABI (Application Binary Interface) of the smart contract.
- * @param functionName - The name of the function to call.
- * @param args - An array of arguments to pass to the function.
- * @param transactionBodyOverride - (Optional) Custom transaction body to override default settings.
- * @returns A Transaction object representing the function call transaction.
+ * @param functionName - The name of the function to be called.
+ * @param args - The input data for the function.
+ *
+ * @returns A clause for interacting with a smart contract function.
+ *
+ * @throws Will throw an error if an error occurs while encoding the function input.
  */
-function buildCallTransaction(
+function functionInteraction(
     contractAddress: string,
     contractAbi: InterfaceAbi,
     functionName: string,
-    args: unknown[],
-    transactionBodyOverride?: TransactionBodyOverride
-): Transaction {
-    const clauses: TransactionClause[] = [
-        {
-            to: contractAddress,
-            value: 0,
-            data: coder.encodeFunctionInput(contractAbi, functionName, args)
-        }
-    ];
+    args: unknown[]
+): TransactionClause {
+    const clause: TransactionClause = {
+        to: contractAddress,
+        value: 0,
+        data: coder.encodeFunctionInput(contractAbi, functionName, args)
+    };
 
-    return buildTransactionBody(clauses, transactionBodyOverride);
+    return clause;
 }
 
 /**
- * Builds a transaction body using provided clauses and optional overrides.
- *
- * @param clauses - An array of transaction clauses.
- * @param transactionBodyOverride - (Optional) Custom transaction body to override default settings.
- * @returns A Transaction object representing the transaction.
+ * clauseBuilder provides methods for building clauses for interacting with smart contracts or deploying smart contracts.
  */
-function buildTransactionBody(
-    clauses: TransactionClause[],
-    transactionBodyOverride?: TransactionBodyOverride
-): Transaction {
-    const body = {
-        nonce: '0x' + dataUtils.toHexString(randomBytes(8)),
-        chainTag: networkInfo.mainnet.chainTag,
-        blockRef: '0x0000000000000000', // in the online part, replace with the result of a method that interacts with the blockchain
-        expiration: 32, // tx will expire after block #N + 32
-        clauses,
-        gasPriceCoef: 128,
-        gas: 5000 + TransactionUtils.intrinsicGas(clauses) * 5,
-        dependsOn: null,
-        ...transactionBodyOverride
-    };
-    return new Transaction(body);
-}
-
-export const txBuilder = {
-    buildDeployTransaction,
-    buildCallTransaction
+export const clauseBuilder = {
+    deployContract,
+    functionInteraction
 };

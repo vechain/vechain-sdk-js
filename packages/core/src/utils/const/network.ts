@@ -107,25 +107,44 @@ const soloGenesisBlock = {
 };
 
 /**
- * Constants defining Vechain mainnet and testnet network information
- * @internal
+ * Constants defining Vechain mainnet information
  */
-const networkInfo = {
-    mainnet: {
-        genesisBlock: mainnetGenesisBlock,
-        chainTag: VECHAIN_MAINNET_CHAIN_TAG,
-        zeroAddress: ZERO_ADDRESS
-    },
-    testnet: {
-        genesisBlock: testnetGenesisBlock,
-        chainTag: VECHAIN_TESTNET_CHAIN_TAG,
-        zeroAddress: ZERO_ADDRESS
-    },
-    solo: {
-        genesisBlock: soloGenesisBlock,
-        chainTag: VECHAIN_SOLO_CHAIN_TAG,
-        zeroAddress: ZERO_ADDRESS
-    }
+const MAINNET_NETWORK = {
+    genesisBlock: mainnetGenesisBlock,
+    chainTag: VECHAIN_MAINNET_CHAIN_TAG
 };
 
-export { networkInfo, VTHO_ADDRESS, PARAMS_ADDRESS, ZERO_ADDRESS };
+/**
+ * Constants defining Vechain testnet information
+ */
+const TESTNET_NETWORK = {
+    genesisBlock: testnetGenesisBlock,
+    chainTag: VECHAIN_TESTNET_CHAIN_TAG
+};
+
+/**
+ * Constants defining Vechain solo network information
+ */
+const SOLO_NETWORK = {
+    genesisBlock: soloGenesisBlock,
+    chainTag: VECHAIN_SOLO_CHAIN_TAG
+};
+
+/**
+ * Constants defining Vechain mainnet and testnet network information
+ */
+const networkInfo = {
+    mainnet: MAINNET_NETWORK,
+    testnet: TESTNET_NETWORK,
+    solo: SOLO_NETWORK
+};
+
+export {
+    networkInfo,
+    VTHO_ADDRESS,
+    PARAMS_ADDRESS,
+    ZERO_ADDRESS,
+    MAINNET_NETWORK,
+    TESTNET_NETWORK,
+    SOLO_NETWORK
+};
