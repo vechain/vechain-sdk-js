@@ -50,6 +50,30 @@ class BlocksModule {
     }
 
     /**
+     * Asynchronously retrieves a reference to the best block in the blockchain.
+     *
+     * This method first calls `getBestBlock()` to obtain the current best block. If no block is found (i.e., if `getBestBlock()` returns `null`),
+     * the method returns `null` indicating that there's no block to reference. Otherwise, it extracts and returns the first 18 characters of the
+     * block's ID, providing the ref to the best block.
+     *
+     * @returns {Promise<string | null>} A promise that resolves to either a string representing the first 18 characters of the best block's ID,
+     * or `null` if no best block is found.
+     *
+     * @Example:
+     * const blockRef = await getBestBlockRef();
+     * if (blockRef) {
+     *     console.log(`Reference to the best block: ${blockRef}`);
+     * } else {
+     *     console.log("No best block found.");
+     * }
+     */
+    public async getBestBlockRef(): Promise<string | null> {
+        const bestBlock = await this.getBestBlock();
+        if (bestBlock === null) return null;
+        return bestBlock.id.slice(0, 18);
+    }
+
+    /**
      * Retrieves details of the finalized block.
      *
      * @returns A promise that resolves to an object containing the block details.
