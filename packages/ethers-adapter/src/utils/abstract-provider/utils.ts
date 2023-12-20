@@ -46,7 +46,7 @@ function concisify(items: string[]): string[] {
  * @param x - The string to check.
  */
 function isTransactionHash(x: string): boolean {
-    return x.startsWith('0x') && dataUtils.isThorId(x, true);
+    return dataUtils.isThorId(x, true);
 }
 
 /**
