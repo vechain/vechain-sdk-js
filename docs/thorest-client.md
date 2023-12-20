@@ -13,7 +13,8 @@ The Thorest-client extends its functionality to provide seamless access to accou
 ```typescript { name=accounts, category=example }
 import {
     HttpClient,
-    ThorestClient
+    ThorestClient,
+    ThorClient
 } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
@@ -22,23 +23,24 @@ import { expect } from 'expect';
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
 const thorestClient = new ThorestClient(testNetwork);
+const thorClient = new ThorClient(thorestClient);
 
 // 2 - Get account details
 
 // Account details
-const accountDetails = await thorestClient.accounts.getAccount(
+const accountDetails = await thorClient.accounts.getAccount(
     '0x5034aa590125b64023a0262112b98d72e3c8e40e'
 );
 expect(accountDetails).toBeDefined();
 
 // Account code
-const accountCode = await thorestClient.accounts.getBytecode(
+const accountCode = await thorClient.accounts.getBytecode(
     '0x5034aa590125b64023a0262112b98d72e3c8e40e'
 );
 expect(accountCode).toEqual('0x');
 
 // Get account storage
-const accountStorage = await thorestClient.accounts.getStorageAt(
+const accountStorage = await thorClient.accounts.getStorageAt(
     '0x5034aa590125b64023a0262112b98d72e3c8e40e',
     '0x0000000000000000000000000000000000000000000000000000000000000001'
 );

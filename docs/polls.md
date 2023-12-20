@@ -54,7 +54,8 @@ Here, we explore the approach to monitor balance changes subsequent to a transfe
 import {
     HttpClient,
     Poll,
-    ThorestClient
+    ThorestClient,
+    ThorClient
 } from '@vechainfoundation/vechain-sdk-network';
 import {
     dataUtils,
@@ -69,6 +70,7 @@ import { expect } from 'expect';
 const _soloUrl = 'http://localhost:8669';
 const soloNetwork = new HttpClient(_soloUrl);
 const thorestSoloClient = new ThorestClient(soloNetwork);
+const thorSoloClient = new ThorClient(thorestSoloClient);
 
 // 2- Init transaction
 
@@ -126,11 +128,11 @@ const raw = `0x${encoded.toString('hex')}`;
 // 3 - Get the sender and receiver balance before the transaction
 
 const senderBalanceBefore = (
-    await thorestSoloClient.accounts.getAccount(sender.address)
+    await thorSoloClient.accounts.getAccount(sender.address)
 ).balance;
 
 const receiverBalanceBefore = (
-    await thorestSoloClient.accounts.getAccount(receiver.address)
+    await thorSoloClient.accounts.getAccount(receiver.address)
 ).balance;
 
 console.log('Sender balance before:', senderBalanceBefore);
@@ -151,7 +153,7 @@ expect(dataUtils.isHexString(sentedTransaction.id)).toBe(true);
 // New balance of sender (wait until the balance is updated)
 const newBalanceSender = await Poll.SyncPoll(
     async () =>
-        (await thorestSoloClient.accounts.getAccount(sender.address)).balance
+        (await thorSoloClient.accounts.getAccount(sender.address)).balance
 ).waitUntil((newBalance) => {
     return newBalance !== senderBalanceBefore;
 });
@@ -159,7 +161,7 @@ const newBalanceSender = await Poll.SyncPoll(
 // New balance of receiver (wait until the balance is updated)
 const newBalanceReceiver = await Poll.SyncPoll(
     async () =>
-        (await thorestSoloClient.accounts.getAccount(receiver.address)).balance
+        (await thorSoloClient.accounts.getAccount(receiver.address)).balance
 ).waitUntil((newBalance) => {
     return newBalance !== receiverBalanceBefore;
 });
@@ -186,7 +188,8 @@ This example demonstrates the application of an asynchronous poll for tracking t
 import {
     HttpClient,
     Poll,
-    ThorestClient
+    ThorestClient,
+    ThorClient
 } from '@vechainfoundation/vechain-sdk-network';
 
 // 1 - Create client for testnet
@@ -194,6 +197,7 @@ import {
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
 const thorestClient = new ThorestClient(testNetwork);
+const thorClient = new ThorClient(thorestClient);
 
 // 2 - Init accounts
 
@@ -206,7 +210,7 @@ const accounts = [
 
 for (const account of accounts) {
     const monitoringPoll = Poll.createEventPoll(
-        async () => await thorestClient.accounts.getAccount(account),
+        async () => await thorClient.accounts.getAccount(account),
         1000
     )
         // Add listeners for start event
