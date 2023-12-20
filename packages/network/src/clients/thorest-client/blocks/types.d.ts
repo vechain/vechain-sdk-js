@@ -1,6 +1,6 @@
 /* --- Input options start --- */
 
-import { type Event, type Transfer } from '../logs';
+import { type Event, type Transfer } from '../../thor-client/logs';
 
 /**
  * Input options for:

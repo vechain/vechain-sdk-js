@@ -54,7 +54,7 @@ These methods demonstrate how the Thorest-client simplifies the process of fetch
 
 The Thorest-client extends its capabilities to efficiently filter and retrieve event logs and transfer logs on the VechainThor network. The following code exemplifies how developers can use the Thorest-client to filter event logs and transfer logs:
 
-[example](examples/thorest-client/logs.ts)
+[example](examples/thor-client/logs.ts)
 
 In this example, the code initializes a Thorest client for the VechainThor testnet network and demonstrates two essential methods for interacting with logs:
 

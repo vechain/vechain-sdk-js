@@ -1,6 +1,5 @@
 import { type HttpClient } from '../../utils';
 import { BlocksClient } from './blocks';
-import { LogsClient } from './logs';
 import { TransactionsClient } from './transactions';
 import { NodesClient } from './nodes';
 
@@ -14,11 +13,6 @@ class ThorestClient {
      * The `BlockClient` instance used for interacting with block-related endpoints.
      */
     public readonly blocks: BlocksClient;
-
-    /**
-     * The `LogsClient` instance used for interacting with log-related endpoints.
-     */
-    public readonly logs: LogsClient;
 
     /**
      * The `TransactionClient` instance used for interacting with transaction-related endpoints.
@@ -36,7 +30,6 @@ class ThorestClient {
      */
     constructor(readonly httpClient: HttpClient) {
         this.blocks = new BlocksClient(httpClient);
-        this.logs = new LogsClient(httpClient);
         this.nodes = new NodesClient(httpClient);
         this.transactions = new TransactionsClient(httpClient);
     }
