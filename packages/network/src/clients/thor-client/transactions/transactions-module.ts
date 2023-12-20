@@ -23,8 +23,8 @@ import { type ThorClient } from '../thor-client';
  */
 class TransactionsModule {
     /**
-     * Initializes a new instance of the `Thorest` class.
-     * @param thorest - The Thorest instance used to interact with the vechain Thorest blockchain API.
+     * Initializes a new instance of the `Thor` class.
+     * @param thor - The Thor instance used to interact with the vechain blockchain API.
      */
     constructor(readonly thor: ThorClient) {}
 

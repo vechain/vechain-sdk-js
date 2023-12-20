@@ -35,8 +35,8 @@ class ContractsModule {
     private readonly gasModule: GasModule;
 
     /**
-     * Creates an instance of the ContractsModule.
-     * @param thorest - The Thorest instance used to interact with the vechain Thorest blockchain API.
+     * Initializes a new instance of the `Thor` class.
+     * @param thor - The Thor instance used to interact with the vechain blockchain API.
      */
     constructor(readonly thor: ThorClient) {
         this.transactionsModule = new TransactionsModule(thor);

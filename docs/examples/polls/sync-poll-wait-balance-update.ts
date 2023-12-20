@@ -22,7 +22,7 @@ const thorSoloClient = new ThorClient(thorestSoloClient);
 // 2- Init transaction
 
 // 2.1 - Get latest block
-const latestBlock = await thorestSoloClient.blocks.getBestBlock();
+const latestBlock = await thorSoloClient.blocks.getBestBlock();
 
 // 2.2 - Transaction sender and receiver
 const sender = {
