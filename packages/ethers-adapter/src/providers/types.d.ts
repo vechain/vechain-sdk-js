@@ -1,4 +1,4 @@
-import { type EventEmitterable as EthersEventEmittable } from 'ethers';
+import { type EventEmitterable as EthersEventEmittable } from '@vechainfoundation/vechain-sdk-core';
 
 /**
  * An `EventEmitterable` interface is akin to an EventEmitter,

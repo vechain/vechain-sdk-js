@@ -16,7 +16,6 @@
     "dependencies": {
         "@vechainfoundation/vechain-sdk-errors": "*",
         "@vechainfoundation/vechain-sdk-core": "*",
-        "@vechainfoundation/vechain-sdk-network": "*",
-        "ethers": "6.9.0"
+        "@vechainfoundation/vechain-sdk-network": "*"
     }
 }

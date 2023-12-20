@@ -1,3 +1,6 @@
+import { ethers } from 'ethers';
+
+// Our core library
 export * from './abi';
 export * from './address';
 export * from './bloom';
@@ -13,3 +16,6 @@ export * from './transaction';
 export * from './utils';
 export * from './bloom';
 export * from './certificate';
+
+// Other libraries
+export { ethers as vechain_sdk_core_ethers };

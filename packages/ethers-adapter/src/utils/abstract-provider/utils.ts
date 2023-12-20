@@ -1,16 +1,17 @@
 import { dataUtils } from '@vechainfoundation/vechain-sdk-core';
+
 import { buildError, FUNCTION } from '@vechainfoundation/vechain-sdk-errors';
 import {
+    type EventFilter,
     type HardhatEthersProviderEvent,
-    type ProviderEvent,
-    type EventFilter
+    type ProviderEvent
 } from './types';
 
 /**
  * Type guard for Promise.
  *
  * When ethers registers an event with an async value (e.g. address is a Signer or ENS name)
- * ethers need to add it immediatly for the Event API,
+ * ethers need to add it immediately for the Event API,
  *
  * @param value - The value to check.
  */

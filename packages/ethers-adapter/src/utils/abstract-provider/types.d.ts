@@ -1,10 +1,10 @@
-import { type ethers } from 'ethers';
+import { type vechain_sdk_core_ethers } from '@vechainfoundation/vechain-sdk-core';
 
 /**
  *  An **EventFilter** allows efficiently filtering logs (also known as events)
  *  using bloom filters included within blocks.
  */
-type EventFilter = ethers.EventFilter;
+type EventFilter = vechain_sdk_core_ethers.EventFilter;
 
 /**
  *  A **ProviderEvent** provides the types of events that can be subscribed
@@ -30,7 +30,7 @@ type EventFilter = ethers.EventFilter;
  *
  *  [[EventFilter]] - calls the listener with each matching log
  */
-type ProviderEvent = ethers.ProviderEvent;
+type ProviderEvent = vechain_sdk_core_ethers.ProviderEvent;
 
 /**
  * This type has a more explicit and type-safe list
@@ -51,4 +51,8 @@ type HardhatEthersProviderEvent =
           eventFilter: EventFilter;
       };
 
-export type { EventFilter, ProviderEvent, HardhatEthersProviderEvent };
+export {
+    type EventFilter,
+    type ProviderEvent,
+    type HardhatEthersProviderEvent
+};
