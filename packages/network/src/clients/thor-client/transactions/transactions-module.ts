@@ -122,9 +122,9 @@ class TransactionsModule {
                 options?.isDelegated === true ? { features: 1 } : undefined
         };
 
-        const latestBlock = await this.thorest.blocks.getBestBlock();
+        const latestBlockRef = await this.thorest.blocks.getBestBlockRef();
 
-        if (latestBlock === null)
+        if (latestBlockRef === null)
             throw buildError(
                 TRANSACTION.INVALID_TRANSACTION_BODY,
                 "Error while building transaction body: can't get latest block",
@@ -134,7 +134,7 @@ class TransactionsModule {
         return {
             ...constTxBody,
             chainTag: Number(`0x${genesisBlock.id.slice(64)}`), // Last byte of the genesis block ID which is used to identify a network (chainTag)
-            blockRef: latestBlock.id.slice(0, 18)
+            blockRef: latestBlockRef
         };
     }
 }
