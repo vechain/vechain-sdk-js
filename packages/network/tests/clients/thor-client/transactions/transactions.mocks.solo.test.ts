@@ -21,9 +21,10 @@ describe('buildTransactionBody with mocks', () => {
         const thorSoloClient = new ThorClient(thorestSoloClient);
 
         await expect(
-            thorSoloClient.transactions.buildTransactionBody([
-                transferTransactionBody.clauses[0]
-            ])
+            thorSoloClient.transactions.buildTransactionBody(
+                [transferTransactionBody.clauses[0]],
+                0
+            )
         ).rejects.toThrowError(TransactionBodyError);
     });
 
@@ -38,9 +39,10 @@ describe('buildTransactionBody with mocks', () => {
         const thorSoloClient = new ThorClient(thorestSoloClient);
 
         await expect(
-            thorSoloClient.transactions.buildTransactionBody([
-                transferTransactionBody.clauses[0]
-            ])
+            thorSoloClient.transactions.buildTransactionBody(
+                [transferTransactionBody.clauses[0]],
+                0
+            )
         ).rejects.toThrowError(TransactionBodyError);
     });
 });
