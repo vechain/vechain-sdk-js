@@ -10,7 +10,7 @@ The thorest-client serves as a RESTful API for seamless access to the VechainTho
 
 The Thorest-client extends its functionality to provide seamless access to account-related information on the VechainThor network. The following code exemplifies how developers can utilize the Thorest-client to interact with accounts:
 
-[example](examples/thorest-client/accounts.ts)
+[example](examples/thor-client/accounts.ts)
 
 In this example, the code initializes a Thorest client for the VechainThor testnet network and demonstrates three crucial methods for interacting with accounts:
 
