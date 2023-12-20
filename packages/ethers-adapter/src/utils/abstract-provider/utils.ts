@@ -43,10 +43,10 @@ function concisify(items: string[]): string[] {
  *
  * Useful for checking during `ethersToHardhatEvent` function call
  *
- * @param x - The string to check.
+ * @param value - The string to check.
  */
-function isTransactionHash(x: string): boolean {
-    return dataUtils.isThorId(x, true);
+function isTransactionHash(value: string): boolean {
+    return dataUtils.isThorId(value, true);
 }
 
 /**
@@ -54,10 +54,14 @@ function isTransactionHash(x: string): boolean {
  *
  * Useful for checking during `ethersToHardhatEvent` function call
  *
- * @param x - The value to check.
+ * @param value - The value to check.
  */
-function isEventFilter(x: ProviderEvent): x is EventFilter {
-    return typeof x !== 'string' && !Array.isArray(x) && !('orphan' in x);
+function isEventFilter(value: ProviderEvent): value is EventFilter {
+    return (
+        typeof value !== 'string' &&
+        !Array.isArray(value) &&
+        !('orphan' in value)
+    );
 }
 
 /**
