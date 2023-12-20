@@ -55,11 +55,11 @@ class ThorClient {
      */
     constructor(readonly thorest: ThorestClient) {
         this.accounts = new AccountsModule(thorest.httpClient);
-        this.nodes = new NodesModule(thorest);
+        this.nodes = new NodesModule(this);
         this.blocks = new BlocksModule(thorest);
         this.logs = new LogsModule(thorest.httpClient);
-        this.transactions = new TransactionsModule(thorest);
-        this.contracts = new ContractsModule(thorest);
+        this.transactions = new TransactionsModule(this);
+        this.contracts = new ContractsModule(this);
         this.gas = new GasModule(thorest);
     }
 }

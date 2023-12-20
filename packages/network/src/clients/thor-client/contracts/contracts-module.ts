@@ -1,4 +1,3 @@
-import { type ThorestClient } from '../../thorest-client';
 import {
     contract,
     type DeployParams,
@@ -15,6 +14,7 @@ import {
     TransactionsModule
 } from '../transactions';
 import { GasModule } from '../gas';
+import { type ThorClient } from '../thor-client';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -38,9 +38,9 @@ class ContractsModule {
      * Creates an instance of the ContractsModule.
      * @param thorest - The Thorest instance used to interact with the vechain Thorest blockchain API.
      */
-    constructor(readonly thorest: ThorestClient) {
-        this.transactionsModule = new TransactionsModule(thorest);
-        this.gasModule = new GasModule(thorest);
+    constructor(readonly thor: ThorClient) {
+        this.transactionsModule = new TransactionsModule(thor);
+        this.gasModule = new GasModule(thor.thorest);
     }
 
     /**
@@ -107,17 +107,18 @@ class ContractsModule {
         functionData: unknown[]
     ): Promise<string> {
         // Simulate the transaction to get the result of the contract call
-        const response = await this.thorest.transactions.simulateTransaction([
-            {
-                to: contractAddress,
-                value: '0',
-                data: contract.coder.encodeFunctionInput(
-                    contractABI,
-                    functionName,
-                    functionData
-                )
-            }
-        ]);
+        const response =
+            await this.thor.thorest.transactions.simulateTransaction([
+                {
+                    to: contractAddress,
+                    value: '0',
+                    data: contract.coder.encodeFunctionInput(
+                        contractABI,
+                        functionName,
+                        functionData
+                    )
+                }
+            ]);
 
         // Return the result of the contract call
         return response[0].data;

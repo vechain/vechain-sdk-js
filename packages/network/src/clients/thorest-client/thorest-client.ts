@@ -1,5 +1,4 @@
 import { type HttpClient } from '../../utils';
-import { BlocksClient } from './blocks';
 import { TransactionsClient } from './transactions';
 import { NodesClient } from './nodes';
 
@@ -9,11 +8,6 @@ import { NodesClient } from './nodes';
  * Basically it can be considered a wrapper of Thorest API.
  */
 class ThorestClient {
-    /**
-     * The `BlockClient` instance used for interacting with block-related endpoints.
-     */
-    public readonly blocks: BlocksClient;
-
     /**
      * The `TransactionClient` instance used for interacting with transaction-related endpoints.
      */
@@ -29,7 +23,6 @@ class ThorestClient {
      * @param httpClient - The HTTP client instance used for making network requests.
      */
     constructor(readonly httpClient: HttpClient) {
-        this.blocks = new BlocksClient(httpClient);
         this.nodes = new NodesClient(httpClient);
         this.transactions = new TransactionsClient(httpClient);
     }

@@ -2,8 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import {
     TEST_ACCOUNTS,
     TEST_CONTRACT_ADDRESS,
-    thorSoloClient,
-    thorestSoloClient
+    thorSoloClient
 } from '../../../fixture';
 import { unitsUtils } from '@vechainfoundation/vechain-sdk-core';
 import { TESTING_CONTRACT_BYTECODE } from './fixture';
@@ -46,7 +45,7 @@ describe('ThorestClient - Accounts', () => {
                 );
 
                 const currentBlock =
-                    await thorestSoloClient.blocks.getBlock('best');
+                    await thorSoloClient.blocks.getBlock('best');
 
                 if (currentBlock !== null) {
                     let latestBlock;
@@ -54,7 +53,7 @@ describe('ThorestClient - Accounts', () => {
                     // Wait for a block greater than currentBlock
                     do {
                         latestBlock =
-                            await thorestSoloClient.blocks.getBlock('best');
+                            await thorSoloClient.blocks.getBlock('best');
                         await new Promise((resolve) =>
                             setTimeout(resolve, 1000)
                         );

@@ -1,5 +1,4 @@
 // Single clients
-export * from './blocks';
 export * from './nodes';
 export * from './transactions';
 

@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { validBlockRevisions, invalidBlockRevisions } from './fixture';
 import { thorestClient } from '../../../fixture';
+import { ThorClient } from '../../../../src';
 
 /**
  * ThorestClient - BlockClient class tests
@@ -8,6 +9,7 @@ import { thorestClient } from '../../../fixture';
  * @group integration/clients/thorest-client/blocks
  */
 describe('ThorestClient - Blocks', () => {
+    const thorClient = new ThorClient(thorestClient);
     /**
      * getBlock tests
      */
@@ -17,7 +19,7 @@ describe('ThorestClient - Blocks', () => {
          */
         validBlockRevisions.forEach(({ revision, expanded, expected }) => {
             test(revision, async () => {
-                const blockDetails = await thorestClient.blocks.getBlock(
+                const blockDetails = await thorClient.blocks.getBlock(
                     revision,
                     {
                         expanded
@@ -34,7 +36,7 @@ describe('ThorestClient - Blocks', () => {
             ({ description, revision, expectedError }) => {
                 test(description, async () => {
                     await expect(
-                        thorestClient.blocks.getBlock(revision)
+                        thorClient.blocks.getBlock(revision)
                     ).rejects.toThrowError(expectedError);
                 });
             }
@@ -44,7 +46,7 @@ describe('ThorestClient - Blocks', () => {
          * getBestBlock test
          */
         test('getBestBlock', async () => {
-            const blockDetails = await thorestClient.blocks.getBestBlock();
+            const blockDetails = await thorClient.blocks.getBestBlock();
             expect(blockDetails).toBeDefined();
         });
 
@@ -52,7 +54,7 @@ describe('ThorestClient - Blocks', () => {
          * getFinalBlock test
          */
         test('getFinalBlock', async () => {
-            const blockDetails = await thorestClient.blocks.getFinalBlock();
+            const blockDetails = await thorClient.blocks.getFinalBlock();
             expect(blockDetails).toBeDefined();
         });
     });
