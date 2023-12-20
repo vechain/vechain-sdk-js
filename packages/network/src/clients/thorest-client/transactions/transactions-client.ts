@@ -150,7 +150,6 @@ class TransactionsClient {
             expiration,
             provedWork
         } = options ?? {};
-
         assert(
             revision === undefined ||
                 revision === null ||

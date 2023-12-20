@@ -1,7 +1,7 @@
 import { jest, describe, test, expect } from '@jest/globals';
 import { ThorClient, ThorestClient } from '../../../../src';
 import { transferTransactionBody } from './fixture';
-import { soloNetwork } from '../../../fixture';
+import { soloNetwork, TEST_ACCOUNTS } from '../../../fixture';
 import { TransactionBodyError } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
@@ -17,10 +17,15 @@ describe('buildTransactionBody with mocks', () => {
         // Mock the getBlock method to return null
         jest.spyOn(thorSoloClient.blocks, 'getBlock').mockResolvedValue(null);
 
+        const gas = await thorSoloClient.gas.estimateGas(
+            [transferTransactionBody.clauses[0]],
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+        );
+
         await expect(
             thorSoloClient.transactions.buildTransactionBody(
                 [transferTransactionBody.clauses[0]],
-                0
+                gas.totalGas
             )
         ).rejects.toThrowError(TransactionBodyError);
     });
@@ -34,10 +39,15 @@ describe('buildTransactionBody with mocks', () => {
             null
         );
 
+        const gas = await thorSoloClient.gas.estimateGas(
+            [transferTransactionBody.clauses[0]],
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+        );
+
         await expect(
             thorSoloClient.transactions.buildTransactionBody(
                 [transferTransactionBody.clauses[0]],
-                0
+                gas.totalGas
             )
         ).rejects.toThrowError(TransactionBodyError);
     });
