@@ -9,7 +9,7 @@ import "./executor.sol";
 
 /**
  * @title Builtin
- * @dev The VeChainThor builtin contracts are encapsulated in library Builtin.
+ * @dev The VechainThor builtin contracts are encapsulated in library Builtin.
  * It's very easy to use it for the developer, just need import it.
  */
 library Builtin {

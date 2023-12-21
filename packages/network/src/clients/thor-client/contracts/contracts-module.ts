@@ -1,18 +1,19 @@
-import { type ThorestClient } from '../../thorest-client';
 import {
     contract,
     type DeployParams,
     type InterfaceAbi,
     PARAMS_ADDRESS,
     PARAMS_ABI,
-    dataUtils
+    dataUtils,
+    addressUtils
 } from '@vechainfoundation/vechain-sdk-core';
-import type { ContractTransactionOptions } from './types';
+import type { ContractCallOptions, ContractTransactionOptions } from './types';
 import {
     type SendTransactionResult,
     TransactionsModule
 } from '../transactions';
 import { GasModule } from '../gas';
+import { type ThorClient } from '../thor-client';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -33,18 +34,17 @@ class ContractsModule {
     private readonly gasModule: GasModule;
 
     /**
-     * Creates an instance of the ContractsModule.
-     * @param thorest - The Thorest instance used to interact with the vechain Thorest blockchain API.
+     * Initializes a new instance of the `Thor` class.
+     * @param thor - The Thor instance used to interact with the vechain blockchain API.
      */
-    constructor(readonly thorest: ThorestClient) {
-        this.transactionsModule = new TransactionsModule(thorest);
-        this.gasModule = new GasModule(thorest);
+    constructor(readonly thor: ThorClient) {
+        this.transactionsModule = new TransactionsModule(thor);
+        this.gasModule = new GasModule(thor.thorest);
     }
 
     /**
      * Deploys a smart contract to the blockchain.
      *
-     * @param callerAddress - The address of the account deploying the smart contract.
      * @param privateKey - The private key of the account deploying the smart contract.
      * @param contractBytecode - The bytecode of the smart contract to be deployed.
      * @param deployParams - The parameters to pass to the smart contract constructor.
@@ -54,7 +54,6 @@ class ContractsModule {
      * @returns A promise that resolves to a `TransactionSendResult` object representing the result of the deployment.
      */
     public async deployContract(
-        callerAddress: string,
         privateKey: string,
         contractBytecode: string,
         deployParams?: DeployParams,
@@ -69,7 +68,7 @@ class ContractsModule {
         // Estimate the gas cost of the transaction
         const gasResult = await this.gasModule.estimateGas(
             [deployContractClause],
-            callerAddress
+            addressUtils.fromPrivateKey(Buffer.from(privateKey, 'hex'))
         );
 
         const txBody = await this.transactionsModule.buildTransactionBody(
@@ -95,27 +94,32 @@ class ContractsModule {
      * @param contractABI - The ABI (Application Binary Interface) of the smart contract.
      * @param functionName - The name of the function to be called.
      * @param functionData - The input data for the function.
-     * @param transactionBodyOverride - (Optional) Override for the transaction body.
+     * @param contractCallOptions - (Optional) Options for the contract call.
      * @returns A promise resolving to a hex string representing the result of the contract call.
      */
     public async executeContractCall(
         contractAddress: string,
         contractABI: InterfaceAbi,
         functionName: string,
-        functionData: unknown[]
+        functionData: unknown[],
+        contractCallOptions?: ContractCallOptions
     ): Promise<string> {
         // Simulate the transaction to get the result of the contract call
-        const response = await this.thorest.transactions.simulateTransaction([
-            {
-                to: contractAddress,
-                value: '0',
-                data: contract.coder.encodeFunctionInput(
-                    contractABI,
-                    functionName,
-                    functionData
-                )
-            }
-        ]);
+        const response =
+            await this.thor.thorest.transactions.simulateTransaction(
+                [
+                    {
+                        to: contractAddress,
+                        value: '0',
+                        data: contract.coder.encodeFunctionInput(
+                            contractABI,
+                            functionName,
+                            functionData
+                        )
+                    }
+                ],
+                contractCallOptions
+            );
 
         // Return the result of the contract call
         return response[0].data;
@@ -124,7 +128,6 @@ class ContractsModule {
     /**
      * Executes a transaction to interact with a smart contract function.
      *
-     * @param callerAddress - The address of the account calling the contract function.
      * @param privateKey - The private key for signing the transaction.
      * @param contractAddress - The address of the smart contract.
      * @param contractABI - The ABI (Application Binary Interface) of the smart contract.
@@ -137,7 +140,6 @@ class ContractsModule {
      * @returns A promise resolving to a ContractTransactionResult object.
      */
     public async executeContractTransaction(
-        callerAddress: string,
         privateKey: string,
         contractAddress: string,
         contractABI: InterfaceAbi,
@@ -156,7 +158,7 @@ class ContractsModule {
         // Estimate the gas cost of the transaction
         const gasResult = await this.gasModule.estimateGas(
             [clause],
-            callerAddress
+            addressUtils.fromPrivateKey(Buffer.from(privateKey, 'hex'))
         );
 
         // Build a transaction for calling the contract function

@@ -10,10 +10,7 @@ import {
     TransactionHandler
 } from '@vechainfoundation/vechain-sdk-core';
 import { Poll } from '../../../utils';
-import {
-    type ThorestClient,
-    type TransactionReceipt
-} from '../../thorest-client';
+import { type TransactionReceipt } from '../../thorest-client';
 import {
     type TransactionBodyOptions,
     type SendTransactionResult,
@@ -28,6 +25,7 @@ import {
 } from '@vechainfoundation/vechain-sdk-errors';
 import { getDelegationSignature } from './helpers/delegation-handler';
 import { assertTransactionCanBeSigned } from './helpers/assertions';
+import { type ThorClient } from '../thor-client';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -35,10 +33,10 @@ import { assertTransactionCanBeSigned } from './helpers/assertions';
  */
 class TransactionsModule {
     /**
-     * Initializes a new instance of the `Thorest` class.
-     * @param thorest - The Thorest instance used to interact with the vechain Thorest blockchain API.
+     * Initializes a new instance of the `Thor` class.
+     * @param thor - The Thor instance used to interact with the vechain blockchain API.
      */
-    constructor(readonly thorest: ThorestClient) {}
+    constructor(readonly thor: ThorClient) {}
 
     /**
      * Sends a signed transaction to the network.
@@ -56,7 +54,7 @@ class TransactionsModule {
 
         const rawTx = `0x${signedTx.encoded.toString('hex')}`;
 
-        return await this.thorest.transactions.sendTransaction(rawTx);
+        return await this.thor.thorest.transactions.sendTransaction(rawTx);
     }
 
     /**
@@ -79,7 +77,9 @@ class TransactionsModule {
 
         return await Poll.SyncPoll(
             async () =>
-                await this.thorest.transactions.getTransactionReceipt(txID),
+                await this.thor.thorest.transactions.getTransactionReceipt(
+                    txID
+                ),
             {
                 requestIntervalInMilliseconds: options?.intervalMs,
                 maximumWaitingTimeInMilliseconds: options?.timeoutMs
@@ -111,7 +111,7 @@ class TransactionsModule {
         options?: TransactionBodyOptions
     ): Promise<TransactionBody> {
         // Get the genesis block to get the chainTag
-        const genesisBlock = await this.thorest.blocks.getBlock(0);
+        const genesisBlock = await this.thor.blocks.getBlock(0);
 
         if (genesisBlock === null)
             throw buildError(
@@ -132,9 +132,9 @@ class TransactionsModule {
                 options?.isDelegated === true ? { features: 1 } : undefined
         };
 
-        const latestBlock = await this.thorest.blocks.getBestBlock();
+        const latestBlockRef = await this.thor.blocks.getBestBlockRef();
 
-        if (latestBlock === null)
+        if (latestBlockRef === null)
             throw buildError(
                 TRANSACTION.INVALID_TRANSACTION_BODY,
                 "Error while building transaction body: can't get latest block",
@@ -144,7 +144,7 @@ class TransactionsModule {
         return {
             ...constTxBody,
             chainTag: Number(`0x${genesisBlock.id.slice(64)}`), // Last byte of the genesis block ID which is used to identify a network (chainTag)
-            blockRef: latestBlock.id.slice(0, 18)
+            blockRef: latestBlockRef
         };
     }
 
@@ -231,7 +231,7 @@ class TransactionsModule {
             unsignedTx,
             delegatorUrl as string,
             originAddress,
-            this.thorest.httpClient
+            this.thor.thorest.httpClient
         );
 
         // Sign transaction with origin private key

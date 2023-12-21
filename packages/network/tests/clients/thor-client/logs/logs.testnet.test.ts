@@ -6,6 +6,7 @@ import {
     expectedFilterEventLogs,
     expectedFilterTransferLogs
 } from './fixture';
+import { ThorClient } from '../../../../src';
 
 /**
  * ThorestClient class tests
@@ -13,12 +14,13 @@ import {
  * @group integration/clients/thorest-client/logs
  */
 describe('ThorestClient - Logs', () => {
+    const thorClient = new ThorClient(thorestClient);
     /**
      * filterEventLogs tests
      */
     test('filterEventLogs', async () => {
         const eventLogs =
-            await thorestClient.logs.filterEventLogs(argFilterEventLogs);
+            await thorClient.logs.filterEventLogs(argFilterEventLogs);
         expect(eventLogs).toStrictEqual(expectedFilterEventLogs);
     });
 
@@ -26,7 +28,7 @@ describe('ThorestClient - Logs', () => {
      * filterTransferLogs tests
      */
     test('filterTransferLogs', async () => {
-        const transferLogs = await thorestClient.logs.filterTransferLogs(
+        const transferLogs = await thorClient.logs.filterTransferLogs(
             argFilterTransferLogs
         );
         expect(transferLogs).toStrictEqual(expectedFilterTransferLogs);

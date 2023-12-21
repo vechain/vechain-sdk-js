@@ -1,6 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { thorestClient } from '../../../fixture';
 import { transactionDetails, transactionReceipts } from './fixture';
+import { ThorClient } from '../../../../src';
 
 /**
  * ThorestClient class tests
@@ -10,6 +11,7 @@ import { transactionDetails, transactionReceipts } from './fixture';
  * @group integration/clients/thorest-client/transactions
  */
 describe('ThorestClient - Transactions', () => {
+    const thorClient = new ThorClient(thorestClient);
     /**
      * getTransaction tests
      */
@@ -20,7 +22,7 @@ describe('ThorestClient - Transactions', () => {
         transactionDetails.correct.forEach((testCase) => {
             test(testCase.testName, async () => {
                 // Check block number
-                const latestBlock = await thorestClient.blocks.getFinalBlock();
+                const latestBlock = await thorClient.blocks.getFinalBlock();
 
                 // Check transaction block. If undefined, it is the 'best' block.
                 for (const blockNumber of [latestBlock, undefined]) {
@@ -66,7 +68,7 @@ describe('ThorestClient - Transactions', () => {
         transactionReceipts.correct.forEach((testCase) => {
             test(testCase.testName, async () => {
                 // Check block number
-                const latestBlock = await thorestClient.blocks.getFinalBlock();
+                const latestBlock = await thorClient.blocks.getFinalBlock();
 
                 // Check transaction block. If undefined, it is the 'best' block.
                 for (const blockNumber of [latestBlock, undefined]) {

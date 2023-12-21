@@ -7,7 +7,7 @@ import { HTTPClientError } from '@vechainfoundation/vechain-sdk-errors';
  * @group integration/clients/thor-client/nodes
  */
 describe('Integration tests to check the Node health check for different scenarios', () => {
-    test('valid URL but inaccessible VeChain node', async () => {
+    test('valid URL but inaccessible vechain node', async () => {
         /**
          *  client required to access a node
          *  @internal

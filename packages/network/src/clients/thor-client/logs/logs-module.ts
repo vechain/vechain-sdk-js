@@ -11,7 +11,7 @@ import { thorest } from '../../../utils';
  * The `LogsClient` class provides methods to interact with log-related endpoints
  * of the VechainThor blockchain. It allows filtering event and transfer logs.
  */
-class LogsClient {
+class LogsModule {
     /**
      * Initializes a new instance of the `LogsClient` class.
      * @param httpClient - The HTTP client instance used for making HTTP requests.
@@ -59,4 +59,4 @@ class LogsClient {
     }
 }
 
-export { LogsClient };
+export { LogsModule };

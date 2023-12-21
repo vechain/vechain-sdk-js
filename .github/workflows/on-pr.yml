@@ -23,7 +23,6 @@ jobs:
                 yarn build
             - name: Test docs examples
               run: |
-                cd docs
                 yarn test:examples
 
     install-build:

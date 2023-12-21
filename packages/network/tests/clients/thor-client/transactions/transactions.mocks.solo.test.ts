@@ -1,7 +1,7 @@
 import { jest, describe, test, expect } from '@jest/globals';
 import { ThorClient, ThorestClient } from '../../../../src';
 import { transferTransactionBody } from './fixture';
-import { soloNetwork } from '../../../fixture';
+import { soloNetwork, TEST_ACCOUNTS } from '../../../fixture';
 import { TransactionBodyError } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
@@ -12,36 +12,42 @@ import { TransactionBodyError } from '@vechainfoundation/vechain-sdk-errors';
 describe('buildTransactionBody with mocks', () => {
     test('Should throw error when genesis block is not found', async () => {
         const thorestSoloClient = new ThorestClient(soloNetwork);
+        const thorSoloClient = new ThorClient(thorestSoloClient);
 
         // Mock the getBlock method to return null
-        jest.spyOn(thorestSoloClient.blocks, 'getBlock').mockResolvedValue(
-            null
-        );
+        jest.spyOn(thorSoloClient.blocks, 'getBlock').mockResolvedValue(null);
 
-        const thorSoloClient = new ThorClient(thorestSoloClient);
+        const gas = await thorSoloClient.gas.estimateGas(
+            [transferTransactionBody.clauses[0]],
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+        );
 
         await expect(
             thorSoloClient.transactions.buildTransactionBody(
                 [transferTransactionBody.clauses[0]],
-                0
+                gas.totalGas
             )
         ).rejects.toThrowError(TransactionBodyError);
     });
 
     test('Should throw error when gest block is not found', async () => {
         const thorestSoloClient = new ThorestClient(soloNetwork);
+        const thorSoloClient = new ThorClient(thorestSoloClient);
 
         // Mock the getBestBlock method to return null
-        jest.spyOn(thorestSoloClient.blocks, 'getBestBlock').mockResolvedValue(
+        jest.spyOn(thorSoloClient.blocks, 'getBestBlock').mockResolvedValue(
             null
         );
 
-        const thorSoloClient = new ThorClient(thorestSoloClient);
+        const gas = await thorSoloClient.gas.estimateGas(
+            [transferTransactionBody.clauses[0]],
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+        );
 
         await expect(
             thorSoloClient.transactions.buildTransactionBody(
                 [transferTransactionBody.clauses[0]],
-                0
+                gas.totalGas
             )
         ).rejects.toThrowError(TransactionBodyError);
     });

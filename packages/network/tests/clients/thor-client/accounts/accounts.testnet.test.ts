@@ -9,7 +9,7 @@ import {
     testSmartContract,
     testStoragePositionKey
 } from './fixture';
-import { testAccount, thorestClient } from '../../../fixture';
+import { testAccount, thorClient } from '../../../fixture';
 
 /**
  * ThorestClient class tests
@@ -27,10 +27,12 @@ describe('ThorestClient - Accounts', () => {
         getAccountWithRevisionTestCases.forEach(
             ({ description, account, revision, expected }) => {
                 test(description, async () => {
-                    const accountDetails =
-                        await thorestClient.accounts.getAccount(account, {
+                    const accountDetails = await thorClient.accounts.getAccount(
+                        account,
+                        {
                             revision
-                        });
+                        }
+                    );
                     expect(accountDetails).toEqual(expected);
                 });
             }
@@ -41,7 +43,7 @@ describe('ThorestClient - Accounts', () => {
          */
         test('get account without revision', async () => {
             const accountDetails =
-                await thorestClient.accounts.getAccount(testAccount);
+                await thorClient.accounts.getAccount(testAccount);
             expect(accountDetails).toBeDefined();
             expect(accountDetails.balance).toBeDefined();
             expect(accountDetails.energy).toBeDefined();
@@ -56,7 +58,7 @@ describe('ThorestClient - Accounts', () => {
             ({ description, address, revision, expectedError }) => {
                 test(description, async () => {
                     await expect(
-                        thorestClient.accounts.getAccount(address, { revision })
+                        thorClient.accounts.getAccount(address, { revision })
                     ).rejects.toThrowError(expectedError);
                 });
             }
@@ -73,7 +75,7 @@ describe('ThorestClient - Accounts', () => {
         getBytecodeTestCases.forEach(
             ({ description, address, revision, expected }) => {
                 test(description, async () => {
-                    const bytecode = await thorestClient.accounts.getBytecode(
+                    const bytecode = await thorClient.accounts.getBytecode(
                         address,
                         { revision }
                     );
@@ -89,7 +91,7 @@ describe('ThorestClient - Accounts', () => {
             ({ description, address, revision, expectedError }) => {
                 test(description, async () => {
                     await expect(
-                        thorestClient.accounts.getBytecode(address, {
+                        thorClient.accounts.getBytecode(address, {
                             revision
                         })
                     ).rejects.toThrowError(expectedError);
@@ -106,7 +108,7 @@ describe('ThorestClient - Accounts', () => {
          * Tests storage data at the specified position of the smart contract
          */
         test('Should get the storage data at the specified position of the smart contract', async () => {
-            const storageData = await thorestClient.accounts.getStorageAt(
+            const storageData = await thorClient.accounts.getStorageAt(
                 testSmartContract,
                 testStoragePositionKey
             );
@@ -119,7 +121,7 @@ describe('ThorestClient - Accounts', () => {
          * Tests storage data at the specified position of the smart contract with revision
          */
         test('Should get the storage data at the specified position of the smart contract with revision', async () => {
-            const storageData = await thorestClient.accounts.getStorageAt(
+            const storageData = await thorClient.accounts.getStorageAt(
                 testSmartContract,
                 testStoragePositionKey,
                 { revision: '1' }
@@ -136,7 +138,7 @@ describe('ThorestClient - Accounts', () => {
             ({ description, address, position, revision, expectedError }) => {
                 test(description, async () => {
                     await expect(
-                        thorestClient.accounts.getStorageAt(address, position, {
+                        thorClient.accounts.getStorageAt(address, position, {
                             revision
                         })
                     ).rejects.toThrowError(expectedError);

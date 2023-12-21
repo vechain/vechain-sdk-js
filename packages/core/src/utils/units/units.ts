@@ -52,7 +52,7 @@ const formatUnits = (
 /**
  * Parses a string number to a string with 18 decimals.
  *
- * VET is the native token of the VeChainThor blockchain.
+ * VET is the native token of the VechainThor blockchain.
  * It has 18 decimals.
  *
  * This method can parse any numeric string with 18 decimals (e.g., VTHO balance too).
@@ -69,7 +69,7 @@ const parseVET = (value: string): bigint => {
 /**
  * Converts a value into a decimal string assuming 18 decimals.
  *
- * VET is the native token of the VeChainThor blockchain.
+ * VET is the native token of the VechainThor blockchain.
  * It has 18 decimals.
  *
  * This method can format any numeric value with 18 decimals (e.g., VTHO balance too).
