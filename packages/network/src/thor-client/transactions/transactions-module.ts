@@ -6,7 +6,7 @@ import {
     dataUtils,
     type TransactionBody
 } from '@vechainfoundation/vechain-sdk-core';
-import { Poll, buildQuery, thorest } from '../../../utils';
+import { Poll, buildQuery, thorest } from '../../utils';
 import {
     type TransactionReceipt,
     type TransactionBodyOptions,

@@ -4,7 +4,7 @@ import {
     type FilterTransferLogsOptions,
     type TransferLogs
 } from './types';
-import { thorest } from '../../../utils';
+import { thorest } from '../../utils';
 import { type ThorClient } from '../thor-client';
 
 /**

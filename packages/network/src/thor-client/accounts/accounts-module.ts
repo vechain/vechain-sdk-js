@@ -1,5 +1,5 @@
 import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
-import { buildQuery, thorest } from '../../../utils';
+import { buildQuery, thorest } from '../../utils';
 import {
     type ResponseBytecode,
     type AccountDetail,

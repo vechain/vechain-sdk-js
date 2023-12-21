@@ -1,4 +1,4 @@
-import { NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS, thorest } from '../../../utils';
+import { NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS, thorest } from '../../utils';
 import { assert, DATA } from '@vechainfoundation/vechain-sdk-errors';
 import { type BlockDetail } from '../blocks';
 import { type ThorClient } from '../thor-client';

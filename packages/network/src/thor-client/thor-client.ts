@@ -5,7 +5,7 @@ import { ContractsModule } from './contracts';
 import { TransactionsModule } from './transactions';
 import { LogsModule } from './logs';
 import { GasModule } from './gas';
-import { type HttpClient } from '../../utils';
+import { type HttpClient } from '../utils';
 
 /**
  * The `ThorClient` class serves as an interface to interact with the vechain Thor blockchain.

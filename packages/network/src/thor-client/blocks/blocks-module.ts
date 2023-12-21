@@ -1,5 +1,5 @@
 import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
-import { Poll, buildQuery, thorest } from '../../../utils';
+import { Poll, buildQuery, thorest } from '../../utils';
 import {
     type WaitForBlockOptions,
     type BlockInputOptions,
