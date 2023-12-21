@@ -8,7 +8,7 @@ type EventFilter = vechain_sdk_core_ethers.EventFilter;
 
 /**
  *  A **ProviderEvent** provides the types of events that can be subscribed
- *  to on a [[Provider]].
+ *  to on a **Provider**.
  *
  *  Each provider may include additional possible events it supports, but
  *  the most commonly supported are:
@@ -28,7 +28,7 @@ type EventFilter = vechain_sdk_core_ethers.EventFilter;
  *
  *  **``Array``** - calls the listener on each log that matches the filter.
  *
- *  [[EventFilter]] - calls the listener with each matching log
+ *  **EventFilter** - calls the listener with each matching log
  */
 type ProviderEvent = vechain_sdk_core_ethers.ProviderEvent;
 

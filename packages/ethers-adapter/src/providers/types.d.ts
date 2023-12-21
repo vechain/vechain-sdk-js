@@ -122,7 +122,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
     getNetwork: () => Promise<Network>;
 
     /**
-     * Get the best guess at the recommended [[FeeData]].
+     * Get the best guess at the recommended **FeeData**.
      *
      * ----- TEMPORARY COMMENT -----
      * FeeData in ethers contains gasPrice, maxFeePerGas, maxPriorityFeePerGas
@@ -153,7 +153,7 @@ interface Provider extends ContractRunner, EventEmitterable<ProviderEvent> {
      * is used as the ``nonce`` when sending a transaction. If
      * %%blockTag%% is specified and the node supports archive access
      * for that %%blockTag%%, the transaction count is as of that
-     * [[BlockTag]].
+     * **BlockTag**.
      *
      * ----- TEMPORARY COMMENT -----
      * This method is not needed as we do not have the incremental nonce logic as per Ethereum.
