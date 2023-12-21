@@ -7,6 +7,7 @@ import {
 } from '@vechainfoundation/vechain-sdk-core';
 import {
     HttpClient,
+    ThorClient,
     ThorestClient
 } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
@@ -16,10 +17,11 @@ import { expect } from 'expect';
 const _soloUrl = 'http://localhost:8669';
 const soloNetwork = new HttpClient(_soloUrl);
 const thorestSoloClient = new ThorestClient(soloNetwork);
+const thorSoloClient = new ThorClient(thorestSoloClient);
 
 // 2 - Get latest block
 
-const latestBlock = await thorestSoloClient.blocks.getBestBlock();
+const latestBlock = await thorSoloClient.blocks.getBestBlock();
 
 // 3 - Create clauses
 

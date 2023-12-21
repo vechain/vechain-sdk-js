@@ -1,7 +1,9 @@
+import { AccountsModule } from './accounts';
 import { NodesModule } from './nodes';
 import { BlocksModule } from './blocks';
 import { ContractsModule } from './contracts';
 import { TransactionsModule } from './transactions';
+import { LogsModule } from './logs';
 import { type ThorestClient } from '../thorest-client';
 import { GasModule } from './gas';
 
@@ -12,6 +14,11 @@ import { GasModule } from './gas';
  */
 class ThorClient {
     /**
+     * The `AccountsModule` instance
+     */
+    public readonly accounts: AccountsModule;
+
+    /**
      * The `NodesModule` instance
      */
     public readonly nodes: NodesModule;
@@ -20,6 +27,11 @@ class ThorClient {
      * The `BlocksModule` instance
      */
     public readonly blocks: BlocksModule;
+
+    /**
+     * The `LogsModule` instance used for interacting with log-related endpoints.
+     */
+    public readonly logs: LogsModule;
 
     /*
      * The `TransactionsModule` instance
@@ -42,10 +54,12 @@ class ThorClient {
      * @param httpClient - The HTTP client instance used for making network requests.
      */
     constructor(readonly thorest: ThorestClient) {
-        this.nodes = new NodesModule(thorest);
+        this.accounts = new AccountsModule(thorest.httpClient);
+        this.nodes = new NodesModule(this);
         this.blocks = new BlocksModule(thorest);
-        this.transactions = new TransactionsModule(thorest);
-        this.contracts = new ContractsModule(thorest);
+        this.logs = new LogsModule(thorest.httpClient);
+        this.transactions = new TransactionsModule(this);
+        this.contracts = new ContractsModule(this);
         this.gas = new GasModule(thorest);
     }
 }

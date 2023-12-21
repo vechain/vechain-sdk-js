@@ -1,9 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import {
-    TEST_ACCOUNTS,
-    thorestSoloClient,
-    thorSoloClient
-} from '../../../fixture';
+import { TEST_ACCOUNTS, thorSoloClient } from '../../../fixture';
 import {
     deployedContractAbi,
     deployedContractBytecode,
@@ -189,7 +185,7 @@ describe('ThorClient - Contracts', () => {
 
         // Retrieve the bytecode of the deployed contract
         const contractBytecodeResponse =
-            await thorestSoloClient.accounts.getBytecode(
+            await thorSoloClient.accounts.getBytecode(
                 contractAddress as string
             );
 
