@@ -1,7 +1,8 @@
-import { NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS } from '../../../utils';
+import { NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS, thorest } from '../../../utils';
 import { assert, DATA } from '@vechainfoundation/vechain-sdk-errors';
 import { type BlockDetail } from '../blocks';
 import { type ThorClient } from '../thor-client';
+import { type ConnectedPeer } from './types';
 
 /**
  * The `NodesModule` class serves as a module for node-related functionality, for example, checking the health of a node.
@@ -12,6 +13,18 @@ class NodesModule {
      * @param thor - The Thor instance used to interact with the vechain blockchain API.
      */
     constructor(readonly thor: ThorClient) {}
+
+    /**
+     * Retrieves connected peers of a node.
+     *
+     * @returns A promise that resolves to the list of connected peers.
+     */
+    public async getNodes(): Promise<ConnectedPeer | null> {
+        return (await this.thor.httpClient.http(
+            'GET',
+            thorest.nodes.get.NODES()
+        )) as ConnectedPeer | null;
+    }
 
     /**
      * Checks the health of a node using the following algorithm:

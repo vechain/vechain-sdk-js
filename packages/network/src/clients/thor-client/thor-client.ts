@@ -49,6 +49,11 @@ class ThorClient {
     public readonly gas: GasModule;
 
     /**
+     * The HTTP client instance used for making network requests.
+     */
+    public readonly httpClient: ThorestClient['httpClient'];
+
+    /**
      * Constructs a new `ThorClient` instance with a given HTTP client.
      *
      * @param httpClient - The HTTP client instance used for making network requests.
@@ -61,6 +66,7 @@ class ThorClient {
         this.transactions = new TransactionsModule(this);
         this.contracts = new ContractsModule(this);
         this.gas = new GasModule(thorest);
+        this.httpClient = thorest.httpClient;
     }
 }
 
