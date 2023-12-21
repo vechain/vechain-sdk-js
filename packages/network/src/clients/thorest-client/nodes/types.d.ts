@@ -28,8 +28,8 @@ interface ConnectedPeer {
     netAddr: string;
     /**
      * indicates whether the connection to a peer is inbound or outbound.
-     * If `inbound` is true,  the peer has initiated the connection to your node. In other words, the connection request came from the peer to your VeChainThor node.
-     * If `inbound` is false, your node has initiated the connection to the peer. In other words, the connection request came from your VeChainThor node to the peer.
+     * If `inbound` is true,  the peer has initiated the connection to your node. In other words, the connection request came from the peer to your VechainThor node.
+     * If `inbound` is false, your node has initiated the connection to the peer. In other words, the connection request came from your VechainThor node to the peer.
      */
     inbound: boolean;
     /**
