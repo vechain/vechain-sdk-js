@@ -1,6 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
 import { thorestClient } from '../../../fixture';
-import { transactionDetails, transactionReceipts } from './fixture';
+import {
+    transactionDetails,
+    transactionReceipts
+} from '../../thor-client/transactions/fixture-thorest';
 import { ThorClient } from '../../../../src';
 
 /**
