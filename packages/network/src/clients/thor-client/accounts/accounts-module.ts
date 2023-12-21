@@ -13,11 +13,11 @@ import {
 } from '@vechainfoundation/vechain-sdk-core';
 
 /**
- * The `AccountClient` class provides methods to interact with account-related endpoints
+ * The `AccountModule` class provides methods to interact with account-related endpoints
  * of the VechainThor blockchain. It allows fetching details, bytecode, and storage data
  * for a specific blockchain account.
  */
-class AccountsClient {
+class AccountsModule {
     /**
      * Initializes a new instance of the `AccountClient` class.
      * @param httpClient - The HTTP client instance used for making HTTP requests.
@@ -120,4 +120,4 @@ class AccountsClient {
     }
 }
 
-export { AccountsClient };
+export { AccountsModule };

@@ -2,7 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import {
     TEST_ACCOUNTS,
     TEST_CONTRACT_ADDRESS,
-    thorestSoloClient
+    thorSoloClient
 } from '../../../fixture';
 import { unitsUtils } from '@vechainfoundation/vechain-sdk-core';
 import { TESTING_CONTRACT_BYTECODE } from './fixture';
@@ -29,10 +29,9 @@ describe('ThorestClient - Accounts', () => {
         test(
             'Get account returns fixed VET balance and increased VTHO balance with block number increase',
             async () => {
-                const accountBefore =
-                    await thorestSoloClient.accounts.getAccount(
-                        TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
-                    );
+                const accountBefore = await thorSoloClient.accounts.getAccount(
+                    TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
+                );
 
                 expect(accountBefore).toBeDefined();
 
@@ -46,7 +45,7 @@ describe('ThorestClient - Accounts', () => {
                 );
 
                 const currentBlock =
-                    await thorestSoloClient.blocks.getBlock('best');
+                    await thorSoloClient.blocks.getBlock('best');
 
                 if (currentBlock !== null) {
                     let latestBlock;
@@ -54,7 +53,7 @@ describe('ThorestClient - Accounts', () => {
                     // Wait for a block greater than currentBlock
                     do {
                         latestBlock =
-                            await thorestSoloClient.blocks.getBlock('best');
+                            await thorSoloClient.blocks.getBlock('best');
                         await new Promise((resolve) =>
                             setTimeout(resolve, 1000)
                         );
@@ -64,10 +63,9 @@ describe('ThorestClient - Accounts', () => {
                     );
                 }
 
-                const accountAfter =
-                    await thorestSoloClient.accounts.getAccount(
-                        TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
-                    );
+                const accountAfter = await thorSoloClient.accounts.getAccount(
+                    TEST_ACCOUNTS.ACCOUNT.SIMPLE_ACCOUNT.address
+                );
 
                 expect(accountAfter).toBeDefined();
                 expect(accountAfter.balance).toEqual(accountBefore.balance);
@@ -82,7 +80,7 @@ describe('ThorestClient - Accounts', () => {
          * Checks if the Testing Contract has been deployed and with the correct bytecode
          */
         test("Should return TestingContract.sol contract's bytecode", async () => {
-            const bytecode = await thorestSoloClient.accounts.getBytecode(
+            const bytecode = await thorSoloClient.accounts.getBytecode(
                 TEST_CONTRACT_ADDRESS
             );
 

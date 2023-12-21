@@ -7,10 +7,7 @@ import {
     type TransactionBody
 } from '@vechainfoundation/vechain-sdk-core';
 import { Poll } from '../../../utils';
-import {
-    type ThorestClient,
-    type TransactionReceipt
-} from '../../thorest-client';
+import { type TransactionReceipt } from '../../thorest-client';
 import {
     type TransactionBodyOptions,
     type SendTransactionResult,
@@ -18,6 +15,7 @@ import {
 } from './types';
 import { randomBytes } from 'crypto';
 import { TRANSACTION, buildError } from '@vechainfoundation/vechain-sdk-errors';
+import { type ThorClient } from '../thor-client';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -25,10 +23,10 @@ import { TRANSACTION, buildError } from '@vechainfoundation/vechain-sdk-errors';
  */
 class TransactionsModule {
     /**
-     * Initializes a new instance of the `Thorest` class.
-     * @param thorest - The Thorest instance used to interact with the vechain Thorest blockchain API.
+     * Initializes a new instance of the `Thor` class.
+     * @param thor - The Thor instance used to interact with the vechain blockchain API.
      */
-    constructor(readonly thorest: ThorestClient) {}
+    constructor(readonly thor: ThorClient) {}
 
     /**
      * Sends a signed transaction to the network.
@@ -46,7 +44,7 @@ class TransactionsModule {
 
         const rawTx = `0x${signedTx.encoded.toString('hex')}`;
 
-        return await this.thorest.transactions.sendTransaction(rawTx);
+        return await this.thor.thorest.transactions.sendTransaction(rawTx);
     }
 
     /**
@@ -69,7 +67,9 @@ class TransactionsModule {
 
         return await Poll.SyncPoll(
             async () =>
-                await this.thorest.transactions.getTransactionReceipt(txID),
+                await this.thor.thorest.transactions.getTransactionReceipt(
+                    txID
+                ),
             {
                 requestIntervalInMilliseconds: options?.intervalMs,
                 maximumWaitingTimeInMilliseconds: options?.timeoutMs
@@ -101,7 +101,7 @@ class TransactionsModule {
         options?: TransactionBodyOptions
     ): Promise<TransactionBody> {
         // Get the genesis block to get the chainTag
-        const genesisBlock = await this.thorest.blocks.getBlock(0);
+        const genesisBlock = await this.thor.blocks.getBlock(0);
 
         if (genesisBlock === null)
             throw buildError(
@@ -122,7 +122,7 @@ class TransactionsModule {
                 options?.isDelegated === true ? { features: 1 } : undefined
         };
 
-        const latestBlockRef = await this.thorest.blocks.getBestBlockRef();
+        const latestBlockRef = await this.thor.blocks.getBestBlockRef();
 
         if (latestBlockRef === null)
             throw buildError(
