@@ -1,6 +1,15 @@
 import { describe, expect, test } from '@jest/globals';
-import { buildTransactionBodyClausesTestCases } from './fixture';
-import { TEST_ACCOUNTS, thorClient } from '../../../fixture';
+import {
+    buildTransactionBodyClausesTestCases,
+    signTransactionTestCases
+} from './fixture';
+import {
+    TESTING_CONTRACT_ABI,
+    TEST_ACCOUNTS,
+    TEST_CONTRACT_ADDRESS,
+    thorClient
+} from '../../../fixture';
+import { addressUtils, contract } from '@vechainfoundation/vechain-sdk-core';
 
 /**
  * Transactions module tests suite.
@@ -46,6 +55,55 @@ describe('Transactions module Testnet tests suite', () => {
                         expected.testnet.reserved
                     );
                     expect(txBody.chainTag).toBe(expected.testnet.chainTag);
+                });
+            }
+        );
+    });
+
+    /**
+     * Test suite for signTransaction method
+     */
+    describe('signTransactionTestCases', () => {
+        signTransactionTestCases.testnet.correct.forEach(
+            ({ description, origin, options, isDelegated, expected }) => {
+                test(description, async () => {
+                    const sampleClause =
+                        contract.clauseBuilder.functionInteraction(
+                            TEST_CONTRACT_ADDRESS,
+                            TESTING_CONTRACT_ABI,
+                            'setStateVariable',
+                            [123]
+                        );
+
+                    const gasResult = await thorClient.gas.estimateGas(
+                        [sampleClause],
+                        origin.address
+                    );
+
+                    const txBody =
+                        await thorClient.transactions.buildTransactionBody(
+                            [sampleClause],
+                            gasResult.totalGas,
+                            {
+                                isDelegated
+                            }
+                        );
+
+                    const signedTx =
+                        await thorClient.transactions.signTransaction(
+                            txBody,
+                            origin.privateKey,
+                            options
+                        );
+
+                    expect(signedTx).toBeDefined();
+                    expect(signedTx.body).toMatchObject(expected.body);
+                    expect(signedTx.origin).toBe(
+                        addressUtils.toChecksumed(origin.address)
+                    );
+                    expect(signedTx.isDelegated).toBe(isDelegated);
+                    expect(signedTx.isSigned).toBe(true);
+                    expect(signedTx.signature).toBeDefined();
                 });
             }
         );
