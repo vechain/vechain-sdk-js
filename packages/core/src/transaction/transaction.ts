@@ -55,7 +55,7 @@ class Transaction {
     constructor(body: TransactionBody, signature?: Buffer) {
         // Body
         assert(
-            this._isValidBody(body),
+            Transaction.isValidBody(body),
             TRANSACTION.INVALID_TRANSACTION_BODY,
             'Invalid transaction body. Ensure all required fields are correctly formatted and present.',
             { body }
@@ -395,12 +395,11 @@ class Transaction {
     }
 
     /**
-     * Private utility function to check transaction body
-     * @private
+     * utility function to check transaction body validity.
      *
      * @param body Transaction body to check
      */
-    private _isValidBody(body: TransactionBody): boolean {
+    public static isValidBody(body: TransactionBody): boolean {
         // Check if body is valid
         return (
             // Chain tag
