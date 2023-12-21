@@ -7,8 +7,8 @@ import { TRANSACTION, buildError } from '@vechainfoundation/vechain-sdk-errors';
  * Retrieves the signature of a delegation transaction from a delegator given the endpoint
  * from which to retrieve the signature.
  *
- * @param delegatorUrl - The URL of the endpoint of the delegator.
  * @param tx - The transaction to delegate.
+ * @param delegatorUrl - The URL of the endpoint of the delegator.
  * @param originAddress - The address of the origin account.
  * @param httpClient - The HTTP client instance used for making HTTP requests.
  *
