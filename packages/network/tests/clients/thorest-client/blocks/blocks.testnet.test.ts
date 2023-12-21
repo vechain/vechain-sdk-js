@@ -45,7 +45,17 @@ describe('ThorestClient - Blocks', () => {
          */
         test('getBestBlock', async () => {
             const blockDetails = await thorestClient.blocks.getBestBlock();
+            expect(blockDetails).not.toBeNull();
             expect(blockDetails).toBeDefined();
+        });
+
+        /**
+         * getBestBlockRef test
+         */
+        test('getBestBlockRef', async () => {
+            const bestBlockRef = await thorestClient.blocks.getBestBlockRef();
+            expect(bestBlockRef).not.toBeNull();
+            expect(bestBlockRef).toBeDefined();
         });
 
         /**
@@ -53,6 +63,7 @@ describe('ThorestClient - Blocks', () => {
          */
         test('getFinalBlock', async () => {
             const blockDetails = await thorestClient.blocks.getFinalBlock();
+            expect(blockDetails).not.toBeNull();
             expect(blockDetails).toBeDefined();
         });
     });

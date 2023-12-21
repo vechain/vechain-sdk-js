@@ -60,6 +60,16 @@ describe('Address', () => {
                 secp256k1.derivePublicKey(invalidPrivateKey)
             ).toThrowError(InvalidSecp256k1PrivateKeyError);
         });
+
+        /**
+         * Derive the address from the private key
+         */
+        test('derive address from private key', () => {
+            // Correct private key address derivation
+            expect(addressUtils.fromPrivateKey(simplePrivateKey)).toEqual(
+                simpleAddress
+            );
+        });
     });
 
     /**
