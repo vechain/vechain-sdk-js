@@ -1,4 +1,3 @@
-import { type HttpClient } from '../../../utils/http';
 import {
     type FilterEventLogsOptions,
     type EventLogs,
@@ -6,6 +5,7 @@ import {
     type TransferLogs
 } from './types';
 import { thorest } from '../../../utils';
+import { type ThorClient } from '../thor-client';
 
 /**
  * The `LogsClient` class provides methods to interact with log-related endpoints
@@ -13,10 +13,10 @@ import { thorest } from '../../../utils';
  */
 class LogsModule {
     /**
-     * Initializes a new instance of the `LogsClient` class.
-     * @param httpClient - The HTTP client instance used for making HTTP requests.
+     * Initializes a new instance of the `Thor` class.
+     * @param thor - The Thor instance used to interact with the vechain blockchain API.
      */
-    constructor(protected readonly httpClient: HttpClient) {}
+    constructor(readonly thor: ThorClient) {}
 
     /**
      * Filters event logs based on the provided criteria.
@@ -27,7 +27,7 @@ class LogsModule {
     public async filterEventLogs(
         filterOptions: FilterEventLogsOptions
     ): Promise<EventLogs> {
-        return (await this.httpClient.http(
+        return (await this.thor.httpClient.http(
             'POST',
             thorest.logs.post.EVENT_LOGS(),
             {
@@ -47,7 +47,7 @@ class LogsModule {
     public async filterTransferLogs(
         filterOptions: FilterTransferLogsOptions
     ): Promise<TransferLogs> {
-        return (await this.httpClient.http(
+        return (await this.thor.httpClient.http(
             'POST',
             thorest.logs.post.TRANSFER_LOGS(),
             {

@@ -1,12 +1,11 @@
 import { describe, expect, test } from '@jest/globals';
-import { thorestClient } from '../../fixture';
 import {
     argFilterEventLogs,
     argFilterTransferLogs,
     expectedFilterEventLogs,
     expectedFilterTransferLogs
 } from './fixture';
-import { ThorClient } from '../../../src';
+import { thorClient } from '../../fixture';
 
 /**
  * ThorestClient class tests
@@ -14,7 +13,6 @@ import { ThorClient } from '../../../src';
  * @group integration/clients/thorest-client/logs
  */
 describe('ThorestClient - Logs', () => {
-    const thorClient = new ThorClient(thorestClient);
     /**
      * filterEventLogs tests
      */

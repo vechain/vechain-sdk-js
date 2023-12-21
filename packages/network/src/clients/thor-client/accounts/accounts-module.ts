@@ -1,5 +1,5 @@
 import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
-import { type HttpClient, buildQuery, thorest } from '../../../utils';
+import { buildQuery, thorest } from '../../../utils';
 import {
     type ResponseBytecode,
     type AccountDetail,
@@ -11,6 +11,7 @@ import {
     assertIsAddress,
     assertIsRevisionForAccount
 } from '@vechainfoundation/vechain-sdk-core';
+import { type ThorClient } from '../thor-client';
 
 /**
  * The `AccountModule` class provides methods to interact with account-related endpoints
@@ -19,10 +20,10 @@ import {
  */
 class AccountsModule {
     /**
-     * Initializes a new instance of the `AccountClient` class.
-     * @param httpClient - The HTTP client instance used for making HTTP requests.
+     * Initializes a new instance of the `Thor` class.
+     * @param thor - The Thor instance used to interact with the vechain blockchain API.
      */
-    constructor(protected readonly httpClient: HttpClient) {}
+    constructor(readonly thor: ThorClient) {}
 
     /**
      * Retrieves account details such as balance of VET, VTHO, and if the address is a smart contract.
@@ -42,7 +43,7 @@ class AccountsModule {
 
         assertIsRevisionForAccount(options?.revision);
 
-        return (await this.httpClient.http(
+        return (await this.thor.httpClient.http(
             'GET',
             thorest.accounts.get.ACCOUNT_DETAIL(address),
             {
@@ -69,7 +70,7 @@ class AccountsModule {
 
         assertIsRevisionForAccount(options?.revision);
 
-        const result = (await this.httpClient.http(
+        const result = (await this.thor.httpClient.http(
             'GET',
             thorest.accounts.get.ACCOUNT_BYTECODE(address),
             {
@@ -108,7 +109,7 @@ class AccountsModule {
             { position }
         );
 
-        const result = (await this.httpClient.http(
+        const result = (await this.thor.httpClient.http(
             'GET',
             thorest.accounts.get.STORAGE_AT(address, position),
             {

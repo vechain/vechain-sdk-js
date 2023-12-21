@@ -1,4 +1,4 @@
-import { HttpClient, ThorestClient, ThorClient } from '../src';
+import { HttpClient, ThorClient } from '../src';
 
 /**
  * Url of the testnet fixture
@@ -31,24 +31,14 @@ const testAccount = '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa';
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 /**
- * Thorest client testnet instance fixture
- */
-const thorestClient = new ThorestClient(testNetwork);
-
-/**
- * Thorest client solo instance fixture
- */
-const thorestSoloClient = new ThorestClient(soloNetwork);
-
-/**
  * Thor client testnet instance fixture
  */
-const thorClient = new ThorClient(thorestClient);
+const thorClient = new ThorClient(testNetwork);
 
 /**
  * Thor client solo instance fixture
  */
-const thorSoloClient = new ThorClient(thorestSoloClient);
+const thorSoloClient = new ThorClient(soloNetwork);
 
 /**
  * All available accounts for testing purposes
@@ -972,8 +962,6 @@ export {
     soloNetwork,
     ZERO_ADDRESS,
     testAccount,
-    thorestClient,
-    thorestSoloClient,
     thorClient,
     thorSoloClient,
     TEST_ACCOUNTS,

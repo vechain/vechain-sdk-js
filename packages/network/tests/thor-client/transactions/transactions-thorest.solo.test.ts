@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { TEST_ACCOUNTS, thorestSoloClient } from '../../fixture';
+import { TEST_ACCOUNTS, soloNetwork } from '../../fixture';
 import {
     dataUtils,
     Transaction,
@@ -18,7 +18,7 @@ import { ThorClient } from '../../../src';
  * @group integration/clients/thorest-client/transactions
  */
 describe('ThorestClient - Transactions', () => {
-    const thorSoloClient = new ThorClient(thorestSoloClient);
+    const thorSoloClient = new ThorClient(soloNetwork);
     /**
      * sendTransaction tests
      */

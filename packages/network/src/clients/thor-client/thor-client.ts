@@ -4,8 +4,8 @@ import { BlocksModule } from './blocks';
 import { ContractsModule } from './contracts';
 import { TransactionsModule } from './transactions';
 import { LogsModule } from './logs';
-import { type ThorestClient } from '../thorest-client';
 import { GasModule } from './gas';
+import { type HttpClient } from '../../utils';
 
 /**
  * The `ThorClient` class serves as an interface to interact with the vechain Thor blockchain.
@@ -51,22 +51,22 @@ class ThorClient {
     /**
      * The HTTP client instance used for making network requests.
      */
-    public readonly httpClient: ThorestClient['httpClient'];
+    public readonly httpClient: HttpClient;
 
     /**
      * Constructs a new `ThorClient` instance with a given HTTP client.
      *
      * @param httpClient - The HTTP client instance used for making network requests.
      */
-    constructor(readonly thorest: ThorestClient) {
-        this.accounts = new AccountsModule(thorest.httpClient);
+    constructor(readonly httpClientParam: HttpClient) {
+        this.accounts = new AccountsModule(this);
         this.nodes = new NodesModule(this);
-        this.blocks = new BlocksModule(thorest);
-        this.logs = new LogsModule(thorest.httpClient);
+        this.blocks = new BlocksModule(this);
+        this.logs = new LogsModule(this);
         this.transactions = new TransactionsModule(this);
         this.contracts = new ContractsModule(this);
         this.gas = new GasModule(this);
-        this.httpClient = thorest.httpClient;
+        this.httpClient = httpClientParam;
     }
 }
 

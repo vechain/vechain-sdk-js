@@ -1,4 +1,4 @@
-import { HttpClient, ThorClient, ThorestClient } from '../../../src';
+import { HttpClient, ThorClient } from '../../../src';
 
 /**
  * @internal
@@ -89,10 +89,8 @@ const blockWithInvalidTimeStampFormat = {
 function createThorClient(url: string): ThorClient {
     // HttpClient instance
     const httpClient = new HttpClient(url);
-    // Thorest client instance
-    const thorestClient = new ThorestClient(httpClient);
     // Thor client instance
-    return new ThorClient(thorestClient);
+    return new ThorClient(httpClient);
 }
 
 export {

@@ -1,22 +1,22 @@
 import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
 import { Poll, buildQuery, thorest } from '../../../utils';
-import { type ThorestClient } from '../../thorest-client';
 import {
     type WaitForBlockOptions,
     type BlockInputOptions,
     type BlockDetail
 } from './types';
 import { assertIsRevisionForBlock } from '@vechainfoundation/vechain-sdk-core';
+import { type ThorClient } from '../thor-client';
 
 /** The `BlocksModule` class encapsulates functionality for interacting with blocks
  * on the VechainThor blockchain.
  */
 class BlocksModule {
     /**
-     * Initializes a new instance of the `Thorest` class.
-     * @param thorest - The Thorest instance used to interact with the vechain Thorest blockchain API.
+     * Initializes a new instance of the `Thor` class.
+     * @param thor - The Thor instance used to interact with the vechain blockchain API.
      */
-    constructor(readonly thorest: ThorestClient) {}
+    constructor(readonly thor: ThorClient) {}
 
     /**
      * Retrieves details of a specific block identified by its revision (block number or ID).
@@ -31,7 +31,7 @@ class BlocksModule {
     ): Promise<BlockDetail | null> {
         assertIsRevisionForBlock(revision);
 
-        return (await this.thorest.httpClient.http(
+        return (await this.thor.httpClient.http(
             'GET',
             thorest.blocks.get.BLOCK_DETAIL(revision),
             {
