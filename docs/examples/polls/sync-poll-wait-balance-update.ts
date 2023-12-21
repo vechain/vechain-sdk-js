@@ -1,7 +1,8 @@
 import {
     HttpClient,
     Poll,
-    ThorestClient
+    ThorestClient,
+    ThorClient
 } from '@vechainfoundation/vechain-sdk-network';
 import {
     dataUtils,
@@ -16,11 +17,12 @@ import { expect } from 'expect';
 const _soloUrl = 'http://localhost:8669';
 const soloNetwork = new HttpClient(_soloUrl);
 const thorestSoloClient = new ThorestClient(soloNetwork);
+const thorSoloClient = new ThorClient(thorestSoloClient);
 
 // 2- Init transaction
 
 // 2.1 - Get latest block
-const latestBlock = await thorestSoloClient.blocks.getBestBlock();
+const latestBlock = await thorSoloClient.blocks.getBestBlock();
 
 // 2.2 - Transaction sender and receiver
 const sender = {
@@ -73,11 +75,11 @@ const raw = `0x${encoded.toString('hex')}`;
 // 3 - Get the sender and receiver balance before the transaction
 
 const senderBalanceBefore = (
-    await thorestSoloClient.accounts.getAccount(sender.address)
+    await thorSoloClient.accounts.getAccount(sender.address)
 ).balance;
 
 const receiverBalanceBefore = (
-    await thorestSoloClient.accounts.getAccount(receiver.address)
+    await thorSoloClient.accounts.getAccount(receiver.address)
 ).balance;
 
 console.log('Sender balance before:', senderBalanceBefore);
@@ -98,7 +100,7 @@ expect(dataUtils.isHexString(sentedTransaction.id)).toBe(true);
 // New balance of sender (wait until the balance is updated)
 const newBalanceSender = await Poll.SyncPoll(
     async () =>
-        (await thorestSoloClient.accounts.getAccount(sender.address)).balance
+        (await thorSoloClient.accounts.getAccount(sender.address)).balance
 ).waitUntil((newBalance) => {
     return newBalance !== senderBalanceBefore;
 });
@@ -106,7 +108,7 @@ const newBalanceSender = await Poll.SyncPoll(
 // New balance of receiver (wait until the balance is updated)
 const newBalanceReceiver = await Poll.SyncPoll(
     async () =>
-        (await thorestSoloClient.accounts.getAccount(receiver.address)).balance
+        (await thorSoloClient.accounts.getAccount(receiver.address)).balance
 ).waitUntil((newBalance) => {
     return newBalance !== receiverBalanceBefore;
 });

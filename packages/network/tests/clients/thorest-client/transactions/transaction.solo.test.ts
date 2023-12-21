@@ -8,6 +8,7 @@ import {
 } from '@vechainfoundation/vechain-sdk-core';
 import { sendTransactionErrors, simulateTransaction } from './fixture';
 import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
+import { ThorClient } from '../../../../src';
 
 /**
  * ThorestClient class tests.
@@ -17,6 +18,7 @@ import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
  * @group integration/clients/thorest-client/transactions
  */
 describe('ThorestClient - Transactions', () => {
+    const thorSoloClient = new ThorClient(thorestSoloClient);
     /**
      * sendTransaction tests
      */
@@ -29,8 +31,7 @@ describe('ThorestClient - Transactions', () => {
                 // 1- Init transaction
 
                 // Get latest block
-                const latestBlock =
-                    await thorestSoloClient.blocks.getBestBlock();
+                const latestBlock = await thorSoloClient.blocks.getBestBlock();
 
                 // Get gas @NOTE it is approximation. This part must be improved.
                 const gas =

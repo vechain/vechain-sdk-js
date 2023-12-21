@@ -1,5 +1,5 @@
 import { type TransactionBody } from '@vechainfoundation/vechain-sdk-core/src';
-import { type Output } from '../blocks';
+import { type Output } from '../../thor-client';
 import { type TransactionClause } from '@vechainfoundation/vechain-sdk-core';
 
 /**
