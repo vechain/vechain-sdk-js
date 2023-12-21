@@ -65,7 +65,7 @@ class ThorClient {
         this.logs = new LogsModule(thorest.httpClient);
         this.transactions = new TransactionsModule(this);
         this.contracts = new ContractsModule(this);
-        this.gas = new GasModule(thorest);
+        this.gas = new GasModule(this);
         this.httpClient = thorest.httpClient;
     }
 }

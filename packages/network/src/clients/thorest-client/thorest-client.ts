@@ -1,5 +1,4 @@
 import { type HttpClient } from '../../utils';
-import { TransactionsClient } from './transactions';
 
 /**
  * The `ThorestClient` class serves as an interface to interact with the vechain Thorest blockchain API.
@@ -8,17 +7,10 @@ import { TransactionsClient } from './transactions';
  */
 class ThorestClient {
     /**
-     * The `TransactionClient` instance used for interacting with transaction-related endpoints.
-     */
-    public readonly transactions: TransactionsClient;
-
-    /**
      * Constructs a new `ThorClient` instance with a given HTTP client.
      * @param httpClient - The HTTP client instance used for making network requests.
      */
-    constructor(readonly httpClient: HttpClient) {
-        this.transactions = new TransactionsClient(httpClient);
-    }
+    constructor(readonly httpClient: HttpClient) {}
 }
 
 export { ThorestClient };

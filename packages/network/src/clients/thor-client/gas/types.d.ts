@@ -1,4 +1,4 @@
-import { type SimulateTransactionOptions } from '../../thorest-client';
+import { type SimulateTransactionOptions } from '../transactions';
 
 /* --- Input options start --- */
 

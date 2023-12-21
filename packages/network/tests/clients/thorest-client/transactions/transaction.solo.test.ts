@@ -97,7 +97,7 @@ describe('ThorestClient - Transactions', () => {
                 // 2 - Send transaction
                 for (const raw of [rawNormalSigned, rawDelegatedSigned]) {
                     const send =
-                        await thorestSoloClient.transactions.sendTransaction(
+                        await thorSoloClient.transactions.sendRawTransaction(
                             `0x${raw.toString('hex')}`
                         );
                     expect(send).toBeDefined();
@@ -106,11 +106,11 @@ describe('ThorestClient - Transactions', () => {
 
                     // 3 - Get transaction AND transaction receipt
                     const transaction =
-                        await thorestSoloClient.transactions.getTransaction(
+                        await thorSoloClient.transactions.getTransaction(
                             send.id
                         );
                     const transactionReceipt =
-                        await thorestSoloClient.transactions.getTransactionReceipt(
+                        await thorSoloClient.transactions.getTransactionReceipt(
                             send.id
                         );
 
@@ -126,7 +126,7 @@ describe('ThorestClient - Transactions', () => {
         sendTransactionErrors.errors.forEach((testCase) => {
             test(testCase.testName, async () => {
                 await expect(
-                    thorestSoloClient.transactions.sendTransaction(
+                    thorSoloClient.transactions.sendRawTransaction(
                         testCase.transaction.raw
                     )
                 ).rejects.toThrow(testCase.expected);
@@ -145,7 +145,7 @@ describe('ThorestClient - Transactions', () => {
             ({ testName, transaction, expected }) => {
                 test(testName, async () => {
                     const simulatedTx =
-                        await thorestSoloClient.transactions.simulateTransaction(
+                        await thorSoloClient.transactions.simulateTransaction(
                             transaction.clauses,
                             {
                                 ...transaction.simulateTransactionOptions
@@ -180,7 +180,7 @@ describe('ThorestClient - Transactions', () => {
             ({ testName, transaction, expected }) => {
                 test(testName, async () => {
                     const simulatedTx =
-                        await thorestSoloClient.transactions.simulateTransaction(
+                        await thorSoloClient.transactions.simulateTransaction(
                             transaction.clauses,
                             {
                                 ...transaction.simulateTransactionOptions
@@ -205,7 +205,7 @@ describe('ThorestClient - Transactions', () => {
             ({ testName, transaction, expected }) => {
                 test(testName, async () => {
                     const simulatedTx =
-                        await thorestSoloClient.transactions.simulateTransaction(
+                        await thorSoloClient.transactions.simulateTransaction(
                             transaction.clauses
                         );
 
@@ -227,7 +227,7 @@ describe('ThorestClient - Transactions', () => {
             ({ testName, transaction, vmError }) => {
                 test(testName, async () => {
                     const simulatedTx =
-                        await thorestSoloClient.transactions.simulateTransaction(
+                        await thorSoloClient.transactions.simulateTransaction(
                             transaction.clauses,
                             {
                                 ...transaction.simulateTransactionOptions
@@ -250,7 +250,7 @@ describe('ThorestClient - Transactions', () => {
          */
         test('simulateTransaction with invalid revision', async () => {
             await expect(
-                thorestSoloClient.transactions.simulateTransaction(
+                thorSoloClient.transactions.simulateTransaction(
                     [
                         {
                             to: '0x',

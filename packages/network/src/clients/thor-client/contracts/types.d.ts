@@ -1,8 +1,8 @@
-import { type TransactionBodyOptions } from '../transactions';
-import type {
-    SimulateTransactionOptions,
-    TransactionSimulationResult
-} from '../../thorest-client';
+import {
+    type TransactionBodyOptions,
+    type TransactionSimulationResult,
+    type SimulateTransactionOptions
+} from '../transactions';
 
 /**
  * Represents the result of a transaction involving a smart contract, including its ID

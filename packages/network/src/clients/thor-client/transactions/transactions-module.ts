@@ -6,16 +6,33 @@ import {
     dataUtils,
     type TransactionBody
 } from '@vechainfoundation/vechain-sdk-core';
-import { Poll } from '../../../utils';
-import { type TransactionReceipt } from '../../thorest-client';
+import { Poll, buildQuery, thorest } from '../../../utils';
 import {
+    type TransactionReceipt,
     type TransactionBodyOptions,
     type SendTransactionResult,
-    type WaitForTransactionOptions
+    type WaitForTransactionOptions,
+    type GetTransactionInputOptions,
+    type TransactionDetail,
+    type GetTransactionReceiptInputOptions,
+    type TransactionSendResult,
+    type SimulateTransactionClause,
+    type SimulateTransactionOptions,
+    type TransactionSimulationResult
 } from './types';
 import { randomBytes } from 'crypto';
-import { TRANSACTION, buildError } from '@vechainfoundation/vechain-sdk-errors';
+import {
+    TRANSACTION,
+    buildError,
+    DATA,
+    assert
+} from '@vechainfoundation/vechain-sdk-errors';
 import { type ThorClient } from '../thor-client';
+import {
+    assertValidTransactionHead,
+    TransactionHandler,
+    revisionUtils
+} from '@vechainfoundation/vechain-sdk-core';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -27,6 +44,102 @@ class TransactionsModule {
      * @param thor - The Thor instance used to interact with the vechain blockchain API.
      */
     constructor(readonly thor: ThorClient) {}
+
+    /**
+     * Retrieves the details of a transaction.
+     *
+     * @param id - Transaction ID of the transaction to retrieve.
+     * @param options - (Optional) Other optional parameters for the request.
+     * @returns A promise that resolves to the details of the transaction.
+     */
+    public async getTransaction(
+        id: string,
+        options?: GetTransactionInputOptions
+    ): Promise<TransactionDetail | null> {
+        // Invalid transaction ID
+        assertValidTransactionID(id);
+
+        // Invalid head
+        assertValidTransactionHead(options?.head);
+
+        return (await this.thor.httpClient.http(
+            'GET',
+            thorest.transactions.get.TRANSACTION(id),
+            {
+                query: buildQuery({
+                    raw: options?.raw,
+                    head: options?.head,
+                    options: options?.pending
+                })
+            }
+        )) as TransactionDetail | null;
+    }
+
+    /**
+     * Retrieves the receipt of a transaction.
+     *
+     * @param id - Transaction ID of the transaction to retrieve.
+     * @param options - (Optional) Other optional parameters for the request.
+     *                  If `head` is not specified, the receipt of the transaction at the best block is returned.
+     * @returns A promise that resolves to the receipt of the transaction.
+     */
+    public async getTransactionReceipt(
+        id: string,
+        options?: GetTransactionReceiptInputOptions
+    ): Promise<TransactionReceipt | null> {
+        // Invalid transaction ID
+        assertValidTransactionID(id);
+
+        // Invalid head
+        assertValidTransactionHead(options?.head);
+
+        return (await this.thor.httpClient.http(
+            'GET',
+            thorest.transactions.get.TRANSACTION_RECEIPT(id),
+            {
+                query: buildQuery({ head: options?.head })
+            }
+        )) as TransactionReceipt | null;
+    }
+
+    /**
+     * Retrieves the receipt of a transaction.
+     *
+     * @param raw - The raw transaction.
+     * @returns The transaction id of send transaction.
+     */
+    public async sendRawTransaction(
+        raw: string
+    ): Promise<TransactionSendResult> {
+        // Validate raw transaction
+        assert(
+            dataUtils.isHexString(raw),
+            DATA.INVALID_DATA_TYPE,
+            'Sending failed: Input must be a valid raw transaction in hex format.',
+            { raw }
+        );
+
+        // Decode raw transaction to check if raw is ok
+        try {
+            TransactionHandler.decode(Buffer.from(raw.slice(2), 'hex'), true);
+        } catch (error) {
+            throw buildError(
+                DATA.INVALID_DATA_TYPE,
+                'Sending failed: Input must be a valid raw transaction in hex format. Decoding error encountered.',
+
+                { raw },
+                error
+            );
+        }
+
+        return (await this.thor.httpClient.http(
+            'POST',
+            thorest.transactions.post.TRANSACTION(),
+            {
+                body: { raw }
+            }
+        )) as TransactionSendResult;
+    }
 
     /**
      * Sends a signed transaction to the network.
@@ -44,7 +157,7 @@ class TransactionsModule {
 
         const rawTx = `0x${signedTx.encoded.toString('hex')}`;
 
-        return await this.thor.thorest.transactions.sendTransaction(rawTx);
+        return await this.sendRawTransaction(rawTx);
     }
 
     /**
@@ -67,9 +180,7 @@ class TransactionsModule {
 
         return await Poll.SyncPoll(
             async () =>
-                await this.thor.thorest.transactions.getTransactionReceipt(
-                    txID
-                ),
+                await this.thor.transactions.getTransactionReceipt(txID),
             {
                 requestIntervalInMilliseconds: options?.intervalMs,
                 maximumWaitingTimeInMilliseconds: options?.timeoutMs
@@ -136,6 +247,63 @@ class TransactionsModule {
             chainTag: Number(`0x${genesisBlock.id.slice(64)}`), // Last byte of the genesis block ID which is used to identify a network (chainTag)
             blockRef: latestBlockRef
         };
+    }
+
+    /**
+     * Simulates the execution of a transaction.
+     * Allows to estimate the gas cost of a transaction without sending it, as well as to retrieve the return value(s) of the transaction.
+     *
+     * @param clauses - The clauses of the transaction to simulate.
+     * @param options - (Optional) The options for simulating the transaction.
+     *
+     * @returns A promise that resolves to an array of simulation results.
+     *          Each element of the array represents the result of simulating a clause.
+     */
+    public async simulateTransaction(
+        clauses: SimulateTransactionClause[],
+        options?: SimulateTransactionOptions
+    ): Promise<TransactionSimulationResult[]> {
+        const {
+            revision,
+            caller,
+            gasPrice,
+            gasPayer,
+            gas,
+            blockRef,
+            expiration,
+            provedWork
+        } = options ?? {};
+        assert(
+            revision === undefined ||
+                revision === null ||
+                revisionUtils.isRevisionAccount(revision),
+            DATA.INVALID_DATA_TYPE,
+            'Invalid revision given as input. Input must be a valid revision (i.e., a block number or block ID).',
+            { revision }
+        );
+
+        return (await this.thor.httpClient.http(
+            'POST',
+            thorest.accounts.post.SIMULATE_TRANSACTION(revision),
+            {
+                query: buildQuery({ revision }),
+                body: {
+                    clauses: clauses.map((clause) => {
+                        return {
+                            ...clause,
+                            value: BigInt(clause.value).toString()
+                        };
+                    }),
+                    gas,
+                    gasPrice,
+                    caller,
+                    provedWork,
+                    gasPayer,
+                    expiration,
+                    blockRef
+                }
+            }
+        )) as TransactionSimulationResult[];
     }
 }
 

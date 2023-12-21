@@ -1,11 +1,9 @@
 import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
-import {
-    type SimulateTransactionClause,
-    type ThorestClient
-} from '../../thorest-client';
+import type { SimulateTransactionClause } from '../transactions';
 import { type EstimateGasOptions, type EstimateGasResult } from './types';
 import { TransactionUtils } from '@vechainfoundation/vechain-sdk-core';
 import { decodeRevertReason } from './helpers/decode-evm-error';
+import { type ThorClient } from '../thor-client';
 
 /**
  * The `GasModule` handles gas related operations and provides
@@ -13,10 +11,10 @@ import { decodeRevertReason } from './helpers/decode-evm-error';
  */
 class GasModule {
     /**
-     * Initializes a new instance of the `TransactionsModule` class.
-     * @param httpClient - The HTTP client instance used for making HTTP requests.
+     * Initializes a new instance of the `Thor` class.
+     * @param thor - The Thor instance used to interact with the vechain blockchain API.
      */
-    constructor(readonly thorest: ThorestClient) {}
+    constructor(readonly thor: ThorClient) {}
 
     /**
      * Simulates a transaction and returns an object containing information regarding the gas used and whether the transaction reverted.
@@ -43,7 +41,7 @@ class GasModule {
         );
 
         // Simulate the transaction to get the simulations of each clause
-        const simulations = await this.thorest.transactions.simulateTransaction(
+        const simulations = await this.thor.transactions.simulateTransaction(
             clauses,
             {
                 caller,

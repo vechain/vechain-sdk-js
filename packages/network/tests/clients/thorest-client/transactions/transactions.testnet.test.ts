@@ -27,7 +27,7 @@ describe('ThorestClient - Transactions', () => {
                 // Check transaction block. If undefined, it is the 'best' block.
                 for (const blockNumber of [latestBlock, undefined]) {
                     const transaction =
-                        await thorestClient.transactions.getTransaction(
+                        await thorClient.transactions.getTransaction(
                             testCase.transaction.id,
                             {
                                 raw: testCase.transaction.raw,
@@ -46,7 +46,7 @@ describe('ThorestClient - Transactions', () => {
         transactionDetails.errors.forEach((testCase) => {
             test(testCase.testName, async () => {
                 await expect(
-                    thorestClient.transactions.getTransaction(
+                    thorClient.transactions.getTransaction(
                         testCase.transaction.id,
                         {
                             raw: testCase.transaction.raw,
@@ -73,7 +73,7 @@ describe('ThorestClient - Transactions', () => {
                 // Check transaction block. If undefined, it is the 'best' block.
                 for (const blockNumber of [latestBlock, undefined]) {
                     const transaction =
-                        await thorestClient.transactions.getTransactionReceipt(
+                        await thorClient.transactions.getTransactionReceipt(
                             testCase.transaction.id,
                             { head: blockNumber?.id }
                         );
@@ -88,7 +88,7 @@ describe('ThorestClient - Transactions', () => {
         transactionReceipts.errors.forEach((testCase) => {
             test(testCase.testName, async () => {
                 await expect(
-                    thorestClient.transactions.getTransactionReceipt(
+                    thorClient.transactions.getTransactionReceipt(
                         testCase.transaction.id,
                         { head: testCase.transaction.head }
                     )

@@ -41,7 +41,7 @@ class ContractsModule {
      */
     constructor(readonly thor: ThorClient) {
         this.transactionsModule = new TransactionsModule(thor);
-        this.gasModule = new GasModule(thor.thorest);
+        this.gasModule = new GasModule(thor);
     }
 
     /**
@@ -107,21 +107,20 @@ class ContractsModule {
         contractCallOptions?: ContractCallOptions
     ): Promise<string> {
         // Simulate the transaction to get the result of the contract call
-        const response =
-            await this.thor.thorest.transactions.simulateTransaction(
-                [
-                    {
-                        to: contractAddress,
-                        value: '0',
-                        data: contract.coder.encodeFunctionInput(
-                            contractABI,
-                            functionName,
-                            functionData
-                        )
-                    }
-                ],
-                contractCallOptions
-            );
+        const response = await this.thor.transactions.simulateTransaction(
+            [
+                {
+                    to: contractAddress,
+                    value: '0',
+                    data: contract.coder.encodeFunctionInput(
+                        contractABI,
+                        functionName,
+                        functionData
+                    )
+                }
+            ],
+            contractCallOptions
+        );
 
         // Return the result of the contract call
         return response[0].data;
