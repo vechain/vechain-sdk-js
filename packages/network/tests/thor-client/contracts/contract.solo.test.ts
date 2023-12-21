@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { TEST_ACCOUNTS, thorSoloClient } from '../../../fixture';
+import { TEST_ACCOUNTS, thorSoloClient } from '../../fixture';
 import {
     deployedContractAbi,
     deployedContractBytecode,
@@ -8,7 +8,7 @@ import {
     deployExampleContract
 } from './fixture';
 import { addressUtils } from '@vechainfoundation/vechain-sdk-core';
-import type { TransactionReceipt } from '../../../../src';
+import type { TransactionReceipt } from '../../../src';
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.

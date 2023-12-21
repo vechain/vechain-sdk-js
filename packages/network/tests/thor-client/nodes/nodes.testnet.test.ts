@@ -1,8 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
 import { createThorClient } from './fixture';
 import { HTTPClientError } from '@vechainfoundation/vechain-sdk-errors';
-import { thorestClient } from '../../../fixture';
-import { ThorClient } from '../../../../src';
+import { thorestClient } from '../../fixture';
+import { ThorClient } from '../../../src';
 /**
  * Node integration tests
  * @group integration/clients/thor-client/nodes

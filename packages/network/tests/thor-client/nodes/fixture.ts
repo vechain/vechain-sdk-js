@@ -1,4 +1,4 @@
-import { HttpClient, ThorClient, ThorestClient } from '../../../../src';
+import { HttpClient, ThorClient, ThorestClient } from '../../../src';
 
 /**
  * @internal

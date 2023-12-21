@@ -1,7 +1,7 @@
 import {
     type FilterEventLogsOptions,
     type FilterTransferLogsOptions
-} from '../../../../src';
+} from '../../../src';
 
 const argFilterEventLogs: FilterEventLogsOptions = {
     range: {

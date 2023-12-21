@@ -1,7 +1,7 @@
 import { jest, describe, test, expect } from '@jest/globals';
-import { ThorClient, ThorestClient } from '../../../../src';
+import { ThorClient, ThorestClient } from '../../../src';
 import { transferTransactionBody } from './fixture';
-import { soloNetwork, TEST_ACCOUNTS } from '../../../fixture';
+import { soloNetwork, TEST_ACCOUNTS } from '../../fixture';
 import { TransactionBodyError } from '@vechainfoundation/vechain-sdk-errors';
 
 /**

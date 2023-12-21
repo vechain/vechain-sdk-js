@@ -1,17 +1,14 @@
 import { describe, expect, test } from '@jest/globals';
-import { TEST_ACCOUNTS, thorestSoloClient } from '../../../fixture';
+import { TEST_ACCOUNTS, thorestSoloClient } from '../../fixture';
 import {
     dataUtils,
     Transaction,
     TransactionHandler,
     TransactionUtils
 } from '@vechainfoundation/vechain-sdk-core';
-import {
-    sendTransactionErrors,
-    simulateTransaction
-} from '../../thor-client/transactions/fixture-thorest';
+import { sendTransactionErrors, simulateTransaction } from './fixture-thorest';
 import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
-import { ThorClient } from '../../../../src';
+import { ThorClient } from '../../../src';
 
 /**
  * ThorestClient class tests.

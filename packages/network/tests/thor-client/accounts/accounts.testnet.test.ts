@@ -9,7 +9,7 @@ import {
     testSmartContract,
     testStoragePositionKey
 } from './fixture';
-import { testAccount, thorClient } from '../../../fixture';
+import { testAccount, thorClient } from '../../fixture';
 
 /**
  * ThorestClient class tests

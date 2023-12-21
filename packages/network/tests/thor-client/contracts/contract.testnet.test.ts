@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { thorClient } from '../../../fixture';
+import { thorClient } from '../../fixture';
 
 /**
  * Transcations module tests suite.

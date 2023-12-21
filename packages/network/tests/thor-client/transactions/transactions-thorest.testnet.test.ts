@@ -1,10 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
-import { thorestClient } from '../../../fixture';
-import {
-    transactionDetails,
-    transactionReceipts
-} from '../../thor-client/transactions/fixture-thorest';
-import { ThorClient } from '../../../../src';
+import { thorestClient } from '../../fixture';
+import { transactionDetails, transactionReceipts } from './fixture-thorest';
+import { ThorClient } from '../../../src';
 
 /**
  * ThorestClient class tests

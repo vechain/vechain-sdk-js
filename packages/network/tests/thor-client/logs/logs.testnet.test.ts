@@ -1,12 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
-import { thorestClient } from '../../../fixture';
+import { thorestClient } from '../../fixture';
 import {
     argFilterEventLogs,
     argFilterTransferLogs,
     expectedFilterEventLogs,
     expectedFilterTransferLogs
 } from './fixture';
-import { ThorClient } from '../../../../src';
+import { ThorClient } from '../../../src';
 
 /**
  * ThorestClient class tests

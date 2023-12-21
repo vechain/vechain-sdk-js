@@ -1,5 +1,5 @@
 import { describe, expect, test, jest } from '@jest/globals';
-import { HttpClient } from '../../../../src';
+import { HttpClient } from '../../../src';
 import {
     blockWithMissingTimeStamp,
     blockWithOldTimeStamp,

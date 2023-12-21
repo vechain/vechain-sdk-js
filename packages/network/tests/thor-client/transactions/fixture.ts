@@ -5,12 +5,12 @@ import {
     unitsUtils,
     networkInfo
 } from '@vechainfoundation/vechain-sdk-core';
-import { BUILT_IN_CONTRACTS } from '../../../built-in-fixture';
+import { BUILT_IN_CONTRACTS } from '../../built-in-fixture';
 import {
     TESTING_CONTRACT_ABI,
     TEST_ACCOUNTS,
     TEST_CONTRACT_ADDRESS
-} from '../../../fixture';
+} from '../../fixture';
 
 /**
  * Clause to transfer 1 VTHO to TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER

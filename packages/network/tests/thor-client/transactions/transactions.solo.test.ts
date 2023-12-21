@@ -7,7 +7,7 @@ import {
     transferTransactionBodyValueAsNumber,
     waitForTransactionTestCases
 } from './fixture';
-import { TEST_ACCOUNTS, thorSoloClient } from '../../../fixture';
+import { TEST_ACCOUNTS, thorSoloClient } from '../../fixture';
 import {
     Transaction,
     TransactionHandler

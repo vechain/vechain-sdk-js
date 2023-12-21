@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { buildTransactionBodyClausesTestCases } from './fixture';
-import { TEST_ACCOUNTS, thorClient } from '../../../fixture';
+import { TEST_ACCOUNTS, thorClient } from '../../fixture';
 
 /**
  * Transactions module tests suite.

@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { estimateGasTestCases } from './fixture';
-import { thorSoloClient } from '../../../fixture';
+import { thorSoloClient } from '../../fixture';
 
 /**
  * Gas module tests.

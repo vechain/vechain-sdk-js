@@ -1,6 +1,6 @@
 import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
-import { TEST_ACCOUNTS, ZERO_ADDRESS } from '../../../fixture';
-import { BUILT_IN_CONTRACTS } from '../../../built-in-fixture';
+import { TEST_ACCOUNTS, ZERO_ADDRESS } from '../../fixture';
+import { BUILT_IN_CONTRACTS } from '../../built-in-fixture';
 import {
     contract,
     unitsUtils,
