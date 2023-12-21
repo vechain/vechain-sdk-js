@@ -14,9 +14,10 @@
         "format": "prettier --write src/**/*.ts tests/**/*.ts"
     },
     "dependencies": {
-        "@vechainfoundation/vechain-sdk-errors": "*",
         "@ethereumjs/rlp": "^5.0.0",
+        "@openzeppelin/contracts": "^5.0.1",
         "@types/elliptic": "^6.4.18",
+        "@vechainfoundation/vechain-sdk-errors": "*",
         "blakejs": "^1.2.1",
         "elliptic": "^6.5.4",
         "ethers": "6.9.0"
