@@ -11,19 +11,14 @@ The thorest-client serves as a RESTful API for seamless access to the VechainTho
 The Thorest-client extends its functionality to provide seamless access to account-related information on the VechainThor network. The following code exemplifies how developers can utilize the Thorest-client to interact with accounts:
 
 ```typescript { name=accounts, category=example }
-import {
-    HttpClient,
-    ThorestClient,
-    ThorClient
-} from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create client for testnet
 
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
-const thorestClient = new ThorestClient(testNetwork);
-const thorClient = new ThorClient(thorestClient);
+const thorClient = new ThorClient(testNetwork);
 
 // 2 - Get account details
 
@@ -71,19 +66,14 @@ These methods showcase how the Thorest-client simplifies the process of obtainin
 The Thorest-client facilitates easy interaction with blocks on the VechainThor network, as demonstrated in the following code snippet:
 
 ```typescript { name=blocks, category=example }
-import {
-    HttpClient,
-    ThorestClient,
-    ThorClient
-} from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create client for testnet
 
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
-const thorestClient = new ThorestClient(testNetwork);
-const thorClient = new ThorClient(thorestClient);
+const thorClient = new ThorClient(testNetwork);
 
 // 2 - Get block details
 
@@ -147,19 +137,14 @@ These methods demonstrate how the Thorest-client simplifies the process of fetch
 The Thorest-client extends its capabilities to efficiently filter and retrieve event logs and transfer logs on the VechainThor network. The following code exemplifies how developers can use the Thorest-client to filter event logs and transfer logs:
 
 ```typescript { name=logs, category=example }
-import {
-    HttpClient,
-    ThorestClient,
-    ThorClient
-} from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create client for testnet
 
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
-const thorestClient = new ThorestClient(testNetwork);
-const thorClient = new ThorClient(thorestClient);
+const thorClient = new ThorClient(testNetwork);
 
 // 2 - Filter event logs based on the provided criteria. (EXAMPLE 1)
 
@@ -309,21 +294,18 @@ The `filterTransferLogs` method provides a streamlined way to retrieve transfer 
 The Thorest-client allows developers to interact with nodes on the VechainThor network, providing information about connected peers. The following code demonstrates how to use the Thorest-client to retrieve connected peers of a node:
 
 ```typescript { name=nodes, category=example }
-import {
-    HttpClient,
-    ThorestClient
-} from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create client for testnet
 
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
-const thorestClient = new ThorestClient(testNetwork);
+const thorClient = new ThorClient(testNetwork);
 
 // 2 - Retrieves connected peers of a node
 
-const peerNodes = await thorestClient.nodes.getNodes();
+const peerNodes = await thorClient.nodes.getNodes();
 expect(peerNodes).toBeDefined();
 
 ```
@@ -346,19 +328,14 @@ import {
     dataUtils,
     unitsUtils
 } from '@vechainfoundation/vechain-sdk-core';
-import {
-    HttpClient,
-    ThorClient,
-    ThorestClient
-} from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create client for solo network
 
 const _soloUrl = 'http://localhost:8669';
 const soloNetwork = new HttpClient(_soloUrl);
-const thorestSoloClient = new ThorestClient(soloNetwork);
-const thorSoloClient = new ThorClient(thorestSoloClient);
+const thorSoloClient = new ThorClient(soloNetwork);
 
 // 2 - Get latest block
 
@@ -400,7 +377,7 @@ const rawNormalSigned = TransactionHandler.sign(
 
 // 6 - Send transaction
 
-const send = await thorestSoloClient.transactions.sendTransaction(
+const send = await thorSoloClient.transactions.sendRawTransaction(
     `0x${rawNormalSigned.toString('hex')}`
 );
 expect(send).toBeDefined();
@@ -409,11 +386,11 @@ expect(dataUtils.isHexString(send.id)).toBe(true);
 
 // 7 - Get transaction details and receipt
 
-const transactionDetails = await thorestSoloClient.transactions.getTransaction(
+const transactionDetails = await thorSoloClient.transactions.getTransaction(
     send.id
 );
 const transactionReceipt =
-    await thorestSoloClient.transactions.getTransactionReceipt(send.id);
+    await thorSoloClient.transactions.getTransactionReceipt(send.id);
 
 expect(transactionDetails).toBeDefined();
 expect(transactionReceipt).toBeDefined();
@@ -454,19 +431,14 @@ import {
     dataUtils,
     unitsUtils
 } from '@vechainfoundation/vechain-sdk-core';
-import {
-    HttpClient,
-    ThorestClient,
-    ThorClient
-} from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create client for solo network
 
 const _soloUrl = 'http://localhost:8669';
 const soloNetwork = new HttpClient(_soloUrl);
-const thorestSoloClient = new ThorestClient(soloNetwork);
-const thorSoloClient = new ThorClient(thorestSoloClient);
+const thorSoloClient = new ThorClient(soloNetwork);
 
 // 2 - Get latest block
 
@@ -521,7 +493,7 @@ const rawDelegatedSigned = TransactionHandler.signWithDelegator(
 
 // 6 - Send transaction
 
-const send = await thorestSoloClient.transactions.sendTransaction(
+const send = await thorSoloClient.transactions.sendRawTransaction(
     `0x${rawDelegatedSigned.toString('hex')}`
 );
 expect(send).toBeDefined();
@@ -531,13 +503,13 @@ expect(dataUtils.isHexString(send.id)).toBe(true);
 // 7 - Get transaction details and receipt
 
 // Details of transaction
-const transactionDetails = await thorestSoloClient.transactions.getTransaction(
+const transactionDetails = await thorSoloClient.transactions.getTransaction(
     send.id
 );
 
 // Receipt of transaction
 const transactionReceipt =
-    await thorestSoloClient.transactions.getTransactionReceipt(send.id);
+    await thorSoloClient.transactions.getTransactionReceipt(send.id);
 
 expect(transactionDetails).toBeDefined();
 expect(transactionReceipt).toBeDefined();

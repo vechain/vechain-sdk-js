@@ -5,19 +5,14 @@ import {
     dataUtils,
     unitsUtils
 } from '@vechainfoundation/vechain-sdk-core';
-import {
-    HttpClient,
-    ThorClient,
-    ThorestClient
-} from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create client for solo network
 
 const _soloUrl = 'http://localhost:8669';
 const soloNetwork = new HttpClient(_soloUrl);
-const thorestSoloClient = new ThorestClient(soloNetwork);
-const thorSoloClient = new ThorClient(thorestSoloClient);
+const thorSoloClient = new ThorClient(soloNetwork);
 
 // 2 - Get latest block
 
@@ -59,7 +54,7 @@ const rawNormalSigned = TransactionHandler.sign(
 
 // 6 - Send transaction
 
-const send = await thorestSoloClient.transactions.sendTransaction(
+const send = await thorSoloClient.transactions.sendRawTransaction(
     `0x${rawNormalSigned.toString('hex')}`
 );
 expect(send).toBeDefined();
@@ -68,11 +63,11 @@ expect(dataUtils.isHexString(send.id)).toBe(true);
 
 // 7 - Get transaction details and receipt
 
-const transactionDetails = await thorestSoloClient.transactions.getTransaction(
+const transactionDetails = await thorSoloClient.transactions.getTransaction(
     send.id
 );
 const transactionReceipt =
-    await thorestSoloClient.transactions.getTransactionReceipt(send.id);
+    await thorSoloClient.transactions.getTransactionReceipt(send.id);
 
 expect(transactionDetails).toBeDefined();
 expect(transactionReceipt).toBeDefined();
