@@ -3,11 +3,11 @@
 Welcome to the **ethers-adapter package** of the vechain SDK!
 
 ## Introduction
-The VeChain SDK Ethers-Adapter: Enabling Ethers.js Integration
+The vechain SDK Ethers-Adapter: Enabling Ethers.js Integration
 
-The VeChain SDK Ethers-Adapter is a sophisticated tool designed to facilitate developers' interactions with the VechainThor blockchain through the utilization of standard ethers.js constructs. This package serves as an advanced wrapper built atop the VeChain SDK Network package. It is meticulously crafted to extend and complement the already comprehensive features set provided for decentralized application (dApp) development on the VechainThor blockchain.
+The vechain SDK Ethers-Adapter is a sophisticated tool designed to facilitate developers' interactions with the VechainThor blockchain through the utilization of standard ethers.js constructs. This package serves as an advanced wrapper built atop the vechain SDK Network package. It is meticulously crafted to extend and complement the already comprehensive features set provided for decentralized application (dApp) development on the VechainThor blockchain.
 
-At its core, the VeChain SDK Ethers-Adapter primarily focuses on offering seamless integration of the signer and provider constructs, which are fundamental components of the ethers.js library. This integration is carefully adapted to align with the unique architecture and functionalities of the VeChain SDK, thereby ensuring a fluid and intuitive development experience.
+At its core, the vechain SDK Ethers-Adapter primarily focuses on offering seamless integration of the signer and provider constructs, which are fundamental components of the ethers.js library. This integration is carefully adapted to align with the unique architecture and functionalities of the vechain SDK, thereby ensuring a fluid and intuitive development experience.
 
 ## Key Features
 
