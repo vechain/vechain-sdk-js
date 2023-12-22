@@ -3,14 +3,22 @@ import {
     buildTransactionBodyClausesTestCases,
     expectedReceipt,
     invalidWaitForTransactionTestCases,
+    signTransactionTestCases,
     transferTransactionBody,
     transferTransactionBodyValueAsNumber,
     waitForTransactionTestCases
 } from './fixture';
-import { TEST_ACCOUNTS, thorSoloClient } from '../../fixture';
+import {
+    TESTING_CONTRACT_ABI,
+    TEST_ACCOUNTS,
+    TEST_CONTRACT_ADDRESS,
+    thorSoloClient
+} from '../../fixture';
 import {
     Transaction,
-    TransactionHandler
+    TransactionHandler,
+    addressUtils,
+    contract
 } from '@vechainfoundation/vechain-sdk-core';
 import { TransactionNotSignedError } from '@vechainfoundation/vechain-sdk-errors';
 
@@ -204,6 +212,89 @@ describe('Transactions Module', () => {
                         expected.solo.reserved
                     );
                     expect(txBody.chainTag).toBe(expected.solo.chainTag);
+                });
+            }
+        );
+    });
+
+    /**
+     * Test suite for signTransaction method
+     */
+    describe('signTransactionTestCases', () => {
+        /**
+         * signTransaction test cases with different options
+         */
+        signTransactionTestCases.solo.correct.forEach(
+            ({ description, origin, options, isDelegated, expected }) => {
+                test(description, async () => {
+                    const sampleClause =
+                        contract.clauseBuilder.functionInteraction(
+                            TEST_CONTRACT_ADDRESS,
+                            TESTING_CONTRACT_ABI,
+                            'setStateVariable',
+                            [123]
+                        );
+
+                    const gasResult = await thorSoloClient.gas.estimateGas(
+                        [sampleClause],
+                        origin.address
+                    );
+
+                    const txBody =
+                        await thorSoloClient.transactions.buildTransactionBody(
+                            [sampleClause],
+                            gasResult.totalGas,
+                            {
+                                isDelegated
+                            }
+                        );
+
+                    const signedTx =
+                        await thorSoloClient.transactions.signTransaction(
+                            txBody,
+                            origin.privateKey,
+                            options
+                        );
+
+                    expect(signedTx).toBeDefined();
+                    expect(signedTx.body).toMatchObject(expected.body);
+                    expect(signedTx.origin).toBe(
+                        addressUtils.toChecksumed(origin.address)
+                    );
+                    expect(signedTx.isDelegated).toBe(isDelegated);
+                    expect(signedTx.isSigned).toBe(true);
+                    expect(signedTx.signature).toBeDefined();
+                });
+            }
+        );
+
+        /**
+         * signTransaction test cases that should throw an error
+         */
+        signTransactionTestCases.solo.incorrect.forEach(
+            ({ description, origin, options, expectedError }) => {
+                test(description, async () => {
+                    const sampleClause =
+                        contract.clauseBuilder.functionInteraction(
+                            TEST_CONTRACT_ADDRESS,
+                            TESTING_CONTRACT_ABI,
+                            'setStateVariable',
+                            [123]
+                        );
+
+                    const txBody =
+                        await thorSoloClient.transactions.buildTransactionBody(
+                            [sampleClause],
+                            0
+                        );
+
+                    await expect(
+                        thorSoloClient.transactions.signTransaction(
+                            txBody,
+                            origin.privateKey,
+                            options
+                        )
+                    ).rejects.toThrow(expectedError);
                 });
             }
         );

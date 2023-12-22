@@ -159,6 +159,11 @@ const ALL_ACCOUNTS = [
 ];
 
 /**
+ * Delegate url fixture to test signing transactions with delegation by URL
+ */
+const TESTNET_DELEGATE_URL = 'https://sponsor-testnet.vechain.energy/by/299';
+
+/**
  * Test accounts fixture
  */
 const TEST_ACCOUNTS = {
@@ -967,5 +972,6 @@ export {
     TEST_ACCOUNTS,
     ALL_ACCOUNTS,
     TEST_CONTRACT_ADDRESS,
-    TESTING_CONTRACT_ABI
+    TESTING_CONTRACT_ABI,
+    TESTNET_DELEGATE_URL
 };
