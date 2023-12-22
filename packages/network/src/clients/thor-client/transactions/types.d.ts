@@ -17,20 +17,6 @@ interface WaitForTransactionOptions {
 }
 
 /**
- * Represents the result of sending a transaction.
- *
- * @interface SendTransactionResult
- */
-interface SendTransactionResult {
-    /**
-     * The unique identifier associated with the transaction.
-     *
-     * @type {string}
-     */
-    id: string;
-}
-
-/**
  * Options for `buildTransactionBody` method.
  */
 interface TransactionBodyOptions {
@@ -57,10 +43,55 @@ interface TransactionBodyOptions {
     isDelegated?: boolean;
 }
 
+/**
+ * Options for `signTransaction` method.
+ */
+interface SignTransactionOptions {
+    /**
+     * The URL of the endpoint of the delegator.
+     */
+    delegatorUrl?: string;
+
+    /**
+     * The private key of the delegator.
+     */
+    delegatorPrivatekey?: string;
+}
+
 /* --- Input options end --- */
+
+/* --- Responses Outputs start --- */
+
+/**
+ * Represents the result of sending a transaction.
+ *
+ * @interface SendTransactionResult
+ */
+interface SendTransactionResult {
+    /**
+     * The unique identifier associated with the transaction.
+     *
+     * @type {string}
+     */
+    id: string;
+}
+
+/**
+ * Represents the result of getting a delegation signature.
+ */
+interface GetDelegationSignatureResult {
+    /**
+     * The signature of the transaction.
+     */
+    signature: string;
+}
+
+/* --- Responses Outputs end --- */
 
 export type {
     WaitForTransactionOptions,
     SendTransactionResult,
-    TransactionBodyOptions
+    TransactionBodyOptions,
+    SignTransactionOptions,
+    GetDelegationSignatureResult
 };

@@ -2,8 +2,6 @@ import {
     contract,
     type DeployParams,
     type InterfaceAbi,
-    TransactionHandler,
-    Transaction,
     PARAMS_ADDRESS,
     PARAMS_ABI,
     dataUtils,
@@ -80,9 +78,9 @@ class ContractsModule {
         );
 
         // Sign the transaction with the provided private key
-        const signedTx = TransactionHandler.sign(
-            new Transaction(txBody),
-            Buffer.from(privateKey, 'hex')
+        const signedTx = await this.transactionsModule.signTransaction(
+            txBody,
+            privateKey
         );
 
         // Send the signed transaction to the blockchain
@@ -171,9 +169,9 @@ class ContractsModule {
         );
 
         // Sign the transaction with the private key
-        const signedTx = TransactionHandler.sign(
-            new Transaction(txBody),
-            Buffer.from(privateKey, 'hex')
+        const signedTx = await this.transactionsModule.signTransaction(
+            txBody,
+            privateKey
         );
 
         // Send the signed transaction

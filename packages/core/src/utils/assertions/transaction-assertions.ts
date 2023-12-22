@@ -1,5 +1,6 @@
 import {
     DATA,
+    SECP256K1,
     TRANSACTION,
     assert
 } from '@vechainfoundation/vechain-sdk-errors';
@@ -45,8 +46,29 @@ const assertIsSignedTransaction = (tx: Transaction): void => {
     });
 };
 
+/**
+ * Assert if private key used to sign a transaction is valid
+ *
+ * @param privateKey - Private key to assert
+ * @param isValidPrivateKeyFunction - Function to assert private key
+ * @param role - Role of the private key (e.g. delegator, or signer)
+ */
+function assertIsValidTransactionSigningPrivateKey(
+    privateKey: Buffer,
+    isValidPrivateKeyFunction: (privateKey: Buffer) => boolean,
+    role?: string
+): void {
+    assert(
+        isValidPrivateKeyFunction(privateKey),
+        SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
+        `Invalid ${role} private key used to sign the transaction. Ensure it's a valid SECP256k1 private key.`,
+        { privateKey }
+    );
+}
+
 export {
     assertValidTransactionID,
     assertValidTransactionHead,
-    assertIsSignedTransaction
+    assertIsSignedTransaction,
+    assertIsValidTransactionSigningPrivateKey
 };

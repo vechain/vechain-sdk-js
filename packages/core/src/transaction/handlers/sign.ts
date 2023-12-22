@@ -2,10 +2,8 @@ import { addressUtils } from '../../address';
 import { secp256k1 } from '../../secp256k1';
 import { Transaction } from '../transaction';
 import { assert, TRANSACTION } from '@vechainfoundation/vechain-sdk-errors';
-import {
-    assertIsValidTransactionSigningPrivateKey,
-    assertTransactionIsNotSigned
-} from '../helpers/assertions';
+import { assertTransactionIsNotSigned } from '../helpers/assertions';
+import { assertIsValidTransactionSigningPrivateKey } from '../../utils';
 
 /**
  * Sign a transaction with a given private key
