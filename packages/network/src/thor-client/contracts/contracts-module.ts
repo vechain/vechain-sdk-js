@@ -8,11 +8,7 @@ import {
     addressUtils
 } from '@vechainfoundation/vechain-sdk-core';
 import type { ContractCallOptions, ContractTransactionOptions } from './types';
-import {
-    type SendTransactionResult,
-    TransactionsModule
-} from '../transactions';
-import { GasModule } from '../gas';
+import { type SendTransactionResult } from '../transactions';
 import { type ThorClient } from '../thor-client';
 
 /**
@@ -20,27 +16,10 @@ import { type ThorClient } from '../thor-client';
  */
 class ContractsModule {
     /**
-     * An instance of the TransactionsModule
-     * @private
-     * @readonly
-     */
-    private readonly transactionsModule: TransactionsModule;
-
-    /**
-     * An instance of the GasModule
-     * @private
-     *
-     */
-    private readonly gasModule: GasModule;
-
-    /**
      * Initializes a new instance of the `Thor` class.
      * @param thor - The Thor instance used to interact with the vechain blockchain API.
      */
-    constructor(readonly thor: ThorClient) {
-        this.transactionsModule = new TransactionsModule(thor);
-        this.gasModule = new GasModule(thor);
-    }
+    constructor(readonly thor: ThorClient) {}
 
     /**
      * Deploys a smart contract to the blockchain.
@@ -66,25 +45,25 @@ class ContractsModule {
         );
 
         // Estimate the gas cost of the transaction
-        const gasResult = await this.gasModule.estimateGas(
+        const gasResult = await this.thor.gas.estimateGas(
             [deployContractClause],
             addressUtils.fromPrivateKey(Buffer.from(privateKey, 'hex'))
         );
 
-        const txBody = await this.transactionsModule.buildTransactionBody(
+        const txBody = await this.thor.transactions.buildTransactionBody(
             [deployContractClause],
             gasResult.totalGas,
             options
         );
 
         // Sign the transaction with the provided private key
-        const signedTx = await this.transactionsModule.signTransaction(
+        const signedTx = await this.thor.transactions.signTransaction(
             txBody,
             privateKey
         );
 
         // Send the signed transaction to the blockchain
-        return await this.transactionsModule.sendTransaction(signedTx);
+        return await this.thor.transactions.sendTransaction(signedTx);
     }
 
     /**
@@ -155,26 +134,26 @@ class ContractsModule {
         );
 
         // Estimate the gas cost of the transaction
-        const gasResult = await this.gasModule.estimateGas(
+        const gasResult = await this.thor.gas.estimateGas(
             [clause],
             addressUtils.fromPrivateKey(Buffer.from(privateKey, 'hex'))
         );
 
         // Build a transaction for calling the contract function
-        const txBody = await this.transactionsModule.buildTransactionBody(
+        const txBody = await this.thor.transactions.buildTransactionBody(
             [clause],
             gasResult.totalGas,
             options
         );
 
         // Sign the transaction with the private key
-        const signedTx = await this.transactionsModule.signTransaction(
+        const signedTx = await this.thor.transactions.signTransaction(
             txBody,
             privateKey
         );
 
         // Send the signed transaction
-        return await this.transactionsModule.sendTransaction(signedTx);
+        return await this.thor.transactions.sendTransaction(signedTx);
     }
 
     /**
