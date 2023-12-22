@@ -1,5 +1,5 @@
 import { type Transaction } from '@vechainfoundation/vechain-sdk-core';
-import { type HttpClient } from '../../../../utils';
+import { type HttpClient } from '../../../utils';
 import { type GetDelegationSignatureResult } from '../types';
 import { TRANSACTION, buildError } from '@vechainfoundation/vechain-sdk-errors';
 
