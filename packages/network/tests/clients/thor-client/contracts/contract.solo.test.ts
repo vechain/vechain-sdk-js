@@ -1,11 +1,17 @@
 import { describe, expect, test } from '@jest/globals';
-import { TEST_ACCOUNTS, thorSoloClient } from '../../../fixture';
+import {
+    TEST_ACCOUNTS,
+    TESTING_CONTRACT_ABI,
+    TESTING_CONTRACT_ADDRESS,
+    thorSoloClient
+} from '../../../fixture';
 import {
     deployedContractAbi,
     deployedContractBytecode,
     deployedERC20Abi,
     deployErc20Contract,
-    deployExampleContract
+    deployExampleContract,
+    testingContractTestCases
 } from './fixture';
 import { addressUtils } from '@vechainfoundation/vechain-sdk-core';
 import type { TransactionReceipt } from '../../../../src';
@@ -239,6 +245,19 @@ describe('ThorClient - Contracts', () => {
             console.log('error', error);
         }
     }, 10000);
+
+    test('test the TestingContract functions', async () => {
+        for (const testCase of testingContractTestCases) {
+            const response = await thorSoloClient.contracts.executeContractCall(
+                TESTING_CONTRACT_ADDRESS,
+                TESTING_CONTRACT_ABI,
+                testCase.functionName,
+                testCase.params
+            );
+
+            expect(response).toBe(testCase.expected);
+        }
+    }, 5000);
 
     /**
      * Test suite for 'getBaseGasPrice' method

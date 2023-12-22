@@ -2,7 +2,7 @@ import {
     type DeployParams,
     type InterfaceAbi
 } from '@vechainfoundation/vechain-sdk-core';
-import { type TransactionSendResult } from '../../../../src';
+import { ContractDataType, type TransactionSendResult } from '../../../../src';
 import { TEST_ACCOUNTS, thorSoloClient } from '../../../fixture';
 
 const contractBytecode: string =
@@ -220,6 +220,52 @@ async function deployExampleContract(): Promise<TransactionSendResult> {
 }
 
 /**
+ * Represents a test case for a smart contract function.
+ * This interface is designed to capture the necessary details to execute and validate
+ * a function call within a testing framework.
+ */
+interface TestCase {
+    /**
+     * The name of the function to be tested. This should match exactly with the function name
+     * in the smart contract.
+     */
+    functionName: string;
+
+    /**
+     * An array of parameters to be passed to the function. The order and types of these parameters
+     * should match the expected input of the smart contract function.
+     */
+    params: unknown[];
+
+    /**
+     * The expected result of the function call. This can vary in type depending on what
+     * the function returns. It's used to assert whether the function behaves as expected.
+     */
+    expected: unknown;
+
+    /**
+     * Indicates whether the function call is expected to revert or throw an error.
+     * A value of 'true' means the test is expecting the function to fail.
+     */
+    reverted: boolean;
+}
+
+const testingContractTestCases: TestCase[] = [
+    {
+        functionName: 'boolData',
+        params: [false],
+        expected: ContractDataType.BOOLEAN.False,
+        reverted: false
+    },
+    {
+        functionName: 'boolData',
+        params: [true],
+        expected: ContractDataType.BOOLEAN.True,
+        reverted: false
+    }
+];
+
+/**
  * Asynchronous function to deploy an example smart contract.
  *
  * @returns A promise that resolves to a `TransactionSendResult` object representing the result of the deployment.
@@ -239,5 +285,6 @@ export {
     deployedContractAbi,
     deployedERC20Abi,
     deployExampleContract,
-    deployErc20Contract
+    deployErc20Contract,
+    testingContractTestCases
 };

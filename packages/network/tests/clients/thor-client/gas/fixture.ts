@@ -3,7 +3,7 @@ import { BUILT_IN_CONTRACTS } from '../../../built-in-fixture';
 import {
     TESTING_CONTRACT_ABI,
     TEST_ACCOUNTS,
-    TEST_CONTRACT_ADDRESS
+    TESTING_CONTRACT_ADDRESS
 } from '../../../fixture';
 import { transfer1VTHOClause } from '../transactions/fixture';
 
@@ -161,7 +161,7 @@ const estimateGasTestCases = {
                 'Should estimate gas cost of a transaction that reverts with a Panic(uint256) error',
             clauses: [
                 {
-                    to: TEST_CONTRACT_ADDRESS,
+                    to: TESTING_CONTRACT_ADDRESS,
                     value: '0',
                     data: contract.coder.encodeFunctionInput(
                         TESTING_CONTRACT_ABI,
@@ -216,7 +216,7 @@ const estimateGasTestCases = {
                 transfer1VTHOClause,
                 transfer1VTHOClause,
                 {
-                    to: TEST_CONTRACT_ADDRESS,
+                    to: TESTING_CONTRACT_ADDRESS,
                     value: '0',
                     data: contract.coder.encodeFunctionInput(
                         TESTING_CONTRACT_ABI,
