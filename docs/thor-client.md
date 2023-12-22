@@ -1,14 +1,14 @@
 ---
-description: Thorest-client
+description: Thor-client
 ---
 
-# Thorest-client
+# Thor-client
 
-The thorest-client serves as a RESTful API for seamless access to the VechainThor network. This client streamlines the interaction with the blockchain by providing a set of methods specifically tailored to retrieve information from various endpoints. By encapsulating the intricacies of the underlying communication with the VechainThor network, developers can easily integrate this client into their applications. Whether fetching details about specific blocks, querying transaction information, or accessing other blockchain-related data, the thorest-client simplifies the process, enabling efficient and straightforward integration with the VechainThor network through RESTful API calls.
+The Thor-client serves as an interface to interact with the vechain Thor blockchain. This client streamlines the interaction with the blockchain by providing a set of methods specifically tailored to retrieve information from various endpoints. By encapsulating the intricacies of the underlying communication with the VechainThor network, developers can easily integrate this client into their applications. Whether fetching details about specific blocks, querying transaction information, or accessing other blockchain-related data, the thor-client simplifies the process, enabling efficient and straightforward integration with the VechainThor network through RESTful API calls.
 
 ## Accounts
 
-The Thorest-client extends its functionality to provide seamless access to account-related information on the VechainThor network. The following code exemplifies how developers can utilize the Thorest-client to interact with accounts:
+The Thor-client extends its functionality to provide seamless access to account-related information on the VechainThor network. The following code exemplifies how developers can utilize the Thor-client to interact with accounts:
 
 ```typescript { name=accounts, category=example }
 import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
@@ -45,7 +45,7 @@ expect(accountStorage).toEqual(
 
 ```
 
-In this example, the code initializes a Thorest client for the VechainThor testnet network and demonstrates three crucial methods for interacting with accounts:
+In this example, the code initializes a Thor client for the VechainThor testnet network and demonstrates three crucial methods for interacting with accounts:
 
  - getAccount(address: string): Promise<Account>
 
@@ -59,11 +59,11 @@ Fetches the bytecode of the smart contract associated with the given account add
 
 Retrieves the value stored at a specific key in the storage of the smart contract associated with the given account address.
 
-These methods showcase how the Thorest-client simplifies the process of obtaining account-related information, providing developers with efficient means to integrate VechainThor blockchain data into their applications.
+These methods showcase how Thor-client simplifies the process of obtaining account-related information, providing developers with efficient means to integrate VechainThor blockchain data into their applications.
 
 ## Blocks
 
-The Thorest-client facilitates easy interaction with blocks on the VechainThor network, as demonstrated in the following code snippet:
+The Thor-client facilitates easy interaction with blocks on the VechainThor network, as demonstrated in the following code snippet:
 
 ```typescript { name=blocks, category=example }
 import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
@@ -116,7 +116,7 @@ expect(finalBlockDetails).toBeDefined();
 
 ```
 
-In this example, the code initializes a Thorest client for the VechainThor testnet network and showcases three essential methods for interacting with blocks:
+In this example, the code initializes a Thor client for the VechainThor testnet network and showcases three essential methods for interacting with blocks:
 
  - getBlock(height: number): Promise<Block>
 
@@ -130,11 +130,11 @@ Fetches details of the latest block on the VechainThor network, representing the
 
 Retrieves details of the finalized block, which is the latest block confirmed by the network consensus.
 
-These methods demonstrate how the Thorest-client simplifies the process of fetching block-related information, providing developers with straightforward ways to integrate VechainThor blockchain data into their applications.
+These methods demonstrate how the Thor-client simplifies the process of fetching block-related information, providing developers with straightforward ways to integrate VechainThor blockchain data into their applications.
 
 ## Logs
 
-The Thorest-client extends its capabilities to efficiently filter and retrieve event logs and transfer logs on the VechainThor network. The following code exemplifies how developers can use the Thorest-client to filter event logs and transfer logs:
+The Thor-client extends its capabilities to efficiently filter and retrieve event logs and transfer logs on the VechainThor network. The following code exemplifies how developers can use the Thor-client to filter event logs and transfer logs:
 
 ```typescript { name=logs, category=example }
 import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
@@ -275,7 +275,7 @@ expect(transferLogs).toEqual([
 
 ```
 
-In this example, the code initializes a Thorest client for the VechainThor testnet network and demonstrates two essential methods for interacting with logs:
+In this example, the code initializes a Thor client for the VechainThor testnet network and demonstrates two essential methods for interacting with logs:
 
  - filterEventLogs(
         filterOptions: FilterEventLogsOptions
@@ -291,7 +291,7 @@ The `filterTransferLogs` method provides a streamlined way to retrieve transfer 
 
 ## Nodes
 
-The Thorest-client allows developers to interact with nodes on the VechainThor network, providing information about connected peers. The following code demonstrates how to use the Thorest-client to retrieve connected peers of a node:
+The Thor-client allows developers to interact with nodes on the VechainThor network, providing information about connected peers. The following code demonstrates how to use the Thor-client to retrieve connected peers of a node:
 
 ```typescript { name=nodes, category=example }
 import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
@@ -310,7 +310,7 @@ expect(peerNodes).toBeDefined();
 
 ```
 
-In this example, the code initializes a Thorest client for the VechainThor testnet network and utilizes the `getNodes` method to retrieve information about connected peers.
+In this example, the code initializes a Thor client for the VechainThor testnet network and utilizes the `getNodes` method to retrieve information about connected peers.
 
  - getNodes(): Promise<ConnectedPeer | null>
 
@@ -318,7 +318,7 @@ The `getNodes` method simplifies the process of obtaining details about connecte
 
 ## Transactions
 
-The Thorest-client provides methods for developers to interact with transactions on the VechainThor network, allowing retrieval of transaction details and transaction receipts. The following code illustrates how to use the Thorest-client to fetch information about a specific transaction:
+Thor-client provides methods for developers to interact with transactions on the VechainThor network, allowing retrieval of transaction details and transaction receipts. The following code illustrates how to use the Thor-client to fetch information about a specific transaction:
 
 ```typescript { name=transactions, category=example }
 import {
@@ -397,7 +397,7 @@ expect(transactionReceipt).toBeDefined();
 
 ```
 
-In this example, the code initializes a Thorest client for the VechainThor testnet network and showcases three essential methods for interacting with transactions:
+In this example, the code initializes a Thor client for the VechainThor testnet network and showcases three essential methods for interacting with transactions:
 
  - sendTransaction(raw: string): Promise<TransactionSendResult>
 
@@ -421,7 +421,7 @@ The `getTransactionReceipt` method allows developers to retrieve the receipt of 
 
 Fee delegation is a feature on the VechainThor blockchain which enables the transaction sender to request another entity, a sponsor, to pay for the transaction fee on the sender's behalf. Fee delegation greatly improves the user experience, especially in the case of onboarding new users by removing the necessity of the user having to first acquire cryptocurrency assets before being able to interact on-chain.
 
-The following code demonstrates how to use the Thorest-client with the fee delegation feature:
+The following code demonstrates how to use Thor-client with the fee delegation feature:
 
 ```typescript { name=delegated-transactions, category=example }
 import {
