@@ -1,7 +1,7 @@
 import {
     HttpClient,
     Poll,
-    ThorestClient
+    ThorClient
 } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
@@ -9,11 +9,11 @@ import { expect } from 'expect';
 
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
-const thorestClient = new ThorestClient(testNetwork);
+const thorClient = new ThorClient(testNetwork);
 
 // 2 - Get current block
 
-const currentBlock = await thorestClient.blocks.getBestBlock();
+const currentBlock = await thorClient.blocks.getBestBlock();
 
 console.log('Current block:', currentBlock);
 
@@ -22,7 +22,7 @@ console.log('Current block:', currentBlock);
 // Wait until a new block is created with polling interval of 3 seconds
 const newBlock = await Poll.SyncPoll(
     // Get the latest block as polling target function
-    async () => await thorestClient.blocks.getBlock('best'),
+    async () => await thorClient.blocks.getBlock('best'),
     // Polling interval is 3 seconds
     { requestIntervalInMilliseconds: 3000 }
 ).waitUntil((newBlockData) => {

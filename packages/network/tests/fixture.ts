@@ -1,4 +1,4 @@
-import { HttpClient, ThorestClient } from '../src';
+import { HttpClient, ThorClient } from '../src';
 
 /**
  * Url of the testnet fixture
@@ -31,14 +31,14 @@ const testAccount = '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa';
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 /**
- * Thorest client testnet instance fixture
+ * Thor client testnet instance fixture
  */
-const thorestClient = new ThorestClient(testNetwork);
+const thorClient = new ThorClient(testNetwork);
 
 /**
- * Thorest client solo instance fixture
+ * Thor client solo instance fixture
  */
-const thorestSoloClient = new ThorestClient(soloNetwork);
+const thorSoloClient = new ThorClient(soloNetwork);
 
 /**
  * All available accounts for testing purposes
@@ -157,6 +157,11 @@ const ALL_ACCOUNTS = [
         address: '0x865306084235bf804c8bba8a8d56890940ca8f0b'
     }
 ];
+
+/**
+ * Delegate url fixture to test signing transactions with delegation by URL
+ */
+const TESTNET_DELEGATE_URL = 'https://sponsor-testnet.vechain.energy/by/299';
 
 /**
  * Test accounts fixture
@@ -963,10 +968,11 @@ export {
     soloNetwork,
     ZERO_ADDRESS,
     testAccount,
-    thorestClient,
-    thorestSoloClient,
+    thorClient,
+    thorSoloClient,
     TEST_ACCOUNTS,
     ALL_ACCOUNTS,
     TEST_CONTRACT_ADDRESS,
-    TESTING_CONTRACT_ABI
+    TESTING_CONTRACT_ABI,
+    TESTNET_DELEGATE_URL
 };

@@ -1,0 +1,213 @@
+import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
+import { type EventPoll, Poll, buildQuery, thorest } from '../../utils';
+import {
+    type WaitForBlockOptions,
+    type BlockInputOptions,
+    type BlockDetail
+} from './types';
+import { assertIsRevisionForBlock } from '@vechainfoundation/vechain-sdk-core';
+import { type ThorClient } from '../thor-client';
+
+/** The `BlocksModule` class encapsulates functionality for interacting with blocks
+ * on the VechainThor blockchain.
+ */
+class BlocksModule {
+    /**
+     * The head block (best block)
+     * @private
+     */
+    private headBlock: BlockDetail | null = null;
+
+    /**
+     * Timestamp of the previous block.
+     * @private
+     */
+    private prevBlockTimestamp: number | null = null;
+
+    /**
+     * Error handler for block-related errors.
+     * @private
+     */
+    private readonly onBlockError?: (error: Error) => void;
+
+    /**
+     * The Poll instance for event polling
+     * @private
+     */
+    private pollInstance: EventPoll<BlockDetail | null> | null = null;
+
+    /**
+     * Initializes a new instance of the `Thor` class.
+     * @param thor - The Thor instance used to interact with the vechain blockchain API.
+     */
+    constructor(
+        readonly thor: ThorClient,
+        onBlockError?: (error: Error) => void
+    ) {
+        this.onBlockError = onBlockError;
+
+        // Fetch the best block initially to get the timestamp
+        this.getBestBlock()
+            .then((bestBlock) => {
+                if (bestBlock != null) {
+                    this.prevBlockTimestamp = bestBlock.timestamp;
+                    this.setupRegularPolling();
+                }
+            })
+            .catch((error) => {
+                if (this.onBlockError != null) {
+                    this.onBlockError(error as Error);
+                }
+            });
+    }
+
+    /**
+     * Returns the head block (best block).
+     * @returns {BlockDetail | null} The head block (best block).
+     */
+    public getHeadBlock(): BlockDetail | null {
+        return this.headBlock;
+    }
+
+    /**
+     * Sets up regular polling every 10 seconds based on the previous block timestamp.
+     * @private
+     */
+    private setupRegularPolling(): void {
+        // wait until the next block is mined
+        if (this.prevBlockTimestamp != null) {
+            setTimeout(() => {}, this.prevBlockTimestamp + 10000 - Date.now());
+        }
+
+        this.pollInstance = Poll.createEventPoll(
+            async () => await this.getBestBlock(),
+            10000 // Poll every 10 seconds
+        )
+            .onData((data) => {
+                this.headBlock = data;
+                if (data != null) {
+                    this.prevBlockTimestamp = data.timestamp;
+                }
+            })
+            .onError((error) => {
+                if (this.onBlockError != null) {
+                    this.onBlockError(error);
+                }
+            });
+
+        this.pollInstance.startListen();
+    }
+
+    /**
+     * Retrieves details of a specific block identified by its revision (block number or ID).
+     *
+     * @param revision - The block number or ID to query details for.
+     * @param options - (Optional) Other optional parameters for the request.
+     * @returns A promise that resolves to an object containing the block details.
+     */
+    public async getBlock(
+        revision: string | number,
+        options?: BlockInputOptions
+    ): Promise<BlockDetail | null> {
+        assertIsRevisionForBlock(revision);
+
+        return (await this.thor.httpClient.http(
+            'GET',
+            thorest.blocks.get.BLOCK_DETAIL(revision),
+            {
+                query: buildQuery({ expanded: options?.expanded })
+            }
+        )) as BlockDetail | null;
+    }
+
+    /**
+     * Retrieves details of the latest block.
+     *
+     * @returns A promise that resolves to an object containing the block details.
+     */
+    public async getBestBlock(): Promise<BlockDetail | null> {
+        return await this.getBlock('best');
+    }
+
+    /**
+     * Asynchronously retrieves a reference to the best block in the blockchain.
+     *
+     * This method first calls `getBestBlock()` to obtain the current best block. If no block is found (i.e., if `getBestBlock()` returns `null`),
+     * the method returns `null` indicating that there's no block to reference. Otherwise, it extracts and returns the first 18 characters of the
+     * block's ID, providing the ref to the best block.
+     *
+     * @returns {Promise<string | null>} A promise that resolves to either a string representing the first 18 characters of the best block's ID,
+     * or `null` if no best block is found.
+     *
+     * @Example:
+     * const blockRef = await getBestBlockRef();
+     * if (blockRef) {
+     *     console.log(`Reference to the best block: ${blockRef}`);
+     * } else {
+     *     console.log("No best block found.");
+     * }
+     */
+    public async getBestBlockRef(): Promise<string | null> {
+        const bestBlock = await this.getBestBlock();
+        if (bestBlock === null) return null;
+        return bestBlock.id.slice(0, 18);
+    }
+
+    /**
+     * Retrieves details of the finalized block.
+     *
+     * @returns A promise that resolves to an object containing the block details.
+     */
+    public async getFinalBlock(): Promise<BlockDetail | null> {
+        return await this.getBlock('finalized');
+    }
+
+    /**
+     * Synchronously waits for a specific block revision using polling.
+     *
+     * @param revision - The block number or ID to wait for.
+     * @returns A promise that resolves to an object containing the block details.
+     */
+    public async waitForBlock(
+        blockNumber: number,
+        options?: WaitForBlockOptions
+    ): Promise<BlockDetail | null> {
+        assert(
+            blockNumber === undefined ||
+                blockNumber === null ||
+                typeof blockNumber !== 'number' ||
+                blockNumber >= 0,
+            DATA.INVALID_DATA_TYPE,
+            'Invalid blockNumber. The blockNumber must be a number representing a block number.',
+            { blockNumber }
+        );
+
+        // Use the Poll.SyncPoll utility to repeatedly call getBestBlock with a specified interval
+        const block = await Poll.SyncPoll(
+            async () => await this.getBestBlock(),
+            {
+                requestIntervalInMilliseconds: options?.intervalMs,
+                maximumWaitingTimeInMilliseconds: options?.timeoutMs
+            }
+        ).waitUntil((result) => {
+            // Continue polling until the result's block number matches the specified revision
+            return result != null && result?.number >= blockNumber;
+        });
+
+        return block;
+    }
+
+    /**
+     * Destroys the instance by stopping the event poll.
+     */
+    public destroy(): void {
+        if (this.pollInstance != null) {
+            this.pollInstance.stopListen();
+            this.pollInstance = null;
+            this.pollInstance = null;
+            this.prevBlockTimestamp = null;
+        }
+    }
+}
+
+export { BlocksModule };

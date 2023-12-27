@@ -1,8 +1,5 @@
 import { expect } from 'expect';
-import {
-    HttpClient,
-    ThorestClient
-} from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { unitsUtils } from '@vechainfoundation/vechain-sdk-core';
 
 // In this example we simulate a transaction of sending 1 VET to another account
@@ -11,7 +8,7 @@ import { unitsUtils } from '@vechainfoundation/vechain-sdk-core';
 // 1 - Create client for solo network
 const _soloUrl = 'http://localhost:8669';
 const soloNetwork = new HttpClient(_soloUrl);
-const thorestSoloClient = new ThorestClient(soloNetwork);
+const thorSoloClient = new ThorClient(soloNetwork);
 
 // 2(a) - create the transaction for a VET transfer
 const transaction1 = {
@@ -48,7 +45,7 @@ const expected1 = [
 ];
 
 // 3 - Simulate the transaction
-const simulatedTx1 = await thorestSoloClient.transactions.simulateTransaction(
+const simulatedTx1 = await thorSoloClient.transactions.simulateTransaction(
     transaction1.clauses,
     {
         ...transaction1.simulateTransactionOptions
@@ -103,7 +100,7 @@ const expected3 = [
 ];
 
 // 2 - Simulate the transaction
-const simulatedTx3 = await thorestSoloClient.transactions.simulateTransaction(
+const simulatedTx3 = await thorSoloClient.transactions.simulateTransaction(
     transaction3.clauses
 );
 

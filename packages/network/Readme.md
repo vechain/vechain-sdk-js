@@ -10,10 +10,10 @@ Vechain SDK Network serves as the standard interface connecting decentralized ap
 
 Explore the rich feature set of the vechain SDK Network package, tailored for VechainThor blockchain and dApp development:
 
-- **Blocks and Node Status**: Interact with and retrieve information about blocks on the VeChainThor blockchain. Vechain SDK Network allows developers to access block data and query the status of connected veChain nodes.
-- **Accounts**: Facilitate interactions with Externally Owned Accounts (EOAs), empowering developers to manage and transact with individual user accounts on the VeChainThor blockchain. This includes sending VET tokens and interacting with VTHO (VeThor) tokens.
-- **Smart Contracts**: With vechain SDK Network, seamlessly interact with and manage smart contracts deployed on the VeChainThor blockchain. Deploy contracts, invoke functions, and retrieve contract data effortlessly.
-- **Transactions**: Initiate various transactions on the VeChainThor blockchain using vechain SDK Network. Developers can create and broadcast transactions, including token transfers, contract interactions, and asset management.
+- **Blocks and Node Status**: Interact with and retrieve information about blocks on the VechainThor blockchain. Vechain SDK Network allows developers to access block data and query the status of connected veChain nodes.
+- **Accounts**: Facilitate interactions with Externally Owned Accounts (EOAs), empowering developers to manage and transact with individual user accounts on the VechainThor blockchain. This includes sending VET tokens and interacting with VTHO (VeThor) tokens.
+- **Smart Contracts**: With vechain SDK Network, seamlessly interact with and manage smart contracts deployed on the VechainThor blockchain. Deploy contracts, invoke functions, and retrieve contract data effortlessly.
+- **Transactions**: Initiate various transactions on the VechainThor blockchain using vechain SDK Network. Developers can create and broadcast transactions, including token transfers, contract interactions, and asset management.
 - **Certificates**: Manage certificates and certificate-related operations on the blockchain with vechain SDK Network. Certificates play a crucial role in identity verification and access control within dApps.
 - **Queries**: Efficiently retrieve specific data from the blockchain using vechain SDK Network's querying system. This includes querying transaction details, contract state, and other relevant blockchain information for streamlined dApp development.
 

@@ -1,14 +1,14 @@
 import {
     HttpClient,
     Poll,
-    ThorestClient
+    ThorClient
 } from '@vechainfoundation/vechain-sdk-network';
 
 // 1 - Create client for testnet
 
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
-const thorestClient = new ThorestClient(testNetwork);
+const thorClient = new ThorClient(testNetwork);
 
 // 2 - Init accounts
 
@@ -21,7 +21,7 @@ const accounts = [
 
 for (const account of accounts) {
     const monitoringPoll = Poll.createEventPoll(
-        async () => await thorestClient.accounts.getAccount(account),
+        async () => await thorClient.accounts.getAccount(account),
         1000
     )
         // Add listeners for start event

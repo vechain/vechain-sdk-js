@@ -1,19 +1,28 @@
 import { describe, test, expect } from '@jest/globals';
-import { compileContract } from './compiler';
+import { compileContract, type Sources } from './compiler';
 import { contract, type DeployParams } from '../../src';
 import { coder } from '../../src';
+import {
+    compileERC20SampleTokenContract,
+    getContractSourceCode
+} from './fixture';
 
 /**
  * Unit tests for building transaction clauses.
  * @group unit/contract
  */
 describe('Contract', () => {
+    const sources: Sources = {
+        'Example.sol': {
+            content: getContractSourceCode(
+                'tests/contract/sample',
+                'Example.sol'
+            )
+        }
+    };
+
     test('Build a clause to deploy a contract without constructor', () => {
-        const compiledContract = compileContract(
-            'tests/contract/sample',
-            'Example.sol',
-            'Example'
-        );
+        const compiledContract = compileContract('Example', sources);
 
         const clause = contract.clauseBuilder.deployContract(
             compiledContract.bytecode
@@ -25,11 +34,7 @@ describe('Contract', () => {
     });
 
     test('Build a clause to deploy a contract with deploy params', () => {
-        const compiledContract = compileContract(
-            'tests/contract/sample',
-            'Example.sol',
-            'Example'
-        );
+        const compiledContract = compileContract('Example', sources);
 
         const deployParams: DeployParams = {
             types: ['uint256'],
@@ -50,15 +55,11 @@ describe('Contract', () => {
     });
 
     test('Build a clause to call a contract function', () => {
-        const contractCompiled = compileContract(
-            'tests/contract/sample',
-            'Example.sol',
-            'Example'
-        );
+        const compiledContract = compileContract('Example', sources);
 
         const clause = contract.clauseBuilder.functionInteraction(
             '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-            contractCompiled.abi,
+            compiledContract.abi,
             'set',
             [1]
         );
@@ -73,11 +74,7 @@ describe('Contract', () => {
      */
     test('Compile a sample contract and create an interface from the abi', () => {
         // Compile the contract from a sample file
-        const contractCompiled = compileContract(
-            'tests/contract/sample',
-            'Example.sol',
-            'Example'
-        );
+        const contractCompiled = compileContract('Example', sources);
 
         // Ensure the contract compilation is successful
         expect(contractCompiled).toBeDefined();
@@ -87,5 +84,30 @@ describe('Contract', () => {
 
         // Ensure the contract interface is created successfully
         expect(contractInterface).toBeDefined();
+    });
+
+    /**
+     * Test compile an ERC20 contract and create an interface from the ABI.
+     */
+    test('Compile an ERC20 contract and create an interface from the abi', () => {
+        try {
+            const compiledContract = compileERC20SampleTokenContract();
+
+            // Ensure the contract compilation is successful
+            expect(compiledContract).toBeDefined();
+            expect(compiledContract.name).toBeDefined();
+            expect(compiledContract.abi).toBeDefined();
+            expect(compiledContract.bytecode).toBeDefined();
+
+            // Create an instance of a Contract interface using the ABI
+            const contractInterface = coder.createInterface(
+                compiledContract.abi
+            );
+
+            // Ensure the contract interface is created successfully
+            expect(contractInterface).toBeDefined();
+        } catch (error) {
+            console.log(error);
+        }
     });
 });

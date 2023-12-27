@@ -49,6 +49,17 @@ const generateRandomTransactionHead = (): string => {
 };
 
 /**
+ * Generates a random private key
+ * @returns A random private key of 32 bytes
+ *
+ * @note This is not a valid private key, but it's enough for testing purposes
+ *       Do not use this private key in production or in mainnet
+ */
+const generateRandomPrivateKey = (): Buffer => {
+    return generateRandomBytes(32);
+};
+
+/**
  * Account assertion tests
  */
 const accountAssertionsTests = {
@@ -122,6 +133,33 @@ const transactionAssertionsTests = {
                 value: new Transaction({
                     ...transactions.undelegated[0].body
                 })
+            }
+        ]
+    },
+    assertIsValidTransactionSigningPrivateKey: {
+        valid: [
+            {
+                value: signer.privateKey
+            },
+            {
+                value: generateRandomPrivateKey()
+            }
+        ],
+        invalid: [
+            {
+                value: generateRandomBytes(1)
+            },
+            {
+                value: generateRandomBytes(31)
+            },
+            {
+                value: generateRandomBytes(33)
+            },
+            {
+                value: generateRandomBytes(66)
+            },
+            {
+                value: generateRandomBytes(65)
             }
         ]
     }

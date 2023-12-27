@@ -1,17 +1,19 @@
 import {
-    Transaction,
-    TransactionHandler,
     compileContract,
     contract,
-    unitsUtils,
-    networkInfo
+    networkInfo,
+    type Sources,
+    Transaction,
+    TransactionHandler,
+    unitsUtils
 } from '@vechainfoundation/vechain-sdk-core';
 import { ALL_ACCOUNTS, soloNetwork } from '../tests/fixture';
 import { BUILT_IN_CONTRACTS } from '../tests/built-in-fixture';
-import { ThorestClient } from '../src';
+import { ThorClient, ThorestClient } from '../src';
 import { expect } from '@jest/globals';
-import { ThorClient } from '../src/clients/thor-client';
 import { TESTING_CONTRACT_BYTECODE } from './const';
+import path from 'path';
+import fs from 'fs';
 
 /**
  * Constructs clauses for transferring VTHO tokens.
@@ -89,7 +91,17 @@ const txs = unsignedTxs.map((unsignedTx, index) =>
  */
 const deployTestContractTransaction = (): Transaction => {
     try {
-        const tx = TransactionHandler.sign(
+        const contractPath = path.resolve('TestingContract.sol');
+
+        // Read the Solidity source code from the file
+
+        const sources: Sources = {
+            'Example.sol': {
+                content: fs.readFileSync(contractPath, 'utf8')
+            }
+        };
+
+        return TransactionHandler.sign(
             new Transaction({
                 ...txBody,
                 clauses: [
@@ -98,18 +110,12 @@ const deployTestContractTransaction = (): Transaction => {
                         value: '0x0',
                         data:
                             TESTING_CONTRACT_BYTECODE ??
-                            compileContract(
-                                'solo-seeding',
-                                'TestingContract.sol',
-                                'TestingContract'
-                            ).bytecode
+                            compileContract('solo-seeding', sources).bytecode
                     }
                 ]
             }),
             Buffer.from(ALL_ACCOUNTS[4].privateKey, 'hex')
         );
-
-        return tx;
     } catch (err) {
         console.log('Error creating deploy testing contract tx:', err);
         throw err;
