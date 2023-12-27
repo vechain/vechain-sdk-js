@@ -1,4 +1,5 @@
 import {
+    dataUtils,
     type DeployParams,
     type InterfaceAbi
 } from '@vechainfoundation/vechain-sdk-core';
@@ -261,6 +262,31 @@ const testingContractTestCases: TestCase[] = [
         functionName: 'boolData',
         params: [true],
         expected: ContractDataType.BOOLEAN.True,
+        reverted: false
+    },
+    {
+        functionName: 'boolData',
+        params: [undefined],
+        expected: ContractDataType.BOOLEAN.False,
+        reverted: false
+    },
+    {
+        functionName: 'intData',
+        params: [1],
+        expected: dataUtils.padHexString('0x1'),
+        reverted: false
+    },
+    {
+        functionName: 'intData',
+        params: [-1],
+        expected:
+            '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+        reverted: false
+    },
+    {
+        functionName: 'intData',
+        params: [0],
+        expected: dataUtils.padHexString('0x0'),
         reverted: false
     }
 ];
