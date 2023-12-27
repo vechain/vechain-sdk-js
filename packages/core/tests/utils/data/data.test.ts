@@ -180,4 +180,56 @@ describe('utils/hex', () => {
             }
         );
     });
+
+    /**
+     * Pad hex string
+     */
+    describe('padHexString', () => {
+        // Test the default padding length
+        test('should pad a hex string to 64 characters by default', () => {
+            const result = dataUtils.padHexString('1a');
+            expect(result).toHaveLength(66); // 64 chars + '0x'
+            expect(result).toBe(
+                '0x000000000000000000000000000000000000000000000000000000000000001a'
+            );
+        });
+
+        // Test padding with custom length
+        test('should pad a hex string to a custom length when specified', () => {
+            const result = dataUtils.padHexString('1a', 128);
+            expect(result).toHaveLength(130); // 128 chars + '0x'
+            expect(result.startsWith('0x000000')).toBeTruthy();
+        });
+
+        // Test handling of '0x' prefix
+        test('should correctly handle strings already starting with 0x', () => {
+            const result = dataUtils.padHexString('0x1a');
+            expect(result).toBe(
+                '0x000000000000000000000000000000000000000000000000000000000000001a'
+            );
+        });
+
+        // Test padding a string that is already the correct length
+        test('should return the string unchanged if it is already the correct length', () => {
+            const hex = '0x' + '1'.repeat(64);
+            const result = dataUtils.padHexString(hex);
+            expect(result).toBe(hex);
+        });
+
+        // Test handling of an empty string
+        test('should return a string of just zeros if the input is empty', () => {
+            const result = dataUtils.padHexString('');
+            expect(result).toBe('0x' + '0'.repeat(64));
+        });
+
+        // Test with negative length (should likely throw an error or handle gracefully)
+        test('should return the string with the minimum length', () => {
+            expect(dataUtils.padHexString('1a', -64)).toBe('0x' + '1a');
+        });
+
+        // Test with non-integer length
+        test('should handle or throw an error for non-integer length values', () => {
+            expect(() => dataUtils.padHexString('1a', 63.5)).toThrow();
+        });
+    });
 });
