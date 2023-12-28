@@ -68,6 +68,27 @@ function decodeFunctionInput(
     }
 }
 
+function decodeFunctionOutput(
+    interfaceABI: InterfaceAbi,
+    functionName: string,
+    encodedFunction: BytesLike
+): Result {
+    try {
+        const contractInterface = createInterface(interfaceABI);
+
+        return new abi.Function(
+            contractInterface.getFunction(functionName)
+        ).decodeOutput(encodedFunction);
+    } catch (e) {
+        throw buildError(
+            ERROR_CODES.ABI.INVALID_DATA_TO_DECODE,
+            'Decoding failed: Function input must be properly encoded per ABI specifications',
+            { functionName },
+            e
+        );
+    }
+}
+
 /**
  * Encodes event log data based on the provided contract interface ABI, event name, and data to encode.
  * @param interfaceABI - The ABI (Application Binary Interface) of the contract.
@@ -136,6 +157,7 @@ export const coder = {
     createInterface,
     encodeFunctionInput,
     decodeFunctionInput,
+    decodeFunctionOutput,
     encodeEventLog,
     decodeEventLog
 };

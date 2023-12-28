@@ -21,7 +21,7 @@ import type { TransactionReceipt } from '../../../../src';
  *
  * @NOTE: This test suite runs on the solo network because it requires sending transactions.
  *
- * @group integration/client/thor/contracts
+ * @group contract/client/thor/contracts
  */
 describe('ThorClient - Contracts', () => {
     /**
@@ -50,7 +50,7 @@ describe('ThorClient - Contracts', () => {
                 []
             );
 
-            expect(parseInt(result)).toBe(100);
+            expect(result).toEqual([100n]);
 
             // Assertions
             expect(transactionReceipt.reverted).toBe(false);
@@ -103,11 +103,9 @@ describe('ThorClient - Contracts', () => {
             [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address]
         );
 
-        const resultInt = parseInt(result, 16);
-
         // Assert that the balance matches the expected value
         // The expected value is a predefined number representing the contract's initial balance
-        expect(resultInt).toBe(1e24);
+        expect(result).toEqual([BigInt(1000000000000000000000000n)]);
     }, 10000);
 
     /**
@@ -170,7 +168,7 @@ describe('ThorClient - Contracts', () => {
 
         // Ensure that the transfer transaction was successful and the balance is as expected
         expect(transactionReceiptTransfer.reverted).toBe(false);
-        expect(parseInt(balanceOfResult)).toBe(1000);
+        expect(balanceOfResult).toEqual([BigInt(1000)]);
     }, 10000); // Set a timeout of 10000ms for this test
 
     /**
@@ -240,7 +238,7 @@ describe('ThorClient - Contracts', () => {
                     []
                 );
 
-            expect(parseInt(callFunctionGetResult)).toBe(123);
+            expect(callFunctionGetResult).toEqual([BigInt(123)]);
         } catch (error) {
             console.log('error', error);
         }
@@ -255,7 +253,7 @@ describe('ThorClient - Contracts', () => {
                 testCase.params
             );
 
-            expect(response).toBe(testCase.expected);
+            expect(response).toEqual(testCase.expected);
         }
     }, 5000);
 
@@ -266,10 +264,8 @@ describe('ThorClient - Contracts', () => {
         test('Should return the base gas price of the Solo network', async () => {
             const baseGasPrice =
                 await thorSoloClient.contracts.getBaseGasPrice();
-            expect(baseGasPrice).toBe(
-                '0x00000000000000000000000000000000000000000000000000038d7ea4c68000'
-            );
-            expect(Number(baseGasPrice)).toBe(10 ** 15); // 10^15 wei
+            expect(baseGasPrice).toEqual([1000000000000000n]);
+            expect(baseGasPrice).toEqual([BigInt(10 ** 15)]); // 10^13 wei
         });
     });
 });

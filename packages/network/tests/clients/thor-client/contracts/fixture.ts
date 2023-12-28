@@ -1,9 +1,8 @@
 import {
-    dataUtils,
     type DeployParams,
     type InterfaceAbi
 } from '@vechainfoundation/vechain-sdk-core';
-import { ContractDataType, type TransactionSendResult } from '../../../../src';
+import { type TransactionSendResult } from '../../../../src';
 import { TEST_ACCOUNTS, thorSoloClient } from '../../../fixture';
 
 const contractBytecode: string =
@@ -255,38 +254,37 @@ const testingContractTestCases: TestCase[] = [
     {
         functionName: 'boolData',
         params: [false],
-        expected: ContractDataType.BOOLEAN.False,
+        expected: [false],
         reverted: false
     },
     {
         functionName: 'boolData',
         params: [true],
-        expected: ContractDataType.BOOLEAN.True,
+        expected: [true],
         reverted: false
     },
     {
         functionName: 'boolData',
         params: [undefined],
-        expected: ContractDataType.BOOLEAN.False,
+        expected: [false],
         reverted: false
     },
     {
         functionName: 'intData',
         params: [1],
-        expected: dataUtils.padHexString('0x1'),
+        expected: [1n],
         reverted: false
     },
     {
         functionName: 'intData',
         params: [-1],
-        expected:
-            '0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
+        expected: [-1n],
         reverted: false
     },
     {
         functionName: 'intData',
         params: [0],
-        expected: dataUtils.padHexString('0x0'),
+        expected: [0n],
         reverted: false
     }
 ];
