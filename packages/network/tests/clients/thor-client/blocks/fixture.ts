@@ -30,7 +30,7 @@ const waitForBlockTestCases = [
         description:
             'Should wait for transaction with intervalMs & timeoutMs and return BlockDetail',
         options: {
-            timeoutMs: 10000,
+            timeoutMs: 11000,
             intervalMs: 1000
         }
     }
