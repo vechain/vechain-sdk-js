@@ -25,7 +25,7 @@ describe('Blocks Module', () => {
                     async ({ description, options }) => {
                         try {
                             // Log the description or use it in some other meaningful way
-                            console.log(`Running test: ${description}`);
+                            //  console.log(`Running test: ${description}`);
                             const bestBlock =
                                 await thorClient.blocks.getBestBlock();
                             if (bestBlock != null) {
@@ -42,7 +42,8 @@ describe('Blocks Module', () => {
                             }
                         } catch (error) {
                             // Append the description to any errors for clarity
-                            console.log('error', error);
+                            console.log(description);
+                            throw error;
                         }
                     }
                 );
