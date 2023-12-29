@@ -44,8 +44,8 @@ const sanitizeWebsocketBaseURL = (url: string): string => {
             `Invalid url: ${url}. Must adhere to the regex: ${urlRegex}`
         );
 
-    // Remove trailing slashes
-    url = url.replace(/\/+$/, '');
+    // Remove trailing slash
+    url = url.replace(/\/$/, '');
 
     // Replace http with ws and https with wss
     url = url.replace(/^http/, 'ws').replace(/^https/, 'wss');

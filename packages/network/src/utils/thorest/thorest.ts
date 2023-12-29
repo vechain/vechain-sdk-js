@@ -1,4 +1,5 @@
 import { sanitizeWebsocketBaseURL, toQueryString } from './helpers';
+import { type VetTransferOptions, type EventOptions } from './types';
 
 /**
  * Endpoints for the REST API.
@@ -94,34 +95,19 @@ const thorest = {
              * Subscribe to new events.
              *
              * @param baseURL - The URL of the node to request the subscription from.
-             * @param position - (optional) The block id to start from, defaults to the best block.
-             * @param contractAddress - (optional) The contract address to filter events by.
-             * @param topic0 - (optional) The topic0 to filter events by.
-             * @param topic1 - (optional) The topic1 to filter events by.
-             * @param topic2 - (optional) The topic2 to filter events by.
-             * @param topic3 - (optional) The topic3 to filter events by.
-             * @param topic4 - (optional) The topic4 to filter events by.
+             * @param options - (optional) The options for the subscription.
              *
              * @returns The websocket subscription URL.
              */
-            EVENT: (
-                baseURL: string,
-                position?: string,
-                contractAddress?: string,
-                topic0?: string,
-                topic1?: string,
-                topic2?: string,
-                topic3?: string,
-                topic4?: string
-            ): string => {
+            EVENT: (baseURL: string, options?: EventOptions): string => {
                 const queryParams = toQueryString({
-                    pos: position,
-                    addr: contractAddress,
-                    t0: topic0,
-                    t1: topic1,
-                    t2: topic2,
-                    t3: topic3,
-                    t4: topic4
+                    pos: options?.position,
+                    addr: options?.contractAddress,
+                    t0: options?.topic0,
+                    t1: options?.topic1,
+                    t2: options?.topic2,
+                    t3: options?.topic3,
+                    t4: options?.topic4
                 });
 
                 return `${sanitizeWebsocketBaseURL(
@@ -133,25 +119,19 @@ const thorest = {
              * Subscribe to new VET transfers.
              *
              * @param baseURL - The URL of the node to request the subscription from.
-             * @param position - (optional) The block id to start from, defaults to the best block.
-             * @param signerAddress - (optional) The signer address to filter transfers by.
-             * @param sender - (optional) The sender address to filter transfers by.
-             * @param receiver - (optional) The receiver address to filter transfers by.
+             * @param options - (optional) The options for the subscription.
              *
              * @returns The websocket subscription URL.
              */
             VET_TRANSFER: (
                 baseURL: string,
-                position?: string,
-                signerAddress?: string,
-                sender?: string,
-                receiver?: string
+                options?: VetTransferOptions
             ): string => {
                 const queryParams = toQueryString({
-                    pos: position,
-                    txOrigin: signerAddress,
-                    sender,
-                    recipient: receiver
+                    pos: options?.position,
+                    txOrigin: options?.signerAddress,
+                    sender: options?.sender,
+                    recipient: options?.receiver
                 });
 
                 return `${sanitizeWebsocketBaseURL(

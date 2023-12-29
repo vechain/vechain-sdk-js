@@ -38,16 +38,15 @@ const getEventSubscriptionUrl = (
     // Encode the indexed parameters to construct the topic filters
     const encodedTopics = ev.encodeFilterTopics(indexedValues ?? []);
 
-    return thorest.subscriptions.get.EVENT(
-        baseURL,
-        options?.blockID,
-        options?.address,
-        encodedTopics[0],
-        encodedTopics[1],
-        encodedTopics[2],
-        encodedTopics[3],
-        encodedTopics[4]
-    );
+    return thorest.subscriptions.get.EVENT(baseURL, {
+        position: options?.blockID,
+        contractAddress: options?.address,
+        topic0: encodedTopics[0],
+        topic1: encodedTopics[1],
+        topic2: encodedTopics[2],
+        topic3: encodedTopics[3],
+        topic4: encodedTopics[4]
+    });
 };
 
 export { getEventSubscriptionUrl };

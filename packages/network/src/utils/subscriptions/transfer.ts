@@ -17,13 +17,12 @@ const getVETtransfersSubscriptionUrl = (
     baseURL: string,
     options?: VETtransfersSubscriptionOptions
 ): string => {
-    return thorest.subscriptions.get.VET_TRANSFER(
-        baseURL,
-        options?.blockID,
-        options?.signerAddress,
-        options?.sender,
-        options?.recipient
-    );
+    return thorest.subscriptions.get.VET_TRANSFER(baseURL, {
+        position: options?.blockID,
+        signerAddress: options?.signerAddress,
+        sender: options?.sender,
+        receiver: options?.recipient
+    });
 };
 
 export { getVETtransfersSubscriptionUrl };
