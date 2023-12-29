@@ -5,7 +5,9 @@ import {
     encodedParams,
     events,
     functions,
-    simpleParametersDataForFunction2
+    invalidTopicsEventTestCases,
+    simpleParametersDataForFunction2,
+    topicsEventTestCases
 } from './fixture';
 import { abi, type FormatType } from '../../src';
 import { type ethers, ParamType } from 'ethers';
@@ -423,5 +425,39 @@ describe('Abi - Function & Event', () => {
                 InvalidAbiFormatTypeError
             );
         });
+
+        /**
+         * Encode Event topics test cases
+         */
+        topicsEventTestCases.forEach(
+            ({ event, valuesToEncode, expectedTopics }) => {
+                test(`Encode Event topics - ${
+                    typeof event === 'string' ? event : JSON.stringify(event)
+                }`, () => {
+                    const ev = new abi.Event(event);
+
+                    const topics = ev.encodeFilterTopics(valuesToEncode);
+
+                    expect(topics).toStrictEqual(expectedTopics);
+                });
+            }
+        );
+
+        /**
+         * Invalid Event topics test cases
+         */
+        invalidTopicsEventTestCases.forEach(
+            ({ event, valuesToEncode, expectedError }) => {
+                test(`Encode Event topics - ${
+                    typeof event === 'string' ? event : JSON.stringify(event)
+                }`, () => {
+                    const ev = new abi.Event(event);
+
+                    expect(() =>
+                        ev.encodeFilterTopics(valuesToEncode)
+                    ).toThrowError(expectedError);
+                });
+            }
+        );
     });
 });
