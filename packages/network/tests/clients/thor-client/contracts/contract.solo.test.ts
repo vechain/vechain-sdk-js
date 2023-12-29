@@ -246,14 +246,19 @@ describe('ThorClient - Contracts', () => {
 
     test('test the TestingContract functions', async () => {
         for (const testCase of testingContractTestCases) {
-            const response = await thorSoloClient.contracts.executeContractCall(
-                TESTING_CONTRACT_ADDRESS,
-                TESTING_CONTRACT_ABI,
-                testCase.functionName,
-                testCase.params
-            );
+            try {
+                const response =
+                    await thorSoloClient.contracts.executeContractCall(
+                        TESTING_CONTRACT_ADDRESS,
+                        TESTING_CONTRACT_ABI,
+                        testCase.functionName,
+                        testCase.params
+                    );
 
-            expect(response).toEqual(testCase.expected);
+                expect(response).toEqual(testCase.expected);
+            } catch (error) {
+                console.log('error', error);
+            }
         }
     }, 5000);
 

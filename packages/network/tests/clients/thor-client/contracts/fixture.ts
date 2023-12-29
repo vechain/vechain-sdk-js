@@ -286,6 +286,18 @@ const testingContractTestCases: TestCase[] = [
         params: [0],
         expected: [0n],
         reverted: false
+    },
+    {
+        functionName: 'uintData',
+        params: [0],
+        expected: [0n],
+        reverted: false
+    },
+    {
+        functionName: 'uintData',
+        params: [1],
+        expected: [1n],
+        reverted: false
     }
 ];
 
