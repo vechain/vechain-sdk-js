@@ -248,7 +248,7 @@ class Event<ABIType> {
      */
     public encodeFilterTopics<TValue>(
         valuesToEncode: TValue[]
-    ): Array<string | null> {
+    ): Array<string | undefined> {
         try {
             // Sanitize the values to encode
             const sanitizedValuesToEncode = sanitizeValuesToEncode(
@@ -256,10 +256,11 @@ class Event<ABIType> {
                 this.fragment
             );
 
-            return this.iface.encodeFilterTopics(
-                this.fragment,
-                sanitizedValuesToEncode
-            ) as Array<string | null>;
+            return this.iface
+                .encodeFilterTopics(this.fragment, sanitizedValuesToEncode)
+                .map((topic) => topic ?? undefined) as Array<
+                string | undefined
+            >;
         } catch (e) {
             throw buildError(
                 ABI.INVALID_DATA_TO_ENCODE,

@@ -42,11 +42,11 @@ const getEventSubscriptionUrl = (
         baseURL,
         options?.blockID,
         options?.address,
-        encodedTopics[0] ?? undefined,
-        encodedTopics[1] ?? undefined,
-        encodedTopics[2] ?? undefined,
-        encodedTopics[3] ?? undefined,
-        encodedTopics[4] ?? undefined
+        encodedTopics[0],
+        encodedTopics[1],
+        encodedTopics[2],
+        encodedTopics[3],
+        encodedTopics[4]
     );
 };
 

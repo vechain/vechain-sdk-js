@@ -311,8 +311,18 @@ const topicsEventTestCases = [
         valuesToEncode: [null, null, randomBigInt],
         expectedTopics: [
             '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-            null,
-            null,
+            undefined,
+            undefined,
+            zeroPadValue(hexlify(toBeHex(randomBigInt)), 32)
+        ]
+    },
+    {
+        event: 'event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)',
+        valuesToEncode: [undefined, undefined, randomBigInt],
+        expectedTopics: [
+            '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+            undefined,
+            undefined,
             zeroPadValue(hexlify(toBeHex(randomBigInt)), 32)
         ]
     },
