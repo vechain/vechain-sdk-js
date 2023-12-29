@@ -14,8 +14,12 @@
         "format": "prettier --write src/**/*.ts tests/**/*.ts"
     },
     "dependencies": {
-        "@vechainfoundation/vechain-sdk-errors": "*",
+        "@types/ws": "^8.5.10",
         "@vechainfoundation/vechain-sdk-core": "*",
+        "@vechainfoundation/vechain-sdk-errors": "*",
         "axios": "^1.6.2"
+    },
+    "devDependencies": {
+        "ws": "^8.16.0"
     }
 }
