@@ -14,28 +14,43 @@ import {
 describe('Blocks Module', () => {
     /**
      * Test suite for waitForBlock method
+     * The waitForBlock method is tested in parallel with different options, coming from the waitForBlockTestCases array
      */
     describe('waitForBlock', () => {
-        waitForBlockTestCases.forEach(({ description, options }) => {
-            test(
-                description,
-                async () => {
-                    // Get best block
-                    const bestBlock = await thorClient.blocks.getBestBlock();
-                    if (bestBlock != null) {
-                        const expectedBlock =
-                            await thorClient.blocks.waitForBlock(
-                                bestBlock?.number + 1,
-                                options
-                            );
-                        expect(expectedBlock?.number).toBeGreaterThan(
-                            bestBlock?.number
-                        );
+        test(
+            'parallel waitForBlock tests',
+            async () => {
+                // Map each test case to a promise
+                const tests = waitForBlockTestCases.map(
+                    async ({ description, options }) => {
+                        try {
+                            const bestBlock =
+                                await thorClient.blocks.getBestBlock();
+                            if (bestBlock != null) {
+                                const expectedBlock =
+                                    await thorClient.blocks.waitForBlock(
+                                        bestBlock?.number + 1,
+                                        options
+                                    );
+
+                                // Incorporate the description into the assertion message for clarity
+                                expect(expectedBlock?.number).toBeGreaterThan(
+                                    bestBlock?.number
+                                );
+                            }
+                        } catch (error) {
+                            // Append the description to any errors for clarity
+                            console.log(description);
+                            throw error;
+                        }
                     }
-                },
-                15000
-            );
-        });
+                );
+
+                // Wait for all tests to complete
+                await Promise.all(tests);
+            },
+            15000 * waitForBlockTestCases.length
+        );
     });
 
     test('waitForBlock - invalid blockNumber', async () => {
