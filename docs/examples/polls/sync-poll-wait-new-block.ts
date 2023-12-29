@@ -1,7 +1,6 @@
 import {
     HttpClient,
     Poll,
-    ThorestClient,
     ThorClient
 } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
@@ -10,8 +9,7 @@ import { expect } from 'expect';
 
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
-const thorestClient = new ThorestClient(testNetwork);
-const thorClient = new ThorClient(thorestClient);
+const thorClient = new ThorClient(testNetwork);
 
 // 2 - Get current block
 

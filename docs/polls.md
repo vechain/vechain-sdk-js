@@ -11,7 +11,6 @@ This section illustrates the methodology for monitoring the production of a new 
 import {
     HttpClient,
     Poll,
-    ThorestClient,
     ThorClient
 } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
@@ -20,8 +19,7 @@ import { expect } from 'expect';
 
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
-const thorestClient = new ThorestClient(testNetwork);
-const thorClient = new ThorClient(thorestClient);
+const thorClient = new ThorClient(testNetwork);
 
 // 2 - Get current block
 
@@ -56,7 +54,6 @@ Here, we explore the approach to monitor balance changes subsequent to a transfe
 import {
     HttpClient,
     Poll,
-    ThorestClient,
     ThorClient
 } from '@vechainfoundation/vechain-sdk-network';
 import {
@@ -71,8 +68,7 @@ import { expect } from 'expect';
 
 const _soloUrl = 'http://localhost:8669';
 const soloNetwork = new HttpClient(_soloUrl);
-const thorestSoloClient = new ThorestClient(soloNetwork);
-const thorSoloClient = new ThorClient(thorestSoloClient);
+const thorSoloClient = new ThorClient(soloNetwork);
 
 // 2- Init transaction
 
@@ -143,7 +139,7 @@ console.log('Receiver balance before:', receiverBalanceBefore);
 // 4 - Send transaction
 
 const sentedTransaction =
-    await thorestSoloClient.transactions.sendTransaction(raw);
+    await thorSoloClient.transactions.sendRawTransaction(raw);
 
 // 4.1 - Check if the transaction is sent successfully (check if the transaction id is a valid hex string)
 expect(sentedTransaction).toBeDefined();
@@ -190,7 +186,6 @@ This example demonstrates the application of an asynchronous poll for tracking t
 import {
     HttpClient,
     Poll,
-    ThorestClient,
     ThorClient
 } from '@vechainfoundation/vechain-sdk-network';
 
@@ -198,8 +193,7 @@ import {
 
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
-const thorestClient = new ThorestClient(testNetwork);
-const thorClient = new ThorClient(thorestClient);
+const thorClient = new ThorClient(testNetwork);
 
 // 2 - Init accounts
 
