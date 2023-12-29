@@ -5,7 +5,7 @@ import { unitsUtils } from '@vechainfoundation/vechain-sdk-core';
 // In this example we simulate a transaction of sending 1 VET to another account
 // And we demonstrate (1) how we can check the expected gas cost and (2) whether the transaction is successful
 
-// 1 - Create client for solo network
+// 1 - Create thor client for solo network
 const _soloUrl = 'http://localhost:8669';
 const soloNetwork = new HttpClient(_soloUrl);
 const thorSoloClient = new ThorClient(soloNetwork);
