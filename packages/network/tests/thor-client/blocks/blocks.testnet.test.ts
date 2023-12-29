@@ -24,8 +24,6 @@ describe('Blocks Module', () => {
                 const tests = waitForBlockTestCases.map(
                     async ({ description, options }) => {
                         try {
-                            // Log the description or use it in some other meaningful way
-                            //  console.log(`Running test: ${description}`);
                             const bestBlock =
                                 await thorClient.blocks.getBestBlock();
                             if (bestBlock != null) {
