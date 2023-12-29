@@ -29,7 +29,7 @@ describe('Subscriptions Testnet', () => {
             ({ event, valuesToEncode, options, expectedURL }) => {
                 test(`getEventSubscriptionUrl: ${
                     typeof event === 'string' ? event : JSON.stringify(event)
-                } with ${valuesToEncode.toString()}`, async () => {
+                } with ${valuesToEncode?.toString()}`, async () => {
                     expect(
                         subscriptions.getEventSubscriptionUrl(
                             testnetUrl,

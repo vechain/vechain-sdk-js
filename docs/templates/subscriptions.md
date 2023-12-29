@@ -22,3 +22,13 @@ The vechain sdk also provides other subscription endpoints for subscribing to di
 ### Block subscription
 
 Subscribe to new blocks as they are added to the blockchain through the `subscriptions.getBlockSubscriptionUrl` method.
+
+[example](examples/subscriptions/block-subscriptions.ts)
+
+### Other subscriptions
+
+The vechain sdk also provides other subscription endpoints for subscribing to different types of blockchain data. These include:
+- `subscriptions.getVETtransfersSubscriptionUrl` for subscribing to VET transfers
+- `subscriptions.getNewTransactionsSubscriptionUrl` for subscribing to new transactions
+- `subscriptions.getBeatSubscriptionUrl` for subscribing to new blockchain beats (A beat is a notification that a new block has been added to the blockchain with a bloom filter which can be used to check if the block contains any relevant account.)
+- `subscriptions.getLegacyBeatSubscriptionUrl` for subscribing to the legacy beats.

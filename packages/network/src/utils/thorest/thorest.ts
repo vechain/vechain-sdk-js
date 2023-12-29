@@ -199,7 +199,7 @@ const thorest = {
             },
 
             /**
-             * Subscribe to new transactions in the mempool.
+             * Subscribe to new transactions.
              *
              * @returns The websocket subscription URL.
              */

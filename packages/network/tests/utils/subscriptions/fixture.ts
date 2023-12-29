@@ -116,7 +116,21 @@ const getEventSubscriptionUrlTestCases = [
     },
     {
         event: 'event Transfer(address indexed from, address indexed to, uint256 value)',
+        valuesToEncode: [null, toRandomAddress], // Missing `from` parameter
+        options: {},
+        expectedURL: `wss://testnet.vechain.org/subscriptions/event?t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t2=0x000000000000000000000000${toRandomAddress.slice(
+            2
+        )}`
+    },
+    {
+        event: 'event Transfer(address indexed from, address indexed to, uint256 value)',
         valuesToEncode: [], // Missing `from` and `to` parameters
+        options: {},
+        expectedURL: `wss://testnet.vechain.org/subscriptions/event?t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef`
+    },
+    {
+        event: 'event Transfer(address indexed from, address indexed to, uint256 value)',
+        valuesToEncode: undefined,
         options: {},
         expectedURL: `wss://testnet.vechain.org/subscriptions/event?t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef`
     },
