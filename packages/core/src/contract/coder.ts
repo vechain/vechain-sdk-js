@@ -44,20 +44,20 @@ function encodeFunctionInput(
  * Decode the function data of an encoded function
  * @param interfaceABI ABI in a compatible format
  * @param functionName The name of the function defined in the ABI.
- * @param encodedFunction The encoded function data.
+ * @param encodedFunctionInput The encoded function data.
  * @returns an array of the decoded function data
  * @throws {InvalidAbiDataToDecodeError}
  */
 function decodeFunctionInput(
     interfaceABI: InterfaceAbi,
     functionName: string,
-    encodedFunction: BytesLike
+    encodedFunctionInput: BytesLike
 ): Result {
     try {
         const contractInterface = createInterface(interfaceABI);
         return new abi.Function(
             contractInterface.getFunction(functionName)
-        ).decodeInput(encodedFunction);
+        ).decodeInput(encodedFunctionInput);
     } catch (e) {
         throw buildError(
             ERROR_CODES.ABI.INVALID_DATA_TO_DECODE,
@@ -68,21 +68,40 @@ function decodeFunctionInput(
     }
 }
 
+/**
+ * Decodes the output from a contract function using the specified ABI and function name.
+ * It takes the encoded function output and attempts to decode it according to the ABI definition.
+ *
+ * @param {InterfaceAbi} interfaceABI - The ABI (Application Binary Interface) of the contract,
+ *                                      which defines how data is structured in the blockchain.
+ * @param {string} functionName - The name of the function in the contract to decode the output for.
+ * @param encodedFunctionOutput - The encoded output data from the contract function.
+ * @returns {Result} - The decoded output as a Result object, which provides a user-friendly way
+ *                     to interact with the decoded data.
+ *
+ * @throws Will throw an error if decoding fails, typically due to incorrect encoding or mismatch
+ *         with the ABI specifications. The error will provide details on the specific issue encountered.
+ *
+ * @example
+ * // Example of decoding output for a function called "getValue":
+ * const decodedOutput = decodeFunctionOutput(contractABI, 'getValue', encodedValue);
+ *
+ */
 function decodeFunctionOutput(
     interfaceABI: InterfaceAbi,
     functionName: string,
-    encodedFunction: BytesLike
+    encodedFunctionOutput: BytesLike
 ): Result {
     try {
         const contractInterface = createInterface(interfaceABI);
 
         return new abi.Function(
             contractInterface.getFunction(functionName)
-        ).decodeOutput(encodedFunction);
+        ).decodeOutput(encodedFunctionOutput);
     } catch (e) {
         throw buildError(
             ERROR_CODES.ABI.INVALID_DATA_TO_DECODE,
-            'Decoding failed: Function input must be properly encoded per ABI specifications',
+            'Decoding failed: Function output must be properly encoded per ABI specifications',
             { functionName },
             e
         );
