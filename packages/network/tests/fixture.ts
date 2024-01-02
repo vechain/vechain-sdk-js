@@ -3,22 +3,22 @@ import { HttpClient, ThorClient } from '../src';
 /**
  * Url of the testnet fixture
  */
-const _testnetUrl = 'https://testnet.vechain.org';
+const testnetUrl = 'https://testnet.vechain.org';
 
 /**
  * Url of the solo network fixture
  */
-const _soloUrl = 'http://localhost:8669';
+const soloUrl = 'http://localhost:8669';
 
 /**
  * Network instance fixture
  */
-const testNetwork = new HttpClient(_testnetUrl);
+const testNetwork = new HttpClient(testnetUrl);
 
 /**
  * Solo network instance fixture
  */
-const soloNetwork = new HttpClient(_soloUrl);
+const soloNetwork = new HttpClient(soloUrl);
 
 /**
  * Simple test account fixture
@@ -182,6 +182,14 @@ const TEST_ACCOUNTS = {
         TRANSACTION_RECEIVER: ALL_ACCOUNTS[2],
         DELEGATOR: ALL_ACCOUNTS[3],
         CONTRACT_MANAGER: ALL_ACCOUNTS[4]
+    },
+
+    /**
+     * Accounts dedicated for testing subscription related operations.
+     */
+    SUBSCRIPTION: {
+        EVENT_SUBSCRIPTION: ALL_ACCOUNTS[5],
+        VET_TRANSFERS_SUBSCRIPTION: ALL_ACCOUNTS[6]
     }
 };
 
@@ -973,5 +981,7 @@ export {
     ALL_ACCOUNTS,
     TEST_CONTRACT_ADDRESS,
     TESTING_CONTRACT_ABI,
-    TESTNET_DELEGATE_URL
+    TESTNET_DELEGATE_URL,
+    testnetUrl,
+    soloUrl
 };

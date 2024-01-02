@@ -1,4 +1,4 @@
-import { clauseBuilder } from './contract';
+import { clauseBuilder } from './clause';
 import { coder } from './coder';
 
 /**
