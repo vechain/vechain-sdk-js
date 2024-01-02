@@ -8,10 +8,14 @@
     "scripts": {
         "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
         "lint": "eslint --ext .ts src --ext .ts tests",
+        "start-thor-solo": "echo 'Starting thor solo node ...\n' && docker compose up -d --wait && echo '\nThor solo node started'",
+        "stop-thor-solo": "docker compose down && echo '\nThor solo node stopped'",
         "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
-        "test:integration": "export JEST_INTEGRATION=true; rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
-        "test": "export JEST_INTEGRATION=true; rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
-        "format": "prettier --write src/**/*.ts tests/**/*.ts"
+        "test:integration:no-solo": "export JEST_INTEGRATION=true; rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
+        "test:no-solo": "export JEST_INTEGRATION=true; rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
+        "format": "prettier --write src/**/*.ts tests/**/*.ts",
+        "test": "(yarn start-thor-solo && yarn test:integration:no-solo) && (yarn stop-thor-solo) || (yarn stop-thor-solo)",
+        "test:integration": "(yarn start-thor-solo && yarn test:no-solo) && (yarn stop-thor-solo) || (yarn stop-thor-solo)"
     },
     "dependencies": {
         "@types/ws": "^8.5.10",

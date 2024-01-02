@@ -4,9 +4,10 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
-    "test:before": "docker compose up -d",
-    "test:after": "docker compose down",
-    "test:examples": "yarn test:before && ts-node-test examples/ && yarn test:after",
+    "start-thor-solo": "echo 'Starting thor solo node ...\n' && docker compose up -d --wait && echo '\nThor solo node started'",
+    "stop-thor-solo": "docker compose down && echo '\nThor solo node stopped'",
+    "test:examples:no-solo": "ts-node-test examples/",
+    "test:examples": "(yarn start-thor-solo && yarn test:examples:no-solo) && (yarn stop-thor-solo) || (yarn stop-thor-solo)",
     "build": "find . -name \"*.md\" -type f -maxdepth 1 ! -name \"README.md\" -delete && tsup ./build-scripts && node dist/builddocs.cjs"
   },
   "dependencies": {
