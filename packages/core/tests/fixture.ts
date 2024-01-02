@@ -1,3 +1,5 @@
+import { randomBytes } from 'crypto';
+
 /**
  * Generates a random buffer of the specified length
  *
@@ -5,13 +7,7 @@
  * @returns A random buffer of the specified length
  */
 const generateRandomBytes = (length: number): Buffer => {
-    const buffer = Buffer.alloc(length);
-    for (let i = 0; i < length; i++) {
-        // Generate a random byte
-        buffer[i] = Math.floor(Math.random() * 256);
-    }
-
-    return buffer;
+    return randomBytes(length);
 };
 
 /**
