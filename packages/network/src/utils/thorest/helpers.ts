@@ -50,7 +50,7 @@ const sanitizeWebsocketBaseURL = (url: string): string => {
 
     // Replace http with ws and https with wss
     url =
-        url.match(HTTP_REGEX) !== null
+        HTTP_REGEX.exec(url) !== null
             ? url.replace(HTTP_REGEX, 'ws://')
             : url.replace(HTTPS_REGEX, 'wss://');
 
