@@ -6,7 +6,9 @@
   "scripts": {
     "build": "find . -name \"*.md\" -type f -maxdepth 1 ! -name \"README.md\" -delete && tsup ./build-scripts && node dist/builddocs.cjs",
 
-    "test:examples": "ts-node-test examples/"
+    "pretest:examples": "if [ $RUN_BY_ROOT_PACKAGE -eq 1 ]; then echo 'Thor solo already executed by root package.json...'; else yarn start-thor-solo; fi",
+    "test:integration": "ts-node-test examples/",
+    "posttest:examples": "if [ $RUN_BY_ROOT_PACKAGE -eq 1 ]; then echo 'Thor solo will be stopped by root package.json...'; else yarn stop-thor-solo; fi"
   },
   "dependencies": {
     "@vechainfoundation/vechain-sdk-core": "*",

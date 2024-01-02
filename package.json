@@ -26,7 +26,7 @@
         "posttest:integration": "yarn stop-thor-solo",
 
         "pretest:examples": "yarn start-thor-solo",
-        "test:examples": "turbo test:examples",
+        "test:examples": "export RUN_BY_ROOT_PACKAGE=true; turbo test:examples",
         "posttest:examples": "yarn stop-thor-solo",
 
         "pretest": "yarn start-thor-solo",
