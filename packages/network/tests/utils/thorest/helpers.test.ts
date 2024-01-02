@@ -4,10 +4,7 @@ import {
     sanitizeWebsocketBaseURLTestCases,
     toQueryStringTestCases
 } from './fixture';
-import {
-    sanitizeWebsocketBaseURL,
-    toQueryString
-} from '../../../src/utils/thorest/helpers';
+import { sanitizeWebsocketBaseURL, toQueryString } from '../../../src';
 
 /**
  * Thorest Helpers test suite
