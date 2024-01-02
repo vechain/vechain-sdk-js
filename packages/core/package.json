@@ -7,11 +7,15 @@
     "license": "MIT",
     "scripts": {
         "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
+
         "lint": "eslint --ext .ts src --ext .ts tests",
+        "format": "prettier --write src/**/*.ts tests/**/*.ts",
+
         "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
+
         "test:integration": "export JEST_INTEGRATION=true; rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
-        "test": "export JEST_INTEGRATION=true; rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
-        "format": "prettier --write src/**/*.ts tests/**/*.ts"
+
+        "test": "export JEST_INTEGRATION=true; rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
     },
     "dependencies": {
         "@ethereumjs/rlp": "^5.0.0",

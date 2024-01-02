@@ -6,12 +6,23 @@
     "types": "dist/index.d.ts",
     "license": "MIT",
     "scripts": {
+        "start-thor-solo": "echo 'Starting thor solo node ...\n' && docker compose up -d --wait && echo '\nThor solo node started'",
+        "stop-thor-solo": "docker compose down && echo '\nThor solo node stopped'",
+
         "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
+
         "lint": "eslint --ext .ts src --ext .ts tests",
+        "format": "prettier --write src/**/*.ts tests/**/*.ts",
+
         "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
+
+        "pretest:integration": "if [ $RUN_BY_ROOT_PACKAGE -eq 1 ]; then echo 'Thor solo already executed by root package.json...'; else yarn start-thor-solo; fi",
         "test:integration": "export JEST_INTEGRATION=true; rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
+        "posttest:integration": "if [ $RUN_BY_ROOT_PACKAGE -eq 1 ]; then echo 'Thor solo will be stopped by root package.json...'; else yarn stop-thor-solo; fi",
+
+        "pretest": "if [ $RUN_BY_ROOT_PACKAGE -eq 1 ]; then echo 'Thor solo already executed by root package.json...'; else yarn start-thor-solo; fi",
         "test": "export JEST_INTEGRATION=true; rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
-        "format": "prettier --write src/**/*.ts tests/**/*.ts"
+        "posttest": "if [ $RUN_BY_ROOT_PACKAGE -eq 1 ]; then echo 'Thor solo will be stopped by root package.json...'; else yarn stop-thor-solo; fi"
     },
     "dependencies": {
         "@vechainfoundation/vechain-sdk-errors": "*",

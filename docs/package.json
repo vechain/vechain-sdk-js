@@ -4,6 +4,9 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
+    "start-thor-solo": "echo 'Starting thor solo node ...\n' && docker compose up -d --wait && echo '\nThor solo node started'",
+    "stop-thor-solo": "docker compose down && echo '\nThor solo node stopped'",
+
     "build": "find . -name \"*.md\" -type f -maxdepth 1 ! -name \"README.md\" -delete && tsup ./build-scripts && node dist/builddocs.cjs",
 
     "pretest:examples": "if [ $RUN_BY_ROOT_PACKAGE -eq 1 ]; then echo 'Thor solo already executed by root package.json...'; else yarn start-thor-solo; fi",
