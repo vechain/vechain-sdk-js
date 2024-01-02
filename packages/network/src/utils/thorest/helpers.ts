@@ -1,4 +1,5 @@
 import { DATA, buildError } from '@vechainfoundation/vechain-sdk-errors';
+import { HTTP_REGEX, HTTPS_REGEX } from '../const';
 
 /**
  * Generates a query string from a record of key-value pairs.
@@ -48,7 +49,10 @@ const sanitizeWebsocketBaseURL = (url: string): string => {
     url = url.replace(/\/$/, '');
 
     // Replace http with ws and https with wss
-    url = url.replace(/^http/, 'ws').replace(/^https/, 'wss');
+    url =
+        url.match(HTTP_REGEX) !== null
+            ? url.replace(HTTP_REGEX, 'ws://')
+            : url.replace(HTTPS_REGEX, 'wss://');
 
     return url;
 };
