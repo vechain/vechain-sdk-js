@@ -18,7 +18,7 @@ describe('Integration tests to check the Node health check for different scenari
         const peerNodes = await thorClient.nodes.getNodes();
         expect(peerNodes).toBeDefined();
         expect(Array.isArray(peerNodes)).toBe(true);
-    });
+    }, 3000);
 
     test('valid URL but inaccessible vechain node', async () => {
         /**
@@ -31,7 +31,7 @@ describe('Integration tests to check the Node health check for different scenari
         );
 
         thorClient.destroy();
-    });
+    }, 3000);
 
     test('invalid URL', async () => {
         /**

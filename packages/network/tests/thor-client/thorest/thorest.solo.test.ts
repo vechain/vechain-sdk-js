@@ -22,7 +22,7 @@ describe('ThorestClient', () => {
     test('getBestBlock method', async () => {
         const bestBlock = await thorClient.blocks.getBestBlock();
         expect(bestBlock).toBeDefined();
-    });
+    }, 3000);
 
     test('getBlock method', async () => {
         const bestBlock = await thorClient.blocks.getBestBlock();
@@ -30,5 +30,5 @@ describe('ThorestClient', () => {
             const block = await thorClient.blocks.getBlock(bestBlock.number);
             expect(block?.number).toBe(bestBlock.number);
         }
-    });
+    }, 3000);
 });

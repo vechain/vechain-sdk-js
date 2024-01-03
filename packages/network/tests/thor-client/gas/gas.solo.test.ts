@@ -29,16 +29,20 @@ describe('Gas Module', () => {
          */
         estimateGasTestCases.revert.forEach(
             ({ description, clauses, caller, options, expected }) => {
-                test(description, async () => {
-                    const result = await thorSoloClient.gas.estimateGas(
-                        clauses,
-                        caller,
-                        options
-                    );
+                test(
+                    description,
+                    async () => {
+                        const result = await thorSoloClient.gas.estimateGas(
+                            clauses,
+                            caller,
+                            options
+                        );
 
-                    expect(result).toBeDefined();
-                    expect(result).toStrictEqual(expected);
-                });
+                        expect(result).toBeDefined();
+                        expect(result).toStrictEqual(expected);
+                    },
+                    3000
+                );
             }
         );
 
@@ -47,16 +51,20 @@ describe('Gas Module', () => {
          */
         estimateGasTestCases.success.forEach(
             ({ description, clauses, caller, options, expected }) => {
-                test(description, async () => {
-                    const result = await thorSoloClient.gas.estimateGas(
-                        clauses,
-                        caller,
-                        options
-                    );
+                test(
+                    description,
+                    async () => {
+                        const result = await thorSoloClient.gas.estimateGas(
+                            clauses,
+                            caller,
+                            options
+                        );
 
-                    expect(result).toBeDefined();
-                    expect(result).toStrictEqual(expected);
-                });
+                        expect(result).toBeDefined();
+                        expect(result).toStrictEqual(expected);
+                    },
+                    3000
+                );
             }
         );
     });

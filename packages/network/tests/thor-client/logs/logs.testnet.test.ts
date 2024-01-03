@@ -20,7 +20,7 @@ describe('ThorestClient - Logs', () => {
         const eventLogs =
             await thorClient.logs.filterEventLogs(argFilterEventLogs);
         expect(eventLogs).toStrictEqual(expectedFilterEventLogs);
-    });
+    }, 3000);
 
     /**
      * filterTransferLogs tests
@@ -30,5 +30,5 @@ describe('ThorestClient - Logs', () => {
             argFilterTransferLogs
         );
         expect(transferLogs).toStrictEqual(expectedFilterTransferLogs);
-    });
+    }, 3000);
 });
