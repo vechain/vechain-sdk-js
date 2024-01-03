@@ -10,7 +10,7 @@ import {
     testnetUrl
 } from '../../fixture';
 import { addressUtils, contract } from '@vechainfoundation/vechain-sdk-core';
-import { createThorClient } from '../nodes/fixture';
+import { HttpClient, ThorClient } from '../../../src';
 
 /**
  * Transactions module tests suite.
@@ -28,7 +28,8 @@ describe('Transactions module Testnet tests suite', () => {
         buildTransactionBodyClausesTestCases.forEach(
             ({ description, clauses, options, expected }) => {
                 test(description, async () => {
-                    const thorClient = createThorClient(testnetUrl);
+                    const testNetwork = new HttpClient(testnetUrl);
+                    const thorClient = new ThorClient(testNetwork);
                     const gasResult = await thorClient.gas.estimateGas(
                         clauses,
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address // This address might not exist on testnet, thus the gasResult.reverted might be true
@@ -70,7 +71,8 @@ describe('Transactions module Testnet tests suite', () => {
         signTransactionTestCases.testnet.correct.forEach(
             ({ description, origin, options, isDelegated, expected }) => {
                 test(description, async () => {
-                    const thorClient = createThorClient(testnetUrl);
+                    const testNetwork = new HttpClient(testnetUrl);
+                    const thorClient = new ThorClient(testNetwork);
                     const sampleClause =
                         contract.clauseBuilder.functionInteraction(
                             TEST_CONTRACT_ADDRESS,

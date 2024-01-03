@@ -9,11 +9,10 @@ import {
 import {
     blockWithMissingTimeStamp,
     blockWithOldTimeStamp,
-    blockWithInvalidTimeStampFormat,
-    createThorClient
+    blockWithInvalidTimeStampFormat
 } from './fixture';
 import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
-import { HttpClient, type ThorClient } from '../../../src';
+import { HttpClient, ThorClient } from '../../../src';
 
 /**
  * Node integration tests
@@ -24,19 +23,20 @@ describe('Integration tests to check the Node health check is working for differ
     // ThorClient instance
     let thorClient: ThorClient;
 
-    beforeEach(() => {
-        thorClient = createThorClient(URL);
-    });
-
-    afterEach(() => {
-        thorClient.destroy();
-    });
-
     /**
      *  @internal
      *  a well-formed URL to ensure we get to the axios call in the node health check
      */
     const URL = 'http://example.com';
+
+    beforeEach(() => {
+        const soloNetwork = new HttpClient(URL);
+        thorClient = new ThorClient(soloNetwork);
+    });
+
+    afterEach(() => {
+        thorClient.destroy();
+    });
 
     test('valid URL/node but Error is thrown by network provider', async () => {
         // Mock an error on the HTTPClient
