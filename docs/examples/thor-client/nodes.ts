@@ -10,7 +10,8 @@ const thorClient = new ThorClient(testNetwork);
 // 2 - Retrieves connected peers of a node
 
 const peerNodes = await thorClient.nodes.getNodes();
-expect(peerNodes).toBeDefined();
 
 // Destroying the Thor client
 thorClient.destroy();
+
+expect(peerNodes).toBeDefined();

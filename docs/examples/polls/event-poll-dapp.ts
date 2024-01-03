@@ -32,6 +32,8 @@ for (const account of accounts) {
         // Add listeners for stop event
         .onStop((eventPoll) => {
             console.log(`Stop monitoring account ${account}`, eventPoll);
+            // Destroying the Thor client
+            thorClient.destroy();
         })
 
         // Add listeners for data event. It intercepts the account details every 1 second
@@ -49,6 +51,3 @@ for (const account of accounts) {
 
     monitoringPoll.startListen();
 }
-
-// Destroying the Thor client
-thorClient.destroy();
