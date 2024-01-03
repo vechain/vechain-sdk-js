@@ -133,6 +133,12 @@ describe('Blocks Module', () => {
          */
         test('getBestBlock', async () => {
             const blockDetails = await thorClient.blocks.getBestBlock();
+            if (blockDetails != null) {
+                const block = await thorClient.blocks.getBlock(
+                    blockDetails.number
+                );
+                expect(block?.number).toBe(blockDetails.number);
+            }
             expect(blockDetails).not.toBeNull();
             expect(blockDetails).toBeDefined();
         }, 3000);
