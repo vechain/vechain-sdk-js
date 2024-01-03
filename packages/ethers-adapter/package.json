@@ -6,10 +6,8 @@
     "types": "dist/index.d.ts",
     "license": "MIT",
     "scripts": {
-        "start-thor-solo": "echo 'Starting thor solo node ...\n' && docker compose up -d --wait && echo '\nThor solo node started'",
-        "stop-thor-solo": "docker compose down && echo '\nThor solo node stopped'",
-        "start-thor-solo:conditionally": "if [ $RUN_BY_ROOT_PACKAGE -eq 1 ]; then echo 'Thor solo already executed by root package.json...'; else yarn start-thor-solo; fi",
-        "stop-thor-solo:conditionally": "if [ $RUN_BY_ROOT_PACKAGE -eq 1 ]; then echo 'Thor solo will be stopped by root package.json...'; else yarn stop-thor-solo; fi",
+        "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose up -d --wait && echo '\nThor solo node started ...'",
+        "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose down && echo 'Thor solo node stopped ...'",
 
         "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
 
@@ -18,11 +16,11 @@
 
         "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
 
-        "pretest:integration": "yarn start-thor-solo:conditionally",
-        "test:integration": "if ! (rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration); then yarn stop-thor-solo:conditionally; exit 1; fi",
+        "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
+        "test:integration:solo": "(yarn start-thor-solo && yarn test:integration) || yarn stop-thor-solo",
 
-        "pretest": "yarn start-thor-solo:conditionally",
-        "test": "if ! (rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit); then yarn stop-thor-solo:conditionally; exit 1; fi"
+        "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
+        "test:solo": "(yarn start-thor-solo && yarn test) || yarn stop-thor-solo"
     },
     "dependencies": {
         "@vechainfoundation/vechain-sdk-errors": "*",

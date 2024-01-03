@@ -6,8 +6,8 @@
     "author": "vechain Foundation",
     "license": "MIT",
     "scripts": {
-        "start-thor-solo": "echo 'Starting thor solo node ...\n' && docker compose up -d --wait && echo '\nThor solo node started'",
-        "stop-thor-solo": "docker compose down && echo '\nThor solo node stopped'",
+        "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose up -d --wait && echo '\nThor solo node started ...'",
+        "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose down && echo 'Thor solo node stopped ...'",
 
         "postinstall": "husky install",
 
@@ -21,17 +21,14 @@
 
         "test:unit": "turbo test:unit",
 
-        "pretest:integration": "yarn start-thor-solo",
-        "test:integration": "export RUN_BY_ROOT_PACKAGE=1; turbo test:integration",
-        "posttest:integration": "yarn stop-thor-solo",
+        "test:integration": "turbo test:integration",
+        "test:integration:solo": "(yarn start-thor-solo && yarn test:integration) || yarn stop-thor-solo",
 
-        "pretest:examples": "yarn start-thor-solo",
-        "test:examples": "export RUN_BY_ROOT_PACKAGE=true; turbo test:examples",
-        "posttest:examples": "yarn stop-thor-solo",
+        "test:examples": "turbo test:examples",
+        "test:examples:solo": "(yarn start-thor-solo && yarn test:examples) || yarn stop-thor-solo",
 
-        "pretest": "yarn start-thor-solo",
-        "test": "export RUN_BY_ROOT_PACKAGE=true; turbo test --force",
-        "posttest": "yarn stop-thor-solo",
+        "test": "turbo test --force",
+        "test:solo": "(yarn start-thor-solo && yarn test) || yarn stop-thor-solo",
 
         "merge-coverage": "ts-node scripts/merge-coverage.ts"
     },
