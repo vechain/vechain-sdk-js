@@ -85,6 +85,6 @@ describe('ThorestClient - Accounts', () => {
             );
 
             expect(bytecode).toEqual(TESTING_CONTRACT_BYTECODE);
-        });
+        }, 3000);
     });
 });

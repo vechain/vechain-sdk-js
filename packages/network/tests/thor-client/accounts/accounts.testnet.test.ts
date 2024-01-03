@@ -26,15 +26,17 @@ describe('ThorestClient - Accounts', () => {
          */
         getAccountWithRevisionTestCases.forEach(
             ({ description, account, revision, expected }) => {
-                test(description, async () => {
-                    const accountDetails = await thorClient.accounts.getAccount(
-                        account,
-                        {
-                            revision
-                        }
-                    );
-                    expect(accountDetails).toEqual(expected);
-                });
+                test(
+                    description,
+                    async () => {
+                        const accountDetails =
+                            await thorClient.accounts.getAccount(account, {
+                                revision
+                            });
+                        expect(accountDetails).toEqual(expected);
+                    },
+                    3000
+                );
             }
         );
 
@@ -49,18 +51,24 @@ describe('ThorestClient - Accounts', () => {
             expect(accountDetails.energy).toBeDefined();
             expect(accountDetails.hasCode).toBeDefined();
             expect(accountDetails.hasCode).toEqual(false);
-        });
+        }, 3000);
 
         /**
          * getAccount with invalid revision & address
          */
         invalidGetAccountTests.forEach(
             ({ description, address, revision, expectedError }) => {
-                test(description, async () => {
-                    await expect(
-                        thorClient.accounts.getAccount(address, { revision })
-                    ).rejects.toThrowError(expectedError);
-                });
+                test(
+                    description,
+                    async () => {
+                        await expect(
+                            thorClient.accounts.getAccount(address, {
+                                revision
+                            })
+                        ).rejects.toThrowError(expectedError);
+                    },
+                    3000
+                );
             }
         );
     });
@@ -74,13 +82,17 @@ describe('ThorestClient - Accounts', () => {
          */
         getBytecodeTestCases.forEach(
             ({ description, address, revision, expected }) => {
-                test(description, async () => {
-                    const bytecode = await thorClient.accounts.getBytecode(
-                        address,
-                        { revision }
-                    );
-                    expect(bytecode).toEqual(expected);
-                });
+                test(
+                    description,
+                    async () => {
+                        const bytecode = await thorClient.accounts.getBytecode(
+                            address,
+                            { revision }
+                        );
+                        expect(bytecode).toEqual(expected);
+                    },
+                    3000
+                );
             }
         );
 
@@ -89,13 +101,17 @@ describe('ThorestClient - Accounts', () => {
          */
         invalidGetBytecodeTests.forEach(
             ({ description, address, revision, expectedError }) => {
-                test(description, async () => {
-                    await expect(
-                        thorClient.accounts.getBytecode(address, {
-                            revision
-                        })
-                    ).rejects.toThrowError(expectedError);
-                });
+                test(
+                    description,
+                    async () => {
+                        await expect(
+                            thorClient.accounts.getBytecode(address, {
+                                revision
+                            })
+                        ).rejects.toThrowError(expectedError);
+                    },
+                    3000
+                );
             }
         );
     });
@@ -115,7 +131,7 @@ describe('ThorestClient - Accounts', () => {
 
             expect(storageData).toBeDefined();
             expect(storageData).not.toEqual(NULL_STORAGE_SLOT);
-        });
+        }, 3000);
 
         /**
          * Tests storage data at the specified position of the smart contract with revision
@@ -129,20 +145,28 @@ describe('ThorestClient - Accounts', () => {
 
             expect(storageData).toBeDefined();
             expect(storageData).toEqual(NULL_STORAGE_SLOT);
-        });
+        }, 3000);
 
         /**
          * Tests invalid position & revisions
          */
         invalidGetStorageAtTests.forEach(
             ({ description, address, position, revision, expectedError }) => {
-                test(description, async () => {
-                    await expect(
-                        thorClient.accounts.getStorageAt(address, position, {
-                            revision
-                        })
-                    ).rejects.toThrowError(expectedError);
-                });
+                test(
+                    description,
+                    async () => {
+                        await expect(
+                            thorClient.accounts.getStorageAt(
+                                address,
+                                position,
+                                {
+                                    revision
+                                }
+                            )
+                        ).rejects.toThrowError(expectedError);
+                    },
+                    3000
+                );
             }
         );
     });
