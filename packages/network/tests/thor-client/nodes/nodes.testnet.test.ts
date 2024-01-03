@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { HTTPClientError } from '@vechainfoundation/vechain-sdk-errors';
-import { thorClient } from '../../fixture';
+import { testNetwork } from '../../fixture';
 import { HttpClient, ThorClient } from '../../../src';
 /**
  * Node integration tests
@@ -15,6 +15,7 @@ describe('Integration tests to check the Node health check for different scenari
          *  client required to access a node
          *  @internal
          */
+        const thorClient = new ThorClient(testNetwork);
         const peerNodes = await thorClient.nodes.getNodes();
         expect(peerNodes).toBeDefined();
         expect(Array.isArray(peerNodes)).toBe(true);

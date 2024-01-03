@@ -1,11 +1,12 @@
-import { describe, expect, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import {
     argFilterEventLogs,
     argFilterTransferLogs,
     expectedFilterEventLogs,
     expectedFilterTransferLogs
 } from './fixture';
-import { thorClient } from '../../fixture';
+import { ThorClient } from '../../../src';
+import { testNetwork } from '../../fixture';
 
 /**
  * ThorestClient class tests
@@ -13,6 +14,17 @@ import { thorClient } from '../../fixture';
  * @group integration/clients/thorest-client/logs
  */
 describe('ThorestClient - Logs', () => {
+    // ThorClient instance
+    let thorClient: ThorClient;
+
+    beforeEach(() => {
+        thorClient = new ThorClient(testNetwork);
+    });
+
+    afterEach(() => {
+        thorClient.destroy();
+    });
+
     /**
      * filterEventLogs tests
      */

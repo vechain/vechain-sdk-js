@@ -5,7 +5,7 @@ import {
     deployedContractAbi,
     deployedContractBytecode,
     deployedERC20Abi,
-    deployErc20Contract
+    erc20ContractBytecode
 } from './fixture';
 import {
     addressUtils,
@@ -108,7 +108,10 @@ describe('ThorClient - Contracts', () => {
      */
     test('deployErc20Contract', async () => {
         // Deploy the ERC20 contract and receive a response
-        const response = await deployErc20Contract();
+        const response = await thorSoloClient.contracts.deployContract(
+            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+            erc20ContractBytecode
+        );
 
         // Poll until the transaction receipt is available
         // This receipt includes details of the deployment transaction
@@ -150,7 +153,10 @@ describe('ThorClient - Contracts', () => {
      */
     test('Execute ERC20 contract operations', async () => {
         // Deploy an ERC20 contract and store the response which includes the transaction ID
-        const response = await deployErc20Contract();
+        const response = await thorSoloClient.contracts.deployContract(
+            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+            erc20ContractBytecode
+        );
 
         // Wait for the transaction to complete and obtain its receipt,
         // which contains details such as the contract address

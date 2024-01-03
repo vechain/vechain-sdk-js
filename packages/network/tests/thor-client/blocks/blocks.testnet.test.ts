@@ -23,6 +23,7 @@ describe('Blocks Module', () => {
     afterEach(() => {
         thorClient.destroy();
     });
+
     /**
      * Test suite for waitForBlock method
      * The waitForBlock method is tested in parallel with different options, coming from the waitForBlockTestCases array

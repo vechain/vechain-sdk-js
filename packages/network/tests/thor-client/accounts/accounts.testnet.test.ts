@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import {
     NULL_STORAGE_SLOT,
     getAccountWithRevisionTestCases,
@@ -9,7 +9,8 @@ import {
     testSmartContract,
     testStoragePositionKey
 } from './fixture';
-import { testAccount, thorClient } from '../../fixture';
+import { testAccount, testNetwork } from '../../fixture';
+import { ThorClient } from '../../../src';
 
 /**
  * ThorestClient class tests
@@ -17,6 +18,17 @@ import { testAccount, thorClient } from '../../fixture';
  * @group integration/clients/thorest-client/accounts
  */
 describe('ThorestClient - Accounts', () => {
+    // ThorClient instance
+    let thorClient: ThorClient;
+
+    beforeEach(() => {
+        thorClient = new ThorClient(testNetwork);
+    });
+
+    afterEach(() => {
+        thorClient.destroy();
+    });
+
     /**
      * getAccount tests
      */
