@@ -7,7 +7,7 @@ import { ThorClient } from '../../../src';
  *
  * @group integration/clients/thor-client/gas
  */
-describe('Gas Module', () => {
+describe('ThorClient - Gas Module', () => {
     // ThorClient instance
     let thorClient: ThorClient;
 

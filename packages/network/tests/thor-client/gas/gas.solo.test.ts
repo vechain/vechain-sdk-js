@@ -8,7 +8,7 @@ import { soloNetwork } from '../../fixture';
  *
  * @group integration/clients/thor-client/gas
  */
-describe('Gas Module', () => {
+describe('ThorClient - Gas Module', () => {
     // ThorClient instance
     let thorSoloClient: ThorClient;
 

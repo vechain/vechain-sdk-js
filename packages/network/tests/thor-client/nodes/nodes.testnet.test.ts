@@ -6,7 +6,7 @@ import { HttpClient, ThorClient } from '../../../src';
  * Node integration tests
  * @group integration/clients/thor-client/nodes
  */
-describe('Integration tests to check the Node health check for different scenarios', () => {
+describe('ThorClient - Nodes Module', () => {
     /**
      * Should return an array of nodes or an empty array
      */
@@ -17,6 +17,7 @@ describe('Integration tests to check the Node health check for different scenari
          */
         const thorClient = new ThorClient(testNetwork);
         const peerNodes = await thorClient.nodes.getNodes();
+        thorClient.destroy();
         expect(peerNodes).toBeDefined();
         expect(Array.isArray(peerNodes)).toBe(true);
     }, 3000);

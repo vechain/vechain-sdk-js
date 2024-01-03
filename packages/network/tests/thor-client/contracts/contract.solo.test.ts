@@ -22,7 +22,7 @@ import {
  *
  * @NOTE: This test suite runs on the solo network because it requires sending transactions.
  *
- * @group integration/client/thor/contracts
+ * @group integration/client/thor-client/contracts
  */
 describe('ThorClient - Contracts', () => {
     // ThorClient instance

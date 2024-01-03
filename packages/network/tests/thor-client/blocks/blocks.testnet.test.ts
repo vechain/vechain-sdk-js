@@ -12,7 +12,7 @@ import { testnetUrl } from '../../fixture';
  *
  * @group integration/clients/thor-client/blocks
  */
-describe('Blocks Module', () => {
+describe('ThorClient - Blocks Module', () => {
     // ThorClient instance
     let thorClient: ThorClient;
 

@@ -44,6 +44,8 @@ describe('Transactions module Testnet tests suite', () => {
                             options
                         );
 
+                    thorClient.destroy();
+
                     expect(txBody).toBeDefined();
                     expect(txBody.clauses).toStrictEqual(
                         expected.testnet.clauses
@@ -58,7 +60,6 @@ describe('Transactions module Testnet tests suite', () => {
                         expected.testnet.reserved
                     );
                     expect(txBody.chainTag).toBe(expected.testnet.chainTag);
-                    thorClient.destroy();
                 });
             }
         );
@@ -102,6 +103,8 @@ describe('Transactions module Testnet tests suite', () => {
                             options
                         );
 
+                    thorClient.destroy();
+
                     expect(signedTx).toBeDefined();
                     expect(signedTx.body).toMatchObject(expected.body);
                     expect(signedTx.origin).toBe(
@@ -110,7 +113,6 @@ describe('Transactions module Testnet tests suite', () => {
                     expect(signedTx.isDelegated).toBe(isDelegated);
                     expect(signedTx.isSigned).toBe(true);
                     expect(signedTx.signature).toBeDefined();
-                    thorClient.destroy();
                 });
             }
         );

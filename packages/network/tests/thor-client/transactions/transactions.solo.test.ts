@@ -28,7 +28,7 @@ import { ThorClient } from '../../../src';
  *
  * @group integration/clients/thor-client/transactions
  */
-describe('Transactions Module', () => {
+describe('ThorClient - Transactions Module', () => {
     // ThorClient instance for the Solo network
     let thorSoloClient: ThorClient;
 

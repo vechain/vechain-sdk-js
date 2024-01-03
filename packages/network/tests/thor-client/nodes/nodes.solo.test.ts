@@ -19,7 +19,7 @@ import { HttpClient, ThorClient } from '../../../src';
  * @group integration/clients/thor-client/nodes
  *
  */
-describe('Integration tests to check the Node health check is working for different scenarios', () => {
+describe('ThorClient - Nodes Module', () => {
     // ThorClient instance
     let thorClient: ThorClient;
 

@@ -13,11 +13,11 @@ import { testAccount, testNetwork } from '../../fixture';
 import { ThorClient } from '../../../src';
 
 /**
- * ThorestClient class tests
+ * ThorClient class tests
  *
- * @group integration/clients/thorest-client/accounts
+ * @group integration/clients/thor-client/accounts
  */
-describe('ThorestClient - Accounts', () => {
+describe('ThorClient - Accounts Module', () => {
     // ThorClient instance
     let thorClient: ThorClient;
 
