@@ -243,7 +243,7 @@ describe('Transactions Module', () => {
                         contract.clauseBuilder.functionInteraction(
                             TEST_CONTRACT_ADDRESS,
                             TESTING_CONTRACT_ABI,
-                            'setStateVariable',
+                            'deposit',
                             [123]
                         );
 

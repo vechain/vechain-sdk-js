@@ -7,6 +7,7 @@ import {
     type BytesLike
 } from './types';
 import { ABI, buildError, assert } from '@vechainfoundation/vechain-sdk-errors';
+import { sanitizeValuesToEncode } from './helpers/fragment';
 
 /**
  * Allowed formats for the signature.
@@ -161,10 +162,12 @@ class Event<ABIType> {
         try {
             this.fragment = ethers.EventFragment.from(source);
             this.iface = new ethers.Interface([this.fragment]);
-        } catch {
+        } catch (e) {
             throw buildError(
                 ABI.INVALID_EVENT,
-                'Initialization failed: Event fragment creation not possible due to invalid ABI data format.'
+                'Initialization failed: Event fragment creation not possible due to invalid ABI data format.',
+                { source },
+                e
             );
         }
     }
@@ -202,10 +205,12 @@ class Event<ABIType> {
                 data.data,
                 data.topics
             );
-        } catch {
+        } catch (e) {
             throw buildError(
                 ABI.INVALID_DATA_TO_DECODE,
-                'Decoding failed: Data and topics must be correctly formatted for ABI-compliant decoding.'
+                'Decoding failed: Data and topics must be correctly formatted for ABI-compliant decoding.',
+                { data },
+                e
             );
         }
     }
@@ -223,10 +228,45 @@ class Event<ABIType> {
     } {
         try {
             return this.iface.encodeEventLog(this.fragment, dataToEncode);
-        } catch {
+        } catch (e) {
             throw buildError(
                 ABI.INVALID_DATA_TO_ENCODE,
-                'Encoding failed: Event data must be correctly formatted for ABI-compliant encoding.'
+                'Encoding failed: Event data must be correctly formatted for ABI-compliant encoding.',
+                { dataToEncode },
+                e
+            );
+        }
+    }
+
+    /**
+     * Encode event log topics using the event's ABI.
+     *
+     * @param valuesToEncode - values to encode as topics. Non-indexed values are ignored.
+     *                         Only the values of the indexed parameters are needed.
+     *
+     * @returns Encoded topics array.
+     */
+    public encodeFilterTopics<TValue>(
+        valuesToEncode: TValue[]
+    ): Array<string | undefined> {
+        try {
+            // Sanitize the values to encode
+            const sanitizedValuesToEncode = sanitizeValuesToEncode(
+                valuesToEncode,
+                this.fragment
+            );
+
+            return this.iface
+                .encodeFilterTopics(this.fragment, sanitizedValuesToEncode)
+                .map((topic) => topic ?? undefined) as Array<
+                string | undefined
+            >;
+        } catch (e) {
+            throw buildError(
+                ABI.INVALID_DATA_TO_ENCODE,
+                'Encoding topics failed: Event topics values must be correctly formatted for ABI-compliant encoding.',
+                { valuesToEncode },
+                e
             );
         }
     }

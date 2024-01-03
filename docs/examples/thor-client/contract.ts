@@ -1,14 +1,13 @@
 import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-// Url of the local solo network
-const _testnetUrl = 'http://localhost:8669/';
+// 1 - Create thor client for solo network
 
-// Solo network instance
-const soloNetwork = new HttpClient(_testnetUrl);
-
-// Thor client solo instance
+const _soloUrl = 'http://localhost:8669/';
+const soloNetwork = new HttpClient(_soloUrl);
 const thorSoloClient = new ThorClient(soloNetwork);
+
+// 2 - Deploy contract
 
 const privateKeyDeployer =
     '706e6acd567fdc22db54aead12cb39db01c4832f149f95299aa8dd8bef7d28ff'; // Private key of a test account with VTHO (energy) to pay for the deployment
