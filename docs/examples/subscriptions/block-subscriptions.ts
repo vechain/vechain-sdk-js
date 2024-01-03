@@ -8,7 +8,7 @@ const testnetUrl = 'https://testnet.vechain.org';
 const wsURL = subscriptions.getBlockSubscriptionUrl(testnetUrl);
 
 // Any websocket library can be used to connect to the websocket
-const ws = new WebSocket(wsURL, {});
+const ws = new WebSocket(wsURL);
 
 // Simple websocket event handlers
 
