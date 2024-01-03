@@ -4,10 +4,15 @@ import { expect } from 'expect';
 import {
     erc20ContractABI,
     erc20ContractBytecode,
-    privateKeyDeployer,
-    thorSoloClient
+    privateKeyDeployer
 } from './fixture.js';
 import { addressUtils } from '@vechainfoundation/vechain-sdk-core';
+import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+
+// Create thor client for solo network
+const _soloUrl = 'http://localhost:8669/';
+const soloNetwork = new HttpClient(_soloUrl);
+const thorSoloClient = new ThorClient(soloNetwork);
 
 // Deploying the ERC20 contract using the Thor client and the deployer's private key
 const transaction = await thorSoloClient.contracts.deployContract(
@@ -33,3 +38,6 @@ const balance = await thorSoloClient.contracts.executeContractCall(
 
 // Asserting that the initial balance of the deployer is the expected amount (1e24)
 expect(parseInt(balance, 16)).toEqual(1e24);
+
+// Destroying the Thor client
+thorSoloClient.destroy();

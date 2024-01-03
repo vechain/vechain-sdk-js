@@ -1,11 +1,35 @@
 import {
     erc20ContractABI,
-    privateKeyDeployer,
-    setupERC20Contract,
-    thorSoloClient
+    erc20ContractBytecode,
+    privateKeyDeployer
 } from './fixture.js';
-import { TransactionReceipt } from '@vechainfoundation/vechain-sdk-network';
+import {
+    HttpClient,
+    ThorClient,
+    type TransactionReceipt
+} from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
+
+// Create thor client for solo network
+const _soloUrl = 'http://localhost:8669/';
+const soloNetwork = new HttpClient(_soloUrl);
+const thorSoloClient = new ThorClient(soloNetwork);
+
+// Defining a function for deploying the ERC20 contract
+const setupERC20Contract = async () => {
+    // Deploying the ERC20 contract using the Thor client and the deployer's private key
+    const transaction = await thorSoloClient.contracts.deployContract(
+        privateKeyDeployer,
+        erc20ContractBytecode
+    );
+
+    // Awaiting the transaction receipt to confirm successful contract deployment
+    const receipt = await thorSoloClient.transactions.waitForTransaction(
+        transaction.id
+    );
+
+    return receipt.outputs[0].contractAddress;
+};
 
 // Setting up the ERC20 contract and getting its address
 const contractAddress = await setupERC20Contract();
@@ -28,3 +52,6 @@ const transactionReceiptTransfer =
 
 // Asserting that the transaction has not been reverted
 expect(transactionReceiptTransfer.reverted).toEqual(false);
+
+// Destroying the Thor client
+thorSoloClient.destroy();

@@ -11,3 +11,6 @@ const thorClient = new ThorClient(testNetwork);
 
 const peerNodes = await thorClient.nodes.getNodes();
 expect(peerNodes).toBeDefined();
+
+// Destroying the Thor client
+thorClient.destroy();

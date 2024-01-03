@@ -49,3 +49,6 @@ for (const account of accounts) {
 
     monitoringPoll.startListen();
 }
+
+// Destroying the Thor client
+thorClient.destroy();

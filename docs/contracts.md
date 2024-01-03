@@ -42,7 +42,7 @@ This example provides a practical demonstration of utilizing the vechain SDK to 
 This example demonstrates the process of building a clause to call a function on a deployed smart contract using the vechain SDK.
 
 ```typescript { name=contract-function-call, category=example }
-import { networkInfo, contract } from '@vechainfoundation/vechain-sdk-core';
+import { contract } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Init a simple contract ABI
@@ -145,10 +145,15 @@ import { expect } from 'expect';
 import {
     erc20ContractABI,
     erc20ContractBytecode,
-    privateKeyDeployer,
-    thorSoloClient
+    privateKeyDeployer
 } from './fixture.js';
 import { addressUtils } from '@vechainfoundation/vechain-sdk-core';
+import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+
+// Create thor client for solo network
+const _soloUrl = 'http://localhost:8669/';
+const soloNetwork = new HttpClient(_soloUrl);
+const thorSoloClient = new ThorClient(soloNetwork);
 
 // Deploying the ERC20 contract using the Thor client and the deployer's private key
 const transaction = await thorSoloClient.contracts.deployContract(
@@ -175,6 +180,9 @@ const balance = await thorSoloClient.contracts.executeContractCall(
 // Asserting that the initial balance of the deployer is the expected amount (1e24)
 expect(parseInt(balance, 16)).toEqual(1e24);
 
+// Destroying the Thor client
+thorSoloClient.destroy();
+
 ```
 
 
@@ -185,12 +193,36 @@ Once the contract is deployed, we can transfer tokens to another address using t
 ```typescript { name=contract-transfer-erc20-token, category=example }
 import {
     erc20ContractABI,
-    privateKeyDeployer,
-    setupERC20Contract,
-    thorSoloClient
+    erc20ContractBytecode,
+    privateKeyDeployer
 } from './fixture.js';
-import { TransactionReceipt } from '@vechainfoundation/vechain-sdk-network';
+import {
+    HttpClient,
+    ThorClient,
+    type TransactionReceipt
+} from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
+
+// Create thor client for solo network
+const _soloUrl = 'http://localhost:8669/';
+const soloNetwork = new HttpClient(_soloUrl);
+const thorSoloClient = new ThorClient(soloNetwork);
+
+// Defining a function for deploying the ERC20 contract
+const setupERC20Contract = async () => {
+    // Deploying the ERC20 contract using the Thor client and the deployer's private key
+    const transaction = await thorSoloClient.contracts.deployContract(
+        privateKeyDeployer,
+        erc20ContractBytecode
+    );
+
+    // Awaiting the transaction receipt to confirm successful contract deployment
+    const receipt = await thorSoloClient.transactions.waitForTransaction(
+        transaction.id
+    );
+
+    return receipt.outputs[0].contractAddress;
+};
 
 // Setting up the ERC20 contract and getting its address
 const contractAddress = await setupERC20Contract();
@@ -213,6 +245,9 @@ const transactionReceiptTransfer =
 
 // Asserting that the transaction has not been reverted
 expect(transactionReceiptTransfer.reverted).toEqual(false);
+
+// Destroying the Thor client
+thorSoloClient.destroy();
 
 ```
 
