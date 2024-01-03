@@ -225,7 +225,7 @@ describe('ThorClient - Contracts', () => {
 
         // Assertion: Compare with the expected deployed contract bytecode
         expect(contractBytecodeResponse).toBe(deployedContractBytecode);
-    });
+    }, 10000);
 
     /**
      * Test case for deploying a smart contract using the deployContract method.
@@ -285,6 +285,6 @@ describe('ThorClient - Contracts', () => {
                 '0x00000000000000000000000000000000000000000000000000038d7ea4c68000'
             );
             expect(Number(baseGasPrice)).toBe(10 ** 15); // 10^15 wei
-        });
+        }, 3000);
     });
 });

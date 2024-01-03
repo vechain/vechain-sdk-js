@@ -5,7 +5,7 @@ import {
     waitForBlockTestCases
 } from './fixture';
 import { HttpClient, Poll, ThorClient } from '../../../src';
-import { _testnetUrl } from '../../fixture';
+import { testnetUrl } from '../../fixture';
 
 /**
  * Blocks Module integration tests
@@ -17,7 +17,7 @@ describe('Blocks Module', () => {
     let thorClient: ThorClient;
 
     beforeEach(() => {
-        thorClient = new ThorClient(new HttpClient(_testnetUrl));
+        thorClient = new ThorClient(new HttpClient(testnetUrl));
     });
 
     afterEach(() => {
