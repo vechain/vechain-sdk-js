@@ -14,6 +14,7 @@ The vechain SDK Error package is specifically designed to handle custom errors s
 - **Test:unit**: Execute `yarn test:unit` to run unit tests.
 - **Test:integration**: Execute `yarn test:integration` to run integration tests.
 - **Test**: Execute `yarn test` to run all tests on the package.
+   - **NOTE**: Tests and Integration tests require thor-solo to be running locally. You can run and stop separately thor solo node with `yarn start-thor-solo` and `yarn stop-thor-solo` or run all tests with `yarn test:solo` which will start thor solo node, run all tests and stop thor solo at the end. Same for integration tests. You can directly run `yarn test:integration:solo` to run integration tests with thor solo.
 
 ## Usage
 

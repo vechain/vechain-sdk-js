@@ -6,19 +6,31 @@
     "author": "vechain Foundation",
     "license": "MIT",
     "scripts": {
+        "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose up -d --wait && echo '\nThor solo node started ...'",
+        "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose down && echo 'Thor solo node stopped ...'",
+
         "postinstall": "husky install",
+
         "build": "turbo build",
-        "lint": "turbo lint",
-        "start-thor-solo": "echo 'Starting thor solo node ...\n' && docker compose up -d --wait && echo '\nThor solo node started'",
-        "stop-thor-solo": "docker compose down && echo '\nThor solo node stopped'",
-        "test": "(yarn start-thor-solo && turbo test --force && yarn merge-coverage) && (yarn stop-thor-solo) || (yarn stop-thor-solo)",
-        "test:unit": "turbo test:unit",
-        "test:integration": "(yarn start-thor-solo && turbo test:integration) && (yarn stop-thor-solo) || (yarn stop-thor-solo)",
-        "format": "turbo format",
-        "test:examples": "(yarn start-thor-solo && turbo test:examples) && (yarn stop-thor-solo) || (yarn stop-thor-solo)",
-        "merge-coverage": "ts-node scripts/merge-coverage.ts",
+
         "generate:apidocs": "typedoc --options typedoc.json --logLevel Error",
-        "generate:apidocs-debug": "typedoc --options typedoc.json --logLevel Verbose --plugin typedoc-plugin-missing-exports --validation.notDocumented"
+        "generate:apidocs-debug": "typedoc --options typedoc.json --logLevel Verbose --plugin typedoc-plugin-missing-exports --validation.notDocumented",
+
+        "lint": "turbo lint",
+        "format": "turbo format",
+
+        "test:unit": "turbo test:unit",
+
+        "test:integration": "turbo test:integration",
+        "test:integration:solo": "(yarn start-thor-solo && yarn test:integration) || yarn stop-thor-solo",
+
+        "test:examples": "turbo test:examples",
+        "test:examples:solo": "(yarn start-thor-solo && yarn test:examples) || yarn stop-thor-solo",
+
+        "test": "turbo test --force",
+        "test:solo": "(yarn start-thor-solo && yarn test) || yarn stop-thor-solo",
+
+        "merge-coverage": "ts-node scripts/merge-coverage.ts"
     },
     "private": true,
     "workspaces": [

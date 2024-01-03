@@ -41,7 +41,7 @@ describe('Subscriptions Testnet', () => {
 
                     // Test the connection to the websocket
                     await testWebSocketConnection(expectedURL);
-                });
+                }, 10000);
             }
         );
     });

@@ -31,6 +31,9 @@ To run the scripts within /examples as tests, use:
 yarn test:examples
 ```
 
+**NOTE**: Tests require thor-solo to be running locally. You can run and stop separately thor solo node with `yarn start-thor-solo` and `yarn stop-thor-solo` or run all tests with `yarn test:examples:solo` which will start thor solo node, run all tests and stop thor solo at the end.
+
+
 ### Build Documentation
 
 To build the documentation, expanding examples into code snippets, use:
