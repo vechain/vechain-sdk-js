@@ -46,5 +46,9 @@ jobs:
       uses: ./.github/workflows/sonar.yml
       secrets: inherit
       needs: unit-integration-test
-            
-    
+
+    qodana-scan:
+        uses: ./.github/workflows/qodana.yml
+        secrets: inherit
+        needs: unit-integration-test
+
