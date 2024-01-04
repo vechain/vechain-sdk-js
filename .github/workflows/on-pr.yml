@@ -5,6 +5,10 @@ on:
     branches:
       - main
 
+concurrency:
+    group: ${{ github.head_ref || github.ref_name }}-pr-checks
+    cancel-in-progress: true
+
 jobs:
     doc-examples:
         name: Execute doc examples
