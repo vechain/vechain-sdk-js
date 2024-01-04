@@ -45,5 +45,5 @@ jobs:
         run: |
           echo "Failed Qodana Scan"
           ls -la
-          ls -la ./logs
-          cat ./logs/*
+          ls -la .qodana
+          cat .qodana/logs/*
