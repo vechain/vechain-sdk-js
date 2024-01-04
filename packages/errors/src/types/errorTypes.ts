@@ -105,15 +105,15 @@ type DataType<ErrorCodeT extends ErrorCode> =
             ErrorCodeT extends POLL_ERROR.POLL_EXECUTION_ERROR
             ? PollErrorData
             : // EIP1193
-              ErrorCodeT extends EIP1193.CODE_4001
+              ErrorCodeT extends EIP1193.USER_REJECTED_REQUEST
               ? EIP1193ProviderRpcErrorData
-              : ErrorCodeT extends EIP1193.CODE_4100
+              : ErrorCodeT extends EIP1193.UNAUTHORIZED
                 ? EIP1193ProviderRpcErrorData
-                : ErrorCodeT extends EIP1193.CODE_4200
+                : ErrorCodeT extends EIP1193.UNSUPPORTED_METHOD
                   ? EIP1193ProviderRpcErrorData
-                  : ErrorCodeT extends EIP1193.CODE_4900
+                  : ErrorCodeT extends EIP1193.DISCONNECTED
                     ? EIP1193ProviderRpcErrorData
-                    : ErrorCodeT extends EIP1193.CODE_4901
+                    : ErrorCodeT extends EIP1193.CHAIN_DISCONNECTED
                       ? EIP1193ProviderRpcErrorData
                       : // DEFAULT
                         DefaultErrorData;
@@ -224,15 +224,15 @@ type ErrorType<ErrorCodeT> =
                                                                       ErrorCodeT extends POLL_ERROR.POLL_EXECUTION_ERROR
                                                                       ? PollExecutionError
                                                                       : // EIP1193
-                                                                        ErrorCodeT extends EIP1193.CODE_4001
+                                                                        ErrorCodeT extends EIP1193.USER_REJECTED_REQUEST
                                                                         ? EIP1193UserRejectedRequest
-                                                                        : ErrorCodeT extends EIP1193.CODE_4100
+                                                                        : ErrorCodeT extends EIP1193.UNAUTHORIZED
                                                                           ? EIP1193Unauthorized
-                                                                          : ErrorCodeT extends EIP1193.CODE_4200
+                                                                          : ErrorCodeT extends EIP1193.UNSUPPORTED_METHOD
                                                                             ? EIP1193UnsupportedMethod
-                                                                            : ErrorCodeT extends EIP1193.CODE_4900
+                                                                            : ErrorCodeT extends EIP1193.DISCONNECTED
                                                                               ? EIP1193Disconnected
-                                                                              : ErrorCodeT extends EIP1193.CODE_4901
+                                                                              : ErrorCodeT extends EIP1193.CHAIN_DISCONNECTED
                                                                                 ? EIP1193ChainDisconnected
                                                                                 : ErrorCodeT extends FUNCTION.NOT_IMPLEMENTED
                                                                                   ? NotImplementedError
@@ -315,11 +315,11 @@ const ErrorClassMap = new Map<
     [FUNCTION.NOT_IMPLEMENTED, NotImplementedError],
 
     // EIP1193
-    [EIP1193.CODE_4001, EIP1193UserRejectedRequest],
-    [EIP1193.CODE_4100, EIP1193Unauthorized],
-    [EIP1193.CODE_4200, EIP1193UnsupportedMethod],
-    [EIP1193.CODE_4900, EIP1193Disconnected],
-    [EIP1193.CODE_4901, EIP1193ChainDisconnected]
+    [EIP1193.USER_REJECTED_REQUEST, EIP1193UserRejectedRequest],
+    [EIP1193.UNAUTHORIZED, EIP1193Unauthorized],
+    [EIP1193.UNSUPPORTED_METHOD, EIP1193UnsupportedMethod],
+    [EIP1193.DISCONNECTED, EIP1193Disconnected],
+    [EIP1193.CHAIN_DISCONNECTED, EIP1193ChainDisconnected]
 ]);
 
 export {

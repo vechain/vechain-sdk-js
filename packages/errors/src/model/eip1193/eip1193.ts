@@ -12,18 +12,6 @@ import { ErrorBase } from '../base';
  * @NOTE: code parameter is required to be fully compatible with EIP-1193.
  * When we will throw error, we will use EIP1193.CODE_..., but for syntactic sugar
  * we will have code as number into error data.
- *
- * @example
- * ```typescript
- * // ... some code that throw errors ...
- *
- * throw buildError(
- *     EIP1193.CODE_4001,
- *     4001, // <- this is required to be fully compatible with EIP-1193
- *     { ... User Rejected Request ... },
- * );
- *
- * ```
  */
 interface EIP1193ProviderRpcErrorData {
     code: number;
@@ -34,7 +22,7 @@ interface EIP1193ProviderRpcErrorData {
  * The user rejected the request.
  */
 class EIP1193UserRejectedRequest extends ErrorBase<
-    EIP1193.CODE_4001,
+    EIP1193.USER_REJECTED_REQUEST,
     EIP1193ProviderRpcErrorData
 > {}
 
@@ -42,7 +30,7 @@ class EIP1193UserRejectedRequest extends ErrorBase<
  * The requested method and/or account has not been authorized by the user.
  */
 class EIP1193Unauthorized extends ErrorBase<
-    EIP1193.CODE_4100,
+    EIP1193.UNAUTHORIZED,
     EIP1193ProviderRpcErrorData
 > {}
 
@@ -50,7 +38,7 @@ class EIP1193Unauthorized extends ErrorBase<
  * The Provider does not support the requested method.
  */
 class EIP1193UnsupportedMethod extends ErrorBase<
-    EIP1193.CODE_4200,
+    EIP1193.UNSUPPORTED_METHOD,
     EIP1193ProviderRpcErrorData
 > {}
 
@@ -58,7 +46,7 @@ class EIP1193UnsupportedMethod extends ErrorBase<
  * The Provider is disconnected from all chains.
  */
 class EIP1193Disconnected extends ErrorBase<
-    EIP1193.CODE_4900,
+    EIP1193.DISCONNECTED,
     EIP1193ProviderRpcErrorData
 > {}
 
@@ -70,7 +58,7 @@ class EIP1193Disconnected extends ErrorBase<
  * In other words, 4901 implies that the Provider is connected to other chains, just not the requested one.
  */
 class EIP1193ChainDisconnected extends ErrorBase<
-    EIP1193.CODE_4901,
+    EIP1193.CHAIN_DISCONNECTED,
     EIP1193ProviderRpcErrorData
 > {}
 
@@ -83,22 +71,22 @@ enum EIP1193 {
     /**
      * The user rejected the request.
      */
-    CODE_4001 = 'User Rejected Request',
+    USER_REJECTED_REQUEST = 'USER_REJECTED_REQUEST',
 
     /**
      * The requested method and/or account has not been authorized by the user.
      */
-    CODE_4100 = 'Unauthorized',
+    UNAUTHORIZED = 'UNAUTHORIZED',
 
     /**
      * The Provider does not support the requested method.
      */
-    CODE_4200 = 'Unsupported Method',
+    UNSUPPORTED_METHOD = 'UNSUPPORTED METHOD',
 
     /**
      * The Provider is disconnected from all chains.
      */
-    CODE_4900 = 'Disconnected',
+    DISCONNECTED = 'DISCONNECTED',
 
     /**
      * The Provider is not connected to the requested chain.
@@ -107,7 +95,7 @@ enum EIP1193 {
      * while 4901 is intended to indicate that the Provider is disconnected from a specific chain only.
      * In other words, 4901 implies that the Provider is connected to other chains, just not the requested one.
      */
-    CODE_4901 = 'Chain Disconnected'
+    CHAIN_DISCONNECTED = 'CHAIN_DISCONNECTED'
 }
 
 export {

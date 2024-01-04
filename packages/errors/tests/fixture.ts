@@ -260,23 +260,23 @@ const ErrorsCodeAndClassesMapsFixture = [
         name: 'EIP1193',
         elements: [
             {
-                errorCode: EIP1193.CODE_4001,
+                errorCode: EIP1193.USER_REJECTED_REQUEST,
                 classExpected: EIP1193UserRejectedRequest
             },
             {
-                errorCode: EIP1193.CODE_4100,
+                errorCode: EIP1193.UNAUTHORIZED,
                 classExpected: EIP1193Unauthorized
             },
             {
-                errorCode: EIP1193.CODE_4200,
+                errorCode: EIP1193.UNSUPPORTED_METHOD,
                 classExpected: EIP1193UnsupportedMethod
             },
             {
-                errorCode: EIP1193.CODE_4900,
+                errorCode: EIP1193.DISCONNECTED,
                 classExpected: EIP1193Disconnected
             },
             {
-                errorCode: EIP1193.CODE_4901,
+                errorCode: EIP1193.CHAIN_DISCONNECTED,
                 classExpected: EIP1193ChainDisconnected
             }
         ]
