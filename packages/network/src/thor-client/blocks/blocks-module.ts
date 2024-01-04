@@ -39,15 +39,6 @@ class BlocksModule {
         this.setupPolling();
     }
 
-    private async getTimeToNextBlock(): Promise<number> {
-        const bestBlock = await this.thor.blocks.getBestBlock();
-
-        if (bestBlock != null)
-            return bestBlock.timestamp * 1000 + 10000 - Date.now();
-
-        return 0;
-    }
-
     private setupPolling(): void {
         this.pollInstance = Poll.createEventPoll(
             async () => await this.thor.blocks.getBestBlock(),
