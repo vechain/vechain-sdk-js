@@ -19,12 +19,6 @@ class BlocksModule {
     private headBlock: BlockDetail | null = null;
 
     /**
-     * Timestamp of the previous block.
-     * @private
-     */
-    private prevBlockTimestamp: number | null = null;
-
-    /**
      * Error handler for block-related errors.
      * @private
      */
@@ -36,87 +30,33 @@ class BlocksModule {
      */
     private pollInstance: EventPoll<BlockDetail | null> | null = null;
 
-    /**
-     * ID of the timeout for regular polling setup.
-     * @private
-     */
-    private regularPollingTimeoutId: NodeJS.Timeout | null = null;
-
-    /**
-     * Initializes a new instance of the `Thor` class.
-     * @param thor - The Thor instance used to interact with the vechain blockchain API.
-     */
     constructor(
         readonly thor: ThorClient,
         onBlockError?: (error: Error) => void
     ) {
-        this.onBlockError = onBlockError;
+        if (onBlockError != null) this.onBlockError = onBlockError;
 
-        // Fetch the best block initially to get the timestamp
-        void (async () => {
-            try {
-                const bestBlock = await this.getBestBlock();
-                if (bestBlock != null) {
-                    this.prevBlockTimestamp = bestBlock.timestamp;
-                    await this.setupRegularPolling();
-                }
-            } catch (error) {
-                if (this.onBlockError != null) {
-                    this.onBlockError(error as Error);
-                }
-            }
-        })();
+        this.setupPolling();
     }
 
-    /**
-     * Returns the head block (best block).
-     * @returns {BlockDetail | null} The head block (best block).
-     */
-    public getHeadBlock(): BlockDetail | null {
-        return this.headBlock;
+    private async getTimeToNextBlock(): Promise<number> {
+        const bestBlock = await this.thor.blocks.getBestBlock();
+
+        if (bestBlock != null)
+            return bestBlock.timestamp * 1000 + 10000 - Date.now();
+
+        return 0;
     }
 
-    /**
-     * Sets up regular polling every 10 seconds based on the previous block timestamp.
-     * @private
-     */
-    private async setupRegularPolling(): Promise<void> {
-        // Clear any existing timeout
-        if (this.regularPollingTimeoutId !== null) {
-            clearTimeout(this.regularPollingTimeoutId);
-            this.regularPollingTimeoutId = null;
-        }
-
-        // Use a timeout ID to keep track of the scheduled timeout
-        this.regularPollingTimeoutId = await new Promise(() =>
-            setTimeout(
-                () => {
-                    this.regularPollingTimeoutId = null; // Clear the timeout ID after execution
-                    this.startPolling();
-                },
-                this.prevBlockTimestamp != null
-                    ? +10000 - Date.now()
-                    : Date.now()
-            )
-        );
-    }
-
-    private startPolling(): void {
+    private setupPolling(): void {
         this.pollInstance = Poll.createEventPoll(
-            async () => await this.getBestBlock(),
-            10000 // Poll every 10 seconds
+            async () => await this.thor.blocks.getBestBlock(),
+            10000 // Poll every 10 seconds,
         )
             .onData((data) => {
                 this.headBlock = data;
-                if (data != null) {
-                    this.prevBlockTimestamp = data.timestamp;
-                }
             })
-            .onError((error) => {
-                if (this.onBlockError != null) {
-                    this.onBlockError(error);
-                }
-            });
+            .onError(this.onBlockError ?? (() => {}));
 
         this.pollInstance.startListen();
     }
@@ -221,18 +161,20 @@ class BlocksModule {
     }
 
     /**
+     * Returns the head block (best block).
+     * @returns {BlockDetail | null} The head block (best block).
+     */
+    public getHeadBlock(): BlockDetail | null {
+        return this.headBlock;
+    }
+
+    /**
      * Destroys the instance by stopping the event poll.
      */
     public destroy(): void {
-        // Clear any existing timeout
-        if (this.regularPollingTimeoutId !== null) {
-            clearTimeout(this.regularPollingTimeoutId);
-            this.regularPollingTimeoutId = null;
-        }
         if (this.pollInstance != null) {
             this.pollInstance.stopListen();
             this.pollInstance = null;
-            this.prevBlockTimestamp = null;
         }
     }
 }
