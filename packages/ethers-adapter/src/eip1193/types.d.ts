@@ -31,7 +31,7 @@ interface EIP1193ProviderConnectInfo {
  * ```
  */
 interface EIP1193ProviderMessage {
-    request: (args: RequestArguments) => Promise<unknown>;
+    request: (args: EIP1193RequestArguments) => Promise<unknown>;
 }
 
 /**
