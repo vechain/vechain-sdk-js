@@ -132,4 +132,4 @@ function SyncPoll<TReturnType>(
     };
 }
 
-export { SyncPoll };
+export { SyncPoll, sleep };

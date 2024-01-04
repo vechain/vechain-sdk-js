@@ -14,12 +14,6 @@ class BlocksModule {
     private headBlock: BlockDetail | null = null;
 
     /**
-     * Timestamp of the previous block.
-     * @private
-     */
-    private prevBlockTimestamp: number | null = null;
-
-    /**
      * Error handler for block-related errors.
      * @private
      */
@@ -39,49 +33,29 @@ class BlocksModule {
         readonly thorest: ThorestClient,
         onBlockError?: (error: Error) => void
     ) {
-        this.onBlockError = onBlockError;
+        if (onBlockError != null) this.onBlockError = onBlockError;
 
-        // Fetch the best block initially to get the timestamp
-        this.thorest.blocks
-            .getBestBlock()
-            .then((bestBlock) => {
-                if (bestBlock != null) {
-                    this.prevBlockTimestamp = bestBlock.timestamp;
-                    this.setupRegularPolling();
-                }
-            })
-            .catch((error) => {
-                if (this.onBlockError != null) {
-                    this.onBlockError(error as Error);
-                }
-            });
+        this.setupPolling();
     }
 
-    /**
-     * Sets up regular polling every 10 seconds based on the previous block timestamp.
-     * @private
-     */
-    private setupRegularPolling(): void {
-        // wait until the next block is mined
-        if (this.prevBlockTimestamp != null) {
-            setTimeout(() => {}, this.prevBlockTimestamp + 10000 - Date.now());
-        }
+    private async getTimeToNextBlock(): Promise<number> {
+        const bestBlock = await this.thorest.blocks.getBestBlock();
 
+        if (bestBlock != null)
+            return bestBlock.timestamp * 1000 + 10000 - Date.now();
+
+        return 0;
+    }
+
+    private setupPolling(): void {
         this.pollInstance = Poll.createEventPoll(
             async () => await this.thorest.blocks.getBestBlock(),
-            10000 // Poll every 10 seconds
+            10000 // Poll every 10 seconds,
         )
             .onData((data) => {
                 this.headBlock = data;
-                if (data != null) {
-                    this.prevBlockTimestamp = data.timestamp;
-                }
             })
-            .onError((error) => {
-                if (this.onBlockError != null) {
-                    this.onBlockError(error);
-                }
-            });
+            .onError(this.onBlockError ?? (() => {}));
 
         this.pollInstance.startListen();
     }

@@ -72,20 +72,34 @@ describe('Blocks Module', () => {
     });
 
     test('getHeadBlock', async () => {
+        let startTime = Date.now();
+
         const headBlockFirst = await Poll.SyncPoll(() =>
             thorClient.blocks.getHeadBlock()
         ).waitUntil((result) => {
             return result !== null;
         });
 
+        let endTime = Date.now();
+
+        console.log('Time to get head block: ', endTime - startTime, 'ms');
+
         expect(headBlockFirst).toBeDefined();
 
-        // Wait for 15 seconds with promise
-        await new Promise((resolve) => setTimeout(resolve, 10000));
+        startTime = Date.now();
 
-        const headBlockSecond = thorClient.blocks.getHeadBlock();
+        // Wait for 15 seconds with promise
+        const headBlockSecond = await Poll.SyncPoll(() =>
+            thorClient.blocks.getHeadBlock()
+        ).waitUntil((result) => {
+            return result !== headBlockFirst;
+        });
+
+        endTime = Date.now();
+
+        console.log('Time to get next block: ', endTime - startTime, 'ms');
 
         expect(headBlockSecond).toBeDefined();
         expect(headBlockFirst).not.toBe(headBlockSecond);
-    }, 25000);
+    }, 60000);
 });

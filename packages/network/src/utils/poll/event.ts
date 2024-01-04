@@ -99,16 +99,37 @@ class EventPoll<TReturnType> extends EventEmitter {
     /**
      * Start listening to the event.
      */
-    startListen(): void {
-        // Start listening
+    startListen(delayInMilliseconds?: Promise<number>): void {
+        // Emit the start event
         this.emit('start', { eventPoll: this });
 
-        // Create an interval
-        this.intervalId = setInterval(() => {
-            void (async () => {
-                await this._intervalLoop();
-            })();
-        }, this.requestIntervalInMilliseconds);
+        const startPolling = (): void => {
+            // Create an interval for polling
+            this.intervalId = setInterval(() => {
+                void this._intervalLoop();
+            }, this.requestIntervalInMilliseconds);
+        };
+
+        delayInMilliseconds != null
+            ? delayInMilliseconds
+                  .then((delay) => {
+                      console.log('Waiting for: ', delay);
+                      // If there is a delay, wait for it and then proceed
+                      setTimeout(startPolling, delay);
+                  })
+                  .catch((err) => {
+                      this.error = buildError(
+                          POLL_ERROR.POLL_EXECUTION_ERROR,
+                          'Error during the start of the poll',
+                          {
+                              message: (err as Error).message,
+                              functionName: this.pollingFunction.name
+                          }
+                      );
+
+                      this.emit('error', { error: this.error });
+                  })
+            : startPolling();
     }
 
     /**
