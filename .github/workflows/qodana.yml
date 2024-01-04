@@ -44,4 +44,12 @@ jobs:
         # Should `cat` all files in ./logs/
         run: |
           echo "Failed Qodana Scan"
+          ls -la /home/runner/work/_temp/qodana/results
           cat /home/runner/work/_temp/qodana/results/logs/*
+
+      - name: Upload Results
+        uses: actions/upload-artifact@v4
+        if: ${{ always() }}
+        with:
+          name: qodana-results
+          path: /home/runner/work/_temp/qodana
