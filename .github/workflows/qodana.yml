@@ -44,6 +44,4 @@ jobs:
         # Should `cat` all files in ./logs/
         run: |
           echo "Failed Qodana Scan"
-          ls -la
-          ls -la .qodana
-          cat .qodana/logs/*
+          cat /home/runner/work/_temp/qodana/results/logs/*
