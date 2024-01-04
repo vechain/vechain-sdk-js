@@ -13,43 +13,9 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download coverage report
-        uses: actions/download-artifact@v4
-        with:
-          name: coverage-results
-          path: .qodana/code-coverage
-
-      - name: Debug
-        run: |
-          ls -la
-          ls -la .qodana
-          ls -la .qodana/code-coverage
-          ls -la .qodana/code-coverage/**/
-
-      - name: Archive coverage data # Archive data for using by Qodana
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage
-          path: .qodana/code-coverage
-
       - name: Qodana Scan # Run Qodana
         uses: JetBrains/qodana-action@main
         env:
           QODANA_TOKEN: ${{ secrets.QODANA_TOKEN_JS }}
         with:
           pr-mode: ${{ github.event_name == 'pull_request' }}
-
-      - name: Log Failed Scan
-        if: ${{ failure() }}
-        # Should `cat` all files in ./logs/
-        run: |
-          echo "Failed Qodana Scan"
-          ls -la /home/runner/work/_temp/qodana/results
-          cat /home/runner/work/_temp/qodana/results/logs/*
-
-      - name: Upload Results
-        uses: actions/upload-artifact@v4
-        if: ${{ always() }}
-        with:
-          name: qodana-results
-          path: /home/runner/work/_temp/qodana
