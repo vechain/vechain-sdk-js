@@ -1,0 +1,34 @@
+name: Qodana Scan
+
+on:
+  workflow_call:
+
+jobs:
+  sonar-scan:
+    name: Sonar Scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download coverage report
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-results
+          path: coverage
+
+      - name: Archive coverage data # Archive data for using by Qodana
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: JS/jest/.qodana/code-coverage
+
+      - name: Qodana Scan # Run Qodana
+        uses: JetBrains/qodana-action@main
+        env:
+          QODANA_TOKEN: ${{ secrets.QODANA_TOKEN_JS }}
+        with:
+          args: "-i,JS/jest,--linter,jetbrains/qodana-js:2023.3"
+          pr-mode: ${{ github.event_name == 'pull_request' }}
