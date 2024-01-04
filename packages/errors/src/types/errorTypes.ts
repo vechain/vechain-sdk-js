@@ -48,7 +48,14 @@ import {
     TransactionDelegationError,
     TransactionNotSignedError,
     FUNCTION,
-    NotImplementedError
+    NotImplementedError,
+    EIP1193,
+    type EIP1193ProviderRpcErrorData,
+    EIP1193UserRejectedRequest,
+    EIP1193Unauthorized,
+    EIP1193UnsupportedMethod,
+    EIP1193Disconnected,
+    EIP1193ChainDisconnected
 } from '../model';
 
 /**
@@ -78,7 +85,8 @@ type ErrorCode =
     | TRANSACTION
     | HTTP_CLIENT
     | POLL_ERROR
-    | FUNCTION;
+    | FUNCTION
+    | EIP1193;
 
 /**
  * Conditional type to get the error data type from the error code.
@@ -86,13 +94,29 @@ type ErrorCode =
  *
  * @param ErrorCodeT - The error code type from the error types enum.
  */
-type DataType<ErrorCodeT extends ErrorCode> = ErrorCodeT extends RLP.INVALID_RLP
-    ? InvalidRLPErrorData
-    : ErrorCodeT extends HTTP_CLIENT.INVALID_HTTP_REQUEST
-      ? HTTPClientErrorData
-      : ErrorCodeT extends POLL_ERROR.POLL_EXECUTION_ERROR
-        ? PollErrorData
-        : DefaultErrorData;
+type DataType<ErrorCodeT extends ErrorCode> =
+    // RLP
+    ErrorCodeT extends RLP.INVALID_RLP
+        ? InvalidRLPErrorData
+        : // HTTP_CLIENT
+          ErrorCodeT extends HTTP_CLIENT.INVALID_HTTP_REQUEST
+          ? HTTPClientErrorData
+          : // POLL_ERROR
+            ErrorCodeT extends POLL_ERROR.POLL_EXECUTION_ERROR
+            ? PollErrorData
+            : // EIP1193
+              ErrorCodeT extends EIP1193.CODE_4001
+              ? EIP1193ProviderRpcErrorData
+              : ErrorCodeT extends EIP1193.CODE_4100
+                ? EIP1193ProviderRpcErrorData
+                : ErrorCodeT extends EIP1193.CODE_4200
+                  ? EIP1193ProviderRpcErrorData
+                  : ErrorCodeT extends EIP1193.CODE_4900
+                    ? EIP1193ProviderRpcErrorData
+                    : ErrorCodeT extends EIP1193.CODE_4901
+                      ? EIP1193ProviderRpcErrorData
+                      : // DEFAULT
+                        DefaultErrorData;
 
 /**
  * Default error codes.
@@ -110,7 +134,8 @@ const ERROR_CODES = {
     TRANSACTION,
     HTTP_CLIENT,
     POLL_ERROR,
-    FUNCTION
+    FUNCTION,
+    EIP1193
 };
 
 /**
@@ -122,6 +147,7 @@ const ERROR_CODES = {
  * @param ErrorCodeT - The error code type from the error types enum.
  */
 type ErrorType<ErrorCodeT> =
+    // SECP256K1
     ErrorCodeT extends SECP256K1.INVALID_SECP256k1_PRIVATE_KEY
         ? InvalidSecp256k1PrivateKeyError
         : ErrorCodeT extends SECP256K1.INVALID_SECP256k1_MESSAGE_HASH
@@ -130,13 +156,16 @@ type ErrorType<ErrorCodeT> =
             ? InvalidSecp256k1SignatureError
             : ErrorCodeT extends SECP256K1.INVALID_SECP256k1_SIGNATURE_RECOVERY
               ? InvalidSecp256k1SignatureRecoveryError
-              : ErrorCodeT extends ADDRESS.INVALID_ADDRESS
+              : // ADDRESS
+                ErrorCodeT extends ADDRESS.INVALID_ADDRESS
                 ? InvalidAddressError
-                : ErrorCodeT extends KEYSTORE.INVALID_KEYSTORE
+                : // KEYSTORE
+                  ErrorCodeT extends KEYSTORE.INVALID_KEYSTORE
                   ? InvalidKeystoreError
                   : ErrorCodeT extends KEYSTORE.INVALID_PASSWORD
                     ? InvalidKeystorePasswordError
-                    : ErrorCodeT extends HDNODE.INVALID_HDNODE_CHAIN_CODE
+                    : // HDNODE
+                      ErrorCodeT extends HDNODE.INVALID_HDNODE_CHAIN_CODE
                       ? InvalidHDNodeChaincodeError
                       : ErrorCodeT extends HDNODE.INVALID_HDNODE_MNEMONICS
                         ? InvalidHDNodeMnemonicsError
@@ -146,17 +175,20 @@ type ErrorType<ErrorCodeT> =
                             ? InvalidHDNodePublicKeyError
                             : ErrorCodeT extends HDNODE.INVALID_HDNODE_DERIVATION_PATH
                               ? InvalidHDNodeDerivationPathError
-                              : ErrorCodeT extends BLOOM.INVALID_BLOOM
+                              : // BLOOM
+                                ErrorCodeT extends BLOOM.INVALID_BLOOM
                                 ? InvalidBloomError
                                 : ErrorCodeT extends BLOOM.INVALID_K
                                   ? InvalidKError
-                                  : ErrorCodeT extends CERTIFICATE.CERTIFICATE_NOT_SIGNED
+                                  : // CERTIFICATE
+                                    ErrorCodeT extends CERTIFICATE.CERTIFICATE_NOT_SIGNED
                                     ? CertificateNotSignedError
                                     : ErrorCodeT extends CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT
                                       ? CertificateInvalidSignatureFormatError
                                       : ErrorCodeT extends CERTIFICATE.CERTIFICATE_INVALID_SIGNER
                                         ? CertificateInvalidSignerError
-                                        : ErrorCodeT extends ABI.INVALID_EVENT
+                                        : // ABI
+                                          ErrorCodeT extends ABI.INVALID_EVENT
                                           ? InvalidAbiEventError
                                           : ErrorCodeT extends ABI.INVALID_DATA_TO_DECODE
                                             ? InvalidAbiDataToDecodeError
@@ -168,13 +200,16 @@ type ErrorType<ErrorCodeT> =
                                                   ? InvalidAbiFunctionError
                                                   : ErrorCodeT extends ABI.CONTRACT_INTERFACE_ERROR
                                                     ? ContractInterfaceError
-                                                    : ErrorCodeT extends RLP.INVALID_RLP
+                                                    : // RLP
+                                                      ErrorCodeT extends RLP.INVALID_RLP
                                                       ? InvalidRLPError
-                                                      : ErrorCodeT extends DATA.INVALID_DATA_TYPE
+                                                      : // DATA
+                                                        ErrorCodeT extends DATA.INVALID_DATA_TYPE
                                                         ? InvalidDataTypeError
                                                         : ErrorCodeT extends DATA.INVALID_DATA_RETURN_TYPE
                                                           ? InvalidDataReturnTypeError
-                                                          : ErrorCodeT extends TRANSACTION.ALREADY_SIGNED
+                                                          : // TRANSACTION
+                                                            ErrorCodeT extends TRANSACTION.ALREADY_SIGNED
                                                             ? TransactionAlreadySignedError
                                                             : ErrorCodeT extends TRANSACTION.NOT_SIGNED
                                                               ? TransactionNotSignedError
@@ -182,13 +217,26 @@ type ErrorType<ErrorCodeT> =
                                                                 ? TransactionBodyError
                                                                 : ErrorCodeT extends TRANSACTION.INVALID_DELEGATION
                                                                   ? TransactionDelegationError
-                                                                  : ErrorCodeT extends HTTP_CLIENT.INVALID_HTTP_REQUEST
+                                                                  : // HTTP_CLIENT
+                                                                    ErrorCodeT extends HTTP_CLIENT.INVALID_HTTP_REQUEST
                                                                     ? HTTPClientError
-                                                                    : ErrorCodeT extends POLL_ERROR.POLL_EXECUTION_ERROR
+                                                                    : // POOL_ERROR
+                                                                      ErrorCodeT extends POLL_ERROR.POLL_EXECUTION_ERROR
                                                                       ? PollExecutionError
-                                                                      : ErrorCodeT extends FUNCTION.NOT_IMPLEMENTED
-                                                                        ? NotImplementedError
-                                                                        : never;
+                                                                      : // EIP1193
+                                                                        ErrorCodeT extends EIP1193.CODE_4001
+                                                                        ? EIP1193UserRejectedRequest
+                                                                        : ErrorCodeT extends EIP1193.CODE_4100
+                                                                          ? EIP1193Unauthorized
+                                                                          : ErrorCodeT extends EIP1193.CODE_4200
+                                                                            ? EIP1193UnsupportedMethod
+                                                                            : ErrorCodeT extends EIP1193.CODE_4900
+                                                                              ? EIP1193Disconnected
+                                                                              : ErrorCodeT extends EIP1193.CODE_4901
+                                                                                ? EIP1193ChainDisconnected
+                                                                                : ErrorCodeT extends FUNCTION.NOT_IMPLEMENTED
+                                                                                  ? NotImplementedError
+                                                                                  : never;
 
 /**
  * Map to get the error class from the error code.
@@ -202,7 +250,10 @@ const ErrorClassMap = new Map<
     ErrorCode,
     typeof ErrorBase<ErrorCode, DataType<ErrorCode>>
 >([
+    // ADDRESS
     [ADDRESS.INVALID_ADDRESS, InvalidAddressError],
+
+    // SECP256K1
     [SECP256K1.INVALID_SECP256k1_PRIVATE_KEY, InvalidSecp256k1PrivateKeyError],
     [
         SECP256K1.INVALID_SECP256k1_MESSAGE_HASH,
@@ -213,8 +264,11 @@ const ErrorClassMap = new Map<
         SECP256K1.INVALID_SECP256k1_SIGNATURE_RECOVERY,
         InvalidSecp256k1SignatureRecoveryError
     ],
+
+    // KEYSTORE
     [KEYSTORE.INVALID_KEYSTORE, InvalidKeystoreError],
     [KEYSTORE.INVALID_PASSWORD, InvalidKeystorePasswordError],
+    // HDNODE
     [HDNODE.INVALID_HDNODE_CHAIN_CODE, InvalidHDNodeChaincodeError],
     [HDNODE.INVALID_HDNODE_MNEMONICS, InvalidHDNodeMnemonicsError],
     [HDNODE.INVALID_HDNODE_PRIVATE_KEY, InvalidHDNodePrivateKeyError],
@@ -222,28 +276,50 @@ const ErrorClassMap = new Map<
     [HDNODE.INVALID_HDNODE_DERIVATION_PATH, InvalidHDNodeDerivationPathError],
     [BLOOM.INVALID_BLOOM, InvalidBloomError],
     [BLOOM.INVALID_K, InvalidKError],
+
+    // CERTIFICATE
     [CERTIFICATE.CERTIFICATE_NOT_SIGNED, CertificateNotSignedError],
     [
         CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT,
         CertificateInvalidSignatureFormatError
     ],
     [CERTIFICATE.CERTIFICATE_INVALID_SIGNER, CertificateInvalidSignerError],
+    // ABI
     [ABI.INVALID_EVENT, InvalidAbiEventError],
     [ABI.INVALID_DATA_TO_DECODE, InvalidAbiDataToDecodeError],
     [ABI.INVALID_DATA_TO_ENCODE, InvalidAbiDataToEncodeError],
     [ABI.INVALID_FORMAT_TYPE, InvalidAbiFormatTypeError],
     [ABI.INVALID_FUNCTION, InvalidAbiFunctionError],
     [ABI.CONTRACT_INTERFACE_ERROR, ContractInterfaceError],
+
+    // RLP
     [RLP.INVALID_RLP, InvalidRLPError],
+
+    // DATA
     [DATA.INVALID_DATA_TYPE, InvalidDataTypeError],
     [DATA.INVALID_DATA_RETURN_TYPE, InvalidDataReturnTypeError],
+
+    // TRANSACTION
     [TRANSACTION.ALREADY_SIGNED, TransactionAlreadySignedError],
     [TRANSACTION.NOT_SIGNED, TransactionNotSignedError],
     [TRANSACTION.INVALID_TRANSACTION_BODY, TransactionBodyError],
     [TRANSACTION.INVALID_DELEGATION, TransactionDelegationError],
+
+    // HTTP_CLIENT
     [HTTP_CLIENT.INVALID_HTTP_REQUEST, HTTPClientError],
+
+    // POLL_ERROR
     [POLL_ERROR.POLL_EXECUTION_ERROR, PollExecutionError],
-    [FUNCTION.NOT_IMPLEMENTED, NotImplementedError]
+
+    // FUNCTION
+    [FUNCTION.NOT_IMPLEMENTED, NotImplementedError],
+
+    // EIP1193
+    [EIP1193.CODE_4001, EIP1193UserRejectedRequest],
+    [EIP1193.CODE_4100, EIP1193Unauthorized],
+    [EIP1193.CODE_4200, EIP1193UnsupportedMethod],
+    [EIP1193.CODE_4900, EIP1193Disconnected],
+    [EIP1193.CODE_4901, EIP1193ChainDisconnected]
 ]);
 
 export {
