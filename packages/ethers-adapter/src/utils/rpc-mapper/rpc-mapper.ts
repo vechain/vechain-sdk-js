@@ -1,6 +1,8 @@
 import { type ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { type MethodHandlerType } from './types';
 import { RPC_METHODS } from '../const/rpc-mapper';
+import { BlocksMap } from './methods-map';
+import { TransactionsMap } from './methods-map/transactions';
 
 /**
  * Map of RPC methods to their implementations with our SDK.
@@ -20,16 +22,18 @@ const RPCMethodsMap = (
     /**
      * Returns a map of RPC methods to their implementations with our SDK.
      */
-
     return {
         /**
          * Returns the block with the given block number.
-         *
-         * @param blockNumber - The block number.
          */
-        [RPC_METHODS.eth_getBlockByNumber]: async (blockNumber) => {
-            return await thorClient.blocks.getBlock(blockNumber as string);
-        }
+        [RPC_METHODS.eth_getBlockByNumber]:
+            BlocksMap(thorClient)[RPC_METHODS.eth_getBlockByNumber],
+
+        /**
+         * Returns the transaction receipt with the given transaction hash.
+         */
+        [RPC_METHODS.eth_getTransactionReceipt]:
+            TransactionsMap(thorClient)[RPC_METHODS.eth_getTransactionReceipt]
 
         /**
          * ... Other RPC methods ...
