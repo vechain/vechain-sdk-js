@@ -40,7 +40,17 @@ import {
     CertificateInvalidSignerError,
     ContractInterfaceError,
     HTTP_CLIENT,
-    HTTPClientError
+    HTTPClientError,
+    POLL_ERROR,
+    PollExecutionError,
+    FUNCTION,
+    NotImplementedError,
+    EIP1193,
+    EIP1193UserRejectedRequest,
+    EIP1193Disconnected,
+    EIP1193Unauthorized,
+    EIP1193UnsupportedMethod,
+    EIP1193ChainDisconnected
 } from '../src';
 
 /**
@@ -225,6 +235,49 @@ const ErrorsCodeAndClassesMapsFixture = [
             {
                 errorCode: HTTP_CLIENT.INVALID_HTTP_REQUEST,
                 classExpected: HTTPClientError
+            }
+        ]
+    },
+    {
+        name: 'Poll',
+        elements: [
+            {
+                errorCode: POLL_ERROR.POLL_EXECUTION_ERROR,
+                classExpected: PollExecutionError
+            }
+        ]
+    },
+    {
+        name: 'Function',
+        elements: [
+            {
+                errorCode: FUNCTION.NOT_IMPLEMENTED,
+                classExpected: NotImplementedError
+            }
+        ]
+    },
+    {
+        name: 'EIP1193',
+        elements: [
+            {
+                errorCode: EIP1193.CODE_4001,
+                classExpected: EIP1193UserRejectedRequest
+            },
+            {
+                errorCode: EIP1193.CODE_4100,
+                classExpected: EIP1193Unauthorized
+            },
+            {
+                errorCode: EIP1193.CODE_4200,
+                classExpected: EIP1193UnsupportedMethod
+            },
+            {
+                errorCode: EIP1193.CODE_4900,
+                classExpected: EIP1193Disconnected
+            },
+            {
+                errorCode: EIP1193.CODE_4901,
+                classExpected: EIP1193ChainDisconnected
             }
         ]
     }
