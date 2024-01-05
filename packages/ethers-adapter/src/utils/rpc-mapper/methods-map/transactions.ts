@@ -1,40 +1,28 @@
-import {
-    type ThorClient,
-    type TransactionDetail
-} from '@vechainfoundation/vechain-sdk-network';
-import { type MethodHandlerType } from '../types';
-import { RPC_METHODS } from '../../const/rpc-mapper';
+import { type ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { buildError, FUNCTION } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
- * All RPC methods related to blocks
- *
- * @param thorClient - The
+ * All RPC methods related to transactions
  */
-const TransactionsMap = (
-    thorClient: ThorClient
-): Record<string, MethodHandlerType<unknown, unknown>> => {
-    return {
-        /**
-         * Returns the block with the given block number.
-         *
-         * @NOTE IT IS A SIMPLE IMPLEMENTATION TO SET SKELETON! Checks must be done!
-         *
-         *
-         * @param blockNumber - The block number.
-         */
-        [RPC_METHODS.eth_getTransactionByHash]: async (
-            transactionHash
-        ): Promise<TransactionDetail | null> => {
-            return await thorClient.transactions.getTransaction(
-                transactionHash[0] as string
-            );
-        }
 
-        /**
-         * ... Other RPC methods related to blocks ...
-         */
-        // ...
-    };
+/**
+ * Returns the block with the given block number.
+ *
+ * @param thorClient - The thor client instance to use.
+ * @param params - The standard array of rpc call parameters. Params[0] contains The block number.
+ */
+const ethGetTransactionByHash = async (
+    thorClient: ThorClient,
+    params: unknown[]
+): Promise<void> => {
+    // To avoid eslint error
+    await Promise.resolve(0);
+
+    // Not implemented yet
+    throw buildError(FUNCTION.NOT_IMPLEMENTED, 'Not implemented yet', {
+        params,
+        thorClient
+    });
 };
 
-export { TransactionsMap };
+export { ethGetTransactionByHash };
