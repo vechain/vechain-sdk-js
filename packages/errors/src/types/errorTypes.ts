@@ -55,7 +55,15 @@ import {
     EIP1193Unauthorized,
     EIP1193UnsupportedMethod,
     EIP1193Disconnected,
-    EIP1193ChainDisconnected
+    EIP1193ChainDisconnected,
+    JSONRPC,
+    type JSONRPCErrorData,
+    JSONRPCParseError,
+    JSONRPCInvalidRequest,
+    JSONRPCMethodNotFound,
+    JSONRPCInvalidParams,
+    JSONRPCInternalError,
+    JSONRPCDefaultError
 } from '../model';
 
 /**
@@ -86,7 +94,8 @@ type ErrorCode =
     | HTTP_CLIENT
     | POLL_ERROR
     | FUNCTION
-    | EIP1193;
+    | EIP1193
+    | JSONRPC;
 
 /**
  * Conditional type to get the error data type from the error code.
@@ -115,8 +124,19 @@ type DataType<ErrorCodeT extends ErrorCode> =
                     ? EIP1193ProviderRpcErrorData
                     : ErrorCodeT extends EIP1193.CHAIN_DISCONNECTED
                       ? EIP1193ProviderRpcErrorData
-                      : // DEFAULT
-                        DefaultErrorData;
+                      : // JSONRPC
+                        ErrorCodeT extends JSONRPC.PARSE_ERROR
+                        ? JSONRPCErrorData
+                        : ErrorCodeT extends JSONRPC.INVALID_REQUEST
+                          ? JSONRPCErrorData
+                          : ErrorCodeT extends JSONRPC.METHOD_NOT_FOUND
+                            ? JSONRPCErrorData
+                            : ErrorCodeT extends JSONRPC.INVALID_PARAMS
+                              ? JSONRPCErrorData
+                              : ErrorCodeT extends JSONRPC.INTERNAL_ERROR
+                                ? JSONRPCErrorData
+                                : // DEFAULT
+                                  DefaultErrorData;
 
 /**
  * Default error codes.
@@ -135,7 +155,8 @@ const ERROR_CODES = {
     HTTP_CLIENT,
     POLL_ERROR,
     FUNCTION,
-    EIP1193
+    EIP1193,
+    JSONRPC
 };
 
 /**
@@ -234,9 +255,23 @@ type ErrorType<ErrorCodeT> =
                                                                               ? EIP1193Disconnected
                                                                               : ErrorCodeT extends EIP1193.CHAIN_DISCONNECTED
                                                                                 ? EIP1193ChainDisconnected
-                                                                                : ErrorCodeT extends FUNCTION.NOT_IMPLEMENTED
+                                                                                : // FUNCTION
+                                                                                  ErrorCodeT extends FUNCTION.NOT_IMPLEMENTED
                                                                                   ? NotImplementedError
-                                                                                  : never;
+                                                                                  : // JSONRPC
+                                                                                    ErrorCodeT extends JSONRPC.PARSE_ERROR
+                                                                                    ? JSONRPCParseError
+                                                                                    : ErrorCodeT extends JSONRPC.INVALID_REQUEST
+                                                                                      ? JSONRPCInvalidRequest
+                                                                                      : ErrorCodeT extends JSONRPC.METHOD_NOT_FOUND
+                                                                                        ? JSONRPCMethodNotFound
+                                                                                        : ErrorCodeT extends JSONRPC.INVALID_PARAMS
+                                                                                          ? JSONRPCInvalidParams
+                                                                                          : ErrorCodeT extends JSONRPC.INTERNAL_ERROR
+                                                                                            ? JSONRPCInternalError
+                                                                                            : ErrorCodeT extends JSONRPC.DEFAULT
+                                                                                              ? JSONRPCDefaultError
+                                                                                              : never;
 
 /**
  * Map to get the error class from the error code.
@@ -319,7 +354,15 @@ const ErrorClassMap = new Map<
     [EIP1193.UNAUTHORIZED, EIP1193Unauthorized],
     [EIP1193.UNSUPPORTED_METHOD, EIP1193UnsupportedMethod],
     [EIP1193.DISCONNECTED, EIP1193Disconnected],
-    [EIP1193.CHAIN_DISCONNECTED, EIP1193ChainDisconnected]
+    [EIP1193.CHAIN_DISCONNECTED, EIP1193ChainDisconnected],
+
+    // JSONRPC
+    [JSONRPC.PARSE_ERROR, JSONRPCParseError],
+    [JSONRPC.INVALID_REQUEST, JSONRPCInvalidRequest],
+    [JSONRPC.METHOD_NOT_FOUND, JSONRPCMethodNotFound],
+    [JSONRPC.INVALID_PARAMS, JSONRPCInvalidParams],
+    [JSONRPC.INTERNAL_ERROR, JSONRPCInternalError],
+    [JSONRPC.DEFAULT, JSONRPCDefaultError]
 ]);
 
 export {

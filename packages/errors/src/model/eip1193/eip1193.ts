@@ -14,7 +14,7 @@ import { ErrorBase } from '../base';
  * we will have code as number into error data.
  */
 interface EIP1193ProviderRpcErrorData {
-    code: number;
+    code: 4001 | 4100 | 4200 | 4900 | 4901;
     data?: unknown;
 }
 
@@ -98,6 +98,24 @@ enum EIP1193 {
     CHAIN_DISCONNECTED = 'CHAIN_DISCONNECTED'
 }
 
+/**
+ * Get correct error code by error message enum.
+ */
+const getEIP1193ErrorCode = (error: EIP1193): number => {
+    switch (error) {
+        case EIP1193.USER_REJECTED_REQUEST:
+            return 4001;
+        case EIP1193.UNAUTHORIZED:
+            return 4100;
+        case EIP1193.UNSUPPORTED_METHOD:
+            return 4200;
+        case EIP1193.DISCONNECTED:
+            return 4900;
+        case EIP1193.CHAIN_DISCONNECTED:
+            return 4901;
+    }
+};
+
 export {
     type EIP1193ProviderRpcErrorData,
     EIP1193UserRejectedRequest,
@@ -105,5 +123,6 @@ export {
     EIP1193UnsupportedMethod,
     EIP1193Disconnected,
     EIP1193ChainDisconnected,
-    EIP1193
+    EIP1193,
+    getEIP1193ErrorCode
 };

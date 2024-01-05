@@ -50,7 +50,14 @@ import {
     EIP1193Disconnected,
     EIP1193Unauthorized,
     EIP1193UnsupportedMethod,
-    EIP1193ChainDisconnected
+    EIP1193ChainDisconnected,
+    JSONRPC,
+    JSONRPCParseError,
+    JSONRPCInvalidRequest,
+    JSONRPCMethodNotFound,
+    JSONRPCInvalidParams,
+    JSONRPCInternalError,
+    JSONRPCDefaultError
 } from '../src';
 
 /**
@@ -278,6 +285,35 @@ const ErrorsCodeAndClassesMapsFixture = [
             {
                 errorCode: EIP1193.CHAIN_DISCONNECTED,
                 classExpected: EIP1193ChainDisconnected
+            }
+        ]
+    },
+    {
+        name: 'JSONRPC',
+        elements: [
+            {
+                errorCode: JSONRPC.PARSE_ERROR,
+                classExpected: JSONRPCParseError
+            },
+            {
+                errorCode: JSONRPC.INVALID_REQUEST,
+                classExpected: JSONRPCInvalidRequest
+            },
+            {
+                errorCode: JSONRPC.METHOD_NOT_FOUND,
+                classExpected: JSONRPCMethodNotFound
+            },
+            {
+                errorCode: JSONRPC.INVALID_PARAMS,
+                classExpected: JSONRPCInvalidParams
+            },
+            {
+                errorCode: JSONRPC.INTERNAL_ERROR,
+                classExpected: JSONRPCInternalError
+            },
+            {
+                errorCode: JSONRPC.DEFAULT,
+                classExpected: JSONRPCDefaultError
             }
         ]
     }
