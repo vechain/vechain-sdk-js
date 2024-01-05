@@ -143,35 +143,42 @@ describe('Transactions Module', () => {
          */
         invalidWaitForTransactionTestCases.forEach(
             ({ description, options }) => {
-                test(description, async () => {
-                    const nonce = 12345678;
+                test(
+                    description,
+                    async () => {
+                        const nonce =
+                            Math.random() * (99999999 - 10000000) + 1000000 // Random number between 10000000 and 99999999
 
-                    // Create the signed transfer transaction
-                    const tx = TransactionHandler.sign(
-                        new Transaction({
-                            ...transferTransactionBody,
-                            nonce
-                        }),
-                        Buffer.from(
-                            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
-                                .privateKey,
-                            'hex'
+                        // Create the signed transfer transaction
+                        const tx = TransactionHandler.sign(
+                            new Transaction({
+                                ...transferTransactionBody,
+                                nonce: Math.floor(nonce),
+                            }),
+                            Buffer.from(
+                                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
+                                    .privateKey,
+                                "hex",
+                            ),
                         )
-                    );
 
-                    const sendTransactionResult =
-                        await thorSoloClient.transactions.sendTransaction(tx);
+                        const sendTransactionResult =
+                            await thorSoloClient.transactions.sendTransaction(
+                                tx,
+                            )
 
-                    expect(sendTransactionResult.id).toBeDefined();
+                        expect(sendTransactionResult.id).toBeDefined();
 
-                    const txReceipt =
-                        await thorSoloClient.transactions.waitForTransaction(
-                            sendTransactionResult.id,
-                            options
-                        );
+                        const txReceipt =
+                            await thorSoloClient.transactions.waitForTransaction(
+                                sendTransactionResult.id,
+                                options
+                            );
 
-                    expect(txReceipt).toBeNull();
-                });
+                        expect(txReceipt).toBeNull();
+                    },
+                    5000
+                );
             }
         );
     });
