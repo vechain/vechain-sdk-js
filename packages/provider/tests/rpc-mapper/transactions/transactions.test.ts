@@ -1,8 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { NotImplementedError } from '@vechainfoundation/vechain-sdk-errors';
-import { RPCMethodsMap } from '../../../src/utils/rpc-mapper';
 import { thorClient } from '../../fixture';
-import { RPC_METHODS } from '../../../src/utils/const/rpc-mapper';
+import { RPC_METHODS, RPCMethodsMap } from '../../../src';
 
 /**
  * RPC Mapper integration tests

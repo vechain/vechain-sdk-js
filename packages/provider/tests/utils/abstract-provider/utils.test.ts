@@ -11,7 +11,7 @@ import {
     isEventFilter,
     isPromise,
     isTransactionHash
-} from '../../../src/utils/abstract-provider';
+} from '../../../src';
 import { NotImplementedError } from '@vechainfoundation/vechain-sdk-errors';
 
 /**

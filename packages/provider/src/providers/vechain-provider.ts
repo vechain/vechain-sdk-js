@@ -3,10 +3,9 @@ import {
     type EIP1193ProviderMessage,
     type EIP1193RequestArguments
 } from '../eip1193';
-import { RPC_METHODS } from '../utils/const/rpc-mapper';
 import { assert, DATA } from '@vechainfoundation/vechain-sdk-errors';
 import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
-import { RPCMethodsMap } from '../utils/rpc-mapper';
+import { RPC_METHODS, RPCMethodsMap } from '../utils';
 
 /**
  * Our core provider class for vechain

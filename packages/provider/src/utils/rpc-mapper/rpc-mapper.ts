@@ -1,7 +1,7 @@
 import { type ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { type MethodHandlerType } from './types';
-import { RPC_METHODS } from '../const/rpc-mapper';
 import { ethGetTransactionByHash, ethGetBlockByNumber } from './methods-map';
+import { RPC_METHODS } from '../const';
 
 /**
  * Map of RPC methods to their implementations with our SDK.
