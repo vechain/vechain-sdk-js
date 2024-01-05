@@ -147,25 +147,25 @@ describe('Transactions Module', () => {
                     description,
                     async () => {
                         const nonce =
-                            Math.random() * (99999999 - 10000000) + 1000000 // Random number between 10000000 and 99999999
+                            Math.random() * (99999999 - 10000000) + 1000000; // Random number between 10000000 and 99999999
 
                         // Create the signed transfer transaction
                         const tx = TransactionHandler.sign(
                             new Transaction({
                                 ...transferTransactionBody,
-                                nonce: Math.floor(nonce),
+                                nonce: Math.floor(nonce)
                             }),
                             Buffer.from(
                                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
                                     .privateKey,
-                                "hex",
-                            ),
-                        )
+                                'hex'
+                            )
+                        );
 
                         const sendTransactionResult =
                             await thorSoloClient.transactions.sendTransaction(
-                                tx,
-                            )
+                                tx
+                            );
 
                         expect(sendTransactionResult.id).toBeDefined();
 
