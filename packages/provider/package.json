@@ -1,5 +1,5 @@
 {
-    "name": "@vechainfoundation/vechain-sdk-ethers-adapter",
+    "name": "@vechainfoundation/vechain-sdk-provider",
     "version": "1.0.0",
     "private": false,
     "main": "dist/index.js",
