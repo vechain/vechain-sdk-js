@@ -18,10 +18,20 @@ describe('RPC Mapper - Blocks tests', () => {
          * Positive cases
          */
         test('eth_getBlockByNumber - positive cases', async () => {
+            // Zero block
             const rpcCallZeroBlock = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_getBlockByNumber
             ]([0]);
             expect(rpcCallZeroBlock).toStrictEqual(zeroBlock);
+
+            // Null block
+            const rpcCallNullBlock = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.eth_getBlockByNumber
+            ]([
+                // Invalid revision
+                '0x0000000000000000000000000000000000000000000000000000000000000000'
+            ]);
+            expect(rpcCallNullBlock).toBeNull();
         });
 
         /**
