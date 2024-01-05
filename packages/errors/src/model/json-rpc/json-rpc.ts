@@ -88,7 +88,9 @@ enum JSONRPC {
 /**
  * Get correct error code by error message enum.
  */
-const getJSONRPCErrorCode = (error: JSONRPC): number => {
+const getJSONRPCErrorCode = (
+    error: JSONRPC
+): -32700 | -32600 | -32601 | -32602 | -32603 | -32000 => {
     switch (error) {
         case JSONRPC.PARSE_ERROR:
             return -32700;

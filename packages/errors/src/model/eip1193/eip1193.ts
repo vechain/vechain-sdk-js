@@ -101,7 +101,9 @@ enum EIP1193 {
 /**
  * Get correct error code by error message enum.
  */
-const getEIP1193ErrorCode = (error: EIP1193): number => {
+const getEIP1193ErrorCode = (
+    error: EIP1193
+): 4001 | 4100 | 4200 | 4900 | 4901 => {
     switch (error) {
         case EIP1193.USER_REJECTED_REQUEST:
             return 4001;
