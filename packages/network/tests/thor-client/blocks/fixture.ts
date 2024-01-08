@@ -16,7 +16,7 @@ const waitForBlockTestCases = [
         description:
             'Should wait for block with timeoutMs and return BlockDetail',
         options: {
-            timeoutMs: 10000,
+            timeoutMs: 12000,
             intervalMs: undefined
         }
     },

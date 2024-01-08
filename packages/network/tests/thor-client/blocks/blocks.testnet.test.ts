@@ -49,7 +49,7 @@ describe('Blocks Module', () => {
                 // Wait for all tests to complete
                 await Promise.all(tests);
             },
-            15000 * waitForBlockTestCases.length
+            12000 * waitForBlockTestCases.length
         );
     });
 
