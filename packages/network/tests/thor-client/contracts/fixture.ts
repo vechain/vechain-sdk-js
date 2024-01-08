@@ -334,6 +334,12 @@ const testingContractTestCases: TestCase[] = [
         reverted: false
     },
     {
+        functionName: 'dynamicArrayData',
+        params: [[123, 456, 789, 323, 123]],
+        expected: [[123n, 456n, 789n, 323n, 123n]],
+        reverted: false
+    },
+    {
         functionName: 'structData',
         params: [{ id: 10, name: 'test' }],
         expected: [[10n, 'test']],
