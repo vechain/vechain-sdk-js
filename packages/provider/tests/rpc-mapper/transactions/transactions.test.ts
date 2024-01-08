@@ -1,7 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
 import { NotImplementedError } from '@vechainfoundation/vechain-sdk-errors';
-import { thorClient } from '../../fixture';
 import { RPC_METHODS, RPCMethodsMap } from '../../../src';
+import { ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { testNetwork } from '../../fixture';
 
 /**
  * RPC Mapper integration tests
@@ -17,6 +18,9 @@ describe('RPC Mapper - Transactions tests', () => {
          * Positive cases
          */
         test('eth_getTransactionByHash - positive cases', async () => {
+            // Init thor client
+            const thorClient = new ThorClient(testNetwork);
+
             // NOT IMPLEMENTED YET!
             await expect(
                 async () =>
@@ -24,12 +28,18 @@ describe('RPC Mapper - Transactions tests', () => {
                         RPC_METHODS.eth_getTransactionByHash
                     ]([-1])
             ).rejects.toThrowError(NotImplementedError);
+
+            // @NOTE for future PRs
+            // thorClient.destroy();
         });
 
         /**
          * Negative cases
          */
         test('eth_getTransactionByHash - negative cases', async () => {
+            // Init thor client
+            const thorClient = new ThorClient(testNetwork);
+
             // NOT IMPLEMENTED YET!
             await expect(
                 async () =>
@@ -37,6 +47,9 @@ describe('RPC Mapper - Transactions tests', () => {
                         RPC_METHODS.eth_getTransactionByHash
                     ](['0x0000'])
             ).rejects.toThrowError(NotImplementedError);
+
+            // @NOTE for future PRs
+            // thorClient.destroy();
         });
     });
 });

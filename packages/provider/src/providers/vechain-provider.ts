@@ -24,7 +24,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
 
         // NOTE: We are using a temporary ThorClient instance to make the request
         const tempThorClient = new ThorClient(
-            new HttpClient('https://sync-testnet.vechain.org')
+            new HttpClient('https://testnet.vechain.org')
         );
 
         // Get the method from the RPCMethodsMap and call it

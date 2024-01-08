@@ -1,4 +1,4 @@
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient } from '@vechainfoundation/vechain-sdk-network';
 
 /**
  * Url of the testnet fixture
@@ -25,22 +25,4 @@ const soloNetwork = new HttpClient(soloUrl);
  */
 const testAccount = '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa';
 
-/**
- * Thor client testnet instance fixture
- */
-const thorClient = new ThorClient(testNetwork);
-
-/**
- * Thor client solo instance fixture
- */
-const thorSoloClient = new ThorClient(soloNetwork);
-
-export {
-    testnetUrl,
-    soloUrl,
-    testNetwork,
-    soloNetwork,
-    testAccount,
-    thorClient,
-    thorSoloClient
-};
+export { testnetUrl, soloUrl, testNetwork, soloNetwork, testAccount };
