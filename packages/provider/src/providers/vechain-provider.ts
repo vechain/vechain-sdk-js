@@ -27,6 +27,8 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
             new HttpClient('https://testnet.vechain.org')
         );
 
+        tempThorClient.destroy();
+
         // Get the method from the RPCMethodsMap and call it
         return await RPCMethodsMap(tempThorClient)[args.method](
             args.params as unknown[]
