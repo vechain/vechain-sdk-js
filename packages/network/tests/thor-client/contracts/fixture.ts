@@ -250,6 +250,12 @@ interface TestCase {
     reverted: boolean;
 }
 
+const ExampleEnum = {
+    SMALL: 0,
+    MEDIUM: 1,
+    LARGE: 2
+};
+
 const testingContractTestCases: TestCase[] = [
     {
         functionName: 'boolData',
@@ -297,6 +303,46 @@ const testingContractTestCases: TestCase[] = [
         functionName: 'uintData',
         params: [1],
         expected: [1n],
+        reverted: false
+    },
+    {
+        functionName: 'addressData',
+        params: ['0x0000000000000000000000000000000000000000'],
+        expected: ['0x0000000000000000000000000000000000000000'],
+        reverted: false
+    },
+    {
+        functionName: 'bytes32Data',
+        params: [
+            '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0'
+        ],
+        expected: [
+            '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0'
+        ],
+        reverted: false
+    },
+    {
+        functionName: 'stringData',
+        params: ['a'],
+        expected: ['a'],
+        reverted: false
+    },
+    {
+        functionName: 'fixedArrayData',
+        params: [[123, 456, 789]],
+        expected: [[123n, 456n, 789n]],
+        reverted: false
+    },
+    {
+        functionName: 'structData',
+        params: [{ id: 10, name: 'test' }],
+        expected: [[10n, 'test']],
+        reverted: false
+    },
+    {
+        functionName: 'enumData',
+        params: [ExampleEnum.SMALL],
+        expected: [BigInt(ExampleEnum.SMALL)],
         reverted: false
     }
 ];
