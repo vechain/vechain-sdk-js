@@ -13,7 +13,7 @@ import { type ThorClient } from '../thor-client';
  */
 class BlocksModule {
     /**
-     * The head block (best block)
+     * The head block (best block). This is updated by the event poll instance every time a new block is produced.
      * @private
      */
     private headBlock: BlockDetail | null = null;
