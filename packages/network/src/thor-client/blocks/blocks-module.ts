@@ -40,8 +40,7 @@ class BlocksModule {
         readonly thor: ThorClient,
         options?: BlocksModuleOptions
     ) {
-        if (options?.onBlockError != null)
-            this.onBlockError = options?.onBlockError;
+        this.onBlockError = options?.onBlockError;
 
         if (options?.isPollingEnabled ?? true) this.setupPolling();
     }
