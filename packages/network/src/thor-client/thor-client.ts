@@ -1,6 +1,6 @@
 import { AccountsModule } from './accounts';
 import { NodesModule } from './nodes';
-import { BlocksModule } from './blocks';
+import { BlocksModule, type BlocksModuleOptions } from './blocks';
 import { ContractsModule } from './contracts';
 import { TransactionsModule } from './transactions';
 import { LogsModule } from './logs';
@@ -55,11 +55,11 @@ class ThorClient {
      */
     constructor(
         readonly httpClient: HttpClient,
-        isPollingEnabled?: boolean
+        options?: BlocksModuleOptions
     ) {
         this.accounts = new AccountsModule(this);
         this.nodes = new NodesModule(this);
-        this.blocks = new BlocksModule(this, { isPollingEnabled });
+        this.blocks = new BlocksModule(this, options);
         this.logs = new LogsModule(this);
         this.transactions = new TransactionsModule(this);
         this.contracts = new ContractsModule(this);

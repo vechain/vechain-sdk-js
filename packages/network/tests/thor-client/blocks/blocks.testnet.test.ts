@@ -185,7 +185,9 @@ describe('ThorClient - Blocks Module', () => {
 describe('ThorClient - Blocks Module - polling', () => {
     test('polling not enabled', () => {
         const httpClient = new HttpClient(testnetUrl);
-        const thorClient = new ThorClient(httpClient, false);
+        const thorClient = new ThorClient(httpClient, {
+            isPollingEnabled: false
+        });
 
         const headBlockFirst = thorClient.blocks.getHeadBlock();
 
