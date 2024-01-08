@@ -181,3 +181,14 @@ describe('ThorClient - Blocks Module', () => {
         expect(headBlockFirst).not.toBe(headBlockSecond);
     }, 23000);
 });
+
+describe('ThorClient - Blocks Module - polling', () => {
+    test('polling not enabled', () => {
+        const httpClient = new HttpClient(testnetUrl);
+        const thorClient = new ThorClient(httpClient, false);
+
+        const headBlockFirst = thorClient.blocks.getHeadBlock();
+
+        expect(headBlockFirst).toBeNull();
+    });
+});

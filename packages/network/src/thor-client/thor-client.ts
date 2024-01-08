@@ -53,10 +53,13 @@ class ThorClient {
      *
      * @param httpClient - The HTTP client instance used for making network requests.
      */
-    constructor(readonly httpClient: HttpClient) {
+    constructor(
+        readonly httpClient: HttpClient,
+        isPollingEnabled?: boolean
+    ) {
         this.accounts = new AccountsModule(this);
         this.nodes = new NodesModule(this);
-        this.blocks = new BlocksModule(this);
+        this.blocks = new BlocksModule(this, isPollingEnabled);
         this.logs = new LogsModule(this);
         this.transactions = new TransactionsModule(this);
         this.contracts = new ContractsModule(this);

@@ -22,7 +22,7 @@ class BlocksModule {
      * Error handler for block-related errors.
      * @private
      */
-    private readonly onBlockError?: (error: Error) => void;
+    private readonly onBlockError?: (error: Error) => undefined;
 
     /**
      * The Poll instance for event polling
@@ -32,11 +32,12 @@ class BlocksModule {
 
     constructor(
         readonly thor: ThorClient,
-        onBlockError?: (error: Error) => void
+        isPollingEnabled?: boolean,
+        onBlockError?: (error: Error) => undefined
     ) {
         if (onBlockError != null) this.onBlockError = onBlockError;
 
-        this.setupPolling();
+        if (isPollingEnabled ?? true) this.setupPolling();
     }
 
     /**
