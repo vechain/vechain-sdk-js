@@ -79,7 +79,7 @@ const PARAMS_ABI = JSON.stringify([
  *
  * @see [VIP 180](https://github.com/vechain/VIPs/blob/master/vips/VIP-180.md)
  */
-const VIP180 = JSON.stringify([
+const VIP180_ABI = JSON.stringify([
     {
         inputs: [
             {
@@ -349,4 +349,4 @@ const VIP180 = JSON.stringify([
     }
 ]);
 
-export { PARAMS_ABI, VIP180 };
+export { PARAMS_ABI, VIP180_ABI };

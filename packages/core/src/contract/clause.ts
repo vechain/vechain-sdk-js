@@ -2,7 +2,7 @@ import { type InterfaceAbi } from 'ethers';
 import { abi, coder } from '../abi';
 import { type TransactionClause } from '../transaction';
 import type { DeployParams } from './types';
-import { VIP180 } from '../utils';
+import { VIP180_ABI } from '../utils';
 import {
     DATA,
     assert,
@@ -82,7 +82,7 @@ function transferToken(
     amount: number | bigint | string
 ): TransactionClause {
     try {
-        return functionInteraction(tokenAddress, VIP180, 'transfer', [
+        return functionInteraction(tokenAddress, VIP180_ABI, 'transfer', [
             recipientAddress,
             BigInt(amount)
         ]);
