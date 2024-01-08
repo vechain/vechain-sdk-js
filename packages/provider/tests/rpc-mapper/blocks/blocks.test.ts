@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@jest/globals';
+import { beforeEach, describe, expect, test } from '@jest/globals';
 import { JSONRPCInternalError } from '@vechainfoundation/vechain-sdk-errors';
 import { zeroBlock } from './fixture';
 import { RPC_METHODS, RPCMethodsMap } from '../../../src';
@@ -12,16 +12,26 @@ import { testNetwork } from '../../fixture';
  */
 describe('RPC Mapper - Blocks tests', () => {
     /**
+     * Thor client instance
+     */
+    let thorClient: ThorClient;
+
+    /**
      * eth_getBlockByNumber RPC call tests
      */
     describe('eth_getBlockByNumber', () => {
         /**
+         * Before each test
+         */
+        beforeEach(() => {
+            // Init thor client
+            thorClient = new ThorClient(testNetwork);
+        });
+
+        /**
          * Positive cases
          */
         test('eth_getBlockByNumber - positive cases', async () => {
-            // Init thor client
-            const thorClient = new ThorClient(testNetwork);
-
             // Zero block
             const rpcCallZeroBlock = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_getBlockByNumber
@@ -36,27 +46,27 @@ describe('RPC Mapper - Blocks tests', () => {
                 '0x0000000000000000000000000000000000000000000000000000000000000000'
             ]);
             expect(rpcCallNullBlock).toBeNull();
-
-            // @NOTE for future PRs
-            // thorClient.destroy();
         });
 
         /**
          * Negative cases
          */
         test('eth_getBlockByNumber - negative cases', async () => {
-            // Init thor client
-            const thorClient = new ThorClient(testNetwork);
-
             await expect(
                 async () =>
                     await RPCMethodsMap(thorClient)[
                         RPC_METHODS.eth_getBlockByNumber
                     ]([-1])
             ).rejects.toThrowError(JSONRPCInternalError);
-
-            // @NOTE for future PRs
-            // thorClient.destroy();
         });
+
+        /**
+         * After each test
+         * @NOTE for future PRs
+         */
+        // afterEach(() => {
+        //     // Destroy thor client
+        //     thorClient.destroy();
+        // });
     });
 });
