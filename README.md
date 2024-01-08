@@ -23,7 +23,7 @@ Welcome to the Vechain SDK repository! Here's a breakdown of our organized struc
    - `./packages/core`: The heart of the SDK, housing essential modules for fundamental operations like hashing and cryptography. Dive into the core for the building blocks of your decentralized dreams.
    - `./packages/network`: Embark on a journey through the network module, your gateway to all things related to blockchain interaction and transaction dissemination. Here, the vechain SDK connects you seamlessly to the VechainThor blockchain.
    - `./packages/errors`: Delve into the world of error handling with the errors package. This module is dedicated to managing and customizing errors within the SDK, ensuring your development experience remains resilient and smooth.
-   - `./packages/ethers-adapter`: Get the maximum of EVM development stack with ethers-adapter package. This module is dedicated to managing the compatibility with ethers and EVM world.
+   - `./packages/provider`: Get the maximum of EVM development stack with provider package. This module is dedicated to managing the compatibility with ethers and EVM world.
 
 Explore, experiment, and let the vechain SDK empower your blockchain adventures!
 
