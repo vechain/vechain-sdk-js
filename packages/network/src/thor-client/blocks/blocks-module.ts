@@ -39,6 +39,10 @@ class BlocksModule {
         this.setupPolling();
     }
 
+    /**
+     * Sets up the event polling for the best block.
+     * @private
+     * */
     private setupPolling(): void {
         this.pollInstance = Poll.createEventPoll(
             async () => await this.thor.blocks.getBestBlock(),
@@ -163,9 +167,8 @@ class BlocksModule {
      * Destroys the instance by stopping the event poll.
      */
     public destroy(): void {
-        if (this.pollInstance != null) {
+        if (this.pollInstance !== null) {
             this.pollInstance.stopListen();
-            this.pollInstance = null;
         }
     }
 }
