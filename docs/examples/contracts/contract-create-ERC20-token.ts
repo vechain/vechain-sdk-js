@@ -32,4 +32,4 @@ const balance = await thorSoloClient.contracts.executeContractCall(
 );
 
 // Asserting that the initial balance of the deployer is the expected amount (1e24)
-expect(parseInt(balance, 16)).toEqual(1e24);
+expect(balance).toEqual([1000000000000000000000000n]);
