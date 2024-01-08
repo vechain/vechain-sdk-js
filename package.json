@@ -27,7 +27,7 @@
         "test:examples": "turbo test:examples",
         "test:examples:solo": "(yarn start-thor-solo && yarn test:examples) || yarn stop-thor-solo",
 
-        "test": "turbo test --force",
+        "test": "turbo test --force && yarn merge-coverage",
         "test:solo": "(yarn start-thor-solo && yarn test) || yarn stop-thor-solo",
 
         "merge-coverage": "ts-node scripts/merge-coverage.ts"
