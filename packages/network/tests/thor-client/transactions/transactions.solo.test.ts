@@ -158,13 +158,14 @@ describe('ThorClient - Transactions Module', () => {
                 test(
                     description,
                     async () => {
-                        const nonce = 12345678;
+                        const nonce =
+                            Math.random() * (99999999 - 10000000) + 1000000; // Random number between 10000000 and 99999999
 
                         // Create the signed transfer transaction
                         const tx = TransactionHandler.sign(
                             new Transaction({
                                 ...transferTransactionBody,
-                                nonce
+                                nonce: Math.floor(nonce)
                             }),
                             Buffer.from(
                                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
@@ -188,7 +189,7 @@ describe('ThorClient - Transactions Module', () => {
 
                         expect(txReceipt).toBeNull();
                     },
-                    10000
+                    5000
                 );
             }
         );

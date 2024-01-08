@@ -82,7 +82,7 @@ interface BlockDetail {
 
     /**
      * Represents the Accumulated Witness Number (AWN) of the block.
-     * It is used when selecting the trunk block in the VeChainThor consensus algorithm.
+     * It is used when selecting the trunk block in the Vechainthor consensus algorithm.
      *
      * @link see [VechainThor Trunk](https://docs.vechain.org/introduction-to-vechain/about-the-vechain-blockchain/consensus-deep-dive#meta-transaction-features-3)
      */
