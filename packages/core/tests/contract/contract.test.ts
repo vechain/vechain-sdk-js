@@ -4,7 +4,11 @@ import { contract, type DeployParams } from '../../src';
 import { coder } from '../../src';
 import {
     compileERC20SampleTokenContract,
-    getContractSourceCode
+    getContractSourceCode,
+    invalidTransferTokenClausesTestCases,
+    invalidTransferVETtestCases,
+    transferTokenClausesTestCases,
+    transferVETtestCases
 } from './fixture';
 
 /**
@@ -109,5 +113,76 @@ describe('Contract', () => {
         } catch (error) {
             console.log(error);
         }
+    });
+
+    describe('Transfer token clause builder test cases', () => {
+        /**
+         * Transfer token clause builder test cases.
+         */
+        transferTokenClausesTestCases.forEach(
+            ({ tokenAddress, recipientAddress, amount, expected }) => {
+                test(`Build a clause to transfer ${amount} tokens`, () => {
+                    const clause = contract.clauseBuilder.transferToken(
+                        tokenAddress,
+                        recipientAddress,
+                        amount
+                    );
+
+                    expect(clause.to).toBe(tokenAddress);
+                    expect(clause.value).toBe(0);
+                    expect(clause).toStrictEqual(expected);
+                });
+            }
+        );
+
+        /**
+         * Invalid transfer token clause builder test cases.
+         */
+        invalidTransferTokenClausesTestCases.forEach(
+            ({ tokenAddress, recipientAddress, amount, expectedError }) => {
+                test(`Build a clause to transfer ${amount} tokens`, () => {
+                    expect(() => {
+                        contract.clauseBuilder.transferToken(
+                            tokenAddress,
+                            recipientAddress,
+                            amount
+                        );
+                    }).toThrowError(expectedError);
+                });
+            }
+        );
+
+        /**
+         * Transfer VET clause builder test cases.
+         */
+        transferVETtestCases.forEach(
+            ({ recipientAddress, amount, expected }) => {
+                test(`Build a clause to transfer ${amount} VET`, () => {
+                    const clause = contract.clauseBuilder.transferVET(
+                        recipientAddress,
+                        amount
+                    );
+
+                    expect(clause.to).toBe(recipientAddress);
+                    expect(clause).toStrictEqual(expected);
+                });
+            }
+        );
+
+        /**
+         * Invalid transfer VET clause builder test cases.
+         */
+        invalidTransferVETtestCases.forEach(
+            ({ recipientAddress, amount, expectedError }) => {
+                test(`Build a clause to transfer ${amount} VET`, () => {
+                    expect(() => {
+                        contract.clauseBuilder.transferVET(
+                            recipientAddress,
+                            amount
+                        );
+                    }).toThrowError(expectedError);
+                });
+            }
+        );
     });
 });

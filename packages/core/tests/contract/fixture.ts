@@ -2,6 +2,9 @@
 import path from 'path';
 import fs from 'fs';
 import { compileContract, type Contract, type Sources } from './compiler';
+import { unitsUtils, VTHO_ADDRESS } from '../../src';
+import { generateRandomValidAddress } from '../fixture';
+import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
 
 const getContractSourceCode = (dirname: string, filename: string): string => {
     const contractPath = path.resolve(dirname, filename);
@@ -62,4 +65,194 @@ function compileERC20SampleTokenContract(): Contract {
     return compileContract('SampleToken', erc20Sources);
 }
 
-export { compileERC20SampleTokenContract, getContractSourceCode };
+/**
+ * Generates a random valid address.
+ */
+const recipientAddress = generateRandomValidAddress();
+
+/**
+ * Test cases for building clauses for transferring VIP180 tokens.
+ */
+const transferTokenClausesTestCases = [
+    {
+        tokenAddress: VTHO_ADDRESS,
+        recipientAddress,
+        amount: 1,
+        expected: {
+            to: VTHO_ADDRESS,
+            value: 0,
+            data: `0xa9059cbb000000000000000000000000${recipientAddress.slice(
+                2
+            )}0000000000000000000000000000000000000000000000000000000000000001`
+        }
+    },
+    {
+        tokenAddress: VTHO_ADDRESS,
+        recipientAddress,
+        amount: '1',
+        expected: {
+            to: VTHO_ADDRESS,
+            value: 0,
+            data: `0xa9059cbb000000000000000000000000${recipientAddress.slice(
+                2
+            )}0000000000000000000000000000000000000000000000000000000000000001`
+        }
+    },
+    {
+        tokenAddress: VTHO_ADDRESS,
+        recipientAddress,
+        amount: unitsUtils.parseVET('1'),
+        expected: {
+            to: VTHO_ADDRESS,
+            value: 0,
+            data: `0xa9059cbb000000000000000000000000${recipientAddress.slice(
+                2
+            )}0000000000000000000000000000000000000000000000000de0b6b3a7640000`
+        }
+    },
+    {
+        tokenAddress: VTHO_ADDRESS,
+        recipientAddress,
+        amount: unitsUtils.parseVET('500000000'),
+        expected: {
+            to: VTHO_ADDRESS,
+            value: 0,
+            data: `0xa9059cbb000000000000000000000000${recipientAddress.slice(
+                2
+            )}0000000000000000000000000000000000000000019d971e4fe8401e74000000`
+        }
+    },
+    {
+        tokenAddress: VTHO_ADDRESS,
+        recipientAddress,
+        amount: Number(unitsUtils.parseUnits('1', 2)),
+        expected: {
+            to: VTHO_ADDRESS,
+            value: 0,
+            data: `0xa9059cbb000000000000000000000000${recipientAddress.slice(
+                2
+            )}0000000000000000000000000000000000000000000000000000000000000064`
+        }
+    }
+];
+
+/**
+ * Test cases for building clauses for transferring VIP180 tokens.
+ */
+const invalidTransferTokenClausesTestCases = [
+    {
+        tokenAddress: VTHO_ADDRESS,
+        recipientAddress,
+        amount: Number(unitsUtils.parseUnits('-1', 2)),
+        expectedError: InvalidDataTypeError
+    },
+    {
+        tokenAddress: VTHO_ADDRESS,
+        recipientAddress,
+        amount: -1,
+        expectedError: InvalidDataTypeError
+    },
+    {
+        tokenAddress: VTHO_ADDRESS,
+        recipientAddress,
+        amount: '1,2',
+        expectedError: InvalidDataTypeError
+    },
+    {
+        tokenAddress: VTHO_ADDRESS,
+        recipientAddress,
+        amount: 1.7,
+        expectedError: InvalidDataTypeError
+    }
+];
+
+/**
+ * Test cases for building clauses for transferring VET.
+ */
+const transferVETtestCases = [
+    {
+        recipientAddress,
+        amount: 1,
+        expected: {
+            to: recipientAddress,
+            value: '0x1',
+            data: '0x'
+        }
+    },
+    {
+        recipientAddress,
+        amount: '1',
+        expected: {
+            to: recipientAddress,
+            value: '0x1',
+            data: '0x'
+        }
+    },
+    {
+        recipientAddress,
+        amount: unitsUtils.parseVET('1'),
+        expected: {
+            to: recipientAddress,
+            value: '0xde0b6b3a7640000',
+            data: '0x'
+        }
+    },
+    {
+        recipientAddress,
+        amount: unitsUtils.parseVET('500000000'),
+        expected: {
+            to: recipientAddress,
+            value: '0x19d971e4fe8401e74000000',
+            data: '0x'
+        }
+    },
+    {
+        recipientAddress,
+        amount: Number(unitsUtils.parseUnits('1', 2)),
+        expected: {
+            to: recipientAddress,
+            value: '0x64',
+            data: '0x'
+        }
+    }
+];
+
+/**
+ * Invalid Test cases for building clauses for transferring VET.
+ */
+const invalidTransferVETtestCases = [
+    {
+        recipientAddress,
+        amount: Number(unitsUtils.parseUnits('-1', 2)),
+        expectedError: InvalidDataTypeError
+    },
+    {
+        recipientAddress,
+        amount: -1,
+        expectedError: InvalidDataTypeError
+    },
+    {
+        recipientAddress,
+        amount: '1,2',
+        expectedError: InvalidDataTypeError
+    },
+    {
+        recipientAddress,
+        amount: '1.2',
+        expectedError: InvalidDataTypeError
+    },
+    {
+        recipientAddress,
+        amount: 1.7,
+        expectedError: InvalidDataTypeError
+    }
+];
+
+export {
+    compileERC20SampleTokenContract,
+    getContractSourceCode,
+    transferTokenClausesTestCases,
+    invalidTransferTokenClausesTestCases,
+    transferVETtestCases,
+    invalidTransferVETtestCases
+};
