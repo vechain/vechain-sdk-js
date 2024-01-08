@@ -180,6 +180,12 @@ describe('ThorClient - Blocks Module', () => {
         expect(headBlockSecond).toBeDefined();
         expect(headBlockFirst).not.toBe(headBlockSecond);
     }, 23000);
+
+    test('setOnBlockError', () => {
+        thorClient.blocks.setOnBlockError((error) => {
+            console.log(`New error handler: ${error.message}`);
+        });
+    });
 });
 
 describe('ThorClient - Blocks Module - polling', () => {
