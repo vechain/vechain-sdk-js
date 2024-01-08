@@ -1,4 +1,8 @@
-import { networkInfo } from '@vechainfoundation/vechain-sdk-core';
+import {
+    VTHO_ADDRESS,
+    contract,
+    networkInfo
+} from '@vechainfoundation/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -13,18 +17,15 @@ import { expect } from 'expect';
 // 1 - Define multiple clauses
 
 const clauses: TransactionClause[] = [
-    {
-        to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: unitsUtils.parseVET('10000').toString(), // VET transfer clause
-        data: '0x'
-    },
-    {
-        to: '0x0000000000000000000000000000456E65726779',
-        value: 0, // Contract call to transfer VTHO
-        data: '0xa9059cbb0000000000000000000000007567d83b7b8d80addcb\
-281a71d54fc7b3364ffed0000000000000000000000000000000000000000\
-0000000000000000000003e8'
-    }
+    contract.clauseBuilder.transferVET(
+        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+        unitsUtils.parseVET('10000')
+    ),
+    contract.clauseBuilder.transferToken(
+        VTHO_ADDRESS,
+        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+        unitsUtils.parseUnits('10000', 18) // 10000 VTHO
+    )
 ];
 
 // 2 - Calculate intrinsic gas of both clauses

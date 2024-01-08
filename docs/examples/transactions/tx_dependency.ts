@@ -1,4 +1,4 @@
-import { networkInfo } from '@vechainfoundation/vechain-sdk-core';
+import { contract, networkInfo } from '@vechainfoundation/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -13,18 +13,16 @@ import { expect } from 'expect';
 // 1 - Define transaction clauses
 
 const txAClauses: TransactionClause[] = [
-    {
-        to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: unitsUtils.parseVET('1000').toString(), // VET transfer transaction
-        data: '0x'
-    }
+    contract.clauseBuilder.transferVET(
+        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+        unitsUtils.parseVET('1000')
+    )
 ];
 const txBClauses: TransactionClause[] = [
-    {
-        to: '0x7ccadeea14dd6727845b58f8aa7aad0f41a002a2',
-        value: 2000, // VET transfer transaction
-        data: '0x'
-    }
+    contract.clauseBuilder.transferVET(
+        '0x7ccadeea14dd6727845b58f8aa7aad0f41a002a2',
+        unitsUtils.parseVET('1')
+    )
 ];
 
 // 2 - Define transaction A with no dependencies
