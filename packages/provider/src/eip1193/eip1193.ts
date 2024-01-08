@@ -7,7 +7,7 @@ import { type EIP1193ProviderMessage } from './types';
  *
  * The utils into vechain-sdk is to both:
  * - provide a standard interface for DApps to access vechain clients compatible with EIP-1193
- * - provide a standard JSON-RPC interface for DApps to access VeChain clients (we know vechain uses RESTful API)
+ * - provide a standard JSON-RPC interface for DApps to access vechain clients (we know vechain uses RESTful API)
  *
  * ------- TEMPORARY COMMENT -------
  * Probably we can remove this file and use directly the `BackwardsCompatibilityProviderAdapter` of hardhat

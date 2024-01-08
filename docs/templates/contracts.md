@@ -44,7 +44,7 @@ This example illustrates the process of creating a clause that is useful for int
 ## Create a sample ERC20 token
 
 ### Overview
-The ERC20 token standard is widely used for creating and issuing smart contracts on Ethereum blockchain. VeChain, being compatible with Ethereum's EVM, allows for the implementation of ERC20 tokens on its platform. This provides the benefits of VeChain's features, such as improved scalability and lower transaction costs, while maintaining the familiar ERC20 interface.
+The ERC20 token standard is widely used for creating and issuing smart contracts on Ethereum blockchain. Vechain, being compatible with Ethereum's EVM, allows for the implementation of ERC20 tokens on its platform. This provides the benefits of VeChain's features, such as improved scalability and lower transaction costs, while maintaining the familiar ERC20 interface.
 
 ### Example
 
