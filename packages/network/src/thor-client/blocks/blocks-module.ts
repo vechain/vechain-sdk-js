@@ -3,7 +3,8 @@ import { type EventPoll, Poll, buildQuery, thorest } from '../../utils';
 import {
     type WaitForBlockOptions,
     type BlockInputOptions,
-    type BlockDetail
+    type BlockDetail,
+    type BlocksModuleOptions
 } from './types';
 import { assertIsRevisionForBlock } from '@vechainfoundation/vechain-sdk-core';
 import { type ThorClient } from '../thor-client';
@@ -30,14 +31,19 @@ class BlocksModule {
      */
     private pollInstance: EventPoll<BlockDetail | null> | null = null;
 
+    /**
+     * Initializes a new instance of the `Thor` class.
+     * @param thor - The Thor instance used to interact with the vechain blockchain API.
+     * @param BlocksModuleOptions - (Optional) Other optional parameters for polling and error handling.
+     */
     constructor(
         readonly thor: ThorClient,
-        isPollingEnabled?: boolean,
-        onBlockError?: (error: Error) => undefined
+        options?: BlocksModuleOptions
     ) {
-        if (onBlockError != null) this.onBlockError = onBlockError;
+        if (options?.onBlockError != null)
+            this.onBlockError = options?.onBlockError;
 
-        if (isPollingEnabled ?? true) this.setupPolling();
+        if (options?.isPollingEnabled ?? true) this.setupPolling();
     }
 
     /**

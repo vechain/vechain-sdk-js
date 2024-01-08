@@ -59,7 +59,7 @@ class ThorClient {
     ) {
         this.accounts = new AccountsModule(this);
         this.nodes = new NodesModule(this);
-        this.blocks = new BlocksModule(this, isPollingEnabled);
+        this.blocks = new BlocksModule(this, { isPollingEnabled });
         this.logs = new LogsModule(this);
         this.transactions = new TransactionsModule(this);
         this.contracts = new ContractsModule(this);
