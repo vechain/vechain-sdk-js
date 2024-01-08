@@ -29,7 +29,7 @@ class BlocksModule {
      * The Poll instance for event polling
      * @private
      */
-    private pollInstance: EventPoll<BlockDetail | null> | null = null;
+    private pollInstance?: EventPoll<BlockDetail | null>;
 
     /**
      * Initializes a new instance of the `Thor` class.
@@ -181,7 +181,7 @@ class BlocksModule {
      * Destroys the instance by stopping the event poll.
      */
     public destroy(): void {
-        if (this.pollInstance !== null) {
+        if (this.pollInstance != null) {
             this.pollInstance.stopListen();
         }
     }
