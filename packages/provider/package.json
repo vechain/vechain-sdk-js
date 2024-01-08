@@ -1,0 +1,30 @@
+{
+    "name": "@vechainfoundation/vechain-sdk-provider",
+    "version": "1.0.0",
+    "private": false,
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "license": "MIT",
+    "scripts": {
+        "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose up -d --wait && echo '\nThor solo node started ...'",
+        "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose down && echo 'Thor solo node stopped ...'",
+
+        "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
+
+        "lint": "eslint --ext .ts src --ext .ts tests",
+        "format": "prettier --write src/**/*.ts tests/**/*.ts",
+
+        "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
+
+        "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
+        "test:integration:solo": "(yarn start-thor-solo && yarn test:integration) || yarn stop-thor-solo",
+
+        "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
+        "test:solo": "(yarn start-thor-solo && yarn test) || yarn stop-thor-solo"
+    },
+    "dependencies": {
+        "@vechainfoundation/vechain-sdk-errors": "*",
+        "@vechainfoundation/vechain-sdk-core": "*",
+        "@vechainfoundation/vechain-sdk-network": "*"
+    }
+}

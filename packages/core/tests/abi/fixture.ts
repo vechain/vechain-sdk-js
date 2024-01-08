@@ -1,4 +1,7 @@
+import { hexlify, toBeHex, zeroPadValue } from 'ethers';
 import { addressUtils } from '../../src';
+import { generateRandomValidAddress } from '../fixture';
+import { InvalidAbiDataToEncodeError } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
  * Simple functions fixtures
@@ -183,6 +186,190 @@ const events = [
             [1n, 'test'],
             [2n, 'test2']
         ]
+    }
+];
+
+/**
+ * `from` random valid address
+ */
+const fromRandomAddress = generateRandomValidAddress();
+
+/**
+ * `to` random valid address
+ */
+const toRandomAddress = generateRandomValidAddress();
+
+/**
+ * `value` random BigInt
+ */
+const randomBigInt = BigInt(Math.floor(Math.random() * 1000));
+
+/**
+ * Event test cases for encoding topics
+ */
+const topicsEventTestCases = [
+    {
+        event: {
+            anonymous: false,
+            inputs: [
+                {
+                    indexed: true,
+                    name: 'from',
+                    type: 'address'
+                },
+                {
+                    indexed: true,
+                    name: 'to',
+                    type: 'address'
+                },
+                {
+                    indexed: false,
+                    name: 'value',
+                    type: 'uint256'
+                }
+            ],
+            name: 'Transfer',
+            type: 'event'
+        },
+        valuesToEncode: [fromRandomAddress, toRandomAddress],
+        expectedTopics: [
+            '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+            `0x000000000000000000000000${fromRandomAddress.slice(2)}`,
+            `0x000000000000000000000000${toRandomAddress.slice(2)}`
+        ]
+    },
+    {
+        event: 'event Transfer(address indexed, address indexed, uint256)',
+        valuesToEncode: [fromRandomAddress, toRandomAddress],
+        expectedTopics: [
+            '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+            `0x000000000000000000000000${fromRandomAddress.slice(2)}`,
+            `0x000000000000000000000000${toRandomAddress.slice(2)}`
+        ]
+    },
+    {
+        event: 'event Transfer(address indexed from, address indexed to, uint256 value)',
+        valuesToEncode: [fromRandomAddress, toRandomAddress],
+        expectedTopics: [
+            '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+            `0x000000000000000000000000${fromRandomAddress.slice(2)}`,
+            `0x000000000000000000000000${toRandomAddress.slice(2)}`
+        ]
+    },
+    {
+        event: 'event Transfer(address indexed from, address indexed to, uint256 value)',
+        valuesToEncode: [fromRandomAddress], // Missing `to` parameter
+        expectedTopics: [
+            '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+            `0x000000000000000000000000${fromRandomAddress.slice(2)}` // Should return only signature and topic1
+        ]
+    },
+    {
+        event: 'event Transfer(address indexed from, address indexed to, uint256 value)',
+        valuesToEncode: [], // Missing `from` and `to` parameters
+        expectedTopics: [
+            '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef' // Should return only signature
+        ]
+    },
+    {
+        event: 'event Swap(address indexed sender,uint amount0In,uint amount1In,uint amount0Out,uint amount1Out,address indexed to)',
+        valuesToEncode: [fromRandomAddress, toRandomAddress],
+        expectedTopics: [
+            '0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822',
+            `0x000000000000000000000000${fromRandomAddress.slice(2)}`,
+            `0x000000000000000000000000${toRandomAddress.slice(2)}`
+        ]
+    },
+    {
+        event: 'event Swap(address indexed sender,uint amount0In,uint amount1In,uint amount0Out,uint amount1Out,address indexed to)',
+        valuesToEncode: [], // Missing `from` and `to` parameters
+        expectedTopics: [
+            '0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822' // Should return only signature
+        ]
+    },
+    {
+        event: 'event Approval(address indexed owner, address indexed spender, uint256 value)',
+        valuesToEncode: [fromRandomAddress, toRandomAddress],
+        expectedTopics: [
+            '0x8c5be1e5ebec7d5bd14f71427d1e84f3dd0314c0f7b2291e5b200ac8c7c3b925',
+            `0x000000000000000000000000${fromRandomAddress.slice(2)}`,
+            `0x000000000000000000000000${toRandomAddress.slice(2)}`
+        ]
+    },
+    {
+        event: 'event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)',
+        valuesToEncode: [fromRandomAddress, toRandomAddress, randomBigInt],
+        expectedTopics: [
+            '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+            `0x000000000000000000000000${fromRandomAddress.slice(2)}`,
+            `0x000000000000000000000000${toRandomAddress.slice(2)}`,
+            zeroPadValue(hexlify(toBeHex(randomBigInt)), 32)
+        ]
+    },
+    {
+        event: 'event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)',
+        valuesToEncode: [null, null, randomBigInt],
+        expectedTopics: [
+            '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+            undefined,
+            undefined,
+            zeroPadValue(hexlify(toBeHex(randomBigInt)), 32)
+        ]
+    },
+    {
+        event: 'event Transfer(address indexed from, address indexed to, uint256 indexed tokenId)',
+        valuesToEncode: [undefined, undefined, randomBigInt],
+        expectedTopics: [
+            '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+            undefined,
+            undefined,
+            zeroPadValue(hexlify(toBeHex(randomBigInt)), 32)
+        ]
+    },
+    {
+        event: 'event Transfer(address from, address to, uint256 tokenId)', // Event without any indexed params
+        valuesToEncode: [fromRandomAddress, toRandomAddress, randomBigInt], // Even with specified values for indexed params, should return only signature because there are no indexed params in the event
+        expectedTopics: [
+            '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+        ]
+    }
+];
+
+/**
+ * Invalid topics event test cases
+ */
+const invalidTopicsEventTestCases = [
+    {
+        event: {
+            anonymous: false,
+            inputs: [
+                {
+                    indexed: true,
+                    name: 'from',
+                    type: 'address'
+                },
+                {
+                    indexed: true,
+                    name: 'to',
+                    type: 'address'
+                },
+                {
+                    indexed: false,
+                    name: 'value',
+                    type: 'uint256'
+                }
+            ],
+            name: 'Transfer',
+            type: 'event'
+        },
+        valuesToEncode: [
+            // Too many parameters
+            fromRandomAddress,
+            toRandomAddress,
+            fromRandomAddress,
+            toRandomAddress
+        ],
+        expectedError: InvalidAbiDataToEncodeError
     }
 ];
 
@@ -377,6 +564,8 @@ export {
     encodedDecodedInvalidValues,
     contractABI,
     contractABIWithEvents,
-    contractStorageABI,
-    ValueChangedEventData
+    ValueChangedEventData,
+    topicsEventTestCases,
+    invalidTopicsEventTestCases,
+    contractStorageABI
 };

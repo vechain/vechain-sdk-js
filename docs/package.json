@@ -4,10 +4,13 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
-    "test:before": "docker compose up -d",
-    "test:after": "docker compose down",
-    "test:examples": "yarn test:before && ts-node-test examples/ && yarn test:after",
-    "build": "find . -name \"*.md\" -type f -maxdepth 1 ! -name \"README.md\" -delete && tsup ./build-scripts && node dist/builddocs.cjs"
+    "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose up -d --wait && echo '\nThor solo node started ...'",
+    "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose down && echo 'Thor solo node stopped ...'",
+
+    "build": "find . -name \"*.md\" -type f -maxdepth 1 ! -name \"README.md\" -delete && tsup ./build-scripts && node dist/builddocs.cjs",
+
+    "test:examples": "ts-node-test examples/",
+    "test:examples:solo": "(yarn start-thor-solo && yarn test:examples) || yarn stop-thor-solo"
   },
   "dependencies": {
     "@vechainfoundation/vechain-sdk-core": "*",
@@ -15,6 +18,7 @@
   },
   "devDependencies": {
     "expect": "^29.7.0",
-    "ts-node-test": "^0.4.3"
+    "ts-node-test": "^0.4.3",
+    "ws": "^8.16.0"
   }
 }

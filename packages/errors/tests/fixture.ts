@@ -40,7 +40,24 @@ import {
     CertificateInvalidSignerError,
     ContractInterfaceError,
     HTTP_CLIENT,
-    HTTPClientError
+    HTTPClientError,
+    POLL_ERROR,
+    PollExecutionError,
+    FUNCTION,
+    NotImplementedError,
+    EIP1193,
+    EIP1193UserRejectedRequest,
+    EIP1193Disconnected,
+    EIP1193Unauthorized,
+    EIP1193UnsupportedMethod,
+    EIP1193ChainDisconnected,
+    JSONRPC,
+    JSONRPCParseError,
+    JSONRPCInvalidRequest,
+    JSONRPCMethodNotFound,
+    JSONRPCInvalidParams,
+    JSONRPCInternalError,
+    JSONRPCDefaultError
 } from '../src';
 
 /**
@@ -225,6 +242,78 @@ const ErrorsCodeAndClassesMapsFixture = [
             {
                 errorCode: HTTP_CLIENT.INVALID_HTTP_REQUEST,
                 classExpected: HTTPClientError
+            }
+        ]
+    },
+    {
+        name: 'Poll',
+        elements: [
+            {
+                errorCode: POLL_ERROR.POLL_EXECUTION_ERROR,
+                classExpected: PollExecutionError
+            }
+        ]
+    },
+    {
+        name: 'Function',
+        elements: [
+            {
+                errorCode: FUNCTION.NOT_IMPLEMENTED,
+                classExpected: NotImplementedError
+            }
+        ]
+    },
+    {
+        name: 'EIP1193',
+        elements: [
+            {
+                errorCode: EIP1193.USER_REJECTED_REQUEST,
+                classExpected: EIP1193UserRejectedRequest
+            },
+            {
+                errorCode: EIP1193.UNAUTHORIZED,
+                classExpected: EIP1193Unauthorized
+            },
+            {
+                errorCode: EIP1193.UNSUPPORTED_METHOD,
+                classExpected: EIP1193UnsupportedMethod
+            },
+            {
+                errorCode: EIP1193.DISCONNECTED,
+                classExpected: EIP1193Disconnected
+            },
+            {
+                errorCode: EIP1193.CHAIN_DISCONNECTED,
+                classExpected: EIP1193ChainDisconnected
+            }
+        ]
+    },
+    {
+        name: 'JSONRPC',
+        elements: [
+            {
+                errorCode: JSONRPC.PARSE_ERROR,
+                classExpected: JSONRPCParseError
+            },
+            {
+                errorCode: JSONRPC.INVALID_REQUEST,
+                classExpected: JSONRPCInvalidRequest
+            },
+            {
+                errorCode: JSONRPC.METHOD_NOT_FOUND,
+                classExpected: JSONRPCMethodNotFound
+            },
+            {
+                errorCode: JSONRPC.INVALID_PARAMS,
+                classExpected: JSONRPCInvalidParams
+            },
+            {
+                errorCode: JSONRPC.INTERNAL_ERROR,
+                classExpected: JSONRPCInternalError
+            },
+            {
+                errorCode: JSONRPC.DEFAULT,
+                classExpected: JSONRPCDefaultError
             }
         ]
     }

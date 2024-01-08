@@ -14,7 +14,7 @@ The Thor-client extends its functionality to provide seamless access to account-
 import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-// 1 - Create client for testnet
+// 1 - Create thor client for testnet
 
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
@@ -69,7 +69,7 @@ The Thor-client facilitates easy interaction with blocks on the VechainThor netw
 import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-// 1 - Create client for testnet
+// 1 - Create thor client for testnet
 
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
@@ -140,7 +140,7 @@ The Thor-client extends its capabilities to efficiently filter and retrieve even
 import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-// 1 - Create client for testnet
+// 1 - Create thor client for testnet
 
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
@@ -297,7 +297,7 @@ The Thor-client allows developers to interact with nodes on the VechainThor netw
 import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-// 1 - Create client for testnet
+// 1 - Create thor client for testnet
 
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
@@ -331,7 +331,7 @@ import {
 import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-// 1 - Create client for solo network
+// 1 - Create thor client for solo network
 
 const _soloUrl = 'http://localhost:8669';
 const soloNetwork = new HttpClient(_soloUrl);
@@ -434,7 +434,7 @@ import {
 import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-// 1 - Create client for solo network
+// 1 - Create thor client for solo network
 
 const _soloUrl = 'http://localhost:8669';
 const soloNetwork = new HttpClient(_soloUrl);

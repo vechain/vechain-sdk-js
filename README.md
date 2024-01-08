@@ -23,6 +23,7 @@ Welcome to the Vechain SDK repository! Here's a breakdown of our organized struc
    - `./packages/core`: The heart of the SDK, housing essential modules for fundamental operations like hashing and cryptography. Dive into the core for the building blocks of your decentralized dreams.
    - `./packages/network`: Embark on a journey through the network module, your gateway to all things related to blockchain interaction and transaction dissemination. Here, the vechain SDK connects you seamlessly to the VechainThor blockchain.
    - `./packages/errors`: Delve into the world of error handling with the errors package. This module is dedicated to managing and customizing errors within the SDK, ensuring your development experience remains resilient and smooth.
+   - `./packages/provider`: Get the maximum of EVM development stack with provider package. This module is dedicated to managing the compatibility with ethers and EVM world.
 
 Explore, experiment, and let the vechain SDK empower your blockchain adventures!
 
@@ -44,6 +45,7 @@ Explore, experiment, and let the vechain SDK empower your blockchain adventures!
 ### Commands
 - **Build**: Execute `yarn build` to build the project.
 - **Test**: Execute `yarn test` to run all tests.
+  - **NOTE**: Integration tests require a local thor-solo node. See the [Integration Testing](#integration-testing) section for more details. 
 - **Lint**: Execute `yarn lint` to lint all packages.
 - **Format**: Execute `yarn format` to format all packages.
 
@@ -56,7 +58,10 @@ The integration tests interact with a local thor-solo node. This node utilizes t
 
 ### Running Tests
 1. **Start the thor-solo node**: Ensure Docker is running and execute the script to launch the thor-solo node.
+   * You can run and stop thor-solo node manually using the following command `yarn start-thor-solo` and `yarn stop-thor-solo` respectively.
 2. **Run tests**: Use `yarn test:integration` to execute integration tests. These tests are designed to interact with the thor-solo node, verifying the correct operation of various SDK functionalities.
+   * Note that this command requires the thor-solo node to be running. You can run directly without care for thor solo-node start and stop using `yarn test:integration:solo` command.
+   * Same is for `yarn test:solo`and `yarn test:examples:solo` commands.
 
 ### Custom thor-solo Data Starting Point
 
@@ -89,6 +94,7 @@ For advanced testing scenarios, you may require a custom data starting point wit
 - The `./docs` directory houses extensive code examples written as executable demonstrations.
 - Dive into the [examples](./docs/README.md) for a hands-on understanding of the SDK capabilities.
 - For a comprehensive overview of the package structure, please refer to our [Architecture Diagrams](./docs/architecture-diagrams/) located in the documentation directory.
+- You can also create and test youe examples using `yarn test:examples` command (with solo `yarn test:examples:solo`).
 
 ## Contributing
 

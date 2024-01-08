@@ -8,7 +8,7 @@ import {
 import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
 
-// 1 - Create client for solo network
+// 1 - Create thor client for solo network
 
 const _soloUrl = 'http://localhost:8669';
 const soloNetwork = new HttpClient(_soloUrl);
