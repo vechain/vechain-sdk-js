@@ -258,6 +258,7 @@ describe('ThorClient - Contracts', () => {
                 expect(response).toEqual(testCase.expected);
             } catch (error) {
                 console.log('error', error);
+                throw error;
             }
         }
     }, 5000);
