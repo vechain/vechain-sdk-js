@@ -34,22 +34,8 @@ interface EIP1193ProviderMessage {
     request: (args: EIP1193RequestArguments) => Promise<unknown>;
 }
 
-/**
- * Interface for EIP-1193 provider subscription messages.
- *
- * @see https://eips.ethereum.org/EIPS/eip-1193#subscriptions
- */
-interface EIP1193EthSubscription extends EIP1193ProviderMessage {
-    readonly type: 'eth_subscription';
-    readonly data: {
-        readonly subscription: string;
-        readonly result: unknown;
-    };
-}
-
 export {
     type EIP1193RequestArguments,
     type EIP1193ProviderConnectInfo,
-    type EIP1193ProviderMessage,
-    type EIP1193EthSubscription
+    type EIP1193ProviderMessage
 };
