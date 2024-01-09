@@ -174,4 +174,25 @@ describe('Contract interface for ABI encoding/decoding', () => {
         expect(decodedOutput).toBeDefined();
         expect(decodedOutput).toEqual([mockReturnValue]);
     });
+
+    /**
+     * Test the failed decoding of a function output.
+     */
+    test('fail to decode a function output', () => {
+        const contractInterface = coder.createInterface(contractStorageABI);
+        const functionName = 'getValue';
+        const mockReturnValue = 'test';
+        const encodedFunctionOutput = contractInterface.encodeFunctionResult(
+            functionName,
+            [mockReturnValue]
+        );
+
+        expect(() =>
+            coder.decodeFunctionOutput(
+                contractStorageABI,
+                'invalidFunctionName',
+                encodedFunctionOutput
+            )
+        ).toThrowError(InvalidAbiDataToDecodeError);
+    });
 });
