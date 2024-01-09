@@ -6,7 +6,7 @@ import {
     PARAMS_ABI,
     dataUtils,
     addressUtils
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import type { ContractCallOptions, ContractTransactionOptions } from './types';
 import { type SendTransactionResult } from '../transactions';
 import { type ThorClient } from '../thor-client';

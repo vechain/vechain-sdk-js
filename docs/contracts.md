@@ -7,7 +7,7 @@
 This example showcases the process of building a clause to deploy a smart contract using the Vechain SDK.
 
 ```typescript { name=contract-deploy, category=example }
-import { contract } from '@vechainfoundation/vechain-sdk-core';
+import { contract } from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Init contract bytecode to deploy
@@ -25,7 +25,7 @@ expect(clause.data).toEqual(contractBytecode);
 
 ### Code Explanation
 
--   The `clauseBuilder.deployContract` function from `@vechainfoundation/vechain-sdk-core` is employed to construct a clause needed to perform a deploy contract transaction.
+-   The `clauseBuilder.deployContract` function from `@vechain/vechain-sdk-core` is employed to construct a clause needed to perform a deploy contract transaction.
 
 -   The smart contract bytecode is represented by the `contractBytecode` variable.
 
@@ -42,7 +42,7 @@ This example provides a practical demonstration of utilizing the vechain SDK to 
 This example demonstrates the process of building a clause to call a function on a deployed smart contract using the vechain SDK.
 
 ```typescript { name=contract-function-call, category=example }
-import { networkInfo, contract } from '@vechainfoundation/vechain-sdk-core';
+import { networkInfo, contract } from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Init a simple contract ABI
@@ -97,7 +97,7 @@ expect(clause.data).toBeDefined();
 
 -   The example involves a smart contract with an ABI (Application Binary Interface) defined in JSON format. The ABI describes the functions and their parameters in the contract.
 
--   The `clauseBuilder.functionInteraction` function from `@vechainfoundation/vechain-sdk-core` is used to create a clause for calling a specific function on the smart contract.
+-   The `clauseBuilder.functionInteraction` function from `@vechain/vechain-sdk-core` is used to create a clause for calling a specific function on the smart contract.
 
 -   The function `setValue` is called with an argument of 123, representing the value to be set in the smart contract.
 
@@ -147,7 +147,7 @@ import {
     privateKeyDeployer,
     thorSoloClient
 } from './fixture.js';
-import { addressUtils, VIP180_ABI } from '@vechainfoundation/vechain-sdk-core';
+import { addressUtils, VIP180_ABI } from '@vechain/vechain-sdk-core';
 
 // Deploying the ERC20 contract using the Thor client and the deployer's private key
 const transaction = await thorSoloClient.contracts.deployContract(
@@ -182,13 +182,13 @@ expect(parseInt(balance, 16)).toEqual(1e24);
 Once the contract is deployed, we can transfer tokens to another address using the vechain SDK. The following code shows how to transfer 10000 token smallest unit to another address:
 
 ```typescript { name=contract-transfer-erc20-token, category=example }
-import { VIP180_ABI } from '@vechainfoundation/vechain-sdk-core';
+import { VIP180_ABI } from '@vechain/vechain-sdk-core';
 import {
     privateKeyDeployer,
     setupERC20Contract,
     thorSoloClient
 } from './fixture.js';
-import { type TransactionReceipt } from '@vechainfoundation/vechain-sdk-network';
+import { type TransactionReceipt } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // Setting up the ERC20 contract and getting its address

@@ -6,7 +6,7 @@ import {
     blockWithInvalidTimeStampFormat,
     createThorClient
 } from './fixture';
-import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
+import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 
 /**
  * Node integration tests

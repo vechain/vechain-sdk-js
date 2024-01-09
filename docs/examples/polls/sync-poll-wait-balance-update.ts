@@ -2,13 +2,13 @@ import {
     HttpClient,
     Poll,
     ThorClient
-} from '@vechainfoundation/vechain-sdk-network';
+} from '@vechain/vechain-sdk-network';
 import {
     dataUtils,
     Transaction,
     TransactionHandler,
     TransactionUtils
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Create thor client for solo network

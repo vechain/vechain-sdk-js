@@ -1,4 +1,4 @@
-import { subscriptions } from '@vechainfoundation/vechain-sdk-network';
+import { subscriptions } from '@vechain/vechain-sdk-network';
 import WebSocket from 'ws';
 
 // The URL of the node to request the subscription from.

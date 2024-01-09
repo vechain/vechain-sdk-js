@@ -7,7 +7,7 @@ import {
     deployErc20Contract,
     deployExampleContract
 } from './fixture';
-import { addressUtils } from '@vechainfoundation/vechain-sdk-core';
+import { addressUtils } from '@vechain/vechain-sdk-core';
 import type { TransactionReceipt } from '../../../src';
 
 /**

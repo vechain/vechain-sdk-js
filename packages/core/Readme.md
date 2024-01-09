@@ -1,4 +1,4 @@
-# @vechainfoundation/vechain-sdk-core
+# @vechain/vechain-sdk-core
 
 Welcome to the **core package** of the vechain SDK!
 

@@ -6,7 +6,7 @@ import {
     privateKeyDeployer,
     thorSoloClient
 } from './fixture.js';
-import { addressUtils, VIP180_ABI } from '@vechainfoundation/vechain-sdk-core';
+import { addressUtils, VIP180_ABI } from '@vechain/vechain-sdk-core';
 
 // Deploying the ERC20 contract using the Thor client and the deployer's private key
 const transaction = await thorSoloClient.contracts.deployContract(

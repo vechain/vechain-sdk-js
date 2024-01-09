@@ -1,4 +1,4 @@
-import { assert, RLP } from '@vechainfoundation/vechain-sdk-errors';
+import { assert, RLP } from '@vechain/vechain-sdk-errors';
 
 /**
  * Asserts that the provided buffer is of a specific length and does not contain leading zeros.

@@ -1,5 +1,5 @@
 {
-    "name": "@vechainfoundation/vechain-sdk-provider",
+    "name": "@vechain/vechain-sdk-provider",
     "version": "1.0.0",
     "private": false,
     "main": "dist/index.js",
@@ -23,8 +23,8 @@
         "test:solo": "(yarn start-thor-solo && yarn test) || yarn stop-thor-solo"
     },
     "dependencies": {
-        "@vechainfoundation/vechain-sdk-errors": "*",
-        "@vechainfoundation/vechain-sdk-core": "*",
-        "@vechainfoundation/vechain-sdk-network": "*"
+        "@vechain/vechain-sdk-errors": "*",
+        "@vechain/vechain-sdk-core": "*",
+        "@vechain/vechain-sdk-network": "*"
     }
 }

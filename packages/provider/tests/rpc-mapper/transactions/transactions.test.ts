@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { NotImplementedError } from '@vechainfoundation/vechain-sdk-errors';
+import { NotImplementedError } from '@vechain/vechain-sdk-errors';
 import { RPC_METHODS, RPCMethodsMap } from '../../../src';
-import { ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../fixture';
 
 /**

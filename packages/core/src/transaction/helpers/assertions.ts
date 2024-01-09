@@ -1,4 +1,4 @@
-import { assert, TRANSACTION } from '@vechainfoundation/vechain-sdk-errors';
+import { assert, TRANSACTION } from '@vechain/vechain-sdk-errors';
 import { type Transaction } from '../transaction';
 
 /**

@@ -2,7 +2,7 @@ import {
     HttpClient,
     Poll,
     ThorClient
-} from '@vechainfoundation/vechain-sdk-network';
+} from '@vechain/vechain-sdk-network';
 
 // 1 - Create thor client for testnet
 

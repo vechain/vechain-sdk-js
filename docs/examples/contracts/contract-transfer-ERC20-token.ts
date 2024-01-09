@@ -1,10 +1,10 @@
-import { VIP180_ABI } from '@vechainfoundation/vechain-sdk-core';
+import { VIP180_ABI } from '@vechain/vechain-sdk-core';
 import {
     privateKeyDeployer,
     setupERC20Contract,
     thorSoloClient
 } from './fixture.js';
-import { type TransactionReceipt } from '@vechainfoundation/vechain-sdk-network';
+import { type TransactionReceipt } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // Setting up the ERC20 contract and getting its address

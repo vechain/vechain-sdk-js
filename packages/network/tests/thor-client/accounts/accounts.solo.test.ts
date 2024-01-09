@@ -4,7 +4,7 @@ import {
     TEST_CONTRACT_ADDRESS,
     thorSoloClient
 } from '../../fixture';
-import { unitsUtils } from '@vechainfoundation/vechain-sdk-core';
+import { unitsUtils } from '@vechain/vechain-sdk-core';
 import { TESTING_CONTRACT_BYTECODE } from './fixture';
 
 /**

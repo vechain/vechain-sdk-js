@@ -63,7 +63,7 @@ interface HeaderReturnTypeRPC {
 /**
  * Return type of blocks for RPC standard.
  *
- * Our SDK uses `BlockDetail` type from `@vechainfoundation/vechain-sdk-network` package.
+ * Our SDK uses `BlockDetail` type from `@vechain/vechain-sdk-network` package.
  */
 interface BlocksReturnTypeRPC extends HeaderReturnTypeRPC {
     /**

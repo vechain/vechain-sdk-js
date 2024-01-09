@@ -3,8 +3,8 @@ import {
     type EIP1193ProviderMessage,
     type EIP1193RequestArguments
 } from '../eip1193';
-import { assert, DATA } from '@vechainfoundation/vechain-sdk-errors';
-import { type ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { assert, DATA } from '@vechain/vechain-sdk-errors';
+import { type ThorClient } from '@vechain/vechain-sdk-network';
 import { RPC_METHODS, RPCMethodsMap } from '../utils';
 
 /**

@@ -6,7 +6,7 @@ import {
     InvalidKeystoreError,
     InvalidKeystorePasswordError,
     InvalidSecp256k1PrivateKeyError
-} from '@vechainfoundation/vechain-sdk-errors';
+} from '@vechain/vechain-sdk-errors';
 
 /**
  * Keystore tests

@@ -8,7 +8,7 @@ import {
 } from '../../../src';
 import { TESTING_CONTRACT_ABI, TEST_ACCOUNTS, soloUrl } from '../../fixture';
 import WebSocket from 'ws';
-import { addressUtils, coder } from '@vechainfoundation/vechain-sdk-core';
+import { addressUtils, coder } from '@vechain/vechain-sdk-core';
 import { triggerContractFunction, triggerVETtransfer } from './fixture';
 
 const TIMEOUT = 15000; // 15-second timeout

@@ -20,8 +20,8 @@ import {
     addressUtils,
     contract,
     dataUtils
-} from '@vechainfoundation/vechain-sdk-core';
-import { TransactionNotSignedError } from '@vechainfoundation/vechain-sdk-errors';
+} from '@vechain/vechain-sdk-core';
+import { TransactionNotSignedError } from '@vechain/vechain-sdk-errors';
 import { randomBytes } from 'crypto';
 
 /**

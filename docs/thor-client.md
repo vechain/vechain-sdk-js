@@ -11,7 +11,7 @@ The Thor-client serves as an interface to interact with the vechain Thor blockch
 The Thor-client extends its functionality to provide seamless access to account-related information on the VechainThor network. The following code exemplifies how developers can utilize the Thor-client to interact with accounts:
 
 ```typescript { name=accounts, category=example }
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
@@ -66,7 +66,7 @@ These methods showcase how Thor-client simplifies the process of obtaining accou
 The Thor-client facilitates easy interaction with blocks on the VechainThor network, as demonstrated in the following code snippet:
 
 ```typescript { name=blocks, category=example }
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
@@ -137,7 +137,7 @@ These methods demonstrate how the Thor-client simplifies the process of fetching
 The Thor-client extends its capabilities to efficiently filter and retrieve event logs and transfer logs on the VechainThor network. The following code exemplifies how developers can use the Thor-client to filter event logs and transfer logs:
 
 ```typescript { name=logs, category=example }
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
@@ -294,7 +294,7 @@ The `filterTransferLogs` method provides a streamlined way to retrieve transfer 
 The Thor-client allows developers to interact with nodes on the VechainThor network, providing information about connected peers. The following code demonstrates how to use the Thor-client to retrieve connected peers of a node:
 
 ```typescript { name=nodes, category=example }
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
@@ -328,8 +328,8 @@ import {
     dataUtils,
     unitsUtils,
     contract
-} from '@vechainfoundation/vechain-sdk-core';
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+} from '@vechain/vechain-sdk-core';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for solo network
@@ -431,8 +431,8 @@ import {
     dataUtils,
     unitsUtils,
     contract
-} from '@vechainfoundation/vechain-sdk-core';
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+} from '@vechain/vechain-sdk-core';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for solo network

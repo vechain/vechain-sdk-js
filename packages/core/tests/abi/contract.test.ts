@@ -10,7 +10,7 @@ import {
     InvalidAbiDataToDecodeError,
     InvalidAbiDataToEncodeError,
     InvalidAbiEventError
-} from '@vechainfoundation/vechain-sdk-errors';
+} from '@vechain/vechain-sdk-errors';
 
 /**
  * Contract tests - encode & decode

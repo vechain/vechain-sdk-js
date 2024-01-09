@@ -9,7 +9,7 @@ import {
     TEST_CONTRACT_ADDRESS,
     thorClient
 } from '../../fixture';
-import { addressUtils, contract } from '@vechainfoundation/vechain-sdk-core';
+import { addressUtils, contract } from '@vechain/vechain-sdk-core';
 
 /**
  * Transactions module tests suite.

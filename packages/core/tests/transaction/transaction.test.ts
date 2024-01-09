@@ -7,7 +7,7 @@ import {
     TransactionBodyError,
     TransactionDelegationError,
     TransactionNotSignedError
-} from '@vechainfoundation/vechain-sdk-errors';
+} from '@vechain/vechain-sdk-errors';
 
 /**
  * Test transaction module

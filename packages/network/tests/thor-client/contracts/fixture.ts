@@ -1,7 +1,7 @@
 import {
     type DeployParams,
     type InterfaceAbi
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import { type TransactionSendResult } from '../../../src';
 import { TEST_ACCOUNTS, thorSoloClient } from '../../fixture';
 

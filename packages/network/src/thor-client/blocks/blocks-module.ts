@@ -1,11 +1,11 @@
-import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
+import { DATA, assert } from '@vechain/vechain-sdk-errors';
 import { Poll, buildQuery, thorest } from '../../utils';
 import {
     type WaitForBlockOptions,
     type BlockInputOptions,
     type BlockDetail
 } from './types';
-import { assertIsRevisionForBlock } from '@vechainfoundation/vechain-sdk-core';
+import { assertIsRevisionForBlock } from '@vechain/vechain-sdk-core';
 import { type ThorClient } from '../thor-client';
 
 /** The `BlocksModule` class encapsulates functionality for interacting with blocks

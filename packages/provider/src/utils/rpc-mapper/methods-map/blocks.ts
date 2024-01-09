@@ -1,10 +1,10 @@
-import { type ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { type ThorClient } from '@vechain/vechain-sdk-network';
 import { blocksFormatter, type BlocksReturnTypeRPC } from '../../formatter';
 import {
     buildError,
     getJSONRPCErrorCode,
     JSONRPC
-} from '@vechainfoundation/vechain-sdk-errors';
+} from '@vechain/vechain-sdk-errors';
 
 /**
  * All RPC methods related to blocks

@@ -1,16 +1,13 @@
 import { generateRandomValidAddress } from '../../../../core/tests/fixture';
+import { unitsUtils, vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
 import {
-    unitsUtils,
-    vechain_sdk_core_ethers
-} from '@vechainfoundation/vechain-sdk-core';
-import {
-    TESTING_CONTRACT_ABI,
     TEST_ACCOUNTS,
     TEST_CONTRACT_ADDRESS,
+    TESTING_CONTRACT_ABI,
     thorSoloClient
 } from '../../fixture';
 import WebSocket from 'ws';
-import { contract } from '@vechainfoundation/vechain-sdk-core/src';
+import { contract } from '@vechain/vechain-sdk-core/src';
 import { type Clause } from '../../../src';
 
 /**
