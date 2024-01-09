@@ -3,6 +3,7 @@ import {
     Poll,
     ThorClient
 } from '@vechainfoundation/vechain-sdk-network';
+import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
 
@@ -48,4 +49,10 @@ for (const account of accounts) {
         });
 
     monitoringPoll.startListen();
+
+    // It seeme to be strange, BUT onData is called only after 1 second of the eventPoll.startListen() call.
+    expect(monitoringPoll.getCurrentIteration).toBe(0);
+
+    // Test "Asynchronicity". Code must be executed after the eventPoll.startListen() call
+    expect(true).toBe(true);
 }
