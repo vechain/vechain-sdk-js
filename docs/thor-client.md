@@ -340,7 +340,8 @@ import {
     TransactionUtils,
     TransactionHandler,
     dataUtils,
-    unitsUtils
+    unitsUtils,
+    contract
 } from '@vechainfoundation/vechain-sdk-core';
 import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
@@ -358,11 +359,10 @@ const latestBlock = await thorSoloClient.blocks.getBestBlock();
 // 3 - Create clauses
 
 const clauses = [
-    {
-        to: '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-        value: unitsUtils.parseVET('10000').toString(), // VET transfer transaction
-        data: '0x'
-    }
+    contract.clauseBuilder.transferVET(
+        '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+        unitsUtils.parseVET('10000')
+    )
 ];
 
 // 4 - Create transaction
@@ -446,7 +446,8 @@ import {
     TransactionUtils,
     TransactionHandler,
     dataUtils,
-    unitsUtils
+    unitsUtils,
+    contract
 } from '@vechainfoundation/vechain-sdk-core';
 import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
 import { expect } from 'expect';
@@ -464,11 +465,10 @@ const latestBlock = await thorSoloClient.blocks.getBestBlock();
 // 3 - Create transaction clauses
 
 const clauses = [
-    {
-        to: '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-        value: unitsUtils.parseVET('10000').toString(), // VET transfer transaction
-        data: '0x'
-    }
+    contract.clauseBuilder.transferVET(
+        '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+        unitsUtils.parseVET('10000')
+    )
 ];
 
 // Get gas @NOTE this is an approximation
