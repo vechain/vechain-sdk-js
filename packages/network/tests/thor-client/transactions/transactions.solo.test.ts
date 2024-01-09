@@ -18,9 +18,11 @@ import {
     Transaction,
     TransactionHandler,
     addressUtils,
-    contract
+    contract,
+    dataUtils
 } from '@vechainfoundation/vechain-sdk-core';
 import { TransactionNotSignedError } from '@vechainfoundation/vechain-sdk-errors';
+import { randomBytes } from 'crypto';
 
 /**
  * Transactions module tests.
@@ -104,13 +106,13 @@ describe('Transactions Module', () => {
          */
         test('test a send transaction with a number as value in transaction body ', async () => {
             try {
-                const nonce = Math.random() * (99999999 - 10000000) + 1000000; // Random number between 10000000 and 99999999
+                const nonce = `0x${dataUtils.toHexString(randomBytes(8))}`; // Random nonce
 
                 // Create the signed transfer transaction
                 const tx = TransactionHandler.sign(
                     new Transaction({
                         ...transferTransactionBodyValueAsNumber,
-                        nonce: Math.floor(nonce)
+                        nonce
                     }),
                     Buffer.from(
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
@@ -146,14 +148,15 @@ describe('Transactions Module', () => {
                 test(
                     description,
                     async () => {
-                        const nonce =
-                            Math.random() * (99999999 - 10000000) + 1000000; // Random number between 10000000 and 99999999
+                        const nonce = `0x${dataUtils.toHexString(
+                            randomBytes(8)
+                        )}`; // Random nonce
 
                         // Create the signed transfer transaction
                         const tx = TransactionHandler.sign(
                             new Transaction({
                                 ...transferTransactionBody,
-                                nonce: Math.floor(nonce)
+                                nonce
                             }),
                             Buffer.from(
                                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
