@@ -93,8 +93,9 @@ describe('Transactions Module', () => {
                     expect(txReceipt?.gasUsed).toBe(expectedReceipt.gasUsed);
                     expect(txReceipt?.gasPayer).toBe(expectedReceipt.gasPayer);
                     expect(sendTransactionResult.id).toBe(txReceipt?.meta.txID);
-                } catch (e) {
-                    console.log(e);
+                } catch (error) {
+                    console.log(error);
+                    throw error;
                 }
             });
         });
@@ -133,8 +134,9 @@ describe('Transactions Module', () => {
 
                 expect(txReceipt).toBeDefined();
                 expect(txReceipt?.reverted).toBe(expectedReceipt.reverted);
-            } catch (e) {
-                console.log(e);
+            } catch (error) {
+                console.log(error);
+                throw error;
             }
         });
 

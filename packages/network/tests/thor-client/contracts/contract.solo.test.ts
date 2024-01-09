@@ -61,6 +61,7 @@ describe('ThorClient - Contracts', () => {
             );
         } catch (error) {
             console.log('error', error);
+            throw error;
         }
     }, 10000);
 
@@ -241,6 +242,7 @@ describe('ThorClient - Contracts', () => {
             expect(callFunctionGetResult).toEqual([BigInt(123)]);
         } catch (error) {
             console.log('error', error);
+            throw error;
         }
     }, 10000);
 
