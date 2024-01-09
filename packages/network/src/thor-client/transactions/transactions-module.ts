@@ -4,7 +4,12 @@ import {
     assertValidTransactionID,
     type TransactionClause,
     dataUtils,
-    type TransactionBody
+    type TransactionBody,
+    assertValidTransactionHead,
+    TransactionHandler,
+    revisionUtils,
+    secp256k1,
+    addressUtils
 } from '@vechainfoundation/vechain-sdk-core';
 import { Poll, buildQuery, thorest } from '../../utils';
 import {
@@ -29,13 +34,6 @@ import {
     assert
 } from '@vechainfoundation/vechain-sdk-errors';
 import { type ThorClient } from '../thor-client';
-import {
-    assertValidTransactionHead,
-    TransactionHandler,
-    revisionUtils,
-    secp256k1,
-    addressUtils
-} from '@vechainfoundation/vechain-sdk-core';
 import { assertTransactionCanBeSigned } from './helpers/assertions';
 import { getDelegationSignature } from './helpers/delegation-handler';
 
