@@ -2,6 +2,8 @@ import { describe, expect, test } from '@jest/globals';
 import { VechainProvider } from '../../src';
 import { zeroBlock } from '../rpc-mapper/blocks/fixture';
 import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
+import { ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { testNetwork } from '../fixture';
 
 /**
  * Vechain provider tests
@@ -14,7 +16,7 @@ describe('Vechain provider tests', () => {
      */
     test('Should be able to call an RPC function', async () => {
         // Init provider
-        const provider = new VechainProvider();
+        const provider = new VechainProvider(new ThorClient(testNetwork));
         expect(provider).toBeDefined();
 
         // Call RPC function
@@ -30,7 +32,7 @@ describe('Vechain provider tests', () => {
      */
     test('Should throw an error when calling an invalid RPC method', async () => {
         // Init provider
-        const provider = new VechainProvider();
+        const provider = new VechainProvider(new ThorClient(testNetwork));
         expect(provider).toBeDefined();
 
         // Call RPC function
