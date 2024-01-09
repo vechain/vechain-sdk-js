@@ -176,9 +176,9 @@ describe('Contract interface for ABI encoding/decoding', () => {
     });
 
     /**
-     * Test the failed decoding of a function output.
+     * Test the failed decoding of a function output due to wrong function name.
      */
-    test('fail to decode a function output', () => {
+    test('fail to decode a function due to wrong function name', () => {
         const contractInterface = coder.createInterface(contractStorageABI);
         const functionName = 'getValue';
         const mockReturnValue = 'test';
@@ -192,6 +192,27 @@ describe('Contract interface for ABI encoding/decoding', () => {
                 contractStorageABI,
                 'invalidFunctionName',
                 encodedFunctionOutput
+            )
+        ).toThrowError(InvalidAbiDataToDecodeError);
+    });
+
+    /**
+     * Test the failed decoding of a function output due to wrong data.
+     */
+    test('fail to decode a function due to wrong data', () => {
+        const contractInterface = coder.createInterface(contractStorageABI);
+        const functionName = 'getValue';
+        const mockReturnValue = 'test';
+        const encodedFunctionOutput = contractInterface.encodeFunctionResult(
+            functionName,
+            [mockReturnValue]
+        );
+
+        expect(() =>
+            coder.decodeFunctionOutput(
+                contractStorageABI,
+                'getValue',
+                encodedFunctionOutput + 'InvalidDataString'
             )
         ).toThrowError(InvalidAbiDataToDecodeError);
     });
