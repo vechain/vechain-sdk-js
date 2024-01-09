@@ -6,18 +6,18 @@ import {
     networkInfo,
     type TransactionClause,
     type TransactionBody,
-    unitsUtils
+    unitsUtils,
+    contract
 } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Define clauses
 
 const clauses: TransactionClause[] = [
-    {
-        to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: unitsUtils.parseVET('1000').toString(), // VET transfer transaction
-        data: '0x'
-    }
+    contract.clauseBuilder.transferVET(
+        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+        unitsUtils.parseVET('1000')
+    )
 ];
 
 // 2 - Define transaction body

@@ -1,6 +1,6 @@
 import { expect } from 'expect';
 import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
-import { unitsUtils } from '@vechainfoundation/vechain-sdk-core';
+import { contract, unitsUtils } from '@vechainfoundation/vechain-sdk-core';
 
 // In this example we simulate a transaction of sending 1 VET to another account
 // And we demonstrate (1) how we can check the expected gas cost and (2) whether the transaction is successful
@@ -13,11 +13,10 @@ const thorSoloClient = new ThorClient(soloNetwork);
 // 2(a) - create the transaction for a VET transfer
 const transaction1 = {
     clauses: [
-        {
-            to: '0xb717b660cd51109334bd10b2c168986055f58c1a',
-            value: unitsUtils.parseVET('1').toString(), // converts from 1 VET to wei
-            data: '0x'
-        }
+        contract.clauseBuilder.transferVET(
+            '0xb717b660cd51109334bd10b2c168986055f58c1a',
+            unitsUtils.parseVET('1')
+        )
     ],
     // Please note - this field one of the optional fields that may be passed (see SimulateTransactionOptions),
     // and is only required if you want to simulate a transaction

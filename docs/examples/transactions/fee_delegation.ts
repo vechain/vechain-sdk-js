@@ -1,4 +1,4 @@
-import { networkInfo } from '@vechainfoundation/vechain-sdk-core';
+import { contract, networkInfo } from '@vechainfoundation/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -15,11 +15,10 @@ import { expect } from 'expect';
 // 1 - Define clause
 
 const clauses: TransactionClause[] = [
-    {
-        to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: unitsUtils.parseVET('10000').toString(), // VET transfer transaction
-        data: '0x'
-    }
+    contract.clauseBuilder.transferVET(
+        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+        unitsUtils.parseVET('10000')
+    )
 ];
 
 // 2 - Define transaction body
