@@ -270,16 +270,6 @@ async function testWebSocketConnection(url: string): Promise<boolean> {
         ws.on('error', (error: Error) => {
             reject(error);
         });
-
-        ws.on('unexpected-response', (request, response) => {
-            reject(
-                new Error(
-                    `Unexpected response: ${JSON.stringify(
-                        response.headers
-                    )}\nrequest: ${JSON.stringify(request.getHeaders())}`
-                )
-            );
-        });
     });
 }
 
