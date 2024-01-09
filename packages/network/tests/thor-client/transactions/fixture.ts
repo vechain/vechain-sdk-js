@@ -18,6 +18,15 @@ import {
 } from '@vechainfoundation/vechain-sdk-errors';
 
 /**
+ * Some random transaction nonces to use into tests
+ */
+const transactionNonces = {
+    waitForTransactionTestCases: [10000000, 10000001, 10000002, 10000003],
+    sendTransactionWithANumberAsValueInTransactionBody: 10000004,
+    invalidWaitForTransactionTestCases: [10000005]
+};
+
+/**
  * Clause to transfer 1 VTHO to TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
  */
 const transfer1VTHOClause = {
@@ -112,7 +121,8 @@ const waitForTransactionTestCases = [
             'Should wait for transaction without timeout and return TransactionReceipt',
         options: {
             timeoutMs: undefined,
-            intervalMs: undefined
+            intervalMs: undefined,
+            nonce: transactionNonces.waitForTransactionTestCases[0]
         }
     },
     {
@@ -120,7 +130,8 @@ const waitForTransactionTestCases = [
             'Should wait for transaction with timeout and return TransactionReceipt',
         options: {
             timeoutMs: 5000,
-            intervalMs: undefined
+            intervalMs: undefined,
+            nonce: transactionNonces.waitForTransactionTestCases[1]
         }
     },
     {
@@ -128,7 +139,8 @@ const waitForTransactionTestCases = [
             'Should wait for transaction with intervalMs TransactionReceipt',
         options: {
             timeoutMs: undefined,
-            intervalMs: 100
+            intervalMs: 100,
+            nonce: transactionNonces.waitForTransactionTestCases[2]
         }
     },
     {
@@ -136,7 +148,8 @@ const waitForTransactionTestCases = [
             'Should wait for transaction with intervalMs & timeoutMs and return TransactionReceipt',
         options: {
             timeoutMs: 5000,
-            intervalMs: 100
+            intervalMs: 100,
+            nonce: transactionNonces.waitForTransactionTestCases[3]
         }
     }
 ];
@@ -149,7 +162,8 @@ const invalidWaitForTransactionTestCases = [
         description: 'Should throw error when timeoutMs is too low',
         options: {
             timeoutMs: 1,
-            intervalMs: undefined
+            intervalMs: undefined,
+            nonce: transactionNonces.invalidWaitForTransactionTestCases[0]
         }
     }
 ];
@@ -417,6 +431,7 @@ const signTransactionTestCases = {
 };
 
 export {
+    transactionNonces,
     waitForTransactionTestCases,
     invalidWaitForTransactionTestCases,
     transferTransactionBody,
