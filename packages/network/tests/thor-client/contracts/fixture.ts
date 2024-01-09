@@ -350,6 +350,36 @@ const testingContractTestCases: TestCase[] = [
         params: [ExampleEnum.SMALL],
         expected: [BigInt(ExampleEnum.SMALL)],
         reverted: false
+    },
+    {
+        functionName: 'multipleData',
+        params: [
+            1,
+            '0x0000000000000000000000000000000000000000',
+            '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0',
+            'a',
+            [123, 456, 789],
+            [123, 456, 789, 323, 123],
+            { id: 10, name: 'test' },
+            ExampleEnum.SMALL
+        ],
+        expected: [
+            1n,
+            '0x0000000000000000000000000000000000000000',
+            '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0',
+            'a',
+            [123n, 456n, 789n],
+            [123n, 456n, 789n, 323n, 123n],
+            [10n, 'test'],
+            BigInt(ExampleEnum.SMALL)
+        ],
+        reverted: false
+    },
+    {
+        functionName: 'multipleIntData',
+        params: [1, 222, 333, 287274, 390343843, 123223663],
+        expected: [1n, 222n, 333n, 287274n, 390343843n, 123223663n],
+        reverted: false
     }
 ];
 
