@@ -22,8 +22,16 @@ jobs:
 
             - run: yarn build
 
+            - name: Start Thor solo node
+              id: start-solo
+              run: yarn start-thor-solo
+
             - name: Run Unit & Integration tests
               run: yarn test
+
+            - name: Stop Thor solo node
+              id: stop-solo
+              run: yarn stop-thor-solo
 
             - name: Publish errors
               run: |

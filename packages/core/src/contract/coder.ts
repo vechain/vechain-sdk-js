@@ -33,7 +33,10 @@ function encodeFunctionInput(
     } catch (e) {
         throw buildError(
             ERROR_CODES.ABI.INVALID_DATA_TO_ENCODE,
-            'Encoding failed: Function input must match ABI specifications and be correctly formatted',
+            `Method 'encodeFunctionInput' failed while encoding input for function '${functionName}'. ` +
+                `Input must match ABI specifications and be correctly formatted.\n` +
+                `Parameters: ${JSON.stringify(functionData)}\n` +
+                `Ethers' error message: ${(e as Error).message}`,
             { functionName, functionData },
             e
         );
@@ -46,6 +49,7 @@ function encodeFunctionInput(
  * @param functionName The name of the function defined in the ABI.
  * @param encodedFunctionInput The encoded function data.
  * @returns an array of the decoded function data
+ *
  * @throws {InvalidAbiDataToDecodeError}
  */
 function decodeFunctionInput(

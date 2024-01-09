@@ -16,7 +16,7 @@ To break it down:
 In this example a simple transaction with a single clause is created, signed, encoded and then decoded
 
 ```typescript { name=sign_decode, category=example }
-import { networkInfo } from '@vechainfoundation/vechain-sdk-core';
+import { contract, networkInfo } from '@vechainfoundation/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -31,11 +31,10 @@ import { expect } from 'expect';
 // 1 - Define clauses
 
 const clauses: TransactionClause[] = [
-    {
-        to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: unitsUtils.parseVET('10000').toString(),
-        data: '0x'
-    }
+    contract.clauseBuilder.transferVET(
+        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+        unitsUtils.parseVET('10000')
+    )
 ];
 
 // 2 - Calculate intrinsic gas of clauses
@@ -80,7 +79,11 @@ In VechainThor blockchain a transaction can be composed of multiple clauses. \
 Clauses allow to send multiple payloads to different recipients within a single transaction.
 
 ```typescript { name=multiple_clauses, category=example }
-import { networkInfo } from '@vechainfoundation/vechain-sdk-core';
+import {
+    VTHO_ADDRESS,
+    contract,
+    networkInfo
+} from '@vechainfoundation/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -95,18 +98,15 @@ import { expect } from 'expect';
 // 1 - Define multiple clauses
 
 const clauses: TransactionClause[] = [
-    {
-        to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: unitsUtils.parseVET('10000').toString(), // VET transfer clause
-        data: '0x'
-    },
-    {
-        to: '0x0000000000000000000000000000456E65726779',
-        value: 0, // Contract call to transfer VTHO
-        data: '0xa9059cbb0000000000000000000000007567d83b7b8d80addcb\
-281a71d54fc7b3364ffed0000000000000000000000000000000000000000\
-0000000000000000000003e8'
-    }
+    contract.clauseBuilder.transferVET(
+        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+        unitsUtils.parseVET('10000')
+    ),
+    contract.clauseBuilder.transferToken(
+        VTHO_ADDRESS,
+        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+        unitsUtils.parseUnits('10000', 18) // 10000 VTHO
+    )
 ];
 
 // 2 - Calculate intrinsic gas of both clauses
@@ -149,7 +149,7 @@ expect(decodedTx.body.clauses.length).toBe(clauses.length);
 Fee delegation is a feature on the VechainThor blockchain which enables the transaction sender to request another entity, a sponsor, to pay for the transaction fee on the sender's behalf.
 
 ```typescript { name=fee_delegation, category=example }
-import { networkInfo } from '@vechainfoundation/vechain-sdk-core';
+import { contract, networkInfo } from '@vechainfoundation/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -166,11 +166,10 @@ import { expect } from 'expect';
 // 1 - Define clause
 
 const clauses: TransactionClause[] = [
-    {
-        to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: unitsUtils.parseVET('10000').toString(), // VET transfer transaction
-        data: '0x'
-    }
+    contract.clauseBuilder.transferVET(
+        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+        unitsUtils.parseVET('10000')
+    )
 ];
 
 // 2 - Define transaction body
@@ -233,18 +232,18 @@ import {
     networkInfo,
     type TransactionClause,
     type TransactionBody,
-    unitsUtils
+    unitsUtils,
+    contract
 } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Define clauses
 
 const clauses: TransactionClause[] = [
-    {
-        to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: unitsUtils.parseVET('1000').toString(), // VET transfer transaction
-        data: '0x'
-    }
+    contract.clauseBuilder.transferVET(
+        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+        unitsUtils.parseVET('1000')
+    )
 ];
 
 // 2 - Define transaction body
@@ -285,7 +284,7 @@ expect(decodedTx.body.expiration).toBe(body.expiration);
 A transaction can be set to only be processed after another transaction, therefore defining an execution order for transactions. The _DependsOn_ field is the Id of the transaction on which the current transaction depends on. If the transaction does not depend on others _DependsOn_ can be set to _null_
 
 ```typescript { name=tx_dependency, category=example }
-import { networkInfo } from '@vechainfoundation/vechain-sdk-core';
+import { contract, networkInfo } from '@vechainfoundation/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -300,18 +299,16 @@ import { expect } from 'expect';
 // 1 - Define transaction clauses
 
 const txAClauses: TransactionClause[] = [
-    {
-        to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        value: unitsUtils.parseVET('1000').toString(), // VET transfer transaction
-        data: '0x'
-    }
+    contract.clauseBuilder.transferVET(
+        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+        unitsUtils.parseVET('1000')
+    )
 ];
 const txBClauses: TransactionClause[] = [
-    {
-        to: '0x7ccadeea14dd6727845b58f8aa7aad0f41a002a2',
-        value: 2000, // VET transfer transaction
-        data: '0x'
-    }
+    contract.clauseBuilder.transferVET(
+        '0x7ccadeea14dd6727845b58f8aa7aad0f41a002a2',
+        unitsUtils.parseVET('1')
+    )
 ];
 
 // 2 - Define transaction A with no dependencies
@@ -381,7 +378,7 @@ Note - the result of a transaction might be different depending on the state(blo
 ```typescript { name=simulation, category=example }
 import { expect } from 'expect';
 import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
-import { unitsUtils } from '@vechainfoundation/vechain-sdk-core';
+import { contract, unitsUtils } from '@vechainfoundation/vechain-sdk-core';
 
 // In this example we simulate a transaction of sending 1 VET to another account
 // And we demonstrate (1) how we can check the expected gas cost and (2) whether the transaction is successful
@@ -394,11 +391,10 @@ const thorSoloClient = new ThorClient(soloNetwork);
 // 2(a) - create the transaction for a VET transfer
 const transaction1 = {
     clauses: [
-        {
-            to: '0xb717b660cd51109334bd10b2c168986055f58c1a',
-            value: unitsUtils.parseVET('1').toString(), // converts from 1 VET to wei
-            data: '0x'
-        }
+        contract.clauseBuilder.transferVET(
+            '0xb717b660cd51109334bd10b2c168986055f58c1a',
+            unitsUtils.parseVET('1')
+        )
     ],
     // Please note - this field one of the optional fields that may be passed (see SimulateTransactionOptions),
     // and is only required if you want to simulate a transaction
