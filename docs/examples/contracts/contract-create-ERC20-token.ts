@@ -2,12 +2,11 @@
 
 import { expect } from 'expect';
 import {
-    erc20ContractABI,
     erc20ContractBytecode,
     privateKeyDeployer,
     thorSoloClient
 } from './fixture.js';
-import { addressUtils } from '@vechainfoundation/vechain-sdk-core';
+import { addressUtils, VIP180_ABI } from '@vechainfoundation/vechain-sdk-core';
 
 // Deploying the ERC20 contract using the Thor client and the deployer's private key
 const transaction = await thorSoloClient.contracts.deployContract(
@@ -26,7 +25,7 @@ expect(receipt.reverted).toEqual(false);
 // Executing a contract call to get the balance of the account that deployed the contract
 const balance = await thorSoloClient.contracts.executeContractCall(
     receipt.outputs[0].contractAddress,
-    erc20ContractABI,
+    VIP180_ABI,
     'balanceOf',
     [addressUtils.fromPrivateKey(Buffer.from(privateKeyDeployer, 'hex'))]
 );
