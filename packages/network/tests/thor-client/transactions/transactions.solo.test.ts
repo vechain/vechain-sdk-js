@@ -37,7 +37,8 @@ describe('Transactions Module', () => {
         test("Should throw error if transaction isn't signed", async () => {
             const tx = new Transaction({
                 ...transferTransactionBody,
-                nonce: 12345678
+                nonce: transactionNonces
+                    .shouldThrowErrorIfTransactionIsntSigned[0]
             });
 
             await expect(
