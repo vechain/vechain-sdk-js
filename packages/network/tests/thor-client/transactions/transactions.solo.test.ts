@@ -4,7 +4,6 @@ import {
     expectedReceipt,
     invalidWaitForTransactionTestCases,
     signTransactionTestCases,
-    transactionNonces,
     transferTransactionBody,
     transferTransactionBodyValueAsNumber,
     waitForTransactionTestCases
@@ -19,9 +18,11 @@ import {
     Transaction,
     TransactionHandler,
     addressUtils,
-    contract
+    contract,
+    dataUtils
 } from '@vechainfoundation/vechain-sdk-core';
 import { TransactionNotSignedError } from '@vechainfoundation/vechain-sdk-errors';
+import { randomBytes } from 'crypto';
 
 /**
  * Transactions module tests.
@@ -56,11 +57,14 @@ describe('Transactions Module', () => {
         waitForTransactionTestCases.forEach(({ description, options }) => {
             test(description, async () => {
                 try {
+                    const nonce =
+                        Math.random() * (99999999 - 10000000) + 1000000; // Random number between 10000000 and 99999999
+
                     // Create the signed transfer transaction
                     const tx = TransactionHandler.sign(
                         new Transaction({
                             ...transferTransactionBody,
-                            nonce: options.nonce
+                            nonce: Math.floor(nonce)
                         }),
                         Buffer.from(
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
@@ -100,13 +104,15 @@ describe('Transactions Module', () => {
         /**
          * test that send transaction with a number as value in transaction body
          */
-        test('test a send transaction with a number as value in transaction body', async () => {
+        test('test a send transaction with a number as value in transaction body ', async () => {
             try {
+                const nonce = `0x${dataUtils.toHexString(randomBytes(8))}`; // Random nonce
+
                 // Create the signed transfer transaction
                 const tx = TransactionHandler.sign(
                     new Transaction({
                         ...transferTransactionBodyValueAsNumber,
-                        nonce: transactionNonces.sendTransactionWithANumberAsValueInTransactionBody
+                        nonce
                     }),
                     Buffer.from(
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
@@ -142,11 +148,15 @@ describe('Transactions Module', () => {
                 test(
                     description,
                     async () => {
+                        const nonce = `0x${dataUtils.toHexString(
+                            randomBytes(8)
+                        )}`; // Random nonce
+
                         // Create the signed transfer transaction
                         const tx = TransactionHandler.sign(
                             new Transaction({
                                 ...transferTransactionBody,
-                                nonce: options.nonce
+                                nonce
                             }),
                             Buffer.from(
                                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER

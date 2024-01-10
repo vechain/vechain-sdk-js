@@ -29,6 +29,15 @@ describe('RPC Mapper - Blocks tests', () => {
         });
 
         /**
+         * After each test
+         * @NOTE for future PRs
+         */
+        // afterEach(() => {
+        //     // Destroy thor client
+        //     thorClient.destroy();
+        // });
+
+        /**
          * Positive cases
          */
         test('eth_getBlockByNumber - positive cases', async () => {
@@ -59,14 +68,5 @@ describe('RPC Mapper - Blocks tests', () => {
                     ]([-1])
             ).rejects.toThrowError(JSONRPCInternalError);
         });
-
-        /**
-         * After each test
-         * @NOTE for future PRs
-         */
-        // afterEach(() => {
-        //     // Destroy thor client
-        //     thorClient.destroy();
-        // });
     });
 });
