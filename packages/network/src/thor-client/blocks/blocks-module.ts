@@ -24,7 +24,7 @@ class BlocksModule {
      * Error handler for block-related errors.
      * @private
      */
-    private onBlockError?: (error: Error) => undefined;
+    private readonly onBlockError?: (error: Error) => undefined;
 
     /**
      * The Poll instance for event polling
@@ -61,14 +61,6 @@ class BlocksModule {
             .onError(this.onBlockError ?? (() => {}));
 
         this.pollInstance.startListen();
-    }
-
-    /**
-     * Update the error handler for block-related errors.
-     * @param onBlockError - The new error handler function.
-     */
-    setOnBlockError(onBlockError: (error: Error) => undefined): void {
-        this.onBlockError = onBlockError;
     }
 
     /**
