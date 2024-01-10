@@ -6,8 +6,8 @@
     "author": "vechain Foundation",
     "license": "MIT",
     "scripts": {
-        "start-thor-solo": "echo 'Starting thor solo node ...' && docker-compose up -d --wait && echo '\nThor solo node started ...'",
-        "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker-compose down && echo 'Thor solo node stopped ...'",
+        "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose up -d --wait && echo '\nThor solo node started ...'",
+        "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose down && echo 'Thor solo node stopped ...'",
 
         "postinstall": "husky install",
 
