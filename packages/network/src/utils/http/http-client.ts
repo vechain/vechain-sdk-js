@@ -30,8 +30,8 @@ class HttpClient {
         this.axios =
             options?.axiosInstance ??
             Axios.create({
-                httpAgent: new HttpAgent({ keepAlive: true }),
-                httpsAgent: new HttpsAgent({ keepAlive: true }),
+                httpAgent: new HttpAgent({ keepAlive: false }),
+                httpsAgent: new HttpsAgent({ keepAlive: false }),
                 baseURL,
                 timeout: options?.timeout ?? DEFAULT_HTTP_TIMEOUT
             });

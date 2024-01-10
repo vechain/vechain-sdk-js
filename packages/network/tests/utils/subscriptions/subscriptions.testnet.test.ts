@@ -157,4 +157,16 @@ describe('Subscriptions Testnet', () => {
             }
         );
     });
+
+    /**
+     * Test if the websocket connection is valid
+     */
+    describe('testWebSocketConnection Errors', () => {
+        test('Wrong subscription URL', async () => {
+            const wrongUrl = 'ws://wrong.url';
+            await expect(
+                testWebSocketConnection(wrongUrl)
+            ).rejects.toThrowError('getaddrinfo ENOTFOUND wrong.url');
+        });
+    });
 });
