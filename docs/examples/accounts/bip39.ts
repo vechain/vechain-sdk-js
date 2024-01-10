@@ -18,4 +18,3 @@ console.log(privateKey.toString('hex'));
 
 // In recovery process, validation is recommended
 expect(mnemonic.validate(randomMnemonic)).toBeTruthy();
-// true

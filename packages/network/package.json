@@ -17,16 +17,16 @@
         "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
 
         "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
-        "test:integration:solo": "(yarn start-thor-solo && yarn test:integration) || yarn stop-thor-solo",
+        "test:integration:solo": "(yarn start-thor-solo && yarn test:integration && yarn stop-thor-solo) || yarn stop-thor-solo",
 
         "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
-        "test:solo": "(yarn start-thor-solo && yarn test) || yarn stop-thor-solo"
+        "test:solo": "(yarn start-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo"
     },
     "dependencies": {
         "@types/ws": "^8.5.10",
         "@vechainfoundation/vechain-sdk-core": "*",
         "@vechainfoundation/vechain-sdk-errors": "*",
-        "axios": "^1.6.2"
+        "axios": "^1.6.5"
     },
     "devDependencies": {
         "ws": "^8.16.0"

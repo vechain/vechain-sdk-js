@@ -22,13 +22,13 @@
         "test:unit": "turbo test:unit",
 
         "test:integration": "turbo test:integration",
-        "test:integration:solo": "(yarn start-thor-solo && yarn test:integration) || yarn stop-thor-solo",
+        "test:integration:solo": "(yarn start-thor-solo && yarn test:integration && yarn stop-thor-solo) || yarn stop-thor-solo",
 
         "test:examples": "turbo test:examples",
-        "test:examples:solo": "(yarn start-thor-solo && yarn test:examples) || yarn stop-thor-solo",
+        "test:examples:solo": "(yarn start-thor-solo && yarn test:examples && yarn stop-thor-solo) || yarn stop-thor-solo",
 
         "test": "turbo test --force && yarn merge-coverage",
-        "test:solo": "(yarn start-thor-solo && yarn test) || yarn stop-thor-solo",
+        "test:solo": "(yarn start-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo",
 
         "merge-coverage": "ts-node scripts/merge-coverage.ts"
     },
@@ -44,13 +44,13 @@
         "@commitlint/config-conventional": "^18.4.3",
         "@jest/globals": "^29.7.0",
         "@types/fs-extra": "^11.0.4",
-        "@typescript-eslint/eslint-plugin": "^6.17.0",
-        "@typescript-eslint/parser": "^6.17.0",
+        "@typescript-eslint/eslint-plugin": "^6.18.1",
+        "@typescript-eslint/parser": "^6.18.1",
         "eslint": "^8.56.0",
         "eslint-config-prettier": "^9.1.0",
         "eslint-config-standard-with-typescript": "^43.0.0",
         "eslint-plugin-import": "^2.29.1",
-        "eslint-plugin-n": "^16.6.1",
+        "eslint-plugin-n": "^16.6.2",
         "eslint-plugin-prettier": "^5.1.0",
         "eslint-plugin-promise": "^6.0.0",
         "fs-extra": "^11.2.0",
@@ -65,7 +65,7 @@
         "ts-jest": "^29.1.1",
         "tsup": "^8.0.1",
         "turbo": "^1.11.2",
-        "typedoc": "^0.25.4",
+        "typedoc": "^0.25.7",
         "typedoc-plugin-missing-exports": "^2.1.0",
         "typescript": "*"
     }

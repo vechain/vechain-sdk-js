@@ -56,40 +56,33 @@ describe('ThorClient - Contracts', () => {
      * Test case for deploying a smart contract using the deployContract method.
      */
     test('deployContract', async () => {
-        try {
-            // Deploy an example contract and get the transaction response
-            const response = await deployExampleContract();
+        // Deploy an example contract and get the transaction response
+        const response = await deployExampleContract();
 
-            // Poll until the transaction receipt is available
-            const transactionReceipt =
-                (await thorSoloClient.transactions.waitForTransaction(
-                    response.id
-                )) as TransactionReceipt;
+        // Poll until the transaction receipt is available
+        const transactionReceipt =
+            (await thorSoloClient.transactions.waitForTransaction(
+                response.id
+            )) as TransactionReceipt;
 
-            // Extract the contract address from the transaction receipt
-            const contractAddress =
-                transactionReceipt.outputs[0].contractAddress;
+        // Extract the contract address from the transaction receipt
+        const contractAddress = transactionReceipt.outputs[0].contractAddress;
 
-            // Call the get function of the deployed contract to verify that the stored value is 100
-            const result = await thorSoloClient.contracts.executeContractCall(
-                contractAddress as string,
-                deployedContractAbi,
-                'get',
-                []
-            );
+        // Call the get function of the deployed contract to verify that the stored value is 100
+        const result = await thorSoloClient.contracts.executeContractCall(
+            contractAddress as string,
+            deployedContractAbi,
+            'get',
+            []
+        );
 
-            expect(parseInt(result)).toBe(100);
+        expect(parseInt(result)).toBe(100);
 
-            // Assertions
-            expect(transactionReceipt.reverted).toBe(false);
-            expect(transactionReceipt.outputs).toHaveLength(1);
-            expect(contractAddress).not.toBeNull();
-            expect(addressUtils.isAddress(contractAddress as string)).toBe(
-                true
-            );
-        } catch (error) {
-            console.log('error', error);
-        }
+        // Assertions
+        expect(transactionReceipt.reverted).toBe(false);
+        expect(transactionReceipt.outputs).toHaveLength(1);
+        expect(contractAddress).not.toBeNull();
+        expect(addressUtils.isAddress(contractAddress as string)).toBe(true);
     }, 10000);
 
     /**
@@ -237,47 +230,43 @@ describe('ThorClient - Contracts', () => {
      * Test case for deploying a smart contract using the deployContract method.
      */
     test('call a contract function', async () => {
-        try {
-            // Deploy an example contract and get the transaction response
-            const response = await deployExampleContract();
+        // Deploy an example contract and get the transaction response
+        const response = await deployExampleContract();
 
-            // Poll until the transaction receipt is available
-            const transactionReceiptDeployContract =
-                (await thorSoloClient.transactions.waitForTransaction(
-                    response.id
-                )) as TransactionReceipt;
+        // Poll until the transaction receipt is available
+        const transactionReceiptDeployContract =
+            (await thorSoloClient.transactions.waitForTransaction(
+                response.id
+            )) as TransactionReceipt;
 
-            const contractAddress = transactionReceiptDeployContract.outputs[0]
-                .contractAddress as string;
+        const contractAddress = transactionReceiptDeployContract.outputs[0]
+            .contractAddress as string;
 
-            const callFunctionSetResponse =
-                await thorSoloClient.contracts.executeContractTransaction(
-                    TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
-                    contractAddress,
-                    deployedContractAbi,
-                    'set',
-                    [123]
-                );
+        const callFunctionSetResponse =
+            await thorSoloClient.contracts.executeContractTransaction(
+                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+                contractAddress,
+                deployedContractAbi,
+                'set',
+                [123]
+            );
 
-            const transactionReceiptCallSetContract =
-                (await thorSoloClient.transactions.waitForTransaction(
-                    callFunctionSetResponse.id
-                )) as TransactionReceipt;
+        const transactionReceiptCallSetContract =
+            (await thorSoloClient.transactions.waitForTransaction(
+                callFunctionSetResponse.id
+            )) as TransactionReceipt;
 
-            expect(transactionReceiptCallSetContract.reverted).toBe(false);
+        expect(transactionReceiptCallSetContract.reverted).toBe(false);
 
-            const callFunctionGetResult =
-                await thorSoloClient.contracts.executeContractCall(
-                    contractAddress,
-                    deployedContractAbi,
-                    'get',
-                    []
-                );
+        const callFunctionGetResult =
+            await thorSoloClient.contracts.executeContractCall(
+                contractAddress,
+                deployedContractAbi,
+                'get',
+                []
+            );
 
-            expect(parseInt(callFunctionGetResult)).toBe(123);
-        } catch (error) {
-            console.log('error', error);
-        }
+        expect(parseInt(callFunctionGetResult)).toBe(123);
     }, 10000);
 
     /**
