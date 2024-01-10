@@ -237,22 +237,27 @@ describe('ThorClient - Contracts', () => {
      * Tests the `TestingContract` functions.
      *
      * This test iterates over an array of test cases, each representing a different function call
-     * to the `TestingContract`. For each test case, it executes the contract call and then asserts
-     * that the response matches the expected value defined in the test case.
+     * to the `TestingContract`. For each test case, it uses the test description provided in the
+     * test case, executes the contract call, and then asserts that the response matches the expected
+     * value defined in the test case.
      *
      */
-    test('test the TestingContract functions', async () => {
-        for (const testCase of testingContractTestCases) {
-            const response = await thorSoloClient.contracts.executeContractCall(
-                TESTING_CONTRACT_ADDRESS,
-                TESTING_CONTRACT_ABI,
-                testCase.functionName,
-                testCase.params
-            );
+    testingContractTestCases.forEach(
+        ({ description, functionName, params, expected }) => {
+            test(description, async () => {
+                const response =
+                    await thorSoloClient.contracts.executeContractCall(
+                        TESTING_CONTRACT_ADDRESS,
+                        TESTING_CONTRACT_ABI,
+                        functionName,
+                        params
+                    );
 
-            expect(response).toEqual(testCase.expected);
-        }
-    }, 5000);
+                expect(response).toEqual(expected);
+            });
+        },
+        5000
+    );
 
     /**
      * Test suite for 'getBaseGasPrice' method
