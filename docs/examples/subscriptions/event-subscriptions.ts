@@ -8,7 +8,7 @@ const testnetUrl = 'https://testnet.vechain.org';
  * The event to subscribe to.
  * The event can be defined as an object or as a string.
  *
- * @see [Event format type examples](https://github.com/vechainfoundation/vechain-sdk/blob/9720551d165b706662c13fac657f55e5a506ea4d/packages/core/tests/abi/fixture.ts#L126)
+ * @see [Event format type examples](https://github.com/vechain/vechain-sdk/blob/9720551d165b706662c13fac657f55e5a506ea4d/packages/core/tests/abi/fixture.ts#L126)
  */
 const swapEvent =
     'event Swap(address indexed sender,uint amount0In,uint amount1In,uint amount0Out,uint amount1Out,address indexed to)';
