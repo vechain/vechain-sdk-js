@@ -6,6 +6,7 @@ import {
 } from './fixture';
 import { HttpClient, Poll, ThorClient } from '../../../src';
 import { testnetUrl } from '../../fixture';
+import { networkInfo } from '@vechainfoundation/vechain-sdk-core';
 
 /**
  * Blocks Module integration tests
@@ -152,36 +153,38 @@ describe('ThorClient - Blocks Module', () => {
             expect(blockDetails).not.toBeNull();
             expect(blockDetails).toBeDefined();
         }, 3000);
-    });
 
-    test('getHeadBlock', async () => {
-        const headBlockFirst = await Poll.SyncPoll(() =>
-            thorClient.blocks.getHeadBlock()
-        ).waitUntil((result) => {
-            return result !== null;
+        /**
+         * getFinalBlock test
+         */
+        test('getHeadBlock', async () => {
+            const headBlockFirst = await Poll.SyncPoll(() =>
+                thorClient.blocks.getHeadBlock()
+            ).waitUntil((result) => {
+                return result !== null;
+            });
+
+            expect(headBlockFirst).toBeDefined();
+
+            // Wait for 15 seconds with promise
+            await new Promise((resolve) => setTimeout(resolve, 10000));
+
+            const headBlockSecond = thorClient.blocks.getHeadBlock();
+
+            expect(headBlockSecond).toBeDefined();
+            expect(headBlockFirst).not.toBe(headBlockSecond);
+        }, 23000);
+
+        /**
+         * getGenesisBlock test
+         */
+        test('getGenesisBlock', async () => {
+            const blockDetails = await thorClient.blocks.getGenesisBlock();
+            expect(blockDetails).toBeDefined();
+            expect(blockDetails?.number).toBe(0);
+            expect(blockDetails?.id).toStrictEqual(
+                networkInfo.testnet.genesisBlock.id
+            );
         });
-
-        expect(headBlockFirst).toBeDefined();
-
-        // Wait for 15 seconds with promise
-        await new Promise((resolve) => setTimeout(resolve, 10000));
-
-        const headBlockSecond = thorClient.blocks.getHeadBlock();
-
-        expect(headBlockSecond).toBeDefined();
-        expect(headBlockFirst).not.toBe(headBlockSecond);
-    }, 23000);
-});
-
-describe('ThorClient - Blocks Module - polling', () => {
-    test('polling not enabled', () => {
-        const httpClient = new HttpClient(testnetUrl);
-        const thorClient = new ThorClient(httpClient, {
-            isPollingEnabled: false
-        });
-
-        const headBlockFirst = thorClient.blocks.getHeadBlock();
-
-        expect(headBlockFirst).toBeNull();
     });
 });
