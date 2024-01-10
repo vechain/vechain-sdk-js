@@ -198,7 +198,7 @@ describe('utils/hex', () => {
         test('should pad a hex string to a custom length when specified', () => {
             const result = dataUtils.padHexString('1a', 128);
             expect(result).toHaveLength(130); // 128 chars + '0x'
-            expect(result.startsWith('0x000000')).toBeTruthy();
+            expect(result).toBe('0x' + '0'.repeat(126) + '1a');
         });
 
         // Test handling of '0x' prefix
