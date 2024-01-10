@@ -1,5 +1,5 @@
 import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
-import { type EventPoll, Poll, buildQuery, thorest } from '../../utils';
+import { Poll, buildQuery, thorest } from '../../utils';
 import {
     type WaitForBlockOptions,
     type BlockInputOptions,
@@ -8,6 +8,7 @@ import {
 } from './types';
 import { assertIsRevisionForBlock } from '@vechainfoundation/vechain-sdk-core';
 import { type ThorClient } from '../thor-client';
+import { type EventPoll } from '../../utils/poll/event';
 
 /** The `BlocksModule` class encapsulates functionality for interacting with blocks
  * on the VechainThor blockchain.
