@@ -6,7 +6,11 @@ import {
     privateKeyDeployer,
     thorSoloClient
 } from './fixture.js';
-import { addressUtils, VIP180_ABI } from '@vechainfoundation/vechain-sdk-core';
+import {
+    addressUtils,
+    unitsUtils,
+    VIP180_ABI
+} from '@vechainfoundation/vechain-sdk-core';
 
 // Deploying the ERC20 contract using the Thor client and the deployer's private key
 const transaction = await thorSoloClient.contracts.deployContract(
@@ -31,4 +35,4 @@ const balance = await thorSoloClient.contracts.executeContractCall(
 );
 
 // Asserting that the initial balance of the deployer is the expected amount (1e24)
-expect(balance).toEqual([1000000000000000000000000n]);
+expect(balance).toEqual([unitsUtils.parseUnits('1', 24)]);
