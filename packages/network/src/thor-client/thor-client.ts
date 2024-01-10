@@ -1,6 +1,6 @@
 import { AccountsModule } from './accounts';
 import { NodesModule } from './nodes';
-import { BlocksModule } from './blocks';
+import { BlocksModule, type BlocksModuleOptions } from './blocks';
 import { ContractsModule } from './contracts';
 import { TransactionsModule } from './transactions';
 import { LogsModule } from './logs';
@@ -53,14 +53,25 @@ class ThorClient {
      *
      * @param httpClient - The HTTP client instance used for making network requests.
      */
-    constructor(readonly httpClient: HttpClient) {
+    constructor(
+        readonly httpClient: HttpClient,
+        options?: BlocksModuleOptions
+    ) {
         this.accounts = new AccountsModule(this);
         this.nodes = new NodesModule(this);
-        this.blocks = new BlocksModule(this);
+        this.blocks = new BlocksModule(this, options);
         this.logs = new LogsModule(this);
         this.transactions = new TransactionsModule(this);
         this.contracts = new ContractsModule(this);
         this.gas = new GasModule(this);
+    }
+
+    /**
+     * Destroys the `ThorClient` instance by stopping the event polling
+     * and any other cleanup.
+     */
+    public destroy(): void {
+        this.blocks.destroy();
     }
 }
 

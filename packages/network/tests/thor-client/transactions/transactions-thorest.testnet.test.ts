@@ -1,17 +1,27 @@
-import { describe, expect, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { testNetwork } from '../../fixture';
 import { transactionDetails, transactionReceipts } from './fixture-thorest';
 import { ThorClient } from '../../../src';
 
 /**
- * ThorestClient class tests
+ * ThorClient class tests
  *
  * @NOTE: This test suite run on testnet network because it contains read only tests.
  *
- * @group integration/clients/thorest-client/transactions
+ * @group integration/clients/thor-client/transactions
  */
-describe('ThorestClient - Transactions', () => {
-    const thorClient = new ThorClient(testNetwork);
+describe('ThorClient - Transactions Module', () => {
+    // ThorClient instance
+    let thorClient: ThorClient;
+
+    beforeEach(() => {
+        thorClient = new ThorClient(testNetwork);
+    });
+
+    afterEach(() => {
+        thorClient.destroy();
+    });
+
     /**
      * getTransaction tests
      */

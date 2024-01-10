@@ -1,29 +1,63 @@
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test, beforeEach, afterEach } from '@jest/globals';
 import {
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS,
-    thorSoloClient
+    soloNetwork
 } from '../../fixture';
 import {
+    contractBytecode,
     deployedContractAbi,
     deployedContractBytecode,
     deployedERC20Abi,
-    deployErc20Contract,
-    deployExampleContract,
+    erc20ContractBytecode,
     testingContractTestCases
 } from './fixture';
-import { addressUtils } from '@vechainfoundation/vechain-sdk-core';
-import type { TransactionReceipt } from '../../../src';
+import {
+    addressUtils,
+    type DeployParams
+} from '@vechainfoundation/vechain-sdk-core';
+import {
+    ThorClient,
+    type TransactionSendResult,
+    type TransactionReceipt
+} from '../../../src';
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.
  *
  * @NOTE: This test suite runs on the solo network because it requires sending transactions.
  *
- * @group integration/client/thor/contracts
+ * @group integration/client/thor-client/contracts
  */
 describe('ThorClient - Contracts', () => {
+    // ThorClient instance
+    let thorSoloClient: ThorClient;
+
+    beforeEach(() => {
+        thorSoloClient = new ThorClient(soloNetwork);
+    });
+
+    afterEach(() => {
+        thorSoloClient.destroy();
+    });
+
+    /**
+     * Asynchronous function to deploy an example smart contract.
+     *
+     * @returns A promise that resolves to a `TransactionSendResult` object representing the result of the deployment.
+     */
+    async function deployExampleContract(): Promise<TransactionSendResult> {
+        const deployParams: DeployParams = { types: ['uint'], values: ['100'] };
+
+        // Deploy the contract using the deployContract method
+        return await thorSoloClient.contracts.deployContract(
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
+            contractBytecode,
+            deployParams
+        );
+    }
+
     /**
      * Test case for deploying a smart contract using the deployContract method.
      */
@@ -73,7 +107,10 @@ describe('ThorClient - Contracts', () => {
      */
     test('deployErc20Contract', async () => {
         // Deploy the ERC20 contract and receive a response
-        const response = await deployErc20Contract();
+        const response = await thorSoloClient.contracts.deployContract(
+            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+            erc20ContractBytecode
+        );
 
         // Poll until the transaction receipt is available
         // This receipt includes details of the deployment transaction
@@ -113,7 +150,10 @@ describe('ThorClient - Contracts', () => {
      */
     test('Execute ERC20 contract operations', async () => {
         // Deploy an ERC20 contract and store the response which includes the transaction ID
-        const response = await deployErc20Contract();
+        const response = await thorSoloClient.contracts.deployContract(
+            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+            erc20ContractBytecode
+        );
 
         // Wait for the transaction to complete and obtain its receipt,
         // which contains details such as the contract address
@@ -188,7 +228,7 @@ describe('ThorClient - Contracts', () => {
 
         // Assertion: Compare with the expected deployed contract bytecode
         expect(contractBytecodeResponse).toBe(deployedContractBytecode);
-    });
+    }, 10000);
 
     /**
      * Test case for deploying a smart contract using the deployContract method.
