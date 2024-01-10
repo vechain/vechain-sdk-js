@@ -10,7 +10,7 @@ import {
     TESTING_CONTRACT_ABI,
     TESTNET_DELEGATE_URL,
     TEST_ACCOUNTS,
-    TEST_CONTRACT_ADDRESS
+    TESTING_CONTRACT_ADDRESS
 } from '../../fixture';
 import {
     InvalidSecp256k1PrivateKeyError,
@@ -217,7 +217,7 @@ const buildTransactionBodyClausesTestCases = [
             transfer1VTHOClause,
             transfer1VTHOClause,
             {
-                to: TEST_CONTRACT_ADDRESS,
+                to: TESTING_CONTRACT_ADDRESS,
                 value: '0',
                 data: contract.coder.encodeFunctionInput(
                     TESTING_CONTRACT_ABI,

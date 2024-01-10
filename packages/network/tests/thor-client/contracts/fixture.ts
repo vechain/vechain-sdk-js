@@ -1,4 +1,9 @@
-import { type InterfaceAbi } from '@vechainfoundation/vechain-sdk-core';
+import type {
+    DeployParams,
+    InterfaceAbi
+} from '@vechainfoundation/vechain-sdk-core';
+import type { ThorClient, TransactionSendResult } from '../../../src';
+import { TEST_ACCOUNTS } from '../../fixture';
 
 const contractBytecode: string =
     '0x608060405234801561001057600080fd5b506040516102063803806102068339818101604052810190610032919061007a565b80600081905550506100a7565b600080fd5b6000819050919050565b61005781610044565b811461006257600080fd5b50565b6000815190506100748161004e565b92915050565b6000602082840312156100905761008f61003f565b5b600061009e84828501610065565b91505092915050565b610150806100b66000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c806360fe47b11461003b5780636d4ce63c14610057575b600080fd5b610055600480360381019061005091906100c3565b610075565b005b61005f61007f565b60405161006c91906100ff565b60405180910390f35b8060008190555050565b60008054905090565b600080fd5b6000819050919050565b6100a08161008d565b81146100ab57600080fd5b50565b6000813590506100bd81610097565b92915050565b6000602082840312156100d9576100d8610088565b5b60006100e7848285016100ae565b91505092915050565b6100f98161008d565b82525050565b600060208201905061011460008301846100f0565b9291505056fea2646970667358221220785262acbf50fa50a7b4dc8d8087ca8904c7e6b847a13674503fdcbac903b67e64736f6c63430008170033';
@@ -198,10 +203,234 @@ const deployedERC20Abi = [
     }
 ];
 
+/**
+ * Asynchronous function to deploy an example smart contract.
+ *
+ * @returns A promise that resolves to a `TransactionSendResult` object representing the result of the deployment.
+ */
+async function deployExampleContract(
+    thorSoloClient: ThorClient
+): Promise<TransactionSendResult> {
+    const deployParams: DeployParams = { types: ['uint'], values: ['100'] };
+
+    // Deploy the contract using the deployContract method
+    return await thorSoloClient.contracts.deployContract(
+        TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+        contractBytecode,
+        deployParams
+    );
+}
+
+/**
+ * Represents a test case for a smart contract function.
+ * This interface is designed to capture the necessary details to execute and validate
+ * a function call within a testing framework.
+ */
+interface TestCase {
+    /**
+     * A description of the test case. This is used to provide context for the test.
+     */
+    description: string;
+
+    /**
+     * The name of the function to be tested. This should match exactly with the function name
+     * in the smart contract.
+     */
+    functionName: string;
+
+    /**
+     * An array of parameters to be passed to the function. The order and types of these parameters
+     * should match the expected input of the smart contract function.
+     */
+    params: unknown[];
+
+    /**
+     * The expected result of the function call. This can vary in type depending on what
+     * the function returns. It's used to assert whether the function behaves as expected.
+     */
+    expected: unknown;
+
+    /**
+     * Indicates whether the function call is expected to revert or throw an error.
+     * A value of 'true' means the test is expecting the function to fail.
+     */
+    reverted: boolean;
+}
+
+const ExampleEnum = {
+    SMALL: 0,
+    MEDIUM: 1,
+    LARGE: 2
+};
+
+const testingContractTestCases: TestCase[] = [
+    {
+        description: 'should return the bool value false',
+        functionName: 'boolData',
+        params: [false],
+        expected: [false],
+        reverted: false
+    },
+    {
+        description: 'should return the bool value true',
+        functionName: 'boolData',
+        params: [true],
+        expected: [true],
+        reverted: false
+    },
+    {
+        description: 'should return the bool value false when passed undefined',
+        functionName: 'boolData',
+        params: [undefined],
+        expected: [false],
+        reverted: false
+    },
+    {
+        description: 'should return the int value 1',
+        functionName: 'intData',
+        params: [1],
+        expected: [1n],
+        reverted: false
+    },
+    {
+        description: 'should return the int value -1',
+        functionName: 'intData',
+        params: [-1],
+        expected: [-1n],
+        reverted: false
+    },
+    {
+        description: 'should return the int value 0',
+        functionName: 'intData',
+        params: [0],
+        expected: [0n],
+        reverted: false
+    },
+    {
+        description: 'should return the uint value 0',
+        functionName: 'uintData',
+        params: [0],
+        expected: [0n],
+        reverted: false
+    },
+    {
+        description: 'should return the uint value 1',
+        functionName: 'uintData',
+        params: [1],
+        expected: [1n],
+        reverted: false
+    },
+    {
+        description:
+            'should return the address value 0x0000000000000000000000000000000000000000',
+        functionName: 'addressData',
+        params: ['0x0000000000000000000000000000000000000000'],
+        expected: ['0x0000000000000000000000000000000000000000'],
+        reverted: false
+    },
+    {
+        description:
+            'should return the bytes32 value 0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0',
+        functionName: 'bytes32Data',
+        params: [
+            '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0'
+        ],
+        expected: [
+            '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0'
+        ],
+        reverted: false
+    },
+    {
+        description: 'should return the string value "a"',
+        functionName: 'stringData',
+        params: ['a'],
+        expected: ['a'],
+        reverted: false
+    },
+    {
+        description: 'should return the passed fixed array',
+        functionName: 'fixedArrayData',
+        params: [[123, 456, 789]],
+        expected: [[123n, 456n, 789n]],
+        reverted: false
+    },
+    {
+        description: 'should return the passed dynamic array',
+        functionName: 'dynamicArrayData',
+        params: [[123, 456, 789, 323, 123]],
+        expected: [[123n, 456n, 789n, 323n, 123n]],
+        reverted: false
+    },
+    {
+        description: 'should return the passed struct',
+        functionName: 'structData',
+        params: [{ id: 10, name: 'test' }],
+        expected: [[10n, 'test']],
+        reverted: false
+    },
+    {
+        description: 'should return the passed enum',
+        functionName: 'enumData',
+        params: [ExampleEnum.SMALL],
+        expected: [BigInt(ExampleEnum.SMALL)],
+        reverted: false
+    },
+    {
+        description: 'should return the passed multiple values',
+        functionName: 'multipleData',
+        params: [
+            1,
+            '0x0000000000000000000000000000000000000000',
+            '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0',
+            'a',
+            [123, 456, 789],
+            [123, 456, 789, 323, 123],
+            { id: 10, name: 'test' },
+            ExampleEnum.SMALL
+        ],
+        expected: [
+            1n,
+            '0x0000000000000000000000000000000000000000',
+            '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0',
+            'a',
+            [123n, 456n, 789n],
+            [123n, 456n, 789n, 323n, 123n],
+            [10n, 'test'],
+            BigInt(ExampleEnum.SMALL)
+        ],
+        reverted: false
+    },
+    {
+        description: 'should return the passed multiple int values',
+        functionName: 'multipleIntData',
+        params: [1, 222, 333, 287274, 390343843, 123223663],
+        expected: [1n, 222n, 333n, 287274n, 390343843n, 123223663n],
+        reverted: false
+    }
+];
+
+/**
+ * Asynchronous function to deploy an example smart contract.
+ *
+ * @returns A promise that resolves to a `TransactionSendResult` object representing the result of the deployment.
+ */
+async function deployErc20Contract(
+    thorSoloClient: ThorClient
+): Promise<TransactionSendResult> {
+    // Deploy the contract using the deployContract method
+    return await thorSoloClient.contracts.deployContract(
+        TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+        erc20ContractBytecode
+    );
+}
+
 export {
     contractBytecode,
     erc20ContractBytecode,
     deployedContractBytecode,
     deployedContractAbi,
-    deployedERC20Abi
+    deployedERC20Abi,
+    deployExampleContract,
+    deployErc20Contract,
+    testingContractTestCases
 };

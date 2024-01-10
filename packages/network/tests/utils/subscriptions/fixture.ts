@@ -1,6 +1,6 @@
 import { generateRandomValidAddress } from '../../../../core/tests/fixture';
 import { vechain_sdk_core_ethers } from '@vechainfoundation/vechain-sdk-core';
-import { TEST_CONTRACT_ADDRESS } from '../../fixture';
+import { TESTING_CONTRACT_ADDRESS } from '../../fixture';
 import WebSocket from 'ws';
 
 /**
@@ -152,9 +152,9 @@ const getEventSubscriptionUrlTestCases = [
         event: 'event Transfer(address indexed from, address indexed to, uint256 value)',
         valuesToEncode: [null, toRandomAddress], // Missing `from` parameter
         options: {
-            address: TEST_CONTRACT_ADDRESS
+            address: TESTING_CONTRACT_ADDRESS
         },
-        expectedURL: `wss://testnet.vechain.org/subscriptions/event?addr=${TEST_CONTRACT_ADDRESS}&t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t2=0x000000000000000000000000${toRandomAddress.slice(
+        expectedURL: `wss://testnet.vechain.org/subscriptions/event?addr=${TESTING_CONTRACT_ADDRESS}&t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t2=0x000000000000000000000000${toRandomAddress.slice(
             2
         )}`
     },
@@ -162,9 +162,9 @@ const getEventSubscriptionUrlTestCases = [
         event: 'event Transfer(address indexed from, address indexed to, uint256 indexed value)',
         valuesToEncode: [fromRandomAddress, null, randomBigInt], // Missing `to` parameter
         options: {
-            address: TEST_CONTRACT_ADDRESS
+            address: TESTING_CONTRACT_ADDRESS
         },
-        expectedURL: `wss://testnet.vechain.org/subscriptions/event?addr=${TEST_CONTRACT_ADDRESS}&t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t1=0x000000000000000000000000${fromRandomAddress.slice(
+        expectedURL: `wss://testnet.vechain.org/subscriptions/event?addr=${TESTING_CONTRACT_ADDRESS}&t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t1=0x000000000000000000000000${fromRandomAddress.slice(
             2
         )}&t3=${vechain_sdk_core_ethers.zeroPadValue(
             vechain_sdk_core_ethers.hexlify(
@@ -177,9 +177,9 @@ const getEventSubscriptionUrlTestCases = [
         event: 'event Swap(address indexed sender,uint amount0In,uint amount1In,uint amount0Out,uint amount1Out,address indexed to)',
         valuesToEncode: [fromRandomAddress, toRandomAddress],
         options: {
-            address: TEST_CONTRACT_ADDRESS
+            address: TESTING_CONTRACT_ADDRESS
         },
-        expectedURL: `wss://testnet.vechain.org/subscriptions/event?addr=${TEST_CONTRACT_ADDRESS}&t0=0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822&t1=0x000000000000000000000000${fromRandomAddress.slice(
+        expectedURL: `wss://testnet.vechain.org/subscriptions/event?addr=${TESTING_CONTRACT_ADDRESS}&t0=0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822&t1=0x000000000000000000000000${fromRandomAddress.slice(
             2
         )}&t2=0x000000000000000000000000${toRandomAddress.slice(2)}`
     }

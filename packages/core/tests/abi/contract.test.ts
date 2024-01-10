@@ -2,7 +2,8 @@ import { describe, expect, test } from '@jest/globals';
 import {
     ValueChangedEventData,
     contractABI,
-    contractABIWithEvents
+    contractABIWithEvents,
+    contractStorageABI
 } from './fixture';
 import { coder, abi } from '../../src';
 import { ethers } from 'ethers';
@@ -151,5 +152,68 @@ describe('Contract interface for ABI encoding/decoding', () => {
                 topics: []
             })
         ).toThrowError(InvalidAbiEventError);
+    });
+
+    /**
+     * Test the successful decoding of a function output.
+     */
+    test('decode a function output successfully', () => {
+        const contractInterface = coder.createInterface(contractStorageABI);
+        const functionName = 'getValue';
+        const mockReturnValue = 'test';
+        const encodedFunctionOutput = contractInterface.encodeFunctionResult(
+            functionName,
+            [mockReturnValue]
+        );
+
+        const decodedOutput = coder.decodeFunctionOutput(
+            contractStorageABI,
+            functionName,
+            encodedFunctionOutput
+        );
+        expect(decodedOutput).toBeDefined();
+        expect(decodedOutput).toEqual([mockReturnValue]);
+    });
+
+    /**
+     * Test the failed decoding of a function output due to wrong function name.
+     */
+    test('fail to decode a function due to wrong function name', () => {
+        const contractInterface = coder.createInterface(contractStorageABI);
+        const functionName = 'getValue';
+        const mockReturnValue = 'test';
+        const encodedFunctionOutput = contractInterface.encodeFunctionResult(
+            functionName,
+            [mockReturnValue]
+        );
+
+        expect(() =>
+            coder.decodeFunctionOutput(
+                contractStorageABI,
+                'invalidFunctionName',
+                encodedFunctionOutput
+            )
+        ).toThrowError(InvalidAbiDataToDecodeError);
+    });
+
+    /**
+     * Test the failed decoding of a function output due to wrong data.
+     */
+    test('fail to decode a function due to wrong data', () => {
+        const contractInterface = coder.createInterface(contractStorageABI);
+        const functionName = 'getValue';
+        const mockReturnValue = 'test';
+        const encodedFunctionOutput = contractInterface.encodeFunctionResult(
+            functionName,
+            [mockReturnValue]
+        );
+
+        expect(() =>
+            coder.decodeFunctionOutput(
+                contractStorageABI,
+                'getValue',
+                encodedFunctionOutput + 'InvalidDataString'
+            )
+        ).toThrowError(InvalidAbiDataToDecodeError);
     });
 });

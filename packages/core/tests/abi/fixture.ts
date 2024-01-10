@@ -518,6 +518,35 @@ const contractABIWithEvents = JSON.stringify([
     }
 ]);
 
+const contractStorageABI = JSON.stringify([
+    {
+        inputs: [],
+        name: 'getValue',
+        outputs: [
+            {
+                internalType: 'string',
+                name: '',
+                type: 'string'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'string',
+                name: '_value',
+                type: 'string'
+            }
+        ],
+        name: 'setValue',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    }
+]);
+
 export const encodedParams =
     '0x000000000000000000000000000000000000000000000000000000000000007b00000000000000000000000000000000000000000000000000000000000000ea';
 
@@ -537,5 +566,6 @@ export {
     contractABIWithEvents,
     ValueChangedEventData,
     topicsEventTestCases,
-    invalidTopicsEventTestCases
+    invalidTopicsEventTestCases,
+    contractStorageABI
 };

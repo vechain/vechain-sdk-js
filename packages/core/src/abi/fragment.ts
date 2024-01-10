@@ -98,13 +98,41 @@ class Function<ABIType> {
     /**
      * Decode data using the function's ABI.
      *
-     * @throws{InvalidAbiDataToDecodeError}
+     * @throws{InvalidAbiDataToDecodeError} - If the data cannot be decoded.
      * @param data - Data to decode.
      * @returns Decoding results.
      */
     public decodeInput(data: BytesLike): Result {
         try {
             return this.iface.decodeFunctionData(this.fragment, data);
+        } catch (e) {
+            throw buildError(
+                ABI.INVALID_DATA_TO_DECODE,
+                'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
+                { data },
+                e
+            );
+        }
+    }
+
+    /**
+     * Decodes the output data from a transaction based on ABI (Application Binary Interface) specifications.
+     * This method attempts to decode the given byte-like data into a readable format using the contract's interface.
+     *
+     * @param data - The `BytesLike` data to be decoded, typically representing the output of a contract function call.
+     * @returns A `Result` object containing the decoded data.
+     *
+     * @throws{InvalidAbiDataToDecodeError} - If the data cannot be decoded.
+     *
+     * @example
+     * ```typescript
+     *   const decoded = contractInstance.decodeOutput(rawTransactionOutput);
+     *   console.log('Decoded Output:', decoded);
+     * ```
+     */
+    public decodeOutput(data: BytesLike): Result {
+        try {
+            return this.iface.decodeFunctionResult(this.fragment, data);
         } catch (e) {
             throw buildError(
                 ABI.INVALID_DATA_TO_DECODE,

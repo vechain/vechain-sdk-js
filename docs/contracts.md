@@ -140,7 +140,7 @@ Once the contract is compiled, we can deploy it using the vechain SDK. The follo
 
 ```typescript { name=contract-create-erc20-token, category=example }
 import { expect } from 'expect';
-import { VIP180_ABI, addressUtils } from '@vechainfoundation/vechain-sdk-core';
+import { VIP180_ABI, addressUtils, unitsUtils } from '@vechainfoundation/vechain-sdk-core';
 import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
 
 const erc20ContractBytecode: string =
@@ -178,7 +178,7 @@ const balance = await thorSoloClient.contracts.executeContractCall(
 );
 
 // Asserting that the initial balance of the deployer is the expected amount (1e24)
-expect(parseInt(balance, 16)).toEqual(1e24);
+expect(balance).toEqual([unitsUtils.parseUnits('1', 24)]);
 
 // Destroying the Thor client
 thorSoloClient.destroy();

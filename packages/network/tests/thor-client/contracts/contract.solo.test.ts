@@ -1,11 +1,17 @@
-import { beforeEach, afterEach, describe, expect, test } from '@jest/globals';
-import { TEST_ACCOUNTS, soloNetwork } from '../../fixture';
+import { describe, expect, test, beforeEach, afterEach } from '@jest/globals';
+import {
+    TEST_ACCOUNTS,
+    TESTING_CONTRACT_ABI,
+    TESTING_CONTRACT_ADDRESS,
+    soloNetwork
+} from '../../fixture';
 import {
     contractBytecode,
     deployedContractAbi,
     deployedContractBytecode,
     deployedERC20Abi,
-    erc20ContractBytecode
+    erc20ContractBytecode,
+    testingContractTestCases
 } from './fixture';
 import {
     addressUtils,
@@ -76,7 +82,7 @@ describe('ThorClient - Contracts', () => {
             []
         );
 
-        expect(parseInt(result)).toBe(100);
+        expect(result).toEqual([100n]);
 
         // Assertions
         expect(transactionReceipt.reverted).toBe(false);
@@ -127,11 +133,9 @@ describe('ThorClient - Contracts', () => {
             [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address]
         );
 
-        const resultInt = parseInt(result, 16);
-
         // Assert that the balance matches the expected value
         // The expected value is a predefined number representing the contract's initial balance
-        expect(resultInt).toBe(1e24);
+        expect(result).toEqual([BigInt(1000000000000000000000000n)]);
     }, 10000);
 
     /**
@@ -197,7 +201,7 @@ describe('ThorClient - Contracts', () => {
 
         // Ensure that the transfer transaction was successful and the balance is as expected
         expect(transactionReceiptTransfer.reverted).toBe(false);
-        expect(parseInt(balanceOfResult)).toBe(1000);
+        expect(balanceOfResult).toEqual([BigInt(1000)]);
     }, 10000); // Set a timeout of 10000ms for this test
 
     /**
@@ -266,8 +270,33 @@ describe('ThorClient - Contracts', () => {
                 []
             );
 
-        expect(parseInt(callFunctionGetResult)).toBe(123);
+        expect(callFunctionGetResult).toEqual([BigInt(123)]);
     }, 10000);
+
+    /**
+     * Tests the `TestingContract` functions.
+     *
+     * This test iterates over an array of test cases, each representing a different function call
+     * to the `TestingContract`. For each test case, it uses the test description provided in the
+     * test case, executes the contract call, and then asserts that the response matches the expected
+     * value defined in the test case.
+     *
+     */
+    testingContractTestCases.forEach(
+        ({ description, functionName, params, expected }) => {
+            test(description, async () => {
+                const response =
+                    await thorSoloClient.contracts.executeContractCall(
+                        TESTING_CONTRACT_ADDRESS,
+                        TESTING_CONTRACT_ABI,
+                        functionName,
+                        params
+                    );
+
+                expect(response).toEqual(expected);
+            });
+        }
+    );
 
     /**
      * Test suite for 'getBaseGasPrice' method
@@ -276,10 +305,8 @@ describe('ThorClient - Contracts', () => {
         test('Should return the base gas price of the Solo network', async () => {
             const baseGasPrice =
                 await thorSoloClient.contracts.getBaseGasPrice();
-            expect(baseGasPrice).toBe(
-                '0x00000000000000000000000000000000000000000000000000038d7ea4c68000'
-            );
-            expect(Number(baseGasPrice)).toBe(10 ** 15); // 10^15 wei
-        }, 3000);
+            expect(baseGasPrice).toEqual([1000000000000000n]);
+            expect(baseGasPrice).toEqual([BigInt(10 ** 15)]); // 10^13 wei
+        });
     });
 });

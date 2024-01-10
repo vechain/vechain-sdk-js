@@ -1,5 +1,4 @@
 import {
-    compileContract,
     contract,
     networkInfo,
     type Sources,
@@ -96,7 +95,7 @@ const deployTestContractTransaction = (): Transaction => {
         // Read the Solidity source code from the file
 
         const sources: Sources = {
-            'Example.sol': {
+            'TestingContract.sol': {
                 content: fs.readFileSync(contractPath, 'utf8')
             }
         };

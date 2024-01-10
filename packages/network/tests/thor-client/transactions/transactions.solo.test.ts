@@ -12,8 +12,8 @@ import {
 import {
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,
-    TEST_CONTRACT_ADDRESS,
-    soloNetwork
+    soloNetwork,
+    TESTING_CONTRACT_ADDRESS
 } from '../../fixture';
 import {
     Transaction,
@@ -234,7 +234,7 @@ describe('ThorClient - Transactions Module', () => {
                 test(description, async () => {
                     const sampleClause =
                         contract.clauseBuilder.functionInteraction(
-                            TEST_CONTRACT_ADDRESS,
+                            TESTING_CONTRACT_ADDRESS,
                             TESTING_CONTRACT_ABI,
                             'deposit',
                             [123]
@@ -281,7 +281,7 @@ describe('ThorClient - Transactions Module', () => {
                 test(description, async () => {
                     const sampleClause =
                         contract.clauseBuilder.functionInteraction(
-                            TEST_CONTRACT_ADDRESS,
+                            TESTING_CONTRACT_ADDRESS,
                             TESTING_CONTRACT_ABI,
                             'setStateVariable',
                             [123]
