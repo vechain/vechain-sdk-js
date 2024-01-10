@@ -94,25 +94,19 @@ describe('Contract', () => {
      * Test compile an ERC20 contract and create an interface from the ABI.
      */
     test('Compile an ERC20 contract and create an interface from the abi', () => {
-        try {
-            const compiledContract = compileERC20SampleTokenContract();
+        const compiledContract = compileERC20SampleTokenContract();
 
-            // Ensure the contract compilation is successful
-            expect(compiledContract).toBeDefined();
-            expect(compiledContract.name).toBeDefined();
-            expect(compiledContract.abi).toBeDefined();
-            expect(compiledContract.bytecode).toBeDefined();
+        // Ensure the contract compilation is successful
+        expect(compiledContract).toBeDefined();
+        expect(compiledContract.name).toBeDefined();
+        expect(compiledContract.abi).toBeDefined();
+        expect(compiledContract.bytecode).toBeDefined();
 
-            // Create an instance of a Contract interface using the ABI
-            const contractInterface = coder.createInterface(
-                compiledContract.abi
-            );
+        // Create an instance of a Contract interface using the ABI
+        const contractInterface = coder.createInterface(compiledContract.abi);
 
-            // Ensure the contract interface is created successfully
-            expect(contractInterface).toBeDefined();
-        } catch (error) {
-            console.log(error);
-        }
+        // Ensure the contract interface is created successfully
+        expect(contractInterface).toBeDefined();
     });
 
     describe('Transfer token clause builder test cases', () => {
