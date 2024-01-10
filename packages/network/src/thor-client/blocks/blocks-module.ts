@@ -46,6 +46,15 @@ class BlocksModule {
     }
 
     /**
+     * Destroys the instance by stopping the event poll.
+     */
+    public destroy(): void {
+        if (this.pollInstance != null) {
+            this.pollInstance.stopListen();
+        }
+    }
+
+    /**
      * Sets up the event polling for the best block.
      * @private
      * */
@@ -170,12 +179,12 @@ class BlocksModule {
     }
 
     /**
-     * Destroys the instance by stopping the event poll.
+     * Retrieves details of the genesis block.
+     *
+     * @returns A promise that resolves to an object containing the block details of the genesis block.
      */
-    public destroy(): void {
-        if (this.pollInstance != null) {
-            this.pollInstance.stopListen();
-        }
+    public async getGenesisBlock(): Promise<BlockDetail | null> {
+        return await this.getBlock(0);
     }
 }
 
