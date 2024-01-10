@@ -155,7 +155,7 @@ describe('ThorClient - Blocks Module', () => {
         }, 3000);
 
         /**
-         * getFinalBlock test
+         * getHeadBlock test
          */
         test('getHeadBlock', async () => {
             const headBlockFirst = await Poll.SyncPoll(() =>
@@ -166,10 +166,12 @@ describe('ThorClient - Blocks Module', () => {
 
             expect(headBlockFirst).toBeDefined();
 
-            // Wait for 15 seconds with promise
-            await new Promise((resolve) => setTimeout(resolve, 10000));
-
-            const headBlockSecond = thorClient.blocks.getHeadBlock();
+            // Wait for the next block
+            const headBlockSecond = await Poll.SyncPoll(() =>
+                thorClient.blocks.getHeadBlock()
+            ).waitUntil((result) => {
+                return result !== headBlockFirst;
+            });
 
             expect(headBlockSecond).toBeDefined();
             expect(headBlockFirst).not.toBe(headBlockSecond);

@@ -57,7 +57,7 @@ describe('ThorClient - Nodes Module', () => {
         expect(healthyNode).toBe(true);
 
         thorClient.destroy();
-    });
+    }, 10000);
 
     test('null or empty URL or blank URL', async () => {
         let testNetwork = new HttpClient('');
