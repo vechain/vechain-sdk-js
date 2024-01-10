@@ -23,7 +23,7 @@ jobs:
               run: yarn install
 
             - name: Preliminary Stop of Thor solo node
-              id: stop-solo
+              id: preliminary-stop-solo
               run: yarn stop-thor-solo
 
             - name: Start Thor solo node
