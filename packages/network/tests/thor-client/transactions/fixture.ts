@@ -22,7 +22,7 @@ import {
  */
 const transactionNonces = {
     waitForTransactionTestCases: [10000000, 10000001, 10000002, 10000003],
-    sendTransactionWithANumberAsValueInTransactionBody: 10000004,
+    sendTransactionWithANumberAsValueInTransactionBody: [10000004],
     invalidWaitForTransactionTestCases: [10000005]
 };
 
