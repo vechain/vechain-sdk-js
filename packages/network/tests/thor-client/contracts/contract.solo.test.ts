@@ -295,8 +295,7 @@ describe('ThorClient - Contracts', () => {
 
                 expect(response).toEqual(expected);
             });
-        },
-        5000
+        }
     );
 
     /**
