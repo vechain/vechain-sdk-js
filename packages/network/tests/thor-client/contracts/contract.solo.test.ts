@@ -233,6 +233,14 @@ describe('ThorClient - Contracts', () => {
         expect(callFunctionGetResult).toEqual([BigInt(123)]);
     }, 10000);
 
+    /**
+     * Tests the `TestingContract` functions.
+     *
+     * This test iterates over an array of test cases, each representing a different function call
+     * to the `TestingContract`. For each test case, it executes the contract call and then asserts
+     * that the response matches the expected value defined in the test case.
+     *
+     */
     test('test the TestingContract functions', async () => {
         for (const testCase of testingContractTestCases) {
             const response = await thorSoloClient.contracts.executeContractCall(
