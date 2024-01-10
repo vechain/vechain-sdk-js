@@ -87,9 +87,6 @@ describe('Events poll unit tests', () => {
             // It seeme to be strange, BUT onData is called only after 1 second of the eventPoll.startListen() call.
             expect(eventPoll.getCurrentIteration).toBe(0);
 
-            // Test "Asynchronicity". Code must be executed after the eventPoll.startListen() call
-            expect(true).toBe(true);
-
             // Advance timers by the specified interval & tick
             await advanceTimersByTimeAndTick(1000);
 

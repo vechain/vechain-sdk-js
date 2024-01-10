@@ -21,35 +21,26 @@ describe('Blocks Module', () => {
             'parallel waitForBlock tests',
             async () => {
                 // Map each test case to a promise
-                const tests = waitForBlockTestCases.map(
-                    async ({ description, options }) => {
-                        try {
-                            const bestBlock =
-                                await thorClient.blocks.getBestBlock();
-                            if (bestBlock != null) {
-                                const expectedBlock =
-                                    await thorClient.blocks.waitForBlock(
-                                        bestBlock?.number + 1,
-                                        options
-                                    );
+                const tests = waitForBlockTestCases.map(async ({ options }) => {
+                    const bestBlock = await thorClient.blocks.getBestBlock();
+                    if (bestBlock != null) {
+                        const expectedBlock =
+                            await thorClient.blocks.waitForBlock(
+                                bestBlock?.number + 1,
+                                options
+                            );
 
-                                // Incorporate the description into the assertion message for clarity
-                                expect(expectedBlock?.number).toBeGreaterThan(
-                                    bestBlock?.number
-                                );
-                            }
-                        } catch (error) {
-                            // Append the description to any errors for clarity
-                            console.log(description);
-                            throw error;
-                        }
+                        // Incorporate the description into the assertion message for clarity
+                        expect(expectedBlock?.number).toBeGreaterThan(
+                            bestBlock?.number
+                        );
                     }
-                );
+                });
 
                 // Wait for all tests to complete
                 await Promise.all(tests);
             },
-            15000 * waitForBlockTestCases.length
+            12000 * waitForBlockTestCases.length
         );
     });
 
