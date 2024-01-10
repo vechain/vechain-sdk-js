@@ -5,6 +5,7 @@ import {
     validBlockRevisions,
     waitForBlockTestCases
 } from './fixture';
+import { networkInfo } from '@vechainfoundation/vechain-sdk-core';
 
 /**
  * Blocks Module integration tests
@@ -125,6 +126,18 @@ describe('Blocks Module', () => {
             const blockDetails = await thorClient.blocks.getFinalBlock();
             expect(blockDetails).not.toBeNull();
             expect(blockDetails).toBeDefined();
+        });
+
+        /**
+         * getGenesisBlock test
+         */
+        test('getGenesisBlock', async () => {
+            const blockDetails = await thorClient.blocks.getGenesisBlock();
+            expect(blockDetails).toBeDefined();
+            expect(blockDetails?.number).toBe(0);
+            expect(blockDetails?.id).toStrictEqual(
+                networkInfo.testnet.genesisBlock.id
+            );
         });
     });
 });

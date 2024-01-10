@@ -116,6 +116,15 @@ class BlocksModule {
 
         return block;
     }
+
+    /**
+     * Retrieves details of the genesis block.
+     *
+     * @returns A promise that resolves to an object containing the block details of the genesis block.
+     */
+    public async getGenesisBlock(): Promise<BlockDetail | null> {
+        return await this.getBlock(0);
+    }
 }
 
 export { BlocksModule };
