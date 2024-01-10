@@ -22,9 +22,8 @@ class BlocksModule {
 
     /**
      * Error handler for block-related errors.
-     * @private
      */
-    private readonly onBlockError?: (error: Error) => undefined;
+    public onBlockError?: (error: Error) => undefined;
 
     /**
      * The Poll instance for event polling
