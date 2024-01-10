@@ -4,7 +4,7 @@ import { thorClient } from '../../fixture';
 /**
  * Transcations module tests suite.
  *
- * @group contract/clients/thor-client/gas
+ * @group integration/clients/thor-client/gas
  */
 describe('Gas Module', () => {
     /**
