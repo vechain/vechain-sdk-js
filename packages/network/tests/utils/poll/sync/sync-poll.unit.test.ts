@@ -129,5 +129,19 @@ describe('Synchronous poll unit tests', () => {
                 }).rejects.toThrowError(PollExecutionError);
             }
         });
+
+        test('Test simpleThrowErrorFunctionIfInputIs10', () => {
+            const poll = Poll.SyncPoll(
+                async () => await simpleThrowErrorFunctionIfInputIs10(7),
+                {
+                    requestIntervalInMilliseconds: 100,
+                    // Stop after 2 iterations
+                    maximumIterations: 2
+                }
+            ).waitUntil((result) => {
+                return result === 9;
+            });
+            expect(poll).toBeDefined();
+        });
     });
 });

@@ -1,18 +1,30 @@
-import { describe, expect, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import {
     argFilterEventLogs,
     argFilterTransferLogs,
     expectedFilterEventLogs,
     expectedFilterTransferLogs
 } from './fixture';
-import { thorClient } from '../../fixture';
+import { ThorClient } from '../../../src';
+import { testNetwork } from '../../fixture';
 
 /**
- * ThorestClient class tests
+ * ThorClient class tests
  *
- * @group integration/clients/thorest-client/logs
+ * @group integration/clients/thor-client/logs
  */
-describe('ThorestClient - Logs', () => {
+describe('ThorClient - Logs Module', () => {
+    // ThorClient instance
+    let thorClient: ThorClient;
+
+    beforeEach(() => {
+        thorClient = new ThorClient(testNetwork);
+    });
+
+    afterEach(() => {
+        thorClient.destroy();
+    });
+
     /**
      * filterEventLogs tests
      */
@@ -20,7 +32,7 @@ describe('ThorestClient - Logs', () => {
         const eventLogs =
             await thorClient.logs.filterEventLogs(argFilterEventLogs);
         expect(eventLogs).toStrictEqual(expectedFilterEventLogs);
-    });
+    }, 3000);
 
     /**
      * filterTransferLogs tests
@@ -30,5 +42,5 @@ describe('ThorestClient - Logs', () => {
             argFilterTransferLogs
         );
         expect(transferLogs).toStrictEqual(expectedFilterTransferLogs);
-    });
+    }, 3000);
 });

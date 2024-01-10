@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { JSONRPCInternalError } from '@vechain/vechain-sdk-errors';
 import { zeroBlock } from './fixture';
 import { RPC_METHODS, RPCMethodsMap } from '../../../src';
@@ -30,12 +30,10 @@ describe('RPC Mapper - Blocks tests', () => {
 
         /**
          * After each test
-         * @NOTE for future PRs
          */
-        // afterEach(() => {
-        //     // Destroy thor client
-        //     thorClient.destroy();
-        // });
+        afterEach(() => {
+            thorClient.destroy();
+        });
 
         /**
          * Positive cases

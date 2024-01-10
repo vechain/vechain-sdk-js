@@ -34,3 +34,6 @@ expect(newBlock).toBeDefined();
 expect(newBlock?.number).toBeGreaterThan(currentBlock?.number as number);
 
 console.log('New block:', newBlock);
+
+// Destroying the Thor client
+thorClient.destroy();

@@ -27,6 +27,8 @@ describe('buildTransactionBody with mocks', () => {
                 gas.totalGas
             )
         ).rejects.toThrowError(TransactionBodyError);
+
+        thorSoloClient.destroy();
     });
 
     test('Should throw error when gest block is not found', async () => {
@@ -48,5 +50,7 @@ describe('buildTransactionBody with mocks', () => {
                 gas.totalGas
             )
         ).rejects.toThrowError(TransactionBodyError);
+
+        thorSoloClient.destroy();
     });
 });

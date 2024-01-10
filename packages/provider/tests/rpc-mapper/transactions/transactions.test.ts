@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { NotImplementedError } from '@vechain/vechain-sdk-errors';
 import { RPC_METHODS, RPCMethodsMap } from '../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
@@ -28,6 +28,13 @@ describe('RPC Mapper - Transactions tests', () => {
         });
 
         /**
+         * After each test
+         */
+        afterEach(() => {
+            thorClient.destroy();
+        });
+
+        /**
          * Positive cases
          */
         test('eth_getTransactionByHash - positive cases', async () => {
@@ -44,9 +51,6 @@ describe('RPC Mapper - Transactions tests', () => {
          * Negative cases
          */
         test('eth_getTransactionByHash - negative cases', async () => {
-            // Init thor client
-            const thorClient = new ThorClient(testNetwork);
-
             // NOT IMPLEMENTED YET!
             await expect(
                 async () =>
@@ -55,14 +59,5 @@ describe('RPC Mapper - Transactions tests', () => {
                     ](['0x0000'])
             ).rejects.toThrowError(NotImplementedError);
         });
-
-        /**
-         * After each test
-         * @NOTE for future PRs
-         */
-        // afterEach(() => {
-        //     // Destroy thor client
-        //     thorClient.destroy();
-        // });
     });
 });

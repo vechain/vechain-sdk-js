@@ -3,6 +3,20 @@
 import { type Event, type Transfer } from '../logs';
 
 /**
+ * Input options for Blocks module.
+ */
+interface BlocksModuleOptions {
+    /**
+     * (Optional) Whether the polling is enabled.
+     */
+    isPollingEnabled?: boolean;
+    /**
+     * (Optional) Callback function called when an error occurs.
+     */
+    onBlockError?: (error: Error) => undefined;
+}
+
+/**
  * Input options for:
  * * getAccount
  * * getBytecode
@@ -272,6 +286,7 @@ interface TransactionsExpandedBlockDetail {
 /* --- Responses Outputs end --- */
 
 export {
+    type BlocksModuleOptions,
     type BlockInputOptions,
     type BlockDetail,
     type TransactionsExpandedBlockDetail,

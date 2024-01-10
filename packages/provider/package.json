@@ -17,10 +17,10 @@
         "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
 
         "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
-        "test:integration:solo": "(yarn start-thor-solo && yarn test:integration) || yarn stop-thor-solo",
+        "test:integration:solo": "(yarn start-thor-solo && yarn test:integration && yarn stop-thor-solo) || yarn stop-thor-solo",
 
         "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
-        "test:solo": "(yarn start-thor-solo && yarn test) || yarn stop-thor-solo"
+        "test:solo": "(yarn start-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo"
     },
     "dependencies": {
         "@vechain/vechain-sdk-errors": "*",

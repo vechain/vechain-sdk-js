@@ -4,12 +4,20 @@ import {
     subscriptions,
     type EventLogs,
     type EventFragment,
-    type TransferLogs
+    type TransferLogs,
+    ThorClient,
+    type Clause
 } from '../../../src';
-import { TESTING_CONTRACT_ABI, TEST_ACCOUNTS, soloUrl } from '../../fixture';
+import {
+    TESTING_CONTRACT_ABI,
+    TEST_ACCOUNTS,
+    TEST_CONTRACT_ADDRESS,
+    soloNetwork,
+    soloUrl
+} from '../../fixture';
 import WebSocket from 'ws';
-import { addressUtils, coder } from '@vechain/vechain-sdk-core';
-import { triggerContractFunction, triggerVETtransfer } from './fixture';
+import { addressUtils, coder, unitsUtils } from '@vechain/vechain-sdk-core';
+import { contract } from '@vechain/vechain-sdk-core/src';
 
 const TIMEOUT = 15000; // 15-second timeout
 
@@ -124,7 +132,30 @@ describe('Subscriptions Solo', () => {
             });
 
             // Trigger the smart contract function that emits the event
-            await triggerContractFunction();
+            const clause = contract.clauseBuilder.functionInteraction(
+                TEST_CONTRACT_ADDRESS,
+                TESTING_CONTRACT_ABI,
+                'setStateVariable',
+                [1]
+            );
+            const thorSoloClient = new ThorClient(soloNetwork);
+            const gasResult = await thorSoloClient.gas.estimateGas(
+                [clause],
+                TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
+            );
+            const txBody =
+                await thorSoloClient.transactions.buildTransactionBody(
+                    [clause],
+                    gasResult.totalGas
+                );
+            const tx = await thorSoloClient.transactions.signTransaction(
+                txBody,
+                TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.privateKey
+            );
+            // Send the signed transaction to the blockchain
+            await thorSoloClient.transactions.sendTransaction(tx);
+
+            thorSoloClient.destroy();
 
             // Wait for the WebSocket message or a timeout
             await expect(waitForMessage).resolves.toBe(true);
@@ -171,7 +202,27 @@ describe('Subscriptions Solo', () => {
         });
 
         // Trigger the smart contract function that emits the event
-        await triggerVETtransfer();
+        const clause: Clause = {
+            to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+            value: unitsUtils.parseVET('1').toString(),
+            data: '0x'
+        };
+        const thorSoloClient = new ThorClient(soloNetwork);
+        const gasResult = await thorSoloClient.gas.estimateGas(
+            [clause],
+            TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION.address
+        );
+        const txBody = await thorSoloClient.transactions.buildTransactionBody(
+            [clause],
+            gasResult.totalGas
+        );
+        const tx = await thorSoloClient.transactions.signTransaction(
+            txBody,
+            TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION.privateKey
+        );
+        // Send the signed transaction to the blockchain
+        await thorSoloClient.transactions.sendTransaction(tx);
+        thorSoloClient.destroy();
 
         // Wait for the WebSocket message or a timeout
         await expect(waitForMessage).resolves.toBe(true);
