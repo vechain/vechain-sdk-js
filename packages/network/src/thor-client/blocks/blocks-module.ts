@@ -3,20 +3,73 @@ import { Poll, buildQuery, thorest } from '../../utils';
 import {
     type WaitForBlockOptions,
     type BlockInputOptions,
-    type BlockDetail
+    type BlockDetail,
+    type BlocksModuleOptions
 } from './types';
 import { assertIsRevisionForBlock } from '@vechainfoundation/vechain-sdk-core';
 import { type ThorClient } from '../thor-client';
+import { type EventPoll } from '../../utils/poll/event';
 
 /** The `BlocksModule` class encapsulates functionality for interacting with blocks
  * on the VechainThor blockchain.
  */
 class BlocksModule {
     /**
+     * The head block (best block). This is updated by the event poll instance every time a new block is produced.
+     * @private
+     */
+    private headBlock: BlockDetail | null = null;
+
+    /**
+     * Error handler for block-related errors.
+     */
+    public onBlockError?: (error: Error) => undefined;
+
+    /**
+     * The Poll instance for event polling
+     * @private
+     */
+    private pollInstance?: EventPoll<BlockDetail | null>;
+
+    /**
      * Initializes a new instance of the `Thor` class.
      * @param thor - The Thor instance used to interact with the vechain blockchain API.
+     * @param BlocksModuleOptions - (Optional) Other optional parameters for polling and error handling.
      */
-    constructor(readonly thor: ThorClient) {}
+    constructor(
+        readonly thor: ThorClient,
+        options?: BlocksModuleOptions
+    ) {
+        this.onBlockError = options?.onBlockError;
+
+        if (options?.isPollingEnabled ?? true) this.setupPolling();
+    }
+
+    /**
+     * Destroys the instance by stopping the event poll.
+     */
+    public destroy(): void {
+        if (this.pollInstance != null) {
+            this.pollInstance.stopListen();
+        }
+    }
+
+    /**
+     * Sets up the event polling for the best block.
+     * @private
+     * */
+    private setupPolling(): void {
+        this.pollInstance = Poll.createEventPoll(
+            async () => await this.thor.blocks.getBestBlock(),
+            10000 // Poll every 10 seconds,
+        )
+            .onData((data) => {
+                this.headBlock = data;
+            })
+            .onError(this.onBlockError ?? (() => {}));
+
+        this.pollInstance.startListen();
+    }
 
     /**
      * Retrieves details of a specific block identified by its revision (block number or ID).
@@ -115,6 +168,14 @@ class BlocksModule {
         });
 
         return block;
+    }
+
+    /**
+     * Returns the head block (best block).
+     * @returns {BlockDetail | null} The head block (best block).
+     */
+    public getHeadBlock(): BlockDetail | null {
+        return this.headBlock;
     }
 
     /**

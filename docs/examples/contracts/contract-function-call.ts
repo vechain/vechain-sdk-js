@@ -1,4 +1,4 @@
-import { networkInfo, contract } from '@vechainfoundation/vechain-sdk-core';
+import { contract } from '@vechainfoundation/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Init a simple contract ABI

@@ -484,5 +484,8 @@ const simulatedTx3 = await thorSoloClient.transactions.simulateTransaction(
 // 3 - Check the result
 expect(JSON.stringify(simulatedTx3)).toStrictEqual(JSON.stringify(expected3));
 
+// Destroying the Thor client
+thorSoloClient.destroy();
+
 ```
 

@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { TEST_ACCOUNTS, soloNetwork } from '../../fixture';
 import {
     dataUtils,
@@ -11,14 +11,24 @@ import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
 import { ThorClient } from '../../../src';
 
 /**
- * ThorestClient class tests.
+ * ThorClient class tests.
  *
  * @NOTE: This test suite run on solo network because it requires to send transactions.
  *
- * @group integration/clients/thorest-client/transactions
+ * @group integration/clients/thor-client/transactions
  */
-describe('ThorestClient - Transactions', () => {
-    const thorSoloClient = new ThorClient(soloNetwork);
+describe('ThorClient - Transactions Module', () => {
+    // ThorClient instance
+    let thorSoloClient: ThorClient;
+
+    beforeEach(() => {
+        thorSoloClient = new ThorClient(soloNetwork);
+    });
+
+    afterEach(() => {
+        thorSoloClient.destroy();
+    });
+
     /**
      * sendTransaction tests
      */

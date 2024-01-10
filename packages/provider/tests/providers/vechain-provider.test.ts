@@ -16,7 +16,9 @@ describe('Vechain provider tests', () => {
      */
     test('Should be able to call an RPC function', async () => {
         // Init provider
-        const provider = new VechainProvider(new ThorClient(testNetwork));
+        const provider = new VechainProvider(
+            new ThorClient(testNetwork, { isPollingEnabled: false })
+        );
         expect(provider).toBeDefined();
 
         // Call RPC function
@@ -32,7 +34,9 @@ describe('Vechain provider tests', () => {
      */
     test('Should throw an error when calling an invalid RPC method', async () => {
         // Init provider
-        const provider = new VechainProvider(new ThorClient(testNetwork));
+        const provider = new VechainProvider(
+            new ThorClient(testNetwork, { isPollingEnabled: false })
+        );
         expect(provider).toBeDefined();
 
         // Call RPC function
