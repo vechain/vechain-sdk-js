@@ -1,5 +1,5 @@
-import { type ThorClient } from '@vechainfoundation/vechain-sdk-network';
-import { buildError, FUNCTION } from '@vechainfoundation/vechain-sdk-errors';
+import { type ThorClient } from '@vechain/vechain-sdk-network';
+import { buildError, FUNCTION } from '@vechain/vechain-sdk-errors';
 
 /**
  * All RPC methods related to transactions

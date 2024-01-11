@@ -16,7 +16,7 @@ To break it down:
 In this example a simple transaction with a single clause is created, signed, encoded and then decoded
 
 ```typescript { name=sign_decode, category=example }
-import { contract, networkInfo } from '@vechainfoundation/vechain-sdk-core';
+import { contract, networkInfo } from '@vechain/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -25,7 +25,7 @@ import {
     type TransactionClause,
     type TransactionBody,
     unitsUtils
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Define clauses
@@ -83,7 +83,7 @@ import {
     VTHO_ADDRESS,
     contract,
     networkInfo
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -92,7 +92,7 @@ import {
     type TransactionClause,
     type TransactionBody,
     unitsUtils
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Define multiple clauses
@@ -149,7 +149,7 @@ expect(decodedTx.body.clauses.length).toBe(clauses.length);
 Fee delegation is a feature on the VechainThor blockchain which enables the transaction sender to request another entity, a sponsor, to pay for the transaction fee on the sender's behalf.
 
 ```typescript { name=fee_delegation, category=example }
-import { contract, networkInfo } from '@vechainfoundation/vechain-sdk-core';
+import { contract, networkInfo } from '@vechain/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -160,7 +160,7 @@ import {
     type TransactionBody,
     mnemonic,
     unitsUtils
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Define clause
@@ -234,7 +234,7 @@ import {
     type TransactionBody,
     unitsUtils,
     contract
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Define clauses
@@ -284,7 +284,7 @@ expect(decodedTx.body.expiration).toBe(body.expiration);
 A transaction can be set to only be processed after another transaction, therefore defining an execution order for transactions. The _DependsOn_ field is the Id of the transaction on which the current transaction depends on. If the transaction does not depend on others _DependsOn_ can be set to _null_
 
 ```typescript { name=tx_dependency, category=example }
-import { contract, networkInfo } from '@vechainfoundation/vechain-sdk-core';
+import { contract, networkInfo } from '@vechain/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -293,7 +293,7 @@ import {
     type TransactionClause,
     type TransactionBody,
     unitsUtils
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Define transaction clauses
@@ -377,8 +377,8 @@ Note - the result of a transaction might be different depending on the state(blo
 
 ```typescript { name=simulation, category=example }
 import { expect } from 'expect';
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
-import { contract, unitsUtils } from '@vechainfoundation/vechain-sdk-core';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
 
 // In this example we simulate a transaction of sending 1 VET to another account
 // And we demonstrate (1) how we can check the expected gas cost and (2) whether the transaction is successful

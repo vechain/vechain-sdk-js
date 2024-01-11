@@ -6,7 +6,7 @@ import {
     type FormatType,
     type BytesLike
 } from './types';
-import { ABI, buildError, assert } from '@vechainfoundation/vechain-sdk-errors';
+import { ABI, buildError, assert } from '@vechain/vechain-sdk-errors';
 import { sanitizeValuesToEncode } from './helpers/fragment';
 
 /**

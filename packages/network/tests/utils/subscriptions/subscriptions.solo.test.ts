@@ -16,12 +16,8 @@ import {
     soloUrl
 } from '../../fixture';
 import WebSocket from 'ws';
-import {
-    addressUtils,
-    coder,
-    unitsUtils
-} from '@vechainfoundation/vechain-sdk-core';
-import { contract } from '@vechainfoundation/vechain-sdk-core/src';
+import { addressUtils, coder, unitsUtils } from '@vechain/vechain-sdk-core';
+import { contract } from '@vechain/vechain-sdk-core/src';
 
 const TIMEOUT = 15000; // 15-second timeout
 

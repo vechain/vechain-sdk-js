@@ -1,12 +1,12 @@
 import {
-    addressUtils,
     contract,
-    dataUtils,
     type DeployParams,
     type InterfaceAbi,
     PARAMS_ABI,
-    PARAMS_ADDRESS
-} from '@vechainfoundation/vechain-sdk-core';
+    PARAMS_ADDRESS,
+    dataUtils,
+    addressUtils
+} from '@vechain/vechain-sdk-core';
 import type { ContractCallOptions, ContractTransactionOptions } from './types';
 import { type SendTransactionResult } from '../transactions';
 import { type ThorClient } from '../thor-client';

@@ -1,7 +1,7 @@
 import { hexlify, toBeHex, zeroPadValue } from 'ethers';
 import { addressUtils } from '../../src';
 import { generateRandomValidAddress } from '../fixture';
-import { InvalidAbiDataToEncodeError } from '@vechainfoundation/vechain-sdk-errors';
+import { InvalidAbiDataToEncodeError } from '@vechain/vechain-sdk-errors';
 
 /**
  * Simple functions fixtures

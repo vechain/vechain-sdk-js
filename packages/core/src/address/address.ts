@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
 import { HEX_ADDRESS_REGEX } from '../utils';
-import { ADDRESS, assert } from '@vechainfoundation/vechain-sdk-errors';
+import { ADDRESS, assert } from '@vechain/vechain-sdk-errors';
 import { secp256k1 } from '../secp256k1';
 
 /**

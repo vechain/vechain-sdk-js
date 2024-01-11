@@ -1,7 +1,7 @@
-import { type Transaction } from '@vechainfoundation/vechain-sdk-core';
+import { type Transaction } from '@vechain/vechain-sdk-core';
 import { type HttpClient } from '../../../utils';
 import { type GetDelegationSignatureResult } from '../types';
-import { TRANSACTION, buildError } from '@vechainfoundation/vechain-sdk-errors';
+import { TRANSACTION, buildError } from '@vechain/vechain-sdk-errors';
 
 /**
  * Retrieves the signature of a delegation transaction from a delegator given the endpoint

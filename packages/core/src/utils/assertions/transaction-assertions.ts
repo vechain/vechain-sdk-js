@@ -3,7 +3,7 @@ import {
     SECP256K1,
     TRANSACTION,
     assert
-} from '@vechainfoundation/vechain-sdk-errors';
+} from '@vechain/vechain-sdk-errors';
 import { dataUtils } from '../data';
 import { type Transaction } from '../../transaction';
 

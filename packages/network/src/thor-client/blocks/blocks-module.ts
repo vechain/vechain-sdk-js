@@ -1,4 +1,4 @@
-import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
+import { DATA, assert } from '@vechain/vechain-sdk-errors';
 import { Poll, buildQuery, thorest } from '../../utils';
 import {
     type WaitForBlockOptions,
@@ -6,7 +6,7 @@ import {
     type BlockDetail,
     type BlocksModuleOptions
 } from './types';
-import { assertIsRevisionForBlock } from '@vechainfoundation/vechain-sdk-core';
+import { assertIsRevisionForBlock } from '@vechain/vechain-sdk-core';
 import { type ThorClient } from '../thor-client';
 import { type EventPoll } from '../../utils/poll/event';
 

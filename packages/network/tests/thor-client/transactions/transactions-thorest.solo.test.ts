@@ -5,9 +5,9 @@ import {
     Transaction,
     TransactionHandler,
     TransactionUtils
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import { sendTransactionErrors, simulateTransaction } from './fixture-thorest';
-import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
+import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '../../../src';
 
 /**

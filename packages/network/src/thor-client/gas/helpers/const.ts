@@ -1,4 +1,4 @@
-import { keccak256 } from '@vechainfoundation/vechain-sdk-core';
+import { keccak256 } from '@vechain/vechain-sdk-core';
 
 /**
  * The selector of the `Error(string)` function in Solidity.

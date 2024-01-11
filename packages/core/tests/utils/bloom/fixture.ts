@@ -1,5 +1,5 @@
 import { dataUtils } from '../../../src';
-import { InvalidAddressError } from '@vechainfoundation/vechain-sdk-errors';
+import { InvalidAddressError } from '@vechain/vechain-sdk-errors';
 
 /**
  * Blooms filter used to check if "it is a bloom filter or not" verification works

@@ -2,7 +2,7 @@ import {
     buildError,
     DATA,
     InvalidDataTypeError
-} from '@vechainfoundation/vechain-sdk-errors';
+} from '@vechain/vechain-sdk-errors';
 
 /**
  * Simple increment function fixture

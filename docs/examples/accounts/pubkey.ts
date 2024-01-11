@@ -1,4 +1,4 @@
-import { HDNode } from '@vechainfoundation/vechain-sdk-core';
+import { HDNode } from '@vechain/vechain-sdk-core';
 
 // 1 - Create HD node from xpub (extended private key) and chain code
 

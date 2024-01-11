@@ -7,11 +7,7 @@ import {
     THOR_ID_LENGTH
 } from '../const';
 import { type HexConfig } from './types';
-import {
-    DATA,
-    buildError,
-    assert
-} from '@vechainfoundation/vechain-sdk-errors';
+import { assert, buildError, DATA } from '@vechain/vechain-sdk-errors';
 
 /**
  * Convert data to a hexadecimal string representation.

@@ -4,7 +4,7 @@ import {
     contract,
     unitsUtils,
     networkInfo
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import { BUILT_IN_CONTRACTS } from '../../built-in-fixture';
 import {
     TESTING_CONTRACT_ABI,
@@ -15,7 +15,7 @@ import {
 import {
     InvalidSecp256k1PrivateKeyError,
     TransactionDelegationError
-} from '@vechainfoundation/vechain-sdk-errors';
+} from '@vechain/vechain-sdk-errors';
 
 /**
  * Some random transaction nonces to use into tests

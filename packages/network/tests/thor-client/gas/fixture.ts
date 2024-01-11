@@ -1,4 +1,4 @@
-import { contract, unitsUtils } from '@vechainfoundation/vechain-sdk-core';
+import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
 import { BUILT_IN_CONTRACTS } from '../../built-in-fixture';
 import {
     TESTING_CONTRACT_ABI,

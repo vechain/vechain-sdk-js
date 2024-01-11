@@ -1,8 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
 import { VechainProvider } from '../../src';
 import { zeroBlock } from '../rpc-mapper/blocks/fixture';
-import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
-import { ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../fixture';
 
 /**

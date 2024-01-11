@@ -13,10 +13,7 @@ import {
     erc20ContractBytecode,
     testingContractTestCases
 } from './fixture';
-import {
-    addressUtils,
-    type DeployParams
-} from '@vechainfoundation/vechain-sdk-core';
+import { addressUtils, type DeployParams } from '@vechain/vechain-sdk-core';
 import {
     ThorClient,
     type TransactionSendResult,

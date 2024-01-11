@@ -1,7 +1,7 @@
 import type {
     TransactionBody,
     TransactionClause
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import type { Output } from '../blocks';
 
 /**

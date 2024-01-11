@@ -4,7 +4,7 @@ import {
     simpleIncrementFunction,
     simpleThrowErrorFunctionIfInputIs10
 } from '../fixture';
-import { PollExecutionError } from '@vechainfoundation/vechain-sdk-errors';
+import { PollExecutionError } from '@vechain/vechain-sdk-errors';
 import { advanceTimersByTimeAndTick } from '../../../test-utils';
 import { Poll } from '../../../../src';
 

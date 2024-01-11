@@ -20,8 +20,8 @@ import {
     TransactionHandler,
     addressUtils,
     contract
-} from '@vechainfoundation/vechain-sdk-core';
-import { TransactionNotSignedError } from '@vechainfoundation/vechain-sdk-errors';
+} from '@vechain/vechain-sdk-core';
+import { TransactionNotSignedError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '../../../src';
 
 /**

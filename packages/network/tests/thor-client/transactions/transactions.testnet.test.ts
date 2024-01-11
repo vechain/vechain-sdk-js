@@ -9,7 +9,7 @@ import {
     TESTING_CONTRACT_ADDRESS,
     testnetUrl
 } from '../../fixture';
-import { addressUtils, contract } from '@vechainfoundation/vechain-sdk-core';
+import { addressUtils, contract } from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '../../../src';
 
 /**

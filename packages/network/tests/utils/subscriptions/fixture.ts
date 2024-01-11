@@ -1,5 +1,5 @@
 import { generateRandomValidAddress } from '../../../../core/tests/fixture';
-import { vechain_sdk_core_ethers } from '@vechainfoundation/vechain-sdk-core';
+import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
 import { TESTING_CONTRACT_ADDRESS } from '../../fixture';
 import WebSocket from 'ws';
 

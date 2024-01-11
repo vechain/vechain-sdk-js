@@ -1,5 +1,5 @@
 import { NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS, thorest } from '../../utils';
-import { assert, DATA } from '@vechainfoundation/vechain-sdk-errors';
+import { assert, DATA } from '@vechain/vechain-sdk-errors';
 import { type BlockDetail } from '../blocks';
 import { type ThorClient } from '../thor-client';
 import { type ConnectedPeer } from './types';
