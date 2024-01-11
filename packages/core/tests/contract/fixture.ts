@@ -6,8 +6,15 @@ import { unitsUtils, VTHO_ADDRESS } from '../../src';
 import { generateRandomValidAddress } from '../fixture';
 import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
 
-const getContractSourceCode = (dirname: string, filename: string): string => {
-    const contractPath = path.resolve(dirname, filename);
+const getContractSourceCode = (
+    dirname: string,
+    filename: string,
+    importFromNodeModules: boolean = false
+): string => {
+    const contractPath = path.resolve(
+        importFromNodeModules ? '../../node_modules/' + dirname : dirname,
+        filename
+    );
 
     // Read the Solidity source code from the file
     return fs.readFileSync(contractPath, 'utf8');
@@ -32,37 +39,143 @@ function compileERC20SampleTokenContract(): Contract {
         },
         '@openzeppelin/contracts/token/ERC20/ERC20.sol': {
             content: getContractSourceCode(
-                '../../node_modules/@openzeppelin/contracts/token/ERC20/',
-                'ERC20.sol'
+                '@openzeppelin/contracts/token/ERC20/',
+                'ERC20.sol',
+                true
             )
         },
         '@openzeppelin/contracts/token/ERC20/IERC20.sol': {
             content: getContractSourceCode(
-                '../../node_modules/@openzeppelin/contracts/token/ERC20/',
-                'IERC20.sol'
+                '@openzeppelin/contracts/token/ERC20/',
+                'IERC20.sol',
+                true
             )
         },
         '@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol': {
             content: getContractSourceCode(
-                '../../node_modules/@openzeppelin/contracts/token/ERC20/',
-                'extensions/IERC20Metadata.sol'
+                '@openzeppelin/contracts/token/ERC20/',
+                'extensions/IERC20Metadata.sol',
+                true
             )
         },
         '@openzeppelin/contracts/utils/Context.sol': {
             content: getContractSourceCode(
-                '../../node_modules/@openzeppelin/contracts/utils/',
-                'Context.sol'
+                '@openzeppelin/contracts/utils/',
+                'Context.sol',
+                true
             )
         },
         '@openzeppelin/contracts/interfaces/draft-IERC6093.sol': {
             content: getContractSourceCode(
-                '../../node_modules/@openzeppelin/contracts/interfaces/',
-                'draft-IERC6093.sol'
+                '@openzeppelin/contracts/interfaces/',
+                'draft-IERC6093.sol',
+                true
             )
         }
     };
 
     return compileContract('SampleToken', erc20Sources);
+}
+
+/**
+ * Compiles the ERC721 sample NFT contract using a predefined set of sources.
+ *
+ * This function gathers various Solidity source files necessary for compiling
+ * a sample ERC721 NFT contract. It pulls in the main contract file, `SampleNFT.sol`,
+ * along with a series of OpenZeppelin contracts that implement ERC721 standards,
+ * utility contracts, and interfaces.
+ *
+ * @returns A `Contract` object representing the compiled ERC721 NFT contract.
+ *          This object is ready to be deployed or further interacted with.
+ */
+function compileERC721SampleNFTContract(): Contract {
+    const erc721sources: Sources = {
+        'SampleNFT.sol': {
+            content: getContractSourceCode(
+                'tests/contract/sample',
+                'SampleNFT.sol'
+            )
+        },
+        '@openzeppelin/contracts/token/ERC721/ERC721.sol': {
+            content: getContractSourceCode(
+                '@openzeppelin/contracts/token/ERC721/',
+                'ERC721.sol',
+                true
+            )
+        },
+        '@openzeppelin/contracts/token/ERC721/IERC721.sol': {
+            content: getContractSourceCode(
+                '@openzeppelin/contracts/token/ERC721/',
+                'IERC721.sol',
+                true
+            )
+        },
+        '@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol': {
+            content: getContractSourceCode(
+                '@openzeppelin/contracts/token/ERC721/',
+                'IERC721Receiver.sol',
+                true
+            )
+        },
+        '@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol': {
+            content: getContractSourceCode(
+                '@openzeppelin/contracts/token/ERC721/extensions/',
+                'IERC721Metadata.sol',
+                true
+            )
+        },
+        '@openzeppelin/contracts/utils/Context.sol': {
+            content: getContractSourceCode(
+                '@openzeppelin/contracts/utils/',
+                'Context.sol',
+                true
+            )
+        },
+        '@openzeppelin/contracts/utils/Strings.sol': {
+            content: getContractSourceCode(
+                '@openzeppelin/contracts/utils/',
+                'Strings.sol',
+                true
+            )
+        },
+        '@openzeppelin/contracts/utils/introspection/IERC165.sol': {
+            content: getContractSourceCode(
+                '@openzeppelin/contracts/utils/introspection/',
+                'IERC165.sol',
+                true
+            )
+        },
+        '@openzeppelin/contracts/utils/introspection/ERC165.sol': {
+            content: getContractSourceCode(
+                '@openzeppelin/contracts/utils/introspection/',
+                'ERC165.sol',
+                true
+            )
+        },
+        '@openzeppelin/contracts/interfaces/draft-IERC6093.sol': {
+            content: getContractSourceCode(
+                '@openzeppelin/contracts/interfaces/',
+                'draft-IERC6093.sol',
+                true
+            )
+        },
+        '@openzeppelin/contracts/utils/math/Math.sol': {
+            content: getContractSourceCode(
+                '@openzeppelin/contracts/utils/math/',
+                'Math.sol',
+                true
+            )
+        },
+        '@openzeppelin/contracts/utils/math/SignedMath.sol': {
+            content: getContractSourceCode(
+                '@openzeppelin/contracts/utils/math/',
+                'SignedMath.sol',
+                true
+            )
+        }
+    };
+
+    return compileContract('SampleNFT', erc721sources);
 }
 
 /**
@@ -250,6 +363,7 @@ const invalidTransferVETtestCases = [
 
 export {
     compileERC20SampleTokenContract,
+    compileERC721SampleNFTContract,
     getContractSourceCode,
     transferTokenClausesTestCases,
     invalidTransferTokenClausesTestCases,
