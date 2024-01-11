@@ -189,7 +189,7 @@ const buildTransactionBodyClausesTestCases = [
                 ],
                 dependsOn: null,
                 expiration: 32,
-                gas: 36518,
+                gas: 51518,
                 gasPriceCoef: 127,
                 reserved: undefined
             },
@@ -204,7 +204,7 @@ const buildTransactionBodyClausesTestCases = [
                 ],
                 dependsOn: null,
                 expiration: 32,
-                gas: 24263,
+                gas: 39263,
                 gasPriceCoef: 127,
                 reserved: undefined
             }
@@ -266,7 +266,7 @@ const buildTransactionBodyClausesTestCases = [
                 dependsOn:
                     '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f',
                 expiration: 1000,
-                gas: 100954,
+                gas: 115954,
                 gasPriceCoef: 255,
                 reserved: { features: 1 }
             },
@@ -297,7 +297,7 @@ const buildTransactionBodyClausesTestCases = [
                 dependsOn:
                     '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f',
                 expiration: 1000,
-                gas: 74855,
+                gas: 89855,
                 gasPriceCoef: 255,
                 reserved: { features: 1 }
             }
@@ -329,7 +329,7 @@ const signTransactionTestCases = {
                         ],
                         dependsOn: null,
                         expiration: 32,
-                        gas: 42491,
+                        gas: 57491,
                         gasPriceCoef: 127,
                         reserved: undefined
                     }
@@ -356,7 +356,7 @@ const signTransactionTestCases = {
                         ],
                         dependsOn: null,
                         expiration: 32,
-                        gas: 42491,
+                        gas: 57491,
                         gasPriceCoef: 127,
                         reserved: {
                             features: 1
