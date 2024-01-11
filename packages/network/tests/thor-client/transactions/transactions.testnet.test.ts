@@ -6,7 +6,7 @@ import {
 import {
     TESTING_CONTRACT_ABI,
     TEST_ACCOUNTS,
-    TEST_CONTRACT_ADDRESS,
+    TESTING_CONTRACT_ADDRESS,
     testnetUrl
 } from '../../fixture';
 import { addressUtils, contract } from '@vechain/vechain-sdk-core';
@@ -76,7 +76,7 @@ describe('Transactions module Testnet tests suite', () => {
                     const thorClient = new ThorClient(testNetwork);
                     const sampleClause =
                         contract.clauseBuilder.functionInteraction(
-                            TEST_CONTRACT_ADDRESS,
+                            TESTING_CONTRACT_ADDRESS,
                             TESTING_CONTRACT_ABI,
                             'setStateVariable',
                             [123]

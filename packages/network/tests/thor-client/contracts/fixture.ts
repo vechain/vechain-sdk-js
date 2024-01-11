@@ -198,10 +198,199 @@ const deployedERC20Abi = [
     }
 ];
 
+/**
+ * Represents a test case for a smart contract function.
+ * This interface is designed to capture the necessary details to execute and validate
+ * a function call within a testing framework.
+ */
+interface TestCase {
+    /**
+     * A description of the test case. This is used to provide context for the test.
+     */
+    description: string;
+
+    /**
+     * The name of the function to be tested. This should match exactly with the function name
+     * in the smart contract.
+     */
+    functionName: string;
+
+    /**
+     * An array of parameters to be passed to the function. The order and types of these parameters
+     * should match the expected input of the smart contract function.
+     */
+    params: unknown[];
+
+    /**
+     * The expected result of the function call. This can vary in type depending on what
+     * the function returns. It's used to assert whether the function behaves as expected.
+     */
+    expected: unknown;
+
+    /**
+     * Indicates whether the function call is expected to revert or throw an error.
+     * A value of 'true' means the test is expecting the function to fail.
+     */
+    reverted: boolean;
+}
+
+const ExampleEnum = {
+    SMALL: 0,
+    MEDIUM: 1,
+    LARGE: 2
+};
+
+const testingContractTestCases: TestCase[] = [
+    {
+        description: 'should return the bool value false',
+        functionName: 'boolData',
+        params: [false],
+        expected: [false],
+        reverted: false
+    },
+    {
+        description: 'should return the bool value true',
+        functionName: 'boolData',
+        params: [true],
+        expected: [true],
+        reverted: false
+    },
+    {
+        description: 'should return the bool value false when passed undefined',
+        functionName: 'boolData',
+        params: [undefined],
+        expected: [false],
+        reverted: false
+    },
+    {
+        description: 'should return the int value 1',
+        functionName: 'intData',
+        params: [1],
+        expected: [1n],
+        reverted: false
+    },
+    {
+        description: 'should return the int value -1',
+        functionName: 'intData',
+        params: [-1],
+        expected: [-1n],
+        reverted: false
+    },
+    {
+        description: 'should return the int value 0',
+        functionName: 'intData',
+        params: [0],
+        expected: [0n],
+        reverted: false
+    },
+    {
+        description: 'should return the uint value 0',
+        functionName: 'uintData',
+        params: [0],
+        expected: [0n],
+        reverted: false
+    },
+    {
+        description: 'should return the uint value 1',
+        functionName: 'uintData',
+        params: [1],
+        expected: [1n],
+        reverted: false
+    },
+    {
+        description:
+            'should return the address value 0x0000000000000000000000000000000000000000',
+        functionName: 'addressData',
+        params: ['0x0000000000000000000000000000000000000000'],
+        expected: ['0x0000000000000000000000000000000000000000'],
+        reverted: false
+    },
+    {
+        description:
+            'should return the bytes32 value 0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0',
+        functionName: 'bytes32Data',
+        params: [
+            '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0'
+        ],
+        expected: [
+            '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0'
+        ],
+        reverted: false
+    },
+    {
+        description: 'should return the string value "a"',
+        functionName: 'stringData',
+        params: ['a'],
+        expected: ['a'],
+        reverted: false
+    },
+    {
+        description: 'should return the passed fixed array',
+        functionName: 'fixedArrayData',
+        params: [[123, 456, 789]],
+        expected: [[123n, 456n, 789n]],
+        reverted: false
+    },
+    {
+        description: 'should return the passed dynamic array',
+        functionName: 'dynamicArrayData',
+        params: [[123, 456, 789, 323, 123]],
+        expected: [[123n, 456n, 789n, 323n, 123n]],
+        reverted: false
+    },
+    {
+        description: 'should return the passed struct',
+        functionName: 'structData',
+        params: [{ id: 10, name: 'test' }],
+        expected: [[10n, 'test']],
+        reverted: false
+    },
+    {
+        description: 'should return the passed enum',
+        functionName: 'enumData',
+        params: [ExampleEnum.SMALL],
+        expected: [BigInt(ExampleEnum.SMALL)],
+        reverted: false
+    },
+    {
+        description: 'should return the passed multiple values',
+        functionName: 'multipleData',
+        params: [
+            1,
+            '0x0000000000000000000000000000000000000000',
+            '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0',
+            'a',
+            [123, 456, 789],
+            [123, 456, 789, 323, 123],
+            { id: 10, name: 'test' },
+            ExampleEnum.SMALL
+        ],
+        expected: [
+            1n,
+            '0x0000000000000000000000000000000000000000',
+            '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0',
+            'a',
+            [123n, 456n, 789n],
+            [123n, 456n, 789n, 323n, 123n],
+            [10n, 'test'],
+            BigInt(ExampleEnum.SMALL)
+        ],
+        reverted: false
+    },
+    {
+        description: 'should return the passed multiple int values',
+        functionName: 'multipleIntData',
+        params: [1, 222, 333, 287274, 390343843, 123223663],
+        expected: [1n, 222n, 333n, 287274n, 390343843n, 123223663n],
+        reverted: false
+    }
+];
+
 export {
     contractBytecode,
     erc20ContractBytecode,
     deployedContractBytecode,
     deployedContractAbi,
-    deployedERC20Abi
+    deployedERC20Abi,
+    testingContractTestCases
 };

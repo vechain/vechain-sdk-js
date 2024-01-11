@@ -11,7 +11,7 @@ import {
 import {
     TESTING_CONTRACT_ABI,
     TEST_ACCOUNTS,
-    TEST_CONTRACT_ADDRESS,
+    TESTING_CONTRACT_ADDRESS,
     soloNetwork,
     soloUrl
 } from '../../fixture';
@@ -133,7 +133,7 @@ describe('Subscriptions Solo', () => {
 
             // Trigger the smart contract function that emits the event
             const clause = contract.clauseBuilder.functionInteraction(
-                TEST_CONTRACT_ADDRESS,
+                TESTING_CONTRACT_ADDRESS,
                 TESTING_CONTRACT_ABI,
                 'setStateVariable',
                 [1]

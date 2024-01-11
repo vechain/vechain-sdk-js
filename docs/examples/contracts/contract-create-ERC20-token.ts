@@ -1,5 +1,9 @@
 import { expect } from 'expect';
-import { VIP180_ABI, addressUtils } from '@vechain/vechain-sdk-core';
+import {
+    VIP180_ABI,
+    addressUtils,
+    unitsUtils
+} from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 
 const erc20ContractBytecode: string =
@@ -37,7 +41,7 @@ const balance = await thorSoloClient.contracts.executeContractCall(
 );
 
 // Asserting that the initial balance of the deployer is the expected amount (1e24)
-expect(parseInt(balance, 16)).toEqual(1e24);
+expect(balance).toEqual([unitsUtils.parseUnits('1', 24)]);
 
 // Destroying the Thor client
 thorSoloClient.destroy();

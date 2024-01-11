@@ -186,7 +186,8 @@ const TEST_ACCOUNTS = {
 /**
  * `TestingContract.sol` deployed contract address on thor-solo snapshot.
  */
-const TEST_CONTRACT_ADDRESS = '0xb2c20a6de401003a671659b10629eb82ff254fb8';
+const TESTING_CONTRACT_ADDRESS: string =
+    '0xb2c20a6de401003a671659b10629eb82ff254fb8';
 
 /**
  * ABI of the `TestingContract` smart contract.
@@ -967,7 +968,7 @@ export {
     testAccount,
     TEST_ACCOUNTS,
     ALL_ACCOUNTS,
-    TEST_CONTRACT_ADDRESS,
+    TESTING_CONTRACT_ADDRESS,
     TESTING_CONTRACT_ABI,
     TESTNET_DELEGATE_URL,
     testnetUrl,
