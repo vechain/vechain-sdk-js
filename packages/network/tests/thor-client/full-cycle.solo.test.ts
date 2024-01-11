@@ -1,14 +1,12 @@
-import { describe, test } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import {
     type TransactionBody,
-    TransactionUtils,
     contract,
-    secp256k1,
     unitsUtils,
     networkInfo,
     Transaction,
     TransactionHandler
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '../../src';
 
 /**
@@ -25,6 +23,12 @@ describe('Full Cycle', () => {
             isPollingEnabled: false
         });
 
+        const senderAccount = {
+            privateKey:
+                'f9fc826b63a35413541d92d2bfb6661128cd5075fcdca583446d20c59994ba26',
+            address: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6'
+        };
+
         // 2 - Create the transaction clauses
         const transaction = {
             clauses: [
@@ -34,48 +38,48 @@ describe('Full Cycle', () => {
                 )
             ],
             simulateTransactionOptions: {
-                caller: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6'
+                caller: senderAccount.address
             }
         };
 
-        // 3 - Simulate the transaction
-        const simulatedTx =
-            await thorSoloClient.transactions.simulateTransaction(
-                transaction.clauses,
-                {
-                    ...transaction.simulateTransactionOptions
-                }
-            );
+        // 3 - Estimate gas
+        const gasResult = await thorSoloClient.gas.estimateGas(
+            transaction.clauses,
+            transaction.simulateTransactionOptions.caller
+        );
 
-        console.log(simulatedTx);
-
-        // Create private key
-        const privateKey = secp256k1.generatePrivateKey();
-
-        // 4 - Sign transaction
-
-        const gas = TransactionUtils.intrinsicGas(transaction.clauses);
-
+        // 4 - Build transaction body
+        const latestBlock = await thorSoloClient.blocks.getBestBlock();
         const body: TransactionBody = {
             chainTag: networkInfo.solo.chainTag,
-            blockRef: '0x0000000000000000',
-            expiration: 0,
+            blockRef:
+                latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
+            expiration: 32,
             clauses: transaction.clauses,
             gasPriceCoef: 128,
-            gas,
+            gas: gasResult.totalGas,
             dependsOn: null,
-            nonce: 12345678
+            nonce: 10000000
         };
 
         const unsignedTx = new Transaction(body);
+
+        // 4 - Sign transaction
         const signedTransaction = TransactionHandler.sign(
             unsignedTx,
-            privateKey
+            Buffer.from(senderAccount.privateKey, 'hex')
         );
 
-        console.log(signedTransaction);
+        const sendTransactionResult =
+            await thorSoloClient.transactions.sendTransaction(
+                signedTransaction
+            );
 
-        await thorSoloClient.transactions.sendTransaction(signedTransaction);
+        // 5 - Wait for transaction receipt
+        const txReceipt = await thorSoloClient.transactions.waitForTransaction(
+            sendTransactionResult.id
+        );
+        console.log(txReceipt);
     });
 
     test('simple test with delegator', async () => {
@@ -86,6 +90,18 @@ describe('Full Cycle', () => {
             isPollingEnabled: false
         });
 
+        const senderAccount = {
+            privateKey:
+                'f9fc826b63a35413541d92d2bfb6661128cd5075fcdca583446d20c59994ba26',
+            address: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6'
+        };
+
+        const delegatorAccount = {
+            privateKey:
+                '521b7793c6eb27d137b617627c6b85d57c0aa303380e9ca4e30a30302fbc6676',
+            address: '0x062F167A905C1484DE7e75B88EDC7439f82117DE'
+        };
+
         // 2 - Create the transaction clauses
         const transaction = {
             clauses: [
@@ -95,22 +111,26 @@ describe('Full Cycle', () => {
                 )
             ],
             simulateTransactionOptions: {
-                caller: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6'
+                caller: senderAccount.address
             }
         };
 
-        // Create private key
-        const privateKey = secp256k1.generatePrivateKey();
+        // 3 - Estimate gas
+        const gasResult = await thorSoloClient.gas.estimateGas(
+            transaction.clauses,
+            transaction.simulateTransactionOptions.caller
+        );
 
-        const gas = TransactionUtils.intrinsicGas(transaction.clauses);
-
+        // 4 - Build transaction body
+        const latestBlock = await thorSoloClient.blocks.getBestBlock();
         const delegatedTransaction = new Transaction({
             chainTag: 0xf6,
-            blockRef: '0x0000000000000000',
+            blockRef:
+                latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
             expiration: 32,
             clauses: transaction.clauses,
             gasPriceCoef: 128,
-            gas,
+            gas: gasResult.totalGas,
             dependsOn: null,
             nonce: 12345678,
             reserved: {
@@ -118,15 +138,27 @@ describe('Full Cycle', () => {
             }
         });
 
+        // 4 - Sign transaction
         const rawDelegatedSigned = TransactionHandler.signWithDelegator(
             delegatedTransaction,
-            privateKey,
-            Buffer.from(
-                '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
-                'hex'
-            )
+            Buffer.from(senderAccount.privateKey, 'hex'),
+            Buffer.from(delegatorAccount.privateKey, 'hex')
         );
 
-        await thorSoloClient.transactions.sendTransaction(rawDelegatedSigned);
+        console.log(rawDelegatedSigned);
+        expect(rawDelegatedSigned.isSigned).toEqual(true);
+        expect(rawDelegatedSigned.isDelegated).toEqual(true);
+        expect(rawDelegatedSigned.delegator).toEqual(delegatorAccount.address);
+
+        const sendTransactionResult =
+            await thorSoloClient.transactions.sendTransaction(
+                rawDelegatedSigned
+            );
+
+        // 5 - Wait for transaction receipt
+        const txReceipt = await thorSoloClient.transactions.waitForTransaction(
+            sendTransactionResult.id
+        );
+        console.log(txReceipt);
     });
 });
