@@ -3,11 +3,7 @@ import { abi, coder } from '../abi';
 import { type TransactionClause } from '../transaction';
 import type { DeployParams } from './types';
 import { VIP180_ABI } from '../utils';
-import {
-    DATA,
-    assert,
-    buildError
-} from '@vechainfoundation/vechain-sdk-errors';
+import { DATA, assert, buildError } from '@vechain/vechain-sdk-errors';
 
 /**
  * Builds a clause for deploying a smart contract.

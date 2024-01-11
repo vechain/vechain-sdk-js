@@ -1,17 +1,7 @@
 import { generateRandomValidAddress } from '../../../../core/tests/fixture';
-import {
-    unitsUtils,
-    vechain_sdk_core_ethers
-} from '@vechainfoundation/vechain-sdk-core';
-import {
-    TESTING_CONTRACT_ABI,
-    TEST_ACCOUNTS,
-    TEST_CONTRACT_ADDRESS,
-    thorSoloClient
-} from '../../fixture';
+import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
+import { TESTING_CONTRACT_ADDRESS } from '../../fixture';
 import WebSocket from 'ws';
-import { contract } from '@vechainfoundation/vechain-sdk-core/src';
-import { type Clause } from '../../../src';
 
 /**
  * random address for `from` parameter
@@ -162,9 +152,9 @@ const getEventSubscriptionUrlTestCases = [
         event: 'event Transfer(address indexed from, address indexed to, uint256 value)',
         valuesToEncode: [null, toRandomAddress], // Missing `from` parameter
         options: {
-            address: TEST_CONTRACT_ADDRESS
+            address: TESTING_CONTRACT_ADDRESS
         },
-        expectedURL: `wss://testnet.vechain.org/subscriptions/event?addr=${TEST_CONTRACT_ADDRESS}&t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t2=0x000000000000000000000000${toRandomAddress.slice(
+        expectedURL: `wss://testnet.vechain.org/subscriptions/event?addr=${TESTING_CONTRACT_ADDRESS}&t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t2=0x000000000000000000000000${toRandomAddress.slice(
             2
         )}`
     },
@@ -172,9 +162,9 @@ const getEventSubscriptionUrlTestCases = [
         event: 'event Transfer(address indexed from, address indexed to, uint256 indexed value)',
         valuesToEncode: [fromRandomAddress, null, randomBigInt], // Missing `to` parameter
         options: {
-            address: TEST_CONTRACT_ADDRESS
+            address: TESTING_CONTRACT_ADDRESS
         },
-        expectedURL: `wss://testnet.vechain.org/subscriptions/event?addr=${TEST_CONTRACT_ADDRESS}&t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t1=0x000000000000000000000000${fromRandomAddress.slice(
+        expectedURL: `wss://testnet.vechain.org/subscriptions/event?addr=${TESTING_CONTRACT_ADDRESS}&t0=0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef&t1=0x000000000000000000000000${fromRandomAddress.slice(
             2
         )}&t3=${vechain_sdk_core_ethers.zeroPadValue(
             vechain_sdk_core_ethers.hexlify(
@@ -187,9 +177,9 @@ const getEventSubscriptionUrlTestCases = [
         event: 'event Swap(address indexed sender,uint amount0In,uint amount1In,uint amount0Out,uint amount1Out,address indexed to)',
         valuesToEncode: [fromRandomAddress, toRandomAddress],
         options: {
-            address: TEST_CONTRACT_ADDRESS
+            address: TESTING_CONTRACT_ADDRESS
         },
-        expectedURL: `wss://testnet.vechain.org/subscriptions/event?addr=${TEST_CONTRACT_ADDRESS}&t0=0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822&t1=0x000000000000000000000000${fromRandomAddress.slice(
+        expectedURL: `wss://testnet.vechain.org/subscriptions/event?addr=${TESTING_CONTRACT_ADDRESS}&t0=0xd78ad95fa46c994b6551d0da85fc275fe613ce37657fb8d5e3d130840159d822&t1=0x000000000000000000000000${fromRandomAddress.slice(
             2
         )}&t2=0x000000000000000000000000${toRandomAddress.slice(2)}`
     }
@@ -293,58 +283,6 @@ async function testWebSocketConnection(url: string): Promise<boolean> {
     });
 }
 
-/**
- * Trigger the `TestingContract` 'setStateVariable' function to generate the 'StateChanged' event
- */
-async function triggerContractFunction(): Promise<void> {
-    const clause = contract.clauseBuilder.functionInteraction(
-        TEST_CONTRACT_ADDRESS,
-        TESTING_CONTRACT_ABI,
-        'setStateVariable',
-        [1]
-    );
-
-    const gasResult = await thorSoloClient.gas.estimateGas(
-        [clause],
-        TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
-    );
-    const txBody = await thorSoloClient.transactions.buildTransactionBody(
-        [clause],
-        gasResult.totalGas
-    );
-    const tx = await thorSoloClient.transactions.signTransaction(
-        txBody,
-        TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.privateKey
-    );
-
-    // Send the signed transaction to the blockchain
-    await thorSoloClient.transactions.sendTransaction(tx);
-}
-
-async function triggerVETtransfer(): Promise<void> {
-    const clause: Clause = {
-        to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-        value: unitsUtils.parseVET('1').toString(),
-        data: '0x'
-    };
-
-    const gasResult = await thorSoloClient.gas.estimateGas(
-        [clause],
-        TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION.address
-    );
-    const txBody = await thorSoloClient.transactions.buildTransactionBody(
-        [clause],
-        gasResult.totalGas
-    );
-    const tx = await thorSoloClient.transactions.signTransaction(
-        txBody,
-        TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION.privateKey
-    );
-
-    // Send the signed transaction to the blockchain
-    await thorSoloClient.transactions.sendTransaction(tx);
-}
-
 export {
     getEventSubscriptionUrlTestCases,
     getBlockSubscriptionUrlTestCases,
@@ -352,7 +290,5 @@ export {
     getBeatSubscriptionUrlTestCases,
     getNewTransactionsSubscriptionUrlTestCases,
     getVETtransfersSubscriptionUrlTestCases,
-    testWebSocketConnection,
-    triggerContractFunction,
-    triggerVETtransfer
+    testWebSocketConnection
 };

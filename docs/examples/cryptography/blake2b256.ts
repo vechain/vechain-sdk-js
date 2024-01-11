@@ -1,7 +1,7 @@
 import {
     blake2b256,
     type HashInput
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // Input of hash function (it can be a string or a Buffer)

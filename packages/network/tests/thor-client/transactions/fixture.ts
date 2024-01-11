@@ -4,18 +4,28 @@ import {
     contract,
     unitsUtils,
     networkInfo
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import { BUILT_IN_CONTRACTS } from '../../built-in-fixture';
 import {
     TESTING_CONTRACT_ABI,
     TESTNET_DELEGATE_URL,
     TEST_ACCOUNTS,
-    TEST_CONTRACT_ADDRESS
+    TESTING_CONTRACT_ADDRESS
 } from '../../fixture';
 import {
     InvalidSecp256k1PrivateKeyError,
     TransactionDelegationError
-} from '@vechainfoundation/vechain-sdk-errors';
+} from '@vechain/vechain-sdk-errors';
+
+/**
+ * Some random transaction nonces to use into tests
+ */
+const transactionNonces = {
+    waitForTransactionTestCases: [10000000, 10000001, 10000002, 10000003],
+    sendTransactionWithANumberAsValueInTransactionBody: [10000004],
+    invalidWaitForTransactionTestCases: [10000005],
+    shouldThrowErrorIfTransactionIsntSigned: [10000006]
+};
 
 /**
  * Clause to transfer 1 VTHO to TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
@@ -112,7 +122,8 @@ const waitForTransactionTestCases = [
             'Should wait for transaction without timeout and return TransactionReceipt',
         options: {
             timeoutMs: undefined,
-            intervalMs: undefined
+            intervalMs: undefined,
+            nonce: transactionNonces.waitForTransactionTestCases[0]
         }
     },
     {
@@ -120,7 +131,8 @@ const waitForTransactionTestCases = [
             'Should wait for transaction with timeout and return TransactionReceipt',
         options: {
             timeoutMs: 5000,
-            intervalMs: undefined
+            intervalMs: undefined,
+            nonce: transactionNonces.waitForTransactionTestCases[1]
         }
     },
     {
@@ -128,7 +140,8 @@ const waitForTransactionTestCases = [
             'Should wait for transaction with intervalMs TransactionReceipt',
         options: {
             timeoutMs: undefined,
-            intervalMs: 100
+            intervalMs: 100,
+            nonce: transactionNonces.waitForTransactionTestCases[2]
         }
     },
     {
@@ -136,7 +149,8 @@ const waitForTransactionTestCases = [
             'Should wait for transaction with intervalMs & timeoutMs and return TransactionReceipt',
         options: {
             timeoutMs: 5000,
-            intervalMs: 100
+            intervalMs: 100,
+            nonce: transactionNonces.waitForTransactionTestCases[3]
         }
     }
 ];
@@ -149,7 +163,8 @@ const invalidWaitForTransactionTestCases = [
         description: 'Should throw error when timeoutMs is too low',
         options: {
             timeoutMs: 1,
-            intervalMs: undefined
+            intervalMs: undefined,
+            nonce: transactionNonces.invalidWaitForTransactionTestCases[0]
         }
     }
 ];
@@ -202,7 +217,7 @@ const buildTransactionBodyClausesTestCases = [
             transfer1VTHOClause,
             transfer1VTHOClause,
             {
-                to: TEST_CONTRACT_ADDRESS,
+                to: TESTING_CONTRACT_ADDRESS,
                 value: '0',
                 data: contract.coder.encodeFunctionInput(
                     TESTING_CONTRACT_ABI,
@@ -417,6 +432,7 @@ const signTransactionTestCases = {
 };
 
 export {
+    transactionNonces,
     waitForTransactionTestCases,
     invalidWaitForTransactionTestCases,
     transferTransactionBody,

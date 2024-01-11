@@ -1,6 +1,6 @@
 import { expect } from 'expect';
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
-import { contract, unitsUtils } from '@vechainfoundation/vechain-sdk-core';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
 
 // In this example we simulate a transaction of sending 1 VET to another account
 // And we demonstrate (1) how we can check the expected gas cost and (2) whether the transaction is successful
@@ -105,3 +105,6 @@ const simulatedTx3 = await thorSoloClient.transactions.simulateTransaction(
 
 // 3 - Check the result
 expect(JSON.stringify(simulatedTx3)).toStrictEqual(JSON.stringify(expected3));
+
+// Destroying the Thor client
+thorSoloClient.destroy();

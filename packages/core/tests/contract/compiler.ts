@@ -62,10 +62,6 @@ function compileContract(contractName: string, sources: Sources): Contract {
     // Compile the contract
     const solcCompiledContract = solc.compile(JSON.stringify(input));
 
-    if (contractName === 'SampleNFT') {
-        console.log(solcCompiledContract);
-    }
-
     // Parse the compiled contract
     const compiledContract = JSON.parse(solcCompiledContract);
 

@@ -11,7 +11,7 @@ The Thor-client serves as an interface to interact with the vechain Thor blockch
 The Thor-client extends its functionality to provide seamless access to account-related information on the VechainThor network. The following code exemplifies how developers can utilize the Thor-client to interact with accounts:
 
 ```typescript { name=accounts, category=example }
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
@@ -43,6 +43,9 @@ expect(accountStorage).toEqual(
     '0x0000000000000000000000000000000000000000000000000000000000000000'
 );
 
+// Destroying the Thor client
+thorClient.destroy();
+
 ```
 
 In this example, the code initializes a Thor client for the VechainThor testnet network and demonstrates three crucial methods for interacting with accounts:
@@ -66,7 +69,7 @@ These methods showcase how Thor-client simplifies the process of obtaining accou
 The Thor-client facilitates easy interaction with blocks on the VechainThor network, as demonstrated in the following code snippet:
 
 ```typescript { name=blocks, category=example }
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
@@ -114,6 +117,9 @@ expect(bestBlockDetails).toBeDefined();
 const finalBlockDetails = await thorClient.blocks.getFinalBlock();
 expect(finalBlockDetails).toBeDefined();
 
+// Destroying the Thor client
+thorClient.destroy();
+
 ```
 
 In this example, the code initializes a Thor client for the VechainThor testnet network and showcases three essential methods for interacting with blocks:
@@ -137,7 +143,7 @@ These methods demonstrate how the Thor-client simplifies the process of fetching
 The Thor-client extends its capabilities to efficiently filter and retrieve event logs and transfer logs on the VechainThor network. The following code exemplifies how developers can use the Thor-client to filter event logs and transfer logs:
 
 ```typescript { name=logs, category=example }
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
@@ -256,6 +262,7 @@ const transferLogs = await thorClient.logs.filterTransferLogs({
     // Specify the order in which transfer logs should be retrieved (ascending in this case)
     order: 'asc'
 });
+
 expect(transferLogs).toEqual([
     {
         sender: '0xe59d475abe695c7f67a8a2321f33a856b0b4c71d',
@@ -272,6 +279,9 @@ expect(transferLogs).toEqual([
         }
     }
 ]);
+
+// Destroying the Thor client
+thorClient.destroy();
 
 ```
 
@@ -294,7 +304,7 @@ The `filterTransferLogs` method provides a streamlined way to retrieve transfer 
 The Thor-client allows developers to interact with nodes on the VechainThor network, providing information about connected peers. The following code demonstrates how to use the Thor-client to retrieve connected peers of a node:
 
 ```typescript { name=nodes, category=example }
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
@@ -306,6 +316,10 @@ const thorClient = new ThorClient(testNetwork);
 // 2 - Retrieves connected peers of a node
 
 const peerNodes = await thorClient.nodes.getNodes();
+
+// Destroying the Thor client
+thorClient.destroy();
+
 expect(peerNodes).toBeDefined();
 
 ```
@@ -328,8 +342,8 @@ import {
     dataUtils,
     unitsUtils,
     contract
-} from '@vechainfoundation/vechain-sdk-core';
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+} from '@vechain/vechain-sdk-core';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for solo network
@@ -395,6 +409,9 @@ const transactionReceipt =
 expect(transactionDetails).toBeDefined();
 expect(transactionReceipt).toBeDefined();
 
+// Destroying the Thor client
+thorSoloClient.destroy();
+
 ```
 
 In this example, the code initializes a Thor client for the VechainThor testnet network and showcases three essential methods for interacting with transactions:
@@ -431,8 +448,8 @@ import {
     dataUtils,
     unitsUtils,
     contract
-} from '@vechainfoundation/vechain-sdk-core';
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+} from '@vechain/vechain-sdk-core';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for solo network
@@ -513,5 +530,8 @@ const transactionReceipt =
 
 expect(transactionDetails).toBeDefined();
 expect(transactionReceipt).toBeDefined();
+
+// Destroying the Thor client
+thorSoloClient.destroy();
 
 ```

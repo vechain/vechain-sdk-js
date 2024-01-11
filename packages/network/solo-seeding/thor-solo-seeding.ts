@@ -1,12 +1,11 @@
 import {
-    compileContract,
     contract,
     networkInfo,
     type Sources,
     Transaction,
     TransactionHandler,
     unitsUtils
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import { ALL_ACCOUNTS, soloNetwork } from '../tests/fixture';
 import { BUILT_IN_CONTRACTS } from '../tests/built-in-fixture';
 import { ThorClient, ThorestClient } from '../src';
@@ -96,7 +95,7 @@ const deployTestContractTransaction = (): Transaction => {
         // Read the Solidity source code from the file
 
         const sources: Sources = {
-            'Example.sol': {
+            'TestingContract.sol': {
                 content: fs.readFileSync(contractPath, 'utf8')
             }
         };

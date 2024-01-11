@@ -1,33 +1,46 @@
-import { describe, expect, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import {
     buildTransactionBodyClausesTestCases,
     expectedReceipt,
     invalidWaitForTransactionTestCases,
     signTransactionTestCases,
+    transactionNonces,
     transferTransactionBody,
     transferTransactionBodyValueAsNumber,
     waitForTransactionTestCases
 } from './fixture';
 import {
-    TESTING_CONTRACT_ABI,
     TEST_ACCOUNTS,
-    TEST_CONTRACT_ADDRESS,
-    thorSoloClient
+    TESTING_CONTRACT_ABI,
+    soloNetwork,
+    TESTING_CONTRACT_ADDRESS
 } from '../../fixture';
 import {
     Transaction,
     TransactionHandler,
     addressUtils,
     contract
-} from '@vechainfoundation/vechain-sdk-core';
-import { TransactionNotSignedError } from '@vechainfoundation/vechain-sdk-errors';
+} from '@vechain/vechain-sdk-core';
+import { TransactionNotSignedError } from '@vechain/vechain-sdk-errors';
+import { ThorClient } from '../../../src';
 
 /**
  * Transactions module tests.
  *
  * @group integration/clients/thor-client/transactions
  */
-describe('Transactions Module', () => {
+describe('ThorClient - Transactions Module', () => {
+    // ThorClient instance for the Solo network
+    let thorSoloClient: ThorClient;
+
+    beforeEach(() => {
+        thorSoloClient = new ThorClient(soloNetwork);
+    });
+
+    afterEach(() => {
+        thorSoloClient.destroy();
+    });
+
     /**
      * Test suite for sendTransaction method
      * For further testing examples see tests/clients/thorest-client/transactions/*
@@ -36,7 +49,8 @@ describe('Transactions Module', () => {
         test("Should throw error if transaction isn't signed", async () => {
             const tx = new Transaction({
                 ...transferTransactionBody,
-                nonce: 12345678
+                nonce: transactionNonces
+                    .shouldThrowErrorIfTransactionIsntSigned[0]
             });
 
             await expect(
@@ -54,63 +68,11 @@ describe('Transactions Module', () => {
          */
         waitForTransactionTestCases.forEach(({ description, options }) => {
             test(description, async () => {
-                try {
-                    const nonce =
-                        Math.random() * (99999999 - 10000000) + 1000000; // Random number between 10000000 and 99999999
-
-                    // Create the signed transfer transaction
-                    const tx = TransactionHandler.sign(
-                        new Transaction({
-                            ...transferTransactionBody,
-                            nonce: Math.floor(nonce)
-                        }),
-                        Buffer.from(
-                            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
-                                .privateKey,
-                            'hex'
-                        )
-                    );
-
-                    // Send the transaction and obtain the transaction ID
-                    const sendTransactionResult =
-                        await thorSoloClient.transactions.sendTransaction(tx);
-
-                    expect(sendTransactionResult).toBeDefined();
-                    expect(sendTransactionResult.id).toBeDefined();
-
-                    // Wait for the transaction to be included in a block
-                    const txReceipt =
-                        await thorSoloClient.transactions.waitForTransaction(
-                            sendTransactionResult.id,
-                            options
-                        );
-
-                    expect(txReceipt).toBeDefined();
-                    expect(txReceipt?.reverted).toBe(expectedReceipt.reverted);
-                    expect(txReceipt?.outputs).toStrictEqual(
-                        expectedReceipt.outputs
-                    );
-                    expect(txReceipt?.gasUsed).toBe(expectedReceipt.gasUsed);
-                    expect(txReceipt?.gasPayer).toBe(expectedReceipt.gasPayer);
-                    expect(sendTransactionResult.id).toBe(txReceipt?.meta.txID);
-                } catch (e) {
-                    console.log(e);
-                }
-            });
-        });
-
-        /**
-         * test that send transaction with a number as value in transaction body
-         */
-        test('test a send transaction with a number as value in transaction body ', async () => {
-            try {
-                const nonce = Math.random() * (99999999 - 10000000) + 1000000; // Random number between 10000000 and 99999999
-
                 // Create the signed transfer transaction
                 const tx = TransactionHandler.sign(
                     new Transaction({
-                        ...transferTransactionBodyValueAsNumber,
-                        nonce: Math.floor(nonce)
+                        ...transferTransactionBody,
+                        nonce: options.nonce
                     }),
                     Buffer.from(
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
@@ -128,14 +90,53 @@ describe('Transactions Module', () => {
                 // Wait for the transaction to be included in a block
                 const txReceipt =
                     await thorSoloClient.transactions.waitForTransaction(
-                        sendTransactionResult.id
+                        sendTransactionResult.id,
+                        options
                     );
 
                 expect(txReceipt).toBeDefined();
                 expect(txReceipt?.reverted).toBe(expectedReceipt.reverted);
-            } catch (e) {
-                console.log(e);
-            }
+                expect(txReceipt?.outputs).toStrictEqual(
+                    expectedReceipt.outputs
+                );
+                expect(txReceipt?.gasUsed).toBe(expectedReceipt.gasUsed);
+                expect(txReceipt?.gasPayer).toBe(expectedReceipt.gasPayer);
+                expect(sendTransactionResult.id).toBe(txReceipt?.meta.txID);
+            });
+        });
+
+        /**
+         * test that send transaction with a number as value in transaction body
+         */
+        test('test a send transaction with a number as value in transaction body ', async () => {
+            // Create the signed transfer transaction
+            const tx = TransactionHandler.sign(
+                new Transaction({
+                    ...transferTransactionBodyValueAsNumber,
+                    nonce: transactionNonces
+                        .sendTransactionWithANumberAsValueInTransactionBody[0]
+                }),
+                Buffer.from(
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
+                    'hex'
+                )
+            );
+
+            // Send the transaction and obtain the transaction ID
+            const sendTransactionResult =
+                await thorSoloClient.transactions.sendTransaction(tx);
+
+            expect(sendTransactionResult).toBeDefined();
+            expect(sendTransactionResult.id).toBeDefined();
+
+            // Wait for the transaction to be included in a block
+            const txReceipt =
+                await thorSoloClient.transactions.waitForTransaction(
+                    sendTransactionResult.id
+                );
+
+            expect(txReceipt).toBeDefined();
+            expect(txReceipt?.reverted).toBe(expectedReceipt.reverted);
         });
 
         /**
@@ -146,14 +147,11 @@ describe('Transactions Module', () => {
                 test(
                     description,
                     async () => {
-                        const nonce =
-                            Math.random() * (99999999 - 10000000) + 1000000; // Random number between 10000000 and 99999999
-
                         // Create the signed transfer transaction
                         const tx = TransactionHandler.sign(
                             new Transaction({
                                 ...transferTransactionBody,
-                                nonce: Math.floor(nonce)
+                                nonce: options.nonce
                             }),
                             Buffer.from(
                                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
@@ -236,7 +234,7 @@ describe('Transactions Module', () => {
                 test(description, async () => {
                     const sampleClause =
                         contract.clauseBuilder.functionInteraction(
-                            TEST_CONTRACT_ADDRESS,
+                            TESTING_CONTRACT_ADDRESS,
                             TESTING_CONTRACT_ABI,
                             'deposit',
                             [123]
@@ -283,7 +281,7 @@ describe('Transactions Module', () => {
                 test(description, async () => {
                     const sampleClause =
                         contract.clauseBuilder.functionInteraction(
-                            TEST_CONTRACT_ADDRESS,
+                            TESTING_CONTRACT_ADDRESS,
                             TESTING_CONTRACT_ABI,
                             'setStateVariable',
                             [123]

@@ -1,4 +1,4 @@
-import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
+import { DATA, assert } from '@vechain/vechain-sdk-errors';
 import { revisionUtils } from '../revision';
 
 /**

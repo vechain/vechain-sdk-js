@@ -1,4 +1,4 @@
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
@@ -29,3 +29,6 @@ const accountStorage = await thorClient.accounts.getStorageAt(
 expect(accountStorage).toEqual(
     '0x0000000000000000000000000000000000000000000000000000000000000000'
 );
+
+// Destroying the Thor client
+thorClient.destroy();

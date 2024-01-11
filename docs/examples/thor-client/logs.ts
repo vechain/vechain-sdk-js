@@ -1,4 +1,4 @@
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
@@ -117,6 +117,7 @@ const transferLogs = await thorClient.logs.filterTransferLogs({
     // Specify the order in which transfer logs should be retrieved (ascending in this case)
     order: 'asc'
 });
+
 expect(transferLogs).toEqual([
     {
         sender: '0xe59d475abe695c7f67a8a2321f33a856b0b4c71d',
@@ -133,3 +134,6 @@ expect(transferLogs).toEqual([
         }
     }
 ]);
+
+// Destroying the Thor client
+thorClient.destroy();

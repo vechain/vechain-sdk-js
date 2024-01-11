@@ -5,8 +5,8 @@ import {
     dataUtils,
     unitsUtils,
     contract
-} from '@vechainfoundation/vechain-sdk-core';
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+} from '@vechain/vechain-sdk-core';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for solo network
@@ -71,3 +71,6 @@ const transactionReceipt =
 
 expect(transactionDetails).toBeDefined();
 expect(transactionReceipt).toBeDefined();
+
+// Destroying the Thor client
+thorSoloClient.destroy();

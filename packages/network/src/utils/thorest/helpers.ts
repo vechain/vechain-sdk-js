@@ -1,4 +1,4 @@
-import { DATA, buildError } from '@vechainfoundation/vechain-sdk-errors';
+import { DATA, buildError } from '@vechain/vechain-sdk-errors';
 import { HTTP_REGEX, HTTPS_REGEX } from '../const';
 
 /**

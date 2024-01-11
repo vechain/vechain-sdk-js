@@ -1,8 +1,8 @@
-import { beforeEach, describe, expect, test } from '@jest/globals';
-import { JSONRPCInternalError } from '@vechainfoundation/vechain-sdk-errors';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import { JSONRPCInternalError } from '@vechain/vechain-sdk-errors';
 import { zeroBlock } from './fixture';
 import { RPC_METHODS, RPCMethodsMap } from '../../../src';
-import { ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../fixture';
 
 /**
@@ -26,6 +26,13 @@ describe('RPC Mapper - Blocks tests', () => {
         beforeEach(() => {
             // Init thor client
             thorClient = new ThorClient(testNetwork);
+        });
+
+        /**
+         * After each test
+         */
+        afterEach(() => {
+            thorClient.destroy();
         });
 
         /**
@@ -59,14 +66,5 @@ describe('RPC Mapper - Blocks tests', () => {
                     ]([-1])
             ).rejects.toThrowError(JSONRPCInternalError);
         });
-
-        /**
-         * After each test
-         * @NOTE for future PRs
-         */
-        // afterEach(() => {
-        //     // Destroy thor client
-        //     thorClient.destroy();
-        // });
     });
 });

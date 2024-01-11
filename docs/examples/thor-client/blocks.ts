@@ -1,4 +1,4 @@
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
@@ -45,3 +45,6 @@ expect(bestBlockDetails).toBeDefined();
 
 const finalBlockDetails = await thorClient.blocks.getFinalBlock();
 expect(finalBlockDetails).toBeDefined();
+
+// Destroying the Thor client
+thorClient.destroy();

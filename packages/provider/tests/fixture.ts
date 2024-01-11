@@ -1,4 +1,4 @@
-import { HttpClient } from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient } from '@vechain/vechain-sdk-network';
 
 /**
  * Url of the testnet fixture

@@ -1,4 +1,4 @@
-import { HttpClient, ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
@@ -10,4 +10,8 @@ const thorClient = new ThorClient(testNetwork);
 // 2 - Retrieves connected peers of a node
 
 const peerNodes = await thorClient.nodes.getNodes();
+
+// Destroying the Thor client
+thorClient.destroy();
+
 expect(peerNodes).toBeDefined();

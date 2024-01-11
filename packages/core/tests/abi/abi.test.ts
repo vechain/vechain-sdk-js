@@ -17,7 +17,7 @@ import {
     InvalidAbiEventError,
     InvalidAbiFormatTypeError,
     InvalidAbiFunctionError
-} from '@vechainfoundation/vechain-sdk-errors';
+} from '@vechain/vechain-sdk-errors';
 
 /**
  * ABI tests - encode & decode

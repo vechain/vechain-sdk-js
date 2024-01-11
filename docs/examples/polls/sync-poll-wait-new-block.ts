@@ -2,7 +2,7 @@ import {
     HttpClient,
     Poll,
     ThorClient
-} from '@vechainfoundation/vechain-sdk-network';
+} from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
@@ -34,3 +34,6 @@ expect(newBlock).toBeDefined();
 expect(newBlock?.number).toBeGreaterThan(currentBlock?.number as number);
 
 console.log('New block:', newBlock);
+
+// Destroying the Thor client
+thorClient.destroy();

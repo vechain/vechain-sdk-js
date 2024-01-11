@@ -3,7 +3,7 @@ import { Agent as HttpAgent } from 'http';
 import { Agent as HttpsAgent } from 'https';
 import { type HttpParams, type HttpClientOptions } from './types';
 import { convertError, DEFAULT_HTTP_TIMEOUT } from '../index';
-import { buildError, HTTP_CLIENT } from '@vechainfoundation/vechain-sdk-errors';
+import { buildError, HTTP_CLIENT } from '@vechain/vechain-sdk-errors';
 
 /**
  * Represents a concrete implementation of the `IHttpClient` interface, providing methods for making HTTP requests.
@@ -30,8 +30,8 @@ class HttpClient {
         this.axios =
             options?.axiosInstance ??
             Axios.create({
-                httpAgent: new HttpAgent({ keepAlive: true }),
-                httpsAgent: new HttpsAgent({ keepAlive: true }),
+                httpAgent: new HttpAgent({ keepAlive: false }),
+                httpsAgent: new HttpsAgent({ keepAlive: false }),
                 baseURL,
                 timeout: options?.timeout ?? DEFAULT_HTTP_TIMEOUT
             });

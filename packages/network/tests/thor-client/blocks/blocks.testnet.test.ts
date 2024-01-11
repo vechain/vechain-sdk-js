@@ -1,17 +1,30 @@
-import { describe, expect, test } from '@jest/globals';
-import { thorClient } from '../../fixture';
+import { beforeEach, afterEach, describe, expect, test } from '@jest/globals';
 import {
     invalidBlockRevisions,
     validBlockRevisions,
     waitForBlockTestCases
 } from './fixture';
+import { HttpClient, Poll, ThorClient } from '../../../src';
+import { testnetUrl } from '../../fixture';
+import { networkInfo } from '@vechain/vechain-sdk-core';
 
 /**
  * Blocks Module integration tests
  *
  * @group integration/clients/thor-client/blocks
  */
-describe('Blocks Module', () => {
+describe('ThorClient - Blocks Module', () => {
+    // ThorClient instance
+    let thorClient: ThorClient;
+
+    beforeEach(() => {
+        thorClient = new ThorClient(new HttpClient(testnetUrl));
+    });
+
+    afterEach(() => {
+        thorClient.destroy();
+    });
+
     /**
      * Test suite for waitForBlock method
      * The waitForBlock method is tested in parallel with different options, coming from the waitForBlockTestCases array
@@ -21,35 +34,26 @@ describe('Blocks Module', () => {
             'parallel waitForBlock tests',
             async () => {
                 // Map each test case to a promise
-                const tests = waitForBlockTestCases.map(
-                    async ({ description, options }) => {
-                        try {
-                            const bestBlock =
-                                await thorClient.blocks.getBestBlock();
-                            if (bestBlock != null) {
-                                const expectedBlock =
-                                    await thorClient.blocks.waitForBlock(
-                                        bestBlock?.number + 1,
-                                        options
-                                    );
+                const tests = waitForBlockTestCases.map(async ({ options }) => {
+                    const bestBlock = await thorClient.blocks.getBestBlock();
+                    if (bestBlock != null) {
+                        const expectedBlock =
+                            await thorClient.blocks.waitForBlock(
+                                bestBlock?.number + 1,
+                                options
+                            );
 
-                                // Incorporate the description into the assertion message for clarity
-                                expect(expectedBlock?.number).toBeGreaterThan(
-                                    bestBlock?.number
-                                );
-                            }
-                        } catch (error) {
-                            // Append the description to any errors for clarity
-                            console.log(description);
-                            throw error;
-                        }
+                        // Incorporate the description into the assertion message for clarity
+                        expect(expectedBlock?.number).toBeGreaterThan(
+                            bestBlock?.number
+                        );
                     }
-                );
+                });
 
                 // Wait for all tests to complete
                 await Promise.all(tests);
             },
-            15000 * waitForBlockTestCases.length
+            12000 * waitForBlockTestCases.length
         );
     });
 
@@ -59,7 +63,7 @@ describe('Blocks Module', () => {
         ).rejects.toThrowError(
             'Invalid blockNumber. The blockNumber must be a number representing a block number.'
         );
-    });
+    }, 5000);
 
     test('waitForBlock - maximumWaitingTimeInMilliseconds', async () => {
         // Get best block
@@ -75,7 +79,7 @@ describe('Blocks Module', () => {
             expect(block).toBeDefined();
             expect(block?.number).not.toBeGreaterThan(bestBlock?.number + 1); // Not enough time to wait for the block (only 1 second was given)
         }
-    });
+    }, 23000);
 
     /**
      * getBlock tests
@@ -85,15 +89,19 @@ describe('Blocks Module', () => {
          * getBlock tests with revision block number or block id
          */
         validBlockRevisions.forEach(({ revision, expanded, expected }) => {
-            test(revision, async () => {
-                const blockDetails = await thorClient.blocks.getBlock(
-                    revision,
-                    {
-                        expanded
-                    }
-                );
-                expect(blockDetails).toEqual(expected);
-            });
+            test(
+                revision,
+                async () => {
+                    const blockDetails = await thorClient.blocks.getBlock(
+                        revision,
+                        {
+                            expanded
+                        }
+                    );
+                    expect(blockDetails).toEqual(expected);
+                },
+                5000
+            );
         });
 
         /**
@@ -101,11 +109,15 @@ describe('Blocks Module', () => {
          */
         invalidBlockRevisions.forEach(
             ({ description, revision, expectedError }) => {
-                test(description, async () => {
-                    await expect(
-                        thorClient.blocks.getBlock(revision)
-                    ).rejects.toThrowError(expectedError);
-                });
+                test(
+                    description,
+                    async () => {
+                        await expect(
+                            thorClient.blocks.getBlock(revision)
+                        ).rejects.toThrowError(expectedError);
+                    },
+                    5000
+                );
             }
         );
 
@@ -114,9 +126,15 @@ describe('Blocks Module', () => {
          */
         test('getBestBlock', async () => {
             const blockDetails = await thorClient.blocks.getBestBlock();
+            if (blockDetails != null) {
+                const block = await thorClient.blocks.getBlock(
+                    blockDetails.number
+                );
+                expect(block?.number).toBe(blockDetails.number);
+            }
             expect(blockDetails).not.toBeNull();
             expect(blockDetails).toBeDefined();
-        });
+        }, 3000);
 
         /**
          * getBestBlockRef test
@@ -125,7 +143,7 @@ describe('Blocks Module', () => {
             const bestBlockRef = await thorClient.blocks.getBestBlockRef();
             expect(bestBlockRef).not.toBeNull();
             expect(bestBlockRef).toBeDefined();
-        });
+        }, 3000);
 
         /**
          * getFinalBlock test
@@ -134,6 +152,41 @@ describe('Blocks Module', () => {
             const blockDetails = await thorClient.blocks.getFinalBlock();
             expect(blockDetails).not.toBeNull();
             expect(blockDetails).toBeDefined();
+        }, 3000);
+
+        /**
+         * getHeadBlock test
+         */
+        test('getHeadBlock', async () => {
+            const headBlockFirst = await Poll.SyncPoll(() =>
+                thorClient.blocks.getHeadBlock()
+            ).waitUntil((result) => {
+                return result !== null;
+            });
+
+            expect(headBlockFirst).toBeDefined();
+
+            // Wait for the next block
+            const headBlockSecond = await Poll.SyncPoll(() =>
+                thorClient.blocks.getHeadBlock()
+            ).waitUntil((result) => {
+                return result !== headBlockFirst;
+            });
+
+            expect(headBlockSecond).toBeDefined();
+            expect(headBlockFirst).not.toBe(headBlockSecond);
+        }, 23000);
+
+        /**
+         * getGenesisBlock test
+         */
+        test('getGenesisBlock', async () => {
+            const blockDetails = await thorClient.blocks.getGenesisBlock();
+            expect(blockDetails).toBeDefined();
+            expect(blockDetails?.number).toBe(0);
+            expect(blockDetails?.id).toStrictEqual(
+                networkInfo.testnet.genesisBlock.id
+            );
         });
     });
 });

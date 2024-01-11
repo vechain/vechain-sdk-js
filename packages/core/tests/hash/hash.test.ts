@@ -2,7 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { hashFunctionsToTest } from './fixture';
 import { ZERO_BUFFER } from '../../src';
 import { ethers } from 'ethers';
-import { InvalidDataReturnTypeError } from '@vechainfoundation/vechain-sdk-errors';
+import { InvalidDataReturnTypeError } from '@vechain/vechain-sdk-errors';
 
 /**
  * Test hash functions

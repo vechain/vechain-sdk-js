@@ -1,8 +1,5 @@
-import {
-    HttpClient,
-    Poll,
-    ThorClient
-} from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, Poll, ThorClient } from '@vechain/vechain-sdk-network';
+import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
 
@@ -32,6 +29,8 @@ for (const account of accounts) {
         // Add listeners for stop event
         .onStop((eventPoll) => {
             console.log(`Stop monitoring account ${account}`, eventPoll);
+            // Destroying the Thor client
+            thorClient.destroy();
         })
 
         // Add listeners for data event. It intercepts the account details every 1 second
@@ -48,4 +47,7 @@ for (const account of accounts) {
         });
 
     monitoringPoll.startListen();
+
+    // It seeme to be strange, BUT onData is called only after 1 second of the eventPoll.startListen() call.
+    expect(monitoringPoll.getCurrentIteration).toBe(0);
 }

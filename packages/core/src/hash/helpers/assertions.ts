@@ -1,4 +1,4 @@
-import { assert, DATA } from '@vechainfoundation/vechain-sdk-errors';
+import { assert, DATA } from '@vechain/vechain-sdk-errors';
 import { type ReturnType } from '../types';
 
 /**

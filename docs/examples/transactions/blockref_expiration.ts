@@ -8,7 +8,7 @@ import {
     type TransactionBody,
     unitsUtils,
     contract
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Define clauses

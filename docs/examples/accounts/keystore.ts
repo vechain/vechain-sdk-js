@@ -1,4 +1,4 @@
-import { keystore, secp256k1 } from '@vechainfoundation/vechain-sdk-core';
+import { keystore, secp256k1 } from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Create private key using Secp256k1

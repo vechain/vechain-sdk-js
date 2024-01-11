@@ -1,11 +1,7 @@
-import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
+import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { TEST_ACCOUNTS, ZERO_ADDRESS } from '../../fixture';
 import { BUILT_IN_CONTRACTS } from '../../built-in-fixture';
-import {
-    contract,
-    unitsUtils,
-    dataUtils
-} from '@vechainfoundation/vechain-sdk-core';
+import { contract, dataUtils, unitsUtils } from '@vechain/vechain-sdk-core';
 
 /**
  * Transaction details function fixture.

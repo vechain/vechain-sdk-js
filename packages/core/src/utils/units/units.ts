@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { type BigNumberish, type WEI_UNITS } from './types';
 import { dataUtils } from '..';
-import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
+import { DATA, assert } from '@vechain/vechain-sdk-errors';
 
 /**
  * Parse a string number to a string with the specified number of decimals

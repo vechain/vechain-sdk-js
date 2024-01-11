@@ -7,7 +7,8 @@ import * as fs from 'fs-extra';
 const COVERAGE_DIRS = [
     'packages/core/coverage',
     'packages/network/coverage',
-    'packages/errors/coverage'
+    'packages/errors/coverage',
+    'packages/provider/coverage'
 ];
 
 /**
