@@ -12,16 +12,16 @@ import {
 import {
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,
-    TEST_CONTRACT_ADDRESS,
-    soloNetwork
+    soloNetwork,
+    TESTING_CONTRACT_ADDRESS
 } from '../../fixture';
 import {
     Transaction,
     TransactionHandler,
     addressUtils,
     contract
-} from '@vechainfoundation/vechain-sdk-core';
-import { TransactionNotSignedError } from '@vechainfoundation/vechain-sdk-errors';
+} from '@vechain/vechain-sdk-core';
+import { TransactionNotSignedError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '../../../src';
 
 /**
@@ -234,7 +234,7 @@ describe('ThorClient - Transactions Module', () => {
                 test(description, async () => {
                     const sampleClause =
                         contract.clauseBuilder.functionInteraction(
-                            TEST_CONTRACT_ADDRESS,
+                            TESTING_CONTRACT_ADDRESS,
                             TESTING_CONTRACT_ABI,
                             'deposit',
                             [123]
@@ -281,7 +281,7 @@ describe('ThorClient - Transactions Module', () => {
                 test(description, async () => {
                     const sampleClause =
                         contract.clauseBuilder.functionInteraction(
-                            TEST_CONTRACT_ADDRESS,
+                            TESTING_CONTRACT_ADDRESS,
                             TESTING_CONTRACT_ABI,
                             'setStateVariable',
                             [123]

@@ -1,7 +1,7 @@
 import { type BytesLike, type ParamType } from './types';
 import { ethers } from 'ethers';
 import { fragment } from './fragment';
-import { ABI, buildError } from '@vechainfoundation/vechain-sdk-errors';
+import { ABI, buildError } from '@vechain/vechain-sdk-errors';
 
 /**
  * Default AbiCoder instance from ethers.js.

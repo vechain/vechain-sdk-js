@@ -4,18 +4,18 @@ import {
     contract,
     unitsUtils,
     networkInfo
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import { BUILT_IN_CONTRACTS } from '../../built-in-fixture';
 import {
     TESTING_CONTRACT_ABI,
     TESTNET_DELEGATE_URL,
     TEST_ACCOUNTS,
-    TEST_CONTRACT_ADDRESS
+    TESTING_CONTRACT_ADDRESS
 } from '../../fixture';
 import {
     InvalidSecp256k1PrivateKeyError,
     TransactionDelegationError
-} from '@vechainfoundation/vechain-sdk-errors';
+} from '@vechain/vechain-sdk-errors';
 
 /**
  * Some random transaction nonces to use into tests
@@ -217,7 +217,7 @@ const buildTransactionBodyClausesTestCases = [
             transfer1VTHOClause,
             transfer1VTHOClause,
             {
-                to: TEST_CONTRACT_ADDRESS,
+                to: TESTING_CONTRACT_ADDRESS,
                 value: '0',
                 data: contract.coder.encodeFunctionInput(
                     TESTING_CONTRACT_ABI,

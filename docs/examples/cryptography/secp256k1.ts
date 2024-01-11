@@ -3,7 +3,7 @@ import {
     secp256k1,
     addressUtils,
     type HashInput
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Generate a private key

@@ -10,7 +10,7 @@ import {
     revisionUtils,
     secp256k1,
     addressUtils
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import { Poll, buildQuery, thorest } from '../../utils';
 import {
     type TransactionReceipt,
@@ -32,7 +32,7 @@ import {
     buildError,
     DATA,
     assert
-} from '@vechainfoundation/vechain-sdk-errors';
+} from '@vechain/vechain-sdk-errors';
 import { type ThorClient } from '../thor-client';
 import { assertTransactionCanBeSigned } from './helpers/assertions';
 import { getDelegationSignature } from './helpers/delegation-handler';

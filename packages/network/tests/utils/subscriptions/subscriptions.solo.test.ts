@@ -11,17 +11,13 @@ import {
 import {
     TESTING_CONTRACT_ABI,
     TEST_ACCOUNTS,
-    TEST_CONTRACT_ADDRESS,
+    TESTING_CONTRACT_ADDRESS,
     soloNetwork,
     soloUrl
 } from '../../fixture';
 import WebSocket from 'ws';
-import {
-    addressUtils,
-    coder,
-    unitsUtils
-} from '@vechainfoundation/vechain-sdk-core';
-import { contract } from '@vechainfoundation/vechain-sdk-core/src';
+import { addressUtils, coder, unitsUtils } from '@vechain/vechain-sdk-core';
+import { contract } from '@vechain/vechain-sdk-core/src';
 
 const TIMEOUT = 15000; // 15-second timeout
 
@@ -137,7 +133,7 @@ describe('Subscriptions Solo', () => {
 
             // Trigger the smart contract function that emits the event
             const clause = contract.clauseBuilder.functionInteraction(
-                TEST_CONTRACT_ADDRESS,
+                TESTING_CONTRACT_ADDRESS,
                 TESTING_CONTRACT_ABI,
                 'setStateVariable',
                 [1]

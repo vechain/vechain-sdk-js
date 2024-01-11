@@ -1,4 +1,4 @@
-import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
+import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 
 /**
  * toQueryString test cases fixture

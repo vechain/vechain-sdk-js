@@ -1,4 +1,4 @@
-import { contract } from '@vechainfoundation/vechain-sdk-core';
+import { contract } from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Create a new function

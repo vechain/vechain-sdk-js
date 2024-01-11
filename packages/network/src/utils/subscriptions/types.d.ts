@@ -1,4 +1,4 @@
-import { type vechain_sdk_core_ethers } from '@vechainfoundation/vechain-sdk-core';
+import { type vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
 /* --------- Event types start --------- */
 
 /**

@@ -1,4 +1,4 @@
-import { DATA, assert } from '@vechainfoundation/vechain-sdk-errors';
+import { DATA, assert } from '@vechain/vechain-sdk-errors';
 import { buildQuery, thorest } from '../../utils';
 import {
     type ResponseBytecode,
@@ -10,7 +10,7 @@ import {
     dataUtils,
     assertIsAddress,
     assertIsRevisionForAccount
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import { type ThorClient } from '../thor-client';
 
 /**

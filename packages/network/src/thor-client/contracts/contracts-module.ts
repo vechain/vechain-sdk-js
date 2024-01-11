@@ -2,11 +2,11 @@ import {
     contract,
     type DeployParams,
     type InterfaceAbi,
-    PARAMS_ADDRESS,
     PARAMS_ABI,
+    PARAMS_ADDRESS,
     dataUtils,
     addressUtils
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import type { ContractCallOptions, ContractTransactionOptions } from './types';
 import { type SendTransactionResult } from '../transactions';
 import { type ThorClient } from '../thor-client';
@@ -82,7 +82,7 @@ class ContractsModule {
         functionName: string,
         functionData: unknown[],
         contractCallOptions?: ContractCallOptions
-    ): Promise<string> {
+    ): Promise<unknown> {
         // Simulate the transaction to get the result of the contract call
         const response = await this.thor.transactions.simulateTransaction(
             [
@@ -99,8 +99,11 @@ class ContractsModule {
             contractCallOptions
         );
 
-        // Return the result of the contract call
-        return response[0].data;
+        return contract.coder.decodeFunctionOutput(
+            contractABI,
+            functionName,
+            response[0].data
+        );
     }
 
     /**
@@ -165,7 +168,7 @@ class ContractsModule {
      *
      * @returns The base gas price in wei.
      */
-    public async getBaseGasPrice(): Promise<string> {
+    public async getBaseGasPrice(): Promise<unknown> {
         return await this.executeContractCall(
             PARAMS_ADDRESS,
             PARAMS_ABI,

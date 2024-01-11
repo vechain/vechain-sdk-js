@@ -1,10 +1,10 @@
-import { type BlockDetail } from '@vechainfoundation/vechain-sdk-network';
+import { type BlockDetail } from '@vechain/vechain-sdk-network';
 import { type BlocksReturnTypeRPC } from './types';
 import {
     dataUtils,
     vechain_sdk_core_ethers,
     ZERO_BUFFER
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 
 /**
  * Output formatter for block details.

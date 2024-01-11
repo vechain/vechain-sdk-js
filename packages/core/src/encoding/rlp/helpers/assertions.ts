@@ -1,8 +1,4 @@
-import {
-    assert,
-    RLP as RLPError,
-    RLP
-} from '@vechainfoundation/vechain-sdk-errors';
+import { assert, RLP as RLPError, RLP } from '@vechain/vechain-sdk-errors';
 import { type RLPInput } from '../types';
 
 /**

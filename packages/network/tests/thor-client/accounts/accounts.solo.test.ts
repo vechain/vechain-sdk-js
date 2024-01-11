@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import {
     TEST_ACCOUNTS,
-    TEST_CONTRACT_ADDRESS,
+    TESTING_CONTRACT_ADDRESS,
     soloNetwork
 } from '../../fixture';
-import { unitsUtils } from '@vechainfoundation/vechain-sdk-core';
+import { unitsUtils } from '@vechain/vechain-sdk-core';
 import { TESTING_CONTRACT_BYTECODE } from './fixture';
 import { ThorClient } from '../../../src';
 
@@ -85,7 +85,7 @@ describe('ThorClient - Accounts Module', () => {
      */
     test("Should return TestingContract.sol contract's bytecode", async () => {
         const bytecode = await thorSoloClient.accounts.getBytecode(
-            TEST_CONTRACT_ADDRESS
+            TESTING_CONTRACT_ADDRESS
         );
 
         expect(bytecode).toEqual(TESTING_CONTRACT_BYTECODE);

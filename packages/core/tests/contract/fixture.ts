@@ -4,7 +4,7 @@ import fs from 'fs';
 import { compileContract, type Contract, type Sources } from './compiler';
 import { unitsUtils, VTHO_ADDRESS } from '../../src';
 import { generateRandomValidAddress } from '../fixture';
-import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
+import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 
 const getContractSourceCode = (dirname: string, filename: string): string => {
     const contractPath = path.resolve(dirname, filename);

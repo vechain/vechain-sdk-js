@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { JSONRPCInternalError } from '@vechainfoundation/vechain-sdk-errors';
+import { JSONRPCInternalError } from '@vechain/vechain-sdk-errors';
 import { zeroBlock } from './fixture';
 import { RPC_METHODS, RPCMethodsMap } from '../../../src';
-import { ThorClient } from '@vechainfoundation/vechain-sdk-network';
+import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../fixture';
 
 /**

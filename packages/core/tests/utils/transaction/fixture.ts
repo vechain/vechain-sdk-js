@@ -2,7 +2,7 @@ import {
     TRANSACTIONS_GAS_CONSTANTS,
     type TransactionClause
 } from '../../../src';
-import { InvalidDataTypeError } from '@vechainfoundation/vechain-sdk-errors';
+import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 
 /**
  * Invalid clauses data fixture

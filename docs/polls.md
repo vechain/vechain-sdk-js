@@ -12,7 +12,7 @@ import {
     HttpClient,
     Poll,
     ThorClient
-} from '@vechainfoundation/vechain-sdk-network';
+} from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
@@ -58,13 +58,13 @@ import {
     HttpClient,
     Poll,
     ThorClient
-} from '@vechainfoundation/vechain-sdk-network';
+} from '@vechain/vechain-sdk-network';
 import {
     dataUtils,
     Transaction,
     TransactionHandler,
     TransactionUtils
-} from '@vechainfoundation/vechain-sdk-core';
+} from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Create thor client for solo network
@@ -189,11 +189,7 @@ Asynchronous polling is utilized for waiting in a non-blocking manner until a sp
 This example demonstrates the application of an asynchronous poll for tracking transaction events, allowing for the execution of additional operations concurrently.
 
 ```typescript { name=event-poll-dapp, category=example }
-import {
-    HttpClient,
-    Poll,
-    ThorClient
-} from '@vechainfoundation/vechain-sdk-network';
+import { HttpClient, Poll, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet

@@ -17,7 +17,7 @@ import {
     assert,
     SECP256K1,
     TRANSACTION
-} from '@vechainfoundation/vechain-sdk-errors';
+} from '@vechain/vechain-sdk-errors';
 import { assertCantGetFieldOnUnsignedTransaction } from './helpers/assertions';
 
 /**
