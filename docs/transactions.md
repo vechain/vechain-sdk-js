@@ -646,32 +646,32 @@ expect(sendTransactionResult.id).toBe(txReceipt?.meta.txID);
 
 ```
 
-3.**Delegation with signTransaction Options**: This example will showcase the use of `signTransaction` options for fee delegation. We'll cover the full process, from building clauses to verifying the transaction on-chain.
+3.**Delegation with URL**: This example will showcase the use of a delegation URL for fee delegation. The sender will specify a delegation URL in the `signTransaction` options, allowing a designated sponsor to pay the transaction fee. We'll cover the full process, from building clauses to verifying the transaction on-chain.
 
-```typescript { name=full-flow-delegator-signtransaction-options, category=example }
+```typescript { name=full-flow-delegator-url, category=example }
 import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create the thor client
-const _soloUrl = 'http://localhost:8669/';
-const soloNetwork = new HttpClient(_soloUrl);
-const thorSoloClient = new ThorClient(soloNetwork, {
+const _testnetUrl = 'https://testnet.vechain.org/';
+const testNetwork = new HttpClient(_testnetUrl);
+const thorClient = new ThorClient(testNetwork, {
     isPollingEnabled: false
 });
 
 // Sender account with private key
 const senderAccount = {
+    mnemonic:
+        'fat draw position use tenant force south job notice soul time fruit',
     privateKey:
-        'f9fc826b63a35413541d92d2bfb6661128cd5075fcdca583446d20c59994ba26',
-    address: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6'
+        '2153c1e49c14d92e8b558750e4ec3dc9b5a6ac4c13d24a71e0fa4f90f4a384b5',
+    address: '0x571E3E1fBE342891778151f037967E107fb89bd0'
 };
 
 // Delegator account with private key
 const delegatorAccount = {
-    privateKey:
-        '521b7793c6eb27d137b617627c6b85d57c0aa303380e9ca4e30a30302fbc6676',
-    address: '0x062F167A905C1484DE7e75B88EDC7439f82117DE'
+    URL: 'https://sponsor-testnet.vechain.energy/by/269'
 };
 
 // 2 - Create the transaction clauses
@@ -688,13 +688,13 @@ const transaction = {
 };
 
 // 3 - Estimate gas
-const gasResult = await thorSoloClient.gas.estimateGas(
+const gasResult = await thorClient.gas.estimateGas(
     transaction.clauses,
     senderAccount.address
 );
 
 // 4 - Build transaction body
-const txBody = await thorSoloClient.transactions.buildTransactionBody(
+const txBody = await thorClient.transactions.buildTransactionBody(
     transaction.clauses,
     gasResult.totalGas,
     {
@@ -703,25 +703,25 @@ const txBody = await thorSoloClient.transactions.buildTransactionBody(
 );
 
 // 4 - Sign the transaction
-const signedTx = await thorSoloClient.transactions.signTransaction(
+const signedTx = await thorClient.transactions.signTransaction(
     txBody,
     senderAccount.privateKey,
     {
-        delegatorPrivatekey: delegatorAccount.privateKey
+        delegatorUrl: delegatorAccount.URL
     }
 );
 
 // Check the signed transactio
 expect(signedTx.isSigned).toEqual(true);
 expect(signedTx.isDelegated).toEqual(true);
-expect(signedTx.delegator).toEqual(delegatorAccount.address);
+// expect(signedTx.delegator).toEqual(delegatorAccount.address); ---
 
 // 5 - Send the transaction
 const sendTransactionResult =
-    await thorSoloClient.transactions.sendTransaction(signedTx);
+    await thorClient.transactions.sendTransaction(signedTx);
 
 // 6 - Wait for transaction receipt
-const txReceipt = await thorSoloClient.transactions.waitForTransaction(
+const txReceipt = await thorClient.transactions.waitForTransaction(
     sendTransactionResult.id
 );
 
