@@ -36,10 +36,12 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         );
     }
 
-    // TODO When we implement the thor client head block polling
-    /* public destroy(): void {
+    /**
+     * Destroys the thor client
+     */
+    public destroy(): void {
         this.thorClient.destroy();
-    } */
+    }
 }
 
 export { VechainProvider };
