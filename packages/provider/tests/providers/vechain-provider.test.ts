@@ -21,12 +21,15 @@ describe('Vechain provider tests', () => {
         );
         expect(provider).toBeDefined();
 
-        // Call RPC function
+        // Call simple RPC function to get the zero block
         const rpcCallZeroBlock = await provider.request({
             method: 'eth_getBlockByNumber',
             params: [0]
         });
         expect(rpcCallZeroBlock).toStrictEqual(zeroBlock);
+
+        // Destroy provider
+        provider.destroy();
     });
 
     /**
@@ -47,5 +50,8 @@ describe('Vechain provider tests', () => {
                     params: [-1]
                 })
         ).rejects.toThrowError(InvalidDataTypeError);
+
+        // Destroy provider
+        provider.destroy();
     });
 });
