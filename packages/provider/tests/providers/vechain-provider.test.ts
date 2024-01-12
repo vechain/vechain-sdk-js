@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { VechainProvider } from '../../src';
-import { zeroBlock } from '../rpc-mapper/blocks/fixture';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../fixture';
+import { zeroBlock } from '../rpc-mapper/methods/eth_getBlockByNumber/fixture';
 
 /**
  * Vechain provider tests
@@ -42,6 +42,8 @@ describe('Vechain provider tests', () => {
         // Call simple RPC function to get the zero block
         const rpcCallZeroBlock = await provider.request({
             method: 'eth_getBlockByNumber',
+            // OR equivalent
+            // method: RPC_METHODS.eth_getBlockByNumber,
             params: [0]
         });
         expect(rpcCallZeroBlock).toStrictEqual(zeroBlock);
