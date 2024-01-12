@@ -755,4 +755,4 @@ expect(sendTransactionResult.id).toBe(txReceipt?.meta.txID);
 
 ```
 
-By examining these complete examples, developers can gain a comprehensive understanding of transaction handling in the Vechain SDK. Each example demonstrates the steps involved in initiating, signing, and sending transactions, as well as the nuances associated with fee delegation.
+By examining these complete examples, developers can gain a comprehensive understanding of transaction handling in the vechain SDK. Each example demonstrates the steps involved in initiating, signing, and sending transactions, as well as the nuances associated with fee delegation.
