@@ -20,7 +20,7 @@ describe('RPC Mapper - Transactions tests', () => {
      */
     describe('eth_getTransactionByHash', () => {
         /**
-         * Before each test
+         * Inti thor client before each test
          */
         beforeEach(() => {
             // Init thor client
@@ -28,7 +28,7 @@ describe('RPC Mapper - Transactions tests', () => {
         });
 
         /**
-         * After each test
+         * Destory thor client after each test
          */
         afterEach(() => {
             thorClient.destroy();

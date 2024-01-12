@@ -21,7 +21,7 @@ describe('RPC Mapper - Blocks tests', () => {
      */
     describe('eth_getBlockByNumber', () => {
         /**
-         * Before each test
+         * Inti thor client before each test
          */
         beforeEach(() => {
             // Init thor client
@@ -29,7 +29,7 @@ describe('RPC Mapper - Blocks tests', () => {
         });
 
         /**
-         * After each test
+         * Destory thor client after each test
          */
         afterEach(() => {
             thorClient.destroy();
