@@ -52,9 +52,9 @@ enum RPC_METHODS {
     /**
      * ----- TEMPORARY COMMENT -----
      * STATUS:
-     * * Implemented in web3-providers-connex: False (IT IS ONLY LISTED `EthJsonRpcMethods`array in `src/common.ts` file)
+     * * Implemented in web3-providers-connex: False (ONLY LISTED `EthJsonRpcMethods`array in `src/common.ts` file)
      * * Required for hardhat: False -> @see https://github.com/vechain/vechain-sdk/issues/462
-     * * Possible to implement: True (WE MUST IMPLEMENT IT :D)
+     * * Possible to implement: TO UNDERSTAND
      * -----------------------------
      */
     eth_coinbase = 'eth_coinbase',
@@ -81,16 +81,41 @@ enum RPC_METHODS {
     eth_newPendingTransactionFilter = 'eth_newPendingTransactionFilter',
     eth_getFilterLogs = 'eth_getFilterLogs',
     eth_getFilterChanges = 'eth_getFilterChanges',
-    eth_uninstallFilter = 'eth_uninstallFilter'
+    eth_uninstallFilter = 'eth_uninstallFilter',
 
     /**
      * ----- TEMPORARY COMMENT -----
      * STATUS:
-     * * Implemented in web3-provviders-connex: False
-     * * Required for hardhat: True -> @see https://github.com/vechain/vechain-sdk/issues/462
-     * * Possible to implement: True (WE MUST IMPLEMENT IT :D)
+     * * Implemented in web3-provviders-connex: False (AND NOT LISTED in `EthJsonRpcMethods`array in `src/common.ts` file. Probably NEW methods)
+     * * Required for hardhat: False (BUT WE MUST INVESTIGATE IT BETTER) -> @see https://github.com/vechain/vechain-sdk/issues/462
+     * * Possible to implement: TO UNDERSTAND
+     *
+     * @note: These methods are taken from https://ethereum.github.io/execution-apis/api-documentation/
      * -----------------------------
      */
+    debug_getBadBlocks = 'debug_getBadBlocks',
+    debug_getRawBlock = 'debug_getRawBlock',
+    debug_getRawHeader = 'debug_getRawHeader',
+    debug_getRawReceipts = 'debug_getRawReceipts',
+    debug_getRawTransaction = 'debug_getRawTransaction',
+    engine_exchangeCapabilities = 'engine_exchangeCapabilities',
+    engine_exchangeTransitionConfigurationV1 = 'engine_exchangeTransitionConfigurationV1',
+    engine_forkchoiceUpdatedV1 = 'engine_forkchoiceUpdatedV1',
+    engine_forkchoiceUpdatedV2 = 'engine_forkchoiceUpdatedV2',
+    engine_forkchoiceUpdatedV3 = 'engine_forkchoiceUpdatedV3',
+    engine_getPayloadBodiesByHashV1 = 'engine_getPayloadBodiesByHashV1',
+    engine_getPayloadBodiesByRangeV1 = 'engine_getPayloadBodiesByRangeV1',
+    engine_getPayloadV1 = 'engine_getPayloadV1',
+    engine_getPayloadV2 = 'engine_getPayloadV2',
+    engine_getPayloadV3 = 'engine_getPayloadV3',
+    engine_newPayloadV1 = 'engine_newPayloadV1',
+    engine_newPayloadV2 = 'engine_newPayloadV2',
+    engine_newPayloadV3 = 'engine_newPayloadV3',
+    eth_createAccessList = 'eth_createAccessList',
+    eth_getBlockReceipts = 'eth_getBlockReceipts',
+    eth_getProof = 'eth_getProof',
+    eth_maxPriorityFeePerGas = 'eth_maxPriorityFeePerGas',
+    eth_signTransaction = 'eth_signTransaction'
 }
 
 export { RPC_METHODS };
