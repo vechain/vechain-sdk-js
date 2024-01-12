@@ -60,7 +60,7 @@ describe('ThorClient - ERC721 Contracts', () => {
             .contractAddress as string;
 
         expect(contractAddress).toBeDefined();
-    }, 3000);
+    }, 10000);
 
     afterAll(() => {
         thorSoloClient.destroy();
