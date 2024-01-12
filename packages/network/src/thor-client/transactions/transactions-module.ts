@@ -229,7 +229,7 @@ class TransactionsModule {
             nonce: `0x${dataUtils.toHexString(randomBytes(8))}`,
             expiration: options?.expiration ?? 32,
             clauses,
-            gasPriceCoef: options?.gasPriceCoef ?? 127,
+            gasPriceCoef: options?.gasPriceCoef ?? 0,
             gas,
             dependsOn: options?.dependsOn ?? null,
             reserved:
