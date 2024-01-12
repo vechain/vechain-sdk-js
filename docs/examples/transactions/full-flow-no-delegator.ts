@@ -1,10 +1,4 @@
-import {
-    Transaction,
-    TransactionHandler,
-    contract,
-    networkInfo,
-    unitsUtils
-} from '@vechain/vechain-sdk-core';
+import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
@@ -42,22 +36,15 @@ const gasResult = await thorSoloClient.gas.estimateGas(
 );
 
 // 4 - Build transaction body
-const latestBlock = await thorSoloClient.blocks.getBestBlock();
-const unsignedTx = new Transaction({
-    chainTag: networkInfo.solo.chainTag,
-    blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
-    expiration: 32,
-    clauses: transaction.clauses,
-    gasPriceCoef: 128,
-    gas: gasResult.totalGas,
-    dependsOn: null,
-    nonce: 10000000
-});
+const txBody = await thorSoloClient.transactions.buildTransactionBody(
+    transaction.clauses,
+    gasResult.totalGas
+);
 
 // 4 - Sign the transaction
-const signedTransaction = TransactionHandler.sign(
-    unsignedTx,
-    Buffer.from(senderAccount.privateKey, 'hex')
+const signedTransaction = await thorSoloClient.transactions.signTransaction(
+    txBody,
+    senderAccount.privateKey
 );
 
 // 5 - Send the transaction

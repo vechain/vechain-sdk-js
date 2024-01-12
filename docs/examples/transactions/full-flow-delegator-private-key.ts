@@ -1,9 +1,4 @@
-import {
-    Transaction,
-    TransactionHandler,
-    contract,
-    unitsUtils
-} from '@vechain/vechain-sdk-core';
+import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
@@ -48,26 +43,21 @@ const gasResult = await thorSoloClient.gas.estimateGas(
 );
 
 // 4 - Build transaction body
-const latestBlock = await thorSoloClient.blocks.getBestBlock();
-const delegatedTransaction = new Transaction({
-    chainTag: 0xf6,
-    blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
-    expiration: 32,
-    clauses: transaction.clauses,
-    gasPriceCoef: 128,
-    gas: gasResult.totalGas,
-    dependsOn: null,
-    nonce: 12345678,
-    reserved: {
-        features: 1
+const txBody = await thorSoloClient.transactions.buildTransactionBody(
+    transaction.clauses,
+    gasResult.totalGas,
+    {
+        isDelegated: true
     }
-});
+);
 
 // 4 - Sign the transaction
-const rawDelegatedSigned = TransactionHandler.signWithDelegator(
-    delegatedTransaction,
-    Buffer.from(senderAccount.privateKey, 'hex'),
-    Buffer.from(delegatorAccount.privateKey, 'hex')
+const rawDelegatedSigned = await thorSoloClient.transactions.signTransaction(
+    txBody,
+    senderAccount.privateKey,
+    {
+        delegatorPrivatekey: delegatorAccount.privateKey
+    }
 );
 
 // Check the signed transaction

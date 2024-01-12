@@ -495,13 +495,7 @@ In the following complete examples, we will explore the entire lifecycle of a Ve
 1.**No Delegation (Signing Only with an Origin Private Key)**: In this scenario, we'll demonstrate the basic process of creating a transaction, signing it with the origin private key, and sending it to the VechainThor blockchain without involving fee delegation.
 
 ```typescript { name=full-flow-no-delegator, category=example }
-import {
-    Transaction,
-    TransactionHandler,
-    contract,
-    networkInfo,
-    unitsUtils
-} from '@vechain/vechain-sdk-core';
+import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
@@ -539,22 +533,15 @@ const gasResult = await thorSoloClient.gas.estimateGas(
 );
 
 // 4 - Build transaction body
-const latestBlock = await thorSoloClient.blocks.getBestBlock();
-const unsignedTx = new Transaction({
-    chainTag: networkInfo.solo.chainTag,
-    blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
-    expiration: 32,
-    clauses: transaction.clauses,
-    gasPriceCoef: 128,
-    gas: gasResult.totalGas,
-    dependsOn: null,
-    nonce: 10000000
-});
+const txBody = await thorSoloClient.transactions.buildTransactionBody(
+    transaction.clauses,
+    gasResult.totalGas
+);
 
 // 4 - Sign the transaction
-const signedTransaction = TransactionHandler.sign(
-    unsignedTx,
-    Buffer.from(senderAccount.privateKey, 'hex')
+const signedTransaction = await thorSoloClient.transactions.signTransaction(
+    txBody,
+    senderAccount.privateKey
 );
 
 // 5 - Send the transaction
@@ -576,12 +563,7 @@ expect(sendTransactionResult.id).toBe(txReceipt?.meta.txID);
 2.**Delegation with Private Key**: Here, we'll extend the previous example by incorporating fee delegation. The transaction sender will delegate the transaction fee payment to another entity (delegator), and we'll guide you through the steps of building, signing, and sending such a transaction.
 
 ```typescript { name=full-flow-delegator-private-key, category=example }
-import {
-    Transaction,
-    TransactionHandler,
-    contract,
-    unitsUtils
-} from '@vechain/vechain-sdk-core';
+import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
@@ -626,26 +608,21 @@ const gasResult = await thorSoloClient.gas.estimateGas(
 );
 
 // 4 - Build transaction body
-const latestBlock = await thorSoloClient.blocks.getBestBlock();
-const delegatedTransaction = new Transaction({
-    chainTag: 0xf6,
-    blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
-    expiration: 32,
-    clauses: transaction.clauses,
-    gasPriceCoef: 128,
-    gas: gasResult.totalGas,
-    dependsOn: null,
-    nonce: 12345678,
-    reserved: {
-        features: 1
+const txBody = await thorSoloClient.transactions.buildTransactionBody(
+    transaction.clauses,
+    gasResult.totalGas,
+    {
+        isDelegated: true
     }
-});
+);
 
 // 4 - Sign the transaction
-const rawDelegatedSigned = TransactionHandler.signWithDelegator(
-    delegatedTransaction,
-    Buffer.from(senderAccount.privateKey, 'hex'),
-    Buffer.from(delegatorAccount.privateKey, 'hex')
+const rawDelegatedSigned = await thorSoloClient.transactions.signTransaction(
+    txBody,
+    senderAccount.privateKey,
+    {
+        delegatorPrivatekey: delegatorAccount.privateKey
+    }
 );
 
 // Check the signed transaction
