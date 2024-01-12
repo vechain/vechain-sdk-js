@@ -2,7 +2,13 @@ import { type SimulateTransactionOptions } from '../transactions';
 
 /* --- Input options start --- */
 
-type EstimateGasOptions = Omit<SimulateTransactionOptions, 'caller'>;
+type EstimateGasOptions = Omit<SimulateTransactionOptions, 'caller'> & {
+    /**
+     * percentage of gas to add on top of the estimated gas.
+     * Value must be between (0, 1]. (e.g. 0.1 = 10%)
+     */
+    gasPadding?: number;
+};
 
 /* --- Input options end --- */
 

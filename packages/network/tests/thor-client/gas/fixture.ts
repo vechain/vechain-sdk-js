@@ -6,6 +6,7 @@ import {
     TESTING_CONTRACT_ADDRESS
 } from '../../fixture';
 import { transfer1VTHOClause } from '../transactions/fixture';
+import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 
 /**
  * Test cases for `estimateGas` method
@@ -35,7 +36,7 @@ const estimateGasTestCases = {
             expected: {
                 revertReasons: ['builtin: insufficient balance'],
                 reverted: true,
-                totalGas: 24455,
+                totalGas: 39455,
                 vmErrors: ['execution reverted']
             }
         },
@@ -67,7 +68,7 @@ const estimateGasTestCases = {
             expected: {
                 revertReasons: ['builtin: insufficient balance'],
                 reverted: true,
-                totalGas: 40455,
+                totalGas: 55455,
                 vmErrors: ['execution reverted']
             }
         },
@@ -99,7 +100,7 @@ const estimateGasTestCases = {
             expected: {
                 revertReasons: ['', ''],
                 reverted: true,
-                totalGas: 52518,
+                totalGas: 67518,
                 vmErrors: ['', 'insufficient balance for transfer']
             }
         },
@@ -152,7 +153,7 @@ const estimateGasTestCases = {
             expected: {
                 revertReasons: ['', '', 'builtin: insufficient balance'],
                 reverted: true,
-                totalGas: 87491,
+                totalGas: 102491,
                 vmErrors: ['', '', 'execution reverted']
             }
         },
@@ -175,7 +176,7 @@ const estimateGasTestCases = {
             expected: {
                 revertReasons: ['Panic(0x01)'], // 0x01: If you call assert with an argument that evaluates to false.
                 reverted: true,
-                totalGas: 22009,
+                totalGas: 37009,
                 vmErrors: ['execution reverted']
             }
         },
@@ -189,7 +190,7 @@ const estimateGasTestCases = {
             },
             expected: {
                 reverted: true,
-                totalGas: 24192,
+                totalGas: 39192,
                 revertReasons: [''],
                 vmErrors: ['out of gas']
             }
@@ -204,7 +205,7 @@ const estimateGasTestCases = {
             options: {},
             expected: {
                 reverted: false,
-                totalGas: 36518,
+                totalGas: 51518,
                 revertReasons: [],
                 vmErrors: []
             }
@@ -234,7 +235,7 @@ const estimateGasTestCases = {
             options: {},
             expected: {
                 reverted: false,
-                totalGas: 100954,
+                totalGas: 115954,
                 revertReasons: [],
                 vmErrors: []
             }
@@ -249,7 +250,7 @@ const estimateGasTestCases = {
             },
             expected: {
                 reverted: false,
-                totalGas: 36518,
+                totalGas: 51518,
                 revertReasons: [],
                 vmErrors: []
             }
@@ -289,10 +290,12 @@ const estimateGasTestCases = {
                 }
             ],
             caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
-            options: {},
+            options: {
+                gasPadding: 0.2 // 20%
+            },
             expected: {
                 reverted: false,
-                totalGas: 37000,
+                totalGas: 44400, // 37000 + 20%
                 revertReasons: [],
                 vmErrors: []
             }
@@ -300,4 +303,54 @@ const estimateGasTestCases = {
     ]
 };
 
-export { estimateGasTestCases };
+/**
+ * Test cases where the estimation throws an error
+ */
+const invalidEstimateGasTestCases = [
+    {
+        clauses: [],
+        options: {},
+        expectedError: InvalidDataTypeError
+    },
+    {
+        clauses: [
+            {
+                to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                value: unitsUtils.parseVET('1').toString(),
+                data: '0x'
+            }
+        ],
+        options: {
+            gasPadding: 1.1
+        },
+        expectedError: InvalidDataTypeError
+    },
+    {
+        clauses: [
+            {
+                to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                value: unitsUtils.parseVET('1').toString(),
+                data: '0x'
+            }
+        ],
+        options: {
+            gasPadding: 0
+        },
+        expectedError: InvalidDataTypeError
+    },
+    {
+        clauses: [
+            {
+                to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                value: unitsUtils.parseVET('1').toString(),
+                data: '0x'
+            }
+        ],
+        options: {
+            gasPadding: -1
+        },
+        expectedError: InvalidDataTypeError
+    }
+];
+
+export { estimateGasTestCases, invalidEstimateGasTestCases };

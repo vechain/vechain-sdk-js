@@ -21,8 +21,9 @@ class GasModule {
      *
      * @param clauses - The clauses of the transaction to simulate.
      * @param caller - The address of the account sending the transaction.
-     * @param options - Optional parameters for the request. Includes all options of the `simulateTransaction` method.
+     * @param options - Optional parameters for the request. Includes all options of the `simulateTransaction` method exluding the `caller` option.
      *                  @see {@link TransactionsClient#simulateTransaction}
+     *                  Also, includes the `gasPadding` option which is a percentage of gas to add on top of the estimated gas. The value must be between (0, 1].
      *
      * @returns An object containing information regarding the gas used and whether the transaction reverted, together with the decoded revert reason and VM errors.
      *
@@ -38,6 +39,14 @@ class GasModule {
             clauses.length > 0,
             DATA.INVALID_DATA_TYPE,
             'Invalid clauses. Clauses must be an array of clauses with at least one clause.'
+        );
+
+        // gasPadding must be a number between (0, 1]
+        assert(
+            options?.gasPadding === undefined ||
+                (options.gasPadding > 0 && options.gasPadding <= 1),
+            DATA.INVALID_DATA_TYPE,
+            'Invalid gasPadding. gasPadding must be a number between (0, 1].'
         );
 
         // Simulate the transaction to get the simulations of each clause
@@ -63,7 +72,11 @@ class GasModule {
         }, 0);
 
         // The total gas of the transaction
-        const totalGas = instrinsicGas + totalSimulatedGas;
+        // If the transaction involves contract interaction, a constant 15000 gas is added to the total gas
+        const totalGas =
+            (instrinsicGas +
+                (totalSimulatedGas !== 0 ? totalSimulatedGas + 15000 : 0)) *
+            (1 + (options?.gasPadding ?? 0)); // Add gasPadding if it is defined
 
         return isReverted
             ? {

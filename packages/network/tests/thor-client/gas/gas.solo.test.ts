@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { estimateGasTestCases } from './fixture';
+import { estimateGasTestCases, invalidEstimateGasTestCases } from './fixture';
 import { ThorClient } from '../../../src';
 import { soloNetwork } from '../../fixture';
+import { generateRandomValidAddress } from '@vechain/vechain-sdk-core/tests/fixture';
 
 /**
  * Gas module tests.
@@ -65,6 +66,25 @@ describe('ThorClient - Gas Module', () => {
                     },
                     3000
                 );
+            }
+        );
+
+        /**
+         * Test cases where the gas estimate should throw an error
+         */
+        invalidEstimateGasTestCases.forEach(
+            ({ clauses, options, expectedError }) => {
+                test(`Should throw an error with clauses: ${JSON.stringify(
+                    clauses
+                )}, options: ${JSON.stringify(options)}`, async () => {
+                    await expect(
+                        thorSoloClient.gas.estimateGas(
+                            clauses,
+                            generateRandomValidAddress(),
+                            options
+                        )
+                    ).rejects.toThrow(expectedError);
+                });
             }
         );
     });
