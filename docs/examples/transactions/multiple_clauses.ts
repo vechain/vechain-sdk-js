@@ -1,8 +1,4 @@
-import {
-    VTHO_ADDRESS,
-    contract,
-    networkInfo
-} from '@vechain/vechain-sdk-core';
+import { VTHO_ADDRESS, contract, networkInfo } from '@vechain/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,

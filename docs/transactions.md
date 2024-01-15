@@ -79,11 +79,7 @@ In VechainThor blockchain a transaction can be composed of multiple clauses. \
 Clauses allow to send multiple payloads to different recipients within a single transaction.
 
 ```typescript { name=multiple_clauses, category=example }
-import {
-    VTHO_ADDRESS,
-    contract,
-    networkInfo
-} from '@vechain/vechain-sdk-core';
+import { VTHO_ADDRESS, contract, networkInfo } from '@vechain/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -152,8 +148,6 @@ Fee delegation is a feature on the VechainThor blockchain which enables the tran
 import { contract, networkInfo } from '@vechain/vechain-sdk-core';
 import {
     Transaction,
-    secp256k1,
-    TransactionUtils,
     TransactionHandler,
     HDNode,
     type TransactionClause,
@@ -162,6 +156,20 @@ import {
     unitsUtils
 } from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+
+const _soloUrl = 'http://localhost:8669/';
+const soloNetwork = new HttpClient(_soloUrl);
+const thorSoloClient = new ThorClient(soloNetwork, {
+    isPollingEnabled: false
+});
+
+// Sender account with private key
+const senderAccount = {
+    privateKey:
+        'f9fc826b63a35413541d92d2bfb6661128cd5075fcdca583446d20c59994ba26',
+    address: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6'
+};
 
 // 1 - Define clause
 
@@ -172,6 +180,11 @@ const clauses: TransactionClause[] = [
     )
 ];
 
+const gasResult = await thorSoloClient.gas.estimateGas(
+    clauses,
+    senderAccount.address
+);
+
 // 2 - Define transaction body
 
 const body: TransactionBody = {
@@ -180,7 +193,7 @@ const body: TransactionBody = {
     expiration: 0,
     clauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(clauses),
+    gas: gasResult.totalGas,
     dependsOn: null,
     nonce: 1,
     reserved: {
@@ -190,7 +203,6 @@ const body: TransactionBody = {
 
 // 3 - Create private keys of sender and delegate
 
-const senderPrivateKey = secp256k1.generatePrivateKey();
 const nodeDelegate = HDNode.fromMnemonic(mnemonic.generate());
 
 const delegatorPrivateKey = nodeDelegate.privateKey;
@@ -204,7 +216,7 @@ const delegatorAddress = nodeDelegate.address;
 const unsignedTx = new Transaction(body);
 const signedTransaction = TransactionHandler.signWithDelegator(
     unsignedTx,
-    senderPrivateKey,
+    Buffer.from(senderAccount.privateKey, 'hex'),
     delegatorPrivateKey
 );
 
@@ -254,7 +266,7 @@ const body: TransactionBody = {
     expiration: 32, // tx will expire after block #16772280 + 32
     clauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(clauses),
+    gas: TransactionUtils.intrinsicGas(clauses), // use thor.gas.estimateGas() for better estimation
     dependsOn: null,
     nonce: 1
 };
@@ -284,8 +296,9 @@ expect(decodedTx.body.expiration).toBe(body.expiration);
 A transaction can be set to only be processed after another transaction, therefore defining an execution order for transactions. The _DependsOn_ field is the Id of the transaction on which the current transaction depends on. If the transaction does not depend on others _DependsOn_ can be set to _null_
 
 ```typescript { name=tx_dependency, category=example }
-import { contract, networkInfo } from '@vechain/vechain-sdk-core';
 import {
+    contract,
+    networkInfo,
     Transaction,
     secp256k1,
     TransactionUtils,
@@ -320,7 +333,7 @@ const txABody: TransactionBody = {
     expiration: 0,
     clauses: txAClauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(txAClauses),
+    gas: TransactionUtils.intrinsicGas(txAClauses), // use thor.gas.estimateGas() for better estimation
     dependsOn: null,
     nonce: 1
 };
