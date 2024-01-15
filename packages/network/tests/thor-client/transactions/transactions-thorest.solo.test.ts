@@ -42,7 +42,7 @@ describe('ThorClient - Transactions Module', () => {
                 // Get latest block
                 const latestBlock = await thorSoloClient.blocks.getBestBlock();
 
-                // Get gas
+                // Get gas estimate
                 const gasResult = await thorSoloClient.gas.estimateGas(
                     testCase.transaction.clauses,
                     TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
