@@ -190,7 +190,7 @@ const buildTransactionBodyClausesTestCases = [
                 dependsOn: null,
                 expiration: 32,
                 gas: 51518,
-                gasPriceCoef: 127,
+                gasPriceCoef: 0,
                 reserved: undefined
             },
             testnet: {
@@ -205,7 +205,7 @@ const buildTransactionBodyClausesTestCases = [
                 dependsOn: null,
                 expiration: 32,
                 gas: 39263,
-                gasPriceCoef: 127,
+                gasPriceCoef: 0,
                 reserved: undefined
             }
         }
@@ -330,7 +330,7 @@ const signTransactionTestCases = {
                         dependsOn: null,
                         expiration: 32,
                         gas: 57491,
-                        gasPriceCoef: 127,
+                        gasPriceCoef: 0,
                         reserved: undefined
                     }
                 }
@@ -357,7 +357,7 @@ const signTransactionTestCases = {
                         dependsOn: null,
                         expiration: 32,
                         gas: 57491,
-                        gasPriceCoef: 127,
+                        gasPriceCoef: 0,
                         reserved: {
                             features: 1
                         }
@@ -420,7 +420,7 @@ const signTransactionTestCases = {
                         dependsOn: null,
                         expiration: 32,
                         gas: 21464,
-                        gasPriceCoef: 127,
+                        gasPriceCoef: 0,
                         reserved: {
                             features: 1
                         }
