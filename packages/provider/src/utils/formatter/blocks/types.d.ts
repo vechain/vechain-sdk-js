@@ -1,3 +1,5 @@
+import { type TransactionReturnTypeRPC } from '../transactions';
+
 /**
  * Return type of block header for RPC standard.
  */
@@ -54,16 +56,18 @@ interface HeaderReturnTypeRPC {
     /**
      * Unsupported fields
      */
-    sha3Uncles: ZeroBytes32;
-    nonce: ZeroBytes8;
-    logsBloom: ZeroBytes256;
-    extraData: '0x';
+    sha3Uncles: string;
+    nonce: string;
+    logsBloom: string;
+    extraData: string;
 }
 
 /**
  * Return type of blocks for RPC standard.
  *
  * Our SDK uses `BlockDetail` type from `@vechain/vechain-sdk-network` package.
+ *
+ * @link [Ethereum JSON RPC Block Object](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_getblockbynumber#returns)
  */
 interface BlocksReturnTypeRPC extends HeaderReturnTypeRPC {
     /**
@@ -72,17 +76,18 @@ interface BlocksReturnTypeRPC extends HeaderReturnTypeRPC {
     size: string;
 
     /**
-     * List of transactions as bytes32 array
+     * List of transactions as bytes32 array or TransactionReturnTypeRPC array
      */
-    transactions: string[];
+    transactions: string[] | TransactionReturnTypeRPC[];
 
     /**
      * Unsupported fields
      */
-    difficulty: '0x0';
-    totalDifficulty: '0x0';
-    uncles: [];
-    baseFeePerGas: '0x0';
+    difficulty: string;
+    totalDifficulty: string;
+    uncles: string[];
+    baseFeePerGas: string;
+    mixHash: string;
 }
 
 export { type HeaderReturnTypeRPC, type BlocksReturnTypeRPC };
