@@ -1,9 +1,5 @@
 import { type ThorClient } from '@vechain/vechain-sdk-network';
-import {
-    buildError,
-    getJSONRPCErrorCode,
-    JSONRPC
-} from '@vechain/vechain-sdk-errors';
+import { buildProviderError, JSONRPC } from '@vechain/vechain-sdk-errors';
 import { blocksFormatter, type BlocksReturnTypeRPC } from '../../../formatter';
 
 /**
@@ -28,12 +24,14 @@ const ethGetBlockByNumber = async (
             ? blocksFormatter.formatToRPCStandard(block)
             : null;
     } catch (e) {
-        throw buildError(
+        throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,
-            `Error while getting block ${blockNumber}`,
+            `Method 'eth_getBlockByNumber' failed: Error while getting block ${blockNumber}\n
+            Params: ${JSON.stringify(params)}\n
+            URL: ${thorClient.httpClient.baseURL}`,
             {
-                code: getJSONRPCErrorCode(JSONRPC.INTERNAL_ERROR),
-                message: JSONRPC.INTERNAL_ERROR.toString()
+                params,
+                innerError: JSON.stringify(e)
             }
         );
     }
