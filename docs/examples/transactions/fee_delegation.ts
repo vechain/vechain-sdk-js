@@ -11,12 +11,6 @@ import {
 import { expect } from 'expect';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 
-const _soloUrl = 'http://localhost:8669/';
-const soloNetwork = new HttpClient(_soloUrl);
-const thorSoloClient = new ThorClient(soloNetwork, {
-    isPollingEnabled: false
-});
-
 // Sender account with private key
 const senderAccount = {
     privateKey:
@@ -24,7 +18,14 @@ const senderAccount = {
     address: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6'
 };
 
-// 1 - Define clause
+// 1 - Create thor client for solo network
+const _soloUrl = 'http://localhost:8669/';
+const soloNetwork = new HttpClient(_soloUrl);
+const thorSoloClient = new ThorClient(soloNetwork, {
+    isPollingEnabled: false
+});
+
+// 2 - Define clause and estimate gas
 
 const clauses: TransactionClause[] = [
     contract.clauseBuilder.transferVET(
@@ -33,12 +34,13 @@ const clauses: TransactionClause[] = [
     )
 ];
 
+// Get gas estimate
 const gasResult = await thorSoloClient.gas.estimateGas(
     clauses,
     senderAccount.address
 );
 
-// 2 - Define transaction body
+// 3 - Define transaction body
 
 const body: TransactionBody = {
     chainTag: networkInfo.mainnet.chainTag,
@@ -54,17 +56,16 @@ const body: TransactionBody = {
     }
 };
 
-// 3 - Create private keys of sender and delegate
+// 4 - Create private keys of sender and delegate
 
 const nodeDelegate = HDNode.fromMnemonic(mnemonic.generate());
-
 const delegatorPrivateKey = nodeDelegate.privateKey;
 
-// 4 - Get address of delegate
+// 5 - Get address of delegate
 
 const delegatorAddress = nodeDelegate.address;
 
-// 5 - Sign transaction as sender and delegate
+// 6 - Sign transaction as sender and delegate
 
 const unsignedTx = new Transaction(body);
 const signedTransaction = TransactionHandler.signWithDelegator(
@@ -73,11 +74,11 @@ const signedTransaction = TransactionHandler.signWithDelegator(
     delegatorPrivateKey
 );
 
-// 5 - Encode transaction
+// 7 - Encode transaction
 
 const encodedRaw = signedTransaction.encoded;
 
-// 6 - Decode transaction and check
+// 8 - Decode transaction and check
 
 const decodedTx = TransactionHandler.decode(encodedRaw, true);
 expect(decodedTx.isDelegated).toBeTruthy();

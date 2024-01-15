@@ -8,17 +8,18 @@ import {
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
-// 1 - Create thor client for solo network
-
-const _soloUrl = 'http://localhost:8669';
-const soloNetwork = new HttpClient(_soloUrl);
-const thorSoloClient = new ThorClient(soloNetwork);
-
+// Sender account with private key
 const senderAccount = {
     privateKey:
         'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5',
     address: '0x2669514f9fe96bc7301177ba774d3da8a06cace4'
 };
+
+// 1 - Create thor client for solo network
+
+const _soloUrl = 'http://localhost:8669';
+const soloNetwork = new HttpClient(_soloUrl);
+const thorSoloClient = new ThorClient(soloNetwork);
 
 // 2 - Get latest block
 
@@ -33,6 +34,7 @@ const clauses = [
     )
 ];
 
+// Get gas estimate
 const gasResult = await thorSoloClient.gas.estimateGas(
     clauses,
     senderAccount.address
