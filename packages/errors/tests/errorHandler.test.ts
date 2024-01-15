@@ -4,9 +4,14 @@ import {
     buildError,
     InvalidKeystoreError,
     InvalidRLPError,
-    assertInnerError
+    assertInnerError,
+    buildProviderError,
+    ProviderRpcError
 } from '../src';
-import { ErrorsCodeAndClassesMapsFixture } from './fixture';
+import {
+    ErrorsCodeAndClassesMapsFixture,
+    JSONrpcErrorsCodeAndClassesMapsFixture
+} from './fixture';
 
 /**
  * Error handler test
@@ -118,5 +123,34 @@ describe('Error handler test', () => {
                 ).toBeInstanceOf(element.classExpected);
             });
         });
+    });
+
+    /**
+     * Verify all JSON RPC/Provider error codes and classes
+     */
+    JSONrpcErrorsCodeAndClassesMapsFixture.forEach((errorType) => {
+        /**
+         * Test for each model
+         */
+        test(`Verify all error codes and classes for ${errorType.name}`, () => {
+            /**
+             * Each error code and class
+             */
+            errorType.elements.forEach((element) => {
+                expect(
+                    buildProviderError(element.errorCode, 'SOME_MESSAGE')
+                ).toBeInstanceOf(ProviderRpcError);
+            });
+        });
+    });
+
+    /**
+     * Verify that the error code is valid
+     */
+    test('Should throw error for invalid JSON RPC error code', () => {
+        expect(() => {
+            // @ts-expect-error Should throw error for invalid JSON RPC error code
+            buildProviderError(0, 'SOME_MESSAGE');
+        }).toThrowError();
     });
 });

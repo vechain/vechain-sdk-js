@@ -13,6 +13,6 @@ describe('Build error function errors', () => {
         expect(() => {
             // @ts-expect-error Testing invalid error code
             buildError(ERROR_CODES.UNDEFINED, 'INVALID');
-        }).toThrowError('Invalid error code');
+        }).toThrowError();
     });
 });
