@@ -76,7 +76,6 @@ import {
     engineForkchoiceUpdatedV1
 } from './methods-map';
 import { RPC_METHODS } from '../const';
-import { type BlocksReturnTypeRPC } from '../formatter';
 
 /**
  * Map of RPC methods to their implementations with our SDK.
@@ -107,8 +106,8 @@ const RPCMethodsMap = (
         /**
          * ... RPC Method DOC ...
          */
-        [RPC_METHODS.eth_chainId]: async (params) => {
-            await ethChainId(thorClient, params);
+        [RPC_METHODS.eth_chainId]: async () => {
+            return await ethChainId(thorClient);
         },
 
         /**
@@ -173,10 +172,9 @@ const RPCMethodsMap = (
          * Params:
          * * params[0]: The block number to get.
          */
-        [RPC_METHODS.eth_getBlockByNumber]: async (
-            params
-        ): Promise<BlocksReturnTypeRPC | null> =>
-            await ethGetBlockByNumber(thorClient, params),
+        [RPC_METHODS.eth_getBlockByNumber]: async (params) => {
+            return await ethGetBlockByNumber(thorClient, params);
+        },
 
         /**
          * ... RPC Method DOC ...
@@ -196,7 +194,7 @@ const RPCMethodsMap = (
          * ... RPC Method DOC ...
          */
         [RPC_METHODS.eth_getTransactionByHash]: async (params) => {
-            await ethGetTransactionByHash(thorClient, params);
+            return await ethGetTransactionByHash(thorClient, params);
         },
 
         /**
