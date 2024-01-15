@@ -19,7 +19,7 @@ async function sleep(delayInMilliseconds: number): Promise<void> {
  * To avoid infinite loop, you can use the `options.maximumIterations` parameter.
  *
  * @example It can be used to wait until:
- *  - A balance is updated after a transaction is send
+ *  - A balance is updated after a transaction is sent
  *  - A transaction is mined
  *  - A block is mined
  *  ...
