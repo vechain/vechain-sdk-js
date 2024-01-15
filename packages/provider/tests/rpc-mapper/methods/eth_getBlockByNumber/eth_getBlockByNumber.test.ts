@@ -1,9 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { JSONRPCInternalError } from '@vechain/vechain-sdk-errors';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
 import { zeroBlock } from './fixture';
+import { ProviderRpcError } from '@vechain/vechain-sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_getBlockByNumber' method
@@ -74,7 +74,7 @@ describe('RPC Mapper - eth_getBlockByNumber method tests', () => {
                     await RPCMethodsMap(thorClient)[
                         RPC_METHODS.eth_getBlockByNumber
                     ]([-1])
-            ).rejects.toThrowError(JSONRPCInternalError);
+            ).rejects.toThrowError(ProviderRpcError);
         });
     });
 });
