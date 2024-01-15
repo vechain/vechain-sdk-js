@@ -1,3 +1,10 @@
+import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
+import {
+    blockWithTransactionsExpanded,
+    blockWithTransactionsNotExpanded
+} from '../../../fixture';
+import { InvalidDataTypeError } from '../../../../../errors/dist';
+
 /**
  * Zero block fixture
  */
@@ -32,4 +39,65 @@ const zeroBlock = {
         '0x0000000000000000000000000000000000000000000000000000000000000000'
 };
 
-export { zeroBlock };
+/**
+ * Test cases for eth_getBlockByNumber RPC method
+ */
+const ethGetBlockByNumberTestCases = [
+    {
+        description: "Should get block by number '0x0'",
+        params: [vechain_sdk_core_ethers.toQuantity(0), false],
+        expected: zeroBlock
+    },
+    {
+        description:
+            "Should get block by number '0x0' with transaction details",
+        params: [vechain_sdk_core_ethers.toQuantity(0), true],
+        expected: zeroBlock // Because geenesis block doesn't have any transactions on testnet
+    },
+    {
+        description: 'Should get block which has transactions',
+        params: [vechain_sdk_core_ethers.toQuantity(17529453), false],
+        expected: blockWithTransactionsNotExpanded
+    },
+    {
+        description: 'Should get block which has transactions with details',
+        params: [vechain_sdk_core_ethers.toQuantity(17529453), true],
+        expected: blockWithTransactionsExpanded
+    },
+    {
+        description:
+            'Should return null for no block found with given revision',
+        params: [
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            false
+        ],
+        expected: null
+    }
+];
+
+/**
+ * Invalid eth_getBlockByNumber RPC method test cases
+ */
+const invalidEthGetBlockByNumberTestCases = [
+    {
+        description: 'Should throw an error when there are too many params',
+        params: ['0x0', false, "I'm an extra param"],
+        expectedError: InvalidDataTypeError
+    },
+    {
+        description: 'Should throw an error when first param is not a string',
+        params: [0, false],
+        expectedError: InvalidDataTypeError
+    },
+    {
+        description: 'Should throw an error when second param is not a boolean',
+        params: ['0x0', 'false'],
+        expectedError: InvalidDataTypeError
+    }
+];
+
+export {
+    zeroBlock,
+    ethGetBlockByNumberTestCases,
+    invalidEthGetBlockByNumberTestCases
+};

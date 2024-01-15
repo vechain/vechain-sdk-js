@@ -1,14 +1,12 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
+import { testNetwork } from '../../../fixture';
 import {
-    blockWithTransactionsExpanded,
-    blockWithTransactionsNotExpanded,
-    testNetwork
-} from '../../../fixture';
-import { zeroBlock } from './fixture';
+    ethGetBlockByNumberTestCases,
+    invalidEthGetBlockByNumberTestCases
+} from './fixture';
 import { ProviderRpcError } from '@vechain/vechain-sdk-errors';
-import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
 
 /**
  * RPC Mapper integration tests for 'eth_getBlockByNumber' method
@@ -41,49 +39,43 @@ describe('RPC Mapper - eth_getBlockByNumber method tests', () => {
      */
     describe('Positive cases', () => {
         /**
-         * Test case where the block number is zero and the full transaction objects flag is false
+         * Test cases for eth_getBlockByNumber RPC method
          */
-        test('Should be able to get a block', async () => {
-            // Zero block
-            const rpcCallZeroBlock = await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_getBlockByNumber
-            ]([vechain_sdk_core_ethers.toQuantity(0), false]);
-            expect(rpcCallZeroBlock).toStrictEqual(zeroBlock);
-        });
+        ethGetBlockByNumberTestCases.forEach(
+            ({ description, params, expected }) => {
+                test(description, async () => {
+                    // Call RPC function
+                    const rpcCall =
+                        await RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_getBlockByNumber
+                        ](params);
+
+                    // Compare the result with the expected value
+                    expect(rpcCall).toStrictEqual(expected);
+                });
+            }
+        );
 
         /**
-         * Test case where the block number is zero and the full transaction objects flag is true
+         * Test case where the revision is valid but doesn't refer to an existing block
          */
-        test('Should be able to get a block with full transaction objects', async () => {
-            const rpcCall = await RPCMethodsMap(thorClient)[
+        test('Should be able to get block with `latest`', async () => {
+            // Null block
+            const rpcCallNullBlock = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_getBlockByNumber
-            ]([vechain_sdk_core_ethers.toQuantity(17529453), true]); // 17529453 is the block number of a block with transactions on testnet
-            expect(rpcCall).toStrictEqual(blockWithTransactionsExpanded);
-        });
-
-        /**
-         * Test case where the block number is zero and the full transaction objects flag is false
-         */
-        test('Should be able to get a block with transactions not expanded', async () => {
-            const rpcCall = await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_getBlockByNumber
-            ]([vechain_sdk_core_ethers.toQuantity(17529453), false]); // 17529453 is the block number of a block with transactions on testnet
-            expect(rpcCall).toStrictEqual(blockWithTransactionsNotExpanded);
+            ](['latest', false]);
+            expect(rpcCallNullBlock).toBeDefined();
         });
 
         /**
          * Test case where the revision is valid but doesn't refer to an existing block
          */
-        test('Should be able to get null block', async () => {
+        test('Should be able to get block with `finalized`', async () => {
             // Null block
             const rpcCallNullBlock = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_getBlockByNumber
-            ]([
-                // Invalid revision
-                '0x0000000000000000000000000000000000000000000000000000000000000000',
-                false
-            ]);
-            expect(rpcCallNullBlock).toBeNull();
+            ](['finalized', false]);
+            expect(rpcCallNullBlock).toBeDefined();
         });
     });
 
@@ -91,6 +83,23 @@ describe('RPC Mapper - eth_getBlockByNumber method tests', () => {
      * eth_getBlockByNumber RPC call tests - Negative cases
      */
     describe('Negative cases', () => {
+        /**
+         * Invalid eth_getBlockByNumber RPC method test cases
+         */
+        invalidEthGetBlockByNumberTestCases.forEach(
+            ({ description, params, expectedError }) => {
+                test(description, async () => {
+                    // Call RPC function
+                    await expect(
+                        async () =>
+                            await RPCMethodsMap(thorClient)[
+                                RPC_METHODS.eth_getBlockByNumber
+                            ](params)
+                    ).rejects.toThrowError(expectedError);
+                });
+            }
+        );
+
         /**
          * Test case where the block number is negative
          */

@@ -28,13 +28,15 @@ const ethGetBlockByNumber = async (
     params: unknown[]
 ): Promise<BlocksReturnTypeRPC | null> => {
     assert(
-        params.length === 2,
+        params.length === 2 &&
+            typeof params[0] === 'string' &&
+            typeof params[1] === 'boolean',
         DATA.INVALID_DATA_TYPE,
         'Invalid params length, expected 2 or less.\nThe params should be [blockNumber: string | "latest" | "finalized", transactionDetailFlag: boolean]'
     );
 
     try {
-        const [blockNumber, isTxDetail] = params as [string, boolean];
+        let [blockNumber, isTxDetail] = params as [string, boolean];
 
         let chainId: string = '0x0';
 
@@ -43,6 +45,9 @@ const ethGetBlockByNumber = async (
             chainId = (await RPCMethodsMap(thorClient)[RPC_METHODS.eth_chainId](
                 []
             )) as string;
+
+        if (blockNumber === 'latest' || blockNumber === 'finalized')
+            blockNumber = 'best'; // 'best' is the alias for 'latest' in Vechain Thorest
 
         const block = await thorClient.blocks.getBlock(blockNumber, {
             expanded: isTxDetail
