@@ -443,7 +443,6 @@ The following code demonstrates how to use Thor-client with the fee delegation f
 ```typescript { name=delegated-transactions, category=example }
 import {
     Transaction,
-    TransactionUtils,
     TransactionHandler,
     dataUtils,
     unitsUtils,
@@ -462,6 +461,12 @@ const thorSoloClient = new ThorClient(soloNetwork);
 
 const latestBlock = await thorSoloClient.blocks.getBestBlock();
 
+const senderAccount = {
+    privateKey:
+        'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5',
+    address: '0x2669514f9fe96bc7301177ba774d3da8a06cace4'
+};
+
 // 3 - Create transaction clauses
 
 const clauses = [
@@ -472,7 +477,10 @@ const clauses = [
 ];
 
 // Get gas @NOTE this is an approximation
-const gas = 5000 + TransactionUtils.intrinsicGas(clauses) * 5;
+const gasResult = await thorSoloClient.gas.estimateGas(
+    clauses,
+    senderAccount.address
+);
 
 //  4 - Create delegated transaction
 
@@ -482,17 +490,13 @@ const delegatedTransaction = new Transaction({
     expiration: 32,
     clauses,
     gasPriceCoef: 128,
-    gas,
+    gas: gasResult.totalGas,
     dependsOn: null,
     nonce: 12345678,
     reserved: {
         features: 1
     }
 });
-
-// Private keys of sender
-const senderPrivateKey =
-    'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5';
 
 /** Private key of delegate
  * @NOTE The delegate account must have enough VET and VTHO to pay for the gas
@@ -504,7 +508,7 @@ const delegatePrivateKey =
 
 const rawDelegatedSigned = TransactionHandler.signWithDelegator(
     delegatedTransaction,
-    Buffer.from(senderPrivateKey, 'hex'),
+    Buffer.from(senderAccount.privateKey, 'hex'),
     Buffer.from(delegatePrivateKey, 'hex')
 ).encoded;
 

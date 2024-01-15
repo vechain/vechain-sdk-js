@@ -1,13 +1,8 @@
-import {
-    HttpClient,
-    Poll,
-    ThorClient
-} from '@vechain/vechain-sdk-network';
+import { HttpClient, Poll, ThorClient } from '@vechain/vechain-sdk-network';
 import {
     dataUtils,
     Transaction,
-    TransactionHandler,
-    TransactionUtils
+    TransactionHandler
 } from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
@@ -49,8 +44,7 @@ const clauses = [
 ];
 
 // 2.3 - Calculate gas
-// @NOTE: To improve the performance, we use a fixed gas price here.
-const gas = 5000 + TransactionUtils.intrinsicGas(clauses) * 5;
+const gasResult = await thorSoloClient.gas.estimateGas(clauses, sender.address);
 
 // 2.4 - Create transactions
 const transaction = new Transaction({
@@ -61,7 +55,7 @@ const transaction = new Transaction({
     expiration: 32,
     clauses,
     gasPriceCoef: 128,
-    gas,
+    gas: gasResult.totalGas,
     dependsOn: null,
     nonce: 12345678
 });
