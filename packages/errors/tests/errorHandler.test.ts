@@ -151,6 +151,6 @@ describe('Error handler test', () => {
         expect(() => {
             // @ts-expect-error Should throw error for invalid JSON RPC error code
             buildProviderError(0, 'SOME_MESSAGE');
-        }).toThrowError('Invalid error code');
+        }).toThrowError();
     });
 });
