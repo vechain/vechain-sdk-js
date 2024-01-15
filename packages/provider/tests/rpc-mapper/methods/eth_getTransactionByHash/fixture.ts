@@ -46,6 +46,11 @@ const invalidEthGetTransactionByHashTestCases = [
         description: 'eth_getTransactionByHash with too few params',
         params: [],
         expectedError: InvalidDataTypeError
+    },
+    {
+        description: 'eth_getTransactionByHash with invalid param type',
+        params: [123],
+        expectedError: InvalidDataTypeError
     }
 ];
 

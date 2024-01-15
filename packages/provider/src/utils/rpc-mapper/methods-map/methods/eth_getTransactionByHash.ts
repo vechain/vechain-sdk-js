@@ -35,7 +35,7 @@ const ethGetTransactionByHash = async (
     params: unknown[]
 ): Promise<TransactionReturnTypeRPC | null> => {
     assert(
-        params.length === 1,
+        params.length === 1 && typeof params[0] === 'string',
         DATA.INVALID_DATA_TYPE,
         'Invalid params length, expected 1.\nThe params should be [hash: string]'
     );
