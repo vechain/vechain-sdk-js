@@ -79,13 +79,13 @@ console.log('Receiver balance before:', receiverBalanceBefore);
 
 // 4 - Send transaction
 
-const sentedTransaction =
+const sentTransaction =
     await thorSoloClient.transactions.sendRawTransaction(raw);
 
 // 4.1 - Check if the transaction is sent successfully (check if the transaction id is a valid hex string)
-expect(sentedTransaction).toBeDefined();
-expect(sentedTransaction).toHaveProperty('id');
-expect(dataUtils.isHexString(sentedTransaction.id)).toBe(true);
+expect(sentTransaction).toBeDefined();
+expect(sentTransaction).toHaveProperty('id');
+expect(dataUtils.isHexString(sentTransaction.id)).toBe(true);
 
 // 4 -Wait until balance is updated
 

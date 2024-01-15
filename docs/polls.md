@@ -8,11 +8,7 @@ Synchronous polling mechanisms are implemented to await the fulfillment of speci
 This section illustrates the methodology for monitoring the production of a new block. Utilizing synchronous polling, the waitUntil function is employed to efficiently wait for the production of a new block.
 
 ```typescript { name=sync-poll-wait-new-block, category=example }
-import {
-    HttpClient,
-    Poll,
-    ThorClient
-} from '@vechain/vechain-sdk-network';
+import { HttpClient, Poll, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
@@ -135,13 +131,13 @@ console.log('Receiver balance before:', receiverBalanceBefore);
 
 // 4 - Send transaction
 
-const sentedTransaction =
+const sentTransaction =
     await thorSoloClient.transactions.sendRawTransaction(raw);
 
 // 4.1 - Check if the transaction is sent successfully (check if the transaction id is a valid hex string)
-expect(sentedTransaction).toBeDefined();
-expect(sentedTransaction).toHaveProperty('id');
-expect(dataUtils.isHexString(sentedTransaction.id)).toBe(true);
+expect(sentTransaction).toBeDefined();
+expect(sentTransaction).toHaveProperty('id');
+expect(dataUtils.isHexString(sentTransaction.id)).toBe(true);
 
 // 4 -Wait until balance is updated
 
@@ -233,7 +229,7 @@ for (const account of accounts) {
 
     monitoringPoll.startListen();
 
-    // It seeme to be strange, BUT onData is called only after 1 second of the eventPoll.startListen() call.
+    // It seems to be strange, BUT onData is called only after 1 second of the eventPoll.startListen() call.
     expect(monitoringPoll.getCurrentIteration).toBe(0);
 }
 

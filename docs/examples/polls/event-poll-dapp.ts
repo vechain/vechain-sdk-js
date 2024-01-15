@@ -48,6 +48,6 @@ for (const account of accounts) {
 
     monitoringPoll.startListen();
 
-    // It seeme to be strange, BUT onData is called only after 1 second of the eventPoll.startListen() call.
+    // It seems to be strange, BUT onData is called only after 1 second of the eventPoll.startListen() call.
     expect(monitoringPoll.getCurrentIteration).toBe(0);
 }
