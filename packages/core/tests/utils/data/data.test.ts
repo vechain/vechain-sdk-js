@@ -114,7 +114,6 @@ describe('utils/hex', () => {
             test(`should return ${expected} for ${JSON.stringify(
                 value
             )}`, () => {
-                // @ts-expect-error - invalid value types are included in test cases
                 expect(dataUtils.isNumeric(value)).toBe(expected);
             });
         });
