@@ -652,7 +652,4 @@ const transactionReceipt =
 expect(transactionDetails).toBeDefined();
 expect(transactionReceipt).toBeDefined();
 
-// Destroy thor client
-thorSoloClient.destroy();
-
 ```
