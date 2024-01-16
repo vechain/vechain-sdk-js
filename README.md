@@ -4,10 +4,12 @@
     <strong>The official JavaScript SDK for vechain.</strong>
   </p>
   <p>
-    <a href="https://github.com/vechainfoundation/vechain-sdk/actions/workflows/on-main.yml"><img src="https://github.com/vechainfoundation/vechain-sdk/actions/workflows/on-main.yml/badge.svg" alt="main-ci"></a>
-    <a href="https://sonarcloud.io/summary/new_code?id=vechainfoundation_thor-sdk-js"><img src="https://sonarcloud.io/api/project_badges/measure?project=vechainfoundation_thor-sdk-js&metric=alert_status&token=0e94ce34f24ef54d43c15c0d4b38f2c645c92b42" alt="Quality Gate Status"></a>
-    <a href="https://sonarcloud.io/summary/new_code?id=vechainfoundation_thor-sdk-js"><img src="https://sonarcloud.io/api/project_badges/measure?project=vechainfoundation_thor-sdk-js&metric=coverage&token=0e94ce34f24ef54d43c15c0d4b38f2c645c92b42" alt="Coverage"></a>
-    <a href="https://github.com/vechainfoundation/vechain-sdk/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+    <a href="https://github.com/vechain/vechain-sdk/actions/workflows/on-main.yml"><img src="https://github.com/vechain/vechain-sdk/actions/workflows/on-main.yml/badge.svg" alt="main-ci"></a>
+    <a href="https://sonarcloud.io/summary/new_code?id=vechain_thor-sdk-js"><img src="https://sonarcloud.io/api/project_badges/measure?project=vechain_vechain-sdk&metric=alert_status&token=c67db88ec1549a9d15bb1bcc9bafc8ca8b1dbfcb" alt="Quality Gate Status"></a>
+    <a href="https://sonarcloud.io/summary/new_code?id=vechain_thor-sdk-js"><img src="https://sonarcloud.io/api/project_badges/measure?project=vechain_vechain-sdk&metric=coverage&token=c67db88ec1549a9d15bb1bcc9bafc8ca8b1dbfcb" alt="Coverage"></a>
+    <a href="https://sonarcloud.io/summary/new_code?id=vechain_thor-sdk-js"><img src="https://sonarcloud.io/api/project_badges/measure?project=vechain_vechain-sdk&metric=security_rating&token=c67db88ec1549a9d15bb1bcc9bafc8ca8b1dbfcb" alt="Security Rating"></a>
+    <a href="https://sonarcloud.io/summary/new_code?id=vechain_thor-sdk-js"><img src="https://sonarcloud.io/api/project_badges/measure?project=vechain_vechain-sdk&metric=sqale_rating&token=c67db88ec1549a9d15bb1bcc9bafc8ca8b1dbfcb" alt="Maintainability Rating"></a>
+    <a href="https://github.com/vechain/vechain-sdk/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
   </p>
 </div>
 
