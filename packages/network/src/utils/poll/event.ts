@@ -9,7 +9,7 @@ import { assertPositiveIntegerForPollOptions } from './helpers/assertions';
  * - The setInterval function to poll
  *
  * @example It can be used to trigger events every time
- *  - When balance is updated after a transaction is send a message is sent
+ *  - When balance is updated after a transaction is sent a message is sent
  *  - When a transaction is mined a message is sent
  *  - When a certain block is mined an operation can start
  *  ...

@@ -168,7 +168,7 @@ class TransactionsModule {
      *
      * @param txID - The transaction ID of the transaction to wait for.
      * @param options - Optional parameters for the request. Includes the timeout and interval between requests.
-     *                  Both parameters are in milliseconds. If the timeout is not specified, the request will not timeout!
+     *                  Both parameters are in milliseconds. If the timeout is not specified, the request will not time out!
      *
      * @returns A promise that resolves to the transaction receipt of the transaction. If the transaction is not included in a block before the timeout,
      *          the promise will resolve to `null`.

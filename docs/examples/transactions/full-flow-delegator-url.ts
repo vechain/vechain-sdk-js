@@ -60,7 +60,7 @@ const signedTx = await thorClient.transactions.signTransaction(
     }
 );
 
-// Check the signed transactio
+// Check the signed transaction
 expect(signedTx.isSigned).toEqual(true);
 expect(signedTx.isDelegated).toEqual(true);
 // expect(signedTx.delegator).toEqual(delegatorAccount.address); ---

@@ -79,11 +79,7 @@ In VechainThor blockchain a transaction can be composed of multiple clauses. \
 Clauses allow to send multiple payloads to different recipients within a single transaction.
 
 ```typescript { name=multiple_clauses, category=example }
-import {
-    VTHO_ADDRESS,
-    contract,
-    networkInfo
-} from '@vechain/vechain-sdk-core';
+import { VTHO_ADDRESS, contract, networkInfo } from '@vechain/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -152,8 +148,6 @@ Fee delegation is a feature on the VechainThor blockchain which enables the tran
 import { contract, networkInfo } from '@vechain/vechain-sdk-core';
 import {
     Transaction,
-    secp256k1,
-    TransactionUtils,
     TransactionHandler,
     HDNode,
     type TransactionClause,
@@ -162,8 +156,23 @@ import {
     unitsUtils
 } from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 
-// 1 - Define clause
+// Sender account with private key
+const senderAccount = {
+    privateKey:
+        'f9fc826b63a35413541d92d2bfb6661128cd5075fcdca583446d20c59994ba26',
+    address: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6'
+};
+
+// 1 - Create thor client for solo network
+const _soloUrl = 'http://localhost:8669/';
+const soloNetwork = new HttpClient(_soloUrl);
+const thorSoloClient = new ThorClient(soloNetwork, {
+    isPollingEnabled: false
+});
+
+// 2 - Define clause and estimate gas
 
 const clauses: TransactionClause[] = [
     contract.clauseBuilder.transferVET(
@@ -172,7 +181,13 @@ const clauses: TransactionClause[] = [
     )
 ];
 
-// 2 - Define transaction body
+// Get gas estimate
+const gasResult = await thorSoloClient.gas.estimateGas(
+    clauses,
+    senderAccount.address
+);
+
+// 3 - Define transaction body
 
 const body: TransactionBody = {
     chainTag: networkInfo.mainnet.chainTag,
@@ -180,7 +195,7 @@ const body: TransactionBody = {
     expiration: 0,
     clauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(clauses),
+    gas: gasResult.totalGas,
     dependsOn: null,
     nonce: 1,
     reserved: {
@@ -188,31 +203,29 @@ const body: TransactionBody = {
     }
 };
 
-// 3 - Create private keys of sender and delegate
+// 4 - Create private keys of sender and delegate
 
-const senderPrivateKey = secp256k1.generatePrivateKey();
 const nodeDelegate = HDNode.fromMnemonic(mnemonic.generate());
-
 const delegatorPrivateKey = nodeDelegate.privateKey;
 
-// 4 - Get address of delegate
+// 5 - Get address of delegate
 
 const delegatorAddress = nodeDelegate.address;
 
-// 5 - Sign transaction as sender and delegate
+// 6 - Sign transaction as sender and delegate
 
 const unsignedTx = new Transaction(body);
 const signedTransaction = TransactionHandler.signWithDelegator(
     unsignedTx,
-    senderPrivateKey,
+    Buffer.from(senderAccount.privateKey, 'hex'),
     delegatorPrivateKey
 );
 
-// 5 - Encode transaction
+// 7 - Encode transaction
 
 const encodedRaw = signedTransaction.encoded;
 
-// 6 - Decode transaction and check
+// 8 - Decode transaction and check
 
 const decodedTx = TransactionHandler.decode(encodedRaw, true);
 expect(decodedTx.isDelegated).toBeTruthy();
@@ -254,7 +267,7 @@ const body: TransactionBody = {
     expiration: 32, // tx will expire after block #16772280 + 32
     clauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(clauses),
+    gas: TransactionUtils.intrinsicGas(clauses), // use thor.gas.estimateGas() for better estimation
     dependsOn: null,
     nonce: 1
 };
@@ -284,8 +297,9 @@ expect(decodedTx.body.expiration).toBe(body.expiration);
 A transaction can be set to only be processed after another transaction, therefore defining an execution order for transactions. The _DependsOn_ field is the Id of the transaction on which the current transaction depends on. If the transaction does not depend on others _DependsOn_ can be set to _null_
 
 ```typescript { name=tx_dependency, category=example }
-import { contract, networkInfo } from '@vechain/vechain-sdk-core';
 import {
+    contract,
+    networkInfo,
     Transaction,
     secp256k1,
     TransactionUtils,
@@ -320,7 +334,7 @@ const txABody: TransactionBody = {
     expiration: 0,
     clauses: txAClauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(txAClauses),
+    gas: TransactionUtils.intrinsicGas(txAClauses), // use thor.gas.estimateGas() for better estimation
     dependsOn: null,
     nonce: 1
 };
@@ -334,7 +348,7 @@ const txBBody: TransactionBody = {
     expiration: 0,
     clauses: txBClauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(txBClauses),
+    gas: TransactionUtils.intrinsicGas(txBClauses), // use thor.gas.estimateGas() for better estimation
     dependsOn: null,
     nonce: 2
 };
@@ -412,7 +426,7 @@ const expected1 = [
             {
                 sender: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6',
                 recipient: '0xb717b660cd51109334bd10b2c168986055f58c1a',
-                amount: '0xde0b6b3a7640000' // hex represenation of 1000000000000000000 wei (1 VET)
+                amount: '0xde0b6b3a7640000' // hex representation of 1000000000000000000 wei (1 VET)
             }
         ],
         gasUsed: 0,
@@ -711,7 +725,7 @@ const signedTx = await thorClient.transactions.signTransaction(
     }
 );
 
-// Check the signed transactio
+// Check the signed transaction
 expect(signedTx.isSigned).toEqual(true);
 expect(signedTx.isDelegated).toEqual(true);
 // expect(signedTx.delegator).toEqual(delegatorAccount.address); ---

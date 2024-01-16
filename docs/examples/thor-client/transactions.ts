@@ -1,6 +1,5 @@
 import {
     Transaction,
-    TransactionUtils,
     TransactionHandler,
     dataUtils,
     unitsUtils,
@@ -8,6 +7,13 @@ import {
 } from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
+
+// Sender account with private key
+const senderAccount = {
+    privateKey:
+        'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5',
+    address: '0x2669514f9fe96bc7301177ba774d3da8a06cace4'
+};
 
 // 1 - Create thor client for solo network
 
@@ -28,6 +34,12 @@ const clauses = [
     )
 ];
 
+// Get gas estimate
+const gasResult = await thorSoloClient.gas.estimateGas(
+    clauses,
+    senderAccount.address
+);
+
 // 4 - Create transaction
 
 const transaction = new Transaction({
@@ -36,20 +48,16 @@ const transaction = new Transaction({
     expiration: 32,
     clauses,
     gasPriceCoef: 128,
-    gas: 5000 + TransactionUtils.intrinsicGas(clauses) * 5,
+    gas: gasResult.totalGas,
     dependsOn: null,
     nonce: 12345678
 });
-
-// Private keys of sender
-const senderPrivateKey =
-    'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5';
 
 // 5 - Normal signature (NO delegation)
 
 const rawNormalSigned = TransactionHandler.sign(
     transaction,
-    Buffer.from(senderPrivateKey, 'hex')
+    Buffer.from(senderAccount.privateKey, 'hex')
 ).encoded;
 
 // 6 - Send transaction

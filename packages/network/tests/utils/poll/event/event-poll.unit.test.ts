@@ -28,7 +28,7 @@ describe('Events poll unit tests', () => {
          * Simple start and stop of an event poll
          */
         test('Simple start and stop', async () => {
-            // To mock setTimeouts we need to use jest fake timers which allow to manpilate time and test asynchronicity
+            // To mock setTimeouts we need to use jest fake timers which allow to manipulate time and test asynchronicity
             jest.useFakeTimers({
                 legacyFakeTimers: true
             });
@@ -84,7 +84,7 @@ describe('Events poll unit tests', () => {
             // Start listening and continue the execution flow
             eventPoll.startListen();
 
-            // It seeme to be strange, BUT onData is called only after 1 second of the eventPoll.startListen() call.
+            // It seems to be strange, BUT onData is called only after 1 second of the eventPoll.startListen() call.
             expect(eventPoll.getCurrentIteration).toBe(0);
 
             // Advance timers by the specified interval & tick

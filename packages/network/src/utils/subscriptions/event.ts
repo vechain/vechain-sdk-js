@@ -8,7 +8,7 @@ import { type EventLike, type EventSubscriptionOptions } from './types';
  * @param baseURL - The URL of the node to request the subscription from.
  * @param event - The event to subscribe to.
  *                Can be an event object or a string representing an event.
- *                @see [Ethers Format Types](https://docs.ethers.org/v5/api/utils/abi/interface/#Interface--formatting
+ *                @see [Ethers Format Types](https://docs.ethers.org/v5/api/utils/abi/interface/#Interface--formatting)
  *
  * @param indexedValues - The values of the indexed parameters to construct the topic filters.
  * @param options - (optional) other optional parameters for the request.
