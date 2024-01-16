@@ -19,6 +19,15 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         super();
     }
 
+    /**
+     * Destroys the provider by closing the thorClient
+     * This is due to the fact that thorClient might be initialized with a polling interval to
+     * keep the head block updated.
+     */
+    public destroy(): void {
+        this.thorClient.destroy();
+    }
+
     public async request(args: EIP1193RequestArguments): Promise<unknown> {
         // Check if the method is supported
         assert(
@@ -34,13 +43,6 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         return await RPCMethodsMap(this.thorClient)[args.method](
             args.params as unknown[]
         );
-    }
-
-    /**
-     * Destroys the thor client
-     */
-    public destroy(): void {
-        this.thorClient.destroy();
     }
 }
 
