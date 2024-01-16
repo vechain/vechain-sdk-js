@@ -318,4 +318,59 @@ const ErrorsCodeAndClassesMapsFixture = [
         ]
     }
 ];
-export { ErrorsCodeAndClassesMapsFixture };
+
+/**
+ * Error maps for EIP1193 and JSON RPC errors.
+ *
+ * @note Should be used with the `buildRPCerror` function which always builds a `ProviderRpcError` object.
+ */
+const JSONrpcErrorsCodeAndClassesMapsFixture = [
+    {
+        name: 'EIP1193',
+        elements: [
+            {
+                errorCode: EIP1193.USER_REJECTED_REQUEST
+            },
+            {
+                errorCode: EIP1193.UNAUTHORIZED
+            },
+            {
+                errorCode: EIP1193.UNSUPPORTED_METHOD
+            },
+            {
+                errorCode: EIP1193.DISCONNECTED
+            },
+            {
+                errorCode: EIP1193.CHAIN_DISCONNECTED
+            }
+        ]
+    },
+    {
+        name: 'JSONRPC',
+        elements: [
+            {
+                errorCode: JSONRPC.PARSE_ERROR
+            },
+            {
+                errorCode: JSONRPC.INVALID_REQUEST
+            },
+            {
+                errorCode: JSONRPC.METHOD_NOT_FOUND
+            },
+            {
+                errorCode: JSONRPC.INVALID_PARAMS
+            },
+            {
+                errorCode: JSONRPC.INTERNAL_ERROR
+            },
+            {
+                errorCode: JSONRPC.DEFAULT
+            }
+        ]
+    }
+];
+
+export {
+    ErrorsCodeAndClassesMapsFixture,
+    JSONrpcErrorsCodeAndClassesMapsFixture
+};

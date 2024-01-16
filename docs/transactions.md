@@ -79,11 +79,7 @@ In VechainThor blockchain a transaction can be composed of multiple clauses. \
 Clauses allow to send multiple payloads to different recipients within a single transaction.
 
 ```typescript { name=multiple_clauses, category=example }
-import {
-    VTHO_ADDRESS,
-    contract,
-    networkInfo
-} from '@vechain/vechain-sdk-core';
+import { VTHO_ADDRESS, contract, networkInfo } from '@vechain/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -152,8 +148,6 @@ Fee delegation is a feature on the VechainThor blockchain which enables the tran
 import { contract, networkInfo } from '@vechain/vechain-sdk-core';
 import {
     Transaction,
-    secp256k1,
-    TransactionUtils,
     TransactionHandler,
     HDNode,
     type TransactionClause,
@@ -162,8 +156,23 @@ import {
     unitsUtils
 } from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 
-// 1 - Define clause
+// Sender account with private key
+const senderAccount = {
+    privateKey:
+        'f9fc826b63a35413541d92d2bfb6661128cd5075fcdca583446d20c59994ba26',
+    address: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6'
+};
+
+// 1 - Create thor client for solo network
+const _soloUrl = 'http://localhost:8669/';
+const soloNetwork = new HttpClient(_soloUrl);
+const thorSoloClient = new ThorClient(soloNetwork, {
+    isPollingEnabled: false
+});
+
+// 2 - Define clause and estimate gas
 
 const clauses: TransactionClause[] = [
     contract.clauseBuilder.transferVET(
@@ -172,7 +181,13 @@ const clauses: TransactionClause[] = [
     )
 ];
 
-// 2 - Define transaction body
+// Get gas estimate
+const gasResult = await thorSoloClient.gas.estimateGas(
+    clauses,
+    senderAccount.address
+);
+
+// 3 - Define transaction body
 
 const body: TransactionBody = {
     chainTag: networkInfo.mainnet.chainTag,
@@ -180,7 +195,7 @@ const body: TransactionBody = {
     expiration: 0,
     clauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(clauses),
+    gas: gasResult.totalGas,
     dependsOn: null,
     nonce: 1,
     reserved: {
@@ -188,31 +203,29 @@ const body: TransactionBody = {
     }
 };
 
-// 3 - Create private keys of sender and delegate
+// 4 - Create private keys of sender and delegate
 
-const senderPrivateKey = secp256k1.generatePrivateKey();
 const nodeDelegate = HDNode.fromMnemonic(mnemonic.generate());
-
 const delegatorPrivateKey = nodeDelegate.privateKey;
 
-// 4 - Get address of delegate
+// 5 - Get address of delegate
 
 const delegatorAddress = nodeDelegate.address;
 
-// 5 - Sign transaction as sender and delegate
+// 6 - Sign transaction as sender and delegate
 
 const unsignedTx = new Transaction(body);
 const signedTransaction = TransactionHandler.signWithDelegator(
     unsignedTx,
-    senderPrivateKey,
+    Buffer.from(senderAccount.privateKey, 'hex'),
     delegatorPrivateKey
 );
 
-// 5 - Encode transaction
+// 7 - Encode transaction
 
 const encodedRaw = signedTransaction.encoded;
 
-// 6 - Decode transaction and check
+// 8 - Decode transaction and check
 
 const decodedTx = TransactionHandler.decode(encodedRaw, true);
 expect(decodedTx.isDelegated).toBeTruthy();
@@ -254,7 +267,7 @@ const body: TransactionBody = {
     expiration: 32, // tx will expire after block #16772280 + 32
     clauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(clauses),
+    gas: TransactionUtils.intrinsicGas(clauses), // use thor.gas.estimateGas() for better estimation
     dependsOn: null,
     nonce: 1
 };
@@ -284,8 +297,9 @@ expect(decodedTx.body.expiration).toBe(body.expiration);
 A transaction can be set to only be processed after another transaction, therefore defining an execution order for transactions. The _DependsOn_ field is the Id of the transaction on which the current transaction depends on. If the transaction does not depend on others _DependsOn_ can be set to _null_
 
 ```typescript { name=tx_dependency, category=example }
-import { contract, networkInfo } from '@vechain/vechain-sdk-core';
 import {
+    contract,
+    networkInfo,
     Transaction,
     secp256k1,
     TransactionUtils,
@@ -320,7 +334,7 @@ const txABody: TransactionBody = {
     expiration: 0,
     clauses: txAClauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(txAClauses),
+    gas: TransactionUtils.intrinsicGas(txAClauses), // use thor.gas.estimateGas() for better estimation
     dependsOn: null,
     nonce: 1
 };
@@ -334,7 +348,7 @@ const txBBody: TransactionBody = {
     expiration: 0,
     clauses: txBClauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(txBClauses),
+    gas: TransactionUtils.intrinsicGas(txBClauses), // use thor.gas.estimateGas() for better estimation
     dependsOn: null,
     nonce: 2
 };
@@ -412,7 +426,7 @@ const expected1 = [
             {
                 sender: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6',
                 recipient: '0xb717b660cd51109334bd10b2c168986055f58c1a',
-                amount: '0xde0b6b3a7640000' // hex represenation of 1000000000000000000 wei (1 VET)
+                amount: '0xde0b6b3a7640000' // hex representation of 1000000000000000000 wei (1 VET)
             }
         ],
         gasUsed: 0,
@@ -489,3 +503,247 @@ thorSoloClient.destroy();
 
 ```
 
+## Complete examples
+In the following complete examples, we will explore the entire lifecycle of a VechainThor transaction, from building clauses to verifying the transaction on-chain.
+
+1.**No Delegation (Signing Only with an Origin Private Key)**: In this scenario, we'll demonstrate the basic process of creating a transaction, signing it with the origin private key, and sending it to the VechainThor blockchain without involving fee delegation.
+
+```typescript { name=full-flow-no-delegator, category=example }
+import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { expect } from 'expect';
+
+// 1 - Create the thor client
+const _soloUrl = 'http://localhost:8669/';
+const soloNetwork = new HttpClient(_soloUrl);
+const thorSoloClient = new ThorClient(soloNetwork, {
+    isPollingEnabled: false
+});
+
+// Sender account with private key
+const senderAccount = {
+    privateKey:
+        'f9fc826b63a35413541d92d2bfb6661128cd5075fcdca583446d20c59994ba26',
+    address: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6'
+};
+
+// 2 - Create the transaction clauses
+const transaction = {
+    clauses: [
+        contract.clauseBuilder.transferVET(
+            '0xb717b660cd51109334bd10b2c168986055f58c1a',
+            unitsUtils.parseVET('1')
+        )
+    ],
+    simulateTransactionOptions: {
+        caller: senderAccount.address
+    }
+};
+
+// 3 - Estimate gas
+const gasResult = await thorSoloClient.gas.estimateGas(
+    transaction.clauses,
+    transaction.simulateTransactionOptions.caller
+);
+
+// 4 - Build transaction body
+const txBody = await thorSoloClient.transactions.buildTransactionBody(
+    transaction.clauses,
+    gasResult.totalGas
+);
+
+// 4 - Sign the transaction
+const signedTransaction = await thorSoloClient.transactions.signTransaction(
+    txBody,
+    senderAccount.privateKey
+);
+
+// 5 - Send the transaction
+const sendTransactionResult =
+    await thorSoloClient.transactions.sendTransaction(signedTransaction);
+
+// 6 - Wait for transaction receipt
+const txReceipt = await thorSoloClient.transactions.waitForTransaction(
+    sendTransactionResult.id
+);
+
+// Check the transaction receipt
+expect(txReceipt).toBeDefined();
+expect(txReceipt?.gasUsed).toBe(gasResult.totalGas);
+expect(sendTransactionResult.id).toBe(txReceipt?.meta.txID);
+
+```
+
+2.**Delegation with Private Key**: Here, we'll extend the previous example by incorporating fee delegation. The transaction sender will delegate the transaction fee payment to another entity (delegator), and we'll guide you through the steps of building, signing, and sending such a transaction.
+
+```typescript { name=full-flow-delegator-private-key, category=example }
+import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { expect } from 'expect';
+
+// 1 - Create the thor client
+const _soloUrl = 'http://localhost:8669/';
+const soloNetwork = new HttpClient(_soloUrl);
+const thorSoloClient = new ThorClient(soloNetwork, {
+    isPollingEnabled: false
+});
+
+// Sender account with private key
+const senderAccount = {
+    privateKey:
+        'f9fc826b63a35413541d92d2bfb6661128cd5075fcdca583446d20c59994ba26',
+    address: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6'
+};
+
+// Delegator account with private key
+const delegatorAccount = {
+    privateKey:
+        '521b7793c6eb27d137b617627c6b85d57c0aa303380e9ca4e30a30302fbc6676',
+    address: '0x062F167A905C1484DE7e75B88EDC7439f82117DE'
+};
+
+// 2 - Create the transaction clauses
+const transaction = {
+    clauses: [
+        contract.clauseBuilder.transferVET(
+            '0xb717b660cd51109334bd10b2c168986055f58c1a',
+            unitsUtils.parseVET('1')
+        )
+    ],
+    simulateTransactionOptions: {
+        caller: senderAccount.address
+    }
+};
+
+// 3 - Estimate gas
+const gasResult = await thorSoloClient.gas.estimateGas(
+    transaction.clauses,
+    transaction.simulateTransactionOptions.caller
+);
+
+// 4 - Build transaction body
+const txBody = await thorSoloClient.transactions.buildTransactionBody(
+    transaction.clauses,
+    gasResult.totalGas,
+    {
+        isDelegated: true
+    }
+);
+
+// 4 - Sign the transaction
+const rawDelegatedSigned = await thorSoloClient.transactions.signTransaction(
+    txBody,
+    senderAccount.privateKey,
+    {
+        delegatorPrivatekey: delegatorAccount.privateKey
+    }
+);
+
+// Check the signed transaction
+expect(rawDelegatedSigned.isSigned).toEqual(true);
+expect(rawDelegatedSigned.isDelegated).toEqual(true);
+expect(rawDelegatedSigned.delegator).toEqual(delegatorAccount.address);
+
+// 5 - Send the transaction
+const sendTransactionResult =
+    await thorSoloClient.transactions.sendTransaction(rawDelegatedSigned);
+
+// 6 - Wait for transaction receipt
+const txReceipt = await thorSoloClient.transactions.waitForTransaction(
+    sendTransactionResult.id
+);
+
+// Check the transaction receipt
+expect(txReceipt).toBeDefined();
+expect(txReceipt?.gasUsed).toBe(gasResult.totalGas);
+expect(sendTransactionResult.id).toBe(txReceipt?.meta.txID);
+
+```
+
+3.**Delegation with URL**: This example will showcase the use of a delegation URL for fee delegation. The sender will specify a delegation URL in the `signTransaction` options, allowing a designated sponsor to pay the transaction fee. We'll cover the full process, from building clauses to verifying the transaction on-chain.
+
+```typescript { name=full-flow-delegator-url, category=example }
+import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { expect } from 'expect';
+
+// 1 - Create the thor client
+const _testnetUrl = 'https://testnet.vechain.org/';
+const testNetwork = new HttpClient(_testnetUrl);
+const thorClient = new ThorClient(testNetwork, {
+    isPollingEnabled: false
+});
+
+// Sender account with private key
+const senderAccount = {
+    mnemonic:
+        'fat draw position use tenant force south job notice soul time fruit',
+    privateKey:
+        '2153c1e49c14d92e8b558750e4ec3dc9b5a6ac4c13d24a71e0fa4f90f4a384b5',
+    address: '0x571E3E1fBE342891778151f037967E107fb89bd0'
+};
+
+// Delegator account with private key
+const delegatorAccount = {
+    URL: 'https://sponsor-testnet.vechain.energy/by/269'
+};
+
+// 2 - Create the transaction clauses
+const transaction = {
+    clauses: [
+        contract.clauseBuilder.transferVET(
+            '0xb717b660cd51109334bd10b2c168986055f58c1a',
+            unitsUtils.parseVET('1')
+        )
+    ],
+    simulateTransactionOptions: {
+        caller: senderAccount.address
+    }
+};
+
+// 3 - Estimate gas
+const gasResult = await thorClient.gas.estimateGas(
+    transaction.clauses,
+    senderAccount.address
+);
+
+// 4 - Build transaction body
+const txBody = await thorClient.transactions.buildTransactionBody(
+    transaction.clauses,
+    gasResult.totalGas,
+    {
+        isDelegated: true
+    }
+);
+
+// 4 - Sign the transaction
+const signedTx = await thorClient.transactions.signTransaction(
+    txBody,
+    senderAccount.privateKey,
+    {
+        delegatorUrl: delegatorAccount.URL
+    }
+);
+
+// Check the signed transaction
+expect(signedTx.isSigned).toEqual(true);
+expect(signedTx.isDelegated).toEqual(true);
+// expect(signedTx.delegator).toEqual(delegatorAccount.address); ---
+
+// 5 - Send the transaction
+const sendTransactionResult =
+    await thorClient.transactions.sendTransaction(signedTx);
+
+// 6 - Wait for transaction receipt
+const txReceipt = await thorClient.transactions.waitForTransaction(
+    sendTransactionResult.id
+);
+
+// Check the transaction receipt
+expect(txReceipt).toBeDefined();
+expect(txReceipt?.gasUsed).toBe(gasResult.totalGas);
+expect(sendTransactionResult.id).toBe(txReceipt?.meta.txID);
+
+```
+
+By examining these complete examples, developers can gain a comprehensive understanding of transaction handling in the vechain SDK. Each example demonstrates the steps involved in initiating, signing, and sending transactions, as well as the nuances associated with fee delegation.

@@ -168,7 +168,7 @@ class TransactionsModule {
      *
      * @param txID - The transaction ID of the transaction to wait for.
      * @param options - Optional parameters for the request. Includes the timeout and interval between requests.
-     *                  Both parameters are in milliseconds. If the timeout is not specified, the request will not timeout!
+     *                  Both parameters are in milliseconds. If the timeout is not specified, the request will not time out!
      *
      * @returns A promise that resolves to the transaction receipt of the transaction. If the transaction is not included in a block before the timeout,
      *          the promise will resolve to `null`.
@@ -229,7 +229,7 @@ class TransactionsModule {
             nonce: `0x${dataUtils.toHexString(randomBytes(8))}`,
             expiration: options?.expiration ?? 32,
             clauses,
-            gasPriceCoef: options?.gasPriceCoef ?? 127,
+            gasPriceCoef: options?.gasPriceCoef ?? 0,
             gas,
             dependsOn: options?.dependsOn ?? null,
             reserved:

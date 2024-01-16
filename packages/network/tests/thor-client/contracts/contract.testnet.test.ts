@@ -3,7 +3,7 @@ import { testNetwork } from '../../fixture';
 import { ThorClient } from '../../../src';
 
 /**
- * Transcations module tests suite.
+ * Transactions module tests suite.
  *
  * @group integration/clients/thor-client/gas
  */

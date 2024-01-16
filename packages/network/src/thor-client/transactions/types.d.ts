@@ -125,7 +125,7 @@ interface SimulateTransactionOptions {
         The following options are useful when simulating transactions that provide additional context to the EVM.
         The additional context is handled by the built-in Extension-V2 Smart contract (https://docs.vechain.org/developer-resources/built-in-contracts#extension-v2-sol)
 
-        The contract allows for smart contract developers to obtain additional context about the transaction in their smart contrace code, for example:
+        The contract allows for smart contract developers to obtain additional context about the transaction in their smart contract code, for example:
         - The expiration of the transaction
         - The block reference of the transaction
         - The gas payer of the transaction
@@ -266,38 +266,6 @@ interface TransactionReceipt {
 }
 
 /**
- * Type for transaction call simulation.
- */
-type TransactionCallSimulation = [
-    {
-        /**
-         * Returned data from the simulation
-         */
-        data: string;
-        /**
-         * Events from the siluation
-         */
-        events: TransactionEventsType;
-        /**
-         * Details of transfers from the simulation
-         */
-        transfers: TransactionTransfersType;
-        /**
-         * Gas used from the simulation
-         */
-        gasUsed: number;
-        /**
-         * If the transaction would be reverted
-         */
-        reverted: boolean;
-        /**
-         * Details of any VM errors
-         */
-        vmError: string;
-    }
-];
-
-/**
  * Type for transaction send result.
  */
 interface TransactionSendResult {
@@ -349,9 +317,9 @@ export type {
     type GetTransactionReceiptInputOptions,
     type TransactionReceipt,
     type TransactionDetail,
-    type TransactionCallSimulation,
     type TransactionSendResult,
     type TransactionSimulationResult,
     type SimulateTransactionClause,
-    type SimulateTransactionOptions
+    type SimulateTransactionOptions,
+    type TransactionDetailNoRaw
 };

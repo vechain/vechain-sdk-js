@@ -15,10 +15,7 @@ vechain sdk supports blake2b256 and keccak256 hash functions.
 Blake2b256 is a specific type of hash function known for its speed and security. It takes any input data and generates a 256-bit (32-byte) hash value. The blake2b256 part refers to the specific design of the algorithm, and the 256 indicates the length of the resulting hash code. Blake2b256 is widely used in cryptographic applications, blockchain technologies, and secure data storage.
 
 ```typescript { name=blake2b256, category=example }
-import {
-    blake2b256,
-    type HashInput
-} from '@vechain/vechain-sdk-core';
+import { blake2b256, type HashInput } from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // Input of hash function (it can be a string or a Buffer)

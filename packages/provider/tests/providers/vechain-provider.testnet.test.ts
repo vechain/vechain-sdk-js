@@ -3,7 +3,7 @@ import { VechainProvider } from '../../src';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../fixture';
-import { zeroBlock } from '../rpc-mapper/methods/eth_getBlockByNumber/fixture';
+import { providerMethodsTestCases } from './fixture';
 
 /**
  * Vechain provider tests
@@ -33,21 +33,22 @@ describe('Vechain provider tests', () => {
     });
 
     /**
-     * Call RPC function tests
+     * Provider methods tests
      */
-    test('Should be able to call an RPC function', async () => {
-        // Check if the provider is defined
-        expect(provider).toBeDefined();
+    providerMethodsTestCases.forEach(
+        ({ description, method, params, expected }) => {
+            test(description, async () => {
+                // Call RPC function
+                const rpcCall = await provider.request({
+                    method,
+                    params
+                });
 
-        // Call simple RPC function to get the zero block
-        const rpcCallZeroBlock = await provider.request({
-            method: 'eth_getBlockByNumber',
-            // OR equivalent
-            // method: RPC_METHODS.eth_getBlockByNumber,
-            params: [0]
-        });
-        expect(rpcCallZeroBlock).toStrictEqual(zeroBlock);
-    });
+                // Compare the result with the expected value
+                expect(rpcCall).toStrictEqual(expected);
+            });
+        }
+    );
 
     /**
      * Invalid RPC method tests

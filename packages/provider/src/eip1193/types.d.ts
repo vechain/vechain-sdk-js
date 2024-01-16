@@ -11,15 +11,6 @@ interface EIP1193RequestArguments {
 }
 
 /**
- * Interface for EIP-1193 provider connection info.
- *
- * @see https://eips.ethereum.org/EIPS/eip-1193#connect
- */
-interface EIP1193ProviderConnectInfo {
-    readonly chainId: string;
-}
-
-/**
  * Standardized provider interface for EIP-1193.
  *
  * @see https://eips.ethereum.org/EIPS/eip-1193#message
@@ -34,8 +25,4 @@ interface EIP1193ProviderMessage {
     request: (args: EIP1193RequestArguments) => Promise<unknown>;
 }
 
-export {
-    type EIP1193RequestArguments,
-    type EIP1193ProviderConnectInfo,
-    type EIP1193ProviderMessage
-};
+export { type EIP1193RequestArguments, type EIP1193ProviderMessage };

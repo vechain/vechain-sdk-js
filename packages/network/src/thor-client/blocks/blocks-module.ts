@@ -34,7 +34,7 @@ class BlocksModule {
     /**
      * Initializes a new instance of the `Thor` class.
      * @param thor - The Thor instance used to interact with the vechain blockchain API.
-     * @param BlocksModuleOptions - (Optional) Other optional parameters for polling and error handling.
+     * @param options - (Optional) Other optional parameters for polling and error handling.
      */
     constructor(
         readonly thor: ThorClient,
@@ -42,7 +42,7 @@ class BlocksModule {
     ) {
         this.onBlockError = options?.onBlockError;
 
-        if (options?.isPollingEnabled ?? true) this.setupPolling();
+        if (options?.isPollingEnabled === true) this.setupPolling();
     }
 
     /**
@@ -138,7 +138,8 @@ class BlocksModule {
     /**
      * Synchronously waits for a specific block revision using polling.
      *
-     * @param revision - The block number or ID to wait for.
+     * @param blockNumber - The block number to wait for.
+     * @param options - (Optional) Allows to specify timeout and interval in milliseconds
      * @returns A promise that resolves to an object containing the block details.
      */
     public async waitForBlock(
@@ -148,7 +149,6 @@ class BlocksModule {
         assert(
             blockNumber === undefined ||
                 blockNumber === null ||
-                typeof blockNumber !== 'number' ||
                 blockNumber >= 0,
             DATA.INVALID_DATA_TYPE,
             'Invalid blockNumber. The blockNumber must be a number representing a block number.',
@@ -156,18 +156,13 @@ class BlocksModule {
         );
 
         // Use the Poll.SyncPoll utility to repeatedly call getBestBlock with a specified interval
-        const block = await Poll.SyncPoll(
-            async () => await this.getBestBlock(),
-            {
-                requestIntervalInMilliseconds: options?.intervalMs,
-                maximumWaitingTimeInMilliseconds: options?.timeoutMs
-            }
-        ).waitUntil((result) => {
+        return await Poll.SyncPoll(async () => await this.getBestBlock(), {
+            requestIntervalInMilliseconds: options?.intervalMs,
+            maximumWaitingTimeInMilliseconds: options?.timeoutMs
+        }).waitUntil((result) => {
             // Continue polling until the result's block number matches the specified revision
             return result != null && result?.number >= blockNumber;
         });
-
-        return block;
     }
 
     /**

@@ -1,8 +1,4 @@
-import {
-    HttpClient,
-    Poll,
-    ThorClient
-} from '@vechain/vechain-sdk-network';
+import { HttpClient, Poll, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet

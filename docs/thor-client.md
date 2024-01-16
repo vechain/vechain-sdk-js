@@ -337,7 +337,6 @@ Thor-client provides methods for developers to interact with transactions on the
 ```typescript { name=transactions, category=example }
 import {
     Transaction,
-    TransactionUtils,
     TransactionHandler,
     dataUtils,
     unitsUtils,
@@ -345,6 +344,13 @@ import {
 } from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
+
+// Sender account with private key
+const senderAccount = {
+    privateKey:
+        'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5',
+    address: '0x2669514f9fe96bc7301177ba774d3da8a06cace4'
+};
 
 // 1 - Create thor client for solo network
 
@@ -365,6 +371,12 @@ const clauses = [
     )
 ];
 
+// Get gas estimate
+const gasResult = await thorSoloClient.gas.estimateGas(
+    clauses,
+    senderAccount.address
+);
+
 // 4 - Create transaction
 
 const transaction = new Transaction({
@@ -373,20 +385,16 @@ const transaction = new Transaction({
     expiration: 32,
     clauses,
     gasPriceCoef: 128,
-    gas: 5000 + TransactionUtils.intrinsicGas(clauses) * 5,
+    gas: gasResult.totalGas,
     dependsOn: null,
     nonce: 12345678
 });
-
-// Private keys of sender
-const senderPrivateKey =
-    'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5';
 
 // 5 - Normal signature (NO delegation)
 
 const rawNormalSigned = TransactionHandler.sign(
     transaction,
-    Buffer.from(senderPrivateKey, 'hex')
+    Buffer.from(senderAccount.privateKey, 'hex')
 ).encoded;
 
 // 6 - Send transaction
@@ -443,7 +451,6 @@ The following code demonstrates how to use Thor-client with the fee delegation f
 ```typescript { name=delegated-transactions, category=example }
 import {
     Transaction,
-    TransactionUtils,
     TransactionHandler,
     dataUtils,
     unitsUtils,
@@ -451,6 +458,22 @@ import {
 } from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
+
+// Sender account with private key
+const senderAccount = {
+    privateKey:
+        'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5',
+    address: '0x2669514f9fe96bc7301177ba774d3da8a06cace4'
+};
+
+/** Delegate account with private key
+ * @NOTE The delegate account must have enough VET and VTHO to pay for the gas
+ */
+const delegateAccount = {
+    privateKey:
+        '432f38bcf338c374523e83fdb2ebe1030aba63c7f1e81f7d76c5f53f4d42e766',
+    address: '0x88b2551c3ed42ca663796c10ce68c88a65f73fe2'
+};
 
 // 1 - Create thor client for solo network
 
@@ -471,8 +494,11 @@ const clauses = [
     )
 ];
 
-// Get gas @NOTE this is an approximation
-const gas = 5000 + TransactionUtils.intrinsicGas(clauses) * 5;
+// Get gas estimate
+const gasResult = await thorSoloClient.gas.estimateGas(
+    clauses,
+    senderAccount.address
+);
 
 //  4 - Create delegated transaction
 
@@ -482,7 +508,7 @@ const delegatedTransaction = new Transaction({
     expiration: 32,
     clauses,
     gasPriceCoef: 128,
-    gas,
+    gas: gasResult.totalGas,
     dependsOn: null,
     nonce: 12345678,
     reserved: {
@@ -490,22 +516,12 @@ const delegatedTransaction = new Transaction({
     }
 });
 
-// Private keys of sender
-const senderPrivateKey =
-    'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5';
-
-/** Private key of delegate
- * @NOTE The delegate account must have enough VET and VTHO to pay for the gas
- */
-const delegatePrivateKey =
-    '432f38bcf338c374523e83fdb2ebe1030aba63c7f1e81f7d76c5f53f4d42e766';
-
 // 5 - Normal signature and delegation signature
 
 const rawDelegatedSigned = TransactionHandler.signWithDelegator(
     delegatedTransaction,
-    Buffer.from(senderPrivateKey, 'hex'),
-    Buffer.from(delegatePrivateKey, 'hex')
+    Buffer.from(senderAccount.privateKey, 'hex'),
+    Buffer.from(delegateAccount.privateKey, 'hex')
 ).encoded;
 
 // 6 - Send transaction
@@ -533,5 +549,107 @@ expect(transactionReceipt).toBeDefined();
 
 // Destroying the Thor client
 thorSoloClient.destroy();
+
+```
+
+## Gas
+
+The `GasModule` in Thor-client is designed to handle gas-related operations on the VechainThor blockchain. Gas is a crucial aspect of executing transactions on the blockchain, representing the computational and storage resources consumed during transaction processing. This module provides convenient methods for estimating the gas cost of a transaction, allowing developers to optimize their interactions with the VechainThor network.
+
+### gasPadding
+The `gasPadding` option is a percentage of gas to add on top of the estimated gas. The value must be between (0, 1].
+
+```typescript { name=gas, category=example }
+import {
+    Transaction,
+    TransactionHandler,
+    networkInfo
+} from '@vechain/vechain-sdk-core';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { expect } from 'expect';
+
+// 1 - Create thor client for solo network
+const _soloUrl = 'http://localhost:8669';
+const soloNetwork = new HttpClient(_soloUrl);
+const thorSoloClient = new ThorClient(soloNetwork);
+
+// 2- Init transaction
+
+// 2.1 - Get latest block
+const latestBlock = await thorSoloClient.blocks.getBestBlock();
+
+// 2.2 - Transaction sender and receiver
+const senderAccount = {
+    address: '0x2669514f9fe96bc7301177ba774d3da8a06cace4',
+    privateKey: Buffer.from(
+        'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5',
+        'hex'
+    )
+};
+
+const receiverAccount = {
+    address: '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+    privateKey: Buffer.from(
+        '1758771c54938e977518e4ff1c297aca882f6598891df503030734532efa790e',
+        'hex'
+    )
+};
+
+// 2 - Create transaction clauses and calcolate gas
+const clauses = [
+    {
+        to: receiverAccount.address,
+        value: 1000000,
+        data: '0x'
+    }
+];
+
+// Options to use gasPadding
+const options = {
+    gasPadding: 0.2 // 20%
+};
+
+// Estimate gas
+const gasResult = await thorSoloClient.gas.estimateGas(
+    clauses,
+    senderAccount.address,
+    options
+);
+
+// 4 - Create transaction
+
+const transaction = new Transaction({
+    chainTag: networkInfo.solo.chainTag,
+    blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
+    expiration: 32,
+    clauses,
+    gasPriceCoef: 128,
+    gas: gasResult.totalGas,
+    dependsOn: null,
+    nonce: 12345678
+});
+
+// 5 - Sign transaction
+const rawNormalSigned = TransactionHandler.sign(
+    transaction,
+    senderAccount.privateKey
+).encoded;
+
+// 6 - Send transaction
+
+const send = await thorSoloClient.transactions.sendRawTransaction(
+    `0x${rawNormalSigned.toString('hex')}`
+);
+
+// 7 - Get transaction details and receipt
+
+const transactionDetails = await thorSoloClient.transactions.getTransaction(
+    send.id
+);
+const transactionReceipt =
+    await thorSoloClient.transactions.getTransactionReceipt(send.id);
+
+expect(transactionDetails).toBeDefined();
+expect(transactionReceipt).toBeDefined();
 
 ```

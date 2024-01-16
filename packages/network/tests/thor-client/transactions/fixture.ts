@@ -1,6 +1,5 @@
 import {
     type TransactionBody,
-    TransactionUtils,
     contract,
     unitsUtils,
     networkInfo
@@ -62,8 +61,7 @@ const transfer1VTHOClauseWithValueAsANumber = {
 /**
  * transaction body that transfers 1 VTHO to TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
  */
-const transferTransactionBody: Omit<TransactionBody, 'nonce'> = {
-    gas: 5000 + TransactionUtils.intrinsicGas([transfer1VTHOClause]) * 5, // @NOTE it is a temporary gas offered solution. This part will be replaced with estimateGas
+const transferTransactionBody: Omit<TransactionBody, 'gas' | 'nonce'> = {
     clauses: [transfer1VTHOClause],
     chainTag: networkInfo.solo.chainTag,
     blockRef: networkInfo.solo.genesisBlock.id.slice(0, 18),
@@ -75,8 +73,10 @@ const transferTransactionBody: Omit<TransactionBody, 'nonce'> = {
 /**
  * transaction body that transfers 1 VTHO to TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
  */
-const transferTransactionBodyValueAsNumber: Omit<TransactionBody, 'nonce'> = {
-    gas: 5000 + TransactionUtils.intrinsicGas([transfer1VTHOClause]) * 5, // @NOTE it is a temporary gas offered solution. This part will be replaced with estimateGas
+const transferTransactionBodyValueAsNumber: Omit<
+    TransactionBody,
+    'gas' | 'nonce'
+> = {
     clauses: [transfer1VTHOClauseWithValueAsANumber],
     chainTag: networkInfo.solo.chainTag,
     blockRef: networkInfo.solo.genesisBlock.id.slice(0, 18),
@@ -190,7 +190,7 @@ const buildTransactionBodyClausesTestCases = [
                 dependsOn: null,
                 expiration: 32,
                 gas: 51518,
-                gasPriceCoef: 127,
+                gasPriceCoef: 0,
                 reserved: undefined
             },
             testnet: {
@@ -205,7 +205,7 @@ const buildTransactionBodyClausesTestCases = [
                 dependsOn: null,
                 expiration: 32,
                 gas: 39263,
-                gasPriceCoef: 127,
+                gasPriceCoef: 0,
                 reserved: undefined
             }
         }
@@ -330,7 +330,7 @@ const signTransactionTestCases = {
                         dependsOn: null,
                         expiration: 32,
                         gas: 57491,
-                        gasPriceCoef: 127,
+                        gasPriceCoef: 0,
                         reserved: undefined
                     }
                 }
@@ -357,7 +357,7 @@ const signTransactionTestCases = {
                         dependsOn: null,
                         expiration: 32,
                         gas: 57491,
-                        gasPriceCoef: 127,
+                        gasPriceCoef: 0,
                         reserved: {
                             features: 1
                         }
@@ -420,7 +420,7 @@ const signTransactionTestCases = {
                         dependsOn: null,
                         expiration: 32,
                         gas: 21464,
-                        gasPriceCoef: 127,
+                        gasPriceCoef: 0,
                         reserved: {
                             features: 1
                         }
