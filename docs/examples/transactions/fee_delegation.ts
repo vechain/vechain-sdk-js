@@ -1,8 +1,6 @@
 import { contract, networkInfo } from '@vechain/vechain-sdk-core';
 import {
     Transaction,
-    secp256k1,
-    TransactionUtils,
     TransactionHandler,
     HDNode,
     type TransactionClause,
@@ -11,8 +9,23 @@ import {
     unitsUtils
 } from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
+import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 
-// 1 - Define clause
+// Sender account with private key
+const senderAccount = {
+    privateKey:
+        'f9fc826b63a35413541d92d2bfb6661128cd5075fcdca583446d20c59994ba26',
+    address: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6'
+};
+
+// 1 - Create thor client for solo network
+const _soloUrl = 'http://localhost:8669/';
+const soloNetwork = new HttpClient(_soloUrl);
+const thorSoloClient = new ThorClient(soloNetwork, {
+    isPollingEnabled: false
+});
+
+// 2 - Define clause and estimate gas
 
 const clauses: TransactionClause[] = [
     contract.clauseBuilder.transferVET(
@@ -21,7 +34,13 @@ const clauses: TransactionClause[] = [
     )
 ];
 
-// 2 - Define transaction body
+// Get gas estimate
+const gasResult = await thorSoloClient.gas.estimateGas(
+    clauses,
+    senderAccount.address
+);
+
+// 3 - Define transaction body
 
 const body: TransactionBody = {
     chainTag: networkInfo.mainnet.chainTag,
@@ -29,7 +48,7 @@ const body: TransactionBody = {
     expiration: 0,
     clauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(clauses),
+    gas: gasResult.totalGas,
     dependsOn: null,
     nonce: 1,
     reserved: {
@@ -37,31 +56,29 @@ const body: TransactionBody = {
     }
 };
 
-// 3 - Create private keys of sender and delegate
+// 4 - Create private keys of sender and delegate
 
-const senderPrivateKey = secp256k1.generatePrivateKey();
 const nodeDelegate = HDNode.fromMnemonic(mnemonic.generate());
-
 const delegatorPrivateKey = nodeDelegate.privateKey;
 
-// 4 - Get address of delegate
+// 5 - Get address of delegate
 
 const delegatorAddress = nodeDelegate.address;
 
-// 5 - Sign transaction as sender and delegate
+// 6 - Sign transaction as sender and delegate
 
 const unsignedTx = new Transaction(body);
 const signedTransaction = TransactionHandler.signWithDelegator(
     unsignedTx,
-    senderPrivateKey,
+    Buffer.from(senderAccount.privateKey, 'hex'),
     delegatorPrivateKey
 );
 
-// 5 - Encode transaction
+// 7 - Encode transaction
 
 const encodedRaw = signedTransaction.encoded;
 
-// 6 - Decode transaction and check
+// 8 - Decode transaction and check
 
 const decodedTx = TransactionHandler.decode(encodedRaw, true);
 expect(decodedTx.isDelegated).toBeTruthy();

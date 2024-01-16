@@ -21,7 +21,7 @@ class GasModule {
      *
      * @param clauses - The clauses of the transaction to simulate.
      * @param caller - The address of the account sending the transaction.
-     * @param options - Optional parameters for the request. Includes all options of the `simulateTransaction` method exluding the `caller` option.
+     * @param options - Optional parameters for the request. Includes all options of the `simulateTransaction` method excluding the `caller` option.
      *                  @see {@link TransactionsClient#simulateTransaction}
      *                  Also, includes the `gasPadding` option which is a percentage of gas to add on top of the estimated gas. The value must be between (0, 1].
      *
@@ -64,7 +64,7 @@ class GasModule {
         });
 
         // The intrinsic gas of the transaction
-        const instrinsicGas = TransactionUtils.intrinsicGas(clauses);
+        const intrinsicGas = TransactionUtils.intrinsicGas(clauses);
 
         // totalSimulatedGas represents the summation of all clauses' gasUsed
         const totalSimulatedGas = simulations.reduce((sum, simulation) => {
@@ -74,7 +74,7 @@ class GasModule {
         // The total gas of the transaction
         // If the transaction involves contract interaction, a constant 15000 gas is added to the total gas
         const totalGas =
-            (instrinsicGas +
+            (intrinsicGas +
                 (totalSimulatedGas !== 0 ? totalSimulatedGas + 15000 : 0)) *
             (1 + (options?.gasPadding ?? 0)); // Add gasPadding if it is defined
 

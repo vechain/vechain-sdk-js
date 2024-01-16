@@ -3,8 +3,7 @@ import { TEST_ACCOUNTS, soloNetwork } from '../../fixture';
 import {
     dataUtils,
     Transaction,
-    TransactionHandler,
-    TransactionUtils
+    TransactionHandler
 } from '@vechain/vechain-sdk-core';
 import { sendTransactionErrors, simulateTransaction } from './fixture-thorest';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
@@ -43,13 +42,11 @@ describe('ThorClient - Transactions Module', () => {
                 // Get latest block
                 const latestBlock = await thorSoloClient.blocks.getBestBlock();
 
-                // Get gas @NOTE it is approximation. This part must be improved.
-                const gas =
-                    5000 +
-                    TransactionUtils.intrinsicGas(
-                        testCase.transaction.clauses
-                    ) *
-                        5;
+                // Get gas estimate
+                const gasResult = await thorSoloClient.gas.estimateGas(
+                    testCase.transaction.clauses,
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                );
 
                 // Create transactions
                 const transaction = new Transaction({
@@ -61,7 +58,7 @@ describe('ThorClient - Transactions Module', () => {
                     expiration: 32,
                     clauses: testCase.transaction.clauses,
                     gasPriceCoef: 128,
-                    gas,
+                    gas: gasResult.totalGas,
                     dependsOn: null,
                     nonce: 12345678
                 });
@@ -75,7 +72,7 @@ describe('ThorClient - Transactions Module', () => {
                     expiration: 32,
                     clauses: testCase.transaction.clauses,
                     gasPriceCoef: 128,
-                    gas,
+                    gas: gasResult.totalGas,
                     dependsOn: null,
                     nonce: 12345678,
                     reserved: {

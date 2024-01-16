@@ -52,6 +52,7 @@ class ThorClient {
      * Constructs a new `ThorClient` instance with a given HTTP client.
      *
      * @param httpClient - The HTTP client instance used for making network requests.
+     * @param options - (Optional) Other optional parameters for polling and error handling.
      */
     constructor(
         readonly httpClient: HttpClient,

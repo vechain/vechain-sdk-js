@@ -22,7 +22,7 @@ describe('ThorClient - Gas Module', () => {
     });
 
     /**
-     * Test suide for 'estimateGas' method
+     * Test suite for 'estimateGas' method
      */
     describe('estimateGas', () => {
         /**
