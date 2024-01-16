@@ -1,8 +1,11 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { NotImplementedError } from '@vechain/vechain-sdk-errors';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
+import {
+    ethGetTransactionByHashTestCases,
+    invalidEthGetTransactionByHashTestCases
+} from './fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_getTransactionByHash' method
@@ -35,17 +38,19 @@ describe('RPC Mapper - eth_getTransactionByHash method tests', () => {
      */
     describe('eth_getTransactionByHash - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Test cases where the rpc method call does not throw an error
          */
-        test('eth_getTransactionByHash - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.eth_getTransactionByHash
-                    ]([-1])
-            ).rejects.toThrowError(NotImplementedError);
-        });
+        ethGetTransactionByHashTestCases.forEach(
+            ({ description, params, expected }) => {
+                test(description, async () => {
+                    const rpcCall =
+                        await RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_getTransactionByHash
+                        ](params);
+                    expect(rpcCall).toStrictEqual(expected);
+                });
+            }
+        );
     });
 
     /**
@@ -53,16 +58,18 @@ describe('RPC Mapper - eth_getTransactionByHash method tests', () => {
      */
     describe('eth_getTransactionByHash - Negative cases', () => {
         /**
-         * Negative case 1 - ... Description ...
+         * Test cases where the rpc method call throws an error
          */
-        test('eth_getTransactionByHash - negative case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.eth_getTransactionByHash
-                    ](['SOME_RANDOM_PARAM'])
-            ).rejects.toThrowError(NotImplementedError);
-        });
+        invalidEthGetTransactionByHashTestCases.forEach(
+            ({ description, params, expectedError }) => {
+                test(description, async () => {
+                    await expect(
+                        RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_getTransactionByHash
+                        ](params)
+                    ).rejects.toThrowError(expectedError);
+                });
+            }
+        );
     });
 });

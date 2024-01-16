@@ -42,7 +42,7 @@ class BlocksModule {
     ) {
         this.onBlockError = options?.onBlockError;
 
-        if (options?.isPollingEnabled ?? true) this.setupPolling();
+        if (options?.isPollingEnabled === true) this.setupPolling();
     }
 
     /**

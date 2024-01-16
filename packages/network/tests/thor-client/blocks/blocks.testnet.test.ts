@@ -18,7 +18,9 @@ describe('ThorClient - Blocks Module', () => {
     let thorClient: ThorClient;
 
     beforeEach(() => {
-        thorClient = new ThorClient(new HttpClient(testnetUrl));
+        thorClient = new ThorClient(new HttpClient(testnetUrl), {
+            isPollingEnabled: true
+        });
     });
 
     afterEach(() => {
