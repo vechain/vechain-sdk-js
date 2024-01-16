@@ -320,5 +320,6 @@ export type {
     type TransactionSendResult,
     type TransactionSimulationResult,
     type SimulateTransactionClause,
-    type SimulateTransactionOptions
+    type SimulateTransactionOptions,
+    type TransactionDetailNoRaw
 };
