@@ -84,9 +84,11 @@ const send = await thorSoloClient.transactions.sendRawTransaction(
 const transactionDetails = await thorSoloClient.transactions.getTransaction(
     send.id
 );
+const transactionReceipt =
+    await thorSoloClient.transactions.getTransactionReceipt(send.id);
+
+expect(transactionDetails).toBeDefined();
+expect(transactionReceipt).toBeDefined();
 
 // Destroy thor client
 thorSoloClient.destroy();
-
-expect(transactionDetails).toBeDefined();
-expect(transactionDetails).toHaveProperty('id');
