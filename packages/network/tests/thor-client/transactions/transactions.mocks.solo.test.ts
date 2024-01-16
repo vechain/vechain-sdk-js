@@ -31,7 +31,7 @@ describe('buildTransactionBody with mocks', () => {
         thorSoloClient.destroy();
     });
 
-    test('Should throw error when gest block is not found', async () => {
+    test('Should throw error when get block is not found', async () => {
         const thorSoloClient = new ThorClient(soloNetwork);
 
         // Mock the getBestBlock method to return null

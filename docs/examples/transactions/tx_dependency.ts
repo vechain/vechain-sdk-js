@@ -1,5 +1,6 @@
-import { contract, networkInfo } from '@vechain/vechain-sdk-core';
 import {
+    contract,
+    networkInfo,
     Transaction,
     secp256k1,
     TransactionUtils,
@@ -34,7 +35,7 @@ const txABody: TransactionBody = {
     expiration: 0,
     clauses: txAClauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(txAClauses),
+    gas: TransactionUtils.intrinsicGas(txAClauses), // use thor.gas.estimateGas() for better estimation
     dependsOn: null,
     nonce: 1
 };
@@ -48,7 +49,7 @@ const txBBody: TransactionBody = {
     expiration: 0,
     clauses: txBClauses,
     gasPriceCoef: 0,
-    gas: TransactionUtils.intrinsicGas(txBClauses),
+    gas: TransactionUtils.intrinsicGas(txBClauses), // use thor.gas.estimateGas() for better estimation
     dependsOn: null,
     nonce: 2
 };

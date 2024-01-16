@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { type AxiosError } from 'axios';
 import { convertErrors } from './fixture';
-import { convertError } from '../../../src/utils';
+import { convertError } from '../../../src';
 
 /**
  * ConvertError function tests.

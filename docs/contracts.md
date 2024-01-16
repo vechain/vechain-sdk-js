@@ -18,7 +18,7 @@ const contractBytecode =
 // 2 - Create a clause to deploy the contract
 const clause = contract.clauseBuilder.deployContract(contractBytecode);
 
-// The first clause of the transaction should be a deploy contract clause
+// The first clause of the transaction should be a deployed contract clause
 expect(clause.data).toEqual(contractBytecode);
 
 ```

@@ -34,7 +34,7 @@ const expected1 = [
             {
                 sender: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6',
                 recipient: '0xb717b660cd51109334bd10b2c168986055f58c1a',
-                amount: '0xde0b6b3a7640000' // hex represenation of 1000000000000000000 wei (1 VET)
+                amount: '0xde0b6b3a7640000' // hex representation of 1000000000000000000 wei (1 VET)
             }
         ],
         gasUsed: 0,

@@ -10,7 +10,7 @@ console.log(k);
 
 const bloomGenerator = new bloom.Generator();
 
-// 3 - Add number from 0 to 99 to the bloom gernator
+// 3 - Add number from 0 to 99 to the bloom generator
 
 for (let i = 0; i < 100; i++) {
     bloomGenerator.add(Buffer.from(i + '', 'utf8'));

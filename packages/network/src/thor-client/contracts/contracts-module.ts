@@ -118,7 +118,7 @@ class ContractsModule {
      *                  besides `isDelegated`.
      *                  @see {@link TransactionsModule.buildTransactionBody}
      *
-     * @returns A promise resolving to a ContractTransactionResult object.
+     * @returns A promise resolving to a SendTransactionResult object.
      */
     public async executeContractTransaction(
         privateKey: string,
