@@ -115,3 +115,12 @@ Fee delegation is a feature on the VechainThor blockchain which enables the tran
 The following code demonstrates how to use Thor-client with the fee delegation feature:
 
 [example](examples/thor-client/delegated-transactions.ts)
+
+## Gas
+
+The `GasModule` in Thor-client is designed to handle gas-related operations on the VechainThor blockchain. Gas is a crucial aspect of executing transactions on the blockchain, representing the computational and storage resources consumed during transaction processing. This module provides convenient methods for estimating the gas cost of a transaction, allowing developers to optimize their interactions with the VechainThor network.
+
+### gasPadding
+The `gasPadding` option is a percentage of gas to add on top of the estimated gas. The value must be between (0, 1].
+
+[example](examples/thor-client/gas.ts)

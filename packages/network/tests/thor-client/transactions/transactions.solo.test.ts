@@ -5,6 +5,7 @@ import {
     invalidWaitForTransactionTestCases,
     signTransactionTestCases,
     transactionNonces,
+    transfer1VTHOClause,
     transferTransactionBody,
     transferTransactionBodyValueAsNumber,
     waitForTransactionTestCases
@@ -47,8 +48,16 @@ describe('ThorClient - Transactions Module', () => {
      */
     describe('sendTransaction', () => {
         test("Should throw error if transaction isn't signed", async () => {
+            // Estimate the gas required for the transfer transaction
+            const gasResult = await thorSoloClient.gas.estimateGas(
+                [transfer1VTHOClause],
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+            );
+
+            // Create the unsigned transfer transaction
             const tx = new Transaction({
                 ...transferTransactionBody,
+                gas: gasResult.totalGas,
                 nonce: transactionNonces
                     .shouldThrowErrorIfTransactionIsntSigned[0]
             });
@@ -68,10 +77,17 @@ describe('ThorClient - Transactions Module', () => {
          */
         waitForTransactionTestCases.forEach(({ description, options }) => {
             test(description, async () => {
+                // Estimate the gas required for the transfer transaction
+                const gasResult = await thorSoloClient.gas.estimateGas(
+                    [transfer1VTHOClause],
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                );
+
                 // Create the signed transfer transaction
                 const tx = TransactionHandler.sign(
                     new Transaction({
                         ...transferTransactionBody,
+                        gas: gasResult.totalGas,
                         nonce: options.nonce
                     }),
                     Buffer.from(
@@ -109,10 +125,17 @@ describe('ThorClient - Transactions Module', () => {
          * test that send transaction with a number as value in transaction body
          */
         test('test a send transaction with a number as value in transaction body ', async () => {
+            // Estimate the gas required for the transfer transaction
+            const gasResult = await thorSoloClient.gas.estimateGas(
+                [transfer1VTHOClause],
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+            );
+
             // Create the signed transfer transaction
             const tx = TransactionHandler.sign(
                 new Transaction({
                     ...transferTransactionBodyValueAsNumber,
+                    gas: gasResult.totalGas,
                     nonce: transactionNonces
                         .sendTransactionWithANumberAsValueInTransactionBody[0]
                 }),
@@ -147,10 +170,17 @@ describe('ThorClient - Transactions Module', () => {
                 test(
                     description,
                     async () => {
+                        // Estimate the gas required for the transfer transaction
+                        const gasResult = await thorSoloClient.gas.estimateGas(
+                            [transfer1VTHOClause],
+                            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                        );
+
                         // Create the signed transfer transaction
                         const tx = TransactionHandler.sign(
                             new Transaction({
                                 ...transferTransactionBody,
+                                gas: gasResult.totalGas,
                                 nonce: options.nonce
                             }),
                             Buffer.from(
