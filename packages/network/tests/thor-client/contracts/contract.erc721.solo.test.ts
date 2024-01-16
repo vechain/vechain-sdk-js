@@ -5,8 +5,9 @@ import {
     erc721ContractTestCases
 } from './fixture';
 import { expect, test, beforeAll, describe, afterAll } from '@jest/globals';
-import { ThorClient } from '../../../src';
+import { ThorClient, type TransactionReceipt } from '../../../src';
 import { soloNetwork, TEST_ACCOUNTS } from '../../fixture';
+import { coder, type Log } from '@vechain/vechain-sdk-core';
 
 /**
  * Tests for the ERC721 Contract, specifically focusing on NFT contract-related functionality.
@@ -67,17 +68,59 @@ describe('ThorClient - ERC721 Contracts', () => {
     });
 
     erc721ContractTestCases.forEach(
-        ({ description, functionName, params, expected }) => {
+        ({ description, functionName, params, expected, isReadOnly }) => {
             test(description, async () => {
-                const response =
-                    await thorSoloClient.contracts.executeContractCall(
-                        contractAddress,
-                        deployedERC721ContractAbi,
-                        functionName,
-                        params
+                let response;
+                if (isReadOnly) {
+                    response =
+                        await thorSoloClient.contracts.executeContractCall(
+                            contractAddress,
+                            deployedERC721ContractAbi,
+                            functionName,
+                            params
+                        );
+                    expect(response).toBeDefined();
+                    expect(response).toEqual(expected);
+                } else {
+                    response =
+                        await thorSoloClient.contracts.executeContractTransaction(
+                            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
+                                .privateKey,
+                            contractAddress,
+                            deployedERC721ContractAbi,
+                            functionName,
+                            params
+                        );
+
+                    const result =
+                        await thorSoloClient.transactions.waitForTransaction(
+                            response.id
+                        );
+
+                    expect(result).toBeDefined();
+                    expect(result?.outputs).toBeDefined();
+
+                    const logDescriptions = decodeResultOutput(
+                        result as TransactionReceipt
                     );
-                expect(response).toEqual(expected);
+
+                    expect(logDescriptions[0][0]?.args).toEqual(expected);
+                }
             });
         }
     );
+
+    function decodeResultOutput(
+        result: TransactionReceipt
+    ): Array<Array<Log | null>> {
+        return result?.outputs.map((output) => {
+            return output.events.map((event) => {
+                return coder.parseLog(
+                    deployedERC721ContractAbi,
+                    event.data,
+                    event.topics
+                );
+            });
+        });
+    }
 });
