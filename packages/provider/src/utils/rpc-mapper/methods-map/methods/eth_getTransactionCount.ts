@@ -5,6 +5,8 @@ import { addressUtils } from '@vechain/vechain-sdk-core';
 /**
  * RPC Method eth_getTransactionCount implementation
  *
+ * @link [eth_getTransactionCount](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_gettransactioncount)
+ *
  * @param params - The standard array of rpc call parameters.
  * @note:
  * * params[0]: address: string, is the address to get the number of transactions from.
