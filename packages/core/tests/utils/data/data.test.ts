@@ -12,6 +12,7 @@ import {
     validHexStrings,
     validThorIDs
 } from './fixture';
+import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 
 /**
  * Hex data tests
@@ -224,12 +225,23 @@ describe('utils/hex', () => {
 
         // Test with negative length (should likely throw an error or handle gracefully)
         test('should return the string with the minimum length', () => {
-            expect(dataUtils.padHexString('1a', -64)).toBe('0x' + '1a');
+            expect(() => dataUtils.padHexString('1a', -64)).toThrowError(
+                InvalidDataTypeError
+            );
         });
 
         // Test with non-integer length
         test('should handle or throw an error for non-integer length values', () => {
-            expect(() => dataUtils.padHexString('1a', 63.5)).toThrow();
+            expect(() => dataUtils.padHexString('1a', 63.5)).toThrowError(
+                InvalidDataTypeError
+            );
+        });
+
+        // Test with target length less than input length
+        test("Shoild throw an error if the target length is less than the input's length", () => {
+            expect(() => dataUtils.padHexString('1a', 1)).toThrowError(
+                InvalidDataTypeError
+            );
         });
     });
 });
