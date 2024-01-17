@@ -768,6 +768,44 @@ const erc721ContractTestCases: TestCase[] = [
         expected: [1n],
         reverted: false,
         isReadOnly: true
+    },
+    {
+        description: 'should transfer the NFT to DELEGATOR address',
+        functionName: 'transferFrom',
+        params: [
+            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address,
+            TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+            1n
+        ],
+        expected: [
+            dataUtils.getChecksumAddress(
+                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
+            ),
+            dataUtils.getChecksumAddress(
+                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+            ),
+            1n
+        ],
+        reverted: false,
+        isReadOnly: false
+    },
+    {
+        description:
+            'should get the current NFT balance of the CONTRACT_MANAGER address',
+        functionName: 'balanceOf',
+        params: [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
+        expected: [1n],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description:
+            'should get the current NFT balance of the DELEGATOR address',
+        functionName: 'balanceOf',
+        params: [TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address],
+        expected: [2n],
+        reverted: false,
+        isReadOnly: true
     }
 ];
 
