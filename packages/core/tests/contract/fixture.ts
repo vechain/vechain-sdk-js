@@ -2,9 +2,12 @@
 import path from 'path';
 import fs from 'fs';
 import { compileContract, type Contract, type Sources } from './compiler';
-import { unitsUtils, VTHO_ADDRESS } from '../../src';
+import { coder, ERC721_ABI, unitsUtils, VTHO_ADDRESS } from '../../src';
 import { generateRandomValidAddress } from '../fixture';
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import {
+    InvalidAbiDataToEncodeError,
+    InvalidDataTypeError
+} from '@vechain/vechain-sdk-errors';
 
 const getContractSourceCode = (
     dirname: string,
@@ -184,6 +187,16 @@ function compileERC721SampleNFTContract(): Contract {
 const recipientAddress = generateRandomValidAddress();
 
 /**
+ * Generates a random valid address.
+ */
+const senderAddress = generateRandomValidAddress();
+
+/**
+ * Generates a random valid address.
+ */
+const contractAddress = generateRandomValidAddress();
+
+/**
  * Test cases for building clauses for transferring VIP180 tokens.
  */
 const transferTokenClausesTestCases = [
@@ -331,6 +344,61 @@ const transferVETtestCases = [
 ];
 
 /**
+ * Test cases for building clauses for transferring NFT.
+ */
+const transferNFTtestCases = [
+    {
+        contractAddress,
+        senderAddress,
+        recipientAddress,
+        tokenId: '0',
+        expected: {
+            to: contractAddress,
+            value: 0,
+            data: coder.encodeFunctionInput(ERC721_ABI, 'transferFrom', [
+                senderAddress,
+                recipientAddress,
+                '0'
+            ])
+        }
+    }
+];
+
+/**
+ * Invalid NFT cases for building clauses for transferring NFT.
+ */
+const invalidNFTtestCases = [
+    {
+        contractAddress,
+        senderAddress,
+        recipientAddress,
+        tokenId: '',
+        expectedError: InvalidDataTypeError
+    },
+    {
+        contractAddress,
+        senderAddress,
+        recipientAddress,
+        tokenId: '-654',
+        expectedError: InvalidAbiDataToEncodeError
+    },
+    {
+        contractAddress,
+        senderAddress,
+        recipientAddress: '',
+        tokenId: '0x00001',
+        expectedError: InvalidAbiDataToEncodeError
+    },
+    {
+        contractAddress: '',
+        senderAddress,
+        recipientAddress,
+        tokenId: '0x00001',
+        expectedError: InvalidDataTypeError
+    }
+];
+
+/**
  * Invalid Test cases for building clauses for transferring VET.
  */
 const invalidTransferVETtestCases = [
@@ -368,5 +436,7 @@ export {
     transferTokenClausesTestCases,
     invalidTransferTokenClausesTestCases,
     transferVETtestCases,
+    transferNFTtestCases,
+    invalidNFTtestCases,
     invalidTransferVETtestCases
 };

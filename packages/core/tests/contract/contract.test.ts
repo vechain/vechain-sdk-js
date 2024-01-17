@@ -6,8 +6,10 @@ import {
     compileERC20SampleTokenContract,
     compileERC721SampleNFTContract,
     getContractSourceCode,
+    invalidNFTtestCases,
     invalidTransferTokenClausesTestCases,
     invalidTransferVETtestCases,
+    transferNFTtestCases,
     transferTokenClausesTestCases,
     transferVETtestCases
 } from './fixture';
@@ -198,6 +200,54 @@ describe('Contract', () => {
 
                     expect(clause.to).toBe(recipientAddress);
                     expect(clause).toStrictEqual(expected);
+                });
+            }
+        );
+
+        /**
+         * Transfer NFT clause builder test cases.
+         */
+        transferNFTtestCases.forEach(
+            ({
+                senderAddress,
+                recipientAddress,
+                contractAddress,
+                tokenId,
+                expected
+            }) => {
+                test(`Build a clause to transfer NFT with id ${tokenId}`, () => {
+                    const clause = contract.clauseBuilder.transferNFT(
+                        contractAddress,
+                        senderAddress,
+                        recipientAddress,
+                        tokenId
+                    );
+
+                    expect(clause).toStrictEqual(expected);
+                });
+            }
+        );
+
+        /**
+         * Invalid transfer NFT clause builder test cases.
+         */
+        invalidNFTtestCases.forEach(
+            ({
+                senderAddress,
+                recipientAddress,
+                contractAddress,
+                tokenId,
+                expectedError
+            }) => {
+                test(`Build a clause to transfer NFT with id ${tokenId}, ${senderAddress}, ${recipientAddress} and ${contractAddress}`, () => {
+                    expect(() =>
+                        contract.clauseBuilder.transferNFT(
+                            contractAddress,
+                            senderAddress,
+                            recipientAddress,
+                            tokenId
+                        )
+                    ).toThrowError(expectedError);
                 });
             }
         );
