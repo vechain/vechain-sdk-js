@@ -3,10 +3,9 @@ import {
     ValueChangedEventData,
     contractABI,
     contractABIWithEvents,
-    contractStorageABI,
-    erc721ContractABI
+    contractStorageABI
 } from './fixture';
-import { coder, abi } from '../../src';
+import { coder, abi, ERC721_ABI } from '../../src';
 import { ethers } from 'ethers';
 import {
     InvalidAbiDataToDecodeError,
@@ -147,7 +146,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
      * Test the decoding of an encoded event log from a contract transaction.
      */
     test('parse an event log and return decoded data', () => {
-        const decodedEventLog = coder.parseLog(erc721ContractABI, '0x', [
+        const decodedEventLog = coder.parseLog(ERC721_ABI, '0x', [
             '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
             '0x0000000000000000000000000000000000000000000000000000000000000000',
             '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
@@ -172,7 +171,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
     test('parse a bad formatted event log and throw an error', () => {
         expect(() => {
             console.log(
-                coder.parseLog(erc721ContractABI, '0x1', [
+                coder.parseLog(ERC721_ABI, '0x1', [
                     '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
                     '',
                     '0x000000000000000000000000f02f557c753edf5fcdcbfe4c',

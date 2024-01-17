@@ -1,13 +1,9 @@
 // Global variable to hold contract address
-import {
-    deployedERC721ContractAbi,
-    erc721ContractBytecode,
-    erc721ContractTestCases
-} from './fixture';
+import { erc721ContractBytecode, erc721ContractTestCases } from './fixture';
 import { expect, test, beforeAll, describe, afterAll } from '@jest/globals';
 import { ThorClient, type TransactionReceipt } from '../../../src';
 import { soloNetwork, TEST_ACCOUNTS } from '../../fixture';
-import { coder, type Log } from '@vechain/vechain-sdk-core';
+import { coder, ERC721_ABI, type Log } from '@vechain/vechain-sdk-core';
 
 /**
  * Tests for the ERC721 Contract, specifically focusing on NFT contract-related functionality.
@@ -75,7 +71,7 @@ describe('ThorClient - ERC721 Contracts', () => {
                     response =
                         await thorSoloClient.contracts.executeContractCall(
                             contractAddress,
-                            deployedERC721ContractAbi,
+                            ERC721_ABI,
                             functionName,
                             params
                         );
@@ -87,7 +83,7 @@ describe('ThorClient - ERC721 Contracts', () => {
                             TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
                                 .privateKey,
                             contractAddress,
-                            deployedERC721ContractAbi,
+                            ERC721_ABI,
                             functionName,
                             params
                         );
@@ -115,11 +111,7 @@ describe('ThorClient - ERC721 Contracts', () => {
     ): Array<Array<Log | null>> {
         return result?.outputs.map((output) => {
             return output.events.map((event) => {
-                return coder.parseLog(
-                    deployedERC721ContractAbi,
-                    event.data,
-                    event.topics
-                );
+                return coder.parseLog(ERC721_ABI, event.data, event.topics);
             });
         });
     }
