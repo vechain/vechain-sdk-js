@@ -4,12 +4,12 @@ import { buildError, FUNCTION } from '@vechain/vechain-sdk-errors';
 /**
  * RPC Method eth_subscribe implementation
  *
+ * @link [eth_subscribe](https://docs.infura.io/networks/ethereum/json-rpc-methods/subscription-methods/eth_subscribe)
+ *
  * @param thorClient - The thor client instance to use.
- * @param params - The standard array of rpc call parameters.
- * @note:
- * * params[0]: ...
- * * params[1]: ...
- * * params[n]: ...
+ * @param params - TBD
+ *
+ * @returns The ID of the newly created subscription on the node.
  */
 const ethSubscribe = async (
     thorClient: ThorClient,
