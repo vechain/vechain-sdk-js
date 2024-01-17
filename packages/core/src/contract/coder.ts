@@ -187,7 +187,7 @@ function decodeEventLog(
  * @param {string} data - The hexadecimal string of the data field in the log.
  * @param {string[]} topics - An array of hexadecimal strings representing the topics of the log.
  * @returns {Log | null} - A `Log` object representing the decoded log or null if decoding fails.
- * @throws - Throws a custom error if decoding fails due to invalid data or topics format.
+ * @throws {InvalidAbiDataToDecodeError} - if decoding fails due to invalid data or topics format.
  */
 function parseLog(
     interfaceABI: InterfaceAbi,
