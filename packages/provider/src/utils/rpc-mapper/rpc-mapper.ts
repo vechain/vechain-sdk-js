@@ -186,8 +186,8 @@ const RPCMethodsMap = (
         /**
          * ... RPC Method DOC ...
          */
-        [RPC_METHODS.eth_gasPrice]: async (params) => {
-            await ethGasPrice(thorClient, params);
+        [RPC_METHODS.eth_gasPrice]: async (): Promise<string> => {
+            return await ethGasPrice();
         },
 
         /**

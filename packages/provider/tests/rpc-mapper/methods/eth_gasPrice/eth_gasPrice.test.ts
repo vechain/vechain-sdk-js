@@ -1,5 +1,4 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { NotImplementedError } from '@vechain/vechain-sdk-errors';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
@@ -35,34 +34,13 @@ describe('RPC Mapper - eth_gasPrice method tests', () => {
      */
     describe('eth_gasPrice - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Positive case 1 - Get a dummy gas price value.
          */
-        test('eth_gasPrice - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_gasPrice]([
-                        -1
-                    ])
-            ).rejects.toThrowError(NotImplementedError);
-        });
-    });
-
-    /**
-     * eth_gasPrice RPC call tests - Negative cases
-     */
-    describe('eth_gasPrice - Negative cases', () => {
-        /**
-         * Negative case 1 - ... Description ...
-         */
-        test('eth_gasPrice - negative case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_gasPrice]([
-                        'SOME_RANDOM_PARAM'
-                    ])
-            ).rejects.toThrowError(NotImplementedError);
+        test('eth_gasPrice - Dummy gas price value', async () => {
+            const gasPrice = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.eth_gasPrice
+            ]([]);
+            expect(gasPrice).toBe('0x0');
         });
     });
 });
