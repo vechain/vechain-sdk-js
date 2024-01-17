@@ -1,4 +1,4 @@
-import { type InterfaceAbi } from 'ethers';
+import { type InterfaceAbi, isAddress } from 'ethers';
 import { abi, coder } from '../abi';
 import { type TransactionClause } from '../transaction';
 import type { DeployParams } from './types';
@@ -126,14 +126,15 @@ function transferVET(
  * Transfers a specified NFT (Non-Fungible Token) from one address to another.
  *
  * This function prepares a transaction clause for transferring an NFT, based on the ERC721 standard,
- * by invoking a smart contract's 'transferFrom' method. It asserts that the provided `tokenId`
- * is valid before proceeding with the transfer.
+ * by invoking a smart contract's 'transferFrom' method.
  *
  * @param {string} contractAddress - The address of the NFT contract.
  * @param {string} senderAddress - The address of the current owner (sender) of the NFT.
  * @param {string} recipientAddress - The address of the new owner (recipient) of the NFT.
  * @param {string} tokenId - The unique identifier of the NFT to be transferred.
- * @returns {TransactionClause} - An object representing the transaction details required for the transfer.
+ * @returns {TransactionClause} - An object representing the transaction clause required for the transfer.
+ *
+ * @throws {InvalidDataTypeError, InvalidAbiDataToEncodeError}.
  * */
 function transferNFT(
     contractAddress: string,
@@ -148,7 +149,7 @@ function transferNFT(
     );
 
     assert(
-        contractAddress !== '',
+        isAddress(contractAddress),
         DATA.INVALID_DATA_TYPE,
         `Invalid 'contractAddress' parameter. Expected a contract address but received ${contractAddress}`
     );
