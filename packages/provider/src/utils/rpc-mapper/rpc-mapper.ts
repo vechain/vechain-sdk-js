@@ -99,8 +99,8 @@ const RPCMethodsMap = (
         /**
          * ... RPC Method DOC ...
          */
-        [RPC_METHODS.eth_blockNumber]: async (params) => {
-            await ethBlockNumber(thorClient, params);
+        [RPC_METHODS.eth_blockNumber]: async () => {
+            return await ethBlockNumber(thorClient);
         },
 
         /**
@@ -114,21 +114,21 @@ const RPCMethodsMap = (
          * ... RPC Method DOC ...
          */
         [RPC_METHODS.eth_getBalance]: async (params) => {
-            await ethGetBalance(thorClient, params);
+            return await ethGetBalance(thorClient, params);
         },
 
         /**
          * ... RPC Method DOC ...
          */
         [RPC_METHODS.eth_getCode]: async (params) => {
-            await ethGetCode(thorClient, params);
+            return await ethGetCode(thorClient, params);
         },
 
         /**
          * ... RPC Method DOC ...
          */
         [RPC_METHODS.eth_getStorageAt]: async (params) => {
-            await ethGetStorageAt(thorClient, params);
+            return await ethGetStorageAt(thorClient, params);
         },
 
         /**
