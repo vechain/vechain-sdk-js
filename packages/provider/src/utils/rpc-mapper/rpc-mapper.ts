@@ -242,8 +242,8 @@ const RPCMethodsMap = (
         /**
          * ... RPC Method DOC ...
          */
-        [RPC_METHODS.eth_subscribe]: async (params) => {
-            await ethSubscribe(thorClient, params);
+        [RPC_METHODS.eth_subscribe]: async (params): Promise<string> => {
+            return await ethSubscribe(params);
         },
 
         /**

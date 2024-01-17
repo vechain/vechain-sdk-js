@@ -1,5 +1,13 @@
-import { type ThorClient } from '@vechain/vechain-sdk-network';
-import { buildError, FUNCTION } from '@vechain/vechain-sdk-errors';
+import { DATA, assert } from '@vechain/vechain-sdk-errors';
+import { randomBytes } from 'crypto';
+
+// type EthSubscribeParams = [
+//     subName: 'newHeads' | 'logs' | 'newPendingTransactions',
+//     options?: {
+//         topics: string[];
+//         address?: string | string[];
+//     }
+// ];
 
 /**
  * RPC Method eth_subscribe implementation
@@ -11,22 +19,17 @@ import { buildError, FUNCTION } from '@vechain/vechain-sdk-errors';
  *
  * @returns The ID of the newly created subscription on the node.
  */
-const ethSubscribe = async (
-    thorClient: ThorClient,
-    params: unknown[]
-): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
-
-    // Not implemented yet
-    throw buildError(
-        FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_subscribe" not not implemented yet',
-        {
-            params,
-            thorClient
-        }
+const ethSubscribe = async (params: unknown[]): Promise<string> => {
+    // Input validation - Invalid params TO BE UPDATED
+    assert(
+        params.length === 1 && typeof params[0] === 'string',
+        DATA.INVALID_DATA_TYPE,
+        'Invalid params length, expected 1.\nThe params should be [param: string]'
     );
+    // also missing asserts at the beginning
+    // @TODO: should do something like this.subscription[subscriptionId] = params
+    const subscriptionId = '0x' + randomBytes(16).toString('hex');
+    return await Promise.resolve(subscriptionId);
 };
 
 export { ethSubscribe };
