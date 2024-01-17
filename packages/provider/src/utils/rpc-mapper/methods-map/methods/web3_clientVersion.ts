@@ -1,32 +1,14 @@
-import { type ThorClient } from '@vechain/vechain-sdk-network';
-import { buildError, FUNCTION } from '@vechain/vechain-sdk-errors';
-
 /**
  * RPC Method web3_clientVersion implementation
  *
+ * @link [web3_clientVersion](https://docs.infura.io/networks/ethereum/json-rpc-methods/web3_clientversion)
+ *
  * @param thorClient - The thor client instance to use.
- * @param params - The standard array of rpc call parameters.
- * @note:
- * * params[0]: ...
- * * params[1]: ...
- * * params[n]: ...
+ *
+ * @returns A string representing the current client version.
  */
-const web3ClientVersion = async (
-    thorClient: ThorClient,
-    params: unknown[]
-): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
-
-    // Not implemented yet
-    throw buildError(
-        FUNCTION.NOT_IMPLEMENTED,
-        'Method "web3_clientVersion" not not implemented yet',
-        {
-            params,
-            thorClient
-        }
-    );
+const web3ClientVersion = async (): Promise<string> => {
+    return await Promise.resolve('thor');
 };
 
 export { web3ClientVersion };

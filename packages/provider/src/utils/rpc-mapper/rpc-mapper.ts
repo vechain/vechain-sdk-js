@@ -235,8 +235,8 @@ const RPCMethodsMap = (
         /**
          * ... RPC Method DOC ...
          */
-        [RPC_METHODS.web3_clientVersion]: async (params) => {
-            await web3ClientVersion(thorClient, params);
+        [RPC_METHODS.web3_clientVersion]: async (): Promise<string> => {
+            return await web3ClientVersion();
         },
 
         /**
