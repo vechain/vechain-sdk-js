@@ -8,7 +8,7 @@ import { buildProviderError, JSONRPC } from '@vechain/vechain-sdk-errors';
  *
  * @param thorClient - ThorClient instance.
  *
- * @returns the chain id or '0x0' if the chain id is not available.
+ * @returns The chain id or '0x0' if the chain id is not available.
  */
 const ethChainId = async (thorClient: ThorClient): Promise<string> => {
     try {

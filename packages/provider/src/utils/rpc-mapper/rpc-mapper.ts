@@ -228,8 +228,8 @@ const RPCMethodsMap = (
         /**
          * ... RPC Method DOC ...
          */
-        [RPC_METHODS.net_version]: async (params) => {
-            await netVersion(thorClient, params);
+        [RPC_METHODS.net_version]: async () => {
+            await netVersion(thorClient);
         },
 
         /**
