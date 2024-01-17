@@ -200,8 +200,10 @@ const RPCMethodsMap = (
         /**
          * ... RPC Method DOC ...
          */
-        [RPC_METHODS.eth_getTransactionCount]: async (params) => {
-            await ethGetTransactionCount(thorClient, params);
+        [RPC_METHODS.eth_getTransactionCount]: async (
+            params
+        ): Promise<string> => {
+            return await ethGetTransactionCount(params);
         },
 
         /**

@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { NotImplementedError } from '@vechain/vechain-sdk-errors';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
+
+import { invalidEthGetTransactionCountTestCases } from './fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_getTransactionCount' method
@@ -35,16 +36,14 @@ describe('RPC Mapper - eth_getTransactionCount method tests', () => {
      */
     describe('eth_getTransactionCount - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Positive case 1 - Get a random nonce (@note different from Ethereum)
          */
-        test('eth_getTransactionCount - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.eth_getTransactionCount
-                    ]([-1])
-            ).rejects.toThrowError(NotImplementedError);
+        test('eth_getTransactionCount - get a random nonce', async () => {
+            // Random nonce
+            const transactionCount = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.eth_getTransactionCount
+            ](['0x0b41c56e19c5151122568873a039fEa090937Fe2']);
+            expect(transactionCount).toBeDefined();
         });
     });
 
@@ -53,16 +52,18 @@ describe('RPC Mapper - eth_getTransactionCount method tests', () => {
      */
     describe('eth_getTransactionCount - Negative cases', () => {
         /**
-         * Negative case 1 - ... Description ...
+         * Invalid params case 1 - Missing params
          */
-        test('eth_getTransactionCount - negative case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.eth_getTransactionCount
-                    ](['SOME_RANDOM_PARAM'])
-            ).rejects.toThrowError(NotImplementedError);
-        });
+        invalidEthGetTransactionCountTestCases.forEach(
+            ({ description, params, expectedError }) => {
+                test(description, async () => {
+                    await expect(
+                        RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_getTransactionCount
+                        ](params)
+                    ).rejects.toThrowError(expectedError);
+                });
+            }
+        );
     });
 });
