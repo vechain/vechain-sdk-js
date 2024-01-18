@@ -12,7 +12,6 @@ import {
     validHexStrings,
     validThorIDs
 } from './fixture';
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 
 /**
  * Hex data tests
@@ -230,26 +229,6 @@ describe('utils/hex', () => {
         // Test with non-integer length
         test('should handle or throw an error for non-integer length values', () => {
             expect(() => dataUtils.padHexString('1a', 63.5)).toThrow();
-        });
-    });
-
-    describe('getChecksumAddress', () => {
-        // Test for correct conversion to checksummed address
-        test('should correctly convert a vechain address to checksummed format', () => {
-            const address = '0x1234567890abcdef1234567890abcdef12345678';
-            const checksummedAddress =
-                '0x1234567890AbcdEF1234567890aBcdef12345678'; // Replace with the expected checksummed format
-            expect(dataUtils.getChecksumAddress(address)).toBe(
-                checksummedAddress
-            );
-        });
-
-        // Test for handling of invalid inputs
-        test('should handle invalid addresses appropriately', () => {
-            const invalidAddress = '0xInvalidAddress';
-            expect(() =>
-                dataUtils.getChecksumAddress(invalidAddress)
-            ).toThrowError(InvalidDataTypeError);
         });
     });
 });

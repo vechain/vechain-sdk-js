@@ -1,4 +1,4 @@
-import { dataUtils, type InterfaceAbi } from '@vechain/vechain-sdk-core';
+import { addressUtils, type InterfaceAbi } from '@vechain/vechain-sdk-core';
 import { TEST_ACCOUNTS } from '../../fixture';
 
 const contractBytecode: string =
@@ -255,7 +255,7 @@ const erc721ContractTestCases: TestCase[] = [
         params: [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
         expected: [
             '0x0000000000000000000000000000000000000000',
-            dataUtils.getChecksumAddress(
+            addressUtils.toChecksummed(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
             ),
             0n
@@ -269,7 +269,7 @@ const erc721ContractTestCases: TestCase[] = [
         params: [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
         expected: [
             '0x0000000000000000000000000000000000000000',
-            dataUtils.getChecksumAddress(
+            addressUtils.toChecksummed(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
             ),
             1n
@@ -284,7 +284,7 @@ const erc721ContractTestCases: TestCase[] = [
         params: [TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address],
         expected: [
             '0x0000000000000000000000000000000000000000',
-            dataUtils.getChecksumAddress(
+            addressUtils.toChecksummed(
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address.toLowerCase()
             ),
             2n
@@ -319,10 +319,10 @@ const erc721ContractTestCases: TestCase[] = [
             1n
         ],
         expected: [
-            dataUtils.getChecksumAddress(
+            addressUtils.toChecksummed(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
             ),
-            dataUtils.getChecksumAddress(
+            addressUtils.toChecksummed(
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
             ),
             1n

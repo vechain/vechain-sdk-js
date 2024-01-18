@@ -81,11 +81,17 @@ describe('Address', () => {
          */
         test('invalid input should throw error', () => {
             expect(() => {
-                addressUtils.toChecksumed('invalid data');
+                addressUtils.toChecksummed('invalid data');
             }).toThrowError(InvalidAddressError);
             expect(() => {
-                addressUtils.toChecksumed(
+                addressUtils.toChecksummed(
                     '52908400098527886E0F7030069857D2E4169EE7'
+                );
+            }).toThrowError(InvalidAddressError);
+
+            expect(() => {
+                addressUtils.toChecksummed(
+                    '52908400098527886E0F7030069857D9EE7'
                 );
             }).toThrowError(InvalidAddressError);
         });
@@ -96,7 +102,7 @@ describe('Address', () => {
         test('valid input', () => {
             checksumedAndUnchecksumedAddresses.forEach((addressPair) => {
                 expect(
-                    addressUtils.toChecksumed(addressPair.unchecksumed)
+                    addressUtils.toChecksummed(addressPair.unchecksumed)
                 ).toEqual(addressPair.checksumed);
             });
         });

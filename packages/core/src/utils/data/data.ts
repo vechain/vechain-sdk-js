@@ -1,4 +1,4 @@
-import { ethers, getAddress } from 'ethers';
+import { ethers } from 'ethers';
 import {
     DECIMAL_INTEGER_REGEX,
     HEX_REGEX,
@@ -202,32 +202,6 @@ const decodeBytes32String = (value: string): string => {
     }
 };
 
-/**
- * Converts a vechain address to its checksummed format.
- *
- * This function takes a vechain address as input, converts it to lowercase,
- * and then uses the `getAddress` function from the ethers.js library to convert
- * it into its checksummed format. Checksummed addresses are a form of addresses
- * that include mixed-case letters, which provide a basic, built-in error checking mechanism.
- * This helps prevent errors like typos when inputting or using addresses.
- *
- * @param {string} address - The vechain address to be converted to checksum format.
- * @returns {string} - The checksummed vechain address.
- */
-const getChecksumAddress = (address: string): string => {
-    try {
-        const addressLower = address.toLowerCase();
-        return getAddress(addressLower);
-    } catch (e) {
-        throw buildError(
-            DATA.INVALID_DATA_TYPE,
-            `Failed to convert address to checksum format: ${address}`,
-            { address },
-            e
-        );
-    }
-};
-
 export const dataUtils = {
     toHexString,
     isHexString,
@@ -237,6 +211,5 @@ export const dataUtils = {
     isNumeric,
     isThorId,
     encodeBytes32String,
-    decodeBytes32String,
-    getChecksumAddress
+    decodeBytes32String
 };
