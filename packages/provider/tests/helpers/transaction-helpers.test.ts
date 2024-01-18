@@ -3,7 +3,7 @@ import {
     getTransactionIndexTestCases,
     invalidGetTransactionIndexTestCases
 } from './fixture';
-import { getTransactionIndex } from '../../src';
+import { getTransactionIndexIntoABlock } from '../../src';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 
 /**
@@ -21,7 +21,7 @@ describe('Provider Transaction Helpers', () => {
          */
         getTransactionIndexTestCases.forEach(({ block, hash, expected }) => {
             test(`should return ${expected} for ${hash}`, () => {
-                const idx = getTransactionIndex(block, hash);
+                const idx = getTransactionIndexIntoABlock(block, hash);
                 expect(idx).toBe(expected);
             });
         });
@@ -31,9 +31,9 @@ describe('Provider Transaction Helpers', () => {
          */
         invalidGetTransactionIndexTestCases.forEach(({ block, hash }) => {
             test(`should throw error for ${hash}`, () => {
-                expect(() => getTransactionIndex(block, hash)).toThrowError(
-                    InvalidDataTypeError
-                );
+                expect(() =>
+                    getTransactionIndexIntoABlock(block, hash)
+                ).toThrowError(InvalidDataTypeError);
             });
         });
     });

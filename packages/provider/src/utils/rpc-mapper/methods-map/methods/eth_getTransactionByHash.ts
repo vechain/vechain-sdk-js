@@ -15,7 +15,7 @@ import {
 } from '../../../formatter';
 import { RPCMethodsMap } from '../../rpc-mapper';
 import { RPC_METHODS } from '../../../const';
-import { getTransactionIndex } from '../../../helpers';
+import { getTransactionIndexIntoABlock } from '../../../helpers';
 
 /**
  * RPC Method eth_getTransactionByHash implementation
@@ -56,7 +56,7 @@ const ethGetTransactionByHash = async (
         ]([tx.meta.blockID, false])) as BlocksReturnTypeRPC;
 
         // Get the index of the transaction in the block
-        const txIndex = getTransactionIndex(block, hash);
+        const txIndex = getTransactionIndexIntoABlock(block, hash);
 
         // Get the chain id
         const chainId = (await RPCMethodsMap(thorClient)[
