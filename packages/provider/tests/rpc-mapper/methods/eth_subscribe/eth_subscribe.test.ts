@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { NotImplementedError } from '@vechain/vechain-sdk-errors';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
@@ -35,13 +35,16 @@ describe('RPC Mapper - eth_subscribe method tests', () => {
      */
     describe('eth_subscribe - Positive cases', () => {
         /**
-         * Positive case 1 - Get subscription ID
+         * Positive case 1 - ... Description ...
          */
         test('eth_subscribe - positive case 1', async () => {
-            const subscriptionId = await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_subscribe
-            ](['newHeads']);
-            expect(subscriptionId).toBeDefined();
+            // NOT IMPLEMENTED YET!
+            await expect(
+                async () =>
+                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_subscribe]([
+                        -1
+                    ])
+            ).rejects.toThrowError(NotImplementedError);
         });
     });
 
@@ -50,15 +53,16 @@ describe('RPC Mapper - eth_subscribe method tests', () => {
      */
     describe('eth_subscribe - Negative cases', () => {
         /**
-         * Negative case 1 - No params
+         * Negative case 1 - ... Description ...
          */
-        test('eth_subscribe - No params', async () => {
+        test('eth_subscribe - negative case 1', async () => {
+            // NOT IMPLEMENTED YET!
             await expect(
                 async () =>
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_subscribe](
-                        []
-                    )
-            ).rejects.toThrowError(InvalidDataTypeError);
+                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_subscribe]([
+                        'SOME_RANDOM_PARAM'
+                    ])
+            ).rejects.toThrowError(NotImplementedError);
         });
     });
 });

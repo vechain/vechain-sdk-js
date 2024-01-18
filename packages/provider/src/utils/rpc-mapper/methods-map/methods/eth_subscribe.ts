@@ -1,35 +1,32 @@
-import { DATA, assert } from '@vechain/vechain-sdk-errors';
-import { randomBytes } from 'crypto';
-
-// type EthSubscribeParams = [
-//     subName: 'newHeads' | 'logs' | 'newPendingTransactions',
-//     options?: {
-//         topics: string[];
-//         address?: string | string[];
-//     }
-// ];
+import { type ThorClient } from '@vechain/vechain-sdk-network';
+import { buildError, FUNCTION } from '@vechain/vechain-sdk-errors';
 
 /**
  * RPC Method eth_subscribe implementation
  *
- * @link [eth_subscribe](https://docs.infura.io/networks/ethereum/json-rpc-methods/subscription-methods/eth_subscribe)
- *
  * @param thorClient - The thor client instance to use.
- * @param params - TBD
- *
- * @returns The ID of the newly created subscription on the node.
+ * @param params - The standard array of rpc call parameters.
+ * @note:
+ * * params[0]: ...
+ * * params[1]: ...
+ * * params[n]: ...
  */
-const ethSubscribe = async (params: unknown[]): Promise<string> => {
-    // Input validation - Invalid params TO BE UPDATED
-    assert(
-        params.length === 1 && typeof params[0] === 'string',
-        DATA.INVALID_DATA_TYPE,
-        'Invalid params length, expected 1.\nThe params should be [param: string]'
+const ethSubscribe = async (
+    thorClient: ThorClient,
+    params: unknown[]
+): Promise<void> => {
+    // To avoid eslint error
+    await Promise.resolve(0);
+
+    // Not implemented yet
+    throw buildError(
+        FUNCTION.NOT_IMPLEMENTED,
+        'Method "eth_subscribe" not not implemented yet',
+        {
+            params,
+            thorClient
+        }
     );
-    // also missing asserts at the beginning
-    // @TODO: should do something like this.subscription[subscriptionId] = params
-    const subscriptionId = '0x' + randomBytes(16).toString('hex');
-    return await Promise.resolve(subscriptionId);
 };
 
 export { ethSubscribe };
