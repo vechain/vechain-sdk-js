@@ -1,8 +1,14 @@
 import { DATA, buildError } from '@vechain/vechain-sdk-errors';
 import {
     type TransactionReturnTypeRPC,
-    type BlocksReturnTypeRPC
+    type BlocksReturnTypeRPC,
+    blocksFormatter
 } from '../formatter';
+import {
+    type BlockDetail,
+    type Output,
+    type TransactionsExpandedBlockDetail
+} from '@vechain/vechain-sdk-network';
 
 /**
  * Get the index of the transaction in the specified block.
@@ -14,7 +20,7 @@ import {
  *
  * @throws Will throw an error if the transaction is not in the block.
  */
-const getTransactionIndex = (
+const getTransactionIndexIntoABlock = (
     block: BlocksReturnTypeRPC,
     hash: string
 ): number => {
@@ -36,4 +42,41 @@ const getTransactionIndex = (
     return idx;
 };
 
-export { getTransactionIndex };
+const getNumberOfLogsAheadOfATransactionIntoABlockExpanded = (
+    blockExpanded: BlockDetail,
+    hash: string,
+    chainId: string
+): number => {
+    // Get transaction index into the block
+    const transactionIndex = getTransactionIndexIntoABlock(
+        blocksFormatter.formatToRPCStandard(blockExpanded, chainId),
+        hash
+    );
+
+    // Count the number of logs in the txs whose number is lower than txId
+    let logIndex: number = 0;
+
+    // Iterate over the transactions into the block bounded by the transaction index
+    for (let i = 0; i < transactionIndex; i++) {
+        const currentTransaction = blockExpanded.transactions[
+            i
+        ] as TransactionsExpandedBlockDetail;
+
+        // Iterate over the outputs of the current transaction
+        for (
+            let j = 0;
+            j < (currentTransaction.outputs as Output[]).length;
+            j++
+        ) {
+            logIndex += (currentTransaction.outputs as Output[])[j].events
+                .length;
+        }
+    }
+
+    return logIndex;
+};
+
+export {
+    getTransactionIndexIntoABlock,
+    getNumberOfLogsAheadOfATransactionIntoABlockExpanded
+};
