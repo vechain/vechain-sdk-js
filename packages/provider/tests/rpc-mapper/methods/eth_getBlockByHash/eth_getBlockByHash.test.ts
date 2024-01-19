@@ -16,7 +16,7 @@ describe('RPC Mapper - eth_getBlockByHash method tests', () => {
     let thorClient: ThorClient;
 
     /**
-     * Inti thor client before each test
+     * Init thor client before each test
      */
     beforeEach(() => {
         // Init thor client
@@ -24,7 +24,7 @@ describe('RPC Mapper - eth_getBlockByHash method tests', () => {
     });
 
     /**
-     * Destory thor client after each test
+     * Destroy thor client after each test
      */
     afterEach(() => {
         thorClient.destroy();
