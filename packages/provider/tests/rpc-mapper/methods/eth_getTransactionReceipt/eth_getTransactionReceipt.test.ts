@@ -1,8 +1,16 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import {
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    jest,
+    test
+} from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
 import { getReceiptCorrectCasesTestNetwork } from './fixture';
+import { ProviderRpcError } from '@vechain/vechain-sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_getTransactionReceipt' method
@@ -57,17 +65,21 @@ describe('RPC Mapper - eth_getTransactionReceipt method tests', () => {
      */
     describe('eth_getTransactionReceipt - Negative cases', () => {
         /**
-         * Negative case 1 - ... Description ...
+         * Negative case 1 - An error occurs while retrieving the transaction receipt
          */
-        test('eth_getTransactionReceipt - negative case 1', () => {
-            // NOT IMPLEMENTED YET!
-            expect(true).toBeTruthy();
-            // await expect(
-            //     async () =>
-            //         await RPCMethodsMap(thorClient)[
-            //             RPC_METHODS.eth_getBlockReceipts
-            //         ](['SOME_RANDOM_PARAM'])
-            // ).rejects.toThrowError(NotImplementedError);
+        test('eth_getTransactionReceipt - negative case 1', async () => {
+            // Mock the getTransactionReceipt method to throw an error
+            jest.spyOn(
+                thorClient.transactions,
+                'getTransactionReceipt'
+            ).mockRejectedValue(new Error());
+
+            // Call eth_getTransactionReceipt with a valid transaction hash BUT an error occurs while retrieving the transaction receipt
+            await expect(
+                RPCMethodsMap(thorClient)[
+                    RPC_METHODS.eth_getTransactionReceipt
+                ]([getReceiptCorrectCasesTestNetwork[0].hash])
+            ).rejects.toThrowError(ProviderRpcError);
         });
     });
 });
