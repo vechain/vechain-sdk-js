@@ -112,7 +112,7 @@ describe('Subscriptions Solo', () => {
 
                         expect(decodedLog.length).toBe(4);
                         expect(decodedLog[2]).toBe(
-                            addressUtils.toChecksumed(
+                            addressUtils.toChecksummed(
                                 TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION
                                     .address
                             )
