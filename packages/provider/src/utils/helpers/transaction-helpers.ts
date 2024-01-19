@@ -70,13 +70,8 @@ const getNumberOfLogsAheadOfATransactionIntoABlockExpanded = (
         ] as TransactionsExpandedBlockDetail;
 
         // Iterate over the outputs of the current transaction
-        for (
-            let j = 0;
-            j < (currentTransaction.outputs as Output[]).length;
-            j++
-        ) {
-            logIndex += (currentTransaction.outputs as Output[])[j].events
-                .length;
+        for (const output of currentTransaction.outputs as Output[]) {
+            logIndex += output.events.length;
         }
     }
 
