@@ -135,6 +135,22 @@ describe('ThorClient - Contracts', () => {
         expect(result).toEqual([BigInt(1000000000000000000000000n)]);
     }, 10000);
 
+    test('deployErc20Contract with Contract Factory', async () => {
+        // Deploy the ERC20 contract and receive a response
+        let factory = thorSoloClient.contracts.createContractFactory(
+            deployedERC20Abi,
+            erc20ContractBytecode,
+            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+        );
+
+        factory = await factory.startDeployment();
+
+        const contract = await factory.waitForDeployment();
+
+        expect(contract.address).not.toBe(null);
+        expect(addressUtils.isAddress(contract.address as string)).toBe(true);
+    }, 10000);
+
     /**
      * Tests the execution of ERC20 contract operations using a blockchain client.
      *

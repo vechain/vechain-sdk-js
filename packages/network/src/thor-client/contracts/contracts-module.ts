@@ -10,6 +10,7 @@ import {
 import type { ContractCallOptions, ContractTransactionOptions } from './types';
 import { type SendTransactionResult } from '../transactions';
 import { type ThorClient } from '../thor-client';
+import { ContractFactory } from './model';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -20,6 +21,14 @@ class ContractsModule {
      * @param thor - The Thor instance used to interact with the vechain blockchain API.
      */
     constructor(readonly thor: ThorClient) {}
+
+    public createContractFactory(
+        abi: InterfaceAbi,
+        bytecode: string,
+        privateKey: string
+    ): ContractFactory {
+        return new ContractFactory(abi, bytecode, privateKey, this.thor);
+    }
 
     /**
      * Deploys a smart contract to the blockchain.
