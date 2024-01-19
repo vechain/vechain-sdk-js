@@ -152,15 +152,11 @@ const isNumericTestCases = [
         expected: false
     },
     {
-        value: 1,
+        value: '0x152',
         expected: false
     },
     {
-        value: 0x152,
-        expected: false
-    },
-    {
-        value: {},
+        value: '',
         expected: false
     }
 ];
