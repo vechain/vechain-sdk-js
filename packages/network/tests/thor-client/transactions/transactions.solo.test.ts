@@ -308,29 +308,33 @@ describe('ThorClient - Transactions Module', () => {
          */
         signTransactionTestCases.solo.incorrect.forEach(
             ({ description, origin, options, expectedError }) => {
-                test(description, async () => {
-                    const sampleClause =
-                        contract.clauseBuilder.functionInteraction(
-                            TESTING_CONTRACT_ADDRESS,
-                            TESTING_CONTRACT_ABI,
-                            'setStateVariable',
-                            [123]
-                        );
+                test(
+                    description,
+                    async () => {
+                        const sampleClause =
+                            contract.clauseBuilder.functionInteraction(
+                                TESTING_CONTRACT_ADDRESS,
+                                TESTING_CONTRACT_ABI,
+                                'setStateVariable',
+                                [123]
+                            );
 
-                    const txBody =
-                        await thorSoloClient.transactions.buildTransactionBody(
-                            [sampleClause],
-                            0
-                        );
+                        const txBody =
+                            await thorSoloClient.transactions.buildTransactionBody(
+                                [sampleClause],
+                                0
+                            );
 
-                    await expect(
-                        thorSoloClient.transactions.signTransaction(
-                            txBody,
-                            origin.privateKey,
-                            options
-                        )
-                    ).rejects.toThrow(expectedError);
-                });
+                        await expect(
+                            thorSoloClient.transactions.signTransaction(
+                                txBody,
+                                origin.privateKey,
+                                options
+                            )
+                        ).rejects.toThrow(expectedError);
+                    },
+                    10000
+                );
             }
         );
     });

@@ -101,24 +101,24 @@ const RPCMethodsMap = (
      * Returns a map of RPC methods to their implementations with our SDK.
      */
     return {
-        [RPC_METHODS.eth_blockNumber]: async (params) => {
-            await ethBlockNumber(thorClient, params);
+        [RPC_METHODS.eth_blockNumber]: async (): Promise<string> => {
+            return await ethBlockNumber(thorClient);
         },
 
         [RPC_METHODS.eth_chainId]: async (): Promise<string> => {
             return await ethChainId(thorClient);
         },
 
-        [RPC_METHODS.eth_getBalance]: async (params) => {
-            await ethGetBalance(thorClient, params);
+        [RPC_METHODS.eth_getBalance]: async (params): Promise<string> => {
+            return await ethGetBalance(thorClient, params);
         },
 
-        [RPC_METHODS.eth_getCode]: async (params) => {
-            await ethGetCode(thorClient, params);
+        [RPC_METHODS.eth_getCode]: async (params): Promise<string> => {
+            return await ethGetCode(thorClient, params);
         },
 
-        [RPC_METHODS.eth_getStorageAt]: async (params) => {
-            await ethGetStorageAt(thorClient, params);
+        [RPC_METHODS.eth_getStorageAt]: async (params): Promise<string> => {
+            return await ethGetStorageAt(thorClient, params);
         },
 
         [RPC_METHODS.eth_estimateGas]: async (params) => {

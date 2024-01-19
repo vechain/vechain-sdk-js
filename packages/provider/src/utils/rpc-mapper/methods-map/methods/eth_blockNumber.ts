@@ -1,32 +1,35 @@
+import { JSONRPC, buildProviderError } from '@vechain/vechain-sdk-errors';
 import { type ThorClient } from '@vechain/vechain-sdk-network';
-import { buildError, FUNCTION } from '@vechain/vechain-sdk-errors';
 
 /**
  * RPC Method eth_blockNumber implementation
  *
+ * @link [eth_blockNumber](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_blocknumber)
+ *
  * @param thorClient - The thor client instance to use.
- * @param params - The standard array of rpc call parameters.
- * @note:
- * * params[0]: ...
- * * params[1]: ...
- * * params[n]: ...
+ *
+ * @returns the latest block number as a hex string. If the block number cannot be retrieved, it will return '0x0'.
+ *
+ * @throws {ProviderRpcError} - Will throw an error if the retrieval of the block number fails.
  */
-const ethBlockNumber = async (
-    thorClient: ThorClient,
-    params: unknown[]
-): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
+const ethBlockNumber = async (thorClient: ThorClient): Promise<string> => {
+    try {
+        // 'best' is the alias for 'latest' in Vechain Thorest
+        const latestBlock = await thorClient.blocks.getBestBlock();
 
-    // Not implemented yet
-    throw buildError(
-        FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_blockNumber" not not implemented yet',
-        {
-            params,
-            thorClient
-        }
-    );
+        return latestBlock?.number !== undefined
+            ? `0x${latestBlock.number.toString(16)}`
+            : '0x0';
+    } catch (e) {
+        throw buildProviderError(
+            JSONRPC.INTERNAL_ERROR,
+            `Method 'eth_blockNumber' failed: Error while getting the latest block number.\n
+            URL: ${thorClient.httpClient.baseURL}`,
+            {
+                innerError: JSON.stringify(e)
+            }
+        );
+    }
 };
 
 export { ethBlockNumber };
