@@ -5,7 +5,7 @@ import {
     contractABIWithEvents,
     contractStorageABI
 } from './fixture';
-import { coder, abi } from '../../src';
+import { coder, abi, ERC721_ABI } from '../../src';
 import { ethers } from 'ethers';
 import {
     InvalidAbiDataToDecodeError,
@@ -140,6 +140,45 @@ describe('Contract interface for ABI encoding/decoding', () => {
                 encodedEventLog.topics
             )
         );
+    });
+
+    /**
+     * Test the decoding of an encoded event log from a contract transaction.
+     */
+    test('parse an event log and return decoded data', () => {
+        const decodedEventLog = coder.parseLog(ERC721_ABI, '0x', [
+            '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+            '0x0000000000000000000000000000000000000000000000000000000000000000',
+            '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
+            '0x0000000000000000000000000000000000000000000000000000000000000001'
+        ]);
+
+        expect(decodedEventLog).toBeDefined();
+        expect(decodedEventLog?.name).toEqual('Transfer');
+        expect(decodedEventLog?.args).toBeDefined();
+        expect(decodedEventLog?.args[0]).toEqual(
+            '0x0000000000000000000000000000000000000000'
+        );
+        expect(decodedEventLog?.args[1]).toEqual(
+            '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54'
+        );
+        expect(decodedEventLog?.args[2]).toEqual(1n);
+    });
+
+    /**
+     * Test the failed decoding of an encoded event log from a contract transaction.
+     */
+    test('parse a bad formatted event log and throw an error', () => {
+        expect(() => {
+            console.log(
+                coder.parseLog(ERC721_ABI, '0x1', [
+                    '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+                    '',
+                    '0x000000000000000000000000f02f557c753edf5fcdcbfe4c',
+                    '0x00000000000000000000000000000000000000000001'
+                ])
+            );
+        }).toThrowError(InvalidAbiDataToDecodeError);
     });
 
     /**

@@ -27,6 +27,12 @@ type InterfaceAbi = ethers.InterfaceAbi;
 type Result = ethers.Result;
 
 /**
+ * Represents a wrapped Log description for ethers.js types.
+ * It represents the decoded data from a log (after decoding).
+ */
+type Log = ethers.LogDescription;
+
+/**
  * Represents a wrapped BytesLike for ethers.js types.
  */
 type BytesLike = ethers.BytesLike;
@@ -43,6 +49,7 @@ export type {
     Interface,
     InterfaceAbi,
     Result,
+    Log,
     BytesLike,
     FormatType
 };
