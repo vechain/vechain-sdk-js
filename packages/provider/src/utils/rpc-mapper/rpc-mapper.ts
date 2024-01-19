@@ -97,35 +97,43 @@ const RPCMethodsMap = (
      */
     return {
         /**
-         * ... RPC Method DOC ...
+         * RPC Method eth_blockNumber implementation
+         * @returns the current block number the client is on.
          */
         [RPC_METHODS.eth_blockNumber]: async () => {
             return await ethBlockNumber(thorClient);
         },
 
         /**
-         * ... RPC Method DOC ...
+         * RPC Method eth_chainId implementation
+         * @returns the current chain id the client is on.
          */
         [RPC_METHODS.eth_chainId]: async () => {
             return await ethChainId(thorClient);
         },
 
         /**
-         * ... RPC Method DOC ...
+         * RPC Method eth_getBalance implementation
+         * @param params - The standard array of rpc call parameters.
+         * @returns the balance of the account of given address.
          */
         [RPC_METHODS.eth_getBalance]: async (params) => {
             return await ethGetBalance(thorClient, params);
         },
 
         /**
-         * ... RPC Method DOC ...
+         * RPC Method eth_getCode implementation
+         * @param params - The standard array of rpc call parameters.
+         * @returns the code of the account at the given address.
          */
         [RPC_METHODS.eth_getCode]: async (params) => {
             return await ethGetCode(thorClient, params);
         },
 
         /**
-         * ... RPC Method DOC ...
+         * RPC Method eth_getStorageAt implementation
+         * @param params - The standard array of rpc call parameters.
+         * @returns the value from a storage position at a given address.
          */
         [RPC_METHODS.eth_getStorageAt]: async (params) => {
             return await ethGetStorageAt(thorClient, params);
@@ -169,8 +177,8 @@ const RPCMethodsMap = (
         /**
          * RPC Method eth_getBlockByNumber implementation
          *
-         * Params:
-         * * params[0]: The block number to get.
+         * @param params - The standard array of rpc call parameters.
+         * @returns the block with the given number formatted to the RPC standard.
          */
         [RPC_METHODS.eth_getBlockByNumber]: async (params) => {
             return await ethGetBlockByNumber(thorClient, params);
@@ -191,7 +199,9 @@ const RPCMethodsMap = (
         },
 
         /**
-         * ... RPC Method DOC ...
+         * RPC Method eth_getTransactionByHash implementation
+         * @param params - The standard array of rpc call parameters.
+         * @returns the transaction with the given hash formatted to the RPC standard.
          */
         [RPC_METHODS.eth_getTransactionByHash]: async (params) => {
             return await ethGetTransactionByHash(thorClient, params);
