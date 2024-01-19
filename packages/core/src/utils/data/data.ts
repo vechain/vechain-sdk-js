@@ -115,8 +115,9 @@ const removePrefix = (hex: string): string => {
  * @returns - A boolean indicating whether the input is a valid numeric string.
  */
 const isNumeric = (value: string): boolean => {
-    if (typeof value !== 'string') return false;
-
+    if (value === '') {
+        return false;
+    }
     return NUMERIC_REGEX.test(value);
 };
 

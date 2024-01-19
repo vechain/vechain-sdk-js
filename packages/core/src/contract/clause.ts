@@ -1,9 +1,9 @@
-import { type InterfaceAbi } from 'ethers';
+import { type InterfaceAbi, isAddress } from 'ethers';
 import { abi, coder } from '../abi';
 import { type TransactionClause } from '../transaction';
 import type { DeployParams } from './types';
-import { VIP180_ABI } from '../utils';
-import { DATA, assert, buildError } from '@vechain/vechain-sdk-errors';
+import { ERC721_ABI, VIP180_ABI } from '../utils';
+import { assert, buildError, DATA } from '@vechain/vechain-sdk-errors';
 
 /**
  * Builds a clause for deploying a smart contract.
@@ -24,13 +24,11 @@ function deployContract(
             .replace('0x', '');
     }
 
-    const clause: TransactionClause = {
+    return {
         to: null,
         value: 0,
         data: contractBytecode + encodedParams
     };
-
-    return clause;
 }
 
 /**
@@ -51,13 +49,11 @@ function functionInteraction(
     functionName: string,
     args: unknown[]
 ): TransactionClause {
-    const clause: TransactionClause = {
+    return {
         to: contractAddress,
         value: 0,
         data: coder.encodeFunctionInput(contractAbi, functionName, args)
     };
-
-    return clause;
 }
 
 /**
@@ -125,6 +121,46 @@ function transferVET(
         );
     }
 }
+
+/**
+ * Transfers a specified NFT (Non-Fungible Token) from one address to another.
+ *
+ * This function prepares a transaction clause for transferring an NFT, based on the ERC721 standard,
+ * by invoking a smart contract's 'transferFrom' method.
+ *
+ * @param {string} contractAddress - The address of the NFT contract.
+ * @param {string} senderAddress - The address of the current owner (sender) of the NFT.
+ * @param {string} recipientAddress - The address of the new owner (recipient) of the NFT.
+ * @param {string} tokenId - The unique identifier of the NFT to be transferred.
+ * @returns {TransactionClause} - An object representing the transaction clause required for the transfer.
+ *
+ * @throws {InvalidDataTypeError, InvalidAbiDataToEncodeError}.
+ * */
+function transferNFT(
+    contractAddress: string,
+    senderAddress: string,
+    recipientAddress: string,
+    tokenId: string
+): TransactionClause {
+    assert(
+        tokenId !== '',
+        DATA.INVALID_DATA_TYPE,
+        `Invalid 'tokenId' parameter. Expected an id but received ${tokenId}`
+    );
+
+    assert(
+        isAddress(contractAddress),
+        DATA.INVALID_DATA_TYPE,
+        `Invalid 'contractAddress' parameter. Expected a contract address but received ${contractAddress}`
+    );
+
+    return functionInteraction(contractAddress, ERC721_ABI, 'transferFrom', [
+        senderAddress,
+        recipientAddress,
+        tokenId
+    ]);
+}
+
 /**
  * clauseBuilder provides methods for building clauses for interacting with smart contracts or deploying smart contracts.
  */
@@ -132,5 +168,6 @@ export const clauseBuilder = {
     deployContract,
     functionInteraction,
     transferToken,
-    transferVET
+    transferVET,
+    transferNFT
 };

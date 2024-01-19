@@ -1,6 +1,4 @@
 /* eslint-disable */
-import * as fs from 'fs';
-import * as path from 'path';
 var solc = require('solc');
 
 interface Contract {
