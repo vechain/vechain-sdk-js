@@ -17,7 +17,7 @@ describe('RPC Mapper - eth_getTransactionReceipt method tests', () => {
     let thorClient: ThorClient;
 
     /**
-     * Inti thor client before each test
+     * Init thor client before each test
      */
     beforeEach(() => {
         // Init thor client
