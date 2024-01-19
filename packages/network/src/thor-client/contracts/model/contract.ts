@@ -7,7 +7,7 @@ class Contract {
     private readonly thor: ThorClient;
     public address: string | null;
 
-    private readonly deployTransactionReceipt: TransactionReceipt;
+    public deployTransactionReceipt: TransactionReceipt;
 
     constructor(
         abi: InterfaceAbi,

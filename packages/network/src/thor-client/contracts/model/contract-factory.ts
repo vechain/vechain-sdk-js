@@ -40,7 +40,7 @@ class ContractFactory {
     /**
      * The result of the deploy transaction, undefined until a deployment is started.
      */
-    private deployTransactionResult: SendTransactionResult | undefined;
+    private deployTransaction: SendTransactionResult | undefined;
 
     constructor(
         abi: InterfaceAbi,
@@ -99,7 +99,7 @@ class ContractFactory {
         );
 
         // Send the signed transaction to the blockchain
-        this.deployTransactionResult =
+        this.deployTransaction =
             await this.thor.transactions.sendTransaction(signedTx);
 
         return this;
@@ -119,26 +119,26 @@ class ContractFactory {
      */
     public async waitForDeployment(): Promise<Contract> {
         // Check if the deploy transaction result is available
-        if (this.deployTransactionResult === undefined) {
+        if (this.deployTransaction === undefined) {
             throw buildError(
                 ERROR_CODES.CONTRACT.CONTRACT_DEPLOYMENT_FAILED,
                 'Cannot find a contract deployment transaction.',
-                { deployTransactionResult: this.deployTransactionResult }
+                { deployTransaction: this.deployTransaction }
             );
         }
 
         // Wait for the transaction to be processed
         const transactionReceipt =
             await this.thor.transactions.waitForTransaction(
-                this.deployTransactionResult.id
+                this.deployTransaction.id
             );
 
         // Ensure that the transaction receipt is valid
         assert(
             transactionReceipt !== undefined && transactionReceipt !== null,
             ERROR_CODES.CONTRACT.CONTRACT_DEPLOYMENT_FAILED,
-            'Cannot deployment failed.',
-            { deployTransactionResult: this.deployTransactionResult }
+            'Contract deployment failed.',
+            { deployTransaction: this.deployTransaction }
         );
 
         // Construct and return a new Contract instance
@@ -147,6 +147,10 @@ class ContractFactory {
             this.thor,
             transactionReceipt as TransactionReceipt
         );
+    }
+
+    public getDeployTransaction(): SendTransactionResult | undefined {
+        return this.deployTransaction;
     }
 }
 
