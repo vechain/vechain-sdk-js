@@ -46,7 +46,7 @@ const wsURL = subscriptions.getEventSubscriptionUrl(
      */
     [senderSampleAddress, toSampleAddress],
     {
-        address: '0x0000000000000000000000000000456E65726779' // VTHO contract address
+        address: '0x6c0A6e1d922E0e63901301573370b932AE20DAdB' // Vexchange contract address
     }
 );
 

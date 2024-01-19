@@ -72,6 +72,14 @@ const ethGetBlockByNumberTestCases = [
             false
         ],
         expected: null
+    },
+    {
+        description: 'Should get block which has transactions',
+        params: [
+            '0x010b7a6d6f04407ac2f72e505ff83d49db8d01607f8af41f508b2ca7eca0d450',
+            false
+        ], // The block hash is the hash of block 17529453
+        expected: blockWithTransactionsNotExpanded
     }
 ];
 
