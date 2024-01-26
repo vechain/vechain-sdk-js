@@ -13,7 +13,7 @@ import {
 } from '@vechain/vechain-sdk-errors';
 
 /**
- * Test address module
+ * Test address modulee
  * @group unit/address
  */
 describe('Address', () => {
