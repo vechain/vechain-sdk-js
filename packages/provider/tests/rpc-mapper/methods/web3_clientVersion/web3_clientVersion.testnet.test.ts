@@ -1,5 +1,4 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { NotImplementedError } from '@vechain/vechain-sdk-errors';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
@@ -35,34 +34,13 @@ describe('RPC Mapper - web3_clientVersion method tests', () => {
      */
     describe('web3_clientVersion - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Get client version
          */
         test('web3_clientVersion - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.web3_clientVersion
-                    ]([-1])
-            ).rejects.toThrowError(NotImplementedError);
-        });
-    });
-
-    /**
-     * web3_clientVersion RPC call tests - Negative cases
-     */
-    describe('web3_clientVersion - Negative cases', () => {
-        /**
-         * Negative case 1 - ... Description ...
-         */
-        test('web3_clientVersion - negative case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.web3_clientVersion
-                    ](['SOME_RANDOM_PARAM'])
-            ).rejects.toThrowError(NotImplementedError);
+            const web3ClientVersion = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.web3_clientVersion
+            ]([]);
+            expect(web3ClientVersion).toBe('thor');
         });
     });
 });

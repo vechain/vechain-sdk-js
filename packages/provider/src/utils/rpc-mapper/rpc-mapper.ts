@@ -19,7 +19,6 @@ import {
     ethGetTransactionReceipt,
     ethSendTransaction,
     ethSyncing,
-    netVersion,
     web3ClientVersion,
     ethSubscribe,
     ethUnsubscribe,
@@ -236,17 +235,20 @@ const RPCMethodsMap = (
         },
 
         /**
-         * ... RPC Method DOC ...
+         * RPC Method net_version implementation
+         * @returns the current client version.
          */
-        [RPC_METHODS.net_version]: async (params) => {
-            await netVersion(thorClient, params);
+        [RPC_METHODS.net_version]: async () => {
+            return await ethChainId(thorClient);
         },
 
         /**
-         * ... RPC Method DOC ...
+         * RPC Method web3_clientVersion implementation
+         *
+         * Returns the current client version.
          */
-        [RPC_METHODS.web3_clientVersion]: async (params) => {
-            await web3ClientVersion(thorClient, params);
+        [RPC_METHODS.web3_clientVersion]: async (): Promise<string> => {
+            return await web3ClientVersion();
         },
 
         /**
