@@ -10,8 +10,8 @@ import {
 } from '@vechain/vechain-sdk-errors';
 import {
     transactionsFormatter,
-    type TransactionReturnTypeRPC,
-    type BlocksReturnTypeRPC
+    type TransactionRPC,
+    type BlocksRPC
 } from '../../../formatter';
 import { RPCMethodsMap } from '../../rpc-mapper';
 import { RPC_METHODS } from '../../../const';
@@ -33,7 +33,7 @@ import { getTransactionIndexIntoBlock } from '../../../helpers';
 const ethGetTransactionByHash = async (
     thorClient: ThorClient,
     params: unknown[]
-): Promise<TransactionReturnTypeRPC | null> => {
+): Promise<TransactionRPC | null> => {
     assert(
         params.length === 1 && typeof params[0] === 'string',
         DATA.INVALID_DATA_TYPE,
@@ -53,7 +53,7 @@ const ethGetTransactionByHash = async (
         // Get the block containing the transaction
         const block = (await RPCMethodsMap(thorClient)[
             RPC_METHODS.eth_getBlockByNumber
-        ]([tx.meta.blockID, false])) as BlocksReturnTypeRPC;
+        ]([tx.meta.blockID, false])) as BlocksRPC;
 
         // Get the index of the transaction in the block
         const txIndex = getTransactionIndexIntoBlock(block, hash);
