@@ -181,12 +181,12 @@ const RPCMethodsMap = (
             await ethSyncing(thorClient, params);
         },
 
-        [RPC_METHODS.net_version]: async (params) => {
-            await netVersion(thorClient, params);
+        [RPC_METHODS.net_version]: async (): Promise<string> => {
+            return await netVersion(thorClient);
         },
 
-        [RPC_METHODS.web3_clientVersion]: async (params) => {
-            await web3ClientVersion(thorClient, params);
+        [RPC_METHODS.web3_clientVersion]: async (): Promise<string> => {
+            return await web3ClientVersion();
         },
 
         [RPC_METHODS.eth_subscribe]: async (params) => {
