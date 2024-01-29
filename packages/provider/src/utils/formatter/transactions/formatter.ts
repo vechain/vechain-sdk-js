@@ -14,7 +14,7 @@ import {
     ZERO_BUFFER
 } from '@vechain/vechain-sdk-core';
 import {
-    getNumberOfLogsAheadOfATransactionIntoABlockExpanded,
+    getNumberOfLogsAheadOfTransactionIntoBlockExpanded,
     getTransactionIndexIntoBlock
 } from '../../helpers';
 import { blocksFormatter } from '../blocks';
@@ -138,7 +138,7 @@ function formatFromTransactionReceiptToRPCStandard(
     );
 
     // Format transaction receipt logs
-    const logIndexOffset = getNumberOfLogsAheadOfATransactionIntoABlockExpanded(
+    const logIndexOffset = getNumberOfLogsAheadOfTransactionIntoBlockExpanded(
         blockContainsTransaction,
         transactionHash,
         chainId

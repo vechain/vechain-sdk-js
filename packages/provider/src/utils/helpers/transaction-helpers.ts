@@ -49,7 +49,7 @@ const getTransactionIndexIntoBlock = (
  * @param hash - The hash of the transaction to search for.
  * @param chainId - The chain ID of the network.
  */
-const getNumberOfLogsAheadOfATransactionIntoABlockExpanded = (
+const getNumberOfLogsAheadOfTransactionIntoBlockExpanded = (
     blockExpanded: BlockDetail,
     hash: string,
     chainId: string
@@ -80,5 +80,5 @@ const getNumberOfLogsAheadOfATransactionIntoABlockExpanded = (
 
 export {
     getTransactionIndexIntoBlock,
-    getNumberOfLogsAheadOfATransactionIntoABlockExpanded
+    getNumberOfLogsAheadOfTransactionIntoBlockExpanded
 };
