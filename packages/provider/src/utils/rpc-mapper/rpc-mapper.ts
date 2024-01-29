@@ -236,8 +236,7 @@ const RPCMethodsMap = (
 
         /**
          * RPC Method net_version implementation
-         * 
-         * Returns the current network id.
+         * @returns the current client version.
          */
         [RPC_METHODS.net_version]: async () => {
             return await ethChainId(thorClient);
@@ -245,7 +244,7 @@ const RPCMethodsMap = (
 
         /**
          * RPC Method web3_clientVersion implementation
-         * 
+         *
          * Returns the current client version.
          */
         [RPC_METHODS.web3_clientVersion]: async (): Promise<string> => {
