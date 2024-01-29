@@ -20,18 +20,19 @@ const thorSoloClient = new ThorClient(soloNetwork);
 
 // Defining a function for deploying the ERC20 contract
 const setupERC20Contract = async (): Promise<string> => {
-    // Deploying the ERC20 contract using the Thor client and the deployer's private key
-    const transaction = await thorSoloClient.contracts.deployContract(
-        privateKeyDeployer,
-        erc20ContractBytecode
+    let contractFactory = thorSoloClient.contracts.createContractFactory(
+        VIP180_ABI,
+        erc20ContractBytecode,
+        privateKeyDeployer
     );
 
-    // Awaiting the transaction receipt to confirm successful contract deployment
-    const receipt = await thorSoloClient.transactions.waitForTransaction(
-        transaction.id
-    );
+    // Deploying the contract
+    contractFactory = await contractFactory.startDeployment();
 
-    return receipt.outputs[0].contractAddress;
+    // Waiting for the contract to be deployed
+    const contract = await contractFactory.waitForDeployment();
+
+    return contract.address;
 };
 
 // Setting up the ERC20 contract and getting its address
