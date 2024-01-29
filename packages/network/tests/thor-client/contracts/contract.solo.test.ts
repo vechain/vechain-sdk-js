@@ -85,7 +85,7 @@ describe('ThorClient - Contracts', () => {
     }, 10000);
 
     /**
-     * Test case for deploying a smart contract using the contract factory.
+     * Test case for a failed smart contract using the contract factory.
      */
     test('failed contract deployment', async () => {
         // Create a contract factory
@@ -99,6 +99,23 @@ describe('ThorClient - Contracts', () => {
         contractFactory = await contractFactory.startDeployment();
 
         // Wait for the deployment to complete and obtain the contract instance
+        await expect(contractFactory.waitForDeployment()).rejects.toThrow(
+            ContractDeploymentFailedError
+        );
+    }, 10000);
+
+    /**
+     * Test case for waiting for a contract deployment not started.
+     */
+    test('wait for a contract deployment not started', async () => {
+        // Create a contract factory
+        const contractFactory = thorSoloClient.contracts.createContractFactory(
+            deployedContractAbi,
+            contractBytecode,
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+        );
+
+        // Waiting for a deployment that has not started
         await expect(contractFactory.waitForDeployment()).rejects.toThrow(
             ContractDeploymentFailedError
         );
