@@ -4,9 +4,12 @@ import { contract, type DeployParams } from '../../src';
 import { coder } from '../../src';
 import {
     compileERC20SampleTokenContract,
+    compileERC721SampleNFTContract,
     getContractSourceCode,
+    invalidNFTtestCases,
     invalidTransferTokenClausesTestCases,
     invalidTransferVETtestCases,
+    transferNFTtestCases,
     transferTokenClausesTestCases,
     transferVETtestCases
 } from './fixture';
@@ -109,6 +112,44 @@ describe('Contract', () => {
         expect(contractInterface).toBeDefined();
     });
 
+    /**
+     * Test compile an ERC721 contract and create an interface from the ABI.
+     */
+    test('Compile an ERC721 contract and create an interface from the abi', () => {
+        const compiledContract = compileERC721SampleNFTContract();
+
+        // Ensure the contract compilation is successful
+        expect(compiledContract).toBeDefined();
+        expect(compiledContract.name).toBeDefined();
+        expect(compiledContract.abi).toBeDefined();
+        expect(compiledContract.bytecode).toBeDefined();
+
+        // Create an instance of a Contract interface using the ABI
+        const contractInterface = coder.createInterface(compiledContract.abi);
+
+        // Ensure the contract interface is created successfully
+        expect(contractInterface).toBeDefined();
+    });
+
+    /**
+     * Test compile an ERC20 contract and create an interface from the ABI.
+     */
+    test('Compile the sample NFT contract and create an interface from the abi', () => {
+        const compiledContract = compileERC20SampleTokenContract();
+
+        // Ensure the contract compilation is successful
+        expect(compiledContract).toBeDefined();
+        expect(compiledContract.name).toBeDefined();
+        expect(compiledContract.abi).toBeDefined();
+        expect(compiledContract.bytecode).toBeDefined();
+
+        // Create an instance of a Contract interface using the ABI
+        const contractInterface = coder.createInterface(compiledContract.abi);
+
+        // Ensure the contract interface is created successfully
+        expect(contractInterface).toBeDefined();
+    });
+
     describe('Transfer token clause builder test cases', () => {
         /**
          * Transfer token clause builder test cases.
@@ -159,6 +200,54 @@ describe('Contract', () => {
 
                     expect(clause.to).toBe(recipientAddress);
                     expect(clause).toStrictEqual(expected);
+                });
+            }
+        );
+
+        /**
+         * Transfer NFT clause builder test cases.
+         */
+        transferNFTtestCases.forEach(
+            ({
+                senderAddress,
+                recipientAddress,
+                contractAddress,
+                tokenId,
+                expected
+            }) => {
+                test(`Build a clause to transfer NFT with id ${tokenId}`, () => {
+                    const clause = contract.clauseBuilder.transferNFT(
+                        contractAddress,
+                        senderAddress,
+                        recipientAddress,
+                        tokenId
+                    );
+
+                    expect(clause).toStrictEqual(expected);
+                });
+            }
+        );
+
+        /**
+         * Invalid transfer NFT clause builder test cases.
+         */
+        invalidNFTtestCases.forEach(
+            ({
+                senderAddress,
+                recipientAddress,
+                contractAddress,
+                tokenId,
+                expectedError
+            }) => {
+                test(`Build a clause to transfer NFT with id ${tokenId}, ${senderAddress}, ${recipientAddress} and ${contractAddress}`, () => {
+                    expect(() =>
+                        contract.clauseBuilder.transferNFT(
+                            contractAddress,
+                            senderAddress,
+                            recipientAddress,
+                            tokenId
+                        )
+                    ).toThrowError(expectedError);
                 });
             }
         );
