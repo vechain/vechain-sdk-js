@@ -2,11 +2,11 @@ import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { VechainProvider } from '../../src';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '@vechain/vechain-sdk-network';
-import { testNetwork } from '../fixture';
-import { providerMethodsTestCasesTestnet } from './fixture';
+import { soloNetwork } from '../fixture';
+import { providerMethodsTestCasesSolo } from './fixture';
 
 /**
- * Vechain provider tests
+ * Vechain provider tests - Solo Network
  *
  * @group integration/providers/vechain-provider
  */
@@ -21,7 +21,7 @@ describe('Vechain provider tests', () => {
      * Inti thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = new ThorClient(testNetwork);
+        thorClient = new ThorClient(soloNetwork);
         provider = new VechainProvider(thorClient);
     });
 
@@ -35,7 +35,7 @@ describe('Vechain provider tests', () => {
     /**
      * Provider methods tests
      */
-    providerMethodsTestCasesTestnet.forEach(
+    providerMethodsTestCasesSolo.forEach(
         ({ description, method, params, expected }) => {
             test(description, async () => {
                 // Call RPC function

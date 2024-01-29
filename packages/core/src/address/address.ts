@@ -58,7 +58,7 @@ function isAddress(addressToVerify: string): boolean {
  * @param address - The input vechain thor address string to be checksummed.
  * @returns The checksum address string, compliant with EIP-55.
  */
-function toChecksumed(address: string): string {
+function toChecksummed(address: string): string {
     assert(
         isAddress(address),
         ADDRESS.INVALID_ADDRESS,
@@ -73,5 +73,5 @@ export const addressUtils = {
     fromPublicKey,
     fromPrivateKey,
     isAddress,
-    toChecksumed
+    toChecksummed
 };

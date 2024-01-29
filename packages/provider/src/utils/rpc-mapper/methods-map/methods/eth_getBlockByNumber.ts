@@ -32,7 +32,7 @@ const ethGetBlockByNumber = async (
             typeof params[0] === 'string' &&
             typeof params[1] === 'boolean',
         DATA.INVALID_DATA_TYPE,
-        'Invalid params length, expected 2 or less.\nThe params should be [blockNumber: string | "latest" | "finalized", transactionDetailFlag: boolean]'
+        'Invalid params length, expected 2.\nThe params should be [blockNumber: string | "latest" | "finalized", transactionDetailFlag: boolean]'
     );
 
     try {

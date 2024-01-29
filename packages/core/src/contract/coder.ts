@@ -1,8 +1,7 @@
 import { type InterfaceAbi, Interface as EthersInterface } from 'ethers';
-import { ERROR_CODES, buildError } from '@vechain/vechain-sdk-errors';
-import type { Interface, BytesLike, Result } from '../abi';
+import { ERROR_CODES, buildError, ABI } from '@vechain/vechain-sdk-errors';
+import type { Interface, BytesLike, Result, Log } from '../abi';
 import { abi } from '../abi';
-
 /**
  * Creates a new Interface instance from an ABI fragment.
  * @param abi - ABI in a compatible format
@@ -176,11 +175,44 @@ function decodeEventLog(
     }
 }
 
+/**
+ * Decodes an Ethereum log based on the ABI definition.
+ *
+ * This method takes raw `data` and `topics` from an Ethereum log and attempts
+ * to decode them using the contract's ABI definition. If the decoding is successful,
+ * it returns a `Log` object representing the decoded information. If the decoding fails,
+ * it throws a custom error with detailed information.
+ *
+ * @param interfaceABI - The ABI (Application Binary Interface) of the contract.
+ * @param {string} data - The hexadecimal string of the data field in the log.
+ * @param {string[]} topics - An array of hexadecimal strings representing the topics of the log.
+ * @returns {Log | null} - A `Log` object representing the decoded log or null if decoding fails.
+ * @throws {InvalidAbiDataToDecodeError} - if decoding fails due to invalid data or topics format.
+ */
+function parseLog(
+    interfaceABI: InterfaceAbi,
+    data: string,
+    topics: string[]
+): Log | null {
+    try {
+        const contractInterface = createInterface(interfaceABI);
+        return contractInterface.parseLog({ topics, data });
+    } catch (e) {
+        throw buildError(
+            ABI.INVALID_DATA_TO_DECODE,
+            'Decoding failed: Data and topics must be correctly formatted for ABI-compliant decoding.',
+            { data },
+            e
+        );
+    }
+}
+
 export const coder = {
     createInterface,
     encodeFunctionInput,
     decodeFunctionInput,
     decodeFunctionOutput,
     encodeEventLog,
-    decodeEventLog
+    decodeEventLog,
+    parseLog
 };
