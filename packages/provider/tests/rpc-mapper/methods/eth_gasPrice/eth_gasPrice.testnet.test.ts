@@ -2,14 +2,13 @@ import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
-import { networkInfo } from '@vechain/vechain-sdk-core';
 
 /**
- * RPC Mapper integration tests for 'eth_chainId' method
+ * RPC Mapper integration tests for 'eth_gasPrice' method
  *
- * @group integration/rpc-mapper/methods/eth_chainId
+ * @group integration/rpc-mapper/methods/eth_gasPrice
  */
-describe('RPC Mapper - eth_chainId method tests', () => {
+describe('RPC Mapper - eth_gasPrice method tests', () => {
     /**
      * Thor client instance
      */
@@ -31,18 +30,17 @@ describe('RPC Mapper - eth_chainId method tests', () => {
     });
 
     /**
-     * eth_chainId RPC call tests - Positive cases
+     * eth_gasPrice RPC call tests - Positive cases
      */
-    describe('eth_chainId - Positive cases', () => {
+    describe('eth_gasPrice - Positive cases', () => {
         /**
-         * Test case regarding obtaining the chain id
+         * Positive case 1 - Get a dummy gas price value.
          */
-        test('Should return the chain id', async () => {
-            const rpcCallChainId = (await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_chainId
-            ]([])) as string;
-
-            expect(rpcCallChainId).toBe(networkInfo.testnet.genesisBlock.id);
+        test('eth_gasPrice - Dummy gas price value', async () => {
+            const gasPrice = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.eth_gasPrice
+            ]([]);
+            expect(gasPrice).toBe('0x0');
         });
     });
 });
