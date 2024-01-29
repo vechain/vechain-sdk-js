@@ -135,7 +135,8 @@ class ContractFactory {
 
         // Ensure that the transaction receipt is valid
         assert(
-            transactionReceipt !== undefined && transactionReceipt !== null,
+            transactionReceipt?.outputs[0]?.contractAddress !== null &&
+                transactionReceipt?.outputs[0]?.contractAddress !== undefined,
             ERROR_CODES.CONTRACT.CONTRACT_DEPLOYMENT_FAILED,
             'Contract deployment failed.',
             { deployTransaction: this.deployTransaction }
@@ -143,6 +144,7 @@ class ContractFactory {
 
         // Construct and return a new Contract instance
         return new Contract(
+            transactionReceipt?.outputs[0].contractAddress as string,
             this.abi,
             this.thor,
             transactionReceipt as TransactionReceipt

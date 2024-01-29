@@ -68,7 +68,7 @@ describe('ThorClient - Contracts', () => {
 
         // Call the get function of the deployed contract to verify that the stored value is 100
         const result = await thorSoloClient.contracts.executeContractCall(
-            contractAddress as string,
+            contractAddress,
             deployedContractAbi,
             'get',
             []
@@ -77,10 +77,10 @@ describe('ThorClient - Contracts', () => {
         expect(result).toEqual([100n]);
 
         // Assertions
-        expect(contract.deployTransactionReceipt.reverted).toBe(false);
-        expect(contract.deployTransactionReceipt.outputs).toHaveLength(1);
+        expect(contract.deployTransactionReceipt?.reverted).toBe(false);
+        expect(contract.deployTransactionReceipt?.outputs).toHaveLength(1);
         expect(contractAddress).not.toBeNull();
-        expect(addressUtils.isAddress(contractAddress as string)).toBe(true);
+        expect(addressUtils.isAddress(contractAddress)).toBe(true);
     }, 10000);
 
     test('deployErc20Contract with Contract Factory', async () => {
@@ -98,7 +98,7 @@ describe('ThorClient - Contracts', () => {
         const contract = await factory.waitForDeployment();
 
         expect(contract.address).not.toBe(null);
-        expect(addressUtils.isAddress(contract.address as string)).toBe(true);
+        expect(addressUtils.isAddress(contract.address)).toBe(true);
     }, 10000);
 
     /**
@@ -128,7 +128,7 @@ describe('ThorClient - Contracts', () => {
         const transferResult =
             await thorSoloClient.contracts.executeContractTransaction(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
-                contract.address as string,
+                contract.address,
                 deployedERC20Abi,
                 'transfer',
                 [TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address, 1000]
@@ -146,7 +146,7 @@ describe('ThorClient - Contracts', () => {
         // Execute a 'balanceOf' call on the contract to check the balance of the receiver
         const balanceOfResult =
             await thorSoloClient.contracts.executeContractCall(
-                contract.address as string,
+                contract.address,
                 deployedERC20Abi,
                 'balanceOf',
                 [TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address],
@@ -172,9 +172,7 @@ describe('ThorClient - Contracts', () => {
 
         // Retrieve the bytecode of the deployed contract
         const contractBytecodeResponse =
-            await thorSoloClient.accounts.getBytecode(
-                contract.address as string
-            );
+            await thorSoloClient.accounts.getBytecode(contract.address);
 
         // Assertion: Compare with the expected deployed contract bytecode
         expect(contractBytecodeResponse).toBe(deployedContractBytecode);
@@ -193,7 +191,7 @@ describe('ThorClient - Contracts', () => {
         const callFunctionSetResponse =
             await thorSoloClient.contracts.executeContractTransaction(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
-                contract.address as string,
+                contract.address,
                 deployedContractAbi,
                 'set',
                 [123]
@@ -208,7 +206,7 @@ describe('ThorClient - Contracts', () => {
 
         const callFunctionGetResult =
             await thorSoloClient.contracts.executeContractCall(
-                contract.address as string,
+                contract.address,
                 deployedContractAbi,
                 'get',
                 []
