@@ -32,7 +32,7 @@ const DECIMAL_INTEGER_REGEX = /^\d+$/;
  * Allows optional "-" prefix and validates both integer and floating point numbers.
  * Also allows for numbers with no leading digits (i.e. ".123", which is equivalent to "0.123").
  */
-const NUMERIC_REGEX = /^-?\d*\.?\d+$/;
+const NUMERIC_REGEX = /(^-?\d+(\.\d+)?)$|(^-?\.\d+)$/;
 
 /**
  * Default length of thor id hex string.
