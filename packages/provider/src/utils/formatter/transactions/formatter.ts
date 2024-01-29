@@ -105,7 +105,7 @@ const formatToRPCStandard = (
  *
  * @returns The RPC standard formatted transaction.
  */
-const formatToRPCStandardFromExpandedBlock = (
+const formatFromExpandedBlockToRPCStandard = (
     tx: TransactionsExpandedBlockDetail,
     block: BlockDetail,
     txIndex: number,
@@ -201,6 +201,6 @@ function formatFromTransactionReceiptToRPCStandard(
 
 export {
     formatToRPCStandard,
-    formatToRPCStandardFromExpandedBlock,
+    formatFromExpandedBlockToRPCStandard,
     formatFromTransactionReceiptToRPCStandard
 };
