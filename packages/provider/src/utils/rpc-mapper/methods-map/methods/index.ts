@@ -40,6 +40,7 @@ export * from './eth_sign';
 export * from './eth_submitWork';
 export * from './net_listening';
 export * from './net_peerCount';
+export * from './net_version';
 export * from './parity_nextNonce';
 export * from './eth_newFilter';
 export * from './eth_newBlockFilter';

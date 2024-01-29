@@ -2,13 +2,13 @@ import {
     type TransactionsExpandedBlockDetail,
     type BlockDetail
 } from '@vechain/vechain-sdk-network';
-import { type BlocksReturnTypeRPC } from './types';
+import { type BlocksRPC } from './types';
 import {
     dataUtils,
     vechain_sdk_core_ethers,
     ZERO_BUFFER
 } from '@vechain/vechain-sdk-core';
-import { formatToRPCStandardFromExpandedBlock } from '../transactions/formatter';
+import { formatFromExpandedBlockToRPCStandard } from '../transactions/formatter';
 
 /**
  * Output formatter for block details.
@@ -20,13 +20,13 @@ import { formatToRPCStandardFromExpandedBlock } from '../transactions/formatter'
 const formatToRPCStandard = (
     block: BlockDetail,
     chainId: string
-): BlocksReturnTypeRPC => {
+): BlocksRPC => {
     // Return the transactions array formatted based on the requested expanded flag
     const transactions =
         typeof block.transactions[0] === 'string'
             ? (block.transactions as string[])
             : block.transactions.map((tx, index) => {
-                  return formatToRPCStandardFromExpandedBlock(
+                  return formatFromExpandedBlockToRPCStandard(
                       tx as TransactionsExpandedBlockDetail,
                       block,
                       index,

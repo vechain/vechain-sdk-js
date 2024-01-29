@@ -1,9 +1,9 @@
-import { type TransactionReturnTypeRPC } from '../transactions';
+import { type TransactionRPC } from '../transactions';
 
 /**
  * Return type of block header for RPC standard.
  */
-interface HeaderReturnTypeRPC {
+interface BlockHeaderRPC {
     /**
      * Header number in hex string format
      */
@@ -69,16 +69,16 @@ interface HeaderReturnTypeRPC {
  *
  * @link [Ethereum JSON RPC Block Object](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_getblockbynumber#returns)
  */
-interface BlocksReturnTypeRPC extends HeaderReturnTypeRPC {
+interface BlocksRPC extends BlockHeaderRPC {
     /**
      * Block number in hex string format
      */
     size: string;
 
     /**
-     * List of transactions as bytes32 array or TransactionReturnTypeRPC array
+     * List of transactions as bytes32 array or TransactionRPC array
      */
-    transactions: string[] | TransactionReturnTypeRPC[];
+    transactions: string[] | TransactionRPC[];
 
     /**
      * Unsupported fields
@@ -90,4 +90,4 @@ interface BlocksReturnTypeRPC extends HeaderReturnTypeRPC {
     mixHash: string;
 }
 
-export { type HeaderReturnTypeRPC, type BlocksReturnTypeRPC };
+export { type BlockHeaderRPC, type BlocksRPC };

@@ -3,8 +3,6 @@
  *
  * @link [web3_clientVersion](https://docs.infura.io/networks/ethereum/json-rpc-methods/web3_clientversion)
  *
- * @param thorClient - The thor client instance to use.
- *
  * @returns A string representing the current client version.
  */
 const web3ClientVersion = async (): Promise<string> => {
