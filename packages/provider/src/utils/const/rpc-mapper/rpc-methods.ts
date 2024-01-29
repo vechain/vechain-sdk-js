@@ -12,6 +12,8 @@ enum RPC_METHODS {
      * * Implemented in web3-providers-connex: True
      * * Required for hardhat: True -> @see https://github.com/vechain/vechain-sdk/issues/462
      * * Possible to implement: True (Already implemented in web3-providers-connex)
+     *
+     * @PRIORITY: HIGH
      * -----------------------------
      */
     eth_blockNumber = 'eth_blockNumber',
@@ -19,13 +21,13 @@ enum RPC_METHODS {
     eth_getBalance = 'eth_getBalance',
     eth_getCode = 'eth_getCode',
     eth_getStorageAt = 'eth_getStorageAt',
-    eth_estimateGas = 'eth_estimateGas',
-    eth_call = 'eth_call',
-    eth_sendRawTransaction = 'eth_sendRawTransaction',
-    eth_getLogs = 'eth_getLogs',
-    eth_getBlockByHash = 'eth_getBlockByHash',
+    eth_estimateGas = 'eth_estimateGas', // TEMPORARY COMMENT - TO IMPLEMENT
+    eth_call = 'eth_call', // TEMPORARY COMMENT - TO IMPLEMENT
+    eth_sendRawTransaction = 'eth_sendRawTransaction', // TEMPORARY COMMENT - TO IMPLEMENT
+    eth_getLogs = 'eth_getLogs', // TEMPORARY COMMENT - TO IMPLEMENT
+    eth_getBlockByHash = 'eth_getBlockByHash', // TEMPORARY COMMENT - TO IMPLEMENT
     eth_getBlockByNumber = 'eth_getBlockByNumber',
-    eth_accounts = 'eth_accounts',
+    eth_accounts = 'eth_accounts', // TEMPORARY COMMENT - TO IMPLEMENT (WALLET NEEDED)
 
     /**
      * ----- TEMPORARY COMMENT -----
@@ -33,21 +35,23 @@ enum RPC_METHODS {
      * * Implemented in web3-providers-connex: True
      * * Required for hardhat: False (BUT WE MUST INVESTIGATE BETTER) -> @see https://github.com/vechain/vechain-sdk/issues/462
      * * Possible to implement: True (Already implemented in web3-providers-connex)
+     *
+     * @PRIORITY: HIGH
      * -----------------------------
      */
-    eth_gasPrice = 'eth_gasPrice',
+    eth_gasPrice = 'eth_gasPrice', // TEMPORARY COMMENT - IMPLEMENTED (Understand only if 0x is ok, or we have other alternatives)
     eth_getTransactionByHash = 'eth_getTransactionByHash',
-    eth_getTransactionCount = 'eth_getTransactionCount',
+    eth_getTransactionCount = 'eth_getTransactionCount', // TEMPORARY COMMENT - IMPLEMENTED (Understand only if count is better, instead of nonce)
     eth_getTransactionReceipt = 'eth_getTransactionReceipt',
-    eth_sendTransaction = 'eth_sendTransaction',
-    eth_syncing = 'eth_syncing',
+    eth_sendTransaction = 'eth_sendTransaction', // TEMPORARY COMMENT - TO IMPLEMENT
+    eth_syncing = 'eth_syncing', // TEMPORARY COMMENT - TO IMPLEMENT
     net_version = 'net_version',
-    web3_clientVersion = 'web3_clientVersion',
-    eth_subscribe = 'eth_subscribe',
-    eth_unsubscribe = 'eth_unsubscribe',
-    debug_traceTransaction = 'debug_traceTransaction',
-    debug_traceCall = 'debug_traceCall',
-    evm_mine = 'evm_mine',
+    web3_clientVersion = 'web3_clientVersion', // TEMPORARY COMMENT -IMPLEMENTED (Better understand if 'thor' is ok)
+    eth_subscribe = 'eth_subscribe', // TEMPORARY COMMENT - TO IMPLEMENT
+    eth_unsubscribe = 'eth_unsubscribe', // TEMPORARY COMMENT - TO IMPLEMENT
+    debug_traceTransaction = 'debug_traceTransaction', // TEMPORARY COMMENT - TO IMPLEMENT
+    debug_traceCall = 'debug_traceCall', // TEMPORARY COMMENT - TO IMPLEMENT
+    evm_mine = 'evm_mine', // TEMPORARY COMMENT - TO IMPLEMENT
 
     /**
      * ----- TEMPORARY COMMENT -----
@@ -55,6 +59,8 @@ enum RPC_METHODS {
      * * Implemented in web3-providers-connex: False (ONLY LISTED `EthJsonRpcMethods`array in `src/common.ts` file)
      * * Required for hardhat: False -> @see https://github.com/vechain/vechain-sdk/issues/462
      * * Possible to implement: TO UNDERSTAND
+     *
+     * @PRIORITY: MEDIUM (SEE AFTER FIRST TWO BLOCKS OF FUNCTIONS)
      * -----------------------------
      */
     eth_coinbase = 'eth_coinbase',
@@ -91,6 +97,8 @@ enum RPC_METHODS {
      * * Possible to implement: TO UNDERSTAND
      *
      * @note: These methods are taken from https://ethereum.github.io/execution-apis/api-documentation/
+     *
+     * @PRIORITY: LOW (Probably not needed)
      * -----------------------------
      */
     debug_getBadBlocks = 'debug_getBadBlocks',
