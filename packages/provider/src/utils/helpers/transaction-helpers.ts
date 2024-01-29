@@ -20,7 +20,7 @@ import {
  *
  * @throws Will throw an error if the transaction is not in the block.
  */
-const getTransactionIndexIntoABlock = (
+const getTransactionIndexIntoBlock = (
     block: BlocksReturnTypeRPC,
     hash: string
 ): number => {
@@ -55,7 +55,7 @@ const getNumberOfLogsAheadOfATransactionIntoABlockExpanded = (
     chainId: string
 ): number => {
     // Get transaction index into the block
-    const transactionIndex = getTransactionIndexIntoABlock(
+    const transactionIndex = getTransactionIndexIntoBlock(
         blocksFormatter.formatToRPCStandard(blockExpanded, chainId),
         hash
     );
@@ -79,6 +79,6 @@ const getNumberOfLogsAheadOfATransactionIntoABlockExpanded = (
 };
 
 export {
-    getTransactionIndexIntoABlock,
+    getTransactionIndexIntoBlock,
     getNumberOfLogsAheadOfATransactionIntoABlockExpanded
 };

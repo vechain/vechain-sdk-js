@@ -15,7 +15,7 @@ import {
 } from '@vechain/vechain-sdk-core';
 import {
     getNumberOfLogsAheadOfATransactionIntoABlockExpanded,
-    getTransactionIndexIntoABlock
+    getTransactionIndexIntoBlock
 } from '../../helpers';
 import { blocksFormatter } from '../blocks';
 
@@ -132,7 +132,7 @@ function formatFromTransactionReceiptToRPCStandard(
     chainId: string
 ): TransactionReceiptReturnTypeRPC {
     // Get transaction index
-    const transactionIndex = getTransactionIndexIntoABlock(
+    const transactionIndex = getTransactionIndexIntoBlock(
         blocksFormatter.formatToRPCStandard(blockContainsTransaction, chainId),
         transactionHash
     );
