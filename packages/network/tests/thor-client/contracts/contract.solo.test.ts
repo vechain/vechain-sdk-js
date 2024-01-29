@@ -16,6 +16,7 @@ import {
 import { addressUtils, type DeployParams } from '@vechain/vechain-sdk-core';
 import { ThorClient, type TransactionReceipt } from '../../../src';
 import { type ContractFactory } from '../../../src/thor-client/contracts/model';
+import { ContractDeploymentFailedError } from '@vechain/vechain-sdk-errors';
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.
@@ -50,14 +51,14 @@ describe('ThorClient - Contracts', () => {
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
         );
 
-        // Deploy the contract using the deployContract method
+        // Start the deployment of the contract
         return await contractFactory.startDeployment(deployParams);
     }
 
     /**
-     * Test case for deploying a smart contract using the deployContract method.
+     * Test case for deploying a smart contract using the contract factory.
      */
-    test('deployContract', async () => {
+    test('deploy a contract', async () => {
         // Deploy an example contract and get the transaction response
         const response = await createExampleContractFactory();
 
@@ -81,6 +82,26 @@ describe('ThorClient - Contracts', () => {
         expect(contract.deployTransactionReceipt?.outputs).toHaveLength(1);
         expect(contractAddress).not.toBeNull();
         expect(addressUtils.isAddress(contractAddress)).toBe(true);
+    }, 10000);
+
+    /**
+     * Test case for deploying a smart contract using the contract factory.
+     */
+    test('failed contract deployment', async () => {
+        // Create a contract factory
+        let contractFactory = thorSoloClient.contracts.createContractFactory(
+            deployedContractAbi,
+            contractBytecode,
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+        );
+
+        // Start the deployment of the contract
+        contractFactory = await contractFactory.startDeployment();
+
+        // Wait for the deployment to complete and obtain the contract instance
+        await expect(contractFactory.waitForDeployment()).rejects.toThrow(
+            ContractDeploymentFailedError
+        );
     }, 10000);
 
     test('deployErc20Contract with Contract Factory', async () => {
@@ -179,7 +200,7 @@ describe('ThorClient - Contracts', () => {
     }, 10000);
 
     /**
-     * Test case for deploying a smart contract using the deployContract method.
+     * Test case for deploying a smart contract using the contract factory.
      */
     test('call a contract function', async () => {
         // Create a contract factory that is already deploying the example contract
