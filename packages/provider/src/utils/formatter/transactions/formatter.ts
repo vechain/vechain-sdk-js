@@ -124,7 +124,7 @@ const formatToRPCStandardFromExpandedBlock = (
  * @param blockContainsTransaction - The block contains the transaction to be formatted.
  * @param chainId - The chain ID of the network.
  */
-function formatToRPCStandardToTransactionReceipt(
+function formatFromTransactionReceiptToRPCStandard(
     transactionHash: string,
     receipt: TransactionReceipt,
     transaction: TransactionDetailNoRaw,
@@ -202,5 +202,5 @@ function formatToRPCStandardToTransactionReceipt(
 export {
     formatToRPCStandard,
     formatToRPCStandardFromExpandedBlock,
-    formatToRPCStandardToTransactionReceipt
+    formatFromTransactionReceiptToRPCStandard
 };

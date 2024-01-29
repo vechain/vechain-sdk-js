@@ -13,7 +13,7 @@ import { type TransactionReceiptReturnTypeRPC } from '../../../formatter';
 import { RPC_METHODS } from '../../../const';
 import { RPCMethodsMap } from '../../rpc-mapper';
 import { assertValidTransactionID } from '@vechain/vechain-sdk-core';
-import { formatToRPCStandardToTransactionReceipt } from '../../../formatter/transactions/formatter';
+import { formatFromTransactionReceiptToRPCStandard } from '../../../formatter/transactions/formatter';
 
 /**
  * RPC Method eth_getTransactionReceipt implementation
@@ -69,7 +69,7 @@ const ethGetTransactionReceipt = async (
             ]([])) as string;
 
             // Initialize the result
-            const result = formatToRPCStandardToTransactionReceipt(
+            const result = formatFromTransactionReceiptToRPCStandard(
                 hash,
                 receipt,
                 transactionDetail,
