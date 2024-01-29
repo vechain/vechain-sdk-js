@@ -9,7 +9,7 @@ import {
     DATA,
     JSONRPC
 } from '@vechain/vechain-sdk-errors';
-import { type TransactionReceiptReturnTypeRPC } from '../../../formatter';
+import { type TransactionReceiptRPC } from '../../../formatter';
 import { RPC_METHODS } from '../../../const';
 import { RPCMethodsMap } from '../../rpc-mapper';
 import { assertValidTransactionID } from '@vechain/vechain-sdk-core';
@@ -28,7 +28,7 @@ import { formatFromTransactionReceiptToRPCStandard } from '../../../formatter/tr
 const ethGetTransactionReceipt = async (
     thorClient: ThorClient,
     params: unknown[]
-): Promise<TransactionReceiptReturnTypeRPC | null> => {
+): Promise<TransactionReceiptRPC | null> => {
     // Assert valid parameters
     assert(
         params.length === 1 && typeof params[0] === 'string',

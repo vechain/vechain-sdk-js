@@ -3,7 +3,7 @@
  *
  * @link [Ethereum JSON RPC Transaction Object](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_gettransactionbyhash#returns)
  */
-interface TransactionReturnTypeRPC {
+interface TransactionRPC {
     /**
      * Hash of the transaction.
      */
@@ -68,7 +68,7 @@ interface TransactionReturnTypeRPC {
  *
  * @link [Ethereum JSON RPC Transaction Receipt Log Object](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_gettransactionreceipt#returns)
  */
-interface TransactionReceiptReturnTypeForLogsRPC {
+interface TransactionReceiptLogsRPC {
     /**
      * The address from which this log was generated
      */
@@ -122,7 +122,7 @@ interface TransactionReceiptReturnTypeForLogsRPC {
  *
  * @link [Ethereum JSON RPC Transaction Receipt Object](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_gettransactionreceipt#returns)
  */
-interface TransactionReceiptReturnTypeRPC {
+interface TransactionReceiptRPC {
     /**
      * 32 bytes. Hash of the block including this transaction.
      */
@@ -160,7 +160,7 @@ interface TransactionReceiptReturnTypeRPC {
     /**
      * Array of log objects, which this transaction generated.
      */
-    logs: TransactionReceiptReturnTypeForLogsRPC[];
+    logs: TransactionReceiptLogsRPC[];
 
     /**
      * 256 bytes. Bloom filter for light clients to quickly retrieve related logs.
@@ -195,7 +195,7 @@ interface TransactionReceiptReturnTypeRPC {
 }
 
 export {
-    type TransactionReturnTypeRPC,
-    type TransactionReceiptReturnTypeForLogsRPC,
-    type TransactionReceiptReturnTypeRPC
+    type TransactionRPC,
+    type TransactionReceiptLogsRPC,
+    type TransactionReceiptRPC
 };

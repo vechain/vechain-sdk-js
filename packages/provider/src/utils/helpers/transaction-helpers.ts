@@ -1,7 +1,7 @@
 import { DATA, buildError } from '@vechain/vechain-sdk-errors';
 import {
-    type TransactionReturnTypeRPC,
-    type BlocksReturnTypeRPC,
+    type TransactionRPC,
+    type BlocksRPC,
     blocksFormatter
 } from '../formatter';
 import {
@@ -21,7 +21,7 @@ import {
  * @throws Will throw an error if the transaction is not in the block.
  */
 const getTransactionIndexIntoBlock = (
-    block: BlocksReturnTypeRPC,
+    block: BlocksRPC,
     hash: string
 ): number => {
     const idx =
@@ -30,7 +30,7 @@ const getTransactionIndexIntoBlock = (
                   (tx: string) => tx === hash
               )
             : block.transactions.findIndex(
-                  (tx) => (tx as TransactionReturnTypeRPC).hash === hash
+                  (tx) => (tx as TransactionRPC).hash === hash
               );
 
     if (idx === -1)

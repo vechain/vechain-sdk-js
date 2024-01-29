@@ -5,9 +5,9 @@ import {
     type TransactionReceipt
 } from '@vechain/vechain-sdk-network';
 import {
-    type TransactionReceiptReturnTypeForLogsRPC,
-    type TransactionReceiptReturnTypeRPC,
-    type TransactionReturnTypeRPC
+    type TransactionReceiptLogsRPC,
+    type TransactionReceiptRPC,
+    type TransactionRPC
 } from './types';
 import {
     vechain_sdk_core_ethers,
@@ -36,7 +36,7 @@ const formatTransactionToRPC = (
     blockNumber: number,
     chainId: string,
     txIndex: number
-): TransactionReturnTypeRPC => {
+): TransactionRPC => {
     return {
         // Supported fields
         blockHash,
@@ -84,7 +84,7 @@ const formatToRPCStandard = (
     tx: TransactionDetailNoRaw,
     chainId: string,
     txIndex: number
-): TransactionReturnTypeRPC => {
+): TransactionRPC => {
     return formatTransactionToRPC(
         tx,
         tx.meta.blockID,
@@ -110,7 +110,7 @@ const formatToRPCStandardFromExpandedBlock = (
     block: BlockDetail,
     txIndex: number,
     chainId: string
-): TransactionReturnTypeRPC => {
+): TransactionRPC => {
     return formatTransactionToRPC(tx, block.id, block.number, chainId, txIndex);
 };
 
@@ -130,7 +130,7 @@ function formatFromTransactionReceiptToRPCStandard(
     transaction: TransactionDetailNoRaw,
     blockContainsTransaction: BlockDetail,
     chainId: string
-): TransactionReceiptReturnTypeRPC {
+): TransactionReceiptRPC {
     // Get transaction index
     const transactionIndex = getTransactionIndexIntoBlock(
         blocksFormatter.formatToRPCStandard(blockContainsTransaction, chainId),
@@ -152,7 +152,7 @@ function formatFromTransactionReceiptToRPCStandard(
         vechain_sdk_core_ethers.toQuantity(i)
     );
 
-    const logs: TransactionReceiptReturnTypeForLogsRPC[] =
+    const logs: TransactionReceiptLogsRPC[] =
         receipt.outputs.length > 0 && receipt.outputs[0].events.length > 0
             ? receipt.outputs[0].events.map((event, index) => {
                   return {
