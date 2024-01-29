@@ -42,6 +42,13 @@ class ContractFactory {
      */
     private deployTransaction: SendTransactionResult | undefined;
 
+    /**
+     * Initializes a new instance of the `ContractFactory` class.
+     * @param abi The Application Binary Interface (ABI) of the contract, which defines the contract's methods and events.
+     * @param bytecode The compiled bytecode of the contract, representing the contract's executable code.
+     * @param privateKey The private key used for signing transactions during contract deployment, ensuring the deployer's identity.
+     * @param thor An instance of ThorClient to interact with the blockchain.
+     */
     constructor(
         abi: InterfaceAbi,
         bytecode: string,
@@ -64,8 +71,8 @@ class ContractFactory {
      * 4. Signs the transaction using the provided private key.
      * 5. Sends the signed transaction to the blockchain.
      *
-     * @param {DeployParams?} deployParams - Optional parameters for contract deployment.
-     * @param {ContractTransactionOptions?} options - Optional transaction options, such as gas limit.
+     * @param {DeployParams?} deployParams (Optional) parameters for contract deployment.
+     * @param {ContractTransactionOptions?} options (Optional) transaction options, such as gas limit.
      * @returns {Promise<ContractFactory>} A promise that resolves to the instance of `ContractFactory`,
      *          allowing for fluent chaining of further actions or queries.
      * @throws {Error} Throws an error if any step in the deployment process fails.
@@ -151,6 +158,9 @@ class ContractFactory {
         );
     }
 
+    /**
+     * Returns the deploy transaction result, if available.
+     */
     public getDeployTransaction(): SendTransactionResult | undefined {
         return this.deployTransaction;
     }

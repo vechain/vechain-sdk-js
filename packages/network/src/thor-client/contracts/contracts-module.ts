@@ -21,6 +21,15 @@ class ContractsModule {
      */
     constructor(readonly thor: ThorClient) {}
 
+    /**
+     * Creates a new instance of `ContractFactory` configured with the specified ABI, bytecode, and private key.
+     * This factory is used to deploy new smart contracts to the blockchain network managed by this instance.
+     *
+     * @param abi - The Application Binary Interface (ABI) of the contract, which defines the contract's methods and events.
+     * @param bytecode - The compiled bytecode of the contract, representing the contract's executable code.
+     * @param privateKey - The private key used for signing transactions during contract deployment, ensuring the deployer's identity.
+     * @returns An instance of `ContractFactory` configured with the provided ABI, bytecode, and private key, ready for deploying contracts.
+     */
     public createContractFactory(
         abi: InterfaceAbi,
         bytecode: string,
