@@ -1,0 +1,36 @@
+digraph "abi" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"abi/coder.ts"        [shape = record, label = "{ abi/coder.ts |  ABI : \l  BytesLike : \l  ParamType : \l  buildError : \l  ethers : \l  fragment : \l }"];
+"abi/fragment.ts"     [shape = record, label = "{ abi/fragment.ts |  ABI : \l  BytesLike : \l  FormatType : \l  Fragment : \l  FunctionFragment : \l  Interface : \l  Result : \l  assert : \l  buildError : \l  ethers : \l  fragment : \l  sanitizeValuesToEncode : \l }"];
+"abi/types.d.ts"      [shape = record, label = "{ abi/types.d.ts |  BytesLike : \l  FormatType : \l  FunctionFragment : \l  Interface : \l  ParamType : \l  Result : \l  ethers : \l }"];
+"dist/index.d.ts"     [shape = record, label = "{ dist/index.d.ts |  ABI : \l  assert : \l  buildError : \l }"];
+ethers                [shape = record, label = "{ ethers |  Fragment : \l }"];
+"helpers/fragment.ts" [shape = record, label = "{ helpers/fragment.ts |  Fragment : \l  sanitizeValuesToEncode : \l }"];
+
+"abi/coder.ts"        -> "abi/fragment.ts"     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"abi/coder.ts"        -> "abi/types.d.ts"      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"abi/coder.ts"        -> "abi/types.d.ts"      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"abi/coder.ts"        -> "dist/index.d.ts"     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"abi/coder.ts"        -> "dist/index.d.ts"     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"abi/coder.ts"        -> ethers                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"abi/fragment.ts"     -> "abi/types.d.ts"      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"abi/fragment.ts"     -> "abi/types.d.ts"      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"abi/fragment.ts"     -> "abi/types.d.ts"      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"abi/fragment.ts"     -> "abi/types.d.ts"      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"abi/fragment.ts"     -> "abi/types.d.ts"      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"abi/fragment.ts"     -> "dist/index.d.ts"     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"abi/fragment.ts"     -> "dist/index.d.ts"     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"abi/fragment.ts"     -> "dist/index.d.ts"     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"abi/fragment.ts"     -> ethers                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"abi/fragment.ts"     -> ethers                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"abi/fragment.ts"     -> "helpers/fragment.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"abi/types.d.ts"      -> ethers                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/fragment.ts" -> ethers                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}
