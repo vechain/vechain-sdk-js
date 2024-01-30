@@ -1,7 +1,6 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { NotImplementedError } from '@vechain/vechain-sdk-errors';
+import { beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
-import { ThorClient } from '@vechain/vechain-sdk-network';
+import { type BlockDetail, ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
 
 /**
@@ -24,43 +23,20 @@ describe('RPC Mapper - evm_mine method tests', () => {
     });
 
     /**
-     * Destroy thor client after each test
-     */
-    afterEach(() => {
-        thorClient.destroy();
-    });
-
-    /**
      * evm_mine RPC call tests - Positive cases
      */
     describe('evm_mine - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Positive case 1 - get new block
          */
         test('evm_mine - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.evm_mine]([-1])
-            ).rejects.toThrowError(NotImplementedError);
-        });
-    });
-
-    /**
-     * evm_mine RPC call tests - Negative cases
-     */
-    describe('evm_mine - Negative cases', () => {
-        /**
-         * Negative case 1 - ... Description ...
-         */
-        test('evm_mine - negative case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.evm_mine]([
-                        'SOME_RANDOM_PARAM'
-                    ])
-            ).rejects.toThrowError(NotImplementedError);
-        });
+            const bestBlock = await thorClient.blocks.getBestBlock();
+            const newBlock = (await RPCMethodsMap(thorClient)[
+                RPC_METHODS.evm_mine
+            ]([])) as BlockDetail | null;
+            if (bestBlock != null && newBlock != null) {
+                expect(newBlock.number).toBe(bestBlock.number + 1);
+            }
+        }, 11000);
     });
 });

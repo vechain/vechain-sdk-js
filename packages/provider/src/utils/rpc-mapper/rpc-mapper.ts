@@ -1,4 +1,7 @@
-import { type ThorClient } from '@vechain/vechain-sdk-network';
+import {
+    type BlockDetail,
+    type ThorClient
+} from '@vechain/vechain-sdk-network';
 import { type MethodHandlerType } from './types';
 import {
     ethGetTransactionByHash,
@@ -205,8 +208,8 @@ const RPCMethodsMap = (
             await debugTraceCall(thorClient, params);
         },
 
-        [RPC_METHODS.evm_mine]: async (params) => {
-            await evmMine(thorClient, params);
+        [RPC_METHODS.evm_mine]: async (): Promise<BlockDetail | null> => {
+            return await evmMine(thorClient);
         },
 
         [RPC_METHODS.eth_coinbase]: async (params) => {
