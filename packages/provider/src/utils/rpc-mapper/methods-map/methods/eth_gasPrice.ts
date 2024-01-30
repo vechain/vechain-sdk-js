@@ -1,32 +1,11 @@
-import { type ThorClient } from '@vechain/vechain-sdk-network';
-import { buildError, FUNCTION } from '@vechain/vechain-sdk-errors';
-
 /**
  * RPC Method eth_gasPrice implementation
  *
- * @param thorClient - The thor client instance to use.
- * @param params - The standard array of rpc call parameters.
- * @note:
- * * params[0]: ...
- * * params[1]: ...
- * * params[n]: ...
+ * @link [ethGasPrice](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_gasprice)
  */
-const ethGasPrice = async (
-    thorClient: ThorClient,
-    params: unknown[]
-): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
-
-    // Not implemented yet
-    throw buildError(
-        FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_gasPrice" not not implemented yet',
-        {
-            params,
-            thorClient
-        }
-    );
+const ethGasPrice = async (): Promise<string> => {
+    // Dummy implementation
+    return await Promise.resolve('0x0');
 };
 
 export { ethGasPrice };

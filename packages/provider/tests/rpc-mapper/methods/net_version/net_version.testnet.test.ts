@@ -1,15 +1,14 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
-import { soloNetwork } from '../../../fixture';
-import { networkInfo } from '@vechain/vechain-sdk-core';
+import { testNetwork } from '../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_chainId' method
  *
- * @group integration/rpc-mapper/methods/eth_chainId
+ * @group integration/rpc-mapper/methods/net_version
  */
-describe('RPC Mapper - eth_chainId method tests', () => {
+describe('RPC Mapper - net_version method tests', () => {
     /**
      * Thor client instance
      */
@@ -20,7 +19,7 @@ describe('RPC Mapper - eth_chainId method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = new ThorClient(soloNetwork);
+        thorClient = new ThorClient(testNetwork);
     });
 
     /**
@@ -31,18 +30,23 @@ describe('RPC Mapper - eth_chainId method tests', () => {
     });
 
     /**
-     * eth_chainId RPC call tests - Positive cases
+     * net_version RPC call tests - Positive cases
      */
-    describe('eth_chainId - Positive cases', () => {
+    describe('net_version - Positive cases', () => {
         /**
-         * Test case regarding obtaining the chain id
+         * Test case regarding obtaining the net_version
          */
-        test('Should return the chain id', async () => {
+        test('Should return the net_version (the chain id in our case)', async () => {
+            // net_version and eth_chainId should return the same value
+            const rpcCallNetVersion = (await RPCMethodsMap(thorClient)[
+                RPC_METHODS.net_version
+            ]([])) as string;
+
             const rpcCallChainId = (await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_chainId
             ]([])) as string;
 
-            expect(rpcCallChainId).toBe(networkInfo.solo.genesisBlock.id);
+            expect(rpcCallNetVersion).toBe(rpcCallChainId);
         });
     });
 });

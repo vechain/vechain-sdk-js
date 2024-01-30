@@ -5,7 +5,7 @@ import {
     DATA,
     JSONRPC
 } from '@vechain/vechain-sdk-errors';
-import { blocksFormatter, type BlocksReturnTypeRPC } from '../../../formatter';
+import { blocksFormatter, type BlocksRPC } from '../../../formatter';
 import { RPCMethodsMap } from '../../rpc-mapper';
 import { RPC_METHODS } from '../../../const';
 
@@ -26,7 +26,7 @@ import { RPC_METHODS } from '../../../const';
 const ethGetBlockByNumber = async (
     thorClient: ThorClient,
     params: unknown[]
-): Promise<BlocksReturnTypeRPC | null> => {
+): Promise<BlocksRPC | null> => {
     assert(
         params.length === 2 &&
             typeof params[0] === 'string' &&
