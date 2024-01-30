@@ -137,8 +137,10 @@ const RPCMethodsMap = (
             await ethGetLogs(thorClient, params);
         },
 
-        [RPC_METHODS.eth_getBlockByHash]: async (params) => {
-            await ethGetBlockByHash(thorClient, params);
+        [RPC_METHODS.eth_getBlockByHash]: async (
+            params
+        ): Promise<BlocksRPC | null> => {
+            return await ethGetBlockByHash(thorClient, params);
         },
 
         [RPC_METHODS.eth_getBlockByNumber]: async (
