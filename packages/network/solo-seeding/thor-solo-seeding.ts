@@ -1,18 +1,15 @@
 import {
     contract,
     networkInfo,
-    type Sources,
     Transaction,
     TransactionHandler,
     unitsUtils
 } from '@vechain/vechain-sdk-core';
 import { ALL_ACCOUNTS, soloNetwork } from '../tests/fixture';
 import { BUILT_IN_CONTRACTS } from '../tests/built-in-fixture';
-import { ThorClient, ThorestClient } from '../src';
+import { ThorClient } from '../src';
 import { expect } from '@jest/globals';
 import { TESTING_CONTRACT_BYTECODE } from './const';
-import path from 'path';
-import fs from 'fs';
 
 /**
  * Constructs clauses for transferring VTHO tokens.
@@ -90,16 +87,6 @@ const txs = unsignedTxs.map((unsignedTx, index) =>
  */
 const deployTestContractTransaction = (): Transaction => {
     try {
-        const contractPath = path.resolve('TestingContract.sol');
-
-        // Read the Solidity source code from the file
-
-        const sources: Sources = {
-            'TestingContract.sol': {
-                content: fs.readFileSync(contractPath, 'utf8')
-            }
-        };
-
         return TransactionHandler.sign(
             new Transaction({
                 ...txBody,
@@ -109,7 +96,7 @@ const deployTestContractTransaction = (): Transaction => {
                         value: '0x0',
                         data:
                             TESTING_CONTRACT_BYTECODE ??
-                            compileContract('solo-seeding', sources).bytecode
+                            TESTING_CONTRACT_BYTECODE
                     }
                 ]
             }),
@@ -132,7 +119,7 @@ const deployTestContractTransaction = (): Transaction => {
  * @returns A Promise that resolves when all transactions have been processed.
  */
 const seedThorSolo = async (): Promise<void> => {
-    const thorestSoloClient = new ThorestClient(soloNetwork);
+    const thorSoloClient = new ThorClient(soloNetwork);
 
     console.log(
         "Distributing balances to the first 10 accounts in the 'ALL_ACCOUNTS' array:"
@@ -140,23 +127,19 @@ const seedThorSolo = async (): Promise<void> => {
 
     let lastTxId = '';
     for (const tx of txs) {
-        const resp = await thorestSoloClient.transactions.sendTransaction(
-            `0x${tx.encoded.toString('hex')}`
-        );
+        const resp = await thorSoloClient.transactions.sendTransaction(tx);
 
         console.log(resp.id); // Print the transaction id
 
         lastTxId = resp.id;
     }
 
-    const thorSoloClient = new ThorClient(thorestSoloClient);
-
     // Wait for the last transaction to be confirmed
     await thorSoloClient.transactions.waitForTransaction(lastTxId);
 
     // Check that the balances have been distributed
     for (const account of ALL_ACCOUNTS) {
-        const accountInfo = await thorestSoloClient.accounts.getAccount(
+        const accountInfo = await thorSoloClient.accounts.getAccount(
             account.address
         );
 
@@ -179,9 +162,7 @@ const seedThorSolo = async (): Promise<void> => {
 
     console.log('Deploy contract simulation: ', JSON.stringify(simulations));
 
-    const resp = await thorestSoloClient.transactions.sendTransaction(
-        `0x${deployTx.encoded.toString('hex')}`
-    );
+    const resp = await thorSoloClient.transactions.sendTransaction(deployTx);
 
     console.log('Deploy contract tx ID: ', resp.id);
 
