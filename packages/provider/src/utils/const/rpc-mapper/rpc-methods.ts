@@ -51,7 +51,7 @@ enum RPC_METHODS {
     eth_unsubscribe = 'eth_unsubscribe', // TEMPORARY COMMENT - TO IMPLEMENT
     debug_traceTransaction = 'debug_traceTransaction', // TEMPORARY COMMENT - TO IMPLEMENT
     debug_traceCall = 'debug_traceCall', // TEMPORARY COMMENT - TO IMPLEMENT
-    evm_mine = 'evm_mine', // TEMPORARY COMMENT - TO IMPLEMENT
+    evm_mine = 'evm_mine',
 
     /**
      * ----- TEMPORARY COMMENT -----

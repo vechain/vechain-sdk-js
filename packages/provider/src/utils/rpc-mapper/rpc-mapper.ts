@@ -210,8 +210,8 @@ const RPCMethodsMap = (
             await debugTraceCall(thorClient, params);
         },
 
-        [RPC_METHODS.evm_mine]: async (params) => {
-            await evmMine(thorClient, params);
+        [RPC_METHODS.evm_mine]: async (): Promise<BlocksRPC | null> => {
+            return await evmMine(thorClient);
         },
 
         [RPC_METHODS.eth_coinbase]: async (params) => {
