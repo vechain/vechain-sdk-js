@@ -23,7 +23,7 @@ import { RPC_METHODS } from '../../../const';
  *
  * @note
  *  * Standard RPC method `eth_getBlockByNumber` support following block numbers: hex number of block, 'earliest', 'latest', 'safe', 'finalized', 'pending'. (@see https://ethereum.org/en/developers/docs/apis/json-rpc#default-block)
- *  * Currently, Vechain Thorest only support hex number of block, 'latest' and 'finalized'.
+ *  * Currently, vechain only support hex number of block, 'latest' and 'finalized'.
  *
  * @throws {ProviderRpcError} - Will throw an error if the retrieval of the block fails.
  */
