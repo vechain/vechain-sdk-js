@@ -5,6 +5,7 @@ import {
     ThorClient
 } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
+import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_call' method
@@ -37,10 +38,7 @@ describe('RPC Mapper - eth_call method tests', () => {
      */
     describe('eth_call - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
-         */
-        /**
-         * Sends 1 VET to the receiver.
+         * Positive case 1 - Sends 1 VET to the receiver.
          */
         const options = [
             {
@@ -52,25 +50,22 @@ describe('RPC Mapper - eth_call method tests', () => {
         test('eth_call - positive case 1', async () => {
             const response =
                 await RPCMethodsMap(thorClient)[RPC_METHODS.eth_call](options);
-            expect(response).toBe('a');
+            expect(response).toBe('0x');
         });
     });
 
     /**
      * eth_call RPC call tests - Negative cases
      */
-    // describe('eth_call - Negative cases', () => {
-    //     /**
-    //      * Negative case 1 - ... Description ...
-    //      */
-    //     test('eth_call - negative case 1', async () => {
-    //         // NOT IMPLEMENTED YET!
-    //         await expect(
-    //             async () =>
-    //                 await RPCMethodsMap(thorClient)[RPC_METHODS.eth_call]([
-    //                     'SOME_RANDOM_PARAM'
-    //                 ])
-    //         ).rejects.toThrowError(NotImplementedError);
-    //     });
-    // });
+    describe('eth_call - Negative cases', () => {
+        /**
+         * Negative case 1 - No parameter passed
+         */
+        test('eth_call - no parameter passed', async () => {
+            await expect(
+                async () =>
+                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_call]([])
+            ).rejects.toThrowError(InvalidDataTypeError);
+        });
+    });
 });

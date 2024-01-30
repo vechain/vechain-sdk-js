@@ -7,6 +7,7 @@ import {
     contract,
     unitsUtils
 } from '@vechain/vechain-sdk-core';
+import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_estimateGas' method
@@ -58,13 +59,12 @@ describe('RPC Mapper - eth_estimateGas method tests', () => {
          * Negative case 1 - No parameter passed
          */
         test('eth_estimateGas - no parameter passed', async () => {
-            // NOT IMPLEMENTED YET!
             await expect(
                 async () =>
                     await RPCMethodsMap(thorClient)[
                         RPC_METHODS.eth_estimateGas
                     ]([])
-            ).rejects.toThrowError('a');
+            ).rejects.toThrowError(InvalidDataTypeError);
         });
     });
 });
