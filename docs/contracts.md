@@ -160,14 +160,14 @@ const soloNetwork = new HttpClient(_soloUrl);
 const thorSoloClient = new ThorClient(soloNetwork);
 
 // Creating the contract factory
-let contractFactory = thorSoloClient.contracts.createContractFactory(
+const contractFactory = thorSoloClient.contracts.createContractFactory(
     VIP180_ABI,
     erc20ContractBytecode,
     privateKeyDeployer
 );
 
 // Deploying the contract
-contractFactory = await contractFactory.startDeployment();
+await contractFactory.startDeployment();
 
 // Awaiting the contract deployment
 const contract = await contractFactory.waitForDeployment();
@@ -222,14 +222,14 @@ const thorSoloClient = new ThorClient(soloNetwork);
 
 // Defining a function for deploying the ERC20 contract
 const setupERC20Contract = async (): Promise<string> => {
-    let contractFactory = thorSoloClient.contracts.createContractFactory(
+    const contractFactory = thorSoloClient.contracts.createContractFactory(
         VIP180_ABI,
         erc20ContractBytecode,
         privateKeyDeployer
     );
 
     // Deploying the contract
-    contractFactory = await contractFactory.startDeployment();
+    await contractFactory.startDeployment();
 
     // Waiting for the contract to be deployed
     const contract = await contractFactory.waitForDeployment();
