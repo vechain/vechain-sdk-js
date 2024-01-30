@@ -25,8 +25,5 @@
         "blakejs": "^1.2.1",
         "elliptic": "^6.5.4",
         "ethers": "6.10.0"
-    },
-    "devDependencies": {
-        "solc": "^0.8.23"
     }
 }
