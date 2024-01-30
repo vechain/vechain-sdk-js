@@ -2,9 +2,11 @@ import {
     type TransactionsExpandedBlockDetail,
     type TransactionDetailNoRaw,
     type BlockDetail,
-    type TransactionReceipt
+    type TransactionReceipt,
+    type SendTransactionResult
 } from '@vechain/vechain-sdk-network';
 import {
+    type SendRawTransactionResultRPC,
     type TransactionReceiptLogsRPC,
     type TransactionReceiptRPC,
     type TransactionRPC
@@ -199,8 +201,23 @@ function formatFromTransactionReceiptToRPCStandard(
     };
 }
 
+/**
+ * Output formatter for Send Raw Transaction result.
+ * It converts the SendTransactionResult into the RPC standard.
+ *
+ * @param transaction - The transaction result to be formatted.
+ */
+const formatFromSendRawTransactionToRPCStandard = (
+    transaction: SendTransactionResult
+): SendRawTransactionResultRPC => {
+    return {
+        result: transaction.id
+    } satisfies SendRawTransactionResultRPC;
+};
+
 export {
     formatToRPCStandard,
     formatFromExpandedBlockToRPCStandard,
-    formatFromTransactionReceiptToRPCStandard
+    formatFromTransactionReceiptToRPCStandard,
+    formatFromSendRawTransactionToRPCStandard
 };

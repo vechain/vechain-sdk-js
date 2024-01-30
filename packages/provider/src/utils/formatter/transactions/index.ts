@@ -1,5 +1,11 @@
-import { formatToRPCStandard } from './formatter';
+import {
+    formatFromSendRawTransactionToRPCStandard,
+    formatToRPCStandard
+} from './formatter';
 
 export * from './types.d';
 
-export const transactionsFormatter = { formatToRPCStandard };
+export const transactionsFormatter = {
+    formatToRPCStandard,
+    formatFromSendRawTransactionToRPCStandard
+};
