@@ -21,8 +21,8 @@ enum RPC_METHODS {
     eth_getBalance = 'eth_getBalance',
     eth_getCode = 'eth_getCode',
     eth_getStorageAt = 'eth_getStorageAt',
-    eth_estimateGas = 'eth_estimateGas', // TEMPORARY COMMENT - TO IMPLEMENT
-    eth_call = 'eth_call', // TEMPORARY COMMENT - TO IMPLEMENT
+    eth_estimateGas = 'eth_estimateGas',
+    eth_call = 'eth_call',
     eth_sendRawTransaction = 'eth_sendRawTransaction', // TEMPORARY COMMENT - TO IMPLEMENT
     eth_getLogs = 'eth_getLogs', // TEMPORARY COMMENT - TO IMPLEMENT
     eth_getBlockByHash = 'eth_getBlockByHash', // TEMPORARY COMMENT - TO IMPLEMENT
