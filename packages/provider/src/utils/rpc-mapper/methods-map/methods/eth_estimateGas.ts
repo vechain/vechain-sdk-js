@@ -9,7 +9,6 @@ import { assert, DATA } from '@vechain/vechain-sdk-errors';
  *
  * @link [eth_estimateGas](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_estimategas)
  *
- * @param thorClient - The thor client instance to use.
  * @param params - The transaction call object
  */
 const ethEstimateGas = async (params: unknown[]): Promise<string> => {

@@ -23,10 +23,12 @@ const ethCall = async (
         'Invalid params length, expected at least 1.'
     );
 
+    // Simulate transaction
     const simulatedTx = await thorClient.transactions.simulateTransaction(
         params as SimulateTransactionClause[]
     );
 
+    // Return simulated transaction data
     return simulatedTx[0].data;
 };
 
