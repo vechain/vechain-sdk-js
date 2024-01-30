@@ -10,4 +10,3 @@ export const contract = {
     coder
 };
 export * from './types.d';
-export * from '../../tests/contract/compiler';
