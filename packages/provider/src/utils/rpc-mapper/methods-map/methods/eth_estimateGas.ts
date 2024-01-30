@@ -1,8 +1,8 @@
+import { type ThorClient } from '@vechain/vechain-sdk-network';
 import {
-    type SimulateTransactionClause,
-    type ThorClient
-} from '@vechain/vechain-sdk-network';
-import { TransactionUtils } from '@vechain/vechain-sdk-core';
+    type TransactionClause,
+    TransactionUtils
+} from '@vechain/vechain-sdk-core';
 import { assert, DATA } from '@vechain/vechain-sdk-errors';
 
 /**
@@ -25,11 +25,12 @@ const ethEstimateGas = async (
     );
 
     // The intrinsic gas of the transaction
-    const intrinsicGas = TransactionUtils.intrinsicGas([
-        params as unknown as SimulateTransactionClause
-    ]).toString(16);
+    const intrinsicGas = TransactionUtils.intrinsicGas(
+        params as TransactionClause[]
+    );
 
-    return await Promise.resolve(intrinsicGas);
+    // Convert intrinsic gas to hex string and return
+    return await Promise.resolve('0x' + intrinsicGas.toString(16));
 };
 
 export { ethEstimateGas };
