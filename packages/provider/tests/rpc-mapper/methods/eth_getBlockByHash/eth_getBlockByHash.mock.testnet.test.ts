@@ -43,7 +43,7 @@ describe('RPC Mapper - eth_getBlockByHash method tests', () => {
      */
     describe('Negative cases', () => {
         /**
-         * Test case where the block number is negative
+         * Test case where request fails
          */
         test('Should throw `ProviderRpcError` when request fails', async () => {
             // Mock the getBlock method to throw error
