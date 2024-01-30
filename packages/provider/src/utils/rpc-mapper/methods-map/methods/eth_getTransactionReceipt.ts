@@ -9,11 +9,13 @@ import {
     DATA,
     JSONRPC
 } from '@vechain/vechain-sdk-errors';
-import { type TransactionReceiptRPC } from '../../../formatter';
+import {
+    type TransactionReceiptRPC,
+    transactionsFormatter
+} from '../../../formatter';
 import { RPC_METHODS } from '../../../const';
 import { RPCMethodsMap } from '../../rpc-mapper';
 import { assertValidTransactionID } from '@vechain/vechain-sdk-core';
-import { formatFromTransactionReceiptToRPCStandard } from '../../../formatter/transactions/formatter';
 
 /**
  * RPC Method eth_getTransactionReceipt implementation
@@ -69,13 +71,14 @@ const ethGetTransactionReceipt = async (
             ]([])) as string;
 
             // Initialize the result
-            const result = formatFromTransactionReceiptToRPCStandard(
-                hash,
-                receipt,
-                transactionDetail,
-                blockContainsTransaction,
-                chainId
-            );
+            const result =
+                transactionsFormatter.formatFromTransactionReceiptToRPCStandard(
+                    hash,
+                    receipt,
+                    transactionDetail,
+                    blockContainsTransaction,
+                    chainId
+                );
 
             return await Promise.resolve(result);
         } else {

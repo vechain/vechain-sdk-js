@@ -32,7 +32,7 @@ import { blocksFormatter } from '../blocks';
  *
  * @returns The RPC standard formatted transaction.
  */
-const formatTransactionToRPC = (
+const _formatTransactionToRPC = (
     tx: TransactionDetailNoRaw | TransactionsExpandedBlockDetail,
     blockHash: string,
     blockNumber: number,
@@ -87,7 +87,7 @@ const formatToRPCStandard = (
     chainId: string,
     txIndex: number
 ): TransactionRPC => {
-    return formatTransactionToRPC(
+    return _formatTransactionToRPC(
         tx,
         tx.meta.blockID,
         tx.meta.blockNumber,
@@ -113,7 +113,13 @@ const formatFromExpandedBlockToRPCStandard = (
     txIndex: number,
     chainId: string
 ): TransactionRPC => {
-    return formatTransactionToRPC(tx, block.id, block.number, chainId, txIndex);
+    return _formatTransactionToRPC(
+        tx,
+        block.id,
+        block.number,
+        chainId,
+        txIndex
+    );
 };
 
 /**
