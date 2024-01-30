@@ -1,32 +1,29 @@
+import { type TransactionClause } from '@vechain/vechain-sdk-core';
 import { type ThorClient } from '@vechain/vechain-sdk-network';
-import { buildError, FUNCTION } from '@vechain/vechain-sdk-errors';
 
 /**
  * RPC Method eth_call implementation
  *
+ * @link [eth_call](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_call)
+ *
  * @param thorClient - The thor client instance to use.
- * @param params - The standard array of rpc call parameters.
- * @note:
- * * params[0]: ...
- * * params[1]: ...
- * * params[n]: ...
+ * @param params - The transaction call object
  */
 const ethCall = async (
     thorClient: ThorClient,
     params: unknown[]
-): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
+): Promise<string> => {
+    // assert missing
+    const txObject = params[0] as TransactionClause[];
 
-    // Not implemented yet
-    throw buildError(
-        FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_call" not not implemented yet',
+    const simulatedTx = await thorClient.transactions.simulateTransaction(
+        txObject,
         {
-            params,
-            thorClient
+            revision: params[1] as string
         }
     );
+
+    return simulatedTx[0].data;
 };
 
 export { ethCall };

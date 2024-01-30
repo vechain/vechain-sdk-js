@@ -125,8 +125,8 @@ const RPCMethodsMap = (
             return await ethEstimateGas(thorClient, params);
         },
 
-        [RPC_METHODS.eth_call]: async (params) => {
-            await ethCall(thorClient, params);
+        [RPC_METHODS.eth_call]: async (params): Promise<string> => {
+            return await ethCall(thorClient, params);
         },
 
         [RPC_METHODS.eth_sendRawTransaction]: async (params) => {

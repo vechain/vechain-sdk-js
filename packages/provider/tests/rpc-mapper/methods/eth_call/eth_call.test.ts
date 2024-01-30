@@ -1,7 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { NotImplementedError } from '@vechain/vechain-sdk-errors';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
-import { ThorClient } from '@vechain/vechain-sdk-network';
+import {
+    type SimulateTransactionClause,
+    ThorClient
+} from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
 
 /**
@@ -37,30 +39,38 @@ describe('RPC Mapper - eth_call method tests', () => {
         /**
          * Positive case 1 - ... Description ...
          */
+        /**
+         * Sends 1 VET to the receiver.
+         */
+        const options = [
+            {
+                to: '0x3db469a79593dcc67f07de1869d6682fc1eaf535',
+                value: '1000000000000000000',
+                data: '0x'
+            }
+        ] as SimulateTransactionClause[];
         test('eth_call - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_call]([-1])
-            ).rejects.toThrowError(NotImplementedError);
+            const response =
+                await RPCMethodsMap(thorClient)[RPC_METHODS.eth_call](options);
+            expect(response).toBe('a');
         });
     });
 
     /**
      * eth_call RPC call tests - Negative cases
      */
-    describe('eth_call - Negative cases', () => {
-        /**
-         * Negative case 1 - ... Description ...
-         */
-        test('eth_call - negative case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_call]([
-                        'SOME_RANDOM_PARAM'
-                    ])
-            ).rejects.toThrowError(NotImplementedError);
-        });
-    });
+    // describe('eth_call - Negative cases', () => {
+    //     /**
+    //      * Negative case 1 - ... Description ...
+    //      */
+    //     test('eth_call - negative case 1', async () => {
+    //         // NOT IMPLEMENTED YET!
+    //         await expect(
+    //             async () =>
+    //                 await RPCMethodsMap(thorClient)[RPC_METHODS.eth_call]([
+    //                     'SOME_RANDOM_PARAM'
+    //                 ])
+    //         ).rejects.toThrowError(NotImplementedError);
+    //     });
+    // });
 });
