@@ -52,7 +52,7 @@ const ethGetBlockByNumberTestCases = [
         description:
             "Should get block by number '0x0' with transaction details",
         params: [vechain_sdk_core_ethers.toQuantity(0), true],
-        expected: zeroBlock // Because geenesis block doesn't have any transactions on testnet
+        expected: zeroBlock // Because genesis block doesn't have any transactions on testnet
     },
     {
         description: 'Should get block which has transactions',

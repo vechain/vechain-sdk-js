@@ -2,9 +2,11 @@ import {
     type TransactionsExpandedBlockDetail,
     type TransactionDetailNoRaw,
     type BlockDetail,
-    type TransactionReceipt
+    type TransactionReceipt,
+    type SendTransactionResult
 } from '@vechain/vechain-sdk-network';
 import {
+    type SendRawTransactionResultRPC,
     type TransactionReceiptLogsRPC,
     type TransactionReceiptRPC,
     type TransactionRPC
@@ -30,7 +32,7 @@ import { blocksFormatter } from '../blocks';
  *
  * @returns The RPC standard formatted transaction.
  */
-const formatTransactionToRPC = (
+const _formatTransactionToRPC = (
     tx: TransactionDetailNoRaw | TransactionsExpandedBlockDetail,
     blockHash: string,
     blockNumber: number,
@@ -85,7 +87,7 @@ const formatToRPCStandard = (
     chainId: string,
     txIndex: number
 ): TransactionRPC => {
-    return formatTransactionToRPC(
+    return _formatTransactionToRPC(
         tx,
         tx.meta.blockID,
         tx.meta.blockNumber,
@@ -111,7 +113,13 @@ const formatFromExpandedBlockToRPCStandard = (
     txIndex: number,
     chainId: string
 ): TransactionRPC => {
-    return formatTransactionToRPC(tx, block.id, block.number, chainId, txIndex);
+    return _formatTransactionToRPC(
+        tx,
+        block.id,
+        block.number,
+        chainId,
+        txIndex
+    );
 };
 
 /**
@@ -199,8 +207,23 @@ function formatFromTransactionReceiptToRPCStandard(
     };
 }
 
+/**
+ * Output formatter for Send Raw Transaction result.
+ * It converts the SendTransactionResult into the RPC standard.
+ *
+ * @param transaction - The transaction result to be formatted.
+ */
+const formatFromSendRawTransactionToRPCStandard = (
+    transaction: SendTransactionResult
+): SendRawTransactionResultRPC => {
+    return {
+        result: transaction.id
+    } satisfies SendRawTransactionResultRPC;
+};
+
 export {
     formatToRPCStandard,
     formatFromExpandedBlockToRPCStandard,
-    formatFromTransactionReceiptToRPCStandard
+    formatFromTransactionReceiptToRPCStandard,
+    formatFromSendRawTransactionToRPCStandard
 };

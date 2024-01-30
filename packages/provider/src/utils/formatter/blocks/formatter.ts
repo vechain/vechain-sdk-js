@@ -8,7 +8,8 @@ import {
     vechain_sdk_core_ethers,
     ZERO_BUFFER
 } from '@vechain/vechain-sdk-core';
-import { formatFromExpandedBlockToRPCStandard } from '../transactions/formatter';
+
+import { transactionsFormatter } from '../transactions';
 
 /**
  * Output formatter for block details.
@@ -26,7 +27,7 @@ const formatToRPCStandard = (
         typeof block.transactions[0] === 'string'
             ? (block.transactions as string[])
             : block.transactions.map((tx, index) => {
-                  return formatFromExpandedBlockToRPCStandard(
+                  return transactionsFormatter.formatFromExpandedBlockToRPCStandard(
                       tx as TransactionsExpandedBlockDetail,
                       block,
                       index,
