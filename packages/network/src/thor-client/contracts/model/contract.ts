@@ -6,9 +6,9 @@ import { type ThorClient } from '../../thor-client';
  * A class representing a smart contract deployed on the blockchain.
  */
 class Contract {
-    private readonly abi: InterfaceAbi;
     private readonly thor: ThorClient;
     public address: string;
+    public abi: InterfaceAbi;
 
     public deployTransactionReceipt: TransactionReceipt | undefined;
 
