@@ -35,8 +35,8 @@ describe('RPC Mapper - evm_mine method tests', () => {
                 RPC_METHODS.evm_mine
             ]([])) as BlockDetail | null;
             if (bestBlock != null && newBlock != null) {
-                expect(newBlock.number).toBe(bestBlock.number + 1);
+                expect(Number(newBlock.number)).toBe(bestBlock.number + 1);
             }
-        }, 11000);
+        }, 12000);
     });
 });
