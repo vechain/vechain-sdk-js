@@ -37,22 +37,19 @@ describe('RPC Mapper - eth_estimateGas method tests', () => {
     //      * Positive case 1 - ... Description ...
     //      */
     //     test('eth_estimateGas - positive case 1', async () => {
-    //         const clauses = [
+    //         const clauses: TransactionClause[] = [
     //             {
-    //                 to: '0x0000000000000000000000000000000000000000',
+    //                 to: '0xDafCA4A51eA97B3b5F21171A95DAbF540894a55A',
     //                 value: 0,
     //                 data: ''
     //             }
     //         ];
-    //         const expected =
-    //             TRANSACTIONS_GAS_CONSTANTS.CLAUSE_GAS * 5 +
-    //             TRANSACTIONS_GAS_CONSTANTS.TX_GAS;
+    //         const estimatedGas =
+    //             await RPCMethodsMap(thorClient)[RPC_METHODS.eth_estimateGas](
+    //                 clauses
+    //             );
 
-    //         const estimatedGas = await RPCMethodsMap(thorClient)[
-    //             RPC_METHODS.eth_estimateGas
-    //         ]([]);
-
-    //         expect(estimatedGas).toBe(expected);
+    //         expect(estimatedGas).toBe(2);
     //     });
     // });
 
