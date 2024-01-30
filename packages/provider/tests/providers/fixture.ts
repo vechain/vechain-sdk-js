@@ -3,7 +3,7 @@ import { zeroBlock } from '../rpc-mapper/methods/eth_getBlockByNumber/fixture';
 import {
     TESTING_CONTRACT_ADDRESS,
     TESTING_CONTRACT_BYTECODE,
-    TEST_ACCOUNTS,
+    TEST_ACCOUNTS_THOR_SOLO,
     validTransactionDetailTestnet,
     validTransactionHashTestnet
 } from '../fixture';
@@ -42,7 +42,7 @@ const providerMethodsTestCasesSolo = [
         description:
             'Should be able to call eth_getBalance of an address with balance more than 0 VET',
         method: 'eth_getBalance',
-        params: [TEST_ACCOUNTS[0].address, 'latest'],
+        params: [TEST_ACCOUNTS_THOR_SOLO[0].address, 'latest'],
         expected: vechain_sdk_core_ethers.toQuantity(
             unitsUtils.parseVET('500000000')
         )
