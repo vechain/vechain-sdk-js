@@ -1,4 +1,3 @@
-import { type ThorClient } from '@vechain/vechain-sdk-network';
 import {
     type TransactionClause,
     TransactionUtils
@@ -13,10 +12,7 @@ import { assert, DATA } from '@vechain/vechain-sdk-errors';
  * @param thorClient - The thor client instance to use.
  * @param params - The transaction call object
  */
-const ethEstimateGas = async (
-    thorClient: ThorClient,
-    params: unknown[]
-): Promise<string> => {
+const ethEstimateGas = async (params: unknown[]): Promise<string> => {
     // Input validation - Invalid params
     assert(
         params.length === 1,
