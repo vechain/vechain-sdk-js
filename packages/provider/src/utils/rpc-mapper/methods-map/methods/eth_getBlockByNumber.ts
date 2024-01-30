@@ -46,7 +46,7 @@ const ethGetBlockByNumber = async (
                 []
             )) as string;
 
-        if (blockNumber === 'latest') blockNumber = 'best'; // 'best' is the alias for 'latest' in Vechain Thorest
+        if (blockNumber === 'latest') blockNumber = 'best'; // 'best' is the alias for 'latest' in vechain Thorest
 
         const block = await thorClient.blocks.getBlock(blockNumber, {
             expanded: isTxDetail
