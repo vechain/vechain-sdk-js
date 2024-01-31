@@ -83,6 +83,7 @@ import {
     type TransactionRPC
 } from '../formatter';
 import { type Wallet } from '@vechain/vechain-sdk-wallet';
+import { ethRequestAccounts } from './methods-map/methods/eth_requestAccounts';
 
 /**
  * Map of RPC methods to their implementations with our SDK.
@@ -271,6 +272,10 @@ const RPCMethodsMap = (
 
         [RPC_METHODS.eth_protocolVersion]: async (params) => {
             await ethProtocolVersion(thorClient, params);
+        },
+
+        [RPC_METHODS.eth_requestAccounts]: async (): Promise<string[]> => {
+            return await ethRequestAccounts(wallet);
         },
 
         [RPC_METHODS.eth_sign]: async (params) => {
