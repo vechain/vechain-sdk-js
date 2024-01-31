@@ -82,6 +82,7 @@ import {
     type TransactionReceiptRPC,
     type TransactionRPC
 } from '../formatter';
+import { type Wallet } from '@vechain/vechain-sdk-wallet';
 
 /**
  * Map of RPC methods to their implementations with our SDK.
@@ -91,12 +92,12 @@ import {
  * * https://eth.wiki/json-rpc/API
  * * https://ethereum.github.io/execution-apis/api-documentation/
  *
- * ------ TEMPORARY COMMENT ------
- * We cannot complete all the RPC methods in this PR!
- * ------------------------------
+ * @param thorClient - ThorClient instance.
+ * @param wallet - Wallet instance. It is optional because the majority of the methods do not require a wallet.
  */
 const RPCMethodsMap = (
-    thorClient: ThorClient
+    thorClient: ThorClient,
+    wallet?: Wallet
 ): Record<string, MethodHandlerType<unknown, unknown>> => {
     /**
      * Returns a map of RPC methods to their implementations with our SDK.
@@ -152,8 +153,8 @@ const RPCMethodsMap = (
             return await ethGetBlockByNumber(thorClient, params);
         },
 
-        [RPC_METHODS.eth_accounts]: async (params) => {
-            await ethAccounts(thorClient, params);
+        [RPC_METHODS.eth_accounts]: async (): Promise<string[]> => {
+            return await ethAccounts(wallet);
         },
 
         [RPC_METHODS.eth_gasPrice]: async (): Promise<string> => {
