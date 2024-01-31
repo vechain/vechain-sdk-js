@@ -1,6 +1,5 @@
 import {
     contract,
-    type DeployParams,
     type InterfaceAbi,
     PARAMS_ABI,
     PARAMS_ADDRESS,
@@ -10,6 +9,7 @@ import {
 import type { ContractCallOptions, ContractTransactionOptions } from './types';
 import { type SendTransactionResult } from '../transactions';
 import { type ThorClient } from '../thor-client';
+import { ContractFactory } from './model';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -22,48 +22,20 @@ class ContractsModule {
     constructor(readonly thor: ThorClient) {}
 
     /**
-     * Deploys a smart contract to the blockchain.
+     * Creates a new instance of `ContractFactory` configured with the specified ABI, bytecode, and private key.
+     * This factory is used to deploy new smart contracts to the blockchain network managed by this instance.
      *
-     * @param privateKey - The private key of the account deploying the smart contract.
-     * @param contractBytecode - The bytecode of the smart contract to be deployed.
-     * @param deployParams - The parameters to pass to the smart contract constructor.
-     * @param options - (Optional) An object containing options for the transaction body. Includes all options of the `buildTransactionBody` method
-     *                  besides `isDelegated`.
-     *
-     * @returns A promise that resolves to a `TransactionSendResult` object representing the result of the deployment.
+     * @param abi - The Application Binary Interface (ABI) of the contract, which defines the contract's methods and events.
+     * @param bytecode - The compiled bytecode of the contract, representing the contract's executable code.
+     * @param privateKey - The private key used for signing transactions during contract deployment, ensuring the deployer's identity.
+     * @returns An instance of `ContractFactory` configured with the provided ABI, bytecode, and private key, ready for deploying contracts.
      */
-    public async deployContract(
-        privateKey: string,
-        contractBytecode: string,
-        deployParams?: DeployParams,
-        options?: ContractTransactionOptions
-    ): Promise<SendTransactionResult> {
-        // Build a transaction for deploying the smart contract
-        const deployContractClause = contract.clauseBuilder.deployContract(
-            contractBytecode,
-            deployParams
-        );
-
-        // Estimate the gas cost of the transaction
-        const gasResult = await this.thor.gas.estimateGas(
-            [deployContractClause],
-            addressUtils.fromPrivateKey(Buffer.from(privateKey, 'hex'))
-        );
-
-        const txBody = await this.thor.transactions.buildTransactionBody(
-            [deployContractClause],
-            gasResult.totalGas,
-            options
-        );
-
-        // Sign the transaction with the provided private key
-        const signedTx = await this.thor.transactions.signTransaction(
-            txBody,
-            privateKey
-        );
-
-        // Send the signed transaction to the blockchain
-        return await this.thor.transactions.sendTransaction(signedTx);
+    public createContractFactory(
+        abi: InterfaceAbi,
+        bytecode: string,
+        privateKey: string
+    ): ContractFactory {
+        return new ContractFactory(abi, bytecode, privateKey, this.thor);
     }
 
     /**

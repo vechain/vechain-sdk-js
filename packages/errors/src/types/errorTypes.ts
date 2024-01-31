@@ -8,11 +8,18 @@ import {
     CertificateNotSignedError,
     ContractInterfaceError,
     DATA,
+    EIP1193,
+    EIP1193ChainDisconnected,
+    EIP1193Disconnected,
+    type EIP1193ProviderRpcErrorData,
+    EIP1193Unauthorized,
+    EIP1193UnsupportedMethod,
+    EIP1193UserRejectedRequest,
     type ErrorBase,
+    FUNCTION,
     HDNODE,
     HTTP_CLIENT,
     HTTPClientError,
-    POLL_ERROR,
     type HTTPClientErrorData,
     InvalidAbiDataToDecodeError,
     InvalidAbiDataToEncodeError,
@@ -32,39 +39,36 @@ import {
     InvalidKeystoreError,
     InvalidKeystorePasswordError,
     InvalidRLPError,
-    PollExecutionError,
     type InvalidRLPErrorData,
-    type PollErrorData,
     InvalidSecp256k1MessageHashError,
     InvalidSecp256k1PrivateKeyError,
     InvalidSecp256k1SignatureError,
     InvalidSecp256k1SignatureRecoveryError,
+    JSONRPC,
+    JSONRPCDefaultError,
+    type JSONRPCErrorData,
+    JSONRPCInternalError,
+    JSONRPCInvalidParams,
+    JSONRPCInvalidRequest,
+    JSONRPCMethodNotFound,
+    JSONRPCParseError,
     KEYSTORE,
+    NotImplementedError,
+    POLL_ERROR,
+    type PollErrorData,
+    PollExecutionError,
     RLP,
     SECP256K1,
     TRANSACTION,
     TransactionAlreadySignedError,
     TransactionBodyError,
     TransactionDelegationError,
-    TransactionNotSignedError,
-    FUNCTION,
-    NotImplementedError,
-    EIP1193,
-    type EIP1193ProviderRpcErrorData,
-    EIP1193UserRejectedRequest,
-    EIP1193Unauthorized,
-    EIP1193UnsupportedMethod,
-    EIP1193Disconnected,
-    EIP1193ChainDisconnected,
-    JSONRPC,
-    type JSONRPCErrorData,
-    JSONRPCParseError,
-    JSONRPCInvalidRequest,
-    JSONRPCMethodNotFound,
-    JSONRPCInvalidParams,
-    JSONRPCInternalError,
-    JSONRPCDefaultError
+    TransactionNotSignedError
 } from '../model';
+import {
+    CONTRACT,
+    ContractDeploymentFailedError
+} from '../model/core/contract';
 
 /**
  * @note: REGISTER YOUR NEW FANCY ERRORS BELOW!
@@ -95,7 +99,8 @@ type ErrorCode =
     | POLL_ERROR
     | FUNCTION
     | EIP1193
-    | JSONRPC;
+    | JSONRPC
+    | CONTRACT;
 
 /**
  * Conditional type to get the error data type from the error code.
@@ -156,7 +161,8 @@ const ERROR_CODES = {
     POLL_ERROR,
     FUNCTION,
     EIP1193,
-    JSONRPC
+    JSONRPC,
+    CONTRACT
 };
 
 /**
@@ -271,7 +277,9 @@ type ErrorType<ErrorCodeT> =
                                                                                             ? JSONRPCInternalError
                                                                                             : ErrorCodeT extends JSONRPC.DEFAULT
                                                                                               ? JSONRPCDefaultError
-                                                                                              : never;
+                                                                                              : ErrorCodeT extends CONTRACT.CONTRACT_DEPLOYMENT_FAILED
+                                                                                                ? ContractDeploymentFailedError
+                                                                                                : never;
 
 /**
  * Map to get the error class from the error code.
@@ -362,7 +370,10 @@ const ErrorClassMap = new Map<
     [JSONRPC.METHOD_NOT_FOUND, JSONRPCMethodNotFound],
     [JSONRPC.INVALID_PARAMS, JSONRPCInvalidParams],
     [JSONRPC.INTERNAL_ERROR, JSONRPCInternalError],
-    [JSONRPC.DEFAULT, JSONRPCDefaultError]
+    [JSONRPC.DEFAULT, JSONRPCDefaultError],
+
+    // CONTRACT
+    [CONTRACT.CONTRACT_DEPLOYMENT_FAILED, ContractDeploymentFailedError]
 ]);
 
 export {
