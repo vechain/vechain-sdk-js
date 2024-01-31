@@ -1,7 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { addressUtils, secp256k1 } from '@vechain/vechain-sdk-core';
-import { BaseWallet } from '../../src/wallets/base-wallet/base-wallet';
-import { type WalletAccount } from '../../src';
+import { BaseWallet, type WalletAccount } from '../../src';
 
 /**
  * Unit test for BaseWallet class.
