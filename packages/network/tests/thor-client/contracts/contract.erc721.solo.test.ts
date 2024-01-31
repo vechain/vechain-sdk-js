@@ -39,14 +39,20 @@ describe('ThorClient - ERC721 Contracts', () => {
     beforeAll(async () => {
         thorSoloClient = new ThorClient(soloNetwork);
 
-        // Deploy the ERC721 contract and set the contract address
-        const response = await thorSoloClient.contracts.deployContract(
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
-            erc721ContractBytecode
+        // Create the ERC721 contract factory
+
+        const factory = thorSoloClient.contracts.createContractFactory(
+            ERC721_ABI,
+            erc721ContractBytecode,
+            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
         );
 
+        await factory.startDeployment();
+
+        const contract = await factory.waitForDeployment();
+
         const transactionReceiptDeployContract =
-            await thorSoloClient.transactions.waitForTransaction(response.id);
+            contract.deployTransactionReceipt;
 
         expect(transactionReceiptDeployContract).toBeDefined();
         expect(
