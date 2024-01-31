@@ -33,7 +33,7 @@ describe('RPC Mapper - eth_syncing method tests', () => {
             const status = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_syncing
             ]([]);
-            expect(status).toBeDefined();
+            expect(status).toBe(false);
         });
     });
 });

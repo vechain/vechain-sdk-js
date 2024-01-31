@@ -30,7 +30,10 @@ const ethSyncing = async (
         const genesisBlock = await thorClient.blocks.getGenesisBlock();
 
         // Check if the node is already in sync
-        if (bestBlock != null && Date.now() - bestBlock.timestamp < 11000) {
+        if (
+            bestBlock != null &&
+            Math.floor(Date.now() / 1000) - bestBlock.timestamp < 11000
+        ) {
             return false;
         }
 
