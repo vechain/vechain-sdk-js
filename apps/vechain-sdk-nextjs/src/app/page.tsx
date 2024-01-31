@@ -38,9 +38,6 @@ export default function Home() {
         setBlock(latestBlock);
     };
 
-    // Chain tag
-    const [chainTag, setChainTag] = useState<number | null>(null);
-
     return (
         <main className="flex min-h-screen flex-col items-center justify-between p-24">
             {/* Welcome Header */}
