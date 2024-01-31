@@ -1,5 +1,5 @@
 import { type ThorClient } from '@vechain/vechain-sdk-network';
-import { type MethodHandlerType } from './types';
+import { type MethodHandlerType, type SyncBlock } from './types';
 import {
     ethGetTransactionByHash,
     ethGetBlockByNumber,
@@ -182,8 +182,8 @@ const RPCMethodsMap = (
             await ethSendTransaction(thorClient, params);
         },
 
-        [RPC_METHODS.eth_syncing]: async (params) => {
-            await ethSyncing(thorClient, params);
+        [RPC_METHODS.eth_syncing]: async (): Promise<boolean | SyncBlock> => {
+            return await ethSyncing(thorClient);
         },
 
         [RPC_METHODS.net_version]: async (): Promise<string> => {

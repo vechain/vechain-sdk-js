@@ -44,7 +44,7 @@ enum RPC_METHODS {
     eth_getTransactionCount = 'eth_getTransactionCount', // TEMPORARY COMMENT - IMPLEMENTED (Understand only if count is better, instead of nonce)
     eth_getTransactionReceipt = 'eth_getTransactionReceipt',
     eth_sendTransaction = 'eth_sendTransaction', // TEMPORARY COMMENT - TO IMPLEMENT
-    eth_syncing = 'eth_syncing', // TEMPORARY COMMENT - TO IMPLEMENT
+    eth_syncing = 'eth_syncing',
     net_version = 'net_version',
     web3_clientVersion = 'web3_clientVersion', // TEMPORARY COMMENT -IMPLEMENTED (Better understand if 'thor' is ok)
     eth_subscribe = 'eth_subscribe', // TEMPORARY COMMENT - TO IMPLEMENT

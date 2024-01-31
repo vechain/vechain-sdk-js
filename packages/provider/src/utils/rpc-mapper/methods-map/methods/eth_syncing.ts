@@ -1,32 +1,68 @@
 import { type ThorClient } from '@vechain/vechain-sdk-network';
-import { buildError, FUNCTION } from '@vechain/vechain-sdk-errors';
+import {
+    blocksFormatter,
+    type BlocksRPC,
+    RPC_METHODS,
+    RPCMethodsMap
+} from '../../../../provider';
+import { JSONRPC, buildProviderError } from '@vechain/vechain-sdk-errors';
+
+interface SyncBlock {
+    startingBlock: null;
+    currentBlock: BlocksRPC | null;
+    highestBlock: string | null;
+}
 
 /**
  * RPC Method eth_syncing implementation
  *
+ * @link [eth_syncing](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_syncing)
+ *
  * @param thorClient - The thor client instance to use.
- * @param params - The standard array of rpc call parameters.
- * @note:
- * * params[0]: ...
- * * params[1]: ...
- * * params[n]: ...
+ *
+ * @returns Returns an object with the sync status of the node if the node is out-of-sync and is syncing. Returns false when the node is already in sync.
  */
 const ethSyncing = async (
-    thorClient: ThorClient,
-    params: unknown[]
-): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
+    thorClient: ThorClient
+): Promise<boolean | SyncBlock> => {
+    try {
+        const bestBlock = await thorClient.blocks.getBestBlock();
+        const genesisBlock = await thorClient.blocks.getGenesisBlock();
 
-    // Not implemented yet
-    throw buildError(
-        FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_syncing" not not implemented yet',
-        {
-            params,
-            thorClient
+        // Check if the node is already in sync
+        if (bestBlock != null && Date.now() - bestBlock.timestamp < 11000) {
+            return false;
         }
-    );
+
+        // Calculate the chainId
+        const chainId = (await RPCMethodsMap(thorClient)[
+            RPC_METHODS.eth_chainId
+        ]([])) as string;
+
+        const highestBlock =
+            genesisBlock != null
+                ? Math.floor((Date.now() - genesisBlock.timestamp) / 10000)
+                : null;
+
+        return {
+            startingBlock: null,
+            currentBlock:
+                bestBlock != null
+                    ? blocksFormatter.formatToRPCStandard(bestBlock, chainId)
+                    : null,
+            highestBlock:
+                highestBlock != null ? highestBlock.toString(16) : null
+        };
+    } catch (e) {
+        throw buildProviderError(
+            JSONRPC.INTERNAL_ERROR,
+            `Method 'eth_syncing' failed: Error while getting last block\n
+            URL: ${thorClient.httpClient.baseURL}`,
+            {
+                innerError: JSON.stringify(e)
+            }
+        );
+    }
 };
 
 export { ethSyncing };
