@@ -70,5 +70,26 @@ describe('RPC Mapper - eth_syncing method tests', () => {
 
             expect(status).not.toBe(false);
         });
+
+        /**
+         * Test case where the best block and genesis block are not defined
+         */
+        test('Should return an object with the sync status of the node if the node is out-of-sync', async () => {
+            // Mock the getBestBlock method to return null
+            jest.spyOn(thorClient.blocks, 'getBestBlock').mockResolvedValue(
+                null
+            );
+
+            // Mock the getGenesisBlock method to return null
+            jest.spyOn(thorClient.blocks, 'getGenesisBlock').mockResolvedValue(
+                null
+            );
+
+            const status = (await RPCMethodsMap(thorClient)[
+                RPC_METHODS.eth_syncing
+            ]([])) as string;
+
+            expect(status).not.toBe(false);
+        });
     });
 });
