@@ -1,0 +1,35 @@
+digraph "hash" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"blakejs/index.d.ts"    [shape = record, label = "{ blakejs/index.d.ts |  }"];
+"dist/index.d.ts"       [shape = record, label = "{ dist/index.d.ts |  DATA : \l  assert : \l }"];
+ethers                  [shape = record, label = "{ ethers |  BytesLike : \l }"];
+"hash/blake2b256.ts"    [shape = record, label = "{ hash/blake2b256.ts |  HashInput : \l  ReturnType : \l  assertIsValidReturnType : \l  blake : \l }"];
+"hash/keccak256.ts"     [shape = record, label = "{ hash/keccak256.ts |  HashInput : \l  ReturnType : \l  assertIsValidReturnType : \l  ethers : \l }"];
+"hash/sha256.ts"        [shape = record, label = "{ hash/sha256.ts |  HashInput : \l  ReturnType : \l  assertIsValidReturnType : \l  ethers : \l }"];
+"hash/types.d.ts"       [shape = record, label = "{ hash/types.d.ts |  BytesLike : \l  HashInput : \l  ReturnType : \l }"];
+"helpers/assertions.ts" [shape = record, label = "{ helpers/assertions.ts |  DATA : \l  ReturnType : \l  assert : \l  assertIsValidReturnType : \l }"];
+
+"hash/blake2b256.ts"    -> "blakejs/index.d.ts"    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hash/blake2b256.ts"    -> "hash/types.d.ts"       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hash/blake2b256.ts"    -> "hash/types.d.ts"       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hash/blake2b256.ts"    -> "helpers/assertions.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hash/keccak256.ts"     -> ethers                  [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hash/keccak256.ts"     -> "hash/types.d.ts"       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hash/keccak256.ts"     -> "hash/types.d.ts"       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hash/keccak256.ts"     -> "helpers/assertions.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hash/sha256.ts"        -> ethers                  [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hash/sha256.ts"        -> "hash/types.d.ts"       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hash/sha256.ts"        -> "hash/types.d.ts"       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hash/sha256.ts"        -> "helpers/assertions.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hash/types.d.ts"       -> ethers                  [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/assertions.ts" -> "dist/index.d.ts"       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/assertions.ts" -> "dist/index.d.ts"       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/assertions.ts" -> "hash/types.d.ts"       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

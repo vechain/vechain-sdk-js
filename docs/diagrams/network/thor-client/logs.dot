@@ -1,0 +1,21 @@
+digraph "logs" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"logs/logs-module.ts"        [shape = record, label = "{ logs/logs-module.ts |  EventLogs : \l  FilterEventLogsOptions : \l  FilterTransferLogsOptions : \l  ThorClient : \l  TransferLogs : \l  thorest : \l }"];
+"logs/types.d.ts"            [shape = record, label = "{ logs/types.d.ts |  EventLogs : \l  FilterEventLogsOptions : \l  FilterTransferLogsOptions : \l  TransferLogs : \l }"];
+"thor-client/thor-client.ts" [shape = record, label = "{ thor-client/thor-client.ts |  ThorClient : \l }"];
+"thorest/thorest.ts"         [shape = record, label = "{ thorest/thorest.ts |  thorest : \l }"];
+
+"logs/logs-module.ts"        -> "logs/types.d.ts"            [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"logs/logs-module.ts"        -> "logs/types.d.ts"            [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"logs/logs-module.ts"        -> "logs/types.d.ts"            [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"logs/logs-module.ts"        -> "logs/types.d.ts"            [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"logs/logs-module.ts"        -> "thor-client/thor-client.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"logs/logs-module.ts"        -> "thorest/thorest.ts"         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

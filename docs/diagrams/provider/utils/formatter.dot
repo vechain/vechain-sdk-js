@@ -1,0 +1,42 @@
+digraph "formatter" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"blocks/formatter.ts"            [shape = record, label = "{ blocks/formatter.ts |  BlockDetail : \l  BlocksRPC : \l  TransactionsExpandedBlockDetail : \l  ZERO_BUFFER : \l  dataUtils : \l  formatFromExpandedBlockToRPCStandard : \l  formatToRPCStandard : \l  vechain_sdk_core_ethers : \l }"];
+"blocks/index.ts"                [shape = record, label = "{ blocks/index.ts |  blocksFormatter : \l  formatToRPCStandard : \l }"];
+"blocks/types.d.ts"              [shape = record, label = "{ blocks/types.d.ts |  BlocksRPC : \l  TransactionRPC : \l }"];
+"dist/index.d.ts"                [shape = record, label = "{ dist/index.d.ts |  ZERO_BUFFER : \l  dataUtils : \l  vechain_sdk_core_ethers : \l }"];
+"dist/index.d.ts"                [shape = record, label = "{ dist/index.d.ts |  BlockDetail : \l  TransactionDetailNoRaw : \l  TransactionReceipt : \l  TransactionsExpandedBlockDetail : \l }"];
+"helpers/transaction-helpers.ts" [shape = record, label = "{ helpers/transaction-helpers.ts |  getNumberOfLogsAheadOfTransactionIntoBlockExpanded : \l  getTransactionIndexIntoBlock : \l }"];
+"transactions/formatter.ts"      [shape = record, label = "{ transactions/formatter.ts |  BlockDetail : \l  TransactionDetailNoRaw : \l  TransactionRPC : \l  TransactionReceipt : \l  TransactionReceiptLogsRPC : \l  TransactionReceiptRPC : \l  TransactionsExpandedBlockDetail : \l  ZERO_BUFFER : \l  blocksFormatter : \l  formatFromExpandedBlockToRPCStandard : \l  formatToRPCStandard : \l  getNumberOfLogsAheadOfTransactionIntoBlockExpanded : \l  getTransactionIndexIntoBlock : \l  vechain_sdk_core_ethers : \l }"];
+"transactions/index.ts"          [shape = record, label = "{ transactions/index.ts |  formatToRPCStandard : \l }"];
+"transactions/types.d.ts"        [shape = record, label = "{ transactions/types.d.ts |  TransactionRPC : \l  TransactionReceiptLogsRPC : \l  TransactionReceiptRPC : \l }"];
+
+"blocks/formatter.ts"            -> "blocks/types.d.ts"              [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/formatter.ts"            -> "dist/index.d.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/formatter.ts"            -> "dist/index.d.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/formatter.ts"            -> "dist/index.d.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/formatter.ts"            -> "dist/index.d.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/formatter.ts"            -> "dist/index.d.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/formatter.ts"            -> "transactions/formatter.ts"      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/index.ts"                -> "blocks/formatter.ts"            [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/types.d.ts"              -> "transactions/types.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/formatter.ts"      -> "blocks/index.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/formatter.ts"      -> "dist/index.d.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/formatter.ts"      -> "dist/index.d.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/formatter.ts"      -> "dist/index.d.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/formatter.ts"      -> "dist/index.d.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/formatter.ts"      -> "dist/index.d.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/formatter.ts"      -> "dist/index.d.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/formatter.ts"      -> "helpers/transaction-helpers.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/formatter.ts"      -> "helpers/transaction-helpers.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/formatter.ts"      -> "transactions/types.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/formatter.ts"      -> "transactions/types.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/formatter.ts"      -> "transactions/types.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/index.ts"          -> "transactions/formatter.ts"      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

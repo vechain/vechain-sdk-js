@@ -1,0 +1,28 @@
+digraph "secp256k1" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"@types/.../crypto.d.ts" [shape = record, label = "{ @types/.../crypto.d.ts |  randomBytes : \l }"];
+"@types/.../index.d.ts"  [shape = record, label = "{ @types/.../index.d.ts |  ec : \l }"];
+"const/data.ts"          [shape = record, label = "{ const/data.ts |  ZERO_BUFFER : \l }"];
+"const/secp256k1.ts"     [shape = record, label = "{ const/secp256k1.ts |  PRIVATE_KEY_MAX_VALUE : \l }"];
+"const/transaction.ts"   [shape = record, label = "{ const/transaction.ts |  SIGNATURE_LENGTH : \l }"];
+"dist/index.d.ts"        [shape = record, label = "{ dist/index.d.ts |  SECP256K1 : \l  assert : \l }"];
+"helpers/assertions.ts"  [shape = record, label = "{ helpers/assertions.ts |  assertIsValidPrivateKey : \l  assertIsValidSecp256k1MessageHash : \l }"];
+"secp256k1/secp256k1.ts" [shape = record, label = "{ secp256k1/secp256k1.ts |  EC : \l  PRIVATE_KEY_MAX_VALUE : \l  SECP256K1 : \l  SIGNATURE_LENGTH : \l  ZERO_BUFFER : \l  assert : \l  assertIsValidPrivateKey : \l  assertIsValidSecp256k1MessageHash : \l  randomBytes : \l }"];
+
+"secp256k1/secp256k1.ts" -> "@types/.../crypto.d.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"secp256k1/secp256k1.ts" -> "@types/.../index.d.ts"  [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"secp256k1/secp256k1.ts" -> "const/data.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"secp256k1/secp256k1.ts" -> "const/secp256k1.ts"     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"secp256k1/secp256k1.ts" -> "const/transaction.ts"   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"secp256k1/secp256k1.ts" -> "dist/index.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"secp256k1/secp256k1.ts" -> "dist/index.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"secp256k1/secp256k1.ts" -> "helpers/assertions.ts"  [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"secp256k1/secp256k1.ts" -> "helpers/assertions.ts"  [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

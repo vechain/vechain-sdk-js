@@ -1,0 +1,16 @@
+digraph "bloom" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"@types/.../buffer.d.ts" [shape = record, label = "{ @types/.../buffer.d.ts |  Buffer : \l }"];
+"bloom/bloom.ts"         [shape = record, label = "{ bloom/bloom.ts |  Buffer : \l  blake2b256 : \l }"];
+"hash/index.ts"          [shape = record, label = "{ hash/index.ts |  blake2b256 : \l }"];
+
+"bloom/bloom.ts"         -> "@types/.../buffer.d.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"bloom/bloom.ts"         -> "hash/index.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

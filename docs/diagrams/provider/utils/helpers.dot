@@ -1,0 +1,25 @@
+digraph "helpers" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"blocks/index.ts"                [shape = record, label = "{ blocks/index.ts |  blocksFormatter : \l }"];
+"blocks/types.d.ts"              [shape = record, label = "{ blocks/types.d.ts |  BlocksRPC : \l }"];
+"dist/index.d.ts"                [shape = record, label = "{ dist/index.d.ts |  DATA : \l  buildError : \l }"];
+"dist/index.d.ts"                [shape = record, label = "{ dist/index.d.ts |  BlockDetail : \l  Output : \l  TransactionsExpandedBlockDetail : \l }"];
+"helpers/transaction-helpers.ts" [shape = record, label = "{ helpers/transaction-helpers.ts |  BlockDetail : \l  BlocksRPC : \l  DATA : \l  Output : \l  TransactionRPC : \l  TransactionsExpandedBlockDetail : \l  blocksFormatter : \l  buildError : \l }"];
+"transactions/types.d.ts"        [shape = record, label = "{ transactions/types.d.ts |  TransactionRPC : \l }"];
+
+"helpers/transaction-helpers.ts" -> "blocks/index.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/transaction-helpers.ts" -> "blocks/types.d.ts"              [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/transaction-helpers.ts" -> "dist/index.d.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/transaction-helpers.ts" -> "dist/index.d.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/transaction-helpers.ts" -> "dist/index.d.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/transaction-helpers.ts" -> "dist/index.d.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/transaction-helpers.ts" -> "dist/index.d.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/transaction-helpers.ts" -> "transactions/types.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

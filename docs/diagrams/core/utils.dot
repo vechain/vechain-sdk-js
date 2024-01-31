@@ -1,0 +1,81 @@
+digraph "utils" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"address/address.ts"                   [shape = record, label = "{ address/address.ts |  addressUtils : \l }"];
+"assertions/account-assertions.ts"     [shape = record, label = "{ assertions/account-assertions.ts |  DATA : \l  addressUtils : \l  assert : \l }"];
+"assertions/block-assertions.ts"       [shape = record, label = "{ assertions/block-assertions.ts |  DATA : \l  assert : \l  revisionUtils : \l }"];
+"assertions/transaction-assertions.ts" [shape = record, label = "{ assertions/transaction-assertions.ts |  DATA : \l  SECP256K1 : \l  TRANSACTION : \l  Transaction : \l  assert : \l  dataUtils : \l }"];
+"bloom/bloom.ts"                       [shape = record, label = "{ bloom/bloom.ts |  ADDRESS : \l  BLOOM : \l  BLOOM_REGEX_LOWERCASE : \l  BLOOM_REGEX_UPPERCASE : \l  DATA : \l  addressUtils : \l  assert : \l  bloomInstance : \l  dataUtils : \l }"];
+"bloom/bloom.ts"                       [shape = record, label = "{ bloom/bloom.ts |  bloom : \l }"];
+"const/bloom.ts"                       [shape = record, label = "{ const/bloom.ts |  BLOOM_REGEX_LOWERCASE : \l  BLOOM_REGEX_UPPERCASE : \l }"];
+"const/data.ts"                        [shape = record, label = "{ const/data.ts |  DECIMAL_INTEGER_REGEX : \l  HEX_REGEX : \l  HEX_REGEX_OPTIONAL_PREFIX : \l  NUMERIC_REGEX : \l  THOR_ID_LENGTH : \l }"];
+"const/mnemonic.ts"                    [shape = record, label = "{ const/mnemonic.ts |  WordlistSizeType : \l }"];
+"const/transaction.ts"                 [shape = record, label = "{ const/transaction.ts |  RLP : \l  TRANSACTIONS_GAS_CONSTANTS : \l }"];
+"data/data.ts"                         [shape = record, label = "{ data/data.ts |  DATA : \l  DECIMAL_INTEGER_REGEX : \l  HEX_REGEX : \l  HEX_REGEX_OPTIONAL_PREFIX : \l  HexConfig : \l  NUMERIC_REGEX : \l  THOR_ID_LENGTH : \l  assert : \l  buildError : \l  dataUtils : \l  ethers : \l }"];
+"data/types.d.ts"                      [shape = record, label = "{ data/types.d.ts |  HexConfig : \l }"];
+"dist/index.d.ts"                      [shape = record, label = "{ dist/index.d.ts |  ADDRESS : \l  BLOOM : \l  DATA : \l  SECP256K1 : \l  TRANSACTION : \l  assert : \l  buildError : \l }"];
+ethers                                 [shape = record, label = "{ ethers |  }"];
+"hdnode/hdnode.ts"                     [shape = record, label = "{ hdnode/hdnode.ts |  DECIMAL_INTEGER_REGEX : \l }"];
+"mnemonic/types.d.ts"                  [shape = record, label = "{ mnemonic/types.d.ts |  WordlistSizeType : \l }"];
+"revision/revision.ts"                 [shape = record, label = "{ revision/revision.ts |  dataUtils : \l  revisionUtils : \l }"];
+"rlp/index.ts"                         [shape = record, label = "{ rlp/index.ts |  RLP : \l }"];
+"transaction/transaction.ts"           [shape = record, label = "{ transaction/transaction.ts |  DATA : \l  TRANSACTIONS_GAS_CONSTANTS : \l  TransactionClause : \l  addressUtils : \l  assert : \l  dataUtils : \l }"];
+"transaction/transaction.ts"           [shape = record, label = "{ transaction/transaction.ts |  Transaction : \l }"];
+"transaction/types.d.ts"               [shape = record, label = "{ transaction/types.d.ts |  TransactionClause : \l }"];
+"units/types.d.ts"                     [shape = record, label = "{ units/types.d.ts |  BigNumberish : \l  WEI_UNITS : \l }"];
+"units/units.ts"                       [shape = record, label = "{ units/units.ts |  BigNumberish : \l  DATA : \l  WEI_UNITS : \l  assert : \l  dataUtils : \l  ethers : \l }"];
+
+"assertions/account-assertions.ts"     -> "address/address.ts"                   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"assertions/account-assertions.ts"     -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"assertions/account-assertions.ts"     -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"assertions/block-assertions.ts"       -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"assertions/block-assertions.ts"       -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"assertions/block-assertions.ts"       -> "revision/revision.ts"                 [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"assertions/transaction-assertions.ts" -> "data/data.ts"                         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"assertions/transaction-assertions.ts" -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"assertions/transaction-assertions.ts" -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"assertions/transaction-assertions.ts" -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"assertions/transaction-assertions.ts" -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"assertions/transaction-assertions.ts" -> "transaction/transaction.ts"           [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"bloom/bloom.ts"                       -> "address/address.ts"                   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"bloom/bloom.ts"                       -> "bloom/bloom.ts"                       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"bloom/bloom.ts"                       -> "const/bloom.ts"                       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"bloom/bloom.ts"                       -> "const/bloom.ts"                       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"bloom/bloom.ts"                       -> "data/data.ts"                         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"bloom/bloom.ts"                       -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"bloom/bloom.ts"                       -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"bloom/bloom.ts"                       -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"bloom/bloom.ts"                       -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"const/mnemonic.ts"                    -> "mnemonic/types.d.ts"                  [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"const/transaction.ts"                 -> "rlp/index.ts"                         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"data/data.ts"                         -> "const/data.ts"                        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"data/data.ts"                         -> "const/data.ts"                        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"data/data.ts"                         -> "const/data.ts"                        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"data/data.ts"                         -> "const/data.ts"                        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"data/data.ts"                         -> "const/data.ts"                        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"data/data.ts"                         -> "data/types.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"data/data.ts"                         -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"data/data.ts"                         -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"data/data.ts"                         -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"data/data.ts"                         -> ethers                                 [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hdnode/hdnode.ts"                     -> "const/data.ts"                        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"revision/revision.ts"                 -> "data/data.ts"                         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "address/address.ts"                   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "const/transaction.ts"                 [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "data/data.ts"                         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "transaction/types.d.ts"               [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"units/units.ts"                       -> "data/data.ts"                         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"units/units.ts"                       -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"units/units.ts"                       -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"units/units.ts"                       -> ethers                                 [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"units/units.ts"                       -> "units/types.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"units/units.ts"                       -> "units/types.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

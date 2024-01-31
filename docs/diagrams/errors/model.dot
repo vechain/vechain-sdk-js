@@ -1,0 +1,54 @@
+digraph "model" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"core/abi.ts"            [shape = record, label = "{ core/abi.ts |  DefaultErrorData : \l  ErrorBase : \l }"];
+"core/address.ts"        [shape = record, label = "{ core/address.ts |  DefaultErrorData : \l  ErrorBase : \l }"];
+"core/bloom.ts"          [shape = record, label = "{ core/bloom.ts |  DefaultErrorData : \l  ErrorBase : \l }"];
+"core/certificate.ts"    [shape = record, label = "{ core/certificate.ts |  DefaultErrorData : \l  ErrorBase : \l }"];
+"core/data.ts"           [shape = record, label = "{ core/data.ts |  DefaultErrorData : \l  ErrorBase : \l }"];
+"core/hdnode.ts"         [shape = record, label = "{ core/hdnode.ts |  DefaultErrorData : \l  ErrorBase : \l }"];
+"core/keystore.ts"       [shape = record, label = "{ core/keystore.ts |  DefaultErrorData : \l  ErrorBase : \l }"];
+"core/rlp.ts"            [shape = record, label = "{ core/rlp.ts |  ErrorBase : \l }"];
+"core/secp256k1.ts"      [shape = record, label = "{ core/secp256k1.ts |  DefaultErrorData : \l  ErrorBase : \l }"];
+"core/transaction.ts"    [shape = record, label = "{ core/transaction.ts |  DefaultErrorData : \l  ErrorBase : \l }"];
+"eip1193/eip1193.ts"     [shape = record, label = "{ eip1193/eip1193.ts |  ErrorBase : \l }"];
+"generic/function.ts"    [shape = record, label = "{ generic/function.ts |  DefaultErrorData : \l  ErrorBase : \l }"];
+"json-rpc/json-rpc.ts"   [shape = record, label = "{ json-rpc/json-rpc.ts |  ErrorBase : \l }"];
+"model/base.ts"          [shape = record, label = "{ model/base.ts |  ErrorBase : \l  ErrorCode : \l }"];
+"network/http-client.ts" [shape = record, label = "{ network/http-client.ts |  ErrorBase : \l }"];
+"network/poll.ts"        [shape = record, label = "{ network/poll.ts |  ErrorBase : \l }"];
+"types/errorTypes.ts"    [shape = record, label = "{ types/errorTypes.ts |  DefaultErrorData : \l  ErrorCode : \l }"];
+
+"core/abi.ts"            -> "model/base.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"core/abi.ts"            -> "types/errorTypes.ts"    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"core/address.ts"        -> "model/base.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"core/address.ts"        -> "types/errorTypes.ts"    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"core/bloom.ts"          -> "model/base.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"core/bloom.ts"          -> "types/errorTypes.ts"    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"core/certificate.ts"    -> "model/base.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"core/certificate.ts"    -> "types/errorTypes.ts"    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"core/data.ts"           -> "model/base.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"core/data.ts"           -> "types/errorTypes.ts"    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"core/hdnode.ts"         -> "model/base.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"core/hdnode.ts"         -> "types/errorTypes.ts"    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"core/keystore.ts"       -> "model/base.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"core/keystore.ts"       -> "types/errorTypes.ts"    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"core/rlp.ts"            -> "model/base.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"core/secp256k1.ts"      -> "model/base.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"core/secp256k1.ts"      -> "types/errorTypes.ts"    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"core/transaction.ts"    -> "model/base.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"core/transaction.ts"    -> "types/errorTypes.ts"    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"eip1193/eip1193.ts"     -> "model/base.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"generic/function.ts"    -> "model/base.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"generic/function.ts"    -> "types/errorTypes.ts"    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"json-rpc/json-rpc.ts"   -> "model/base.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"model/base.ts"          -> "types/errorTypes.ts"    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"network/http-client.ts" -> "model/base.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"network/poll.ts"        -> "model/base.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

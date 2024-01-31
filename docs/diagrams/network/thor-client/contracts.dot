@@ -1,0 +1,29 @@
+digraph "contracts" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"contracts/contracts-module.ts" [shape = record, label = "{ contracts/contracts-module.ts |  ContractCallOptions : \l  ContractTransactionOptions : \l  DeployParams : \l  InterfaceAbi : \l  PARAMS_ABI : \l  PARAMS_ADDRESS : \l  SendTransactionResult : \l  ThorClient : \l  addressUtils : \l  contract : \l  dataUtils : \l }"];
+"contracts/types.d.ts"          [shape = record, label = "{ contracts/types.d.ts |  ContractCallOptions : \l  ContractTransactionOptions : \l  SimulateTransactionOptions : \l  TransactionBodyOptions : \l }"];
+"dist/index.d.ts"               [shape = record, label = "{ dist/index.d.ts |  DeployParams : \l  InterfaceAbi : \l  PARAMS_ABI : \l  PARAMS_ADDRESS : \l  addressUtils : \l  contract : \l  dataUtils : \l }"];
+"thor-client/thor-client.ts"    [shape = record, label = "{ thor-client/thor-client.ts |  ThorClient : \l }"];
+"transactions/types.d.ts"       [shape = record, label = "{ transactions/types.d.ts |  SendTransactionResult : \l  SimulateTransactionOptions : \l  TransactionBodyOptions : \l }"];
+
+"contracts/contracts-module.ts" -> "contracts/types.d.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contracts/contracts-module.ts" -> "contracts/types.d.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contracts/contracts-module.ts" -> "dist/index.d.ts"               [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contracts/contracts-module.ts" -> "dist/index.d.ts"               [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contracts/contracts-module.ts" -> "dist/index.d.ts"               [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contracts/contracts-module.ts" -> "dist/index.d.ts"               [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contracts/contracts-module.ts" -> "dist/index.d.ts"               [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contracts/contracts-module.ts" -> "dist/index.d.ts"               [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contracts/contracts-module.ts" -> "dist/index.d.ts"               [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contracts/contracts-module.ts" -> "thor-client/thor-client.ts"    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contracts/contracts-module.ts" -> "transactions/types.d.ts"       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contracts/types.d.ts"          -> "transactions/types.d.ts"       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contracts/types.d.ts"          -> "transactions/types.d.ts"       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

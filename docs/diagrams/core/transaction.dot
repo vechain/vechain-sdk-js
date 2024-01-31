@@ -1,0 +1,64 @@
+digraph "transaction" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"address/address.ts"                   [shape = record, label = "{ address/address.ts |  addressUtils : \l }"];
+"assertions/transaction-assertions.ts" [shape = record, label = "{ assertions/transaction-assertions.ts |  assertIsValidTransactionSigningPrivateKey : \l }"];
+"const/transaction.ts"                 [shape = record, label = "{ const/transaction.ts |  BLOCK_REF_LENGTH : \l  SIGNATURE_LENGTH : \l  SIGNED_TRANSACTION_RLP : \l  TRANSACTION_FEATURES_KIND : \l  UNSIGNED_TRANSACTION_RLP : \l }"];
+"data/data.ts"                         [shape = record, label = "{ data/data.ts |  dataUtils : \l }"];
+"dist/index.d.ts"                      [shape = record, label = "{ dist/index.d.ts |  ADDRESS : \l  SECP256K1 : \l  TRANSACTION : \l  assert : \l }"];
+"handlers/decode.ts"                   [shape = record, label = "{ handlers/decode.ts |  RLPValidObject : \l  SIGNED_TRANSACTION_RLP : \l  TRANSACTION : \l  TRANSACTION_FEATURES_KIND : \l  Transaction : \l  TransactionBody : \l  UNSIGNED_TRANSACTION_RLP : \l  assert : \l  decode : \l }"];
+"handlers/sign.ts"                     [shape = record, label = "{ handlers/sign.ts |  TRANSACTION : \l  Transaction : \l  addressUtils : \l  assert : \l  assertIsValidTransactionSigningPrivateKey : \l  assertTransactionIsNotSigned : \l  secp256k1 : \l  sign : \l  signWithDelegator : \l }"];
+"hash/index.ts"                        [shape = record, label = "{ hash/index.ts |  blake2b256 : \l }"];
+"helpers/assertions.ts"                [shape = record, label = "{ helpers/assertions.ts |  TRANSACTION : \l  Transaction : \l  assert : \l  assertCantGetFieldOnUnsignedTransaction : \l  assertTransactionIsNotSigned : \l }"];
+"rlp/types.d.ts"                       [shape = record, label = "{ rlp/types.d.ts |  RLPValidObject : \l }"];
+"secp256k1/secp256k1.ts"               [shape = record, label = "{ secp256k1/secp256k1.ts |  secp256k1 : \l }"];
+"transaction/transaction-handler.ts"   [shape = record, label = "{ transaction/transaction-handler.ts |  decode : \l  sign : \l  signWithDelegator : \l }"];
+"transaction/transaction.ts"           [shape = record, label = "{ transaction/transaction.ts |  TransactionUtils : \l }"];
+"transaction/transaction.ts"           [shape = record, label = "{ transaction/transaction.ts |  ADDRESS : \l  BLOCK_REF_LENGTH : \l  RLPValidObject : \l  SECP256K1 : \l  SIGNATURE_LENGTH : \l  SIGNED_TRANSACTION_RLP : \l  TRANSACTION : \l  TRANSACTION_FEATURES_KIND : \l  Transaction : \l  TransactionBody : \l  TransactionUtils : \l  UNSIGNED_TRANSACTION_RLP : \l  addressUtils : \l  assert : \l  assertCantGetFieldOnUnsignedTransaction : \l  blake2b256 : \l  dataUtils : \l  secp256k1 : \l }"];
+"transaction/types.d.ts"               [shape = record, label = "{ transaction/types.d.ts |  TransactionBody : \l }"];
+
+"handlers/decode.ts"                   -> "const/transaction.ts"                 [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"handlers/decode.ts"                   -> "const/transaction.ts"                 [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"handlers/decode.ts"                   -> "const/transaction.ts"                 [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"handlers/decode.ts"                   -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"handlers/decode.ts"                   -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"handlers/decode.ts"                   -> "rlp/types.d.ts"                       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"handlers/decode.ts"                   -> "transaction/transaction.ts"           [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"handlers/decode.ts"                   -> "transaction/types.d.ts"               [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"handlers/sign.ts"                     -> "address/address.ts"                   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"handlers/sign.ts"                     -> "assertions/transaction-assertions.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"handlers/sign.ts"                     -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"handlers/sign.ts"                     -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"handlers/sign.ts"                     -> "helpers/assertions.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"handlers/sign.ts"                     -> "secp256k1/secp256k1.ts"               [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"handlers/sign.ts"                     -> "transaction/transaction.ts"           [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/assertions.ts"                -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/assertions.ts"                -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/assertions.ts"                -> "transaction/transaction.ts"           [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction-handler.ts"   -> "handlers/decode.ts"                   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction-handler.ts"   -> "handlers/sign.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction-handler.ts"   -> "handlers/sign.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "address/address.ts"                   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "const/transaction.ts"                 [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "const/transaction.ts"                 [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "const/transaction.ts"                 [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "const/transaction.ts"                 [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "const/transaction.ts"                 [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "data/data.ts"                         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "dist/index.d.ts"                      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "hash/index.ts"                        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "helpers/assertions.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "rlp/types.d.ts"                       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "secp256k1/secp256k1.ts"               [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "transaction/transaction.ts"           [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transaction/transaction.ts"           -> "transaction/types.d.ts"               [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

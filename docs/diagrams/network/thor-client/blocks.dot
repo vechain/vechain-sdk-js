@@ -1,0 +1,35 @@
+digraph "blocks" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"blocks/blocks-module.ts"    [shape = record, label = "{ blocks/blocks-module.ts |  BlockDetail : \l  BlockInputOptions : \l  BlocksModuleOptions : \l  DATA : \l  EventPoll : \l  Poll : \l  ThorClient : \l  WaitForBlockOptions : \l  assert : \l  assertIsRevisionForBlock : \l  buildQuery : \l  thorest : \l }"];
+"blocks/types.d.ts"          [shape = record, label = "{ blocks/types.d.ts |  BlockDetail : \l  BlockInputOptions : \l  BlocksModuleOptions : \l  Event : \l  Transfer : \l  WaitForBlockOptions : \l }"];
+"dist/index.d.ts"            [shape = record, label = "{ dist/index.d.ts |  assertIsRevisionForBlock : \l }"];
+"dist/index.d.ts"            [shape = record, label = "{ dist/index.d.ts |  DATA : \l  assert : \l }"];
+"helpers/request.ts"         [shape = record, label = "{ helpers/request.ts |  buildQuery : \l }"];
+"logs/types.d.ts"            [shape = record, label = "{ logs/types.d.ts |  Event : \l  Transfer : \l }"];
+"poll/event.ts"              [shape = record, label = "{ poll/event.ts |  EventPoll : \l }"];
+"poll/index.ts"              [shape = record, label = "{ poll/index.ts |  Poll : \l }"];
+"thor-client/thor-client.ts" [shape = record, label = "{ thor-client/thor-client.ts |  ThorClient : \l }"];
+"thorest/thorest.ts"         [shape = record, label = "{ thorest/thorest.ts |  thorest : \l }"];
+
+"blocks/blocks-module.ts"    -> "blocks/types.d.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/blocks-module.ts"    -> "blocks/types.d.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/blocks-module.ts"    -> "blocks/types.d.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/blocks-module.ts"    -> "blocks/types.d.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/blocks-module.ts"    -> "dist/index.d.ts"            [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/blocks-module.ts"    -> "dist/index.d.ts"            [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/blocks-module.ts"    -> "dist/index.d.ts"            [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/blocks-module.ts"    -> "helpers/request.ts"         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/blocks-module.ts"    -> "poll/event.ts"              [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/blocks-module.ts"    -> "poll/index.ts"              [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/blocks-module.ts"    -> "thor-client/thor-client.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/blocks-module.ts"    -> "thorest/thorest.ts"         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/types.d.ts"          -> "logs/types.d.ts"            [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"blocks/types.d.ts"          -> "logs/types.d.ts"            [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

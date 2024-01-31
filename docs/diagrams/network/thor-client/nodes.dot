@@ -1,0 +1,25 @@
+digraph "nodes" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"blocks/types.d.ts"          [shape = record, label = "{ blocks/types.d.ts |  BlockDetail : \l }"];
+"client/nodes.ts"            [shape = record, label = "{ client/nodes.ts |  NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS : \l }"];
+"dist/index.d.ts"            [shape = record, label = "{ dist/index.d.ts |  DATA : \l  assert : \l }"];
+"nodes/nodes-module.ts"      [shape = record, label = "{ nodes/nodes-module.ts |  BlockDetail : \l  ConnectedPeer : \l  DATA : \l  NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS : \l  ThorClient : \l  assert : \l  thorest : \l }"];
+"nodes/types.d.ts"           [shape = record, label = "{ nodes/types.d.ts |  ConnectedPeer : \l }"];
+"thor-client/thor-client.ts" [shape = record, label = "{ thor-client/thor-client.ts |  ThorClient : \l }"];
+"thorest/thorest.ts"         [shape = record, label = "{ thorest/thorest.ts |  thorest : \l }"];
+
+"nodes/nodes-module.ts"      -> "blocks/types.d.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"nodes/nodes-module.ts"      -> "client/nodes.ts"            [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"nodes/nodes-module.ts"      -> "dist/index.d.ts"            [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"nodes/nodes-module.ts"      -> "dist/index.d.ts"            [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"nodes/nodes-module.ts"      -> "nodes/types.d.ts"           [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"nodes/nodes-module.ts"      -> "thor-client/thor-client.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"nodes/nodes-module.ts"      -> "thorest/thorest.ts"         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

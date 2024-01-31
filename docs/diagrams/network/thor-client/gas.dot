@@ -1,0 +1,32 @@
+digraph "gas" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"dist/index.d.ts"             [shape = record, label = "{ dist/index.d.ts |  TransactionUtils : \l  abi : \l  keccak256 : \l }"];
+"dist/index.d.ts"             [shape = record, label = "{ dist/index.d.ts |  DATA : \l  assert : \l }"];
+"gas/gas-module.ts"           [shape = record, label = "{ gas/gas-module.ts |  DATA : \l  EstimateGasOptions : \l  EstimateGasResult : \l  SimulateTransactionClause : \l  ThorClient : \l  TransactionUtils : \l  assert : \l  decodeRevertReason : \l }"];
+"gas/types.d.ts"              [shape = record, label = "{ gas/types.d.ts |  EstimateGasOptions : \l  EstimateGasResult : \l  SimulateTransactionOptions : \l }"];
+"helpers/const.ts"            [shape = record, label = "{ helpers/const.ts |  SOLIDITY_ERROR_SELECTOR : \l  SOLIDITY_PANIC_SELECTOR : \l  keccak256 : \l }"];
+"helpers/decode-evm-error.ts" [shape = record, label = "{ helpers/decode-evm-error.ts |  SOLIDITY_ERROR_SELECTOR : \l  SOLIDITY_PANIC_SELECTOR : \l  abi : \l  decodeRevertReason : \l }"];
+"thor-client/thor-client.ts"  [shape = record, label = "{ thor-client/thor-client.ts |  ThorClient : \l }"];
+"transactions/types.d.ts"     [shape = record, label = "{ transactions/types.d.ts |  SimulateTransactionClause : \l  SimulateTransactionOptions : \l }"];
+
+"gas/gas-module.ts"           -> "dist/index.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"gas/gas-module.ts"           -> "dist/index.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"gas/gas-module.ts"           -> "dist/index.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"gas/gas-module.ts"           -> "gas/types.d.ts"              [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"gas/gas-module.ts"           -> "gas/types.d.ts"              [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"gas/gas-module.ts"           -> "helpers/decode-evm-error.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"gas/gas-module.ts"           -> "thor-client/thor-client.ts"  [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"gas/gas-module.ts"           -> "transactions/types.d.ts"     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"gas/types.d.ts"              -> "transactions/types.d.ts"     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/const.ts"            -> "dist/index.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/decode-evm-error.ts" -> "dist/index.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/decode-evm-error.ts" -> "helpers/const.ts"            [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/decode-evm-error.ts" -> "helpers/const.ts"            [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

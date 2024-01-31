@@ -1,0 +1,40 @@
+digraph "hdnode" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"address/address.ts"     [shape = record, label = "{ address/address.ts |  addressUtils : \l }"];
+"const/hdnode.ts"        [shape = record, label = "{ const/hdnode.ts |  VET_DERIVATION_PATH : \l  X_PRIV_PREFIX : \l  X_PUB_PREFIX : \l }"];
+"const/mnemonic.ts"      [shape = record, label = "{ const/mnemonic.ts |  MNEMONIC_WORDLIST_ALLOWED_SIZES : \l }"];
+"dist/index.d.ts"        [shape = record, label = "{ dist/index.d.ts |  HDNODE : \l  assert : \l }"];
+ethers                   [shape = record, label = "{ ethers |  }"];
+"hash/index.ts"          [shape = record, label = "{ hash/index.ts |  sha256 : \l }"];
+"hdnode/hdnode.ts"       [shape = record, label = "{ hdnode/hdnode.ts |  isDerivationPathValid : \l }"];
+"hdnode/hdnode.ts"       [shape = record, label = "{ hdnode/hdnode.ts |  HDNODE : \l  IHDNode : \l  MNEMONIC_WORDLIST_ALLOWED_SIZES : \l  VET_DERIVATION_PATH : \l  WordlistSizeType : \l  X_PRIV_PREFIX : \l  X_PUB_PREFIX : \l  addressUtils : \l  assert : \l  assertIsValidHdNodeChainCode : \l  assertIsValidHdNodeDerivationPath : \l  ethers : \l  secp256k1 : \l  sha256 : \l }"];
+"hdnode/types.d.ts"      [shape = record, label = "{ hdnode/types.d.ts |  IHDNode : \l }"];
+"helpers/assertions.ts"  [shape = record, label = "{ helpers/assertions.ts |  HDNODE : \l  assert : \l  assertIsValidHdNodeChainCode : \l  assertIsValidHdNodeDerivationPath : \l  isDerivationPathValid : \l }"];
+"mnemonic/types.d.ts"    [shape = record, label = "{ mnemonic/types.d.ts |  WordlistSizeType : \l }"];
+"secp256k1/secp256k1.ts" [shape = record, label = "{ secp256k1/secp256k1.ts |  secp256k1 : \l }"];
+
+"hdnode/hdnode.ts"       -> "address/address.ts"     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hdnode/hdnode.ts"       -> "const/hdnode.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hdnode/hdnode.ts"       -> "const/hdnode.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hdnode/hdnode.ts"       -> "const/hdnode.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hdnode/hdnode.ts"       -> "const/mnemonic.ts"      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hdnode/hdnode.ts"       -> "dist/index.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hdnode/hdnode.ts"       -> "dist/index.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hdnode/hdnode.ts"       -> ethers                   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hdnode/hdnode.ts"       -> "hash/index.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hdnode/hdnode.ts"       -> "hdnode/types.d.ts"      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hdnode/hdnode.ts"       -> "helpers/assertions.ts"  [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hdnode/hdnode.ts"       -> "helpers/assertions.ts"  [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hdnode/hdnode.ts"       -> "mnemonic/types.d.ts"    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"hdnode/hdnode.ts"       -> "secp256k1/secp256k1.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/assertions.ts"  -> "dist/index.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/assertions.ts"  -> "dist/index.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/assertions.ts"  -> "hdnode/hdnode.ts"       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

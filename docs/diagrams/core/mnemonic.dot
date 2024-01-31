@@ -1,0 +1,26 @@
+digraph "mnemonic" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"@types/.../crypto.d.ts" [shape = record, label = "{ @types/.../crypto.d.ts |  randomBytes : \l }"];
+"const/mnemonic.ts"      [shape = record, label = "{ const/mnemonic.ts |  MNEMONIC_WORDLIST_ALLOWED_SIZES : \l }"];
+"dist/index.d.ts"        [shape = record, label = "{ dist/index.d.ts |  HDNODE : \l  assert : \l }"];
+ethers                   [shape = record, label = "{ ethers |  }"];
+"hdnode/hdnode.ts"       [shape = record, label = "{ hdnode/hdnode.ts |  HDNode : \l }"];
+"mnemonic/mnemonic.ts"   [shape = record, label = "{ mnemonic/mnemonic.ts |  HDNODE : \l  HDNode : \l  MNEMONIC_WORDLIST_ALLOWED_SIZES : \l  WordListRandomGeneratorSizeInBytes : \l  WordlistSizeType : \l  assert : \l  ethers : \l  randomBytes : \l }"];
+"mnemonic/types.d.ts"    [shape = record, label = "{ mnemonic/types.d.ts |  WordListRandomGeneratorSizeInBytes : \l  WordlistSizeType : \l }"];
+
+"mnemonic/mnemonic.ts"   -> "@types/.../crypto.d.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"mnemonic/mnemonic.ts"   -> "const/mnemonic.ts"      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"mnemonic/mnemonic.ts"   -> "dist/index.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"mnemonic/mnemonic.ts"   -> "dist/index.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"mnemonic/mnemonic.ts"   -> ethers                   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"mnemonic/mnemonic.ts"   -> "hdnode/hdnode.ts"       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"mnemonic/mnemonic.ts"   -> "mnemonic/types.d.ts"    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"mnemonic/mnemonic.ts"   -> "mnemonic/types.d.ts"    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

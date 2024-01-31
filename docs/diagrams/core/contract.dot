@@ -1,0 +1,45 @@
+digraph "contract" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"abi/coder.ts"           [shape = record, label = "{ abi/coder.ts |  abi : \l }"];
+"abi/types.d.ts"         [shape = record, label = "{ abi/types.d.ts |  BytesLike : \l  Interface : \l  Log : \l  ParamType : \l  Result : \l }"];
+"const/abi.ts"           [shape = record, label = "{ const/abi.ts |  ERC721_ABI : \l  VIP180_ABI : \l }"];
+"contract/clause.ts"     [shape = record, label = "{ contract/clause.ts |  DATA : \l  DeployParams : \l  ERC721_ABI : \l  InterfaceAbi : \l  TransactionClause : \l  VIP180_ABI : \l  abi : \l  assert : \l  buildError : \l  clauseBuilder : \l  coder : \l  isAddress : \l }"];
+"contract/coder.ts"      [shape = record, label = "{ contract/coder.ts |  ABI : \l  BytesLike : \l  ERROR_CODES : \l  EthersInterface : \l  Interface : \l  InterfaceAbi : \l  Log : \l  Result : \l  abi : \l  buildError : \l  coder : \l }"];
+"contract/index.ts"      [shape = record, label = "{ contract/index.ts |  clauseBuilder : \l  coder : \l }"];
+"contract/types.d.ts"    [shape = record, label = "{ contract/types.d.ts |  DeployParams : \l  ParamType : \l }"];
+"dist/index.d.ts"        [shape = record, label = "{ dist/index.d.ts |  ABI : \l  DATA : \l  ERROR_CODES : \l  assert : \l  buildError : \l }"];
+ethers                   [shape = record, label = "{ ethers |  Interface : \l  InterfaceAbi : \l  isAddress : \l }"];
+"transaction/types.d.ts" [shape = record, label = "{ transaction/types.d.ts |  TransactionClause : \l }"];
+
+"contract/clause.ts"     -> "abi/coder.ts"           [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/clause.ts"     -> "const/abi.ts"           [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/clause.ts"     -> "const/abi.ts"           [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/clause.ts"     -> "contract/coder.ts"      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/clause.ts"     -> "contract/types.d.ts"    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/clause.ts"     -> "dist/index.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/clause.ts"     -> "dist/index.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/clause.ts"     -> "dist/index.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/clause.ts"     -> ethers                   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/clause.ts"     -> ethers                   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/clause.ts"     -> "transaction/types.d.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/coder.ts"      -> "abi/coder.ts"           [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/coder.ts"      -> "abi/types.d.ts"         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/coder.ts"      -> "abi/types.d.ts"         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/coder.ts"      -> "abi/types.d.ts"         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/coder.ts"      -> "abi/types.d.ts"         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/coder.ts"      -> "dist/index.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/coder.ts"      -> "dist/index.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/coder.ts"      -> "dist/index.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/coder.ts"      -> ethers                   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/coder.ts"      -> ethers                   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/index.ts"      -> "contract/clause.ts"     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/index.ts"      -> "contract/coder.ts"      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"contract/types.d.ts"    -> "abi/types.d.ts"         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

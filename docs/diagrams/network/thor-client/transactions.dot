@@ -1,0 +1,72 @@
+digraph "transactions" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"@types/.../crypto.d.ts"              [shape = record, label = "{ @types/.../crypto.d.ts |  randomBytes : \l }"];
+"blocks/types.d.ts"                   [shape = record, label = "{ blocks/types.d.ts |  Output : \l }"];
+"dist/index.d.ts"                     [shape = record, label = "{ dist/index.d.ts |  DATA : \l  TRANSACTION : \l  assert : \l  buildError : \l }"];
+"dist/index.d.ts"                     [shape = record, label = "{ dist/index.d.ts |  Transaction : \l  TransactionBody : \l  TransactionClause : \l  TransactionHandler : \l  addressUtils : \l  assertIsSignedTransaction : \l  assertIsValidTransactionSigningPrivateKey : \l  assertValidTransactionHead : \l  assertValidTransactionID : \l  dataUtils : \l  revisionUtils : \l  secp256k1 : \l }"];
+"helpers/assertions.ts"               [shape = record, label = "{ helpers/assertions.ts |  TRANSACTION : \l  Transaction : \l  TransactionBody : \l  assert : \l  assertIsValidTransactionSigningPrivateKey : \l  assertTransactionCanBeSigned : \l  secp256k1 : \l }"];
+"helpers/delegation-handler.ts"       [shape = record, label = "{ helpers/delegation-handler.ts |  GetDelegationSignatureResult : \l  HttpClient : \l  TRANSACTION : \l  Transaction : \l  buildError : \l  getDelegationSignature : \l }"];
+"helpers/request.ts"                  [shape = record, label = "{ helpers/request.ts |  buildQuery : \l }"];
+"http/http-client.ts"                 [shape = record, label = "{ http/http-client.ts |  HttpClient : \l }"];
+"poll/index.ts"                       [shape = record, label = "{ poll/index.ts |  Poll : \l }"];
+"thor-client/thor-client.ts"          [shape = record, label = "{ thor-client/thor-client.ts |  ThorClient : \l }"];
+"thorest/thorest.ts"                  [shape = record, label = "{ thorest/thorest.ts |  thorest : \l }"];
+"transactions/transactions-module.ts" [shape = record, label = "{ transactions/transactions-module.ts |  DATA : \l  GetTransactionInputOptions : \l  GetTransactionReceiptInputOptions : \l  Poll : \l  SendTransactionResult : \l  SignTransactionOptions : \l  SimulateTransactionClause : \l  SimulateTransactionOptions : \l  TRANSACTION : \l  ThorClient : \l  Transaction : \l  TransactionBody : \l  TransactionBodyOptions : \l  TransactionClause : \l  TransactionDetail : \l  TransactionHandler : \l  TransactionReceipt : \l  TransactionSendResult : \l  TransactionSimulationResult : \l  WaitForTransactionOptions : \l  addressUtils : \l  assert : \l  assertIsSignedTransaction : \l  assertTransactionCanBeSigned : \l  assertValidTransactionHead : \l  assertValidTransactionID : \l  buildError : \l  buildQuery : \l  dataUtils : \l  getDelegationSignature : \l  randomBytes : \l  revisionUtils : \l  secp256k1 : \l  thorest : \l }"];
+"transactions/types.d.ts"             [shape = record, label = "{ transactions/types.d.ts |  GetDelegationSignatureResult : \l  GetTransactionInputOptions : \l  GetTransactionReceiptInputOptions : \l  Output : \l  SendTransactionResult : \l  SignTransactionOptions : \l  SimulateTransactionClause : \l  SimulateTransactionOptions : \l  TransactionBody : \l  TransactionBodyOptions : \l  TransactionClause : \l  TransactionDetail : \l  TransactionReceipt : \l  TransactionSendResult : \l  TransactionSimulationResult : \l  WaitForTransactionOptions : \l }"];
+
+"helpers/assertions.ts"               -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/assertions.ts"               -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/assertions.ts"               -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/assertions.ts"               -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/assertions.ts"               -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/assertions.ts"               -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/delegation-handler.ts"       -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/delegation-handler.ts"       -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/delegation-handler.ts"       -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/delegation-handler.ts"       -> "http/http-client.ts"                 [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"helpers/delegation-handler.ts"       -> "transactions/types.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "@types/.../crypto.d.ts"              [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "helpers/assertions.ts"               [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "helpers/delegation-handler.ts"       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "helpers/request.ts"                  [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "poll/index.ts"                       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "thor-client/thor-client.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "thorest/thorest.ts"                  [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "transactions/types.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "transactions/types.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "transactions/types.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "transactions/types.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "transactions/types.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "transactions/types.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "transactions/types.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "transactions/types.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "transactions/types.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "transactions/types.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "transactions/types.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/transactions-module.ts" -> "transactions/types.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/types.d.ts"             -> "blocks/types.d.ts"                   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/types.d.ts"             -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"transactions/types.d.ts"             -> "dist/index.d.ts"                     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

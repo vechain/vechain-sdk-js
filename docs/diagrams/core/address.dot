@@ -1,0 +1,21 @@
+digraph "address" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"address/address.ts"     [shape = record, label = "{ address/address.ts |  ADDRESS : \l  HEX_ADDRESS_REGEX : \l  assert : \l  ethers : \l  secp256k1 : \l }"];
+"const/data.ts"          [shape = record, label = "{ const/data.ts |  HEX_ADDRESS_REGEX : \l }"];
+"dist/index.d.ts"        [shape = record, label = "{ dist/index.d.ts |  ADDRESS : \l  assert : \l }"];
+ethers                   [shape = record, label = "{ ethers |  }"];
+"secp256k1/secp256k1.ts" [shape = record, label = "{ secp256k1/secp256k1.ts |  secp256k1 : \l }"];
+
+"address/address.ts"     -> "const/data.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"address/address.ts"     -> "dist/index.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"address/address.ts"     -> "dist/index.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"address/address.ts"     -> ethers                   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"address/address.ts"     -> "secp256k1/secp256k1.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

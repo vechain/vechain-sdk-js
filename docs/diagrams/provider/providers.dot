@@ -1,0 +1,29 @@
+digraph "providers" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"@types/.../events.d.ts"        [shape = record, label = "{ @types/.../events.d.ts |  EventEmitter : \l }"];
+"dist/index.d.ts"               [shape = record, label = "{ dist/index.d.ts |  vechain_sdk_core_ethers : \l }"];
+"dist/index.d.ts"               [shape = record, label = "{ dist/index.d.ts |  DATA : \l  assert : \l }"];
+"dist/index.d.ts"               [shape = record, label = "{ dist/index.d.ts |  ThorClient : \l }"];
+"eip1193/types.d.ts"            [shape = record, label = "{ eip1193/types.d.ts |  EIP1193ProviderMessage : \l  EIP1193RequestArguments : \l }"];
+"providers/types.d.ts"          [shape = record, label = "{ providers/types.d.ts |  vechain_sdk_core_ethers : \l }"];
+"providers/vechain-provider.ts" [shape = record, label = "{ providers/vechain-provider.ts |  DATA : \l  EIP1193ProviderMessage : \l  EIP1193RequestArguments : \l  EventEmitter : \l  RPCMethodsMap : \l  RPC_METHODS : \l  ThorClient : \l  assert : \l }"];
+"rpc-mapper/rpc-mapper.ts"      [shape = record, label = "{ rpc-mapper/rpc-mapper.ts |  RPCMethodsMap : \l }"];
+"rpc-mapper/rpc-methods.ts"     [shape = record, label = "{ rpc-mapper/rpc-methods.ts |  RPC_METHODS : \l }"];
+
+"providers/types.d.ts"          -> "dist/index.d.ts"               [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"providers/vechain-provider.ts" -> "@types/.../events.d.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"providers/vechain-provider.ts" -> "dist/index.d.ts"               [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"providers/vechain-provider.ts" -> "dist/index.d.ts"               [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"providers/vechain-provider.ts" -> "dist/index.d.ts"               [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"providers/vechain-provider.ts" -> "eip1193/types.d.ts"            [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"providers/vechain-provider.ts" -> "eip1193/types.d.ts"            [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"providers/vechain-provider.ts" -> "rpc-mapper/rpc-mapper.ts"      [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"providers/vechain-provider.ts" -> "rpc-mapper/rpc-methods.ts"     [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

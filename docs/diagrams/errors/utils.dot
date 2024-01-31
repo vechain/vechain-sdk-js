@@ -1,0 +1,30 @@
+digraph "utils" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"eip1193/eip1193.ts"    [shape = record, label = "{ eip1193/eip1193.ts |  EIP1193 : \l  getEIP1193ErrorCode : \l }"];
+"json-rpc/json-rpc.ts"  [shape = record, label = "{ json-rpc/json-rpc.ts |  JSONRPC : \l  getJSONRPCErrorCode : \l }"];
+"model/provider-rpc.ts" [shape = record, label = "{ model/provider-rpc.ts |  ProviderRpcError : \l }"];
+"types/errorTypes.ts"   [shape = record, label = "{ types/errorTypes.ts |  DataType : \l  ErrorClassMap : \l  ErrorCode : \l  ErrorType : \l }"];
+"utils/assert.ts"       [shape = record, label = "{ utils/assert.ts |  DataType : \l  ErrorCode : \l  ErrorType : \l  buildError : \l }"];
+"utils/errorBuilder.ts" [shape = record, label = "{ utils/errorBuilder.ts |  DataType : \l  EIP1193 : \l  ErrorClassMap : \l  ErrorCode : \l  ErrorType : \l  JSONRPC : \l  ProviderRpcError : \l  buildError : \l  getEIP1193ErrorCode : \l  getJSONRPCErrorCode : \l }"];
+
+"utils/assert.ts"       -> "types/errorTypes.ts"   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"utils/assert.ts"       -> "types/errorTypes.ts"   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"utils/assert.ts"       -> "types/errorTypes.ts"   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"utils/assert.ts"       -> "utils/errorBuilder.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"utils/errorBuilder.ts" -> "eip1193/eip1193.ts"    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"utils/errorBuilder.ts" -> "eip1193/eip1193.ts"    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"utils/errorBuilder.ts" -> "json-rpc/json-rpc.ts"  [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"utils/errorBuilder.ts" -> "json-rpc/json-rpc.ts"  [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"utils/errorBuilder.ts" -> "model/provider-rpc.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"utils/errorBuilder.ts" -> "types/errorTypes.ts"   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"utils/errorBuilder.ts" -> "types/errorTypes.ts"   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"utils/errorBuilder.ts" -> "types/errorTypes.ts"   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"utils/errorBuilder.ts" -> "types/errorTypes.ts"   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

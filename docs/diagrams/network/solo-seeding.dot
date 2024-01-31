@@ -1,0 +1,29 @@
+digraph "solo-seeding" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"@jest/.../index.d.ts"              [shape = record, label = "{ @jest/.../index.d.ts |  expect : \l }"];
+"dist/index.d.ts"                   [shape = record, label = "{ dist/index.d.ts |  Transaction : \l  TransactionHandler : \l  contract : \l  networkInfo : \l  unitsUtils : \l }"];
+"solo-seeding/const.ts"             [shape = record, label = "{ solo-seeding/const.ts |  TESTING_CONTRACT_BYTECODE : \l }"];
+"solo-seeding/thor-solo-seeding.ts" [shape = record, label = "{ solo-seeding/thor-solo-seeding.ts |  ALL_ACCOUNTS : \l  BUILT_IN_CONTRACTS : \l  TESTING_CONTRACT_BYTECODE : \l  ThorClient : \l  Transaction : \l  TransactionHandler : \l  contract : \l  expect : \l  networkInfo : \l  soloNetwork : \l  unitsUtils : \l }"];
+"tests/built-in-fixture.ts"         [shape = record, label = "{ tests/built-in-fixture.ts |  BUILT_IN_CONTRACTS : \l }"];
+"tests/fixture.ts"                  [shape = record, label = "{ tests/fixture.ts |  ALL_ACCOUNTS : \l  soloNetwork : \l }"];
+"thor-client/thor-client.ts"        [shape = record, label = "{ thor-client/thor-client.ts |  ThorClient : \l }"];
+
+"solo-seeding/thor-solo-seeding.ts" -> "@jest/.../index.d.ts"              [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"solo-seeding/thor-solo-seeding.ts" -> "dist/index.d.ts"                   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"solo-seeding/thor-solo-seeding.ts" -> "dist/index.d.ts"                   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"solo-seeding/thor-solo-seeding.ts" -> "dist/index.d.ts"                   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"solo-seeding/thor-solo-seeding.ts" -> "dist/index.d.ts"                   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"solo-seeding/thor-solo-seeding.ts" -> "dist/index.d.ts"                   [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"solo-seeding/thor-solo-seeding.ts" -> "solo-seeding/const.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"solo-seeding/thor-solo-seeding.ts" -> "tests/built-in-fixture.ts"         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"solo-seeding/thor-solo-seeding.ts" -> "tests/fixture.ts"                  [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"solo-seeding/thor-solo-seeding.ts" -> "tests/fixture.ts"                  [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"solo-seeding/thor-solo-seeding.ts" -> "thor-client/thor-client.ts"        [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

@@ -1,0 +1,29 @@
+digraph "certificate" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"@types/.../buffer.d.ts"                [shape = record, label = "{ @types/.../buffer.d.ts |  Buffer : \l }"];
+"address/address.ts"                    [shape = record, label = "{ address/address.ts |  addressUtils : \l }"];
+"certificate/certificate.ts"            [shape = record, label = "{ certificate/certificate.ts |  Buffer : \l  CERTIFICATE : \l  Certificate : \l  addressUtils : \l  assert : \l  blake2b256 : \l  dataUtils : \l  fastJsonStableStringify : \l  secp256k1 : \l }"];
+"certificate/types.d.ts"                [shape = record, label = "{ certificate/types.d.ts |  Certificate : \l }"];
+"data/data.ts"                          [shape = record, label = "{ data/data.ts |  dataUtils : \l }"];
+"dist/index.d.ts"                       [shape = record, label = "{ dist/index.d.ts |  CERTIFICATE : \l  assert : \l }"];
+"fast-json-stable-stringify/index.d.ts" [shape = record, label = "{ fast-json-stable-stringify/index.d.ts |  }"];
+"hash/index.ts"                         [shape = record, label = "{ hash/index.ts |  blake2b256 : \l }"];
+"secp256k1/secp256k1.ts"                [shape = record, label = "{ secp256k1/secp256k1.ts |  secp256k1 : \l }"];
+
+"certificate/certificate.ts"            -> "@types/.../buffer.d.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"certificate/certificate.ts"            -> "address/address.ts"                    [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"certificate/certificate.ts"            -> "certificate/types.d.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"certificate/certificate.ts"            -> "data/data.ts"                          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"certificate/certificate.ts"            -> "dist/index.d.ts"                       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"certificate/certificate.ts"            -> "dist/index.d.ts"                       [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"certificate/certificate.ts"            -> "fast-json-stable-stringify/index.d.ts" [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"certificate/certificate.ts"            -> "hash/index.ts"                         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"certificate/certificate.ts"            -> "secp256k1/secp256k1.ts"                [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}

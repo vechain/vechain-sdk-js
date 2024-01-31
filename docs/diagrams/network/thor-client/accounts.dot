@@ -1,0 +1,30 @@
+digraph "accounts" {
+
+splines  = ortho;
+fontname = "Inconsolata";
+
+node [colorscheme = ylgnbu4];
+edge [colorscheme = dark28, dir = both];
+
+"accounts/accounts-module.ts" [shape = record, label = "{ accounts/accounts-module.ts |  AccountDetail : \l  AccountInputOptions : \l  DATA : \l  ResponseBytecode : \l  ResponseStorage : \l  ThorClient : \l  assert : \l  assertIsAddress : \l  assertIsRevisionForAccount : \l  buildQuery : \l  dataUtils : \l  thorest : \l }"];
+"accounts/types.d.ts"         [shape = record, label = "{ accounts/types.d.ts |  AccountDetail : \l  AccountInputOptions : \l  ResponseBytecode : \l  ResponseStorage : \l }"];
+"dist/index.d.ts"             [shape = record, label = "{ dist/index.d.ts |  assertIsAddress : \l  assertIsRevisionForAccount : \l  dataUtils : \l }"];
+"dist/index.d.ts"             [shape = record, label = "{ dist/index.d.ts |  DATA : \l  assert : \l }"];
+"helpers/request.ts"          [shape = record, label = "{ helpers/request.ts |  buildQuery : \l }"];
+"thor-client/thor-client.ts"  [shape = record, label = "{ thor-client/thor-client.ts |  ThorClient : \l }"];
+"thorest/thorest.ts"          [shape = record, label = "{ thorest/thorest.ts |  thorest : \l }"];
+
+"accounts/accounts-module.ts" -> "accounts/types.d.ts"         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"accounts/accounts-module.ts" -> "accounts/types.d.ts"         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"accounts/accounts-module.ts" -> "accounts/types.d.ts"         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"accounts/accounts-module.ts" -> "accounts/types.d.ts"         [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"accounts/accounts-module.ts" -> "dist/index.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"accounts/accounts-module.ts" -> "dist/index.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"accounts/accounts-module.ts" -> "dist/index.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"accounts/accounts-module.ts" -> "dist/index.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"accounts/accounts-module.ts" -> "dist/index.d.ts"             [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"accounts/accounts-module.ts" -> "helpers/request.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"accounts/accounts-module.ts" -> "thor-client/thor-client.ts"  [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+"accounts/accounts-module.ts" -> "thorest/thorest.ts"          [color = "#595959", style = solid , arrowtail = tee     , arrowhead = none    , taillabel = "", label = "", headlabel = ""];
+
+}
