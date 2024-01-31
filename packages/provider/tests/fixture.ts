@@ -38,12 +38,24 @@ const testAccount = '0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa';
 /**
  * Test accounts fixture
  */
-const TEST_ACCOUNTS = [
+const TEST_ACCOUNTS_THOR_SOLO = [
     {
-        // Same account as Network package TEST_ACCOUNTS[0]
+        // Same account as Network package ALL_ACCOUNTS[0]
         privateKey:
             '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
         address: '0x3db469a79593dcc67f07de1869d6682fc1eaf535'
+    },
+    {
+        // Same account as Network package ALL_ACCOUNTS[1]
+        privateKey:
+            'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5',
+        address: '0x2669514f9fe96bc7301177ba774d3da8a06cace4'
+    },
+    {
+        // Same account as Network package ALL_ACCOUNTS[2]
+        privateKey:
+            '1758771c54938e977518e4ff1c297aca882f6598891df503030734532efa790e',
+        address: '0x9e7911de289c3c856ce7f421034f66b6cde49c39'
     }
 ];
 
@@ -248,7 +260,7 @@ export {
     blockWithTransactionsNotExpanded,
     validTransactionHashTestnet,
     validTransactionDetailTestnet,
-    TEST_ACCOUNTS,
+    TEST_ACCOUNTS_THOR_SOLO,
     TESTING_CONTRACT_ADDRESS,
     TESTING_CONTRACT_BYTECODE,
     mainNetwork

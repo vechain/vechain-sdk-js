@@ -21,6 +21,10 @@ import { RPC_METHODS } from '../../../const';
  *
  * @returns the block at the given block number formatted to the RPC standard or null if the block does not exist.
  *
+ * @note
+ *  * Standard RPC method `eth_getBlockByNumber` support following block numbers: hex number of block, 'earliest', 'latest', 'safe', 'finalized', 'pending'. (@see https://ethereum.org/en/developers/docs/apis/json-rpc#default-block)
+ *  * Currently, vechain only support hex number of block, 'latest' and 'finalized'.
+ *
  * @throws {ProviderRpcError} - Will throw an error if the retrieval of the block fails.
  */
 const ethGetBlockByNumber = async (
@@ -32,7 +36,7 @@ const ethGetBlockByNumber = async (
             typeof params[0] === 'string' &&
             typeof params[1] === 'boolean',
         DATA.INVALID_DATA_TYPE,
-        'Invalid params length, expected 2.\nThe params should be [blockNumber: string | "latest" | "finalized", transactionDetailFlag: boolean]'
+        'Invalid params length, expected 2.\nThe params should be [blockNumber: string (an hex number) | "latest" | "finalized", transactionDetailFlag: boolean]'
     );
 
     try {
@@ -46,7 +50,7 @@ const ethGetBlockByNumber = async (
                 []
             )) as string;
 
-        if (blockNumber === 'latest') blockNumber = 'best'; // 'best' is the alias for 'latest' in Vechain Thorest
+        if (blockNumber === 'latest') blockNumber = 'best'; // 'best' is the alias for 'latest' in vechain Thorest
 
         const block = await thorClient.blocks.getBlock(blockNumber, {
             expanded: isTxDetail

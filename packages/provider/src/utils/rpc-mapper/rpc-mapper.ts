@@ -78,6 +78,7 @@ import {
 import { RPC_METHODS } from '../const';
 import {
     type BlocksRPC,
+    type SendRawTransactionResultRPC,
     type TransactionReceiptRPC,
     type TransactionRPC
 } from '../formatter';
@@ -129,16 +130,20 @@ const RPCMethodsMap = (
             return await ethCall(thorClient, params);
         },
 
-        [RPC_METHODS.eth_sendRawTransaction]: async (params) => {
-            await ethSendRawTransaction(thorClient, params);
+        [RPC_METHODS.eth_sendRawTransaction]: async (
+            params
+        ): Promise<SendRawTransactionResultRPC> => {
+            return await ethSendRawTransaction(thorClient, params);
         },
 
         [RPC_METHODS.eth_getLogs]: async (params) => {
             await ethGetLogs(thorClient, params);
         },
 
-        [RPC_METHODS.eth_getBlockByHash]: async (params) => {
-            await ethGetBlockByHash(thorClient, params);
+        [RPC_METHODS.eth_getBlockByHash]: async (
+            params
+        ): Promise<BlocksRPC | null> => {
+            return await ethGetBlockByHash(thorClient, params);
         },
 
         [RPC_METHODS.eth_getBlockByNumber]: async (
@@ -205,8 +210,8 @@ const RPCMethodsMap = (
             await debugTraceCall(thorClient, params);
         },
 
-        [RPC_METHODS.evm_mine]: async (params) => {
-            await evmMine(thorClient, params);
+        [RPC_METHODS.evm_mine]: async (): Promise<BlocksRPC | null> => {
+            return await evmMine(thorClient);
         },
 
         [RPC_METHODS.eth_coinbase]: async (params) => {
