@@ -2,7 +2,7 @@
 
 Welcome to the **core package** of the vechain SDK!
 
-## Introduction
+## Introduction
 
 Vechain SDK Core is a robust package meticulously crafted for dApp development and various blockchain operations that seamlessly unfold offline. This versatile toolkit empowers users to effortlessly create and sign transactions, providing a comprehensive solution for offline blockchain interactions. Explore the power of Vechain SDK Core for a smooth and efficient dApp development experience.
 

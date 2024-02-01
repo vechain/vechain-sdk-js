@@ -1,4 +1,6 @@
 import { HttpClient } from '@vechain/vechain-sdk-network';
+import { BaseWallet } from '@vechain/vechain-sdk-wallet';
+import { secp256k1 } from '@vechain/vechain-sdk-core';
 
 /**
  * Url of the testnet fixture
@@ -58,6 +60,19 @@ const TEST_ACCOUNTS_THOR_SOLO = [
         address: '0x9e7911de289c3c856ce7f421034f66b6cde49c39'
     }
 ];
+
+/**
+ * Test accounts into wallet fixture
+ */
+const THOR_SOLO_ACCOUNTS_BASE_WALLET = new BaseWallet(
+    TEST_ACCOUNTS_THOR_SOLO.map((account) => ({
+        privateKey: Buffer.from(account.privateKey, 'hex'),
+        publicKey: secp256k1.derivePublicKey(
+            Buffer.from(account.privateKey, 'hex')
+        ),
+        address: account.address
+    }))
+);
 
 /**
  * Block with transactions expanded fixture
@@ -261,6 +276,7 @@ export {
     validTransactionHashTestnet,
     validTransactionDetailTestnet,
     TEST_ACCOUNTS_THOR_SOLO,
+    THOR_SOLO_ACCOUNTS_BASE_WALLET,
     TESTING_CONTRACT_ADDRESS,
     TESTING_CONTRACT_BYTECODE,
     mainNetwork
