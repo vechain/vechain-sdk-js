@@ -1,20 +1,27 @@
-import {
-    type TransactionClause,
-    TransactionUtils
-} from '@vechain/vechain-sdk-core';
 import { assert, DATA } from '@vechain/vechain-sdk-errors';
 import { JSONRPC, buildProviderError } from '../../../../../../errors/dist';
+import {
+    type SimulateTransactionClause,
+    type SimulateTransactionOptions,
+    type ThorClient
+} from '@vechain/vechain-sdk-network';
+import { type TransactionObj } from '../../types';
 
 /**
  * RPC Method eth_estimateGas implementation
  *
  * @link [eth_estimateGas](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_estimategas)
  *
- * @param params - The transaction call object
+ * @param params - The transaction call object.
+ *
+ * @note At the moment only the `to`, `value` and `data` fields are supported.
  *
  * @returns A hexadecimal of the estimate of the gas for the given transaction.
  */
-const ethEstimateGas = async (params: unknown[]): Promise<string> => {
+const ethEstimateGas = async (
+    thorClient: ThorClient,
+    params: unknown[]
+): Promise<string> => {
     // Input validation - Invalid params
     assert(
         params.length === 1,
@@ -23,13 +30,25 @@ const ethEstimateGas = async (params: unknown[]): Promise<string> => {
     );
 
     try {
-        // The intrinsic gas of the transaction
-        const intrinsicGas = TransactionUtils.intrinsicGas(
-            params as TransactionClause[]
+        const { to, value, data, ...rest } = params[0] as TransactionObj;
+
+        // Prepare transaction clauses for the estimateGas method
+        const clauses: SimulateTransactionClause = {
+            to,
+            value,
+            data
+        };
+        const options: SimulateTransactionOptions = {
+            ...rest
+        };
+
+        const estimatedGas = await thorClient.gas.estimateGas(
+            [clauses],
+            options.caller
         );
 
         // Convert intrinsic gas to hex string and return
-        return await Promise.resolve('0x' + intrinsicGas.toString(16));
+        return await Promise.resolve('0x' + estimatedGas.totalGas.toString(16));
     } catch (e) {
         throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,
