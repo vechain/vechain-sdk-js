@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { NotImplementedError } from '@vechain/vechain-sdk-errors';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
-import { testNetwork } from '../../../fixture';
+import { testNetwork, THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../fixture';
+import { type Wallet } from '@vechain/vechain-sdk-wallet';
 
 /**
  * RPC Mapper integration tests for 'eth_accounts' method
@@ -35,16 +35,22 @@ describe('RPC Mapper - eth_accounts method tests', () => {
      */
     describe('eth_accounts - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Positive case 1 - Should be able to get addresses from a NON-empty wallet
          */
-        test('eth_accounts - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_accounts]([
-                        -1
-                    ])
-            ).rejects.toThrowError(NotImplementedError);
+        test('eth_accounts - Should be able to get addresses from a NON-empty wallet', async () => {
+            // Get accounts
+            const accounts = (await RPCMethodsMap(
+                thorClient,
+                THOR_SOLO_ACCOUNTS_BASE_WALLET as Wallet
+            )[RPC_METHODS.eth_accounts]([])) as string[];
+
+            // Check if the accounts are the same
+            expect(accounts.length).toBeGreaterThan(0);
+            expect(accounts).toEqual(
+                THOR_SOLO_ACCOUNTS_BASE_WALLET.accounts.map(
+                    (account) => account.address
+                )
+            );
         });
     });
 
@@ -53,16 +59,17 @@ describe('RPC Mapper - eth_accounts method tests', () => {
      */
     describe('eth_accounts - Negative cases', () => {
         /**
-         * Negative case 1 - ... Description ...
+         * Negative case 1 - Should return empty array if wallet is not given
          */
-        test('eth_accounts - negative case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_accounts]([
-                        'SOME_RANDOM_PARAM'
-                    ])
-            ).rejects.toThrowError(NotImplementedError);
+        test('eth_accounts - Should return empty array if wallet is not given', async () => {
+            // Get accounts (NO WALLET GIVEN)
+            const accounts = (await RPCMethodsMap(thorClient)[
+                RPC_METHODS.eth_accounts
+            ]([])) as string[];
+
+            // Check if the accounts are the same
+            expect(accounts.length).toBe(0);
+            expect(accounts).toEqual([]);
         });
     });
 });

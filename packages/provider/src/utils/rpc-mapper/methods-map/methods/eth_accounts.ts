@@ -1,32 +1,16 @@
-import { type ThorClient } from '@vechain/vechain-sdk-network';
-import { buildError, FUNCTION } from '@vechain/vechain-sdk-errors';
+import { type Wallet } from '@vechain/vechain-sdk-wallet';
 
 /**
  * RPC Method eth_accounts implementation
  *
- * @param thorClient - The thor client instance to use.
- * @param params - The standard array of rpc call parameters.
- * @note:
- * * params[0]: ...
- * * params[1]: ...
- * * params[n]: ...
+ * @param wallet - Wallet instance to use.
  */
-const ethAccounts = async (
-    thorClient: ThorClient,
-    params: unknown[]
-): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
+const ethAccounts = async (wallet?: Wallet): Promise<string[]> => {
+    // Wallet exists
+    if (wallet !== undefined) return await wallet.getAddresses();
 
-    // Not implemented yet
-    throw buildError(
-        FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_accounts" not not implemented yet',
-        {
-            params,
-            thorClient
-        }
-    );
+    // In error case (if wallet is not defined), return an empty array
+    return [];
 };
 
 export { ethAccounts };

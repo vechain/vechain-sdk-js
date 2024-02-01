@@ -6,6 +6,7 @@ import {
 import { assert, DATA } from '@vechain/vechain-sdk-errors';
 import { type ThorClient } from '@vechain/vechain-sdk-network';
 import { RPC_METHODS, RPCMethodsMap } from '../utils';
+import { type Wallet } from '@vechain/vechain-sdk-wallet';
 
 /**
  * Our core provider class for vechain
@@ -13,9 +14,14 @@ import { RPC_METHODS, RPCMethodsMap } from '../utils';
 class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
     /**
      * Constructor for VechainProvider
-     * @param thorClient - ThorClient instance
+     *
+     * @param thorClient - ThorClient instance.
+     * @param wallet - Wallet instance. It is optional because the majority of the methods do not require a wallet.
      */
-    constructor(readonly thorClient: ThorClient) {
+    constructor(
+        readonly thorClient: ThorClient,
+        readonly wallet?: Wallet
+    ) {
         super();
     }
 
@@ -40,7 +46,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         );
 
         // Get the method from the RPCMethodsMap and call it
-        return await RPCMethodsMap(this.thorClient)[args.method](
+        return await RPCMethodsMap(this.thorClient, this.wallet)[args.method](
             args.params as unknown[]
         );
     }
