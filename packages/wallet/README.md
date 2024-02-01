@@ -3,11 +3,17 @@
 Welcome to the **wallet package** of the vechain SDK!
 
 ## Introduction
-Wallet enable user to manage their accounts and sign transactions by using different kind of wallet.
+Wallet enables users to manage their accounts and sign transactions by using different kinds of wallet.
 
 ## Key Features
 
-...
+The vechain SDK Wallet package provides features for wallet management and transaction signing.
+Basically, it provides a standard Wallet interface.
+All other wallet implementations should implement this interface.
+This allows developers to use different kinds of wallet without changing vechain development stack.
+
+For instance, the provider package uses the wallet interface to get addresses.
+This means that the provider package can be used with any wallet implementation, BUT the wallet implementation must implement the wallet interface.
 
 ## Commands
 
