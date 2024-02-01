@@ -1,17 +1,11 @@
 import { type ThorClient } from '@vechain/vechain-sdk-network';
 import {
     blocksFormatter,
-    type BlocksRPC,
     RPC_METHODS,
-    RPCMethodsMap
+    RPCMethodsMap,
+    type SyncBlockRPC
 } from '../../../../provider';
 import { JSONRPC, buildProviderError } from '@vechain/vechain-sdk-errors';
-
-interface SyncBlock {
-    startingBlock: null;
-    currentBlock: BlocksRPC | null;
-    highestBlock: string | null;
-}
 
 /**
  * RPC Method eth_syncing implementation
@@ -24,7 +18,7 @@ interface SyncBlock {
  */
 const ethSyncing = async (
     thorClient: ThorClient
-): Promise<boolean | SyncBlock> => {
+): Promise<boolean | SyncBlockRPC> => {
     try {
         const bestBlock = await thorClient.blocks.getBestBlock();
         const genesisBlock = await thorClient.blocks.getGenesisBlock();

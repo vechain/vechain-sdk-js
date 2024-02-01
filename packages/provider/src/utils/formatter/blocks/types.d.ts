@@ -90,4 +90,13 @@ interface BlocksRPC extends BlockHeaderRPC {
     mixHash: string;
 }
 
-export { type BlockHeaderRPC, type BlocksRPC };
+/**
+ * Return type of eth_syncing for RPC method.
+ */
+interface SyncBlockRPC {
+    startingBlock: null;
+    currentBlock: BlocksRPC | null;
+    highestBlock: string | null;
+}
+
+export { type BlockHeaderRPC, type BlocksRPC, type SyncBlockRPC };
