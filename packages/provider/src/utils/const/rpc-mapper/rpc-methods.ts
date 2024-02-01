@@ -27,7 +27,8 @@ enum RPC_METHODS {
     eth_getLogs = 'eth_getLogs', // TEMPORARY COMMENT - TO IMPLEMENT
     eth_getBlockByHash = 'eth_getBlockByHash',
     eth_getBlockByNumber = 'eth_getBlockByNumber',
-    eth_accounts = 'eth_accounts', // TEMPORARY COMMENT - TO IMPLEMENT (WALLET NEEDED)
+    eth_accounts = 'eth_accounts',
+    eth_requestAccounts = 'eth_requestAccounts',
 
     /**
      * ----- TEMPORARY COMMENT -----
