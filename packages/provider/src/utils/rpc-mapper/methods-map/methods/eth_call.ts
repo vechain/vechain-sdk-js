@@ -1,9 +1,11 @@
 import {
     type SimulateTransactionClause,
-    type ThorClient
+    type ThorClient,
+    type SimulateTransactionOptions
 } from '@vechain/vechain-sdk-network';
 import { assert, DATA } from '@vechain/vechain-sdk-errors';
 import { JSONRPC, buildProviderError } from '../../../../../../errors/dist';
+import { type TransactionObj } from '../../types';
 
 /**
  * RPC Method eth_call implementation
@@ -27,9 +29,22 @@ const ethCall = async (
     );
 
     try {
+        const { to, value, data, ...rest } = params[0] as TransactionObj;
+
+        // Prepare simulate transaction clauses and options for the simulateTransaction method
+        const clauses: SimulateTransactionClause = {
+            to,
+            value,
+            data
+        };
+        const options: SimulateTransactionOptions = {
+            ...rest
+        };
+
         // Simulate transaction
         const simulatedTx = await thorClient.transactions.simulateTransaction(
-            params as SimulateTransactionClause[]
+            [clauses],
+            options
         );
 
         // Return simulated transaction data
