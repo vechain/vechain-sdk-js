@@ -79,6 +79,7 @@ import { RPC_METHODS } from '../const';
 import {
     type BlocksRPC,
     type SendRawTransactionResultRPC,
+    type SyncBlockRPC,
     type TransactionReceiptRPC,
     type TransactionRPC
 } from '../formatter';
@@ -184,8 +185,10 @@ const RPCMethodsMap = (
             await ethSendTransaction(thorClient, params);
         },
 
-        [RPC_METHODS.eth_syncing]: async (params) => {
-            await ethSyncing(thorClient, params);
+        [RPC_METHODS.eth_syncing]: async (): Promise<
+            boolean | SyncBlockRPC
+        > => {
+            return await ethSyncing(thorClient);
         },
 
         [RPC_METHODS.net_version]: async (): Promise<string> => {
