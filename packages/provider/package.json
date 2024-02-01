@@ -23,6 +23,7 @@
         "test:solo": "(yarn start-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo"
     },
     "dependencies": {
-        "@vechain/vechain-sdk-network": "*"
+        "@vechain/vechain-sdk-network": "*",
+        "@vechain/vechain-sdk-wallet": "*"
     }
 }
