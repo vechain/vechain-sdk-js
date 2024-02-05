@@ -1,8 +1,8 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { NotImplementedError } from '@vechain/vechain-sdk-errors';
+import { afterEach, beforeEach, describe, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
+import { logsFixture } from './fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_getLogs' method
@@ -37,32 +37,32 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
         /**
          * Positive case 1 - ... Description ...
          */
-        test('eth_getLogs - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_getLogs]([
-                        -1
-                    ])
-            ).rejects.toThrowError(NotImplementedError);
+        logsFixture.forEach((fixture, index) => {
+            test(`eth_getLogs - Should be able to get logs - ${index}`, async () => {
+                // Call RPC method
+                const logs = await RPCMethodsMap(thorClient)[
+                    RPC_METHODS.eth_getLogs
+                ]([fixture]);
+                console.log('final logs:', logs);
+            }, 20000);
         });
     });
 
     /**
      * eth_getLogs RPC call tests - Negative cases
      */
-    describe('eth_getLogs - Negative cases', () => {
-        /**
-         * Negative case 1 - ... Description ...
-         */
-        test('eth_getLogs - negative case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_getLogs]([
-                        'SOME_RANDOM_PARAM'
-                    ])
-            ).rejects.toThrowError(NotImplementedError);
-        });
-    });
+    // describe('eth_getLogs - Negative cases', () => {
+    //     /**
+    //      * Negative case 1 - ... Description ...
+    //      */
+    //     test('eth_getLogs - negative case 1', async () => {
+    //         // NOT IMPLEMENTED YET!
+    //         await expect(
+    //             async () =>
+    //                 await RPCMethodsMap(thorClient)[RPC_METHODS.eth_getLogs]([
+    //                     'SOME_RANDOM_PARAM'
+    //                 ])
+    //         ).rejects.toThrowError(NotImplementedError);
+    //     });
+    // });
 });
