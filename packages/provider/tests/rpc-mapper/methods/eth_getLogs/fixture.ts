@@ -190,6 +190,41 @@ const logsFixture = [
             ]
         },
         expectedSliced: []
+    },
+
+    // No topics defined, only addresses
+    {
+        input: {
+            address: [
+                '0x0000000000000000000000000000456e65726779',
+                '0x0000000000000000000000000000456e65726779'
+            ]
+        },
+        expectedSliced: []
+    },
+
+    // No addresses defined, only topics
+    {
+        input: {
+            topics: [
+                '0x0000000000000000000000005034aa590125b64023a0262112b98d72e3c8e40e'
+            ]
+        },
+        expectedSliced: []
+    },
+
+    // No addresses and topics defined
+    {
+        input: {},
+        expectedSliced: []
+    },
+
+    // A single address
+    {
+        input: {
+            address: '0x0000000000000000000000000000456e65726779'
+        },
+        expectedSliced: []
     }
 ];
 
