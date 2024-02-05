@@ -1,8 +1,10 @@
-import { afterEach, beforeEach, describe, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
 import { logsFixture } from './fixture';
+import { type LogsRPC } from '../../../../src/utils/formatter/logs';
+import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_getLogs' method
@@ -35,34 +37,34 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
      */
     describe('eth_getLogs - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Positive cases. Should be able to get logs
          */
         logsFixture.forEach((fixture, index) => {
             test(`eth_getLogs - Should be able to get logs - ${index}`, async () => {
                 // Call RPC method
-                const logs = await RPCMethodsMap(thorClient)[
+                const logs = (await RPCMethodsMap(thorClient)[
                     RPC_METHODS.eth_getLogs
-                ]([fixture]);
-                console.log('final logs:', logs);
-            }, 20000);
+                ]([fixture.input])) as LogsRPC[];
+                expect(logs.slice(0, 4)).toStrictEqual(fixture.expectedSliced);
+            });
         });
     });
 
     /**
      * eth_getLogs RPC call tests - Negative cases
      */
-    // describe('eth_getLogs - Negative cases', () => {
-    //     /**
-    //      * Negative case 1 - ... Description ...
-    //      */
-    //     test('eth_getLogs - negative case 1', async () => {
-    //         // NOT IMPLEMENTED YET!
-    //         await expect(
-    //             async () =>
-    //                 await RPCMethodsMap(thorClient)[RPC_METHODS.eth_getLogs]([
-    //                     'SOME_RANDOM_PARAM'
-    //                 ])
-    //         ).rejects.toThrowError(NotImplementedError);
-    //     });
-    // });
+    describe('eth_getLogs - Negative cases', () => {
+        /**
+         * Negative case 1 - Should throw an error for invalid input
+         */
+        test('eth_getLogs - Invalid input', async () => {
+            await expect(
+                async () =>
+                    // Call RPC method
+                    (await RPCMethodsMap(thorClient)[RPC_METHODS.eth_getLogs]([
+                        'INVALID_INPUT'
+                    ])) as LogsRPC[]
+            ).rejects.toThrowError(InvalidDataTypeError);
+        });
+    });
 });
