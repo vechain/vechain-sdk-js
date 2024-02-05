@@ -140,9 +140,21 @@ interface Metadata {
  * TransferCriteria interface for filtering transfer logs.
  */
 interface TransferCriteria {
-    txOrigin?: string; // Transaction origin filter for transfer criteria.
-    sender?: string; // Sender's address filter.
-    recipient?: string; // Recipient's address filter.
+    /**
+     * Transaction origin filter for transfer criteria.
+     */
+
+    txOrigin?: string;
+    /**
+     * Sender's address filter.
+     */
+
+    sender?: string;
+    /**
+     * Recipient's address filter.
+     */
+
+    recipient?: string;
 }
 
 /**
@@ -190,7 +202,7 @@ interface Transfer {
  */
 interface EventLogs extends Event {
     /**
-     * // Event logs with associated metadata
+     * Event logs with associated metadata
      */
     meta: Metadata;
 }
@@ -213,5 +225,7 @@ export type {
     EventLogs,
     FilterTransferLogsOptions,
     Transfer,
-    TransferLogs
+    TransferLogs,
+    EventCriteria,
+    Range
 };
