@@ -81,39 +81,30 @@ const getCriteriaSetForInput = (criteria: {
     if (criteria.topics !== undefined) criteriaTopics = criteria.topics;
 
     // Filtering considering the address and topics. For each address, we have to consider the topics
-    const addressAndTopics: EventCriteria[] = criteriaAddress.map(
-        (addr: string) => {
-            return {
-                address: addr,
-                topic0: criteriaTopics[0] ?? undefined,
-                topic1: criteriaTopics[1] ?? undefined,
-                topic2: criteriaTopics[2] ?? undefined,
-                topic3: criteriaTopics[3] ?? undefined,
-                topic4: criteriaTopics[4] ?? undefined
-            };
-        }
-    );
-
-    // Filtering by only address
-    const onlyAddress: EventCriteria[] = criteriaAddress.map((addr: string) => {
-        return {
-            address: addr
-        };
-    });
-
-    // Filtering by only topics
-    const onlyTopics: EventCriteria[] = [
-        {
-            topic0: criteriaTopics[0] ?? undefined,
-            topic1: criteriaTopics[1] ?? undefined,
-            topic2: criteriaTopics[2] ?? undefined,
-            topic3: criteriaTopics[3] ?? undefined,
-            topic4: criteriaTopics[4] ?? undefined
-        }
-    ];
+    const finalEventLog: EventCriteria[] =
+        criteriaAddress.length > 0
+            ? criteriaAddress.map((addr: string) => {
+                  return {
+                      address: addr,
+                      topic0: criteriaTopics[0] ?? undefined,
+                      topic1: criteriaTopics[1] ?? undefined,
+                      topic2: criteriaTopics[2] ?? undefined,
+                      topic3: criteriaTopics[3] ?? undefined,
+                      topic4: criteriaTopics[4] ?? undefined
+                  };
+              })
+            : [
+                  {
+                      topic0: criteriaTopics[0] ?? undefined,
+                      topic1: criteriaTopics[1] ?? undefined,
+                      topic2: criteriaTopics[2] ?? undefined,
+                      topic3: criteriaTopics[3] ?? undefined,
+                      topic4: criteriaTopics[4] ?? undefined
+                  }
+              ];
 
     // Filtering by only topics
-    return addressAndTopics.concat(onlyAddress, onlyTopics);
+    return finalEventLog;
 };
 
 export { formatToLogsRPC, getCriteriaSetForInput };
