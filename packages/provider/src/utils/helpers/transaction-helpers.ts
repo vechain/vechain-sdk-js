@@ -46,18 +46,18 @@ const getTransactionIndexIntoBlock = (
  * Get the number of logs ahead of a transaction into a block.
  *
  * @param blockExpanded - The block to search in.
- * @param hash - The hash of the transaction to search for.
+ * @param transactionId - The hash of the transaction to search for.
  * @param chainId - The chain ID of the network.
  */
 const getNumberOfLogsAheadOfTransactionIntoBlockExpanded = (
     blockExpanded: BlockDetail,
-    hash: string,
+    transactionId: string,
     chainId: string
 ): number => {
     // Get transaction index into the block
     const transactionIndex = getTransactionIndexIntoBlock(
         blocksFormatter.formatToRPCStandard(blockExpanded, chainId),
-        hash
+        transactionId
     );
 
     // Count the number of logs in the txs whose number is lower than txId

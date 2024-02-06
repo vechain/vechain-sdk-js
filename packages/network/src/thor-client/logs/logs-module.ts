@@ -26,7 +26,7 @@ class LogsModule {
      */
     public async filterEventLogs(
         filterOptions: FilterEventLogsOptions
-    ): Promise<EventLogs> {
+    ): Promise<EventLogs[]> {
         return (await this.thor.httpClient.http(
             'POST',
             thorest.logs.post.EVENT_LOGS(),
@@ -35,7 +35,7 @@ class LogsModule {
                 body: filterOptions,
                 headers: {}
             }
-        )) as EventLogs;
+        )) as EventLogs[];
     }
 
     /**
@@ -46,7 +46,7 @@ class LogsModule {
      */
     public async filterTransferLogs(
         filterOptions: FilterTransferLogsOptions
-    ): Promise<TransferLogs> {
+    ): Promise<TransferLogs[]> {
         return (await this.thor.httpClient.http(
             'POST',
             thorest.logs.post.TRANSFER_LOGS(),
@@ -55,7 +55,7 @@ class LogsModule {
                 body: filterOptions,
                 headers: {}
             }
-        )) as TransferLogs;
+        )) as TransferLogs[];
     }
 }
 
