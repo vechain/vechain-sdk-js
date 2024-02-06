@@ -8,6 +8,7 @@ import {
 import { blocksFormatter, type BlocksRPC } from '../../../formatter';
 import { RPCMethodsMap } from '../../rpc-mapper';
 import { RPC_METHODS } from '../../../const';
+import { getCorrectBlockNumberRPCToVechain } from '../../../const/blocks';
 
 /**
  * RPC Method eth_getBlockByNumber implementation
@@ -23,7 +24,7 @@ import { RPC_METHODS } from '../../../const';
  *
  * @note
  *  * Standard RPC method `eth_getBlockByNumber` support following block numbers: hex number of block, 'earliest', 'latest', 'safe', 'finalized', 'pending'. (@see https://ethereum.org/en/developers/docs/apis/json-rpc#default-block)
- *  * Currently, vechain only support hex number of block, 'latest' and 'finalized'.
+ *  * Currently, vechain only supports hex number of block, 'latest' and 'finalized'.
  *
  * @throws {ProviderRpcError} - Will throw an error if the retrieval of the block fails.
  */
@@ -40,7 +41,7 @@ const ethGetBlockByNumber = async (
     );
 
     try {
-        let [blockNumber, isTxDetail] = params as [string, boolean];
+        const [blockNumber, isTxDetail] = params as [string, boolean];
 
         let chainId: string = '0x0';
 
@@ -50,11 +51,12 @@ const ethGetBlockByNumber = async (
                 []
             )) as string;
 
-        if (blockNumber === 'latest') blockNumber = 'best'; // 'best' is the alias for 'latest' in vechain Thorest
-
-        const block = await thorClient.blocks.getBlock(blockNumber, {
-            expanded: isTxDetail
-        });
+        const block = await thorClient.blocks.getBlock(
+            getCorrectBlockNumberRPCToVechain(blockNumber),
+            {
+                expanded: isTxDetail
+            }
+        );
 
         return block !== null
             ? blocksFormatter.formatToRPCStandard(block, chainId)
