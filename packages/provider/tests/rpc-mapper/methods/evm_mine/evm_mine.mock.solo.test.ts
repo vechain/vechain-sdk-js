@@ -40,18 +40,28 @@ describe('RPC Mapper - evm_mine method tests', () => {
                 RPCMethodsMap(thorClient)[RPC_METHODS.evm_mine]([])
             ).rejects.toThrowError(ProviderRpcError);
         });
-    });
 
-    /**
-     * evm_mine RPC call tests - Negative cases
-     */
-    describe('evm_mine - Negative cases', () => {
         /**
          * Test case that mocks an error thrown by the waitForBlock method
          */
         test('Should throw `ProviderRpcError` if an error occurs while waiting for the new block', async () => {
             // Mock the waitForBlock method to return null
             jest.spyOn(thorClient.blocks, 'waitForBlock').mockResolvedValue(
+                null
+            );
+
+            const newBlock = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.evm_mine
+            ]([]);
+            expect(newBlock).toBeNull();
+        });
+
+        /**
+         * Should return null if the best block is null
+         */
+        test('Should return null if the best block is null', async () => {
+            // Mock the getBestBlock method to return null
+            jest.spyOn(thorClient.blocks, 'getBestBlock').mockResolvedValue(
                 null
             );
 
