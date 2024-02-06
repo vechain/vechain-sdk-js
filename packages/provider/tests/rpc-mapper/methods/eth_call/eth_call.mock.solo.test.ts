@@ -1,10 +1,7 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { ProviderRpcError } from '@vechain/vechain-sdk-errors';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
-import {
-    ThorClient,
-    type SimulateTransactionClause
-} from '@vechain/vechain-sdk-network';
+import { ThorClient } from '@vechain/vechain-sdk-network';
 import { soloNetwork } from '../../../fixture';
 
 /**
@@ -40,15 +37,16 @@ describe('RPC Mapper - eth_call method tests', () => {
                 'simulateTransaction'
             ).mockRejectedValue(new Error());
 
-            const options = [
-                {
-                    to: '0x3db469a79593dcc67f07de1869d6682fc1eaf535',
-                    value: '1000000000000000000',
-                    data: '0x'
-                }
-            ] as SimulateTransactionClause[];
             await expect(
-                RPCMethodsMap(thorClient)[RPC_METHODS.eth_call](options)
+                RPCMethodsMap(thorClient)[RPC_METHODS.eth_call]([
+                    {
+                        from: '0x7487d912d03ab9de786278f679592b3730bdd540',
+                        to: '0x3db469a79593dcc67f07de1869d6682fc1eaf535',
+                        value: '1000000000000000000',
+                        data: '0x'
+                    },
+                    'latest'
+                ])
             ).rejects.toThrowError(ProviderRpcError);
         });
     });
