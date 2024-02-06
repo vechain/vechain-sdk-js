@@ -1,13 +1,9 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
+import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ProviderRpcError } from '@vechain/vechain-sdk-errors';
-import {
-    type TransactionClause,
-    contract,
-    unitsUtils
-} from '@vechain/vechain-sdk-core';
+import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
 
 /**
  * RPC Mapper integration tests for 'eth_estimateGas' method with Solo Network and mocked functionality
@@ -41,14 +37,14 @@ describe('RPC Mapper - eth_estimateGas method tests', () => {
                 new Error()
             );
 
-            const clauses: TransactionClause[] = [
-                contract.clauseBuilder.transferVET(
-                    '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-                    unitsUtils.parseVET('1000')
-                )
-            ];
             await expect(
-                RPCMethodsMap(thorClient)[RPC_METHODS.eth_estimateGas](clauses)
+                RPCMethodsMap(thorClient)[RPC_METHODS.eth_estimateGas]([
+                    contract.clauseBuilder.transferVET(
+                        '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+                        unitsUtils.parseVET('1000')
+                    ),
+                    'latest'
+                ])
             ).rejects.toThrowError(ProviderRpcError);
         });
     });

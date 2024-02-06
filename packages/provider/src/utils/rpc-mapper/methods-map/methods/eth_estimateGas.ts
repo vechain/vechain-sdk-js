@@ -1,17 +1,36 @@
-import { assert, DATA } from '@vechain/vechain-sdk-errors';
-import { JSONRPC, buildProviderError } from '../../../../../../errors/dist';
+import {
+    assert,
+    buildProviderError,
+    DATA,
+    JSONRPC
+} from '@vechain/vechain-sdk-errors';
 import {
     type SimulateTransactionClause,
-    type SimulateTransactionOptions,
     type ThorClient
 } from '@vechain/vechain-sdk-network';
-import { type TransactionObj } from '../../types';
+
+/**
+ * Transaction object input type
+ */
+interface TransactionObjectInput {
+    from?: string;
+    to: string;
+    gas?: string;
+    gasPrice?: string;
+    value?: string;
+    data?: string;
+
+    // Not supported
+    maxFeePerGas?: string;
+    maxPriorityFeePerGas?: string;
+}
 
 /**
  * RPC Method eth_estimateGas implementation
  *
  * @link [eth_estimateGas](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_estimategas)
  *
+ * @param thorClient - ThorClient instance.
  * @param params - The transaction call object.
  *
  * @note At the moment only the `to`, `value` and `data` fields are supported.
@@ -22,29 +41,41 @@ const ethEstimateGas = async (
     thorClient: ThorClient,
     params: unknown[]
 ): Promise<string> => {
-    // Input validation - Invalid params
+    // Check input params
     assert(
-        params.length === 1,
+        params.length === 2 &&
+            typeof params[0] === 'object' &&
+            typeof params[1] === 'string',
         DATA.INVALID_DATA_TYPE,
-        'Invalid params length, expected 1.'
+        `Invalid params length, expected 1 object containing transaction info with following properties: \n {` +
+            `\tfrom: 20 bytes Address the transaction is sent from.` +
+            `\tto: [Required] 20 bytes - Address the transaction is directed to.` +
+            `\tgas: Hexadecimal value of the gas provided for the transaction execution. eth_estimateGas consumes zero gas, but this parameter may be needed by some executions.` +
+            `\tgasPrice:Hexadecimal value of the gas price used for each paid gas.` +
+            `\tmaxPriorityFeePerGas: Maximum fee, in Wei, the sender is willing to pay per gas above the base fee` +
+            `\tmaxFeePerGas: Maximum total fee (base fee + priority fee), in Wei, the sender is willing to pay per gas` +
+            `\tvalue: Hexadecimal of the value sent with this transaction.` +
+            `\tdata: Hash of the method signature and encoded parameters` +
+            `}\n\n and the block number parameter. An hexadecimal number or (latest, earliest or pending).`
     );
 
     try {
-        const { to, value, data, ...rest } = params[0] as TransactionObj;
-
-        // Prepare transaction clauses for the estimateGas method
-        const clauses: SimulateTransactionClause = {
-            to,
-            value,
-            data
-        };
-        const options: SimulateTransactionOptions = {
-            ...rest
-        };
+        // NOTE: The standard requires block parameter. Here it is ignored and added only for future compatibility reasons.
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [inputOptions, block] = params as [
+            TransactionObjectInput,
+            string
+        ];
 
         const estimatedGas = await thorClient.gas.estimateGas(
-            [clauses],
-            options.caller
+            [
+                {
+                    to: inputOptions.to,
+                    value: inputOptions.value ?? '0x0',
+                    data: inputOptions.data ?? '0x0'
+                } satisfies SimulateTransactionClause
+            ],
+            inputOptions.from
         );
 
         // Convert intrinsic gas to hex string and return

@@ -1,13 +1,15 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
-import {
-    type TransactionClause,
-    contract,
-    unitsUtils
-} from '@vechain/vechain-sdk-core';
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { positiveCasesFixtures, negativeCasesFixtures } from './fixture';
+import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
+
+// import {
+//     type TransactionClause,
+//     contract,
+//     unitsUtils
+// } from '@vechain/vechain-sdk-core';
+// import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_estimateGas' method
@@ -33,21 +35,15 @@ describe('RPC Mapper - eth_estimateGas method tests', () => {
      */
     describe('eth_estimateGas - Positive cases', () => {
         /**
-         * Positive case 1 - Transfer VET transaction example
+         * Positive cases
          */
-        test('eth_estimateGas - positive case 1', async () => {
-            const clauses: TransactionClause[] = [
-                contract.clauseBuilder.transferVET(
-                    '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-                    unitsUtils.parseVET('1000')
-                )
-            ];
-            const estimatedGas =
-                await RPCMethodsMap(thorClient)[RPC_METHODS.eth_estimateGas](
-                    clauses
-                );
-
-            expect(estimatedGas).toBe('0x5208');
+        positiveCasesFixtures.forEach((fixture) => {
+            test(fixture.description, async () => {
+                const response = await RPCMethodsMap(thorClient)[
+                    RPC_METHODS.eth_estimateGas
+                ](fixture.input);
+                expect(response).toBe(fixture.expected);
+            });
         });
     });
 
@@ -56,15 +52,16 @@ describe('RPC Mapper - eth_estimateGas method tests', () => {
      */
     describe('eth_estimateGas - Negative cases', () => {
         /**
-         * Negative case 1 - No parameter passed
+         * Negative cases
          */
-        test('eth_estimateGas - no parameter passed', async () => {
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.eth_estimateGas
-                    ]([])
-            ).rejects.toThrowError(InvalidDataTypeError);
+        negativeCasesFixtures.forEach((fixture) => {
+            test(fixture.description, async () => {
+                await expect(
+                    RPCMethodsMap(thorClient)[RPC_METHODS.eth_estimateGas](
+                        fixture.input
+                    )
+                ).rejects.toThrowError(fixture.expected);
+            });
         });
     });
 });
