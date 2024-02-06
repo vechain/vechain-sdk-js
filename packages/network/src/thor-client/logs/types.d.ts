@@ -153,7 +153,6 @@ interface TransferCriteria {
     /**
      * Recipient's address filter.
      */
-
     recipient?: string;
 }
 
