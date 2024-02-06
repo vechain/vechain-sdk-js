@@ -25,7 +25,7 @@ const ethSyncing = async (
 
         // Check if the node is already in sync
         if (
-            bestBlock != null &&
+            bestBlock !== null &&
             Math.floor(Date.now() / 1000) - bestBlock.timestamp < 11000
         ) {
             return false;
@@ -37,18 +37,18 @@ const ethSyncing = async (
         ]([])) as string;
 
         const highestBlock =
-            genesisBlock != null
+            genesisBlock !== null
                 ? Math.floor((Date.now() - genesisBlock.timestamp) / 10000)
                 : null;
 
         return {
             startingBlock: null,
             currentBlock:
-                bestBlock != null
+                bestBlock !== null
                     ? blocksFormatter.formatToRPCStandard(bestBlock, chainId)
                     : null,
             highestBlock:
-                highestBlock != null ? highestBlock.toString(16) : null
+                highestBlock !== null ? highestBlock.toString(16) : null
         };
     } catch (e) {
         throw buildProviderError(
