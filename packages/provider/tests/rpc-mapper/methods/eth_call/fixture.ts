@@ -4,7 +4,7 @@ import {
 } from '@vechain/vechain-sdk-errors';
 
 /**
- * Fixtures for eth_call positive cases
+ * Fixtures for positive cases
  */
 const positiveCasesFixtures = [
     {

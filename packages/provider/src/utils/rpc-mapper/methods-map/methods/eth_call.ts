@@ -26,6 +26,7 @@ interface TransactionObjectInput {
     maxFeePerGas?: string;
     maxPriorityFeePerGas?: string;
 }
+
 /**
  * RPC Method eth_call implementation
  *
