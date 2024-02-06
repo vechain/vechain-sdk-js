@@ -2,7 +2,7 @@ import { ZERO_BUFFER, dataUtils } from '@vechain/vechain-sdk-core';
 import {
     InvalidDataTypeError,
     ProviderRpcError
-} from '../../../../../errors/dist';
+} from '@vechain/vechain-sdk-errors';
 
 /**
  * Test cases for eth_getStorageAt RPC method

@@ -25,13 +25,15 @@ class GasModule {
      *                  @see {@link TransactionsClient#simulateTransaction}
      *                  Also, includes the `gasPadding` option which is a percentage of gas to add on top of the estimated gas. The value must be between (0, 1].
      *
+     * @note The caller option is suggested as estimation without this parameter may not be accurate.
+     *
      * @returns An object containing information regarding the gas used and whether the transaction reverted, together with the decoded revert reason and VM errors.
      *
      * @throws an error if the clauses are invalid or if an error occurs during the simulation.
      */
     public async estimateGas(
         clauses: SimulateTransactionClause[],
-        caller: string,
+        caller?: string,
         options?: EstimateGasOptions
     ): Promise<EstimateGasResult> {
         // Clauses must be an array of clauses with at least one clause
