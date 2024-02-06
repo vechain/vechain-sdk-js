@@ -60,7 +60,9 @@ const ethEstimateGas = async (
     );
 
     try {
-        // NOTE: The standard requires block parameter. Here it is ignored and can be added in the future compatibility reasons. (INPUT CHECK TAKE CARE OF THIS)
+        // NOTE: The standard requires block parameter.
+        // Here it is ignored and can be added in the future compatibility reasons.
+        // (INPUT CHECK TAKE CARE OF THIS)
         const [inputOptions] = params as [TransactionObjectInput];
 
         const estimatedGas = await thorClient.gas.estimateGas(
