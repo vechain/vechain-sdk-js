@@ -27,9 +27,17 @@ const formatToLogsRPC = (eventLogs: EventLogs[]): LogsRPC[] => {
             // Always false for now
             removed: false,
 
-            // Not implemented yet.
-            // @NOTE: It is implementable, BUT it is not implemented yet for performance reasons.
-            // This is because we have to get block details log entry.
+            // @NOTE: These two fields are not implemented yet. This for performance reasons.
+            //
+            /**
+             * @NOTE: These two fields are not implemented yet.
+             * This for performance reasons.
+             * We can implement them later if needed.
+             *
+             * To have these two fields, we need to query a block for each entry into the logs.
+             * After from the block, we can get the transaction index and the log index.
+             * This is a performance issue because we have to query a block for each entry into the logs.
+             */
             logIndex: '0x0',
             transactionIndex: '0x0'
         } satisfies LogsRPC;
