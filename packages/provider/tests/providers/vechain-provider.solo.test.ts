@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { VechainProvider } from '../../src';
+import { type SubscriptionEvent, VechainProvider } from '../../src';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { soloNetwork } from '../fixture';
@@ -26,7 +26,7 @@ describe('Vechain provider tests', () => {
     });
 
     /**
-     * Destory thor client and provider after each test
+     * Destroy thor client and provider after each test
      */
     afterEach(() => {
         provider.destroy();
@@ -63,6 +63,34 @@ describe('Vechain provider tests', () => {
         // Compare the result with the expected value
         expect(rpcCall).not.toBe('0x0');
     });
+
+    /**
+     * eth_getBalance RPC call test
+     */
+    test('Should be able to get to subscribe to the latest blocks', async () => {
+        // Call RPC function
+        const rpcCall = await provider.request({
+            method: 'eth_subscribe',
+            params: ['newHeads']
+        });
+
+        const messageReceived = new Promise((resolve) => {
+            provider.on('message', (message) => {
+                resolve(message);
+                provider.destroy();
+            });
+        });
+
+        const message = (await messageReceived) as SubscriptionEvent;
+
+        // Optionally, you can do assertions or other operations with the message
+        expect(message).toBeDefined();
+        expect(message.data).toBeDefined();
+        expect(message.type).toBe('New block');
+
+        // Compare the result with the expected value
+        expect(rpcCall).not.toBe('0x0');
+    }, 20000);
 
     /**
      * Invalid RPC method tests

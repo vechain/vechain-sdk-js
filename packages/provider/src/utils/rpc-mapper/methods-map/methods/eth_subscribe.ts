@@ -1,5 +1,19 @@
 import { type ThorClient } from '@vechain/vechain-sdk-network';
-import { buildError, FUNCTION } from '@vechain/vechain-sdk-errors';
+import { subscriptionService } from '../../../service/subscriptionService';
+
+enum SUBSCRIPTION_TYPE {
+    NEW_HEADS = 'newHeads',
+    LOGS = 'logs',
+    NEW_PENDING_TRANSACTIONS = 'newPendingTransactions',
+    SYNCING = 'syncing'
+}
+
+type ethSubscribeParams =
+    | [
+          'newHeads' | 'logs' | 'newPendingTransactions' | 'syncing',
+          string | string[]
+      ]
+    | unknown[];
 
 /**
  * RPC Method eth_subscribe implementation
@@ -13,20 +27,18 @@ import { buildError, FUNCTION } from '@vechain/vechain-sdk-errors';
  */
 const ethSubscribe = async (
     thorClient: ThorClient,
-    params: unknown[]
+    params: ethSubscribeParams
 ): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
-
-    // Not implemented yet
-    throw buildError(
-        FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_subscribe" not not implemented yet',
-        {
-            params,
-            thorClient
+    if (params[0] === SUBSCRIPTION_TYPE.NEW_HEADS) {
+        const bestBlock = await thorClient.blocks.getBlock('best');
+        if (bestBlock == null) {
+            throw new Error('Failed to get the best block');
         }
-    );
+        subscriptionService.currentBlockNumber = bestBlock.number;
+        subscriptionService.subscriptions.push(params[0] as string);
+    }
+
+    await Promise.resolve(0);
 };
 
 export { ethSubscribe };

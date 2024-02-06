@@ -4,9 +4,10 @@ import {
     type EIP1193RequestArguments
 } from '../eip1193';
 import { assert, DATA } from '@vechain/vechain-sdk-errors';
-import { type ThorClient } from '@vechain/vechain-sdk-network';
+import { Poll, type ThorClient } from '@vechain/vechain-sdk-network';
 import { RPC_METHODS, RPCMethodsMap } from '../utils';
 import { type Wallet } from '@vechain/vechain-sdk-wallet';
+import { subscriptionService } from '../utils/service/subscriptionService';
 
 /**
  * Our core provider class for vechain
@@ -23,6 +24,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         readonly wallet?: Wallet
     ) {
         super();
+        this.startSubscriptionsPolling();
     }
 
     /**
@@ -49,6 +51,35 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         return await RPCMethodsMap(this.thorClient, this.wallet)[args.method](
             args.params as unknown[]
         );
+    }
+
+    private startSubscriptionsPolling(): void {
+        Poll.createEventPoll(async () => {
+            if (subscriptionService.subscriptions.includes('newHeads')) {
+                const block = await this.thorClient.blocks.getBlock(
+                    subscriptionService.currentBlockNumber
+                );
+                if (block !== undefined && block !== null) {
+                    subscriptionService.currentBlockNumber++;
+                    return block;
+                }
+            } else {
+                return null;
+            }
+        }, 100)
+            .onData((newBlockData: unknown) => {
+                if (newBlockData === null || newBlockData === undefined) {
+                    return;
+                }
+
+                this.emit('message', {
+                    type: 'New block',
+                    data: {
+                        block: newBlockData
+                    }
+                });
+            })
+            .startListen();
     }
 }
 

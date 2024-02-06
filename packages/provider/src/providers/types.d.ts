@@ -1,5 +1,10 @@
 import { type vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
 
+interface SubscriptionEvent {
+    readonly type: string;
+    readonly data: unknown;
+}
+
 /**
  * An `EventEmitterable` interface is akin to an EventEmitter,
  * but with asynchronous access to its methods.
@@ -79,4 +84,4 @@ interface ContractRunner {
     sendTransaction?: (tx: TransactionRequest) => Promise<TransactionResponse>;
 }
 
-export { type EventEmitterable };
+export { type EventEmitterable, type SubscriptionEvent };
