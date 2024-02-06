@@ -3,7 +3,7 @@ import {
     blockWithTransactionsExpanded,
     blockWithTransactionsNotExpanded
 } from '../../../fixture';
-import { InvalidDataTypeError } from '../../../../../errors/dist';
+import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 
 /**
  * Zero block fixture
