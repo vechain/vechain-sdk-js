@@ -60,12 +60,8 @@ const ethEstimateGas = async (
     );
 
     try {
-        // NOTE: The standard requires block parameter. Here it is ignored and added only for future compatibility reasons.
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const [inputOptions, block] = params as [
-            TransactionObjectInput,
-            string
-        ];
+        // NOTE: The standard requires block parameter. Here it is ignored and can be added in the future compatibility reasons. (INPUT CHECK TAKE CARE OF THIS)
+        const [inputOptions] = params as [TransactionObjectInput];
 
         const estimatedGas = await thorClient.gas.estimateGas(
             [
