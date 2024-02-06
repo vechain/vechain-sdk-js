@@ -13,7 +13,7 @@ import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
  */
 const formatToLogsRPC = (eventLogs: EventLogs[]): LogsRPC[] => {
     // Final RPC event logs formatted
-    const rpcEventLogs: LogsRPC[] = eventLogs.map((eventLog: EventLogs) => {
+    return eventLogs.map((eventLog: EventLogs) => {
         return {
             transactionHash: eventLog.meta.txID,
             blockHash: eventLog.meta.blockID,
@@ -42,7 +42,31 @@ const formatToLogsRPC = (eventLogs: EventLogs[]): LogsRPC[] => {
             transactionIndex: '0x0'
         } satisfies LogsRPC;
     });
-    return rpcEventLogs;
+};
+
+/**
+ * Convert the criteria topics into an array of topics.
+ *
+ * This because the criteria topics are not an array of topics in vechain,
+ * but they are directly enumerated (topic0, topic1, topic2, topic3, topic4).
+ *
+ * RPC standard requires an array of topics instead.
+ *
+ * @param criteriaTopicsArray - The criteria topics array.
+ * @param address - The address to filter.
+ */
+const _scatterArrayTopic = (
+    criteriaTopicsArray: string[],
+    address?: string
+): EventCriteria => {
+    return {
+        address,
+        topic0: criteriaTopicsArray[0] ?? undefined,
+        topic1: criteriaTopicsArray[1] ?? undefined,
+        topic2: criteriaTopicsArray[2] ?? undefined,
+        topic3: criteriaTopicsArray[3] ?? undefined,
+        topic4: criteriaTopicsArray[4] ?? undefined
+    };
 };
 
 /**
@@ -89,30 +113,11 @@ const getCriteriaSetForInput = (criteria: {
     if (criteria.topics !== undefined) criteriaTopics = criteria.topics;
 
     // Filtering considering the address and topics. For each address, we have to consider the topics
-    const finalEventLog: EventCriteria[] =
-        criteriaAddress.length > 0
-            ? criteriaAddress.map((addr: string) => {
-                  return {
-                      address: addr,
-                      topic0: criteriaTopics[0] ?? undefined,
-                      topic1: criteriaTopics[1] ?? undefined,
-                      topic2: criteriaTopics[2] ?? undefined,
-                      topic3: criteriaTopics[3] ?? undefined,
-                      topic4: criteriaTopics[4] ?? undefined
-                  };
-              })
-            : [
-                  {
-                      topic0: criteriaTopics[0] ?? undefined,
-                      topic1: criteriaTopics[1] ?? undefined,
-                      topic2: criteriaTopics[2] ?? undefined,
-                      topic3: criteriaTopics[3] ?? undefined,
-                      topic4: criteriaTopics[4] ?? undefined
-                  }
-              ];
-
-    // Filtering by only topics
-    return finalEventLog;
+    return criteriaAddress.length > 0
+        ? criteriaAddress.map((addr: string) => {
+              return _scatterArrayTopic(criteriaTopics, addr);
+          })
+        : [_scatterArrayTopic(criteriaTopics)];
 };
 
 export { formatToLogsRPC, getCriteriaSetForInput };
