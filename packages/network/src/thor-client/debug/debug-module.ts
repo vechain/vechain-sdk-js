@@ -29,6 +29,15 @@ class DebugModule {
         name?: TracerName,
         config?: TracerConfig<typeof name>
     ): Promise<TraceReturnType<typeof name>> {
+        // Validate target
+        // ... TODO ...
+
+        // Validate name
+        // ... TODO ...
+
+        // Validate config
+        // ... TODO ... (MOCK FOR NOW)
+
         // Parse target
         const parsedTarget =
             typeof target === 'string'
