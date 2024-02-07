@@ -4,15 +4,29 @@ import {
     type EIP1193RequestArguments
 } from '../eip1193';
 import { assert, DATA } from '@vechain/vechain-sdk-errors';
-import { Poll, type ThorClient } from '@vechain/vechain-sdk-network';
-import { RPC_METHODS, RPCMethodsMap } from '../utils';
+import {
+    type BlockDetail,
+    Poll,
+    type ThorClient
+} from '@vechain/vechain-sdk-network';
+import { ethGetLogs, RPC_METHODS, RPCMethodsMap } from '../utils';
 import { type Wallet } from '@vechain/vechain-sdk-wallet';
-import { subscriptionService } from '../utils/service/subscriptionService';
+import {
+    type FilterOptions,
+    type SubscriptionEvent,
+    type SubscriptionManager
+} from './types';
+import { POLLING_INTERVAL } from './constants';
 
 /**
  * Our core provider class for vechain
  */
 class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
+    public readonly subscriptionManager: SubscriptionManager = {
+        subscriptions: new Map(),
+        currentBlockNumber: 0
+    };
+
     /**
      * Constructor for VechainProvider
      *
@@ -48,38 +62,64 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         );
 
         // Get the method from the RPCMethodsMap and call it
-        return await RPCMethodsMap(this.thorClient, this.wallet)[args.method](
-            args.params as unknown[]
-        );
+        return await RPCMethodsMap(this.thorClient, this, this.wallet)[
+            args.method
+        ](args.params as unknown[]);
     }
 
     private startSubscriptionsPolling(): void {
         Poll.createEventPoll(async () => {
-            if (subscriptionService.subscriptions.includes('newHeads')) {
-                const block = await this.thorClient.blocks.getBlock(
-                    subscriptionService.currentBlockNumber
-                );
-                if (block !== undefined && block !== null) {
-                    subscriptionService.currentBlockNumber++;
-                    return block;
-                }
-            } else {
-                return null;
+            const data: SubscriptionEvent[] = [];
+
+            const nextBlock = await this.nextBlock();
+
+            if (
+                nextBlock !== null &&
+                this.subscriptionManager.subscriptions.has('newHeads')
+            ) {
+                data.push({ type: 'newBlock', data: nextBlock });
             }
-        }, 100)
-            .onData((newBlockData: unknown) => {
-                if (newBlockData === null || newBlockData === undefined) {
+
+            if (this.subscriptionManager.subscriptions.has('logs')) {
+                const logSubscription =
+                    this.subscriptionManager.subscriptions.get('logs');
+
+                const filterOptions: FilterOptions = {
+                    address: logSubscription?.address,
+                    fromBlock:
+                        this.subscriptionManager.currentBlockNumber.toString(),
+                    toBlock:
+                        this.subscriptionManager.currentBlockNumber.toString(),
+                    topics: logSubscription?.topics
+                };
+                const logs = await ethGetLogs(this.thorClient, [filterOptions]);
+                data.push({ type: 'logs', data: logs });
+            }
+
+            return data;
+        }, POLLING_INTERVAL)
+            .onData((data: SubscriptionEvent[]) => {
+                if (data.length === 0) {
                     return;
                 }
 
-                this.emit('message', {
-                    type: 'New block',
-                    data: {
-                        block: newBlockData
-                    }
-                });
+                this.emit('message', data);
             })
             .startListen();
+    }
+
+    private async nextBlock(): Promise<BlockDetail | null> {
+        let result: BlockDetail | null = null;
+        if (this.subscriptionManager.subscriptions.size > 0) {
+            const block = await this.thorClient.blocks.getBlock(
+                this.subscriptionManager.currentBlockNumber
+            );
+            if (block !== undefined && block !== null) {
+                this.subscriptionManager.currentBlockNumber++;
+                result = block;
+            }
+        }
+        return result;
     }
 }
 

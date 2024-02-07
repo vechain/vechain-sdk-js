@@ -1,8 +1,63 @@
 import { type vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
 
+/**
+ * Represents an event that occurs within a subscription context, containing the event's type and associated data.
+ */
 interface SubscriptionEvent {
+    /**
+     * The type of the event, typically used to distinguish between different kinds of events within a subscription service.
+     */
     readonly type: string;
+
+    /**
+     * The data associated with the event, which can be of any type. The structure of this data depends on the event type.
+     */
     readonly data: unknown;
+}
+
+/**
+ * Defines the options used to filter events in a subscription. These options can specify which events to include based on various blockchain parameters.
+ */
+interface FilterOptions {
+    /**
+     * The contract address or addresses to filter for events.
+     */
+    address?: string | string[];
+
+    /**
+     * The starting block number (inclusive) from which to begin filtering events.
+     */
+    fromBlock?: string;
+
+    /**
+     * The ending block number (inclusive) at which to stop filtering events.
+     */
+    toBlock?: string;
+
+    /**
+     * An array of topic identifiers to filter events. Each event must match all specified topics to be included.
+     */
+    topics?: string[];
+
+    /**
+     * The hash of a specific block. If defined, only events from this block are included.
+     */
+    blockhash?: string;
+}
+
+/**
+ * Manages subscriptions to blockchain events, keeping track of active subscriptions and the current block number.
+ */
+interface SubscriptionManager {
+    /**
+     * A collection of active subscriptions, identified by a unique string key, with each subscription potentially having its own filtering options.
+     */
+    subscriptions: Map<string, FilterOptions | undefined>;
+
+    /**
+     * The current block number that the subscription manager is aware of. This is used to track the latest block number in the blockchain context.
+     */
+    currentBlockNumber: number;
 }
 
 /**
@@ -84,4 +139,9 @@ interface ContractRunner {
     sendTransaction?: (tx: TransactionRequest) => Promise<TransactionResponse>;
 }
 
-export { type EventEmitterable, type SubscriptionEvent };
+export {
+    type EventEmitterable,
+    type SubscriptionEvent,
+    type SubscriptionManager,
+    type FilterOptions
+};

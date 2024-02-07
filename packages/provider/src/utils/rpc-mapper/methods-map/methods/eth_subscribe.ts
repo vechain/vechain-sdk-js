@@ -1,6 +1,8 @@
 import { type ThorClient } from '@vechain/vechain-sdk-network';
-import { subscriptionService } from '../../../service/subscriptionService';
-
+import {
+    type FilterOptions,
+    type VechainProvider
+} from '../../../../providers';
 enum SUBSCRIPTION_TYPE {
     NEW_HEADS = 'newHeads',
     LOGS = 'logs',
@@ -20,6 +22,7 @@ type ethSubscribeParams =
  *
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
+ * @param provider
  * @note:
  * * params[0]: ...
  * * params[1]: ...
@@ -27,15 +30,32 @@ type ethSubscribeParams =
  */
 const ethSubscribe = async (
     thorClient: ThorClient,
-    params: ethSubscribeParams
+    params: ethSubscribeParams,
+    provider?: VechainProvider
 ): Promise<void> => {
-    if (params[0] === SUBSCRIPTION_TYPE.NEW_HEADS) {
-        const bestBlock = await thorClient.blocks.getBlock('best');
-        if (bestBlock == null) {
-            throw new Error('Failed to get the best block');
+    if (provider === undefined) {
+        throw new Error('Provider is not defined');
+    }
+    // I check if some subscription is already active, if not I set a new starting point for the subscription
+    if (provider.subscriptionManager.subscriptions.size > 0) {
+        const block = await thorClient.blocks.getBlock(
+            provider.subscriptionManager.currentBlockNumber
+        );
+
+        if (block !== undefined && block !== null) {
+            provider.subscriptionManager.currentBlockNumber = block.number;
         }
-        subscriptionService.currentBlockNumber = bestBlock.number;
-        subscriptionService.subscriptions.push(params[0] as string);
+    }
+
+    if (params.includes(SUBSCRIPTION_TYPE.NEW_HEADS)) {
+        provider.subscriptionManager.subscriptions.set('newHeads', undefined);
+    }
+
+    if (params.includes(SUBSCRIPTION_TYPE.LOGS)) {
+        provider.subscriptionManager.subscriptions.set(
+            'logs',
+            params[1] as FilterOptions
+        );
     }
 
     await Promise.resolve(0);

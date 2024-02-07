@@ -74,6 +74,40 @@ describe('Vechain provider tests', () => {
             params: ['newHeads']
         });
 
+        let count = 0;
+        const messageReceived = new Promise((resolve) => {
+            provider.on('message', (message) => {
+                count++;
+
+                if (count === 5) {
+                    resolve(message);
+                    provider.destroy();
+                }
+            });
+        });
+
+        const message = (await messageReceived) as SubscriptionEvent[];
+
+        // Optionally, you can do assertions or other operations with the message
+        expect(message).toBeDefined();
+        expect(message[0].data).toBeDefined();
+        expect(message[0].type).toBe('newBlock');
+
+        // Compare the result with the expected value
+        expect(rpcCall).not.toBe('0x0');
+    }, 40000);
+
+    /**
+     * eth_getBalance RPC call test
+     */
+
+    test('Should be able to get to subscribe to the latest logs', async () => {
+        // Call RPC function
+        const rpcCall = await provider.request({
+            method: 'eth_subscribe',
+            params: ['logs', {}]
+        });
+
         const messageReceived = new Promise((resolve) => {
             provider.on('message', (message) => {
                 resolve(message);
@@ -81,12 +115,11 @@ describe('Vechain provider tests', () => {
             });
         });
 
-        const message = (await messageReceived) as SubscriptionEvent;
+        const message = (await messageReceived) as SubscriptionEvent[];
 
         // Optionally, you can do assertions or other operations with the message
         expect(message).toBeDefined();
-        expect(message.data).toBeDefined();
-        expect(message.type).toBe('New block');
+        expect(message[0].data).toBeDefined();
 
         // Compare the result with the expected value
         expect(rpcCall).not.toBe('0x0');
