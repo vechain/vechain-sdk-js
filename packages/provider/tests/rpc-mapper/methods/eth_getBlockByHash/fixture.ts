@@ -1,10 +1,10 @@
-import { InvalidDataTypeError } from '../../../../../errors/dist';
 import {
     blockWithTransactionsExpanded,
     blockWithTransactionsNotExpanded
 } from '../../../fixture';
 
 import { zeroBlock } from '../eth_getBlockByNumber/fixture';
+import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 
 /**
  * Test cases for eth_getBlockByHash RPC method

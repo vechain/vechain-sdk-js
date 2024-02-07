@@ -16,13 +16,10 @@ const evmMine = async (thorClient: ThorClient): Promise<BlocksRPC | null> => {
     try {
         // Get best block
         const bestBlock = await thorClient.blocks.getBestBlock();
-        let newBlock = null;
-        if (bestBlock != null) {
-            // Wait for new block
-            newBlock = await thorClient.blocks.waitForBlock(
-                bestBlock.number + 1
-            );
-        }
+        const newBlock =
+            bestBlock !== null
+                ? await thorClient.blocks.waitForBlock(bestBlock.number + 1)
+                : null;
 
         const chainId = (await RPCMethodsMap(thorClient)[
             RPC_METHODS.eth_chainId
