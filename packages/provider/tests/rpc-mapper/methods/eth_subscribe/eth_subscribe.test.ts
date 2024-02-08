@@ -1,6 +1,7 @@
-import { afterEach, beforeEach, describe, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
+import { VechainProvider } from '../../../../src';
 
 /**
  * RPC Mapper integration tests for 'eth_subscribe' method
@@ -9,23 +10,24 @@ import { testNetwork } from '../../../fixture';
  */
 describe('RPC Mapper - eth_subscribe method tests', () => {
     /**
-     * Thor client instance
+     * ThorClient and provider instances
      */
     let thorClient: ThorClient;
+    let provider: VechainProvider;
 
     /**
-     * Init thor client before each test
+     * Inti thor client and provider before each test
      */
     beforeEach(() => {
-        // Init thor client
         thorClient = new ThorClient(testNetwork);
+        provider = new VechainProvider(thorClient);
     });
 
     /**
-     * Destroy thor client after each test
+     * Destroy thor client and provider after each test
      */
     afterEach(() => {
-        thorClient.destroy();
+        provider.destroy();
     });
 
     /**
@@ -35,7 +37,15 @@ describe('RPC Mapper - eth_subscribe method tests', () => {
         /**
          * Positive case 1 - ... Description ...
          */
-        test('eth_subscribe - positive case 1', async () => {});
+        test('eth_subscribe - positive case 1', async () => {
+            // Call RPC function
+            const rpcCall = (await provider.request({
+                method: 'eth_subscribe',
+                params: ['newHeads']
+            })) as string;
+
+            expect(rpcCall.length).toEqual(32);
+        });
     });
 
     /**

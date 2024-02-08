@@ -1,18 +1,38 @@
 import { type vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
 
 /**
- * Represents an event that occurs within a subscription context, containing the event's type and associated data.
+ * Represents the parameters for a subscription.
+ * This interface includes all necessary details for managing a subscription.
+ */
+interface SubscriptionParams {
+    /**
+     * The unique identifier for the subscription.
+     * This string uniquely identifies the subscription instance.
+     */
+    readonly subscription: string;
+
+    /**
+     * The result associated with the subscription.
+     * This can be of any type and contains the data or outcome that the subscription yields.
+     */
+    readonly result: unknown;
+}
+
+/**
+ * Describes an event related to a subscription.
+ * This interface encapsulates the method invoked and the parameters associated with the subscription event.
  */
 interface SubscriptionEvent {
     /**
-     * The type of the event, typically used to distinguish between different kinds of events within a subscription service.
+     * The name of the method associated with the subscription event.
      */
-    readonly type: string;
+    readonly method: string;
 
     /**
-     * The data associated with the event, which can be of any type. The structure of this data depends on the event type.
+     * The parameters associated with the subscription event.
+     * This includes all necessary details such as the subscription identifier and the result.
      */
-    readonly data: unknown;
+    readonly params: SubscriptionParams;
 }
 
 /**
@@ -61,6 +81,11 @@ interface Subscription {
     options?: FilterOptions;
 }
 
+interface NewHeadsSubscription {
+    readonly subscriptionId: string;
+    readonly subscription: Subscription;
+}
+
 /**
  * Manages multiple subscriptions within a system, keeping track of active subscriptions and the current block number.
  */
@@ -73,7 +98,7 @@ interface SubscriptionManager {
     /**
      * An optional collection of subscriptions specifically for new block headers, indexed by a unique identifier.
      */
-    newHeadsSubscription?: Record<string, Subscription>;
+    newHeadsSubscription?: NewHeadsSubscription;
 
     /**
      * The most recent block number that has been processed or observed by the manager, serving as a point of reference for new events.

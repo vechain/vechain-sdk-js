@@ -18,7 +18,6 @@ import {
     type SubscriptionManager
 } from './types';
 import { POLLING_INTERVAL } from './constants';
-import { type LogsRPC } from '../utils/formatter/logs';
 
 /**
  * Our core provider class for vechain
@@ -84,62 +83,113 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
                 nextBlock !== null &&
                 this.subscriptionManager.newHeadsSubscription !== undefined
             ) {
-                data.push({ type: 'newBlock', data: nextBlock });
+                data.push({
+                    method: 'eth_subscription',
+                    params: {
+                        subscription:
+                            this.subscriptionManager.newHeadsSubscription
+                                .subscriptionId,
+                        result: nextBlock
+                    }
+                });
             }
 
             if (this.subscriptionManager.logSubscriptions.size > 0) {
                 const logs = await this.getLogsRPC();
-                logs.forEach((log) => {
-                    data.push({ type: 'logs', data: log });
-                });
+                data.push(...logs);
             }
 
             return data;
-        }, POLLING_INTERVAL);
-
-        this.pollInstance.onData((data: SubscriptionEvent[]) => {
-            if (data.length === 0) {
-                return;
+        }, POLLING_INTERVAL).onData(
+            (subscriptionEvents: SubscriptionEvent[]) => {
+                subscriptionEvents.forEach((event) =>
+                    this.emit('message', event)
+                );
             }
-
-            this.emit('message', data);
-        });
+        );
 
         this.pollInstance.startListen();
     }
 
-    private async getLogsRPC(): Promise<LogsRPC[][]> {
+    /**
+     * Fetches logs for all active log subscriptions managed by `subscriptionManager`.
+     * This method iterates over each log subscription, constructs filter options based on the
+     * subscription details, and then queries for logs using these filter options.
+     *
+     * Each log query is performed asynchronously, and the method waits for all queries to complete
+     * before returning. The result for each subscription is encapsulated in a `SubscriptionEvent`
+     * object, which includes the subscription ID and the fetched logs.
+     *
+     * This function is intended to be called when there's a need to update or fetch the latest
+     * logs for all active subscriptions, typically in response to a new block being mined or
+     * at regular intervals to keep subscription data up to date.
+     *
+     * @returns {Promise<SubscriptionEvent[]>} A promise that resolves to an array of `SubscriptionEvent`
+     * objects, each containing the subscription ID and the corresponding logs fetched for that
+     * subscription. The promise resolves to an empty array if there are no active log subscriptions.
+     */
+    private async getLogsRPC(): Promise<SubscriptionEvent[]> {
+        // Convert the logSubscriptions Map to an array of promises, each promise corresponds to a log fetch operation
         const promises = Array.from(
-            this.subscriptionManager.logSubscriptions.values()
-        ).map(async (subscription) => {
+            this.subscriptionManager.logSubscriptions.entries()
+        ).map(async ([subscriptionId, subscriptionDetails]) => {
+            // Construct filter options for the Ethereum logs query based on the subscription details
             const filterOptions: FilterOptions = {
-                address: subscription?.options?.address,
+                address: subscriptionDetails.options?.address, // Contract address to filter the logs by
                 fromBlock:
-                    this.subscriptionManager.currentBlockNumber.toString(),
-                toBlock: this.subscriptionManager.currentBlockNumber.toString(),
-                topics: subscription?.options?.topics
+                    this.subscriptionManager.currentBlockNumber.toString(), // Start block number (inclusive)
+                toBlock: this.subscriptionManager.currentBlockNumber.toString(), // End block number (inclusive)
+                topics: subscriptionDetails.options?.topics // Topics to filter the logs by
             };
 
-            return await ethGetLogs(this.thorClient, [filterOptions]);
+            // Fetch logs based on the filter options and construct a SubscriptionEvent object
+            return {
+                method: 'eth_subscription',
+                params: {
+                    subscription: subscriptionId, // Subscription ID
+                    result: await ethGetLogs(this.thorClient, [filterOptions]) // The actual log data fetched from Ethereum node
+                }
+            };
         });
 
+        // Wait for all log fetch operations to complete and return an array of SubscriptionEvent objects
         return await Promise.all(promises);
     }
 
+    /**
+     * Retrieves the details of the next block in the blockchain, if available.
+     * Increments the current block number tracked by `subscriptionManager` and returns the details of the newly fetched block.
+     *
+     * Only attempts to fetch the next block if there are active log subscriptions
+     * or if a new heads subscription exists. If the next block is successfully fetched,
+     * the current block number is incremented, and the block details are returned.
+     * Returns `null` if there are no subscriptions or the next block cannot be fetched.
+     *
+     * @returns {Promise<BlockDetail | null>} A promise that resolves to the details of the next block
+     * as a `BlockDetail` object if the block exists and can be fetched; otherwise, `null`.
+     */
     private async nextBlock(): Promise<BlockDetail | null> {
+        // Initialize result to null, indicating no block found initially
         let result: BlockDetail | null = null;
+
+        // Proceed only if there are active log subscriptions or a new heads subscription is present
         if (
             this.subscriptionManager.logSubscriptions.size > 0 ||
             this.subscriptionManager.newHeadsSubscription !== undefined
         ) {
+            // Fetch the block details for the current block number
             const block = await this.thorClient.blocks.getBlock(
                 this.subscriptionManager.currentBlockNumber
             );
+
+            // If the block is successfully fetched (not undefined or null), update the result and increment the block number
             if (block !== undefined && block !== null) {
-                this.subscriptionManager.currentBlockNumber++;
-                result = block;
+                this.subscriptionManager.currentBlockNumber++; // Move to the next block number
+                result = block; // Set the fetched block as the result
             }
         }
+
+        // Return the fetched block details or null if no block was fetched
         return result;
     }
 }

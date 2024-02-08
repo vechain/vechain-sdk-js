@@ -20,10 +20,7 @@ const ethUnsubscribe = async (
 
     const subscriptionId = params[0] as string;
 
-    if (
-        provider.subscriptionManager.newHeadsSubscription?.[subscriptionId] !==
-        undefined
-    ) {
+    if (provider.subscriptionManager.newHeadsSubscription !== undefined) {
         provider.subscriptionManager.newHeadsSubscription = undefined;
     } else {
         provider.subscriptionManager.logSubscriptions.delete(subscriptionId);

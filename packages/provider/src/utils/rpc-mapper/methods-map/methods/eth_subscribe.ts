@@ -52,7 +52,8 @@ const ethSubscribe = async (
 
     if (params.includes(SUBSCRIPTION_TYPE.NEW_HEADS)) {
         provider.subscriptionManager.newHeadsSubscription = {
-            subscriptionId: {
+            subscriptionId,
+            subscription: {
                 type: SUBSCRIPTION_TYPE.NEW_HEADS
             }
         };

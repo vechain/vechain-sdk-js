@@ -82,8 +82,8 @@ describe('Vechain provider tests', () => {
 
         // Optionally, you can do assertions or other operations with the message
         expect(message).toBeDefined();
-        expect(message[0].data).toBeDefined();
-        expect(message[0].type).toBe('newBlock');
+        expect(message.method).toBe('eth_subscription');
+        expect(message.params.subscription).toBeDefined();
 
         // Compare the result with the expected value
         expect(rpcCall).not.toBe('0x0');
@@ -108,7 +108,8 @@ describe('Vechain provider tests', () => {
 
         // Optionally, you can do assertions or other operations with the message
         expect(message).toBeDefined();
-        expect(message[0].data).toBeDefined();
+        expect(message.method).toBe('eth_subscription');
+        expect(message.params).toBeDefined();
 
         // Compare the result with the expected value
         expect(rpcCall).not.toBe('0x0');

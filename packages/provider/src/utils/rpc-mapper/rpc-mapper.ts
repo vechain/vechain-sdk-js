@@ -203,8 +203,8 @@ const RPCMethodsMap = (
             return await web3ClientVersion();
         },
 
-        [RPC_METHODS.eth_subscribe]: async (params) => {
-            await ethSubscribe(thorClient, params, provider);
+        [RPC_METHODS.eth_subscribe]: async (params): Promise<string> => {
+            return await ethSubscribe(thorClient, params, provider);
         },
 
         [RPC_METHODS.eth_unsubscribe]: async (params) => {

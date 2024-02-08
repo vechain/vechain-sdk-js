@@ -82,12 +82,12 @@ describe('Vechain provider tests', () => {
             });
         });
 
-        const message = (await messageReceived) as SubscriptionEvent[];
+        const message = (await messageReceived) as SubscriptionEvent;
 
         // Optionally, you can do assertions or other operations with the message
         expect(message).toBeDefined();
-        expect(message[0].data).toBeDefined();
-        expect(message[0].type).toBe('newBlock');
+        expect(message.method).toBe('eth_subscription');
+        expect(message.params).toBeDefined();
 
         // Compare the result with the expected value
         expect(rpcCall).not.toBe('0x0');
@@ -108,9 +108,8 @@ describe('Vechain provider tests', () => {
     }, 12000);
 
     /**
-     * eth_getBalance RPC call test
+     * eth_subscribe to the latest logs RPC call test
      */
-
     test('Should be able to get to subscribe to the latest logs', async () => {
         // Call RPC function
         const rpcCall = await provider.request({
@@ -126,7 +125,8 @@ describe('Vechain provider tests', () => {
 
         // Optionally, you can do assertions or other operations with the message
         expect(message).toBeDefined();
-        expect(message[0].data).toBeDefined();
+        expect(message.method).toBeDefined();
+        expect(message.params).toBeDefined();
 
         // Compare the result with the expected value
         expect(rpcCall).not.toBe('0x0');
