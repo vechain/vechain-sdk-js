@@ -4,6 +4,7 @@ import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { soloNetwork } from '../fixture';
 import { providerMethodsTestCasesSolo } from './fixture';
+import { waitForMessage } from './helpers';
 
 /**
  * Vechain provider tests - Solo Network
@@ -65,7 +66,7 @@ describe('Vechain provider tests', () => {
     });
 
     /**
-     * eth_getBalance RPC call test
+     * eth_subscribe latest blocks RPC call test
      */
     test('Should be able to get to subscribe to the latest blocks', async () => {
         // Call RPC function
@@ -122,14 +123,9 @@ describe('Vechain provider tests', () => {
             params: ['logs', {}]
         });
 
-        const messageReceived = new Promise((resolve) => {
-            provider.on('message', (message) => {
-                resolve(message);
-                provider.destroy();
-            });
-        });
+        const messageReceived = waitForMessage(provider);
 
-        const message = (await messageReceived) as SubscriptionEvent[];
+        const message = await messageReceived;
 
         // Optionally, you can do assertions or other operations with the message
         expect(message).toBeDefined();

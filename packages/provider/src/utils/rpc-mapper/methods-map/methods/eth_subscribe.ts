@@ -37,14 +37,12 @@ const ethSubscribe = async (
         throw new Error('Invalid subscription type');
     }
 
-    // I check if some subscription is already active, if not I set a new starting point for the subscription
+    // I check if some subscription is already active, if not I set a new starting block number for the subscription
     if (
         provider.subscriptionManager.logSubscriptions.size === 0 &&
         provider.subscriptionManager.newHeadsSubscription === undefined
     ) {
-        const block = await thorClient.blocks.getBlock(
-            provider.subscriptionManager.currentBlockNumber
-        );
+        const block = await thorClient.blocks.getBestBlock();
 
         if (block !== undefined && block !== null) {
             provider.subscriptionManager.currentBlockNumber = block.number;

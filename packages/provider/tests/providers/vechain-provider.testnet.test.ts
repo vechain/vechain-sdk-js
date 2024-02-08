@@ -5,6 +5,7 @@ import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../fixture';
 import { providerMethodsTestCasesTestnet } from './fixture';
 import { logsFixture } from '../rpc-mapper/methods/eth_getLogs/fixture';
+import { waitForMessage } from './helpers';
 
 /**
  * Vechain provider tests
@@ -66,6 +67,39 @@ describe('Vechain provider tests', () => {
     });
 
     /**
+     * eth_subscribe latest blocks RPC call test
+     */
+    test('Should be able to get to subscribe to the latest blocks', async () => {
+        // Call RPC function
+        const rpcCall = await provider.request({
+            method: 'eth_subscribe',
+            params: ['newHeads']
+        });
+
+        let count = 0;
+        const messageReceived = new Promise((resolve) => {
+            provider.on('message', (message) => {
+                count++;
+
+                if (count === 2) {
+                    resolve(message);
+                    provider.destroy();
+                }
+            });
+        });
+
+        const message = (await messageReceived) as SubscriptionEvent[];
+
+        // Optionally, you can do assertions or other operations with the message
+        expect(message).toBeDefined();
+        expect(message[0].data).toBeDefined();
+        expect(message[0].type).toBe('newBlock');
+
+        // Compare the result with the expected value
+        expect(rpcCall).not.toBe('0x0');
+    }, 12000);
+
+    /**
      * eth_getBalance RPC call test
      */
 
@@ -76,20 +110,13 @@ describe('Vechain provider tests', () => {
             params: ['logs', logsFixture[0].input]
         });
 
-        const messageReceived = new Promise((resolve) => {
-            provider.on('message', (message) => {
-                resolve(message);
-                provider.destroy();
-            });
-        });
+        const messageReceived = waitForMessage(provider);
 
-        const message = (await messageReceived) as SubscriptionEvent[];
+        const message = await messageReceived;
 
         // Optionally, you can do assertions or other operations with the message
         expect(message).toBeDefined();
         expect(message[0].data).toBeDefined();
-
-        console.log(message[0]);
 
         // Compare the result with the expected value
         expect(rpcCall).not.toBe('0x0');
