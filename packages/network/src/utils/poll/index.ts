@@ -7,5 +7,5 @@ import { createEventPoll, EventPoll } from './event';
 // Types
 export * from './types.d';
 
-const Poll = { SyncPoll, EventPoll, createEventPoll };
-export { Poll };
+const Poll = { SyncPoll, createEventPoll };
+export { Poll, EventPoll };

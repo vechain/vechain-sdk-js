@@ -6,6 +6,7 @@ import {
 import { assert, DATA } from '@vechain/vechain-sdk-errors';
 import {
     type BlockDetail,
+    type EventPoll,
     Poll,
     type ThorClient
 } from '@vechain/vechain-sdk-network';
@@ -28,6 +29,8 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         currentBlockNumber: 0
     };
 
+    private pollInstance?: EventPoll<SubscriptionEvent[]>;
+
     /**
      * Constructor for VechainProvider
      *
@@ -49,6 +52,9 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
      */
     public destroy(): void {
         this.thorClient.destroy();
+        if (this.pollInstance !== undefined) {
+            this.pollInstance.stopListen();
+        }
     }
 
     public async request(args: EIP1193RequestArguments): Promise<unknown> {
@@ -69,7 +75,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
     }
 
     private startSubscriptionsPolling(): void {
-        Poll.createEventPoll(async () => {
+        this.pollInstance = Poll.createEventPoll(async () => {
             const data: SubscriptionEvent[] = [];
 
             const nextBlock = await this.nextBlock();
@@ -89,15 +95,17 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
             }
 
             return data;
-        }, POLLING_INTERVAL)
-            .onData((data: SubscriptionEvent[]) => {
-                if (data.length === 0) {
-                    return;
-                }
+        }, POLLING_INTERVAL);
 
-                this.emit('message', data);
-            })
-            .startListen();
+        this.pollInstance.onData((data: SubscriptionEvent[]) => {
+            if (data.length === 0) {
+                return;
+            }
+
+            this.emit('message', data);
+        });
+
+        this.pollInstance.startListen();
     }
 
     private async getLogsRPC(): Promise<LogsRPC[][]> {

@@ -75,15 +75,10 @@ describe('Vechain provider tests', () => {
             params: ['newHeads']
         });
 
-        let count = 0;
         const messageReceived = new Promise((resolve) => {
             provider.on('message', (message) => {
-                count++;
-
-                if (count === 2) {
-                    resolve(message);
-                    provider.destroy();
-                }
+                resolve(message);
+                provider.destroy();
             });
         });
 
@@ -126,6 +121,8 @@ describe('Vechain provider tests', () => {
         const messageReceived = waitForMessage(provider);
 
         const message = await messageReceived;
+
+        provider.destroy();
 
         // Optionally, you can do assertions or other operations with the message
         expect(message).toBeDefined();

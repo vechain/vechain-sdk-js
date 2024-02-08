@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { type SubscriptionEvent, VechainProvider } from '../../src';
+import { VechainProvider } from '../../src';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../fixture';
@@ -76,19 +76,9 @@ describe('Vechain provider tests', () => {
             params: ['newHeads']
         });
 
-        let count = 0;
-        const messageReceived = new Promise((resolve) => {
-            provider.on('message', (message) => {
-                count++;
+        const messageReceived = waitForMessage(provider);
 
-                if (count === 2) {
-                    resolve(message);
-                    provider.destroy();
-                }
-            });
-        });
-
-        const message = (await messageReceived) as SubscriptionEvent[];
+        const message = await messageReceived;
 
         // Optionally, you can do assertions or other operations with the message
         expect(message).toBeDefined();
@@ -113,6 +103,8 @@ describe('Vechain provider tests', () => {
         const messageReceived = waitForMessage(provider);
 
         const message = await messageReceived;
+
+        provider.destroy();
 
         // Optionally, you can do assertions or other operations with the message
         expect(message).toBeDefined();
