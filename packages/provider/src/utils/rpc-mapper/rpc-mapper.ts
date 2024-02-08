@@ -208,7 +208,7 @@ const RPCMethodsMap = (
         },
 
         [RPC_METHODS.eth_unsubscribe]: async (params) => {
-            await ethUnsubscribe(thorClient, params);
+            await ethUnsubscribe(params, provider);
         },
 
         [RPC_METHODS.debug_traceTransaction]: async (params) => {

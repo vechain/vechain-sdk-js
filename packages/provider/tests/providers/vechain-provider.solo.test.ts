@@ -79,7 +79,7 @@ describe('Vechain provider tests', () => {
             provider.on('message', (message) => {
                 count++;
 
-                if (count === 5) {
+                if (count === 2) {
                     resolve(message);
                     provider.destroy();
                 }
@@ -95,7 +95,21 @@ describe('Vechain provider tests', () => {
 
         // Compare the result with the expected value
         expect(rpcCall).not.toBe('0x0');
-    }, 40000);
+    }, 12000);
+
+    /**
+     * eth_getSubscribe invalid call
+     */
+    test('Should not be able to subscribe since the subscription type is invalid', async () => {
+        // Call RPC function
+        await expect(
+            async () =>
+                await provider.request({
+                    method: 'eth_subscribe',
+                    params: ['invalid']
+                })
+        ).rejects.toThrowError('Invalid subscription type');
+    }, 12000);
 
     /**
      * eth_getBalance RPC call test

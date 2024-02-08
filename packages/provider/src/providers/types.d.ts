@@ -46,16 +46,37 @@ interface FilterOptions {
 }
 
 /**
- * Manages subscriptions to blockchain events, keeping track of active subscriptions and the current block number.
+ * Represents a subscription to a specific type of data or event within a system.
+ * This could be used for subscribing to updates or changes in the data.
+ */
+interface Subscription {
+    /**
+     * The type of subscription, indicating what kind of data or events this subscription pertains to.
+     */
+    type: string;
+
+    /**
+     * Optional configuration options for the subscription that can filter or modify the data received.
+     */
+    options?: FilterOptions;
+}
+
+/**
+ * Manages multiple subscriptions within a system, keeping track of active subscriptions and the current block number.
  */
 interface SubscriptionManager {
     /**
-     * A collection of active subscriptions, identified by a unique string key, with each subscription potentially having its own filtering options.
+     * A map of subscription identifiers to Subscription objects, keeping track of all log-related subscriptions.
      */
-    subscriptions: Map<string, FilterOptions | undefined>;
+    logSubscriptions: Map<string, Subscription>;
 
     /**
-     * The current block number that the subscription manager is aware of. This is used to track the latest block number in the blockchain context.
+     * An optional collection of subscriptions specifically for new block headers, indexed by a unique identifier.
+     */
+    newHeadsSubscription?: Record<string, Subscription>;
+
+    /**
+     * The most recent block number that has been processed or observed by the manager, serving as a point of reference for new events.
      */
     currentBlockNumber: number;
 }

@@ -17,13 +17,14 @@ import {
     type SubscriptionManager
 } from './types';
 import { POLLING_INTERVAL } from './constants';
+import { type LogsRPC } from '../utils/formatter/logs';
 
 /**
  * Our core provider class for vechain
  */
 class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
     public readonly subscriptionManager: SubscriptionManager = {
-        subscriptions: new Map(),
+        logSubscriptions: new Map(),
         currentBlockNumber: 0
     };
 
@@ -75,25 +76,16 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
 
             if (
                 nextBlock !== null &&
-                this.subscriptionManager.subscriptions.has('newHeads')
+                this.subscriptionManager.newHeadsSubscription !== undefined
             ) {
                 data.push({ type: 'newBlock', data: nextBlock });
             }
 
-            if (this.subscriptionManager.subscriptions.has('logs')) {
-                const logSubscription =
-                    this.subscriptionManager.subscriptions.get('logs');
-
-                const filterOptions: FilterOptions = {
-                    address: logSubscription?.address,
-                    fromBlock:
-                        this.subscriptionManager.currentBlockNumber.toString(),
-                    toBlock:
-                        this.subscriptionManager.currentBlockNumber.toString(),
-                    topics: logSubscription?.topics
-                };
-                const logs = await ethGetLogs(this.thorClient, [filterOptions]);
-                data.push({ type: 'logs', data: logs });
+            if (this.subscriptionManager.logSubscriptions.size > 0) {
+                const logs = await this.getLogsRPC();
+                logs.forEach((log) => {
+                    data.push({ type: 'logs', data: log });
+                });
             }
 
             return data;
@@ -108,9 +100,30 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
             .startListen();
     }
 
+    private async getLogsRPC(): Promise<LogsRPC[][]> {
+        const promises = Array.from(
+            this.subscriptionManager.logSubscriptions.values()
+        ).map(async (subscription) => {
+            const filterOptions: FilterOptions = {
+                address: subscription?.options?.address,
+                fromBlock:
+                    this.subscriptionManager.currentBlockNumber.toString(),
+                toBlock: this.subscriptionManager.currentBlockNumber.toString(),
+                topics: subscription?.options?.topics
+            };
+
+            return await ethGetLogs(this.thorClient, [filterOptions]);
+        });
+
+        return await Promise.all(promises);
+    }
+
     private async nextBlock(): Promise<BlockDetail | null> {
         let result: BlockDetail | null = null;
-        if (this.subscriptionManager.subscriptions.size > 0) {
+        if (
+            this.subscriptionManager.logSubscriptions.size > 0 ||
+            this.subscriptionManager.newHeadsSubscription !== undefined
+        ) {
             const block = await this.thorClient.blocks.getBlock(
                 this.subscriptionManager.currentBlockNumber
             );

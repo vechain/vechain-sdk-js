@@ -3,19 +3,13 @@ import {
     type FilterOptions,
     type VechainProvider
 } from '../../../../providers';
+import { subscriptionHelper } from '../../../helpers';
 enum SUBSCRIPTION_TYPE {
     NEW_HEADS = 'newHeads',
-    LOGS = 'logs',
-    NEW_PENDING_TRANSACTIONS = 'newPendingTransactions',
-    SYNCING = 'syncing'
+    LOGS = 'logs'
 }
 
-type ethSubscribeParams =
-    | [
-          'newHeads' | 'logs' | 'newPendingTransactions' | 'syncing',
-          string | string[]
-      ]
-    | unknown[];
+type ethSubscribeParams = [SUBSCRIPTION_TYPE, string | string[]] | unknown[];
 
 /**
  * RPC Method eth_subscribe implementation
@@ -32,12 +26,22 @@ const ethSubscribe = async (
     thorClient: ThorClient,
     params: ethSubscribeParams,
     provider?: VechainProvider
-): Promise<void> => {
+): Promise<string> => {
     if (provider === undefined) {
         throw new Error('Provider is not defined');
     }
+    if (
+        params[0] !== SUBSCRIPTION_TYPE.NEW_HEADS &&
+        params[0] !== SUBSCRIPTION_TYPE.LOGS
+    ) {
+        throw new Error('Invalid subscription type');
+    }
+
     // I check if some subscription is already active, if not I set a new starting point for the subscription
-    if (provider.subscriptionManager.subscriptions.size > 0) {
+    if (
+        provider.subscriptionManager.logSubscriptions.size === 0 &&
+        provider.subscriptionManager.newHeadsSubscription === undefined
+    ) {
         const block = await thorClient.blocks.getBlock(
             provider.subscriptionManager.currentBlockNumber
         );
@@ -46,19 +50,23 @@ const ethSubscribe = async (
             provider.subscriptionManager.currentBlockNumber = block.number;
         }
     }
+    const subscriptionId = subscriptionHelper.generateRandomHex(32);
 
     if (params.includes(SUBSCRIPTION_TYPE.NEW_HEADS)) {
-        provider.subscriptionManager.subscriptions.set('newHeads', undefined);
+        provider.subscriptionManager.newHeadsSubscription = {
+            subscriptionId: {
+                type: SUBSCRIPTION_TYPE.NEW_HEADS
+            }
+        };
     }
 
     if (params.includes(SUBSCRIPTION_TYPE.LOGS)) {
-        provider.subscriptionManager.subscriptions.set(
-            'logs',
-            params[1] as FilterOptions
-        );
+        provider.subscriptionManager.logSubscriptions.set(subscriptionId, {
+            type: SUBSCRIPTION_TYPE.LOGS,
+            options: params[1] as FilterOptions
+        });
     }
-
-    await Promise.resolve(0);
+    return subscriptionId;
 };
 
 export { ethSubscribe };
