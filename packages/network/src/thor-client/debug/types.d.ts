@@ -20,6 +20,7 @@ import {
     type UnigramNameConfig,
     type UnigramNameReturnType
 } from './types-by-name';
+import { type SimulateTransactionOptions } from '../transactions';
 
 /**
  * Type for target of TraceTransactionClause.
@@ -122,9 +123,39 @@ type TraceReturnType<TraceNameType extends TracerName | undefined> =
                               ? DefaultNameReturnType
                               : never;
 
+/**
+ * Type for input for trace contract call - target.
+ */
+interface ContractCallTraceContactInfoInput {
+    /**
+     * The recipient of the call. Null indicates contract deployment.
+     */
+    to?: string | null;
+
+    /**
+     * The input data for the contract call.
+     */
+    data?: string;
+
+    /**
+     * The amount of token to be transferred.
+     */
+    value?: string;
+}
+
+/**
+ * Type for input for trace contract call.
+ */
+type ContractCallTraceTransactionOptionsInput = Omit<
+    SimulateTransactionOptions,
+    'revision'
+>;
+
 export {
     type TransactionTraceTarget,
     type TracerName,
     type TracerConfig,
-    type TraceReturnType
+    type TraceReturnType,
+    type ContractCallTraceContactInfoInput,
+    type ContractCallTraceTransactionOptionsInput
 };
