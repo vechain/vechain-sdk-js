@@ -24,16 +24,20 @@ import {
 /**
  * Type for target of TraceTransactionClause.
  */
-type TransactionTraceTarget =
-    | string
-    | {
-          blockID: string;
-          /**
-           * Transaction ID or Transaction index.
-           */
-          transaction: number | string;
-          clauseIndex: number;
-      };
+interface TransactionTraceTarget {
+    /**
+     * Block ID.
+     */
+    blockID: string;
+    /**
+     * Transaction ID or Transaction index.
+     */
+    transaction: number | string;
+    /**
+     * Clause index.
+     */
+    clauseIndex: number;
+}
 
 /**
  * TracerName is the name of the tracer to use.

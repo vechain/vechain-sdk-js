@@ -1,6 +1,11 @@
-import { afterEach, beforeEach, describe, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { testNetwork } from '../../fixture';
 import { ThorClient } from '../../../src';
+import {
+    firstTransactionTestnetFixture,
+    traceTransactionClauseTestnet
+} from './fixture';
+import { type TracerName } from '../../../src/thor-client/debug';
 
 /**
  * ThorClient class tests
@@ -26,16 +31,74 @@ describe('ThorClient - Debug Module', () => {
      */
     describe('traceTransactionClause', () => {
         /**
+         * Test a result of a transaction clause for each kind of trace name
+         */
+        (
+            [
+                '',
+                '4byte',
+                'call',
+                'noop',
+                'prestate',
+                'unigram',
+                'bigram',
+                'trigram',
+                'evmdis',
+                'opcount',
+                null
+            ] as TracerName[]
+        ).forEach((traceName: TracerName) => {
+            test(`traceTransactionClause - ${traceName}`, async () => {
+                const result = await thorClient.debug.traceTransactionClause(
+                    {
+                        blockID: firstTransactionTestnetFixture.blockID,
+                        transaction: firstTransactionTestnetFixture.transaction,
+                        clauseIndex: firstTransactionTestnetFixture.clauseIndex
+                    },
+                    traceName
+                );
+                expect(result).toBeDefined();
+            });
+        });
+
+        /**
          * traceTransactionClause - correct cases
          */
-        test('traceTransactionClause', async () => {
-            const traces = await thorClient.debug.traceTransactionClause({
-                blockID:
-                    '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
-                transaction: 0,
-                clauseIndex: 0
-            });
-            console.log(traces);
-        });
+        traceTransactionClauseTestnet.positiveCases.forEach(
+            (positiveTestCase) => {
+                test(positiveTestCase.testName, async () => {
+                    const result =
+                        await thorClient.debug.traceTransactionClause(
+                            {
+                                blockID: positiveTestCase.blockID,
+                                transaction: positiveTestCase.transaction,
+                                clauseIndex: positiveTestCase.clauseIndex
+                            },
+                            positiveTestCase.name as TracerName | undefined
+                        );
+                    expect(result).toEqual(positiveTestCase.expected);
+                });
+            }
+        );
+
+        /**
+         * traceTransactionClause - negative cases
+         */
+        traceTransactionClauseTestnet.negativeCases.forEach(
+            (negativeTestCase) => {
+                test(negativeTestCase.testName, async () => {
+                    await expect(
+                        thorClient.debug.traceTransactionClause(
+                            {
+                                blockID: negativeTestCase.blockID,
+                                transaction: negativeTestCase.transaction,
+                                clauseIndex: negativeTestCase.clauseIndex
+                            },
+                            negativeTestCase.name as TracerName | undefined
+                        )
+                    ).rejects.toThrow(negativeTestCase.expectedError);
+                });
+            }
+        );
     });
 });

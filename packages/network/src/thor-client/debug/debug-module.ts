@@ -6,6 +6,8 @@ import {
     type TransactionTraceTarget
 } from './types';
 import { thorest } from '../../utils';
+import { assert, DATA } from '@vechain/vechain-sdk-errors';
+import { dataUtils } from '@vechain/vechain-sdk-core';
 
 /** The `DebugModule` class encapsulates functionality to handle Debug
  * on the VechainThor blockchain.
@@ -29,20 +31,40 @@ class DebugModule {
         name?: TracerName,
         config?: TracerConfig<typeof name>
     ): Promise<TraceReturnType<typeof name>> {
-        // Validate target
-        // ... TODO ...
+        // Validate target - blockID
+        assert(
+            dataUtils.isThorId(target.blockID, true),
+            DATA.INVALID_DATA_TYPE,
+            `Invalid block ID '${target.blockID}' given as input for traceTransactionClause.`,
+            { blockId: target.blockID }
+        );
 
-        // Validate name
-        // ... TODO ...
+        // Validate target - transaction
+        if (typeof target.transaction === 'string')
+            assert(
+                dataUtils.isThorId(target.transaction, true),
+                DATA.INVALID_DATA_TYPE,
+                `Invalid transaction id '${target.transaction}' given as input for traceTransactionClause.`,
+                { transaction: target.transaction }
+            );
+        else
+            assert(
+                target.transaction >= 0,
+                DATA.INVALID_DATA_TYPE,
+                `Invalid transaction index '${target.transaction}' given as input for traceTransactionClause.`,
+                { transaction: target.transaction }
+            );
 
-        // Validate config
-        // ... TODO ... (MOCK FOR NOW)
+        // Validate target - clauseIndex
+        assert(
+            target.clauseIndex >= 0,
+            DATA.INVALID_DATA_TYPE,
+            `Invalid clause index '${target.clauseIndex}' given as input for traceTransactionClause.`,
+            { clauseIndex: target.clauseIndex }
+        );
 
         // Parse target
-        const parsedTarget =
-            typeof target === 'string'
-                ? target
-                : `${target.blockID}/${target.transaction}/${target.clauseIndex}`;
+        const parsedTarget = `${target.blockID}/${target.transaction}/${target.clauseIndex}`;
 
         // Send request
         return (await this.thor.httpClient.http(
