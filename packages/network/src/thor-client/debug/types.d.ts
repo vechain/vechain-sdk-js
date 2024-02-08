@@ -42,6 +42,7 @@ interface TransactionTraceTarget {
 
 /**
  * TracerName is the name of the tracer to use.
+ *
  * It determines Output and Input configuration.
  *
  * An empty name stands for the default struct logger tracer.
@@ -61,7 +62,11 @@ type TracerName =
 
 /**
  * The configuration of the tracer.
+ *
+ * Used for traceTransactionClause and traceContractCall functions.
+ *
  * It is specific to the name of the tracer.
+ *
  * @see{TracerName}
  */
 type TracerConfig<TraceNameType extends TracerName | undefined> =
@@ -93,7 +98,11 @@ type TracerConfig<TraceNameType extends TracerName | undefined> =
 
 /**
  * The return type of the tracer.
+ *
+ * Used for traceTransactionClause and traceContractCall functions.
+ *
  * It is specific to the name of the tracer.
+ *
  * @see{TracerName}
  */
 type TraceReturnType<TraceNameType extends TracerName | undefined> =
@@ -124,9 +133,9 @@ type TraceReturnType<TraceNameType extends TracerName | undefined> =
                               : never;
 
 /**
- * Type for input for trace contract call - target.
+ * Type for input for trace contract call - target contract.
  */
-interface ContractCallTraceContactInfoInput {
+interface ContractCallTraceContractTargetInput {
     /**
      * The recipient of the call. Null indicates contract deployment.
      */
@@ -144,7 +153,7 @@ interface ContractCallTraceContactInfoInput {
 }
 
 /**
- * Type for input for trace contract call.
+ * Type for input for trace contract call - transaction options.
  */
 type ContractCallTraceTransactionOptionsInput = Omit<
     SimulateTransactionOptions,
@@ -156,6 +165,6 @@ export {
     type TracerName,
     type TracerConfig,
     type TraceReturnType,
-    type ContractCallTraceContactInfoInput,
+    type ContractCallTraceContractTargetInput,
     type ContractCallTraceTransactionOptionsInput
 };
