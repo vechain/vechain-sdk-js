@@ -1,32 +1,35 @@
-import { type ThorClient } from '@vechain/vechain-sdk-network';
-import { buildError, FUNCTION } from '@vechain/vechain-sdk-errors';
+import type { VechainProvider } from '../../../../providers';
 
 /**
  * RPC Method eth_unsubscribe implementation
  *
- * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
+ * @param provider - The provider instance.
  * @note:
  * * params[0]: ...
  * * params[1]: ...
  * * params[n]: ...
  */
 const ethUnsubscribe = async (
-    thorClient: ThorClient,
-    params: unknown[]
+    params: unknown[],
+    provider?: VechainProvider
 ): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
+    if (provider === undefined) {
+        throw new Error('Provider is not defined');
+    }
 
-    // Not implemented yet
-    throw buildError(
-        FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_unsubscribe" not not implemented yet',
-        {
-            params,
-            thorClient
-        }
-    );
+    const subscriptionId = params[0] as string;
+
+    if (
+        provider.subscriptionManager.newHeadsSubscription?.[subscriptionId] !==
+        undefined
+    ) {
+        provider.subscriptionManager.newHeadsSubscription = undefined;
+    } else {
+        provider.subscriptionManager.logSubscriptions.delete(subscriptionId);
+    }
+
+    await Promise.resolve();
 };
 
 export { ethUnsubscribe };

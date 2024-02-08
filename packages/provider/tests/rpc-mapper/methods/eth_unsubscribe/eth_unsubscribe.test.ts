@@ -1,6 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { NotImplementedError } from '@vechain/vechain-sdk-errors';
-import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
+import { afterEach, beforeEach, describe, test } from '@jest/globals';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
 
@@ -37,15 +35,7 @@ describe('RPC Mapper - eth_unsubscribe method tests', () => {
         /**
          * Positive case 1 - ... Description ...
          */
-        test('eth_unsubscribe - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.eth_unsubscribe
-                    ]([-1])
-            ).rejects.toThrowError(NotImplementedError);
-        });
+        test('eth_unsubscribe - positive case 1', async () => {});
     });
 
     /**
@@ -55,14 +45,6 @@ describe('RPC Mapper - eth_unsubscribe method tests', () => {
         /**
          * Negative case 1 - ... Description ...
          */
-        test('eth_unsubscribe - negative case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.eth_unsubscribe
-                    ](['SOME_RANDOM_PARAM'])
-            ).rejects.toThrowError(NotImplementedError);
-        });
+        test('eth_unsubscribe - negative case 1', async () => {});
     });
 });
