@@ -11,8 +11,8 @@ type PreStateNameReturnType = Record<
     {
         balance: string;
         energy: string;
-        code: string;
-        storage: Record<string, string>;
+        code?: string;
+        storage?: Record<string, string>;
     }
 >;
 

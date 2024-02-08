@@ -13,7 +13,8 @@ interface CallNameReturnType {
     to: string;
     input: string;
     output: string;
-    calls: Array<{
+    // Trace clause type (/debug/tracers endpoint)
+    calls?: Array<{
         from: string;
         gas: string;
         gasUsed: string;
@@ -22,6 +23,9 @@ interface CallNameReturnType {
         output: string;
         type: string;
     }>;
+    // Trace contract type (/debug/tracers/call endpoint)
+    value?: string;
+    type?: string;
 }
 
 export { type CallNameConfig, type CallNameReturnType };
