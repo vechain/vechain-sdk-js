@@ -160,11 +160,63 @@ type ContractCallTraceTransactionOptionsInput = Omit<
     'revision'
 >;
 
+/**
+ * Type for input options
+ * for retrieve storage range function
+ */
+interface RetrieveStorageRangeInputOptions {
+    /**
+     * The address of the contract/ account to be traced.
+     */
+    address?: string;
+
+    /**
+     * The start key of the storage range.
+     * Default is 0x0000000000000000000000000000000000000000000000000000000000000000.
+     */
+    keyStart?: string;
+
+    /**
+     * The maximum number of results to be returned. Default is 1000.
+     */
+    maxResult?: number;
+}
+
+/**
+ * Return type for retrieve storage range function
+ */
+interface RetrieveStorageRangeReturnType {
+    /**
+     * The next key to be used for the next retrieve storage range call.
+     */
+    nextKey: string | null;
+
+    /**
+     * The data is non-nullable, but an empty object is returned if no data is found.
+     */
+    storage: Record<
+        string,
+        {
+            /**
+             * Storage key.
+             */
+            key: string;
+
+            /**
+             * Storage value.
+             */
+            value: string;
+        }
+    >;
+}
+
 export {
     type TransactionTraceTarget,
     type TracerName,
     type TracerConfig,
     type TraceReturnType,
     type ContractCallTraceContractTargetInput,
-    type ContractCallTraceTransactionOptionsInput
+    type ContractCallTraceTransactionOptionsInput,
+    type RetrieveStorageRangeInputOptions,
+    type RetrieveStorageRangeReturnType
 };

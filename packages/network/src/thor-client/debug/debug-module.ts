@@ -2,6 +2,8 @@ import { type ThorClient } from '../thor-client';
 import {
     type ContractCallTraceContractTargetInput,
     type ContractCallTraceTransactionOptionsInput,
+    type RetrieveStorageRangeInputOptions,
+    type RetrieveStorageRangeReturnType,
     type TracerConfig,
     type TraceReturnType,
     type TracerName,
@@ -32,6 +34,8 @@ class DebugModule {
      * * target - The target of the tracer. It is a combination of blockID, transaction (transaction ID or index into block), and clauseIndex.
      * * config - The configuration of the tracer. It is specific to the name of the tracer.
      * @param name - The name of the tracer to use. It determines Output and Input configuration.
+     *
+     * @throws{InvalidDataTypeError} - If the input is invalid.
      */
     public async traceTransactionClause(
         input: {
@@ -40,37 +44,8 @@ class DebugModule {
         },
         name?: TracerName
     ): Promise<TraceReturnType<typeof name>> {
-        // Validate target - blockID
-        assert(
-            dataUtils.isThorId(input.target.blockID, true),
-            DATA.INVALID_DATA_TYPE,
-            `Invalid block ID '${input.target.blockID}' given as input for traceTransactionClause.`,
-            { blockId: input.target.blockID }
-        );
-
-        // Validate target - transaction
-        if (typeof input.target.transaction === 'string')
-            assert(
-                dataUtils.isThorId(input.target.transaction, true),
-                DATA.INVALID_DATA_TYPE,
-                `Invalid transaction id '${input.target.transaction}' given as input for traceTransactionClause.`,
-                { transaction: input.target.transaction }
-            );
-        else
-            assert(
-                input.target.transaction >= 0,
-                DATA.INVALID_DATA_TYPE,
-                `Invalid transaction index '${input.target.transaction}' given as input for traceTransactionClause.`,
-                { transaction: input.target.transaction }
-            );
-
-        // Validate target - clauseIndex
-        assert(
-            input.target.clauseIndex >= 0,
-            DATA.INVALID_DATA_TYPE,
-            `Invalid clause index '${input.target.clauseIndex}' given as input for traceTransactionClause.`,
-            { clauseIndex: input.target.clauseIndex }
-        );
+        // Validate target. If invalid, assert
+        this.validateTarget(input.target, 'traceTransactionClause');
 
         // Parse target
         const parsedTarget = `${input.target.blockID}/${input.target.transaction}/${input.target.clauseIndex}`;
@@ -102,6 +77,8 @@ class DebugModule {
      * * config - The configuration of the tracer. It is specific to the name of the tracer.
      * * transactionOptions - The transaction options.
      * @param name - The name of the tracer to use. It determines Output and Input configuration.
+     *
+     * @throws{InvalidDataTypeError} - If the input is invalid.
      */
     public async traceContractCall(
         input: {
@@ -163,6 +140,80 @@ class DebugModule {
                 headers: {}
             }
         )) as TraceReturnType<typeof name>;
+    }
+
+    public async retrieveStorageRange(input: {
+        target: TransactionTraceTarget;
+        options?: RetrieveStorageRangeInputOptions;
+    }): Promise<RetrieveStorageRangeReturnType> {
+        // Validate target. If invalid, assert
+        this.validateTarget(input.target, 'retrieveStorageRange');
+
+        // Parse target
+        const parsedTarget = `${input.target.blockID}/${input.target.transaction}/${input.target.clauseIndex}`;
+
+        // Send request
+        return (await this.thor.httpClient.http(
+            'POST',
+            thorest.debug.post.RETRIEVE_STORAGE_RANGE(),
+            {
+                query: {},
+                body: {
+                    target: parsedTarget,
+                    address: input.options?.address,
+                    keyStart: input.options?.keyStart,
+                    maxResult: input.options?.maxResult
+                },
+                headers: {}
+            }
+        )) as RetrieveStorageRangeReturnType;
+    }
+
+    /**
+     * Validate target of traceTransactionClause and retrieveStorageRange.
+     *
+     * @param target - Target of traceTransactionClause and retrieveStorageRange to validate.
+     * @param functionName - The name of the function.
+     *
+     * @private
+     *
+     * @throws{InvalidDataTypeError} - If the input is invalid.
+     */
+    private validateTarget(
+        target: TransactionTraceTarget,
+        functionName: string
+    ): void {
+        // Validate target - blockID
+        assert(
+            dataUtils.isThorId(target.blockID, true),
+            DATA.INVALID_DATA_TYPE,
+            `Invalid block ID '${target.blockID}' given as input for ${functionName}.`,
+            { blockId: target.blockID }
+        );
+
+        // Validate target - transaction
+        if (typeof target.transaction === 'string')
+            assert(
+                dataUtils.isThorId(target.transaction, true),
+                DATA.INVALID_DATA_TYPE,
+                `Invalid transaction id '${target.transaction}' given as input for ${functionName}.`,
+                { transaction: target.transaction }
+            );
+        else
+            assert(
+                target.transaction >= 0,
+                DATA.INVALID_DATA_TYPE,
+                `Invalid transaction index '${target.transaction}' given as input for ${functionName}.`,
+                { transaction: target.transaction }
+            );
+
+        // Validate target - clauseIndex
+        assert(
+            target.clauseIndex >= 0,
+            DATA.INVALID_DATA_TYPE,
+            `Invalid clause index '${target.clauseIndex}' given as input for ${functionName}.`,
+            { clauseIndex: target.clauseIndex }
+        );
     }
 }
 
