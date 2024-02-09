@@ -14,7 +14,6 @@ describe('subscriptionHelper.generateRandomHex', () => {
     test('should return a string of the correct length', () => {
         const size = 8;
         const hex = subscriptionHelper.generateRandomHex(size);
-        console.log(hex);
         expect(hex).toHaveLength(size);
     });
 

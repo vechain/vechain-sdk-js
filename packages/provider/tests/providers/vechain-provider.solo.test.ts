@@ -3,8 +3,8 @@ import { type SubscriptionEvent, VechainProvider } from '../../src';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { soloNetwork } from '../fixture';
-import { providerMethodsTestCasesSolo } from './fixture';
-import { waitForMessage } from './helpers';
+import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from './fixture';
+import { deployERC20Contract, waitForMessage } from './helpers';
 
 /**
  * Vechain provider tests - Solo Network
@@ -111,11 +111,26 @@ describe('Vechain provider tests', () => {
      * eth_subscribe to the latest logs RPC call test
      */
     test('Should be able to get to subscribe to the latest logs', async () => {
+        const contract = await deployERC20Contract(thorClient);
+
+        const logsParams = {
+            address: [contract.address],
+            topics: []
+        };
+
         // Call RPC function
         const rpcCall = await provider.request({
             method: 'eth_subscribe',
-            params: ['logs', {}]
+            params: ['logs', logsParams]
         });
+
+        await thorClient.contracts.executeContractTransaction(
+            TEST_ACCOUNT.privateKey,
+            contract.address,
+            contract.abi,
+            'transfer',
+            [TEST_ACCOUNT.address, 100]
+        );
 
         const messageReceived = waitForMessage(provider);
 
@@ -127,10 +142,19 @@ describe('Vechain provider tests', () => {
         expect(message).toBeDefined();
         expect(message.method).toBeDefined();
         expect(message.params).toBeDefined();
+        // @ts-expect-error - I'm expecting the result to have an address
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        expect(message.params.result[0].address).toBe(contract.address);
+        // @ts-expect-error - I'm expecting the topics to be defined
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        expect(message.params.result[0].topics).toBeDefined();
+        // @ts-expect-error - I'm expecting the data to be defined
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        expect(message.params.result[0].data).toBeDefined();
 
         // Compare the result with the expected value
         expect(rpcCall).not.toBe('0x0');
-    }, 20000);
+    }, 30000);
 
     /**
      * Invalid RPC method tests

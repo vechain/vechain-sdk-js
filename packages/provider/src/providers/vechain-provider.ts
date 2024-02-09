@@ -18,6 +18,7 @@ import {
     type SubscriptionManager
 } from './types';
 import { POLLING_INTERVAL } from './constants';
+import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
 
 /**
  * Our core provider class for vechain
@@ -28,6 +29,10 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         currentBlockNumber: 0
     };
 
+    /**
+     * Poll instance for subscriptions
+     * @private
+     */
     private pollInstance?: EventPoll<SubscriptionEvent[]>;
 
     /**
@@ -102,9 +107,9 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
             return data;
         }, POLLING_INTERVAL).onData(
             (subscriptionEvents: SubscriptionEvent[]) => {
-                subscriptionEvents.forEach((event) =>
-                    this.emit('message', event)
-                );
+                subscriptionEvents.forEach((event) => {
+                    this.emit('message', event);
+                });
             }
         );
 
@@ -133,12 +138,14 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         const promises = Array.from(
             this.subscriptionManager.logSubscriptions.entries()
         ).map(async ([subscriptionId, subscriptionDetails]) => {
+            const currentBlock = vechain_sdk_core_ethers.toQuantity(
+                this.subscriptionManager.currentBlockNumber
+            );
             // Construct filter options for the Ethereum logs query based on the subscription details
             const filterOptions: FilterOptions = {
                 address: subscriptionDetails.options?.address, // Contract address to filter the logs by
-                fromBlock:
-                    this.subscriptionManager.currentBlockNumber.toString(), // Start block number (inclusive)
-                toBlock: this.subscriptionManager.currentBlockNumber.toString(), // End block number (inclusive)
+                fromBlock: currentBlock,
+                toBlock: currentBlock,
                 topics: subscriptionDetails.options?.topics // Topics to filter the logs by
             };
 
@@ -153,7 +160,11 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         });
 
         // Wait for all log fetch operations to complete and return an array of SubscriptionEvent objects
-        return await Promise.all(promises);
+        const subscriptionEvents = await Promise.all(promises);
+        // Filter out empty results
+        return subscriptionEvents.filter(
+            (event) => event.params.result.length > 0
+        );
     }
 
     /**

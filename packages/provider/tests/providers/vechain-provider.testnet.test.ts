@@ -4,7 +4,6 @@ import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../fixture';
 import { providerMethodsTestCasesTestnet } from './fixture';
-import { logsFixture } from '../rpc-mapper/methods/eth_getLogs/fixture';
 import { waitForMessage } from './helpers';
 
 /**
@@ -92,28 +91,6 @@ describe('Vechain provider tests', () => {
     /**
      * eth_getBalance RPC call test
      */
-
-    test('Should be able to get to subscribe to the latest logs', async () => {
-        // Call RPC function
-        const rpcCall = await provider.request({
-            method: 'eth_subscribe',
-            params: ['logs', logsFixture[0].input]
-        });
-
-        const messageReceived = waitForMessage(provider);
-
-        const message = await messageReceived;
-
-        provider.destroy();
-
-        // Optionally, you can do assertions or other operations with the message
-        expect(message).toBeDefined();
-        expect(message.method).toBe('eth_subscription');
-        expect(message.params).toBeDefined();
-
-        // Compare the result with the expected value
-        expect(rpcCall).not.toBe('0x0');
-    }, 20000);
 
     /**
      * Invalid RPC method tests
