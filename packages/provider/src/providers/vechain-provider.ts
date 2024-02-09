@@ -50,9 +50,8 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
     }
 
     /**
-     * Destroys the provider by closing the thorClient
-     * This is due to the fact that thorClient might be initialized with a polling interval to
-     * keep the head block updated.
+     * Destroys the provider by closing the thorClient and stopping the provider poll instance if present.
+     * This is due to the fact that thorClient and the provider might be initialized with a polling interval.
      */
     public destroy(): void {
         this.thorClient.destroy();
@@ -78,6 +77,15 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         ](args.params as unknown[]);
     }
 
+    /**
+     * Initializes and starts the polling mechanism for subscription events.
+     * This method sets up an event poll that periodically checks for new events related to active
+     * subscriptions, such as 'newHeads' or log subscriptions. When new data is available, it emits
+     * these events to listeners.
+     *
+     * This method leverages the `Poll.createEventPoll` utility to create the polling mechanism,
+     * which is then started by invoking `startListen` on the poll instance.
+     */
     private startSubscriptionsPolling(): void {
         this.pollInstance = Poll.createEventPoll(async () => {
             const data: SubscriptionEvent[] = [];
