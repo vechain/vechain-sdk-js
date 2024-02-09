@@ -1,8 +1,11 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { NotImplementedError } from '@vechain/vechain-sdk-errors';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
+import {
+    debugTraceTransactionNegativeCasesFixtureTestnet,
+    debugTraceTransactionPositiveCasesFixtureTestnet
+} from './fixture';
 
 /**
  * RPC Mapper integration tests for 'debug_traceTransaction' method
@@ -35,16 +38,15 @@ describe('RPC Mapper - debug_traceTransaction method tests', () => {
      */
     describe('debug_traceTransaction - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Positive cases.
          */
-        test('debug_traceTransaction - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.debug_traceTransaction
-                    ]([-1])
-            ).rejects.toThrowError(NotImplementedError);
+        test('debug_traceTransaction - positive cases', async () => {
+            for (const fixture of debugTraceTransactionPositiveCasesFixtureTestnet) {
+                const result = await RPCMethodsMap(thorClient)[
+                    RPC_METHODS.debug_traceTransaction
+                ](fixture.input.params);
+                expect(result).toEqual(fixture.input.expected);
+            }
         });
     });
 
@@ -53,16 +55,16 @@ describe('RPC Mapper - debug_traceTransaction method tests', () => {
      */
     describe('debug_traceTransaction - Negative cases', () => {
         /**
-         * Negative case 1 - ... Description ...
+         * Negative cases.
          */
-        test('debug_traceTransaction - negative case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
+        test('debug_traceTransaction - negative case', async () => {
+            for (const fixture of debugTraceTransactionNegativeCasesFixtureTestnet) {
+                await expect(async () => {
                     await RPCMethodsMap(thorClient)[
                         RPC_METHODS.debug_traceTransaction
-                    ](['SOME_RANDOM_PARAM'])
-            ).rejects.toThrowError(NotImplementedError);
+                    ](fixture.input.params);
+                }).rejects.toThrowError(fixture.input.expectedError);
+            }
         });
     });
 });

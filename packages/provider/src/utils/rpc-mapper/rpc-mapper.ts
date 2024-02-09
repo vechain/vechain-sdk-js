@@ -86,6 +86,7 @@ import {
 import { type Wallet } from '@vechain/vechain-sdk-wallet';
 import { ethRequestAccounts } from './methods-map/methods/eth_requestAccounts';
 import { type LogsRPC } from '../formatter/logs';
+import type { TraceReturnType } from '@vechain/vechain-sdk-network/src/thor-client/debug';
 
 /**
  * Map of RPC methods to their implementations with our SDK.
@@ -208,8 +209,10 @@ const RPCMethodsMap = (
             await ethUnsubscribe(thorClient, params);
         },
 
-        [RPC_METHODS.debug_traceTransaction]: async (params) => {
-            await debugTraceTransaction(thorClient, params);
+        [RPC_METHODS.debug_traceTransaction]: async (
+            params
+        ): Promise<TraceReturnType<'call'> | TraceReturnType<'prestate'>> => {
+            return await debugTraceTransaction(thorClient, params);
         },
 
         [RPC_METHODS.debug_traceCall]: async (params) => {
