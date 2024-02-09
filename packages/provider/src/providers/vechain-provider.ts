@@ -90,28 +90,29 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         this.pollInstance = Poll.createEventPoll(async () => {
             const data: SubscriptionEvent[] = [];
 
-            const nextBlock = await this.nextBlock();
+            const currentBlock = await this.getCurrentBlock();
 
-            if (
-                nextBlock !== null &&
-                this.subscriptionManager.newHeadsSubscription !== undefined
-            ) {
-                data.push({
-                    method: 'eth_subscription',
-                    params: {
-                        subscription:
-                            this.subscriptionManager.newHeadsSubscription
-                                .subscriptionId,
-                        result: nextBlock
-                    }
-                });
+            if (currentBlock !== null) {
+                if (
+                    this.subscriptionManager.newHeadsSubscription !== undefined
+                ) {
+                    data.push({
+                        method: 'eth_subscription',
+                        params: {
+                            subscription:
+                                this.subscriptionManager.newHeadsSubscription
+                                    .subscriptionId,
+                            result: currentBlock
+                        }
+                    });
+                }
+                if (this.subscriptionManager.logSubscriptions.size > 0) {
+                    const logs = await this.getLogsRPC();
+                    data.push(...logs);
+                }
+
+                this.subscriptionManager.currentBlockNumber++;
             }
-
-            if (this.subscriptionManager.logSubscriptions.size > 0) {
-                const logs = await this.getLogsRPC();
-                data.push(...logs);
-            }
-
             return data;
         }, POLLING_INTERVAL).onData(
             (subscriptionEvents: SubscriptionEvent[]) => {
@@ -175,19 +176,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         );
     }
 
-    /**
-     * Retrieves the details of the next block in the blockchain, if available.
-     * Increments the current block number tracked by `subscriptionManager` and returns the details of the newly fetched block.
-     *
-     * Only attempts to fetch the next block if there are active log subscriptions
-     * or if a new heads subscription exists. If the next block is successfully fetched,
-     * the current block number is incremented, and the block details are returned.
-     * Returns `null` if there are no subscriptions or the next block cannot be fetched.
-     *
-     * @returns {Promise<BlockDetail | null>} A promise that resolves to the details of the next block
-     * as a `BlockDetail` object if the block exists and can be fetched; otherwise, `null`.
-     */
-    private async nextBlock(): Promise<BlockDetail | null> {
+    private async getCurrentBlock(): Promise<BlockDetail | null> {
         // Initialize result to null, indicating no block found initially
         let result: BlockDetail | null = null;
 
