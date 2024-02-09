@@ -186,6 +186,17 @@ const thorest = {
             NEW_TRANSACTIONS: (baseURL: string): string =>
                 `${sanitizeWebsocketBaseURL(baseURL)}/subscriptions/txpool`
         }
+    },
+
+    /**
+     * Debug related endpoints.
+     */
+    debug: {
+        post: {
+            TRACE_TRANSACTION_CLAUSE: (): string => `/debug/tracers`,
+            TRACE_CONTRACT_CALL: (): string => `/debug/tracers/call`,
+            RETRIEVE_STORAGE_RANGE: (): string => `/debug/storage-range`
+        }
     }
 };
 
