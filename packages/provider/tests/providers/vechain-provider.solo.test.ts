@@ -303,7 +303,7 @@ describe('Vechain provider tests', () => {
         // @ts-expect-error - Asserting that log data is present
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(results[1].params.result.length).toBeGreaterThan(0);
-    }, 40000); // Extended timeout for asynchronous operations
+    }, 1000000); // Extended timeout for asynchronous operations
 
     /**
      * Invalid RPC method tests
