@@ -169,6 +169,8 @@ describe('Vechain provider tests', () => {
             method: 'eth_subscribe',
             params: ['logs', logsParams]
         });
+        // Wait for the subscription to receive a message (log event)
+        const messageReceived = waitForMessage(provider);
 
         // Execute a contract transaction to generate a log event
         await thorClient.contracts.executeContractTransaction(
@@ -179,8 +181,6 @@ describe('Vechain provider tests', () => {
             [TEST_ACCOUNT.address, 100]
         );
 
-        // Wait for the subscription to receive a message (log event)
-        const messageReceived = waitForMessage(provider);
         const message = await messageReceived;
 
         // Clean up the subscription
@@ -256,6 +256,18 @@ describe('Vechain provider tests', () => {
             params: ['logs', erc721logsParams]
         });
 
+        // Collect and assert log events
+        let results: SubscriptionEvent[] = [];
+        const eventPromise = new Promise((resolve) => {
+            provider.on('message', (message: SubscriptionEvent) => {
+                results.push(message);
+                if (results.length === 2) {
+                    provider.destroy();
+                    resolve(results);
+                }
+            });
+        });
+
         // Execute transactions that should emit events
         await thorClient.contracts.executeContractTransaction(
             TEST_ACCOUNT.privateKey,
@@ -273,17 +285,7 @@ describe('Vechain provider tests', () => {
             [TEST_ACCOUNT.address]
         );
 
-        // Collect and assert log events
-        let results: SubscriptionEvent[] = [];
-        results = await new Promise((resolve) => {
-            provider.on('message', (message) => {
-                results.push(message as SubscriptionEvent);
-                if (results.length === 2) {
-                    provider.destroy();
-                    resolve(results);
-                }
-            });
-        });
+        results = (await eventPromise) as SubscriptionEvent[];
 
         // Assertions to validate the received log events
         expect(results).toBeDefined();
