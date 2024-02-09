@@ -52,7 +52,7 @@ describe('Vechain provider tests', () => {
     );
 
     /**
-     * eth_getBalance RPC call test
+     * eth_blockNumber RPC call test
      */
     test('Should be able to get the latest block number', async () => {
         // Call RPC function

@@ -98,7 +98,7 @@ describe('Vechain provider tests', () => {
     }, 12000);
 
     /**
-     * eth_subscribe latest blocks RPC call test
+     * eth_subscribe latest blocks and then unsubscribe RPC call test
      */
     test('Should be able to get to subscribe to the latest blocks and then unsubscribe', async () => {
         // Call RPC function
