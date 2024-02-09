@@ -4,6 +4,7 @@ import {
     type VechainProvider
 } from '../../../../providers';
 import { subscriptionHelper } from '../../../helpers';
+import { buildError, ERROR_CODES } from '@vechain/vechain-sdk-errors';
 enum SUBSCRIPTION_TYPE {
     NEW_HEADS = 'newHeads',
     LOGS = 'logs'
@@ -28,13 +29,27 @@ const ethSubscribe = async (
     provider?: VechainProvider
 ): Promise<string> => {
     if (provider === undefined) {
-        throw new Error('Provider is not defined');
+        throw buildError(
+            ERROR_CODES.JSONRPC.INTERNAL_ERROR,
+            'Provider not available',
+            {
+                message: 'The Provider is not defined',
+                code: -32603
+            }
+        );
     }
     if (
         params[0] !== SUBSCRIPTION_TYPE.NEW_HEADS &&
         params[0] !== SUBSCRIPTION_TYPE.LOGS
     ) {
-        throw new Error('Invalid subscription type');
+        throw buildError(
+            ERROR_CODES.JSONRPC.INVALID_PARAMS,
+            'Invalid subscription type param',
+            {
+                message: 'Invalid subscription type param',
+                code: -32602
+            }
+        );
     }
 
     // I check if some subscription is already active, if not I set a new starting block number for the subscription

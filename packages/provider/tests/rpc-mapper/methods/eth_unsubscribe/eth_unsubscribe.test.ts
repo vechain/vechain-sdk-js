@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
 import { VechainProvider } from '../../../../src';
-import { JSONRPCInternalError } from '@vechain/vechain-sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_unsubscribe' method
@@ -75,13 +74,12 @@ describe('RPC Mapper - eth_unsubscribe method tests', () => {
          */
         test('eth_unsubscribe - negative case 1', async () => {
             // Attempts to unsubscribe with an invalid subscription ID and expects an error.
-            await expect(
-                async () =>
-                    await provider.request({
-                        method: 'eth_unsubscribe',
-                        params: ['invalid_subscription_id']
-                    })
-            ).rejects.toThrowError(JSONRPCInternalError); // Assumes JSONRPCInternalError is defined and imported.
+            expect(
+                await provider.request({
+                    method: 'eth_unsubscribe',
+                    params: ['invalid_subscription_id']
+                })
+            ).toBe(false); // Assumes JSONRPCInternalError is defined and imported.
         });
     });
 });

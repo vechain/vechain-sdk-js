@@ -31,11 +31,17 @@ describe('RPC Mapper - eth_subscribe method tests', () => {
     });
 
     /**
-     * eth_subscribe RPC call tests - Positive cases
+     * Describes the test suite for positive test cases of the `eth_subscribe` RPC method.
+     * This suite includes various scenarios where `eth_subscribe` is expected to succeed,
+     * verifying the correct behavior of subscription functionalities for different types
+     * of events in Ethereum, such as `newHeads`.
      */
     describe('eth_subscribe - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Tests successful subscription to the 'newHeads' event.
+         * It verifies that the RPC call to `eth_subscribe` with 'newHeads' as a parameter
+         * successfully returns a subscription ID, and that the ID has the expected length
+         * of 32 characters, indicating a valid response format.
          */
         test('eth_subscribe - positive case 1', async () => {
             // Call RPC function
@@ -44,19 +50,32 @@ describe('RPC Mapper - eth_subscribe method tests', () => {
                 params: ['newHeads']
             })) as string;
 
+            // Verify the length of the subscription ID
             expect(rpcCall.length).toEqual(32);
         });
     });
 
     /**
-     * eth_subscribe RPC call tests - Negative cases
+     * Describes the test suite for negative test cases of the `eth_subscribe` RPC method.
+     * This suite focuses on scenarios where `eth_subscribe` is expected to fail, such as
+     * when invalid parameters are provided. The aim is to ensure the method handles errors
+     * gracefully and in accordance with the JSON-RPC specifications.
      */
     describe('eth_subscribe - Negative cases', () => {
         /**
-         * Negative case 1 - ... Description ...
+         * Tests the behavior of `eth_subscribe` when an invalid subscription type is provided.
+         * The test expects the RPC call to throw an error, demonstrating that the method
+         * properly validates input parameters and handles invalid requests as per the
+         * JSON-RPC error handling conventions.
          */
         test('eth_subscribe - negative case 1', async () => {
-            // NOT IMPLEMENTED YET!
+            await expect(
+                async () =>
+                    await provider.request({
+                        method: 'eth_subscribe',
+                        params: ['invalidSubscriptionType']
+                    })
+            ).rejects.toThrowError(); // Ideally, specify the expected error for more precise testing.
         });
     });
 });
