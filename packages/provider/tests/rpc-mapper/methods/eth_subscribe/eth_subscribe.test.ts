@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
-import { VechainProvider } from '../../../../src';
+import { RPC_METHODS, RPCMethodsMap, VechainProvider } from '../../../../src';
+import { JSONRPCInternalError } from '@vechain/vechain-sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_subscribe' method
@@ -43,7 +44,7 @@ describe('RPC Mapper - eth_subscribe method tests', () => {
          * successfully returns a subscription ID, and that the ID has the expected length
          * of 32 characters, indicating a valid response format.
          */
-        test('eth_subscribe - positive case 1', async () => {
+        test('eth_subscribe - new latest blocks subscription', async () => {
             // Call RPC function
             const rpcCall = (await provider.request({
                 method: 'eth_subscribe',
@@ -52,6 +53,16 @@ describe('RPC Mapper - eth_subscribe method tests', () => {
 
             // Verify the length of the subscription ID
             expect(rpcCall.length).toEqual(32);
+        });
+
+        test('eth_subscribe - no provider', async () => {
+            // Attempts to unsubscribe with no provider and expects an error.
+            await expect(
+                async () =>
+                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_subscribe](
+                        []
+                    )
+            ).rejects.toThrowError(JSONRPCInternalError);
         });
     });
 
@@ -68,7 +79,7 @@ describe('RPC Mapper - eth_subscribe method tests', () => {
          * properly validates input parameters and handles invalid requests as per the
          * JSON-RPC error handling conventions.
          */
-        test('eth_subscribe - negative case 1', async () => {
+        test('eth_subscribe - invalid subscription', async () => {
             await expect(
                 async () =>
                     await provider.request({
