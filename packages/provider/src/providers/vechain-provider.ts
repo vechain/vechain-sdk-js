@@ -192,7 +192,6 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
 
             // If the block is successfully fetched (not undefined or null), update the result and increment the block number
             if (block !== undefined && block !== null) {
-                this.subscriptionManager.currentBlockNumber++; // Move to the next block number
                 result = block; // Set the fetched block as the result
             }
         }

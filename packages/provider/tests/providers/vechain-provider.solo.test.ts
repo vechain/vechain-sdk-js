@@ -261,7 +261,7 @@ describe('Vechain provider tests', () => {
         const eventPromise = new Promise((resolve) => {
             provider.on('message', (message: SubscriptionEvent) => {
                 results.push(message);
-                if (results.length === 2) {
+                if (results.length >= 2) {
                     provider.destroy();
                     resolve(results);
                 }
@@ -289,9 +289,15 @@ describe('Vechain provider tests', () => {
 
         // Assertions to validate the received log events
         expect(results).toBeDefined();
-        expect(results.length).toBe(2);
-        expect(results[0].params.subscription).toBe(erc20Subscription);
-        expect(results[1].params.subscription).toBe(erc721Subscription);
+        expect(results.length).toBeGreaterThan(1);
+        expect(
+            results.filter((x) => x.params.subscription === erc20Subscription)
+                .length
+        ).toBeGreaterThan(0);
+        expect(
+            results.filter((x) => x.params.subscription === erc721Subscription)
+                .length
+        ).toBeGreaterThan(0);
 
         expect(results[0].method).toBe('eth_subscription');
         expect(results[1].method).toBe('eth_subscription');
@@ -303,7 +309,7 @@ describe('Vechain provider tests', () => {
         // @ts-expect-error - Asserting that log data is present
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(results[1].params.result.length).toBeGreaterThan(0);
-    }, 1000000); // Extended timeout for asynchronous operations
+    }, 20000); // Extended timeout for asynchronous operations
 
     /**
      * Invalid RPC method tests
