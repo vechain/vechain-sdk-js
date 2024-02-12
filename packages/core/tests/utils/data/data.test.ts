@@ -245,13 +245,13 @@ describe('utils/hex', () => {
     });
 
     /**
-     * Test suite for the `generateRandomHex` method of the `subscriptionHelper`.
+     * Test suite for the `generateRandomHexOfLength` method of the `subscriptionHelper`.
      * This suite verifies that the method behaves as expected under various conditions.
      * @group unit/helpers/subscription
      */
-    describe('subscriptionHelper.generateRandomHex', () => {
+    describe('subscriptionHelper.generateRandomHexOfLength', () => {
         /**
-         * Tests that the `generateRandomHex` method returns a string of the correct length.
+         * Tests that the `generateRandomHexOfLength` method returns a string of the correct length.
          * The length of the generated string should match the specified size.
          */
         test('should return a string of the correct length', () => {
@@ -261,7 +261,7 @@ describe('utils/hex', () => {
         });
 
         /**
-         * Ensures that the `generateRandomHex` method produces a string containing only valid hexadecimal characters.
+         * Ensures that the `generateRandomHexOfLength` method produces a string containing only valid hexadecimal characters.
          * The output should match a regular expression that allows only characters 0-9 and a-f.
          */
         test('should only contain hexadecimal characters', () => {
@@ -272,7 +272,7 @@ describe('utils/hex', () => {
         });
 
         /**
-         * Verifies that consecutive calls to `generateRandomHex` return different values.
+         * Verifies that consecutive calls to `generateRandomHexOfLength` return different values.
          * This test confirms the randomness and uniqueness of the generated strings over multiple invocations.
          */
         test('should return different values on subsequent calls', () => {
