@@ -15,7 +15,7 @@ describe('RPC Mapper - web3_clientVersion method tests', () => {
     let thorClient: ThorClient;
 
     /**
-     * Inti thor client before each test
+     * Init thor client before each test
      */
     beforeEach(() => {
         // Init thor client
