@@ -73,13 +73,8 @@ const debugTraceCall = async (
     );
 
     // Init params
-    // @note: Revision (the block number) is not supported yet in vechain, but required in the standard
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [transactionOptions, blockNumber, tracerOptions] = params as [
-        TransactionObjectInput,
-        string,
-        TraceCallRPC
-    ];
+    const transactionOptions = params[0] as TransactionObjectInput;
+    const tracerOptions = params[2] as TraceCallRPC;
 
     // Tracer to use
     const tracerToUse: TracerName =
