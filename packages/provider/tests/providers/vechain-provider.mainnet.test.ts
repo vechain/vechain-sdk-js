@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { VechainProvider } from '../../src';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '@vechain/vechain-sdk-network';
@@ -23,6 +23,13 @@ describe('Vechain provider tests', () => {
     beforeEach(() => {
         thorClient = new ThorClient(mainNetwork);
         provider = new VechainProvider(thorClient);
+    });
+
+    /**
+     * Destory thor client and provider after each test
+     */
+    afterEach(() => {
+        provider.destroy();
     });
 
     /**
