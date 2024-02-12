@@ -27,8 +27,6 @@ describe('buildTransactionBody with mocks', () => {
                 gas.totalGas
             )
         ).rejects.toThrowError(TransactionBodyError);
-
-        thorSoloClient.destroy();
     });
 
     test('Should throw error when get block is not found', async () => {
@@ -50,7 +48,5 @@ describe('buildTransactionBody with mocks', () => {
                 gas.totalGas
             )
         ).rejects.toThrowError(TransactionBodyError);
-
-        thorSoloClient.destroy();
     });
 });

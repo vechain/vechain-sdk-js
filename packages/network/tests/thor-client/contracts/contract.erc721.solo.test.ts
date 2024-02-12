@@ -1,6 +1,6 @@
 // Global variable to hold contract address
 import { erc721ContractBytecode, erc721ContractTestCases } from './fixture';
-import { expect, test, beforeAll, describe, afterAll } from '@jest/globals';
+import { expect, test, beforeAll, describe } from '@jest/globals';
 import { ThorClient, type TransactionReceipt } from '../../../src';
 import { soloNetwork, TEST_ACCOUNTS } from '../../fixture';
 import { coder, ERC721_ABI, type Log } from '@vechain/vechain-sdk-core';
@@ -64,10 +64,6 @@ describe('ThorClient - ERC721 Contracts', () => {
 
         expect(contractAddress).toBeDefined();
     }, 10000);
-
-    afterAll(() => {
-        thorSoloClient.destroy();
-    });
 
     erc721ContractTestCases.forEach(
         ({ description, functionName, params, expected, isReadOnly }) => {

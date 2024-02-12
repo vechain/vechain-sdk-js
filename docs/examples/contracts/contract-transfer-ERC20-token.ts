@@ -56,6 +56,3 @@ const transactionReceiptTransfer =
 
 // Asserting that the transaction has not been reverted
 expect(transactionReceiptTransfer.reverted).toEqual(false);
-
-// Destroying the Thor client
-thorSoloClient.destroy();

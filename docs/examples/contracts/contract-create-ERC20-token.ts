@@ -47,6 +47,3 @@ const balance = await thorSoloClient.contracts.executeContractCall(
 
 // Asserting that the initial balance of the deployer is the expected amount (1e24)
 expect(balance).toEqual([unitsUtils.parseUnits('1', 24)]);
-
-// Destroying the Thor client
-thorSoloClient.destroy();

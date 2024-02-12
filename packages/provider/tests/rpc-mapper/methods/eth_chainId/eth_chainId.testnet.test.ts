@@ -2,13 +2,14 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
+import { networkInfo } from '@vechain/vechain-sdk-core';
 
 /**
  * RPC Mapper integration tests for 'eth_chainId' method
  *
- * @group integration/rpc-mapper/methods/net_version
+ * @group integration/rpc-mapper/methods/eth_chainId
  */
-describe('RPC Mapper - net_version method tests', () => {
+describe('RPC Mapper - eth_chainId method tests', () => {
     /**
      * Thor client instance
      */
@@ -23,23 +24,18 @@ describe('RPC Mapper - net_version method tests', () => {
     });
 
     /**
-     * net_version RPC call tests - Positive cases
+     * eth_chainId RPC call tests - Positive cases
      */
-    describe('net_version - Positive cases', () => {
+    describe('eth_chainId - Positive cases', () => {
         /**
-         * Test case regarding obtaining the net_version
+         * Test case regarding obtaining the chain id
          */
-        test('Should return the net_version (the chain id in our case)', async () => {
-            // net_version and eth_chainId should return the same value
-            const rpcCallNetVersion = (await RPCMethodsMap(thorClient)[
-                RPC_METHODS.net_version
-            ]([])) as string;
-
+        test('Should return the chain id', async () => {
             const rpcCallChainId = (await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_chainId
             ]([])) as string;
 
-            expect(rpcCallNetVersion).toBe(rpcCallChainId);
+            expect(rpcCallChainId).toBe(networkInfo.testnet.genesisBlock.id);
         });
     });
 });

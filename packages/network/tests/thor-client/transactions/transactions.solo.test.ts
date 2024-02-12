@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     buildTransactionBodyClausesTestCases,
     expectedReceipt,
@@ -36,10 +36,6 @@ describe('ThorClient - Transactions Module', () => {
 
     beforeEach(() => {
         thorSoloClient = new ThorClient(soloNetwork);
-    });
-
-    afterEach(() => {
-        thorSoloClient.destroy();
     });
 
     /**
