@@ -73,11 +73,11 @@ interface FilterEventLogsOptions {
     /**
      * Event filters
      */
-    criteriaSet: EventCriteria[];
+    criteriaSet?: EventCriteria[];
     /**
      * Sorting order
      */
-    order: EventDisplayOrder;
+    order?: EventDisplayOrder;
 }
 
 /**
