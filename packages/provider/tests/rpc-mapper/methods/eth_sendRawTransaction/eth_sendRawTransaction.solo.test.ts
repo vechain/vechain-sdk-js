@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import { beforeEach, describe, expect, test } from '@jest/globals';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { soloNetwork, TEST_ACCOUNTS_THOR_SOLO } from '../../../fixture';
 import {
@@ -30,13 +30,6 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
     beforeEach(() => {
         // Init thor client
         thorClient = new ThorClient(soloNetwork);
-    });
-
-    /**
-     * Destroy thor client after each test
-     */
-    afterEach(() => {
-        thorClient.destroy();
     });
 
     /**
