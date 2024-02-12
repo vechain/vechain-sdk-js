@@ -44,8 +44,6 @@ describe('Transactions module Testnet tests suite', () => {
                             options
                         );
 
-                    thorClient.destroy();
-
                     expect(txBody).toBeDefined();
                     expect(txBody.clauses).toStrictEqual(
                         expected.testnet.clauses
@@ -102,8 +100,6 @@ describe('Transactions module Testnet tests suite', () => {
                             origin.privateKey,
                             options
                         );
-
-                    thorClient.destroy();
 
                     expect(signedTx).toBeDefined();
                     expect(signedTx.body).toMatchObject(expected.body);
