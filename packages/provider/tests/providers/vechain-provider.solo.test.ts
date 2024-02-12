@@ -74,7 +74,7 @@ describe('Vechain provider tests', () => {
      */
     test('Should be able to get to subscribe to the latest blocks', async () => {
         // Call RPC function
-        const rpcCall = await provider.request({
+        const subscriptionId = await provider.request({
             method: 'eth_subscribe',
             params: ['newHeads']
         });
@@ -92,9 +92,8 @@ describe('Vechain provider tests', () => {
         expect(message).toBeDefined();
         expect(message.method).toBe('eth_subscription');
         expect(message.params).toBeDefined();
-
-        // Compare the result with the expected value
-        expect(rpcCall).not.toBe('0x0');
+        expect(message.params.subscription).toBe(subscriptionId);
+        expect(message.params.result).toBeDefined();
     }, 12000);
 
     /**
