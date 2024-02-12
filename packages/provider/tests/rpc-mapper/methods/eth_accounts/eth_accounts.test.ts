@@ -34,6 +34,7 @@ describe('RPC Mapper - eth_accounts method tests', () => {
             // Get accounts
             const accounts = (await RPCMethodsMap(
                 thorClient,
+                undefined,
                 THOR_SOLO_ACCOUNTS_BASE_WALLET as Wallet
             )[RPC_METHODS.eth_accounts]([])) as string[];
 

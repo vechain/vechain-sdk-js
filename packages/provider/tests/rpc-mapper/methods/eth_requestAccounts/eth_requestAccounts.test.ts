@@ -35,6 +35,7 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
             // Get accounts
             const accounts = (await RPCMethodsMap(
                 thorClient,
+                undefined,
                 THOR_SOLO_ACCOUNTS_BASE_WALLET as Wallet
             )[RPC_METHODS.eth_requestAccounts]([])) as string[];
 
@@ -70,7 +71,7 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
 
             // Error with empty wallet
             await expect(
-                RPCMethodsMap(thorClient, emptyBaseWallet)[
+                RPCMethodsMap(thorClient, undefined, emptyBaseWallet)[
                     RPC_METHODS.eth_requestAccounts
                 ]([])
             ).rejects.toThrow(ProviderRpcError);

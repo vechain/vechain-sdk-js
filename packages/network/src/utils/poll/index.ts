@@ -2,10 +2,10 @@
 import { SyncPoll } from './sync';
 
 // Asynchronous Event Polling
-import { createEventPoll, EventPoll } from './event';
+import { createEventPoll, type EventPoll } from './event';
 
 // Types
 export * from './types.d';
 
-const Poll = { SyncPoll, EventPoll, createEventPoll };
-export { Poll };
+const Poll = { SyncPoll, createEventPoll };
+export { Poll, type EventPoll };

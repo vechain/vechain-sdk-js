@@ -48,8 +48,8 @@ enum RPC_METHODS {
     eth_syncing = 'eth_syncing',
     net_version = 'net_version',
     web3_clientVersion = 'web3_clientVersion',
-    eth_subscribe = 'eth_subscribe', // TEMPORARY COMMENT - TO IMPLEMENT
-    eth_unsubscribe = 'eth_unsubscribe', // TEMPORARY COMMENT - TO IMPLEMENT
+    eth_subscribe = 'eth_subscribe',
+    eth_unsubscribe = 'eth_unsubscribe',
     debug_traceTransaction = 'debug_traceTransaction', // TEMPORARY COMMENT - TO IMPLEMENT
     debug_traceCall = 'debug_traceCall', // TEMPORARY COMMENT - TO IMPLEMENT
     evm_mine = 'evm_mine',
