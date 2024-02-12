@@ -1,4 +1,4 @@
-import { describe, expect, test, beforeEach, afterEach } from '@jest/globals';
+import { describe, expect, test, beforeEach } from '@jest/globals';
 import {
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,
@@ -35,10 +35,6 @@ describe('ThorClient - Contracts', () => {
 
     beforeEach(() => {
         thorSoloClient = new ThorClient(soloNetwork);
-    });
-
-    afterEach(() => {
-        thorSoloClient.destroy();
     });
 
     /**

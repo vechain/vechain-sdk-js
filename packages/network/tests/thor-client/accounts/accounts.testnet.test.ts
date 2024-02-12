@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     NULL_STORAGE_SLOT,
     getAccountWithRevisionTestCases,
@@ -23,10 +23,6 @@ describe('ThorClient - Accounts Module', () => {
 
     beforeEach(() => {
         thorClient = new ThorClient(testNetwork);
-    });
-
-    afterEach(() => {
-        thorClient.destroy();
     });
 
     /**
