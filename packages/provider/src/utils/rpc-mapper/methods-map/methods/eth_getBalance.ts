@@ -18,6 +18,8 @@ import {
  *
  * @returns the balance of the account at the given address formatted to the RPC standard.
  *
+ * @note Only 'latest' and 'finalized' block numbers are supported.
+ *
  * @throws {ProviderRpcError} - Will throw an error if the retrieval of the balance fails.
  */
 const ethGetBalance = async (
