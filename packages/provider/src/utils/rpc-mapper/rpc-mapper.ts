@@ -215,8 +215,10 @@ const RPCMethodsMap = (
             return await debugTraceTransaction(thorClient, params);
         },
 
-        [RPC_METHODS.debug_traceCall]: async (params) => {
-            await debugTraceCall(thorClient, params);
+        [RPC_METHODS.debug_traceCall]: async (
+            params
+        ): Promise<TraceReturnType<'call'> | TraceReturnType<'prestate'>> => {
+            return await debugTraceCall(thorClient, params);
         },
 
         [RPC_METHODS.evm_mine]: async (): Promise<BlocksRPC | null> => {
