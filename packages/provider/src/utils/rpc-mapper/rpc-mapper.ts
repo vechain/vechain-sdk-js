@@ -86,6 +86,7 @@ import {
 import { type Wallet } from '@vechain/vechain-sdk-wallet';
 import { ethRequestAccounts } from './methods-map/methods/eth_requestAccounts';
 import { type LogsRPC } from '../formatter/logs';
+import { type VechainProvider } from '../../providers';
 
 /**
  * Map of RPC methods to their implementations with our SDK.
@@ -97,9 +98,11 @@ import { type LogsRPC } from '../formatter/logs';
  *
  * @param thorClient - ThorClient instance.
  * @param wallet - Wallet instance. It is optional because the majority of the methods do not require a wallet.
+ * @param provider
  */
 const RPCMethodsMap = (
     thorClient: ThorClient,
+    provider?: VechainProvider,
     wallet?: Wallet
 ): Record<string, MethodHandlerType<unknown, unknown>> => {
     /**
@@ -200,12 +203,12 @@ const RPCMethodsMap = (
             return await web3ClientVersion();
         },
 
-        [RPC_METHODS.eth_subscribe]: async (params) => {
-            await ethSubscribe(thorClient, params);
+        [RPC_METHODS.eth_subscribe]: async (params): Promise<string> => {
+            return await ethSubscribe(thorClient, params, provider);
         },
 
         [RPC_METHODS.eth_unsubscribe]: async (params) => {
-            await ethUnsubscribe(thorClient, params);
+            return await ethUnsubscribe(params, provider);
         },
 
         [RPC_METHODS.debug_traceTransaction]: async (params) => {
