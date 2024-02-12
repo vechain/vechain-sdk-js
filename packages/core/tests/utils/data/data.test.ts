@@ -256,7 +256,7 @@ describe('utils/hex', () => {
          */
         test('should return a string of the correct length', () => {
             const size = 8;
-            const hex = dataUtils.generateRandomHex(size);
+            const hex = dataUtils.generateRandomHexOfLength(size);
             expect(hex).toHaveLength(size);
         });
 
@@ -266,7 +266,7 @@ describe('utils/hex', () => {
          */
         test('should only contain hexadecimal characters', () => {
             const size = 8;
-            const hex = dataUtils.generateRandomHex(size);
+            const hex = dataUtils.generateRandomHexOfLength(size);
             // This regex matches strings that only contain characters 0-9 and a-f
             expect(hex).toMatch(/^[0-9a-f]+$/);
         });
@@ -277,8 +277,8 @@ describe('utils/hex', () => {
          */
         test('should return different values on subsequent calls', () => {
             const size = 8;
-            const hex1 = dataUtils.generateRandomHex(size);
-            const hex2 = dataUtils.generateRandomHex(size);
+            const hex1 = dataUtils.generateRandomHexOfLength(size);
+            const hex2 = dataUtils.generateRandomHexOfLength(size);
             expect(hex1).not.toEqual(hex2);
         });
     });

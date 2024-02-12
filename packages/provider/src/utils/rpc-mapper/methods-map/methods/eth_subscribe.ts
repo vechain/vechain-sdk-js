@@ -87,7 +87,7 @@ const ethSubscribe = async (
             provider.subscriptionManager.currentBlockNumber = block.number;
         }
     }
-    const subscriptionId = dataUtils.generateRandomHex(32);
+    const subscriptionId = dataUtils.generateRandomHexOfLength(32);
 
     if (params.includes(SUBSCRIPTION_TYPE.NEW_HEADS)) {
         provider.subscriptionManager.newHeadsSubscription = {
