@@ -3,7 +3,7 @@ import {
     type FilterOptions,
     type VechainProvider
 } from '../../../../providers';
-import { buildError, ERROR_CODES } from '@vechain/vechain-sdk-errors';
+import { buildProviderError, JSONRPC } from '@vechain/vechain-sdk-errors';
 import { dataUtils } from '@vechain/vechain-sdk-core';
 
 /**
@@ -53,12 +53,14 @@ const ethSubscribe = async (
     provider?: VechainProvider
 ): Promise<string> => {
     if (provider === undefined) {
-        throw buildError(
-            ERROR_CODES.JSONRPC.INTERNAL_ERROR,
-            'Provider not available',
+        throw buildProviderError(
+            JSONRPC.INTERNAL_ERROR,
+            `Method 'ethSubscribe' failed: provider not available\n
+            Params: ${JSON.stringify(params)}\n
+            URL: ${thorClient.httpClient.baseURL}`,
             {
-                message: 'The Provider is not defined',
-                code: -32603
+                params,
+                provider
             }
         );
     }
@@ -66,26 +68,35 @@ const ethSubscribe = async (
         params[0] !== SUBSCRIPTION_TYPE.NEW_HEADS &&
         params[0] !== SUBSCRIPTION_TYPE.LOGS
     ) {
-        throw buildError(
-            ERROR_CODES.JSONRPC.INVALID_PARAMS,
-            'Invalid subscription type param',
+        throw buildProviderError(
+            JSONRPC.INVALID_PARAMS,
+            `Method 'ethSubscribe' failed: Invalid subscription type param\n
+            Params: ${JSON.stringify(params)}\n
+            URL: ${thorClient.httpClient.baseURL}`,
             {
-                message: 'Invalid subscription type param',
-                code: -32602
+                params
             }
         );
     }
 
-    // I check if some subscription is already active, if not I set a new starting block number for the subscription
-    if (
-        provider.subscriptionManager.logSubscriptions.size === 0 &&
-        provider.subscriptionManager.newHeadsSubscription === undefined
-    ) {
+    // I check if a poll instance is already active, if not I set a new starting block number for the subscription
+    if (provider.getPollInstance() === undefined) {
         const block = await thorClient.blocks.getBestBlock();
 
         if (block !== undefined && block !== null) {
             provider.subscriptionManager.currentBlockNumber = block.number;
-        }
+        } else
+            throw buildProviderError(
+                JSONRPC.INTERNAL_ERROR,
+                `Method 'ethSubscribe' failed: Best block not available\n
+            Params: ${JSON.stringify(params)}\n
+            URL: ${thorClient.httpClient.baseURL}`,
+                {
+                    params
+                }
+            );
+
+        provider.startSubscriptionsPolling();
     }
     const subscriptionId = dataUtils.generateRandomHexOfLength(32);
 

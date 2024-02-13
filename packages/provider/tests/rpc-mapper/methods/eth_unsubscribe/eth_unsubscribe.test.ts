@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
 import { RPC_METHODS, RPCMethodsMap, VechainProvider } from '../../../../src';
-import { JSONRPCInternalError } from '@vechain/vechain-sdk-errors';
+import { ProviderRpcError } from '@vechain/vechain-sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_unsubscribe' method
@@ -81,6 +81,8 @@ describe('RPC Mapper - eth_unsubscribe method tests', () => {
                     params: ['invalid_subscription_id']
                 })
             ).toBe(false);
+
+            expect(provider.getPollInstance()).toBeUndefined();
         });
 
         test('eth_unsubscribe - no provider', async () => {
@@ -90,7 +92,7 @@ describe('RPC Mapper - eth_unsubscribe method tests', () => {
                     await RPCMethodsMap(thorClient)[
                         RPC_METHODS.eth_unsubscribe
                     ]([])
-            ).rejects.toThrowError(JSONRPCInternalError);
+            ).rejects.toThrowError(ProviderRpcError);
         });
     });
 });

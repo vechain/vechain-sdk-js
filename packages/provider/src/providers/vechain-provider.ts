@@ -47,7 +47,6 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         readonly wallet?: Wallet
     ) {
         super();
-        this.startSubscriptionsPolling();
     }
 
     /**
@@ -93,43 +92,84 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
      * This method leverages the `Poll.createEventPoll` utility to create the polling mechanism,
      * which is then started by invoking `startListen` on the poll instance.
      */
-    private startSubscriptionsPolling(): void {
-        this.pollInstance = Poll.createEventPoll(async () => {
-            const data: SubscriptionEvent[] = [];
+    public startSubscriptionsPolling(): boolean {
+        let result = false;
+        if (this.pollInstance === undefined) {
+            this.pollInstance = Poll.createEventPoll(async () => {
+                const data: SubscriptionEvent[] = [];
 
-            const currentBlock = await this.getCurrentBlock();
+                const currentBlock = await this.getCurrentBlock();
 
-            if (currentBlock !== null) {
-                if (
-                    this.subscriptionManager.newHeadsSubscription !== undefined
-                ) {
-                    data.push({
-                        method: 'eth_subscription',
-                        params: {
-                            subscription:
-                                this.subscriptionManager.newHeadsSubscription
-                                    .subscriptionId,
-                            result: currentBlock
-                        }
+                if (currentBlock !== null) {
+                    if (
+                        this.subscriptionManager.newHeadsSubscription !==
+                        undefined
+                    ) {
+                        data.push({
+                            method: 'eth_subscription',
+                            params: {
+                                subscription:
+                                    this.subscriptionManager
+                                        .newHeadsSubscription.subscriptionId,
+                                result: currentBlock
+                            }
+                        });
+                    }
+                    if (this.subscriptionManager.logSubscriptions.size > 0) {
+                        const logs = await this.getLogsRPC();
+                        data.push(...logs);
+                    }
+
+                    this.subscriptionManager.currentBlockNumber++;
+                }
+                return data;
+            }, POLLING_INTERVAL).onData(
+                (subscriptionEvents: SubscriptionEvent[]) => {
+                    subscriptionEvents.forEach((event) => {
+                        this.emit('message', event);
                     });
                 }
-                if (this.subscriptionManager.logSubscriptions.size > 0) {
-                    const logs = await this.getLogsRPC();
-                    data.push(...logs);
-                }
+            );
 
-                this.subscriptionManager.currentBlockNumber++;
-            }
-            return data;
-        }, POLLING_INTERVAL).onData(
-            (subscriptionEvents: SubscriptionEvent[]) => {
-                subscriptionEvents.forEach((event) => {
-                    this.emit('message', event);
-                });
-            }
+            this.pollInstance.startListen();
+            result = true;
+        }
+        return result;
+    }
+
+    /**
+     * Stops the polling mechanism for subscription events.
+     * This method stops the polling mechanism for subscription events, if it is active.
+     *
+     * @returns {boolean} A boolean indicating whether the polling mechanism was stopped.
+     */
+    public stopSubscriptionsPolling(): boolean {
+        let result = false;
+        if (this.pollInstance !== undefined) {
+            this.pollInstance.stopListen();
+            result = true;
+        }
+        return result;
+    }
+
+    /**
+     * Checks if there are active subscriptions.
+     * This method checks if there are any active log subscriptions or a new heads subscription.
+     *
+     * @returns {boolean} A boolean indicating whether there are active subscriptions.
+     */
+    public isThereActiveSubscriptions(): boolean {
+        return (
+            this.subscriptionManager.logSubscriptions.size > 0 ||
+            this.subscriptionManager.newHeadsSubscription !== undefined
         );
+    }
 
-        this.pollInstance.startListen();
+    /**
+     * Returns the poll instance for subscriptions.
+     */
+    public getPollInstance(): EventPoll<SubscriptionEvent[]> | undefined {
+        return this.pollInstance;
     }
 
     /**
@@ -193,10 +233,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         let result: BlockDetail | null = null;
 
         // Proceed only if there are active log subscriptions or a new heads subscription is present
-        if (
-            this.subscriptionManager.logSubscriptions.size > 0 ||
-            this.subscriptionManager.newHeadsSubscription !== undefined
-        ) {
+        if (this.isThereActiveSubscriptions()) {
             // Fetch the block details for the current block number
             const block = await this.thorClient.blocks.getBlock(
                 this.subscriptionManager.currentBlockNumber

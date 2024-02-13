@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
 import { RPC_METHODS, RPCMethodsMap, VechainProvider } from '../../../../src';
-import { JSONRPCInternalError } from '@vechain/vechain-sdk-errors';
+import { ProviderRpcError } from '@vechain/vechain-sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_subscribe' method
@@ -54,16 +54,6 @@ describe('RPC Mapper - eth_subscribe method tests', () => {
             // Verify the length of the subscription ID
             expect(rpcCall.length).toEqual(32);
         });
-
-        test('eth_subscribe - no provider', async () => {
-            // Attempts to unsubscribe with no provider and expects an error.
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_subscribe](
-                        []
-                    )
-            ).rejects.toThrowError(JSONRPCInternalError);
-        });
     });
 
     /**
@@ -86,7 +76,20 @@ describe('RPC Mapper - eth_subscribe method tests', () => {
                         method: 'eth_subscribe',
                         params: ['invalidSubscriptionType']
                     })
-            ).rejects.toThrowError(); // Ideally, specify the expected error for more precise testing.
+            ).rejects.toThrowError(ProviderRpcError); // Ideally, specify the expected error for more precise testing.
+        });
+
+        /**
+         * Tests the behavior of `eth_subscribe` when no provider is available.
+         */
+        test('eth_subscribe - no provider', async () => {
+            // Attempts to unsubscribe with no provider and expects an error.
+            await expect(
+                async () =>
+                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_subscribe](
+                        []
+                    )
+            ).rejects.toThrowError(ProviderRpcError);
         });
     });
 });
