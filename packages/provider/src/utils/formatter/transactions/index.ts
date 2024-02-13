@@ -1,7 +1,7 @@
 import {
-    formatFromExpandedBlockToRPCStandard,
-    formatFromSendRawTransactionToRPCStandard,
-    formatFromTransactionReceiptToRPCStandard,
+    formatExpandedBlockToRPCStandard,
+    formatSendRawTransactionToRPCStandard,
+    formatTransactionReceiptToRPCStandard,
     formatToRPCStandard
 } from './formatter';
 
@@ -9,7 +9,7 @@ export * from './types.d';
 
 export const transactionsFormatter = {
     formatToRPCStandard,
-    formatFromExpandedBlockToRPCStandard,
-    formatFromTransactionReceiptToRPCStandard,
-    formatFromSendRawTransactionToRPCStandard
+    formatExpandedBlockToRPCStandard,
+    formatTransactionReceiptToRPCStandard,
+    formatSendRawTransactionToRPCStandard
 };

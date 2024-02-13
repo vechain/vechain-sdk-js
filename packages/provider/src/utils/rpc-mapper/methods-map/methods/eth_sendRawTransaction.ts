@@ -43,7 +43,7 @@ const ethSendRawTransaction = async (
                 signedTransactionData
             );
 
-        return transactionsFormatter.formatFromSendRawTransactionToRPCStandard(
+        return transactionsFormatter.formatSendRawTransactionToRPCStandard(
             sentTransaction
         );
     } catch (e) {

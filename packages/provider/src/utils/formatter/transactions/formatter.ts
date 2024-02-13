@@ -107,7 +107,7 @@ const formatToRPCStandard = (
  *
  * @returns The RPC standard formatted transaction.
  */
-const formatFromExpandedBlockToRPCStandard = (
+const formatExpandedBlockToRPCStandard = (
     tx: TransactionsExpandedBlockDetail,
     block: BlockDetail,
     txIndex: number,
@@ -132,7 +132,7 @@ const formatFromExpandedBlockToRPCStandard = (
  * @param blockContainsTransaction - The block contains the transaction to be formatted.
  * @param chainId - The chain ID of the network.
  */
-function formatFromTransactionReceiptToRPCStandard(
+function formatTransactionReceiptToRPCStandard(
     transactionHash: string,
     receipt: TransactionReceipt,
     transaction: TransactionDetailNoRaw,
@@ -213,7 +213,7 @@ function formatFromTransactionReceiptToRPCStandard(
  *
  * @param transaction - The transaction result to be formatted.
  */
-const formatFromSendRawTransactionToRPCStandard = (
+const formatSendRawTransactionToRPCStandard = (
     transaction: SendTransactionResult
 ): SendRawTransactionResultRPC => {
     return {
@@ -223,7 +223,7 @@ const formatFromSendRawTransactionToRPCStandard = (
 
 export {
     formatToRPCStandard,
-    formatFromExpandedBlockToRPCStandard,
-    formatFromTransactionReceiptToRPCStandard,
-    formatFromSendRawTransactionToRPCStandard
+    formatExpandedBlockToRPCStandard,
+    formatTransactionReceiptToRPCStandard,
+    formatSendRawTransactionToRPCStandard
 };

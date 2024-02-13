@@ -72,7 +72,7 @@ const ethGetTransactionReceipt = async (
 
             // Initialize the result
             const result =
-                transactionsFormatter.formatFromTransactionReceiptToRPCStandard(
+                transactionsFormatter.formatTransactionReceiptToRPCStandard(
                     hash,
                     receipt,
                     transactionDetail,
