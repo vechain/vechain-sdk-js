@@ -40,11 +40,9 @@ const ethGetCode = async (
         if (blockNumber === 'latest') blockNumber = 'best';
 
         // Get the account details
-        const accountCode = await thorClient.accounts.getBytecode(address, {
+        return await thorClient.accounts.getBytecode(address, {
             revision: blockNumber
         });
-
-        return accountCode;
     } catch (e) {
         throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,

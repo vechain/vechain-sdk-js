@@ -71,18 +71,15 @@ const ethGetTransactionReceipt = async (
             ]([])) as string;
 
             // Initialize the result
-            const result =
-                transactionsFormatter.formatTransactionReceiptToRPCStandard(
-                    hash,
-                    receipt,
-                    transactionDetail,
-                    blockContainsTransaction,
-                    chainId
-                );
-
-            return await Promise.resolve(result);
+            return transactionsFormatter.formatTransactionReceiptToRPCStandard(
+                hash,
+                receipt,
+                transactionDetail,
+                blockContainsTransaction,
+                chainId
+            );
         } else {
-            return await Promise.resolve(null);
+            return null;
         }
     } catch (e) {
         throw buildProviderError(

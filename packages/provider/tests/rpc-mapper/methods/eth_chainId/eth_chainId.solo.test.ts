@@ -36,10 +36,9 @@ describe('RPC Mapper - eth_chainId method tests', () => {
             ]([])) as string;
 
             expect(rpcCallChainId).toBe(
-                '0x' +
-                    (
-                        networkInfo.solo.genesisBlock.id as unknown as number
-                    ).toString(16)
+                (
+                    networkInfo.solo.genesisBlock.id as unknown as number
+                ).toString(16)
             );
         });
     });

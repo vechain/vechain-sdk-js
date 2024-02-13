@@ -15,7 +15,7 @@ const ethChainId = async (thorClient: ThorClient): Promise<string> => {
         const genesisBlock = await thorClient.blocks.getGenesisBlock();
         if (genesisBlock != null) {
             const chainId = genesisBlock?.id;
-            return '0x' + (chainId as unknown as number).toString(16);
+            return (chainId as unknown as number).toString(16);
         } else {
             return '0x0';
         }

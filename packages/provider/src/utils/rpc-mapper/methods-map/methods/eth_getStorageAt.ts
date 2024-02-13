@@ -1,9 +1,9 @@
 import { dataUtils } from '@vechain/vechain-sdk-core';
 import {
-    DATA,
-    JSONRPC,
     assert,
-    buildProviderError
+    buildProviderError,
+    DATA,
+    JSONRPC
 } from '@vechain/vechain-sdk-errors';
 import { type ThorClient } from '@vechain/vechain-sdk-network';
 
@@ -47,15 +47,13 @@ const ethGetStorageAt = async (
         if (blockNumber === 'latest') blockNumber = 'best';
 
         // Get the account details
-        const accountCode = await thorClient.accounts.getStorageAt(
+        return await thorClient.accounts.getStorageAt(
             address,
             dataUtils.padHexString(storagePosition),
             {
                 revision: blockNumber
             }
         );
-
-        return accountCode;
     } catch (e) {
         throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,
