@@ -31,6 +31,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
 
     /**
      * Poll instance for subscriptions
+     *
      * @private
      */
     private pollInstance?: EventPoll<SubscriptionEvent[]>;
@@ -51,7 +52,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
 
     /**
      * Destroys the provider by closing the thorClient and stopping the provider poll instance if present.
-     * This is due to the fact that thorClient and the provider might be initialized with a polling interval.
+     * This is because thorClient and the provider might be initialized with a polling interval.
      */
     public destroy(): void {
         this.thorClient.destroy();
@@ -60,6 +61,12 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         }
     }
 
+    /**
+     * This method is used to send a request to the provider.
+     * Basically, it is a wrapper around the RPCMethodsMap.
+     *
+     * @param args - Method and parameters to be used for the request.
+     */
     public async request(args: EIP1193RequestArguments): Promise<unknown> {
         // Check if the method is supported
         assert(
@@ -176,8 +183,13 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         );
     }
 
+    /**
+     * Fetches the current block details from the vechain node.
+     *
+     * @private
+     */
     private async getCurrentBlock(): Promise<BlockDetail | null> {
-        // Initialize result to null, indicating no block found initially
+        // Initialize the result to null, indicating no block found initially
         let result: BlockDetail | null = null;
 
         // Proceed only if there are active log subscriptions or a new heads subscription is present
