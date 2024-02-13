@@ -113,6 +113,3 @@ expect(newBalanceReceiver).not.toBe(receiverBalanceBefore);
 
 console.log('New balance of sender:', newBalanceSender);
 console.log('New balance of receiver:', newBalanceReceiver);
-
-// Destroying the Thor client
-thorSoloClient.destroy();

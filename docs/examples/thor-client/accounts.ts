@@ -29,6 +29,3 @@ const accountStorage = await thorClient.accounts.getStorageAt(
 expect(accountStorage).toEqual(
     '0x0000000000000000000000000000000000000000000000000000000000000000'
 );
-
-// Destroying the Thor client
-thorClient.destroy();

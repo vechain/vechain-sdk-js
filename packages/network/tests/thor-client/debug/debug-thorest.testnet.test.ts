@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import { beforeEach, describe, expect, test } from '@jest/globals';
 import { testNetwork } from '../../fixture';
 import { ThorClient } from '../../../src';
 import { type TracerName } from '../../../src/thor-client/debug';
@@ -23,10 +23,6 @@ describe('ThorClient - Debug Module', () => {
 
     beforeEach(() => {
         thorClient = new ThorClient(testNetwork);
-    });
-
-    afterEach(() => {
-        thorClient.destroy();
     });
 
     /**

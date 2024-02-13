@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     argFilterEventLogs,
     argFilterTransferLogs,
@@ -19,10 +19,6 @@ describe('ThorClient - Logs Module', () => {
 
     beforeEach(() => {
         thorClient = new ThorClient(testNetwork);
-    });
-
-    afterEach(() => {
-        thorClient.destroy();
     });
 
     /**

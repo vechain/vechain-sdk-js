@@ -1,11 +1,4 @@
-import {
-    describe,
-    expect,
-    test,
-    jest,
-    beforeEach,
-    afterEach
-} from '@jest/globals';
+import { describe, expect, test, jest, beforeEach } from '@jest/globals';
 import {
     blockWithMissingTimeStamp,
     blockWithOldTimeStamp,
@@ -32,10 +25,6 @@ describe('ThorClient - Nodes Module', () => {
     beforeEach(() => {
         const soloNetwork = new HttpClient(URL);
         thorClient = new ThorClient(soloNetwork);
-    });
-
-    afterEach(() => {
-        thorClient.destroy();
     });
 
     test('valid URL/node but Error is thrown by network provider', async () => {

@@ -1,4 +1,4 @@
-import { describe, expect, test, beforeEach, afterEach } from '@jest/globals';
+import { describe, expect, test, beforeEach } from '@jest/globals';
 import {
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,
@@ -14,8 +14,12 @@ import {
     testingContractTestCases
 } from './fixture';
 import { addressUtils, type DeployParams } from '@vechain/vechain-sdk-core';
-import { ThorClient, type TransactionReceipt } from '../../../src';
-import { type ContractFactory } from '../../../src/thor-client/contracts/model';
+import {
+    Contract,
+    ThorClient,
+    type TransactionReceipt,
+    type ContractFactory
+} from '../../../src';
 import { ContractDeploymentFailedError } from '@vechain/vechain-sdk-errors';
 
 /**
@@ -31,10 +35,6 @@ describe('ThorClient - Contracts', () => {
 
     beforeEach(() => {
         thorSoloClient = new ThorClient(soloNetwork);
-    });
-
-    afterEach(() => {
-        thorSoloClient.destroy();
     });
 
     /**
@@ -58,12 +58,31 @@ describe('ThorClient - Contracts', () => {
     /**
      * Test case for deploying a smart contract using the contract factory.
      */
+    test('create a new contract', () => {
+        // Poll until the transaction receipt is available
+        const contract: Contract = new Contract(
+            '0x123',
+            deployedContractAbi,
+            thorSoloClient
+        );
+        expect(contract.address).toBeDefined();
+        expect(contract.abi).toBeDefined();
+    }, 10000);
+
+    /**
+     * Test case for deploying a smart contract using the contract factory.
+     */
     test('deploy a contract', async () => {
         // Deploy an example contract and get the transaction response
         const response = await createExampleContractFactory();
 
         // Poll until the transaction receipt is available
-        const contract = await response.waitForDeployment();
+        const contract: Contract = await response.waitForDeployment();
+
+        expect(contract.address).toBeDefined();
+        expect(contract.abi).toBeDefined();
+        expect(contract.deployTransactionReceipt).toBeDefined();
+
         // Extract the contract address from the transaction receipt
         const contractAddress = contract.address;
 
@@ -133,7 +152,7 @@ describe('ThorClient - Contracts', () => {
 
         expect(factory.getDeployTransaction()).not.toBe(undefined);
 
-        const contract = await factory.waitForDeployment();
+        const contract: Contract = await factory.waitForDeployment();
 
         expect(contract.address).not.toBe(null);
         expect(addressUtils.isAddress(contract.address)).toBe(true);
@@ -159,7 +178,7 @@ describe('ThorClient - Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract = await factory.waitForDeployment();
+        const contract: Contract = await factory.waitForDeployment();
 
         // Execute a 'transfer' transaction on the deployed contract,
         // transferring a specified amount of tokens
@@ -206,7 +225,7 @@ describe('ThorClient - Contracts', () => {
         const factory = await createExampleContractFactory();
 
         // Wait for the deployment to complete and obtain the contract instance
-        const contract = await factory.waitForDeployment();
+        const contract: Contract = await factory.waitForDeployment();
 
         // Retrieve the bytecode of the deployed contract
         const contractBytecodeResponse =
@@ -224,7 +243,7 @@ describe('ThorClient - Contracts', () => {
         const factory = await createExampleContractFactory();
 
         // Wait for the deployment to complete and obtain the contract instance
-        const contract = await factory.waitForDeployment();
+        const contract: Contract = await factory.waitForDeployment();
 
         const callFunctionSetResponse =
             await thorSoloClient.contracts.executeContractTransaction(

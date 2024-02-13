@@ -7,17 +7,17 @@ interface Range {
     /**
      * The unit for specifying the range (block or time).
      */
-    unit: 'block' | 'time'; // The unit for specifying the range (block or time).
+    unit?: 'block' | 'time'; // The unit for specifying the range (block or time).
 
     /**
      * The starting point of the range.
      */
-    from: number;
+    from?: number;
 
     /**
      * The ending point of the range.
      */
-    to: number;
+    to?: number;
 }
 
 /**
@@ -27,12 +27,12 @@ interface PaginationOptions {
     /**
      * Offset for pagination.
      */
-    offset: number;
+    offset?: number;
 
     /**
      * Limit for the number of results to return.
      */
-    limit: number;
+    limit?: number;
 }
 
 /**
@@ -73,11 +73,11 @@ interface FilterEventLogsOptions {
     /**
      * Event filters
      */
-    criteriaSet: EventCriteria[];
+    criteriaSet?: EventCriteria[];
     /**
      * Sorting order
      */
-    order: EventDisplayOrder;
+    order?: EventDisplayOrder;
 }
 
 /**

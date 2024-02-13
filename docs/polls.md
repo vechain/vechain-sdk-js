@@ -41,9 +41,6 @@ expect(newBlock?.number).toBeGreaterThan(currentBlock?.number as number);
 
 console.log('New block:', newBlock);
 
-// Destroying the Thor client
-thorClient.destroy();
-
 ```
 
 ### Observing Balance Changes Post-Transfer
@@ -166,9 +163,6 @@ expect(newBalanceReceiver).not.toBe(receiverBalanceBefore);
 console.log('New balance of sender:', newBalanceSender);
 console.log('New balance of receiver:', newBalanceReceiver);
 
-// Destroying the Thor client
-thorSoloClient.destroy();
-
 ```
 
 ## Asynchronous Polling
@@ -210,8 +204,6 @@ for (const account of accounts) {
         // Add listeners for stop event
         .onStop((eventPoll) => {
             console.log(`Stop monitoring account ${account}`, eventPoll);
-            // Destroying the Thor client
-            thorClient.destroy();
         })
 
         // Add listeners for data event. It intercepts the account details every 1 second

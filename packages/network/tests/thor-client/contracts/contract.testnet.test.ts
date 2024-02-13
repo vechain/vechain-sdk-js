@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import { beforeEach, describe, expect, test } from '@jest/globals';
 import { testNetwork } from '../../fixture';
 import { ThorClient } from '../../../src';
 
@@ -15,9 +15,6 @@ describe('ThorClient - Gas Module', () => {
         thorClient = new ThorClient(testNetwork);
     });
 
-    afterEach(() => {
-        thorClient.destroy();
-    });
     /**
      * Validates the base gas price of the Testnet.
      */

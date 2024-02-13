@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { NotImplementedError } from '@vechain/vechain-sdk-errors';
-import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
+import { RPC_METHODS, RPCMethodsMap, VechainProvider } from '../../../../src';
+import { JSONRPCInternalError } from '@vechain/vechain-sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_subscribe' method
@@ -11,58 +11,82 @@ import { testNetwork } from '../../../fixture';
  */
 describe('RPC Mapper - eth_subscribe method tests', () => {
     /**
-     * Thor client instance
+     * ThorClient and provider instances
      */
     let thorClient: ThorClient;
+    let provider: VechainProvider;
 
     /**
-     * Init thor client before each test
+     * Init thor client and provider before each test
      */
     beforeEach(() => {
-        // Init thor client
         thorClient = new ThorClient(testNetwork);
+        provider = new VechainProvider(thorClient);
     });
 
     /**
-     * Destroy thor client after each test
+     * Destroy thor client and provider after each test
      */
     afterEach(() => {
-        thorClient.destroy();
+        provider.destroy();
     });
 
     /**
-     * eth_subscribe RPC call tests - Positive cases
+     * Describes the test suite for positive test cases of the `eth_subscribe` RPC method.
+     * This suite includes various scenarios where `eth_subscribe` is expected to succeed,
+     * verifying the correct behavior of subscription functionalities for different types
+     * of events in Ethereum, such as `newHeads`.
      */
     describe('eth_subscribe - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Tests successful subscription to the 'newHeads' event.
+         * It verifies that the RPC call to `eth_subscribe` with 'newHeads' as a parameter
+         * successfully returns a subscription ID, and that the ID has the expected length
+         * of 32 characters, indicating a valid response format.
          */
-        test('eth_subscribe - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
+        test('eth_subscribe - new latest blocks subscription', async () => {
+            // Call RPC function
+            const rpcCall = (await provider.request({
+                method: 'eth_subscribe',
+                params: ['newHeads']
+            })) as string;
+
+            // Verify the length of the subscription ID
+            expect(rpcCall.length).toEqual(32);
+        });
+
+        test('eth_subscribe - no provider', async () => {
+            // Attempts to unsubscribe with no provider and expects an error.
             await expect(
                 async () =>
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_subscribe]([
-                        -1
-                    ])
-            ).rejects.toThrowError(NotImplementedError);
+                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_subscribe](
+                        []
+                    )
+            ).rejects.toThrowError(JSONRPCInternalError);
         });
     });
 
     /**
-     * eth_subscribe RPC call tests - Negative cases
+     * Describes the test suite for negative test cases of the `eth_subscribe` RPC method.
+     * This suite focuses on scenarios where `eth_subscribe` is expected to fail, such as
+     * when invalid parameters are provided. The aim is to ensure the method handles errors
+     * gracefully and in accordance with the JSON-RPC specifications.
      */
     describe('eth_subscribe - Negative cases', () => {
         /**
-         * Negative case 1 - ... Description ...
+         * Tests the behavior of `eth_subscribe` when an invalid subscription type is provided.
+         * The test expects the RPC call to throw an error, demonstrating that the method
+         * properly validates input parameters and handles invalid requests as per the
+         * JSON-RPC error handling conventions.
          */
-        test('eth_subscribe - negative case 1', async () => {
-            // NOT IMPLEMENTED YET!
+        test('eth_subscribe - invalid subscription', async () => {
             await expect(
                 async () =>
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.eth_subscribe]([
-                        'SOME_RANDOM_PARAM'
-                    ])
-            ).rejects.toThrowError(NotImplementedError);
+                    await provider.request({
+                        method: 'eth_subscribe',
+                        params: ['invalidSubscriptionType']
+                    })
+            ).rejects.toThrowError(); // Ideally, specify the expected error for more precise testing.
         });
     });
 });

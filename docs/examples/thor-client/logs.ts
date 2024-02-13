@@ -134,6 +134,3 @@ expect(transferLogs).toEqual([
         }
     }
 ]);
-
-// Destroying the Thor client
-thorClient.destroy();

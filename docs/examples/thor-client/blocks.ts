@@ -45,6 +45,3 @@ expect(bestBlockDetails).toBeDefined();
 
 const finalBlockDetails = await thorClient.blocks.getFinalBlock();
 expect(finalBlockDetails).toBeDefined();
-
-// Destroying the Thor client
-thorClient.destroy();

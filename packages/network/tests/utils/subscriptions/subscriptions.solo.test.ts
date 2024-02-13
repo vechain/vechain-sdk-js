@@ -155,8 +155,6 @@ describe('Subscriptions Solo', () => {
             // Send the signed transaction to the blockchain
             await thorSoloClient.transactions.sendTransaction(tx);
 
-            thorSoloClient.destroy();
-
             // Wait for the WebSocket message or a timeout
             await expect(waitForMessage).resolves.toBe(true);
         },
@@ -222,7 +220,6 @@ describe('Subscriptions Solo', () => {
         );
         // Send the signed transaction to the blockchain
         await thorSoloClient.transactions.sendTransaction(tx);
-        thorSoloClient.destroy();
 
         // Wait for the WebSocket message or a timeout
         await expect(waitForMessage).resolves.toBe(true);

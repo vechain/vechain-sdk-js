@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import { beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork, THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../fixture';
@@ -25,13 +25,6 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
     });
 
     /**
-     * Destroy thor client after each test
-     */
-    afterEach(() => {
-        thorClient.destroy();
-    });
-
-    /**
      * eth_requestAccounts RPC call tests - Positive cases
      */
     describe('eth_requestAccounts - Positive cases', () => {
@@ -42,6 +35,7 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
             // Get accounts
             const accounts = (await RPCMethodsMap(
                 thorClient,
+                undefined,
                 THOR_SOLO_ACCOUNTS_BASE_WALLET as Wallet
             )[RPC_METHODS.eth_requestAccounts]([])) as string[];
 
@@ -77,7 +71,7 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
 
             // Error with empty wallet
             await expect(
-                RPCMethodsMap(thorClient, emptyBaseWallet)[
+                RPCMethodsMap(thorClient, undefined, emptyBaseWallet)[
                     RPC_METHODS.eth_requestAccounts
                 ]([])
             ).rejects.toThrow(ProviderRpcError);

@@ -54,5 +54,3 @@ const receipt = contract.deployTransactionReceipt;
 
 expect(receipt.reverted).toEqual(false);
 expect(receipt.outputs[0].contractAddress).toBeDefined();
-
-thorSoloClient.destroy();
