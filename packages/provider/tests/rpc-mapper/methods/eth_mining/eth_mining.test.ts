@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import { beforeEach, describe, expect, test } from '@jest/globals';
 import { NotImplementedError } from '@vechain/vechain-sdk-errors';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
@@ -21,13 +21,6 @@ describe('RPC Mapper - eth_mining method tests', () => {
     beforeEach(() => {
         // Init thor client
         thorClient = new ThorClient(testNetwork);
-    });
-
-    /**
-     * Destroy thor client after each test
-     */
-    afterEach(() => {
-        thorClient.destroy();
     });
 
     /**

@@ -17,7 +17,7 @@ describe('RPC Mapper - eth_unsubscribe method tests', () => {
     let provider: VechainProvider;
 
     /**
-     * Inti thor client and provider before each test
+     * Init thor client and provider before each test
      */
     beforeEach(() => {
         thorClient = new ThorClient(testNetwork);

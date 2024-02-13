@@ -19,7 +19,7 @@ describe('Vechain provider tests', () => {
     let provider: VechainProvider;
 
     /**
-     * Inti thor client and provider before each test
+     * Init thor client and provider before each test
      */
     beforeEach(() => {
         thorClient = new ThorClient(testNetwork);
@@ -27,7 +27,7 @@ describe('Vechain provider tests', () => {
     });
 
     /**
-     * Destory thor client and provider after each test
+     * Destroy thor client and provider after each test
      */
     afterEach(() => {
         provider.destroy();

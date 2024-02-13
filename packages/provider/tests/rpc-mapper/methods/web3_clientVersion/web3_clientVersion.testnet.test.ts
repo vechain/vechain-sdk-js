@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import { beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
@@ -15,18 +15,11 @@ describe('RPC Mapper - web3_clientVersion method tests', () => {
     let thorClient: ThorClient;
 
     /**
-     * Inti thor client before each test
+     * Init thor client before each test
      */
     beforeEach(() => {
         // Init thor client
         thorClient = new ThorClient(testNetwork);
-    });
-
-    /**
-     * Destory thor client after each test
-     */
-    afterEach(() => {
-        thorClient.destroy();
     });
 
     /**

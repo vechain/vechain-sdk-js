@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import { beforeEach, describe, expect, test } from '@jest/globals';
 import { estimateGasTestCases, invalidEstimateGasTestCases } from './fixture';
 import { ThorClient } from '../../../src';
 import { soloNetwork } from '../../fixture';
@@ -15,10 +15,6 @@ describe('ThorClient - Gas Module', () => {
 
     beforeEach(() => {
         thorSoloClient = new ThorClient(soloNetwork);
-    });
-
-    afterEach(() => {
-        thorSoloClient.destroy();
     });
 
     /**

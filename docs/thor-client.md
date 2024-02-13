@@ -43,9 +43,6 @@ expect(accountStorage).toEqual(
     '0x0000000000000000000000000000000000000000000000000000000000000000'
 );
 
-// Destroying the Thor client
-thorClient.destroy();
-
 ```
 
 In this example, the code initializes a Thor client for the VechainThor testnet network and demonstrates three crucial methods for interacting with accounts:
@@ -116,9 +113,6 @@ expect(bestBlockDetails).toBeDefined();
 
 const finalBlockDetails = await thorClient.blocks.getFinalBlock();
 expect(finalBlockDetails).toBeDefined();
-
-// Destroying the Thor client
-thorClient.destroy();
 
 ```
 
@@ -280,9 +274,6 @@ expect(transferLogs).toEqual([
     }
 ]);
 
-// Destroying the Thor client
-thorClient.destroy();
-
 ```
 
 In this example, the code initializes a Thor client for the VechainThor testnet network and demonstrates two essential methods for interacting with logs:
@@ -316,9 +307,6 @@ const thorClient = new ThorClient(testNetwork);
 // 2 - Retrieves connected peers of a node
 
 const peerNodes = await thorClient.nodes.getNodes();
-
-// Destroying the Thor client
-thorClient.destroy();
 
 expect(peerNodes).toBeDefined();
 
@@ -416,9 +404,6 @@ const transactionReceipt =
 
 expect(transactionDetails).toBeDefined();
 expect(transactionReceipt).toBeDefined();
-
-// Destroying the Thor client
-thorSoloClient.destroy();
 
 ```
 
@@ -546,9 +531,6 @@ const transactionReceipt =
 
 expect(transactionDetails).toBeDefined();
 expect(transactionReceipt).toBeDefined();
-
-// Destroying the Thor client
-thorSoloClient.destroy();
 
 ```
 

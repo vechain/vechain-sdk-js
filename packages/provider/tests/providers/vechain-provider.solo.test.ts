@@ -23,7 +23,7 @@ describe('Vechain provider tests', () => {
     let provider: VechainProvider;
 
     /**
-     * Inti thor client and provider before each test
+     * Init thor client and provider before each test
      */
     beforeEach(() => {
         thorClient = new ThorClient(soloNetwork);
