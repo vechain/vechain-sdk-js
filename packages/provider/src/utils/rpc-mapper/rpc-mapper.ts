@@ -187,7 +187,7 @@ const RPCMethodsMap = (
         [RPC_METHODS.eth_sendTransaction]: async (
             params
         ): Promise<SendRawTransactionResultRPC> => {
-            return await ethSendTransaction(thorClient, params);
+            return await ethSendTransaction(thorClient, params, provider);
         },
 
         [RPC_METHODS.eth_syncing]: async (): Promise<

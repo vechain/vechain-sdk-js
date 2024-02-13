@@ -5,7 +5,7 @@ import { type VechainProvider } from '../../../../providers';
 /**
  * RPC Method eth_requestAccounts implementation
  *
- * @param wallet - Wallet instance to use.
+ * @param provider - Provider with Wallet instance to use.
  */
 const ethRequestAccounts = async (
     provider?: VechainProvider

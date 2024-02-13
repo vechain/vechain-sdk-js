@@ -33,6 +33,8 @@ interface TransactionObjectInput {
 /**
  * RPC Method debug_traceCall implementation
  *
+ * @link [debug_traceCall](https://www.quicknode.com/docs/ethereum/debug_traceCall)
+ *
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
  *                * params[0]: transaction - object - This describes the transaction info with following properties:
@@ -47,6 +49,9 @@ interface TransactionObjectInput {
  *                   * tracer - string to specify the type of tracer. Currently, it supports callTracer and prestateTracer.
  *                   * tracerConfig - Object to specify configurations for the tracer. It has the following parameters:
  *                      * onlyTopCall - boolean Setting this to true will only trace the main (top-level) call and none of the sub-calls. This avoids extra processing for each call frame if only the top-level call info are required (useful for getting revertReason).
+ *
+ * @throws {ProviderRpcError} - Will throw an error if the debug fails.
+ * @throws {InvalidDataTypeError} - Will throw an error if the params are invalid.
  */
 const debugTraceCall = async (
     thorClient: ThorClient,
@@ -59,17 +64,18 @@ const debugTraceCall = async (
             typeof params[2] === 'object',
         DATA.INVALID_DATA_TYPE,
         `Invalid params length, expected:\n* One transaction object containing transaction info with following properties: \n {` +
-            `\tfrom: 20 bytes - Address the transaction is sent from.` +
-            `\tto: 20 bytes [Required] - Address the transaction is directed to.` +
-            `\tgas: Hexadecimal value of the gas provided for the transaction execution as hex string.` +
-            `\tgasPrice: Hexadecimal value of the gasPrice used for each paid gas.` +
-            `\tvalue: Hexadecimal of the value sent with this transaction.` +
-            `\tdata: Hash of the method signature and encoded parameters` +
-            `}.\n\n* the block number parameter. An hexadecimal number or (latest, earliest or pending).` +
+            `\n\tfrom: 20 bytes - Address the transaction is sent from.` +
+            `\n\tto: 20 bytes [Required] - Address the transaction is directed to.` +
+            `\n\tgas: Hexadecimal value of the gas provided for the transaction execution as hex string.` +
+            `\n\tgasPrice: Hexadecimal value of the gasPrice used for each paid gas.` +
+            `\n\tvalue: Hexadecimal of the value sent with this transaction.` +
+            `\n\tdata: Hash of the method signature and encoded parameters` +
+            `\n}.\n\n* the block number parameter. An hexadecimal number or (latest, earliest or pending).` +
             `\n\nAnd lastly, one object containing the options for trace: \n {` +
-            `\ttracer - string to specify the type of tracer. Currently, it supports callTracer and prestateTracer.` +
-            `\ttracerConfig - Object to specify configurations for the tracer. It has the following parameters:` +
-            `\tonlyTopCall - boolean Setting this to true will only trace the main (top-level) call and none of the sub-calls. This avoids extra processing for each call frame if only the top-level call info are required (useful for getting revertReason)`
+            `\n\ttracer - string to specify the type of tracer. Currently, it supports callTracer and prestateTracer.` +
+            `\n\ttracerConfig - Object to specify configurations for the tracer. It has the following parameters:` +
+            `\n\tonlyTopCall - boolean Setting this to true will only trace the main (top-level) call and none of the sub-calls. This avoids extra processing for each call frame if only the top-level call info are required (useful for getting revertReason)` +
+            `\n}.`
     );
 
     // Init params

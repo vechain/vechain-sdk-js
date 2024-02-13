@@ -14,6 +14,8 @@ import {
 /**
  * RPC Method eth_sendRawTransaction implementation
  *
+ * @link [eth_sendrawtransaction](https://docs.infura.io/api/networks/ethereum/json-rpc-methods/eth_sendrawtransaction)
+ *
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
  *                 * params[0]: The signed transaction data as a hex string.
