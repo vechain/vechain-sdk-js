@@ -1,4 +1,7 @@
 import { type Wallet, type WalletAccount } from './types';
+import { assert, DATA } from '@vechain/vechain-sdk-errors';
+import { addressUtils } from '@vechain/vechain-sdk-core';
+import { type SignTransactionOptions } from '@vechain/vechain-sdk-network';
 
 /**
  * Base wallet class.
@@ -6,29 +9,71 @@ import { type Wallet, type WalletAccount } from './types';
  * This is the most basic wallet implementation we can have.
  */
 class BaseWallet implements Wallet {
+    /**
+     * List of accounts in the wallet.
+     */
     accounts: WalletAccount[];
+
+    /**
+     * Options for signing a transaction with delegator.
+     */
+    delegator?: SignTransactionOptions;
 
     /**
      * Create a new wallet.
      *
-     * ----- TEMPORARY COMMENT -----
-     * This is the most basic wallet implementation we can have.
-     * Probably we can add later a factory method to create a wallet from a list of private keys.
-     * Or, even better user into provider will use HDWallet.
-     * -----------------------------
-     *
      * @param accounts List of accounts in the wallet.
      */
-    constructor(accounts: WalletAccount[]) {
+    constructor(
+        accounts: WalletAccount[],
+        options?: {
+            delegator?: SignTransactionOptions;
+        }
+    ) {
         this.accounts = accounts;
+        this.delegator = options?.delegator;
     }
 
     /**
-     * Get the list of accounts in the wallet.
+     * Get the list of addresses in the wallet.
+     *
+     * @returns The list of addresses in the wallet.
      */
     async getAddresses(): Promise<string[]> {
-        const addresses = this.accounts.map((account) => account.address);
-        return await Promise.resolve(addresses);
+        return await Promise.resolve(
+            this.accounts.map((account) => account.address)
+        );
+    }
+
+    /**
+     * Get an account by address.
+     *
+     * @param address - Address of the account.
+     * @returns The account with the given address, or null if not found.
+     */
+    async getAccount(address: string): Promise<WalletAccount | null> {
+        // Check if the address is valid
+        assert(
+            addressUtils.isAddress(address),
+            DATA.INVALID_DATA_TYPE,
+            'Invalid params expected an address.',
+            { address }
+        );
+
+        // Get the account by address
+        const account = this.accounts.find(
+            (account) => account.address === address
+        );
+        return await Promise.resolve(account ?? null);
+    }
+
+    /**
+     * Get the options for signing a transaction with delegator (if any).
+     *
+     * @returns The options for signing a transaction with delegator.
+     */
+    async getDelegator(): Promise<SignTransactionOptions | null> {
+        return await Promise.resolve(this.delegator ?? null);
     }
 }
 
