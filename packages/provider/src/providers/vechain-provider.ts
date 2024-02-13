@@ -79,9 +79,9 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         );
 
         // Get the method from the RPCMethodsMap and call it
-        return await RPCMethodsMap(this.thorClient, this, this.wallet)[
-            args.method
-        ](args.params as unknown[]);
+        return await RPCMethodsMap(this.thorClient, this)[args.method](
+            args.params as unknown[]
+        );
     }
 
     /**

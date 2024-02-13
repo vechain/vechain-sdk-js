@@ -1,8 +1,8 @@
-import { beforeEach, describe, expect, test } from '@jest/globals';
-import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import { RPC_METHODS, RPCMethodsMap, VechainProvider } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork, THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../fixture';
-import { BaseWallet, type Wallet } from '@vechain/vechain-sdk-wallet';
+import { type Wallet, type WalletAccount } from '@vechain/vechain-sdk-wallet';
 import { ProviderRpcError } from '@vechain/vechain-sdk-errors';
 
 /**
@@ -17,11 +17,29 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
     let thorClient: ThorClient;
 
     /**
+     * Provider instance
+     */
+    let provider: VechainProvider;
+
+    /**
      * Init thor client before each test
      */
     beforeEach(() => {
         // Init thor client
         thorClient = new ThorClient(testNetwork);
+
+        // Init provider
+        provider = new VechainProvider(
+            thorClient,
+            THOR_SOLO_ACCOUNTS_BASE_WALLET as Wallet
+        );
+    });
+
+    /**
+     * Destroy thor client after each test
+     */
+    afterEach(() => {
+        provider.destroy();
     });
 
     /**
@@ -32,18 +50,17 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
          * Positive case 1 - Should be able to get addresses from a NON-empty wallet
          */
         test('eth_requestAccounts - Should be able to get addresses from a NON-empty wallet', async () => {
-            // Get accounts
-            const accounts = (await RPCMethodsMap(
-                thorClient,
-                undefined,
-                THOR_SOLO_ACCOUNTS_BASE_WALLET as Wallet
-            )[RPC_METHODS.eth_requestAccounts]([])) as string[];
+            // Get accounts - Instead of using RPCMethodsMap, we can use provider directly
+            const accounts = (await provider.request({
+                method: RPC_METHODS.eth_requestAccounts,
+                params: []
+            })) as string[];
 
             // Check if the accounts are the same
             expect(accounts.length).toBeGreaterThan(0);
             expect(accounts).toEqual(
                 THOR_SOLO_ACCOUNTS_BASE_WALLET.accounts.map(
-                    (account) => account.address
+                    (account: WalletAccount) => account.address
                 )
             );
         });
@@ -66,12 +83,9 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
          * Negative case 2 - Should throw error if wallet is given, but empty
          */
         test('eth_requestAccounts - Should throw error if wallet is given, but empty', async () => {
-            // Init a wallet BUT empty
-            const emptyBaseWallet = new BaseWallet([]);
-
             // Error with empty wallet
             await expect(
-                RPCMethodsMap(thorClient, undefined, emptyBaseWallet)[
+                RPCMethodsMap(thorClient, undefined)[
                     RPC_METHODS.eth_requestAccounts
                 ]([])
             ).rejects.toThrow(ProviderRpcError);

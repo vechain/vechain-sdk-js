@@ -64,7 +64,7 @@ const TEST_ACCOUNTS_THOR_SOLO = [
 /**
  * Test accounts into wallet fixture
  */
-const THOR_SOLO_ACCOUNTS_BASE_WALLET = new BaseWallet(
+const THOR_SOLO_ACCOUNTS_BASE_WALLET: BaseWallet = new BaseWallet(
     TEST_ACCOUNTS_THOR_SOLO.map((account) => ({
         privateKey: Buffer.from(account.privateKey, 'hex'),
         publicKey: secp256k1.derivePublicKey(

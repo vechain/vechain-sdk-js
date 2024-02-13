@@ -1,5 +1,6 @@
 import { type ThorClient } from '@vechain/vechain-sdk-network';
 import { buildError, FUNCTION } from '@vechain/vechain-sdk-errors';
+import type { SendRawTransactionResultRPC } from '../../../formatter';
 
 /**
  * RPC Method eth_sendTransaction implementation
@@ -14,7 +15,7 @@ import { buildError, FUNCTION } from '@vechain/vechain-sdk-errors';
 const ethSendTransaction = async (
     thorClient: ThorClient,
     params: unknown[]
-): Promise<void> => {
+): Promise<SendRawTransactionResultRPC> => {
     // To avoid eslint error
     await Promise.resolve(0);
 

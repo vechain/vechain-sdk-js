@@ -1,14 +1,17 @@
-import { type Wallet } from '@vechain/vechain-sdk-wallet';
 import { ethAccounts } from './eth_accounts';
 import { buildProviderError, JSONRPC } from '@vechain/vechain-sdk-errors';
+import { type VechainProvider } from '../../../../providers';
 
 /**
  * RPC Method eth_requestAccounts implementation
  *
  * @param wallet - Wallet instance to use.
  */
-const ethRequestAccounts = async (wallet?: Wallet): Promise<string[]> => {
-    const accounts = await ethAccounts(wallet);
+const ethRequestAccounts = async (
+    provider?: VechainProvider
+): Promise<string[]> => {
+    // Get the accounts from the wallet
+    const accounts = await ethAccounts(provider);
 
     // If there are no accounts, throw error
     // @NOTE: eth_accounts returns an empty array if there are no accounts OR wallet is not defined.

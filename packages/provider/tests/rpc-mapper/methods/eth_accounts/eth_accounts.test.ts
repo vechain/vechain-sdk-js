@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, test } from '@jest/globals';
-import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import { RPC_METHODS, RPCMethodsMap, VechainProvider } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork, THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../fixture';
 import { type Wallet } from '@vechain/vechain-sdk-wallet';
@@ -16,11 +16,29 @@ describe('RPC Mapper - eth_accounts method tests', () => {
     let thorClient: ThorClient;
 
     /**
+     * Provider instance
+     */
+    let provider: VechainProvider;
+
+    /**
      * Init thor client before each test
      */
     beforeEach(() => {
         // Init thor client
         thorClient = new ThorClient(testNetwork);
+
+        // Init provider
+        provider = new VechainProvider(
+            thorClient,
+            THOR_SOLO_ACCOUNTS_BASE_WALLET as Wallet
+        );
+    });
+
+    /**
+     * Destroy thor client after each test
+     */
+    afterEach(() => {
+        provider.destroy();
     });
 
     /**
@@ -31,12 +49,11 @@ describe('RPC Mapper - eth_accounts method tests', () => {
          * Positive case 1 - Should be able to get addresses from a NON-empty wallet
          */
         test('eth_accounts - Should be able to get addresses from a NON-empty wallet', async () => {
-            // Get accounts
-            const accounts = (await RPCMethodsMap(
-                thorClient,
-                undefined,
-                THOR_SOLO_ACCOUNTS_BASE_WALLET as Wallet
-            )[RPC_METHODS.eth_accounts]([])) as string[];
+            // Get accounts - Instead of using RPCMethodsMap, we can use provider directly
+            const accounts = (await provider.request({
+                method: RPC_METHODS.eth_accounts,
+                params: []
+            })) as string[];
 
             // Check if the accounts are the same
             expect(accounts.length).toBeGreaterThan(0);
