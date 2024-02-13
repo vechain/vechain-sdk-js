@@ -97,8 +97,7 @@ import { type TraceReturnType } from '@vechain/vechain-sdk-network/src/thor-clie
  * * https://ethereum.github.io/execution-apis/api-documentation/
  *
  * @param thorClient - ThorClient instance.
- * @param wallet - Wallet instance. It is optional because the majority of the methods do not require a wallet.
- * @param provider
+ * @param provider - Provider instance. It is optional because the majority of the methods do not require a provider.
  */
 const RPCMethodsMap = (
     thorClient: ThorClient,
