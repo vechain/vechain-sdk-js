@@ -89,8 +89,8 @@ import { type LogsRPC } from '../formatter/logs';
 import { type VechainProvider } from '../../providers';
 
 /**
- * Map of RPC methods to their implementations with our SDK.
- * We can consider this as a "RPC Mapper" for our SDK.
+ * Map of RPC methods to their implementations with the SDK.
+ * We can consider this as an "RPC Mapper" for the SDK.
  *
  * List of all RPC methods:
  * * https://eth.wiki/json-rpc/API
