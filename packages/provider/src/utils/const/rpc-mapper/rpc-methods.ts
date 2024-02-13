@@ -44,14 +44,14 @@ enum RPC_METHODS {
     eth_getTransactionByHash = 'eth_getTransactionByHash',
     eth_getTransactionCount = 'eth_getTransactionCount',
     eth_getTransactionReceipt = 'eth_getTransactionReceipt',
-    eth_sendTransaction = 'eth_sendTransaction',
+    eth_sendTransaction = 'eth_sendTransaction', // TEMPORARY COMMENT - TO IMPLEMENT
     eth_syncing = 'eth_syncing',
     net_version = 'net_version',
     web3_clientVersion = 'web3_clientVersion',
     eth_subscribe = 'eth_subscribe',
     eth_unsubscribe = 'eth_unsubscribe',
-    debug_traceTransaction = 'debug_traceTransaction', // TEMPORARY COMMENT - TO IMPLEMENT
-    debug_traceCall = 'debug_traceCall', // TEMPORARY COMMENT - TO IMPLEMENT
+    debug_traceTransaction = 'debug_traceTransaction',
+    debug_traceCall = 'debug_traceCall',
     evm_mine = 'evm_mine',
 
     /**
