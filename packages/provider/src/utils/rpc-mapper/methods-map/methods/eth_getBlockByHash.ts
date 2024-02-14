@@ -27,7 +27,6 @@ const ethGetBlockByHash = async (
     thorClient: ThorClient,
     params: unknown[]
 ): Promise<BlocksRPC | null> => {
-    // Check different params from eth_getBlockByNumber. Otherwise, the logic is the same. Only difference is the block number is replaced by block hash.
     assert(
         params.length === 2 &&
             typeof params[0] === 'string' &&

@@ -16,7 +16,9 @@ import {
  *               * params[0]: The address to get the code for as a hex string.
  *               * params[1]: The block number to get the code at as a hex string or "latest".
  *
- * @returns the code of the account at the given address formatted to the RPC standard.
+ * @returns The code of the account at the given address formatted to the RPC standard.
+ *
+ * @note Only 'latest' and 'finalized' block numbers are supported.
  *
  * @throws {ProviderRpcError} - Will throw an error if the retrieval of the code fails.
  */
@@ -38,11 +40,9 @@ const ethGetCode = async (
         if (blockNumber === 'latest') blockNumber = 'best';
 
         // Get the account details
-        const accountCode = await thorClient.accounts.getBytecode(address, {
+        return await thorClient.accounts.getBytecode(address, {
             revision: blockNumber
         });
-
-        return accountCode;
     } catch (e) {
         throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,

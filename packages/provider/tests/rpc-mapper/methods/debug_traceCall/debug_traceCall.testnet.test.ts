@@ -1,8 +1,11 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { NotImplementedError } from '@vechain/vechain-sdk-errors';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
+import {
+    debugTraceCallNegativeCasesFixtureTestnet,
+    debugTraceCallPositiveCasesFixtureTestnet
+} from './fixture';
 
 /**
  * RPC Mapper integration tests for 'debug_traceCall' method
@@ -28,16 +31,34 @@ describe('RPC Mapper - debug_traceCall method tests', () => {
      */
     describe('debug_traceCall - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Positive cases
          */
-        test('debug_traceCall - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.debug_traceCall
-                    ]([-1])
-            ).rejects.toThrowError(NotImplementedError);
+        test('debug_traceCall - positive cases', async () => {
+            for (const fixture of debugTraceCallPositiveCasesFixtureTestnet) {
+                const result = await RPCMethodsMap(thorClient)[
+                    RPC_METHODS.debug_traceCall
+                ](fixture.input.params);
+                expect(result).toEqual(fixture.input.expected);
+            }
+        });
+
+        /**
+         * Should be able to trace a call with callTracer and prestateTracer
+         */
+        test('debug_traceCall - Should be able to trace a call with callTracer and prestateTracer', async () => {
+            const fixtureTransaction =
+                debugTraceCallPositiveCasesFixtureTestnet[0];
+
+            for (const tracerName of ['callTracer', 'prestateTracer']) {
+                const result = await RPCMethodsMap(thorClient)[
+                    RPC_METHODS.debug_traceCall
+                ]([
+                    fixtureTransaction.input.params[0],
+                    fixtureTransaction.input.params[1],
+                    { tracer: tracerName }
+                ]);
+                expect(result).toBeDefined();
+            }
         });
     });
 
@@ -46,16 +67,16 @@ describe('RPC Mapper - debug_traceCall method tests', () => {
      */
     describe('debug_traceCall - Negative cases', () => {
         /**
-         * Negative case 1 - ... Description ...
+         * Negative cases
          */
-        test('debug_traceCall - negative case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
+        test('debug_traceCall - negative cases', async () => {
+            for (const fixture of debugTraceCallNegativeCasesFixtureTestnet) {
+                await expect(async () => {
                     await RPCMethodsMap(thorClient)[
                         RPC_METHODS.debug_traceCall
-                    ](['SOME_RANDOM_PARAM'])
-            ).rejects.toThrowError(NotImplementedError);
+                    ](fixture.input.params);
+                }).rejects.toThrowError(fixture.input.expectedError);
+            }
         });
     });
 });

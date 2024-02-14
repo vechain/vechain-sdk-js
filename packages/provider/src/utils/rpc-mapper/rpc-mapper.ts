@@ -87,10 +87,11 @@ import { type Wallet } from '@vechain/vechain-sdk-wallet';
 import { ethRequestAccounts } from './methods-map/methods/eth_requestAccounts';
 import { type LogsRPC } from '../formatter/logs';
 import { type VechainProvider } from '../../providers';
+import { type TraceReturnType } from '@vechain/vechain-sdk-network/src/thor-client/debug';
 
 /**
- * Map of RPC methods to their implementations with our SDK.
- * We can consider this as a "RPC Mapper" for our SDK.
+ * Map of RPC methods to their implementations with the SDK.
+ * We can consider this as an "RPC Mapper" for the SDK.
  *
  * List of all RPC methods:
  * * https://eth.wiki/json-rpc/API
@@ -211,12 +212,16 @@ const RPCMethodsMap = (
             return await ethUnsubscribe(params, provider);
         },
 
-        [RPC_METHODS.debug_traceTransaction]: async (params) => {
-            await debugTraceTransaction(thorClient, params);
+        [RPC_METHODS.debug_traceTransaction]: async (
+            params
+        ): Promise<TraceReturnType<'call'> | TraceReturnType<'prestate'>> => {
+            return await debugTraceTransaction(thorClient, params);
         },
 
-        [RPC_METHODS.debug_traceCall]: async (params) => {
-            await debugTraceCall(thorClient, params);
+        [RPC_METHODS.debug_traceCall]: async (
+            params
+        ): Promise<TraceReturnType<'call'> | TraceReturnType<'prestate'>> => {
+            return await debugTraceCall(thorClient, params);
         },
 
         [RPC_METHODS.evm_mine]: async (): Promise<BlocksRPC | null> => {
