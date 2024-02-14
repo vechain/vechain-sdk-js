@@ -27,7 +27,7 @@ const formatToRPCStandard = (
         typeof block.transactions[0] === 'string'
             ? (block.transactions as string[])
             : block.transactions.map((tx, index) => {
-                  return transactionsFormatter.formatFromExpandedBlockToRPCStandard(
+                  return transactionsFormatter.formatExpandedBlockToRPCStandard(
                       tx as TransactionsExpandedBlockDetail,
                       block,
                       index,

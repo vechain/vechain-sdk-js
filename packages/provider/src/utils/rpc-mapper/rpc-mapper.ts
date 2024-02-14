@@ -90,8 +90,8 @@ import { type VechainProvider } from '../../providers';
 import { type TraceReturnType } from '@vechain/vechain-sdk-network/src/thor-client/debug';
 
 /**
- * Map of RPC methods to their implementations with our SDK.
- * We can consider this as a "RPC Mapper" for our SDK.
+ * Map of RPC methods to their implementations with the SDK.
+ * We can consider this as an "RPC Mapper" for the SDK.
  *
  * List of all RPC methods:
  * * https://eth.wiki/json-rpc/API

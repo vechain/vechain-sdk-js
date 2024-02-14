@@ -93,7 +93,7 @@ enum RPC_METHODS {
     /**
      * ----- TEMPORARY COMMENT -----
      * STATUS:
-     * * Implemented in web3-provviders-connex: False (AND NOT LISTED in `EthJsonRpcMethods`array in `src/common.ts` file. Probably NEW methods)
+     * * Implemented in web3-providers-connex: False (AND NOT LISTED in `EthJsonRpcMethods`array in `src/common.ts` file. Probably NEW methods)
      * * Required for hardhat: False (BUT WE MUST INVESTIGATE IT BETTER) -> @see https://github.com/vechain/vechain-sdk/issues/462
      * * Possible to implement: TO UNDERSTAND
      *
