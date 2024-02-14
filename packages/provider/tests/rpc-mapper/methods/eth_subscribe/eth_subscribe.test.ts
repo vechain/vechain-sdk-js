@@ -1,4 +1,11 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import {
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    jest,
+    test
+} from '@jest/globals';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
 import { RPC_METHODS, RPCMethodsMap, VechainProvider } from '../../../../src';
@@ -89,6 +96,21 @@ describe('RPC Mapper - eth_subscribe method tests', () => {
                     await RPCMethodsMap(thorClient)[RPC_METHODS.eth_subscribe](
                         []
                     )
+            ).rejects.toThrowError(ProviderRpcError);
+        });
+
+        test('eth_subscribe - no best block', async () => {
+            jest.spyOn(thorClient.blocks, 'getBestBlock').mockReturnValue(
+                Promise.resolve(null)
+            );
+
+            // Attempts to unsubscribe with no provider and expects an error.
+            await expect(
+                async () =>
+                    await provider.request({
+                        method: 'eth_subscribe',
+                        params: ['newHeads']
+                    })
             ).rejects.toThrowError(ProviderRpcError);
         });
     });
