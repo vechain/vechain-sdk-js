@@ -13,7 +13,7 @@ const eventLogs = await thorClient.logs.filterEventLogs({
     // Specify the range of blocks to search for events
     range: {
         unit: 'block',
-        from: 0,
+        caller: 0,
         to: 100000
     },
     // Additional options for the query, such as offset and limit
@@ -97,7 +97,7 @@ const transferLogs = await thorClient.logs.filterTransferLogs({
     // Specify the range of blocks to search for transfer events
     range: {
         unit: 'block',
-        from: 0,
+        caller: 0,
         to: 100000
     },
     // Additional options for the query, such as offset and limit
