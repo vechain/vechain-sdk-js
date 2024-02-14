@@ -64,7 +64,7 @@ const ethSendTransaction = async (
 ): Promise<SendRawTransactionResultRPC> => {
     // Input validation
     assert(
-        params.length === 1,
+        params.length === 1 && typeof params[0] === 'object',
         DATA.INVALID_DATA_TYPE,
         `Invalid params, expected one transaction object containing following properties: \n {` +
             `\n\tto: 20 bytes - Address the transaction is directed to.` +
@@ -85,6 +85,13 @@ const ethSendTransaction = async (
         'Provider must be defined with a wallet. Ensure that the provider is defined and connected to the network.'
     );
 
+    // From field is required
+    assert(
+        (params[0] as TransactionObjectInput).from !== undefined,
+        JSONRPC.INVALID_PARAMS,
+        'From field is required in the transaction object.'
+    );
+
     // Input params
     const [transaction] = params as [TransactionObjectInput];
 
@@ -97,7 +104,7 @@ const ethSendTransaction = async (
                       {
                           to: transaction.to,
                           data: transaction.data ?? '0x',
-                          value: transaction.value ?? '0x'
+                          value: transaction.value ?? '0x0'
                       } satisfies TransactionClause
                   ]
                 : // If 'to' address is not provided, it will be assumed that the transaction is a contract creation transaction.
@@ -113,14 +120,7 @@ const ethSendTransaction = async (
             transaction.from
         );
 
-        // 3 - Create transaction body
-        const transactionBody =
-            await thorClient.transactions.buildTransactionBody(
-                transactionClauses,
-                gasResult.totalGas
-            );
-
-        // 4 - Get the signed transaction (we already know wallet is defined, thanks to the input validation)
+        // 3 - Get the signed transaction (we already know wallet is defined, thanks to the input validation)
         const delegatorIntoWallet: SignTransactionOptions | null = await (
             provider?.wallet as Wallet
         ).getDelegator();
@@ -129,28 +129,21 @@ const ethSendTransaction = async (
             provider?.wallet as Wallet
         ).getAccount(transaction.from);
 
+        // 4 - Create transaction body
+        const transactionBody =
+            await thorClient.transactions.buildTransactionBody(
+                transactionClauses,
+                gasResult.totalGas,
+                {
+                    isDelegated: delegatorIntoWallet !== null
+                }
+            );
+
         // At least, a signer private key is required
         if (
-            signerIntoWallet?.privateKey !== null &&
-            signerIntoWallet?.privateKey !== undefined
+            signerIntoWallet?.privateKey === null ||
+            signerIntoWallet?.privateKey === undefined
         ) {
-            // Sign the transaction
-            const signedTransaction =
-                await thorClient.transactions.signTransaction(
-                    transactionBody,
-                    signerIntoWallet.privateKey.toString('hex'),
-                    {
-                        delegatorPrivatekey:
-                            delegatorIntoWallet?.delegatorPrivatekey,
-                        delegatorUrl: delegatorIntoWallet?.delegatorUrl
-                    }
-                );
-
-            // Return the result
-            return await ethSendRawTransaction(thorClient, [
-                `0x${signedTransaction.encoded.toString('hex')}`
-            ]);
-        } else {
             throw buildProviderError(
                 JSONRPC.INTERNAL_ERROR,
                 `Method 'eth_sendTransaction' failed: Wallet has not the private key of signer.\n
@@ -158,6 +151,20 @@ const ethSendTransaction = async (
                 URL: ${thorClient.httpClient.baseURL}`
             );
         }
+        // Sign the transaction
+        const signedTransaction = await thorClient.transactions.signTransaction(
+            transactionBody,
+            signerIntoWallet.privateKey.toString('hex'),
+            {
+                delegatorPrivatekey: delegatorIntoWallet?.delegatorPrivatekey,
+                delegatorUrl: delegatorIntoWallet?.delegatorUrl
+            }
+        );
+
+        // Return the result
+        return await ethSendRawTransaction(thorClient, [
+            `0x${signedTransaction.encoded.toString('hex')}`
+        ]);
     } catch (e) {
         throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,
