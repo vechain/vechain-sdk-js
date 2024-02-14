@@ -50,11 +50,9 @@ describe('RPC Mapper - eth_chainId method tests', () => {
                 null
             );
 
-            const rpcCallChainId = (await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_chainId
-            ]([])) as string;
-
-            expect(rpcCallChainId).toBe('0x0');
+            await expect(
+                RPCMethodsMap(thorClient)[RPC_METHODS.eth_chainId]([])
+            ).rejects.toThrowError(ProviderRpcError);
         });
     });
 });

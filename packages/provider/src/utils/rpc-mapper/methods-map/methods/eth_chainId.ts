@@ -8,12 +8,19 @@ import { buildProviderError, JSONRPC } from '@vechain/vechain-sdk-errors';
  *
  * @param thorClient - ThorClient instance.
  *
- * @returns The chain id or '0x0' if the chain id is not available.
+ * @returns The chain id
  */
 const ethChainId = async (thorClient: ThorClient): Promise<string> => {
     try {
         const genesisBlock = await thorClient.blocks.getGenesisBlock();
-        return genesisBlock?.id ?? '0x0';
+
+        if (genesisBlock?.id === null || genesisBlock?.id === undefined) {
+            throw new Error(
+                `The genesis block id is null.\n\tgenesisBlock: ${JSON.stringify(genesisBlock)}`
+            );
+        }
+
+        return genesisBlock.id;
     } catch (e) {
         throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,
