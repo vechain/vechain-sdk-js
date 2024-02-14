@@ -57,6 +57,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         this.thorClient.destroy();
         if (this.pollInstance !== undefined) {
             this.pollInstance.stopListen();
+            this.pollInstance = undefined;
         }
     }
 
@@ -147,6 +148,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         let result = false;
         if (this.pollInstance !== undefined) {
             this.pollInstance.stopListen();
+            this.pollInstance = undefined;
             result = true;
         }
         return result;

@@ -52,11 +52,14 @@ describe('RPC Mapper - eth_subscribe method tests', () => {
          * of 32 characters, indicating a valid response format.
          */
         test('eth_subscribe - new latest blocks subscription', async () => {
+            expect(provider.getPollInstance()).toBeUndefined();
             // Call RPC function
             const rpcCall = (await provider.request({
                 method: 'eth_subscribe',
                 params: ['newHeads']
             })) as string;
+
+            expect(provider.getPollInstance()).toBeDefined();
 
             // Verify the length of the subscription ID
             expect(rpcCall.length).toEqual(32);
