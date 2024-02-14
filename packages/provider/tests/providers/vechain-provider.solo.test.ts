@@ -100,11 +100,14 @@ describe('Vechain provider tests', () => {
      * eth_subscribe latest blocks and then unsubscribe RPC call test
      */
     test('Should be able to get to subscribe to the latest blocks and then unsubscribe', async () => {
+        expect(provider.getPollInstance()).toBeUndefined();
         // Call RPC function
         const subscriptionId = await provider.request({
             method: 'eth_subscribe',
             params: ['newHeads']
         });
+
+        expect(provider.getPollInstance()).toBeDefined();
 
         expect(subscriptionId).toBeDefined();
         expect(
@@ -115,6 +118,8 @@ describe('Vechain provider tests', () => {
             method: 'eth_unsubscribe',
             params: [subscriptionId]
         });
+
+        expect(provider.getPollInstance()).toBeUndefined();
 
         expect(
             provider.subscriptionManager.newHeadsSubscription?.subscriptionId
