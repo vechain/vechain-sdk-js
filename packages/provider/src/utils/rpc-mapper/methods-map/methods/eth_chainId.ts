@@ -24,7 +24,7 @@ const ethChainId = async (thorClient: ThorClient): Promise<string> => {
             }
         );
     }
-    if (genesisBlock != null) {
+    if (genesisBlock !== null) {
         return genesisBlock.id;
     } else {
         throw buildProviderError(
