@@ -18,7 +18,7 @@
         "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
     },
     "dependencies": {
-        "@ethereumjs/rlp": "^5.0.0",
+        "@ethereumjs/rlp": "^5.0.2",
         "@types/elliptic": "^6.4.18",
         "@vechain/vechain-sdk-errors": "*",
         "blakejs": "^1.2.1",
