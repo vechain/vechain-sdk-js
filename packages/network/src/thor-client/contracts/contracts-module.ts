@@ -127,8 +127,12 @@ class ContractsModule {
             privateKey
         );
 
-        // Send the signed transaction
-        return await this.thor.transactions.sendTransaction(signedTx);
+        const result = await this.thor.transactions.sendTransaction(signedTx);
+
+        result.wait = async () =>
+            await this.thor.transactions.waitForTransaction(result.id);
+
+        return result;
     }
 
     /**

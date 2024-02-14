@@ -176,6 +176,8 @@ interface SendTransactionResult {
      * @type {string}
      */
     id: string;
+
+    wait: () => Promise<TransactionReceipt | null>;
 }
 
 /**
@@ -266,16 +268,6 @@ interface TransactionReceipt {
 }
 
 /**
- * Type for transaction send result.
- */
-interface TransactionSendResult {
-    /**
-     * Transaction id
-     */
-    id: string;
-}
-
-/**
  * Type for transaction call simulation result.
  */
 interface TransactionSimulationResult {
@@ -317,7 +309,6 @@ export type {
     type GetTransactionReceiptInputOptions,
     type TransactionReceipt,
     type TransactionDetail,
-    type TransactionSendResult,
     type TransactionSimulationResult,
     type SimulateTransactionClause,
     type SimulateTransactionOptions,

@@ -58,12 +58,28 @@ describe('ThorClient - Contracts', () => {
     /**
      * Test case for deploying a smart contract using the contract factory.
      */
+    test('create a new contract and call it', () => {
+        // Poll until the transaction receipt is available
+        const contract: Contract = new Contract(
+            '0x123',
+            deployedContractAbi,
+            thorSoloClient,
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+        );
+        expect(contract.address).toBeDefined();
+        expect(contract.abi).toBeDefined();
+    }, 10000);
+
+    /**
+     * Test case for deploying a smart contract using the contract factory.
+     */
     test('create a new contract', () => {
         // Poll until the transaction receipt is available
         const contract: Contract = new Contract(
             '0x123',
             deployedContractAbi,
-            thorSoloClient
+            thorSoloClient,
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
         );
         expect(contract.address).toBeDefined();
         expect(contract.abi).toBeDefined();
@@ -87,12 +103,7 @@ describe('ThorClient - Contracts', () => {
         const contractAddress = contract.address;
 
         // Call the get function of the deployed contract to verify that the stored value is 100
-        const result = await thorSoloClient.contracts.executeContractCall(
-            contractAddress,
-            deployedContractAbi,
-            'get',
-            []
-        );
+        const result = await contract.read.get();
 
         expect(result).toEqual([100n]);
 
@@ -182,35 +193,22 @@ describe('ThorClient - Contracts', () => {
 
         // Execute a 'transfer' transaction on the deployed contract,
         // transferring a specified amount of tokens
-        const transferResult =
-            await thorSoloClient.contracts.executeContractTransaction(
-                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
-                contract.address,
-                deployedERC20Abi,
-                'transfer',
-                [TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address, 1000]
-            );
+        const transferResult = await contract.transact.transfer(
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+            1000
+        );
 
         // Wait for the transfer transaction to complete and obtain its receipt
         const transactionReceiptTransfer =
-            (await thorSoloClient.transactions.waitForTransaction(
-                transferResult.id
-            )) as TransactionReceipt;
+            (await transferResult.wait()) as TransactionReceipt;
 
         // Verify that the transfer transaction did not revert
         expect(transactionReceiptTransfer.reverted).toBe(false);
 
         // Execute a 'balanceOf' call on the contract to check the balance of the receiver
-        const balanceOfResult =
-            await thorSoloClient.contracts.executeContractCall(
-                contract.address,
-                deployedERC20Abi,
-                'balanceOf',
-                [TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address],
-                {
-                    caller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
-                }
-            );
+        const balanceOfResult = await contract.read.balanceOf(
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+        );
 
         // Ensure that the transfer transaction was successful and the balance is as expected
         expect(transactionReceiptTransfer.reverted).toBe(false);
@@ -245,29 +243,14 @@ describe('ThorClient - Contracts', () => {
         // Wait for the deployment to complete and obtain the contract instance
         const contract: Contract = await factory.waitForDeployment();
 
-        const callFunctionSetResponse =
-            await thorSoloClient.contracts.executeContractTransaction(
-                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
-                contract.address,
-                deployedContractAbi,
-                'set',
-                [123]
-            );
+        const callFunctionSetResponse = await contract.transact.set(123);
 
         const transactionReceiptCallSetContract =
-            (await thorSoloClient.transactions.waitForTransaction(
-                callFunctionSetResponse.id
-            )) as TransactionReceipt;
+            (await callFunctionSetResponse.wait()) as TransactionReceipt;
 
         expect(transactionReceiptCallSetContract.reverted).toBe(false);
 
-        const callFunctionGetResult =
-            await thorSoloClient.contracts.executeContractCall(
-                contract.address,
-                deployedContractAbi,
-                'get',
-                []
-            );
+        const callFunctionGetResult = await contract.read.get();
 
         expect(callFunctionGetResult).toEqual([BigInt(123)]);
     }, 10000);
