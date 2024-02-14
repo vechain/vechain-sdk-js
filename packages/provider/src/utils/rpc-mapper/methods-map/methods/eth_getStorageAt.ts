@@ -1,9 +1,9 @@
 import { dataUtils } from '@vechain/vechain-sdk-core';
 import {
-    DATA,
-    JSONRPC,
     assert,
-    buildProviderError
+    buildProviderError,
+    DATA,
+    JSONRPC
 } from '@vechain/vechain-sdk-errors';
 import { type ThorClient } from '@vechain/vechain-sdk-network';
 
@@ -18,7 +18,9 @@ import { type ThorClient } from '@vechain/vechain-sdk-network';
  *               * params[1]: The storage position to get as a hex string.
  *               * params[2]: The block number to get the storage slot at as a hex string or "latest".
  *
- * @returns the storage slot of the account at the given address formatted to the RPC standard.
+ * @returns The storage slot of the account at the given address formatted to the RPC standard.
+ *
+ * @note Only 'latest' and 'finalized' block numbers are supported.
  *
  * @throws {ProviderRpcError} - Will throw an error if the retrieval of the storage slot fails.
  */
@@ -45,15 +47,13 @@ const ethGetStorageAt = async (
         if (blockNumber === 'latest') blockNumber = 'best';
 
         // Get the account details
-        const accountCode = await thorClient.accounts.getStorageAt(
+        return await thorClient.accounts.getStorageAt(
             address,
             dataUtils.padHexString(storagePosition),
             {
                 revision: blockNumber
             }
         );
-
-        return accountCode;
     } catch (e) {
         throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,
