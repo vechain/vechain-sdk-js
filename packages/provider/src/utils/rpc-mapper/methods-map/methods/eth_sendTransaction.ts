@@ -46,6 +46,7 @@ interface TransactionObjectInput {
  *                   * data: Hash of the method signature and encoded parameters.
  *                   * maxPriorityFeePerGas: Maximum fee per gas the sender is willing to pay to miners in wei. Used in 1559 transactions.
  *                   * maxFeePerGas: The maximum total fee per gas the sender is willing to pay (includes the network / base fee and miner / priority fee) in wei. Used in 1559 transactions.
+ * @provider - The provider instance to use.
  *
  * @NOTE: If 'to' address is not provided.
  * It will be assumed that the transaction is a contract creation transaction.
