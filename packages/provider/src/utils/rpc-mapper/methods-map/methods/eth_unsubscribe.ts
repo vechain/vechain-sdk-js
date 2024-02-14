@@ -1,5 +1,5 @@
 import type { VechainProvider } from '../../../../providers';
-import { buildError, ERROR_CODES } from '@vechain/vechain-sdk-errors';
+import { buildProviderError, JSONRPC } from '@vechain/vechain-sdk-errors';
 
 /**
  * Asynchronously unsubscribes from a vechain event subscription.
@@ -28,16 +28,19 @@ const ethUnsubscribe = async (
     provider?: VechainProvider
 ): Promise<boolean> => {
     let result: boolean = false;
+
     if (provider === undefined) {
-        throw buildError(
-            ERROR_CODES.JSONRPC.INTERNAL_ERROR,
-            'Provider not available',
+        throw buildProviderError(
+            JSONRPC.INTERNAL_ERROR,
+            `Method 'ethSubscribe' failed: provider not available\n
+            Params: ${JSON.stringify(params)}`,
             {
-                message: 'The Provider is not defined',
-                code: -32603
+                params,
+                provider
             }
         );
     }
+
     const subscriptionId = params[0] as string;
 
     // Unsubscribe from 'newHeads' events if the subscription ID matches the newHeads subscription
@@ -55,6 +58,10 @@ const ethUnsubscribe = async (
             provider.subscriptionManager.logSubscriptions.delete(
                 subscriptionId
             );
+    }
+
+    if (!provider.isThereActiveSubscriptions()) {
+        provider.stopSubscriptionsPolling();
     }
 
     return await Promise.resolve(result);
