@@ -1,3 +1,5 @@
+import { type SignTransactionOptions } from '@vechain/vechain-sdk-network';
+
 /**
  * Represent a single account in a wallet.
  * Basically an account is a triple of **address**, **private key** and **public key**.
@@ -24,7 +26,7 @@ interface WalletAccount {
      * Currently, private key and public key are used by provider.
      * -----------------------------
      */
-    // ... e.g. fromPrivateKey, fromPublicKey, ...
+    // ... e.g. fromPrivateKey(privateKey), fromPublicKey(publicKey), ...
 }
 
 /**
@@ -39,14 +41,36 @@ interface WalletAccount {
  */
 interface Wallet {
     /**
+     * Options for signing a transaction with delegator.
+     */
+    delegator?: SignTransactionOptions;
+
+    /**
      * List of accounts in the wallet.
      */
     accounts: WalletAccount[];
 
     /**
-     * Get the list of accounts in the wallet.
+     * Get the list of addresses in the wallet.
+     *
+     * @returns The list of addresses in the wallet.
      */
     getAddresses: () => Promise<string[]>;
+
+    /**
+     * Get an account by address.
+     *
+     * @param address - Address of the account.
+     * @returns The account with the given address, or null if not found.
+     */
+    getAccount: (address: string) => Promise<WalletAccount | null>;
+
+    /**
+     * Get the options for signing a transaction with delegator (if any).
+     *
+     * @returns The options for signing a transaction with delegator.
+     */
+    getDelegator: () => Promise<SignTransactionOptions | null>;
 
     /**
      * ----- TEMPORARY COMMENT -----
