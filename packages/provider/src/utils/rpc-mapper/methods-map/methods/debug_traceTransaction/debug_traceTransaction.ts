@@ -10,17 +10,12 @@ import type {
     TraceReturnType,
     TracerName
 } from '@vechain/vechain-sdk-network/src/thor-client/debug';
-import { ethGetTransactionReceipt } from './eth_getTransactionReceipt';
-
-/**
- * Type for trace options
- */
-interface TraceOptionsRPC {
-    tracer: 'callTracer' | 'prestateTracer';
-    tracerConfig?: { onlyTopCall?: boolean };
-    // Not supported yet
-    timeout?: string;
-}
+import { ethGetTransactionReceipt } from '../eth_getTransactionReceipt';
+import { type TraceOptionsRPC } from './types';
+import {
+    debugFormatter,
+    type TracerReturnTypeRPC
+} from '../../../../formatter/debug';
 
 /**
  * RPC Method debug_traceTransaction implementation
@@ -44,7 +39,7 @@ interface TraceOptionsRPC {
 const debugTraceTransaction = async (
     thorClient: ThorClient,
     params: unknown[]
-): Promise<TraceReturnType<'call'> | TraceReturnType<'prestate'>> => {
+): Promise<TracerReturnTypeRPC<'call'> | TracerReturnTypeRPC<'prestate'>> => {
     // Check input params
     assert(
         params.length === 2 &&
@@ -74,7 +69,7 @@ const debugTraceTransaction = async (
             transactionId
         ]);
 
-        return (await thorClient.debug.traceTransactionClause(
+        const trace = (await thorClient.debug.traceTransactionClause(
             {
                 target: {
                     blockID: transactionReceipt?.blockHash as string,
@@ -85,6 +80,11 @@ const debugTraceTransaction = async (
             },
             tracerToUse
         )) as TraceReturnType<'call'> | TraceReturnType<'prestate'>;
+
+        return debugFormatter.formatToRPCStandard(
+            tracerToUse as 'call' | 'prestate',
+            trace
+        );
     } catch (e) {
         throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,
