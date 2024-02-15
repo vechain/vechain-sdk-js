@@ -8,6 +8,12 @@ interface HDWallet extends Wallet {
      * Derivation path of the wallet.
      */
     derivationPath: string;
+
+    /**
+     * Here we can add all useful methods for HDWallet.
+     * This CURRENTLY is only an example.
+     */
+    // ... e.g. fromMnemonic
 }
 
 export { type HDWallet };
