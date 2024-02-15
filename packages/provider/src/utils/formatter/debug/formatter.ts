@@ -2,10 +2,10 @@ import { type TraceReturnType } from '@vechain/vechain-sdk-network/src/thor-clie
 import { type TracerNameRPC, type TracerReturnTypeRPC } from './types';
 
 /**
- * Output formatter for debug endpoints:
+ * Output formatter for RPC debug endpoints:
  * * debug_traceTransaction
  * * debug_traceCall
- * It converts out endpoint calls to the RPC standard.
+ * It converts our endpoint calls output to the RPC standard output.
  *
  * @param tracerName - Tracer name used for the debug endpoint.
  * @param debugDetails - Debug details to be formatted.
