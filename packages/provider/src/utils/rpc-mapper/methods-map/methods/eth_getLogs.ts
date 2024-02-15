@@ -20,11 +20,10 @@ import {
  * RPC Method eth_getLogs implementation
  *
  * @param thorClient - The thor client instance to use.
+ *
  * @param params - The standard array of rpc call parameters.
- * @note:
- * * params[0]: ...
- * * params[1]: ...
- * * params[n]: ...
+ *
+ * @returns An array of log objects, or an empty array if nothing has changed since last poll
  */
 const ethGetLogs = async (
     thorClient: ThorClient,
