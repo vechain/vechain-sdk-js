@@ -6,6 +6,12 @@
  * * https://ethereum.github.io/execution-apis/api-documentation/
  */
 enum RPC_METHODS {
+    /**
+     * STATUS:
+     * * Implemented in web3-providers-connex: True
+     * * Required for hardhat: True -> @see https://github.com/vechain/vechain-sdk/issues/462
+     * * Possible to implement: True (Already implemented in web3-providers-connex)
+     */
     eth_blockNumber = 'eth_blockNumber',
     eth_chainId = 'eth_chainId',
     eth_getBalance = 'eth_getBalance',
@@ -19,6 +25,13 @@ enum RPC_METHODS {
     eth_getBlockByNumber = 'eth_getBlockByNumber',
     eth_accounts = 'eth_accounts',
     eth_requestAccounts = 'eth_requestAccounts',
+
+    /**
+     * STATUS:
+     * * Implemented in web3-providers-connex: True
+     * * Required for hardhat: False (BUT WE MUST INVESTIGATE BETTER) -> @see https://github.com/vechain/vechain-sdk/issues/462
+     * * Possible to implement: True (Already implemented in web3-providers-connex)
+     */
     eth_gasPrice = 'eth_gasPrice',
     eth_getTransactionByHash = 'eth_getTransactionByHash',
     eth_getTransactionCount = 'eth_getTransactionCount',
@@ -32,6 +45,7 @@ enum RPC_METHODS {
     debug_traceTransaction = 'debug_traceTransaction',
     debug_traceCall = 'debug_traceCall',
     evm_mine = 'evm_mine',
+
     /**
      * STATUS:
      * * Implemented in web3-providers-connex: False (ONLY LISTED `EthJsonRpcMethods`array in `src/common.ts` file)
@@ -63,6 +77,7 @@ enum RPC_METHODS {
     eth_getFilterLogs = 'eth_getFilterLogs',
     eth_getFilterChanges = 'eth_getFilterChanges',
     eth_uninstallFilter = 'eth_uninstallFilter',
+
     /**
      * STATUS:
      * * Implemented in web3-providers-connex: False (AND NOT LISTED in `EthJsonRpcMethods`array in `src/common.ts` file. Probably NEW methods)
@@ -70,8 +85,6 @@ enum RPC_METHODS {
      * * Possible to implement: TO UNDERSTAND
      *
      * @note: These methods are taken from https://ethereum.github.io/execution-apis/api-documentation/
-     *
-     * @PRIORITY: LOW (Probably not needed)
      */
     debug_getBadBlocks = 'debug_getBadBlocks',
     debug_getRawBlock = 'debug_getRawBlock',
