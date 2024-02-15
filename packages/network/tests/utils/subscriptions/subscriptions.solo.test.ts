@@ -26,7 +26,7 @@ const TIMEOUT = 15000; // 15-second timeout
  *
  * @group integration/utils/subscriptions
  */
-describe('Subscriptions Solo', () => {
+describe('Subscriptions Solo network tests', () => {
     test(
         'Should receive new blocks from the block subscription',
         async () => {
