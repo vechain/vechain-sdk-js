@@ -21,10 +21,8 @@ interface WalletAccount {
     publicKey: Buffer;
 
     /**
-     * ----- TEMPORARY COMMENT -----
      * Here we can add all useful methods for WalletAccount.
      * Currently, private key and public key are used by provider.
-     * -----------------------------
      */
     // ... e.g. fromPrivateKey(privateKey), fromPublicKey(publicKey), ...
 }
@@ -73,10 +71,8 @@ interface Wallet {
     getDelegator: () => Promise<SignTransactionOptions | null>;
 
     /**
-     * ----- TEMPORARY COMMENT -----
      * Here we can add all useful methods wor wallet.
      * Currently, we have only getAddresses (needed by provider)
-     * -----------------------------
      */
     // ... e.g. addAccount, removeAccount, ...
 }
