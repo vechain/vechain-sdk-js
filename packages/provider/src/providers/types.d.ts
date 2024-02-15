@@ -1,5 +1,3 @@
-import { type vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
-
 /**
  * Represents the parameters for a subscription.
  * This interface includes all necessary details for managing a subscription.
@@ -106,26 +104,4 @@ interface SubscriptionManager {
     currentBlockNumber: number;
 }
 
-/**
- * An `EventEmitterable` interface is akin to an EventEmitter,
- * but with asynchronous access to its methods.
- *
- * It follows the observer pattern, facilitating event-driven programming.
- *
- * ----- TEMPORARY COMMENT -----
- * These methods will be implemented by the abstract provider.
- * Each subscribe type will be handled by a dedicated subscriber class (e.g, PollingBlockSubscriber, PollingEventSubscriber (polls an event for its logs), etc.)
- *
- * See hardhat-ethers-plugin and ethers implementations for more details.
- *
- * https://github.com/ethers-io/ethers.js/blob/6ee1a5f8bb38ec31fa84c00aae7f091e1d3d6837/src.ts/utils/events.ts#L21
- * -----------------------------
- */
-type EventEmitterable<T> = vechain_sdk_core_ethers.EventEmitterable<T>;
-
-export {
-    type EventEmitterable,
-    type SubscriptionEvent,
-    type SubscriptionManager,
-    type FilterOptions
-};
+export { type SubscriptionEvent, type SubscriptionManager, type FilterOptions };

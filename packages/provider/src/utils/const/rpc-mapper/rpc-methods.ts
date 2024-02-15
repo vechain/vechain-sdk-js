@@ -7,14 +7,10 @@
  */
 enum RPC_METHODS {
     /**
-     * ----- TEMPORARY COMMENT -----
      * STATUS:
      * * Implemented in web3-providers-connex: True
      * * Required for hardhat: True -> @see https://github.com/vechain/vechain-sdk/issues/462
      * * Possible to implement: True (Already implemented in web3-providers-connex)
-     *
-     * @PRIORITY: HIGH
-     * -----------------------------
      */
     eth_blockNumber = 'eth_blockNumber',
     eth_chainId = 'eth_chainId',
@@ -31,14 +27,10 @@ enum RPC_METHODS {
     eth_requestAccounts = 'eth_requestAccounts',
 
     /**
-     * ----- TEMPORARY COMMENT -----
      * STATUS:
      * * Implemented in web3-providers-connex: True
      * * Required for hardhat: False (BUT WE MUST INVESTIGATE BETTER) -> @see https://github.com/vechain/vechain-sdk/issues/462
      * * Possible to implement: True (Already implemented in web3-providers-connex)
-     *
-     * @PRIORITY: HIGH
-     * -----------------------------
      */
     eth_gasPrice = 'eth_gasPrice',
     eth_getTransactionByHash = 'eth_getTransactionByHash',
@@ -55,14 +47,10 @@ enum RPC_METHODS {
     evm_mine = 'evm_mine',
 
     /**
-     * ----- TEMPORARY COMMENT -----
      * STATUS:
      * * Implemented in web3-providers-connex: False (ONLY LISTED `EthJsonRpcMethods`array in `src/common.ts` file)
      * * Required for hardhat: False -> @see https://github.com/vechain/vechain-sdk/issues/462
      * * Possible to implement: TO UNDERSTAND
-     *
-     * @PRIORITY: MEDIUM (SEE AFTER FIRST TWO BLOCKS OF FUNCTIONS)
-     * -----------------------------
      */
     eth_coinbase = 'eth_coinbase',
     eth_feeHistory = 'eth_feeHistory',
@@ -91,16 +79,12 @@ enum RPC_METHODS {
     eth_uninstallFilter = 'eth_uninstallFilter',
 
     /**
-     * ----- TEMPORARY COMMENT -----
      * STATUS:
      * * Implemented in web3-providers-connex: False (AND NOT LISTED in `EthJsonRpcMethods`array in `src/common.ts` file. Probably NEW methods)
      * * Required for hardhat: False (BUT WE MUST INVESTIGATE IT BETTER) -> @see https://github.com/vechain/vechain-sdk/issues/462
      * * Possible to implement: TO UNDERSTAND
      *
      * @note: These methods are taken from https://ethereum.github.io/execution-apis/api-documentation/
-     *
-     * @PRIORITY: LOW (Probably not needed)
-     * -----------------------------
      */
     debug_getBadBlocks = 'debug_getBadBlocks',
     debug_getRawBlock = 'debug_getRawBlock',
