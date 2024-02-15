@@ -14,7 +14,7 @@ import { testnetUrl } from '../../fixture';
 /**
  * Test suite for the Subscriptions utility methods for getting the subscription URLs
  *
- * @group unit/utils/subscriptions
+ * @group integration/utils/subscriptions
  */
 describe('Subscriptions Testnet', () => {
     /**

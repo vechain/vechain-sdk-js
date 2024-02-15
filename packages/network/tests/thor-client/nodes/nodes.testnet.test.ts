@@ -12,7 +12,7 @@ describe('ThorClient - Nodes Module', () => {
      */
     test('Should get nodes', async () => {
         /**
-         *  client required to access a node
+         *  client required accessing a node
          *  @internal
          */
         const thorClient = new ThorClient(testNetwork);
