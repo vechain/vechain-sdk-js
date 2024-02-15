@@ -25,6 +25,13 @@ const allowed_names = [
 ];
 
 /**
+ * Exit with error code 1 if any test file is not named correctly.
+ * The Default exit code is 0.
+ * As good programmers, we assume we're naming tests correctly :D
+ */
+let exit_code = 0;
+
+/**
  * Get all test files
  */
 glob(test_pattern, { ignore: 'node_modules/**' }).then((test_files) => {
@@ -46,6 +53,9 @@ glob(test_pattern, { ignore: 'node_modules/**' }).then((test_files) => {
 
         if (!file_naming_ok) {
             console.error(`Test file ${file} is not named correctly`);
+            exit_code = 1;
         }
     });
 });
+
+process.exit(exit_code);
