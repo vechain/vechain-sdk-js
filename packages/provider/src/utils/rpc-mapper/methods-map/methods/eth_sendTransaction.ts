@@ -122,13 +122,13 @@ const ethSendTransaction = async (
         );
 
         // 3 - Get the signed transaction (we already know wallet is defined, thanks to the input validation)
-        const delegatorIntoWallet: SignTransactionOptions | null = await (
-            provider?.wallet as Wallet
-        ).getDelegator();
+        const walletTouse: Wallet = provider?.wallet as Wallet;
 
-        const signerIntoWallet: WalletAccount | null = await (
-            provider?.wallet as Wallet
-        ).getAccount(transaction.from);
+        const delegatorIntoWallet: SignTransactionOptions | null =
+            await walletTouse.getDelegator();
+
+        const signerIntoWallet: WalletAccount | null =
+            await walletTouse.getAccount(transaction.from);
 
         // 4 - Create transaction body
         const transactionBody =

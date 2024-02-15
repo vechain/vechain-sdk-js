@@ -86,7 +86,7 @@ import {
 import { ethRequestAccounts } from './methods-map/methods/eth_requestAccounts';
 import { type LogsRPC } from '../formatter/logs';
 import { type VechainProvider } from '../../providers';
-import { type TraceReturnType } from '@vechain/vechain-sdk-network/src/thor-client/debug';
+import { type TracerReturnTypeRPC } from '../formatter/debug';
 
 /**
  * Map of RPC methods to their implementations with the SDK.
@@ -213,19 +213,18 @@ const RPCMethodsMap = (
 
         [RPC_METHODS.debug_traceTransaction]: async (
             params
-        ): Promise<TraceReturnType<'call'> | TraceReturnType<'prestate'>> => {
-            const transactionTrace = await debugTraceTransaction(
-                thorClient,
-                params
-            );
-            return transactionTrace;
+        ): Promise<
+            TracerReturnTypeRPC<'call'> | TracerReturnTypeRPC<'prestate'>
+        > => {
+            return await debugTraceTransaction(thorClient, params);
         },
 
         [RPC_METHODS.debug_traceCall]: async (
             params
-        ): Promise<TraceReturnType<'call'> | TraceReturnType<'prestate'>> => {
-            const callTrace = await debugTraceCall(thorClient, params);
-            return callTrace;
+        ): Promise<
+            TracerReturnTypeRPC<'call'> | TracerReturnTypeRPC<'prestate'>
+        > => {
+            return await debugTraceCall(thorClient, params);
         },
 
         [RPC_METHODS.evm_mine]: async (): Promise<BlocksRPC | null> => {
