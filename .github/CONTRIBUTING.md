@@ -142,6 +142,29 @@ describe('Bloom Filter', () => {
 ```
 These tags help us categorize and run specific types of tests when needed. This ensures that our test suite remains well-organized and efficient.
 
+# Test File Naming Convention
+
+When adding new test files, please adhere to the following naming conventions to maintain consistency across the project:
+```typescript
+/**
+ * Allowed names for test files
+ */
+const allowed_names = [
+    // Unit tests
+    '.unit.test.ts',
+
+    // Integration tests
+    '.testnet.test.ts',
+    '.mainnet.test.ts',
+    '.solo.test.ts',
+
+    // Mocks
+    '.mock.testnet.ts',
+    '.mock.mainnet.ts',
+    '.mock.solo.ts'
+];
+```
+
 # Submitting a Pull Request
 
 Before submitting a pull request, please make sure the following is done:
