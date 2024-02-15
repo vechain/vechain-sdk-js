@@ -25,6 +25,8 @@ interface TraceOptionsRPC {
 /**
  * RPC Method debug_traceTransaction implementation
  *
+ * @link [debug_traceTransaction](https://www.quicknode.com/docs/ethereum/debug_traceTransaction)
+ *
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
  *                 * params[0]: transactionHash - hex string - This describes the transaction hash of the transaction that needs to be traced.
@@ -36,7 +38,8 @@ interface TraceOptionsRPC {
  *                       * onlyTopCall - boolean Setting this to true will only trace the main (top-level) call and none of the sub-calls.
  *                         This avoids extra processing for each call frame if only the top-level call info are required (useful for getting revertReason).
  *
- * @see https://docs.alchemy.com/reference/debug-tracetransaction
+ * @throws {ProviderRpcError} - Will throw an error if the debug fails.
+ * @throws {InvalidDataTypeError} - Will throw an error if the params are invalid.
  */
 const debugTraceTransaction = async (
     thorClient: ThorClient,
@@ -49,10 +52,11 @@ const debugTraceTransaction = async (
             typeof params[1] === 'object',
         DATA.INVALID_DATA_TYPE,
         `Invalid params length, expected the transactionHash and 1 object containing the options for trace: \n {` +
-            `\ttracer - string to specify the type of tracer. Currently, it supports callTracer and prestateTracer.` +
-            `\ttimeout - string - A duration string of decimal numbers that overrides the default timeout of 5 seconds for JavaScript-based tracing calls. Max timeout is "10s". Valid time units are "ns", "us", "ms", "s" each with an optional fraction, such as "300ms" or "2s45ms"` +
-            `\ttracerConfig - Object to specify configurations for the tracer. It has the following parameters:` +
-            `\tonlyTopCall - boolean Setting this to true will only trace the main (top-level) call and none of the sub-calls. This avoids extra processing for each call frame if only the top-level call info are required (useful for getting revertReason)`
+            `\n\ttracer - string to specify the type of tracer. Currently, it supports callTracer and prestateTracer.` +
+            `\n\ttimeout - string - A duration string of decimal numbers that overrides the default timeout of 5 seconds for JavaScript-based tracing calls. Max timeout is "10s". Valid time units are "ns", "us", "ms", "s" each with an optional fraction, such as "300ms" or "2s45ms"` +
+            `\n\ttracerConfig - Object to specify configurations for the tracer. It has the following parameters:` +
+            `\n\tonlyTopCall - boolean Setting this to true will only trace the main (top-level) call and none of the sub-calls. This avoids extra processing for each call frame if only the top-level call info are required (useful for getting revertReason)` +
+            `\n}.`
     );
 
     // Assert valid transaction id

@@ -83,7 +83,6 @@ import {
     type TransactionReceiptRPC,
     type TransactionRPC
 } from '../formatter';
-import { type Wallet } from '@vechain/vechain-sdk-wallet';
 import { ethRequestAccounts } from './methods-map/methods/eth_requestAccounts';
 import { type LogsRPC } from '../formatter/logs';
 import { type VechainProvider } from '../../providers';
@@ -98,13 +97,11 @@ import { type TraceReturnType } from '@vechain/vechain-sdk-network/src/thor-clie
  * * https://ethereum.github.io/execution-apis/api-documentation/
  *
  * @param thorClient - ThorClient instance.
- * @param wallet - Wallet instance. It is optional because the majority of the methods do not require a wallet.
- * @param provider
+ * @param provider - Provider instance. It is optional because the majority of the methods do not require a provider.
  */
 const RPCMethodsMap = (
     thorClient: ThorClient,
-    provider?: VechainProvider,
-    wallet?: Wallet
+    provider?: VechainProvider
 ): Record<string, MethodHandlerType<unknown, unknown>> => {
     /**
      * Returns a map of RPC methods to their implementations with our SDK.
@@ -161,7 +158,7 @@ const RPCMethodsMap = (
         },
 
         [RPC_METHODS.eth_accounts]: async (): Promise<string[]> => {
-            return await ethAccounts(wallet);
+            return await ethAccounts(provider);
         },
 
         [RPC_METHODS.eth_gasPrice]: async (): Promise<string> => {
@@ -186,8 +183,10 @@ const RPCMethodsMap = (
             return await ethGetTransactionReceipt(thorClient, params);
         },
 
-        [RPC_METHODS.eth_sendTransaction]: async (params) => {
-            await ethSendTransaction(thorClient, params);
+        [RPC_METHODS.eth_sendTransaction]: async (
+            params
+        ): Promise<SendRawTransactionResultRPC> => {
+            return await ethSendTransaction(thorClient, params, provider);
         },
 
         [RPC_METHODS.eth_syncing]: async (): Promise<
@@ -215,13 +214,18 @@ const RPCMethodsMap = (
         [RPC_METHODS.debug_traceTransaction]: async (
             params
         ): Promise<TraceReturnType<'call'> | TraceReturnType<'prestate'>> => {
-            return await debugTraceTransaction(thorClient, params);
+            const transactionTrace = await debugTraceTransaction(
+                thorClient,
+                params
+            );
+            return transactionTrace;
         },
 
         [RPC_METHODS.debug_traceCall]: async (
             params
         ): Promise<TraceReturnType<'call'> | TraceReturnType<'prestate'>> => {
-            return await debugTraceCall(thorClient, params);
+            const callTrace = await debugTraceCall(thorClient, params);
+            return callTrace;
         },
 
         [RPC_METHODS.evm_mine]: async (): Promise<BlocksRPC | null> => {
@@ -287,7 +291,7 @@ const RPCMethodsMap = (
         },
 
         [RPC_METHODS.eth_requestAccounts]: async (): Promise<string[]> => {
-            return await ethRequestAccounts(wallet);
+            return await ethRequestAccounts(provider);
         },
 
         [RPC_METHODS.eth_sign]: async (params) => {
