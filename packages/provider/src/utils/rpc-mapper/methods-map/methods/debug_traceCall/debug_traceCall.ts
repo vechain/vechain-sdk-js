@@ -5,14 +5,14 @@ import {
     DATA,
     JSONRPC
 } from '@vechain/vechain-sdk-errors';
-import type {
-    TraceReturnType,
-    TracerName
-} from '@vechain/vechain-sdk-network/src/thor-client/debug';
 import {
     debugFormatter,
     type TracerReturnTypeRPC
-} from '../../../formatter/debug';
+} from '../../../../formatter/debug';
+import {
+    type TraceReturnType,
+    type TracerName
+} from '@vechain/vechain-sdk-network/src/thor-client/debug';
 
 /**
  * Type for trace options
@@ -48,7 +48,7 @@ interface TransactionObjectInput {
  *                   * gasPrice - Hexadecimal value of the gasPrice used for each paid gas.
  *                   * value - Hexadecimal of the value sent with this transaction.
  *                   * data - Hash of the method signature and encoded parameters.
- *                * params[1]: blockNumber - string - The block number parameter. An hexadecimal number or (latest, earliest or pending). (NOT SUPPORTED YET)
+ *                * params[1]: blockNumber - string - The block number parameter. A hexadecimal number or (latest, earliest or pending). (NOT SUPPORTED YET)
  *                * params[2]: options - object - This describes the options for the trace. It has the following parameters:
  *                   * tracer - string to specify the type of tracer. Currently, it supports callTracer and prestateTracer.
  *                   * tracerConfig - Object to specify configurations for the tracer. It has the following parameters:
