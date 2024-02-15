@@ -25,17 +25,15 @@ class Contract {
     readonly thor: ThorClient;
     readonly address: string;
     readonly abi: InterfaceAbi;
-    readonly callerPrivateKey: string;
+    callerPrivateKey: string;
 
     readonly deployTransactionReceipt: TransactionReceipt | undefined;
 
-    public readonly read: ContractFunctionRead = {};
-    public readonly transact: ContractFunctionTransact = {};
+    public read: ContractFunctionRead = {};
+    public transact: ContractFunctionTransact = {};
 
     private contractCallOptions: ContractCallOptions = {};
     private contractTransactionOptions: ContractTransactionOptions = {};
-
-    // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 
     /**
      * Initializes a new instance of the `Contract` class.
@@ -57,8 +55,73 @@ class Contract {
         this.address = address;
         this.deployTransactionReceipt = transactionReceipt;
         this.callerPrivateKey = callerPrivateKey;
-        this.read = new Proxy(this.read, {
-            get: (target, prop) => {
+        this.read = this.getReadProxy();
+        this.transact = this.getTransactProxy();
+    }
+
+    /**
+     * Sets the options for contract calls.
+     * @param options - The contract call options to set.
+     * @returns The updated contract call options.
+     */
+    public setContractReadOptions(
+        options: ContractCallOptions
+    ): ContractCallOptions {
+        this.contractCallOptions = options;
+        // initialize the proxy with the new options
+        this.read = this.getReadProxy();
+        return this.contractCallOptions;
+    }
+
+    /**
+     * Clears the current contract call options, resetting them to an empty object.
+     */
+    public clearContractReadOptions(): void {
+        this.contractCallOptions = {};
+        this.read = this.getReadProxy();
+    }
+
+    /**
+     * Sets the options for contract transactions.
+     * @param options - The contract transaction options to set.
+     * @returns The updated contract transaction options.
+     */
+    public setContractTransactOptions(
+        options: ContractTransactionOptions
+    ): ContractTransactionOptions {
+        this.contractTransactionOptions = options;
+        // initialize the proxy with the new options
+        this.transact = this.getTransactProxy();
+        return this.contractTransactionOptions;
+    }
+
+    /**
+     * Clears the current contract transaction options, resetting them to an empty object.
+     */
+    public clearContractTransactOptions(): void {
+        this.contractTransactionOptions = {};
+        this.transact = this.getTransactProxy();
+    }
+
+    /**
+     * Sets the private key of the caller for signing transactions.
+     * @param privateKey
+     */
+    public setCallerPrivateKey(privateKey: string): string {
+        this.callerPrivateKey = privateKey;
+        this.transact = this.getTransactProxy();
+        this.read = this.getReadProxy();
+        return this.callerPrivateKey;
+    }
+
+    /**
+     * Creates a Proxy object for reading contract functions, allowing for the dynamic invocation of contract read operations.
+     * @returns A Proxy that intercepts calls to read contract functions, automatically handling the invocation with the configured options.
+     * @private
+     */
+    private getReadProxy(): ContractFunctionRead {
+        return new Proxy(this.read, {
+            get: (_target, prop) => {
                 // Otherwise, assume that the function is a contract method
                 return async (...args: unknown[]) => {
                     return await this.thor.contracts.executeContractCall(
@@ -76,9 +139,16 @@ class Contract {
                 };
             }
         });
+    }
 
-        this.transact = new Proxy(this.transact, {
-            get: (target, prop) => {
+    /**
+     * Creates a Proxy object for transacting with contract functions, allowing for the dynamic invocation of contract transaction operations.
+     * @returns A Proxy that intercepts calls to transaction contract functions, automatically handling the invocation with the configured options.
+     * @private
+     */
+    private getTransactProxy(): ContractFunctionTransact {
+        return new Proxy(this.transact, {
+            get: (_target, prop) => {
                 // Otherwise, assume that the function is a contract method
                 return async (
                     ...args: unknown[]
@@ -94,28 +164,6 @@ class Contract {
                 };
             }
         });
-    }
-
-    public setContractCallOptions(
-        options: ContractCallOptions
-    ): ContractCallOptions {
-        this.contractCallOptions = options;
-        return this.contractCallOptions;
-    }
-
-    public clearContractCallOptions(): void {
-        this.contractCallOptions = {};
-    }
-
-    public setContractTransactionOptions(
-        options: ContractTransactionOptions
-    ): ContractTransactionOptions {
-        this.contractTransactionOptions = options;
-        return this.contractTransactionOptions;
-    }
-
-    public clearContractTransactionOptions(): void {
-        this.contractTransactionOptions = {};
     }
 }
 
