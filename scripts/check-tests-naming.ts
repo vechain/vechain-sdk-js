@@ -52,10 +52,11 @@ glob(test_pattern, { ignore: 'node_modules/**' }).then((test_files) => {
         });
 
         if (!file_naming_ok) {
-            console.error(`Test file ${file} is not named correctly`);
+            console.error(`Test file \`${file}\` is not named correctly`);
             exit_code = 1;
         }
     });
-});
 
-process.exit(exit_code);
+    // Exit with the correct code
+    process.exit(exit_code);
+});
