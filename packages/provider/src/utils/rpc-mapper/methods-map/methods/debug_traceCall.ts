@@ -9,6 +9,10 @@ import type {
     TraceReturnType,
     TracerName
 } from '@vechain/vechain-sdk-network/src/thor-client/debug';
+import {
+    debugFormatter,
+    type TracerReturnTypeRPC
+} from '../../../formatter/debug';
 
 /**
  * Type for trace options
@@ -56,7 +60,7 @@ interface TransactionObjectInput {
 const debugTraceCall = async (
     thorClient: ThorClient,
     params: unknown[]
-): Promise<TraceReturnType<'call'> | TraceReturnType<'prestate'>> => {
+): Promise<TracerReturnTypeRPC<'call'> | TracerReturnTypeRPC<'prestate'>> => {
     assert(
         params.length === 3 &&
             typeof params[0] === 'object' &&
@@ -87,7 +91,7 @@ const debugTraceCall = async (
         tracerOptions.tracer === 'callTracer' ? 'call' : 'prestate';
 
     try {
-        return (await thorClient.debug.traceContractCall(
+        const trace = (await thorClient.debug.traceContractCall(
             {
                 transactionOptions: {
                     caller: transactionOptions.from,
@@ -105,6 +109,11 @@ const debugTraceCall = async (
             },
             tracerToUse
         )) as TraceReturnType<'call'> | TraceReturnType<'prestate'>;
+
+        return debugFormatter.formatToRPCStandard(
+            tracerToUse as 'call' | 'prestate',
+            trace
+        );
     } catch (e) {
         throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,
