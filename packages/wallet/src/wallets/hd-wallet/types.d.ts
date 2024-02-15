@@ -10,10 +10,8 @@ interface HDWallet extends Wallet {
     derivationPath: string;
 
     /**
-     * ----- TEMPORARY COMMENT -----
      * Here we can add all useful methods for HDWallet.
      * This CURRENTLY is only an example.
-     * -----------------------------
      */
     // ... e.g. fromMnemonic
 }
