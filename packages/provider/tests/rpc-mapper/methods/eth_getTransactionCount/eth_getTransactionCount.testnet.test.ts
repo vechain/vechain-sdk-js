@@ -36,6 +36,7 @@ describe('RPC Mapper - eth_getTransactionCount method tests', () => {
             const transactionCount = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_getTransactionCount
             ](['0x0b41c56e19c5151122568873a039fEa090937Fe2']);
+            expect(transactionCount).toBe('0x0');
             expect(transactionCount).toBeDefined();
         });
     });
