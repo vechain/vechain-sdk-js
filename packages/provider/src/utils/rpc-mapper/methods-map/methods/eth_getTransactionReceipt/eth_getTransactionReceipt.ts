@@ -12,9 +12,9 @@ import {
 import {
     type TransactionReceiptRPC,
     transactionsFormatter
-} from '../../../formatter';
-import { RPC_METHODS } from '../../../const';
-import { RPCMethodsMap } from '../../rpc-mapper';
+} from '../../../../formatter';
+import { RPC_METHODS } from '../../../../const';
+import { RPCMethodsMap } from '../../../rpc-mapper';
 import { assertValidTransactionID } from '@vechain/vechain-sdk-core';
 
 /**

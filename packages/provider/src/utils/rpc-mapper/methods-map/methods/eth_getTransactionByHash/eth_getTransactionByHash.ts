@@ -12,10 +12,10 @@ import {
     transactionsFormatter,
     type TransactionRPC,
     type BlocksRPC
-} from '../../../formatter';
-import { RPCMethodsMap } from '../../rpc-mapper';
-import { RPC_METHODS } from '../../../const';
-import { getTransactionIndexIntoBlock } from '../../../helpers';
+} from '../../../../formatter';
+import { RPCMethodsMap } from '../../../rpc-mapper';
+import { RPC_METHODS } from '../../../../const';
+import { getTransactionIndexIntoBlock } from '../../../../helpers';
 
 /**
  * RPC Method eth_getTransactionByHash implementation

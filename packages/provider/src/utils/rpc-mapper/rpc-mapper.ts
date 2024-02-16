@@ -83,7 +83,7 @@ import {
     type TransactionReceiptRPC,
     type TransactionRPC
 } from '../formatter';
-import { ethRequestAccounts } from './methods-map/methods/eth_requestAccounts';
+import { ethRequestAccounts } from './methods-map/methods/eth_requestAccounts/eth_requestAccounts';
 import { type LogsRPC } from '../formatter/logs';
 import { type VechainProvider } from '../../providers';
 import { type TracerReturnTypeRPC } from '../formatter/debug';

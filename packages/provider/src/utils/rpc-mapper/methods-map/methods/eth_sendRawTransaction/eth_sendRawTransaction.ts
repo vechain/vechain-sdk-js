@@ -9,7 +9,7 @@ import { dataUtils } from '@vechain/vechain-sdk-core';
 import {
     type SendRawTransactionResultRPC,
     transactionsFormatter
-} from '../../../formatter';
+} from '../../../../formatter';
 
 /**
  * RPC Method eth_sendRawTransaction implementation

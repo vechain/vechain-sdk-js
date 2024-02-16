@@ -8,9 +8,9 @@ import {
     DATA,
     JSONRPC
 } from '@vechain/vechain-sdk-errors';
-import type { SendRawTransactionResultRPC } from '../../../formatter';
-import { type VechainProvider } from '../../../../providers';
-import { ethSendRawTransaction } from './eth_sendRawTransaction';
+import type { SendRawTransactionResultRPC } from '../../../../formatter';
+import { type VechainProvider } from '../../../../../providers';
+import { ethSendRawTransaction } from '../eth_sendRawTransaction/eth_sendRawTransaction';
 import { contract, type TransactionClause } from '@vechain/vechain-sdk-core';
 import { type Wallet, type WalletAccount } from '@vechain/vechain-sdk-wallet';
 
