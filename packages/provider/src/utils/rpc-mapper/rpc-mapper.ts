@@ -162,7 +162,7 @@ const RPCMethodsMap = (
         },
 
         [RPC_METHODS.eth_gasPrice]: async (): Promise<string> => {
-            return await ethGasPrice();
+            return await ethGasPrice(thorClient);
         },
 
         [RPC_METHODS.eth_getTransactionByHash]: async (
