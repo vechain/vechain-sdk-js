@@ -9,7 +9,7 @@ import {
     DATA,
     JSONRPC
 } from '@vechain/vechain-sdk-errors';
-import { getCorrectBlockNumberRPCToVechain } from '../../../const/blocks';
+import { getCorrectBlockNumberRPCToVechain } from '../../../../const/blocks';
 
 /**
  * Transaction object input type

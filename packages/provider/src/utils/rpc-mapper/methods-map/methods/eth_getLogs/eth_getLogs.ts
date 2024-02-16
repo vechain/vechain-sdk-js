@@ -14,7 +14,7 @@ import {
     formatToLogsRPC,
     getCriteriaSetForInput,
     type LogsRPC
-} from '../../../formatter/logs';
+} from '../../../../formatter/logs';
 
 /**
  * RPC Method eth_getLogs implementation

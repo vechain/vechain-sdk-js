@@ -1,4 +1,4 @@
-import { type VechainProvider } from '../../../../providers';
+import { type VechainProvider } from '../../../../../providers';
 
 /**
  * RPC Method eth_accounts implementation

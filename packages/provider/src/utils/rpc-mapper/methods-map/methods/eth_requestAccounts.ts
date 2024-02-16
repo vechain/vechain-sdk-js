@@ -1,4 +1,4 @@
-import { ethAccounts } from './eth_accounts';
+import { ethAccounts } from './eth_accounts/eth_accounts';
 import { buildProviderError, JSONRPC } from '@vechain/vechain-sdk-errors';
 import { type VechainProvider } from '../../../../providers';
 
