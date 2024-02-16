@@ -1,4 +1,5 @@
 import { assert, DATA } from '@vechain/vechain-sdk-errors';
+import { randomBytes } from 'crypto';
 import { addressUtils } from '@vechain/vechain-sdk-core';
 
 /**
@@ -30,7 +31,7 @@ const ethGetTransactionCount = async (params: unknown[]): Promise<string> => {
     );
 
     // Return a random number
-    return await Promise.resolve(`0x0`);
+    return await Promise.resolve(`0x${randomBytes(8).toString('hex')}`);
 };
 
 export { ethGetTransactionCount };
