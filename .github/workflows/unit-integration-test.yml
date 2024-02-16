@@ -72,7 +72,7 @@ jobs:
                     "source": "GitHub",
                     "repo": "${{ github.repository}}",
                     "branch": "${{ github.head_ref || github.ref_name }}",
-                    "message": "unit tests failed"
+                    "message": "unit tests failed, see run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
                   }
               env:
                 SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
