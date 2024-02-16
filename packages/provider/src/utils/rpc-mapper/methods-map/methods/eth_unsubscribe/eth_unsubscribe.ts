@@ -1,4 +1,4 @@
-import type { VechainProvider } from '../../../../providers';
+import type { VechainProvider } from '../../../../../providers';
 import { buildProviderError, JSONRPC } from '@vechain/vechain-sdk-errors';
 
 /**

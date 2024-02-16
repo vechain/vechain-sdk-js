@@ -2,7 +2,7 @@ import { type ThorClient } from '@vechain/vechain-sdk-network';
 import {
     type FilterOptions,
     type VechainProvider
-} from '../../../../providers';
+} from '../../../../../providers';
 import { buildProviderError, JSONRPC } from '@vechain/vechain-sdk-errors';
 import { dataUtils } from '@vechain/vechain-sdk-core';
 

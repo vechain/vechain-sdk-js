@@ -1,7 +1,7 @@
 import { type ThorClient } from '@vechain/vechain-sdk-network';
-import { blocksFormatter, type BlocksRPC } from '../../../formatter';
+import { blocksFormatter, type BlocksRPC } from '../../../../formatter';
 import { JSONRPC, buildProviderError } from '@vechain/vechain-sdk-errors';
-import { RPCMethodsMap, RPC_METHODS } from '../../../../provider';
+import { RPCMethodsMap, RPC_METHODS } from '../../../../../provider';
 
 /**
  * RPC Method evm_mine implementation

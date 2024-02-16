@@ -1,5 +1,5 @@
 import { type ThorClient } from '@vechain/vechain-sdk-network';
-import { ethChainId } from './eth_chainId/eth_chainId';
+import { ethChainId } from '../eth_chainId/eth_chainId';
 
 /**
  * RPC Method net_version implementation

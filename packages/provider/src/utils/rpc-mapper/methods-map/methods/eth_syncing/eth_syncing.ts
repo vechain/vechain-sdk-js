@@ -7,7 +7,7 @@ import {
     RPC_METHODS,
     RPCMethodsMap,
     type SyncBlockRPC
-} from '../../../../provider';
+} from '../../../../../provider';
 import { JSONRPC, buildProviderError } from '@vechain/vechain-sdk-errors';
 import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
 
