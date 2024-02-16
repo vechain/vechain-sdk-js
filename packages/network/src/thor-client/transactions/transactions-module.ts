@@ -20,7 +20,6 @@ import {
     type GetTransactionInputOptions,
     type TransactionDetail,
     type GetTransactionReceiptInputOptions,
-    type TransactionSendResult,
     type SimulateTransactionClause,
     type SimulateTransactionOptions,
     type TransactionSimulationResult,
@@ -113,7 +112,7 @@ class TransactionsModule {
      */
     public async sendRawTransaction(
         raw: string
-    ): Promise<TransactionSendResult> {
+    ): Promise<SendTransactionResult> {
         // Validate raw transaction
         assert(
             dataUtils.isHexString(raw),
@@ -141,7 +140,7 @@ class TransactionsModule {
             {
                 body: { raw }
             }
-        )) as TransactionSendResult;
+        )) as SendTransactionResult;
     }
 
     /**

@@ -38,7 +38,7 @@ class ContractFactory {
     private readonly thor: ThorClient;
 
     /**
-     * The result of the deploy transaction, undefined until a deployment is started.
+     * The result of the deployment transaction, undefined until a deployment is started.
      */
     private deployTransaction: SendTransactionResult | undefined;
 
@@ -154,6 +154,7 @@ class ContractFactory {
             transactionReceipt?.outputs[0].contractAddress as string,
             this.abi,
             this.thor,
+            this.privateKey,
             transactionReceipt as TransactionReceipt
         );
     }
