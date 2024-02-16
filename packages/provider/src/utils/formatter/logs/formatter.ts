@@ -15,19 +15,22 @@ const formatToLogsRPC = (eventLogs: EventLogs[]): LogsRPC[] => {
     // Final RPC event logs formatted
     return eventLogs.map((eventLog: EventLogs) => {
         return {
-            transactionHash: eventLog.meta.txID,
+            address: eventLog.address,
             blockHash: eventLog.meta.blockID,
             blockNumber: vechain_sdk_core_ethers.toQuantity(
                 eventLog.meta.blockNumber
             ),
-            address: eventLog.address,
-            data: eventLog.data,
-            topics: eventLog.topics,
 
+            data: eventLog.data,
+            logIndex: '0x0',
             // Always false for now
             removed: false,
 
-            // @NOTE: These two fields are not implemented yet. This for performance reasons.
+            topics: eventLog.topics,
+            transactionHash: eventLog.meta.txID,
+            transactionIndex: '0x0'
+
+            // @NOTE: logIndex and transactionIndex are not implemented yet. This for performance reasons.
             //
             /**
              * @NOTE: These two fields are not implemented yet.
@@ -38,8 +41,6 @@ const formatToLogsRPC = (eventLogs: EventLogs[]): LogsRPC[] => {
              * After from the block, we can get the transaction index and the log index.
              * This is a performance issue because we have to query a block for each entry into the logs.
              */
-            logIndex: '0x0',
-            transactionIndex: '0x0'
         } satisfies LogsRPC;
     });
 };

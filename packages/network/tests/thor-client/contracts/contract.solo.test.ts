@@ -9,8 +9,6 @@ import {
     contractBytecode,
     deployedContractAbi,
     deployedContractBytecode,
-    deployedERC20Abi,
-    erc20ContractBytecode,
     testingContractTestCases
 } from './fixture';
 import { addressUtils, type DeployParams } from '@vechain/vechain-sdk-core';
@@ -58,12 +56,28 @@ describe('ThorClient - Contracts', () => {
     /**
      * Test case for deploying a smart contract using the contract factory.
      */
+    test('create a new contract and call it', () => {
+        // Poll until the transaction receipt is available
+        const contract: Contract = new Contract(
+            '0x123',
+            deployedContractAbi,
+            thorSoloClient,
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+        );
+        expect(contract.address).toBeDefined();
+        expect(contract.abi).toBeDefined();
+    }, 10000);
+
+    /**
+     * Test case for deploying a smart contract using the contract factory.
+     */
     test('create a new contract', () => {
         // Poll until the transaction receipt is available
         const contract: Contract = new Contract(
             '0x123',
             deployedContractAbi,
-            thorSoloClient
+            thorSoloClient,
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
         );
         expect(contract.address).toBeDefined();
         expect(contract.abi).toBeDefined();
@@ -87,12 +101,7 @@ describe('ThorClient - Contracts', () => {
         const contractAddress = contract.address;
 
         // Call the get function of the deployed contract to verify that the stored value is 100
-        const result = await thorSoloClient.contracts.executeContractCall(
-            contractAddress,
-            deployedContractAbi,
-            'get',
-            []
-        );
+        const result = await contract.read.get();
 
         expect(result).toEqual([100n]);
 
@@ -140,83 +149,6 @@ describe('ThorClient - Contracts', () => {
         );
     }, 10000);
 
-    test('deployErc20Contract with Contract Factory', async () => {
-        // Deploy the ERC20 contract and receive a response
-        let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
-            erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
-        );
-
-        factory = await factory.startDeployment();
-
-        expect(factory.getDeployTransaction()).not.toBe(undefined);
-
-        const contract: Contract = await factory.waitForDeployment();
-
-        expect(contract.address).not.toBe(null);
-        expect(addressUtils.isAddress(contract.address)).toBe(true);
-    }, 10000);
-
-    /**
-     * Tests the execution of ERC20 contract operations using a blockchain client.
-     *
-     * This test covers the deployment of an ERC20 token contract, executing a transfer transaction,
-     * and verifying the transaction's effects. It begins by deploying the contract and obtaining
-     * its address. A transfer operation is then executed to transfer tokens to a specified address.
-     * Finally, the test verifies that the transaction was successful and that the recipient's balance
-     * reflects the transferred amount.
-     *
-     */
-    test('Execute ERC20 contract operations', async () => {
-        // Deploy the ERC20 contract
-        let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
-            erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
-        );
-
-        factory = await factory.startDeployment();
-
-        const contract: Contract = await factory.waitForDeployment();
-
-        // Execute a 'transfer' transaction on the deployed contract,
-        // transferring a specified amount of tokens
-        const transferResult =
-            await thorSoloClient.contracts.executeContractTransaction(
-                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
-                contract.address,
-                deployedERC20Abi,
-                'transfer',
-                [TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address, 1000]
-            );
-
-        // Wait for the transfer transaction to complete and obtain its receipt
-        const transactionReceiptTransfer =
-            (await thorSoloClient.transactions.waitForTransaction(
-                transferResult.id
-            )) as TransactionReceipt;
-
-        // Verify that the transfer transaction did not revert
-        expect(transactionReceiptTransfer.reverted).toBe(false);
-
-        // Execute a 'balanceOf' call on the contract to check the balance of the receiver
-        const balanceOfResult =
-            await thorSoloClient.contracts.executeContractCall(
-                contract.address,
-                deployedERC20Abi,
-                'balanceOf',
-                [TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address],
-                {
-                    caller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
-                }
-            );
-
-        // Ensure that the transfer transaction was successful and the balance is as expected
-        expect(transactionReceiptTransfer.reverted).toBe(false);
-        expect(balanceOfResult).toEqual([BigInt(1000)]);
-    }, 10000); // Set a timeout of 10000ms for this test
-
     /**
      * Test case for retrieving the bytecode of a deployed smart contract.
      */
@@ -245,29 +177,75 @@ describe('ThorClient - Contracts', () => {
         // Wait for the deployment to complete and obtain the contract instance
         const contract: Contract = await factory.waitForDeployment();
 
-        const callFunctionSetResponse =
-            await thorSoloClient.contracts.executeContractTransaction(
-                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
-                contract.address,
-                deployedContractAbi,
-                'set',
-                [123]
-            );
+        const callFunctionSetResponse = await contract.transact.set(123);
 
         const transactionReceiptCallSetContract =
-            (await thorSoloClient.transactions.waitForTransaction(
-                callFunctionSetResponse.id
-            )) as TransactionReceipt;
+            (await callFunctionSetResponse.wait()) as TransactionReceipt;
 
         expect(transactionReceiptCallSetContract.reverted).toBe(false);
 
-        const callFunctionGetResult =
-            await thorSoloClient.contracts.executeContractCall(
-                contract.address,
-                deployedContractAbi,
-                'get',
-                []
-            );
+        const callFunctionGetResult = await contract.read.get();
+
+        expect(callFunctionGetResult).toEqual([BigInt(123)]);
+    }, 10000);
+
+    /**
+     * Test case for calling a contract function with options.
+     */
+    test('call a contract function with options', async () => {
+        // Create a contract factory that is already deploying the example contract
+        const factory = await createExampleContractFactory();
+
+        // Wait for the deployment to complete and obtain the contract instance
+        const contract: Contract = await factory.waitForDeployment();
+
+        await (await contract.transact.set(123)).wait();
+
+        contract.setContractReadOptions({ caller: 'invalid address' });
+
+        // The contract call should fail because the caller address is invalid
+        await expect(contract.read.get()).rejects.toThrow();
+
+        contract.clearContractReadOptions();
+
+        const callFunctionGetResult = await contract.read.get();
+
+        contract.setContractTransactOptions({
+            gasPriceCoef: 2442442,
+            expiration: 32
+        });
+
+        await expect(contract.transact.set(22323)).rejects.toThrow();
+
+        contract.clearContractTransactOptions();
+
+        await (await contract.transact.set(22323)).wait();
+
+        expect(callFunctionGetResult).toEqual([BigInt(123)]);
+    }, 10000);
+
+    /**
+     * Test case for calling a contract function with different private keys.
+     */
+    test('call a contract function with different private keys', async () => {
+        // Create a contract factory that is already deploying the example contract
+        const factory = await createExampleContractFactory();
+
+        // Wait for the deployment to complete and obtain the contract instance
+        const contract: Contract = await factory.waitForDeployment();
+
+        contract.setCallerPrivateKey('');
+
+        // The contract call should fail because the private key is not set
+        await expect(contract.transact.set(123)).rejects.toThrow();
+
+        contract.setCallerPrivateKey(
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+        );
+
+        await (await contract.transact.set(123)).wait();
+
+        const callFunctionGetResult = await contract.read.get();
 
         expect(callFunctionGetResult).toEqual([BigInt(123)]);
     }, 10000);

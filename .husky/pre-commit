@@ -4,3 +4,4 @@
 yarn build
 yarn lint
 yarn test:unit && git add docs
+yarn check-tests-naming

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap, VechainProvider } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
-import { testNetwork, THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../fixture';
+import { soloNetwork, THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../fixture';
 import { type Wallet } from '@vechain/vechain-sdk-wallet';
 
 /**
@@ -25,7 +25,7 @@ describe('RPC Mapper - eth_accounts method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = new ThorClient(testNetwork);
+        thorClient = new ThorClient(soloNetwork);
 
         // Init provider
         provider = new VechainProvider(
