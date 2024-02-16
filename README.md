@@ -18,7 +18,8 @@
 🚀 Welcome to the **vechain SDK**, your passport to the dazzling universe of decentralized wonders on the vechain blockchain. Brace yourself for a coding adventure like no other! Whether you're a blockchain bard or a coding wizard, our SDK is your key to unlocking the mysteries of secure and seamless blockchain development. Join us in this epic journey, where lines of code transform into spells of innovation, and every commit propels you deeper into the enchanted realms of VechainThor. Ready to embark on a coding odyssey? Let the vechain SDK be your guide! 🌌🔮
 
 ## Repository Structure
-Welcome to the Vechain SDK repository! Here's a breakdown of our organized structure:
+
+Welcome to the vechain SDK repository! Here's a breakdown of our organized structure:
 
 - `./docs`: Your go-to destination for comprehensive documentation. Explore demonstrative examples showcasing the prowess of our SDK. Knowledge is power, and our docs are here to enlighten your path.
 - `./packages`: A hub for our monorepo packages, each serving a distinct purpose:
@@ -26,12 +27,14 @@ Welcome to the Vechain SDK repository! Here's a breakdown of our organized struc
    - `./packages/network`: Embark on a journey through the network module, your gateway to all things related to blockchain interaction and transaction dissemination. Here, the vechain SDK connects you seamlessly to the VechainThor blockchain.
    - `./packages/errors`: Delve into the world of error handling with the errors package. This module is dedicated to managing and customizing errors within the SDK, ensuring your development experience remains resilient and smooth.
    - `./packages/provider`: Get the maximum of EVM development stack with provider package. This module is dedicated to managing the compatibility with ethers and EVM world.
+   - `./packages/wallet`: Secure your assets and manage transactions with ease using the wallet package. This module provides functionality for creating and managing vechain wallets, as well as signing and broadcasting transactions securely on the VechainThor blockchain.
 
 Explore, experiment, and let the vechain SDK empower your blockchain adventures!
 
 ## SDK Development
 
 ### Prerequisites
+
 > **Note** <br />
 > Docker is required for setting up a local thor-solo node for integration testing.
  - [Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
@@ -45,6 +48,7 @@ Explore, experiment, and let the vechain SDK empower your blockchain adventures!
 3. Run `yarn install` to install all dependencies.
 
 ### Commands
+
 - **Build**: Execute `yarn build` to build the project.
 - **Test**: Execute `yarn test` to run all tests.
   - **NOTE**: Integration tests require a local thor-solo node. See the [Integration Testing](#integration-testing) section for more details. 
@@ -56,9 +60,11 @@ Explore, experiment, and let the vechain SDK empower your blockchain adventures!
 This section provides guidance on conducting integration tests using a local thor-solo node. Ensure Docker is operational on your system before proceeding.
 
 ### Setting Up
+
 The integration tests interact with a local thor-solo node. This node utilizes the `thor-solo/instance-a4988aba7aea69f6-v3/main.db` data directory, which is pre-configured with a block history and 20 seeded accounts for testing.
 
 ### Running Tests
+
 1. **Start the thor-solo node**: Ensure Docker is running and execute the script to launch the thor-solo node.
    * You can run and stop thor-solo node manually using the following command `yarn start-thor-solo` and `yarn stop-thor-solo` respectively.
 2. **Run tests**: Use `yarn test:integration` to execute integration tests. These tests are designed to interact with the thor-solo node, verifying the correct operation of various SDK functionalities.
@@ -70,6 +76,7 @@ The integration tests interact with a local thor-solo node. This node utilizes t
 For advanced testing scenarios, you may require a custom data starting point with thor-solo. This involves creating a custom snapshot of thor's LevelDB.
 
 #### Creating a Custom LevelDB Snapshot
+
 1. **Start thor-solo with Persistence**:
    - Launch thor-solo using Docker with the `--persist` flag. This enables data persistence.
    - Use the `--data-dir` flag to specify the directory where thor-solo will store its data.
@@ -82,6 +89,7 @@ For advanced testing scenarios, you may require a custom data starting point wit
    - Once you've completed the transactions, use a tool like `docker cp` to export the LevelDB directory (i.e., `instance-a4988aba7aea69f6-v3`) from the Docker container.
 
 #### Using the Custom Snapshot
+
 1. **Prepare the Dockerfile**:
    - Modify the Dockerfile used for building the thor-solo container. Ensure it copies the exported LevelDB snapshot into the correct path within the container.
 
@@ -93,14 +101,15 @@ For advanced testing scenarios, you may require a custom data starting point wit
 
 
 ## Documentation and Examples
+
 - The `./docs` directory houses extensive code examples written as executable demonstrations.
 - Dive into the [examples](./docs/README.md) for a hands-on understanding of the SDK capabilities.
-- For a comprehensive overview of the package structure, please refer to our [Architecture Diagrams](./docs/architecture-diagrams/) located in the documentation directory.
-- You can also create and test youe examples using `yarn test:examples` command (with solo `yarn test:examples:solo`).
+- For a comprehensive overview of the package structure, please refer to our [Architecture Diagrams](./docs/diagrams/) located in the documentation directory.
+- You can also create and test your examples using `yarn test:examples` command (with solo `yarn test:examples:solo`).
 
 ## Contributing
 
-If you want to contribute to this project and make it better, your help is very welcome. Contributing is also a great way to learn more about social coding on Github, new technologies and and their ecosystems and how to make constructive, helpful bug reports, feature requests and the noblest of all contributions: a good, clean pull request.
+If you want to contribute to this project and make it better, your help is very welcome. Contributing is also a great way to learn more about social coding on GitHub, new technologies and their ecosystems and how to make constructive, helpful bug reports, feature requests and the noblest of all contributions: a good, clean pull request.
 
 For more details and guidelines on how to contribute, refer to [CONTRIBUTING](./.github/CONTRIBUTING.md).
 
@@ -109,12 +118,13 @@ For more details and guidelines on how to contribute, refer to [CONTRIBUTING](./
 This project is licensed under the [MIT license](./.github/LICENSE.md).
 
 ## Publishing
+
 The vechain SDK uses `Changesets CLI`. Execute the `yarn changeset version` and `yarn changeset publish` commands to release a new package.
 
 ## Contact information
+
 - Discord https://discord.com/invite/vechain
 - Support https://support.vechain.org
-
 
                               @@@@@@@@@@@@@@                     /@@@@@                   
                                @@@@@@@@@@@@@@@@                 @@@@@@                    
