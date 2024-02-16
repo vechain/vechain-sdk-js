@@ -37,12 +37,8 @@ const receipt = contract.deployTransactionReceipt;
 // Asserting that the contract deployment didn't revert, indicating a successful deployment
 expect(receipt.reverted).toEqual(false);
 
-// Executing a contract call to get the balance of the account that deployed the contract
-const balance = await thorSoloClient.contracts.executeContractCall(
-    receipt.outputs[0].contractAddress,
-    VIP180_ABI,
-    'balanceOf',
-    [addressUtils.fromPrivateKey(Buffer.from(privateKeyDeployer, 'hex'))]
+const balance = await contract.read.balanceOf(
+    addressUtils.fromPrivateKey(Buffer.from(privateKeyDeployer, 'hex'))
 );
 
 // Asserting that the initial balance of the deployer is the expected amount (1e24)
