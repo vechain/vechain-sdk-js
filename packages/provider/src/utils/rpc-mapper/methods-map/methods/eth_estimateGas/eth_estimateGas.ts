@@ -8,22 +8,7 @@ import {
     type SimulateTransactionClause,
     type ThorClient
 } from '@vechain/vechain-sdk-network';
-
-/**
- * Transaction object input type
- */
-interface TransactionObjectInput {
-    from?: string;
-    to: string;
-    gas?: string;
-    gasPrice?: string;
-    value?: string;
-    data?: string;
-
-    // Not supported
-    maxFeePerGas?: string;
-    maxPriorityFeePerGas?: string;
-}
+import { type TransactionObjectInput } from './types';
 
 /**
  * RPC Method eth_estimateGas implementation

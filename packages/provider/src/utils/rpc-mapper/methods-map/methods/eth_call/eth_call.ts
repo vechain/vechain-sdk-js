@@ -10,22 +10,7 @@ import {
     JSONRPC
 } from '@vechain/vechain-sdk-errors';
 import { getCorrectBlockNumberRPCToVechain } from '../../../../const/blocks';
-
-/**
- * Transaction object input type
- */
-interface TransactionObjectInput {
-    from: string;
-    to?: string;
-    gas?: string;
-    gasPrice?: string;
-    value?: string;
-    data?: string;
-
-    // Not supported
-    maxFeePerGas?: string;
-    maxPriorityFeePerGas?: string;
-}
+import { type TransactionObjectInput } from './types';
 
 /**
  * RPC Method eth_call implementation
