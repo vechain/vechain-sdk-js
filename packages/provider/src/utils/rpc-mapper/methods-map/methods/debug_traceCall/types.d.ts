@@ -1,3 +1,5 @@
+import { type BaseTransactionObjectInput } from '../types';
+
 /**
  * Type for trace options
  */
@@ -9,13 +11,9 @@ interface TraceCallRPC {
 /**
  * Transaction object input type
  */
-interface TransactionObjectInput {
+interface TransactionObjectInput extends BaseTransactionObjectInput {
     from?: string;
     to: string;
-    gas?: string;
-    gasPrice?: string;
-    value?: string;
-    data?: string;
 }
 
 export type { TraceCallRPC, TransactionObjectInput };

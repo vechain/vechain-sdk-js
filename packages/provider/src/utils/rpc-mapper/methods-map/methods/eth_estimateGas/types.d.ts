@@ -1,17 +1,11 @@
+import { type BaseTransactionObjectInput } from '../types';
+
 /**
  * Transaction object input type
  */
-interface TransactionObjectInput {
+interface TransactionObjectInput extends BaseTransactionObjectInput {
     from?: string;
     to: string;
-    gas?: string;
-    gasPrice?: string;
-    value?: string;
-    data?: string;
-
-    // Not supported
-    maxFeePerGas?: string;
-    maxPriorityFeePerGas?: string;
 }
 
 export type { TransactionObjectInput };
