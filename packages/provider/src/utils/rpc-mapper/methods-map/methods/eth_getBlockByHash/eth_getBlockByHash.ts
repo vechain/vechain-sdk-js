@@ -7,7 +7,7 @@ import {
 } from '@vechain/vechain-sdk-errors';
 import { type BlocksRPC } from '../../../../formatter';
 import { dataUtils } from '@vechain/vechain-sdk-core';
-import { ethGetBlockByNumber } from '../eth_getBlockByNumber/eth_getBlockByNumber';
+import { ethGetBlockByNumber } from '../eth_getBlockByNumber';
 
 /**
  * RPC Method eth_getBlockByHash implementation

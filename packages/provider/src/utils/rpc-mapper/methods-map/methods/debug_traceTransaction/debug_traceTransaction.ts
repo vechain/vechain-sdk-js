@@ -10,7 +10,7 @@ import type {
     TraceReturnType,
     TracerName
 } from '@vechain/vechain-sdk-network/src/thor-client/debug';
-import { ethGetTransactionReceipt } from '../eth_getTransactionReceipt/eth_getTransactionReceipt';
+import { ethGetTransactionReceipt } from '../eth_getTransactionReceipt';
 import { type TraceOptionsRPC } from './types';
 import {
     debugFormatter,
