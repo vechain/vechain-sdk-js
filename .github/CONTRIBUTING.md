@@ -1,15 +1,17 @@
-# Introduction
+# Vechain SDK Contributing
 
-Thank you for considering contributing to the vechain-sdk project. This SDK is an important part of the vechain ecosystem and your contributions are greatly appreciated. This document outlines the process and guidelines for contributing.
+## Introduction
 
-# Getting Started
+Thank you for considering contributing to the vechain SDK project. This SDK is an important part of the vechain ecosystem and your contributions are greatly appreciated. This document outlines the process and guidelines for contributing.
+
+## Getting Started
 
 1. Fork the repository on GitHub.
 2. Clone your forked repository to your local machine.
 3. Install the dependencies by running yarn install.
-4. Make your changes in a new git branch: git checkout -b my-fix-branch master.
+4. Make your changes are in a new git branch: git checkout -b my-fix-branch master.
 
-# Coding Rules
+## Coding Rules
 
 To ensure consistency throughout the source code, please adhere to the following rules:
 
@@ -17,30 +19,30 @@ To ensure consistency throughout the source code, please adhere to the following
 2. All public API methods must be documented.
 3. Write tests for new features and bug fixes.
 4. For integration tests using thor-solo, if needed, use a `TEST_ACCOUNT` in order to isolate previous integration tests.
-5. We follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for commit messages.
+5. Follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) for commit messages.
 
-# Documentation Updates
+## Guidelines for Documentation Updates
 
-## Overview
+An accurate and up-to-date documentation is vital for the usability and maintainability of the vechain-sdk. We welcome contributions that improve or update the documentation.
 
-Accurate and up-to-date documentation is vital for the usability and maintainability of the vechain-sdk. We welcome contributions that improve or update the documentation.
+### Textual Documentation
 
-### Guidelines for Documentation Updates
-
-#### Textual Documentation
 1. **Clarity and Accuracy**: Ensure that the documentation is clear, accurate, and easy to understand. Avoid technical jargon where possible, or provide explanations for technical terms.
 2. **Consistency**: Follow the existing format and style of the documentation. This includes using the same tense, person, and voice.
 3. **Markdown Formatting**: Use Markdown formatting appropriately to improve the readability of the document.
 
-#### Diagrams
+### Diagrams
+
 1. **Updating Diagrams**: In the `docs/diagrams` directory, update diagrams if there are significant changes to the system architecture or if you find any outdated diagrams.
 2. **Tools**: Use mermaid markdown diagrams that produce clear, high-quality diagrams.
 3. **Documenting Changes**: Include a brief description of what was changed in the diagram and why in your pull request.
 
-# Commenting Guidelines
+## Commenting Guidelines
 
-## Class Commenting
+### Class Commenting
+
 Provide an overview of the class's purpose, how it should be used, and in which subsystem it belongs if applicable.
+
 ```typescript
 /**
  * Represents a statistical utility that provides methods to compute 
@@ -55,8 +57,10 @@ export class Statistics {
 }
 ```
 
-## Method Commenting
+### Method Commenting
+
 Document the purpose, parameters, return values, and usage examples of methods, as well as any exceptions they might throw.
+
 ```typescript
 /**
  * Computes the average of two numbers.
@@ -80,8 +84,10 @@ public static getAverage(x: number, y: number): number {
 }
 ```
 
-## Property Commenting
+### Property Commenting
+
 Explain the purpose of properties and any noteworthy characteristics about them.
+
 ```typescript
 /**
  * The total count of instances created from this class.
@@ -92,8 +98,10 @@ Explain the purpose of properties and any noteworthy characteristics about them.
 public static instanceCount: number = 0;
 ```
 
-## Exception Commenting
+### Exception Commenting
+
 Describe under what conditions methods throw exceptions.
+
 ```typescript
 /**
  * Parses a string and returns its integer representation.
@@ -112,13 +120,17 @@ public static parseInteger(s: string): number {
   return result;
 }
 ```
+## Tests
 
-# Test Group Tagging
+Testing is a crucial aspect of maintaining a high-quality codebase in the vechain SDK project. Tests not only validate the correctness of the code but also ensure that future changes do not inadvertently introduce bugs or regressions. It is imperative that all new features and bug fixes are accompanied by corresponding tests to verify their functionality. Additionally, existing code should have adequate test coverage to maintain its stability over time. We aim for 100% test coverage to guarantee the reliability of the SDK.
+
+### Test Group Tagging
 
 When adding new tests or modifying existing ones, please make use of the `@group` tag to indicate the nature of the test:
 
 - For unit tests, use `@group unit`.
-- For integration tests, use `@group int`.
+- For integration tests, use `@group integration`.
+
 ```typescript
 /**
  * Bloom filter tests
@@ -140,11 +152,13 @@ describe('Bloom Filter', () => {
   });
 });
 ```
+
 These tags help us categorize and run specific types of tests when needed. This ensures that our test suite remains well-organized and efficient.
 
-# Test File Naming Convention
+### Test File Naming Convention
 
 When adding new test files, please adhere to the following naming conventions to maintain consistency across the project:
+
 ```typescript
 /**
  * Allowed names for test files
@@ -165,31 +179,13 @@ const allowed_names = [
 ];
 ```
 
-# Submitting a Pull Request
+## Errors handling conventions
 
-Before submitting a pull request, please make sure the following is done:
+Errors handling is delegated to `errors` package.
+Follow all code snapshots and convention related to it.
 
-1. Rebase your branch on the latest master branch.
-2. Run the test suite to make sure your changes do not break existing functionality. You can do this by running yarn test.
-3. Squash your commits into a single commit with a clear message.
-4. Push your branch to your fork on GitHub.
-5. Open a pull request against the master branch of the vechain-sdk repository.
+### Input validation
 
-# Pull Request Review
-
-All submissions, including submissions by project members, require review. We use GitHub's pull request review feature for this.
-
-# Issues
-
-If you find a bug or want to request a new feature, please open a new issue. When filing a bug report, please provide a clear description of the problem, including the expected behavior and the actual behavior.
-
-# Errors handling conventions
-Errors handling is delegated to `errors` pacakge.
-Follow all code snapshots and convetion related to it.
-
-Below a brief description of main conventions:
-
-## Input validation
 The typical flow to handle errors is the following:
 
 ```typescript
@@ -201,14 +197,32 @@ function some_function(input: any) {
 ```
 
 ### Common assertions
-It is often observed that certain assertions are applicable across various contexts. 
-Adhering to the principle of Don't Repeat Yourself (DRY), it is imperative that these assertions be consolidated in a universally accessible file. 
-This file shall be designated as `helpers/assertions.ts` and should be referenced by each module requiring its contents.
 
-# Code of Conduct
+It is often observed that certain assertions are applicable across various contexts. 
+Adhering to the principle of Don't Repeat Yourself (DRY), it is imperative that these assertions be consolidated in a universally accessible file.
+
+## Issues
+
+If you find a bug or want to request a new feature, please open a new issue. When filing a bug report, please provide a clear description of the problem, including the expected behavior and the actual behavior.
+
+## Submitting a Pull Request
+
+Before submitting a pull request, please make sure the following is done:
+
+1. Rebase your branch on the latest master branch.
+2. Run the test suite to make sure your changes do not break existing functionality. You can do this by running `yarn test`.
+3. Squash your commits into a single commit with a clear message.
+4. Push your branch to your fork on GitHub.
+5. Open a pull request against the master branch of the vechain-sdk repository.
+
+### Pull Request Review
+
+All submissions, including submissions by project members, require a review. We use GitHub's pull request review feature for this.
+
+## Code of Conduct
 
 We are committed to providing a welcoming and inclusive environment for everyone who contributes to or interacts with the vechain SDK project. To ensure a positive experience for our community, we have established a [Code of Conduct](CODE_OF_CONDUCT.md) that outlines our expectations for behavior. We encourage all contributors, maintainers, and users to familiarize themselves with this code, as it reflects our commitment to creating a diverse and respectful community. Thank you for helping us maintain a welcoming and collaborative space for all.
 
-# Thank You
+## Thank You
 
 Your contributions to open source, large or small, make projects like this possible. Thank you for taking the time to contribute.
