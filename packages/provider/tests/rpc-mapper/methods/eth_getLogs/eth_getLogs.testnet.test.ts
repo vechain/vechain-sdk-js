@@ -39,7 +39,7 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
                     RPC_METHODS.eth_getLogs
                 ]([fixture.input])) as LogsRPC[];
                 expect(logs.slice(0, 4)).toStrictEqual(fixture.expectedSliced);
-            });
+            }, 3000);
         });
     });
 
