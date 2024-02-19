@@ -19,9 +19,9 @@ const allowed_names = [
     '.solo.test.ts',
 
     // Mocks
-    '.mock.testnet.ts',
-    '.mock.mainnet.ts',
-    '.mock.solo.ts'
+    '.mock.testnet.test.ts',
+    '.mock.mainnet.test.ts',
+    '.mock.solo.test.ts'
 ];
 
 /**
