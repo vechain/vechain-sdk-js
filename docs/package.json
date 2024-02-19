@@ -1,8 +1,17 @@
 {
   "name": "docs",
+  "version": "1.0.0",
+  "description": "Documentation for the SDK with examples",
+  "author": "vechain Foundation",
+  "license": "MIT",
+  "keywords": [
+    "vechain",
+    "thor",
+    "documentation",
+    "example"
+  ],
   "private": true,
   "type": "module",
-  "version": "1.0.0",
   "scripts": {
     "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose up -d --wait && echo '\nThor solo node started ...'",
     "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose down && echo 'Thor solo node stopped ...'",
