@@ -15,15 +15,7 @@ import type {
     ContractTransactionOptions
 } from '../types';
 import { buildError, ERROR_CODES } from '@vechain/vechain-sdk-errors';
-
-export type ContractFunction<T = unknown> = (...args: unknown[]) => Promise<T>;
-
-type ContractFunctionRead = Record<string, ContractFunction>;
-
-type ContractFunctionTransact = Record<
-    string,
-    ContractFunction<SendTransactionResult>
->;
+import type { ContractFunctionRead, ContractFunctionTransact } from './types';
 
 /**
  * A class representing a smart contract deployed on the blockchain.
