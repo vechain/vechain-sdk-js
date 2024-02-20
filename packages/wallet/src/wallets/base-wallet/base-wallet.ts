@@ -62,7 +62,9 @@ class BaseWallet implements Wallet {
 
         // Get the account by address
         const account = this.accounts.find(
-            (account) => account.address === address
+            (account) =>
+                addressUtils.toChecksummed(account.address) ===
+                addressUtils.toChecksummed(address)
         );
         return await Promise.resolve(account ?? null);
     }
