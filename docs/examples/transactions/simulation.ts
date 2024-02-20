@@ -1,6 +1,6 @@
 import { expect } from 'expect';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
-import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
+import { clauseBuilder, unitsUtils } from '@vechain/vechain-sdk-core';
 
 // In this example we simulate a transaction of sending 1 VET to another account
 // And we demonstrate (1) how we can check the expected gas cost and (2) whether the transaction is successful
@@ -13,7 +13,7 @@ const thorSoloClient = new ThorClient(soloNetwork);
 // 2(a) - create the transaction for a VET transfer
 const transaction1 = {
     clauses: [
-        contract.clauseBuilder.transferVET(
+        clauseBuilder.transferVET(
             '0xb717b660cd51109334bd10b2c168986055f58c1a',
             unitsUtils.parseVET('1')
         )

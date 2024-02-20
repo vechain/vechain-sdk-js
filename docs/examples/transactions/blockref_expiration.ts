@@ -7,14 +7,14 @@ import {
     type TransactionClause,
     type TransactionBody,
     unitsUtils,
-    contract
+    clauseBuilder
 } from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Define clauses
 
 const clauses: TransactionClause[] = [
-    contract.clauseBuilder.transferVET(
+    clauseBuilder.transferVET(
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
         unitsUtils.parseVET('1000')
     )
