@@ -9,7 +9,7 @@ import {
     TESTING_CONTRACT_ADDRESS,
     testnetUrl
 } from '../../fixture';
-import { addressUtils, contract } from '@vechain/vechain-sdk-core';
+import { addressUtils, clauseBuilder } from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '../../../src';
 
 /**
@@ -72,13 +72,12 @@ describe('Transactions module Testnet tests suite', () => {
                 test(description, async () => {
                     const testNetwork = new HttpClient(testnetUrl);
                     const thorClient = new ThorClient(testNetwork);
-                    const sampleClause =
-                        contract.clauseBuilder.functionInteraction(
-                            TESTING_CONTRACT_ADDRESS,
-                            TESTING_CONTRACT_ABI,
-                            'setStateVariable',
-                            [123]
-                        );
+                    const sampleClause = clauseBuilder.functionInteraction(
+                        TESTING_CONTRACT_ADDRESS,
+                        TESTING_CONTRACT_ABI,
+                        'setStateVariable',
+                        [123]
+                    );
 
                     const gasResult = await thorClient.gas.estimateGas(
                         [sampleClause],

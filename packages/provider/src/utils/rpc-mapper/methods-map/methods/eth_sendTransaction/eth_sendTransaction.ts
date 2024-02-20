@@ -11,7 +11,10 @@ import {
 import type { SendRawTransactionResultRPC } from '../../../../formatter';
 import { type VechainProvider } from '../../../../../providers';
 import { ethSendRawTransaction } from '../eth_sendRawTransaction/eth_sendRawTransaction';
-import { contract, type TransactionClause } from '@vechain/vechain-sdk-core';
+import {
+    clauseBuilder,
+    type TransactionClause
+} from '@vechain/vechain-sdk-core';
 import { type Wallet, type WalletAccount } from '@vechain/vechain-sdk-wallet';
 import { type TransactionObjectInput } from './types';
 
@@ -94,11 +97,7 @@ const ethSendTransaction = async (
                       } satisfies TransactionClause
                   ]
                 : // If 'to' address is not provided, it will be assumed that the transaction is a contract creation transaction.
-                  [
-                      contract.clauseBuilder.deployContract(
-                          transaction.data ?? '0x'
-                      )
-                  ];
+                  [clauseBuilder.deployContract(transaction.data ?? '0x')];
 
         // 2 - Estimate gas
         const gasResult = await thorClient.gas.estimateGas(

@@ -1,10 +1,11 @@
 import {
-    contract,
+    coder,
     type InterfaceAbi,
     PARAMS_ABI,
     PARAMS_ADDRESS,
     dataUtils,
-    addressUtils
+    addressUtils,
+    clauseBuilder
 } from '@vechain/vechain-sdk-core';
 import type { ContractCallOptions, ContractTransactionOptions } from './types';
 import { type SendTransactionResult } from '../transactions';
@@ -61,7 +62,7 @@ class ContractsModule {
                 {
                     to: contractAddress,
                     value: '0',
-                    data: contract.coder.encodeFunctionInput(
+                    data: coder.encodeFunctionInput(
                         contractABI,
                         functionName,
                         functionData
@@ -71,7 +72,7 @@ class ContractsModule {
             contractCallOptions
         );
 
-        return contract.coder.decodeFunctionOutput(
+        return coder.decodeFunctionOutput(
             contractABI,
             functionName,
             response[0].data
@@ -101,7 +102,7 @@ class ContractsModule {
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
         // Build a clause to interact with the contract function
-        const clause = contract.clauseBuilder.functionInteraction(
+        const clause = clauseBuilder.functionInteraction(
             contractAddress,
             contractABI,
             functionName,

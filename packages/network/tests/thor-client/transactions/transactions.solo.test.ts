@@ -20,7 +20,7 @@ import {
     Transaction,
     TransactionHandler,
     addressUtils,
-    contract
+    clauseBuilder
 } from '@vechain/vechain-sdk-core';
 import { TransactionNotSignedError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '../../../src';
@@ -258,13 +258,12 @@ describe('ThorClient - Transactions Module', () => {
         signTransactionTestCases.solo.correct.forEach(
             ({ description, origin, options, isDelegated, expected }) => {
                 test(description, async () => {
-                    const sampleClause =
-                        contract.clauseBuilder.functionInteraction(
-                            TESTING_CONTRACT_ADDRESS,
-                            TESTING_CONTRACT_ABI,
-                            'deposit',
-                            [123]
-                        );
+                    const sampleClause = clauseBuilder.functionInteraction(
+                        TESTING_CONTRACT_ADDRESS,
+                        TESTING_CONTRACT_ABI,
+                        'deposit',
+                        [123]
+                    );
 
                     const gasResult = await thorSoloClient.gas.estimateGas(
                         [sampleClause],
@@ -307,13 +306,12 @@ describe('ThorClient - Transactions Module', () => {
                 test(
                     description,
                     async () => {
-                        const sampleClause =
-                            contract.clauseBuilder.functionInteraction(
-                                TESTING_CONTRACT_ADDRESS,
-                                TESTING_CONTRACT_ABI,
-                                'setStateVariable',
-                                [123]
-                            );
+                        const sampleClause = clauseBuilder.functionInteraction(
+                            TESTING_CONTRACT_ADDRESS,
+                            TESTING_CONTRACT_ABI,
+                            'setStateVariable',
+                            [123]
+                        );
 
                         const txBody =
                             await thorSoloClient.transactions.buildTransactionBody(

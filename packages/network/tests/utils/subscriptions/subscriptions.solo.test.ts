@@ -16,8 +16,12 @@ import {
     soloUrl
 } from '../../fixture';
 import WebSocket from 'ws';
-import { addressUtils, coder, unitsUtils } from '@vechain/vechain-sdk-core';
-import { contract } from '@vechain/vechain-sdk-core/src';
+import {
+    addressUtils,
+    clauseBuilder,
+    coder,
+    unitsUtils
+} from '@vechain/vechain-sdk-core';
 
 const TIMEOUT = 15000; // 15-second timeout
 
@@ -132,7 +136,7 @@ describe('Subscriptions Solo network tests', () => {
             });
 
             // Trigger the smart contract function that emits the event
-            const clause = contract.clauseBuilder.functionInteraction(
+            const clause = clauseBuilder.functionInteraction(
                 TESTING_CONTRACT_ADDRESS,
                 TESTING_CONTRACT_ABI,
                 'setStateVariable',
