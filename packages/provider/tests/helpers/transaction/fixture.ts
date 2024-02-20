@@ -1,7 +1,7 @@
 import {
     blockWithTransactionsExpanded,
     blockWithTransactionsNotExpanded
-} from '../fixture';
+} from '../../fixture';
 
 /**
  * Test cases for getTransactionIndex
