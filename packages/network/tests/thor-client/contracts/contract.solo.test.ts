@@ -13,7 +13,7 @@ import {
 } from './fixture';
 import {
     addressUtils,
-    contract,
+    coder,
     type DeployParams,
     type FunctionFragment
 } from '@vechain/vechain-sdk-core';
@@ -270,7 +270,7 @@ describe('ThorClient - Contracts', () => {
                 const response =
                     await thorSoloClient.contracts.executeContractCall(
                         TESTING_CONTRACT_ADDRESS,
-                        contract.coder
+                        coder
                             .createInterface(TESTING_CONTRACT_ABI)
                             .getFunction(functionName) as FunctionFragment,
                         params

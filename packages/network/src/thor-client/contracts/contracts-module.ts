@@ -1,12 +1,13 @@
 import {
-    contract,
+    coder,
     type InterfaceAbi,
     PARAMS_ABI,
     PARAMS_ADDRESS,
     dataUtils,
     addressUtils,
     type FunctionFragment,
-    abi
+    abi,
+    clauseBuilder
 } from '@vechain/vechain-sdk-core';
 import type { ContractCallOptions, ContractTransactionOptions } from './types';
 import { type SendTransactionResult } from '../transactions';
@@ -97,7 +98,7 @@ class ContractsModule {
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
         // Build a clause to interact with the contract function
-        const clause = contract.clauseBuilder.functionInteraction(
+        const clause = clauseBuilder.functionInteraction(
             contractAddress,
             functionFragment,
             functionData
@@ -142,7 +143,7 @@ class ContractsModule {
     public async getBaseGasPrice(): Promise<unknown> {
         return await this.executeContractCall(
             PARAMS_ADDRESS,
-            contract.coder
+            coder
                 .createInterface(PARAMS_ABI)
                 .getFunction('get') as FunctionFragment,
             [dataUtils.encodeBytes32String('base-gas-price')]

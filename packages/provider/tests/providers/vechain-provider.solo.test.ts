@@ -9,8 +9,7 @@ import {
     deployERC721Contract,
     waitForMessage
 } from './helpers';
-import { type FunctionFragment } from '@vechain/vechain-sdk-core';
-import { contract as contractUtils } from '@vechain/vechain-sdk-core';
+import { coder, type FunctionFragment } from '@vechain/vechain-sdk-core';
 
 /**
  * Vechain provider tests - Solo Network
@@ -182,7 +181,7 @@ describe('Vechain provider tests', () => {
         await thorClient.contracts.executeContractTransaction(
             TEST_ACCOUNT.privateKey,
             contract.address,
-            contractUtils.coder
+            coder
                 .createInterface(contract.abi)
                 .getFunction('transfer') as FunctionFragment,
             [TEST_ACCOUNT.address, 100]
@@ -279,7 +278,7 @@ describe('Vechain provider tests', () => {
         await thorClient.contracts.executeContractTransaction(
             TEST_ACCOUNT.privateKey,
             erc20Contract.address,
-            contractUtils.coder
+            coder
                 .createInterface(erc20Contract.abi)
                 .getFunction('transfer') as FunctionFragment,
             [TEST_ACCOUNT.address, 100]
@@ -288,7 +287,7 @@ describe('Vechain provider tests', () => {
         await thorClient.contracts.executeContractTransaction(
             TEST_ACCOUNT.privateKey,
             erc721Contract.address,
-            contractUtils.coder
+            coder
                 .createInterface(erc721Contract.abi)
                 .getFunction('mintItem') as FunctionFragment,
             [TEST_ACCOUNT.address]

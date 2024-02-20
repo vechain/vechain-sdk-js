@@ -5,6 +5,19 @@
     "repository": "https://github.com/vechain/vechain-sdk.git",
     "author": "vechain Foundation",
     "license": "MIT",
+    "keywords": [
+        "vechain",
+        "thor",
+        "sdk",
+        "blockchain",
+        "dapp",
+        "web3"
+    ],
+    "private": true,
+    "workspaces": [
+        "packages/*",
+        "docs"
+    ],
     "scripts": {
         "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose up -d --wait && echo '\nThor solo node started ...'",
         "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose down && echo 'Thor solo node stopped ...'",
@@ -24,11 +37,6 @@
         "merge-coverage": "ts-node scripts/merge-coverage.ts",
         "check-tests-naming": "ts-node scripts/check-tests-naming.ts"
     },
-    "private": true,
-    "workspaces": [
-        "packages/*",
-        "docs"
-    ],
     "devDependencies": {
         "@changesets/cli": "^2.27.1",
         "@commitlint/cli": "^18.6.0",

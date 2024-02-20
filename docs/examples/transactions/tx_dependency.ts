@@ -1,5 +1,4 @@
 import {
-    contract,
     networkInfo,
     Transaction,
     secp256k1,
@@ -7,20 +6,21 @@ import {
     TransactionHandler,
     type TransactionClause,
     type TransactionBody,
-    unitsUtils
+    unitsUtils,
+    clauseBuilder
 } from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Define transaction clauses
 
 const txAClauses: TransactionClause[] = [
-    contract.clauseBuilder.transferVET(
+    clauseBuilder.transferVET(
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
         unitsUtils.parseVET('1000')
     )
 ];
 const txBClauses: TransactionClause[] = [
-    contract.clauseBuilder.transferVET(
+    clauseBuilder.transferVET(
         '0x7ccadeea14dd6727845b58f8aa7aad0f41a002a2',
         unitsUtils.parseVET('1')
     )

@@ -5,7 +5,6 @@ import { ThorClient, type TransactionReceipt } from '../../../src';
 import { soloNetwork, TEST_ACCOUNTS } from '../../fixture';
 import {
     coder,
-    contract,
     ERC721_ABI,
     type FunctionFragment,
     type Log
@@ -79,7 +78,7 @@ describe('ThorClient - ERC721 Contracts', () => {
                     response =
                         await thorSoloClient.contracts.executeContractCall(
                             contractAddress,
-                            contract.coder
+                            coder
                                 .createInterface(ERC721_ABI)
                                 .getFunction(functionName) as FunctionFragment,
                             params
@@ -92,7 +91,7 @@ describe('ThorClient - ERC721 Contracts', () => {
                             TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
                                 .privateKey,
                             contractAddress,
-                            contract.coder
+                            coder
                                 .createInterface(ERC721_ABI)
                                 .getFunction(functionName) as FunctionFragment,
                             params

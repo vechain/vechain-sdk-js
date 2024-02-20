@@ -11,8 +11,9 @@ import {
 } from '../../fixture';
 import {
     addressUtils,
-    contract,
-    type FunctionFragment
+    coder,
+    type FunctionFragment,
+    clauseBuilder
 } from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '../../../src';
 
@@ -77,16 +78,15 @@ describe('Transactions module Testnet tests suite', () => {
                     const testNetwork = new HttpClient(testnetUrl);
                     const thorClient = new ThorClient(testNetwork);
 
-                    const sampleClause =
-                        contract.clauseBuilder.functionInteraction(
-                            TESTING_CONTRACT_ADDRESS,
-                            contract.coder
-                                .createInterface(TESTING_CONTRACT_ABI)
-                                .getFunction(
-                                    'setStateVariable'
-                                ) as FunctionFragment,
-                            [123]
-                        );
+                    const sampleClause = clauseBuilder.functionInteraction(
+                        TESTING_CONTRACT_ADDRESS,
+                        coder
+                            .createInterface(TESTING_CONTRACT_ABI)
+                            .getFunction(
+                                'setStateVariable'
+                            ) as FunctionFragment,
+                        [123]
+                    );
 
                     const gasResult = await thorClient.gas.estimateGas(
                         [sampleClause],

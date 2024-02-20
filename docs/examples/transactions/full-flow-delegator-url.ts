@@ -1,4 +1,4 @@
-import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
+import { clauseBuilder, unitsUtils } from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
@@ -26,7 +26,7 @@ const delegatorAccount = {
 // 2 - Create the transaction clauses
 const transaction = {
     clauses: [
-        contract.clauseBuilder.transferVET(
+        clauseBuilder.transferVET(
             '0xb717b660cd51109334bd10b2c168986055f58c1a',
             unitsUtils.parseVET('1')
         )

@@ -18,11 +18,11 @@ import {
 import WebSocket from 'ws';
 import {
     addressUtils,
+    clauseBuilder,
     coder,
     type FunctionFragment,
     unitsUtils
 } from '@vechain/vechain-sdk-core';
-import { contract } from '@vechain/vechain-sdk-core/src';
 
 const TIMEOUT = 15000; // 15-second timeout
 
@@ -137,9 +137,9 @@ describe('Subscriptions Solo network tests', () => {
             });
 
             // Trigger the smart contract function that emits the event
-            const clause = contract.clauseBuilder.functionInteraction(
+            const clause = clauseBuilder.functionInteraction(
                 TESTING_CONTRACT_ADDRESS,
-                contract.coder
+                coder
                     .createInterface(TESTING_CONTRACT_ABI)
                     .getFunction('setStateVariable') as FunctionFragment,
                 [1]

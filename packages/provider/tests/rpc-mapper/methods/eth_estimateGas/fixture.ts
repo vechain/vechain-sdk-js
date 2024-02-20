@@ -2,7 +2,7 @@ import {
     InvalidDataTypeError,
     ProviderRpcError
 } from '@vechain/vechain-sdk-errors';
-import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
+import { clauseBuilder, unitsUtils } from '@vechain/vechain-sdk-core';
 
 /**
  * Fixtures for positive cases
@@ -11,7 +11,7 @@ const positiveCasesFixtures = [
     {
         description: 'Simple transfer.',
         input: [
-            contract.clauseBuilder.transferVET(
+            clauseBuilder.transferVET(
                 '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
                 unitsUtils.parseVET('1000')
             ),

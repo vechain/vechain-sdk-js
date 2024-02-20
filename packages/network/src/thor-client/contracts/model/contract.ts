@@ -1,6 +1,6 @@
 import {
     addressUtils,
-    contract,
+    coder,
     type FunctionFragment,
     type InterfaceAbi
 } from '@vechain/vechain-sdk-core';
@@ -179,7 +179,7 @@ class Contract {
      *
      */
     private getFunctionFragment(prop: string | symbol): FunctionFragment {
-        const functionFragment = contract.coder
+        const functionFragment = coder
             .createInterface(this.abi)
             .getFunction(prop.toString());
 
