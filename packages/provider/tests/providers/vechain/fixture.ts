@@ -3,14 +3,14 @@ import {
     unitsUtils,
     type InterfaceAbi
 } from '@vechain/vechain-sdk-core';
-import { zeroBlock } from '../rpc-mapper/methods/eth_getBlockByNumber/fixture';
+import { zeroBlock } from '../../rpc-mapper/methods/eth_getBlockByNumber/fixture';
 import {
     TESTING_CONTRACT_ADDRESS,
     TESTING_CONTRACT_BYTECODE,
     TEST_ACCOUNTS_THOR_SOLO,
     validTransactionDetailTestnet,
     validTransactionHashTestnet
-} from '../fixture';
+} from '../../fixture';
 
 /**
  * Test cases for provider methods - Testnet

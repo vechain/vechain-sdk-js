@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { type SubscriptionEvent, VechainProvider } from '../../src';
+import { type SubscriptionEvent, VechainProvider } from '../../../src';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '@vechain/vechain-sdk-network';
-import { soloNetwork } from '../fixture';
+import { soloNetwork } from '../../fixture';
 import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from './fixture';
 import {
     deployERC20Contract,
