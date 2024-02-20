@@ -24,6 +24,7 @@ class HardhatVechainProvider extends ProviderWrapper {
      * Constructor with the network configuration.
      *
      * @param networkConfig - The network configuration given into hardhat.
+     * @param debug - Debug mode.
      */
     constructor(networkConfig: HttpNetworkConfig, debug: boolean = false) {
         // Initialize the provider with the network configuration.
