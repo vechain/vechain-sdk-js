@@ -1,17 +1,16 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { VechainProvider } from '../../src';
+import { VechainProvider } from '../../../src';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '@vechain/vechain-sdk-network';
-import { testNetwork } from '../fixture';
-import { providerMethodsTestCasesTestnet } from './fixture';
-import { waitForMessage } from './helpers';
+import { mainNetwork } from '../../fixture';
+import { providerMethodsTestCasesMainnet } from '../fixture';
 
 /**
- * Vechain provider tests
+ * Vechain provider tests - Mainnet
  *
- * @group integration/providers/vechain-provider
+ * @group integration/providers/vechain-provider-mainnet
  */
-describe('Vechain provider tests', () => {
+describe('Vechain provider tests - mainnet', () => {
     /**
      * ThorClient and provider instances
      */
@@ -22,12 +21,12 @@ describe('Vechain provider tests', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = new ThorClient(testNetwork);
+        thorClient = new ThorClient(mainNetwork);
         provider = new VechainProvider(thorClient);
     });
 
     /**
-     * Destroy thor client and provider after each test
+     * Destory thor client and provider after each test
      */
     afterEach(() => {
         provider.destroy();
@@ -36,7 +35,7 @@ describe('Vechain provider tests', () => {
     /**
      * Provider methods tests
      */
-    providerMethodsTestCasesTestnet.forEach(
+    providerMethodsTestCasesMainnet.forEach(
         ({ description, method, params, expected }) => {
             test(description, async () => {
                 // Call RPC function
@@ -52,7 +51,7 @@ describe('Vechain provider tests', () => {
     );
 
     /**
-     * eth_blockNumber RPC call test
+     * eth_getBalance RPC call test
      */
     test('Should be able to get the latest block number', async () => {
         // Call RPC function
@@ -64,33 +63,6 @@ describe('Vechain provider tests', () => {
         // Compare the result with the expected value
         expect(rpcCall).not.toBe('0x0');
     });
-
-    /**
-     * eth_subscribe latest blocks RPC call test
-     */
-    test('Should be able to get to subscribe to the latest blocks', async () => {
-        // Call RPC function
-        const rpcCall = await provider.request({
-            method: 'eth_subscribe',
-            params: ['newHeads']
-        });
-
-        const messageReceived = waitForMessage(provider);
-
-        const message = await messageReceived;
-
-        // Optionally, you can do assertions or other operations with the message
-        expect(message).toBeDefined();
-        expect(message.method).toBe('eth_subscription');
-        expect(message.params.subscription).toBeDefined();
-
-        // Compare the result with the expected value
-        expect(rpcCall).not.toBe('0x0');
-    }, 12000);
-
-    /**
-     * eth_getBalance RPC call test
-     */
 
     /**
      * Invalid RPC method tests

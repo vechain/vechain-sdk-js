@@ -2,7 +2,7 @@ import { EventEmitter } from 'events';
 import {
     type EIP1193ProviderMessage,
     type EIP1193RequestArguments
-} from '../eip1193';
+} from '../../eip1193';
 import { assert, DATA } from '@vechain/vechain-sdk-errors';
 import {
     type BlockDetail,
@@ -10,14 +10,18 @@ import {
     Poll,
     type ThorClient
 } from '@vechain/vechain-sdk-network';
-import { ethGetLogs, RPC_METHODS, RPCMethodsMap } from '../utils';
+import {
+    ethGetLogs,
+    RPC_METHODS,
+    RPCMethodsMap,
+    POLLING_INTERVAL
+} from '../../utils';
 import { type Wallet } from '@vechain/vechain-sdk-wallet';
 import {
     type FilterOptions,
     type SubscriptionEvent,
     type SubscriptionManager
 } from './types';
-import { POLLING_INTERVAL } from './constants';
 import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
 
 /**
