@@ -40,7 +40,9 @@ describe('Provider Hardhat Helpers', () => {
         (fixture) => {
             test(fixture.test, () => {
                 expect(() =>
-                    createWalletFromHardhatNetworkConfig(fixture.networkConfig)
+                    createWalletFromHardhatNetworkConfig(
+                        fixture.networkConfig as HttpNetworkConfig
+                    )
                 ).toThrowError(fixture.expectedError);
             });
         }
