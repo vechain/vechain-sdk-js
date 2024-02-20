@@ -3,7 +3,7 @@ import { HardhatVechainProvider } from '../../../src';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { mainnetUrl } from '../../fixture';
 import { providerMethodsTestCasesMainnet } from '../fixture';
-import { type NetworkConfig } from 'hardhat/src/types/config';
+import { type HttpNetworkConfig } from 'hardhat/types';
 
 /**
  * Hardhat provider tests - Mainnet
@@ -24,7 +24,7 @@ describe('Hardhat provider tests', () => {
         provider = new HardhatVechainProvider({
             url: mainnetUrl,
             chainId: 74
-        } as NetworkConfig);
+        } as HttpNetworkConfig);
     });
 
     /**
