@@ -3,7 +3,7 @@ import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ProviderRpcError } from '@vechain/vechain-sdk-errors';
-import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
+import { clauseBuilder, unitsUtils } from '@vechain/vechain-sdk-core';
 
 /**
  * RPC Mapper integration tests for 'eth_estimateGas' method with Solo Network and mocked functionality
@@ -39,7 +39,7 @@ describe('RPC Mapper - eth_estimateGas method tests', () => {
 
             await expect(
                 RPCMethodsMap(thorClient)[RPC_METHODS.eth_estimateGas]([
-                    contract.clauseBuilder.transferVET(
+                    clauseBuilder.transferVET(
                         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
                         unitsUtils.parseVET('1000')
                     ),

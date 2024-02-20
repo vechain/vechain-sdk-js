@@ -1,4 +1,4 @@
-import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
+import { coder, unitsUtils } from '@vechain/vechain-sdk-core';
 import { BUILT_IN_CONTRACTS } from '../../built-in-fixture';
 import {
     TESTING_CONTRACT_ABI,
@@ -20,7 +20,7 @@ const estimateGasTestCases = {
                 {
                     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                     value: '0',
-                    data: contract.coder.encodeFunctionInput(
+                    data: coder.encodeFunctionInput(
                         BUILT_IN_CONTRACTS.ENERGY_ABI,
                         'transfer',
                         [
@@ -47,7 +47,7 @@ const estimateGasTestCases = {
                 {
                     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                     value: '0',
-                    data: contract.coder.encodeFunctionInput(
+                    data: coder.encodeFunctionInput(
                         BUILT_IN_CONTRACTS.ENERGY_ABI,
                         'transfer',
                         [
@@ -79,7 +79,7 @@ const estimateGasTestCases = {
                 {
                     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                     value: '0',
-                    data: contract.coder.encodeFunctionInput(
+                    data: coder.encodeFunctionInput(
                         BUILT_IN_CONTRACTS.ENERGY_ABI,
                         'transfer',
                         [
@@ -111,7 +111,7 @@ const estimateGasTestCases = {
                 {
                     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                     value: '0',
-                    data: contract.coder.encodeFunctionInput(
+                    data: coder.encodeFunctionInput(
                         BUILT_IN_CONTRACTS.ENERGY_ABI,
                         'transfer',
                         [
@@ -124,7 +124,7 @@ const estimateGasTestCases = {
                 {
                     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                     value: '0',
-                    data: contract.coder.encodeFunctionInput(
+                    data: coder.encodeFunctionInput(
                         BUILT_IN_CONTRACTS.ENERGY_ABI,
                         'transfer',
                         [
@@ -137,7 +137,7 @@ const estimateGasTestCases = {
                 {
                     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                     value: '0',
-                    data: contract.coder.encodeFunctionInput(
+                    data: coder.encodeFunctionInput(
                         BUILT_IN_CONTRACTS.ENERGY_ABI,
                         'transfer',
                         [
@@ -164,7 +164,7 @@ const estimateGasTestCases = {
                 {
                     to: TESTING_CONTRACT_ADDRESS,
                     value: '0',
-                    data: contract.coder.encodeFunctionInput(
+                    data: coder.encodeFunctionInput(
                         TESTING_CONTRACT_ABI,
                         'testAssertError',
                         [1] // Any number !== 0 will cause Panic error
@@ -219,7 +219,7 @@ const estimateGasTestCases = {
                 {
                     to: TESTING_CONTRACT_ADDRESS,
                     value: '0',
-                    data: contract.coder.encodeFunctionInput(
+                    data: coder.encodeFunctionInput(
                         TESTING_CONTRACT_ABI,
                         'testAssertError',
                         [0] // Any number !== 0 will cause Panic error

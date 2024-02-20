@@ -1,7 +1,7 @@
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { TEST_ACCOUNTS, ZERO_ADDRESS } from '../../fixture';
 import { BUILT_IN_CONTRACTS } from '../../built-in-fixture';
-import { contract, dataUtils, unitsUtils } from '@vechain/vechain-sdk-core';
+import { coder, dataUtils, unitsUtils } from '@vechain/vechain-sdk-core';
 
 /**
  * Transaction details function fixture.
@@ -234,7 +234,7 @@ const simulateTransaction = {
                         {
                             to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                             value: '0',
-                            data: contract.coder.encodeFunctionInput(
+                            data: coder.encodeFunctionInput(
                                 BUILT_IN_CONTRACTS.ENERGY_ABI,
                                 'transfer',
                                 [
@@ -312,7 +312,7 @@ const simulateTransaction = {
                         {
                             to: BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
                             value: '0',
-                            data: contract.coder.encodeFunctionInput(
+                            data: coder.encodeFunctionInput(
                                 BUILT_IN_CONTRACTS.PARAMS_ABI,
                                 'get',
                                 [
@@ -359,7 +359,7 @@ const simulateTransaction = {
                             /**
                              * Checks the VTHO balance of TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
                              */
-                            data: contract.coder.encodeFunctionInput(
+                            data: coder.encodeFunctionInput(
                                 BUILT_IN_CONTRACTS.ENERGY_ABI,
                                 'balanceOf',
                                 [
@@ -464,7 +464,7 @@ const simulateTransaction = {
                     {
                         to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
                         value: '0',
-                        data: contract.coder.encodeFunctionInput(
+                        data: coder.encodeFunctionInput(
                             BUILT_IN_CONTRACTS.ENERGY_ABI,
                             'transfer',
                             [

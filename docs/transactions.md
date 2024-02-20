@@ -16,7 +16,7 @@ To break it down:
 In this example a simple transaction with a single clause is created, signed, encoded and then decoded
 
 ```typescript { name=sign_decode, category=example }
-import { contract, networkInfo } from '@vechain/vechain-sdk-core';
+import { clauseBuilder, networkInfo } from '@vechain/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -31,7 +31,7 @@ import { expect } from 'expect';
 // 1 - Define clauses
 
 const clauses: TransactionClause[] = [
-    contract.clauseBuilder.transferVET(
+    clauseBuilder.transferVET(
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
         unitsUtils.parseVET('10000')
     )
@@ -79,7 +79,11 @@ In VechainThor blockchain a transaction can be composed of multiple clauses. \
 Clauses allow to send multiple payloads to different recipients within a single transaction.
 
 ```typescript { name=multiple_clauses, category=example }
-import { VTHO_ADDRESS, contract, networkInfo } from '@vechain/vechain-sdk-core';
+import {
+    VTHO_ADDRESS,
+    clauseBuilder,
+    networkInfo
+} from '@vechain/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -94,11 +98,11 @@ import { expect } from 'expect';
 // 1 - Define multiple clauses
 
 const clauses: TransactionClause[] = [
-    contract.clauseBuilder.transferVET(
+    clauseBuilder.transferVET(
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
         unitsUtils.parseVET('10000')
     ),
-    contract.clauseBuilder.transferToken(
+    clauseBuilder.transferToken(
         VTHO_ADDRESS,
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
         unitsUtils.parseUnits('10000', 18) // 10000 VTHO
@@ -145,7 +149,7 @@ expect(decodedTx.body.clauses.length).toBe(clauses.length);
 Fee delegation is a feature on the VechainThor blockchain which enables the transaction sender to request another entity, a sponsor, to pay for the transaction fee on the sender's behalf.
 
 ```typescript { name=fee_delegation, category=example }
-import { contract, networkInfo } from '@vechain/vechain-sdk-core';
+import { clauseBuilder, networkInfo } from '@vechain/vechain-sdk-core';
 import {
     Transaction,
     TransactionHandler,
@@ -175,7 +179,7 @@ const thorSoloClient = new ThorClient(soloNetwork, {
 // 2 - Define clause and estimate gas
 
 const clauses: TransactionClause[] = [
-    contract.clauseBuilder.transferVET(
+    clauseBuilder.transferVET(
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
         unitsUtils.parseVET('10000')
     )
@@ -246,14 +250,14 @@ import {
     type TransactionClause,
     type TransactionBody,
     unitsUtils,
-    contract
+    clauseBuilder
 } from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Define clauses
 
 const clauses: TransactionClause[] = [
-    contract.clauseBuilder.transferVET(
+    clauseBuilder.transferVET(
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
         unitsUtils.parseVET('1000')
     )
@@ -298,7 +302,6 @@ A transaction can be set to only be processed after another transaction, therefo
 
 ```typescript { name=tx_dependency, category=example }
 import {
-    contract,
     networkInfo,
     Transaction,
     secp256k1,
@@ -306,20 +309,21 @@ import {
     TransactionHandler,
     type TransactionClause,
     type TransactionBody,
-    unitsUtils
+    unitsUtils,
+    clauseBuilder
 } from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Define transaction clauses
 
 const txAClauses: TransactionClause[] = [
-    contract.clauseBuilder.transferVET(
+    clauseBuilder.transferVET(
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
         unitsUtils.parseVET('1000')
     )
 ];
 const txBClauses: TransactionClause[] = [
-    contract.clauseBuilder.transferVET(
+    clauseBuilder.transferVET(
         '0x7ccadeea14dd6727845b58f8aa7aad0f41a002a2',
         unitsUtils.parseVET('1')
     )
@@ -392,7 +396,7 @@ Note - the result of a transaction might be different depending on the state(blo
 ```typescript { name=simulation, category=example }
 import { expect } from 'expect';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
-import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
+import { clauseBuilder, unitsUtils } from '@vechain/vechain-sdk-core';
 
 // In this example we simulate a transaction of sending 1 VET to another account
 // And we demonstrate (1) how we can check the expected gas cost and (2) whether the transaction is successful
@@ -405,7 +409,7 @@ const thorSoloClient = new ThorClient(soloNetwork);
 // 2(a) - create the transaction for a VET transfer
 const transaction1 = {
     clauses: [
-        contract.clauseBuilder.transferVET(
+        clauseBuilder.transferVET(
             '0xb717b660cd51109334bd10b2c168986055f58c1a',
             unitsUtils.parseVET('1')
         )
@@ -506,7 +510,7 @@ In the following complete examples, we will explore the entire lifecycle of a Ve
 1.**No Delegation (Signing Only with an Origin Private Key)**: In this scenario, we'll demonstrate the basic process of creating a transaction, signing it with the origin private key, and sending it to the VechainThor blockchain without involving fee delegation.
 
 ```typescript { name=full-flow-no-delegator, category=example }
-import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
+import { clauseBuilder, unitsUtils } from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
@@ -527,7 +531,7 @@ const senderAccount = {
 // 2 - Create the transaction clauses
 const transaction = {
     clauses: [
-        contract.clauseBuilder.transferVET(
+        clauseBuilder.transferVET(
             '0xb717b660cd51109334bd10b2c168986055f58c1a',
             unitsUtils.parseVET('1')
         )
@@ -574,7 +578,7 @@ expect(sendTransactionResult.id).toBe(txReceipt?.meta.txID);
 2.**Delegation with Private Key**: Here, we'll extend the previous example by incorporating fee delegation. The transaction sender will delegate the transaction fee payment to another entity (delegator), and we'll guide you through the steps of building, signing, and sending such a transaction.
 
 ```typescript { name=full-flow-delegator-private-key, category=example }
-import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
+import { clauseBuilder, unitsUtils } from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
@@ -602,7 +606,7 @@ const delegatorAccount = {
 // 2 - Create the transaction clauses
 const transaction = {
     clauses: [
-        contract.clauseBuilder.transferVET(
+        clauseBuilder.transferVET(
             '0xb717b660cd51109334bd10b2c168986055f58c1a',
             unitsUtils.parseVET('1')
         )
@@ -660,7 +664,7 @@ expect(sendTransactionResult.id).toBe(txReceipt?.meta.txID);
 3.**Delegation with URL**: This example will showcase the use of a delegation URL for fee delegation. The sender will specify a delegation URL in the `signTransaction` options, allowing a designated sponsor to pay the transaction fee. We'll cover the full process, from building clauses to verifying the transaction on-chain.
 
 ```typescript { name=full-flow-delegator-url, category=example }
-import { contract, unitsUtils } from '@vechain/vechain-sdk-core';
+import { clauseBuilder, unitsUtils } from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
@@ -688,7 +692,7 @@ const delegatorAccount = {
 // 2 - Create the transaction clauses
 const transaction = {
     clauses: [
-        contract.clauseBuilder.transferVET(
+        clauseBuilder.transferVET(
             '0xb717b660cd51109334bd10b2c168986055f58c1a',
             unitsUtils.parseVET('1')
         )

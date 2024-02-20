@@ -3,7 +3,7 @@ import {
     getTransactionIndexTestCases,
     invalidGetTransactionIndexTestCases
 } from './fixture';
-import { getTransactionIndexIntoBlock } from '../../src';
+import { getTransactionIndexIntoBlock } from '../../../src';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 
 /**

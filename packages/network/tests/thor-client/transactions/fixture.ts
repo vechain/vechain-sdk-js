@@ -1,8 +1,8 @@
 import {
     type TransactionBody,
-    contract,
     unitsUtils,
-    networkInfo
+    networkInfo,
+    coder
 } from '@vechain/vechain-sdk-core';
 import { BUILT_IN_CONTRACTS } from '../../built-in-fixture';
 import {
@@ -32,14 +32,10 @@ const transactionNonces = {
 const transfer1VTHOClause = {
     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
     value: '0',
-    data: contract.coder.encodeFunctionInput(
-        BUILT_IN_CONTRACTS.ENERGY_ABI,
-        'transfer',
-        [
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-            unitsUtils.parseVET('1')
-        ]
-    )
+    data: coder.encodeFunctionInput(BUILT_IN_CONTRACTS.ENERGY_ABI, 'transfer', [
+        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+        unitsUtils.parseVET('1')
+    ])
 };
 
 /**
@@ -48,14 +44,10 @@ const transfer1VTHOClause = {
 const transfer1VTHOClauseWithValueAsANumber = {
     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
     value: 0,
-    data: contract.coder.encodeFunctionInput(
-        BUILT_IN_CONTRACTS.ENERGY_ABI,
-        'transfer',
-        [
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-            unitsUtils.parseVET('1')
-        ]
-    )
+    data: coder.encodeFunctionInput(BUILT_IN_CONTRACTS.ENERGY_ABI, 'transfer', [
+        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+        unitsUtils.parseVET('1')
+    ])
 };
 
 /**
@@ -219,7 +211,7 @@ const buildTransactionBodyClausesTestCases = [
             {
                 to: TESTING_CONTRACT_ADDRESS,
                 value: '0',
-                data: contract.coder.encodeFunctionInput(
+                data: coder.encodeFunctionInput(
                     TESTING_CONTRACT_ABI,
                     'testAssertError',
                     [0] // Any number !== 0 will cause Panic error

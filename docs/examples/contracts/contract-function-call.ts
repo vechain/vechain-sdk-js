@@ -1,4 +1,4 @@
-import { contract } from '@vechain/vechain-sdk-core';
+import { clauseBuilder } from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Init a simple contract ABI
@@ -34,7 +34,7 @@ const contractABI = JSON.stringify([
 ]);
 
 // 2 - Create a clause to call setValue(123)
-const clause = contract.clauseBuilder.functionInteraction(
+const clause = clauseBuilder.functionInteraction(
     '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed', // just a sample deployed contract address
     contractABI,
     'setValue',

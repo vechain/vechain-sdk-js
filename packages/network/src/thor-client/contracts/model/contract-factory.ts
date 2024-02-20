@@ -1,6 +1,6 @@
 import {
     addressUtils,
-    contract,
+    clauseBuilder,
     type DeployParams,
     type InterfaceAbi
 } from '@vechain/vechain-sdk-core';
@@ -82,7 +82,7 @@ class ContractFactory {
         options?: ContractTransactionOptions
     ): Promise<ContractFactory> {
         // Build a transaction for deploying the smart contract
-        const deployContractClause = contract.clauseBuilder.deployContract(
+        const deployContractClause = clauseBuilder.deployContract(
             this.bytecode,
             deployParams
         );
