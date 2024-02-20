@@ -4,6 +4,7 @@ import { Transaction } from '../transaction';
 import { assert, TRANSACTION } from '@vechain/vechain-sdk-errors';
 import { assertTransactionIsNotSigned } from '../helpers/assertions';
 import { assertIsValidTransactionSigningPrivateKey } from '../../utils';
+import { type TransactionToSign } from './types';
 
 /**
  * Sign a transaction with a given private key
@@ -14,7 +15,7 @@ import { assertIsValidTransactionSigningPrivateKey } from '../../utils';
  * @returns Signed transaction
  */
 function sign(
-    transactionToSign: Transaction,
+    transactionToSign: TransactionToSign,
     signerPrivateKey: Buffer
 ): Transaction {
     // Invalid private key
@@ -23,12 +24,17 @@ function sign(
         secp256k1.isValidPrivateKey
     );
 
+    const transaction = new Transaction(
+        transactionToSign.body,
+        transactionToSign?.signature
+    );
+
     // Transaction is already signed
-    assertTransactionIsNotSigned(transactionToSign);
+    assertTransactionIsNotSigned(transaction);
 
     // Transaction is delegated
     assert(
-        !transactionToSign.isDelegated,
+        !transaction.isDelegated,
         TRANSACTION.INVALID_DELEGATION,
         'Transaction is delegated. Use signWithDelegator method instead.',
         { transactionToSign }
@@ -36,7 +42,7 @@ function sign(
 
     // Sign transaction
     const signature = secp256k1.sign(
-        transactionToSign.getSignatureHash(),
+        transaction.getSignatureHash(),
         signerPrivateKey
     );
 

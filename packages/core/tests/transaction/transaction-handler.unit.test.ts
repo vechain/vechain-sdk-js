@@ -29,7 +29,7 @@ describe('Transaction handler', () => {
         describe('Should be able to sign not delegated transactions', () => {
             transactions.undelegated.forEach((transaction) => {
                 const signedTransaction = TransactionHandler.sign(
-                    new Transaction(transaction.body),
+                    { body: transaction.body },
                     signer.privateKey
                 );
 
