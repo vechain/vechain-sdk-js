@@ -2,6 +2,7 @@ import { extendProvider } from 'hardhat/config';
 import { HardhatVechainProvider } from '@vechain/vechain-sdk-provider';
 import './type-extensions';
 import { type HttpNetworkConfig } from 'hardhat/types';
+import { type Wallet } from '@vechain/vechain-sdk-wallet';
 
 /**
  * Extend the provider to be able to use vechain functions
@@ -23,12 +24,16 @@ extendProvider(async (_provider, config, network) => {
 
     // Log the provider
     if (isInDebugMode) {
+        const accounts = await (
+            newProvider.getInternalVechainProvider().wallet as Wallet
+        ).getAddresses();
+
         console.log(
-            `Extending VechainHardhatProvider with:
-        \n\n- network: \n\t${network}
-        \n\n- config: \n\t${JSON.stringify(config.networks[network])}
-        \n\n- accounts (Hardhat): \n\t${JSON.stringify(config.networks[network].accounts)}
-        \n\n- accounts (Provider): \n\t${JSON.stringify(newProvider.getInternalVechainProvider().wallet?.getAddresses())}\n\n`
+            `\n****************** Extending VechainHardhatProvider with: ******************\n` +
+                `\n- network: \n\t${network}` +
+                `\n\n- config: \n\t${JSON.stringify(config.networks[network])}` +
+                `\n\n- accounts (Hardhat): \n\t${JSON.stringify(config.networks[network].accounts)}` +
+                `\n\n- accounts (Provider): \n\t${JSON.stringify(accounts)}\n\n`
         );
     }
 

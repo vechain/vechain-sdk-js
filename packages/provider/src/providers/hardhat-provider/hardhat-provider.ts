@@ -3,6 +3,7 @@ import { ProviderWrapper } from 'hardhat/plugins';
 import { type RequestArguments, type HttpNetworkConfig } from 'hardhat/types';
 import { VechainProvider } from '../vechain-provider';
 import { createWalletFromHardhatNetworkConfig } from '../../utils';
+import { type Wallet } from '@vechain/vechain-sdk-wallet';
 
 /**
  * This class is a wrapper for the VechainProvider that is used by Hardhat.
@@ -52,23 +53,28 @@ class HardhatVechainProvider extends ProviderWrapper {
      * @param args - The request arguments.
      */
     async request(args: RequestArguments): Promise<unknown> {
-        // Debug mode
-        if (this.debug) {
-            const accounts =
-                this.getInternalVechainProvider().wallet?.getAddresses();
-
-            console.log(
-                `Sending request with VechainProvider:
-                \n- method:\n\t${JSON.stringify(args.method)}
-                \n- params:\n\t${JSON.stringify(args.params)}
-                \n- accounts:\n\t${JSON.stringify(accounts)}\n\n`
-            );
-        }
-
-        return await this._wrappedProvider.request({
+        // Send the request
+        const result = await this._wrappedProvider.request({
             method: args.method,
             params: args.params as never
         });
+
+        // Debug mode
+        if (this.debug) {
+            const accounts = await (
+                this.getInternalVechainProvider().wallet as Wallet
+            ).getAddresses();
+
+            console.log(
+                `\n****************** Sending request with VechainProvider ******************\n` +
+                    `\n- method:\n\t${JSON.stringify(args.method)}` +
+                    `\n\n- params:\n\t${JSON.stringify(args.params)}` +
+                    `\n\n- accounts:\n\t${JSON.stringify(accounts)}` +
+                    `\n\n- result:\n\t${JSON.stringify(result)}\n\n`
+            );
+        }
+
+        return result;
     }
 
     /**
