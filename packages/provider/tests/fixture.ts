@@ -223,15 +223,15 @@ const blockWithTransactionsExpanded = {
             input: '0xd547741f3c11d16cbaffd01df69ce1c404f6340ee057498f5f00246190ea54220576a84800000000000000000000000042f51a1de771c41157be6129ba7b1756da2f8290',
             to: '0x6e1ffe60656421eb12de92433c5a319ba606bb81',
             value: '0x0',
-            gasPrice: '0x',
-            type: '0x',
-            v: '0x',
-            r: '0x',
-            s: '0x',
+            gasPrice: '0x0',
+            type: '0x0',
+            v: '0x0',
+            r: '0x0',
+            s: '0x0',
             accessList: [],
-            maxFeePerGas: '0x',
-            maxPriorityFeePerGas: '0x',
-            yParity: '0x'
+            maxFeePerGas: '0x0',
+            maxPriorityFeePerGas: '0x0',
+            yParity: '0x0'
         },
         {
             blockHash:
@@ -247,15 +247,15 @@ const blockWithTransactionsExpanded = {
             input: '0x799161d500000000000000000000000042f51a1de771c41157be6129ba7b1756da2f8290',
             to: '0x6e1ffe60656421eb12de92433c5a319ba606bb81',
             value: '0x0',
-            gasPrice: '0x',
-            type: '0x',
-            v: '0x',
-            r: '0x',
-            s: '0x',
+            gasPrice: '0x0',
+            type: '0x0',
+            v: '0x0',
+            r: '0x0',
+            s: '0x0',
             accessList: [],
-            maxFeePerGas: '0x',
-            maxPriorityFeePerGas: '0x',
-            yParity: '0x'
+            maxFeePerGas: '0x0',
+            maxPriorityFeePerGas: '0x0',
+            yParity: '0x0'
         },
         {
             blockHash:
@@ -271,28 +271,28 @@ const blockWithTransactionsExpanded = {
             input: '0x2f2ff15d3c11d16cbaffd01df69ce1c404f6340ee057498f5f00246190ea54220576a84800000000000000000000000042f51a1de771c41157be6129ba7b1756da2f8290',
             to: '0x6e1ffe60656421eb12de92433c5a319ba606bb81',
             value: '0x0',
-            gasPrice: '0x',
-            type: '0x',
-            v: '0x',
-            r: '0x',
-            s: '0x',
+            gasPrice: '0x0',
+            type: '0x0',
+            v: '0x0',
+            r: '0x0',
+            s: '0x0',
             accessList: [],
-            maxFeePerGas: '0x',
-            maxPriorityFeePerGas: '0x',
-            yParity: '0x'
+            maxFeePerGas: '0x0',
+            maxPriorityFeePerGas: '0x0',
+            yParity: '0x0'
         }
     ],
     miner: '0xb4094c25f86d628fdd571afc4077f0d0196afb48',
-    difficulty: '0x',
-    totalDifficulty: '0x',
+    difficulty: '0x0',
+    totalDifficulty: '0x0',
     uncles: [],
     sha3Uncles:
         '0x0000000000000000000000000000000000000000000000000000000000000000',
     nonce: '0x0000000000000000',
     logsBloom:
         '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-    extraData: '0x',
-    baseFeePerGas: '0x',
+    extraData: '0x0',
+    baseFeePerGas: '0x0',
     mixHash:
         '0x0000000000000000000000000000000000000000000000000000000000000000'
 };
@@ -321,16 +321,16 @@ const blockWithTransactionsNotExpanded = {
         '0xb476d1a43b8632c25a581465c944a1cb5dd99e48d41d326a250847a0a279afa5'
     ],
     miner: '0xb4094c25f86d628fdd571afc4077f0d0196afb48',
-    difficulty: '0x',
-    totalDifficulty: '0x',
+    difficulty: '0x0',
+    totalDifficulty: '0x0',
     uncles: [],
     sha3Uncles:
         '0x0000000000000000000000000000000000000000000000000000000000000000',
     nonce: '0x0000000000000000',
     logsBloom:
         '0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-    extraData: '0x',
-    baseFeePerGas: '0x',
+    extraData: '0x0',
+    baseFeePerGas: '0x0',
     mixHash:
         '0x0000000000000000000000000000000000000000000000000000000000000000'
 };
@@ -358,15 +358,15 @@ const validTransactionDetailTestnet = {
     input: '0xf14fcbc8ad2a4a05c94893cc69b721955da2fb2e93ba001224f6ec7250ad110765065541',
     to: '0xaeb29614bb9af450a7fff539bbba319455a1aca7',
     value: '0x0',
-    gasPrice: '0x',
-    type: '0x',
-    v: '0x',
-    r: '0x',
-    s: '0x',
+    gasPrice: '0x0',
+    type: '0x0',
+    v: '0x0',
+    r: '0x0',
+    s: '0x0',
     accessList: [],
-    maxFeePerGas: '0x',
-    maxPriorityFeePerGas: '0x',
-    yParity: '0x'
+    maxFeePerGas: '0x0',
+    maxPriorityFeePerGas: '0x0',
+    yParity: '0x0'
 };
 
 /**

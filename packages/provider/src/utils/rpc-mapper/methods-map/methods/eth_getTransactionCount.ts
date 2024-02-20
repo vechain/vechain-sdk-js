@@ -9,6 +9,7 @@ import { addressUtils } from '@vechain/vechain-sdk-core';
  *
  * @param params - The standard array of rpc call parameters.
  *                * params[0]: address: string, is the address to get the number of transactions from.
+ *                * params[1]: blockNumber: string, is the block number to get the number of transactions from.
  *
  * @note: To respect differences between vechain and Ethereum, in this function we will give a random number as output.
  * Basically Ethereum to get nonce use the number of transactions sent from an address, while vechain use a random number.
@@ -18,7 +19,7 @@ import { addressUtils } from '@vechain/vechain-sdk-core';
 const ethGetTransactionCount = async (params: unknown[]): Promise<string> => {
     // Input validation - Invalid params
     assert(
-        params.length === 1 && typeof params[0] === 'string',
+        params.length === 2 && typeof params[0] === 'string',
         DATA.INVALID_DATA_TYPE,
         'Invalid params length, expected 1.\nThe params should be [address: string]'
     );

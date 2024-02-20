@@ -95,7 +95,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
                 RPC_METHODS.eth_sendRawTransaction
             ]([raw])) as SendRawTransactionResultRPC;
 
-            expect(result.result).toBe(signedTransaction.id);
+            expect(result).toBe(signedTransaction.id);
         });
     });
 

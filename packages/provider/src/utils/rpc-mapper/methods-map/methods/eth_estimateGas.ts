@@ -81,9 +81,9 @@ const ethEstimateGas = async (
     } catch (e) {
         throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,
-            `Method 'eth_estimateGas' failed: Error while calculating gas for ${
-                params[0] as string
-            } transaction\n
+            `Method 'eth_estimateGas' failed: Error while calculating gas for ${JSON.stringify(
+                params[0]
+            )} transaction\n
             Params: ${JSON.stringify(params)}\n`,
             {
                 params,
