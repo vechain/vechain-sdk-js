@@ -142,6 +142,19 @@ class DebugModule {
         )) as TraceReturnType<typeof name>;
     }
 
+    /**
+     * Retrieve the storage range.
+     *
+     * This endpoint enables clients to retrieve the storage range for the
+     * coordinates specified in the `input` parameter.
+     *
+     * @param input - the coordinates to retrieve the storage range. It has:
+     * * target - {@link TransactionTraceTarget} specifies `blockID`,
+     *           `transaction` address and `clauseIndex` number.
+     * * options - {@link RetrieveStorageRangeInputOptions} specified the
+     *           `address` if the contract or account to retrieve the
+     *           storage range for. Nullable.
+     */
     public async retrieveStorageRange(input: {
         target: TransactionTraceTarget;
         options?: RetrieveStorageRangeInputOptions;

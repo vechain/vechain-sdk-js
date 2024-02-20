@@ -9,7 +9,11 @@ import {
     abi,
     clauseBuilder
 } from '@vechain/vechain-sdk-core';
-import type { ContractCallOptions, ContractTransactionOptions } from './types';
+import type {
+    ContractCallOptions,
+    ContractCallResult,
+    ContractTransactionOptions
+} from './types';
 import { type SendTransactionResult } from '../transactions';
 import { type ThorClient } from '../thor-client';
 import { ContractFactory } from './model';
@@ -57,7 +61,7 @@ class ContractsModule {
         functionFragment: FunctionFragment,
         functionData: unknown[],
         contractCallOptions?: ContractCallOptions
-    ): Promise<unknown> {
+    ): Promise<ContractCallResult> {
         // Simulate the transaction to get the result of the contract call
         const response = await this.thor.transactions.simulateTransaction(
             [

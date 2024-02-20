@@ -9,9 +9,10 @@ import type {
     TransactionReceipt
 } from '../../transactions';
 import { type ThorClient } from '../../thor-client';
-import {
-    type ContractCallOptions,
-    type ContractTransactionOptions
+import type {
+    ContractCallOptions,
+    ContractCallResult,
+    ContractTransactionOptions
 } from '../types';
 import { buildError, ERROR_CODES } from '@vechain/vechain-sdk-errors';
 
@@ -129,7 +130,9 @@ class Contract {
         return new Proxy(this.read, {
             get: (_target, prop) => {
                 // Otherwise, assume that the function is a contract method
-                return async (...args: unknown[]) => {
+                return async (
+                    ...args: unknown[]
+                ): Promise<ContractCallResult> => {
                     return await this.thor.contracts.executeContractCall(
                         this.address,
                         this.getFunctionFragment(prop),
