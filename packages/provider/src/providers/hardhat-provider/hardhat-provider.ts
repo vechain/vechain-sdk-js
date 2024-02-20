@@ -53,13 +53,7 @@ class HardhatVechainProvider extends ProviderWrapper {
      * @param args - The request arguments.
      */
     async request(args: RequestArguments): Promise<unknown> {
-        // Send the request
-        const result = await this._wrappedProvider.request({
-            method: args.method,
-            params: args.params as never
-        });
-
-        // Debug mode
+        // Debug mode - get the request and the accounts
         if (this.debug) {
             const accounts = await (
                 this.getInternalVechainProvider().wallet as Wallet
@@ -69,9 +63,19 @@ class HardhatVechainProvider extends ProviderWrapper {
                 `\n****************** Sending request with VechainProvider ******************\n` +
                     `\n- method:\n\t${JSON.stringify(args.method)}` +
                     `\n\n- params:\n\t${JSON.stringify(args.params)}` +
-                    `\n\n- accounts:\n\t${JSON.stringify(accounts)}` +
-                    `\n\n- result:\n\t${JSON.stringify(result)}\n\n`
+                    `\n\n- accounts:\n\t${JSON.stringify(accounts)}`
             );
+        }
+
+        // Send the request
+        const result = await this._wrappedProvider.request({
+            method: args.method,
+            params: args.params as never
+        });
+
+        // Debug mode - get the result
+        if (this.debug) {
+            console.log(`\n- result:\n\t${JSON.stringify(result)}\n\n`);
         }
 
         return result;
