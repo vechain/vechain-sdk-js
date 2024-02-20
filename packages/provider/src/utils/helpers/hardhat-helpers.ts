@@ -61,8 +61,9 @@ const createWalletFromHardhatNetworkConfig = (
                 [...Array(accountFromConfig.count).keys()].map(
                     (path: number) => {
                         // Convert the private key to a buffer
-                        const privateKeyBuffer = hdnode.derive(path)
-                            .privateKey as Buffer;
+                        const privateKeyBuffer = hdnode.derive(
+                            path + accountFromConfig.initialIndex
+                        ).privateKey as Buffer;
 
                         // Derive the public key and address from the private key
                         return {
