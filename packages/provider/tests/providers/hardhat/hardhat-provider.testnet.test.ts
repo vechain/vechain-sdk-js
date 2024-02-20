@@ -1,36 +1,31 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { VechainProvider } from '../../../src';
+import { beforeEach, describe, expect, test } from '@jest/globals';
+import { HardhatVechainProvider } from '../../../src';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
-import { ThorClient } from '@vechain/vechain-sdk-network';
-import { testNetwork } from '../../fixture';
+import { testnetUrl } from '../../fixture';
 import { providerMethodsTestCasesTestnet } from '../fixture';
 import { waitForMessage } from '../helpers';
+import type { HttpNetworkConfig } from 'hardhat/types';
 
 /**
  * Vechain provider tests
  *
- * @group integration/providers/vechain-provider
+ * @group integration/providers/vechain-provider-testnet
  */
-describe('Vechain provider tests - testnet', () => {
+describe('Hardhat provider tests - testnet', () => {
     /**
-     * ThorClient and provider instances
+     * Hardhat provider instances
      */
-    let thorClient: ThorClient;
-    let provider: VechainProvider;
+    let provider: HardhatVechainProvider;
 
     /**
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = new ThorClient(testNetwork);
-        provider = new VechainProvider(thorClient);
-    });
-
-    /**
-     * Destroy thor client and provider after each test
-     */
-    afterEach(() => {
-        provider.destroy();
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        provider = new HardhatVechainProvider({
+            url: testnetUrl,
+            chainId: 74
+        } as HttpNetworkConfig);
     });
 
     /**
@@ -75,7 +70,9 @@ describe('Vechain provider tests - testnet', () => {
             params: ['newHeads']
         });
 
-        const messageReceived = waitForMessage(provider);
+        const messageReceived = waitForMessage(
+            provider.getInternalVechainProvider()
+        );
 
         const message = await messageReceived;
 

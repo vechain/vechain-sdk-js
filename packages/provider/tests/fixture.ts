@@ -396,5 +396,6 @@ export {
     THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR,
     TESTING_CONTRACT_ADDRESS,
     TESTING_CONTRACT_BYTECODE,
-    mainNetwork
+    mainNetwork,
+    mainnetUrl
 };

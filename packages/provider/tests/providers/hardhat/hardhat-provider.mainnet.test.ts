@@ -1,35 +1,30 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { VechainProvider } from '../../../src';
+import { beforeEach, describe, expect, test } from '@jest/globals';
+import { HardhatVechainProvider } from '../../../src';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
-import { ThorClient } from '@vechain/vechain-sdk-network';
-import { mainNetwork } from '../../fixture';
+import { mainnetUrl } from '../../fixture';
 import { providerMethodsTestCasesMainnet } from '../fixture';
+import { type NetworkConfig } from 'hardhat/src/types/config';
 
 /**
- * Vechain provider tests - Mainnet
+ * Hardhat provider tests - Mainnet
  *
- * @group integration/providers/vechain-provider-mainnet
+ * @group integration/providers/hardhat-provider-mainnet
  */
-describe('Vechain provider tests - mainnet', () => {
+describe('Hardhat provider tests', () => {
     /**
-     * ThorClient and provider instances
+     * Hardhat provider instances
      */
-    let thorClient: ThorClient;
-    let provider: VechainProvider;
+    let provider: HardhatVechainProvider;
 
     /**
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = new ThorClient(mainNetwork);
-        provider = new VechainProvider(thorClient);
-    });
-
-    /**
-     * Destory thor client and provider after each test
-     */
-    afterEach(() => {
-        provider.destroy();
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        provider = new HardhatVechainProvider({
+            url: mainnetUrl,
+            chainId: 74
+        } as NetworkConfig);
     });
 
     /**

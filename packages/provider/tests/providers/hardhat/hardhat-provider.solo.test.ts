@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { type SubscriptionEvent, VechainProvider } from '../../../src';
+import { HardhatVechainProvider, type SubscriptionEvent } from '../../../src';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { soloNetwork } from '../../fixture';
@@ -9,32 +9,36 @@ import {
     deployERC721Contract,
     waitForMessage
 } from '../helpers';
+import type { HttpNetworkConfig } from 'hardhat/types';
 
 /**
  * Vechain provider tests - Solo Network
  *
  * @group integration/providers/vechain-provider-solo
  */
-describe('Vechain provider tests - solo', () => {
+describe('Hardhat provider tests', () => {
     /**
      * ThorClient and provider instances
      */
     let thorClient: ThorClient;
-    let provider: VechainProvider;
+    let provider: HardhatVechainProvider;
 
     /**
      * Init thor client and provider before each test
      */
     beforeEach(() => {
         thorClient = new ThorClient(soloNetwork);
-        provider = new VechainProvider(thorClient);
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        provider = new HardhatVechainProvider({
+            chainId: 74
+        } as HttpNetworkConfig);
     });
 
     /**
      * Destroy thor client and provider after each test
      */
     afterEach(() => {
-        provider.destroy();
+        provider.getInternalVechainProvider().destroy();
     });
 
     /**
@@ -80,9 +84,9 @@ describe('Vechain provider tests - solo', () => {
         });
 
         const messageReceived = new Promise((resolve) => {
-            provider.on('message', (message) => {
+            provider.getInternalVechainProvider().on('message', (message) => {
                 resolve(message);
-                provider.destroy();
+                provider.getInternalVechainProvider().destroy();
             });
         });
 
@@ -100,18 +104,23 @@ describe('Vechain provider tests - solo', () => {
      * eth_subscribe latest blocks and then unsubscribe RPC call test
      */
     test('Should be able to get to subscribe to the latest blocks and then unsubscribe', async () => {
-        expect(provider.getPollInstance()).toBeUndefined();
+        expect(
+            provider.getInternalVechainProvider().getPollInstance()
+        ).toBeUndefined();
         // Call RPC function
         const subscriptionId = await provider.request({
             method: 'eth_subscribe',
             params: ['newHeads']
         });
 
-        expect(provider.getPollInstance()).toBeDefined();
+        expect(
+            provider.getInternalVechainProvider().getPollInstance()
+        ).toBeDefined();
 
         expect(subscriptionId).toBeDefined();
         expect(
-            provider.subscriptionManager.newHeadsSubscription?.subscriptionId
+            provider.getInternalVechainProvider().subscriptionManager
+                .newHeadsSubscription?.subscriptionId
         ).toBe(subscriptionId);
 
         await provider.request({
@@ -119,10 +128,13 @@ describe('Vechain provider tests - solo', () => {
             params: [subscriptionId]
         });
 
-        expect(provider.getPollInstance()).toBeUndefined();
+        expect(
+            provider.getInternalVechainProvider().getPollInstance()
+        ).toBeUndefined();
 
         expect(
-            provider.subscriptionManager.newHeadsSubscription?.subscriptionId
+            provider.getInternalVechainProvider().subscriptionManager
+                .newHeadsSubscription?.subscriptionId
         ).toBeUndefined();
     });
 
@@ -174,7 +186,9 @@ describe('Vechain provider tests - solo', () => {
             params: ['logs', logsParams]
         });
         // Wait for the subscription to receive a message (log event)
-        const messageReceived = waitForMessage(provider);
+        const messageReceived = waitForMessage(
+            provider.getInternalVechainProvider()
+        );
 
         // Execute a contract transaction to generate a log event
         await thorClient.contracts.executeContractTransaction(
@@ -188,7 +202,7 @@ describe('Vechain provider tests - solo', () => {
         const message = await messageReceived;
 
         // Clean up the subscription
-        provider.destroy();
+        provider.getInternalVechainProvider().destroy();
 
         // Assertions to validate the received message
         expect(message).toBeDefined();
@@ -266,7 +280,7 @@ describe('Vechain provider tests - solo', () => {
             provider.on('message', (message: SubscriptionEvent) => {
                 results.push(message);
                 if (results.length >= 2) {
-                    provider.destroy();
+                    provider.getInternalVechainProvider().destroy();
                     resolve(results);
                 }
             });

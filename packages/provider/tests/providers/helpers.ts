@@ -1,4 +1,4 @@
-import { type SubscriptionEvent, type VechainProvider } from '../../../src';
+import { type SubscriptionEvent, type VechainProvider } from '../../src';
 import {
     ERC20_ABI,
     ERC20_BYTECODE,

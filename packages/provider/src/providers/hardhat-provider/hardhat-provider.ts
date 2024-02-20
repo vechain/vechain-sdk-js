@@ -5,7 +5,7 @@ import {
     type RequestArguments,
     type HttpNetworkConfig
 } from 'hardhat/types';
-import { VechainProvider } from '../vechain-provider/vechain-provider';
+import { VechainProvider } from '../vechain-provider';
 import { createWalletFromHardhatNetworkConfig } from '../../utils';
 
 /**
@@ -45,6 +45,15 @@ class HardhatVechainProvider extends ProviderWrapper {
             method: args.method,
             params: args.params as never
         });
+    }
+
+    /**
+     * Get the internal VechainProvider.
+     *
+     * @returns The internal VechainProvider.
+     */
+    getInternalVechainProvider(): VechainProvider {
+        return this._wrappedProvider as VechainProvider;
     }
 }
 
