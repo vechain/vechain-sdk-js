@@ -1,4 +1,9 @@
-import { addressUtils, type InterfaceAbi } from '@vechain/vechain-sdk-core';
+import {
+    addressUtils,
+    contract,
+    type FunctionFragment,
+    type InterfaceAbi
+} from '@vechain/vechain-sdk-core';
 import type {
     SendTransactionResult,
     TransactionReceipt
@@ -8,6 +13,7 @@ import {
     type ContractCallOptions,
     type ContractTransactionOptions
 } from '../types';
+import { buildError, ERROR_CODES } from '@vechain/vechain-sdk-errors';
 
 export type ContractFunction<T = unknown> = (...args: unknown[]) => Promise<T>;
 
@@ -126,8 +132,7 @@ class Contract {
                 return async (...args: unknown[]) => {
                     return await this.thor.contracts.executeContractCall(
                         this.address,
-                        this.abi,
-                        prop.toString(),
+                        this.getFunctionFragment(prop),
                         args,
                         {
                             caller: addressUtils.fromPrivateKey(
@@ -156,14 +161,36 @@ class Contract {
                     return await this.thor.contracts.executeContractTransaction(
                         this.callerPrivateKey,
                         this.address,
-                        this.abi,
-                        prop.toString(),
+                        this.getFunctionFragment(prop),
                         args,
                         this.contractTransactionOptions
                     );
                 };
             }
         });
+    }
+
+    /**
+     * Retrieves the function fragment for the specified function name.
+     * @param prop - The name of the function.
+     * @private
+     * @throws An error if the specified function name or symbol is not found in the contract's ABI. The error includes
+     * the `ERROR_CODES.ABI.INVALID_FUNCTION` code and a message indicating the function is not present in the ABI.
+     *
+     */
+    private getFunctionFragment(prop: string | symbol): FunctionFragment {
+        const functionFragment = contract.coder
+            .createInterface(this.abi)
+            .getFunction(prop.toString());
+
+        if (functionFragment == null) {
+            throw buildError(
+                ERROR_CODES.ABI.INVALID_FUNCTION,
+                `Function '${prop.toString()}' not found in contract ABI`,
+                { prop }
+            );
+        }
+        return functionFragment;
     }
 }
 

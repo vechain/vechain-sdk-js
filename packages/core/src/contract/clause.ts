@@ -1,5 +1,5 @@
-import { type InterfaceAbi, isAddress } from 'ethers';
-import { abi, coder } from '../abi';
+import { isAddress } from 'ethers';
+import { abi, coder, type FunctionFragment } from '../abi';
 import { type TransactionClause } from '../transaction';
 import type { DeployParams } from './types';
 import { ERC721_ABI, VIP180_ABI } from '../utils';
@@ -35,8 +35,7 @@ function deployContract(
  * Builds a clause for interacting with a smart contract function.
  *
  * @param contractAddress - The address of the smart contract.
- * @param contractAbi - The ABI (Application Binary Interface) of the smart contract.
- * @param functionName - The name of the function to be called.
+ * @param functionFragment - The function fragment to interact with.
  * @param args - The input data for the function.
  *
  * @returns A clause for interacting with a smart contract function.
@@ -45,14 +44,13 @@ function deployContract(
  */
 function functionInteraction(
     contractAddress: string,
-    contractAbi: InterfaceAbi,
-    functionName: string,
+    functionFragment: FunctionFragment,
     args: unknown[]
 ): TransactionClause {
     return {
         to: contractAddress,
         value: 0,
-        data: coder.encodeFunctionInput(contractAbi, functionName, args)
+        data: new abi.Function(functionFragment).encodeInput(args)
     };
 }
 
@@ -74,10 +72,13 @@ function transferToken(
     amount: number | bigint | string
 ): TransactionClause {
     try {
-        return functionInteraction(tokenAddress, VIP180_ABI, 'transfer', [
-            recipientAddress,
-            BigInt(amount)
-        ]);
+        return functionInteraction(
+            tokenAddress,
+            coder
+                .createInterface(VIP180_ABI)
+                .getFunction('transfer') as FunctionFragment,
+            [recipientAddress, BigInt(amount)]
+        );
     } catch (error) {
         throw buildError(
             DATA.INVALID_DATA_TYPE,
@@ -154,11 +155,13 @@ function transferNFT(
         `Invalid 'contractAddress' parameter. Expected a contract address but received ${contractAddress}`
     );
 
-    return functionInteraction(contractAddress, ERC721_ABI, 'transferFrom', [
-        senderAddress,
-        recipientAddress,
-        tokenId
-    ]);
+    return functionInteraction(
+        contractAddress,
+        coder
+            .createInterface(ERC721_ABI)
+            .getFunction('transferFrom') as FunctionFragment,
+        [senderAddress, recipientAddress, tokenId]
+    );
 }
 
 /**

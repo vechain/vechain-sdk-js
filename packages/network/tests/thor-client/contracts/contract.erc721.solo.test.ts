@@ -3,7 +3,13 @@ import { erc721ContractBytecode, erc721ContractTestCases } from './fixture';
 import { expect, test, beforeAll, describe } from '@jest/globals';
 import { ThorClient, type TransactionReceipt } from '../../../src';
 import { soloNetwork, TEST_ACCOUNTS } from '../../fixture';
-import { coder, ERC721_ABI, type Log } from '@vechain/vechain-sdk-core';
+import {
+    coder,
+    contract,
+    ERC721_ABI,
+    type FunctionFragment,
+    type Log
+} from '@vechain/vechain-sdk-core';
 
 /**
  * Tests for the ERC721 Contract, specifically focusing on NFT contract-related functionality.
@@ -73,8 +79,9 @@ describe('ThorClient - ERC721 Contracts', () => {
                     response =
                         await thorSoloClient.contracts.executeContractCall(
                             contractAddress,
-                            ERC721_ABI,
-                            functionName,
+                            contract.coder
+                                .createInterface(ERC721_ABI)
+                                .getFunction(functionName) as FunctionFragment,
                             params
                         );
                     expect(response).toBeDefined();
@@ -85,8 +92,9 @@ describe('ThorClient - ERC721 Contracts', () => {
                             TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
                                 .privateKey,
                             contractAddress,
-                            ERC721_ABI,
-                            functionName,
+                            contract.coder
+                                .createInterface(ERC721_ABI)
+                                .getFunction(functionName) as FunctionFragment,
                             params
                         );
 

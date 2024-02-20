@@ -20,7 +20,8 @@ import {
     Transaction,
     TransactionHandler,
     addressUtils,
-    contract
+    contract,
+    type FunctionFragment
 } from '@vechain/vechain-sdk-core';
 import { TransactionNotSignedError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '../../../src';
@@ -261,8 +262,9 @@ describe('ThorClient - Transactions Module', () => {
                     const sampleClause =
                         contract.clauseBuilder.functionInteraction(
                             TESTING_CONTRACT_ADDRESS,
-                            TESTING_CONTRACT_ABI,
-                            'deposit',
+                            contract.coder
+                                .createInterface(TESTING_CONTRACT_ABI)
+                                .getFunction('deposit') as FunctionFragment,
                             [123]
                         );
 
@@ -310,8 +312,11 @@ describe('ThorClient - Transactions Module', () => {
                         const sampleClause =
                             contract.clauseBuilder.functionInteraction(
                                 TESTING_CONTRACT_ADDRESS,
-                                TESTING_CONTRACT_ABI,
-                                'setStateVariable',
+                                contract.coder
+                                    .createInterface(TESTING_CONTRACT_ABI)
+                                    .getFunction(
+                                        'setStateVariable'
+                                    ) as FunctionFragment,
                                 [123]
                             );
 

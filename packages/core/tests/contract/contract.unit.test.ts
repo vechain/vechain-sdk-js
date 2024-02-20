@@ -11,6 +11,7 @@ import {
     transferTokenClausesTestCases,
     transferVETtestCases
 } from './fixture';
+import { type FunctionFragment } from 'ethers';
 
 /**
  * Unit tests for building transaction clauses.
@@ -49,8 +50,9 @@ describe('Contract', () => {
     test('Build a clause to call a contract function', () => {
         const clause = contract.clauseBuilder.functionInteraction(
             '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-            exampleContractAbi,
-            'set',
+            contract.coder
+                .createInterface(exampleContractAbi)
+                .getFunction('set') as FunctionFragment,
             [1]
         );
 

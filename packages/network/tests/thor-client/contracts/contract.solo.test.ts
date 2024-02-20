@@ -11,7 +11,12 @@ import {
     deployedContractBytecode,
     testingContractTestCases
 } from './fixture';
-import { addressUtils, type DeployParams } from '@vechain/vechain-sdk-core';
+import {
+    addressUtils,
+    contract,
+    type DeployParams,
+    type FunctionFragment
+} from '@vechain/vechain-sdk-core';
 import {
     Contract,
     ThorClient,
@@ -265,8 +270,9 @@ describe('ThorClient - Contracts', () => {
                 const response =
                     await thorSoloClient.contracts.executeContractCall(
                         TESTING_CONTRACT_ADDRESS,
-                        TESTING_CONTRACT_ABI,
-                        functionName,
+                        contract.coder
+                            .createInterface(TESTING_CONTRACT_ABI)
+                            .getFunction(functionName) as FunctionFragment,
                         params
                     );
 
