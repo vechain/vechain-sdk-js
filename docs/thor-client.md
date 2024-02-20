@@ -328,7 +328,7 @@ import {
     TransactionHandler,
     dataUtils,
     unitsUtils,
-    contract
+    clauseBuilder
 } from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
@@ -353,7 +353,7 @@ const latestBlock = await thorSoloClient.blocks.getBestBlock();
 // 3 - Create clauses
 
 const clauses = [
-    contract.clauseBuilder.transferVET(
+    clauseBuilder.transferVET(
         '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
         unitsUtils.parseVET('10000')
     )
@@ -439,7 +439,7 @@ import {
     TransactionHandler,
     dataUtils,
     unitsUtils,
-    contract
+    clauseBuilder
 } from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
@@ -473,7 +473,7 @@ const latestBlock = await thorSoloClient.blocks.getBestBlock();
 // 3 - Create transaction clauses
 
 const clauses = [
-    contract.clauseBuilder.transferVET(
+    clauseBuilder.transferVET(
         '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
         unitsUtils.parseVET('10000')
     )

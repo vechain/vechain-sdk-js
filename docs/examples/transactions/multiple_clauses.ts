@@ -1,4 +1,8 @@
-import { VTHO_ADDRESS, contract, networkInfo } from '@vechain/vechain-sdk-core';
+import {
+    VTHO_ADDRESS,
+    clauseBuilder,
+    networkInfo
+} from '@vechain/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -13,11 +17,11 @@ import { expect } from 'expect';
 // 1 - Define multiple clauses
 
 const clauses: TransactionClause[] = [
-    contract.clauseBuilder.transferVET(
+    clauseBuilder.transferVET(
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
         unitsUtils.parseVET('10000')
     ),
-    contract.clauseBuilder.transferToken(
+    clauseBuilder.transferToken(
         VTHO_ADDRESS,
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
         unitsUtils.parseUnits('10000', 18) // 10000 VTHO
