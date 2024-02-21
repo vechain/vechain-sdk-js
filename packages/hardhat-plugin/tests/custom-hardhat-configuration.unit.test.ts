@@ -45,7 +45,7 @@ describe('Custom network configuration hardhat', () => {
                 (hre.config.networks.vechain as HttpNetworkConfig).delegator
             ).toBeDefined();
             expect(
-                (hre.config.networks.vechain as HttpNetworkConfig).debug
+                (hre.config.networks.vechain as HttpNetworkConfig).debugMode
             ).toBeDefined();
         });
     });

@@ -1,42 +1,46 @@
-import { extendProvider } from 'hardhat/config';
 import { HardhatVechainProvider } from '@vechain/vechain-sdk-provider';
-import './type-extensions';
+
+import { extendEnvironment } from 'hardhat/config';
 import { type HttpNetworkConfig } from 'hardhat/types';
-import { type Wallet } from '@vechain/vechain-sdk-wallet';
+import { lazyObject } from 'hardhat/plugins';
+
+import './type-extensions';
 
 /**
- * Extend the provider to be able to use vechain functions
+ * Extend the enviroment with provider to be able to use vechain functions
  */
-extendProvider(async (_provider, config, network) => {
-    // Get config for the network
-    const networkConfig: HttpNetworkConfig = config.networks[
-        network
+extendEnvironment((hre) => {
+    // 1 - Get parameters
+
+    // 1.1 - Get network name
+    const networkName = hre.network.name;
+
+    // 1.2 - Get network config
+    const networkConfig: HttpNetworkConfig = hre.config.networks[
+        networkName
     ] as HttpNetworkConfig;
 
-    // Understand if in debug mode or not.
-    const isInDebugMode = networkConfig.debug ?? false;
+    // 1.3 - Get debug mode
+    const isInDebugMode = networkConfig.debugMode ?? false;
 
-    // Initialize the provider
-    const newProvider = new HardhatVechainProvider(
+    // 2 - Check if network is vechain
+
+    if (!networkName.includes('vechain')) {
+        console.log('Not a vechain network');
+        return;
+    }
+
+    // 3 - Extend environment with the 'HardhatVechainProvider'
+
+    // 3.1 - Create the provider
+    const hardhatVechainProvider = new HardhatVechainProvider(
         networkConfig,
         isInDebugMode
     );
 
-    // Log the provider
-    if (isInDebugMode) {
-        const accounts = await (
-            newProvider.getInternalVechainProvider().wallet as Wallet
-        ).getAddresses();
+    // 3.2 - Extend environment
+    hre.vechainProvider = lazyObject(() => hardhatVechainProvider);
 
-        console.log(
-            `\n****************** Extending VechainHardhatProvider with: ******************\n` +
-                `\n- network: \n\t${network}` +
-                `\n\n- config: \n\t${JSON.stringify(config.networks[network])}` +
-                `\n\n- accounts (Hardhat): \n\t${JSON.stringify(config.networks[network].accounts)}` +
-                `\n\n- accounts (Provider): \n\t${JSON.stringify(accounts)}\n\n`
-        );
-    }
-
-    // Return the new provider
-    return await Promise.resolve(newProvider);
+    // 3.3 - Set provider for the network
+    hre.network.provider = hardhatVechainProvider;
 });
