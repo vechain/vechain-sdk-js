@@ -2,9 +2,8 @@ import { addressUtils } from '../../address';
 import { secp256k1 } from '../../secp256k1';
 import { Transaction } from '../transaction';
 import { assert, TRANSACTION } from '@vechain/vechain-sdk-errors';
-import { assertTransactionIsNotSigned } from '../helpers/assertions';
 import { assertIsValidTransactionSigningPrivateKey } from '../../utils';
-import { type TransactionToSign } from './types';
+import { type TransactionBody } from '../types';
 
 /**
  * Sign a transaction with a given private key
@@ -15,7 +14,7 @@ import { type TransactionToSign } from './types';
  * @returns Signed transaction
  */
 function sign(
-    transactionToSign: TransactionToSign,
+    transactionBody: TransactionBody,
     signerPrivateKey: Buffer
 ): Transaction {
     // Invalid private key
@@ -24,30 +23,24 @@ function sign(
         secp256k1.isValidPrivateKey
     );
 
-    const transaction = new Transaction(
-        transactionToSign.body,
-        transactionToSign?.signature
-    );
-
-    // Transaction is already signed
-    assertTransactionIsNotSigned(transaction);
+    const transactionToSign = new Transaction(transactionBody);
 
     // Transaction is delegated
     assert(
-        !transaction.isDelegated,
+        !transactionToSign.isDelegated,
         TRANSACTION.INVALID_DELEGATION,
         'Transaction is delegated. Use signWithDelegator method instead.',
-        { transactionToSign }
+        { transactionBody }
     );
 
     // Sign transaction
     const signature = secp256k1.sign(
-        transaction.getSignatureHash(),
+        transactionToSign.getSignatureHash(),
         signerPrivateKey
     );
 
     // Return new signed transaction
-    return new Transaction(transactionToSign.body, signature);
+    return new Transaction(transactionBody, signature);
 }
 
 /**
@@ -60,7 +53,7 @@ function sign(
  * @returns Signed transaction
  */
 function signWithDelegator(
-    transactionToSign: Transaction,
+    transactionBody: TransactionBody,
     signerPrivateKey: Buffer,
     delegatorPrivateKey: Buffer
 ): Transaction {
@@ -76,8 +69,7 @@ function signWithDelegator(
         'delegator'
     );
 
-    // Transaction is already signed
-    assertTransactionIsNotSigned(transactionToSign);
+    const transactionToSign = new Transaction(transactionBody);
 
     // Transaction is not delegated
     assert(
@@ -97,7 +89,7 @@ function signWithDelegator(
     ]);
 
     // Return new signed transaction
-    return new Transaction(transactionToSign.body, signature);
+    return new Transaction(transactionBody, signature);
 }
 
 export { sign, signWithDelegator };

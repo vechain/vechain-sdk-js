@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { SIGNATURE_LENGTH, Transaction, TransactionHandler } from '../../src';
+import { SIGNATURE_LENGTH, TransactionHandler } from '../../src';
 import {
     transactions,
     invalidDecodedNotTrimmedReserved,
@@ -8,7 +8,6 @@ import {
 } from './fixture';
 import {
     InvalidSecp256k1PrivateKeyError,
-    TransactionAlreadySignedError,
     TransactionBodyError,
     TransactionDelegationError,
     TransactionNotSignedError
@@ -29,22 +28,14 @@ describe('Transaction handler', () => {
         describe('Should be able to sign not delegated transactions', () => {
             transactions.undelegated.forEach((transaction) => {
                 const signedTransaction = TransactionHandler.sign(
-                    { body: transaction.body },
+                    transaction.body,
                     signer.privateKey
                 );
-
-                // Sign already signed transaction
-                expect(() =>
-                    TransactionHandler.sign(
-                        signedTransaction,
-                        signer.privateKey
-                    )
-                ).toThrowError(TransactionAlreadySignedError);
 
                 // Sign a non-delegated transaction with delegator
                 expect(() =>
                     TransactionHandler.signWithDelegator(
-                        new Transaction(transaction.body),
+                        transaction.body,
                         signer.privateKey,
                         delegator.privateKey
                     )
@@ -75,31 +66,19 @@ describe('Transaction handler', () => {
         describe('Should be able to sign delegated transactions', () => {
             transactions.delegated.forEach((transaction) => {
                 const signedTransaction = TransactionHandler.signWithDelegator(
-                    new Transaction(transaction.body),
+                    transaction.body,
                     signer.privateKey,
                     delegator.privateKey
                 );
 
-                // Sign already signed transaction
-                expect(() =>
-                    TransactionHandler.signWithDelegator(
-                        signedTransaction,
-                        signer.privateKey,
-                        delegator.privateKey
-                    )
-                ).toThrowError(TransactionAlreadySignedError);
-
                 // Sign normally a delegated transaction
                 expect(() =>
-                    TransactionHandler.sign(
-                        new Transaction(transaction.body),
-                        signer.privateKey
-                    )
+                    TransactionHandler.sign(transaction.body, signer.privateKey)
                 ).toThrowError(TransactionDelegationError);
 
                 expect(() =>
                     TransactionHandler.sign(
-                        new Transaction(transaction.body),
+                        transaction.body,
                         delegator.privateKey
                     )
                 ).toThrowError(TransactionDelegationError);
@@ -128,7 +107,7 @@ describe('Transaction handler', () => {
             // Invalid private key - undelegated
             expect(() => {
                 TransactionHandler.sign(
-                    new Transaction(transactions.undelegated[0].body),
+                    transactions.undelegated[0].body,
                     Buffer.from('INVALID', 'hex')
                 );
             }).toThrowError(InvalidSecp256k1PrivateKeyError);
@@ -136,7 +115,7 @@ describe('Transaction handler', () => {
             // Invalid private keys - delegated
             expect(() => {
                 TransactionHandler.signWithDelegator(
-                    new Transaction(transactions.delegated[0].body),
+                    transactions.delegated[0].body,
                     Buffer.from('INVALID', 'hex'),
                     delegator.privateKey
                 );
@@ -144,7 +123,7 @@ describe('Transaction handler', () => {
 
             expect(() => {
                 TransactionHandler.signWithDelegator(
-                    new Transaction(transactions.delegated[0].body),
+                    transactions.delegated[0].body,
                     signer.privateKey,
                     Buffer.from('INVALID', 'hex')
                 );
@@ -152,7 +131,7 @@ describe('Transaction handler', () => {
 
             expect(() => {
                 TransactionHandler.signWithDelegator(
-                    new Transaction(transactions.delegated[0].body),
+                    transactions.delegated[0].body,
                     Buffer.from('INVALID', 'hex'),
                     Buffer.from('INVALID', 'hex')
                 );
@@ -261,7 +240,7 @@ describe('Transaction handler', () => {
                 );
                 const encodedSignedDelegated =
                     TransactionHandler.signWithDelegator(
-                        new Transaction(transactions.delegated[0].body),
+                        transactions.delegated[0].body,
                         signer.privateKey,
                         delegator.privateKey
                     );
