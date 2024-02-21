@@ -50,7 +50,7 @@ Explore, experiment, and let the vechain SDK empower your blockchain adventures!
 ### Commands
 
 - **Build**: Execute `yarn build` to build the project.
-- **Test**: Execute `yarn test` to run all tests.
+- **Test**: Execute `yarn test:solo` to run all tests.
   - **NOTE**: Integration tests require a local thor-solo node. See the [Integration Testing](#integration-testing) section for more details. 
 - **Lint**: Execute `yarn lint` to lint all packages.
 - **Format**: Execute `yarn format` to format all packages.
@@ -65,11 +65,16 @@ The integration tests interact with a local thor-solo node. This node utilizes t
 
 ### Running Tests
 
-1. **Start the thor-solo node**: Ensure Docker is running and execute the script to launch the thor-solo node.
-   * You can run and stop thor-solo node manually using the following command `yarn start-thor-solo` and `yarn stop-thor-solo` respectively.
-2. **Run tests**: Use `yarn test:integration` to execute integration tests. These tests are designed to interact with the thor-solo node, verifying the correct operation of various SDK functionalities.
-   * Note that this command requires the thor-solo node to be running. You can run directly without care for thor solo-node start and stop using `yarn test:integration:solo` command.
-   * Same is for `yarn test:solo`and `yarn test:examples:solo` commands.
+There are two ways to run tests:
+
+1. **Manual start of thor-Solo node**:
+   - To start the thor-Solo node manually, use the command `yarn start-thor-solo`.
+   - Once the local thor-Solo node is running, integration tests can be executed with `yarn test`.
+   - After testing is complete, stop the node with `yarn stop-thor-solo`.
+   
+2. **Simple execution**:
+   - For a more straightforward approach, use `yarn test:solo`.
+   - This command handles the thor-Solo node's start and stop processes for you.
 
 ### Custom thor-solo Data Starting Point
 
