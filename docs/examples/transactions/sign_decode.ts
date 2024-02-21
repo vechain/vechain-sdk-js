@@ -1,6 +1,5 @@
 import { clauseBuilder, networkInfo } from '@vechain/vechain-sdk-core';
 import {
-    Transaction,
     secp256k1,
     TransactionUtils,
     TransactionHandler,
@@ -41,8 +40,7 @@ const privateKey = secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 
-const unsignedTx = new Transaction(body);
-const signedTransaction = TransactionHandler.sign(unsignedTx, privateKey);
+const signedTransaction = TransactionHandler.sign(body, privateKey);
 
 // 5 - Encode transaction
 
