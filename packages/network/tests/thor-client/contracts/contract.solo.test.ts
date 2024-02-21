@@ -23,7 +23,10 @@ import {
     type TransactionReceipt,
     type ContractFactory
 } from '../../../src';
-import { ContractDeploymentFailedError } from '@vechain/vechain-sdk-errors';
+import {
+    ContractDeploymentFailedError,
+    InvalidAbiFunctionError
+} from '@vechain/vechain-sdk-errors';
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.
@@ -192,6 +195,25 @@ describe('ThorClient - Contracts', () => {
         const callFunctionGetResult = await contract.read.get();
 
         expect(callFunctionGetResult).toEqual([BigInt(123)]);
+    }, 10000);
+
+    /**
+     * Test case for calling an undefined contract function.
+     */
+    test('call an undefined contract function', async () => {
+        // Create a contract factory that is already deploying the example contract
+        const factory = await createExampleContractFactory();
+
+        // Wait for the deployment to complete and obtain the contract instance
+        const contract: Contract = await factory.waitForDeployment();
+
+        await expect(
+            async () => await contract.read.undefinedFunction()
+        ).rejects.toThrowError(InvalidAbiFunctionError);
+
+        await expect(
+            async () => await contract.transact.undefinedFunction()
+        ).rejects.toThrowError(InvalidAbiFunctionError);
     }, 10000);
 
     /**
