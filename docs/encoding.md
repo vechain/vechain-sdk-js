@@ -65,7 +65,7 @@ expect(encodedFunction).toBe(expected);
 The contract interface is used to provide a higher level of abstraction to allow direct interaction with a smart contract. To create a contract interface is necessary to have a compatible smart contract ABI. Vechain SDK provides a full implementation of the Contract interface as well as some methods to encode directly a specific fragment of the smart contract (until now only functions and events fragments are supported). Encoding and decoding are based on the ABI one.
 
 ```typescript { name=contract, category=example }
-import { contract } from '@vechain/vechain-sdk-core';
+import { coder } from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Create a new function
@@ -102,15 +102,11 @@ const contractABI = JSON.stringify([
 ]);
 
 // 2 - Encode the function input, ready to be used to send a tx
-const encodedData = contract.coder.encodeFunctionInput(
-    contractABI,
-    'setValue',
-    [123]
-);
+const encodedData = coder.encodeFunctionInput(contractABI, 'setValue', [123]);
 
 // 3 - Decode the function input data
 const decodedData = String(
-    contract.coder.decodeFunctionInput(contractABI, 'setValue', encodedData)[0]
+    coder.decodeFunctionInput(contractABI, 'setValue', encodedData)[0]
 ); // decode the function input data
 
 // Check the decoded data

@@ -1,4 +1,4 @@
-import { contract, networkInfo } from '@vechain/vechain-sdk-core';
+import { clauseBuilder, networkInfo } from '@vechain/vechain-sdk-core';
 import {
     Transaction,
     TransactionHandler,
@@ -28,7 +28,7 @@ const thorSoloClient = new ThorClient(soloNetwork, {
 // 2 - Define clause and estimate gas
 
 const clauses: TransactionClause[] = [
-    contract.clauseBuilder.transferVET(
+    clauseBuilder.transferVET(
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
         unitsUtils.parseVET('10000')
     )

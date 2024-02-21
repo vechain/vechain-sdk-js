@@ -1,4 +1,4 @@
-import { contract, networkInfo } from '@vechain/vechain-sdk-core';
+import { clauseBuilder, networkInfo } from '@vechain/vechain-sdk-core';
 import {
     Transaction,
     secp256k1,
@@ -13,7 +13,7 @@ import { expect } from 'expect';
 // 1 - Define clauses
 
 const clauses: TransactionClause[] = [
-    contract.clauseBuilder.transferVET(
+    clauseBuilder.transferVET(
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
         unitsUtils.parseVET('10000')
     )

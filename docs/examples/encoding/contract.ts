@@ -1,4 +1,4 @@
-import { contract } from '@vechain/vechain-sdk-core';
+import { coder } from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Create a new function
@@ -35,15 +35,11 @@ const contractABI = JSON.stringify([
 ]);
 
 // 2 - Encode the function input, ready to be used to send a tx
-const encodedData = contract.coder.encodeFunctionInput(
-    contractABI,
-    'setValue',
-    [123]
-);
+const encodedData = coder.encodeFunctionInput(contractABI, 'setValue', [123]);
 
 // 3 - Decode the function input data
 const decodedData = String(
-    contract.coder.decodeFunctionInput(contractABI, 'setValue', encodedData)[0]
+    coder.decodeFunctionInput(contractABI, 'setValue', encodedData)[0]
 ); // decode the function input data
 
 // Check the decoded data

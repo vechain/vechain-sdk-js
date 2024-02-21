@@ -1,2 +1,2 @@
-export * from './types.d';
 export * from './vechain-provider';
+export * from './hardhat-provider';
