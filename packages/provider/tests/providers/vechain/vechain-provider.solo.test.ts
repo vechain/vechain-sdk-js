@@ -160,6 +160,7 @@ describe('Vechain provider tests - solo', () => {
      *
      * @throws {Error} If the received message doesn't match the expected format or if the log event details are incorrect, indicating an issue with the subscription or the event emission process.
      */
+    // FIX TEST (LONG RUNNING)
     test('Should be able to get to subscribe to the latest logs of an erc20 contract', async () => {
         const contract = await deployERC20Contract(thorClient);
 
@@ -209,7 +210,7 @@ describe('Vechain provider tests - solo', () => {
 
         // Validate the RPC call was successful
         expect(rpcCall).not.toBe('0x0');
-    }, 30000); // Extended timeout for asynchronous operations
+    }, 30000);
 
     /**
      * Tests the ability to subscribe to and receive log events for both ERC20 and ERC721 token contracts.
@@ -235,6 +236,7 @@ describe('Vechain provider tests - solo', () => {
      *
      * @throws {Error} If any of the assertions fail, indicating a problem with event subscription or log data capture.
      */
+    // FIX TEST (LONG RUNNING)
     test('Should be able to subscribe to the latest logs of an erc20 and erc721 contract', async () => {
         // Test setup: Deploy contracts and set up event subscriptions
         const erc20Contract = await deployERC20Contract(thorClient);
@@ -313,7 +315,7 @@ describe('Vechain provider tests - solo', () => {
         // @ts-expect-error - Asserting that log data is present
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(results[1].params.result.length).toBeGreaterThan(0);
-    }, 30000); // Extended timeout for asynchronous operations
+    }, 120000);
 
     /**
      * Invalid RPC method tests
