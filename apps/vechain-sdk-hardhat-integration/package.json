@@ -3,20 +3,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "author": "vechain Foundation",
+  "keywords": [],
+  "license": "ISC",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "rodolfopietro97",
-  "license": "ISC",
   "dependencies": {
     "@vechain/vechain-sdk-hardhat-plugin": "*"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
     "hardhat": "^2.20.1"
-  },
-  "dependencies": {
-    "@vechain/vechain-sdk-hardhat-plugin": "*"
   }
 }
