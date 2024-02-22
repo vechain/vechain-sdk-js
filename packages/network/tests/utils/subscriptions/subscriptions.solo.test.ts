@@ -20,6 +20,7 @@ import {
     addressUtils,
     clauseBuilder,
     coder,
+    type FunctionFragment,
     unitsUtils
 } from '@vechain/vechain-sdk-core';
 
@@ -138,8 +139,9 @@ describe('Subscriptions Solo network tests', () => {
             // Trigger the smart contract function that emits the event
             const clause = clauseBuilder.functionInteraction(
                 TESTING_CONTRACT_ADDRESS,
-                TESTING_CONTRACT_ABI,
-                'setStateVariable',
+                coder
+                    .createInterface(TESTING_CONTRACT_ABI)
+                    .getFunction('setStateVariable') as FunctionFragment,
                 [1]
             );
             const thorSoloClient = new ThorClient(soloNetwork);

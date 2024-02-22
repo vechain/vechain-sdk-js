@@ -4,8 +4,13 @@ import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { soloNetwork } from '../../fixture';
 import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
-import { deployERC20Contract, waitForMessage } from '../helpers';
+import {
+    deployERC20Contract,
+    deployERC721Contract,
+    waitForMessage
+} from '../helpers';
 import type { HttpNetworkConfig } from 'hardhat/types';
+import { coder, type FunctionFragment } from '@vechain/vechain-sdk-core';
 
 /**
  * Vechain provider tests - Solo Network
@@ -44,7 +49,10 @@ describe('Hardhat provider tests', () => {
         ({ description, method, params, expected }) => {
             test(description, async () => {
                 // Call RPC function
-                const rpcCall = await provider.send(method, params);
+                const rpcCall = await provider.request({
+                    method,
+                    params
+                });
 
                 // Compare the result with the expected value
                 expect(rpcCall).toStrictEqual(expected);
@@ -165,7 +173,6 @@ describe('Hardhat provider tests', () => {
      *
      * @throws {Error} If the received message doesn't match the expected format or if the log event details are incorrect, indicating an issue with the subscription or the event emission process.
      */
-    // FIX TEST (LONG RUNNING)
     test('Should be able to get to subscribe to the latest logs of an erc20 contract', async () => {
         const contract = await deployERC20Contract(thorClient);
 
@@ -188,8 +195,10 @@ describe('Hardhat provider tests', () => {
         await thorClient.contracts.executeContractTransaction(
             TEST_ACCOUNT.privateKey,
             contract.address,
-            contract.abi,
-            'transfer',
+            coder
+                .createInterface(contract.abi)
+                .getFunction('transfer') as FunctionFragment,
+
             [TEST_ACCOUNT.address, 100]
         );
 
@@ -217,7 +226,7 @@ describe('Hardhat provider tests', () => {
 
         // Validate the RPC call was successful
         expect(rpcCall).not.toBe('0x0');
-    }, 30000);
+    }, 30000); // Extended timeout for asynchronous operations
 
     /**
      * Tests the ability to subscribe to and receive log events for both ERC20 and ERC721 token contracts.
@@ -243,86 +252,88 @@ describe('Hardhat provider tests', () => {
      *
      * @throws {Error} If any of the assertions fail, indicating a problem with event subscription or log data capture.
      */
-    // FIX TEST (LONG RUNNING)
-    // test('Should be able to subscribe to the latest logs of an erc20 and erc721 contract', async () => {
-    //     // Test setup: Deploy contracts and set up event subscriptions
-    //     const erc20Contract = await deployERC20Contract(thorClient);
-    //     const erc721Contract = await deployERC721Contract(thorClient);
-    //
-    //     const erc20logsParams = {
-    //         address: [erc20Contract.address],
-    //         topics: []
-    //     };
-    //
-    //     const erc721logsParams = {
-    //         address: [erc721Contract.address],
-    //         topics: []
-    //     };
-    //
-    //     const erc20Subscription = await provider.request({
-    //         method: 'eth_subscribe',
-    //         params: ['logs', erc20logsParams]
-    //     });
-    //
-    //     const erc721Subscription = await provider.request({
-    //         method: 'eth_subscribe',
-    //         params: ['logs', erc721logsParams]
-    //     });
-    //
-    //     // Collect and assert log events
-    //     let results: SubscriptionEvent[] = [];
-    //     const eventPromise = new Promise((resolve) => {
-    //         provider.on('message', (message: SubscriptionEvent) => {
-    //             results.push(message);
-    //             if (results.length >= 2) {
-    //                 provider.getInternalVechainProvider().destroy();
-    //                 resolve(results);
-    //             }
-    //         });
-    //     });
-    //
-    //     // Execute transactions that should emit events
-    //     await thorClient.contracts.executeContractTransaction(
-    //         TEST_ACCOUNT.privateKey,
-    //         erc20Contract.address,
-    //         erc20Contract.abi,
-    //         'transfer',
-    //         [TEST_ACCOUNT.address, 100]
-    //     );
-    //
-    //     await thorClient.contracts.executeContractTransaction(
-    //         TEST_ACCOUNT.privateKey,
-    //         erc721Contract.address,
-    //         erc721Contract.abi,
-    //         'mintItem',
-    //         [TEST_ACCOUNT.address]
-    //     );
-    //
-    //     results = (await eventPromise) as SubscriptionEvent[];
-    //
-    //     // Assertions to validate the received log events
-    //     expect(results).toBeDefined();
-    //     expect(results.length).toBeGreaterThan(1);
-    //     expect(
-    //         results.filter((x) => x.params.subscription === erc20Subscription)
-    //             .length
-    //     ).toBeGreaterThan(0);
-    //     expect(
-    //         results.filter((x) => x.params.subscription === erc721Subscription)
-    //             .length
-    //     ).toBeGreaterThan(0);
-    //
-    //     expect(results[0].method).toBe('eth_subscription');
-    //     expect(results[1].method).toBe('eth_subscription');
-    //
-    //     // @ts-expect-error - Asserting that log data is present
-    //     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    //     expect(results[0].params.result.length).toBeGreaterThan(0);
-    //
-    //     // @ts-expect-error - Asserting that log data is present
-    //     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    //     expect(results[1].params.result.length).toBeGreaterThan(0);
-    // }, 120000);
+    test('Should be able to subscribe to the latest logs of an erc20 and erc721 contract', async () => {
+        // Test setup: Deploy contracts and set up event subscriptions
+        const erc20Contract = await deployERC20Contract(thorClient);
+        const erc721Contract = await deployERC721Contract(thorClient);
+
+        const erc20logsParams = {
+            address: [erc20Contract.address],
+            topics: []
+        };
+
+        const erc721logsParams = {
+            address: [erc721Contract.address],
+            topics: []
+        };
+
+        const erc20Subscription = await provider.request({
+            method: 'eth_subscribe',
+            params: ['logs', erc20logsParams]
+        });
+
+        const erc721Subscription = await provider.request({
+            method: 'eth_subscribe',
+            params: ['logs', erc721logsParams]
+        });
+
+        // Collect and assert log events
+        let results: SubscriptionEvent[] = [];
+        const eventPromise = new Promise((resolve) => {
+            provider.on('message', (message: SubscriptionEvent) => {
+                results.push(message);
+                if (results.length >= 2) {
+                    provider.getInternalVechainProvider().destroy();
+                    resolve(results);
+                }
+            });
+        });
+
+        // Execute transactions that should emit events
+        await thorClient.contracts.executeContractTransaction(
+            TEST_ACCOUNT.privateKey,
+            erc20Contract.address,
+            coder
+                .createInterface(erc20Contract.abi)
+                .getFunction('transfer') as FunctionFragment,
+            [TEST_ACCOUNT.address, 100]
+        );
+
+        await thorClient.contracts.executeContractTransaction(
+            TEST_ACCOUNT.privateKey,
+            erc721Contract.address,
+            coder
+                .createInterface(erc721Contract.abi)
+                .getFunction('mintItem') as FunctionFragment,
+
+            [TEST_ACCOUNT.address]
+        );
+
+        results = (await eventPromise) as SubscriptionEvent[];
+
+        // Assertions to validate the received log events
+        expect(results).toBeDefined();
+        expect(results.length).toBeGreaterThan(1);
+        expect(
+            results.filter((x) => x.params.subscription === erc20Subscription)
+                .length
+        ).toBeGreaterThan(0);
+        expect(
+            results.filter((x) => x.params.subscription === erc721Subscription)
+                .length
+        ).toBeGreaterThan(0);
+
+        expect(results[0].method).toBe('eth_subscription');
+        expect(results[1].method).toBe('eth_subscription');
+
+        // @ts-expect-error - Asserting that log data is present
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        expect(results[0].params.result.length).toBeGreaterThan(0);
+
+        // @ts-expect-error - Asserting that log data is present
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        expect(results[1].params.result.length).toBeGreaterThan(0);
+    }, 30000); // Extended timeout for asynchronous operations
 
     /**
      * Invalid RPC method tests
