@@ -9,7 +9,12 @@ import {
     TESTING_CONTRACT_ADDRESS,
     testnetUrl
 } from '../../fixture';
-import { addressUtils, clauseBuilder } from '@vechain/vechain-sdk-core';
+import {
+    addressUtils,
+    coder,
+    type FunctionFragment,
+    clauseBuilder
+} from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '../../../src';
 
 /**
@@ -72,10 +77,14 @@ describe('Transactions module Testnet tests suite', () => {
                 test(description, async () => {
                     const testNetwork = new HttpClient(testnetUrl);
                     const thorClient = new ThorClient(testNetwork);
+
                     const sampleClause = clauseBuilder.functionInteraction(
                         TESTING_CONTRACT_ADDRESS,
-                        TESTING_CONTRACT_ABI,
-                        'setStateVariable',
+                        coder
+                            .createInterface(TESTING_CONTRACT_ABI)
+                            .getFunction(
+                                'setStateVariable'
+                            ) as FunctionFragment,
                         [123]
                     );
 

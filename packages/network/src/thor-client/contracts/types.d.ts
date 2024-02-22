@@ -1,7 +1,9 @@
-import {
-    type TransactionBodyOptions,
-    type SimulateTransactionOptions
+import type {
+    TransactionBodyOptions,
+    SimulateTransactionOptions
 } from '../transactions';
+
+import type { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
 
 /* --------- Input types Start --------- */
 
@@ -14,4 +16,10 @@ type ContractTransactionOptions = Omit<TransactionBodyOptions, 'isDelegated'>;
  */
 type ContractCallOptions = SimulateTransactionOptions;
 
-export type { ContractTransactionOptions, ContractCallOptions };
+type ContractCallResult = vechain_sdk_core_ethers.Result;
+
+export type {
+    ContractTransactionOptions,
+    ContractCallOptions,
+    ContractCallResult
+};

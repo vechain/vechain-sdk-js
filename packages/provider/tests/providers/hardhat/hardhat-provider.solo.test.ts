@@ -10,6 +10,7 @@ import {
     waitForMessage
 } from '../helpers';
 import type { HttpNetworkConfig } from 'hardhat/types';
+import { coder, type FunctionFragment } from '@vechain/vechain-sdk-core';
 
 /**
  * Vechain provider tests - Solo Network
@@ -194,8 +195,10 @@ describe('Hardhat provider tests', () => {
         await thorClient.contracts.executeContractTransaction(
             TEST_ACCOUNT.privateKey,
             contract.address,
-            contract.abi,
-            'transfer',
+            coder
+                .createInterface(contract.abi)
+                .getFunction('transfer') as FunctionFragment,
+
             [TEST_ACCOUNT.address, 100]
         );
 
@@ -290,16 +293,19 @@ describe('Hardhat provider tests', () => {
         await thorClient.contracts.executeContractTransaction(
             TEST_ACCOUNT.privateKey,
             erc20Contract.address,
-            erc20Contract.abi,
-            'transfer',
+            coder
+                .createInterface(erc20Contract.abi)
+                .getFunction('transfer') as FunctionFragment,
             [TEST_ACCOUNT.address, 100]
         );
 
         await thorClient.contracts.executeContractTransaction(
             TEST_ACCOUNT.privateKey,
             erc721Contract.address,
-            erc721Contract.abi,
-            'mintItem',
+            coder
+                .createInterface(erc721Contract.abi)
+                .getFunction('mintItem') as FunctionFragment,
+
             [TEST_ACCOUNT.address]
         );
 
