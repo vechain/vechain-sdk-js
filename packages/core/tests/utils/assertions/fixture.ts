@@ -70,9 +70,7 @@ const transactionAssertionsTests = {
         valid: [
             {
                 value: TransactionHandler.sign(
-                    new Transaction({
-                        ...transactions.undelegated[0].body
-                    }),
+                    transactions.undelegated[0].body,
                     signer.privateKey
                 )
             }
