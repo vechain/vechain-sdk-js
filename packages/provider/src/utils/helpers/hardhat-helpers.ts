@@ -24,8 +24,6 @@ const createWalletFromHardhatNetworkConfig = (
     if (accountFromConfig === undefined) return new BaseWallet([], {});
     // Some configuration
     else {
-        // 1 - HttpNetworkAccountsConfig instance
-
         // Remote (not supported)
         if (accountFromConfig === 'remote')
             throw buildError(
@@ -38,7 +36,12 @@ const createWalletFromHardhatNetworkConfig = (
             return new BaseWallet(
                 (accountFromConfig as string[]).map((privateKey: string) => {
                     // Convert the private key to a buffer
-                    const privateKeyBuffer = Buffer.from(privateKey, 'hex');
+                    const privateKeyBuffer = Buffer.from(
+                        privateKey.startsWith('0x')
+                            ? privateKey.slice(2)
+                            : privateKey,
+                        'hex'
+                    );
 
                     // Derive the public key and address from the private key
                     return {
@@ -61,8 +64,9 @@ const createWalletFromHardhatNetworkConfig = (
                 [...Array(accountFromConfig.count).keys()].map(
                     (path: number) => {
                         // Convert the private key to a buffer
-                        const privateKeyBuffer = hdnode.derive(path)
-                            .privateKey as Buffer;
+                        const privateKeyBuffer = hdnode.derive(
+                            path + accountFromConfig.initialIndex
+                        ).privateKey as Buffer;
 
                         // Derive the public key and address from the private key
                         return {

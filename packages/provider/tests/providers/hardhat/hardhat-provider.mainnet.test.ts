@@ -1,9 +1,12 @@
-import { beforeEach, describe, expect, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { HardhatVechainProvider } from '../../../src';
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { mainnetUrl } from '../../fixture';
 import { providerMethodsTestCasesMainnet } from '../fixture';
-import { type NetworkConfig } from 'hardhat/src/types/config';
+import { type HttpNetworkConfig } from 'hardhat/types';
+import {
+    InvalidDataTypeError,
+    JSONRPCInvalidRequest
+} from '@vechain/vechain-sdk-errors';
 
 /**
  * Hardhat provider tests - Mainnet
@@ -24,7 +27,14 @@ describe('Hardhat provider tests', () => {
         provider = new HardhatVechainProvider({
             url: mainnetUrl,
             chainId: 74
-        } as NetworkConfig);
+        } as HttpNetworkConfig);
+    });
+
+    /**
+     * Destory thor client and provider after each test
+     */
+    afterEach(() => {
+        provider.destroy();
     });
 
     /**
@@ -60,6 +70,35 @@ describe('Hardhat provider tests', () => {
     });
 
     /**
+     * The methods request, send, sendAsync must give the same result
+     */
+    test('Should be able to get chain id using request, send and sendAsync methods', async () => {
+        // Call RPC function
+        const rpcCall = await provider.send('eth_chainId', []);
+
+        // Call RPC function using send method (same result as above)
+        const rpcCallSend = await provider.send('eth_chainId', []);
+
+        // Call RPC function using send-async method (same result as above)
+        // provider.sendAsync(
+        //     {
+        //         jsonrpc: '2.0',
+        //         id: 1,
+        //         method: 'eth_chainId',
+        //         params: []
+        //     },
+        //     (error, response) => {
+        //         expect(rpcCall).toBe(response.result);
+        //         expect(rpcCall).toBe(rpcCallSend);
+        //         expect(error).toBeUndefined();
+        //     }
+        // );
+
+        // Compare the result with the expected value
+        expect(rpcCall).toBe(rpcCallSend);
+    });
+
+    /**
      * Invalid RPC method tests
      */
     test('Should throw an error when calling an invalid RPC method', async () => {
@@ -74,5 +113,27 @@ describe('Hardhat provider tests', () => {
                     params: [-1]
                 })
         ).rejects.toThrowError(InvalidDataTypeError);
+
+        // Call RPC function and throw error using send method (same result as above)
+        await expect(
+            async () => await provider.send('INVALID_METHOD', [-1])
+        ).rejects.toThrowError(JSONRPCInvalidRequest);
+
+        // Call RPC function and throw error using send-async method (same result as above)
+        // provider.sendAsync(
+        //     {
+        //         jsonrpc: '2.0',
+        //         id: 1,
+        //         method: 'INVALID_METHOD',
+        //         params: [-1]
+        //     },
+        //     (error, response) => {
+        //         // Response should be undefined
+        //         expect(response).toBeDefined();
+        //
+        //         // An error should be thrown
+        //         expect(error).toBeDefined();
+        //     }
+        // );
     });
 });

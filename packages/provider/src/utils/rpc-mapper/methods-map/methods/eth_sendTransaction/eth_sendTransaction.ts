@@ -13,10 +13,12 @@ import { type VechainProvider } from '../../../../../providers';
 import { ethSendRawTransaction } from '../eth_sendRawTransaction/eth_sendRawTransaction';
 import {
     clauseBuilder,
+    dataUtils,
     type TransactionClause
 } from '@vechain/vechain-sdk-core';
 import { type Wallet, type WalletAccount } from '@vechain/vechain-sdk-wallet';
 import { type TransactionObjectInput } from './types';
+import { randomBytes } from 'crypto';
 
 /**
  * RPC Method eth_sendTransaction implementation
@@ -124,6 +126,12 @@ const ethSendTransaction = async (
                 }
             );
 
+        // NOTE: To be compliant with the standard and to avoid nonce overflow, we generate a random nonce of 6 bytes
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { nonce, ...transactionBodyWithoutNonce } = transactionBody;
+        const newNonce = `0x${dataUtils.toHexString(randomBytes(6))}`;
+
         // At least, a signer private key is required
         if (
             signerIntoWallet?.privateKey === null ||
@@ -138,7 +146,7 @@ const ethSendTransaction = async (
         }
         // Sign the transaction
         const signedTransaction = await thorClient.transactions.signTransaction(
-            transactionBody,
+            { nonce: newNonce, ...transactionBodyWithoutNonce },
             signerIntoWallet.privateKey.toString('hex'),
             {
                 delegatorPrivatekey: delegatorIntoWallet?.delegatorPrivatekey,

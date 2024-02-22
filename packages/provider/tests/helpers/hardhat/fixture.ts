@@ -29,6 +29,21 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
         ]
     },
     {
+        test: 'Should return a wallet from an Array of private keys (with 0x prefix)',
+        networkConfig: {
+            url: 'https://testnet.vechain.org',
+            chainId: 74,
+            accounts: [
+                '0x7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
+                '0x7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa157'
+            ]
+        },
+        expectedAddresses: [
+            '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
+            '0x768Ca51b9C9C2b520c845EBea9DDfaA54513b595'
+        ]
+    },
+    {
         test: 'Should return a wallet from an HDNode wallet',
         networkConfig: {
             url: 'https://testnet.vechain.org',
