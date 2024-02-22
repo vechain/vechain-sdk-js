@@ -4,7 +4,9 @@ import {
     type WaitForBlockOptions,
     type BlockInputOptions,
     type BlockDetail,
-    type BlocksModuleOptions
+    type BlocksModuleOptions,
+    type CompressedBlockDetail,
+    type ExpandedBlockDetail
 } from './types';
 import { assertIsRevisionForBlock } from '@vechain/vechain-sdk-core';
 import { type ThorClient } from '../thor-client';
@@ -18,7 +20,7 @@ class BlocksModule {
      * The head block (best block). This is updated by the event poll instance every time a new block is produced.
      * @private
      */
-    private headBlock: BlockDetail | null = null;
+    private headBlock: CompressedBlockDetail | null = null;
 
     /**
      * Error handler for block-related errors.
@@ -29,7 +31,7 @@ class BlocksModule {
      * The Poll instance for event polling
      * @private
      */
-    private pollInstance?: EventPoll<BlockDetail | null>;
+    private pollInstance?: EventPoll<CompressedBlockDetail | null>;
 
     /**
      * Initializes a new instance of the `Thor` class.
@@ -81,16 +83,24 @@ class BlocksModule {
     public async getBlock(
         revision: string | number,
         options?: BlockInputOptions
-    ): Promise<BlockDetail | null> {
+    ): Promise<CompressedBlockDetail | ExpandedBlockDetail | null> {
         assertIsRevisionForBlock(revision);
 
-        return (await this.thor.httpClient.http(
+        const blockDetail = await this.thor.httpClient.http(
             'GET',
             thorest.blocks.get.BLOCK_DETAIL(revision),
             {
                 query: buildQuery({ expanded: options?.expanded })
             }
-        )) as BlockDetail | null;
+        );
+
+        if (blockDetail === null) return null;
+
+        if (options?.expanded ?? false) {
+            return blockDetail as ExpandedBlockDetail;
+        } else {
+            return blockDetail as CompressedBlockDetail;
+        }
     }
 
     /**
@@ -98,8 +108,8 @@ class BlocksModule {
      *
      * @returns A promise that resolves to an object containing the block details.
      */
-    public async getBestBlock(): Promise<BlockDetail | null> {
-        return await this.getBlock('best');
+    public async getBestBlock(): Promise<CompressedBlockDetail | null> {
+        return (await this.getBlock('best')) as CompressedBlockDetail;
     }
 
     /**
@@ -131,8 +141,8 @@ class BlocksModule {
      *
      * @returns A promise that resolves to an object containing the block details.
      */
-    public async getFinalBlock(): Promise<BlockDetail | null> {
-        return await this.getBlock('finalized');
+    public async getFinalBlock(): Promise<CompressedBlockDetail | null> {
+        return (await this.getBlock('finalized')) as CompressedBlockDetail;
     }
 
     /**
@@ -145,7 +155,7 @@ class BlocksModule {
     public async waitForBlock(
         blockNumber: number,
         options?: WaitForBlockOptions
-    ): Promise<BlockDetail | null> {
+    ): Promise<CompressedBlockDetail | null> {
         assert(
             blockNumber === undefined ||
                 blockNumber === null ||
@@ -178,8 +188,8 @@ class BlocksModule {
      *
      * @returns A promise that resolves to an object containing the block details of the genesis block.
      */
-    public async getGenesisBlock(): Promise<BlockDetail | null> {
-        return await this.getBlock(0);
+    public async getGenesisBlock(): Promise<CompressedBlockDetail | null> {
+        return (await this.getBlock(0)) as CompressedBlockDetail;
     }
 }
 

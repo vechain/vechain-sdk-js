@@ -1,9 +1,9 @@
 import {
     type TransactionsExpandedBlockDetail,
     type TransactionDetailNoRaw,
-    type BlockDetail,
     type TransactionReceipt,
-    type SendTransactionResult
+    type SendTransactionResult,
+    type ExpandedBlockDetail
 } from '@vechain/vechain-sdk-network';
 import {
     type SendRawTransactionResultRPC,
@@ -109,7 +109,7 @@ const formatToRPCStandard = (
  */
 const formatExpandedBlockToRPCStandard = (
     tx: TransactionsExpandedBlockDetail,
-    block: BlockDetail,
+    block: ExpandedBlockDetail,
     txIndex: number,
     chainId: string
 ): TransactionRPC => {
@@ -136,7 +136,7 @@ function formatTransactionReceiptToRPCStandard(
     transactionHash: string,
     receipt: TransactionReceipt,
     transaction: TransactionDetailNoRaw,
-    blockContainsTransaction: BlockDetail,
+    blockContainsTransaction: ExpandedBlockDetail,
     chainId: string
 ): TransactionReceiptRPC {
     // Get transaction index

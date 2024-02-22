@@ -1,4 +1,7 @@
-import { type ThorClient } from '@vechain/vechain-sdk-network';
+import {
+    type ExpandedBlockDetail,
+    type ThorClient
+} from '@vechain/vechain-sdk-network';
 import {
     assert,
     buildProviderError,
@@ -51,12 +54,12 @@ const ethGetBlockByNumber = async (
                 []
             )) as string;
 
-        const block = await thorClient.blocks.getBlock(
+        const block = (await thorClient.blocks.getBlock(
             getCorrectBlockNumberRPCToVechain(blockNumber),
             {
                 expanded: isTxDetail
             }
-        );
+        )) as ExpandedBlockDetail;
 
         return block !== null
             ? blocksFormatter.formatToRPCStandard(block, chainId)

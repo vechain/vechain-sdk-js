@@ -1,5 +1,5 @@
 import {
-    type BlockDetail,
+    type ExpandedBlockDetail,
     type ThorClient,
     type TransactionDetailNoRaw
 } from '@vechain/vechain-sdk-network';
@@ -57,7 +57,7 @@ const ethGetTransactionReceipt = async (
                 {
                     expanded: true
                 }
-            )) as BlockDetail;
+            )) as ExpandedBlockDetail;
 
             // Get transaction detail. @note: It cannot be null!. If some error occurs, it will be thrown.
             const transactionDetail =

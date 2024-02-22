@@ -1,6 +1,7 @@
 import {
     type TransactionsExpandedBlockDetail,
-    type BlockDetail
+    type ExpandedBlockDetail,
+    type CompressedBlockDetail
 } from '@vechain/vechain-sdk-network';
 import { type BlocksRPC } from './types';
 import {
@@ -19,7 +20,7 @@ import { transactionsFormatter } from '../transactions';
  * @param chainId - The chain id to use for the transaction formatting.
  */
 const formatToRPCStandard = (
-    block: BlockDetail,
+    block: CompressedBlockDetail | ExpandedBlockDetail,
     chainId: string
 ): BlocksRPC => {
     // Return the transactions array formatted based on the requested expanded flag
@@ -29,7 +30,7 @@ const formatToRPCStandard = (
             : block.transactions.map((tx, index) => {
                   return transactionsFormatter.formatExpandedBlockToRPCStandard(
                       tx as TransactionsExpandedBlockDetail,
-                      block,
+                      block as ExpandedBlockDetail,
                       index,
                       chainId
                   );

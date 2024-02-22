@@ -128,11 +128,6 @@ interface BlockDetail {
     signer: string;
 
     /**
-     * Array of transaction IDs or hashes in the block.
-     */
-    transactions: string[] | TransactionsExpandedBlockDetail[];
-
-    /**
      * Indicates if the block contains a community fund (com).
      */
     com?: boolean;
@@ -149,6 +144,14 @@ interface BlockDetail {
      * @link see [VechainThor Trunk](https://docs.vechain.org/introduction-to-vechain/about-the-vechain-blockchain/consensus-deep-dive#meta-transaction-features-3)
      */
     isTrunk: boolean;
+}
+
+interface CompressedBlockDetail extends BlockDetail {
+    transactions: string[];
+}
+
+interface ExpandedBlockDetail extends BlockDetail {
+    transactions: TransactionsExpandedBlockDetail[];
 }
 
 /**
@@ -289,6 +292,8 @@ export {
     type BlocksModuleOptions,
     type BlockInputOptions,
     type BlockDetail,
+    type CompressedBlockDetail,
+    type ExpandedBlockDetail,
     type TransactionsExpandedBlockDetail,
     type Clause,
     type Output,
