@@ -324,7 +324,6 @@ Thor-client provides methods for developers to interact with transactions on the
 
 ```typescript { name=transactions, category=example }
 import {
-    Transaction,
     TransactionHandler,
     dataUtils,
     unitsUtils,
@@ -367,7 +366,7 @@ const gasResult = await thorSoloClient.gas.estimateGas(
 
 // 4 - Create transaction
 
-const transaction = new Transaction({
+const transactionBody = {
     chainTag: 0xf6,
     blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
     expiration: 32,
@@ -376,12 +375,12 @@ const transaction = new Transaction({
     gas: gasResult.totalGas,
     dependsOn: null,
     nonce: 12345678
-});
+};
 
 // 5 - Normal signature (NO delegation)
 
 const rawNormalSigned = TransactionHandler.sign(
-    transaction,
+    transactionBody,
     Buffer.from(senderAccount.privateKey, 'hex')
 ).encoded;
 
@@ -435,7 +434,6 @@ The following code demonstrates how to use Thor-client with the fee delegation f
 
 ```typescript { name=delegated-transactions, category=example }
 import {
-    Transaction,
     TransactionHandler,
     dataUtils,
     unitsUtils,
@@ -487,7 +485,7 @@ const gasResult = await thorSoloClient.gas.estimateGas(
 
 //  4 - Create delegated transaction
 
-const delegatedTransaction = new Transaction({
+const delegatedTransactionBody = {
     chainTag: 0xf6,
     blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
     expiration: 32,
@@ -499,12 +497,12 @@ const delegatedTransaction = new Transaction({
     reserved: {
         features: 1
     }
-});
+};
 
 // 5 - Normal signature and delegation signature
 
 const rawDelegatedSigned = TransactionHandler.signWithDelegator(
-    delegatedTransaction,
+    delegatedTransactionBody,
     Buffer.from(senderAccount.privateKey, 'hex'),
     Buffer.from(delegateAccount.privateKey, 'hex')
 ).encoded;
@@ -542,11 +540,7 @@ The `GasModule` in Thor-client is designed to handle gas-related operations on t
 The `gasPadding` option is a percentage of gas to add on top of the estimated gas. The value must be between (0, 1].
 
 ```typescript { name=gas, category=example }
-import {
-    Transaction,
-    TransactionHandler,
-    networkInfo
-} from '@vechain/vechain-sdk-core';
+import { TransactionHandler, networkInfo } from '@vechain/vechain-sdk-core';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import { expect } from 'expect';
 
@@ -600,7 +594,7 @@ const gasResult = await thorSoloClient.gas.estimateGas(
 
 // 4 - Create transaction
 
-const transaction = new Transaction({
+const transactionBody = {
     chainTag: networkInfo.solo.chainTag,
     blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
     expiration: 32,
@@ -609,11 +603,11 @@ const transaction = new Transaction({
     gas: gasResult.totalGas,
     dependsOn: null,
     nonce: 12345678
-});
+};
 
 // 5 - Sign transaction
 const rawNormalSigned = TransactionHandler.sign(
-    transaction,
+    transactionBody,
     senderAccount.privateKey
 ).encoded;
 

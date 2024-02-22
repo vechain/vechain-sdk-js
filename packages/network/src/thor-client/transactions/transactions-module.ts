@@ -331,8 +331,6 @@ class TransactionsModule {
         // Check if the transaction can be signed
         assertTransactionCanBeSigned(originPrivateKey, txBody);
 
-        const unsignedTx = new Transaction(txBody);
-
         // Check if the transaction is delegated
         const isDelegated =
             options?.delegatorPrivatekey !== undefined ||
@@ -340,12 +338,12 @@ class TransactionsModule {
 
         return isDelegated
             ? await this._signWithDelegator(
-                  unsignedTx,
+                  txBody,
                   originPrivateKey,
                   options?.delegatorPrivatekey,
                   options?.delegatorUrl
               )
-            : TransactionHandler.sign(unsignedTx, originPrivateKey);
+            : TransactionHandler.sign(txBody, originPrivateKey);
     }
 
     /**
@@ -361,7 +359,7 @@ class TransactionsModule {
      * @throws an error if the delegation fails.
      */
     private async _signWithDelegator(
-        unsignedTx: Transaction,
+        txBody: TransactionBody,
         originPrivateKey: Buffer,
         delegatorPrivateKey?: string,
         delegatorUrl?: string
@@ -378,10 +376,12 @@ class TransactionsModule {
             secp256k1.derivePublicKey(originPrivateKey)
         );
 
+        const unsignedTx = new Transaction(txBody);
+
         if (delegatorPrivateKey !== undefined)
             // Sign transaction with origin private key and delegator private key
             return TransactionHandler.signWithDelegator(
-                unsignedTx,
+                txBody,
                 originPrivateKey,
                 Buffer.from(delegatorPrivateKey, 'hex')
             );

@@ -71,7 +71,7 @@ describe('Transaction', () => {
             transactions.undelegated.forEach((transaction) => {
                 // Init unsigned transaction from body
                 const signedTransaction = TransactionHandler.sign(
-                    new Transaction(transaction.body),
+                    transaction.body,
                     signer.privateKey
                 );
 
@@ -153,7 +153,7 @@ describe('Transaction', () => {
         test('Should be able to create signed transactions', () => {
             transactions.delegated.forEach((transaction) => {
                 const signedTransaction = TransactionHandler.signWithDelegator(
-                    new Transaction(transaction.body),
+                    transaction.body,
                     signer.privateKey,
                     delegator.privateKey
                 );
