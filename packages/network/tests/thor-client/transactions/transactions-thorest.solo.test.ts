@@ -1,10 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { TEST_ACCOUNTS, soloNetwork } from '../../fixture';
-import {
-    dataUtils,
-    Transaction,
-    TransactionHandler
-} from '@vechain/vechain-sdk-core';
+import { dataUtils, TransactionHandler } from '@vechain/vechain-sdk-core';
 import { sendTransactionErrors, simulateTransaction } from './fixture-thorest';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '../../../src';
@@ -45,7 +41,7 @@ describe('ThorClient - Transactions Module', () => {
                 );
 
                 // Create transactions
-                const transaction = new Transaction({
+                const transactionBody = {
                     chainTag: 0xf6,
                     blockRef:
                         latestBlock !== null
@@ -57,9 +53,9 @@ describe('ThorClient - Transactions Module', () => {
                     gas: gasResult.totalGas,
                     dependsOn: null,
                     nonce: 12345678
-                });
+                };
 
-                const delegatedTransaction = new Transaction({
+                const delegatedTransactionBody = {
                     chainTag: 0xf6,
                     blockRef:
                         latestBlock !== null
@@ -74,11 +70,11 @@ describe('ThorClient - Transactions Module', () => {
                     reserved: {
                         features: 1
                     }
-                });
+                };
 
                 // Normal signature and delegation signature
                 const rawNormalSigned = TransactionHandler.sign(
-                    transaction,
+                    transactionBody,
                     Buffer.from(
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
                         'hex'
@@ -86,7 +82,7 @@ describe('ThorClient - Transactions Module', () => {
                 ).encoded;
 
                 const rawDelegatedSigned = TransactionHandler.signWithDelegator(
-                    delegatedTransaction,
+                    delegatedTransactionBody,
                     Buffer.from(
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
                         'hex'

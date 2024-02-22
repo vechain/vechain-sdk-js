@@ -1,5 +1,4 @@
 import {
-    Transaction,
     TransactionHandler,
     dataUtils,
     unitsUtils,
@@ -51,7 +50,7 @@ const gasResult = await thorSoloClient.gas.estimateGas(
 
 //  4 - Create delegated transaction
 
-const delegatedTransaction = new Transaction({
+const delegatedTransactionBody = {
     chainTag: 0xf6,
     blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
     expiration: 32,
@@ -63,12 +62,12 @@ const delegatedTransaction = new Transaction({
     reserved: {
         features: 1
     }
-});
+};
 
 // 5 - Normal signature and delegation signature
 
 const rawDelegatedSigned = TransactionHandler.signWithDelegator(
-    delegatedTransaction,
+    delegatedTransactionBody,
     Buffer.from(senderAccount.privateKey, 'hex'),
     Buffer.from(delegateAccount.privateKey, 'hex')
 ).encoded;
