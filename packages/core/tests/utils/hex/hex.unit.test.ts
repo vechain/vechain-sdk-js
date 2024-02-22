@@ -10,10 +10,6 @@ describe('Hex', () => {
         expect(Hex.PREFIX).toBe('0x');
     });
 
-    test('test', () => {
-        console.log(Hex.of(-10));
-    });
-
     test('should transform a number to its hexadecimal representation with a prefix', () => {
         expect(Hex.of(255)).toBe('0xff');
         expect(Hex.of(0)).toBe('0x0');
