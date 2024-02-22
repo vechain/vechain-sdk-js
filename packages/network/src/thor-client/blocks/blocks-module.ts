@@ -3,7 +3,6 @@ import { Poll, buildQuery, thorest } from '../../utils';
 import {
     type WaitForBlockOptions,
     type BlockInputOptions,
-    type BlockDetail,
     type BlocksModuleOptions,
     type CompressedBlockDetail,
     type ExpandedBlockDetail
@@ -179,7 +178,7 @@ class BlocksModule {
      * Returns the head block (best block).
      * @returns {BlockDetail | null} The head block (best block).
      */
-    public getHeadBlock(): BlockDetail | null {
+    public getHeadBlock(): CompressedBlockDetail | null {
         return this.headBlock;
     }
 

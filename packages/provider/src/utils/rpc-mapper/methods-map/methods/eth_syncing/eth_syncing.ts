@@ -1,6 +1,6 @@
 import {
-    type BlockDetail,
-    type ThorClient
+    type ThorClient,
+    type CompressedBlockDetail
 } from '@vechain/vechain-sdk-network';
 import {
     blocksFormatter,
@@ -17,7 +17,7 @@ import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
  *
  * @param block - Block to check
  */
-const _isBlockNotOutOfSyncInTime = (block: BlockDetail): boolean => {
+const _isBlockNotOutOfSyncInTime = (block: CompressedBlockDetail): boolean => {
     return Math.floor(Date.now() / 1000) - block.timestamp < 11000;
 };
 

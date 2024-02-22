@@ -3,7 +3,7 @@
 import { mnemonic } from '@vechain/vechain-sdk-core';
 import { useState } from 'react';
 import {
-    type BlockDetail,
+    type CompressedBlockDetail,
     HttpClient,
     ThorClient
 } from '@vechain/vechain-sdk-network';
@@ -31,7 +31,7 @@ export default function Home() {
     };
 
     // Block
-    const [block, setBlock] = useState<BlockDetail | null>(null);
+    const [block, setBlock] = useState<CompressedBlockDetail | null>(null);
 
     const getLatestBlock = async (): Promise<void> => {
         const latestBlock = await thorClient.blocks.getBestBlock();
