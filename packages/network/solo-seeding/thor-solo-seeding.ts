@@ -1,5 +1,5 @@
 import {
-    contract,
+    coder,
     networkInfo,
     Transaction,
     TransactionHandler,
@@ -21,11 +21,10 @@ import { TESTING_CONTRACT_BYTECODE } from './const';
 const CLAUSES_VTHO = ALL_ACCOUNTS.slice(0, 10).map((account) => ({
     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
     value: 0,
-    data: contract.coder.encodeFunctionInput(
-        BUILT_IN_CONTRACTS.ENERGY_ABI,
-        'transfer',
-        [account.address, unitsUtils.parseVET('500000000')]
-    )
+    data: coder.encodeFunctionInput(BUILT_IN_CONTRACTS.ENERGY_ABI, 'transfer', [
+        account.address,
+        unitsUtils.parseVET('500000000')
+    ])
 }));
 
 /**
