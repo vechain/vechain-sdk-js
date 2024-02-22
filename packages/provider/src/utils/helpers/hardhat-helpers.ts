@@ -24,8 +24,6 @@ const createWalletFromHardhatNetworkConfig = (
     if (accountFromConfig === undefined) return new BaseWallet([], {});
     // Some configuration
     else {
-        // 1 - HttpNetworkAccountsConfig instance
-
         // Remote (not supported)
         if (accountFromConfig === 'remote')
             throw buildError(
