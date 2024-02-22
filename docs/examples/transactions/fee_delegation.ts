@@ -1,6 +1,5 @@
 import { clauseBuilder, networkInfo } from '@vechain/vechain-sdk-core';
 import {
-    Transaction,
     TransactionHandler,
     HDNode,
     type TransactionClause,
@@ -67,9 +66,8 @@ const delegatorAddress = nodeDelegate.address;
 
 // 6 - Sign transaction as sender and delegate
 
-const unsignedTx = new Transaction(body);
 const signedTransaction = TransactionHandler.signWithDelegator(
-    unsignedTx,
+    body,
     Buffer.from(senderAccount.privateKey, 'hex'),
     delegatorPrivateKey
 );

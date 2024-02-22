@@ -2,19 +2,19 @@ import { addressUtils } from '../../address';
 import { secp256k1 } from '../../secp256k1';
 import { Transaction } from '../transaction';
 import { assert, TRANSACTION } from '@vechain/vechain-sdk-errors';
-import { assertTransactionIsNotSigned } from '../helpers/assertions';
 import { assertIsValidTransactionSigningPrivateKey } from '../../utils';
+import { type TransactionBody } from '../types';
 
 /**
  * Sign a transaction with a given private key
  *
  * @throws{InvalidSecp256k1PrivateKeyError, TransactionAlreadySignedError, TransactionDelegationError}
- * @param transactionToSign - Transaction to sign
+ * @param transactionBody - The body of the transaction to sign
  * @param signerPrivateKey - Private key used to sign the transaction
  * @returns Signed transaction
  */
 function sign(
-    transactionToSign: Transaction,
+    transactionBody: TransactionBody,
     signerPrivateKey: Buffer
 ): Transaction {
     // Invalid private key
@@ -23,15 +23,14 @@ function sign(
         secp256k1.isValidPrivateKey
     );
 
-    // Transaction is already signed
-    assertTransactionIsNotSigned(transactionToSign);
+    const transactionToSign = new Transaction(transactionBody);
 
     // Transaction is delegated
     assert(
         !transactionToSign.isDelegated,
         TRANSACTION.INVALID_DELEGATION,
         'Transaction is delegated. Use signWithDelegator method instead.',
-        { transactionToSign }
+        { transactionBody }
     );
 
     // Sign transaction
@@ -41,20 +40,20 @@ function sign(
     );
 
     // Return new signed transaction
-    return new Transaction(transactionToSign.body, signature);
+    return new Transaction(transactionBody, signature);
 }
 
 /**
  * Sign a transaction with signer and delegator private keys
  *
  * @throws{InvalidSecp256k1PrivateKeyError, TransactionAlreadySignedError, TransactionDelegationError}
- * @param transactionToSign - Transaction to sign
+ * @param transactionBody - The body of the transaction to sign
  * @param signerPrivateKey - Signer private key (the origin)
  * @param delegatorPrivateKey - Delegate private key (the delegator)
  * @returns Signed transaction
  */
 function signWithDelegator(
-    transactionToSign: Transaction,
+    transactionBody: TransactionBody,
     signerPrivateKey: Buffer,
     delegatorPrivateKey: Buffer
 ): Transaction {
@@ -70,8 +69,7 @@ function signWithDelegator(
         'delegator'
     );
 
-    // Transaction is already signed
-    assertTransactionIsNotSigned(transactionToSign);
+    const transactionToSign = new Transaction(transactionBody);
 
     // Transaction is not delegated
     assert(
@@ -91,7 +89,7 @@ function signWithDelegator(
     ]);
 
     // Return new signed transaction
-    return new Transaction(transactionToSign.body, signature);
+    return new Transaction(transactionBody, signature);
 }
 
 export { sign, signWithDelegator };
