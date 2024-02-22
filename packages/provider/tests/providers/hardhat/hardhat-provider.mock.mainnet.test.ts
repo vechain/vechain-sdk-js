@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { HardhatVechainProvider } from '../../../src';
 import { mainnetUrl } from '../../fixture';
 import { type HttpNetworkConfig } from 'hardhat/types';
+import { JSONRPCInvalidRequest } from '@vechain/vechain-sdk-errors';
 
 /**
  * Hardhat provider tests - Mainnet
@@ -40,6 +41,26 @@ describe('Hardhat provider tests', () => {
             method: 'eth_blockNumber',
             params: []
         });
+
+        expect(logSpy).toHaveBeenCalled();
+        logSpy.mockRestore();
+    });
+
+    /**
+     * Test debug mode errors.
+     */
+
+    /**
+     * Test debug mode errors in send function.
+     */
+    test('Should be able to log errors in debug mode - send function', async () => {
+        // Spy on console.log
+        const logSpy = jest.spyOn(global.console, 'log');
+
+        // Error during call
+        await expect(
+            async () => await providerInDebugMode.send('INVALID_METHOD', [-1])
+        ).rejects.toThrowError(JSONRPCInvalidRequest);
 
         expect(logSpy).toHaveBeenCalled();
         logSpy.mockRestore();
