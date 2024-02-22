@@ -1,22 +1,21 @@
-import { addressUtils, type InterfaceAbi } from '@vechain/vechain-sdk-core';
+import {
+    addressUtils,
+    coder,
+    type FunctionFragment,
+    type InterfaceAbi
+} from '@vechain/vechain-sdk-core';
 import type {
     SendTransactionResult,
     TransactionReceipt
 } from '../../transactions';
 import { type ThorClient } from '../../thor-client';
-import {
-    type ContractCallOptions,
-    type ContractTransactionOptions
+import type {
+    ContractCallOptions,
+    ContractCallResult,
+    ContractTransactionOptions
 } from '../types';
-
-export type ContractFunction<T = unknown> = (...args: unknown[]) => Promise<T>;
-
-type ContractFunctionRead = Record<string, ContractFunction>;
-
-type ContractFunctionTransact = Record<
-    string,
-    ContractFunction<SendTransactionResult>
->;
+import { buildError, ERROR_CODES } from '@vechain/vechain-sdk-errors';
+import type { ContractFunctionRead, ContractFunctionTransact } from './types';
 
 /**
  * A class representing a smart contract deployed on the blockchain.
@@ -123,11 +122,12 @@ class Contract {
         return new Proxy(this.read, {
             get: (_target, prop) => {
                 // Otherwise, assume that the function is a contract method
-                return async (...args: unknown[]) => {
+                return async (
+                    ...args: unknown[]
+                ): Promise<ContractCallResult> => {
                     return await this.thor.contracts.executeContractCall(
                         this.address,
-                        this.abi,
-                        prop.toString(),
+                        this.getFunctionFragment(prop),
                         args,
                         {
                             caller: addressUtils.fromPrivateKey(
@@ -156,14 +156,36 @@ class Contract {
                     return await this.thor.contracts.executeContractTransaction(
                         this.callerPrivateKey,
                         this.address,
-                        this.abi,
-                        prop.toString(),
+                        this.getFunctionFragment(prop),
                         args,
                         this.contractTransactionOptions
                     );
                 };
             }
         });
+    }
+
+    /**
+     * Retrieves the function fragment for the specified function name.
+     * @param prop - The name of the function.
+     * @private
+     * @throws An error if the specified function name or symbol is not found in the contract's ABI. The error includes
+     * the `ERROR_CODES.ABI.INVALID_FUNCTION` code and a message indicating the function is not present in the ABI.
+     *
+     */
+    private getFunctionFragment(prop: string | symbol): FunctionFragment {
+        const functionFragment = coder
+            .createInterface(this.abi)
+            .getFunction(prop.toString());
+
+        if (functionFragment == null) {
+            throw buildError(
+                ERROR_CODES.ABI.INVALID_FUNCTION,
+                `Function '${prop.toString()}' not found in contract ABI`,
+                { prop }
+            );
+        }
+        return functionFragment;
     }
 }
 
