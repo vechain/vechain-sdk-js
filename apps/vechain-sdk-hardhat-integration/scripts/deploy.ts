@@ -1,5 +1,4 @@
-import { ethers, config } from 'hardhat';
-import { provider } from '@vechain/vechain-sdk-provider';
+import { ethers } from 'hardhat';
 
 async function main() {
     const vechainHelloWorldWithNonEmptyConstructor =
@@ -20,10 +19,8 @@ async function main() {
         }
     );
 
-    // await vechainHelloWorld.waitForDeployment();
     await vechainHelloWorldWithNonEmptyConstructor.waitForDeployment();
-    // console.log(config);
-    //
+
     console.log(
         `VechainHelloWorld deployed to ${JSON.stringify(vechainHelloWorld)}`
     );

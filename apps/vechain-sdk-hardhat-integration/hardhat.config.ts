@@ -11,7 +11,7 @@ task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
 /**
  * Main hardhat configuration
  *
- * Here we have custom vechin networks: 'vechain_testnet' and 'vechain_solo'
+ * Here we have custom vechain networks: 'vechain_mainnet', 'vechain_testnet' and 'vechain_solo'
  *
  * They have custom parameters:
  * - debugMode: whether to enable debug mode
@@ -20,6 +20,22 @@ task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
 const config: HardhatUserConfig = {
     solidity: '0.8.17',
     networks: {
+        /**
+         * Mainnet configuration
+         */
+        vechain_mainnet: {
+            // Mainnet
+            url: 'https://mainnet.vechain.org',
+            accounts: [],
+            debugMode: true,
+            delegator: {},
+            gas: 'auto',
+            gasPrice: 'auto',
+            gasMultiplier: 1,
+            timeout: 20000,
+            httpHeaders: {}
+        },
+
         /**
          * Testnet configuration
          */
@@ -31,7 +47,7 @@ const config: HardhatUserConfig = {
                     'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
                 path: VET_DERIVATION_PATH,
                 count: 1,
-                initialIndex: 1
+                initialIndex: 0
             },
             debugMode: true,
             delegator: {},
