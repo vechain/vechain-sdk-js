@@ -1,12 +1,10 @@
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 import {
     type EthereumProvider,
-    type HttpNetworkConfig,
     type JsonRpcRequest,
     type JsonRpcResponse
 } from 'hardhat/types';
 import { VechainProvider } from '../vechain-provider';
-import { createWalletFromHardhatNetworkConfig } from '../../utils';
 import { type Wallet } from '@vechain/vechain-sdk-wallet';
 import type { EIP1193RequestArguments } from '../../eip1193';
 import {
@@ -25,11 +23,6 @@ class HardhatVechainProvider
     implements EthereumProvider
 {
     /**
-     * The network configuration.
-     */
-    networkConfig: HttpNetworkConfig;
-
-    /**
      * Debug mode.
      */
     debug: boolean;
@@ -40,17 +33,9 @@ class HardhatVechainProvider
      * @param networkConfig - The network configuration given into hardhat.
      * @param debug - Debug mode.
      */
-    constructor(networkConfig: HttpNetworkConfig, debug: boolean = false) {
+    constructor(walletToUse: Wallet, nodeUrl: string, debug: boolean = false) {
         // Initialize the provider with the network configuration.
-        super(
-            new ThorClient(
-                new HttpClient(networkConfig.url ?? 'http://localhost:8669')
-            ),
-            createWalletFromHardhatNetworkConfig(networkConfig)
-        );
-
-        // Save the network configuration.
-        this.networkConfig = networkConfig;
+        super(new ThorClient(new HttpClient(nodeUrl)), walletToUse);
 
         // Save the debug mode.
         this.debug = debug;
@@ -74,10 +59,15 @@ class HardhatVechainProvider
         } catch (e) {
             // Debug the error
             if (this.debug) {
+                const delegator = await (this.wallet as Wallet).getDelegator();
+                const accounts = await (this.wallet as Wallet).getAddresses();
+
                 console.log(
                     `\n****************** ERROR ON REQUEST ******************\n` +
                         `\n- request:\n\t\t${JSON.stringify(method)}` +
                         `\n- params:\n\t\t${JSON.stringify(params)}` +
+                        `\n- accounts:\n\t\t${JSON.stringify(accounts)}` +
+                        `\n- delegator:\n\t\t${JSON.stringify(delegator)}` +
                         `\n- url:\n\t\t${this.thorClient.httpClient.baseURL}` +
                         `\n- error:\n\t\t${JSON.stringify(e)}` +
                         `\n\n`
@@ -145,12 +135,14 @@ class HardhatVechainProvider
         // Debug mode - get the request and the accounts
         if (this.debug) {
             const accounts = await (this.wallet as Wallet).getAddresses();
+            const delegator = await (this.wallet as Wallet).getDelegator();
 
             console.log(
                 `\n****************** SENDING REQUEST ******************\n` +
                     `\n- method:\n\t\t${JSON.stringify(args.method)}` +
                     `\n- params:\n\t\t${JSON.stringify(args.params)}` +
                     `\n- accounts:\n\t\t${JSON.stringify(accounts)}` +
+                    `\n- delegator:\n\t\t${JSON.stringify(delegator)}` +
                     `\n- url:\n\t\t${this.thorClient.httpClient.baseURL}`
             );
         }
