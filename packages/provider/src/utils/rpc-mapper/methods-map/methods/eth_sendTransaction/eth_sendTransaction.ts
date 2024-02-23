@@ -1,6 +1,7 @@
 import {
     type SignTransactionOptions,
-    type ThorClient
+    type ThorClient,
+    DelegationHandler
 } from '@vechain/vechain-sdk-network';
 import {
     assert,
@@ -121,7 +122,8 @@ const ethSendTransaction = async (
                 transactionClauses,
                 gasResult.totalGas,
                 {
-                    isDelegated: delegatorIntoWallet !== null
+                    isDelegated:
+                        DelegationHandler(delegatorIntoWallet).isDelegated()
                 }
             );
 
@@ -147,10 +149,7 @@ const ethSendTransaction = async (
         const signedTransaction = await thorClient.transactions.signTransaction(
             { nonce: newNonce, ...transactionBodyWithoutNonce },
             signerIntoWallet.privateKey.toString('hex'),
-            {
-                delegatorPrivatekey: delegatorIntoWallet?.delegatorPrivatekey,
-                delegatorUrl: delegatorIntoWallet?.delegatorUrl
-            }
+            DelegationHandler(delegatorIntoWallet).delegatorOrUndefined()
         );
 
         // Return the result
