@@ -58,15 +58,15 @@ const _formatTransactionToRPC = (
         value: Hex.of0x(tx.clauses[0].value),
 
         // Unsupported fields
-        gasPrice: '0x',
-        type: '0x',
-        v: '0x',
-        r: '0x',
-        s: '0x',
+        gasPrice: '0x0',
+        type: '0x0',
+        v: '0x0',
+        r: '0x0',
+        s: '0x0',
         accessList: [],
-        maxFeePerGas: '0x',
-        maxPriorityFeePerGas: '0x',
-        yParity: '0x'
+        maxFeePerGas: '0x0',
+        maxPriorityFeePerGas: '0x0',
+        yParity: '0x0'
     };
 };
 
@@ -207,9 +207,7 @@ function formatTransactionReceiptToRPCStandard(
 const formatSendRawTransactionToRPCStandard = (
     transaction: SendTransactionResult
 ): SendRawTransactionResultRPC => {
-    return {
-        result: transaction.id
-    } satisfies SendRawTransactionResultRPC;
+    return transaction.id;
 };
 
 export {

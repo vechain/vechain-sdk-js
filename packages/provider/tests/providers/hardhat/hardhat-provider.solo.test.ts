@@ -10,6 +10,7 @@ import {
     waitForMessage
 } from '../helpers';
 import type { HttpNetworkConfig } from 'hardhat/types';
+import { coder, type FunctionFragment } from '@vechain/vechain-sdk-core';
 
 /**
  * Vechain provider tests - Solo Network
@@ -38,7 +39,7 @@ describe('Hardhat provider tests', () => {
      * Destroy thor client and provider after each test
      */
     afterEach(() => {
-        provider.getInternalVechainProvider().destroy();
+        provider.destroy();
     });
 
     /**
@@ -84,9 +85,9 @@ describe('Hardhat provider tests', () => {
         });
 
         const messageReceived = new Promise((resolve) => {
-            provider.getInternalVechainProvider().on('message', (message) => {
+            provider.on('message', (message) => {
                 resolve(message);
-                provider.getInternalVechainProvider().destroy();
+                provider.destroy();
             });
         });
 
@@ -104,23 +105,18 @@ describe('Hardhat provider tests', () => {
      * eth_subscribe latest blocks and then unsubscribe RPC call test
      */
     test('Should be able to get to subscribe to the latest blocks and then unsubscribe', async () => {
-        expect(
-            provider.getInternalVechainProvider().getPollInstance()
-        ).toBeUndefined();
+        expect(provider.getPollInstance()).toBeUndefined();
         // Call RPC function
         const subscriptionId = await provider.request({
             method: 'eth_subscribe',
             params: ['newHeads']
         });
 
-        expect(
-            provider.getInternalVechainProvider().getPollInstance()
-        ).toBeDefined();
+        expect(provider.getPollInstance()).toBeDefined();
 
         expect(subscriptionId).toBeDefined();
         expect(
-            provider.getInternalVechainProvider().subscriptionManager
-                .newHeadsSubscription?.subscriptionId
+            provider.subscriptionManager.newHeadsSubscription?.subscriptionId
         ).toBe(subscriptionId);
 
         await provider.request({
@@ -128,13 +124,10 @@ describe('Hardhat provider tests', () => {
             params: [subscriptionId]
         });
 
-        expect(
-            provider.getInternalVechainProvider().getPollInstance()
-        ).toBeUndefined();
+        expect(provider.getPollInstance()).toBeUndefined();
 
         expect(
-            provider.getInternalVechainProvider().subscriptionManager
-                .newHeadsSubscription?.subscriptionId
+            provider.subscriptionManager.newHeadsSubscription?.subscriptionId
         ).toBeUndefined();
     });
 
@@ -186,23 +179,22 @@ describe('Hardhat provider tests', () => {
             params: ['logs', logsParams]
         });
         // Wait for the subscription to receive a message (log event)
-        const messageReceived = waitForMessage(
-            provider.getInternalVechainProvider()
-        );
+        const messageReceived = waitForMessage(provider);
 
         // Execute a contract transaction to generate a log event
         await thorClient.contracts.executeContractTransaction(
             TEST_ACCOUNT.privateKey,
             contract.address,
-            contract.abi,
-            'transfer',
+            coder
+                .createInterface(contract.abi)
+                .getFunction('transfer') as FunctionFragment,
             [TEST_ACCOUNT.address, 100]
         );
 
         const message = await messageReceived;
 
         // Clean up the subscription
-        provider.getInternalVechainProvider().destroy();
+        provider.destroy();
 
         // Assertions to validate the received message
         expect(message).toBeDefined();
@@ -223,7 +215,7 @@ describe('Hardhat provider tests', () => {
 
         // Validate the RPC call was successful
         expect(rpcCall).not.toBe('0x0');
-    }, 30000); // Extended timeout for asynchronous operations
+    }, 30000);
 
     /**
      * Tests the ability to subscribe to and receive log events for both ERC20 and ERC721 token contracts.
@@ -280,7 +272,7 @@ describe('Hardhat provider tests', () => {
             provider.on('message', (message: SubscriptionEvent) => {
                 results.push(message);
                 if (results.length >= 2) {
-                    provider.getInternalVechainProvider().destroy();
+                    provider.destroy();
                     resolve(results);
                 }
             });
@@ -290,16 +282,18 @@ describe('Hardhat provider tests', () => {
         await thorClient.contracts.executeContractTransaction(
             TEST_ACCOUNT.privateKey,
             erc20Contract.address,
-            erc20Contract.abi,
-            'transfer',
+            coder
+                .createInterface(erc20Contract.abi)
+                .getFunction('transfer') as FunctionFragment,
             [TEST_ACCOUNT.address, 100]
         );
 
         await thorClient.contracts.executeContractTransaction(
             TEST_ACCOUNT.privateKey,
             erc721Contract.address,
-            erc721Contract.abi,
-            'mintItem',
+            coder
+                .createInterface(erc721Contract.abi)
+                .getFunction('mintItem') as FunctionFragment,
             [TEST_ACCOUNT.address]
         );
 
@@ -327,7 +321,7 @@ describe('Hardhat provider tests', () => {
         // @ts-expect-error - Asserting that log data is present
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(results[1].params.result.length).toBeGreaterThan(0);
-    }, 30000); // Extended timeout for asynchronous operations
+    }, 30000);
 
     /**
      * Invalid RPC method tests

@@ -11,14 +11,22 @@ import {
     deployedContractBytecode,
     testingContractTestCases
 } from './fixture';
-import { addressUtils, type DeployParams } from '@vechain/vechain-sdk-core';
+import {
+    addressUtils,
+    coder,
+    type DeployParams,
+    type FunctionFragment
+} from '@vechain/vechain-sdk-core';
 import {
     Contract,
     ThorClient,
     type TransactionReceipt,
     type ContractFactory
 } from '../../../src';
-import { ContractDeploymentFailedError } from '@vechain/vechain-sdk-errors';
+import {
+    ContractDeploymentFailedError,
+    InvalidAbiFunctionError
+} from '@vechain/vechain-sdk-errors';
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.
@@ -190,6 +198,25 @@ describe('ThorClient - Contracts', () => {
     }, 10000);
 
     /**
+     * Test case for calling an undefined contract function.
+     */
+    test('call an undefined contract function', async () => {
+        // Create a contract factory that is already deploying the example contract
+        const factory = await createExampleContractFactory();
+
+        // Wait for the deployment to complete and obtain the contract instance
+        const contract: Contract = await factory.waitForDeployment();
+
+        await expect(
+            async () => await contract.read.undefinedFunction()
+        ).rejects.toThrowError(InvalidAbiFunctionError);
+
+        await expect(
+            async () => await contract.transact.undefinedFunction()
+        ).rejects.toThrowError(InvalidAbiFunctionError);
+    }, 10000);
+
+    /**
      * Test case for calling a contract function with options.
      */
     test('call a contract function with options', async () => {
@@ -265,8 +292,9 @@ describe('ThorClient - Contracts', () => {
                 const response =
                     await thorSoloClient.contracts.executeContractCall(
                         TESTING_CONTRACT_ADDRESS,
-                        TESTING_CONTRACT_ABI,
-                        functionName,
+                        coder
+                            .createInterface(TESTING_CONTRACT_ABI)
+                            .getFunction(functionName) as FunctionFragment,
                         params
                     );
 

@@ -112,7 +112,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                     // Wait for the transaction to be mined
                     const receipt =
                         await thorClient.transactions.waitForTransaction(
-                            transaction.result
+                            transaction
                         );
                     expect(receipt).toBeDefined();
 
@@ -179,9 +179,8 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
             })) as SendRawTransactionResultRPC;
 
             // Wait for the transaction to be mined
-            const receipt = await thorClient.transactions.waitForTransaction(
-                transaction.result
-            );
+            const receipt =
+                await thorClient.transactions.waitForTransaction(transaction);
             expect(receipt).toBeDefined();
 
             // Get the balance of the sender and the receiver after sending the transaction
@@ -223,9 +222,8 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
             })) as SendRawTransactionResultRPC;
 
             // Wait for the transaction to be mined
-            const receipt = await thorClient.transactions.waitForTransaction(
-                transaction.result
-            );
+            const receipt =
+                await thorClient.transactions.waitForTransaction(transaction);
             expect(receipt).toBeDefined();
         });
     });

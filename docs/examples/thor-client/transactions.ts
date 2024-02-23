@@ -1,5 +1,4 @@
 import {
-    Transaction,
     TransactionHandler,
     dataUtils,
     unitsUtils,
@@ -42,7 +41,7 @@ const gasResult = await thorSoloClient.gas.estimateGas(
 
 // 4 - Create transaction
 
-const transaction = new Transaction({
+const transactionBody = {
     chainTag: 0xf6,
     blockRef: latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
     expiration: 32,
@@ -51,12 +50,12 @@ const transaction = new Transaction({
     gas: gasResult.totalGas,
     dependsOn: null,
     nonce: 12345678
-});
+};
 
 // 5 - Normal signature (NO delegation)
 
 const rawNormalSigned = TransactionHandler.sign(
-    transaction,
+    transactionBody,
     Buffer.from(senderAccount.privateKey, 'hex')
 ).encoded;
 

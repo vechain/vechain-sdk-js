@@ -20,7 +20,9 @@ import {
     Transaction,
     TransactionHandler,
     addressUtils,
-    clauseBuilder
+    type FunctionFragment,
+    clauseBuilder,
+    coder
 } from '@vechain/vechain-sdk-core';
 import { TransactionNotSignedError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '../../../src';
@@ -81,11 +83,11 @@ describe('ThorClient - Transactions Module', () => {
 
                 // Create the signed transfer transaction
                 const tx = TransactionHandler.sign(
-                    new Transaction({
+                    {
                         ...transferTransactionBody,
                         gas: gasResult.totalGas,
                         nonce: options.nonce
-                    }),
+                    },
                     Buffer.from(
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
                         'hex'
@@ -129,12 +131,12 @@ describe('ThorClient - Transactions Module', () => {
 
             // Create the signed transfer transaction
             const tx = TransactionHandler.sign(
-                new Transaction({
+                {
                     ...transferTransactionBodyValueAsNumber,
                     gas: gasResult.totalGas,
                     nonce: transactionNonces
                         .sendTransactionWithANumberAsValueInTransactionBody[0]
-                }),
+                },
                 Buffer.from(
                     TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
                     'hex'
@@ -174,11 +176,11 @@ describe('ThorClient - Transactions Module', () => {
 
                         // Create the signed transfer transaction
                         const tx = TransactionHandler.sign(
-                            new Transaction({
+                            {
                                 ...transferTransactionBody,
                                 gas: gasResult.totalGas,
                                 nonce: options.nonce
-                            }),
+                            },
                             Buffer.from(
                                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
                                     .privateKey,
@@ -260,8 +262,9 @@ describe('ThorClient - Transactions Module', () => {
                 test(description, async () => {
                     const sampleClause = clauseBuilder.functionInteraction(
                         TESTING_CONTRACT_ADDRESS,
-                        TESTING_CONTRACT_ABI,
-                        'deposit',
+                        coder
+                            .createInterface(TESTING_CONTRACT_ABI)
+                            .getFunction('deposit') as FunctionFragment,
                         [123]
                     );
 
@@ -308,8 +311,11 @@ describe('ThorClient - Transactions Module', () => {
                     async () => {
                         const sampleClause = clauseBuilder.functionInteraction(
                             TESTING_CONTRACT_ADDRESS,
-                            TESTING_CONTRACT_ABI,
-                            'setStateVariable',
+                            coder
+                                .createInterface(TESTING_CONTRACT_ABI)
+                                .getFunction(
+                                    'setStateVariable'
+                                ) as FunctionFragment,
                             [123]
                         );
 

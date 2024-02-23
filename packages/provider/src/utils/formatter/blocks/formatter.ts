@@ -4,6 +4,7 @@ import {
 } from '@vechain/vechain-sdk-network';
 import { type BlocksRPC } from './types';
 import {
+    dataUtils,
     vechain_sdk_core_ethers,
     ZERO_BUFFER
 } from '@vechain/vechain-sdk-core';
@@ -51,8 +52,8 @@ const formatToRPCStandard = (
         miner: block.beneficiary,
 
         // Unsupported fields
-        difficulty: '0x',
-        totalDifficulty: '0x',
+        difficulty: '0x0',
+        totalDifficulty: '0x0',
         uncles: [],
         sha3Uncles: Hex.of0x(ZERO_BUFFER(32)),
         nonce: Hex.of0x(ZERO_BUFFER(8)),

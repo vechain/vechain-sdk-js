@@ -9,7 +9,9 @@ import {
     transferTokenClausesTestCases,
     transferVETtestCases
 } from './fixture';
-import { type DeployParams, clauseBuilder } from '../../src/clause';
+import { type DeployParams, clauseBuilder } from '../../src';
+import { coder } from '../../src';
+import { type FunctionFragment } from 'ethers';
 /**
  * Unit tests for building transaction clauses.
  * @group unit/clause
@@ -45,8 +47,9 @@ describe('Contract', () => {
     test('Build a clause to call a contract function', () => {
         const clause = clauseBuilder.functionInteraction(
             '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-            exampleContractAbi,
-            'set',
+            coder
+                .createInterface(exampleContractAbi)
+                .getFunction('set') as FunctionFragment,
             [1]
         );
 

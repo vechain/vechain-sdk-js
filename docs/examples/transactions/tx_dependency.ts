@@ -1,6 +1,5 @@
 import {
     networkInfo,
-    Transaction,
     secp256k1,
     TransactionUtils,
     TransactionHandler,
@@ -63,8 +62,7 @@ const senderPrivateKey = secp256k1.generatePrivateKey();
 
 // 4 - Get Tx A id
 
-const txAUnsigned = new Transaction(txABody);
-const txASigned = TransactionHandler.sign(txAUnsigned, senderPrivateKey);
+const txASigned = TransactionHandler.sign(txABody, senderPrivateKey);
 
 // 5 - Set it inside tx B
 
@@ -72,8 +70,7 @@ txBBody.dependsOn = txASigned.id;
 
 // 6 - Sign Tx B
 
-const txBUnsigned = new Transaction(txBBody);
-const txBSigned = TransactionHandler.sign(txBUnsigned, senderPrivateKey);
+const txBSigned = TransactionHandler.sign(txBBody, senderPrivateKey);
 
 // 7 - encode Tx B
 

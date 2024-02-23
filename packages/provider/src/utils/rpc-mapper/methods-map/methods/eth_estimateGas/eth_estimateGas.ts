@@ -16,7 +16,9 @@ import { type TransactionObjectInput } from './types';
  * @link [eth_estimateGas](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_estimategas)
  *
  * @param thorClient - ThorClient instance.
- * @param params - The transaction call object.
+ * @param params - The standard array of rpc call parameters.
+ *                * params[0]: The transaction call object.
+ *                 * params[1]: A string representing a block number, or one of the string tags latest, earliest, or pending.
  *
  * @note At the moment only the `to`, `value` and `data` fields are supported.
  *
@@ -53,7 +55,7 @@ const ethEstimateGas = async (
         const estimatedGas = await thorClient.gas.estimateGas(
             [
                 {
-                    to: inputOptions.to,
+                    to: inputOptions.to ?? null,
                     value: inputOptions.value ?? '0x0',
                     data: inputOptions.data ?? '0x0'
                 } satisfies SimulateTransactionClause

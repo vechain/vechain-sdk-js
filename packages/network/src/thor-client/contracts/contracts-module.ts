@@ -5,9 +5,15 @@ import {
     PARAMS_ADDRESS,
     dataUtils,
     addressUtils,
+    type FunctionFragment,
+    abi,
     clauseBuilder
 } from '@vechain/vechain-sdk-core';
-import type { ContractCallOptions, ContractTransactionOptions } from './types';
+import type {
+    ContractCallOptions,
+    ContractCallResult,
+    ContractTransactionOptions
+} from './types';
 import { type SendTransactionResult } from '../transactions';
 import { type ThorClient } from '../thor-client';
 import { ContractFactory } from './model';
@@ -40,31 +46,29 @@ class ContractsModule {
     }
 
     /**
-     * Executes a read-only call to a smart contract function.
+     * Executes a read-only call to a smart contract function, simulating the transaction to obtain the result.
      *
-     * @param contractAddress - The address of the smart contract.
-     * @param contractABI - The ABI (Application Binary Interface) of the smart contract.
-     * @param functionName - The name of the function to be called.
-     * @param functionData - The input data for the function.
-     * @param contractCallOptions - (Optional) Options for the contract call.
-     * @returns A promise resolving to a hex string representing the result of the contract call.
+     * @param contractAddress - The address of the smart contract to interact with.
+     * @param functionFragment - The function fragment, including the name and types of the function to be called, derived from the contract's ABI.
+     * @param functionData - An array of arguments to be passed to the smart contract function, corresponding to the function's parameters.
+     * @param contractCallOptions - (Optional) Additional options for the contract call, such as the sender's address, gas limit, and gas price, which can affect the simulation's context.
+     * @returns A promise that resolves to the decoded output of the smart contract function call, the format of which depends on the function's return types.
+     *
+     * The function simulates a transaction using the provided parameters without submitting it to the blockchain, allowing read-only operations to be tested without incurring gas costs or modifying the blockchain state.
      */
     public async executeContractCall(
         contractAddress: string,
-        contractABI: InterfaceAbi,
-        functionName: string,
+        functionFragment: FunctionFragment,
         functionData: unknown[],
         contractCallOptions?: ContractCallOptions
-    ): Promise<unknown> {
+    ): Promise<ContractCallResult> {
         // Simulate the transaction to get the result of the contract call
         const response = await this.thor.transactions.simulateTransaction(
             [
                 {
                     to: contractAddress,
                     value: '0',
-                    data: coder.encodeFunctionInput(
-                        contractABI,
-                        functionName,
+                    data: new abi.Function(functionFragment).encodeInput(
                         functionData
                     )
                 }
@@ -72,9 +76,7 @@ class ContractsModule {
             contractCallOptions
         );
 
-        return coder.decodeFunctionOutput(
-            contractABI,
-            functionName,
+        return new abi.Function(functionFragment).decodeOutput(
             response[0].data
         );
     }
@@ -84,8 +86,7 @@ class ContractsModule {
      *
      * @param privateKey - The private key for signing the transaction.
      * @param contractAddress - The address of the smart contract.
-     * @param contractABI - The ABI (Application Binary Interface) of the smart contract.
-     * @param functionName - The name of the function to be called.
+     * @param functionFragment - The function fragment, including the name and types of the function to be called, derived from the contract's ABI.
      * @param functionData - The input data for the function.
      * @param options - (Optional) An object containing options for the transaction body. Includes all options of the `buildTransactionBody` method
      *                  besides `isDelegated`.
@@ -96,16 +97,14 @@ class ContractsModule {
     public async executeContractTransaction(
         privateKey: string,
         contractAddress: string,
-        contractABI: InterfaceAbi,
-        functionName: string,
+        functionFragment: FunctionFragment,
         functionData: unknown[],
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
         // Build a clause to interact with the contract function
         const clause = clauseBuilder.functionInteraction(
             contractAddress,
-            contractABI,
-            functionName,
+            functionFragment,
             functionData
         );
 
@@ -148,8 +147,9 @@ class ContractsModule {
     public async getBaseGasPrice(): Promise<unknown> {
         return await this.executeContractCall(
             PARAMS_ADDRESS,
-            PARAMS_ABI,
-            'get',
+            coder
+                .createInterface(PARAMS_ABI)
+                .getFunction('get') as FunctionFragment,
             [dataUtils.encodeBytes32String('base-gas-price')]
         );
     }

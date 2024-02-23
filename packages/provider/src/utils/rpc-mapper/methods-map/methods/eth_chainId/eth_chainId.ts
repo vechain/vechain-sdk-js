@@ -20,7 +20,7 @@ const ethChainId = async (thorClient: ThorClient): Promise<string> => {
             );
         }
 
-        return genesisBlock.id;
+        return `0x${genesisBlock.id.substring(genesisBlock.id.length - 2)}`;
     } catch (e) {
         throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,

@@ -4,13 +4,6 @@ import { testNetwork } from '../../../fixture';
 import { positiveCasesFixtures, negativeCasesFixtures } from './fixture';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 
-// import {
-//     type TransactionClause,
-//     contract,
-//     unitsUtils
-// } from '@vechain/vechain-sdk-core';
-// import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
-
 /**
  * RPC Mapper integration tests for 'eth_estimateGas' method
  *
