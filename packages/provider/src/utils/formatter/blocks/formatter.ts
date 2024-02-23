@@ -52,8 +52,8 @@ const formatToRPCStandard = (
         miner: block.beneficiary,
 
         // Unsupported fields
-        difficulty: '0x',
-        totalDifficulty: '0x',
+        difficulty: '0x0',
+        totalDifficulty: '0x0',
         uncles: [],
         sha3Uncles: dataUtils.toHexString(ZERO_BUFFER(32), {
             withPrefix: true
@@ -64,8 +64,8 @@ const formatToRPCStandard = (
         logsBloom: dataUtils.toHexString(ZERO_BUFFER(256), {
             withPrefix: true
         }),
-        extraData: '0x',
-        baseFeePerGas: '0x',
+        extraData: '0x0',
+        baseFeePerGas: '0x0',
         mixHash: dataUtils.toHexString(ZERO_BUFFER(32), {
             withPrefix: true
         })

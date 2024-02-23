@@ -83,11 +83,11 @@ describe('ThorClient - Transactions Module', () => {
 
                 // Create the signed transfer transaction
                 const tx = TransactionHandler.sign(
-                    new Transaction({
+                    {
                         ...transferTransactionBody,
                         gas: gasResult.totalGas,
                         nonce: options.nonce
-                    }),
+                    },
                     Buffer.from(
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
                         'hex'
@@ -131,12 +131,12 @@ describe('ThorClient - Transactions Module', () => {
 
             // Create the signed transfer transaction
             const tx = TransactionHandler.sign(
-                new Transaction({
+                {
                     ...transferTransactionBodyValueAsNumber,
                     gas: gasResult.totalGas,
                     nonce: transactionNonces
                         .sendTransactionWithANumberAsValueInTransactionBody[0]
-                }),
+                },
                 Buffer.from(
                     TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
                     'hex'
@@ -176,11 +176,11 @@ describe('ThorClient - Transactions Module', () => {
 
                         // Create the signed transfer transaction
                         const tx = TransactionHandler.sign(
-                            new Transaction({
+                            {
                                 ...transferTransactionBody,
                                 gas: gasResult.totalGas,
                                 nonce: options.nonce
-                            }),
+                            },
                             Buffer.from(
                                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
                                     .privateKey,

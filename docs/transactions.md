@@ -18,7 +18,6 @@ In this example a simple transaction with a single clause is created, signed, en
 ```typescript { name=sign_decode, category=example }
 import { clauseBuilder, networkInfo } from '@vechain/vechain-sdk-core';
 import {
-    Transaction,
     secp256k1,
     TransactionUtils,
     TransactionHandler,
@@ -59,8 +58,7 @@ const privateKey = secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 
-const unsignedTx = new Transaction(body);
-const signedTransaction = TransactionHandler.sign(unsignedTx, privateKey);
+const signedTransaction = TransactionHandler.sign(body, privateKey);
 
 // 5 - Encode transaction
 
@@ -85,7 +83,6 @@ import {
     networkInfo
 } from '@vechain/vechain-sdk-core';
 import {
-    Transaction,
     secp256k1,
     TransactionUtils,
     TransactionHandler,
@@ -131,8 +128,7 @@ const privateKey = secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 
-const unsignedTx = new Transaction(body);
-const signedTransaction = TransactionHandler.sign(unsignedTx, privateKey);
+const signedTransaction = TransactionHandler.sign(body, privateKey);
 
 // 5 - Encode transaction
 
@@ -151,7 +147,6 @@ Fee delegation is a feature on the VechainThor blockchain which enables the tran
 ```typescript { name=fee_delegation, category=example }
 import { clauseBuilder, networkInfo } from '@vechain/vechain-sdk-core';
 import {
-    Transaction,
     TransactionHandler,
     HDNode,
     type TransactionClause,
@@ -218,9 +213,8 @@ const delegatorAddress = nodeDelegate.address;
 
 // 6 - Sign transaction as sender and delegate
 
-const unsignedTx = new Transaction(body);
 const signedTransaction = TransactionHandler.signWithDelegator(
-    unsignedTx,
+    body,
     Buffer.from(senderAccount.privateKey, 'hex'),
     delegatorPrivateKey
 );
@@ -242,7 +236,6 @@ Using the _BlockRef_ and _Expiration_ fields a transaction can be set to be proc
 
 ```typescript { name=blockref_expiration, category=example }
 import {
-    Transaction,
     secp256k1,
     TransactionUtils,
     TransactionHandler,
@@ -282,8 +275,7 @@ const privateKey = secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 
-const unsignedTx = new Transaction(body);
-const signedTransaction = TransactionHandler.sign(unsignedTx, privateKey);
+const signedTransaction = TransactionHandler.sign(body, privateKey);
 
 // 5 - Encode transaction
 
@@ -303,7 +295,6 @@ A transaction can be set to only be processed after another transaction, therefo
 ```typescript { name=tx_dependency, category=example }
 import {
     networkInfo,
-    Transaction,
     secp256k1,
     TransactionUtils,
     TransactionHandler,
@@ -366,8 +357,7 @@ const senderPrivateKey = secp256k1.generatePrivateKey();
 
 // 4 - Get Tx A id
 
-const txAUnsigned = new Transaction(txABody);
-const txASigned = TransactionHandler.sign(txAUnsigned, senderPrivateKey);
+const txASigned = TransactionHandler.sign(txABody, senderPrivateKey);
 
 // 5 - Set it inside tx B
 
@@ -375,8 +365,7 @@ txBBody.dependsOn = txASigned.id;
 
 // 6 - Sign Tx B
 
-const txBUnsigned = new Transaction(txBBody);
-const txBSigned = TransactionHandler.sign(txBUnsigned, senderPrivateKey);
+const txBSigned = TransactionHandler.sign(txBBody, senderPrivateKey);
 
 // 7 - encode Tx B
 

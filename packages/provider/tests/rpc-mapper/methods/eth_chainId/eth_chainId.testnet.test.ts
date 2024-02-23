@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
-import { networkInfo } from '@vechain/vechain-sdk-core';
 
 /**
  * RPC Mapper integration tests for 'eth_chainId' method
@@ -35,7 +34,7 @@ describe('RPC Mapper - eth_chainId method tests', () => {
                 RPC_METHODS.eth_chainId
             ]([])) as string;
 
-            expect(rpcCallChainId).toBe(networkInfo.testnet.genesisBlock.id);
+            expect(rpcCallChainId).toBe('0x27');
         });
     });
 });

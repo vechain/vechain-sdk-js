@@ -211,7 +211,7 @@ describe('Vechain provider tests - solo', () => {
 
         // Validate the RPC call was successful
         expect(rpcCall).not.toBe('0x0');
-    }, 30000); // Extended timeout for asynchronous operations
+    }, 30000);
 
     /**
      * Tests the ability to subscribe to and receive log events for both ERC20 and ERC721 token contracts.
@@ -317,7 +317,7 @@ describe('Vechain provider tests - solo', () => {
         // @ts-expect-error - Asserting that log data is present
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(results[1].params.result.length).toBeGreaterThan(0);
-    }, 30000); // Extended timeout for asynchronous operations
+    }, 30000);
 
     /**
      * Invalid RPC method tests

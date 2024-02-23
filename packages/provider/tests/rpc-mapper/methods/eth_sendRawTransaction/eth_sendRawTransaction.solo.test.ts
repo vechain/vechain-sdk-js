@@ -2,7 +2,6 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { soloNetwork, TEST_ACCOUNTS_THOR_SOLO } from '../../../fixture';
 import {
-    Transaction,
     type TransactionClause,
     TransactionHandler
 } from '@vechain/vechain-sdk-core';
@@ -68,7 +67,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
             );
 
             // Create transactions
-            const transaction = new Transaction({
+            const transactionBody = {
                 chainTag: 0xf6,
                 blockRef:
                     latestBlock !== null ? latestBlock.id.slice(0, 18) : '0x0',
@@ -78,12 +77,12 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
                 gas: gasResult.totalGas,
                 dependsOn: null,
                 nonce: 23456789
-            });
+            };
 
             // 2- Sign transaction
 
             const signedTransaction = TransactionHandler.sign(
-                transaction,
+                transactionBody,
                 Buffer.from(actors.sender.privateKey, 'hex')
             );
 
@@ -95,7 +94,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
                 RPC_METHODS.eth_sendRawTransaction
             ]([raw])) as SendRawTransactionResultRPC;
 
-            expect(result.result).toBe(signedTransaction.id);
+            expect(result).toBe(signedTransaction.id);
         });
     });
 

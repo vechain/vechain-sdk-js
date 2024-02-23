@@ -197,9 +197,7 @@ interface TransactionReceiptRPC {
 /**
  * The return type of send raw transaction according to the Ethereum RPC standard.
  */
-interface SendRawTransactionResultRPC {
-    result: string;
-}
+type SendRawTransactionResultRPC = string;
 
 export {
     type TransactionRPC,

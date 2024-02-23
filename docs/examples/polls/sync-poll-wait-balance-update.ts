@@ -1,9 +1,5 @@
 import { HttpClient, Poll, ThorClient } from '@vechain/vechain-sdk-network';
-import {
-    dataUtils,
-    Transaction,
-    TransactionHandler
-} from '@vechain/vechain-sdk-core';
+import { dataUtils, TransactionHandler } from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Create thor client for solo network
@@ -47,7 +43,7 @@ const clauses = [
 const gasResult = await thorSoloClient.gas.estimateGas(clauses, sender.address);
 
 // 2.4 - Create transactions
-const transaction = new Transaction({
+const transactionBody = {
     // Solo network chain tag
     chainTag: 0xf6,
     // Solo network block ref
@@ -58,10 +54,13 @@ const transaction = new Transaction({
     gas: gasResult.totalGas,
     dependsOn: null,
     nonce: 12345678
-});
+};
 
 // 2.5 - Sign and get raw transaction
-const encoded = TransactionHandler.sign(transaction, sender.privateKey).encoded;
+const encoded = TransactionHandler.sign(
+    transactionBody,
+    sender.privateKey
+).encoded;
 const raw = `0x${encoded.toString('hex')}`;
 
 // 3 - Get the sender and receiver balance before the transaction
