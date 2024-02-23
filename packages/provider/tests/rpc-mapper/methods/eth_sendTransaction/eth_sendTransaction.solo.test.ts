@@ -6,11 +6,7 @@ import {
     THOR_SOLO_ACCOUNTS_BASE_WALLET,
     THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR
 } from '../../../fixture';
-import {
-    RPC_METHODS,
-    type SendRawTransactionResultRPC,
-    VechainProvider
-} from '../../../../src';
+import { RPC_METHODS, VechainProvider } from '../../../../src';
 import {
     delegatorPrivateKeyFixture,
     THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE
@@ -107,7 +103,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                                 value: '0x111'
                             }
                         ]
-                    })) as SendRawTransactionResultRPC;
+                    })) as string;
 
                     // Wait for the transaction to be mined
                     const receipt =
@@ -176,7 +172,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                             .receiver.address
                     }
                 ]
-            })) as SendRawTransactionResultRPC;
+            })) as string;
 
             // Wait for the transaction to be mined
             const receipt =
@@ -219,7 +215,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                             .sender.address
                     }
                 ]
-            })) as SendRawTransactionResultRPC;
+            })) as string;
 
             // Wait for the transaction to be mined
             const receipt =

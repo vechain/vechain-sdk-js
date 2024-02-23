@@ -8,7 +8,6 @@ import {
     DATA,
     JSONRPC
 } from '@vechain/vechain-sdk-errors';
-import type { SendRawTransactionResultRPC } from '../../../../formatter';
 import { type VechainProvider } from '../../../../../providers';
 import { ethSendRawTransaction } from '../eth_sendRawTransaction/eth_sendRawTransaction';
 import {
@@ -52,7 +51,7 @@ const ethSendTransaction = async (
     thorClient: ThorClient,
     params: unknown[],
     provider?: VechainProvider
-): Promise<SendRawTransactionResultRPC> => {
+): Promise<string> => {
     // Input validation
     assert(
         params.length === 1 && typeof params[0] === 'object',
