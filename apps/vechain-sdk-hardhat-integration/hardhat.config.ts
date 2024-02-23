@@ -3,6 +3,7 @@ import '@nomicfoundation/hardhat-toolbox';
 import '@vechain/vechain-sdk-hardhat-plugin';
 
 import { VET_DERIVATION_PATH } from '@vechain/vechain-sdk-core';
+import { type HttpNetworkConfig } from 'hardhat/types';
 
 task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
     console.log(await hre.network.provider.request({ method: 'eth_accounts' }));
@@ -26,7 +27,9 @@ const config: HardhatUserConfig = {
         vechain_mainnet: {
             // Mainnet
             url: 'https://mainnet.vechain.org',
-            accounts: [],
+            accounts: [
+                '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+            ],
             debugMode: true,
             delegator: {},
             gas: 'auto',
@@ -34,7 +37,7 @@ const config: HardhatUserConfig = {
             gasMultiplier: 1,
             timeout: 20000,
             httpHeaders: {}
-        },
+        } as HttpNetworkConfig,
 
         /**
          * Testnet configuration
@@ -46,7 +49,7 @@ const config: HardhatUserConfig = {
                 mnemonic:
                     'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
                 path: VET_DERIVATION_PATH,
-                count: 1,
+                count: 3,
                 initialIndex: 0
             },
             debugMode: true,
@@ -56,7 +59,7 @@ const config: HardhatUserConfig = {
             gasMultiplier: 1,
             timeout: 20000,
             httpHeaders: {}
-        },
+        } as HttpNetworkConfig,
 
         /**
          * Thor solo network configuration
@@ -74,7 +77,7 @@ const config: HardhatUserConfig = {
             gasMultiplier: 1,
             timeout: 20000,
             httpHeaders: {}
-        }
+        } satisfies HttpNetworkConfig
     }
 };
 
