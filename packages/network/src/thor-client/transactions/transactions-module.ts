@@ -33,8 +33,7 @@ import {
     assert
 } from '@vechain/vechain-sdk-errors';
 import { type ThorClient } from '../thor-client';
-import { assertTransactionCanBeSigned } from './helpers/assertions';
-import { DelegationHandler } from './helpers';
+import { assertTransactionCanBeSigned, DelegationHandler } from './helpers';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -345,7 +344,7 @@ class TransactionsModule {
     /**
      * Signs a transaction where the gas fee is paid by a delegator.
      *
-     * @param unsignedTx - The unsigned transaction to sign.
+     * @param unsignedTransactionBody - The unsigned transaction body to sign.
      * @param originPrivateKey - The private key of the origin account.
      * @param delegatorPrivateKey - (Optional) The private key of the delegator account.
      * @param delegatorUrl - (Optional) The URL of the endpoint of the delegator.
@@ -355,7 +354,7 @@ class TransactionsModule {
      * @throws an error if the delegation fails.
      */
     private async _signWithDelegator(
-        txBody: TransactionBody,
+        unsignedTransactionBody: TransactionBody,
         originPrivateKey: Buffer,
         delegatorPrivateKey?: string,
         delegatorUrl?: string
@@ -372,12 +371,12 @@ class TransactionsModule {
             secp256k1.derivePublicKey(originPrivateKey)
         );
 
-        const unsignedTx = new Transaction(txBody);
+        const unsignedTx = new Transaction(unsignedTransactionBody);
 
         // Sign transaction with origin private key and delegator private key
         if (delegatorPrivateKey !== undefined)
             return TransactionHandler.signWithDelegator(
-                txBody,
+                unsignedTransactionBody,
                 originPrivateKey,
                 Buffer.from(delegatorPrivateKey, 'hex')
             );
