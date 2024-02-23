@@ -43,7 +43,7 @@ const ethSyncing = async (
         // Get the highest block number
         const highestBlockNumber: string | null =
             genesisBlock !== null
-                ? Hex.of(
+                ? Hex.of0x(
                       Math.floor((Date.now() - genesisBlock.timestamp) / 10000)
                   )
                 : null;

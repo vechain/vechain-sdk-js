@@ -40,13 +40,13 @@ const _formatTransactionToRPC = (
     return {
         // Supported fields
         blockHash,
-        blockNumber: Hex.of(blockNumber),
+        blockNumber: Hex.of0x(blockNumber),
         from: tx.origin,
-        gas: Hex.of(tx.gas),
+        gas: Hex.of0x(tx.gas),
         chainId,
         hash: tx.id,
         nonce: tx.nonce as string,
-        transactionIndex: Hex.of(txIndex),
+        transactionIndex: Hex.of0x(txIndex),
 
         /**
          * `input`, `to`, `value` are being referred to the first clause.
@@ -55,7 +55,7 @@ const _formatTransactionToRPC = (
          */
         input: tx.clauses[0].data,
         to: tx.clauses[0].to,
-        value: Hex.of(tx.clauses[0].value),
+        value: Hex.of0x(tx.clauses[0].value),
 
         // Unsupported fields
         gasPrice: '0x',
@@ -154,14 +154,14 @@ function formatTransactionReceiptToRPCStandard(
         .fill(logIndexOffset)
         .map((_, i) => i + logIndexOffset);
 
-    const logIndexes: string[] = filledLogIndexes.map((i) => Hex.of(i));
+    const logIndexes: string[] = filledLogIndexes.map((i) => Hex.of0x(i));
 
     const logs: TransactionReceiptLogsRPC[] =
         receipt.outputs.length > 0 && receipt.outputs[0].events.length > 0
             ? receipt.outputs[0].events.map((event, index) => {
                   return {
                       blockHash: receipt.meta.blockID,
-                      blockNumber: Hex.of(receipt.meta.blockNumber),
+                      blockNumber: Hex.of0x(receipt.meta.blockNumber),
                       transactionHash: receipt.meta.txID as string,
                       address: event.address,
                       topics: event.topics.map((topic) => topic),
@@ -169,7 +169,7 @@ function formatTransactionReceiptToRPCStandard(
 
                       removed: false,
 
-                      transactionIndex: Hex.of(transactionIndex),
+                      transactionIndex: Hex.of0x(transactionIndex),
                       logIndex: logIndexes[index]
                   };
               })
@@ -177,18 +177,18 @@ function formatTransactionReceiptToRPCStandard(
 
     return {
         blockHash: receipt.meta.blockID,
-        blockNumber: Hex.of(receipt.meta.blockNumber),
+        blockNumber: Hex.of0x(receipt.meta.blockNumber),
         contractAddress:
             receipt.outputs.length > 0
                 ? receipt.outputs[0].contractAddress
                 : null,
         from: transaction.origin,
-        gasUsed: Hex.of(receipt.gasUsed),
+        gasUsed: Hex.of0x(receipt.gasUsed),
         logs,
         status: receipt.reverted ? '0x0' : '0x1',
         to: transaction.clauses[0].to,
         transactionHash: receipt.meta.txID as string,
-        transactionIndex: Hex.of(transactionIndex),
+        transactionIndex: Hex.of0x(transactionIndex),
 
         // Incompatible fields
         logsBloom: `0x${ZERO_BUFFER(256).toString('hex')}`,

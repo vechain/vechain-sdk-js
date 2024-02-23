@@ -48,7 +48,7 @@ describe('RPC Mapper - eth_blockNumber method tests', () => {
             expect(rpcCallUpdatedLatestBlockNumber).not.toBe('0x0');
             expect(rpcCallUpdatedLatestBlockNumber).toBe(
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                Hex.of(Number(rpcCallLatestBlockNumber) + 1)
+                Hex.of0x(Number(rpcCallLatestBlockNumber) + 1)
             );
         }, 15000);
     });

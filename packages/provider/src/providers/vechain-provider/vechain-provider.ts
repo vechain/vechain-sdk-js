@@ -200,7 +200,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         const promises = Array.from(
             this.subscriptionManager.logSubscriptions.entries()
         ).map(async ([subscriptionId, subscriptionDetails]) => {
-            const currentBlock = Hex.of(
+            const currentBlock = Hex.of0x(
                 this.subscriptionManager.currentBlockNumber
             );
             // Construct filter options for the Ethereum logs query based on the subscription details

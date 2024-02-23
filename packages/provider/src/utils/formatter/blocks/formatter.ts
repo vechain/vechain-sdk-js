@@ -4,7 +4,6 @@ import {
 } from '@vechain/vechain-sdk-network';
 import { type BlocksRPC } from './types';
 import {
-    dataUtils,
     vechain_sdk_core_ethers,
     ZERO_BUFFER
 } from '@vechain/vechain-sdk-core';
@@ -55,20 +54,12 @@ const formatToRPCStandard = (
         difficulty: '0x',
         totalDifficulty: '0x',
         uncles: [],
-        sha3Uncles: dataUtils.toHexString(ZERO_BUFFER(32), {
-            withPrefix: true
-        }),
-        nonce: dataUtils.toHexString(ZERO_BUFFER(8), {
-            withPrefix: true
-        }),
-        logsBloom: dataUtils.toHexString(ZERO_BUFFER(256), {
-            withPrefix: true
-        }),
+        sha3Uncles: Hex.of0x(ZERO_BUFFER(32)),
+        nonce: Hex.of0x(ZERO_BUFFER(8)),
+        logsBloom: Hex.of0x(ZERO_BUFFER(256)),
         extraData: '0x',
         baseFeePerGas: '0x',
-        mixHash: dataUtils.toHexString(ZERO_BUFFER(32), {
-            withPrefix: true
-        })
+        mixHash: Hex.of0x(ZERO_BUFFER(32))
     };
 };
 

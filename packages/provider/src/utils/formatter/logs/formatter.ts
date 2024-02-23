@@ -17,7 +17,7 @@ const formatToLogsRPC = (eventLogs: EventLogs[]): LogsRPC[] => {
         return {
             address: eventLog.address,
             blockHash: eventLog.meta.blockID,
-            blockNumber: Hex.of(eventLog.meta.blockNumber),
+            blockNumber: Hex.of0x(eventLog.meta.blockNumber),
 
             data: eventLog.data,
             logIndex: '0x0',

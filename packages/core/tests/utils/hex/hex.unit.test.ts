@@ -11,17 +11,17 @@ describe('Hex', () => {
     });
 
     test('should transform a number to its hexadecimal representation with a prefix', () => {
-        expect(Hex.of(255)).toBe('0xff');
-        expect(Hex.of(0)).toBe('0x0');
+        expect(Hex.of0x(255)).toBe('0xff');
+        expect(Hex.of0x(0)).toBe('0x0');
 
         // Test case for number which is not an integer
         expect(() => {
-            Hex.of(2.667);
+            Hex.of0x(2.667);
         }).toThrow();
 
         // Test case for negative number
         expect(() => {
-            Hex.of(-10);
+            Hex.of0x(-10);
         }).toThrow();
     });
 });
