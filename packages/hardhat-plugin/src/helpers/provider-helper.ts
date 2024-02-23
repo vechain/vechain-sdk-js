@@ -1,11 +1,12 @@
-import type {
-    HardhatNetworkAccountsConfig,
-    HttpNetworkAccountsConfig,
-    NetworkConfig
-} from 'hardhat/types';
 import { BaseWallet, type Wallet } from '@vechain/vechain-sdk-wallet';
 import { buildError, JSONRPC } from '@vechain/vechain-sdk-errors';
 import { addressUtils, HDNode, secp256k1 } from '@vechain/vechain-sdk-core';
+import {
+    type HardhatNetworkAccountsConfig,
+    type HttpNetworkAccountsConfig,
+    type HttpNetworkConfig,
+    type NetworkConfig
+} from 'hardhat/types';
 
 /**
  * Create a wallet from the hardhat network configuration.
@@ -16,9 +17,13 @@ import { addressUtils, HDNode, secp256k1 } from '@vechain/vechain-sdk-core';
 const createWalletFromHardhatNetworkConfig = (
     networkConfig: NetworkConfig
 ): Wallet => {
+    // Get the accounts from the configuration
     const accountFromConfig:
         | HardhatNetworkAccountsConfig
         | HttpNetworkAccountsConfig = networkConfig.accounts;
+
+    // Get the delegator from the configuration
+    const delegatorFromConfig = (networkConfig as HttpNetworkConfig).delegator;
 
     // Empty wallet
     if (accountFromConfig === undefined) return new BaseWallet([], {});
@@ -50,7 +55,7 @@ const createWalletFromHardhatNetworkConfig = (
                         address: addressUtils.fromPrivateKey(privateKeyBuffer)
                     };
                 }),
-                {}
+                { delegator: delegatorFromConfig }
             );
         }
         // HD Wallet
@@ -78,7 +83,7 @@ const createWalletFromHardhatNetworkConfig = (
                         };
                     }
                 ),
-                {}
+                { delegator: delegatorFromConfig }
             );
         }
     }

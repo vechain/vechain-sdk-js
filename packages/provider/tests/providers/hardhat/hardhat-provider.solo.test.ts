@@ -2,15 +2,15 @@ import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { HardhatVechainProvider, type SubscriptionEvent } from '../../../src';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '@vechain/vechain-sdk-network';
-import { soloNetwork } from '../../fixture';
+import { soloNetwork, soloUrl } from '../../fixture';
 import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
 import {
     deployERC20Contract,
     deployERC721Contract,
     waitForMessage
 } from '../helpers';
-import type { HttpNetworkConfig } from 'hardhat/types';
 import { coder, type FunctionFragment } from '@vechain/vechain-sdk-core';
+import { BaseWallet } from '@vechain/vechain-sdk-wallet';
 
 /**
  * Vechain provider tests - Solo Network
@@ -29,10 +29,7 @@ describe('Hardhat provider tests', () => {
      */
     beforeEach(() => {
         thorClient = new ThorClient(soloNetwork);
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        provider = new HardhatVechainProvider({
-            chainId: 74
-        } as HttpNetworkConfig);
+        provider = new HardhatVechainProvider(new BaseWallet([]), soloUrl);
     });
 
     /**

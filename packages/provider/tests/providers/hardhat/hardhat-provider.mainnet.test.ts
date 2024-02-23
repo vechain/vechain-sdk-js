@@ -2,11 +2,11 @@ import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { HardhatVechainProvider } from '../../../src';
 import { mainnetUrl } from '../../fixture';
 import { providerMethodsTestCasesMainnet } from '../fixture';
-import { type HttpNetworkConfig } from 'hardhat/types';
 import {
     InvalidDataTypeError,
     JSONRPCInvalidRequest
 } from '@vechain/vechain-sdk-errors';
+import { BaseWallet } from '@vechain/vechain-sdk-wallet';
 
 /**
  * Hardhat provider tests - Mainnet
@@ -23,11 +23,7 @@ describe('Hardhat provider tests', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        provider = new HardhatVechainProvider({
-            url: mainnetUrl,
-            chainId: 74
-        } as HttpNetworkConfig);
+        provider = new HardhatVechainProvider(new BaseWallet([]), mainnetUrl);
     });
 
     /**
