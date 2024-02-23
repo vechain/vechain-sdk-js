@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { HardhatVechainProvider } from '../../../src';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { testnetUrl } from '../../fixture';
@@ -26,6 +26,13 @@ describe('Hardhat provider tests - testnet', () => {
             url: testnetUrl,
             chainId: 74
         } as HttpNetworkConfig);
+    });
+
+    /**
+     * Destroy thor client and provider after each test
+     */
+    afterEach(() => {
+        provider.destroy();
     });
 
     /**
@@ -70,9 +77,7 @@ describe('Hardhat provider tests - testnet', () => {
             params: ['newHeads']
         });
 
-        const messageReceived = waitForMessage(
-            provider.getInternalVechainProvider()
-        );
+        const messageReceived = waitForMessage(provider);
 
         const message = await messageReceived;
 

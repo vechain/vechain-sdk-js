@@ -5,6 +5,5 @@ module.exports = {
     coverageReporters: ['html', 'lcov', 'json'],
     runner: 'groups',
     reporters: ['default', 'jest-junit'],
-    workerThreads: true,
-    testTimeout: 10000,
+    workerThreads: true
 };
