@@ -1,7 +1,5 @@
 import { assert, DATA } from '@vechain/vechain-sdk-errors';
 
-// todo: toQuantity <--
-
 // todo: Buffer.from(dataUtils.removePrefix(data), 'hex');
 // todo: hexlify
 // todo: decodeBufferToHexWithLeadingZeros

@@ -16,13 +16,13 @@ import {
     RPCMethodsMap,
     POLLING_INTERVAL
 } from '../../utils';
-import { type Wallet } from '@vechain/vechain-sdk-wallet/dist/index';
+import { type Wallet } from '@vechain/vechain-sdk-wallet';
 import {
     type FilterOptions,
     type SubscriptionEvent,
     type SubscriptionManager
 } from './types';
-import { Hex } from '../../../../core/src/utils/hex/Hex';
+import { Hex } from '@vechain/vechain-sdk-core/src/utils/hex/Hex';
 
 /**
  * Our core provider class for vechain
@@ -203,9 +203,6 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
             const currentBlock = Hex.of(
                 this.subscriptionManager.currentBlockNumber
             );
-            // const currentBlock = vechain_sdk_core_ethers.toQuantity(
-            //     this.subscriptionManager.currentBlockNumber
-            // );
             // Construct filter options for the Ethereum logs query based on the subscription details
             const filterOptions: FilterOptions = {
                 address: subscriptionDetails.options?.address, // Contract address to filter the logs by

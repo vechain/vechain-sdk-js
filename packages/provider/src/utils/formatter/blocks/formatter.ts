@@ -10,6 +10,7 @@ import {
 } from '@vechain/vechain-sdk-core';
 
 import { transactionsFormatter } from '../transactions';
+import { Hex } from '@vechain/vechain-sdk-core/src/utils/hex/Hex';
 
 /**
  * Output formatter for block details.
@@ -39,13 +40,13 @@ const formatToRPCStandard = (
         // Supported fields converted to RPC standard
         hash: block.id,
         parentHash: block.parentID,
-        number: vechain_sdk_core_ethers.toQuantity(block.number),
-        size: vechain_sdk_core_ethers.toQuantity(block.size),
+        number: Hex.of(block.number),
+        size: Hex.of(block.size),
         stateRoot: block.stateRoot,
         receiptsRoot: block.receiptsRoot,
         transactionsRoot: block.txsRoot,
-        timestamp: vechain_sdk_core_ethers.toQuantity(block.timestamp),
-        gasLimit: vechain_sdk_core_ethers.toQuantity(block.gasLimit),
+        timestamp: Hex.of(block.timestamp),
+        gasLimit: Hex.of(block.gasLimit),
         gasUsed: vechain_sdk_core_ethers.toQuantity(block.gasUsed),
         transactions,
         miner: block.beneficiary,

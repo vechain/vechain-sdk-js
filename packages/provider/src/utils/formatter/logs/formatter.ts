@@ -3,7 +3,7 @@ import {
     type EventLogs
 } from '@vechain/vechain-sdk-network';
 import { type LogsRPC } from './types';
-import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
+import { Hex } from '@vechain/vechain-sdk-core/src/utils/hex/Hex';
 
 /**
  * Output formatter for Event logs.
@@ -17,9 +17,7 @@ const formatToLogsRPC = (eventLogs: EventLogs[]): LogsRPC[] => {
         return {
             address: eventLog.address,
             blockHash: eventLog.meta.blockID,
-            blockNumber: vechain_sdk_core_ethers.toQuantity(
-                eventLog.meta.blockNumber
-            ),
+            blockNumber: Hex.of(eventLog.meta.blockNumber),
 
             data: eventLog.data,
             logIndex: '0x0',
