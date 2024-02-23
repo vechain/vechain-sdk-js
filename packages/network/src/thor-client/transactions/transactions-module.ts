@@ -34,7 +34,7 @@ import {
 } from '@vechain/vechain-sdk-errors';
 import { type ThorClient } from '../thor-client';
 import { assertTransactionCanBeSigned } from './helpers/assertions';
-import { getDelegationSignature } from './helpers/delegation-handler';
+import { DelegationHandler } from './helpers';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -316,7 +316,7 @@ class TransactionsModule {
      *
      * @param txBody - The transaction body to sign.
      * @param privateKey - The private key of the origin account.
-     * @param options - Optional parameters for the request. Includes the `delegatorUrl` and `delegatorPrivateKey` fields.
+     * @param delegatorOptions - Optional parameters for the request. Includes the `delegatorUrl` and `delegatorPrivateKey` fields.
      *                  Only one of the following options can be specified: `delegatorUrl`, `delegatorPrivateKey`.
      *
      * @returns A promise that resolves to the signed transaction.
@@ -324,7 +324,7 @@ class TransactionsModule {
     public async signTransaction(
         txBody: TransactionBody,
         privateKey: string,
-        options?: SignTransactionOptions
+        delegatorOptions?: SignTransactionOptions
     ): Promise<Transaction> {
         const originPrivateKey = Buffer.from(privateKey, 'hex');
 
@@ -332,16 +332,12 @@ class TransactionsModule {
         assertTransactionCanBeSigned(originPrivateKey, txBody);
 
         // Check if the transaction is delegated
-        const isDelegated =
-            options?.delegatorPrivatekey !== undefined ||
-            options?.delegatorUrl !== undefined;
-
-        return isDelegated
+        return DelegationHandler(delegatorOptions).isDelegated()
             ? await this._signWithDelegator(
                   txBody,
                   originPrivateKey,
-                  options?.delegatorPrivatekey,
-                  options?.delegatorUrl
+                  delegatorOptions?.delegatorPrivateKey,
+                  delegatorOptions?.delegatorUrl
               )
             : TransactionHandler.sign(txBody, originPrivateKey);
     }
@@ -378,8 +374,8 @@ class TransactionsModule {
 
         const unsignedTx = new Transaction(txBody);
 
+        // Sign transaction with origin private key and delegator private key
         if (delegatorPrivateKey !== undefined)
-            // Sign transaction with origin private key and delegator private key
             return TransactionHandler.signWithDelegator(
                 txBody,
                 originPrivateKey,
@@ -387,9 +383,10 @@ class TransactionsModule {
             );
 
         // Otherwise, get the signature of the delegator from the delegator endpoint
-        const delegatorSignature = await getDelegationSignature(
+        const delegatorSignature = await DelegationHandler({
+            delegatorUrl: delegatorUrl as string
+        }).getDelegationSignatureUsingUrl(
             unsignedTx,
-            delegatorUrl as string,
             originAddress,
             this.thor.httpClient
         );
