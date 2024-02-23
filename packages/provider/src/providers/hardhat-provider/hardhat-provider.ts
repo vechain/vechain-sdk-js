@@ -30,7 +30,8 @@ class HardhatVechainProvider
     /**
      * Constructor with the network configuration.
      *
-     * @param networkConfig - The network configuration given into hardhat.
+     * @param walletToUse - The wallet to use.
+     * @param nodeUrl - The node url to use
      * @param debug - Debug mode.
      */
     constructor(walletToUse: Wallet, nodeUrl: string, debug: boolean = false) {
