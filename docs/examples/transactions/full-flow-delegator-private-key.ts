@@ -56,7 +56,7 @@ const rawDelegatedSigned = await thorSoloClient.transactions.signTransaction(
     txBody,
     senderAccount.privateKey,
     {
-        delegatorPrivatekey: delegatorAccount.privateKey
+        delegatorPrivateKey: delegatorAccount.privateKey
     }
 );
 
