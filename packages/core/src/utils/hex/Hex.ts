@@ -5,7 +5,7 @@ import { assert, DATA } from '@vechain/vechain-sdk-errors';
 // todo: Buffer.from(dataUtils.removePrefix(data), 'hex');
 // todo: hexlify
 // todo: decodeBufferToHexWithLeadingZeros
-// todo: let hex = bi.toString(16);
+// todo: let hex = bi.toString(16); it seems to to be the same bigint everyhere.
 // todo: toHexString
 // todo: toBeHex
 

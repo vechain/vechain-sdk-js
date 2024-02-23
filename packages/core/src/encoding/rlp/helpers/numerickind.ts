@@ -137,6 +137,7 @@ const encodeBigIntToBuffer = (
     if (bi === 0n) return Buffer.alloc(0);
 
     let hex = bi.toString(16);
+    // let hex = Hex.ofBigInt(bi);
 
     // Ensure hex string has an even length
     if (hex.length % 2 !== 0) {
