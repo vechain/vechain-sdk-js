@@ -18,9 +18,8 @@ const vechainThorSolo: HttpNetworkConfig = {
 
     // Custom parameters
     delegator: {
-        delegatorPrivatekey:
-            'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5',
-        delegatorUrl: 'https://sponsor-testnet.vechain.energy/by/269'
+        delegatorPrivateKey:
+            'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5'
     },
     debugMode: true
 };
