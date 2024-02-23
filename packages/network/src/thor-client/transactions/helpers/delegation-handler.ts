@@ -1,6 +1,9 @@
 import { type Transaction } from '@vechain/vechain-sdk-core';
 import { type HttpClient } from '../../../utils';
-import { type GetDelegationSignatureResult } from '../types';
+import {
+    type GetDelegationSignatureResult,
+    type SignTransactionOptions
+} from '../types';
 import { TRANSACTION, buildError } from '@vechain/vechain-sdk-errors';
 
 /**
@@ -18,7 +21,7 @@ import { TRANSACTION, buildError } from '@vechain/vechain-sdk-errors';
  *
  * @throws an error if the delegation fails.
  */
-const getDelegationSignature = async (
+const _getDelegationSignature = async (
     tx: Transaction,
     delegatorUrl: string,
     originAddress: string,
@@ -52,4 +55,93 @@ const getDelegationSignature = async (
     }
 };
 
-export { getDelegationSignature };
+/**
+ * Provide a set of utils for the delegation type.
+ * It is a mutual exclusion between delegatorPrivateKey and delegatorUrl. (@see SignTransactionOptions)
+ *
+ * The aim of this handler is to:
+ *   - Understand the kind of delegation and the delegation info
+ *   - Provide a method to get the delegation signature
+ *
+ * @param delegator - The delegator options.
+ */
+const DelegationHandler = (
+    delegator?: SignTransactionOptions | null
+): {
+    isDelegated: () => boolean;
+    delegatorOrUndefined: () => SignTransactionOptions | undefined;
+    delegatorOrNull: () => SignTransactionOptions | null;
+    getDelegationSignature: (
+        tx: Transaction,
+        originAddress: string,
+        httpClient: HttpClient
+    ) => Promise<Buffer>;
+} => {
+    // Check if delegator is undefined (null or undefined)
+    const delegatorIsUndefined = delegator === undefined || delegator === null;
+
+    // Check if is delegated by url
+    const isDelegatedWithUrl =
+        !delegatorIsUndefined && delegator?.delegatorUrl !== undefined;
+
+    // Check if is delegated by private key
+    const isDelegatedWithPrivateKey =
+        !delegatorIsUndefined && delegator?.delegatorPrivateKey !== undefined;
+
+    return {
+        /**
+         * Check if the transaction is delegated.
+         *
+         * @returns true if the transaction is delegated, false otherwise.
+         */
+        isDelegated: (): boolean =>
+            isDelegatedWithUrl || isDelegatedWithPrivateKey,
+
+        /**
+         * Get the delegator options or undefined.
+         * (if delegator is undefined or null).
+         *
+         * @returns The delegator options or undefined.
+         */
+        delegatorOrUndefined: (): SignTransactionOptions | undefined =>
+            delegatorIsUndefined ? undefined : delegator,
+
+        /**
+         * Get the delegator options or null.
+         * (if delegator is undefined or null).
+         *
+         * @returns The delegator options or null.
+         */
+        delegatorOrNull: (): SignTransactionOptions | null =>
+            delegatorIsUndefined ? null : delegator,
+
+        /**
+         * Retrieves the signature of a delegation transaction from a delegator given the endpoint
+         * from which to retrieve the signature.
+         *
+         * @param tx - The transaction to delegate.
+         * @param originAddress - The address of the origin account.
+         * @param httpClient - The HTTP client instance used for making HTTP requests.
+         *
+         * @returns A promise that resolves to the signature of the delegation transaction.
+         *
+         * @see [Simple Gas Payer Standard](https://github.com/vechain/VIPs/blob/master/vips/VIP-201.md)
+         *
+         * @throws an error if the delegation fails.
+         */
+        getDelegationSignature: async (
+            tx: Transaction,
+            originAddress: string,
+            httpClient: HttpClient
+        ): Promise<Buffer> => {
+            return await _getDelegationSignature(
+                tx,
+                delegator?.delegatorUrl as string,
+                originAddress,
+                httpClient
+            );
+        }
+    };
+};
+
+export { DelegationHandler };
