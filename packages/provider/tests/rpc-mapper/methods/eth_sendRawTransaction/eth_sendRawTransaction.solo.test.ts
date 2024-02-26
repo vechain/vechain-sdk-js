@@ -5,11 +5,7 @@ import {
     type TransactionClause,
     TransactionHandler
 } from '@vechain/vechain-sdk-core';
-import {
-    RPC_METHODS,
-    RPCMethodsMap,
-    type SendRawTransactionResultRPC
-} from '../../../../src';
+import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 
 /**
@@ -92,7 +88,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
 
             const result = (await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_sendRawTransaction
-            ]([raw])) as SendRawTransactionResultRPC;
+            ]([raw])) as string;
 
             expect(result).toBe(signedTransaction.id);
         });
@@ -109,7 +105,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
             await expect(async () => {
                 (await RPCMethodsMap(thorClient)[
                     RPC_METHODS.eth_sendRawTransaction
-                ](['INVALID'])) as SendRawTransactionResultRPC;
+                ](['INVALID'])) as string;
             }).rejects.toThrowError(InvalidDataTypeError);
         });
     });

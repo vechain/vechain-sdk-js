@@ -1,7 +1,10 @@
-import { type Wallet, type WalletAccount } from './types';
+import { type Wallet, type WalletAccount } from '../types';
 import { assert, DATA } from '@vechain/vechain-sdk-errors';
 import { addressUtils } from '@vechain/vechain-sdk-core';
-import { type SignTransactionOptions } from '@vechain/vechain-sdk-network';
+import {
+    DelegationHandler,
+    type SignTransactionOptions
+} from '@vechain/vechain-sdk-network';
 
 /**
  * Base wallet class.
@@ -12,12 +15,12 @@ class BaseWallet implements Wallet {
     /**
      * List of accounts in the wallet.
      */
-    accounts: WalletAccount[];
+    readonly accounts: WalletAccount[];
 
     /**
      * Options for signing a transaction with delegator.
      */
-    delegator?: SignTransactionOptions;
+    readonly delegator?: SignTransactionOptions;
 
     /**
      * Create a new wallet.
@@ -75,7 +78,9 @@ class BaseWallet implements Wallet {
      * @returns The options for signing a transaction with delegator.
      */
     async getDelegator(): Promise<SignTransactionOptions | null> {
-        return await Promise.resolve(this.delegator ?? null);
+        return await Promise.resolve(
+            DelegationHandler(this.delegator).delegatorOrNull()
+        );
     }
 }
 

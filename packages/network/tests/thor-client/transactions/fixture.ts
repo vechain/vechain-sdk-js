@@ -15,6 +15,7 @@ import {
     InvalidSecp256k1PrivateKeyError,
     TransactionDelegationError
 } from '@vechain/vechain-sdk-errors';
+import { type SignTransactionOptions } from '../../../src';
 
 /**
  * Some random transaction nonces to use into tests
@@ -307,7 +308,6 @@ const signTransactionTestCases = {
             {
                 description: 'Should sign a transaction without delegation',
                 origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
-                options: {},
                 isDelegated: false,
                 expected: {
                     body: {
@@ -332,9 +332,9 @@ const signTransactionTestCases = {
                     'Should sign a transaction with private key delegation',
                 origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
                 options: {
-                    delegatorPrivatekey:
+                    delegatorPrivateKey:
                         TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey
-                },
+                } satisfies SignTransactionOptions,
                 isDelegated: true,
                 expected: {
                     body: {
@@ -363,8 +363,8 @@ const signTransactionTestCases = {
                     "Should throw error when delegator's private key is invalid",
                 origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
                 options: {
-                    delegatorPrivatekey: '0x'
-                },
+                    delegatorPrivateKey: '0x'
+                } satisfies SignTransactionOptions,
                 isDelegated: true,
                 expectedError: InvalidSecp256k1PrivateKeyError
             },
@@ -374,7 +374,6 @@ const signTransactionTestCases = {
                 origin: {
                     privateKey: '0x'
                 },
-                options: {},
                 isDelegated: true,
                 expectedError: InvalidSecp256k1PrivateKeyError
             },
@@ -384,7 +383,7 @@ const signTransactionTestCases = {
                 origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
                 options: {
                     delegatorUrl: 'https://example.com'
-                },
+                } satisfies SignTransactionOptions,
                 isDelegated: true,
                 expectedError: TransactionDelegationError
             }
@@ -397,7 +396,7 @@ const signTransactionTestCases = {
                 origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
                 options: {
                     delegatorUrl: TESTNET_DELEGATE_URL
-                },
+                } satisfies SignTransactionOptions,
                 isDelegated: true,
                 expected: {
                     body: {

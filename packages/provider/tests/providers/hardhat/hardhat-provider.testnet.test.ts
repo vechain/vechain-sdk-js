@@ -1,10 +1,10 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { HardhatVechainProvider } from '../../../src';
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { JSONRPCInvalidRequest } from '@vechain/vechain-sdk-errors';
 import { testnetUrl } from '../../fixture';
 import { providerMethodsTestCasesTestnet } from '../fixture';
 import { waitForMessage } from '../helpers';
-import type { HttpNetworkConfig } from 'hardhat/types';
+import { BaseWallet } from '@vechain/vechain-sdk-wallet';
 
 /**
  * Vechain provider tests
@@ -22,10 +22,7 @@ describe('Hardhat provider tests - testnet', () => {
      */
     beforeEach(() => {
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        provider = new HardhatVechainProvider({
-            url: testnetUrl,
-            chainId: 74
-        } as HttpNetworkConfig);
+        provider = new HardhatVechainProvider(new BaseWallet([]), testnetUrl);
     });
 
     /**
@@ -108,6 +105,6 @@ describe('Hardhat provider tests - testnet', () => {
                     method: 'INVALID_METHOD',
                     params: [-1]
                 })
-        ).rejects.toThrowError(InvalidDataTypeError);
+        ).rejects.toThrowError(JSONRPCInvalidRequest);
     });
 });

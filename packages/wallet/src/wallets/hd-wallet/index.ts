@@ -1,1 +1,1 @@
-export * from './types.d';
+export * from './hd-wallet';

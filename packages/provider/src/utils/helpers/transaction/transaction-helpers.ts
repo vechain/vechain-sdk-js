@@ -3,7 +3,7 @@ import {
     type TransactionRPC,
     type BlocksRPC,
     blocksFormatter
-} from '../formatter';
+} from '../../formatter';
 import {
     type BlockDetail,
     type Output,
