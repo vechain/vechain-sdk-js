@@ -291,8 +291,17 @@ describe('ThorClient - Contracts', () => {
         // Load the deployed contract using the contract address, ABI and private key
         const loadedContract = thorSoloClient.contracts.load(
             contract.address,
-            contract.abi,
-            contract.callerPrivateKey
+            contract.abi
+        );
+
+        // Call the get function of the loaded contract to verify that the stored value is 100
+        let callFunctionGetResult = await contract.read.get();
+
+        expect(callFunctionGetResult).toEqual([BigInt(100)]);
+
+        // Set the private key of the caller for signing transactions
+        loadedContract.setCallerPrivateKey(
+            contract.getCallerPrivateKey() as string
         );
 
         // Call the set function of the loaded contract to set the value to 123
@@ -304,7 +313,7 @@ describe('ThorClient - Contracts', () => {
 
         expect(transactionReceiptCallSetContract.reverted).toBe(false);
 
-        const callFunctionGetResult = await contract.read.get();
+        callFunctionGetResult = await contract.read.get();
 
         // Assertion: The value should be 123
         expect(callFunctionGetResult).toEqual([BigInt(123)]);

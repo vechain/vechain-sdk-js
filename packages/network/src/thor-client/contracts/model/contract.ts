@@ -24,7 +24,7 @@ class Contract {
     readonly thor: ThorClient;
     readonly address: string;
     readonly abi: InterfaceAbi;
-    callerPrivateKey?: string;
+    private callerPrivateKey?: string;
 
     readonly deployTransactionReceipt: TransactionReceipt | undefined;
 
@@ -114,6 +114,14 @@ class Contract {
         // initialize the proxy with the new private key
         this.transact = this.getTransactProxy();
         this.read = this.getReadProxy();
+        return this.callerPrivateKey;
+    }
+
+    /**
+     * Get the private key of the caller for signing transactions.
+     * @returns The private key of the caller.
+     */
+    public getCallerPrivateKey(): string | undefined {
         return this.callerPrivateKey;
     }
 
