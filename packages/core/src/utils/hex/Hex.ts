@@ -1,17 +1,24 @@
 import { assert, DATA } from '@vechain/vechain-sdk-errors';
 import { Buffer } from 'buffer';
 
-// todo: hexlify <- check
 // todo: let hex = bi.toString(16); it seems to to be the same bigint everyhere.
-// todo: toBeHex
 
-// todo: padHexString?
+// check package/core/test/fixture.abi for zeroPadValue and hexlify, it seems expected hex are a nibble short.
+// check package/network/test/subscriptions/fixture.ts for vechain_sdk_core_ethers.toBeHex(randomBigInt), it seems expected hex are a nibble short.
+// todo: change padHexString?
 
+/**
+ * Represents the error messages used in the {@link Hex} object.
+ * @enum {string}
+ */
 enum Error {
     NOT_INTEGER = `Arg 'n' not an integer.`,
     NOT_POSITIVE = `Arg 'n' not negative.`
 }
 
+/**
+ * Helper class for encoding hexadecimal values.
+ */
 export const Hex = {
     ENCODING: 'hex' as BufferEncoding,
     PREFIX: '0x' as string,

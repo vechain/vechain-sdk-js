@@ -1,6 +1,7 @@
 import { dataUtils } from '../../../utils';
 import { type RLPInput } from '../types';
 import { assert, RLP } from '@vechain/vechain-sdk-errors';
+import { Hex } from '../../../utils/hex/Hex';
 
 /**
  * Validates and converts the input data to a BigInt.
@@ -136,8 +137,7 @@ const encodeBigIntToBuffer = (
 ): Buffer => {
     if (bi === 0n) return Buffer.alloc(0);
 
-    let hex = bi.toString(16);
-    // let hex = Hex.ofBigInt(bi);
+    let hex = Hex.of(bi);
 
     // Ensure hex string has an even length
     if (hex.length % 2 !== 0) {
