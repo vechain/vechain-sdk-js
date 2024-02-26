@@ -48,6 +48,7 @@ describe('Custom network configuration hardhat - testnet', () => {
                     .debugMode
             ).toBeDefined();
             expect(hre.vechainProvider).toBeDefined();
+            expect(hre.vechainProvider?.send('eth_accounts', [])).toBeDefined();
         });
     });
 });
