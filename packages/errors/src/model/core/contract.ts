@@ -10,10 +10,19 @@ class ContractDeploymentFailedError extends ErrorBase<
 > {}
 
 /**
+ * Error to be thrown when the private key is missing.
+ */
+class MissingPrivateKeyError extends ErrorBase<
+    CONTRACT.MISSING_PRIVATE_KEY,
+    DefaultErrorData
+> {}
+
+/**
  * Errors enum.
  */
 enum CONTRACT {
-    CONTRACT_DEPLOYMENT_FAILED = 'CONTRACT_DEPLOYMENT_FAILED'
+    CONTRACT_DEPLOYMENT_FAILED = 'CONTRACT_DEPLOYMENT_FAILED',
+    MISSING_PRIVATE_KEY = 'MISSING_PRIVATE_KEY'
 }
 
-export { ContractDeploymentFailedError, CONTRACT };
+export { ContractDeploymentFailedError, MissingPrivateKeyError, CONTRACT };

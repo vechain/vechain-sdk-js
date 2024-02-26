@@ -53,6 +53,7 @@ import {
     JSONRPCMethodNotFound,
     JSONRPCParseError,
     KEYSTORE,
+    MissingPrivateKeyError,
     NotImplementedError,
     POLL_ERROR,
     type PollErrorData,
@@ -65,10 +66,7 @@ import {
     TransactionDelegationError,
     TransactionNotSignedError
 } from '../model';
-import {
-    CONTRACT,
-    ContractDeploymentFailedError
-} from '../model/core/contract';
+import { CONTRACT, ContractDeploymentFailedError } from '../model';
 
 /**
  * @note: REGISTER YOUR NEW FANCY ERRORS BELOW!
@@ -279,7 +277,9 @@ type ErrorType<ErrorCodeT> =
                                                                                               ? JSONRPCDefaultError
                                                                                               : ErrorCodeT extends CONTRACT.CONTRACT_DEPLOYMENT_FAILED
                                                                                                 ? ContractDeploymentFailedError
-                                                                                                : never;
+                                                                                                : ErrorCodeT extends CONTRACT.MISSING_PRIVATE_KEY
+                                                                                                  ? MissingPrivateKeyError
+                                                                                                  : never;
 
 /**
  * Map to get the error class from the error code.
@@ -373,7 +373,8 @@ const ErrorClassMap = new Map<
     [JSONRPC.DEFAULT, JSONRPCDefaultError],
 
     // CONTRACT
-    [CONTRACT.CONTRACT_DEPLOYMENT_FAILED, ContractDeploymentFailedError]
+    [CONTRACT.CONTRACT_DEPLOYMENT_FAILED, ContractDeploymentFailedError],
+    [CONTRACT.MISSING_PRIVATE_KEY, MissingPrivateKeyError]
 ]);
 
 export {

@@ -24,7 +24,7 @@ class Contract {
     readonly thor: ThorClient;
     readonly address: string;
     readonly abi: InterfaceAbi;
-    callerPrivateKey: string;
+    callerPrivateKey?: string;
 
     readonly deployTransactionReceipt: TransactionReceipt | undefined;
 
@@ -46,7 +46,7 @@ class Contract {
         address: string,
         abi: InterfaceAbi,
         thor: ThorClient,
-        callerPrivateKey: string,
+        callerPrivateKey?: string,
         transactionReceipt?: TransactionReceipt
     ) {
         this.abi = abi;
@@ -67,6 +67,7 @@ class Contract {
         options: ContractCallOptions
     ): ContractCallOptions {
         this.contractCallOptions = options;
+
         // initialize the proxy with the new options
         this.read = this.getReadProxy();
         return this.contractCallOptions;
@@ -89,6 +90,7 @@ class Contract {
         options: ContractTransactionOptions
     ): ContractTransactionOptions {
         this.contractTransactionOptions = options;
+
         // initialize the proxy with the new options
         this.transact = this.getTransactProxy();
         return this.contractTransactionOptions;
@@ -108,6 +110,8 @@ class Contract {
      */
     public setCallerPrivateKey(privateKey: string): string {
         this.callerPrivateKey = privateKey;
+
+        // initialize the proxy with the new private key
         this.transact = this.getTransactProxy();
         this.read = this.getReadProxy();
         return this.callerPrivateKey;
@@ -130,9 +134,15 @@ class Contract {
                         this.getFunctionFragment(prop),
                         args,
                         {
-                            caller: addressUtils.fromPrivateKey(
-                                Buffer.from(this.callerPrivateKey, 'hex')
-                            ),
+                            caller:
+                                this.callerPrivateKey !== undefined
+                                    ? addressUtils.fromPrivateKey(
+                                          Buffer.from(
+                                              this.callerPrivateKey,
+                                              'hex'
+                                          )
+                                      )
+                                    : undefined,
                             ...this.contractCallOptions
                         }
                     );
@@ -153,6 +163,13 @@ class Contract {
                 return async (
                     ...args: unknown[]
                 ): Promise<SendTransactionResult> => {
+                    if (this.callerPrivateKey === undefined) {
+                        throw buildError(
+                            ERROR_CODES.CONTRACT.MISSING_PRIVATE_KEY,
+                            'Caller private key is required to transact with the contract',
+                            { prop }
+                        );
+                    }
                     return await this.thor.contracts.executeContractTransaction(
                         this.callerPrivateKey,
                         this.address,

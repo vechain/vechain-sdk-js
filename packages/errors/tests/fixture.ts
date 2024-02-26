@@ -57,7 +57,10 @@ import {
     JSONRPCMethodNotFound,
     JSONRPCInvalidParams,
     JSONRPCInternalError,
-    JSONRPCDefaultError
+    JSONRPCDefaultError,
+    CONTRACT,
+    ContractDeploymentFailedError,
+    MissingPrivateKeyError
 } from '../src';
 
 /**
@@ -314,6 +317,19 @@ const ErrorsCodeAndClassesMapsFixture = [
             {
                 errorCode: JSONRPC.DEFAULT,
                 classExpected: JSONRPCDefaultError
+            }
+        ]
+    },
+    {
+        name: 'Contract',
+        elements: [
+            {
+                errorCode: CONTRACT.CONTRACT_DEPLOYMENT_FAILED,
+                classExpected: ContractDeploymentFailedError
+            },
+            {
+                errorCode: CONTRACT.MISSING_PRIVATE_KEY,
+                classExpected: MissingPrivateKeyError
             }
         ]
     }

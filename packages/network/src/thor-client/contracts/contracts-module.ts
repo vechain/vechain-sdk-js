@@ -16,7 +16,7 @@ import type {
 } from './types';
 import { type SendTransactionResult } from '../transactions';
 import { type ThorClient } from '../thor-client';
-import { ContractFactory } from './model';
+import { Contract, ContractFactory } from './model';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -43,6 +43,22 @@ class ContractsModule {
         privateKey: string
     ): ContractFactory {
         return new ContractFactory(abi, bytecode, privateKey, this.thor);
+    }
+
+    /**
+     * Initializes and returns a new Contract instance with the provided parameters.
+     *
+     * @param address - The blockchain address of the contract to load.
+     * @param abi - The Application Binary Interface (ABI) of the contract, which defines the contract's methods and structures.
+     * @param callerPrivateKey - Optional. The private key of the caller, used for signing transactions when interacting with the contract.
+     * @returns A new instance of the Contract, initialized with the provided address, ABI, and optionally, a caller private key.
+     */
+    public load(
+        address: string,
+        abi: InterfaceAbi,
+        callerPrivateKey?: string
+    ): Contract {
+        return new Contract(address, abi, this.thor, callerPrivateKey);
     }
 
     /**
