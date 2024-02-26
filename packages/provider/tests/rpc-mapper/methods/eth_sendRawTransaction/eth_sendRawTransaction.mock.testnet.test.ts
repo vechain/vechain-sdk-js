@@ -1,11 +1,7 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
-import {
-    RPC_METHODS,
-    RPCMethodsMap,
-    type SendRawTransactionResultRPC
-} from '../../../../src';
+import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ProviderRpcError } from '@vechain/vechain-sdk-errors';
 
 /**
@@ -44,7 +40,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
             await expect(async () => {
                 (await RPCMethodsMap(thorClient)[
                     RPC_METHODS.eth_sendRawTransaction
-                ](['0x123456789'])) as SendRawTransactionResultRPC;
+                ](['0x123456789'])) as string;
             }).rejects.toThrowError(ProviderRpcError);
         });
     });

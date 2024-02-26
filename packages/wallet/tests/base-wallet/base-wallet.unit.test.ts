@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { BaseWallet } from '../../src';
-import { accountsFixture } from '../fixture';
+import { accountsFixture } from './fixture';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 import { secp256k1, ZERO_ADDRESS } from '@vechain/vechain-sdk-core';
 import type { SignTransactionOptions } from '@vechain/vechain-sdk-network';
@@ -98,7 +98,7 @@ describe('Base wallet tests', () => {
             // Initialize delegator
             const delegators: SignTransactionOptions[] = [
                 {
-                    delegatorPrivatekey: secp256k1
+                    delegatorPrivateKey: secp256k1
                         .generatePrivateKey()
                         .toString('hex')
                 },

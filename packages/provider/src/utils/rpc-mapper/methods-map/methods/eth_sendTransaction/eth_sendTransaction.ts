@@ -1,6 +1,7 @@
 import {
     type SignTransactionOptions,
-    type ThorClient
+    type ThorClient,
+    DelegationHandler
 } from '@vechain/vechain-sdk-network';
 import {
     assert,
@@ -8,7 +9,6 @@ import {
     DATA,
     JSONRPC
 } from '@vechain/vechain-sdk-errors';
-import type { SendRawTransactionResultRPC } from '../../../../formatter';
 import { type VechainProvider } from '../../../../../providers';
 import { ethSendRawTransaction } from '../eth_sendRawTransaction/eth_sendRawTransaction';
 import {
@@ -52,7 +52,7 @@ const ethSendTransaction = async (
     thorClient: ThorClient,
     params: unknown[],
     provider?: VechainProvider
-): Promise<SendRawTransactionResultRPC> => {
+): Promise<string> => {
     // Input validation
     assert(
         params.length === 1 && typeof params[0] === 'object',
@@ -122,7 +122,8 @@ const ethSendTransaction = async (
                 transactionClauses,
                 gasResult.totalGas,
                 {
-                    isDelegated: delegatorIntoWallet !== null
+                    isDelegated:
+                        DelegationHandler(delegatorIntoWallet).isDelegated()
                 }
             );
 
@@ -148,10 +149,7 @@ const ethSendTransaction = async (
         const signedTransaction = await thorClient.transactions.signTransaction(
             { nonce: newNonce, ...transactionBodyWithoutNonce },
             signerIntoWallet.privateKey.toString('hex'),
-            {
-                delegatorPrivatekey: delegatorIntoWallet?.delegatorPrivatekey,
-                delegatorUrl: delegatorIntoWallet?.delegatorUrl
-            }
+            DelegationHandler(delegatorIntoWallet).delegatorOrUndefined()
         );
 
         // Return the result

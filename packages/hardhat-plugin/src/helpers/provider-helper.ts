@@ -1,11 +1,13 @@
-import type {
-    HardhatNetworkAccountsConfig,
-    HttpNetworkAccountsConfig,
-    NetworkConfig
-} from 'hardhat/types';
-import { BaseWallet, type Wallet } from '@vechain/vechain-sdk-wallet';
+import { BaseWallet, HDWallet, type Wallet } from '@vechain/vechain-sdk-wallet';
 import { buildError, JSONRPC } from '@vechain/vechain-sdk-errors';
-import { addressUtils, HDNode, secp256k1 } from '@vechain/vechain-sdk-core';
+import { addressUtils, secp256k1 } from '@vechain/vechain-sdk-core';
+import {
+    type HardhatNetworkAccountsConfig,
+    type HttpNetworkAccountsConfig,
+    type HttpNetworkConfig,
+    type NetworkConfig
+} from 'hardhat/types';
+import { DelegationHandler } from '@vechain/vechain-sdk-network';
 
 /**
  * Create a wallet from the hardhat network configuration.
@@ -16,6 +18,7 @@ import { addressUtils, HDNode, secp256k1 } from '@vechain/vechain-sdk-core';
 const createWalletFromHardhatNetworkConfig = (
     networkConfig: NetworkConfig
 ): Wallet => {
+    // Get the accounts from the configuration
     const accountFromConfig:
         | HardhatNetworkAccountsConfig
         | HttpNetworkAccountsConfig = networkConfig.accounts;
@@ -31,7 +34,7 @@ const createWalletFromHardhatNetworkConfig = (
                 'Remote accounts are not supported in hardhat network configuration'
             );
 
-        // Array of private keys
+        // Base Wallet - From an array of private keys
         if (Array.isArray(accountFromConfig)) {
             return new BaseWallet(
                 (accountFromConfig as string[]).map((privateKey: string) => {
@@ -50,35 +53,25 @@ const createWalletFromHardhatNetworkConfig = (
                         address: addressUtils.fromPrivateKey(privateKeyBuffer)
                     };
                 }),
-                {}
+                {
+                    delegator: DelegationHandler(
+                        (networkConfig as HttpNetworkConfig).delegator
+                    ).delegatorOrUndefined()
+                }
             );
         }
-        // HD Wallet
+        // HD Wallet - From a mnemonic and hd wallet options
         else {
-            const hdnode = HDNode.fromMnemonic(
+            return new HDWallet(
                 accountFromConfig.mnemonic.split(' '),
-                accountFromConfig.path
-            );
-
-            return new BaseWallet(
-                [...Array(accountFromConfig.count).keys()].map(
-                    (path: number) => {
-                        // Convert the private key to a buffer
-                        const privateKeyBuffer = hdnode.derive(
-                            path + accountFromConfig.initialIndex
-                        ).privateKey as Buffer;
-
-                        // Derive the public key and address from the private key
-                        return {
-                            privateKey: privateKeyBuffer,
-                            publicKey:
-                                secp256k1.derivePublicKey(privateKeyBuffer),
-                            address:
-                                addressUtils.fromPrivateKey(privateKeyBuffer)
-                        };
-                    }
-                ),
-                {}
+                accountFromConfig.count,
+                accountFromConfig.initialIndex,
+                accountFromConfig.path,
+                {
+                    delegator: DelegationHandler(
+                        (networkConfig as HttpNetworkConfig).delegator
+                    ).delegatorOrUndefined()
+                }
             );
         }
     }

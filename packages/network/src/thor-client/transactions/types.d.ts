@@ -57,17 +57,9 @@ interface TransactionBodyOptions {
 /**
  * Options for `signTransaction` method.
  */
-interface SignTransactionOptions {
-    /**
-     * The URL of the endpoint of the delegator.
-     */
-    delegatorUrl?: string;
-
-    /**
-     * The private key of the delegator.
-     */
-    delegatorPrivatekey?: string;
-}
+type SignTransactionOptions =
+    | { delegatorUrl: string; delegatorPrivateKey?: never }
+    | { delegatorPrivateKey: string; delegatorUrl?: never };
 
 /**
  * Input options for:

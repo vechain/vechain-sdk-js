@@ -6,7 +6,6 @@ import {
     type ExpandedBlockDetail
 } from '@vechain/vechain-sdk-network';
 import {
-    type SendRawTransactionResultRPC,
     type TransactionReceiptLogsRPC,
     type TransactionReceiptRPC,
     type TransactionRPC
@@ -215,7 +214,7 @@ function formatTransactionReceiptToRPCStandard(
  */
 const formatSendRawTransactionToRPCStandard = (
     transaction: SendTransactionResult
-): SendRawTransactionResultRPC => {
+): string => {
     return transaction.id;
 };
 

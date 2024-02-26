@@ -33,8 +33,7 @@ import {
     assert
 } from '@vechain/vechain-sdk-errors';
 import { type ThorClient } from '../thor-client';
-import { assertTransactionCanBeSigned } from './helpers/assertions';
-import { getDelegationSignature } from './helpers/delegation-handler';
+import { assertTransactionCanBeSigned, DelegationHandler } from './helpers';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -316,7 +315,7 @@ class TransactionsModule {
      *
      * @param txBody - The transaction body to sign.
      * @param privateKey - The private key of the origin account.
-     * @param options - Optional parameters for the request. Includes the `delegatorUrl` and `delegatorPrivateKey` fields.
+     * @param delegatorOptions - Optional parameters for the request. Includes the `delegatorUrl` and `delegatorPrivateKey` fields.
      *                  Only one of the following options can be specified: `delegatorUrl`, `delegatorPrivateKey`.
      *
      * @returns A promise that resolves to the signed transaction.
@@ -324,7 +323,7 @@ class TransactionsModule {
     public async signTransaction(
         txBody: TransactionBody,
         privateKey: string,
-        options?: SignTransactionOptions
+        delegatorOptions?: SignTransactionOptions
     ): Promise<Transaction> {
         const originPrivateKey = Buffer.from(privateKey, 'hex');
 
@@ -332,16 +331,12 @@ class TransactionsModule {
         assertTransactionCanBeSigned(originPrivateKey, txBody);
 
         // Check if the transaction is delegated
-        const isDelegated =
-            options?.delegatorPrivatekey !== undefined ||
-            options?.delegatorUrl !== undefined;
-
-        return isDelegated
+        return DelegationHandler(delegatorOptions).isDelegated()
             ? await this._signWithDelegator(
                   txBody,
                   originPrivateKey,
-                  options?.delegatorPrivatekey,
-                  options?.delegatorUrl
+                  delegatorOptions?.delegatorPrivateKey,
+                  delegatorOptions?.delegatorUrl
               )
             : TransactionHandler.sign(txBody, originPrivateKey);
     }
@@ -349,7 +344,7 @@ class TransactionsModule {
     /**
      * Signs a transaction where the gas fee is paid by a delegator.
      *
-     * @param unsignedTx - The unsigned transaction to sign.
+     * @param unsignedTransactionBody - The unsigned transaction body to sign.
      * @param originPrivateKey - The private key of the origin account.
      * @param delegatorPrivateKey - (Optional) The private key of the delegator account.
      * @param delegatorUrl - (Optional) The URL of the endpoint of the delegator.
@@ -359,7 +354,7 @@ class TransactionsModule {
      * @throws an error if the delegation fails.
      */
     private async _signWithDelegator(
-        txBody: TransactionBody,
+        unsignedTransactionBody: TransactionBody,
         originPrivateKey: Buffer,
         delegatorPrivateKey?: string,
         delegatorUrl?: string
@@ -376,20 +371,21 @@ class TransactionsModule {
             secp256k1.derivePublicKey(originPrivateKey)
         );
 
-        const unsignedTx = new Transaction(txBody);
+        const unsignedTx = new Transaction(unsignedTransactionBody);
 
+        // Sign transaction with origin private key and delegator private key
         if (delegatorPrivateKey !== undefined)
-            // Sign transaction with origin private key and delegator private key
             return TransactionHandler.signWithDelegator(
-                txBody,
+                unsignedTransactionBody,
                 originPrivateKey,
                 Buffer.from(delegatorPrivateKey, 'hex')
             );
 
         // Otherwise, get the signature of the delegator from the delegator endpoint
-        const delegatorSignature = await getDelegationSignature(
+        const delegatorSignature = await DelegationHandler({
+            delegatorUrl: delegatorUrl as string
+        }).getDelegationSignatureUsingUrl(
             unsignedTx,
-            delegatorUrl as string,
             originAddress,
             this.thor.httpClient
         );

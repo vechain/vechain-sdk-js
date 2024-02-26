@@ -78,7 +78,6 @@ import {
 import { RPC_METHODS } from '../const';
 import {
     type BlocksRPC,
-    type SendRawTransactionResultRPC,
     type SyncBlockRPC,
     type TransactionReceiptRPC,
     type TransactionRPC
@@ -137,7 +136,7 @@ const RPCMethodsMap = (
 
         [RPC_METHODS.eth_sendRawTransaction]: async (
             params
-        ): Promise<SendRawTransactionResultRPC> => {
+        ): Promise<string> => {
             return await ethSendRawTransaction(thorClient, params);
         },
 
@@ -183,9 +182,7 @@ const RPCMethodsMap = (
             return await ethGetTransactionReceipt(thorClient, params);
         },
 
-        [RPC_METHODS.eth_sendTransaction]: async (
-            params
-        ): Promise<SendRawTransactionResultRPC> => {
+        [RPC_METHODS.eth_sendTransaction]: async (params): Promise<string> => {
             return await ethSendTransaction(thorClient, params, provider);
         },
 

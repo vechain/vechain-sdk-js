@@ -6,10 +6,7 @@ import {
     JSONRPC
 } from '@vechain/vechain-sdk-errors';
 import { dataUtils } from '@vechain/vechain-sdk-core';
-import {
-    type SendRawTransactionResultRPC,
-    transactionsFormatter
-} from '../../../../formatter';
+import { transactionsFormatter } from '../../../../formatter';
 
 /**
  * RPC Method eth_sendRawTransaction implementation
@@ -28,7 +25,7 @@ import {
 const ethSendRawTransaction = async (
     thorClient: ThorClient,
     params: unknown[]
-): Promise<SendRawTransactionResultRPC> => {
+): Promise<string> => {
     assert(
         params.length === 1 &&
             typeof params[0] === 'string' &&
