@@ -295,7 +295,7 @@ describe('ThorClient - Contracts', () => {
         );
 
         // Call the get function of the loaded contract to verify that the stored value is 100
-        let callFunctionGetResult = await contract.read.get();
+        let callFunctionGetResult = await loadedContract.read.get();
 
         expect(callFunctionGetResult).toEqual([BigInt(100)]);
 
@@ -313,7 +313,7 @@ describe('ThorClient - Contracts', () => {
 
         expect(transactionReceiptCallSetContract.reverted).toBe(false);
 
-        callFunctionGetResult = await contract.read.get();
+        callFunctionGetResult = await loadedContract.read.get();
 
         // Assertion: The value should be 123
         expect(callFunctionGetResult).toEqual([BigInt(123)]);
