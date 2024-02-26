@@ -1,15 +1,13 @@
 import { execSync } from 'child_process';
 import * as fs from 'fs-extra';
+import { glob } from 'glob';
 
 /**
  * Default directory paths for coverage reports.
  */
-const COVERAGE_DIRS = [
-    'packages/core/coverage',
-    'packages/network/coverage',
-    'packages/errors/coverage',
-    'packages/provider/coverage'
-];
+const COVERAGE_DIRS = glob
+    .sync('*/', { cwd: './packages' })
+    .map((dir) => `packages/${dir}/coverage`);
 
 /**
  * Default directory path for final merged  coverage report.
