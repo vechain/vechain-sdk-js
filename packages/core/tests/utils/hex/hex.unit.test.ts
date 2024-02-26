@@ -24,4 +24,8 @@ describe('Hex', () => {
             Hex.of0x(-10);
         }).toThrow();
     });
+
+    test('pad', () => {
+        console.log(Hex.of0x(255, 32));
+    });
 });

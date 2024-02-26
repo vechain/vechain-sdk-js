@@ -5,6 +5,7 @@ import {
 } from '../../helpers';
 import { type RLPInput, type DataOutput, type BufferOutput } from '../../types';
 import { FixedHexBlobKind } from './fixedhexblob';
+import { Hex } from '../../../../utils/hex/Hex';
 
 /**
  * Represents a fixed hex blob kind with zero trimming and padding functionality.
@@ -38,7 +39,7 @@ class CompactFixedHexBlobKind extends FixedHexBlobKind {
         assertCompactFixedHexBlobBuffer(buffer, context, this.bytes);
 
         return {
-            decode: () => decodeBufferToHexWithLeadingZeros(buffer, this.bytes) // Decode the buffer, returning a hex string with leading zeros.
+            decode: () => Hex.of0x(buffer, this.bytes) // Decode the buffer, returning a hex string with leading zeros.
         };
     }
 }

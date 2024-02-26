@@ -2,6 +2,7 @@ import { hexlify, toBeHex, zeroPadValue } from 'ethers';
 import { addressUtils } from '../../src';
 import { generateRandomValidAddress } from '../fixture';
 import { InvalidAbiDataToEncodeError } from '@vechain/vechain-sdk-errors';
+import { Hex } from '../../src/utils/hex/Hex';
 
 /**
  * Simple functions fixtures
