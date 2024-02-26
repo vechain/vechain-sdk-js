@@ -1,8 +1,6 @@
 import { assert, DATA } from '@vechain/vechain-sdk-errors';
 import { Buffer } from 'buffer';
 
-// todo: let hex = bi.toString(16); it seems to to be the same bigint everyhere.
-
 // check package/core/test/fixture.abi for zeroPadValue and hexlify, it seems expected hex are a nibble short.
 // check package/network/test/subscriptions/fixture.ts for vechain_sdk_core_ethers.toBeHex(randomBigInt), it seems expected hex are a nibble short.
 // todo: change padHexString?
@@ -12,7 +10,21 @@ import { Buffer } from 'buffer';
  * @enum {string}
  */
 enum Error {
+    /**
+     * String constant representing an error message when the argument 'n' is not an integer.
+     *
+     * @type {string}
+     * @see {Hex.ofNumber}
+     */
     NOT_INTEGER = `Arg 'n' not an integer.`,
+
+    /**
+     * String constant representing an error message when argument 'n' is not negative.
+     *
+     * @type {string}
+     * @see {Hex.ofBigInt}
+     * @see {Hex.ofNumber}
+     */
     NOT_POSITIVE = `Arg 'n' not negative.`
 }
 
@@ -20,9 +32,29 @@ enum Error {
  * Helper class for encoding hexadecimal values.
  */
 export const Hex = {
+    /**
+     * The encoding used for buffers.
+     *
+     * @type {BufferEncoding}
+     * @constant
+     * @see {Hex.ofString}
+     */
     ENCODING: 'hex' as BufferEncoding,
+    /**
+     * The PREFIX constant represents the prefix string used in the code.
+     * The prefix is set to '0x', indicating that the following value is in hexadecimal format.
+     *
+     * @constant {string}
+     * @default '0x'
+     * @see {Hex.of0x}
+     */
     PREFIX: '0x' as string,
-    RADIX: 16,
+    /**
+     * The radix value used for hexadecimal numbers.
+     *
+     * @type {number}
+     */
+    RADIX: 16 as number,
 
     of: function (n: bigint | Uint8Array | number | string, bytes: number = 0) {
         if (typeof n === 'bigint') return this.ofBigInt(n, bytes);
