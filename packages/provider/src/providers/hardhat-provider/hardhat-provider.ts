@@ -96,35 +96,29 @@ class HardhatVechainProvider
      * @param payload - The request payload (it contains method and params as 'send' method).
      * @param callback - The callback to call with the result.
      */
-    sendAsync(
+    async sendAsync(
         payload: JsonRpcRequest,
         callback: (error: unknown, response: JsonRpcResponse) => void
-    ): void {
-        // Make the request and call the callback with the result.
-        this.request({
-            method: payload.method,
-            params: payload.params
-        })
-            // Make the request and call the callback with the result.
-            .then((result) => {
-                // Execute the callback with the result
-                callback(null, {
-                    id: payload.id,
-                    jsonrpc: '2.0',
-                    result
-                });
-            })
-
-            // Errors occur, call the callback with the error.
-            .catch((e) => {
-                // Execute the callback with the error
-                callback(e, {
-                    id: payload.id,
-                    jsonrpc: '2.0',
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                    error: e
-                });
+    ): Promise<void> {
+        try {
+            const result = await this.request({
+                method: payload.method,
+                params: payload.params
             });
+
+            // Execute the callback with the result
+            callback(null, {
+                id: payload.id,
+                jsonrpc: '2.0',
+                result
+            });
+        } catch (e) {
+            // Execute the callback with the error
+            callback(e, {
+                id: payload.id,
+                jsonrpc: '2.0'
+            });
+        }
     }
 
     /**

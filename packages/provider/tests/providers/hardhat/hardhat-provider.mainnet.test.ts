@@ -76,19 +76,25 @@ describe('Hardhat provider tests', () => {
         const rpcCallSend = await provider.send('eth_chainId', []);
 
         // Call RPC function using send-async method (same result as above)
-        // provider.sendAsync(
-        //     {
-        //         jsonrpc: '2.0',
-        //         id: 1,
-        //         method: 'eth_chainId',
-        //         params: []
-        //     },
-        //     (error, response) => {
-        //         expect(rpcCall).toBe(response.result);
-        //         expect(rpcCall).toBe(rpcCallSend);
-        //         expect(error).toBeUndefined();
-        //     }
-        // );
+        await provider.sendAsync(
+            {
+                jsonrpc: '2.0',
+                id: 1,
+                method: 'eth_chainId',
+                params: []
+            },
+            (error, response) => {
+                // Response should be defined
+                expect(response).toBeDefined();
+
+                // An error should not be thrown
+                expect(error).toBeNull();
+
+                // Expected result
+                expect(response.result).toBe(rpcCall);
+                expect(response.result).toBe(rpcCallSend);
+            }
+        );
 
         // Compare the result with the expected value
         expect(rpcCall).toBe(rpcCallSend);
@@ -116,20 +122,20 @@ describe('Hardhat provider tests', () => {
         ).rejects.toThrowError(JSONRPCInvalidRequest);
 
         // Call RPC function and throw error using send-async method (same result as above)
-        // provider.sendAsync(
-        //     {
-        //         jsonrpc: '2.0',
-        //         id: 1,
-        //         method: 'INVALID_METHOD',
-        //         params: [-1]
-        //     },
-        //     (error, response) => {
-        //         // Response should be undefined
-        //         expect(response).toBeDefined();
-        //
-        //         // An error should be thrown
-        //         expect(error).toBeDefined();
-        //     }
-        // );
+        await provider.sendAsync(
+            {
+                jsonrpc: '2.0',
+                id: 1,
+                method: 'INVALID_METHOD',
+                params: [-1]
+            },
+            (error, response) => {
+                // Response should be undefined
+                expect(response).toBeDefined();
+
+                // An error should be thrown
+                expect(error).toBeDefined();
+            }
+        );
     });
 });
