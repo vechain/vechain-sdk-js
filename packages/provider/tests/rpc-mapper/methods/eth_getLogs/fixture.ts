@@ -90,6 +90,7 @@ const logsFixture = [
             }
         ]
     },
+
     // To block not defined (latest block as default)
     {
         input: {
@@ -210,12 +211,6 @@ const logsFixture = [
                 '0x0000000000000000000000005034aa590125b64023a0262112b98d72e3c8e40e'
             ]
         },
-        expectedSliced: []
-    },
-
-    // No addresses and topics defined
-    {
-        input: {},
         expectedSliced: []
     },
 

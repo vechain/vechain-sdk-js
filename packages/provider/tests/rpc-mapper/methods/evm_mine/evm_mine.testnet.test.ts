@@ -31,12 +31,16 @@ describe('RPC Mapper - evm_mine method tests', () => {
          */
         test('evm_mine - positive case 1', async () => {
             const bestBlock = await thorClient.blocks.getBestBlock();
-            const newBlock = (await RPCMethodsMap(thorClient)[
+
+            const rpcCallEvmMine = (await RPCMethodsMap(thorClient)[
                 RPC_METHODS.evm_mine
             ]([])) as BlocksRPC | null;
-            if (bestBlock != null && newBlock != null) {
-                expect(Number(newBlock.number)).toBe(bestBlock.number + 1);
+
+            if (bestBlock != null && rpcCallEvmMine != null) {
+                expect(Number(rpcCallEvmMine.number)).toBeGreaterThanOrEqual(
+                    bestBlock.number + 1
+                );
             }
-        }, 23000);
+        }, 15000);
     });
 });

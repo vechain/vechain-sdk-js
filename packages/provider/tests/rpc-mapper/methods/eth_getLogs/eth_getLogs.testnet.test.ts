@@ -33,11 +33,12 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
          * Positive cases. Should be able to get logs
          */
         logsFixture.forEach((fixture, index) => {
-            test(`eth_getLogs - Should be able to get logs - ${index}`, async () => {
+            test(`eth_getLogs - Should be able to get logs - ${index} with input: ${JSON.stringify(fixture.input)}`, async () => {
                 // Call RPC method
                 const logs = (await RPCMethodsMap(thorClient)[
                     RPC_METHODS.eth_getLogs
                 ]([fixture.input])) as LogsRPC[];
+
                 expect(logs.slice(0, 4)).toStrictEqual(fixture.expectedSliced);
             }, 6000);
         });
