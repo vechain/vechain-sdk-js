@@ -85,9 +85,9 @@ describe('ThorClient - Blocks Module', () => {
     }, 23000);
 
     /**
-     * getBlock tests
+     * getBlockCompressed tests
      */
-    describe('getBlock', () => {
+    describe('getBlockCompressed', () => {
         /**
          * getBlockCompressed tests with revision block number or block id
          */
@@ -119,7 +119,7 @@ describe('ThorClient - Blocks Module', () => {
         });
 
         /**
-         * getBlock tests with invalid revision block number or block id
+         * getBlockCompressed tests with invalid revision block number or block id
          */
         invalidBlockRevisions.forEach(
             ({ description, revision, expectedError }) => {
@@ -128,6 +128,23 @@ describe('ThorClient - Blocks Module', () => {
                     async () => {
                         await expect(
                             thorClient.blocks.getBlockCompressed(revision)
+                        ).rejects.toThrowError(expectedError);
+                    },
+                    5000
+                );
+            }
+        );
+
+        /**
+         * getBlockCompressed tests with invalid revision block number or block id
+         */
+        invalidBlockRevisions.forEach(
+            ({ description, revision, expectedError }) => {
+                test(
+                    description,
+                    async () => {
+                        await expect(
+                            thorClient.blocks.getBlockExpanded(revision)
                         ).rejects.toThrowError(expectedError);
                     },
                     5000
