@@ -72,3 +72,11 @@ jobs:
                 yarn publish
               env:
                 NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
+
+            - name: Publish Hardhat Plugin
+              run: |
+                cd packages/hardhat-plugin
+                yarn version --no-git-tag-version --new-version ${{ github.ref_name }}
+                yarn publish
+              env:
+                NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
