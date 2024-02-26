@@ -34,13 +34,22 @@ class TransactionDelegationError extends ErrorBase<
 > {}
 
 /**
+ * Error to be thrown when the private key is missing.
+ */
+class TransactionMissingPrivateKeyError extends ErrorBase<
+    TRANSACTION.MISSING_PRIVATE_KEY,
+    DefaultErrorData
+> {}
+
+/**
  * Errors enum.
  */
 enum TRANSACTION {
     ALREADY_SIGNED = 'ALREADY_SIGNED',
     NOT_SIGNED = 'NOT_SIGNED',
     INVALID_TRANSACTION_BODY = 'INVALID_TRANSACTION_BODY',
-    INVALID_DELEGATION = 'INVALID_DELEGATION'
+    INVALID_DELEGATION = 'INVALID_DELEGATION',
+    MISSING_PRIVATE_KEY = 'MISSING_PRIVATE_KEY'
 }
 
 export {
@@ -48,5 +57,6 @@ export {
     TransactionNotSignedError,
     TransactionBodyError,
     TransactionDelegationError,
+    TransactionMissingPrivateKeyError,
     TRANSACTION
 };
