@@ -28,7 +28,7 @@ console.log('Current block:', currentBlock);
 // Wait until a new block is created with polling interval of 3 seconds
 const newBlock = await Poll.SyncPoll(
     // Get the latest block as polling target function
-    async () => await thorClient.blocks.getBlock('best'),
+    async () => await thorClient.blocks.getBlockCompressed('best'),
     // Polling interval is 3 seconds
     { requestIntervalInMilliseconds: 3000 }
 ).waitUntil((newBlockData) => {

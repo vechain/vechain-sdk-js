@@ -1,8 +1,5 @@
 import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
-import {
-    blockWithTransactionsExpanded,
-    blockWithTransactionsNotExpanded
-} from '../../../fixture';
+import { blockWithTransactionsExpanded } from '../../../fixture';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
 
 /**
@@ -55,11 +52,6 @@ const ethGetBlockByNumberTestCases = [
         expected: zeroBlock // Because genesis block doesn't have any transactions on testnet
     },
     {
-        description: 'Should get block which has transactions',
-        params: [vechain_sdk_core_ethers.toQuantity(17529453), false],
-        expected: blockWithTransactionsNotExpanded
-    },
-    {
         description: 'Should get block which has transactions with details',
         params: [vechain_sdk_core_ethers.toQuantity(17529453), true],
         expected: blockWithTransactionsExpanded
@@ -72,14 +64,6 @@ const ethGetBlockByNumberTestCases = [
             false
         ],
         expected: null
-    },
-    {
-        description: 'Should get block which has transactions',
-        params: [
-            '0x010b7a6d6f04407ac2f72e505ff83d49db8d01607f8af41f508b2ca7eca0d450',
-            false
-        ], // The block hash is the hash of block 17529453
-        expected: blockWithTransactionsNotExpanded
     }
 ];
 

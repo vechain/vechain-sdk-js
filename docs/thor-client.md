@@ -78,7 +78,7 @@ const thorClient = new ThorClient(testNetwork);
 // 2 - Get block details
 
 // Details of block
-const blockDetails = await thorClient.blocks.getBlock(1);
+const blockDetails = await thorClient.blocks.getBlockCompressed(1);
 expect(blockDetails).toEqual({
     number: 1,
     id: '0x000000019015bbd98fc1c9088d793ba9add53896a29cd9aa3a4dcabd1f561c38',

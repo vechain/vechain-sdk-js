@@ -2,7 +2,6 @@ import { DATA, assert } from '@vechain/vechain-sdk-errors';
 import { Poll, buildQuery, thorest } from '../../utils';
 import {
     type WaitForBlockOptions,
-    type BlockInputOptions,
     type BlocksModuleOptions,
     type CompressedBlockDetail,
     type ExpandedBlockDetail
@@ -73,33 +72,50 @@ class BlocksModule {
     }
 
     /**
-     * Retrieves details of a specific block identified by its revision (block number or ID).
+     * Retrieves details of a compressed specific block identified by its revision (block number or ID).
      *
      * @param revision - The block number or ID to query details for.
      * @param options - (Optional) Other optional parameters for the request.
-     * @returns A promise that resolves to an object containing the block details.
+     * @returns A promise that resolves to an object containing the details of the compressed block.
      */
-    public async getBlock(
-        revision: string | number,
-        options?: BlockInputOptions
-    ): Promise<CompressedBlockDetail | ExpandedBlockDetail | null> {
+    public async getBlockCompressed(
+        revision: string | number
+    ): Promise<CompressedBlockDetail | null> {
+        assertIsRevisionForBlock(revision);
+
+        const blockDetail = await this.thor.httpClient.http(
+            'GET',
+            thorest.blocks.get.BLOCK_DETAIL(revision)
+        );
+
+        if (blockDetail === null) return null;
+
+        return blockDetail as CompressedBlockDetail;
+    }
+
+    /**
+     * Retrieves details of a expanded specific block identified by its revision (block number or ID).
+     *
+     * @param revision - The block number or ID to query details for.
+     * @param options - (Optional) Other optional parameters for the request.
+     * @returns A promise that resolves to an object containing the details of the expanded block.
+     */
+    public async getBlockExpanded(
+        revision: string | number
+    ): Promise<ExpandedBlockDetail | null> {
         assertIsRevisionForBlock(revision);
 
         const blockDetail = await this.thor.httpClient.http(
             'GET',
             thorest.blocks.get.BLOCK_DETAIL(revision),
             {
-                query: buildQuery({ expanded: options?.expanded })
+                query: buildQuery({ expanded: true })
             }
         );
 
         if (blockDetail === null) return null;
 
-        if (options?.expanded ?? false) {
-            return blockDetail as ExpandedBlockDetail;
-        } else {
-            return blockDetail as CompressedBlockDetail;
-        }
+        return blockDetail as ExpandedBlockDetail;
     }
 
     /**
@@ -108,7 +124,7 @@ class BlocksModule {
      * @returns A promise that resolves to an object containing the block details.
      */
     public async getBestBlock(): Promise<CompressedBlockDetail | null> {
-        return (await this.getBlock('best')) as CompressedBlockDetail;
+        return await this.getBlockCompressed('best');
     }
 
     /**
@@ -141,7 +157,7 @@ class BlocksModule {
      * @returns A promise that resolves to an object containing the block details.
      */
     public async getFinalBlock(): Promise<CompressedBlockDetail | null> {
-        return (await this.getBlock('finalized')) as CompressedBlockDetail;
+        return await this.getBlockCompressed('finalized');
     }
 
     /**
@@ -188,7 +204,7 @@ class BlocksModule {
      * @returns A promise that resolves to an object containing the block details of the genesis block.
      */
     public async getGenesisBlock(): Promise<CompressedBlockDetail | null> {
-        return (await this.getBlock(0)) as CompressedBlockDetail;
+        return await this.getBlockCompressed(0);
     }
 }
 

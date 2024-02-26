@@ -1,7 +1,8 @@
 import { beforeEach, afterEach, describe, expect, test } from '@jest/globals';
 import {
     invalidBlockRevisions,
-    validBlockRevisions,
+    validCompressedBlockRevisions,
+    validExpandedBlockRevisions,
     waitForBlockTestCases
 } from './fixture';
 import { HttpClient, Poll, ThorClient } from '../../../src';
@@ -88,18 +89,29 @@ describe('ThorClient - Blocks Module', () => {
      */
     describe('getBlock', () => {
         /**
-         * getBlock tests with revision block number or block id
+         * getBlockCompressed tests with revision block number or block id
          */
-        validBlockRevisions.forEach(({ revision, expanded, expected }) => {
+        validCompressedBlockRevisions.forEach(({ revision, expected }) => {
             test(
                 revision,
                 async () => {
-                    const blockDetails = await thorClient.blocks.getBlock(
-                        revision,
-                        {
-                            expanded
-                        }
-                    );
+                    const blockDetails =
+                        await thorClient.blocks.getBlockCompressed(revision);
+                    expect(blockDetails).toEqual(expected);
+                },
+                5000
+            );
+        });
+
+        /**
+         * getBlockExpanded tests with revision block number or block id
+         */
+        validExpandedBlockRevisions.forEach(({ revision, expected }) => {
+            test(
+                revision,
+                async () => {
+                    const blockDetails =
+                        await thorClient.blocks.getBlockExpanded(revision);
                     expect(blockDetails).toEqual(expected);
                 },
                 5000
@@ -115,7 +127,7 @@ describe('ThorClient - Blocks Module', () => {
                     description,
                     async () => {
                         await expect(
-                            thorClient.blocks.getBlock(revision)
+                            thorClient.blocks.getBlockCompressed(revision)
                         ).rejects.toThrowError(expectedError);
                     },
                     5000
@@ -129,7 +141,7 @@ describe('ThorClient - Blocks Module', () => {
         test('getBestBlock', async () => {
             const blockDetails = await thorClient.blocks.getBestBlock();
             if (blockDetails != null) {
-                const block = await thorClient.blocks.getBlock(
+                const block = await thorClient.blocks.getBlockCompressed(
                     blockDetails.number
                 );
                 expect(block?.number).toBe(blockDetails.number);

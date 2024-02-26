@@ -241,9 +241,9 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         // Proceed only if there are active log subscriptions or a new heads subscription is present
         if (this.isThereActiveSubscriptions()) {
             // Fetch the block details for the current block number
-            const block = (await this.thorClient.blocks.getBlock(
+            const block = await this.thorClient.blocks.getBlockCompressed(
                 this.subscriptionManager.currentBlockNumber
-            )) as CompressedBlockDetail | null;
+            );
 
             // If the block is successfully fetched (not undefined or null), update the result and increment the block number
             if (block !== undefined && block !== null) {

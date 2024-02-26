@@ -52,12 +52,10 @@ const ethGetTransactionReceipt = async (
         // Receipt is not null (transaction exists. This implies: Block exists and Transaction details exists)
         if (receipt !== null) {
             // Get the block containing the transaction. @note: It cannot be null!. If some error occurs, it will be thrown.
-            const blockContainsTransaction = (await thorClient.blocks.getBlock(
-                receipt.meta.blockID,
-                {
-                    expanded: true
-                }
-            )) as ExpandedBlockDetail;
+            const blockContainsTransaction =
+                (await thorClient.blocks.getBlockExpanded(
+                    receipt.meta.blockID
+                )) as ExpandedBlockDetail;
 
             // Get transaction detail. @note: It cannot be null!. If some error occurs, it will be thrown.
             const transactionDetail =

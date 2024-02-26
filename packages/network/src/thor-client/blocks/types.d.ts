@@ -17,20 +17,6 @@ interface BlocksModuleOptions {
 }
 
 /**
- * Input options for:
- * * getAccount
- * * getBytecode
- * * getStorage
- * Methods
- */
-interface BlockInputOptions {
-    /**
-     * (Optional) Whether the returned block is expanded.
-     */
-    expanded?: boolean;
-}
-
-/**
  * Options for `waitForBlock` method.
  */
 interface WaitForBlockOptions {
@@ -290,7 +276,6 @@ interface TransactionsExpandedBlockDetail {
 
 export {
     type BlocksModuleOptions,
-    type BlockInputOptions,
     type BlockDetail,
     type CompressedBlockDetail,
     type ExpandedBlockDetail,
