@@ -1,7 +1,7 @@
 import { assert, DATA } from '@vechain/vechain-sdk-errors/dist/index';
 import { Buffer } from 'buffer';
 
-// TODO: investigate vechain_sdk_core_ethers.toQuantity
+// Investigate vechain_sdk_core_ethers.toQuantity
 
 /**
  * Represents the error messages used in the {@link Hex} object.

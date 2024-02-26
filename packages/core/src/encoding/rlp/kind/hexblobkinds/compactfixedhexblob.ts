@@ -1,6 +1,5 @@
 import {
     assertCompactFixedHexBlobBuffer,
-    decodeBufferToHexWithLeadingZeros,
     encodeCompactFixedHexBlob
 } from '../../helpers';
 import { type RLPInput, type DataOutput, type BufferOutput } from '../../types';

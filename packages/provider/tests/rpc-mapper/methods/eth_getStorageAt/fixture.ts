@@ -13,6 +13,8 @@ let ethGetStorageAtTestCases: Array<{
     description: string;
     params: string[];
 }>;
+
+// eslint-disable-next-line prefer-const
 ethGetStorageAtTestCases = [
     {
         description:

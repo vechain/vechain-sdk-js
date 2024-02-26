@@ -1,5 +1,4 @@
 import { Hex } from '@vechain/vechain-sdk-core/src/utils/hex/Hex';
-import { string } from 'hardhat/internal/core/params/argumentTypes';
 
 /**
  * Fixtures for eth_getLogs positive cases

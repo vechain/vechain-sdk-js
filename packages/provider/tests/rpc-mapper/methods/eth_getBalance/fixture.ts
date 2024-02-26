@@ -1,6 +1,5 @@
 import {
     ZERO_BUFFER,
-    dataUtils,
     unitsUtils,
     vechain_sdk_core_ethers
 } from '@vechain/vechain-sdk-core';
