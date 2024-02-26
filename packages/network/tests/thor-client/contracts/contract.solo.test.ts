@@ -25,7 +25,8 @@ import {
 } from '../../../src';
 import {
     ContractDeploymentFailedError,
-    InvalidAbiFunctionError
+    InvalidAbiFunctionError,
+    MissingPrivateKeyError
 } from '@vechain/vechain-sdk-errors';
 
 /**
@@ -275,6 +276,60 @@ describe('ThorClient - Contracts', () => {
         const callFunctionGetResult = await contract.read.get();
 
         expect(callFunctionGetResult).toEqual([BigInt(123)]);
+    }, 10000);
+
+    /**
+     * Test case for loading a deployed contract and calling its functions.
+     */
+    test('load a deployed contract and call its functions', async () => {
+        // Create a contract factory that is already deploying the example contract
+        const factory = await createExampleContractFactory();
+
+        // Wait for the deployment to complete and obtain the contract instance
+        const contract: Contract = await factory.waitForDeployment();
+
+        // Load the deployed contract using the contract address, ABI and private key
+        const loadedContract = thorSoloClient.contracts.load(
+            contract.address,
+            contract.abi,
+            contract.callerPrivateKey
+        );
+
+        // Call the set function of the loaded contract to set the value to 123
+        const callFunctionSetResponse = await loadedContract.transact.set(123);
+
+        // Wait for the transaction to complete and obtain the transaction receipt
+        const transactionReceiptCallSetContract =
+            (await callFunctionSetResponse.wait()) as TransactionReceipt;
+
+        expect(transactionReceiptCallSetContract.reverted).toBe(false);
+
+        const callFunctionGetResult = await contract.read.get();
+
+        // Assertion: The value should be 123
+        expect(callFunctionGetResult).toEqual([BigInt(123)]);
+    }, 10000);
+
+    /**
+     * Test case for loading a deployed contract without adding a private key
+     */
+    test('load a deployed contract without adding a private key and transact', async () => {
+        // Create a contract factory that is already deploying the example contract
+        const factory = await createExampleContractFactory();
+
+        // Wait for the deployment to complete and obtain the contract instance
+        const contract: Contract = await factory.waitForDeployment();
+
+        // Load the deployed contract using the contract address, ABI and private key
+        const loadedContract = thorSoloClient.contracts.load(
+            contract.address,
+            contract.abi
+        );
+
+        // The contract call should fail because the private key is not set
+        await expect(loadedContract.transact.set(123)).rejects.toThrowError(
+            MissingPrivateKeyError
+        );
     }, 10000);
 
     /**
