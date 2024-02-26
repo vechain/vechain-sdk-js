@@ -2,30 +2,55 @@ import { describe, expect, test } from '@jest/globals';
 import { Hex } from '../../../src/utils/hex/Hex';
 
 describe('Hex', () => {
-    test('should have a RADIX property with value 16', () => {
-        expect(Hex.RADIX).toBe(16);
-    });
+    test('ofBigInt', () => {
+        const output = Hex.ofBigInt(BigInt(10), 0);
+        expect(output).toBe('0a');
 
-    test('should have a PREFIX property with value 0x', () => {
-        expect(Hex.PREFIX).toBe('0x');
-    });
-
-    test('should transform a number to its hexadecimal representation with a prefix', () => {
-        expect(Hex.of0x(255)).toBe('0xff');
-        expect(Hex.of0x(0)).toBe('0x0');
-
-        // Test case for number which is not an integer
         expect(() => {
-            Hex.of0x(2.667);
-        }).toThrow();
-
-        // Test case for negative number
-        expect(() => {
-            Hex.of0x(-10);
-        }).toThrow();
+            Hex.ofBigInt(BigInt(-10), 0);
+        }).toThrow("Arg 'n' not negative.");
     });
 
-    test('pad', () => {
-        console.log(Hex.of0x(255, 32));
+    test('ofNumber', () => {
+        const output = Hex.ofNumber(10, 0);
+        expect(output).toBe('0a');
+
+        expect(() => {
+            Hex.ofNumber(3.14, 0);
+        }).toThrow(`Arg 'n' not an integer.`);
+
+        expect(() => {
+            Hex.ofNumber(-10, 0);
+        }).toThrow("Arg 'n' not negative.");
+    });
+
+    test('ofBuffer', () => {
+        const buffer = new Uint8Array(1);
+        buffer[0] = 10;
+        const output = Hex.ofBuffer(buffer, 0);
+        expect(output).toBe('0a');
+    });
+
+    test('ofString', () => {
+        const output = Hex.ofString('a', 0);
+        expect(output).toBe('61');
+    });
+
+    test('of', () => {
+        let output = Hex.of(10, 0);
+        expect(output).toBe('0a');
+
+        const buffer = new Uint8Array(1);
+        buffer[0] = 10;
+        output = Hex.of(buffer, 0);
+        expect(output).toBe('0a');
+
+        output = Hex.of('a', 0);
+        expect(output).toBe('61');
+    });
+
+    test('of0x', () => {
+        const output = Hex.of0x(10, 0);
+        expect(output).toBe('0x0a');
     });
 });

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
-import { Hex } from '../../../../../core/src/utils/hex/Hex';
+import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
 
 /**
  * RPC Mapper integration tests for 'eth_blockNumber' method on Testnet Network
@@ -47,8 +47,9 @@ describe('RPC Mapper - eth_blockNumber method tests', () => {
 
             expect(rpcCallUpdatedLatestBlockNumber).not.toBe('0x0');
             expect(rpcCallUpdatedLatestBlockNumber).toBe(
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-                Hex.of0x(Number(rpcCallLatestBlockNumber) + 1)
+                vechain_sdk_core_ethers.toQuantity(
+                    Number(rpcCallLatestBlockNumber) + 1
+                )
             );
         }, 15000);
     });

@@ -10,7 +10,6 @@ import {
 } from '@vechain/vechain-sdk-core';
 
 import { transactionsFormatter } from '../transactions';
-import { Hex } from '@vechain/vechain-sdk-core/src/utils/hex/Hex';
 
 /**
  * Output formatter for block details.
@@ -40,13 +39,13 @@ const formatToRPCStandard = (
         // Supported fields converted to RPC standard
         hash: block.id,
         parentHash: block.parentID,
-        number: Hex.of(block.number),
-        size: Hex.of(block.size),
+        number: vechain_sdk_core_ethers.toQuantity(block.number),
+        size: vechain_sdk_core_ethers.toQuantity(block.size),
         stateRoot: block.stateRoot,
         receiptsRoot: block.receiptsRoot,
         transactionsRoot: block.txsRoot,
-        timestamp: Hex.of(block.timestamp),
-        gasLimit: Hex.of(block.gasLimit),
+        timestamp: vechain_sdk_core_ethers.toQuantity(block.timestamp),
+        gasLimit: vechain_sdk_core_ethers.toQuantity(block.gasLimit),
         gasUsed: vechain_sdk_core_ethers.toQuantity(block.gasUsed),
         transactions,
         miner: block.beneficiary,
@@ -55,12 +54,20 @@ const formatToRPCStandard = (
         difficulty: '0x0',
         totalDifficulty: '0x0',
         uncles: [],
-        sha3Uncles: Hex.of0x(ZERO_BUFFER(32)),
-        nonce: Hex.of0x(ZERO_BUFFER(8)),
-        logsBloom: Hex.of0x(ZERO_BUFFER(256)),
-        extraData: '0x',
-        baseFeePerGas: '0x',
-        mixHash: Hex.of0x(ZERO_BUFFER(32))
+        sha3Uncles: dataUtils.toHexString(ZERO_BUFFER(32), {
+            withPrefix: true
+        }),
+        nonce: dataUtils.toHexString(ZERO_BUFFER(8), {
+            withPrefix: true
+        }),
+        logsBloom: dataUtils.toHexString(ZERO_BUFFER(256), {
+            withPrefix: true
+        }),
+        extraData: '0x0',
+        baseFeePerGas: '0x0',
+        mixHash: dataUtils.toHexString(ZERO_BUFFER(32), {
+            withPrefix: true
+        })
     };
 };
 
