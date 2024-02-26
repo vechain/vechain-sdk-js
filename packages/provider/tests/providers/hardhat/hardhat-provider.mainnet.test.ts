@@ -2,10 +2,7 @@ import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { HardhatVechainProvider } from '../../../src';
 import { mainnetUrl } from '../../fixture';
 import { providerMethodsTestCasesMainnet } from '../fixture';
-import {
-    InvalidDataTypeError,
-    JSONRPCInvalidRequest
-} from '@vechain/vechain-sdk-errors';
+import { JSONRPCInvalidRequest } from '@vechain/vechain-sdk-errors';
 import { BaseWallet } from '@vechain/vechain-sdk-wallet';
 
 /**
@@ -114,7 +111,7 @@ describe('Hardhat provider tests', () => {
                     method: 'INVALID_METHOD',
                     params: [-1]
                 })
-        ).rejects.toThrowError(InvalidDataTypeError);
+        ).rejects.toThrowError(JSONRPCInvalidRequest);
 
         // Call RPC function and throw error using send method (same result as above)
         await expect(

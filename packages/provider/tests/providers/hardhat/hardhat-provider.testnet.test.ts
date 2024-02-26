@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { HardhatVechainProvider } from '../../../src';
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { JSONRPCInvalidRequest } from '@vechain/vechain-sdk-errors';
 import { testnetUrl } from '../../fixture';
 import { providerMethodsTestCasesTestnet } from '../fixture';
 import { waitForMessage } from '../helpers';
@@ -105,6 +105,6 @@ describe('Hardhat provider tests - testnet', () => {
                     method: 'INVALID_METHOD',
                     params: [-1]
                 })
-        ).rejects.toThrowError(InvalidDataTypeError);
+        ).rejects.toThrowError(JSONRPCInvalidRequest);
     });
 });

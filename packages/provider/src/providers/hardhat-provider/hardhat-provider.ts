@@ -52,40 +52,10 @@ class HardhatVechainProvider
         method: string,
         params?: unknown[] | undefined
     ): Promise<unknown> {
-        try {
-            return await this.request({
-                method,
-                params
-            });
-        } catch (e) {
-            // Debug the error
-            if (this.debug) {
-                const delegator = await (this.wallet as Wallet).getDelegator();
-                const accounts = await (this.wallet as Wallet).getAddresses();
-
-                console.log(
-                    `\n****************** ERROR ON REQUEST ******************\n` +
-                        `\n- request:\n\t\t${JSON.stringify(method)}` +
-                        `\n- params:\n\t\t${JSON.stringify(params)}` +
-                        `\n- accounts:\n\t\t${JSON.stringify(accounts)}` +
-                        `\n- delegator:\n\t\t${JSON.stringify(delegator)}` +
-                        `\n- url:\n\t\t${this.thorClient.httpClient.baseURL}` +
-                        `\n- error:\n\t\t${JSON.stringify(e)}` +
-                        `\n\n`
-                );
-            }
-
-            // Throw the error
-            throw buildError(
-                JSONRPC.INVALID_REQUEST,
-                `Invalid request to endpoint ${method}`,
-                {
-                    code: getJSONRPCErrorCode(JSONRPC.INVALID_REQUEST),
-                    message: `Invalid request to endpoint ${method}`
-                },
-                e
-            );
-        }
+        return await this.request({
+            method,
+            params
+        });
     }
 
     /**
@@ -127,33 +97,65 @@ class HardhatVechainProvider
      * @param args - The request arguments.
      */
     async request(args: EIP1193RequestArguments): Promise<unknown> {
-        // Debug mode - get the request and the accounts
-        if (this.debug) {
-            const accounts = await (this.wallet as Wallet).getAddresses();
-            const delegator = await (this.wallet as Wallet).getDelegator();
+        try {
+            // Debug mode - get the request and the accounts
+            if (this.debug) {
+                const accounts = await (this.wallet as Wallet).getAddresses();
+                const delegator = await (this.wallet as Wallet).getDelegator();
 
-            console.log(
-                `\n****************** SENDING REQUEST ******************\n` +
-                    `\n- method:\n\t\t${JSON.stringify(args.method)}` +
-                    `\n- params:\n\t\t${JSON.stringify(args.params)}` +
-                    `\n- accounts:\n\t\t${JSON.stringify(accounts)}` +
-                    `\n- delegator:\n\t\t${JSON.stringify(delegator)}` +
-                    `\n- url:\n\t\t${this.thorClient.httpClient.baseURL}`
+                console.log(
+                    `\n****************** SENDING REQUEST ******************\n` +
+                        `\n- method:\n\t\t${JSON.stringify(args.method)}` +
+                        `\n- params:\n\t\t${JSON.stringify(args.params)}` +
+                        `\n- accounts:\n\t\t${JSON.stringify(accounts)}` +
+                        `\n- delegator:\n\t\t${JSON.stringify(delegator)}` +
+                        `\n- url:\n\t\t${this.thorClient.httpClient.baseURL}`
+                );
+            }
+
+            // Send the request
+            const result = await super.request({
+                method: args.method,
+                params: args.params as never
+            });
+
+            // Debug mode - get the result
+            if (this.debug) {
+                console.log(
+                    `- result:\n\t\t${JSON.stringify(result)}` + `\n\n`
+                );
+            }
+
+            return result;
+        } catch (e) {
+            // Debug the error
+            if (this.debug) {
+                const delegator = await (this.wallet as Wallet).getDelegator();
+                const accounts = await (this.wallet as Wallet).getAddresses();
+
+                console.log(
+                    `\n****************** ERROR ON REQUEST ******************\n` +
+                        `\n- request:\n\t\t${JSON.stringify(args.method)}` +
+                        `\n- params:\n\t\t${JSON.stringify(args.params)}` +
+                        `\n- accounts:\n\t\t${JSON.stringify(accounts)}` +
+                        `\n- delegator:\n\t\t${JSON.stringify(delegator)}` +
+                        `\n- url:\n\t\t${this.thorClient.httpClient.baseURL}` +
+                        `\n- error:\n\t\t${JSON.stringify(e)}` +
+                        `\n\n`
+                );
+            }
+
+            // Throw the error
+            throw buildError(
+                JSONRPC.INVALID_REQUEST,
+                `Invalid request to endpoint ${args.method}`,
+                {
+                    code: getJSONRPCErrorCode(JSONRPC.INVALID_REQUEST),
+                    message: `Invalid request to endpoint ${args.method}`
+                },
+                e
             );
         }
-
-        // Send the request
-        const result = await super.request({
-            method: args.method,
-            params: args.params as never
-        });
-
-        // Debug mode - get the result
-        if (this.debug) {
-            console.log(`- result:\n\t\t${JSON.stringify(result)}` + `\n\n`);
-        }
-
-        return result;
     }
 }
 

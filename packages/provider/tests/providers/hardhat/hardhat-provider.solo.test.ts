@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { HardhatVechainProvider, type SubscriptionEvent } from '../../../src';
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { JSONRPCInvalidRequest } from '@vechain/vechain-sdk-errors';
 import { ThorClient } from '@vechain/vechain-sdk-network';
 import { soloNetwork, soloUrl } from '../../fixture';
 import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
@@ -139,7 +139,7 @@ describe('Hardhat provider tests', () => {
                     method: 'eth_subscribe',
                     params: ['invalid']
                 })
-        ).rejects.toThrowError('Invalid subscription type');
+        ).rejects.toThrowError(JSONRPCInvalidRequest);
     }, 12000);
 
     /**
@@ -334,6 +334,6 @@ describe('Hardhat provider tests', () => {
                     method: 'INVALID_METHOD',
                     params: [-1]
                 })
-        ).rejects.toThrowError(InvalidDataTypeError);
+        ).rejects.toThrowError(JSONRPCInvalidRequest);
     });
 });
