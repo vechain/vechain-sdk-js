@@ -57,7 +57,10 @@ import {
     JSONRPCMethodNotFound,
     JSONRPCInvalidParams,
     JSONRPCInternalError,
-    JSONRPCDefaultError
+    JSONRPCDefaultError,
+    CONTRACT,
+    ContractDeploymentFailedError,
+    TransactionMissingPrivateKeyError
 } from '../src';
 
 /**
@@ -233,6 +236,10 @@ const ErrorsCodeAndClassesMapsFixture = [
             {
                 errorCode: TRANSACTION.INVALID_DELEGATION,
                 classExpected: TransactionDelegationError
+            },
+            {
+                errorCode: TRANSACTION.MISSING_PRIVATE_KEY,
+                classExpected: TransactionMissingPrivateKeyError
             }
         ]
     },
@@ -314,6 +321,15 @@ const ErrorsCodeAndClassesMapsFixture = [
             {
                 errorCode: JSONRPC.DEFAULT,
                 classExpected: JSONRPCDefaultError
+            }
+        ]
+    },
+    {
+        name: 'Contract',
+        elements: [
+            {
+                errorCode: CONTRACT.CONTRACT_DEPLOYMENT_FAILED,
+                classExpected: ContractDeploymentFailedError
             }
         ]
     }
