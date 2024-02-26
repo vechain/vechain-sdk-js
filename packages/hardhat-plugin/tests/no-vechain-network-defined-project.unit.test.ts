@@ -1,28 +1,23 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 
 import { resetHardhatContext } from 'hardhat/plugins-testing';
-import * as path from 'path';
-import {
-    type HardhatRuntimeEnvironment,
-    type HttpNetworkConfig
-} from 'hardhat/types';
+import { type HardhatRuntimeEnvironment } from 'hardhat/types';
+import { setHardhatContext } from './test-utils';
 
 /**
- * Custom HTTP network configuration tests
+ * Simple hardhat project without vechain network configuration defined
  *
- * @group unit/custom-hardhat-configuration
+ * @group unit/no-vechain-network-defined-project
  */
-describe('Custom network configuration hardhat', () => {
+describe('Custom network configuration hardhat without vechain network defined', () => {
     /**
      * Init hardhat runtime environment
      */
     let hre: HardhatRuntimeEnvironment;
 
     beforeEach(async function () {
-        // Init node environment directory
-        process.chdir(
-            path.join(__dirname, 'test-environment', 'hardhat-project')
-        );
+        // Set hardhat context
+        setHardhatContext('no-vechain-network-defined-project');
 
         // Load hardhat environment
         hre = await import('hardhat');
@@ -40,13 +35,8 @@ describe('Custom network configuration hardhat', () => {
          * Positive test cases for createWalletFromHardhatNetworkConfig function
          */
         test('Should be able to get custom configuration from a project', () => {
-            expect(hre.config.networks.vechain).toBeDefined();
-            expect(
-                (hre.config.networks.vechain as HttpNetworkConfig).delegator
-            ).toBeDefined();
-            expect(
-                (hre.config.networks.vechain as HttpNetworkConfig).debugMode
-            ).toBeDefined();
+            // Default network (hardhat) should be undefined
+            expect(hre.config.networks.hardhat).toBeDefined();
         });
     });
 });

@@ -1,14 +1,18 @@
+/**
+ * Simple hardhat configuration for testing with a vechain network defined
+ */
+
 // We load the plugin here.
 import { type HardhatUserConfig, type HttpNetworkConfig } from 'hardhat/types';
 
 import '../../../src/index';
 
 /**
- * Simple configuration for testing - thor solo network
+ * Simple configuration for testing
  */
-const vechainThorSolo: HttpNetworkConfig = {
+const vechainTestNetowrk: HttpNetworkConfig = {
     // Default network parameters
-    url: 'http://localhost:8669',
+    url: 'https://testnet.vechain.org',
     timeout: 20000,
     httpHeaders: {},
     gas: 'auto',
@@ -30,8 +34,17 @@ const vechainThorSolo: HttpNetworkConfig = {
 const config: HardhatUserConfig = {
     solidity: '0.8.17',
     networks: {
-        vechain: vechainThorSolo
-    }
+        vechain_testnet: vechainTestNetowrk
+    },
+
+    /**
+     * @note: here we set vechain_testnet as the default network to simulate a command like this:
+     *
+     * ```sh
+     * npx hardhat --network vechain_testnet <command>
+     * ```
+     */
+    defaultNetwork: 'vechain_testnet'
 };
 
 export default config;
