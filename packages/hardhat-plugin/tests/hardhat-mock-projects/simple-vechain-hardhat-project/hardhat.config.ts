@@ -10,7 +10,7 @@ import '../../../src/index';
 /**
  * Simple configuration for testing
  */
-const vechainTestNetowrk: HttpNetworkConfig = {
+const vechainTestNetwork: HttpNetworkConfig = {
     // Default network parameters
     url: 'https://testnet.vechain.org',
     timeout: 20000,
@@ -34,7 +34,7 @@ const vechainTestNetowrk: HttpNetworkConfig = {
 const config: HardhatUserConfig = {
     solidity: '0.8.17',
     networks: {
-        vechain_testnet: vechainTestNetowrk
+        vechain_testnet: vechainTestNetwork
     },
 
     /**
