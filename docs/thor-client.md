@@ -118,7 +118,7 @@ expect(finalBlockDetails).toBeDefined();
 
 In this example, the code initializes a Thor client for the VechainThor testnet network and showcases three essential methods for interacting with blocks:
 
- - getBlock(height: number): Promise<Block>
+ - getBlockCompressed(height: number): Promise<Block>
 
 Retrieves details of a specific block based on its height. In the provided code, it fetches details for the block at height 1.
 
