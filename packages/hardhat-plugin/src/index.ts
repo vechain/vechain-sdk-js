@@ -1,4 +1,5 @@
 import { HardhatVechainProvider } from '@vechain/vechain-sdk-provider';
+import { createWalletFromHardhatNetworkConfig } from './helpers';
 
 import { extendEnvironment } from 'hardhat/config';
 import { type HttpNetworkConfig } from 'hardhat/types';
@@ -34,7 +35,8 @@ extendEnvironment((hre) => {
 
     // 3.1 - Create the provider
     const hardhatVechainProvider = new HardhatVechainProvider(
-        networkConfig,
+        createWalletFromHardhatNetworkConfig(networkConfig),
+        networkConfig.url ?? 'http://localhost:8669/',
         isInDebugMode
     );
 

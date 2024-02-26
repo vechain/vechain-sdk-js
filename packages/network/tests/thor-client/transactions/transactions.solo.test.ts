@@ -25,7 +25,7 @@ import {
     coder
 } from '@vechain/vechain-sdk-core';
 import { TransactionNotSignedError } from '@vechain/vechain-sdk-errors';
-import { ThorClient } from '../../../src';
+import { DelegationHandler, ThorClient } from '../../../src';
 
 /**
  * Transactions module tests.
@@ -286,7 +286,7 @@ describe('ThorClient - Transactions Module', () => {
                         await thorSoloClient.transactions.signTransaction(
                             txBody,
                             origin.privateKey,
-                            options
+                            DelegationHandler(options).delegatorOrUndefined()
                         );
 
                     expect(signedTx).toBeDefined();

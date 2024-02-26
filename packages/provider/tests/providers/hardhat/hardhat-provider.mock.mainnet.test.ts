@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { HardhatVechainProvider } from '../../../src';
 import { mainnetUrl } from '../../fixture';
-import { type HttpNetworkConfig } from 'hardhat/types';
 import { JSONRPCInvalidRequest } from '@vechain/vechain-sdk-errors';
+import { BaseWallet } from '@vechain/vechain-sdk-wallet';
 
 /**
  * Hardhat provider tests - Mainnet
@@ -20,11 +20,8 @@ describe('Hardhat provider tests', () => {
      */
     beforeEach(() => {
         providerInDebugMode = new HardhatVechainProvider(
-            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-            {
-                url: mainnetUrl,
-                chainId: 74
-            } as HttpNetworkConfig,
+            new BaseWallet([]),
+            mainnetUrl,
             true
         );
     });

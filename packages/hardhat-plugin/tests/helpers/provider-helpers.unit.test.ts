@@ -3,8 +3,9 @@ import {
     createWalletFromHardhatNetworkConfigNegativeCasesFixture,
     createWalletFromHardhatNetworkConfigPositiveCasesFixture
 } from './fixture';
-import { createWalletFromHardhatNetworkConfig } from '../../../src';
+
 import { type HttpNetworkConfig } from 'hardhat/types';
+import { createWalletFromHardhatNetworkConfig } from '../../src/helpers';
 
 /**
  * Provider hardhat helpers test suite
@@ -26,8 +27,12 @@ describe('Provider Hardhat Helpers', () => {
                         fixture.networkConfig as HttpNetworkConfig
                     );
                     const addresses = await wallet.getAddresses();
+                    const delegator = await wallet.getDelegator();
 
                     expect(addresses).toEqual(fixture.expectedAddresses);
+                    expect(delegator).toEqual(
+                        fixture.networkConfig.delegator ?? null
+                    );
                 });
             }
         );
