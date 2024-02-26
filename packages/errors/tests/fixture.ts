@@ -60,7 +60,7 @@ import {
     JSONRPCDefaultError,
     CONTRACT,
     ContractDeploymentFailedError,
-    MissingPrivateKeyError
+    TransactionMissingPrivateKeyError
 } from '../src';
 
 /**
@@ -236,6 +236,10 @@ const ErrorsCodeAndClassesMapsFixture = [
             {
                 errorCode: TRANSACTION.INVALID_DELEGATION,
                 classExpected: TransactionDelegationError
+            },
+            {
+                errorCode: TRANSACTION.MISSING_PRIVATE_KEY,
+                classExpected: TransactionMissingPrivateKeyError
             }
         ]
     },
@@ -326,10 +330,6 @@ const ErrorsCodeAndClassesMapsFixture = [
             {
                 errorCode: CONTRACT.CONTRACT_DEPLOYMENT_FAILED,
                 classExpected: ContractDeploymentFailedError
-            },
-            {
-                errorCode: CONTRACT.MISSING_PRIVATE_KEY,
-                classExpected: MissingPrivateKeyError
             }
         ]
     }

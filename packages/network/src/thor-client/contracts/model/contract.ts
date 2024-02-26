@@ -173,7 +173,7 @@ class Contract {
                 ): Promise<SendTransactionResult> => {
                     if (this.callerPrivateKey === undefined) {
                         throw buildError(
-                            ERROR_CODES.CONTRACT.MISSING_PRIVATE_KEY,
+                            ERROR_CODES.TRANSACTION.MISSING_PRIVATE_KEY,
                             'Caller private key is required to transact with the contract',
                             { prop }
                         );

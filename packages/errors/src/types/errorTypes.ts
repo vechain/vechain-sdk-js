@@ -53,7 +53,6 @@ import {
     JSONRPCMethodNotFound,
     JSONRPCParseError,
     KEYSTORE,
-    MissingPrivateKeyError,
     NotImplementedError,
     POLL_ERROR,
     type PollErrorData,
@@ -64,6 +63,7 @@ import {
     TransactionAlreadySignedError,
     TransactionBodyError,
     TransactionDelegationError,
+    TransactionMissingPrivateKeyError,
     TransactionNotSignedError
 } from '../model';
 import { CONTRACT, ContractDeploymentFailedError } from '../model';
@@ -242,43 +242,43 @@ type ErrorType<ErrorCodeT> =
                                                                 ? TransactionBodyError
                                                                 : ErrorCodeT extends TRANSACTION.INVALID_DELEGATION
                                                                   ? TransactionDelegationError
-                                                                  : // HTTP_CLIENT
-                                                                    ErrorCodeT extends HTTP_CLIENT.INVALID_HTTP_REQUEST
-                                                                    ? HTTPClientError
-                                                                    : // POOL_ERROR
-                                                                      ErrorCodeT extends POLL_ERROR.POLL_EXECUTION_ERROR
-                                                                      ? PollExecutionError
-                                                                      : // EIP1193
-                                                                        ErrorCodeT extends EIP1193.USER_REJECTED_REQUEST
-                                                                        ? EIP1193UserRejectedRequest
-                                                                        : ErrorCodeT extends EIP1193.UNAUTHORIZED
-                                                                          ? EIP1193Unauthorized
-                                                                          : ErrorCodeT extends EIP1193.UNSUPPORTED_METHOD
-                                                                            ? EIP1193UnsupportedMethod
-                                                                            : ErrorCodeT extends EIP1193.DISCONNECTED
-                                                                              ? EIP1193Disconnected
-                                                                              : ErrorCodeT extends EIP1193.CHAIN_DISCONNECTED
-                                                                                ? EIP1193ChainDisconnected
-                                                                                : // FUNCTION
-                                                                                  ErrorCodeT extends FUNCTION.NOT_IMPLEMENTED
-                                                                                  ? NotImplementedError
-                                                                                  : // JSONRPC
-                                                                                    ErrorCodeT extends JSONRPC.PARSE_ERROR
-                                                                                    ? JSONRPCParseError
-                                                                                    : ErrorCodeT extends JSONRPC.INVALID_REQUEST
-                                                                                      ? JSONRPCInvalidRequest
-                                                                                      : ErrorCodeT extends JSONRPC.METHOD_NOT_FOUND
-                                                                                        ? JSONRPCMethodNotFound
-                                                                                        : ErrorCodeT extends JSONRPC.INVALID_PARAMS
-                                                                                          ? JSONRPCInvalidParams
-                                                                                          : ErrorCodeT extends JSONRPC.INTERNAL_ERROR
-                                                                                            ? JSONRPCInternalError
-                                                                                            : ErrorCodeT extends JSONRPC.DEFAULT
-                                                                                              ? JSONRPCDefaultError
-                                                                                              : ErrorCodeT extends CONTRACT.CONTRACT_DEPLOYMENT_FAILED
-                                                                                                ? ContractDeploymentFailedError
-                                                                                                : ErrorCodeT extends CONTRACT.MISSING_PRIVATE_KEY
-                                                                                                  ? MissingPrivateKeyError
+                                                                  : ErrorCodeT extends TRANSACTION.MISSING_PRIVATE_KEY
+                                                                    ? TransactionMissingPrivateKeyError
+                                                                    : // HTTP_CLIENT
+                                                                      ErrorCodeT extends HTTP_CLIENT.INVALID_HTTP_REQUEST
+                                                                      ? HTTPClientError
+                                                                      : // POOL_ERROR
+                                                                        ErrorCodeT extends POLL_ERROR.POLL_EXECUTION_ERROR
+                                                                        ? PollExecutionError
+                                                                        : // EIP1193
+                                                                          ErrorCodeT extends EIP1193.USER_REJECTED_REQUEST
+                                                                          ? EIP1193UserRejectedRequest
+                                                                          : ErrorCodeT extends EIP1193.UNAUTHORIZED
+                                                                            ? EIP1193Unauthorized
+                                                                            : ErrorCodeT extends EIP1193.UNSUPPORTED_METHOD
+                                                                              ? EIP1193UnsupportedMethod
+                                                                              : ErrorCodeT extends EIP1193.DISCONNECTED
+                                                                                ? EIP1193Disconnected
+                                                                                : ErrorCodeT extends EIP1193.CHAIN_DISCONNECTED
+                                                                                  ? EIP1193ChainDisconnected
+                                                                                  : // FUNCTION
+                                                                                    ErrorCodeT extends FUNCTION.NOT_IMPLEMENTED
+                                                                                    ? NotImplementedError
+                                                                                    : // JSONRPC
+                                                                                      ErrorCodeT extends JSONRPC.PARSE_ERROR
+                                                                                      ? JSONRPCParseError
+                                                                                      : ErrorCodeT extends JSONRPC.INVALID_REQUEST
+                                                                                        ? JSONRPCInvalidRequest
+                                                                                        : ErrorCodeT extends JSONRPC.METHOD_NOT_FOUND
+                                                                                          ? JSONRPCMethodNotFound
+                                                                                          : ErrorCodeT extends JSONRPC.INVALID_PARAMS
+                                                                                            ? JSONRPCInvalidParams
+                                                                                            : ErrorCodeT extends JSONRPC.INTERNAL_ERROR
+                                                                                              ? JSONRPCInternalError
+                                                                                              : ErrorCodeT extends JSONRPC.DEFAULT
+                                                                                                ? JSONRPCDefaultError
+                                                                                                : ErrorCodeT extends CONTRACT.CONTRACT_DEPLOYMENT_FAILED
+                                                                                                  ? ContractDeploymentFailedError
                                                                                                   : never;
 
 /**
@@ -347,6 +347,7 @@ const ErrorClassMap = new Map<
     [TRANSACTION.NOT_SIGNED, TransactionNotSignedError],
     [TRANSACTION.INVALID_TRANSACTION_BODY, TransactionBodyError],
     [TRANSACTION.INVALID_DELEGATION, TransactionDelegationError],
+    [TRANSACTION.MISSING_PRIVATE_KEY, TransactionMissingPrivateKeyError],
 
     // HTTP_CLIENT
     [HTTP_CLIENT.INVALID_HTTP_REQUEST, HTTPClientError],
@@ -373,8 +374,7 @@ const ErrorClassMap = new Map<
     [JSONRPC.DEFAULT, JSONRPCDefaultError],
 
     // CONTRACT
-    [CONTRACT.CONTRACT_DEPLOYMENT_FAILED, ContractDeploymentFailedError],
-    [CONTRACT.MISSING_PRIVATE_KEY, MissingPrivateKeyError]
+    [CONTRACT.CONTRACT_DEPLOYMENT_FAILED, ContractDeploymentFailedError]
 ]);
 
 export {

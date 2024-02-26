@@ -26,7 +26,7 @@ import {
 import {
     ContractDeploymentFailedError,
     InvalidAbiFunctionError,
-    MissingPrivateKeyError
+    TransactionMissingPrivateKeyError
 } from '@vechain/vechain-sdk-errors';
 
 /**
@@ -337,7 +337,7 @@ describe('ThorClient - Contracts', () => {
 
         // The contract call should fail because the private key is not set
         await expect(loadedContract.transact.set(123)).rejects.toThrowError(
-            MissingPrivateKeyError
+            TransactionMissingPrivateKeyError
         );
     }, 10000);
 
