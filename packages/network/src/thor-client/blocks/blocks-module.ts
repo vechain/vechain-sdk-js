@@ -83,14 +83,10 @@ class BlocksModule {
     ): Promise<CompressedBlockDetail | null> {
         assertIsRevisionForBlock(revision);
 
-        const blockDetail = await this.thor.httpClient.http(
+        return (await this.thor.httpClient.http(
             'GET',
             thorest.blocks.get.BLOCK_DETAIL(revision)
-        );
-
-        if (blockDetail === null) return null;
-
-        return blockDetail as CompressedBlockDetail;
+        )) as CompressedBlockDetail | null;
     }
 
     /**
@@ -105,17 +101,13 @@ class BlocksModule {
     ): Promise<ExpandedBlockDetail | null> {
         assertIsRevisionForBlock(revision);
 
-        const blockDetail = await this.thor.httpClient.http(
+        return (await this.thor.httpClient.http(
             'GET',
             thorest.blocks.get.BLOCK_DETAIL(revision),
             {
                 query: buildQuery({ expanded: true })
             }
-        );
-
-        if (blockDetail === null) return null;
-
-        return blockDetail as ExpandedBlockDetail;
+        )) as ExpandedBlockDetail | null;
     }
 
     /**
