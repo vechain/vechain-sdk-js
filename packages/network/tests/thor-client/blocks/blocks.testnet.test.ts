@@ -156,7 +156,7 @@ describe('ThorClient - Blocks Module', () => {
         /**
          * getBestBlockCompressed test
          */
-        test('getBestBlock', async () => {
+        test('getBestBlockCompressed', async () => {
             const blockDetails =
                 await thorClient.blocks.getBestBlockCompressed();
             if (blockDetails != null) {
@@ -172,7 +172,7 @@ describe('ThorClient - Blocks Module', () => {
         /**
          * getBestBlockExpanded test
          */
-        test('getBestBlock', async () => {
+        test('getBestBlockExpanded', async () => {
             const blockDetails = await thorClient.blocks.getBestBlockExpanded();
             if (blockDetails != null) {
                 const block = await thorClient.blocks.getBlockExpanded(

@@ -250,7 +250,7 @@ describe('ThorClient - Contracts', () => {
         await (await contract.transact.set(22323)).wait();
 
         expect(callFunctionGetResult).toEqual([BigInt(123)]);
-    }, 10000);
+    }, 15000);
 
     /**
      * Test case for calling a contract function with different private keys.

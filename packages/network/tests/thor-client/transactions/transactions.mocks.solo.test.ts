@@ -36,9 +36,10 @@ describe('buildTransactionBody with mocks', () => {
         const thorSoloClient = new ThorClient(soloNetwork);
 
         // Mock the getBestBlock method to return null
-        jest.spyOn(thorSoloClient.blocks, 'getBestBlock').mockResolvedValue(
-            null
-        );
+        jest.spyOn(
+            thorSoloClient.blocks,
+            'getBestBlockCompressed'
+        ).mockResolvedValue(null);
 
         const gas = await thorSoloClient.gas.estimateGas(
             [transferTransactionBody.clauses[0]],
