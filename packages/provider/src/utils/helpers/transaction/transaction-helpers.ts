@@ -4,10 +4,7 @@ import {
     type BlocksRPC,
     blocksFormatter
 } from '../../formatter';
-import {
-    type Output,
-    type ExpandedBlockDetail
-} from '@vechain/vechain-sdk-network';
+import { type ExpandedBlockDetail } from '@vechain/vechain-sdk-network';
 
 /**
  * Get the index of the transaction in the specified block.
@@ -67,7 +64,7 @@ const getNumberOfLogsAheadOfTransactionIntoBlockExpanded = (
         const currentTransaction = blockExpanded.transactions[i];
 
         // Iterate over the outputs of the current transaction
-        for (const output of currentTransaction.outputs as Output[]) {
+        for (const output of currentTransaction.outputs) {
             logIndex += output.events.length;
         }
     }
