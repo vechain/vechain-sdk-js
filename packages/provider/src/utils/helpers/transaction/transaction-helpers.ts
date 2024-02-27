@@ -6,7 +6,6 @@ import {
 } from '../../formatter';
 import {
     type BlockDetail,
-    type Output,
     type TransactionsExpandedBlockDetail
 } from '@vechain/vechain-sdk-network';
 
@@ -70,7 +69,7 @@ const getNumberOfLogsAheadOfTransactionIntoBlockExpanded = (
         ] as TransactionsExpandedBlockDetail;
 
         // Iterate over the outputs of the current transaction
-        for (const output of currentTransaction.outputs as Output[]) {
+        for (const output of currentTransaction.outputs) {
             logIndex += output.events.length;
         }
     }

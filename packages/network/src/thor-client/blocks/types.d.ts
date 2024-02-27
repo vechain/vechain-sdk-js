@@ -280,7 +280,7 @@ interface TransactionsExpandedBlockDetail {
     /**
      * Outputs represent the results or consequences of a blockchain transaction.
      */
-    outputs: Outputs;
+    outputs: Output[];
 }
 
 /* --- Responses Outputs end --- */
