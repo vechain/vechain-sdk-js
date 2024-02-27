@@ -6,7 +6,7 @@ import { Buffer } from 'buffer';
  *
  * @type {BufferEncoding}
  * @constant
- * @see {Hex.ofString}
+ * @see {ofString}
  */
 const ENCODING: BufferEncoding = 'hex' as BufferEncoding;
 
@@ -36,7 +36,7 @@ enum ErrorMessage {
      * String constant representing an error message when the argument 'n' is not an integer.
      *
      * @type {string}
-     * @see {Hex.ofNumber}
+     * @see {ofNumber}
      */
     NOT_INTEGER = `Arg 'n' not an integer.`,
 
@@ -44,8 +44,8 @@ enum ErrorMessage {
      * String constant representing an error message when argument 'n' is not negative.
      *
      * @type {string}
-     * @see {Hex.ofBigInt}
-     * @see {Hex.ofNumber}
+     * @see {ofBigInt}
+     * @see {ofNumber}
      */
     NOT_POSITIVE = `Arg 'n' not negative.`
 }
@@ -148,10 +148,10 @@ export const Hex = {
     /**
      * Generate a hexadecimal representation from the given input data.
      * This method calls
-     * * {@link Hex.ofBigInt} if `n` type is `bigint`;
-     * * {@link Hex.ofNumber} if `n` type is `number`;
-     * * {@link Hex.ofBuffer} if `n` is an instance of {@link Uint8Array};
-     * * {@link Hex.ofString} if `n` type is `string`.
+     * * {@link ofBigInt} if `n` type is `bigint`;
+     * * {@link ofNumber} if `n` type is `number`;
+     * * {@link ofBuffer} if `n` is an instance of {@link Uint8Array};
+     * * {@link ofString} if `n` type is `string`.
      *
      * **Note:** the returned string is not prefixed with `0x`,
      * see {@link Hex.of0x} to make a hexadecimal representation prefixed with `0x`.
@@ -161,7 +161,10 @@ export const Hex = {
      * @returns {Uint8Array} - The resulting hexadecimal representation,
      * it is guaranteed to be even characters long.
      */
-    of: function (n: bigint | Uint8Array | number | string, bytes: number = 0) {
+    of: function (
+        n: bigint | Uint8Array | number | string,
+        bytes: number = 0
+    ): string {
         if (typeof n === 'bigint') return ofBigInt(n, bytes);
         if (typeof n === 'number') return ofNumber(n, bytes);
         if (isBuffer(n)) return ofBuffer(n, bytes);
@@ -182,7 +185,7 @@ export const Hex = {
     of0x: function (
         n: bigint | Uint8Array | number | string,
         bytes: number = 0
-    ) {
+    ): string {
         return `${PREFIX}${this.of(n, bytes)}`;
     }
 };
