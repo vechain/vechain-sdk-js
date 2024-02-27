@@ -19,7 +19,7 @@ const thorClient = new ThorClient(testNetwork);
 
 // 2 - Get current block
 
-const currentBlock = await thorClient.blocks.getBestBlock();
+const currentBlock = await thorClient.blocks.getBestBlockCompressed();
 
 console.log('Current block:', currentBlock);
 
@@ -60,7 +60,7 @@ const thorSoloClient = new ThorClient(soloNetwork);
 // 2- Init transaction
 
 // 2.1 - Get latest block
-const latestBlock = await thorSoloClient.blocks.getBestBlock();
+const latestBlock = await thorSoloClient.blocks.getBestBlockCompressed();
 
 // 2.2 - Transaction sender and receiver
 const sender = {

@@ -106,7 +106,7 @@ expect(blockDetails).toEqual({
 
 // 3 - Get best block details
 
-const bestBlockDetails = await thorClient.blocks.getBestBlock();
+const bestBlockDetails = await thorClient.blocks.getBestBlockExpanded();
 expect(bestBlockDetails).toBeDefined();
 
 // 4 - Get finalizes block details
@@ -122,7 +122,7 @@ In this example, the code initializes a Thor client for the VechainThor testnet 
 
 Retrieves details of a specific block based on its height. In the provided code, it fetches details for the block at height 1.
 
- - getBestBlock(): Promise<Block>
+ - getBestBlockExpanded(): Promise<Block>
 
 Fetches details of the latest block on the VechainThor network, representing the best-known block.
 
@@ -347,7 +347,7 @@ const thorSoloClient = new ThorClient(soloNetwork);
 
 // 2 - Get latest block
 
-const latestBlock = await thorSoloClient.blocks.getBestBlock();
+const latestBlock = await thorSoloClient.blocks.getBestBlockCompressed();
 
 // 3 - Create clauses
 
@@ -466,7 +466,7 @@ const thorSoloClient = new ThorClient(soloNetwork);
 
 // 2 - Get latest block
 
-const latestBlock = await thorSoloClient.blocks.getBestBlock();
+const latestBlock = await thorSoloClient.blocks.getBestBlockCompressed();
 
 // 3 - Create transaction clauses
 
@@ -552,7 +552,7 @@ const thorSoloClient = new ThorClient(soloNetwork);
 // 2- Init transaction
 
 // 2.1 - Get latest block
-const latestBlock = await thorSoloClient.blocks.getBestBlock();
+const latestBlock = await thorSoloClient.blocks.getBestBlockCompressed();
 
 // 2.2 - Transaction sender and receiver
 const senderAccount = {

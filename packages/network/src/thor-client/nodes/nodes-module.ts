@@ -46,7 +46,7 @@ class NodesModule {
          * @internal
          * Perform an HTTP GET request using the SimpleNet instance to get the latest block
          */
-        const response = await this.thor.blocks.getBestBlock();
+        const response = await this.thor.blocks.getBestBlockCompressed();
 
         /**
          * timestamp from the last block and, eventually handle errors

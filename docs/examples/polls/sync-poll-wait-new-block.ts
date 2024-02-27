@@ -9,7 +9,7 @@ const thorClient = new ThorClient(testNetwork);
 
 // 2 - Get current block
 
-const currentBlock = await thorClient.blocks.getBestBlock();
+const currentBlock = await thorClient.blocks.getBestBlockCompressed();
 
 console.log('Current block:', currentBlock);
 

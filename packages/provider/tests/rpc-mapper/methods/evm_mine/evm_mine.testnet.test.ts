@@ -30,7 +30,7 @@ describe('RPC Mapper - evm_mine method tests', () => {
          * Positive case 1 - get new block
          */
         test('evm_mine - positive case 1', async () => {
-            const bestBlock = await thorClient.blocks.getBestBlock();
+            const bestBlock = await thorClient.blocks.getBestBlockCompressed();
 
             const rpcCallEvmMine = (await RPCMethodsMap(thorClient)[
                 RPC_METHODS.evm_mine

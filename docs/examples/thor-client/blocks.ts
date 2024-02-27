@@ -38,7 +38,7 @@ expect(blockDetails).toEqual({
 
 // 3 - Get best block details
 
-const bestBlockDetails = await thorClient.blocks.getBestBlock();
+const bestBlockDetails = await thorClient.blocks.getBestBlockExpanded();
 expect(bestBlockDetails).toBeDefined();
 
 // 4 - Get finalizes block details

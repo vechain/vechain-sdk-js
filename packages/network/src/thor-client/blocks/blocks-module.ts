@@ -60,7 +60,7 @@ class BlocksModule {
      * */
     private setupPolling(): void {
         this.pollInstance = Poll.createEventPoll(
-            async () => await this.thor.blocks.getBestBlock(),
+            async () => await this.thor.blocks.getBestBlockCompressed(),
             10000 // Poll every 10 seconds,
         )
             .onData((data) => {
@@ -113,16 +113,25 @@ class BlocksModule {
     /**
      * Retrieves details of the latest block.
      *
-     * @returns A promise that resolves to an object containing the block details.
+     * @returns A promise that resolves to an object containing the compressed block details.
      */
-    public async getBestBlock(): Promise<CompressedBlockDetail | null> {
+    public async getBestBlockCompressed(): Promise<CompressedBlockDetail | null> {
         return await this.getBlockCompressed('best');
+    }
+
+    /**
+     * Retrieves details of the latest block.
+     *
+     * @returns A promise that resolves to an object containing the expanded block details.
+     */
+    public async getBestBlockExpanded(): Promise<ExpandedBlockDetail | null> {
+        return await this.getBlockExpanded('best');
     }
 
     /**
      * Asynchronously retrieves a reference to the best block in the blockchain.
      *
-     * This method first calls `getBestBlock()` to obtain the current best block. If no block is found (i.e., if `getBestBlock()` returns `null`),
+     * This method first calls `getBestBlockCompressed()` to obtain the current best block. If no block is found (i.e., if `getBestBlockCompressed()` returns `null`),
      * the method returns `null` indicating that there's no block to reference. Otherwise, it extracts and returns the first 18 characters of the
      * block's ID, providing the ref to the best block.
      *
@@ -138,7 +147,7 @@ class BlocksModule {
      * }
      */
     public async getBestBlockRef(): Promise<string | null> {
-        const bestBlock = await this.getBestBlock();
+        const bestBlock = await this.getBestBlockCompressed();
         if (bestBlock === null) return null;
         return bestBlock.id.slice(0, 18);
     }
@@ -173,10 +182,13 @@ class BlocksModule {
         );
 
         // Use the Poll.SyncPoll utility to repeatedly call getBestBlock with a specified interval
-        return await Poll.SyncPoll(async () => await this.getBestBlock(), {
-            requestIntervalInMilliseconds: options?.intervalMs,
-            maximumWaitingTimeInMilliseconds: options?.timeoutMs
-        }).waitUntil((result) => {
+        return await Poll.SyncPoll(
+            async () => await this.getBestBlockCompressed(),
+            {
+                requestIntervalInMilliseconds: options?.intervalMs,
+                maximumWaitingTimeInMilliseconds: options?.timeoutMs
+            }
+        ).waitUntil((result) => {
             // Continue polling until the result's block number matches the specified revision
             return result != null && result?.number >= blockNumber;
         });

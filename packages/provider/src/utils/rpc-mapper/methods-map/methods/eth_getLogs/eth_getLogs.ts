@@ -1,8 +1,8 @@
 import {
+    type CompressedBlockDetail,
     type EventCriteria,
     type EventLogs,
-    type ThorClient,
-    type CompressedBlockDetail
+    type ThorClient
 } from '@vechain/vechain-sdk-network';
 import {
     assert,
@@ -59,7 +59,7 @@ const ethGetLogs = async (
     try {
         // Get the latest block (if fromBlock or toBlock is not defined, we will use the latest block)
         const latestBlock =
-            (await thorClient.blocks.getBestBlock()) as CompressedBlockDetail;
+            (await thorClient.blocks.getBestBlockCompressed()) as CompressedBlockDetail;
 
         // Get criteria set from input
         const criteriaSet: EventCriteria[] = getCriteriaSetForInput({

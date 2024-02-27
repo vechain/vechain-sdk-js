@@ -34,7 +34,7 @@ export default function Home() {
     const [block, setBlock] = useState<CompressedBlockDetail | null>(null);
 
     const getLatestBlock = async (): Promise<void> => {
-        const latestBlock = await thorClient.blocks.getBestBlock();
+        const latestBlock = await thorClient.blocks.getBestBlockCompressed();
         setBlock(latestBlock);
     };
 

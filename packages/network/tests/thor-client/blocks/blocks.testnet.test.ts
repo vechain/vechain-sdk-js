@@ -38,7 +38,8 @@ describe('ThorClient - Blocks Module', () => {
             async () => {
                 // Map each test case to a promise
                 const tests = waitForBlockTestCases.map(async ({ options }) => {
-                    const bestBlock = await thorClient.blocks.getBestBlock();
+                    const bestBlock =
+                        await thorClient.blocks.getBestBlockCompressed();
                     if (bestBlock != null) {
                         const expectedBlock =
                             await thorClient.blocks.waitForBlock(
@@ -70,7 +71,7 @@ describe('ThorClient - Blocks Module', () => {
 
     test('waitForBlock - maximumWaitingTimeInMilliseconds', async () => {
         // Get best block
-        const bestBlock = await thorClient.blocks.getBestBlock();
+        const bestBlock = await thorClient.blocks.getBestBlockCompressed();
         if (bestBlock != null) {
             const block = await thorClient.blocks.waitForBlock(
                 bestBlock?.number + 2,
@@ -153,12 +154,28 @@ describe('ThorClient - Blocks Module', () => {
         );
 
         /**
-         * getBestBlock test
+         * getBestBlockCompressed test
          */
         test('getBestBlock', async () => {
-            const blockDetails = await thorClient.blocks.getBestBlock();
+            const blockDetails =
+                await thorClient.blocks.getBestBlockCompressed();
             if (blockDetails != null) {
                 const block = await thorClient.blocks.getBlockCompressed(
+                    blockDetails.number
+                );
+                expect(block?.number).toBe(blockDetails.number);
+            }
+            expect(blockDetails).not.toBeNull();
+            expect(blockDetails).toBeDefined();
+        }, 3000);
+
+        /**
+         * getBestBlockExpanded test
+         */
+        test('getBestBlock', async () => {
+            const blockDetails = await thorClient.blocks.getBestBlockExpanded();
+            if (blockDetails != null) {
+                const block = await thorClient.blocks.getBlockExpanded(
                     blockDetails.number
                 );
                 expect(block?.number).toBe(blockDetails.number);

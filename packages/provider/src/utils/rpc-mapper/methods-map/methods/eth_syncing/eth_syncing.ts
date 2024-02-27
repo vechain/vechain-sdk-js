@@ -37,7 +37,7 @@ const ethSyncing = async (
 ): Promise<boolean | SyncBlockRPC> => {
     try {
         // Get the best block and the genesis block
-        const bestBlock = await thorClient.blocks.getBestBlock();
+        const bestBlock = await thorClient.blocks.getBestBlockCompressed();
         const genesisBlock = await thorClient.blocks.getGenesisBlock();
 
         // Get the highest block number
