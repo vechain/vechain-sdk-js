@@ -15,7 +15,7 @@ import { type ThorClient } from '@vechain/vechain-sdk-network';
 const ethBlockNumber = async (thorClient: ThorClient): Promise<string> => {
     try {
         // 'best' is the alias for 'latest' in Vechain Thorest
-        const latestBlock = await thorClient.blocks.getBestBlock();
+        const latestBlock = await thorClient.blocks.getBestBlockCompressed();
 
         return latestBlock?.number !== undefined
             ? `0x${latestBlock.number.toString(16)}`

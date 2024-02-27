@@ -5,9 +5,8 @@ import {
     blocksFormatter
 } from '../../formatter';
 import {
-    type BlockDetail,
     type Output,
-    type TransactionsExpandedBlockDetail
+    type ExpandedBlockDetail
 } from '@vechain/vechain-sdk-network';
 
 /**
@@ -50,7 +49,7 @@ const getTransactionIndexIntoBlock = (
  * @param chainId - The chain ID of the network.
  */
 const getNumberOfLogsAheadOfTransactionIntoBlockExpanded = (
-    blockExpanded: BlockDetail,
+    blockExpanded: ExpandedBlockDetail,
     transactionId: string,
     chainId: string
 ): number => {
@@ -65,9 +64,7 @@ const getNumberOfLogsAheadOfTransactionIntoBlockExpanded = (
 
     // Iterate over the transactions into the block bounded by the transaction index
     for (let i = 0; i < transactionIndex; i++) {
-        const currentTransaction = blockExpanded.transactions[
-            i
-        ] as TransactionsExpandedBlockDetail;
+        const currentTransaction = blockExpanded.transactions[i];
 
         // Iterate over the outputs of the current transaction
         for (const output of currentTransaction.outputs as Output[]) {

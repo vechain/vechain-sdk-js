@@ -31,7 +31,7 @@ const thorSoloClient = new ThorClient(soloNetwork);
 
 // 2 - Get latest block
 
-const latestBlock = await thorSoloClient.blocks.getBestBlock();
+const latestBlock = await thorSoloClient.blocks.getBestBlockCompressed();
 
 // 3 - Create transaction clauses
 

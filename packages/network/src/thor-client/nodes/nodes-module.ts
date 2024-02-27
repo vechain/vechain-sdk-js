@@ -1,6 +1,6 @@
 import { NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS, thorest } from '../../utils';
 import { assert, DATA } from '@vechain/vechain-sdk-errors';
-import { type BlockDetail } from '../blocks';
+import { type CompressedBlockDetail } from '../blocks';
 import { type ThorClient } from '../thor-client';
 import { type ConnectedPeer } from './types';
 
@@ -46,7 +46,7 @@ class NodesModule {
          * @internal
          * Perform an HTTP GET request using the SimpleNet instance to get the latest block
          */
-        const response = await this.thor.blocks.getBestBlock();
+        const response = await this.thor.blocks.getBestBlockCompressed();
 
         /**
          * timestamp from the last block and, eventually handle errors
@@ -79,7 +79,7 @@ class NodesModule {
      * @throws {InvalidDataTypeError} - if the response from the API call to the node is null or undefined
      */
     private readonly getTimestampFromBlock = (
-        response: BlockDetail | null
+        response: CompressedBlockDetail | null
     ): number => {
         assert(
             response !== null &&

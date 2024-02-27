@@ -1,7 +1,8 @@
 import { beforeEach, afterEach, describe, expect, test } from '@jest/globals';
 import {
     invalidBlockRevisions,
-    validBlockRevisions,
+    validCompressedBlockRevisions,
+    validExpandedBlockRevisions,
     waitForBlockTestCases
 } from './fixture';
 import { HttpClient, Poll, ThorClient } from '../../../src';
@@ -37,7 +38,8 @@ describe('ThorClient - Blocks Module', () => {
             async () => {
                 // Map each test case to a promise
                 const tests = waitForBlockTestCases.map(async ({ options }) => {
-                    const bestBlock = await thorClient.blocks.getBestBlock();
+                    const bestBlock =
+                        await thorClient.blocks.getBestBlockCompressed();
                     if (bestBlock != null) {
                         const expectedBlock =
                             await thorClient.blocks.waitForBlock(
@@ -69,7 +71,7 @@ describe('ThorClient - Blocks Module', () => {
 
     test('waitForBlock - maximumWaitingTimeInMilliseconds', async () => {
         // Get best block
-        const bestBlock = await thorClient.blocks.getBestBlock();
+        const bestBlock = await thorClient.blocks.getBestBlockCompressed();
         if (bestBlock != null) {
             const block = await thorClient.blocks.waitForBlock(
                 bestBlock?.number + 2,
@@ -84,22 +86,18 @@ describe('ThorClient - Blocks Module', () => {
     }, 23000);
 
     /**
-     * getBlock tests
+     * getBlockCompressed tests
      */
-    describe('getBlock', () => {
+    describe('getBlockCompressed', () => {
         /**
-         * getBlock tests with revision block number or block id
+         * getBlockCompressed tests with revision block number or block id
          */
-        validBlockRevisions.forEach(({ revision, expanded, expected }) => {
+        validCompressedBlockRevisions.forEach(({ revision, expected }) => {
             test(
                 revision,
                 async () => {
-                    const blockDetails = await thorClient.blocks.getBlock(
-                        revision,
-                        {
-                            expanded
-                        }
-                    );
+                    const blockDetails =
+                        await thorClient.blocks.getBlockCompressed(revision);
                     expect(blockDetails).toEqual(expected);
                 },
                 5000
@@ -107,7 +105,22 @@ describe('ThorClient - Blocks Module', () => {
         });
 
         /**
-         * getBlock tests with invalid revision block number or block id
+         * getBlockExpanded tests with revision block number or block id
+         */
+        validExpandedBlockRevisions.forEach(({ revision, expected }) => {
+            test(
+                revision,
+                async () => {
+                    const blockDetails =
+                        await thorClient.blocks.getBlockExpanded(revision);
+                    expect(blockDetails).toEqual(expected);
+                },
+                5000
+            );
+        });
+
+        /**
+         * getBlockCompressed tests with invalid revision block number or block id
          */
         invalidBlockRevisions.forEach(
             ({ description, revision, expectedError }) => {
@@ -115,7 +128,7 @@ describe('ThorClient - Blocks Module', () => {
                     description,
                     async () => {
                         await expect(
-                            thorClient.blocks.getBlock(revision)
+                            thorClient.blocks.getBlockCompressed(revision)
                         ).rejects.toThrowError(expectedError);
                     },
                     5000
@@ -124,12 +137,45 @@ describe('ThorClient - Blocks Module', () => {
         );
 
         /**
-         * getBestBlock test
+         * getBlockCompressed tests with invalid revision block number or block id
          */
-        test('getBestBlock', async () => {
-            const blockDetails = await thorClient.blocks.getBestBlock();
+        invalidBlockRevisions.forEach(
+            ({ description, revision, expectedError }) => {
+                test(
+                    description,
+                    async () => {
+                        await expect(
+                            thorClient.blocks.getBlockExpanded(revision)
+                        ).rejects.toThrowError(expectedError);
+                    },
+                    5000
+                );
+            }
+        );
+
+        /**
+         * getBestBlockCompressed test
+         */
+        test('getBestBlockCompressed', async () => {
+            const blockDetails =
+                await thorClient.blocks.getBestBlockCompressed();
             if (blockDetails != null) {
-                const block = await thorClient.blocks.getBlock(
+                const block = await thorClient.blocks.getBlockCompressed(
+                    blockDetails.number
+                );
+                expect(block?.number).toBe(blockDetails.number);
+            }
+            expect(blockDetails).not.toBeNull();
+            expect(blockDetails).toBeDefined();
+        }, 3000);
+
+        /**
+         * getBestBlockExpanded test
+         */
+        test('getBestBlockExpanded', async () => {
+            const blockDetails = await thorClient.blocks.getBestBlockExpanded();
+            if (blockDetails != null) {
+                const block = await thorClient.blocks.getBlockExpanded(
                     blockDetails.number
                 );
                 expect(block?.number).toBe(blockDetails.number);

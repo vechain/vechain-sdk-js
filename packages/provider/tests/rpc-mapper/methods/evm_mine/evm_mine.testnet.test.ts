@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
-import { type BlockDetail, ThorClient } from '@vechain/vechain-sdk-network';
+import { type BlocksRPC, RPC_METHODS, RPCMethodsMap } from '../../../../src';
+import { ThorClient } from '@vechain/vechain-sdk-network';
 import { testNetwork } from '../../../fixture';
 
 /**
@@ -30,11 +30,11 @@ describe('RPC Mapper - evm_mine method tests', () => {
          * Positive case 1 - get new block
          */
         test('evm_mine - positive case 1', async () => {
-            const bestBlock = await thorClient.blocks.getBestBlock();
+            const bestBlock = await thorClient.blocks.getBestBlockCompressed();
 
             const rpcCallEvmMine = (await RPCMethodsMap(thorClient)[
                 RPC_METHODS.evm_mine
-            ]([])) as BlockDetail | null;
+            ]([])) as BlocksRPC | null;
 
             if (bestBlock != null && rpcCallEvmMine != null) {
                 expect(Number(rpcCallEvmMine.number)).toBeGreaterThanOrEqual(

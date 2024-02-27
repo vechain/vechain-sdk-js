@@ -5,10 +5,10 @@ import {
 } from '../../eip1193';
 import { assert, DATA } from '@vechain/vechain-sdk-errors';
 import {
-    type BlockDetail,
     type EventPoll,
     Poll,
-    type ThorClient
+    type ThorClient,
+    type CompressedBlockDetail
 } from '@vechain/vechain-sdk-network';
 import {
     ethGetLogs,
@@ -234,14 +234,14 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
      *
      * @private
      */
-    private async getCurrentBlock(): Promise<BlockDetail | null> {
+    private async getCurrentBlock(): Promise<CompressedBlockDetail | null> {
         // Initialize the result to null, indicating no block found initially
-        let result: BlockDetail | null = null;
+        let result: CompressedBlockDetail | null = null;
 
         // Proceed only if there are active log subscriptions or a new heads subscription is present
         if (this.isThereActiveSubscriptions()) {
             // Fetch the block details for the current block number
-            const block = await this.thorClient.blocks.getBlock(
+            const block = await this.thorClient.blocks.getBlockCompressed(
                 this.subscriptionManager.currentBlockNumber
             );
 

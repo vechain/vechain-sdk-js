@@ -1,10 +1,10 @@
-import { type BlockDetail } from '@vechain/vechain-sdk-network';
+import { type CompressedBlockDetail } from '@vechain/vechain-sdk-network';
 
 /**
  * Mocked latest block fixture.
  * This to be sure that the block is not out of sync in time at 100%
  */
-const mockedNotOutOfSyncBestBlockFixture: BlockDetail = {
+const mockedNotOutOfSyncBestBlockFixture: CompressedBlockDetail = {
     number: 99999999,
     id: '0x0000000000000ffe671fae58993e0b3f465a7900000000000000000000000000',
     size: 361,
@@ -33,7 +33,7 @@ const mockedNotOutOfSyncBestBlockFixture: BlockDetail = {
  * Mocked latest block fixture.
  * This to be sure that the block is out of sync in time at 100%
  */
-const mockedOutOfSyncBestBlockFixture: BlockDetail = {
+const mockedOutOfSyncBestBlockFixture: CompressedBlockDetail = {
     number: 99999999,
     id: '0x0000000000000ffe671fae58993e0b3f465a7900000000000000000000000000',
     size: 361,

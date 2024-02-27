@@ -32,9 +32,10 @@ describe('RPC Mapper - evm_mine method tests', () => {
          */
         test('Should throw `ProviderRpcError` if an error occurs while retrieving the block number', async () => {
             // Mock the getGenesisBlock method to return null
-            jest.spyOn(thorClient.blocks, 'getBestBlock').mockRejectedValue(
-                new Error()
-            );
+            jest.spyOn(
+                thorClient.blocks,
+                'getBestBlockExpanded'
+            ).mockRejectedValue(new Error());
 
             await expect(
                 RPCMethodsMap(thorClient)[RPC_METHODS.evm_mine]([])
@@ -61,9 +62,10 @@ describe('RPC Mapper - evm_mine method tests', () => {
          */
         test('Should return null if the best block is null', async () => {
             // Mock the getBestBlock method to return null
-            jest.spyOn(thorClient.blocks, 'getBestBlock').mockResolvedValue(
-                null
-            );
+            jest.spyOn(
+                thorClient.blocks,
+                'getBestBlockExpanded'
+            ).mockResolvedValue(null);
 
             const newBlock = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.evm_mine
