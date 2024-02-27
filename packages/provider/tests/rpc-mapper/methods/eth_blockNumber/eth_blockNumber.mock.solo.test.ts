@@ -32,9 +32,10 @@ describe('RPC Mapper - eth_blockNumber method tests', () => {
          */
         test('Should throw `ProviderRpcError` if an error occurs while retrieving the block number', async () => {
             // Mock the getGenesisBlock method to return null
-            jest.spyOn(thorClient.blocks, 'getBestBlock').mockRejectedValue(
-                new Error()
-            );
+            jest.spyOn(
+                thorClient.blocks,
+                'getBestBlockCompressed'
+            ).mockRejectedValue(new Error());
 
             await expect(
                 RPCMethodsMap(thorClient)[RPC_METHODS.eth_blockNumber]([])
@@ -46,9 +47,10 @@ describe('RPC Mapper - eth_blockNumber method tests', () => {
          */
         test('Should return `0x0` if the genesis block is not defined', async () => {
             // Mock the getGenesisBlock method to return null
-            jest.spyOn(thorClient.blocks, 'getBestBlock').mockResolvedValue(
-                null
-            );
+            jest.spyOn(
+                thorClient.blocks,
+                'getBestBlockCompressed'
+            ).mockResolvedValue(null);
 
             const rpcCallChainId = (await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_blockNumber

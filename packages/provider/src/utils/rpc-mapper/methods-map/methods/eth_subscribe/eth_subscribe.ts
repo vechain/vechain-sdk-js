@@ -81,7 +81,7 @@ const ethSubscribe = async (
 
     // I check if a poll instance is already active, if not I set a new starting block number for the subscription
     if (provider.getPollInstance() === undefined) {
-        const block = await thorClient.blocks.getBestBlock();
+        const block = await thorClient.blocks.getBestBlockCompressed();
 
         if (block !== undefined && block !== null) {
             provider.subscriptionManager.currentBlockNumber = block.number;

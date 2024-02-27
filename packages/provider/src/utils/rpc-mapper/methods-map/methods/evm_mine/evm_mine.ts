@@ -15,7 +15,7 @@ import { RPCMethodsMap, RPC_METHODS } from '../../../../../provider';
 const evmMine = async (thorClient: ThorClient): Promise<BlocksRPC | null> => {
     try {
         // Get best block
-        const bestBlock = await thorClient.blocks.getBestBlock();
+        const bestBlock = await thorClient.blocks.getBestBlockExpanded();
         const newBlock =
             bestBlock !== null
                 ? await thorClient.blocks.waitForBlock(bestBlock.number + 1)

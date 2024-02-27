@@ -2,9 +2,9 @@ import { DATA, assert } from '@vechain/vechain-sdk-errors';
 import { Poll, buildQuery, thorest } from '../../utils';
 import {
     type WaitForBlockOptions,
-    type BlockInputOptions,
-    type BlockDetail,
-    type BlocksModuleOptions
+    type BlocksModuleOptions,
+    type CompressedBlockDetail,
+    type ExpandedBlockDetail
 } from './types';
 import { assertIsRevisionForBlock } from '@vechain/vechain-sdk-core';
 import { type ThorClient } from '../thor-client';
@@ -18,7 +18,7 @@ class BlocksModule {
      * The head block (best block). This is updated by the event poll instance every time a new block is produced.
      * @private
      */
-    private headBlock: BlockDetail | null = null;
+    private headBlock: CompressedBlockDetail | null = null;
 
     /**
      * Error handler for block-related errors.
@@ -29,7 +29,7 @@ class BlocksModule {
      * The Poll instance for event polling
      * @private
      */
-    private pollInstance?: EventPoll<BlockDetail | null>;
+    private pollInstance?: EventPoll<CompressedBlockDetail | null>;
 
     /**
      * Initializes a new instance of the `Thor` class.
@@ -60,7 +60,7 @@ class BlocksModule {
      * */
     private setupPolling(): void {
         this.pollInstance = Poll.createEventPoll(
-            async () => await this.thor.blocks.getBestBlock(),
+            async () => await this.thor.blocks.getBestBlockCompressed(),
             10000 // Poll every 10 seconds,
         )
             .onData((data) => {
@@ -72,40 +72,66 @@ class BlocksModule {
     }
 
     /**
-     * Retrieves details of a specific block identified by its revision (block number or ID).
+     * Retrieves details of a compressed specific block identified by its revision (block number or ID).
      *
      * @param revision - The block number or ID to query details for.
      * @param options - (Optional) Other optional parameters for the request.
-     * @returns A promise that resolves to an object containing the block details.
+     * @returns A promise that resolves to an object containing the details of the compressed block.
      */
-    public async getBlock(
-        revision: string | number,
-        options?: BlockInputOptions
-    ): Promise<BlockDetail | null> {
+    public async getBlockCompressed(
+        revision: string | number
+    ): Promise<CompressedBlockDetail | null> {
+        assertIsRevisionForBlock(revision);
+
+        return (await this.thor.httpClient.http(
+            'GET',
+            thorest.blocks.get.BLOCK_DETAIL(revision)
+        )) as CompressedBlockDetail | null;
+    }
+
+    /**
+     * Retrieves details of a expanded specific block identified by its revision (block number or ID).
+     *
+     * @param revision - The block number or ID to query details for.
+     * @param options - (Optional) Other optional parameters for the request.
+     * @returns A promise that resolves to an object containing the details of the expanded block.
+     */
+    public async getBlockExpanded(
+        revision: string | number
+    ): Promise<ExpandedBlockDetail | null> {
         assertIsRevisionForBlock(revision);
 
         return (await this.thor.httpClient.http(
             'GET',
             thorest.blocks.get.BLOCK_DETAIL(revision),
             {
-                query: buildQuery({ expanded: options?.expanded })
+                query: buildQuery({ expanded: true })
             }
-        )) as BlockDetail | null;
+        )) as ExpandedBlockDetail | null;
     }
 
     /**
      * Retrieves details of the latest block.
      *
-     * @returns A promise that resolves to an object containing the block details.
+     * @returns A promise that resolves to an object containing the compressed block details.
      */
-    public async getBestBlock(): Promise<BlockDetail | null> {
-        return await this.getBlock('best');
+    public async getBestBlockCompressed(): Promise<CompressedBlockDetail | null> {
+        return await this.getBlockCompressed('best');
+    }
+
+    /**
+     * Retrieves details of the latest block.
+     *
+     * @returns A promise that resolves to an object containing the expanded block details.
+     */
+    public async getBestBlockExpanded(): Promise<ExpandedBlockDetail | null> {
+        return await this.getBlockExpanded('best');
     }
 
     /**
      * Asynchronously retrieves a reference to the best block in the blockchain.
      *
-     * This method first calls `getBestBlock()` to obtain the current best block. If no block is found (i.e., if `getBestBlock()` returns `null`),
+     * This method first calls `getBestBlockCompressed()` to obtain the current best block. If no block is found (i.e., if `getBestBlockCompressed()` returns `null`),
      * the method returns `null` indicating that there's no block to reference. Otherwise, it extracts and returns the first 18 characters of the
      * block's ID, providing the ref to the best block.
      *
@@ -121,7 +147,7 @@ class BlocksModule {
      * }
      */
     public async getBestBlockRef(): Promise<string | null> {
-        const bestBlock = await this.getBestBlock();
+        const bestBlock = await this.getBestBlockCompressed();
         if (bestBlock === null) return null;
         return bestBlock.id.slice(0, 18);
     }
@@ -131,8 +157,8 @@ class BlocksModule {
      *
      * @returns A promise that resolves to an object containing the block details.
      */
-    public async getFinalBlock(): Promise<BlockDetail | null> {
-        return await this.getBlock('finalized');
+    public async getFinalBlock(): Promise<CompressedBlockDetail | null> {
+        return await this.getBlockCompressed('finalized');
     }
 
     /**
@@ -145,7 +171,7 @@ class BlocksModule {
     public async waitForBlock(
         blockNumber: number,
         options?: WaitForBlockOptions
-    ): Promise<BlockDetail | null> {
+    ): Promise<CompressedBlockDetail | null> {
         assert(
             blockNumber === undefined ||
                 blockNumber === null ||
@@ -156,10 +182,13 @@ class BlocksModule {
         );
 
         // Use the Poll.SyncPoll utility to repeatedly call getBestBlock with a specified interval
-        return await Poll.SyncPoll(async () => await this.getBestBlock(), {
-            requestIntervalInMilliseconds: options?.intervalMs,
-            maximumWaitingTimeInMilliseconds: options?.timeoutMs
-        }).waitUntil((result) => {
+        return await Poll.SyncPoll(
+            async () => await this.getBestBlockCompressed(),
+            {
+                requestIntervalInMilliseconds: options?.intervalMs,
+                maximumWaitingTimeInMilliseconds: options?.timeoutMs
+            }
+        ).waitUntil((result) => {
             // Continue polling until the result's block number matches the specified revision
             return result != null && result?.number >= blockNumber;
         });
@@ -169,7 +198,7 @@ class BlocksModule {
      * Returns the head block (best block).
      * @returns {BlockDetail | null} The head block (best block).
      */
-    public getHeadBlock(): BlockDetail | null {
+    public getHeadBlock(): CompressedBlockDetail | null {
         return this.headBlock;
     }
 
@@ -178,8 +207,8 @@ class BlocksModule {
      *
      * @returns A promise that resolves to an object containing the block details of the genesis block.
      */
-    public async getGenesisBlock(): Promise<BlockDetail | null> {
-        return await this.getBlock(0);
+    public async getGenesisBlock(): Promise<CompressedBlockDetail | null> {
+        return await this.getBlockCompressed(0);
     }
 }
 

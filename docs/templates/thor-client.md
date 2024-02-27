@@ -36,11 +36,11 @@ The Thor-client facilitates easy interaction with blocks on the VechainThor netw
 
 In this example, the code initializes a Thor client for the VechainThor testnet network and showcases three essential methods for interacting with blocks:
 
- - getBlock(height: number): Promise<Block>
+ - getBlockCompressed(height: number): Promise<Block>
 
 Retrieves details of a specific block based on its height. In the provided code, it fetches details for the block at height 1.
 
- - getBestBlock(): Promise<Block>
+ - getBestBlockExpanded(): Promise<Block>
 
 Fetches details of the latest block on the VechainThor network, representing the best-known block.
 

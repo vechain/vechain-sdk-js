@@ -17,20 +17,6 @@ interface BlocksModuleOptions {
 }
 
 /**
- * Input options for:
- * * getAccount
- * * getBytecode
- * * getStorage
- * Methods
- */
-interface BlockInputOptions {
-    /**
-     * (Optional) Whether the returned block is expanded.
-     */
-    expanded?: boolean;
-}
-
-/**
  * Options for `waitForBlock` method.
  */
 interface WaitForBlockOptions {
@@ -128,11 +114,6 @@ interface BlockDetail {
     signer: string;
 
     /**
-     * Array of transaction IDs or hashes in the block.
-     */
-    transactions: string[] | TransactionsExpandedBlockDetail[];
-
-    /**
      * Indicates if the block contains a community fund (com).
      */
     com?: boolean;
@@ -149,6 +130,14 @@ interface BlockDetail {
      * @link see [VechainThor Trunk](https://docs.vechain.org/introduction-to-vechain/about-the-vechain-blockchain/consensus-deep-dive#meta-transaction-features-3)
      */
     isTrunk: boolean;
+}
+
+interface CompressedBlockDetail extends BlockDetail {
+    transactions: string[];
+}
+
+interface ExpandedBlockDetail extends BlockDetail {
+    transactions: TransactionsExpandedBlockDetail[];
 }
 
 /**
@@ -280,15 +269,16 @@ interface TransactionsExpandedBlockDetail {
     /**
      * Outputs represent the results or consequences of a blockchain transaction.
      */
-    outputs: Outputs;
+    outputs: Output[];
 }
 
 /* --- Responses Outputs end --- */
 
 export {
     type BlocksModuleOptions,
-    type BlockInputOptions,
     type BlockDetail,
+    type CompressedBlockDetail,
+    type ExpandedBlockDetail,
     type TransactionsExpandedBlockDetail,
     type Clause,
     type Output,

@@ -103,9 +103,10 @@ describe('RPC Mapper - eth_subscribe method tests', () => {
         });
 
         test('eth_subscribe - no best block', async () => {
-            jest.spyOn(thorClient.blocks, 'getBestBlock').mockReturnValue(
-                Promise.resolve(null)
-            );
+            jest.spyOn(
+                thorClient.blocks,
+                'getBestBlockCompressed'
+            ).mockReturnValue(Promise.resolve(null));
 
             // Attempts to unsubscribe with no provider and expects an error.
             await expect(
