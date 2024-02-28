@@ -33,7 +33,7 @@ describe('RPC Mapper - eth_getBlockByHash method tests', () => {
          */
         test('Should throw `ProviderRpcError` when request fails', async () => {
             // Mock the getBlock method to throw error
-            jest.spyOn(thorClient.blocks, 'getBlock').mockRejectedValue(
+            jest.spyOn(thorClient.blocks, 'getBlockExpanded').mockRejectedValue(
                 new Error()
             );
 

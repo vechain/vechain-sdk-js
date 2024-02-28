@@ -54,7 +54,8 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
             ];
 
             // Get latest block
-            const latestBlock = await thorClient.blocks.getBestBlock();
+            const latestBlock =
+                await thorClient.blocks.getBestBlockCompressed();
 
             // Estimate the gas required for the transfer transaction
             const gasResult = await thorClient.gas.estimateGas(

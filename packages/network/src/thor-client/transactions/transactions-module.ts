@@ -213,7 +213,7 @@ class TransactionsModule {
         options?: TransactionBodyOptions
     ): Promise<TransactionBody> {
         // Get the genesis block to get the chainTag
-        const genesisBlock = await this.thor.blocks.getBlock(0);
+        const genesisBlock = await this.thor.blocks.getBlockCompressed(0);
 
         if (genesisBlock === null)
             throw buildError(

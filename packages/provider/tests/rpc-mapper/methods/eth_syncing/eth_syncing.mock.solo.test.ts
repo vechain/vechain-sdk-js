@@ -36,9 +36,10 @@ describe('RPC Mapper - eth_syncing method tests', () => {
          */
         test('eth_syncing - Should return false with NOT out of sync best block', async () => {
             // Mock the getGenesisBlock method to return null
-            jest.spyOn(thorClient.blocks, 'getBestBlock').mockResolvedValue(
-                mockedNotOutOfSyncBestBlockFixture
-            );
+            jest.spyOn(
+                thorClient.blocks,
+                'getBestBlockCompressed'
+            ).mockResolvedValue(mockedNotOutOfSyncBestBlockFixture);
 
             const status = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_syncing
@@ -51,9 +52,10 @@ describe('RPC Mapper - eth_syncing method tests', () => {
          */
         test('eth_syncing - Should return sync status with out of sync best block', async () => {
             // Mock the getGenesisBlock method to return null
-            jest.spyOn(thorClient.blocks, 'getBestBlock').mockResolvedValue(
-                mockedOutOfSyncBestBlockFixture
-            );
+            jest.spyOn(
+                thorClient.blocks,
+                'getBestBlockCompressed'
+            ).mockResolvedValue(mockedOutOfSyncBestBlockFixture);
 
             const status = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_syncing
@@ -78,9 +80,10 @@ describe('RPC Mapper - eth_syncing method tests', () => {
              */
             test('Should throw `ProviderRpcError` if an error occurs while retrieving the best block', async () => {
                 // Mock the getGenesisBlock method to return null
-                jest.spyOn(thorClient.blocks, 'getBestBlock').mockRejectedValue(
-                    new Error()
-                );
+                jest.spyOn(
+                    thorClient.blocks,
+                    'getBestBlockCompressed'
+                ).mockRejectedValue(new Error());
 
                 await expect(
                     RPCMethodsMap(thorClient)[RPC_METHODS.eth_syncing]([])
@@ -113,7 +116,7 @@ describe('RPC Mapper - eth_syncing method tests', () => {
                     // Mock the getBestBlock method to return null
                     jest.spyOn(
                         thorClient.blocks,
-                        'getBestBlock'
+                        'getBestBlockCompressed'
                     ).mockResolvedValue(null);
 
                     // Mock the getGenesisBlock method to return null

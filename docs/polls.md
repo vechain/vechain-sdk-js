@@ -19,7 +19,7 @@ const thorClient = new ThorClient(testNetwork);
 
 // 2 - Get current block
 
-const currentBlock = await thorClient.blocks.getBestBlock();
+const currentBlock = await thorClient.blocks.getBestBlockCompressed();
 
 console.log('Current block:', currentBlock);
 
@@ -28,7 +28,7 @@ console.log('Current block:', currentBlock);
 // Wait until a new block is created with polling interval of 3 seconds
 const newBlock = await Poll.SyncPoll(
     // Get the latest block as polling target function
-    async () => await thorClient.blocks.getBlock('best'),
+    async () => await thorClient.blocks.getBlockCompressed('best'),
     // Polling interval is 3 seconds
     { requestIntervalInMilliseconds: 3000 }
 ).waitUntil((newBlockData) => {
@@ -60,7 +60,7 @@ const thorSoloClient = new ThorClient(soloNetwork);
 // 2- Init transaction
 
 // 2.1 - Get latest block
-const latestBlock = await thorSoloClient.blocks.getBestBlock();
+const latestBlock = await thorSoloClient.blocks.getBestBlockCompressed();
 
 // 2.2 - Transaction sender and receiver
 const sender = {

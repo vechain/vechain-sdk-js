@@ -32,7 +32,8 @@ describe('ThorClient - Transactions Module', () => {
                 // 1- Init transaction
 
                 // Get latest block
-                const latestBlock = await thorSoloClient.blocks.getBestBlock();
+                const latestBlock =
+                    await thorSoloClient.blocks.getBestBlockCompressed();
 
                 // Estimate the gas required for the transfer transaction
                 const gasResult = await thorSoloClient.gas.estimateGas(

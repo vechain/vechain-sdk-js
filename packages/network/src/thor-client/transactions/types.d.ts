@@ -3,6 +3,7 @@ import type {
     TransactionClause
 } from '@vechain/vechain-sdk-core';
 import type { Output } from '../blocks';
+import { type Transfer } from '../logs';
 
 /**
  * Transaction clause type for transaction simulation having value only string.
@@ -297,12 +298,12 @@ export type {
     SignTransactionOptions,
     GetDelegationSignatureResult,
     SendTransactionResult,
-    type GetTransactionInputOptions,
-    type GetTransactionReceiptInputOptions,
-    type TransactionReceipt,
-    type TransactionDetail,
-    type TransactionSimulationResult,
-    type SimulateTransactionClause,
-    type SimulateTransactionOptions,
-    type TransactionDetailNoRaw
+    GetTransactionInputOptions,
+    GetTransactionReceiptInputOptions,
+    TransactionReceipt,
+    TransactionDetail,
+    TransactionSimulationResult,
+    SimulateTransactionClause,
+    SimulateTransactionOptions,
+    TransactionDetailNoRaw
 };

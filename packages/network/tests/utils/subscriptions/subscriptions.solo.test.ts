@@ -1,12 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-    type BlockDetail,
     subscriptions,
     type EventLogs,
     type EventFragment,
     type TransferLogs,
     ThorClient,
-    type Clause
+    type Clause,
+    type CompressedBlockDetail
 } from '../../../src';
 import {
     TESTING_CONTRACT_ABI,
@@ -54,7 +54,7 @@ describe('Subscriptions Solo network tests', () => {
 
                     const block = JSON.parse(
                         data.toLocaleString()
-                    ) as BlockDetail;
+                    ) as CompressedBlockDetail;
 
                     expect(block.number).toBeGreaterThan(0); // Basic assertion to ensure the block number is valid
 
