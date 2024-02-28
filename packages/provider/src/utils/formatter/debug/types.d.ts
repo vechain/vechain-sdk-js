@@ -1,17 +1,17 @@
 import { type TraceReturnType } from '@vechain/vechain-sdk-network/src/thor-client/debug';
 
 /**
+ * Available tracers for the RPC standard.
+ */
+type TracerNameRPC = 'call' | 'prestate';
+
+/**
  * Return type for the following RPC endpoints:
  * * debug_traceTransaction
  * * debug_traceCall
  */
-type TracerReturnTypeRPC<TracerNameType extends TracerNamesRPC> =
+type TracerReturnTypeRPC<TracerNameType extends TracerNameRPC> =
     TracerNameType extends 'call' ? CallTracerRPC : PrestateTracerRPC;
-
-/**
- * Available tracers for the RPC standard.
- */
-type TracerNameRPC = 'call' | 'prestate';
 
 /**
  * The return type of the 'call' tracer for the RPC standard.
