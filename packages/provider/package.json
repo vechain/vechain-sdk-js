@@ -33,8 +33,5 @@
         "@vechain/vechain-sdk-network": "*",
         "@vechain/vechain-sdk-wallet": "*",
         "@vechain/vechain-sdk-core": "*"
-    },
-    "devDependencies": {
-        "hardhat": "^2.20.1"
     }
 }
