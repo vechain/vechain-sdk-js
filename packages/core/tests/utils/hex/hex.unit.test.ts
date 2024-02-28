@@ -1,6 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
 import { Hex } from '../../../src';
 
+/**
+ * @group unit/utils/hex
+ */
 describe('Hex', () => {
     test('of bigint', () => {
         const output: string = Hex.of(BigInt(10), 0);
