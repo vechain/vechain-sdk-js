@@ -1,5 +1,12 @@
 import { assert, DATA } from '@vechain/vechain-sdk-errors';
 import { Buffer } from 'buffer';
+import {
+    type BigNumberish,
+    type BytesLike,
+    hexlify,
+    isBytesLike,
+    toBeArray
+} from 'ethers';
 
 /**
  * The encoding used for buffers.
@@ -189,5 +196,18 @@ const Hex = {
         return `${PREFIX}${this.of(n, bytes)}`;
     }
 };
+
+export function toQuantity(value: BytesLike | BigNumberish): string {
+    let result = hexlify(
+        isBytesLike(value) ? value : toBeArray(value)
+    ).substring(2);
+    while (result.startsWith('0')) {
+        result = result.substring(1);
+    }
+    if (result === '') {
+        result = '0';
+    }
+    return '0x' + result;
+}
 
 export { Hex };
