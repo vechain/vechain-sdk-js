@@ -51,16 +51,6 @@ enum ErrorMessage {
 }
 
 /**
- * Checks if the given value is a buffer.
- *
- * @param {unknown} n - The value to check.
- * @return {boolean} - Returns true if the value is a buffer, otherwise returns false.
- */
-function isBuffer(n: unknown): n is Uint8Array {
-    return true;
-}
-
-/**
  * Convert a bigint number to a padded hexadecimal representation long the specified number of bytes.
  *
  * @param {bigint} bi - The bigint number to be represented as hexadecimal string.
@@ -150,8 +140,8 @@ const Hex = {
      * This method calls
      * * {@link ofBigInt} if `n` type is `bigint`;
      * * {@link ofNumber} if `n` type is `number`;
-     * * {@link ofBuffer} if `n` is an instance of {@link Uint8Array};
-     * * {@link ofString} if `n` type is `string`.
+     * * {@link ofString} if `n` type is `string`;
+     * * {@link ofBuffer} if `n` is an instance of {@link Uint8Array}.
      *
      * **Note:** the returned string is not prefixed with `0x`,
      * see {@link Hex.of0x} to make a hexadecimal representation prefixed with `0x`.
@@ -162,13 +152,13 @@ const Hex = {
      * it is guaranteed to be even characters long.
      */
     of: function (
-        n: bigint | Uint8Array | number | string,
+        n: bigint | number | string | Uint8Array,
         bytes: number = 0
     ): string {
         if (typeof n === 'bigint') return ofBigInt(n, bytes);
         if (typeof n === 'number') return ofNumber(n, bytes);
-        if (isBuffer(n)) return ofBuffer(n, bytes);
-        return ofString(n, bytes);
+        if (typeof n === 'string') return ofString(n, bytes);
+        return ofBuffer(n, bytes);
     },
 
     /**
