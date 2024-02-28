@@ -7,11 +7,7 @@ import {
 import { VechainProvider } from '../vechain-provider';
 import { type Wallet } from '@vechain/vechain-sdk-wallet';
 import type { EIP1193RequestArguments } from '../../eip1193';
-import {
-    buildError,
-    getJSONRPCErrorCode,
-    JSONRPC
-} from '@vechain/vechain-sdk-errors';
+import { buildHardhatError } from '@vechain/vechain-sdk-errors';
 
 /**
  * This class is a wrapper for the VechainProvider that Hardhat uses.
@@ -146,14 +142,9 @@ class HardhatVechainProvider
             }
 
             // Throw the error
-            throw buildError(
-                JSONRPC.INVALID_REQUEST,
+            throw buildHardhatError(
                 `Invalid request to endpoint ${args.method}`,
-                {
-                    code: getJSONRPCErrorCode(JSONRPC.INVALID_REQUEST),
-                    message: `Invalid request to endpoint ${args.method}`
-                },
-                e
+                e as Error
             );
         }
     }

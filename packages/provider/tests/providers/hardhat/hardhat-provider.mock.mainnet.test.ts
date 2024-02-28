@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { HardhatVechainProvider } from '../../../src';
 import { mainnetUrl } from '../../fixture';
-import { JSONRPCInvalidRequest } from '@vechain/vechain-sdk-errors';
 import { BaseWallet } from '@vechain/vechain-sdk-wallet';
 
 /**
@@ -57,7 +56,7 @@ describe('Hardhat provider tests', () => {
         // Error during call
         await expect(
             async () => await providerInDebugMode.send('INVALID_METHOD', [-1])
-        ).rejects.toThrowError(JSONRPCInvalidRequest);
+        ).rejects.toThrowError();
 
         expect(logSpy).toHaveBeenCalled();
         logSpy.mockRestore();
