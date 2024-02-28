@@ -298,12 +298,12 @@ export type {
     SignTransactionOptions,
     GetDelegationSignatureResult,
     SendTransactionResult,
-    type GetTransactionInputOptions,
-    type GetTransactionReceiptInputOptions,
-    type TransactionReceipt,
-    type TransactionDetail,
-    type TransactionSimulationResult,
-    type SimulateTransactionClause,
-    type SimulateTransactionOptions,
-    type TransactionDetailNoRaw
+    GetTransactionInputOptions,
+    GetTransactionReceiptInputOptions,
+    TransactionReceipt,
+    TransactionDetail,
+    TransactionSimulationResult,
+    SimulateTransactionClause,
+    SimulateTransactionOptions,
+    TransactionDetailNoRaw
 };
