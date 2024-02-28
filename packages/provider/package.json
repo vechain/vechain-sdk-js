@@ -32,6 +32,7 @@
     "dependencies": {
         "@vechain/vechain-sdk-network": "*",
         "@vechain/vechain-sdk-wallet": "*",
-        "@vechain/vechain-sdk-core": "*"
+        "@vechain/vechain-sdk-core": "*",
+        "@vechain/vechain-sdk-logging": "*"
     }
 }
