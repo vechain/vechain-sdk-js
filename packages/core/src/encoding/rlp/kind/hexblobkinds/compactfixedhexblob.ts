@@ -2,9 +2,9 @@ import {
     assertCompactFixedHexBlobBuffer,
     encodeCompactFixedHexBlob
 } from '../../helpers';
-import { type RLPInput, type DataOutput, type BufferOutput } from '../../types';
+import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
 import { FixedHexBlobKind } from './fixedhexblob';
-import { Hex } from '../../../../utils/hex/Hex';
+import { Hex } from '../../../../utils';
 
 /**
  * Represents a fixed hex blob kind with zero trimming and padding functionality.

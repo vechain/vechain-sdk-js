@@ -1,5 +1,5 @@
 import { InvalidAddressError } from '@vechain/vechain-sdk-errors';
-import { Hex } from '../../../src/utils/hex/Hex';
+import { Hex } from '../../../src';
 
 /**
  * Blooms filter used to check if "it is a bloom filter or not" verification works

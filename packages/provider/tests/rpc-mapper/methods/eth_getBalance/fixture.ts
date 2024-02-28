@@ -1,14 +1,14 @@
 import {
-    ZERO_BUFFER,
+    Hex,
     unitsUtils,
-    vechain_sdk_core_ethers
+    vechain_sdk_core_ethers,
+    ZERO_BUFFER
 } from '@vechain/vechain-sdk-core';
 import { TEST_ACCOUNTS_THOR_SOLO } from '../../../fixture';
 import {
     InvalidDataTypeError,
     ProviderRpcError
 } from '@vechain/vechain-sdk-errors';
-import { Hex } from '@vechain/vechain-sdk-core/src/utils/hex/Hex';
 
 /**
  * eth_getBalance RPC call tests - Positive cases

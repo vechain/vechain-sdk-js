@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { Hex } from '../../../src/utils/hex/Hex';
+import { Hex } from '../../../src';
 
 describe('Hex', () => {
     test('hex of bigint', () => {

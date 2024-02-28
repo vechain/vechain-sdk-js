@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { dataUtils } from '../../../src';
+import { dataUtils, Hex } from '../../../src';
 import {
     decodeBytes32StringTestCases,
     encodeBytes32StringTestCases,
@@ -13,7 +13,6 @@ import {
     validThorIDs
 } from './fixture';
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
-import { Hex } from '../../../src/utils/hex/Hex';
 
 /**
  * Hex data tests

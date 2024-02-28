@@ -1,7 +1,6 @@
-import { addressUtils } from '../../src';
+import { addressUtils, Hex } from '../../src';
 import { generateRandomValidAddress } from '../fixture';
-import { InvalidAbiDataToEncodeError } from '@vechain/vechain-sdk-errors/dist/index';
-import { Hex } from '../../src/utils/hex/Hex';
+import { InvalidAbiDataToEncodeError } from '@vechain/vechain-sdk-errors';
 
 /**
  * Simple functions fixtures

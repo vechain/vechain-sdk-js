@@ -144,7 +144,7 @@ function pad(exp: string, bytes: number): string {
 /**
  * Helper class for encoding hexadecimal values.
  */
-export const Hex = {
+const Hex = {
     /**
      * Generate a hexadecimal representation from the given input data.
      * This method calls
@@ -189,3 +189,5 @@ export const Hex = {
         return `${PREFIX}${this.of(n, bytes)}`;
     }
 };
+
+export { Hex };
