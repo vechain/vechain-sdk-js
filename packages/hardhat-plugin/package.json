@@ -27,11 +27,5 @@
     },
     "dependencies": {
         "@vechain/vechain-sdk-provider": "*"
-    },
-    "devDependencies": {
-        "hardhat": "^2.20.1"
-    },
-    "peerDependencies": {
-        "hardhat": "^2.20.1"
     }
 }
