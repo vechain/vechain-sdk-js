@@ -44,7 +44,7 @@ extendEnvironment((hre) => {
     // 3.1 - Create the provider
     const hardhatVechainProvider = new HardhatVechainProvider(
         createWalletFromHardhatNetworkConfig(networkConfig),
-        networkConfig.url ?? 'http://localhost:8669/',
+        networkConfig.url,
         isInDebugMode
     );
 
