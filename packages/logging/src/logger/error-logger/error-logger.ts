@@ -9,9 +9,9 @@ const _logErrorFunction: LogFunctionType<'error'> = {
         console.error(
             `\n****************** ERROR: ${error.errorCode} ******************\n` +
                 `- Error message: '${error.errorMessage}'` +
-                '\n- Error data:\n\t',
+                '\n- Error data:\n',
             error.errorData,
-            `\n- Internal error:\n\t`,
+            `\n- Internal error:\n`,
             error.innerError,
             `\n`
         );
