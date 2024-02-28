@@ -3,7 +3,7 @@
  * @group unit/hardhat/hardhat-error-builder
  */
 import { buildHardhatError } from '../../src';
-import { expect } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import { HardhatPluginError } from 'hardhat/plugins';
 
 describe('Hardhat error builder tests', () => {
