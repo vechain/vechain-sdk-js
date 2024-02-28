@@ -2,7 +2,7 @@ import { describe, expect, jest, test } from '@jest/globals';
 import { VechainSDKLogger } from '../src';
 
 /**
- * Error logger tests
+ * Log logger tests
  *
  * @group unit/logging/log-logger
  */

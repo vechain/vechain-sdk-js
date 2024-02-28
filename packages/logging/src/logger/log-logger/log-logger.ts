@@ -3,7 +3,7 @@ import type { LogFunctionType, LogLoggerData } from '../types';
 /**
  * Log logger internal function.
  */
-const _logDataFunction: LogFunctionType<'log'> = {
+const _logLogFunction: LogFunctionType<'log'> = {
     log: (data: LogLoggerData) => {
         console.log(
             `\n****************** EVENT: ${data.title} ******************\n` +
@@ -13,4 +13,4 @@ const _logDataFunction: LogFunctionType<'log'> = {
     }
 };
 
-export { _logDataFunction };
+export { _logLogFunction };
