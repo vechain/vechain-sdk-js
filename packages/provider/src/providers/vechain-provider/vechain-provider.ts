@@ -22,7 +22,7 @@ import {
     type SubscriptionEvent,
     type SubscriptionManager
 } from './types';
-import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
+import { Hex } from '@vechain/vechain-sdk-core';
 
 /**
  * Our core provider class for vechain
@@ -200,7 +200,10 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         const promises = Array.from(
             this.subscriptionManager.logSubscriptions.entries()
         ).map(async ([subscriptionId, subscriptionDetails]) => {
-            const currentBlock = vechain_sdk_core_ethers.toQuantity(
+            // const currentBlock = vechain_sdk_core_ethers.toQuantity(
+            //     this.subscriptionManager.currentBlockNumber
+            // );
+            const currentBlock = Hex.quantity(
                 this.subscriptionManager.currentBlockNumber
             );
             // Construct filter options for the Ethereum logs query based on the subscription details

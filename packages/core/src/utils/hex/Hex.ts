@@ -184,6 +184,10 @@ const Hex = {
         bytes: number = 0
     ): string {
         return `${PREFIX}${this.of(n, bytes)}`;
+    },
+
+    quantity: function (value: BytesLike | BigNumberish): string {
+        return toQuantity(value);
     }
 };
 
