@@ -5,9 +5,14 @@ import type { LogFunctionType, LogLoggerData } from '../types';
  */
 const _logWarningFunction: LogFunctionType<'log'> = {
     log: (data: LogLoggerData) => {
+        // Convert messages to string
+        const messagesAsString = data.messages
+            .map((message) => `- ${message}`)
+            .join('\n');
+
         console.warn(
             `\n****************** WARNING: ${data.title} ******************\n` +
-                `${data.messages.map((message) => `- ${message}`).join('\n')}` +
+                messagesAsString +
                 `\n`
         );
     }

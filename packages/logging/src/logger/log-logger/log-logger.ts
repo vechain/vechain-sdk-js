@@ -5,9 +5,14 @@ import type { LogFunctionType, LogLoggerData } from '../types';
  */
 const _logLogFunction: LogFunctionType<'log'> = {
     log: (data: LogLoggerData) => {
+        // Convert messages to string
+        const messagesAsString = data.messages
+            .map((message) => `- ${message}`)
+            .join('\n');
+
         console.log(
             `\n****************** EVENT: ${data.title} ******************\n` +
-                `${data.messages.map((message) => `- ${message}`).join('\n')}` +
+                messagesAsString +
                 `\n`
         );
     }
