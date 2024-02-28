@@ -1,19 +1,16 @@
-# @vechain/vechain-sdk-network
+# @vechain/vechain-sdk-logging
 
-Welcome to the **wallet package** of the vechain SDK!
+Welcome to the **logging package** of the vechain SDK!
 
 ## Introduction
-Wallet enables users to manage their accounts and sign transactions by using different kinds of wallet.
+Logging package provides a simple and easy-to-use logging system for the vechain SDK.
 
 ## Key Features
 
-The vechain SDK Wallet package provides features for wallet management and transaction signing.
-Basically, it provides a standard Wallet interface.
-All other wallet implementations should implement this interface.
-This allows developers to use different kinds of wallet without changing vechain development stack.
-
-For instance, the provider package uses the wallet interface to get addresses.
-This means that the provider package can be used with any wallet implementation, BUT the wallet implementation must implement the wallet interface.
+The vechain SDK Wallet package provides features for logging, including:
+* error logging
+* info logging
+* warning logging
 
 ## Commands
 
