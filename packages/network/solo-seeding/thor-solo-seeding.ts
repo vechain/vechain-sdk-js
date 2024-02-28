@@ -74,7 +74,7 @@ const unsignedTxs = txBodies.map((txBody) => new Transaction(txBody));
  */
 const txs = unsignedTxs.map((unsignedTx, index) =>
     TransactionHandler.sign(
-        unsignedTx,
+        unsignedTx.body,
         Buffer.from(ALL_ACCOUNTS[10 + index].privateKey, 'hex') // 10 is the index of the first thor-solo genesis account
     )
 );
@@ -87,7 +87,7 @@ const txs = unsignedTxs.map((unsignedTx, index) =>
 const deployTestContractTransaction = (): Transaction => {
     try {
         return TransactionHandler.sign(
-            new Transaction({
+            {
                 ...txBody,
                 clauses: [
                     {
@@ -98,7 +98,7 @@ const deployTestContractTransaction = (): Transaction => {
                             TESTING_CONTRACT_BYTECODE
                     }
                 ]
-            }),
+            },
             Buffer.from(ALL_ACCOUNTS[4].privateKey, 'hex')
         );
     } catch (err) {
