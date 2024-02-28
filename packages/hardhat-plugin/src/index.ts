@@ -6,6 +6,7 @@ import { type HttpNetworkConfig } from 'hardhat/types';
 import { lazyObject } from 'hardhat/plugins';
 
 import './type-extensions';
+import { VechainSDKLogger } from '@vechain/vechain-sdk-logging';
 
 /**
  * Extend the enviroment with provider to be able to use vechain functions
@@ -27,7 +28,14 @@ extendEnvironment((hre) => {
     // 2 - Check if network is vechain
 
     if (!networkName.includes('vechain')) {
-        console.log('Not a vechain network');
+        VechainSDKLogger('warning').log({
+            title: 'Not a vechain network',
+            messages: [
+                'Ensure your hardhat config file has a network that:',
+                '\t1. Is a vechain valid network (set url and optionally delegator parameter)',
+                '\t2. Has the name of the network containing "vechain" (e.g. "vechain_mainnet", "vechain_testnet", "vechain_solo", ...)'
+            ]
+        });
         return;
     }
 
