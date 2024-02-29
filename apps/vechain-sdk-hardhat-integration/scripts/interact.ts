@@ -5,7 +5,7 @@ async function main(): Promise<void> {
         'VechainHelloWorldWithNonEmptyConstructor',
         '0x3dbfbed6b0aa6981ebb65bad6ffc57206641f2f1'
     );
-    const message = await vechainHelloWorld.sayHello();
+    const message = (await vechainHelloWorld.sayHello()) as string;
 
     console.log(`${message}`);
 }

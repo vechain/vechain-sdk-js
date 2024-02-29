@@ -9,6 +9,9 @@ The hardhat-plugin package serves as a crucial link between Hardhat and the vech
 ## Commands
 
 - **Install dependencies**: Execute `yarn install` to install the required dependencies.
-- **Compile**: Execute `npx hardhat compile` to compile the smart contracts in the `contracts` folder.
-- **Testing**: Execute `npx hardhat test` to test the smart contracts running the tests located on the `test` folder.
-- **Deploy**: Execute `npx hardhat run scripts/deploy.ts` to deploy the smart contracts in the `contracts` folder. Remember to add `--network vechain_testnet` at the end of the command to specify the network you want to use (you cand find available vechain networks on the hardhat config file `hardhat,config.js`).
+- **Compile**: Execute `yarn compile` to compile the smart contracts in the `contracts` folder.
+- **Testing**: Execute `yarn test` to test the smart contracts running the tests located on the `test` folder.
+- **Deploy**: Execute `yarn deploy-solo` to deploy the smart contracts on the solo network, and `yarn deploy-testnet` to deploy on the vechain testnet. 
+
+## Usage
+The `hardhat.config.js` is the main configuration file. By specifying the desired network configurations, such as the network URL and the accounts to be used for signing transactions, developers can seamlessly switch between different networks and environments. Additionally, settings like enabling logging can also be configured to provide more detailed information during development and testing. This flexibility in the configuration file allows developers to tailor their development experience and adapt it to the requirements of their projects, ensuring a smooth and efficient development process.
