@@ -9,7 +9,7 @@ import { type RequestBody, type Config } from './types';
 function startProxy(): void {
     const config: Config = importConfig as Config;
     const port = config.port ?? 8545;
-    console.log(`[rpc-proxy]: Starting proxy at http://localhost:${port}`);
+    console.log(`[rpc-proxy]: Starting proxy on port ${port}`);
 
     const soloNetwork = new HttpClient(config.url);
     const thorClient = new ThorClient(soloNetwork);
@@ -59,9 +59,7 @@ function startProxy(): void {
     });
 
     app.listen(port, () => {
-        console.log(
-            `[rpc-proxy]: Proxy is running at http://localhost:${port}`
-        );
+        console.log(`[rpc-proxy]: Proxy is running on port ${port}`);
     }).on('error', (err: Error) => {
         console.error(`[rpc-proxy]: Error starting proxy: ${err.message}`);
     });
