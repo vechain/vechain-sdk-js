@@ -4,19 +4,7 @@ import { VechainProvider } from '@vechain/vechain-sdk-provider';
 import importConfig from '../config.json';
 import express, { type Express, type Request, type Response } from 'express';
 import cors from 'cors';
-
-interface Config {
-    port?: number;
-    url: string;
-    accounts: {
-        mnemonic: string;
-    };
-}
-
-interface RequestBody {
-    method: string;
-    id: string;
-}
+import { type RequestBody, type Config } from './types';
 
 function startProxy(): void {
     const config: Config = importConfig as Config;
