@@ -526,12 +526,12 @@
     execa "^8.0.1"
     yargs "^17.0.0"
 
-"@commitlint/config-conventional@^18.6.0":
-  version "18.6.2"
-  resolved "https://registry.yarnpkg.com/@commitlint/config-conventional/-/config-conventional-18.6.2.tgz#617f3ee761578040cade530631058699642cbd78"
-  integrity sha512-PcgSYg1AKGQIwDQKbaHtJsfqYy4uJTC7crLVZ83lfjcPaec4Pry2vLeaWej7ao2KsT20l9dWoMPpEGg8LWdUuA==
+"@commitlint/config-conventional@^19.0.3":
+  version "19.0.3"
+  resolved "https://registry.yarnpkg.com/@commitlint/config-conventional/-/config-conventional-19.0.3.tgz#28b8b9e7561366bf663c2955e4fe8e3fd954675d"
+  integrity sha512-vh0L8XeLaEzTe8VCxSd0gAFvfTK0RFolrzw4o431bIuWJfi/yRCHJlsDwus7wW2eJaFFDR0VFXJyjGyDQhi4vA==
   dependencies:
-    "@commitlint/types" "^18.6.1"
+    "@commitlint/types" "^19.0.3"
     conventional-changelog-conventionalcommits "^7.0.2"
 
 "@commitlint/config-validator@^19.0.0":
@@ -659,18 +659,12 @@
   dependencies:
     find-up "^7.0.0"
 
-"@commitlint/types@^18.6.1":
-  version "18.6.1"
-  resolved "https://registry.yarnpkg.com/@commitlint/types/-/types-18.6.1.tgz#7eb3ab2d799d9166fbb98b96b0744581e59a4ad4"
-  integrity sha512-gwRLBLra/Dozj2OywopeuHj2ac26gjGkz2cZ+86cTJOdtWfiRRr4+e77ZDAGc6MDWxaWheI+mAV5TLWWRwqrFg==
+"@commitlint/types@^19.0.0", "@commitlint/types@^19.0.3":
+  version "19.0.3"
+  resolved "https://registry.yarnpkg.com/@commitlint/types/-/types-19.0.3.tgz#feff4ecac2b5c359f2a57f9ab094b2ac80ef0266"
+  integrity sha512-tpyc+7i6bPG9mvaBbtKUeghfyZSDgWquIDfMgqYtTbmZ9Y9VzEm2je9EYcQ0aoz5o7NvGS+rcDec93yO08MHYA==
   dependencies:
-    chalk "^4.1.0"
-
-"@commitlint/types@^19.0.0":
-  version "19.0.0"
-  resolved "https://registry.yarnpkg.com/@commitlint/types/-/types-19.0.0.tgz#d5af1c8730c85a1622ae885f2d728fced17a4e0c"
-  integrity sha512-qLjLUdYXKi0TIavONrjBkxrElp7KguqDbvzIRbqTdJBV/cAAr8QEhHe1qUq8OcCM3gFWTlUrDz3ISZbkRoGsAg==
-  dependencies:
+    "@types/conventional-commits-parser" "^5.0.0"
     chalk "^5.3.0"
 
 "@cspotcode/source-map-support@^0.8.0":
@@ -1819,6 +1813,13 @@
   version "4.11.6"
   resolved "https://registry.yarnpkg.com/@types/bn.js/-/bn.js-4.11.6.tgz#c306c70d9358aaea33cd4eda092a742b9505967c"
   integrity sha512-pqr857jrp2kPuO9uRjZ3PwnJTjoQy+fcdxvBTvHm6dkmEL9q+hDD/2j/0ELOBPtPnS8LjCX0gI9nbl8lVkadpg==
+  dependencies:
+    "@types/node" "*"
+
+"@types/conventional-commits-parser@^5.0.0":
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/@types/conventional-commits-parser/-/conventional-commits-parser-5.0.0.tgz#8c9d23e0b415b24b91626d07017303755d542dc8"
+  integrity sha512-loB369iXNmAZglwWATL+WRe+CRMmmBPtpolYzIebFaX4YA3x+BEfLqhUAV9WanycKI3TG1IMr5bMJDajDKLlUQ==
   dependencies:
     "@types/node" "*"
 
