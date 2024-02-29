@@ -1,6 +1,6 @@
 import {
-    type ThorClient,
-    type CompressedBlockDetail
+    type CompressedBlockDetail,
+    type ThorClient
 } from '@vechain/vechain-sdk-network';
 import {
     blocksFormatter,
@@ -8,7 +8,7 @@ import {
     RPCMethodsMap,
     type SyncBlockRPC
 } from '../../../../../provider';
-import { JSONRPC, buildProviderError } from '@vechain/vechain-sdk-errors';
+import { buildProviderError, JSONRPC } from '@vechain/vechain-sdk-errors';
 import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
 
 /**
