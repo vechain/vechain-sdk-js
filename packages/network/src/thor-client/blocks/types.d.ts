@@ -132,10 +132,18 @@ interface BlockDetail {
     isTrunk: boolean;
 }
 
+/**
+ * Type for the compressed block detail.
+ * Here we have the transactions as an array of strings.
+ */
 interface CompressedBlockDetail extends BlockDetail {
     transactions: string[];
 }
 
+/**
+ * Type for the expanded block detail.
+ * Here we have the transactions expanded with the details.
+ */
 interface ExpandedBlockDetail extends BlockDetail {
     transactions: TransactionsExpandedBlockDetail[];
 }

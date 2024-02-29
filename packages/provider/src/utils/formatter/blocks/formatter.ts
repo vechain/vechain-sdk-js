@@ -1,7 +1,7 @@
 import {
-    type TransactionsExpandedBlockDetail,
+    type CompressedBlockDetail,
     type ExpandedBlockDetail,
-    type CompressedBlockDetail
+    type TransactionsExpandedBlockDetail
 } from '@vechain/vechain-sdk-network';
 import { type BlocksRPC } from './types';
 import {
