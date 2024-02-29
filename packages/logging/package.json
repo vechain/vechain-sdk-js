@@ -1,14 +1,12 @@
 {
-    "name": "@vechain/vechain-sdk-hardhat-plugin",
+    "name": "@vechain/vechain-sdk-logging",
     "version": "1.0.0",
-    "description": "This module allows to create smart contracts and interact with them using the vechain SDK and Hardhat",
+    "description": "This module provides functionality to logging data for vechain-sdk",
     "author": "vechain Foundation",
     "license": "MIT",
     "keywords": [
         "vechain",
-        "hardhat",
-        "plugin",
-        "contract"
+        "logging"
     ],
     "private": false,
     "main": "dist/index.js",
@@ -26,6 +24,6 @@
         "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
     },
     "dependencies": {
-        "@vechain/vechain-sdk-provider": "*"
+        "@vechain/vechain-sdk-errors": "*"
     }
 }

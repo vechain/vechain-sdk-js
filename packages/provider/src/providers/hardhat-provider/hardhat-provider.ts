@@ -8,10 +8,11 @@ import { VechainProvider } from '../vechain-provider';
 import { type Wallet } from '@vechain/vechain-sdk-wallet';
 import type { EIP1193RequestArguments } from '../../eip1193';
 import {
-    buildError,
+    buildHardhatError,
     getJSONRPCErrorCode,
     JSONRPC
 } from '@vechain/vechain-sdk-errors';
+import { VechainSDKLogger } from '@vechain/vechain-sdk-logging';
 
 /**
  * This class is a wrapper for the VechainProvider that Hardhat uses.
@@ -103,14 +104,15 @@ class HardhatVechainProvider
                 const accounts = await (this.wallet as Wallet).getAddresses();
                 const delegator = await (this.wallet as Wallet).getDelegator();
 
-                console.log(
-                    `\n****************** SENDING REQUEST ******************\n` +
-                        `\n- method:\n\t\t${JSON.stringify(args.method)}` +
-                        `\n- params:\n\t\t${JSON.stringify(args.params)}` +
-                        `\n- accounts:\n\t\t${JSON.stringify(accounts)}` +
-                        `\n- delegator:\n\t\t${JSON.stringify(delegator)}` +
-                        `\n- url:\n\t\t${this.thorClient.httpClient.baseURL}`
-                );
+                VechainSDKLogger('log').log({
+                    title: `Sending request - ${args.method}`,
+                    messages: [
+                        `params: ${JSON.stringify(args.params)}`,
+                        `accounts: ${JSON.stringify(accounts)}`,
+                        `delegator: ${JSON.stringify(delegator)}`,
+                        `url: ${this.thorClient.httpClient.baseURL}`
+                    ]
+                });
             }
 
             // Send the request
@@ -121,39 +123,31 @@ class HardhatVechainProvider
 
             // Debug mode - get the result
             if (this.debug) {
-                console.log(
-                    `- result:\n\t\t${JSON.stringify(result)}` + `\n\n`
-                );
+                VechainSDKLogger('log').log({
+                    title: `Get request - ${args.method} result`,
+                    messages: [`result: ${JSON.stringify(result)}`]
+                });
             }
 
             return result;
         } catch (e) {
             // Debug the error
             if (this.debug) {
-                const delegator = await (this.wallet as Wallet).getDelegator();
-                const accounts = await (this.wallet as Wallet).getAddresses();
-
-                console.log(
-                    `\n****************** ERROR ON REQUEST ******************\n` +
-                        `\n- request:\n\t\t${JSON.stringify(args.method)}` +
-                        `\n- params:\n\t\t${JSON.stringify(args.params)}` +
-                        `\n- accounts:\n\t\t${JSON.stringify(accounts)}` +
-                        `\n- delegator:\n\t\t${JSON.stringify(delegator)}` +
-                        `\n- url:\n\t\t${this.thorClient.httpClient.baseURL}` +
-                        `\n- error:\n\t\t${JSON.stringify(e)}` +
-                        `\n\n`
-                );
+                VechainSDKLogger('error').log({
+                    errorCode: JSONRPC.INTERNAL_ERROR,
+                    errorMessage: `Error on request - ${args.method}`,
+                    errorData: {
+                        code: getJSONRPCErrorCode(JSONRPC.INVALID_REQUEST),
+                        message: `Error on request - ${args.method} to endpoint ${this.thorClient.httpClient.baseURL}`
+                    },
+                    innerError: e
+                });
             }
 
             // Throw the error
-            throw buildError(
-                JSONRPC.INVALID_REQUEST,
+            throw buildHardhatError(
                 `Invalid request to endpoint ${args.method}`,
-                {
-                    code: getJSONRPCErrorCode(JSONRPC.INVALID_REQUEST),
-                    message: `Invalid request to endpoint ${args.method}`
-                },
-                e
+                e as Error
             );
         }
     }
