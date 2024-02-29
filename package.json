@@ -1,6 +1,6 @@
 {
     "name": "vechain-sdk",
-    "version": "2.0.0",
+    "version": "1.0.0",
     "description": "The official JavaScript SDK for vechain",
     "repository": "https://github.com/vechain/vechain-sdk.git",
     "author": "vechain Foundation",
