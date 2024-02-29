@@ -16,8 +16,7 @@
     "private": true,
     "workspaces": [
         "packages/*",
-        "docs",
-        "apps/vechain-sdk-hardhat-integration"
+        "docs"
     ],
     "scripts": {
         "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose up -d --wait && echo '\nThor solo node started ...'",
