@@ -15,7 +15,8 @@
     "scripts": {
         "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
         "lint": "eslint --ext .ts src --ext .ts",
-        "format": "prettier --write src/**/*.ts"
+        "format": "prettier --write src/**/*.ts",
+        "start": "yarn build && node dist/index.js"
     },
     "dependencies": {
         "@vechain/vechain-sdk-network": "*",
