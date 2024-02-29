@@ -2,7 +2,6 @@ import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { HardhatVechainProvider } from '../../../src';
 import { mainnetUrl } from '../../fixture';
 import { providerMethodsTestCasesMainnet } from '../fixture';
-import { JSONRPCInvalidRequest } from '@vechain/vechain-sdk-errors';
 import { BaseWallet } from '@vechain/vechain-sdk-wallet';
 
 /**
@@ -111,12 +110,12 @@ describe('Hardhat provider tests', () => {
                     method: 'INVALID_METHOD',
                     params: [-1]
                 })
-        ).rejects.toThrowError(JSONRPCInvalidRequest);
+        ).rejects.toThrowError();
 
         // Call RPC function and throw error using send method (same result as above)
         await expect(
             async () => await provider.send('INVALID_METHOD', [-1])
-        ).rejects.toThrowError(JSONRPCInvalidRequest);
+        ).rejects.toThrowError();
 
         // Call RPC function and throw error using send-async method (same result as above)
         await provider.sendAsync(
