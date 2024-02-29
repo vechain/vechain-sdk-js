@@ -30,7 +30,7 @@ Welcome to the vechain SDK repository! Here's a breakdown of our organized struc
    - `./packages/network`: Embark on a journey through the network module, your gateway to all things related to blockchain interaction and transaction dissemination. Here, the vechain SDK connects you seamlessly to the VechainThor blockchain.
    - `./packages/provider`: Get the maximum of EVM development stack with provider package. This module is dedicated to managing the compatibility with ethers and EVM world.
    - `./packages/wallet`: Secure your assets and manage transactions with ease using the wallet package. This module provides functionality for creating and managing vechain wallets, as well as signing and broadcasting transactions securely on the VechainThor blockchain.
-   - `./packages/proxy`: This package is designed to bridge the gap between Thor's RESTful API and Ethereum's JSON-RPC.
+   - `./packages/rpc-proxy`: This package is designed to bridge the gap between Thor's RESTful API and Ethereum's JSON-RPC.
 
 Explore, experiment, and let the vechain SDK empower your blockchain adventures!
 

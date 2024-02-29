@@ -25,7 +25,6 @@ function startProxy(): void {
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
     app.post('*', async (req: Request, res: Response) => {
         const requestBody = req.body as RequestBody;
-
         try {
             res.json({
                 jsonrpc: 2.0,

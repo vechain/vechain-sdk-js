@@ -89,9 +89,9 @@ jobs:
               env:
                 NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
             
-            - name: Publish proxy
+            - name: Publish RPC proxy
               run: |
-                cd packages/proxy
+                cd packages/rpc-proxy
                 yarn version --no-git-tag-version --new-version ${{ github.ref_name }}
                 yarn publish
               env:
