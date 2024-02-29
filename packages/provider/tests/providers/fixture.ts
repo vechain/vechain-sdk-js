@@ -1,8 +1,4 @@
-import {
-    vechain_sdk_core_ethers,
-    unitsUtils,
-    type InterfaceAbi
-} from '@vechain/vechain-sdk-core';
+import { unitsUtils, type InterfaceAbi, Hex } from '@vechain/vechain-sdk-core';
 import { zeroBlock } from '../rpc-mapper/methods/eth_getBlockByNumber/fixture';
 import {
     TESTING_CONTRACT_ADDRESS,
@@ -20,7 +16,7 @@ const providerMethodsTestCasesTestnet = [
         description:
             "Should be able to call eth_getBlockByNumber with '0x0' as the block number",
         method: 'eth_getBlockByNumber',
-        params: [vechain_sdk_core_ethers.toQuantity(0), false],
+        params: [Hex.quantity(0), false],
         expected: zeroBlock
     },
     {
@@ -46,9 +42,7 @@ const providerMethodsTestCasesSolo = [
             'Should be able to call eth_getBalance of an address with balance more than 0 VET',
         method: 'eth_getBalance',
         params: [TEST_ACCOUNTS_THOR_SOLO[0].address, 'latest'],
-        expected: vechain_sdk_core_ethers.toQuantity(
-            unitsUtils.parseVET('500000000')
-        )
+        expected: Hex.quantity(unitsUtils.parseVET('500000000'))
     },
     {
         description: 'Should be able to call eth_getCode of a smart contract',
@@ -63,8 +57,8 @@ const logsInput = {
         '0x0000000000000000000000000000456e65726779',
         '0x0000000000000000000000000000456e65726779'
     ],
-    fromBlock: vechain_sdk_core_ethers.toQuantity(0),
-    toBlock: vechain_sdk_core_ethers.toQuantity(100000),
+    fromBlock: Hex.quantity(0),
+    toBlock: Hex.quantity(100000),
     topics: [
         '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
         '0x0000000000000000000000005034aa590125b64023a0262112b98d72e3c8e40e',
