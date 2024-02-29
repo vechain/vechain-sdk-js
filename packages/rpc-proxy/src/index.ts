@@ -60,6 +60,8 @@ function startProxy(): void {
 
     app.listen(port, () => {
         console.log(`[proxy]: Proxy is running at http://localhost:${port}`);
+    }).on('error', (err: Error) => {
+        console.error(`[proxy]: Error starting proxy: ${err.message}`);
     });
 }
 
