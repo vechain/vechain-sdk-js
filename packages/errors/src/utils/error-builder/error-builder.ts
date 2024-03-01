@@ -5,6 +5,7 @@ import {
     type ErrorType
 } from '../../types';
 import { assertInnerError } from '../assert';
+import { buildErrorMessage } from '../error-message-builder';
 
 /**
  * Build error object according to the error code provided.
@@ -30,9 +31,17 @@ function buildError<
         throw new Error('Invalid error code');
     }
 
+    // Error message
+    const errorMessage = buildErrorMessage<ErrorCodeT, DataTypeT>(
+        'method',
+        message,
+        data as DataTypeT,
+        innerError === undefined ? undefined : assertInnerError(innerError)
+    );
+
     const error = new ErrorClass({
         code,
-        message,
+        message: errorMessage,
         data,
         innerError:
             innerError === undefined ? undefined : assertInnerError(innerError)

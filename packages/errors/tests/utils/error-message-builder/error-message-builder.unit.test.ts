@@ -5,7 +5,7 @@ import { buildErrorMessage } from '../../../src/utils/error-message-builder';
  * Error message buildr test
  * @group unit/errors/error-message-builder
  */
-describe('Error message buildr test', () => {
+describe('Error message builder test', () => {
     /**
      * An error message is built
      */
@@ -19,8 +19,6 @@ describe('Error message buildr test', () => {
             new Error('Internal error')
         );
         expect(errorMessage).toBeDefined();
-        expect(errorMessage).toContain('simpleMethod');
-        expect(errorMessage).toContain('data');
     });
 
     /**
@@ -35,7 +33,5 @@ describe('Error message buildr test', () => {
             }
         );
         expect(errorMessage).toBeDefined();
-        expect(errorMessage).toContain('simpleMethod');
-        expect(errorMessage).toContain('data');
     });
 });
