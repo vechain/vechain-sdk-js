@@ -1,11 +1,11 @@
 import { ethers } from 'hardhat';
 
-async function main() {
+async function main(): Promise<void> {
     const vechainHelloWorld = await ethers.getContractAt(
         'VechainHelloWorldWithNonEmptyConstructor',
         '0x3dbfbed6b0aa6981ebb65bad6ffc57206641f2f1'
     );
-    const message = await vechainHelloWorld.sayHello();
+    const message = (await vechainHelloWorld.sayHello()) as string;
 
     console.log(`${message}`);
 }
