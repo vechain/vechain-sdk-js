@@ -14,4 +14,11 @@ The hardhat-plugin package serves as a crucial link between Hardhat and the vech
 - **Deploy**: Execute `yarn deploy-solo` to deploy the smart contracts on the solo network, and `yarn deploy-testnet` to deploy on the vechain testnet. 
 
 ## Usage
-The `hardhat.config.js` is the main configuration file. By specifying the desired network configurations, such as the network URL and the accounts to be used for signing transactions, developers can seamlessly switch between different networks and environments. Additionally, settings like enabling logging can also be configured to provide more detailed information during development and testing. This flexibility in the configuration file allows developers to tailor their development experience and adapt it to the requirements of their projects, ensuring a smooth and efficient development process.
+
+The `hardhat.config.js` is the main configuration file. By specifying the desired network configurations, such as the network URL and the accounts to be used for signing transactions, developers can seamlessly switch between different networks and environments. Additionally, settings like enabling logging can also be configured to provide more detailed information during development and testing. 
+Note that:
+
+- The network name should contain `vechain`, otherwise, it may result in an error.
+- In the network configuration, two additional fields can be added: `delegator` and `useDebug`. These fields allow for more customization and control over the network settings, catering to specific project requirements and preferences.
+
+This flexibility in the configuration file allows developers to tailor their development experience and adapt it to the requirements of their projects, ensuring a smooth and efficient development process.
