@@ -9,7 +9,7 @@ import './type-extensions';
 import { VechainSDKLogger } from '@vechain/vechain-sdk-logging';
 
 /**
- * Extend the enviroment with provider to be able to use vechain functions
+ * Extend the environment with provider to be able to use vechain functions
  */
 extendEnvironment((hre) => {
     // 1 - Get parameters

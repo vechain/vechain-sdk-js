@@ -26,7 +26,7 @@ describe('Vechain provider tests - mainnet', () => {
     });
 
     /**
-     * Destory thor client and provider after each test
+     * Destroy thor client and provider after each test
      */
     afterEach(() => {
         provider.destroy();

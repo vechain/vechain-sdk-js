@@ -26,6 +26,7 @@ class BaseWallet implements Wallet {
      * Create a new wallet.
      *
      * @param accounts List of accounts in the wallet.
+     * @param options Optional options for signing a transaction with delegator.
      */
     constructor(
         accounts: WalletAccount[],

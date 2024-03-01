@@ -1,15 +1,15 @@
 /**
- * Constants defining vechain mainnet chain tag. The chain tag is the last byte of the genesis block ID
+ * Constant defining vechain mainnet chain tag. The chain tag is the last byte of the genesis block ID
  */
 const VECHAIN_MAINNET_CHAIN_TAG = 0x4a;
 
 /**
- * Constants defining vechain testnet chain tag. The chain tag is the last byte of the genesis block ID
+ * Constant defining vechain testnet chain tag. The chain tag is the last byte of the genesis block ID
  */
 const VECHAIN_TESTNET_CHAIN_TAG = 0x27;
 
 /**
- * Constants defining vechain testnet chain tag. The chain tag is the last byte of the genesis block ID
+ * Constant defining vechain testnet chain tag. The chain tag is the last byte of the genesis block ID
  */
 const VECHAIN_SOLO_CHAIN_TAG = 0xf6;
 
@@ -107,7 +107,7 @@ const soloGenesisBlock = {
 };
 
 /**
- * Constants defining vechain mainnet information
+ * Constant defining vechain mainnet information
  */
 const MAINNET_NETWORK = {
     genesisBlock: mainnetGenesisBlock,
@@ -115,7 +115,7 @@ const MAINNET_NETWORK = {
 };
 
 /**
- * Constants defining vechain testnet information
+ * Constant defining vechain testnet information
  */
 const TESTNET_NETWORK = {
     genesisBlock: testnetGenesisBlock,
@@ -123,7 +123,7 @@ const TESTNET_NETWORK = {
 };
 
 /**
- * Constants defining vechain solo network information
+ * Constant defining vechain solo network information
  */
 const SOLO_NETWORK = {
     genesisBlock: soloGenesisBlock,
@@ -131,7 +131,7 @@ const SOLO_NETWORK = {
 };
 
 /**
- * Constants defining vechain mainnet and testnet network information
+ * Constant defining vechain mainnet and testnet network information
  */
 const networkInfo = {
     mainnet: MAINNET_NETWORK,

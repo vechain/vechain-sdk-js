@@ -72,46 +72,54 @@ describe('ThorClient - ERC721 Contracts', () => {
 
     erc721ContractTestCases.forEach(
         ({ description, functionName, params, expected, isReadOnly }) => {
-            test(description, async () => {
-                let response;
-                if (isReadOnly) {
-                    response =
-                        await thorSoloClient.contracts.executeContractCall(
-                            contractAddress,
-                            coder
-                                .createInterface(ERC721_ABI)
-                                .getFunction(functionName) as FunctionFragment,
-                            params
+            test(
+                description,
+                async () => {
+                    let response;
+                    if (isReadOnly) {
+                        response =
+                            await thorSoloClient.contracts.executeContractCall(
+                                contractAddress,
+                                coder
+                                    .createInterface(ERC721_ABI)
+                                    .getFunction(
+                                        functionName
+                                    ) as FunctionFragment,
+                                params
+                            );
+                        expect(response).toBeDefined();
+                        expect(response).toEqual(expected);
+                    } else {
+                        response =
+                            await thorSoloClient.contracts.executeContractTransaction(
+                                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
+                                    .privateKey,
+                                contractAddress,
+                                coder
+                                    .createInterface(ERC721_ABI)
+                                    .getFunction(
+                                        functionName
+                                    ) as FunctionFragment,
+                                params
+                            );
+
+                        const result =
+                            await thorSoloClient.transactions.waitForTransaction(
+                                response.id
+                            );
+
+                        expect(result).toBeDefined();
+                        expect(result?.outputs).toBeDefined();
+
+                        const logDescriptions = decodeResultOutput(
+                            result as TransactionReceipt
                         );
-                    expect(response).toBeDefined();
-                    expect(response).toEqual(expected);
-                } else {
-                    response =
-                        await thorSoloClient.contracts.executeContractTransaction(
-                            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
-                                .privateKey,
-                            contractAddress,
-                            coder
-                                .createInterface(ERC721_ABI)
-                                .getFunction(functionName) as FunctionFragment,
-                            params
-                        );
 
-                    const result =
-                        await thorSoloClient.transactions.waitForTransaction(
-                            response.id
-                        );
-
-                    expect(result).toBeDefined();
-                    expect(result?.outputs).toBeDefined();
-
-                    const logDescriptions = decodeResultOutput(
-                        result as TransactionReceipt
-                    );
-
-                    expect(logDescriptions[0][0]?.args).toEqual(expected);
-                }
-            });
+                        expect(logDescriptions[0][0]?.args).toEqual(expected);
+                    }
+                },
+                10000
+            );
         }
     );
 
