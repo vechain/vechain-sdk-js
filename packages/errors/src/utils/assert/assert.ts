@@ -1,5 +1,5 @@
-import { type DataType, type ErrorCode, type ErrorType } from '../types';
-import { buildError } from './errorBuilder';
+import { type DataType, type ErrorCode, type ErrorType } from '../../types';
+import { buildError } from '../error-builder/error-builder';
 
 /**
  * Assert that the condition is true, otherwise throw an error.
@@ -31,4 +31,17 @@ function assert<
     if (!condition && typeof error === 'object') throw error;
 }
 
-export { assert };
+/**
+ * Assert that the inner error object is an instance of Error
+ * @param error an unknown object to be asserted as an instance of Error
+ * @returns an Error object
+ */
+function assertInnerError(error: unknown): Error {
+    if (error instanceof Error) {
+        return error;
+    }
+
+    throw new Error('Inner error is not an instance of Error');
+}
+
+export { assert, assertInnerError };
