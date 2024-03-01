@@ -22,40 +22,43 @@ function startProxy(): void {
     );
     app.use(express.json());
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    app.post('*', async (req: Request, res: Response) => {
-        const requestBody = req.body as RequestBody;
-        try {
-            res.json({
-                jsonrpc: 2.0,
-                result: await provider.request(requestBody),
-                id: requestBody.id
-            });
-        } catch (e) {
-            res.json({
-                jsonrpc: 2.0,
-                error: e,
-                id: requestBody.id
-            });
-        }
+    app.post('*', (req: Request, res: Response) => {
+        void (async () => {
+            const requestBody = req.body as RequestBody;
+            try {
+                res.json({
+                    jsonrpc: 2.0,
+                    result: await provider.request(requestBody),
+                    id: requestBody.id
+                });
+            } catch (e) {
+                res.json({
+                    jsonrpc: 2.0,
+                    error: e,
+                    id: requestBody.id
+                });
+            }
+        })();
     });
 
     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-    app.get('*', async (req: Request, res: Response) => {
-        const requestBody = req.body as RequestBody;
-        try {
-            res.json({
-                jsonrpc: 2.0,
-                result: await provider.request(requestBody),
-                id: requestBody.id
-            });
-        } catch (e) {
-            res.json({
-                jsonrpc: 2.0,
-                error: e,
-                id: requestBody.id
-            });
-        }
+    app.get('*', (req: Request, res: Response) => {
+        void (async () => {
+            const requestBody = req.body as RequestBody;
+            try {
+                res.json({
+                    jsonrpc: 2.0,
+                    result: await provider.request(requestBody),
+                    id: requestBody.id
+                });
+            } catch (e) {
+                res.json({
+                    jsonrpc: 2.0,
+                    error: e,
+                    id: requestBody.id
+                });
+            }
+        })();
     });
 
     app.listen(port, () => {
