@@ -89,7 +89,7 @@ describe('Transaction', () => {
                     transaction.signedTransactionIdExpected
                 );
 
-                // Get delegator form undelegeted signed transaction (should throw error)
+                // Get delegator form undelegated signed transaction (should throw error)
                 expect(() => signedTransaction.delegator).toThrowError(
                     TransactionDelegationError
                 );

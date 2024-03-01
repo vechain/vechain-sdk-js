@@ -1,15 +1,15 @@
 /**
- * Constants defining Vechain mainnet chain tag. The chain tag is the last byte of the genesis block ID
+ * Constants defining vechain mainnet chain tag. The chain tag is the last byte of the genesis block ID
  */
 const VECHAIN_MAINNET_CHAIN_TAG = 0x4a;
 
 /**
- * Constants defining Vechain testnet chain tag. The chain tag is the last byte of the genesis block ID
+ * Constants defining vechain testnet chain tag. The chain tag is the last byte of the genesis block ID
  */
 const VECHAIN_TESTNET_CHAIN_TAG = 0x27;
 
 /**
- * Constants defining Vechain testnet chain tag. The chain tag is the last byte of the genesis block ID
+ * Constants defining vechain testnet chain tag. The chain tag is the last byte of the genesis block ID
  */
 const VECHAIN_SOLO_CHAIN_TAG = 0xf6;
 
@@ -29,7 +29,7 @@ const VTHO_ADDRESS = '0x0000000000000000000000000000456e65726779';
 const PARAMS_ADDRESS = '0x0000000000000000000000000000506172616d73';
 
 /**
- * Genesis block for Vechain mainnet
+ * Genesis block for vechain mainnet
  */
 const mainnetGenesisBlock = {
     number: 0,
@@ -55,7 +55,7 @@ const mainnetGenesisBlock = {
 };
 
 /**
- * Genesis block for Vechain testnet
+ * Genesis block for vechain testnet
  */
 const testnetGenesisBlock = {
     number: 0,
@@ -81,7 +81,7 @@ const testnetGenesisBlock = {
 };
 
 /**
- * Genesis block for Vechain solo network
+ * Genesis block for vechain solo network
  */
 const soloGenesisBlock = {
     number: 0,
@@ -107,7 +107,7 @@ const soloGenesisBlock = {
 };
 
 /**
- * Constants defining Vechain mainnet information
+ * Constants defining vechain mainnet information
  */
 const MAINNET_NETWORK = {
     genesisBlock: mainnetGenesisBlock,
@@ -115,7 +115,7 @@ const MAINNET_NETWORK = {
 };
 
 /**
- * Constants defining Vechain testnet information
+ * Constants defining vechain testnet information
  */
 const TESTNET_NETWORK = {
     genesisBlock: testnetGenesisBlock,
@@ -123,7 +123,7 @@ const TESTNET_NETWORK = {
 };
 
 /**
- * Constants defining Vechain solo network information
+ * Constants defining vechain solo network information
  */
 const SOLO_NETWORK = {
     genesisBlock: soloGenesisBlock,
@@ -131,7 +131,7 @@ const SOLO_NETWORK = {
 };
 
 /**
- * Constants defining Vechain mainnet and testnet network information
+ * Constants defining vechain mainnet and testnet network information
  */
 const networkInfo = {
     mainnet: MAINNET_NETWORK,

@@ -235,7 +235,7 @@ describe('Abi - Function & Event', () => {
              *
              * @type {string}
              */
-            const params = abi.encodeParams(
+            const params: string = abi.encodeParams(
                 ['uint256', 'uint256'],
                 ['123', '234']
             );
@@ -448,9 +448,7 @@ describe('Abi - Function & Event', () => {
          */
         invalidTopicsEventTestCases.forEach(
             ({ event, valuesToEncode, expectedError }) => {
-                test(`Encode Event topics - ${
-                    typeof event === 'string' ? event : JSON.stringify(event)
-                }`, () => {
+                test(`Encode Event topics - ${JSON.stringify(event)}`, () => {
                     const ev = new abi.Event(event);
 
                     expect(() =>

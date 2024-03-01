@@ -38,7 +38,7 @@ describe('Mnemonic', () => {
     });
 
     /**
-     * Test generation with custom lenghts and random generators
+     * Test generation with custom lengths and random generators
      */
     test('Custom generation parameters', () => {
         // Custom lengths
@@ -100,7 +100,7 @@ describe('Mnemonic', () => {
                                 derivationPath.derivationPath
                             )
                             .toString('hex')
-                    ).toEqual(derivationPath.resultingPriovateKey);
+                    ).toEqual(derivationPath.resultingPrivateKey);
 
                     // Address derivation
                     expect(
@@ -115,7 +115,7 @@ describe('Mnemonic', () => {
                     // Private key derivation
                     expect(
                         mnemonic.derivePrivateKey(words).toString('hex')
-                    ).toEqual(derivationPath.resultingPriovateKey);
+                    ).toEqual(derivationPath.resultingPrivateKey);
 
                     // Address derivation
                     expect(mnemonic.deriveAddress(words)).toEqual(

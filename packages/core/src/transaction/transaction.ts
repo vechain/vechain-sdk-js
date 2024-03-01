@@ -159,7 +159,7 @@ class Transaction {
      * B is the delegator
      * TX is the transaction
      *
-     * A send a TX (signed by A) to B to who add his signature to TX using delegateFor parameter (that is A address)
+     * A sends a TX (signed by A) to B to who add his signature to TX using delegateFor parameter (that is A address)
      * on signing hash of TX computation.
      *
      * Mathematically:
@@ -179,6 +179,7 @@ class Transaction {
      *      concat(
      *              blake2b256(TX.encoded),
      *              A.address
+     *             )
      * )
      * ```
      *
@@ -295,11 +296,11 @@ class Transaction {
      */
     private _isSignatureValid(signature: Buffer): boolean {
         // Verify signature length
-        const expectedSigatureLength = this._isDelegated(this.body)
+        const expectedSignatureLength = this._isDelegated(this.body)
             ? SIGNATURE_LENGTH * 2
             : SIGNATURE_LENGTH;
 
-        return signature.length === expectedSigatureLength;
+        return signature.length === expectedSignatureLength;
     }
 
     /**
