@@ -1,11 +1,11 @@
-/**
- * Hardhat build error tests
- * @group unit/hardhat/hardhat-error-builder
- */
 import { buildHardhatError } from '../../src';
 import { describe, expect, test } from '@jest/globals';
 import { HardhatPluginError } from 'hardhat/plugins';
 
+/**
+ * Hardhat build error tests
+ * @group unit/hardhat/hardhat-error-builder
+ */
 describe('Hardhat error builder tests', () => {
     /**
      * Should build hardhat error
