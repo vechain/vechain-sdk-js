@@ -4,8 +4,6 @@ import * as path from 'path';
 // variable packages should be all of the child folders in the packages folder
 const packages = fs.readdirSync(path.resolve(__dirname, '../packages'));
 
-console.log('packages', packages);
-
 const updatePackageVersions = (version: string): void => {
     const packageNames = [];
 
