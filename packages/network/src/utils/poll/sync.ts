@@ -39,18 +39,21 @@ function SyncPoll<TReturnType>(
 } {
     // Positive number for request interval
     assertPositiveIntegerForPollOptions(
+        'SyncPoll',
         options?.requestIntervalInMilliseconds,
         'options?.requestIntervalInMilliseconds'
     );
 
     // Positive number for maximum iterations
     assertPositiveIntegerForPollOptions(
+        'SyncPoll',
         options?.maximumIterations,
         'options?.maximumIterations'
     );
 
     // Positive number for maximum waiting time
     assertPositiveIntegerForPollOptions(
+        'SyncPoll',
         options?.maximumWaitingTimeInMilliseconds,
         'options?.maximumWaitingTimeInMilliseconds'
     );

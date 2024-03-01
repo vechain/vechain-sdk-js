@@ -57,6 +57,7 @@ class EventPoll<TReturnType> extends EventEmitter {
 
         // Positive number for request interval
         assertPositiveIntegerForPollOptions(
+            'EventPoll constructor',
             requestIntervalInMilliseconds,
             'requestIntervalInMilliseconds'
         );
