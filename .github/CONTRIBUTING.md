@@ -163,7 +163,7 @@ When adding new test files, please adhere to the following naming conventions to
 /**
  * Allowed names for test files
  */
-const allowed_names = [
+const allowedNames = [
     // Unit tests
     '.unit.test.ts',
 

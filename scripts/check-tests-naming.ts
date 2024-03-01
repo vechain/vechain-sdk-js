@@ -4,12 +4,12 @@ import { glob } from 'glob';
 /**
  * Pattern to match all test files starting from the root of the project
  */
-const test_pattern = './packages/**/**/*.test.ts';
+const testPattern = './packages/**/**/*.test.ts';
 
 /**
  * Allowed names for test files
  */
-const allowed_names = [
+const allowedNames = [
     // Unit tests
     '.unit.test.ts',
 
@@ -29,34 +29,34 @@ const allowed_names = [
  * The Default exit code is 0.
  * As good programmers, we assume we're naming tests correctly :D
  */
-let exit_code = 0;
+let exitCode = 0;
 
 /**
  * Get all test files
  */
-glob(test_pattern, { ignore: 'node_modules/**' }).then((test_files) => {
+void glob(testPattern, { ignore: 'node_modules/**' }).then((testFiles) => {
     /**
      * Iterate over all test files to check if they are named correctly
      */
-    test_files.forEach((file) => {
+    testFiles.forEach((file) => {
         // File naming is not ok by default
-        let file_naming_ok = false;
+        let fileNamingOk = false;
 
         /**
          * Iterate over all allowed names to check if the file is named correctly
          */
-        allowed_names.forEach((allowed_name) => {
-            if (file.endsWith(allowed_name)) {
-                file_naming_ok = true;
+        allowedNames.forEach((allowedName) => {
+            if (file.endsWith(allowedName)) {
+                fileNamingOk = true;
             }
         });
 
-        if (!file_naming_ok) {
+        if (!fileNamingOk) {
             console.error(`Test file \`${file}\` is not named correctly`);
-            exit_code = 1;
+            exitCode = 1;
         }
     });
 
     // Exit with the correct code
-    process.exit(exit_code);
+    process.exit(exitCode);
 });
