@@ -1,6 +1,6 @@
 import { ethers } from 'hardhat';
 
-async function main() {
+async function main(): Promise<void> {
     const vechainHelloWorldWithNonEmptyConstructor =
         await ethers.deployContract(
             'VechainHelloWorldWithNonEmptyConstructor',
