@@ -46,8 +46,8 @@ function buildErrorMessage<
     return (
         `Method '${methodName}' failed.` +
         `\n-Reason: '${errorMessage}'` +
-        `\n-Internal error: \n\t${innerError?.message !== undefined ? innerError.message : 'No internal error given'}` +
-        `\n-Parameters: \n\t${stringifyData(inputData)}`
+        `\n-Parameters: \n\t${stringifyData(inputData)}` +
+        `\n-Internal error: \n\t${innerError?.message !== undefined ? innerError.message : 'No internal error given'}`
     );
 }
 
