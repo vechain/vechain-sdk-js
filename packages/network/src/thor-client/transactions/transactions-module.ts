@@ -9,7 +9,8 @@ import {
     TransactionHandler,
     revisionUtils,
     secp256k1,
-    addressUtils
+    addressUtils,
+    Hex
 } from '@vechain/vechain-sdk-core';
 import { Poll, buildQuery, thorest } from '../../utils';
 import {
@@ -156,7 +157,7 @@ class TransactionsModule {
     ): Promise<SendTransactionResult> {
         assertIsSignedTransaction(signedTx);
 
-        const rawTx = `0x${signedTx.encoded.toString('hex')}`;
+        const rawTx = Hex.of0x(signedTx.encoded);
 
         return await this.sendRawTransaction(rawTx);
     }

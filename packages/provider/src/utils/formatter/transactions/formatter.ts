@@ -11,6 +11,7 @@ import {
     type TransactionRPC
 } from './types';
 import {
+    Hex,
     vechain_sdk_core_ethers,
     ZERO_BUFFER
 } from '@vechain/vechain-sdk-core';
@@ -199,7 +200,7 @@ function formatTransactionReceiptToRPCStandard(
         transactionIndex: vechain_sdk_core_ethers.toQuantity(transactionIndex),
 
         // Incompatible fields
-        logsBloom: `0x${ZERO_BUFFER(256).toString('hex')}`,
+        logsBloom: Hex.of0x(ZERO_BUFFER(256)),
         cumulativeGasUsed: '0x0',
         effectiveGasPrice: '0x0',
         type: '0x0'

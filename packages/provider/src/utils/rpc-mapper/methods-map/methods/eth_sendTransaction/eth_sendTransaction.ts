@@ -14,6 +14,7 @@ import { ethSendRawTransaction } from '../eth_sendRawTransaction/eth_sendRawTran
 import {
     clauseBuilder,
     dataUtils,
+    Hex,
     type TransactionClause
 } from '@vechain/vechain-sdk-core';
 import { type Wallet, type WalletAccount } from '@vechain/vechain-sdk-wallet';
@@ -148,13 +149,13 @@ const ethSendTransaction = async (
         // Sign the transaction
         const signedTransaction = await thorClient.transactions.signTransaction(
             { nonce: newNonce, ...transactionBodyWithoutNonce },
-            signerIntoWallet.privateKey.toString('hex'),
+            Hex.of(signerIntoWallet.privateKey),
             DelegationHandler(delegatorIntoWallet).delegatorOrUndefined()
         );
 
         // Return the result
         return await ethSendRawTransaction(thorClient, [
-            `0x${signedTransaction.encoded.toString('hex')}`
+            Hex.of0x(signedTransaction.encoded)
         ]);
     } catch (e) {
         throw buildProviderError(
