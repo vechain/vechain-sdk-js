@@ -30,14 +30,14 @@ const config: HardhatUserConfig = {
             accounts: [
                 '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
             ],
-            debugMode: true,
-            delegator: {},
+            debugMode: false,
+            delegator: undefined,
             gas: 'auto',
             gasPrice: 'auto',
             gasMultiplier: 1,
             timeout: 20000,
             httpHeaders: {}
-        } as HttpNetworkConfig,
+        } satisfies HttpNetworkConfig,
 
         /**
          * Testnet configuration
@@ -50,16 +50,17 @@ const config: HardhatUserConfig = {
                     'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
                 path: VET_DERIVATION_PATH,
                 count: 3,
-                initialIndex: 0
+                initialIndex: 0,
+                passphrase: 'vechainthor'
             },
-            debugMode: true,
-            delegator: {},
+            debugMode: false,
+            delegator: undefined,
             gas: 'auto',
             gasPrice: 'auto',
             gasMultiplier: 1,
             timeout: 20000,
             httpHeaders: {}
-        } as HttpNetworkConfig,
+        } satisfies HttpNetworkConfig,
 
         /**
          * Thor solo network configuration
@@ -70,8 +71,8 @@ const config: HardhatUserConfig = {
             accounts: [
                 '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
             ],
-            debugMode: true,
-            delegator: {},
+            debugMode: false,
+            delegator: undefined,
             gas: 'auto',
             gasPrice: 'auto',
             gasMultiplier: 1,

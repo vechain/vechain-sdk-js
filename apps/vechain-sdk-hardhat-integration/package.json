@@ -7,7 +7,10 @@
   "keywords": [],
   "license": "ISC",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "deploy-solo": "npx hardhat run scripts/deploy.ts --network vechain_solo",
+    "deploy-testnet": "npx hardhat run scripts/deploy.ts --network vechain_testnet"
   },
   "dependencies": {
     "@vechain/vechain-sdk-hardhat-plugin": "*",
