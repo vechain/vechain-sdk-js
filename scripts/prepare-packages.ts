@@ -15,7 +15,7 @@ const updatePackageVersions = (version: string): void => {
         const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf8'));
         pkgJson.version = version;
         packageNames.push(pkgJson.name);
-        fs.writeFileSync(pkgJsonPath, JSON.stringify(pkgJson, null, 4));
+        fs.writeFileSync(pkgJsonPath, JSON.stringify(pkgJson, null, 2));
     }
 
     // if a package json contains a dependency on another package in this repo, update it to the new version
@@ -24,9 +24,11 @@ const updatePackageVersions = (version: string): void => {
         const pkgJsonPath = path.resolve(pkgPath, './package.json');
         const pkgJson = JSON.parse(fs.readFileSync(pkgJsonPath, 'utf8'));
 
-        for (const dep of Object.keys(pkgJson.dependencies)) {
-            if (packageNames.includes(dep)) {
-                pkgJson.dependencies[dep] = version;
+        if (pkgJson.dependencies != null) {
+            for (const dep of Object.keys(pkgJson.dependencies)) {
+                if (packageNames.includes(dep)) {
+                    pkgJson.dependencies[dep] = version;
+                }
             }
         }
 
@@ -56,6 +58,21 @@ const updatePackageVersions = (version: string): void => {
             JSON.stringify(appPackageJson, null, 2)
         );
     }
+
+    // Update versions in the docs directory
+    const docsPath = path.resolve(__dirname, `../docs`);
+    const docsJsonPath = path.resolve(docsPath, './package.json');
+    const docsJson = JSON.parse(fs.readFileSync(docsJsonPath, 'utf8'));
+
+    if (docsJson.dependencies != null) {
+        for (const dep of Object.keys(docsJson.dependencies)) {
+            if (packageNames.includes(dep)) {
+                docsJson.dependencies[dep] = version;
+            }
+        }
+    }
+
+    fs.writeFileSync(docsJsonPath, JSON.stringify(docsJson, null, 2));
 };
 
 updatePackageVersions('0.0.1');
