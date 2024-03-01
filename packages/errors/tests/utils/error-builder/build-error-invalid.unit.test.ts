@@ -1,9 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
-import { buildError, ERROR_CODES } from '../src';
+import { buildError, ERROR_CODES } from '../../../src';
 
 /**
  * Build error function errors
- * @group unit/errors/build-error
+ * @group unit/errors/utils/build-error
  */
 describe('Build error function errors', () => {
     /**

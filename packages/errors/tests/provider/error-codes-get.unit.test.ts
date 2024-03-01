@@ -4,11 +4,11 @@ import {
     getEIP1193ErrorCode,
     getJSONRPCErrorCode,
     JSONRPC
-} from '../src';
+} from '../../src';
 
 /**
  * Test the get error codes from EIP1193 and JSON-RPC
- * @group unit/errors/error-codes-get
+ * @group unit/errors/provider/error-codes-get
  */
 describe('Assertion test', () => {
     /**

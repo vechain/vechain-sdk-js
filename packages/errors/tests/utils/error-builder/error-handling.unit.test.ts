@@ -1,21 +1,21 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-    ERROR_CODES,
+    assertInnerError,
     buildError,
+    buildProviderError,
+    ERROR_CODES,
     InvalidKeystoreError,
     InvalidRLPError,
-    assertInnerError,
-    buildProviderError,
     ProviderRpcError
-} from '../src';
+} from '../../../src';
 import {
     ErrorsCodeAndClassesMapsFixture,
     JSONrpcErrorsCodeAndClassesMapsFixture
-} from './fixture';
+} from '../../fixture';
 
 /**
  * Error handler test
- * @group unit/errors/error-handler
+ * @group unit/errors/error-handling
  */
 describe('Error handler test', () => {
     /**

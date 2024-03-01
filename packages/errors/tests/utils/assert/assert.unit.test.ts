@@ -1,10 +1,10 @@
 import { describe, expect, test } from '@jest/globals';
-import { assert } from '../src';
-import { ErrorsCodeAndClassesMapsFixture } from './fixture';
+import { ErrorsCodeAndClassesMapsFixture } from '../../fixture';
+import { assert } from '../../../src';
 
 /**
  * Assertion error handler test
- * @group unit/errors/assertion
+ * @group unit/errors/utils/assert
  */
 describe('Assertion test', () => {
     /**
