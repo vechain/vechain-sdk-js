@@ -4,7 +4,7 @@ import { glob } from 'glob';
 /**
  * Pattern to match all test files starting from the root of the project
  */
-const testPattern = './packages/**/**/*.test.ts';
+const testPattern = './packages/**/tests/**/*.test.ts';
 
 /**
  * Allowed names for test files
@@ -34,7 +34,7 @@ let exitCode = 0;
 /**
  * Get all test files
  */
-glob(testPattern, { ignore: 'node_modules/**' }).then((testFiles) => {
+void glob(testPattern, { ignore: 'node_modules/**' }).then((testFiles) => {
     /**
      * Iterate over all test files to check if they are named correctly
      */
