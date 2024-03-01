@@ -20,6 +20,7 @@ const ethMining = async (
 
     // Not implemented yet
     throw buildError(
+        "eth_mining",
         FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_mining" not not implemented yet',
         {

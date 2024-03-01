@@ -24,6 +24,7 @@ describe('Error handler test', () => {
     test('Throw Invalid Keystore Exception without data', () => {
         expect(() => {
             throw buildError(
+                'test',
                 ERROR_CODES.KEYSTORE.INVALID_KEYSTORE,
                 'Invalid Keystore: Missing or malformed data'
             );
@@ -35,6 +36,7 @@ describe('Error handler test', () => {
     test('Throw Invalid Keystore Exception with data', () => {
         try {
             throw buildError(
+                'test',
                 ERROR_CODES.KEYSTORE.INVALID_KEYSTORE,
                 'Invalid Keystore: Missing or malformed data',
                 { test: 'test' }
@@ -51,6 +53,7 @@ describe('Error handler test', () => {
     test('Throw Invalid RLP Exception with data', () => {
         try {
             throw buildError(
+                'test',
                 ERROR_CODES.RLP.INVALID_RLP,
                 'Invalid Keystore: Missing or malformed data',
                 {
@@ -84,6 +87,7 @@ describe('Error handler test', () => {
     test('Verify that the inner error is undefined', () => {
         expect(
             buildError(
+                'test',
                 ERROR_CODES.ABI.CONTRACT_INTERFACE_ERROR,
                 'test',
                 undefined,
@@ -98,6 +102,7 @@ describe('Error handler test', () => {
     test('Verify that the inner error is defined', () => {
         expect(
             buildError(
+                'test',
                 ERROR_CODES.ABI.CONTRACT_INTERFACE_ERROR,
                 'test',
                 undefined,
@@ -119,7 +124,7 @@ describe('Error handler test', () => {
              */
             errorType.elements.forEach((element) => {
                 expect(
-                    buildError(element.errorCode, 'SOME_MESSAGE')
+                    buildError('test', element.errorCode, 'SOME_MESSAGE')
                 ).toBeInstanceOf(element.classExpected);
             });
         });

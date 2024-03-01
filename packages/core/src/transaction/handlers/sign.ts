@@ -27,6 +27,7 @@ function sign(
 
     // Transaction is delegated
     assert(
+        'sign',
         !transactionToSign.isDelegated,
         TRANSACTION.INVALID_DELEGATION,
         'Transaction is delegated. Use signWithDelegator method instead.',
@@ -73,6 +74,7 @@ function signWithDelegator(
 
     // Transaction is not delegated
     assert(
+        'signWithDelegator',
         transactionToSign.isDelegated,
         TRANSACTION.INVALID_DELEGATION,
         'Transaction is not delegated. Use sign method instead.',

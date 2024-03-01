@@ -14,6 +14,7 @@ const assertCompactFixedHexBlobBuffer = (
     bytes: number
 ): void => {
     assert(
+        'assertCompactFixedHexBlobBuffer',
         buffer.length <= bytes,
         RLP.INVALID_RLP,
         `Validation error: Buffer in ${context} must be at most ${bytes} bytes.`,
@@ -21,6 +22,7 @@ const assertCompactFixedHexBlobBuffer = (
     );
 
     assert(
+        'assertCompactFixedHexBlobBuffer',
         buffer.length === 0 || buffer[0] !== 0,
         RLP.INVALID_RLP,
         `Validation error: Buffer in ${context} should not have leading zero bytes.`,

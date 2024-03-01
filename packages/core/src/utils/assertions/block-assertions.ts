@@ -1,4 +1,4 @@
-import { DATA, assert } from '@vechain/vechain-sdk-errors';
+import { assert, DATA } from '@vechain/vechain-sdk-errors';
 import { revisionUtils } from '../revision';
 
 /**
@@ -9,6 +9,7 @@ import { revisionUtils } from '../revision';
  */
 function assertIsRevisionForBlock(revision?: string | number): void {
     assert(
+        'assertIsRevisionForBlock',
         revision === undefined ||
             revision === null ||
             revisionUtils.isRevisionBlock(revision),
@@ -20,6 +21,7 @@ function assertIsRevisionForBlock(revision?: string | number): void {
 
 function assertIsRevisionForAccount(revision?: string | number): void {
     assert(
+        'assertIsRevisionForAccount',
         revision === undefined ||
             revision === null ||
             revisionUtils.isRevisionAccount(revision),

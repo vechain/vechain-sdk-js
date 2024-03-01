@@ -120,6 +120,7 @@ function SyncPoll<TReturnType>(
                 return currentResult;
             } catch (error) {
                 throw buildError(
+                    'SyncPoll - waitUntil',
                     POLL_ERROR.POLL_EXECUTION_ERROR,
                     'Polling failed: Function execution error encountered during synchronous polling.',
                     {

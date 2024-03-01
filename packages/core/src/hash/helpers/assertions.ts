@@ -19,6 +19,7 @@ const isValidReturnType = (value: string): boolean => {
  */
 function assertIsValidReturnType(returnType: ReturnType): void {
     assert(
+        'assertIsValidReturnType',
         isValidReturnType(returnType),
         DATA.INVALID_DATA_RETURN_TYPE,
         "Validation error: Invalid Return type. Return type in hash function must be 'buffer' or 'hex'.",

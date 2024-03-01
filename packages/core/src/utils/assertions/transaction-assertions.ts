@@ -1,8 +1,8 @@
 import {
+    assert,
     DATA,
     SECP256K1,
-    TRANSACTION,
-    assert
+    TRANSACTION
 } from '@vechain/vechain-sdk-errors';
 import { dataUtils } from '../data';
 import { type Transaction } from '../../transaction';
@@ -14,6 +14,7 @@ import { type Transaction } from '../../transaction';
  */
 function assertValidTransactionID(transactionId: string): void {
     assert(
+        'assertValidTransactionID',
         dataUtils.isThorId(transactionId, true),
         DATA.INVALID_DATA_TYPE,
         'Invalid transaction ID given as input. Input must be an hex string of length 64.',
@@ -27,6 +28,7 @@ function assertValidTransactionID(transactionId: string): void {
  */
 function assertValidTransactionHead(head?: string): void {
     assert(
+        'assertValidTransactionHead',
         head === undefined || dataUtils.isThorId(head, true),
         DATA.INVALID_DATA_TYPE,
         'Invalid head given as input. Input must be an hex string of length 64.',
@@ -41,9 +43,15 @@ function assertValidTransactionHead(head?: string): void {
  * @throws {InvalidTransactionError} if the transaction is not signed.
  */
 const assertIsSignedTransaction = (tx: Transaction): void => {
-    assert(tx.isSigned, TRANSACTION.NOT_SIGNED, 'Transaction must be signed.', {
-        tx
-    });
+    assert(
+        'assertIsSignedTransaction',
+        tx.isSigned,
+        TRANSACTION.NOT_SIGNED,
+        'Transaction must be signed.',
+        {
+            tx
+        }
+    );
 };
 
 /**
@@ -59,6 +67,7 @@ function assertIsValidTransactionSigningPrivateKey(
     role?: string
 ): void {
     assert(
+        'assertIsValidTransactionSigningPrivateKey',
         isValidPrivateKeyFunction(privateKey),
         SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
         `Invalid ${role} private key used to sign the transaction. Ensure it's a valid SECP256k1 private key.`,

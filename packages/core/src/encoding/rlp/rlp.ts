@@ -7,7 +7,7 @@ import {
     type RLPValueType
 } from './types';
 import { RLP } from '.';
-import { RLP as RLPError, assert } from '@vechain/vechain-sdk-errors';
+import { assert, RLP as RLPError } from '@vechain/vechain-sdk-errors';
 import { assertIsArray } from './helpers/assertions';
 
 /**
@@ -133,6 +133,7 @@ const _unpackData = (
     // ScalarKind: Direct decoding using the provided method.
     if (kind instanceof RLP.ScalarKind) {
         assert(
+            '_unpackData',
             Buffer.isBuffer(packed) || packed instanceof Uint8Array,
             RLPError.INVALID_RLP,
             'Unpacking error: Expected data type is Buffer.',
@@ -149,6 +150,7 @@ const _unpackData = (
         const parts = packed;
 
         assert(
+            '_unpackData',
             parts.length === kind.length,
             RLPError.INVALID_RLP,
             `Unpacking error: Expected ${kind.length} items, but got ${parts.length}.`,

@@ -42,6 +42,7 @@ const debugTraceTransaction = async (
 ): Promise<TracerReturnTypeRPC<'call'> | TracerReturnTypeRPC<'prestate'>> => {
     // Check input params
     assert(
+        'debug_traceTransaction',
         params.length === 2 &&
             typeof params[0] === 'string' &&
             typeof params[1] === 'object',

@@ -27,6 +27,7 @@ import {
 function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
     // Invalid mnemonic words
     assert(
+        'fromMnemonic',
         MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(
             words.length as WordlistSizeType
         ),
@@ -58,6 +59,7 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
 function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
     // Invalid public key
     assert(
+        'fromPublicKey',
         publicKey.length === 65,
         HDNODE.INVALID_HDNODE_PUBLIC_KEY,
         'Invalid public key. Length must be exactly 65 bytes.',
@@ -93,6 +95,7 @@ function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
 function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
     // Invalid private key
     assert(
+        'fromPrivateKey',
         privateKey.length === 32,
         HDNODE.INVALID_HDNODE_PRIVATE_KEY,
         'Invalid private key. Length must be exactly 32 bytes.',

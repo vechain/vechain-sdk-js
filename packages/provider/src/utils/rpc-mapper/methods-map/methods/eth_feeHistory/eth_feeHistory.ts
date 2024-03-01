@@ -20,6 +20,7 @@ const ethFeeHistory = async (
 
     // Not implemented yet
     throw buildError(
+        "eth_feeHistory",
         FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_feeHistory" not not implemented yet',
         {

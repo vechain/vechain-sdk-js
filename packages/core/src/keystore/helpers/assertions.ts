@@ -11,6 +11,7 @@ function assertIsValidPrivateKey(
     isValidPrivateKeyFunction: (privateKey: Buffer) => boolean
 ): void {
     assert(
+        'assertIsValidPrivateKey',
         isValidPrivateKeyFunction(privateKey),
         SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
         'Invalid private key given as input. Ensure it is a valid 32-byte SECP256k1 private key.',
@@ -29,6 +30,7 @@ function assertIsValidSecp256k1MessageHash(
     isValidMessageHashFunction: (messageHash: Buffer) => boolean
 ): void {
     assert(
+        'assertIsValidSecp256k1MessageHash',
         isValidMessageHashFunction(msgHash),
         SECP256K1.INVALID_SECP256k1_MESSAGE_HASH,
         'Invalid private key given as input. Ensure it is a valid 32-byte SECP256k1 private key.',

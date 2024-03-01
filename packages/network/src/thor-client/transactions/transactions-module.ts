@@ -1,36 +1,36 @@
 import {
-    Transaction,
+    addressUtils,
     assertIsSignedTransaction,
-    assertValidTransactionID,
-    type TransactionClause,
-    dataUtils,
-    type TransactionBody,
     assertValidTransactionHead,
-    TransactionHandler,
+    assertValidTransactionID,
+    dataUtils,
     revisionUtils,
     secp256k1,
-    addressUtils
+    Transaction,
+    type TransactionBody,
+    type TransactionClause,
+    TransactionHandler
 } from '@vechain/vechain-sdk-core';
-import { Poll, buildQuery, thorest } from '../../utils';
+import { buildQuery, Poll, thorest } from '../../utils';
 import {
-    type TransactionReceipt,
-    type TransactionBodyOptions,
-    type SendTransactionResult,
-    type WaitForTransactionOptions,
     type GetTransactionInputOptions,
-    type TransactionDetail,
     type GetTransactionReceiptInputOptions,
+    type SendTransactionResult,
+    type SignTransactionOptions,
     type SimulateTransactionClause,
     type SimulateTransactionOptions,
+    type TransactionBodyOptions,
+    type TransactionDetail,
+    type TransactionReceipt,
     type TransactionSimulationResult,
-    type SignTransactionOptions
+    type WaitForTransactionOptions
 } from './types';
 import { randomBytes } from 'crypto';
 import {
-    TRANSACTION,
+    assert,
     buildError,
     DATA,
-    assert
+    TRANSACTION
 } from '@vechain/vechain-sdk-errors';
 import { type ThorClient } from '../thor-client';
 import { assertTransactionCanBeSigned, DelegationHandler } from './helpers';
@@ -114,6 +114,7 @@ class TransactionsModule {
     ): Promise<SendTransactionResult> {
         // Validate raw transaction
         assert(
+            'sendRawTransaction',
             dataUtils.isHexString(raw),
             DATA.INVALID_DATA_TYPE,
             'Sending failed: Input must be a valid raw transaction in hex format.',
@@ -125,9 +126,9 @@ class TransactionsModule {
             TransactionHandler.decode(Buffer.from(raw.slice(2), 'hex'), true);
         } catch (error) {
             throw buildError(
+                'sendRawTransaction',
                 DATA.INVALID_DATA_TYPE,
                 'Sending failed: Input must be a valid raw transaction in hex format. Decoding error encountered.',
-
                 { raw },
                 error
             );
@@ -217,6 +218,7 @@ class TransactionsModule {
 
         if (genesisBlock === null)
             throw buildError(
+                'buildTransactionBody',
                 TRANSACTION.INVALID_TRANSACTION_BODY,
                 "Error while building transaction body: can't get genesis block",
                 { clauses, options }
@@ -238,6 +240,7 @@ class TransactionsModule {
 
         if (latestBlockRef === null)
             throw buildError(
+                'buildTransactionBody',
                 TRANSACTION.INVALID_TRANSACTION_BODY,
                 "Error while building transaction body: can't get latest block",
                 { clauses, options }
@@ -275,6 +278,7 @@ class TransactionsModule {
             provedWork
         } = options ?? {};
         assert(
+            'simulateTransaction',
             revision === undefined ||
                 revision === null ||
                 revisionUtils.isRevisionAccount(revision),
@@ -361,6 +365,7 @@ class TransactionsModule {
     ): Promise<Transaction> {
         // Only one of the `SignTransactionOptions` options can be specified
         assert(
+            '_signWithDelegator',
             !(delegatorUrl !== undefined && delegatorPrivateKey !== undefined),
             TRANSACTION.INVALID_DELEGATION,
             'Only one of the following options can be specified: delegatorUrl, delegatorPrivateKey'

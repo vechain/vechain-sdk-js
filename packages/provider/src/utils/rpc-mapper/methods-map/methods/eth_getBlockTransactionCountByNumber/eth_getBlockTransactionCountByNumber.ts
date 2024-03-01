@@ -20,6 +20,7 @@ const ethGetBlockTransactionCountByNumber = async (
 
     // Not implemented yet
     throw buildError(
+        "eth_getBlockTransactionCountByNumber",
         FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_getBlockTransactionCountByNumber" not not implemented yet',
         {

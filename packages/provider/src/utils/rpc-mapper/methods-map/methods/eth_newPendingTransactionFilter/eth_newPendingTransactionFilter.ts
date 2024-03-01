@@ -20,6 +20,7 @@ const ethNewPendingTransactionFilter = async (
 
     // Not implemented yet
     throw buildError(
+        "eth_newPendingTransactionFilter",
         FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_newPendingTransactionFilter" not not implemented yet',
         {

@@ -12,6 +12,7 @@ function assertCantGetFieldOnUnsignedTransaction(
     fieldToGet: string
 ): void {
     assert(
+        'assertCantGetFieldOnUnsignedTransaction',
         transaction.isSigned,
         TRANSACTION.NOT_SIGNED,
         `Cannot get ${fieldToGet} from unsigned transaction. Sign the transaction first.`

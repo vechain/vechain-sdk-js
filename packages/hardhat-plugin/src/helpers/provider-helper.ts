@@ -30,6 +30,7 @@ const createWalletFromHardhatNetworkConfig = (
         // Remote (not supported)
         if (accountFromConfig === 'remote')
             throw buildError(
+                'createWalletFromHardhatNetworkConfig',
                 JSONRPC.INTERNAL_ERROR,
                 'Remote accounts are not supported in hardhat network configuration'
             );

@@ -128,6 +128,7 @@ class ContractFactory {
         // Check if the deploy transaction result is available
         if (this.deployTransaction === undefined) {
             throw buildError(
+                'ContractFactory.waitForDeployment',
                 ERROR_CODES.CONTRACT.CONTRACT_DEPLOYMENT_FAILED,
                 'Cannot find a contract deployment transaction.',
                 { deployTransaction: this.deployTransaction }
@@ -142,6 +143,7 @@ class ContractFactory {
 
         // Ensure that the transaction receipt is valid
         assert(
+            'ContractFactory.waitForDeployment',
             transactionReceipt?.outputs[0]?.contractAddress !== null &&
                 transactionReceipt?.outputs[0]?.contractAddress !== undefined,
             ERROR_CODES.CONTRACT.CONTRACT_DEPLOYMENT_FAILED,

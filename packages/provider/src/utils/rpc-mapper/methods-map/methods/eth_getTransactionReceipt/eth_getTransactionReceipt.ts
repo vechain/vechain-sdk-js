@@ -33,6 +33,7 @@ const ethGetTransactionReceipt = async (
 ): Promise<TransactionReceiptRPC | null> => {
     // Assert valid parameters
     assert(
+        'eth_getTransactionReceipt',
         params.length === 1 && typeof params[0] === 'string',
         DATA.INVALID_DATA_TYPE,
         'Invalid params length, expected 1.\nThe params should be [hash: string]'

@@ -4,6 +4,7 @@ import { buildError } from '../error-builder/error-builder';
 /**
  * Assert that the condition is true, otherwise throw an error.
  *
+ * @param methodName - The method name where the error was thrown.
  * @param condition - The condition to be asserted.
  * @param code - The error code from the error types enum.
  * @param message - The error message.
@@ -14,6 +15,7 @@ function assert<
     ErrorCodeT extends ErrorCode,
     DataTypeT extends DataType<ErrorCodeT>
 >(
+    methodName: string,
     condition: boolean,
     code: ErrorCodeT,
     message: string,
@@ -22,6 +24,7 @@ function assert<
 ): void {
     // Error to throw if the condition is false.
     const error = buildError(
+        `Assertion on ${methodName}`,
         code,
         message,
         data,

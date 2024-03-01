@@ -20,7 +20,7 @@ describe('Assertion test', () => {
              */
             errorType.elements.forEach((element) => {
                 expect(() => {
-                    assert(false, element.errorCode, 'SOME_MESSAGE');
+                    assert('test', false, element.errorCode, 'SOME_MESSAGE');
                 }).toThrowError(element.classExpected);
             });
         });

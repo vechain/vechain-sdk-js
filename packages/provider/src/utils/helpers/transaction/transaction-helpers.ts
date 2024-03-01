@@ -1,9 +1,5 @@
-import { DATA, buildError } from '@vechain/vechain-sdk-errors';
-import {
-    type TransactionRPC,
-    type BlocksRPC,
-    blocksFormatter
-} from '../../formatter';
+import { buildError, DATA } from '@vechain/vechain-sdk-errors';
+import { blocksFormatter, type BlocksRPC, type TransactionRPC } from '../../formatter';
 import { type ExpandedBlockDetail } from '@vechain/vechain-sdk-network';
 
 /**
@@ -31,6 +27,7 @@ const getTransactionIndexIntoBlock = (
 
     if (idx === -1)
         throw buildError(
+            'getTransactionIndexIntoBlock',
             DATA.INVALID_DATA_TYPE,
             'Transaction not found in block'
         );

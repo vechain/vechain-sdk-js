@@ -5,16 +5,16 @@ import {
 } from '../../eip1193';
 import { assert, DATA } from '@vechain/vechain-sdk-errors';
 import {
+    type CompressedBlockDetail,
     type EventPoll,
     Poll,
-    type ThorClient,
-    type CompressedBlockDetail
+    type ThorClient
 } from '@vechain/vechain-sdk-network';
 import {
     ethGetLogs,
+    POLLING_INTERVAL,
     RPC_METHODS,
-    RPCMethodsMap,
-    POLLING_INTERVAL
+    RPCMethodsMap
 } from '../../utils';
 import { type Wallet } from '@vechain/vechain-sdk-wallet';
 import {
@@ -74,6 +74,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
     public async request(args: EIP1193RequestArguments): Promise<unknown> {
         // Check if the method is supported
         assert(
+            'request',
             Object.values(RPC_METHODS)
                 .map((key) => key.toString())
                 .includes(args.method),

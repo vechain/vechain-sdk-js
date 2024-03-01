@@ -27,6 +27,7 @@ const assertTransactionCanBeSigned = (
 
     // Check if the transaction body is valid
     assert(
+        'assertTransactionCanBeSigned',
         Transaction.isValidBody(txBody),
         TRANSACTION.INVALID_TRANSACTION_BODY,
         'Invalid transaction body provided, the transaction cannot be signed. Please check the transaction fields.'

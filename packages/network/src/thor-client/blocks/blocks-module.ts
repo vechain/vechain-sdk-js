@@ -1,10 +1,10 @@
-import { DATA, assert } from '@vechain/vechain-sdk-errors';
-import { Poll, buildQuery, thorest } from '../../utils';
+import { assert, DATA } from '@vechain/vechain-sdk-errors';
+import { buildQuery, Poll, thorest } from '../../utils';
 import {
-    type WaitForBlockOptions,
     type BlocksModuleOptions,
     type CompressedBlockDetail,
-    type ExpandedBlockDetail
+    type ExpandedBlockDetail,
+    type WaitForBlockOptions
 } from './types';
 import { assertIsRevisionForBlock } from '@vechain/vechain-sdk-core';
 import { type ThorClient } from '../thor-client';
@@ -173,6 +173,7 @@ class BlocksModule {
         options?: WaitForBlockOptions
     ): Promise<CompressedBlockDetail | null> {
         assert(
+            'waitForBlock',
             blockNumber === undefined ||
                 blockNumber === null ||
                 blockNumber >= 0,

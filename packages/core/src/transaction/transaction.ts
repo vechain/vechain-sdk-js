@@ -55,6 +55,7 @@ class Transaction {
     constructor(body: TransactionBody, signature?: Buffer) {
         // Body
         assert(
+            'Transaction constructor',
             Transaction.isValidBody(body),
             TRANSACTION.INVALID_TRANSACTION_BODY,
             'Invalid transaction body. Ensure all required fields are correctly formatted and present.',
@@ -65,6 +66,7 @@ class Transaction {
         // User passed a signature
         if (signature !== undefined) {
             assert(
+                'Transaction constructor',
                 this._isSignatureValid(signature),
                 SECP256K1.INVALID_SECP256k1_SIGNATURE,
                 'Invalid transaction signature. Ensure it is correctly formatted.',
@@ -104,6 +106,7 @@ class Transaction {
     public get delegator(): string {
         // Undelegated transaction
         assert(
+            'delegator',
             this.isDelegated,
             TRANSACTION.INVALID_DELEGATION,
             'Transaction is not delegated. Delegator information is unavailable.'
@@ -189,6 +192,7 @@ class Transaction {
     public getSignatureHash(delegateFor?: string): Buffer {
         // Correct delegateFor address
         assert(
+            'getSignatureHash',
             delegateFor === undefined || addressUtils.isAddress(delegateFor),
             ADDRESS.INVALID_ADDRESS,
             'Invalid address given as input as delegateFor parameter. Ensure it is a valid address.',

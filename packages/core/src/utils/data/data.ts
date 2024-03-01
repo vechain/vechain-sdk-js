@@ -58,6 +58,7 @@ function padHexString(hexString: string, hexTargetLength: number = 64): string {
     // Check if the input length is an integer, if not throw an error
     if (!Number.isInteger(hexTargetLength)) {
         throw buildError(
+            'padHexString',
             DATA.INVALID_DATA_TYPE,
             `The target length '${hexTargetLength}' must be an integer.`,
             { hexTargetLength }
@@ -66,6 +67,7 @@ function padHexString(hexString: string, hexTargetLength: number = 64): string {
 
     if (hexString.replace(/^0x/, '').length > hexTargetLength) {
         throw buildError(
+            'padHexString',
             DATA.INVALID_DATA_TYPE,
             `The input string '${hexString}' is longer than the target length '${hexTargetLength}'.`,
             { hexString, hexTargetLength }
@@ -162,6 +164,7 @@ const encodeBytes32String = (
             : ethers.zeroPadBytes(valueInBytes, 32); // calls internal `zeroPad` ethers method which pads zeros to the right
     } catch (e) {
         throw buildError(
+            'encodeBytes32String',
             DATA.INVALID_DATA_TYPE,
             `Encoding to bytes32 failed: Value '${value}' exceeds 32 bytes or is otherwise invalid.`,
             { value, zeroPadding },
@@ -181,6 +184,7 @@ const encodeBytes32String = (
  */
 const decodeBytes32String = (value: string): string => {
     assert(
+        'decodeBytes32String',
         isHexString(value) && removePrefix(value).length === 64,
         DATA.INVALID_DATA_TYPE,
         `Failed to decode value ${value} to string. Value is not a valid hex string or it is not 64 characters long`,

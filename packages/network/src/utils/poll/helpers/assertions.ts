@@ -11,6 +11,7 @@ function assertPositiveIntegerForPollOptions(
     fieldName: string
 ): void {
     assert(
+        'assertPositiveIntegerForPollOptions',
         field === undefined || (field > 0 && Number.isInteger(field)),
         DATA.INVALID_DATA_TYPE,
         `Invalid input for field name. ${fieldName} must be a positive number`,

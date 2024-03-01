@@ -10,6 +10,7 @@ import { buildErrorMessage } from '../error-message-builder';
 /**
  * Build error object according to the error code provided.
  * The error code determines the error type returned and the data type to be provided.
+ * @param methodName - The method name where the error was thrown.
  * @param code - The error code from the error types enum.
  * @param message - The error message.
  * @param data - The error data.
@@ -20,6 +21,7 @@ function buildError<
     ErrorCodeT extends ErrorCode,
     DataTypeT extends DataType<ErrorCodeT>
 >(
+    methodName: string,
     code: ErrorCodeT,
     message: string,
     data?: DataTypeT,
@@ -33,7 +35,7 @@ function buildError<
 
     // Error message
     const errorMessage = buildErrorMessage<ErrorCodeT, DataTypeT>(
-        'method',
+        methodName,
         message,
         data as DataTypeT,
         innerError === undefined ? undefined : assertInnerError(innerError)

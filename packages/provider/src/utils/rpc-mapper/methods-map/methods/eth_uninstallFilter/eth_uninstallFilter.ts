@@ -20,6 +20,7 @@ const ethUninstallFilter = async (
 
     // Not implemented yet
     throw buildError(
+        "eth_uninstallFilter",
         FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_uninstallFilter" not not implemented yet',
         {

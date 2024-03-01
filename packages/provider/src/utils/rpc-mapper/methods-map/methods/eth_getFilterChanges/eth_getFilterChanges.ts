@@ -20,6 +20,7 @@ const ethGetFilterChanges = async (
 
     // Not implemented yet
     throw buildError(
+        "eth_getFilterChanges",
         FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_getFilterChanges" not not implemented yet',
         {

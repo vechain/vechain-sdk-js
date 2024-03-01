@@ -20,6 +20,7 @@ const convertError = (error: AxiosError): HTTPClientError => {
         const resp = error.response;
 
         return buildError(
+            'convertError',
             HTTP_CLIENT.INVALID_HTTP_REQUEST,
             `An error occurred while performing http request ${error.config?.url}`,
             {
@@ -34,6 +35,7 @@ const convertError = (error: AxiosError): HTTPClientError => {
     // Error does not have a response
     else {
         return buildError(
+            'convertError',
             HTTP_CLIENT.INVALID_HTTP_REQUEST,
             `An error occurred while performing http request ${error.config?.url}`,
             {

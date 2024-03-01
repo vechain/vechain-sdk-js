@@ -20,6 +20,7 @@ const ethMaxPriorityFeePerGas = async (
 
     // Not implemented yet
     throw buildError(
+        "eth_maxPriorityFeePerGas",
         FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_maxPriorityFeePerGas" not not implemented yet',
         {

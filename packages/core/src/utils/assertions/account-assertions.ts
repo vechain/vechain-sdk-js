@@ -1,4 +1,4 @@
-import { DATA, assert } from '@vechain/vechain-sdk-errors';
+import { assert, DATA } from '@vechain/vechain-sdk-errors';
 import { addressUtils } from '../../address';
 
 /**
@@ -8,6 +8,7 @@ import { addressUtils } from '../../address';
  */
 function assertIsAddress(address: string): void {
     assert(
+        'assertIsAddress',
         addressUtils.isAddress(address),
         DATA.INVALID_DATA_TYPE,
         'Invalid address. The address must be 20 bytes (a 42 characters hex string with a `0x` prefix.)',

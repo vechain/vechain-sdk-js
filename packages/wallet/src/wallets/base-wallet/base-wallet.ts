@@ -57,6 +57,7 @@ class BaseWallet implements Wallet {
     async getAccount(address: string): Promise<WalletAccount | null> {
         // Check if the address is valid
         assert(
+            'getAccount',
             addressUtils.isAddress(address),
             DATA.INVALID_DATA_TYPE,
             'Invalid params expected an address.',

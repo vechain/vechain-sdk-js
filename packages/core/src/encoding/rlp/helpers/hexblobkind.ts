@@ -11,6 +11,7 @@ import { assert, RLP } from '@vechain/vechain-sdk-errors';
  */
 const assertValidHexBlobKindData = (data: RLPInput, context: string): void => {
     assert(
+        'assertValidHexBlobKindData',
         typeof data === 'string',
         RLP.INVALID_RLP,
         'Validation error: Input must be a string.',
@@ -22,6 +23,7 @@ const assertValidHexBlobKindData = (data: RLPInput, context: string): void => {
 
     // Check if data is a valid hex string with '0x' prefix.
     assert(
+        'assertValidHexBlobKindData',
         dataUtils.isHexString(data as string, true),
         RLP.INVALID_RLP,
         "Validation error: Input must be a valid hex string with a '0x' prefix.",
@@ -30,6 +32,7 @@ const assertValidHexBlobKindData = (data: RLPInput, context: string): void => {
 
     // Ensure the hex string length is even.
     assert(
+        'assertValidHexBlobKindData',
         (data as string).length % 2 === 0,
         RLP.INVALID_RLP,
         'Validation error: Hex string must have an even length.',
@@ -49,6 +52,7 @@ const assertValidHexBlobKindBuffer = (
     context: string
 ): void => {
     assert(
+        'assertValidHexBlobKindBuffer',
         Buffer.isBuffer(buffer),
         RLP.INVALID_RLP,
         'Validation error: Input must be a valid buffer.',

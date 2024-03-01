@@ -33,6 +33,7 @@ const ethGetBlockByNumber = async (
     params: unknown[]
 ): Promise<BlocksRPC | null> => {
     assert(
+        'eth_getBlockByNumber',
         params.length === 2 &&
             typeof params[0] === 'string' &&
             typeof params[1] === 'boolean',
