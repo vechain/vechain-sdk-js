@@ -20,7 +20,7 @@ const ethCoinbase = async (
 
     // Not implemented yet
     throw buildError(
-        "eth_coinbase",
+        'eth_coinbase',
         FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_coinbase" not not implemented yet',
         {

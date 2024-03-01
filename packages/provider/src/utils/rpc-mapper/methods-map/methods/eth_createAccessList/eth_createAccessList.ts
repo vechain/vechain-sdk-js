@@ -20,7 +20,7 @@ const ethCreateAccessList = async (
 
     // Not implemented yet
     throw buildError(
-        "eth_createAccessList",
+        'eth_createAccessList',
         FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_createAccessList" not not implemented yet',
         {

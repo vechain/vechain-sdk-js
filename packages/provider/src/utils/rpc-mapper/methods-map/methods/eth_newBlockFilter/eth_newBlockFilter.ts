@@ -20,7 +20,7 @@ const ethNewBlockFilter = async (
 
     // Not implemented yet
     throw buildError(
-        "eth_newBlockFilter",
+        'eth_newBlockFilter',
         FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_newBlockFilter" not not implemented yet',
         {

@@ -20,7 +20,7 @@ const ethGetWork = async (
 
     // Not implemented yet
     throw buildError(
-        "eth_getWork",
+        'eth_getWork',
         FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_getWork" not not implemented yet',
         {

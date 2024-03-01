@@ -20,7 +20,7 @@ const netListening = async (
 
     // Not implemented yet
     throw buildError(
-        "net_listening",
+        'net_listening',
         FUNCTION.NOT_IMPLEMENTED,
         'Method "net_listening" not not implemented yet',
         {

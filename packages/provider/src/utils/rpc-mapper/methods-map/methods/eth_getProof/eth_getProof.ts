@@ -20,7 +20,7 @@ const ethGetProof = async (
 
     // Not implemented yet
     throw buildError(
-        "eth_getProof",
+        'eth_getProof',
         FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_getProof" not not implemented yet',
         {

@@ -20,7 +20,7 @@ const debugGetRawHeader = async (
 
     // Not implemented yet
     throw buildError(
-        "debug_getRawHeader",
+        'debug_getRawHeader',
         FUNCTION.NOT_IMPLEMENTED,
         'Method "debug_getRawHeader" not not implemented yet',
         {

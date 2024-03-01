@@ -1,5 +1,9 @@
 import { buildError, DATA } from '@vechain/vechain-sdk-errors';
-import { blocksFormatter, type BlocksRPC, type TransactionRPC } from '../../formatter';
+import {
+    blocksFormatter,
+    type BlocksRPC,
+    type TransactionRPC
+} from '../../formatter';
 import { type ExpandedBlockDetail } from '@vechain/vechain-sdk-network';
 
 /**

@@ -20,7 +20,7 @@ const ethGetUncleCountByBlockNumber = async (
 
     // Not implemented yet
     throw buildError(
-        "eth_getUncleCountByBlockNumber",
+        'eth_getUncleCountByBlockNumber',
         FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_getUncleCountByBlockNumber" not not implemented yet',
         {

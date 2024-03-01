@@ -20,7 +20,7 @@ const debugGetRawReceipts = async (
 
     // Not implemented yet
     throw buildError(
-        "debug_getRawReceipts",
+        'debug_getRawReceipts',
         FUNCTION.NOT_IMPLEMENTED,
         'Method "debug_getRawReceipts" not not implemented yet',
         {

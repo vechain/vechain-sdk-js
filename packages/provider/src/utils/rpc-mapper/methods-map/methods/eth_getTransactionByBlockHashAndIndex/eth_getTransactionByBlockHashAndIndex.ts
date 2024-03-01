@@ -20,7 +20,7 @@ const ethGetTransactionByBlockHashAndIndex = async (
 
     // Not implemented yet
     throw buildError(
-        "eth_getTransactionByBlockHashAndIndex",
+        'eth_getTransactionByBlockHashAndIndex',
         FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_getTransactionByBlockHashAndIndex" not not implemented yet',
         {
