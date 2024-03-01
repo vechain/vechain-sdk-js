@@ -34,7 +34,7 @@ let exitCode = 0;
 /**
  * Get all test files
  */
-void glob(testPattern, { ignore: 'node_modules/**' }).then((testFiles) => {
+glob(testPattern, { ignore: 'node_modules/**' }).then((testFiles) => {
     /**
      * Iterate over all test files to check if they are named correctly
      */
