@@ -29,14 +29,16 @@ extendEnvironment((hre) => {
 
     if (!networkName.includes('vechain')) {
         VechainSDKLogger('warning').log({
-            title: 'Not a vechain network',
+            title: 'You are operating on a non-vechain network',
             messages: [
                 'Ensure your hardhat config file has a network that:',
                 '\t1. Is a vechain valid network (set url and optionally delegator parameter)',
-                '\t2. Has the name of the network containing "vechain" (e.g. "vechain_mainnet", "vechain_testnet", "vechain_solo", ...)'
+                '\t2. Has the name of the network containing "vechain" (e.g. "vechain_mainnet", "vechain_testnet", "vechain_solo", ...)',
+                '',
+                'This is required to use the vechain provider and its functions. Note that this is only a warning and you can hardhat without a vechain network.',
+                "BUT it's possible that some functionalities will not be available."
             ]
         });
-        return;
     }
 
     // 3 - Extend environment with the 'HardhatVechainProvider'

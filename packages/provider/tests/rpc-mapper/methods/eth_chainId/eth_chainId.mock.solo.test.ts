@@ -7,9 +7,9 @@ import { soloNetwork } from '../../../fixture';
 /**
  * RPC Mapper integration tests for 'eth_chainId' method
  *
- * @group integration/rpc-mapper/methods/eth_chainId
+ * @group integration/rpc-mapper/methods/eth_chainId-mock-solo
  */
-describe('RPC Mapper - eth_chainId method tests', () => {
+describe('RPC Mapper - eth_chainId method tests mock on solo', () => {
     /**
      * Thor client instance
      */

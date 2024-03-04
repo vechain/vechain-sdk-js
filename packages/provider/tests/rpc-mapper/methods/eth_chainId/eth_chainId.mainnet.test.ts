@@ -1,14 +1,14 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { CHAIN_ID, RPC_METHODS, RPCMethodsMap } from '../../../../src';
 import { ThorClient } from '@vechain/vechain-sdk-network';
-import { testNetwork } from '../../../fixture';
+import { mainNetwork } from '../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_chainId' method
  *
- * @group integration/rpc-mapper/methods/eth_chainId-testnet
+ * @group integration/rpc-mapper/methods/eth_chainId-mainnet
  */
-describe('RPC Mapper - eth_chainId method tests testnet', () => {
+describe('RPC Mapper - eth_chainId method tests mainnet', () => {
     /**
      * Thor client instance
      */
@@ -19,7 +19,7 @@ describe('RPC Mapper - eth_chainId method tests testnet', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = new ThorClient(testNetwork);
+        thorClient = new ThorClient(mainNetwork);
     });
 
     /**
@@ -34,7 +34,7 @@ describe('RPC Mapper - eth_chainId method tests testnet', () => {
                 RPC_METHODS.eth_chainId
             ]([])) as string;
 
-            expect(rpcCallChainId).toBe(CHAIN_ID.TESTNET);
+            expect(rpcCallChainId).toBe(CHAIN_ID.MAINNET);
         });
     });
 });
