@@ -1,29 +1,25 @@
 {
-    "name": "@vechain/vechain-sdk-logging",
-    "version": "1.0.0",
-    "description": "This module provides functionality to logging data for vechain-sdk",
-    "author": "vechain Foundation",
-    "license": "MIT",
-    "keywords": [
-        "vechain",
-        "logging"
-    ],
-    "private": false,
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
-    "scripts": {
-        "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
-
-        "lint": "eslint --ext .ts src --ext .ts tests",
-        "format": "prettier --write src/**/*.ts tests/**/*.ts",
-
-        "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
-
-        "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
-
-        "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
-    },
-    "dependencies": {
-        "@vechain/vechain-sdk-errors": "*"
-    }
+  "name": "@vechain/vechain-sdk-logging",
+  "version": "0.0.10",
+  "description": "This module provides functionality to logging data for vechain-sdk",
+  "author": "vechain Foundation",
+  "license": "MIT",
+  "keywords": [
+    "vechain",
+    "logging"
+  ],
+  "private": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
+    "lint": "eslint --ext .ts src --ext .ts tests",
+    "format": "prettier --write src/**/*.ts tests/**/*.ts",
+    "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
+    "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
+    "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
+  },
+  "dependencies": {
+    "@vechain/vechain-sdk-errors": "0.0.10"
+  }
 }

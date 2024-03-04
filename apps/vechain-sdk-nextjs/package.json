@@ -12,8 +12,8 @@
     "react": "^18",
     "react-dom": "^18",
     "next": "14.1.0",
-    "@vechain/vechain-sdk-core": "*",
-    "@vechain/vechain-sdk-network": "*"
+    "@vechain/vechain-sdk-core": "0.0.10",
+    "@vechain/vechain-sdk-network": "0.0.10"
   },
   "devDependencies": {
     "typescript": "^5",
