@@ -10,8 +10,10 @@ C4Context
         Boundary(b1, "Core components") {
             System(abi, "Abi module", "Handles all abi related operations")
             System(address, "Address module", "Handles all address related operations")
+            System(assertions, "Assertions module", "Provides a set of functions and utilities for writing and handling assertions in the code")
             System(bloom, "Bloom module", "Handles all bloom related operations")
             System(certificate, "Certificate module", "Handles all certificate related operations")
+            System(clause, "Clause", "Handles all clause related operations")
             System(contract, "Smart contract module", "Handles all smsrt contract related operations")
             System(encoding, "RLP cncoding module", "Handles all RLP encoding related operations")
             System(hash, "Hash module", "Handles all hash related operations")
@@ -22,20 +24,14 @@ C4Context
             System(transaction, "Transaction module", "Handles all transaction related operations")
         }
 
-        Boundary(b3, "Utilities") {
-
-            Boundary(b4, "Components utils") {
-                System(bloom, "Bloom utils", "Handles all utils constructs for bloom module")
-                System(hdnode, "Hdnode utils", "Handles all utils constructs for hdnode module")
-                System(transaction, "Transaction utils", "Handles all utils constructs for transaction module")
-            }
-
-            Boundary(b5, "Generic utils") {
-                System(const, "Main constants utils", "Contains all core constants")
-                System(data, "Data utils", "Handles all data utils")
-                System(units, "Units utils", "Handles all units utils. Basic conversions.<br>e.g. Wei to Vet")
-            }
-
+        Boundary(b2, "Utils") {
+            System(bloom, "Bloom utils", "Handles all utils constructs for bloom module")
+            System(const, "Main constants utils", "Contains all core constants")
+            System(data, "Data utils", "Handles all data utils")
+            System(hdnode, "Hdnode utils", "Handles all utils constructs for hdnode module")
+            System(revision, "Revision utils", "Handles all revision-related utility operations")
+            System(transaction, "Transaction utils", "Handles all utils constructs for transaction module")
+            System(units, "Units utils", "Handles all units utils. Basic conversions.<br>e.g. Wei to VET")
         }
     }
 
