@@ -18,7 +18,7 @@ describe('HDWallet wallet tests', () => {
          */
         hdNodeFixtures.forEach((hdNodeFixture) => {
             /**
-             * Test wallet creation and execution of walletfunctions
+             * Test wallet creation and execution of wallet functions
              */
             test('Should be able to create a wallet and execute functions', async () => {
                 const hdWallet = new HDWallet(

@@ -18,45 +18,45 @@ const simpleAddress = '0xd989829d88B0eD1B06eDF5C50174eCfA64F14A64';
 const invalidPrivateKey = Buffer.from('INVALID_PRIVATE_KEY', 'hex');
 
 /**
- * Checksumed and unchecksumed addresses
+ * Checksummed and unchecksummed addresses
  */
-const checksumedAndUnchecksumedAddresses = [
+const checksummedAndUnchecksummedAddresses = [
     {
-        unchecksumed: '0x8617E340B3D01FA5F11F306F4090FD50E238070D',
-        checksumed: '0x8617E340B3D01FA5F11F306F4090FD50E238070D'
+        unchecksummed: '0x8617E340B3D01FA5F11F306F4090FD50E238070D',
+        checksummed: '0x8617E340B3D01FA5F11F306F4090FD50E238070D'
     },
     {
-        unchecksumed:
+        unchecksummed:
             '0x8617E340B3D01FA5F11F306F4090FD50E238070D'.toLowerCase(),
-        checksumed: '0x8617E340B3D01FA5F11F306F4090FD50E238070D'
+        checksummed: '0x8617E340B3D01FA5F11F306F4090FD50E238070D'
     },
     {
-        unchecksumed: '0xde709f2102306220921060314715629080e2fb77',
-        checksumed: '0xde709f2102306220921060314715629080e2fb77'
+        unchecksummed: '0xde709f2102306220921060314715629080e2fb77',
+        checksummed: '0xde709f2102306220921060314715629080e2fb77'
     },
     {
-        unchecksumed: '0xde709f2102306220921060314715629080e2fb77',
-        checksumed: '0xde709f2102306220921060314715629080e2fb77'
+        unchecksummed: '0xde709f2102306220921060314715629080e2fb77',
+        checksummed: '0xde709f2102306220921060314715629080e2fb77'
     },
     {
-        unchecksumed: '0x27b1fdb04752bbc536007a920d24acb045561c26',
-        checksumed: '0x27b1fdb04752bbc536007a920d24acb045561c26'
+        unchecksummed: '0x27b1fdb04752bbc536007a920d24acb045561c26',
+        checksummed: '0x27b1fdb04752bbc536007a920d24acb045561c26'
     },
     {
-        unchecksumed: '0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed',
-        checksumed: '0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed'
+        unchecksummed: '0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed',
+        checksummed: '0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed'
     },
     {
-        unchecksumed: '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359',
-        checksumed: '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
+        unchecksummed: '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359',
+        checksummed: '0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359'
     },
     {
-        unchecksumed: '0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB',
-        checksumed: '0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB'
+        unchecksummed: '0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB',
+        checksummed: '0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB'
     },
     {
-        unchecksumed: '0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb',
-        checksumed: '0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb'
+        unchecksummed: '0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb',
+        checksummed: '0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb'
     }
 ];
 
@@ -65,5 +65,5 @@ export {
     simplePublicKey,
     simpleAddress,
     invalidPrivateKey,
-    checksumedAndUnchecksumedAddresses
+    checksummedAndUnchecksummedAddresses
 };
