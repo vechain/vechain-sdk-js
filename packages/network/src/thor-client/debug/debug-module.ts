@@ -94,6 +94,7 @@ class DebugModule {
             input.contractInput.to !== null
         ) {
             assert(
+                'traceContractCall',
                 addressUtils.isAddress(input.contractInput.to),
                 DATA.INVALID_DATA_TYPE,
                 `Invalid address '${input.contractInput.to}' given as input for traceContractCall.`,
@@ -103,6 +104,7 @@ class DebugModule {
 
         if (input.contractInput?.data !== undefined)
             assert(
+                'traceContractCall',
                 dataUtils.isHexString(input.contractInput.data, true),
                 DATA.INVALID_DATA_TYPE,
                 `Invalid data '${input.contractInput?.data}' given as input for traceContractCall.`,
@@ -111,6 +113,7 @@ class DebugModule {
 
         if (input.contractInput?.value !== undefined)
             assert(
+                'traceContractCall',
                 dataUtils.isHexString(input.contractInput.value, true),
                 DATA.INVALID_DATA_TYPE,
                 `Invalid value '${input.contractInput?.value}' given as input for traceContractCall.`,
@@ -198,6 +201,7 @@ class DebugModule {
     ): void {
         // Validate target - blockID
         assert(
+            'validateTarget',
             dataUtils.isThorId(target.blockID, true),
             DATA.INVALID_DATA_TYPE,
             `Invalid block ID '${target.blockID}' given as input for ${functionName}.`,
@@ -207,6 +211,7 @@ class DebugModule {
         // Validate target - transaction
         if (typeof target.transaction === 'string')
             assert(
+                'validateTarget',
                 dataUtils.isThorId(target.transaction, true),
                 DATA.INVALID_DATA_TYPE,
                 `Invalid transaction id '${target.transaction}' given as input for ${functionName}.`,
@@ -214,6 +219,7 @@ class DebugModule {
             );
         else
             assert(
+                'validateTarget',
                 target.transaction >= 0,
                 DATA.INVALID_DATA_TYPE,
                 `Invalid transaction index '${target.transaction}' given as input for ${functionName}.`,
@@ -222,6 +228,7 @@ class DebugModule {
 
         // Validate target - clauseIndex
         assert(
+            'validateTarget',
             target.clauseIndex >= 0,
             DATA.INVALID_DATA_TYPE,
             `Invalid clause index '${target.clauseIndex}' given as input for ${functionName}.`,

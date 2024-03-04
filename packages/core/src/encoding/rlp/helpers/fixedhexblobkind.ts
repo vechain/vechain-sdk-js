@@ -14,6 +14,7 @@ const assertFixedHexBlobKindData = (
     bytes: number
 ): void => {
     assert(
+        'assertFixedHexBlobKindData',
         data.length === bytes * 2 + 2,
         RLP.INVALID_RLP,
         `Validation error: Hex string in ${context} must be exactly ${bytes} bytes in length.`,
@@ -36,6 +37,7 @@ const assertFixedHexBlobKindBuffer = (
     bytes: number
 ): void => {
     assert(
+        'assertFixedHexBlobKindBuffer',
         buffer.length === bytes,
         RLP.INVALID_RLP,
         `Validation error: Buffer in ${context} must be exactly ${bytes} bytes in length.`,

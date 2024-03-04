@@ -1,17 +1,17 @@
 import {
-    type TransactionDetailNoRaw,
-    type ThorClient
+    type ThorClient,
+    type TransactionDetailNoRaw
 } from '@vechain/vechain-sdk-network';
 import {
     assert,
-    DATA,
     buildProviderError,
+    DATA,
     JSONRPC
 } from '@vechain/vechain-sdk-errors';
 import {
-    transactionsFormatter,
+    type BlocksRPC,
     type TransactionRPC,
-    type BlocksRPC
+    transactionsFormatter
 } from '../../../../formatter';
 import { RPCMethodsMap } from '../../../rpc-mapper';
 import { RPC_METHODS } from '../../../../const';
@@ -35,6 +35,7 @@ const ethGetTransactionByHash = async (
     params: unknown[]
 ): Promise<TransactionRPC | null> => {
     assert(
+        'eth_getTransactionByHash',
         params.length === 1 && typeof params[0] === 'string',
         DATA.INVALID_DATA_TYPE,
         'Invalid params length, expected 1.\nThe params should be [hash: string]'

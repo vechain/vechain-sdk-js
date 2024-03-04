@@ -1,15 +1,15 @@
-import { DATA, assert } from '@vechain/vechain-sdk-errors';
+import { assert, DATA } from '@vechain/vechain-sdk-errors';
 import { buildQuery, thorest } from '../../utils';
 import {
-    type ResponseBytecode,
     type AccountDetail,
-    type ResponseStorage,
-    type AccountInputOptions
+    type AccountInputOptions,
+    type ResponseBytecode,
+    type ResponseStorage
 } from './types';
 import {
-    dataUtils,
     assertIsAddress,
-    assertIsRevisionForAccount
+    assertIsRevisionForAccount,
+    dataUtils
 } from '@vechain/vechain-sdk-core';
 import { type ThorClient } from '../thor-client';
 
@@ -39,9 +39,9 @@ class AccountsModule {
         address: string,
         options?: AccountInputOptions
     ): Promise<AccountDetail> {
-        assertIsAddress(address);
+        assertIsAddress('getAccount', address);
 
-        assertIsRevisionForAccount(options?.revision);
+        assertIsRevisionForAccount('getAccount', options?.revision);
 
         return (await this.thor.httpClient.http(
             'GET',
@@ -66,9 +66,9 @@ class AccountsModule {
         address: string,
         options?: AccountInputOptions
     ): Promise<string> {
-        assertIsAddress(address);
+        assertIsAddress('getBytecode', address);
 
-        assertIsRevisionForAccount(options?.revision);
+        assertIsRevisionForAccount('getBytecode', options?.revision);
 
         const result = (await this.thor.httpClient.http(
             'GET',
@@ -97,12 +97,13 @@ class AccountsModule {
         position: string,
         options?: AccountInputOptions
     ): Promise<string> {
-        assertIsAddress(address);
+        assertIsAddress('getStorageAt', address);
 
-        assertIsRevisionForAccount(options?.revision);
+        assertIsRevisionForAccount('getStorageAt', options?.revision);
 
         // The position represents a slot in the VM storage. Each slot is 32 bytes.
         assert(
+            'getStorageAt',
             dataUtils.isHexString(position) && position.length === 66,
             DATA.INVALID_DATA_TYPE,
             'Invalid `position`. The position must be a hex string of 32 bytes (66 characters including `0x` prefix).',

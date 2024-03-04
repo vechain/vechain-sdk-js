@@ -81,6 +81,7 @@ function transferToken(
         );
     } catch (error) {
         throw buildError(
+            'transferToken',
             DATA.INVALID_DATA_TYPE,
             `Invalid 'amount' parameter. Expected an integer but received ${amount}`
         );
@@ -105,6 +106,7 @@ function transferVET(
 
         // The amount must be positive otherwise we would be transferring negative VET.
         assert(
+            'transferVET',
             bnAmount > 0,
             DATA.INVALID_DATA_TYPE,
             `Invalid 'amount' parameter. Expected a positive amount but received ${amount}`
@@ -117,6 +119,7 @@ function transferVET(
         };
     } catch (error) {
         throw buildError(
+            'transferVET',
             DATA.INVALID_DATA_TYPE,
             `Invalid 'amount' parameter. Expected an integer but received ${amount}`
         );
@@ -144,12 +147,14 @@ function transferNFT(
     tokenId: string
 ): TransactionClause {
     assert(
+        'transferNFT',
         tokenId !== '',
         DATA.INVALID_DATA_TYPE,
         `Invalid 'tokenId' parameter. Expected an id but received ${tokenId}`
     );
 
     assert(
+        'transferNFT',
         isAddress(contractAddress),
         DATA.INVALID_DATA_TYPE,
         `Invalid 'contractAddress' parameter. Expected a contract address but received ${contractAddress}`

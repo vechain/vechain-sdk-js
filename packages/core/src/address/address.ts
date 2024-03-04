@@ -60,6 +60,7 @@ function isAddress(addressToVerify: string): boolean {
  */
 function toChecksummed(address: string): string {
     assert(
+        'toChecksummed',
         isAddress(address),
         ADDRESS.INVALID_ADDRESS,
         'Checksum failed: Input must be a valid Vechain Thor address.',

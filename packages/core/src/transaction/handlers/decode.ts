@@ -76,6 +76,7 @@ function _decodeReservedField(reserved: Buffer[]): {
 } {
     // Not trimmed reserved field
     assert(
+        '_decodeReservedField',
         reserved[reserved.length - 1].length !== 0,
         TRANSACTION.INVALID_TRANSACTION_BODY,
         'Invalid reserved field. Fields in the reserved buffer must be properly trimmed.',

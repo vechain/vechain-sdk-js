@@ -62,6 +62,7 @@ async function decrypt(
 ): Promise<KeystoreAccount> {
     // Invalid keystore
     assert(
+        'keystore.decrypt',
         isValid(keystore),
         KEYSTORE.INVALID_KEYSTORE,
         'Invalid keystore. Ensure the keystore is properly formatted and contains the necessary data.',
@@ -77,6 +78,7 @@ async function decrypt(
         )) as KeystoreAccount;
     } catch (e) {
         throw buildError(
+            'keystore.decrypt',
             KEYSTORE.INVALID_PASSWORD,
             'Decryption failed: Invalid Password for the given keystore.',
             {

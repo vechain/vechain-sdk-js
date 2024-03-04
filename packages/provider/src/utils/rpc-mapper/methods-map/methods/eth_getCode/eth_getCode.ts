@@ -27,6 +27,7 @@ const ethGetCode = async (
     params: unknown[]
 ): Promise<string> => {
     assert(
+        'eth_getCode',
         params.length === 2 &&
             typeof params[0] === 'string' &&
             typeof params[1] === 'string',

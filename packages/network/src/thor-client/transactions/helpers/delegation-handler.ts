@@ -4,7 +4,7 @@ import {
     type GetDelegationSignatureResult,
     type SignTransactionOptions
 } from '../types';
-import { TRANSACTION, buildError, assert } from '@vechain/vechain-sdk-errors';
+import { assert, buildError, TRANSACTION } from '@vechain/vechain-sdk-errors';
 
 /**
  * Retrieves the signature of a delegation transaction from a delegator given the endpoint
@@ -47,6 +47,7 @@ const _getDelegationSignature = async (
         return Buffer.from(response.signature.slice(2), 'hex');
     } catch (error) {
         throw buildError(
+            '_getDelegationSignature',
             TRANSACTION.INVALID_DELEGATION,
             "Delegation failed: Can't get signature from delegator.",
             { delegatorUrl },
@@ -136,6 +137,7 @@ const DelegationHandler = (
         ): Promise<Buffer> => {
             // Cannot be delegated by private key
             assert(
+                'getDelegationSignatureUsingUrl',
                 isDelegatedWithUrl,
                 TRANSACTION.INVALID_DELEGATION,
                 'Delegation with url failed: delegatorUrl is not defined.',

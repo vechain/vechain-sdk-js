@@ -5,4 +5,3 @@ export * from './hdnode';
 export * from './transaction';
 export * from './units';
 export * from './revision';
-export * from './assertions';

@@ -1,19 +1,6 @@
 import { ScalarKind } from './scalarkind.abstract';
 import { type BufferOutput, type DataOutput, type RLPInput } from '../types';
-import { assertIsValidBuffer } from '../helpers/assertions';
-
-/**
- * Asserts that the data is a buffer.
- * Internal function used to avoid duplicate code.
- *
- * @param data - The data to validate.
- * @param context - Descriptive context for error messages.
- *
- * @throws{InvalidRLPError}
- */
-function _assertBuffer(data: RLPInput | Buffer, context: string): void {
-    assertIsValidBuffer(data, context);
-}
+import { assertIsValidBuffer } from '../../../assertions';
 
 /**
  * Represents a scalar kind with Buffer functionality.
@@ -30,7 +17,7 @@ class BufferKind extends ScalarKind {
      */
     public data(data: RLPInput, context: string): DataOutput {
         // Ensure that the data is indeed a Buffer before encoding.
-        _assertBuffer(data, context);
+        assertIsValidBuffer('data', data, context);
 
         return {
             encode: () => data as Buffer // Data is already a Buffer, so return as-is.
@@ -47,7 +34,7 @@ class BufferKind extends ScalarKind {
      */
     public buffer(buffer: Buffer, context: string): BufferOutput {
         // Ensure that the provided parameter is indeed a Buffer before decoding.
-        assertIsValidBuffer(buffer, context);
+        assertIsValidBuffer('buffer', buffer, context);
 
         return {
             decode: () => buffer // Buffer is already in the correct format, so return as-is.
