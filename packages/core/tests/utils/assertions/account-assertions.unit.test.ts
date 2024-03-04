@@ -1,7 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
 import { accountAssertionsTests } from './fixture';
-import { assertIsAddress } from '../../../src';
+
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { assertIsAddress } from '../../../src';
 
 /**
  * Account assertions

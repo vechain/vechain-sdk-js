@@ -5,7 +5,7 @@ import { assert, SECP256K1 } from '@vechain/vechain-sdk-errors';
 import {
     assertIsValidPrivateKey,
     assertIsValidSecp256k1MessageHash
-} from '../keystore/helpers/assertions';
+} from '../assertions';
 
 // Curve algorithm
 const curve = new EC('secp256k1');

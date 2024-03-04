@@ -4,8 +4,8 @@ import {
     SECP256K1,
     TRANSACTION
 } from '@vechain/vechain-sdk-errors';
-import { dataUtils } from '../data';
 import { type Transaction } from '../../transaction';
+import { dataUtils } from '../../utils';
 
 /**
  * Assert if transaction ID is valid
@@ -83,9 +83,30 @@ function assertIsValidTransactionSigningPrivateKey(
     );
 }
 
+/**
+ * Assert if transaction is not signed and cannot get field (e.g. delegator, origin, or id)
+ *
+ * @param methodName - The name of the method calling this assertion.
+ * @param transaction - Transaction to assert
+ * @param fieldToGet - Field to get (e.g. delegator, origin, or id)
+ */
+function assertCantGetFieldOnUnsignedTransaction(
+    methodName: string,
+    transaction: Transaction,
+    fieldToGet: string
+): void {
+    assert(
+        `assertCantGetFieldOnUnsignedTransaction - ${methodName}`,
+        transaction.isSigned,
+        TRANSACTION.NOT_SIGNED,
+        `Cannot get ${fieldToGet} from unsigned transaction. Sign the transaction first.`
+    );
+}
+
 export {
     assertValidTransactionID,
     assertValidTransactionHead,
     assertIsSignedTransaction,
-    assertIsValidTransactionSigningPrivateKey
+    assertIsValidTransactionSigningPrivateKey,
+    assertCantGetFieldOnUnsignedTransaction
 };

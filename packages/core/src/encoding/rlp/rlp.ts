@@ -8,7 +8,7 @@ import {
 } from './types';
 import { RLP } from '.';
 import { assert, RLP as RLPError } from '@vechain/vechain-sdk-errors';
-import { assertIsArray } from './helpers/assertions';
+import { assertIsArray } from '../../assertions';
 
 /**
  * Encodes data using the Ethereumjs RLP library.

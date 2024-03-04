@@ -1,5 +1,5 @@
 import { assert, DATA } from '@vechain/vechain-sdk-errors';
-import { revisionUtils } from '../revision';
+import { revisionUtils } from '../../utils';
 
 /**
  * Assert if a given revision is valid.

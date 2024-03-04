@@ -14,7 +14,7 @@ import { assert, HDNODE } from '@vechain/vechain-sdk-errors';
 import {
     assertIsValidHdNodeChainCode,
     assertIsValidHdNodeDerivationPath
-} from './helpers/assertions';
+} from '../assertions';
 
 /**
  * Generates an HDNode instance using mnemonic words.

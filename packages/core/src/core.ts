@@ -18,5 +18,8 @@ export * from './utils';
 export * from './bloom';
 export * from './certificate';
 
+// Assertions
+export * from './assertions';
+
 // Other libraries
 export { ethers as vechain_sdk_core_ethers };

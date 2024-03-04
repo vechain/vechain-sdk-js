@@ -1,5 +1,5 @@
 import { assert, RLP as RLPError, RLP } from '@vechain/vechain-sdk-errors';
-import { type RLPInput } from '../types';
+import { type RLPInput } from '../../encoding';
 
 /**
  * Asserts that the data is a buffer.

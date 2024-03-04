@@ -156,6 +156,7 @@ class TransactionsModule {
     public async sendTransaction(
         signedTx: Transaction
     ): Promise<SendTransactionResult> {
+        // Assert transaction is signed or not
         assertIsSignedTransaction('sendTransaction', signedTx);
 
         const rawTx = `0x${signedTx.encoded.toString('hex')}`;

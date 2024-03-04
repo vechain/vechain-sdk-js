@@ -18,7 +18,7 @@ import {
     SECP256K1,
     TRANSACTION
 } from '@vechain/vechain-sdk-errors';
-import { assertCantGetFieldOnUnsignedTransaction } from './helpers/assertions';
+import { assertCantGetFieldOnUnsignedTransaction } from '../assertions';
 
 /**
  * Represents an immutable transaction entity.

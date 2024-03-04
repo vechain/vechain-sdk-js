@@ -1,5 +1,5 @@
 import { assert, DATA } from '@vechain/vechain-sdk-errors';
-import { type ReturnType } from '../types';
+import { type ReturnType } from '../../hash';
 
 /**
  * Checks if the return type is valid

@@ -3,7 +3,7 @@ import { assert, SECP256K1 } from '@vechain/vechain-sdk-errors';
 /**
  * Assert if private key is valid
  *
- * @methodName - The name of the method calling this assertion.
+ * @param methodName - The name of the method calling this assertion.
  * @param methodName - The name of the method calling this assertion.
  * @param privateKey - Private key to assert
  * @param isValidPrivateKeyFunction - Function to assert private key
