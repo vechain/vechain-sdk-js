@@ -1,6 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
 import { buildErrorMessage } from '../../../src/utils/error-message-builder';
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 
 /**
  * Error message builder test
@@ -39,15 +38,30 @@ describe('Error message builder test', () => {
     /**
      * An error message is built with circular dependency on data
      */
-    test('Should be able to build an error message - inner error undefined', () => {
+    test('Should be able to build an error message - circular dependency', () => {
+        // Simple circular dependency object
+        const circularDependencyObject: {
+            prop1: string;
+            prop2: {
+                prop3: string;
+                prop4?: unknown;
+            };
+        } = {
+            prop1: 'value1',
+            prop2: {
+                prop3: 'value3'
+            }
+        };
+
+        // Introduce circular reference
+        circularDependencyObject.prop2.prop4 = circularDependencyObject;
+
         const errorMessage = buildErrorMessage(
             'simpleMethod',
             'Error message',
             {
                 params: [-1],
-                thorClient: new ThorClient(
-                    new HttpClient('http://localhost:8669/')
-                )
+                data: circularDependencyObject
             },
             new Error('Internal error')
         );
