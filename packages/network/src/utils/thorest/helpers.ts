@@ -43,7 +43,7 @@ const sanitizeWebsocketBaseURL = (url: string): string => {
         throw buildError(
             'sanitizeWebsocketBaseURL',
             DATA.INVALID_DATA_TYPE,
-            `Invalid url: ${url}. Must adhere to the regex: ${urlRegex}`
+            `Invalid url: ${url}. Must adhere to the regex: ${urlRegex}.`
         );
 
     // Remove trailing slash

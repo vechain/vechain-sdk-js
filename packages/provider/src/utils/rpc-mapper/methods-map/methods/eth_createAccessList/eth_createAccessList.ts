@@ -22,7 +22,7 @@ const ethCreateAccessList = async (
     throw buildError(
         'eth_createAccessList',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_createAccessList" not not implemented yet',
+        'Method "eth_createAccessList" has not been implemented yet.',
         {
             params,
             thorClient

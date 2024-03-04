@@ -22,7 +22,7 @@ const ethGetFilterChanges = async (
     throw buildError(
         'eth_getFilterChanges',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_getFilterChanges" not not implemented yet',
+        'Method "eth_getFilterChanges" has not been implemented yet.',
         {
             params,
             thorClient

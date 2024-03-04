@@ -22,7 +22,7 @@ const ethUninstallFilter = async (
     throw buildError(
         'eth_uninstallFilter',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_uninstallFilter" not not implemented yet',
+        'Method "eth_uninstallFilter" has not been implemented yet.',
         {
             params,
             thorClient

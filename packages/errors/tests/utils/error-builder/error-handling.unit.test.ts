@@ -26,7 +26,7 @@ describe('Error handler test', () => {
             throw buildError(
                 'test',
                 ERROR_CODES.KEYSTORE.INVALID_KEYSTORE,
-                'Invalid Keystore: Missing or malformed data'
+                'Invalid Keystore: Missing or malformed data.'
             );
         }).toThrowError(InvalidKeystoreError);
     });
@@ -38,7 +38,7 @@ describe('Error handler test', () => {
             throw buildError(
                 'test',
                 ERROR_CODES.KEYSTORE.INVALID_KEYSTORE,
-                'Invalid Keystore: Missing or malformed data',
+                'Invalid Keystore: Missing or malformed data.',
                 { test: 'test' }
             );
         } catch (error) {
@@ -55,7 +55,7 @@ describe('Error handler test', () => {
             throw buildError(
                 'test',
                 ERROR_CODES.RLP.INVALID_RLP,
-                'Invalid Keystore: Missing or malformed data',
+                'Invalid Keystore: Missing or malformed data.',
                 {
                     context: 'test'
                 }
