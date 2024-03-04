@@ -1,6 +1,7 @@
 import { type ThorClient } from '@vechain/vechain-sdk-network';
 import { buildProviderError, JSONRPC } from '@vechain/vechain-sdk-errors';
-import { CHAIN_ID, GENESIS_BLOCK_ID } from '../../../../const';
+import { CHAIN_ID } from '../../../../const';
+import { networkInfo } from '@vechain/vechain-sdk-core';
 
 /**
  * RPC Method eth_chainId implementation
@@ -23,10 +24,10 @@ const ethChainId = async (thorClient: ThorClient): Promise<string> => {
         }
 
         // We are on Mainnet
-        if (genesisBlock.id === GENESIS_BLOCK_ID.MAINNET)
+        if (genesisBlock.id === networkInfo.mainnet.genesisBlock.id)
             return CHAIN_ID.MAINNET;
 
-        // Testnet OR Solo
+        // Testnet OR Solo OR some other network
         return CHAIN_ID.TESTNET;
     } catch (e) {
         throw buildProviderError(
