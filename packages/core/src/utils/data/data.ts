@@ -180,7 +180,7 @@ const encodeBytes32String = (
  * @param value - The bytes32 hex string to decode.
  * @returns The decoded string.
  *
- * @throws If the value cannot be decoded to string. (e.g. if the value is not a valid hex string or it is not 64 characters long)
+ * @throws If the value cannot be decoded to string. (e.g. if the value is not a valid hex string, or it is not 64 characters long)
  */
 const decodeBytes32String = (value: string): string => {
     assert(
@@ -198,7 +198,7 @@ const decodeBytes32String = (value: string): string => {
 
     // if the first byte is zero, then the encoded bytes 32 string is padded with zeros to the left
     if (firstZeroIndex === 0) {
-        // find the first non zero byte
+        // find the first non-zero byte
         const nonZeroIndex = valueInBytes.findIndex((byte) => byte !== 0);
 
         // Decode the encoded bytes 32 string to string by removing the padded zeros

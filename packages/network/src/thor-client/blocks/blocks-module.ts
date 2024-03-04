@@ -88,7 +88,7 @@ class BlocksModule {
     }
 
     /**
-     * Retrieves details of a expanded specific block identified by its revision (block number or ID).
+     * Retrieves details of an expanded specific block identified by its revision (block number or ID).
      *
      * @param revision - The block number or ID to query details for.
      * @returns A promise that resolves to an object containing the details of the expanded block.

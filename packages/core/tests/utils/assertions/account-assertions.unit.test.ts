@@ -29,7 +29,7 @@ describe('Account assertions', () => {
          * Invalid addresses test cases
          */
         accountAssertionsTests.assertIsAddress.invalid.forEach(({ value }) => {
-            test(`hould throw error for assertIsAddress of ${value}`, () => {
+            test(`Should throw error for assertIsAddress of ${value}`, () => {
                 // Expect assertIsAddress to throw
                 expect(() => {
                     assertIsAddress('test', value);

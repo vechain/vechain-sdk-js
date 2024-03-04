@@ -17,7 +17,7 @@ function assertIsValidPrivateKey(
         `assertIsValidPrivateKey - ${methodName}`,
         isValidPrivateKeyFunction(privateKey),
         SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
-        'Invalid private key given as input. Ensure it is a valid 32-byte SECP256k1 private key.',
+        'Invalid private key given as input. Ensure it is a valid 32-byte secp256k1 private key.',
         { privateKey }
     );
 }
@@ -38,7 +38,7 @@ function assertIsValidSecp256k1MessageHash(
         `assertIsValidSecp256k1MessageHash - ${methodName}`,
         isValidMessageHashFunction(msgHash),
         SECP256K1.INVALID_SECP256k1_MESSAGE_HASH,
-        'Invalid private key given as input. Ensure it is a valid 32-byte SECP256k1 private key.',
+        'Invalid private key given as input. Ensure it is a valid 32-byte secp256k1 private key.',
         { msgHash }
     );
 }

@@ -7,7 +7,7 @@ import {
     assertIsValidSecp256k1MessageHash
 } from '../keystore/helpers/assertions';
 
-// Cureve algorithm
+// Curve algorithm
 const curve = new EC('secp256k1');
 
 /**

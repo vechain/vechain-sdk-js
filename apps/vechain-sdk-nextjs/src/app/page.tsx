@@ -44,7 +44,7 @@ export default function Home() {
             <div>
                 <header className="flex flex-col items-center justify-center">
                     <h1 className="text-5xl font-bold">
-                        Welcome to Vechain SDK
+                        Welcome to the vechain SDK
                     </h1>
                 </header>
             </div>
