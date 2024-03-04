@@ -33,7 +33,8 @@ import {
     TRANSACTION
 } from '@vechain/vechain-sdk-errors';
 import { type ThorClient } from '../thor-client';
-import { assertTransactionCanBeSigned, DelegationHandler } from './helpers';
+import { DelegationHandler } from './helpers';
+import { assertTransactionCanBeSigned } from '../../assertions';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
