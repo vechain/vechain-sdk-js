@@ -6,6 +6,7 @@ import type { DataType, ErrorCode } from '../../types';
  * This function handles those cases and avoid circular references.
  *
  * @param data - The data to be stringified.
+ * @returns The stringified data.
  */
 const stringifyData = (data: unknown): string => {
     /**
@@ -33,6 +34,12 @@ const stringifyData = (data: unknown): string => {
 
 /**
  * Function to build an error message
+ *
+ * @param methodName - The method name where the error was thrown.
+ * @param errorMessage - The error message.
+ * @param inputData - The input data.
+ * @param innerError - The inner error.
+ * @returns The error message string.
  */
 function buildErrorMessage<
     ErrorCodeT extends ErrorCode,

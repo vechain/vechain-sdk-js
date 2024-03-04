@@ -3,7 +3,7 @@ import { buildErrorMessage } from '../../../src/utils/error-message-builder';
 import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
 
 /**
- * Error message buildr test
+ * Error message builder test
  * @group unit/errors/error-message-builder
  */
 describe('Error message builder test', () => {
