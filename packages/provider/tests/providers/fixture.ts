@@ -1,13 +1,13 @@
 import {
-    vechain_sdk_core_ethers,
+    type InterfaceAbi,
     unitsUtils,
-    type InterfaceAbi
+    vechain_sdk_core_ethers
 } from '@vechain/vechain-sdk-core';
 import { zeroBlock } from '../rpc-mapper/methods/eth_getBlockByNumber/fixture';
 import {
+    TEST_ACCOUNTS_THOR_SOLO,
     TESTING_CONTRACT_ADDRESS,
     TESTING_CONTRACT_BYTECODE,
-    TEST_ACCOUNTS_THOR_SOLO,
     validTransactionDetailTestnet,
     validTransactionHashTestnet
 } from '../fixture';
@@ -27,7 +27,7 @@ const providerMethodsTestCasesTestnet = [
         description: 'Should be able to call eth_chainId',
         method: 'eth_chainId',
         params: [],
-        expected: '0x27'
+        expected: '0x186aa'
     },
     {
         description: `Should be able to call eth_getTransactionByHash with ${validTransactionHashTestnet} as the transaction hash`,
