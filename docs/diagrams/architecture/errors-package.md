@@ -1,12 +1,12 @@
 # Errors Package C4 Architecture diagram
-Main diagram for the errors package.
-It represents the architecture of the errors package with its most important components.
+Main diagram for the `errors package`.
+It represents the architecture of the `errors package` with its most important components.
 
 ```mermaid
 C4Context
-    title "vechain-sdk architecture overview - errors package"
+    "Vechain SDK architecture overview: errors package"
 
-    Boundary(b0, "vechain-SDK Errors Package") {
+    Boundary(b0, "errors", "package") {
         Boundary(b1, "Model") {
             Boundary(b2, "Core") {
                 System(abi, "Abi", "Abi related errors")

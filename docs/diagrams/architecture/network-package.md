@@ -1,10 +1,10 @@
 # Network Package C4 Architecture diagram
-Main diagram for the network package.
-It represents the architecture of the network package with its most important components.
+Main diagram for the `network package`.
+It represents the architecture of the `network package` with its most important components.
 
 ```mermaid
 C4Context
-    title "vechain-sdk architecture overview - network package"
+    "Vechain SDK architecture overview: network package"
 
     Boundary(b0, "network", "package") {
         Boundary(b1, "Assertions") {
@@ -24,7 +24,7 @@ C4Context
 
         Boundary(b3, "Utils") {
             System(const, "Const", "Constants about default timout, regex and healthcheck timing")
-            System(helpers, "Helpers", "Convertion helpers")
+            System(helpers, "Helpers", "Conversion helpers")
             System(http, "HTTP", "Customized HTTP client for efficient network request handling")
             System(poll, "Poll", "Synchronous and Asynchronous Event Polling")
             System(subscriptions, "Subscriptions", "Contains functions for obtaining URLs for subscribing to events through a websocket connection")

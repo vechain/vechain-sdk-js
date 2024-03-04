@@ -1,10 +1,10 @@
 # Core Package C4 Architecture diagram
-Main diagram for the core package.
-It represents the architecture of the core package with its most important components.
+Main diagram for the `core package`.
+It represents the architecture of the `core package` with its most important components.
 
 ```mermaid
 C4Context
-    title "vechain-sdk architecture overview - core package"
+    title "Vechain SDK architecture overview: core package"
 
     Boundary(b0, "core", "package") {
         Boundary(b1, "Core components") {
@@ -14,8 +14,8 @@ C4Context
             System(bloom, "Bloom module", "Handles all bloom related operations")
             System(certificate, "Certificate module", "Handles all certificate related operations")
             System(clause, "Clause", "Handles all clause related operations")
-            System(contract, "Smart contract module", "Handles all smsrt contract related operations")
-            System(encoding, "RLP cncoding module", "Handles all RLP encoding related operations")
+            System(contract, "Smart contract module", "Handles all smart contract related operations")
+            System(encoding, "RLP encoding module", "Handles all RLP encoding related operations")
             System(hash, "Hash module", "Handles all hash related operations")
             System(hdnode, "HDnode module", "Handles all hdnode related operations")
             System(keystore, "Keystore module", "Handles all keystore related operations")

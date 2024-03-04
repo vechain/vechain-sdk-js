@@ -1,10 +1,10 @@
 # Hardhat Plugin Package C4 Architecture diagram
-Main diagram for the hardhat-plugin package.
-It represents the architecture of the hardhat-plugin package with its most important components.
+Main diagram for the `hardhat-plugin package`.
+It represents the architecture of the `hardhat-plugin package` with its most important components.
 
 ```mermaid
 C4Context
-    title "vechain-sdk architecture overview - hardhat-plugin package"
+    "Vechain SDK architecture overview: hardhat-plugin package"
 
     Boundary(b0, "hardhat-plugin", "package") {
         Boundary(b1, "Helpers") {

@@ -1,10 +1,10 @@
 # Logging Package C4 Architecture diagram
-Main diagram for the logging package.
-It represents the architecture of the logging package with its most important components.
+Main diagram for the `logging package`.
+It represents the architecture of the `logging package` with its most important components.
 
 ```mermaid
 C4Context
-    title "vechain-sdk architecture overview - logging package"
+    "Vechain SDK architecture overview: logging package"
 
     Boundary(b0, "logging", "package") {
         Boundary(b1, "Logger") {

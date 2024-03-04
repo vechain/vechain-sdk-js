@@ -1,10 +1,10 @@
 # Provider Package C4 Architecture diagram
-Main diagram for the provider package.
-It represents the architecture of the provider package with its most important components.
+Main diagram for the `provider package`.
+It represents the architecture of the `provider package` with its most important components.
 
 ```mermaid
 C4Context
-    title "vechain-sdk architecture overview - provider package"
+    "Vechain SDK architecture overview: provider package"
 
     Boundary(b0, "provider", "package") {
         Boundary(b1, "EIP-1193") {
