@@ -20,6 +20,7 @@ const ethSubmitWork = async (
 
     // Not implemented yet
     throw buildError(
+        'eth_submitWork',
         FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_submitWork" not not implemented yet',
         {

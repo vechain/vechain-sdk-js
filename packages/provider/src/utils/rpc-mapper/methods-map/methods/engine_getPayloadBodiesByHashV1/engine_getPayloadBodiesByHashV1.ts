@@ -20,6 +20,7 @@ const engineGetPayloadBodiesByHashV1 = async (
 
     // Not implemented yet
     throw buildError(
+        'engine_getPayloadBodiesByHashV1',
         FUNCTION.NOT_IMPLEMENTED,
         'Method "engine_getPayloadBodiesByHashV1" not not implemented yet',
         {

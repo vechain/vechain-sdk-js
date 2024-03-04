@@ -30,6 +30,7 @@ const ethEstimateGas = async (
 ): Promise<string> => {
     // Check input params
     assert(
+        'eth_estimateGas',
         params.length === 2 &&
             typeof params[0] === 'object' &&
             typeof params[1] === 'string',

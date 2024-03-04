@@ -31,6 +31,7 @@ const ethGetLogs = async (
 ): Promise<LogsRPC[]> => {
     // Check input params
     assert(
+        'eth_getLogs',
         params.length === 1 && typeof params[0] === 'object',
         DATA.INVALID_DATA_TYPE,
         `Invalid params length, expected 1 object with following properties: \n {` +

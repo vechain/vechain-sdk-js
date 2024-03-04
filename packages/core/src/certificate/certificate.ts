@@ -29,6 +29,7 @@ function encode(cert: Certificate): string {
 function verify(cert: Certificate): void {
     // No signature
     assert(
+        'verify',
         cert.signature !== undefined && cert.signature !== null,
         CERTIFICATE.CERTIFICATE_NOT_SIGNED,
         "Verification failed: Certificate's signature is missing.",
@@ -37,6 +38,7 @@ function verify(cert: Certificate): void {
 
     // Invalid signature
     assert(
+        'verify',
         dataUtils.isHexString(cert.signature as string) &&
             (cert.signature as string).length % 2 === 0,
         CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT,
@@ -54,6 +56,7 @@ function verify(cert: Certificate): void {
 
     // Signature does not match with the signer's public key
     assert(
+        'verify',
         addressUtils.fromPublicKey(pubKey) === cert.signer,
         CERTIFICATE.CERTIFICATE_INVALID_SIGNER,
         "Verification failed: Signature does not correspond to the signer's public key.",

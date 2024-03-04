@@ -1,14 +1,13 @@
-import { DATA, assert } from '@vechain/vechain-sdk-errors';
-import { Poll, buildQuery, thorest } from '../../utils';
+import { assert, DATA } from '@vechain/vechain-sdk-errors';
+import { buildQuery, type EventPoll, Poll, thorest } from '../../utils';
 import {
-    type WaitForBlockOptions,
     type BlocksModuleOptions,
     type CompressedBlockDetail,
-    type ExpandedBlockDetail
+    type ExpandedBlockDetail,
+    type WaitForBlockOptions
 } from './types';
 import { assertIsRevisionForBlock } from '@vechain/vechain-sdk-core';
 import { type ThorClient } from '../thor-client';
-import { type EventPoll } from '../../utils';
 
 /** The `BlocksModule` class encapsulates functionality for interacting with blocks
  * on the VechainThor blockchain.
@@ -80,7 +79,7 @@ class BlocksModule {
     public async getBlockCompressed(
         revision: string | number
     ): Promise<CompressedBlockDetail | null> {
-        assertIsRevisionForBlock(revision);
+        assertIsRevisionForBlock('getBlockCompressed', revision);
 
         return (await this.thor.httpClient.http(
             'GET',
@@ -97,7 +96,7 @@ class BlocksModule {
     public async getBlockExpanded(
         revision: string | number
     ): Promise<ExpandedBlockDetail | null> {
-        assertIsRevisionForBlock(revision);
+        assertIsRevisionForBlock('getBlockExpanded', revision);
 
         return (await this.thor.httpClient.http(
             'GET',
@@ -171,6 +170,7 @@ class BlocksModule {
         options?: WaitForBlockOptions
     ): Promise<CompressedBlockDetail | null> {
         assert(
+            'waitForBlock',
             blockNumber === undefined ||
                 blockNumber === null ||
                 blockNumber >= 0,

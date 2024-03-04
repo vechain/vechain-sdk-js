@@ -20,6 +20,7 @@ const ethSign = async (
 
     // Not implemented yet
     throw buildError(
+        'eth_sign',
         FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_sign" not not implemented yet',
         {

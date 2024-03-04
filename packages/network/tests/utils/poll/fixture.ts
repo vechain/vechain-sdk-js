@@ -25,6 +25,7 @@ const simpleThrowErrorFunctionIfInputIs10 = async (
 ): Promise<number> => {
     if (a === 10)
         throw buildError(
+            'simpleThrowErrorFunctionIfInputIs10',
             DATA.INVALID_DATA_RETURN_TYPE,
             "Input value error: 'a' must not be 10"
         );

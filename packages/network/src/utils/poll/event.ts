@@ -57,6 +57,7 @@ class EventPoll<TReturnType> extends EventEmitter {
 
         // Positive number for request interval
         assertPositiveIntegerForPollOptions(
+            'EventPoll constructor',
             requestIntervalInMilliseconds,
             'requestIntervalInMilliseconds'
         );
@@ -207,6 +208,7 @@ class EventPoll<TReturnType> extends EventEmitter {
         } catch (error) {
             // Set error
             this.error = buildError(
+                'EventPoll - main interval loop function',
                 POLL_ERROR.POLL_EXECUTION_ERROR,
                 'Error during the execution of the poll',
                 {

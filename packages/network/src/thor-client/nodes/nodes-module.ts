@@ -82,6 +82,7 @@ class NodesModule {
         response: CompressedBlockDetail | null
     ): number => {
         assert(
+            'getTimestampFromBlock',
             response !== null &&
                 response !== undefined &&
                 typeof response === 'object' &&

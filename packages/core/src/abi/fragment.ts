@@ -1,12 +1,12 @@
-import { type Fragment, ethers } from 'ethers';
+import { ethers, type Fragment } from 'ethers';
 import {
-    type Interface,
-    type FunctionFragment,
-    type Result,
+    type BytesLike,
     type FormatType,
-    type BytesLike
+    type FunctionFragment,
+    type Interface,
+    type Result
 } from './types';
-import { ABI, buildError, assert } from '@vechain/vechain-sdk-errors';
+import { ABI, assert, buildError } from '@vechain/vechain-sdk-errors';
 import { sanitizeValuesToEncode } from './helpers/fragment';
 
 /**
@@ -28,6 +28,7 @@ const allowedSignatureFormats = ['sighash', 'minimal', 'full', 'json'];
 function getSignature(fragment: Fragment, formatType: FormatType): string {
     // If the formatType is not included in the allowed formats, throw an error.
     assert(
+        'getSignature',
         allowedSignatureFormats.includes(formatType),
         ABI.INVALID_FORMAT_TYPE,
         `Signature format error: '${formatType}' is invalid. Allowed formats: ${allowedSignatureFormats.join(
@@ -68,6 +69,7 @@ class Function<ABIType> {
             this.iface = new ethers.Interface([this.fragment]);
         } catch (e) {
             throw buildError(
+                'Function constructor',
                 ABI.INVALID_FUNCTION,
                 'Initialization failed: Cannot create Function fragment. Function format is invalid',
                 { source },
@@ -107,6 +109,7 @@ class Function<ABIType> {
             return this.iface.decodeFunctionData(this.fragment, data);
         } catch (e) {
             throw buildError(
+                'decodeInput',
                 ABI.INVALID_DATA_TO_DECODE,
                 'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
                 { data },
@@ -135,6 +138,7 @@ class Function<ABIType> {
             return this.iface.decodeFunctionResult(this.fragment, data);
         } catch (e) {
             throw buildError(
+                'decodeOutput',
                 ABI.INVALID_DATA_TO_DECODE,
                 'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
                 { data },
@@ -155,6 +159,7 @@ class Function<ABIType> {
             return this.iface.encodeFunctionData(this.fragment, dataToEncode);
         } catch (e) {
             throw buildError(
+                'encodeInput',
                 ABI.INVALID_DATA_TO_ENCODE,
                 'Encoding failed: Data format is invalid. Function data  match the expected format for ABI type encoding.',
                 { dataToEncode },
@@ -192,6 +197,7 @@ class Event<ABIType> {
             this.iface = new ethers.Interface([this.fragment]);
         } catch (e) {
             throw buildError(
+                'Event constructor',
                 ABI.INVALID_EVENT,
                 'Initialization failed: Event fragment creation not possible due to invalid ABI data format.',
                 { source },
@@ -235,6 +241,7 @@ class Event<ABIType> {
             );
         } catch (e) {
             throw buildError(
+                'decodeEventLog',
                 ABI.INVALID_DATA_TO_DECODE,
                 'Decoding failed: Data and topics must be correctly formatted for ABI-compliant decoding.',
                 { data },
@@ -258,6 +265,7 @@ class Event<ABIType> {
             return this.iface.encodeEventLog(this.fragment, dataToEncode);
         } catch (e) {
             throw buildError(
+                'encodeEventLog',
                 ABI.INVALID_DATA_TO_ENCODE,
                 'Encoding failed: Event data must be correctly formatted for ABI-compliant encoding.',
                 { dataToEncode },
@@ -291,6 +299,7 @@ class Event<ABIType> {
             >;
         } catch (e) {
             throw buildError(
+                'encodeFilterTopics',
                 ABI.INVALID_DATA_TO_ENCODE,
                 'Encoding topics failed: Event topics values must be correctly formatted for ABI-compliant encoding.',
                 { valuesToEncode },

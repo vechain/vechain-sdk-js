@@ -7,8 +7,8 @@ import {
     type RLPValueType
 } from './types';
 import { RLP } from '.';
-import { RLP as RLPError, assert } from '@vechain/vechain-sdk-errors';
-import { assertIsArray } from './helpers/assertions';
+import { assert, RLP as RLPError } from '@vechain/vechain-sdk-errors';
+import { assertIsArray } from '../../assertions';
 
 /**
  * Encodes data using the Ethereumjs RLP library.
@@ -94,7 +94,7 @@ const _packData = (
     }
 
     // Valid RLP array
-    assertIsArray(obj, context);
+    assertIsArray('packData', obj, context);
 
     // ArrayKind: recursively pack each array item based on the shared item profile.
     if ('item' in kind && Array.isArray(obj)) {
@@ -133,6 +133,7 @@ const _unpackData = (
     // ScalarKind: Direct decoding using the provided method.
     if (kind instanceof RLP.ScalarKind) {
         assert(
+            '_unpackData',
             Buffer.isBuffer(packed) || packed instanceof Uint8Array,
             RLPError.INVALID_RLP,
             'Unpacking error: Expected data type is Buffer.',
@@ -149,6 +150,7 @@ const _unpackData = (
         const parts = packed;
 
         assert(
+            '_unpackData',
             parts.length === kind.length,
             RLPError.INVALID_RLP,
             `Unpacking error: Expected ${kind.length} items, but got ${parts.length}.`,
@@ -166,7 +168,7 @@ const _unpackData = (
     }
 
     // Valid RLP array
-    assertIsArray(packed, context);
+    assertIsArray('_unpackData', packed, context);
 
     // ArrayKind: Recursively unpack each array item based on the shared item profile.
     if ('item' in kind && Array.isArray(packed)) {

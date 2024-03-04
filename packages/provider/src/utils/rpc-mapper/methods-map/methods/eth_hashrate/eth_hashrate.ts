@@ -20,6 +20,7 @@ const ethHashrate = async (
 
     // Not implemented yet
     throw buildError(
+        'ethHashrate',
         FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_hashrate" not not implemented yet',
         {

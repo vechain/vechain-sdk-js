@@ -29,6 +29,7 @@ const ethGetStorageAt = async (
     params: unknown[]
 ): Promise<string> => {
     assert(
+        'eth_getStorageAt',
         params.length === 3 &&
             typeof params[0] === 'string' &&
             typeof params[1] === 'string' &&

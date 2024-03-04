@@ -30,7 +30,7 @@ describe('Tests of convertError function', () => {
                 ).toStrictEqual({});
 
                 // Assert that the returned Error message matches the expected format
-                expect(error.message).toBe(
+                expect(error.message).toContain(
                     'An error occurred while performing http request http://localhost:3000'
                 );
                 expect(error.code).toBe('INVALID_HTTP_REQUEST');

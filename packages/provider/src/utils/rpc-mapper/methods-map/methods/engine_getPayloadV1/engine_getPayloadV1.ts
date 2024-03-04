@@ -20,6 +20,7 @@ const engineGetPayloadV1 = async (
 
     // Not implemented yet
     throw buildError(
+        'engine_getPayloadV1',
         FUNCTION.NOT_IMPLEMENTED,
         'Method "engine_getPayloadV1" not not implemented yet',
         {
