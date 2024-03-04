@@ -19,6 +19,7 @@ function sign(
 ): Transaction {
     // Invalid private key
     assertIsValidTransactionSigningPrivateKey(
+        'sign',
         signerPrivateKey,
         secp256k1.isValidPrivateKey
     );
@@ -60,11 +61,13 @@ function signWithDelegator(
 ): Transaction {
     // Invalid private keys (signer and delegator)
     assertIsValidTransactionSigningPrivateKey(
+        'signWithDelegator',
         signerPrivateKey,
         secp256k1.isValidPrivateKey,
         'signer'
     );
     assertIsValidTransactionSigningPrivateKey(
+        'signWithDelgator',
         delegatorPrivateKey,
         secp256k1.isValidPrivateKey,
         'delegator'

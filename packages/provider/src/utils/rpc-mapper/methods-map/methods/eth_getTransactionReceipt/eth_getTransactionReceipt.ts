@@ -40,7 +40,7 @@ const ethGetTransactionReceipt = async (
     );
 
     // Assert valid transaction id
-    assertValidTransactionID(params[0] as string);
+    assertValidTransactionID('eth_getTransactionReceipt', params[0] as string);
 
     try {
         // Get hash by params

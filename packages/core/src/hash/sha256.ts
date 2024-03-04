@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { type ReturnType, type HashInput } from './types';
+import { type HashInput, type ReturnType } from './types';
 import { assertIsValidReturnType } from './helpers/assertions';
 
 /* --- Overloaded functions start --- */
@@ -50,7 +50,7 @@ function sha256(
     returnType: ReturnType = 'buffer'
 ): Buffer | string {
     // Assert that the returnType is valid
-    assertIsValidReturnType(returnType);
+    assertIsValidReturnType('sha256', returnType);
 
     const hash = ethers.isBytesLike(data)
         ? ethers.sha256(data)

@@ -58,10 +58,10 @@ class TransactionsModule {
         options?: GetTransactionInputOptions
     ): Promise<TransactionDetail | null> {
         // Invalid transaction ID
-        assertValidTransactionID(id);
+        assertValidTransactionID('getTransaction', id);
 
         // Invalid head
-        assertValidTransactionHead(options?.head);
+        assertValidTransactionHead('getTransaction', options?.head);
 
         return (await this.thor.httpClient.http(
             'GET',
@@ -89,10 +89,10 @@ class TransactionsModule {
         options?: GetTransactionReceiptInputOptions
     ): Promise<TransactionReceipt | null> {
         // Invalid transaction ID
-        assertValidTransactionID(id);
+        assertValidTransactionID('getTransactionReceipt', id);
 
         // Invalid head
-        assertValidTransactionHead(options?.head);
+        assertValidTransactionHead('getTransactionReceipt', options?.head);
 
         return (await this.thor.httpClient.http(
             'GET',
@@ -155,7 +155,7 @@ class TransactionsModule {
     public async sendTransaction(
         signedTx: Transaction
     ): Promise<SendTransactionResult> {
-        assertIsSignedTransaction(signedTx);
+        assertIsSignedTransaction('sendTransaction', signedTx);
 
         const rawTx = `0x${signedTx.encoded.toString('hex')}`;
 
@@ -178,7 +178,7 @@ class TransactionsModule {
         txID: string,
         options?: WaitForTransactionOptions
     ): Promise<TransactionReceipt | null> {
-        assertValidTransactionID(txID);
+        assertValidTransactionID('waitForTransaction', txID);
 
         return await Poll.SyncPoll(
             async () =>
@@ -332,7 +332,11 @@ class TransactionsModule {
         const originPrivateKey = Buffer.from(privateKey, 'hex');
 
         // Check if the transaction can be signed
-        assertTransactionCanBeSigned(originPrivateKey, txBody);
+        assertTransactionCanBeSigned(
+            'signTransaction',
+            originPrivateKey,
+            txBody
+        );
 
         // Check if the transaction is delegated
         return DelegationHandler(delegatorOptions).isDelegated()

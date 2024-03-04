@@ -113,7 +113,7 @@ class Transaction {
         );
 
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
-        assertCantGetFieldOnUnsignedTransaction(this, 'delegator');
+        assertCantGetFieldOnUnsignedTransaction('delegator', this, 'delegator');
 
         // Slice signature needed to recover public key
         // Obtains the recovery param from the signature
@@ -232,7 +232,7 @@ class Transaction {
      */
     public get origin(): string {
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
-        assertCantGetFieldOnUnsignedTransaction(this, 'origin');
+        assertCantGetFieldOnUnsignedTransaction('origin', this, 'origin');
 
         // Slice signature
         // Obtains the concatenated signature (r, s) of ECDSA digital signature
@@ -256,7 +256,7 @@ class Transaction {
      */
     get id(): string {
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
-        assertCantGetFieldOnUnsignedTransaction(this, 'id');
+        assertCantGetFieldOnUnsignedTransaction('id', this, 'id');
 
         // Return transaction ID
         return blake2b256(

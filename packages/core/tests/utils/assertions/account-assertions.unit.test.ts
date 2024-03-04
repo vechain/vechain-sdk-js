@@ -20,7 +20,7 @@ describe('Account assertions', () => {
             test(`should not throw error for assertIsAddress of ${value}`, () => {
                 // Expect assertIsAddress to not throw
                 expect(() => {
-                    assertIsAddress(value);
+                    assertIsAddress('test', value);
                 }).not.toThrow();
             });
         });
@@ -32,7 +32,7 @@ describe('Account assertions', () => {
             test(`hould throw error for assertIsAddress of ${value}`, () => {
                 // Expect assertIsAddress to throw
                 expect(() => {
-                    assertIsAddress(value);
+                    assertIsAddress('test', value);
                 }).toThrowError(InvalidDataTypeError);
             });
         });

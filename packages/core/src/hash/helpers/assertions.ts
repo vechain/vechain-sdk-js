@@ -15,11 +15,16 @@ const isValidReturnType = (value: string): boolean => {
 
 /**
  * Asserts that the return type of hash is valid.
+ *
+ * @param methodName - The name of the method calling this assertion.
  * @param returnType - The return type of the hash function
  */
-function assertIsValidReturnType(returnType: ReturnType): void {
+function assertIsValidReturnType(
+    methodName: string,
+    returnType: ReturnType
+): void {
     assert(
-        'assertIsValidReturnType',
+        `assertIsValidReturnType - ${methodName}`,
         isValidReturnType(returnType),
         DATA.INVALID_DATA_RETURN_TYPE,
         "Validation error: Invalid Return type. Return type in hash function must be 'buffer' or 'hex'.",

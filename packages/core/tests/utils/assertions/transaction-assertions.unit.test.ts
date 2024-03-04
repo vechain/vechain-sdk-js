@@ -27,7 +27,7 @@ describe('Transaction assertions', () => {
                 test(`should not throw error for assertValidTransactionID of ${value}`, () => {
                     // Expect assertValidTransactionID to not throw
                     expect(() => {
-                        assertValidTransactionID(value);
+                        assertValidTransactionID('test', value);
                     }).not.toThrow();
                 });
             }
@@ -41,7 +41,7 @@ describe('Transaction assertions', () => {
                 test(`should throw error for assertValidTransactionID of ${value}`, () => {
                     // Expect assertValidTransactionID to throw
                     expect(() => {
-                        assertValidTransactionID(value);
+                        assertValidTransactionID('test', value);
                     }).toThrowError();
                 });
             }
@@ -57,7 +57,7 @@ describe('Transaction assertions', () => {
                 test(`should not throw error for assertValidTransactionHead of ${value}`, () => {
                     // Expect assertValidTransactionHead to not throw
                     expect(() => {
-                        assertValidTransactionHead(value);
+                        assertValidTransactionHead('test', value);
                     }).not.toThrow();
                 });
             }
@@ -71,7 +71,7 @@ describe('Transaction assertions', () => {
                 test(`should throw error for assertValidTransactionHead of ${value}`, () => {
                     // Expect assertValidTransactionHead to throw
                     expect(() => {
-                        assertValidTransactionHead(value);
+                        assertValidTransactionHead('test', value);
                     }).toThrowError();
                 });
             }
@@ -92,7 +92,7 @@ describe('Transaction assertions', () => {
                 )}`, () => {
                     // Expect assertIsSignedTransaction to not throw
                     expect(() => {
-                        assertIsSignedTransaction(value);
+                        assertIsSignedTransaction('test', value);
                     }).not.toThrow();
                 });
             }
@@ -108,7 +108,7 @@ describe('Transaction assertions', () => {
                 )}`, () => {
                     // Expect assertIsSignedTransaction to throw
                     expect(() => {
-                        assertIsSignedTransaction(value);
+                        assertIsSignedTransaction('test', value);
                     }).toThrowError();
                 });
             }
@@ -127,6 +127,7 @@ describe('Transaction assertions', () => {
                     // Expect assertIsValidTransactionSigningPrivateKey to not throw
                     expect(() => {
                         assertIsValidTransactionSigningPrivateKey(
+                            'test',
                             value,
                             secp256k1.isValidPrivateKey,
                             'signer'
@@ -147,6 +148,7 @@ describe('Transaction assertions', () => {
                     // Expect assertIsValidTransactionSigningPrivateKey to throw
                     expect(() => {
                         assertIsValidTransactionSigningPrivateKey(
+                            'test',
                             value,
                             () => false
                         );

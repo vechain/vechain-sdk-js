@@ -37,7 +37,7 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
     );
 
     // Invalid derivation path
-    assertIsValidHdNodeDerivationPath(path);
+    assertIsValidHdNodeDerivationPath('fromMnemonic', path);
 
     // normalize words to lowercase
     const joinedWords = words.join(' ').toLowerCase();
@@ -67,7 +67,7 @@ function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
     );
 
     // Invalid chain code
-    assertIsValidHdNodeChainCode(chainCode);
+    assertIsValidHdNodeChainCode('fromPublicKey', chainCode);
 
     const compressed = secp256k1.extendedPublicKeyToArray(publicKey, true);
     const key = Buffer.concat([
@@ -103,7 +103,7 @@ function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
     );
 
     // Invalid chain code
-    assertIsValidHdNodeChainCode(chainCode);
+    assertIsValidHdNodeChainCode('fromPrivateKey', chainCode);
 
     const key = Buffer.concat([
         X_PRIV_PREFIX,
@@ -157,7 +157,7 @@ function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
         },
         derivePath(path: string) {
             // Invalid derivation path
-            assertIsValidHdNodeDerivationPath(path);
+            assertIsValidHdNodeDerivationPath('ethersNodeToOurHDNode', path);
 
             return ethersNodeToOurHDNode(ethersNode.derivePath(path));
         }

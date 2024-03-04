@@ -4,17 +4,19 @@ import { type RLPInput } from '../types';
 /**
  * Asserts that the data is a buffer.
  *
+ * @param methodName - The name of the method calling this assertion.
  * @param bufferToCheck - The bufferToCheck to validate.
  * @param context - Descriptive context for error messages.
  *
  * @throws{InvalidRLPError}
  */
 function assertIsValidBuffer(
+    methodName: string,
     bufferToCheck: Buffer | RLPInput,
     context: string
 ): void {
     assert(
-        'assertIsValidBuffer',
+        `assertIsValidBuffer - ${methodName}`,
         Buffer.isBuffer(bufferToCheck),
         RLP.INVALID_RLP,
         `Validation error: Expected a Buffer type in ${context}.`,
@@ -28,17 +30,19 @@ function assertIsValidBuffer(
 /**
  * Asserts that the data is an array.
  *
+ * @param methodName - The name of the method calling this assertion.
  * @param arrayToCheck - The arrayToCheck to validate.
  * @param context - Descriptive context for error messages.
  *
  * @throws{InvalidRLPError}
  */
 function assertIsArray<ArrayType>(
+    methodName: string,
     arrayToCheck: ArrayType,
     context: string
 ): void {
     assert(
-        'assertIsArray',
+        `assertIsArray - ${methodName}`,
         Array.isArray(arrayToCheck),
         RLPError.INVALID_RLP,
         `Validation error: Expected an array in ${context}.`,

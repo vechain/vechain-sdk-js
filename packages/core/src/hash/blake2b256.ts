@@ -72,7 +72,7 @@ function blake2b256(
     returnType: ReturnType = 'buffer'
 ): Buffer | string {
     // Assert that the returnType is valid
-    assertIsValidReturnType(returnType);
+    assertIsValidReturnType('blake2b256', returnType);
 
     // Converts the data to an array of Buffer or string
     const dataBytesLike = [data] as Array<Buffer | string>;

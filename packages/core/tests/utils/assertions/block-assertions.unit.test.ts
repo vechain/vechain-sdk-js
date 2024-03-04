@@ -22,7 +22,7 @@ describe('Block assertions', () => {
             ({ value }) => {
                 test(`should not throw error for assertIsRevision of ${value}`, () => {
                     expect(() => {
-                        assertIsRevisionForAccount(value);
+                        assertIsRevisionForAccount('test', value);
                     }).not.toThrow();
                 });
             }
@@ -35,7 +35,7 @@ describe('Block assertions', () => {
             ({ value }) => {
                 test(`should throw error for assertIsRevision of ${value}`, () => {
                     expect(() => {
-                        assertIsRevisionForAccount(value);
+                        assertIsRevisionForAccount('test', value);
                     }).toThrow();
                 });
             }
@@ -53,7 +53,7 @@ describe('Block assertions', () => {
             ({ value }) => {
                 test(`should not throw error for assertIsRevision of ${value}`, () => {
                     expect(() => {
-                        assertIsRevisionForBlock(value);
+                        assertIsRevisionForBlock('test', value);
                     }).not.toThrow();
                 });
             }
@@ -66,7 +66,7 @@ describe('Block assertions', () => {
             ({ value }) => {
                 test(`should throw error for assertIsRevision of ${value}`, () => {
                     expect(() => {
-                        assertIsRevisionForBlock(value);
+                        assertIsRevisionForBlock('test', value);
                     }).toThrow();
                 });
             }

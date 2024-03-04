@@ -54,7 +54,7 @@ function generatePrivateKey(entropy?: () => Buffer): Buffer {
  * @returns Public key derived from private key
  */
 function derivePublicKey(privateKey: Buffer): Buffer {
-    assertIsValidPrivateKey(privateKey, isValidPrivateKey);
+    assertIsValidPrivateKey('derivePublicKey', privateKey, isValidPrivateKey);
     const keyPair = curve.keyFromPrivate(privateKey);
     return Buffer.from(keyPair.getPublic().encode('array', false));
 }
@@ -67,9 +67,9 @@ function derivePublicKey(privateKey: Buffer): Buffer {
  * @param privateKey serialized private key
  */
 function sign(messageHash: Buffer, privateKey: Buffer): Buffer {
-    assertIsValidSecp256k1MessageHash(messageHash, isValidMessageHash);
+    assertIsValidSecp256k1MessageHash('sign', messageHash, isValidMessageHash);
 
-    assertIsValidPrivateKey(privateKey, isValidPrivateKey);
+    assertIsValidPrivateKey('sign', privateKey, isValidPrivateKey);
 
     const keyPair = curve.keyFromPrivate(privateKey);
     const sig = keyPair.sign(messageHash, { canonical: true });
@@ -88,7 +88,11 @@ function sign(messageHash: Buffer, privateKey: Buffer): Buffer {
  * @param sig signature
  */
 function recover(messageHash: Buffer, sig: Buffer): Buffer {
-    assertIsValidSecp256k1MessageHash(messageHash, isValidMessageHash);
+    assertIsValidSecp256k1MessageHash(
+        'recover',
+        messageHash,
+        isValidMessageHash
+    );
 
     assert(
         'recover',

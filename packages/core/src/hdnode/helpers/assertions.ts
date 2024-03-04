@@ -4,9 +4,13 @@ import { isDerivationPathValid } from '../../utils';
 /**
  * Asserts that the derivation path is valid.
  *
+ * @param methodName - The name of the method calling this assertion.
  * @param path - The derivation path to validate.
  */
-function assertIsValidHdNodeDerivationPath(path: string): void {
+function assertIsValidHdNodeDerivationPath(
+    methodName: string,
+    path: string
+): void {
     assert(
         'assertIsValidHdNodeDerivationPath',
         isDerivationPathValid(path),
@@ -19,9 +23,13 @@ function assertIsValidHdNodeDerivationPath(path: string): void {
 /**
  * Asserts that the chain code is valid.
  *
+ * @param methodName - The name of the method calling this assertion.
  * @param chainCode - The chain code to validate.
  */
-function assertIsValidHdNodeChainCode(chainCode: Buffer): void {
+function assertIsValidHdNodeChainCode(
+    methodName: string,
+    chainCode: Buffer
+): void {
     assert(
         'assertIsValidHdNodeChainCode',
         chainCode.length === 32,

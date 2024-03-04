@@ -12,7 +12,7 @@ import { assertIsValidBuffer } from '../helpers/assertions';
  * @throws{InvalidRLPError}
  */
 function _assertBuffer(data: RLPInput | Buffer, context: string): void {
-    assertIsValidBuffer(data, context);
+    assertIsValidBuffer('_assertBuffer', data, context);
 }
 
 /**
@@ -47,7 +47,7 @@ class BufferKind extends ScalarKind {
      */
     public buffer(buffer: Buffer, context: string): BufferOutput {
         // Ensure that the provided parameter is indeed a Buffer before decoding.
-        assertIsValidBuffer(buffer, context);
+        assertIsValidBuffer('buffer', buffer, context);
 
         return {
             decode: () => buffer // Buffer is already in the correct format, so return as-is.

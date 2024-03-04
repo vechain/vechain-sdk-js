@@ -5,11 +5,15 @@ import { revisionUtils } from '../revision';
  * Assert if a given revision is valid.
  * A valid revision is a string representing a block number or block id.
  *
+ * @param methodName - The name of the method calling this assertion.
  * @param revision - Revision to assert
  */
-function assertIsRevisionForBlock(revision?: string | number): void {
+function assertIsRevisionForBlock(
+    methodName: string,
+    revision?: string | number
+): void {
     assert(
-        'assertIsRevisionForBlock',
+        `assertIsRevisionForBlock - ${methodName}`,
         revision === undefined ||
             revision === null ||
             revisionUtils.isRevisionBlock(revision),
@@ -19,9 +23,19 @@ function assertIsRevisionForBlock(revision?: string | number): void {
     );
 }
 
-function assertIsRevisionForAccount(revision?: string | number): void {
+/**
+ * Assert if a given revision is valid.
+ * A valid revision is a string representing a block number or block id.
+ *
+ * @param methodName - The name of the method calling this assertion.
+ * @param revision - Revision to assert
+ */
+function assertIsRevisionForAccount(
+    methodName: string,
+    revision?: string | number
+): void {
     assert(
-        'assertIsRevisionForAccount',
+        `assertIsRevisionForAccount - ${methodName}`,
         revision === undefined ||
             revision === null ||
             revisionUtils.isRevisionAccount(revision),
