@@ -22,7 +22,7 @@ const ethMaxPriorityFeePerGas = async (
     throw buildError(
         'eth_maxPriorityFeePerGas',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_maxPriorityFeePerGas" not not implemented yet',
+        'Method "eth_maxPriorityFeePerGas" has not been implemented yet.',
         {
             params,
             thorClient

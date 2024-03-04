@@ -22,7 +22,7 @@ const engineGetPayloadV3 = async (
     throw buildError(
         'engine_getPayloadV3',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "engine_getPayloadV3" not not implemented yet',
+        'Method "engine_getPayloadV3" has not been implemented yet.',
         {
             params,
             thorClient

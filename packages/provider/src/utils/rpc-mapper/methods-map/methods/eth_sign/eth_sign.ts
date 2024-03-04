@@ -22,7 +22,7 @@ const ethSign = async (
     throw buildError(
         'eth_sign',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_sign" not not implemented yet',
+        'Method "eth_sign" has not been implemented yet.',
         {
             params,
             thorClient

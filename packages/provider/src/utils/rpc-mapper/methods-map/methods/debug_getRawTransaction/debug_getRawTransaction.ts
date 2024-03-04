@@ -22,7 +22,7 @@ const debugGetRawTransaction = async (
     throw buildError(
         'debug_getRawTransaction',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "debug_getRawTransaction" not not implemented yet',
+        'Method "debug_getRawTransaction" has not been implemented yet.',
         {
             params,
             thorClient

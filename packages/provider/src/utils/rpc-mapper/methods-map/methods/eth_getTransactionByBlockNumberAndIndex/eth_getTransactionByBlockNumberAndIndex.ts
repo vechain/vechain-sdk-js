@@ -22,7 +22,7 @@ const ethGetTransactionByBlockNumberAndIndex = async (
     throw buildError(
         'eth_getTransactionByBlockNumberAndIndex',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_getTransactionByBlockNumberAndIndex" not not implemented yet',
+        'Method "eth_getTransactionByBlockNumberAndIndex" has not been implemented yet.',
         {
             params,
             thorClient

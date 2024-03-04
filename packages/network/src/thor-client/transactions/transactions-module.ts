@@ -222,7 +222,7 @@ class TransactionsModule {
             throw buildError(
                 'buildTransactionBody',
                 TRANSACTION.INVALID_TRANSACTION_BODY,
-                "Error while building transaction body: can't get genesis block",
+                'Error while building transaction body: Cannot get genesis block.',
                 { clauses, options }
             );
 
@@ -244,7 +244,7 @@ class TransactionsModule {
             throw buildError(
                 'buildTransactionBody',
                 TRANSACTION.INVALID_TRANSACTION_BODY,
-                "Error while building transaction body: can't get latest block",
+                'Error while building transaction body: Cannot get latest block.',
                 { clauses, options }
             );
 
