@@ -12,7 +12,7 @@ interface HTTPClientErrorData {
 }
 
 /**
- * Client error to be thrown when an http request fails.
+ * Client error to be thrown when a http request fails.
  */
 class HTTPClientError extends ErrorBase<
     HTTP_CLIENT.INVALID_HTTP_REQUEST,

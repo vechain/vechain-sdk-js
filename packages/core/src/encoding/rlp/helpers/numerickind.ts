@@ -87,7 +87,7 @@ const _validateNumericKindString = (str: string, context: string): void => {
 };
 
 /**
- * Validates a buffer to ensure it adheres to constraints and doesn’t contain
+ * Validates a buffer to ensure it adheres to constraints and does not contain
  * leading zero bytes which are not canonical representation in integers.
  *
  * @throws{InvalidRLPError}

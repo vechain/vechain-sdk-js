@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { addressUtils, secp256k1 } from '../../src';
 import {
-    checksumedAndUnchecksumedAddresses,
+    checksummedAndUnchecksummedAddresses,
     invalidPrivateKey,
     simpleAddress,
     simplePrivateKey,
@@ -100,10 +100,10 @@ describe('Address', () => {
          * Valid inputs
          */
         test('valid input', () => {
-            checksumedAndUnchecksumedAddresses.forEach((addressPair) => {
+            checksummedAndUnchecksummedAddresses.forEach((addressPair) => {
                 expect(
-                    addressUtils.toChecksummed(addressPair.unchecksumed)
-                ).toEqual(addressPair.checksumed);
+                    addressUtils.toChecksummed(addressPair.unchecksummed)
+                ).toEqual(addressPair.checksummed);
             });
         });
     });

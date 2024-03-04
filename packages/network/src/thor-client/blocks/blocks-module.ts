@@ -8,7 +8,7 @@ import {
 } from './types';
 import { assertIsRevisionForBlock } from '@vechain/vechain-sdk-core';
 import { type ThorClient } from '../thor-client';
-import { type EventPoll } from '../../utils/poll/event';
+import { type EventPoll } from '../../utils';
 
 /** The `BlocksModule` class encapsulates functionality for interacting with blocks
  * on the VechainThor blockchain.
@@ -75,7 +75,6 @@ class BlocksModule {
      * Retrieves details of a compressed specific block identified by its revision (block number or ID).
      *
      * @param revision - The block number or ID to query details for.
-     * @param options - (Optional) Other optional parameters for the request.
      * @returns A promise that resolves to an object containing the details of the compressed block.
      */
     public async getBlockCompressed(
@@ -90,10 +89,9 @@ class BlocksModule {
     }
 
     /**
-     * Retrieves details of a expanded specific block identified by its revision (block number or ID).
+     * Retrieves details of an expanded specific block identified by its revision (block number or ID).
      *
      * @param revision - The block number or ID to query details for.
-     * @param options - (Optional) Other optional parameters for the request.
      * @returns A promise that resolves to an object containing the details of the expanded block.
      */
     public async getBlockExpanded(
