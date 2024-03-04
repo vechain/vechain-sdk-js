@@ -1,10 +1,12 @@
 import { type ThorClient } from '@vechain/vechain-sdk-network';
 import { buildProviderError, JSONRPC } from '@vechain/vechain-sdk-errors';
+import { CHAIN_ID, GENESIS_BLOCK_ID } from '../../../../const';
 
 /**
  * RPC Method eth_chainId implementation
  *
  * @link [eth_chainId](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_chainid)
+ * @link [Chain IDs](https://chainlist.org/?search=vechain&testnets=true)
  *
  * @param thorClient - ThorClient instance.
  *
@@ -20,7 +22,12 @@ const ethChainId = async (thorClient: ThorClient): Promise<string> => {
             );
         }
 
-        return `0x${genesisBlock.id.substring(genesisBlock.id.length - 2)}`;
+        // We are on Mainnet
+        if (genesisBlock.id === GENESIS_BLOCK_ID.MAINNET)
+            return CHAIN_ID.MAINNET;
+
+        // Testnet OR Solo
+        return CHAIN_ID.TESTNET;
     } catch (e) {
         throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,
