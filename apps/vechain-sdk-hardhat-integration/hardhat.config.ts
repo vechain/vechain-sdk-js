@@ -19,7 +19,32 @@ task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
  * - delegator: the delegator to use
  */
 const config: HardhatUserConfig = {
-    solidity: '0.8.17',
+    solidity: {
+        compilers: [
+            {
+                version: '0.8.17', // Specify the first Solidity version
+                settings: {
+                    // Additional compiler settings for this version
+                    optimizer: {
+                        enabled: true,
+                        runs: 200
+                    },
+                    evmVersion: 'london' // EVM version (e.g., "byzantium", "constantinople", "petersburg", "istanbul", "berlin", "london")
+                }
+            },
+            {
+                version: '0.8.20', // Specify the first Solidity version
+                settings: {
+                    // Additional compiler settings for this version
+                    optimizer: {
+                        enabled: true,
+                        runs: 200
+                    },
+                    evmVersion: 'paris'
+                }
+            }
+        ]
+    },
     networks: {
         /**
          * Mainnet configuration
@@ -53,7 +78,7 @@ const config: HardhatUserConfig = {
                 initialIndex: 0,
                 passphrase: 'vechainthor'
             },
-            debugMode: false,
+            debugMode: true,
             delegator: undefined,
             gas: 'auto',
             gasPrice: 'auto',
