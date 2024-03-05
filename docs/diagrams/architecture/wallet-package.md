@@ -6,7 +6,7 @@ The **Wallet** interface encompasses fundamental wallet functionalities. Both th
 
 ```mermaid
 C4Context
-    "Vechain SDK architecture overview: wallet package"
+    title "Vechain SDK architecture overview: wallet package"
 
     Boundary(b0, "wallet", "package") {
         Boundary(b1, "Wallets") {

@@ -4,7 +4,7 @@ It represents the architecture of the `provider package` with its most important
 
 ```mermaid
 C4Context
-    "Vechain SDK architecture overview: provider package"
+    title "Vechain SDK architecture overview: provider package"
 
     Boundary(b0, "provider", "package") {
         Boundary(b1, "EIP-1193") {
