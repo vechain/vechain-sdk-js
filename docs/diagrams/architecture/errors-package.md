@@ -4,7 +4,7 @@ It represents the architecture of the `errors package` with its most important c
 
 ```mermaid
 C4Context
-    "Vechain SDK architecture overview: errors package"
+    title "Vechain SDK architecture overview: errors package"
 
     Boundary(b0, "errors", "package") {
         Boundary(b1, "Model") {

@@ -4,7 +4,7 @@ It represents the architecture of the `rpx-proxy package` with its most importan
 
 ```mermaid
 C4Context
-    "Vechain SDK architecture overview: rpx-proxy package"
+    title "Vechain SDK architecture overview: rpx-proxy package"
 
     Boundary(b0, "rpx-proxy", "package") {
         System(rpx-proxy, "PRC Proxy", "Proxy Thor's RESTful API to Eth JSON-RPC")

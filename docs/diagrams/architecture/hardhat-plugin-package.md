@@ -4,7 +4,7 @@ It represents the architecture of the `hardhat-plugin package` with its most imp
 
 ```mermaid
 C4Context
-    "Vechain SDK architecture overview: hardhat-plugin package"
+    title "Vechain SDK architecture overview: hardhat-plugin package"
 
     Boundary(b0, "hardhat-plugin", "package") {
         Boundary(b1, "Helpers") {
