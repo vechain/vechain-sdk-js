@@ -22,7 +22,7 @@ const engineExchangeTransitionConfigurationV1 = async (
     throw buildError(
         'engine_exchangeTransitionConfigurationV1',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "engine_exchangeTransitionConfigurationV1" not not implemented yet',
+        'Method "engine_exchangeTransitionConfigurationV1" has not been implemented yet.',
         {
             params,
             thorClient

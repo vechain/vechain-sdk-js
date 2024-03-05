@@ -22,7 +22,7 @@ const ethGetUncleByBlockHashAndIndex = async (
     throw buildError(
         'eth_getUncleByBlockHashAndIndex',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_getUncleByBlockHashAndIndex" not not implemented yet',
+        'Method "eth_getUncleByBlockHashAndIndex" has not been implemented yet.',
         {
             params,
             thorClient

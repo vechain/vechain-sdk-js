@@ -23,6 +23,7 @@
         "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose down && echo 'Thor solo node stopped ...'",
         "postinstall": "husky install",
         "build": "turbo build",
+        "prepare-packages": "ts-node scripts/prepare-packages.ts",
         "generate:apidocs": "typedoc --options typedoc.json --logLevel Error",
         "generate:apidocs-debug": "typedoc --options typedoc.json --logLevel Verbose --plugin typedoc-plugin-missing-exports --validation.notDocumented",
         "lint": "turbo lint",

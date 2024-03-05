@@ -22,7 +22,7 @@ const engineForkchoiceUpdatedV2 = async (
     throw buildError(
         'engine_forkchoiceUpdatedV2',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "engine_forkchoiceUpdatedV2" not not implemented yet',
+        'Method "engine_forkchoiceUpdatedV2" has not been implemented yet.',
         {
             params,
             thorClient

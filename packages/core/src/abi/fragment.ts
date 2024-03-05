@@ -71,7 +71,7 @@ class Function<ABIType> {
             throw buildError(
                 'Function constructor',
                 ABI.INVALID_FUNCTION,
-                'Initialization failed: Cannot create Function fragment. Function format is invalid',
+                'Initialization failed: Cannot create Function fragment. Function format is invalid.',
                 { source },
                 e
             );
@@ -161,7 +161,7 @@ class Function<ABIType> {
             throw buildError(
                 'encodeInput',
                 ABI.INVALID_DATA_TO_ENCODE,
-                'Encoding failed: Data format is invalid. Function data  match the expected format for ABI type encoding.',
+                'Encoding failed: Data format is invalid. Function data does not match the expected format for ABI type encoding.',
                 { dataToEncode },
                 e
             );
@@ -199,7 +199,7 @@ class Event<ABIType> {
             throw buildError(
                 'Event constructor',
                 ABI.INVALID_EVENT,
-                'Initialization failed: Event fragment creation not possible due to invalid ABI data format.',
+                'Initialization failed: Event fragment creation is not possible due to invalid ABI data format.',
                 { source },
                 e
             );

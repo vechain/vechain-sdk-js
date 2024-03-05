@@ -22,7 +22,7 @@ const ethSubmitWork = async (
     throw buildError(
         'eth_submitWork',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_submitWork" not not implemented yet',
+        'Method "eth_submitWork" has not been implemented yet.',
         {
             params,
             thorClient

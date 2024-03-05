@@ -22,7 +22,7 @@ const ethGetUncleCountByBlockNumber = async (
     throw buildError(
         'eth_getUncleCountByBlockNumber',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_getUncleCountByBlockNumber" not not implemented yet',
+        'Method "eth_getUncleCountByBlockNumber" has not been implemented yet.',
         {
             params,
             thorClient

@@ -22,7 +22,7 @@ const engineNewPayloadV2 = async (
     throw buildError(
         'engine_newPayloadV2',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "engine_newPayloadV2" not not implemented yet',
+        'Method "engine_newPayloadV2" has not been implemented yet.',
         {
             params,
             thorClient
