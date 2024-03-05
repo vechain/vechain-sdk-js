@@ -32,7 +32,7 @@ const createWalletFromHardhatNetworkConfig = (
             throw buildError(
                 'createWalletFromHardhatNetworkConfig',
                 JSONRPC.INTERNAL_ERROR,
-                'Remote accounts are not supported in hardhat network configuration'
+                'Remote accounts are not supported in hardhat network configuration.'
             );
 
         // Base Wallet - From an array of private keys

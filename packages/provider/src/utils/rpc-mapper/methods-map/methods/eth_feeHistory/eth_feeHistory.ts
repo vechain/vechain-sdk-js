@@ -22,7 +22,7 @@ const ethFeeHistory = async (
     throw buildError(
         'eth_feeHistory',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_feeHistory" not not implemented yet',
+        'Method "eth_feeHistory" has not been implemented yet.',
         {
             params,
             thorClient

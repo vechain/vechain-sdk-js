@@ -22,7 +22,7 @@ const ethNewBlockFilter = async (
     throw buildError(
         'eth_newBlockFilter',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_newBlockFilter" not not implemented yet',
+        'Method "eth_newBlockFilter" has not been implemented yet.',
         {
             params,
             thorClient

@@ -100,7 +100,7 @@ describe('Test HttpClient class on Testnet', () => {
                 throw buildError(
                     'validateResponseHeader',
                     HTTP_CLIENT.INVALID_HTTP_REQUEST,
-                    `Forcing error on header validation`
+                    `Forcing error on header validation.`
                 );
             }
         };

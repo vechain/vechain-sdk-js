@@ -49,7 +49,7 @@ const _getDelegationSignature = async (
         throw buildError(
             '_getDelegationSignature',
             TRANSACTION.INVALID_DELEGATION,
-            "Delegation failed: Can't get signature from delegator.",
+            'Delegation failed: Cannot get signature from delegator.',
             { delegatorUrl },
             error
         );

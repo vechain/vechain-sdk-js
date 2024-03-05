@@ -33,7 +33,7 @@ const getTransactionIndexIntoBlock = (
         throw buildError(
             'getTransactionIndexIntoBlock',
             DATA.INVALID_DATA_TYPE,
-            'Transaction not found in block'
+            'Transaction not found in block.'
         );
 
     return idx;
