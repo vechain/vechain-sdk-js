@@ -1,5 +1,6 @@
 import { type DataType, type ErrorCode, type ErrorType } from '../../types';
-import { buildError } from '../error-builder/error-builder';
+import { buildError } from '../error-builder';
+import { stringifyData } from '../error-message-builder';
 
 /**
  * Assert that the condition is true, otherwise throw an error.
@@ -44,7 +45,9 @@ function assertInnerError(error: unknown): Error {
         return error;
     }
 
-    throw new Error('Inner error is not an instance of Error');
+    return new Error(
+        `Inner error is not an instance of Error. Object:\n\t${stringifyData(error)}`
+    );
 }
 
 export { assert, assertInnerError };

@@ -58,4 +58,4 @@ function buildErrorMessage<
     );
 }
 
-export { buildErrorMessage };
+export { stringifyData, buildErrorMessage };

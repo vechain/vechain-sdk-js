@@ -78,7 +78,8 @@ describe('Error handler test', () => {
      * Verify that the object is not a valid instance of error
      */
     test('Assert invalid error', () => {
-        expect(() => assertInnerError({})).toThrowError();
+        const innerError = assertInnerError({});
+        expect(innerError).toBeInstanceOf(Error);
     });
 
     /**
