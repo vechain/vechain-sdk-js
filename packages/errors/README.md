@@ -4,7 +4,7 @@ Welcome to the **errors package** of the vechain SDK!
 
 ## Introduction
 
-The vechain SDK Error package is specifically designed to handle custom errors seamlessly integrated into the Core and Network packages. It serves as a dedicated solution for managing and communicating errors within these essential components, ensuring a streamlined and robust development experience. By leveraging vechain SDK Error, developers can enhance error handling and reporting, contributing to the overall reliability and resilience of the Core and Network functionalities within the vechain SDK ecosystem.
+The vechain SDK Error package is specifically designed to handle custom errors seamlessly integrated into the Core and Network packages. It serves as a dedicated solution for managing and communicating errors within these essential components, ensuring a streamlined and robust development experience. By leveraging vechain SDK Error, developers can enhance error handling and reporting, contributing to the overall reliability and resilience of the Core and Network functionalities within the vechain SDK ecosystem. (test)
 
 ## Commands
 
