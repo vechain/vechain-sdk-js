@@ -20,8 +20,9 @@ const engineExchangeCapabilities = async (
 
     // Not implemented yet
     throw buildError(
+        'engine_exchangeCapabilities',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "engine_exchangeCapabilities" not not implemented yet',
+        'Method "engine_exchangeCapabilities" has not been implemented yet.',
         {
             params,
             thorClient

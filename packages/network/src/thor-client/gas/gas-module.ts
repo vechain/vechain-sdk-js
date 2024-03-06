@@ -1,4 +1,4 @@
-import { DATA, assert } from '@vechain/vechain-sdk-errors';
+import { assert, DATA } from '@vechain/vechain-sdk-errors';
 import type { SimulateTransactionClause } from '../transactions';
 import { type EstimateGasOptions, type EstimateGasResult } from './types';
 import { TransactionUtils } from '@vechain/vechain-sdk-core';
@@ -38,6 +38,7 @@ class GasModule {
     ): Promise<EstimateGasResult> {
         // Clauses must be an array of clauses with at least one clause
         assert(
+            'estimateGas',
             clauses.length > 0,
             DATA.INVALID_DATA_TYPE,
             'Invalid clauses. Clauses must be an array of clauses with at least one clause.'
@@ -45,6 +46,7 @@ class GasModule {
 
         // gasPadding must be a number between (0, 1]
         assert(
+            'estimateGas',
             options?.gasPadding === undefined ||
                 (options.gasPadding > 0 && options.gasPadding <= 1),
             DATA.INVALID_DATA_TYPE,

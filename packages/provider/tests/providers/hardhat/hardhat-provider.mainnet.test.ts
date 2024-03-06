@@ -23,7 +23,7 @@ describe('Hardhat provider tests', () => {
     });
 
     /**
-     * Destory thor client and provider after each test
+     * Destroy thor client and provider after each test
      */
     afterEach(() => {
         provider.destroy();

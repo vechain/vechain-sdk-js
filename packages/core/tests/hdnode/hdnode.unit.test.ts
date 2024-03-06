@@ -19,7 +19,7 @@ import {
 
 /**
  * Mnemonic tests
- * @group unit/nhdnode
+ * @group unit/hdnode
  */
 describe('Hdnode', () => {
     /**

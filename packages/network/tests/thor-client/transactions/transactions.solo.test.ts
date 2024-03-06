@@ -74,49 +74,54 @@ describe('ThorClient - Transactions Module', () => {
          * waitForTransaction test cases with different options
          */
         waitForTransactionTestCases.forEach(({ description, options }) => {
-            test(description, async () => {
-                // Estimate the gas required for the transfer transaction
-                const gasResult = await thorSoloClient.gas.estimateGas(
-                    [transfer1VTHOClause],
-                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-                );
-
-                // Create the signed transfer transaction
-                const tx = TransactionHandler.sign(
-                    {
-                        ...transferTransactionBody,
-                        gas: gasResult.totalGas,
-                        nonce: options.nonce
-                    },
-                    Buffer.from(
-                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
-                        'hex'
-                    )
-                );
-
-                // Send the transaction and obtain the transaction ID
-                const sendTransactionResult =
-                    await thorSoloClient.transactions.sendTransaction(tx);
-
-                expect(sendTransactionResult).toBeDefined();
-                expect(sendTransactionResult.id).toBeDefined();
-
-                // Wait for the transaction to be included in a block
-                const txReceipt =
-                    await thorSoloClient.transactions.waitForTransaction(
-                        sendTransactionResult.id,
-                        options
+            test(
+                description,
+                async () => {
+                    // Estimate the gas required for the transfer transaction
+                    const gasResult = await thorSoloClient.gas.estimateGas(
+                        [transfer1VTHOClause],
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
                     );
 
-                expect(txReceipt).toBeDefined();
-                expect(txReceipt?.reverted).toBe(expectedReceipt.reverted);
-                expect(txReceipt?.outputs).toStrictEqual(
-                    expectedReceipt.outputs
-                );
-                expect(txReceipt?.gasUsed).toBe(expectedReceipt.gasUsed);
-                expect(txReceipt?.gasPayer).toBe(expectedReceipt.gasPayer);
-                expect(sendTransactionResult.id).toBe(txReceipt?.meta.txID);
-            });
+                    // Create the signed transfer transaction
+                    const tx = TransactionHandler.sign(
+                        {
+                            ...transferTransactionBody,
+                            gas: gasResult.totalGas,
+                            nonce: options.nonce
+                        },
+                        Buffer.from(
+                            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
+                                .privateKey,
+                            'hex'
+                        )
+                    );
+
+                    // Send the transaction and obtain the transaction ID
+                    const sendTransactionResult =
+                        await thorSoloClient.transactions.sendTransaction(tx);
+
+                    expect(sendTransactionResult).toBeDefined();
+                    expect(sendTransactionResult.id).toBeDefined();
+
+                    // Wait for the transaction to be included in a block
+                    const txReceipt =
+                        await thorSoloClient.transactions.waitForTransaction(
+                            sendTransactionResult.id,
+                            options
+                        );
+
+                    expect(txReceipt).toBeDefined();
+                    expect(txReceipt?.reverted).toBe(expectedReceipt.reverted);
+                    expect(txReceipt?.outputs).toStrictEqual(
+                        expectedReceipt.outputs
+                    );
+                    expect(txReceipt?.gasUsed).toBe(expectedReceipt.gasUsed);
+                    expect(txReceipt?.gasPayer).toBe(expectedReceipt.gasPayer);
+                    expect(sendTransactionResult.id).toBe(txReceipt?.meta.txID);
+                },
+                10000
+            );
         });
 
         /**

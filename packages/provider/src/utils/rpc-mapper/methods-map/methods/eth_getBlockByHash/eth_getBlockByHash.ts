@@ -28,6 +28,7 @@ const ethGetBlockByHash = async (
     params: unknown[]
 ): Promise<BlocksRPC | null> => {
     assert(
+        'eth_getBlockByHash',
         params.length === 2 &&
             typeof params[0] === 'string' &&
             dataUtils.isThorId(params[0], true) &&

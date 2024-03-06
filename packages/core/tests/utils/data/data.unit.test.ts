@@ -230,7 +230,7 @@ describe('utils/hex', () => {
         });
 
         // Test with target length less than input length
-        test("Shoild throw an error if the target length is less than the input's length", () => {
+        test("Should throw an error if the target length is less than the input's length", () => {
             expect(() => dataUtils.padHexString('1a', 1)).toThrowError(
                 InvalidDataTypeError
             );

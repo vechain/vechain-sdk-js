@@ -20,8 +20,9 @@ const ethGetProof = async (
 
     // Not implemented yet
     throw buildError(
+        'eth_getProof',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_getProof" not not implemented yet',
+        'Method "eth_getProof" has not been implemented yet.',
         {
             params,
             thorClient

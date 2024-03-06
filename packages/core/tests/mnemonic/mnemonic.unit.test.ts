@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { Hex, mnemonic } from '../../src';
+import { mnemonic } from '../../src';
 import {
     customRandomGeneratorWithXor,
     derivationPaths,
@@ -38,7 +38,7 @@ describe('Mnemonic', () => {
     });
 
     /**
-     * Test generation with custom lenghts and random generators
+     * Test generation with custom lengths and random generators
      */
     test('Custom generation parameters', () => {
         // Custom lengths
@@ -94,13 +94,13 @@ describe('Mnemonic', () => {
                 if (derivationPath.derivationPath !== undefined) {
                     // Private key derivation
                     expect(
-                        Hex.of(
-                            mnemonic.derivePrivateKey(
+                        mnemonic
+                            .derivePrivateKey(
                                 words,
                                 derivationPath.derivationPath
                             )
-                        )
-                    ).toEqual(derivationPath.resultingPriovateKey);
+                            .toString('hex')
+                    ).toEqual(derivationPath.resultingPrivateKey);
 
                     // Address derivation
                     expect(
@@ -113,9 +113,9 @@ describe('Mnemonic', () => {
                 // Derivation path is not defined
                 else {
                     // Private key derivation
-                    expect(Hex.of(mnemonic.derivePrivateKey(words))).toEqual(
-                        derivationPath.resultingPriovateKey
-                    );
+                    expect(
+                        mnemonic.derivePrivateKey(words).toString('hex')
+                    ).toEqual(derivationPath.resultingPrivateKey);
 
                     // Address derivation
                     expect(mnemonic.deriveAddress(words)).toEqual(

@@ -59,9 +59,15 @@ enum ErrorMessage {
  * @throws {ErrorMessage} - If n is negative.
  */
 function ofBigInt(bi: bigint, bytes: number): string {
-    assert(bi >= 0, DATA.INVALID_DATA_TYPE, ErrorMessage.NOT_POSITIVE, {
-        n: bi
-    });
+    assert(
+        'Hex.ofBigInt',
+        bi >= 0,
+        DATA.INVALID_DATA_TYPE,
+        ErrorMessage.NOT_POSITIVE,
+        {
+            bi: bi.toString()
+        }
+    );
     return pad(bi.toString(RADIX), bytes);
 }
 
@@ -86,6 +92,7 @@ function ofBuffer(buffer: Uint8Array, bytes: number = 0): string {
  */
 function ofNumber(n: number, bytes: number): string {
     assert(
+        'Hex.ofNumber',
         Number.isInteger(n),
         DATA.INVALID_DATA_TYPE,
         ErrorMessage.NOT_INTEGER,
@@ -93,9 +100,15 @@ function ofNumber(n: number, bytes: number): string {
             n
         }
     );
-    assert(n >= 0, DATA.INVALID_DATA_TYPE, ErrorMessage.NOT_POSITIVE, {
-        n
-    });
+    assert(
+        'Hex.ofNumber',
+        n >= 0,
+        DATA.INVALID_DATA_TYPE,
+        ErrorMessage.NOT_POSITIVE,
+        {
+            n
+        }
+    );
     return pad(n.toString(RADIX), bytes);
 }
 

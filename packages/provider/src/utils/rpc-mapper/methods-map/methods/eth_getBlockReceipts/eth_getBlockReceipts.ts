@@ -20,8 +20,9 @@ const ethGetBlockReceipts = async (
 
     // Not implemented yet
     throw buildError(
+        'eth_getBlockReceipts',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_getBlockReceipts" not not implemented yet',
+        'Method "eth_getBlockReceipts" has not been implemented yet.',
         {
             params,
             thorClient

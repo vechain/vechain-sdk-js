@@ -9,7 +9,7 @@ interface PollErrorData {
 }
 
 /**
- * Client error to be thrown when an http request fails.
+ * Client error to be thrown when a http request fails.
  */
 class PollExecutionError extends ErrorBase<
     POLL_ERROR.POLL_EXECUTION_ERROR,

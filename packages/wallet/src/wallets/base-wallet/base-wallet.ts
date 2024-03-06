@@ -26,6 +26,7 @@ class BaseWallet implements Wallet {
      * Create a new wallet.
      *
      * @param accounts List of accounts in the wallet.
+     * @param options Optional options for signing a transaction with delegator.
      */
     constructor(
         accounts: WalletAccount[],
@@ -57,6 +58,7 @@ class BaseWallet implements Wallet {
     async getAccount(address: string): Promise<WalletAccount | null> {
         // Check if the address is valid
         assert(
+            'getAccount',
             addressUtils.isAddress(address),
             DATA.INVALID_DATA_TYPE,
             'Invalid params expected an address.',

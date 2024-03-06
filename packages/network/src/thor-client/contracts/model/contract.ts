@@ -173,8 +173,9 @@ class Contract {
                 ): Promise<SendTransactionResult> => {
                     if (this.callerPrivateKey === undefined) {
                         throw buildError(
+                            'Contract.getTransactProxy',
                             ERROR_CODES.TRANSACTION.MISSING_PRIVATE_KEY,
-                            'Caller private key is required to transact with the contract',
+                            'Caller private key is required to transact with the contract.',
                             { prop }
                         );
                     }
@@ -205,8 +206,9 @@ class Contract {
 
         if (functionFragment == null) {
             throw buildError(
+                'Contract.getFunctionFragment',
                 ERROR_CODES.ABI.INVALID_FUNCTION,
-                `Function '${prop.toString()}' not found in contract ABI`,
+                `Function '${prop.toString()}' not found in contract ABI.`,
                 { prop }
             );
         }

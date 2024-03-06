@@ -1,7 +1,7 @@
 import {
     type SimulateTransactionClause,
-    type ThorClient,
-    type SimulateTransactionOptions
+    type SimulateTransactionOptions,
+    type ThorClient
 } from '@vechain/vechain-sdk-network';
 import {
     assert,
@@ -9,7 +9,7 @@ import {
     DATA,
     JSONRPC
 } from '@vechain/vechain-sdk-errors';
-import { getCorrectBlockNumberRPCToVechain } from '../../../../const/blocks';
+import { getCorrectBlockNumberRPCToVechain } from '../../../../const';
 import { type TransactionObjectInput } from './types';
 
 /**
@@ -28,6 +28,7 @@ const ethCall = async (
 ): Promise<string> => {
     // Check input params
     assert(
+        'eth_call',
         params.length === 2 &&
             typeof params[0] === 'object' &&
             typeof params[1] === 'string',

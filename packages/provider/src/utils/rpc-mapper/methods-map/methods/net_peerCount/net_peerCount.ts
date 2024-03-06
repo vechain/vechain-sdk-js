@@ -20,8 +20,9 @@ const netPeerCount = async (
 
     // Not implemented yet
     throw buildError(
+        'net_peerCount',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "net_peerCount" not not implemented yet',
+        'Method "net_peerCount" has not been implemented yet.',
         {
             params,
             thorClient

@@ -20,8 +20,9 @@ const parityNextNonce = async (
 
     // Not implemented yet
     throw buildError(
+        'parity_nextNonce',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "parity_nextNonce" not not implemented yet',
+        'Method "parity_nextNonce" has not been implemented yet.',
         {
             params,
             thorClient

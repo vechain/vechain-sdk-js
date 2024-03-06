@@ -20,8 +20,9 @@ const ethGetFilterLogs = async (
 
     // Not implemented yet
     throw buildError(
+        'eth_getFilterLogs',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_getFilterLogs" not not implemented yet',
+        'Method "eth_getFilterLogs" has not been implemented yet.',
         {
             params,
             thorClient

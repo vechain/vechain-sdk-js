@@ -19,6 +19,7 @@ import { addressUtils, Hex } from '@vechain/vechain-sdk-core';
 const ethGetTransactionCount = async (params: unknown[]): Promise<string> => {
     // Input validation - Invalid params
     assert(
+        'eth_getTransactionCount',
         params.length === 2 &&
             typeof params[0] === 'string' &&
             typeof params[1] === 'string',
@@ -28,6 +29,7 @@ const ethGetTransactionCount = async (params: unknown[]): Promise<string> => {
 
     // Input validation - Invalid address
     assert(
+        'eth_getTransactionCount',
         addressUtils.isAddress(params[0] as string),
         DATA.INVALID_DATA_TYPE,
         'Invalid address, expected a 20 bytes address string.'

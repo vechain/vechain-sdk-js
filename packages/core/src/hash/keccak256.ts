@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
-import { type ReturnType, type HashInput } from './types';
-import { assertIsValidReturnType } from './helpers/assertions';
+import { type HashInput, type ReturnType } from './types';
+import { assertIsValidReturnType } from '../assertions';
 
 /* --- Overloaded functions start --- */
 
@@ -51,7 +51,7 @@ function keccak256(
     returnType: ReturnType = 'buffer'
 ): Buffer | string {
     // Assert that the returnType is valid
-    assertIsValidReturnType(returnType);
+    assertIsValidReturnType('keccak256', returnType);
 
     const hash = ethers.isBytesLike(data)
         ? ethers.keccak256(data)

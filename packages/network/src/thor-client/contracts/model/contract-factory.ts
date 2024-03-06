@@ -115,11 +115,11 @@ class ContractFactory {
     /**
      * Waits for the completion of a contract deployment transaction.
      *
-     * This method checks for the presence of a deploy transaction result and then
+     * This method checks for the presence of a deployed transaction result and then
      * waits for the transaction to be processed. Upon successful processing, it
      * constructs and returns a new `Contract` instance based on the transaction receipt.
      *
-     * @throws An error if the deploy transaction result is not found or if the
+     * @throws An error if the deployed transaction result is not found or if the
      *         contract deployment fails.
      * @returns {Promise<Contract>} A promise that resolves to a `Contract` instance
      *          once the deployment transaction is completed.
@@ -128,6 +128,7 @@ class ContractFactory {
         // Check if the deploy transaction result is available
         if (this.deployTransaction === undefined) {
             throw buildError(
+                'ContractFactory.waitForDeployment',
                 ERROR_CODES.CONTRACT.CONTRACT_DEPLOYMENT_FAILED,
                 'Cannot find a contract deployment transaction.',
                 { deployTransaction: this.deployTransaction }
@@ -142,6 +143,7 @@ class ContractFactory {
 
         // Ensure that the transaction receipt is valid
         assert(
+            'ContractFactory.waitForDeployment',
             transactionReceipt?.outputs[0]?.contractAddress !== null &&
                 transactionReceipt?.outputs[0]?.contractAddress !== undefined,
             ERROR_CODES.CONTRACT.CONTRACT_DEPLOYMENT_FAILED,

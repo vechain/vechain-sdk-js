@@ -7,8 +7,10 @@ import {
 } from '@vechain/vechain-sdk-errors';
 import { blocksFormatter, type BlocksRPC } from '../../../../formatter';
 import { RPCMethodsMap } from '../../../rpc-mapper';
-import { RPC_METHODS } from '../../../../const';
-import { getCorrectBlockNumberRPCToVechain } from '../../../../const/blocks';
+import {
+    RPC_METHODS,
+    getCorrectBlockNumberRPCToVechain
+} from '../../../../const';
 
 /**
  * RPC Method eth_getBlockByNumber implementation
@@ -33,6 +35,7 @@ const ethGetBlockByNumber = async (
     params: unknown[]
 ): Promise<BlocksRPC | null> => {
     assert(
+        'eth_getBlockByNumber',
         params.length === 2 &&
             typeof params[0] === 'string' &&
             typeof params[1] === 'boolean',

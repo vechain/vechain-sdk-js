@@ -20,8 +20,9 @@ const ethGetWork = async (
 
     // Not implemented yet
     throw buildError(
+        'eth_getWork',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_getWork" not not implemented yet',
+        'Method "eth_getWork" has not been implemented yet.',
         {
             params,
             thorClient

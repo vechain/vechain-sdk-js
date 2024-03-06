@@ -1,7 +1,7 @@
 import {
+    DelegationHandler,
     type SignTransactionOptions,
-    type ThorClient,
-    DelegationHandler
+    type ThorClient
 } from '@vechain/vechain-sdk-network';
 import {
     assert,
@@ -56,6 +56,7 @@ const ethSendTransaction = async (
 ): Promise<string> => {
     // Input validation
     assert(
+        'eth_sendTransaction',
         params.length === 1 && typeof params[0] === 'object',
         DATA.INVALID_DATA_TYPE,
         `Invalid params, expected one transaction object containing following properties: \n {` +
@@ -72,6 +73,7 @@ const ethSendTransaction = async (
 
     // Provider must be defined
     assert(
+        'eth_sendTransaction',
         provider?.wallet !== undefined,
         JSONRPC.INVALID_PARAMS,
         'Provider must be defined with a wallet. Ensure that the provider is defined and connected to the network.'
@@ -79,6 +81,7 @@ const ethSendTransaction = async (
 
     // From field is required
     assert(
+        'eth_sendTransaction',
         (params[0] as TransactionObjectInput).from !== undefined,
         JSONRPC.INVALID_PARAMS,
         'From field is required in the transaction object.'

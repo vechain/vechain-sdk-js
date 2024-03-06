@@ -1,7 +1,6 @@
 import blake from 'blakejs';
 import { type HashInput, type ReturnType } from './types';
-import { assertIsValidReturnType } from './helpers/assertions';
-import { Hex } from '../utils';
+import { assertIsValidReturnType } from '../assertions';
 
 /**
  * Internal function to compute the blake2b256 256-bit hash of the given data.
@@ -73,14 +72,14 @@ function blake2b256(
     returnType: ReturnType = 'buffer'
 ): Buffer | string {
     // Assert that the returnType is valid
-    assertIsValidReturnType(returnType);
+    assertIsValidReturnType('blake2b256', returnType);
 
     // Converts the data to an array of Buffer or string
     const dataBytesLike = [data] as Array<Buffer | string>;
 
     const hash = _blake2b256(...dataBytesLike);
 
-    return returnType === 'buffer' ? hash : Hex.of0x(hash);
+    return returnType === 'buffer' ? hash : `0x${hash.toString('hex')}`;
 }
 
 export { blake2b256 };

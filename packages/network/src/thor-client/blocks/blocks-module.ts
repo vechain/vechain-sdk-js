@@ -1,14 +1,13 @@
-import { DATA, assert } from '@vechain/vechain-sdk-errors';
-import { Poll, buildQuery, thorest } from '../../utils';
+import { assert, DATA } from '@vechain/vechain-sdk-errors';
+import { buildQuery, type EventPoll, Poll, thorest } from '../../utils';
 import {
-    type WaitForBlockOptions,
     type BlocksModuleOptions,
     type CompressedBlockDetail,
-    type ExpandedBlockDetail
+    type ExpandedBlockDetail,
+    type WaitForBlockOptions
 } from './types';
 import { assertIsRevisionForBlock } from '@vechain/vechain-sdk-core';
 import { type ThorClient } from '../thor-client';
-import { type EventPoll } from '../../utils/poll/event';
 
 /** The `BlocksModule` class encapsulates functionality for interacting with blocks
  * on the VechainThor blockchain.
@@ -75,13 +74,12 @@ class BlocksModule {
      * Retrieves details of a compressed specific block identified by its revision (block number or ID).
      *
      * @param revision - The block number or ID to query details for.
-     * @param options - (Optional) Other optional parameters for the request.
      * @returns A promise that resolves to an object containing the details of the compressed block.
      */
     public async getBlockCompressed(
         revision: string | number
     ): Promise<CompressedBlockDetail | null> {
-        assertIsRevisionForBlock(revision);
+        assertIsRevisionForBlock('getBlockCompressed', revision);
 
         return (await this.thor.httpClient.http(
             'GET',
@@ -90,16 +88,15 @@ class BlocksModule {
     }
 
     /**
-     * Retrieves details of a expanded specific block identified by its revision (block number or ID).
+     * Retrieves details of an expanded specific block identified by its revision (block number or ID).
      *
      * @param revision - The block number or ID to query details for.
-     * @param options - (Optional) Other optional parameters for the request.
      * @returns A promise that resolves to an object containing the details of the expanded block.
      */
     public async getBlockExpanded(
         revision: string | number
     ): Promise<ExpandedBlockDetail | null> {
-        assertIsRevisionForBlock(revision);
+        assertIsRevisionForBlock('getBlockExpanded', revision);
 
         return (await this.thor.httpClient.http(
             'GET',
@@ -173,6 +170,7 @@ class BlocksModule {
         options?: WaitForBlockOptions
     ): Promise<CompressedBlockDetail | null> {
         assert(
+            'waitForBlock',
             blockNumber === undefined ||
                 blockNumber === null ||
                 blockNumber >= 0,

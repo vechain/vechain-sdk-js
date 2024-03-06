@@ -6,4 +6,3 @@ export * from './hex';
 export * from './transaction';
 export * from './units';
 export * from './revision';
-export * from './assertions';

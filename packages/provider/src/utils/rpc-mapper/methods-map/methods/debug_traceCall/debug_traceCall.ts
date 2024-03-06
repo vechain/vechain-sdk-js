@@ -13,7 +13,7 @@ import {
     type TraceReturnType,
     type TracerName
 } from '@vechain/vechain-sdk-network/src/thor-client/debug';
-import { type TransactionObjectInput, type TraceCallRPC } from './types';
+import { type TraceCallRPC, type TransactionObjectInput } from './types';
 
 /**
  * RPC Method debug_traceCall implementation
@@ -43,6 +43,7 @@ const debugTraceCall = async (
     params: unknown[]
 ): Promise<TracerReturnTypeRPC<'call'> | TracerReturnTypeRPC<'prestate'>> => {
     assert(
+        'debug_traceCall',
         params.length === 3 &&
             typeof params[0] === 'object' &&
             typeof params[1] === 'string' &&

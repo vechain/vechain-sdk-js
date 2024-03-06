@@ -1,31 +1,27 @@
 {
-    "name": "@vechain/vechain-sdk-hardhat-plugin",
-    "version": "1.0.0",
-    "description": "This module allows to create smart contracts and interact with them using the vechain SDK and Hardhat",
-    "author": "vechain Foundation",
-    "license": "MIT",
-    "keywords": [
-        "vechain",
-        "hardhat",
-        "plugin",
-        "contract"
-    ],
-    "private": false,
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
-    "scripts": {
-        "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
-
-        "lint": "eslint --ext .ts src --ext .ts tests",
-        "format": "prettier --write src/**/*.ts tests/**/*.ts",
-
-        "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
-
-        "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
-
-        "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
-    },
-    "dependencies": {
-        "@vechain/vechain-sdk-provider": "*"
-    }
+  "name": "@vechain/vechain-sdk-hardhat-plugin",
+  "version": "0.0.12",
+  "description": "This module allows to create smart contracts and interact with them using the vechain SDK and Hardhat",
+  "author": "vechain Foundation",
+  "license": "MIT",
+  "keywords": [
+    "vechain",
+    "hardhat",
+    "plugin",
+    "contract"
+  ],
+  "private": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
+    "lint": "eslint --ext .ts src --ext .ts tests",
+    "format": "prettier --write src/**/*.ts tests/**/*.ts",
+    "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
+    "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
+    "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
+  },
+  "dependencies": {
+    "@vechain/vechain-sdk-provider": "0.0.12"
+  }
 }
