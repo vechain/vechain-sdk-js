@@ -80,7 +80,6 @@ function blake2b256(
 
     const hash = _blake2b256(...dataBytesLike);
 
-    // return returnType === 'buffer' ? hash : `0x${hash.toString('hex')}`;
     return returnType === 'buffer' ? hash : Hex.of0x(hash);
 }
 
