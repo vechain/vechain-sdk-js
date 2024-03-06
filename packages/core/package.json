@@ -1,6 +1,6 @@
 {
   "name": "@vechain/vechain-sdk-core",
-  "version": "0.0.13",
+  "version": "0.0.15",
   "description": "Includes modules for fundamental operations like hashing and cryptography",
   "author": "vechain Foundation",
   "license": "MIT",
@@ -25,7 +25,7 @@
   "dependencies": {
     "@ethereumjs/rlp": "^5.0.2",
     "@types/elliptic": "^6.4.18",
-    "@vechain/vechain-sdk-errors": "0.0.13",
+    "@vechain/vechain-sdk-errors": "0.0.15",
     "blakejs": "^1.2.1",
     "elliptic": "^6.5.5",
     "ethers": "6.11.1"
