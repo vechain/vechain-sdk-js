@@ -69,10 +69,10 @@
         "typedoc": "^0.25.8",
         "typedoc-plugin-missing-exports": "^2.2.0",
         "typescript": "*",
-        "hardhat": "^2.20.1",
+        "hardhat": "^2.21.0",
         "ws": "^8.16.0"
     },
     "peerDependencies": {
-        "hardhat": "^2.20.1"
+        "hardhat": "^2.21.0"
     }
 }
