@@ -193,4 +193,4 @@ const Hex = {
     }
 };
 
-export { Hex };
+export { Hex, ofBuffer };

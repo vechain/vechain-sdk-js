@@ -1,5 +1,35 @@
 import { describe, expect, test } from '@jest/globals';
-import { Hex } from '../../../src';
+import { Hex, ofBuffer } from '../../../src';
+
+/**
+ * @group unit/utils/hex
+ */
+describe('ofBuffer', () => {
+    test('ofBuffer for buffer with bytes', () => {
+        const buffer: Buffer = Buffer.alloc(1);
+        buffer[0] = 10;
+        const output: string = ofBuffer(buffer, 4);
+        expect(output).toBe('0000000a');
+    });
+    test('ofBuffer for buffer without bytes', () => {
+        const buffer: Buffer = Buffer.alloc(1);
+        buffer[0] = 10;
+        const output: string = ofBuffer(buffer);
+        expect(output).toBe('0a');
+    });
+    test('ofBuffer for UInt8Array with bytes', () => {
+        const buffer: Uint8Array = new Uint8Array(1);
+        buffer[0] = 10;
+        const output: string = ofBuffer(buffer, 4);
+        expect(output).toBe('0000000a');
+    });
+    test('ofBuffer for UInt8Array without bytes', () => {
+        const buffer: Uint8Array = new Uint8Array(1);
+        buffer[0] = 10;
+        const output: string = ofBuffer(buffer);
+        expect(output).toBe('0a');
+    });
+});
 
 /**
  * @group unit/utils/hex
