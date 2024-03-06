@@ -66,13 +66,13 @@
         "ts-jest": "^29.1.2",
         "tsup": "^8.0.2",
         "turbo": "^1.12.4",
-        "typedoc": "^0.25.8",
+        "typedoc": "^0.25.11",
         "typedoc-plugin-missing-exports": "^2.2.0",
         "typescript": "*",
-        "hardhat": "^2.20.1",
+        "hardhat": "^2.21.0",
         "ws": "^8.16.0"
     },
     "peerDependencies": {
-        "hardhat": "^2.20.1"
+        "hardhat": "^2.21.0"
     }
 }
