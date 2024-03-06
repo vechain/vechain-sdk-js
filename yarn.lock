@@ -3321,10 +3321,23 @@ electron-to-chromium@^1.4.668:
   resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.685.tgz#3ce988e4dfbb3aa984840394b1d7064c01ad74c1"
   integrity sha512-yDYeobbTEe4TNooEzOQO6xFqg9XnAkVy2Lod1C1B2it8u47JNLYvl9nLDWBamqUakWB8Jc1hhS1uHUNYTNQdfw==
 
-elliptic@6.5.4, elliptic@^6.5.2, elliptic@^6.5.4:
+elliptic@6.5.4:
   version "6.5.4"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.4.tgz#da37cebd31e79a1367e941b592ed1fbebd58abbb"
   integrity sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==
+  dependencies:
+    bn.js "^4.11.9"
+    brorand "^1.1.0"
+    hash.js "^1.0.0"
+    hmac-drbg "^1.0.1"
+    inherits "^2.0.4"
+    minimalistic-assert "^1.0.1"
+    minimalistic-crypto-utils "^1.0.1"
+
+elliptic@^6.5.2, elliptic@^6.5.4, elliptic@^6.5.5:
+  version "6.5.5"
+  resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.5.tgz#c715e09f78b6923977610d4c2346d6ce22e6dded"
+  integrity sha512-7EjbcmUm17NQFu4Pmgmq2olYMj8nwMnpcddByChSUjArp8F5DQWcIcpriwO4ZToLNAJig0yiyjswfyGNje/ixw==
   dependencies:
     bn.js "^4.11.9"
     brorand "^1.1.0"
