@@ -20,8 +20,9 @@ const ethProtocolVersion = async (
 
     // Not implemented yet
     throw buildError(
+        'eth_protocolVersion',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_protocolVersion" not not implemented yet',
+        'Method "eth_protocolVersion" has not been implemented yet.',
         {
             params,
             thorClient

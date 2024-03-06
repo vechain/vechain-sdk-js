@@ -1,6 +1,6 @@
 {
     "name": "vechain-sdk",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "The official JavaScript SDK for vechain",
     "repository": "https://github.com/vechain/vechain-sdk.git",
     "author": "vechain Foundation",
@@ -23,6 +23,7 @@
         "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose down && echo 'Thor solo node stopped ...'",
         "postinstall": "husky install",
         "build": "turbo build",
+        "prepare-packages": "ts-node scripts/prepare-packages.ts",
         "generate:apidocs": "typedoc --options typedoc.json --logLevel Error",
         "generate:apidocs-debug": "typedoc --options typedoc.json --logLevel Verbose --plugin typedoc-plugin-missing-exports --validation.notDocumented",
         "lint": "turbo lint",
@@ -39,7 +40,7 @@
     },
     "devDependencies": {
         "@changesets/cli": "^2.27.1",
-        "@commitlint/cli": "^19.0.1",
+        "@commitlint/cli": "^19.0.3",
         "@commitlint/config-conventional": "^19.0.3",
         "@jest/globals": "^29.7.0",
         "@types/fs-extra": "^11.0.4",
@@ -65,13 +66,13 @@
         "ts-jest": "^29.1.2",
         "tsup": "^8.0.2",
         "turbo": "^1.12.4",
-        "typedoc": "^0.25.8",
+        "typedoc": "^0.25.11",
         "typedoc-plugin-missing-exports": "^2.2.0",
         "typescript": "*",
-        "hardhat": "^2.20.1",
+        "hardhat": "^2.21.0",
         "ws": "^8.16.0"
     },
     "peerDependencies": {
-        "hardhat": "^2.20.1"
+        "hardhat": "^2.21.0"
     }
 }

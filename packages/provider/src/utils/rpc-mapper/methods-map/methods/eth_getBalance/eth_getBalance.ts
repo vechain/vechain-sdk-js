@@ -1,9 +1,9 @@
 import { type ThorClient } from '@vechain/vechain-sdk-network';
 import {
-    DATA,
-    JSONRPC,
     assert,
-    buildProviderError
+    buildProviderError,
+    DATA,
+    JSONRPC
 } from '@vechain/vechain-sdk-errors';
 
 /**
@@ -27,6 +27,7 @@ const ethGetBalance = async (
     params: unknown[]
 ): Promise<string> => {
     assert(
+        'eth_getBalance',
         params.length === 2 &&
             typeof params[0] === 'string' &&
             typeof params[1] === 'string',

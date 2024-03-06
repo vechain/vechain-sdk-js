@@ -20,8 +20,9 @@ const debugGetRawBlock = async (
 
     // Not implemented yet
     throw buildError(
+        'debug_getRawBlock',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "debug_getRawBlock" not not implemented yet',
+        'Method "debug_getRawBlock" has not been implemented yet.',
         {
             params,
             thorClient

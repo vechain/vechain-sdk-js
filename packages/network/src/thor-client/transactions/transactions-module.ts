@@ -1,39 +1,40 @@
 import {
-    Transaction,
+    addressUtils,
     assertIsSignedTransaction,
-    assertValidTransactionID,
-    type TransactionClause,
-    dataUtils,
-    type TransactionBody,
     assertValidTransactionHead,
-    TransactionHandler,
+    assertValidTransactionID,
+    dataUtils,
     revisionUtils,
     secp256k1,
-    addressUtils
+    Transaction,
+    type TransactionBody,
+    type TransactionClause,
+    TransactionHandler
 } from '@vechain/vechain-sdk-core';
-import { Poll, buildQuery, thorest } from '../../utils';
+import { buildQuery, Poll, thorest } from '../../utils';
 import {
-    type TransactionReceipt,
-    type TransactionBodyOptions,
-    type SendTransactionResult,
-    type WaitForTransactionOptions,
     type GetTransactionInputOptions,
-    type TransactionDetail,
     type GetTransactionReceiptInputOptions,
+    type SendTransactionResult,
+    type SignTransactionOptions,
     type SimulateTransactionClause,
     type SimulateTransactionOptions,
+    type TransactionBodyOptions,
+    type TransactionDetail,
+    type TransactionReceipt,
     type TransactionSimulationResult,
-    type SignTransactionOptions
+    type WaitForTransactionOptions
 } from './types';
 import { randomBytes } from 'crypto';
 import {
-    TRANSACTION,
+    assert,
     buildError,
     DATA,
-    assert
+    TRANSACTION
 } from '@vechain/vechain-sdk-errors';
 import { type ThorClient } from '../thor-client';
-import { assertTransactionCanBeSigned, DelegationHandler } from './helpers';
+import { DelegationHandler } from './helpers';
+import { assertTransactionCanBeSigned } from '../../assertions';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -58,10 +59,10 @@ class TransactionsModule {
         options?: GetTransactionInputOptions
     ): Promise<TransactionDetail | null> {
         // Invalid transaction ID
-        assertValidTransactionID(id);
+        assertValidTransactionID('getTransaction', id);
 
         // Invalid head
-        assertValidTransactionHead(options?.head);
+        assertValidTransactionHead('getTransaction', options?.head);
 
         return (await this.thor.httpClient.http(
             'GET',
@@ -89,10 +90,10 @@ class TransactionsModule {
         options?: GetTransactionReceiptInputOptions
     ): Promise<TransactionReceipt | null> {
         // Invalid transaction ID
-        assertValidTransactionID(id);
+        assertValidTransactionID('getTransactionReceipt', id);
 
         // Invalid head
-        assertValidTransactionHead(options?.head);
+        assertValidTransactionHead('getTransactionReceipt', options?.head);
 
         return (await this.thor.httpClient.http(
             'GET',
@@ -114,6 +115,7 @@ class TransactionsModule {
     ): Promise<SendTransactionResult> {
         // Validate raw transaction
         assert(
+            'sendRawTransaction',
             dataUtils.isHexString(raw),
             DATA.INVALID_DATA_TYPE,
             'Sending failed: Input must be a valid raw transaction in hex format.',
@@ -125,9 +127,9 @@ class TransactionsModule {
             TransactionHandler.decode(Buffer.from(raw.slice(2), 'hex'), true);
         } catch (error) {
             throw buildError(
+                'sendRawTransaction',
                 DATA.INVALID_DATA_TYPE,
                 'Sending failed: Input must be a valid raw transaction in hex format. Decoding error encountered.',
-
                 { raw },
                 error
             );
@@ -154,7 +156,8 @@ class TransactionsModule {
     public async sendTransaction(
         signedTx: Transaction
     ): Promise<SendTransactionResult> {
-        assertIsSignedTransaction(signedTx);
+        // Assert transaction is signed or not
+        assertIsSignedTransaction('sendTransaction', signedTx);
 
         const rawTx = `0x${signedTx.encoded.toString('hex')}`;
 
@@ -177,7 +180,7 @@ class TransactionsModule {
         txID: string,
         options?: WaitForTransactionOptions
     ): Promise<TransactionReceipt | null> {
-        assertValidTransactionID(txID);
+        assertValidTransactionID('waitForTransaction', txID);
 
         return await Poll.SyncPoll(
             async () =>
@@ -217,8 +220,9 @@ class TransactionsModule {
 
         if (genesisBlock === null)
             throw buildError(
+                'buildTransactionBody',
                 TRANSACTION.INVALID_TRANSACTION_BODY,
-                "Error while building transaction body: can't get genesis block",
+                'Error while building transaction body: Cannot get genesis block.',
                 { clauses, options }
             );
 
@@ -238,8 +242,9 @@ class TransactionsModule {
 
         if (latestBlockRef === null)
             throw buildError(
+                'buildTransactionBody',
                 TRANSACTION.INVALID_TRANSACTION_BODY,
-                "Error while building transaction body: can't get latest block",
+                'Error while building transaction body: Cannot get latest block.',
                 { clauses, options }
             );
 
@@ -275,6 +280,7 @@ class TransactionsModule {
             provedWork
         } = options ?? {};
         assert(
+            'simulateTransaction',
             revision === undefined ||
                 revision === null ||
                 revisionUtils.isRevisionAccount(revision),
@@ -328,7 +334,11 @@ class TransactionsModule {
         const originPrivateKey = Buffer.from(privateKey, 'hex');
 
         // Check if the transaction can be signed
-        assertTransactionCanBeSigned(originPrivateKey, txBody);
+        assertTransactionCanBeSigned(
+            'signTransaction',
+            originPrivateKey,
+            txBody
+        );
 
         // Check if the transaction is delegated
         return DelegationHandler(delegatorOptions).isDelegated()
@@ -361,6 +371,7 @@ class TransactionsModule {
     ): Promise<Transaction> {
         // Only one of the `SignTransactionOptions` options can be specified
         assert(
+            '_signWithDelegator',
             !(delegatorUrl !== undefined && delegatorPrivateKey !== undefined),
             TRANSACTION.INVALID_DELEGATION,
             'Only one of the following options can be specified: delegatorUrl, delegatorPrivateKey'

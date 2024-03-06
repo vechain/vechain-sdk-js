@@ -1,7 +1,8 @@
-import { type InterfaceAbi, Interface as EthersInterface } from 'ethers';
-import { ERROR_CODES, buildError, ABI } from '@vechain/vechain-sdk-errors';
-import type { Interface, BytesLike, Result, Log } from '../abi';
+import { Interface as EthersInterface, type InterfaceAbi } from 'ethers';
+import { ABI, buildError, ERROR_CODES } from '@vechain/vechain-sdk-errors';
+import type { BytesLike, Interface, Log, Result } from '../abi';
 import { abi } from '../abi';
+
 /**
  * Creates a new Interface instance from an ABI fragment.
  * @param abi - ABI in a compatible format
@@ -31,11 +32,12 @@ function encodeFunctionInput(
         ).encodeInput(functionData);
     } catch (e) {
         throw buildError(
+            'coder.encodeFunctionInput',
             ERROR_CODES.ABI.INVALID_DATA_TO_ENCODE,
             `Method 'encodeFunctionInput' failed while encoding input for function '${functionName}'. ` +
                 `Input must match ABI specifications and be correctly formatted.\n` +
-                `Parameters: ${JSON.stringify(functionData)}\n` +
-                `Ethers' error message: ${(e as Error).message}`,
+                `Parameters: ${JSON.stringify(functionData)}.\n` +
+                `Ethers' error message: ${(e as Error).message}.`,
             { functionName, functionData },
             e
         );
@@ -63,8 +65,9 @@ function decodeFunctionInput(
         ).decodeInput(encodedFunctionInput);
     } catch (e) {
         throw buildError(
+            'coder.decodeFunctionInput',
             ERROR_CODES.ABI.INVALID_DATA_TO_DECODE,
-            'Decoding failed: Function input must be properly encoded per ABI specifications',
+            'Decoding failed: Function input must be properly encoded per ABI specifications.',
             { functionName },
             e
         );
@@ -103,8 +106,9 @@ function decodeFunctionOutput(
         ).decodeOutput(encodedFunctionOutput);
     } catch (e) {
         throw buildError(
+            'coder.decodeFunctionOutput',
             ERROR_CODES.ABI.INVALID_DATA_TO_DECODE,
-            'Decoding failed: Function output must be properly encoded per ABI specifications',
+            'Decoding failed: Function output must be properly encoded per ABI specifications.',
             { functionName },
             e
         );
@@ -135,8 +139,9 @@ function encodeEventLog(
     } catch (e) {
         // Handle errors and throw a custom error with relevant details
         throw buildError(
+            'coder.encodeEventLog',
             ERROR_CODES.ABI.INVALID_EVENT,
-            'Encoding failed: Event log data must align with ABI specifications for encoding',
+            'Encoding failed: Event log data must align with ABI specifications for encoding.',
             { eventName },
             e
         );
@@ -167,8 +172,9 @@ function decodeEventLog(
     } catch (e) {
         // Handle errors and throw a custom error with relevant details
         throw buildError(
+            'coder.decodeEventLog',
             ERROR_CODES.ABI.INVALID_EVENT,
-            'Decoding failed: Event log data must be correctly encoded per ABI specifications',
+            'Decoding failed: Event log data must be correctly encoded per ABI specifications.',
             { eventName },
             e
         );
@@ -199,6 +205,7 @@ function parseLog(
         return contractInterface.parseLog({ topics, data });
     } catch (e) {
         throw buildError(
+            'coder.parseLog',
             ABI.INVALID_DATA_TO_DECODE,
             'Decoding failed: Data and topics must be correctly formatted for ABI-compliant decoding.',
             { data },

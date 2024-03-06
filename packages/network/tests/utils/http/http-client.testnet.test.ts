@@ -3,9 +3,9 @@ import { type HttpParams } from '../../../src';
 import { testnetGenesisBlock } from './fixture';
 import { testAccount, testNetwork } from '../../fixture';
 import {
-    HTTPClientError,
+    buildError,
     HTTP_CLIENT,
-    buildError
+    HTTPClientError
 } from '@vechain/vechain-sdk-errors';
 
 /**
@@ -98,8 +98,9 @@ describe('Test HttpClient class on Testnet', () => {
             },
             validateResponseHeader: function (): void {
                 throw buildError(
+                    'validateResponseHeader',
                     HTTP_CLIENT.INVALID_HTTP_REQUEST,
-                    `Forcing error on header validation`
+                    `Forcing error on header validation.`
                 );
             }
         };

@@ -27,6 +27,7 @@ const ethSendRawTransaction = async (
     params: unknown[]
 ): Promise<string> => {
     assert(
+        'eth_sendRawTransaction',
         params.length === 1 &&
             typeof params[0] === 'string' &&
             dataUtils.isHexString(params[0]),

@@ -16,7 +16,7 @@ import { SOLIDITY_ERROR_SELECTOR, SOLIDITY_PANIC_SELECTOR } from './const';
  * console.log(revertReason); // 'Decoded Revert Reason'
  * ```
  */
-export function decodeRevertReason(data: string): string | undefined {
+function decodeRevertReason(data: string): string | undefined {
     // Check if the revert reason starts with the error selector
     if (data.startsWith(SOLIDITY_ERROR_SELECTOR))
         // Decode the error message from the remaining data
@@ -36,3 +36,5 @@ export function decodeRevertReason(data: string): string | undefined {
             .padStart(2, '0')})`;
     }
 }
+
+export { decodeRevertReason };

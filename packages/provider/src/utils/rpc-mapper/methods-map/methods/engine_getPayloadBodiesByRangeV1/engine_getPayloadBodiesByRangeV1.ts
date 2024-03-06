@@ -20,8 +20,9 @@ const engineGetPayloadBodiesByRangeV1 = async (
 
     // Not implemented yet
     throw buildError(
+        'engine_getPayloadBodiesByRangeV1',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "engine_getPayloadBodiesByRangeV1" not not implemented yet',
+        'Method "engine_getPayloadBodiesByRangeV1" has not been implemented yet.',
         {
             params,
             thorClient

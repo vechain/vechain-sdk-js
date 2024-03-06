@@ -10,7 +10,7 @@ import { createWalletFromHardhatNetworkConfig } from '../../src/helpers';
 /**
  * Provider hardhat helpers test suite
  *
- * @group unit/helpers/hardhat
+ * @group unit/hardhat-helpers
  */
 describe('Provider Hardhat Helpers', () => {
     /**

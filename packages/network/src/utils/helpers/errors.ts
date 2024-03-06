@@ -2,7 +2,8 @@ import { type AxiosError } from 'axios';
 import {
     buildError,
     HTTP_CLIENT,
-    type HTTPClientError
+    type HTTPClientError,
+    stringifyData
 } from '@vechain/vechain-sdk-errors';
 
 /**
@@ -20,20 +21,21 @@ const convertError = (error: AxiosError): HTTPClientError => {
         const resp = error.response;
 
         return buildError(
+            'convertError',
             HTTP_CLIENT.INVALID_HTTP_REQUEST,
             `An error occurred while performing http request ${error.config?.url}`,
             {
                 status: resp.status,
                 method: error.config?.method,
                 url: error.config?.url,
-                text:
-                    typeof resp.data === 'string' ? resp.data.trim() : undefined
+                text: stringifyData(resp.data)
             }
         );
     }
     // Error does not have a response
     else {
         return buildError(
+            'convertError',
             HTTP_CLIENT.INVALID_HTTP_REQUEST,
             `An error occurred while performing http request ${error.config?.url}`,
             {

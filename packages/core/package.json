@@ -1,37 +1,33 @@
 {
-    "name": "@vechain/vechain-sdk-core",
-    "version": "1.0.0",
-    "description": "Includes modules for fundamental operations like hashing and cryptography",
-    "author": "vechain Foundation",
-    "license": "MIT",
-    "keywords": [
-        "vechain",
-        "contract",
-        "encoding",
-        "certificate",
-        "bloom"
-    ],
-    "private": false,
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
-    "scripts": {
-        "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
-
-        "lint": "eslint --ext .ts src --ext .ts tests",
-        "format": "prettier --write src/**/*.ts tests/**/*.ts",
-
-        "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
-
-        "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
-
-        "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
-    },
-    "dependencies": {
-        "@ethereumjs/rlp": "^5.0.2",
-        "@types/elliptic": "^6.4.18",
-        "@vechain/vechain-sdk-errors": "*",
-        "blakejs": "^1.2.1",
-        "elliptic": "^6.5.4",
-        "ethers": "6.11.1"
-    }
+  "name": "@vechain/vechain-sdk-core",
+  "version": "0.0.13",
+  "description": "Includes modules for fundamental operations like hashing and cryptography",
+  "author": "vechain Foundation",
+  "license": "MIT",
+  "keywords": [
+    "vechain",
+    "contract",
+    "encoding",
+    "certificate",
+    "bloom"
+  ],
+  "private": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
+    "lint": "eslint --ext .ts src --ext .ts tests",
+    "format": "prettier --write src/**/*.ts tests/**/*.ts",
+    "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
+    "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
+    "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
+  },
+  "dependencies": {
+    "@ethereumjs/rlp": "^5.0.2",
+    "@types/elliptic": "^6.4.18",
+    "@vechain/vechain-sdk-errors": "0.0.13",
+    "blakejs": "^1.2.1",
+    "elliptic": "^6.5.5",
+    "ethers": "6.11.1"
+  }
 }

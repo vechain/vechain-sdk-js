@@ -20,8 +20,9 @@ const debugGetRawReceipts = async (
 
     // Not implemented yet
     throw buildError(
+        'debug_getRawReceipts',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "debug_getRawReceipts" not not implemented yet',
+        'Method "debug_getRawReceipts" has not been implemented yet.',
         {
             params,
             thorClient

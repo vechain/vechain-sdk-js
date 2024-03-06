@@ -23,6 +23,7 @@ function encode<ValueType>(type: string | ParamType, value: ValueType): string {
         return ethersCoder.encode([type], [value]);
     } catch {
         throw buildError(
+            'encode',
             ABI.INVALID_DATA_TO_ENCODE,
             'Encoding failed: Data must be a valid ABI type with corresponding valid data.'
         );
@@ -52,6 +53,7 @@ function encodeParams(types: string[] | ParamType[], values: string[]): string {
         return ethersCoder.encode(types, values);
     } catch {
         throw buildError(
+            'encodeParams',
             ABI.INVALID_DATA_TO_ENCODE,
             'Encoding failed: Data must be a valid ABI type with corresponding valid data.'
         );
@@ -77,8 +79,9 @@ function decode<ReturnType>(
         return decoded[0] as ReturnType;
     } catch {
         throw buildError(
+            'decode',
             ABI.INVALID_DATA_TO_DECODE,
-            'Decoding failed: Data must be a valid hex string that encodes a valid ABI type'
+            'Decoding failed: Data must be a valid hex string that encodes a valid ABI type.'
         );
     }
 }

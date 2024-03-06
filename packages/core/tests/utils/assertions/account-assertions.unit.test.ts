@@ -1,7 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
 import { accountAssertionsTests } from './fixture';
-import { assertIsAddress } from '../../../src';
+
 import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { assertIsAddress } from '../../../src';
 
 /**
  * Account assertions
@@ -20,7 +21,7 @@ describe('Account assertions', () => {
             test(`should not throw error for assertIsAddress of ${value}`, () => {
                 // Expect assertIsAddress to not throw
                 expect(() => {
-                    assertIsAddress(value);
+                    assertIsAddress('test', value);
                 }).not.toThrow();
             });
         });
@@ -32,7 +33,7 @@ describe('Account assertions', () => {
             test(`Should throw error for assertIsAddress of ${value}`, () => {
                 // Expect assertIsAddress to throw
                 expect(() => {
-                    assertIsAddress(value);
+                    assertIsAddress('test', value);
                 }).toThrowError(InvalidDataTypeError);
             });
         });

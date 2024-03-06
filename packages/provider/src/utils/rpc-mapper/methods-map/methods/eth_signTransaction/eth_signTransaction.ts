@@ -20,8 +20,9 @@ const ethSignTransaction = async (
 
     // Not implemented yet
     throw buildError(
+        'eth_signTransaction',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_signTransaction" not not implemented yet',
+        'Method "eth_signTransaction" has not been implemented yet.',
         {
             params,
             thorClient

@@ -39,18 +39,21 @@ function SyncPoll<TReturnType>(
 } {
     // Positive number for request interval
     assertPositiveIntegerForPollOptions(
+        'SyncPoll',
         options?.requestIntervalInMilliseconds,
         'options?.requestIntervalInMilliseconds'
     );
 
     // Positive number for maximum iterations
     assertPositiveIntegerForPollOptions(
+        'SyncPoll',
         options?.maximumIterations,
         'options?.maximumIterations'
     );
 
     // Positive number for maximum waiting time
     assertPositiveIntegerForPollOptions(
+        'SyncPoll',
         options?.maximumWaitingTimeInMilliseconds,
         'options?.maximumWaitingTimeInMilliseconds'
     );
@@ -120,6 +123,7 @@ function SyncPoll<TReturnType>(
                 return currentResult;
             } catch (error) {
                 throw buildError(
+                    'SyncPoll - waitUntil',
                     POLL_ERROR.POLL_EXECUTION_ERROR,
                     'Polling failed: Function execution error encountered during synchronous polling.',
                     {

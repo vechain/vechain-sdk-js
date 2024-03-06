@@ -20,8 +20,9 @@ const ethCoinbase = async (
 
     // Not implemented yet
     throw buildError(
+        'eth_coinbase',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "eth_coinbase" not not implemented yet',
+        'Method "eth_coinbase" has not been implemented yet.',
         {
             params,
             thorClient

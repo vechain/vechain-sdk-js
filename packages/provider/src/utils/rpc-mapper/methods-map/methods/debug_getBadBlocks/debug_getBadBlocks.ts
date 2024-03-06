@@ -20,8 +20,9 @@ const debugGetBadBlocks = async (
 
     // Not implemented yet
     throw buildError(
+        'debug_getBadBlocks',
         FUNCTION.NOT_IMPLEMENTED,
-        'Method "debug_getBadBlocks" not not implemented yet',
+        'Method "debug_getBadBlocks" has not been implemented yet.',
         {
             params,
             thorClient
