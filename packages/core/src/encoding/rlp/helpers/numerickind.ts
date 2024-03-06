@@ -141,14 +141,7 @@ const encodeBigIntToBuffer = (
     context: string
 ): Buffer => {
     if (bi === 0n) return Buffer.alloc(0);
-
-    let hex = Hex.of(bi);
-
-    // Ensure hex string has an even length
-    if (hex.length % 2 !== 0) {
-        hex = '0' + hex;
-    }
-
+    const hex = Hex.of(bi);
     assert(
         'encodeBigIntToBuffer',
         maxBytes === undefined || hex.length <= maxBytes * 2,
