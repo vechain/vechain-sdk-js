@@ -968,55 +968,75 @@
   dependencies:
     "@types/node" "*"
 
-"@vechain/vechain-sdk-core@*":
-  version "0.0.7"
-  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-core/0.0.7/977de322efa21128fedf2c41a9901ae3e8a8ae20#977de322efa21128fedf2c41a9901ae3e8a8ae20"
-  integrity sha512-eDFJzBi+bVZPGIFResdMYLxcmLCqvsOsOlUnP7PaSPLAKS8e9ZkgStTokF3TJmC43hRnj13sbDp66VrqAwfxWw==
+"@vechain/vechain-sdk-core@0.0.12":
+  version "0.0.12"
+  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-core/0.0.12/ae055829a08eee2e9679575a8a56fccfd2a68e85#ae055829a08eee2e9679575a8a56fccfd2a68e85"
+  integrity sha512-vupoxdaIClBMZalXysJDrPFlaxILg7syfCy3xNn4ArR/X7afnrgRU9CO6tpYJ9CwkG/IOdC2wwEcqgNE/dQ7Cw==
   dependencies:
     "@ethereumjs/rlp" "^5.0.2"
     "@types/elliptic" "^6.4.18"
-    "@vechain/vechain-sdk-errors" "*"
+    "@vechain/vechain-sdk-errors" "0.0.12"
     blakejs "^1.2.1"
     elliptic "^6.5.4"
     ethers "6.11.1"
 
-"@vechain/vechain-sdk-errors@*":
-  version "0.0.7"
-  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-errors/0.0.7/d287264b3fca5cb135bfa1c491a98d53f88d7ad1#d287264b3fca5cb135bfa1c491a98d53f88d7ad1"
-  integrity sha512-IiItD7LzVt9cF4ZgPqxW6J0QhIiQDKCmh5O4TVyaAliIRzpVJC5nzHF3stjvuBP0xI21lata0kH/UOdXOZRTIg==
-
-"@vechain/vechain-sdk-hardhat-plugin@*":
-  version "0.0.7"
-  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-hardhat-plugin/0.0.7/62dd2df117dd776b4adae3fa4cc64dcdeaa9c17b#62dd2df117dd776b4adae3fa4cc64dcdeaa9c17b"
-  integrity sha512-lOf8ijZeQSakrfGN2ZKdDSSZlYyPXzFo3SOpv4qjIf0I3hq8OL8LHSYcrnqVxHiWUWaj/Zg3WXlYP/k2EXayJg==
+"@vechain/vechain-sdk-core@0.0.13":
+  version "0.0.13"
+  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-core/0.0.13/5e999fe6b7ac178dc090febaf0d5f5691af6cae4#5e999fe6b7ac178dc090febaf0d5f5691af6cae4"
+  integrity sha512-PqWnZX4hplkT9ti4RP+MbVvG0jMqolb2OsOoTAXIUA+cvl5BqZtzP6NBErtw7VUJNItd7LJIRNAV3vyNIRWlOA==
   dependencies:
-    "@vechain/vechain-sdk-provider" "*"
+    "@ethereumjs/rlp" "^5.0.2"
+    "@types/elliptic" "^6.4.18"
+    "@vechain/vechain-sdk-errors" "0.0.12"
+    blakejs "^1.2.1"
+    elliptic "^6.5.5"
+    ethers "6.11.1"
 
-"@vechain/vechain-sdk-network@*":
-  version "0.0.7"
-  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-network/0.0.7/2ff9de552cd3f0705628c4f5140881533f81fbad#2ff9de552cd3f0705628c4f5140881533f81fbad"
-  integrity sha512-4irYAyDb90dDw7SP1jG4ItsS5Q9qtGIZiLBlTuHMs9clBe+TJquxzU9Gj9yalCeTeAYFT2KjoAa2zAlklq1RmA==
+"@vechain/vechain-sdk-errors@0.0.12":
+  version "0.0.12"
+  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-errors/0.0.12/e921425ff5b6c4ef886d20412619d36f8edce4d5#e921425ff5b6c4ef886d20412619d36f8edce4d5"
+  integrity sha512-nb0iR8epvC31dKfxW/rOh3u442SygYpPRswhIrBWhw82x/SdJRqcyTdl/YfWjtkwe+kVRFi3hyRg0zMEUvcODg==
+
+"@vechain/vechain-sdk-hardhat-plugin@0.0.13":
+  version "0.0.13"
+  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-hardhat-plugin/0.0.13/d5c8f9940582f72432d8d31cccf94feb7843c5cb#d5c8f9940582f72432d8d31cccf94feb7843c5cb"
+  integrity sha512-9o/z7N6jXhO6S3UBQV4wOPbBkV2/TSNr9JUKW9OhTf2ZragjN/+yLa5lP17ISBxtJEg7PIGKUKYBoWXkNJ6VSw==
+  dependencies:
+    "@vechain/vechain-sdk-provider" "0.0.12"
+
+"@vechain/vechain-sdk-logging@0.0.12":
+  version "0.0.12"
+  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-logging/0.0.12/556a3945fe91adcda096192c100cb4c0fe718a38#556a3945fe91adcda096192c100cb4c0fe718a38"
+  integrity sha512-szGBKixq3TmlbGGF4fX4PGuadQPhTP3ITG6CAJMlYBzpZOMnbZKteWXbWL6j6N79k7WhvV0iR5iNrOP/VwMq4w==
+  dependencies:
+    "@vechain/vechain-sdk-errors" "0.0.12"
+
+"@vechain/vechain-sdk-network@0.0.12":
+  version "0.0.12"
+  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-network/0.0.12/517f266ebd298e1875b6d5e8fe4a72a55d95d01a#517f266ebd298e1875b6d5e8fe4a72a55d95d01a"
+  integrity sha512-ZMNMOQwoWUa4QlaS5YJ+7sTyDJG0PD2Ap039WMNyBLsIq6H63HOEat5oVBBX2XijLdXXtUCtJKe87jA8buzmsw==
   dependencies:
     "@types/ws" "^8.5.10"
-    "@vechain/vechain-sdk-core" "*"
-    "@vechain/vechain-sdk-errors" "*"
+    "@vechain/vechain-sdk-core" "0.0.12"
+    "@vechain/vechain-sdk-errors" "0.0.12"
     axios "^1.6.7"
 
-"@vechain/vechain-sdk-provider@*":
-  version "0.0.7"
-  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-provider/0.0.7/6689c97d5dae789931286e36377efa77ad2dcb1e#6689c97d5dae789931286e36377efa77ad2dcb1e"
-  integrity sha512-0jXjgsO3oBeuQhaqqxQG0U56E47+IQgBYa0koE5v9gecVlCoudMaiCMu/ZGcqsq2WDadyp00oBMNtpLQr93GKA==
+"@vechain/vechain-sdk-provider@0.0.12":
+  version "0.0.12"
+  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-provider/0.0.12/84bfc04cbaea9cd9e3cc94551994bb0d7b93b80e#84bfc04cbaea9cd9e3cc94551994bb0d7b93b80e"
+  integrity sha512-rHOWTDYyYnFww1/pqcbtr92/dY0zrXQK6PEMd0FrzUVgfR52KY7j29PNL5odcHcCbloia62Av59Cu8ZE2qakFA==
   dependencies:
-    "@vechain/vechain-sdk-core" "*"
-    "@vechain/vechain-sdk-network" "*"
-    "@vechain/vechain-sdk-wallet" "*"
+    "@vechain/vechain-sdk-core" "0.0.12"
+    "@vechain/vechain-sdk-logging" "0.0.12"
+    "@vechain/vechain-sdk-network" "0.0.12"
+    "@vechain/vechain-sdk-wallet" "0.0.12"
 
-"@vechain/vechain-sdk-wallet@*":
-  version "0.0.7"
-  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-wallet/0.0.7/4b9a0e3ecd108e78844c383d2786d7bb34d3c39e#4b9a0e3ecd108e78844c383d2786d7bb34d3c39e"
-  integrity sha512-8qKZhc3XyKO25YdkB8FoleCYssevVGiRAqkuRc4xMdde8fFHves0GnTXgqp/m5ws+DAlPI0WbesX9f7qD909gQ==
+"@vechain/vechain-sdk-wallet@0.0.12":
+  version "0.0.12"
+  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-wallet/0.0.12/f21e354305817352c20f640320fa16ec0d1853b4#f21e354305817352c20f640320fa16ec0d1853b4"
+  integrity sha512-tGu7LRsW/geicMd/dhXv5/Pu/UtcKjH/V+1zV4SkX4lImN8OdSo3Gflvg0I+d3l8PJZ30+klN4a7gdPe4g4PLg==
   dependencies:
-    "@vechain/vechain-sdk-network" "*"
+    "@vechain/vechain-sdk-network" "0.0.12"
 
 abbrev@1:
   version "1.1.1"
@@ -1685,6 +1705,19 @@ elliptic@6.5.4, elliptic@^6.5.2, elliptic@^6.5.4:
   version "6.5.4"
   resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.4.tgz#da37cebd31e79a1367e941b592ed1fbebd58abbb"
   integrity sha512-iLhC6ULemrljPZb+QutR5TQGB+pdW6KGD5RSegS+8sorOZT+rdQFbsQFJgvN3eRqNALqJer4oQ16YvJHlU8hzQ==
+  dependencies:
+    bn.js "^4.11.9"
+    brorand "^1.1.0"
+    hash.js "^1.0.0"
+    hmac-drbg "^1.0.1"
+    inherits "^2.0.4"
+    minimalistic-assert "^1.0.1"
+    minimalistic-crypto-utils "^1.0.1"
+
+elliptic@^6.5.5:
+  version "6.5.5"
+  resolved "https://registry.yarnpkg.com/elliptic/-/elliptic-6.5.5.tgz#c715e09f78b6923977610d4c2346d6ce22e6dded"
+  integrity sha512-7EjbcmUm17NQFu4Pmgmq2olYMj8nwMnpcddByChSUjArp8F5DQWcIcpriwO4ZToLNAJig0yiyjswfyGNje/ixw==
   dependencies:
     bn.js "^4.11.9"
     brorand "^1.1.0"
