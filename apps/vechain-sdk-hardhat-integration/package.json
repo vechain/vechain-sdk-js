@@ -13,8 +13,8 @@
     "deploy-testnet": "npx hardhat run scripts/deploy.ts --network vechain_testnet"
   },
   "dependencies": {
-    "@vechain/vechain-sdk-hardhat-plugin": "0.0.12",
-    "@vechain/vechain-sdk-core": "0.0.12"
+    "@vechain/vechain-sdk-hardhat-plugin": "0.0.13",
+    "@vechain/vechain-sdk-core": "0.0.13"
   },
   "devDependencies": {
     "hardhat": "^2.20.1",

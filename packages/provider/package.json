@@ -1,6 +1,6 @@
 {
   "name": "@vechain/vechain-sdk-provider",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "This module is dedicated to managing the compatibility with ethers and EVM world",
   "author": "vechain Foundation",
   "license": "MIT",
@@ -25,9 +25,9 @@
     "test:solo": "(yarn start-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo"
   },
   "dependencies": {
-    "@vechain/vechain-sdk-network": "0.0.12",
-    "@vechain/vechain-sdk-wallet": "0.0.12",
-    "@vechain/vechain-sdk-core": "0.0.12",
-    "@vechain/vechain-sdk-logging": "0.0.12"
+    "@vechain/vechain-sdk-network": "0.0.13",
+    "@vechain/vechain-sdk-wallet": "0.0.13",
+    "@vechain/vechain-sdk-core": "0.0.13",
+    "@vechain/vechain-sdk-logging": "0.0.13"
   }
 }
