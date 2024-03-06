@@ -73,4 +73,23 @@ const updatePackageVersions = (version: string): void => {
     fs.writeFileSync(docsJsonPath, JSON.stringify(docsJson, null, 2));
 };
 
-updatePackageVersions('0.0.14');
+const preparePackages = async () => {
+    const version = process.argv[2];
+
+    if (!version?.match(/^\d+\.\d+\.\d+$/)) {
+        console.error(
+            `🚨 You must specify a semantic version as the first argument  🚨`
+        );
+        process.exit(1);
+    }
+
+    console.log(' Version:');
+    console.log(`       - 🏷 Updating package versions to ${version}...`);
+    updatePackageVersions(version);
+    console.log('       - ✅  Updated!');
+};
+
+preparePackages().catch((e) => {
+    console.error(e);
+    process.exit(1);
+});
