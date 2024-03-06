@@ -27,7 +27,7 @@
     "@types/elliptic": "^6.4.18",
     "@vechain/vechain-sdk-errors": "0.0.12",
     "blakejs": "^1.2.1",
-    "elliptic": "^6.5.4",
+    "elliptic": "^6.5.5",
     "ethers": "6.11.1"
   }
 }
