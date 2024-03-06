@@ -3,7 +3,7 @@ import { createWalletFromHardhatNetworkConfig } from './helpers';
 
 import { extendEnvironment } from 'hardhat/config';
 import { type HttpNetworkConfig } from 'hardhat/types';
-import { lazyObject } from 'hardhat/plugins';
+import { HardhatPluginError, lazyObject } from 'hardhat/plugins';
 
 import './type-extensions';
 import { VechainSDKLogger } from '@vechain/vechain-sdk-logging';
@@ -47,6 +47,12 @@ extendEnvironment((hre) => {
     const hardhatVechainProvider = new HardhatVechainProvider(
         createWalletFromHardhatNetworkConfig(networkConfig),
         networkConfig.url,
+        (message: string, parent?: Error) =>
+            new HardhatPluginError(
+                '@vechain/vechain-sdk-hardhat-plugin',
+                message,
+                parent
+            ),
         isInDebugMode
     );
 

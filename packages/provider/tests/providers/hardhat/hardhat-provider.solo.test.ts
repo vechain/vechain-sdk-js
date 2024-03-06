@@ -28,7 +28,11 @@ describe('Hardhat provider tests', () => {
      */
     beforeEach(() => {
         thorClient = new ThorClient(soloNetwork);
-        provider = new HardhatVechainProvider(new BaseWallet([]), soloUrl);
+        provider = new HardhatVechainProvider(
+            new BaseWallet([]),
+            soloUrl,
+            (message: string, parent?: Error) => new Error(message, parent)
+        );
     });
 
     /**
