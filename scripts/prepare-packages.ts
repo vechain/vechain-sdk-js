@@ -61,6 +61,8 @@ const updatePackageVersions = (version: string): void => {
     const docsPath = path.resolve(__dirname, `../docs`);
     const docsJsonPath = path.resolve(docsPath, './package.json');
     const docsJson = JSON.parse(fs.readFileSync(docsJsonPath, 'utf8'));
+    docsJson.version = version;
+    fs.writeFileSync(docsJsonPath, JSON.stringify(docsJson, null, 2));
 
     if (docsJson.dependencies != null) {
         for (const dep of Object.keys(docsJson.dependencies)) {
