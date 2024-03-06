@@ -48,4 +48,11 @@ describe('Hex', () => {
         const output: string = Hex.of0x(10 as number, 4);
         expect(output).toBe('0x0000000a');
     });
+
+    test('of0x buffer padded', () => {
+        const buffer: Buffer = Buffer.alloc(1);
+        buffer[0] = 10;
+        const output: string = Hex.of0x(buffer, 4);
+        expect(output).toBe('0x0000000a');
+    });
 });

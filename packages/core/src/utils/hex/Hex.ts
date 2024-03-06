@@ -78,7 +78,7 @@ function ofBigInt(bi: bigint, bytes: number): string {
  * @param {number} [bytes=0] - The number of bytes the resulting hexadecimal representation should be padded to.
  * @return {string} - The padded hexadecimal representation of the buffer.
  */
-function ofBuffer(buffer: Uint8Array, bytes: number = 0): string {
+function ofBuffer(buffer: Buffer | Uint8Array, bytes: number = 0): string {
     return pad(Buffer.from(buffer).toString(ENCODING), bytes);
 }
 
