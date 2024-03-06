@@ -73,4 +73,4 @@ const updatePackageVersions = (version: string): void => {
     fs.writeFileSync(docsJsonPath, JSON.stringify(docsJson, null, 2));
 };
 
-updatePackageVersions('0.0.13');
+updatePackageVersions('0.0.14');
