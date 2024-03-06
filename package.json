@@ -1,6 +1,6 @@
 {
     "name": "vechain-sdk",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "description": "The official JavaScript SDK for vechain",
     "repository": "https://github.com/vechain/vechain-sdk.git",
     "author": "vechain Foundation",
@@ -40,7 +40,7 @@
     },
     "devDependencies": {
         "@changesets/cli": "^2.27.1",
-        "@commitlint/cli": "^19.0.1",
+        "@commitlint/cli": "^19.0.3",
         "@commitlint/config-conventional": "^19.0.3",
         "@jest/globals": "^29.7.0",
         "@types/fs-extra": "^11.0.4",
