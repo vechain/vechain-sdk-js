@@ -1,8 +1,34 @@
 import { describe, expect, test } from '@jest/globals';
 import { hashFunctionsToTest } from './fixture';
-import { ZERO_BUFFER } from '../../src';
 import { ethers } from 'ethers';
 import { InvalidDataReturnTypeError } from '@vechain/vechain-sdk-errors';
+import { Buffer } from 'buffer';
+import { dataUtils, ZERO_BUFFER } from '../../src';
+
+/**
+ * Test hash functions
+ * @group unit/hash
+ */
+describe('toHexString', () => {
+    test('toHexString of string', () => {
+        expect(dataUtils.toHexString('a')).toBe('61');
+    });
+    test('toHexString of string with prefix', () => {
+        expect(dataUtils.toHexString('a', { withPrefix: true })).toBe('0x61');
+    });
+    test('toHexString of UInt8Array', () => {
+        const buffer: Uint8Array = new Uint8Array(1);
+        buffer[0] = 10;
+        expect(dataUtils.toHexString(buffer)).toBe('0a');
+    });
+    test('toHexString of UInt8Array with prefix', () => {
+        const buffer: Uint8Array = new Uint8Array(1);
+        buffer[0] = 10;
+        expect(dataUtils.toHexString(buffer, { withPrefix: true })).toBe(
+            '0x0a'
+        );
+    });
+});
 
 /**
  * Test hash functions

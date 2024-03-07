@@ -1,4 +1,4 @@
-import { ZERO_BUFFER, dataUtils } from '@vechain/vechain-sdk-core';
+import { Hex, ZERO_BUFFER } from '@vechain/vechain-sdk-core';
 import {
     InvalidDataTypeError,
     ProviderRpcError
@@ -7,7 +7,14 @@ import {
 /**
  * Test cases for eth_getStorageAt RPC method
  */
-const ethGetStorageAtTestCases = [
+let ethGetStorageAtTestCases: Array<{
+    expected: string;
+    description: string;
+    params: string[];
+}>;
+
+// eslint-disable-next-line prefer-const
+ethGetStorageAtTestCases = [
     {
         description:
             'Should return storage slot value for a given smart contract that has a storage slot value different than NULL',
@@ -34,9 +41,7 @@ const ethGetStorageAtTestCases = [
         description:
             'Should return null slot value for an address that does not have a storage slot value at the given position',
         params: [
-            dataUtils.toHexString(ZERO_BUFFER(20), {
-                withPrefix: true
-            }),
+            Hex.of0x(ZERO_BUFFER(20)),
             '0x1',
             'latest' // Block n. 17497585
         ],

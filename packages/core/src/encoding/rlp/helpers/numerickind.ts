@@ -1,4 +1,4 @@
-import { dataUtils } from '../../../utils';
+import { dataUtils, Hex } from '../../../utils';
 import { type RLPInput } from '../types';
 import { assert, RLP } from '@vechain/vechain-sdk-errors';
 
@@ -141,14 +141,7 @@ const encodeBigIntToBuffer = (
     context: string
 ): Buffer => {
     if (bi === 0n) return Buffer.alloc(0);
-
-    let hex = bi.toString(16);
-
-    // Ensure hex string has an even length
-    if (hex.length % 2 !== 0) {
-        hex = '0' + hex;
-    }
-
+    const hex = Hex.of(bi);
     assert(
         'encodeBigIntToBuffer',
         maxBytes === undefined || hex.length <= maxBytes * 2,
