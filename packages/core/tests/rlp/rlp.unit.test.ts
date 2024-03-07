@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { RLP } from '../../src';
+import { Hex, RLP } from '../../src';
 import {
     decodeBufferProfileTestCases,
     decodeHexBlobProfileTestCases,
@@ -85,9 +85,9 @@ describe('RLP', () => {
             numericKindEncodeTestCases.forEach(
                 ({ kind, data, expected, description }) => {
                     test(description, () => {
-                        expect(
-                            kind.data(data, '').encode().toString('hex')
-                        ).toEqual(expected);
+                        expect(Hex.of(kind.data(data, '').encode())).toEqual(
+                            expected
+                        );
                     });
                 }
             );
@@ -136,9 +136,9 @@ describe('RLP', () => {
             hexBlobKindEncodeTestCases.forEach(
                 ({ kind, data, expected, description }) => {
                     test(description, () => {
-                        expect(
-                            kind.data(data, '').encode().toString('hex')
-                        ).toEqual(expected);
+                        expect(Hex.of(kind.data(data, '').encode())).toEqual(
+                            expected
+                        );
                     });
                 }
             );
@@ -188,9 +188,9 @@ describe('RLP', () => {
             fixedHexBlobKindEncodeTestCases.forEach(
                 ({ kind, data, expected, description }) => {
                     test(description, () => {
-                        expect(
-                            kind.data(data, '').encode().toString('hex')
-                        ).toEqual(expected);
+                        expect(Hex.of(kind.data(data, '').encode())).toEqual(
+                            expected
+                        );
                     });
                 }
             );
@@ -241,9 +241,9 @@ describe('RLP', () => {
             compactFixedHexBlobKindEncodeTestCases.forEach(
                 ({ kind, data, expected, description }) => {
                     test(description, () => {
-                        expect(
-                            kind.data(data, '').encode().toString('hex')
-                        ).toEqual(expected);
+                        expect(Hex.of(kind.data(data, '').encode())).toEqual(
+                            expected
+                        );
                     });
                 }
             );

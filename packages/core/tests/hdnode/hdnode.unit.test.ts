@@ -5,7 +5,8 @@ import {
     ZERO_BUFFER,
     addressUtils,
     mnemonic,
-    secp256k1
+    secp256k1,
+    Hex
 } from '../../src';
 import { addresses, words, wrongWords } from './fixture';
 import {
@@ -39,9 +40,11 @@ describe('Hdnode', () => {
 
             // Correct public key
             expect(
-                secp256k1
-                    .derivePublicKey(child.privateKey ?? ZERO_BUFFER(0))
-                    .toString('hex')
+                Hex.of(
+                    secp256k1.derivePublicKey(
+                        child.privateKey ?? ZERO_BUFFER(0)
+                    )
+                )
             ).toEqual(child.publicKey.toString('hex'));
         }
 
@@ -60,9 +63,11 @@ describe('Hdnode', () => {
 
             // Correct public key
             expect(
-                secp256k1
-                    .derivePublicKey(child.privateKey ?? ZERO_BUFFER(0))
-                    .toString('hex')
+                Hex.of(
+                    secp256k1.derivePublicKey(
+                        child.privateKey ?? ZERO_BUFFER(0)
+                    )
+                )
             ).toEqual(child.publicKey.toString('hex'));
         }
 

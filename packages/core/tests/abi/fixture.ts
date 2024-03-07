@@ -1,5 +1,4 @@
-import { hexlify, toBeHex, zeroPadValue } from 'ethers';
-import { addressUtils } from '../../src';
+import { addressUtils, Hex } from '../../src';
 import { generateRandomValidAddress } from '../fixture';
 import { InvalidAbiDataToEncodeError } from '@vechain/vechain-sdk-errors';
 
@@ -303,7 +302,7 @@ const topicsEventTestCases = [
             '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
             `0x000000000000000000000000${fromRandomAddress.slice(2)}`,
             `0x000000000000000000000000${toRandomAddress.slice(2)}`,
-            zeroPadValue(hexlify(toBeHex(randomBigInt)), 32)
+            Hex.of0x(randomBigInt, 32)
         ]
     },
     {
@@ -313,7 +312,7 @@ const topicsEventTestCases = [
             '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
             undefined,
             undefined,
-            zeroPadValue(hexlify(toBeHex(randomBigInt)), 32)
+            Hex.of0x(randomBigInt, 32)
         ]
     },
     {
@@ -323,7 +322,7 @@ const topicsEventTestCases = [
             '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
             undefined,
             undefined,
-            zeroPadValue(hexlify(toBeHex(randomBigInt)), 32)
+            Hex.of0x(randomBigInt, 32)
         ]
     },
     {

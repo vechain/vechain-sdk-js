@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { dataUtils } from '../../../src';
+import { dataUtils, Hex } from '../../../src';
 import {
     decodeBytes32StringTestCases,
     encodeBytes32StringTestCases,
@@ -24,30 +24,23 @@ describe('utils/hex', () => {
      */
     describe('Hex string conversion', () => {
         test('Should convert string to hex string without prefix by default', () => {
-            expect(dataUtils.toHexString('Hello')).toBe('48656c6c6f');
+            expect(Hex.of('Hello')).toBe('48656c6c6f');
         });
 
         test('Should convert Uint8Array to hex string without prefix by default', () => {
-            expect(
-                dataUtils.toHexString(new Uint8Array([72, 101, 108, 108, 111]))
-            ).toBe('48656c6c6f');
-        });
-
-        test('Should convert string to hex string with prefix when specified', () => {
-            expect(dataUtils.toHexString('Hello', { withPrefix: true })).toBe(
-                '0x48656c6c6f'
+            expect(Hex.of(new Uint8Array([72, 101, 108, 108, 111]))).toBe(
+                '48656c6c6f'
             );
         });
 
+        test('Should convert string to hex string with prefix when specified', () => {
+            expect(Hex.of0x('Hello')).toBe('0x48656c6c6f');
+        });
+
         test('Should convert Uint8Array to hex string with prefix when specified', () => {
-            expect(
-                dataUtils.toHexString(
-                    new Uint8Array([72, 101, 108, 108, 111]),
-                    {
-                        withPrefix: true
-                    }
-                )
-            ).toBe('0x48656c6c6f');
+            expect(Hex.of0x(new Uint8Array([72, 101, 108, 108, 111]))).toBe(
+                '0x48656c6c6f'
+            );
         });
     });
 

@@ -1,8 +1,8 @@
 import {
-    ZERO_BUFFER,
-    dataUtils,
+    Hex,
     unitsUtils,
-    vechain_sdk_core_ethers
+    vechain_sdk_core_ethers,
+    ZERO_BUFFER
 } from '@vechain/vechain-sdk-core';
 import { TEST_ACCOUNTS_THOR_SOLO } from '../../../fixture';
 import {
@@ -42,9 +42,7 @@ const ethGetBalanceTestCases = [
             'Should return correct balance of the test account after seeding',
         params: [
             // Zero address
-            dataUtils.toHexString(ZERO_BUFFER(20), {
-                withPrefix: true
-            }),
+            Hex.of0x(ZERO_BUFFER(20)),
             vechain_sdk_core_ethers.toQuantity(1)
         ],
         expected: '0x0'

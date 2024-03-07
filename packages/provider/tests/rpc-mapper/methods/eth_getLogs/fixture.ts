@@ -1,4 +1,4 @@
-import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
+import { Hex } from '@vechain/vechain-sdk-core';
 
 /**
  * Fixtures for eth_getLogs positive cases
@@ -11,8 +11,8 @@ const logsFixture = [
                 '0x0000000000000000000000000000456e65726779',
                 '0x0000000000000000000000000000456e65726779'
             ],
-            fromBlock: vechain_sdk_core_ethers.toQuantity(0),
-            toBlock: vechain_sdk_core_ethers.toQuantity(100000),
+            fromBlock: Hex.of0x(0),
+            toBlock: Hex.of0x(100000),
             topics: [
                 '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
                 '0x0000000000000000000000005034aa590125b64023a0262112b98d72e3c8e40e',
@@ -98,7 +98,7 @@ const logsFixture = [
                 '0x0000000000000000000000000000456e65726779',
                 '0x0000000000000000000000000000456e65726779'
             ],
-            fromBlock: vechain_sdk_core_ethers.toQuantity(0),
+            fromBlock: Hex.of0x(0),
             topics: [
                 '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
                 '0x0000000000000000000000005034aa590125b64023a0262112b98d72e3c8e40e',

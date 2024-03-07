@@ -1,5 +1,5 @@
 import { describe, test, expect } from '@jest/globals';
-import { ZERO_BUFFER, secp256k1 } from '../../src';
+import { ZERO_BUFFER, secp256k1, Hex } from '../../src';
 import {
     invalidMessageHashes,
     invalidPrivateKeys,
@@ -65,8 +65,8 @@ describe('Secp256k1', () => {
      */
     test('derive', () => {
         // Correct derivation
-        expect(secp256k1.derivePublicKey(privateKey).toString('hex')).toBe(
-            publicKey.toString('hex')
+        expect(Hex.of(secp256k1.derivePublicKey(privateKey))).toBe(
+            Hex.of(publicKey)
         );
 
         // Corrext public key length (65 bytes because first byte is 0)

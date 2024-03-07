@@ -9,6 +9,7 @@ import {
 import { type HexConfig } from './types';
 import { assert, buildError, DATA } from '@vechain/vechain-sdk-errors';
 import * as crypto from 'crypto';
+import { Hex } from '../hex';
 
 /**
  * Convert data to a hexadecimal string representation.
@@ -22,9 +23,7 @@ import * as crypto from 'crypto';
  * @returns The hexadecimal string representation of the input data.
  */
 const toHexString = (data: string | Uint8Array, config?: HexConfig): string => {
-    return `${config?.withPrefix === true ? '0x' : ''}${Buffer.from(
-        data
-    ).toString('hex')}`;
+    return config?.withPrefix === true ? Hex.of0x(data) : Hex.of(data);
 };
 
 /**
@@ -222,7 +221,7 @@ const generateRandomHexOfLength = (stringLength: number): string => {
     // Ensure the number of bytes generated is half the size of the desired hex string length
     // since each byte will be converted to two hex characters.
     const bytes = Math.ceil(stringLength / 2);
-    return crypto.randomBytes(bytes).toString('hex').substring(0, stringLength);
+    return Hex.of(crypto.randomBytes(bytes)).substring(0, stringLength);
 };
 
 export const dataUtils = {
