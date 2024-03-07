@@ -12,6 +12,12 @@
   "private": false,
   "main": "dist/index.js",
   "types": "src/index.ts",
+  "files": [
+    "dist",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
     "lint": "eslint --ext .ts src --ext .ts",
