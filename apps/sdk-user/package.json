@@ -4,10 +4,14 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts"
+    "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "@vechain/vechain-sdk-core": "0.0.15",
     "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.2"
   }
 }
