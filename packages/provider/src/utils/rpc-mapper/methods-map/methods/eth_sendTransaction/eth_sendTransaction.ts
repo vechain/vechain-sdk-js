@@ -6,7 +6,7 @@ import {
     JSONRPC
 } from '@vechain/vechain-sdk-errors';
 import { type VechainProvider } from '../../../../../providers';
-import { ethSendRawTransaction } from '../eth_sendRawTransaction/eth_sendRawTransaction';
+import { ethSendRawTransaction } from '../eth_sendRawTransaction';
 import { type TransactionObjectInput } from './types';
 
 /**
@@ -25,7 +25,7 @@ import { type TransactionObjectInput } from './types';
  *                   * data: Hash of the method signature and encoded parameters.
  *                   * maxPriorityFeePerGas: Maximum fee per gas the sender is willing to pay to miners in wei. Used in 1559 transactions.
  *                   * maxFeePerGas: The maximum total fee per gas the sender is willing to pay (includes the network / base fee and miner / priority fee) in wei. Used in 1559 transactions.
- * @provider - The provider instance to use.
+ * @param provider - The provider instance to use.
  *
  * @NOTE: If 'to' address is not provided.
  * It will be assumed that the transaction is a contract creation transaction.
