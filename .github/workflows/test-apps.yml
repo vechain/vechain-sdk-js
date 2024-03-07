@@ -1,0 +1,24 @@
+name: Test apps examples
+
+on:
+    workflow_call:
+
+jobs:
+    build:
+        name: Install and test example apps
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Install dependencies and run tests
+              run: |
+                  for dir in apps/*; do               # Iterate over each folder in /apps
+                    if [ -d "$dir" ]; then            # Check if it's a directory
+                      echo "Running yarn in $dir"
+                      cd "$dir"                       # Navigate to the directory
+                      yarn                             # Run yarn to install dependencies
+                      yarn test                       # Run yarn test to execute tests
+                      cd ..                           # Navigate back to the /apps directory
+                    fi
+                  done
