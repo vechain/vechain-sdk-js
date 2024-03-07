@@ -14,6 +14,7 @@
   "types": "src/index.ts",
   "files": [
     "dist",
+    "src",
     "package.json",
     "README.md",
     "LICENSE"
