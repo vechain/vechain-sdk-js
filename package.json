@@ -15,6 +15,7 @@
     ],
     "private": true,
     "workspaces": [
+        "apps/vechain-sdk-hardhat-integration",
         "packages/*",
         "docs"
     ],

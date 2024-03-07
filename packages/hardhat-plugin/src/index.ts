@@ -7,6 +7,7 @@ import { lazyObject } from 'hardhat/plugins';
 
 import './type-extensions';
 import { VechainSDKLogger } from '@vechain/vechain-sdk-logging';
+import { ethers } from 'ethers';
 
 /**
  * Extend the environment with provider to be able to use vechain functions
@@ -55,4 +56,14 @@ extendEnvironment((hre) => {
 
     // 3.3 - Set provider for the network
     hre.network.provider = hardhatVechainProvider;
+
+    // @ts-expect-error: Suppress TypeScript error for modifying Hardhat 'ethers'
+    hre.ethers = lazyObject(() => {
+        return {
+            ...ethers,
+            deployContract: () => {
+                console.log('deployingContract');
+            }
+        };
+    });
 });

@@ -968,75 +968,63 @@
   dependencies:
     "@types/node" "*"
 
-"@vechain/vechain-sdk-core@0.0.12":
-  version "0.0.12"
-  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-core/0.0.12/ae055829a08eee2e9679575a8a56fccfd2a68e85#ae055829a08eee2e9679575a8a56fccfd2a68e85"
-  integrity sha512-vupoxdaIClBMZalXysJDrPFlaxILg7syfCy3xNn4ArR/X7afnrgRU9CO6tpYJ9CwkG/IOdC2wwEcqgNE/dQ7Cw==
+"@vechain/vechain-sdk-core@*", "@vechain/vechain-sdk-core@0.0.15":
+  version "0.0.15"
+  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-core/0.0.15/4493033fc528a88f36b7264cc9e03e17b0def0ec#4493033fc528a88f36b7264cc9e03e17b0def0ec"
+  integrity sha512-DucKztFzadkAOyDbLfTvaZ4xfhAbS5r9BczCGbnf8IF8TplhmO11gIBdPVWmUjhwpSdu/RQPmoZI2TYyaXQaiQ==
   dependencies:
     "@ethereumjs/rlp" "^5.0.2"
     "@types/elliptic" "^6.4.18"
-    "@vechain/vechain-sdk-errors" "0.0.12"
-    blakejs "^1.2.1"
-    elliptic "^6.5.4"
-    ethers "6.11.1"
-
-"@vechain/vechain-sdk-core@0.0.13":
-  version "0.0.13"
-  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-core/0.0.13/5e999fe6b7ac178dc090febaf0d5f5691af6cae4#5e999fe6b7ac178dc090febaf0d5f5691af6cae4"
-  integrity sha512-PqWnZX4hplkT9ti4RP+MbVvG0jMqolb2OsOoTAXIUA+cvl5BqZtzP6NBErtw7VUJNItd7LJIRNAV3vyNIRWlOA==
-  dependencies:
-    "@ethereumjs/rlp" "^5.0.2"
-    "@types/elliptic" "^6.4.18"
-    "@vechain/vechain-sdk-errors" "0.0.12"
+    "@vechain/vechain-sdk-errors" "0.0.15"
     blakejs "^1.2.1"
     elliptic "^6.5.5"
     ethers "6.11.1"
 
-"@vechain/vechain-sdk-errors@0.0.12":
-  version "0.0.12"
-  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-errors/0.0.12/e921425ff5b6c4ef886d20412619d36f8edce4d5#e921425ff5b6c4ef886d20412619d36f8edce4d5"
-  integrity sha512-nb0iR8epvC31dKfxW/rOh3u442SygYpPRswhIrBWhw82x/SdJRqcyTdl/YfWjtkwe+kVRFi3hyRg0zMEUvcODg==
+"@vechain/vechain-sdk-errors@0.0.15":
+  version "0.0.15"
+  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-errors/0.0.15/63acbae160fc1d952feae2d6e671d6871cb11ccb#63acbae160fc1d952feae2d6e671d6871cb11ccb"
+  integrity sha512-7BMQjynMu2/qb5l5fmjrouHRHwRIZ0ns6wqqoFk5LM/BOBsFmU1RB1WhOlLrde4TPd3MyQ7Zktvf02zpu/YHnQ==
 
-"@vechain/vechain-sdk-hardhat-plugin@0.0.13":
-  version "0.0.13"
-  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-hardhat-plugin/0.0.13/d5c8f9940582f72432d8d31cccf94feb7843c5cb#d5c8f9940582f72432d8d31cccf94feb7843c5cb"
-  integrity sha512-9o/z7N6jXhO6S3UBQV4wOPbBkV2/TSNr9JUKW9OhTf2ZragjN/+yLa5lP17ISBxtJEg7PIGKUKYBoWXkNJ6VSw==
+"@vechain/vechain-sdk-hardhat-plugin@*":
+  version "0.0.15"
+  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-hardhat-plugin/0.0.15/fe38327c31a5946286208d495e9825e91b396459#fe38327c31a5946286208d495e9825e91b396459"
+  integrity sha512-g6e0C7VE0IWIiCkr2UDc1wesUDe550sFAiEGUIw2Yig4LxrXXJ3Wc0FtJ+d5/lAbzuzEdJxkXWqTYaBnvGp9pQ==
   dependencies:
-    "@vechain/vechain-sdk-provider" "0.0.12"
+    "@vechain/vechain-sdk-provider" "0.0.15"
 
-"@vechain/vechain-sdk-logging@0.0.12":
-  version "0.0.12"
-  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-logging/0.0.12/556a3945fe91adcda096192c100cb4c0fe718a38#556a3945fe91adcda096192c100cb4c0fe718a38"
-  integrity sha512-szGBKixq3TmlbGGF4fX4PGuadQPhTP3ITG6CAJMlYBzpZOMnbZKteWXbWL6j6N79k7WhvV0iR5iNrOP/VwMq4w==
+"@vechain/vechain-sdk-logging@0.0.15":
+  version "0.0.15"
+  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-logging/0.0.15/abb167a56e0d0e5d826108047ecf30ba68f1bc71#abb167a56e0d0e5d826108047ecf30ba68f1bc71"
+  integrity sha512-4SZE6k57zxfJ/Xf8t4EIvjxtcozGHDbDyAvKp+x897o/yAZHBPPooWmO+iRlcqydLm2zcYc8rYW8Cyo4jTr3Cw==
   dependencies:
-    "@vechain/vechain-sdk-errors" "0.0.12"
+    "@vechain/vechain-sdk-errors" "0.0.15"
 
-"@vechain/vechain-sdk-network@0.0.12":
-  version "0.0.12"
-  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-network/0.0.12/517f266ebd298e1875b6d5e8fe4a72a55d95d01a#517f266ebd298e1875b6d5e8fe4a72a55d95d01a"
-  integrity sha512-ZMNMOQwoWUa4QlaS5YJ+7sTyDJG0PD2Ap039WMNyBLsIq6H63HOEat5oVBBX2XijLdXXtUCtJKe87jA8buzmsw==
+"@vechain/vechain-sdk-network@0.0.15":
+  version "0.0.15"
+  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-network/0.0.15/fe5144a495ffda1c9b96db8f4d87a2290a70f100#fe5144a495ffda1c9b96db8f4d87a2290a70f100"
+  integrity sha512-uvJWHS1QUGLcEbcNo33g6rKGNEyZ4ATJDRRpWbi1QcrUuu53p0B2YiAbcf4pU65KXFxBhK344TsgBMrNzYgyIA==
   dependencies:
     "@types/ws" "^8.5.10"
-    "@vechain/vechain-sdk-core" "0.0.12"
-    "@vechain/vechain-sdk-errors" "0.0.12"
+    "@vechain/vechain-sdk-core" "0.0.15"
+    "@vechain/vechain-sdk-errors" "0.0.15"
     axios "^1.6.7"
 
-"@vechain/vechain-sdk-provider@0.0.12":
-  version "0.0.12"
-  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-provider/0.0.12/84bfc04cbaea9cd9e3cc94551994bb0d7b93b80e#84bfc04cbaea9cd9e3cc94551994bb0d7b93b80e"
-  integrity sha512-rHOWTDYyYnFww1/pqcbtr92/dY0zrXQK6PEMd0FrzUVgfR52KY7j29PNL5odcHcCbloia62Av59Cu8ZE2qakFA==
+"@vechain/vechain-sdk-provider@0.0.15":
+  version "0.0.15"
+  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-provider/0.0.15/b3765284a5687f705fa1bd6bcdfa3cd1ac4fef11#b3765284a5687f705fa1bd6bcdfa3cd1ac4fef11"
+  integrity sha512-YTdfE8UfVF6R8LOq7R50JnLMAhqkj0886JMFBOsX31Ijz2p9cOkP2i/woY1Fc0faYGKBzwCExCU3V827/g4GdA==
   dependencies:
-    "@vechain/vechain-sdk-core" "0.0.12"
-    "@vechain/vechain-sdk-logging" "0.0.12"
-    "@vechain/vechain-sdk-network" "0.0.12"
-    "@vechain/vechain-sdk-wallet" "0.0.12"
+    "@vechain/vechain-sdk-core" "0.0.15"
+    "@vechain/vechain-sdk-logging" "0.0.15"
+    "@vechain/vechain-sdk-network" "0.0.15"
+    "@vechain/vechain-sdk-wallet" "0.0.15"
 
-"@vechain/vechain-sdk-wallet@0.0.12":
-  version "0.0.12"
-  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-wallet/0.0.12/f21e354305817352c20f640320fa16ec0d1853b4#f21e354305817352c20f640320fa16ec0d1853b4"
-  integrity sha512-tGu7LRsW/geicMd/dhXv5/Pu/UtcKjH/V+1zV4SkX4lImN8OdSo3Gflvg0I+d3l8PJZ30+klN4a7gdPe4g4PLg==
+"@vechain/vechain-sdk-wallet@0.0.15":
+  version "0.0.15"
+  resolved "https://npm.pkg.github.com/download/@vechain/vechain-sdk-wallet/0.0.15/064886031cd0862965974db4faf1f04cfe7625ce#064886031cd0862965974db4faf1f04cfe7625ce"
+  integrity sha512-6GkDiVtjU5ZijgDPjEKbe8RPXlKdD3nl8zWaShJ6E5L8fNxH6JeDLke2d4+dROmaau4seUgUnTwHf9MRluydqg==
   dependencies:
-    "@vechain/vechain-sdk-network" "0.0.12"
+    "@vechain/vechain-sdk-network" "0.0.15"
 
 abbrev@1:
   version "1.1.1"
