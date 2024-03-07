@@ -8,8 +8,7 @@
     "vechain",
     "transaction",
     "block",
-    "contract",
-    "log"
+    "contract"
   ],
   "private": false,
   "main": "dist/index.js",
