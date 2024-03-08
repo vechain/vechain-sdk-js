@@ -1,5 +1,9 @@
+import util from 'util';
+import * as child_process from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+
+const exec = util.promisify(child_process.exec);
 
 // variable packages should be all of the child folders in the packages folder
 const packages = fs.readdirSync(path.resolve(__dirname, '../packages'));
@@ -85,10 +89,32 @@ const preparePackages = async () => {
         process.exit(1);
     }
 
+    console.log(' Install:');
+    console.log('       - 📦 Installing dependencies...');
+    await exec('yarn');
+    console.log('       - ✅  Installed!');
+
+    console.log(' Build:');
+    console.log('       - 📦 Building packages...');
+    await exec('yarn build');
+    console.log('       - ✅  Built!');
+
+    console.log(' Test:');
+    console.log('       - 🧪 Testing packages...');
+    await exec('yarn test:solo');
+    console.log('       - ✅  Success!');
+
     console.log(' Version:');
     console.log(`       - 🏷 Updating package versions to ${version}...`);
     updatePackageVersions(version);
     console.log('       - ✅  Updated!');
+
+    console.log('\n______________________________________________________\n\n');
+    console.log(' Publish:');
+    console.log(
+        `       - Run 'yarn changeset publish' to publish the packages`
+    );
+    console.log('\n______________________________________________________\n\n');
 };
 
 preparePackages().catch((e) => {

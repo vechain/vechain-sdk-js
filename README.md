@@ -160,7 +160,11 @@ This project is licensed under the [MIT license](./.github/LICENSE.md).
 
 ## Publishing
 
-The vechain SDK uses `Changesets CLI`. Execute the `yarn changeset version` and `yarn changeset publish` commands to release a new package.
+The vechain SDK uses `Changesets CLI`. To publish a new release:
+``` bash
+yarn prepare-packages X.Y.Z
+yarn changeset publish
+```
 
 ## Contact information
 
