@@ -73,7 +73,7 @@ contract SampleToken is ERC20 {
 Once the contract is compiled, we can deploy it using the vechain SDK. The following code shows how to deploy the contract:
 
 
-[example](examples/contracts/contract-create-ERC20-token.ts)
+[DeployContractSnippet](examples/contracts/contract-create-ERC20-token.ts)
 
 
 #### Transfer tokens to another address
