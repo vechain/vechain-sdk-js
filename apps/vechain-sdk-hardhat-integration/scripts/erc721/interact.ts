@@ -13,7 +13,9 @@ async function main(): Promise<void> {
 
     const receipt = await tx.wait();
 
-    console.log(`${JSON.stringify(receipt)}`);
+    receipt?.logs?.forEach((log) => {
+        console.log(GameItem.interface.parseLog(log));
+    });
 }
 
 // We recommend this pattern to be able to use async/await everywhere
