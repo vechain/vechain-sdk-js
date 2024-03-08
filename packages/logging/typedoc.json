@@ -1,4 +1,4 @@
 {
     "extends": ["../../typedoc.base.json"],
-    "entryPoints": ["src/wallet.ts"]
+    "entryPoints": ["src/logging.ts"]
   }
