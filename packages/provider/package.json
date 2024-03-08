@@ -6,12 +6,18 @@
   "license": "MIT",
   "keywords": [
     "vechain",
-    "provider",
-    "RPC"
+    "provider"
   ],
   "private": false,
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "src/index.ts",
+  "files": [
+    "dist",
+    "src",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose up -d --wait && echo '\nThor solo node started ...'",
     "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose down && echo 'Thor solo node stopped ...'",
