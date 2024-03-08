@@ -2,11 +2,12 @@
  * Implements the JSON Keystore v3 Wallet encryption, decryption, and validation functionality.
  */
 import { addressUtils } from '../address';
-import { secp256k1 } from '../secp256k1';
 import { ethers } from 'ethers';
 import { Hex, SCRYPT_PARAMS } from '../utils';
 import { type Keystore, type KeystoreAccount } from './types';
 import { assert, buildError, KEYSTORE } from '@vechain/vechain-sdk-errors';
+import * as secp256k1 from '@noble/secp256k1';
+import { assertIsValidPrivateKey } from '../assertions';
 
 /**
  * Encrypts a given private key into a keystore format using the specified password.
@@ -19,8 +20,11 @@ async function encrypt(
     privateKey: Buffer,
     password: string
 ): Promise<Keystore> {
-    // Public and Address are derived from private key
-    const derivePublicKey = secp256k1.derivePublicKey(privateKey);
+    assertIsValidPrivateKey('encrypt', privateKey, (privateKey): boolean => {
+        return secp256k1.utils.isValidPrivateKey(privateKey);
+    });
+    secp256k1.utils.isValidPrivateKey(privateKey);
+    const derivePublicKey = Buffer.from(secp256k1.getPublicKey(privateKey));
     const deriveAddress = addressUtils.fromPublicKey(derivePublicKey);
 
     // Create keystore account compatible with ethers
