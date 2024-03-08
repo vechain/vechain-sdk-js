@@ -3,10 +3,10 @@ import { ethers } from 'hardhat';
 async function main(): Promise<void> {
     const GLDTokenContract = await ethers.getContractAt(
         'GLDToken',
-        '0x3032e00E6466F395eb7B38C2819cDd1D16076503'
+        '0x50addfa20cb4ce4600b24037f9f08ef5b6edc603'
     );
     const message = await GLDTokenContract.balanceOf(
-        '0x783DE01F06b4F2a068A7b3Bb6ff3db821A08f8c1'
+        '0x3db469a79593dcc67f07de1869d6682fc1eaf535'
     );
 
     console.log(`${message}`);

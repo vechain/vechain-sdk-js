@@ -96,7 +96,7 @@ const config: HardhatUserConfig = {
             accounts: [
                 '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
             ],
-            debugMode: false,
+            debugMode: true,
             delegator: undefined,
             gas: 'auto',
             gasPrice: 'auto',
