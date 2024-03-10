@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { HEX_ADDRESS_REGEX } from '../utils';
 import { ADDRESS, assert } from '@vechain/vechain-sdk-errors';
-import * as secp256k1 from '@noble/secp256k1';
+import { secp256k1 } from '../secp256k1';
 
 /**
  * Derives a vechain thor address from a public key.
@@ -31,9 +31,7 @@ function fromPublicKey(publicKey: Buffer): string {
  *
  */
 function fromPrivateKey(privateKey: Buffer): string {
-    return addressUtils.fromPublicKey(
-        Buffer.from(secp256k1.getPublicKey(privateKey))
-    );
+    return addressUtils.fromPublicKey(secp256k1.derivePublicKey(privateKey));
 }
 
 /**

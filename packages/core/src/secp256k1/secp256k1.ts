@@ -6,6 +6,7 @@ import {
     assertIsValidPrivateKey,
     assertIsValidSecp256k1MessageHash
 } from '../assertions';
+import * as secp from '@noble/secp256k1';
 
 // Curve algorithm
 const curve = new EC('secp256k1');
@@ -55,8 +56,8 @@ function generatePrivateKey(entropy?: () => Buffer): Buffer {
  */
 function derivePublicKey(privateKey: Buffer): Buffer {
     assertIsValidPrivateKey('derivePublicKey', privateKey, isValidPrivateKey);
-    const keyPair = curve.keyFromPrivate(privateKey);
-    return Buffer.from(keyPair.getPublic().encode('array', false));
+    const publicKey = secp.getPublicKey(privateKey);
+    return Buffer.from(publicKey);
 }
 
 /**
