@@ -12,12 +12,7 @@ import {
     UNSIGNED_TRANSACTION_RLP
 } from '../utils';
 import { type TransactionBody } from './types';
-import {
-    ADDRESS,
-    assert,
-    SECP256K1,
-    TRANSACTION
-} from '@vechain/vechain-sdk-errors';
+import { ADDRESS, assert, SECP256K1, TRANSACTION } from '@vechain/sdk-errors';
 import { assertCantGetFieldOnUnsignedTransaction } from '../assertions';
 
 /**

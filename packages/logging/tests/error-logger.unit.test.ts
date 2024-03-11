@@ -1,5 +1,5 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { DATA } from '@vechain/vechain-sdk-errors';
+import { DATA } from '@vechain/sdk-errors';
 import { VechainSDKLogger } from '../src';
 
 /**

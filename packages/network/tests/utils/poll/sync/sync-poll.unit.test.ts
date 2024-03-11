@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { Poll } from '../../../../src';
-import { PollExecutionError } from '@vechain/vechain-sdk-errors';
+import { PollExecutionError } from '@vechain/sdk-errors';
 import {
     invalidOptionsParametersForPollTests,
     simpleIncrementFunction,

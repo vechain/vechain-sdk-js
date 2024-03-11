@@ -15,7 +15,7 @@ import {
     InvalidHDNodeMnemonicsError,
     InvalidHDNodePrivateKeyError,
     InvalidHDNodePublicKeyError
-} from '@vechain/vechain-sdk-errors';
+} from '@vechain/sdk-errors';
 
 /**
  * Mnemonic tests

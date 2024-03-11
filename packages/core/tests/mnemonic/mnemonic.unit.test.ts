@@ -16,7 +16,7 @@ import { randomBytes } from 'crypto';
 import {
     InvalidHDNodeDerivationPathError,
     InvalidHDNodeMnemonicsError
-} from '@vechain/vechain-sdk-errors';
+} from '@vechain/sdk-errors';
 
 /**
  * Mnemonic tests

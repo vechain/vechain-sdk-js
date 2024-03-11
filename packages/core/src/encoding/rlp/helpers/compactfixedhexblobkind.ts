@@ -1,4 +1,4 @@
-import { assert, RLP } from '@vechain/vechain-sdk-errors';
+import { assert, RLP } from '@vechain/sdk-errors';
 import { Hex } from '../../../utils';
 
 /**

@@ -2,7 +2,7 @@ import { bloom as bloomInstance } from '../../bloom';
 import { dataUtils } from '../data';
 import { addressUtils } from '../../address';
 import { BLOOM_REGEX_LOWERCASE, BLOOM_REGEX_UPPERCASE } from '../const';
-import { ADDRESS, assert, BLOOM, DATA } from '@vechain/vechain-sdk-errors';
+import { ADDRESS, assert, BLOOM, DATA } from '@vechain/sdk-errors';
 
 /**
  * Checks if a given string adheres to the Bloom filter format.

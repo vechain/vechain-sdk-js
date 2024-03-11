@@ -1,4 +1,4 @@
-import { assert, RLP as RLPError, RLP } from '@vechain/vechain-sdk-errors';
+import { assert, RLP as RLPError, RLP } from '@vechain/sdk-errors';
 import { type RLPInput } from '../../encoding';
 
 /**

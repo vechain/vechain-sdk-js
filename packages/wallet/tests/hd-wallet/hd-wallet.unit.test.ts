@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { HDWallet } from '../../src';
-import { DelegationHandler } from '@vechain/vechain-sdk-network';
+import { DelegationHandler } from '@vechain/sdk-network';
 import { hdNodeFixtures } from './fixture';
 
 /**

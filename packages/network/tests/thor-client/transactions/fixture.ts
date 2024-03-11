@@ -3,7 +3,7 @@ import {
     unitsUtils,
     networkInfo,
     coder
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import { BUILT_IN_CONTRACTS } from '../../built-in-fixture';
 import {
     TESTING_CONTRACT_ABI,
@@ -14,7 +14,7 @@ import {
 import {
     InvalidSecp256k1PrivateKeyError,
     TransactionDelegationError
-} from '@vechain/vechain-sdk-errors';
+} from '@vechain/sdk-errors';
 import { type SignTransactionOptions } from '../../../src';
 
 /**

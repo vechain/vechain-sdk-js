@@ -1,4 +1,4 @@
-# @vechain/vechain-sdk-errors
+# @vechain/sdk-errors
 
 Welcome to the **errors package** of the vechain SDK!
 

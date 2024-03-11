@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import { estimateGasTestCases, invalidEstimateGasTestCases } from './fixture';
 import { ThorClient } from '../../../src';
 import { soloNetwork } from '../../fixture';
-import { generateRandomValidAddress } from '@vechain/vechain-sdk-core/tests/fixture';
+import { generateRandomValidAddress } from '@vechain/sdk-core/tests/fixture';
 
 /**
  * Gas module tests.

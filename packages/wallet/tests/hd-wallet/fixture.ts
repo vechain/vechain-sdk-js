@@ -1,5 +1,5 @@
-import { VET_DERIVATION_PATH } from '@vechain/vechain-sdk-core';
-import { type SignTransactionOptions } from '@vechain/vechain-sdk-network';
+import { VET_DERIVATION_PATH } from '@vechain/sdk-core';
+import { type SignTransactionOptions } from '@vechain/sdk-network';
 
 /**
  * HDNode fixtures

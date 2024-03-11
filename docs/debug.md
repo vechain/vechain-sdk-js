@@ -22,7 +22,7 @@ In this example the `thorClient` connects to the *testnet* to retrieve the stora
 as `input` parameter.
 
 ```typescript { name=debug-retrieve-storage-range, category=example }
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
 
 // 1 - Create thor client for testnet
 const _testnetUrl = 'https://testnet.vechain.org';
@@ -110,7 +110,7 @@ In this example the `thorClient` connects to the *testnet* to trace the contract
 the `input` parameter.
 
 ```typescript { name=debug-trace-contract-call, category=example }
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
 
 // 1 - Create thor client for testnet
 const _testnetUrl = 'https://testnet.vechain.org';
@@ -172,7 +172,7 @@ In this example the `thorClient` connects to the *testnet* to trace the clause a
 the `input` parameter.
 
 ```typescript { name=debug-trace-contract-call, category=example }
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
 
 // 1 - Create thor client for testnet
 const _testnetUrl = 'https://testnet.vechain.org';

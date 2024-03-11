@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
-import { ThorClient } from '@vechain/vechain-sdk-network';
+import { ThorClient } from '@vechain/sdk-network';
 import { testNetwork } from '../../../fixture';
 import { logsFixture } from './fixture';
 import { type LogsRPC } from '../../../../src/utils/formatter/logs';
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { InvalidDataTypeError } from '@vechain/sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_getLogs' method

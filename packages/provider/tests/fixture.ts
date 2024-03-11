@@ -1,9 +1,6 @@
-import {
-    HttpClient,
-    type SignTransactionOptions
-} from '@vechain/vechain-sdk-network';
-import { BaseWallet } from '@vechain/vechain-sdk-wallet';
-import { secp256k1 } from '@vechain/vechain-sdk-core';
+import { HttpClient, type SignTransactionOptions } from '@vechain/sdk-network';
+import { BaseWallet } from '@vechain/sdk-wallet';
+import { secp256k1 } from '@vechain/sdk-core';
 
 /**
  * Url of the testnet fixture

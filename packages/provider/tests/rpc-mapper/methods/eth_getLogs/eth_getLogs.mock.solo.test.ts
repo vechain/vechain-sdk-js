@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
-import { ThorClient } from '@vechain/vechain-sdk-network';
+import { ThorClient } from '@vechain/sdk-network';
 import { soloNetwork } from '../../../fixture';
 import { type LogsRPC } from '../../../../src/utils/formatter/logs';
-import { ProviderRpcError } from '@vechain/vechain-sdk-errors';
+import { ProviderRpcError } from '@vechain/sdk-errors';
 import { logsFixture } from './fixture';
 
 /**

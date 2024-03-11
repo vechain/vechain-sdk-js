@@ -11,7 +11,7 @@ import {
     TransactionBodyError,
     TransactionDelegationError,
     TransactionNotSignedError
-} from '@vechain/vechain-sdk-errors';
+} from '@vechain/sdk-errors';
 
 /**
  * Transaction handler tests

@@ -1,7 +1,7 @@
 import { addressUtils } from '../../address';
 import { secp256k1 } from '../../secp256k1';
 import { Transaction } from '../transaction';
-import { assert, TRANSACTION } from '@vechain/vechain-sdk-errors';
+import { assert, TRANSACTION } from '@vechain/sdk-errors';
 import { type TransactionBody } from '../types';
 import { assertIsValidTransactionSigningPrivateKey } from '../../assertions';
 

@@ -3,7 +3,7 @@ import {
     coder,
     type FunctionFragment,
     type InterfaceAbi
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import type {
     SendTransactionResult,
     TransactionReceipt
@@ -14,7 +14,7 @@ import type {
     ContractCallResult,
     ContractTransactionOptions
 } from '../types';
-import { buildError, ERROR_CODES } from '@vechain/vechain-sdk-errors';
+import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 import type { ContractFunctionRead, ContractFunctionTransact } from './types';
 
 /**

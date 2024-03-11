@@ -7,7 +7,7 @@ import {
     THOR_ID_LENGTH
 } from '../const';
 import { type HexConfig } from './types';
-import { assert, buildError, DATA } from '@vechain/vechain-sdk-errors';
+import { assert, buildError, DATA } from '@vechain/sdk-errors';
 import * as crypto from 'crypto';
 import { Hex } from '../hex';
 

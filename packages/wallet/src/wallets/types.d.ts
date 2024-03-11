@@ -1,4 +1,4 @@
-import { type SignTransactionOptions } from '@vechain/vechain-sdk-network';
+import { type SignTransactionOptions } from '@vechain/sdk-network';
 
 /**
  * Represent a single account in a wallet.

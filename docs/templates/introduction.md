@@ -9,7 +9,7 @@ This SDK provides developers with tools and resources to integrate vechain block
 To begin using the vechain SDK, run the following command:
 
 ``` bash
-npm install @vechain/vechain-sdk
+npm install @vechain/sdk
 ```
 
 ## Contributing

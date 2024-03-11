@@ -1,4 +1,4 @@
-# @vechain/vechain-sdk-logging
+# @vechain/sdk-logging
 
 Welcome to the **logging package** of the vechain SDK!
 

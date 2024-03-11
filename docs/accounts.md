@@ -21,7 +21,7 @@ BIP-39 provides several benefits:
  - **Security**: By generating private keys from a mnemonic phrase, users can securely back up and restore their wallets. As long as the mnemonic phrase is kept secure, users can recover their funds even if their original device is lost or damaged.
 
 ```typescript { name=bip39, category=example }
-import { mnemonic } from '@vechain/vechain-sdk-core';
+import { mnemonic } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // 1 - Generate BIP39 mnemonic words, default to 12 words (128bit strength)
@@ -55,7 +55,7 @@ This hierarchy provides several advantages, including:
  - **Privacy**: HD wallets provide improved privacy by generating a new public key for each transaction. This prevents observers from linking multiple transactions to a single wallet address.
 
 ```typescript { name=bip32, category=example }
-import { HDNode, mnemonic } from '@vechain/vechain-sdk-core';
+import { HDNode, mnemonic } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // 1 - Generate BIP39 mnemonic words, default to 12 words (128bit strength)
@@ -98,7 +98,7 @@ In the context of hierarchical deterministic wallets, an HDNode instance represe
 Generating an HDNode instance from an extended public key (xpub) allows developers to derive child public keys for purposes such as address generation, transaction monitoring, or building hierarchical structures within the wallet. This functionality is particularly useful in scenarios where the private keys are stored securely offline, and only public keys are exposed to the network for enhanced security.
 
 ```typescript { name=pubkey, category=example }
-import { HDNode } from '@vechain/vechain-sdk-core';
+import { HDNode } from '@vechain/sdk-core';
 
 // 1 - Create HD node from xpub (extended private key) and chain code
 
@@ -137,7 +137,7 @@ On the other hand, Keystore is employed for encrypting private keys in accordanc
 Through the use of mnemonics and keystore, vechain SDK ensures secure and user-friendly account handling. Mnemonics allow for easy generation of private keys, while keystore provides an additional layer of protection by encrypting the private keys in a standardized manner as per Ethereum's security practices. These functionalities collectively contribute to a robust and secure approach to managing accounts within the Thor ecosystem.
 
 ```typescript { name=keystore, category=example }
-import { keystore, secp256k1 } from '@vechain/vechain-sdk-core';
+import { keystore, secp256k1 } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // 1 - Create private key using Secp256k1

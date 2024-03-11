@@ -1,12 +1,7 @@
-import { type ThorClient } from '@vechain/vechain-sdk-network';
-import {
-    assert,
-    buildProviderError,
-    DATA,
-    JSONRPC
-} from '@vechain/vechain-sdk-errors';
+import { type ThorClient } from '@vechain/sdk-network';
+import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
 import { type BlocksRPC } from '../../../../formatter';
-import { dataUtils } from '@vechain/vechain-sdk-core';
+import { dataUtils } from '@vechain/sdk-core';
 import { ethGetBlockByNumber } from '../eth_getBlockByNumber';
 
 /**

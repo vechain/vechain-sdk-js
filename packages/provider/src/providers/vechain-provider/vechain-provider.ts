@@ -3,12 +3,7 @@ import {
     type EIP1193ProviderMessage,
     type EIP1193RequestArguments
 } from '../../eip1193';
-import {
-    assert,
-    buildProviderError,
-    DATA,
-    JSONRPC
-} from '@vechain/vechain-sdk-errors';
+import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
 import {
     type CompressedBlockDetail,
     DelegationHandler,
@@ -16,14 +11,14 @@ import {
     Poll,
     type SignTransactionOptions,
     type ThorClient
-} from '@vechain/vechain-sdk-network';
+} from '@vechain/sdk-network';
 import {
     ethGetLogs,
     POLLING_INTERVAL,
     RPC_METHODS,
     RPCMethodsMap
 } from '../../utils';
-import { type Wallet, type WalletAccount } from '@vechain/vechain-sdk-wallet';
+import { type Wallet, type WalletAccount } from '@vechain/sdk-wallet';
 import {
     type FilterOptions,
     type SubscriptionEvent,
@@ -35,7 +30,7 @@ import {
     Hex,
     type TransactionClause,
     vechain_sdk_core_ethers
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import type { TransactionObjectInput } from '../../utils/rpc-mapper/methods-map/methods/eth_sendTransaction/types';
 import { randomBytes } from 'crypto';
 

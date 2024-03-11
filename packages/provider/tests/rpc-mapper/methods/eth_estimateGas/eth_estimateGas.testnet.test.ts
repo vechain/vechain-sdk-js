@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { ThorClient } from '@vechain/vechain-sdk-network';
+import { ThorClient } from '@vechain/sdk-network';
 import { testNetwork } from '../../../fixture';
 import { positiveCasesFixtures, negativeCasesFixtures } from './fixture';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';

@@ -1,4 +1,4 @@
-import { coder, unitsUtils } from '@vechain/vechain-sdk-core';
+import { coder, unitsUtils } from '@vechain/sdk-core';
 import { BUILT_IN_CONTRACTS } from '../../built-in-fixture';
 import {
     TESTING_CONTRACT_ABI,
@@ -6,7 +6,7 @@ import {
     TESTING_CONTRACT_ADDRESS
 } from '../../fixture';
 import { transfer1VTHOClause } from '../transactions/fixture';
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { InvalidDataTypeError } from '@vechain/sdk-errors';
 
 /**
  * Test cases for `estimateGas` method

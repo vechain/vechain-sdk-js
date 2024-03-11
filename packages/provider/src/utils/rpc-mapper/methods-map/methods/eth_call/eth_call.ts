@@ -2,13 +2,8 @@ import {
     type SimulateTransactionClause,
     type SimulateTransactionOptions,
     type ThorClient
-} from '@vechain/vechain-sdk-network';
-import {
-    assert,
-    buildProviderError,
-    DATA,
-    JSONRPC
-} from '@vechain/vechain-sdk-errors';
+} from '@vechain/sdk-network';
+import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
 import { getCorrectBlockNumberRPCToVechain } from '../../../../const';
 import { type TransactionObjectInput } from './types';
 

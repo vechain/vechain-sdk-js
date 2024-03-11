@@ -1,5 +1,5 @@
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
-import { type TracerName } from '@vechain/vechain-sdk-network/src/thor-client/debug';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
+import { type TracerName } from '@vechain/sdk-network/src/thor-client/debug';
 
 // 1 - Create thor client for testnet
 const _testnetUrl = 'https://testnet.vechain.org';

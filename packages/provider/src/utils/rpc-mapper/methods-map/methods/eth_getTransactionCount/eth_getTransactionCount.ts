@@ -1,6 +1,6 @@
-import { assert, DATA } from '@vechain/vechain-sdk-errors';
+import { assert, DATA } from '@vechain/sdk-errors';
 import { randomBytes } from 'crypto';
-import { addressUtils, Hex } from '@vechain/vechain-sdk-core';
+import { addressUtils, Hex } from '@vechain/sdk-core';
 
 /**
  * RPC Method eth_getTransactionCount implementation
