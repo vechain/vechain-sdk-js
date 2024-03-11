@@ -1,4 +1,3 @@
-import { randomBytes } from 'crypto';
 import { PRIVATE_KEY_MAX_VALUE, SIGNATURE_LENGTH, ZERO_BUFFER } from '../utils';
 import { ec as EC } from 'elliptic';
 import { assert, SECP256K1 } from '@vechain/vechain-sdk-errors';
@@ -39,12 +38,15 @@ function isValidPrivateKey(key: Buffer): boolean {
  * @returns Private key generated
  */
 function generatePrivateKey(entropy?: () => Buffer): Buffer {
-    entropy = entropy ?? ((): Buffer => randomBytes(32));
-    let privateKey: Buffer;
-    do {
-        privateKey = entropy();
-    } while (!isValidPrivateKey(privateKey));
-    return privateKey;
+    if (entropy == null) {
+        return Buffer.from(secp.utils.randomPrivateKey());
+    } else {
+        let privateKey: Buffer;
+        do {
+            privateKey = entropy();
+        } while (!isValidPrivateKey(privateKey));
+        return privateKey;
+    }
 }
 
 /**
