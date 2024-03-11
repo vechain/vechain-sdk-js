@@ -1,6 +1,6 @@
 {
   "name": "@vechain/vechain-sdk-wallet",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "This module provides functionality for creating and managing vechain wallets, as well as signing and broadcasting transactions securely on the VechainThor blockchain",
   "author": "vechain Foundation",
   "license": "MIT",
@@ -11,7 +11,14 @@
   ],
   "private": false,
   "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "types": "src/index.ts",
+  "files": [
+    "dist",
+    "src",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
     "lint": "eslint --ext .ts src --ext .ts tests",
@@ -21,6 +28,6 @@
     "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
   },
   "dependencies": {
-    "@vechain/vechain-sdk-network": "0.0.15"
+    "@vechain/vechain-sdk-network": "0.0.16"
   }
 }
