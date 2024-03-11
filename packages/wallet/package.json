@@ -1,6 +1,6 @@
 {
   "name": "@vechain/vechain-sdk-wallet",
-  "version": "0.0.16",
+  "version": "1.0.0-beta.0",
   "description": "This module provides functionality for creating and managing vechain wallets, as well as signing and broadcasting transactions securely on the VechainThor blockchain",
   "author": "vechain Foundation",
   "license": "MIT",
@@ -28,6 +28,6 @@
     "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
   },
   "dependencies": {
-    "@vechain/vechain-sdk-network": "0.0.16"
+    "@vechain/vechain-sdk-network": "*"
   }
 }
