@@ -44,7 +44,7 @@ console.log('New block:', newBlock);
 ```
 
 ### Observing Balance Changes Post-Transfer
-Here, we explore the approach to monitor balance changes subsequent to a transfer. Synchronous polling leverages the waitUntil function to detect balance changes following a transfer.
+Here, we explore the approach to monitor balance changes after a transfer. Synchronous polling leverages the waitUntil function to detect balance changes following a transfer.
 
 ```typescript { name=sync-poll-wait-balance-update, category=example }
 import { HttpClient, Poll, ThorClient } from '@vechain/vechain-sdk-network';

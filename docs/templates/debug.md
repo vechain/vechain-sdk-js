@@ -11,7 +11,7 @@ The module provides methods to interact with the debug end points provided by
 
 * [**Retrieve Storage Range**](#retrieve-storage-range) - http://localhost:8669/doc/swagger-ui/#/Debug/post_debug_storage_range 
 * [**Trace Contract Call**](#trace-contract-call) - http://localhost:8669/doc/swagger-ui/#/Debug/post_debug_tracers_call
-* [**Trace Transction Cluase**](#trace-transaction-clause) - http://localhost:8669/doc/swagger-ui/#/Debug/post_debug_tracers
+* [**Trace Transaction Clause**](#trace-transaction-clause) - http://localhost:8669/doc/swagger-ui/#/Debug/post_debug_tracers
 
 supposing Thor is running at `localhost`, 
 else change `localhost` with the IP address of the [Swagger](https://swagger.io/) service.
@@ -114,7 +114,7 @@ the `input` parameter.
 The `traceTransactionClause` method trace the transactions specified in the clause at the
 coordinates expressed in the `input` parameter.
 
-In this example the `thorClient` connects to the *testnet* to trace the clase at the coordinates specified in
+In this example the `thorClient` connects to the *testnet* to trace the clause at the coordinates specified in
 the `input` parameter.
 
 [example](examples/debug/debug-trace-contract-call.ts)

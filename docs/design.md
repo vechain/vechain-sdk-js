@@ -5,7 +5,7 @@ Comprehensive diagrams, following the C4 model, are available for reference in t
 
 ## Introduction
 
-Basically the `vechain-sdk` is a monorepo divided into different packages packages:
+Basically the `vechain-sdk` is a monorepo divided into different packages:
 
 - **Core Package**
 - **Error Package**
