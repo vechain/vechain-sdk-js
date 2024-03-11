@@ -1,6 +1,6 @@
 {
   "name": "@vechain/vechain-sdk-core",
-  "version": "1.0.0-beta",
+  "version": "1.0.0-beta.0",
   "description": "Includes modules for fundamental operations like hashing and cryptography",
   "author": "vechain Foundation",
   "license": "MIT",

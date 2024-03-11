@@ -1,6 +1,6 @@
 {
   "name": "@vechain/vechain-sdk-rpc-proxy",
-  "version": "1.0.0-beta",
+  "version": "1.0.0-beta.0",
   "description": "Proxy Thor's RESTful API to Eth JSON-RPC",
   "author": "vechain Foundation",
   "license": "MIT",
