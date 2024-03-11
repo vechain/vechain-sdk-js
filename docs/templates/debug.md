@@ -11,7 +11,7 @@ The module provides methods to interact with the debug end points provided by
 
 * [**Retrieve Storage Range**](#retrieve-storage-range) - https://testnet.vechain.org/doc/swagger-ui/#/Debug/post_debug_storage_range 
 * [**Trace Contract Call**](#trace-contract-call) - https://testnet.vechain.org/doc/swagger-ui/#/Debug/post_debug_tracers_call
-* [**Trace Transction Cluase**](#trace-transaction-clause) - https://testnet.vechain.org/doc/swagger-ui/#/Debug/post_debug_tracers
+* [**Trace Transaction Clause**](#trace-transaction-clause) - https://testnet.vechain.org/doc/swagger-ui/#/Debug/post_debug_tracers
 
 ## Retrieve Storage Range
 

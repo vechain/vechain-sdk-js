@@ -14,15 +14,15 @@ The Thor-client extends its functionality to provide seamless access to account-
 
 In this example, the code initializes a Thor client for the VechainThor testnet network and demonstrates three crucial methods for interacting with accounts:
 
- - `getAccount(address: string): Promise<Account>`
+ - `getAccount(address: string, options?: AccountInputOptions): Promise<AccountDetail>`
 
 Retrieves details of a specific account based on its address. The provided code fetches details for the account with the address '0x5034aa590125b64023a0262112b98d72e3c8e40e'.
 
- - `getBytecode(address: string): Promise<string>`
+ - `getBytecode(address: string, options?: AccountInputOptions): Promise<string>`
 
 Fetches the bytecode of the smart contract associated with the given account address.
 
- - `getStorageAt(address: string, key: string): Promise<string>`
+ - `getStorageAt(address: string, position: string, options?: AccountInputOptions): Promise<string>`
 
 Retrieves the value stored at a specific key in the storage of the smart contract associated with the given account address.
 
@@ -36,15 +36,15 @@ The Thor-client facilitates easy interaction with blocks on the VechainThor netw
 
 In this example, the code initializes a Thor client for the VechainThor testnet network and showcases three essential methods for interacting with blocks:
 
- - `getBlockCompressed(height: number): Promise<Block>`
+ - `getBlockCompressed(revision: string | number): Promise<CompressedBlockDetail | null>`
 
 Retrieves details of a specific block based on its height. In the provided code, it fetches details for the block at height 1.
 
- - `getBestBlockExpanded(): Promise<Block>`
+ - `getBestBlockExpanded(): Promise<ExpandedBlockDetail | null>`
 
 Fetches details of the latest block on the VechainThor network, representing the best-known block.
 
- - `getFinalBlock(): Promise<Block>`
+ - `getFinalBlock(): Promise<CompressedBlockDetail | null>`
 
 Retrieves details of the finalized block, which is the latest block confirmed by the network consensus.
 
@@ -60,13 +60,13 @@ In this example, the code initializes a Thor client for the VechainThor testnet 
 
  - `filterEventLogs(
         filterOptions: FilterEventLogsOptions
-    ): Promise<EventLogs>`
+    ): Promise<EventLogs[]>`
 
 The `filterEventLogs` method simplifies the process of retrieving event logs from the VechainThor network. Developers can set criteria for the block range, apply pagination options, and define filters based on specific addresses and topics. The result is an array of event logs that match the specified criteria.
 
  - `filterTransferLogs(
         filterOptions: FilterTransferLogsOptions
-    ): Promise<TransferLogs>`
+    ): Promise<TransferLogs[]>`
 
 The `filterTransferLogs` method provides a streamlined way to retrieve transfer logs from the VechainThor network. Developers can define criteria, including the block range, pagination options, and filters for transaction origin, sender, and recipient. The method returns an array of transfer logs that meet the specified criteria.
 
@@ -90,7 +90,7 @@ Thor-client provides methods for developers to interact with transactions on the
 
 In this example, the code initializes a Thor client for the VechainThor testnet network and showcases three essential methods for interacting with transactions:
 
- - sendTransaction(raw: string): Promise<TransactionSendResult>
+ - `sendTransaction(signedTx: Transaction): Promise<SendTransactionResult>`
 
 The `sendTransaction` method enables developers to broadcast a raw transaction to the VechainThor network. This method is crucial for initiating new transactions and executing smart contract functions.
 
@@ -121,6 +121,7 @@ The following code demonstrates how to use Thor-client with the fee delegation f
 The `GasModule` in Thor-client is designed to handle gas-related operations on the VechainThor blockchain. Gas is a crucial aspect of executing transactions on the blockchain, representing the computational and storage resources consumed during transaction processing. This module provides convenient methods for estimating the gas cost of a transaction, allowing developers to optimize their interactions with the VechainThor network.
 
 ### gasPadding
-The `gasPadding` option is a percentage of gas to add on top of the estimated gas. The value must be between (0, 1].
+
+The `gasPadding` option adds a safety margin to estimated gas costs. It allows developers to specify a percentage increase in gas estimation to account for potential variations or complexities in transaction execution. This helps ensure transaction success by providing extra resources while managing costs effectively.
 
 [example](examples/thor-client/gas.ts)
