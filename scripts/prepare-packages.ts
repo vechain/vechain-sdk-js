@@ -90,30 +90,28 @@ const preparePackages = async () => {
     }
 
     console.log(' Install:');
-    console.log('       - 📦 Installing dependencies...');
+    console.log('\t- 📦 Installing dependencies...');
     await exec('yarn');
-    console.log('       - ✅  Installed!');
+    console.log('\t- ✅  Installed!');
 
     console.log(' Build:');
-    console.log('       - 📦 Building packages...');
+    console.log('\t- 📦 Building packages...');
     await exec('yarn build');
-    console.log('       - ✅  Built!');
+    console.log('\t- ✅  Built!');
 
     console.log(' Test:');
-    console.log('       - 🧪 Testing packages...');
+    console.log('\t- 🧪 Testing packages...');
     await exec('yarn test:solo');
-    console.log('       - ✅  Success!');
+    console.log('\t- ✅  Success!');
 
     console.log(' Version:');
-    console.log(`       - 🏷 Updating package versions to ${version}...`);
+    console.log(`\t- 🏷 Updating package versions to ${version}...`);
     updatePackageVersions(version);
-    console.log('       - ✅  Updated!');
+    console.log('\t- ✅  Updated!');
 
     console.log('\n______________________________________________________\n\n');
     console.log(' Publish:');
-    console.log(
-        `       - Run 'yarn changeset publish' to publish the packages`
-    );
+    console.log(`\t- Run 'yarn changeset publish' to publish the packages`);
     console.log('\n______________________________________________________\n\n');
 };
 

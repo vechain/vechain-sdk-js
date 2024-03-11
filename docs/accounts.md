@@ -55,7 +55,7 @@ This hierarchy provides several advantages, including:
  - **Privacy**: HD wallets provide improved privacy by generating a new public key for each transaction. This prevents observers from linking multiple transactions to a single wallet address.
 
 ```typescript { name=bip32, category=example }
-import { mnemonic, HDNode } from '@vechain/vechain-sdk-core';
+import { HDNode, mnemonic } from '@vechain/vechain-sdk-core';
 import { expect } from 'expect';
 
 // 1 - Generate BIP39 mnemonic words, default to 12 words (128bit strength)
@@ -80,7 +80,7 @@ for (let i = 0; i < 5; i++) {
     // children 4 0x...
 }
 
-// In recovery process, validation is recommended
+// In the recovery process, validation is recommended
 expect(mnemonic.validate(randomMnemonic)).toBeTruthy();
 
 ```
