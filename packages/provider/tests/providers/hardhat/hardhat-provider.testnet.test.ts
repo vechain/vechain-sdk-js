@@ -21,7 +21,11 @@ describe('Hardhat provider tests - testnet', () => {
      */
     beforeEach(() => {
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        provider = new HardhatVechainProvider(new BaseWallet([]), testnetUrl);
+        provider = new HardhatVechainProvider(
+            new BaseWallet([]),
+            testnetUrl,
+            (message: string, parent?: Error) => new Error(message, parent)
+        );
     });
 
     /**

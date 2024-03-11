@@ -19,7 +19,11 @@ describe('Hardhat provider tests', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        provider = new HardhatVechainProvider(new BaseWallet([]), mainnetUrl);
+        provider = new HardhatVechainProvider(
+            new BaseWallet([]),
+            mainnetUrl,
+            (message: string, parent?: Error) => new Error(message, parent)
+        );
     });
 
     /**

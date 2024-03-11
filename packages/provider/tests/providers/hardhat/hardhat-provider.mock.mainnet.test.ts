@@ -22,6 +22,7 @@ describe('Hardhat provider tests', () => {
         providerInDebugMode = new HardhatVechainProvider(
             new BaseWallet([]),
             mainnetUrl,
+            (message: string, parent?: Error) => new Error(message, parent),
             true
         );
     });

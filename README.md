@@ -24,7 +24,7 @@ Welcome to the vechain SDK repository! Here's a breakdown of our organized struc
 - `./docs`: Your go-to destination for comprehensive documentation. Explore demonstrative examples showcasing the prowess of our SDK. Knowledge is power, and our docs are here to enlighten your path.
 - `./packages`: A hub for our monorepo packages, each serving a distinct purpose:
    - `./packages/core`: The heart of the SDK, housing essential modules for fundamental operations like hashing and cryptography. Dive into the core for the building blocks of your decentralized dreams.
-   - `./packages/errors`: Delve into the world of error handling with the errors package. This module is dedicated to managing and customizing errors within the SDK, ensuring your development experience remains resilient and smooth.
+   - `./packages/errors`: Delve into the world of error handling with the error package. This module is dedicated to managing and customizing errors within the SDK, ensuring your development experience remains resilient and smooth.
    - `./packages/hardhat-plugin`: Seamlessly integrate the vechain SDK with Hardhat, the Ethereum development environment. This plugin provides a bridge between the vechain SDK and the Ethereum ecosystem, enabling you to leverage the best of both worlds.
    - `./packages/logging`: The logging package provides a simple and easy-to-use logging system for the vechain SDK. This module is dedicated to managing and customizing logs within the SDK, ensuring your development experience remains transparent and insightful.
    - `./packages/network`: Embark on a journey through the network module, your gateway to all things related to blockchain interaction and transaction dissemination. Here, the vechain SDK connects you seamlessly to the VechainThor blockchain.
@@ -32,7 +32,7 @@ Welcome to the vechain SDK repository! Here's a breakdown of our organized struc
    - `./packages/wallet`: Secure your assets and manage transactions with ease using the wallet package. This module provides functionality for creating and managing vechain wallets, as well as signing and broadcasting transactions securely on the VechainThor blockchain.
    - `./packages/rpc-proxy`: This package is designed to bridge the gap between Thor's RESTful API and Ethereum's JSON-RPC.
 
-Explore, experiment, and let the vechain SDK empower your blockchain adventures!
+Explore, experiment, and let the vechain SDK empowers your blockchain adventures!
 
 ## SDK Development
 
@@ -64,7 +64,9 @@ This section provides guidance on conducting integration tests using a local tho
 
 ### Setting Up
 
-The integration tests interact with a local thor-solo node. This node utilizes the `thor-solo/instance-a4988aba7aea69f6-v3/main.db` data directory, which is pre-configured with a block history and 20 seeded accounts for testing.
+The integration tests interact with a local thor-solo node.
+This node uses the `thor-solo/instance-a4988aba7aea69f6-v3/main.db` data directory,
+which is pre-configured with a block history and 20 seeded accounts for testing.
 
 ### Running Tests
 
@@ -109,7 +111,9 @@ For advanced testing scenarios, you may require a custom data starting point wit
 
 ## Documentation and Examples
 
-On the `/docs` folder you cna find the comprehensive **SDK documentation** and executable code examples. We've designed these examples not just for learning purposes but also as integration tests, ensuring that the provided code snippets are always functional and up-to-date.
+On the `/docs` folder you can find the comprehensive **SDK documentation** and executable code examples.
+We've designed these examples not just for learning purposes but also as integration tests,
+ensuring that the provided code snippets are always functional and up to date.
 
 ### Examples
 
@@ -132,7 +136,7 @@ For instance:
 
 The above link, when processed during documentation build, expands into the content of the linked file, ensuring our documentation is as practical as possible.
 
-Note: links that are to be expanded must have text \[example]
+Note: links that are to be expanded must have a text \[example]
 
 #### Code Snippets
 
@@ -157,7 +161,6 @@ yarn build
 ### Architecture diagrams
 
 For a comprehensive overview of the package structure, please refer to our [Architecture Diagrams](./docs/diagrams/) located in the documentation directory.
-
 
 - You can also create and test your examples using `yarn test:examples` command (with solo `yarn test:examples:solo`).
 
