@@ -15,6 +15,9 @@ const privateKeyDeployer =
 
 // Create thor client for solo network
 const _soloUrl = 'http://localhost:8669/';
+
+// START_SNIPPET: DeployContractSnippet
+
 const soloNetwork = new HttpClient(_soloUrl);
 const thorSoloClient = new ThorClient(soloNetwork);
 
@@ -43,3 +46,5 @@ const balance = await contract.read.balanceOf(
 
 // Asserting that the initial balance of the deployer is the expected amount (1e24)
 expect(balance).toEqual([unitsUtils.parseUnits('1', 24)]);
+
+// END_SNIPPET: DeployContractSnippet

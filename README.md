@@ -1,15 +1,15 @@
 <div align="center">
-  <h1><code>vechain-sdk</code></h1>
+  <h1><code>vechain-sdk-js</code></h1>
   <p>
     <strong>The official JavaScript SDK for vechain.</strong>
   </p>
   <p>
-    <a href="https://github.com/vechain/vechain-sdk/actions/workflows/on-main.yml"><img src="https://github.com/vechain/vechain-sdk/actions/workflows/on-main.yml/badge.svg" alt="main-ci"></a>
+    <a href="https://github.com/vechain/vechain-sdk-js/actions/workflows/on-main.yml"><img src="https://github.com/vechain/vechain-sdk-js/actions/workflows/on-main.yml/badge.svg" alt="main-ci"></a>
     <a href="https://sonarcloud.io/project/overview?id=vechain_vechain-sdk"><img src="https://sonarcloud.io/api/project_badges/measure?project=vechain_vechain-sdk&metric=alert_status&token=c67db88ec1549a9d15bb1bcc9bafc8ca8b1dbfcb" alt="Quality Gate Status"></a>
     <a href="https://sonarcloud.io/project/overview?id=vechain_vechain-sdk"><img src="https://sonarcloud.io/api/project_badges/measure?project=vechain_vechain-sdk&metric=coverage&token=c67db88ec1549a9d15bb1bcc9bafc8ca8b1dbfcb" alt="Coverage"></a>
     <a href="https://sonarcloud.io/project/overview?id=vechain_vechain-sdk"><img src="https://sonarcloud.io/api/project_badges/measure?project=vechain_vechain-sdk&metric=security_rating&token=c67db88ec1549a9d15bb1bcc9bafc8ca8b1dbfcb" alt="Security Rating"></a>
     <a href="https://sonarcloud.io/project/overview?id=vechain_vechain-sdk"><img src="https://sonarcloud.io/api/project_badges/measure?project=vechain_vechain-sdk&metric=sqale_rating&token=c67db88ec1549a9d15bb1bcc9bafc8ca8b1dbfcb" alt="Maintainability Rating"></a>
-    <a href="https://github.com/vechain/vechain-sdk/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
+    <a href="https://github.com/vechain/vechain-sdk-js/blob/main/.github/LICENSE.md"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT"></a>
   </p>
 </div>
 
@@ -137,6 +137,19 @@ For instance:
 The above link, when processed during documentation build, expands into the content of the linked file, ensuring our documentation is as practical as possible.
 
 Note: links that are to be expanded must have a text \[example]
+
+#### Code Snippets
+
+It's also possible to include just a code snippet from an example file. For instance:
+
+\[DeployContractSnippet](examples/contracts/contract-create-ERC20-token.ts)
+
+Will just include into the documentation the code snippet between the comments `// START_SNIPPET: DeployContractSnippet` and `// END_SNIPPET: DeployContractSnippet` in the file `examples/contracts/contract-create-ERC20-token.ts`.
+
+Important: The code snippets names must be unique across all examples and must end with the word "Snippet".
+
+In this way we can keep the examples dry and avoid duplicating code.
+
 
 ### Usage
 

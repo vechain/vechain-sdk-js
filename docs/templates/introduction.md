@@ -1,6 +1,6 @@
 # Vechain SDK
 
-Welcome to the official documentation for the vechain SDK!
+Welcome to the official documentation for the JavaScript vechain SDK!
 
 This SDK provides developers with tools and resources to integrate vechain blockchain functionality into their applications with ease. Whether you're building decentralized applications (dApps), managing digital assets, or exploring blockchain-based solutions, this SDK offers a comprehensive set of features to interact with the VeChainThor blockchain.
 
