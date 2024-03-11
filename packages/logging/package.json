@@ -1,6 +1,6 @@
 {
   "name": "@vechain/vechain-sdk-logging",
-  "version": "0.0.16",
+  "version": "1.0.0",
   "description": "This module provides functionality to logging data for vechain-sdk",
   "author": "vechain Foundation",
   "license": "MIT",
@@ -27,6 +27,6 @@
     "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
   },
   "dependencies": {
-    "@vechain/vechain-sdk-errors": "0.0.16"
+    "@vechain/vechain-sdk-errors": "1.0.0"
   }
 }
