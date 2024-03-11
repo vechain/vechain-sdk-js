@@ -2103,6 +2103,57 @@
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
+"@vechain/vechain-sdk-core@*", "@vechain/vechain-sdk-core@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@vechain/vechain-sdk-core/-/vechain-sdk-core-1.0.0.tgz#a2791a4c373983f9e9902094ed6677a18c991ed3"
+  integrity sha512-RRrikR7BU0o110llfOk0oYO/rkvHXiXEE6qFzqZp32nSVXrno05T1E5156olDUN/4yPVafjIJ6fqsmHPa8sTTw==
+  dependencies:
+    "@ethereumjs/rlp" "^5.0.2"
+    "@types/elliptic" "^6.4.18"
+    "@vechain/vechain-sdk-errors" "*"
+    blakejs "^1.2.1"
+    elliptic "^6.5.5"
+    ethers "6.11.1"
+
+"@vechain/vechain-sdk-errors@*", "@vechain/vechain-sdk-errors@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@vechain/vechain-sdk-errors/-/vechain-sdk-errors-1.0.0.tgz#22991520c47d97628f5f5c38291b65f2d5a2c15e"
+  integrity sha512-F3vW/gW09xsnKyWEXf+0GZYFhWLClMBaZJVPrmJ54Bg6ySA4c7GSjvznLcVjMuUkPCEHU1B2QdopuOX58cFlTA==
+
+"@vechain/vechain-sdk-logging@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@vechain/vechain-sdk-logging/-/vechain-sdk-logging-1.0.0.tgz#ce7241770fea2290bb1c7eec860de7ea1a9472e5"
+  integrity sha512-rMQUWQLSZwiIbG72aPpGHUqL3qYRgiTF8q/Mj5Z0cqTQBP5644WWAyF1XwRqhY1R914ioxpFWy1aqWLcLzA2eA==
+  dependencies:
+    "@vechain/vechain-sdk-errors" "*"
+
+"@vechain/vechain-sdk-network@*", "@vechain/vechain-sdk-network@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@vechain/vechain-sdk-network/-/vechain-sdk-network-1.0.0.tgz#2eb066399b610d95d66c22eacbaaa21989871baf"
+  integrity sha512-VosxR63cvMkSI7pXY9XHbGA9jAs9cORV2JZq7Hqjtw914CpcXPo/zh+HsHlAo69VURHIgCzNpLxScHmzzdBbWQ==
+  dependencies:
+    "@types/ws" "^8.5.10"
+    "@vechain/vechain-sdk-core" "1.0.0"
+    "@vechain/vechain-sdk-errors" "1.0.0"
+    axios "^1.6.7"
+
+"@vechain/vechain-sdk-provider@*", "@vechain/vechain-sdk-provider@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@vechain/vechain-sdk-provider/-/vechain-sdk-provider-1.0.0.tgz#5981e5e440b571968b20aa09a03508719aad532a"
+  integrity sha512-XX9YhmCVCJeLpjVZSmrmsSv38JsFwp0Q0vFJW6WWC4gvOUkc2bOJlfW+iNojN1e1qX4SA79G7kvXFJ+kV2JRRA==
+  dependencies:
+    "@vechain/vechain-sdk-core" "1.0.0"
+    "@vechain/vechain-sdk-logging" "1.0.0"
+    "@vechain/vechain-sdk-network" "1.0.0"
+    "@vechain/vechain-sdk-wallet" "1.0.0"
+
+"@vechain/vechain-sdk-wallet@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@vechain/vechain-sdk-wallet/-/vechain-sdk-wallet-1.0.0.tgz#53be62fb6442b8598231f16258a951e9b06b7525"
+  integrity sha512-SnOjjPGyCUOgSDTnG/wx6XQDvjqTsBc+mAWQIaUo2+5U7QLi2p5d88a6uM8FY5NDFfgPmh6zbeMp76H4MK56Eg==
+  dependencies:
+    "@vechain/vechain-sdk-network" "*"
+
 JSONStream@^1.3.5:
   version "1.3.5"
   resolved "https://registry.yarnpkg.com/JSONStream/-/JSONStream-1.3.5.tgz#3208c1f08d3a4d99261ab64f92302bc15e111ca0"
