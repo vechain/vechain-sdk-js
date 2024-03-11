@@ -23,5 +23,8 @@
   },
   "dependencies": {
     "@vechain/vechain-sdk-provider": "0.0.15"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.2.3"
   }
 }
