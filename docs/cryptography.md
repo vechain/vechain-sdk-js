@@ -6,7 +6,8 @@ description: Main cryptography related functions.
 
 ## Hash functions
 
-Hash functions are algorithms that take input data of differing size as an input and produces a fixed-size output. The output of a hash function is typically represented as a sequence of numbers and letters. Hash functions are commonly used in computer science for various purposes, such as ensuring data integrity, securing storing passwords, and creating unique identifiers for data.
+Hash functions are algorithms that take input data of differing size as an input, and it produces a fixed-size output.
+The output of a hash function is typically represented as a sequence of numbers and letters. Hash functions are commonly used in computer science for various purposes, such as ensuring data integrity, securing storing passwords, and creating unique identifiers for data.
 
 vechain sdk supports blake2b256 and keccak256 hash functions.
 
@@ -50,7 +51,7 @@ expect(hash.toString('hex')).toBe(
 
 vechain sdk uses Secp256k1 to handle public key cryptography.
 
-Secp256k1 is a specific elliptic curve used in public key cryptography. It is defined by the standards organization "Standards for Efficient Cryptography Group" (SECG) and is particularly well-known for its use in cryptocurrencies, most notably Bitcoin.
+Secp256k1 is a specific elliptic curve used in public key cryptography. It is defined by the standard organization "Standards for Efficient Cryptography Group" (SECG) and is particularly well-known for its use in cryptocurrencies, most notably Bitcoin.
 
 Secp256k1 is mainly used for generating public and private key pairs in cryptographic systems. It is a critical component in securing blockchain networks and other applications where digital signatures and secure transactions are required. The security of Secp256k1 is based on the difficulty of solving certain mathematical problems related to elliptic curves, making it highly resistant to attacks.
 
