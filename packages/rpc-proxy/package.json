@@ -26,9 +26,9 @@
     "start": "yarn build && node dist/index.js"
   },
   "dependencies": {
-    "@vechain/vechain-sdk-network": "1.0.0",
-    "@vechain/vechain-sdk-provider": "1.0.0",
-    "@vechain/vechain-sdk-wallet": "1.0.0",
+    "@vechain/vechain-sdk-network": "*",
+    "@vechain/vechain-sdk-provider": "*",
+    "@vechain/vechain-sdk-wallet": "*",
     "cors": "^2.8.5",
     "express": "^4.18.2"
   },
