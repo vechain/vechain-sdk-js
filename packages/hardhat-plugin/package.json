@@ -29,7 +29,7 @@
     "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
   },
   "dependencies": {
-    "@vechain/vechain-sdk-provider": "1.0.0"
+    "@vechain/vechain-sdk-provider": "*"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.2.3"

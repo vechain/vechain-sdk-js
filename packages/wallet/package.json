@@ -28,6 +28,6 @@
     "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
   },
   "dependencies": {
-    "@vechain/vechain-sdk-network": "1.0.0"
+    "@vechain/vechain-sdk-network": "*"
   }
 }
