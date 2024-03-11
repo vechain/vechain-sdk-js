@@ -134,6 +134,19 @@ The above link, when processed during documentation build, expands into the cont
 
 Note: links that are to be expanded must have text \[example]
 
+#### Code Snippets
+
+It's also possible to include just a code snippet from an example file. For instance:
+
+\[DeployContractSnippet](examples/contracts/contract-create-ERC20-token.ts)
+
+Will just include into the documentation the code snippet between the comments `// START_SNIPPET: DeployContractSnippet` and `// END_SNIPPET: DeployContractSnippet` in the file `examples/contracts/contract-create-ERC20-token.ts`.
+
+Important: The code snippets names must be unique across all examples and must end with the word "Snippet".
+
+In this way we can keep the examples dry and avoid duplicating code.
+
+
 ### Usage
 
 To build the documentation, expanding examples into code snippets, use:

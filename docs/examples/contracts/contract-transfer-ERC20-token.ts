@@ -37,6 +37,8 @@ const setupERC20Contract = async (): Promise<Contract> => {
 // Setting up the ERC20 contract and getting its address
 const contract = await setupERC20Contract();
 
+// START_SNIPPET: ERC20FunctionCallSnippet
+
 const transferResult = await contract.transact.transfer(
     '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
     10000
@@ -48,3 +50,5 @@ const transactionReceiptTransfer =
 
 // Asserting that the transaction has not been reverted
 expect(transactionReceiptTransfer.reverted).toEqual(false);
+
+// END_SNIPPET: ERC20FunctionCallSnippet

@@ -13,10 +13,11 @@ const erc20ContractBytecode: string =
 const privateKeyDeployer =
     '706e6acd567fdc22db54aead12cb39db01c4832f149f95299aa8dd8bef7d28ff';
 
-// StartSnippet: DeployContractSnippet
-
 // Create thor client for solo network
 const _soloUrl = 'http://localhost:8669/';
+
+// START_SNIPPET: DeployContractSnippet
+
 const soloNetwork = new HttpClient(_soloUrl);
 const thorSoloClient = new ThorClient(soloNetwork);
 
@@ -46,4 +47,4 @@ const balance = await contract.read.balanceOf(
 // Asserting that the initial balance of the deployer is the expected amount (1e24)
 expect(balance).toEqual([unitsUtils.parseUnits('1', 24)]);
 
-// EndSnippet: DeployContractSnippet
+// END_SNIPPET: DeployContractSnippet

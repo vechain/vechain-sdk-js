@@ -80,4 +80,4 @@ Once the contract is compiled, we can deploy it using the vechain SDK. The follo
 
 Once the contract is deployed, we can transfer tokens to another address using the vechain SDK. The following code shows how to transfer 10000 token smallest unit to another address:
 
-[example](examples/contracts/contract-transfer-ERC20-token.ts)
+[ERC20FunctionCallSnippet](examples/contracts/contract-transfer-ERC20-token.ts)

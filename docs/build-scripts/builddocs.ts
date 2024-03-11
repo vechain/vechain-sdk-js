@@ -78,8 +78,8 @@ function getSnippetContent(tag: string, tagLine: string): string {
     const snippetName = tag.replace('[', '').replace(']', '');
     return extractContent(
         snippetFileAbsPath,
-        '// StartSnippet: ' + snippetName,
-        '// EndSnippet: ' + snippetName
+        '// START_SNIPPET: ' + snippetName,
+        '// END_SNIPPET: ' + snippetName
     );
 }
 
