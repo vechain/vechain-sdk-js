@@ -1,4 +1,4 @@
-import { addressUtils, type InterfaceAbi } from '@vechain/vechain-sdk-core';
+import { addressUtils, type InterfaceAbi } from '@vechain/sdk-core';
 import { TEST_ACCOUNTS } from '../../fixture';
 
 const contractBytecode: string =

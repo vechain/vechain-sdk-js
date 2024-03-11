@@ -1,4 +1,4 @@
-import { coder } from '@vechain/vechain-sdk-core';
+import { coder } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // 1 - Create a new function

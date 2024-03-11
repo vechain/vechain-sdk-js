@@ -23,8 +23,8 @@ import {
     type FunctionFragment,
     clauseBuilder,
     coder
-} from '@vechain/vechain-sdk-core';
-import { TransactionNotSignedError } from '@vechain/vechain-sdk-errors';
+} from '@vechain/sdk-core';
+import { TransactionNotSignedError } from '@vechain/sdk-errors';
 import { DelegationHandler, ThorClient } from '../../../src';
 
 /**

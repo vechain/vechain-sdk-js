@@ -1,10 +1,5 @@
-import { type ThorClient } from '@vechain/vechain-sdk-network';
-import {
-    assert,
-    buildProviderError,
-    DATA,
-    JSONRPC
-} from '@vechain/vechain-sdk-errors';
+import { type ThorClient } from '@vechain/sdk-network';
+import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
 import { blocksFormatter, type BlocksRPC } from '../../../../formatter';
 import { RPCMethodsMap } from '../../../rpc-mapper';
 import {

@@ -1,5 +1,5 @@
 import type { ErrorLoggerData, LogFunctionType } from '../types';
-import type { ErrorCode } from '@vechain/vechain-sdk-errors/src';
+import type { ErrorCode } from '@vechain/sdk-errors/src';
 
 /**
  * Error logger internal function.

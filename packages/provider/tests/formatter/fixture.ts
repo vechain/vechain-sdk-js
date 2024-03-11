@@ -1,7 +1,7 @@
 import {
     type CompressedBlockDetail,
     type ExpandedBlockDetail
-} from '@vechain/vechain-sdk-network';
+} from '@vechain/sdk-network';
 
 /**
  * Block fixtures

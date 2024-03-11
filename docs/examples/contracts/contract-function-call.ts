@@ -2,7 +2,7 @@ import {
     clauseBuilder,
     coder,
     type FunctionFragment
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // 1 - Init a simple contract ABI

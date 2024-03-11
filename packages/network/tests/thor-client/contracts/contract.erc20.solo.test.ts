@@ -6,7 +6,7 @@ import {
 } from '../../../src';
 import { soloNetwork, TEST_ACCOUNTS } from '../../fixture';
 import { deployedERC20Abi, erc20ContractBytecode } from './fixture';
-import { addressUtils } from '@vechain/vechain-sdk-core';
+import { addressUtils } from '@vechain/sdk-core';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.

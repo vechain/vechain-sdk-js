@@ -1,10 +1,10 @@
-import { Hex, type Transaction } from '@vechain/vechain-sdk-core';
+import { Hex, type Transaction } from '@vechain/sdk-core';
 import { type HttpClient } from '../../../utils';
 import {
     type GetDelegationSignatureResult,
     type SignTransactionOptions
 } from '../types';
-import { assert, buildError, TRANSACTION } from '@vechain/vechain-sdk-errors';
+import { assert, buildError, TRANSACTION } from '@vechain/sdk-errors';
 
 /**
  * Retrieves the signature of a delegation transaction from a delegator given the endpoint

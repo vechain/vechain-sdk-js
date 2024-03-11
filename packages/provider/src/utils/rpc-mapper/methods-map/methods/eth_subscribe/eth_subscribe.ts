@@ -1,10 +1,10 @@
-import { type ThorClient } from '@vechain/vechain-sdk-network';
+import { type ThorClient } from '@vechain/sdk-network';
 import {
     type FilterOptions,
     type VechainProvider
 } from '../../../../../providers';
-import { buildProviderError, JSONRPC } from '@vechain/vechain-sdk-errors';
-import { dataUtils } from '@vechain/vechain-sdk-core';
+import { buildProviderError, JSONRPC } from '@vechain/sdk-errors';
+import { dataUtils } from '@vechain/sdk-core';
 
 /**
  * Enumerates the types of subscriptions supported by the`eth_subscribe` RPC method.

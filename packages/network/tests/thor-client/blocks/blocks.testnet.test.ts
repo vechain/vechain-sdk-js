@@ -7,7 +7,7 @@ import {
 } from './fixture';
 import { HttpClient, Poll, ThorClient } from '../../../src';
 import { testnetUrl } from '../../fixture';
-import { networkInfo } from '@vechain/vechain-sdk-core';
+import { networkInfo } from '@vechain/sdk-core';
 
 /**
  * Blocks Module integration tests

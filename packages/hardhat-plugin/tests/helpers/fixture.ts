@@ -1,5 +1,5 @@
-import { VET_DERIVATION_PATH } from '@vechain/vechain-sdk-core';
-import { JSONRPCInternalError } from '@vechain/vechain-sdk-errors';
+import { VET_DERIVATION_PATH } from '@vechain/sdk-core';
+import { JSONRPCInternalError } from '@vechain/sdk-errors';
 
 /**
  * Positive test cases for createWalletFromHardhatNetworkConfig function

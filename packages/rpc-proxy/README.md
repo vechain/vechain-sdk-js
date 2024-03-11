@@ -1,4 +1,4 @@
-# @vechain/vechain-sdk-remix-proxy
+# @vechain/sdk-remix-proxy
 
 Welcome to the **remix proxy** of the vechain SDK!
 

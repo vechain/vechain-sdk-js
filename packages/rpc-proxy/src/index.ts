@@ -1,6 +1,6 @@
-import { HDWallet } from '@vechain/vechain-sdk-wallet';
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
-import { VechainProvider } from '@vechain/vechain-sdk-provider';
+import { HDWallet } from '@vechain/sdk-wallet';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
+import { VechainProvider } from '@vechain/sdk-provider';
 import importConfig from '../config.json';
 import express, { type Express, type Request, type Response } from 'express';
 import cors from 'cors';

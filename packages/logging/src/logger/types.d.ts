@@ -1,4 +1,4 @@
-import { type DataType, type ErrorCode } from '@vechain/vechain-sdk-errors/src';
+import { type DataType, type ErrorCode } from '@vechain/sdk-errors/src';
 
 /**
  * Type representing the different types of loggers.

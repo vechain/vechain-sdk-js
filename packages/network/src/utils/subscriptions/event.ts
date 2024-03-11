@@ -1,4 +1,4 @@
-import { abi, vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
+import { abi, vechain_sdk_core_ethers } from '@vechain/sdk-core';
 import { thorest } from '../thorest';
 import { type EventLike, type EventSubscriptionOptions } from './types';
 

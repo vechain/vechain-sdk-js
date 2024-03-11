@@ -1,6 +1,6 @@
 {
   "name": "vechain-sdk-nextjs",
-  "version": "0.1.0",
+  "version": "1.0.0-beta.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -12,8 +12,8 @@
     "react": "^18",
     "react-dom": "^18",
     "next": "14.1.0",
-    "@vechain/vechain-sdk-core": "*",
-    "@vechain/vechain-sdk-network": "*"
+    "@vechain/sdk-core": "1.0.0-beta.0",
+    "@vechain/sdk-network": "1.0.0-beta.0"
   },
   "devDependencies": {
     "typescript": "^5",

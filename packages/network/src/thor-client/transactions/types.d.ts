@@ -1,7 +1,4 @@
-import type {
-    TransactionBody,
-    TransactionClause
-} from '@vechain/vechain-sdk-core';
+import type { TransactionBody, TransactionClause } from '@vechain/sdk-core';
 import type { Output } from '../blocks';
 import { type Transfer } from '../logs';
 

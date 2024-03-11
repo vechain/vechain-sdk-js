@@ -4,11 +4,11 @@ import { extendEnvironment } from 'hardhat/config';
 import { type HttpNetworkConfig } from 'hardhat/types';
 import { HardhatPluginError, lazyObject } from 'hardhat/plugins';
 
-import { HardhatVechainProvider } from '@vechain/vechain-sdk-provider';
-import { VechainSDKLogger } from '@vechain/vechain-sdk-logging';
+import { HardhatVechainProvider } from '@vechain/sdk-provider';
+import { VechainSDKLogger } from '@vechain/sdk-logging';
 
 // Import needed to customize ethers functionality
-import { vechain_sdk_core_ethers as ethers } from '@vechain/vechain-sdk-core';
+import { vechain_sdk_core_ethers as ethers } from '@vechain/sdk-core';
 
 // Import needed to extend the hardhat environment
 import './type-extensions';
@@ -155,7 +155,7 @@ extendEnvironment((hre) => {
         networkConfig.url,
         (message: string, parent?: Error) =>
             new HardhatPluginError(
-                '@vechain/vechain-sdk-hardhat-plugin',
+                '@vechain/sdk-hardhat-plugin',
                 message,
                 parent
             ),

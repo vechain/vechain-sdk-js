@@ -1,4 +1,4 @@
-# @vechain/vechain-sdk-hardhat-plugin
+# @vechain/sdk-hardhat-plugin
 
 Welcome to the **hardhat-plugin package** of the vechain SDK!
 

@@ -1,11 +1,6 @@
-import { dataUtils } from '@vechain/vechain-sdk-core';
-import {
-    assert,
-    buildProviderError,
-    DATA,
-    JSONRPC
-} from '@vechain/vechain-sdk-errors';
-import { type ThorClient } from '@vechain/vechain-sdk-network';
+import { dataUtils } from '@vechain/sdk-core';
+import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
+import { type ThorClient } from '@vechain/sdk-network';
 
 /**
  * RPC Method eth_getStorageAt implementation

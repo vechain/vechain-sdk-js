@@ -1,4 +1,4 @@
-import { abi } from '@vechain/vechain-sdk-core';
+import { abi } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // 1 - Create a simple function to encode into ABI

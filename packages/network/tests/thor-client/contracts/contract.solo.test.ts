@@ -16,7 +16,7 @@ import {
     coder,
     type DeployParams,
     type FunctionFragment
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import {
     Contract,
     ThorClient,
@@ -27,7 +27,7 @@ import {
     ContractDeploymentFailedError,
     InvalidAbiFunctionError,
     TransactionMissingPrivateKeyError
-} from '@vechain/vechain-sdk-errors';
+} from '@vechain/sdk-errors';
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.

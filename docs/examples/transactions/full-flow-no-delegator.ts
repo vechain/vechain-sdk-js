@@ -1,5 +1,5 @@
-import { clauseBuilder, unitsUtils } from '@vechain/vechain-sdk-core';
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { clauseBuilder, unitsUtils } from '@vechain/sdk-core';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create the thor client

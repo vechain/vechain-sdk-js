@@ -1,7 +1,7 @@
 import { randomBytes } from 'crypto';
 import { PRIVATE_KEY_MAX_VALUE, SIGNATURE_LENGTH, ZERO_BUFFER } from '../utils';
 import { ec as EC } from 'elliptic';
-import { assert, SECP256K1 } from '@vechain/vechain-sdk-errors';
+import { assert, SECP256K1 } from '@vechain/sdk-errors';
 import {
     assertIsValidPrivateKey,
     assertIsValidSecp256k1MessageHash

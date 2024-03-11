@@ -1,4 +1,4 @@
-import { type ThorClient } from '@vechain/vechain-sdk-network';
+import { type ThorClient } from '@vechain/sdk-network';
 
 /**
  * RPC Method eth_gasPrice implementation

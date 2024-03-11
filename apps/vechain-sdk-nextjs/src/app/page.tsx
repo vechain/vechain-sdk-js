@@ -1,12 +1,12 @@
 'use client';
 
-import { mnemonic } from '@vechain/vechain-sdk-core';
+import { mnemonic } from '@vechain/sdk-core';
 import { useState } from 'react';
 import {
     type CompressedBlockDetail,
     HttpClient,
     ThorClient
-} from '@vechain/vechain-sdk-network';
+} from '@vechain/sdk-network';
 
 /**
  * Url of the testnet fixture

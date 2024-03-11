@@ -2,7 +2,7 @@ import { jest, describe, test, expect } from '@jest/globals';
 import { ThorClient } from '../../../src';
 import { transferTransactionBody } from './fixture';
 import { soloNetwork, TEST_ACCOUNTS } from '../../fixture';
-import { TransactionBodyError } from '@vechain/vechain-sdk-errors';
+import { TransactionBodyError } from '@vechain/sdk-errors';
 
 /**
  * Transactions module tests with mocks.

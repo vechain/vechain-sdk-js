@@ -10,7 +10,7 @@ This example showcases the process of building a clause to deploy a smart contra
 
 ### Code Explanation
 
--   The `clauseBuilder.deployContract` function from `@vechain/vechain-sdk-core` is employed to construct a clause needed to perform a deploy contract transaction.
+-   The `clauseBuilder.deployContract` function from `@vechain/sdk-core` is employed to construct a clause needed to perform a deploy contract transaction.
 
 -   The smart contract bytecode is represented by the `contractBytecode` variable.
 
@@ -32,7 +32,7 @@ This example demonstrates the process of building a clause to call a function on
 
 -   The example involves a smart contract with an ABI (Application Binary Interface) defined in JSON format. The ABI describes the functions and their parameters in the contract.
 
--   The `clauseBuilder.functionInteraction` function from `@vechain/vechain-sdk-core` is used to create a clause for calling a specific function on the smart contract.
+-   The `clauseBuilder.functionInteraction` function from `@vechain/sdk-core` is used to create a clause for calling a specific function on the smart contract.
 
 -   The function `setValue` is called with an argument of 123, representing the value to be set in the smart contract.
 

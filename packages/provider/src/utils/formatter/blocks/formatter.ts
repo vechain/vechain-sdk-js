@@ -2,13 +2,13 @@ import {
     type CompressedBlockDetail,
     type ExpandedBlockDetail,
     type TransactionsExpandedBlockDetail
-} from '@vechain/vechain-sdk-network';
+} from '@vechain/sdk-network';
 import { type BlocksRPC } from './types';
 import {
     dataUtils,
     vechain_sdk_core_ethers,
     ZERO_BUFFER
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 
 import { transactionsFormatter } from '../transactions';
 

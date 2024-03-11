@@ -12,7 +12,7 @@ import {
     validHexStrings,
     validThorIDs
 } from './fixture';
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { InvalidDataTypeError } from '@vechain/sdk-errors';
 
 /**
  * Hex data tests

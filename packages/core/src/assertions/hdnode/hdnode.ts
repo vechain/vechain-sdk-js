@@ -1,4 +1,4 @@
-import { assert, HDNODE } from '@vechain/vechain-sdk-errors';
+import { assert, HDNODE } from '@vechain/sdk-errors';
 import { isDerivationPathValid } from '../../utils';
 
 /**

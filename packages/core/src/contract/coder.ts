@@ -1,5 +1,5 @@
 import { Interface as EthersInterface, type InterfaceAbi } from 'ethers';
-import { ABI, buildError, ERROR_CODES } from '@vechain/vechain-sdk-errors';
+import { ABI, buildError, ERROR_CODES } from '@vechain/sdk-errors';
 import type { BytesLike, Interface, Log, Result } from '../abi';
 import { abi } from '../abi';
 

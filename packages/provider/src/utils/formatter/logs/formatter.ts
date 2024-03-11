@@ -1,9 +1,6 @@
-import {
-    type EventCriteria,
-    type EventLogs
-} from '@vechain/vechain-sdk-network';
+import { type EventCriteria, type EventLogs } from '@vechain/sdk-network';
 import { type LogsRPC } from './types';
-import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
+import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
 
 /**
  * Output formatter for Event logs.

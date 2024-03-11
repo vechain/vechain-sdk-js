@@ -1,5 +1,5 @@
-import { type ThorClient } from '@vechain/vechain-sdk-network';
-import { buildError, FUNCTION } from '@vechain/vechain-sdk-errors';
+import { type ThorClient } from '@vechain/sdk-network';
+import { buildError, FUNCTION } from '@vechain/sdk-errors';
 
 /**
  * RPC Method eth_getUncleByBlockNumberAndIndex implementation
