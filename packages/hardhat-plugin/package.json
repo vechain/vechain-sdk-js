@@ -1,6 +1,6 @@
 {
   "name": "@vechain/vechain-sdk-hardhat-plugin",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0",
   "description": "This module allows to create smart contracts and interact with them using the vechain SDK and Hardhat",
   "author": "vechain Foundation",
   "license": "MIT",
