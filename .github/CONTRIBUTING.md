@@ -2,7 +2,9 @@
 
 ## Introduction
 
-Thank you for considering contributing to the vechain SDK project. This SDK is an important part of the vechain ecosystem and your contributions are greatly appreciated. This document outlines the process and guidelines for contributing.
+Thank you for considering contributing to the vechain SDK project.
+This SDK is an important part of the vechain ecosystem, and your contributions are greatly appreciated.
+This document outlines the process and guidelines for contributing.
 
 ## Getting Started
 
@@ -23,7 +25,8 @@ To ensure consistency throughout the source code, please adhere to the following
 
 ## Guidelines for Documentation Updates
 
-An accurate and up-to-date documentation is vital for the usability and maintainability of the vechain-sdk. We welcome contributions that improve or update the documentation.
+Accurate and up-to-date documentation is vital for the usability and maintainability of the vechain-sdk.
+We welcome contributions that improve or update the documentation.
 
 ### Textual Documentation
 
@@ -179,7 +182,7 @@ const allowedNames = [
 ];
 ```
 
-## Errors handling conventions
+## Error handling conventions
 
 Errors handling is delegated to `errors` package.
 Follow all code snapshots and convention related to it.
@@ -209,11 +212,11 @@ If you find a bug or want to request a new feature, please open a new issue. Whe
 
 Before submitting a pull request, please make sure the following is done:
 
-1. Rebase your branch on the latest master branch.
+1. Rebase your branch on the latest main branch.
 2. Run the test suite to make sure your changes do not break existing functionality. You can do this by running `yarn test`.
 3. Squash your commits into a single commit with a clear message.
 4. Push your branch to your fork on GitHub.
-5. Open a pull request against the master branch of the vechain-sdk repository.
+5. Open a pull request against the main branch of the vechain-sdk repository.
 
 ### Pull Request Review
 
