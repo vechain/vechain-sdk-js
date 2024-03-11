@@ -1,5 +1,5 @@
 {
-  "name": "@vechain/vechain-sdk-network",
+  "name": "@vechain/sdk-network",
   "version": "1.0.0",
   "description": "This module allows to connect you seamlessly to the VechainThor blockchain",
   "author": "vechain Foundation",
@@ -34,8 +34,8 @@
   },
   "dependencies": {
     "@types/ws": "^8.5.10",
-    "@vechain/vechain-sdk-core": "*",
-    "@vechain/vechain-sdk-errors": "*",
+    "@vechain/sdk-core": "*",
+    "@vechain/sdk-errors": "*",
     "axios": "^1.6.7"
   }
 }

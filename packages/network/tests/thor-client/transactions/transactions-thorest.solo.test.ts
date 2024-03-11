@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { TEST_ACCOUNTS, soloNetwork } from '../../fixture';
-import { dataUtils, Hex, TransactionHandler } from '@vechain/vechain-sdk-core';
+import { dataUtils, Hex, TransactionHandler } from '@vechain/sdk-core';
 import { sendTransactionErrors, simulateTransaction } from './fixture-thorest';
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { InvalidDataTypeError } from '@vechain/sdk-errors';
 import { ThorClient } from '../../../src';
 
 /**

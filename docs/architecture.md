@@ -1,7 +1,7 @@
 # Architecture
 
 The chapter is designed to provide a high-level understanding of the vechain SDK architecture and structure. 
-Comprehensive diagrams, following the C4 model, are available for reference in the project's [GitHub repository](https://github.com/vechain/vechain-sdk-js/tree/main/docs/diagrams/architecture).
+Comprehensive diagrams, following the C4 model, are available for reference in the project's [GitHub repository](https://github.com/vechain/sdk-js/tree/main/docs/diagrams/architecture).
 
 ## Introduction
 

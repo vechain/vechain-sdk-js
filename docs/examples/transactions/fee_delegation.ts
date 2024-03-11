@@ -1,4 +1,4 @@
-import { clauseBuilder, networkInfo } from '@vechain/vechain-sdk-core';
+import { clauseBuilder, networkInfo } from '@vechain/sdk-core';
 import {
     TransactionHandler,
     HDNode,
@@ -6,9 +6,9 @@ import {
     type TransactionBody,
     mnemonic,
     unitsUtils
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import { expect } from 'expect';
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
 
 // Sender account with private key
 const senderAccount = {

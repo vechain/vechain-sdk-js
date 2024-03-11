@@ -1,5 +1,5 @@
-import { JSONRPC, buildProviderError } from '@vechain/vechain-sdk-errors';
-import { type ThorClient } from '@vechain/vechain-sdk-network';
+import { JSONRPC, buildProviderError } from '@vechain/sdk-errors';
+import { type ThorClient } from '@vechain/sdk-network';
 
 /**
  * RPC Method eth_blockNumber implementation

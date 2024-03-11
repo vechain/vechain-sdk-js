@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { type SubscriptionEvent, VechainProvider } from '../../../src';
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
-import { ThorClient } from '@vechain/vechain-sdk-network';
+import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { ThorClient } from '@vechain/sdk-network';
 import { soloNetwork } from '../../fixture';
 import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
 import {
@@ -9,7 +9,7 @@ import {
     deployERC721Contract,
     waitForMessage
 } from '../helpers';
-import { coder, type FunctionFragment } from '@vechain/vechain-sdk-core';
+import { coder, type FunctionFragment } from '@vechain/sdk-core';
 
 /**
  * Vechain provider tests - Solo Network

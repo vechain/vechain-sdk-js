@@ -1,13 +1,8 @@
 import {
     type ThorClient,
     type TransactionDetailNoRaw
-} from '@vechain/vechain-sdk-network';
-import {
-    assert,
-    buildProviderError,
-    DATA,
-    JSONRPC
-} from '@vechain/vechain-sdk-errors';
+} from '@vechain/sdk-network';
+import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
 import {
     type BlocksRPC,
     type TransactionRPC,

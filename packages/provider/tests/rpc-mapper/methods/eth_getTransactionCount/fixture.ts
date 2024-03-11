@@ -1,4 +1,4 @@
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { InvalidDataTypeError } from '@vechain/sdk-errors';
 
 /**
  * Negative test cases for eth_getTransactionCount

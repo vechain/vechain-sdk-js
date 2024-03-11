@@ -8,7 +8,7 @@ import {
     ERC721_ABI,
     type FunctionFragment,
     type Log
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 
 /**
  * Tests for the ERC721 Contract, specifically focusing on NFT contract-related functionality.

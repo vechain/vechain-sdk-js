@@ -1,4 +1,4 @@
-import { assert, RLP } from '@vechain/vechain-sdk-errors';
+import { assert, RLP } from '@vechain/sdk-errors';
 
 /**
  * Asserts that the data is a hex string of the correct length.

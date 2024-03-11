@@ -1,8 +1,5 @@
-import { Hex, ZERO_BUFFER } from '@vechain/vechain-sdk-core';
-import {
-    InvalidDataTypeError,
-    ProviderRpcError
-} from '@vechain/vechain-sdk-errors';
+import { Hex, ZERO_BUFFER } from '@vechain/sdk-core';
+import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
 
 /**
  * Test cases for eth_getStorageAt RPC method

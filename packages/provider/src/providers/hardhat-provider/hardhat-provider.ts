@@ -1,9 +1,9 @@
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
 import { VechainProvider } from '../vechain-provider';
-import { type Wallet } from '@vechain/vechain-sdk-wallet';
+import { type Wallet } from '@vechain/sdk-wallet';
 import type { EIP1193RequestArguments } from '../../eip1193';
-import { getJSONRPCErrorCode, JSONRPC } from '@vechain/vechain-sdk-errors';
-import { VechainSDKLogger } from '@vechain/vechain-sdk-logging';
+import { getJSONRPCErrorCode, JSONRPC } from '@vechain/sdk-errors';
+import { VechainSDKLogger } from '@vechain/sdk-logging';
 import {
     type BuildHardhatErrorFunction,
     type JsonRpcRequest,

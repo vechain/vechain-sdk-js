@@ -1,4 +1,4 @@
-import { assert, DATA } from '@vechain/vechain-sdk-errors';
+import { assert, DATA } from '@vechain/sdk-errors';
 import { buildQuery, thorest } from '../../utils';
 import {
     type AccountDetail,
@@ -10,7 +10,7 @@ import {
     assertIsAddress,
     assertIsRevisionForAccount,
     dataUtils
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import { type ThorClient } from '../thor-client';
 
 /**

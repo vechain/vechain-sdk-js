@@ -1,6 +1,6 @@
-import { type ThorClient } from '@vechain/vechain-sdk-network';
+import { type ThorClient } from '@vechain/sdk-network';
 import { blocksFormatter, type BlocksRPC } from '../../../../formatter';
-import { JSONRPC, buildProviderError } from '@vechain/vechain-sdk-errors';
+import { JSONRPC, buildProviderError } from '@vechain/sdk-errors';
 import { RPCMethodsMap, RPC_METHODS } from '../../../../../provider';
 
 /**

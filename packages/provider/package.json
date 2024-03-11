@@ -1,5 +1,5 @@
 {
-  "name": "@vechain/vechain-sdk-provider",
+  "name": "@vechain/sdk-provider",
   "version": "1.0.0",
   "description": "This module is dedicated to managing the compatibility with ethers and EVM world",
   "author": "vechain Foundation",
@@ -31,9 +31,9 @@
     "test:solo": "(yarn start-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo"
   },
   "dependencies": {
-    "@vechain/vechain-sdk-network": "*",
-    "@vechain/vechain-sdk-wallet": "*",
-    "@vechain/vechain-sdk-core": "*",
-    "@vechain/vechain-sdk-logging": "*"
+    "@vechain/sdk-network": "*",
+    "@vechain/sdk-wallet": "*",
+    "@vechain/sdk-core": "*",
+    "@vechain/sdk-logging": "*"
   }
 }

@@ -1,6 +1,6 @@
 // Generate 10 random accounts
 import type { WalletAccount } from '../../src';
-import { addressUtils, secp256k1 } from '@vechain/vechain-sdk-core';
+import { addressUtils, secp256k1 } from '@vechain/sdk-core';
 
 /**
  * Fixture of WalletAccount randomly generated.

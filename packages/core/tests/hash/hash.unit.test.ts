@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { hashFunctionsToTest } from './fixture';
 import { ethers } from 'ethers';
-import { InvalidDataReturnTypeError } from '@vechain/vechain-sdk-errors';
+import { InvalidDataReturnTypeError } from '@vechain/sdk-errors';
 import { Buffer } from 'buffer';
 import { dataUtils, ZERO_BUFFER } from '../../src';
 

@@ -1,5 +1,5 @@
 {
-  "name": "@vechain/vechain-sdk-errors",
+  "name": "@vechain/sdk-errors",
   "version": "1.0.0",
   "description": "This module is dedicated to managing and customizing errors within the SDK",
   "author": "vechain Foundation",

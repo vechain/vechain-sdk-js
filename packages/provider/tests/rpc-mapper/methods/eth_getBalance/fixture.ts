@@ -3,12 +3,9 @@ import {
     unitsUtils,
     vechain_sdk_core_ethers,
     ZERO_BUFFER
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import { TEST_ACCOUNTS_THOR_SOLO } from '../../../fixture';
-import {
-    InvalidDataTypeError,
-    ProviderRpcError
-} from '@vechain/vechain-sdk-errors';
+import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
 
 /**
  * eth_getBalance RPC call tests - Positive cases

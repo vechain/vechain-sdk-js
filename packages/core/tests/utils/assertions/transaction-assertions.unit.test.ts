@@ -7,7 +7,7 @@ import {
     assertValidTransactionID,
     secp256k1
 } from '../../../src';
-import { InvalidSecp256k1PrivateKeyError } from '@vechain/vechain-sdk-errors';
+import { InvalidSecp256k1PrivateKeyError } from '@vechain/sdk-errors';
 
 /**
  * Transaction assertions

@@ -1,12 +1,9 @@
-import { ZERO_BUFFER, dataUtils } from '@vechain/vechain-sdk-core';
+import { ZERO_BUFFER, dataUtils } from '@vechain/sdk-core';
 import {
     validTransactionDetailTestnet,
     validTransactionHashTestnet
 } from '../../../fixture';
-import {
-    InvalidDataTypeError,
-    ProviderRpcError
-} from '@vechain/vechain-sdk-errors';
+import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
 
 /**
  * Positive test cases for eth_getTransactionByHash

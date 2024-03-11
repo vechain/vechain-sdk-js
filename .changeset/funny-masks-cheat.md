@@ -1,12 +1,12 @@
 ---
-"@vechain/vechain-sdk-hardhat-plugin": patch
-"@vechain/vechain-sdk-rpc-proxy": patch
-"@vechain/vechain-sdk-provider": patch
-"@vechain/vechain-sdk-logging": patch
-"@vechain/vechain-sdk-network": patch
-"@vechain/vechain-sdk-errors": patch
-"@vechain/vechain-sdk-wallet": patch
-"@vechain/vechain-sdk-core": patch
+"@vechain/sdk-hardhat-plugin": patch
+"@vechain/sdk-rpc-proxy": patch
+"@vechain/sdk-provider": patch
+"@vechain/sdk-logging": patch
+"@vechain/sdk-network": patch
+"@vechain/sdk-errors": patch
+"@vechain/sdk-wallet": patch
+"@vechain/sdk-core": patch
 ---
 
 First BETA release of the vechain SDK! :D

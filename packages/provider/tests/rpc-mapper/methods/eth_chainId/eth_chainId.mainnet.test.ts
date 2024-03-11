@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { CHAIN_ID, RPC_METHODS, RPCMethodsMap } from '../../../../src';
-import { ThorClient } from '@vechain/vechain-sdk-network';
+import { ThorClient } from '@vechain/sdk-network';
 import { mainNetwork } from '../../../fixture';
 
 /**

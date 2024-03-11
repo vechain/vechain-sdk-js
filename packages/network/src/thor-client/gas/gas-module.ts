@@ -1,7 +1,7 @@
-import { assert, DATA } from '@vechain/vechain-sdk-errors';
+import { assert, DATA } from '@vechain/sdk-errors';
 import type { SimulateTransactionClause } from '../transactions';
 import { type EstimateGasOptions, type EstimateGasResult } from './types';
-import { TransactionUtils } from '@vechain/vechain-sdk-core';
+import { TransactionUtils } from '@vechain/sdk-core';
 import { decodeRevertReason } from './helpers/decode-evm-error';
 import { type ThorClient } from '../thor-client';
 

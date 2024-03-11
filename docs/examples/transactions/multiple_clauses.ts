@@ -2,7 +2,7 @@ import {
     VTHO_ADDRESS,
     clauseBuilder,
     networkInfo
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import {
     secp256k1,
     TransactionUtils,
@@ -10,7 +10,7 @@ import {
     type TransactionClause,
     type TransactionBody,
     unitsUtils
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // 1 - Define multiple clauses

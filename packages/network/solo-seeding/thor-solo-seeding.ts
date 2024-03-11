@@ -4,7 +4,7 @@ import {
     Transaction,
     TransactionHandler,
     unitsUtils
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import { ALL_ACCOUNTS, soloNetwork } from '../tests/fixture';
 import { BUILT_IN_CONTRACTS } from '../tests/built-in-fixture';
 import { ThorClient } from '../src';

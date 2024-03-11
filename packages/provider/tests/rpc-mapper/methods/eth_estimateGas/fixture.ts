@@ -1,8 +1,5 @@
-import {
-    InvalidDataTypeError,
-    ProviderRpcError
-} from '@vechain/vechain-sdk-errors';
-import { clauseBuilder, unitsUtils } from '@vechain/vechain-sdk-core';
+import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
+import { clauseBuilder, unitsUtils } from '@vechain/sdk-core';
 
 /**
  * Fixtures for positive cases

@@ -1,10 +1,10 @@
-import { VIP180_ABI } from '@vechain/vechain-sdk-core';
+import { VIP180_ABI } from '@vechain/sdk-core';
 import {
     Contract,
     HttpClient,
     ThorClient,
     type TransactionReceipt
-} from '@vechain/vechain-sdk-network';
+} from '@vechain/sdk-network';
 import { expect } from 'expect';
 
 const erc20ContractBytecode: string =

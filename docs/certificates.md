@@ -40,7 +40,7 @@ import {
     secp256k1,
     blake2b256,
     addressUtils
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 
 // 1 - Generate a private key and address for the signer
 

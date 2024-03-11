@@ -20,7 +20,7 @@
     "test:examples:solo": "(yarn start-thor-solo && yarn test:examples && yarn stop-thor-solo) || yarn stop-thor-solo"
   },
   "dependencies": {
-    "@vechain/vechain-sdk-core": "*",
+    "@vechain/sdk-core": "*",
     "typescript": "^5.3.3"
   },
   "devDependencies": {

@@ -1,13 +1,8 @@
-import {
-    assert,
-    buildProviderError,
-    DATA,
-    JSONRPC
-} from '@vechain/vechain-sdk-errors';
+import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
 import {
     type SimulateTransactionClause,
     type ThorClient
-} from '@vechain/vechain-sdk-network';
+} from '@vechain/sdk-network';
 import { type TransactionObjectInput } from './types';
 
 /**

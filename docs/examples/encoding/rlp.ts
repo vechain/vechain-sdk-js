@@ -1,4 +1,4 @@
-import { RLP } from '@vechain/vechain-sdk-core';
+import { RLP } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // 1 - Define the profile for tx clause structure

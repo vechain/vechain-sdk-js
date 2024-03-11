@@ -1,10 +1,10 @@
 import { type Wallet, type WalletAccount } from '../types';
-import { assert, DATA } from '@vechain/vechain-sdk-errors';
-import { addressUtils } from '@vechain/vechain-sdk-core';
+import { assert, DATA } from '@vechain/sdk-errors';
+import { addressUtils } from '@vechain/sdk-core';
 import {
     DelegationHandler,
     type SignTransactionOptions
-} from '@vechain/vechain-sdk-network';
+} from '@vechain/sdk-network';
 
 /**
  * Base wallet class.

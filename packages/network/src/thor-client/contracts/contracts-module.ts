@@ -8,7 +8,7 @@ import {
     type FunctionFragment,
     abi,
     clauseBuilder
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import type {
     ContractCallOptions,
     ContractCallResult,

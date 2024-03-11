@@ -1,4 +1,4 @@
-import { Hex } from '@vechain/vechain-sdk-core';
+import { Hex } from '@vechain/sdk-core';
 
 /**
  * Fixtures for eth_getLogs positive cases

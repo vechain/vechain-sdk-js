@@ -1,4 +1,4 @@
-import { InvalidAddressError } from '@vechain/vechain-sdk-errors';
+import { InvalidAddressError } from '@vechain/sdk-errors';
 import { Hex } from '../../../src';
 
 /**

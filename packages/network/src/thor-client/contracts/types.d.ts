@@ -3,7 +3,7 @@ import type {
     SimulateTransactionOptions
 } from '../transactions';
 
-import type { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
+import type { vechain_sdk_core_ethers } from '@vechain/sdk-core';
 
 /* --------- Input types Start --------- */
 

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { HardhatVechainProvider } from '../../../src';
 import { mainnetUrl } from '../../fixture';
 import { providerMethodsTestCasesMainnet } from '../fixture';
-import { BaseWallet } from '@vechain/vechain-sdk-wallet';
+import { BaseWallet } from '@vechain/sdk-wallet';
 
 /**
  * Hardhat provider tests - Mainnet

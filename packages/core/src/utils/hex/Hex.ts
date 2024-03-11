@@ -1,4 +1,4 @@
-import { assert, DATA } from '@vechain/vechain-sdk-errors';
+import { assert, DATA } from '@vechain/sdk-errors';
 import { Buffer } from 'buffer';
 
 /**

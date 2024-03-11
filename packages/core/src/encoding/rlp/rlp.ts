@@ -7,7 +7,7 @@ import {
     type RLPValueType
 } from './types';
 import { RLP } from '.';
-import { assert, RLP as RLPError } from '@vechain/vechain-sdk-errors';
+import { assert, RLP as RLPError } from '@vechain/sdk-errors';
 import { assertIsArray } from '../../assertions';
 
 /**
