@@ -1,6 +1,6 @@
 {
   "name": "@vechain/vechain-sdk-logging",
-  "version": "1.0.0",
+  "version": "1.0.0-beta",
   "description": "This module provides functionality to logging data for vechain-sdk",
   "author": "vechain Foundation",
   "license": "MIT",

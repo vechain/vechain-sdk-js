@@ -1,6 +1,6 @@
 {
   "name": "@vechain/vechain-sdk-provider",
-  "version": "1.0.0",
+  "version": "1.0.0-beta",
   "description": "This module is dedicated to managing the compatibility with ethers and EVM world",
   "author": "vechain Foundation",
   "license": "MIT",
