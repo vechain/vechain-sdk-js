@@ -1,21 +1,14 @@
 import {
-    addressUtils,
     coder,
     type FunctionFragment,
     type InterfaceAbi
 } from '@vechain/sdk-core';
-import type {
-    SendTransactionResult,
-    TransactionReceipt
-} from '../../transactions';
+import type { TransactionReceipt } from '../../transactions';
 import { type ThorClient } from '../../thor-client';
-import type {
-    ContractCallOptions,
-    ContractCallResult,
-    ContractTransactionOptions
-} from '../types';
+import type { ContractCallOptions, ContractTransactionOptions } from '../types';
 import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 import type { ContractFunctionRead, ContractFunctionTransact } from './types';
+import { getReadProxy, getTransactProxy } from './contract-proxy';
 
 /**
  * A class representing a smart contract deployed on the blockchain.
@@ -54,8 +47,8 @@ class Contract {
         this.address = address;
         this.deployTransactionReceipt = transactionReceipt;
         this.callerPrivateKey = callerPrivateKey;
-        this.read = this.getReadProxy();
-        this.transact = this.getTransactProxy();
+        this.read = getReadProxy(this);
+        this.transact = getTransactProxy(this);
     }
 
     /**
@@ -69,7 +62,11 @@ class Contract {
         this.contractCallOptions = options;
 
         // initialize the proxy with the new options
-        this.read = this.getReadProxy();
+        this.read = getReadProxy(this);
+        return this.contractCallOptions;
+    }
+
+    public getContractReadOptions(): ContractCallOptions {
         return this.contractCallOptions;
     }
 
@@ -78,7 +75,7 @@ class Contract {
      */
     public clearContractReadOptions(): void {
         this.contractCallOptions = {};
-        this.read = this.getReadProxy();
+        this.read = getReadProxy(this);
     }
 
     /**
@@ -92,7 +89,11 @@ class Contract {
         this.contractTransactionOptions = options;
 
         // initialize the proxy with the new options
-        this.transact = this.getTransactProxy();
+        this.transact = getTransactProxy(this);
+        return this.contractTransactionOptions;
+    }
+
+    public getContractTransactOptions(): ContractTransactionOptions {
         return this.contractTransactionOptions;
     }
 
@@ -101,7 +102,7 @@ class Contract {
      */
     public clearContractTransactOptions(): void {
         this.contractTransactionOptions = {};
-        this.transact = this.getTransactProxy();
+        this.transact = getTransactProxy(this);
     }
 
     /**
@@ -112,8 +113,8 @@ class Contract {
         this.callerPrivateKey = privateKey;
 
         // initialize the proxy with the new private key
-        this.transact = this.getTransactProxy();
-        this.read = this.getReadProxy();
+        this.transact = getTransactProxy(this);
+        this.read = getReadProxy(this);
         return this.callerPrivateKey;
     }
 
@@ -126,72 +127,6 @@ class Contract {
     }
 
     /**
-     * Creates a Proxy object for reading contract functions, allowing for the dynamic invocation of contract read operations.
-     * @returns A Proxy that intercepts calls to read contract functions, automatically handling the invocation with the configured options.
-     * @private
-     */
-    private getReadProxy(): ContractFunctionRead {
-        return new Proxy(this.read, {
-            get: (_target, prop) => {
-                // Otherwise, assume that the function is a contract method
-                return async (
-                    ...args: unknown[]
-                ): Promise<ContractCallResult> => {
-                    return await this.thor.contracts.executeContractCall(
-                        this.address,
-                        this.getFunctionFragment(prop),
-                        args,
-                        {
-                            caller:
-                                this.callerPrivateKey !== undefined
-                                    ? addressUtils.fromPrivateKey(
-                                          Buffer.from(
-                                              this.callerPrivateKey,
-                                              'hex'
-                                          )
-                                      )
-                                    : undefined,
-                            ...this.contractCallOptions
-                        }
-                    );
-                };
-            }
-        });
-    }
-
-    /**
-     * Creates a Proxy object for transacting with contract functions, allowing for the dynamic invocation of contract transaction operations.
-     * @returns A Proxy that intercepts calls to transaction contract functions, automatically handling the invocation with the configured options.
-     * @private
-     */
-    private getTransactProxy(): ContractFunctionTransact {
-        return new Proxy(this.transact, {
-            get: (_target, prop) => {
-                // Otherwise, assume that the function is a contract method
-                return async (
-                    ...args: unknown[]
-                ): Promise<SendTransactionResult> => {
-                    if (this.callerPrivateKey === undefined) {
-                        throw buildError(
-                            'Contract.getTransactProxy',
-                            ERROR_CODES.TRANSACTION.MISSING_PRIVATE_KEY,
-                            'Caller private key is required to transact with the contract.',
-                            { prop }
-                        );
-                    }
-                    return await this.thor.contracts.executeContractTransaction(
-                        this.callerPrivateKey,
-                        this.address,
-                        this.getFunctionFragment(prop),
-                        args,
-                        this.contractTransactionOptions
-                    );
-                };
-            }
-        });
-    }
-
-    /**
      * Retrieves the function fragment for the specified function name.
      * @param prop - The name of the function.
      * @private
@@ -199,7 +134,7 @@ class Contract {
      * the `ERROR_CODES.ABI.INVALID_FUNCTION` code and a message indicating the function is not present in the ABI.
      *
      */
-    private getFunctionFragment(prop: string | symbol): FunctionFragment {
+    public getFunctionFragment(prop: string | symbol): FunctionFragment {
         const functionFragment = coder
             .createInterface(this.abi)
             .getFunction(prop.toString());
