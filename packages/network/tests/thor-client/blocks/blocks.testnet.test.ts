@@ -194,10 +194,21 @@ describe('ThorClient - Blocks Module', () => {
         }, 3000);
 
         /**
-         * getFinalBlock test
+         * getFinalBlockCompressed test
          */
-        test('getFinalBlock', async () => {
-            const blockDetails = await thorClient.blocks.getFinalBlock();
+        test('getFinalBlockCompressed', async () => {
+            const blockDetails =
+                await thorClient.blocks.getFinalBlockCompressed();
+            expect(blockDetails).not.toBeNull();
+            expect(blockDetails).toBeDefined();
+        }, 3000);
+
+        /**
+         * getFinalBlockExpanded test
+         */
+        test('getFinalBlockExpanded', async () => {
+            const blockDetails =
+                await thorClient.blocks.getFinalBlockExpanded();
             expect(blockDetails).not.toBeNull();
             expect(blockDetails).toBeDefined();
         }, 3000);

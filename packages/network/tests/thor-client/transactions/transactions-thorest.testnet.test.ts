@@ -28,7 +28,8 @@ describe('ThorClient - Transactions Module', () => {
         transactionDetails.correct.forEach((testCase) => {
             test(testCase.testName, async () => {
                 // Check block number
-                const latestBlock = await thorClient.blocks.getFinalBlock();
+                const latestBlock =
+                    await thorClient.blocks.getFinalBlockCompressed();
 
                 // Check transaction block. If undefined, it is the 'best' block.
                 for (const blockNumber of [latestBlock, undefined]) {
@@ -74,7 +75,8 @@ describe('ThorClient - Transactions Module', () => {
         transactionReceipts.correct.forEach((testCase) => {
             test(testCase.testName, async () => {
                 // Check block number
-                const latestBlock = await thorClient.blocks.getFinalBlock();
+                const latestBlock =
+                    await thorClient.blocks.getFinalBlockCompressed();
 
                 // Check transaction block. If undefined, it is the 'best' block.
                 for (const blockNumber of [latestBlock, undefined]) {

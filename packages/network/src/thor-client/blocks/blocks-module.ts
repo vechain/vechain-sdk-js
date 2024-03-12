@@ -150,12 +150,21 @@ class BlocksModule {
     }
 
     /**
+     * Retrieves the finalized block.
+     *
+     * @returns A promise that resolves to an object containing the finalized block.
+     */
+    public async getFinalBlockCompressed(): Promise<CompressedBlockDetail | null> {
+        return await this.getBlockCompressed('finalized');
+    }
+
+    /**
      * Retrieves details of the finalized block.
      *
-     * @returns A promise that resolves to an object containing the block details.
+     * @returns A promise that resolves to an object containing the finalized block details.
      */
-    public async getFinalBlock(): Promise<CompressedBlockDetail | null> {
-        return await this.getBlockCompressed('finalized');
+    public async getFinalBlockExpanded(): Promise<ExpandedBlockDetail | null> {
+        return await this.getBlockExpanded('finalized');
     }
 
     /**
