@@ -29,12 +29,12 @@ describe('ThorClient - Blocks Module', () => {
     });
 
     /**
-     * Test suite for waitForBlock method
-     * The waitForBlock method is tested in parallel with different options, coming from the waitForBlockTestCases array
+     * Test suite for waitForBlockCompressed method
+     * The waitForBlockCompressed method is tested in parallel with different options, coming from the waitForBlockTestCases array
      */
-    describe('waitForBlock', () => {
+    describe('waitForBlockCompressed', () => {
         test(
-            'parallel waitForBlock tests',
+            'parallel waitForBlockCompressed tests',
             async () => {
                 // Map each test case to a promise
                 const tests = waitForBlockTestCases.map(async ({ options }) => {
@@ -42,7 +42,7 @@ describe('ThorClient - Blocks Module', () => {
                         await thorClient.blocks.getBestBlockCompressed();
                     if (bestBlock != null) {
                         const expectedBlock =
-                            await thorClient.blocks.waitForBlock(
+                            await thorClient.blocks.waitForBlockCompressed(
                                 bestBlock?.number + 1,
                                 options
                             );
@@ -61,19 +61,60 @@ describe('ThorClient - Blocks Module', () => {
         );
     });
 
-    test('waitForBlock - invalid blockNumber', async () => {
+    /**
+     * Test suite for waitForBlockExpanded method
+     * The waitForBlockExpanded method is tested in parallel with different options, coming from the waitForBlockTestCases array
+     */
+    describe('waitForBlockExpanded', () => {
+        test(
+            'parallel waitForBlockExpanded tests',
+            async () => {
+                // Map each test case to a promise
+                const tests = waitForBlockTestCases.map(async ({ options }) => {
+                    const bestBlock =
+                        await thorClient.blocks.getBestBlockExpanded();
+                    if (bestBlock != null) {
+                        const expectedBlock =
+                            await thorClient.blocks.waitForBlockExpanded(
+                                bestBlock?.number + 1,
+                                options
+                            );
+
+                        // Incorporate the description into the assertion message for clarity
+                        expect(expectedBlock?.number).toBeGreaterThan(
+                            bestBlock?.number
+                        );
+                    }
+                });
+
+                // Wait for all tests to complete
+                await Promise.all(tests);
+            },
+            12000 * waitForBlockTestCases.length
+        );
+    });
+
+    test('waitForBlockCompressed - invalid blockNumber', async () => {
         await expect(
-            async () => await thorClient.blocks.waitForBlock(-2)
+            async () => await thorClient.blocks.waitForBlockCompressed(-2)
         ).rejects.toThrowError(
             'Invalid blockNumber. The blockNumber must be a number representing a block number.'
         );
     }, 5000);
 
-    test('waitForBlock - maximumWaitingTimeInMilliseconds', async () => {
+    test('waitForBlockExpanded - invalid blockNumber', async () => {
+        await expect(
+            async () => await thorClient.blocks.waitForBlockExpanded(-2)
+        ).rejects.toThrowError(
+            'Invalid blockNumber. The blockNumber must be a number representing a block number.'
+        );
+    }, 5000);
+
+    test('waitForBlockCompressed - maximumWaitingTimeInMilliseconds', async () => {
         // Get best block
         const bestBlock = await thorClient.blocks.getBestBlockCompressed();
         if (bestBlock != null) {
-            const block = await thorClient.blocks.waitForBlock(
+            const block = await thorClient.blocks.waitForBlockCompressed(
                 bestBlock?.number + 2,
                 {
                     timeoutMs: 1000
