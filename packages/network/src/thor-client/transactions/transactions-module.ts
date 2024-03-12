@@ -10,7 +10,7 @@ import {
     type TransactionBody,
     type TransactionClause,
     TransactionHandler
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import { buildQuery, Poll, thorest } from '../../utils';
 import {
     type GetTransactionInputOptions,
@@ -26,12 +26,7 @@ import {
     type WaitForTransactionOptions
 } from './types';
 import { randomBytes } from 'crypto';
-import {
-    assert,
-    buildError,
-    DATA,
-    TRANSACTION
-} from '@vechain/vechain-sdk-errors';
+import { assert, buildError, DATA, TRANSACTION } from '@vechain/sdk-errors';
 import { type ThorClient } from '../thor-client';
 import { DelegationHandler } from './helpers';
 import { assertTransactionCanBeSigned } from '../../assertions';

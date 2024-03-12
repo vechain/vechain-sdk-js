@@ -1,15 +1,15 @@
 import {
     type CompressedBlockDetail,
     type ThorClient
-} from '@vechain/vechain-sdk-network';
+} from '@vechain/sdk-network';
 import {
     blocksFormatter,
     RPC_METHODS,
     RPCMethodsMap,
     type SyncBlockRPC
 } from '../../../../../provider';
-import { buildProviderError, JSONRPC } from '@vechain/vechain-sdk-errors';
-import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
+import { buildProviderError, JSONRPC } from '@vechain/sdk-errors';
+import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
 
 /**
  * Check if the block is out of sync in time.

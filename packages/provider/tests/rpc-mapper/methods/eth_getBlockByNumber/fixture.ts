@@ -1,6 +1,6 @@
-import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
+import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
 import { blockWithTransactionsExpanded } from '../../../fixture';
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { InvalidDataTypeError } from '@vechain/sdk-errors';
 
 /**
  * Zero block fixture

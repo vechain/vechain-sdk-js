@@ -1,8 +1,4 @@
-import {
-    buildError,
-    DATA,
-    InvalidDataTypeError
-} from '@vechain/vechain-sdk-errors';
+import { buildError, DATA, InvalidDataTypeError } from '@vechain/sdk-errors';
 
 /**
  * Simple increment function fixture

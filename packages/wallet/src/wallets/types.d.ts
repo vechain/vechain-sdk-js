@@ -1,4 +1,4 @@
-import { type SignTransactionOptions } from '@vechain/vechain-sdk-network';
+import { type SignTransactionOptions } from '@vechain/sdk-network';
 
 /**
  * Represent a single account in a wallet.
@@ -19,19 +19,13 @@ interface WalletAccount {
      * Public key of the account.
      */
     publicKey: Buffer;
-
-    /**
-     * Here we can add all useful methods for WalletAccount.
-     * Currently, private key and public key are used by provider.
-     */
-    // ... e.g. fromPrivateKey(privateKey), fromPublicKey(publicKey), ...
 }
 
 /**
  * Represent a wallet.
  * Basically a wallet is a list of {@link WalletAccount}.
  *
- * @note TO be compatible with vechain-sdk-wallet stack it is better
+ * @note To be compatible with vechain-sdk-wallet stack it is better
  * to implement this interface for each kind of wallet you want to use.
  *
  * Basically, this interface contains all data needed for a wallet that others can use.

@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap, VechainProvider } from '../../../../src';
-import { ThorClient } from '@vechain/vechain-sdk-network';
+import { ThorClient } from '@vechain/sdk-network';
 import { soloNetwork, THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../fixture';
-import { type Wallet, type WalletAccount } from '@vechain/vechain-sdk-wallet';
-import { ProviderRpcError } from '@vechain/vechain-sdk-errors';
+import { type Wallet, type WalletAccount } from '@vechain/sdk-wallet';
+import { ProviderRpcError } from '@vechain/sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_requestAccounts' method

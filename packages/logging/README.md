@@ -1,4 +1,4 @@
-# @vechain/vechain-sdk-logging
+# @vechain/sdk-logging
 
 Welcome to the **logging package** of the vechain SDK!
 
@@ -8,9 +8,9 @@ Logging package provides a simple and easy-to-use logging system for the vechain
 ## Key Features
 
 The vechain SDK Wallet package provides features for logging, including:
-* error logging
-* info logging
-* warning logging
+* `Error` logging
+* `Info` logging
+* `Warning` logging
 
 ## Commands
 

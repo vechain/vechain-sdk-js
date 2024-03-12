@@ -1,4 +1,4 @@
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { InvalidDataTypeError } from '@vechain/sdk-errors';
 
 /**
  * Debug traceTransactionClause tests fixture testnet

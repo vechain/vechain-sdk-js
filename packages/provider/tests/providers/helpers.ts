@@ -5,8 +5,8 @@ import {
     ERC721_BYTECODE,
     TEST_ACCOUNT
 } from './fixture';
-import { type Contract, type ThorClient } from '@vechain/vechain-sdk-network';
-import { ERC721_ABI } from '@vechain/vechain-sdk-core';
+import { type Contract, type ThorClient } from '@vechain/sdk-network';
+import { ERC721_ABI } from '@vechain/sdk-core';
 
 export async function waitForMessage(
     provider: VechainProvider

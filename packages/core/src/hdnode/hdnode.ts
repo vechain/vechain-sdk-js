@@ -10,7 +10,7 @@ import { addressUtils } from '../address';
 import { sha256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import { type WordlistSizeType } from '../mnemonic';
-import { assert, HDNODE } from '@vechain/vechain-sdk-errors';
+import { assert, HDNODE } from '@vechain/sdk-errors';
 import {
     assertIsValidHdNodeChainCode,
     assertIsValidHdNodeDerivationPath

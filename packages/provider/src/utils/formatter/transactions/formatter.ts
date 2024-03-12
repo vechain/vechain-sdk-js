@@ -4,17 +4,13 @@ import {
     type TransactionReceipt,
     type SendTransactionResult,
     type ExpandedBlockDetail
-} from '@vechain/vechain-sdk-network';
+} from '@vechain/sdk-network';
 import {
     type TransactionReceiptLogsRPC,
     type TransactionReceiptRPC,
     type TransactionRPC
 } from './types';
-import {
-    Hex,
-    vechain_sdk_core_ethers,
-    ZERO_BUFFER
-} from '@vechain/vechain-sdk-core';
+import { Hex, vechain_sdk_core_ethers, ZERO_BUFFER } from '@vechain/sdk-core';
 import {
     getNumberOfLogsAheadOfTransactionIntoBlockExpanded,
     getTransactionIndexIntoBlock

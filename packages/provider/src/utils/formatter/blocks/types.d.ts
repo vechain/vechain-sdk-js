@@ -65,7 +65,7 @@ interface BlockHeaderRPC {
 /**
  * Return type of blocks for RPC standard.
  *
- * Our SDK uses `BlockDetail` type from `@vechain/vechain-sdk-network` package.
+ * Our SDK uses `BlockDetail` type from `@vechain/sdk-network` package.
  *
  * @link [Ethereum JSON RPC Block Object](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_getblockbynumber#returns)
  */

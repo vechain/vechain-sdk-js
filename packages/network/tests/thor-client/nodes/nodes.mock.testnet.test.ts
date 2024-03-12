@@ -4,7 +4,7 @@ import {
     blockWithOldTimeStamp,
     blockWithInvalidTimeStampFormat
 } from './fixture';
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { InvalidDataTypeError } from '@vechain/sdk-errors';
 import { HttpClient, ThorClient } from '../../../src';
 
 /**

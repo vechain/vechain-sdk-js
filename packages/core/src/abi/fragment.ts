@@ -6,7 +6,7 @@ import {
     type Interface,
     type Result
 } from './types';
-import { ABI, assert, buildError } from '@vechain/vechain-sdk-errors';
+import { ABI, assert, buildError } from '@vechain/sdk-errors';
 import { sanitizeValuesToEncode } from './helpers/fragment';
 
 /**

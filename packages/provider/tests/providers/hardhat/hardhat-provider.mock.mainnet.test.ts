@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { HardhatVechainProvider } from '../../../src';
 import { mainnetUrl } from '../../fixture';
-import { BaseWallet } from '@vechain/vechain-sdk-wallet';
-import { VechainSDKLogger } from '@vechain/vechain-sdk-logging';
+import { BaseWallet } from '@vechain/sdk-wallet';
+import { VechainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * Hardhat provider tests - Mainnet
@@ -22,6 +22,7 @@ describe('Hardhat provider tests', () => {
         providerInDebugMode = new HardhatVechainProvider(
             new BaseWallet([]),
             mainnetUrl,
+            (message: string, parent?: Error) => new Error(message, parent),
             true
         );
     });

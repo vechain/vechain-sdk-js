@@ -3,8 +3,8 @@ import {
     secp256k1,
     Transaction,
     type TransactionBody
-} from '@vechain/vechain-sdk-core';
-import { assert, TRANSACTION } from '@vechain/vechain-sdk-errors';
+} from '@vechain/sdk-core';
+import { assert, TRANSACTION } from '@vechain/sdk-errors';
 
 /**
  * Asserts that the transaction can be signed by validating the private key and the transaction body.

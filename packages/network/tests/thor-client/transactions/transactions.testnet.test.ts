@@ -14,7 +14,7 @@ import {
     coder,
     type FunctionFragment,
     clauseBuilder
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import { HttpClient, ThorClient } from '../../../src';
 
 /**

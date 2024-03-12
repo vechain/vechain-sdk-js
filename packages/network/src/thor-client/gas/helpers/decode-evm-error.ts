@@ -1,7 +1,7 @@
 // https://docs.soliditylang.org/en/v0.8.16/control-structures.html#error-handling-assert-require-revert-and-exceptions
 // builtin errors in solidity, Error(string) and Panic(uint256)
 
-import { abi } from '@vechain/vechain-sdk-core';
+import { abi } from '@vechain/sdk-core';
 import { SOLIDITY_ERROR_SELECTOR, SOLIDITY_PANIC_SELECTOR } from './const';
 
 /**

@@ -6,7 +6,7 @@ import { secp256k1 } from '../secp256k1';
 import { ethers } from 'ethers';
 import { Hex, SCRYPT_PARAMS } from '../utils';
 import { type Keystore, type KeystoreAccount } from './types';
-import { assert, buildError, KEYSTORE } from '@vechain/vechain-sdk-errors';
+import { assert, buildError, KEYSTORE } from '@vechain/sdk-errors';
 
 /**
  * Encrypts a given private key into a keystore format using the specified password.

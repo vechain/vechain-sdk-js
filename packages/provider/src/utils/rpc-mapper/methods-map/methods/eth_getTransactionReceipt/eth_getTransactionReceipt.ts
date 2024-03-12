@@ -2,20 +2,15 @@ import {
     type ExpandedBlockDetail,
     type ThorClient,
     type TransactionDetailNoRaw
-} from '@vechain/vechain-sdk-network';
-import {
-    assert,
-    buildProviderError,
-    DATA,
-    JSONRPC
-} from '@vechain/vechain-sdk-errors';
+} from '@vechain/sdk-network';
+import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
 import {
     type TransactionReceiptRPC,
     transactionsFormatter
 } from '../../../../formatter';
 import { RPC_METHODS } from '../../../../const';
 import { RPCMethodsMap } from '../../../rpc-mapper';
-import { assertValidTransactionID } from '@vechain/vechain-sdk-core';
+import { assertValidTransactionID } from '@vechain/sdk-core';
 
 /**
  * RPC Method eth_getTransactionReceipt implementation

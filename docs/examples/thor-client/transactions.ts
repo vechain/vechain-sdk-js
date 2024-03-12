@@ -3,8 +3,8 @@ import {
     dataUtils,
     unitsUtils,
     clauseBuilder
-} from '@vechain/vechain-sdk-core';
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+} from '@vechain/sdk-core';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
 // Sender account with private key

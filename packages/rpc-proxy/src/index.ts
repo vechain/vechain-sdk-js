@@ -1,21 +1,29 @@
-import { HDWallet } from '@vechain/vechain-sdk-wallet';
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
-import { VechainProvider } from '@vechain/vechain-sdk-provider';
+import { HDWallet } from '@vechain/sdk-wallet';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
+import { VechainProvider } from '@vechain/sdk-provider';
 import importConfig from '../config.json';
 import express, { type Express, type Request, type Response } from 'express';
 import cors from 'cors';
-import { type RequestBody, type Config } from './types';
+import { type Config, type RequestBody } from './types';
 
+/**
+ * Start the proxy function.
+ * @note
+ * * This is a simple proxy server that converts and forwards RPC requests to the vechain network.
+ * * Don't use this in production, it's just for testing purposes.
+ */
 function startProxy(): void {
+    // Initialize the proxy server
     const config: Config = importConfig as Config;
     const port = config.port ?? 8545;
     console.log(`[rpc-proxy]: Starting proxy on port ${port}`);
 
-    const soloNetwork = new HttpClient(config.url);
-    const thorClient = new ThorClient(soloNetwork);
+    // Initialize the provider
+    const thorClient = new ThorClient(new HttpClient(config.url));
     const wallet = new HDWallet(config.accounts.mnemonic.split(' '));
     const provider = new VechainProvider(thorClient, wallet);
 
+    // Start the express proxy server
     const app: Express = express();
     app.use(
         (cors as (options: cors.CorsOptions) => express.RequestHandler)({})
@@ -41,7 +49,6 @@ function startProxy(): void {
         })();
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     app.get('*', (req: Request, res: Response) => {
         void (async () => {
             const requestBody = req.body as RequestBody;

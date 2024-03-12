@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { HTTPClientError } from '@vechain/vechain-sdk-errors';
+import { HTTPClientError } from '@vechain/sdk-errors';
 import { testNetwork } from '../../fixture';
 import { HttpClient, ThorClient } from '../../../src';
 /**

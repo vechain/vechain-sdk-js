@@ -4,7 +4,7 @@ import {
     invalidGetTransactionIndexTestCases
 } from './fixture';
 import { getTransactionIndexIntoBlock } from '../../../src';
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { InvalidDataTypeError } from '@vechain/sdk-errors';
 
 /**
  * Provider transaction helpers test suite

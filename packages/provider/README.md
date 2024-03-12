@@ -1,4 +1,4 @@
-# @vechain/vechain-sdk-provider
+# @vechain/sdk-provider
 
 Welcome to the **provider package** of the vechain SDK!
 

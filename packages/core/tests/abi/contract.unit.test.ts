@@ -11,7 +11,7 @@ import {
     InvalidAbiDataToDecodeError,
     InvalidAbiDataToEncodeError,
     InvalidAbiEventError
-} from '@vechain/vechain-sdk-errors';
+} from '@vechain/sdk-errors';
 
 /**
  * Contract tests - encode & decode
