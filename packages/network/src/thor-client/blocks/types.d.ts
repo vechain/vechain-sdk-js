@@ -17,7 +17,7 @@ interface BlocksModuleOptions {
 }
 
 /**
- * Options for `waitForBlock` method.
+ * Options for `waitForBlockCompressed` and  `waitForBlockExpanded` methods.
  */
 interface WaitForBlockOptions {
     /**
