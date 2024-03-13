@@ -6,6 +6,7 @@ import {
     type HttpNetworkConfig
 } from 'hardhat/types';
 import { setHardhatContext } from './test-utils';
+import { HardhatPluginError } from 'hardhat/plugins';
 
 /**
  * Simple hardhat project with vechain network configuration defined
@@ -49,6 +50,20 @@ describe('Custom network configuration hardhat - testnet', () => {
             ).toBeDefined();
             expect(hre.vechainProvider).toBeDefined();
             expect(hre.vechainProvider?.send('eth_accounts', [])).toBeDefined();
+        });
+    });
+
+    /**
+     * Negative test cases for the provider. It must throw an error
+     */
+    describe('Custom network configuration hardhat', () => {
+        /**
+         * Negative test cases for the provider. It must throw an error
+         */
+        test('Should throw an error when a send call goes wrong', async () => {
+            await expect(
+                hre.vechainProvider?.send('WRONG_ENDPOINT', [])
+            ).rejects.toThrowError(HardhatPluginError);
         });
     });
 });

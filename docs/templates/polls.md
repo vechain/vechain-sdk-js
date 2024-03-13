@@ -10,7 +10,7 @@ This section illustrates the methodology for monitoring the production of a new 
 [example](examples/polls/sync-poll-wait-new-block.ts)
 
 ### Observing Balance Changes Post-Transfer
-Here, we explore the approach to monitor balance changes subsequent to a transfer. Synchronous polling leverages the waitUntil function to detect balance changes following a transfer.
+Here, we explore the approach to monitor balance changes after a transfer. Synchronous polling leverages the waitUntil function to detect balance changes following a transfer.
 
 [example](examples/polls/sync-poll-wait-balance-update.ts)
 

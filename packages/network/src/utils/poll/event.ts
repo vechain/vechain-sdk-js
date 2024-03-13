@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { buildError, POLL_ERROR } from '@vechain/vechain-sdk-errors';
+import { buildError, POLL_ERROR } from '@vechain/sdk-errors';
 import { assertPositiveIntegerForPollOptions } from './helpers/assertions';
 
 /**

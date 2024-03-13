@@ -3,26 +3,36 @@ import {
     type EIP1193ProviderMessage,
     type EIP1193RequestArguments
 } from '../../eip1193';
-import { assert, DATA } from '@vechain/vechain-sdk-errors';
+import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
 import {
     type CompressedBlockDetail,
+    DelegationHandler,
     type EventPoll,
     Poll,
+    type SignTransactionOptions,
     type ThorClient
-} from '@vechain/vechain-sdk-network';
+} from '@vechain/sdk-network';
 import {
     ethGetLogs,
     POLLING_INTERVAL,
     RPC_METHODS,
     RPCMethodsMap
 } from '../../utils';
-import { type Wallet } from '@vechain/vechain-sdk-wallet';
+import { type Wallet, type WalletAccount } from '@vechain/sdk-wallet';
 import {
     type FilterOptions,
     type SubscriptionEvent,
     type SubscriptionManager
 } from './types';
-import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
+import {
+    clauseBuilder,
+    dataUtils,
+    Hex,
+    type TransactionClause,
+    vechain_sdk_core_ethers
+} from '@vechain/sdk-core';
+import type { TransactionObjectInput } from '../../utils/rpc-mapper/methods-map/methods/eth_sendTransaction/types';
+import { randomBytes } from 'crypto';
 
 /**
  * Our core provider class for vechain
@@ -254,6 +264,80 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
 
         // Return the fetched block details or null if no block was fetched
         return result;
+    }
+
+    /**
+     * Signs a transaction using the wallet.
+     */
+    public async sign(transaction: TransactionObjectInput): Promise<string> {
+        // 1 - Initiate the transaction clauses
+        const transactionClauses: TransactionClause[] =
+            transaction.to !== undefined
+                ? // Normal transaction
+                  [
+                      {
+                          to: transaction.to,
+                          data: transaction.data ?? '0x',
+                          value: transaction.value ?? '0x0'
+                      } satisfies TransactionClause
+                  ]
+                : // If 'to' address is not provided, it will be assumed that the transaction is a contract creation transaction.
+                  [clauseBuilder.deployContract(transaction.data ?? '0x')];
+
+        // 2 - Estimate gas
+        const gasResult = await this.thorClient.gas.estimateGas(
+            transactionClauses,
+            transaction.from
+        );
+
+        // 3 - Get the signed transaction (we already know wallet is defined, thanks to the input validation)
+        const walletTouse: Wallet = this.wallet as Wallet;
+
+        const delegatorIntoWallet: SignTransactionOptions | null =
+            await walletTouse.getDelegator();
+
+        const signerIntoWallet: WalletAccount | null =
+            await walletTouse.getAccount(transaction.from);
+
+        // 4 - Create transaction body
+        const transactionBody =
+            await this.thorClient.transactions.buildTransactionBody(
+                transactionClauses,
+                gasResult.totalGas,
+                {
+                    isDelegated:
+                        DelegationHandler(delegatorIntoWallet).isDelegated()
+                }
+            );
+
+        // NOTE: To be compliant with the standard and to avoid nonce overflow, we generate a random nonce of 6 bytes
+
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { nonce, ...transactionBodyWithoutNonce } = transactionBody;
+        const newNonce = `0x${dataUtils.toHexString(randomBytes(6))}`;
+
+        // At least, a signer private key is required
+        if (
+            signerIntoWallet?.privateKey === null ||
+            signerIntoWallet?.privateKey === undefined
+        ) {
+            throw buildProviderError(
+                JSONRPC.INTERNAL_ERROR,
+                `Transaction 'sign' failed: Wallet has not the private key of signer.\n
+                Params: ${JSON.stringify(transaction)}\n
+                URL: ${this.thorClient.httpClient.baseURL}`
+            );
+        }
+
+        // Sign the transaction
+        const signedTransaction =
+            await this.thorClient.transactions.signTransaction(
+                { nonce: newNonce, ...transactionBodyWithoutNonce },
+                Hex.of(signerIntoWallet.privateKey),
+                DelegationHandler(delegatorIntoWallet).delegatorOrUndefined()
+            );
+
+        return Hex.of0x(signedTransaction.encoded);
     }
 }
 

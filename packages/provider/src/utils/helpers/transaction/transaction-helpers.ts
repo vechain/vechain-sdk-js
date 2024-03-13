@@ -1,10 +1,10 @@
-import { buildError, DATA } from '@vechain/vechain-sdk-errors';
+import { buildError, DATA } from '@vechain/sdk-errors';
 import {
     blocksFormatter,
     type BlocksRPC,
     type TransactionRPC
 } from '../../formatter';
-import { type ExpandedBlockDetail } from '@vechain/vechain-sdk-network';
+import { type ExpandedBlockDetail } from '@vechain/sdk-network';
 
 /**
  * Get the index of the transaction in the specified block.

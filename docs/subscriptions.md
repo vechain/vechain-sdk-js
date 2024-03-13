@@ -14,7 +14,7 @@ To use the subscription endpoints, import the `subscriptions`` object from the v
 Subscribe to specific contract events through the `subscriptions.getEventSubscriptionUrl`. You can filter events based on contract address and topics.
 
 ```typescript { name=event-subscriptions, category=example }
-import { subscriptions } from '@vechain/vechain-sdk-network';
+import { subscriptions } from '@vechain/sdk-network';
 import WebSocket from 'ws';
 
 // The URL of the node to request the subscription from.
@@ -87,7 +87,7 @@ The vechain sdk also provides other subscription endpoints for subscribing to di
 Subscribe to new blocks as they are added to the blockchain through the `subscriptions.getBlockSubscriptionUrl` method.
 
 ```typescript { name=block-subscriptions, category=example }
-import { subscriptions } from '@vechain/vechain-sdk-network';
+import { subscriptions } from '@vechain/sdk-network';
 import WebSocket from 'ws';
 
 // The URL of the node to request the subscription from.

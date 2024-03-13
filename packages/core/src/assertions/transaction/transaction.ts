@@ -1,9 +1,4 @@
-import {
-    assert,
-    DATA,
-    SECP256K1,
-    TRANSACTION
-} from '@vechain/vechain-sdk-errors';
+import { assert, DATA, SECP256K1, TRANSACTION } from '@vechain/sdk-errors';
 import { type Transaction } from '../../transaction';
 import { dataUtils } from '../../utils';
 

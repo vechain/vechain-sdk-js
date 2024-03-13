@@ -11,7 +11,7 @@ import {
     InvalidBloomError,
     InvalidDataTypeError,
     InvalidKError
-} from '@vechain/vechain-sdk-errors';
+} from '@vechain/sdk-errors';
 
 /**
  * Bloom utils tests

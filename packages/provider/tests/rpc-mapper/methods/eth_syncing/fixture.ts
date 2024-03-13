@@ -1,4 +1,4 @@
-import { type CompressedBlockDetail } from '@vechain/vechain-sdk-network';
+import { type CompressedBlockDetail } from '@vechain/sdk-network';
 
 /**
  * Mocked latest block fixture.

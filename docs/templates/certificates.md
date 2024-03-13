@@ -4,7 +4,7 @@ description: Certificate related functions.
 
 # Certificates
 
-In the VechainThor blockchain, a certificate is a data structure used for client-side self-signed certificates. It plays a crucial role in providing a mechanism for secure identification and validation of data.
+In the VechainThor blockchain, a certificate is a data structure used for client-side self-signed certificates. It plays a crucial role in providing a mechanism for secure identification and validation of data. For example, when signing in to a Dapp, users typically need to sign a certificate as part of the authentication process. This certificate serves as cryptographic proof of their identity and authorization. Users use their private keys to sign the certificate, demonstrating their ownership and enabling secure access to the Dapp's services.
 
 ## Purpose of Certificates
 

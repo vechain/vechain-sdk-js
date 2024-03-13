@@ -1,4 +1,4 @@
-import { assert, DATA } from '@vechain/vechain-sdk-errors';
+import { assert, DATA } from '@vechain/sdk-errors';
 
 /**
  * Assert if poll options are valid (options are basically positive integers)

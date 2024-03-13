@@ -1,13 +1,13 @@
-import { BaseWallet, HDWallet, type Wallet } from '@vechain/vechain-sdk-wallet';
-import { buildError, JSONRPC } from '@vechain/vechain-sdk-errors';
-import { addressUtils, secp256k1 } from '@vechain/vechain-sdk-core';
+import { BaseWallet, HDWallet, type Wallet } from '@vechain/sdk-wallet';
+import { buildError, JSONRPC } from '@vechain/sdk-errors';
+import { addressUtils, secp256k1 } from '@vechain/sdk-core';
 import {
     type HardhatNetworkAccountsConfig,
     type HttpNetworkAccountsConfig,
     type HttpNetworkConfig,
     type NetworkConfig
 } from 'hardhat/types';
-import { DelegationHandler } from '@vechain/vechain-sdk-network';
+import { DelegationHandler } from '@vechain/sdk-network';
 
 /**
  * Create a wallet from the hardhat network configuration.

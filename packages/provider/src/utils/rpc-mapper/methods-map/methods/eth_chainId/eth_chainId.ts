@@ -1,7 +1,7 @@
-import { type ThorClient } from '@vechain/vechain-sdk-network';
-import { buildProviderError, JSONRPC } from '@vechain/vechain-sdk-errors';
+import { type ThorClient } from '@vechain/sdk-network';
+import { buildProviderError, JSONRPC } from '@vechain/sdk-errors';
 import { CHAIN_ID } from '../../../../const';
-import { networkInfo } from '@vechain/vechain-sdk-core';
+import { networkInfo } from '@vechain/sdk-core';
 
 /**
  * RPC Method eth_chainId implementation

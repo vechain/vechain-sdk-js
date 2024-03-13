@@ -1,10 +1,5 @@
-import { type ThorClient } from '@vechain/vechain-sdk-network';
-import {
-    assert,
-    buildProviderError,
-    DATA,
-    JSONRPC
-} from '@vechain/vechain-sdk-errors';
+import { type ThorClient } from '@vechain/sdk-network';
+import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
 import {
     debugFormatter,
     type TracerReturnTypeRPC
@@ -12,7 +7,7 @@ import {
 import {
     type TraceReturnType,
     type TracerName
-} from '@vechain/vechain-sdk-network/src/thor-client/debug';
+} from '@vechain/sdk-network/src/thor-client/debug';
 import { type TraceCallRPC, type TransactionObjectInput } from './types';
 
 /**

@@ -27,7 +27,7 @@ import {
     validNumericBufferTestCases,
     validateNumberTestCases
 } from './helpers.fixture';
-import { InvalidRLPError } from '@vechain/vechain-sdk-errors';
+import { InvalidRLPError } from '@vechain/sdk-errors';
 
 /**
  * Test suite for BigInt helper functions

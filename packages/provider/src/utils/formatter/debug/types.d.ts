@@ -1,4 +1,4 @@
-import { type TraceReturnType } from '@vechain/vechain-sdk-network/src/thor-client/debug';
+import { type TraceReturnType } from '@vechain/sdk-network/src/thor-client/debug';
 
 /**
  * Available tracers for the RPC standard.

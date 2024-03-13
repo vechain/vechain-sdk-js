@@ -1,8 +1,8 @@
 import { type HardhatUserConfig, task } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
-import '@vechain/vechain-sdk-hardhat-plugin';
+import '@vechain/sdk-hardhat-plugin';
 
-import { VET_DERIVATION_PATH } from '@vechain/vechain-sdk-core';
+import { VET_DERIVATION_PATH } from '@vechain/sdk-core';
 import { type HttpNetworkConfig } from 'hardhat/types';
 
 task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {

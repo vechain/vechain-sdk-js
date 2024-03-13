@@ -4,8 +4,9 @@ import { type Keystore } from '../../src';
 import { encryptionPassword } from './fixture';
 import {
     InvalidKeystoreError,
-    InvalidKeystorePasswordError
-} from '@vechain/vechain-sdk-errors';
+    InvalidKeystorePasswordError,
+    InvalidSecp256k1PrivateKeyError
+} from '@vechain/sdk-errors';
 
 /**
  * Keystore tests
@@ -47,8 +48,7 @@ describe('Keystore', () => {
                     Buffer.from('wrong private key', 'hex'),
                     encryptionPassword
                 )
-            // ).rejects.toThrowError(InvalidSecp256k1PrivateKeyError);
-        ).rejects.toThrowError(Error);
+        ).rejects.toThrowError(InvalidSecp256k1PrivateKeyError);
     });
 
     /**

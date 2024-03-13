@@ -22,7 +22,7 @@ import {
     coder,
     type FunctionFragment,
     unitsUtils
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 
 const TIMEOUT = 15000; // 15-second timeout
 

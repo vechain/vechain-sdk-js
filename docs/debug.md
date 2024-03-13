@@ -9,12 +9,9 @@ class encapsulates functionality to debug the VechainThor blockchain.
 
 The module provides methods to interact with the debug end points provided by 
 
-* [**Retrieve Storage Range**](#retrieve-storage-range) - http://localhost:8669/doc/swagger-ui/#/Debug/post_debug_storage_range 
-* [**Trace Contract Call**](#trace-contract-call) - http://localhost:8669/doc/swagger-ui/#/Debug/post_debug_tracers_call
-* [**Trace Transction Cluase**](#trace-transaction-clause) - http://localhost:8669/doc/swagger-ui/#/Debug/post_debug_tracers
-
-supposing Thor is running at `localhost`, 
-else change `localhost` with the IP address of the [Swagger](https://swagger.io/) service.
+* [**Retrieve Storage Range**](#retrieve-storage-range) - https://testnet.vechain.org/doc/swagger-ui/#/Debug/post_debug_storage_range 
+* [**Trace Contract Call**](#trace-contract-call) - https://testnet.vechain.org/doc/swagger-ui/#/Debug/post_debug_tracers_call
+* [**Trace Transaction Clause**](#trace-transaction-clause) - https://testnet.vechain.org/doc/swagger-ui/#/Debug/post_debug_tracers
 
 ## Retrieve Storage Range
 
@@ -25,7 +22,7 @@ In this example the `thorClient` connects to the *testnet* to retrieve the stora
 as `input` parameter.
 
 ```typescript { name=debug-retrieve-storage-range, category=example }
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
 
 // 1 - Create thor client for testnet
 const _testnetUrl = 'https://testnet.vechain.org';
@@ -113,7 +110,7 @@ In this example the `thorClient` connects to the *testnet* to trace the contract
 the `input` parameter.
 
 ```typescript { name=debug-trace-contract-call, category=example }
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
 
 // 1 - Create thor client for testnet
 const _testnetUrl = 'https://testnet.vechain.org';
@@ -171,11 +168,11 @@ console.log(result);
 The `traceTransactionClause` method trace the transactions specified in the clause at the
 coordinates expressed in the `input` parameter.
 
-In this example the `thorClient` connects to the *testnet* to trace the clase at the coordinates specified in
+In this example the `thorClient` connects to the *testnet* to trace the clause at the coordinates specified in
 the `input` parameter.
 
 ```typescript { name=debug-trace-contract-call, category=example }
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
 
 // 1 - Create thor client for testnet
 const _testnetUrl = 'https://testnet.vechain.org';

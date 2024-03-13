@@ -3,11 +3,11 @@ import {
     clauseBuilder,
     type DeployParams,
     type InterfaceAbi
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import type { ContractTransactionOptions } from '../types';
 import { type ThorClient } from '../../thor-client';
 import { Contract } from './contract';
-import { assert, buildError, ERROR_CODES } from '@vechain/vechain-sdk-errors';
+import { assert, buildError, ERROR_CODES } from '@vechain/sdk-errors';
 import {
     type SendTransactionResult,
     type TransactionReceipt

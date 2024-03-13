@@ -2,7 +2,7 @@ import { addressUtils } from '../../address';
 import { type TransactionClause } from '../../transaction';
 import { TRANSACTIONS_GAS_CONSTANTS } from '../const';
 import { dataUtils } from '../data';
-import { assert, DATA } from '@vechain/vechain-sdk-errors';
+import { assert, DATA } from '@vechain/sdk-errors';
 
 /**
  * Calculates intrinsic gas that a tx costs with the given set of clauses.

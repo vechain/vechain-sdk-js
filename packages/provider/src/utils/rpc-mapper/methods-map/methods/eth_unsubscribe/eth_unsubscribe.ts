@@ -1,5 +1,5 @@
 import type { VechainProvider } from '../../../../../providers';
-import { buildProviderError, JSONRPC } from '@vechain/vechain-sdk-errors';
+import { buildProviderError, JSONRPC } from '@vechain/sdk-errors';
 
 /**
  * Asynchronously unsubscribes from a vechain event subscription.

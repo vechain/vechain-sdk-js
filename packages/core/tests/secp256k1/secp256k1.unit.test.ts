@@ -16,7 +16,7 @@ import {
     InvalidSecp256k1PrivateKeyError,
     InvalidSecp256k1SignatureError,
     InvalidSecp256k1SignatureRecoveryError
-} from '@vechain/vechain-sdk-errors';
+} from '@vechain/sdk-errors';
 
 /**
  * Secp256k1 tests
@@ -69,7 +69,7 @@ describe('Secp256k1', () => {
             Hex.of(publicKey)
         );
 
-        // Correct public key length (65 bytes because first byte is 0)
+        // Corrext public key length (65 bytes because first byte is 0)
         expect(secp256k1.derivePublicKey(privateKey).length).toBe(65);
 
         // Invalid private key

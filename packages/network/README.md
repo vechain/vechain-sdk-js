@@ -1,4 +1,4 @@
-# @vechain/vechain-sdk-network
+# @vechain/sdk-network
 
 Welcome to the **network package** of the vechain SDK!
 

@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { HardhatVechainProvider } from '../../../src';
 import { mainnetUrl } from '../../fixture';
 import { providerMethodsTestCasesMainnet } from '../fixture';
-import { BaseWallet } from '@vechain/vechain-sdk-wallet';
+import { BaseWallet } from '@vechain/sdk-wallet';
 
 /**
  * Hardhat provider tests - Mainnet
@@ -19,7 +19,11 @@ describe('Hardhat provider tests', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        provider = new HardhatVechainProvider(new BaseWallet([]), mainnetUrl);
+        provider = new HardhatVechainProvider(
+            new BaseWallet([]),
+            mainnetUrl,
+            (message: string, parent?: Error) => new Error(message, parent)
+        );
     });
 
     /**

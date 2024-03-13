@@ -1,4 +1,4 @@
-import { assert, SECP256K1 } from '@vechain/vechain-sdk-errors';
+import { assert, SECP256K1 } from '@vechain/sdk-errors';
 
 /**
  * Assert if private key is valid

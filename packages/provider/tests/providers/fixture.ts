@@ -2,7 +2,7 @@ import {
     type InterfaceAbi,
     unitsUtils,
     vechain_sdk_core_ethers
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import { zeroBlock } from '../rpc-mapper/methods/eth_getBlockByNumber/fixture';
 import {
     TEST_ACCOUNTS_THOR_SOLO,

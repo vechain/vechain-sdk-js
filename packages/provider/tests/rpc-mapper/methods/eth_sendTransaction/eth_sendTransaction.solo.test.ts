@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { ThorClient } from '@vechain/vechain-sdk-network';
+import { ThorClient } from '@vechain/sdk-network';
 import {
     soloNetwork,
     TEST_ACCOUNTS_THOR_SOLO,
@@ -15,9 +15,9 @@ import {
     InvalidDataTypeError,
     JSONRPCInvalidParams,
     ProviderRpcError
-} from '@vechain/vechain-sdk-errors';
-import { BaseWallet } from '@vechain/vechain-sdk-wallet';
-import { secp256k1 } from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-errors';
+import { BaseWallet } from '@vechain/sdk-wallet';
+import { secp256k1 } from '@vechain/sdk-core';
 
 /**
  * RPC Mapper integration tests for 'eth_sendTransaction' method

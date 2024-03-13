@@ -28,7 +28,7 @@ Please describe the tests that you ran to verify your changes. Provide instructi
 
 - [x] My code follows the coding standards of this project
 - [x] I have performed a self-review of my code
-- [x] I have commented my code, particularly in hard-to-understand areas
+- [x] I have commented on my code, particularly in hard-to-understand areas
 - [x] I have made corresponding changes to the documentation
 - [x] My changes generate no new warnings
 - [x] I have added tests that prove my fix is effective or that my feature works
