@@ -8,8 +8,7 @@ import { HardhatVechainProvider } from '@vechain/sdk-provider';
 import { VechainSDKLogger } from '@vechain/sdk-logging';
 
 // Import needed to customize ethers functionality
-import { vechain_sdk_core_ethers as ethers } from '@vechain/sdk-core';
-
+// import { vechain_sdk_core_ethers as ethers } from '@vechain/sdk-core';
 // Import needed to extend the hardhat environment
 import './type-extensions';
 
@@ -173,52 +172,51 @@ extendEnvironment((hre) => {
      * To improve. Needed for ethers customization
      */
     // 4 - Customise ethers functionality
-    // @ts-expect-error - We are extending the environment with the vechain provider
-    hre.ethers = {
-        ...ethers
-        // provider: new CustomJSONRpcProvider(
-        //     0,
-        //     networkName,
-        //     hardhatVechainProvider
-        // )
+    // hre.ethers = {
+    //     ...ethers
+    // provider: new CustomJSONRpcProvider(
+    //     0,
+    //     networkName,
+    //     hardhatVechainProvider
+    // )
 
-        // getContractFactory: typeof getContractFactory;
-        // getContractFactoryFromArtifact: (
-        //     artifact: Artifact,
-        //     signerOrOptions?: ethers.Signer | FactoryOptions
-        // ) => Promise<ethers.ContractFactory>;
-        // getContractAt: (
-        //     nameOrAbi: string | any[],
-        //     address: string,
-        //     signer?: ethers.Signer
-        // ) => Promise<ethers.Contract>;
-        // getContractAtFromArtifact: (
-        //     artifact: Artifact,
-        //     address: string,
-        //     signer?: ethers.Signer
-        // ) => Promise<ethers.Contract>;
-        // getSigner: async (address: string): Promise<SignerWithAddress> => {
-        //     console.log('getSigner', address);
-        //     return await getSinger(
-        //         address,
-        //         networkName,
-        //         hardhatVechainProvider
-        //     );
-        // }
-        // getSigners: async (): Promise<SignerWithAddress[]> => {
-        //     const accounts: string[] = (await hardhatVechainProvider.send(
-        //         'eth_getAccounts',
-        //         []
-        //     )) as string[];
-        //     return accounts.map((address: string) => {
-        //         getSinger(
-        //             address,
-        //             networkName,
-        //             hardhatVechainProvider
-        //         );
-        //     });
-        // }
-        // getImpersonatedSigner: (address: string) => Promise<SignerWithAddress>;
-        // deployContract: typeof deployContract;
-    };
+    // getContractFactory: typeof getContractFactory;
+    // getContractFactoryFromArtifact: (
+    //     artifact: Artifact,
+    //     signerOrOptions?: ethers.Signer | FactoryOptions
+    // ) => Promise<ethers.ContractFactory>;
+    // getContractAt: (
+    //     nameOrAbi: string | any[],
+    //     address: string,
+    //     signer?: ethers.Signer
+    // ) => Promise<ethers.Contract>;
+    // getContractAtFromArtifact: (
+    //     artifact: Artifact,
+    //     address: string,
+    //     signer?: ethers.Signer
+    // ) => Promise<ethers.Contract>;
+    // getSigner: async (address: string): Promise<SignerWithAddress> => {
+    //     console.log('getSigner', address);
+    //     return await getSinger(
+    //         address,
+    //         networkName,
+    //         hardhatVechainProvider
+    //     );
+    // }
+    // getSigners: async (): Promise<SignerWithAddress[]> => {
+    //     const accounts: string[] = (await hardhatVechainProvider.send(
+    //         'eth_getAccounts',
+    //         []
+    //     )) as string[];
+    //     return accounts.map((address: string) => {
+    //         getSinger(
+    //             address,
+    //             networkName,
+    //             hardhatVechainProvider
+    //         );
+    //     });
+    // }
+    // getImpersonatedSigner: (address: string) => Promise<SignerWithAddress>;
+    // deployContract: typeof deployContract;
+    // };
 });
