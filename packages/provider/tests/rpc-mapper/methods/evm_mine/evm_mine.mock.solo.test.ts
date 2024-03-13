@@ -43,13 +43,14 @@ describe('RPC Mapper - evm_mine method tests', () => {
         });
 
         /**
-         * Test case that mocks an error thrown by the waitForBlock method
+         * Test case that mocks an error thrown by the waitForBlockCompressed method
          */
         test('Should throw `ProviderRpcError` if an error occurs while waiting for the new block', async () => {
-            // Mock the waitForBlock method to return null
-            jest.spyOn(thorClient.blocks, 'waitForBlock').mockResolvedValue(
-                null
-            );
+            // Mock the waitForBlockCompressed method to return null
+            jest.spyOn(
+                thorClient.blocks,
+                'waitForBlockCompressed'
+            ).mockResolvedValue(null);
 
             const newBlock = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.evm_mine

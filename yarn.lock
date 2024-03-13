@@ -513,7 +513,7 @@
     human-id "^1.0.2"
     prettier "^2.7.1"
 
-"@commitlint/cli@^19.0.3":
+"@commitlint/cli@^19.1.0":
   version "19.1.0"
   resolved "https://registry.yarnpkg.com/@commitlint/cli/-/cli-19.1.0.tgz#56d7baa098a29e2a909b46e35021f2ab68ec5a51"
   integrity sha512-SYGm8HGbVzrlSYeB6oo6pG1Ec6bOMJcDsXgNGa4vgZQsPj6nJkcbTWlIRmtmIk0tHi0d5sCljGuQ+g/0NCPv7w==
@@ -526,7 +526,7 @@
     execa "^8.0.1"
     yargs "^17.0.0"
 
-"@commitlint/config-conventional@^19.0.3":
+"@commitlint/config-conventional@^19.1.0":
   version "19.1.0"
   resolved "https://registry.yarnpkg.com/@commitlint/config-conventional/-/config-conventional-19.1.0.tgz#6b4b7938aa3bc308214a683247520f602e55961e"
   integrity sha512-KIKD2xrp6Uuk+dcZVj3++MlzIr/Su6zLE8crEDQCZNvWHNQSeeGbzOlNtsR32TUy6H3JbP7nWgduAHCaiGQ6EA==
@@ -3245,9 +3245,9 @@ ee-first@1.1.1:
   integrity sha512-WMwm9LhRUo+WUaRN+vRuETqG89IgZphVSNkdFgeb6sS/E4OrDIN7t48CAewSHXc6C8lefD8KKfr5vY61brQlow==
 
 electron-to-chromium@^1.4.668:
-  version "1.4.702"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.702.tgz#a05803c5a1a54f5eb727ce6a922a5923ef436261"
-  integrity sha512-LYLXyEUsZ3nNSwiOWjI88N1PJUAMU2QphQSgGLVkFnb3FxZxNui2Vzi2PaKPgPWbsWbZstZnh6BMf/VQJamjiQ==
+  version "1.4.703"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.703.tgz#786ab0c8cfe548b9da03890f923e69b1ae522741"
+  integrity sha512-094ZZC4nHXPKl/OwPinSMtLN9+hoFkdfQGKnvXbY+3WEAYtVDpz9UhJIViiY6Zb8agvqxiaJzNG9M+pRZWvSZw==
 
 elliptic@6.5.4:
   version "6.5.4"

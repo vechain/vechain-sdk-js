@@ -43,5 +43,5 @@ expect(bestBlockDetails).toBeDefined();
 
 // 4 - Get finalizes block details
 
-const finalBlockDetails = await thorClient.blocks.getFinalBlock();
+const finalBlockDetails = await thorClient.blocks.getFinalBlockExpanded();
 expect(finalBlockDetails).toBeDefined();
