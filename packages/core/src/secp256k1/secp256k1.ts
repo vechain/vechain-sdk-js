@@ -6,9 +6,8 @@ import {
     assertIsValidSecp256k1MessageHash
 } from '../assertions';
 
-import BN from 'bn.js';
+import { BN } from 'bn.js';
 import { secp256k1 as secp256k1Curve } from '@noble/curves/secp256k1';
-import * as secp256k1Library from '@noble/secp256k1';
 
 // Curve algorithm
 const curve = new EC('secp256k1');
@@ -61,7 +60,7 @@ function generatePrivateKey(entropy?: () => Buffer): Buffer {
  */
 function derivePublicKey(privateKey: Buffer): Buffer {
     assertIsValidPrivateKey('derivePublicKey', privateKey, isValidPrivateKey);
-    const publicKey = secp256k1Library.getPublicKey(privateKey);
+    const publicKey = secp256k1Curve.getPublicKey(privateKey, false);
     return Buffer.from(publicKey);
 }
 
@@ -113,11 +112,10 @@ function recover(messageHash: Buffer, sig: Buffer): Buffer {
     );
 
     return Buffer.from(
-        secp256k1Library.recoverPublicKey(
-            messageHash,
-            Uint8Array.from(sig).slice(0, 64),
-            recovery
-        )
+        secp256k1Curve.Signature.fromCompact(Uint8Array.from(sig).slice(0, 64))
+            .addRecoveryBit(recovery)
+            .recoverPublicKey(messageHash)
+            .toRawBytes(false)
     );
 }
 
