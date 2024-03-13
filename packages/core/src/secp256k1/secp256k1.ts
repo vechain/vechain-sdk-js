@@ -5,7 +5,10 @@ import {
     assertIsValidPrivateKey,
     assertIsValidSecp256k1MessageHash
 } from '../assertions';
-import * as secp from '@noble/secp256k1';
+
+import BN from 'bn.js';
+import { secp256k1 as secp256k1Curve } from '@noble/curves/secp256k1';
+import * as secp256k1Library from '@noble/secp256k1';
 
 // Curve algorithm
 const curve = new EC('secp256k1');
@@ -39,7 +42,7 @@ function isValidPrivateKey(key: Buffer): boolean {
  */
 function generatePrivateKey(entropy?: () => Buffer): Buffer {
     if (entropy == null) {
-        return Buffer.from(secp.utils.randomPrivateKey());
+        return Buffer.from(secp256k1Curve.utils.randomPrivateKey());
     } else {
         let privateKey: Buffer;
         do {
@@ -58,7 +61,7 @@ function generatePrivateKey(entropy?: () => Buffer): Buffer {
  */
 function derivePublicKey(privateKey: Buffer): Buffer {
     assertIsValidPrivateKey('derivePublicKey', privateKey, isValidPrivateKey);
-    const publicKey = secp.getPublicKey(privateKey);
+    const publicKey = secp256k1Library.getPublicKey(privateKey);
     return Buffer.from(publicKey);
 }
 
@@ -71,16 +74,11 @@ function derivePublicKey(privateKey: Buffer): Buffer {
  */
 function sign(messageHash: Buffer, privateKey: Buffer): Buffer {
     assertIsValidSecp256k1MessageHash('sign', messageHash, isValidMessageHash);
-
     assertIsValidPrivateKey('sign', privateKey, isValidPrivateKey);
-
-    const keyPair = curve.keyFromPrivate(privateKey);
-    const sig = keyPair.sign(messageHash, { canonical: true });
-
-    const r = Buffer.from(sig.r.toArray('be', 32));
-    const s = Buffer.from(sig.s.toArray('be', 32));
-
-    return Buffer.concat([r, s, Buffer.from([sig.recoveryParam as number])]);
+    const sig = secp256k1Curve.sign(messageHash, privateKey);
+    const r = Buffer.from(new BN(sig.r.toString()).toArray('be', 32));
+    const s = Buffer.from(new BN(sig.s.toString()).toArray('be', 32));
+    return Buffer.concat([r, s, Buffer.from([sig.recovery])]);
 }
 
 /**
@@ -114,18 +112,12 @@ function recover(messageHash: Buffer, sig: Buffer): Buffer {
         { recovery }
     );
 
-    const rCopy = Uint8Array.from(sig);
-    const r = rCopy.slice(0, 32);
-
-    const sCopy = Uint8Array.from(sig);
-    const s = sCopy.slice(32, 64);
-
     return Buffer.from(
-        (
-            curve.recoverPubKey(messageHash, { r, s }, recovery) as {
-                encode: (enc: string, flag: boolean) => ArrayBuffer;
-            }
-        ).encode('array', false)
+        secp256k1Library.recoverPublicKey(
+            messageHash,
+            Uint8Array.from(sig).slice(0, 64),
+            recovery
+        )
     );
 }
 

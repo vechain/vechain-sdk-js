@@ -69,7 +69,7 @@ describe('Secp256k1', () => {
             Hex.of(publicKey)
         );
 
-        // Corrext public key length (65 bytes because first byte is 0)
+        // Correct public key length (65 bytes because first byte is 0)
         expect(secp256k1.derivePublicKey(privateKey).length).toBe(65);
 
         // Invalid private key
