@@ -21,12 +21,14 @@ You can install these packages individually based on your requirements. Here's h
 npm install @vechain/sdk-core
 npm install @vechain/sdk-network
 npm install @vechain/sdk-provider
+...
 ```
 If you prefer using yarn, you can install the packages as follows:
 ``` bash
 yarn add @vechain/sdk-core
 yarn add @vechain/sdk-network
 yarn add @vechain/sdk-provider
+...
 ```
 
 ## Contributing
