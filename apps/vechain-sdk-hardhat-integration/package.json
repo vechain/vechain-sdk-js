@@ -8,7 +8,7 @@
   "license": "ISC",
   "scripts": {
     "compile": "npx hardhat compile",
-    "test": "npx hardhat test",
+    "test": "npx hardhat test --network vechain_testnet",
     "deploy-solo": "npx hardhat run scripts/deploy.ts --network vechain_solo",
     "deploy-testnet": "npx hardhat run scripts/deploy.ts --network vechain_testnet"
   },
