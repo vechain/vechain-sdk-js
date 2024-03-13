@@ -1,6 +1,6 @@
 {
   "name": "docs",
-  "version": "1.0.0-beta.0",
+  "version": "1.0.0-beta.1",
   "description": "Documentation for the SDK with examples",
   "author": "vechain Foundation",
   "license": "MIT",
@@ -20,7 +20,7 @@
     "test:examples:solo": "(yarn start-thor-solo && yarn test:examples && yarn stop-thor-solo) || yarn stop-thor-solo"
   },
   "dependencies": {
-    "@vechain/sdk-core": "1.0.0-beta.0",
+    "@vechain/sdk-core": "1.0.0-beta.1",
     "typescript": "^5.3.3"
   },
   "devDependencies": {
