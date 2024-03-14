@@ -31,6 +31,29 @@ To use the vechain Provider in your project, follow these steps:
     ```
  - Start interacting with the VeChain blockchain using the available methods provided by the VeChainProvider.
 
+Example:
+```typescript { name=vechain-provider, category=example }
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
+import { VechainProvider } from '@vechain/sdk-provider';
+import { expect } from 'expect';
+
+// 1 - Create thor client for testnet
+const testnetUrl = 'https://testnet.vechain.org';
+const testNetwork = new HttpClient(testnetUrl);
+const thorClient = new ThorClient(testNetwork);
+
+// 2 - Init provider
+const provider = new VechainProvider(thorClient);
+
+// 3 - Call RPC function
+const rpcCallChainId = await provider.request({
+    method: 'eth_chainId'
+});
+
+expect(rpcCallChainId).toBe('0x186aa');
+
+```
+
 ## HardHat Provider
 
 The Hardhat Provider is a wrapper around the core vechain Provider specifically designed for Hardhat integration. It simplifies the process of using the vechain Provider within a Hardhat environment.
@@ -60,3 +83,27 @@ To use the Hardhat Provider in your project, follow these steps:
         );
     ```
  - Start interacting with the VeChain blockchain using the available methods provided by the HardhatVechainProvider.
+
+Example:
+```typescript { name=vechain-hardhat-provider, category=example }
+import { HardhatVechainProvider } from '@vechain/sdk-provider';
+import { BaseWallet } from '@vechain/sdk-wallet';
+import { expect } from 'expect';
+
+const testnetUrl = 'https://testnet.vechain.org';
+
+// 1 - Init provider
+const provider = new HardhatVechainProvider(
+    new BaseWallet([]),
+    testnetUrl,
+    (message: string, parent?: Error) => new Error(message, parent)
+);
+
+// 2 - Call RPC function
+const rpcCallChainId = await provider.request({
+    method: 'eth_chainId'
+});
+
+expect(rpcCallChainId).toBe('0x186aa');
+
+```

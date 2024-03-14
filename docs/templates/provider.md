@@ -31,6 +31,9 @@ To use the vechain Provider in your project, follow these steps:
     ```
  - Start interacting with the VeChain blockchain using the available methods provided by the VeChainProvider.
 
+Example:
+[example](examples/provider/vechain-provider.ts)
+
 ## HardHat Provider
 
 The Hardhat Provider is a wrapper around the core vechain Provider specifically designed for Hardhat integration. It simplifies the process of using the vechain Provider within a Hardhat environment.
@@ -60,3 +63,6 @@ To use the Hardhat Provider in your project, follow these steps:
         );
     ```
  - Start interacting with the VeChain blockchain using the available methods provided by the HardhatVechainProvider.
+
+Example:
+[example](examples/provider/vechain-hardhat-provider.ts)
