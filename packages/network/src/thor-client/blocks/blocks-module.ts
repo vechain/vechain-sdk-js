@@ -150,12 +150,21 @@ class BlocksModule {
     }
 
     /**
+     * Retrieves the finalized block.
+     *
+     * @returns A promise that resolves to an object containing the finalized block.
+     */
+    public async getFinalBlockCompressed(): Promise<CompressedBlockDetail | null> {
+        return await this.getBlockCompressed('finalized');
+    }
+
+    /**
      * Retrieves details of the finalized block.
      *
-     * @returns A promise that resolves to an object containing the block details.
+     * @returns A promise that resolves to an object containing the finalized block details.
      */
-    public async getFinalBlock(): Promise<CompressedBlockDetail | null> {
-        return await this.getBlockCompressed('finalized');
+    public async getFinalBlockExpanded(): Promise<ExpandedBlockDetail | null> {
+        return await this.getBlockExpanded('finalized');
     }
 
     /**
@@ -163,12 +172,13 @@ class BlocksModule {
      *
      * @param blockNumber - The block number to wait for.
      * @param options - (Optional) Allows to specify timeout and interval in milliseconds
-     * @returns A promise that resolves to an object containing the block details.
+     * @returns A promise that resolves to an object containing the compressed block.
      */
-    public async waitForBlock(
+    private async _waitForBlock(
         blockNumber: number,
+        expanded: boolean,
         options?: WaitForBlockOptions
-    ): Promise<CompressedBlockDetail | null> {
+    ): Promise<CompressedBlockDetail | ExpandedBlockDetail | null> {
         assert(
             'waitForBlock',
             blockNumber === undefined ||
@@ -181,7 +191,10 @@ class BlocksModule {
 
         // Use the Poll.SyncPoll utility to repeatedly call getBestBlock with a specified interval
         return await Poll.SyncPoll(
-            async () => await this.getBestBlockCompressed(),
+            async () =>
+                expanded
+                    ? await this.getBestBlockCompressed()
+                    : await this.getBestBlockExpanded(),
             {
                 requestIntervalInMilliseconds: options?.intervalMs,
                 maximumWaitingTimeInMilliseconds: options?.timeoutMs
@@ -190,6 +203,42 @@ class BlocksModule {
             // Continue polling until the result's block number matches the specified revision
             return result != null && result?.number >= blockNumber;
         });
+    }
+
+    /**
+     * Synchronously waits for a specific block revision using polling.
+     *
+     * @param blockNumber - The block number to wait for.
+     * @param options - (Optional) Allows to specify timeout and interval in milliseconds
+     * @returns A promise that resolves to an object containing the compressed block.
+     */
+    public async waitForBlockCompressed(
+        blockNumber: number,
+        options?: WaitForBlockOptions
+    ): Promise<CompressedBlockDetail | null> {
+        return (await this._waitForBlock(
+            blockNumber,
+            false,
+            options
+        )) as CompressedBlockDetail | null;
+    }
+
+    /**
+     * Synchronously waits for a specific expanded block revision using polling.
+     *
+     * @param blockNumber - The block number to wait for.
+     * @param options - (Optional) Allows to specify timeout and interval in milliseconds
+     * @returns A promise that resolves to an object containing the expanded block details.
+     */
+    public async waitForBlockExpanded(
+        blockNumber: number,
+        options?: WaitForBlockOptions
+    ): Promise<ExpandedBlockDetail | null> {
+        return (await this._waitForBlock(
+            blockNumber,
+            false,
+            options
+        )) as ExpandedBlockDetail | null;
     }
 
     /**

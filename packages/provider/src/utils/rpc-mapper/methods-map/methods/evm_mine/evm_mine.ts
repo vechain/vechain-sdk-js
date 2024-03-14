@@ -18,7 +18,9 @@ const evmMine = async (thorClient: ThorClient): Promise<BlocksRPC | null> => {
         const bestBlock = await thorClient.blocks.getBestBlockExpanded();
         const newBlock =
             bestBlock !== null
-                ? await thorClient.blocks.waitForBlock(bestBlock.number + 1)
+                ? await thorClient.blocks.waitForBlockCompressed(
+                      bestBlock.number + 1
+                  )
                 : null;
 
         const chainId = (await RPCMethodsMap(thorClient)[

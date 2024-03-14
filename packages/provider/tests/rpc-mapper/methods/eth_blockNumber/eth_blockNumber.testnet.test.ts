@@ -37,7 +37,7 @@ describe('RPC Mapper - eth_blockNumber method tests', () => {
 
             expect(rpcCallLatestBlockNumber).not.toBe('0x0');
 
-            await thorClient.blocks.waitForBlock(
+            await thorClient.blocks.waitForBlockCompressed(
                 Number(rpcCallLatestBlockNumber) + 1
             );
 
