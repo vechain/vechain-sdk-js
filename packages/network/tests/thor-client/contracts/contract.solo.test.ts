@@ -9,6 +9,7 @@ import {
     contractBytecode,
     deployedContractAbi,
     deployedContractBytecode,
+    filterContractEventsTestCases,
     testingContractTestCases
 } from './fixture';
 import {
@@ -363,6 +364,48 @@ describe('ThorClient - Contracts', () => {
                     );
 
                 expect(response).toEqual(expected);
+            });
+        }
+    );
+
+    filterContractEventsTestCases.forEach(
+        ({
+            description,
+            contractBytecode,
+            contractAbi,
+            contractCaller,
+            eventName,
+            args,
+            expectedTopics,
+            expectedData
+        }) => {
+            test(description, async () => {
+                const contractFactory =
+                    thorSoloClient.contracts.createContractFactory(
+                        contractAbi,
+                        contractBytecode,
+                        contractCaller
+                    );
+
+                const factory = await contractFactory.startDeployment();
+
+                const contract: Contract = await factory.waitForDeployment();
+
+                const eventLogs = await contract.filters[eventName](
+                    ...args
+                ).get();
+
+                expect(
+                    eventLogs.map((event) => {
+                        return event.data;
+                    })
+                ).toEqual(expectedData);
+
+                expect(
+                    eventLogs.map((event) => {
+                        return event.topics;
+                    })
+                ).toEqual(expectedTopics);
             });
         }
     );

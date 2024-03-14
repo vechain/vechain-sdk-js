@@ -1,12 +1,14 @@
 import {
+    type ContractFunctionFilter,
     type ContractFunctionRead,
     type ContractFunctionTransact
 } from './types';
 import { type SendTransactionResult } from '../../transactions';
 import { type Contract } from './contract';
 import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
-import { addressUtils } from '@vechain/sdk-core';
+import { addressUtils, fragment } from '@vechain/sdk-core';
 import { type ContractCallResult } from '../types';
+import { ContractFilter } from './contract-filter';
 
 /**
  * Creates a Proxy object for reading contract functions, allowing for the dynamic invocation of contract read operations.
@@ -72,4 +74,43 @@ function getTransactProxy(contract: Contract): ContractFunctionTransact {
     });
 }
 
-export { getReadProxy, getTransactProxy };
+/**
+ * Creates a Proxy object for filtering contract events, allowing for the dynamic invocation of contract event filtering operations.
+ * @param contract - The contract instance to create the filter proxy for.
+ */
+function getFilterProxy(contract: Contract): ContractFunctionFilter {
+    return new Proxy(contract.filters, {
+        get: (_target, prop) => {
+            // Otherwise, assume that the function is a contract method
+            return (...args: unknown[]): ContractFilter => {
+                // Create the vechain sdk event fragment starting from the contract ABI event fragment
+                const eventFragment = new fragment.Event(
+                    contract.getEventFragment(prop)
+                );
+
+                // Create a map of encoded filter topics for the event
+                const topics = new Map<number, string | undefined>(
+                    eventFragment
+                        .encodeFilterTopics(args)
+                        .map((topic, index) => [index, topic])
+                );
+
+                // Create the criteria set for the contract filter
+                const criteriaSet = [
+                    {
+                        address: contract.address,
+                        topic0: topics.has(0) ? topics.get(0) : undefined,
+                        topic1: topics.has(1) ? topics.get(1) : undefined,
+                        topic2: topics.has(2) ? topics.get(2) : undefined,
+                        topic3: topics.has(3) ? topics.get(3) : undefined,
+                        topic4: topics.has(4) ? topics.get(4) : undefined
+                    }
+                ];
+
+                return new ContractFilter(contract, criteriaSet);
+            };
+        }
+    });
+}
+
+export { getReadProxy, getTransactProxy, getFilterProxy };

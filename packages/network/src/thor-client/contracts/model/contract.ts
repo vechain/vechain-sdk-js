@@ -1,5 +1,6 @@
 import {
     coder,
+    type EventFragment,
     type FunctionFragment,
     type InterfaceAbi
 } from '@vechain/sdk-core';
@@ -7,8 +8,16 @@ import type { TransactionReceipt } from '../../transactions';
 import { type ThorClient } from '../../thor-client';
 import type { ContractCallOptions, ContractTransactionOptions } from '../types';
 import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
-import type { ContractFunctionRead, ContractFunctionTransact } from './types';
-import { getReadProxy, getTransactProxy } from './contract-proxy';
+import {
+    type ContractFunctionFilter,
+    type ContractFunctionRead,
+    type ContractFunctionTransact
+} from './types';
+import {
+    getFilterProxy,
+    getReadProxy,
+    getTransactProxy
+} from './contract-proxy';
 
 /**
  * A class representing a smart contract deployed on the blockchain.
@@ -23,6 +32,7 @@ class Contract {
 
     public read: ContractFunctionRead = {};
     public transact: ContractFunctionTransact = {};
+    public filters: ContractFunctionFilter = {};
 
     private contractCallOptions: ContractCallOptions = {};
     private contractTransactionOptions: ContractTransactionOptions = {};
@@ -49,6 +59,7 @@ class Contract {
         this.callerPrivateKey = callerPrivateKey;
         this.read = getReadProxy(this);
         this.transact = getTransactProxy(this);
+        this.filters = getFilterProxy(this);
     }
 
     /**
@@ -148,6 +159,22 @@ class Contract {
             );
         }
         return functionFragment;
+    }
+
+    public getEventFragment(prop: string | symbol): EventFragment {
+        const eventFragment = coder
+            .createInterface(this.abi)
+            .getEvent(prop.toString());
+
+        if (eventFragment == null) {
+            throw buildError(
+                'Contract.getFunctionFragment',
+                ERROR_CODES.ABI.INVALID_FUNCTION,
+                `Function '${prop.toString()}' not found in contract ABI.`,
+                { prop }
+            );
+        }
+        return eventFragment;
     }
 }
 

@@ -513,6 +513,38 @@ const testingContractTestCases: TestCase[] = [
     }
 ];
 
+interface FilterEventTestCase {
+    description: string;
+    contractBytecode: string;
+    contractAbi: InterfaceAbi;
+    contractCaller: string;
+    eventName: string;
+    args: unknown[];
+    expectedTopics: string[][];
+    expectedData: string[];
+}
+
+const filterContractEventsTestCases: FilterEventTestCase[] = [
+    {
+        description: 'should filter the Transfer event',
+        contractBytecode: erc20ContractBytecode,
+        contractAbi: deployedERC20Abi,
+        contractCaller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+        eventName: 'Transfer',
+        args: [undefined, TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
+        expectedTopics: [
+            [
+                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+                '0x0000000000000000000000000000000000000000000000000000000000000000',
+                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54'
+            ]
+        ],
+        expectedData: [
+            '0x00000000000000000000000000000000000000000000d3c21bcecceda1000000'
+        ]
+    }
+];
+
 export {
     contractBytecode,
     erc20ContractBytecode,
@@ -521,5 +553,6 @@ export {
     deployedContractBytecode,
     deployedContractAbi,
     deployedERC20Abi,
-    testingContractTestCases
+    testingContractTestCases,
+    filterContractEventsTestCases
 };
