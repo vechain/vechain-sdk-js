@@ -44,7 +44,7 @@ Retrieves details of a specific block based on its height. In the provided code,
 
 Fetches details of the latest block on the VechainThor network, representing the best-known block.
 
- - `getFinalBlock(): Promise<CompressedBlockDetail | null>`
+ - `getFinalBlockExpanded(): Promise<ExpandedBlockDetail | null>`
 
 Retrieves details of the finalized block, which is the latest block confirmed by the network consensus.
 
