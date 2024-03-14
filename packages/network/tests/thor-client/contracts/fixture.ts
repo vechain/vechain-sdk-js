@@ -513,11 +513,18 @@ const testingContractTestCases: TestCase[] = [
     }
 ];
 
+interface FunctionCallTestCase {
+    functionName: string;
+    params: unknown[];
+    type: 'read' | 'transact';
+}
+
 interface FilterEventTestCase {
     description: string;
     contractBytecode: string;
     contractAbi: InterfaceAbi;
     contractCaller: string;
+    functionCalls: FunctionCallTestCase[];
     eventName: string;
     args: unknown[];
     expectedTopics: string[][];
@@ -526,10 +533,12 @@ interface FilterEventTestCase {
 
 const filterContractEventsTestCases: FilterEventTestCase[] = [
     {
-        description: 'should filter the Transfer event',
+        description:
+            'should filter the first Transfer event of the initial supply',
         contractBytecode: erc20ContractBytecode,
         contractAbi: deployedERC20Abi,
         contractCaller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+        functionCalls: [],
         eventName: 'Transfer',
         args: [undefined, TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
         expectedTopics: [
@@ -541,6 +550,52 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
         ],
         expectedData: [
             '0x00000000000000000000000000000000000000000000d3c21bcecceda1000000'
+        ]
+    },
+    {
+        description:
+            'should filter the first Transfer event of the initial supply',
+        contractBytecode: erc20ContractBytecode,
+        contractAbi: deployedERC20Abi,
+        contractCaller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+        functionCalls: [
+            {
+                functionName: 'transfer',
+                params: [
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                    1000
+                ],
+                type: 'transact'
+            },
+            {
+                functionName: 'transfer',
+                params: [
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                    5000
+                ],
+                type: 'transact'
+            }
+        ],
+        eventName: 'Transfer',
+        args: [
+            undefined,
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+        ],
+        expectedTopics: [
+            [
+                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
+                '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
+            ],
+            [
+                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
+                '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
+            ]
+        ],
+        expectedData: [
+            '0x00000000000000000000000000000000000000000000000000000000000003e8',
+            '0x0000000000000000000000000000000000000000000000000000000000001388'
         ]
     }
 ];

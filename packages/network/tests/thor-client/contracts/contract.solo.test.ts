@@ -374,39 +374,59 @@ describe('ThorClient - Contracts', () => {
             contractBytecode,
             contractAbi,
             contractCaller,
+            functionCalls,
             eventName,
             args,
             expectedTopics,
             expectedData
         }) => {
-            test(description, async () => {
-                const contractFactory =
-                    thorSoloClient.contracts.createContractFactory(
-                        contractAbi,
-                        contractBytecode,
-                        contractCaller
-                    );
+            test(
+                description,
+                async () => {
+                    const contractFactory =
+                        thorSoloClient.contracts.createContractFactory(
+                            contractAbi,
+                            contractBytecode,
+                            contractCaller
+                        );
 
-                const factory = await contractFactory.startDeployment();
+                    const factory = await contractFactory.startDeployment();
 
-                const contract: Contract = await factory.waitForDeployment();
+                    const contract: Contract =
+                        await factory.waitForDeployment();
 
-                const eventLogs = await contract.filters[eventName](
-                    ...args
-                ).get();
+                    for (const functionCall of functionCalls) {
+                        if (functionCall.type === 'read') {
+                            await contract.read[functionCall.functionName](
+                                ...functionCall.params
+                            );
+                        } else {
+                            await (
+                                await contract.transact[
+                                    functionCall.functionName
+                                ](...functionCall.params)
+                            ).wait();
+                        }
+                    }
 
-                expect(
-                    eventLogs.map((event) => {
-                        return event.data;
-                    })
-                ).toEqual(expectedData);
+                    const eventLogs = await contract.filters[eventName](
+                        ...args
+                    ).get();
 
-                expect(
-                    eventLogs.map((event) => {
-                        return event.topics;
-                    })
-                ).toEqual(expectedTopics);
-            });
+                    expect(
+                        eventLogs.map((event) => {
+                            return event.data;
+                        })
+                    ).toEqual(expectedData);
+
+                    expect(
+                        eventLogs.map((event) => {
+                            return event.topics;
+                        })
+                    ).toEqual(expectedTopics);
+                },
+                10000
+            );
         }
     );
 

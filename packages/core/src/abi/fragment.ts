@@ -287,8 +287,6 @@ class Event<ABIType> {
         valuesToEncode: TValue[]
     ): Array<string | undefined> {
         try {
-            console.log('values to encode', valuesToEncode.toString());
-
             // Sanitize the values to encode
             const sanitizedValuesToEncode = sanitizeValuesToEncode(
                 valuesToEncode,

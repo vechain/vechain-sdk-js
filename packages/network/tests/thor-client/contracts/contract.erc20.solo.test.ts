@@ -90,6 +90,9 @@ describe('ThorClient - ERC20 Contracts', () => {
         expect(balanceOfResult).toEqual([BigInt(1000)]);
     }, 10000); // Set a timeout of 10000ms for this test
 
+    /**
+     * Tests the listening to ERC20 contract operations using a blockchain client.
+     */
     test('listen to ERC20 contract operations', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
