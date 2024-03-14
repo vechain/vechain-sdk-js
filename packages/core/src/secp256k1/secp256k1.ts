@@ -9,21 +9,21 @@ import {
 import { BN } from 'bn.js';
 import { secp256k1 as secp256k1Curve } from '@noble/curves/secp256k1';
 
-// Curve algorithm
+// Curve algorithm.
 const curve = new EC('secp256k1');
 
 /**
- * Validate message hash
- * @param hash of message
- * @returns if message hash is valid or not
+ * Validate message hash.
+ * @param hash of message.
+ * @returns if message hash is valid or not.
  */
 function isValidMessageHash(hash: Buffer): boolean {
     return Buffer.isBuffer(hash) && hash.length === 32;
 }
 
 /**
- * Verify if private key is valid
- * @returns If private key is valid or not
+ * Verify if private key is valid.
+ * @returns If private key is valid or not.
  */
 function isValidPrivateKey(key: Buffer): boolean {
     return (
@@ -35,28 +35,19 @@ function isValidPrivateKey(key: Buffer): boolean {
 }
 
 /**
- * Generate private key using elliptic curve algorithm on the curve secp256k1
- * @param entropy - entropy function
- * @returns Private key generated
+ * Generate private key using elliptic curve algorithm on the curve secp256k1.
+ * @returns Private key generated.
  */
-function generatePrivateKey(entropy?: () => Buffer): Buffer {
-    if (entropy == null) {
-        return Buffer.from(secp256k1Curve.utils.randomPrivateKey());
-    } else {
-        let privateKey: Buffer;
-        do {
-            privateKey = entropy();
-        } while (!isValidPrivateKey(privateKey));
-        return privateKey;
-    }
+function generatePrivateKey(): Buffer {
+    return Buffer.from(secp256k1Curve.utils.randomPrivateKey());
 }
 
 /**
- * Derive public key from private key using elliptic curve algorithm on the curve secp256k1
+ * Derive public key from private key using elliptic curve algorithm secp256k1.
  *
  * @throws{InvalidSecp256k1PrivateKeyError}
- * @param privateKey - private key to derive public key from
- * @returns Public key derived from private key
+ * @param privateKey - private key to derive public key from.
+ * @returns Public key derived from private key.
  */
 function derivePublicKey(privateKey: Buffer): Buffer {
     assertIsValidPrivateKey('derivePublicKey', privateKey, isValidPrivateKey);
@@ -65,11 +56,11 @@ function derivePublicKey(privateKey: Buffer): Buffer {
 }
 
 /**
- * sign a message using elliptic curve algorithm on the curve secp256k1
+ * Sign a message using elliptic curve algorithm secp256k1.
  *
  * @throws{InvalidSecp256k1PrivateKeyError, InvalidSecp256k1MessageHashError}
- * @param messageHash hash of message
- * @param privateKey serialized private key
+ * @param messageHash hash of message.
+ * @param privateKey serialized private key.
  */
 function sign(messageHash: Buffer, privateKey: Buffer): Buffer {
     assertIsValidSecp256k1MessageHash('sign', messageHash, isValidMessageHash);
@@ -81,7 +72,7 @@ function sign(messageHash: Buffer, privateKey: Buffer): Buffer {
 }
 
 /**
- * Recovery signature to public key
+ * Recover the public key from its signature and messahe hash.
  *
  * @throws{InvalidSecp256k1MessageHashError, InvalidSecp256k1SignatureError, InvalidSecp256k1SignatureRecoveryError}
  * @param messageHash hash of message
@@ -122,9 +113,9 @@ function recover(messageHash: Buffer, sig: Buffer): Buffer {
 /**
  * Convert extended public key to array public key (compressed or uncompressed)
  *
- * @param extendedPublicKey extended public key
- * @param compact if public key should be compressed or not
- * @returns array public key
+ * @param extendedPublicKey extended public key.
+ * @param compact if public key should be compressed or not.
+ * @returns array public key.
  */
 function extendedPublicKeyToArray(
     extendedPublicKey: Buffer,
