@@ -1,4 +1,3 @@
-import { randomBytes } from 'crypto';
 import { PRIVATE_KEY_MAX_VALUE, SIGNATURE_LENGTH, ZERO_BUFFER } from '../utils';
 import { ec as EC } from 'elliptic';
 import { assert, SECP256K1 } from '@vechain/sdk-errors';
@@ -7,21 +6,24 @@ import {
     assertIsValidSecp256k1MessageHash
 } from '../assertions';
 
-// Curve algorithm
+import { BN } from 'bn.js';
+import { secp256k1 as secp256k1Curve } from '@noble/curves/secp256k1';
+
+// Curve algorithm.
 const curve = new EC('secp256k1');
 
 /**
- * Validate message hash
- * @param hash of message
- * @returns if message hash is valid or not
+ * Validate message hash.
+ * @param hash of message.
+ * @returns if message hash is valid or not.
  */
 function isValidMessageHash(hash: Buffer): boolean {
     return Buffer.isBuffer(hash) && hash.length === 32;
 }
 
 /**
- * Verify if private key is valid
- * @returns If private key is valid or not
+ * Verify if private key is valid.
+ * @returns If private key is valid or not.
  */
 function isValidPrivateKey(key: Buffer): boolean {
     return (
@@ -33,55 +35,44 @@ function isValidPrivateKey(key: Buffer): boolean {
 }
 
 /**
- * Generate private key using elliptic curve algorithm on the curve secp256k1
- * @param entropy - entropy function
- * @returns Private key generated
+ * Generate private key using elliptic curve algorithm on the curve secp256k1.
+ * @returns Private key generated.
  */
-function generatePrivateKey(entropy?: () => Buffer): Buffer {
-    entropy = entropy ?? ((): Buffer => randomBytes(32));
-    let privateKey: Buffer;
-    do {
-        privateKey = entropy();
-    } while (!isValidPrivateKey(privateKey));
-    return privateKey;
+function generatePrivateKey(): Buffer {
+    return Buffer.from(secp256k1Curve.utils.randomPrivateKey());
 }
 
 /**
- * Derive public key from private key using elliptic curve algorithm on the curve secp256k1
+ * Derive public key from private key using elliptic curve algorithm secp256k1.
  *
  * @throws{InvalidSecp256k1PrivateKeyError}
- * @param privateKey - private key to derive public key from
- * @returns Public key derived from private key
+ * @param privateKey - private key to derive public key from.
+ * @returns Public key derived from private key.
  */
 function derivePublicKey(privateKey: Buffer): Buffer {
     assertIsValidPrivateKey('derivePublicKey', privateKey, isValidPrivateKey);
-    const keyPair = curve.keyFromPrivate(privateKey);
-    return Buffer.from(keyPair.getPublic().encode('array', false));
+    const publicKey = secp256k1Curve.getPublicKey(privateKey, false);
+    return Buffer.from(publicKey);
 }
 
 /**
- * sign a message using elliptic curve algorithm on the curve secp256k1
+ * Sign a message using elliptic curve algorithm secp256k1.
  *
  * @throws{InvalidSecp256k1PrivateKeyError, InvalidSecp256k1MessageHashError}
- * @param messageHash hash of message
- * @param privateKey serialized private key
+ * @param messageHash hash of message.
+ * @param privateKey serialized private key.
  */
 function sign(messageHash: Buffer, privateKey: Buffer): Buffer {
     assertIsValidSecp256k1MessageHash('sign', messageHash, isValidMessageHash);
-
     assertIsValidPrivateKey('sign', privateKey, isValidPrivateKey);
-
-    const keyPair = curve.keyFromPrivate(privateKey);
-    const sig = keyPair.sign(messageHash, { canonical: true });
-
-    const r = Buffer.from(sig.r.toArray('be', 32));
-    const s = Buffer.from(sig.s.toArray('be', 32));
-
-    return Buffer.concat([r, s, Buffer.from([sig.recoveryParam as number])]);
+    const sig = secp256k1Curve.sign(messageHash, privateKey);
+    const r = Buffer.from(new BN(sig.r.toString()).toArray('be', 32));
+    const s = Buffer.from(new BN(sig.s.toString()).toArray('be', 32));
+    return Buffer.concat([r, s, Buffer.from([sig.recovery])]);
 }
 
 /**
- * Recovery signature to public key
+ * Recover the public key from its signature and messahe hash.
  *
  * @throws{InvalidSecp256k1MessageHashError, InvalidSecp256k1SignatureError, InvalidSecp256k1SignatureRecoveryError}
  * @param messageHash hash of message
@@ -111,27 +102,20 @@ function recover(messageHash: Buffer, sig: Buffer): Buffer {
         { recovery }
     );
 
-    const rCopy = Uint8Array.from(sig);
-    const r = rCopy.slice(0, 32);
-
-    const sCopy = Uint8Array.from(sig);
-    const s = sCopy.slice(32, 64);
-
     return Buffer.from(
-        (
-            curve.recoverPubKey(messageHash, { r, s }, recovery) as {
-                encode: (enc: string, flag: boolean) => ArrayBuffer;
-            }
-        ).encode('array', false)
+        secp256k1Curve.Signature.fromCompact(Uint8Array.from(sig).slice(0, 64))
+            .addRecoveryBit(recovery)
+            .recoverPublicKey(messageHash)
+            .toRawBytes(false)
     );
 }
 
 /**
  * Convert extended public key to array public key (compressed or uncompressed)
  *
- * @param extendedPublicKey extended public key
- * @param compact if public key should be compressed or not
- * @returns array public key
+ * @param extendedPublicKey extended public key.
+ * @param compact if public key should be compressed or not.
+ * @returns array public key.
  */
 function extendedPublicKeyToArray(
     extendedPublicKey: Buffer,
