@@ -4,11 +4,7 @@ import {
     type TransactionsExpandedBlockDetail
 } from '@vechain/sdk-network';
 import { type BlocksRPC } from './types';
-import {
-    dataUtils,
-    vechain_sdk_core_ethers,
-    ZERO_BUFFER
-} from '@vechain/sdk-core';
+import { dataUtils, Quantity, ZERO_BUFFER } from '@vechain/sdk-core';
 
 import { transactionsFormatter } from '../transactions';
 
@@ -40,14 +36,14 @@ const formatToRPCStandard = (
         // Supported fields converted to RPC standard
         hash: block.id,
         parentHash: block.parentID,
-        number: vechain_sdk_core_ethers.toQuantity(block.number),
-        size: vechain_sdk_core_ethers.toQuantity(block.size),
+        number: Quantity.of(block.number),
+        size: Quantity.of(block.size),
         stateRoot: block.stateRoot,
         receiptsRoot: block.receiptsRoot,
         transactionsRoot: block.txsRoot,
-        timestamp: vechain_sdk_core_ethers.toQuantity(block.timestamp),
-        gasLimit: vechain_sdk_core_ethers.toQuantity(block.gasLimit),
-        gasUsed: vechain_sdk_core_ethers.toQuantity(block.gasUsed),
+        timestamp: Quantity.of(block.timestamp),
+        gasLimit: Quantity.of(block.gasLimit),
+        gasUsed: Quantity.of(block.gasUsed),
         transactions,
         miner: block.beneficiary,
 
