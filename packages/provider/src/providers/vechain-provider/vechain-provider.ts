@@ -27,6 +27,7 @@ import {
 import {
     clauseBuilder,
     dataUtils,
+    H0x,
     Hex,
     type TransactionClause,
     vechain_sdk_core_ethers
@@ -337,7 +338,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
                 DelegationHandler(delegatorIntoWallet).delegatorOrUndefined()
             );
 
-        return Hex.of0x(signedTransaction.encoded);
+        return H0x.of(signedTransaction.encoded);
     }
 }
 

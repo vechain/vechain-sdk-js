@@ -3,6 +3,7 @@ import {
     addressUtils,
     blake2b256,
     certificate,
+    H0x,
     Hex
 } from '../../src';
 
@@ -45,14 +46,14 @@ const cert2 = {
 /**
  * Signature of Certificate n.1
  */
-const sig = Hex.of0x(
+const sig = H0x.of(
     secp256k1.sign(blake2b256(certificate.encode(cert)), privKey)
 );
 
 /**
  * Signature of Certificate n.2
  */
-const sig2 = Hex.of0x(
+const sig2 = H0x.of(
     secp256k1.sign(blake2b256(certificate.encode(cert2)), privKey)
 );
 

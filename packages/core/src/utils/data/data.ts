@@ -9,7 +9,7 @@ import {
 import { type HexConfig } from './types';
 import { assert, buildError, DATA } from '@vechain/sdk-errors';
 import * as crypto from 'crypto';
-import { Hex } from '../hex';
+import { H0x, Hex } from '../hex';
 
 /**
  * Convert data to a hexadecimal string representation.
@@ -23,7 +23,7 @@ import { Hex } from '../hex';
  * @returns The hexadecimal string representation of the input data.
  */
 const toHexString = (data: string | Uint8Array, config?: HexConfig): string => {
-    return config?.withPrefix === true ? Hex.of0x(data) : Hex.of(data);
+    return config?.withPrefix === true ? H0x.of(data) : Hex.of(data);
 };
 
 /**
@@ -214,7 +214,8 @@ const decodeBytes32String = (value: string): string => {
 /**
  * Generates a random hexadecimal string of a specified length.
  *
- * @param stringLength - The length of the hexadecimal string to generate. This is twice the number of bytes that will be generated, since each byte is represented by two hexadecimal characters.
+ * @param stringLength - The length of the hexadecimal string to generate.
+ * This is twice the number of bytes that will be generated, since each byte is represented by two hexadecimal characters.
  * @returns A random hexadecimal string of the specified length.
  */
 const generateRandomHexOfLength = (stringLength: number): string => {

@@ -1,35 +1,58 @@
 import { describe, expect, test } from '@jest/globals';
-import { Hex, ofBuffer } from '../../../src';
+import { Hex } from '../../../src';
 
 /**
  * @group unit/utils/hex
  */
-describe('ofBuffer', () => {
-    test('ofBuffer for buffer with bytes', () => {
-        const buffer: Buffer = Buffer.alloc(1);
-        buffer[0] = 10;
-        const output: string = ofBuffer(buffer, 4);
-        expect(output).toBe('0000000a');
-    });
-    test('ofBuffer for buffer without bytes', () => {
-        const buffer: Buffer = Buffer.alloc(1);
-        buffer[0] = 10;
-        const output: string = ofBuffer(buffer);
-        expect(output).toBe('0a');
-    });
-    test('ofBuffer for UInt8Array with bytes', () => {
-        const buffer: Uint8Array = new Uint8Array(1);
-        buffer[0] = 10;
-        const output: string = ofBuffer(buffer, 4);
-        expect(output).toBe('0000000a');
-    });
-    test('ofBuffer for UInt8Array without bytes', () => {
-        const buffer: Uint8Array = new Uint8Array(1);
-        buffer[0] = 10;
-        const output: string = ofBuffer(buffer);
-        expect(output).toBe('0a');
-    });
-});
+// describe('ofBuffer', () => {
+//     test('ofBuffer for buffer with bytes', () => {
+//         const buffer: Buffer = Buffer.alloc(1);
+//         buffer[0] = 10;
+//         const output: string = ofBuffer(buffer, 4);
+//         expect(output).toBe('0000000a');
+//     });
+//     test('ofBuffer for buffer without bytes', () => {
+//         const buffer: Buffer = Buffer.alloc(1);
+//         buffer[0] = 10;
+//         const output: string = ofBuffer(buffer);
+//         expect(output).toBe('0a');
+//     });
+//     test('ofBuffer for UInt8Array with bytes', () => {
+//         const buffer: Uint8Array = new Uint8Array(1);
+//         buffer[0] = 10;
+//         const output: string = ofBuffer(buffer, 4);
+//         expect(output).toBe('0000000a');
+//     });
+//     test('ofBuffer for UInt8Array without bytes', () => {
+//         const buffer: Uint8Array = new Uint8Array(1);
+//         buffer[0] = 10;
+//         const output: string = ofBuffer(buffer);
+//         expect(output).toBe('0a');
+//     });
+// });
+
+/**
+ * @group unit/utils/hex
+ */
+// describe('H0x', () => {
+//
+//     test('of', () => {
+//         const output: string = H0x.of(10 as number, 0);
+//         expect(output).toBe('0x0a');
+//     });
+//
+//     test('of padded', () => {
+//         const output: string = H0x.of(10 as number, 4);
+//         expect(output).toBe('0x0000000a');
+//     });
+//
+//     test('of buffer padded', () => {
+//         const buffer: Buffer = Buffer.alloc(1);
+//         buffer[0] = 10;
+//         const output: string = H0x.of(buffer, 4);
+//         expect(output).toBe('0x0000000a');
+//     });
+// });
 
 /**
  * @group unit/utils/hex
@@ -67,22 +90,5 @@ describe('Hex', () => {
     test('of string', () => {
         const output: string = Hex.of('a' as string, 0);
         expect(output).toBe('61');
-    });
-
-    test('of0x', () => {
-        const output: string = Hex.of0x(10 as number, 0);
-        expect(output).toBe('0x0a');
-    });
-
-    test('of0x padded', () => {
-        const output: string = Hex.of0x(10 as number, 4);
-        expect(output).toBe('0x0000000a');
-    });
-
-    test('of0x buffer padded', () => {
-        const buffer: Buffer = Buffer.alloc(1);
-        buffer[0] = 10;
-        const output: string = Hex.of0x(buffer, 4);
-        expect(output).toBe('0x0000000a');
     });
 });

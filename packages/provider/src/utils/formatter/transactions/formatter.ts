@@ -10,7 +10,7 @@ import {
     type TransactionReceiptRPC,
     type TransactionRPC
 } from './types';
-import { Hex, vechain_sdk_core_ethers, ZERO_BUFFER } from '@vechain/sdk-core';
+import { H0x, vechain_sdk_core_ethers, ZERO_BUFFER } from '@vechain/sdk-core';
 import {
     getNumberOfLogsAheadOfTransactionIntoBlockExpanded,
     getTransactionIndexIntoBlock
@@ -196,7 +196,7 @@ function formatTransactionReceiptToRPCStandard(
         transactionIndex: vechain_sdk_core_ethers.toQuantity(transactionIndex),
 
         // Incompatible fields
-        logsBloom: Hex.of0x(ZERO_BUFFER(256)),
+        logsBloom: H0x.of(ZERO_BUFFER(256)),
         cumulativeGasUsed: '0x0',
         effectiveGasPrice: '0x0',
         type: '0x0'

@@ -1,5 +1,5 @@
 import {
-    Hex,
+    H0x,
     unitsUtils,
     vechain_sdk_core_ethers,
     ZERO_BUFFER
@@ -39,7 +39,7 @@ const ethGetBalanceTestCases = [
             'Should return correct balance of the test account after seeding',
         params: [
             // Zero address
-            Hex.of0x(ZERO_BUFFER(20)),
+            H0x.of(ZERO_BUFFER(20)),
             vechain_sdk_core_ethers.toQuantity(1)
         ],
         expected: '0x0'

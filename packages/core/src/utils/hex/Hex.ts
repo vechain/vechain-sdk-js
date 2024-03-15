@@ -16,7 +16,7 @@ const ENCODING: BufferEncoding = 'hex' as BufferEncoding;
  *
  * @constant {string}
  * @default '0x'
- * @see {Hex.of0x}
+ * @see {H0x.of}
  */
 const PREFIX: string = '0x';
 
@@ -72,14 +72,25 @@ function ofBigInt(bi: bigint, bytes: number): string {
 }
 
 /**
- * Convert an Uint8Array to a padded hexadecimal representation long the specified number of bytes.
+ * Convert a Buffer to a padded hexadecimal representation long the specified number of bytes.
  *
- * @param {Uint8Array} buffer - The Uint8Array to be represented as hexadecimal string.
+ * @param {Buffer} buffer - The Uint8Array to be represented as hexadecimal string.
  * @param {number} [bytes=0] - The number of bytes the resulting hexadecimal representation should be padded to.
  * @return {string} - The padded hexadecimal representation of the buffer.
  */
-function ofBuffer(buffer: Buffer | Uint8Array, bytes: number = 0): string {
-    return pad(Buffer.from(buffer).toString(ENCODING), bytes);
+function ofBuffer(buffer: Buffer, bytes: number = 0): string {
+    return pad(buffer.toString(ENCODING), bytes);
+}
+
+/**
+ * Convert an Uint8Array to a padded hexadecimal representation long the specified number of bytes.
+ *
+ * @param {Uint8Array} uint8Array - The Uint8Array to be represented as hexadecimal string.
+ * @param {number} [bytes=0] - The number of bytes the resulting hexadecimal representation should be padded to.
+ * @return {string} - The padded hexadecimal representation of the buffer.
+ */
+function ofUint8Array(uint8Array: Uint8Array, bytes: number = 0): string {
+    return ofBuffer(Buffer.from(uint8Array), bytes);
 }
 
 /**
@@ -144,53 +155,81 @@ function pad(exp: string, bytes: number): string {
     return exp;
 }
 
+function trim(exp: string): string {
+    let i = 0;
+    while (i < exp.length && exp.at(i) !== '0') {
+        i++;
+    }
+    return i === exp.length ? '0' : exp.slice(i);
+}
+
 /**
  * Helper class for encoding hexadecimal values.
  */
 const Hex = {
     /**
-     * Generate a hexadecimal representation from the given input data.
+     * Returns a hexadecimal representation from the given input data.
      * This method calls
      * * {@link ofBigInt} if `n` type is `bigint`;
+     * * {@link ofBuffer} if `n` is an instance of {@link Buffer};
      * * {@link ofNumber} if `n` type is `number`;
      * * {@link ofString} if `n` type is `string`;
-     * * {@link ofBuffer} if `n` is an instance of {@link Uint8Array}.
+     * * {@link ofUint8Array} if `n` is an instance of {@link Uint8Array}.
      *
      * **Note:** the returned string is not prefixed with `0x`,
-     * see {@link Hex.of0x} to make a hexadecimal representation prefixed with `0x`.
+     * see {@link H0x.of} to make a hexadecimal representation prefixed with `0x`.
      *
-     * @param {bigint | Uint8Array | number | string} n - The input data to be represented.
+     * @param {bigint | Buffer | Uint8Array | number | string} n - The input data to be represented.
      * @param {number} [bytes=0] - If not `0` by default, the hexadecimal representation encodes at least {number}  bytes.
      * @returns {Uint8Array} - The resulting hexadecimal representation,
      * it is guaranteed to be even characters long.
      */
     of: function (
-        n: bigint | number | string | Uint8Array,
+        n: bigint | number | string | Buffer | Uint8Array,
         bytes: number = 0
     ): string {
+        if (n instanceof Buffer) return ofBuffer(n, bytes);
+        if (n instanceof Uint8Array) return ofUint8Array(n, bytes);
         if (typeof n === 'bigint') return ofBigInt(n, bytes);
         if (typeof n === 'number') return ofNumber(n, bytes);
-        if (typeof n === 'string') return ofString(n, bytes);
-        return ofBuffer(n, bytes);
-    },
+        return ofString(n, bytes);
+    }
+};
 
+const H0x = {
     /**
-     * Generate a hexadecimal representation from the given input data prefixed with `0x`.
+     * Returns a hexadecimal representation from the given input data prefixed with `0x`.
      *
      * **Note:** this method calls {@link Hex.of} to generate the hexadecimal representation of n,
      * then it prefixes the result with `0x`.
      *
-     * @param {bigint | Uint8Array | number | string} n - The input data to be represented.
+     * @param {bigint | Buffer | Uint8Array | number | string} n - The input data to be represented.
      * @param {number} [bytes=0] - If not `0` by default, the hexadecimal representation encodes at least {number}  bytes.
      * @returns {Uint8Array} - The resulting hexadecimal representation,
      * it is guaranteed to be even characters long.
      */
-    of0x: function (
-        n: bigint | Uint8Array | number | string,
+    of: function (
+        n: bigint | number | string | Buffer | Uint8Array,
         bytes: number = 0
     ): string {
-        return `${PREFIX}${this.of(n, bytes)}`;
+        return `${PREFIX}${Hex.of(n, bytes)}`;
     }
 };
 
-export { Hex, ofBuffer };
+const Quantity = {
+    /**
+     *  Returns a hexadecimal representation for the given input data
+     *  - without any not meaningful `0` digit on the left side,
+     *  - prefixed with `0x`,
+     *  - hence returns `0x0` if `n` is zero.
+     *
+     * This function is a more efficient drop-in replacement of the function
+     * `toQuantity` in [math.ts](https://github.com/ethers-io/ethers.js/blob/main/src.ts/utils/maths.ts)
+     * of [The Ethers Project](https://github.com/ethers-io/ethers.js/tree/main) library.
+     */
+    of(n: bigint | number | string | Buffer | Uint8Array): string {
+        return `${PREFIX}${trim(Hex.of(n))}`;
+    }
+};
+
+export { Hex, H0x, Quantity };
