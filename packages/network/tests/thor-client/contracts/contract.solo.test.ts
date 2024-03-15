@@ -376,6 +376,7 @@ describe('ThorClient - Contracts', () => {
             contractCaller,
             functionCalls,
             eventName,
+            getParams,
             args,
             expectedTopics,
             expectedData
@@ -411,7 +412,11 @@ describe('ThorClient - Contracts', () => {
 
                     const eventLogs = await contract.filters[eventName](
                         ...args
-                    ).get();
+                    ).get(
+                        getParams?.range,
+                        getParams?.options,
+                        getParams?.order
+                    );
 
                     expect(
                         eventLogs.map((event) => {
