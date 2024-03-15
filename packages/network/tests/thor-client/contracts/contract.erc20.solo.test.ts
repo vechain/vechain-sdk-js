@@ -7,6 +7,7 @@ import {
 import { soloNetwork, TEST_ACCOUNTS } from '../../fixture';
 import { deployedERC20Abi, erc20ContractBytecode } from './fixture';
 import { addressUtils } from '@vechain/sdk-core';
+import { InvalidAbiFunctionError } from '@vechain/sdk-errors/dist';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -154,4 +155,24 @@ describe('ThorClient - ERC20 Contracts', () => {
             ]
         ]);
     }, 10000); // Set a timeout of 10000ms for this test
+
+    /**
+     * Test listening to a non-existing ERC20 event.
+     */
+    test('listen to a non existing ERC20 event', async () => {
+        // Deploy the ERC20 contract
+        let factory = thorSoloClient.contracts.createContractFactory(
+            deployedERC20Abi,
+            erc20ContractBytecode,
+            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+        );
+
+        factory = await factory.startDeployment();
+
+        const contract: Contract = await factory.waitForDeployment();
+
+        await expect(
+            async () => await contract.filters.EventNotFound().get()
+        ).rejects.toThrowError(InvalidAbiFunctionError);
+    }, 10000);
 });

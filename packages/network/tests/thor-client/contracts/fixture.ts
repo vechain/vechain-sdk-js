@@ -559,6 +559,25 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
         ]
     },
     {
+        description:
+            'should not be able to filter the event, since I am checking just the block 0',
+        contractBytecode: erc20ContractBytecode,
+        contractAbi: deployedERC20Abi,
+        contractCaller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+        functionCalls: [],
+        eventName: 'Transfer',
+        getParams: {
+            range: {
+                unit: 'block',
+                from: 0,
+                to: 0
+            }
+        },
+        args: [undefined, TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
+        expectedTopics: [],
+        expectedData: []
+    },
+    {
         description: 'should filter the two transfer events',
         contractBytecode: erc20ContractBytecode,
         contractAbi: deployedERC20Abi,

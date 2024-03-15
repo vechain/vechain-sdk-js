@@ -161,17 +161,21 @@ class Contract {
         return functionFragment;
     }
 
-    public getEventFragment(prop: string | symbol): EventFragment {
+    /**
+     * Retrieves the event fragment for the specified event name.
+     * @param eventName - The name of the event.
+     */
+    public getEventFragment(eventName: string | symbol): EventFragment {
         const eventFragment = coder
             .createInterface(this.abi)
-            .getEvent(prop.toString());
+            .getEvent(eventName.toString());
 
         if (eventFragment == null) {
             throw buildError(
                 'Contract.getFunctionFragment',
                 ERROR_CODES.ABI.INVALID_FUNCTION,
-                `Function '${prop.toString()}' not found in contract ABI.`,
-                { prop }
+                `Function '${eventName.toString()}' not found in contract ABI.`,
+                { eventName }
             );
         }
         return eventFragment;
