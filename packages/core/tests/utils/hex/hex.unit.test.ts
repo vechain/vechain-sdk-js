@@ -1,65 +1,74 @@
 import { describe, expect, test } from '@jest/globals';
-import { Hex } from '../../../src';
+import { H0x, Hex, Quantity } from '../../../src';
 
 /**
+ * Text hexadecimal representation of Ethereum quantities.
  * @group unit/utils/hex
  */
-// describe('ofBuffer', () => {
-//     test('ofBuffer for buffer with bytes', () => {
-//         const buffer: Buffer = Buffer.alloc(1);
-//         buffer[0] = 10;
-//         const output: string = ofBuffer(buffer, 4);
-//         expect(output).toBe('0000000a');
-//     });
-//     test('ofBuffer for buffer without bytes', () => {
-//         const buffer: Buffer = Buffer.alloc(1);
-//         buffer[0] = 10;
-//         const output: string = ofBuffer(buffer);
-//         expect(output).toBe('0a');
-//     });
-//     test('ofBuffer for UInt8Array with bytes', () => {
-//         const buffer: Uint8Array = new Uint8Array(1);
-//         buffer[0] = 10;
-//         const output: string = ofBuffer(buffer, 4);
-//         expect(output).toBe('0000000a');
-//     });
-//     test('ofBuffer for UInt8Array without bytes', () => {
-//         const buffer: Uint8Array = new Uint8Array(1);
-//         buffer[0] = 10;
-//         const output: string = ofBuffer(buffer);
-//         expect(output).toBe('0a');
-//     });
-// });
+describe('Quantity', () => {
+    test('of zero', () => {
+        const output: string = Quantity.of(0);
+        expect(output).toBe('0x0');
+    });
+
+    test('of odd long hex expression', () => {
+        const output: string = Quantity.of(256);
+        expect(output).toBe('0x100');
+    });
+
+    test('of even long hex expression', () => {
+        const output: string = Quantity.of(255);
+        expect(output).toBe('0xff');
+    });
+});
 
 /**
+ * Text Hex representation from TS types prefixed with `0x`.
  * @group unit/utils/hex
  */
-// describe('H0x', () => {
-//
-//     test('of', () => {
-//         const output: string = H0x.of(10 as number, 0);
-//         expect(output).toBe('0x0a');
-//     });
-//
-//     test('of padded', () => {
-//         const output: string = H0x.of(10 as number, 4);
-//         expect(output).toBe('0x0000000a');
-//     });
-//
-//     test('of buffer padded', () => {
-//         const buffer: Buffer = Buffer.alloc(1);
-//         buffer[0] = 10;
-//         const output: string = H0x.of(buffer, 4);
-//         expect(output).toBe('0x0000000a');
-//     });
-// });
+describe('H0x', () => {
+    test('of bigint', () => {
+        const output: string = H0x.of(BigInt(10), 0);
+        expect(output).toBe('0x0a');
+    });
+
+    test('of Buffer', () => {
+        const buffer: Uint8Array = Buffer.from(new Uint8Array(1));
+        buffer[0] = 10;
+        const output: string = H0x.of(buffer, 0);
+        expect(output).toBe('0x0a');
+    });
+
+    test('of Uint8Array', () => {
+        const uint8Array: Uint8Array = new Uint8Array(1);
+        uint8Array[0] = 10;
+        const output: string = H0x.of(uint8Array, 0);
+        expect(output).toBe('0x0a');
+    });
+
+    test('of number', () => {
+        const output: string = H0x.of(10 as number, 0);
+        expect(output).toBe('0x0a');
+    });
+
+    test('of string', () => {
+        const output: string = H0x.of('a' as string, 0);
+        expect(output).toBe('0x61');
+    });
+
+    test('padded', () => {
+        const output: string = H0x.of('a', 2);
+        expect(output).toBe('0x0061');
+    });
+});
 
 /**
+ * Text Hex representation from TS types.
  * @group unit/utils/hex
  */
 describe('Hex', () => {
     test('of bigint', () => {
-        const output: string = Hex.of(BigInt(10), 0);
+        const output: string = Hex.of(BigInt(10));
         expect(output).toBe('0a');
 
         expect(() => {
@@ -67,28 +76,45 @@ describe('Hex', () => {
         }).toThrow("Arg 'n' not negative.");
     });
 
-    test('of buffer', () => {
-        const buffer: Uint8Array = new Uint8Array(1);
+    test('of Buffer', () => {
+        const buffer: Uint8Array = Buffer.from(new Uint8Array(1));
         buffer[0] = 10;
-        const output: string = Hex.of(buffer, 0);
+        const output: string = Hex.of(buffer);
+        expect(output).toBe('0a');
+    });
+
+    test('of Uint8Array', () => {
+        const uint8Array: Uint8Array = new Uint8Array(1);
+        uint8Array[0] = 10;
+        const output: string = Hex.of(uint8Array);
         expect(output).toBe('0a');
     });
 
     test('of number', () => {
-        const output: string = Hex.of(10 as number, 0);
+        const output: string = Hex.of(10 as number);
         expect(output).toBe('0a');
 
         expect(() => {
-            Hex.of(3.14 as number, 0);
+            Hex.of(3.14 as number);
         }).toThrow(`Arg 'n' not an integer.`);
 
         expect(() => {
-            Hex.of(-10 as number, 0);
+            Hex.of(-10 as number);
         }).toThrow("Arg 'n' not negative.");
     });
 
     test('of string', () => {
-        const output: string = Hex.of('a' as string, 0);
+        const output: string = Hex.of('a' as string);
         expect(output).toBe('61');
+    });
+
+    test('of string', () => {
+        const output: string = Hex.of('a' as string);
+        expect(output).toBe('61');
+    });
+
+    test('padded', () => {
+        const output: string = Hex.of('a', 2);
+        expect(output).toBe('0061');
     });
 });

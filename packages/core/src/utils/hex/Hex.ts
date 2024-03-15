@@ -157,7 +157,7 @@ function pad(exp: string, bytes: number): string {
 
 function trim(exp: string): string {
     let i = 0;
-    while (i < exp.length && exp.at(i) !== '0') {
+    while (i < exp.length && exp.at(i) === '0') {
         i++;
     }
     return i === exp.length ? '0' : exp.slice(i);
