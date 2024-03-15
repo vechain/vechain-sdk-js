@@ -1,5 +1,6 @@
 {
   "name": "vechain-sdk-nextjs",
+  "description": "A Next.js sample app using the vechain SDK",
   "version": "1.0.0-beta.1",
   "private": true,
   "scripts": {
