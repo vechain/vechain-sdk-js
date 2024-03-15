@@ -4,6 +4,7 @@ import {
     assertValidTransactionHead,
     assertValidTransactionID,
     dataUtils,
+    H0x,
     revisionUtils,
     secp256k1,
     Transaction,
@@ -154,7 +155,7 @@ class TransactionsModule {
         // Assert transaction is signed or not
         assertIsSignedTransaction('sendTransaction', signedTx);
 
-        const rawTx = `0x${signedTx.encoded.toString('hex')}`;
+        const rawTx = H0x.of(signedTx.encoded);
 
         return await this.sendRawTransaction(rawTx);
     }
