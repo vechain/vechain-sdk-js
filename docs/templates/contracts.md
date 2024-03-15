@@ -81,3 +81,13 @@ Once the contract is compiled, we can deploy it using the vechain SDK. The follo
 Once the contract is deployed, we can transfer tokens to another address using the vechain SDK. The following code shows how to transfer 10000 token smallest unit to another address:
 
 [ERC20FunctionCallSnippet](examples/contracts/contract-transfer-ERC20-token.ts)
+
+
+#### Filter the Transfer event
+
+
+Once the contract is deployed, we can filter the Transfer event using the vechain SDK. The following code shows how to filter the Transfer event:
+
+[ERC20FilterEventSnippet](examples/contracts/contract-event-filter.ts)
+
+We are transferring tokens from the deployer address to another address. We can filter the Transfer event to get the transfer details by passing the receiver address (to restrict the event logs to a specific receiver). The filter parameters depend on the event signature and the indexed parameters of the event. In this example, the Transfer event has two indexed parameters, `from` and `to`. We are filtering the event logs by passing the `to` address.

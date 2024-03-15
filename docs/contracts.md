@@ -193,3 +193,36 @@ const transactionReceiptTransfer =
 expect(transactionReceiptTransfer.reverted).toEqual(false);
 ```
 
+
+#### Filter the Transfer event
+
+
+Once the contract is deployed, we can filter the Transfer event using the vechain SDK. The following code shows how to filter the Transfer event:
+
+```typescript { name=contract-event-filter, category=example }
+// Starting from a deployed contract instance, transfer some tokens to a specific address
+const transferResult = await contract.transact.transfer(
+    '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+    10000
+);
+
+// Wait for the transfer transaction to complete and obtain its receipt
+const transactionReceiptTransfer =
+    (await transferResult.wait()) as TransactionReceipt;
+
+// Asserting that the transaction has not been reverted
+expect(transactionReceiptTransfer.reverted).toEqual(false);
+
+// Check transfer event logs by also passing the destination address
+const transferEvents = await contract.filters
+    .Transfer(undefined, '0x9e7911de289c3c856ce7f421034f66b6cde49c39')
+    .get();
+
+// Asserting that the transfer event has been emitted
+expect(transferEvents.length).toEqual(1);
+
+// log the transfer events
+console.log(transferEvents);
+```
+
+We are transferring tokens from the deployer address to another address. We can filter the Transfer event to get the transfer details by passing the receiver address (to restrict the event logs to a specific receiver). The filter parameters depend on the event signature and the indexed parameters of the event. In this example, the Transfer event has two indexed parameters, `from` and `to`. We are filtering the event logs by passing the `to` address.
