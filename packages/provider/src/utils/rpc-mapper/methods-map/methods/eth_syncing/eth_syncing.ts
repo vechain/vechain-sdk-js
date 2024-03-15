@@ -9,7 +9,7 @@ import {
     type SyncBlockRPC
 } from '../../../../../provider';
 import { buildProviderError, JSONRPC } from '@vechain/sdk-errors';
-import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
+import { Quantity } from '@vechain/sdk-core';
 
 /**
  * Check if the block is out of sync in time.
@@ -43,7 +43,7 @@ const ethSyncing = async (
         // Get the highest block number
         const highestBlockNumber: string | null =
             genesisBlock !== null
-                ? vechain_sdk_core_ethers.toQuantity(
+                ? Quantity.of(
                       Math.floor((Date.now() - genesisBlock.timestamp) / 10000)
                   )
                 : null;

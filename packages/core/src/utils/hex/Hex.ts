@@ -219,10 +219,17 @@ const Hex = {
      * see {@link H0x.of} to make a hexadecimal representation prefixed with `0x`.
      *
      * **Note:** [HexString](https://docs.ethers.org/v6/api/utils/#HexString)
-     * definition overlaps `string` TS completely: this function tests if
-     * the given input is positive to {@link H0x.isValid} processing it as
-     * {@link HexString}, else it considers the string as an array of bytes and
+     * definition overlaps `string` TS completely as an alias.
+     * This function tests if the given input starts with `0x`
+     * and is positive to {@link H0x.isValid}
+     * processing it as {@link HexString} type,
+     * else it considers the string as an array of bytes and
      * returns its hexadecimal representation.
+     * To force a string to be considered an array of bytes despite it is
+     * a valid `0x` hexadecimal expression, convert it to {@link Buffer}.
+     * ```
+     * Hex.of(buffer.toString('hex'))
+     * ```
      *
      * @param {bigint | Buffer | Uint8Array | number | string} n - The input data to be represented.
      * @param {number} [bytes=0] - If not `0` by default, the hexadecimal representation encodes at least {number}  bytes.
