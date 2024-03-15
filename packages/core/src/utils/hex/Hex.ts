@@ -98,6 +98,13 @@ function ofBuffer(buffer: Buffer, bytes: number = 0): string {
     return pad(buffer.toString(ENCODING), bytes);
 }
 
+/**
+ * Converts a hexadecimal string representing a number to a padded lowercase hexadecimal string.
+ *
+ * @param {HexString} n - The hexadecimal string representing the number.
+ * @param {number} [bytes=0] - The number of bytes the resulting hexadecimal string should be padded to. Defaults to 0.
+ * @returns {string} - The padded lowercase hexadecimal string.
+ */
 function ofHexString(n: HexString, bytes: number = 0): string {
     assert(
         'Hex.ts.ofHexString',
@@ -106,7 +113,7 @@ function ofHexString(n: HexString, bytes: number = 0): string {
         ErrorMessage.NOT_HEX,
         { n }
     );
-    return pad(n.slice(2), bytes);
+    return pad(n.slice(2).toLowerCase(), bytes);
 }
 
 /**
