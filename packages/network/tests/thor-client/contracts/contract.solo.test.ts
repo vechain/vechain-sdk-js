@@ -10,6 +10,7 @@ import {
     deployedContractAbi,
     deployedContractBytecode,
     filterContractEventsTestCases,
+    fourArgsEventAbi,
     testingContractTestCases
 } from './fixture';
 import {
@@ -340,6 +341,31 @@ describe('ThorClient - Contracts', () => {
         await expect(loadedContract.transact.set(123)).rejects.toThrowError(
             TransactionMissingPrivateKeyError
         );
+    }, 10000);
+
+    /**
+     * Test case for creating a filter for a contract event.
+     */
+    test('Create a filter for a four args event', () => {
+        // Load the deployed contract using the contract address, ABI and private key
+        const loadedContract = thorSoloClient.contracts.load(
+            '0x0000000000000000000000000000456e65726779',
+            fourArgsEventAbi
+        );
+
+        const contractFilter = loadedContract.filters.DataUpdated(
+            '0x0000000000000000000000000000456e65726779',
+            10,
+            10,
+            10
+        );
+
+        expect(contractFilter).toBeDefined();
+        expect(contractFilter.criteriaSet[0].topic0).toBeDefined();
+        expect(contractFilter.criteriaSet[0].topic1).toBeDefined();
+        expect(contractFilter.criteriaSet[0].topic2).toBeDefined();
+        expect(contractFilter.criteriaSet[0].topic3).toBeDefined();
+        expect(contractFilter.criteriaSet[0].topic4).toBeDefined();
     }, 10000);
 
     /**

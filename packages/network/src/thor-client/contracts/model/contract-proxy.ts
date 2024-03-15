@@ -101,7 +101,7 @@ function getFilterProxy(contract: Contract): ContractFunctionFilter {
                 const criteriaSet = [
                     {
                         address: contract.address,
-                        topic0: topics.has(0) ? topics.get(0) : undefined,
+                        topic0: topics.get(0) as string, // the first topic is always defined since it's the event signature
                         topic1: topics.has(1) ? topics.get(1) : undefined,
                         topic2: topics.has(2) ? topics.get(2) : undefined,
                         topic3: topics.has(3) ? topics.get(3) : undefined,

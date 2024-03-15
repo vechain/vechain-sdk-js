@@ -156,6 +156,23 @@ describe('ThorClient - ERC20 Contracts', () => {
         ]);
     }, 10000); // Set a timeout of 10000ms for this test
 
+    test('listen to a non existing ERC20 event', async () => {
+        // Deploy the ERC20 contract
+        let factory = thorSoloClient.contracts.createContractFactory(
+            deployedERC20Abi,
+            erc20ContractBytecode,
+            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+        );
+
+        factory = await factory.startDeployment();
+
+        const contract: Contract = await factory.waitForDeployment();
+
+        await expect(
+            async () => await contract.filters.EventNotFound().get()
+        ).rejects.toThrowError(InvalidAbiFunctionError);
+    }, 10000);
+
     /**
      * Test listening to a non-existing ERC20 event.
      */

@@ -202,6 +202,36 @@ const deployedERC20Abi: InterfaceAbi = [
     }
 ];
 
+const fourArgsEventAbi = [
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                name: 'sender',
+                type: 'address'
+            },
+            {
+                indexed: true,
+                name: 'key',
+                type: 'uint256'
+            },
+            {
+                indexed: true,
+                name: 'oldValue',
+                type: 'uint256'
+            },
+            {
+                indexed: true,
+                name: 'newValue',
+                type: 'uint256'
+            }
+        ],
+        name: 'DataUpdated',
+        type: 'event'
+    }
+];
+
 /**
  * Represents a test case for a smart contract function.
  * This interface is designed to capture the necessary details to execute and validate
@@ -727,6 +757,7 @@ export {
     erc20ContractBytecode,
     erc721ContractBytecode,
     erc721ContractTestCases,
+    fourArgsEventAbi,
     deployedContractBytecode,
     deployedContractAbi,
     deployedERC20Abi,
