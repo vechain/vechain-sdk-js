@@ -10,12 +10,7 @@ import {
     type TransactionReceiptRPC,
     type TransactionRPC
 } from './types';
-import {
-    H0x,
-    Quantity,
-    vechain_sdk_core_ethers,
-    ZERO_BUFFER
-} from '@vechain/sdk-core';
+import { H0x, Quantity, ZERO_BUFFER } from '@vechain/sdk-core';
 import {
     getNumberOfLogsAheadOfTransactionIntoBlockExpanded,
     getTransactionIndexIntoBlock
@@ -157,27 +152,20 @@ function formatTransactionReceiptToRPCStandard(
         .fill(logIndexOffset)
         .map((_, i) => i + logIndexOffset);
 
-    const logIndexes: string[] = filledLogIndexes.map((i) =>
-        vechain_sdk_core_ethers.toQuantity(i)
-    );
+    const logIndexes: string[] = filledLogIndexes.map((i) => Quantity.of(i));
 
     const logs: TransactionReceiptLogsRPC[] =
         receipt.outputs.length > 0 && receipt.outputs[0].events.length > 0
             ? receipt.outputs[0].events.map((event, index) => {
                   return {
                       blockHash: receipt.meta.blockID,
-                      blockNumber: vechain_sdk_core_ethers.toQuantity(
-                          receipt.meta.blockNumber
-                      ),
+                      blockNumber: Quantity.of(receipt.meta.blockNumber),
                       transactionHash: receipt.meta.txID as string,
                       address: event.address,
                       topics: event.topics.map((topic) => topic),
                       data: event.data,
-
                       removed: false,
-
-                      transactionIndex:
-                          vechain_sdk_core_ethers.toQuantity(transactionIndex),
+                      transactionIndex: Quantity.of(transactionIndex),
                       logIndex: logIndexes[index]
                   };
               })
@@ -185,20 +173,18 @@ function formatTransactionReceiptToRPCStandard(
 
     return {
         blockHash: receipt.meta.blockID,
-        blockNumber: vechain_sdk_core_ethers.toQuantity(
-            receipt.meta.blockNumber
-        ),
+        blockNumber: Quantity.of(receipt.meta.blockNumber),
         contractAddress:
             receipt.outputs.length > 0
                 ? receipt.outputs[0].contractAddress
                 : null,
         from: transaction.origin,
-        gasUsed: vechain_sdk_core_ethers.toQuantity(receipt.gasUsed),
+        gasUsed: Quantity.of(receipt.gasUsed),
         logs,
         status: receipt.reverted ? '0x0' : '0x1',
         to: transaction.clauses[0].to,
         transactionHash: receipt.meta.txID as string,
-        transactionIndex: vechain_sdk_core_ethers.toQuantity(transactionIndex),
+        transactionIndex: Quantity.of(transactionIndex),
 
         // Incompatible fields
         logsBloom: H0x.of(ZERO_BUFFER(256)),
