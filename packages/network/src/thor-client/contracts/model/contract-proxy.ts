@@ -11,9 +11,9 @@ import { type ContractCallResult } from '../types';
 import { ContractFilter } from './contract-filter';
 
 /**
- * Creates a Proxy object for reading contract functions, allowing for the dynamic invocation of contract read operations.
+ * Creates a Proxy object for reading contract state, allowing for the dynamic invocation of contract read operations.
+ * @param contract - The contract instance to create the read proxy for.
  * @returns A Proxy that intercepts calls to read contract functions, automatically handling the invocation with the configured options.
- * @private
  */
 function getReadProxy(contract: Contract): ContractFunctionRead {
     return new Proxy(contract.read, {
@@ -44,6 +44,7 @@ function getReadProxy(contract: Contract): ContractFunctionRead {
 
 /**
  * Creates a Proxy object for transacting with contract functions, allowing for the dynamic invocation of contract transaction operations.
+ * @param contract - The contract instance
  * @returns A Proxy that intercepts calls to transaction contract functions, automatically handling the invocation with the configured options.
  * @private
  */
@@ -77,6 +78,7 @@ function getTransactProxy(contract: Contract): ContractFunctionTransact {
 /**
  * Creates a Proxy object for filtering contract events, allowing for the dynamic invocation of contract event filtering operations.
  * @param contract - The contract instance to create the filter proxy for.
+ * @returns A Proxy that intercepts calls to filter contract events, automatically handling the invocation with the configured options.
  */
 function getFilterProxy(contract: Contract): ContractFunctionFilter {
     return new Proxy(contract.filters, {

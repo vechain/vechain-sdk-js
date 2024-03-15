@@ -77,6 +77,10 @@ class Contract {
         return this.contractCallOptions;
     }
 
+    /**
+     * Clears the current contract call options, resetting them to an empty object.
+     * @returns The updated contract call options.
+     */
     public getContractReadOptions(): ContractCallOptions {
         return this.contractCallOptions;
     }
