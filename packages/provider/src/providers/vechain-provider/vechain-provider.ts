@@ -29,8 +29,8 @@ import {
     dataUtils,
     H0x,
     Hex,
-    type TransactionClause,
-    vechain_sdk_core_ethers
+    Quantity,
+    type TransactionClause
 } from '@vechain/sdk-core';
 import type { TransactionObjectInput } from '../../utils/rpc-mapper/methods-map/methods/eth_sendTransaction/types';
 import { randomBytes } from 'crypto';
@@ -212,7 +212,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
         const promises = Array.from(
             this.subscriptionManager.logSubscriptions.entries()
         ).map(async ([subscriptionId, subscriptionDetails]) => {
-            const currentBlock = vechain_sdk_core_ethers.toQuantity(
+            const currentBlock = Quantity.of(
                 this.subscriptionManager.currentBlockNumber
             );
             // Construct filter options for the Ethereum logs query based on the subscription details
