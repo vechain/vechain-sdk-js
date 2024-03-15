@@ -10,7 +10,12 @@ import {
     type TransactionReceiptRPC,
     type TransactionRPC
 } from './types';
-import { H0x, vechain_sdk_core_ethers, ZERO_BUFFER } from '@vechain/sdk-core';
+import {
+    H0x,
+    Quantity,
+    vechain_sdk_core_ethers,
+    ZERO_BUFFER
+} from '@vechain/sdk-core';
 import {
     getNumberOfLogsAheadOfTransactionIntoBlockExpanded,
     getTransactionIndexIntoBlock
@@ -38,13 +43,13 @@ const _formatTransactionToRPC = (
     return {
         // Supported fields
         blockHash,
-        blockNumber: vechain_sdk_core_ethers.toQuantity(blockNumber),
+        blockNumber: Quantity.of(blockNumber),
         from: tx.origin,
-        gas: vechain_sdk_core_ethers.toQuantity(tx.gas),
+        gas: Quantity.of(tx.gas),
         chainId,
         hash: tx.id,
         nonce: tx.nonce as string,
-        transactionIndex: vechain_sdk_core_ethers.toQuantity(txIndex),
+        transactionIndex: Quantity.of(txIndex),
 
         /**
          * `input`, `to`, `value` are being referred to the first clause.
@@ -53,7 +58,7 @@ const _formatTransactionToRPC = (
          */
         input: tx.clauses[0].data,
         to: tx.clauses[0].to,
-        value: vechain_sdk_core_ethers.toQuantity(tx.clauses[0].value),
+        value: Quantity.of(tx.clauses[0].value),
 
         // Unsupported fields
         gasPrice: '0x0',

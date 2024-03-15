@@ -1,5 +1,6 @@
 import { assert, DATA } from '@vechain/sdk-errors';
 import { Buffer } from 'buffer';
+import { type HexString } from 'ethers/lib.esm/utils/data';
 
 /**
  * The encoding used for buffers.
@@ -28,10 +29,25 @@ const PREFIX: string = '0x';
 const RADIX: number = 16;
 
 /**
+ * Regular expression for matching a string in the format /^0x[0-9A-Fa-f]*$/
+ *
+ * @type {RegExp}
+ * @see HexString
+ */
+const REGEX_FOR_0X_EXP = /^0x[0-9A-Fa-f]*$/;
+
+/**
  * Represents the error messages used in the {@link Hex} object.
  * @enum {string}
  */
 enum ErrorMessage {
+    /**
+     * Error message constant for invalid hexadecimal expression
+     * not matching {@link REGEX_FOR_0X_EXP}.
+     *
+     * @const {string}
+     */
+    NOT_HEX = `Arg 'n' not an hexadecimal expression`,
     /**
      * String constant representing an error message when the argument 'n' is not an integer.
      *
@@ -60,7 +76,7 @@ enum ErrorMessage {
  */
 function ofBigInt(bi: bigint, bytes: number): string {
     assert(
-        'Hex.ofBigInt',
+        'Hex.ts.ofBigInt',
         bi >= 0,
         DATA.INVALID_DATA_TYPE,
         ErrorMessage.NOT_POSITIVE,
@@ -82,15 +98,15 @@ function ofBuffer(buffer: Buffer, bytes: number = 0): string {
     return pad(buffer.toString(ENCODING), bytes);
 }
 
-/**
- * Convert an Uint8Array to a padded hexadecimal representation long the specified number of bytes.
- *
- * @param {Uint8Array} uint8Array - The Uint8Array to be represented as hexadecimal string.
- * @param {number} [bytes=0] - The number of bytes the resulting hexadecimal representation should be padded to.
- * @return {string} - The padded hexadecimal representation of the buffer.
- */
-function ofUint8Array(uint8Array: Uint8Array, bytes: number = 0): string {
-    return ofBuffer(Buffer.from(uint8Array), bytes);
+function ofHexString(n: HexString, bytes: number = 0): string {
+    assert(
+        'Hex.ts.ofHexString',
+        H0x.isValid(n),
+        DATA.INVALID_DATA_TYPE,
+        ErrorMessage.NOT_HEX,
+        { n }
+    );
+    return pad(n.slice(2), bytes);
 }
 
 /**
@@ -103,7 +119,7 @@ function ofUint8Array(uint8Array: Uint8Array, bytes: number = 0): string {
  */
 function ofNumber(n: number, bytes: number): string {
     assert(
-        'Hex.ofNumber',
+        'Hex.ts.ofNumber',
         Number.isInteger(n),
         DATA.INVALID_DATA_TYPE,
         ErrorMessage.NOT_INTEGER,
@@ -112,7 +128,7 @@ function ofNumber(n: number, bytes: number): string {
         }
     );
     assert(
-        'Hex.ofNumber',
+        'Hex.ts.ofNumber',
         n >= 0,
         DATA.INVALID_DATA_TYPE,
         ErrorMessage.NOT_POSITIVE,
@@ -124,14 +140,29 @@ function ofNumber(n: number, bytes: number): string {
 }
 
 /**
- * Converts a string to its padded hexadecimal representation long the specified number of bytes.
+ * Converts a string to its binary representation,
+ * then to its padded hexadecimal representation
+ * long the specified number of bytes.
  *
  * @param {string} txt - The input string to be converted.
  * @param {number} bytes - The number of bytes the resulting hexadecimal representation should be padded to.
  * @returns {string} - The padded hexadecimal representation of the number.
+ * @see {ofBuffer}
  */
 function ofString(txt: string, bytes: number): string {
-    return pad(Buffer.from(txt).toString(ENCODING), bytes);
+    return ofBuffer(Buffer.from(txt), bytes);
+}
+
+/**
+ * Convert an Uint8Array to a padded hexadecimal representation long the specified number of bytes.
+ *
+ * @param {Uint8Array} uint8Array - The Uint8Array to be represented as hexadecimal string.
+ * @param {number} [bytes=0] - The number of bytes the resulting hexadecimal representation should be padded to.
+ * @return {string} - The padded hexadecimal representation of the buffer.
+ * @see {ofBuffer}
+ */
+function ofUint8Array(uint8Array: Uint8Array, bytes: number = 0): string {
+    return ofBuffer(Buffer.from(uint8Array), bytes);
 }
 
 /**
@@ -155,6 +186,13 @@ function pad(exp: string, bytes: number): string {
     return exp;
 }
 
+/**
+ * Trims leading zeros from a string.
+ *
+ * @param {string} exp - The string to trim.
+ * @returns {string} - The trimmed string.
+ * @see Quantity.of
+ */
 function trim(exp: string): string {
     let i = 0;
     while (i < exp.length && exp.at(i) === '0') {
@@ -172,12 +210,19 @@ const Hex = {
      * This method calls
      * * {@link ofBigInt} if `n` type is `bigint`;
      * * {@link ofBuffer} if `n` is an instance of {@link Buffer};
+     * * {@link ofHexString} if `n` type is {@link HexString}`;
      * * {@link ofNumber} if `n` type is `number`;
      * * {@link ofString} if `n` type is `string`;
      * * {@link ofUint8Array} if `n` is an instance of {@link Uint8Array}.
      *
      * **Note:** the returned string is not prefixed with `0x`,
      * see {@link H0x.of} to make a hexadecimal representation prefixed with `0x`.
+     *
+     * **Note:** [HexString](https://docs.ethers.org/v6/api/utils/#HexString)
+     * definition overlaps `string` TS completely: this function tests if
+     * the given input is positive to {@link H0x.isValid} processing it as
+     * {@link HexString}, else it considers the string as an array of bytes and
+     * returns its hexadecimal representation.
      *
      * @param {bigint | Buffer | Uint8Array | number | string} n - The input data to be represented.
      * @param {number} [bytes=0] - If not `0` by default, the hexadecimal representation encodes at least {number}  bytes.
@@ -192,11 +237,22 @@ const Hex = {
         if (n instanceof Uint8Array) return ofUint8Array(n, bytes);
         if (typeof n === 'bigint') return ofBigInt(n, bytes);
         if (typeof n === 'number') return ofNumber(n, bytes);
+        if (H0x.isValid(n)) return ofHexString(n, bytes);
         return ofString(n, bytes);
     }
 };
 
 const H0x = {
+    /**
+     * Checks if the given expression is a valid hexadecimal expression
+     * prefixed with `0x`.
+     *
+     * @param {string} exp - The expression to be validated.
+     * @returns {boolean} - Whether the expression is valid or not.
+     */
+    isValid(exp: string): boolean {
+        return REGEX_FOR_0X_EXP.test(exp);
+    },
     /**
      * Returns a hexadecimal representation from the given input data prefixed with `0x`.
      *
@@ -207,6 +263,7 @@ const H0x = {
      * @param {number} [bytes=0] - If not `0` by default, the hexadecimal representation encodes at least {number}  bytes.
      * @returns {Uint8Array} - The resulting hexadecimal representation,
      * it is guaranteed to be even characters long.
+     * @see Hex
      */
     of: function (
         n: bigint | number | string | Buffer | Uint8Array,

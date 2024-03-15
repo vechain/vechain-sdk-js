@@ -5,7 +5,6 @@ import {
 } from '@vechain/sdk-network';
 import { type BlocksRPC } from './types';
 import { dataUtils, Quantity, ZERO_BUFFER } from '@vechain/sdk-core';
-
 import { transactionsFormatter } from '../transactions';
 
 /**

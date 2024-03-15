@@ -83,11 +83,9 @@ describe('Hex', () => {
         expect(output).toBe('0a');
     });
 
-    test('of Uint8Array', () => {
-        const uint8Array: Uint8Array = new Uint8Array(1);
-        uint8Array[0] = 10;
-        const output: string = Hex.of(uint8Array);
-        expect(output).toBe('0a');
+    test('of HexString', () => {
+        const output: string = Hex.of('0x61' as string);
+        expect(output).toBe('61');
     });
 
     test('of number', () => {
@@ -108,9 +106,11 @@ describe('Hex', () => {
         expect(output).toBe('61');
     });
 
-    test('of string', () => {
-        const output: string = Hex.of('a' as string);
-        expect(output).toBe('61');
+    test('of Uint8Array', () => {
+        const uint8Array: Uint8Array = new Uint8Array(1);
+        uint8Array[0] = 10;
+        const output: string = Hex.of(uint8Array);
+        expect(output).toBe('0a');
     });
 
     test('padded', () => {
