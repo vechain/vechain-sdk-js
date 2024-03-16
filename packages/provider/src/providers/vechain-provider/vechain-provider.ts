@@ -26,7 +26,6 @@ import {
 } from './types';
 import {
     clauseBuilder,
-    dataUtils,
     H0x,
     Hex,
     Quantity,
@@ -315,7 +314,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { nonce, ...transactionBodyWithoutNonce } = transactionBody;
-        const newNonce = `0x${dataUtils.toHexString(randomBytes(6))}`;
+        const newNonce = H0x.of(randomBytes(6));
 
         // At least, a signer private key is required
         if (
