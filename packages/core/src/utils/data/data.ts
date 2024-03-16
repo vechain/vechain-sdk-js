@@ -6,25 +6,9 @@ import {
     NUMERIC_REGEX,
     THOR_ID_LENGTH
 } from '../const';
-import { type HexConfig } from './types';
 import { assert, buildError, DATA } from '@vechain/sdk-errors';
 import * as crypto from 'crypto';
-import { H0x, Hex } from '../hex';
-
-/**
- * Convert data to a hexadecimal string representation.
- *
- * @remarks
- * This function takes a `string` or `Uint8Array` and converts it into a hexadecimal string.
- * The resulting string can optionally be prefixed with '0x' based on the configuration provided.
- *
- * @param data - The input data to be converted, either a string or a Uint8Array.
- * @param config - An optional configuration object that may include a `withPrefix` boolean, which, if true, prefixes the resulting string with '0x'.
- * @returns The hexadecimal string representation of the input data.
- */
-const toHexString = (data: string | Uint8Array, config?: HexConfig): string => {
-    return config?.withPrefix === true ? H0x.of(data) : Hex.of(data);
-};
+import { Hex } from '../hex';
 
 /**
  * Checks whether the provided data is a valid hexadecimal string.
@@ -226,7 +210,7 @@ const generateRandomHexOfLength = (stringLength: number): string => {
 };
 
 export const dataUtils = {
-    toHexString,
+    // toHexString,
     isHexString,
     padHexString,
     removePrefix,
