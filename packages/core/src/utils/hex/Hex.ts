@@ -29,12 +29,19 @@ const PREFIX: string = '0x';
 const RADIX: number = 16;
 
 /**
- * Regular expression for matching a string in the format /^0x[0-9A-Fa-f]*$/
+ * Regular expression for matching a string in the format `/^0x[0-9a-f]*$/i;`
  *
  * @type {RegExp}
  * @see HexString
  */
-const REGEX_FOR_0X_EXP = /^0x[0-9A-Fa-f]*$/;
+const REGEX_FOR_0X_EXP = /^0x[0-9a-f]*$/i;
+
+/**
+ * Regular expression for matching a string in the format /^[0-9A-Fa-f]*$/
+ *
+ * @type {RegExp}
+ */
+const REGEX_FOR_HEX = /^[0-9A-Fa-f]*$/;
 
 /**
  * Represents the error messages used in the {@link Hex} object.
@@ -209,9 +216,20 @@ function trim(exp: string): string {
 }
 
 /**
- * Helper class for encoding hexadecimal values.
+ * Helper for encoding hexadecimal values.
  */
 const Hex = {
+    /**
+     * Checks if the given expression is a valid hexadecimal expression.
+     *
+     * It doesn't check if the given input is aligned to bytes (even long) or nibbles.
+     *
+     * @param {string} exp - The expression to be validated.
+     * @returns {boolean} - Whether the expression is valid or not.
+     */
+    isValid(exp: string): boolean {
+        return REGEX_FOR_HEX.test(exp);
+    },
     /**
      * Returns a hexadecimal representation from the given input data.
      * This method calls
@@ -256,10 +274,15 @@ const Hex = {
     }
 };
 
+/**
+ * Helper for encoding hexadecimal values prefixed with `0x`.
+ */
 const H0x = {
     /**
      * Checks if the given expression is a valid hexadecimal expression
      * prefixed with `0x`.
+     *
+     * It doesn't check if the given input is aligned to bytes (even long) or nibbles.
      *
      * @param {string} exp - The expression to be validated.
      * @returns {boolean} - Whether the expression is valid or not.
@@ -287,6 +310,10 @@ const H0x = {
     }
 };
 
+/**
+ * Helper for encoding Ethereum quantities according
+ * [HexString](https://docs.ethers.org/v6/api/utils/#HexString) specifications.
+ */
 const Quantity = {
     /**
      *  Returns a hexadecimal representation for the given input data

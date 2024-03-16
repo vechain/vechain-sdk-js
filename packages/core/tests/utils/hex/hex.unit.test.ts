@@ -60,6 +60,15 @@ describe('H0x', () => {
         const output: string = H0x.of('a', 2);
         expect(output).toBe('0x0061');
     });
+
+    test('isValid - true', () => {
+        expect(H0x.isValid('0x00fF')).toBe(true);
+    });
+
+    test('isValid - false', () => {
+        expect(H0x.isValid('00fF')).toBe(false);
+        expect(H0x.isValid('0x00gG')).toBe(false);
+    });
 });
 
 /**
@@ -116,5 +125,14 @@ describe('Hex', () => {
     test('padded', () => {
         const output: string = Hex.of('a', 2);
         expect(output).toBe('0061');
+    });
+
+    test('isValid - true', () => {
+        expect(Hex.isValid('00fF')).toBe(true);
+    });
+
+    test('isValid - false', () => {
+        expect(Hex.isValid('0x00fF')).toBe(false);
+        expect(Hex.isValid('00gG')).toBe(false);
     });
 });

@@ -1,14 +1,13 @@
 import { ethers } from 'ethers';
 import {
     DECIMAL_INTEGER_REGEX,
-    HEX_REGEX,
     HEX_REGEX_OPTIONAL_PREFIX,
     NUMERIC_REGEX,
     THOR_ID_LENGTH
 } from '../const';
 import { assert, buildError, DATA } from '@vechain/sdk-errors';
 import * as crypto from 'crypto';
-import { Hex } from '../hex';
+import { H0x, Hex } from '../hex';
 
 /**
  * Checks whether the provided data is a valid hexadecimal string.
@@ -22,7 +21,7 @@ import { Hex } from '../hex';
  */
 const isHexString = (data: string, checkPrefix: boolean = true): boolean => {
     return checkPrefix
-        ? HEX_REGEX.test(data)
+        ? H0x.isValid(data)
         : HEX_REGEX_OPTIONAL_PREFIX.test(data);
 };
 
