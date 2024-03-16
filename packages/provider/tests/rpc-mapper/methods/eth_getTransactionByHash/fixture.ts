@@ -1,4 +1,4 @@
-import { ZERO_BUFFER, dataUtils } from '@vechain/sdk-core';
+import { ZERO_BUFFER, H0x } from '@vechain/sdk-core';
 import {
     validTransactionDetailTestnet,
     validTransactionHashTestnet
@@ -16,11 +16,7 @@ const ethGetTransactionByHashTestCases = [
     },
     {
         description: "eth_getTransactionByHash with a hash that doesn't exist",
-        params: [
-            dataUtils.toHexString(ZERO_BUFFER(32), {
-                withPrefix: true
-            })
-        ],
+        params: [H0x.of(ZERO_BUFFER(32))],
         expected: null
     }
 ];
