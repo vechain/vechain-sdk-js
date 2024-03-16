@@ -224,7 +224,7 @@ class TransactionsModule {
 
         // The constant part of the transaction body
         const constTxBody = {
-            nonce: `0x${dataUtils.toHexString(randomBytes(8))}`,
+            nonce: H0x.of(randomBytes(8)),
             expiration: options?.expiration ?? 32,
             clauses,
             gasPriceCoef: options?.gasPriceCoef ?? 0,
