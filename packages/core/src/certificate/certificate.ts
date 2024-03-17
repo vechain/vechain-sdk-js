@@ -3,7 +3,7 @@ import { blake2b256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Buffer } from 'buffer';
-import { dataUtils } from '../utils';
+import { H0x } from '../utils';
 import { type Certificate } from './types';
 import { assert, CERTIFICATE } from '@vechain/sdk-errors';
 
@@ -39,8 +39,7 @@ function verify(cert: Certificate): void {
     // Invalid signature
     assert(
         'verify',
-        dataUtils.isHexString(cert.signature as string) &&
-            (cert.signature as string).length % 2 === 0,
+        H0x.isValidWithOptional0x(cert.signature as string, true),
         CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT,
         'Verification failed: Signature format is invalid.',
         { cert }

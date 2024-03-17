@@ -32,16 +32,26 @@ const RADIX: number = 16;
  * Regular expression for matching a string in the format `/^0x[0-9a-f]*$/i;`
  *
  * @type {RegExp}
+ * @see H0x.of
  * @see HexString
  */
-const REGEX_FOR_0X_EXP = /^0x[0-9a-f]*$/i;
+const REGEX_FOR_0X_HEX = /^0x[0-9a-f]*$/i;
 
 /**
  * Regular expression for matching a string in the format /^[0-9A-Fa-f]*$/
  *
  * @type {RegExp}
+ * @see Hex.isValid
  */
-const REGEX_FOR_HEX = /^[0-9A-Fa-f]*$/;
+const REGEX_FOR_HEX = /^[0-9a-f]*$/i;
+
+/**
+ * Regular expression for matching a string in the format `/^(0x)?[0-9a-f]*$/i;`
+ *
+ * @type {RegExp}
+ * @see HexString
+ */
+const REGEX_FOR_OPTIONAL_0X_HEX = /^(0x)?[0-9a-f]*$/i;
 
 /**
  * Represents the error messages used in the {@link Hex} object.
@@ -50,7 +60,7 @@ const REGEX_FOR_HEX = /^[0-9A-Fa-f]*$/;
 enum ErrorMessage {
     /**
      * Error message constant for invalid hexadecimal expression
-     * not matching {@link REGEX_FOR_0X_EXP}.
+     * not matching {@link REGEX_FOR_0X_HEX}.
      *
      * @const {string}
      */
@@ -225,10 +235,15 @@ const Hex = {
      * It doesn't check if the given input is aligned to bytes (even long) or nibbles.
      *
      * @param {string} exp - The expression to be validated.
+     * @param {boolean} checkByteAligment check the expression represents a complete byte array,
      * @returns {boolean} - Whether the expression is valid or not.
      */
-    isValid(exp: string): boolean {
-        return REGEX_FOR_HEX.test(exp);
+    isValid(exp: string, checkByteAligment: boolean = false): boolean {
+        let predicate = REGEX_FOR_HEX.test(exp);
+        if (predicate && checkByteAligment) {
+            predicate = exp.length % 2 === 0;
+        }
+        return predicate;
     },
     /**
      * Returns a hexadecimal representation from the given input data.
@@ -280,7 +295,7 @@ const Hex = {
 const H0x = {
     /**
      * Checks if the given expression is a valid hexadecimal expression
-     * prefixed with `0x`.
+     * prefixed with `0x`,
      *
      * It doesn't check if the given input is aligned to bytes (even long) or nibbles.
      *
@@ -288,7 +303,27 @@ const H0x = {
      * @returns {boolean} - Whether the expression is valid or not.
      */
     isValid(exp: string): boolean {
-        return REGEX_FOR_0X_EXP.test(exp);
+        return REGEX_FOR_0X_HEX.test(exp);
+    },
+    /**
+     * Checks if the given expression is a valid hexadecimal expression
+     * optionally prefixed with `0x`.
+     *
+     * It doesn't check if the given input is aligned to bytes (even long) or nibbles.
+     *
+     * @param {string} exp - The expression to be validated.
+     * @param {boolean} checkByteAligment check the expression represents a complete byte array,
+     * @returns {boolean} - Whether the expression is valid or not.
+     */
+    isValidWithOptional0x(
+        exp: string,
+        checkByteAligment: boolean = false
+    ): boolean {
+        let predicate = REGEX_FOR_OPTIONAL_0X_HEX.test(exp);
+        if (predicate && checkByteAligment) {
+            predicate = exp.length % 2 === 0;
+        }
+        return predicate;
     },
     /**
      * Returns a hexadecimal representation from the given input data prefixed with `0x`.

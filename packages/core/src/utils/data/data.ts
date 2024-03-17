@@ -1,10 +1,5 @@
 import { ethers } from 'ethers';
-import {
-    DECIMAL_INTEGER_REGEX,
-    HEX_REGEX_OPTIONAL_PREFIX,
-    NUMERIC_REGEX,
-    THOR_ID_LENGTH
-} from '../const';
+import { DECIMAL_INTEGER_REGEX, NUMERIC_REGEX, THOR_ID_LENGTH } from '../const';
 import { assert, buildError, DATA } from '@vechain/sdk-errors';
 import * as crypto from 'crypto';
 import { H0x, Hex } from '../hex';
@@ -20,9 +15,7 @@ import { H0x, Hex } from '../hex';
  * @returns A boolean indicating whether the input is a valid hexadecimal string.
  */
 const isHexString = (data: string, checkPrefix: boolean = true): boolean => {
-    return checkPrefix
-        ? H0x.isValid(data)
-        : HEX_REGEX_OPTIONAL_PREFIX.test(data);
+    return checkPrefix ? H0x.isValid(data) : H0x.isValidWithOptional0x(data);
 };
 
 /**
@@ -209,7 +202,6 @@ const generateRandomHexOfLength = (stringLength: number): string => {
 };
 
 export const dataUtils = {
-    // toHexString,
     isHexString,
     padHexString,
     removePrefix,
