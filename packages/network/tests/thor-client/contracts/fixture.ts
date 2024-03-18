@@ -202,6 +202,57 @@ const deployedERC20Abi: InterfaceAbi = [
     }
 ];
 
+const eventExampleAbi = [
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: 'address',
+                name: '_setter',
+                type: 'address'
+            },
+            {
+                indexed: false,
+                internalType: 'uint256',
+                name: '_value',
+                type: 'uint256'
+            }
+        ],
+        name: 'ValueSet',
+        type: 'event'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: '_newValue',
+                type: 'uint256'
+            }
+        ],
+        name: 'setValue',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'value',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    }
+];
+
+const eventExampleBytecode =
+    '0x608060405234801561001057600080fd5b5061019b806100206000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c80633fa4f2451461003b5780635524107714610059575b600080fd5b610043610075565b60405161005091906100ec565b60405180910390f35b610073600480360381019061006e9190610138565b61007b565b005b60005481565b806000819055503373ffffffffffffffffffffffffffffffffffffffff167ff3f57717dff9f5f10af315efdbfadc60c42152c11fc0c3c413bbfbdc661f143c826040516100c891906100ec565b60405180910390a250565b6000819050919050565b6100e6816100d3565b82525050565b600060208201905061010160008301846100dd565b92915050565b600080fd5b610115816100d3565b811461012057600080fd5b50565b6000813590506101328161010c565b92915050565b60006020828403121561014e5761014d610107565b5b600061015c84828501610123565b9150509291505056fea2646970667358221220d6092bd20e3b6594cb285317ce56a11fd752ee174eaac9ee555f0db6f4f3d4f764736f6c63430008180033';
+
 const fourArgsEventAbi = [
     {
         anonymous: false,
@@ -568,6 +619,30 @@ interface FilterEventTestCase {
 }
 
 const filterContractEventsTestCases: FilterEventTestCase[] = [
+    {
+        description: 'should filter the ValueSet event',
+        contractBytecode: eventExampleBytecode,
+        contractAbi: eventExampleAbi,
+        contractCaller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+        functionCalls: [
+            {
+                functionName: 'setValue',
+                params: [1000],
+                type: 'transact'
+            }
+        ],
+        eventName: 'ValueSet',
+        args: [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
+        expectedTopics: [
+            [
+                '0xf3f57717dff9f5f10af315efdbfadc60c42152c11fc0c3c413bbfbdc661f143c',
+                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54'
+            ]
+        ],
+        expectedData: [
+            '0x00000000000000000000000000000000000000000000000000000000000003e8'
+        ]
+    },
     {
         description:
             'should filter the first Transfer event of the initial supply',

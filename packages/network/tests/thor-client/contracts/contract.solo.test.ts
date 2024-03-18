@@ -394,6 +394,30 @@ describe('ThorClient - Contracts', () => {
         }
     );
 
+    test('Should filter the StateChanged event of the testing contract', async () => {
+        const contract = thorSoloClient.contracts.load(
+            TESTING_CONTRACT_ADDRESS,
+            TESTING_CONTRACT_ABI,
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+        );
+
+        await (await contract.transact.setStateVariable(123)).wait();
+
+        const events = await contract.filters
+            .StateChanged(
+                undefined,
+                undefined,
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+            )
+            .get();
+
+        expect(events).toBeDefined();
+
+        expect(events.at(events.length - 1)?.topics[1]).toBe(
+            '0x000000000000000000000000000000000000000000000000000000000000007b'
+        );
+    });
+
     filterContractEventsTestCases.forEach(
         ({
             description,
