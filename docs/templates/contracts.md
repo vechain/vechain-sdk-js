@@ -85,8 +85,15 @@ Once the contract is deployed, we can transfer tokens to another address using t
 
 #### Filter the Transfer event
 
+In blockchain and smart contract contexts, events are significant occurrences or state changes within a contract that are emitted (or logged) for external systems and interfaces to detect and act upon. These events provide a way to signal to external entities that something of note has occurred within the contract, without requiring constant monitoring of the contract's state. They are especially useful in decentralized applications (dApps) for triggering updates in the UI in response to contract state changes.
 
-Once the contract is deployed, we can filter the Transfer event using the vechain SDK. The following code shows how to filter the Transfer event:
+The Transfer event is a common event found in token contracts, especially those following standards like ERC-20 or ERC-721. It signifies the transfer of tokens from one address to another and typically includes information such as the sender's address, the recipient's address, and the amount transferred.
+
+Filtering events allows applications to listen for specific occurrences within a contract rather than polling the contract's state continually. This is both efficient and effective for staying updated with relevant contract interactions.
+
+
+
+For instance, once an ERC20 token contract is deployed, we can filter the Transfer events using the vechain SDK. The following code shows the filtering of a transfer event for a specific receiver address
 
 [ERC20FilterEventSnippet](examples/contracts/contract-event-filter.ts)
 

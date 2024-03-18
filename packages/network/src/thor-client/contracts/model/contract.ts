@@ -168,6 +168,7 @@ class Contract {
     /**
      * Retrieves the event fragment for the specified event name.
      * @param eventName - The name of the event.
+     * @return The event fragment for the specified event name.
      */
     public getEventFragment(eventName: string | symbol): EventFragment {
         const eventFragment = coder
