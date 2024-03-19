@@ -16,6 +16,7 @@ describe('VechainHelloWorld', function () {
         // OUR SUPER TEAM WILL FIX THIS SOON.
         // 💪
         // await expect(contract.sayHello()).to.be.rejected;
+        // NOTE: This is a temporary test to make sure the test suite is working.
         expect(true).to.be.true;
     });
 });
