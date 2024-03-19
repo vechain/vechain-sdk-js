@@ -1,6 +1,6 @@
 import { type ThorClient } from '@vechain/sdk-network';
 import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
-import { dataUtils } from '@vechain/sdk-core';
+import { H0x } from '@vechain/sdk-core';
 import { transactionsFormatter } from '../../../../formatter';
 
 /**
@@ -25,7 +25,7 @@ const ethSendRawTransaction = async (
         'eth_sendRawTransaction',
         params.length === 1 &&
             typeof params[0] === 'string' &&
-            dataUtils.isHexString(params[0]),
+            H0x.isValid(params[0]),
         DATA.INVALID_DATA_TYPE,
         'Invalid params, expected 1.\nThe param should be [signedTransactionData: string (hex string)]'
     );

@@ -38,14 +38,6 @@ const RADIX: number = 16;
 const REGEX_FOR_0X_PREFIX_HEX = /^0x[0-9a-f]*$/i;
 
 /**
- * Regular expression for matching a string in the format /^[0-9A-Fa-f]*$/
- *
- * @type {RegExp}
- * @see Hex.isValid
- */
-// const REGEX_FOR_NO_PREFIX_HEX = /^[0-9a-f]*$/i;
-
-/**
  * Regular expression for matching a string in the format `/^(0x)?[0-9a-f]*$/i;`
  *
  * @type {RegExp}

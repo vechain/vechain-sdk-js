@@ -5,20 +5,6 @@ import * as crypto from 'crypto';
 import { H0x, Hex } from '../hex';
 
 /**
- * Checks whether the provided data is a valid hexadecimal string.
- *
- * @remarks
- * The check can optionally validate the presence of a '0x' prefix.
- *
- * @param data - The string data to check.
- * @param checkPrefix - A boolean determining whether to validate the '0x' prefix (default: false).
- * @returns A boolean indicating whether the input is a valid hexadecimal string.
- */
-const isHexString = (data: string, checkPrefix: boolean = true): boolean => {
-    return checkPrefix ? H0x.isValid(data) : H0x.isValid(data, true);
-};
-
-/**
  * Pads a hexadecimal string to a fixed length by adding zeros to the left.
  *
  * @param {string} hexString - The original hexadecimal string to pad. It can optionally start with '0x'.
@@ -110,7 +96,7 @@ const isNumeric = (value: string): boolean => {
  */
 const isThorId = (data: string, checkPrefix: boolean = false): boolean => {
     return (
-        isHexString(data, checkPrefix) &&
+        H0x.isValid(data, !checkPrefix) &&
         (checkPrefix
             ? data.length === THOR_ID_LENGTH + 2 // +2 for '0x'
             : data.length === THOR_ID_LENGTH)
@@ -160,7 +146,7 @@ const encodeBytes32String = (
 const decodeBytes32String = (value: string): string => {
     assert(
         'decodeBytes32String',
-        isHexString(value) && removePrefix(value).length === 64,
+        H0x.isValid(value) && removePrefix(value).length === 64,
         DATA.INVALID_DATA_TYPE,
         `Failed to decode value ${value} to string. Value is not a valid hex string or it is not 64 characters long`,
         { value }
@@ -202,7 +188,6 @@ const generateRandomHexOfLength = (stringLength: number): string => {
 };
 
 export const dataUtils = {
-    isHexString,
     padHexString,
     removePrefix,
     isDecimalString,
