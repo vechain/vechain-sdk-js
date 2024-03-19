@@ -193,3 +193,43 @@ const transactionReceiptTransfer =
 expect(transactionReceiptTransfer.reverted).toEqual(false);
 ```
 
+
+#### Filter the Transfer event
+
+In blockchain and smart contract contexts, events are significant occurrences or state changes within a contract that are emitted (or logged) for external systems and interfaces to detect and act upon. These events provide a way to signal to external entities that something of note has occurred within the contract, without requiring constant monitoring of the contract's state. They are especially useful in decentralized applications (dApps) for triggering updates in the UI in response to contract state changes.
+
+The Transfer event is a common event found in token contracts, especially those following standards like ERC-20 or ERC-721. It signifies the transfer of tokens from one address to another and typically includes information such as the sender's address, the recipient's address, and the amount transferred.
+
+Filtering events allows applications to listen for specific occurrences within a contract rather than polling the contract's state continually. This is both efficient and effective for staying updated with relevant contract interactions.
+
+
+
+For instance, once an ERC20 token contract is deployed, we can filter the Transfer events using the vechain SDK. The following code shows the filtering of a transfer event for a specific receiver address
+
+```typescript { name=contract-event-filter, category=example }
+// Starting from a deployed contract instance, transfer some tokens to a specific address
+const transferResult = await contract.transact.transfer(
+    '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+    10000
+);
+
+// Wait for the transfer transaction to complete and obtain its receipt
+const transactionReceiptTransfer =
+    (await transferResult.wait()) as TransactionReceipt;
+
+// Asserting that the transaction has not been reverted
+expect(transactionReceiptTransfer.reverted).toEqual(false);
+
+// Check transfer event logs by also passing the destination address
+const transferEvents = await contract.filters
+    .Transfer(undefined, '0x9e7911de289c3c856ce7f421034f66b6cde49c39')
+    .get();
+
+// Asserting that the transfer event has been emitted
+expect(transferEvents.length).toEqual(1);
+
+// log the transfer events
+console.log(transferEvents);
+```
+
+We are transferring tokens from the deployer address to another address. We can filter the Transfer event to get the transfer details by passing the receiver address (to restrict the event logs to a specific receiver). The filter parameters depend on the event signature and the indexed parameters of the event. In this example, the Transfer event has two indexed parameters, `from` and `to`. We are filtering the event logs by passing the `to` address.

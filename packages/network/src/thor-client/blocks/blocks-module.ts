@@ -171,6 +171,7 @@ class BlocksModule {
      * Synchronously waits for a specific block revision using polling.
      *
      * @param blockNumber - The block number to wait for.
+     * @param expanded - A boolean indicating whether to wait for an expanded block.
      * @param options - (Optional) Allows to specify timeout and interval in milliseconds
      * @returns A promise that resolves to an object containing the compressed block.
      */
@@ -236,7 +237,7 @@ class BlocksModule {
     ): Promise<ExpandedBlockDetail | null> {
         return (await this._waitForBlock(
             blockNumber,
-            false,
+            true,
             options
         )) as ExpandedBlockDetail | null;
     }
