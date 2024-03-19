@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { DECIMAL_INTEGER_REGEX, NUMERIC_REGEX, THOR_ID_LENGTH } from '../const';
+import { DECIMAL_INTEGER_REGEX, NUMERIC_REGEX } from '../const';
 import { assert, buildError, DATA } from '@vechain/sdk-errors';
 import * as crypto from 'crypto';
 import { Hex0x, Hex } from '../hex';
@@ -64,27 +64,6 @@ const isDecimalString = (data: string): boolean => {
  */
 const isNumeric = (value: string): boolean => {
     return NUMERIC_REGEX.test(value);
-};
-
-/**
- * Checks whether the provided data is a valid transaction thor id.
- * Thor id is a 64 characters long hexadecimal string.
- * It is used to identify a transaction id, a block id, ....
- *
- * @remarks
- * The check can optionally validate the presence of a '0x' prefix.
- *
- * @param data - The string data to check.
- * @param checkPrefix - A boolean determining whether to validate the '0x' prefix (default: false).
- * @returns A boolean indicating whether the input is a valid hexadecimal string.
- */
-const isThorId = (data: string, checkPrefix: boolean = false): boolean => {
-    return (
-        Hex0x.isValid(data, !checkPrefix) &&
-        (checkPrefix
-            ? data.length === THOR_ID_LENGTH + 2 // +2 for '0x'
-            : data.length === THOR_ID_LENGTH)
-    );
 };
 
 /**
@@ -175,7 +154,6 @@ export const dataUtils = {
     padHexString,
     isDecimalString,
     isNumeric,
-    isThorId,
     encodeBytes32String,
     decodeBytes32String,
     generateRandomHexOfLength

@@ -11,7 +11,7 @@ import {
 } from './types';
 import { thorest } from '../../utils';
 import { assert, DATA } from '@vechain/sdk-errors';
-import { addressUtils, dataUtils, Hex0x } from '@vechain/sdk-core';
+import { addressUtils, Hex0x } from '@vechain/sdk-core';
 
 /** The `DebugModule` class encapsulates functionality to handle Debug
  * on the VechainThor blockchain.
@@ -202,7 +202,7 @@ class DebugModule {
         // Validate target - blockID
         assert(
             'validateTarget',
-            dataUtils.isThorId(target.blockID, true),
+            Hex0x.isThorId(target.blockID),
             DATA.INVALID_DATA_TYPE,
             `Invalid block ID '${target.blockID}' given as input for ${functionName}.`,
             { blockId: target.blockID }
@@ -212,7 +212,7 @@ class DebugModule {
         if (typeof target.transaction === 'string')
             assert(
                 'validateTarget',
-                dataUtils.isThorId(target.transaction, true),
+                Hex0x.isThorId(target.transaction),
                 DATA.INVALID_DATA_TYPE,
                 `Invalid transaction id '${target.transaction}' given as input for ${functionName}.`,
                 { transaction: target.transaction }

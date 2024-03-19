@@ -46,6 +46,13 @@ const REGEX_FOR_0X_PREFIX_HEX = /^0x[0-9a-f]*$/i;
 const REGEX_FOR_OPTIONAL_0X_PREFIX_HEX = /^(0x)?[0-9a-f]*$/i;
 
 /**
+ * Default length of thor id hex string.
+ * Thor id is a 64 characters long hexadecimal string.
+ * This is used to validate thor id strings (block ids, transaction ids, ...).
+ */
+const THOR_ID_LENGTH = 64;
+
+/**
  * Represents the error messages used in the {@link Hex} object.
  * @enum {string}
  */
@@ -229,6 +236,23 @@ function trim(exp: string): string {
  */
 const Hex0x = {
     /**
+     * Checks if the given expression is a valid Thor-based ID.
+     * Thor id is a 64 characters long hexadecimal string.
+     * It is used to identify a transaction id, a block id, etc.
+     *
+     * @param {string} exp - The expression to check.
+     * @param {boolean} is0xOptional - Do not check if `exp` is `0x` prefixed, `false` by default.
+     * @returns {boolean} - Returns true if the expression is a valid Thor ID, otherwise false.
+     */
+    isThorId: function (exp: string, is0xOptional: boolean = false): boolean {
+        return (
+            this.isValid(exp, is0xOptional) &&
+            (is0xOptional
+                ? exp.length === THOR_ID_LENGTH
+                : exp.length === THOR_ID_LENGTH + 2) // +2 for '0x'
+        );
+    },
+    /**
      * Checks if the given expression is a valid hexadecimal expression
      * - prefixed with `0x` (or optionally if `is0xOptional is `true`),
      * - byte aligned if  `isByteAligned` is `true`.
@@ -238,7 +262,7 @@ const Hex0x = {
      * @param {boolean} isByteAliged - Check `exp` represents a full byte or an array of bytes, `false`, by default.
      * @returns {boolean} - Whether the expression is valid or not.
      */
-    isValid(
+    isValid: function (
         exp: string,
         is0xOptional: boolean = false,
         isByteAliged: boolean = false

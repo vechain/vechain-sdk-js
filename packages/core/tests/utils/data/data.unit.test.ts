@@ -67,15 +67,13 @@ describe('utils/hex', () => {
     describe('Thor id verification', () => {
         validThorIDs.forEach((id) => {
             test(`Should return true for valid thor id string: ${id.value}`, () => {
-                expect(dataUtils.isThorId(id.value, id.checkPrefix)).toBe(true);
+                expect(Hex0x.isThorId(id.value, !id.checkPrefix)).toBe(true);
             });
         });
 
         invalidThorIDs.forEach((id) => {
             test(`Should return false for valid thor id string: ${id.value}`, () => {
-                expect(dataUtils.isThorId(id.value, id.checkPrefix)).toBe(
-                    false
-                );
+                expect(Hex0x.isThorId(id.value, !id.checkPrefix)).toBe(false);
             });
         });
     });
