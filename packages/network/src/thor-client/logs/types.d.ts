@@ -226,5 +226,7 @@ export type {
     Transfer,
     TransferLogs,
     EventCriteria,
-    Range
+    Range,
+    PaginationOptions,
+    EventDisplayOrder
 };
