@@ -1,5 +1,5 @@
 import { dataUtils } from '../data';
-import { H0x } from '../hex';
+import { Hex0x } from '../hex';
 
 /**
  * Determines whether the provided revision is a valid for blocks functions.
@@ -29,7 +29,7 @@ const isRevisionBlock = (revision: string | number): boolean => {
 const isRevisionAccount = (revision: string | number): boolean => {
     return (
         revision === 'best' ||
-        (typeof revision === 'string' && H0x.isValid(revision)) ||
+        (typeof revision === 'string' && Hex0x.isValid(revision)) ||
         (typeof revision === 'string' && dataUtils.isDecimalString(revision)) ||
         (typeof revision === 'number' && revision >= 0)
     );

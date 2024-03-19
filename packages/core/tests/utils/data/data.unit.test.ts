@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { dataUtils, H0x, Hex } from '../../../src';
+import { dataUtils, Hex0x, Hex } from '../../../src';
 import {
     decodeBytes32StringTestCases,
     encodeBytes32StringTestCases,
@@ -34,11 +34,11 @@ describe('utils/hex', () => {
         });
 
         test('Should convert string to hex string with prefix when specified', () => {
-            expect(H0x.of('Hello')).toBe('0x48656c6c6f');
+            expect(Hex0x.of('Hello')).toBe('0x48656c6c6f');
         });
 
         test('Should convert Uint8Array to hex string with prefix when specified', () => {
-            expect(H0x.of(new Uint8Array([72, 101, 108, 108, 111]))).toBe(
+            expect(Hex0x.of(new Uint8Array([72, 101, 108, 108, 111]))).toBe(
                 '0x48656c6c6f'
             );
         });
@@ -50,13 +50,13 @@ describe('utils/hex', () => {
     describe('Hex string verification', () => {
         validHexStrings.forEach((hex) => {
             test(`should return true for valid hex string: ${hex}`, () => {
-                expect(H0x.isValid(hex, true)).toBe(true);
+                expect(Hex0x.isValid(hex, true)).toBe(true);
             });
         });
 
         invalidHexStrings.forEach((hex) => {
             test(`should return false for invalid hex string: ${hex}`, () => {
-                expect(H0x.isValid(hex, true)).toBe(false);
+                expect(Hex0x.isValid(hex, true)).toBe(false);
             });
         });
     });

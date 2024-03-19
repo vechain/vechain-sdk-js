@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 import { DECIMAL_INTEGER_REGEX, NUMERIC_REGEX, THOR_ID_LENGTH } from '../const';
 import { assert, buildError, DATA } from '@vechain/sdk-errors';
 import * as crypto from 'crypto';
-import { H0x, Hex } from '../hex';
+import { Hex0x, Hex } from '../hex';
 
 /**
  * Pads a hexadecimal string to a fixed length by adding zeros to the left.
@@ -80,7 +80,7 @@ const isNumeric = (value: string): boolean => {
  */
 const isThorId = (data: string, checkPrefix: boolean = false): boolean => {
     return (
-        H0x.isValid(data, !checkPrefix) &&
+        Hex0x.isValid(data, !checkPrefix) &&
         (checkPrefix
             ? data.length === THOR_ID_LENGTH + 2 // +2 for '0x'
             : data.length === THOR_ID_LENGTH)
@@ -130,7 +130,7 @@ const encodeBytes32String = (
 const decodeBytes32String = (value: string): string => {
     assert(
         'decodeBytes32String',
-        H0x.isValid(value) && Hex.canon(value).length === 64,
+        Hex0x.isValid(value) && Hex.canon(value).length === 64,
         DATA.INVALID_DATA_TYPE,
         `Failed to decode value ${value} to string. Value is not a valid hex string or it is not 64 characters long`,
         { value }

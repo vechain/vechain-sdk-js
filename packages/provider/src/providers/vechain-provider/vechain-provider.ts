@@ -26,7 +26,7 @@ import {
 } from './types';
 import {
     clauseBuilder,
-    H0x,
+    Hex0x,
     Hex,
     Quantity,
     type TransactionClause
@@ -314,7 +314,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { nonce, ...transactionBodyWithoutNonce } = transactionBody;
-        const newNonce = H0x.of(randomBytes(6));
+        const newNonce = Hex0x.of(randomBytes(6));
 
         // At least, a signer private key is required
         if (
@@ -337,7 +337,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
                 DelegationHandler(delegatorIntoWallet).delegatorOrUndefined()
             );
 
-        return H0x.of(signedTransaction.encoded);
+        return Hex0x.of(signedTransaction.encoded);
     }
 }
 

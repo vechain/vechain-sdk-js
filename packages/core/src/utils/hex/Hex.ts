@@ -17,7 +17,7 @@ const ENCODING: BufferEncoding = 'hex' as BufferEncoding;
  *
  * @constant {string}
  * @default '0x'
- * @see {H0x.of}
+ * @see {Hex0x.of}
  */
 const PREFIX: string = '0x';
 
@@ -32,7 +32,7 @@ const RADIX: number = 16;
  * Regular expression for matching a string in the format `/^0x[0-9a-f]*$/i;`
  *
  * @type {RegExp}
- * @see H0x.of
+ * @see Hex0x.of
  * @see HexString
  */
 const REGEX_FOR_0X_PREFIX_HEX = /^0x[0-9a-f]*$/i;
@@ -76,10 +76,9 @@ enum ErrorMessage {
 }
 
 /**
- * Combines the types can be represented as hexadecimal expression.
- * @see H0x
- * @see Hex
- * @see Quantity
+ * Represents a value that can be represented in hexadecimal format.
+ *
+ * @typedef {bigint | Buffer | Uint8Array | number | string} HexRepresentable
  */
 type HexRepresentable = bigint | Buffer | Uint8Array | number | string;
 
@@ -111,7 +110,7 @@ function ofBigInt(bi: bigint, bytes: number): string {
  * @param {number} [bytes=0] - The number of bytes the resulting hexadecimal representation should be padded to.
  * @return {string} - The padded hexadecimal representation of the buffer.
  */
-function ofBuffer(buffer: Buffer, bytes: number = 0): string {
+function ofBuffer(buffer: Buffer, bytes: number): string {
     return pad(buffer.toString(ENCODING), bytes);
 }
 
@@ -122,10 +121,10 @@ function ofBuffer(buffer: Buffer, bytes: number = 0): string {
  * @param {number} [bytes=0] - The number of bytes the resulting hexadecimal string should be padded to. Defaults to 0.
  * @returns {string} - The padded lowercase hexadecimal string.
  */
-function ofHexString(n: HexString, bytes: number = 0): string {
+function ofHexString(n: HexString, bytes: number): string {
     assert(
         'ofHexString',
-        H0x.isValid(n),
+        Hex0x.isValid(n),
         DATA.INVALID_DATA_TYPE,
         ErrorMessage.NOT_HEX,
         { n }
@@ -185,7 +184,7 @@ function ofString(txt: string, bytes: number): string {
  * @return {string} - The padded hexadecimal representation of the buffer.
  * @see {ofBuffer}
  */
-function ofUint8Array(uint8Array: Uint8Array, bytes: number = 0): string {
+function ofUint8Array(uint8Array: Uint8Array, bytes: number): string {
     return ofBuffer(Buffer.from(uint8Array), bytes);
 }
 
@@ -226,9 +225,9 @@ function trim(exp: string): string {
 }
 
 /**
- * Helper for encoding hexadecimal values prefixed with `0x`.
+ * Helper for encoding hexadecimal values prefixed with '0x'.
  */
-const H0x = {
+const Hex0x = {
     /**
      * Checks if the given expression is a valid hexadecimal expression
      * - prefixed with `0x` (or optionally if `is0xOptional is `true`),
@@ -307,12 +306,12 @@ const Hex = {
      * * {@link ofUint8Array} if `n` is an instance of {@link Uint8Array}.
      *
      * **Note:** the returned string is not prefixed with `0x`,
-     * see {@link H0x.of} to make a hexadecimal representation prefixed with `0x`.
+     * see {@link Hex0x.of} to make a hexadecimal representation prefixed with `0x`.
      *
      * **Note:** [HexString](https://docs.ethers.org/v6/api/utils/#HexString)
      * definition overlaps `string` TS completely as an alias.
      * This function tests if the given input starts with `0x`
-     * and is positive to {@link H0x.isValid}
+     * and is positive to {@link Hex0x.isValid}
      * processing it as {@link HexString} type,
      * else it considers the string as an array of bytes and
      * returns its hexadecimal representation.
@@ -333,7 +332,7 @@ const Hex = {
         if (n instanceof Uint8Array) return ofUint8Array(n, bytes);
         if (typeof n === 'bigint') return ofBigInt(n, bytes);
         if (typeof n === 'number') return ofNumber(n, bytes);
-        if (H0x.isValid(n)) return ofHexString(n, bytes);
+        if (Hex0x.isValid(n)) return ofHexString(n, bytes);
         return ofString(n, bytes);
     }
 };
@@ -361,4 +360,4 @@ const Quantity = {
     }
 };
 
-export { Hex, H0x, Quantity };
+export { Hex, Hex0x, Quantity };
