@@ -23,7 +23,7 @@ const testNetwork = new HttpClient(testnetUrl);
  */
 const thorClient = new ThorClient(testNetwork);
 
-export default function Home() {
+export default function Home(): JSX.Element {
     // Random wallet
     const [mnemonicWallet, setMnemonicWallet] = useState<string[]>([]);
     const generateWallet = (): void => {
@@ -86,6 +86,7 @@ export default function Home() {
                 <div>
                     <button
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-4"
+                        // eslint-disable-next-line @typescript-eslint/no-misused-promises
                         onClick={async (): Promise<void> => {
                             await getLatestBlock();
                         }}

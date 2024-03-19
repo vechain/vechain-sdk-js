@@ -1,5 +1,6 @@
 import { addressUtils, type InterfaceAbi } from '@vechain/sdk-core';
 import { TEST_ACCOUNTS } from '../../fixture';
+import type { EventDisplayOrder, PaginationOptions, Range } from '../../../src';
 
 const contractBytecode: string =
     '0x608060405234801561001057600080fd5b506040516102063803806102068339818101604052810190610032919061007a565b80600081905550506100a7565b600080fd5b6000819050919050565b61005781610044565b811461006257600080fd5b50565b6000815190506100748161004e565b92915050565b6000602082840312156100905761008f61003f565b5b600061009e84828501610065565b91505092915050565b610150806100b66000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c806360fe47b11461003b5780636d4ce63c14610057575b600080fd5b610055600480360381019061005091906100c3565b610075565b005b61005f61007f565b60405161006c91906100ff565b60405180910390f35b8060008190555050565b60008054905090565b600080fd5b6000819050919050565b6100a08161008d565b81146100ab57600080fd5b50565b6000813590506100bd81610097565b92915050565b6000602082840312156100d9576100d8610088565b5b60006100e7848285016100ae565b91505092915050565b6100f98161008d565b82525050565b600060208201905061011460008301846100f0565b9291505056fea2646970667358221220785262acbf50fa50a7b4dc8d8087ca8904c7e6b847a13674503fdcbac903b67e64736f6c63430008170033';
@@ -198,6 +199,87 @@ const deployedERC20Abi: InterfaceAbi = [
         outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
         stateMutability: 'nonpayable',
         type: 'function'
+    }
+];
+
+const eventExampleAbi = [
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: 'address',
+                name: '_setter',
+                type: 'address'
+            },
+            {
+                indexed: false,
+                internalType: 'uint256',
+                name: '_value',
+                type: 'uint256'
+            }
+        ],
+        name: 'ValueSet',
+        type: 'event'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: '_newValue',
+                type: 'uint256'
+            }
+        ],
+        name: 'setValue',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'value',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    }
+];
+
+const eventExampleBytecode =
+    '0x608060405234801561001057600080fd5b5061019b806100206000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c80633fa4f2451461003b5780635524107714610059575b600080fd5b610043610075565b60405161005091906100ec565b60405180910390f35b610073600480360381019061006e9190610138565b61007b565b005b60005481565b806000819055503373ffffffffffffffffffffffffffffffffffffffff167ff3f57717dff9f5f10af315efdbfadc60c42152c11fc0c3c413bbfbdc661f143c826040516100c891906100ec565b60405180910390a250565b6000819050919050565b6100e6816100d3565b82525050565b600060208201905061010160008301846100dd565b92915050565b600080fd5b610115816100d3565b811461012057600080fd5b50565b6000813590506101328161010c565b92915050565b60006020828403121561014e5761014d610107565b5b600061015c84828501610123565b9150509291505056fea2646970667358221220d6092bd20e3b6594cb285317ce56a11fd752ee174eaac9ee555f0db6f4f3d4f764736f6c63430008180033';
+
+const fourArgsEventAbi = [
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                name: 'sender',
+                type: 'address'
+            },
+            {
+                indexed: true,
+                name: 'key',
+                type: 'uint256'
+            },
+            {
+                indexed: true,
+                name: 'oldValue',
+                type: 'uint256'
+            },
+            {
+                indexed: true,
+                name: 'newValue',
+                type: 'uint256'
+            }
+        ],
+        name: 'DataUpdated',
+        type: 'event'
     }
 ];
 
@@ -513,13 +595,247 @@ const testingContractTestCases: TestCase[] = [
     }
 ];
 
+interface FunctionCallTestCase {
+    functionName: string;
+    params: unknown[];
+    type: 'read' | 'transact';
+}
+
+interface FilterEventTestCase {
+    description: string;
+    contractBytecode: string;
+    contractAbi: InterfaceAbi;
+    contractCaller: string;
+    functionCalls: FunctionCallTestCase[];
+    eventName: string;
+    getParams?: {
+        range?: Range;
+        options?: PaginationOptions;
+        order?: EventDisplayOrder;
+    };
+    args: unknown[];
+    expectedTopics: string[][];
+    expectedData: string[];
+}
+
+const filterContractEventsTestCases: FilterEventTestCase[] = [
+    {
+        description: 'should filter the ValueSet event',
+        contractBytecode: eventExampleBytecode,
+        contractAbi: eventExampleAbi,
+        contractCaller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+        functionCalls: [
+            {
+                functionName: 'setValue',
+                params: [1000],
+                type: 'transact'
+            }
+        ],
+        eventName: 'ValueSet',
+        args: [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
+        expectedTopics: [
+            [
+                '0xf3f57717dff9f5f10af315efdbfadc60c42152c11fc0c3c413bbfbdc661f143c',
+                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54'
+            ]
+        ],
+        expectedData: [
+            '0x00000000000000000000000000000000000000000000000000000000000003e8'
+        ]
+    },
+    {
+        description:
+            'should filter the first Transfer event of the initial supply',
+        contractBytecode: erc20ContractBytecode,
+        contractAbi: deployedERC20Abi,
+        contractCaller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+        functionCalls: [],
+        eventName: 'Transfer',
+        args: [undefined, TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
+        expectedTopics: [
+            [
+                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+                '0x0000000000000000000000000000000000000000000000000000000000000000',
+                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54'
+            ]
+        ],
+        expectedData: [
+            '0x00000000000000000000000000000000000000000000d3c21bcecceda1000000'
+        ]
+    },
+    {
+        description:
+            'should not be able to filter the event, since I am checking just the block 0',
+        contractBytecode: erc20ContractBytecode,
+        contractAbi: deployedERC20Abi,
+        contractCaller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+        functionCalls: [],
+        eventName: 'Transfer',
+        getParams: {
+            range: {
+                unit: 'block',
+                from: 0,
+                to: 0
+            }
+        },
+        args: [undefined, TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
+        expectedTopics: [],
+        expectedData: []
+    },
+    {
+        description: 'should filter the two transfer events',
+        contractBytecode: erc20ContractBytecode,
+        contractAbi: deployedERC20Abi,
+        contractCaller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+        functionCalls: [
+            {
+                functionName: 'transfer',
+                params: [
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                    1000
+                ],
+                type: 'transact'
+            },
+            {
+                functionName: 'transfer',
+                params: [
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                    5000
+                ],
+                type: 'transact'
+            }
+        ],
+        eventName: 'Transfer',
+        args: [
+            undefined,
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+        ],
+        expectedTopics: [
+            [
+                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
+                '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
+            ],
+            [
+                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
+                '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
+            ]
+        ],
+        expectedData: [
+            '0x00000000000000000000000000000000000000000000000000000000000003e8',
+            '0x0000000000000000000000000000000000000000000000000000000000001388'
+        ]
+    },
+    {
+        description:
+            'should filter the two transfer events with descending order',
+        contractBytecode: erc20ContractBytecode,
+        contractAbi: deployedERC20Abi,
+        contractCaller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+        functionCalls: [
+            {
+                functionName: 'transfer',
+                params: [
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                    1000
+                ],
+                type: 'transact'
+            },
+            {
+                functionName: 'transfer',
+                params: [
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                    5000
+                ],
+                type: 'transact'
+            }
+        ],
+        eventName: 'Transfer',
+        getParams: {
+            order: 'desc'
+        },
+        args: [
+            undefined,
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+        ],
+        expectedTopics: [
+            [
+                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
+                '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
+            ],
+            [
+                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
+                '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
+            ]
+        ],
+        expectedData: [
+            '0x0000000000000000000000000000000000000000000000000000000000001388',
+            '0x00000000000000000000000000000000000000000000000000000000000003e8'
+        ]
+    },
+    {
+        description:
+            'should try to filter the second Transfer event for a specific value but since value is not indexed, all movements are returned',
+        contractBytecode: erc20ContractBytecode,
+        contractAbi: deployedERC20Abi,
+        contractCaller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+        functionCalls: [
+            {
+                functionName: 'transfer',
+                params: [
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                    1000
+                ],
+                type: 'transact'
+            },
+            {
+                functionName: 'transfer',
+                params: [
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                    5000
+                ],
+                type: 'transact'
+            }
+        ],
+        eventName: 'Transfer',
+        args: [undefined, undefined, 5000],
+        expectedTopics: [
+            [
+                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+                '0x0000000000000000000000000000000000000000000000000000000000000000',
+                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54'
+            ],
+            [
+                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
+                '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
+            ],
+            [
+                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
+                '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
+            ]
+        ],
+        expectedData: [
+            '0x00000000000000000000000000000000000000000000d3c21bcecceda1000000',
+            '0x00000000000000000000000000000000000000000000000000000000000003e8',
+            '0x0000000000000000000000000000000000000000000000000000000000001388'
+        ]
+    }
+];
+
 export {
     contractBytecode,
     erc20ContractBytecode,
     erc721ContractBytecode,
     erc721ContractTestCases,
+    fourArgsEventAbi,
     deployedContractBytecode,
     deployedContractAbi,
     deployedERC20Abi,
-    testingContractTestCases
+    testingContractTestCases,
+    filterContractEventsTestCases
 };

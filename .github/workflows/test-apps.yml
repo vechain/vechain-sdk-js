@@ -1,0 +1,33 @@
+name: Test apps examples
+
+on:
+    workflow_call:
+
+jobs:
+    build:
+        name: Install and test example apps
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Install dependencies and run tests
+              run: |
+                  # Save the current working directory
+                  original_dir=$(pwd)
+
+                  # Absolute path to the 'apps' directory
+                  apps_dir="$original_dir/apps"
+
+                  # Iterate over each folder in /apps
+                  for dir in "$apps_dir"/*; do
+                    if [ -d "$dir" ]; then
+                      echo "Running yarn in $dir"
+                      # Navigate to the directory using absolute path
+                      cd "$dir" || exit 1  # Exit if cd fails
+                      yarn  # Run yarn to install dependencies
+                      yarn test  # Run yarn test to execute tests
+                      # Return to the original directory using absolute path
+                      cd "$original_dir" || exit 1  # Exit if cd fails
+                    fi
+                  done
