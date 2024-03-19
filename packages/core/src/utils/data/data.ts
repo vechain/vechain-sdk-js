@@ -58,22 +58,6 @@ const isDecimalString = (data: string): boolean => {
 };
 
 /**
- * Remove the '0x' prefix from a hexadecimal string.
- *
- * @remarks
- * If the input hexadecimal string starts with '0x', it is removed. If the input string does not start with '0x', it is returned unmodified.
- *
- * @param hex - The input hexadecimal string.
- * @returns The hexadecimal string without the '0x' prefix.
- */
-const removePrefix = (hex: string): string => {
-    if (hex.startsWith('0x')) {
-        return hex.slice(2);
-    }
-    return hex;
-};
-
-/**
  * Checks whether the provided string is a valid decimal numeric string.
  * @param value - The string to check.
  * @returns - A boolean indicating whether the input is a valid numeric string.
@@ -146,13 +130,13 @@ const encodeBytes32String = (
 const decodeBytes32String = (value: string): string => {
     assert(
         'decodeBytes32String',
-        H0x.isValid(value) && removePrefix(value).length === 64,
+        H0x.isValid(value) && Hex.canon(value).length === 64,
         DATA.INVALID_DATA_TYPE,
         `Failed to decode value ${value} to string. Value is not a valid hex string or it is not 64 characters long`,
         { value }
     );
 
-    const valueInBytes = Buffer.from(removePrefix(value), 'hex');
+    const valueInBytes = Buffer.from(Hex.canon(value), 'hex');
 
     // find the first zero byte
     const firstZeroIndex = valueInBytes.findIndex((byte) => byte === 0);
@@ -189,7 +173,6 @@ const generateRandomHexOfLength = (stringLength: number): string => {
 
 export const dataUtils = {
     padHexString,
-    removePrefix,
     isDecimalString,
     isNumeric,
     isThorId,

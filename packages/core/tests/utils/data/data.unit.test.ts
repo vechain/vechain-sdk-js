@@ -89,7 +89,7 @@ describe('utils/hex', () => {
          */
         test('Should remove "0x" prefix from hex string', () => {
             prefixedAndUnprefixedStrings.forEach((prefixAndUnprefix) => {
-                expect(dataUtils.removePrefix(prefixAndUnprefix.prefixed)).toBe(
+                expect(Hex.canon(prefixAndUnprefix.prefixed)).toBe(
                     prefixAndUnprefix.unprefixed
                 );
             });

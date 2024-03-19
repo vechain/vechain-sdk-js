@@ -1,4 +1,4 @@
-import { assert, DATA } from '@vechain/sdk-errors';
+import { assert, buildError, DATA } from '@vechain/sdk-errors';
 import { Buffer } from 'buffer';
 import { type HexString } from 'ethers/lib.esm/utils/data';
 
@@ -75,6 +75,12 @@ enum ErrorMessage {
     NOT_POSITIVE = `Arg 'n' not negative.`
 }
 
+/**
+ * Combines the types can be represented as hexadecimal expression.
+ * @see H0x
+ * @see Hex
+ * @see Quantity
+ */
 type HexRepresentable = bigint | Buffer | Uint8Array | number | string;
 
 /**
@@ -87,7 +93,7 @@ type HexRepresentable = bigint | Buffer | Uint8Array | number | string;
  */
 function ofBigInt(bi: bigint, bytes: number): string {
     assert(
-        'Hex.ts.ofBigInt',
+        'ofBigInt',
         bi >= 0,
         DATA.INVALID_DATA_TYPE,
         ErrorMessage.NOT_POSITIVE,
@@ -118,7 +124,7 @@ function ofBuffer(buffer: Buffer, bytes: number = 0): string {
  */
 function ofHexString(n: HexString, bytes: number = 0): string {
     assert(
-        'Hex.ts.ofHexString',
+        'ofHexString',
         H0x.isValid(n),
         DATA.INVALID_DATA_TYPE,
         ErrorMessage.NOT_HEX,
@@ -137,7 +143,7 @@ function ofHexString(n: HexString, bytes: number = 0): string {
  */
 function ofNumber(n: number, bytes: number): string {
     assert(
-        'Hex.ts.ofNumber',
+        'ofNumber',
         Number.isInteger(n),
         DATA.INVALID_DATA_TYPE,
         ErrorMessage.NOT_INTEGER,
@@ -146,7 +152,7 @@ function ofNumber(n: number, bytes: number): string {
         }
     );
     assert(
-        'Hex.ts.ofNumber',
+        'ofNumber',
         n >= 0,
         DATA.INVALID_DATA_TYPE,
         ErrorMessage.NOT_POSITIVE,
@@ -268,6 +274,28 @@ const H0x = {
  * Helper for encoding hexadecimal values.
  */
 const Hex = {
+    /**
+     * Converts a hexadecimal string to canonical form:
+     * - without '0x' prefix,
+     * - lowercase.
+     *
+     * @param {string} exp - The hexadecimal string to be converted.
+     * @throws {Error} If the input string is not a valid hexadecimal format.
+     * @returns {string} The hexadecimal string in canonical form.
+     */
+    canon: function (exp: string): string {
+        if (REGEX_FOR_0X_PREFIX_HEX.test(exp)) {
+            return exp.slice(2).toLowerCase();
+        } else if (REGEX_FOR_OPTIONAL_0X_PREFIX_HEX.test(exp)) {
+            return exp.toLowerCase();
+        }
+        throw buildError(
+            `Hex.canon`,
+            DATA.INVALID_DATA_TYPE,
+            ErrorMessage.NOT_HEX,
+            { exp }
+        );
+    },
     /**
      * Returns a hexadecimal representation from the given input data.
      * This method calls
