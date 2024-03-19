@@ -45,6 +45,11 @@ describe('H0x', () => {
         expect(output).toBe(true);
     });
 
+    test('isValid - true - optional 0x', () => {
+        expect(H0x.isValid('12ef', true)).toBe(true);
+        expect(H0x.isValid('0x12ef', true)).toBe(true);
+    });
+
     test('isValid - false - no 0x', () => {
         const output: boolean = H0x.isValid('12ef');
         expect(output).toBe(false);
@@ -53,6 +58,21 @@ describe('H0x', () => {
     test('isValid - false - no hex', () => {
         const output: boolean = H0x.isValid('12fg');
         expect(output).toBe(false);
+    });
+
+    test('isValid - false - no hex', () => {
+        const output: boolean = H0x.isValid('12fg');
+        expect(output).toBe(false);
+    });
+
+    test('isValid - false - byte aligned', () => {
+        const output: boolean = H0x.isValid('12e', true, true);
+        expect(output).toBe(false);
+    });
+
+    test('isValid - true - byte aligned', () => {
+        const output: boolean = H0x.isValid('12ef', true, true);
+        expect(output).toBe(true);
     });
 });
 
