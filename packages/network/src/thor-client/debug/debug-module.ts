@@ -11,7 +11,7 @@ import {
 } from './types';
 import { thorest } from '../../utils';
 import { assert, DATA } from '@vechain/sdk-errors';
-import { addressUtils, dataUtils } from '@vechain/sdk-core';
+import { addressUtils, dataUtils, H0x } from '@vechain/sdk-core';
 
 /** The `DebugModule` class encapsulates functionality to handle Debug
  * on the VechainThor blockchain.
@@ -105,7 +105,7 @@ class DebugModule {
         if (input.contractInput?.data !== undefined)
             assert(
                 'traceContractCall',
-                dataUtils.isHexString(input.contractInput.data, true),
+                H0x.isValid(input.contractInput.data, true),
                 DATA.INVALID_DATA_TYPE,
                 `Invalid data '${input.contractInput?.data}' given as input for traceContractCall.`,
                 { data: input.contractInput?.data }
@@ -114,7 +114,7 @@ class DebugModule {
         if (input.contractInput?.value !== undefined)
             assert(
                 'traceContractCall',
-                dataUtils.isHexString(input.contractInput.value, true),
+                H0x.isValid(input.contractInput.value),
                 DATA.INVALID_DATA_TYPE,
                 `Invalid value '${input.contractInput?.value}' given as input for traceContractCall.`,
                 { value: input.contractInput?.value }
