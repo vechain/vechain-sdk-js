@@ -4,7 +4,7 @@ import {
     type TransactionsExpandedBlockDetail
 } from '@vechain/sdk-network';
 import { type BlocksRPC } from './types';
-import { H0x, Quantity, ZERO_BUFFER } from '@vechain/sdk-core';
+import { Hex0x, Quantity, ZERO_BUFFER } from '@vechain/sdk-core';
 import { transactionsFormatter } from '../transactions';
 
 /**
@@ -50,12 +50,12 @@ const formatToRPCStandard = (
         difficulty: '0x0',
         totalDifficulty: '0x0',
         uncles: [],
-        sha3Uncles: H0x.of(ZERO_BUFFER(32)),
-        nonce: H0x.of(ZERO_BUFFER(8)),
-        logsBloom: H0x.of(ZERO_BUFFER(256)),
+        sha3Uncles: Hex0x.of(ZERO_BUFFER(32)),
+        nonce: Hex0x.of(ZERO_BUFFER(8)),
+        logsBloom: Hex0x.of(ZERO_BUFFER(256)),
         extraData: '0x0',
         baseFeePerGas: '0x0',
-        mixHash: H0x.of(ZERO_BUFFER(32))
+        mixHash: Hex0x.of(ZERO_BUFFER(32))
     };
 };
 
