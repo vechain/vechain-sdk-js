@@ -1,4 +1,5 @@
 import { type SignTransactionOptions } from '@vechain/sdk-network';
+import { type TransactionClause } from '@vechain/sdk-core';
 
 /**
  * Represent a single account in a wallet.
@@ -21,6 +22,17 @@ interface WalletAccount {
     publicKey: Buffer;
 }
 
+interface WalletInterface {
+    sendTransaction: (
+        clauses: ExtendedClause[],
+        options?: SendTxOptions
+    ) => Promise<SendTxResponse>;
+
+    signCertificate: (
+        request: CertificateRequest,
+        options?: CertificateOptions
+    ) => Promise<CertificateResponse>;
+}
 /**
  * Represent a wallet.
  * Basically a wallet is a list of {@link WalletAccount}.
@@ -63,12 +75,88 @@ interface Wallet {
      * @returns The options for signing a transaction with delegator.
      */
     getDelegator: () => Promise<SignTransactionOptions | null>;
-
-    /**
-     * Here we can add all useful methods wor wallet.
-     * Currently, we have only getAddresses (needed by provider)
-     */
-    // ... e.g. addAccount, removeAccount, ...
 }
 
-export { type Wallet, type WalletAccount };
+/**
+ * Defines the extended clause for sending a transaction.
+ * @property comment - The comment for the transaction clause.
+ * @property abi - The ABI for the transaction clause.
+ */
+type ExtendedClause = TransactionClause & {
+    comment?: string;
+    abi?: object;
+};
+
+/**
+ * Defines the options for sending a transaction.
+ * @property signer - Request an account to send the transaction.
+ * @property gas - The gas limit for the transaction.
+ * @property dependsOn - The transaction hash that this transaction depends on.
+ * @property link - The callback URL for the transaction.
+ * @property comment - The comment for the transaction.
+ * @property delegator - The delegator for the transaction.
+ * @property onAccepted - The callback function that is called when the transaction is sent to the wallet.
+ */
+interface SendTxOptions {
+    signer?: string;
+    gas?: number;
+    dependsOn?: string;
+    link?: string;
+    comment?: string;
+    delegator?: {
+        url: string;
+        signer?: string;
+    };
+    onAccepted?: () => void;
+}
+
+/**
+ * Defines the response for sending a transaction.
+ * @property id - The transaction ID.
+ * @property signer - The signer for the transaction.
+ */
+interface SendTxResponse {
+    readonly id: string;
+    readonly signer: string;
+}
+
+/**
+ *
+ */
+interface CertificateRequest {
+    purpose: 'identification' | 'agreement';
+    payload: {
+        type: 'text';
+        content: string;
+    };
+}
+
+interface CertificateResponse {
+    annex: {
+        domain: string;
+        timestamp: number;
+        signer: string;
+    };
+    signature: string;
+}
+
+interface CertificateOptions {
+    signer?: string;
+    link?: string;
+    onAccepted?: () => void;
+}
+
+type AddWalletFn = (client: ThorClient) => BaseSigner;
+
+export type {
+    Wallet,
+    WalletInterface,
+    WalletAccount,
+    AddWalletFn,
+    ExtendedClause,
+    SendTxOptions,
+    SendTxResponse,
+    CertificateRequest,
+    CertificateOptions,
+    CertificateResponse
+};
