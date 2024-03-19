@@ -1,0 +1,62 @@
+name: Test apps examples
+
+on:
+    workflow_call:
+
+jobs:
+    build:
+        name: Install and test example apps
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: v20.11.0
+
+            - name: Install & Patch packages
+              run: |
+                # Absolute path to the 'apps' directory
+                apps_directory="$(pwd)/apps"
+            
+                # Iterate over each folder in /apps
+                for current_app_directory in "$apps_directory"/*; do
+                  if [ -d "$current_app_directory" ]; then
+                    # LOG
+                    echo "Running yarn in $current_app_directory"
+                  
+                    # Navigate to the directory using absolute path
+                    cd "$current_app_directory"
+                  
+                    # Install dependencies
+                    rm yarn.lock
+                    yarn install
+                  
+                    # Return to the original directory using absolute path
+                    cd "../"
+                  fi
+                done
+
+            - name: Test apps
+              run: |
+                  # Absolute path to the 'apps' directory
+                  apps_directory="$(pwd)/apps"
+                  
+                  # Iterate over each folder in /apps
+                  for current_app_directory in "$apps_directory"/*; do
+                    if [ -d "$current_app_directory" ]; then
+                      # LOG
+                      echo "Running yarn in $current_app_directory"
+                  
+                      # Navigate to the directory using absolute path
+                      cd "$current_app_directory"
+                  
+                      # Test
+                      yarn test
+                  
+                      # Return to the original directory using absolute path
+                      cd "../"
+                    fi
+                  done
