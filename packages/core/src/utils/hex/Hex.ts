@@ -66,6 +66,8 @@ enum ErrorMessage {
     NOT_POSITIVE = `Arg 'n' not negative.`
 }
 
+type HexRepresentable = bigint | Buffer | Uint8Array | number | string;
+
 /**
  * Convert a bigint number to a padded hexadecimal representation long the specified number of bytes.
  *
@@ -238,15 +240,13 @@ const Hex = {
      * Hex.of(buffer.toString('hex'))
      * ```
      *
-     * @param {bigint | Buffer | Uint8Array | number | string} n - The input data to be represented.
+     * @param {HexRepresentable} n - The input data to be represented.
      * @param {number} [bytes=0] - If not `0` by default, the hexadecimal representation encodes at least {number}  bytes.
      * @returns {Uint8Array} - The resulting hexadecimal representation,
      * it is guaranteed to be even characters long.
+     * @see HexRepresentable
      */
-    of: function (
-        n: bigint | number | string | Buffer | Uint8Array,
-        bytes: number = 0
-    ): string {
+    of: function (n: HexRepresentable, bytes: number = 0): string {
         if (n instanceof Buffer) return ofBuffer(n, bytes);
         if (n instanceof Uint8Array) return ofUint8Array(n, bytes);
         if (typeof n === 'bigint') return ofBigInt(n, bytes);
@@ -273,16 +273,14 @@ const H0x = {
      * **Note:** this method calls {@link Hex.of} to generate the hexadecimal representation of n,
      * then it prefixes the result with `0x`.
      *
-     * @param {bigint | Buffer | Uint8Array | number | string} n - The input data to be represented.
+     * @param {HexRepresentable} n - The input data to be represented.
      * @param {number} [bytes=0] - If not `0` by default, the hexadecimal representation encodes at least {number}  bytes.
      * @returns {Uint8Array} - The resulting hexadecimal representation,
      * it is guaranteed to be even characters long.
      * @see Hex
+     * @see HexRepresentable
      */
-    of: function (
-        n: bigint | number | string | Buffer | Uint8Array,
-        bytes: number = 0
-    ): string {
+    of: function (n: HexRepresentable, bytes: number = 0): string {
         return `${PREFIX}${Hex.of(n, bytes)}`;
     }
 };
@@ -297,8 +295,12 @@ const Quantity = {
      * This function is a more efficient drop-in replacement of the function
      * `toQuantity` in [math.ts](https://github.com/ethers-io/ethers.js/blob/main/src.ts/utils/maths.ts)
      * of [The Ethers Project](https://github.com/ethers-io/ethers.js/tree/main) library.
+     *
+     * @param {HexRepresentable} n - The input data to be represented.
+     * @return The resulting hexadecimal representation, nibble aligned.
+     * @see HexRepresentable
      */
-    of(n: bigint | number | string | Buffer | Uint8Array): string {
+    of(n: HexRepresentable): string {
         return `${PREFIX}${trim(Hex.of(n))}`;
     }
 };
