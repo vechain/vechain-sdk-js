@@ -11,23 +11,46 @@ jobs:
             - name: Checkout repository
               uses: actions/checkout@v4
 
-            - name: Install dependencies and run tests
-              run: |
-                  # Save the current working directory
-                  original_dir=$(pwd)
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: v20.11.0
 
-                  # Absolute path to the 'apps' directory
-                  apps_dir="$original_dir/apps"
+            - name: Install & Patch packages
+              run: |
+                  # Path to the 'apps' directory
+                  apps_dir="./apps"
 
                   # Iterate over each folder in /apps
                   for dir in "$apps_dir"/*; do
                     if [ -d "$dir" ]; then
-                      echo "Running yarn in $dir"
-                      # Navigate to the directory using absolute path
-                      cd "$dir" || exit 1  # Exit if cd fails
-                      yarn  # Run yarn to install dependencies
-                      yarn test  # Run yarn test to execute tests
+                      echo "Running Yarn install yarn in $dir"
+                  
+                      # Run yarn to install dependencies
+                      yarn install  
+ 
                       # Return to the original directory using absolute path
-                      cd "$original_dir" || exit 1  # Exit if cd fails
+                      cd ../
                     fi
                   done
+
+#            - name: Install dependencies and run tests
+#              run: |
+#                  # Save the current working directory
+#                  original_dir=$(pwd)
+#
+#                  # Absolute path to the 'apps' directory
+#                  apps_dir="$original_dir/apps"
+#
+#                  # Iterate over each folder in /apps
+#                  for dir in "$apps_dir"/*; do
+#                    if [ -d "$dir" ]; then
+#                      echo "Running yarn in $dir"
+#                      # Navigate to the directory using absolute path
+#                      cd "$dir" || exit 1  # Exit if cd fails
+#                      yarn  # Run yarn to install dependencies
+#                      yarn test  # Run yarn test to execute tests
+#                      # Return to the original directory using absolute path
+#                      cd "$original_dir" || exit 1  # Exit if cd fails
+#                    fi
+#                  done
