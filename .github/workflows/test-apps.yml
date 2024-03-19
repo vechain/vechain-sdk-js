@@ -31,6 +31,7 @@ jobs:
                     cd "$current_app_directory"
                   
                     # Install dependencies
+                    rm yarn.lock
                     yarn install
                   
                     # Return to the original directory using absolute path
