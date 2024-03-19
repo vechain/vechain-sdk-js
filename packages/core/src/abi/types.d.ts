@@ -11,6 +11,11 @@ type ParamType = ethers.ParamType;
 type FunctionFragment = ethers.FunctionFragment;
 
 /**
+ * Represents a wrapped Event Fragment for ethers.js types.
+ */
+type EventFragment = ethers.EventFragment;
+
+/**
  * Represents a wrapped Interface for ethers.js types.
  */
 type Interface = ethers.Interface;
@@ -46,6 +51,7 @@ type FormatType = ethers.FormatType;
 export type {
     ParamType,
     FunctionFragment,
+    EventFragment,
     Interface,
     InterfaceAbi,
     Result,
