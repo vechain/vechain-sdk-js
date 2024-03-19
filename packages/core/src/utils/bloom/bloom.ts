@@ -3,6 +3,7 @@ import { dataUtils } from '../data';
 import { addressUtils } from '../../address';
 import { BLOOM_REGEX_LOWERCASE, BLOOM_REGEX_UPPERCASE } from '../const';
 import { ADDRESS, assert, BLOOM, DATA } from '@vechain/sdk-errors';
+import { H0x } from '../hex';
 
 /**
  * Checks if a given string adheres to the Bloom filter format.
@@ -52,7 +53,7 @@ const isInBloom = (bloom: string, k: number, data: string): boolean => {
 
     assert(
         'isInBloom',
-        dataUtils.isHexString(data, false),
+        H0x.isValid(data, true),
         DATA.INVALID_DATA_TYPE,
         'Invalid data type. Data should be an hexadecimal string',
         { data }

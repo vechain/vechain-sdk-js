@@ -2,27 +2,6 @@ import { describe, expect, test } from '@jest/globals';
 import { H0x, Hex, Quantity } from '../../../src';
 
 /**
- * Text hexadecimal representation of Ethereum quantities.
- * @group unit/utils/hex
- */
-describe('Quantity', () => {
-    test('of zero', () => {
-        const output: string = Quantity.of(0);
-        expect(output).toBe('0x0');
-    });
-
-    test('of odd long hex expression', () => {
-        const output: string = Quantity.of(256);
-        expect(output).toBe('0x100');
-    });
-
-    test('of even long hex expression', () => {
-        const output: string = Quantity.of(255);
-        expect(output).toBe('0xff');
-    });
-});
-
-/**
  * Text Hex representation from TS types prefixed with `0x`.
  * @group unit/utils/hex
  */
@@ -62,12 +41,18 @@ describe('H0x', () => {
     });
 
     test('isValid - true', () => {
-        expect(H0x.isValid('0x00fF')).toBe(true);
+        const output: boolean = H0x.isValid('0x12ef');
+        expect(output).toBe(true);
     });
 
-    test('isValid - false', () => {
-        expect(H0x.isValid('00fF')).toBe(false);
-        expect(H0x.isValid('0x00gG')).toBe(false);
+    test('isValid - false - no 0x', () => {
+        const output: boolean = H0x.isValid('12ef');
+        expect(output).toBe(false);
+    });
+
+    test('isValid - false - no hex', () => {
+        const output: boolean = H0x.isValid('12fg');
+        expect(output).toBe(false);
     });
 });
 
@@ -126,13 +111,25 @@ describe('Hex', () => {
         const output: string = Hex.of('a', 2);
         expect(output).toBe('0061');
     });
+});
 
-    test('isValid - true', () => {
-        expect(Hex.isValid('00fF')).toBe(true);
+/**
+ * Text hexadecimal representation of Ethereum quantities.
+ * @group unit/utils/hex
+ */
+describe('Quantity', () => {
+    test('of zero', () => {
+        const output: string = Quantity.of(0);
+        expect(output).toBe('0x0');
     });
 
-    test('isValid - false', () => {
-        expect(Hex.isValid('0x00fF')).toBe(false);
-        expect(Hex.isValid('00gG')).toBe(false);
+    test('of odd long hex expression', () => {
+        const output: string = Quantity.of(256);
+        expect(output).toBe('0x100');
+    });
+
+    test('of even long hex expression', () => {
+        const output: string = Quantity.of(255);
+        expect(output).toBe('0xff');
     });
 });

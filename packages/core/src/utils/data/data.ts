@@ -15,7 +15,7 @@ import { H0x, Hex } from '../hex';
  * @returns A boolean indicating whether the input is a valid hexadecimal string.
  */
 const isHexString = (data: string, checkPrefix: boolean = true): boolean => {
-    return checkPrefix ? H0x.isValid(data) : H0x.isValidWithOptional0x(data);
+    return checkPrefix ? H0x.isValid(data) : H0x.isValid(data, true);
 };
 
 /**

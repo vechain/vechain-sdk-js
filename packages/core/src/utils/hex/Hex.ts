@@ -35,7 +35,7 @@ const RADIX: number = 16;
  * @see H0x.of
  * @see HexString
  */
-const REGEX_FOR_0X_HEX = /^0x[0-9a-f]*$/i;
+const REGEX_FOR_0X_PREFIX_HEX = /^0x[0-9a-f]*$/i;
 
 /**
  * Regular expression for matching a string in the format /^[0-9A-Fa-f]*$/
@@ -43,7 +43,7 @@ const REGEX_FOR_0X_HEX = /^0x[0-9a-f]*$/i;
  * @type {RegExp}
  * @see Hex.isValid
  */
-const REGEX_FOR_HEX = /^[0-9a-f]*$/i;
+// const REGEX_FOR_NO_PREFIX_HEX = /^[0-9a-f]*$/i;
 
 /**
  * Regular expression for matching a string in the format `/^(0x)?[0-9a-f]*$/i;`
@@ -51,7 +51,7 @@ const REGEX_FOR_HEX = /^[0-9a-f]*$/i;
  * @type {RegExp}
  * @see HexString
  */
-const REGEX_FOR_OPTIONAL_0X_HEX = /^(0x)?[0-9a-f]*$/i;
+const REGEX_FOR_OPTIONAL_0X_PREFIX_HEX = /^(0x)?[0-9a-f]*$/i;
 
 /**
  * Represents the error messages used in the {@link Hex} object.
@@ -60,7 +60,7 @@ const REGEX_FOR_OPTIONAL_0X_HEX = /^(0x)?[0-9a-f]*$/i;
 enum ErrorMessage {
     /**
      * Error message constant for invalid hexadecimal expression
-     * not matching {@link REGEX_FOR_0X_HEX}.
+     * not matching {@link REGEX_FOR_0X_PREFIX_HEX}.
      *
      * @const {string}
      */
@@ -82,6 +82,8 @@ enum ErrorMessage {
      */
     NOT_POSITIVE = `Arg 'n' not negative.`
 }
+
+type HexRepresentable = bigint | Buffer | Uint8Array | number | string;
 
 /**
  * Convert a bigint number to a padded hexadecimal representation long the specified number of bytes.
@@ -226,25 +228,54 @@ function trim(exp: string): string {
 }
 
 /**
- * Helper for encoding hexadecimal values.
+ * Helper for encoding hexadecimal values prefixed with `0x`.
  */
-const Hex = {
+const H0x = {
     /**
-     * Checks if the given expression is a valid hexadecimal expression.
-     *
-     * It doesn't check if the given input is aligned to bytes (even long) or nibbles.
+     * Checks if the given expression is a valid hexadecimal expression
+     * - prefixed with `0x` (or optionally if `is0xOptional is `true`),
+     * - byte aligned if  `isByteAligned` is `true`.
      *
      * @param {string} exp - The expression to be validated.
-     * @param {boolean} checkByteAligment check the expression represents a complete byte array,
+     * @param {boolean} is0xOptional - Do not check if `exp` is `0x` prefixed, `false` by default.
+     * @param {boolean} isByteAliged - Check `exp` represents a full byte or an array of bytes, `false`, by default.
      * @returns {boolean} - Whether the expression is valid or not.
      */
-    isValid(exp: string, checkByteAligment: boolean = false): boolean {
-        let predicate = REGEX_FOR_HEX.test(exp);
-        if (predicate && checkByteAligment) {
+    isValid(
+        exp: string,
+        is0xOptional: boolean = false,
+        isByteAliged: boolean = false
+    ): boolean {
+        let predicate: boolean = is0xOptional
+            ? REGEX_FOR_OPTIONAL_0X_PREFIX_HEX.test(exp)
+            : REGEX_FOR_0X_PREFIX_HEX.test(exp);
+        if (isByteAliged && predicate) {
             predicate = exp.length % 2 === 0;
         }
         return predicate;
     },
+    /**
+     * Returns a hexadecimal representation from the given input data prefixed with `0x`.
+     *
+     * **Note:** this method calls {@link Hex.of} to generate the hexadecimal representation of n,
+     * then it prefixes the result with `0x`.
+     *
+     * @param {HexRepresentable} n - The input data to be represented.
+     * @param {number} [bytes=0] - If not `0` by default, the hexadecimal representation encodes at least {number}  bytes.
+     * @returns {Uint8Array} - The resulting hexadecimal representation,
+     * it is guaranteed to be even characters long.
+     * @see Hex
+     * @see HexRepresentable
+     */
+    of: function (n: HexRepresentable, bytes: number = 0): string {
+        return `${PREFIX}${Hex.of(n, bytes)}`;
+    }
+};
+
+/**
+ * Helper for encoding hexadecimal values.
+ */
+const Hex = {
     /**
      * Returns a hexadecimal representation from the given input data.
      * This method calls
@@ -271,15 +302,13 @@ const Hex = {
      * Hex.of(buffer.toString('hex'))
      * ```
      *
-     * @param {bigint | Buffer | Uint8Array | number | string} n - The input data to be represented.
+     * @param {HexRepresentable} n - The input data to be represented.
      * @param {number} [bytes=0] - If not `0` by default, the hexadecimal representation encodes at least {number}  bytes.
      * @returns {Uint8Array} - The resulting hexadecimal representation,
      * it is guaranteed to be even characters long.
+     * @see HexRepresentable
      */
-    of: function (
-        n: bigint | number | string | Buffer | Uint8Array,
-        bytes: number = 0
-    ): string {
+    of: function (n: HexRepresentable, bytes: number = 0): string {
         if (n instanceof Buffer) return ofBuffer(n, bytes);
         if (n instanceof Uint8Array) return ofUint8Array(n, bytes);
         if (typeof n === 'bigint') return ofBigInt(n, bytes);
@@ -290,64 +319,7 @@ const Hex = {
 };
 
 /**
- * Helper for encoding hexadecimal values prefixed with `0x`.
- */
-const H0x = {
-    /**
-     * Checks if the given expression is a valid hexadecimal expression
-     * prefixed with `0x`,
-     *
-     * It doesn't check if the given input is aligned to bytes (even long) or nibbles.
-     *
-     * @param {string} exp - The expression to be validated.
-     * @returns {boolean} - Whether the expression is valid or not.
-     */
-    isValid(exp: string): boolean {
-        return REGEX_FOR_0X_HEX.test(exp);
-    },
-    /**
-     * Checks if the given expression is a valid hexadecimal expression
-     * optionally prefixed with `0x`.
-     *
-     * It doesn't check if the given input is aligned to bytes (even long) or nibbles.
-     *
-     * @param {string} exp - The expression to be validated.
-     * @param {boolean} checkByteAligment check the expression represents a complete byte array,
-     * @returns {boolean} - Whether the expression is valid or not.
-     */
-    isValidWithOptional0x(
-        exp: string,
-        checkByteAligment: boolean = false
-    ): boolean {
-        let predicate = REGEX_FOR_OPTIONAL_0X_HEX.test(exp);
-        if (predicate && checkByteAligment) {
-            predicate = exp.length % 2 === 0;
-        }
-        return predicate;
-    },
-    /**
-     * Returns a hexadecimal representation from the given input data prefixed with `0x`.
-     *
-     * **Note:** this method calls {@link Hex.of} to generate the hexadecimal representation of n,
-     * then it prefixes the result with `0x`.
-     *
-     * @param {bigint | Buffer | Uint8Array | number | string} n - The input data to be represented.
-     * @param {number} [bytes=0] - If not `0` by default, the hexadecimal representation encodes at least {number}  bytes.
-     * @returns {Uint8Array} - The resulting hexadecimal representation,
-     * it is guaranteed to be even characters long.
-     * @see Hex
-     */
-    of: function (
-        n: bigint | number | string | Buffer | Uint8Array,
-        bytes: number = 0
-    ): string {
-        return `${PREFIX}${Hex.of(n, bytes)}`;
-    }
-};
-
-/**
- * Helper for encoding Ethereum quantities according
- * [HexString](https://docs.ethers.org/v6/api/utils/#HexString) specifications.
+ * Helper for encoding hexadecimal values as used to represent Ethereum quantities.
  */
 const Quantity = {
     /**
@@ -359,8 +331,12 @@ const Quantity = {
      * This function is a more efficient drop-in replacement of the function
      * `toQuantity` in [math.ts](https://github.com/ethers-io/ethers.js/blob/main/src.ts/utils/maths.ts)
      * of [The Ethers Project](https://github.com/ethers-io/ethers.js/tree/main) library.
+     *
+     * @param {HexRepresentable} n - The input data to be represented.
+     * @return The resulting hexadecimal representation, nibble aligned.
+     * @see HexRepresentable
      */
-    of(n: bigint | number | string | Buffer | Uint8Array): string {
+    of(n: HexRepresentable): string {
         return `${PREFIX}${trim(Hex.of(n))}`;
     }
 };

@@ -50,13 +50,13 @@ describe('utils/hex', () => {
     describe('Hex string verification', () => {
         validHexStrings.forEach((hex) => {
             test(`should return true for valid hex string: ${hex}`, () => {
-                expect(dataUtils.isHexString(hex, false)).toBe(true);
+                expect(H0x.isValid(hex, true)).toBe(true);
             });
         });
 
         invalidHexStrings.forEach((hex) => {
             test(`should return false for invalid hex string: ${hex}`, () => {
-                expect(dataUtils.isHexString(hex, false)).toBe(false);
+                expect(H0x.isValid(hex, true)).toBe(false);
             });
         });
     });

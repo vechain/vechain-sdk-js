@@ -39,7 +39,7 @@ function verify(cert: Certificate): void {
     // Invalid signature
     assert(
         'verify',
-        H0x.isValidWithOptional0x(cert.signature as string, true),
+        H0x.isValid(cert.signature as string, false, true),
         CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT,
         'Verification failed: Signature format is invalid.',
         { cert }
