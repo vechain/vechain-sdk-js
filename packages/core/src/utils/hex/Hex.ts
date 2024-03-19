@@ -210,6 +210,35 @@ function trim(exp: string): string {
     return i === exp.length ? '0' : exp.slice(i);
 }
 
+const H0x = {
+    /**
+     * Checks if the given expression is a valid hexadecimal expression
+     * prefixed with `0x`.
+     *
+     * @param {string} exp - The expression to be validated.
+     * @returns {boolean} - Whether the expression is valid or not.
+     */
+    isValid(exp: string): boolean {
+        return REGEX_FOR_0X_EXP.test(exp);
+    },
+    /**
+     * Returns a hexadecimal representation from the given input data prefixed with `0x`.
+     *
+     * **Note:** this method calls {@link Hex.of} to generate the hexadecimal representation of n,
+     * then it prefixes the result with `0x`.
+     *
+     * @param {HexRepresentable} n - The input data to be represented.
+     * @param {number} [bytes=0] - If not `0` by default, the hexadecimal representation encodes at least {number}  bytes.
+     * @returns {Uint8Array} - The resulting hexadecimal representation,
+     * it is guaranteed to be even characters long.
+     * @see Hex
+     * @see HexRepresentable
+     */
+    of: function (n: HexRepresentable, bytes: number = 0): string {
+        return `${PREFIX}${Hex.of(n, bytes)}`;
+    }
+};
+
 /**
  * Helper class for encoding hexadecimal values.
  */
@@ -253,35 +282,6 @@ const Hex = {
         if (typeof n === 'number') return ofNumber(n, bytes);
         if (H0x.isValid(n)) return ofHexString(n, bytes);
         return ofString(n, bytes);
-    }
-};
-
-const H0x = {
-    /**
-     * Checks if the given expression is a valid hexadecimal expression
-     * prefixed with `0x`.
-     *
-     * @param {string} exp - The expression to be validated.
-     * @returns {boolean} - Whether the expression is valid or not.
-     */
-    isValid(exp: string): boolean {
-        return REGEX_FOR_0X_EXP.test(exp);
-    },
-    /**
-     * Returns a hexadecimal representation from the given input data prefixed with `0x`.
-     *
-     * **Note:** this method calls {@link Hex.of} to generate the hexadecimal representation of n,
-     * then it prefixes the result with `0x`.
-     *
-     * @param {HexRepresentable} n - The input data to be represented.
-     * @param {number} [bytes=0] - If not `0` by default, the hexadecimal representation encodes at least {number}  bytes.
-     * @returns {Uint8Array} - The resulting hexadecimal representation,
-     * it is guaranteed to be even characters long.
-     * @see Hex
-     * @see HexRepresentable
-     */
-    of: function (n: HexRepresentable, bytes: number = 0): string {
-        return `${PREFIX}${Hex.of(n, bytes)}`;
     }
 };
 

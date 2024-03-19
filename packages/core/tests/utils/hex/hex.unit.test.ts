@@ -2,27 +2,6 @@ import { describe, expect, test } from '@jest/globals';
 import { H0x, Hex, Quantity } from '../../../src';
 
 /**
- * Text hexadecimal representation of Ethereum quantities.
- * @group unit/utils/hex
- */
-describe('Quantity', () => {
-    test('of zero', () => {
-        const output: string = Quantity.of(0);
-        expect(output).toBe('0x0');
-    });
-
-    test('of odd long hex expression', () => {
-        const output: string = Quantity.of(256);
-        expect(output).toBe('0x100');
-    });
-
-    test('of even long hex expression', () => {
-        const output: string = Quantity.of(255);
-        expect(output).toBe('0xff');
-    });
-});
-
-/**
  * Text Hex representation from TS types prefixed with `0x`.
  * @group unit/utils/hex
  */
@@ -59,6 +38,21 @@ describe('H0x', () => {
     test('padded', () => {
         const output: string = H0x.of('a', 2);
         expect(output).toBe('0x0061');
+    });
+
+    test('isValid - true', () => {
+        const output: boolean = H0x.isValid('0x12ef');
+        expect(output).toBe(true);
+    });
+
+    test('isValid - false - no 0x', () => {
+        const output: boolean = H0x.isValid('12ef');
+        expect(output).toBe(false);
+    });
+
+    test('isValid - false - no hex', () => {
+        const output: boolean = H0x.isValid('12fg');
+        expect(output).toBe(false);
     });
 });
 
@@ -116,5 +110,26 @@ describe('Hex', () => {
     test('padded', () => {
         const output: string = Hex.of('a', 2);
         expect(output).toBe('0061');
+    });
+});
+
+/**
+ * Text hexadecimal representation of Ethereum quantities.
+ * @group unit/utils/hex
+ */
+describe('Quantity', () => {
+    test('of zero', () => {
+        const output: string = Quantity.of(0);
+        expect(output).toBe('0x0');
+    });
+
+    test('of odd long hex expression', () => {
+        const output: string = Quantity.of(256);
+        expect(output).toBe('0x100');
+    });
+
+    test('of even long hex expression', () => {
+        const output: string = Quantity.of(255);
+        expect(output).toBe('0xff');
     });
 });
