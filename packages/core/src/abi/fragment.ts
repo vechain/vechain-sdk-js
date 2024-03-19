@@ -1,6 +1,7 @@
 import { ethers, type Fragment } from 'ethers';
 import {
     type BytesLike,
+    type EventFragment,
     type FormatType,
     type FunctionFragment,
     type Interface,
@@ -178,7 +179,7 @@ class Event<ABIType> {
     /**
      * The main fragment handled by ethers.js.
      */
-    public fragment: ethers.EventFragment;
+    public fragment: EventFragment;
 
     /**
      * The main interface handled by ethers.js.
