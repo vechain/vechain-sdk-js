@@ -4,7 +4,7 @@ import { glob } from 'glob';
 /**
  * Pattern to match all test files starting from the root of the project
  */
-const testPattern = './packages/**/tests/**/*.test.ts';
+const testPattern = './**/tests/**/*.test.ts';
 
 /**
  * Allowed names for test files
