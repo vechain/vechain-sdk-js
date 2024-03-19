@@ -210,7 +210,6 @@ const generateRandomHexOfLength = (stringLength: number): string => {
 };
 
 export const dataUtils = {
-    // toHexString,
     isHexString,
     padHexString,
     removePrefix,

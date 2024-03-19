@@ -66,6 +66,11 @@ enum ErrorMessage {
     NOT_POSITIVE = `Arg 'n' not negative.`
 }
 
+/**
+ * Represents a value that can be represented in hexadecimal format.
+ *
+ * @typedef {bigint | Buffer | Uint8Array | number | string} HexRepresentable
+ */
 type HexRepresentable = bigint | Buffer | Uint8Array | number | string;
 
 /**
@@ -210,6 +215,9 @@ function trim(exp: string): string {
     return i === exp.length ? '0' : exp.slice(i);
 }
 
+/**
+ * Helper class for encoding hexadecimal values prefixed with '0x'.
+ */
 const H0x = {
     /**
      * Checks if the given expression is a valid hexadecimal expression
