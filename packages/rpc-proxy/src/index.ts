@@ -5,6 +5,12 @@ import importConfig from '../config.json';
 import express, { type Express, type Request, type Response } from 'express';
 import cors from 'cors';
 import { type Config, type RequestBody } from './types';
+import { VechainSDKLogger } from '@vechain/sdk-logging';
+import {
+    getJSONRPCErrorCode,
+    JSONRPC,
+    stringifyData
+} from '@vechain/sdk-errors';
 
 /**
  * Start the proxy function.
@@ -33,17 +39,37 @@ function startProxy(): void {
     app.post('*', (req: Request, res: Response) => {
         void (async () => {
             const requestBody = req.body as RequestBody;
+
             try {
+                // Get result
+                const result = await provider.request(requestBody);
                 res.json({
                     jsonrpc: 2.0,
-                    result: await provider.request(requestBody),
+                    result,
                     id: requestBody.id
+                });
+
+                // Log the request and the response
+                VechainSDKLogger('log').log({
+                    title: `Sending request - ${requestBody.method}`,
+                    messages: [`response: ${stringifyData(result)}`]
                 });
             } catch (e) {
                 res.json({
                     jsonrpc: 2.0,
                     error: e,
                     id: requestBody.id
+                });
+
+                // Log the error
+                VechainSDKLogger('error').log({
+                    errorCode: JSONRPC.INTERNAL_ERROR,
+                    errorMessage: `Error sending request - ${requestBody.method}`,
+                    errorData: {
+                        code: getJSONRPCErrorCode(JSONRPC.INVALID_REQUEST),
+                        message: `Error on request - ${requestBody.method}`
+                    },
+                    innerError: e
                 });
             }
         })();
@@ -53,16 +79,36 @@ function startProxy(): void {
         void (async () => {
             const requestBody = req.body as RequestBody;
             try {
+                // Get result
+                const result = await provider.request(requestBody);
+
                 res.json({
                     jsonrpc: 2.0,
-                    result: await provider.request(requestBody),
+                    result,
                     id: requestBody.id
+                });
+
+                // Log the request and the response
+                VechainSDKLogger('log').log({
+                    title: `Sending request - ${requestBody.method}`,
+                    messages: [`response: ${stringifyData(result)}`]
                 });
             } catch (e) {
                 res.json({
                     jsonrpc: 2.0,
                     error: e,
                     id: requestBody.id
+                });
+
+                // Log the error
+                VechainSDKLogger('error').log({
+                    errorCode: JSONRPC.INTERNAL_ERROR,
+                    errorMessage: `Error sending request - ${requestBody.method}`,
+                    errorData: {
+                        code: getJSONRPCErrorCode(JSONRPC.INVALID_REQUEST),
+                        message: `Error on request - ${requestBody.method}`
+                    },
+                    innerError: e
                 });
             }
         })();
