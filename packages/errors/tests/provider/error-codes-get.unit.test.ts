@@ -27,7 +27,6 @@ describe('Assertion test', () => {
      */
     test('JSON-RPC error codes get test', () => {
         expect(getJSONRPCErrorCode(JSONRPC.INVALID_REQUEST)).toBe(-32600);
-        expect(getJSONRPCErrorCode(JSONRPC.METHOD_NOT_FOUND)).toBe(-32601);
         expect(getJSONRPCErrorCode(JSONRPC.INVALID_PARAMS)).toBe(-32602);
         expect(getJSONRPCErrorCode(JSONRPC.INTERNAL_ERROR)).toBe(-32603);
         expect(getJSONRPCErrorCode(JSONRPC.DEFAULT)).toBe(-32000);

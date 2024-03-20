@@ -50,7 +50,6 @@ import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     JSONRPCInvalidRequest,
-    JSONRPCMethodNotFound,
     KEYSTORE,
     NotImplementedError,
     POLL_ERROR,
@@ -129,14 +128,12 @@ type DataType<ErrorCodeT extends ErrorCode> =
                       : // JSONRPC
                         ErrorCodeT extends JSONRPC.INVALID_REQUEST
                         ? JSONRPCErrorData
-                        : ErrorCodeT extends JSONRPC.METHOD_NOT_FOUND
+                        : ErrorCodeT extends JSONRPC.INVALID_PARAMS
                           ? JSONRPCErrorData
-                          : ErrorCodeT extends JSONRPC.INVALID_PARAMS
+                          : ErrorCodeT extends JSONRPC.INTERNAL_ERROR
                             ? JSONRPCErrorData
-                            : ErrorCodeT extends JSONRPC.INTERNAL_ERROR
-                              ? JSONRPCErrorData
-                              : // DEFAULT
-                                DefaultErrorData;
+                            : // DEFAULT
+                              DefaultErrorData;
 
 /**
  * Default error codes.
@@ -264,17 +261,15 @@ type ErrorType<ErrorCodeT> =
                                                                                     : // JSONRPC
                                                                                       ErrorCodeT extends JSONRPC.INVALID_REQUEST
                                                                                       ? JSONRPCInvalidRequest
-                                                                                      : ErrorCodeT extends JSONRPC.METHOD_NOT_FOUND
-                                                                                        ? JSONRPCMethodNotFound
-                                                                                        : ErrorCodeT extends JSONRPC.INVALID_PARAMS
-                                                                                          ? JSONRPCInvalidParams
-                                                                                          : ErrorCodeT extends JSONRPC.INTERNAL_ERROR
-                                                                                            ? JSONRPCInternalError
-                                                                                            : ErrorCodeT extends JSONRPC.DEFAULT
-                                                                                              ? JSONRPCDefaultError
-                                                                                              : ErrorCodeT extends CONTRACT.CONTRACT_DEPLOYMENT_FAILED
-                                                                                                ? ContractDeploymentFailedError
-                                                                                                : never;
+                                                                                      : ErrorCodeT extends JSONRPC.INVALID_PARAMS
+                                                                                        ? JSONRPCInvalidParams
+                                                                                        : ErrorCodeT extends JSONRPC.INTERNAL_ERROR
+                                                                                          ? JSONRPCInternalError
+                                                                                          : ErrorCodeT extends JSONRPC.DEFAULT
+                                                                                            ? JSONRPCDefaultError
+                                                                                            : ErrorCodeT extends CONTRACT.CONTRACT_DEPLOYMENT_FAILED
+                                                                                              ? ContractDeploymentFailedError
+                                                                                              : never;
 
 /**
  * Map to get the error class from the error code.
@@ -362,7 +357,6 @@ const ErrorClassMap = new Map<
 
     // JSONRPC
     [JSONRPC.INVALID_REQUEST, JSONRPCInvalidRequest],
-    [JSONRPC.METHOD_NOT_FOUND, JSONRPCMethodNotFound],
     [JSONRPC.INVALID_PARAMS, JSONRPCInvalidParams],
     [JSONRPC.INTERNAL_ERROR, JSONRPCInternalError],
     [JSONRPC.DEFAULT, JSONRPCDefaultError],

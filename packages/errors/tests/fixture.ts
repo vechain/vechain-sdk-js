@@ -53,7 +53,6 @@ import {
     EIP1193ChainDisconnected,
     JSONRPC,
     JSONRPCInvalidRequest,
-    JSONRPCMethodNotFound,
     JSONRPCInvalidParams,
     JSONRPCInternalError,
     JSONRPCDefaultError,
@@ -302,10 +301,6 @@ const ErrorsCodeAndClassesMapsFixture = [
                 classExpected: JSONRPCInvalidRequest
             },
             {
-                errorCode: JSONRPC.METHOD_NOT_FOUND,
-                classExpected: JSONRPCMethodNotFound
-            },
-            {
                 errorCode: JSONRPC.INVALID_PARAMS,
                 classExpected: JSONRPCInvalidParams
             },
@@ -361,9 +356,6 @@ const JSONrpcErrorsCodeAndClassesMapsFixture = [
         elements: [
             {
                 errorCode: JSONRPC.INVALID_REQUEST
-            },
-            {
-                errorCode: JSONRPC.METHOD_NOT_FOUND
             },
             {
                 errorCode: JSONRPC.INVALID_PARAMS
