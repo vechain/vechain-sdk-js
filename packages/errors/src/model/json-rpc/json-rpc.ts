@@ -19,14 +19,6 @@ interface JSONRPCErrorData {
 }
 
 /**
- * Invalid JSON
- */
-class JSONRPCParseError extends ErrorBase<
-    JSONRPC.PARSE_ERROR,
-    JSONRPCErrorData
-> {}
-
-/**
  * JSON is not a valid request object
  */
 class JSONRPCInvalidRequest extends ErrorBase<
@@ -75,7 +67,6 @@ class JSONRPCDefaultError extends ErrorBase<
  */
 enum JSONRPC {
     // Standard errors
-    PARSE_ERROR = 'PARSE_ERROR',
     INVALID_REQUEST = 'INVALID_REQUEST',
     METHOD_NOT_FOUND = 'METHOD_NOT_FOUND',
     INVALID_PARAMS = 'INVALID_PARAMS',
@@ -90,10 +81,8 @@ enum JSONRPC {
  */
 const getJSONRPCErrorCode = (
     error: JSONRPC
-): -32700 | -32600 | -32601 | -32602 | -32603 | -32000 => {
+): -32600 | -32601 | -32602 | -32603 | -32000 => {
     switch (error) {
-        case JSONRPC.PARSE_ERROR:
-            return -32700;
         case JSONRPC.INVALID_REQUEST:
             return -32600;
         case JSONRPC.METHOD_NOT_FOUND:
@@ -109,7 +98,6 @@ const getJSONRPCErrorCode = (
 
 export {
     type JSONRPCErrorData,
-    JSONRPCParseError,
     JSONRPCInvalidRequest,
     JSONRPCMethodNotFound,
     JSONRPCInvalidParams,

@@ -51,7 +51,6 @@ import {
     JSONRPCInvalidParams,
     JSONRPCInvalidRequest,
     JSONRPCMethodNotFound,
-    JSONRPCParseError,
     KEYSTORE,
     NotImplementedError,
     POLL_ERROR,
@@ -128,18 +127,16 @@ type DataType<ErrorCodeT extends ErrorCode> =
                     : ErrorCodeT extends EIP1193.CHAIN_DISCONNECTED
                       ? EIP1193ProviderRpcErrorData
                       : // JSONRPC
-                        ErrorCodeT extends JSONRPC.PARSE_ERROR
+                        ErrorCodeT extends JSONRPC.INVALID_REQUEST
                         ? JSONRPCErrorData
-                        : ErrorCodeT extends JSONRPC.INVALID_REQUEST
+                        : ErrorCodeT extends JSONRPC.METHOD_NOT_FOUND
                           ? JSONRPCErrorData
-                          : ErrorCodeT extends JSONRPC.METHOD_NOT_FOUND
+                          : ErrorCodeT extends JSONRPC.INVALID_PARAMS
                             ? JSONRPCErrorData
-                            : ErrorCodeT extends JSONRPC.INVALID_PARAMS
+                            : ErrorCodeT extends JSONRPC.INTERNAL_ERROR
                               ? JSONRPCErrorData
-                              : ErrorCodeT extends JSONRPC.INTERNAL_ERROR
-                                ? JSONRPCErrorData
-                                : // DEFAULT
-                                  DefaultErrorData;
+                              : // DEFAULT
+                                DefaultErrorData;
 
 /**
  * Default error codes.
@@ -265,21 +262,19 @@ type ErrorType<ErrorCodeT> =
                                                                                     ErrorCodeT extends FUNCTION.NOT_IMPLEMENTED
                                                                                     ? NotImplementedError
                                                                                     : // JSONRPC
-                                                                                      ErrorCodeT extends JSONRPC.PARSE_ERROR
-                                                                                      ? JSONRPCParseError
-                                                                                      : ErrorCodeT extends JSONRPC.INVALID_REQUEST
-                                                                                        ? JSONRPCInvalidRequest
-                                                                                        : ErrorCodeT extends JSONRPC.METHOD_NOT_FOUND
-                                                                                          ? JSONRPCMethodNotFound
-                                                                                          : ErrorCodeT extends JSONRPC.INVALID_PARAMS
-                                                                                            ? JSONRPCInvalidParams
-                                                                                            : ErrorCodeT extends JSONRPC.INTERNAL_ERROR
-                                                                                              ? JSONRPCInternalError
-                                                                                              : ErrorCodeT extends JSONRPC.DEFAULT
-                                                                                                ? JSONRPCDefaultError
-                                                                                                : ErrorCodeT extends CONTRACT.CONTRACT_DEPLOYMENT_FAILED
-                                                                                                  ? ContractDeploymentFailedError
-                                                                                                  : never;
+                                                                                      ErrorCodeT extends JSONRPC.INVALID_REQUEST
+                                                                                      ? JSONRPCInvalidRequest
+                                                                                      : ErrorCodeT extends JSONRPC.METHOD_NOT_FOUND
+                                                                                        ? JSONRPCMethodNotFound
+                                                                                        : ErrorCodeT extends JSONRPC.INVALID_PARAMS
+                                                                                          ? JSONRPCInvalidParams
+                                                                                          : ErrorCodeT extends JSONRPC.INTERNAL_ERROR
+                                                                                            ? JSONRPCInternalError
+                                                                                            : ErrorCodeT extends JSONRPC.DEFAULT
+                                                                                              ? JSONRPCDefaultError
+                                                                                              : ErrorCodeT extends CONTRACT.CONTRACT_DEPLOYMENT_FAILED
+                                                                                                ? ContractDeploymentFailedError
+                                                                                                : never;
 
 /**
  * Map to get the error class from the error code.
@@ -366,7 +361,6 @@ const ErrorClassMap = new Map<
     [EIP1193.CHAIN_DISCONNECTED, EIP1193ChainDisconnected],
 
     // JSONRPC
-    [JSONRPC.PARSE_ERROR, JSONRPCParseError],
     [JSONRPC.INVALID_REQUEST, JSONRPCInvalidRequest],
     [JSONRPC.METHOD_NOT_FOUND, JSONRPCMethodNotFound],
     [JSONRPC.INVALID_PARAMS, JSONRPCInvalidParams],
