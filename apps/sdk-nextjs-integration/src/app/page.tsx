@@ -79,7 +79,7 @@ export default function Home(): JSX.Element {
                         Generate Wallet
                     </button>
                     <br />
-                    (vechain-sdk-core)
+                    (sdk-core)
                 </div>
 
                 {/* Get latest block */}
@@ -94,7 +94,7 @@ export default function Home(): JSX.Element {
                         Get latest block
                     </button>
                     <br />
-                    (vechain-sdk-network)
+                    (sdk-network)
                 </div>
             </div>
         </main>
