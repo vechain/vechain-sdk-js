@@ -1,6 +1,8 @@
-import { type Signer } from './types.d';
+import { type vechain_sdk_core_ethers } from '../../../core/src';
 
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
-class VechainSigner implements Signer {}
+interface VechainSigner extends vechain_sdk_core_ethers.Signer {
+    // add delegator methods
+}
 
-export { VechainSigner };
+export type { VechainSigner };
