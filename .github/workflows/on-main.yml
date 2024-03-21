@@ -14,5 +14,7 @@ jobs:
         uses: ./.github/workflows/unit-integration-test.yml
         secrets: inherit
     sonar-scan:
+        if: ${{ always()}}
         uses: ./.github/workflows/sonar.yml
         secrets: inherit
+        needs: unit-integration-test
