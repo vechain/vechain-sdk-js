@@ -16,4 +16,3 @@ jobs:
     sonar-scan:
         uses: ./.github/workflows/sonar.yml
         secrets: inherit
-        needs: unit-integration-test
