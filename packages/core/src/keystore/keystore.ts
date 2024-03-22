@@ -4,7 +4,7 @@
 import { addressUtils } from '../address';
 import { secp256k1 } from '../secp256k1';
 import { ethers } from 'ethers';
-import { H0x, SCRYPT_PARAMS } from '../utils';
+import { Hex0x, SCRYPT_PARAMS } from '../utils';
 import { type Keystore, type KeystoreAccount } from './types';
 import { assert, buildError, KEYSTORE } from '@vechain/sdk-errors';
 
@@ -26,7 +26,7 @@ async function encrypt(
     // Create keystore account compatible with ethers
     const keystoreAccount: ethers.KeystoreAccount = {
         address: deriveAddress,
-        privateKey: H0x.of(privateKey)
+        privateKey: Hex0x.of(privateKey)
     };
 
     // Scrypt options

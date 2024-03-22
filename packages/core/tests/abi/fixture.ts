@@ -1,4 +1,4 @@
-import { addressUtils, H0x } from '../../src';
+import { addressUtils, Hex0x } from '../../src';
 import { generateRandomValidAddress } from '../fixture';
 import { InvalidAbiDataToEncodeError } from '@vechain/sdk-errors';
 
@@ -302,7 +302,7 @@ const topicsEventTestCases = [
             '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
             `0x000000000000000000000000${fromRandomAddress.slice(2)}`,
             `0x000000000000000000000000${toRandomAddress.slice(2)}`,
-            H0x.of(randomBigInt, 32)
+            Hex0x.of(randomBigInt, 32)
         ]
     },
     {
@@ -312,7 +312,7 @@ const topicsEventTestCases = [
             '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
             undefined,
             undefined,
-            H0x.of(randomBigInt, 32)
+            Hex0x.of(randomBigInt, 32)
         ]
     },
     {
@@ -322,7 +322,7 @@ const topicsEventTestCases = [
             '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
             undefined,
             undefined,
-            H0x.of(randomBigInt, 32)
+            Hex0x.of(randomBigInt, 32)
         ]
     },
     {
