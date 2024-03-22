@@ -12,7 +12,7 @@ The plugin streamlines the process of creating, testing, deploying and interacti
 
 ## Example
 
-If you want to explore a comprehensive example of the Hardhat plugin, you can navigate to the `apps/vechain-sdk-hardhat-integration`. Inside this directory, you'll find a fully-fledged example with all the necessary commands already configured. This example serves as a practical demonstration of how to use the Hardhat plugin for vechain SDK integration, providing a complete setup that you can easily follow and replicate for your own projects.
+If you want to explore a comprehensive example of the Hardhat plugin, you can navigate to the `apps/sdk-hardhat-integration`. Inside this directory, you'll find a fully-fledged example with all the necessary commands already configured. This example serves as a practical demonstration of how to use the Hardhat plugin for vechain SDK integration, providing a complete setup that you can easily follow and replicate for your own projects.
 
 ## Usage
 
