@@ -5,6 +5,43 @@ import importConfig from '../config.json';
 import express, { type Express, type Request, type Response } from 'express';
 import cors from 'cors';
 import { type Config, type RequestBody } from './types';
+import { VechainSDKLogger } from '@vechain/sdk-logging';
+import {
+    getJSONRPCErrorCode,
+    JSONRPC,
+    stringifyData
+} from '@vechain/sdk-errors';
+
+/**
+ * Simple function to log an error.
+ *
+ * @param requestBody - The request body of error request
+ * @param e - The error object
+ */
+function logError(requestBody: RequestBody, e: unknown): void {
+    VechainSDKLogger('error').log({
+        errorCode: JSONRPC.INTERNAL_ERROR,
+        errorMessage: `Error sending request - ${requestBody.method}`,
+        errorData: {
+            code: getJSONRPCErrorCode(JSONRPC.INVALID_REQUEST),
+            message: `Error on request - ${requestBody.method}`
+        },
+        innerError: e
+    });
+}
+
+/**
+ * Simple function to log a request.
+ *
+ * @param requestBody - The request body of the request
+ * @param result - The result of the request
+ */
+function logRequest(requestBody: RequestBody, result: unknown): void {
+    VechainSDKLogger('log').log({
+        title: `Sending request - ${requestBody.method}`,
+        messages: [`response: ${stringifyData(result)}`]
+    });
+}
 
 /**
  * Start the proxy function.
@@ -33,18 +70,27 @@ function startProxy(): void {
     app.post('*', (req: Request, res: Response) => {
         void (async () => {
             const requestBody = req.body as RequestBody;
+
             try {
+                // Get result
+                const result = await provider.request(requestBody);
                 res.json({
                     jsonrpc: 2.0,
-                    result: await provider.request(requestBody),
+                    result,
                     id: requestBody.id
                 });
+
+                // Log the request and the response
+                logRequest(requestBody, result);
             } catch (e) {
                 res.json({
                     jsonrpc: 2.0,
                     error: e,
                     id: requestBody.id
                 });
+
+                // Log the error
+                logError(requestBody, e);
             }
         })();
     });
@@ -53,17 +99,26 @@ function startProxy(): void {
         void (async () => {
             const requestBody = req.body as RequestBody;
             try {
+                // Get result
+                const result = await provider.request(requestBody);
+
                 res.json({
                     jsonrpc: 2.0,
-                    result: await provider.request(requestBody),
+                    result,
                     id: requestBody.id
                 });
+
+                // Log the request and the response
+                logRequest(requestBody, result);
             } catch (e) {
                 res.json({
                     jsonrpc: 2.0,
                     error: e,
                     id: requestBody.id
                 });
+
+                // Log the error
+                logError(requestBody, e);
             }
         })();
     });
