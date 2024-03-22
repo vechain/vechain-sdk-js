@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { buildErrorMessage } from '../../../src/utils/error-message-builder';
+import { buildErrorMessage } from '../../../src';
 
 /**
  * Error message builder test

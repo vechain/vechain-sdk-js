@@ -10,7 +10,7 @@ import type { DataType, ErrorCode } from '../../types';
  */
 const stringifyData = (data: unknown): string => {
     /**
-     * Function to avoid circular references when stringifying data.
+     * Function to avoid circular references when stringify data.
      */
     const getCircularReplacer = (): ((
         key: string,
