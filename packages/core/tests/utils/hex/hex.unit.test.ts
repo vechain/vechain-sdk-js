@@ -1,11 +1,67 @@
 import { describe, expect, test } from '@jest/globals';
 import { Hex0x, Hex, Quantity } from '../../../src';
+import {
+    invalidThorIDs,
+    prefixedAndUnprefixedStrings,
+    validThorIDs
+} from '../data/fixture';
+import { InvalidDataTypeError } from '@vechain/sdk-errors/dist';
 
 /**
  * Text Hex representation from TS types prefixed with `0x`.
  * @group unit/utils/hex
  */
 describe('Hex0x', () => {
+    test('canon - pad to 64 characters by default', () => {
+        const result = Hex0x.canon('1a', 32);
+        expect(result).toHaveLength(66); // 64 chars + '0x'
+        expect(result).toBe(
+            '0x000000000000000000000000000000000000000000000000000000000000001a'
+        );
+    });
+
+    test('canon - pad to custom length', () => {
+        const result = Hex0x.canon('1a', 64);
+        expect(result).toHaveLength(130); // 128 chars + '0x'
+        expect(result).toBe('0x' + '0'.repeat(126) + '1a');
+    });
+
+    test('canon - with 0x', () => {
+        const result = Hex0x.canon('0x1a', 32);
+        expect(result).toBe(
+            '0x000000000000000000000000000000000000000000000000000000000000001a'
+        );
+    });
+
+    test('canon - return unchanged if it is already the correct length', () => {
+        const hex = '0x' + '1'.repeat(64);
+        const result = Hex0x.canon(hex, 32);
+        expect(result).toBe(hex);
+    });
+
+    test('canon - return a string of just zeros if the input is empty', () => {
+        const result = Hex0x.canon('', 32);
+        expect(result).toBe('0x' + '0'.repeat(64));
+    });
+
+    test('canon - not hex', () => {
+        expect(() => Hex0x.canon('defg', 1)).toThrowError(InvalidDataTypeError);
+    });
+
+    test('canon - not fit', () => {
+        expect(() => Hex0x.canon('001a', 1)).toThrowError(InvalidDataTypeError);
+    });
+
+    test('canon - non-integer length', () => {
+        expect(() => Hex0x.canon('1a', 31.5)).toThrowError(
+            InvalidDataTypeError
+        );
+    });
+
+    test('canon - not positive length', () => {
+        expect(() => Hex0x.canon('1a', -32)).toThrowError(InvalidDataTypeError);
+    });
+
     test('of bigint', () => {
         const output: string = Hex0x.of(BigInt(10));
         expect(output).toBe('0x0a');
@@ -64,6 +120,18 @@ describe('Hex0x', () => {
         expect(output).toBe('0x0061');
     });
 
+    test('isThorId - true', () => {
+        validThorIDs.forEach((id) => {
+            expect(Hex0x.isThorId(id.value, !id.checkPrefix)).toBe(true);
+        });
+    });
+
+    test('isThorId - false', () => {
+        invalidThorIDs.forEach((id) => {
+            expect(Hex0x.isThorId(id.value, !id.checkPrefix)).toBe(false);
+        });
+    });
+
     test('isValid - true', () => {
         const output: boolean = Hex0x.isValid('0x12ef');
         expect(output).toBe(true);
@@ -105,6 +173,14 @@ describe('Hex0x', () => {
  * @group unit/utils/hex
  */
 describe('Hex', () => {
+    test('canon', () => {
+        prefixedAndUnprefixedStrings.forEach((prefixAndUnprefix) => {
+            expect(Hex.canon(prefixAndUnprefix.prefixed)).toBe(
+                prefixAndUnprefix.unprefixed
+            );
+        });
+    });
+
     test('of bigint', () => {
         const output: string = Hex.of(BigInt(10));
         expect(output).toBe('0a');
@@ -183,6 +259,26 @@ describe('Hex', () => {
         uint8Array[0] = 10;
         const output: string = Hex.of(uint8Array);
         expect(output).toBe('0a');
+    });
+
+    test('random - should return a string of the correct length', () => {
+        const size = 8;
+        const hex = Hex.random(size / 2);
+        expect(hex).toHaveLength(size);
+    });
+
+    test('random - should only contain hexadecimal characters', () => {
+        const size = 8;
+        const hex = Hex.random(size / 2);
+        // This regex matches strings that only contain characters 0-9 and a-f
+        expect(hex).toMatch(/^[0-9a-f]+$/);
+    });
+
+    test('random - should return different values on subsequent calls', () => {
+        const size = 8;
+        const hex1 = Hex.random(size / 2);
+        const hex2 = Hex.random(size / 2);
+        expect(hex1).not.toEqual(hex2);
     });
 });
 
