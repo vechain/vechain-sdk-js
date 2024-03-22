@@ -19,7 +19,7 @@ const logsFixture = [
                 '0x0000000000000000000000005034aa590125b64023a0262112b98d72e3c8e40e'
             ]
         },
-        expectedSliced: [
+        expected: [
             {
                 transactionHash:
                     '0x0ee8df3a9de6787ec0848ea8951ed8899bb053b6b4af167228dd7c0c012f5346',
@@ -89,8 +89,13 @@ const logsFixture = [
                 transactionIndex: '0x0'
             }
         ]
-    },
+    }
+];
 
+/**
+ * Fixtures for eth_getLogs mocked positive cases
+ */
+const mockLogsFixture = [
     // To block not defined (latest block as default)
     {
         input: {
@@ -106,7 +111,7 @@ const logsFixture = [
             fromBlock: Hex0x.of(0),
             toBlock: Hex0x.of(1)
         },
-        expectedSliced: []
+        expected: []
     },
 
     // From block and to not defined (latest block as default)
@@ -124,7 +129,7 @@ const logsFixture = [
             fromBlock: Hex0x.of(0),
             toBlock: Hex0x.of(1)
         },
-        expectedSliced: []
+        expected: []
     },
 
     // No topics defined, only addresses
@@ -137,7 +142,7 @@ const logsFixture = [
             fromBlock: Hex0x.of(0),
             toBlock: Hex0x.of(1)
         },
-        expectedSliced: []
+        expected: []
     },
 
     // No addresses defined, only topics
@@ -149,7 +154,7 @@ const logsFixture = [
             fromBlock: Hex0x.of(0),
             toBlock: Hex0x.of(1)
         },
-        expectedSliced: []
+        expected: []
     },
 
     // fromBlock and toBlock not defined (latest block as default)
@@ -157,8 +162,8 @@ const logsFixture = [
         input: {
             address: '0x0000000000000000000000000000456e65726779'
         },
-        expectedSliced: []
+        expected: []
     }
 ];
 
-export { logsFixture };
+export { logsFixture, mockLogsFixture };
