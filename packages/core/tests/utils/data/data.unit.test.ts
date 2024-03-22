@@ -178,7 +178,7 @@ describe('utils/hex', () => {
     describe('padHexString', () => {
         // Test the default padding length
         test('should pad a hex string to 64 characters by default', () => {
-            const result = dataUtils.padHexString('1a');
+            const result = Hex0x.canon('1a', 32);
             expect(result).toHaveLength(66); // 64 chars + '0x'
             expect(result).toBe(
                 '0x000000000000000000000000000000000000000000000000000000000000001a'
@@ -187,14 +187,14 @@ describe('utils/hex', () => {
 
         // Test padding with custom length
         test('should pad a hex string to a custom length when specified', () => {
-            const result = dataUtils.padHexString('1a', 128);
+            const result = Hex0x.canon('1a', 64);
             expect(result).toHaveLength(130); // 128 chars + '0x'
             expect(result).toBe('0x' + '0'.repeat(126) + '1a');
         });
 
         // Test handling of '0x' prefix
         test('should correctly handle strings already starting with 0x', () => {
-            const result = dataUtils.padHexString('0x1a');
+            const result = Hex0x.canon('0x1a', 32);
             expect(result).toBe(
                 '0x000000000000000000000000000000000000000000000000000000000000001a'
             );
@@ -203,33 +203,33 @@ describe('utils/hex', () => {
         // Test padding a string that is already the correct length
         test('should return the string unchanged if it is already the correct length', () => {
             const hex = '0x' + '1'.repeat(64);
-            const result = dataUtils.padHexString(hex);
+            const result = Hex0x.canon(hex, 32);
             expect(result).toBe(hex);
         });
 
         // Test handling of an empty string
         test('should return a string of just zeros if the input is empty', () => {
-            const result = dataUtils.padHexString('');
+            const result = Hex0x.canon('', 32);
             expect(result).toBe('0x' + '0'.repeat(64));
         });
 
         // Test with negative length (should likely throw an error or handle gracefully)
         test('should return the string with the minimum length', () => {
-            expect(() => dataUtils.padHexString('1a', -64)).toThrowError(
+            expect(() => Hex0x.canon('1a', -32)).toThrowError(
                 InvalidDataTypeError
             );
         });
 
         // Test with non-integer length
         test('should handle or throw an error for non-integer length values', () => {
-            expect(() => dataUtils.padHexString('1a', 63.5)).toThrowError(
+            expect(() => Hex0x.canon('1a', 31.5)).toThrowError(
                 InvalidDataTypeError
             );
         });
 
         // Test with target length less than input length
         test("Should throw an error if the target length is less than the input's length", () => {
-            expect(() => dataUtils.padHexString('1a', 1)).toThrowError(
+            expect(() => Hex0x.canon('001a', 1)).toThrowError(
                 InvalidDataTypeError
             );
         });

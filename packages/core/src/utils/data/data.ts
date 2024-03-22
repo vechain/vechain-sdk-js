@@ -4,46 +4,6 @@ import { assert, buildError, DATA } from '@vechain/sdk-errors';
 import { Hex0x, Hex } from '../hex';
 
 /**
- * Pads a hexadecimal string to a fixed length by adding zeros to the left.
- *
- * @param {string} hexString - The original hexadecimal string to pad. It can optionally start with '0x'.
- * @param {number} [hexTargetLength=64] - The desired length in characters for the output string. Defaults to vechain data length of 64 characters if not specified. If the value is less than or equal to str.length, then str is returned as-is.
- * @returns {string} - The padded hexadecimal string, starting with '0x' and with length matching the specified number of characters.
- *
- * @example
- * // returns '0x000000000000000000000000000000000000000000000000000000000000001a'
- * padHexString('1a', 64);
- */
-function padHexString(hexString: string, hexTargetLength: number = 64): string {
-    // Check if the input length is an integer, if not throw an error
-    if (!Number.isInteger(hexTargetLength)) {
-        throw buildError(
-            'padHexString',
-            DATA.INVALID_DATA_TYPE,
-            `The target length '${hexTargetLength}' must be an integer.`,
-            { hexTargetLength }
-        );
-    }
-
-    if (hexString.replace(/^0x/, '').length > hexTargetLength) {
-        throw buildError(
-            'padHexString',
-            DATA.INVALID_DATA_TYPE,
-            `The input string '${hexString}' is longer than the target length '${hexTargetLength}'.`,
-            { hexString, hexTargetLength }
-        );
-    }
-
-    // Remove the '0x' prefix if present
-    if (hexString.startsWith('0x')) {
-        hexString = hexString.slice(2);
-    }
-
-    // Pad the string with zeros on the left and add the '0x' prefix back
-    return '0x' + hexString.padStart(hexTargetLength, '0');
-}
-
-/**
  * Checks whether the provided data is a valid decimal string.
  *
  * @remarks
@@ -136,7 +96,6 @@ const decodeBytes32String = (value: string): string => {
 };
 
 export const dataUtils = {
-    padHexString,
     isDecimalString,
     isNumeric,
     encodeBytes32String,

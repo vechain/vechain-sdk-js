@@ -59,19 +59,38 @@ const THOR_ID_LENGTH = 64;
  */
 enum ErrorMessage {
     /**
+     * Error message constant indicating that the provided arguments are not sufficient
+     * to fit the expected value.
+     *
+     * @type {string}
+     * @see Hex.canon
+     */
+    NOT_FIT = `Arg 'bytes' not enough to fit 'exp'`,
+
+    /**
      * Error message constant for invalid hexadecimal expression
      * not matching {@link REGEX_FOR_0X_PREFIX_HEX}.
      *
-     * @const {string}
+     * @type {string}
+     * @see Hex.canon
      */
     NOT_HEX = `Arg 'n' not an hexadecimal expression`,
+
     /**
      * String constant representing an error message when the argument 'n' is not an integer.
      *
      * @type {string}
-     * @see {ofNumber}
+     * @see ofNumber
      */
     NOT_INTEGER = `Arg 'n' not an integer.`,
+
+    /**
+     * Variable representing an error message when the argument 'bytes' is not a valid length.
+     *
+     * @type {string}
+     * @see Hex.canon
+     */
+    NOT_LENGTH = `Arg 'bytes' not a length.`,
 
     /**
      * String constant representing an error message when argument 'n' is not negative.
@@ -238,6 +257,21 @@ function trim(exp: string): string {
  */
 const Hex0x = {
     /**
+     * Converts a given string expression to a canonical representation prefixed with `0x`,
+     * optionally specifying the number of bytes to include in the canonical form.
+     *
+     * @param {string} exp - The string expression to convert to canonical form.
+     * @param {number} [bytes] - The number of bytes to include in the canonical form.
+     * If not specified, all bytes will be included.
+     * @returns {string} The canonical representation of the given string expression.
+     * @throws {Error} if `exp` is not a valid hexadecimal expression,
+     * if `bytes` is not integer and greater or equal to zero.
+     */
+    canon: function (exp: string, bytes?: number): string {
+        return `${PREFIX}${Hex.canon(exp, bytes)}`;
+    },
+
+    /**
      * Checks if the given expression is a valid Thor-based ID.
      * Thor id is a 64 characters long hexadecimal string.
      * It is used to identify a transaction id, a block id, etc.
@@ -254,6 +288,7 @@ const Hex0x = {
                 : exp.length === THOR_ID_LENGTH + 2) // +2 for '0x'
         );
     },
+
     /**
      * Checks if the given expression is a valid hexadecimal expression
      * - prefixed with `0x` (or optionally if `is0xOptional is `true`),
@@ -277,6 +312,7 @@ const Hex0x = {
         }
         return predicate;
     },
+
     /**
      * Returns a hexadecimal representation from the given input data prefixed with `0x`.
      *
@@ -300,13 +336,15 @@ const Hex0x = {
  */
 const Hex = {
     /**
-     * Converts a hexadecimal string to canonical form:
-     * - without '0x' prefix,
-     * - lowercase.
+     * Converts a given string expression to a canonical representation prefixed with `0x`,
+     * optionally specifying the number of bytes to include in the canonical form.
      *
-     * @param {string} exp - The hexadecimal string to be converted.
-     * @throws {Error} If the input string is not a valid hexadecimal format.
-     * @returns {string} The hexadecimal string in canonical form.
+     * @param {string} exp - The string expression to convert to canonical form.
+     * @param {number} [bytes] - The number of bytes to include in the canonical form.
+     * If not specified, all bytes will be included.
+     * @returns {string} The canonical representation of the given string expression.
+     * @throws {Error} if `exp` is not a valid hexadecimal expression,
+     * if `bytes` is not integer and greater or equal to zero.
      */
     canon: function (exp: string, bytes?: number): string {
         let result: string = '';
@@ -323,10 +361,25 @@ const Hex = {
             );
         }
         if (typeof bytes !== 'undefined') {
+            assert(
+                'Hex.canon',
+                Number.isInteger(bytes) && bytes >= 0,
+                DATA.INVALID_DATA_TYPE,
+                ErrorMessage.NOT_LENGTH,
+                { bytes }
+            );
             result = pad(result, bytes);
+            assert(
+                'Hex.canon',
+                result.length <= bytes * 2,
+                DATA.INVALID_DATA_TYPE,
+                ErrorMessage.NOT_FIT,
+                { bytes }
+            );
         }
         return result;
     },
+
     /**
      * Returns a hexadecimal representation from the given input data.
      * This method calls
