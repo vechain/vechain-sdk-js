@@ -1,6 +1,7 @@
 import { assert, buildError, DATA } from '@vechain/sdk-errors';
 import { Buffer } from 'buffer';
 import { type HexString } from 'ethers/lib.esm/utils/data';
+import { randomBytes } from '@noble/hashes/utils';
 
 /**
  * The encoding used for buffers.
@@ -355,9 +356,13 @@ const Hex = {
         if (n instanceof Buffer) return ofBuffer(n, bytes);
         if (n instanceof Uint8Array) return ofUint8Array(n, bytes);
         if (typeof n === 'bigint') return ofBigInt(n, bytes);
-        if (typeof n === 'number') return ofNumber(n, bytes);
+        if (typeof n === `number`) return ofNumber(n, bytes);
         if (Hex0x.isValid(n)) return ofHexString(n, bytes);
         return ofString(n, bytes);
+    },
+
+    random: function (bytes: number): string {
+        return ofUint8Array(randomBytes(bytes), bytes);
     }
 };
 

@@ -1,7 +1,6 @@
 import { ethers } from 'ethers';
 import { DECIMAL_INTEGER_REGEX, NUMERIC_REGEX } from '../const';
 import { assert, buildError, DATA } from '@vechain/sdk-errors';
-import * as crypto from 'crypto';
 import { Hex0x, Hex } from '../hex';
 
 /**
@@ -136,25 +135,10 @@ const decodeBytes32String = (value: string): string => {
     }
 };
 
-/**
- * Generates a random hexadecimal string of a specified length.
- *
- * @param stringLength - The length of the hexadecimal string to generate.
- * This is twice the number of bytes that will be generated, since each byte is represented by two hexadecimal characters.
- * @returns A random hexadecimal string of the specified length.
- */
-const generateRandomHexOfLength = (stringLength: number): string => {
-    // Ensure the number of bytes generated is half the size of the desired hex string length
-    // since each byte will be converted to two hex characters.
-    const bytes = Math.ceil(stringLength / 2);
-    return Hex.of(crypto.randomBytes(bytes)).substring(0, stringLength);
-};
-
 export const dataUtils = {
     padHexString,
     isDecimalString,
     isNumeric,
     encodeBytes32String,
-    decodeBytes32String,
-    generateRandomHexOfLength
+    decodeBytes32String
 };
