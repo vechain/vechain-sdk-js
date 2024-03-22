@@ -45,7 +45,7 @@ describe('Hdnode', () => {
                         child.privateKey ?? ZERO_BUFFER(0)
                     )
                 )
-            ).toEqual(child.publicKey.toString('hex'));
+            ).toEqual(Hex.of(child.publicKey));
         }
 
         // HDNode from private key
@@ -68,7 +68,7 @@ describe('Hdnode', () => {
                         child.privateKey ?? ZERO_BUFFER(0)
                     )
                 )
-            ).toEqual(child.publicKey.toString('hex'));
+            ).toEqual(Hex.of(child.publicKey));
         }
 
         // HDNode from public key

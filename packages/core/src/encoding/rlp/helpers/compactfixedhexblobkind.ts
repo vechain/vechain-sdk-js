@@ -1,5 +1,5 @@
 import { assert, RLP } from '@vechain/sdk-errors';
-import { Hex } from '../../../utils';
+import { Hex0x } from '../../../utils';
 
 /**
  * Asserts that the provided buffer is of a specific length and does not contain leading zeros.
@@ -59,7 +59,7 @@ const decodeBufferToHexWithLeadingZeros = (
     buffer: Buffer,
     bytes: number
 ): string => {
-    return Hex.of0x(buffer, bytes);
+    return Hex0x.of(buffer, bytes);
 };
 
 export {

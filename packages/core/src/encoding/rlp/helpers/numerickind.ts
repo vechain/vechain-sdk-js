@@ -1,4 +1,4 @@
-import { dataUtils, Hex } from '../../../utils';
+import { dataUtils, Hex0x, Hex } from '../../../utils';
 import { type RLPInput } from '../types';
 import { assert, RLP } from '@vechain/sdk-errors';
 
@@ -161,7 +161,7 @@ const encodeBigIntToBuffer = (
 const decodeBufferToNumberOrHex = (buffer: Buffer): number | string => {
     if (buffer.length === 0) return 0;
 
-    const bi = BigInt('0x' + buffer.toString('hex'));
+    const bi = BigInt(Hex0x.of(buffer));
     const num = Number(bi);
 
     // Return number or hex based on integer safety

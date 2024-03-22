@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { TEST_ACCOUNTS, soloNetwork } from '../../fixture';
-import { dataUtils, Hex, TransactionHandler } from '@vechain/sdk-core';
+import { dataUtils, Hex0x, TransactionHandler } from '@vechain/sdk-core';
 import { sendTransactionErrors, simulateTransaction } from './fixture-thorest';
 import { InvalidDataTypeError } from '@vechain/sdk-errors';
 import { ThorClient } from '../../../src';
@@ -98,7 +98,7 @@ describe('ThorClient - Transactions Module', () => {
                 for (const raw of [rawNormalSigned, rawDelegatedSigned]) {
                     const send =
                         await thorSoloClient.transactions.sendRawTransaction(
-                            Hex.of0x(raw)
+                            Hex0x.of(raw)
                         );
                     expect(send).toBeDefined();
                     expect(send).toHaveProperty('id');

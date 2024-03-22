@@ -1,5 +1,5 @@
 import { randomBytes } from 'crypto';
-import { Hex } from '../src';
+import { Hex0x } from '../src';
 
 /**
  * Generates a random buffer of the specified length
@@ -19,7 +19,7 @@ const generateRandomBytes = (length: number): Buffer => {
 const generateRandomValidAddress = (): string => {
     const buffer = generateRandomBytes(20);
 
-    return Hex.of0x(buffer);
+    return Hex0x.of(buffer);
 };
 
 /**
@@ -30,7 +30,7 @@ const generateRandomValidAddress = (): string => {
 const generateRandomTransactionID = (): string => {
     const buffer = generateRandomBytes(32);
 
-    return Hex.of0x(buffer);
+    return Hex0x.of(buffer);
 };
 
 /**

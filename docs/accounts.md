@@ -73,7 +73,8 @@ const hdnode = HDNode.fromMnemonic(randomMnemonic);
 
 for (let i = 0; i < 5; i++) {
     const child = hdnode.derive(i);
-    console.log(`children ${i}`, child.address);
+    console.log(`children ${i} address`, child.address);
+    console.log(`children ${i} private key`, child.privateKey);
     // children 0 0x...
     // children 1 0x...
     // ...
