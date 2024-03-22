@@ -205,16 +205,17 @@ function ofUint8Array(uint8Array: Uint8Array, bytes: number): string {
  * @return {string} The padded hexadecimal expression.
  */
 function pad(exp: string, bytes: number): string {
-    if (exp.length % 2 !== 0) {
-        exp = '0' + exp;
+    let result = exp;
+    if (result.length % 2 !== 0) {
+        result = '0' + result;
     }
     if (bytes > 0) {
-        const gap = bytes - exp.length / 2;
+        const gap = bytes - result.length / 2;
         if (gap > 0) {
-            return `${'00'.repeat(gap)}${exp}`;
+            return `${'00'.repeat(gap)}${result}`;
         }
     }
-    return exp;
+    return result;
 }
 
 /**
@@ -307,18 +308,24 @@ const Hex = {
      * @throws {Error} If the input string is not a valid hexadecimal format.
      * @returns {string} The hexadecimal string in canonical form.
      */
-    canon: function (exp: string): string {
+    canon: function (exp: string, bytes?: number): string {
+        let result: string = '';
         if (REGEX_FOR_0X_PREFIX_HEX.test(exp)) {
-            return exp.slice(2).toLowerCase();
+            result = exp.slice(2).toLowerCase();
         } else if (REGEX_FOR_OPTIONAL_0X_PREFIX_HEX.test(exp)) {
-            return exp.toLowerCase();
+            result = exp.toLowerCase();
+        } else {
+            throw buildError(
+                `Hex.canon`,
+                DATA.INVALID_DATA_TYPE,
+                ErrorMessage.NOT_HEX,
+                { exp }
+            );
         }
-        throw buildError(
-            `Hex.canon`,
-            DATA.INVALID_DATA_TYPE,
-            ErrorMessage.NOT_HEX,
-            { exp }
-        );
+        if (typeof bytes !== 'undefined') {
+            result = pad(result, bytes);
+        }
+        return result;
     },
     /**
      * Returns a hexadecimal representation from the given input data.
@@ -361,6 +368,13 @@ const Hex = {
         return ofString(n, bytes);
     },
 
+    /**
+     * Generates a random hexadecimal string of the specified number of bytes.
+     * The length of the string is twice the `bytes`.
+     *
+     * @param {number} bytes - The number of bytes for the random string.
+     * @return {string} - The generated random string.
+     */
     random: function (bytes: number): string {
         return ofUint8Array(randomBytes(bytes), bytes);
     }
