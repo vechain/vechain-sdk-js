@@ -5,15 +5,14 @@ import {
 } from './fixture';
 import {
     TESTING_CONTRACT_ABI,
-    TEST_ACCOUNTS,
     TESTING_CONTRACT_ADDRESS,
     testnetUrl
 } from '../../fixture';
 import {
     addressUtils,
+    clauseBuilder,
     coder,
-    type FunctionFragment,
-    clauseBuilder
+    type FunctionFragment
 } from '@vechain/sdk-core';
 import { HttpClient, ThorClient } from '../../../src';
 
@@ -37,7 +36,7 @@ describe('Transactions module Testnet tests suite', () => {
                     const thorClient = new ThorClient(testNetwork);
                     const gasResult = await thorClient.gas.estimateGas(
                         clauses,
-                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address // This address might not exist on testnet, thus the gasResult.reverted might be true
+                        '0x000000000000000000000000004d000000000000' // This address might not exist on testnet, thus the gasResult.reverted might be true
                     );
 
                     expect(gasResult.totalGas).toBe(expected.testnet.gas);
