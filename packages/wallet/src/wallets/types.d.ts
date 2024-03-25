@@ -65,7 +65,7 @@ interface Wallet {
     getDelegator: () => Promise<SignTransactionOptions | null>;
 
     /**
-     * Here we can add all useful methods wor wallet.
+     * Here we can add all useful methods for wallet.
      * Currently, we have only getAddresses (needed by provider)
      */
     // ... e.g. addAccount, removeAccount, ...
