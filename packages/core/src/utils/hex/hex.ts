@@ -1,6 +1,7 @@
-import { assert, DATA } from '@vechain/sdk-errors';
+import { assert, buildError, DATA } from '@vechain/sdk-errors';
 import { Buffer } from 'buffer';
 import { type HexString } from 'ethers/lib.esm/utils/data';
+import { randomBytes } from '@noble/hashes/utils';
 
 /**
  * The encoding used for buffers.
@@ -29,12 +30,28 @@ const PREFIX: string = '0x';
 const RADIX: number = 16;
 
 /**
- * Regular expression for matching a string in the format /^0x[0-9A-Fa-f]*$/
+ * Regular expression for matching a string in the format `/^0x[0-9a-f]*$/i;`
+ *
+ * @type {RegExp}
+ * @see Hex0x.of
+ * @see HexString
+ */
+const REGEX_FOR_0X_PREFIX_HEX = /^0x[0-9a-f]*$/i;
+
+/**
+ * Regular expression for matching a string in the format `/^(0x)?[0-9a-f]*$/i;`
  *
  * @type {RegExp}
  * @see HexString
  */
-const REGEX_FOR_0X_EXP = /^0x[0-9A-Fa-f]*$/;
+const REGEX_FOR_OPTIONAL_0X_PREFIX_HEX = /^(0x)?[0-9a-f]*$/i;
+
+/**
+ * Default length of thor id hex string.
+ * Thor id is a 64 characters long hexadecimal string.
+ * This is used to validate thor id strings (block ids, transaction ids, ...).
+ */
+const THOR_ID_LENGTH = 64;
 
 /**
  * Represents the error messages used in the {@link Hex} object.
@@ -42,19 +59,38 @@ const REGEX_FOR_0X_EXP = /^0x[0-9A-Fa-f]*$/;
  */
 enum ErrorMessage {
     /**
-     * Error message constant for invalid hexadecimal expression
-     * not matching {@link REGEX_FOR_0X_EXP}.
+     * Error message constant indicating that the provided arguments are not sufficient
+     * to fit the expected value.
      *
-     * @const {string}
+     * @type {string}
+     * @see Hex.canon
+     */
+    NOT_FIT = `Arg 'bytes' not enough to fit 'exp'`,
+
+    /**
+     * Error message constant for invalid hexadecimal expression
+     * not matching {@link REGEX_FOR_0X_PREFIX_HEX}.
+     *
+     * @type {string}
+     * @see Hex.canon
      */
     NOT_HEX = `Arg 'n' not an hexadecimal expression`,
+
     /**
      * String constant representing an error message when the argument 'n' is not an integer.
      *
      * @type {string}
-     * @see {ofNumber}
+     * @see ofNumber
      */
     NOT_INTEGER = `Arg 'n' not an integer.`,
+
+    /**
+     * Variable representing an error message when the argument 'bytes' is not a valid length.
+     *
+     * @type {string}
+     * @see Hex.canon
+     */
+    NOT_LENGTH = `Arg 'bytes' not a length.`,
 
     /**
      * String constant representing an error message when argument 'n' is not negative.
@@ -83,7 +119,7 @@ type HexRepresentable = bigint | Buffer | Uint8Array | number | string;
  */
 function ofBigInt(bi: bigint, bytes: number): string {
     assert(
-        'Hex.ts.ofBigInt',
+        'ofBigInt',
         bi >= 0,
         DATA.INVALID_DATA_TYPE,
         ErrorMessage.NOT_POSITIVE,
@@ -114,7 +150,7 @@ function ofBuffer(buffer: Buffer, bytes: number): string {
  */
 function ofHexString(n: HexString, bytes: number): string {
     assert(
-        'Hex.ts.ofHexString',
+        'ofHexString',
         Hex0x.isValid(n),
         DATA.INVALID_DATA_TYPE,
         ErrorMessage.NOT_HEX,
@@ -133,7 +169,7 @@ function ofHexString(n: HexString, bytes: number): string {
  */
 function ofNumber(n: number, bytes: number): string {
     assert(
-        'Hex.ts.ofNumber',
+        'ofNumber',
         Number.isInteger(n),
         DATA.INVALID_DATA_TYPE,
         ErrorMessage.NOT_INTEGER,
@@ -142,7 +178,7 @@ function ofNumber(n: number, bytes: number): string {
         }
     );
     assert(
-        'Hex.ts.ofNumber',
+        'ofNumber',
         n >= 0,
         DATA.INVALID_DATA_TYPE,
         ErrorMessage.NOT_POSITIVE,
@@ -188,16 +224,17 @@ function ofUint8Array(uint8Array: Uint8Array, bytes: number): string {
  * @return {string} The padded hexadecimal expression.
  */
 function pad(exp: string, bytes: number): string {
-    if (exp.length % 2 !== 0) {
-        exp = '0' + exp;
+    let result = exp;
+    if (result.length % 2 !== 0) {
+        result = '0' + result;
     }
     if (bytes > 0) {
-        const gap = bytes - exp.length / 2;
+        const gap = bytes - result.length / 2;
         if (gap > 0) {
-            return `${'00'.repeat(gap)}${exp}`;
+            return `${'00'.repeat(gap)}${result}`;
         }
     }
-    return exp;
+    return result;
 }
 
 /**
@@ -216,19 +253,66 @@ function trim(exp: string): string {
 }
 
 /**
- * Helper class for encoding hexadecimal values prefixed with '0x'.
+ * Helper for encoding hexadecimal values prefixed with '0x'.
  */
 const Hex0x = {
     /**
+     * Converts a given string expression to a canonical representation prefixed with `0x`,
+     * optionally specifying the number of bytes to include in the canonical form.
+     *
+     * @param {string} exp - The string expression to convert to canonical form.
+     * @param {number} [bytes] - The number of bytes to include in the canonical form.
+     * If not specified, all bytes will be included.
+     * @returns {string} The canonical representation of the given string expression.
+     * @throws {Error} if `exp` is not a valid hexadecimal expression,
+     * if `bytes` is not integer and greater or equal to zero.
+     */
+    canon: function (exp: string, bytes?: number): string {
+        return `${PREFIX}${Hex.canon(exp, bytes)}`;
+    },
+
+    /**
+     * Checks if the given expression is a valid Thor-based ID.
+     * Thor id is a 64 characters long hexadecimal string.
+     * It is used to identify a transaction id, a block id, etc.
+     *
+     * @param {string} exp - The expression to check.
+     * @param {boolean} is0xOptional - Do not check if `exp` is `0x` prefixed, `false` by default.
+     * @returns {boolean} - Returns true if the expression is a valid Thor ID, otherwise false.
+     */
+    isThorId: function (exp: string, is0xOptional: boolean = false): boolean {
+        return (
+            this.isValid(exp, is0xOptional) &&
+            (is0xOptional
+                ? exp.length === THOR_ID_LENGTH
+                : exp.length === THOR_ID_LENGTH + 2) // +2 for '0x'
+        );
+    },
+
+    /**
      * Checks if the given expression is a valid hexadecimal expression
-     * prefixed with `0x`.
+     * - prefixed with `0x` (or optionally if `is0xOptional is `true`),
+     * - byte aligned if  `isByteAligned` is `true`.
      *
      * @param {string} exp - The expression to be validated.
+     * @param {boolean} is0xOptional - Do not check if `exp` is `0x` prefixed, `false` by default.
+     * @param {boolean} isByteAliged - Check `exp` represents a full byte or an array of bytes, `false`, by default.
      * @returns {boolean} - Whether the expression is valid or not.
      */
-    isValid(exp: string): boolean {
-        return REGEX_FOR_0X_EXP.test(exp);
+    isValid: function (
+        exp: string,
+        is0xOptional: boolean = false,
+        isByteAliged: boolean = false
+    ): boolean {
+        let predicate: boolean = is0xOptional
+            ? REGEX_FOR_OPTIONAL_0X_PREFIX_HEX.test(exp)
+            : REGEX_FOR_0X_PREFIX_HEX.test(exp);
+        if (isByteAliged && predicate) {
+            predicate = exp.length % 2 === 0;
+        }
+        return predicate;
     },
+
     /**
      * Returns a hexadecimal representation from the given input data prefixed with `0x`.
      *
@@ -248,9 +332,54 @@ const Hex0x = {
 };
 
 /**
- * Helper class for encoding hexadecimal values.
+ * Helper for encoding hexadecimal values.
  */
 const Hex = {
+    /**
+     * Converts a given string expression to a canonical representation prefixed with `0x`,
+     * optionally specifying the number of bytes to include in the canonical form.
+     *
+     * @param {string} exp - The string expression to convert to canonical form.
+     * @param {number} [bytes] - The number of bytes to include in the canonical form.
+     * If not specified, all bytes will be included.
+     * @returns {string} The canonical representation of the given string expression.
+     * @throws {Error} if `exp` is not a valid hexadecimal expression,
+     * if `bytes` is not integer and greater or equal to zero.
+     */
+    canon: function (exp: string, bytes?: number): string {
+        let result: string = '';
+        if (REGEX_FOR_0X_PREFIX_HEX.test(exp)) {
+            result = exp.slice(2).toLowerCase();
+        } else if (REGEX_FOR_OPTIONAL_0X_PREFIX_HEX.test(exp)) {
+            result = exp.toLowerCase();
+        } else {
+            throw buildError(
+                `Hex.canon`,
+                DATA.INVALID_DATA_TYPE,
+                ErrorMessage.NOT_HEX,
+                { exp }
+            );
+        }
+        if (typeof bytes !== 'undefined') {
+            assert(
+                'Hex.canon',
+                Number.isInteger(bytes) && bytes >= 0,
+                DATA.INVALID_DATA_TYPE,
+                ErrorMessage.NOT_LENGTH,
+                { bytes }
+            );
+            result = pad(result, bytes);
+            assert(
+                'Hex.canon',
+                result.length <= bytes * 2,
+                DATA.INVALID_DATA_TYPE,
+                ErrorMessage.NOT_FIT,
+                { bytes }
+            );
+        }
+        return result;
+    },
+
     /**
      * Returns a hexadecimal representation from the given input data.
      * This method calls
@@ -287,12 +416,26 @@ const Hex = {
         if (n instanceof Buffer) return ofBuffer(n, bytes);
         if (n instanceof Uint8Array) return ofUint8Array(n, bytes);
         if (typeof n === 'bigint') return ofBigInt(n, bytes);
-        if (typeof n === 'number') return ofNumber(n, bytes);
+        if (typeof n === `number`) return ofNumber(n, bytes);
         if (Hex0x.isValid(n)) return ofHexString(n, bytes);
         return ofString(n, bytes);
+    },
+
+    /**
+     * Generates a random hexadecimal string of the specified number of bytes.
+     * The length of the string is twice the `bytes`.
+     *
+     * @param {number} bytes - The number of bytes for the random string.
+     * @return {string} - The generated random string.
+     */
+    random: function (bytes: number): string {
+        return ofUint8Array(randomBytes(bytes), bytes);
     }
 };
 
+/**
+ * Helper for encoding hexadecimal values as used to represent Ethereum quantities.
+ */
 const Quantity = {
     /**
      *  Returns a hexadecimal representation for the given input data

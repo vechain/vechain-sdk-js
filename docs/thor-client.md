@@ -259,6 +259,9 @@ const rawNormalSigned = TransactionHandler.sign(
 const send = await thorSoloClient.transactions.sendRawTransaction(
     `0x${rawNormalSigned.toString('hex')}`
 );
+expect(send).toBeDefined();
+expect(send).toHaveProperty('id');
+expect(Hex0x.isValid(send.id)).toBe(true);
 
 // 7 - Get transaction details and receipt
 
@@ -366,6 +369,9 @@ const rawDelegatedSigned = TransactionHandler.signWithDelegator(
 const send = await thorSoloClient.transactions.sendRawTransaction(
     `0x${rawDelegatedSigned.toString('hex')}`
 );
+expect(send).toBeDefined();
+expect(send).toHaveProperty('id');
+expect(Hex0x.isValid(send.id)).toBe(true);
 
 // 7 - Get transaction details and receipt
 

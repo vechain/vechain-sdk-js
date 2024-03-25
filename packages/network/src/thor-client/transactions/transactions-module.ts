@@ -3,7 +3,6 @@ import {
     assertIsSignedTransaction,
     assertValidTransactionHead,
     assertValidTransactionID,
-    dataUtils,
     Hex0x,
     revisionUtils,
     secp256k1,
@@ -112,7 +111,7 @@ class TransactionsModule {
         // Validate raw transaction
         assert(
             'sendRawTransaction',
-            dataUtils.isHexString(raw),
+            Hex0x.isValid(raw),
             DATA.INVALID_DATA_TYPE,
             'Sending failed: Input must be a valid raw transaction in hex format.',
             { raw }
