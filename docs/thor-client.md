@@ -325,9 +325,9 @@ Thor-client provides methods for developers to interact with transactions on the
 ```typescript { name=transactions, category=example }
 import {
     TransactionHandler,
-    dataUtils,
     unitsUtils,
-    clauseBuilder
+    clauseBuilder,
+    Hex0x
 } from '@vechain/sdk-core';
 import { HttpClient, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
@@ -391,7 +391,7 @@ const send = await thorSoloClient.transactions.sendRawTransaction(
 );
 expect(send).toBeDefined();
 expect(send).toHaveProperty('id');
-expect(dataUtils.isHexString(send.id)).toBe(true);
+expect(Hex0x.isValid(send.id)).toBe(true);
 
 // 7 - Get transaction details and receipt
 
@@ -435,9 +435,9 @@ The following code demonstrates how to use Thor-client with the fee delegation f
 ```typescript { name=delegated-transactions, category=example }
 import {
     TransactionHandler,
-    dataUtils,
     unitsUtils,
-    clauseBuilder
+    clauseBuilder,
+    Hex0x
 } from '@vechain/sdk-core';
 import { HttpClient, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
@@ -514,7 +514,7 @@ const send = await thorSoloClient.transactions.sendRawTransaction(
 );
 expect(send).toBeDefined();
 expect(send).toHaveProperty('id');
-expect(dataUtils.isHexString(send.id)).toBe(true);
+expect(Hex0x.isValid(send.id)).toBe(true);
 
 // 7 - Get transaction details and receipt
 

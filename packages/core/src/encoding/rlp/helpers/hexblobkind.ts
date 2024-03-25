@@ -1,4 +1,4 @@
-import { dataUtils } from '../../../utils';
+import { Hex0x } from '../../../utils';
 import { type RLPInput } from '../types';
 import { assert, RLP } from '@vechain/sdk-errors';
 
@@ -24,7 +24,7 @@ const assertValidHexBlobKindData = (data: RLPInput, context: string): void => {
     // Check if data is a valid hex string with '0x' prefix.
     assert(
         'assertValidHexBlobKindData',
-        dataUtils.isHexString(data as string, true),
+        Hex0x.isValid(data as string),
         RLP.INVALID_RLP,
         "Validation error: Input must be a valid hex string with a '0x' prefix.",
         { data, context }
