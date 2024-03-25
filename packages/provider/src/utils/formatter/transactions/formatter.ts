@@ -10,7 +10,7 @@ import {
     type TransactionReceiptRPC,
     type TransactionRPC
 } from './types';
-import { Hex, vechain_sdk_core_ethers, ZERO_BUFFER } from '@vechain/sdk-core';
+import { Hex0x, Quantity, ZERO_BUFFER } from '@vechain/sdk-core';
 import {
     getNumberOfLogsAheadOfTransactionIntoBlockExpanded,
     getTransactionIndexIntoBlock
@@ -38,13 +38,13 @@ const _formatTransactionToRPC = (
     return {
         // Supported fields
         blockHash,
-        blockNumber: vechain_sdk_core_ethers.toQuantity(blockNumber),
+        blockNumber: Quantity.of(blockNumber),
         from: tx.origin,
-        gas: vechain_sdk_core_ethers.toQuantity(tx.gas),
+        gas: Quantity.of(tx.gas),
         chainId,
         hash: tx.id,
         nonce: tx.nonce as string,
-        transactionIndex: vechain_sdk_core_ethers.toQuantity(txIndex),
+        transactionIndex: Quantity.of(txIndex),
 
         /**
          * `input`, `to`, `value` are being referred to the first clause.
@@ -53,7 +53,7 @@ const _formatTransactionToRPC = (
          */
         input: tx.clauses[0].data,
         to: tx.clauses[0].to,
-        value: vechain_sdk_core_ethers.toQuantity(tx.clauses[0].value),
+        value: Quantity.of(tx.clauses[0].value),
 
         // Unsupported fields
         gasPrice: '0x0',
@@ -152,27 +152,20 @@ function formatTransactionReceiptToRPCStandard(
         .fill(logIndexOffset)
         .map((_, i) => i + logIndexOffset);
 
-    const logIndexes: string[] = filledLogIndexes.map((i) =>
-        vechain_sdk_core_ethers.toQuantity(i)
-    );
+    const logIndexes: string[] = filledLogIndexes.map((i) => Quantity.of(i));
 
     const logs: TransactionReceiptLogsRPC[] =
         receipt.outputs.length > 0 && receipt.outputs[0].events.length > 0
             ? receipt.outputs[0].events.map((event, index) => {
                   return {
                       blockHash: receipt.meta.blockID,
-                      blockNumber: vechain_sdk_core_ethers.toQuantity(
-                          receipt.meta.blockNumber
-                      ),
+                      blockNumber: Quantity.of(receipt.meta.blockNumber),
                       transactionHash: receipt.meta.txID as string,
                       address: event.address,
                       topics: event.topics.map((topic) => topic),
                       data: event.data,
-
                       removed: false,
-
-                      transactionIndex:
-                          vechain_sdk_core_ethers.toQuantity(transactionIndex),
+                      transactionIndex: Quantity.of(transactionIndex),
                       logIndex: logIndexes[index]
                   };
               })
@@ -180,23 +173,21 @@ function formatTransactionReceiptToRPCStandard(
 
     return {
         blockHash: receipt.meta.blockID,
-        blockNumber: vechain_sdk_core_ethers.toQuantity(
-            receipt.meta.blockNumber
-        ),
+        blockNumber: Quantity.of(receipt.meta.blockNumber),
         contractAddress:
             receipt.outputs.length > 0
                 ? receipt.outputs[0].contractAddress
                 : null,
         from: transaction.origin,
-        gasUsed: vechain_sdk_core_ethers.toQuantity(receipt.gasUsed),
+        gasUsed: Quantity.of(receipt.gasUsed),
         logs,
         status: receipt.reverted ? '0x0' : '0x1',
         to: transaction.clauses[0].to,
         transactionHash: receipt.meta.txID as string,
-        transactionIndex: vechain_sdk_core_ethers.toQuantity(transactionIndex),
+        transactionIndex: Quantity.of(transactionIndex),
 
         // Incompatible fields
-        logsBloom: Hex.of0x(ZERO_BUFFER(256)),
+        logsBloom: Hex0x.of(ZERO_BUFFER(256)),
         cumulativeGasUsed: '0x0',
         effectiveGasPrice: '0x0',
         type: '0x0'

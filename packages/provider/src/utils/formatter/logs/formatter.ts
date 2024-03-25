@@ -1,6 +1,6 @@
 import { type EventCriteria, type EventLogs } from '@vechain/sdk-network';
 import { type LogsRPC } from './types';
-import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
+import { Quantity } from '@vechain/sdk-core/dist';
 
 /**
  * Output formatter for Event logs.
@@ -14,15 +14,11 @@ const formatToLogsRPC = (eventLogs: EventLogs[]): LogsRPC[] => {
         return {
             address: eventLog.address,
             blockHash: eventLog.meta.blockID,
-            blockNumber: vechain_sdk_core_ethers.toQuantity(
-                eventLog.meta.blockNumber
-            ),
-
+            blockNumber: Quantity.of(eventLog.meta.blockNumber),
             data: eventLog.data,
             logIndex: '0x0',
             // Always false for now
             removed: false,
-
             topics: eventLog.topics,
             transactionHash: eventLog.meta.txID,
             transactionIndex: '0x0'

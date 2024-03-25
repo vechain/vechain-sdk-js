@@ -44,7 +44,7 @@ describe('RLP', () => {
     describe('encode', () => {
         encodeTestCases.forEach(({ input, expected, description }) => {
             test(description, () => {
-                expect(RLP.encode(input).toString('hex')).toEqual(expected);
+                expect(Hex.of(RLP.encode(input))).toEqual(expected);
             });
         });
     });
@@ -276,7 +276,7 @@ describe('RLP', () => {
 
                         const encoded = rlp.encodeObject(data);
 
-                        expect(encoded.toString('hex')).toBe(expected);
+                        expect(Hex.of(encoded)).toBe(expected);
                     });
                 }
             );
@@ -291,7 +291,7 @@ describe('RLP', () => {
 
                         const encoded = rlp.encodeObject(data);
 
-                        expect(encoded.toString('hex')).toBe(expected);
+                        expect(Hex.of(encoded)).toBe(expected);
                     });
                 }
             );
@@ -306,7 +306,7 @@ describe('RLP', () => {
 
                         const encoded = rlp.encodeObject(data);
 
-                        expect(encoded.toString('hex')).toBe(expected);
+                        expect(Hex.of(encoded)).toBe(expected);
                     });
                 }
             );
@@ -320,7 +320,7 @@ describe('RLP', () => {
 
                         const encoded = rlp.encodeObject(data);
 
-                        expect(encoded.toString('hex')).toBe(expected);
+                        expect(Hex.of(encoded)).toBe(expected);
                     });
                 }
             );
@@ -335,7 +335,7 @@ describe('RLP', () => {
 
                         const encoded = rlp.encodeObject(data);
 
-                        expect(encoded.toString('hex')).toBe(expected);
+                        expect(Hex.of(encoded)).toBe(expected);
                     });
                 }
             );
@@ -350,7 +350,7 @@ describe('RLP', () => {
 
                         const encoded = rlp.encodeObject(data);
 
-                        expect(encoded.toString('hex')).toBe(expected);
+                        expect(Hex.of(encoded)).toBe(expected);
                     });
                 }
             );
@@ -365,7 +365,7 @@ describe('RLP', () => {
 
                         const encoded = rlp.encodeObject(data);
 
-                        expect(encoded.toString('hex')).toBe(expected);
+                        expect(Hex.of(encoded)).toBe(expected);
                     });
                 }
             );

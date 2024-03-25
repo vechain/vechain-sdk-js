@@ -1,7 +1,7 @@
 import blake from 'blakejs';
 import { type HashInput, type ReturnType } from './types';
 import { assertIsValidReturnType } from '../assertions';
-import { Hex } from '../utils';
+import { Hex0x } from '../utils';
 
 /**
  * Internal function to compute the blake2b256 256-bit hash of the given data.
@@ -80,7 +80,7 @@ function blake2b256(
 
     const hash = _blake2b256(...dataBytesLike);
 
-    return returnType === 'buffer' ? hash : Hex.of0x(hash);
+    return returnType === 'buffer' ? hash : Hex0x.of(hash);
 }
 
 export { blake2b256 };

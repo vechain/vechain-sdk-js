@@ -1,9 +1,4 @@
-import {
-    Hex,
-    unitsUtils,
-    vechain_sdk_core_ethers,
-    ZERO_BUFFER
-} from '@vechain/sdk-core';
+import { Hex0x, Quantity, unitsUtils, ZERO_BUFFER } from '@vechain/sdk-core';
 import { TEST_ACCOUNTS_THOR_SOLO } from '../../../fixture';
 import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
 
@@ -14,23 +9,19 @@ const ethGetBalanceTestCases = [
     {
         description: 'Should return correct balance of the test account',
         params: [TEST_ACCOUNTS_THOR_SOLO[0].address, 'latest'],
-        expected: vechain_sdk_core_ethers.toQuantity(
-            unitsUtils.parseVET('500000000')
-        )
+        expected: Quantity.of(unitsUtils.parseVET('500000000'))
     },
     {
         description: 'Should return correct balance of the test account',
         params: [TEST_ACCOUNTS_THOR_SOLO[0].address, 'best'],
-        expected: vechain_sdk_core_ethers.toQuantity(
-            unitsUtils.parseVET('500000000')
-        )
+        expected: Quantity.of(unitsUtils.parseVET('500000000'))
     },
     {
         description:
             'Should return correct balance of the test account before seeding',
         params: [
             TEST_ACCOUNTS_THOR_SOLO[0].address,
-            vechain_sdk_core_ethers.toQuantity(0) // 0 is the genesis block
+            Quantity.of(0) // 0 is the genesis block
         ],
         expected: '0x0' // Expected balance is 0
     },
@@ -39,8 +30,8 @@ const ethGetBalanceTestCases = [
             'Should return correct balance of the test account after seeding',
         params: [
             // Zero address
-            Hex.of0x(ZERO_BUFFER(20)),
-            vechain_sdk_core_ethers.toQuantity(1)
+            Hex0x.of(ZERO_BUFFER(20)),
+            Quantity.of(1)
         ],
         expected: '0x0'
     },
