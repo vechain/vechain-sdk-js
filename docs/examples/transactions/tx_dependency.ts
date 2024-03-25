@@ -10,6 +10,8 @@ import {
 } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
+// START_SNIPPET: TxDependencySnippet
+
 // 1 - Define transaction clauses
 
 const txAClauses: TransactionClause[] = [
@@ -78,4 +80,7 @@ const rawTxB = txBSigned.encoded;
 
 // Check (we can decode Tx B)
 const decodedTx = TransactionHandler.decode(rawTxB, true);
+
+// END_SNIPPET: TxDependencySnippet
+
 expect(decodedTx.body.dependsOn).toBe(txASigned.id);
