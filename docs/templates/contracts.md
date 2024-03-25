@@ -6,7 +6,7 @@
 
 This example showcases the process of building a clause to deploy a smart contract using the Vechain SDK.
 
-[example](examples/contracts/contract-deploy.ts)
+[ContractDeploySnippet](examples/contracts/contract-deploy.ts)
 
 ### Code Explanation
 
@@ -26,7 +26,7 @@ This example provides a practical demonstration of utilizing the vechain SDK to 
 
 This example demonstrates the process of building a clause to call a function on a deployed smart contract using the vechain SDK.
 
-[example](examples/contracts/contract-function-call.ts)
+[ContractFunctionCallSnippet](examples/contracts/contract-function-call.ts)
 
 ### Code Explanation
 
@@ -73,7 +73,7 @@ contract SampleToken is ERC20 {
 Once the contract is compiled, we can deploy it using the vechain SDK. The following code shows how to deploy the contract:
 
 
-[DeployContractSnippet](examples/contracts/contract-create-ERC20-token.ts)
+[CreateERC20TokenSnippet](examples/contracts/contract-create-ERC20-token.ts)
 
 
 #### Transfer tokens to another address

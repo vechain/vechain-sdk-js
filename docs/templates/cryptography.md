@@ -15,13 +15,13 @@ vechain sdk supports blake2b256 and keccak256 hash functions.
 
 Blake2b256 is a specific type of hash function known for its speed and security. It takes any input data and generates a 256-bit (32-byte) hash value. The blake2b256 part refers to the specific design of the algorithm, and the 256 indicates the length of the resulting hash code. Blake2b256 is widely used in cryptographic applications, blockchain technologies, and secure data storage.
 
-[example](examples/cryptography/blake2b256.ts)
+[Blake2b256Snippet](examples/cryptography/blake2b256.ts)
 
 ### Keccak256
 
 Keccak256 is another type of hash function, and it's particularly well-known for its use in the blockchain world, specifically in cryptocurrencies like Ethereum. Similar to Blake2b256, Keccak256 also takes input data and generates a 256-bit (32-byte) hash value. The Keccak part refers to the family of algorithms, and again, 256 denotes the length of the output hash code.
 
-[example](examples/cryptography/keccak256.ts)
+[Kekkak256Snippet](examples/cryptography/keccak256.ts)
 
 ## Public key cryptography
 
@@ -35,4 +35,4 @@ Secp256k1 is mainly used for generating public and private key pairs in cryptogr
 * **Digital Signatures**: An essential feature of Secp256k1 is generating and verifying digital signatures, public key cryptography. To sign a message, the private key holder performs a mathematical operation involving the message and the private key to produce a signature. The signature, along with the original message, can be publicly verified using the corresponding public key. This process ensures the authenticity and integrity of the message without revealing the private key.
 * **Security Considerations**: The security of Secp256k1 relies on the difficulty of the elliptic curve discrete logarithm problem. Breaking this problem requires an impractical amount of computational power, making Secp256k1 a secure choice for cryptographic applications, including blockchain networks.
 
-[example](examples/cryptography/secp256k1.ts)
+[Secp256k1Snippet](examples/cryptography/secp256k1.ts)

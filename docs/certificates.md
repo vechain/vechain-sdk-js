@@ -34,14 +34,6 @@ Certificates are used in various scenarios within the VechainThor blockchain, in
 It's important to note that certificates in the VechainThor blockchain are self-signed, which means that they are issued and signed by the same entity or user. The signature from the issuer's private key serves as proof of the certificate's authenticity.
 
 ```typescript { name=sign_verify, category=example }
-import {
-    type Certificate,
-    certificate,
-    secp256k1,
-    blake2b256,
-    addressUtils
-} from '@vechain/sdk-core';
-
 // 1 - Generate a private key and address for the signer
 
 const privateKey = secp256k1.generatePrivateKey();
@@ -68,8 +60,4 @@ const signature = secp256k1.sign(blake2b256(jsonStr), privateKey);
 
 // Add 0x to signature
 cert.signature = '0x' + signature.toString('hex');
-
-// Verify certificate
-certificate.verify(cert);
-
 ```
