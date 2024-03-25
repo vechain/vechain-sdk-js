@@ -1,7 +1,7 @@
 import { type ThorClient } from '@vechain/sdk-network';
 import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
 import { type BlocksRPC } from '../../../../formatter';
-import { dataUtils } from '@vechain/sdk-core';
+import { Hex0x } from '@vechain/sdk-core';
 import { ethGetBlockByNumber } from '../eth_getBlockByNumber';
 
 /**
@@ -26,7 +26,8 @@ const ethGetBlockByHash = async (
         'eth_getBlockByHash',
         params.length === 2 &&
             typeof params[0] === 'string' &&
-            dataUtils.isThorId(params[0], true) &&
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            Boolean(Hex0x.isThorId(params[0])) &&
             typeof params[1] === 'boolean',
         DATA.INVALID_DATA_TYPE,
         'Invalid params length, expected 2.\nThe params should be [hash: hash of block, transactionDetailFlag: boolean]'

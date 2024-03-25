@@ -11,7 +11,7 @@ import {
 } from './types';
 import { thorest } from '../../utils';
 import { assert, DATA } from '@vechain/sdk-errors';
-import { addressUtils, dataUtils } from '@vechain/sdk-core';
+import { addressUtils, Hex0x } from '@vechain/sdk-core';
 
 /** The `DebugModule` class encapsulates functionality to handle Debug
  * on the VechainThor blockchain.
@@ -105,7 +105,7 @@ class DebugModule {
         if (input.contractInput?.data !== undefined)
             assert(
                 'traceContractCall',
-                dataUtils.isHexString(input.contractInput.data, true),
+                Hex0x.isValid(input.contractInput.data, true),
                 DATA.INVALID_DATA_TYPE,
                 `Invalid data '${input.contractInput?.data}' given as input for traceContractCall.`,
                 { data: input.contractInput?.data }
@@ -114,7 +114,7 @@ class DebugModule {
         if (input.contractInput?.value !== undefined)
             assert(
                 'traceContractCall',
-                dataUtils.isHexString(input.contractInput.value, true),
+                Hex0x.isValid(input.contractInput.value),
                 DATA.INVALID_DATA_TYPE,
                 `Invalid value '${input.contractInput?.value}' given as input for traceContractCall.`,
                 { value: input.contractInput?.value }
@@ -202,7 +202,7 @@ class DebugModule {
         // Validate target - blockID
         assert(
             'validateTarget',
-            dataUtils.isThorId(target.blockID, true),
+            Hex0x.isThorId(target.blockID),
             DATA.INVALID_DATA_TYPE,
             `Invalid block ID '${target.blockID}' given as input for ${functionName}.`,
             { blockId: target.blockID }
@@ -212,7 +212,7 @@ class DebugModule {
         if (typeof target.transaction === 'string')
             assert(
                 'validateTarget',
-                dataUtils.isThorId(target.transaction, true),
+                Hex0x.isThorId(target.transaction),
                 DATA.INVALID_DATA_TYPE,
                 `Invalid transaction id '${target.transaction}' given as input for ${functionName}.`,
                 { transaction: target.transaction }
