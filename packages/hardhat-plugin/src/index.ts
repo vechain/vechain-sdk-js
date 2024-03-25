@@ -4,7 +4,11 @@ import { extendEnvironment } from 'hardhat/config';
 import { type HttpNetworkConfig } from 'hardhat/types';
 import { HardhatPluginError, lazyObject } from 'hardhat/plugins';
 
-import { HardhatVechainProvider } from '@vechain/sdk-provider';
+// Custom provider for ethers
+import {
+    HardhatVechainProvider,
+    JSONRPCEthersProvider
+} from '@vechain/sdk-provider';
 import { VechainSDKLogger } from '@vechain/sdk-logging';
 
 // Import needed to customize ethers functionality
@@ -15,70 +19,10 @@ import './type-extensions';
 
 // Custom signer
 import {
+    getImpersonatedSigner,
     getSigner,
     getSigners
 } from '@nomiclabs/hardhat-ethers/internal/helpers';
-
-/**
- * // TEMPORARY COMMENT //
- * To improve. Needed for ethers customization
- */
-// class CustomJSONRpcProvider extends ethers.JsonRpcApiProvider {
-//     hardhatProvider: HardhatVechainProvider;
-//
-//     constructor(
-//         netowrkChainId: number,
-//         networkName: string,
-//         hardhatProvider: HardhatVechainProvider
-//     ) {
-//         super({ name: networkName, chainId: netowrkChainId });
-//         this.hardhatProvider = hardhatProvider;
-//     }
-//
-//     async _send(
-//         payload: JsonRpcPayload | JsonRpcPayload[]
-//     ): Promise<Array<JsonRpcResult | JsonRpcError>> {
-//         const requestPayloadArray = Array.isArray(payload)
-//             ? payload
-//             : [payload];
-//         console.log('requestPayloadArray', requestPayloadArray);
-//
-//         const responses: Array<JsonRpcResult | JsonRpcError> =
-//             requestPayloadArray.map((jsonRpcPayload: JsonRpcPayload) => {
-//                 let response: JsonRpcResult | JsonRpcError = {
-//                     id: 0,
-//                     result: ''
-//                 };
-//
-//                 this.hardhatProvider
-//                     .send(
-//                         jsonRpcPayload.method,
-//                         jsonRpcPayload.params as unknown[]
-//                     )
-//                     .then((result) => {
-//                         response = {
-//                             id: jsonRpcPayload.id,
-//                             result
-//                         } as JsonRpcResult;
-//                     })
-//                     .catch((e) => {
-//                         response = {
-//                             id: jsonRpcPayload.id,
-//                             error: {
-//                                 code: getJSONRPCErrorCode(
-//                                     JSONRPC.INTERNAL_ERROR
-//                                 ),
-//                                 message: stringifyData(e)
-//                             }
-//                         } satisfies JsonRpcError;
-//                     });
-//
-//                 return response;
-//             });
-//
-//         return await Promise.resolve(responses);
-//     }
-// }
 
 /**
  * // TEMPORARY COMMENT //
@@ -179,15 +123,32 @@ extendEnvironment((hre) => {
      * To improve. Needed for ethers customization
      */
     // 4 - Customise ethers functionality
+
+    // 4.1 - Get chain id
+    let chainIdFromProvider = 0;
+    hardhatVechainProvider
+        .send('eth_chainId', [])
+        .then((chainId) => {
+            console.log('Chain ID pluto', chainId);
+            chainIdFromProvider = parseInt(chainId as string, 16);
+        })
+        .catch(() => {
+            chainIdFromProvider = 0;
+        });
+
     // @ts-expect-error Not everything is implemented
     hre.ethers = {
+        // Ethers default constructs
         ...ethers,
-        // provider: new CustomJSONRpcProvider(
-        //     0,
-        //     networkName,
-        //     hardhatVechainProvider
-        // )
 
+        // JSON RPC provider for ethers (able to send multiple payloads (send in batch))
+        provider: new JSONRPCEthersProvider(
+            chainIdFromProvider,
+            networkName,
+            hardhatVechainProvider
+        ),
+
+        // Smart contracts
         // getContractFactory: typeof getContractFactory;
         // getContractFactoryFromArtifact: (
         //     artifact: Artifact,
@@ -203,9 +164,12 @@ extendEnvironment((hre) => {
         //     address: string,
         //     signer?: ethers.Signer
         // ) => Promise<ethers.Contract>;
-        getSigner: async (address: string) => await getSigner(hre, address),
-        getSigners: async () => await getSigners(hre)
-        // getImpersonatedSigner: (address: string) => Promise<SignerWithAddress>;
         // deployContract: typeof deployContract;
+
+        // Signer
+        getSigner: async (address: string) => await getSigner(hre, address),
+        getSigners: async () => await getSigners(hre),
+        getImpersonatedSigner: async (address: string) =>
+            await getImpersonatedSigner(hre, address)
     };
 });
