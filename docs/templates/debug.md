@@ -114,7 +114,7 @@ coordinates expressed in the `input` parameter.
 In this example the `thorClient` connects to the *testnet* to trace the clause at the coordinates specified in
 the `input` parameter.
 
-[DebugTraceTransactionClauseSnippet](examples/debug/debug-trace-contract-call.ts)
+[DebugTraceTransactionClauseSnippet](examples/debug/debug-trace-transaction-clause.ts)
 
 <details>
 <summary>The result shows the following.</summary>

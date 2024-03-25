@@ -60,4 +60,7 @@ const signature = secp256k1.sign(blake2b256(jsonStr), privateKey);
 
 // Add 0x to signature
 cert.signature = '0x' + signature.toString('hex');
+
+// Verify certificate
+certificate.verify(cert);
 ```
