@@ -129,7 +129,6 @@ extendEnvironment((hre) => {
     hardhatVechainProvider
         .send('eth_chainId', [])
         .then((chainId) => {
-            console.log('Chain ID pluto', chainId);
             chainIdFromProvider = parseInt(chainId as string, 16);
         })
         .catch(() => {
