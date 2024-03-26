@@ -33,10 +33,6 @@ To use the vechain Provider in your project, follow these steps:
 
 Example:
 ```typescript { name=vechain-provider, category=example }
-import { HttpClient, ThorClient } from '@vechain/sdk-network';
-import { VechainProvider } from '@vechain/sdk-provider';
-import { expect } from 'expect';
-
 // 1 - Create thor client for testnet
 const testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(testnetUrl);
@@ -49,9 +45,6 @@ const provider = new VechainProvider(thorClient);
 const rpcCallChainId = await provider.request({
     method: 'eth_chainId'
 });
-
-expect(rpcCallChainId).toBe('0x186aa');
-
 ```
 
 ## HardHat Provider
@@ -86,10 +79,6 @@ To use the Hardhat Provider in your project, follow these steps:
 
 Example:
 ```typescript { name=vechain-hardhat-provider, category=example }
-import { HardhatVechainProvider } from '@vechain/sdk-provider';
-import { BaseWallet } from '@vechain/sdk-wallet';
-import { expect } from 'expect';
-
 const testnetUrl = 'https://testnet.vechain.org';
 
 // 1 - Init provider
@@ -103,7 +92,4 @@ const provider = new HardhatVechainProvider(
 const rpcCallChainId = await provider.request({
     method: 'eth_chainId'
 });
-
-expect(rpcCallChainId).toBe('0x186aa');
-
 ```

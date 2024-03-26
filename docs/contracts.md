@@ -7,9 +7,6 @@
 This example showcases the process of building a clause to deploy a smart contract using the Vechain SDK.
 
 ```typescript { name=contract-deploy, category=example }
-import { clauseBuilder } from '@vechain/sdk-core';
-import { expect } from 'expect';
-
 // 1 - Init contract bytecode to deploy
 
 const contractBytecode =
@@ -17,10 +14,6 @@ const contractBytecode =
 
 // 2 - Create a clause to deploy the contract
 const clause = clauseBuilder.deployContract(contractBytecode);
-
-// The first clause of the transaction should be a deployed contract clause
-expect(clause.data).toEqual(contractBytecode);
-
 ```
 
 ### Code Explanation
@@ -42,13 +35,6 @@ This example provides a practical demonstration of utilizing the vechain SDK to 
 This example demonstrates the process of building a clause to call a function on a deployed smart contract using the vechain SDK.
 
 ```typescript { name=contract-function-call, category=example }
-import {
-    clauseBuilder,
-    coder,
-    type FunctionFragment
-} from '@vechain/sdk-core';
-import { expect } from 'expect';
-
 // 1 - Init a simple contract ABI
 const contractABI = JSON.stringify([
     {
@@ -89,13 +75,6 @@ const clause = clauseBuilder.functionInteraction(
         .getFunction('setValue') as FunctionFragment,
     [123]
 );
-
-// 3 - Check the parameters of the clause
-
-expect(clause.to).toBe('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed');
-expect(clause.value).toBe(0);
-expect(clause.data).toBeDefined();
-
 ```
 
 ### Code Explanation

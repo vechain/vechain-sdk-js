@@ -2,6 +2,8 @@ import { clauseBuilder, unitsUtils } from '@vechain/sdk-core';
 import { HttpClient, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
+// START_SNIPPET: FullFlowNoDelegatorSnippet
+
 // 1 - Create the thor client
 const _soloUrl = 'http://localhost:8669/';
 const soloNetwork = new HttpClient(_soloUrl);
@@ -55,6 +57,8 @@ const sendTransactionResult =
 const txReceipt = await thorSoloClient.transactions.waitForTransaction(
     sendTransactionResult.id
 );
+
+// END_SNIPPET: FullFlowNoDelegatorSnippet
 
 // Check the transaction receipt
 expect(txReceipt).toBeDefined();

@@ -1,70 +1,7 @@
 import { ethers } from 'ethers';
-import {
-    DECIMAL_INTEGER_REGEX,
-    HEX_REGEX,
-    HEX_REGEX_OPTIONAL_PREFIX,
-    NUMERIC_REGEX,
-    THOR_ID_LENGTH
-} from '../const';
+import { DECIMAL_INTEGER_REGEX, NUMERIC_REGEX } from '../const';
 import { assert, buildError, DATA } from '@vechain/sdk-errors';
-import * as crypto from 'crypto';
-import { Hex } from '../hex';
-
-/**
- * Checks whether the provided data is a valid hexadecimal string.
- *
- * @remarks
- * The check can optionally validate the presence of a '0x' prefix.
- *
- * @param data - The string data to check.
- * @param checkPrefix - A boolean determining whether to validate the '0x' prefix (default: false).
- * @returns A boolean indicating whether the input is a valid hexadecimal string.
- */
-const isHexString = (data: string, checkPrefix: boolean = true): boolean => {
-    return checkPrefix
-        ? HEX_REGEX.test(data)
-        : HEX_REGEX_OPTIONAL_PREFIX.test(data);
-};
-
-/**
- * Pads a hexadecimal string to a fixed length by adding zeros to the left.
- *
- * @param {string} hexString - The original hexadecimal string to pad. It can optionally start with '0x'.
- * @param {number} [hexTargetLength=64] - The desired length in characters for the output string. Defaults to vechain data length of 64 characters if not specified. If the value is less than or equal to str.length, then str is returned as-is.
- * @returns {string} - The padded hexadecimal string, starting with '0x' and with length matching the specified number of characters.
- *
- * @example
- * // returns '0x000000000000000000000000000000000000000000000000000000000000001a'
- * padHexString('1a', 64);
- */
-function padHexString(hexString: string, hexTargetLength: number = 64): string {
-    // Check if the input length is an integer, if not throw an error
-    if (!Number.isInteger(hexTargetLength)) {
-        throw buildError(
-            'padHexString',
-            DATA.INVALID_DATA_TYPE,
-            `The target length '${hexTargetLength}' must be an integer.`,
-            { hexTargetLength }
-        );
-    }
-
-    if (hexString.replace(/^0x/, '').length > hexTargetLength) {
-        throw buildError(
-            'padHexString',
-            DATA.INVALID_DATA_TYPE,
-            `The input string '${hexString}' is longer than the target length '${hexTargetLength}'.`,
-            { hexString, hexTargetLength }
-        );
-    }
-
-    // Remove the '0x' prefix if present
-    if (hexString.startsWith('0x')) {
-        hexString = hexString.slice(2);
-    }
-
-    // Pad the string with zeros on the left and add the '0x' prefix back
-    return '0x' + hexString.padStart(hexTargetLength, '0');
-}
+import { Hex0x, Hex } from '../hex';
 
 /**
  * Checks whether the provided data is a valid decimal string.
@@ -80,49 +17,12 @@ const isDecimalString = (data: string): boolean => {
 };
 
 /**
- * Remove the '0x' prefix from a hexadecimal string.
- *
- * @remarks
- * If the input hexadecimal string starts with '0x', it is removed. If the input string does not start with '0x', it is returned unmodified.
- *
- * @param hex - The input hexadecimal string.
- * @returns The hexadecimal string without the '0x' prefix.
- */
-const removePrefix = (hex: string): string => {
-    if (hex.startsWith('0x')) {
-        return hex.slice(2);
-    }
-    return hex;
-};
-
-/**
  * Checks whether the provided string is a valid decimal numeric string.
  * @param value - The string to check.
  * @returns - A boolean indicating whether the input is a valid numeric string.
  */
 const isNumeric = (value: string): boolean => {
     return NUMERIC_REGEX.test(value);
-};
-
-/**
- * Checks whether the provided data is a valid transaction thor id.
- * Thor id is a 64 characters long hexadecimal string.
- * It is used to identify a transaction id, a block id, ....
- *
- * @remarks
- * The check can optionally validate the presence of a '0x' prefix.
- *
- * @param data - The string data to check.
- * @param checkPrefix - A boolean determining whether to validate the '0x' prefix (default: false).
- * @returns A boolean indicating whether the input is a valid hexadecimal string.
- */
-const isThorId = (data: string, checkPrefix: boolean = false): boolean => {
-    return (
-        isHexString(data, checkPrefix) &&
-        (checkPrefix
-            ? data.length === THOR_ID_LENGTH + 2 // +2 for '0x'
-            : data.length === THOR_ID_LENGTH)
-    );
 };
 
 /**
@@ -168,13 +68,13 @@ const encodeBytes32String = (
 const decodeBytes32String = (value: string): string => {
     assert(
         'decodeBytes32String',
-        isHexString(value) && removePrefix(value).length === 64,
+        Hex0x.isValid(value) && Hex.canon(value).length === 64,
         DATA.INVALID_DATA_TYPE,
         `Failed to decode value ${value} to string. Value is not a valid hex string or it is not 64 characters long`,
         { value }
     );
 
-    const valueInBytes = Buffer.from(removePrefix(value), 'hex');
+    const valueInBytes = Buffer.from(Hex.canon(value), 'hex');
 
     // find the first zero byte
     const firstZeroIndex = valueInBytes.findIndex((byte) => byte === 0);
@@ -195,28 +95,9 @@ const decodeBytes32String = (value: string): string => {
     }
 };
 
-/**
- * Generates a random hexadecimal string of a specified length.
- *
- * @param stringLength - The length of the hexadecimal string to generate.
- * This is twice the number of bytes that will be generated, since each byte is represented by two hexadecimal characters.
- * @returns A random hexadecimal string of the specified length.
- */
-const generateRandomHexOfLength = (stringLength: number): string => {
-    // Ensure the number of bytes generated is half the size of the desired hex string length
-    // since each byte will be converted to two hex characters.
-    const bytes = Math.ceil(stringLength / 2);
-    return Hex.of(crypto.randomBytes(bytes)).substring(0, stringLength);
-};
-
 export const dataUtils = {
-    isHexString,
-    padHexString,
-    removePrefix,
     isDecimalString,
     isNumeric,
-    isThorId,
     encodeBytes32String,
-    decodeBytes32String,
-    generateRandomHexOfLength
+    decodeBytes32String
 };
