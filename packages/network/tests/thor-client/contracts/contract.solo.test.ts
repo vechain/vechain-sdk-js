@@ -9,6 +9,8 @@ import {
     contractBytecode,
     deployedContractAbi,
     deployedContractBytecode,
+    depositContractAbi,
+    depositContractBytecode,
     filterContractEventsTestCases,
     fourArgsEventAbi,
     testingContractTestCases
@@ -366,6 +368,32 @@ describe('ThorClient - Contracts', () => {
         expect(contractFilter.criteriaSet[0].topic2).toBeDefined();
         expect(contractFilter.criteriaSet[0].topic3).toBeDefined();
         expect(contractFilter.criteriaSet[0].topic4).toBeDefined();
+    }, 10000);
+
+    test('deploy the deposit contract and call the deposit method', async () => {
+        const depositContractFactory =
+            thorSoloClient.contracts.createContractFactory(
+                depositContractAbi,
+                depositContractBytecode,
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+            );
+
+        const depositContract = await depositContractFactory.startDeployment();
+
+        const deployedDepositContract =
+            await depositContract.waitForDeployment();
+
+        const result = await deployedDepositContract.transact.deposit({
+            value: 1000
+        });
+
+        await result.wait();
+
+        expect(
+            await deployedDepositContract.read.getBalance(
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+            )
+        ).toEqual([BigInt(1000)]);
     }, 10000);
 
     /**
