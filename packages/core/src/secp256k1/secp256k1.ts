@@ -131,7 +131,6 @@ function extendedPublicKeyToArray(
  * The function relays on [noble-hashes](https://github.com/paulmillr/noble-hashes/blob/main/src/utils.ts)
  * functionality to delegate the OS to generate the random sequence according the host hardware.
  *
- *
  * @param {number} bytesLength - The length of the random bytes to generate.
  * @return {Buffer} - The generated random bytes as a Buffer object.
  * @throws Error with `crypto.getRandomValues must be defined`
