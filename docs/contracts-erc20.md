@@ -31,7 +31,34 @@ Once the contract is compiled, we can deploy it using the vechain SDK. The follo
 
 
 ```typescript { name=contract-create-erc20-token, category=example }
-Content not found between specified comments.
+const soloNetwork = new HttpClient(_soloUrl);
+const thorSoloClient = new ThorClient(soloNetwork);
+
+// Creating the contract factory
+const contractFactory = thorSoloClient.contracts.createContractFactory(
+    VIP180_ABI,
+    erc20ContractBytecode,
+    privateKeyDeployer
+);
+
+// Deploying the contract
+await contractFactory.startDeployment();
+
+// Awaiting the contract deployment
+const contract = await contractFactory.waitForDeployment();
+
+// Awaiting the transaction receipt to confirm successful contract deployment
+const receipt = contract.deployTransactionReceipt;
+
+// Asserting that the contract deployment didn't revert, indicating a successful deployment
+expect(receipt.reverted).toEqual(false);
+
+const balance = await contract.read.balanceOf(
+    addressUtils.fromPrivateKey(Buffer.from(privateKeyDeployer, 'hex'))
+);
+
+// Asserting that the initial balance of the deployer is the expected amount (1e24)
+expect(balance).toEqual([unitsUtils.parseUnits('1', 24)]);
 ```
 
 
@@ -64,7 +91,7 @@ Filtering events allows applications to listen for specific occurrences within a
 
 
 
-For instance, once an ERC20 token contract is deployed, we can filter the Transfer events using the vechain SDK. The following code shows the filtering of a transfer event for a specific receiver address
+For instance, once an ERC20 token contract is deployed, we can filter the Transfer events using the x1x\ SDK. The following code shows the filtering of a transfer event for a specific receiver address
 
 ```typescript { name=contract-event-filter, category=example }
 // Starting from a deployed contract instance, transfer some tokens to a specific address

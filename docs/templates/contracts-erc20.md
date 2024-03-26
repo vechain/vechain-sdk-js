@@ -30,7 +30,7 @@ contract SampleToken is ERC20 {
 Once the contract is compiled, we can deploy it using the vechain SDK. The following code shows how to deploy the contract:
 
 
-[DeployContractSnippet](examples/contracts/contract-create-ERC20-token.ts)
+[CreateERC20TokenSnippet](examples/contracts/contract-create-ERC20-token.ts)
 
 
 #### Transfer tokens to another address
@@ -50,7 +50,7 @@ Filtering events allows applications to listen for specific occurrences within a
 
 
 
-For instance, once an ERC20 token contract is deployed, we can filter the Transfer events using the vechain SDK. The following code shows the filtering of a transfer event for a specific receiver address
+For instance, once an ERC20 token contract is deployed, we can filter the Transfer events using the x1x\ SDK. The following code shows the filtering of a transfer event for a specific receiver address
 
 [ERC20FilterEventSnippet](examples/contracts/contract-event-filter.ts)
 
