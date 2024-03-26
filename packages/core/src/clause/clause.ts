@@ -38,6 +38,7 @@ function deployContract(
  * @param functionFragment - The function fragment to interact with.
  * @param args - The input data for the function.
  *
+ * @param value - The amount of VET to send with the transaction.
  * @returns A clause for interacting with a smart contract function.
  *
  * @throws Will throw an error if an error occurs while encoding the function input.
@@ -45,11 +46,12 @@ function deployContract(
 function functionInteraction(
     contractAddress: string,
     functionFragment: FunctionFragment,
-    args: unknown[]
+    args: unknown[],
+    value = 0
 ): TransactionClause {
     return {
         to: contractAddress,
-        value: 0,
+        value,
         data: new abi.Function(functionFragment).encodeInput(args)
     };
 }
