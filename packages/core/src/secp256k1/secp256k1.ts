@@ -7,7 +7,8 @@ import {
 } from '../assertions';
 
 import { BN } from 'bn.js';
-import { secp256k1 as secp256k1Curve } from '@noble/curves/secp256k1';
+import { secp256k1 as _secp256k1 } from '@noble/curves/secp256k1';
+import { randomBytes as _randomBytes } from '@noble/hashes/utils';
 
 // Curve algorithm.
 const curve = new EC('secp256k1');
@@ -39,7 +40,7 @@ function isValidPrivateKey(key: Buffer): boolean {
  * @returns Private key generated.
  */
 function generatePrivateKey(): Buffer {
-    return Buffer.from(secp256k1Curve.utils.randomPrivateKey());
+    return Buffer.from(_secp256k1.utils.randomPrivateKey());
 }
 
 /**
@@ -51,7 +52,7 @@ function generatePrivateKey(): Buffer {
  */
 function derivePublicKey(privateKey: Buffer): Buffer {
     assertIsValidPrivateKey('derivePublicKey', privateKey, isValidPrivateKey);
-    const publicKey = secp256k1Curve.getPublicKey(privateKey, false);
+    const publicKey = _secp256k1.getPublicKey(privateKey, false);
     return Buffer.from(publicKey);
 }
 
@@ -65,7 +66,7 @@ function derivePublicKey(privateKey: Buffer): Buffer {
 function sign(messageHash: Buffer, privateKey: Buffer): Buffer {
     assertIsValidSecp256k1MessageHash('sign', messageHash, isValidMessageHash);
     assertIsValidPrivateKey('sign', privateKey, isValidPrivateKey);
-    const sig = secp256k1Curve.sign(messageHash, privateKey);
+    const sig = _secp256k1.sign(messageHash, privateKey);
     const r = Buffer.from(new BN(sig.r.toString()).toArray('be', 32));
     const s = Buffer.from(new BN(sig.s.toString()).toArray('be', 32));
     return Buffer.concat([r, s, Buffer.from([sig.recovery])]);
@@ -103,7 +104,7 @@ function recover(messageHash: Buffer, sig: Buffer): Buffer {
     );
 
     return Buffer.from(
-        secp256k1Curve.Signature.fromCompact(Uint8Array.from(sig).slice(0, 64))
+        _secp256k1.Signature.fromCompact(Uint8Array.from(sig).slice(0, 64))
             .addRecoveryBit(recovery)
             .recoverPublicKey(messageHash)
             .toRawBytes(false)
@@ -124,6 +125,10 @@ function extendedPublicKeyToArray(
     return curve.keyFromPublic(extendedPublicKey).getPublic(compact, 'array');
 }
 
+function randomBytes(bytesLength?: number | undefined): Buffer {
+    return Buffer.from(_randomBytes(bytesLength));
+}
+
 export const secp256k1 = {
     isValidMessageHash,
     isValidPrivateKey,
@@ -131,5 +136,6 @@ export const secp256k1 = {
     derivePublicKey,
     sign,
     recover,
-    extendedPublicKeyToArray
+    extendedPublicKeyToArray,
+    randomBytes
 };
