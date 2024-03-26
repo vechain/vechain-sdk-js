@@ -32,7 +32,7 @@ To use the vechain Provider in your project, follow these steps:
  - Start interacting with the VeChain blockchain using the available methods provided by the VeChainProvider.
 
 Example:
-[example](examples/provider/vechain-provider.ts)
+[VechainProviderSnippet](examples/provider/vechain-provider.ts)
 
 ## HardHat Provider
 
@@ -65,4 +65,4 @@ To use the Hardhat Provider in your project, follow these steps:
  - Start interacting with the VeChain blockchain using the available methods provided by the HardhatVechainProvider.
 
 Example:
-[example](examples/provider/vechain-hardhat-provider.ts)
+[VechainHardhatProviderSnippet](examples/provider/vechain-hardhat-provider.ts)

@@ -7,6 +7,8 @@ import {
 import { HttpClient, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
+// START_SNIPPET: TransactionsSnippet
+
 // Sender account with private key
 const senderAccount = {
     privateKey:
@@ -76,5 +78,10 @@ const transactionDetails = await thorSoloClient.transactions.getTransaction(
 const transactionReceipt =
     await thorSoloClient.transactions.getTransactionReceipt(send.id);
 
+// END_SNIPPET: TransactionsSnippet
+
+expect(send).toBeDefined();
+expect(send).toHaveProperty('id');
+expect(Hex0x.isValid(send.id)).toBe(true);
 expect(transactionDetails).toBeDefined();
 expect(transactionReceipt).toBeDefined();

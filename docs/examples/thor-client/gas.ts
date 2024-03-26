@@ -2,6 +2,8 @@ import { TransactionHandler, networkInfo } from '@vechain/sdk-core';
 import { HttpClient, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
+// START_SNIPPET: GasSnippet
+
 // 1 - Create thor client for solo network
 const _soloUrl = 'http://localhost:8669';
 const soloNetwork = new HttpClient(_soloUrl);
@@ -82,6 +84,8 @@ const transactionDetails = await thorSoloClient.transactions.getTransaction(
 );
 const transactionReceipt =
     await thorSoloClient.transactions.getTransactionReceipt(send.id);
+
+// END_SNIPPET: GasSnippet
 
 expect(transactionDetails).toBeDefined();
 expect(transactionReceipt).toBeDefined();

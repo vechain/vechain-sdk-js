@@ -1,6 +1,8 @@
 import { HttpClient, ThorClient } from '@vechain/sdk-network';
 import { type TracerName } from '@vechain/sdk-network/src/thor-client/debug';
 
+// START_SNIPPET: DebugTraceTransactionClauseSnippet
+
 // 1 - Create thor client for testnet
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
@@ -23,3 +25,5 @@ const result = await thorClient.debug.traceTransactionClause(
 
 // 3 - Print the result.
 console.log(result);
+
+// END_SNIPPET: DebugTraceTransactionClauseSnippet

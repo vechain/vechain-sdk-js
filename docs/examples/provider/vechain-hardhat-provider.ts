@@ -2,6 +2,8 @@ import { HardhatVechainProvider } from '@vechain/sdk-provider';
 import { BaseWallet } from '@vechain/sdk-wallet';
 import { expect } from 'expect';
 
+// START_SNIPPET: VechainHardhatProviderSnippet
+
 const testnetUrl = 'https://testnet.vechain.org';
 
 // 1 - Init provider
@@ -15,5 +17,7 @@ const provider = new HardhatVechainProvider(
 const rpcCallChainId = await provider.request({
     method: 'eth_chainId'
 });
+
+// END_SNIPPET: VechainHardhatProviderSnippet
 
 expect(rpcCallChainId).toBe('0x186aa');
