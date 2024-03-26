@@ -125,6 +125,19 @@ function extendedPublicKeyToArray(
     return curve.keyFromPublic(extendedPublicKey).getPublic(compact, 'array');
 }
 
+/**
+ * Generates random bytes of specified length.
+ *
+ * The function relays on [noble-hashes](https://github.com/paulmillr/noble-hashes/blob/main/src/utils.ts)
+ * functionality to delegate the OS to generate the random sequence according the host hardware.
+ *
+ *
+ * @param {number} bytesLength - The length of the random bytes to generate.
+ * @return {Buffer} - The generated random bytes as a Buffer object.
+ * @throws Error with `crypto.getRandomValues must be defined`
+ * message if no hardware for random generation is
+ * available at runtime.
+ */
 function randomBytes(bytesLength?: number | undefined): Buffer {
     return Buffer.from(_randomBytes(bytesLength));
 }
