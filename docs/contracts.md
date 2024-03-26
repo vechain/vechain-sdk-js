@@ -9,9 +9,6 @@ This document provides a comprehensive guide on constructing contract transactio
 Deploying a smart contract is a foundational step in leveraging the vechain blockchain for decentralized applications. This section delves into the process of creating a deployment clause, which is essential for initiating a smart contract on the network.
 
 ```typescript { name=contract-deploy, category=example }
-import { clauseBuilder } from '@vechain/sdk-core';
-import { expect } from 'expect';
-
 // 1 - Init contract bytecode to deploy
 
 const contractBytecode =
@@ -19,10 +16,6 @@ const contractBytecode =
 
 // 2 - Create a clause to deploy the contract
 const clause = clauseBuilder.deployContract(contractBytecode);
-
-// The first clause of the transaction should be a deployed contract clause
-expect(clause.data).toEqual(contractBytecode);
-
 ```
 
 ### Process Breakdown
@@ -44,13 +37,6 @@ The deployment example elucidates the utilization of the vechain SDK to construc
 After deploying a smart contract, interacting with its functions is the next step. This section guides you through the creation of a clause tailored for calling a specific function within a deployed smart contract.
 
 ```typescript { name=contract-function-call, category=example }
-import {
-    clauseBuilder,
-    coder,
-    type FunctionFragment
-} from '@vechain/sdk-core';
-import { expect } from 'expect';
-
 // 1 - Init a simple contract ABI
 const contractABI = JSON.stringify([
     {
@@ -91,13 +77,6 @@ const clause = clauseBuilder.functionInteraction(
         .getFunction('setValue') as FunctionFragment,
     [123]
 );
-
-// 3 - Check the parameters of the clause
-
-expect(clause.to).toBe('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed');
-expect(clause.value).toBe(0);
-expect(clause.data).toBeDefined();
-
 ```
 
 ### Process Breakdown

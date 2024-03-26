@@ -31,34 +31,7 @@ Once the contract is compiled, we can deploy it using the vechain SDK. The follo
 
 
 ```typescript { name=contract-create-erc20-token, category=example }
-const soloNetwork = new HttpClient(_soloUrl);
-const thorSoloClient = new ThorClient(soloNetwork);
-
-// Creating the contract factory
-const contractFactory = thorSoloClient.contracts.createContractFactory(
-    VIP180_ABI,
-    erc20ContractBytecode,
-    privateKeyDeployer
-);
-
-// Deploying the contract
-await contractFactory.startDeployment();
-
-// Awaiting the contract deployment
-const contract = await contractFactory.waitForDeployment();
-
-// Awaiting the transaction receipt to confirm successful contract deployment
-const receipt = contract.deployTransactionReceipt;
-
-// Asserting that the contract deployment didn't revert, indicating a successful deployment
-expect(receipt.reverted).toEqual(false);
-
-const balance = await contract.read.balanceOf(
-    addressUtils.fromPrivateKey(Buffer.from(privateKeyDeployer, 'hex'))
-);
-
-// Asserting that the initial balance of the deployer is the expected amount (1e24)
-expect(balance).toEqual([unitsUtils.parseUnits('1', 24)]);
+Content not found between specified comments.
 ```
 
 

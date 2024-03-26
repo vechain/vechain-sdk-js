@@ -1,5 +1,7 @@
 import { HttpClient, ThorClient } from '@vechain/sdk-network';
 
+// START_SNIPPET: DebugRetrieveStorageRangeSnippet
+
 // 1 - Create thor client for testnet
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
@@ -23,3 +25,5 @@ const result = await thorClient.debug.retrieveStorageRange({
 
 // 3 - Print the result.
 console.log(result);
+
+// END_SNIPPET: DebugRetrieveStorageRangeSnippet

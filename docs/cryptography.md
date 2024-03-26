@@ -16,17 +16,10 @@ vechain sdk supports blake2b256 and keccak256 hash functions.
 Blake2b256 is a specific type of hash function known for its speed and security. It takes any input data and generates a 256-bit (32-byte) hash value. The blake2b256 part refers to the specific design of the algorithm, and the 256 indicates the length of the resulting hash code. Blake2b256 is widely used in cryptographic applications, blockchain technologies, and secure data storage.
 
 ```typescript { name=blake2b256, category=example }
-import { blake2b256, type HashInput } from '@vechain/sdk-core';
-import { expect } from 'expect';
-
 // Input of hash function (it can be a string or a Buffer)
 const toHash: HashInput = 'hello world';
 
 const hash = blake2b256(toHash);
-expect(hash.toString('hex')).toBe(
-    '256c83b297114d201b30179f3f0ef0cace9783622da5974326b436178aeef610'
-);
-
 ```
 
 ### Keccak256
@@ -34,17 +27,10 @@ expect(hash.toString('hex')).toBe(
 Keccak256 is another type of hash function, and it's particularly well-known for its use in the blockchain world, specifically in cryptocurrencies like Ethereum. Similar to Blake2b256, Keccak256 also takes input data and generates a 256-bit (32-byte) hash value. The Keccak part refers to the family of algorithms, and again, 256 denotes the length of the output hash code.
 
 ```typescript { name=keccak256, category=example }
-import { keccak256, type HashInput } from '@vechain/sdk-core';
-import { expect } from 'expect';
-
 // Input of hash function (it can be a string or a Buffer)
 const toHash: HashInput = 'hello world';
 
 const hash = keccak256(toHash);
-expect(hash.toString('hex')).toBe(
-    '47173285a8d7341e5e972fc677286384f802f8ef42a5ec5f03bbfa254cb01fad'
-);
-
 ```
 
 ## Public key cryptography
@@ -60,14 +46,6 @@ Secp256k1 is mainly used for generating public and private key pairs in cryptogr
 * **Security Considerations**: The security of Secp256k1 relies on the difficulty of the elliptic curve discrete logarithm problem. Breaking this problem requires an impractical amount of computational power, making Secp256k1 a secure choice for cryptographic applications, including blockchain networks.
 
 ```typescript { name=secp256k1, category=example }
-import {
-    keccak256,
-    secp256k1,
-    addressUtils,
-    type HashInput
-} from '@vechain/sdk-core';
-import { expect } from 'expect';
-
 // 1 - Generate a private key
 
 const privateKey = secp256k1.generatePrivateKey();
@@ -90,11 +68,4 @@ console.log(`Hash: ${hash.toString()}`);
 const signature = secp256k1.sign(hash, privateKey);
 console.log('Signature:', signature.toString('hex'));
 // Signature: ...SOME_SIGNATURE...
-
-// 4 - Test recovery of public key
-
-const recoveredPublicKey = secp256k1.recover(hash, signature);
-expect(publicKey.equals(recoveredPublicKey)).toBeTruthy();
-// Recovered public key is correct: true
-
 ```

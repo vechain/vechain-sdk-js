@@ -8,7 +8,7 @@ This document provides a comprehensive guide on constructing contract transactio
 
 Deploying a smart contract is a foundational step in leveraging the vechain blockchain for decentralized applications. This section delves into the process of creating a deployment clause, which is essential for initiating a smart contract on the network.
 
-[example](examples/contracts/contract-deploy.ts)
+[ContractDeploySnippet](examples/contracts/contract-deploy.ts)
 
 ### Process Breakdown
 
@@ -28,7 +28,7 @@ The deployment example elucidates the utilization of the vechain SDK to construc
 
 After deploying a smart contract, interacting with its functions is the next step. This section guides you through the creation of a clause tailored for calling a specific function within a deployed smart contract.
 
-[example](examples/contracts/contract-function-call.ts)
+[ContractFunctionCallSnippet](examples/contracts/contract-function-call.ts)
 
 ### Process Breakdown
 
