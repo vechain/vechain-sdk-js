@@ -146,4 +146,22 @@ describe('Secp256k1', () => {
             secp256k1.extendedPublicKeyToArray(publicKey, true)
         ).toStrictEqual(puclicKeyAsArray);
     });
+
+    /**
+     *  Test random byte generation as Buffer.
+     */
+    test('randomBytes - without parameters', () => {
+        const result = secp256k1.randomBytes();
+        expect(Buffer.isBuffer(result)).toBe(true);
+        expect(result.length).toBeGreaterThan(0);
+    });
+
+    /**
+     *  Test random byte generation as Buffer.
+     */
+    test('randomBytes - with param', () => {
+        const result = secp256k1.randomBytes(16);
+        expect(Buffer.isBuffer(result)).toBe(true);
+        expect(result.length).toBe(16);
+    });
 });
