@@ -1,7 +1,7 @@
 {
   "name": "sdk-user",
   "description": "A node sample app using the vechain SDK",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "main": "dist/index.js",
   "types": "src/index.ts",
   "license": "MIT",
@@ -10,7 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@vechain/sdk-core": "1.0.0-beta.1",
+    "@vechain/sdk-core": "1.0.0-beta.2",
     "typescript": "^5.3.3"
   },
   "devDependencies": {
