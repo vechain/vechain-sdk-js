@@ -10,7 +10,7 @@ The Thor-client serves as an interface to interact with the vechain Thor blockch
 
 The Thor-client extends its functionality to provide seamless access to account-related information on the VechainThor network. The following code exemplifies how developers can utilize the Thor-client to interact with accounts:
 
-[example](examples/thor-client/accounts.ts)
+[AccountsSnippet](examples/thor-client/accounts.ts)
 
 In this example, the code initializes a Thor client for the VechainThor testnet network and demonstrates three crucial methods for interacting with accounts:
 
@@ -32,7 +32,7 @@ These methods showcase how Thor-client simplifies the process of obtaining accou
 
 The Thor-client facilitates easy interaction with blocks on the VechainThor network, as demonstrated in the following code snippet:
 
-[example](examples/thor-client/blocks.ts)
+[BlocksSnippet](examples/thor-client/blocks.ts)
 
 In this example, the code initializes a Thor client for the VechainThor testnet network and showcases three essential methods for interacting with blocks:
 
@@ -54,7 +54,7 @@ These methods demonstrate how the Thor-client simplifies the process of fetching
 
 The Thor-client extends its capabilities to efficiently filter and retrieve event logs and transfer logs on the VechainThor network. The following code exemplifies how developers can use the Thor-client to filter event logs and transfer logs:
 
-[example](examples/thor-client/logs.ts)
+[LogsSnippet](examples/thor-client/logs.ts)
 
 In this example, the code initializes a Thor client for the VechainThor testnet network and demonstrates two essential methods for interacting with logs:
 
@@ -74,7 +74,7 @@ The `filterTransferLogs` method provides a streamlined way to retrieve transfer 
 
 The Thor-client allows developers to interact with nodes on the VechainThor network, providing information about connected peers. The following code demonstrates how to use the Thor-client to retrieve connected peers of a node:
 
-[example](examples/thor-client/nodes.ts)
+[NodesSnippet](examples/thor-client/nodes.ts)
 
 In this example, the code initializes a Thor client for the VechainThor testnet network and utilizes the `getNodes` method to retrieve information about connected peers.
 
@@ -86,7 +86,7 @@ The `getNodes` method simplifies the process of obtaining details about connecte
 
 Thor-client provides methods for developers to interact with transactions on the VechainThor network, allowing retrieval of transaction details and transaction receipts. The following code illustrates how to use the Thor-client to fetch information about a specific transaction:
 
-[example](examples/thor-client/transactions.ts)
+[TransactionsSnippet](examples/thor-client/transactions.ts)
 
 In this example, the code initializes a Thor client for the VechainThor testnet network and showcases three essential methods for interacting with transactions:
 
@@ -114,7 +114,7 @@ Fee delegation is a feature on the VechainThor blockchain which enables the tran
 
 The following code demonstrates how to use Thor-client with the fee delegation feature:
 
-[example](examples/thor-client/delegated-transactions.ts)
+[DelegatedTransactionsSnippet](examples/thor-client/delegated-transactions.ts)
 
 ## Gas
 
@@ -124,4 +124,4 @@ The `GasModule` in Thor-client is designed to handle gas-related operations on t
 
 The `gasPadding` option adds a safety margin to estimated gas costs. It allows developers to specify a percentage increase in gas estimation to account for potential variations or complexities in transaction execution. This helps ensure transaction success by providing extra resources while managing costs effectively.
 
-[example](examples/thor-client/gas.ts)
+[GasSnippet](examples/thor-client/gas.ts)

@@ -1,9 +1,5 @@
 import { expect } from 'expect';
-import {
-    VIP180_ABI,
-    addressUtils,
-    unitsUtils
-} from '@vechain/sdk-core';
+import { VIP180_ABI, addressUtils, unitsUtils } from '@vechain/sdk-core';
 import { HttpClient, ThorClient } from '@vechain/sdk-network';
 
 const erc20ContractBytecode: string =
@@ -16,7 +12,7 @@ const privateKeyDeployer =
 // Create thor client for solo network
 const _soloUrl = 'http://localhost:8669/';
 
-// START_SNIPPET: DeployContractSnippet
+// START_SNIPPET: CreateERC20TokenSnippet
 
 const soloNetwork = new HttpClient(_soloUrl);
 const thorSoloClient = new ThorClient(soloNetwork);
@@ -47,4 +43,4 @@ const balance = await contract.read.balanceOf(
 // Asserting that the initial balance of the deployer is the expected amount (1e24)
 expect(balance).toEqual([unitsUtils.parseUnits('1', 24)]);
 
-// END_SNIPPET: DeployContractSnippet
+// END_SNIPPET: CreateERC20TokenSnippet

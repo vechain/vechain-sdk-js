@@ -6,6 +6,8 @@ import {
 } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
+// START_SNIPPET: Secp256k1Snippet
+
 // 1 - Generate a private key
 
 const privateKey = secp256k1.generatePrivateKey();
@@ -28,6 +30,8 @@ console.log(`Hash: ${hash.toString()}`);
 const signature = secp256k1.sign(hash, privateKey);
 console.log('Signature:', signature.toString('hex'));
 // Signature: ...SOME_SIGNATURE...
+
+// END_SNIPPET: Secp256k1Snippet
 
 // 4 - Test recovery of public key
 

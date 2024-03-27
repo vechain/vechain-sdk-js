@@ -64,14 +64,14 @@
         "prettier": "^3.2.5",
         "ts-jest": "^29.1.2",
         "tsup": "^8.0.2",
-        "turbo": "^1.12.4",
+        "turbo": "^1.13.0",
         "typedoc": "^0.25.11",
         "typedoc-plugin-missing-exports": "^2.2.0",
-        "typescript": "^5.3.3",
-        "hardhat": "^2.21.0",
+        "typescript": "^5.4.3",
+        "hardhat": "^2.22.2",
         "ws": "^8.16.0"
     },
     "peerDependencies": {
-        "hardhat": "^2.21.0"
+        "hardhat": "^2.22.2"
     }
 }
