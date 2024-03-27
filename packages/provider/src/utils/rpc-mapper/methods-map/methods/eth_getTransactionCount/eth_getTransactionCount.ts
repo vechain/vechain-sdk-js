@@ -1,6 +1,5 @@
 import { assert, DATA } from '@vechain/sdk-errors';
-import { randomBytes } from 'crypto';
-import { addressUtils, Hex0x } from '@vechain/sdk-core';
+import { addressUtils, Hex0x, secp256k1 } from '@vechain/sdk-core';
 
 /**
  * RPC Method eth_getTransactionCount implementation
@@ -36,7 +35,7 @@ const ethGetTransactionCount = async (params: unknown[]): Promise<string> => {
     );
 
     // Return a random number
-    return await Promise.resolve(Hex0x.of(randomBytes(6)));
+    return await Promise.resolve(Hex0x.of(secp256k1.randomBytes(6)));
 };
 
 export { ethGetTransactionCount };

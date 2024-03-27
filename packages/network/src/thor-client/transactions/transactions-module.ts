@@ -25,7 +25,6 @@ import {
     type TransactionSimulationResult,
     type WaitForTransactionOptions
 } from './types';
-import { randomBytes } from 'crypto';
 import { assert, buildError, DATA, TRANSACTION } from '@vechain/sdk-errors';
 import { type ThorClient } from '../thor-client';
 import { DelegationHandler } from './helpers';
@@ -223,7 +222,7 @@ class TransactionsModule {
 
         // The constant part of the transaction body
         const constTxBody = {
-            nonce: Hex0x.of(randomBytes(8)),
+            nonce: Hex0x.of(secp256k1.randomBytes(8)),
             expiration: options?.expiration ?? 32,
             clauses,
             gasPriceCoef: options?.gasPriceCoef ?? 0,
