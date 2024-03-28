@@ -1,16 +1,9 @@
 import { HttpClient, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
 import type { DeployParams, InterfaceAbi } from '@vechain/sdk-core';
+import { PrivateKeySigner } from '@vechain/sdk-wallet/src/signers';
 
 // START_SNIPPET: ContractSnippet
-
-// 1 - Create thor client for solo network
-
-const _soloUrl = 'http://localhost:8669/';
-const soloNetwork = new HttpClient(_soloUrl);
-const thorSoloClient = new ThorClient(soloNetwork);
-
-// 2 - Deploy contract
 
 const privateKeyDeployer =
     '706e6acd567fdc22db54aead12cb39db01c4832f149f95299aa8dd8bef7d28ff'; // Private key of a test account with VTHO (energy) to pay for the deployment
@@ -35,11 +28,23 @@ const deployedContractAbi: InterfaceAbi = [
     }
 ];
 
+// 1 - Create thor client for solo network and signer
+
+const _soloUrl = 'http://localhost:8669/';
+const soloNetwork = new HttpClient(_soloUrl);
+const thorSoloClient = new ThorClient(soloNetwork);
+const pksigner = new PrivateKeySigner(
+    thorSoloClient,
+    Buffer.from(privateKeyDeployer, 'hex')
+);
+
+// 2 - Deploy contract
+
 // Creating the contract factory
 let contractFactory = thorSoloClient.contracts.createContractFactory(
     deployedContractAbi,
     contractBytecode,
-    privateKeyDeployer
+    pksigner
 );
 
 // Deploy parameters to be used for the contract creation
