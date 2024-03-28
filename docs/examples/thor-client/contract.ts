@@ -1,7 +1,7 @@
 import { HttpClient, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
 import type { DeployParams, InterfaceAbi } from '@vechain/sdk-core';
-import { PrivateKeySigner } from '@vechain/sdk-wallet/src/signers';
+import { PrivateKeySigner } from '@vechain/sdk-wallet';
 
 // START_SNIPPET: ContractSnippet
 
