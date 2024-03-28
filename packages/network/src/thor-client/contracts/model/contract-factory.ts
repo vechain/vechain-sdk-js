@@ -1,5 +1,4 @@
 import {
-    addressUtils,
     clauseBuilder,
     type DeployParams,
     type InterfaceAbi
@@ -8,10 +7,11 @@ import type { ContractTransactionOptions } from '../types';
 import { type ThorClient } from '../../thor-client';
 import { Contract } from './contract';
 import { assert, buildError, ERROR_CODES } from '@vechain/sdk-errors';
+import { type TransactionReceipt } from '../../transactions';
 import {
-    type SendTransactionResult,
-    type TransactionReceipt
-} from '../../transactions';
+    type SendTxResponse,
+    type TransactionSender
+} from '@vechain/sdk-wallet/src/signers/types.d';
 
 /**
  * A factory class for deploying smart contracts to a blockchain using a ThorClient.
@@ -30,7 +30,7 @@ class ContractFactory {
     /**
      * The private key used for signing transactions.
      */
-    private readonly privateKey: string;
+    private readonly txSender: TransactionSender;
 
     /**
      * An instance of ThorClient to interact with the blockchain.
@@ -40,7 +40,7 @@ class ContractFactory {
     /**
      * The result of the deployment transaction, undefined until a deployment is started.
      */
-    private deployTransaction: SendTransactionResult | undefined;
+    private deployTransaction: SendTxResponse | undefined;
 
     /**
      * Initializes a new instance of the `ContractFactory` class.
@@ -52,12 +52,12 @@ class ContractFactory {
     constructor(
         abi: InterfaceAbi,
         bytecode: string,
-        privateKey: string,
+        txSender: TransactionSender,
         thor: ThorClient
     ) {
         this.abi = abi;
         this.bytecode = bytecode;
-        this.privateKey = privateKey;
+        this.txSender = txSender;
         this.thor = thor;
     }
 
@@ -87,27 +87,12 @@ class ContractFactory {
             deployParams
         );
 
-        // Estimate the gas cost of the transaction
-        const gasResult = await this.thor.gas.estimateGas(
+        this.deployTransaction = await this.txSender.sendTransaction(
             [deployContractClause],
-            addressUtils.fromPrivateKey(Buffer.from(this.privateKey, 'hex'))
-        );
-
-        const txBody = await this.thor.transactions.buildTransactionBody(
-            [deployContractClause],
-            gasResult.totalGas,
             options
         );
 
-        // Sign the transaction with the provided private key
-        const signedTx = await this.thor.transactions.signTransaction(
-            txBody,
-            this.privateKey
-        );
-
-        // Send the signed transaction to the blockchain
-        this.deployTransaction =
-            await this.thor.transactions.sendTransaction(signedTx);
+        await this.txSender.sendTransaction([deployContractClause]); //* ******* added later - test */
 
         return this;
     }
@@ -156,7 +141,7 @@ class ContractFactory {
             transactionReceipt?.outputs[0].contractAddress as string,
             this.abi,
             this.thor,
-            this.privateKey,
+            this.txSender,
             transactionReceipt as TransactionReceipt
         );
     }
@@ -164,7 +149,7 @@ class ContractFactory {
     /**
      * Returns the deploy transaction result, if available.
      */
-    public getDeployTransaction(): SendTransactionResult | undefined {
+    public getDeployTransaction(): SendTxResponse | undefined {
         return this.deployTransaction;
     }
 }

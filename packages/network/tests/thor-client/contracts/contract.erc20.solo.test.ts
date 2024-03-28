@@ -7,7 +7,8 @@ import {
 import { soloNetwork, TEST_ACCOUNTS } from '../../fixture';
 import { deployedERC20Abi, erc20ContractBytecode } from './fixture';
 import { addressUtils } from '@vechain/sdk-core';
-import { InvalidAbiFunctionError } from '@vechain/sdk-errors/dist';
+import { InvalidAbiFunctionError } from '@vechain/sdk-errors';
+import { PrivateKeySigner } from '@vechain/sdk-wallet/src/signers';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -19,9 +20,17 @@ import { InvalidAbiFunctionError } from '@vechain/sdk-errors/dist';
 describe('ThorClient - ERC20 Contracts', () => {
     // ThorClient instance
     let thorSoloClient: ThorClient;
+    let pkSigner: PrivateKeySigner;
 
     beforeEach(() => {
         thorSoloClient = new ThorClient(soloNetwork);
+        pkSigner = new PrivateKeySigner(
+            thorSoloClient,
+            Buffer.from(
+                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+                'hex'
+            )
+        );
     });
 
     /**
@@ -32,11 +41,12 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            pkSigner
         );
 
         factory = await factory.startDeployment();
 
+        console.log(factory.getDeployTransaction());
         expect(factory.getDeployTransaction()).not.toBe(undefined);
 
         const contract: Contract = await factory.waitForDeployment();
@@ -60,7 +70,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            pkSigner
         );
 
         factory = await factory.startDeployment();
@@ -99,7 +109,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            pkSigner
         );
 
         factory = await factory.startDeployment();
@@ -161,7 +171,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            pkSigner
         );
 
         factory = await factory.startDeployment();
@@ -181,7 +191,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            pkSigner
         );
 
         factory = await factory.startDeployment();

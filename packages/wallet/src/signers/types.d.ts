@@ -1,4 +1,5 @@
 import { type TransactionClause } from '@vechain/sdk-core';
+import { type TransactionReceipt } from '@vechain/sdk-network';
 
 interface TransactionSender {
     sendTransaction: (
@@ -48,6 +49,7 @@ interface SendTxOptions {
 interface SendTxResponse {
     readonly id: string;
     readonly signer: string;
+    wait: () => Promise<TransactionReceipt | null>;
 }
 
 export type {

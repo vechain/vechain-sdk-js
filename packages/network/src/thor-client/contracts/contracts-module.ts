@@ -4,7 +4,6 @@ import {
     PARAMS_ABI,
     PARAMS_ADDRESS,
     dataUtils,
-    addressUtils,
     type FunctionFragment,
     abi,
     clauseBuilder
@@ -17,6 +16,7 @@ import type {
 import { type SendTransactionResult } from '../transactions';
 import { type ThorClient } from '../thor-client';
 import { Contract, ContractFactory } from './model';
+import { type TransactionSender } from '@vechain/sdk-wallet/src/signers/types.d';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -40,9 +40,9 @@ class ContractsModule {
     public createContractFactory(
         abi: InterfaceAbi,
         bytecode: string,
-        privateKey: string
+        txSender: TransactionSender
     ): ContractFactory {
-        return new ContractFactory(abi, bytecode, privateKey, this.thor);
+        return new ContractFactory(abi, bytecode, txSender, this.thor);
     }
 
     /**
@@ -56,9 +56,9 @@ class ContractsModule {
     public load(
         address: string,
         abi: InterfaceAbi,
-        callerPrivateKey?: string
+        txSender?: TransactionSender
     ): Contract {
-        return new Contract(address, abi, this.thor, callerPrivateKey);
+        return new Contract(address, abi, this.thor, txSender);
     }
 
     /**
@@ -111,7 +111,7 @@ class ContractsModule {
      * @returns A promise resolving to a SendTransactionResult object.
      */
     public async executeContractTransaction(
-        privateKey: string,
+        txSender: TransactionSender,
         contractAddress: string,
         functionFragment: FunctionFragment,
         functionData: unknown[],
@@ -125,31 +125,16 @@ class ContractsModule {
             options?.value ?? 0
         );
 
-        // Estimate the gas cost of the transaction
-        const gasResult = await this.thor.gas.estimateGas(
-            [clause],
-            addressUtils.fromPrivateKey(Buffer.from(privateKey, 'hex'))
-        );
+        console.log('clause', clause);
+        console.log('options', options);
+        const tx = await txSender.sendTransaction([clause], options);
 
-        // Build a transaction for calling the contract function
-        const txBody = await this.thor.transactions.buildTransactionBody(
-            [clause],
-            gasResult.totalGas,
-            options
-        );
-
-        // Sign the transaction with the private key
-        const signedTx = await this.thor.transactions.signTransaction(
-            txBody,
-            privateKey
-        );
-
-        const result = await this.thor.transactions.sendTransaction(signedTx);
-
-        result.wait = async () =>
-            await this.thor.transactions.waitForTransaction(result.id);
-
-        return result;
+        return {
+            id: tx.id,
+            wait: async () => {
+                return await this.thor.transactions.waitForTransaction(tx.id);
+            }
+        };
     }
 
     /**

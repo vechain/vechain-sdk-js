@@ -30,7 +30,8 @@ class PrivateKeySigner implements TransactionSender {
 
         const txBody = await this.client.transactions.buildTransactionBody(
             clauses,
-            gas.totalGas
+            gas.totalGas,
+            options
         );
 
         if (options?.gas != null && options.gas < gas.totalGas) {
@@ -47,8 +48,14 @@ class PrivateKeySigner implements TransactionSender {
         const sendTxRes =
             await this.client.transactions.sendTransaction(signedTx);
 
+        sendTxRes.wait = async () => {
+            return await this.client.transactions.waitForTransaction(
+                sendTxRes.id
+            );
+        };
+
         return {
-            id: sendTxRes.id,
+            ...sendTxRes,
             signer: this.address
         };
     };

@@ -18,6 +18,7 @@ import {
     getReadProxy,
     getTransactProxy
 } from './contract-proxy';
+import { type TransactionSender } from '@vechain/sdk-wallet/src/signers/types.d';
 
 /**
  * A class representing a smart contract deployed on the blockchain.
@@ -26,7 +27,6 @@ class Contract {
     readonly thor: ThorClient;
     readonly address: string;
     readonly abi: InterfaceAbi;
-    private callerPrivateKey?: string;
 
     readonly deployTransactionReceipt: TransactionReceipt | undefined;
 
@@ -34,6 +34,8 @@ class Contract {
     public transact: ContractFunctionTransact = {};
     public filters: ContractFunctionFilter = {};
 
+    // should be private readonly
+    public txSender: TransactionSender | undefined;
     private contractCallOptions: ContractCallOptions = {};
     private contractTransactionOptions: ContractTransactionOptions = {};
 
@@ -49,14 +51,14 @@ class Contract {
         address: string,
         abi: InterfaceAbi,
         thor: ThorClient,
-        callerPrivateKey?: string,
+        txSender?: TransactionSender,
         transactionReceipt?: TransactionReceipt
     ) {
         this.abi = abi;
         this.thor = thor;
         this.address = address;
         this.deployTransactionReceipt = transactionReceipt;
-        this.callerPrivateKey = callerPrivateKey;
+        this.txSender = txSender;
         this.read = getReadProxy(this);
         this.transact = getTransactProxy(this);
         this.filters = getFilterProxy(this);
@@ -118,27 +120,6 @@ class Contract {
     public clearContractTransactOptions(): void {
         this.contractTransactionOptions = {};
         this.transact = getTransactProxy(this);
-    }
-
-    /**
-     * Sets the private key of the caller for signing transactions.
-     * @param privateKey
-     */
-    public setCallerPrivateKey(privateKey: string): string {
-        this.callerPrivateKey = privateKey;
-
-        // initialize the proxy with the new private key
-        this.transact = getTransactProxy(this);
-        this.read = getReadProxy(this);
-        return this.callerPrivateKey;
-    }
-
-    /**
-     * Get the private key of the caller for signing transactions.
-     * @returns The private key of the caller.
-     */
-    public getCallerPrivateKey(): string | undefined {
-        return this.callerPrivateKey;
     }
 
     /**

@@ -9,6 +9,7 @@ import {
     type FunctionFragment,
     type Log
 } from '@vechain/sdk-core';
+import { PrivateKeySigner } from '@vechain/sdk-wallet/src/signers';
 
 /**
  * Tests for the ERC721 Contract, specifically focusing on NFT contract-related functionality.
@@ -20,6 +21,8 @@ import {
 describe('ThorClient - ERC721 Contracts', () => {
     // ThorClient instance
     let thorSoloClient: ThorClient;
+
+    let pkSigner: PrivateKeySigner;
 
     let contractAddress: string;
 
@@ -43,13 +46,20 @@ describe('ThorClient - ERC721 Contracts', () => {
      */
     beforeAll(async () => {
         thorSoloClient = new ThorClient(soloNetwork);
+        pkSigner = new PrivateKeySigner(
+            thorSoloClient,
+            Buffer.from(
+                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+                'hex'
+            )
+        );
 
         // Create the ERC721 contract factory
 
         const factory = thorSoloClient.contracts.createContractFactory(
             ERC721_ABI,
             erc721ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            pkSigner
         );
 
         await factory.startDeployment();
@@ -92,8 +102,7 @@ describe('ThorClient - ERC721 Contracts', () => {
                     } else {
                         response =
                             await thorSoloClient.contracts.executeContractTransaction(
-                                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
-                                    .privateKey,
+                                pkSigner,
                                 contractAddress,
                                 coder
                                     .createInterface(ERC721_ABI)

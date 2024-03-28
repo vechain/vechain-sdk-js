@@ -6,8 +6,7 @@ import {
 } from './types';
 import { type SendTransactionResult } from '../../transactions';
 import { type Contract } from './contract';
-import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
-import { addressUtils, fragment } from '@vechain/sdk-core';
+import { fragment } from '@vechain/sdk-core';
 import { type ContractCallResult } from '../types';
 import { ContractFilter } from './contract-filter';
 
@@ -26,15 +25,6 @@ function getReadProxy(contract: Contract): ContractFunctionRead {
                     contract.getFunctionFragment(prop),
                     args,
                     {
-                        caller:
-                            contract.getCallerPrivateKey() !== undefined
-                                ? addressUtils.fromPrivateKey(
-                                      Buffer.from(
-                                          contract.getCallerPrivateKey() as string,
-                                          'hex'
-                                      )
-                                  )
-                                : undefined,
                         ...contract.getContractReadOptions()
                     }
                 );
@@ -56,15 +46,6 @@ function getTransactProxy(contract: Contract): ContractFunctionTransact {
             return async (
                 ...args: unknown[]
             ): Promise<SendTransactionResult> => {
-                if (contract.getCallerPrivateKey() === undefined) {
-                    throw buildError(
-                        'Contract.getTransactProxy',
-                        ERROR_CODES.TRANSACTION.MISSING_PRIVATE_KEY,
-                        'Caller private key is required to transact with the contract.',
-                        { prop }
-                    );
-                }
-
                 // get the transaction options for the contract
                 const transactionOptions =
                     contract.getContractTransactOptions();
@@ -77,19 +58,23 @@ function getTransactProxy(contract: Contract): ContractFunctionTransact {
                     args = args.filter((arg) => !isTransactionValue(arg));
                 }
 
-                return await contract.thor.contracts.executeContractTransaction(
-                    contract.getCallerPrivateKey() as string,
-                    contract.address,
-                    contract.getFunctionFragment(prop),
-                    args,
-                    {
-                        ...transactionOptions,
-                        value:
-                            transactionOptions.value ??
-                            transactionValue?.value ??
-                            0
-                    }
-                );
+                if (contract.txSender != null) {
+                    return await contract.thor.contracts.executeContractTransaction(
+                        contract.txSender,
+                        contract.address,
+                        contract.getFunctionFragment(prop),
+                        args,
+                        {
+                            ...transactionOptions,
+                            value:
+                                transactionOptions.value ??
+                                transactionValue?.value ??
+                                0
+                        }
+                    );
+                } else {
+                    throw new Error('Transaction sender is undefined.');
+                }
             };
         }
     });
