@@ -125,8 +125,6 @@ class ContractsModule {
             options?.value ?? 0
         );
 
-        console.log('clause', clause);
-        console.log('options', options);
         const tx = await txSender.sendTransaction([clause], options);
 
         return {

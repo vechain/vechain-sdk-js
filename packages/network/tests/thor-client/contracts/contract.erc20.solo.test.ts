@@ -46,7 +46,6 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        console.log(factory.getDeployTransaction());
         expect(factory.getDeployTransaction()).not.toBe(undefined);
 
         const contract: Contract = await factory.waitForDeployment();
