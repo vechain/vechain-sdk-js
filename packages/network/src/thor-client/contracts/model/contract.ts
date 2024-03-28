@@ -18,7 +18,7 @@ import {
     getReadProxy,
     getTransactProxy
 } from './contract-proxy';
-import { type Signer } from '@vechain/sdk-wallet/src/signers/types.d';
+import { type Signer } from '@vechain/sdk-wallet';
 
 /**
  * A class representing a smart contract deployed on the blockchain.

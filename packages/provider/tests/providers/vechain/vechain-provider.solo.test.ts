@@ -10,7 +10,7 @@ import {
     waitForMessage
 } from '../helpers';
 import { coder, type FunctionFragment } from '@vechain/sdk-core';
-import { PrivateKeySigner } from '@vechain/sdk-wallet/src/signers';
+import { PrivateKeySigner } from '@vechain/sdk-wallet';
 
 /**
  * Vechain provider tests - Solo Network

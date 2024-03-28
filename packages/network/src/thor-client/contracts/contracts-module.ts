@@ -16,7 +16,7 @@ import type {
 import { type SendTransactionResult } from '../transactions';
 import { type ThorClient } from '../thor-client';
 import { Contract, ContractFactory } from './model';
-import { type Signer } from '@vechain/sdk-wallet/src/signers/types.d';
+import { type Signer } from '@vechain/sdk-wallet';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.

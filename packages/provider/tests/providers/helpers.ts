@@ -2,7 +2,7 @@ import { type SubscriptionEvent, type VechainProvider } from '../../src';
 import { ERC20_ABI, ERC20_BYTECODE, ERC721_BYTECODE } from './fixture';
 import { type Contract, type ThorClient } from '@vechain/sdk-network';
 import { ERC721_ABI } from '@vechain/sdk-core';
-import { type Signer } from '@vechain/sdk-wallet/src/signers';
+import { type Signer } from '@vechain/sdk-wallet';
 
 export async function waitForMessage(
     provider: VechainProvider

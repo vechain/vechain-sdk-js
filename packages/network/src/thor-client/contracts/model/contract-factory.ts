@@ -8,10 +8,7 @@ import { type ThorClient } from '../../thor-client';
 import { Contract } from './contract';
 import { assert, buildError, ERROR_CODES } from '@vechain/sdk-errors';
 import { type TransactionReceipt } from '../../transactions';
-import {
-    type SendTxResponse,
-    type Signer
-} from '@vechain/sdk-wallet/src/signers/types.d';
+import { type SendTxResponse, type Signer } from '@vechain/sdk-wallet';
 
 /**
  * A factory class for deploying smart contracts to a blockchain using a ThorClient.

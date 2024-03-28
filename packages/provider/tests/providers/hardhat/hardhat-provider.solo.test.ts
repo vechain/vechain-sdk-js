@@ -10,7 +10,7 @@ import {
 } from '../helpers';
 import { coder, type FunctionFragment } from '@vechain/sdk-core';
 import { BaseWallet } from '@vechain/sdk-wallet';
-import { PrivateKeySigner, type Signer } from '@vechain/sdk-wallet/src/signers';
+import { PrivateKeySigner, type Signer } from '@vechain/sdk-wallet';
 
 /**
  * Vechain provider tests - Solo Network

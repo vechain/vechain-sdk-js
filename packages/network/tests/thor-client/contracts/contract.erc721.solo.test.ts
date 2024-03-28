@@ -9,7 +9,7 @@ import {
     type FunctionFragment,
     type Log
 } from '@vechain/sdk-core';
-import { PrivateKeySigner } from '@vechain/sdk-wallet/src/signers';
+import { PrivateKeySigner } from '@vechain/sdk-wallet';
 
 /**
  * Tests for the ERC721 Contract, specifically focusing on NFT contract-related functionality.

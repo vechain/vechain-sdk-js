@@ -32,7 +32,7 @@ import {
     InvalidAbiFunctionError,
     TransactionMissingPrivateKeyError
 } from '@vechain/sdk-errors';
-import { PrivateKeySigner } from '@vechain/sdk-wallet/src/signers';
+import { PrivateKeySigner } from '@vechain/sdk-wallet';
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.
