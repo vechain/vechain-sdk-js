@@ -18,10 +18,6 @@ class PrivateKeySigner implements Signer {
         this.address = addressUtils.fromPrivateKey(privateKey);
     }
 
-    static new = (client: ThorClient, privateKey: Buffer): PrivateKeySigner => {
-        return new PrivateKeySigner(client, privateKey);
-    };
-
     public sendTransaction = async (
         clauses: ExtendedClause[],
         options?: SendTxOptions | undefined
@@ -48,11 +44,8 @@ class PrivateKeySigner implements Signer {
         const sendTxRes =
             await this.client.transactions.sendTransaction(signedTx);
 
-        sendTxRes.wait = async () => {
-            return await this.client.transactions.waitForTransaction(
-                sendTxRes.id
-            );
-        };
+        sendTxRes.wait = async () =>
+            await this.client.transactions.waitForTransaction(sendTxRes.id);
 
         return {
             ...sendTxRes,

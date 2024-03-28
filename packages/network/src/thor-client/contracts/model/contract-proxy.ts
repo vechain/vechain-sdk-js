@@ -10,6 +10,7 @@ import { fragment } from '@vechain/sdk-core';
 import { type ContractCallResult } from '../types';
 import { ContractFilter } from './contract-filter';
 import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
+import { type Signer } from '@vechain/sdk-wallet';
 
 /**
  * Creates a Proxy object for reading contract state, allowing for the dynamic invocation of contract read operations.
@@ -47,6 +48,15 @@ function getTransactProxy(contract: Contract): ContractFunctionTransact {
             return async (
                 ...args: unknown[]
             ): Promise<SendTransactionResult> => {
+                if (contract.getSigner() === undefined) {
+                    throw buildError(
+                        'Contract.getTransactProxy',
+                        ERROR_CODES.TRANSACTION.MISSING_PRIVATE_KEY,
+                        'Signer is required to transact with the contract.',
+                        { prop }
+                    );
+                }
+
                 // get the transaction options for the contract
                 const transactionOptions =
                     contract.getContractTransactOptions();
@@ -59,28 +69,19 @@ function getTransactProxy(contract: Contract): ContractFunctionTransact {
                     args = args.filter((arg) => !isTransactionValue(arg));
                 }
 
-                if (contract.signer != null) {
-                    return await contract.thor.contracts.executeContractTransaction(
-                        contract.signer,
-                        contract.address,
-                        contract.getFunctionFragment(prop),
-                        args,
-                        {
-                            ...transactionOptions,
-                            value:
-                                transactionOptions.value ??
-                                transactionValue?.value ??
-                                0
-                        }
-                    );
-                } else {
-                    throw buildError(
-                        'Contract.getTransactProxy',
-                        ERROR_CODES.TRANSACTION.MISSING_PRIVATE_KEY,
-                        'Signer is undefined.',
-                        { prop }
-                    );
-                }
+                return await contract.thor.contracts.executeContractTransaction(
+                    contract.signer as Signer,
+                    contract.address,
+                    contract.getFunctionFragment(prop),
+                    args,
+                    {
+                        ...transactionOptions,
+                        value:
+                            transactionOptions.value ??
+                            transactionValue?.value ??
+                            0
+                    }
+                );
             };
         }
     });
