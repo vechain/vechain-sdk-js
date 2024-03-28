@@ -65,6 +65,29 @@ class Contract {
     }
 
     /**
+     * Sets the signer to attach to the contract.
+     * @param signer - The signer to attach to the contract.
+     */
+    public setSigner(signer: Signer): void {
+        this.signer = signer;
+    }
+
+    /**
+     * Clears the signer attached to the contract.
+     */
+    public clearSigner(): void {
+        this.signer = undefined;
+    }
+
+    /**
+     * Retrieves the signer attached to the contract.
+     * @returns The signer attached to the contract.
+     */
+    public getSigner(): Signer | undefined {
+        return this.signer;
+    }
+
+    /**
      * Sets the options for contract calls.
      * @param options - The contract call options to set.
      * @returns The updated contract call options.

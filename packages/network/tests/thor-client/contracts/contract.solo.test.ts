@@ -29,7 +29,8 @@ import {
 } from '../../../src';
 import {
     ContractDeploymentFailedError,
-    InvalidAbiFunctionError
+    InvalidAbiFunctionError,
+    TransactionMissingPrivateKeyError
 } from '@vechain/sdk-errors';
 import { PrivateKeySigner } from '@vechain/sdk-wallet/src/signers';
 
@@ -268,22 +269,27 @@ describe('ThorClient - Contracts', () => {
     /**
      * Test case for calling a contract function with different private keys.
      */
-    // test('call a contract function with different private keys', async () => {
-    //     // Create a contract factory that is already deploying the example contract
-    //     const factory = await createExampleContractFactory();
+    test('call a contract function with different private keys', async () => {
+        // Create a contract factory that is already deploying the example contract
+        const factory = await createExampleContractFactory();
 
-    //     // Wait for the deployment to complete and obtain the contract instance
-    //     const contract: Contract = await factory.waitForDeployment();
+        // Wait for the deployment to complete and obtain the contract instance
+        const contract: Contract = await factory.waitForDeployment();
 
-    //     // The contract call should fail because the private key is not set
-    //     await expect(contract.transact.set(123)).rejects.toThrow();
+        // Remove the signer
+        contract.clearSigner();
+        // The contract call should fail because the private key is not set
+        await expect(contract.transact.set(123)).rejects.toThrow();
 
-    //     await (await contract.transact.set(123)).wait();
+        // Set the signer
+        contract.setSigner(pkSigner);
 
-    //     const callFunctionGetResult = await contract.read.get();
+        await (await contract.transact.set(123)).wait();
 
-    //     expect(callFunctionGetResult).toEqual([BigInt(123)]);
-    // }, 10000);
+        const callFunctionGetResult = await contract.read.get();
+
+        expect(callFunctionGetResult).toEqual([BigInt(123)]);
+    }, 10000);
 
     /**
      * Test case for loading a deployed contract and calling its functions.
@@ -325,25 +331,25 @@ describe('ThorClient - Contracts', () => {
     /**
      * Test case for loading a deployed contract without adding a private key
      */
-    // test('load a deployed contract without adding a private key and transact', async () => {
-    //     // Create a contract factory that is already deploying the example contract
-    //     const factory = await createExampleContractFactory();
+    test('load a deployed contract without adding a private key and transact', async () => {
+        // Create a contract factory that is already deploying the example contract
+        const factory = await createExampleContractFactory();
 
-    //     // Wait for the deployment to complete and obtain the contract instance
-    //     const contract: Contract = await factory.waitForDeployment();
+        // Wait for the deployment to complete and obtain the contract instance
+        const contract: Contract = await factory.waitForDeployment();
 
-    //     // Load the deployed contract using the contract address, ABI and private key
-    //     const loadedContract = thorSoloClient.contracts.load(
-    //         contract.address,
-    //         contract.abi,
-    //         undefined
-    //     );
+        // Load the deployed contract using the contract address, ABI and private key
+        const loadedContract = thorSoloClient.contracts.load(
+            contract.address,
+            contract.abi,
+            undefined
+        );
 
-    //     // The contract call should fail because the private key is not set
-    //     await expect(loadedContract.transact.set(123)).rejects.toThrowError(
-    //         TransactionMissingPrivateKeyError
-    //     );
-    // }, 10000);
+        // The contract call should fail because the private key is not set
+        await expect(loadedContract.transact.set(123)).rejects.toThrowError(
+            TransactionMissingPrivateKeyError
+        );
+    }, 10000);
 
     /**
      * Test case for creating a filter for a contract event.

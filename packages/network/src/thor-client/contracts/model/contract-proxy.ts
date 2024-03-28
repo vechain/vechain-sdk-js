@@ -77,7 +77,7 @@ function getTransactProxy(contract: Contract): ContractFunctionTransact {
                     throw buildError(
                         'Contract.getTransactProxy',
                         ERROR_CODES.TRANSACTION.MISSING_PRIVATE_KEY,
-                        'Transaction sender is undefined.',
+                        'Signer is undefined.',
                         { prop }
                     );
                 }
