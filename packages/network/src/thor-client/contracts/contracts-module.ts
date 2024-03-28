@@ -129,9 +129,8 @@ class ContractsModule {
 
         return {
             id: tx.id,
-            wait: async () => {
-                return await this.thor.transactions.waitForTransaction(tx.id);
-            }
+            wait: async () =>
+                await this.thor.transactions.waitForTransaction(tx.id)
         };
     }
 

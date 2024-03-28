@@ -9,6 +9,7 @@ import { type Contract } from './contract';
 import { fragment } from '@vechain/sdk-core';
 import { type ContractCallResult } from '../types';
 import { ContractFilter } from './contract-filter';
+import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 
 /**
  * Creates a Proxy object for reading contract state, allowing for the dynamic invocation of contract read operations.
@@ -73,7 +74,12 @@ function getTransactProxy(contract: Contract): ContractFunctionTransact {
                         }
                     );
                 } else {
-                    throw new Error('Transaction sender is undefined.');
+                    throw buildError(
+                        'Contract.getTransactProxy',
+                        ERROR_CODES.TRANSACTION.MISSING_PRIVATE_KEY,
+                        'Transaction sender is undefined.',
+                        { prop }
+                    );
                 }
             };
         }
