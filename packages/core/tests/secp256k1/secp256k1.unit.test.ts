@@ -164,4 +164,12 @@ describe('Secp256k1', () => {
         expect(Buffer.isBuffer(result)).toBe(true);
         expect(result.length).toBe(16);
     });
+
+    test('inflate', () => {
+        const compressedPublicKey = Buffer.from(
+            '02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5',
+            'hex'
+        );
+        console.log(secp256k1.decompressPublicKey(compressedPublicKey));
+    });
 });
