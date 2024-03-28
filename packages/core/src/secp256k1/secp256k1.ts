@@ -121,7 +121,7 @@ function recover(messageHash: Buffer, sig: Buffer): Buffer {
 // https://bitcoin.stackexchange.com/questions/44024/get-uncompressed-public-key-from-compressed-form
 // https://www.secg.org/sec2-v2.pdf
 // https://cryptobook.nakov.com/digital-signatures/ecdsa-sign-verify-messages
-function extendedPublicKeyToArray(
+function publicKeyToArray(
     extendedPublicKey: Buffer,
     compact: boolean
 ): number[] {
@@ -132,54 +132,25 @@ function extendedPublicKeyToArray(
     return keyPair.getPublic(compact, 'array');
 }
 
-function decompressPublicKey(compressedPublicKey: Uint8Array): Buffer {
-    const prefix = compressedPublicKey.slice(0, 1);
-    const pub = compressedPublicKey.slice(1);
-    const x = BigInt(Hex0x.of(pub));
-    const secp256k1P = BigInt(
-        '0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEFFFFFC2F'
-    );
-    const secp256k1A = BigInt('0x0');
-    const secp256k1B = BigInt('0x7');
-
-    const ySquare = (x ** 3n + secp256k1A * x + secp256k1B) % secp256k1P;
-    const pOverFour = (secp256k1P + 1n) / 4n;
-    let y = ySquare ** pOverFour % secp256k1P;
-
-    const isYEven = y % 2n === 0n;
-    const isSecondKey = (prefix[0] === 0x03);
-
-    if ((isYEven && isSecondKey) || (!isYEven && !isSecondKey)){
-        y = secp256k1P - y;
+function compressPublicKey(publicKey: Uint8Array): Uint8Array {
+    const prefix = publicKey.at(0);
+    if (prefix === 4) {
+        // Compressed.
+        const x = publicKey.slice(1, 33);
+        const y = publicKey.slice(33, 65);
+        const isYOdd = y[y.length - 1] & 1;
+        // Prefix with 0x02 if Y coordinate is even, 0x03 if odd.
+        const compressedKey = Buffer.concat([Buffer.from([2 + isYOdd]), x]);
+        return compressedKey;
     }
-
-    const decompressedPub = Buffer.concat([
-        Buffer.from([0x04]),
-        Buffer.from(x.toString(16).padStart(64, "0"), "hex"),
-        Buffer.from(y.toString(16).padStart(64, "0"), "hex")
-    ]);
-
-    return decompressedPub;
+    // Uncompressed.
+    return publicKey;
 }
 
 /*
 const compressedPublicKey = Buffer.from("02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5", 'hex');
 console.log(decompressPublicKey(compressedPublicKey));
  */
-
-function inflate(compressedPublicKey: Uint8Array): Buffer {
-    // const prefix = compressedPublicKey[0];
-    const x = BigInt(Hex0x.of(compressedPublicKey.slice(1)));
-    const y2 =
-        (x ** 3n + x * _secp256k1.CURVE.a + _secp256k1.CURVE.b) %
-        _secp256k1.CURVE.p;
-    // const exp = (_secp256k1.CURVE.p + 1n) / 4n;
-    return Buffer.concat([
-        Buffer.from([0x04]), // Prefix byte for uncompressed key
-        Buffer.from(Hex.of(x)), // X-coordinate
-        Buffer.from(Hex.of(y2)) // Y-coordinate
-    ]);
-}
 
 /**
  * Generates random bytes of specified length.
@@ -198,11 +169,10 @@ function randomBytes(bytesLength?: number | undefined): Buffer {
 }
 
 export const secp256k1 = {
-    decompressPublicKey,
+    compressPublicKey,
     derivePublicKey,
-    extendedPublicKeyToArray,
+    publicKeyToArray,
     generatePrivateKey,
-    inflate,
     isValidMessageHash,
     isValidPrivateKey,
     recover,

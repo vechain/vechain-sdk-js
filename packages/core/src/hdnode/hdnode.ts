@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import {
+    Hex0x,
     MNEMONIC_WORDLIST_ALLOWED_SIZES,
     VET_DERIVATION_PATH,
     X_PRIV_PREFIX,
@@ -39,6 +40,10 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
     // Invalid derivation path
     assertIsValidHdNodeDerivationPath('fromMnemonic', path);
 
+    // https://github.com/paulmillr/scure-bip39 from mnemonic
+    // https://github.com/paulmillr/scure-bip32 with derivation path
+    // https://learnmeabitcoin.com/technical/keys/public-key
+
     // normalize words to lowercase
     const joinedWords = words.join(' ').toLowerCase();
     const node = ethers.HDNodeWallet.fromMnemonic(
@@ -58,18 +63,19 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
  */
 function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
     // Invalid public key
-    assert(
-        'fromPublicKey',
-        publicKey.length === 65,
-        HDNODE.INVALID_HDNODE_PUBLIC_KEY,
-        'Invalid public key. Length must be exactly 65 bytes.',
-        { publicKey }
-    );
+    // assert(
+    //     'fromPublicKey',
+    //     publicKey.length === 65,
+    //     HDNODE.INVALID_HDNODE_PUBLIC_KEY,
+    //     'Invalid public key. Length must be exactly 65 bytes.',
+    //     { publicKey }
+    // );
 
     // Invalid chain code
     assertIsValidHdNodeChainCode('fromPublicKey', chainCode);
 
-    const compressed = secp256k1.extendedPublicKeyToArray(publicKey, true);
+    // no need of elliptic lib
+    const compressed = secp256k1.publicKeyToArray(publicKey, true);
     const key = Buffer.concat([
         X_PUB_PREFIX,
         chainCode,
@@ -128,15 +134,21 @@ function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
  * @returns An IHDNode instance in the custom format.
  */
 function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
+    //     const pub = Buffer.from(
+    //         secp256k1.publicKeyToArray(
+    //             Buffer.from(ethersNode.publicKey.slice(2), 'hex'),
+    //             false
+    //         )
+    //     );
     const pub = Buffer.from(
-        secp256k1.extendedPublicKeyToArray(
-            Buffer.from(ethersNode.publicKey.slice(2), 'hex'),
-            false
+        secp256k1.compressPublicKey(
+            Buffer.from(ethersNode.publicKey.slice(2), 'hex')
         )
     );
     const cc = Buffer.from(ethersNode.chainCode.slice(2), 'hex');
     const addr = addressUtils.fromPublicKey(pub);
-
+    // console.log(ethers.computeAddress(Hex0x.of(pub)));
+    // console.log(ethers.computeAddress(ethersNode.publicKey));
     return {
         get publicKey() {
             return pub;

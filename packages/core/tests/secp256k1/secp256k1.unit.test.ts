@@ -6,7 +6,7 @@ import {
     messageHashBuffer,
     privateKey,
     publicKey,
-    puclicKeyAsArray,
+    publicKeyAsArray,
     signature,
     validMessageHashes,
     validPrivateKeys
@@ -17,6 +17,7 @@ import {
     InvalidSecp256k1SignatureError,
     InvalidSecp256k1SignatureRecoveryError
 } from '@vechain/sdk-errors';
+import { simplePublicKey } from '../address/fixture';
 
 /**
  * Secp256k1 tests
@@ -143,8 +144,8 @@ describe('Secp256k1', () => {
      */
     test('public key format conversion', () => {
         expect(
-            secp256k1.extendedPublicKeyToArray(publicKey, true)
-        ).toStrictEqual(puclicKeyAsArray);
+            secp256k1.publicKeyToArray(publicKey, true)
+        ).toStrictEqual(publicKeyAsArray);
     });
 
     /**
@@ -165,11 +166,7 @@ describe('Secp256k1', () => {
         expect(result.length).toBe(16);
     });
 
-    test('inflate', () => {
-        const compressedPublicKey = Buffer.from(
-            '02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5',
-            'hex'
-        );
-        console.log(secp256k1.decompressPublicKey(compressedPublicKey));
+    test('compress', () => {
+        console.log(secp256k1.compressPublicKey(publicKey));
     });
 });
