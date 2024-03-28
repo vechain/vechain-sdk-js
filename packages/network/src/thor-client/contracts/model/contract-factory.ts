@@ -10,7 +10,7 @@ import { assert, buildError, ERROR_CODES } from '@vechain/sdk-errors';
 import { type TransactionReceipt } from '../../transactions';
 import {
     type SendTxResponse,
-    type TransactionSender
+    type Signer
 } from '@vechain/sdk-wallet/src/signers/types.d';
 
 /**
@@ -30,7 +30,7 @@ class ContractFactory {
     /**
      * The private key used for signing transactions.
      */
-    private readonly txSender: TransactionSender;
+    private readonly signer: Signer;
 
     /**
      * An instance of ThorClient to interact with the blockchain.
@@ -52,12 +52,12 @@ class ContractFactory {
     constructor(
         abi: InterfaceAbi,
         bytecode: string,
-        txSender: TransactionSender,
+        signer: Signer,
         thor: ThorClient
     ) {
         this.abi = abi;
         this.bytecode = bytecode;
-        this.txSender = txSender;
+        this.signer = signer;
         this.thor = thor;
     }
 
@@ -87,12 +87,12 @@ class ContractFactory {
             deployParams
         );
 
-        this.deployTransaction = await this.txSender.sendTransaction(
+        this.deployTransaction = await this.signer.sendTransaction(
             [deployContractClause],
             options
         );
 
-        await this.txSender.sendTransaction([deployContractClause]); //* ******* added later - test */
+        await this.signer.sendTransaction([deployContractClause]); //* ******* added later - test */
 
         return this;
     }
@@ -141,7 +141,7 @@ class ContractFactory {
             transactionReceipt?.outputs[0].contractAddress as string,
             this.abi,
             this.thor,
-            this.txSender,
+            this.signer,
             transactionReceipt as TransactionReceipt
         );
     }

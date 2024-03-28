@@ -3,11 +3,11 @@ import {
     type SendTxOptions,
     type ExtendedClause,
     type SendTxResponse,
-    type TransactionSender
-} from './types';
+    type Signer
+} from '../types';
 import { addressUtils, secp256k1, Transaction } from '@vechain/sdk-core';
 
-class PrivateKeySigner implements TransactionSender {
+class PrivateKeySigner implements Signer {
     private readonly privateKey: Buffer;
     private readonly address: string;
     private readonly client: ThorClient;
@@ -22,7 +22,7 @@ class PrivateKeySigner implements TransactionSender {
         return new PrivateKeySigner(client, privateKey);
     };
 
-    public sendTransaction: TransactionSender['sendTransaction'] = async (
+    public sendTransaction = async (
         clauses: ExtendedClause[],
         options?: SendTxOptions | undefined
     ): Promise<SendTxResponse> => {

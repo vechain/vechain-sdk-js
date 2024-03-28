@@ -16,7 +16,7 @@ import type {
 import { type SendTransactionResult } from '../transactions';
 import { type ThorClient } from '../thor-client';
 import { Contract, ContractFactory } from './model';
-import { type TransactionSender } from '@vechain/sdk-wallet/src/signers/types.d';
+import { type Signer } from '@vechain/sdk-wallet/src/signers/types.d';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -40,9 +40,9 @@ class ContractsModule {
     public createContractFactory(
         abi: InterfaceAbi,
         bytecode: string,
-        txSender: TransactionSender
+        signer: Signer
     ): ContractFactory {
-        return new ContractFactory(abi, bytecode, txSender, this.thor);
+        return new ContractFactory(abi, bytecode, signer, this.thor);
     }
 
     /**
@@ -53,12 +53,8 @@ class ContractsModule {
      * @param callerPrivateKey - Optional. The private key of the caller, used for signing transactions when interacting with the contract.
      * @returns A new instance of the Contract, initialized with the provided address, ABI, and optionally, a caller private key.
      */
-    public load(
-        address: string,
-        abi: InterfaceAbi,
-        txSender?: TransactionSender
-    ): Contract {
-        return new Contract(address, abi, this.thor, txSender);
+    public load(address: string, abi: InterfaceAbi, signer?: Signer): Contract {
+        return new Contract(address, abi, this.thor, signer);
     }
 
     /**
@@ -111,7 +107,7 @@ class ContractsModule {
      * @returns A promise resolving to a SendTransactionResult object.
      */
     public async executeContractTransaction(
-        txSender: TransactionSender,
+        signer: Signer,
         contractAddress: string,
         functionFragment: FunctionFragment,
         functionData: unknown[],
@@ -125,7 +121,7 @@ class ContractsModule {
             options?.value ?? 0
         );
 
-        const tx = await txSender.sendTransaction([clause], options);
+        const tx = await signer.sendTransaction([clause], options);
 
         return {
             id: tx.id,

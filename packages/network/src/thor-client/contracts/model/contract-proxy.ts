@@ -59,9 +59,9 @@ function getTransactProxy(contract: Contract): ContractFunctionTransact {
                     args = args.filter((arg) => !isTransactionValue(arg));
                 }
 
-                if (contract.txSender != null) {
+                if (contract.signer != null) {
                     return await contract.thor.contracts.executeContractTransaction(
-                        contract.txSender,
+                        contract.signer,
                         contract.address,
                         contract.getFunctionFragment(prop),
                         args,

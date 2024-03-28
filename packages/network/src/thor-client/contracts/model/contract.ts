@@ -18,7 +18,7 @@ import {
     getReadProxy,
     getTransactProxy
 } from './contract-proxy';
-import { type TransactionSender } from '@vechain/sdk-wallet/src/signers/types.d';
+import { type Signer } from '@vechain/sdk-wallet/src/signers/types.d';
 
 /**
  * A class representing a smart contract deployed on the blockchain.
@@ -35,7 +35,7 @@ class Contract {
     public filters: ContractFunctionFilter = {};
 
     // should be private readonly
-    public txSender: TransactionSender | undefined;
+    public signer: Signer | undefined;
     private contractCallOptions: ContractCallOptions = {};
     private contractTransactionOptions: ContractTransactionOptions = {};
 
@@ -51,14 +51,14 @@ class Contract {
         address: string,
         abi: InterfaceAbi,
         thor: ThorClient,
-        txSender?: TransactionSender,
+        signer?: Signer,
         transactionReceipt?: TransactionReceipt
     ) {
         this.abi = abi;
         this.thor = thor;
         this.address = address;
         this.deployTransactionReceipt = transactionReceipt;
-        this.txSender = txSender;
+        this.signer = signer;
         this.read = getReadProxy(this);
         this.transact = getTransactProxy(this);
         this.filters = getFilterProxy(this);

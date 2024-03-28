@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { mnemonic } from '@vechain/sdk-core';
 import { HttpClient, ThorClient } from '@vechain/sdk-network';
-import { PrivateKeySigner } from '../../src/signers/private-key-signer';
+import { PrivateKeySigner } from '../../src/signers/private-key-signer/private-key-signer';
 
 /**
  * Unit test for Signer class.

@@ -1,7 +1,7 @@
 import { type TransactionClause } from '@vechain/sdk-core';
 import { type TransactionReceipt } from '@vechain/sdk-network';
 
-interface TransactionSender {
+interface Signer {
     sendTransaction: (
         clauses: ExtendedClause[],
         options?: SendTxOptions
@@ -52,9 +52,4 @@ interface SendTxResponse {
     wait: () => Promise<TransactionReceipt | null>;
 }
 
-export type {
-    TransactionSender,
-    SendTxResponse,
-    ExtendedClause,
-    SendTxOptions
-};
+export type { Signer, SendTxResponse, ExtendedClause, SendTxOptions };
