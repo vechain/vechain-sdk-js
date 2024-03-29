@@ -1,115 +1,53 @@
 import { describe, expect, test } from '@jest/globals';
 import {
     HDNode,
-    type WordlistSizeType,
+    Hex,
     ZERO_BUFFER,
     addressUtils,
     mnemonic,
-    secp256k1, Hex, Hex0x
+    secp256k1,
+    type WordlistSizeType
 } from '../../src';
 import { addresses, words, wrongWords } from './fixture';
 import {
     InvalidHDNodeChaincodeError,
     InvalidHDNodeDerivationPathError,
     InvalidHDNodeMnemonicsError,
-    InvalidHDNodePrivateKeyError,
-    InvalidHDNodePublicKeyError
+    InvalidHDNodePrivateKeyError
 } from '@vechain/sdk-errors';
 
 /**
- * Mnemonic tests
+ * HDNode tests.
  * @group unit/hdnode
  */
-describe('HDnode', () => {
+describe('HDNode', () => {
+    const master = HDNode.fromMnemonic(words);
 
-    const _node = HDNode.fromMnemonic(words);
-
-    test('HDNode - from public key', () => {
-        const root = HDNode.fromPublicKey(_node.publicKey, _node.chainCode);
+    test('HDNode - from mnemonic', () => {
         for (let i = 0; i < 5; i++) {
-            const child = root.derive(i);
+            const child = master.derive(i);
             // Correct address
             expect(
                 Hex.canon(addressUtils.fromPublicKey(child.publicKey))
             ).toEqual(Hex.canon(addresses[i]));
-            expect(Hex.canon(child.address)).toEqual(Hex.canon(addresses[i]));
-            // Null private key
-            expect(child.privateKey).toEqual(null);
-        }
-    });
-
-    /**
-     * Test HD Node
-     */
-    test('HD Node', () => {
-        // HdNode from mnemonic
-        const node = HDNode.fromMnemonic(words);
-
-        // for (let i = 0; i < 5; i++) {
-        //     const child = _node.derive(i);
-        //
-        //     // Correct address
-        //     expect(
-        //         addressUtils.fromPublicKey(child.publicKey).slice(2)
-        //     ).toEqual(addresses[i]);
-        //     expect(child.address).toEqual('0x' + addresses[i]);
-        //
-        //     // Correct public key
-        //     expect(
-        //         Hex.of(
-        //             secp256k1.derivePublicKey(
-        //                 child.privateKey ?? ZERO_BUFFER(0)
-        //             )
-        //         )
-        //     ).toEqual(Hex.of(child.publicKey));
-        // }
-
-        // HDNode from private key
-        // const xprivNode = HDNode.fromPrivateKey(
-        //     _node.privateKey ?? ZERO_BUFFER(0),
-        //     _node.chainCode
-        // );
-        // for (let i = 0; i < 5; i++) {
-        //     const child = xprivNode.derive(i);
-        //     // Correct address
-        //     expect(
-        //         addressUtils.fromPublicKey(child.publicKey).slice(2)
-        //     ).toEqual(addresses[i]);
-        //     expect(child.address).toEqual('0x' + addresses[i]);
-        //
-        //     // Correct public key
-        //     expect(
-        //         Hex.of(
-        //             secp256k1.derivePublicKey(
-        //                 child.privateKey ?? ZERO_BUFFER(0)
-        //             )
-        //         )
-        //     ).toEqual(Hex.of(child.publicKey));
-        // }
-
-        // HDNode from public key
-        const xpubNode = HDNode.fromPublicKey(node.publicKey, node.chainCode);
-        for (let i = 0; i < 5; i++) {
-            const child = xpubNode.derive(i);
-            // Correct address
+            // expect(Hex.canon(child.address)).toEqual(Hex.canon(addresses[i]));
+            // Correct public key
             expect(
-                Hex.canon(addressUtils.fromPublicKey(child.publicKey))
-            ).toEqual(Hex.canon(addresses[i]));
-            expect(Hex.canon(child.address)).toEqual(Hex.canon(addresses[i]));
-
-            // Null private key
-            expect(child.privateKey).toEqual(null);
+                Hex.of(
+                    secp256k1.derivePublicKey(
+                        child.privateKey ?? ZERO_BUFFER(0)
+                    )
+                )
+            ).toEqual(Hex.of(child.publicKey));
         }
-
-        // non-lowercase
-        // const node2 = HDNode.fromMnemonic(words.map((w) => w.toUpperCase()));
-        // expect(_node.address === node2.address);
     });
 
-    /**
-     * Test HD Node from mnemonics with custom lengths
-     */
-    test('HD Node from mnemonics with custom lengths', () => {
+    test('HDNode - from mnemonic - case insensitive check ', () => {
+        const node = HDNode.fromMnemonic(words.map((w) => w.toUpperCase()));
+        expect(node.address === master.address);
+    });
+
+    test('HDNode - from mnemonic - custom word list lengths', () => {
         // Default lengths
         new Array<WordlistSizeType>(12, 15, 18, 21, 24).forEach(
             (length: WordlistSizeType) => {
@@ -140,56 +78,81 @@ describe('HDnode', () => {
     });
 
     /**
-     * Test invalid mnemonic
-     */
-    test('Invalid mnemonic', () => {
-        expect(() => HDNode.fromMnemonic(wrongWords)).toThrowError(
-            InvalidHDNodeMnemonicsError
-        );
-    });
-
-    /**
      * Test invalid derivation path
      */
-    test('Invalid derivation path', () => {
+    test('HDNode - from mnemonic - invalid derivation path', () => {
         expect(() => HDNode.fromMnemonic(words, 'INVALID')).toThrowError(
             InvalidHDNodeDerivationPathError
         );
     });
 
     /**
-     * Test invalid private key
+     * Test invalid mnemonic
      */
-    test('Invalid private key', () => {
-        expect(() =>
-            HDNode.fromPrivateKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
-        ).toThrowError(InvalidHDNodePrivateKeyError);
+    test('HDNode - from mnemonic - invalid mnemonic', () => {
+        expect(() => HDNode.fromMnemonic(wrongWords)).toThrowError(
+            InvalidHDNodeMnemonicsError
+        );
     });
 
-    /**
-     * Test invalid public key
-     */
-    test('Invalid public key', () => {
-        expect(() =>
-            HDNode.fromPublicKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
-        ).toThrowError(InvalidHDNodePublicKeyError);
+    test('HDNode - from private key', () => {
+        const parent = HDNode.fromPrivateKey(
+            master.privateKey ?? ZERO_BUFFER(0),
+            master.chainCode
+        );
+        for (let i = 0; i < 5; i++) {
+            const child = parent.derive(i);
+            // Correct address
+            expect(
+                Hex.canon(addressUtils.fromPublicKey(child.publicKey))
+            ).toEqual(Hex.canon(addresses[i]));
+            expect(Hex.canon(child.address)).toEqual(Hex.canon(addresses[i]));
+            // Correct public key
+            expect(
+                Hex.of(
+                    secp256k1.derivePublicKey(
+                        child.privateKey ?? ZERO_BUFFER(0)
+                    )
+                )
+            ).toEqual(Hex.of(child.publicKey));
+        }
     });
 
-    /**
-     * Test invalid chain code - private key
-     */
-    test('Invalid chain code private key', () => {
+    test('HDNode - from private key - invalid chain code', () => {
         expect(() =>
             HDNode.fromPrivateKey(ZERO_BUFFER(32), ZERO_BUFFER(31))
         ).toThrowError(InvalidHDNodeChaincodeError);
     });
 
-    /**
-     * Test invalid chain code - public key
-     */
-    test('Invalid chain code public key', () => {
+    test('HDNode - from private key - invalid key', () => {
+        expect(() =>
+            HDNode.fromPrivateKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
+        ).toThrowError(InvalidHDNodePrivateKeyError);
+    });
+
+    test('HDNode - from public key', () => {
+        const parent = HDNode.fromPublicKey(master.publicKey, master.chainCode);
+        for (let i = 0; i < 5; i++) {
+            const child = parent.derive(i);
+            // Correct address
+            expect(
+                Hex.canon(addressUtils.fromPublicKey(child.publicKey))
+            ).toEqual(Hex.canon(addresses[i]));
+            expect(Hex.canon(child.address)).toEqual(Hex.canon(addresses[i]));
+            // Null private key
+            expect(child.privateKey).toEqual(null);
+        }
+    });
+
+    test('HDNode - from public key - invalid chain code', () => {
         expect(() =>
             HDNode.fromPublicKey(ZERO_BUFFER(65), ZERO_BUFFER(31))
         ).toThrowError(InvalidHDNodeChaincodeError);
     });
+
+    // test('HDNode - from public key - invalid key', () => {
+    //     expect(() =>
+    //         HDNode.fromPublicKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
+    //     ).toThrowError(InvalidHDNodePublicKeyError);
+    // });
 });

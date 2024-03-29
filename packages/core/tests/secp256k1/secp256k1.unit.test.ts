@@ -17,7 +17,6 @@ import {
     InvalidSecp256k1SignatureError,
     InvalidSecp256k1SignatureRecoveryError
 } from '@vechain/sdk-errors';
-import { simplePublicKey } from '../address/fixture';
 
 /**
  * Secp256k1 tests
@@ -143,9 +142,9 @@ describe('Secp256k1', () => {
      * Public key format conversion
      */
     test('public key format conversion', () => {
-        expect(
-            secp256k1.publicKeyToArray(publicKey, true)
-        ).toStrictEqual(publicKeyAsArray);
+        expect(secp256k1.publicKeyToArray(publicKey, true)).toStrictEqual(
+            publicKeyAsArray
+        );
     });
 
     /**

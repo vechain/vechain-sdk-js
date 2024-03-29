@@ -1,4 +1,4 @@
-import { Hex, Hex0x, PRIVATE_KEY_MAX_VALUE, SIGNATURE_LENGTH, ZERO_BUFFER } from '../utils';
+import { SIGNATURE_LENGTH, ZERO_BUFFER } from '../utils';
 import { ec as EC } from 'elliptic';
 import { assert, SECP256K1 } from '@vechain/sdk-errors';
 import {
@@ -9,6 +9,15 @@ import {
 import { BN } from 'bn.js';
 import { secp256k1 as _secp256k1 } from '@noble/curves/secp256k1';
 import { randomBytes as _randomBytes } from '@noble/hashes/utils';
+
+/**
+ * Biggest value of private key
+ * @internal
+ */
+const PRIVATE_KEY_MAX_VALUE = Buffer.from(
+    'fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141',
+    'hex'
+);
 
 // Curve algorithm.
 const curve = new EC('secp256k1');
@@ -23,15 +32,16 @@ function isValidMessageHash(hash: Buffer): boolean {
 }
 
 /**
- * Verify if private key is valid.
- * @returns If private key is valid or not.
+ * Verify if `privateKey` is valid.
+ * @returns `true` if `privateKey` is 32 bytes long, not zeros and in
+ * the ] 0 .. {@link PRIVATE_KEY_MAX_VALUE} [ range.
  */
-function isValidPrivateKey(key: Buffer): boolean {
+function isValidPrivateKey(privateKey: Buffer): boolean {
     return (
-        Buffer.isBuffer(key) &&
-        key.length === 32 &&
-        !key.equals(ZERO_BUFFER(32)) &&
-        key.compare(PRIVATE_KEY_MAX_VALUE) < 0
+        Buffer.isBuffer(privateKey) &&
+        privateKey.length === 32 &&
+        !privateKey.equals(ZERO_BUFFER(32)) &&
+        privateKey.compare(PRIVATE_KEY_MAX_VALUE) < 0
     );
 }
 
@@ -46,13 +56,20 @@ function generatePrivateKey(): Buffer {
 /**
  * Derive public key from private key using elliptic curve algorithm secp256k1.
  *
- * @throws{InvalidSecp256k1PrivateKeyError}
  * @param privateKey - private key to derive public key from.
+ * @param isCompressed - return the public key compressed if `true`,
+ * else uncompressed. `true` by default because the public key canonical
+ * representation is compressed.
  * @returns Public key derived from private key.
+ * @throws{InvalidSecp256k1PrivateKeyError} if `privateKey` is invalid.
+ * @see assertIsValidPrivateKey
  */
-function derivePublicKey(privateKey: Buffer): Buffer {
+function derivePublicKey(
+    privateKey: Buffer,
+    isCompressed: boolean = true
+): Buffer {
     assertIsValidPrivateKey('derivePublicKey', privateKey, isValidPrivateKey);
-    const publicKey = _secp256k1.getPublicKey(privateKey, false);
+    const publicKey = _secp256k1.getPublicKey(privateKey, isCompressed);
     return Buffer.from(publicKey);
 }
 
@@ -125,10 +142,10 @@ function publicKeyToArray(
     extendedPublicKey: Buffer,
     compact: boolean
 ): number[] {
-    console.log('EPKTA:I: ' + Hex.of(extendedPublicKey));
+    // console.log('EPKTA:I: ' + Hex.of(extendedPublicKey));
     const keyPair = curve.keyFromPublic(extendedPublicKey);
-    console.log('EPKTA:O: ' + keyPair.getPublic(false, 'hex'));
-    console.log('EPKTA:C: ' + keyPair.getPublic(true, 'hex'));
+    // console.log('EPKTA:O: ' + keyPair.getPublic(false, 'hex'));
+    // console.log('EPKTA:C: ' + keyPair.getPublic(true, 'hex'));
     return keyPair.getPublic(compact, 'array');
 }
 
