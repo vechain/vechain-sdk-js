@@ -1,6 +1,5 @@
 import { ethers } from 'ethers';
 import {
-    Hex,
     MNEMONIC_WORDLIST_ALLOWED_SIZES,
     VET_DERIVATION_PATH,
     X_PRIV_PREFIX,
@@ -20,7 +19,6 @@ import {
 
 import * as bip32 from '@scure/bip32';
 import * as bip39 from '@scure/bip39';
-import { keccak_256 } from '@noble/hashes/sha3';
 
 /**
  * Generates an HDNode instance using mnemonic words.
@@ -32,7 +30,6 @@ import { keccak_256 } from '@noble/hashes/sha3';
  */
 function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
     // Invalid mnemonic words
-    // bip39.validateMnemonic(mn, wordlist);
     assert(
         'fromMnemonic',
         MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(
@@ -46,29 +43,32 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
     // Invalid derivation path
     assertIsValidHdNodeDerivationPath('fromMnemonic', path);
 
-    // https://github.com/paulmillr/scure-bip39 from mnemonic
-    // https://github.com/paulmillr/scure-bip32 with derivation path
-    // https://learnmeabitcoin.com/technical/keys/public-key
+    // normalize words to lowercase
+    const joinedWords = words.join(' ').toLowerCase();
+    const node = ethers.HDNodeWallet.fromMnemonic(
+        ethers.Mnemonic.fromPhrase(joinedWords),
+        path
+    );
+    return ethersNodeToOurHDNode(node);
+}
+
+function fromMnemonicx(words: string[], path = VET_DERIVATION_PATH): IHDNode {
+    // Invalid mnemonic words
+    // bip39.validateMnemonic(mn, wordlist);
+
     const seed = bip39.mnemonicToSeedSync(words.join(' ').toLowerCase());
     const master = bip32.HDKey.fromMasterSeed(seed);
     const node = master.derive(path);
     return of(node);
-
-    // normalize words to lowercase
-    // const joinedWords = words.join(' ').toLowerCase();
-    // const node = ethers.HDNodeWallet.fromMnemonic(
-    //    ethers.Mnemonic.fromPhrase(joinedWords),
-    //    path
-    // );
-    // return ethersNodeToOurHDNode(node);
 }
 
 function of(hdkey: bip32.HDKey): IHDNode {
     const publicKey =
         hdkey.publicKey != null ? Buffer.from(hdkey.publicKey) : ZERO_BUFFER(0);
-    const address = Buffer.from(
-        keccak_256(publicKey).slice(publicKey.length - 20)
-    );
+    // const address = Buffer.from(
+    //     keccak_256(publicKey).slice(publicKey.length - 20)
+    // );
+    const addr = addressUtils.fromPublicKey(publicKey);
     return {
         get publicKey() {
             return publicKey;
@@ -84,7 +84,7 @@ function of(hdkey: bip32.HDKey): IHDNode {
                 : ZERO_BUFFER(0);
         },
         get address() {
-            return Hex.of(address);
+            return addr;
         },
         derive(index) {
             return of(hdkey.deriveChild(index));
@@ -189,8 +189,6 @@ function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
     );
     const cc = Buffer.from(ethersNode.chainCode.slice(2), 'hex');
     const addr = addressUtils.fromPublicKey(pub);
-    // console.log(ethers.computeAddress(Hex0x.of(pub)));
-    // console.log(ethers.computeAddress(ethersNode.publicKey));
     return {
         get publicKey() {
             return pub;
@@ -221,5 +219,6 @@ function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
 export const HDNode = {
     fromMnemonic,
     fromPublicKey,
-    fromPrivateKey
+    fromPrivateKey,
+    fromMnemonicx
 };

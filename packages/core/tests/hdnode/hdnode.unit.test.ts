@@ -21,7 +21,7 @@ import {
  * @group unit/hdnode
  */
 describe('HDNode', () => {
-    const master = HDNode.fromMnemonic(words);
+    const master = HDNode.fromMnemonicx(words);
 
     test('HDNode - from mnemonic', () => {
         for (let i = 0; i < 5; i++) {
@@ -30,7 +30,7 @@ describe('HDNode', () => {
             expect(
                 Hex.canon(addressUtils.fromPublicKey(child.publicKey))
             ).toEqual(Hex.canon(addresses[i]));
-            // expect(Hex.canon(child.address)).toEqual(Hex.canon(addresses[i]));
+            expect(Hex.canon(child.address)).toEqual(Hex.canon(addresses[i]));
             // Correct public key
             expect(
                 Hex.of(

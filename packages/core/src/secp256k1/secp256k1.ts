@@ -135,17 +135,11 @@ function recover(messageHash: Buffer, sig: Buffer): Buffer {
  * @param compact if public key should be compressed or not.
  * @returns array public key.
  */
-// https://bitcoin.stackexchange.com/questions/44024/get-uncompressed-public-key-from-compressed-form
-// https://www.secg.org/sec2-v2.pdf
-// https://cryptobook.nakov.com/digital-signatures/ecdsa-sign-verify-messages
 function publicKeyToArray(
     extendedPublicKey: Buffer,
     compact: boolean
 ): number[] {
-    // console.log('EPKTA:I: ' + Hex.of(extendedPublicKey));
     const keyPair = curve.keyFromPublic(extendedPublicKey);
-    // console.log('EPKTA:O: ' + keyPair.getPublic(false, 'hex'));
-    // console.log('EPKTA:C: ' + keyPair.getPublic(true, 'hex'));
     return keyPair.getPublic(compact, 'array');
 }
 
