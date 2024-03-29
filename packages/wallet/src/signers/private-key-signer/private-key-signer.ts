@@ -49,9 +49,6 @@ class PrivateKeySigner implements Signer {
         const sendTxRes =
             await this.client.transactions.sendTransaction(signedTx);
 
-        sendTxRes.wait = async () =>
-            await this.client.transactions.waitForTransaction(sendTxRes.id);
-
         return {
             ...sendTxRes,
             signer: this.address
