@@ -15,7 +15,7 @@ function assertIsValidHdNodeDerivationPath(
         'assertIsValidHdNodeDerivationPath',
         isDerivationPathValid(path),
         HDNODE.INVALID_HDNODE_DERIVATION_PATH,
-        'Invalid derivation path. Ensure the path adheres to the standard format.',
+        'Invalid derivation path. Ensure the path adderes to the standard format.',
         { path }
     );
 }

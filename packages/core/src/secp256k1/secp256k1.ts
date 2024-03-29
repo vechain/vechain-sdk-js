@@ -34,7 +34,7 @@ function isValidMessageHash(hash: Buffer): boolean {
 /**
  * Verify if `privateKey` is valid.
  * @returns `true` if `privateKey` is 32 bytes long, not zeros and in
- * the ] 0 .. {@link PRIVATE_KEY_MAX_VALUE} [ range.
+ * the ] 0..{@link PRIVATE_KEY_MAX_VALUE} [ range.
  */
 function isValidPrivateKey(privateKey: Buffer): boolean {
     return (
@@ -146,22 +146,17 @@ function publicKeyToArray(
 function compressPublicKey(publicKey: Uint8Array): Uint8Array {
     const prefix = publicKey.at(0);
     if (prefix === 4) {
-        // Compressed.
+        // To compress.
         const x = publicKey.slice(1, 33);
         const y = publicKey.slice(33, 65);
         const isYOdd = y[y.length - 1] & 1;
         // Prefix with 0x02 if Y coordinate is even, 0x03 if odd.
-        const compressedKey = Buffer.concat([Buffer.from([2 + isYOdd]), x]);
-        return compressedKey;
+        return Buffer.concat([Buffer.from([2 + isYOdd]), x]);
+    } else {
+        // Compressed.
+        return publicKey;
     }
-    // Uncompressed.
-    return publicKey;
 }
-
-/*
-const compressedPublicKey = Buffer.from("02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5", 'hex');
-console.log(decompressPublicKey(compressedPublicKey));
- */
 
 /**
  * Generates random bytes of specified length.

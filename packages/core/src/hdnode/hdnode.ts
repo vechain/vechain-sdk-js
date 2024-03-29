@@ -1,6 +1,5 @@
 import { ethers } from 'ethers';
 import {
-    MNEMONIC_WORDLIST_ALLOWED_SIZES,
     VET_DERIVATION_PATH,
     X_PRIV_PREFIX,
     X_PUB_PREFIX,
@@ -10,8 +9,7 @@ import { type IHDNode } from './types';
 import { addressUtils } from '../address';
 import { sha256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
-import { type WordlistSizeType } from '../mnemonic';
-import { assert, HDNODE } from '@vechain/sdk-errors';
+import { assert, buildError, HDNODE } from '@vechain/sdk-errors';
 import {
     assertIsValidHdNodeChainCode,
     assertIsValidHdNodeDerivationPath
@@ -19,56 +17,46 @@ import {
 
 import * as bip32 from '@scure/bip32';
 import * as bip39 from '@scure/bip39';
+import { wordlist } from '@scure/bip39/wordlists/english';
 
 /**
- * Generates an HDNode instance using mnemonic words.
+ * Generates an HDNode from a mnemonic phrase.
  *
- * @throws {InvalidHDNodeMnemonicsError, InvalidHDNodeDerivationPathError}
- * @param words - The mnemonic words.
- * @param path - The derivation path (default is VET_DERIVATION_PATH).
- * @returns An IHDNode instance derived from the given mnemonic.
+ * @param {string[]} words - The mnemonic words.
+ * @param {string} path - The derivation path. Defaults to {@link VET_DERIVATION_PATH}.
+ * @returns {IHDNode} The created HDNode from mnemonic `words.
+ * @throws Will throw an error if the mnemonic is invalid or if the derivation path is invalid.
  */
 function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
-    // Invalid mnemonic words
+    const mnemonic = words.join(' ').toLowerCase();
     assert(
-        'fromMnemonic',
-        MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(
-            words.length as WordlistSizeType
-        ),
+        'HDNode.fromMnemonic',
+        bip39.validateMnemonic(mnemonic, wordlist),
         HDNODE.INVALID_HDNODE_MNEMONICS,
         'Invalid mnemonic size. Mnemonic must be 12, 15, 18, 21, or 24 words.',
         { words }
     );
-
-    // Invalid derivation path
-    assertIsValidHdNodeDerivationPath('fromMnemonic', path);
-
-    // normalize words to lowercase
-    const joinedWords = words.join(' ').toLowerCase();
-    const node = ethers.HDNodeWallet.fromMnemonic(
-        ethers.Mnemonic.fromPhrase(joinedWords),
-        path
-    );
-    return ethersNodeToOurHDNode(node);
-}
-
-function fromMnemonicx(words: string[], path = VET_DERIVATION_PATH): IHDNode {
-    // Invalid mnemonic words
-    // bip39.validateMnemonic(mn, wordlist);
-
-    const seed = bip39.mnemonicToSeedSync(words.join(' ').toLowerCase());
-    const master = bip32.HDKey.fromMasterSeed(seed);
-    const node = master.derive(path);
-    return of(node);
+    try {
+        return of(
+            bip32.HDKey.fromMasterSeed(
+                bip39.mnemonicToSeedSync(mnemonic)
+            ).derive(path)
+        );
+    } catch (error) {
+        throw buildError(
+            'HDnode.fromMnemonic',
+            HDNODE.INVALID_HDNODE_DERIVATION_PATH,
+            'Invalid derivation path. Ensure the path adheres to the standard format.',
+            { path },
+            error
+        );
+    }
 }
 
 function of(hdkey: bip32.HDKey): IHDNode {
     const publicKey =
         hdkey.publicKey != null ? Buffer.from(hdkey.publicKey) : ZERO_BUFFER(0);
-    // const address = Buffer.from(
-    //     keccak_256(publicKey).slice(publicKey.length - 20)
-    // );
-    const addr = addressUtils.fromPublicKey(publicKey);
+    const address = addressUtils.fromPublicKey(publicKey);
     return {
         get publicKey() {
             return publicKey;
@@ -84,7 +72,7 @@ function of(hdkey: bip32.HDKey): IHDNode {
                 : ZERO_BUFFER(0);
         },
         get address() {
-            return addr;
+            return address;
         },
         derive(index) {
             return of(hdkey.deriveChild(index));
@@ -114,7 +102,7 @@ function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
     // );
 
     // Invalid chain code
-    assertIsValidHdNodeChainCode('fromPublicKey', chainCode);
+    // assertIsValidHdNodeChainCode('fromPublicKey', chainCode);
 
     // no need of elliptic lib
     const compressed = secp256k1.publicKeyToArray(publicKey, true);
@@ -219,6 +207,5 @@ function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
 export const HDNode = {
     fromMnemonic,
     fromPublicKey,
-    fromPrivateKey,
-    fromMnemonicx
+    fromPrivateKey
 };
