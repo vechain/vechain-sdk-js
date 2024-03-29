@@ -1,12 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
 import { mnemonic } from '@vechain/sdk-core';
 import { HttpClient, ThorClient } from '@vechain/sdk-network';
-import { PrivateKeySigner } from '../../src/signers/private-key-signer/private-key-signer';
+import { PrivateKeySigner } from '../../src';
 
 /**
- * Unit test for Signer class.
+ * Unit test for PrivateKeySigner class.
  *
- * @group unit/signer
+ * @group unit/signer/private-key-signer
  */
 describe('Signer Tests', () => {
     // ThorClient instance
@@ -30,7 +30,7 @@ describe('Signer Tests', () => {
 
     const pkSigner = new PrivateKeySigner(thorClient, privateKey);
 
-    test('should be able to send a transaction', async () => {
+    test('Should be able to send a transaction given the mnemonic', async () => {
         // Send a transaction
         const response = await pkSigner.sendTransaction([
             {
@@ -43,13 +43,11 @@ describe('Signer Tests', () => {
         expect(response.id).toBeDefined();
     });
 
-    test('2', async () => {
+    test('Should be able to send a transaction given a private key', async () => {
         const privateKey = Buffer.from(
             '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
             'hex'
         );
-        // const publicKey = secp256k1.derivePublicKey(privateKey);
-        // const userAddress = addressUtils.fromPublicKey(publicKey);
 
         const pkSigner = new PrivateKeySigner(thorClient, privateKey);
 
@@ -73,7 +71,7 @@ describe('Signer Tests', () => {
 
         const pkSigner = new PrivateKeySigner(thorClient, privateKey);
 
-        // Send a transaction
+        // The transaction is expected to fail because of insufficient gas
         await expect(
             pkSigner.sendTransaction(
                 [

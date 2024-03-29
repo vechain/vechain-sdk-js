@@ -8,6 +8,9 @@ import {
 import { addressUtils, secp256k1, Transaction } from '@vechain/sdk-core';
 import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 
+/**
+ * The private key signer implementation.
+ */
 class PrivateKeySigner implements Signer {
     private readonly privateKey: Buffer;
     private readonly address: string;
@@ -19,6 +22,12 @@ class PrivateKeySigner implements Signer {
         this.address = addressUtils.fromPrivateKey(privateKey);
     }
 
+    /**
+     * Send a transaction with the specified clauses and options.
+     * @param clauses - The transaction clauses.
+     * @param options - The transaction options.
+     * @returns The transaction response.
+     */
     public sendTransaction = async (
         clauses: ExtendedClause[],
         options?: SendTxOptions | undefined

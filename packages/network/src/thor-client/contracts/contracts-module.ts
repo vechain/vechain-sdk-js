@@ -34,7 +34,7 @@ class ContractsModule {
      *
      * @param abi - The Application Binary Interface (ABI) of the contract, which defines the contract's methods and events.
      * @param bytecode - The compiled bytecode of the contract, representing the contract's executable code.
-     * @param privateKey - The private key used for signing transactions during contract deployment, ensuring the deployer's identity.
+     * @param signer - The signer used to deploy the contract, ensuring that the contract is deployed by the specified account.
      * @returns An instance of `ContractFactory` configured with the provided ABI, bytecode, and private key, ready for deploying contracts.
      */
     public createContractFactory(
@@ -50,7 +50,7 @@ class ContractsModule {
      *
      * @param address - The blockchain address of the contract to load.
      * @param abi - The Application Binary Interface (ABI) of the contract, which defines the contract's methods and structures.
-     * @param callerPrivateKey - Optional. The private key of the caller, used for signing transactions when interacting with the contract.
+     * @param signer - Optional. The signer used to sign transactions when interacting with the contract.
      * @returns A new instance of the Contract, initialized with the provided address, ABI, and optionally, a caller private key.
      */
     public load(address: string, abi: InterfaceAbi, signer?: Signer): Contract {
@@ -96,7 +96,7 @@ class ContractsModule {
     /**
      * Executes a transaction to interact with a smart contract function.
      *
-     * @param privateKey - The private key for signing the transaction.
+     * @param signer - The signer used to sign the transaction.
      * @param contractAddress - The address of the smart contract.
      * @param functionFragment - The function fragment, including the name and types of the function to be called, derived from the contract's ABI.
      * @param functionData - The input data for the function.

@@ -1,6 +1,10 @@
 import { type TransactionClause } from '@vechain/sdk-core';
 import { type TransactionReceipt } from '@vechain/sdk-network';
 
+/**
+ * Defines the signer interface for sending a transaction.
+ * @property sendTransaction - Send a transaction with the specified clauses and options.
+ */
 interface Signer {
     sendTransaction: (
         clauses: ExtendedClause[],

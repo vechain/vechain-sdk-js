@@ -43,7 +43,7 @@ class ContractFactory {
      * Initializes a new instance of the `ContractFactory` class.
      * @param abi The Application Binary Interface (ABI) of the contract, which defines the contract's methods and events.
      * @param bytecode The compiled bytecode of the contract, representing the contract's executable code.
-     * @param privateKey The private key used for signing transactions during contract deployment, ensuring the deployer's identity.
+     * @param signer The signer used for signing transactions during contract deployment, ensuring the deployer's identity.
      * @param thor An instance of ThorClient to interact with the blockchain.
      */
     constructor(

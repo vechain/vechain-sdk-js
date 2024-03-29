@@ -44,7 +44,7 @@ class Contract {
      * @param address The address of the contract.
      * @param abi The Application Binary Interface (ABI) of the contract, which defines the contract's methods and events.
      * @param thor An instance of ThorClient to interact with the blockchain.
-     * @param callerPrivateKey The private key used for signing transactions.
+     * @param signer The signer used for signing transactions.
      * @param transactionReceipt (Optional) The transaction receipt of the contract deployment.
      */
     constructor(
