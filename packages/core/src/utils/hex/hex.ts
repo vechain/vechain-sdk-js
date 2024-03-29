@@ -1,7 +1,8 @@
 import { assert, buildError, DATA } from '@vechain/sdk-errors';
 import { Buffer } from 'buffer';
-import { type HexString } from 'ethers/lib.esm/utils/data';
+
 import { randomBytes } from '@noble/hashes/utils';
+import { type HexString } from './types';
 
 /**
  * The encoding used for buffers.

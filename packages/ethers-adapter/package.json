@@ -1,5 +1,5 @@
 {
-  "name": "@vechain/sdk-hardhat-plugin",
+  "name": "@vechain/sdk-ethers-adapter",
   "version": "1.0.0-beta.1",
   "description": "This module allows to create smart contracts and interact with them using the vechain SDK and Hardhat",
   "author": "vechain Foundation",
@@ -7,8 +7,8 @@
   "keywords": [
     "vechain",
     "hardhat",
-    "plugin",
-    "contract"
+    "ethers",
+    "adapter"
   ],
   "private": false,
   "main": "dist/index.js",
@@ -21,7 +21,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts",
+    "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
     "lint": "eslint --ext .ts src --ext .ts tests",
     "format": "prettier --write src/**/*.ts tests/**/*.ts",
     "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
@@ -29,10 +29,7 @@
     "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
   },
   "dependencies": {
-    "@vechain/sdk-provider": "1.0.0-beta.1",
-    "@vechain/sdk-ethers-adapter": "1.0.0-beta.1"
-  },
-  "devDependencies": {
-    "@nomicfoundation/hardhat-ethers": "^3.0.5"
+    "@vechain/sdk-core": "^1.0.0-beta.1",
+    "@vechain/sdk-network": "^1.0.0-beta.1"
   }
 }

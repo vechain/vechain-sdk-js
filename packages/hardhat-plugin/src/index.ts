@@ -3,12 +3,16 @@ import { createWalletFromHardhatNetworkConfig } from './helpers';
 import { extendEnvironment } from 'hardhat/config';
 import { type HttpNetworkConfig } from 'hardhat/types';
 import { HardhatPluginError, lazyObject } from 'hardhat/plugins';
+import {
+    deployContract,
+    getImpersonatedSigner,
+    getSigner,
+    getSigners,
+    getContractFactory
+} from '@nomicfoundation/hardhat-ethers/internal/helpers';
 
 // Custom provider for ethers
-import {
-    HardhatVechainProvider,
-    JSONRPCEthersProvider
-} from '@vechain/sdk-provider';
+import { HardhatVechainProvider } from '@vechain/sdk-provider';
 import { VechainSDKLogger } from '@vechain/sdk-logging';
 
 // Import needed to customize ethers functionality
@@ -17,13 +21,8 @@ import { vechain_sdk_core_ethers as ethers } from '@vechain/sdk-core';
 // Import needed to extend the hardhat environment
 import './type-extensions';
 
-// Custom signer
-import {
-    getImpersonatedSigner,
-    getSigner,
-    getSigners
-} from '@nomiclabs/hardhat-ethers/internal/helpers';
-
+import { HardhatEthersProvider } from '@nomicfoundation/hardhat-ethers/internal/hardhat-ethers-provider';
+import { contractAdapter } from '@vechain/sdk-ethers-adapter/dist';
 /**
  * // TEMPORARY COMMENT //
  * To improve. Needed for ethers customization
@@ -73,7 +72,7 @@ extendEnvironment((hre) => {
     // 1.1 - Get network name
     const networkName = hre.network.name;
 
-    // 1.2 - Get network config
+    // 1.2 - Get network xconfig
     const networkConfig: HttpNetworkConfig = hre.config.networks[
         networkName
     ] as HttpNetworkConfig;
@@ -118,57 +117,79 @@ extendEnvironment((hre) => {
     // 3.3 - Set provider for the network
     hre.network.provider = hardhatVechainProvider;
 
-    /**
-     * // TEMPORARY COMMENT //
-     * To improve. Needed for ethers customization
-     */
-    // 4 - Customise ethers functionality
-
-    // 4.1 - Get chain id
-    let chainIdFromProvider = 0;
-    hardhatVechainProvider
-        .send('eth_chainId', [])
-        .then((chainId) => {
-            chainIdFromProvider = parseInt(chainId as string, 16);
-        })
-        .catch(() => {
-            chainIdFromProvider = 0;
-        });
-
     // @ts-expect-error Not everything is implemented
-    hre.ethers = {
-        // Ethers default constructs
-        ...ethers,
+    hre.ethers = lazyObject(() => {
+        /**
+         * // TEMPORARY COMMENT //
+         * To improve. Needed for ethers customization
+         */
+        // 4 - Customise ethers functionality
 
-        // JSON RPC provider for ethers (able to send multiple payloads (send in batch))
-        provider: new JSONRPCEthersProvider(
-            chainIdFromProvider,
-            networkName,
-            hardhatVechainProvider
-        ),
+        // 4.1 - Get chain id
+        let chainIdFromProvider = 0;
+        hardhatVechainProvider
+            .send('eth_chainId', [])
+            .then((chainId) => {
+                chainIdFromProvider = parseInt(chainId as string, 16);
+            })
+            .catch(() => {
+                chainIdFromProvider = 0;
+            });
 
-        // Smart contracts
-        // getContractFactory: typeof getContractFactory;
-        // getContractFactoryFromArtifact: (
-        //     artifact: Artifact,
-        //     signerOrOptions?: ethers.Signer | FactoryOptions
-        // ) => Promise<ethers.ContractFactory>;
-        // getContractAt: (
-        //     nameOrAbi: string | any[],
-        //     address: string,
-        //     signer?: ethers.Signer
-        // ) => Promise<ethers.Contract>;
-        // getContractAtFromArtifact: (
-        //     artifact: Artifact,
-        //     address: string,
-        //     signer?: ethers.Signer
-        // ) => Promise<ethers.Contract>;
-        // deployContract: typeof deployContract;
+        const vechainNewHardhatProvider = new HardhatEthersProvider(
+            hardhatVechainProvider,
+            hre.network.name
+        );
 
-        // Signer
-        getSigner: async (address: string) => await getSigner(hre, address),
-        getSigners: async () => await getSigners(hre),
-        getImpersonatedSigner: async (address: string) =>
-            await getImpersonatedSigner(hre, address)
-    };
+        console.log(chainIdFromProvider);
+
+        return {
+            ...ethers,
+            provider: vechainNewHardhatProvider,
+            // Ethers default constructs
+
+            // JSON RPC provider for ethers (able to send multiple payloads (send in batch))
+            // provider,
+            // eslint-disable-next-line @typescript-eslint/require-await
+            getContractFactory: async (...args: unknown[]) => {
+                const deployContractBound = getContractFactory.bind(null, hre);
+                console.log('getContractFactory', args);
+                // @ts-expect-error Not everything is implemented
+                return await deployContractBound(...args);
+            },
+
+            deployContract: async (...args: unknown[]) => {
+                const deployContractBound = deployContract.bind(null, hre);
+                console.log('network', networkConfig);
+                // @ts-expect-error Not everything is implemented
+                return await deployContractBound(...args).then((contract) =>
+                    contractAdapter(contract, hardhatVechainProvider)
+                );
+            },
+
+            // Smart contracts
+            // getContractFactory: typeof getContractFactory;
+            // getContractFactoryFromArtifact: (
+            //     artifact: Artifact,
+            //     signerOrOptions?: ethers.Signer | FactoryOptions
+            // ) => Promise<ethers.ContractFactory>;
+            // getContractAt: (
+            //     nameOrAbi: string | any[],
+            //     address: string,
+            //     signer?: ethers.Signer
+            // ) => Promise<ethers.Contract>;
+            // getContractAtFromArtifact: (
+            //     artifact: Artifact,
+            //     address: string,
+            //     signer?: ethers.Signer
+            // ) => Promise<ethers.Contract>;
+            // deployContract: typeof deployContract;
+
+            // Signer
+            getSigner: async (address: string) => await getSigner(hre, address),
+            getSigners: async () => await getSigners(hre),
+            getImpersonatedSigner: async (address: string) =>
+                await getImpersonatedSigner(hre, address)
+        };
+    });
 });

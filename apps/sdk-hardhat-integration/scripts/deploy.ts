@@ -1,7 +1,8 @@
 import { ethers } from 'hardhat';
 
 async function main(): Promise<void> {
-    const vechainHelloWorldWithNonEmptyConstructor =
+    // console.log(await ethers.getSigners());
+    /* const vechainHelloWorldWithNonEmptyConstructor =
         await ethers.deployContract(
             'VechainHelloWorldWithNonEmptyConstructor',
             [10],
@@ -9,7 +10,7 @@ async function main(): Promise<void> {
                 from: (await ethers.getSigners())[0].address,
                 value: ethers.parseEther('0.1')
             }
-        );
+        ); */
 
     const vechainHelloWorld = await ethers.deployContract(
         'VechainHelloWorld',
@@ -19,7 +20,9 @@ async function main(): Promise<void> {
         }
     );
 
-    await vechainHelloWorldWithNonEmptyConstructor.waitForDeployment();
+    console.log(await vechainHelloWorld.getAddress());
+
+    // await vechainHelloWorldWithNonEmptyConstructor.waitForDeployment();
 
     console.log(
         `VechainHelloWorld deployed to ${JSON.stringify(vechainHelloWorld)}`
