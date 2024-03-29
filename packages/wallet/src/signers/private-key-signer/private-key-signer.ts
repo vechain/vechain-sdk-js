@@ -6,6 +6,7 @@ import {
     type Signer
 } from '../types';
 import { addressUtils, secp256k1, Transaction } from '@vechain/sdk-core';
+import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 
 class PrivateKeySigner implements Signer {
     private readonly privateKey: Buffer;
@@ -31,7 +32,11 @@ class PrivateKeySigner implements Signer {
         );
 
         if (options?.gas != null && options.gas < gas.totalGas) {
-            throw new Error('Insufficient gas');
+            throw buildError(
+                'Contract.getTransactProxy',
+                ERROR_CODES.TRANSACTION.MISSING_PRIVATE_KEY,
+                'Insufficient gas.'
+            );
         }
 
         const tx = new Transaction(txBody);

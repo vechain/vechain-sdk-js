@@ -58,7 +58,8 @@ import {
     JSONRPCDefaultError,
     CONTRACT,
     ContractDeploymentFailedError,
-    TransactionMissingPrivateKeyError
+    TransactionMissingPrivateKeyError,
+    TransactionNotEnoughGasError
 } from '../src';
 
 /**
@@ -238,6 +239,10 @@ const ErrorsCodeAndClassesMapsFixture = [
             {
                 errorCode: TRANSACTION.MISSING_PRIVATE_KEY,
                 classExpected: TransactionMissingPrivateKeyError
+            },
+            {
+                errorCode: TRANSACTION.NOT_ENOUGH_GAS,
+                classExpected: TransactionNotEnoughGasError
             }
         ]
     },

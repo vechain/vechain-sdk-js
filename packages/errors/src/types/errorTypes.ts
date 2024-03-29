@@ -62,6 +62,7 @@ import {
     TransactionBodyError,
     TransactionDelegationError,
     TransactionMissingPrivateKeyError,
+    TransactionNotEnoughGasError,
     TransactionNotSignedError
 } from '../model';
 import { CONTRACT, ContractDeploymentFailedError } from '../model';
@@ -238,38 +239,40 @@ type ErrorType<ErrorCodeT> =
                                                                   ? TransactionDelegationError
                                                                   : ErrorCodeT extends TRANSACTION.MISSING_PRIVATE_KEY
                                                                     ? TransactionMissingPrivateKeyError
-                                                                    : // HTTP_CLIENT
-                                                                      ErrorCodeT extends HTTP_CLIENT.INVALID_HTTP_REQUEST
-                                                                      ? HTTPClientError
-                                                                      : // POOL_ERROR
-                                                                        ErrorCodeT extends POLL_ERROR.POLL_EXECUTION_ERROR
-                                                                        ? PollExecutionError
-                                                                        : // EIP1193
-                                                                          ErrorCodeT extends EIP1193.USER_REJECTED_REQUEST
-                                                                          ? EIP1193UserRejectedRequest
-                                                                          : ErrorCodeT extends EIP1193.UNAUTHORIZED
-                                                                            ? EIP1193Unauthorized
-                                                                            : ErrorCodeT extends EIP1193.UNSUPPORTED_METHOD
-                                                                              ? EIP1193UnsupportedMethod
-                                                                              : ErrorCodeT extends EIP1193.DISCONNECTED
-                                                                                ? EIP1193Disconnected
-                                                                                : ErrorCodeT extends EIP1193.CHAIN_DISCONNECTED
-                                                                                  ? EIP1193ChainDisconnected
-                                                                                  : // FUNCTION
-                                                                                    ErrorCodeT extends FUNCTION.NOT_IMPLEMENTED
-                                                                                    ? NotImplementedError
-                                                                                    : // JSONRPC
-                                                                                      ErrorCodeT extends JSONRPC.INVALID_REQUEST
-                                                                                      ? JSONRPCInvalidRequest
-                                                                                      : ErrorCodeT extends JSONRPC.INVALID_PARAMS
-                                                                                        ? JSONRPCInvalidParams
-                                                                                        : ErrorCodeT extends JSONRPC.INTERNAL_ERROR
-                                                                                          ? JSONRPCInternalError
-                                                                                          : ErrorCodeT extends JSONRPC.DEFAULT
-                                                                                            ? JSONRPCDefaultError
-                                                                                            : ErrorCodeT extends CONTRACT.CONTRACT_DEPLOYMENT_FAILED
-                                                                                              ? ContractDeploymentFailedError
-                                                                                              : never;
+                                                                    : ErrorCodeT extends TRANSACTION.NOT_ENOUGH_GAS
+                                                                      ? TransactionNotEnoughGasError
+                                                                      : // HTTP_CLIENT
+                                                                        ErrorCodeT extends HTTP_CLIENT.INVALID_HTTP_REQUEST
+                                                                        ? HTTPClientError
+                                                                        : // POOL_ERROR
+                                                                          ErrorCodeT extends POLL_ERROR.POLL_EXECUTION_ERROR
+                                                                          ? PollExecutionError
+                                                                          : // EIP1193
+                                                                            ErrorCodeT extends EIP1193.USER_REJECTED_REQUEST
+                                                                            ? EIP1193UserRejectedRequest
+                                                                            : ErrorCodeT extends EIP1193.UNAUTHORIZED
+                                                                              ? EIP1193Unauthorized
+                                                                              : ErrorCodeT extends EIP1193.UNSUPPORTED_METHOD
+                                                                                ? EIP1193UnsupportedMethod
+                                                                                : ErrorCodeT extends EIP1193.DISCONNECTED
+                                                                                  ? EIP1193Disconnected
+                                                                                  : ErrorCodeT extends EIP1193.CHAIN_DISCONNECTED
+                                                                                    ? EIP1193ChainDisconnected
+                                                                                    : // FUNCTION
+                                                                                      ErrorCodeT extends FUNCTION.NOT_IMPLEMENTED
+                                                                                      ? NotImplementedError
+                                                                                      : // JSONRPC
+                                                                                        ErrorCodeT extends JSONRPC.INVALID_REQUEST
+                                                                                        ? JSONRPCInvalidRequest
+                                                                                        : ErrorCodeT extends JSONRPC.INVALID_PARAMS
+                                                                                          ? JSONRPCInvalidParams
+                                                                                          : ErrorCodeT extends JSONRPC.INTERNAL_ERROR
+                                                                                            ? JSONRPCInternalError
+                                                                                            : ErrorCodeT extends JSONRPC.DEFAULT
+                                                                                              ? JSONRPCDefaultError
+                                                                                              : ErrorCodeT extends CONTRACT.CONTRACT_DEPLOYMENT_FAILED
+                                                                                                ? ContractDeploymentFailedError
+                                                                                                : never;
 
 /**
  * Map to get the error class from the error code.
@@ -338,6 +341,7 @@ const ErrorClassMap = new Map<
     [TRANSACTION.INVALID_TRANSACTION_BODY, TransactionBodyError],
     [TRANSACTION.INVALID_DELEGATION, TransactionDelegationError],
     [TRANSACTION.MISSING_PRIVATE_KEY, TransactionMissingPrivateKeyError],
+    [TRANSACTION.NOT_ENOUGH_GAS, TransactionNotEnoughGasError],
 
     // HTTP_CLIENT
     [HTTP_CLIENT.INVALID_HTTP_REQUEST, HTTPClientError],

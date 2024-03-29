@@ -42,6 +42,14 @@ class TransactionMissingPrivateKeyError extends ErrorBase<
 > {}
 
 /**
+ * Error to be thrown when gas in insufficient
+ */
+class TransactionNotEnoughGasError extends ErrorBase<
+    TRANSACTION.NOT_ENOUGH_GAS,
+    DefaultErrorData
+> {}
+
+/**
  * Errors enum.
  */
 enum TRANSACTION {
@@ -49,7 +57,8 @@ enum TRANSACTION {
     NOT_SIGNED = 'NOT_SIGNED',
     INVALID_TRANSACTION_BODY = 'INVALID_TRANSACTION_BODY',
     INVALID_DELEGATION = 'INVALID_DELEGATION',
-    MISSING_PRIVATE_KEY = 'MISSING_PRIVATE_KEY'
+    MISSING_PRIVATE_KEY = 'MISSING_PRIVATE_KEY',
+    NOT_ENOUGH_GAS = 'NOT_ENOUGH_GAS'
 }
 
 export {
@@ -58,5 +67,6 @@ export {
     TransactionBodyError,
     TransactionDelegationError,
     TransactionMissingPrivateKeyError,
+    TransactionNotEnoughGasError,
     TRANSACTION
 };
