@@ -7,8 +7,8 @@ import {
 } from '../assertions';
 
 import { BN } from 'bn.js';
-import { secp256k1 as _secp256k1 } from '@noble/curves/secp256k1';
 import { randomBytes as _randomBytes } from '@noble/hashes/utils';
+import { secp256k1 as _secp256k1 } from '@noble/curves/secp256k1';
 
 /**
  * Biggest value of private key

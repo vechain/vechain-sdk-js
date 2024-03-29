@@ -77,18 +77,12 @@ describe('HDNode', () => {
         );
     });
 
-    /**
-     * Test invalid derivation path
-     */
     test('HDNode - from mnemonic - invalid derivation path', () => {
         expect(() => HDNode.fromMnemonic(words, 'INVALID')).toThrowError(
             InvalidHDNodeDerivationPathError
         );
     });
 
-    /**
-     * Test invalid mnemonic
-     */
     test('HDNode - from mnemonic - invalid mnemonic', () => {
         expect(() => HDNode.fromMnemonic(wrongWords)).toThrowError(
             InvalidHDNodeMnemonicsError

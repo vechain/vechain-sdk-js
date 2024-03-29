@@ -10,22 +10,21 @@ import { addressUtils } from '../address';
 import { sha256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import { assert, buildError, HDNODE } from '@vechain/sdk-errors';
-import {
-    assertIsValidHdNodeChainCode,
-    assertIsValidHdNodeDerivationPath
-} from '../assertions';
+import { assertIsValidHdNodeDerivationPath } from '../assertions';
 
 import * as bip32 from '@scure/bip32';
 import * as bip39 from '@scure/bip39';
+import { base58 } from '@scure/base';
 import { wordlist } from '@scure/bip39/wordlists/english';
 
 /**
- * Generates an HDNode from a mnemonic phrase.
+ * Create an HDNode from a mnemonic phrase.
  *
  * @param {string[]} words - The mnemonic words.
  * @param {string} path - The derivation path. Defaults to {@link VET_DERIVATION_PATH}.
  * @returns {IHDNode} The created HDNode from mnemonic `words.
- * @throws Will throw an error if the mnemonic is invalid or if the derivation path is invalid.
+ * @throws {HDNODE.INVALID_HDNODE_DERIVATION_PATH} an error if the derivation path is invalid.
+ * @throws {HDNODE.INVALID_HDNODE_MNEMONICS} an error if the mnemonic is invalid or if the derivation path is invalid.
  */
 function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
     const mnemonic = words.join(' ').toLowerCase();
@@ -84,6 +83,44 @@ function of(hdkey: bip32.HDKey): IHDNode {
 }
 
 /**
+ * Creates an HDNode from a private key and chain code.
+ *
+ * @param {Buffer} privateKey - The private key to create the HDNode from.
+ * @param {Buffer} chainCode - The chain code associated with the private key.
+ * @returns {IHDNode} - The created HDNode.
+ * @throws {HDNODE.INVALID_HDNODE_CHAIN_CODE} an error if chain code is invalid.
+ * @throws {HDNODE.INVALID_HDNODE_PRIVATE_KEY} an error if the private key is invalid.
+ */
+function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
+    assert(
+        'HDNode.fromPrivateKey',
+        privateKey.length === 32,
+        HDNODE.INVALID_HDNODE_PRIVATE_KEY,
+        'Invalid private key. Length must be exactly 32 bytes.',
+        { privateKey }
+    );
+    const header = Buffer.concat([
+        X_PRIV_PREFIX,
+        chainCode,
+        Buffer.from([0]),
+        privateKey
+    ]);
+    const checksum = sha256(sha256(header)).subarray(0, 4);
+    const xPrivateKey = Buffer.concat([header, checksum]);
+    try {
+        return of(bip32.HDKey.fromExtendedKey(base58.encode(xPrivateKey)));
+    } catch (error) {
+        throw buildError(
+            'HDNode.fromPrivateKey',
+            HDNODE.INVALID_HDNODE_CHAIN_CODE,
+            'Invalid chain code. Length must be exactly 32 bytes.',
+            { chainCode },
+            error
+        );
+    }
+}
+
+/**
  * Generates an HDNode instance using an extended public key.
  *
  * @throws{InvalidHDNodePublicKeyError, InvalidHDNodeChaincodeError}
@@ -110,42 +147,6 @@ function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
         X_PUB_PREFIX,
         chainCode,
         Buffer.from(compressed)
-    ]);
-    const checksum = sha256(sha256(key));
-    const slicedChecksum = checksum.subarray(0, 4);
-
-    const node = ethers.HDNodeWallet.fromExtendedKey(
-        ethers.encodeBase58(Buffer.concat([key, slicedChecksum]))
-    ) as ethers.HDNodeWallet;
-    return ethersNodeToOurHDNode(node);
-}
-
-/**
- * Generates an HDNode instance using an extended private key (xpriv).
- *
- * @throws{InvalidHDNodePrivateKeyError, InvalidHDNodeChaincodeError}
- * @param privateKey - The private key.
- * @param chainCode - The associated chain code.
- * @returns An IHDNode instance derived from the given private key and chain code.
- */
-function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
-    // Invalid private key
-    assert(
-        'fromPrivateKey',
-        privateKey.length === 32,
-        HDNODE.INVALID_HDNODE_PRIVATE_KEY,
-        'Invalid private key. Length must be exactly 32 bytes.',
-        { privateKey }
-    );
-
-    // Invalid chain code
-    assertIsValidHdNodeChainCode('fromPrivateKey', chainCode);
-
-    const key = Buffer.concat([
-        X_PRIV_PREFIX,
-        chainCode,
-        Buffer.from([0]),
-        privateKey
     ]);
     const checksum = sha256(sha256(key));
     const slicedChecksum = checksum.subarray(0, 4);
@@ -206,6 +207,6 @@ function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
 
 export const HDNode = {
     fromMnemonic,
-    fromPublicKey,
-    fromPrivateKey
+    fromPrivateKey,
+    fromPublicKey
 };
