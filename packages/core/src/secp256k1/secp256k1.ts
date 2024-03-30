@@ -17,6 +17,21 @@ const PRIVATE_KEY_MAX_VALUE = Buffer.from(
     'hex'
 );
 
+function compressPublicKey(publicKey: Uint8Array): Uint8Array {
+    const prefix = publicKey.at(0);
+    if (prefix === 4) {
+        // To compress.
+        const x = publicKey.slice(1, 33);
+        const y = publicKey.slice(33, 65);
+        const isYOdd = y[y.length - 1] & 1;
+        // Prefix with 0x02 if Y coordinate is even, 0x03 if odd.
+        return Buffer.concat([Buffer.from([2 + isYOdd]), x]);
+    } else {
+        // Compressed.
+        return publicKey;
+    }
+}
+
 /**
  * Derives a public key from a given private key.
  *
@@ -79,6 +94,22 @@ function isValidPrivateKey(privateKey: Buffer): boolean {
         !privateKey.equals(ZERO_BUFFER(32)) &&
         privateKey.compare(PRIVATE_KEY_MAX_VALUE) < 0
     );
+}
+
+/**
+ * Generates random bytes of specified length.
+ *
+ * The function relays on [noble-hashes](https://github.com/paulmillr/noble-hashes/blob/main/src/utils.ts)
+ * functionality to delegate the OS to generate the random sequence according the host hardware.
+ *
+ * @param {number} bytesLength - The length of the random bytes to generate.
+ * @return {Buffer} - The generated random bytes as a Buffer object.
+ * @throws Error with `crypto.getRandomValues must be defined`
+ * message if no hardware for random generation is
+ * available at runtime.
+ */
+function randomBytes(bytesLength?: number | undefined): Buffer {
+    return Buffer.from(_randomBytes(bytesLength));
 }
 
 /**
@@ -153,37 +184,6 @@ function sign(messageHash: Buffer, privateKey: Buffer): Buffer {
     const r = Buffer.from(new BN(sig.r.toString()).toArray('be', 32));
     const s = Buffer.from(new BN(sig.s.toString()).toArray('be', 32));
     return Buffer.concat([r, s, Buffer.from([sig.recovery])]);
-}
-
-function compressPublicKey(publicKey: Uint8Array): Uint8Array {
-    const prefix = publicKey.at(0);
-    if (prefix === 4) {
-        // To compress.
-        const x = publicKey.slice(1, 33);
-        const y = publicKey.slice(33, 65);
-        const isYOdd = y[y.length - 1] & 1;
-        // Prefix with 0x02 if Y coordinate is even, 0x03 if odd.
-        return Buffer.concat([Buffer.from([2 + isYOdd]), x]);
-    } else {
-        // Compressed.
-        return publicKey;
-    }
-}
-
-/**
- * Generates random bytes of specified length.
- *
- * The function relays on [noble-hashes](https://github.com/paulmillr/noble-hashes/blob/main/src/utils.ts)
- * functionality to delegate the OS to generate the random sequence according the host hardware.
- *
- * @param {number} bytesLength - The length of the random bytes to generate.
- * @return {Buffer} - The generated random bytes as a Buffer object.
- * @throws Error with `crypto.getRandomValues must be defined`
- * message if no hardware for random generation is
- * available at runtime.
- */
-function randomBytes(bytesLength?: number | undefined): Buffer {
-    return Buffer.from(_randomBytes(bytesLength));
 }
 
 export const secp256k1 = {

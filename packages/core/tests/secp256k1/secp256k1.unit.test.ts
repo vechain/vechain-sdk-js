@@ -4,7 +4,8 @@ import {
     invalidMessageHashes,
     messageHashBuffer,
     privateKey,
-    publicKey,
+    publicKeyCompressed,
+    publicKeyUncompressed,
     signature,
     validMessageHashes,
     validPrivateKeys
@@ -21,37 +22,37 @@ import {
  * @group unit/secp256k1
  */
 describe('secp256k1', () => {
-    test('secp256k1 - message hash - isValidMessageHash - true', () => {
-        validMessageHashes.forEach((messageHash: Buffer) => {
-            expect(secp256k1.isValidMessageHash(messageHash)).toBe(true);
-        });
+    test('secp256k1 - compressPublicKey - from compressed', () => {
+        expect(Hex.of(secp256k1.compressPublicKey(publicKeyCompressed))).toBe(
+            Hex.of(publicKeyCompressed)
+        );
     });
 
-    test('secp256k1 - message hash - isValidMessageHash - false', () => {
-        invalidMessageHashes.forEach((messageHash: Buffer) => {
-            expect(secp256k1.isValidMessageHash(messageHash)).toBe(false);
-        });
+    test('secp256k1 - compressPublicKey - from uncompressed', () => {
+        expect(Hex.of(secp256k1.compressPublicKey(publicKeyUncompressed))).toBe(
+            Hex.of(publicKeyCompressed)
+        );
     });
 
-    test('secp256k - private key - derivePublicKey - compressed', () => {
+    test('secp256k1 - derivePublicKey - compressed', () => {
         expect(Hex.of(secp256k1.derivePublicKey(privateKey))).toBe(
-            Hex.of(secp256k1.compressPublicKey(publicKey))
+            Hex.of(secp256k1.compressPublicKey(publicKeyUncompressed))
         );
     });
 
-    test('secp256k - private key - derivePublicKey - uncompressed', () => {
+    test('secp256k1 - derivePublicKey - uncompressed', () => {
         expect(Hex.of(secp256k1.derivePublicKey(privateKey, false))).toBe(
-            Hex.of(publicKey)
+            Hex.of(publicKeyUncompressed)
         );
     });
 
-    test('secp256k - private key - derivePublicKey - error', () => {
+    test('secp256k1 - derivePublicKey - error', () => {
         expect(() => secp256k1.derivePublicKey(ZERO_BUFFER(32))).toThrowError(
             InvalidSecp256k1PrivateKeyError
         );
     });
 
-    test('secp256k - private key - generatePrivateKey', () => {
+    test('secp256k1 - generatePrivateKey', () => {
         const randomPrivateKey = secp256k1.generatePrivateKey();
         // Length of private key should be 32 bytes
         expect(randomPrivateKey.length).toBe(32);
@@ -59,13 +60,25 @@ describe('secp256k1', () => {
         expect(secp256k1.isValidPrivateKey(randomPrivateKey)).toBe(true);
     });
 
-    test('secp256k1 - private key - isValidPrivateKey - true', () => {
+    test('secp256k1 - isValidMessageHash - true', () => {
+        validMessageHashes.forEach((messageHash: Buffer) => {
+            expect(secp256k1.isValidMessageHash(messageHash)).toBe(true);
+        });
+    });
+
+    test('secp256k1 - isValidMessageHash - false', () => {
+        invalidMessageHashes.forEach((messageHash: Buffer) => {
+            expect(secp256k1.isValidMessageHash(messageHash)).toBe(false);
+        });
+    });
+
+    test('secp256k1 - isValidPrivateKey - true', () => {
         validPrivateKeys.forEach((privateKey: Buffer) => {
             expect(secp256k1.isValidPrivateKey(privateKey)).toBe(true);
         });
     });
 
-    test('secp256k1 - private key - isValidPrivateKey - false', () => {
+    test('secp256k1 - isValidPrivateKey - false', () => {
         validPrivateKeys.forEach((privateKey: Buffer) => {
             expect(secp256k1.isValidPrivateKey(privateKey)).toBe(true);
         });
@@ -109,7 +122,7 @@ describe('secp256k1', () => {
 
     test('secp256k1 - recover - success', () => {
         expect(secp256k1.recover(messageHashBuffer, signature)).toStrictEqual(
-            publicKey
+            publicKeyUncompressed
         );
     });
 
