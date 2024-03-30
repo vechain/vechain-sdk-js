@@ -1,24 +1,25 @@
-import { ethers } from 'ethers';
+import * as bip32 from '@scure/bip32';
+import * as bip39 from '@scure/bip39';
+import { addressUtils } from '../address';
+import { assert, buildError, HDNODE } from '@vechain/sdk-errors';
+import { base58 } from '@scure/base';
+import { secp256k1 } from '../secp256k1';
+import { sha256 } from '../hash';
+import { type IHDNode } from './types';
 import {
     VET_DERIVATION_PATH,
     X_PRIV_PREFIX,
     X_PUB_PREFIX,
     ZERO_BUFFER
 } from '../utils';
-import { type IHDNode } from './types';
-import { addressUtils } from '../address';
-import { sha256 } from '../hash';
-import { secp256k1 } from '../secp256k1';
-import { assert, buildError, HDNODE } from '@vechain/sdk-errors';
-import { assertIsValidHdNodeDerivationPath } from '../assertions';
-
-import * as bip32 from '@scure/bip32';
-import * as bip39 from '@scure/bip39';
-import { base58 } from '@scure/base';
 import { wordlist } from '@scure/bip39/wordlists/english';
 
 /**
  * Create an HDNode from a mnemonic phrase.
+ *
+ * Security audit function.
+ * * [bip32](https://github.com/paulmillr/scure-bip32)
+ * * [bip39](https://github.com/paulmillr/scure-bip39)
  *
  * @param {string[]} words - The mnemonic words.
  * @param {string} path - The derivation path. Defaults to {@link VET_DERIVATION_PATH}.
@@ -52,38 +53,12 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
     }
 }
 
-function of(hdkey: bip32.HDKey): IHDNode {
-    const publicKey =
-        hdkey.publicKey != null ? Buffer.from(hdkey.publicKey) : ZERO_BUFFER(0);
-    const address = addressUtils.fromPublicKey(publicKey);
-    return {
-        get publicKey() {
-            return publicKey;
-        },
-        get privateKey() {
-            return hdkey.privateKey != null
-                ? Buffer.from(hdkey.privateKey)
-                : null;
-        },
-        get chainCode() {
-            return hdkey.chainCode != null
-                ? Buffer.from(hdkey.chainCode)
-                : ZERO_BUFFER(0);
-        },
-        get address() {
-            return address;
-        },
-        derive(index) {
-            return of(hdkey.deriveChild(index));
-        },
-        derivePath(path: string) {
-            return of(hdkey.derive(path));
-        }
-    };
-}
-
 /**
  * Creates an HDNode from a private key and chain code.
+ *
+ * Security audit function.
+ * [base58](https://github.com/paulmillr/scure-base)
+ * [bip32](https://github.com/paulmillr/scure-bip32)
  *
  * @param {Buffer} privateKey - The private key to create the HDNode from.
  * @param {Buffer} chainCode - The chain code associated with the private key.
@@ -121,86 +96,83 @@ function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
 }
 
 /**
- * Generates an HDNode instance using an extended public key.
+ * Creates an HDNode instance from a public key and chain code.
  *
- * @throws{InvalidHDNodePublicKeyError, InvalidHDNodeChaincodeError}
- * @param publicKey - The extended public key.
- * @param chainCode - The associated chain code.
- * @returns An IHDNode instance derived from the given public key and chain code.
+ * Security audit function.
+ * [base58](https://github.com/paulmillr/scure-base)
+ * [bip32](https://github.com/paulmillr/scure-bip32)
+ *
+ * @param {Buffer} publicKey - The public key.
+ * @param {Buffer} chainCode - The chain code.
+ * @returns {IHDNode} - The HDNode instance.
+ * @throws {HDNODE.INVALID_HDNODE_CHAIN_CODE} an error if chain code is invalid.
+ * @throws {HDNODE.INVALID_HDNODE_PUBLIC_KEY} an error if the public key is invalid.
  */
 function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
-    // Invalid public key
-    // assert(
-    //     'fromPublicKey',
-    //     publicKey.length === 65,
-    //     HDNODE.INVALID_HDNODE_PUBLIC_KEY,
-    //     'Invalid public key. Length must be exactly 65 bytes.',
-    //     { publicKey }
-    // );
-
-    // Invalid chain code
-    // assertIsValidHdNodeChainCode('fromPublicKey', chainCode);
-
-    // no need of elliptic lib
-    const compressed = secp256k1.publicKeyToArray(publicKey, true);
-    const key = Buffer.concat([
+    assert(
+        'HDNode.fromPublicKey',
+        chainCode.length === 32,
+        HDNODE.INVALID_HDNODE_CHAIN_CODE,
+        'Invalid chain code. Length must be exactly 32 bytes.',
+        { chainCode }
+    );
+    const compressed = secp256k1.compressPublicKey(publicKey);
+    const header = Buffer.concat([
         X_PUB_PREFIX,
         chainCode,
         Buffer.from(compressed)
     ]);
-    const checksum = sha256(sha256(key));
-    const slicedChecksum = checksum.subarray(0, 4);
-
-    const node = ethers.HDNodeWallet.fromExtendedKey(
-        ethers.encodeBase58(Buffer.concat([key, slicedChecksum]))
-    ) as ethers.HDNodeWallet;
-    return ethersNodeToOurHDNode(node);
+    const checksum = sha256(sha256(header)).subarray(0, 4);
+    const xPublicKey = Buffer.concat([header, checksum]);
+    try {
+        return of(bip32.HDKey.fromExtendedKey(base58.encode(xPublicKey)));
+    } catch (error) {
+        throw buildError(
+            'HDNode.fromPublicKey',
+            HDNODE.INVALID_HDNODE_PUBLIC_KEY,
+            'Invalid public key.',
+            { publicKey },
+            error
+        );
+    }
 }
 
 /**
- * Converts an `ethers` HDNode to a custom HDNode format.
+ * Creates an instance of IHDNode using the provided HDKey.
  *
- * @throws{InvalidHDNodeDerivationPathError}
- * @param ethersNode - The HDNode instance from the `ethers` library.
- * @returns An IHDNode instance in the custom format.
+ * If the input `hdkey` has missing properties (`null` or `undefined`) those
+ * must be present in the returned `IHDNode`, those are represented as an
+ * empty {@link Buffer}.
+ *
+ * @param {bip32.HDKey} hdkey - The HDKey to create the IHDNode from.
+ * @returns {IHDNode} The created IHDNode instance.
  */
-function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
-    //     const pub = Buffer.from(
-    //         secp256k1.publicKeyToArray(
-    //             Buffer.from(ethersNode.publicKey.slice(2), 'hex'),
-    //             false
-    //         )
-    //     );
-    const pub = Buffer.from(
-        secp256k1.compressPublicKey(
-            Buffer.from(ethersNode.publicKey.slice(2), 'hex')
-        )
-    );
-    const cc = Buffer.from(ethersNode.chainCode.slice(2), 'hex');
-    const addr = addressUtils.fromPublicKey(pub);
+function of(hdkey: bip32.HDKey): IHDNode {
+    const publicKey =
+        hdkey.publicKey != null ? Buffer.from(hdkey.publicKey) : ZERO_BUFFER(0);
+    const address = addressUtils.fromPublicKey(publicKey);
     return {
         get publicKey() {
-            return pub;
+            return publicKey;
         },
         get privateKey() {
-            if (ethersNode.privateKey !== undefined)
-                return Buffer.from(ethersNode.privateKey.slice(2), 'hex');
-            return null;
+            return hdkey.privateKey != null
+                ? Buffer.from(hdkey.privateKey)
+                : null;
         },
         get chainCode() {
-            return cc;
+            return hdkey.chainCode != null
+                ? Buffer.from(hdkey.chainCode)
+                : ZERO_BUFFER(0);
         },
         get address() {
-            return addr;
+            return address;
         },
         derive(index) {
-            return ethersNodeToOurHDNode(ethersNode.deriveChild(index));
+            return of(hdkey.deriveChild(index));
         },
         derivePath(path: string) {
-            // Invalid derivation path
-            assertIsValidHdNodeDerivationPath('ethersNodeToOurHDNode', path);
-
-            return ethersNodeToOurHDNode(ethersNode.derivePath(path));
+            return of(hdkey.derive(path));
         }
     };
 }
