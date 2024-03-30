@@ -24,8 +24,8 @@ import { wordlist } from '@scure/bip39/wordlists/english';
  * @param {string[]} words - The mnemonic words.
  * @param {string} path - The derivation path. Defaults to {@link VET_DERIVATION_PATH}.
  * @returns {IHDNode} The created HDNode from mnemonic `words.
- * @throws {HDNODE.INVALID_HDNODE_DERIVATION_PATH} an error if the derivation path is invalid.
- * @throws {HDNODE.INVALID_HDNODE_MNEMONICS} an error if the mnemonic is invalid or if the derivation path is invalid.
+ * @throws {InvalidHDNodeDerivationPathError} an error if the derivation path is invalid.
+ * @throws {InvalidHDNodeMnemonicsError} an error if the mnemonic is invalid or if the derivation path is invalid.
  */
 function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
     const mnemonic = words.join(' ').toLowerCase();
@@ -63,8 +63,8 @@ function fromMnemonic(words: string[], path = VET_DERIVATION_PATH): IHDNode {
  * @param {Buffer} privateKey - The private key to create the HDNode from.
  * @param {Buffer} chainCode - The chain code associated with the private key.
  * @returns {IHDNode} - The created HDNode.
- * @throws {HDNODE.INVALID_HDNODE_CHAIN_CODE} an error if chain code is invalid.
- * @throws {HDNODE.INVALID_HDNODE_PRIVATE_KEY} an error if the private key is invalid.
+ * @throws {InvalidHDNodeChaincodeError)} an error if chain code is invalid.
+ * @throws {InvalidHDNodePrivateKeyError} an error if the private key is invalid.
  */
 function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
     assert(
@@ -105,8 +105,8 @@ function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
  * @param {Buffer} publicKey - The public key.
  * @param {Buffer} chainCode - The chain code.
  * @returns {IHDNode} - The HDNode instance.
- * @throws {HDNODE.INVALID_HDNODE_CHAIN_CODE} an error if chain code is invalid.
- * @throws {HDNODE.INVALID_HDNODE_PUBLIC_KEY} an error if the public key is invalid.
+ * @throws {InvalidHDNodeChaincodeError) an error if chain code is invalid.
+ * @throws {InvalidHDNodePublicKeyError} an error if the public key is invalid.
  */
 function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
     assert(
@@ -146,6 +146,7 @@ function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
  *
  * @param {bip32.HDKey} hdkey - The HDKey to create the IHDNode from.
  * @returns {IHDNode} The created IHDNode instance.
+ * @internal
  */
 function of(hdkey: bip32.HDKey): IHDNode {
     const publicKey =

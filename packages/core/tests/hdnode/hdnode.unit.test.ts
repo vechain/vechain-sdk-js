@@ -1,3 +1,4 @@
+import { addresses, words, wrongWords } from './fixture';
 import { describe, expect, test } from '@jest/globals';
 import {
     HDNode,
@@ -8,12 +9,12 @@ import {
     secp256k1,
     type WordlistSizeType
 } from '../../src';
-import { addresses, words, wrongWords } from './fixture';
 import {
     InvalidHDNodeChaincodeError,
     InvalidHDNodeDerivationPathError,
     InvalidHDNodeMnemonicsError,
-    InvalidHDNodePrivateKeyError
+    InvalidHDNodePrivateKeyError,
+    InvalidHDNodePublicKeyError
 } from '@vechain/sdk-errors';
 
 /**
@@ -139,14 +140,14 @@ describe('HDNode', () => {
     });
 
     test('HDNode - from public key - invalid chain code', () => {
-        // expect(() =>
-        //     HDNode.fromPublicKey(ZERO_BUFFER(65), ZERO_BUFFER(31))
-        // ).toThrowError(InvalidHDNodeChaincodeError);
+        expect(() =>
+            HDNode.fromPublicKey(ZERO_BUFFER(65), ZERO_BUFFER(31))
+        ).toThrowError(InvalidHDNodeChaincodeError);
     });
 
-    // test('HDNode - from public key - invalid key', () => {
-    //     expect(() =>
-    //         HDNode.fromPublicKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
-    //     ).toThrowError(InvalidHDNodePublicKeyError);
-    // });
+    test('HDNode - from public key - invalid key', () => {
+        expect(() =>
+            HDNode.fromPublicKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
+        ).toThrowError(InvalidHDNodePublicKeyError);
+    });
 });
