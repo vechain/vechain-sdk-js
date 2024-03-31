@@ -173,7 +173,11 @@ function of(hdkey: bip32.HDKey): IHDNode {
             return of(hdkey.deriveChild(index));
         },
         derivePath(path: string) {
-            return of(hdkey.derive(path));
+            if (!path.startsWith('m/') && !path.startsWith('M/')) {
+                return of(hdkey.derive('m/' + path));
+            } else {
+                return of(hdkey.derive(path));
+            }
         }
     };
 }

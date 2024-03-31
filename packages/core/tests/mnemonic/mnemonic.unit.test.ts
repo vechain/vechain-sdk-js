@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { mnemonic } from '../../src';
+import { addressUtils, Hex, mnemonic, secp256k1 } from '../../src';
 import {
     customRandomGeneratorWithXor,
     derivationPaths,
@@ -54,20 +54,20 @@ describe('Mnemonic', () => {
                     expect(mnemonic.validate(words)).toEqual(true);
 
                     // Derive private key from mnemonic words
-                    // TODO expect(mnemonic.derivePrivateKey(words)).toBeDefined();
-                    // TODO expect(mnemonic.derivePrivateKey(words).length).toEqual(32);
-                    // TODO expect(
-                    //     secp256k1.isValidPrivateKey(
-                    //         mnemonic.derivePrivateKey(words)
-                    //     )
-                    // ).toEqual(true);
+                    expect(mnemonic.derivePrivateKey(words)).toBeDefined();
+                    expect(mnemonic.derivePrivateKey(words).length).toEqual(32);
+                    expect(
+                        secp256k1.isValidPrivateKey(
+                            mnemonic.derivePrivateKey(words)
+                        )
+                    ).toEqual(true);
 
                     // Derive address from mnemonic words
-                    // TODO expect(mnemonic.deriveAddress(words)).toBeDefined();
-                    // TODO expect(mnemonic.deriveAddress(words).length).toEqual(42);
-                    // TODO expect(
-                    //     addressUtils.isAddress(mnemonic.deriveAddress(words))
-                    // ).toBe(true);
+                    expect(mnemonic.deriveAddress(words)).toBeDefined();
+                    expect(mnemonic.deriveAddress(words).length).toEqual(42);
+                    expect(
+                        addressUtils.isAddress(mnemonic.deriveAddress(words))
+                    ).toBe(true);
                 }
             );
         });
@@ -93,32 +93,32 @@ describe('Mnemonic', () => {
                 // Derivation path is defined
                 if (derivationPath.derivationPath !== undefined) {
                     // Private key derivation
-                    // TODO expect(
-                    //     Hex.of(
-                    //         mnemonic.derivePrivateKey(
-                    //             words,
-                    //             derivationPath.derivationPath
-                    //         )
-                    //     )
-                    // ).toEqual(derivationPath.resultingPrivateKey);
+                    expect(
+                        Hex.of(
+                            mnemonic.derivePrivateKey(
+                                words,
+                                derivationPath.derivationPath
+                            )
+                        )
+                    ).toEqual(derivationPath.resultingPrivateKey);
                     // Address derivation
-                    // TODO expect(
-                    //     mnemonic.deriveAddress(
-                    //         words,
-                    //         derivationPath.derivationPath
-                    //     )
-                    // ).toEqual(derivationPath.resultingAddress);
+                    expect(
+                        mnemonic.deriveAddress(
+                            words,
+                            derivationPath.derivationPath
+                        )
+                    ).toEqual(derivationPath.resultingAddress);
                 }
                 // Derivation path is not defined
                 else {
                     // Private key derivation
-                    // TODO expect(Hex.of(mnemonic.derivePrivateKey(words))).toEqual(
-                    //     derivationPath.resultingPrivateKey
-                    // );
+                    expect(Hex.of(mnemonic.derivePrivateKey(words))).toEqual(
+                        derivationPath.resultingPrivateKey
+                    );
                     // Address derivation
-                    // TODO expect(mnemonic.deriveAddress(words)).toEqual(
-                    //     derivationPath.resultingAddress
-                    // );
+                    expect(mnemonic.deriveAddress(words)).toEqual(
+                        derivationPath.resultingAddress
+                    );
                 }
             });
         });
