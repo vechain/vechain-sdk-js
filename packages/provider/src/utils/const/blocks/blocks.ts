@@ -15,7 +15,20 @@ const getCorrectBlockNumberRPCToVechain = (
 ): string => {
     // Tag block number
     if (typeof block === 'string') {
-        if (block === 'latest') return 'best'; // 'best' is the alias for 'latest' in vechain Thorest
+        // Latest, Finalized, Safe blocks
+        if (
+            block === 'latest' ||
+            block === 'finalized' ||
+            block === 'safe' ||
+            block === 'pending'
+        )
+            // 'best' is the alias for 'latest', 'finalized' and 'safe' in vechain Thorest
+            return 'best';
+
+        // Earliest block
+        if (block === 'earliest') return Hex0x.of(0);
+
+        // Hex number of block
         return block;
     }
 
