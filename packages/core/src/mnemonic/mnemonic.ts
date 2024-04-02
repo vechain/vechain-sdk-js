@@ -103,9 +103,8 @@ function derivePrivateKey(
     words: string[],
     derivationPathFromCurrentNode: string = '0'
 ): Buffer {
-    const master = HDNode.fromMnemonic(words);
-    const node = master.derivePath(derivationPathFromCurrentNode);
-    return node.privateKey as Buffer;
+    return HDNode.fromMnemonic(words).derivePath(derivationPathFromCurrentNode)
+        .privateKey as Buffer;
 }
 
 /**

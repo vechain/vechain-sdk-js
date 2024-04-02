@@ -173,10 +173,20 @@ function of(hdkey: bip32.HDKey): IHDNode {
             return of(hdkey.deriveChild(index));
         },
         derivePath(path: string) {
-            if (!path.startsWith('m/') && !path.startsWith('M/')) {
-                return of(hdkey.derive('m/' + path));
-            } else {
-                return of(hdkey.derive(path));
+            const canonicPath =
+                !path.startsWith('m/') && !path.startsWith('M/')
+                    ? 'm/' + path
+                    : path;
+            try {
+                return of(hdkey.derive(canonicPath));
+            } catch (error) {
+                throw buildError(
+                    'HDNode.of',
+                    HDNODE.INVALID_HDNODE_DERIVATION_PATH,
+                    'Invalid derivation path. Ensure the path adheres to the standard format.',
+                    { path },
+                    error
+                );
             }
         }
     };

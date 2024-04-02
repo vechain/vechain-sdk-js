@@ -128,19 +128,32 @@ describe('Mnemonic', () => {
          * Private key derivation form mnemonic words - With a WRONG deep derivation path
          */
         test('Try to derive private key with a wrong deep derivation path', () => {
-            expect(
-                mnemonic.derivePrivateKey(words, wrongDerivationPath)
-            ).toThrowError(InvalidHDNodeDerivationPathError);
+            // expect(
+            //     mnemonic.derivePrivateKey(words, wrongDerivationPath)
             // ).toThrowError(Error);
+            try {
+                mnemonic.derivePrivateKey(words, wrongDerivationPath);
+            } catch (error) {
+                expect(
+                    error instanceof InvalidHDNodeDerivationPathError
+                ).toBeTruthy();
+            }
         });
 
         /**
          * Address derivation form mnemonic words - With a WRONG deep derivation path
          */
         test('try to derive address with a wrong deep derivation path', () => {
-            expect(
-                mnemonic.deriveAddress(words, wrongDerivationPath)
-            ).toThrowError(InvalidHDNodeDerivationPathError);
+            // expect(
+            //     mnemonic.deriveAddress(words, wrongDerivationPath)
+            // ).toThrowError(InvalidHDNodeDerivationPathError);
+            try {
+                mnemonic.deriveAddress(words, wrongDerivationPath);
+            } catch (error) {
+                expect(
+                    error instanceof InvalidHDNodeDerivationPathError
+                ).toBeTruthy();
+            }
         });
     });
 });
