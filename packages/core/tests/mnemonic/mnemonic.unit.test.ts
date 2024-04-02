@@ -14,6 +14,7 @@ import {
 } from '../../src';
 import { randomBytes } from 'crypto';
 import {
+    InvalidHDNodeDerivationPathError,
     // InvalidHDNodeDerivationPathError,
     InvalidHDNodeMnemonicsError
 } from '@vechain/sdk-errors';
@@ -128,9 +129,9 @@ describe('Mnemonic', () => {
          */
         test('Try to derive private key with a wrong deep derivation path', () => {
             expect(
-                () => mnemonic.derivePrivateKey(words, wrongDerivationPath)
-                // TODO ).toThrowError(InvalidHDNodeDerivationPathError);
-            ).toThrowError(Error);
+                mnemonic.derivePrivateKey(words, wrongDerivationPath)
+            ).toThrowError(InvalidHDNodeDerivationPathError);
+            // ).toThrowError(Error);
         });
 
         /**
@@ -138,9 +139,8 @@ describe('Mnemonic', () => {
          */
         test('try to derive address with a wrong deep derivation path', () => {
             expect(
-                () => mnemonic.deriveAddress(words, wrongDerivationPath)
-                // TODO ).toThrowError(InvalidHDNodeDerivationPathError);
-            ).toThrowError(Error);
+                mnemonic.deriveAddress(words, wrongDerivationPath)
+            ).toThrowError(InvalidHDNodeDerivationPathError);
         });
     });
 });
