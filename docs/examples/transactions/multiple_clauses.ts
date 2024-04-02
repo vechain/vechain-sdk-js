@@ -1,8 +1,4 @@
-import {
-    VTHO_ADDRESS,
-    clauseBuilder,
-    networkInfo
-} from '@vechain/sdk-core';
+import { VTHO_ADDRESS, clauseBuilder, networkInfo } from '@vechain/sdk-core';
 import {
     secp256k1,
     TransactionUtils,
@@ -12,6 +8,8 @@ import {
     unitsUtils
 } from '@vechain/sdk-core';
 import { expect } from 'expect';
+
+// START_SNIPPET: MultipleClausesSnippet
 
 // 1 - Define multiple clauses
 
@@ -55,7 +53,10 @@ const signedTransaction = TransactionHandler.sign(body, privateKey);
 
 const encodedRaw = signedTransaction.encoded;
 
-// 6 - Decode transaction and check
+// 6 - Decode transaction
 
 const decodedTx = TransactionHandler.decode(encodedRaw, true);
+
+// END_SNIPPET: MultipleClausesSnippet
+
 expect(decodedTx.body.clauses.length).toBe(clauses.length);

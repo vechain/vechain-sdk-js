@@ -65,10 +65,18 @@ type ContractFunctionFilter = Record<
     ContractFunctionSync<ContractFilter>
 >;
 
+/**
+ * Represents the amount of VET to transfer in a transaction.
+ */
+interface TransactionValue {
+    value: number;
+}
+
 export type {
     ContractFunctionAsync,
     ContractFunctionSync,
     ContractFunctionRead,
     ContractFunctionTransact,
-    ContractFunctionFilter
+    ContractFunctionFilter,
+    TransactionValue
 };

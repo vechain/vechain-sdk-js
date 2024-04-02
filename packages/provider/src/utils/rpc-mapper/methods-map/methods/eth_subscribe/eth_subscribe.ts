@@ -4,7 +4,7 @@ import {
     type VechainProvider
 } from '../../../../../providers';
 import { buildProviderError, JSONRPC } from '@vechain/sdk-errors';
-import { dataUtils } from '@vechain/sdk-core';
+import { Hex } from '@vechain/sdk-core';
 
 /**
  * Enumerates the types of subscriptions supported by the`eth_subscribe` RPC method.
@@ -98,7 +98,7 @@ const ethSubscribe = async (
 
         provider.startSubscriptionsPolling();
     }
-    const subscriptionId = dataUtils.generateRandomHexOfLength(32);
+    const subscriptionId: string = Hex.random(16);
 
     if (params.includes(SUBSCRIPTION_TYPE.NEW_HEADS)) {
         provider.subscriptionManager.newHeadsSubscription = {

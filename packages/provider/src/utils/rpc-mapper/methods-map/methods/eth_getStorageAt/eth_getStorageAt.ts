@@ -1,4 +1,4 @@
-import { dataUtils } from '@vechain/sdk-core';
+import { Hex0x } from '@vechain/sdk-core';
 import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
 import { type ThorClient } from '@vechain/sdk-network';
 
@@ -45,7 +45,7 @@ const ethGetStorageAt = async (
         // Get the account details
         return await thorClient.accounts.getStorageAt(
             address,
-            dataUtils.padHexString(storagePosition),
+            Hex0x.canon(storagePosition, 32),
             {
                 revision: blockNumber
             }

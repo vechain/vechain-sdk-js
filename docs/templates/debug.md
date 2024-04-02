@@ -21,7 +21,7 @@ including the nextKey which is a string that can be null, and storage which is a
 In this example the `thorClient` connects to the *testnet* to retrieve the storage range for the coordinates passed
 as `input` parameter.
 
-[example](examples/debug/debug-retrieve-storage-range.ts)
+[DebugRetrieveStorageRangeSnippet](examples/debug/debug-retrieve-storage-range.ts)
 
 <details>
 <summary>The result will show the storage.</summary>
@@ -82,7 +82,7 @@ The `traceContractCall` traces the contract call execution.
 In this example the `thorClient` connects to the *testnet* to trace the contract at the coordinates specified in
 the `input` parameter.
 
-[example](examples/debug/debug-trace-contract-call.ts)
+[DebugTraceContractCallSnippet](examples/debug/debug-trace-contract-call.ts)
 
 <details>
 <summary>The result shows the trace, here only the first element is shown.</summary>
@@ -114,7 +114,7 @@ coordinates expressed in the `input` parameter.
 In this example the `thorClient` connects to the *testnet* to trace the clause at the coordinates specified in
 the `input` parameter.
 
-[example](examples/debug/debug-trace-contract-call.ts)
+[DebugTraceTransactionClauseSnippet](examples/debug/debug-trace-transaction-clause.ts)
 
 <details>
 <summary>The result shows the following.</summary>

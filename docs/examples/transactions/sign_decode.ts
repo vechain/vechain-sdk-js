@@ -9,6 +9,8 @@ import {
 } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
+// START_SNIPPET: SignDecodeSnippet
+
 // 1 - Define clauses
 
 const clauses: TransactionClause[] = [
@@ -46,8 +48,11 @@ const signedTransaction = TransactionHandler.sign(body, privateKey);
 
 const encodedRaw = signedTransaction.encoded;
 
-// 6 - Decode transaction and check
+// 6 - Decode transaction
 
 const decodedTx = TransactionHandler.decode(encodedRaw, true);
+
+// END_SNIPPET: SignDecodeSnippet
+
 expect(decodedTx.body.chainTag).toBe(body.chainTag);
 expect(decodedTx.body.nonce).toBe(body.nonce);

@@ -6,6 +6,8 @@ import {
     addressUtils
 } from '@vechain/sdk-core';
 
+// START_SNIPPET: SignVerifySnippet
+
 // 1 - Generate a private key and address for the signer
 
 const privateKey = secp256k1.generatePrivateKey();
@@ -35,3 +37,5 @@ cert.signature = '0x' + signature.toString('hex');
 
 // Verify certificate
 certificate.verify(cert);
+
+// END_SNIPPET: SignVerifySnippet

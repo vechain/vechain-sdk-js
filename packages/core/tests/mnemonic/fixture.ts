@@ -1,5 +1,4 @@
-import { type WordListRandomGeneratorSizeInBytes } from '../../src';
-import { randomBytes } from 'crypto';
+import { secp256k1, type WordListRandomGeneratorSizeInBytes } from '../../src';
 
 /**
  * Mnemonic words fixture.
@@ -15,8 +14,8 @@ const words =
 const customRandomGeneratorWithXor = (
     numberOfBytes: WordListRandomGeneratorSizeInBytes
 ): Buffer => {
-    const r1 = randomBytes(numberOfBytes);
-    const r2 = randomBytes(numberOfBytes);
+    const r1 = secp256k1.randomBytes(numberOfBytes);
+    const r2 = secp256k1.randomBytes(numberOfBytes);
     return Buffer.from(r1.map((byte, index) => byte ^ r2[index]));
 };
 

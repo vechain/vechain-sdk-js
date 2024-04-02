@@ -10,6 +10,8 @@ import {
 } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
+// START_SNIPPET: BlockrefExpirationSnippet
+
 // 1 - Define clauses
 
 const clauses: TransactionClause[] = [
@@ -47,5 +49,8 @@ const encodedRaw = signedTransaction.encoded;
 // 6 - Decode transaction and check
 
 const decodedTx = TransactionHandler.decode(encodedRaw, true);
+
+// END_SNIPPET: BlockrefExpirationSnippet
+
 expect(decodedTx.body.blockRef).toBe(body.blockRef);
 expect(decodedTx.body.expiration).toBe(body.expiration);

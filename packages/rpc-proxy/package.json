@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-rpc-proxy",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "Proxy Thor's RESTful API to Eth JSON-RPC",
   "author": "vechain Foundation",
   "license": "MIT",
@@ -26,11 +26,12 @@
     "start": "yarn build && node dist/index.js"
   },
   "dependencies": {
-    "@vechain/sdk-network": "1.0.0-beta.1",
-    "@vechain/sdk-provider": "1.0.0-beta.1",
-    "@vechain/sdk-wallet": "1.0.0-beta.1",
+    "@vechain/sdk-network": "1.0.0-beta.2",
+    "@vechain/sdk-provider": "1.0.0-beta.2",
+    "@vechain/sdk-wallet": "1.0.0-beta.2",
+    "@vechain/sdk-logging": "1.0.0-beta.2",
     "cors": "^2.8.5",
-    "express": "^4.18.2"
+    "express": "^4.19.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",

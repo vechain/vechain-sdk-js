@@ -3,7 +3,7 @@ import {
     assertIsSignedTransaction,
     assertValidTransactionHead,
     assertValidTransactionID,
-    dataUtils,
+    Hex0x,
     revisionUtils,
     secp256k1,
     Transaction,
@@ -25,7 +25,6 @@ import {
     type TransactionSimulationResult,
     type WaitForTransactionOptions
 } from './types';
-import { randomBytes } from 'crypto';
 import { assert, buildError, DATA, TRANSACTION } from '@vechain/sdk-errors';
 import { type ThorClient } from '../thor-client';
 import { DelegationHandler } from './helpers';
@@ -111,7 +110,7 @@ class TransactionsModule {
         // Validate raw transaction
         assert(
             'sendRawTransaction',
-            dataUtils.isHexString(raw),
+            Hex0x.isValid(raw),
             DATA.INVALID_DATA_TYPE,
             'Sending failed: Input must be a valid raw transaction in hex format.',
             { raw }
@@ -154,7 +153,7 @@ class TransactionsModule {
         // Assert transaction is signed or not
         assertIsSignedTransaction('sendTransaction', signedTx);
 
-        const rawTx = `0x${signedTx.encoded.toString('hex')}`;
+        const rawTx = Hex0x.of(signedTx.encoded);
 
         return await this.sendRawTransaction(rawTx);
     }
@@ -223,7 +222,7 @@ class TransactionsModule {
 
         // The constant part of the transaction body
         const constTxBody = {
-            nonce: `0x${dataUtils.toHexString(randomBytes(8))}`,
+            nonce: Hex0x.of(secp256k1.randomBytes(8)),
             expiration: options?.expiration ?? 32,
             clauses,
             gasPriceCoef: options?.gasPriceCoef ?? 0,

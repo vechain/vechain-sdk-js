@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { bloom } from '../../src';
+import { bloom, Hex } from '../../src';
 import { bloomKTestCases } from './fixture';
 
 /**
@@ -39,7 +39,7 @@ describe('Bloom Filter', () => {
         // Generate the bloom filter
         const filter = generator.generate(bitsPerKey, k);
 
-        expect(filter.bits.toString('hex')).toBe('96b298d634155950');
+        expect(Hex.of(filter.bits)).toBe('96b298d634155950');
         expect(filter.bits.byteLength).toBe(8); // 64 bits
         expect(filter.k).toBe(k);
 
@@ -67,7 +67,7 @@ describe('Bloom Filter', () => {
 
         expect(filter.bits.byteLength).toBe(8);
         expect(filter.k).toBe(k);
-        expect(filter.bits.toString('hex')).toBe('0000000000000000'); // 16 groups of 4 bits, all 0 -> 64 bits
+        expect(Hex.of(filter.bits)).toBe('0000000000000000'); // 16 groups of 4 bits, all 0 -> 64 bits
     });
 
     /**
@@ -92,7 +92,7 @@ describe('Bloom Filter', () => {
         // Generate the bloom filter
         const filter = generator.generate(bitsPerKey, k);
 
-        expect(filter.bits.toString('hex')).toBe(
+        expect(Hex.of(filter.bits)).toBe(
             'a4d641159d68d829345f86f40d50676cf042f6265072075a94'
         );
         expect(filter.bits.byteLength).toBe(25);
@@ -133,7 +133,7 @@ describe('Bloom Filter', () => {
 
         const filter = generator.generate(bitsPerKey, k);
 
-        expect(filter.bits.toString('hex')).toBe('1190199325088200');
+        expect(Hex.of(filter.bits)).toBe('1190199325088200');
 
         // Validate the generated filter
         keys.forEach((key) => {

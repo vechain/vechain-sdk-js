@@ -33,4 +33,4 @@ Certificates are used in various scenarios within the VechainThor blockchain, in
 
 It's important to note that certificates in the VechainThor blockchain are self-signed, which means that they are issued and signed by the same entity or user. The signature from the issuer's private key serves as proof of the certificate's authenticity.
 
-[example](examples/certificates/sign_verify.ts)
+[SignVerifySnippet](examples/certificates/sign_verify.ts)

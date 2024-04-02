@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import { ThorClient } from '@vechain/sdk-network';
 import { soloNetwork, TEST_ACCOUNTS_THOR_SOLO } from '../../../fixture';
 import {
-    Hex,
+    Hex0x,
     type TransactionClause,
     TransactionHandler
 } from '@vechain/sdk-core';
@@ -84,7 +84,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
                 Buffer.from(actors.sender.privateKey, 'hex')
             );
 
-            const raw = Hex.of0x(signedTransaction.encoded);
+            const raw = Hex0x.of(signedTransaction.encoded);
 
             // 3 - Send raw transaction
 

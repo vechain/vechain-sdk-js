@@ -1,11 +1,13 @@
 import {
     TransactionHandler,
-    dataUtils,
     unitsUtils,
-    clauseBuilder
+    clauseBuilder,
+    Hex0x
 } from '@vechain/sdk-core';
 import { HttpClient, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
+
+// START_SNIPPET: DelegatedTransactionsSnippet
 
 // Sender account with private key
 const senderAccount = {
@@ -79,7 +81,7 @@ const send = await thorSoloClient.transactions.sendRawTransaction(
 );
 expect(send).toBeDefined();
 expect(send).toHaveProperty('id');
-expect(dataUtils.isHexString(send.id)).toBe(true);
+expect(Hex0x.isValid(send.id)).toBe(true);
 
 // 7 - Get transaction details and receipt
 
@@ -92,5 +94,10 @@ const transactionDetails = await thorSoloClient.transactions.getTransaction(
 const transactionReceipt =
     await thorSoloClient.transactions.getTransactionReceipt(send.id);
 
+// END_SNIPPET: DelegatedTransactionsSnippet
+
+expect(send).toBeDefined();
+expect(send).toHaveProperty('id');
+expect(Hex0x.isValid(send.id)).toBe(true);
 expect(transactionDetails).toBeDefined();
 expect(transactionReceipt).toBeDefined();

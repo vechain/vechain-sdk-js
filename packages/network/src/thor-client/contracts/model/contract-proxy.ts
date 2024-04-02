@@ -1,7 +1,8 @@
 import {
     type ContractFunctionFilter,
     type ContractFunctionRead,
-    type ContractFunctionTransact
+    type ContractFunctionTransact,
+    type TransactionValue
 } from './types';
 import { type SendTransactionResult } from '../../transactions';
 import { type Contract } from './contract';
@@ -63,12 +64,31 @@ function getTransactProxy(contract: Contract): ContractFunctionTransact {
                         { prop }
                     );
                 }
+
+                // get the transaction options for the contract
+                const transactionOptions =
+                    contract.getContractTransactOptions();
+
+                // check if the transaction value is provided as an argument
+                const transactionValue = getTransactionValue(args);
+
+                // if present remove the transaction value argument from the list of arguments
+                if (transactionValue !== undefined) {
+                    args = args.filter((arg) => !isTransactionValue(arg));
+                }
+
                 return await contract.thor.contracts.executeContractTransaction(
                     contract.getCallerPrivateKey() as string,
                     contract.address,
                     contract.getFunctionFragment(prop),
                     args,
-                    contract.getContractTransactOptions()
+                    {
+                        ...transactionOptions,
+                        value:
+                            transactionOptions.value ??
+                            transactionValue?.value ??
+                            0
+                    }
                 );
             };
         }
@@ -113,6 +133,26 @@ function getFilterProxy(contract: Contract): ContractFunctionFilter {
             };
         }
     });
+}
+
+/**
+ * Extracts the transaction value from the list of arguments, if present.
+ * @param args - The list of arguments to search for the transaction value.
+ * @returns The transaction value object, if found in the arguments list.
+ */
+function getTransactionValue(args: unknown[]): TransactionValue | undefined {
+    return args.find((arg) => isTransactionValue(arg)) as
+        | TransactionValue
+        | undefined;
+}
+
+/**
+ * Type guard function to check if an object is a TransactionValue.
+ * @param obj - The object to check.
+ * @returns True if the object is a TransactionValue, false otherwise.
+ */
+function isTransactionValue(obj: unknown): obj is TransactionValue {
+    return (obj as TransactionValue).value !== undefined;
 }
 
 export { getReadProxy, getTransactProxy, getFilterProxy };
