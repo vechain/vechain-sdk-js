@@ -166,7 +166,38 @@ describe('HDNode', () => {
         });
     });
 
-    // describe('HDNode - of', () => {
-    //
-    // });
+    describe('HDNode - of', () => {
+        test('HDNode - of - success', () => {
+            const path = '0/1/4/2/4/3';
+            const expectedAddress = '0b41c56e19c5151122568873a039fea090937fe2';
+            const expectedChainCode =
+                '174469a247a1b891317af13b369b9d511996a74899b3991cde15b77e28c0f8d3';
+            const expectedDerive0Address =
+                '0x601e953c417DcF60cD349386fF3b349e7B5D6b77';
+            const expectedPrivateKey =
+                '66962cecff67bea483935c87fd33c6b6a524f06cc46430fa9591350bbd9f4999';
+            const expectedPublicKey =
+                '037ac6894cef5c061f608aaff2a01afa8055eddf3e2527297238733a3cfdd50e41';
+            const node = HDNode.fromMnemonic(words).derivePath(path);
+            expect(Hex.canon(node.address)).toBe(expectedAddress);
+            expect(Hex.of(node.chainCode)).toBe(expectedChainCode);
+            expect(node.derive(0).address).toBe(expectedDerive0Address);
+            expect(node.privateKey).toBeDefined();
+            if (node.privateKey != null) {
+                expect(Hex.of(node.privateKey)).toBe(expectedPrivateKey);
+            }
+            expect(Hex.of(node.publicKey)).toBe(expectedPublicKey);
+        });
+
+        test('HDNode - of - invalid path', () => {
+            const path = '0/1/4/2/4/3/h';
+            try {
+                HDNode.fromMnemonic(words).derivePath(path);
+            } catch (error) {
+                expect(
+                    error instanceof InvalidHDNodeDerivationPathError
+                ).toBeTruthy();
+            }
+        });
+    });
 });

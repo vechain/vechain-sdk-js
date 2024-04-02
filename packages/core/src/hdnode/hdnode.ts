@@ -153,21 +153,13 @@ function of(hdkey: bip32.HDKey): IHDNode {
         hdkey.publicKey != null ? Buffer.from(hdkey.publicKey) : ZERO_BUFFER(0);
     const address = addressUtils.fromPublicKey(publicKey);
     return {
-        get publicKey() {
-            return publicKey;
-        },
-        get privateKey() {
-            return hdkey.privateKey != null
-                ? Buffer.from(hdkey.privateKey)
-                : null;
+        get address() {
+            return address;
         },
         get chainCode() {
             return hdkey.chainCode != null
                 ? Buffer.from(hdkey.chainCode)
                 : ZERO_BUFFER(0);
-        },
-        get address() {
-            return address;
         },
         derive(index) {
             return of(hdkey.deriveChild(index));
@@ -188,6 +180,14 @@ function of(hdkey: bip32.HDKey): IHDNode {
                     error
                 );
             }
+        },
+        get privateKey() {
+            return hdkey.privateKey != null
+                ? Buffer.from(hdkey.privateKey)
+                : null;
+        },
+        get publicKey() {
+            return publicKey;
         }
     };
 }
