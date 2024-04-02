@@ -19,7 +19,7 @@ const privateKeyDeployer =
 const _soloUrl = 'http://localhost:8669/';
 const soloNetwork = new HttpClient(_soloUrl);
 const thorSoloClient = new ThorClient(soloNetwork);
-const pksigner = new PrivateKeySigner(
+const privateKeySigner = new PrivateKeySigner(
     thorSoloClient,
     Buffer.from(privateKeyDeployer, 'hex')
 );
@@ -29,7 +29,7 @@ const setupERC20Contract = async (): Promise<Contract> => {
     const contractFactory = thorSoloClient.contracts.createContractFactory(
         VIP180_ABI,
         erc20ContractBytecode,
-        pksigner
+        privateKeySigner
     );
 
     // Deploying the contract

@@ -20,11 +20,11 @@ import { PrivateKeySigner } from '@vechain/sdk-wallet';
 describe('ThorClient - ERC20 Contracts', () => {
     // ThorClient instance
     let thorSoloClient: ThorClient;
-    let pkSigner: PrivateKeySigner;
+    let privateKeySigner: PrivateKeySigner;
 
     beforeEach(() => {
         thorSoloClient = new ThorClient(soloNetwork);
-        pkSigner = new PrivateKeySigner(
+        privateKeySigner = new PrivateKeySigner(
             thorSoloClient,
             Buffer.from(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
@@ -41,7 +41,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            pkSigner
+            privateKeySigner
         );
 
         factory = await factory.startDeployment();
@@ -69,7 +69,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            pkSigner
+            privateKeySigner
         );
 
         factory = await factory.startDeployment();
@@ -108,7 +108,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            pkSigner
+            privateKeySigner
         );
 
         factory = await factory.startDeployment();
@@ -170,7 +170,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            pkSigner
+            privateKeySigner
         );
 
         factory = await factory.startDeployment();
@@ -190,7 +190,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            pkSigner
+            privateKeySigner
         );
 
         factory = await factory.startDeployment();

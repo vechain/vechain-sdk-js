@@ -45,11 +45,11 @@ describe('ThorClient - Contracts', () => {
     // ThorClient instance
     let thorSoloClient: ThorClient;
 
-    let pkSigner: PrivateKeySigner;
+    let privateKeySigner: PrivateKeySigner;
 
     beforeEach(() => {
         thorSoloClient = new ThorClient(soloNetwork);
-        pkSigner = new PrivateKeySigner(
+        privateKeySigner = new PrivateKeySigner(
             thorSoloClient,
             Buffer.from(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
@@ -69,7 +69,7 @@ describe('ThorClient - Contracts', () => {
         const contractFactory = thorSoloClient.contracts.createContractFactory(
             deployedContractAbi,
             contractBytecode,
-            pkSigner
+            privateKeySigner
         );
 
         // Start the deployment of the contract
@@ -85,7 +85,7 @@ describe('ThorClient - Contracts', () => {
             '0x123',
             deployedContractAbi,
             thorSoloClient,
-            pkSigner
+            privateKeySigner
         );
         expect(contract.address).toBeDefined();
         expect(contract.abi).toBeDefined();
@@ -100,7 +100,7 @@ describe('ThorClient - Contracts', () => {
             '0x123',
             deployedContractAbi,
             thorSoloClient,
-            pkSigner
+            privateKeySigner
         );
         expect(contract.address).toBeDefined();
         expect(contract.abi).toBeDefined();
@@ -143,7 +143,7 @@ describe('ThorClient - Contracts', () => {
         let contractFactory = thorSoloClient.contracts.createContractFactory(
             deployedContractAbi,
             contractBytecode,
-            pkSigner
+            privateKeySigner
         );
 
         // Start the deployment of the contract
@@ -163,7 +163,7 @@ describe('ThorClient - Contracts', () => {
         const contractFactory = thorSoloClient.contracts.createContractFactory(
             deployedContractAbi,
             contractBytecode,
-            pkSigner
+            privateKeySigner
         );
 
         // Waiting for a deployment that has not started
@@ -282,7 +282,7 @@ describe('ThorClient - Contracts', () => {
         await expect(contract.transact.set(123)).rejects.toThrow();
 
         // Set the signer
-        contract.setSigner(pkSigner);
+        contract.setSigner(privateKeySigner);
 
         await (await contract.transact.set(123)).wait();
 
@@ -305,7 +305,7 @@ describe('ThorClient - Contracts', () => {
         const loadedContract = thorSoloClient.contracts.load(
             contract.address,
             contract.abi,
-            pkSigner
+            privateKeySigner
         );
 
         // Call the get function of the loaded contract to verify that the stored value is 100
@@ -359,7 +359,7 @@ describe('ThorClient - Contracts', () => {
         const loadedContract = thorSoloClient.contracts.load(
             '0x0000000000000000000000000000456e65726779',
             fourArgsEventAbi,
-            pkSigner
+            privateKeySigner
         );
 
         const contractFilter = loadedContract.filters.DataUpdated(
@@ -382,7 +382,7 @@ describe('ThorClient - Contracts', () => {
             thorSoloClient.contracts.createContractFactory(
                 depositContractAbi,
                 depositContractBytecode,
-                pkSigner
+                privateKeySigner
             );
 
         const depositContract = await depositContractFactory.startDeployment();
@@ -433,7 +433,7 @@ describe('ThorClient - Contracts', () => {
         const contract = thorSoloClient.contracts.load(
             TESTING_CONTRACT_ADDRESS,
             TESTING_CONTRACT_ABI,
-            pkSigner
+            privateKeySigner
         );
 
         await (await contract.transact.setStateVariable(123)).wait();
@@ -473,7 +473,7 @@ describe('ThorClient - Contracts', () => {
                         thorSoloClient.contracts.createContractFactory(
                             contractAbi,
                             contractBytecode,
-                            pkSigner
+                            privateKeySigner
                         );
 
                     const factory = await contractFactory.startDeployment();

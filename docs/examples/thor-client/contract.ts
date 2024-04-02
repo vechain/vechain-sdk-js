@@ -33,7 +33,7 @@ const deployedContractAbi: InterfaceAbi = [
 const _soloUrl = 'http://localhost:8669/';
 const soloNetwork = new HttpClient(_soloUrl);
 const thorSoloClient = new ThorClient(soloNetwork);
-const pksigner = new PrivateKeySigner(
+const privateKeySigner = new PrivateKeySigner(
     thorSoloClient,
     Buffer.from(privateKeyDeployer, 'hex')
 );
@@ -44,7 +44,7 @@ const pksigner = new PrivateKeySigner(
 let contractFactory = thorSoloClient.contracts.createContractFactory(
     deployedContractAbi,
     contractBytecode,
-    pksigner
+    privateKeySigner
 );
 
 // Deploy parameters to be used for the contract creation

@@ -28,11 +28,11 @@ describe('Signer Tests', () => {
         'body'
     ]);
 
-    const pkSigner = new PrivateKeySigner(thorClient, privateKey);
+    const privateKeySigner = new PrivateKeySigner(thorClient, privateKey);
 
     test('Should be able to send a transaction given the mnemonic', async () => {
         // Send a transaction
-        const response = await pkSigner.sendTransaction([
+        const response = await privateKeySigner.sendTransaction([
             {
                 to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
                 value: 100,
@@ -49,10 +49,10 @@ describe('Signer Tests', () => {
             'hex'
         );
 
-        const pkSigner = new PrivateKeySigner(thorClient, privateKey);
+        const privateKeySigner = new PrivateKeySigner(thorClient, privateKey);
 
         // Send a transaction
-        const response = await pkSigner.sendTransaction([
+        const response = await privateKeySigner.sendTransaction([
             {
                 to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
                 value: 100,
@@ -69,11 +69,11 @@ describe('Signer Tests', () => {
             'hex'
         );
 
-        const pkSigner = new PrivateKeySigner(thorClient, privateKey);
+        const privateKeySigner = new PrivateKeySigner(thorClient, privateKey);
 
         // The transaction is expected to fail because of insufficient gas
         await expect(
-            pkSigner.sendTransaction(
+            privateKeySigner.sendTransaction(
                 [
                     {
                         to: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',

@@ -33,7 +33,7 @@ Once the contract is compiled, we can deploy it using the vechain SDK. The follo
 ```typescript { name=contract-create-erc20-token, category=example }
 const soloNetwork = new HttpClient(_soloUrl);
 const thorSoloClient = new ThorClient(soloNetwork);
-const pksigner = new PrivateKeySigner(
+const privateKeySigner = new PrivateKeySigner(
     thorSoloClient,
     Buffer.from(privateKeyDeployer, 'hex')
 );
@@ -42,7 +42,7 @@ const pksigner = new PrivateKeySigner(
 const contractFactory = thorSoloClient.contracts.createContractFactory(
     VIP180_ABI,
     erc20ContractBytecode,
-    pksigner
+    privateKeySigner
 );
 
 // Deploying the contract

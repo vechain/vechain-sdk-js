@@ -22,7 +22,7 @@ describe('ThorClient - ERC721 Contracts', () => {
     // ThorClient instance
     let thorSoloClient: ThorClient;
 
-    let pkSigner: PrivateKeySigner;
+    let privateKeySigner: PrivateKeySigner;
 
     let contractAddress: string;
 
@@ -46,7 +46,7 @@ describe('ThorClient - ERC721 Contracts', () => {
      */
     beforeAll(async () => {
         thorSoloClient = new ThorClient(soloNetwork);
-        pkSigner = new PrivateKeySigner(
+        privateKeySigner = new PrivateKeySigner(
             thorSoloClient,
             Buffer.from(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
@@ -59,7 +59,7 @@ describe('ThorClient - ERC721 Contracts', () => {
         const factory = thorSoloClient.contracts.createContractFactory(
             ERC721_ABI,
             erc721ContractBytecode,
-            pkSigner
+            privateKeySigner
         );
 
         await factory.startDeployment();
@@ -102,7 +102,7 @@ describe('ThorClient - ERC721 Contracts', () => {
                     } else {
                         response =
                             await thorSoloClient.contracts.executeContractTransaction(
-                                pkSigner,
+                                privateKeySigner,
                                 contractAddress,
                                 coder
                                     .createInterface(ERC721_ABI)
