@@ -146,7 +146,6 @@ function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
  *
  * @param {bip32.HDKey} hdkey - The HDKey to create the IHDNode from.
  * @returns {IHDNode} The created IHDNode instance.
- * @internal
  */
 function of(hdkey: bip32.HDKey): IHDNode {
     const publicKey =
@@ -195,5 +194,6 @@ function of(hdkey: bip32.HDKey): IHDNode {
 export const HDNode = {
     fromMnemonic,
     fromPrivateKey,
-    fromPublicKey
+    fromPublicKey,
+    of
 };
