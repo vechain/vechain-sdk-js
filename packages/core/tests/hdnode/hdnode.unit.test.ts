@@ -81,13 +81,13 @@ describe('HDNode', () => {
             );
         });
 
-        test('HDNode - from mnemonic - invalid derivation path', () => {
+        test('HDNode - fromMnemonic - invalid derivation path', () => {
             expect(() => HDNode.fromMnemonic(words, 'INVALID')).toThrowError(
                 InvalidHDNodeDerivationPathError
             );
         });
 
-        test('HDNode - from mnemonic - invalid mnemonic', () => {
+        test('HDNode - fromMnemonic - invalid mnemonic', () => {
             expect(() => HDNode.fromMnemonic(wrongWords)).toThrowError(
                 InvalidHDNodeMnemonicsError
             );
@@ -120,13 +120,13 @@ describe('HDNode', () => {
             }
         });
 
-        test('HDNode - from private key - invalid chain code', () => {
+        test('HDNode - fromPrivateKey - invalid chain code', () => {
             expect(() =>
                 HDNode.fromPrivateKey(ZERO_BUFFER(32), ZERO_BUFFER(31))
             ).toThrowError(InvalidHDNodeChaincodeError);
         });
 
-        test('HDNode - from private key - invalid key', () => {
+        test('HDNode - fromPrivateKey - invalid key', () => {
             expect(() =>
                 HDNode.fromPrivateKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
             ).toThrowError(InvalidHDNodePrivateKeyError);
@@ -153,13 +153,13 @@ describe('HDNode', () => {
             }
         });
 
-        test('HDNode - from public key - invalid chain code', () => {
+        test('HDNode - fromPublicKey - invalid chain code', () => {
             expect(() =>
                 HDNode.fromPublicKey(ZERO_BUFFER(65), ZERO_BUFFER(31))
             ).toThrowError(InvalidHDNodeChaincodeError);
         });
 
-        test('HDNode - from public key - invalid key', () => {
+        test('HDNode - fromPublicKey - invalid key', () => {
             expect(() =>
                 HDNode.fromPublicKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
             ).toThrowError(InvalidHDNodePublicKeyError);
