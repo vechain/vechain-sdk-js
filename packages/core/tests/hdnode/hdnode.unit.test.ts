@@ -24,7 +24,7 @@ import {
 describe('HDNode', () => {
     const master = HDNode.fromMnemonic(words);
 
-    describe('HDNode = fromMnemonic', () => {
+    describe('HDNode - fromMnemonic', () => {
         test('HDNode - fromMnemonic - success', () => {
             for (let i = 0; i < 5; i++) {
                 const child = master.derive(i);
