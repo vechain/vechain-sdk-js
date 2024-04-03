@@ -1,15 +1,46 @@
+import { type BlockQuantityInputRPC } from '../../rpc-mapper';
+import { Hex0x } from '@vechain/sdk-core';
+
 /**
  * Get the correct block number for the given block number.
  *
- * @param blockNumber - The block number to get as a hex string or "latest" or "finalized".
+ * @param block - The block tag to get.
+ * 'latest' or 'earliest' or 'pending' or 'safe' or 'finalized'
+ * or an object: { blockNumber: number } or { blockHash: string }
  *
  * @note
- *  * Standard RPC method `eth_getBlockByNumber` support following block numbers: hex number of block, 'earliest', 'latest', 'safe', 'finalized', 'pending'. (@see https://ethereum.org/en/developers/docs/apis/json-rpc#default-block)
- *  * Currently, vechain only supports hex number of block, 'latest' and 'finalized'.
+ *  * Currently VechainThor supports 'earliest', 'latest' and 'finalized' as block tags.
+ *  So 'pending' and 'safe' are converted to 'best' which is the alias for 'latest' and 'finalized' in VechainThor.
  */
-const getCorrectBlockNumberRPCToVechain = (blockNumber: string): string => {
-    if (blockNumber === 'latest') return 'best'; // 'best' is the alias for 'latest' in vechain Thorest
-    return blockNumber;
+const getCorrectBlockNumberRPCToVechain = (
+    block: BlockQuantityInputRPC
+): string => {
+    // Tag block number
+    if (typeof block === 'string') {
+        // Latest, Finalized, Safe blocks
+        if (
+            block === 'latest' ||
+            block === 'finalized' ||
+            block === 'safe' ||
+            block === 'pending'
+        )
+            // 'best' is the alias for 'latest', 'finalized' and 'safe' in vechain Thorest
+            return 'best';
+
+        // Earliest block
+        if (block === 'earliest') return Hex0x.of(0);
+
+        // Hex number of block
+        return block;
+    }
+
+    // Object with block number
+    if (block.blockNumber !== undefined) {
+        return Hex0x.of(block.blockNumber);
+    }
+
+    // Object with block hash - Default case
+    return block.blockHash;
 };
 
 export { getCorrectBlockNumberRPCToVechain };
