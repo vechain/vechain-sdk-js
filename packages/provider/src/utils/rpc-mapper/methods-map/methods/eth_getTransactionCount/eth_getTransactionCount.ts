@@ -11,7 +11,8 @@ import { addressUtils, Hex0x, secp256k1 } from '@vechain/sdk-core';
  *                * params[1]: A string representing a block number, or one of the string tags latest, earliest, or pending.
  *
  * @note: To respect differences between vechain and Ethereum, in this function we will give a random number as output.
- * Basically Ethereum to get nonce use the number of transactions sent from an address, while vechain use a random number.
+ * Basically Ethereum to get nonce to use the number of transactions sent from an address,
+ * while vechain uses a random number.
  *
  * @throws {InvalidDataTypeError} - When address parameter is invalid.
  */
@@ -21,9 +22,16 @@ const ethGetTransactionCount = async (params: unknown[]): Promise<string> => {
         'eth_getTransactionCount',
         params.length === 2 &&
             typeof params[0] === 'string' &&
-            typeof params[1] === 'string',
+            (typeof params[1] === 'object' || typeof params[1] === 'string'),
+
         DATA.INVALID_DATA_TYPE,
-        'Invalid params length, expected 2.\nThe params should be [address: string, blockNumber: string]'
+        `Invalid params length, expected 2.` +
+            `\nThe params should be address: string` +
+            `\nand the block tag parameter. 'latest', 'earliest', 'pending', 'safe' or 'finalized' or an object: \n{.` +
+            `\tblockNumber: The number of the block` +
+            `\n}\n\nOR\n\n{` +
+            `\tblockHash: The hash of block` +
+            `\n}`
     );
 
     // Input validation - Invalid address
