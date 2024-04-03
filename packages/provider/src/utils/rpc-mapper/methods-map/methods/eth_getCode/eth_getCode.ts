@@ -1,5 +1,7 @@
 import { type ThorClient } from '@vechain/sdk-network';
 import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
+import type { BlockQuantityInputRPC } from '../../../types';
+import { getCorrectBlockNumberRPCToVechain } from '../../../../const';
 
 /**
  * RPC Method eth_getCode implementation
@@ -25,19 +27,23 @@ const ethGetCode = async (
         'eth_getCode',
         params.length === 2 &&
             typeof params[0] === 'string' &&
-            typeof params[1] === 'string',
+            (typeof params[1] === 'object' || typeof params[1] === 'string'),
         DATA.INVALID_DATA_TYPE,
-        'Invalid params length, expected 2.\nThe params should be [address: string, blockNumber: string | "latest"]'
+        `Invalid params length, expected 2.` +
+            `\nThe params should be address: string` +
+            `\nand the block tag parameter. 'latest', 'earliest', 'pending', 'safe' or 'finalized' or an object: \n{.` +
+            `\tblockNumber: The number of the block` +
+            `\n}\n\nOR\n\n{` +
+            `\tblockHash: The hash of block` +
+            `\n}`
     );
 
     try {
-        let [address, blockNumber] = params as [string, string];
-
-        if (blockNumber === 'latest') blockNumber = 'best';
+        const [address, block] = params as [string, BlockQuantityInputRPC];
 
         // Get the account details
         return await thorClient.accounts.getBytecode(address, {
-            revision: blockNumber
+            revision: getCorrectBlockNumberRPCToVechain(block)
         });
     } catch (e) {
         throw buildProviderError(

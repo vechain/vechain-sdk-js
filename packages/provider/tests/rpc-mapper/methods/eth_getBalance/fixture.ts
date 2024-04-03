@@ -65,11 +65,6 @@ const invalidEthGetBalanceTestCases = [
         description: 'Should throw error for too few params',
         params: [TEST_ACCOUNTS_THOR_SOLO[0].address],
         expectedError: InvalidDataTypeError
-    },
-    {
-        description: 'Should throw error for finalized as block number',
-        params: [TEST_ACCOUNTS_THOR_SOLO[0].address, 'finalized'], // VechainThor does not currently support finalized for account details
-        expectedError: ProviderRpcError
     }
 ];
 

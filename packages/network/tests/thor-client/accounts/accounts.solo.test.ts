@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
+    soloUrl,
     TEST_ACCOUNTS,
-    TESTING_CONTRACT_ADDRESS,
-    soloNetwork
+    TESTING_CONTRACT_ADDRESS
 } from '../../fixture';
 import { unitsUtils } from '@vechain/sdk-core';
 import { TESTING_CONTRACT_BYTECODE } from './fixture';
@@ -23,7 +23,7 @@ describe('ThorClient - Accounts Module', () => {
     let thorSoloClient: ThorClient;
 
     beforeEach(() => {
-        thorSoloClient = new ThorClient(soloNetwork);
+        thorSoloClient = ThorClient.fromUrl(soloUrl);
     });
 
     /**
