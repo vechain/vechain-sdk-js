@@ -5,7 +5,7 @@ import { ContractsModule } from './contracts';
 import { TransactionsModule } from './transactions';
 import { LogsModule } from './logs';
 import { GasModule } from './gas';
-import { type HttpClient } from '../utils';
+import { HttpClient } from '../utils';
 import { DebugModule } from './debug';
 
 /**
@@ -72,6 +72,20 @@ class ThorClient {
         this.contracts = new ContractsModule(this);
         this.gas = new GasModule(this);
         this.debug = new DebugModule(this);
+    }
+
+    /**
+     * Creates a new `ThorClient` instance from a given URL.
+     *
+     * @param networkUrl - The URL of the network to connect to.
+     * @param options - (Optional) Other optional parameters for polling and error handling.
+     * @returns A new `ThorClient` instance.
+     */
+    public static fromUrl(
+        networkUrl: string,
+        options?: BlocksModuleOptions
+    ): ThorClient {
+        return new ThorClient(new HttpClient(networkUrl), options);
     }
 
     /**
