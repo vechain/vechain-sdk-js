@@ -115,7 +115,7 @@ describe('Events poll unit tests', () => {
         /**
          * Test the error event
          */
-        test('Test the error event', async () => {
+        test('Test the error event - polling loop stop', async () => {
             jest.useFakeTimers({
                 legacyFakeTimers: true
             });
@@ -132,6 +132,33 @@ describe('Events poll unit tests', () => {
             eventPoll.startListen();
 
             await advanceTimersByTimeAndTick(1000);
+        });
+
+        /**
+         * Test the error event without stoppoing the poll loop.
+         */
+        test('Test the error event - polling loop no-stop', async () => {
+            jest.useFakeTimers({
+                legacyFakeTimers: true
+            });
+
+            // Create event poll
+            const eventPoll = Poll.createEventPoll(
+                async () => await simpleThrowErrorFunctionIfInputIs10(10),
+                1000
+            ).onError((error) => {
+                expect(error).toBeDefined();
+                expect(error).toBeInstanceOf(PollExecutionError);
+            });
+
+            eventPoll.startListen();
+
+            await advanceTimersByTimeAndTick(1000);
+
+            expect(eventPoll.getCurrentIteration).toBe(1);
+            // Advance timers by the specified interval & tick
+            await advanceTimersByTimeAndTick(1000);
+            expect(eventPoll.getCurrentIteration).toBe(2);
         });
 
         /**

@@ -60,7 +60,7 @@ class EventPoll<TReturnType> extends EventEmitter {
     constructor(
         pollingFunction: () => Promise<TReturnType>,
         requestIntervalInMilliseconds: number,
-        isToStopOnError = true
+        isToStopOnError: boolean
     ) {
         super();
         this.pollingFunction = pollingFunction;
@@ -245,17 +245,24 @@ class EventPoll<TReturnType> extends EventEmitter {
 }
 
 /**
- * Create an event poll factory method.
+ * Creates an event poll that performs a callback function repeatedly at a specified interval.
  * This method is useful to create an event poll in a more readable way.
  *
- * @param callBack - The function to be called.
- * @param requestIntervalInMilliseconds - The interval of time (in milliseconds) between each request.
+ * @param {Function} callBack - The callback function to be executed on each interval. It should return a Promise.
+ * @param {number} requestIntervalInMilliseconds - The interval in milliseconds at which the callback function will be executed.
+ * @param {boolean} [isToStopOnError=true] - Optional parameter to specify whether the poll should stop on error. Default is true.
+ * @returns {EventPoll} - The created event poll instance.
  */
 function createEventPoll<TReturnType>(
     callBack: () => Promise<TReturnType>,
-    requestIntervalInMilliseconds: number
+    requestIntervalInMilliseconds: number,
+    isToStopOnError: boolean = true
 ): EventPoll<TReturnType> {
-    return new EventPoll<TReturnType>(callBack, requestIntervalInMilliseconds);
+    return new EventPoll<TReturnType>(
+        callBack,
+        requestIntervalInMilliseconds,
+        isToStopOnError
+    );
 }
 
 export { EventPoll, createEventPoll };
