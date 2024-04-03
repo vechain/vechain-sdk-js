@@ -16,6 +16,31 @@ import { assertPositiveIntegerForPollOptions } from './helpers/assertions';
  */
 class EventPoll<TReturnType> extends EventEmitter {
     /**
+     * The current iteration. It counts how many iterations have been done.
+     * This parameter is useful to know how many iterations have been done.
+     * For example, it can be used to stop the poll after a certain number of iterations.
+     */
+    private currentIteration: number = 0;
+
+    /**
+     * Error thrown during the execution of the poll.
+     */
+    private error?: Error;
+
+    /**
+     * The interval used to poll.
+     */
+    private intervalId?: NodeJS.Timeout;
+
+    /**
+     * Indicates whether to stop execution on error of the
+     * {@link _intervalLoop} function.
+     *
+     * @type {boolean}
+     */
+    private readonly isToStopOnError: boolean;
+
+    /**
      * The function to be called.
      */
     private readonly pollingFunction: () => Promise<TReturnType>;
@@ -26,34 +51,20 @@ class EventPoll<TReturnType> extends EventEmitter {
     private readonly requestIntervalInMilliseconds: number;
 
     /**
-     * The current iteration. It counts how many iterations have been done.
-     * This parameter is useful to know how many iterations have been done.
-     * For example, it can be used to stop the poll after a certain number of iterations.
-     */
-    private currentIteration: number = 0;
-
-    /**
-     * The interval used to poll.
-     */
-    private intervalId?: NodeJS.Timeout;
-
-    /**
-     * Error thrown during the execution of the poll.
-     */
-    private error?: Error;
-
-    /**
-     * Create a new eventPoll.
+     * Constructor for creating an instance of EventPoll.
      *
-     * @param pollingFunction - The function to be called.
-     * @param requestIntervalInMilliseconds - The interval of time (in milliseconds) between each request.
+     * @param {Function} pollingFunction - The function to be executed repeatedly.
+     * @param {number} requestIntervalInMilliseconds - The interval in milliseconds between each execution of the polling function.
+     * @param {boolean} [isToStopOnError=true] - Indicates whether to stop polling if an error occurs.
      */
     constructor(
         pollingFunction: () => Promise<TReturnType>,
-        requestIntervalInMilliseconds: number
+        requestIntervalInMilliseconds: number,
+        isToStopOnError = true
     ) {
         super();
         this.pollingFunction = pollingFunction;
+        this.isToStopOnError = isToStopOnError;
 
         // Positive number for request interval
         assertPositiveIntegerForPollOptions(
@@ -220,8 +231,10 @@ class EventPoll<TReturnType> extends EventEmitter {
             // Emit the error
             this.emit('error', { error: this.error });
 
-            // Stop listening
-            this.stopListen();
+            // Stop listening?
+            if (this.isToStopOnError) {
+                this.stopListen();
+            }
         }
 
         // Increment the iteration
