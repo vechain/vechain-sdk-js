@@ -121,7 +121,8 @@ class ContractsModule {
         const clause = clauseBuilder.functionInteraction(
             contractAddress,
             functionFragment,
-            functionData
+            functionData,
+            options?.value ?? 0
         );
 
         // Estimate the gas cost of the transaction

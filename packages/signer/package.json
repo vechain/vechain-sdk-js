@@ -1,15 +1,12 @@
 {
-  "name": "@vechain/sdk-core",
-  "version": "1.0.0-beta.2",
-  "description": "Includes modules for fundamental operations like hashing and cryptography",
+  "name": "@vechain/sdk-signer",
+  "version": "1.0.0-beta.1",
+  "description": "This module provides signing functionality to for vechain-sdk",
   "author": "vechain Foundation",
   "license": "MIT",
   "keywords": [
     "vechain",
-    "contract",
-    "encoding",
-    "certificate",
-    "bloom"
+    "signer"
   ],
   "private": false,
   "main": "dist/index.js",
@@ -30,11 +27,6 @@
     "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
   },
   "dependencies": {
-    "@ethereumjs/rlp": "^5.0.2",
-    "@types/elliptic": "^6.4.18",
-    "@vechain/sdk-errors": "1.0.0-beta.2",
-    "blakejs": "^1.2.1",
-    "elliptic": "^6.5.5",
-    "ethers": "6.11.1"
+    "@vechain/sdk-network": "1.0.0-beta.1"
   }
 }

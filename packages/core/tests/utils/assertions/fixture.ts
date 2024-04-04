@@ -1,7 +1,5 @@
-import { Transaction, TransactionHandler } from '../../../src';
+import { secp256k1, Transaction, TransactionHandler } from '../../../src';
 import {
-    generateRandomBytes,
-    generateRandomPrivateKey,
     generateRandomTransactionHead,
     generateRandomTransactionID,
     generateRandomValidAddress
@@ -89,24 +87,24 @@ const transactionAssertionsTests = {
                 value: signer.privateKey
             },
             {
-                value: generateRandomPrivateKey()
+                value: secp256k1.generatePrivateKey()
             }
         ],
         invalid: [
             {
-                value: generateRandomBytes(1)
+                value: secp256k1.randomBytes(1)
             },
             {
-                value: generateRandomBytes(31)
+                value: secp256k1.randomBytes(31)
             },
             {
-                value: generateRandomBytes(33)
+                value: secp256k1.randomBytes(33)
             },
             {
-                value: generateRandomBytes(66)
+                value: secp256k1.randomBytes(66)
             },
             {
-                value: generateRandomBytes(65)
+                value: secp256k1.randomBytes(65)
             }
         ]
     }

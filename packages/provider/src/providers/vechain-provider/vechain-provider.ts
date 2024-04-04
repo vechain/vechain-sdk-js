@@ -29,10 +29,10 @@ import {
     Hex0x,
     Hex,
     Quantity,
+    secp256k1,
     type TransactionClause
 } from '@vechain/sdk-core';
 import type { TransactionObjectInput } from '../../utils/rpc-mapper/methods-map/methods/eth_sendTransaction/types';
-import { randomBytes } from 'crypto';
 
 /**
  * Our core provider class for vechain
@@ -314,7 +314,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { nonce, ...transactionBodyWithoutNonce } = transactionBody;
-        const newNonce = Hex0x.of(randomBytes(6));
+        const newNonce = Hex0x.of(secp256k1.randomBytes(6));
 
         // At least, a signer private key is required
         if (

@@ -1,5 +1,7 @@
 import { type ThorClient } from '@vechain/sdk-network';
 import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
+import type { BlockQuantityInputRPC } from '../../../types';
+import { getCorrectBlockNumberRPCToVechain } from '../../../../const';
 
 /**
  * RPC Method eth_getBalance implementation
@@ -25,19 +27,22 @@ const ethGetBalance = async (
         'eth_getBalance',
         params.length === 2 &&
             typeof params[0] === 'string' &&
-            typeof params[1] === 'string',
+            (typeof params[1] === 'object' || typeof params[1] === 'string'),
         DATA.INVALID_DATA_TYPE,
-        'Invalid params length, expected 2.\nThe params should be [address: string, blockNumber: string | "latest"]'
+        `Invalid params length, expected 2.\nThe params should be address: string` +
+            `and the block tag parameter. 'latest', 'earliest', 'pending', 'safe' or 'finalized' or an object: \n{.` +
+            `\tblockNumber: The number of the block` +
+            `\n}\n\nOR\n\n{` +
+            `\tblockHash: The hash of block` +
+            `\n}`
     );
 
     try {
-        let [address, blockNumber] = params as [string, string];
-
-        if (blockNumber === 'latest') blockNumber = 'best';
+        const [address, block] = params as [string, BlockQuantityInputRPC];
 
         // Get the account details
         const accountDetails = await thorClient.accounts.getAccount(address, {
-            revision: blockNumber
+            revision: getCorrectBlockNumberRPCToVechain(block)
         });
 
         return accountDetails.balance;

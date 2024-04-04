@@ -939,22 +939,22 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@vechain/sdk-core@1.0.0-beta.1":
-  version "1.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.1.tgz#7a9b1ec5c3b4fe21d22a79860bb6674e72509eb7"
-  integrity sha512-TettN+0Pe95dfnsaKnWJpCKYjJ3T6KddKSUbQj/ittQfTHVd0o8r0hmIkzqMh5mEGfJ3w7Qo/vKkwDF3hl7hkA==
+"@vechain/sdk-core@1.0.0-beta.2":
+  version "1.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.2.tgz#5b217f2fef47f2507a369f65e149f4aa6ac2fb65"
+  integrity sha512-eGJjts+/eJdybSnb7Y1q9d53vkeRuJB0kTsdUZDGf8M7JrkCzNEkdzxiXXWnP5hUItFbqJHPSH7Kl7k8DOknjw==
   dependencies:
     "@ethereumjs/rlp" "^5.0.2"
     "@types/elliptic" "^6.4.18"
-    "@vechain/sdk-errors" "1.0.0-beta.1"
+    "@vechain/sdk-errors" "1.0.0-beta.2"
     blakejs "^1.2.1"
     elliptic "^6.5.5"
     ethers "6.11.1"
 
-"@vechain/sdk-errors@1.0.0-beta.1":
-  version "1.0.0-beta.1"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.1.tgz#ffadfca611df8cc29852c52af19adc9347ec274c"
-  integrity sha512-P6Z3pxMmoY1ykxeBwqE7OUnLOTjU7o5iu52xhSSrsVbkN6F8hhS3LLbTntLq2S8skMBWt+RAguOM/09mWOJSfQ==
+"@vechain/sdk-errors@1.0.0-beta.2":
+  version "1.0.0-beta.2"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.2.tgz#29ee4b4b0a4371a83e823b52170af8bb45e1085d"
+  integrity sha512-O7CVZ15jzrFZmDEvymeRl5mhLug1pGYuOsJzU8a1V3qk5wzyzIZthMT1eK6xczapJsLArx6F82vMR+5mYIDQOA==
 
 acorn-walk@^8.1.1:
   version "8.3.2"
