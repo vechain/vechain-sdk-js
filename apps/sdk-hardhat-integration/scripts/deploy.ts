@@ -1,32 +1,20 @@
 import { ethers } from 'hardhat';
 
 async function main(): Promise<void> {
-    // console.log(await ethers.getSigners());
-    /* const vechainHelloWorldWithNonEmptyConstructor =
-        await ethers.deployContract(
-            'VechainHelloWorldWithNonEmptyConstructor',
-            [10],
-            {
-                from: (await ethers.getSigners())[0].address,
-                value: ethers.parseEther('0.1')
-            }
-        ); */
+    const signer = (await ethers.getSigners())[0];
 
-    const vechainHelloWorld = await ethers.deployContract(
+    const vechainHelloWorldFactory = await ethers.getContractFactory(
         'VechainHelloWorld',
-        [],
-        {
-            from: (await ethers.getSigners())[0].address
-        }
+        signer
     );
 
-    console.log(await vechainHelloWorld.getAddress());
+    console.log('factory', JSON.stringify(vechainHelloWorldFactory));
 
-    // await vechainHelloWorldWithNonEmptyConstructor.waitForDeployment();
+    const txResponse = await vechainHelloWorldFactory.deploy();
 
-    console.log(
-        `VechainHelloWorld deployed to ${JSON.stringify(vechainHelloWorld)}`
-    );
+    console.log('txResponse', JSON.stringify(txResponse));
+
+    console.log('address', await txResponse.getAddress());
 }
 
 // We recommend this pattern to be able to use async/await everywhere

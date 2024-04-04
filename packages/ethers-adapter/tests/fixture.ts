@@ -1,4 +1,4 @@
-import { HttpClient } from '@vechain/sdk-network/dist';
+import { HttpClient } from '@vechain/sdk-network';
 
 const testnetUrl = 'https://testnet.vechain.org';
 

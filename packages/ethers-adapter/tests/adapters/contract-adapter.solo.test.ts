@@ -8,7 +8,7 @@ import { ThorClient } from '@vechain/sdk-network';
 import { soloNetwork, soloUrl } from '../fixture';
 import { BaseWallet } from '@vechain/sdk-wallet';
 import { contractAdapter } from '../../src';
-import { describe, expect, test } from '@jest/globals';
+import { describe, expect, test, beforeEach } from '@jest/globals';
 import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
 
 /**
@@ -36,7 +36,7 @@ describe('Hardhat provider tests', () => {
         expect(thorClient).toBeDefined();
     });
 
-    test('Should be to create a contract adapter', () => {
+    test('Should create a contract adapter', () => {
         const contract = new vechain_sdk_core_ethers.Contract('0x', []);
         // Create a contract adapter
         const adapter = contractAdapter(contract, provider);

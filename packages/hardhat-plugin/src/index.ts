@@ -1,14 +1,17 @@
 import { createWalletFromHardhatNetworkConfig } from './helpers';
 
 import { extendEnvironment } from 'hardhat/config';
-import { type HttpNetworkConfig } from 'hardhat/types';
+import { type Artifact, type HttpNetworkConfig } from 'hardhat/types';
 import { HardhatPluginError, lazyObject } from 'hardhat/plugins';
 import {
     deployContract,
     getImpersonatedSigner,
     getSigner,
     getSigners,
-    getContractFactory
+    getContractFactory,
+    getContractAtFromArtifact,
+    getContractAt,
+    getContractFactoryFromArtifact
 } from '@nomicfoundation/hardhat-ethers/internal/helpers';
 
 // Custom provider for ethers
@@ -22,7 +25,8 @@ import { vechain_sdk_core_ethers as ethers } from '@vechain/sdk-core';
 import './type-extensions';
 
 import { HardhatEthersProvider } from '@nomicfoundation/hardhat-ethers/internal/hardhat-ethers-provider';
-import { contractAdapter } from '@vechain/sdk-ethers-adapter/dist';
+import { contractAdapter, factoryAdapter } from '@vechain/sdk-ethers-adapter';
+import { type FactoryOptions } from '@nomicfoundation/hardhat-ethers/src/types';
 /**
  * // TEMPORARY COMMENT //
  * To improve. Needed for ethers customization
@@ -117,79 +121,66 @@ extendEnvironment((hre) => {
     // 3.3 - Set provider for the network
     hre.network.provider = hardhatVechainProvider;
 
-    // @ts-expect-error Not everything is implemented
     hre.ethers = lazyObject(() => {
-        /**
-         * // TEMPORARY COMMENT //
-         * To improve. Needed for ethers customization
-         */
         // 4 - Customise ethers functionality
-
-        // 4.1 - Get chain id
-        let chainIdFromProvider = 0;
-        hardhatVechainProvider
-            .send('eth_chainId', [])
-            .then((chainId) => {
-                chainIdFromProvider = parseInt(chainId as string, 16);
-            })
-            .catch(() => {
-                chainIdFromProvider = 0;
-            });
 
         const vechainNewHardhatProvider = new HardhatEthersProvider(
             hardhatVechainProvider,
             hre.network.name
         );
 
-        console.log(chainIdFromProvider);
-
         return {
             ...ethers,
-            provider: vechainNewHardhatProvider,
-            // Ethers default constructs
-
-            // JSON RPC provider for ethers (able to send multiple payloads (send in batch))
-            // provider,
-            // eslint-disable-next-line @typescript-eslint/require-await
-            getContractFactory: async (...args: unknown[]) => {
-                const deployContractBound = getContractFactory.bind(null, hre);
-                console.log('getContractFactory', args);
-                // @ts-expect-error Not everything is implemented
-                return await deployContractBound(...args);
-            },
-
             deployContract: async (...args: unknown[]) => {
                 const deployContractBound = deployContract.bind(null, hre);
-                console.log('network', networkConfig);
-                // @ts-expect-error Not everything is implemented
+                // @ts-expect-error args types depends on the function signature
                 return await deployContractBound(...args).then((contract) =>
                     contractAdapter(contract, hardhatVechainProvider)
                 );
             },
 
-            // Smart contracts
-            // getContractFactory: typeof getContractFactory;
-            // getContractFactoryFromArtifact: (
-            //     artifact: Artifact,
-            //     signerOrOptions?: ethers.Signer | FactoryOptions
-            // ) => Promise<ethers.ContractFactory>;
-            // getContractAt: (
-            //     nameOrAbi: string | any[],
-            //     address: string,
-            //     signer?: ethers.Signer
-            // ) => Promise<ethers.Contract>;
-            // getContractAtFromArtifact: (
-            //     artifact: Artifact,
-            //     address: string,
-            //     signer?: ethers.Signer
-            // ) => Promise<ethers.Contract>;
-            // deployContract: typeof deployContract;
+            getContractFactory: async (...args: unknown[]) => {
+                const contractFactoryBound = getContractFactory.bind(null, hre);
+                // @ts-expect-error args types depends on the function signature
+                return await contractFactoryBound(...args).then((factory) =>
+                    factoryAdapter(factory, hardhatVechainProvider)
+                );
+            },
+
+            getContractFactoryFromArtifact: async <A extends unknown[], I>(
+                artifact: Artifact,
+                signerOrOptions?: ethers.Signer | FactoryOptions
+            ): Promise<ethers.ContractFactory<A, I>> => {
+                // Define the get contract factory from artifact instance with the correct types
+                const getContractFactoryFromArtifactInstance =
+                    getContractFactoryFromArtifact<A, I>;
+
+                // Bind the get contract factory from artifact instance with the hardhat instance
+                const contractFactoryFromArtifactBound =
+                    getContractFactoryFromArtifactInstance.bind(null, hre);
+
+                // Return the factory adapter
+                return await contractFactoryFromArtifactBound(
+                    artifact,
+                    signerOrOptions
+                ).then((factory) =>
+                    factoryAdapter(factory, hardhatVechainProvider)
+                );
+            },
+
+            getImpersonatedSigner: async (address: string) =>
+                await getImpersonatedSigner(hre, address),
+
+            getContractAtFromArtifact: getContractAtFromArtifact.bind(
+                null,
+                hre
+            ),
+            getContractAt: getContractAt.bind(null, hre),
 
             // Signer
             getSigner: async (address: string) => await getSigner(hre, address),
             getSigners: async () => await getSigners(hre),
-            getImpersonatedSigner: async (address: string) =>
-                await getImpersonatedSigner(hre, address)
+            provider: vechainNewHardhatProvider
         };
     });
 });
