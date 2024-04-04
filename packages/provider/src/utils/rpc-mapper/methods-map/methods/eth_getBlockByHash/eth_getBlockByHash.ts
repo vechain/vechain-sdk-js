@@ -26,7 +26,6 @@ const ethGetBlockByHash = async (
         'eth_getBlockByHash',
         params.length === 2 &&
             typeof params[0] === 'string' &&
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             Boolean(Hex0x.isThorId(params[0])) &&
             typeof params[1] === 'boolean',
         DATA.INVALID_DATA_TYPE,

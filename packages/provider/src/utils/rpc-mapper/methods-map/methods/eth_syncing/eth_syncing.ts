@@ -69,6 +69,8 @@ const ethSyncing = async (
                 startingBlock: null
             };
         }
+
+        // Strange cases when the fetched best block is null
         return {
             currentBlock: null,
             highestBlock: highestBlockNumber,
