@@ -1,6 +1,7 @@
-import { ethers } from 'ethers';
-import { type HashInput, type ReturnType } from './types';
 import { assertIsValidReturnType } from '../assertions';
+import { keccak_256 } from '@noble/hashes/sha3';
+import { type HashInput, type ReturnType } from './types';
+import { Hex0x } from '../utils';
 
 /* --- Overloaded functions start --- */
 
@@ -36,28 +37,27 @@ function keccak256(data: HashInput, returnType: 'hex'): string;
 /* --- Overloaded functions end --- */
 
 /**
- * Computes the keccak256 hash of the given data and returns the hash based on the returnType specified.
+ * Calculates the keccak256 hash of the given data and returns the hash based on the returnType specified.
  * Defaults to returning a Buffer if returnType is not provided.
  *
+ * Secure audit function.
+ * * [keccak_256](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#sha3-fips-shake-keccak).
+ *
+ * @param {HashInput} data - The data to be hashed, either a Buffer or string.
+ * @param {ReturnType} [returnType='buffer'] - The desired return type, either 'buffer' or 'hex'. Default is 'buffer'.
+ *
+ * @return {Buffer|string} The keccak256 hash of the data.
+ *
  * @throws{InvalidDataReturnTypeError}
- * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
- * @param returnType - The format in which to return the hash. Either 'buffer' or 'hex'.
- *                   Defaults to 'buffer' if not provided.
- * @returns A Buffer or a string representing the 256-bit keccak256 hash of the provided data,
- *         based on the returnType specified.
  */
 function keccak256(
-    data: HashInput,
+    data: string | Uint8Array,
     returnType: ReturnType = 'buffer'
 ): Buffer | string {
     // Assert that the returnType is valid
     assertIsValidReturnType('keccak256', returnType);
-
-    const hash = ethers.isBytesLike(data)
-        ? ethers.keccak256(data)
-        : ethers.keccak256(ethers.toUtf8Bytes(data));
-
-    return returnType === 'buffer' ? Buffer.from(hash.slice(2), 'hex') : hash;
+    const hash = keccak_256(data);
+    return returnType === 'buffer' ? Buffer.from(hash) : Hex0x.of(hash);
 }
 
 export { keccak256 };
