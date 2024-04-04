@@ -1,5 +1,5 @@
 import { BN } from 'bn.js';
-import { SIGNATURE_LENGTH, ZERO_BUFFER } from '../utils';
+import { Hex, SIGNATURE_LENGTH, ZERO_BUFFER } from '../utils';
 import { assert, SECP256K1 } from '@vechain/sdk-errors';
 import { randomBytes as _randomBytes } from '@noble/hashes/utils';
 import { secp256k1 as ec } from '@noble/curves/secp256k1';
@@ -17,6 +17,19 @@ const PRIVATE_KEY_MAX_VALUE = Buffer.from(
     'hex'
 );
 
+/**
+ * Compresses a public key.
+ *
+ * Security audit function.
+ * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
+ *
+ * @param {Uint8Array} publicKey - The uncompressed public key.
+ *
+ * @returns {Uint8Array} - The compressed public key.
+ *
+ * @see inflatePublicKey
+ *
+ */
 function compressPublicKey(publicKey: Uint8Array): Uint8Array {
     const prefix = publicKey.at(0);
     if (prefix === 4) {
@@ -54,6 +67,33 @@ function derivePublicKey(
     );
     const publicKey = ec.getPublicKey(privateKey, isCompressed);
     return Buffer.from(publicKey);
+}
+
+/**
+ * Inflates a compressed or uncompressed public key.
+ *
+ * Security audit function.
+ * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
+ *
+ * @param {Uint8Array} publicKey - The compressed or uncompressed public key to inflate.
+ *
+ * @return {Uint8Array} - The inflated uncompressed public key.
+ *
+ * @see compressPublicKey
+ */
+function inflatePublicKey(publicKey: Uint8Array): Uint8Array {
+    const prefix = publicKey.at(0);
+    if (prefix !== 4) {
+        // To inflate.
+        const x = publicKey.slice(0, 33);
+        const p = ec.ProjectivePoint.fromAffine(
+            ec.ProjectivePoint.fromHex(Hex.of(x)).toAffine()
+        );
+        return p.toRawBytes(false);
+    } else {
+        // Inflated.
+        return publicKey;
+    }
 }
 
 /**
@@ -190,6 +230,7 @@ export const secp256k1 = {
     compressPublicKey,
     derivePublicKey,
     generatePrivateKey,
+    inflatePublicKey,
     isValidMessageHash,
     isValidPrivateKey,
     recover,

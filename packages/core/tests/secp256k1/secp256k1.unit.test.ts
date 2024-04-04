@@ -22,6 +22,10 @@ import {
  * @group unit/secp256k1
  */
 describe('secp256k1', () => {
+    test('inflate', () => {
+        console.log(Hex.of(secp256k1.inflatePublicKey(publicKeyCompressed)));
+    });
+
     describe('secp256k1 - compressPublicKey', () => {
         test('secp256k1 - compressPublicKey - from compressed', () => {
             expect(
