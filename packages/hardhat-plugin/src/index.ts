@@ -5,7 +5,6 @@ import { type Artifact, type HttpNetworkConfig } from 'hardhat/types';
 import { HardhatPluginError, lazyObject } from 'hardhat/plugins';
 import {
     deployContract,
-    getImpersonatedSigner,
     getSigner,
     getSigners,
     getContractFactory,
@@ -168,8 +167,9 @@ extendEnvironment((hre) => {
                 );
             },
 
-            getImpersonatedSigner: async (address: string) =>
-                await getImpersonatedSigner(hre, address),
+            getImpersonatedSigner: (_address: string) => {
+                throw new Error('Not implemented yet');
+            },
 
             getContractAtFromArtifact: getContractAtFromArtifact.bind(
                 null,

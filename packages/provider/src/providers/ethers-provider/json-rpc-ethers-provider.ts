@@ -74,12 +74,12 @@ class JSONRPCEthersProvider extends vechain_sdk_core_ethers.JsonRpcApiProvider {
         // Call the hardhat provider for each request
         for (const jsonRpcPayload of requestPayloadArray) {
             // Do the request
-            const result = (await this.hardhatProvider.send(
-                jsonRpcPayload.method,
-                jsonRpcPayload.params as unknown[]
-            )) as JsonRpcResult;
-
             try {
+                const result = (await this.hardhatProvider.send(
+                    jsonRpcPayload.method,
+                    jsonRpcPayload.params as unknown[]
+                )) as JsonRpcResult;
+
                 // Push the result to the response array
                 responses.push({
                     id: jsonRpcPayload.id,

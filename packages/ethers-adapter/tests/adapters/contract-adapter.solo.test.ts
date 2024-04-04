@@ -8,15 +8,16 @@ import { ThorClient } from '@vechain/sdk-network';
 import { soloNetwork, soloUrl } from '../fixture';
 import { BaseWallet } from '@vechain/sdk-wallet';
 import { contractAdapter } from '../../src';
-import { describe, expect, test, beforeEach } from '@jest/globals';
+import { describe, expect, test, beforeEach, jest } from '@jest/globals';
 import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
+import { helpers } from '../../src/adapters/helpers';
 
 /**
  * Vechain adapters tests - Solo Network
  *
  * @group integration/adapter/contract-adapter-solo
  */
-describe('Hardhat provider tests', () => {
+describe('Hardhat contract adapter tests', () => {
     /**
      * ThorClient and provider instances
      */
@@ -41,5 +42,16 @@ describe('Hardhat provider tests', () => {
         // Create a contract adapter
         const adapter = contractAdapter(contract, provider);
         expect(adapter).toBeDefined();
+    });
+
+    test('Should get the address of a contract', () => {
+        const contract = new vechain_sdk_core_ethers.Contract('0x', []);
+        helpers.getContractAddress = jest.fn(
+            async () => await Promise.resolve('0x')
+        );
+        contract.getAddress = jest.fn(async () => await Promise.resolve('0x'));
+        // Create a contract adapter
+        const adapter = contractAdapter(contract, provider);
+        expect(adapter.getAddress()).toBeDefined();
     });
 });
