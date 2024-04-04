@@ -28,17 +28,17 @@ class EventPoll<TReturnType> extends EventEmitter {
     private error?: Error;
 
     /**
-     * The interval used to poll.
-     */
-    private intervalId?: NodeJS.Timeout;
-
-    /**
      * Indicates whether to stop execution on error of the
      * {@link _intervalLoop} function.
      *
      * @type {boolean}
      */
-    private readonly isToStopOnError: boolean;
+    private readonly hasToStopOnError: boolean;
+
+    /**
+     * The interval used to poll.
+     */
+    private intervalId?: NodeJS.Timeout;
 
     /**
      * The function to be called.
@@ -55,16 +55,16 @@ class EventPoll<TReturnType> extends EventEmitter {
      *
      * @param {Function} pollingFunction - The function to be executed repeatedly.
      * @param {number} requestIntervalInMilliseconds - The interval in milliseconds between each execution of the polling function.
-     * @param {boolean} [isToStopOnError=true] - Indicates whether to stop polling if an error occurs.
+     * @param {boolean} [hasToStopOnError=true] - Indicates whether to stop polling if an error occurs.
      */
     constructor(
         pollingFunction: () => Promise<TReturnType>,
         requestIntervalInMilliseconds: number,
-        isToStopOnError: boolean
+        hasToStopOnError: boolean
     ) {
         super();
         this.pollingFunction = pollingFunction;
-        this.isToStopOnError = isToStopOnError;
+        this.hasToStopOnError = hasToStopOnError;
 
         // Positive number for request interval
         assertPositiveIntegerForPollOptions(
@@ -111,7 +111,7 @@ class EventPoll<TReturnType> extends EventEmitter {
             this.emit('error', { error: this.error });
 
             // Stop listening?
-            if (this.isToStopOnError) {
+            if (this.hasToStopOnError) {
                 this.stopListen();
             }
         }
@@ -250,18 +250,18 @@ class EventPoll<TReturnType> extends EventEmitter {
  *
  * @param {Function} callBack - The callback function to be executed on each interval. It should return a Promise.
  * @param {number} requestIntervalInMilliseconds - The interval in milliseconds at which the callback function will be executed.
- * @param {boolean} [isToStopOnError=true] - Optional parameter to specify whether the poll should stop on error. Default is true.
+ * @param {boolean} [hasToStopOnError=true] - Optional parameter to specify whether the poll should stop on error. Default is true.
  * @returns {EventPoll} - The created event poll instance.
  */
 function createEventPoll<TReturnType>(
     callBack: () => Promise<TReturnType>,
     requestIntervalInMilliseconds: number,
-    isToStopOnError: boolean = true
+    hasToStopOnError: boolean = true
 ): EventPoll<TReturnType> {
     return new EventPoll<TReturnType>(
         callBack,
         requestIntervalInMilliseconds,
-        isToStopOnError
+        hasToStopOnError
     );
 }
 
