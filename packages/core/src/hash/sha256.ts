@@ -1,6 +1,7 @@
-import { ethers } from 'ethers';
-import { type HashInput, type ReturnType } from './types';
+import { sha256 as _sha256 } from '@noble/hashes/sha256';
+import { type ReturnType } from './types';
 import { assertIsValidReturnType } from '../assertions';
+import { Hex0x } from '../utils';
 
 /* --- Overloaded functions start --- */
 
@@ -11,7 +12,7 @@ import { assertIsValidReturnType } from '../assertions';
  * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
  * @returns A Buffer containing the 256-bit sha256 hash of the provided data.
  */
-function sha256(data: HashInput): Buffer;
+function sha256(data: string | Uint8Array): Buffer;
 
 /**
  * Computes the sha256 hash of the given data.
@@ -21,7 +22,7 @@ function sha256(data: HashInput): Buffer;
  * @param returnType - The format in which to return the hash. Either 'buffer' or 'hex'.
  * @returns {Buffer} A Buffer containing the 256-bit sha256 hash of the provided data.
  */
-function sha256(data: HashInput, returnType: 'buffer'): Buffer;
+function sha256(data: string | Uint8Array, returnType: 'buffer'): Buffer;
 
 /**
  * Computes the sha256 hash of the given data.
@@ -31,7 +32,7 @@ function sha256(data: HashInput, returnType: 'buffer'): Buffer;
  * @param returnType - The format in which to return the hash. Either 'hex' or 'buffer'.
  * @returns {string} A string representing the hexadecimal format of the 256-bit sha256 hash, prefixed with `0x`.
  */
-function sha256(data: HashInput, returnType: 'hex'): string;
+function sha256(data: string | Uint8Array, returnType: 'hex'): string;
 
 /* --- Overloaded functions end --- */
 
@@ -46,17 +47,13 @@ function sha256(data: HashInput, returnType: 'hex'): string;
  * @returns A Buffer or string representing the 256-bit sha256 hash.
  */
 function sha256(
-    data: HashInput,
+    data: string | Uint8Array,
     returnType: ReturnType = 'buffer'
 ): Buffer | string {
     // Assert that the returnType is valid
     assertIsValidReturnType('sha256', returnType);
-
-    const hash = ethers.isBytesLike(data)
-        ? ethers.sha256(data)
-        : ethers.sha256(ethers.toUtf8Bytes(data));
-
-    return returnType === 'buffer' ? Buffer.from(hash.slice(2), 'hex') : hash;
+    const hash = _sha256(data);
+    return returnType === 'buffer' ? Buffer.from(hash) : Hex0x.of(hash);
 }
 
 export { sha256 };

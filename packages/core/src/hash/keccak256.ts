@@ -1,6 +1,6 @@
 import { assertIsValidReturnType } from '../assertions';
 import { keccak_256 } from '@noble/hashes/sha3';
-import { type HashInput, type ReturnType } from './types';
+import { type ReturnType } from './types';
 import { Hex0x } from '../utils';
 
 /* --- Overloaded functions start --- */
@@ -12,7 +12,7 @@ import { Hex0x } from '../utils';
  * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
  * @returns A Buffer containing the 256-bit keccak256 hash of the provided data.
  */
-function keccak256(data: HashInput): Buffer;
+function keccak256(data: string | Uint8Array): Buffer;
 
 /**
  * Computes the keccak256 hash of the given data.
@@ -22,7 +22,7 @@ function keccak256(data: HashInput): Buffer;
  * @param returnType - The format in which to return the hash. Either 'buffer' or 'hex'.
  * @returns {Buffer} A Buffer containing the 256-bit keccak256 hash of the provided data.
  */
-function keccak256(data: HashInput, returnType: 'buffer'): Buffer;
+function keccak256(data: string | Uint8Array, returnType: 'buffer'): Buffer;
 
 /**
  * Computes the keccak256 hash of the given data.
@@ -32,7 +32,7 @@ function keccak256(data: HashInput, returnType: 'buffer'): Buffer;
  * @param returnType - The format in which to return the hash. Either 'hex' or 'buffer'.
  * @returns {string} A string representing the hexadecimal format of the 256-bit keccak256 hash, prefixed with `0x`.
  */
-function keccak256(data: HashInput, returnType: 'hex'): string;
+function keccak256(data: string | Uint8Array, returnType: 'hex'): string;
 
 /* --- Overloaded functions end --- */
 
