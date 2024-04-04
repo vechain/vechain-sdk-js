@@ -4,14 +4,11 @@ import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
 /**
  * Test cases for eth_getStorageAt RPC method
  */
-let ethGetStorageAtTestCases: Array<{
+const ethGetStorageAtTestCases: Array<{
     expected: string;
     description: string;
     params: string[];
-}>;
-
-// eslint-disable-next-line prefer-const
-ethGetStorageAtTestCases = [
+}> = [
     {
         description:
             'Should return storage slot value for a given smart contract that has a storage slot value different than NULL',
