@@ -1,7 +1,7 @@
+import { Hex0x } from '../utils';
+import { assertIsValidReturnType } from '../assertions';
 import { sha256 as _sha256 } from '@noble/hashes/sha256';
 import { type ReturnType } from './types';
-import { assertIsValidReturnType } from '../assertions';
-import { Hex0x } from '../utils';
 
 /* --- Overloaded functions start --- */
 

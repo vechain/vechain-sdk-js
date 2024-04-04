@@ -1,7 +1,7 @@
 import { assertIsValidReturnType } from '../assertions';
+import { Hex0x } from '../utils';
 import { keccak_256 } from '@noble/hashes/sha3';
 import { type ReturnType } from './types';
-import { Hex0x } from '../utils';
 
 /* --- Overloaded functions start --- */
 
