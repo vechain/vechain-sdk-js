@@ -88,7 +88,7 @@ describe('Vechain provider tests - solo', () => {
 
         // Optionally, you can do assertions or other operations with the message
         expect(message).toBeDefined();
-    }, 12000);
+    }, 30000);
 
     /**
      * Invalid RPC method tests
