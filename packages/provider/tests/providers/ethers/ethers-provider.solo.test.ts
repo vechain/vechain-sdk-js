@@ -27,7 +27,7 @@ describe('Vechain provider tests - solo', () => {
             new BaseWallet([]),
             soloUrl,
             (message: string, parent?: Error) => new Error(message, parent),
-            true
+            false
         );
         jsonRPCEthersProvider = new JSONRPCEthersProvider(
             SOLO_NETWORK.chainTag,
