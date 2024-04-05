@@ -64,7 +64,7 @@ function keccak256(
     // Assert that the returnType is valid
     assertIsValidReturnType('keccak256', returnType);
     const hash = keccak_256(data);
-    return returnType === 'buffer' ? Buffer.from(hash) : Hex0x.of(hash);
+    return returnType === 'buffer' ? hash : Hex0x.of(hash);
 }
 
 export { keccak256 };

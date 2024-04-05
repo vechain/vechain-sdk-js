@@ -26,7 +26,7 @@ const signature = Buffer.from(
 /**
  * Simple message hashs
  */
-const messageHashBuffer = keccak256('hello world');
+const messageHashBuffer = Buffer.from(keccak256('hello world'));
 const validMessageHashes = [messageHashBuffer];
 const invalidMessageHashes = [Buffer.from('some_invalid_stuff', 'hex')];
 
