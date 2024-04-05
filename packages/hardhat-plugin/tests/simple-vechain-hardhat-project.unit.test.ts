@@ -9,9 +9,11 @@ import { setHardhatContext } from './test-utils';
 import { HardhatPluginError } from 'hardhat/plugins';
 
 /**
- * Simple hardhat project with vechain network configuration defined
+ * Tests for hardhat plugin with custom network configuration.
  *
- * @group unit/simple-vechain-hardhat-project
+ * @NOTE: This test suite runs on the solo network because it requires sending transactions.
+ *
+ * @group integration/hardhat-plugin
  */
 describe('Custom network configuration hardhat - testnet', () => {
     /**
@@ -65,5 +67,102 @@ describe('Custom network configuration hardhat - testnet', () => {
                 hre.vechainProvider?.send('WRONG_ENDPOINT', [])
             ).rejects.toThrowError(HardhatPluginError);
         });
+    });
+
+    describe('Invoke hardhat functions', () => {
+        /**
+         * Test suite for getSigner
+         */
+        test('Get signer', async () => {
+            const signer = (await hre.ethers.getSigners())[0];
+
+            console.log('signer', JSON.stringify(signer));
+
+            const impersonatedSigner = await hre.ethers.getSigner(
+                '0x3db469a79593dcc67f07DE1869d6682fC1eaf535'
+            );
+
+            expect(impersonatedSigner).toBeDefined();
+        }, 10000);
+
+        /**
+         * Test suite for getImpersonatedSigner
+         */
+        test('Get impersonated signer', async () => {
+            const signer = (await hre.ethers.getSigners())[0];
+
+            console.log('signer', JSON.stringify(signer));
+
+            await expect(
+                async () =>
+                    await hre.ethers.getImpersonatedSigner(
+                        '0x3db469a79593dcc67f07DE1869d6682fC1eaf535'
+                    )
+            ).rejects.toThrowError();
+        }, 10000);
+
+        /**
+         * Test suite for the deployment of the hello world contract
+         */
+        test('Should deploy the hello world contract', async () => {
+            const signer = (await hre.ethers.getSigners())[0];
+
+            console.log('signer', JSON.stringify(signer));
+
+            const helloWorldContract = await hre.ethers.deployContract(
+                'VechainHelloWorld',
+                signer
+            );
+
+            expect(helloWorldContract).toBeDefined();
+
+            expect(await helloWorldContract.sayHello()).toBe(
+                'Hello world from Vechain!'
+            );
+        }, 10000);
+
+        /**
+         * Test suite for invoking the hello world contract
+         */
+        test('Should invoke the hello world contract', async () => {
+            const signer = (await hre.ethers.getSigners())[0];
+
+            console.log('signer', JSON.stringify(signer));
+
+            const helloWorldContract = await (
+                await hre.ethers.getContractFactory('VechainHelloWorld', signer)
+            ).deploy();
+
+            expect(helloWorldContract).toBeDefined();
+
+            expect(await helloWorldContract.sayHello()).toBe(
+                'Hello world from Vechain!'
+            );
+        }, 10000);
+
+        /**
+         * Test suite for getContractFactoryFromArtifact
+         */
+        test('Should invoke the hello world contract using getContractFactoryFromArtifact', async () => {
+            const signer = (await hre.ethers.getSigners())[0];
+
+            console.log('signer', JSON.stringify(signer));
+
+            const helloWorldContractArtifact =
+                await hre.artifacts.readArtifact('VechainHelloWorld');
+
+            const helloWorldContract = await (
+                await hre.ethers.getContractFactoryFromArtifact(
+                    helloWorldContractArtifact,
+                    signer
+                )
+            ).deploy();
+
+            expect(helloWorldContract).toBeDefined();
+
+            expect(await helloWorldContract.sayHello()).toBe(
+                'Hello world from Vechain!'
+            );
+        }, 10000);
     });
 });

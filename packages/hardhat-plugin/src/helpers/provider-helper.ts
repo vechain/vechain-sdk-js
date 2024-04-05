@@ -9,7 +9,7 @@ import {
 } from 'hardhat/types';
 import { DelegationHandler } from '@vechain/sdk-network';
 
-/**
+/*
  * Create a wallet from the hardhat network configuration.
  *
  * @param networkConfig - The hardhat network configuration.
