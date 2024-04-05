@@ -73,7 +73,7 @@ function hash(key: Buffer): number {
     const uint8ArrayKey = new Uint8Array(key);
 
     // Compute hash using blake2b256
-    const hash = blake2b256(uint8ArrayKey);
+    const hash = Buffer.from(blake2b256(uint8ArrayKey));
 
     return hash.readUInt32BE(0);
 }

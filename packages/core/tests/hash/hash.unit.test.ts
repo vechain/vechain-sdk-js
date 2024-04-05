@@ -31,23 +31,31 @@ describe('Hash', () => {
             test('Hash as buffer is correct', () => {
                 // Hello world hash
                 expect(
-                    hashFunction.hashFunction('hello world', 'buffer')
+                    Buffer.from(
+                        hashFunction.hashFunction('hello world', 'buffer')
+                    )
                 ).toStrictEqual(
                     hashFunction.results.HELLO_WORLD_HASH_VALUE_BUFFER
                 );
 
-                expect(hashFunction.hashFunction('hello world')).toStrictEqual(
+                expect(
+                    Buffer.from(hashFunction.hashFunction('hello world'))
+                ).toStrictEqual(
                     hashFunction.results.HELLO_WORLD_HASH_VALUE_BUFFER
                 );
 
                 // Zero bytes hash
                 expect(
-                    hashFunction.hashFunction(ZERO_BUFFER(0), 'buffer')
+                    Buffer.from(
+                        hashFunction.hashFunction(ZERO_BUFFER(0), 'buffer')
+                    )
                 ).toStrictEqual(
                     hashFunction.results.ZERO_BUFFER_HASH_VALUE_BUFFER
                 );
 
-                expect(hashFunction.hashFunction(ZERO_BUFFER(0))).toStrictEqual(
+                expect(
+                    Buffer.from(hashFunction.hashFunction(ZERO_BUFFER(0)))
+                ).toStrictEqual(
                     hashFunction.results.ZERO_BUFFER_HASH_VALUE_BUFFER
                 );
             });

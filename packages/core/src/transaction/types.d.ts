@@ -27,19 +27,14 @@ interface TransactionClause {
  */
 interface TransactionBody {
     /**
-     * Last byte of genesis block ID
-     */
-    chainTag: number;
-
-    /**
      * 8 bytes prefix of some block's ID
      */
     blockRef: string;
 
     /**
-     * Constraint of time bucket
+     * Last byte of genesis block ID
      */
-    expiration: number;
+    chainTag: number;
 
     /**
      * Array of clauses
@@ -47,9 +42,14 @@ interface TransactionBody {
     clauses: TransactionClause[];
 
     /**
-     * Coefficient applied to base gas price [0,255]
+     * ID of another tx that is depended
      */
-    gasPriceCoef: number;
+    dependsOn: string | null;
+
+    /**
+     * Constraint of time bucket
+     */
+    expiration: number;
 
     /**
      * Max gas provided for execution
@@ -57,9 +57,9 @@ interface TransactionBody {
     gas: string | number;
 
     /**
-     * ID of another tx that is depended
+     * Coefficient applied to base gas price [0,255]
      */
-    dependsOn: string | null;
+    gasPriceCoef: number;
 
     /**
      * Nonce value for various purposes.

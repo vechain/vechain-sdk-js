@@ -47,14 +47,14 @@ const cert2 = {
  * Signature of Certificate n.1
  */
 const sig = Hex0x.of(
-    secp256k1.sign(blake2b256(certificate.encode(cert)), privKey)
+    secp256k1.sign(Buffer.from(blake2b256(certificate.encode(cert))), privKey)
 );
 
 /**
  * Signature of Certificate n.2
  */
 const sig2 = Hex0x.of(
-    secp256k1.sign(blake2b256(certificate.encode(cert2)), privKey)
+    secp256k1.sign(Buffer.from(blake2b256(certificate.encode(cert2))), privKey)
 );
 
 /**
@@ -62,6 +62,11 @@ const sig2 = Hex0x.of(
  */
 const invalidSignature =
     '0xBAD' +
-    Hex.of(secp256k1.sign(blake2b256(certificate.encode(cert)), privKey));
+    Hex.of(
+        secp256k1.sign(
+            Buffer.from(blake2b256(certificate.encode(cert))),
+            privKey
+        )
+    );
 
 export { privKey, cert, cert2, sig, sig2, invalidSignature };

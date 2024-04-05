@@ -30,10 +30,9 @@ interface WaitForTransactionOptions {
  */
 interface TransactionBodyOptions {
     /**
-     * Coefficient used to calculate the gas price for the transaction.
-     * Value must be between 0 and 255.
+     * The ID of the transaction that this transaction depends on.
      */
-    gasPriceCoef?: number;
+    dependsOn?: string;
 
     /**
      * The expiration time of the transaction.
@@ -42,9 +41,10 @@ interface TransactionBodyOptions {
     expiration?: number;
 
     /**
-     * The ID of the transaction that this transaction depends on.
+     * Coefficient used to calculate the gas price for the transaction.
+     * Value must be between 0 and 255.
      */
-    dependsOn?: string;
+    gasPriceCoef?: number;
 
     /**
      * Whether the transaction is delegated to another account for gas payment.

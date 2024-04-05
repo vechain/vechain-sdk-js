@@ -200,15 +200,17 @@ class Transaction {
 
         // There is a delegateFor address (@note we already know that it is a valid address)
         if (delegateFor !== undefined) {
-            return blake2b256(
-                Buffer.concat([
-                    transactionHash,
-                    Buffer.from(delegateFor.slice(2), 'hex')
-                ])
+            return Buffer.from(
+                blake2b256(
+                    Buffer.concat([
+                        Buffer.from(transactionHash),
+                        Buffer.from(delegateFor.slice(2), 'hex')
+                    ])
+                )
             );
         }
 
-        return transactionHash;
+        return Buffer.from(transactionHash);
     }
 
     /**
