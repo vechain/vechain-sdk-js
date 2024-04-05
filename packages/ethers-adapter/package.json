@@ -1,14 +1,14 @@
 {
   "name": "@vechain/sdk-ethers-adapter",
   "version": "1.0.0-beta.2",
-  "description": "This module allows to create smart contracts and interact with them using the vechain SDK and Hardhat",
+  "description": "This module serves as a crucial bridge between the standard Ethereum tooling provided by Hardhat and the unique features of the vechain thor blockchain",
   "author": "vechain Foundation",
   "license": "MIT",
   "keywords": [
     "vechain",
-    "hardhat",
     "ethers",
-    "adapter"
+    "adapter",
+    "hardhat-plugin"
   ],
   "private": false,
   "main": "dist/index.js",

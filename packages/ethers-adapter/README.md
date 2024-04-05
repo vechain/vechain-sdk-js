@@ -1,23 +1,18 @@
-# @vechain/sdk-hardhat-plugin
+# @vechain/sdk-ethers-adapter
 
-Welcome to the **hardhat-plugin package** of the vechain SDK!
+Welcome to the **sdk-ethers-adapter** package of the vechain SDK! This package serves as a crucial bridge between the standard Ethereum tooling provided by Hardhat and the unique features of the vechain Thor blockchain. By utilizing this adapter, the hardhat vechain plugin can seamlessly integrate veChain's capabilities, leveraging the Hardhat environment for smart contract deployment and testing on veChain's network.
 
-## Introduction
+## Features
 
-The vechain SDK Hardhat plugin is a crucial tool that bridges the gap between Hardhat and the vechain SDK, providing a seamless interface for developers. This versatile package is indispensable for smart contract development on the VeChainThor blockchain network.
+- **Ethers.js Integration**: Fully compatible with ethers.js, providing a familiar interface for Ethereum developers.
+- **vechain Extensions**: Implements vechain-specific functionalities, such as multi-clause transactions, fee delegation, and native token (VET and VTHO) handling.
+- **Custom Provider**: Includes a VeChainThor Provider to interact with the vechain Thor blockchain.
+- **Transaction Signing**: Enhancements for signing transactions using vechain's unique model, including support for block ref and expiration.
+- **Contract Interaction**: Facilitates interaction with contracts deployed on the vechain Thor blockchain, taking into account vechain-specific transaction parameters.
 
-## Key Features
+## Installation
 
-The plugin streamlines the process of creating, testing, deploying and interacting with smart contracts, making it easier for developers to build robust decentralized applications (dApps) and services on VeChainThor. By integrating the vechain SDK into Hardhat, developers can leverage the full power of vechain's blockchain infrastructure while enjoying the familiar development environment provided by Hardhat.
+To install the `@vechain/sdk-ethers-adapter`, run the following command in your project directory:
 
-## Example
-
-If you want to explore a comprehensive example of the Hardhat plugin, you can navigate to the `apps/sdk-hardhat-integration`. Inside this directory, you'll find a fully-fledged example with all the necessary commands already configured. This example serves as a practical demonstration of how to use the Hardhat plugin for vechain SDK integration, providing a complete setup that you can easily follow and replicate for your own projects.
-
-## Usage
-
-Explore examples of how to use this package in real-world scenarios at [vechain SDK examples](https://github.com/vechain/vechain-sdk/tree/main/docs/examples).
-
-Feel free to leverage these resources and don't hesitate to reach out if you have any questions or need further assistance.
-
-Happy coding with the vechain SDK!
+```bash
+npm install @vechain/sdk-ethers-adapter

@@ -8,13 +8,12 @@ async function main(): Promise<void> {
         signer
     );
 
-    console.log('factory', JSON.stringify(vechainHelloWorldFactory));
-
     const txResponse = await vechainHelloWorldFactory.deploy();
 
-    console.log('txResponse', JSON.stringify(txResponse));
-
-    console.log('address', await txResponse.getAddress());
+    console.log(
+        'Contract deployment with the following transaction:',
+        JSON.stringify(txResponse)
+    );
 }
 
 // We recommend this pattern to be able to use async/await everywhere
