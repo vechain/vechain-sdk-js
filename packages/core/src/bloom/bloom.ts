@@ -8,6 +8,7 @@
  * Reference: https://github.com/vechain/thor/blob/master/thor/bloom/bloom.go
  */
 
+import * as utils from '@noble/curves/abstract/utils';
 import { blake2b256 } from '../hash';
 import { Buffer } from 'buffer';
 
@@ -71,11 +72,8 @@ function addWithUInt32Wrap(a: number, b: number): number {
 function hash(key: Buffer): number {
     // Convert key to Uint8Array
     const uint8ArrayKey = new Uint8Array(key);
-
     // Compute hash using blake2b256
-    const hash = Buffer.from(blake2b256(uint8ArrayKey));
-
-    return hash.readUInt32BE(0);
+    return Number(utils.bytesToNumberBE(blake2b256(uint8ArrayKey).slice(0, 4)));
 }
 
 /**
@@ -126,7 +124,8 @@ class Generator {
      * @param key - The key to be added.
      */
     public add(key: Buffer): void {
-        this.hashes.set(hash(key), true);
+        const h: number = hash(key);
+        this.hashes.set(h, true);
     }
 
     /**
