@@ -5,12 +5,12 @@ import { type Artifact, type HttpNetworkConfig } from 'hardhat/types';
 import { HardhatPluginError, lazyObject } from 'hardhat/plugins';
 import {
     deployContract,
-    getSigner,
-    getSigners,
-    getContractFactory,
-    getContractAtFromArtifact,
     getContractAt,
-    getContractFactoryFromArtifact
+    getContractAtFromArtifact,
+    getContractFactory,
+    getContractFactoryFromArtifact,
+    getSigner,
+    getSigners
 } from '@nomicfoundation/hardhat-ethers/internal/helpers';
 
 // Custom provider for ethers
@@ -26,45 +26,6 @@ import './type-extensions';
 import { HardhatEthersProvider } from '@nomicfoundation/hardhat-ethers/internal/hardhat-ethers-provider';
 import { contractAdapter, factoryAdapter } from '@vechain/sdk-ethers-adapter';
 import { type FactoryOptions } from '@nomicfoundation/hardhat-ethers/src/types';
-/**
- * // TEMPORARY COMMENT //
- * To improve. Needed for ethers customization
- */
-// const getSinger = async (
-//     address: string,
-//     networkName: string,
-//     hardhatVechainProvider: HardhatVechainProvider
-// ): Promise<SignerWithAddress> => {
-//     const signer = await SignerWithAddress.create(
-//         new ethers.JsonRpcSigner(
-//             new CustomJSONRpcProvider(1, networkName, hardhatVechainProvider),
-//             address
-//         )
-//     );
-//     return signer;
-// };
-
-/**
- * // TEMPORARY COMMENT //
- * To improve. Needed for ethers customization
- */
-// class WrappedEthersProvider extends ethers.JsonRpcApiProvider {
-//     hardhatProvider: HardhatVechainProvider;
-//
-//     constructor(
-//         url: string,
-//         networkName: string,
-//         networkChainId: number,
-//         hardhatProvider: HardhatVechainProvider
-//     ) {
-//         super({ name: networkName, chainId: networkChainId });
-//         this.hardhatProvider = hardhatProvider;
-//     }
-//
-//     // async _send(method: string, params: unknown[]): Promise<unknown> {
-//     //     return await this.hardhatProvider.send(method, params);
-//     // }
-// }
 
 /**
  * Extend the environment with provider to be able to use vechain functions
@@ -75,7 +36,7 @@ extendEnvironment((hre) => {
     // 1.1 - Get network name
     const networkName = hre.network.name;
 
-    // 1.2 - Get network xconfig
+    // 1.2 - Get network config
     const networkConfig: HttpNetworkConfig = hre.config.networks[
         networkName
     ] as HttpNetworkConfig;
