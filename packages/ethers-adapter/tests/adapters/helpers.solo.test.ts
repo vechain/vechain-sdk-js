@@ -14,7 +14,7 @@ import { helpers } from '../../src/adapters/helpers';
  *
  * @group integration/adapter/contract-adapter-solo
  */
-describe('Hardhat factory adapter tests', () => {
+describe('Helpers tests', () => {
     /**
      * ThorClient and provider instances
      */

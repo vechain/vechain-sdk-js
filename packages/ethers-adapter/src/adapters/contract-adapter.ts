@@ -2,6 +2,12 @@ import { type vechain_sdk_core_ethers } from '@vechain/sdk-core';
 import { type HardhatVechainProvider } from '@vechain/sdk-provider';
 import { helpers } from './helpers';
 
+/**
+ * Contract adapter for the vechain hardhat plugin
+ *
+ * @param contract - The contract to adapt to the vechain network
+ * @param hardhatVechainProvider - The hardhat vechain provider
+ */
 export const contractAdapter = (
     contract: vechain_sdk_core_ethers.Contract,
     hardhatVechainProvider: HardhatVechainProvider

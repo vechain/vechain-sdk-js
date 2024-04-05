@@ -1,6 +1,12 @@
 import type { HardhatVechainProvider } from '@vechain/sdk-provider';
 import { vechain_sdk_core_ethers } from '@vechain/sdk-core/dist';
 
+/**
+ * Factory adapter for the vechain hardhat plugin
+ *
+ * @param contractFactory - The contract factory to adapt to the vechain network
+ * @param hardhatVechainProvider - The hardhat vechain provider
+ */
 function factoryAdapter<A extends unknown[], I>(
     contractFactory: vechain_sdk_core_ethers.ContractFactory<A, I>,
     hardhatVechainProvider: HardhatVechainProvider
