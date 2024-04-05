@@ -93,7 +93,7 @@ extendEnvironment((hre) => {
             ...ethers,
             deployContract: async (...args: unknown[]) => {
                 const deployContractBound = deployContract.bind(null, hre);
-                // @ts-expect-error args types depends on the function signature
+                // @ts-expect-error args types depend on the function signature
                 return await deployContractBound(...args).then((contract) =>
                     contractAdapter(contract, hardhatVechainProvider)
                 );
@@ -101,7 +101,7 @@ extendEnvironment((hre) => {
 
             getContractFactory: async (...args: unknown[]) => {
                 const contractFactoryBound = getContractFactory.bind(null, hre);
-                // @ts-expect-error args types depends on the function signature
+                // @ts-expect-error args types depend on the function signature
                 return await contractFactoryBound(...args).then((factory) =>
                     factoryAdapter(factory, hardhatVechainProvider)
                 );
