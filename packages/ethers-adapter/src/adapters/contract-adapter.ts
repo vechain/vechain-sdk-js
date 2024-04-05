@@ -8,7 +8,7 @@ import { helpers } from './helpers';
  * @param contract - The contract to adapt to the vechain network
  * @param hardhatVechainProvider - The hardhat vechain provider
  */
-export const contractAdapter = (
+const contractAdapter = (
     contract: vechain_sdk_core_ethers.Contract,
     hardhatVechainProvider: HardhatVechainProvider
 ): vechain_sdk_core_ethers.Contract => {
@@ -20,3 +20,5 @@ export const contractAdapter = (
     };
     return contract;
 };
+
+export { contractAdapter };

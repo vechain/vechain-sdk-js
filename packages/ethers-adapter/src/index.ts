@@ -1,5 +1,5 @@
-import * as adapters from './adapters';
+import * as adapters from './ethers-adapter';
 
 export { adapters };
 
-export * from './adapters';
+export * from './ethers-adapter';
