@@ -124,7 +124,7 @@ class Transaction {
         );
 
         // Address from public key
-        return addressUtils.fromPublicKey(delegatorPublicKey);
+        return addressUtils.fromPublicKey(Buffer.from(delegatorPublicKey));
     }
 
     /**
@@ -243,7 +243,7 @@ class Transaction {
         );
 
         // Address from public key
-        return addressUtils.fromPublicKey(originPublicKey);
+        return addressUtils.fromPublicKey(Buffer.from(originPublicKey));
     }
 
     /**

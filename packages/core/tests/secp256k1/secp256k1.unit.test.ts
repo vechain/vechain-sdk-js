@@ -1,5 +1,5 @@
 import { describe, test, expect } from '@jest/globals';
-import { Hex, secp256k1, ZERO_BUFFER } from '../../src';
+import { Hex, secp256k1, ZERO_BYTES } from '../../src';
 import {
     invalidMessageHashes,
     messageHashBuffer,
@@ -55,7 +55,7 @@ describe('secp256k1', () => {
 
         test('secp256k1 - derivePublicKey - error', () => {
             expect(() =>
-                secp256k1.derivePublicKey(ZERO_BUFFER(32))
+                secp256k1.derivePublicKey(ZERO_BYTES(32))
             ).toThrowError(InvalidSecp256k1PrivateKeyError);
         });
     });
@@ -130,13 +130,11 @@ describe('secp256k1', () => {
     describe('secp256k1 - randomBytes', () => {
         test('secp256k1 - randomBytes - without parameters', () => {
             const result = secp256k1.randomBytes();
-            expect(Buffer.isBuffer(result)).toBe(true);
             expect(result.length).toBeGreaterThan(0);
         });
 
         test('secp256k1 - randomBytes - with param', () => {
             const result = secp256k1.randomBytes(16);
-            expect(Buffer.isBuffer(result)).toBe(true);
             expect(result.length).toBe(16);
         });
     });
@@ -144,7 +142,7 @@ describe('secp256k1', () => {
     describe('secp256k1 - recover', () => {
         test('secp256k1 - recover - success', () => {
             expect(
-                secp256k1.recover(messageHashBuffer, signature)
+                Buffer.from(secp256k1.recover(messageHashBuffer, signature))
             ).toStrictEqual(publicKeyUncompressed);
         });
 

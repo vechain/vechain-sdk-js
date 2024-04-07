@@ -373,7 +373,7 @@ class TransactionsModule {
 
         // Address of the origin account
         const originAddress = addressUtils.fromPublicKey(
-            secp256k1.derivePublicKey(originPrivateKey)
+            Buffer.from(secp256k1.derivePublicKey(originPrivateKey))
         );
 
         const unsignedTx = new Transaction(unsignedTransactionBody);

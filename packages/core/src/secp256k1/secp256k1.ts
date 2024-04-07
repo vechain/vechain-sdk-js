@@ -1,5 +1,6 @@
+import * as utils from '@noble/curves/abstract/utils';
 import { BN } from 'bn.js';
-import { Hex, SIGNATURE_LENGTH, ZERO_BUFFER } from '../utils';
+import { Hex, SIGNATURE_LENGTH } from '../utils';
 import { assert, SECP256K1 } from '@vechain/sdk-errors';
 import { randomBytes as _randomBytes } from '@noble/hashes/utils';
 import { secp256k1 as ec } from '@noble/curves/secp256k1';
@@ -12,10 +13,9 @@ import {
  * Biggest value of private key
  * @internal
  */
-const PRIVATE_KEY_MAX_VALUE = Buffer.from(
-    'fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141',
-    'hex'
-);
+// const PRIVATE_KEY_MAX_VALUE = utils.hexToBytes(
+//     'fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141'
+// );
 
 /**
  * Compresses a public key.
@@ -38,7 +38,7 @@ function compressPublicKey(publicKey: Uint8Array): Uint8Array {
         const y = publicKey.slice(33, 65);
         const isYOdd = y[y.length - 1] & 1;
         // Prefix with 0x02 if Y coordinate is even, 0x03 if odd.
-        return Buffer.concat([Buffer.from([2 + isYOdd]), x]);
+        return utils.concatBytes(Uint8Array.of(2 + isYOdd), x);
     } else {
         // Compressed.
         return publicKey;
@@ -48,25 +48,24 @@ function compressPublicKey(publicKey: Uint8Array): Uint8Array {
 /**
  * Derives a public key from a given private key.
  *
- * @param {Buffer} privateKey - The private key used to derive the public key.
+ * @param {Uint8Array} privateKey - The private key used to derive the public key.
  * @param {boolean} [isCompressed=true] - Boolean indicating whether the derived public key should be compressed or not.
- * @returns {Buffer} - The derived public key as a Buffer object.
+ * @returns {Uint8Array} - The derived public key as a Uint8Array object.
  *
  * @throws{InvalidSecp256k1PrivateKeyError} if `privateKey` is invalid.
  *
  * @see assertIsValidPrivateKey
  */
 function derivePublicKey(
-    privateKey: Buffer,
+    privateKey: Uint8Array,
     isCompressed: boolean = true
-): Buffer {
+): Uint8Array {
     assertIsValidPrivateKey(
         'secp256k1.derivePublicKey',
         privateKey,
         isValidPrivateKey
     );
-    const publicKey = ec.getPublicKey(privateKey, isCompressed);
-    return Buffer.from(publicKey);
+    return ec.getPublicKey(privateKey, isCompressed);
 }
 
 /**
@@ -102,38 +101,39 @@ function inflatePublicKey(publicKey: Uint8Array): Uint8Array {
  * Security audit function.
  * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
  *
- * @returns {Buffer} The newly generated private key as a buffer.
+ * @returns {Uint8Array} The newly generated private key as a buffer.
  */
-function generatePrivateKey(): Buffer {
-    return Buffer.from(ec.utils.randomPrivateKey());
+function generatePrivateKey(): Uint8Array {
+    return ec.utils.randomPrivateKey();
 }
 
 /**
  * Check if the given hash is a valid message hash.
  *
- * @param {Buffer} hash - The hash of the message to validate.
+ * @param {Uint8Array} hash - The hash of the message to validate.
  * @return {boolean} - Returns `true` if the hash is a valid message hash,
  * otherwise returns `false`.
  */
-function isValidMessageHash(hash: Buffer): boolean {
-    return Buffer.isBuffer(hash) && hash.length === 32;
+function isValidMessageHash(hash: Uint8Array): boolean {
+    return hash.length === 32;
 }
 
 /**
  * Checks if the given private key is valid.
  *
- * @param {Buffer} privateKey - The private key to be checked.
+ * @param {Uint8Array} privateKey - The private key to be checked.
  * @return {boolean} - Returns `true` if the private key is 32 bytes long
  * in the range between 0 and {@link PRIVATE_KEY_MAX_VALUE} excluded,
  * otherwise `false`.
  */
-function isValidPrivateKey(privateKey: Buffer): boolean {
-    return (
-        Buffer.isBuffer(privateKey) &&
-        privateKey.length === 32 &&
-        !privateKey.equals(ZERO_BUFFER(32)) &&
-        privateKey.compare(PRIVATE_KEY_MAX_VALUE) < 0
-    );
+function isValidPrivateKey(privateKey: Uint8Array): boolean {
+    return ec.utils.isValidPrivateKey(privateKey);
+    // return (
+    //     privateKey instanceof Uint8Array &&
+    //     privateKey.length === 32 &&
+    //     !utils.equalBytes(privateKey, ZERO_BUFFER(32)) &&
+    //     Buffer.from(privateKey).compare(Buffer.from(PRIVATE_KEY_MAX_VALUE)) < 0
+    // );
 }
 
 /**
@@ -143,21 +143,21 @@ function isValidPrivateKey(privateKey: Buffer): boolean {
  * functionality to delegate the OS to generate the random sequence according the host hardware.
  *
  * @param {number} bytesLength - The length of the random bytes to generate.
- * @return {Buffer} - The generated random bytes as a Buffer object.
+ * @return {Uint8Array} - The generated random bytes as a Uint8Array object.
  * @throws Error with `crypto.getRandomValues must be defined`
  * message if no hardware for random generation is
  * available at runtime.
  */
-function randomBytes(bytesLength?: number | undefined): Buffer {
-    return Buffer.from(_randomBytes(bytesLength));
+function randomBytes(bytesLength?: number | undefined): Uint8Array {
+    return _randomBytes(bytesLength);
 }
 
 /**
  * Recovers public key from a given message hash and signature.
  *
- * @param {Buffer} messageHash - The message hash to recover the public key from.
- * @param {Buffer} sig - The signature of the message.
- * @returns {Buffer} - The recovered public key.
+ * @param {Uint8Array} messageHash - The message hash to recover the public key from.
+ * @param {Uint8Array} sig - The signature of the message.
+ * @returns {Uint8Array} - The recovered public key.
  *
  * @throws{InvalidSecp256k1MessageHashError} - If the message hash is invalid.
  * @throws{InvalidSecp256k1SignatureError} - If the signature is invalid.
@@ -165,7 +165,7 @@ function randomBytes(bytesLength?: number | undefined): Buffer {
  *
  * @see assertIsValidSecp256k1MessageHash
  */
-function recover(messageHash: Buffer, sig: Buffer): Buffer {
+function recover(messageHash: Uint8Array, sig: Uint8Array): Uint8Array {
     assertIsValidSecp256k1MessageHash(
         'secp256k1.recover',
         messageHash,
@@ -174,7 +174,7 @@ function recover(messageHash: Buffer, sig: Buffer): Buffer {
 
     assert(
         'secp256k1.recover',
-        Buffer.isBuffer(sig) && sig.length === SIGNATURE_LENGTH,
+        sig.length === SIGNATURE_LENGTH,
         SECP256K1.INVALID_SECP256k1_SIGNATURE,
         'Invalid signature given as input. Length must be exactly 65 bytes.',
         { sig }
@@ -189,12 +189,10 @@ function recover(messageHash: Buffer, sig: Buffer): Buffer {
         { recovery }
     );
 
-    return Buffer.from(
-        ec.Signature.fromCompact(Uint8Array.from(sig).slice(0, 64))
-            .addRecoveryBit(recovery)
-            .recoverPublicKey(messageHash)
-            .toRawBytes(false)
-    );
+    return ec.Signature.fromCompact(Uint8Array.from(sig).slice(0, 64))
+        .addRecoveryBit(recovery)
+        .recoverPublicKey(messageHash)
+        .toRawBytes(false);
 }
 
 /**
@@ -203,9 +201,9 @@ function recover(messageHash: Buffer, sig: Buffer): Buffer {
  * Security audit function.
  * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
  *
- * @param {Buffer} messageHash - The message hash to be signed.
- * @param {Buffer} privateKey - The private key to use for signing.
- * @returns {Buffer} - The signature of the message hash.
+ * @param {Uint8Array} messageHash - The message hash to be signed.
+ * @param {Uint8Array} privateKey - The private key to use for signing.
+ * @returns {Uint8Array} - The signature of the message hash.
  *
  * @throws {InvalidSecp256k1MessageHashError} - If the message hash is invalid.
  * @throws {InvalidSecp256k1PrivateKeyError} - If the private key is invalid.
@@ -213,7 +211,7 @@ function recover(messageHash: Buffer, sig: Buffer): Buffer {
  * @see assertIsValidSecp256k1MessageHash
  * @see assertIsValidPrivateKey
  */
-function sign(messageHash: Buffer, privateKey: Buffer): Buffer {
+function sign(messageHash: Uint8Array, privateKey: Uint8Array): Uint8Array {
     assertIsValidSecp256k1MessageHash(
         'secp256k1.sign',
         messageHash,

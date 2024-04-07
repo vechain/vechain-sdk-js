@@ -10,7 +10,7 @@ import {
     VET_DERIVATION_PATH,
     X_PRIV_PREFIX,
     X_PUB_PREFIX,
-    ZERO_BUFFER
+    ZERO_BYTES
 } from '../utils';
 import { wordlist } from '@scure/bip39/wordlists/english';
 
@@ -149,8 +149,8 @@ function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
  */
 function of(hdkey: bip32.HDKey): IHDNode {
     const publicKey =
-        hdkey.publicKey != null ? Buffer.from(hdkey.publicKey) : ZERO_BUFFER(0);
-    const address = addressUtils.fromPublicKey(publicKey);
+        hdkey.publicKey != null ? Buffer.from(hdkey.publicKey) : ZERO_BYTES(0);
+    const address = addressUtils.fromPublicKey(Buffer.from(publicKey));
     return {
         get address() {
             return address;
@@ -158,7 +158,7 @@ function of(hdkey: bip32.HDKey): IHDNode {
         get chainCode() {
             return hdkey.chainCode != null
                 ? Buffer.from(hdkey.chainCode)
-                : ZERO_BUFFER(0);
+                : Buffer.from(ZERO_BYTES(0));
         },
         derive(index) {
             return of(hdkey.deriveChild(index));
@@ -186,7 +186,7 @@ function of(hdkey: bip32.HDKey): IHDNode {
                 : null;
         },
         get publicKey() {
-            return publicKey;
+            return Buffer.from(publicKey);
         }
     };
 }

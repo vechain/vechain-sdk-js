@@ -56,7 +56,7 @@ function verify(cert: Certificate): void {
     // Signature does not match with the signer's public key
     assert(
         'verify',
-        addressUtils.fromPublicKey(pubKey) === cert.signer,
+        addressUtils.fromPublicKey(Buffer.from(pubKey)) === cert.signer,
         CERTIFICATE.CERTIFICATE_INVALID_SIGNER,
         "Verification failed: Signature does not correspond to the signer's public key.",
         { pubKey, cert }

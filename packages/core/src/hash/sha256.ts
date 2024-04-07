@@ -18,14 +18,14 @@ function sha256(data: string | Uint8Array): Uint8Array;
 
 /**
  * Computes the sha256 hash of the given data.
- * Returns the hash as a Buffer.
+ * Returns the hash as a Uint8Array.
  *
  * Secure audit function.
  * * {@link sha256}
  *
- * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
+ * @param data - The input data (either a Uint8Array or string) for which the hash needs to be computed.
  * @param returnType - The format in which to return the hash. Either 'buffer' or 'hex'.
- * @returns {Buffer} A Buffer containing the 256-bit sha256 hash of the provided data.
+ * @returns {Uint8Array} A Uint8Array containing the 256-bit sha256 hash of the provided data.
  */
 /**
  * Calculates the SHA-256 hash of the given data.

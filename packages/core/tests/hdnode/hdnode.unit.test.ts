@@ -3,7 +3,7 @@ import { describe, expect, test } from '@jest/globals';
 import {
     HDNode,
     Hex,
-    ZERO_BUFFER,
+    ZERO_BYTES,
     addressUtils,
     mnemonic,
     secp256k1,
@@ -39,7 +39,7 @@ describe('HDNode', () => {
                 expect(
                     Hex.of(
                         secp256k1.derivePublicKey(
-                            child.privateKey ?? ZERO_BUFFER(0)
+                            child.privateKey ?? ZERO_BYTES(0)
                         )
                     )
                 ).toEqual(Hex.of(child.publicKey));
@@ -62,15 +62,17 @@ describe('HDNode', () => {
                     expect(currentHdnode.privateKey).toBeDefined();
                     expect(
                         secp256k1.isValidPrivateKey(
-                            currentHdnode.privateKey as Buffer
+                            currentHdnode.privateKey as Uint8Array
                         )
                     ).toBe(true);
 
                     // Public key
                     expect(currentHdnode.publicKey).toBeDefined();
                     expect(
-                        secp256k1.derivePublicKey(
-                            currentHdnode.privateKey as Buffer
+                        Buffer.from(
+                            secp256k1.derivePublicKey(
+                                currentHdnode.privateKey as Uint8Array
+                            )
                         )
                     ).toEqual(currentHdnode.publicKey);
 
@@ -97,7 +99,7 @@ describe('HDNode', () => {
     describe('HDNode - fromPrivateKey', () => {
         test('HDNode - fromPrivateKey - success', () => {
             const parent = HDNode.fromPrivateKey(
-                master.privateKey ?? ZERO_BUFFER(0),
+                master.privateKey ?? Buffer.from(ZERO_BYTES(0)),
                 master.chainCode
             );
             for (let i = 0; i < 5; i++) {
@@ -113,7 +115,7 @@ describe('HDNode', () => {
                 expect(
                     Hex.of(
                         secp256k1.derivePublicKey(
-                            child.privateKey ?? ZERO_BUFFER(0)
+                            child.privateKey ?? ZERO_BYTES(0)
                         )
                     )
                 ).toEqual(Hex.of(child.publicKey));
@@ -122,13 +124,19 @@ describe('HDNode', () => {
 
         test('HDNode - fromPrivateKey - invalid chain code', () => {
             expect(() =>
-                HDNode.fromPrivateKey(ZERO_BUFFER(32), ZERO_BUFFER(31))
+                HDNode.fromPrivateKey(
+                    Buffer.from(ZERO_BYTES(32)),
+                    Buffer.from(ZERO_BYTES(31))
+                )
             ).toThrowError(InvalidHDNodeChaincodeError);
         });
 
         test('HDNode - fromPrivateKey - invalid key', () => {
             expect(() =>
-                HDNode.fromPrivateKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
+                HDNode.fromPrivateKey(
+                    Buffer.from(ZERO_BYTES(31)),
+                    Buffer.from(ZERO_BYTES(32))
+                )
             ).toThrowError(InvalidHDNodePrivateKeyError);
         });
     });
@@ -155,13 +163,19 @@ describe('HDNode', () => {
 
         test('HDNode - fromPublicKey - invalid chain code', () => {
             expect(() =>
-                HDNode.fromPublicKey(ZERO_BUFFER(65), ZERO_BUFFER(31))
+                HDNode.fromPublicKey(
+                    Buffer.from(ZERO_BYTES(65)),
+                    Buffer.from(ZERO_BYTES(31))
+                )
             ).toThrowError(InvalidHDNodeChaincodeError);
         });
 
         test('HDNode - fromPublicKey - invalid key', () => {
             expect(() =>
-                HDNode.fromPublicKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
+                HDNode.fromPublicKey(
+                    Buffer.from(ZERO_BYTES(31)),
+                    Buffer.from(ZERO_BYTES(32))
+                )
             ).toThrowError(InvalidHDNodePublicKeyError);
         });
     });

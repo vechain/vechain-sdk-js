@@ -4,7 +4,7 @@
  *
  * @example ZERO_BUFFER(8) -> 0x00000000 , ... , ZERO_BUFFER(n) -> 0x0...0
  */
-const ZERO_BUFFER = (size: number): Buffer => Buffer.alloc(size, 0);
+const ZERO_BYTES = (size: number): Uint8Array => new Uint8Array(size);
 
 /**
  * Regular expression for validating hexadecimal addresses. Must have "0x" prefix. Must be 40 characters long.
@@ -23,4 +23,4 @@ const DECIMAL_INTEGER_REGEX = /^\d+$/;
  */
 const NUMERIC_REGEX = /(^-?\d+(\.\d+)?)$|(^-?\.\d+)$/;
 
-export { ZERO_BUFFER, HEX_ADDRESS_REGEX, DECIMAL_INTEGER_REGEX, NUMERIC_REGEX };
+export { ZERO_BYTES, HEX_ADDRESS_REGEX, DECIMAL_INTEGER_REGEX, NUMERIC_REGEX };

@@ -9,12 +9,12 @@ import { type ReturnType } from './types';
  * Secure audit function.
  * * [blake2b](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#blake2b-blake2s-blake3)
  *
- * @param {Array<Buffer|string>} data - The input data to be hashed.
+ * @param {Array<Uint8Array|string>} data - The input data to be hashed.
  * It accepts multiple arguments in the form of `Uint8Array` or strings.
  *
  * @returns {Uint8Array} - The BLAKE2B-256 hash of the input data.
  */
-function _blake2b256(...data: Array<Buffer | string>): Uint8Array {
+function _blake2b256(...data: Array<Uint8Array | string>): Uint8Array {
     const ctx = blake2b.create({ dkLen: 32 });
     data.forEach((datum) => {
         ctx.update(datum);
@@ -83,8 +83,8 @@ function blake2b256(
     // Assert that the returnType is valid
     assertIsValidReturnType('blake2b256', returnType);
 
-    // Converts the data to an array of Buffer or string
-    const dataBytesLike = [data] as Array<Buffer | string>;
+    // Converts the data to an array of Uint8Array or string
+    const dataBytesLike = [data] as Array<Uint8Array | string>;
 
     const hash = _blake2b256(...dataBytesLike);
 
