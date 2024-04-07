@@ -1,117 +1,31 @@
 import { createWalletFromHardhatNetworkConfig } from './helpers';
 
 import { extendEnvironment } from 'hardhat/config';
-import { type HttpNetworkConfig } from 'hardhat/types';
+import { type Artifact, type HttpNetworkConfig } from 'hardhat/types';
 import { HardhatPluginError, lazyObject } from 'hardhat/plugins';
+import {
+    deployContract,
+    getContractAt,
+    getContractAtFromArtifact,
+    getContractFactory,
+    getContractFactoryFromArtifact,
+    getSigner,
+    getSigners
+} from '@nomicfoundation/hardhat-ethers/internal/helpers';
 
+// Custom provider for ethers
 import { HardhatVechainProvider } from '@vechain/sdk-provider';
 import { VechainSDKLogger } from '@vechain/sdk-logging';
 
 // Import needed to customize ethers functionality
-// import { vechain_sdk_core_ethers as ethers } from '@vechain/sdk-core';
+import { vechain_sdk_core_ethers as ethers } from '@vechain/sdk-core';
+
 // Import needed to extend the hardhat environment
 import './type-extensions';
 
-/**
- * // TEMPORARY COMMENT //
- * To improve. Needed for ethers customization
- */
-// class CustomJSONRpcProvider extends ethers.JsonRpcApiProvider {
-//     hardhatProvider: HardhatVechainProvider;
-//
-//     constructor(
-//         netowrkChainId: number,
-//         networkName: string,
-//         hardhatProvider: HardhatVechainProvider
-//     ) {
-//         super({ name: networkName, chainId: netowrkChainId });
-//         this.hardhatProvider = hardhatProvider;
-//     }
-//
-//     async _send(
-//         payload: JsonRpcPayload | JsonRpcPayload[]
-//     ): Promise<Array<JsonRpcResult | JsonRpcError>> {
-//         const requestPayloadArray = Array.isArray(payload)
-//             ? payload
-//             : [payload];
-//         console.log('requestPayloadArray', requestPayloadArray);
-//
-//         const responses: Array<JsonRpcResult | JsonRpcError> =
-//             requestPayloadArray.map((jsonRpcPayload: JsonRpcPayload) => {
-//                 let response: JsonRpcResult | JsonRpcError = {
-//                     id: 0,
-//                     result: ''
-//                 };
-//
-//                 this.hardhatProvider
-//                     .send(
-//                         jsonRpcPayload.method,
-//                         jsonRpcPayload.params as unknown[]
-//                     )
-//                     .then((result) => {
-//                         response = {
-//                             id: jsonRpcPayload.id,
-//                             result
-//                         } as JsonRpcResult;
-//                     })
-//                     .catch((e) => {
-//                         response = {
-//                             id: jsonRpcPayload.id,
-//                             error: {
-//                                 code: getJSONRPCErrorCode(
-//                                     JSONRPC.INTERNAL_ERROR
-//                                 ),
-//                                 message: stringifyData(e)
-//                             }
-//                         } satisfies JsonRpcError;
-//                     });
-//
-//                 return response;
-//             });
-//
-//         return await Promise.resolve(responses);
-//     }
-// }
-
-/**
- * // TEMPORARY COMMENT //
- * To improve. Needed for ethers customization
- */
-// const getSinger = async (
-//     address: string,
-//     networkName: string,
-//     hardhatVechainProvider: HardhatVechainProvider
-// ): Promise<SignerWithAddress> => {
-//     const signer = await SignerWithAddress.create(
-//         new ethers.JsonRpcSigner(
-//             new CustomJSONRpcProvider(1, networkName, hardhatVechainProvider),
-//             address
-//         )
-//     );
-//     return signer;
-// };
-
-/**
- * // TEMPORARY COMMENT //
- * To improve. Needed for ethers customization
- */
-// class WrappedEthersProvider extends ethers.JsonRpcApiProvider {
-//     hardhatProvider: HardhatVechainProvider;
-//
-//     constructor(
-//         url: string,
-//         networkName: string,
-//         networkChainId: number,
-//         hardhatProvider: HardhatVechainProvider
-//     ) {
-//         super({ name: networkName, chainId: networkChainId });
-//         this.hardhatProvider = hardhatProvider;
-//     }
-//
-//     // async _send(method: string, params: unknown[]): Promise<unknown> {
-//     //     return await this.hardhatProvider.send(method, params);
-//     // }
-// }
+import { HardhatEthersProvider } from '@nomicfoundation/hardhat-ethers/internal/hardhat-ethers-provider';
+import { contractAdapter, factoryAdapter } from '@vechain/sdk-ethers-adapter';
+import { type FactoryOptions } from '@nomicfoundation/hardhat-ethers/src/types';
 
 /**
  * Extend the environment with provider to be able to use vechain functions
@@ -167,56 +81,67 @@ extendEnvironment((hre) => {
     // 3.3 - Set provider for the network
     hre.network.provider = hardhatVechainProvider;
 
-    /**
-     * // TEMPORARY COMMENT //
-     * To improve. Needed for ethers customization
-     */
-    // 4 - Customise ethers functionality
-    // hre.ethers = {
-    //     ...ethers
-    // provider: new CustomJSONRpcProvider(
-    //     0,
-    //     networkName,
-    //     hardhatVechainProvider
-    // )
+    hre.ethers = lazyObject(() => {
+        // 4 - Customise ethers functionality
 
-    // getContractFactory: typeof getContractFactory;
-    // getContractFactoryFromArtifact: (
-    //     artifact: Artifact,
-    //     signerOrOptions?: ethers.Signer | FactoryOptions
-    // ) => Promise<ethers.ContractFactory>;
-    // getContractAt: (
-    //     nameOrAbi: string | any[],
-    //     address: string,
-    //     signer?: ethers.Signer
-    // ) => Promise<ethers.Contract>;
-    // getContractAtFromArtifact: (
-    //     artifact: Artifact,
-    //     address: string,
-    //     signer?: ethers.Signer
-    // ) => Promise<ethers.Contract>;
-    // getSigner: async (address: string): Promise<SignerWithAddress> => {
-    //     console.log('getSigner', address);
-    //     return await getSinger(
-    //         address,
-    //         networkName,
-    //         hardhatVechainProvider
-    //     );
-    // }
-    // getSigners: async (): Promise<SignerWithAddress[]> => {
-    //     const accounts: string[] = (await hardhatVechainProvider.send(
-    //         'eth_getAccounts',
-    //         []
-    //     )) as string[];
-    //     return accounts.map((address: string) => {
-    //         getSinger(
-    //             address,
-    //             networkName,
-    //             hardhatVechainProvider
-    //         );
-    //     });
-    // }
-    // getImpersonatedSigner: (address: string) => Promise<SignerWithAddress>;
-    // deployContract: typeof deployContract;
-    // };
+        const vechainNewHardhatProvider = new HardhatEthersProvider(
+            hardhatVechainProvider,
+            hre.network.name
+        );
+
+        return {
+            ...ethers,
+            deployContract: async (...args: unknown[]) => {
+                const deployContractBound = deployContract.bind(null, hre);
+                // @ts-expect-error args types depend on the function signature
+                return await deployContractBound(...args).then((contract) =>
+                    contractAdapter(contract, hardhatVechainProvider)
+                );
+            },
+
+            getContractFactory: async (...args: unknown[]) => {
+                const contractFactoryBound = getContractFactory.bind(null, hre);
+                // @ts-expect-error args types depend on the function signature
+                return await contractFactoryBound(...args).then((factory) =>
+                    factoryAdapter(factory, hardhatVechainProvider)
+                );
+            },
+
+            getContractFactoryFromArtifact: async <A extends unknown[], I>(
+                artifact: Artifact,
+                signerOrOptions?: ethers.Signer | FactoryOptions
+            ): Promise<ethers.ContractFactory<A, I>> => {
+                // Define the get contract factory from artifact instance with the correct types
+                const getContractFactoryFromArtifactInstance =
+                    getContractFactoryFromArtifact<A, I>;
+
+                // Bind the get contract factory from artifact instance with the hardhat instance
+                const contractFactoryFromArtifactBound =
+                    getContractFactoryFromArtifactInstance.bind(null, hre);
+
+                // Return the factory adapter
+                return await contractFactoryFromArtifactBound(
+                    artifact,
+                    signerOrOptions
+                ).then((factory) =>
+                    factoryAdapter(factory, hardhatVechainProvider)
+                );
+            },
+
+            getImpersonatedSigner: (_address: string) => {
+                throw new Error('Not implemented yet');
+            },
+
+            getContractAtFromArtifact: getContractAtFromArtifact.bind(
+                null,
+                hre
+            ),
+            getContractAt: getContractAt.bind(null, hre),
+
+            // Signer
+            getSigner: async (address: string) => await getSigner(hre, address),
+            getSigners: async () => await getSigners(hre),
+            provider: vechainNewHardhatProvider
+        };
+    });
 });

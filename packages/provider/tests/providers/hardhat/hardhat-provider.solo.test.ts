@@ -31,7 +31,8 @@ describe('Hardhat provider tests', () => {
         provider = new HardhatVechainProvider(
             new BaseWallet([]),
             soloUrl,
-            (message: string, parent?: Error) => new Error(message, parent)
+            (message: string, parent?: Error) => new Error(message, parent),
+            true
         );
     });
 

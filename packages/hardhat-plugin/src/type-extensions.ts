@@ -2,12 +2,12 @@ import { type SignTransactionOptions } from '@vechain/sdk-network';
 import { type HardhatVechainProvider } from '@vechain/sdk-provider';
 
 // Ethers types
-import { type HardhatEthersHelpers } from '@nomiclabs/hardhat-ethers/types';
 import { type vechain_sdk_core_ethers as ethers } from '@vechain/sdk-core';
 
 // To extend one of Hardhat's types, you need to import the module where it has been defined, and redeclare it.
 import 'hardhat/types/config';
 import 'hardhat/types/runtime';
+import { type HardhatEthersHelpers } from '@nomicfoundation/hardhat-ethers/types';
 
 /**
  * Hardhat runtime environment extension

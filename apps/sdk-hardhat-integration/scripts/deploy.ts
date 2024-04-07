@@ -1,28 +1,18 @@
 import { ethers } from 'hardhat';
 
 async function main(): Promise<void> {
-    const vechainHelloWorldWithNonEmptyConstructor =
-        await ethers.deployContract(
-            'VechainHelloWorldWithNonEmptyConstructor',
-            [10],
-            {
-                from: (await ethers.getSigners())[0].address,
-                value: ethers.parseEther('0.1')
-            }
-        );
+    const signer = (await ethers.getSigners())[0];
 
-    const vechainHelloWorld = await ethers.deployContract(
+    const vechainHelloWorldFactory = await ethers.getContractFactory(
         'VechainHelloWorld',
-        [],
-        {
-            from: (await ethers.getSigners())[0].address
-        }
+        signer
     );
 
-    await vechainHelloWorldWithNonEmptyConstructor.waitForDeployment();
+    const txResponse = await vechainHelloWorldFactory.deploy();
 
     console.log(
-        `VechainHelloWorld deployed to ${JSON.stringify(vechainHelloWorld)}`
+        'Contract deployment with the following transaction:',
+        JSON.stringify(txResponse)
     );
 }
 
