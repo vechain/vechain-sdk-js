@@ -1,5 +1,4 @@
 import * as utils from '@noble/curves/abstract/utils';
-import { BN } from 'bn.js';
 import { Hex, SIGNATURE_LENGTH } from '../utils';
 import { assert, SECP256K1 } from '@vechain/sdk-errors';
 import { randomBytes as _randomBytes } from '@noble/hashes/utils';
@@ -8,14 +7,6 @@ import {
     assertIsValidPrivateKey,
     assertIsValidSecp256k1MessageHash
 } from '../assertions';
-
-/**
- * Biggest value of private key
- * @internal
- */
-// const PRIVATE_KEY_MAX_VALUE = utils.hexToBytes(
-//     'fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141'
-// );
 
 /**
  * Compresses a public key.
@@ -128,12 +119,6 @@ function isValidMessageHash(hash: Uint8Array): boolean {
  */
 function isValidPrivateKey(privateKey: Uint8Array): boolean {
     return ec.utils.isValidPrivateKey(privateKey);
-    // return (
-    //     privateKey instanceof Uint8Array &&
-    //     privateKey.length === 32 &&
-    //     !utils.equalBytes(privateKey, ZERO_BUFFER(32)) &&
-    //     Buffer.from(privateKey).compare(Buffer.from(PRIVATE_KEY_MAX_VALUE)) < 0
-    // );
 }
 
 /**
@@ -189,7 +174,7 @@ function recover(messageHash: Uint8Array, sig: Uint8Array): Uint8Array {
         { recovery }
     );
 
-    return ec.Signature.fromCompact(Uint8Array.from(sig).slice(0, 64))
+    return ec.Signature.fromCompact(sig.slice(0, 64))
         .addRecoveryBit(recovery)
         .recoverPublicKey(messageHash)
         .toRawBytes(false);
@@ -219,9 +204,11 @@ function sign(messageHash: Uint8Array, privateKey: Uint8Array): Uint8Array {
     );
     assertIsValidPrivateKey('secp256k1.sign', privateKey, isValidPrivateKey);
     const sig = ec.sign(messageHash, privateKey);
-    const r = Buffer.from(new BN(sig.r.toString()).toArray('be', 32));
-    const s = Buffer.from(new BN(sig.s.toString()).toArray('be', 32));
-    return Buffer.concat([r, s, Buffer.from([sig.recovery])]);
+    return utils.concatBytes(
+        utils.numberToBytesBE(sig.r, 32),
+        utils.numberToBytesBE(sig.s, 32),
+        utils.numberToVarBytesBE(sig.recovery)
+    );
 }
 
 export const secp256k1 = {

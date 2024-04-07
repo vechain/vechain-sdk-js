@@ -72,13 +72,13 @@ describe('secp256k1', () => {
 
     describe('secp256k1 - isValidMessageHash', () => {
         test('secp256k1 - isValidMessageHash - true', () => {
-            validMessageHashes.forEach((messageHash: Buffer) => {
+            validMessageHashes.forEach((messageHash: Uint8Array) => {
                 expect(secp256k1.isValidMessageHash(messageHash)).toBe(true);
             });
         });
 
         test('secp256k1 - isValidMessageHash - false', () => {
-            invalidMessageHashes.forEach((messageHash: Buffer) => {
+            invalidMessageHashes.forEach((messageHash: Uint8Array) => {
                 expect(secp256k1.isValidMessageHash(messageHash)).toBe(false);
             });
         });
@@ -86,13 +86,13 @@ describe('secp256k1', () => {
 
     describe('secp256k1 - isValidPrivateKey', () => {
         test('secp256k1 - isValidPrivateKey - true', () => {
-            validPrivateKeys.forEach((privateKey: Buffer) => {
+            validPrivateKeys.forEach((privateKey: Uint8Array) => {
                 expect(secp256k1.isValidPrivateKey(privateKey)).toBe(true);
             });
         });
 
         test('secp256k1 - isValidPrivateKey - false', () => {
-            validPrivateKeys.forEach((privateKey: Buffer) => {
+            validPrivateKeys.forEach((privateKey: Uint8Array) => {
                 expect(secp256k1.isValidPrivateKey(privateKey)).toBe(true);
             });
         });
@@ -142,7 +142,7 @@ describe('secp256k1', () => {
     describe('secp256k1 - recover', () => {
         test('secp256k1 - recover - success', () => {
             expect(
-                Buffer.from(secp256k1.recover(messageHashBuffer, signature))
+                secp256k1.recover(messageHashBuffer, signature)
             ).toStrictEqual(publicKeyUncompressed);
         });
 
