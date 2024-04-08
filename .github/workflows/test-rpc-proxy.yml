@@ -22,13 +22,13 @@ jobs:
             
             - name: Start PRC Proxy
               run: |
-                  cd packages/rpx-proxy
+                  cd packages/rpc-proxy
                   yarn install
                   yarn start
             
             - name: Run RPC Proxy tests
               run: |
-                yarn test-rpx-proxy
+                yarn test-rpc-proxy
                 exit_code=$?
                 if [ $exit_code -eq 0 ]; then
                   echo "RPC Proxy tests passed successfully."
