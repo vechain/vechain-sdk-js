@@ -26,7 +26,6 @@
     "start": "yarn build && node dist/index.js"
   },
   "dependencies": {
-    "@vechain/sdk-errors": "^1.0.0-beta.2",
     "@vechain/sdk-logging": "1.0.0-beta.2",
     "@vechain/sdk-network": "1.0.0-beta.2",
     "@vechain/sdk-provider": "1.0.0-beta.2",
