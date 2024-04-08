@@ -15,6 +15,9 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: v20.11.0
+                  
+            - name: Install & Patch packages
+              run: yarn install
             
             - name: Start Thor solo node
               id: start-solo
@@ -23,7 +26,6 @@ jobs:
             - name: Start PRC Proxy
               run: |
                   cd packages/rpc-proxy
-                  yarn install
                   yarn start
             
             - name: Run RPC Proxy tests
