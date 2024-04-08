@@ -12,7 +12,8 @@ import {
  * Compresses a public key.
  *
  * Security audit function.
- * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
+ * * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
+ * * [utils](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
  *
  * @param {Uint8Array} publicKey - The uncompressed public key.
  *
@@ -38,6 +39,9 @@ function compressPublicKey(publicKey: Uint8Array): Uint8Array {
 
 /**
  * Derives a public key from a given private key.
+ *
+ * Security audit function.
+ * * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
  *
  * @param {Uint8Array} privateKey - The private key used to derive the public key.
  * @param {boolean} [isCompressed=true] - Boolean indicating whether the derived public key should be compressed or not.
@@ -101,6 +105,10 @@ function generatePrivateKey(): Uint8Array {
 /**
  * Check if the given hash is a valid message hash.
  *
+ * Security audit function.
+ * * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
+ * * [utils](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
+ *
  * @param {Uint8Array} hash - The hash of the message to validate.
  * @return {boolean} - Returns `true` if the hash is a valid message hash,
  * otherwise returns `false`.
@@ -111,6 +119,9 @@ function isValidMessageHash(hash: Uint8Array): boolean {
 
 /**
  * Checks if the given private key is valid.
+ *
+ * Security audit function.
+ * * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
  *
  * @param {Uint8Array} privateKey - The private key to be checked.
  * @return {boolean} - Returns `true` if the private key is 32 bytes long
@@ -127,6 +138,9 @@ function isValidPrivateKey(privateKey: Uint8Array): boolean {
  * The function relays on [noble-hashes](https://github.com/paulmillr/noble-hashes/blob/main/src/utils.ts)
  * functionality to delegate the OS to generate the random sequence according the host hardware.
  *
+ * Security audit function.
+ * * [_randomBytes](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
+ *
  * @param {number} bytesLength - The length of the random bytes to generate.
  * @return {Uint8Array} - The generated random bytes as a Uint8Array object.
  * @throws Error with `crypto.getRandomValues must be defined`
@@ -139,6 +153,9 @@ function randomBytes(bytesLength?: number | undefined): Uint8Array {
 
 /**
  * Recovers public key from a given message hash and signature.
+ *
+ * Security audit function.
+ * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
  *
  * @param {Uint8Array} messageHash - The message hash to recover the public key from.
  * @param {Uint8Array} sig - The signature of the message.
@@ -184,7 +201,8 @@ function recover(messageHash: Uint8Array, sig: Uint8Array): Uint8Array {
  * Signs a message hash using a private key.
  *
  * Security audit function.
- * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
+ * * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
+ * * [utils](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
  *
  * @param {Uint8Array} messageHash - The message hash to be signed.
  * @param {Uint8Array} privateKey - The private key to use for signing.
