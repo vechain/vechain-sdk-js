@@ -16,7 +16,10 @@ const privateKey = secp256k1.generatePrivateKey();
 // 2 - Encrypt/decrypt private key using Ethereum's keystore scheme
 
 const keyStorePassword = 'your password';
-const newKeyStore = await keystore.encrypt(privateKey, keyStorePassword);
+const newKeyStore = await keystore.encrypt(
+    Buffer.from(privateKey),
+    keyStorePassword
+);
 
 // 3 - Throw for wrong password
 
