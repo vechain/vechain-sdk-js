@@ -28,8 +28,9 @@ jobs:
             
             - name: Start PRC Proxy
               run: |
-                  cd packages/rpc-proxy
-                  yarn start
+                cd packages/rpc-proxy
+                yarn start &
+                disown
             
             - name: Run RPC Proxy tests
               run: |
