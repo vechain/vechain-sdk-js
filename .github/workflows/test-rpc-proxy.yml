@@ -1,0 +1,48 @@
+name: Test RPC Proxy
+
+on:
+    workflow_call:
+
+jobs:
+    build:
+        name: Test RPC Proxy
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: v20.11.0
+                  
+            - name: Install & Patch packages
+              run: yarn install
+            
+            - name: Build
+              run: yarn build
+            
+            - name: Start Thor solo node
+              id: start-solo
+              run: yarn start-thor-solo
+            
+            - name: Start PRC Proxy
+              run: |
+                cd packages/rpc-proxy
+                yarn start &
+                disown
+            
+            - name: Run RPC Proxy tests
+              run: |
+                yarn test-rpc-proxy
+                exit_code=$?
+                if [ $exit_code -eq 0 ]; then
+                  echo "RPC Proxy tests passed successfully."
+                else
+                  echo "RPC Proxy tests failed."
+                  exit 1
+                fi
+            
+            - name: Stop Thor solo node
+              id: stop-solo
+              run: yarn stop-thor-solo
