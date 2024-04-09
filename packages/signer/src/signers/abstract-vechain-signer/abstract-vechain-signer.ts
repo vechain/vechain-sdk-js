@@ -1,40 +1,26 @@
+import {
+    type AvailableVechainProviders,
+    type TransactionRequest,
+    type TransactionResponse,
+    type VechainSigner
+} from '../types';
 import { type SignTransactionOptions } from '@vechain/sdk-network';
-import { type vechain_sdk_core_ethers } from '@vechain/sdk-core';
-import type {
-    HardhatVechainProvider,
-    JSONRPCEthersProvider,
-    VechainProvider
-} from '@vechain/sdk-provider';
+import {
+    Hex0x,
+    secp256k1,
+    type vechain_sdk_core_ethers
+} from '@vechain/sdk-core';
 
 /**
- * Transaction request object
+ * Abstract class for Vechain Signer
+ * An **AbstractVechainSigner** includes most of the functionality required
+ * to get a [[VechainSigner]] working as expected, but requires a few
+ * Signer-specific methods be overridden.
  */
-type TransactionRequest = vechain_sdk_core_ethers.TransactionRequest;
-
-/**
- * Transaction response object
- */
-type TransactionResponse = vechain_sdk_core_ethers.TransactionResponse;
-
-/**
- * Available types for the VechainProvider's
- *
- * @NOTE: We use our supported providers instead of ethers providers.
- * If you create a new provider, you need to add it here.
- */
-type AvailableVechainProviders =
-    | VechainProvider
-    | HardhatVechainProvider
-    | JSONRPCEthersProvider;
-
-/**
- * A signer for vechain, adding specific methods for vechain to the ethers signer
- *
- * @NOTE: Su support completely our providers (that already support ethers provider format)
- * We use our supported providers instead of ethers providers
- */
-interface VechainSigner<TProviderType extends AvailableVechainProviders>
-    extends vechain_sdk_core_ethers.Signer {
+abstract class AbstractVechainSigner<
+    TProviderType extends AvailableVechainProviders
+> implements VechainSigner<TProviderType>
+{
     /**
      * ********* START: Delegator needed methods *********
      */
@@ -42,14 +28,14 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
     /**
      * The delegator attached to this Signer (if any)
      */
-    delegator: null | SignTransactionOptions;
+    delegator: SignTransactionOptions | null;
 
     /**
      * Sign a transaction with the delegator
      * @param transactionToSign - the transaction to sign
      * @returns the fully signed transaction
      */
-    signWithDelegator: (
+    abstract signWithDelegator: (
         transactionToSign: TransactionRequest
     ) => Promise<string>;
 
@@ -58,7 +44,7 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      * @param transactionToSend - the transaction to send
      * @returns the transaction response
      */
-    sendWithDelegator: (
+    abstract sendWithDelegator: (
         transactionToSend: TransactionRequest
     ) => Promise<TransactionResponse>;
 
@@ -71,20 +57,40 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      */
 
     /**
-     * The provider attached to this Signer (if any).
+     * The Provider this Signer is connected to (or null)
      */
     provider: TProviderType | null;
+
+    /**
+     * Create a new instance of the AbstractVechainSigner
+     *
+     * @param provider - The Provider this Signer is connected to (or null)
+     * @param delegator - The delegator attached to this Signer (if any)
+     */
+    constructor(
+        provider: TProviderType | null,
+        delegator: SignTransactionOptions | null
+    ) {
+        this.provider = provider;
+        this.delegator = delegator;
+    }
 
     /**
      *  Returns a new instance of this Signer connected to //provider// or detached
      *  from any Provider if null.
      */
-    connect: (provider: TProviderType | null) => VechainSigner;
+    connect(provider: TProviderType | null): this {
+        this.provider = provider;
+        return this;
+    }
+
+    /// /////////////////
+    // State
 
     /**
      *  Get the address of the Signer.
      */
-    getAddress: () => Promise<string>;
+    abstract getAddress(): Promise<string>;
 
     /**
      *  Gets the next nonce required for this Signer to send a transaction.
@@ -94,21 +100,29 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      *
      *  @NOTE: This method generates a random number as nonce. It is because the nonce in vechain is a 6-byte number.
      */
-    getNonce: (
+    async getNonce(
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         blockTag?: vechain_sdk_core_ethers.BlockTag
-    ) => Promise<number>;
+    ): Promise<number> {
+        // Return a random number
+        return await Promise.resolve(
+            Number(Hex0x.of(secp256k1.randomBytes(6)))
+        );
+    }
+
+    /// /////////////////
+    // Preparation
 
     /**
      *  Prepares a {@link TransactionRequest} for calling:
      *  - resolves ``to`` and ``from`` addresses
-     *  - if ``from`` is specified, check that it matches this Signer
+     *  - if ``from`` is specified , check that it matches this Signer
      *
      *  @param tx - The call to prepare
      */
-    populateCall: (
+    abstract populateCall(
         tx: TransactionRequest
-    ) => Promise<vechain_sdk_core_ethers.TransactionLike<string>>;
+    ): Promise<vechain_sdk_core_ethers.TransactionLike<string>>;
 
     /**
      *  Prepares a {@link TransactionRequest} for sending to the network by
@@ -127,9 +141,12 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      *
      *  @param tx - The call to prepare
      */
-    populateTransaction: (
+    abstract populateTransaction(
         tx: TransactionRequest
-    ) => Promise<vechain_sdk_core_ethers.TransactionLike<string>>;
+    ): Promise<vechain_sdk_core_ethers.TransactionLike<string>>;
+
+    /// /////////////////
+    // Execution
 
     /**
      *  Estimates the required gas required to execute //tx// on the Blockchain. This
@@ -146,7 +163,7 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      *          node to take into account. In these cases, a manually determined ``gasLimit``
      *          will need to be made.
      */
-    estimateGas: (tx: TransactionRequest) => Promise<bigint>;
+    abstract estimateGas(tx: TransactionRequest): Promise<bigint>;
 
     /**
      *  Evaluates the //tx// by running it against the current Blockchain state. This
@@ -157,12 +174,12 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      *  (e.g. running a Contract's getters) or to simulate the effect of a transaction
      *  before actually performing an operation.
      */
-    call: (tx: TransactionRequest) => Promise<string>;
+    abstract call(tx: TransactionRequest): Promise<string>;
 
     /**
      *  Resolves an ENS Name to an address.
      */
-    resolveName: (name: string) => Promise<null | string>;
+    abstract resolveName(name: string): Promise<null | string>;
 
     /// /////////////////
     // Signing
@@ -171,14 +188,16 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      *  Signs %%tx%%, returning the fully signed transaction. This does not
      *  populate any additional properties within the transaction.
      */
-    signTransaction: (tx: TransactionRequest) => Promise<string>;
+    abstract signTransaction(tx: TransactionRequest): Promise<string>;
 
     /**
      *  Sends %%tx%% to the Network. The ``signer.populateTransaction(tx)``
      *  is called first to ensure all necessary properties for the
      *  transaction to be valid have been popualted first.
      */
-    sendTransaction: (tx: TransactionRequest) => Promise<TransactionResponse>;
+    abstract sendTransaction(
+        tx: TransactionRequest
+    ): Promise<TransactionResponse>;
 
     /**
      *  Signs an [[link-eip-191]] prefixed personal message.
@@ -190,25 +209,20 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      *  To sign that example as two bytes, the Uint8Array should be used
      *  (i.e. ``new Uint8Array([ 0x12, 0x34 ])``).
      */
-    signMessage: (message: string | Uint8Array) => Promise<string>;
+    abstract signMessage(message: string | Uint8Array): Promise<string>;
 
     /**
      *  Signs the [[link-eip-712]] typed data.
      */
-    signTypedData: (
+    abstract signTypedData(
         domain: vechain_sdk_core_ethers.TypedDataDomain,
         types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
         value: Record<string, unknown>
-    ) => Promise<string>;
+    ): Promise<string>;
 
     /**
      * ********* END: Standard ethers signer methods adapted for vechain *********
      */
 }
 
-export {
-    type VechainSigner,
-    type TransactionRequest,
-    type TransactionResponse,
-    type AvailableVechainProviders
-};
+export { AbstractVechainSigner };
