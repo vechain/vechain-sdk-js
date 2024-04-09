@@ -46,16 +46,17 @@ Secp256k1 is mainly used for generating public and private key pairs in cryptogr
 * **Security Considerations**: The security of Secp256k1 relies on the difficulty of the elliptic curve discrete logarithm problem. Breaking this problem requires an impractical amount of computational power, making Secp256k1 a secure choice for cryptographic applications, including blockchain networks.
 
 ```typescript { name=secp256k1, category=example }
-// 1 - Generate a private key
+// 1 - Generate a private key.
 
 const privateKey = secp256k1.generatePrivateKey();
-console.log('Private key:', privateKey.toString('hex'));
+console.log('Private key:', Hex.of(privateKey));
 // Private key: ...SOME_PRIVATE_KEY...
 
-// 2 - Derive public key and address from private key
+// 2 - Derive the public key and address from private key.
+//     By default, the key is returned in compressed form.
 
 const publicKey = secp256k1.derivePublicKey(privateKey);
-const userAddress = addressUtils.fromPublicKey(publicKey);
+const userAddress = addressUtils.fromPublicKey(Buffer.from(publicKey));
 console.log('User address:', userAddress);
 // User address: 0x...SOME_ADDRESS...
 
@@ -66,6 +67,6 @@ const hash = keccak256(messageToSign);
 console.log(`Hash: ${hash.toString()}`);
 
 const signature = secp256k1.sign(hash, privateKey);
-console.log('Signature:', signature.toString('hex'));
+console.log('Signature:', Hex.of(signature));
 // Signature: ...SOME_SIGNATURE...
 ```
