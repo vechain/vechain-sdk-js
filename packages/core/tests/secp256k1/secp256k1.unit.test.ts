@@ -1,5 +1,5 @@
 import { describe, test, expect } from '@jest/globals';
-import { Hex, secp256k1, ZERO_BYTES } from '../../src';
+import { secp256k1, ZERO_BYTES } from '../../src';
 import {
     invalidMessageHashes,
     messageHashBuffer,
@@ -22,34 +22,30 @@ import {
  * @group unit/secp256k1
  */
 describe('secp256k1', () => {
-    test('inflate', () => {
-        console.log(Hex.of(secp256k1.inflatePublicKey(publicKeyCompressed)));
-    });
-
     describe('secp256k1 - compressPublicKey', () => {
         test('secp256k1 - compressPublicKey - from compressed', () => {
             expect(
-                Hex.of(secp256k1.compressPublicKey(publicKeyCompressed))
-            ).toBe(Hex.of(publicKeyCompressed));
+                secp256k1.compressPublicKey(publicKeyCompressed)
+            ).toStrictEqual(publicKeyCompressed);
         });
 
         test('secp256k1 - compressPublicKey - from uncompressed', () => {
             expect(
-                Hex.of(secp256k1.compressPublicKey(publicKeyUncompressed))
-            ).toBe(Hex.of(publicKeyCompressed));
+                secp256k1.compressPublicKey(publicKeyUncompressed)
+            ).toStrictEqual(publicKeyCompressed);
         });
     });
 
     describe('secp256k1 - derivePublicKey', () => {
         test('secp256k1 - derivePublicKey - compressed', () => {
-            expect(Hex.of(secp256k1.derivePublicKey(privateKey))).toBe(
-                Hex.of(secp256k1.compressPublicKey(publicKeyUncompressed))
+            expect(secp256k1.derivePublicKey(privateKey)).toStrictEqual(
+                secp256k1.compressPublicKey(publicKeyUncompressed)
             );
         });
 
         test('secp256k1 - derivePublicKey - uncompressed', () => {
-            expect(Hex.of(secp256k1.derivePublicKey(privateKey, false))).toBe(
-                Hex.of(publicKeyUncompressed)
+            expect(secp256k1.derivePublicKey(privateKey, false)).toStrictEqual(
+                publicKeyUncompressed
             );
         });
 
@@ -67,6 +63,20 @@ describe('secp256k1', () => {
             expect(randomPrivateKey.length).toBe(32);
             // Private key should be valid
             expect(secp256k1.isValidPrivateKey(randomPrivateKey)).toBe(true);
+        });
+    });
+
+    describe('secp256k1 - inflatePublicKey', () => {
+        test('secp256k1 - inflatePublicKey - compressed', () => {
+            expect(
+                secp256k1.inflatePublicKey(publicKeyCompressed)
+            ).toStrictEqual(publicKeyUncompressed);
+        });
+
+        test('secp256k1 - inflatePublicKey - uncompressed', () => {
+            expect(
+                secp256k1.inflatePublicKey(publicKeyUncompressed)
+            ).toStrictEqual(publicKeyUncompressed);
         });
     });
 
