@@ -104,7 +104,7 @@ const _signerPrivateKey = Buffer.from(
 const signer = {
     privateKey: _signerPrivateKey,
     address: addressUtils.fromPublicKey(
-        secp256k1.derivePublicKey(_signerPrivateKey)
+        Buffer.from(secp256k1.derivePublicKey(_signerPrivateKey))
     )
 };
 
@@ -118,7 +118,7 @@ const _delegatorPrivateKey = Buffer.from(
 const delegator = {
     privateKey: _delegatorPrivateKey,
     address: addressUtils.fromPublicKey(
-        secp256k1.derivePublicKey(_delegatorPrivateKey)
+        Buffer.from(secp256k1.derivePublicKey(_delegatorPrivateKey))
     )
 };
 

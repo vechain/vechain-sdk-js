@@ -26,7 +26,9 @@ const cert = {
     },
     domain: 'localhost',
     timestamp: 1545035330,
-    signer: addressUtils.fromPublicKey(secp256k1.derivePublicKey(privKey))
+    signer: addressUtils.fromPublicKey(
+        Buffer.from(secp256k1.derivePublicKey(privKey))
+    )
 };
 
 /**
