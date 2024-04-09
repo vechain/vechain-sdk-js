@@ -1,9 +1,42 @@
-import { describe, expect, test } from '@jest/globals';
-import { generateMnemonic } from '../src';
+import {
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    jest,
+    test
+} from '@jest/globals';
+import { type SpiedFunction } from 'jest-mock';
+import { VeChainTransactionLogger } from '../src/vechain-transaction-logger';
 
-describe('index - Test', () => {
-    test('Should create a mnemonic', () => {
-        const mnemonic = generateMnemonic();
-        expect(mnemonic).toHaveLength(12);
+describe('VechainTransactionLogger - Tests', () => {
+    let logSpy: SpiedFunction<{
+        (...data: never[]): void;
+        (message?: never, ...optionalParams: never[]): void;
+    }>;
+
+    beforeEach(() => {
+        logSpy = jest.spyOn(console, 'log');
+        logSpy.mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        logSpy.mockRestore();
+    });
+    
+    test('Should be able to start and stop a logger instance', (done) => {
+        // Create a new logger instance
+        const logger = new VeChainTransactionLogger('https://testnet.vechain.org/');
+        // Start logging transactions for the specified address
+        logger.startLogging('0xc3bE339D3D20abc1B731B320959A96A08D479583');
+
+        // Check if the logger has started and stop it
+        setTimeout(() => {
+            expect(logSpy).toHaveBeenCalledWith(
+                'Start monitoring account 0xc3bE339D3D20abc1B731B320959A96A08D479583'
+            );
+            done();
+            logger.stopLogging();
+        }, 1000);
     });
 });
