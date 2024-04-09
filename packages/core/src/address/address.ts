@@ -31,7 +31,9 @@ function fromPublicKey(publicKey: Buffer): string {
  *
  */
 function fromPrivateKey(privateKey: Buffer): string {
-    return addressUtils.fromPublicKey(secp256k1.derivePublicKey(privateKey));
+    return addressUtils.fromPublicKey(
+        Buffer.from(secp256k1.derivePublicKey(privateKey))
+    );
 }
 
 /**
