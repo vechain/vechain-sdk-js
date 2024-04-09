@@ -10,7 +10,7 @@ const endpointsTestCases = [
     {
         method: 'eth_chainId',
         params: [],
-        expected: '0x186aa'
+        expected: '0x186aaaa'
     },
     {
         method: 'web3_clientVersion',
