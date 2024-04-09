@@ -37,6 +37,10 @@ jobs:
     test-apps:
         uses: ./.github/workflows/test-apps.yml
         secrets: inherit
+    
+    test-rpc-proxy:
+        uses: ./.github/workflows/test-rpc-proxy.yml
+        secrets: inherit
 
     install-build:
         uses: ./.github/workflows/build-lint.yml
