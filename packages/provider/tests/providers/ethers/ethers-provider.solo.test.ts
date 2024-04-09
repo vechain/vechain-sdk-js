@@ -102,6 +102,4 @@ describe('Vechain provider tests - solo', () => {
             async () => await jsonRPCEthersProvider.send('INVALID_METHOD', [-1])
         ).rejects.toThrowError();
     });
-
-    // TODO Test subscription with eth_newFilter which is not implemented yet
 });
