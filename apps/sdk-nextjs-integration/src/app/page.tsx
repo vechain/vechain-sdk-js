@@ -1,10 +1,8 @@
 'use client';
 
-import { mnemonic } from '@vechain/sdk-core';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
     type CompressedBlockDetail,
-    HttpClient,
     ThorClient,
     FilterTransferLogsOptions
 } from '@vechain/sdk-network';
@@ -41,42 +39,86 @@ const ABI = {
 };
 const CONTRACT_ADDRESS = "0x0000000000000000000000000000456E65726779";
 
+interface Metadata {
+    /**
+     * Block identifier associated with the entity
+     */
+    blockID: string;
+    /**
+     * Block number associated with the entity
+     */
+    blockNumber: number;
+    /**
+     * Timestamp of the block
+     */
+    blockTimestamp: number;
+    /**
+     * Transaction ID associated with the entity
+     */
+    txID: string;
+    /**
+     * Transaction origin information
+     */
+    txOrigin: string;
+    /**
+     * Index of the clause
+     */
+    clauseIndex: number;
+}
+
+interface Transfer {
+    from: string;
+    to: string;
+    amount: string;
+    meta: Metadata;
+};
+
 export default function Home(): JSX.Element {
-    const [transfers, setTransfers] = useState([]);
+    const [transfers, setTransfers] = useState<Transfer[]>([]);
     const [address, setAddress] = useState(
-        "0x0000000000000000000000000000456E65726779"
+        "0xc3bE339D3D20abc1B731B320959A96A08D479583"
     );
 
     async function getHistoryFor(address: string) {
-        // Get the latest block
-        const bestBlock = await thorClient.blocks.getBestBlockCompressed();
+        try{
+            // Get the latest block
+            const bestBlock = await thorClient.blocks.getBestBlockCompressed();
 
-        const filterOptions: FilterTransferLogsOptions = {
-            criteriaSet: [
-                { sender: address }, // Transactions sent by the address
-                { recipient: address } // Transactions received by the address
-            ],
-            order: 'desc', // Order logs by descending timestamp
-            range: 
-                { 
-                    unit: 'block',
-                    from: 0,
-                    to: (bestBlock as CompressedBlockDetail).number
-                }, 
-        };
+            const filterOptions: FilterTransferLogsOptions = {
+                criteriaSet: [
+                    { sender: address }, // Transactions sent by the address
+                    { recipient: address } // Transactions received by the address
+                ],
+                order: 'desc', // Order logs by descending timestamp
+                range: 
+                    { 
+                        unit: 'block',
+                        from: 0,
+                        to: (bestBlock as CompressedBlockDetail).number
+                    }, 
+            };
 
-        const res = await thorClient.logs.filterTransferLogs(filterOptions);
-
-        console.log(res);
+            const logs = await thorClient.logs.filterTransferLogs(filterOptions);
+            const transfers = logs.map((log) => {
+                return {
+                    from: log.sender,
+                    to: log.recipient,
+                    amount: log.amount,
+                    meta: log.meta
+                };
+            });
+            setTransfers(transfers);
+            console.log(logs);
+        } catch (error) {
+            setTransfers([]);
+            console.log(error);
+        }
     }
 
-    // Block
-    const [block, setBlock] = useState<CompressedBlockDetail | null>(null);
-
-    const getLatestBlock = async (): Promise<void> => {
-        const latestBlock = await thorClient.blocks.getBestBlockCompressed();
-        setBlock(latestBlock);
-    };
+    // Update the history when the address changes
+    useEffect(() => {
+        getHistoryFor(address);
+    }, [address]);
 
     return (
         <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
@@ -86,8 +128,28 @@ export default function Home(): JSX.Element {
             <div className="mx-auto max-w-2xl text-center">
                 <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">sdk-nextsjs-integration</h2>
                 <p className="mt-2 text-lg leading-8 text-gray-600">Sample NextJs app</p>
+                <input type="text" name="address" id="address" onChange={(e)=>setAddress(e.target.value)} value={address} className="block mx-auto w-full sm:max-w-md border-2 border-transparent focus:border-purple-500 bg-transparent py-2 px-4 text-lg text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 outline-none rounded-md" placeholder="0xc3bE339D3D20abc1B731B320959A96A08D479583" />
             </div>
-            <p>ciaoo</p>
+            <table className="table-auto mx-auto">
+                <thead>
+                    <tr>
+                    <th>Time</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th>Amount</th>
+                    <th>Transaction Id</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Time</td>
+                        <td>From</td>
+                        <td>To</td>
+                        <td>Amount</td>
+                        <td>Transaction Id</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     );
 }
