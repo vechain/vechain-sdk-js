@@ -7,16 +7,6 @@ import type {
 } from '@vechain/sdk-provider';
 
 /**
- * Transaction request object
- */
-type TransactionRequest = vechain_sdk_core_ethers.TransactionRequest;
-
-/**
- * Transaction response object
- */
-type TransactionResponse = vechain_sdk_core_ethers.TransactionResponse;
-
-/**
  * Available types for the VechainProvider's
  *
  * @NOTE: We use our supported providers instead of ethers providers.
@@ -50,7 +40,7 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      * @returns the fully signed transaction
      */
     signWithDelegator: (
-        transactionToSign: TransactionRequest
+        transactionToSign: vechain_sdk_core_ethers.TransactionRequest
     ) => Promise<string>;
 
     /**
@@ -59,8 +49,8 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      * @returns the transaction response
      */
     sendWithDelegator: (
-        transactionToSend: TransactionRequest
-    ) => Promise<TransactionResponse>;
+        transactionToSend: vechain_sdk_core_ethers.TransactionRequest
+    ) => Promise<vechain_sdk_core_ethers.TransactionResponse>;
 
     /**
      * ********* END: Delegator needed methods *********
@@ -94,24 +84,21 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      *
      *  @NOTE: This method generates a random number as nonce. It is because the nonce in vechain is a 6-byte number.
      */
-    getNonce: (
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        blockTag?: vechain_sdk_core_ethers.BlockTag
-    ) => Promise<number>;
+    getNonce: (blockTag?: vechain_sdk_core_ethers.BlockTag) => Promise<number>;
 
     /**
-     *  Prepares a {@link TransactionRequest} for calling:
+     *  Prepares a {@link vechain_sdk_core_ethers.TransactionRequest} for calling:
      *  - resolves ``to`` and ``from`` addresses
      *  - if ``from`` is specified, check that it matches this Signer
      *
      *  @param tx - The call to prepare
      */
     populateCall: (
-        tx: TransactionRequest
+        tx: vechain_sdk_core_ethers.TransactionRequest
     ) => Promise<vechain_sdk_core_ethers.TransactionLike<string>>;
 
     /**
-     *  Prepares a {@link TransactionRequest} for sending to the network by
+     *  Prepares a {@link vechain_sdk_core_ethers.TransactionRequest} for sending to the network by
      *  populating any missing properties:
      *  - resolves ``to`` and ``from`` addresses
      *  - if ``from`` is specified , check that it matches this Signer
@@ -128,7 +115,7 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      *  @param tx - The call to prepare
      */
     populateTransaction: (
-        tx: TransactionRequest
+        tx: vechain_sdk_core_ethers.TransactionRequest
     ) => Promise<vechain_sdk_core_ethers.TransactionLike<string>>;
 
     /**
@@ -146,7 +133,9 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      *          node to take into account. In these cases, a manually determined ``gasLimit``
      *          will need to be made.
      */
-    estimateGas: (tx: TransactionRequest) => Promise<bigint>;
+    estimateGas: (
+        tx: vechain_sdk_core_ethers.TransactionRequest
+    ) => Promise<bigint>;
 
     /**
      *  Evaluates the //tx// by running it against the current Blockchain state. This
@@ -157,7 +146,7 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      *  (e.g. running a Contract's getters) or to simulate the effect of a transaction
      *  before actually performing an operation.
      */
-    call: (tx: TransactionRequest) => Promise<string>;
+    call: (tx: vechain_sdk_core_ethers.TransactionRequest) => Promise<string>;
 
     /**
      *  Resolves an ENS Name to an address.
@@ -171,14 +160,18 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      *  Signs %%tx%%, returning the fully signed transaction. This does not
      *  populate any additional properties within the transaction.
      */
-    signTransaction: (tx: TransactionRequest) => Promise<string>;
+    signTransaction: (
+        tx: vechain_sdk_core_ethers.TransactionRequest
+    ) => Promise<string>;
 
     /**
      *  Sends %%tx%% to the Network. The ``signer.populateTransaction(tx)``
      *  is called first to ensure all necessary properties for the
      *  transaction to be valid have been popualted first.
      */
-    sendTransaction: (tx: TransactionRequest) => Promise<TransactionResponse>;
+    sendTransaction: (
+        tx: vechain_sdk_core_ethers.TransactionRequest
+    ) => Promise<vechain_sdk_core_ethers.TransactionResponse>;
 
     /**
      *  Signs an [[link-eip-191]] prefixed personal message.
@@ -206,9 +199,4 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      */
 }
 
-export {
-    type VechainSigner,
-    type TransactionRequest,
-    type TransactionResponse,
-    type AvailableVechainProviders
-};
+export { type VechainSigner, type AvailableVechainProviders };
