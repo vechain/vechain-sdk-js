@@ -64,6 +64,18 @@ function derivePublicKey(
 }
 
 /**
+ * Generates a new private key.
+ *
+ * Security audit function.
+ * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
+ *
+ * @returns {Uint8Array} The newly generated private key as a buffer.
+ */
+function generatePrivateKey(): Uint8Array {
+    return ec.utils.randomPrivateKey();
+}
+
+/**
  * Inflates a compressed or uncompressed public key.
  *
  * Security audit function.
@@ -88,18 +100,6 @@ function inflatePublicKey(publicKey: Uint8Array): Uint8Array {
         // Inflated.
         return publicKey;
     }
-}
-
-/**
- * Generates a new private key.
- *
- * Security audit function.
- * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
- *
- * @returns {Uint8Array} The newly generated private key as a buffer.
- */
-function generatePrivateKey(): Uint8Array {
-    return ec.utils.randomPrivateKey();
 }
 
 /**
