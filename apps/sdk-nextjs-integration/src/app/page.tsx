@@ -5,30 +5,70 @@ import { useState } from 'react';
 import {
     type CompressedBlockDetail,
     HttpClient,
-    ThorClient
+    ThorClient,
+    FilterTransferLogsOptions
 } from '@vechain/sdk-network';
 
-/**
- * Url of the testnet fixture
- */
-const testnetUrl = 'https://testnet.vechain.org';
 
-/**
- * Test Network instance fixture
- */
-const testNetwork = new HttpClient(testnetUrl);
+// Url of the vechain testnet
+const testnetUrl = 'https://mainnet.vechain.org';
 
-/**
- * Main thor client
- */
-const thorClient = new ThorClient(testNetwork);
+// Thor client
+const thorClient = ThorClient.fromUrl(testnetUrl);
+
+// ABI and contract address
+const ABI = {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        name: "_from",
+        type: "address"
+      },
+      {
+        indexed: true,
+        name: "_to",
+        type: "address"
+      },
+      {
+        indexed: false,
+        name: "_value",
+        type: "uint256"
+      }
+    ],
+    name: "Transfer",
+    type: "event"
+};
+const CONTRACT_ADDRESS = "0x0000000000000000000000000000456E65726779";
 
 export default function Home(): JSX.Element {
-    // Random wallet
-    const [mnemonicWallet, setMnemonicWallet] = useState<string[]>([]);
-    const generateWallet = (): void => {
-        setMnemonicWallet(mnemonic.generate());
-    };
+    const [transfers, setTransfers] = useState([]);
+    const [address, setAddress] = useState(
+        "0x0000000000000000000000000000456E65726779"
+    );
+
+    async function getHistoryFor(address: string) {
+        // Get the latest block
+        const bestBlock = await thorClient.blocks.getBestBlockCompressed();
+
+        const filterOptions: FilterTransferLogsOptions = {
+            criteriaSet: [
+                { sender: address }, // Transactions sent by the address
+                { recipient: address } // Transactions received by the address
+            ],
+            order: 'desc', // Order logs by descending timestamp
+            range: 
+                { 
+                    unit: 'block',
+                    from: 0,
+                    to: (bestBlock as CompressedBlockDetail).number
+                }, 
+        };
+
+        const res = await thorClient.logs.filterTransferLogs(filterOptions);
+
+        console.log(res);
+    }
 
     // Block
     const [block, setBlock] = useState<CompressedBlockDetail | null>(null);
@@ -39,64 +79,15 @@ export default function Home(): JSX.Element {
     };
 
     return (
-        <main className="flex min-h-screen flex-col items-center justify-between p-24">
-            {/* Welcome Header */}
-            <div>
-                <header className="flex flex-col items-center justify-center">
-                    <h1 className="text-5xl font-bold">
-                        Welcome to the vechain SDK
-                    </h1>
-                </header>
+        <div className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
+            <div className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]" aria-hidden="true">
+                <div className="relative left-1/2 -z-10 aspect-[1155/678] w-[36.125rem] max-w-none -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-30 sm:left-[calc(50%-40rem)] sm:w-[72.1875rem]" style={{clipPath: 'polygon(74.1% 44.1%, 100% 61.6%, 97.5% 26.9%, 85.5% 0.1%, 80.7% 2%, 72.5% 32.5%, 60.2% 62.4%, 52.4% 68.1%, 47.5% 58.3%, 45.2% 34.5%, 27.5% 76.7%, 0.1% 64.9%, 17.9% 100%, 27.6% 76.8%, 76.1% 97.7%, 74.1% 44.1%)'}}></div>
             </div>
-
-            {/* Wallet words */}
-            <div>
-                <p className="text-2xl font-bold">
-                    {mnemonicWallet.length > 0
-                        ? mnemonicWallet.join(' ')
-                        : 'Click on "Generate Wallet" button'}
-                </p>
+            <div className="mx-auto max-w-2xl text-center">
+                <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">sdk-nextsjs-integration</h2>
+                <p className="mt-2 text-lg leading-8 text-gray-600">Sample NextJs app</p>
             </div>
-
-            {/* Block */}
-            <div>
-                <p className="text-2xl font-bold">
-                    {block !== null
-                        ? block.id
-                        : 'Click on "Get latest block" button'}
-                </p>
-            </div>
-
-            {/* Generate Wallet button */}
-            <div className={'flex flex-row justify-end'}>
-                <div>
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-4"
-                        onClick={() => {
-                            generateWallet();
-                        }}
-                    >
-                        Generate Wallet
-                    </button>
-                    <br />
-                    (sdk-core)
-                </div>
-
-                {/* Get latest block */}
-                <div>
-                    <button
-                        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mx-4"
-                        // eslint-disable-next-line @typescript-eslint/no-misused-promises
-                        onClick={async (): Promise<void> => {
-                            await getLatestBlock();
-                        }}
-                    >
-                        Get latest block
-                    </button>
-                    <br />
-                    (sdk-network)
-                </div>
-            </div>
-        </main>
+            <p>ciaoo</p>
+        </div>
     );
 }
