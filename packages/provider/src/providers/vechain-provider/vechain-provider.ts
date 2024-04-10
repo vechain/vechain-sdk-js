@@ -5,6 +5,7 @@ import {
 } from '../../eip1193';
 import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
 import {
+    assertTransactionCanBeSigned,
     type CompressedBlockDetail,
     DelegationHandler,
     type EventPoll,
@@ -25,12 +26,16 @@ import {
     type SubscriptionManager
 } from './types';
 import {
+    addressUtils,
     clauseBuilder,
-    Hex0x,
     Hex,
+    Hex0x,
     Quantity,
     secp256k1,
-    type TransactionClause
+    Transaction,
+    type TransactionBody,
+    type TransactionClause,
+    TransactionHandler
 } from '@vechain/sdk-core';
 import type { TransactionObjectInput } from '../../utils/rpc-mapper/methods-map/methods/eth_sendTransaction/types';
 
@@ -328,16 +333,77 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
                 URL: ${this.thorClient.httpClient.baseURL}`
             );
         }
+        const finalTransactionBody: TransactionBody = {
+            nonce: newNonce,
+            ...transactionBodyWithoutNonce
+        };
+
+        // Check if the transaction can be signed
+        assertTransactionCanBeSigned(
+            'signTransaction',
+            signerIntoWallet?.privateKey,
+            finalTransactionBody
+        );
 
         // Sign the transaction
-        const signedTransaction =
-            await this.thorClient.transactions.signTransaction(
-                { nonce: newNonce, ...transactionBodyWithoutNonce },
-                Hex.of(signerIntoWallet.privateKey),
-                DelegationHandler(delegatorIntoWallet).delegatorOrUndefined()
+        if (DelegationHandler(delegatorIntoWallet).isDelegated()) {
+            // Address of the origin account
+            const originAddress = addressUtils.fromPublicKey(
+                secp256k1.derivePublicKey(signerIntoWallet?.privateKey)
             );
 
-        return Hex0x.of(signedTransaction.encoded);
+            const unsignedTx = new Transaction(finalTransactionBody);
+
+            // Sign transaction with origin private key and delegator private key
+            if (delegatorIntoWallet?.delegatorPrivateKey !== undefined) {
+                const signedDelegated = TransactionHandler.signWithDelegator(
+                    finalTransactionBody,
+                    signerIntoWallet?.privateKey,
+                    Buffer.from(delegatorIntoWallet.delegatorPrivateKey, 'hex')
+                );
+                return Hex0x.of(signedDelegated.encoded);
+            }
+
+            // Otherwise, get the signature of the delegator from the delegator endpoint
+            const delegatorSignature = await DelegationHandler({
+                delegatorUrl: delegatorIntoWallet?.delegatorUrl as string
+            }).getDelegationSignatureUsingUrl(
+                unsignedTx,
+                originAddress,
+                this.thorClient.httpClient
+            );
+
+            // Sign transaction with origin private key
+            const originSignature = secp256k1.sign(
+                unsignedTx.getSignatureHash(),
+                signerIntoWallet?.privateKey
+            );
+
+            // Sign the transaction with both signatures. Concat both signatures to get the final signature
+            const signature = Buffer.concat([
+                originSignature,
+                delegatorSignature
+            ]);
+
+            // Return new signed transaction
+            return Hex0x.of(
+                new Transaction(unsignedTx.body, signature).encoded
+            );
+        }
+        // const signedTransaction =
+        //     await this.thorClient.transactions.signTransaction(
+        //         { nonce: newNonce, ...transactionBodyWithoutNonce },
+        //         Hex.of(signerIntoWallet.privateKey),
+        //         DelegationHandler(delegatorIntoWallet).delegatorOrUndefined()
+        //     );
+
+        // Not delegated
+        return Hex0x.of(
+            TransactionHandler.sign(
+                finalTransactionBody,
+                Buffer.from(Hex.of(signerIntoWallet.privateKey), 'hex')
+            ).encoded
+        );
     }
 }
 
