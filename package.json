@@ -68,7 +68,7 @@
         "turbo": "^1.13.2",
         "typedoc": "^0.25.11",
         "typedoc-plugin-missing-exports": "^2.2.0",
-        "typescript": "^5.4.3",
+        "typescript": "^5.4.4",
         "hardhat": "^2.22.2",
         "ws": "^8.16.0"
     },
