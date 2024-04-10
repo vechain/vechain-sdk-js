@@ -280,10 +280,12 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                             TEST_ACCOUNTS_THOR_SOLO[0].privateKey,
                             'hex'
                         ),
-                        publicKey: secp256k1.derivePublicKey(
-                            Buffer.from(
-                                TEST_ACCOUNTS_THOR_SOLO[0].privateKey,
-                                'hex'
+                        publicKey: Buffer.from(
+                            secp256k1.derivePublicKey(
+                                Buffer.from(
+                                    TEST_ACCOUNTS_THOR_SOLO[0].privateKey,
+                                    'hex'
+                                )
                             )
                         ),
                         address: TEST_ACCOUNTS_THOR_SOLO[0].address
