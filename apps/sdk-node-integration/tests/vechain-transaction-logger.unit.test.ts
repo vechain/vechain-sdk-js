@@ -9,17 +9,24 @@ import {
 import { type SpiedFunction } from 'jest-mock';
 import { VeChainTransactionLogger } from '../src/vechain-transaction-logger';
 
+/**
+ * VeChainTransactionLogger Tests
+ * 
+ * @group integration/apps/vechain-transaction-logger
+ */
 describe('VechainTransactionLogger - Tests', () => {
     let logSpy: SpiedFunction<{
         (...data: never[]): void;
         (message?: never, ...optionalParams: never[]): void;
     }>;
 
+    // Mock the console.log function to prevent logging before tests
     beforeEach(() => {
         logSpy = jest.spyOn(console, 'log');
         logSpy.mockImplementation(() => {});
     });
 
+    // Restore the console.log function after tests
     afterEach(() => {
         logSpy.mockRestore();
     });
