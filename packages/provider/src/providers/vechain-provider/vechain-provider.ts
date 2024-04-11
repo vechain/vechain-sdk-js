@@ -3,9 +3,8 @@ import {
     type EIP1193ProviderMessage,
     type EIP1193RequestArguments
 } from '../../eip1193';
-import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
+import { assert, DATA } from '@vechain/sdk-errors';
 import {
-    assertTransactionCanBeSigned,
     type CompressedBlockDetail,
     DelegationHandler,
     type EventPoll,
@@ -19,23 +18,19 @@ import {
     RPC_METHODS,
     RPCMethodsMap
 } from '../../utils';
-import { type Wallet, type WalletAccount } from '@vechain/sdk-wallet';
+import { type Wallet } from '@vechain/sdk-wallet';
 import {
     type FilterOptions,
     type SubscriptionEvent,
     type SubscriptionManager
 } from './types';
 import {
-    addressUtils,
     clauseBuilder,
-    Hex,
     Hex0x,
     Quantity,
     secp256k1,
-    Transaction,
     type TransactionBody,
-    type TransactionClause,
-    TransactionHandler
+    type TransactionClause
 } from '@vechain/sdk-core';
 import type { TransactionObjectInput } from '../../utils/rpc-mapper/methods-map/methods/eth_sendTransaction/types';
 
@@ -295,14 +290,11 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
             transaction.from
         );
 
-        // 3 - Get the signed transaction (we already know wallet is defined, thanks to the input validation)
+        // 3 - Init the wallet to use (we already know wallet is defined, thanks to the input validation)
         const walletTouse: Wallet = this.wallet as Wallet;
 
         const delegatorIntoWallet: SignTransactionOptions | null =
             await walletTouse.getDelegator();
-
-        const signerIntoWallet: WalletAccount | null =
-            await walletTouse.getAccount(transaction.from);
 
         // 4 - Create transaction body
         const transactionBody =
@@ -315,95 +307,34 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
                 }
             );
 
-        // NOTE: To be compliant with the standard and to avoid nonce overflow, we generate a random nonce of 6 bytes
+        // 5 - Generate nonce.
+        // @NOTE: To be compliant with the standard and to avoid nonce overflow, we generate a random nonce of 6 bytes
 
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { nonce, ...transactionBodyWithoutNonce } = transactionBody;
         const newNonce = Hex0x.of(secp256k1.randomBytes(6));
 
-        // At least, a signer private key is required
-        if (
-            signerIntoWallet?.privateKey === null ||
-            signerIntoWallet?.privateKey === undefined
-        ) {
-            throw buildProviderError(
-                JSONRPC.INTERNAL_ERROR,
-                `Transaction 'sign' failed: Wallet has not the private key of signer.\n
-                Params: ${JSON.stringify(transaction)}\n
-                URL: ${this.thorClient.httpClient.baseURL}`
-            );
-        }
         const finalTransactionBody: TransactionBody = {
             nonce: newNonce,
             ...transactionBodyWithoutNonce
         };
 
-        // Check if the transaction can be signed
-        assertTransactionCanBeSigned(
-            'signTransaction',
-            signerIntoWallet?.privateKey,
-            finalTransactionBody
-        );
+        // 6 - Sign the transaction
 
-        // Sign the transaction
-        if (DelegationHandler(delegatorIntoWallet).isDelegated()) {
-            // Address of the origin account
-            const originAddress = addressUtils.fromPublicKey(
-                secp256k1.derivePublicKey(signerIntoWallet?.privateKey)
-            );
+        const signedTransaction = DelegationHandler(
+            delegatorIntoWallet
+        ).isDelegated()
+            ? await walletTouse.signTransactionWithDelegator(
+                  transaction.from,
+                  finalTransactionBody,
+                  this.thorClient
+              )
+            : await walletTouse.signTransaction(
+                  transaction.from,
+                  finalTransactionBody
+              );
 
-            const unsignedTx = new Transaction(finalTransactionBody);
-
-            // Sign transaction with origin private key and delegator private key
-            if (delegatorIntoWallet?.delegatorPrivateKey !== undefined) {
-                const signedDelegated = TransactionHandler.signWithDelegator(
-                    finalTransactionBody,
-                    signerIntoWallet?.privateKey,
-                    Buffer.from(delegatorIntoWallet.delegatorPrivateKey, 'hex')
-                );
-                return Hex0x.of(signedDelegated.encoded);
-            }
-
-            // Otherwise, get the signature of the delegator from the delegator endpoint
-            const delegatorSignature = await DelegationHandler({
-                delegatorUrl: delegatorIntoWallet?.delegatorUrl as string
-            }).getDelegationSignatureUsingUrl(
-                unsignedTx,
-                originAddress,
-                this.thorClient.httpClient
-            );
-
-            // Sign transaction with origin private key
-            const originSignature = secp256k1.sign(
-                unsignedTx.getSignatureHash(),
-                signerIntoWallet?.privateKey
-            );
-
-            // Sign the transaction with both signatures. Concat both signatures to get the final signature
-            const signature = Buffer.concat([
-                originSignature,
-                delegatorSignature
-            ]);
-
-            // Return new signed transaction
-            return Hex0x.of(
-                new Transaction(unsignedTx.body, signature).encoded
-            );
-        }
-        // const signedTransaction =
-        //     await this.thorClient.transactions.signTransaction(
-        //         { nonce: newNonce, ...transactionBodyWithoutNonce },
-        //         Hex.of(signerIntoWallet.privateKey),
-        //         DelegationHandler(delegatorIntoWallet).delegatorOrUndefined()
-        //     );
-
-        // Not delegated
-        return Hex0x.of(
-            TransactionHandler.sign(
-                finalTransactionBody,
-                Buffer.from(Hex.of(signerIntoWallet.privateKey), 'hex')
-            ).encoded
-        );
+        return Hex0x.of(signedTransaction.encoded);
     }
 }
 
