@@ -6,13 +6,14 @@ import {
     ThorClient,
     FilterTransferLogsOptions
 } from '@vechain/sdk-network';
+import { unitsUtils } from '@vechain/sdk-core';
 
 
-// Url of the vechain testnet
-const testnetUrl = 'https://mainnet.vechain.org';
+// Url of the vechain mainnet
+const mainnetUrl = 'https://testnet.vechain.org';
 
 // Thor client
-const thorClient = ThorClient.fromUrl(testnetUrl);
+const thorClient = ThorClient.fromUrl(mainnetUrl);
 
 // ABI and contract address
 const ABI = {
@@ -130,26 +131,30 @@ export default function Home(): JSX.Element {
                 <p className="mt-2 text-lg leading-8 text-gray-600">Sample NextJs app</p>
                 <input type="text" name="address" id="address" onChange={(e)=>setAddress(e.target.value)} value={address} className="block mx-auto w-full sm:max-w-md border-2 border-transparent focus:border-purple-500 bg-transparent py-2 px-4 text-lg text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 outline-none rounded-md" placeholder="0xc3bE339D3D20abc1B731B320959A96A08D479583" />
             </div>
-            <table className="table-auto mx-auto">
-                <thead>
-                    <tr>
-                    <th>Time</th>
-                    <th>From</th>
-                    <th>To</th>
-                    <th>Amount</th>
-                    <th>Transaction Id</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>Time</td>
-                        <td>From</td>
-                        <td>To</td>
-                        <td>Amount</td>
-                        <td>Transaction Id</td>
-                    </tr>
-                </tbody>
-            </table>
+            <div className="table-container mx-auto max-w-4xl overflow-x-auto">
+                <table className="table-auto">
+                    <thead>
+                        <tr>
+                        <th className="px-4 py-2">Time</th>
+                        <th className="px-4 py-2">From</th>
+                        <th className="px-4 py-2">To</th>
+                        <th className="px-4 py-2">Amount</th>
+                        <th className="px-4 py-2">Transaction Id</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {transfers.map((transfer, index) => (
+                            <tr key={index}>
+                                <td className="px-4 py-2">{new Date(transfer.meta.blockTimestamp * 1000).toISOString()}</td>
+                                <td className="px-4 py-2">{transfer.from}</td>
+                                <td className="px-4 py-2">{transfer.to}</td>
+                                <td className="px-4 py-2">{unitsUtils.formatVET(transfer.amount)}</td>
+                                <td className="px-4 py-2">{transfer.meta.txID}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
     );
 }
