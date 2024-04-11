@@ -1,41 +1,45 @@
 /**
  * Bloom filter implementation.
  *
- * A Bloom filter is a space-efficient probabilistic data structure
+ * A [Bloom filter](https://en.wikipedia.org/wiki/Bloom_filter)
+ * is a space-efficient probabilistic data structure
  * that is used to test whether an element is a member of a set.
  * False positive matches are possible, but false negatives are not.
  *
- * Reference: https://github.com/vechain/thor/blob/master/thor/bloom/bloom.go
+ * Reference: [Bloom Filter in Vechain Thor](https://github.com/vechain/thor/blob/master/thor/bloom/bloom.go).
  */
-
+import * as utils from '@noble/curves/abstract/utils';
 import { blake2b256 } from '../hash';
-import { Buffer } from 'buffer';
 
 /**
  * This class represents a Bloom filter with its associated bit array and
  * a specified number (k) of hash functions.
  */
 class Filter {
-    public readonly bits: Buffer;
+    public readonly bits: Uint8Array;
     public readonly k: number;
 
     /**
      * Constructs a new Filter instance.
-     * @param bits - The bit array used in the Bloom filter.
-     * @param k - The number of hash functions to be used.
+     *
+     * @constructor
+     * @param {Uint8Array} bits - The input array containing bits.
+     * @param {number} k - The value of k.
      */
-    constructor(bits: Buffer, k: number) {
+    constructor(bits: Uint8Array, k: number) {
         this.bits = bits;
         this.k = k;
     }
 
     /**
-     * Checks if the given key might be contained in the set.
+     * Checks if the Bloom filter may contain the specified key.
      * Note: false positives are possible, but false negatives are not.
-     * @param key - The key to be checked.
-     * @returns A boolean indicating whether the key might be contained in the set.
+     *
+     * @param {Uint8Array} key - The key to check.
+     *
+     * @return {boolean} - True if the Bloom filter may contain the key, otherwise false.
      */
-    public contains(key: Buffer): boolean {
+    public contains(key: Uint8Array): boolean {
         return distribute(
             hash(key),
             this.k,
@@ -48,49 +52,43 @@ class Filter {
 }
 
 /**
- * Performs addition of two numbers and ensures the result is a 32-bit unsigned integer.
+ * Adds two numbers with wraparound behavior, treating them as unsigned 32-bit integers.
  *
  * JavaScript represents numbers using the IEEE 754 standard for floating-point arithmetic,
  * which does not automatically handle wrapping of integers. This function ensures that
  * the addition of two numbers returns a result that is wrapped to a 32-bit unsigned integer,
  * emulating the behavior of integer addition in languages with fixed-width integers.
  *
- * @param a - The first number to be added.
- * @param b - The second number to be added.
- * @returns The sum of `a` and `b`, modulo 2^32.
+ * @param {number} a - The first number to add.
+ * @param {number} b - The second number to add.
+ * @return {number} The result of adding `a` and `b`, modulo 2^32.
  */
 function addWithUInt32Wrap(a: number, b: number): number {
     return (a + b) % 2 ** 32;
 }
 
 /**
- * Generates a hash value for the given key.
- * @param key - The key to be hashed.
- * @returns The hash value.
+ * Computes the hash of the given key using blake2b256 algorithm.
+ *
+ * Secure audit function.
+ * * {@link blake2b256}
+ *
+ * @param {Uint8Array} key - The key to be hashed.
+ * @return {number} The computed hash value as a number.
  */
-function hash(key: Buffer): number {
-    // Convert key to Uint8Array
-    const uint8ArrayKey = new Uint8Array(key);
-
-    // Compute hash using blake2b256
-    const hash = blake2b256(uint8ArrayKey);
-
-    return hash.readUInt32BE(0);
+function hash(key: Uint8Array): number {
+    return Number(utils.bytesToNumberBE(blake2b256(key).slice(0, 4)));
 }
 
 /**
- * Distributes bits in the Bloom filter based on the hash of the key.
+ * Distribute method distributes a given hash value across a set of bits.
  *
- * Specifically, bit-shifting is employed to construct delta, which
- * manipulates the hash in successive iterations, thereby ensuring a uniform
- * distribution of hash values. This facilitates reducing collisions and hence,
- * diminishing the probability of false positives.
- *
- * @param hash - The hash value of the key.
- * @param k - The number of hash functions to be used.
- * @param nBits - The total number of bits in the Bloom filter.
- * @param cb - The callback function to be invoked with the index and bit.
- * @returns A boolean indicating whether the distribution was successful.
+ * @param {number} hash - The hash value to distribute.
+ * @param {number} k - The number of times to distribute the hash value.
+ * @param {number} nBits - The total number of bits to distribute the hash value across.
+ * @param {function} cb - The callback function to be called for each distributed bit. It takes two arguments: index (the index of the byte containing the distributed bit) and bit (
+ *the distributed bit itself).
+ * @returns {boolean} Returns true if all bits were successfully distributed, false otherwise.
  */
 function distribute(
     hash: number,
@@ -112,7 +110,7 @@ function distribute(
 }
 
 /**
- * Generator class for creating and managing Bloom filters.
+ * Represents a Bloom filter generator.
  *
  * This class aids in the creation and management of Bloom filters.
  * It allows keys to be added, internally hashes them, and provides
@@ -122,10 +120,14 @@ class Generator {
     private readonly hashes = new Map<number, boolean>();
 
     /**
-     * Adds a key to the generator's internal map for later Bloom filter generation.
-     * @param key - The key to be added.
+     * Adds a key to the set of hashes.
+     *
+     * Secure audit function.
+     * * {@link hash}
+     *
+     * @param {Uint8Array} key - The key to be added to the set of hashes.
      */
-    public add(key: Buffer): void {
+    public add(key: Uint8Array): void {
         this.hashes.set(hash(key), true);
     }
 
@@ -137,6 +139,13 @@ class Generator {
      * @param k - The number of hash functions to be used (count of keys).
      * @returns A new Filter instance.
      */
+    /**
+     * Generates a Bloom filter with the specified number of bits per key and number of hash functions.
+     *
+     * @param {number} bitsPerKey - The desired number of bits per key in the Bloom filter.
+     * @param {number} k - The number of hash functions to use in the Bloom filter.
+     * @returns {Filter} - The generated Bloom filter.
+     */
     public generate(bitsPerKey: number, k: number): Filter {
         // Compute bloom filter size in bytes
         let nBytes = Math.floor((this.hashes.size * bitsPerKey + 7) / 8);
@@ -144,7 +153,7 @@ class Generator {
         // Enforce a minimum bloom filter length to reduce very high false positive rate for small n
         nBytes = nBytes < 8 ? 8 : nBytes;
 
-        const bits = Buffer.alloc(nBytes);
+        const bits = new Uint8Array(nBytes);
 
         // Filter bit length
         const nBits = nBytes * 8;
@@ -179,7 +188,7 @@ function calculateK(bitsPerKey: number): number {
 }
 
 export const bloom = {
-    Generator,
+    calculateK,
     Filter,
-    calculateK
+    Generator
 };
