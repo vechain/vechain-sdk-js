@@ -2,6 +2,7 @@ import { ethers } from 'ethers';
 import { Hex0x, HEX_ADDRESS_REGEX } from '../utils';
 import { ADDRESS, assert } from '@vechain/sdk-errors';
 import { secp256k1 } from '../secp256k1';
+// import { keccak256 } from '../hash';
 
 /**
  * Derives a vechain thor address from a public key.
@@ -16,6 +17,26 @@ import { secp256k1 } from '../secp256k1';
 function fromPublicKey(publicKey: Buffer): string {
     return ethers.computeAddress(Hex0x.of(publicKey));
 }
+
+/*
+https://docs.ethers.org/v5/api/utils/address/
+https://ethereum.org/en/whitepaper/#ethereum-accounts
+ */
+// function fromPublicKeyAsUint8Array(publicKey: Uint8Array): Uint8Array {
+//     return keccak256(publicKey.slice(2)).slice(13);
+// }
+//
+/*
+export function computeAddress(key: string | SigningKey): string {
+    let pubkey: string;
+    if (typeof(key) === "string") {
+        pubkey = SigningKey.computePublicKey(key, false);
+    } else {
+        pubkey = key.publicKey;
+    }
+    return getAddress(keccak256("0x" + pubkey.substring(4)).substring(26));
+}
+ */
 
 /**
  * Derives an Ethereum address from a given private key.
