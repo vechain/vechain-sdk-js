@@ -17,12 +17,12 @@ interface WalletAccount {
     /**
      * Private key of the account.
      */
-    privateKey: Buffer;
+    privateKey?: Buffer;
 
     /**
      * Public key of the account.
      */
-    publicKey: Buffer;
+    publicKey?: Buffer;
 }
 
 /**

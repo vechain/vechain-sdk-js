@@ -122,7 +122,7 @@ class BaseWallet implements Wallet {
         // 3 - Sign the transaction
         return TransactionHandler.sign(
             transactionToSign,
-            accountUsedToSign.privateKey
+            accountUsedToSign.privateKey as Buffer
         );
     }
 
@@ -167,7 +167,7 @@ class BaseWallet implements Wallet {
         if (this.delegator?.delegatorPrivateKey !== undefined) {
             return TransactionHandler.signWithDelegator(
                 transactionToSign,
-                accountUsedToSign.privateKey,
+                accountUsedToSign.privateKey as Buffer,
                 Buffer.from(this.delegator.delegatorPrivateKey, 'hex')
             );
         }
@@ -184,7 +184,7 @@ class BaseWallet implements Wallet {
         // Sign transaction with origin private key
         const originSignature = secp256k1.sign(
             new Transaction(transactionToSign).getSignatureHash(),
-            accountUsedToSign?.privateKey
+            accountUsedToSign?.privateKey as Buffer
         );
 
         // Sign the transaction with both signatures. Concat both signatures to get the final signature
