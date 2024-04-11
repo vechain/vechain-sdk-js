@@ -1,12 +1,15 @@
 import { ethers } from 'hardhat';
 
 async function main(): Promise<void> {
-    const GameItem = await ethers.getContractAt(
-        'GameItem',
-        '0x4f433050fa55bcb811409266b51a08923c8cf9e9'
-    );
+    const signer = (await ethers.getSigners())[0];
 
-    const tx = await GameItem.awardItem(
+    const gameItemFactory = await ethers.getContractFactory('GameItem', signer);
+
+    const gameItemContract = await gameItemFactory.deploy();
+
+    await gameItemContract.waitForDeployment();
+
+    const tx = await gameItemContract.awardItem(
         '0x3db469a79593dcc67f07de1869d6682fc1eaf535',
         'URINotDefined'
     );
@@ -14,7 +17,7 @@ async function main(): Promise<void> {
     const receipt = await tx.wait();
 
     receipt?.logs?.forEach((log) => {
-        console.log(GameItem.interface.parseLog(log));
+        console.log(gameItemContract.interface.parseLog(log));
     });
 }
 
