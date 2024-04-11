@@ -127,7 +127,7 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      *  Keep in mind that this is **best efforts**, since the state of the Blockchain
      *  is in flux, which could affect transaction gas requirements.
      *
-     *  @throws UNPREDICTABLE_GAS_LIMIT A transaction that is believed by the node to likely
+     *  @throws UNPREDICTABLE_GAS_LIMIT A transaction believed by the node to likely
      *          fail will throw an error during gas estimation. This could indicate that it
      *          will actually fail or that the circumstances are simply too complex for the
      *          node to take into account. In these cases, a manually determined ``gasLimit``
@@ -174,10 +174,10 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
     ) => Promise<vechain_sdk_core_ethers.TransactionResponse>;
 
     /**
-     *  Signs an [[link-eip-191]] prefixed personal message.
+     *  Signs an [[link-eip-191]] prefixed a personal message.
      *
      *  If the %%message%% is a string, it is signed as UTF-8 encoded bytes. It is **not**
-     *  interpretted as a [[BytesLike]]; so the string ``"0x1234"`` is signed as six
+     *  interpreted as a [[BytesLike]]; so the string ``"0x1234"`` is signed as six
      *  characters, **not** two bytes.
      *
      *  To sign that example as two bytes, the Uint8Array should be used
