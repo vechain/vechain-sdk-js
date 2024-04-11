@@ -14,7 +14,7 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@v4
               with:
-                  node-version: v20.11.0
+                  node-version: lts/*
 
             - name: Install & Patch packages
               run: |
@@ -30,8 +30,12 @@ jobs:
                     # Navigate to the directory using absolute path
                     cd "$current_app_directory"
                   
+                    # Check if the directory name is "sdk-nextjs-integration" and remove yarn.lock
+                    if [ "$(basename "$current_app_directory")" = "sdk-nextjs-integration" ]; then
+                      rm yarn.lock
+                    fi
+
                     # Install dependencies
-                    rm yarn.lock
                     yarn install
                   
                     # Return to the original directory using absolute path
