@@ -8,70 +8,31 @@ import {
 } from '@vechain/sdk-network';
 import { unitsUtils } from '@vechain/sdk-core';
 
-
 // Url of the vechain mainnet
-const mainnetUrl = 'https://testnet.vechain.org';
+const mainnetUrl = 'https://mainnet.vechain.org';
 
 // Thor client
 const thorClient = ThorClient.fromUrl(mainnetUrl);
 
-// ABI and contract address
-const ABI = {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        name: "_from",
-        type: "address"
-      },
-      {
-        indexed: true,
-        name: "_to",
-        type: "address"
-      },
-      {
-        indexed: false,
-        name: "_value",
-        type: "uint256"
-      }
-    ],
-    name: "Transfer",
-    type: "event"
-};
-const CONTRACT_ADDRESS = "0x0000000000000000000000000000456E65726779";
-
-interface Metadata {
-    /**
-     * Block identifier associated with the entity
-     */
-    blockID: string;
-    /**
-     * Block number associated with the entity
-     */
-    blockNumber: number;
-    /**
-     * Timestamp of the block
-     */
-    blockTimestamp: number;
-    /**
-     * Transaction ID associated with the entity
-     */
-    txID: string;
-    /**
-     * Transaction origin information
-     */
-    txOrigin: string;
-    /**
-     * Index of the clause
-     */
-    clauseIndex: number;
-}
-
+// Transfer interface definition for the transfer history
 interface Transfer {
     from: string;
     to: string;
     amount: string;
-    meta: Metadata;
+    meta: {
+        // Block identifier associated with the entity
+        blockID: string;
+        // Block number associated with the entity
+        blockNumber: number;
+        // Timestamp of the block
+        blockTimestamp: number;
+        // Transaction ID associated with the entity
+        txID: string;
+        // Transaction origin information
+        txOrigin: string;
+        // Index of the clause
+        clauseIndex: number;
+    };
 };
 
 export default function Home(): JSX.Element {
@@ -80,6 +41,7 @@ export default function Home(): JSX.Element {
         "0xc3bE339D3D20abc1B731B320959A96A08D479583"
     );
 
+    // Function to get the history for the provided address
     async function getHistoryFor(address: string) {
         try{
             // Get the latest block
@@ -99,7 +61,9 @@ export default function Home(): JSX.Element {
                     }, 
             };
 
+            // Get the transfer logs
             const logs = await thorClient.logs.filterTransferLogs(filterOptions);
+            // Map the logs to the transfer interface
             const transfers = logs.map((log) => {
                 return {
                     from: log.sender,
@@ -109,7 +73,6 @@ export default function Home(): JSX.Element {
                 };
             });
             setTransfers(transfers);
-            console.log(logs);
         } catch (error) {
             setTransfers([]);
             console.log(error);
