@@ -1,82 +1,90 @@
-import blake from 'blakejs';
-import { type HashInput, type ReturnType } from './types';
-import { assertIsValidReturnType } from '../assertions';
 import { Hex0x } from '../utils';
+import { assertIsValidReturnType } from '../assertions';
+import { blake2b } from '@noble/hashes/blake2b';
+import { type ReturnType } from './types';
 
 /**
- * Internal function to compute the blake2b256 256-bit hash of the given data.
+ * Internal function to calculates the BLAKE2B-256 hash of the input data.
  *
- * This function allows hashing multiple data items (Buffers or strings) in a single hash context,
- * aggregating the hash of all these items into a single result.
+ * Secure audit function.
+ * * [blake2b](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#blake2b-blake2s-blake3)
  *
- * @param data - One or more data items (either Buffer or string) to be hashed.
- * @returns {Buffer} A Buffer containing the 256-bit blake2b256 hash of the provided data.
+ * @param {Array<Uint8Array|string>} data - The input data to be hashed.
+ * It accepts multiple arguments in the form of `Uint8Array` or strings.
+ *
+ * @returns {Uint8Array} - The BLAKE2B-256 hash of the input data.
  */
-function _blake2b256(...data: Array<Buffer | string>): Buffer {
-    const ctx = blake.blake2bInit(32);
-    data.forEach((d) => {
-        if (Buffer.isBuffer(d)) {
-            blake.blake2bUpdate(ctx, d);
-        } else {
-            blake.blake2bUpdate(ctx, Buffer.from(d, 'utf8'));
-        }
+function _blake2b256(...data: Array<Uint8Array | string>): Uint8Array {
+    const ctx = blake2b.create({ dkLen: 32 });
+    data.forEach((datum) => {
+        ctx.update(datum);
     });
-    return Buffer.from(blake.blake2bFinal(ctx));
+    return ctx.digest();
 }
 
 /* --- Overloaded functions start --- */
 
 /**
- * Computes the blake2b256 256-bit hash of the given data.
- * Returns the hash as a Buffer.
+ * Calculates the Blake2b-256 hash value for the given data.
  *
- * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
- * @returns A Buffer containing the 256-bit blake2b256 hash of the provided data.
+ * Secure audit function.
+ * * {@link _blake2b256}
+ *
+ * @param {string | Uint8Array} data - The input data for which the hash needs to be computed.
+ * @returns {Uint8Array} - The BLAKE2B-256 hash value computed for the given input data.
  */
-function blake2b256(data: HashInput): Buffer;
+function blake2b256(data: string | Uint8Array): Uint8Array;
 
 /**
- * Computes the blake2b256 256-bit hash of the given data.
- * Returns the hash as a Buffer.
+ * Calculates the BLAKE2b-256 hash of the given data.
  *
- * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
- * @param returnType - The format in which to return the hash. Either 'buffer' or 'hex'.
- * @returns {Buffer} A Buffer containing the 256-bit blake2b256 hash of the provided data.
+ * Secure audit function.
+ * * {@link _blake2b256}
+ *
+ * @param {string | Uint8Array} data - The input data to be hashed. Can be either a string or a Uint8Array.
+ * @param {'buffer'} returnType - The desired return type. Currently only supports 'buffer'.
+ * @returns {Uint8Array} - The BLAKE2b-256 hash as a Uint8Array.
  */
-function blake2b256(data: HashInput, returnType: 'buffer'): Buffer;
+function blake2b256(
+    data: string | Uint8Array,
+    returnType: 'buffer'
+): Uint8Array;
 
 /**
- * Computes the blake2b256 256-bit hash of the given data.
- * Returns the hash as a hex string, prefixed with `0x`.
+ * Compute the BLAKE2b-256 hash of the given data.
  *
- * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
- * @param returnType - The format in which to return the hash. Either 'hex' or 'buffer'.
- * @returns {string} A string representing the hexadecimal format of the 256-bit blake2b256 hash, prefixed with `0x`.
+ * Secure audit function.
+ * * {@link _blake2b256}
+ *
+ * @param {string | Uint8Array} data - The data to hash.
+ * @param {string} returnType - The desired return type of the hash. Only "hex" is supported.
+ *
+ * @return {string} - The BLAKE2b-256 hash of the data in the specified return type.
  */
-function blake2b256(data: HashInput, returnType: 'hex'): string;
+function blake2b256(data: string | Uint8Array, returnType: 'hex'): string;
 
 /* --- Overloaded functions end --- */
 
 /**
- * Computes the blake2b256 256-bit hash of the given data and returns the hash based on the returnType specified.
- * Defaults to returning a Buffer if returnType is not provided.
+ * Computes the BLAKE2b-256 hash of the given data.
  *
- * @throws{InvalidDataReturnTypeError}
- * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
- * @param returnType - The format in which to return the hash. Either 'buffer' or 'hex'.
- *                    Defaults to 'buffer' if not provided.
- * @returns A Buffer or a string representing the 256-bit blake2b256 hash of the provided data,
- *          based on the returnType specified.
+ * Secure audit function.
+ * * {@link _blake2b256}
+ *
+ * @param {string | Uint8Array} data - The data to be hashed.
+ * @param {ReturnType} [returnType='buffer'] - The type of the return value. Valid options are 'buffer' (default) and 'hex'.
+ *
+ * @returns {Uint8Array | string} - The computed hash value.
  */
 function blake2b256(
-    data: HashInput,
+    data: string | Uint8Array,
     returnType: ReturnType = 'buffer'
-): Buffer | string {
+): Uint8Array | string {
     // Assert that the returnType is valid
     assertIsValidReturnType('blake2b256', returnType);
 
-    // Converts the data to an array of Buffer or string
-    const dataBytesLike = [data] as Array<Buffer | string>;
+    // Converts the data to an array of Uint8Array or string
+    const dataBytesLike = [data] as Array<Uint8Array | string>;
 
     const hash = _blake2b256(...dataBytesLike);
 

@@ -1,62 +1,75 @@
-import { ethers } from 'ethers';
-import { type HashInput, type ReturnType } from './types';
+import { Hex0x } from '../utils';
 import { assertIsValidReturnType } from '../assertions';
+import { sha256 as _sha256 } from '@noble/hashes/sha256';
+import { type ReturnType } from './types';
 
 /* --- Overloaded functions start --- */
 
 /**
- * Computes the sha256 hash of the given data.
- * Returns the hash as a Buffer.
+ * Calculates the SHA-256 hash of the given data.
  *
- * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
- * @returns A Buffer containing the 256-bit sha256 hash of the provided data.
+ * Secure audit function.
+ * * {@link sha256}
+ *
+ * @param {string | Uint8Array} data - The data to calculate the hash for.
+ * @return {Uint8Array} - The SHA-256 hash of the given data.
  */
-function sha256(data: HashInput): Buffer;
+function sha256(data: string | Uint8Array): Uint8Array;
 
 /**
  * Computes the sha256 hash of the given data.
- * Returns the hash as a Buffer.
+ * Returns the hash as a Uint8Array.
  *
- * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
+ * Secure audit function.
+ * * {@link sha256}
+ *
+ * @param data - The input data (either a Uint8Array or string) for which the hash needs to be computed.
  * @param returnType - The format in which to return the hash. Either 'buffer' or 'hex'.
- * @returns {Buffer} A Buffer containing the 256-bit sha256 hash of the provided data.
+ * @returns {Uint8Array} A Uint8Array containing the 256-bit sha256 hash of the provided data.
  */
-function sha256(data: HashInput, returnType: 'buffer'): Buffer;
+/**
+ * Calculates the SHA-256 hash of the given data.
+ *
+ * @param {string | Uint8Array} data - The data to calculate the SHA-256 hash for.
+ * @param {'buffer'} returnType - The return type for the hash. Currently only supports 'buffer'.
+ *
+ * @return {Uint8Array} - The SHA-256 hash as a Uint8Array.
+ */
+function sha256(data: string | Uint8Array, returnType: 'buffer'): Uint8Array;
 
 /**
- * Computes the sha256 hash of the given data.
- * Returns the hash as a hex string, prefixed with `0x`.
+ * Calculates the SHA-256 hash of the given data.
  *
- * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
- * @param returnType - The format in which to return the hash. Either 'hex' or 'buffer'.
- * @returns {string} A string representing the hexadecimal format of the 256-bit sha256 hash, prefixed with `0x`.
+ * Secure audit function.
+ * * {@link sha256}
+ *
+ * @param {string | Uint8Array} data - The input data to be hashed.
+ * @param {'hex'} returnType - The desired return type of the hash.
+ * @return {string} The SHA-256 hash of the data in the specified return type.
  */
-function sha256(data: HashInput, returnType: 'hex'): string;
+function sha256(data: string | Uint8Array, returnType: 'hex'): string;
 
 /* --- Overloaded functions end --- */
 
 /**
- * Computes the sha256 hash of the given data.
- * Returns the hash as a Buffer or hex string, depending on the returnType.
- * If no returnType is provided, the hash is returned as a Buffer.
+ * Computes the SHA-256 hash of the given data.
  *
- * @throws{InvalidDataReturnTypeError}
- * @param data - The input data (either a Buffer or string) for which the hash needs to be computed.
- * @param returnType - The type of the return value. Either 'buffer' or 'hex'. Defaults to 'buffer'.
- * @returns A Buffer or string representing the 256-bit sha256 hash.
+ * Secure audit function.
+ * * [_sha256](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#sha2-sha256-sha384-sha512-sha512_256)
+ *
+ * @param {string | Uint8Array} data - The data to compute the hash for.
+ * @param {ReturnType} [returnType='buffer'] - The desired return type for the hash. Defaults to 'buffer'.
+ *
+ * @return {Uint8Array | string} - The computed SHA-256 hash.
  */
 function sha256(
-    data: HashInput,
+    data: string | Uint8Array,
     returnType: ReturnType = 'buffer'
-): Buffer | string {
+): Uint8Array | string {
     // Assert that the returnType is valid
     assertIsValidReturnType('sha256', returnType);
-
-    const hash = ethers.isBytesLike(data)
-        ? ethers.sha256(data)
-        : ethers.sha256(ethers.toUtf8Bytes(data));
-
-    return returnType === 'buffer' ? Buffer.from(hash.slice(2), 'hex') : hash;
+    const hash = _sha256(data);
+    return returnType === 'buffer' ? hash : Hex0x.of(hash);
 }
 
 export { sha256 };

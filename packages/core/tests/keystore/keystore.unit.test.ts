@@ -22,7 +22,7 @@ describe('Keystore', () => {
 
         //  Create keystore
         const myKeystore = await keystore.encrypt(
-            privateKey,
+            Buffer.from(privateKey),
             encryptionPassword
         );
 
@@ -32,7 +32,7 @@ describe('Keystore', () => {
             `0x` + myKeystore.address
         );
         const addressFromPrivateKey = addressUtils.fromPublicKey(
-            secp256k1.derivePublicKey(privateKey)
+            Buffer.from(secp256k1.derivePublicKey(privateKey))
         );
         expect(keyStoreAddress).toEqual(addressFromPrivateKey);
     });
@@ -60,7 +60,7 @@ describe('Keystore', () => {
 
         //  Create keystore
         const myKeystore = await keystore.encrypt(
-            privateKey,
+            Buffer.from(privateKey),
             encryptionPassword
         );
 
@@ -85,7 +85,7 @@ describe('Keystore', () => {
 
         //  Create keystore
         const myKeystore = await keystore.encrypt(
-            privateKey,
+            Buffer.from(privateKey),
             encryptionPassword
         );
 
@@ -108,7 +108,7 @@ describe('Keystore', () => {
 
         //  Create keystore
         const myKeystore = await keystore.encrypt(
-            privateKey,
+            Buffer.from(privateKey),
             encryptionPassword
         );
 
@@ -137,7 +137,7 @@ describe('Keystore', () => {
 
         //  Create keystore
         const myKeystore = await keystore.encrypt(
-            privateKey,
+            Buffer.from(privateKey),
             encryptionPassword
         );
 
