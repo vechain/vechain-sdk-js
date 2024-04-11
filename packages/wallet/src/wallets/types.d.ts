@@ -1,4 +1,8 @@
-import { type SignTransactionOptions } from '@vechain/sdk-network';
+import {
+    type SignTransactionOptions,
+    type ThorClient
+} from '@vechain/sdk-network';
+import { type Transaction, type TransactionBody } from '@vechain/sdk-core';
 
 /**
  * Represent a single account in a wallet.
@@ -63,6 +67,34 @@ interface Wallet {
      * @returns The options for signing a transaction with delegator.
      */
     getDelegator: () => Promise<SignTransactionOptions | null>;
+
+    /**
+     * Sign a transaction.
+     * This method must be implemented to define how to sign a transaction with the wallet.
+     *
+     * @param transactionOrigin - The origin address of the transaction (the 'from' field).
+     * @param transactionToSign - The transaction to sign.
+     * @returns The signed transaction.
+     */
+    signTransaction: (
+        transactionOrigin: string,
+        transactionToSign: TransactionBody
+    ) => Promise<Transaction>;
+
+    /**
+     * Sign a transaction with the delegator.
+     * This method must be implemented to define how to sign a transaction with the delegator.
+     *
+     * @param transactionOrigin - The origin address of the transaction (the 'from' field).
+     * @param transactionToSign - The transaction to sign.
+     * @param thorClient - The ThorClient instance used to sign using the url
+     * @returns The transaction signed by the delegator.
+     */
+    signTransactionWithDelegator: (
+        transactionOrigin: string,
+        transactionToSign: TransactionBody,
+        thorClient: ThorClient
+    ) => Promise<Transaction>;
 
     /**
      * Here we can add all useful methods for wallet.
