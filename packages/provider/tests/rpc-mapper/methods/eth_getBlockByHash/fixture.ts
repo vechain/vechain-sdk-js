@@ -1,7 +1,7 @@
 import { blockWithTransactionsExpanded } from '../../../fixture';
 
 import { zeroBlock } from '../eth_getBlockByNumber/fixture';
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { InvalidDataTypeError } from '@vechain/sdk-errors';
 
 /**
  * Test cases for eth_getBlockByHash RPC method

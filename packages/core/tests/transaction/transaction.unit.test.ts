@@ -1,13 +1,13 @@
 import { describe, expect, test } from '@jest/globals';
 import { signer, delegator, transactions } from './fixture';
-import { Transaction, TransactionHandler } from '../../src';
+import { Hex, Transaction, TransactionHandler } from '../../src';
 import {
     InvalidAddressError,
     InvalidSecp256k1SignatureError,
     TransactionBodyError,
     TransactionDelegationError,
     TransactionNotSignedError
-} from '@vechain/vechain-sdk-errors';
+} from '@vechain/sdk-errors';
 
 /**
  * Test transaction module
@@ -30,9 +30,9 @@ describe('Transaction', () => {
                 expect(unsignedTransaction.signature).toBeUndefined();
                 expect(unsignedTransaction.isSigned).toEqual(false);
                 expect(unsignedTransaction.isDelegated).toEqual(false);
-                expect(
-                    unsignedTransaction.getSignatureHash().toString('hex')
-                ).toEqual(transaction.signatureHashExpected);
+                expect(Hex.of(unsignedTransaction.getSignatureHash())).toEqual(
+                    transaction.signatureHashExpected
+                );
 
                 // Get id from unsigned transaction (should throw error)
                 expect(() => unsignedTransaction.id).toThrowError(
@@ -79,9 +79,9 @@ describe('Transaction', () => {
                 expect(signedTransaction.signature).toBeDefined();
                 expect(signedTransaction.isSigned).toEqual(true);
                 expect(signedTransaction.isDelegated).toEqual(false);
-                expect(
-                    signedTransaction.getSignatureHash().toString('hex')
-                ).toEqual(transaction.signatureHashExpected);
+                expect(Hex.of(signedTransaction.getSignatureHash())).toEqual(
+                    transaction.signatureHashExpected
+                );
 
                 // Checks on origin, id and delegator
                 expect(signedTransaction.origin).toEqual(signer.address);
@@ -118,9 +118,9 @@ describe('Transaction', () => {
                 expect(unsignedTransaction.signature).toBeUndefined();
                 expect(unsignedTransaction.isSigned).toEqual(false);
                 expect(unsignedTransaction.isDelegated).toEqual(true);
-                expect(
-                    unsignedTransaction.getSignatureHash().toString('hex')
-                ).toEqual(transaction.signatureHashExpected);
+                expect(Hex.of(unsignedTransaction.getSignatureHash())).toEqual(
+                    transaction.signatureHashExpected
+                );
 
                 // Get id from unsigned transaction (should throw error)
                 expect(() => unsignedTransaction.id).toThrowError(
@@ -162,9 +162,9 @@ describe('Transaction', () => {
                 expect(signedTransaction.signature).toBeDefined();
                 expect(signedTransaction.isSigned).toEqual(true);
                 expect(signedTransaction.isDelegated).toEqual(true);
-                expect(
-                    signedTransaction.getSignatureHash().toString('hex')
-                ).toEqual(transaction.signatureHashExpected);
+                expect(Hex.of(signedTransaction.getSignatureHash())).toEqual(
+                    transaction.signatureHashExpected
+                );
 
                 // Checks on origin, id and delegator
                 expect(signedTransaction.origin).toEqual(signer.address);

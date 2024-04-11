@@ -5,7 +5,8 @@ import {
     ZERO_BUFFER,
     addressUtils,
     mnemonic,
-    secp256k1
+    secp256k1,
+    Hex
 } from '../../src';
 import { addresses, words, wrongWords } from './fixture';
 import {
@@ -14,7 +15,7 @@ import {
     InvalidHDNodeMnemonicsError,
     InvalidHDNodePrivateKeyError,
     InvalidHDNodePublicKeyError
-} from '@vechain/vechain-sdk-errors';
+} from '@vechain/sdk-errors';
 
 /**
  * Mnemonic tests
@@ -39,10 +40,14 @@ describe('Hdnode', () => {
 
             // Correct public key
             expect(
-                secp256k1
-                    .derivePublicKey(child.privateKey ?? ZERO_BUFFER(0))
-                    .toString('hex')
-            ).toEqual(child.publicKey.toString('hex'));
+                Hex.of(
+                    secp256k1.inflatePublicKey(
+                        secp256k1.derivePublicKey(
+                            child.privateKey ?? ZERO_BUFFER(0)
+                        )
+                    )
+                )
+            ).toEqual(Hex.of(child.publicKey));
         }
 
         // HDNode from private key
@@ -60,10 +65,14 @@ describe('Hdnode', () => {
 
             // Correct public key
             expect(
-                secp256k1
-                    .derivePublicKey(child.privateKey ?? ZERO_BUFFER(0))
-                    .toString('hex')
-            ).toEqual(child.publicKey.toString('hex'));
+                Hex.of(
+                    secp256k1.inflatePublicKey(
+                        secp256k1.derivePublicKey(
+                            child.privateKey ?? ZERO_BUFFER(0)
+                        )
+                    )
+                )
+            ).toEqual(Hex.of(child.publicKey));
         }
 
         // HDNode from public key
@@ -106,8 +115,12 @@ describe('Hdnode', () => {
                 // Public key
                 expect(currentHdnode.publicKey).toBeDefined();
                 expect(
-                    secp256k1.derivePublicKey(
-                        currentHdnode.privateKey as Buffer
+                    Buffer.from(
+                        secp256k1.inflatePublicKey(
+                            secp256k1.derivePublicKey(
+                                currentHdnode.privateKey as Buffer
+                            )
+                        )
                     )
                 ).toEqual(currentHdnode.publicKey);
 

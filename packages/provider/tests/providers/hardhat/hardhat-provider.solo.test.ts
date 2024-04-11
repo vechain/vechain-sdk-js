@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { HardhatVechainProvider, type SubscriptionEvent } from '../../../src';
-import { ThorClient } from '@vechain/vechain-sdk-network';
+import { ThorClient } from '@vechain/sdk-network';
 import { soloNetwork, soloUrl } from '../../fixture';
 import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
 import {
@@ -8,8 +8,8 @@ import {
     deployERC721Contract,
     waitForMessage
 } from '../helpers';
-import { coder, type FunctionFragment } from '@vechain/vechain-sdk-core';
-import { BaseWallet } from '@vechain/vechain-sdk-wallet';
+import { coder, type FunctionFragment } from '@vechain/sdk-core';
+import { BaseWallet } from '@vechain/sdk-wallet';
 
 /**
  * Vechain provider tests - Solo Network
@@ -28,7 +28,12 @@ describe('Hardhat provider tests', () => {
      */
     beforeEach(() => {
         thorClient = new ThorClient(soloNetwork);
-        provider = new HardhatVechainProvider(new BaseWallet([]), soloUrl);
+        provider = new HardhatVechainProvider(
+            new BaseWallet([]),
+            soloUrl,
+            (message: string, parent?: Error) => new Error(message, parent),
+            true
+        );
     });
 
     /**

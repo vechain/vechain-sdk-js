@@ -1,5 +1,7 @@
-import { abi } from '@vechain/vechain-sdk-core';
+import { abi } from '@vechain/sdk-core';
 import { expect } from 'expect';
+
+// START_SNIPPET: AbiSnippet
 
 // 1 - Create a simple function to encode into ABI
 
@@ -34,6 +36,8 @@ const simpleAbiFunction = new abi.Function({
 // 2 - Encode function
 
 const encodedFunction = simpleAbiFunction.encodeInput([1, 'foo']);
+
+// END_SNIPPET: AbiSnippet
 
 // 3 - Check encoding
 

@@ -4,7 +4,7 @@ import { blake2b256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import {
     BLOCK_REF_LENGTH,
-    dataUtils,
+    Hex0x,
     SIGNATURE_LENGTH,
     SIGNED_TRANSACTION_RLP,
     TRANSACTION_FEATURES_KIND,
@@ -12,12 +12,7 @@ import {
     UNSIGNED_TRANSACTION_RLP
 } from '../utils';
 import { type TransactionBody } from './types';
-import {
-    ADDRESS,
-    assert,
-    SECP256K1,
-    TRANSACTION
-} from '@vechain/vechain-sdk-errors';
+import { ADDRESS, assert, SECP256K1, TRANSACTION } from '@vechain/sdk-errors';
 import { assertCantGetFieldOnUnsignedTransaction } from '../assertions';
 
 /**
@@ -129,7 +124,7 @@ class Transaction {
         );
 
         // Address from public key
-        return addressUtils.fromPublicKey(delegatorPublicKey);
+        return addressUtils.fromPublicKey(Buffer.from(delegatorPublicKey));
     }
 
     /**
@@ -205,15 +200,17 @@ class Transaction {
 
         // There is a delegateFor address (@note we already know that it is a valid address)
         if (delegateFor !== undefined) {
-            return blake2b256(
-                Buffer.concat([
-                    transactionHash,
-                    Buffer.from(delegateFor.slice(2), 'hex')
-                ])
+            return Buffer.from(
+                blake2b256(
+                    Buffer.concat([
+                        Buffer.from(transactionHash),
+                        Buffer.from(delegateFor.slice(2), 'hex')
+                    ])
+                )
             );
         }
 
-        return transactionHash;
+        return Buffer.from(transactionHash);
     }
 
     /**
@@ -246,7 +243,7 @@ class Transaction {
         );
 
         // Address from public key
-        return addressUtils.fromPublicKey(originPublicKey);
+        return addressUtils.fromPublicKey(Buffer.from(originPublicKey));
     }
 
     /**
@@ -413,7 +410,7 @@ class Transaction {
             body.chainTag <= 255 &&
             // Block reference
             body.blockRef !== undefined &&
-            dataUtils.isHexString(body.blockRef) &&
+            Hex0x.isValid(body.blockRef) &&
             Buffer.from(body.blockRef.slice(2), 'hex').length ===
                 BLOCK_REF_LENGTH &&
             // Expiration

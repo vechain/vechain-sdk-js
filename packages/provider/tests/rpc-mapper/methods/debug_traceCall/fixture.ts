@@ -1,7 +1,4 @@
-import {
-    InvalidDataTypeError,
-    ProviderRpcError
-} from '@vechain/vechain-sdk-errors';
+import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
 
 /**
  * debug_traceCall positive cases fixture

@@ -1,5 +1,7 @@
-import { clauseBuilder } from '@vechain/vechain-sdk-core';
+import { clauseBuilder } from '@vechain/sdk-core';
 import { expect } from 'expect';
+
+// START_SNIPPET: ContractDeploySnippet
 
 // 1 - Init contract bytecode to deploy
 
@@ -8,6 +10,8 @@ const contractBytecode =
 
 // 2 - Create a clause to deploy the contract
 const clause = clauseBuilder.deployContract(contractBytecode);
+
+// END_SNIPPET: ContractDeploySnippet
 
 // The first clause of the transaction should be a deployed contract clause
 expect(clause.data).toEqual(contractBytecode);

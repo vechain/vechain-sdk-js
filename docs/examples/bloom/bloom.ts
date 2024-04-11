@@ -1,5 +1,7 @@
-import { bloom } from '@vechain/vechain-sdk-core';
+import { bloom } from '@vechain/sdk-core';
 import { expect } from 'expect';
+
+// START_SNIPPET: BloomSnippet
 
 // 1 - Get best value of k (bits per key)
 
@@ -19,6 +21,8 @@ for (let i = 0; i < 100; i++) {
 // 4 - Create the filter
 
 const bloomFilter = bloomGenerator.generate(100, k);
+
+// END_SNIPPET: BloomSnippet
 
 // Positive case (number from 0 to 99 must be present in the bloom filter)
 for (let i = 0; i < 100; i++) {

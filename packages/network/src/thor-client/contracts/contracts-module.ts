@@ -8,7 +8,7 @@ import {
     type FunctionFragment,
     abi,
     clauseBuilder
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import type {
     ContractCallOptions,
     ContractCallResult,
@@ -121,7 +121,8 @@ class ContractsModule {
         const clause = clauseBuilder.functionInteraction(
             contractAddress,
             functionFragment,
-            functionData
+            functionData,
+            options?.value ?? 0
         );
 
         // Estimate the gas cost of the transaction

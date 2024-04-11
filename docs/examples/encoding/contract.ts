@@ -1,5 +1,7 @@
-import { coder } from '@vechain/vechain-sdk-core';
+import { coder } from '@vechain/sdk-core';
 import { expect } from 'expect';
+
+// START_SNIPPET: ContractSnippet
 
 // 1 - Create a new function
 
@@ -41,6 +43,8 @@ const encodedData = coder.encodeFunctionInput(contractABI, 'setValue', [123]);
 const decodedData = String(
     coder.decodeFunctionInput(contractABI, 'setValue', encodedData)[0]
 ); // decode the function input data
+
+// END_SNIPPET: ContractSnippet
 
 // Check the decoded data
 expect(decodedData).toEqual('123');

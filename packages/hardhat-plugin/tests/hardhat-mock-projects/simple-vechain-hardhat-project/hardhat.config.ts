@@ -6,6 +6,7 @@
 import { type HardhatUserConfig, type HttpNetworkConfig } from 'hardhat/types';
 
 import '../../../src/index';
+import { VET_DERIVATION_PATH } from '@vechain/sdk-core/dist';
 
 /**
  * Simple configuration for testing
@@ -18,7 +19,14 @@ const vechainTestNetwork: HttpNetworkConfig = {
     gas: 'auto',
     gasPrice: 'auto',
     gasMultiplier: 1,
-    accounts: [],
+    accounts: {
+        mnemonic:
+            'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
+        path: VET_DERIVATION_PATH,
+        count: 3,
+        initialIndex: 0,
+        passphrase: 'vechainthor'
+    },
 
     // Custom parameters
     delegator: {
@@ -29,11 +37,30 @@ const vechainTestNetwork: HttpNetworkConfig = {
 };
 
 /**
+ * Thor solo network configuration
+ */
+const vechainSoloNetwork = {
+    // Thor solo network
+    url: 'http://localhost:8669',
+    accounts: [
+        '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+    ],
+    debugMode: false,
+    delegator: undefined,
+    gas: 'auto',
+    gasPrice: 'auto',
+    gasMultiplier: 1,
+    timeout: 20000,
+    httpHeaders: {}
+} satisfies HttpNetworkConfig;
+
+/**
  * Hardhat configuration
  */
 const config: HardhatUserConfig = {
     solidity: '0.8.17',
     networks: {
+        vechain_solo: vechainSoloNetwork,
         vechain_testnet: vechainTestNetwork
     },
 
@@ -44,7 +71,7 @@ const config: HardhatUserConfig = {
      * npx hardhat --network vechain_testnet <command>
      * ```
      */
-    defaultNetwork: 'vechain_testnet'
+    defaultNetwork: 'vechain_solo'
 };
 
 export default config;

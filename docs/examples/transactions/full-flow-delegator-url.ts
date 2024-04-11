@@ -1,6 +1,8 @@
-import { clauseBuilder, unitsUtils } from '@vechain/vechain-sdk-core';
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { clauseBuilder, unitsUtils } from '@vechain/sdk-core';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
+
+// START_SNIPPET: FullFlowDelegatorUrlSnippet
 
 // 1 - Create the thor client
 const _testnetUrl = 'https://testnet.vechain.org/';
@@ -60,11 +62,6 @@ const signedTx = await thorClient.transactions.signTransaction(
     }
 );
 
-// Check the signed transaction
-expect(signedTx.isSigned).toEqual(true);
-expect(signedTx.isDelegated).toEqual(true);
-// expect(signedTx.delegator).toEqual(delegatorAccount.address); ---
-
 // 5 - Send the transaction
 const sendTransactionResult =
     await thorClient.transactions.sendTransaction(signedTx);
@@ -73,6 +70,13 @@ const sendTransactionResult =
 const txReceipt = await thorClient.transactions.waitForTransaction(
     sendTransactionResult.id
 );
+
+// END_SNIPPET: FullFlowDelegatorUrlSnippet
+
+// Check the signed transaction
+expect(signedTx.isSigned).toEqual(true);
+expect(signedTx.isDelegated).toEqual(true);
+// expect(signedTx.delegator).toEqual(delegatorAccount.address); ---
 
 // Check the transaction receipt
 expect(txReceipt).toBeDefined();

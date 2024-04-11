@@ -3,9 +3,9 @@ import { blake2b256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Buffer } from 'buffer';
-import { dataUtils } from '../utils';
+import { Hex0x } from '../utils';
 import { type Certificate } from './types';
-import { assert, CERTIFICATE } from '@vechain/vechain-sdk-errors';
+import { assert, CERTIFICATE } from '@vechain/sdk-errors';
 
 /**
  * Deterministically encodes a certificate into a JSON string.
@@ -39,8 +39,7 @@ function verify(cert: Certificate): void {
     // Invalid signature
     assert(
         'verify',
-        dataUtils.isHexString(cert.signature as string) &&
-            (cert.signature as string).length % 2 === 0,
+        Hex0x.isValid(cert.signature as string, false, true),
         CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT,
         'Verification failed: Signature format is invalid.',
         { cert }
@@ -50,14 +49,14 @@ function verify(cert: Certificate): void {
     const encoded = encode({ ...cert, signature: undefined });
     const signingHash = blake2b256(encoded);
     const pubKey = secp256k1.recover(
-        signingHash,
+        Buffer.from(signingHash),
         Buffer.from((cert.signature as string).slice(2), 'hex')
     );
 
     // Signature does not match with the signer's public key
     assert(
         'verify',
-        addressUtils.fromPublicKey(pubKey) === cert.signer,
+        addressUtils.fromPublicKey(Buffer.from(pubKey)) === cert.signer,
         CERTIFICATE.CERTIFICATE_INVALID_SIGNER,
         "Verification failed: Signature does not correspond to the signer's public key.",
         { pubKey, cert }

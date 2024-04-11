@@ -3,7 +3,7 @@ import { HardhatVechainProvider } from '../../../src';
 import { testnetUrl } from '../../fixture';
 import { providerMethodsTestCasesTestnet } from '../fixture';
 import { waitForMessage } from '../helpers';
-import { BaseWallet } from '@vechain/vechain-sdk-wallet';
+import { BaseWallet } from '@vechain/sdk-wallet';
 
 /**
  * Vechain provider tests
@@ -21,7 +21,11 @@ describe('Hardhat provider tests - testnet', () => {
      */
     beforeEach(() => {
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        provider = new HardhatVechainProvider(new BaseWallet([]), testnetUrl);
+        provider = new HardhatVechainProvider(
+            new BaseWallet([]),
+            testnetUrl,
+            (message: string, parent?: Error) => new Error(message, parent)
+        );
     });
 
     /**

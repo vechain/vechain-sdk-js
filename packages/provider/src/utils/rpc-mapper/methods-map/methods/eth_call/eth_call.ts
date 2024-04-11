@@ -2,15 +2,11 @@ import {
     type SimulateTransactionClause,
     type SimulateTransactionOptions,
     type ThorClient
-} from '@vechain/vechain-sdk-network';
-import {
-    assert,
-    buildProviderError,
-    DATA,
-    JSONRPC
-} from '@vechain/vechain-sdk-errors';
+} from '@vechain/sdk-network';
+import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
 import { getCorrectBlockNumberRPCToVechain } from '../../../../const';
 import { type TransactionObjectInput } from './types';
+import { type BlockQuantityInputRPC } from '../../../types';
 
 /**
  * RPC Method eth_call implementation
@@ -31,9 +27,9 @@ const ethCall = async (
         'eth_call',
         params.length === 2 &&
             typeof params[0] === 'object' &&
-            typeof params[1] === 'string',
+            (typeof params[1] === 'object' || typeof params[1] === 'string'),
         DATA.INVALID_DATA_TYPE,
-        `Invalid params length, expected 1 object containing transaction info with following properties: \n {` +
+        `Invalid params length, expected 1 object containing transaction info with following properties: \n{` +
             `\tfrom: 20 bytes [Required] Address the transaction is sent from.` +
             `\tto: 20 bytes - Address the transaction is directed to.` +
             `\tgas: Hexadecimal value of the gas provided for the transaction execution. eth_call consumes zero gas, but this parameter may be needed by some executions.` +
@@ -42,13 +38,17 @@ const ethCall = async (
             `\tmaxFeePerGas: Maximum total fee (base fee + priority fee), in Wei, the sender is willing to pay per gas` +
             `\tvalue: Hexadecimal of the value sent with this transaction.` +
             `\tdata: Hash of the method signature and encoded parameters` +
-            `}\n\n and the block number parameter. An hexadecimal number or (latest, earliest or pending).`
+            `}\n\n and the block tag parameter. 'latest', 'earliest', 'pending', 'safe' or 'finalized' or an object: \n{.` +
+            '\tblockNumber: The number of the block' +
+            '\n}\n\nOR\n\n{' +
+            '\tblockHash: The hash of block' +
+            '\n}'
     );
 
     try {
         const [inputOptions, block] = params as [
             TransactionObjectInput,
-            string
+            BlockQuantityInputRPC
         ];
 
         // Simulate transaction

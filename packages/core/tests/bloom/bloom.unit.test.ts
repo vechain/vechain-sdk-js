@@ -1,5 +1,6 @@
+import * as utils from '@noble/curves/abstract/utils';
 import { describe, expect, test } from '@jest/globals';
-import { bloom } from '../../src';
+import { bloom, Hex } from '../../src';
 import { bloomKTestCases } from './fixture';
 
 /**
@@ -10,6 +11,8 @@ import { bloomKTestCases } from './fixture';
  * @group unit/bloom
  */
 describe('Bloom Filter', () => {
+    const textEncoder = new TextEncoder();
+
     /**
      * Test estimate K function
      */
@@ -30,7 +33,7 @@ describe('Bloom Filter', () => {
         const keys = ['key1', 'key2', 'key3'];
 
         keys.forEach((key) => {
-            generator.add(Buffer.from(key));
+            generator.add(textEncoder.encode(key));
         });
 
         const bitsPerKey = 20;
@@ -39,18 +42,18 @@ describe('Bloom Filter', () => {
         // Generate the bloom filter
         const filter = generator.generate(bitsPerKey, k);
 
-        expect(filter.bits.toString('hex')).toBe('96b298d634155950');
+        expect(Hex.of(filter.bits)).toBe('96b298d634155950');
         expect(filter.bits.byteLength).toBe(8); // 64 bits
         expect(filter.k).toBe(k);
 
         // Validate the generated filter with the expected behavior
         keys.forEach((key) => {
-            expect(filter.contains(Buffer.from(key))).toBe(true);
+            expect(filter.contains(textEncoder.encode(key))).toBe(true);
         });
 
         // Validate false positives/negatives, similar to how it's done in the Go test
         // Assuming 'falseKey1' does not exist in the filter
-        expect(filter.contains(Buffer.from('falseKey1'))).toBe(false);
+        expect(filter.contains(textEncoder.encode('falseKey1'))).toBe(false);
     });
 
     /**
@@ -67,7 +70,7 @@ describe('Bloom Filter', () => {
 
         expect(filter.bits.byteLength).toBe(8);
         expect(filter.k).toBe(k);
-        expect(filter.bits.toString('hex')).toBe('0000000000000000'); // 16 groups of 4 bits, all 0 -> 64 bits
+        expect(Hex.of(filter.bits)).toBe('0000000000000000'); // 16 groups of 4 bits, all 0 -> 64 bits
     });
 
     /**
@@ -83,7 +86,7 @@ describe('Bloom Filter', () => {
         }
 
         keys.forEach((key) => {
-            generator.add(Buffer.from(key));
+            generator.add(textEncoder.encode(key));
         });
 
         const bitsPerKey = 20;
@@ -92,24 +95,23 @@ describe('Bloom Filter', () => {
         // Generate the bloom filter
         const filter = generator.generate(bitsPerKey, k);
 
-        expect(filter.bits.toString('hex')).toBe(
+        expect(Hex.of(filter.bits)).toBe(
             'a4d641159d68d829345f86f40d50676cf042f6265072075a94'
         );
         expect(filter.bits.byteLength).toBe(25);
         expect(filter.k).toBe(k);
 
-        expect(
+        expect(JSON.stringify(filter.bits)).toBe(
             JSON.stringify(
-                Buffer.from(
-                    'a4d641159d68d829345f86f40d50676cf042f6265072075a94',
-                    'hex'
+                utils.hexToBytes(
+                    'a4d641159d68d829345f86f40d50676cf042f6265072075a94'
                 )
             )
-        ).toBe(JSON.stringify(filter.bits));
+        );
 
         // Validate the generated filter with the expected behavior
         keys.forEach((key) => {
-            expect(filter.contains(Buffer.from(key))).toBe(true);
+            expect(filter.contains(textEncoder.encode(key))).toBe(true);
         });
     });
 
@@ -123,7 +125,7 @@ describe('Bloom Filter', () => {
         const keys = ['🚀', '🌕', '\x00\x01\x02'];
 
         keys.forEach((key) => {
-            generator.add(Buffer.from(key));
+            generator.add(textEncoder.encode(key));
         });
 
         const bitsPerKey = 10;
@@ -133,11 +135,11 @@ describe('Bloom Filter', () => {
 
         const filter = generator.generate(bitsPerKey, k);
 
-        expect(filter.bits.toString('hex')).toBe('1190199325088200');
+        expect(Hex.of(filter.bits)).toBe('1190199325088200');
 
         // Validate the generated filter
         keys.forEach((key) => {
-            expect(filter.contains(Buffer.from(key))).toBe(true);
+            expect(filter.contains(textEncoder.encode(key))).toBe(true);
         });
     });
 
@@ -147,14 +149,14 @@ describe('Bloom Filter', () => {
     test('Should correctly handle empty string', () => {
         const generator = new bloom.Generator();
 
-        generator.add(Buffer.from('')); // Empty string
+        generator.add(textEncoder.encode('')); // Empty string
 
         const bitsPerKey = 10;
         const k = bloom.calculateK(bitsPerKey);
 
         const filter = generator.generate(bitsPerKey, k);
 
-        expect(filter.contains(Buffer.from(''))).toBe(true);
+        expect(filter.contains(textEncoder.encode(''))).toBe(true);
     });
 
     /**
@@ -165,7 +167,7 @@ describe('Bloom Filter', () => {
         const numKeys = 1000;
 
         for (let i = 0; i < numKeys; i++) {
-            generator.add(Buffer.from(`key${i}`));
+            generator.add(textEncoder.encode(`key${i}`));
         }
 
         const bitsPerKey = 10;
@@ -177,7 +179,7 @@ describe('Bloom Filter', () => {
         const numTests = 1000;
 
         for (let i = 0; i < numTests; i++) {
-            if (filter.contains(Buffer.from(`falseKey${i}`))) {
+            if (filter.contains(textEncoder.encode(`falseKey${i}`))) {
                 falsePositives++;
             }
         }

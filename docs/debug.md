@@ -9,12 +9,9 @@ class encapsulates functionality to debug the VechainThor blockchain.
 
 The module provides methods to interact with the debug end points provided by 
 
-* [**Retrieve Storage Range**](#retrieve-storage-range) - http://localhost:8669/doc/swagger-ui/#/Debug/post_debug_storage_range 
-* [**Trace Contract Call**](#trace-contract-call) - http://localhost:8669/doc/swagger-ui/#/Debug/post_debug_tracers_call
-* [**Trace Transction Cluase**](#trace-transaction-clause) - http://localhost:8669/doc/swagger-ui/#/Debug/post_debug_tracers
-
-supposing Thor is running at `localhost`, 
-else change `localhost` with the IP address of the [Swagger](https://swagger.io/) service.
+* [**Retrieve Storage Range**](#retrieve-storage-range) - https://testnet.vechain.org/doc/swagger-ui/#/Debug/post_debug_storage_range 
+* [**Trace Contract Call**](#trace-contract-call) - https://testnet.vechain.org/doc/swagger-ui/#/Debug/post_debug_tracers_call
+* [**Trace Transaction Clause**](#trace-transaction-clause) - https://testnet.vechain.org/doc/swagger-ui/#/Debug/post_debug_tracers
 
 ## Retrieve Storage Range
 
@@ -25,8 +22,6 @@ In this example the `thorClient` connects to the *testnet* to retrieve the stora
 as `input` parameter.
 
 ```typescript { name=debug-retrieve-storage-range, category=example }
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
-
 // 1 - Create thor client for testnet
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
@@ -50,7 +45,6 @@ const result = await thorClient.debug.retrieveStorageRange({
 
 // 3 - Print the result.
 console.log(result);
-
 ```
 
 <details>
@@ -113,8 +107,6 @@ In this example the `thorClient` connects to the *testnet* to trace the contract
 the `input` parameter.
 
 ```typescript { name=debug-trace-contract-call, category=example }
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
-
 // 1 - Create thor client for testnet
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
@@ -141,7 +133,6 @@ const result = await thorClient.debug.traceContractCall(
 
 // 3 - Print the result.
 console.log(result);
-
 ```
 
 <details>
@@ -171,39 +162,32 @@ console.log(result);
 The `traceTransactionClause` method trace the transactions specified in the clause at the
 coordinates expressed in the `input` parameter.
 
-In this example the `thorClient` connects to the *testnet* to trace the clase at the coordinates specified in
+In this example the `thorClient` connects to the *testnet* to trace the clause at the coordinates specified in
 the `input` parameter.
 
-```typescript { name=debug-trace-contract-call, category=example }
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
-
+```typescript { name=debug-trace-transaction-clause, category=example }
 // 1 - Create thor client for testnet
 const _testnetUrl = 'https://testnet.vechain.org';
 const testNetwork = new HttpClient(_testnetUrl);
 const thorClient = new ThorClient(testNetwork);
 
-// 2 - Trace the contract call.
-const result = await thorClient.debug.traceContractCall(
+// 2 - Trace the clause.
+const result = await thorClient.debug.traceTransactionClause(
     {
-        contractInput: {
-            to: '0x0000000000000000000000000000456E65726779',
-            data: '0xa9059cbb0000000000000000000000000000000000000000000000000000456e65726779000000000000000000000000000000000000000000000004563918244f400000',
-            value: '0x0'
-        },
-        transactionOptions: {
-            caller: '0x625fCe8dd8E2C05e82e77847F3da06AF6e55A7AF',
-            gasPayer: '0x625fCe8dd8E2C05e82e77847F3da06AF6e55A7AF',
-            expiration: 18,
-            blockRef: '0x0101d05409d55cce'
+        target: {
+            blockID:
+                '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
+            transaction:
+                '0x05b31824569f2f2ec64c62c4e6396199f56ae872ff219288eb3293b4a36e7b0f',
+            clauseIndex: 0
         },
         config: {}
     },
-    null
+    'call' as TracerName
 );
 
 // 3 - Print the result.
 console.log(result);
-
 ```
 
 <details>

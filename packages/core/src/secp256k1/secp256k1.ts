@@ -1,102 +1,182 @@
-import { randomBytes } from 'crypto';
-import { PRIVATE_KEY_MAX_VALUE, SIGNATURE_LENGTH, ZERO_BUFFER } from '../utils';
-import { ec as EC } from 'elliptic';
-import { assert, SECP256K1 } from '@vechain/vechain-sdk-errors';
+import * as utils from '@noble/curves/abstract/utils';
+import { Hex, SIGNATURE_LENGTH } from '../utils';
+import { assert, SECP256K1 } from '@vechain/sdk-errors';
+import { randomBytes as _randomBytes } from '@noble/hashes/utils';
+import { secp256k1 as ec } from '@noble/curves/secp256k1';
 import {
     assertIsValidPrivateKey,
     assertIsValidSecp256k1MessageHash
 } from '../assertions';
 
-// Curve algorithm
-const curve = new EC('secp256k1');
-
 /**
- * Validate message hash
- * @param hash of message
- * @returns if message hash is valid or not
+ * Compresses a public key.
+ *
+ * Security audit function.
+ * * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
+ * * [utils](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
+ *
+ * @param {Uint8Array} publicKey - The uncompressed public key.
+ *
+ * @returns {Uint8Array} - The compressed public key.
+ *
+ * @see inflatePublicKey
+ *
  */
-function isValidMessageHash(hash: Buffer): boolean {
-    return Buffer.isBuffer(hash) && hash.length === 32;
+function compressPublicKey(publicKey: Uint8Array): Uint8Array {
+    const prefix = publicKey.at(0);
+    if (prefix === 4) {
+        // To compress.
+        const x = publicKey.slice(1, 33);
+        const y = publicKey.slice(33, 65);
+        const isYOdd = y[y.length - 1] & 1;
+        // Prefix with 0x02 if Y coordinate is even, 0x03 if odd.
+        return utils.concatBytes(Uint8Array.of(2 + isYOdd), x);
+    } else {
+        // Compressed.
+        return publicKey;
+    }
 }
 
 /**
- * Verify if private key is valid
- * @returns If private key is valid or not
+ * Derives a public key from a given private key.
+ *
+ * Security audit function.
+ * * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
+ *
+ * @param {Uint8Array} privateKey - The private key used to derive the public key.
+ * @param {boolean} [isCompressed=true] - Boolean indicating whether the derived public key should be compressed or not.
+ * @returns {Uint8Array} - The derived public key as a Uint8Array object.
+ *
+ * @throws{InvalidSecp256k1PrivateKeyError} if `privateKey` is invalid.
+ *
+ * @see assertIsValidPrivateKey
  */
-function isValidPrivateKey(key: Buffer): boolean {
-    return (
-        Buffer.isBuffer(key) &&
-        key.length === 32 &&
-        !key.equals(ZERO_BUFFER(32)) &&
-        key.compare(PRIVATE_KEY_MAX_VALUE) < 0
+function derivePublicKey(
+    privateKey: Uint8Array,
+    isCompressed: boolean = true
+): Uint8Array {
+    assertIsValidPrivateKey(
+        'secp256k1.derivePublicKey',
+        privateKey,
+        isValidPrivateKey
     );
+    return ec.getPublicKey(privateKey, isCompressed);
 }
 
 /**
- * Generate private key using elliptic curve algorithm on the curve secp256k1
- * @param entropy - entropy function
- * @returns Private key generated
- */
-function generatePrivateKey(entropy?: () => Buffer): Buffer {
-    entropy = entropy ?? ((): Buffer => randomBytes(32));
-    let privateKey: Buffer;
-    do {
-        privateKey = entropy();
-    } while (!isValidPrivateKey(privateKey));
-    return privateKey;
-}
-
-/**
- * Derive public key from private key using elliptic curve algorithm on the curve secp256k1
+ * Generates a new private key.
  *
- * @throws{InvalidSecp256k1PrivateKeyError}
- * @param privateKey - private key to derive public key from
- * @returns Public key derived from private key
+ * Security audit function.
+ * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
+ *
+ * @returns {Uint8Array} The newly generated private key as a buffer.
  */
-function derivePublicKey(privateKey: Buffer): Buffer {
-    assertIsValidPrivateKey('derivePublicKey', privateKey, isValidPrivateKey);
-    const keyPair = curve.keyFromPrivate(privateKey);
-    return Buffer.from(keyPair.getPublic().encode('array', false));
+function generatePrivateKey(): Uint8Array {
+    return ec.utils.randomPrivateKey();
 }
 
 /**
- * sign a message using elliptic curve algorithm on the curve secp256k1
+ * Inflates a compressed or uncompressed public key.
  *
- * @throws{InvalidSecp256k1PrivateKeyError, InvalidSecp256k1MessageHashError}
- * @param messageHash hash of message
- * @param privateKey serialized private key
+ * Security audit function.
+ * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
+ *
+ * @param {Uint8Array} publicKey - The compressed or uncompressed public key to inflate.
+ *
+ * @return {Uint8Array} - The inflated uncompressed public key.
+ *
+ * @see compressPublicKey
  */
-function sign(messageHash: Buffer, privateKey: Buffer): Buffer {
-    assertIsValidSecp256k1MessageHash('sign', messageHash, isValidMessageHash);
-
-    assertIsValidPrivateKey('sign', privateKey, isValidPrivateKey);
-
-    const keyPair = curve.keyFromPrivate(privateKey);
-    const sig = keyPair.sign(messageHash, { canonical: true });
-
-    const r = Buffer.from(sig.r.toArray('be', 32));
-    const s = Buffer.from(sig.s.toArray('be', 32));
-
-    return Buffer.concat([r, s, Buffer.from([sig.recoveryParam as number])]);
+function inflatePublicKey(publicKey: Uint8Array): Uint8Array {
+    const prefix = publicKey.at(0);
+    if (prefix !== 4) {
+        // To inflate.
+        const x = publicKey.slice(0, 33);
+        const p = ec.ProjectivePoint.fromAffine(
+            ec.ProjectivePoint.fromHex(Hex.of(x)).toAffine()
+        );
+        return p.toRawBytes(false);
+    } else {
+        // Inflated.
+        return publicKey;
+    }
 }
 
 /**
- * Recovery signature to public key
+ * Check if the given hash is a valid message hash.
  *
- * @throws{InvalidSecp256k1MessageHashError, InvalidSecp256k1SignatureError, InvalidSecp256k1SignatureRecoveryError}
- * @param messageHash hash of message
- * @param sig signature
+ * Security audit function.
+ * * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
+ * * [utils](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
+ *
+ * @param {Uint8Array} hash - The hash of the message to validate.
+ * @return {boolean} - Returns `true` if the hash is a valid message hash,
+ * otherwise returns `false`.
  */
-function recover(messageHash: Buffer, sig: Buffer): Buffer {
+function isValidMessageHash(hash: Uint8Array): boolean {
+    return hash.length === 32;
+}
+
+/**
+ * Checks if the given private key is valid.
+ *
+ * Security audit function.
+ * * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
+ *
+ * @param {Uint8Array} privateKey - The private key to be checked.
+ * @return {boolean} - Returns `true` if the private key is 32 bytes long
+ * in the range between 0 and {@link PRIVATE_KEY_MAX_VALUE} excluded,
+ * otherwise `false`.
+ */
+function isValidPrivateKey(privateKey: Uint8Array): boolean {
+    return ec.utils.isValidPrivateKey(privateKey);
+}
+
+/**
+ * Generates random bytes of specified length.
+ *
+ * The function relays on [noble-hashes](https://github.com/paulmillr/noble-hashes/blob/main/src/utils.ts)
+ * functionality to delegate the OS to generate the random sequence according the host hardware.
+ *
+ * Security audit function.
+ * * [_randomBytes](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
+ *
+ * @param {number} bytesLength - The length of the random bytes to generate.
+ * @return {Uint8Array} - The generated random bytes as a Uint8Array object.
+ * @throws Error with `crypto.getRandomValues must be defined`
+ * message if no hardware for random generation is
+ * available at runtime.
+ */
+function randomBytes(bytesLength?: number | undefined): Uint8Array {
+    return _randomBytes(bytesLength);
+}
+
+/**
+ * Recovers public key from a given message hash and signature.
+ *
+ * Security audit function.
+ * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
+ *
+ * @param {Uint8Array} messageHash - The message hash to recover the public key from.
+ * @param {Uint8Array} sig - The signature of the message.
+ * @returns {Uint8Array} - The recovered public key.
+ *
+ * @throws{InvalidSecp256k1MessageHashError} - If the message hash is invalid.
+ * @throws{InvalidSecp256k1SignatureError} - If the signature is invalid.
+ * @throws{InvalidSecp256k1SignatureRecoveryError} - If the signature can't be used to recovery the public key.
+ *
+ * @see assertIsValidSecp256k1MessageHash
+ */
+function recover(messageHash: Uint8Array, sig: Uint8Array): Uint8Array {
     assertIsValidSecp256k1MessageHash(
-        'recover',
+        'secp256k1.recover',
         messageHash,
         isValidMessageHash
     );
 
     assert(
-        'recover',
-        Buffer.isBuffer(sig) && sig.length === SIGNATURE_LENGTH,
+        'secp256k1.recover',
+        sig.length === SIGNATURE_LENGTH,
         SECP256K1.INVALID_SECP256k1_SIGNATURE,
         'Invalid signature given as input. Length must be exactly 65 bytes.',
         { sig }
@@ -104,48 +184,59 @@ function recover(messageHash: Buffer, sig: Buffer): Buffer {
 
     const recovery = sig[64];
     assert(
-        'recover',
+        'secp256k1.recover',
         recovery === 0 || recovery === 1,
         SECP256K1.INVALID_SECP256k1_SIGNATURE_RECOVERY,
         'Invalid signature recovery value. Signature bytes at position 64 must be 0 or 1.',
         { recovery }
     );
 
-    const rCopy = Uint8Array.from(sig);
-    const r = rCopy.slice(0, 32);
-
-    const sCopy = Uint8Array.from(sig);
-    const s = sCopy.slice(32, 64);
-
-    return Buffer.from(
-        (
-            curve.recoverPubKey(messageHash, { r, s }, recovery) as {
-                encode: (enc: string, flag: boolean) => ArrayBuffer;
-            }
-        ).encode('array', false)
-    );
+    return ec.Signature.fromCompact(sig.slice(0, 64))
+        .addRecoveryBit(recovery)
+        .recoverPublicKey(messageHash)
+        .toRawBytes(false);
 }
 
 /**
- * Convert extended public key to array public key (compressed or uncompressed)
+ * Signs a message hash using a private key.
  *
- * @param extendedPublicKey extended public key
- * @param compact if public key should be compressed or not
- * @returns array public key
+ * Security audit function.
+ * * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
+ * * [utils](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
+ *
+ * @param {Uint8Array} messageHash - The message hash to be signed.
+ * @param {Uint8Array} privateKey - The private key to use for signing.
+ * @returns {Uint8Array} - The signature of the message hash.
+ *
+ * @throws {InvalidSecp256k1MessageHashError} - If the message hash is invalid.
+ * @throws {InvalidSecp256k1PrivateKeyError} - If the private key is invalid.
+ *
+ * @see assertIsValidSecp256k1MessageHash
+ * @see assertIsValidPrivateKey
  */
-function extendedPublicKeyToArray(
-    extendedPublicKey: Buffer,
-    compact: boolean
-): number[] {
-    return curve.keyFromPublic(extendedPublicKey).getPublic(compact, 'array');
+function sign(messageHash: Uint8Array, privateKey: Uint8Array): Uint8Array {
+    assertIsValidSecp256k1MessageHash(
+        'secp256k1.sign',
+        messageHash,
+        isValidMessageHash
+    );
+    assertIsValidPrivateKey('secp256k1.sign', privateKey, isValidPrivateKey);
+    const sig = ec.sign(messageHash, privateKey);
+    return utils.concatBytes(
+        utils.numberToBytesBE(sig.r, 32),
+        utils.numberToBytesBE(sig.s, 32),
+        utils.numberToVarBytesBE(sig.recovery)
+    );
 }
 
 export const secp256k1 = {
+    compressPublicKey,
+    derivePublicKey,
+    generatePrivateKey,
+    inflatePublicKey,
     isValidMessageHash,
     isValidPrivateKey,
-    generatePrivateKey,
-    derivePublicKey,
-    sign,
     recover,
-    extendedPublicKeyToArray
+    randomBytes,
+    sign
 };

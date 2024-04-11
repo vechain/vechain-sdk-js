@@ -6,7 +6,10 @@ import {
     assertValidHexBlobKindBuffer,
     assertFixedHexBlobKindData,
     assertFixedHexBlobKindBuffer,
-    assertCompactFixedHexBlobBuffer
+    assertCompactFixedHexBlobBuffer,
+    decodeBufferToHexWithLeadingZeros,
+    encodeBigIntToBuffer,
+    Hex
 } from '../../src';
 import {
     invalidCompactFixedHexBlobKindBufferTestCases,
@@ -24,7 +27,36 @@ import {
     validNumericBufferTestCases,
     validateNumberTestCases
 } from './helpers.fixture';
-import { InvalidRLPError } from '@vechain/vechain-sdk-errors';
+import { InvalidRLPError } from '@vechain/sdk-errors';
+
+/**
+ * Test suite for BigInt helper functions
+ * @group unit/numerickind-helpers
+ */
+describe('encodeBigIntToBuffer', () => {
+    test('encodeBigIntToBuffer', () => {
+        const bi = 123456789012345678901n; // or any BigInt you want to test with
+        const buffer = encodeBigIntToBuffer(bi, 9, 'encodeBigIntToBuffer');
+        expect(Hex.of(buffer)).toBe('06b14e9f812f366c35');
+    });
+});
+
+/**
+ * Test suite for Buffer helper functions
+ * @group unit/numerickind-helpers
+ */
+describe('decodeBufferToHexWithLeadingZeros', () => {
+    test('decodeBufferToHexWithLeadingZeros zero bytes', () => {
+        const buffer: Buffer = Buffer.alloc(1);
+        buffer[0] = 10;
+        expect(decodeBufferToHexWithLeadingZeros(buffer, 0)).toBe('0x0a');
+    });
+    test('decodeBufferToHexWithLeadingZeros with bytes', () => {
+        const buffer: Buffer = Buffer.alloc(1);
+        buffer[0] = 10;
+        expect(decodeBufferToHexWithLeadingZeros(buffer, 4)).toBe('0x0000000a');
+    });
+});
 
 /**
  * Test suite for NumericKind helpers.

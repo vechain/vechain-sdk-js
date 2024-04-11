@@ -1,83 +1,45 @@
-# Contract Transactions
+# Contracts in vechain
 
-## Build a deploy contract clause
+This document provides a comprehensive guide on constructing contract transactions using the vechain SDK, specifically focusing on deploying smart contracts and calling contract functions. The aim is to furnish developers with the knowledge to seamlessly integrate these transactions into their blockchain applications on vechain.
+
+## Deploying a Smart Contract
 
 ### Overview
 
-This example showcases the process of building a clause to deploy a smart contract using the Vechain SDK.
+Deploying a smart contract is a foundational step in leveraging the vechain blockchain for decentralized applications. This section delves into the process of creating a deployment clause, which is essential for initiating a smart contract on the network.
 
-[example](examples/contracts/contract-deploy.ts)
+[ContractDeploySnippet](examples/contracts/contract-deploy.ts)
 
-### Code Explanation
+### Process Breakdown
 
--   The `clauseBuilder.deployContract` function from `@vechain/vechain-sdk-core` is employed to construct a clause needed to perform a deploy contract transaction.
+1. **Clause Construction**: The deployment of a smart contract begins with the construction of a deployment clause. The vechain SDK offers a dedicated function, `clauseBuilder.deployContract`, found within the `@vechain/sdk-core` package, for this purpose.
 
--   The smart contract bytecode is represented by the `contractBytecode` variable.
+2. **Smart Contract Bytecode**: The bytecode of the smart contract, contained within the `contractBytecode` variable, encapsulates the compiled contract code that will be deployed to the blockchain.
 
--   The `clauseBuilder.deployContract` function is invoked with the contract bytecode, resulting in the creation of a clause object.
+3. **Invocation**: By invoking the `clauseBuilder.deployContract` function with the contract's bytecode, a clause object is generated. This clause object is a structured representation of the deployment request, ready to be broadcast to the vechain network.
 
 ### Conclusion
 
-This example provides a practical demonstration of utilizing the vechain SDK to build a clause which can be used to deploy a smart contract.
+The deployment example elucidates the utilization of the vechain SDK to construct a deployment clause, a crucial component for deploying smart contracts on the vechain blockchain.
 
-## Build a Contract Function Call clause
+## Calling a Contract Function
 
 ### Overview
 
-This example demonstrates the process of building a clause to call a function on a deployed smart contract using the vechain SDK.
+After deploying a smart contract, interacting with its functions is the next step. This section guides you through the creation of a clause tailored for calling a specific function within a deployed smart contract.
 
-[example](examples/contracts/contract-function-call.ts)
+[ContractFunctionCallSnippet](examples/contracts/contract-function-call.ts)
 
-### Code Explanation
+### Process Breakdown
 
--   The example involves a smart contract with an ABI (Application Binary Interface) defined in JSON format. The ABI describes the functions and their parameters in the contract.
+1. **Understanding the ABI**: The ABI (Application Binary Interface) of the smart contract, usually defined in JSON format, describes the contract's functions and their respective parameters. This interface is pivotal for ensuring proper interaction with the contract's functions.
 
--   The `clauseBuilder.functionInteraction` function from `@vechain/vechain-sdk-core` is used to create a clause for calling a specific function on the smart contract.
+2. **Clause Creation for Function Calls**: Utilizing the `clauseBuilder.functionInteraction` function from the `@vechain/sdk-core` package, a clause is crafted for the specific purpose of invoking a function on the smart contract.
 
--   The function `setValue` is called with an argument of 123, representing the value to be set in the smart contract.
+3. **Function Invocation**: In this example, the function `setValue` within the smart contract is invoked with a parameter of `123`. This action demonstrates how to interact with a function, altering the state within the smart contract based on the function's logic.
 
 ### Conclusion
 
-This example illustrates the process of creating a clause that is useful for interacting with a deployed smart contract on vechain.
+This section highlights the methodology for constructing a clause that facilitates interaction with a deployed smart contract's functions on the vechain network, thereby enabling developers to manipulate and query smart contract states efficiently.
 
-   
-## Create a sample ERC20 token
-
-### Overview
-The ERC20 token standard is widely used for creating and issuing smart contracts on Ethereum blockchain. Vechain, being compatible with Ethereum's EVM, allows for the implementation of ERC20 tokens on its platform. This provides the benefits of VeChain's features, such as improved scalability and lower transaction costs, while maintaining the familiar ERC20 interface.
-
-### Example
-
-The vechain SDK allows to create a sample ERC20 token with a few lines of code. The example below shows how to create a sample ERC20 token with the name "SampleToken" and symbol "ST" with a total supply of 1000000000000000000000000. 
-
-#### Compile the contract
-
-The first step is to compile the contract using a solidity compiler. In this example we will compile an ERC20 token contract based on the OpenZeppelin ERC20 implementation. The contract is the following one: 
-
-The bytecode and the ABI have been obtained by compiling the following contract:
-
-```solidity
-pragma solidity ^0.8.20;
-
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-
-contract SampleToken is ERC20 {
-    constructor() ERC20("SampleToken", "ST") {
-        _mint(msg.sender, 1000000 * (10 ** uint256(decimals())));
-    }
-}
-```
-
-#### Deploy the contract
-
-Once the contract is compiled, we can deploy it using the vechain SDK. The following code shows how to deploy the contract:
-
-
-[example](examples/contracts/contract-create-ERC20-token.ts)
-
-
-#### Transfer tokens to another address
-
-Once the contract is deployed, we can transfer tokens to another address using the vechain SDK. The following code shows how to transfer 10000 token smallest unit to another address:
-
-[example](examples/contracts/contract-transfer-ERC20-token.ts)
+This document, designed to be both informative and practical, equips developers with the necessary tools and knowledge to effectively interact with smart contracts on the vechain blockchain, from deployment to function invocation.

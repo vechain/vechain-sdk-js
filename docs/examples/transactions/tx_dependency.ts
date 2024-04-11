@@ -7,8 +7,10 @@ import {
     type TransactionBody,
     unitsUtils,
     clauseBuilder
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import { expect } from 'expect';
+
+// START_SNIPPET: TxDependencySnippet
 
 // 1 - Define transaction clauses
 
@@ -62,7 +64,10 @@ const senderPrivateKey = secp256k1.generatePrivateKey();
 
 // 4 - Get Tx A id
 
-const txASigned = TransactionHandler.sign(txABody, senderPrivateKey);
+const txASigned = TransactionHandler.sign(
+    txABody,
+    Buffer.from(senderPrivateKey)
+);
 
 // 5 - Set it inside tx B
 
@@ -70,7 +75,10 @@ txBBody.dependsOn = txASigned.id;
 
 // 6 - Sign Tx B
 
-const txBSigned = TransactionHandler.sign(txBBody, senderPrivateKey);
+const txBSigned = TransactionHandler.sign(
+    txBBody,
+    Buffer.from(senderPrivateKey)
+);
 
 // 7 - encode Tx B
 
@@ -78,4 +86,7 @@ const rawTxB = txBSigned.encoded;
 
 // Check (we can decode Tx B)
 const decodedTx = TransactionHandler.decode(rawTxB, true);
+
+// END_SNIPPET: TxDependencySnippet
+
 expect(decodedTx.body.dependsOn).toBe(txASigned.id);

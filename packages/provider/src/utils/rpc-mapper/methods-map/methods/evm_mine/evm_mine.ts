@@ -1,6 +1,6 @@
-import { type ThorClient } from '@vechain/vechain-sdk-network';
+import { type ThorClient } from '@vechain/sdk-network';
 import { blocksFormatter, type BlocksRPC } from '../../../../formatter';
-import { JSONRPC, buildProviderError } from '@vechain/vechain-sdk-errors';
+import { JSONRPC, buildProviderError } from '@vechain/sdk-errors';
 import { RPCMethodsMap, RPC_METHODS } from '../../../../../provider';
 
 /**
@@ -18,7 +18,9 @@ const evmMine = async (thorClient: ThorClient): Promise<BlocksRPC | null> => {
         const bestBlock = await thorClient.blocks.getBestBlockExpanded();
         const newBlock =
             bestBlock !== null
-                ? await thorClient.blocks.waitForBlock(bestBlock.number + 1)
+                ? await thorClient.blocks.waitForBlockCompressed(
+                      bestBlock.number + 1
+                  )
                 : null;
 
         const chainId = (await RPCMethodsMap(thorClient)[

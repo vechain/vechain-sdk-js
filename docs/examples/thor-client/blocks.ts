@@ -1,5 +1,7 @@
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
+
+// START_SNIPPET: BlocksSnippet
 
 // 1 - Create thor client for testnet
 
@@ -11,6 +13,18 @@ const thorClient = new ThorClient(testNetwork);
 
 // Details of block
 const blockDetails = await thorClient.blocks.getBlockCompressed(1);
+
+// 3 - Get best block details
+
+const bestBlockDetails = await thorClient.blocks.getBestBlockExpanded();
+expect(bestBlockDetails).toBeDefined();
+
+// 4 - Get finalizes block details
+
+const finalBlockDetails = await thorClient.blocks.getFinalBlockExpanded();
+
+// END_SNIPPET: BlocksSnippet
+
 expect(blockDetails).toEqual({
     number: 1,
     id: '0x000000019015bbd98fc1c9088d793ba9add53896a29cd9aa3a4dcabd1f561c38',
@@ -35,13 +49,5 @@ expect(blockDetails).toEqual({
     isFinalized: true,
     transactions: []
 });
-
-// 3 - Get best block details
-
-const bestBlockDetails = await thorClient.blocks.getBestBlockExpanded();
 expect(bestBlockDetails).toBeDefined();
-
-// 4 - Get finalizes block details
-
-const finalBlockDetails = await thorClient.blocks.getFinalBlock();
 expect(finalBlockDetails).toBeDefined();

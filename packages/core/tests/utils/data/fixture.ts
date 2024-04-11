@@ -1,4 +1,4 @@
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { InvalidDataTypeError } from '@vechain/sdk-errors';
 
 /**
  * Valid hex strings.
@@ -24,7 +24,8 @@ const validThorIDs = [
         checkPrefix: true
     },
     {
-        value: '271f7db20141001975f71deb8fca90d6b22b8d6610dfb5a3e0bbeaf78b5a4891'
+        value: '271f7db20141001975f71deb8fca90d6b22b8d6610dfb5a3e0bbeaf78b5a4891',
+        checkPrefix: false
     },
     {
         value: '271f7db20141001975f71deb8fca90d6b22b8d6610dfb5a3e0bbeaf78b5a4891',
@@ -45,7 +46,8 @@ const invalidThorIDs = [
         checkPrefix: false
     },
     {
-        value: '0xInvalidThorID'
+        value: '0xInvalidThorID',
+        checkPrefix: true
     }
 ];
 

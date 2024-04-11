@@ -1,12 +1,9 @@
-import { VTHO_ADDRESS } from '@vechain/vechain-sdk-core';
+import { VTHO_ADDRESS } from '@vechain/sdk-core';
 import {
     TESTING_CONTRACT_ADDRESS,
     TESTING_CONTRACT_BYTECODE
 } from '../../../fixture';
-import {
-    InvalidDataTypeError,
-    ProviderRpcError
-} from '@vechain/vechain-sdk-errors';
+import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
 
 /**
  * VTHO Contract bytecode on Solo Network

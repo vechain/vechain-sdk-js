@@ -1,11 +1,6 @@
-import {
-    assert,
-    DATA,
-    SECP256K1,
-    TRANSACTION
-} from '@vechain/vechain-sdk-errors';
+import { assert, DATA, SECP256K1, TRANSACTION } from '@vechain/sdk-errors';
 import { type Transaction } from '../../transaction';
-import { dataUtils } from '../../utils';
+import { Hex0x } from '../../utils';
 
 /**
  * Assert if transaction ID is valid
@@ -19,7 +14,7 @@ function assertValidTransactionID(
 ): void {
     assert(
         `assertValidTransactionID - ${methodName}`,
-        dataUtils.isThorId(transactionId, true),
+        Hex0x.isThorId(transactionId),
         DATA.INVALID_DATA_TYPE,
         'Invalid transaction ID given as input. Input must be an hex string of length 64.',
         { transactionId }
@@ -35,7 +30,7 @@ function assertValidTransactionID(
 function assertValidTransactionHead(methodName: string, head?: string): void {
     assert(
         `assertValidTransactionHead - ${methodName}`,
-        head === undefined || dataUtils.isThorId(head, true),
+        head === undefined || Hex0x.isThorId(head),
         DATA.INVALID_DATA_TYPE,
         'Invalid head given as input. Input must be an hex string of length 64.',
         { head }

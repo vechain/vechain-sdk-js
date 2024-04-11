@@ -1,5 +1,5 @@
-import { dataUtils } from '../../../src';
-import { InvalidAddressError } from '@vechain/vechain-sdk-errors';
+import { InvalidAddressError } from '@vechain/sdk-errors';
+import { Hex } from '../../../src';
 
 /**
  * Blooms filter used to check if "it is a bloom filter or not" verification works
@@ -57,21 +57,21 @@ const valueTypeBloomTestCases = [
     {
         bloom: 'a4d641159d68d829345f86f40d50676cf042f6265072075a94',
         k: 13,
-        data: dataUtils.toHexString('key1'),
+        data: Hex.of('key1'),
         expected: true,
         description: 'regular string'
     },
     {
         bloom: '1190199325088200',
         k: 6,
-        data: dataUtils.toHexString('\x00\x01\x02'),
+        data: Hex.of('\x00\x01\x02'),
         expected: true,
         description: 'binary data'
     },
     {
         bloom: '0x1190199325088200',
         k: 6,
-        data: dataUtils.toHexString('🚀'),
+        data: Hex.of('🚀'),
         expected: true,
         description: 'emoji'
     }

@@ -9,6 +9,10 @@ import {
     contractBytecode,
     deployedContractAbi,
     deployedContractBytecode,
+    depositContractAbi,
+    depositContractBytecode,
+    filterContractEventsTestCases,
+    fourArgsEventAbi,
     testingContractTestCases
 } from './fixture';
 import {
@@ -16,7 +20,7 @@ import {
     coder,
     type DeployParams,
     type FunctionFragment
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import {
     Contract,
     ThorClient,
@@ -27,7 +31,7 @@ import {
     ContractDeploymentFailedError,
     InvalidAbiFunctionError,
     TransactionMissingPrivateKeyError
-} from '@vechain/vechain-sdk-errors';
+} from '@vechain/sdk-errors';
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.
@@ -342,6 +346,57 @@ describe('ThorClient - Contracts', () => {
     }, 10000);
 
     /**
+     * Test case for creating a filter for a contract event.
+     */
+    test('Create a filter for a four args event', () => {
+        // Load the deployed contract using the contract address, ABI and private key
+        const loadedContract = thorSoloClient.contracts.load(
+            '0x0000000000000000000000000000456e65726779',
+            fourArgsEventAbi
+        );
+
+        const contractFilter = loadedContract.filters.DataUpdated(
+            '0x0000000000000000000000000000456e65726779',
+            10,
+            10,
+            10
+        );
+
+        expect(contractFilter).toBeDefined();
+        expect(contractFilter.criteriaSet[0].topic0).toBeDefined();
+        expect(contractFilter.criteriaSet[0].topic1).toBeDefined();
+        expect(contractFilter.criteriaSet[0].topic2).toBeDefined();
+        expect(contractFilter.criteriaSet[0].topic3).toBeDefined();
+        expect(contractFilter.criteriaSet[0].topic4).toBeDefined();
+    }, 10000);
+
+    test('deploy the deposit contract and call the deposit method', async () => {
+        const depositContractFactory =
+            thorSoloClient.contracts.createContractFactory(
+                depositContractAbi,
+                depositContractBytecode,
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+            );
+
+        const depositContract = await depositContractFactory.startDeployment();
+
+        const deployedDepositContract =
+            await depositContract.waitForDeployment();
+
+        const result = await deployedDepositContract.transact.deposit({
+            value: 1000
+        });
+
+        await result.wait();
+
+        expect(
+            await deployedDepositContract.read.getBalance(
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+            )
+        ).toEqual([BigInt(1000)]);
+    }, 10000);
+
+    /**
      * Tests the `TestingContract` functions.
      *
      * This test iterates over an array of test cases, each representing a different function call
@@ -364,6 +419,97 @@ describe('ThorClient - Contracts', () => {
 
                 expect(response).toEqual(expected);
             });
+        }
+    );
+
+    test('Should filter the StateChanged event of the testing contract', async () => {
+        const contract = thorSoloClient.contracts.load(
+            TESTING_CONTRACT_ADDRESS,
+            TESTING_CONTRACT_ABI,
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+        );
+
+        await (await contract.transact.setStateVariable(123)).wait();
+
+        const events = await contract.filters
+            .StateChanged(
+                undefined,
+                undefined,
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+            )
+            .get();
+
+        expect(events).toBeDefined();
+
+        expect(events.at(events.length - 1)?.topics[1]).toBe(
+            '0x000000000000000000000000000000000000000000000000000000000000007b'
+        );
+    });
+
+    filterContractEventsTestCases.forEach(
+        ({
+            description,
+            contractBytecode,
+            contractAbi,
+            contractCaller,
+            functionCalls,
+            eventName,
+            getParams,
+            args,
+            expectedTopics,
+            expectedData
+        }) => {
+            test(
+                description,
+                async () => {
+                    const contractFactory =
+                        thorSoloClient.contracts.createContractFactory(
+                            contractAbi,
+                            contractBytecode,
+                            contractCaller
+                        );
+
+                    const factory = await contractFactory.startDeployment();
+
+                    const contract: Contract =
+                        await factory.waitForDeployment();
+
+                    for (const functionCall of functionCalls) {
+                        if (functionCall.type === 'read') {
+                            await contract.read[functionCall.functionName](
+                                ...functionCall.params
+                            );
+                        } else {
+                            await (
+                                await contract.transact[
+                                    functionCall.functionName
+                                ](...functionCall.params)
+                            ).wait();
+                        }
+                    }
+
+                    const eventLogs = await contract.filters[eventName](
+                        ...args
+                    ).get(
+                        getParams?.range,
+                        getParams?.options,
+                        getParams?.order
+                    );
+
+                    expect(
+                        eventLogs.map((event) => {
+                            return event.data;
+                        })
+                    ).toEqual(expectedData);
+
+                    expect(
+                        eventLogs.map((event) => {
+                            return event.topics;
+                        })
+                    ).toEqual(expectedTopics);
+                },
+                10000
+            );
         }
     );
 

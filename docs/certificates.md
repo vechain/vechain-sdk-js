@@ -4,7 +4,7 @@ description: Certificate related functions.
 
 # Certificates
 
-In the VechainThor blockchain, a certificate is a data structure used for client-side self-signed certificates. It plays a crucial role in providing a mechanism for secure identification and validation of data.
+In the VechainThor blockchain, a certificate is a data structure used for client-side self-signed certificates. It plays a crucial role in providing a mechanism for secure identification and validation of data. For example, when signing in to a Dapp, users typically need to sign a certificate as part of the authentication process. This certificate serves as cryptographic proof of their identity and authorization. Users use their private keys to sign the certificate, demonstrating their ownership and enabling secure access to the Dapp's services.
 
 ## Purpose of Certificates
 
@@ -34,19 +34,11 @@ Certificates are used in various scenarios within the VechainThor blockchain, in
 It's important to note that certificates in the VechainThor blockchain are self-signed, which means that they are issued and signed by the same entity or user. The signature from the issuer's private key serves as proof of the certificate's authenticity.
 
 ```typescript { name=sign_verify, category=example }
-import {
-    type Certificate,
-    certificate,
-    secp256k1,
-    blake2b256,
-    addressUtils
-} from '@vechain/vechain-sdk-core';
-
 // 1 - Generate a private key and address for the signer
 
 const privateKey = secp256k1.generatePrivateKey();
 const publicKey = secp256k1.derivePublicKey(privateKey);
-const signerAddress = addressUtils.fromPublicKey(publicKey);
+const signerAddress = addressUtils.fromPublicKey(Buffer.from(publicKey));
 
 // 2 - Create a certificate
 
@@ -67,9 +59,8 @@ const jsonStr = certificate.encode(cert);
 const signature = secp256k1.sign(blake2b256(jsonStr), privateKey);
 
 // Add 0x to signature
-cert.signature = '0x' + signature.toString('hex');
+cert.signature = Hex0x.of(signature);
 
 // Verify certificate
 certificate.verify(cert);
-
 ```

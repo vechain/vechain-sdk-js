@@ -2,14 +2,9 @@ import {
     type CompressedBlockDetail,
     type ExpandedBlockDetail,
     type TransactionsExpandedBlockDetail
-} from '@vechain/vechain-sdk-network';
+} from '@vechain/sdk-network';
 import { type BlocksRPC } from './types';
-import {
-    dataUtils,
-    vechain_sdk_core_ethers,
-    ZERO_BUFFER
-} from '@vechain/vechain-sdk-core';
-
+import { Hex0x, Quantity, ZERO_BUFFER } from '@vechain/sdk-core';
 import { transactionsFormatter } from '../transactions';
 
 /**
@@ -40,14 +35,14 @@ const formatToRPCStandard = (
         // Supported fields converted to RPC standard
         hash: block.id,
         parentHash: block.parentID,
-        number: vechain_sdk_core_ethers.toQuantity(block.number),
-        size: vechain_sdk_core_ethers.toQuantity(block.size),
+        number: Quantity.of(block.number),
+        size: Quantity.of(block.size),
         stateRoot: block.stateRoot,
         receiptsRoot: block.receiptsRoot,
         transactionsRoot: block.txsRoot,
-        timestamp: vechain_sdk_core_ethers.toQuantity(block.timestamp),
-        gasLimit: vechain_sdk_core_ethers.toQuantity(block.gasLimit),
-        gasUsed: vechain_sdk_core_ethers.toQuantity(block.gasUsed),
+        timestamp: Quantity.of(block.timestamp),
+        gasLimit: Quantity.of(block.gasLimit),
+        gasUsed: Quantity.of(block.gasUsed),
         transactions,
         miner: block.beneficiary,
 
@@ -55,20 +50,12 @@ const formatToRPCStandard = (
         difficulty: '0x0',
         totalDifficulty: '0x0',
         uncles: [],
-        sha3Uncles: dataUtils.toHexString(ZERO_BUFFER(32), {
-            withPrefix: true
-        }),
-        nonce: dataUtils.toHexString(ZERO_BUFFER(8), {
-            withPrefix: true
-        }),
-        logsBloom: dataUtils.toHexString(ZERO_BUFFER(256), {
-            withPrefix: true
-        }),
+        sha3Uncles: Hex0x.of(ZERO_BUFFER(32)),
+        nonce: Hex0x.of(ZERO_BUFFER(8)),
+        logsBloom: Hex0x.of(ZERO_BUFFER(256)),
         extraData: '0x0',
         baseFeePerGas: '0x0',
-        mixHash: dataUtils.toHexString(ZERO_BUFFER(32), {
-            withPrefix: true
-        })
+        mixHash: Hex0x.of(ZERO_BUFFER(32))
     };
 };
 

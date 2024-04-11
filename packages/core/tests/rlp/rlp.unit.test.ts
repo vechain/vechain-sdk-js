@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { RLP } from '../../src';
+import { Hex, RLP } from '../../src';
 import {
     decodeBufferProfileTestCases,
     decodeHexBlobProfileTestCases,
@@ -33,7 +33,7 @@ import {
     compactFixedHexBlobKindEncodeTestCases,
     compactFixedHexBlobKindDecodeTestCases
 } from './rlp.fixture';
-import { InvalidRLPError } from '@vechain/vechain-sdk-errors';
+import { InvalidRLPError } from '@vechain/sdk-errors';
 
 /**
  * Test suite for RLP encoding/decoding functionality
@@ -44,7 +44,7 @@ describe('RLP', () => {
     describe('encode', () => {
         encodeTestCases.forEach(({ input, expected, description }) => {
             test(description, () => {
-                expect(RLP.encode(input).toString('hex')).toEqual(expected);
+                expect(Hex.of(RLP.encode(input))).toEqual(expected);
             });
         });
     });
@@ -85,9 +85,9 @@ describe('RLP', () => {
             numericKindEncodeTestCases.forEach(
                 ({ kind, data, expected, description }) => {
                     test(description, () => {
-                        expect(
-                            kind.data(data, '').encode().toString('hex')
-                        ).toEqual(expected);
+                        expect(Hex.of(kind.data(data, '').encode())).toEqual(
+                            expected
+                        );
                     });
                 }
             );
@@ -136,9 +136,9 @@ describe('RLP', () => {
             hexBlobKindEncodeTestCases.forEach(
                 ({ kind, data, expected, description }) => {
                     test(description, () => {
-                        expect(
-                            kind.data(data, '').encode().toString('hex')
-                        ).toEqual(expected);
+                        expect(Hex.of(kind.data(data, '').encode())).toEqual(
+                            expected
+                        );
                     });
                 }
             );
@@ -188,9 +188,9 @@ describe('RLP', () => {
             fixedHexBlobKindEncodeTestCases.forEach(
                 ({ kind, data, expected, description }) => {
                     test(description, () => {
-                        expect(
-                            kind.data(data, '').encode().toString('hex')
-                        ).toEqual(expected);
+                        expect(Hex.of(kind.data(data, '').encode())).toEqual(
+                            expected
+                        );
                     });
                 }
             );
@@ -241,9 +241,9 @@ describe('RLP', () => {
             compactFixedHexBlobKindEncodeTestCases.forEach(
                 ({ kind, data, expected, description }) => {
                     test(description, () => {
-                        expect(
-                            kind.data(data, '').encode().toString('hex')
-                        ).toEqual(expected);
+                        expect(Hex.of(kind.data(data, '').encode())).toEqual(
+                            expected
+                        );
                     });
                 }
             );
@@ -276,7 +276,7 @@ describe('RLP', () => {
 
                         const encoded = rlp.encodeObject(data);
 
-                        expect(encoded.toString('hex')).toBe(expected);
+                        expect(Hex.of(encoded)).toBe(expected);
                     });
                 }
             );
@@ -291,7 +291,7 @@ describe('RLP', () => {
 
                         const encoded = rlp.encodeObject(data);
 
-                        expect(encoded.toString('hex')).toBe(expected);
+                        expect(Hex.of(encoded)).toBe(expected);
                     });
                 }
             );
@@ -306,7 +306,7 @@ describe('RLP', () => {
 
                         const encoded = rlp.encodeObject(data);
 
-                        expect(encoded.toString('hex')).toBe(expected);
+                        expect(Hex.of(encoded)).toBe(expected);
                     });
                 }
             );
@@ -320,7 +320,7 @@ describe('RLP', () => {
 
                         const encoded = rlp.encodeObject(data);
 
-                        expect(encoded.toString('hex')).toBe(expected);
+                        expect(Hex.of(encoded)).toBe(expected);
                     });
                 }
             );
@@ -335,7 +335,7 @@ describe('RLP', () => {
 
                         const encoded = rlp.encodeObject(data);
 
-                        expect(encoded.toString('hex')).toBe(expected);
+                        expect(Hex.of(encoded)).toBe(expected);
                     });
                 }
             );
@@ -350,7 +350,7 @@ describe('RLP', () => {
 
                         const encoded = rlp.encodeObject(data);
 
-                        expect(encoded.toString('hex')).toBe(expected);
+                        expect(Hex.of(encoded)).toBe(expected);
                     });
                 }
             );
@@ -365,7 +365,7 @@ describe('RLP', () => {
 
                         const encoded = rlp.encodeObject(data);
 
-                        expect(encoded.toString('hex')).toBe(expected);
+                        expect(Hex.of(encoded)).toBe(expected);
                     });
                 }
             );

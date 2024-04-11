@@ -1,5 +1,7 @@
-import { mnemonic } from '@vechain/vechain-sdk-core';
+import { mnemonic } from '@vechain/sdk-core';
 import { expect } from 'expect';
+
+// START_SNIPPET: Bip39Snippet
 
 // 1 - Generate BIP39 mnemonic words, default to 12 words (128bit strength)
 
@@ -15,6 +17,8 @@ const privateKey = mnemonic.derivePrivateKey(randomMnemonic);
 
 console.log(privateKey.toString('hex'));
 // ...SOME PRIVATE KEY...
+
+// END_SNIPPET: Bip39Snippet
 
 // In recovery process, validation is recommended
 expect(mnemonic.validate(randomMnemonic)).toBeTruthy();

@@ -1,13 +1,14 @@
-import { ZERO_BUFFER, dataUtils } from '@vechain/vechain-sdk-core';
-import {
-    InvalidDataTypeError,
-    ProviderRpcError
-} from '@vechain/vechain-sdk-errors';
+import { Hex0x, ZERO_BUFFER } from '@vechain/sdk-core';
+import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
 
 /**
  * Test cases for eth_getStorageAt RPC method
  */
-const ethGetStorageAtTestCases = [
+const ethGetStorageAtTestCases: Array<{
+    expected: string;
+    description: string;
+    params: string[];
+}> = [
     {
         description:
             'Should return storage slot value for a given smart contract that has a storage slot value different than NULL',
@@ -34,9 +35,7 @@ const ethGetStorageAtTestCases = [
         description:
             'Should return null slot value for an address that does not have a storage slot value at the given position',
         params: [
-            dataUtils.toHexString(ZERO_BUFFER(20), {
-                withPrefix: true
-            }),
+            Hex0x.of(ZERO_BUFFER(20)),
             '0x1',
             'latest' // Block n. 17497585
         ],

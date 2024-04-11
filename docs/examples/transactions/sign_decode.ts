@@ -1,4 +1,4 @@
-import { clauseBuilder, networkInfo } from '@vechain/vechain-sdk-core';
+import { clauseBuilder, networkInfo } from '@vechain/sdk-core';
 import {
     secp256k1,
     TransactionUtils,
@@ -6,8 +6,10 @@ import {
     type TransactionClause,
     type TransactionBody,
     unitsUtils
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import { expect } from 'expect';
+
+// START_SNIPPET: SignDecodeSnippet
 
 // 1 - Define clauses
 
@@ -40,14 +42,20 @@ const privateKey = secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 
-const signedTransaction = TransactionHandler.sign(body, privateKey);
+const signedTransaction = TransactionHandler.sign(
+    body,
+    Buffer.from(privateKey)
+);
 
 // 5 - Encode transaction
 
 const encodedRaw = signedTransaction.encoded;
 
-// 6 - Decode transaction and check
+// 6 - Decode transaction
 
 const decodedTx = TransactionHandler.decode(encodedRaw, true);
+
+// END_SNIPPET: SignDecodeSnippet
+
 expect(decodedTx.body.chainTag).toBe(body.chainTag);
 expect(decodedTx.body.nonce).toBe(body.nonce);

@@ -1,9 +1,7 @@
-import {
-    clauseBuilder,
-    coder,
-    type FunctionFragment
-} from '@vechain/vechain-sdk-core';
+import { clauseBuilder, coder, type FunctionFragment } from '@vechain/sdk-core';
 import { expect } from 'expect';
+
+// START_SNIPPET: ContractFunctionCallSnippet
 
 // 1 - Init a simple contract ABI
 const contractABI = JSON.stringify([
@@ -45,6 +43,8 @@ const clause = clauseBuilder.functionInteraction(
         .getFunction('setValue') as FunctionFragment,
     [123]
 );
+
+// END_SNIPPET: ContractFunctionCallSnippet
 
 // 3 - Check the parameters of the clause
 

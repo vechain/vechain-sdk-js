@@ -1,12 +1,12 @@
 import { ethers } from 'ethers';
-import { randomBytes } from 'crypto';
 import { HDNode } from '../hdnode';
 import {
     type WordListRandomGeneratorSizeInBytes,
     type WordlistSizeType
 } from './types';
 import { MNEMONIC_WORDLIST_ALLOWED_SIZES } from '../utils';
-import { assert, HDNODE } from '@vechain/vechain-sdk-errors';
+import { assert, HDNODE } from '@vechain/sdk-errors';
+import { secp256k1 } from '../secp256k1';
 
 /* --- Overloaded functions start --- */
 
@@ -65,7 +65,8 @@ function generate(
     randomGenerator =
         randomGenerator ??
         // Default random generator
-        ((numberOfBytes: number) => randomBytes(numberOfBytes));
+        ((numberOfBytes: number) =>
+            Buffer.from(secp256k1.randomBytes(numberOfBytes)));
 
     // Worldlist size
     const wordlistSizeToUse = wordlistSize ?? 12;

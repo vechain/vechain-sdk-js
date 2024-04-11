@@ -1,7 +1,4 @@
-import type {
-    TransactionBody,
-    TransactionClause
-} from '@vechain/vechain-sdk-core';
+import type { TransactionBody, TransactionClause } from '@vechain/sdk-core';
 import type { Output } from '../blocks';
 import { type Transfer } from '../logs';
 
@@ -33,10 +30,19 @@ interface WaitForTransactionOptions {
  */
 interface TransactionBodyOptions {
     /**
-     * Coefficient used to calculate the gas price for the transaction.
-     * Value must be between 0 and 255.
+     * 8 bytes prefix of some block's ID
      */
-    gasPriceCoef?: number;
+    blockRef?: string;
+
+    /**
+     * Last byte of genesis block ID
+     */
+    chainTag?: number;
+
+    /**
+     * The ID of the transaction that this transaction depends on.
+     */
+    dependsOn?: string;
 
     /**
      * The expiration time of the transaction.
@@ -45,14 +51,22 @@ interface TransactionBodyOptions {
     expiration?: number;
 
     /**
-     * The ID of the transaction that this transaction depends on.
+     * Coefficient used to calculate the gas price for the transaction.
+     * Value must be between 0 and 255.
      */
-    dependsOn?: string;
+    gasPriceCoef?: number;
 
     /**
      * Whether the transaction is delegated to another account for gas payment.
      */
     isDelegated?: boolean;
+
+    /**
+     * Nonce value for various purposes.
+     * Basic is to prevent replay attack by make transaction unique.
+     * Every transaction with same chainTag, blockRef, ... must have different nonce.
+     */
+    nonce?: string | number;
 }
 
 /**

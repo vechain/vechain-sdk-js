@@ -1,4 +1,6 @@
-import { HDNode } from '@vechain/vechain-sdk-core';
+import { HDNode } from '@vechain/sdk-core';
+
+// START_SNIPPET: PubKeySnippet
 
 // 1 - Create HD node from xpub (extended private key) and chain code
 
@@ -27,3 +29,5 @@ for (let i = 0; i < 5; i++) {
     // ...
     // children 4 0x...
 }
+
+// END_SNIPPET: PubKeySnippet

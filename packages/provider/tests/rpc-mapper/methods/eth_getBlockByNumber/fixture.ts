@@ -1,6 +1,6 @@
-import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
+import { Quantity } from '@vechain/sdk-core';
 import { blockWithTransactionsExpanded } from '../../../fixture';
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
+import { InvalidDataTypeError } from '@vechain/sdk-errors';
 
 /**
  * Zero block fixture
@@ -42,18 +42,18 @@ const zeroBlock = {
 const ethGetBlockByNumberTestCases = [
     {
         description: "Should get block by number '0x0'",
-        params: [vechain_sdk_core_ethers.toQuantity(0), false],
+        params: [Quantity.of(0), false],
         expected: zeroBlock
     },
     {
         description:
             "Should get block by number '0x0' with transaction details",
-        params: [vechain_sdk_core_ethers.toQuantity(0), true],
+        params: [Quantity.of(0), true],
         expected: zeroBlock // Because genesis block doesn't have any transactions on testnet
     },
     {
         description: 'Should get block which has transactions with details',
-        params: [vechain_sdk_core_ethers.toQuantity(17529453), true],
+        params: [Quantity.of(17529453), true],
         expected: blockWithTransactionsExpanded
     },
     {

@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap } from '../../../../src';
-import { ThorClient } from '@vechain/vechain-sdk-network';
+import { ThorClient } from '@vechain/sdk-network';
 import { testNetwork } from '../../../fixture';
-import { vechain_sdk_core_ethers } from '@vechain/vechain-sdk-core';
+import { Quantity } from '@vechain/sdk-core';
 
 /**
  * RPC Mapper integration tests for 'eth_blockNumber' method on Testnet Network
@@ -37,7 +37,7 @@ describe('RPC Mapper - eth_blockNumber method tests', () => {
 
             expect(rpcCallLatestBlockNumber).not.toBe('0x0');
 
-            await thorClient.blocks.waitForBlock(
+            await thorClient.blocks.waitForBlockCompressed(
                 Number(rpcCallLatestBlockNumber) + 1
             );
 
@@ -47,9 +47,7 @@ describe('RPC Mapper - eth_blockNumber method tests', () => {
 
             expect(rpcCallUpdatedLatestBlockNumber).not.toBe('0x0');
             expect(rpcCallUpdatedLatestBlockNumber).toBe(
-                vechain_sdk_core_ethers.toQuantity(
-                    Number(rpcCallLatestBlockNumber) + 1
-                )
+                Quantity.of(Number(rpcCallLatestBlockNumber) + 1)
             );
         }, 15000);
     });

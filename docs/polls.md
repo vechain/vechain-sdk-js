@@ -8,7 +8,7 @@ Synchronous polling mechanisms are implemented to await the fulfillment of speci
 This section illustrates the methodology for monitoring the production of a new block. Utilizing synchronous polling, the waitUntil function is employed to efficiently wait for the production of a new block.
 
 ```typescript { name=sync-poll-wait-new-block, category=example }
-import { HttpClient, Poll, ThorClient } from '@vechain/vechain-sdk-network';
+import { HttpClient, Poll, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
@@ -44,11 +44,11 @@ console.log('New block:', newBlock);
 ```
 
 ### Observing Balance Changes Post-Transfer
-Here, we explore the approach to monitor balance changes subsequent to a transfer. Synchronous polling leverages the waitUntil function to detect balance changes following a transfer.
+Here, we explore the approach to monitor balance changes after a transfer. Synchronous polling leverages the waitUntil function to detect balance changes following a transfer.
 
 ```typescript { name=sync-poll-wait-balance-update, category=example }
-import { HttpClient, Poll, ThorClient } from '@vechain/vechain-sdk-network';
-import { dataUtils, TransactionHandler } from '@vechain/vechain-sdk-core';
+import { HttpClient, Poll, ThorClient } from '@vechain/sdk-network';
+import { Hex0x, TransactionHandler } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // 1 - Create thor client for solo network
@@ -133,7 +133,7 @@ const sentTransaction =
 // 4.1 - Check if the transaction is sent successfully (check if the transaction id is a valid hex string)
 expect(sentTransaction).toBeDefined();
 expect(sentTransaction).toHaveProperty('id');
-expect(dataUtils.isHexString(sentTransaction.id)).toBe(true);
+expect(Hex0x.isValid(sentTransaction.id)).toBe(true);
 
 // 4 -Wait until balance is updated
 
@@ -172,7 +172,7 @@ Asynchronous polling is utilized for waiting in a non-blocking manner until a sp
 This example demonstrates the application of an asynchronous poll for tracking transaction events, allowing for the execution of additional operations concurrently.
 
 ```typescript { name=event-poll-dapp, category=example }
-import { HttpClient, Poll, ThorClient } from '@vechain/vechain-sdk-network';
+import { HttpClient, Poll, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet

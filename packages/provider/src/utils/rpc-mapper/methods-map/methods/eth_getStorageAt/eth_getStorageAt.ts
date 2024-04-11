@@ -1,11 +1,8 @@
-import { dataUtils } from '@vechain/vechain-sdk-core';
-import {
-    assert,
-    buildProviderError,
-    DATA,
-    JSONRPC
-} from '@vechain/vechain-sdk-errors';
-import { type ThorClient } from '@vechain/vechain-sdk-network';
+import { Hex0x } from '@vechain/sdk-core';
+import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
+import { type ThorClient } from '@vechain/sdk-network';
+import type { BlockQuantityInputRPC } from '../../../types';
+import { getCorrectBlockNumberRPCToVechain } from '../../../../const';
 
 /**
  * RPC Method eth_getStorageAt implementation
@@ -33,26 +30,31 @@ const ethGetStorageAt = async (
         params.length === 3 &&
             typeof params[0] === 'string' &&
             typeof params[1] === 'string' &&
-            typeof params[2] === 'string',
+            (typeof params[2] === 'object' || typeof params[2] === 'string'),
         DATA.INVALID_DATA_TYPE,
-        'Invalid params length, expected 3.\nThe params should be [address: string, storagePosition: string, blockNumber: string | "latest"]'
+        `Invalid params length, expected 3.` +
+            `\nThe params should be:` +
+            `\naddress: string, storagePosition: string` +
+            `\nand the block tag parameter. 'latest', 'earliest', 'pending', 'safe' or 'finalized' or an object: \n{.` +
+            `\tblockNumber: The number of the block` +
+            `\n}\n\nOR\n\n{` +
+            `\tblockHash: The hash of block` +
+            `\n}`
     );
 
     try {
-        let [address, storagePosition, blockNumber] = params as [
+        const [address, storagePosition, block] = params as [
             string,
             string,
-            string
+            BlockQuantityInputRPC
         ];
-
-        if (blockNumber === 'latest') blockNumber = 'best';
 
         // Get the account details
         return await thorClient.accounts.getStorageAt(
             address,
-            dataUtils.padHexString(storagePosition),
+            Hex0x.canon(storagePosition, 32),
             {
-                revision: blockNumber
+                revision: getCorrectBlockNumberRPCToVechain(block)
             }
         );
     } catch (e) {

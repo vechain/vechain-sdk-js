@@ -1,4 +1,4 @@
-import { assert, SECP256K1 } from '@vechain/vechain-sdk-errors';
+import { assert, SECP256K1 } from '@vechain/sdk-errors';
 
 /**
  * Assert if private key is valid
@@ -10,8 +10,8 @@ import { assert, SECP256K1 } from '@vechain/vechain-sdk-errors';
  */
 function assertIsValidPrivateKey(
     methodName: string,
-    privateKey: Buffer,
-    isValidPrivateKeyFunction: (privateKey: Buffer) => boolean
+    privateKey: Uint8Array,
+    isValidPrivateKeyFunction: (privateKey: Uint8Array) => boolean
 ): void {
     assert(
         `assertIsValidPrivateKey - ${methodName}`,
@@ -31,8 +31,8 @@ function assertIsValidPrivateKey(
  */
 function assertIsValidSecp256k1MessageHash(
     methodName: string,
-    msgHash: Buffer,
-    isValidMessageHashFunction: (messageHash: Buffer) => boolean
+    msgHash: Uint8Array,
+    isValidMessageHashFunction: (messageHash: Uint8Array) => boolean
 ): void {
     assert(
         `assertIsValidSecp256k1MessageHash - ${methodName}`,

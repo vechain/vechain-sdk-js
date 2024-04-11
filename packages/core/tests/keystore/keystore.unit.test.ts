@@ -1,12 +1,12 @@
 import { describe, test, expect } from '@jest/globals';
-import { secp256k1, addressUtils, keystore } from '../../src';
+import { secp256k1, addressUtils, keystore, Hex } from '../../src';
 import { type Keystore } from '../../src';
 import { encryptionPassword } from './fixture';
 import {
     InvalidKeystoreError,
     InvalidKeystorePasswordError,
     InvalidSecp256k1PrivateKeyError
-} from '@vechain/vechain-sdk-errors';
+} from '@vechain/sdk-errors';
 
 /**
  * Keystore tests
@@ -22,7 +22,7 @@ describe('Keystore', () => {
 
         //  Create keystore
         const myKeystore = await keystore.encrypt(
-            privateKey,
+            Buffer.from(privateKey),
             encryptionPassword
         );
 
@@ -32,7 +32,7 @@ describe('Keystore', () => {
             `0x` + myKeystore.address
         );
         const addressFromPrivateKey = addressUtils.fromPublicKey(
-            secp256k1.derivePublicKey(privateKey)
+            Buffer.from(secp256k1.derivePublicKey(privateKey))
         );
         expect(keyStoreAddress).toEqual(addressFromPrivateKey);
     });
@@ -60,7 +60,7 @@ describe('Keystore', () => {
 
         //  Create keystore
         const myKeystore = await keystore.encrypt(
-            privateKey,
+            Buffer.from(privateKey),
             encryptionPassword
         );
 
@@ -72,7 +72,7 @@ describe('Keystore', () => {
 
         // Verify private key (slice(2) is used to remove 0x prefix)
         expect(decryptedKeystore.privateKey.slice(2)).toEqual(
-            privateKey.toString('hex')
+            Hex.of(privateKey)
         );
     });
 
@@ -85,7 +85,7 @@ describe('Keystore', () => {
 
         //  Create keystore
         const myKeystore = await keystore.encrypt(
-            privateKey,
+            Buffer.from(privateKey),
             encryptionPassword
         );
 
@@ -108,7 +108,7 @@ describe('Keystore', () => {
 
         //  Create keystore
         const myKeystore = await keystore.encrypt(
-            privateKey,
+            Buffer.from(privateKey),
             encryptionPassword
         );
 
@@ -137,7 +137,7 @@ describe('Keystore', () => {
 
         //  Create keystore
         const myKeystore = await keystore.encrypt(
-            privateKey,
+            Buffer.from(privateKey),
             encryptionPassword
         );
 

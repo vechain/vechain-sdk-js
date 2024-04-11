@@ -1,7 +1,7 @@
 import { addressUtils } from '../../address';
 import { secp256k1 } from '../../secp256k1';
 import { Transaction } from '../transaction';
-import { assert, TRANSACTION } from '@vechain/vechain-sdk-errors';
+import { assert, TRANSACTION } from '@vechain/sdk-errors';
 import { type TransactionBody } from '../types';
 import { assertIsValidTransactionSigningPrivateKey } from '../../assertions';
 
@@ -42,7 +42,7 @@ function sign(
     );
 
     // Return new signed transaction
-    return new Transaction(transactionBody, signature);
+    return new Transaction(transactionBody, Buffer.from(signature));
 }
 
 /**
@@ -86,7 +86,9 @@ function signWithDelegator(
 
     const transactionHash = transactionToSign.getSignatureHash();
     const delegatedHash = transactionToSign.getSignatureHash(
-        addressUtils.fromPublicKey(secp256k1.derivePublicKey(signerPrivateKey))
+        addressUtils.fromPublicKey(
+            Buffer.from(secp256k1.derivePublicKey(signerPrivateKey))
+        )
     );
     const signature = Buffer.concat([
         secp256k1.sign(transactionHash, signerPrivateKey),

@@ -4,8 +4,8 @@ import {
     HDNode,
     secp256k1,
     VET_DERIVATION_PATH
-} from '@vechain/vechain-sdk-core';
-import { type SignTransactionOptions } from '@vechain/vechain-sdk-network';
+} from '@vechain/sdk-core';
+import { type SignTransactionOptions } from '@vechain/sdk-network';
 
 class HDWallet extends BaseWallet {
     /**
@@ -58,7 +58,9 @@ class HDWallet extends BaseWallet {
                 // Derive the public key and address from the private key
                 return {
                     privateKey: privateKeyBuffer,
-                    publicKey: secp256k1.derivePublicKey(privateKeyBuffer),
+                    publicKey: Buffer.from(
+                        secp256k1.derivePublicKey(privateKeyBuffer)
+                    ),
                     address: addressUtils.fromPrivateKey(privateKeyBuffer)
                 };
             }),

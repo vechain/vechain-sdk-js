@@ -1,21 +1,20 @@
+import { Buffer } from 'buffer';
+
 /**
- * Zero buffer
+ * Zero Buffer
  * @internal
  *
  * @example ZERO_BUFFER(8) -> 0x00000000 , ... , ZERO_BUFFER(n) -> 0x0...0
  */
-const ZERO_BUFFER = (size: number): Buffer => Buffer.alloc(size, 0);
+const ZERO_BUFFER = (size: number): Buffer => Buffer.from(ZERO_BYTES(size));
 
 /**
- * Regular expression for validating hexadecimal strings.
- * Allows optional "0x" prefix and validates both lower and uppercase hex characters.
+ * Create a Uint8Array filled with zero bytes of the specified size.
+ *
+ * @param {number} size - The size of the Uint8Array to create.
+ * @returns {Uint8Array} - A Uint8Array filled with zero bytes.
  */
-const HEX_REGEX_OPTIONAL_PREFIX = /^(0x)?[0-9a-fA-F]*$/;
-
-/**
- * Regular expression for validating hexadecimal strings. Must have "0x" prefix.
- */
-const HEX_REGEX = /^0x[0-9a-f]*$/i;
+const ZERO_BYTES = (size: number): Uint8Array => new Uint8Array(size);
 
 /**
  * Regular expression for validating hexadecimal addresses. Must have "0x" prefix. Must be 40 characters long.
@@ -34,19 +33,10 @@ const DECIMAL_INTEGER_REGEX = /^\d+$/;
  */
 const NUMERIC_REGEX = /(^-?\d+(\.\d+)?)$|(^-?\.\d+)$/;
 
-/**
- * Default length of thor id hex string.
- * Thor id is a 64 characters long hexadecimal string.
- * This is used to validate thor id strings (block ids, transaction ids, ...).
- */
-const THOR_ID_LENGTH = 64;
-
 export {
     ZERO_BUFFER,
-    HEX_REGEX,
+    ZERO_BYTES,
     HEX_ADDRESS_REGEX,
-    HEX_REGEX_OPTIONAL_PREFIX,
     DECIMAL_INTEGER_REGEX,
-    NUMERIC_REGEX,
-    THOR_ID_LENGTH
+    NUMERIC_REGEX
 };

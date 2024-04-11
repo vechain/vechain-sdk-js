@@ -1,6 +1,8 @@
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
-import type { DeployParams, InterfaceAbi } from '@vechain/vechain-sdk-core';
+import type { DeployParams, InterfaceAbi } from '@vechain/sdk-core';
+
+// START_SNIPPET: ContractSnippet
 
 // 1 - Create thor client for solo network
 
@@ -51,6 +53,8 @@ const contract = await contractFactory.waitForDeployment();
 
 // Awaiting the transaction receipt to confirm successful contract deployment
 const receipt = contract.deployTransactionReceipt;
+
+// END_SNIPPET: ContractSnippet
 
 expect(receipt.reverted).toEqual(false);
 expect(receipt.outputs[0].contractAddress).toBeDefined();

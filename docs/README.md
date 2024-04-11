@@ -1,46 +1,40 @@
-# Code Examples & Documentation
+# Vechain SDK
 
-Welcome to the `/docs` folder, your go-to resource for comprehensive **SDK documentation** and executable code examples. We've designed these examples not just for learning purposes but also as integration tests, ensuring that the provided code snippets are always functional and up-to-date.
+Welcome to the official documentation for the JavaScript vechain SDK!
 
-## Structure
+This SDK provides developers with tools and resources to integrate vechain blockchain functionality into their applications with ease. Whether you're building decentralized applications (dApps), managing digital assets, or exploring blockchain-based solutions, this SDK offers a comprehensive set of features to interact with the VeChainThor blockchain.
 
-### Examples
+## Installation
 
-Our code examples reside in the `/examples` folder. Each example is a stand-alone script that showcases various operations achievable with the SDK.
+To start using the vechain SDK, you can install specific packages based on your needs. The SDK is a monorepo that includes various packages. Here are the packages available:
+ - [@vechain/sdk-core](https://www.npmjs.com/package/@vechain/sdk-core)
+ - [@vechain/sdk-network](https://www.npmjs.com/package/@vechain/sdk-network)
+ - [@vechain/sdk-errors](https://www.npmjs.com/package/@vechain/sdk-errors)
+ - [@vechain/sdk-provider](https://www.npmjs.com/package/@vechain/sdk-provider)
+ - [@vechain/sdk-wallet](https://www.npmjs.com/package/@vechain/sdk-wallet)
+ - [@vechain/sdk-hardhat-plugin](https://www.npmjs.com/package/@vechain/sdk-hardhat-plugin)
+ - [@vechain/sdk-logging](https://www.npmjs.com/package/@vechain/sdk-logging)
+ - [@vechain/sdk-rpc-proxy](https://www.npmjs.com/package/@vechain/sdk-rpc-proxy)
 
-Some of the code examples require a Thor Solo node to be available.
-
-### Templates
-
-In the `/templates` folder, you'll find markdown files used to build our final documentation. These templates can include links to example files, dynamically expanded into code snippets during documentation generation.
-
-For instance:
-
-\[example](examples/accounts/bip39.ts)
-
-The above link, when processed during documentation build, expands into the content of the linked file, ensuring our documentation is as practical as possible.
-
-Note: links that are to be expanded must have text \[example]
-
-## Usage
-
-### Execute Examples as Tests
-
-To run the scripts within /examples as tests, use:
+You can install these packages individually based on your requirements. Here's how you can install the packages using npm:
 ``` bash
-yarn test:examples
+npm install @vechain/sdk-core
+npm install @vechain/sdk-network
+npm install @vechain/sdk-provider
+...
+```
+If you prefer using yarn, you can install the packages as follows:
+``` bash
+yarn add @vechain/sdk-core
+yarn add @vechain/sdk-network
+yarn add @vechain/sdk-provider
+...
 ```
 
-**NOTE**: Tests require thor-solo to be running locally. You can run and stop separately thor solo node with `yarn start-thor-solo` and `yarn stop-thor-solo` or run all tests with `yarn test:examples:solo` which will start thor solo node, run all tests and stop thor solo at the end.
+## Contributing
 
+We welcome contributions from the community to improve the vechain SDK. If you want to contribute, please review our Contribution Guidelines for more information.
 
-### Build Documentation
+## License
 
-To build the documentation, expanding examples into code snippets, use:
-``` bash
-yarn build
-```
-
-Feel free to explore the examples and templates, and don't hesitate to reach out if you have any questions or need further assistance.
-
-Happy coding with the vechain SDK!
+The vechain SDK is licensed under the MIT License, which allows for both personal and commercial use.

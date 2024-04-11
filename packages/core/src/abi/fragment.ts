@@ -1,12 +1,13 @@
 import { ethers, type Fragment } from 'ethers';
 import {
     type BytesLike,
+    type EventFragment,
     type FormatType,
     type FunctionFragment,
     type Interface,
     type Result
 } from './types';
-import { ABI, assert, buildError } from '@vechain/vechain-sdk-errors';
+import { ABI, assert, buildError } from '@vechain/sdk-errors';
 import { sanitizeValuesToEncode } from './helpers/fragment';
 
 /**
@@ -178,7 +179,7 @@ class Event<ABIType> {
     /**
      * The main fragment handled by ethers.js.
      */
-    public fragment: ethers.EventFragment;
+    public fragment: EventFragment;
 
     /**
      * The main interface handled by ethers.js.

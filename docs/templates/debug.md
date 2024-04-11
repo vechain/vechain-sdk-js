@@ -9,12 +9,9 @@ class encapsulates functionality to debug the VechainThor blockchain.
 
 The module provides methods to interact with the debug end points provided by 
 
-* [**Retrieve Storage Range**](#retrieve-storage-range) - http://localhost:8669/doc/swagger-ui/#/Debug/post_debug_storage_range 
-* [**Trace Contract Call**](#trace-contract-call) - http://localhost:8669/doc/swagger-ui/#/Debug/post_debug_tracers_call
-* [**Trace Transction Cluase**](#trace-transaction-clause) - http://localhost:8669/doc/swagger-ui/#/Debug/post_debug_tracers
-
-supposing Thor is running at `localhost`, 
-else change `localhost` with the IP address of the [Swagger](https://swagger.io/) service.
+* [**Retrieve Storage Range**](#retrieve-storage-range) - https://testnet.vechain.org/doc/swagger-ui/#/Debug/post_debug_storage_range 
+* [**Trace Contract Call**](#trace-contract-call) - https://testnet.vechain.org/doc/swagger-ui/#/Debug/post_debug_tracers_call
+* [**Trace Transaction Clause**](#trace-transaction-clause) - https://testnet.vechain.org/doc/swagger-ui/#/Debug/post_debug_tracers
 
 ## Retrieve Storage Range
 
@@ -24,7 +21,7 @@ including the nextKey which is a string that can be null, and storage which is a
 In this example the `thorClient` connects to the *testnet* to retrieve the storage range for the coordinates passed
 as `input` parameter.
 
-[example](examples/debug/debug-retrieve-storage-range.ts)
+[DebugRetrieveStorageRangeSnippet](examples/debug/debug-retrieve-storage-range.ts)
 
 <details>
 <summary>The result will show the storage.</summary>
@@ -85,7 +82,7 @@ The `traceContractCall` traces the contract call execution.
 In this example the `thorClient` connects to the *testnet* to trace the contract at the coordinates specified in
 the `input` parameter.
 
-[example](examples/debug/debug-trace-contract-call.ts)
+[DebugTraceContractCallSnippet](examples/debug/debug-trace-contract-call.ts)
 
 <details>
 <summary>The result shows the trace, here only the first element is shown.</summary>
@@ -114,10 +111,10 @@ the `input` parameter.
 The `traceTransactionClause` method trace the transactions specified in the clause at the
 coordinates expressed in the `input` parameter.
 
-In this example the `thorClient` connects to the *testnet* to trace the clase at the coordinates specified in
+In this example the `thorClient` connects to the *testnet* to trace the clause at the coordinates specified in
 the `input` parameter.
 
-[example](examples/debug/debug-trace-contract-call.ts)
+[DebugTraceTransactionClauseSnippet](examples/debug/debug-trace-transaction-clause.ts)
 
 <details>
 <summary>The result shows the following.</summary>

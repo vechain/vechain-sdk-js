@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { buildError, POLL_ERROR } from '@vechain/vechain-sdk-errors';
+import { buildError, POLL_ERROR } from '@vechain/sdk-errors';
 import { assertPositiveIntegerForPollOptions } from './helpers/assertions';
 
 /**
@@ -16,6 +16,31 @@ import { assertPositiveIntegerForPollOptions } from './helpers/assertions';
  */
 class EventPoll<TReturnType> extends EventEmitter {
     /**
+     * The current iteration. It counts how many iterations have been done.
+     * This parameter is useful to know how many iterations have been done.
+     * For example, it can be used to stop the poll after a certain number of iterations.
+     */
+    private currentIteration: number = 0;
+
+    /**
+     * Error thrown during the execution of the poll.
+     */
+    private error?: Error;
+
+    /**
+     * Indicates whether to stop execution on error of the
+     * {@link _intervalLoop} function.
+     *
+     * @type {boolean}
+     */
+    private readonly hasToStopOnError: boolean;
+
+    /**
+     * The interval used to poll.
+     */
+    private intervalId?: NodeJS.Timeout;
+
+    /**
      * The function to be called.
      */
     private readonly pollingFunction: () => Promise<TReturnType>;
@@ -26,34 +51,20 @@ class EventPoll<TReturnType> extends EventEmitter {
     private readonly requestIntervalInMilliseconds: number;
 
     /**
-     * The current iteration. It counts how many iterations have been done.
-     * This parameter is useful to know how many iterations have been done.
-     * For example, it can be used to stop the poll after a certain number of iterations.
-     */
-    private currentIteration: number = 0;
-
-    /**
-     * The interval used to poll.
-     */
-    private intervalId?: NodeJS.Timeout;
-
-    /**
-     * Error thrown during the execution of the poll.
-     */
-    private error?: Error;
-
-    /**
-     * Create a new eventPoll.
+     * Constructor for creating an instance of EventPoll.
      *
-     * @param pollingFunction - The function to be called.
-     * @param requestIntervalInMilliseconds - The interval of time (in milliseconds) between each request.
+     * @param {Function} pollingFunction - The function to be executed repeatedly.
+     * @param {number} requestIntervalInMilliseconds - The interval in milliseconds between each execution of the polling function.
+     * @param {boolean} [hasToStopOnError=true] - Indicates whether to stop polling if an error occurs.
      */
     constructor(
         pollingFunction: () => Promise<TReturnType>,
-        requestIntervalInMilliseconds: number
+        requestIntervalInMilliseconds: number,
+        hasToStopOnError: boolean
     ) {
         super();
         this.pollingFunction = pollingFunction;
+        this.hasToStopOnError = hasToStopOnError;
 
         // Positive number for request interval
         assertPositiveIntegerForPollOptions(
@@ -75,29 +86,38 @@ class EventPoll<TReturnType> extends EventEmitter {
     }
 
     /**
-     * Start listening to the event.
+     * Basic interval loop function.
+     * This function must be called into setInterval.
+     * It calls the promise and emit the event.
      */
-    startListen(): void {
-        // Start listening
-        this.emit('start', { eventPoll: this });
+    private async _intervalLoop(): Promise<void> {
+        try {
+            // Get data and emit the event
+            const data = await this.pollingFunction();
+            this.emit('data', { data, eventPoll: this });
+        } catch (error) {
+            // Set error
+            this.error = buildError(
+                'EventPoll - main interval loop function',
+                POLL_ERROR.POLL_EXECUTION_ERROR,
+                'Error during the execution of the poll',
+                {
+                    message: (error as Error).message,
+                    functionName: this.pollingFunction.name
+                }
+            );
 
-        // Execute `_intervalLoop` and then set an interval which calls `_intervalLoop` every `requestIntervalInMilliseconds`
-        void this._intervalLoop().then(() => {
-            // Create an interval
-            this.intervalId = setInterval(() => {
-                void (async () => {
-                    await this._intervalLoop();
-                })();
-            }, this.requestIntervalInMilliseconds);
-        }); // No need for .catch(), errors are handled within _intervalLoop
-    }
+            // Emit the error
+            this.emit('error', { error: this.error });
 
-    /**
-     * Stop listening to the event.
-     */
-    stopListen(): void {
-        clearInterval(this.intervalId);
-        this.emit('stop', { eventPoll: this });
+            // Stop listening?
+            if (this.hasToStopOnError) {
+                this.stopListen();
+            }
+        }
+
+        // Increment the iteration
+        this.currentIteration = this.currentIteration + 1;
     }
 
     /**
@@ -134,25 +154,6 @@ class EventPoll<TReturnType> extends EventEmitter {
     /* --- Overloaded of 'on' event emitter start --- */
 
     /**
-     * Listen to the 'start' event.
-     * This happens when the poll is stopped.
-     *
-     * @param onStartCallback - The callback to be called when the event is emitted.
-     */
-    public onStart(
-        onStartCallback: (eventPoll: EventPoll<TReturnType>) => void
-    ): this {
-        this.on('start', (data) => {
-            onStartCallback(
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                data.eventPoll as EventPoll<TReturnType>
-            );
-        });
-
-        return this;
-    }
-
-    /**
      * Listen to the 'error' event.
      * This method is the redefinition of the EventEmitter.on method.
      * Because the EventEmitter.on method does not allow to specify the type of the data.
@@ -170,6 +171,25 @@ class EventPoll<TReturnType> extends EventEmitter {
             onErrorCallback(
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 error.error as Error
+            );
+        });
+
+        return this;
+    }
+
+    /**
+     * Listen to the 'start' event.
+     * This happens when the poll is stopped.
+     *
+     * @param onStartCallback - The callback to be called when the event is emitted.
+     */
+    public onStart(
+        onStartCallback: (eventPoll: EventPoll<TReturnType>) => void
+    ): this {
+        this.on('start', (data) => {
+            onStartCallback(
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                data.eventPoll as EventPoll<TReturnType>
             );
         });
 
@@ -196,53 +216,53 @@ class EventPoll<TReturnType> extends EventEmitter {
     }
 
     /**
-     * Basic interval loop function.
-     * This function must be called into setInterval.
-     * It calls the promise and emit the event.
+     * Start listening to the event.
      */
-    private async _intervalLoop(): Promise<void> {
-        try {
-            // Get data and emit the event
-            const data = await this.pollingFunction();
-            this.emit('data', { data, eventPoll: this });
-        } catch (error) {
-            // Set error
-            this.error = buildError(
-                'EventPoll - main interval loop function',
-                POLL_ERROR.POLL_EXECUTION_ERROR,
-                'Error during the execution of the poll',
-                {
-                    message: (error as Error).message,
-                    functionName: this.pollingFunction.name
-                }
-            );
+    startListen(): void {
+        // Start listening
+        this.emit('start', { eventPoll: this });
 
-            // Emit the error
-            this.emit('error', { error: this.error });
+        // Execute `_intervalLoop` and then set an interval which calls `_intervalLoop` every `requestIntervalInMilliseconds`
+        void this._intervalLoop().then(() => {
+            // Create an interval
+            this.intervalId = setInterval(() => {
+                void (async () => {
+                    await this._intervalLoop();
+                })();
+            }, this.requestIntervalInMilliseconds);
+        }); // No need for .catch(), errors are handled within _intervalLoop
+    }
 
-            // Stop listening
-            this.stopListen();
-        }
-
-        // Increment the iteration
-        this.currentIteration = this.currentIteration + 1;
+    /**
+     * Stop listening to the event.
+     */
+    stopListen(): void {
+        clearInterval(this.intervalId);
+        this.emit('stop', { eventPoll: this });
     }
 
     /* --- Overloaded of 'on' event emitter end --- */
 }
 
 /**
- * Create an event poll factory method.
+ * Creates an event poll that performs a callback function repeatedly at a specified interval.
  * This method is useful to create an event poll in a more readable way.
  *
- * @param callBack - The function to be called.
- * @param requestIntervalInMilliseconds - The interval of time (in milliseconds) between each request.
+ * @param {Function} callBack - The callback function to be executed on each interval. It should return a Promise.
+ * @param {number} requestIntervalInMilliseconds - The interval in milliseconds at which the callback function will be executed.
+ * @param {boolean} [hasToStopOnError=true] - Optional parameter to specify whether the poll should stop on error. Default is true.
+ * @returns {EventPoll} - The created event poll instance.
  */
 function createEventPoll<TReturnType>(
     callBack: () => Promise<TReturnType>,
-    requestIntervalInMilliseconds: number
+    requestIntervalInMilliseconds: number,
+    hasToStopOnError: boolean = true
 ): EventPoll<TReturnType> {
-    return new EventPoll<TReturnType>(callBack, requestIntervalInMilliseconds);
+    return new EventPoll<TReturnType>(
+        callBack,
+        requestIntervalInMilliseconds,
+        hasToStopOnError
+    );
 }
 
 export { EventPoll, createEventPoll };

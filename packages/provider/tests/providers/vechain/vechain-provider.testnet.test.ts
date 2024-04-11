@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { VechainProvider } from '../../../src';
-import { InvalidDataTypeError } from '@vechain/vechain-sdk-errors';
-import { ThorClient } from '@vechain/vechain-sdk-network';
+import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { ThorClient } from '@vechain/sdk-network';
 import { testNetwork } from '../../fixture';
 import { providerMethodsTestCasesTestnet } from '../fixture';
 import { waitForMessage } from '../helpers';

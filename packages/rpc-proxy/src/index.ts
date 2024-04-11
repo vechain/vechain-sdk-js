@@ -1,21 +1,66 @@
-import { HDWallet } from '@vechain/vechain-sdk-wallet';
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
-import { VechainProvider } from '@vechain/vechain-sdk-provider';
+import { HDWallet } from '@vechain/sdk-wallet';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
+import { VechainProvider } from '@vechain/sdk-provider';
 import importConfig from '../config.json';
 import express, { type Express, type Request, type Response } from 'express';
 import cors from 'cors';
-import { type RequestBody, type Config } from './types';
+import { type Config, type RequestBody } from './types';
+import { VechainSDKLogger } from '@vechain/sdk-logging';
+import {
+    getJSONRPCErrorCode,
+    JSONRPC,
+    stringifyData
+} from '@vechain/sdk-errors';
 
+/**
+ * Simple function to log an error.
+ *
+ * @param requestBody - The request body of error request
+ * @param e - The error object
+ */
+function logError(requestBody: RequestBody, e: unknown): void {
+    VechainSDKLogger('error').log({
+        errorCode: JSONRPC.INTERNAL_ERROR,
+        errorMessage: `Error sending request - ${requestBody.method}`,
+        errorData: {
+            code: getJSONRPCErrorCode(JSONRPC.INVALID_REQUEST),
+            message: `Error on request - ${requestBody.method}`
+        },
+        innerError: e
+    });
+}
+
+/**
+ * Simple function to log a request.
+ *
+ * @param requestBody - The request body of the request
+ * @param result - The result of the request
+ */
+function logRequest(requestBody: RequestBody, result: unknown): void {
+    VechainSDKLogger('log').log({
+        title: `Sending request - ${requestBody.method}`,
+        messages: [`response: ${stringifyData(result)}`]
+    });
+}
+
+/**
+ * Start the proxy function.
+ * @note
+ * * This is a simple proxy server that converts and forwards RPC requests to the vechain network.
+ * * Don't use this in production, it's just for testing purposes.
+ */
 function startProxy(): void {
+    // Initialize the proxy server
     const config: Config = importConfig as Config;
     const port = config.port ?? 8545;
     console.log(`[rpc-proxy]: Starting proxy on port ${port}`);
 
-    const soloNetwork = new HttpClient(config.url);
-    const thorClient = new ThorClient(soloNetwork);
+    // Initialize the provider
+    const thorClient = new ThorClient(new HttpClient(config.url));
     const wallet = new HDWallet(config.accounts.mnemonic.split(' '));
     const provider = new VechainProvider(thorClient, wallet);
 
+    // Start the express proxy server
     const app: Express = express();
     app.use(
         (cors as (options: cors.CorsOptions) => express.RequestHandler)({})
@@ -25,38 +70,55 @@ function startProxy(): void {
     app.post('*', (req: Request, res: Response) => {
         void (async () => {
             const requestBody = req.body as RequestBody;
+
             try {
+                // Get result
+                const result = await provider.request(requestBody);
                 res.json({
                     jsonrpc: 2.0,
-                    result: await provider.request(requestBody),
+                    result,
                     id: requestBody.id
                 });
+
+                // Log the request and the response
+                logRequest(requestBody, result);
             } catch (e) {
                 res.json({
                     jsonrpc: 2.0,
                     error: e,
                     id: requestBody.id
                 });
+
+                // Log the error
+                logError(requestBody, e);
             }
         })();
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     app.get('*', (req: Request, res: Response) => {
         void (async () => {
             const requestBody = req.body as RequestBody;
             try {
+                // Get result
+                const result = await provider.request(requestBody);
+
                 res.json({
                     jsonrpc: 2.0,
-                    result: await provider.request(requestBody),
+                    result,
                     id: requestBody.id
                 });
+
+                // Log the request and the response
+                logRequest(requestBody, result);
             } catch (e) {
                 res.json({
                     jsonrpc: 2.0,
                     error: e,
                     id: requestBody.id
                 });
+
+                // Log the error
+                logError(requestBody, e);
             }
         })();
     });

@@ -1,43 +1,54 @@
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
+import { VechainProvider } from '../vechain-provider';
+import { type Wallet } from '@vechain/sdk-wallet';
+import type { EIP1193RequestArguments } from '../../eip1193';
+import { getJSONRPCErrorCode, JSONRPC } from '@vechain/sdk-errors';
+import { VechainSDKLogger } from '@vechain/sdk-logging';
 import {
-    type EthereumProvider,
+    type BuildHardhatErrorFunction,
     type JsonRpcRequest,
     type JsonRpcResponse
-} from 'hardhat/types';
-import { VechainProvider } from '../vechain-provider';
-import { type Wallet } from '@vechain/vechain-sdk-wallet';
-import type { EIP1193RequestArguments } from '../../eip1193';
-import { getJSONRPCErrorCode, JSONRPC } from '@vechain/vechain-sdk-errors';
-import { VechainSDKLogger } from '@vechain/vechain-sdk-logging';
-import { HardhatPluginError } from 'hardhat/plugins';
+} from './types';
 
 /**
  * This class is a wrapper for the VechainProvider that Hardhat uses.
  *
  * It exposes the interface that Hardhat expects, and uses the VechainProvider as wrapped provider.
  */
-class HardhatVechainProvider
-    extends VechainProvider
-    implements EthereumProvider
-{
+class HardhatVechainProvider extends VechainProvider {
     /**
      * Debug mode.
      */
     debug: boolean;
 
     /**
+     * The function to use to build Hardhat errors.
+     */
+    buildHardhatErrorFunctionCallback: BuildHardhatErrorFunction;
+
+    /**
      * Constructor with the network configuration.
      *
      * @param walletToUse - The wallet to use.
      * @param nodeUrl - The node url to use
+     * @param buildHardhatErrorFunctionCallback - The function to use to build Hardhat errors.
      * @param debug - Debug mode.
      */
-    constructor(walletToUse: Wallet, nodeUrl: string, debug: boolean = false) {
+    constructor(
+        walletToUse: Wallet,
+        nodeUrl: string,
+        buildHardhatErrorFunctionCallback: BuildHardhatErrorFunction,
+        debug: boolean = false
+    ) {
         // Initialize the provider with the network configuration.
         super(new ThorClient(new HttpClient(nodeUrl)), walletToUse);
 
         // Save the debug mode.
         this.debug = debug;
+
+        // Save the buildHardhatErrorFunction.
+        this.buildHardhatErrorFunctionCallback =
+            buildHardhatErrorFunctionCallback;
     }
 
     /**
@@ -142,9 +153,8 @@ class HardhatVechainProvider
             }
 
             // Throw the error
-            throw new HardhatPluginError(
-                '@vechain/vechain-sdk-hardhat-plugin',
-                `Invalid request to endpoint ${args.method}`,
+            throw this.buildHardhatErrorFunctionCallback(
+                `Error on request - ${args.method}`,
                 e as Error
             );
         }

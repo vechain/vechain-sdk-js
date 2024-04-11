@@ -1,4 +1,4 @@
-import { assert, DATA } from '@vechain/vechain-sdk-errors';
+import { assert, DATA } from '@vechain/sdk-errors';
 import { buildQuery, thorest } from '../../utils';
 import {
     type AccountDetail,
@@ -9,8 +9,8 @@ import {
 import {
     assertIsAddress,
     assertIsRevisionForAccount,
-    dataUtils
-} from '@vechain/vechain-sdk-core';
+    Hex0x
+} from '@vechain/sdk-core';
 import { type ThorClient } from '../thor-client';
 
 /**
@@ -104,7 +104,7 @@ class AccountsModule {
         // The position represents a slot in the VM storage. Each slot is 32 bytes.
         assert(
             'getStorageAt',
-            dataUtils.isHexString(position) && position.length === 66,
+            Hex0x.isValid(position) && position.length === 66,
             DATA.INVALID_DATA_TYPE,
             'Invalid `position`. The position must be a hex string of 32 bytes (66 characters including `0x` prefix).',
             { position }

@@ -1,6 +1,6 @@
 import { ethers } from 'ethers';
-import { HEX_ADDRESS_REGEX } from '../utils';
-import { ADDRESS, assert } from '@vechain/vechain-sdk-errors';
+import { Hex0x, HEX_ADDRESS_REGEX } from '../utils';
+import { ADDRESS, assert } from '@vechain/sdk-errors';
 import { secp256k1 } from '../secp256k1';
 
 /**
@@ -14,7 +14,7 @@ import { secp256k1 } from '../secp256k1';
  * @returns The derived vechain thor address as a string.
  */
 function fromPublicKey(publicKey: Buffer): string {
-    return ethers.computeAddress('0x' + publicKey.toString('hex'));
+    return ethers.computeAddress(Hex0x.of(publicKey));
 }
 
 /**
@@ -31,7 +31,9 @@ function fromPublicKey(publicKey: Buffer): string {
  *
  */
 function fromPrivateKey(privateKey: Buffer): string {
-    return addressUtils.fromPublicKey(secp256k1.derivePublicKey(privateKey));
+    return addressUtils.fromPublicKey(
+        Buffer.from(secp256k1.derivePublicKey(privateKey))
+    );
 }
 
 /**

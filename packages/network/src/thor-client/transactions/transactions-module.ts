@@ -3,14 +3,14 @@ import {
     assertIsSignedTransaction,
     assertValidTransactionHead,
     assertValidTransactionID,
-    dataUtils,
+    Hex0x,
     revisionUtils,
     secp256k1,
     Transaction,
     type TransactionBody,
     type TransactionClause,
     TransactionHandler
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import { buildQuery, Poll, thorest } from '../../utils';
 import {
     type GetTransactionInputOptions,
@@ -25,13 +25,7 @@ import {
     type TransactionSimulationResult,
     type WaitForTransactionOptions
 } from './types';
-import { randomBytes } from 'crypto';
-import {
-    assert,
-    buildError,
-    DATA,
-    TRANSACTION
-} from '@vechain/vechain-sdk-errors';
+import { assert, buildError, DATA, TRANSACTION } from '@vechain/sdk-errors';
 import { type ThorClient } from '../thor-client';
 import { DelegationHandler } from './helpers';
 import { assertTransactionCanBeSigned } from '../../assertions';
@@ -116,7 +110,7 @@ class TransactionsModule {
         // Validate raw transaction
         assert(
             'sendRawTransaction',
-            dataUtils.isHexString(raw),
+            Hex0x.isValid(raw),
             DATA.INVALID_DATA_TYPE,
             'Sending failed: Input must be a valid raw transaction in hex format.',
             { raw }
@@ -159,7 +153,7 @@ class TransactionsModule {
         // Assert transaction is signed or not
         assertIsSignedTransaction('sendTransaction', signedTx);
 
-        const rawTx = `0x${signedTx.encoded.toString('hex')}`;
+        const rawTx = Hex0x.of(signedTx.encoded);
 
         return await this.sendRawTransaction(rawTx);
     }
@@ -217,7 +211,6 @@ class TransactionsModule {
     ): Promise<TransactionBody> {
         // Get the genesis block to get the chainTag
         const genesisBlock = await this.thor.blocks.getBlockCompressed(0);
-
         if (genesisBlock === null)
             throw buildError(
                 'buildTransactionBody',
@@ -226,32 +219,29 @@ class TransactionsModule {
                 { clauses, options }
             );
 
-        // The constant part of the transaction body
-        const constTxBody = {
-            nonce: `0x${dataUtils.toHexString(randomBytes(8))}`,
-            expiration: options?.expiration ?? 32,
-            clauses,
-            gasPriceCoef: options?.gasPriceCoef ?? 0,
-            gas,
-            dependsOn: options?.dependsOn ?? null,
-            reserved:
-                options?.isDelegated === true ? { features: 1 } : undefined
-        };
-
-        const latestBlockRef = await this.thor.blocks.getBestBlockRef();
-
-        if (latestBlockRef === null)
+        const blockRef =
+            options?.blockRef ?? (await this.thor.blocks.getBestBlockRef());
+        if (blockRef === null)
             throw buildError(
-                'buildTransactionBody',
+                'TransactionsModule.buildTransactionBody',
                 TRANSACTION.INVALID_TRANSACTION_BODY,
                 'Error while building transaction body: Cannot get latest block.',
                 { clauses, options }
             );
+        const chainTag =
+            options?.chainTag ?? Number(`0x${genesisBlock.id.slice(64)}`);
 
         return {
-            ...constTxBody,
-            chainTag: Number(`0x${genesisBlock.id.slice(64)}`), // Last byte of the genesis block ID which is used to identify a network (chainTag)
-            blockRef: latestBlockRef
+            blockRef,
+            chainTag,
+            clauses,
+            dependsOn: options?.dependsOn ?? null,
+            expiration: options?.expiration ?? 32,
+            gas,
+            gasPriceCoef: options?.gasPriceCoef ?? 0,
+            nonce: options?.nonce ?? Hex0x.of(secp256k1.randomBytes(8)),
+            reserved:
+                options?.isDelegated === true ? { features: 1 } : undefined
         };
     }
 
@@ -379,7 +369,7 @@ class TransactionsModule {
 
         // Address of the origin account
         const originAddress = addressUtils.fromPublicKey(
-            secp256k1.derivePublicKey(originPrivateKey)
+            Buffer.from(secp256k1.derivePublicKey(originPrivateKey))
         );
 
         const unsignedTx = new Transaction(unsignedTransactionBody);

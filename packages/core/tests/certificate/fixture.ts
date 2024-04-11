@@ -1,4 +1,11 @@
-import { secp256k1, addressUtils, blake2b256, certificate } from '../../src';
+import {
+    secp256k1,
+    addressUtils,
+    blake2b256,
+    certificate,
+    Hex0x,
+    Hex
+} from '../../src';
 
 /**
  * Private Key used for digital signature during certificate creation
@@ -19,7 +26,9 @@ const cert = {
     },
     domain: 'localhost',
     timestamp: 1545035330,
-    signer: addressUtils.fromPublicKey(secp256k1.derivePublicKey(privKey))
+    signer: addressUtils.fromPublicKey(
+        Buffer.from(secp256k1.derivePublicKey(privKey))
+    )
 };
 
 /**
@@ -39,28 +48,27 @@ const cert2 = {
 /**
  * Signature of Certificate n.1
  */
-const sig =
-    '0x' +
-    secp256k1
-        .sign(blake2b256(certificate.encode(cert)), privKey)
-        .toString('hex');
+const sig = Hex0x.of(
+    secp256k1.sign(Buffer.from(blake2b256(certificate.encode(cert))), privKey)
+);
 
 /**
  * Signature of Certificate n.2
  */
-const sig2 =
-    '0x' +
-    secp256k1
-        .sign(blake2b256(certificate.encode(cert2)), privKey)
-        .toString('hex');
+const sig2 = Hex0x.of(
+    secp256k1.sign(Buffer.from(blake2b256(certificate.encode(cert2))), privKey)
+);
 
 /**
  * Invalid Signature of Certificate n.1
  */
 const invalidSignature =
     '0xBAD' +
-    secp256k1
-        .sign(blake2b256(certificate.encode(cert)), privKey)
-        .toString('hex');
+    Hex.of(
+        secp256k1.sign(
+            Buffer.from(blake2b256(certificate.encode(cert))),
+            privKey
+        )
+    );
 
 export { privKey, cert, cert2, sig, sig2, invalidSignature };

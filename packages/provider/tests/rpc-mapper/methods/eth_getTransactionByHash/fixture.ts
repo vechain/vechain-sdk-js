@@ -1,12 +1,9 @@
-import { ZERO_BUFFER, dataUtils } from '@vechain/vechain-sdk-core';
+import { ZERO_BUFFER, Hex0x } from '@vechain/sdk-core';
 import {
     validTransactionDetailTestnet,
     validTransactionHashTestnet
 } from '../../../fixture';
-import {
-    InvalidDataTypeError,
-    ProviderRpcError
-} from '@vechain/vechain-sdk-errors';
+import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
 
 /**
  * Positive test cases for eth_getTransactionByHash
@@ -19,11 +16,7 @@ const ethGetTransactionByHashTestCases = [
     },
     {
         description: "eth_getTransactionByHash with a hash that doesn't exist",
-        params: [
-            dataUtils.toHexString(ZERO_BUFFER(32), {
-                withPrefix: true
-            })
-        ],
+        params: [Hex0x.of(ZERO_BUFFER(32))],
         expected: null
     }
 ];

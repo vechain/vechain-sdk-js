@@ -1,5 +1,9 @@
+import util from 'util';
+import * as child_process from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+
+const exec = util.promisify(child_process.exec);
 
 // variable packages should be all of the child folders in the packages folder
 const packages = fs.readdirSync(path.resolve(__dirname, '../packages'));
@@ -61,6 +65,8 @@ const updatePackageVersions = (version: string): void => {
     const docsPath = path.resolve(__dirname, `../docs`);
     const docsJsonPath = path.resolve(docsPath, './package.json');
     const docsJson = JSON.parse(fs.readFileSync(docsJsonPath, 'utf8'));
+    docsJson.version = version;
+    fs.writeFileSync(docsJsonPath, JSON.stringify(docsJson, null, 2));
 
     if (docsJson.dependencies != null) {
         for (const dep of Object.keys(docsJson.dependencies)) {
@@ -73,4 +79,43 @@ const updatePackageVersions = (version: string): void => {
     fs.writeFileSync(docsJsonPath, JSON.stringify(docsJson, null, 2));
 };
 
-updatePackageVersions('0.0.14');
+const preparePackages = async () => {
+    const version = process.argv[2];
+
+    if (!version?.match(/^\d+\.\d+\.\d+$/)) {
+        console.error(
+            `🚨 You must specify a semantic version as the first argument  🚨`
+        );
+        process.exit(1);
+    }
+
+    console.log(' Install:');
+    console.log('\t- 📦 Installing dependencies...');
+    await exec('yarn');
+    console.log('\t- ✅  Installed!');
+
+    console.log(' Build:');
+    console.log('\t- 📦 Building packages...');
+    await exec('yarn build');
+    console.log('\t- ✅  Built!');
+
+    console.log(' Test:');
+    console.log('\t- 🧪 Testing packages...');
+    await exec('yarn test:solo');
+    console.log('\t- ✅  Success!');
+
+    console.log(' Version:');
+    console.log(`\t- 🏷 Updating package versions to ${version}...`);
+    updatePackageVersions(version);
+    console.log('\t- ✅  Updated!');
+
+    console.log('\n______________________________________________________\n\n');
+    console.log(' Publish:');
+    console.log(`\t- Run 'yarn changeset publish' to publish the packages`);
+    console.log('\n______________________________________________________\n\n');
+};
+
+preparePackages().catch((e) => {
+    console.error(e);
+    process.exit(1);
+});

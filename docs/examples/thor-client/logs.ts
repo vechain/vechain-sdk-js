@@ -1,5 +1,7 @@
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
+
+// START_SNIPPET: LogsSnippet
 
 // 1 - Create thor client for testnet
 
@@ -34,6 +36,36 @@ const eventLogs = await thorClient.logs.filterEventLogs({
     // Specify the order in which logs should be retrieved (ascending in this case)
     order: 'asc'
 });
+
+// 3 - Filter again event logs based on the provided criteria. (EXAMPLE 2)
+
+const transferLogs = await thorClient.logs.filterTransferLogs({
+    // Specify the range of blocks to search for transfer events
+    range: {
+        unit: 'block',
+        from: 0,
+        to: 100000
+    },
+    // Additional options for the query, such as offset and limit
+    options: {
+        offset: 0,
+        limit: 3
+    },
+    // Define criteria for filtering transfer events
+    criteriaSet: [
+        {
+            // Transaction origin, sender, and recipient addresses to filter transfer events
+            txOrigin: '0xe59d475abe695c7f67a8a2321f33a856b0b4c71d',
+            sender: '0xe59d475abe695c7f67a8a2321f33a856b0b4c71d',
+            recipient: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'
+        }
+    ],
+    // Specify the order in which transfer logs should be retrieved (ascending in this case)
+    order: 'asc'
+});
+
+// END_SNIPPET: LogsSnippet
+
 expect(eventLogs).toEqual([
     {
         address: '0x0000000000000000000000000000456e65726779',
@@ -90,34 +122,6 @@ expect(eventLogs).toEqual([
         }
     }
 ]);
-
-// 3 - Filter again event logs based on the provided criteria. (EXAMPLE 2)
-
-const transferLogs = await thorClient.logs.filterTransferLogs({
-    // Specify the range of blocks to search for transfer events
-    range: {
-        unit: 'block',
-        from: 0,
-        to: 100000
-    },
-    // Additional options for the query, such as offset and limit
-    options: {
-        offset: 0,
-        limit: 3
-    },
-    // Define criteria for filtering transfer events
-    criteriaSet: [
-        {
-            // Transaction origin, sender, and recipient addresses to filter transfer events
-            txOrigin: '0xe59d475abe695c7f67a8a2321f33a856b0b4c71d',
-            sender: '0xe59d475abe695c7f67a8a2321f33a856b0b4c71d',
-            recipient: '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'
-        }
-    ],
-    // Specify the order in which transfer logs should be retrieved (ascending in this case)
-    order: 'asc'
-});
-
 expect(transferLogs).toEqual([
     {
         sender: '0xe59d475abe695c7f67a8a2321f33a856b0b4c71d',

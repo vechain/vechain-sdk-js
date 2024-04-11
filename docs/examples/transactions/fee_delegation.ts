@@ -1,4 +1,4 @@
-import { clauseBuilder, networkInfo } from '@vechain/vechain-sdk-core';
+import { clauseBuilder, networkInfo } from '@vechain/sdk-core';
 import {
     TransactionHandler,
     HDNode,
@@ -6,9 +6,11 @@ import {
     type TransactionBody,
     mnemonic,
     unitsUtils
-} from '@vechain/vechain-sdk-core';
+} from '@vechain/sdk-core';
 import { expect } from 'expect';
-import { HttpClient, ThorClient } from '@vechain/vechain-sdk-network';
+import { HttpClient, ThorClient } from '@vechain/sdk-network';
+
+// START_SNIPPET: FeeDelegationSnippet
 
 // Sender account with private key
 const senderAccount = {
@@ -79,5 +81,8 @@ const encodedRaw = signedTransaction.encoded;
 // 8 - Decode transaction and check
 
 const decodedTx = TransactionHandler.decode(encodedRaw, true);
+
+// END_SNIPPET: FeeDelegationSnippet
+
 expect(decodedTx.isDelegated).toBeTruthy();
 expect(decodedTx.delegator).toBe(delegatorAddress);

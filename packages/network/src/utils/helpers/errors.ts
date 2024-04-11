@@ -4,7 +4,7 @@ import {
     HTTP_CLIENT,
     type HTTPClientError,
     stringifyData
-} from '@vechain/vechain-sdk-errors';
+} from '@vechain/sdk-errors';
 
 /**
  * Converts an AxiosError into a standard Error.

@@ -1,15 +1,10 @@
-import { type ThorClient } from '@vechain/vechain-sdk-network';
-import {
-    assert,
-    buildProviderError,
-    DATA,
-    JSONRPC
-} from '@vechain/vechain-sdk-errors';
-import { assertValidTransactionID } from '@vechain/vechain-sdk-core';
+import { type ThorClient } from '@vechain/sdk-network';
+import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
+import { assertValidTransactionID } from '@vechain/sdk-core';
 import type {
     TraceReturnType,
     TracerName
-} from '@vechain/vechain-sdk-network/src/thor-client/debug';
+} from '@vechain/sdk-network/src/thor-client/debug';
 import { ethGetTransactionReceipt } from '../eth_getTransactionReceipt';
 import { type TraceOptionsRPC } from './types';
 import {

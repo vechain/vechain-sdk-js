@@ -4,6 +4,7 @@ import {
 } from '../../helpers';
 import { type DataOutput, type BufferOutput, type RLPInput } from '../../types';
 import { ScalarKind } from '../scalarkind.abstract';
+import { Hex0x } from '../../../../utils';
 
 /**
  * Represents a scalar kind with hex blob functionality.
@@ -39,7 +40,7 @@ class HexBlobKind extends ScalarKind {
         assertValidHexBlobKindBuffer(buffer, context);
 
         return {
-            decode: () => `0x${buffer.toString('hex')}`
+            decode: () => Hex0x.of(buffer)
         };
     }
 }

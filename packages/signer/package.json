@@ -1,0 +1,32 @@
+{
+  "name": "@vechain/sdk-signer",
+  "version": "1.0.0-beta.3",
+  "description": "This module provides signing functionality to for vechain-sdk",
+  "author": "vechain Foundation",
+  "license": "MIT",
+  "keywords": [
+    "vechain",
+    "signer"
+  ],
+  "private": false,
+  "main": "dist/index.js",
+  "types": "src/index.ts",
+  "files": [
+    "dist",
+    "src",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
+    "lint": "eslint --ext .ts src --ext .ts tests",
+    "format": "prettier --write src/**/*.ts tests/**/*.ts",
+    "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
+    "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
+    "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
+  },
+  "dependencies": {
+    "@vechain/sdk-network": "1.0.0-beta.3"
+  }
+}

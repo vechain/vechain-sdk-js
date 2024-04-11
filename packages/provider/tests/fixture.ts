@@ -1,9 +1,6 @@
-import {
-    HttpClient,
-    type SignTransactionOptions
-} from '@vechain/vechain-sdk-network';
-import { BaseWallet } from '@vechain/vechain-sdk-wallet';
-import { secp256k1 } from '@vechain/vechain-sdk-core';
+import { HttpClient, type SignTransactionOptions } from '@vechain/sdk-network';
+import { BaseWallet } from '@vechain/sdk-wallet';
+import { secp256k1 } from '@vechain/sdk-core';
 
 /**
  * Url of the testnet fixture
@@ -164,8 +161,8 @@ const TEST_ACCOUNTS_THOR_SOLO = [
 const THOR_SOLO_ACCOUNTS_BASE_WALLET: BaseWallet = new BaseWallet(
     TEST_ACCOUNTS_THOR_SOLO.map((account) => ({
         privateKey: Buffer.from(account.privateKey, 'hex'),
-        publicKey: secp256k1.derivePublicKey(
-            Buffer.from(account.privateKey, 'hex')
+        publicKey: Buffer.from(
+            secp256k1.derivePublicKey(Buffer.from(account.privateKey, 'hex'))
         ),
         address: account.address
     }))
@@ -180,8 +177,10 @@ const THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR = (
     new BaseWallet(
         TEST_ACCOUNTS_THOR_SOLO.map((account) => ({
             privateKey: Buffer.from(account.privateKey, 'hex'),
-            publicKey: secp256k1.derivePublicKey(
-                Buffer.from(account.privateKey, 'hex')
+            publicKey: Buffer.from(
+                secp256k1.derivePublicKey(
+                    Buffer.from(account.privateKey, 'hex')
+                )
             ),
             address: account.address
         })),
