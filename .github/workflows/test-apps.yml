@@ -14,7 +14,7 @@ jobs:
             - name: Setup Node
               uses: actions/setup-node@v4
               with:
-                  node-version: lts/*
+                  node-version: v20.11.0
 
             - name: Install & Patch packages
               run: |
