@@ -11,7 +11,6 @@ To start using the vechain SDK, you can install specific packages based on your 
  - [@vechain/sdk-network](https://www.npmjs.com/package/@vechain/sdk-network)
  - [@vechain/sdk-errors](https://www.npmjs.com/package/@vechain/sdk-errors)
  - [@vechain/sdk-provider](https://www.npmjs.com/package/@vechain/sdk-provider)
- - [@vechain/sdk-wallet](https://www.npmjs.com/package/@vechain/sdk-wallet)
  - [@vechain/sdk-hardhat-plugin](https://www.npmjs.com/package/@vechain/sdk-hardhat-plugin)
  - [@vechain/sdk-logging](https://www.npmjs.com/package/@vechain/sdk-logging)
  - [@vechain/sdk-rpc-proxy](https://www.npmjs.com/package/@vechain/sdk-rpc-proxy)

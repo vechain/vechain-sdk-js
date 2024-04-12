@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { HardhatVechainProvider, type SubscriptionEvent } from '../../../src';
-import { ThorClient } from '@vechain/sdk-network';
+import { BaseWallet, ThorClient } from '@vechain/sdk-network';
 import { soloNetwork, soloUrl } from '../../fixture';
 import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
 import {
@@ -9,7 +9,6 @@ import {
     waitForMessage
 } from '../helpers';
 import { coder, type FunctionFragment } from '@vechain/sdk-core';
-import { BaseWallet } from '@vechain/sdk-wallet';
 
 /**
  * Vechain provider tests - Solo Network

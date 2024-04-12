@@ -12,7 +12,7 @@ import {
     DelegationHandler,
     type SignTransactionOptions,
     type ThorClient
-} from '@vechain/sdk-network';
+} from '../../../../thor-client';
 
 /**
  * Base wallet class.

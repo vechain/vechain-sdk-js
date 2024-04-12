@@ -7,7 +7,7 @@ import {
 import { mainnetUrl } from '../../fixture';
 
 import { MAINNET_NETWORK } from '@vechain/sdk-core';
-import { BaseWallet } from '@vechain/sdk-wallet';
+import { BaseWallet } from '@vechain/sdk-network';
 import { providerMethodsTestCasesMainnet } from '../fixture';
 
 /**

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { ThorClient } from '@vechain/sdk-network';
+import { BaseWallet, ThorClient } from '@vechain/sdk-network';
 import {
     soloNetwork,
     TEST_ACCOUNTS_THOR_SOLO,
@@ -16,7 +16,6 @@ import {
     JSONRPCInvalidParams,
     ProviderRpcError
 } from '@vechain/sdk-errors';
-import { BaseWallet } from '@vechain/sdk-wallet';
 import { secp256k1 } from '@vechain/sdk-core';
 
 /**

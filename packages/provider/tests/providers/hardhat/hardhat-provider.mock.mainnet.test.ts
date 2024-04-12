@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { HardhatVechainProvider } from '../../../src';
 import { mainnetUrl } from '../../fixture';
-import { BaseWallet } from '@vechain/sdk-wallet';
+import { BaseWallet } from '@vechain/sdk-network';
 import { VechainSDKLogger } from '@vechain/sdk-logging';
 
 /**

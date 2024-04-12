@@ -1,5 +1,5 @@
 import { HardhatVechainProvider } from '@vechain/sdk-provider';
-import { BaseWallet } from '@vechain/sdk-wallet';
+import { BaseWallet } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
 // START_SNIPPET: VechainHardhatProviderSnippet

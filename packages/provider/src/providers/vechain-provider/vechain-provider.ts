@@ -10,7 +10,8 @@ import {
     type EventPoll,
     Poll,
     type SignTransactionOptions,
-    type ThorClient
+    type ThorClient,
+    type Wallet
 } from '@vechain/sdk-network';
 import {
     ethGetLogs,
@@ -18,7 +19,6 @@ import {
     RPC_METHODS,
     RPCMethodsMap
 } from '../../utils';
-import { type Wallet } from '@vechain/sdk-wallet';
 import {
     type FilterOptions,
     type SubscriptionEvent,

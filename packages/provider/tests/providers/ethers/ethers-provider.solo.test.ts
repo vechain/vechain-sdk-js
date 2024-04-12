@@ -7,7 +7,7 @@ import {
 import { soloUrl } from '../../fixture';
 
 import { SOLO_NETWORK } from '@vechain/sdk-core';
-import { BaseWallet } from '@vechain/sdk-wallet';
+import { BaseWallet } from '@vechain/sdk-network';
 import { providerMethodsTestCasesSolo } from '../fixture';
 
 /**

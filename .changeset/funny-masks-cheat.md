@@ -5,7 +5,6 @@
 "@vechain/sdk-logging": patch
 "@vechain/sdk-network": patch
 "@vechain/sdk-errors": patch
-"@vechain/sdk-wallet": patch
 "@vechain/sdk-core": patch
 ---
 

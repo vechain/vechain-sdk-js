@@ -1,12 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
-import { HDWallet } from '../../src';
-import { DelegationHandler } from '@vechain/sdk-network';
+
 import { hdNodeFixtures } from './fixture';
+import { DelegationHandler, HDWallet } from '../../../../src';
 
 /**
  * Unit test for HDWallet class.
  *
- * @group unit/wallet/hd-wallet
+ * @group unit/provider/helpers/provider-internal-hd-wallet
  */
 describe('HDWallet wallet tests', () => {
     /**

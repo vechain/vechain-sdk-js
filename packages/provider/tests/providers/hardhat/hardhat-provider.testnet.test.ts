@@ -3,7 +3,7 @@ import { HardhatVechainProvider } from '../../../src';
 import { testnetUrl } from '../../fixture';
 import { providerMethodsTestCasesTestnet } from '../fixture';
 import { waitForMessage } from '../helpers';
-import { BaseWallet } from '@vechain/sdk-wallet';
+import { BaseWallet } from '@vechain/sdk-network';
 
 /**
  * Vechain provider tests

@@ -1,14 +1,13 @@
 import { describe, expect, test } from '@jest/globals';
-import { BaseWallet } from '../../src';
 import { accountsFixture } from './fixture';
 import { InvalidDataTypeError } from '@vechain/sdk-errors';
 import { Hex, secp256k1, ZERO_ADDRESS } from '@vechain/sdk-core';
-import type { SignTransactionOptions } from '@vechain/sdk-network';
+import { BaseWallet, type SignTransactionOptions } from '../../../../src';
 
 /**
  * Unit test for BaseWallet class.
  *
- * @group unit/wallet/base-wallet
+ * @group unit/provider/helpers/provider-internal-base-wallet
  */
 describe('Base wallet tests', () => {
     /**

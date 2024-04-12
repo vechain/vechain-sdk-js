@@ -7,7 +7,7 @@ import {
 import { testnetUrl } from '../../fixture';
 
 import { TESTNET_NETWORK } from '@vechain/sdk-core';
-import { BaseWallet } from '@vechain/sdk-wallet';
+import { BaseWallet } from '@vechain/sdk-network';
 import { providerMethodsTestCasesTestnet } from '../fixture';
 
 /**

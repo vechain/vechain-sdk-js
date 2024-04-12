@@ -28,7 +28,6 @@
   "dependencies": {
     "@vechain/sdk-network": "1.0.0-beta.3",
     "@vechain/sdk-provider": "1.0.0-beta.3",
-    "@vechain/sdk-wallet": "1.0.0-beta.3",
     "@vechain/sdk-logging": "1.0.0-beta.3",
     "cors": "^2.8.5",
     "express": "^4.19.2"

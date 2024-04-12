@@ -1,5 +1,8 @@
-import { HttpClient, type SignTransactionOptions } from '@vechain/sdk-network';
-import { BaseWallet } from '@vechain/sdk-wallet';
+import {
+    BaseWallet,
+    HttpClient,
+    type SignTransactionOptions
+} from '@vechain/sdk-network';
 import { secp256k1 } from '@vechain/sdk-core';
 
 /**
