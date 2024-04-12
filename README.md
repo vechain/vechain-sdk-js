@@ -45,6 +45,33 @@ Explore, experiment, and let the vechain SDK empowers your blockchain adventures
  - [Yarn](https://classic.yarnpkg.com/en/docs/install)
  - [Docker](https://docs.docker.com/get-docker/)
 
+#### Additional prerequisites for Windows 10
+
+[Docker Desktop](https://www.docker.com/products/docker-desktop/) needs the run on *Windows 10* patched
+at the level **21H2 (19044 build)**. The last level provided by *Windows 10* automatic upgrade is **21H1 (1043 build)**.
+To install *Docker Desktop* to run *Thor Solo* to develop with this SDK, and *Windows 10* is not patched with a build
+higher than 19043, follows the instructions published in the 
+[KB5015684 Featured Update Windows 10 to 22H2](https://support.microsoft.com/en-us/topic/kb5015684-featured-update-to-windows-10-version-22h2-by-using-an-enablement-package-09d43632-f438-47b5-985e-d6fd704eee61)
+guide.
+1. Update *Windows 10* to the last available level, if this is not **21H2 (19044 build)** go to step 2.
+2. From **Start - Settings - Update & Security - Windows Update** panel, see if the link **View Optional Updates** is
+   visible and clickable, else go to step 3.
+3. From **Start - Settings - Update & Security** opt in  the **Windows Insider Program**.
+4. From **Start - Settings - Update & Security - Windows Update** panel, click **View Optional Updates** and install 
+   all the available patches.
+
+#### Additional prerequisite for Windows OS
+
+This SDK is supposed to be downloaded and installed with *Git*.
+*Yarn* scripts are distributed according Linux/MacOS/Unix  shell specifications.
+To let *Windows OS* to manage *Git* distributed software, to install and upgrade this SDK and run *Yarn* scripts,
+please, follow the instructions below.
+1. Install the official [Git for Windows](https://git-scm.com/download/win).
+   The installation deploys the [Git Bash - MINGW](https://www.mingw-w64.org/) terminal in *Windows 0S*, 
+   providing a terminal compatible with the *Yarn* scripts used in this SDK.
+2. From **Start**menu, click **Git Bash** to open the terminal compatible with the *Yarn* scripts. You are now
+3. ready to getting started.
+
 ### Getting Started
 1. Clone your forked repository.
 2. Navigate to the project directory.
