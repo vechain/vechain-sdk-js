@@ -1,4 +1,7 @@
-import { type Wallet, type WalletAccount } from '../types';
+import {
+    type ProviderInternalWallet,
+    type ProviderInternalWalletAccount
+} from '../types';
 import { assert, buildError, DATA, TRANSACTION } from '@vechain/sdk-errors';
 import {
     addressUtils,
@@ -15,15 +18,15 @@ import {
 } from '../../../../thor-client';
 
 /**
- * Base wallet class.
+ * Provider internal Base wallet class.
  *
  * This is the most basic wallet implementation we can have.
  */
-class BaseWallet implements Wallet {
+class ProviderInternalBaseWallet implements ProviderInternalWallet {
     /**
      * List of accounts in the wallet.
      */
-    readonly accounts: WalletAccount[];
+    readonly accounts: ProviderInternalWalletAccount[];
 
     /**
      * Options for signing a transaction with delegator.
@@ -37,7 +40,7 @@ class BaseWallet implements Wallet {
      * @param options Optional options for signing a transaction with delegator.
      */
     constructor(
-        accounts: WalletAccount[],
+        accounts: ProviderInternalWalletAccount[],
         options?: {
             delegator?: SignTransactionOptions;
         }
@@ -63,7 +66,9 @@ class BaseWallet implements Wallet {
      * @param address - Address of the account.
      * @returns The account with the given address, or null if not found.
      */
-    async getAccount(address: string): Promise<WalletAccount | null> {
+    async getAccount(
+        address: string
+    ): Promise<ProviderInternalWalletAccount | null> {
         // Check if the address is valid
         assert(
             'getAccount',
@@ -198,4 +203,4 @@ class BaseWallet implements Wallet {
     }
 }
 
-export { BaseWallet };
+export { ProviderInternalBaseWallet };

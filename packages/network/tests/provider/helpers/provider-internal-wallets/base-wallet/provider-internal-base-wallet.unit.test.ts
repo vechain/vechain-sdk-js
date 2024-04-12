@@ -2,10 +2,13 @@ import { describe, expect, test } from '@jest/globals';
 import { accountsFixture } from './fixture';
 import { InvalidDataTypeError } from '@vechain/sdk-errors';
 import { Hex, secp256k1, ZERO_ADDRESS } from '@vechain/sdk-core';
-import { BaseWallet, type SignTransactionOptions } from '../../../../src';
+import {
+    ProviderInternalBaseWallet,
+    type SignTransactionOptions
+} from '../../../../../src';
 
 /**
- * Unit test for BaseWallet class.
+ * Unit test for ProviderInternalBaseWallet class.
  *
  * @group unit/provider/helpers/provider-internal-base-wallet
  */
@@ -19,7 +22,7 @@ describe('Base wallet tests', () => {
          */
         test('Should be able to create a wallet and get addresses from them', async () => {
             // Initialize a wallet with the accounts
-            const baseWallet = new BaseWallet(accountsFixture);
+            const baseWallet = new ProviderInternalBaseWallet(accountsFixture);
 
             // Get the addresses from the wallet
             expect(baseWallet.accounts).toEqual(accountsFixture);
@@ -41,7 +44,7 @@ describe('Base wallet tests', () => {
          */
         test('Should be able to get an account by address', async () => {
             // Initialize a wallet with the accounts
-            const baseWallet = new BaseWallet(accountsFixture);
+            const baseWallet = new ProviderInternalBaseWallet(accountsFixture);
 
             // Get the addresses from the wallet
             const randomAccount =
@@ -62,7 +65,7 @@ describe('Base wallet tests', () => {
          */
         test('Should get null when trying to get an account by a not existing address', async () => {
             // Initialize a wallet with the accounts
-            const baseWallet = new BaseWallet(accountsFixture);
+            const baseWallet = new ProviderInternalBaseWallet(accountsFixture);
 
             // Get the account by not existing address
             const notExistingAccount =
@@ -76,7 +79,7 @@ describe('Base wallet tests', () => {
          */
         test('Should throw error when trying to get an account by invalid address', async () => {
             // Initialize a wallet with the accounts
-            const baseWallet = new BaseWallet(accountsFixture);
+            const baseWallet = new ProviderInternalBaseWallet(accountsFixture);
 
             // Get the account by address
             const invalidAddress = 'INVALID_ADDRESS';
@@ -107,7 +110,7 @@ describe('Base wallet tests', () => {
 
             for (const delegator of delegators) {
                 // Initialize a wallet with the accounts and delegator
-                const baseWalletWithDelegator = new BaseWallet(
+                const baseWalletWithDelegator = new ProviderInternalBaseWallet(
                     accountsFixture,
                     {
                         delegator
@@ -127,7 +130,9 @@ describe('Base wallet tests', () => {
          */
         test('Should get null if delegator is not set', async () => {
             // Initialize a wallet with the accounts
-            const baseWalletWithoutDelegator = new BaseWallet(accountsFixture);
+            const baseWalletWithoutDelegator = new ProviderInternalBaseWallet(
+                accountsFixture
+            );
 
             // Get the delegator from the wallet that has no delegator
             const delegator = await baseWalletWithoutDelegator.getDelegator();

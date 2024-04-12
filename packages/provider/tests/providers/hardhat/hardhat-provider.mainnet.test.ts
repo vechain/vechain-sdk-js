@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { HardhatVechainProvider } from '../../../src';
 import { mainnetUrl } from '../../fixture';
 import { providerMethodsTestCasesMainnet } from '../fixture';
-import { BaseWallet } from '@vechain/sdk-network';
+import { ProviderInternalBaseWallet } from '@vechain/sdk-network';
 
 /**
  * Hardhat provider tests - Mainnet
@@ -20,7 +20,7 @@ describe('Hardhat provider tests', () => {
      */
     beforeEach(() => {
         provider = new HardhatVechainProvider(
-            new BaseWallet([]),
+            new ProviderInternalBaseWallet([]),
             mainnetUrl,
             (message: string, parent?: Error) => new Error(message, parent)
         );

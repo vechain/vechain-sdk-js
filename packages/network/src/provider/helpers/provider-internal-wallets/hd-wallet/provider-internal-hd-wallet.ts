@@ -1,4 +1,4 @@
-import { BaseWallet } from '../base-wallet';
+import { ProviderInternalBaseWallet } from '../base-wallet';
 import {
     addressUtils,
     HDNode,
@@ -7,7 +7,7 @@ import {
 } from '@vechain/sdk-core';
 import { type SignTransactionOptions } from '@vechain/sdk-network';
 
-class HDWallet extends BaseWallet {
+class ProviderInternalHDWallet extends ProviderInternalBaseWallet {
     /**
      * Mnemonic of the wallet.
      */
@@ -75,4 +75,4 @@ class HDWallet extends BaseWallet {
     }
 }
 
-export { HDWallet };
+export { ProviderInternalHDWallet };

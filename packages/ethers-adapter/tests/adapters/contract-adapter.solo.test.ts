@@ -4,7 +4,7 @@
  * @group integration/providers/vechain-provider-solo
  */
 import { HardhatVechainProvider } from '@vechain/sdk-provider';
-import { BaseWallet, ThorClient } from '@vechain/sdk-network';
+import { ProviderInternalBaseWallet, ThorClient } from '@vechain/sdk-network';
 import { soloNetwork, soloUrl } from '../fixture';
 import { contractAdapter } from '../../src';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
@@ -29,7 +29,7 @@ describe('Hardhat contract adapter tests', () => {
     beforeEach(() => {
         thorClient = new ThorClient(soloNetwork);
         provider = new HardhatVechainProvider(
-            new BaseWallet([]),
+            new ProviderInternalBaseWallet([]),
             soloUrl,
             (message: string, parent?: Error) => new Error(message, parent)
         );

@@ -57,7 +57,7 @@ To use the Hardhat Provider in your project, follow these steps:
  - Initialize the provider:
     ``` bash
     const provider = new HardhatVechainProvider(
-            new BaseWallet([]),
+            new ProviderInternalBaseWallet([]),
             testnetUrl,
             (message: string, parent?: Error) => new Error(message, parent)
         );

@@ -1,6 +1,6 @@
 import { HardhatVechainProvider } from '@vechain/sdk-provider';
 import {
-    BaseWallet,
+    ProviderInternalBaseWallet,
     ThorClient,
     type WaitForTransactionOptions
 } from '@vechain/sdk-network';
@@ -32,7 +32,7 @@ describe('Hardhat factory adapter tests', () => {
     beforeEach(() => {
         thorClient = new ThorClient(soloNetwork);
         provider = new HardhatVechainProvider(
-            new BaseWallet([]),
+            new ProviderInternalBaseWallet([]),
             soloUrl,
             (message: string, parent?: Error) => new Error(message, parent)
         );

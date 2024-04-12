@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { HardhatVechainProvider, type SubscriptionEvent } from '../../../src';
-import { BaseWallet, ThorClient } from '@vechain/sdk-network';
+import { ProviderInternalBaseWallet, ThorClient } from '@vechain/sdk-network';
 import { soloNetwork, soloUrl } from '../../fixture';
 import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
 import {
@@ -28,7 +28,7 @@ describe('Hardhat provider tests', () => {
     beforeEach(() => {
         thorClient = new ThorClient(soloNetwork);
         provider = new HardhatVechainProvider(
-            new BaseWallet([]),
+            new ProviderInternalBaseWallet([]),
             soloUrl,
             (message: string, parent?: Error) => new Error(message, parent),
             true

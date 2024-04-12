@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { BaseWallet, ThorClient } from '@vechain/sdk-network';
+import { ProviderInternalBaseWallet, ThorClient } from '@vechain/sdk-network';
 import {
     soloNetwork,
     TEST_ACCOUNTS_THOR_SOLO,
@@ -273,7 +273,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
             // Empty wallet provider
             const providerWithoutFromPrivateKey = new VechainProvider(
                 thorClient,
-                new BaseWallet([
+                new ProviderInternalBaseWallet([
                     {
                         privateKey: Buffer.from(
                             TEST_ACCOUNTS_THOR_SOLO[0].privateKey,

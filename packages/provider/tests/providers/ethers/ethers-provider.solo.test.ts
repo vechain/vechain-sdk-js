@@ -7,7 +7,7 @@ import {
 import { soloUrl } from '../../fixture';
 
 import { SOLO_NETWORK } from '@vechain/sdk-core';
-import { BaseWallet } from '@vechain/sdk-network';
+import { ProviderInternalBaseWallet } from '@vechain/sdk-network';
 import { providerMethodsTestCasesSolo } from '../fixture';
 
 /**
@@ -24,7 +24,7 @@ describe('Vechain provider tests - solo', () => {
      */
     beforeEach(() => {
         hardhatVechainProvider = new HardhatVechainProvider(
-            new BaseWallet([]),
+            new ProviderInternalBaseWallet([]),
             soloUrl,
             (message: string, parent?: Error) => new Error(message, parent),
             false

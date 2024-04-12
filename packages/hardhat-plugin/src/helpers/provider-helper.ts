@@ -1,8 +1,8 @@
 import {
-    BaseWallet,
+    ProviderInternalBaseWallet,
     DelegationHandler,
-    HDWallet,
-    type Wallet
+    ProviderInternalHDWallet,
+    type ProviderInternalWallet
 } from '@vechain/sdk-network';
 import { buildError, JSONRPC } from '@vechain/sdk-errors';
 import { addressUtils, secp256k1 } from '@vechain/sdk-core';
@@ -21,14 +21,15 @@ import {
  */
 const createWalletFromHardhatNetworkConfig = (
     networkConfig: NetworkConfig
-): Wallet => {
+): ProviderInternalWallet => {
     // Get the accounts from the configuration
     const accountFromConfig:
         | HardhatNetworkAccountsConfig
         | HttpNetworkAccountsConfig = networkConfig.accounts;
 
     // Empty wallet
-    if (accountFromConfig === undefined) return new BaseWallet([], {});
+    if (accountFromConfig === undefined)
+        return new ProviderInternalBaseWallet([], {});
     // Some configuration
     else {
         // Remote (not supported)
@@ -39,9 +40,9 @@ const createWalletFromHardhatNetworkConfig = (
                 'Remote accounts are not supported in hardhat network configuration.'
             );
 
-        // Base Wallet - From an array of private keys
+        // Base ProviderInternalWallet - From an array of private keys
         if (Array.isArray(accountFromConfig)) {
-            return new BaseWallet(
+            return new ProviderInternalBaseWallet(
                 (accountFromConfig as string[]).map((privateKey: string) => {
                     // Convert the private key to a buffer
                     const privateKeyBuffer = Buffer.from(
@@ -67,9 +68,9 @@ const createWalletFromHardhatNetworkConfig = (
                 }
             );
         }
-        // HD Wallet - From a mnemonic and hd wallet options
+        // HD ProviderInternalWallet - From a mnemonic and hd wallet options
         else {
-            return new HDWallet(
+            return new ProviderInternalHDWallet(
                 accountFromConfig.mnemonic.split(' '),
                 accountFromConfig.count,
                 accountFromConfig.initialIndex,

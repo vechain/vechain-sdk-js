@@ -5,10 +5,10 @@ import {
 import { type Transaction, type TransactionBody } from '@vechain/sdk-core';
 
 /**
- * Represent a single account in a wallet.
+ * Represent a single account in a provider internal wallet.
  * Basically an account is a triple of **address**, **private key** and **public key**.
  */
-interface WalletAccount {
+interface ProviderInternalWalletAccount {
     /**
      * Address of the account.
      */
@@ -26,16 +26,16 @@ interface WalletAccount {
 }
 
 /**
- * Represent a wallet.
- * Basically a wallet is a list of {@link WalletAccount}.
+ * Represent a provider internal base wallet.
+ * Basically it is a list {@link ProviderInternalWalletAccount} used to contain account data into provider.
+ * A provider internal wallet is able to generate a signer when it is needed by the provider.
+ *
+ * e.g., Provider can need the Signer with methods like eth_sendTransaction, ...
  *
  * @note To be compatible with provider-internal-wallet stack it is better
- * to implement this interface for each kind of wallet you want to use.
- *
- * Basically, this interface contains all data needed for a wallet that others can use.
- * e.g., Provider can use this interface to get the list of accounts in a wallet.
+ * to implement this interface for each kind of provider internal wallet you want to use.
  */
-interface Wallet {
+interface ProviderInternalWallet {
     /**
      * Options for signing a transaction with delegator.
      */
@@ -44,7 +44,7 @@ interface Wallet {
     /**
      * List of accounts in the wallet.
      */
-    accounts: WalletAccount[];
+    accounts: ProviderInternalWalletAccount[];
 
     /**
      * Get the list of addresses in the wallet.
@@ -59,7 +59,9 @@ interface Wallet {
      * @param address - Address of the account.
      * @returns The account with the given address, or null if not found.
      */
-    getAccount: (address: string) => Promise<WalletAccount | null>;
+    getAccount: (
+        address: string
+    ) => Promise<ProviderInternalWalletAccount | null>;
 
     /**
      * Get the options for signing a transaction with delegator (if any).
@@ -95,12 +97,6 @@ interface Wallet {
         transactionToSign: TransactionBody,
         thorClient: ThorClient
     ) => Promise<Transaction>;
-
-    /**
-     * Here we can add all useful methods for wallet.
-     * Currently, we have only getAddresses (needed by provider)
-     */
-    // ... e.g. addAccount, removeAccount, ...
 }
 
-export { type Wallet, type WalletAccount };
+export { type ProviderInternalWallet, type ProviderInternalWalletAccount };

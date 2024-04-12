@@ -1,5 +1,5 @@
 import {
-    BaseWallet,
+    ProviderInternalBaseWallet,
     HttpClient,
     type SignTransactionOptions
 } from '@vechain/sdk-network';
@@ -161,23 +161,26 @@ const TEST_ACCOUNTS_THOR_SOLO = [
 /**
  * Test accounts into wallet fixture
  */
-const THOR_SOLO_ACCOUNTS_BASE_WALLET: BaseWallet = new BaseWallet(
-    TEST_ACCOUNTS_THOR_SOLO.map((account) => ({
-        privateKey: Buffer.from(account.privateKey, 'hex'),
-        publicKey: Buffer.from(
-            secp256k1.derivePublicKey(Buffer.from(account.privateKey, 'hex'))
-        ),
-        address: account.address
-    }))
-);
+const THOR_SOLO_ACCOUNTS_BASE_WALLET: ProviderInternalBaseWallet =
+    new ProviderInternalBaseWallet(
+        TEST_ACCOUNTS_THOR_SOLO.map((account) => ({
+            privateKey: Buffer.from(account.privateKey, 'hex'),
+            publicKey: Buffer.from(
+                secp256k1.derivePublicKey(
+                    Buffer.from(account.privateKey, 'hex')
+                )
+            ),
+            address: account.address
+        }))
+    );
 
 /**
  * Test accounts into wallet fixture with delegator
  */
 const THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR = (
     delegator: SignTransactionOptions
-): BaseWallet =>
-    new BaseWallet(
+): ProviderInternalBaseWallet =>
+    new ProviderInternalBaseWallet(
         TEST_ACCOUNTS_THOR_SOLO.map((account) => ({
             privateKey: Buffer.from(account.privateKey, 'hex'),
             publicKey: Buffer.from(

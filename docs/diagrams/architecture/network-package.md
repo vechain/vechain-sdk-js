@@ -30,10 +30,18 @@ C4Context
             System(subscriptions, "Subscriptions", "Contains functions for obtaining URLs for subscribing to events through a websocket connection")
             System(thorest, "Thorest", "Endpoints for the REST API")
         }
+       
+        Boundary(b4, "Provider") {
+            Boundary(b41, "Provider Internal Wallets") {
+                System(provider-internal-base-wallet, "BaseProviderInternalWallet", "Basical wallet a provider can use internally")
+                System(provider-internal-hd-wallet, "HDProviderInternalWallet", "HD wallet a provider can use internally")
+            }        
+        }
         
-        Boundary(b4, "External Blockchain Interaction") {
+        Boundary(b5, "External Blockchain Interaction") {
             System_Ext(vechainthor, "Thor Blockchain", "Represents the blockchain platform with which the SDK interacts")
         }
+       
     }
 
     UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
