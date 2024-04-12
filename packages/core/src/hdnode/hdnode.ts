@@ -1,3 +1,4 @@
+import * as utils from '@noble/curves/abstract/utils';
 import { ethers } from 'ethers';
 import {
     MNEMONIC_WORDLIST_ALLOWED_SIZES,
@@ -69,7 +70,7 @@ function fromPublicKey(publicKey: Buffer, chainCode: Buffer): IHDNode {
     // Invalid chain code
     assertIsValidHdNodeChainCode('fromPublicKey', chainCode);
 
-    const compressed = secp256k1.extendedPublicKeyToArray(publicKey, true);
+    const compressed = secp256k1.compressPublicKey(publicKey);
     const key = Buffer.concat([
         X_PUB_PREFIX,
         chainCode,
@@ -129,9 +130,8 @@ function fromPrivateKey(privateKey: Buffer, chainCode: Buffer): IHDNode {
  */
 function ethersNodeToOurHDNode(ethersNode: ethers.HDNodeWallet): IHDNode {
     const pub = Buffer.from(
-        secp256k1.extendedPublicKeyToArray(
-            Buffer.from(ethersNode.publicKey.slice(2), 'hex'),
-            false
+        secp256k1.inflatePublicKey(
+            utils.hexToBytes(ethersNode.publicKey.slice(2))
         )
     );
     const cc = Buffer.from(ethersNode.chainCode.slice(2), 'hex');

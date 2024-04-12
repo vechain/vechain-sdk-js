@@ -41,8 +41,10 @@ describe('Hdnode', () => {
             // Correct public key
             expect(
                 Hex.of(
-                    secp256k1.derivePublicKey(
-                        child.privateKey ?? ZERO_BUFFER(0)
+                    secp256k1.inflatePublicKey(
+                        secp256k1.derivePublicKey(
+                            child.privateKey ?? ZERO_BUFFER(0)
+                        )
                     )
                 )
             ).toEqual(Hex.of(child.publicKey));
@@ -64,8 +66,10 @@ describe('Hdnode', () => {
             // Correct public key
             expect(
                 Hex.of(
-                    secp256k1.derivePublicKey(
-                        child.privateKey ?? ZERO_BUFFER(0)
+                    secp256k1.inflatePublicKey(
+                        secp256k1.derivePublicKey(
+                            child.privateKey ?? ZERO_BUFFER(0)
+                        )
                     )
                 )
             ).toEqual(Hex.of(child.publicKey));
@@ -111,8 +115,12 @@ describe('Hdnode', () => {
                 // Public key
                 expect(currentHdnode.publicKey).toBeDefined();
                 expect(
-                    secp256k1.derivePublicKey(
-                        currentHdnode.privateKey as Buffer
+                    Buffer.from(
+                        secp256k1.inflatePublicKey(
+                            secp256k1.derivePublicKey(
+                                currentHdnode.privateKey as Buffer
+                            )
+                        )
                     )
                 ).toEqual(currentHdnode.publicKey);
 

@@ -38,7 +38,7 @@ It's important to note that certificates in the VechainThor blockchain are self-
 
 const privateKey = secp256k1.generatePrivateKey();
 const publicKey = secp256k1.derivePublicKey(privateKey);
-const signerAddress = addressUtils.fromPublicKey(publicKey);
+const signerAddress = addressUtils.fromPublicKey(Buffer.from(publicKey));
 
 // 2 - Create a certificate
 
@@ -59,7 +59,7 @@ const jsonStr = certificate.encode(cert);
 const signature = secp256k1.sign(blake2b256(jsonStr), privateKey);
 
 // Add 0x to signature
-cert.signature = '0x' + signature.toString('hex');
+cert.signature = Hex0x.of(signature);
 
 // Verify certificate
 certificate.verify(cert);

@@ -40,7 +40,10 @@ const privateKey = secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 
-const signedTransaction = TransactionHandler.sign(body, privateKey);
+const signedTransaction = TransactionHandler.sign(
+    body,
+    Buffer.from(privateKey)
+);
 
 // 5 - Encode transaction
 

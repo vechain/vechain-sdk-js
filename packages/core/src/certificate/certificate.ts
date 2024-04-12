@@ -49,14 +49,14 @@ function verify(cert: Certificate): void {
     const encoded = encode({ ...cert, signature: undefined });
     const signingHash = blake2b256(encoded);
     const pubKey = secp256k1.recover(
-        signingHash,
+        Buffer.from(signingHash),
         Buffer.from((cert.signature as string).slice(2), 'hex')
     );
 
     // Signature does not match with the signer's public key
     assert(
         'verify',
-        addressUtils.fromPublicKey(pubKey) === cert.signer,
+        addressUtils.fromPublicKey(Buffer.from(pubKey)) === cert.signer,
         CERTIFICATE.CERTIFICATE_INVALID_SIGNER,
         "Verification failed: Signature does not correspond to the signer's public key.",
         { pubKey, cert }

@@ -1,10 +1,20 @@
+import { Buffer } from 'buffer';
+
 /**
- * Zero buffer
+ * Zero Buffer
  * @internal
  *
  * @example ZERO_BUFFER(8) -> 0x00000000 , ... , ZERO_BUFFER(n) -> 0x0...0
  */
-const ZERO_BUFFER = (size: number): Buffer => Buffer.alloc(size, 0);
+const ZERO_BUFFER = (size: number): Buffer => Buffer.from(ZERO_BYTES(size));
+
+/**
+ * Create a Uint8Array filled with zero bytes of the specified size.
+ *
+ * @param {number} size - The size of the Uint8Array to create.
+ * @returns {Uint8Array} - A Uint8Array filled with zero bytes.
+ */
+const ZERO_BYTES = (size: number): Uint8Array => new Uint8Array(size);
 
 /**
  * Regular expression for validating hexadecimal addresses. Must have "0x" prefix. Must be 40 characters long.
@@ -23,4 +33,10 @@ const DECIMAL_INTEGER_REGEX = /^\d+$/;
  */
 const NUMERIC_REGEX = /(^-?\d+(\.\d+)?)$|(^-?\.\d+)$/;
 
-export { ZERO_BUFFER, HEX_ADDRESS_REGEX, DECIMAL_INTEGER_REGEX, NUMERIC_REGEX };
+export {
+    ZERO_BUFFER,
+    ZERO_BYTES,
+    HEX_ADDRESS_REGEX,
+    DECIMAL_INTEGER_REGEX,
+    NUMERIC_REGEX
+};
