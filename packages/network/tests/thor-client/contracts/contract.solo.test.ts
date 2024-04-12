@@ -408,14 +408,13 @@ describe('ThorClient - Contracts', () => {
     testingContractTestCases.forEach(
         ({ description, functionName, params, expected }) => {
             test(description, async () => {
-                const response =
-                    await thorSoloClient.contracts.executeContractCall(
-                        TESTING_CONTRACT_ADDRESS,
-                        coder
-                            .createInterface(TESTING_CONTRACT_ABI)
-                            .getFunction(functionName) as FunctionFragment,
-                        params
-                    );
+                const response = await thorSoloClient.contracts.executeCall(
+                    TESTING_CONTRACT_ADDRESS,
+                    coder
+                        .createInterface(TESTING_CONTRACT_ABI)
+                        .getFunction(functionName) as FunctionFragment,
+                    params
+                );
 
                 expect(response).toEqual(expected);
             });

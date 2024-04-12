@@ -7,7 +7,8 @@ import {
     addressUtils,
     type FunctionFragment,
     abi,
-    clauseBuilder
+    clauseBuilder,
+    type TransactionClause
 } from '@vechain/sdk-core';
 import type {
     ContractCallOptions,
@@ -72,7 +73,7 @@ class ContractsModule {
      *
      * The function simulates a transaction using the provided parameters without submitting it to the blockchain, allowing read-only operations to be tested without incurring gas costs or modifying the blockchain state.
      */
-    public async executeContractCall(
+    public async executeCall(
         contractAddress: string,
         functionFragment: FunctionFragment,
         functionData: unknown[],
@@ -110,7 +111,7 @@ class ContractsModule {
      *
      * @returns A promise resolving to a SendTransactionResult object.
      */
-    public async executeContractTransaction(
+    public async executeTransaction(
         privateKey: string,
         contractAddress: string,
         functionFragment: FunctionFragment,
@@ -152,6 +153,38 @@ class ContractsModule {
         return result;
     }
 
+    public async executeMultipleClausesTransaction(
+        clauses: TransactionClause[],
+        privateKey: string,
+        options?: ContractTransactionOptions
+    ): Promise<SendTransactionResult> {
+        // Estimate the gas cost of the transaction
+        const gasResult = await this.thor.gas.estimateGas(
+            clauses,
+            addressUtils.fromPrivateKey(Buffer.from(privateKey, 'hex'))
+        );
+
+        // Build a transaction for calling the contract function
+        const txBody = await this.thor.transactions.buildTransactionBody(
+            clauses,
+            gasResult.totalGas,
+            options
+        );
+
+        // Sign the transaction with the private key
+        const signedTx = await this.thor.transactions.signTransaction(
+            txBody,
+            privateKey
+        );
+
+        const result = await this.thor.transactions.sendTransaction(signedTx);
+
+        result.wait = async () =>
+            await this.thor.transactions.waitForTransaction(result.id);
+
+        return result;
+    }
+
     /**
      * Gets the base gas price in wei.
      * The base gas price is the minimum gas price that can be used for a transaction.
@@ -162,7 +195,7 @@ class ContractsModule {
      * @returns The base gas price in wei.
      */
     public async getBaseGasPrice(): Promise<unknown> {
-        return await this.executeContractCall(
+        return await this.executeCall(
             PARAMS_ADDRESS,
             coder
                 .createInterface(PARAMS_ABI)
