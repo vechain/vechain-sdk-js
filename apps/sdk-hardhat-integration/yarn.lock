@@ -943,62 +943,62 @@
     "@types/node" "*"
 
 "@vechain/sdk-core@1.0.0-beta.2":
-  version "1.0.0-beta.2"
+  version "1.0.0-beta.3"
   resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.2.tgz#5b217f2fef47f2507a369f65e149f4aa6ac2fb65"
   integrity sha512-eGJjts+/eJdybSnb7Y1q9d53vkeRuJB0kTsdUZDGf8M7JrkCzNEkdzxiXXWnP5hUItFbqJHPSH7Kl7k8DOknjw==
   dependencies:
     "@ethereumjs/rlp" "^5.0.2"
     "@types/elliptic" "^6.4.18"
-    "@vechain/sdk-errors" "1.0.0-beta.2"
+    "@vechain/sdk-errors" "1.0.0-beta.3"
     blakejs "^1.2.1"
     elliptic "^6.5.5"
     ethers "6.11.1"
 
 "@vechain/sdk-errors@1.0.0-beta.2":
-  version "1.0.0-beta.2"
+  version "1.0.0-beta.3"
   resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.2.tgz#29ee4b4b0a4371a83e823b52170af8bb45e1085d"
   integrity sha512-O7CVZ15jzrFZmDEvymeRl5mhLug1pGYuOsJzU8a1V3qk5wzyzIZthMT1eK6xczapJsLArx6F82vMR+5mYIDQOA==
 
 "@vechain/sdk-hardhat-plugin@1.0.0-beta.2":
-  version "1.0.0-beta.2"
+  version "1.0.0-beta.3"
   resolved "https://registry.yarnpkg.com/@vechain/sdk-hardhat-plugin/-/sdk-hardhat-plugin-1.0.0-beta.2.tgz#6216f03924c2160f83e398fe6488d943598a061f"
   integrity sha512-ag3d0RrLLkGKWEuZafOUkocPo9adZyS998kb9x3EeeWmC5NiCZGNfgprB3QX422an1phQax2hqpSkOPgOLTeeQ==
   dependencies:
-    "@vechain/sdk-provider" "1.0.0-beta.2"
+    "@vechain/sdk-provider" "1.0.0-beta.3"
 
 "@vechain/sdk-logging@1.0.0-beta.2":
-  version "1.0.0-beta.2"
+  version "1.0.0-beta.3"
   resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-beta.2.tgz#c7102d1ee4f9fcdb3f02def9c16b559a8adc169a"
   integrity sha512-s/WvdKvOTeS7kAYSjOBA6csJ3aBKSIItkV33HWxi3HiD1RCmrjFRGNRwqR70v4CtAk5sLSf0CWSACuxkd0BCsA==
   dependencies:
-    "@vechain/sdk-errors" "1.0.0-beta.2"
+    "@vechain/sdk-errors" "1.0.0-beta.3"
 
 "@vechain/sdk-network@1.0.0-beta.2":
-  version "1.0.0-beta.2"
+  version "1.0.0-beta.3"
   resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.2.tgz#5201b7c39d5926ff2c24ef862b3486c108fc539a"
   integrity sha512-QGfPGql6nhUA5WcAJgpS7qXOsQDBOn5w5QyZXOXpK2ttOKx5c94N41cCJkLOASTWvGkI6PuwoVr0JriO/7TNsQ==
   dependencies:
     "@types/ws" "^8.5.10"
-    "@vechain/sdk-core" "1.0.0-beta.2"
-    "@vechain/sdk-errors" "1.0.0-beta.2"
+    "@vechain/sdk-core" "1.0.0-beta.3"
+    "@vechain/sdk-errors" "1.0.0-beta.3"
     axios "^1.6.7"
 
 "@vechain/sdk-provider@1.0.0-beta.2":
-  version "1.0.0-beta.2"
+  version "1.0.0-beta.3"
   resolved "https://registry.yarnpkg.com/@vechain/sdk-provider/-/sdk-provider-1.0.0-beta.2.tgz#c8b5304667f5fe5189c163e22db62951bc4d1464"
   integrity sha512-nTBvyv/RYHFOrbrftHpEdPpyKcOcKFdWb7pzUb8+fzDBFyEbAsnS0KI0l8SzJTMxqOI8v7awXZ1sMR1r56+cwA==
   dependencies:
-    "@vechain/sdk-core" "1.0.0-beta.2"
-    "@vechain/sdk-logging" "1.0.0-beta.2"
-    "@vechain/sdk-network" "1.0.0-beta.2"
-    "@vechain/sdk-wallet" "1.0.0-beta.2"
+    "@vechain/sdk-core" "1.0.0-beta.3"
+    "@vechain/sdk-logging" "1.0.0-beta.3"
+    "@vechain/sdk-network" "1.0.0-beta.3"
+    "@vechain/sdk-wallet" "1.0.0-beta.3"
 
 "@vechain/sdk-wallet@1.0.0-beta.2":
-  version "1.0.0-beta.2"
+  version "1.0.0-beta.3"
   resolved "https://registry.yarnpkg.com/@vechain/sdk-wallet/-/sdk-wallet-1.0.0-beta.2.tgz#aa1e88a514178e37c9a6ff88ff507fda621897dc"
   integrity sha512-EpirdkeEL3cHe1tFSPr16c04YOVkePTr55/IbT+UsgrW6eJTnwuDsMw6dA71jy27LazbPoJ+Bc0GNnXEgx7SOA==
   dependencies:
-    "@vechain/sdk-network" "1.0.0-beta.2"
+    "@vechain/sdk-network" "1.0.0-beta.3"
 
 abbrev@1:
   version "1.1.1"
@@ -3748,9 +3748,9 @@ undici-types@~5.26.4:
   integrity sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==
 
 undici@^5.14.0:
-  version "5.28.3"
-  resolved "https://registry.yarnpkg.com/undici/-/undici-5.28.3.tgz#a731e0eff2c3fcfd41c1169a869062be222d1e5b"
-  integrity sha512-3ItfzbrhDlINjaP0duwnNsKpDQk3acHI3gVJ1z4fmwMK31k5G9OVIAMLSIaP6w4FaGkaAkN6zaQO9LUvZ1t7VA==
+  version "5.28.4"
+  resolved "https://registry.yarnpkg.com/undici/-/undici-5.28.4.tgz#6b280408edb6a1a604a9b20340f45b422e373068"
+  integrity sha512-72RFADWFqKmUb2hmmvNODKL3p9hcB6Gt2DOQMis1SEBaV6a4MH8soBvzg+95CYhCKPFedut2JY9bMfrDl9D23g==
   dependencies:
     "@fastify/busboy" "^2.0.0"
 

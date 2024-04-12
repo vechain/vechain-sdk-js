@@ -1,11 +1,16 @@
 import { ethers } from 'hardhat';
 
 async function main(): Promise<void> {
-    const vechainHelloWorld = await ethers.getContractAt(
-        'VechainHelloWorldWithNonEmptyConstructor',
-        '0x3dbfbed6b0aa6981ebb65bad6ffc57206641f2f1'
+    const signer = (await ethers.getSigners())[0];
+
+    const vechainHelloWorldFactory = await ethers.getContractFactory(
+        'VechainHelloWorld',
+        signer
     );
-    const message = (await vechainHelloWorld.sayHello()) as string;
+
+    const vechainHelloWorld = await vechainHelloWorldFactory.deploy();
+
+    const message = await vechainHelloWorld.sayHello();
 
     console.log(`${message}`);
 }

@@ -1,4 +1,4 @@
-import { keccak256, type HashInput } from '@vechain/sdk-core';
+import { Hex, keccak256, type HashInput } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // START_SNIPPET: Kekkak256Snippet
@@ -10,6 +10,6 @@ const hash = keccak256(toHash);
 
 // END_SNIPPET: Kekkak256Snippet
 
-expect(hash.toString('hex')).toBe(
+expect(Hex.of(hash)).toBe(
     '47173285a8d7341e5e972fc677286384f802f8ef42a5ec5f03bbfa254cb01fad'
 );

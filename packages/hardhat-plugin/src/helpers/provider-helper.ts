@@ -9,7 +9,7 @@ import {
 } from 'hardhat/types';
 import { DelegationHandler } from '@vechain/sdk-network';
 
-/**
+/*
  * Create a wallet from the hardhat network configuration.
  *
  * @param networkConfig - The hardhat network configuration.
@@ -50,7 +50,9 @@ const createWalletFromHardhatNetworkConfig = (
                     // Derive the public key and address from the private key
                     return {
                         privateKey: privateKeyBuffer,
-                        publicKey: secp256k1.derivePublicKey(privateKeyBuffer),
+                        publicKey: Buffer.from(
+                            secp256k1.derivePublicKey(privateKeyBuffer)
+                        ),
                         address: addressUtils.fromPrivateKey(privateKeyBuffer)
                     };
                 }),

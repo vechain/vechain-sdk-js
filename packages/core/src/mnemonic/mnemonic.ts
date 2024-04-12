@@ -65,7 +65,8 @@ function generate(
     randomGenerator =
         randomGenerator ??
         // Default random generator
-        ((numberOfBytes: number) => secp256k1.randomBytes(numberOfBytes));
+        ((numberOfBytes: number) =>
+            Buffer.from(secp256k1.randomBytes(numberOfBytes)));
 
     // Worldlist size
     const wordlistSizeToUse = wordlistSize ?? 12;
