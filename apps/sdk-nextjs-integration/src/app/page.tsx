@@ -20,33 +20,33 @@ interface Transfer {
     to: string;
     amount: string;
     meta: {
-        // Block identifier associated with the entity
-        blockID: string;
-        // Block number associated with the entity
-        blockNumber: number;
-        // Timestamp of the block
-        blockTimestamp: number;
-        // Transaction ID associated with the entity
-        txID: string;
-        // Transaction origin information
-        txOrigin: string;
-        // Index of the clause
-        clauseIndex: number;
+        blockID: string; // Block identifier associated with the entity
+        blockNumber: number; // Block number associated with the entity
+        blockTimestamp: number; // Timestamp of the block
+        txID: string; // Transaction ID associated with the entity
+        txOrigin: string; // Transaction origin information
+        clauseIndex: number; // Index of the clause
     };
 };
 
 export default function Home(): JSX.Element {
+    // State to store the transfer history
     const [transfers, setTransfers] = useState<Transfer[]>([]);
+    // State to store the address
     const [address, setAddress] = useState(
         "0xc3bE339D3D20abc1B731B320959A96A08D479583"
     );
 
-    // Function to get the history for the provided address
+    /**
+     * Function to get the history for the provided address
+     * @param address The address to get the history for
+     */
     async function getHistoryFor(address: string) {
         try{
             // Get the latest block
             const bestBlock = await thorClient.blocks.getBestBlockCompressed();
 
+            // Filter options for the transfer logs
             const filterOptions: FilterTransferLogsOptions = {
                 criteriaSet: [
                     { sender: address }, // Transactions sent by the address
