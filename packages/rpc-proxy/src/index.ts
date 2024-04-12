@@ -1,9 +1,9 @@
 import {
-    ProviderInternalHDWallet,
     HttpClient,
-    ThorClient
+    ProviderInternalHDWallet,
+    ThorClient,
+    VechainProvider
 } from '@vechain/sdk-network';
-import { VechainProvider } from '@vechain/sdk-provider';
 import importConfig from '../config.json';
 import express, { type Express, type Request, type Response } from 'express';
 import cors from 'cors';

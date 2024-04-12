@@ -5,7 +5,7 @@ import {
     secp256k1,
     VET_DERIVATION_PATH
 } from '@vechain/sdk-core';
-import { type SignTransactionOptions } from '@vechain/sdk-network';
+import { type SignTransactionOptions } from '../../../../thor-client';
 
 class ProviderInternalHDWallet extends ProviderInternalBaseWallet {
     /**

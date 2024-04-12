@@ -14,7 +14,7 @@ import {
 } from '@nomicfoundation/hardhat-ethers/internal/helpers';
 
 // Custom provider for ethers
-import { HardhatVechainProvider } from '@vechain/sdk-provider';
+import { HardhatVechainProvider } from '@vechain/sdk-network';
 import { VechainSDKLogger } from '@vechain/sdk-logging';
 
 // Import needed to customize ethers functionality

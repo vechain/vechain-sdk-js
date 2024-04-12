@@ -1,10 +1,10 @@
-import { type SignTransactionOptions } from '@vechain/sdk-network';
 import { type vechain_sdk_core_ethers } from '@vechain/sdk-core';
 import type {
     HardhatVechainProvider,
     JSONRPCEthersProvider,
+    type SignTransactionOptions,
     VechainProvider
-} from '@vechain/sdk-provider';
+} from '@vechain/sdk-network';
 
 /**
  * Available types for the VechainProvider's

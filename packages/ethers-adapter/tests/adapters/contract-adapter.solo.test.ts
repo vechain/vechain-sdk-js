@@ -3,8 +3,11 @@
  *
  * @group integration/providers/vechain-provider-solo
  */
-import { HardhatVechainProvider } from '@vechain/sdk-provider';
-import { ProviderInternalBaseWallet, ThorClient } from '@vechain/sdk-network';
+import {
+    HardhatVechainProvider,
+    ProviderInternalBaseWallet,
+    ThorClient
+} from '@vechain/sdk-network';
 import { soloNetwork, soloUrl } from '../fixture';
 import { contractAdapter } from '../../src';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';

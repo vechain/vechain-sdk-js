@@ -1,4 +1,4 @@
-import { HardhatVechainProvider } from '@vechain/sdk-provider';
+import { HardhatVechainProvider } from '@vechain/sdk-network';
 import {
     ProviderInternalBaseWallet,
     ThorClient,

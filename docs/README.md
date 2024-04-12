@@ -10,7 +10,6 @@ To start using the vechain SDK, you can install specific packages based on your 
  - [@vechain/sdk-core](https://www.npmjs.com/package/@vechain/sdk-core)
  - [@vechain/sdk-network](https://www.npmjs.com/package/@vechain/sdk-network)
  - [@vechain/sdk-errors](https://www.npmjs.com/package/@vechain/sdk-errors)
- - [@vechain/sdk-provider](https://www.npmjs.com/package/@vechain/sdk-provider)
  - [@vechain/sdk-hardhat-plugin](https://www.npmjs.com/package/@vechain/sdk-hardhat-plugin)
  - [@vechain/sdk-logging](https://www.npmjs.com/package/@vechain/sdk-logging)
  - [@vechain/sdk-rpc-proxy](https://www.npmjs.com/package/@vechain/sdk-rpc-proxy)
@@ -19,14 +18,12 @@ You can install these packages individually based on your requirements. Here's h
 ``` bash
 npm install @vechain/sdk-core
 npm install @vechain/sdk-network
-npm install @vechain/sdk-provider
 ...
 ```
 If you prefer using yarn, you can install the packages as follows:
 ``` bash
 yarn add @vechain/sdk-core
 yarn add @vechain/sdk-network
-yarn add @vechain/sdk-provider
 ...
 ```
 

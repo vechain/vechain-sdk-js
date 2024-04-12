@@ -1,8 +1,8 @@
+import { type Transaction, type TransactionBody } from '@vechain/sdk-core';
 import {
     type SignTransactionOptions,
     type ThorClient
-} from '@vechain/sdk-network';
-import { type Transaction, type TransactionBody } from '@vechain/sdk-core';
+} from '../../../thor-client';
 
 /**
  * Represent a single account in a provider internal wallet.

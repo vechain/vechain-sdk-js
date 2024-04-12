@@ -57,22 +57,6 @@ jobs:
               env:
                   NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
-            - name: Publish provider
-              run: |
-                cd packages/provider
-                yarn version --no-git-tag-version --new-version ${{ github.ref_name }}
-                yarn publish
-              env:
-                NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
-            - name: Publish wallet
-              run: |
-                cd packages/wallet
-                yarn version --no-git-tag-version --new-version ${{ github.ref_name }}
-                yarn publish
-              env:
-                NODE_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
-
             - name: Publish Hardhat Plugin
               run: |
                 cd packages/hardhat-plugin
