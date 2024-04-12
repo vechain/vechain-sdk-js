@@ -1,5 +1,4 @@
-import { HttpClient, ThorClient } from '@vechain/sdk-network';
-import { VechainProvider } from '@vechain/sdk-network';
+import { HttpClient, ThorClient, VechainProvider } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
 // START_SNIPPET: VechainProviderSnippet
