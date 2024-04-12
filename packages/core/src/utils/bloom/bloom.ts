@@ -118,7 +118,6 @@ const isAddressInBloom = (
         'Invalid address given as input in Bloom filter. Ensure it is a valid vechain thor address.',
         { addressToCheck }
     );
-
     return isInBloom(bloom, k, addressToCheck);
 };
 

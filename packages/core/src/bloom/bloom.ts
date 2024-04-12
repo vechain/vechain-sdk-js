@@ -132,15 +132,8 @@ class Generator {
     }
 
     /**
-     * Generates a variable-length Bloom filter based on the bits per key and count of keys.
-     * The generator will be reset after generation.
-     *
-     * @param bitsPerKey - The number of bits per key.
-     * @param k - The number of hash functions to be used (count of keys).
-     * @returns A new Filter instance.
-     */
-    /**
      * Generates a Bloom filter with the specified number of bits per key and number of hash functions.
+     * The generator will be reset after generation.
      *
      * @param {number} bitsPerKey - The desired number of bits per key in the Bloom filter.
      * @param {number} k - The number of hash functions to use in the Bloom filter.
