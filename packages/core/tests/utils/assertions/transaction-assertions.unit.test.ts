@@ -5,6 +5,7 @@ import {
     assertIsValidTransactionSigningPrivateKey,
     assertValidTransactionHead,
     assertValidTransactionID,
+    Hex,
     secp256k1
 } from '../../../src';
 import { InvalidSecp256k1PrivateKeyError } from '@vechain/sdk-errors';
@@ -128,7 +129,7 @@ describe('Transaction assertions', () => {
                     expect(() => {
                         assertIsValidTransactionSigningPrivateKey(
                             'test',
-                            value,
+                            Buffer.from(value),
                             secp256k1.isValidPrivateKey,
                             'signer'
                         );
@@ -142,14 +143,12 @@ describe('Transaction assertions', () => {
          */
         transactionAssertionsTests.assertIsValidTransactionSigningPrivateKey.invalid.forEach(
             ({ value }) => {
-                test(`should throw error for assertIsValidTransactionSigningPrivateKey of ${value.toString(
-                    'hex'
-                )}`, () => {
+                test(`should throw error for assertIsValidTransactionSigningPrivateKey of ${Hex.of(value)}`, () => {
                     // Expect assertIsValidTransactionSigningPrivateKey to throw
                     expect(() => {
                         assertIsValidTransactionSigningPrivateKey(
                             'test',
-                            value,
+                            Buffer.from(value),
                             () => false
                         );
                     }).toThrow(InvalidSecp256k1PrivateKeyError);

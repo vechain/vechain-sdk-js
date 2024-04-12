@@ -1,17 +1,7 @@
+import * as utils from '@noble/curves/abstract/utils';
 import { assert, buildError, DATA } from '@vechain/sdk-errors';
-import { Buffer } from 'buffer';
-
 import { randomBytes } from '@noble/hashes/utils';
 import { type HexString } from './types';
-
-/**
- * The encoding used for buffers.
- *
- * @type {BufferEncoding}
- * @constant
- * @see {ofString}
- */
-const ENCODING: BufferEncoding = 'hex' as BufferEncoding;
 
 /**
  * The PREFIX constant represents the prefix string used in the code.
@@ -106,9 +96,9 @@ enum ErrorMessage {
 /**
  * Represents a value that can be represented in hexadecimal format.
  *
- * @typedef {bigint | Buffer | Uint8Array | number | string} HexRepresentable
+ * @typedef { bigint | Uint8Array | number | string } HexRepresentable
  */
-type HexRepresentable = bigint | Buffer | Uint8Array | number | string;
+type HexRepresentable = bigint | Uint8Array | number | string;
 
 /**
  * Convert a bigint number to a padded hexadecimal representation long the specified number of bytes.
@@ -120,7 +110,7 @@ type HexRepresentable = bigint | Buffer | Uint8Array | number | string;
  */
 function ofBigInt(bi: bigint, bytes: number): string {
     assert(
-        'ofBigInt',
+        'hex.ts.ofBigInt',
         bi >= 0,
         DATA.INVALID_DATA_TYPE,
         ErrorMessage.NOT_POSITIVE,
@@ -132,17 +122,6 @@ function ofBigInt(bi: bigint, bytes: number): string {
 }
 
 /**
- * Convert a Buffer to a padded hexadecimal representation long the specified number of bytes.
- *
- * @param {Buffer} buffer - The Uint8Array to be represented as hexadecimal string.
- * @param {number} [bytes=0] - The number of bytes the resulting hexadecimal representation should be padded to.
- * @return {string} - The padded hexadecimal representation of the buffer.
- */
-function ofBuffer(buffer: Buffer, bytes: number): string {
-    return pad(buffer.toString(ENCODING), bytes);
-}
-
-/**
  * Converts a hexadecimal string representing a number to a padded lowercase hexadecimal string.
  *
  * @param {HexString} n - The hexadecimal string representing the number.
@@ -151,7 +130,7 @@ function ofBuffer(buffer: Buffer, bytes: number): string {
  */
 function ofHexString(n: HexString, bytes: number): string {
     assert(
-        'ofHexString',
+        'hex.ts.ofHexString',
         Hex0x.isValid(n),
         DATA.INVALID_DATA_TYPE,
         ErrorMessage.NOT_HEX,
@@ -166,11 +145,12 @@ function ofHexString(n: HexString, bytes: number): string {
  * @param {number} n - The number to be represented as hexadecimal string.
  * @param {number} bytes - The number of bytes the resulting hexadecimal representation should be padded to.
  * @returns {string} The padded hexadecimal representation of the number.
+ *
  * @throws Throws an error if the provided number is not an integer or is not positive.
  */
 function ofNumber(n: number, bytes: number): string {
     assert(
-        'ofNumber',
+        'hex.ts.ofNumber',
         Number.isInteger(n),
         DATA.INVALID_DATA_TYPE,
         ErrorMessage.NOT_INTEGER,
@@ -179,7 +159,7 @@ function ofNumber(n: number, bytes: number): string {
         }
     );
     assert(
-        'ofNumber',
+        'hex.ts.ofNumber',
         n >= 0,
         DATA.INVALID_DATA_TYPE,
         ErrorMessage.NOT_POSITIVE,
@@ -198,22 +178,25 @@ function ofNumber(n: number, bytes: number): string {
  * @param {string} txt - The input string to be converted.
  * @param {number} bytes - The number of bytes the resulting hexadecimal representation should be padded to.
  * @returns {string} - The padded hexadecimal representation of the number.
- * @see {ofBuffer}
+ *
+ * @see {ofUint8Array}
  */
 function ofString(txt: string, bytes: number): string {
-    return ofBuffer(Buffer.from(txt), bytes);
+    return ofUint8Array(utils.utf8ToBytes(txt), bytes);
 }
 
 /**
  * Convert an Uint8Array to a padded hexadecimal representation long the specified number of bytes.
  *
+ * Secure audit function.
+ * * [utils](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
+ *
  * @param {Uint8Array} uint8Array - The Uint8Array to be represented as hexadecimal string.
  * @param {number} [bytes=0] - The number of bytes the resulting hexadecimal representation should be padded to.
  * @return {string} - The padded hexadecimal representation of the buffer.
- * @see {ofBuffer}
  */
 function ofUint8Array(uint8Array: Uint8Array, bytes: number): string {
-    return ofBuffer(Buffer.from(uint8Array), bytes);
+    return pad(utils.bytesToHex(uint8Array), bytes);
 }
 
 /**
@@ -385,7 +368,6 @@ const Hex = {
      * Returns a hexadecimal representation from the given input data.
      * This method calls
      * * {@link ofBigInt} if `n` type is `bigint`;
-     * * {@link ofBuffer} if `n` is an instance of {@link Buffer};
      * * {@link ofHexString} if `n` type is {@link HexString}`;
      * * {@link ofNumber} if `n` type is `number`;
      * * {@link ofString} if `n` type is `string`;
@@ -402,7 +384,7 @@ const Hex = {
      * else it considers the string as an array of bytes and
      * returns its hexadecimal representation.
      * To force a string to be considered an array of bytes despite it is
-     * a valid `0x` hexadecimal expression, convert it to {@link Buffer}.
+     * a valid `0x` hexadecimal expression, convert it to {@link Uint8Array}.
      * ```
      * Hex.of(buffer.toString('hex'))
      * ```
@@ -414,7 +396,6 @@ const Hex = {
      * @see HexRepresentable
      */
     of: function (n: HexRepresentable, bytes: number = 0): string {
-        if (n instanceof Buffer) return ofBuffer(n, bytes);
         if (n instanceof Uint8Array) return ofUint8Array(n, bytes);
         if (typeof n === 'bigint') return ofBigInt(n, bytes);
         if (typeof n === `number`) return ofNumber(n, bytes);

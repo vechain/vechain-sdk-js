@@ -58,7 +58,9 @@ class HDWallet extends BaseWallet {
                 // Derive the public key and address from the private key
                 return {
                     privateKey: privateKeyBuffer,
-                    publicKey: secp256k1.derivePublicKey(privateKeyBuffer),
+                    publicKey: Buffer.from(
+                        secp256k1.derivePublicKey(privateKeyBuffer)
+                    ),
                     address: addressUtils.fromPrivateKey(privateKeyBuffer)
                 };
             }),

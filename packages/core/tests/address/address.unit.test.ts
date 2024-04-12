@@ -48,9 +48,13 @@ describe('Address', () => {
          */
         test('derive public key from private key', () => {
             // Correct private key / public key / address derivation
-            expect(secp256k1.derivePublicKey(simplePrivateKey)).toEqual(
-                simplePublicKey
-            );
+            expect(
+                Buffer.from(
+                    secp256k1.inflatePublicKey(
+                        secp256k1.derivePublicKey(simplePrivateKey)
+                    )
+                )
+            ).toEqual(simplePublicKey);
             expect(addressUtils.fromPublicKey(simplePublicKey)).toEqual(
                 simpleAddress
             );
