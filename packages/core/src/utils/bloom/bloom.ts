@@ -1,124 +1,137 @@
-import { bloom as bloomInstance } from '../../bloom';
-import { addressUtils } from '../../address';
-import { BLOOM_REGEX_LOWERCASE, BLOOM_REGEX_UPPERCASE } from '../const';
+import * as utils from '@noble/curves/abstract/utils';
 import { ADDRESS, assert, BLOOM, DATA } from '@vechain/sdk-errors';
 import { Hex0x, Hex } from '../hex';
+import { addressUtils } from '../../address';
+import { bloom } from '../../bloom';
 
 /**
- * Checks if a given string adheres to the Bloom filter format.
- * @remarks
- * The Bloom filter format should be a hexadecimal string of at least 16 characters.
- * It may optionally be prefixed with '0x'.
+ * Regular expression pattern to match the uppercase hexadecimal strings
+ * of length 16 or more, with optional leading "0x".
  *
- * @param bloom - The string to validate.
- * @returns A boolean indicating whether the provided string adheres to the Bloom filter format.
- *
+ * @type {RegExp}
+ * @see {isBloom}
  */
-const isBloom = (bloom: string): boolean => {
-    if (typeof bloom !== 'string') {
-        return false;
-    }
+const BLOOM_REGEX = /^(0x)?[0-9a-f]{16,}$/i;
 
-    // At least 16 characters besides '0x' both all lowercase and all uppercase
-    return (
-        BLOOM_REGEX_LOWERCASE.test(bloom) || BLOOM_REGEX_UPPERCASE.test(bloom)
+/**
+ * Regular expression pattern to match a lowercase hexadecimal number
+ * with a minimum length of 16 characters.
+ *
+ * @type {RegExp}
+ * @see {isBloom}
+ */
+// const BLOOM_REGEX_LOWERCASE = /^(0x)?[0-9a-f]{16,}$/;
+
+const filterOf = (addresses: string[], bitPerKey: number = 160): string => {
+    const keys: Uint8Array[] = [];
+    addresses.forEach((address) => {
+        if (addressUtils.isAddress(Hex0x.canon(address))) {
+            keys.push(utils.hexToBytes(Hex.canon(address)));
+        }
+    });
+    const generator = new bloom.Generator();
+    keys.forEach((key) => {
+        generator.add(key);
+    });
+    return utils.bytesToHex(
+        generator.generate(bitPerKey, bloom.calculateK(bitPerKey)).bits
     );
 };
 
 /**
- * Verifies whether the data, specified in a hex string format, is potentially contained in a set represented by the Bloom filter.
+ * Checks if a given string is a valid Bloom Filter string.
+ *
  * @remarks
- * This function throws errors if the input parameters do not adhere to the expected formats.
- * Ensure the `data` parameter is a hexadecimal string and `k` is a positive integer.
+ * The Bloom Filter format should be a hexadecimal string
+ * of at least 16 characters.
  *
- * @param bloom - Hex string representing the Bloom filter.
- * @param k - Number of hash functions used in the filter.
- * @param data - Hex string of the data to check against the Bloom filter.
- * @returns True if the data may be in the set represented by the Bloom filter; false otherwise.
- *
- * @throws{InvalidBloomError, InvalidDataTypeError, InvalidKError}
- * - Will throw an error if `bloom` is not in a valid Bloom filter format.
- * - Will throw an error if `data` is not a valid hexadecimal string.
- * - Will throw an error if `k` is not a positive integer.
+ * @param {string} filter - The string to check.
+ * @returns {boolean} True if the string is a valid filter string, false otherwise.
  */
-const isInBloom = (bloom: string, k: number, data: string): boolean => {
+const isBloom = (filter: string): boolean => {
+    if (typeof filter !== 'string') {
+        return false;
+    }
+    return BLOOM_REGEX.test(filter);
+};
+
+/**
+ * Determines whether a given data string is present in a Bloom Filter.
+ *
+ * The [Bloom Filter](https://en.wikipedia.org/wiki/Bloom_filter)
+ * encodes in a compact form a set of elements allowing to
+ * check if an element possibly belongs to the set or surely doesn't
+ * belong to the set.
+ *
+ * @param {string} filter - The Bloom Filter encoded as a hexadecimal string.
+ * @param {number} k - The number of hash functions used by the Bloom Filter.
+ * @param {string} data - The data string to be checked against the Bloom Filter.
+ * @returns {boolean} True if the data is present in the Bloom Filter, false otherwise.
+ *
+ * @throws{InvalidBloomError} If `bloom` is not in a valid Bloom filter format.
+ * @throws{InvalidDataTypeError} If `data` is not a valid hexadecimal string.
+ * @throws{InvalidKError} If `k` is not a positive integer.
+ */
+const isInBloom = (filter: string, k: number, data: string): boolean => {
     assert(
-        'isInBloom',
-        isBloom(bloom),
+        'bloomUtils.isInBloom',
+        isBloom(filter),
         BLOOM.INVALID_BLOOM,
         'Invalid bloom filter format. Bloom filters must adhere to the format 0x[0-9a-fA-F]{16,}.',
-        { bloom }
+        { bloom: filter }
     );
-
     assert(
-        'isInBloom',
-        Hex0x.isValid(data, true),
+        'bloomUtils.isInBloom',
+        typeof data === 'string' && Hex0x.isValid(data, true),
         DATA.INVALID_DATA_TYPE,
         'Invalid data type. Data should be an hexadecimal string',
         { data }
     );
-
     assert(
-        'isInBloom',
+        'bloomUtils.isInBloom',
         Number.isInteger(k) && k > 0,
         BLOOM.INVALID_K,
         'Invalid k. It should be a positive integer.',
         { k }
     );
-
-    assert(
-        'isInBloom',
-        typeof data === 'string',
-        DATA.INVALID_DATA_TYPE,
-        'Invalid data type. Data should be a string',
-        { data }
+    const bloomFilter = new bloom.Filter(
+        utils.hexToBytes(Hex.canon(filter)),
+        k
     );
-
-    // Ensure data is a Buffer
-    const dataBuffer = Buffer.from(Hex.canon(data), 'hex');
-
-    const bloomBuffer = Buffer.from(Hex.canon(bloom), 'hex');
-    const bloomFilter = new bloomInstance.Filter(bloomBuffer, k);
-
-    return bloomFilter.contains(dataBuffer);
+    return bloomFilter.contains(utils.hexToBytes(Hex.canon(data)));
 };
-
 /**
- * Determines whether an address is potentially part of a set represented by a Bloom filter.
+ * Checks if an address is present in a Bloom Filter.
+ *
  * @remarks
  * This function first checks if `addressToCheck` adheres to the expected address format
  * and then verifies its possible existence in the set represented by the Bloom filter.
  * The address must be a valid vechain thor address, and the Bloom filter should adhere to
  * specified Bloom filter format constraints.
  *
- * Note that due to the probabilistic nature of Bloom filters, a return value of `true`
- * indicates that the address may be in the set, while `false` confirms that the address
- * is not in the set.
+ * @param {string} bloom - The bloom filter encoded as a hexadecimal string.
+ * @param {number} k - The number of hash functions used by the Bloom Filter.
+ * @param {string} address - The address to check if it is present in the Bloom filter.
+ *[ERC-55  Mixed-case checksum address encoding ](https://eips.ethereum.org/EIPS/eip-55) supported.
+ * @returns {boolean} - True if the address is possibly present in the Bloom Filter, false otherwise.
  *
- * @param bloom - A hex string representing the Bloom filter against which the address is checked.
- * @param k - The number of hash functions used by the Bloom filter, must be a positive integer.
- * @param addressToCheck - The address in hexadecimal string format to be checked against the Bloom filter.
- * @returns A boolean indicating whether the address may be part of the set represented by the Bloom filter.
- *
- * @throws{InvalidAddressError}
- * - Will throw an error if `bloom` is not a valid Bloom filter format.
- * - Will throw an error if `k` is not a positive integer.
- * - Will throw an error if `addressToCheck` is not a valid vechain thor address format.
- * ```
+ * @throws{InvalidAddressError} If `addressToCheck` is not a valid Vechain Thor address.
+ * @throws{InvalidBloomError} If `bloom` is not in a valid Bloom filter format.
+ * @throws{InvalidKError} If `k` is not a positive integer.
  */
 const isAddressInBloom = (
     bloom: string,
     k: number,
-    addressToCheck: string
+    address: string
 ): boolean => {
     assert(
-        'isAddressInBloom',
-        addressUtils.isAddress(addressToCheck),
+        'bloomUtils.isAddressInBloom',
+        addressUtils.isAddress(address),
         ADDRESS.INVALID_ADDRESS,
         'Invalid address given as input in Bloom filter. Ensure it is a valid vechain thor address.',
-        { addressToCheck }
+        { addressToCheck: address }
     );
-    return isInBloom(bloom, k, addressToCheck);
+    return isInBloom(bloom, k, address);
 };
 
-export const bloomUtils = { isBloom, isInBloom, isAddressInBloom };
+export const bloomUtils = { filterOf, isBloom, isInBloom, isAddressInBloom };

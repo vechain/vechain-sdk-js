@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { addressUtils, bloom, bloomUtils, Hex, Hex0x } from '../../../src';
+import { addressUtils, bloomUtils, Hex0x } from '../../../src';
 import {
     bloomTestCases,
     blooms,
@@ -18,7 +18,6 @@ import {
     type ExpandedBlockDetail,
     type TransactionsExpandedBlockDetail
 } from '@vechain/sdk-network';
-import * as utils from '@noble/curves/abstract/utils';
 
 /**
  * Bloom utils tests
@@ -139,7 +138,7 @@ describe('utils/bloom', () => {
                 return addressUtils.isAddress(address);
             }
         );
-        const filter = bloomFilterOf(addresses);
+        const filter = bloomUtils.filterOf(addresses);
         console.log(filter);
         console.log(filter.length);
         addresses.forEach((address) => {
@@ -149,20 +148,6 @@ describe('utils/bloom', () => {
         });
     });
 });
-
-export function bloomFilterOf(addresses: string[]): string {
-    const keys: Uint8Array[] = [];
-    addresses.forEach((address) => {
-        if (addressUtils.isAddress(Hex0x.canon(address))) {
-            keys.push(utils.hexToBytes(Hex.canon(address)));
-        }
-    });
-    const generator = new bloom.Generator();
-    keys.forEach((key) => {
-        generator.add(key);
-    });
-    return utils.bytesToHex(generator.generate(20 * 8, 30).bits);
-}
 
 function getAddressesOf(block: ExpandedBlockDetail): string[] {
     const addresses: string[] = [block.beneficiary, block.signer];

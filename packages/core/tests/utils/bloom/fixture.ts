@@ -11,7 +11,7 @@ const blooms = [
     { bloom: 'cceeeeeeeeee2e02', isBloom: true },
     { bloom: '0xcceeefaf544356660001123123eeeeeee2e02', isBloom: true },
     { bloom: '0xABCDEF01230431334', isBloom: true },
-    { bloom: '0xABCdef01230431334', isBloom: false },
+    { bloom: '0xABCdef01230431334', isBloom: true },
     { bloom: '0x', isBloom: false },
     { bloom: '', isBloom: false },
     { bloom: '0x+ò8nbas', isBloom: false }
