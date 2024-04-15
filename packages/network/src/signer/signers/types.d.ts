@@ -1,10 +1,9 @@
-import { type vechain_sdk_core_ethers } from '@vechain/sdk-core';
-import type {
-    HardhatVechainProvider,
-    JSONRPCEthersProvider,
-    type SignTransactionOptions,
-    VechainProvider
-} from '@vechain/sdk-network';
+// import { type vechain_sdk_core_ethers } from '@vechain/sdk-core';
+import {
+    type HardhatVechainProvider,
+    type TransactionObjectInput,
+    type VechainProvider
+} from '../../provider';
 
 /**
  * Available types for the VechainProvider's
@@ -12,10 +11,7 @@ import type {
  * @NOTE: We use our supported providers instead of ethers providers.
  * If you create a new provider, you need to add it here.
  */
-type AvailableVechainProviders =
-    | VechainProvider
-    | HardhatVechainProvider
-    | JSONRPCEthersProvider;
+type AvailableVechainProviders = VechainProvider | HardhatVechainProvider;
 
 /**
  * A signer for vechain, adding specific methods for vechain to the ethers signer
@@ -23,34 +19,47 @@ type AvailableVechainProviders =
  * @NOTE: Su support completely our providers (that already support ethers provider format)
  * We use our supported providers instead of ethers providers
  */
-interface VechainSigner<TProviderType extends AvailableVechainProviders>
-    extends vechain_sdk_core_ethers.Signer {
+interface VechainSigner<TProviderType extends AvailableVechainProviders> {
+    /**
+     * --- START: TEMPORARY COMMENT ---
+     * Understand if  extend signer or ONLY write again method.
+     * This can be understanded by seeing if signature changes from the nature of vechain
+     * wrt ethereum
+     * --- END: TEMPORARY COMMENT ---
+     */
+    // extends vechain_sdk_core_ethers.Signer {
+
     /**
      * ********* START: Delegator needed methods *********
      */
 
     /**
-     * The delegator attached to this Signer (if any)
-     */
-    delegator: null | SignTransactionOptions;
-
-    /**
      * Sign a transaction with the delegator
+     *
      * @param transactionToSign - the transaction to sign
+     * @param delegator - the delegator to use
      * @returns the fully signed transaction
      */
-    signWithDelegator: (
-        transactionToSign: vechain_sdk_core_ethers.TransactionRequest
+    // signTransactionWithDelegator: (
+    //     transactionToSign: vechain_sdk_core_ethers.TransactionRequest
+    // ) => Promise<string>;
+    signTransactionWithDelegator: (
+        transactionToSign: TransactionObjectInput,
+        delegator: SignTransactionOptions
     ) => Promise<string>;
 
     /**
+     * --- START: TEMPORARY COMMENT ---
+     * To be implemented in the future
+     * --- END: TEMPORARY COMMENT ---
+     *
      * Send a transaction with the delegator
      * @param transactionToSend - the transaction to send
      * @returns the transaction response
      */
-    sendWithDelegator: (
-        transactionToSend: vechain_sdk_core_ethers.TransactionRequest
-    ) => Promise<vechain_sdk_core_ethers.TransactionResponse>;
+    // sendWithDelegator: (
+    //     transactionToSend: vechain_sdk_core_ethers.TransactionRequest
+    // ) => Promise<vechain_sdk_core_ethers.TransactionResponse>;
 
     /**
      * ********* END: Delegator needed methods *********
@@ -69,14 +78,20 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      *  Returns a new instance of this Signer connected to //provider// or detached
      *  from any Provider if null.
      */
-    connect: (provider: TProviderType | null) => VechainSigner;
+    connect: (provider: TProviderType | null) => this;
 
     /**
-     *  Get the address of the Signer.
+     * Get the address of the Signer.
+     *
+     * @returns the address of the signer
      */
     getAddress: () => Promise<string>;
 
     /**
+     * --- START: TEMPORARY COMMENT ---
+     * To be implemented in the future
+     * --- END: TEMPORARY COMMENT ---
+     *
      *  Gets the next nonce required for this Signer to send a transaction.
      *
      *  @param blockTag - The blocktag to base the transaction count on, keep in mind
@@ -84,20 +99,28 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      *
      *  @NOTE: This method generates a random number as nonce. It is because the nonce in vechain is a 6-byte number.
      */
-    getNonce: (blockTag?: vechain_sdk_core_ethers.BlockTag) => Promise<number>;
+    // getNonce: (blockTag?: vechain_sdk_core_ethers.BlockTag) => Promise<number>;
 
     /**
+     * --- START: TEMPORARY COMMENT ---
+     * To be implemented in the future
+     * --- END: TEMPORARY COMMENT ---
+     *
      *  Prepares a {@link vechain_sdk_core_ethers.TransactionRequest} for calling:
      *  - resolves ``to`` and ``from`` addresses
      *  - if ``from`` is specified, check that it matches this Signer
      *
      *  @param tx - The call to prepare
      */
-    populateCall: (
-        tx: vechain_sdk_core_ethers.TransactionRequest
-    ) => Promise<vechain_sdk_core_ethers.TransactionLike<string>>;
+    // populateCall: (
+    //     tx: vechain_sdk_core_ethers.TransactionRequest
+    // ) => Promise<vechain_sdk_core_ethers.TransactionLike<string>>;
 
     /**
+     * --- START: TEMPORARY COMMENT ---
+     * To be implemented in the future
+     * --- END: TEMPORARY COMMENT ---
+     *
      *  Prepares a {@link vechain_sdk_core_ethers.TransactionRequest} for sending to the network by
      *  populating any missing properties:
      *  - resolves ``to`` and ``from`` addresses
@@ -114,11 +137,15 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      *
      *  @param tx - The call to prepare
      */
-    populateTransaction: (
-        tx: vechain_sdk_core_ethers.TransactionRequest
-    ) => Promise<vechain_sdk_core_ethers.TransactionLike<string>>;
+    // populateTransaction: (
+    //     tx: vechain_sdk_core_ethers.TransactionRequest
+    // ) => Promise<vechain_sdk_core_ethers.TransactionLike<string>>;
 
     /**
+     * --- START: TEMPORARY COMMENT ---
+     * To be implemented in the future
+     * --- END: TEMPORARY COMMENT ---
+     *
      *  Estimates the required gas required to execute //tx// on the Blockchain. This
      *  will be the expected amount a transaction will require as its ``gasLimit``
      *  to successfully run all the necessary computations and store the needed state
@@ -133,11 +160,15 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      *          node to take into account. In these cases, a manually determined ``gasLimit``
      *          will need to be made.
      */
-    estimateGas: (
-        tx: vechain_sdk_core_ethers.TransactionRequest
-    ) => Promise<bigint>;
+    // estimateGas: (
+    //     tx: vechain_sdk_core_ethers.TransactionRequest
+    // ) => Promise<bigint>;
 
     /**
+     * --- START: TEMPORARY COMMENT ---
+     * To be implemented in the future
+     * --- END: TEMPORARY COMMENT ---
+     *
      *  Evaluates the //tx// by running it against the current Blockchain state. This
      *  cannot change state and has no cost in ether, as it is effectively simulating
      *  execution.
@@ -146,34 +177,48 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      *  (e.g. running a Contract's getters) or to simulate the effect of a transaction
      *  before actually performing an operation.
      */
-    call: (tx: vechain_sdk_core_ethers.TransactionRequest) => Promise<string>;
+    // call: (tx: vechain_sdk_core_ethers.TransactionRequest) => Promise<string>;
 
     /**
      *  Resolves an ENS Name to an address.
      */
-    resolveName: (name: string) => Promise<null | string>;
+    // resolveName: (name: string) => Promise<null | string>;
 
     /// /////////////////
     // Signing
 
     /**
-     *  Signs %%tx%%, returning the fully signed transaction. This does not
-     *  populate any additional properties within the transaction.
+     * Signs %%transactionToSign%%, returning the fully signed transaction. This does not
+     * populate any additional properties within the transaction.
+     *
+     * @param transactionToSign - The transaction to sign
+     * @returns The fully signed transaction
      */
+    // signTransaction: (
+    //     transactionToSign: vechain_sdk_core_ethers.TransactionRequest
+    // ) => Promise<string>;
     signTransaction: (
-        tx: vechain_sdk_core_ethers.TransactionRequest
+        transactionToSign: TransactionObjectInput
     ) => Promise<string>;
 
     /**
+     * --- START: TEMPORARY COMMENT ---
+     * To be implemented in the future
+     * --- END: TEMPORARY COMMENT ---
+     *
      *  Sends %%tx%% to the Network. The ``signer.populateTransaction(tx)``
      *  is called first to ensure all necessary properties for the
      *  transaction to be valid have been popualted first.
      */
-    sendTransaction: (
-        tx: vechain_sdk_core_ethers.TransactionRequest
-    ) => Promise<vechain_sdk_core_ethers.TransactionResponse>;
+    // sendTransaction: (
+    //     tx: vechain_sdk_core_ethers.TransactionRequest
+    // ) => Promise<vechain_sdk_core_ethers.TransactionResponse>;
 
     /**
+     * --- START: TEMPORARY COMMENT ---
+     * To be implemented in the future
+     * --- END: TEMPORARY COMMENT ---
+     *
      *  Signs an [[link-eip-191]] prefixed a personal message.
      *
      *  If the %%message%% is a string, it is signed as UTF-8 encoded bytes. It is **not**
@@ -183,16 +228,20 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders>
      *  To sign that example as two bytes, the Uint8Array should be used
      *  (i.e. ``new Uint8Array([ 0x12, 0x34 ])``).
      */
-    signMessage: (message: string | Uint8Array) => Promise<string>;
+    // signMessage: (message: string | Uint8Array) => Promise<string>;
 
     /**
+     * --- START: TEMPORARY COMMENT ---
+     * To be implemented in the future
+     * --- END: TEMPORARY COMMENT ---
+     *
      *  Signs the [[link-eip-712]] typed data.
      */
-    signTypedData: (
-        domain: vechain_sdk_core_ethers.TypedDataDomain,
-        types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
-        value: Record<string, unknown>
-    ) => Promise<string>;
+    // signTypedData: (
+    //     domain: vechain_sdk_core_ethers.TypedDataDomain,
+    //     types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
+    //     value: Record<string, unknown>
+    // ) => Promise<string>;
 
     /**
      * ********* END: Standard ethers signer methods adapted for vechain *********
