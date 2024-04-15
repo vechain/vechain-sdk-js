@@ -72,11 +72,7 @@ class ProviderInternalBaseWallet implements ProviderInternalWallet {
         // Return a new signer (if exists)
         if (signerAccount?.privateKey !== undefined) {
             return await Promise.resolve(
-                new VechainBaseSigner(
-                    signerAccount.privateKey,
-                    parentProvider,
-                    DelegationHandler(this.delegator).delegatorOrNull()
-                )
+                new VechainBaseSigner(signerAccount.privateKey, parentProvider)
             );
         }
         return null;
