@@ -80,7 +80,6 @@ const addressesOf = (block: ExpandedBlockDetail): string[] => {
  *
  * Secure audit function.
  * * {@link bloom.Generator}
- * * [util](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#utils)
  *
  * @param {string[]} addresses - The list of addresses to be part of the Bloom Filter,
  * expressed in hexadecimal notation, optionally prefixed with '0x',
@@ -133,6 +132,9 @@ const isBloom = (filter: string): boolean => {
  * check if an element possibly belongs to the set or surely doesn't
  * belong to the set.
  *
+ * Secure audit function.
+ * * {@link bloom.Filter}
+ *
  * @param {string} filter - The Bloom Filter encoded as a hexadecimal string.
  * @param {number} k - The number of hash functions used by the Bloom Filter.
  * @param {string} data - The data string to be checked against the Bloom Filter.
@@ -172,6 +174,9 @@ const isInBloom = (filter: string, k: number, data: string): boolean => {
 };
 /**
  * Checks if an address is present in a Bloom Filter.
+ *
+ * Secure audit function.
+ * * {@link isInBloom}
  *
  * @remarks
  * This function first checks if `addressToCheck` adheres to the expected address format
