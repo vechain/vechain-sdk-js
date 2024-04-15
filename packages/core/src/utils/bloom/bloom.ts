@@ -19,56 +19,77 @@ import type {
 const BLOOM_REGEX = /^(0x)?[0-9a-f]{16,}$/i;
 
 /**
+ * Bloom Filter *k* parameter set to 5 (hence 5 hashes functions are
+ * used in filter generation) is computed supposing to express the
+ * 20 bytes long address in 1 byte, hence k =
+ */
+const BLOOM_DEFAULT_K = 5;
+
+/**
  * Retrieves all addresses involved in a given block. This includes beneficiary, signer, clauses,
  * delegator, gas payer, origin, contract addresses, event addresses, and transfer recipients and senders.
  *
  * @param {ExpandedBlockDetail} block - The block object to extract addresses from.
  *
- * @returns {string[]} - An array of addresses involved in the block.
+ * @returns {string[]} - An array of addresses involved in the block, included
+ * empty addresses, duplicate elements are removed.
  *
  * @see {filterOf}
  */
 const addressesOf = (block: ExpandedBlockDetail): string[] => {
-    const addresses: string[] = [block.beneficiary, block.signer];
+    const addresses = new Set<string>();
+    addresses.add(block.beneficiary);
+    addresses.add(block.signer);
     block.transactions.forEach(
         (transaction: TransactionsExpandedBlockDetail) => {
             transaction.clauses.forEach((clause: Clause) => {
                 if (typeof clause.to === 'string') {
-                    addresses.push(clause.to);
+                    addresses.add(clause.to);
                 }
             });
-            addresses.push(transaction.delegator);
-            addresses.push(transaction.gasPayer);
-            addresses.push(transaction.origin);
+            addresses.add(transaction.delegator);
+            addresses.add(transaction.gasPayer);
+            addresses.add(transaction.origin);
             transaction.outputs.forEach((output) => {
                 if (typeof output.contractAddress === 'string') {
-                    addresses.push(output.contractAddress);
+                    addresses.add(output.contractAddress);
                 }
                 output.events.forEach((event) => {
-                    addresses.push(event.address);
+                    addresses.add(event.address);
                 });
                 output.transfers.forEach((transfer) => {
-                    addresses.push(transfer.recipient);
-                    addresses.push(transfer.sender);
+                    addresses.add(transfer.recipient);
+                    addresses.add(transfer.sender);
                 });
             });
         }
     );
-    return addresses;
+    return Array.from(addresses);
 };
 
 /**
- * Filters a list of addresses and generates a bloom filter.
+ * Generates a Bloom Filter(https://en.wikipedia.org/wiki/Bloom_filter)
+ * from a list of addresses ignoring elements of the list are not VeChain Thor addresses
+ * and duplicate elements to avoid to corrupt the resulting filters with empty strings.
  *
- * @param {string[]} addresses - The list of addresses to filter.
- * @param {number} [bitPerKey=160] - The number of bits per key. Default is 160 to fit address size in bytes.
+ * Use {@link addressesOf} to build the Bloom Filter for the addresses of
+ * a an {@link ExpandedBlockDetail}.
+ *
+ * @param {string[]} addresses - The list of addresses to be part of the Bloom Filter,
+ * expressed in hexadecimal notation, optionally prefixed with '0x',
+ * (ERC-55: Mixed-case checksum address encoding)[https://eips.ethereum.org/EIPS/eip-55] supported.
+ * @param {number} [k=5] - The number of hash functions used by the Bloom Filter.
+ * Default is 5 as optimal to compress each address size 20 times in 1 byte key.
+ *
  * @returns {string} The generated bloom filter in hexadecimal format.
+ *
+ * @see {addressesOf}.
  */
-const filterOf = (addresses: string[], bitPerKey: number = 160): string => {
-    const keys: Uint8Array[] = [];
+const filterOf = (addresses: string[], k: number = 5): string => {
+    const keys = new Set<Uint8Array>();
     addresses.forEach((address) => {
         if (addressUtils.isAddress(Hex0x.canon(address))) {
-            keys.push(utils.hexToBytes(Hex.canon(address)));
+            keys.add(utils.hexToBytes(Hex.canon(address)));
         }
     });
     const generator = new bloom.Generator();
@@ -76,7 +97,7 @@ const filterOf = (addresses: string[], bitPerKey: number = 160): string => {
         generator.add(key);
     });
     return utils.bytesToHex(
-        generator.generate(bitPerKey, bloom.calculateK(bitPerKey)).bits
+        generator.generate(bloom.calculateBitsPerKey(k), k).bits
     );
 };
 
@@ -151,7 +172,7 @@ const isInBloom = (filter: string, k: number, data: string): boolean => {
  * The address must be a valid vechain thor address, and the Bloom filter should adhere to
  * specified Bloom filter format constraints.
  *
- * @param {string} filter - The filter filter encoded as a hexadecimal string.
+ * @param {string} filter - The Bloom filter encoded as a hexadecimal string.
  * @param {number} k - The number of hash functions used by the Bloom Filter.
  * @param {string} address - The address to check if it is present in the Bloom filter.
  * [ERC-55  Mixed-case checksum address encoding ](https://eips.ethereum.org/EIPS/eip-55) supported.
@@ -177,6 +198,7 @@ const isAddressInBloom = (
 };
 
 export const bloomUtils = {
+    BLOOM_DEFAULT_K,
     addressesOf,
     filterOf,
     isBloom,

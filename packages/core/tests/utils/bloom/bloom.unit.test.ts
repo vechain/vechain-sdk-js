@@ -55,23 +55,28 @@ describe('utils/bloom', () => {
         const filter = bloomUtils.filterOf(addresses);
         addresses.forEach((address) => {
             expect(
-                bloomUtils.isAddressInBloom(filter, 30, Hex0x.canon(address))
+                bloomUtils.isAddressInBloom(
+                    filter,
+                    bloomUtils.BLOOM_DEFAULT_K,
+                    Hex0x.canon(address)
+                )
             ).toBeTruthy();
         });
     });
 
     test('boolUtils.filterOf -  bit per key - set', () => {
+        const k = 16;
         const addresses = bloomUtils
             .addressesOf(expandedBlockDetail)
             .filter((address) => {
                 return addressUtils.isAddress(address);
             });
-        const filter = bloomUtils.filterOf(addresses, 16);
+        const filter = bloomUtils.filterOf(addresses, k);
         addresses.forEach((address) => {
             expect(
                 bloomUtils.isAddressInBloom(
                     filter,
-                    bloom.calculateK(16),
+                    bloom.calculateK(k),
                     Hex0x.canon(address)
                 )
             ).toBeTruthy();
