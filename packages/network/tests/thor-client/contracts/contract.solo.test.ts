@@ -13,6 +13,7 @@ import {
     depositContractBytecode,
     filterContractEventsTestCases,
     fourArgsEventAbi,
+    multipleClausesTestCases,
     testingContractTestCases
 } from './fixture';
 import {
@@ -511,6 +512,60 @@ describe('ThorClient - Contracts', () => {
             );
         }
     );
+
+    describe('Multiple clauses test cases', () => {
+        multipleClausesTestCases.forEach((x) => {
+            test(x.description, async () => {
+                const contractsFactories: ContractFactory[] = x.contracts.map(
+                    (contract) => {
+                        return thorSoloClient.contracts.createContractFactory(
+                            contract.contractAbi,
+                            contract.contractBytecode,
+                            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
+                                .privateKey
+                        );
+                    }
+                );
+
+                const deployments = contractsFactories.map(
+                    async (factory, index) => {
+                        const deploymentParams =
+                            x.contracts[index].deploymentParams;
+                        return await (
+                            deploymentParams !== undefined
+                                ? await factory.startDeployment(
+                                      deploymentParams
+                                  )
+                                : await factory.startDeployment()
+                        ).waitForDeployment();
+                    }
+                );
+
+                const contracts = await Promise.all(deployments);
+
+                const contractClauses = x.contracts.flatMap(
+                    (contract, index) => {
+                        return contract.functionCalls.map((functionCall) => {
+                            return contracts[index].clause[
+                                functionCall.functionName
+                            ](...functionCall.params);
+                        });
+                    }
+                );
+
+                const transactionResult =
+                    await thorSoloClient.contracts.executeMultipleClausesTransaction(
+                        contractClauses,
+                        TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+                    );
+
+                const result = await transactionResult.wait();
+
+                expect(result?.reverted).toBe(false);
+                expect(result?.outputs.length).toBe(x.expectedResults);
+            });
+        });
+    });
 
     /**
      * Test suite for 'getBaseGasPrice' method
