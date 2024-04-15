@@ -32,6 +32,7 @@ describe('utils/bloom', () => {
             '0x95fe74d1ae072ee45bdb09879a157364e5341565',
             '0x9a107a75cff525b033a3e53cadafe3d193b570ec',
             '0xa416bdda32b00e218f08ace220bab512c863ff2f',
+            '0xb2c20a6de401003a671659b10629eb82ff254fb8',
             '0xb7591602c0c9d525bc3a7cf3c729fd91b8bf5bf6',
             '0xbeae4bef0121f11d269aedf6adb227259d4314ad'
         ];

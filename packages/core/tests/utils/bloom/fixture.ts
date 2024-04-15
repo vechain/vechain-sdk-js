@@ -332,7 +332,8 @@ const expandedBlockDetail: ExpandedBlockDetail = {
             reverted: false,
             outputs: [
                 {
-                    contractAddress: null,
+                    contractAddress:
+                        '0xb2c20a6de401003a671659b10629eb82ff254fb8',
                     events: [],
                     transfers: [
                         {
