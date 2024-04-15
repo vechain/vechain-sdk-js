@@ -16,6 +16,11 @@ import {
     type SignTransactionOptions,
     type ThorClient
 } from '../../../../thor-client';
+import {
+    type AvailableVechainProviders,
+    VechainBaseSigner,
+    type VechainSigner
+} from '../../../../signer';
 
 /**
  * Provider internal Base wallet class.
@@ -47,6 +52,34 @@ class ProviderInternalBaseWallet implements ProviderInternalWallet {
     ) {
         this.accounts = accounts;
         this.delegator = options?.delegator;
+    }
+
+    /**
+     * Get a signer into the internal wallet provider
+     * for the given address.
+     *
+     * @param parentProvider - The parent provider of the Internal Wallet.
+     * @param address - Address of the account.
+     * @returns The signer for the given address.
+     */
+    async getSigner<TProviderType extends AvailableVechainProviders>(
+        parentProvider: TProviderType,
+        address: string
+    ): Promise<VechainSigner<TProviderType> | null> {
+        // Get the account from the wallet
+        const signerAccount = await this.getAccount(address);
+
+        // Return a new signer (if exists)
+        if (signerAccount?.privateKey !== undefined) {
+            return await Promise.resolve(
+                new VechainBaseSigner(
+                    signerAccount.privateKey,
+                    parentProvider,
+                    DelegationHandler(this.delegator).delegatorOrNull()
+                )
+            );
+        }
+        return null;
     }
 
     /**
