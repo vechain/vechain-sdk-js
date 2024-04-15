@@ -2,19 +2,11 @@ import {
     type ProviderInternalWallet,
     type ProviderInternalWalletAccount
 } from '../types';
-import { assert, buildError, DATA, TRANSACTION } from '@vechain/sdk-errors';
-import {
-    addressUtils,
-    assertIsAddress,
-    secp256k1,
-    Transaction,
-    type TransactionBody,
-    TransactionHandler
-} from '@vechain/sdk-core';
+import { assert, DATA } from '@vechain/sdk-errors';
+import { addressUtils } from '@vechain/sdk-core';
 import {
     DelegationHandler,
-    type SignTransactionOptions,
-    type ThorClient
+    type SignTransactionOptions
 } from '../../../../thor-client';
 import {
     type AvailableVechainProviders,
@@ -125,110 +117,6 @@ class ProviderInternalBaseWallet implements ProviderInternalWallet {
         return await Promise.resolve(
             DelegationHandler(this.delegator).delegatorOrNull()
         );
-    }
-
-    /**
-     * Sign a transaction using the account in the wallet.
-     * The private key of the sender (from) account is used to sign the transaction.
-     *
-     * @param transactionOrigin - The origin address of the transaction (the 'from' field).
-     * @param transactionToSign - The transaction to sign.
-     * @returns The signed transaction.
-     */
-    async signTransaction(
-        transactionOrigin: string,
-        transactionToSign: TransactionBody
-    ): Promise<Transaction> {
-        // 1 - Check if origin is a valid address
-        assertIsAddress('signTransaction', transactionOrigin);
-
-        // 2 - Get the account from the wallet
-        const accountUsedToSign = await this.getAccount(transactionOrigin);
-        if (accountUsedToSign === null)
-            throw buildError(
-                'signTransaction',
-                TRANSACTION.MISSING_PRIVATE_KEY,
-                `Missing private key for the account ${transactionOrigin} into the wallet.\n` +
-                    `Available accounts into the wallet: \n${this.accounts.join('\n\t')}`,
-                { address: transactionOrigin }
-            );
-
-        // 3 - Sign the transaction
-        return TransactionHandler.sign(
-            transactionToSign,
-            accountUsedToSign.privateKey as Buffer
-        );
-    }
-
-    /**
-     * Sign a transaction with the delegator.
-     * The signature of the delegator into the wallet will be used to sign the transaction.
-     *
-     * @param transactionOrigin - The origin address of the transaction (the 'from' field).
-     * @param transactionToSign - The transaction to sign.
-     * @param thorClient - The ThorClient instance used to sign using the url
-     * @returns The transaction signed by the delegator.
-     *
-     */
-    async signTransactionWithDelegator(
-        transactionOrigin: string,
-        transactionToSign: TransactionBody,
-        thorClient: ThorClient
-    ): Promise<Transaction> {
-        // 1 - Check if the wallet has a delegator
-        assert(
-            'signTransactionWithDelegator',
-            DelegationHandler(this.delegator).isDelegated(),
-            TRANSACTION.MISSING_PRIVATE_KEY,
-            'Missing delegator in the wallet.'
-        );
-
-        // 2 - Check if origin is a valid address
-        assertIsAddress('signTransaction', transactionOrigin);
-
-        // 3 - Get the account from the wallet
-        const accountUsedToSign = await this.getAccount(transactionOrigin);
-        if (accountUsedToSign === null)
-            throw buildError(
-                'signTransaction',
-                TRANSACTION.MISSING_PRIVATE_KEY,
-                `Missing private key for the account ${transactionOrigin} into the wallet.\n` +
-                    `Available accounts into the wallet: \n${this.accounts.join('\n\t')}`,
-                { address: transactionOrigin }
-            );
-
-        // 4 - Sign the transaction with the delegator private key
-        if (this.delegator?.delegatorPrivateKey !== undefined) {
-            return TransactionHandler.signWithDelegator(
-                transactionToSign,
-                accountUsedToSign.privateKey as Buffer,
-                Buffer.from(this.delegator.delegatorPrivateKey, 'hex')
-            );
-        }
-
-        // 5 - Sign the transaction with the delegator url
-        const delegatorSignatureWithUrl = await DelegationHandler(
-            this.delegator
-        ).getDelegationSignatureUsingUrl(
-            new Transaction(transactionToSign),
-            transactionOrigin,
-            thorClient.httpClient
-        );
-
-        // Sign transaction with origin private key
-        const originSignature = secp256k1.sign(
-            new Transaction(transactionToSign).getSignatureHash(),
-            accountUsedToSign?.privateKey as Buffer
-        );
-
-        // Sign the transaction with both signatures. Concat both signatures to get the final signature
-        const signature = Buffer.concat([
-            originSignature,
-            delegatorSignatureWithUrl
-        ]);
-
-        // Return new signed transaction
-        return new Transaction(transactionToSign, signature);
     }
 }
 

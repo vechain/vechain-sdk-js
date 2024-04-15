@@ -15,20 +15,10 @@ import {
     type SubscriptionEvent,
     type SubscriptionManager
 } from './types';
-import {
-    clauseBuilder,
-    Hex0x,
-    Quantity,
-    secp256k1,
-    type TransactionBody,
-    type TransactionClause
-} from '@vechain/sdk-core';
-import type { TransactionObjectInput } from '../../utils/rpc-mapper/methods-map/methods/eth_sendTransaction/types';
+import { Quantity } from '@vechain/sdk-core';
 import { type EventPoll, Poll } from '../../../utils';
 import {
     type CompressedBlockDetail,
-    DelegationHandler,
-    type SignTransactionOptions,
     type ThorClient
 } from '../../../thor-client';
 import { type ProviderInternalWallet } from '../../helpers';
@@ -263,78 +253,6 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
 
         // Return the fetched block details or null if no block was fetched
         return result;
-    }
-
-    /**
-     * Signs a transaction using the wallet.
-     */
-    public async sign(transaction: TransactionObjectInput): Promise<string> {
-        // 1 - Initiate the transaction clauses
-        const transactionClauses: TransactionClause[] =
-            transaction.to !== undefined
-                ? // Normal transaction
-                  [
-                      {
-                          to: transaction.to,
-                          data: transaction.data ?? '0x',
-                          value: transaction.value ?? '0x0'
-                      } satisfies TransactionClause
-                  ]
-                : // If 'to' address is not provided, it will be assumed that the transaction is a contract creation transaction.
-                  [clauseBuilder.deployContract(transaction.data ?? '0x')];
-
-        // 2 - Estimate gas
-        const gasResult = await this.thorClient.gas.estimateGas(
-            transactionClauses,
-            transaction.from
-        );
-
-        // 3 - Init the wallet to use (we already know wallet is defined, thanks to the input validation)
-        const walletTouse: ProviderInternalWallet = this
-            .wallet as ProviderInternalWallet;
-
-        const delegatorIntoWallet: SignTransactionOptions | null =
-            await walletTouse.getDelegator();
-
-        // 4 - Create transaction body
-        const transactionBody =
-            await this.thorClient.transactions.buildTransactionBody(
-                transactionClauses,
-                gasResult.totalGas,
-                {
-                    isDelegated:
-                        DelegationHandler(delegatorIntoWallet).isDelegated()
-                }
-            );
-
-        // 5 - Generate nonce.
-        // @NOTE: To be compliant with the standard and to avoid nonce overflow, we generate a random nonce of 6 bytes
-
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { nonce, ...transactionBodyWithoutNonce } = transactionBody;
-        const newNonce = Hex0x.of(secp256k1.randomBytes(6));
-
-        const finalTransactionBody: TransactionBody = {
-            nonce: newNonce,
-            ...transactionBodyWithoutNonce
-        };
-
-        // 6 - Sign the transaction
-
-        const signedTransaction = DelegationHandler(
-            delegatorIntoWallet
-        ).isDelegated()
-            ? await walletTouse.signTransactionWithDelegator(
-                  transaction.from,
-                  finalTransactionBody,
-                  this.thorClient
-              )
-            : await walletTouse.signTransaction(
-                  transaction.from,
-                  finalTransactionBody
-              );
-
-        return Hex0x.of(signedTransaction.encoded);
     }
 }
 

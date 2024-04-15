@@ -1,8 +1,13 @@
-import { type ThorClient } from '../../../../../../thor-client';
+import {
+    DelegationHandler,
+    type ThorClient
+} from '../../../../../../thor-client';
 import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
 import { type VechainProvider } from '../../../../../providers';
 import { ethSendRawTransaction } from '../eth_sendRawTransaction';
 import { type TransactionObjectInput } from './types';
+import { type ProviderInternalWallet } from '../../../../../helpers';
+import { type VechainSigner } from '../../../../../../signer';
 
 /**
  * RPC Method eth_sendTransaction implementation
@@ -74,8 +79,30 @@ const ethSendTransaction = async (
     const [transaction] = params as [TransactionObjectInput];
 
     try {
+        // Get the signer of the provider
+        const signer = (await (
+            provider?.wallet as ProviderInternalWallet
+        ).getSigner(
+            provider as VechainProvider,
+            transaction.from
+        )) as VechainSigner<VechainProvider>;
+
+        // ---START: TEMPORARY COMMENT---
+        // For this PR we will see only if 'delegator' field is present on provider.
+        // Next, we will add enableDelegation flag
+        // ---END: TEMPORARY COMMENT---
+        // Understand if transaction is delegated or not
+        const isDelegated = DelegationHandler(
+            provider?.wallet?.delegator
+        ).isDelegated();
+
         // Sign the transaction
-        const signedTransaction = await provider?.sign(transaction);
+        const signedTransaction = isDelegated
+            ? await signer.signTransactionWithDelegator(
+                  transaction,
+                  provider?.wallet?.delegator
+              )
+            : await signer.signTransaction(transaction);
 
         // Return the result
         return await ethSendRawTransaction(thorClient, [signedTransaction]);
