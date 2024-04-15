@@ -3,6 +3,11 @@ import { ADDRESS, assert, BLOOM, DATA } from '@vechain/sdk-errors';
 import { Hex0x, Hex } from '../hex';
 import { addressUtils } from '../../address';
 import { bloom } from '../../bloom';
+import type {
+    Clause,
+    ExpandedBlockDetail,
+    TransactionsExpandedBlockDetail
+} from '@vechain/sdk-network';
 
 /**
  * Regular expression pattern to match the uppercase hexadecimal strings
@@ -14,14 +19,51 @@ import { bloom } from '../../bloom';
 const BLOOM_REGEX = /^(0x)?[0-9a-f]{16,}$/i;
 
 /**
- * Regular expression pattern to match a lowercase hexadecimal number
- * with a minimum length of 16 characters.
+ * Retrieves all addresses involved in a given block. This includes beneficiary, signer, clauses,
+ * delegator, gas payer, origin, contract addresses, event addresses, and transfer recipients and senders.
  *
- * @type {RegExp}
- * @see {isBloom}
+ * @param {ExpandedBlockDetail} block - The block object to extract addresses from.
+ *
+ * @returns {string[]} - An array of addresses involved in the block.
+ *
+ * @see {filterOf}
  */
-// const BLOOM_REGEX_LOWERCASE = /^(0x)?[0-9a-f]{16,}$/;
+const addressesOf = (block: ExpandedBlockDetail): string[] => {
+    const addresses: string[] = [block.beneficiary, block.signer];
+    block.transactions.forEach(
+        (transaction: TransactionsExpandedBlockDetail) => {
+            transaction.clauses.forEach((clause: Clause) => {
+                if (typeof clause.to === 'string') {
+                    addresses.push(clause.to);
+                }
+            });
+            addresses.push(transaction.delegator);
+            addresses.push(transaction.gasPayer);
+            addresses.push(transaction.origin);
+            transaction.outputs.forEach((output) => {
+                if (typeof output.contractAddress === 'string') {
+                    addresses.push(output.contractAddress);
+                }
+                output.events.forEach((event) => {
+                    addresses.push(event.address);
+                });
+                output.transfers.forEach((transfer) => {
+                    addresses.push(transfer.recipient);
+                    addresses.push(transfer.sender);
+                });
+            });
+        }
+    );
+    return addresses;
+};
 
+/**
+ * Filters a list of addresses and generates a bloom filter.
+ *
+ * @param {string[]} addresses - The list of addresses to filter.
+ * @param {number} [bitPerKey=160] - The number of bits per key. Default is 160 to fit address size in bytes.
+ * @returns {string} The generated bloom filter in hexadecimal format.
+ */
 const filterOf = (addresses: string[], bitPerKey: number = 160): string => {
     const keys: Uint8Array[] = [];
     addresses.forEach((address) => {
@@ -109,18 +151,18 @@ const isInBloom = (filter: string, k: number, data: string): boolean => {
  * The address must be a valid vechain thor address, and the Bloom filter should adhere to
  * specified Bloom filter format constraints.
  *
- * @param {string} bloom - The bloom filter encoded as a hexadecimal string.
+ * @param {string} filter - The filter filter encoded as a hexadecimal string.
  * @param {number} k - The number of hash functions used by the Bloom Filter.
  * @param {string} address - The address to check if it is present in the Bloom filter.
- *[ERC-55  Mixed-case checksum address encoding ](https://eips.ethereum.org/EIPS/eip-55) supported.
+ * [ERC-55  Mixed-case checksum address encoding ](https://eips.ethereum.org/EIPS/eip-55) supported.
  * @returns {boolean} - True if the address is possibly present in the Bloom Filter, false otherwise.
  *
  * @throws{InvalidAddressError} If `addressToCheck` is not a valid Vechain Thor address.
- * @throws{InvalidBloomError} If `bloom` is not in a valid Bloom filter format.
+ * @throws{InvalidBloomError} If `filter` is not in a valid Bloom filter format.
  * @throws{InvalidKError} If `k` is not a positive integer.
  */
 const isAddressInBloom = (
-    bloom: string,
+    filter: string,
     k: number,
     address: string
 ): boolean => {
@@ -131,7 +173,13 @@ const isAddressInBloom = (
         'Invalid address given as input in Bloom filter. Ensure it is a valid vechain thor address.',
         { addressToCheck: address }
     );
-    return isInBloom(bloom, k, address);
+    return isInBloom(filter, k, address);
 };
 
-export const bloomUtils = { filterOf, isBloom, isInBloom, isAddressInBloom };
+export const bloomUtils = {
+    addressesOf,
+    filterOf,
+    isBloom,
+    isInBloom,
+    isAddressInBloom
+};

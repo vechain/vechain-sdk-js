@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { addressUtils, bloomUtils, Hex0x } from '../../../src';
+import { addressUtils, bloom, bloomUtils, Hex0x } from '../../../src';
 import {
     bloomTestCases,
     blooms,
@@ -13,17 +13,70 @@ import {
     InvalidDataTypeError,
     InvalidKError
 } from '@vechain/sdk-errors';
-import {
-    type Clause,
-    type ExpandedBlockDetail,
-    type TransactionsExpandedBlockDetail
-} from '@vechain/sdk-network';
 
 /**
  * Bloom utils tests
  * @group unit/utils-bloom
  */
 describe('utils/bloom', () => {
+    test('bloomUtils.addressesOf', () => {
+        const expected = [
+            '0x0000000000000000000000000000456e65726779',
+            '0x1a8abd6d5627eb26ad71c0c7ae5224cdc640faf3',
+            '0x1eef8963e1222417af4dac0d98553abddb4a76b5',
+            '0x23a46368e4acc7bb2fe0afeb054def51ec56aa74',
+            '0x45429a2255e7248e57fce99e7239aed3f84b7a53',
+            '0x576da7124c7bb65a692d95848276367e5a844d95',
+            '0x5db3c8a942333f6468176a870db36eef120a34dc',
+            '0x6298c7a54720febdefd741d0899d287c70954c68',
+            '0x95fe74d1ae072ee45bdb09879a157364e5341565',
+            '0x9a107a75cff525b033a3e53cadafe3d193b570ec',
+            '0xa416bdda32b00e218f08ace220bab512c863ff2f',
+            '0xb7591602c0c9d525bc3a7cf3c729fd91b8bf5bf6',
+            '0xbeae4bef0121f11d269aedf6adb227259d4314ad'
+        ];
+        bloomUtils
+            .addressesOf(expandedBlockDetail)
+            .filter((address) => {
+                return addressUtils.isAddress(address); // Remove empty addresses.
+            })
+            .forEach((actual) => {
+                expect(expected.includes(actual)).toBeTruthy();
+            });
+    });
+
+    test('boolUtils.filterOf - bit per key - default', () => {
+        const addresses = bloomUtils
+            .addressesOf(expandedBlockDetail)
+            .filter((address) => {
+                return addressUtils.isAddress(address);
+            });
+        const filter = bloomUtils.filterOf(addresses);
+        addresses.forEach((address) => {
+            expect(
+                bloomUtils.isAddressInBloom(filter, 30, Hex0x.canon(address))
+            ).toBeTruthy();
+        });
+    });
+
+    test('boolUtils.filterOf -  bit per key - set', () => {
+        const addresses = bloomUtils
+            .addressesOf(expandedBlockDetail)
+            .filter((address) => {
+                return addressUtils.isAddress(address);
+            });
+        const filter = bloomUtils.filterOf(addresses, 16);
+        addresses.forEach((address) => {
+            expect(
+                bloomUtils.isAddressInBloom(
+                    filter,
+                    bloom.calculateK(16),
+                    Hex0x.canon(address)
+                )
+            ).toBeTruthy();
+        });
+    });
+
     /**
      * Check if it is a bloom filter
      */
@@ -131,49 +184,4 @@ describe('utils/bloom', () => {
             }
         );
     });
-
-    test('boolUtils.getAddressesOf', () => {
-        const addresses = getAddressesOf(expandedBlockDetail).filter(
-            (address) => {
-                return addressUtils.isAddress(address);
-            }
-        );
-        const filter = bloomUtils.filterOf(addresses);
-        console.log(filter);
-        console.log(filter.length);
-        addresses.forEach((address) => {
-            expect(
-                bloomUtils.isAddressInBloom(filter, 30, Hex0x.canon(address))
-            ).toBeTruthy();
-        });
-    });
 });
-
-function getAddressesOf(block: ExpandedBlockDetail): string[] {
-    const addresses: string[] = [block.beneficiary, block.signer];
-    block.transactions.forEach(
-        (transaction: TransactionsExpandedBlockDetail) => {
-            transaction.clauses.forEach((clause: Clause) => {
-                if (typeof clause.to === 'string') {
-                    addresses.push(clause.to);
-                }
-            });
-            addresses.push(transaction.delegator);
-            addresses.push(transaction.gasPayer);
-            addresses.push(transaction.origin);
-            transaction.outputs.forEach((output) => {
-                if (typeof output.contractAddress === 'string') {
-                    addresses.push(output.contractAddress);
-                }
-                output.events.forEach((event) => {
-                    addresses.push(event.address);
-                });
-                output.transfers.forEach((transfer) => {
-                    addresses.push(transfer.recipient);
-                    addresses.push(transfer.sender);
-                });
-            });
-        }
-    );
-    return addresses;
-}
