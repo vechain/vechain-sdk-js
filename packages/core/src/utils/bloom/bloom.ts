@@ -21,7 +21,10 @@ const BLOOM_REGEX = /^(0x)?[0-9a-f]{16,}$/i;
 /**
  * Bloom Filter *k* parameter set to 5 (hence 5 hashes functions are
  * used in filter generation) is computed supposing to express the
- * 20 bytes long address in 1 byte, hence k =
+ * 20 bytes long address in 1 byte, hence k = 8 * ln(2) approximated to 5,
+ * leading to a Bloom Filter size of between 8 and 16 bytes to encode
+ * the addresses of a Thor block with a probability of false positives much
+ * smaller than 1%.
  */
 const BLOOM_DEFAULT_K = 5;
 

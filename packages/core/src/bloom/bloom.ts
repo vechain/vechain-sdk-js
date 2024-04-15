@@ -41,8 +41,8 @@ function addWithUInt32Wrap(a: number, b: number): number {
  * @return {number} - The number of bits per key.
  */
 function calculateBitsPerKey(k: number): number {
-    if (k < 1) return 2;
-    return k > 30 ? 44 : Math.ceil(k / 0.69);
+    if (k <= 1) return 2;
+    return k >= 30 ? 44 : Math.ceil(k / 0.69);
 }
 
 /**
