@@ -1,2 +1,2 @@
-export * from './abstract-vechain-signer';
+export * from './vechain-base-signer';
 export * from './types.d';
