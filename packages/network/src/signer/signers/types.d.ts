@@ -85,11 +85,15 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
     // connect: (provider: TProviderType | null) => this;
 
     /**
+     * --- START: TEMPORARY COMMENT ---
+     * To be implemented in the future
+     * --- END: TEMPORARY COMMENT ---
+     *
      * Get the address of the Signer.
      *
      * @returns the address of the signer
      */
-    getAddress: () => Promise<string>;
+    // getAddress: () => Promise<string>;
 
     /**
      * --- START: TEMPORARY COMMENT ---

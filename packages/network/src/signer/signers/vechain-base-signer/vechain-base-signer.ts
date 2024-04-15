@@ -5,7 +5,6 @@ import {
     type ThorClient
 } from '../../../thor-client';
 import {
-    addressUtils,
     clauseBuilder,
     Hex0x,
     secp256k1,
@@ -14,7 +13,7 @@ import {
     type TransactionClause,
     TransactionHandler
 } from '../../../../../core';
-import type { TransactionObjectInput } from '../../../provider/utils/rpc-mapper/methods-map/methods/eth_sendTransaction/types';
+import { type TransactionObjectInput } from '../../../provider';
 
 /**
  * Basic vechain signer.
@@ -41,17 +40,6 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
     ) {
         // Store provider and delegator
         this.provider = provider ?? null;
-    }
-
-    /**
-     * Get the address of the Signer.
-     *
-     * @returns the address of the signer
-     */
-    async getAddress(): Promise<string> {
-        return await Promise.resolve(
-            addressUtils.fromPrivateKey(this.privateKey)
-        );
     }
 
     /**
