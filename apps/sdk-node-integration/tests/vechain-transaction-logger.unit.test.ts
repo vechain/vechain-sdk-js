@@ -7,10 +7,10 @@ import {
     test
 } from '@jest/globals';
 import { type SpiedFunction } from 'jest-mock';
-import { VeChainTransactionLogger } from '../src/vechain-transaction-logger';
+import { VechainTransactionLogger } from '../src/vechain-transaction-logger';
 
 /**
- * VeChainTransactionLogger Tests
+ * VechainTransactionLogger Tests
  * 
  * @group integration/apps/vechain-transaction-logger
  */
@@ -33,7 +33,7 @@ describe('VechainTransactionLogger - Tests', () => {
     
     test('Should be able to start and stop a logger instance', (done) => {
         // Create a new logger instance
-        const logger = new VeChainTransactionLogger('https://testnet.vechain.org/');
+        const logger = new VechainTransactionLogger('https://testnet.vechain.org/');
         // Start logging transactions for the specified address
         logger.startLogging('0xc3bE339D3D20abc1B731B320959A96A08D479583');
 
@@ -44,6 +44,7 @@ describe('VechainTransactionLogger - Tests', () => {
             );
             done();
             logger.stopLogging();
+            done();
         }, 1000);
     });
 });

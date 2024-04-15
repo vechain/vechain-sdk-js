@@ -4,7 +4,7 @@ import axios from 'axios';
 /**
  * The `VeChainTransactionLogger` class provides methods to monitor the transactions of an account
  */
-class VeChainTransactionLogger {
+class VechainTransactionLogger {
     private thorClient: ThorClient;
     private monitoringPoll?: EventPoll<TransferLogs[]>;
     private latestTimestamp: number = 0;
@@ -99,4 +99,4 @@ class VeChainTransactionLogger {
     }
 }
 
-export { VeChainTransactionLogger };
+export { VechainTransactionLogger };
