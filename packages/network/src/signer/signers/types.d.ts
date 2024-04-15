@@ -75,10 +75,14 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
     provider: TProviderType | null;
 
     /**
+     * --- START: TEMPORARY COMMENT ---
+     * To be implemented in the future
+     * --- END: TEMPORARY COMMENT ---
+     *
      *  Returns a new instance of this Signer connected to //provider// or detached
      *  from any Provider if null.
      */
-    connect: (provider: TProviderType | null) => this;
+    // connect: (provider: TProviderType | null) => this;
 
     /**
      * Get the address of the Signer.
