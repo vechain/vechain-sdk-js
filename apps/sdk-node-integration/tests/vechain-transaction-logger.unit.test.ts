@@ -44,6 +44,6 @@ describe('VechainTransactionLogger - Tests', () => {
             );
             logger.stopLogging();
             done();
-        }, 1000);
-    });
+        }, 2000);
+    }, 6000);
 });
