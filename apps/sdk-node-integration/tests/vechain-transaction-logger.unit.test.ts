@@ -42,7 +42,6 @@ describe('VechainTransactionLogger - Tests', () => {
             expect(logSpy).toHaveBeenCalledWith(
                 'Start monitoring account 0xc3bE339D3D20abc1B731B320959A96A08D479583'
             );
-            done();
             logger.stopLogging();
             done();
         }, 1000);
