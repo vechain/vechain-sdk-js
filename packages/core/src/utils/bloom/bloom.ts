@@ -78,6 +78,10 @@ const addressesOf = (block: ExpandedBlockDetail): string[] => {
  * Use {@link addressesOf} to build the Bloom Filter for the addresses of
  * a an {@link ExpandedBlockDetail}.
  *
+ * Secure audit function.
+ * * {@link bloom.Generator}
+ * * [util](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#utils)
+ *
  * @param {string[]} addresses - The list of addresses to be part of the Bloom Filter,
  * expressed in hexadecimal notation, optionally prefixed with '0x',
  * (ERC-55: Mixed-case checksum address encoding)[https://eips.ethereum.org/EIPS/eip-55] supported.
