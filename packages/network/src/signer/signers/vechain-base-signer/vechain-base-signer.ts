@@ -39,7 +39,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
         provider: TProviderType | null
     ) {
         // Store provider and delegator
-        this.provider = provider ?? null;
+        this.provider = provider;
     }
 
     /**
