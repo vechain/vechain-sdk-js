@@ -1,5 +1,7 @@
-import { HardhatVechainProvider } from '@vechain/sdk-provider';
-import { BaseWallet } from '@vechain/sdk-wallet';
+import {
+    HardhatVechainProvider,
+    ProviderInternalBaseWallet
+} from '@vechain/sdk-network';
 import { expect } from 'expect';
 
 // START_SNIPPET: VechainHardhatProviderSnippet
@@ -8,7 +10,7 @@ const testnetUrl = 'https://testnet.vechain.org';
 
 // 1 - Init provider
 const provider = new HardhatVechainProvider(
-    new BaseWallet([]),
+    new ProviderInternalBaseWallet([]),
     testnetUrl,
     (message: string, parent?: Error) => new Error(message, parent)
 );

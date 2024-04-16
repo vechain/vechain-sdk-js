@@ -1,6 +1,6 @@
 import { addressUtils, VIP180_ABI } from '@vechain/sdk-core';
 import {
-    Contract,
+    type Contract,
     HttpClient,
     ThorClient,
     type TransactionReceipt

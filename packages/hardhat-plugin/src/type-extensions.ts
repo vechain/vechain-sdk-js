@@ -1,5 +1,7 @@
-import { type SignTransactionOptions } from '@vechain/sdk-network';
-import { type HardhatVechainProvider } from '@vechain/sdk-provider';
+import {
+    type HardhatVechainProvider,
+    type SignTransactionOptions
+} from '@vechain/sdk-network';
 
 // Ethers types
 import { type vechain_sdk_core_ethers as ethers } from '@vechain/sdk-core';

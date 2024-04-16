@@ -1,6 +1,9 @@
-import { HDWallet } from '@vechain/sdk-wallet';
-import { HttpClient, ThorClient } from '@vechain/sdk-network';
-import { VechainProvider } from '@vechain/sdk-provider';
+import {
+    HttpClient,
+    ProviderInternalHDWallet,
+    ThorClient,
+    VechainProvider
+} from '@vechain/sdk-network';
 import importConfig from '../config.json';
 import express, { type Express, type Request, type Response } from 'express';
 import cors from 'cors';
@@ -57,7 +60,9 @@ function startProxy(): void {
 
     // Initialize the provider
     const thorClient = new ThorClient(new HttpClient(config.url));
-    const wallet = new HDWallet(config.accounts.mnemonic.split(' '));
+    const wallet = new ProviderInternalHDWallet(
+        config.accounts.mnemonic.split(' ')
+    );
     const provider = new VechainProvider(thorClient, wallet);
 
     // Start the express proxy server

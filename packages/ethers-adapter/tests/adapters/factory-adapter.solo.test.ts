@@ -1,5 +1,6 @@
-import { HardhatVechainProvider } from '@vechain/sdk-provider';
+import { HardhatVechainProvider } from '@vechain/sdk-network';
 import {
+    ProviderInternalBaseWallet,
     ThorClient,
     type WaitForTransactionOptions
 } from '@vechain/sdk-network';
@@ -9,9 +10,8 @@ import {
     soloNetwork,
     soloUrl
 } from '../fixture';
-import { BaseWallet } from '@vechain/sdk-wallet';
 import { factoryAdapter } from '../../src';
-import { describe, expect, test, beforeEach, jest } from '@jest/globals';
+import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
 
 /**
@@ -32,7 +32,7 @@ describe('Hardhat factory adapter tests', () => {
     beforeEach(() => {
         thorClient = new ThorClient(soloNetwork);
         provider = new HardhatVechainProvider(
-            new BaseWallet([]),
+            new ProviderInternalBaseWallet([]),
             soloUrl,
             (message: string, parent?: Error) => new Error(message, parent)
         );

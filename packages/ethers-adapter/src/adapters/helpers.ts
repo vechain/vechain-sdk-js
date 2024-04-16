@@ -1,4 +1,4 @@
-import type { HardhatVechainProvider } from '@vechain/sdk-provider';
+import type { HardhatVechainProvider } from '@vechain/sdk-network';
 
 /**
  * Get the contract address from a transaction id
