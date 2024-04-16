@@ -153,6 +153,12 @@ class ContractsModule {
         return result;
     }
 
+    /**
+     * Executes a transaction to interact with multiple smart contract functions.
+     * @param clauses - An array of transaction clauses to interact with the contract functions.
+     * @param privateKey - The private key for signing the transaction.
+     * @param options - (Optional) An object containing options for the transaction body. Includes all options of the `buildTransactionBody` method
+     */
     public async executeMultipleClausesTransaction(
         clauses: TransactionClause[],
         privateKey: string,

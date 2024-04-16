@@ -513,9 +513,13 @@ describe('ThorClient - Contracts', () => {
         }
     );
 
+    /**
+     * Test suite for multiple clauses test cases
+     */
     describe('Multiple clauses test cases', () => {
         multipleClausesTestCases.forEach((x) => {
             test(x.description, async () => {
+                // Create contract factories
                 const contractsFactories: ContractFactory[] = x.contracts.map(
                     (contract) => {
                         return thorSoloClient.contracts.createContractFactory(
@@ -527,6 +531,7 @@ describe('ThorClient - Contracts', () => {
                     }
                 );
 
+                // Deploy contracts
                 const deployments = contractsFactories.map(
                     async (factory, index) => {
                         const deploymentParams =
@@ -543,6 +548,7 @@ describe('ThorClient - Contracts', () => {
 
                 const contracts = await Promise.all(deployments);
 
+                // Define contract clauses
                 const contractClauses = x.contracts.flatMap(
                     (contract, index) => {
                         return contract.functionCalls.map((functionCall) => {
@@ -553,6 +559,7 @@ describe('ThorClient - Contracts', () => {
                     }
                 );
 
+                // Execute multiple clauses transaction
                 const transactionResult =
                     await thorSoloClient.contracts.executeMultipleClausesTransaction(
                         contractClauses,

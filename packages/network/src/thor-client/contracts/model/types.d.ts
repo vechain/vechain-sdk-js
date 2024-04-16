@@ -66,6 +66,14 @@ type ContractFunctionFilter = Record<
     ContractFunctionSync<ContractFilter>
 >;
 
+/**
+ * Defines a mapping of contract function names to their corresponding transactional contract functions.
+ * Each function in this record is expected to return a value of type `TransactionClause`, which represents
+ * a transaction clause that can be used to interact with the contract.
+ *
+ * The keys of this record represent the names of the contract functions, and the values are the contract
+ * functions themselves, adhering to the `ContractFunctionSync` type with `TransactionClause` as the return type.
+ */
 type ContractFunctionClause = Record<
     string,
     ContractFunctionSync<TransactionClause>

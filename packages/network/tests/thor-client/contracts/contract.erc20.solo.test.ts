@@ -193,6 +193,9 @@ describe('ThorClient - ERC20 Contracts', () => {
         ).rejects.toThrowError(InvalidAbiFunctionError);
     }, 10000);
 
+    /**
+     * Tests the execution of multiple ERC20 contract clauses using a blockchain client.
+     */
     test('Execute multiples ERC20 contract clauses', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
@@ -205,6 +208,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         const contract: Contract = await factory.waitForDeployment();
 
+        // Execute multiple 'transfer' transactions on the deployed contract,
         const txResult =
             await thorSoloClient.contracts.executeMultipleClausesTransaction(
                 [
