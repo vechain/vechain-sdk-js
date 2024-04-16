@@ -32,7 +32,23 @@ C4Context
         }
        
         Boundary(b4, "Provider") {
-            Boundary(b41, "Provider Internal Wallets") {
+            Boundary(b41, "EIP-1193") {
+                System(types, "Types", "Interface for EIP-1193 provider request arguments")
+            }
+    
+            Boundary(b42, "Providers") {
+                System(hardhat-provider, "Hardhat Provider", "It exposes the interface that Hardhat expects, and uses the VechainProvider as wrapped provider")
+                System(vechain-provider, "Vechain Provider", "Core provider class for vechain")
+            }
+    
+            Boundary(b43, "Utils") {
+                System(const, "Const", "Commonly used constants")
+                System(formatter, "Formatter", "Functions used for formatting")
+                System(helper, "Helper", "Helpers functions")
+                System(rpc-mapper, "RPC Mapper", "Map of RPC methods to their implementations with the SDK")
+            }
+            
+            Boundary(b44, "Provider Internal Wallets") {
                 System(provider-internal-base-wallet, "BaseProviderInternalWallet", "Basical wallet a provider can use internally")
                 System(provider-internal-hd-wallet, "HDProviderInternalWallet", "HD wallet a provider can use internally")
             }        
