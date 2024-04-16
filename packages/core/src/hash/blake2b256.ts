@@ -70,11 +70,15 @@ function blake2b256(data: string | Uint8Array, returnType: 'hex'): string;
  *
  * Secure audit function.
  * * {@link _blake2b256}
+ * Calculates the BLAKE2b-256 hash of the provided data.
  *
  * @param {string | Uint8Array} data - The data to be hashed.
  * @param {ReturnType} [returnType='buffer'] - The type of the return value. Valid options are 'buffer' (default) and 'hex'.
  *
  * @returns {Uint8Array | string} - The computed hash value.
+ * @param {string | Uint8Array} data - The data to be hashed.
+ * @param {ReturnType} [returnType='buffer'] - The return type of the hash. 'buffer' returns a Buffer object, 'hex' returns a hexadecimal string.
+ * @returns {Buffer | string} - The hash value calculated from the data.
  */
 function blake2b256(
     data: string | Uint8Array,

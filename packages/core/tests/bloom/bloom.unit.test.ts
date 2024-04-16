@@ -25,6 +25,19 @@ describe('Bloom Filter', () => {
     });
 
     /**
+     * Test estimate bitsPerKey function
+     */
+    test('Estimate bits per key (m)', () => {
+        bloomKTestCases.forEach((bloomKTestCase) => {
+            expect(
+                bloom.calculateBitsPerKey(
+                    bloom.calculateK(bloomKTestCase.calculateK)
+                )
+            ).toBe(bloomKTestCase.bitsPerKey);
+        });
+    });
+
+    /**
      * Bloom filter generator tests - Correct case
      */
     test('Should generate correct bloom filter', () => {

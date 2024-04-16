@@ -11,7 +11,7 @@ import { VechainTransactionLogger } from '../src/vechain-transaction-logger';
 
 /**
  * VechainTransactionLogger Tests
- * 
+ *
  * @group integration/apps/vechain-transaction-logger
  */
 describe('VechainTransactionLogger - Tests', () => {
@@ -30,10 +30,12 @@ describe('VechainTransactionLogger - Tests', () => {
     afterEach(() => {
         logSpy.mockRestore();
     });
-    
+
     test('Should be able to start and stop a logger instance', (done) => {
         // Create a new logger instance
-        const logger = new VechainTransactionLogger('https://testnet.vechain.org/');
+        const logger = new VechainTransactionLogger(
+            'https://testnet.vechain.org/'
+        );
         // Start logging transactions for the specified address
         logger.startLogging('0xc3bE339D3D20abc1B731B320959A96A08D479583');
 
