@@ -9,11 +9,13 @@ import { type ThorClient } from '../../thor-client';
 import type { ContractCallOptions, ContractTransactionOptions } from '../types';
 import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 import {
+    type ContractFunctionClause,
     type ContractFunctionFilter,
     type ContractFunctionRead,
     type ContractFunctionTransact
 } from './types';
 import {
+    getClauseProxy,
     getFilterProxy,
     getReadProxy,
     getTransactProxy
@@ -33,6 +35,7 @@ class Contract {
     public read: ContractFunctionRead = {};
     public transact: ContractFunctionTransact = {};
     public filters: ContractFunctionFilter = {};
+    public clause: ContractFunctionClause = {};
 
     private contractCallOptions: ContractCallOptions = {};
     private contractTransactionOptions: ContractTransactionOptions = {};
@@ -60,6 +63,7 @@ class Contract {
         this.read = getReadProxy(this);
         this.transact = getTransactProxy(this);
         this.filters = getFilterProxy(this);
+        this.clause = getClauseProxy(this);
     }
 
     /**
@@ -108,6 +112,10 @@ class Contract {
         return this.contractTransactionOptions;
     }
 
+    /**
+     * Retrieves the options for contract transactions.
+     * @returns The contract transaction options.
+     */
     public getContractTransactOptions(): ContractTransactionOptions {
         return this.contractTransactionOptions;
     }

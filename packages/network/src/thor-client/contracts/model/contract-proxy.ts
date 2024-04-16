@@ -1,4 +1,5 @@
 import {
+    type ContractFunctionClause,
     type ContractFunctionFilter,
     type ContractFunctionRead,
     type ContractFunctionTransact,
@@ -7,7 +8,12 @@ import {
 import { type SendTransactionResult } from '../../transactions';
 import { type Contract } from './contract';
 import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
-import { addressUtils, fragment } from '@vechain/sdk-core';
+import {
+    addressUtils,
+    clauseBuilder,
+    fragment,
+    type TransactionClause
+} from '@vechain/sdk-core';
 import { type ContractCallResult } from '../types';
 import { ContractFilter } from './contract-filter';
 
@@ -21,7 +27,7 @@ function getReadProxy(contract: Contract): ContractFunctionRead {
         get: (_target, prop) => {
             // Otherwise, assume that the function is a contract method
             return async (...args: unknown[]): Promise<ContractCallResult> => {
-                return await contract.thor.contracts.executeContractCall(
+                return await contract.thor.contracts.executeCall(
                     contract.address,
                     contract.getFunctionFragment(prop),
                     args,
@@ -77,7 +83,7 @@ function getTransactProxy(contract: Contract): ContractFunctionTransact {
                     args = args.filter((arg) => !isTransactionValue(arg));
                 }
 
-                return await contract.thor.contracts.executeContractTransaction(
+                return await contract.thor.contracts.executeTransaction(
                     contract.getCallerPrivateKey() as string,
                     contract.address,
                     contract.getFunctionFragment(prop),
@@ -136,6 +142,41 @@ function getFilterProxy(contract: Contract): ContractFunctionFilter {
 }
 
 /**
+ * Creates a Proxy object for interacting with contract functions, allowing for the dynamic invocation of contract functions.
+ * @param contract - The contract instance to create the clause proxy for.
+ * @returns A Proxy that intercepts calls to contract functions, automatically handling the invocation with the configured options.
+ */
+function getClauseProxy(contract: Contract): ContractFunctionClause {
+    return new Proxy(contract.clause, {
+        get: (_target, prop) => {
+            // Otherwise, assume that the function is a contract method
+
+            return (...args: unknown[]): TransactionClause => {
+                // get the transaction options for the contract
+                const transactionOptions =
+                    contract.getContractTransactOptions();
+
+                // check if the transaction value is provided as an argument
+                const transactionValue = getTransactionValue(args);
+
+                // if present remove the transaction value argument from the list of arguments
+                if (transactionValue !== undefined) {
+                    args = args.filter((arg) => !isTransactionValue(arg));
+                }
+
+                // Create the vechain sdk event fragment starting from the contract ABI event fragment
+                return clauseBuilder.functionInteraction(
+                    contract.address,
+                    contract.getFunctionFragment(prop),
+                    args,
+                    transactionOptions.value ?? transactionValue?.value ?? 0
+                );
+            };
+        }
+    });
+}
+
+/**
  * Extracts the transaction value from the list of arguments, if present.
  * @param args - The list of arguments to search for the transaction value.
  * @returns The transaction value object, if found in the arguments list.
@@ -155,4 +196,4 @@ function isTransactionValue(obj: unknown): obj is TransactionValue {
     return (obj as TransactionValue).value !== undefined;
 }
 
-export { getReadProxy, getTransactProxy, getFilterProxy };
+export { getReadProxy, getTransactProxy, getFilterProxy, getClauseProxy };

@@ -1,4 +1,8 @@
-import { addressUtils, type InterfaceAbi } from '@vechain/sdk-core';
+import {
+    addressUtils,
+    type DeployParams,
+    type InterfaceAbi
+} from '@vechain/sdk-core';
 import { TEST_ACCOUNTS } from '../../fixture';
 import type { EventDisplayOrder, PaginationOptions, Range } from '../../../src';
 
@@ -688,6 +692,115 @@ interface FilterEventTestCase {
     expectedData: string[];
 }
 
+interface MultipleClausesTestCase {
+    description: string;
+    contracts: Array<{
+        contractBytecode: string;
+        contractAbi: InterfaceAbi;
+        contractCaller: string;
+        deploymentParams?: DeployParams;
+        functionCalls: FunctionCallTestCase[];
+    }>;
+    expectedResults: number;
+}
+
+const multipleClausesTestCases: MultipleClausesTestCase[] = [
+    {
+        description: 'should execute multiple clauses',
+        contracts: [
+            {
+                contractBytecode: erc20ContractBytecode,
+                contractAbi: deployedERC20Abi,
+                contractCaller:
+                    TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+                functionCalls: [
+                    {
+                        functionName: 'transfer',
+                        params: [
+                            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
+                                .address,
+                            1000
+                        ],
+                        type: 'transact'
+                    },
+                    {
+                        functionName: 'transfer',
+                        params: [
+                            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
+                                .address,
+                            4000
+                        ],
+                        type: 'transact'
+                    }
+                ]
+            },
+            {
+                contractBytecode,
+                contractAbi: deployedContractAbi,
+                contractCaller:
+                    TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+                functionCalls: [
+                    {
+                        functionName: 'set',
+                        params: [1000],
+                        type: 'transact'
+                    }
+                ],
+                deploymentParams: {
+                    types: ['uint256'],
+                    values: ['1000']
+                }
+            }
+        ],
+        expectedResults: 3
+    },
+    {
+        description: 'should execute multiple clauses',
+        contracts: [
+            {
+                contractBytecode,
+                contractAbi: deployedContractAbi,
+                contractCaller:
+                    TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+                functionCalls: [
+                    {
+                        functionName: 'set',
+                        params: [1000],
+                        type: 'transact'
+                    }
+                ],
+                deploymentParams: {
+                    types: ['uint256'],
+                    values: ['1000']
+                }
+            },
+            {
+                contractBytecode: depositContractBytecode,
+                contractAbi: depositContractAbi,
+                contractCaller:
+                    TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+                functionCalls: [
+                    {
+                        functionName: 'deposit',
+                        params: [{ value: 1000 }],
+                        type: 'transact'
+                    },
+                    {
+                        functionName: 'deposit',
+                        params: [{ value: 2000 }],
+                        type: 'transact'
+                    },
+                    {
+                        functionName: 'deposit',
+                        params: [{ value: 7000 }],
+                        type: 'transact'
+                    }
+                ]
+            }
+        ],
+        expectedResults: 4
+    }
+];
 const filterContractEventsTestCases: FilterEventTestCase[] = [
     {
         description: 'should filter the ValueSet event',
@@ -909,5 +1022,6 @@ export {
     testingContractTestCases,
     filterContractEventsTestCases,
     depositContractAbi,
-    depositContractBytecode
+    depositContractBytecode,
+    multipleClausesTestCases
 };
