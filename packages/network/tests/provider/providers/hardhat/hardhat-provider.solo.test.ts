@@ -186,7 +186,7 @@ describe('Hardhat provider tests', () => {
         const messageReceived = waitForMessage(provider);
 
         // Execute a contract transaction to generate a log event
-        await thorClient.contracts.executeContractTransaction(
+        await thorClient.contracts.executeTransaction(
             TEST_ACCOUNT.privateKey,
             contract.address,
             coder
@@ -283,7 +283,7 @@ describe('Hardhat provider tests', () => {
         });
 
         // Execute transactions that should emit events
-        await thorClient.contracts.executeContractTransaction(
+        await thorClient.contracts.executeTransaction(
             TEST_ACCOUNT.privateKey,
             erc20Contract.address,
             coder
@@ -292,7 +292,7 @@ describe('Hardhat provider tests', () => {
             [TEST_ACCOUNT.address, 100]
         );
 
-        await thorClient.contracts.executeContractTransaction(
+        await thorClient.contracts.executeTransaction(
             TEST_ACCOUNT.privateKey,
             erc721Contract.address,
             coder
