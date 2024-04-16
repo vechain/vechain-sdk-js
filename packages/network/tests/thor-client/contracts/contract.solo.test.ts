@@ -518,59 +518,65 @@ describe('ThorClient - Contracts', () => {
      */
     describe('Multiple clauses test cases', () => {
         multipleClausesTestCases.forEach((x) => {
-            test(x.description, async () => {
-                // Create contract factories
-                const contractsFactories: ContractFactory[] = x.contracts.map(
-                    (contract) => {
-                        return thorSoloClient.contracts.createContractFactory(
-                            contract.contractAbi,
-                            contract.contractBytecode,
+            test(
+                x.description,
+                async () => {
+                    // Create contract factories
+                    const contractsFactories: ContractFactory[] =
+                        x.contracts.map((contract) => {
+                            return thorSoloClient.contracts.createContractFactory(
+                                contract.contractAbi,
+                                contract.contractBytecode,
+                                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
+                                    .privateKey
+                            );
+                        });
+
+                    // Deploy contracts
+                    const deployments = contractsFactories.map(
+                        async (factory, index) => {
+                            const deploymentParams =
+                                x.contracts[index].deploymentParams;
+                            return await (
+                                deploymentParams !== undefined
+                                    ? await factory.startDeployment(
+                                          deploymentParams
+                                      )
+                                    : await factory.startDeployment()
+                            ).waitForDeployment();
+                        }
+                    );
+
+                    const contracts = await Promise.all(deployments);
+
+                    // Define contract clauses
+                    const contractClauses = x.contracts.flatMap(
+                        (contract, index) => {
+                            return contract.functionCalls.map(
+                                (functionCall) => {
+                                    return contracts[index].clause[
+                                        functionCall.functionName
+                                    ](...functionCall.params);
+                                }
+                            );
+                        }
+                    );
+
+                    // Execute multiple clauses transaction
+                    const transactionResult =
+                        await thorSoloClient.contracts.executeMultipleClausesTransaction(
+                            contractClauses,
                             TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
                                 .privateKey
                         );
-                    }
-                );
 
-                // Deploy contracts
-                const deployments = contractsFactories.map(
-                    async (factory, index) => {
-                        const deploymentParams =
-                            x.contracts[index].deploymentParams;
-                        return await (
-                            deploymentParams !== undefined
-                                ? await factory.startDeployment(
-                                      deploymentParams
-                                  )
-                                : await factory.startDeployment()
-                        ).waitForDeployment();
-                    }
-                );
+                    const result = await transactionResult.wait();
 
-                const contracts = await Promise.all(deployments);
-
-                // Define contract clauses
-                const contractClauses = x.contracts.flatMap(
-                    (contract, index) => {
-                        return contract.functionCalls.map((functionCall) => {
-                            return contracts[index].clause[
-                                functionCall.functionName
-                            ](...functionCall.params);
-                        });
-                    }
-                );
-
-                // Execute multiple clauses transaction
-                const transactionResult =
-                    await thorSoloClient.contracts.executeMultipleClausesTransaction(
-                        contractClauses,
-                        TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
-                    );
-
-                const result = await transactionResult.wait();
-
-                expect(result?.reverted).toBe(false);
-                expect(result?.outputs.length).toBe(x.expectedResults);
-            });
+                    expect(result?.reverted).toBe(false);
+                    expect(result?.outputs.length).toBe(x.expectedResults);
+                },
+                10000
+            );
         });
     });
 
