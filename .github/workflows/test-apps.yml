@@ -30,8 +30,13 @@ jobs:
                     # Navigate to the directory using absolute path
                     cd "$current_app_directory"
                   
+                    # Check if the directory name is "sdk-nextjs-integration" and remove yarn.lock
+                    if [ "$(basename "$current_app_directory")" = "sdk-nextjs-integration" ]; then
+                      echo "Removing yarn.lock in $current_app_directory"
+                      rm yarn.lock
+                    fi
+
                     # Install dependencies
-                    rm yarn.lock
                     yarn install
                   
                     # Return to the original directory using absolute path
