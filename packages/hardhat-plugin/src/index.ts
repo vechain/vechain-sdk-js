@@ -42,7 +42,12 @@ extendEnvironment((hre) => {
     ] as HttpNetworkConfig;
 
     // 1.3 - Get debug mode
-    const isInDebugMode = networkConfig.debugMode ?? false;
+    const debug = networkConfig.debug !== undefined && networkConfig.debug;
+
+    // 1.4 - Get fee delegation mode enabled or not
+    const enableDelegation =
+        networkConfig.enbaleDelegation !== undefined &&
+        networkConfig.enbaleDelegation;
 
     // 2 - Check if network is vechain
 
@@ -72,7 +77,8 @@ extendEnvironment((hre) => {
                 message,
                 parent
             ),
-        isInDebugMode
+        debug,
+        enableDelegation
     );
 
     // 3.2 - Extend environment

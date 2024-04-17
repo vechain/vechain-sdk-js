@@ -58,7 +58,8 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
             thorClient,
             THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR({
                 delegatorPrivateKey: delegatorPrivateKeyFixture
-            })
+            }),
+            true
         );
     });
 
