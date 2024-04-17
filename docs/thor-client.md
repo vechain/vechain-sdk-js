@@ -14,8 +14,7 @@ The Thor-client extends its functionality to provide seamless access to account-
 // 1 - Create thor client for testnet
 
 const _testnetUrl = 'https://testnet.vechain.org';
-const testNetwork = new HttpClient(_testnetUrl);
-const thorClient = new ThorClient(testNetwork);
+const thorClient = ThorClient.fromUrl(_testnetUrl);
 
 // 2 - Get account details
 
@@ -60,8 +59,7 @@ The Thor-client facilitates easy interaction with blocks on the VechainThor netw
 // 1 - Create thor client for testnet
 
 const _testnetUrl = 'https://testnet.vechain.org';
-const testNetwork = new HttpClient(_testnetUrl);
-const thorClient = new ThorClient(testNetwork);
+const thorClient = ThorClient.fromUrl(_testnetUrl);
 
 // 2 - Get block details
 
@@ -102,8 +100,7 @@ The Thor-client extends its capabilities to efficiently filter and retrieve even
 // 1 - Create thor client for testnet
 
 const _testnetUrl = 'https://testnet.vechain.org';
-const testNetwork = new HttpClient(_testnetUrl);
-const thorClient = new ThorClient(testNetwork);
+const thorClient = ThorClient.fromUrl(_testnetUrl);
 
 // 2 - Filter event logs based on the provided criteria. (EXAMPLE 1)
 
@@ -183,8 +180,7 @@ The Thor-client allows developers to interact with nodes on the VechainThor netw
 // 1 - Create thor client for testnet
 
 const _testnetUrl = 'https://testnet.vechain.org';
-const testNetwork = new HttpClient(_testnetUrl);
-const thorClient = new ThorClient(testNetwork);
+const thorClient = ThorClient.fromUrl(_testnetUrl);
 
 // 2 - Retrieves connected peers of a node
 
@@ -212,8 +208,7 @@ const senderAccount = {
 // 1 - Create thor client for solo network
 
 const _soloUrl = 'http://localhost:8669';
-const soloNetwork = new HttpClient(_soloUrl);
-const thorSoloClient = new ThorClient(soloNetwork);
+const thorSoloClient = ThorClient.fromUrl(_soloUrl);
 
 // 2 - Get latest block
 
@@ -318,8 +313,7 @@ const delegateAccount = {
 // 1 - Create thor client for solo network
 
 const _soloUrl = 'http://localhost:8669';
-const soloNetwork = new HttpClient(_soloUrl);
-const thorSoloClient = new ThorClient(soloNetwork);
+const thorSoloClient = ThorClient.fromUrl(_soloUrl);
 
 // 2 - Get latest block
 
@@ -396,8 +390,7 @@ The `gasPadding` option adds a safety margin to estimated gas costs. It allows d
 ```typescript { name=gas, category=example }
 // 1 - Create thor client for solo network
 const _soloUrl = 'http://localhost:8669';
-const soloNetwork = new HttpClient(_soloUrl);
-const thorSoloClient = new ThorClient(soloNetwork);
+const thorSoloClient = ThorClient.fromUrl(_soloUrl);
 
 // 2- Init transaction
 
