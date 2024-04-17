@@ -12,7 +12,6 @@ import {
     TESTING_CONTRACT_ABI,
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ADDRESS,
-    soloNetwork,
     soloUrl
 } from '../../fixture';
 import WebSocket from 'ws';
@@ -144,7 +143,7 @@ describe('Subscriptions Solo network tests', () => {
                     .getFunction('setStateVariable') as FunctionFragment,
                 [1]
             );
-            const thorSoloClient = new ThorClient(soloNetwork);
+            const thorSoloClient = ThorClient.fromUrl(soloUrl);
             const gasResult = await thorSoloClient.gas.estimateGas(
                 [clause],
                 TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
@@ -211,7 +210,7 @@ describe('Subscriptions Solo network tests', () => {
             value: unitsUtils.parseVET('1').toString(),
             data: '0x'
         };
-        const thorSoloClient = new ThorClient(soloNetwork);
+        const thorSoloClient = ThorClient.fromUrl(soloUrl);
         const gasResult = await thorSoloClient.gas.estimateGas(
             [clause],
             TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION.address

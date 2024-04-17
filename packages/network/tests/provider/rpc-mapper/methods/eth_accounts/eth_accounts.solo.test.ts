@@ -6,7 +6,7 @@ import {
     ThorClient,
     VechainProvider
 } from '../../../../../src';
-import { soloNetwork, THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../fixture';
+import { soloUrl, THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_accounts' method
@@ -29,7 +29,7 @@ describe('RPC Mapper - eth_accounts method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = new ThorClient(soloNetwork);
+        thorClient = ThorClient.fromUrl(soloUrl);
 
         // Init provider
         provider = new VechainProvider(

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { testNetwork } from '../../../fixture';
+import { testnetUrl } from '../../../fixture';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
 import { ProviderRpcError } from '@vechain/sdk-errors';
 
@@ -19,7 +19,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = new ThorClient(testNetwork);
+        thorClient = ThorClient.fromUrl(testnetUrl);
     });
 
     /**

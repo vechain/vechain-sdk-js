@@ -118,7 +118,7 @@ const deployTestContractTransaction = (): Transaction => {
  * @returns A Promise that resolves when all transactions have been processed.
  */
 const seedThorSolo = async (): Promise<void> => {
-    const thorSoloClient = new ThorClient(soloNetwork);
+    const thorSoloClient = ThorClient.fromUrl(soloUrl);
 
     console.log(
         "Distributing balances to the first 10 accounts in the 'ALL_ACCOUNTS' array:"

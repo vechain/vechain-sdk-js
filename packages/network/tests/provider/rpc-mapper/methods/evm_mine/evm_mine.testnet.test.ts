@@ -5,7 +5,7 @@ import {
     RPCMethodsMap,
     ThorClient
 } from '../../../../../src';
-import { testNetwork } from '../../../fixture';
+import { testnetUrl } from '../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'evm_mine' method
@@ -23,7 +23,7 @@ describe('RPC Mapper - evm_mine method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = new ThorClient(testNetwork);
+        thorClient = ThorClient.fromUrl(testnetUrl);
     });
 
     /**

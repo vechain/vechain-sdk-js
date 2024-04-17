@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { soloNetwork } from '../../../fixture';
+import { soloUrl } from '../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_blockNumber' method on Solo Network
@@ -18,7 +18,7 @@ describe('RPC Mapper - eth_blockNumber method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = new ThorClient(soloNetwork);
+        thorClient = ThorClient.fromUrl(soloUrl);
     });
 
     /**

@@ -5,7 +5,7 @@ import {
     RPCMethodsMap,
     ThorClient
 } from '../../../../../src';
-import { testNetwork } from '../../../fixture';
+import { testnetUrl } from '../../../fixture';
 import { logsFixture } from './fixture';
 import { InvalidDataTypeError } from '@vechain/sdk-errors';
 
@@ -25,7 +25,7 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = new ThorClient(testNetwork);
+        thorClient = ThorClient.fromUrl(testnetUrl);
     });
 
     /**

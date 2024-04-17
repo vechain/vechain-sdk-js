@@ -2,7 +2,7 @@
 import { erc721ContractBytecode, erc721ContractTestCases } from './fixture';
 import { expect, test, beforeAll, describe } from '@jest/globals';
 import { ThorClient, type TransactionReceipt } from '../../../src';
-import { soloNetwork, TEST_ACCOUNTS } from '../../fixture';
+import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
 import {
     coder,
     ERC721_ABI,
@@ -42,7 +42,7 @@ describe('ThorClient - ERC721 Contracts', () => {
      * blockchain transaction processing.
      */
     beforeAll(async () => {
-        thorSoloClient = new ThorClient(soloNetwork);
+        thorSoloClient = ThorClient.fromUrl(soloUrl);
 
         // Create the ERC721 contract factory
 

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
-    soloNetwork,
+    soloUrl,
     TEST_ACCOUNTS_THOR_SOLO,
     THOR_SOLO_ACCOUNTS_BASE_WALLET,
     THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR
@@ -44,7 +44,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = new ThorClient(soloNetwork);
+        thorClient = ThorClient.fromUrl(soloUrl);
 
         // Init provider
         provider = new VechainProvider(

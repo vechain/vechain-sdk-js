@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { ProviderRpcError } from '@vechain/sdk-errors';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { soloNetwork } from '../../../fixture';
+import { soloUrl } from '../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_chainId' method
@@ -19,7 +19,7 @@ describe('RPC Mapper - eth_chainId method tests mock on solo', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = new ThorClient(soloNetwork);
+        thorClient = ThorClient.fromUrl(soloUrl);
     });
 
     /**
