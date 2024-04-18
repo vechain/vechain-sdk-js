@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { soloNetwork, soloUrl } from '../../fixture';
+import { soloUrl } from '../../fixture';
 import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
 import {
     deployERC20Contract,
@@ -30,7 +30,7 @@ describe('Hardhat provider tests', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = new ThorClient(soloNetwork);
+        thorClient = ThorClient.fromUrl(soloUrl);
         provider = new HardhatVechainProvider(
             new ProviderInternalBaseWallet([]),
             soloUrl,

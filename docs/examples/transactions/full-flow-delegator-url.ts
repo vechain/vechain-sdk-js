@@ -1,13 +1,12 @@
 import { clauseBuilder, unitsUtils } from '@vechain/sdk-core';
-import { HttpClient, ThorClient } from '@vechain/sdk-network';
+import { ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
 // START_SNIPPET: FullFlowDelegatorUrlSnippet
 
 // 1 - Create the thor client
 const _testnetUrl = 'https://testnet.vechain.org/';
-const testNetwork = new HttpClient(_testnetUrl);
-const thorClient = new ThorClient(testNetwork, {
+const thorClient = ThorClient.fromUrl(_testnetUrl, {
     isPollingEnabled: false
 });
 

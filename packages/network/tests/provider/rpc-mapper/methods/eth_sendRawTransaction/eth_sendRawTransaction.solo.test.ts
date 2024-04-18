@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 
-import { soloNetwork, TEST_ACCOUNTS_THOR_SOLO } from '../../../fixture';
+import { soloUrl, TEST_ACCOUNTS_THOR_SOLO } from '../../../fixture';
 import {
     Hex0x,
     type TransactionClause,
@@ -25,7 +25,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = new ThorClient(soloNetwork);
+        thorClient = ThorClient.fromUrl(soloUrl);
     });
 
     /**

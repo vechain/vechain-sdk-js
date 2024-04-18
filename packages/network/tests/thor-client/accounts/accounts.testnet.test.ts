@@ -9,7 +9,7 @@ import {
     testSmartContract,
     testStoragePositionKey
 } from './fixture';
-import { testAccount, testNetwork } from '../../fixture';
+import { testAccount, testnetUrl } from '../../fixture';
 import { ThorClient } from '../../../src';
 
 /**
@@ -22,7 +22,7 @@ describe('ThorClient - Accounts Module', () => {
     let thorClient: ThorClient;
 
     beforeEach(() => {
-        thorClient = new ThorClient(testNetwork);
+        thorClient = ThorClient.fromUrl(testnetUrl);
     });
 
     /**

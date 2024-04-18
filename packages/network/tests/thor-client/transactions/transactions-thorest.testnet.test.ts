@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { testNetwork } from '../../fixture';
+import { testnetUrl } from '../../fixture';
 import { transactionDetails, transactionReceipts } from './fixture-thorest';
 import { ThorClient } from '../../../src';
 
@@ -15,7 +15,7 @@ describe('ThorClient - Transactions Module', () => {
     let thorClient: ThorClient;
 
     beforeEach(() => {
-        thorClient = new ThorClient(testNetwork);
+        thorClient = ThorClient.fromUrl(testnetUrl);
     });
 
     /**

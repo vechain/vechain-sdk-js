@@ -3,7 +3,7 @@ import {
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS,
-    soloNetwork
+    soloUrl
 } from '../../fixture';
 import {
     contractBytecode,
@@ -46,7 +46,7 @@ describe('ThorClient - Contracts', () => {
     let thorSoloClient: ThorClient;
 
     beforeEach(() => {
-        thorSoloClient = new ThorClient(soloNetwork);
+        thorSoloClient = ThorClient.fromUrl(soloUrl);
     });
 
     /**

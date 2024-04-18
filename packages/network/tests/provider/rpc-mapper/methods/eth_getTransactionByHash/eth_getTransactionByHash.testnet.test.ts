@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { testNetwork } from '../../../fixture';
+import { testnetUrl } from '../../../fixture';
 import {
     ethGetTransactionByHashTestCases,
     invalidEthGetTransactionByHashTestCases
@@ -22,7 +22,7 @@ describe('RPC Mapper - eth_getTransactionByHash method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = new ThorClient(testNetwork);
+        thorClient = ThorClient.fromUrl(testnetUrl);
     });
 
     /**

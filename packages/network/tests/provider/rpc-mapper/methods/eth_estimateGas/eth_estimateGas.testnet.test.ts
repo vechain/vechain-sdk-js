@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 
-import { testNetwork } from '../../../fixture';
+import { testnetUrl } from '../../../fixture';
 import { negativeCasesFixtures, positiveCasesFixtures } from './fixture';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
 /**
@@ -19,7 +19,7 @@ describe('RPC Mapper - eth_estimateGas method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = new ThorClient(testNetwork);
+        thorClient = ThorClient.fromUrl(testnetUrl);
     });
 
     /**
