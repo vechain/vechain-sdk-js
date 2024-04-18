@@ -47,8 +47,7 @@ describe('Custom network configuration hardhat - testnet', () => {
                     .delegator
             ).toBeDefined();
             expect(
-                (hre.config.networks.vechain_testnet as HttpNetworkConfig)
-                    .debugMode
+                (hre.config.networks.vechain_testnet as HttpNetworkConfig).debug
             ).toBeDefined();
             expect(hre.vechainProvider).toBeDefined();
             expect(hre.vechainProvider?.send('eth_accounts', [])).toBeDefined();

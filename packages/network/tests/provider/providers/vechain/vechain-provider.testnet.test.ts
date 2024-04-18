@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
 import { testnetUrl } from '../../fixture';
 import { providerMethodsTestCasesTestnet } from '../fixture';
 import { waitForMessage } from '../helpers';
@@ -107,5 +107,15 @@ describe('Vechain provider tests - testnet', () => {
                     params: [-1]
                 })
         ).rejects.toThrowError(InvalidDataTypeError);
+    });
+
+    /**
+     * Invalid delegation
+     */
+    test('Should throw an error if delegation is enabled and delegator is not defined', () => {
+        expect(() => {
+            // eslint-disable-next-line no-new
+            new VechainProvider(thorClient, undefined, true);
+        }).toThrowError(ProviderRpcError);
     });
 });

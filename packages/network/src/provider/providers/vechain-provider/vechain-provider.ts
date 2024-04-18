@@ -3,7 +3,7 @@ import {
     type EIP1193ProviderMessage,
     type EIP1193RequestArguments
 } from '../../eip1193';
-import { assert, DATA } from '@vechain/sdk-errors';
+import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
 import {
     ethGetLogs,
     POLLING_INTERVAL,
@@ -44,12 +44,26 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
      *
      * @param thorClient - ThorClient instance.
      * @param wallet - ProviderInternalWallet instance. It is optional because the majority of the methods do not require a wallet.
+     * @param enableDelegation - Enable fee delegation or not.
+     *
      */
     constructor(
         readonly thorClient: ThorClient,
-        readonly wallet?: ProviderInternalWallet
+        readonly wallet?: ProviderInternalWallet,
+        readonly enableDelegation: boolean = false
     ) {
         super();
+
+        // Throw an error if delegation is enabled but the delegator is not defined
+        if (enableDelegation && wallet?.delegator === undefined) {
+            throw buildProviderError(
+                JSONRPC.INVALID_PARAMS,
+                'Delegation is enabled but the delegator is not defined. Ensure that the delegator is defined and connected to the network.',
+                {
+                    wallet
+                }
+            );
+        }
     }
 
     /**

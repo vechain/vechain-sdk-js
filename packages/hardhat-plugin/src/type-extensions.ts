@@ -36,7 +36,8 @@ declare module 'hardhat/types/runtime' {
  * Hardhat config extension
  *
  * - Add `delegator` to `HttpNetworkConfig`
- * - Add `debugMode` to `HttpNetworkConfig`
+ * - Add `debug` to `HttpNetworkConfig`
+ * - Add `enbaleDelegation` to `HttpNetworkConfig`
  */
 declare module 'hardhat/types/config' {
     export interface HttpNetworkConfig {
@@ -52,6 +53,11 @@ declare module 'hardhat/types/config' {
         /**
          * Debug mode enabled or not.
          */
-        debugMode?: boolean;
+        debug?: boolean;
+
+        /**
+         * Enable or not the fee's delegation of the transaction.
+         */
+        enbaleDelegation?: boolean;
     }
 }
