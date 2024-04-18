@@ -20,20 +20,6 @@ describe('addressUtils', () => {
     });
 
     describe('fromPublicKey', () => {
-        // test('private -> public key relation - invalid', () => {
-        //     expect(() =>
-        //         secp256k1.derivePublicKey(invalidPrivateKey)
-        //     ).toThrowError(InvalidSecp256k1PrivateKeyError);
-        // });
-        //
-        // test('private -> public key relation - valid', () => {
-        //     expect(
-        //         secp256k1.inflatePublicKey(
-        //             secp256k1.derivePublicKey(simplePrivateKey)
-        //         )
-        //     ).toEqual(simpleUncompressedPublicKey);
-        // });
-
         test('public key -> address relation', () => {
             expect(
                 addressUtils.fromPublicKey(simpleUncompressedPublicKey)
