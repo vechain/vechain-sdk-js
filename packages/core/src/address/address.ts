@@ -1,70 +1,72 @@
-import { ethers } from 'ethers';
-import { Hex0x, HEX_ADDRESS_REGEX } from '../utils';
 import { ADDRESS, assert } from '@vechain/sdk-errors';
+import { Hex0x } from '../utils';
+import { keccak256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
-// import { keccak256 } from '../hash';
+
+import { ethers } from 'ethers';
 
 /**
- * Derives a vechain thor address from a public key.
- *
- * @remarks
- * This function generates a vechain thor address by utilizing the ethers.js library's `computeAddress` function.
- * Note that the public key should be provided in an uncompressed form.
- *
- * @param publicKey - The uncompressed public key as a `Buffer`.
- * @returns The derived vechain thor address as a string.
+ * Regular expression for validating hexadecimal addresses. Must have "0x" prefix. Must be 40 characters long.
  */
-function fromPublicKey(publicKey: Buffer): string {
-    return ethers.computeAddress(Hex0x.of(publicKey));
-}
-
-/*
-https://docs.ethers.org/v5/api/utils/address/
-https://ethereum.org/en/whitepaper/#ethereum-accounts
- */
-// function fromPublicKeyAsUint8Array(publicKey: Uint8Array): Uint8Array {
-//     return keccak256(publicKey.slice(2)).slice(13);
-// }
-//
-/*
-export function computeAddress(key: string | SigningKey): string {
-    let pubkey: string;
-    if (typeof(key) === "string") {
-        pubkey = SigningKey.computePublicKey(key, false);
-    } else {
-        pubkey = key.publicKey;
-    }
-    return getAddress(keccak256("0x" + pubkey.substring(4)).substring(26));
-}
- */
+const HEX_ADDRESS_REGEX = /^0x[0-9a-f]{40}$/i;
 
 /**
- * Derives an Ethereum address from a given private key.
+ * Computes an VeChain Thor address from a given private key.
  *
- * This function uses the `secp256k1` cryptographic function to derive the public key
- * from the provided private key, and then converts this public
- * key into a vechain address.
+ * Secure audit function.
+ * - {@link fromPublicKey}
+ * - {@link secp256k1.derivePublicKey}
  *
- * @param privateKey - The private key as a Buffer object for which the vechain address
- *                     will be derived. The private key must be a valid secp256k1 private key.
+ * @param {Uint8Array} privateKey - The private key used to compute the public key
+ * from wihich the address is computed.
+ * @returns {string} - The string representation of the address,
+ * prefixed with `0x` according the
+ * [ERC-55: Mixed-case checksum address encoding](https://eips.ethereum.org/EIPS/eip-55).
  *
- * @returns The vechain address as a string, derived from the given private key.
- *
+ * @see {secp256k1.derivePublicKey}
+ * @see {fromPublicKey}
  */
-function fromPrivateKey(privateKey: Buffer): string {
-    return addressUtils.fromPublicKey(
-        Buffer.from(secp256k1.derivePublicKey(privateKey))
+function fromPrivateKey(privateKey: Uint8Array): string {
+    return fromPublicKey(secp256k1.derivePublicKey(privateKey));
+}
+/**
+ * Computes a VeChain Thor address from a public key.
+ *
+ * Secure audit function.
+ * - {@link secp256k1.inflatePublicKey}
+ * - {@link keccak256}
+ *
+ * @param {Uint8Array} publicKey - The public key to convert,
+ * either in compressed or uncompressed.
+ * @returns {string} - The string representation of the address,
+ * prefixed with `0x` according the
+ * [ERC-55: Mixed-case checksum address encoding](https://eips.ethereum.org/EIPS/eip-55).
+ *
+ * @remark
+ * Following the [Ethereum Address](https://ethereum.org/en/whitepaper/#notes-and-further-reading)
+ * specification, the returned address is computed
+ * - from the uncompressed public key,
+ * - removing the first byte flagging the uncompressed form,
+ * - computing the [KECCAK256](https://en.wikipedia.org/wiki/SHA-3) hash
+ * - represented in ERC-55 mixed case hexadecimal form,
+ * - prefixed with `0x`.
+ *
+ * @see {secp256k1.inflatePublicKey}
+ */
+
+function fromPublicKey(publicKey: Uint8Array): string {
+    return Hex0x.of(
+        keccak256(secp256k1.inflatePublicKey(publicKey).slice(1)).slice(12)
     );
 }
 
 /**
- * Verifies whether a string qualifies as a valid vechain thor address.
+ * Checks if the given string is a valid VeChain Thor address.
  *
- * @remarks
- * This function checks a provided string against a regular expression to determine whether it is formatted as a valid vechain thor address.`
+ * @param {string} addressToVerify - The string to be checked for validity.
+ * @return {boolean} - True if the string is a valid address, otherwise false.
  *
- * @param addressToVerify - The string to be checked for address-like formatting.
- * @returns A boolean indicating whether the string adheres to vechain thor address formatting.
+ * @see {HEX_ADDRESS_REGEX}
  */
 function isAddress(addressToVerify: string): boolean {
     return HEX_ADDRESS_REGEX.test(addressToVerify);
@@ -94,8 +96,8 @@ function toChecksummed(address: string): string {
 }
 
 export const addressUtils = {
-    fromPublicKey,
     fromPrivateKey,
+    fromPublicKey,
     isAddress,
     toChecksummed
 };

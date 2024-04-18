@@ -1,6 +1,6 @@
 # @vechain/sdk-core
 
-Welcome to the **core package** of the vechain SDK!
+Welcome to the **core package** of the Vechain SDK!
 
 ## Introduction
 
@@ -12,10 +12,10 @@ Vechain SDK Core boasts an extensive array of functionalities tailored for Vecha
 
 - **Hash Functions and Public Key Cryptography**: Vechain SDK Core provides fundamental hash functions and methods for public key cryptography, ensuring the security of blockchain operations. Notable functions include blake2b256, keccak256, and secp256k.
 - **Accounts Handling**: Facilitating seamless account management, the package offers tools for private key generation, mnemonic handling, and keystore encryption/decryption. Users can efficiently manage accounts with mnemonics and keystore functionalities.
-- **Transactions**: Empowering users to interact with the VechainThor blockchain, vechain SDK Core enables the construction, signing, and manipulation of transactions. Users can customize transactions with various clauses and gas settings, enhancing flexibility and control.
+- **Transactions**: Empowering users to interact with the VechainThor blockchain, Vechain SDK Core enables the construction, signing, and manipulation of transactions. Users can customize transactions with various clauses and gas settings, enhancing flexibility and control.
 - **Recursive Length Prefix (RLP)**: The package includes robust RLP encoding and decoding capabilities, crucial for efficient data serialization and deserialization on the VechainThor blockchain. RLP plays a pivotal role in optimizing data handling processes.
 - **Certificates**: Vechain SDK Core supports the creation and verification of client-side self-signed certificates. This feature enhances security by facilitating secure identification and validation processes within the dApp ecosystem.
-- **Bloom Filter**: Harnessing the power of a highly efficient Bloom filter, vechain SDK Core optimizes element lookup within a set. This probabilistic data structure contributes to enhanced speed and efficiency in various applications, including database management, network routing, and caching systems.
+- **Bloom Filter**: Harnessing the power of a highly efficient Bloom filter, Vechain SDK Core optimizes element lookup within a set. This probabilistic data structure contributes to enhanced speed and efficiency in various applications, including database management, network routing, and caching systems.
 
 Vechain SDK Core is your go-to solution for secure, offline dApp development on the VechainThor blockchain. Dive into a world of efficient blockchain operations and seamlessly integrate offline capabilities into your decentralized applications.
 
@@ -30,8 +30,8 @@ Vechain SDK Core is your go-to solution for secure, offline dApp development on 
 
 ## Usage
 
-Explore examples of how to use this package in real-world scenarios at [vechain SDK examples](https://github.com/vechain/vechain-sdk/tree/main/docs/examples).
+Explore examples of how to use this package in real-world scenarios at [Vechain SDK examples](https://github.com/Vechain/Vechain-sdk/tree/main/docs/examples).
 
 Feel free to leverage these resources and don't hesitate to reach out if you have any questions or need further assistance.
 
-Happy coding with the vechain SDK!
+Happy coding with the Vechain SDK!

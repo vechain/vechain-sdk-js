@@ -5,7 +5,7 @@ import {
     invalidPrivateKey,
     simpleAddress,
     simplePrivateKey,
-    simplePublicKey
+    simpleUncompressedPublicKey
 } from './fixture';
 import {
     InvalidAddressError,
@@ -16,63 +16,54 @@ import {
  * Test address module
  * @group unit/address
  */
-describe('Address', () => {
-    /**
-     * Address validity
-     */
-    describe('Address validity', () => {
-        /**
-         * Valid and invalid address check
-         */
-        test('validate address', () => {
-            expect(addressUtils.isAddress('not an address')).toEqual(false);
-            expect(
-                addressUtils.isAddress(
-                    '52908400098527886E0F7030069857D2E4169EE7'
-                )
-            ).toEqual(false);
-            expect(
-                addressUtils.isAddress(
-                    '0x52908400098527886E0F7030069857D2E4169EE7'
-                )
-            ).toEqual(true);
-        });
+describe('addressUtils', () => {
+    test('fromPrivateKey', () => {
+        expect(addressUtils.fromPrivateKey(simplePrivateKey)).toEqual(
+            simpleAddress
+        );
     });
 
-    /**
-     * Test derivation of public key from private key
-     */
-    describe('Derivation ', () => {
-        /**
-         * Derive public key from private key using secp256k1
-         */
-        test('derive public key from private key', () => {
-            // Correct private key / public key / address derivation
-            expect(
-                Buffer.from(
-                    secp256k1.inflatePublicKey(
-                        secp256k1.derivePublicKey(simplePrivateKey)
-                    )
-                )
-            ).toEqual(simplePublicKey);
-            expect(addressUtils.fromPublicKey(simplePublicKey)).toEqual(
-                simpleAddress
-            );
-
-            // Invalid private key to derive public key
+    describe('fromPublicKey', () => {
+        test('private -> public key relation - invalid', () => {
             expect(() =>
                 secp256k1.derivePublicKey(invalidPrivateKey)
             ).toThrowError(InvalidSecp256k1PrivateKeyError);
         });
 
-        /**
-         * Derive the address from the private key
-         */
-        test('derive address from private key', () => {
-            // Correct private key address derivation
-            expect(addressUtils.fromPrivateKey(simplePrivateKey)).toEqual(
-                simpleAddress
-            );
+        test('private -> public key relation - valid', () => {
+            expect(
+                secp256k1.inflatePublicKey(
+                    secp256k1.derivePublicKey(simplePrivateKey)
+                )
+            ).toEqual(simpleUncompressedPublicKey);
+        });
+
+        test('public key -> address relation', () => {
+            expect(
+                addressUtils.fromPublicKey(simpleUncompressedPublicKey)
+            ).toEqual(simpleAddress);
+        });
+    });
+
+    describe('isAddress', () => {
+        test('isAddress - false - not hex', () => {
+            expect(addressUtils.isAddress('not an address')).toEqual(false);
+        });
+
+        test('isAddress - false - no 0x prefix', () => {
+            expect(
+                addressUtils.isAddress(
+                    '52908400098527886E0F7030069857D2E4169EE7'
+                )
+            ).toEqual(false);
+        });
+
+        test('isAddress - true', () => {
+            expect(
+                addressUtils.isAddress(
+                    '0x52908400098527886E0F7030069857D2E4169EE7'
+                )
+            ).toEqual(true);
         });
     });
 
