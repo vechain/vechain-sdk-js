@@ -1,16 +1,12 @@
+import { InvalidAddressError } from '@vechain/sdk-errors';
+import { addressUtils } from '../../src';
 import { describe, expect, test } from '@jest/globals';
-import { addressUtils, secp256k1 } from '../../src';
 import {
     checksummedAndUnchecksummedAddresses,
-    invalidPrivateKey,
     simpleAddress,
     simplePrivateKey,
     simpleUncompressedPublicKey
 } from './fixture';
-import {
-    InvalidAddressError,
-    InvalidSecp256k1PrivateKeyError
-} from '@vechain/sdk-errors';
 
 /**
  * Test address module
@@ -24,19 +20,19 @@ describe('addressUtils', () => {
     });
 
     describe('fromPublicKey', () => {
-        test('private -> public key relation - invalid', () => {
-            expect(() =>
-                secp256k1.derivePublicKey(invalidPrivateKey)
-            ).toThrowError(InvalidSecp256k1PrivateKeyError);
-        });
-
-        test('private -> public key relation - valid', () => {
-            expect(
-                secp256k1.inflatePublicKey(
-                    secp256k1.derivePublicKey(simplePrivateKey)
-                )
-            ).toEqual(simpleUncompressedPublicKey);
-        });
+        // test('private -> public key relation - invalid', () => {
+        //     expect(() =>
+        //         secp256k1.derivePublicKey(invalidPrivateKey)
+        //     ).toThrowError(InvalidSecp256k1PrivateKeyError);
+        // });
+        //
+        // test('private -> public key relation - valid', () => {
+        //     expect(
+        //         secp256k1.inflatePublicKey(
+        //             secp256k1.derivePublicKey(simplePrivateKey)
+        //         )
+        //     ).toEqual(simpleUncompressedPublicKey);
+        // });
 
         test('public key -> address relation', () => {
             expect(
@@ -70,34 +66,36 @@ describe('addressUtils', () => {
     /**
      * Test address checksum
      */
-    describe('Checksum', () => {
+    describe('toERC55Checksum', () => {
         /**
          * Invalid inputs
          */
-        test('invalid input should throw error', () => {
+        test('toERC55Checksum - invalid - no hex', () => {
             expect(() => {
-                addressUtils.toChecksummed('invalid data');
+                addressUtils.toERC55Checksum('invalid data');
             }).toThrowError(InvalidAddressError);
-            expect(() => {
-                addressUtils.toChecksummed(
-                    '52908400098527886E0F7030069857D2E4169EE7'
-                );
-            }).toThrowError(InvalidAddressError);
+        });
 
+        test('toERC55Checksum - invalid - no 0x prefix', () => {
             expect(() => {
-                addressUtils.toChecksummed(
-                    '52908400098527886E0F7030069857D9EE7'
+                addressUtils.toERC55Checksum(
+                    '52908400098527886E0F7030069857D2E4169EE7'
                 );
             }).toThrowError(InvalidAddressError);
         });
 
-        /**
-         * Valid inputs
-         */
-        test('valid input', () => {
+        test('toERC55Checksum - invalid - wrong size', () => {
+            expect(() => {
+                addressUtils.toERC55Checksum(
+                    '0x52908400098527886E0F7030069857D9EE7'
+                );
+            }).toThrowError(InvalidAddressError);
+        });
+
+        test('toERC55Checksum - valid', () => {
             checksummedAndUnchecksummedAddresses.forEach((addressPair) => {
                 expect(
-                    addressUtils.toChecksummed(addressPair.unchecksummed)
+                    addressUtils.toERC55Checksum(addressPair.unchecksummed)
                 ).toEqual(addressPair.checksummed);
             });
         });

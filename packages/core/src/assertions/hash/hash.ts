@@ -27,7 +27,7 @@ function assertIsValidReturnType(
         `assertIsValidReturnType - ${methodName}`,
         isValidReturnType(returnType),
         DATA.INVALID_DATA_RETURN_TYPE,
-        "Validation error: Invalid Return type. Return type in hash function must be 'buffer' or 'hex'.",
+        "Validation error: Invalid return type. Return type in hash function must be 'buffer' or 'hex'.",
         { returnType }
     );
 }

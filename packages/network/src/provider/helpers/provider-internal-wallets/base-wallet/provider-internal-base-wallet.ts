@@ -102,8 +102,8 @@ class ProviderInternalBaseWallet implements ProviderInternalWallet {
         // Get the account by address
         const account = this.accounts.find(
             (account) =>
-                addressUtils.toChecksummed(account.address) ===
-                addressUtils.toChecksummed(address)
+                addressUtils.toERC55Checksum(account.address) ===
+                addressUtils.toERC55Checksum(address)
         );
         return await Promise.resolve(account ?? null);
     }

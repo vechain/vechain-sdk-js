@@ -297,7 +297,7 @@ describe('ThorClient - Transactions Module', () => {
                     expect(signedTx).toBeDefined();
                     expect(signedTx.body).toMatchObject(expected.body);
                     expect(signedTx.origin).toBe(
-                        addressUtils.toChecksummed(origin.address)
+                        addressUtils.toERC55Checksum(origin.address)
                     );
                     expect(signedTx.isDelegated).toBe(isDelegated);
                     expect(signedTx.isSigned).toBe(true);

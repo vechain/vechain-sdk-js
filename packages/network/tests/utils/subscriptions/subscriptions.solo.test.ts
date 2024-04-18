@@ -117,7 +117,7 @@ describe('Subscriptions Solo network tests', () => {
 
                         expect(decodedLog.length).toBe(4);
                         expect(decodedLog[2]).toBe(
-                            addressUtils.toChecksummed(
+                            addressUtils.toERC55Checksum(
                                 TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION
                                     .address
                             )

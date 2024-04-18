@@ -1,17 +1,16 @@
 import { ADDRESS, assert } from '@vechain/sdk-errors';
-import { Hex0x } from '../utils';
+import { Hex, Hex0x } from '../utils';
 import { keccak256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 
-import { ethers } from 'ethers';
-
 /**
- * Regular expression for validating hexadecimal addresses. Must have "0x" prefix. Must be 40 characters long.
+ * Regular expression for validating hexadecimal addresses
+ * Must have "0x" prefix, 40 hexadecimal digits must follow.
  */
 const HEX_ADDRESS_REGEX = /^0x[0-9a-f]{40}$/i;
 
 /**
- * Computes an VeChain Thor address from a given private key.
+ * Computes an VeChainThor address from a given private key.
  *
  * Secure audit function.
  * - {@link fromPublicKey}
@@ -30,7 +29,7 @@ function fromPrivateKey(privateKey: Uint8Array): string {
     return fromPublicKey(secp256k1.derivePublicKey(privateKey));
 }
 /**
- * Computes a VeChain Thor address from a public key.
+ * Computes a VeChainThor address from a public key.
  *
  * Secure audit function.
  * - {@link secp256k1.inflatePublicKey}
@@ -42,7 +41,7 @@ function fromPrivateKey(privateKey: Uint8Array): string {
  * prefixed with `0x` according the
  * [ERC-55: Mixed-case checksum address encoding](https://eips.ethereum.org/EIPS/eip-55).
  *
- * @remark
+ * @remarks
  * Following the [Ethereum Address](https://ethereum.org/en/whitepaper/#notes-and-further-reading)
  * specification, the returned address is computed
  * - from the uncompressed public key,
@@ -55,13 +54,15 @@ function fromPrivateKey(privateKey: Uint8Array): string {
  */
 
 function fromPublicKey(publicKey: Uint8Array): string {
-    return Hex0x.of(
-        keccak256(secp256k1.inflatePublicKey(publicKey).slice(1)).slice(12)
+    return toERC55Checksum(
+        Hex0x.of(
+            keccak256(secp256k1.inflatePublicKey(publicKey).slice(1)).slice(12)
+        )
     );
 }
 
 /**
- * Checks if the given string is a valid VeChain Thor address.
+ * Checks if the given string is a valid VeChainThor address.
  *
  * @param {string} addressToVerify - The string to be checked for validity.
  * @return {boolean} - True if the string is a valid address, otherwise false.
@@ -73,31 +74,43 @@ function isAddress(addressToVerify: string): boolean {
 }
 
 /**
- * Converts a vechain thor address to its checksummed version.
+ * Converts the given VeChainThor address to its
+ * [EIP/ERC-55: Mixed-case checksum address encoding](https://eips.ethereum.org/EIPS/eip-55)
+ * representation.
  *
- * @remarks
- * This function validates and then converts an address into its EIP-55 compliant checksum form using ethers.js’s `getAddress` function.
- * Throws an error if the input string is not a valid vechain thor address.
+ * @param {string} address - The address to be converted,
+ * it must be prefixed with `0x`.
+ * @return {string} - The EIP/ERC-55 checksum address.
  *
- * @throws{InvalidAddressError}
- * @param address - The input vechain thor address string to be checksummed.
- * @returns The checksum address string, compliant with EIP-55.
+ * @throws {InvalidAddressError} if `address` is not a valid hexadecimal
+ * representation 40 digits long, prefixed with `0x`.
+ *
+ * @see {isAddress}
  */
-function toChecksummed(address: string): string {
+function toERC55Checksum(address: string): string {
     assert(
-        'toChecksummed',
+        'addressUtils.toERC55Checksum',
         isAddress(address),
         ADDRESS.INVALID_ADDRESS,
-        'Checksum failed: Input must be a valid Vechain Thor address.',
+        'Checksum failed: Input must be a valid VeChainThor address.',
         { address }
     );
-
-    return ethers.getAddress(address);
+    const digits = Hex.canon(address.toLowerCase());
+    const hash = Hex.of(keccak256(digits));
+    let result = '0x';
+    for (let i = 0; i < digits.length; i++) {
+        if (parseInt(hash[i], 16) >= 8) {
+            result += digits[i].toUpperCase();
+        } else {
+            result += digits[i];
+        }
+    }
+    return result;
 }
 
 export const addressUtils = {
     fromPrivateKey,
     fromPublicKey,
     isAddress,
-    toChecksummed
+    toERC55Checksum
 };
