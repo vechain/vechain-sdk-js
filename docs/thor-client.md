@@ -6,6 +6,20 @@ description: Thor-client
 
 The Thor-client serves as an interface to interact with the vechain Thor blockchain. This client streamlines the interaction with the blockchain by providing a set of methods specifically tailored to retrieve information from various endpoints. By encapsulating the intricacies of the underlying communication with the VechainThor network, developers can easily integrate this client into their applications. Whether fetching details about specific blocks, querying transaction information, or accessing other blockchain-related data, the thor-client simplifies the process, enabling efficient and straightforward integration with the VechainThor network through RESTful API calls.
 
+## Initialization
+
+To initialize a Thor client, there are two straightforward methods. The first involves creating an HTTP client with the desired network URL, then passing it to ThorClient. Alternatively, the ThorClient can be directly initialized from the network URL. The choice between them depends on whether you prefer a two-step setup with explicit HTTP client configuration or a more concise, one-step initialization.
+
+```typescript { name=initialize, category=example }
+// First way to initialize thor client
+const testnetUrl = 'https://testnet.vechain.org/';
+const httpClient = new HttpClient(testnetUrl);
+const thorClient = new ThorClient(httpClient);
+
+// Second way to initialize thor client
+const thorClient2 = ThorClient.fromUrl(testnetUrl);
+```
+
 ## Accounts
 
 The Thor-client extends its functionality to provide seamless access to account-related information on the VechainThor network. The following code exemplifies how developers can utilize the Thor-client to interact with accounts:
