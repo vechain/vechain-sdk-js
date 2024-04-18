@@ -31,8 +31,7 @@ Example:
 ```typescript { name=vechain-provider, category=example }
 // 1 - Create thor client for testnet
 const testnetUrl = 'https://testnet.vechain.org';
-const testNetwork = new HttpClient(testnetUrl);
-const thorClient = new ThorClient(testNetwork);
+const thorClient = ThorClient.fromUrl(testnetUrl);
 
 // 2 - Init provider
 const provider = new VechainProvider(thorClient);

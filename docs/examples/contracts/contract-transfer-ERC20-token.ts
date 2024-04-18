@@ -1,7 +1,6 @@
 import { VIP180_ABI } from '@vechain/sdk-core';
 import {
     type Contract,
-    HttpClient,
     ThorClient,
     type TransactionReceipt
 } from '@vechain/sdk-network';
@@ -16,8 +15,7 @@ const privateKeyDeployer =
 
 // Create thor client for solo network
 const _soloUrl = 'http://localhost:8669/';
-const soloNetwork = new HttpClient(_soloUrl);
-const thorSoloClient = new ThorClient(soloNetwork);
+const thorSoloClient = ThorClient.fromUrl(_soloUrl)
 
 // Defining a function for deploying the ERC20 contract
 const setupERC20Contract = async (): Promise<Contract> => {

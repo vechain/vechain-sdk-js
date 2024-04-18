@@ -1,11 +1,10 @@
-import { HttpClient, ThorClient } from '@vechain/sdk-network';
+import { ThorClient } from '@vechain/sdk-network';
 
 // START_SNIPPET: DebugTraceContractCallSnippet
 
 // 1 - Create thor client for testnet
 const _testnetUrl = 'https://testnet.vechain.org';
-const testNetwork = new HttpClient(_testnetUrl);
-const thorClient = new ThorClient(testNetwork);
+const thorClient = ThorClient.fromUrl(_testnetUrl);
 
 // 2 - Trace the contract call.
 const result = await thorClient.debug.traceContractCall(

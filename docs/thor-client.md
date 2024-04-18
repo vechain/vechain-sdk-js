@@ -6,6 +6,20 @@ description: Thor-client
 
 The Thor-client serves as an interface to interact with the vechain Thor blockchain. This client streamlines the interaction with the blockchain by providing a set of methods specifically tailored to retrieve information from various endpoints. By encapsulating the intricacies of the underlying communication with the VechainThor network, developers can easily integrate this client into their applications. Whether fetching details about specific blocks, querying transaction information, or accessing other blockchain-related data, the thor-client simplifies the process, enabling efficient and straightforward integration with the VechainThor network through RESTful API calls.
 
+## Initialization
+
+To initialize a Thor client, there are two straightforward methods. The first involves creating an HTTP client with the desired network URL, then passing it to ThorClient. Alternatively, the ThorClient can be directly initialized from the network URL. The choice between them depends on whether you prefer a two-step setup with explicit HTTP client configuration or a more concise, one-step initialization.
+
+```typescript { name=initialize, category=example }
+// First way to initialize thor client
+const testnetUrl = 'https://testnet.vechain.org/';
+const httpClient = new HttpClient(testnetUrl);
+const thorClient = new ThorClient(httpClient);
+
+// Second way to initialize thor client
+const thorClient2 = ThorClient.fromUrl(testnetUrl);
+```
+
 ## Accounts
 
 The Thor-client extends its functionality to provide seamless access to account-related information on the VechainThor network. The following code exemplifies how developers can utilize the Thor-client to interact with accounts:
@@ -14,8 +28,7 @@ The Thor-client extends its functionality to provide seamless access to account-
 // 1 - Create thor client for testnet
 
 const _testnetUrl = 'https://testnet.vechain.org';
-const testNetwork = new HttpClient(_testnetUrl);
-const thorClient = new ThorClient(testNetwork);
+const thorClient = ThorClient.fromUrl(_testnetUrl);
 
 // 2 - Get account details
 
@@ -60,8 +73,7 @@ The Thor-client facilitates easy interaction with blocks on the VechainThor netw
 // 1 - Create thor client for testnet
 
 const _testnetUrl = 'https://testnet.vechain.org';
-const testNetwork = new HttpClient(_testnetUrl);
-const thorClient = new ThorClient(testNetwork);
+const thorClient = ThorClient.fromUrl(_testnetUrl);
 
 // 2 - Get block details
 
@@ -102,8 +114,7 @@ The Thor-client extends its capabilities to efficiently filter and retrieve even
 // 1 - Create thor client for testnet
 
 const _testnetUrl = 'https://testnet.vechain.org';
-const testNetwork = new HttpClient(_testnetUrl);
-const thorClient = new ThorClient(testNetwork);
+const thorClient = ThorClient.fromUrl(_testnetUrl);
 
 // 2 - Filter event logs based on the provided criteria. (EXAMPLE 1)
 
@@ -183,8 +194,7 @@ The Thor-client allows developers to interact with nodes on the VechainThor netw
 // 1 - Create thor client for testnet
 
 const _testnetUrl = 'https://testnet.vechain.org';
-const testNetwork = new HttpClient(_testnetUrl);
-const thorClient = new ThorClient(testNetwork);
+const thorClient = ThorClient.fromUrl(_testnetUrl);
 
 // 2 - Retrieves connected peers of a node
 
@@ -212,8 +222,7 @@ const senderAccount = {
 // 1 - Create thor client for solo network
 
 const _soloUrl = 'http://localhost:8669';
-const soloNetwork = new HttpClient(_soloUrl);
-const thorSoloClient = new ThorClient(soloNetwork);
+const thorSoloClient = ThorClient.fromUrl(_soloUrl);
 
 // 2 - Get latest block
 
@@ -318,8 +327,7 @@ const delegateAccount = {
 // 1 - Create thor client for solo network
 
 const _soloUrl = 'http://localhost:8669';
-const soloNetwork = new HttpClient(_soloUrl);
-const thorSoloClient = new ThorClient(soloNetwork);
+const thorSoloClient = ThorClient.fromUrl(_soloUrl);
 
 // 2 - Get latest block
 
@@ -396,8 +404,7 @@ The `gasPadding` option adds a safety margin to estimated gas costs. It allows d
 ```typescript { name=gas, category=example }
 // 1 - Create thor client for solo network
 const _soloUrl = 'http://localhost:8669';
-const soloNetwork = new HttpClient(_soloUrl);
-const thorSoloClient = new ThorClient(soloNetwork);
+const thorSoloClient = ThorClient.fromUrl(_soloUrl);
 
 // 2- Init transaction
 

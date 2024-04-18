@@ -1,4 +1,3 @@
-import { HttpClient } from '@vechain/sdk-network';
 import type { InterfaceAbi } from '@vechain/sdk-core';
 
 const testnetUrl = 'https://testnet.vechain.org';
@@ -12,21 +11,6 @@ const soloUrl = 'http://localhost:8669';
  * Url of the mainnet fixture
  */
 const mainnetUrl = 'https://mainnet.vechain.org';
-
-/**
- * Test Network instance fixture
- */
-const testNetwork = new HttpClient(testnetUrl);
-
-/**
- * Main network instance fixture
- */
-const mainNetwork = new HttpClient(mainnetUrl);
-
-/**
- * Solo network instance fixture
- */
-const soloNetwork = new HttpClient(soloUrl);
 
 /**
  * Simple test account fixture
@@ -209,9 +193,6 @@ const erc20Abi: InterfaceAbi = [
 ];
 
 export {
-    testNetwork,
-    mainNetwork,
-    soloNetwork,
     testAccount,
     testnetUrl,
     soloUrl,

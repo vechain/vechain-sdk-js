@@ -1,11 +1,10 @@
-import { HttpClient, Poll, ThorClient } from '@vechain/sdk-network';
+import { Poll, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
 // 1 - Create thor client for testnet
 
 const _testnetUrl = 'https://testnet.vechain.org';
-const testNetwork = new HttpClient(_testnetUrl);
-const thorClient = new ThorClient(testNetwork);
+const thorClient = ThorClient.fromUrl(_testnetUrl);
 
 // 2 - Get current block
 

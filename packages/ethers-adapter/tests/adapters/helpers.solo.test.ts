@@ -5,7 +5,7 @@ import {
     type TransactionReceipt,
     type WaitForTransactionOptions
 } from '@vechain/sdk-network';
-import { soloNetwork, soloUrl } from '../fixture';
+import { soloUrl } from '../fixture';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { helpers } from '../../src/adapters/helpers';
 
@@ -25,7 +25,7 @@ describe('Helpers tests', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = new ThorClient(soloNetwork);
+        thorClient = ThorClient.fromUrl(soloUrl);
         provider = new HardhatVechainProvider(
             new ProviderInternalBaseWallet([]),
             soloUrl,

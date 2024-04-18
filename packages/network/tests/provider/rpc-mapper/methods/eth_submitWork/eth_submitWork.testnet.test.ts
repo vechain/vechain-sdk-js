@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import { NotImplementedError } from '@vechain/sdk-errors';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
 
-import { testNetwork } from '../../../fixture';
+import { testnetUrl } from '../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_submitWork' method
@@ -20,7 +20,7 @@ describe('RPC Mapper - eth_submitWork method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = new ThorClient(testNetwork);
+        thorClient = ThorClient.fromUrl(testnetUrl);
     });
 
     /**

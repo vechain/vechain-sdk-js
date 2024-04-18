@@ -23,8 +23,7 @@ describe('ThorClient - Nodes Module', () => {
     const URL = 'http://example.com';
 
     beforeEach(() => {
-        const soloNetwork = new HttpClient(URL);
-        thorClient = new ThorClient(soloNetwork);
+        thorClient = ThorClient.fromUrl(URL);
     });
 
     test('valid URL/node but Error is thrown by network provider', async () => {

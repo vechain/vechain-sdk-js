@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { testNetwork } from '../../../fixture';
+import { testnetUrl } from '../../../fixture';
 import {
     RPC_METHODS,
     RPCMethodsMap,
@@ -24,7 +24,7 @@ describe('RPC Mapper - eth_unsubscribe method tests', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = new ThorClient(testNetwork);
+        thorClient = ThorClient.fromUrl(testnetUrl);
         provider = new VechainProvider(thorClient);
     });
 
