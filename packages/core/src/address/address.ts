@@ -78,6 +78,9 @@ function isAddress(addressToVerify: string): boolean {
  * [EIP/ERC-55: Mixed-case checksum address encoding](https://eips.ethereum.org/EIPS/eip-55)
  * representation.
  *
+ * Secure audit function.
+ * - {@link keccak256}
+ *
  * @param {string} address - The address to be converted,
  * it must be prefixed with `0x`.
  * @return {string} - The EIP/ERC-55 checksum address.
