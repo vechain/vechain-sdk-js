@@ -87,22 +87,24 @@ const ethSendTransaction = async (
             transaction.from
         )) as VechainSigner<VechainProvider>;
 
-        // ---START: TEMPORARY COMMENT---
-        // For this PR we will see only if 'delegator' field is present on provider.
-        // Next, we will add enableDelegation flag
-        // ---END: TEMPORARY COMMENT---
-        // Understand if transaction is delegated or not
-        const isDelegated = DelegationHandler(
+        // Understand if use delegation or not
+        const isDelegated =
+            provider?.enableDelegation !== undefined &&
+            provider?.enableDelegation;
+
+        // Understand if transaction can be delegated or not
+        const canBeDelegated = DelegationHandler(
             provider?.wallet?.delegator
         ).isDelegated();
 
         // Sign the transaction
-        const signedTransaction = isDelegated
-            ? await signer.signTransactionWithDelegator(
-                  transaction,
-                  provider?.wallet?.delegator
-              )
-            : await signer.signTransaction(transaction);
+        const signedTransaction =
+            isDelegated && canBeDelegated
+                ? await signer.signTransactionWithDelegator(
+                      transaction,
+                      provider?.wallet?.delegator
+                  )
+                : await signer.signTransaction(transaction);
 
         // Return the result
         return await ethSendRawTransaction(thorClient, [signedTransaction]);

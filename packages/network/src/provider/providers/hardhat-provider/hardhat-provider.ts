@@ -34,15 +34,21 @@ class HardhatVechainProvider extends VechainProvider {
      * @param nodeUrl - The node url to use
      * @param buildHardhatErrorFunctionCallback - The function to use to build Hardhat errors.
      * @param debug - Debug mode.
+     * @param enableDelegation - Enable fee delegation or not.
      */
     constructor(
         walletToUse: ProviderInternalWallet,
         nodeUrl: string,
         buildHardhatErrorFunctionCallback: BuildHardhatErrorFunction,
-        debug: boolean = false
+        debug: boolean = false,
+        enableDelegation: boolean = false
     ) {
         // Initialize the provider with the network configuration.
-        super(new ThorClient(new HttpClient(nodeUrl)), walletToUse);
+        super(
+            new ThorClient(new HttpClient(nodeUrl)),
+            walletToUse,
+            enableDelegation
+        );
 
         // Save the debug mode.
         this.debug = debug;

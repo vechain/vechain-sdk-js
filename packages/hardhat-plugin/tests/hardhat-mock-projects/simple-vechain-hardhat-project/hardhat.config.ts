@@ -33,7 +33,8 @@ const vechainTestNetwork: HttpNetworkConfig = {
         delegatorPrivateKey:
             'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5'
     },
-    debugMode: false
+    debug: true,
+    enbaleDelegation: true
 };
 
 /**
@@ -45,8 +46,9 @@ const vechainSoloNetwork = {
     accounts: [
         '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
     ],
-    debugMode: false,
+    debug: false,
     delegator: undefined,
+    enbaleDelegation: false,
     gas: 'auto',
     gasPrice: 'auto',
     gasMultiplier: 1,

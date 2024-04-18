@@ -4,5 +4,6 @@
     "accounts": {
         "mnemonic": "denial kitchen pet squirrel other broom bar gas better priority spoil cross",
         "count": 10
-    }
+    },
+    "enableDelegation": false
 }
