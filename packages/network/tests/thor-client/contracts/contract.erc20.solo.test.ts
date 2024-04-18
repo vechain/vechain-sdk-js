@@ -192,4 +192,54 @@ describe('ThorClient - ERC20 Contracts', () => {
             async () => await contract.filters.EventNotFound().get()
         ).rejects.toThrowError(InvalidAbiFunctionError);
     }, 10000);
+
+    /**
+     * Tests the execution of multiple ERC20 contract clauses using a blockchain client.
+     */
+    test('Execute multiples ERC20 contract clauses', async () => {
+        // Deploy the ERC20 contract
+        let factory = thorSoloClient.contracts.createContractFactory(
+            deployedERC20Abi,
+            erc20ContractBytecode,
+            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+        );
+
+        factory = await factory.startDeployment();
+
+        const contract: Contract = await factory.waitForDeployment();
+
+        // Execute multiple 'transfer' transactions on the deployed contract,
+        const txResult =
+            await thorSoloClient.contracts.executeMultipleClausesTransaction(
+                [
+                    contract.clause.transfer(
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                        1000
+                    ),
+                    contract.clause.transfer(
+                        TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                        1000
+                    ),
+                    contract.clause.transfer(
+                        TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                        3000
+                    )
+                ],
+                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            );
+
+        await txResult.wait();
+
+        expect(
+            await contract.read.balanceOf(
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+            )
+        ).toEqual([BigInt(1000)]);
+
+        expect(
+            await contract.read.balanceOf(
+                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+            )
+        ).toEqual([BigInt(4000)]);
+    }, 10000);
 });

@@ -8,9 +8,7 @@
     "@vechain/sdk-hardhat-plugin": "1.0.0",
     "@vechain/sdk-logging": "1.0.0",
     "@vechain/sdk-network": "1.0.0",
-    "@vechain/sdk-provider": "1.0.0",
-    "@vechain/sdk-rpc-proxy": "1.0.0",
-    "@vechain/sdk-wallet": "1.0.0"
+    "@vechain/sdk-rpc-proxy": "1.0.0"
   },
   "changesets": []
 }

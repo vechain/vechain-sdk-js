@@ -1,10 +1,11 @@
-import { clauseBuilder, networkInfo } from '@vechain/sdk-core';
 import {
-    TransactionHandler,
+    clauseBuilder,
     HDNode,
-    type TransactionClause,
-    type TransactionBody,
     mnemonic,
+    networkInfo,
+    type TransactionBody,
+    type TransactionClause,
+    TransactionHandler,
     unitsUtils
 } from '@vechain/sdk-core';
 import { expect } from 'expect';

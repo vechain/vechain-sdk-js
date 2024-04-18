@@ -17,13 +17,9 @@ The vechain Provider is our core provider, offering direct interaction with the 
 ### Usage
 
 To use the vechain Provider in your project, follow these steps:
- - Install the package:
-    ``` bash
-    yarn add @vechain/sdk-provider
-    ```
  - Import the provider in your code:
     ``` bash
-    import { VechainProvider } from '@vechain/sdk-provider';
+    import { VechainProvider } from '@vechain/sdk-network';
     ```
  - Initialize the provider:
     ``` bash
@@ -46,18 +42,14 @@ The Hardhat Provider is a wrapper around the core vechain Provider specifically 
 ### Usage
 
 To use the Hardhat Provider in your project, follow these steps:
- - Install the package:
-    ``` bash
-    yarn add @vechain/sdk-provider
-    ```
  - Import the provider in your code:
     ``` bash
-    import { HardhatVechainProvider } from '@vechain/sdk-provider';
+    import { HardhatVechainProvider } from '@vechain/sdk-network';
     ```
  - Initialize the provider:
     ``` bash
     const provider = new HardhatVechainProvider(
-            new BaseWallet([]),
+            new ProviderInternalBaseWallet([]),
             testnetUrl,
             (message: string, parent?: Error) => new Error(message, parent)
         );

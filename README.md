@@ -28,8 +28,6 @@ Welcome to the vechain SDK repository! Here's a breakdown of our organized struc
    - `./packages/hardhat-plugin`: Seamlessly integrate the vechain SDK with Hardhat, the Ethereum development environment. This plugin provides a bridge between the vechain SDK and the Ethereum ecosystem, enabling you to leverage the best of both worlds.
    - `./packages/logging`: The logging package provides a simple and easy-to-use logging system for the vechain SDK. This module is dedicated to managing and customizing logs within the SDK, ensuring your development experience remains transparent and insightful.
    - `./packages/network`: Embark on a journey through the network module, your gateway to all things related to blockchain interaction and transaction dissemination. Here, the vechain SDK connects you seamlessly to the VechainThor blockchain.
-   - `./packages/provider`: Get the maximum of EVM development stack with provider package. This module is dedicated to managing the compatibility with ethers and EVM world.
-   - `./packages/wallet`: Secure your assets and manage transactions with ease using the wallet package. This module provides functionality for creating and managing vechain wallets, as well as signing and broadcasting transactions securely on the VechainThor blockchain.
    - `./packages/rpc-proxy`: This package is designed to bridge the gap between Thor's RESTful API and Ethereum's JSON-RPC.
 
 Explore, experiment, and let the vechain SDK empowers your blockchain adventures!
@@ -44,6 +42,33 @@ Explore, experiment, and let the vechain SDK empowers your blockchain adventures
  - [Node.js](https://nodejs.org/en): versions 18, 19, 20 (LTS), 21 (latest)
  - [Yarn](https://classic.yarnpkg.com/en/docs/install)
  - [Docker](https://docs.docker.com/get-docker/)
+
+#### Additional prerequisites for Windows 10
+
+[Docker Desktop](https://www.docker.com/products/docker-desktop/) needs the run on *Windows 10* patched
+at the level **21H2 (19044 build)**. The last level provided by *Windows 10* automatic upgrade is **21H1 (1043 build)**.
+To install *Docker Desktop* to run *Thor Solo* to develop with this SDK, and *Windows 10* is not patched with a build
+higher than 19043, follows the instructions published in the 
+[KB5015684 Featured Update Windows 10 to 22H2](https://support.microsoft.com/en-us/topic/kb5015684-featured-update-to-windows-10-version-22h2-by-using-an-enablement-package-09d43632-f438-47b5-985e-d6fd704eee61)
+guide.
+1. Update *Windows 10* to the last available level, if this is not **21H2 (19044 build)** go to step 2.
+2. From **Start - Settings - Update & Security - Windows Update** panel, see if the link **View Optional Updates** is
+   visible and clickable, else go to step 3.
+3. From **Start - Settings - Update & Security** opt in  the **Windows Insider Program**.
+4. From **Start - Settings - Update & Security - Windows Update** panel, click **View Optional Updates** and install 
+   all the available patches.
+
+#### Additional prerequisite for Windows OS
+
+This SDK is supposed to be downloaded and installed with *Git*.
+*Yarn* scripts are distributed according Linux/MacOS/Unix  shell specifications.
+To let *Windows OS* to manage *Git* distributed software, to install and upgrade this SDK and run *Yarn* scripts,
+please, follow the instructions below.
+1. Install the official [Git for Windows](https://git-scm.com/download/win).
+   The installation deploys the [Git Bash - MINGW](https://www.mingw-w64.org/) terminal in *Windows 0S*, 
+   providing a terminal compatible with the *Yarn* scripts used in this SDK.
+2. From **Start**menu, click **Git Bash** to open the terminal compatible with the *Yarn* scripts. You are now
+3. ready to getting started.
 
 ### Getting Started
 1. Clone your forked repository.

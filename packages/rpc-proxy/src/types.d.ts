@@ -1,3 +1,5 @@
+import { type SignTransactionOptions } from '@vechain/sdk-network';
+
 /**
  * Interface for the configuration object loaded from the config.json file
  */
@@ -6,10 +8,12 @@ interface Config {
      * Port to run the proxy on
      */
     port?: number;
+
     /**
      * URL of the blockchain node
      */
     url: string;
+
     /**
      * Accounts to use for signing transactions
      */
@@ -17,6 +21,17 @@ interface Config {
         mnemonic: string;
         count: number;
     };
+
+    /**
+     *
+     * Delegator configuration
+     */
+    delegator?: SignTransactionOptions;
+
+    /**
+     * Enable delegation
+     */
+    enbaleDelegation?: boolean;
 }
 
 /**
