@@ -77,7 +77,7 @@ interface TransactionRequestInput {
      *  block to be queried. Many backends do not support this and when
      *  unsupported errors are silently squelched and ``"latest"`` is used.
      */
-    blockTag?: BlockTag;
+    blockTag?: string;
 
     /**
      * Add clauses to ethers.TransactionRequest
@@ -211,21 +211,13 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
     connect: (provider: TProviderType | null) => this;
 
     /**
-     * --- START: TEMPORARY COMMENT ---
-     * To be implemented in the future
-     * --- END: TEMPORARY COMMENT ---
-     *
      * Get the address of the Signer.
      *
      * @returns the address of the signer
      */
-    // getAddress: () => Promise<string>;
+    getAddress: () => Promise<string>;
 
     /**
-     * --- START: TEMPORARY COMMENT ---
-     * To be implemented in the future
-     * --- END: TEMPORARY COMMENT ---
-     *
      *  Gets the next nonce required for this Signer to send a transaction.
      *
      *  @param blockTag - The blocktag to base the transaction count on, keep in mind
@@ -233,7 +225,7 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
      *
      *  @NOTE: This method generates a random number as nonce. It is because the nonce in vechain is a 6-byte number.
      */
-    // getNonce: (blockTag?: vechain_sdk_core_ethers.BlockTag) => Promise<number>;
+    getNonce: (blockTag?: string) => Promise<string>;
 
     /**
      * --- START: TEMPORARY COMMENT ---
