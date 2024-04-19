@@ -17,11 +17,6 @@ const ZERO_BUFFER = (size: number): Buffer => Buffer.from(ZERO_BYTES(size));
 const ZERO_BYTES = (size: number): Uint8Array => new Uint8Array(size);
 
 /**
- * Regular expression for validating hexadecimal addresses. Must have "0x" prefix. Must be 40 characters long.
- */
-const HEX_ADDRESS_REGEX = /^0x[0-9a-f]{40}$/i;
-
-/**
  * Regular expression for validating base 10 integer number format strings.
  */
 const DECIMAL_INTEGER_REGEX = /^\d+$/;
@@ -33,10 +28,4 @@ const DECIMAL_INTEGER_REGEX = /^\d+$/;
  */
 const NUMERIC_REGEX = /(^-?\d+(\.\d+)?)$|(^-?\.\d+)$/;
 
-export {
-    ZERO_BUFFER,
-    ZERO_BYTES,
-    HEX_ADDRESS_REGEX,
-    DECIMAL_INTEGER_REGEX,
-    NUMERIC_REGEX
-};
+export { ZERO_BUFFER, ZERO_BYTES, DECIMAL_INTEGER_REGEX, NUMERIC_REGEX };
