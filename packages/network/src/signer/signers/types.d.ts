@@ -189,19 +189,6 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
     ) => Promise<string>;
 
     /**
-     * --- START: TEMPORARY COMMENT ---
-     * To be implemented in the future
-     * --- END: TEMPORARY COMMENT ---
-     *
-     * Send a transaction with the delegator
-     * @param transactionToSend - the transaction to send
-     * @returns the transaction response
-     */
-    // sendWithDelegator: (
-    //     transactionToSend: vechain_sdk_core_ethers.TransactionRequest
-    // ) => Promise<vechain_sdk_core_ethers.TransactionResponse>;
-
-    /**
      * ********* END: Delegator needed methods *********
      */
 
@@ -215,14 +202,13 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
     provider: TProviderType | null;
 
     /**
-     * --- START: TEMPORARY COMMENT ---
-     * To be implemented in the future
-     * --- END: TEMPORARY COMMENT ---
-     *
      *  Returns a new instance of this Signer connected to //provider// or detached
      *  from any Provider if null.
+     *
+     * @param provider - The provider to connect to
+     * @returns a new instance of this Signer connected to //provider// or detached
      */
-    // connect: (provider: TProviderType | null) => this;
+    connect: (provider: TProviderType | null) => this;
 
     /**
      * --- START: TEMPORARY COMMENT ---

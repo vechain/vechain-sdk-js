@@ -34,6 +34,17 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
     }
 
     /**
+     *  Returns a new instance of this Signer connected to //provider// or detached
+     *  from any Provider if null.
+     *
+     * @param provider - The provider to connect to
+     * @returns a new instance of this Signer connected to //provider// or detached
+     */
+    connect(provider: TProviderType | null): this {
+        return new VechainBaseSigner(this.privateKey, provider) as this;
+    }
+
+    /**
      * Signs %%transactionToSign%%, returning the fully signed transaction. This does not
      * populate any additional properties within the transaction.
      *
