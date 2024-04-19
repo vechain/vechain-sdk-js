@@ -1,6 +1,9 @@
-import { HDWallet } from '@vechain/sdk-wallet';
-import { HttpClient, ThorClient } from '@vechain/sdk-network';
-import { VechainProvider } from '@vechain/sdk-provider';
+import {
+    HttpClient,
+    ProviderInternalHDWallet,
+    ThorClient,
+    VechainProvider
+} from '@vechain/sdk-network';
 import importConfig from '../config.json';
 import express, { type Express, type Request, type Response } from 'express';
 import cors from 'cors';
@@ -11,6 +14,7 @@ import {
     JSONRPC,
     stringifyData
 } from '@vechain/sdk-errors';
+import { VET_DERIVATION_PATH } from '@vechain/sdk-core';
 
 /**
  * Simple function to log an error.
@@ -57,8 +61,18 @@ function startProxy(): void {
 
     // Initialize the provider
     const thorClient = new ThorClient(new HttpClient(config.url));
-    const wallet = new HDWallet(config.accounts.mnemonic.split(' '));
-    const provider = new VechainProvider(thorClient, wallet);
+    const wallet = new ProviderInternalHDWallet(
+        config.accounts.mnemonic.split(' '),
+        config.accounts.count,
+        0,
+        VET_DERIVATION_PATH,
+        { delegator: config.delegator }
+    );
+    const provider = new VechainProvider(
+        thorClient,
+        wallet,
+        config.enbaleDelegation
+    );
 
     // Start the express proxy server
     const app: Express = express();

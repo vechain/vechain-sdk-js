@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { estimateGasTestCases, invalidEstimateGasTestCases } from './fixture';
 import { ThorClient } from '../../../src';
-import { soloNetwork } from '../../fixture';
+import { soloUrl } from '../../fixture';
 import { generateRandomValidAddress } from '@vechain/sdk-core/tests/fixture';
 
 /**
@@ -14,7 +14,7 @@ describe('ThorClient - Gas Module', () => {
     let thorSoloClient: ThorClient;
 
     beforeEach(() => {
-        thorSoloClient = new ThorClient(soloNetwork);
+        thorSoloClient = ThorClient.fromUrl(soloUrl);
     });
 
     /**

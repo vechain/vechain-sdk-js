@@ -14,7 +14,7 @@ import {
     coder,
     type FunctionFragment
 } from '@vechain/sdk-core';
-import { HttpClient, ThorClient } from '../../../src';
+import { ThorClient } from '../../../src';
 
 /**
  * Transactions module tests suite.
@@ -32,8 +32,7 @@ describe('Transactions module Testnet tests suite', () => {
         buildTransactionBodyClausesTestCases.forEach(
             ({ description, clauses, options, expected }) => {
                 test(description, async () => {
-                    const testNetwork = new HttpClient(testnetUrl);
-                    const thorClient = new ThorClient(testNetwork);
+                    const thorClient = ThorClient.fromUrl(testnetUrl);
                     const gasResult = await thorClient.gas.estimateGas(
                         clauses,
                         '0x000000000000000000000000004d000000000000' // This address might not exist on testnet, thus the gasResult.reverted might be true
@@ -74,8 +73,7 @@ describe('Transactions module Testnet tests suite', () => {
         signTransactionTestCases.testnet.correct.forEach(
             ({ description, origin, options, isDelegated, expected }) => {
                 test(description, async () => {
-                    const testNetwork = new HttpClient(testnetUrl);
-                    const thorClient = new ThorClient(testNetwork);
+                    const thorClient = ThorClient.fromUrl(testnetUrl);
 
                     const sampleClause = clauseBuilder.functionInteraction(
                         TESTING_CONTRACT_ADDRESS,
@@ -111,7 +109,7 @@ describe('Transactions module Testnet tests suite', () => {
                     expect(signedTx).toBeDefined();
                     expect(signedTx.body).toMatchObject(expected.body);
                     expect(signedTx.origin).toBe(
-                        addressUtils.toChecksummed(origin.address)
+                        addressUtils.toERC55Checksum(origin.address)
                     );
                     expect(signedTx.isDelegated).toBe(isDelegated);
                     expect(signedTx.isSigned).toBe(true);

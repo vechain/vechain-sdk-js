@@ -99,10 +99,10 @@ const functions = [
  */
 const simpleParametersDataForFunction2 = [
     {
-        master: addressUtils.toChecksummed(
+        master: addressUtils.toERC55Checksum(
             '0x0e8fd586e022f825a109848832d7e552132bc332'
         ),
-        endorsor: addressUtils.toChecksummed(
+        endorsor: addressUtils.toERC55Checksum(
             '0x224626926a7a12225a60e127cec119c939db4a5c'
         ),
         identity:
@@ -110,10 +110,10 @@ const simpleParametersDataForFunction2 = [
         active: false
     },
     {
-        master: addressUtils.toChecksummed(
+        master: addressUtils.toERC55Checksum(
             '0x4977d68df97bb313b23238520580d8d3a59939bf'
         ),
-        endorsor: addressUtils.toChecksummed(
+        endorsor: addressUtils.toERC55Checksum(
             '0x7ad1d568b3fe5bad3fc264aca70bc7bcd5e4a6ff'
         ),
         identity:

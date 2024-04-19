@@ -1,4 +1,4 @@
-import type { HardhatVechainProvider } from '@vechain/sdk-provider';
+import type { HardhatVechainProvider } from '@vechain/sdk-network';
 import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
 
 /**

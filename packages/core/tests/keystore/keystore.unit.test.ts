@@ -28,7 +28,7 @@ describe('Keystore', () => {
 
         // Verify keystore
         expect(myKeystore.version).toBe(3);
-        const keyStoreAddress = addressUtils.toChecksummed(
+        const keyStoreAddress = addressUtils.toERC55Checksum(
             `0x` + myKeystore.address
         );
         const addressFromPrivateKey = addressUtils.fromPublicKey(

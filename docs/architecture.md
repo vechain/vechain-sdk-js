@@ -13,7 +13,6 @@ Basically the `vechain-sdk` is a monorepo divided into different packages:
 - **Hardhat Plugin Package**
 - **Logging Package**
 - **Provider Package**
-- **Wallet Package**
 - **RPC Proxy Package**
 
 
@@ -42,10 +41,6 @@ This module is dedicated to managing and customizing logs within the SDK, ensuri
 ### Provider Package
 Get the maximum of EVM development stack with provider package. 
 This module is dedicated to managing the compatibility with ethers and EVM world.
-
-### Wallet Package
-Secure your assets and manage transactions with ease using the wallet package. 
-This module provides functionality for creating and managing vechain wallets, as well as signing and broadcasting transactions securely on the VechainThor blockchain.
 
 ### RPC Proxy Package
 This package is designed to bridge the gap between Thor's RESTful API and Ethereum's JSON-RPC.

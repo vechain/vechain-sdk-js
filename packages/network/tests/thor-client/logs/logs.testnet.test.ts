@@ -6,7 +6,7 @@ import {
     expectedFilterTransferLogs
 } from './fixture';
 import { ThorClient } from '../../../src';
-import { testNetwork } from '../../fixture';
+import { testnetUrl } from '../../fixture';
 
 /**
  * ThorClient class tests
@@ -18,7 +18,7 @@ describe('ThorClient - Logs Module', () => {
     let thorClient: ThorClient;
 
     beforeEach(() => {
-        thorClient = new ThorClient(testNetwork);
+        thorClient = ThorClient.fromUrl(testnetUrl);
     });
 
     /**
