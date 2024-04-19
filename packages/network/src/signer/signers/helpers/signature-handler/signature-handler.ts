@@ -30,6 +30,7 @@ async function signTransactionWithPrivateKey(
     privateKey: Buffer
 ): Promise<string> {
     // 1 - Initiate the transaction clauses
+    // @NOTE: implement multiple clauses support here
     const transactionClauses: TransactionClause[] =
         transaction.to !== undefined
             ? // Normal transaction
