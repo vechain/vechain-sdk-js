@@ -2,10 +2,8 @@ import {
     clauseBuilder,
     Hex0x,
     secp256k1,
-    Transaction,
     type TransactionBody,
-    type TransactionClause,
-    TransactionHandler
+    type TransactionClause
 } from '../../../../../../core';
 import { type TransactionRequestInput } from '../../types';
 import {
@@ -15,6 +13,11 @@ import {
 } from '../../../../thor-client';
 
 /**
+ * -- START: TEMPORARY COMMENT --
+ * Signature handler will be removed in the future.
+ * This will happen when we will implement all signer methods in the signer classes.
+ * -- END: TEMPORARY COMMENT --
+ *
  * Signs a transaction internal method
  *
  * @param transaction - The transaction to sign
@@ -73,69 +76,13 @@ async function signTransactionWithPrivateKey(
 
     // 6 - Sign the transaction
 
-    const signedTransaction = DelegationHandler(delegator).isDelegated()
-        ? await _signTransactionBodyWithDelegator(
-              transaction.from,
-              finalTransactionBody,
-              delegator as SignTransactionOptions,
-              thorClient,
-              privateKey
-          )
-        : TransactionHandler.sign(finalTransactionBody, privateKey);
+    const signedTransaction = await thorClient.transactions.signTransaction(
+        finalTransactionBody,
+        privateKey.toString('hex'),
+        DelegationHandler(delegator).delegatorOrUndefined()
+    );
 
     return Hex0x.of(signedTransaction.encoded);
-}
-
-/**
- * Sign a transaction with the delegator.
- * The signature of the delegator into the wallet will be used to sign the transaction.
- *
- * @param transactionOrigin - The origin address of the transaction (the 'from' field).
- * @param transactionToSign - The transaction to sign.
- * @param thorClient - The ThorClient instance used to sign using the url
- * @param privateKey - The private key of the signer.
- * @returns The transaction signed by the delegator.
- *
- */
-async function _signTransactionBodyWithDelegator(
-    transactionOrigin: string,
-    transactionToSign: TransactionBody,
-    delegator: SignTransactionOptions,
-    thorClient: ThorClient,
-    privateKey: Buffer
-): Promise<Transaction> {
-    // 1 - Sign with delegatorPrivateKey
-    if (delegator?.delegatorPrivateKey !== undefined) {
-        return TransactionHandler.signWithDelegator(
-            transactionToSign,
-            privateKey,
-            Buffer.from(delegator.delegatorPrivateKey, 'hex')
-        );
-    }
-
-    // 2 - Sign the transaction with the delegator url
-    const delegatorSignatureWithUrl = await DelegationHandler(
-        delegator
-    ).getDelegationSignatureUsingUrl(
-        new Transaction(transactionToSign),
-        transactionOrigin,
-        thorClient.httpClient
-    );
-
-    // Sign transaction with origin private key
-    const originSignature = secp256k1.sign(
-        new Transaction(transactionToSign).getSignatureHash(),
-        privateKey
-    );
-
-    // Sign the transaction with both signatures. Concat both signatures to get the final signature
-    const signature = Buffer.concat([
-        originSignature,
-        delegatorSignatureWithUrl
-    ]);
-
-    // Return new signed transaction
-    return new Transaction(transactionToSign, signature);
 }
 
 export { signTransactionWithPrivateKey };
