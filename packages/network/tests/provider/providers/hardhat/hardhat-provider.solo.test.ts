@@ -11,7 +11,8 @@ import {
     HardhatVechainProvider,
     ProviderInternalBaseWallet,
     type SubscriptionEvent,
-    ThorClient
+    ThorClient,
+    type VechainProvider
 } from '../../../../src';
 
 /**
@@ -183,7 +184,7 @@ describe('Hardhat provider tests', () => {
             params: ['logs', logsParams]
         });
         // Wait for the subscription to receive a message (log event)
-        const messageReceived = waitForMessage(provider);
+        const messageReceived = waitForMessage(provider as VechainProvider);
 
         // Execute a contract transaction to generate a log event
         await thorClient.contracts.executeTransaction(
