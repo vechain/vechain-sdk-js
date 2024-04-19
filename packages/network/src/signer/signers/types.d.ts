@@ -40,9 +40,6 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
      * @param delegator - the delegator to use
      * @returns the fully signed transaction
      */
-    // signTransactionWithDelegator: (
-    //     transactionToSign: vechain_sdk_core_ethers.TransactionRequest
-    // ) => Promise<string>;
     signTransactionWithDelegator: (
         transactionToSign: TransactionObjectInput,
         delegator: SignTransactionOptions
@@ -202,9 +199,6 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
      * @param transactionToSign - The transaction to sign
      * @returns The fully signed transaction
      */
-    // signTransaction: (
-    //     transactionToSign: vechain_sdk_core_ethers.TransactionRequest
-    // ) => Promise<string>;
     signTransaction: (
         transactionToSign: TransactionObjectInput
     ) => Promise<string>;
