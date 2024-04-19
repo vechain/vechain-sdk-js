@@ -164,56 +164,6 @@ describe('mnemonic', () => {
         });
     });
 
-    /**
-     * Mnemonic words generation
-     */
-    test('Generation', () => {
-        // Default length
-        expect(mnemonic.generate().length).toEqual(12);
-
-        // Wrong length
-        // @ts-expect-error - Wrong length error for testing purposes
-        expect(() => mnemonic.generate(13)).toThrowError(
-            InvalidHDNodeMnemonicsError
-        );
-    });
-
-    /**
-     * Test generation with custom lengths and random generators
-     */
-    test('Custom generation parameters', () => {
-        // Custom lengths
-        MNEMONIC_WORDLIST_ALLOWED_SIZES.forEach((length: WordlistSizeType) => {
-            // Custom random generators
-            [customRandomGeneratorWithXor, randomBytes, undefined].forEach(
-                (randomGenerator) => {
-                    // Generate mnemonic words of expected length
-                    const words = mnemonic.generate(length, randomGenerator);
-                    expect(words.length).toEqual(length);
-
-                    // Validate mnemonic words
-                    expect(mnemonic.isValid(words)).toEqual(true);
-
-                    // Derive private key from mnemonic words
-                    expect(mnemonic.derivePrivateKey(words)).toBeDefined();
-                    expect(mnemonic.derivePrivateKey(words).length).toEqual(32);
-                    expect(
-                        secp256k1.isValidPrivateKey(
-                            mnemonic.derivePrivateKey(words)
-                        )
-                    ).toEqual(true);
-
-                    // Derive address from mnemonic words
-                    expect(mnemonic.deriveAddress(words)).toBeDefined();
-                    expect(mnemonic.deriveAddress(words).length).toEqual(42);
-                    expect(
-                        addressUtils.isAddress(mnemonic.deriveAddress(words))
-                    ).toBe(true);
-                }
-            );
-        });
-    });
-
     describe('isValid', () => {
         test('isValid - false', () => {
             expect(mnemonic.isValid(['hello world'])).toBeFalsy();

@@ -13,10 +13,10 @@ const words =
  */
 const customRandomGeneratorWithXor = (
     numberOfBytes: WordListRandomGeneratorSizeInBytes
-): Buffer => {
+): Uint8Array => {
     const r1 = secp256k1.randomBytes(numberOfBytes);
     const r2 = secp256k1.randomBytes(numberOfBytes);
-    return Buffer.from(r1.map((byte, index) => byte ^ r2[index]));
+    return r1.map((byte, index) => byte ^ r2[index]);
 };
 
 /**
