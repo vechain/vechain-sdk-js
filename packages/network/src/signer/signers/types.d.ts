@@ -1,7 +1,9 @@
-// import { type vechain_sdk_core_ethers } from '@vechain/sdk-core';
+import {
+    type TransactionClause,
+    type vechain_sdk_core_ethers
+} from '@vechain/sdk-core';
 import {
     type HardhatVechainProvider,
-    type TransactionObjectInput,
     type VechainProvider
 } from '../../provider';
 
@@ -14,21 +16,162 @@ import {
 type AvailableVechainProviders = VechainProvider | HardhatVechainProvider;
 
 /**
+ * Type for transaction input
+ *
+ * @note Types of the properties can differ WRT ethers.TransactionRequest
+ */
+interface TransactionRequestInput {
+    /**
+     *  The target of the transaction.
+     */
+    to?: string;
+
+    /**
+     *  The sender of the transaction.
+     */
+    from: string;
+
+    /**
+     * Nonce value for various purposes.
+     * Basic is to prevent replay attack by make transaction unique.
+     * Every transaction with same chainTag, blockRef, ... must have different nonce.
+     */
+    nonce?: string | number;
+
+    /**
+     * Transaction gas.
+     */
+    gas?: string;
+
+    /**
+     *  The maximum amount of gas to allow this transaction to consime.
+     */
+    gasLimit?: string;
+
+    /**
+     *  The gas price to use for legacy transactions or transactions on
+     *  legacy networks.
+     *
+     *  Most of the time the ``max*FeePerGas`` is preferred.
+     */
+    gasPrice?: string;
+
+    /**
+     * Coefficient used to calculate the gas price for the transaction.
+     * Value must be between 0 and 255.
+     */
+    gasPriceCoef?: number;
+
+    /**
+     *  The transaction data.
+     */
+    data?: string;
+
+    /**
+     *  The transaction value (in wei).
+     */
+    value?: string;
+
+    /**
+     *  When using ``call`` or ``estimateGas``, this allows a specific
+     *  block to be queried. Many backends do not support this and when
+     *  unsupported errors are silently squelched and ``"latest"`` is used.
+     */
+    blockTag?: BlockTag;
+
+    /**
+     * Add clauses to ethers.TransactionRequest
+     */
+    clauses?: TransactionClause[];
+
+    /**
+     * The ID of the transaction that this transaction depends on.
+     */
+    dependsOn?: string;
+
+    /**
+     * The expiration time of the transaction.
+     * The transaction will expire after the number of blocks specified by this value.
+     */
+    expiration?: number;
+
+    /**
+     * 8 bytes prefix of some block's ID
+     */
+    blockRef?: string;
+
+    /**
+     * Last byte of genesis block ID
+     */
+    chainTag?: number;
+
+    /**
+     *  The chain ID for the network this transaction is valid on.
+     *
+     * @note: NOT SUPPORTED in vechain BUT added to take compatibility with ethers
+     */
+    chainId?: string;
+
+    /**
+     *  The [[link-eip-2930]] access list. Storage slots included in the access
+     *  list are //warmed// by pre-loading them, so their initial cost to
+     *  fetch is guaranteed, but then each additional access is cheaper.
+     *
+     * @note: NOT SUPPORTED in vechain BUT added to take compatibility with ethers
+     */
+    accessList?: null | vechain_sdk_core_ethers.AccessListish;
+
+    /**
+     *  A custom object, which can be passed along for network-specific
+     *  values.
+     *
+     *  @note: NOT SUPPORTED in vechain BUT added to take compatibility with ethers
+     */
+    customData?: unknown;
+
+    /**
+     *  The [[link-eip-1559]] maximum priority fee to pay per gas.
+     *
+     * @note: NOT SUPPORTED in vechain BUT added to take compatibility with ethers
+     */
+    maxPriorityFeePerGas?: string;
+
+    /**
+     *  The [[link-eip-1559]] maximum total fee to pay per gas. The actual
+     *  value used is protocol enforced to be the block's base fee.
+     *
+     * @note: NOT SUPPORTED in vechain BUT added to take compatibility with ethers
+     */
+    maxFeePerGas?: string;
+
+    /**
+     *  The transaction type.
+     *
+     *  @note: NOT SUPPORTED in vechain BUT added to take compatibility with ethers
+     */
+    type?: null | number;
+
+    /**
+     *  When using ``call``, this enables CCIP-read, which permits the
+     *  provider to be redirected to web-based content during execution,
+     *  which is then further validated by the contract.
+     *
+     *  There are potential security implications allowing CCIP-read, as
+     *  it could be used to expose the IP address or user activity during
+     *  the fetch to unexpected parties.
+     *
+     *  @note: NOT SUPPORTED in vechain BUT added to take compatibility with ethers
+     */
+    enableCcipRead?: boolean;
+}
+
+/**
  * A signer for vechain, adding specific methods for vechain to the ethers signer
  *
  * @NOTE: Su support completely our providers (that already support ethers provider format)
  * We use our supported providers instead of ethers providers
  */
 interface VechainSigner<TProviderType extends AvailableVechainProviders> {
-    /**
-     * --- START: TEMPORARY COMMENT ---
-     * Understand if  extend signer or ONLY write again method.
-     * This can be understanded by seeing if signature changes from the nature of vechain
-     * wrt ethereum
-     * --- END: TEMPORARY COMMENT ---
-     */
-    // extends vechain_sdk_core_ethers.Signer {
-
     /**
      * ********* START: Delegator needed methods *********
      */
@@ -41,7 +184,7 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
      * @returns the fully signed transaction
      */
     signTransactionWithDelegator: (
-        transactionToSign: TransactionObjectInput,
+        transactionToSign: TransactionRequestInput,
         delegator: SignTransactionOptions
     ) => Promise<string>;
 
@@ -200,7 +343,7 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
      * @returns The fully signed transaction
      */
     signTransaction: (
-        transactionToSign: TransactionObjectInput
+        transactionToSign: TransactionRequestInput
     ) => Promise<string>;
 
     /**
@@ -250,4 +393,8 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
      */
 }
 
-export { type VechainSigner, type AvailableVechainProviders };
+export {
+    type VechainSigner,
+    type AvailableVechainProviders,
+    type TransactionRequestInput
+};
