@@ -6,7 +6,7 @@ import {
 import { type SignTransactionOptions } from '../../../thor-client';
 import { signTransactionWithPrivateKey } from '../helpers';
 import { addressUtils, Hex0x, secp256k1 } from '../../../../../core';
-import { RPC_METHODS, type VechainProvider } from '../../../provider';
+import { RPC_METHODS } from '../../../provider';
 
 /**
  * Basic vechain signer.
@@ -68,7 +68,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
     async getNonce(blockTag?: string): Promise<string> {
         // If provider is available, get the nonce from the provider using eth_getTransactionCount
         if (this.provider !== null) {
-            return (await (this.provider as VechainProvider).request({
+            return (await this.provider.request({
                 method: RPC_METHODS.eth_getTransactionCount,
                 params: [await this.getAddress(), blockTag]
             })) as string;
