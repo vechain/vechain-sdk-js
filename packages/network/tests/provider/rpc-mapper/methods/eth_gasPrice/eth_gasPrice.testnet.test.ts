@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { testNetwork } from '../../../fixture';
+import { testnetUrl } from '../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_gasPrice' method
@@ -18,7 +18,7 @@ describe('RPC Mapper - eth_gasPrice method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = new ThorClient(testNetwork);
+        thorClient = ThorClient.fromUrl(testnetUrl);
     });
 
     /**

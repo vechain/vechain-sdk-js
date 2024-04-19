@@ -1,5 +1,5 @@
 import { expect } from 'expect';
-import { HttpClient, ThorClient } from '@vechain/sdk-network';
+import { ThorClient } from '@vechain/sdk-network';
 import { clauseBuilder, unitsUtils } from '@vechain/sdk-core';
 
 // START_SNIPPET: SimulationSnippet
@@ -9,8 +9,7 @@ import { clauseBuilder, unitsUtils } from '@vechain/sdk-core';
 
 // 1 - Create thor client for solo network
 const _soloUrl = 'http://localhost:8669';
-const soloNetwork = new HttpClient(_soloUrl);
-const thorSoloClient = new ThorClient(soloNetwork);
+const thorSoloClient = ThorClient.fromUrl(_soloUrl);
 
 // 2(a) - create the transaction for a VET transfer
 const transaction1 = {

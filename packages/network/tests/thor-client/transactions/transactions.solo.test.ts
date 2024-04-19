@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import {
     buildTransactionBodyClausesTestCases,
     expectedReceipt,
@@ -11,9 +11,9 @@ import {
     waitForTransactionTestCases
 } from './fixture';
 import {
+    soloUrl,
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,
-    soloNetwork,
     TESTING_CONTRACT_ADDRESS
 } from '../../fixture';
 import {
@@ -34,11 +34,7 @@ import { DelegationHandler, ThorClient } from '../../../src';
  */
 describe('ThorClient - Transactions Module', () => {
     // ThorClient instance for the Solo network
-    let thorSoloClient: ThorClient;
-
-    beforeEach(() => {
-        thorSoloClient = new ThorClient(soloNetwork);
-    });
+    const thorSoloClient = ThorClient.fromUrl(soloUrl);
 
     /**
      * Test suite for sendTransaction method
@@ -297,7 +293,7 @@ describe('ThorClient - Transactions Module', () => {
                     expect(signedTx).toBeDefined();
                     expect(signedTx.body).toMatchObject(expected.body);
                     expect(signedTx.origin).toBe(
-                        addressUtils.toChecksummed(origin.address)
+                        addressUtils.toERC55Checksum(origin.address)
                     );
                     expect(signedTx.isDelegated).toBe(isDelegated);
                     expect(signedTx.isSigned).toBe(true);

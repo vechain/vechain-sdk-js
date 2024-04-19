@@ -411,7 +411,7 @@ const erc721ContractTestCases: TestCase[] = [
         params: [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
         expected: [
             '0x0000000000000000000000000000000000000000',
-            addressUtils.toChecksummed(
+            addressUtils.toERC55Checksum(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
             ),
             0n
@@ -425,7 +425,7 @@ const erc721ContractTestCases: TestCase[] = [
         params: [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
         expected: [
             '0x0000000000000000000000000000000000000000',
-            addressUtils.toChecksummed(
+            addressUtils.toERC55Checksum(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
             ),
             1n
@@ -440,7 +440,7 @@ const erc721ContractTestCases: TestCase[] = [
         params: [TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address],
         expected: [
             '0x0000000000000000000000000000000000000000',
-            addressUtils.toChecksummed(
+            addressUtils.toERC55Checksum(
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address.toLowerCase()
             ),
             2n
@@ -475,10 +475,10 @@ const erc721ContractTestCases: TestCase[] = [
             1n
         ],
         expected: [
-            addressUtils.toChecksummed(
+            addressUtils.toERC55Checksum(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
             ),
-            addressUtils.toChecksummed(
+            addressUtils.toERC55Checksum(
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
             ),
             1n

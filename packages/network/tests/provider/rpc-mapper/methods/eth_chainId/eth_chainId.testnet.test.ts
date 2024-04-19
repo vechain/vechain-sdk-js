@@ -5,7 +5,7 @@ import {
     RPCMethodsMap,
     ThorClient
 } from '../../../../../src';
-import { testNetwork } from '../../../fixture';
+import { testnetUrl } from '../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_chainId' method
@@ -23,7 +23,7 @@ describe('RPC Mapper - eth_chainId method tests testnet', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = new ThorClient(testNetwork);
+        thorClient = ThorClient.fromUrl(testnetUrl);
     });
 
     /**

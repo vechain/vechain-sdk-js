@@ -1,36 +1,46 @@
+import { InvalidAddressError } from '@vechain/sdk-errors';
+import { addressUtils } from '../../src';
 import { describe, expect, test } from '@jest/globals';
-import { addressUtils, secp256k1 } from '../../src';
 import {
     checksummedAndUnchecksummedAddresses,
-    invalidPrivateKey,
     simpleAddress,
     simplePrivateKey,
-    simplePublicKey
+    simpleUncompressedPublicKey
 } from './fixture';
-import {
-    InvalidAddressError,
-    InvalidSecp256k1PrivateKeyError
-} from '@vechain/sdk-errors';
 
 /**
  * Test address module
  * @group unit/address
  */
-describe('Address', () => {
-    /**
-     * Address validity
-     */
-    describe('Address validity', () => {
-        /**
-         * Valid and invalid address check
-         */
-        test('validate address', () => {
+describe('addressUtils', () => {
+    test('fromPrivateKey', () => {
+        expect(addressUtils.fromPrivateKey(simplePrivateKey)).toEqual(
+            simpleAddress
+        );
+    });
+
+    describe('fromPublicKey', () => {
+        test('public key -> address relation', () => {
+            expect(
+                addressUtils.fromPublicKey(simpleUncompressedPublicKey)
+            ).toEqual(simpleAddress);
+        });
+    });
+
+    describe('isAddress', () => {
+        test('isAddress - false - not hex', () => {
             expect(addressUtils.isAddress('not an address')).toEqual(false);
+        });
+
+        test('isAddress - false - no 0x prefix', () => {
             expect(
                 addressUtils.isAddress(
                     '52908400098527886E0F7030069857D2E4169EE7'
                 )
             ).toEqual(false);
+        });
+
+        test('isAddress - true', () => {
             expect(
                 addressUtils.isAddress(
                     '0x52908400098527886E0F7030069857D2E4169EE7'
@@ -40,73 +50,38 @@ describe('Address', () => {
     });
 
     /**
-     * Test derivation of public key from private key
-     */
-    describe('Derivation ', () => {
-        /**
-         * Derive public key from private key using secp256k1
-         */
-        test('derive public key from private key', () => {
-            // Correct private key / public key / address derivation
-            expect(
-                Buffer.from(
-                    secp256k1.inflatePublicKey(
-                        secp256k1.derivePublicKey(simplePrivateKey)
-                    )
-                )
-            ).toEqual(simplePublicKey);
-            expect(addressUtils.fromPublicKey(simplePublicKey)).toEqual(
-                simpleAddress
-            );
-
-            // Invalid private key to derive public key
-            expect(() =>
-                secp256k1.derivePublicKey(invalidPrivateKey)
-            ).toThrowError(InvalidSecp256k1PrivateKeyError);
-        });
-
-        /**
-         * Derive the address from the private key
-         */
-        test('derive address from private key', () => {
-            // Correct private key address derivation
-            expect(addressUtils.fromPrivateKey(simplePrivateKey)).toEqual(
-                simpleAddress
-            );
-        });
-    });
-
-    /**
      * Test address checksum
      */
-    describe('Checksum', () => {
+    describe('toERC55Checksum', () => {
         /**
          * Invalid inputs
          */
-        test('invalid input should throw error', () => {
+        test('toERC55Checksum - invalid - no hex', () => {
             expect(() => {
-                addressUtils.toChecksummed('invalid data');
+                addressUtils.toERC55Checksum('invalid data');
             }).toThrowError(InvalidAddressError);
-            expect(() => {
-                addressUtils.toChecksummed(
-                    '52908400098527886E0F7030069857D2E4169EE7'
-                );
-            }).toThrowError(InvalidAddressError);
+        });
 
+        test('toERC55Checksum - invalid - no 0x prefix', () => {
             expect(() => {
-                addressUtils.toChecksummed(
-                    '52908400098527886E0F7030069857D9EE7'
+                addressUtils.toERC55Checksum(
+                    '52908400098527886E0F7030069857D2E4169EE7'
                 );
             }).toThrowError(InvalidAddressError);
         });
 
-        /**
-         * Valid inputs
-         */
-        test('valid input', () => {
+        test('toERC55Checksum - invalid - wrong size', () => {
+            expect(() => {
+                addressUtils.toERC55Checksum(
+                    '0x52908400098527886E0F7030069857D9EE7'
+                );
+            }).toThrowError(InvalidAddressError);
+        });
+
+        test('toERC55Checksum - valid', () => {
             checksummedAndUnchecksummedAddresses.forEach((addressPair) => {
                 expect(
-                    addressUtils.toChecksummed(addressPair.unchecksummed)
+                    addressUtils.toERC55Checksum(addressPair.unchecksummed)
                 ).toEqual(addressPair.checksummed);
             });
         });

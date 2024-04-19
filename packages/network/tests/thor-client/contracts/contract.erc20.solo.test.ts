@@ -4,7 +4,7 @@ import {
     ThorClient,
     type TransactionReceipt
 } from '../../../src';
-import { soloNetwork, TEST_ACCOUNTS } from '../../fixture';
+import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
 import { deployedERC20Abi, erc20ContractBytecode } from './fixture';
 import { addressUtils } from '@vechain/sdk-core';
 import { InvalidAbiFunctionError } from '@vechain/sdk-errors/dist';
@@ -21,7 +21,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     let thorSoloClient: ThorClient;
 
     beforeEach(() => {
-        thorSoloClient = new ThorClient(soloNetwork);
+        thorSoloClient = ThorClient.fromUrl(soloUrl);
     });
 
     /**

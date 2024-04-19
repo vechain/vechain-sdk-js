@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { soloNetwork } from '../../../fixture';
+import { soloUrl } from '../../../fixture';
 import {
     ethGetBalanceTestCases,
     invalidEthGetBalanceTestCases
@@ -22,7 +22,7 @@ describe('RPC Mapper - eth_getBalance method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = new ThorClient(soloNetwork);
+        thorClient = ThorClient.fromUrl(soloUrl);
     });
 
     /**

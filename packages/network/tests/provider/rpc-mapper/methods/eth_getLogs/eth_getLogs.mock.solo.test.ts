@@ -5,7 +5,7 @@ import {
     RPCMethodsMap,
     ThorClient
 } from '../../../../../src';
-import { soloNetwork } from '../../../fixture';
+import { soloUrl } from '../../../fixture';
 import { ProviderRpcError } from '@vechain/sdk-errors';
 import { logsFixture, mockLogsFixture } from './fixture';
 
@@ -25,7 +25,7 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = new ThorClient(soloNetwork);
+        thorClient = ThorClient.fromUrl(soloUrl);
     });
 
     /**

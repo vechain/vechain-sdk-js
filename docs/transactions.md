@@ -129,8 +129,7 @@ const senderAccount = {
 
 // 1 - Create thor client for solo network
 const _soloUrl = 'http://localhost:8669/';
-const soloNetwork = new HttpClient(_soloUrl);
-const thorSoloClient = new ThorClient(soloNetwork, {
+const thorSoloClient = ThorClient.fromUrl(_soloUrl, {
     isPollingEnabled: false
 });
 
@@ -328,8 +327,7 @@ Note - the result of a transaction might be different depending on the state(blo
 
 // 1 - Create thor client for solo network
 const _soloUrl = 'http://localhost:8669';
-const soloNetwork = new HttpClient(_soloUrl);
-const thorSoloClient = new ThorClient(soloNetwork);
+const thorSoloClient = ThorClient.fromUrl(_soloUrl);
 
 // 2(a) - create the transaction for a VET transfer
 const transaction1 = {
@@ -388,8 +386,7 @@ In the following complete examples, we will explore the entire lifecycle of a Ve
 ```typescript { name=full-flow-no-delegator, category=example }
 // 1 - Create the thor client
 const _soloUrl = 'http://localhost:8669/';
-const soloNetwork = new HttpClient(_soloUrl);
-const thorSoloClient = new ThorClient(soloNetwork, {
+const thorSoloClient = ThorClient.fromUrl(_soloUrl, {
     isPollingEnabled: false
 });
 
@@ -446,8 +443,7 @@ const txReceipt = await thorSoloClient.transactions.waitForTransaction(
 ```typescript { name=full-flow-delegator-private-key, category=example }
 // 1 - Create the thor client
 const _soloUrl = 'http://localhost:8669/';
-const soloNetwork = new HttpClient(_soloUrl);
-const thorSoloClient = new ThorClient(soloNetwork, {
+const thorSoloClient = ThorClient.fromUrl(_soloUrl, {
     isPollingEnabled: false
 });
 
@@ -517,8 +513,7 @@ const txReceipt = await thorSoloClient.transactions.waitForTransaction(
 ```typescript { name=full-flow-delegator-url, category=example }
 // 1 - Create the thor client
 const _testnetUrl = 'https://testnet.vechain.org/';
-const testNetwork = new HttpClient(_testnetUrl);
-const thorClient = new ThorClient(testNetwork, {
+const thorClient = ThorClient.fromUrl(_testnetUrl, {
     isPollingEnabled: false
 });
 
