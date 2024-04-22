@@ -34,7 +34,7 @@ const X_PUB_PREFIX = utils.hexToBytes('0488b21e000000000000000000');
  *
  * @return {bip32.HDKey} - An instance of bip32.HDKey representing the derived child node.
  *
- * @throws {InvalidHDNodeDerivationPathError} If an error occurs generating the master `bip32.HDKey` from `words`.
+ * @throws {InvalidHDNodeMnemonicsError} If an error occurs generating the master `bip32.HDKey` from `words`.
  * @throws {InvalidHDNodeDerivationPathError} If an error occurs deriving the `bip32.HDKey` at `path` from the master HDKey
  */
 function fromMnemonic(
@@ -61,7 +61,7 @@ function fromMnemonic(
         throw buildError(
             'HDNode.fromMnemonic',
             HDNODE.INVALID_HDNODE_DERIVATION_PATH,
-            'Invalid derivation path.',
+            (error as Error).message,
             { path },
             error
         );
@@ -82,7 +82,8 @@ function fromMnemonic(
  * @returns {bip32.HDKey} The `bip32.HDKey` object.
  *
  * @throws {InvalidHDNodePrivateKeyError} If `privateKey` length is not exactly 32 bytes.
- * @throws {Error} If the `chainCode` length is not exactly 32 bytes.
+ * @throws {InvalidHDNodeChaincodeError} if an error occurs deriving the {@link bip32.HDNode}
+ * from the combination of `privateKey` and `chainCode`.
  */
 function fromPrivateKey(
     privateKey: Uint8Array,
@@ -109,7 +110,7 @@ function fromPrivateKey(
         throw buildError(
             'HDNode.fromPrivateKey',
             HDNODE.INVALID_HDNODE_CHAIN_CODE,
-            'Invalid chain code. Length must be exactly 32 bytes.',
+            (error as Error).message,
             { chainCode },
             error
         );

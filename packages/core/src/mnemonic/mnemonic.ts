@@ -5,7 +5,6 @@ import { addressUtils } from '../address';
 import { assert, buildError, HDNODE } from '@vechain/sdk-errors';
 import { secp256k1 } from '../secp256k1';
 import { wordlist } from '@scure/bip39/wordlists/english';
-import type * as bip32 from '@scure/bip32';
 import {
     type WordListRandomGeneratorSizeInBytes,
     type WordlistSizeType
@@ -18,6 +17,7 @@ import {
  * as in the examples.
  *
  * Secure audit function.
+ * - {@link bip32.HDKey}(https://github.com/paulmillr/scure-bip32)
  * - {@link HDNode}
  *
  * @example `m/0` (default)
@@ -30,20 +30,12 @@ import {
  * @return {string} - The derived address, prefixed with `0x` according the
  * [ERC-55: Mixed-case checksum address encoding](https://eips.ethereum.org/EIPS/eip-55).
  *
+ * @throws {InvalidHDNodeMnemonicsError} If an error occurs generating the master `bip32.HDKey` from `words`.
+ * @throws {InvalidHDNodeDerivationPathError} If an error occurs deriving the `bip32.HDKey` at `path` from the master HDKey
+ *
  */
 function deriveAddress(words: string[], path: string = 'm/0'): string {
-    let root: bip32.HDKey;
-    try {
-        root = HDNode.fromMnemonic(words);
-    } catch (error) {
-        throw buildError(
-            'HDNode.fromMnemonic',
-            HDNODE.INVALID_HDNODE_MNEMONICS,
-            (error as Error).message,
-            { mnemonic },
-            error
-        );
-    }
+    const root = HDNode.fromMnemonic(words);
     try {
         // Public key is always available.
         return addressUtils.fromPublicKey(
@@ -66,6 +58,7 @@ function deriveAddress(words: string[], path: string = 'm/0'): string {
  * and a derivation path as in the examples.
  *
  * Secure audit function.
+ * - {@link bip32.HDKey}(https://github.com/paulmillr/scure-bip32)
  * - {@link HDNode}
  *
  * @example `m/0` (default)
@@ -76,20 +69,12 @@ function deriveAddress(words: string[], path: string = 'm/0'): string {
  * @param {string[]} words - The set of words used for mnemonic generation.
  * @param {string} [path='m/0'] - The derivation path from the current node.
  * @returns {Uint8Array} - The derived private key as a Uint8Array.
+ *
+ * @throws {InvalidHDNodeMnemonicsError} If an error occurs generating the master `bip32.HDKey` from `words`.
+ * @throws {InvalidHDNodeDerivationPathError} If an error occurs deriving the `bip32.HDKey` at `path` from the master HDKey
  */
 function derivePrivateKey(words: string[], path: string = 'm/0'): Uint8Array {
-    let root: bip32.HDKey;
-    try {
-        root = HDNode.fromMnemonic(words);
-    } catch (error) {
-        throw buildError(
-            'HDNode.fromMnemonic',
-            HDNODE.INVALID_HDNODE_MNEMONICS,
-            (error as Error).message,
-            { mnemonic },
-            error
-        );
-    }
+    const root = HDNode.fromMnemonic(words);
     try {
         // Derived from root, private key is always available.
         return root.derive(path).privateKey as Uint8Array;
