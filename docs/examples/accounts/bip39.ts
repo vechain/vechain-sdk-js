@@ -1,4 +1,4 @@
-import { mnemonic } from '@vechain/sdk-core';
+import { Hex, mnemonic } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // START_SNIPPET: Bip39Snippet
@@ -15,10 +15,10 @@ console.log('Mnemonic words', randomMnemonic);
 // Defined for VET at https://github.com/satoshilabs/slips/blob/master/slip-0044.md
 const privateKey = mnemonic.derivePrivateKey(randomMnemonic);
 
-console.log(privateKey.toString('hex'));
+console.log(Hex.of(privateKey));
 // ...SOME PRIVATE KEY...
 
 // END_SNIPPET: Bip39Snippet
 
 // In recovery process, validation is recommended
-expect(mnemonic.validate(randomMnemonic)).toBeTruthy();
+expect(mnemonic.isValid(randomMnemonic)).toBeTruthy();

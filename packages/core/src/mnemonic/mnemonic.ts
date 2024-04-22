@@ -1,123 +1,33 @@
-import { ethers } from 'ethers';
+import * as bip39 from '@scure/bip39';
 import { HDNode } from '../hdnode';
+import { MNEMONIC_WORDLIST_ALLOWED_SIZES } from '../utils';
+import { assert, HDNODE } from '@vechain/sdk-errors';
+import { secp256k1 } from '../secp256k1';
+import { wordlist } from '@scure/bip39/wordlists/english';
 import {
     type WordListRandomGeneratorSizeInBytes,
     type WordlistSizeType
 } from './types';
-import { MNEMONIC_WORDLIST_ALLOWED_SIZES } from '../utils';
-import { assert, HDNODE } from '@vechain/sdk-errors';
-import { secp256k1 } from '../secp256k1';
-
-/* --- Overloaded functions start --- */
 
 /**
- * Generate BIP39 mnemonic words
- * We can have 12, 15, 18, 21, 24 words
+ * Derives the address from a given list of words of
+ * [BIP39 Mnemonic Words](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
+ * and a [BIP44 Derivation Path](https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
+ * as in the examples.
  *
- * @param wordlistSize - Wordlist size expected. Every 4 bytes produce 3 words.
- * @param randomGenerator - The optional random number generator to use.
- * @returns Mnemonic words
- */
-function generate(
-    wordlistSize?: WordlistSizeType,
-    randomGenerator?: (
-        numberOfBytes: WordListRandomGeneratorSizeInBytes
-    ) => Buffer
-): string[];
-
-/**
- * Generate BIP39 mnemonic words
- * We can have 12, 15, 18, 21, 24 words
+ * Secure audit function.
+ * - {@link HDNode}
  *
- * @param wordlistSize - Wordlist size expected. Every 4 bytes produce 3 words.
- * @returns Mnemonic words
- */
-function generate(wordlistSize?: WordlistSizeType): string[];
-
-/* --- Overloaded functions end --- */
-
-/**
- * Generate BIP39 mnemonic words
- * We can have 12, 15, 18, 21, 24 words
- *
- * @throws{InvalidHDNodeMnemonicsError}
- * @param wordlistSize - Wordlist size expected. Every 4 bytes produce 3 words.
- * @param randomGenerator - The optional random number generator to use.
- * @returns Mnemonic words
- */
-function generate(
-    wordlistSize?: WordlistSizeType,
-    randomGenerator?: (
-        numberOfBytes: WordListRandomGeneratorSizeInBytes
-    ) => Buffer
-): string[] {
-    // Strange edge case in wordlist size
-    assert(
-        'generate',
-        wordlistSize === undefined ||
-            MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(wordlistSize),
-        HDNODE.INVALID_HDNODE_MNEMONICS,
-        'Invalid wordlist size given as input. Allowed sizes are 12, 15, 18, 21, 24 words.',
-        { wordlistSize }
-    );
-
-    // Use randomBytes as default random generator if not provided
-    randomGenerator =
-        randomGenerator ??
-        // Default random generator
-        ((numberOfBytes: number) =>
-            Buffer.from(secp256k1.randomBytes(numberOfBytes)));
-
-    // Worldlist size
-    const wordlistSizeToUse = wordlistSize ?? 12;
-
-    // Generate entropy
-    return ethers.Mnemonic.fromEntropy(
-        randomGenerator(
-            ((wordlistSizeToUse / 3) * 4) as WordListRandomGeneratorSizeInBytes
-        )
-    ).phrase.split(' ');
-}
-
-/**
- * Check if the given mnemonic words have valid checksum
- *
- * @param words Mnemonic words
- * @returns If mnemonic words are valid or not
- */
-function validate(words: string[]): boolean {
-    return ethers.Mnemonic.isValidMnemonic(words.join(' '));
-}
-
-/**
- * Derive private key at a specific index from mnemonic words according to BIP32. The default index is 0.
- * the derivation path is defined at https://github.com/satoshilabs/slips/blob/master/slip-0044.md
- *
- * @param words Mnemonic words
- * @param derivationPathFromCurrentNode Derivation path starting from the current HD node
  * @example `0` (default)
  * @example `0/2`
  * @example `0/2/4/6`
- * @returns Private key
- */
-function derivePrivateKey(
-    words: string[],
-    derivationPathFromCurrentNode: string = '0'
-): Buffer {
-    return HDNode.fromMnemonic(words).derivePath(derivationPathFromCurrentNode)
-        .privateKey as Buffer;
-}
-
-/**
  *
- * Derive address at a specific index from mnemonic words. The default index is 0.
+ * @param {string[]} words - The list of words used to generate the HD node.
+ * @param {string} [derivationPathFromCurrentNode='0'] - The derivation path from the current node.
  *
- * @param words Mnemonic words
- * @param derivationPathFromCurrentNode Derivation path starting from the current HD node
- * @example `0` (default)
- * @example `0/2`
- * @example `0/2/4/6`
- * @returns Address
+ * @return {string} - The derived address, prefixed with `0x` according the
+ * [ERC-55: Mixed-case checksum address encoding](https://eips.ethereum.org/EIPS/eip-55).
+ *
  */
 function deriveAddress(
     words: string[],
@@ -127,9 +37,145 @@ function deriveAddress(
         .address;
 }
 
+/**
+ * Derives a private key from a given list of
+ * [BIP39 Mnemonic Words](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
+ * and a derivation path as in the examples.
+ *
+ * Secure audit function.
+ * - {@link HDNode}
+ *
+ * @example `0` (default)
+ * @example `0/2`
+ * @example `0/2/4/6`
+ *
+ *
+ * @param {string[]} words - The set of words used for mnemonic generation.
+ * @param {string} [derivationPathFromCurrentNode='0'] - The derivation path from the current node.
+ * @returns {Uint8Array} - The derived private key as a Uint8Array.
+ */
+function derivePrivateKey(
+    words: string[],
+    derivationPathFromCurrentNode: string = '0'
+): Uint8Array {
+    return HDNode.fromMnemonic(words).derivePath(derivationPathFromCurrentNode)
+        .privateKey as Uint8Array;
+}
+
+/* --- Overloaded functions start --- */
+
+/**
+ * Generates a
+ * [BIP39 Mnemonic Words](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
+ * phrase using the specified wordlist size.
+ *
+ * Secure audit function.
+ * - {@link generate}
+ *
+ * @param {WordlistSizeType} [wordlistSize] - The size of the wordlist used to generate the mnemonic phrase.
+ * Valid sizes are 12, 15, 18, 21, 24.
+ * @param {function} [randomGenerator] - The random generator function used to generate the entropy.
+ * @returns {string[]} - An array of words representing the generated mnemonic phrase.
+ * Words are chosen among the [valid English word list](https://github.com/paulmillr/scure-bip39/blob/main/src/wordlists/english.ts).
+ */
+function generate(
+    wordlistSize?: WordlistSizeType,
+    randomGenerator?: (
+        numberOfBytes: WordListRandomGeneratorSizeInBytes
+    ) => Uint8Array
+): string[];
+
+/**
+ * Generates a
+ * [BIP39 Mnemonic Words](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
+ * phrase using the specified wordlist size.
+ *
+ * Secure audit function.
+ * - {@link generate}
+ * - `randomGenerator` - **Must provide a cryptographic secure source of entropy
+ *    else any secure audit certification related with this software is invalid.**
+ *    By default `randomGenerator` is based on secure {@link secp256k1.randomBytes}.
+ *
+ * @param {WordlistSizeType} [wordlistSize] - The size of the wordlist used to generate the mnemonic phrase.
+ * Valid sizes are 12, 15, 18, 21, 24.
+ * @returns {string[]} - An array of words representing the generated mnemonic phrase.
+ * Words are chosen among the [valid English word list](https://github.com/paulmillr/scure-bip39/blob/main/src/wordlists/english.ts).
+ */
+function generate(wordlistSize?: WordlistSizeType): string[];
+
+/* --- Overloaded functions end --- */
+
+/**
+ * Generates a
+ * [BIP39 Mnemonic Words](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
+ * phrase using the specified wordlist size and random generator.
+ *
+ * Secure audit function.
+ * - [bip39](https://github.com/paulmillr/scure-bip39)
+ * - `randomGenerator` - **Must provide a cryptographic secure source of entropy
+ *    else any secure audit certification related with this software is invalid.**
+ *    By default `randomGenerator` is based on secure {@link secp256k1.randomBytes}.
+ *
+ * @param {WordlistSizeType} [wordlistSize] - The size of the wordlist used to generate the mnemonic phrase.
+ * Valid sizes are 12, 15, 18, 21, 24.
+ * @param {function} [randomGenerator] - The random generator function used to generate the entropy.
+ * @returns {string[]} - An array of words representing the generated mnemonic phrase.
+ * Words are chosen among the [valid English word list](https://github.com/paulmillr/scure-bip39/blob/main/src/wordlists/english.ts).
+ */
+function generate(
+    wordlistSize?: WordlistSizeType,
+    randomGenerator?: (
+        numberOfBytes: WordListRandomGeneratorSizeInBytes
+    ) => Uint8Array
+): string[] {
+    // Strange edge case in wordlist size
+    assert(
+        'mnemonic.generate',
+        wordlistSize === undefined ||
+            MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(wordlistSize),
+        HDNODE.INVALID_HDNODE_MNEMONICS,
+        'Invalid `wordlistSize` given as input. Allowed sizes are 12, 15, 18, 21, 24 words.',
+        { wordlistSize }
+    );
+
+    // Use randomBytes as default random generator if not provided.
+    randomGenerator =
+        // Set random generator.
+        randomGenerator ??
+        // Default random generator.
+        ((numberOfBytes: number) => secp256k1.randomBytes(numberOfBytes));
+
+    // Wordlist size must be at least 12 elements long.
+    const wordlistSizeToUse = wordlistSize ?? 12;
+
+    return bip39
+        .entropyToMnemonic(
+            randomGenerator(
+                ((wordlistSizeToUse / 3) *
+                    4) as WordListRandomGeneratorSizeInBytes
+            ),
+            wordlist
+        )
+        .split(' ');
+}
+
+/**
+ * Check if the given mnemonic words have valid checksum
+ *
+ * Secure audit function.
+ * - [bip39](https://github.com/paulmillr/scure-bip39)
+ * - [wordlist](https://github.com/paulmillr/scure-bip39?tab=readme-ov-file#usage) is part of `bip39`.
+ *
+ * @param words Mnemonic words among [valid English word list](https://github.com/paulmillr/scure-bip39/blob/main/src/wordlists/english.ts)
+ * @returns If mnemonic words are valid or not.
+ */
+function isValid(words: string[]): boolean {
+    return bip39.validateMnemonic(words.join(' '), wordlist);
+}
+
 export const mnemonic = {
-    generate,
-    validate,
+    deriveAddress,
     derivePrivateKey,
-    deriveAddress
+    generate,
+    isValid
 };

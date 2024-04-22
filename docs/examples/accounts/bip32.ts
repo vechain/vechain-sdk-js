@@ -29,4 +29,4 @@ for (let i = 0; i < 5; i++) {
 // END_SNIPPET: Bip32Snippet
 
 // In the recovery process, validation is recommended
-expect(mnemonic.validate(randomMnemonic)).toBeTruthy();
+expect(mnemonic.isValid(randomMnemonic)).toBeTruthy();
