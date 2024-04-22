@@ -22,6 +22,7 @@ import {
     type ThorClient
 } from '../../../thor-client';
 import { type ProviderInternalWallet } from '../../helpers';
+import type { VechainSigner } from '../../../signer';
 
 /**
  * Our core provider class for vechain
@@ -267,6 +268,20 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
 
         // Return the fetched block details or null if no block was fetched
         return result;
+    }
+
+    /**
+     * Get a signer into the internal wallet provider
+     * for the given address.
+     *
+     * @param address - Address of the account.
+     * @returns The signer for the given address.
+     */
+    async getSigner(address: string): Promise<VechainSigner<this> | null> {
+        if (this.wallet === undefined) {
+            return null;
+        }
+        return await this.wallet?.getSigner(this, address);
     }
 }
 
