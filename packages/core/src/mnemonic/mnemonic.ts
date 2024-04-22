@@ -1,9 +1,11 @@
 import * as bip39 from '@scure/bip39';
 import { HDNode } from '../hdnode';
 import { MNEMONIC_WORDLIST_ALLOWED_SIZES } from '../utils';
-import { assert, HDNODE } from '@vechain/sdk-errors';
+import { addressUtils } from '../address';
+import { assert, buildError, HDNODE } from '@vechain/sdk-errors';
 import { secp256k1 } from '../secp256k1';
 import { wordlist } from '@scure/bip39/wordlists/english';
+import type * as bip32 from '@scure/bip32';
 import {
     type WordListRandomGeneratorSizeInBytes,
     type WordlistSizeType
@@ -18,23 +20,44 @@ import {
  * Secure audit function.
  * - {@link HDNode}
  *
- * @example `0` (default)
- * @example `0/2`
- * @example `0/2/4/6`
+ * @example `m/0` (default)
+ * @example `m/0/2`
+ * @example `m/0/2/4/6`
  *
  * @param {string[]} words - The list of words used to generate the HD node.
- * @param {string} [derivationPathFromCurrentNode='0'] - The derivation path from the current node.
+ * @param {string} [path='m/0'] - The derivation path from the current node.
  *
  * @return {string} - The derived address, prefixed with `0x` according the
  * [ERC-55: Mixed-case checksum address encoding](https://eips.ethereum.org/EIPS/eip-55).
  *
  */
-function deriveAddress(
-    words: string[],
-    derivationPathFromCurrentNode: string = '0'
-): string {
-    return HDNode.fromMnemonic(words).derivePath(derivationPathFromCurrentNode)
-        .address;
+function deriveAddress(words: string[], path: string = 'm/0'): string {
+    let root: bip32.HDKey;
+    try {
+        root = HDNode.fromMnemonic(words);
+    } catch (error) {
+        throw buildError(
+            'HDNode.fromMnemonic',
+            HDNODE.INVALID_HDNODE_MNEMONICS,
+            (error as Error).message,
+            { mnemonic },
+            error
+        );
+    }
+    try {
+        // Public key is always available.
+        return addressUtils.fromPublicKey(
+            root.derive(path).publicKey as Uint8Array
+        );
+    } catch (error) {
+        throw buildError(
+            'HDNode.fromMnemonic',
+            HDNODE.INVALID_HDNODE_DERIVATION_PATH,
+            'Invalid derivation path.',
+            { path },
+            error
+        );
+    }
 }
 
 /**
@@ -45,21 +68,41 @@ function deriveAddress(
  * Secure audit function.
  * - {@link HDNode}
  *
- * @example `0` (default)
- * @example `0/2`
- * @example `0/2/4/6`
+ * @example `m/0` (default)
+ * @example `m/0/2`
+ * @example `m/0/2/4/6`
  *
  *
  * @param {string[]} words - The set of words used for mnemonic generation.
- * @param {string} [derivationPathFromCurrentNode='0'] - The derivation path from the current node.
+ * @param {string} [path='m/0'] - The derivation path from the current node.
  * @returns {Uint8Array} - The derived private key as a Uint8Array.
  */
-function derivePrivateKey(
-    words: string[],
-    derivationPathFromCurrentNode: string = '0'
-): Uint8Array {
-    return HDNode.fromMnemonic(words).derivePath(derivationPathFromCurrentNode)
-        .privateKey as Uint8Array;
+function derivePrivateKey(words: string[], path: string = 'm/0'): Uint8Array {
+    let root: bip32.HDKey;
+    try {
+        root = HDNode.fromMnemonic(words);
+    } catch (error) {
+        throw buildError(
+            'HDNode.fromMnemonic',
+            HDNODE.INVALID_HDNODE_MNEMONICS,
+            (error as Error).message,
+            { mnemonic },
+            error
+        );
+    }
+    try {
+        // Derived from root, private key is always available.
+        return root.derive(path).privateKey as Uint8Array;
+    } catch (error) {
+        throw buildError(
+            'HDNode.fromMnemonic',
+            HDNODE.INVALID_HDNODE_DERIVATION_PATH,
+            'Invalid derivation path.',
+            { path },
+            error
+        );
+    }
+    // return HDNode.fromMnemonic(words).derivePath(path).privateKey as Uint8Array;
 }
 
 /* --- Overloaded functions start --- */

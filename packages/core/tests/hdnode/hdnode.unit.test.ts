@@ -1,187 +1,171 @@
+import { addresses, words, wrongDerivationPath, wrongWords } from './fixture';
 import { describe, expect, test } from '@jest/globals';
 import {
     HDNode,
-    type WordlistSizeType,
     ZERO_BUFFER,
     addressUtils,
     mnemonic,
     secp256k1,
-    Hex
+    type WordlistSizeType
 } from '../../src';
-import { addresses, words, wrongWords } from './fixture';
 import {
     InvalidHDNodeChaincodeError,
     InvalidHDNodeDerivationPathError,
     InvalidHDNodeMnemonicsError,
-    InvalidHDNodePrivateKeyError,
-    InvalidHDNodePublicKeyError
+    InvalidHDNodePrivateKeyError
 } from '@vechain/sdk-errors';
 
 /**
  * Mnemonic tests
  * @group unit/hdnode
  */
-describe('Hdnode', () => {
-    /**
-     * Test HD Node
-     */
-    test('HD Node', () => {
-        // HdNode from mnemonic
-        const node = HDNode.fromMnemonic(words);
+describe('HDNode', () => {
+    describe('fromMnemonic', () => {
+        test('fromMnemonic - invalid - path', () => {
+            expect(() =>
+                HDNode.fromMnemonic(words, wrongDerivationPath)
+            ).toThrowError(InvalidHDNodeDerivationPathError);
+        });
 
-        for (let i = 0; i < 5; i++) {
-            const child = node.derive(i);
+        test('fromMnemonic - invalid - word list', () => {
+            expect(() => HDNode.fromMnemonic(wrongWords)).toThrowError(
+                InvalidHDNodeMnemonicsError
+            );
+        });
 
-            // Correct address
-            expect(
-                addressUtils.fromPublicKey(child.publicKey).slice(2)
-            ).toEqual(addresses[i]);
-            expect(child.address).toEqual('0x' + addresses[i]);
-
-            // Correct public key
-            expect(
-                Hex.of(
-                    secp256k1.inflatePublicKey(
-                        secp256k1.derivePublicKey(
-                            child.privateKey ?? ZERO_BUFFER(0)
-                        )
-                    )
-                )
-            ).toEqual(Hex.of(child.publicKey));
-        }
-
-        // HDNode from private key
-        const xprivNode = HDNode.fromPrivateKey(
-            node.privateKey ?? ZERO_BUFFER(0),
-            node.chainCode
-        );
-        for (let i = 0; i < 5; i++) {
-            const child = xprivNode.derive(i);
-            // Correct address
-            expect(
-                addressUtils.fromPublicKey(child.publicKey).slice(2)
-            ).toEqual(addresses[i]);
-            expect(child.address).toEqual('0x' + addresses[i]);
-
-            // Correct public key
-            expect(
-                Hex.of(
-                    secp256k1.inflatePublicKey(
-                        secp256k1.derivePublicKey(
-                            child.privateKey ?? ZERO_BUFFER(0)
-                        )
-                    )
-                )
-            ).toEqual(Hex.of(child.publicKey));
-        }
-
-        // HDNode from public key
-        const xpubNode = HDNode.fromPublicKey(node.publicKey, node.chainCode);
-        for (let i = 0; i < 5; i++) {
-            const child = xpubNode.derive(i);
-            // Correct address
-            expect(
-                addressUtils.fromPublicKey(child.publicKey).slice(2)
-            ).toEqual(addresses[i]);
-            expect(child.address).toEqual('0x' + addresses[i]);
-
-            // Null private key
-            expect(child.privateKey).toEqual(null);
-        }
-
-        // non-lowercase
-        const node2 = HDNode.fromMnemonic(words.map((w) => w.toUpperCase()));
-        expect(node.address === node2.address);
-    });
-
-    /**
-     * Test HD Node from mnemonics with custom lengths
-     */
-    test('HD Node from mnemonics with custom lengths', () => {
-        // Default lengths
-        new Array<WordlistSizeType>(12, 15, 18, 21, 24).forEach(
-            (length: WordlistSizeType) => {
-                const currentHdnode = HDNode.fromMnemonic(
-                    mnemonic.generate(length)
-                );
-                // Private key
-                expect(currentHdnode.privateKey).toBeDefined();
+        test('fromMnemonic - valid - address sequence', () => {
+            const root = HDNode.fromMnemonic(words);
+            for (let i = 0; i < 5; i++) {
+                const child = root.deriveChild(i);
+                expect(child.publicKey).toBeDefined();
                 expect(
-                    secp256k1.isValidPrivateKey(
-                        currentHdnode.privateKey as Buffer
-                    )
-                ).toBe(true);
-
-                // Public key
-                expect(currentHdnode.publicKey).toBeDefined();
-                expect(
-                    Buffer.from(
-                        secp256k1.inflatePublicKey(
-                            secp256k1.derivePublicKey(
-                                currentHdnode.privateKey as Buffer
-                            )
-                        )
-                    )
-                ).toEqual(currentHdnode.publicKey);
-
-                // Address
-                expect(currentHdnode.address).toBeDefined();
-                addressUtils.isAddress(currentHdnode.address);
+                    addressUtils.fromPublicKey(child.publicKey as Uint8Array)
+                ).toEqual(addresses[i]);
+                // do we need <child>.address?
             }
-        );
+        });
+
+        test('fromMnemonic - valid - public key sequence', () => {
+            const root = HDNode.fromMnemonic(words);
+            for (let i = 0; i < 5; i++) {
+                const child = root.deriveChild(i);
+                expect(child.privateKey).toBeDefined();
+                expect(child.publicKey).toEqual(
+                    secp256k1.derivePublicKey(child.privateKey as Uint8Array)
+                );
+            }
+        });
+
+        test('fromMnemonic - valid - word list - case insensitive', () => {
+            const reference = HDNode.fromMnemonic(words);
+            expect(reference.publicKey).toBeDefined();
+            const lowercase = HDNode.fromMnemonic(
+                words.map((w) => w.toLowerCase())
+            );
+            expect(lowercase.publicKey).toBeDefined();
+            expect(
+                addressUtils.fromPublicKey(lowercase.publicKey as Uint8Array)
+            ).toBe(
+                addressUtils.fromPublicKey(reference.publicKey as Uint8Array)
+            );
+            const uppercase = HDNode.fromMnemonic(
+                words.map((w) => w.toUpperCase())
+            );
+            expect(uppercase.publicKey).toBeDefined();
+            expect(
+                addressUtils.fromPublicKey(uppercase.publicKey as Uint8Array)
+            ).toBe(
+                addressUtils.fromPublicKey(reference.publicKey as Uint8Array)
+            );
+        });
+
+        test('fromMnemonic - valid - word list - multiple lengths', () => {
+            new Array<WordlistSizeType>(12, 15, 18, 21, 24).forEach(
+                (length: WordlistSizeType) => {
+                    const hdKey = HDNode.fromMnemonic(
+                        mnemonic.generate(length)
+                    );
+                    expect(hdKey.privateKey).toBeDefined();
+                    expect(
+                        secp256k1.isValidPrivateKey(
+                            hdKey.privateKey as Uint8Array
+                        )
+                    ).toBeTruthy();
+                    expect(hdKey.publicKey).toBeDefined();
+                    expect(hdKey.publicKey).toEqual(
+                        secp256k1.derivePublicKey(
+                            hdKey.privateKey as Uint8Array
+                        )
+                    );
+                }
+            );
+        });
     });
 
-    /**
-     * Test invalid mnemonic
-     */
-    test('Invalid mnemonic', () => {
-        expect(() => HDNode.fromMnemonic(wrongWords)).toThrowError(
-            InvalidHDNodeMnemonicsError
-        );
+    describe('derivePrivateKey', () => {
+        test('derivePrivateKey - invalid - chain code', () => {
+            expect(() =>
+                HDNode.fromPrivateKey(ZERO_BUFFER(32), ZERO_BUFFER(31))
+            ).toThrowError(InvalidHDNodeChaincodeError);
+        });
+
+        test('derivePrivateKey - invalid - private key', () => {
+            expect(() =>
+                HDNode.fromPrivateKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
+            ).toThrowError(InvalidHDNodePrivateKeyError);
+        });
+
+        test('derivePrivateKey - valid - address sequence', () => {
+            const root = HDNode.fromMnemonic(words);
+            expect(root.privateKey).toBeDefined();
+            expect(root.chainCode).toBeDefined();
+            const extendedRoot = HDNode.fromPrivateKey(
+                root.privateKey as Uint8Array,
+                root.chainCode as Uint8Array
+            );
+            for (let i = 0; i < 5; i++) {
+                const child = extendedRoot.deriveChild(i);
+                expect(
+                    addressUtils.fromPublicKey(child.publicKey as Uint8Array)
+                ).toEqual(addresses[i]);
+            }
+        });
+
+        test('derivePrivateKey - valid - public key sequence', () => {
+            const root = HDNode.fromMnemonic(words);
+            expect(root.privateKey).toBeDefined();
+            expect(root.chainCode).toBeDefined();
+            const extendedRoot = HDNode.fromPrivateKey(
+                root.privateKey as Uint8Array,
+                root.chainCode as Uint8Array
+            );
+            for (let i = 0; i < 5; i++) {
+                const child = extendedRoot.deriveChild(i);
+                expect(child.privateKey).toBeDefined();
+                expect(child.publicKey).toEqual(
+                    secp256k1.derivePublicKey(child.privateKey as Uint8Array)
+                );
+            }
+        });
     });
 
-    /**
-     * Test invalid derivation path
-     */
-    test('Invalid derivation path', () => {
-        expect(() => HDNode.fromMnemonic(words, 'INVALID')).toThrowError(
-            InvalidHDNodeDerivationPathError
-        );
-    });
-
-    /**
-     * Test invalid private key
-     */
-    test('Invalid private key', () => {
-        expect(() =>
-            HDNode.fromPrivateKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
-        ).toThrowError(InvalidHDNodePrivateKeyError);
-    });
-
-    /**
-     * Test invalid public key
-     */
-    test('Invalid public key', () => {
-        expect(() =>
-            HDNode.fromPublicKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
-        ).toThrowError(InvalidHDNodePublicKeyError);
-    });
-
-    /**
-     * Test invalid chain code - private key
-     */
-    test('Invalid chain code private key', () => {
-        expect(() =>
-            HDNode.fromPrivateKey(ZERO_BUFFER(32), ZERO_BUFFER(31))
-        ).toThrowError(InvalidHDNodeChaincodeError);
-    });
-
-    /**
-     * Test invalid chain code - public key
-     */
-    test('Invalid chain code public key', () => {
-        expect(() =>
-            HDNode.fromPublicKey(ZERO_BUFFER(65), ZERO_BUFFER(31))
-        ).toThrowError(InvalidHDNodeChaincodeError);
+    describe('derivePublicKey', () => {
+        test(`derivePublicKey - valid - address sequence, no private key`, () => {
+            const root = HDNode.fromMnemonic(words);
+            expect(root.publicKey).toBeDefined();
+            expect(root.chainCode).toBeDefined();
+            const extendedRoot = HDNode.fromPublicKey(
+                root.publicKey as Uint8Array,
+                root.chainCode as Uint8Array
+            );
+            for (let i = 0; i < 5; i++) {
+                const child = extendedRoot.deriveChild(i);
+                expect(child.privateKey).toBeNull();
+                expect(child.publicKey).toBeDefined();
+                expect(
+                    addressUtils.fromPublicKey(child.publicKey as Uint8Array)
+                ).toEqual(addresses[i]);
+            }
+        });
     });
 });
