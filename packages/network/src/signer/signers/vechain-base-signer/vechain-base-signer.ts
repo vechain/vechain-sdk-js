@@ -17,6 +17,7 @@ import {
     type TransactionClause
 } from '../../../../../core';
 import { RPC_METHODS } from '../../../provider';
+import { assert, JSONRPC } from '@vechain/sdk-errors';
 
 /**
  * Basic vechain signer.
@@ -108,16 +109,29 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
      * Sign a transaction with the delegator
      *
      * @param transactionToSign - the transaction to sign
-     * @param delegator - the delegator to use
      * @returns the fully signed transaction
      */
     async signTransactionWithDelegator(
-        transactionToSign: TransactionRequestInput,
-        delegator: SignTransactionOptions
+        transactionToSign: TransactionRequestInput
     ): Promise<string> {
+        // Get the delegator
+        const delegator = DelegationHandler(
+            await this.provider?.wallet?.getDelegator()
+        ).delegatorOrNull();
+
+        // Throw an error if the delegator is not available
+        assert(
+            'signTransactionWithDelegator',
+            delegator !== null,
+            JSONRPC.INVALID_PARAMS,
+            'Delegator not found. Ensure that the provider contains the delegator used to sign the transaction.'
+        );
+
         return await this._sign(
             transactionToSign,
-            delegator,
+            DelegationHandler(
+                await this.provider?.wallet?.getDelegator()
+            ).delegatorOrNull(),
             (this.provider as TProviderType).thorClient,
             this.privateKey
         );

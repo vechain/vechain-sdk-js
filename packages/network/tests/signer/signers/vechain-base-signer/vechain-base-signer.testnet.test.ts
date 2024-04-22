@@ -84,12 +84,9 @@ describe('Vechain base signer tests - testnet', () => {
 
                     // Sign the transaction
                     const signedTransaction =
-                        await signer.signTransactionWithDelegator(
-                            {
-                                from: fixture.origin.address
-                            },
-                            fixture.options
-                        );
+                        await signer.signTransactionWithDelegator({
+                            from: fixture.origin.address
+                        });
 
                     expect(signedTransaction).toBeDefined();
                 }

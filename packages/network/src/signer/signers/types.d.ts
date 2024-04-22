@@ -180,12 +180,10 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
      * Sign a transaction with the delegator
      *
      * @param transactionToSign - the transaction to sign
-     * @param delegator - the delegator to use
      * @returns the fully signed transaction
      */
     signTransactionWithDelegator: (
-        transactionToSign: TransactionRequestInput,
-        delegator: SignTransactionOptions
+        transactionToSign: TransactionRequestInput
     ) => Promise<string>;
 
     /**

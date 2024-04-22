@@ -96,10 +96,7 @@ const ethSendTransaction = async (
         // Sign the transaction
         const signedTransaction =
             isDelegated && canBeDelegated
-                ? await signer.signTransactionWithDelegator(
-                      transaction,
-                      provider?.wallet?.delegator
-                  )
+                ? await signer.signTransactionWithDelegator(transaction)
                 : await signer.signTransaction(transaction);
 
         // Return the result
