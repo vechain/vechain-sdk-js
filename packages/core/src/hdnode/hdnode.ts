@@ -18,6 +18,25 @@ const X_PRIV_PREFIX = utils.hexToBytes('0488ade4000000000000000000');
  */
 const X_PUB_PREFIX = utils.hexToBytes('0488b21e000000000000000000');
 
+/**
+ * Creates a [BIP32 Hierarchical Deterministic Key](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
+ * {@link bip32.HDKey} node
+ * from [BIP39 Mnemonic Words](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki) and from it
+ * derives a child HDKey node based on the given derivation path.
+ *
+ * Secure audit function.
+ * - [bip32](https://github.com/paulmillr/scure-bip32).
+ * - [bip39](https://github.com/paulmillr/scure-bip39)
+ *
+ * @param {string[]} words - An array of words representing the mnemonic.
+ * @param {string} path - The derivation path to derive the child node.
+ * Default value is {@link VET_DERIVATION_PATH}.
+ *
+ * @return {bip32.HDKey} - An instance of bip32.HDKey representing the derived child node.
+ *
+ * @throws {InvalidHDNodeDerivationPathError} If an error occurs generating the master `bip32.HDKey` from `words`.
+ * @throws {InvalidHDNodeDerivationPathError} If an error occurs deriving the `bip32.HDKey` at `path` from the master HDKey
+ */
 function fromMnemonic(
     words: string[],
     path = VET_DERIVATION_PATH
@@ -49,6 +68,22 @@ function fromMnemonic(
     }
 }
 
+/**
+ * Creates a [BIP32 Hierarchical Deterministic Key](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
+ * {@link bip32.HDKey} node from a private key and chain code.
+ *
+ * Secure audit function.
+ * - [base58](https://github.com/paulmillr/scure-base)
+ * - [bip32](https://github.com/paulmillr/scure-bip32).
+ *
+ * @param {Uint8Array} privateKey The private key.
+ * @param {Uint8Array} chainCode The chain code.
+ *
+ * @returns {bip32.HDKey} The `bip32.HDKey` object.
+ *
+ * @throws {InvalidHDNodePrivateKeyError} If `privateKey` length is not exactly 32 bytes.
+ * @throws {Error} If the `chainCode` length is not exactly 32 bytes.
+ */
 function fromPrivateKey(
     privateKey: Uint8Array,
     chainCode: Uint8Array
@@ -63,7 +98,7 @@ function fromPrivateKey(
     const header = utils.concatBytes(
         X_PRIV_PREFIX,
         chainCode,
-        Buffer.from([0]),
+        Uint8Array.of(0),
         privateKey
     );
     const checksum = sha256(sha256(header)).subarray(0, 4);
@@ -81,6 +116,17 @@ function fromPrivateKey(
     }
 }
 
+/**
+ * Creates a [BIP32 Hierarchical Deterministic Key](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
+ * {@link bip32.HDKey} node from a public key and chain code.
+ *
+ * @param {Uint8Array} publicKey - The public key bytes.
+ * @param {Uint8Array} chainCode - The chain code bytes.
+ *
+ * @returns {bip32.HDKey} - The `bip32.HDKey` object.
+ *
+ * @throws {InvalidHDNodeChaincodeError} If `chainCode` length is not exactly 32 bytes.
+ */
 function fromPublicKey(
     publicKey: Uint8Array,
     chainCode: Uint8Array
@@ -98,7 +144,7 @@ function fromPublicKey(
         secp256k1.compressPublicKey(publicKey)
     );
     const checksum = sha256(sha256(header)).subarray(0, 4);
-    const expandedPublicKey = Buffer.concat([header, checksum]);
+    const expandedPublicKey = utils.concatBytes(header, checksum);
     try {
         return bip32.HDKey.fromExtendedKey(base58.encode(expandedPublicKey));
     } catch (error) {

@@ -12,7 +12,8 @@ import {
     InvalidHDNodeChaincodeError,
     InvalidHDNodeDerivationPathError,
     InvalidHDNodeMnemonicsError,
-    InvalidHDNodePrivateKeyError
+    InvalidHDNodePrivateKeyError,
+    InvalidHDNodePublicKeyError
 } from '@vechain/sdk-errors';
 
 /**
@@ -150,6 +151,18 @@ describe('HDNode', () => {
     });
 
     describe('derivePublicKey', () => {
+        test('derivePublicKey - invalid - chain code', () => {
+            expect(() =>
+                HDNode.fromPublicKey(ZERO_BUFFER(32), ZERO_BUFFER(31))
+            ).toThrowError(InvalidHDNodeChaincodeError);
+        });
+
+        test('derivePublicKey - invalid - public key', () => {
+            expect(() =>
+                HDNode.fromPublicKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
+            ).toThrowError(InvalidHDNodePublicKeyError);
+        });
+
         test(`derivePublicKey - valid - address sequence, no private key`, () => {
             const root = HDNode.fromMnemonic(words);
             expect(root.publicKey).toBeDefined();
