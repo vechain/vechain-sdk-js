@@ -53,7 +53,7 @@ class ProviderInternalHDWallet extends ProviderInternalBaseWallet {
                 const privateKeyBuffer = HDNode.fromMnemonic(
                     mnemonic,
                     derivationPath
-                ).derive(path + initialIndex).privateKey as Buffer;
+                ).deriveChild(path + initialIndex).privateKey as Buffer;
 
                 // Derive the public key and address from the private key
                 return {

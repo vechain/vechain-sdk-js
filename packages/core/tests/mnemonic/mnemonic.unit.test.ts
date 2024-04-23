@@ -12,7 +12,6 @@ import {
     secp256k1,
     type WordlistSizeType
 } from '../../src';
-import { randomBytes } from 'crypto';
 import {
     InvalidHDNodeDerivationPathError,
     InvalidHDNodeMnemonicsError
@@ -113,7 +112,7 @@ describe('mnemonic', () => {
                 (length: WordlistSizeType) => {
                     [
                         customRandomGeneratorWithXor,
-                        randomBytes,
+                        secp256k1.randomBytes,
                         undefined
                     ].forEach((randomGenerator) => {
                         // Generate mnemonic words of expected length

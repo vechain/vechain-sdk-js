@@ -62,8 +62,11 @@ const hdnode = HDNode.fromMnemonic(randomMnemonic);
 // 3 - Derive 5 child private keys
 
 for (let i = 0; i < 5; i++) {
-    const child = hdnode.derive(i);
-    console.log(`children ${i} address`, child.address);
+    const child = hdnode.deriveChild(i);
+    console.log(
+        `children ${i} address`,
+        addressUtils.fromPublicKey(child.publicKey)
+    );
     console.log(`children ${i} private key`, child.privateKey);
     // children 0 0x...
     // children 1 0x...
@@ -102,9 +105,9 @@ const hdnode = HDNode.fromPublicKey(Buffer.from(xpub), Buffer.from(chainCode));
 // 3 - Derive 5 child public keys
 
 for (let i = 0; i < 5; i++) {
-    const child = hdnode.derive(i);
+    const child = hdnode.deriveChild(i);
 
-    console.log(`children ${i}`, child.address);
+    console.log(`children ${i}`, addressUtils.fromPublicKey(child.publicKey));
     // children 0 0x...
     // children 1 0x...
     // ...

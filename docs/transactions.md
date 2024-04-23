@@ -171,14 +171,14 @@ const delegatorPrivateKey = nodeDelegate.privateKey;
 
 // 5 - Get address of delegate
 
-const delegatorAddress = nodeDelegate.address;
+const delegatorAddress = addressUtils.fromPublicKey(nodeDelegate.publicKey);
 
 // 6 - Sign transaction as sender and delegate
 
 const signedTransaction = TransactionHandler.signWithDelegator(
     body,
     Buffer.from(senderAccount.privateKey, 'hex'),
-    delegatorPrivateKey
+    Buffer.from(delegatorPrivateKey)
 );
 
 // 7 - Encode transaction
