@@ -70,6 +70,21 @@ please, follow the instructions below.
 2. From **Start**menu, click **Git Bash** to open the terminal compatible with the *Yarn* scripts. You are now
 3. ready to getting started.
 
+#### Configure JetBrains IDE to use Git Bash
+
+- Locate where Git Bash is installed.
+    - From **Start** menu, select **Git**, right-click **Git Bash**, select **More - Open File Location**, select
+      **Git Bash**, right-click **Properties**.
+    - In the shown panel, copy the **Target** item value: it shows how to call the executable.
+      By default **Target** is set `"C:\Program Files\Git\git-bash.exe" --cd-to-home`.
+- [Set IDEA Terminal](https://www.jetbrains.com/help/idea/terminal-emulator.html#smart-command-execution)
+    - Select **File - Settings - Tools - Terminal**, in the **Application Settings** section set **Shell path** to where
+      Git Bash is installed, by default set to `C:\Program Files\Git\bin\bash.exe`.
+- [Set WebStorm Terminal](https://www.jetbrains.com/help/webstorm/settings-tools-terminal.html)
+    - Select **File - Settings - Tools - Terminal**, in the **Application Settings** section set **Shell path** to where
+      Git Bash is installed, by default set to `C:\Program Files\Git\bin\bash.exe`.
+- Opening new **Terminal** panes in the IDE will use Git Bash.
+
 ### Getting Started
 1. Clone your forked repository.
 2. Navigate to the project directory.
