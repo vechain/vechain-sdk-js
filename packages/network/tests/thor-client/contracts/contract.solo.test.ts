@@ -14,7 +14,8 @@ import {
     filterContractEventsTestCases,
     fourArgsEventAbi,
     multipleClausesTestCases,
-    testingContractTestCases
+    testingContractTestCases,
+    testingContractNegativeTestCases
 } from './fixture';
 import {
     addressUtils,
@@ -418,6 +419,21 @@ describe('ThorClient - Contracts', () => {
                 );
 
                 expect(response).toEqual(expected);
+            });
+        }
+    );
+
+    testingContractNegativeTestCases.forEach(
+        ({ description, functionName, params }) => {
+            test(description, async () => {
+                const response = await thorSoloClient.contracts.executeCall(
+                    TESTING_CONTRACT_ADDRESS,
+                    coder
+                        .createInterface(TESTING_CONTRACT_ABI)
+                        .getFunction(functionName) as FunctionFragment,
+                    params
+                );
+                expect(response).toBe('aaa');
             });
         }
     );

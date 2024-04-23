@@ -669,6 +669,17 @@ const testingContractTestCases: TestCase[] = [
     }
 ];
 
+const testingContractNegativeTestCases: TestCase[] = [
+    {
+        description: 'testRequireError() test',
+        functionName: 'testRequireError',
+        params: [8],
+        expected: 'Value must be greater than 10',
+        reverted: true,
+        isReadOnly: true
+    }
+];
+
 interface FunctionCallTestCase {
     functionName: string;
     params: unknown[];
@@ -1020,6 +1031,7 @@ export {
     deployedContractAbi,
     deployedERC20Abi,
     testingContractTestCases,
+    testingContractNegativeTestCases,
     filterContractEventsTestCases,
     depositContractAbi,
     depositContractBytecode,

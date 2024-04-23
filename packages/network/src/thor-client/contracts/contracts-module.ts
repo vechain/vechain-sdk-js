@@ -18,6 +18,7 @@ import type {
 import { type SendTransactionResult } from '../transactions';
 import { type ThorClient } from '../thor-client';
 import { Contract, ContractFactory } from './model';
+import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -78,7 +79,7 @@ class ContractsModule {
         functionFragment: FunctionFragment,
         functionData: unknown[],
         contractCallOptions?: ContractCallOptions
-    ): Promise<ContractCallResult> {
+    ): Promise<ContractCallResult | string | undefined> {
         // Simulate the transaction to get the result of the contract call
         const response = await this.thor.transactions.simulateTransaction(
             [
@@ -93,9 +94,20 @@ class ContractsModule {
             contractCallOptions
         );
 
-        return new abi.Function(functionFragment).decodeOutput(
-            response[0].data
-        );
+        // check if the transaction reverted
+        if (response[0].reverted) {
+            /**
+             * The decoded revert reason of the transaction.
+             * Solidity may revert with Error(string) or Panic(uint256).
+             *
+             * @link see [Error handling: Assert, Require, Revert and Exceptions](https://docs.soliditylang.org/en/latest/control-structures.html#error-handling-assert-require-revert-and-exceptions)
+             */
+            return decodeRevertReason(response[0].data);
+        } else {
+            return new abi.Function(functionFragment).decodeOutput(
+                response[0].data
+            );
+        }
     }
 
     /**
