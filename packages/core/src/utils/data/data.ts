@@ -1,7 +1,9 @@
-import { ethers } from 'ethers';
+import * as utils from '@noble/curves/abstract/utils';
 import { DECIMAL_INTEGER_REGEX, NUMERIC_REGEX } from '../const';
-import { assert, buildError, DATA } from '@vechain/sdk-errors';
 import { Hex0x, Hex } from '../hex';
+import { assert, buildError, DATA } from '@vechain/sdk-errors';
+
+import { ethers } from 'ethers';
 
 /**
  * Checks whether the provided data is a valid decimal string.
@@ -74,7 +76,7 @@ const decodeBytes32String = (value: string): string => {
         { value }
     );
 
-    const valueInBytes = Buffer.from(Hex.canon(value), 'hex');
+    const valueInBytes = utils.hexToBytes(Hex.canon(value));
 
     // find the first zero byte
     const firstZeroIndex = valueInBytes.findIndex((byte) => byte === 0);
