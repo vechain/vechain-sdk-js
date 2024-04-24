@@ -4,8 +4,12 @@ import {
     ThorClient,
     type TransactionReceipt
 } from '../../../src';
-import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
-import { deployedERC20Abi, erc20ContractBytecode } from './fixture';
+import { TEST_ACCOUNTS, testnetUrl } from '../../fixture';
+import {
+    TESTNET_DELEGATE_URL,
+    deployedERC20Abi,
+    erc20ContractBytecode
+} from './fixture';
 import { addressUtils } from '@vechain/sdk-core';
 import { InvalidAbiFunctionError } from '@vechain/sdk-errors';
 
@@ -18,10 +22,10 @@ import { InvalidAbiFunctionError } from '@vechain/sdk-errors';
  */
 describe('ThorClient - ERC20 Contracts', () => {
     // ThorClient instance
-    let thorSoloClient: ThorClient;
+    let thorTestnetClient: ThorClient;
 
     beforeEach(() => {
-        thorSoloClient = ThorClient.fromUrl(soloUrl);
+        thorTestnetClient = ThorClient.fromUrl(testnetUrl);
     });
 
     /**
@@ -29,10 +33,10 @@ describe('ThorClient - ERC20 Contracts', () => {
      */
     test('deployErc20Contract with Contract Factory', async () => {
         // Deploy the ERC20 contract and receive a response
-        let factory = thorSoloClient.contracts.createContractFactory(
+        let factory = thorTestnetClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
         );
 
         factory = await factory.startDeployment();
@@ -43,7 +47,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         expect(contract.address).not.toBe(null);
         expect(addressUtils.isAddress(contract.address)).toBe(true);
-    }, 10000);
+    }, 20000);
 
     /**
      * Tests the execution of ERC20 contract operations using a blockchain client.
@@ -57,10 +61,10 @@ describe('ThorClient - ERC20 Contracts', () => {
      */
     test('Execute ERC20 contract operations', async () => {
         // Deploy the ERC20 contract
-        let factory = thorSoloClient.contracts.createContractFactory(
+        let factory = thorTestnetClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
         );
 
         factory = await factory.startDeployment();
@@ -89,17 +93,17 @@ describe('ThorClient - ERC20 Contracts', () => {
         // Ensure that the transfer transaction was successful and the balance is as expected
         expect(transactionReceiptTransfer.reverted).toBe(false);
         expect(balanceOfResult).toEqual([BigInt(1000)]);
-    }, 10000); // Set a timeout of 10000ms for this test
+    }, 30000); // Set a timeout of 10000ms for this test
 
     /**
      * Tests the listening to ERC20 contract operations using a blockchain client.
      */
     test('listen to ERC20 contract operations', async () => {
         // Deploy the ERC20 contract
-        let factory = thorSoloClient.contracts.createContractFactory(
+        let factory = thorTestnetClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
         );
 
         factory = await factory.startDeployment();
@@ -145,23 +149,23 @@ describe('ThorClient - ERC20 Contracts', () => {
         ).toEqual([
             [
                 '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
+                '0x0000000000000000000000002669514f9fe96bc7301177ba774d3da8a06cace4',
                 '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
             ],
             [
                 '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
+                '0x0000000000000000000000002669514f9fe96bc7301177ba774d3da8a06cace4',
                 '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
             ]
         ]);
-    }, 10000); // Set a timeout of 10000ms for this test
+    }, 50000); // Set a timeout of 10000ms for this test
 
     test('listen to a non existing ERC20 event', async () => {
         // Deploy the ERC20 contract
-        let factory = thorSoloClient.contracts.createContractFactory(
+        let factory = thorTestnetClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
         );
 
         factory = await factory.startDeployment();
@@ -171,17 +175,17 @@ describe('ThorClient - ERC20 Contracts', () => {
         await expect(
             async () => await contract.filters.EventNotFound().get()
         ).rejects.toThrowError(InvalidAbiFunctionError);
-    }, 10000);
+    }, 30000);
 
     /**
      * Test listening to a non-existing ERC20 event.
      */
     test('listen to a non existing ERC20 event', async () => {
         // Deploy the ERC20 contract
-        let factory = thorSoloClient.contracts.createContractFactory(
+        let factory = thorTestnetClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
         );
 
         factory = await factory.startDeployment();
@@ -191,58 +195,17 @@ describe('ThorClient - ERC20 Contracts', () => {
         await expect(
             async () => await contract.filters.EventNotFound().get()
         ).rejects.toThrowError(InvalidAbiFunctionError);
-    }, 10000);
+    }, 30000);
 
     /**
-     * Test transaction execution with delegation.
+     * Test transaction  execution with url delegation set from contract.
      */
-    test('transaction execution with delegation', async () => {
+    test('transaction execution with url delegation set from contract', async () => {
         // Deploy the ERC20 contract
-        let factory = thorSoloClient.contracts.createContractFactory(
+        let factory = thorTestnetClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
-        );
-
-        factory = await factory.startDeployment();
-
-        const contract: Contract = await factory.waitForDeployment();
-
-        contract.setContractTransactOptions({
-            signTransactionOptions: {
-                delegatorPrivateKey:
-                    TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey
-            },
-            isDelegated: true
-        });
-
-        await (
-            await contract.transact.transfer(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
-                1000
-            )
-        ).wait();
-
-        console.log(
-            await contract.read.balanceOf(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
-            )
-        );
-
-        await expect(
-            async () => await contract.filters.EventNotFound().get()
-        ).rejects.toThrowError(InvalidAbiFunctionError);
-    }, 10000);
-
-    /**
-     * Test transaction execution with delegation set from contract.
-     */
-    test('transaction execution with delegation set from contract', async () => {
-        // Deploy the ERC20 contract
-        let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
-            erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
         );
 
         factory = await factory.startDeployment();
@@ -254,8 +217,7 @@ describe('ThorClient - ERC20 Contracts', () => {
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
                 1000,
                 {
-                    delegatorPrivateKey:
-                        TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey
+                    delegatorUrl: TESTNET_DELEGATE_URL
                 }
             )
         ).wait();
@@ -267,17 +229,17 @@ describe('ThorClient - ERC20 Contracts', () => {
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
             )
         ).toEqual([BigInt(1000)]);
-    }, 10000);
+    }, 30000);
 
     /**
      * Tests the execution of multiple ERC20 contract clauses using a blockchain client.
      */
     test('Execute multiples ERC20 contract clauses', async () => {
         // Deploy the ERC20 contract
-        let factory = thorSoloClient.contracts.createContractFactory(
+        let factory = thorTestnetClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
         );
 
         factory = await factory.startDeployment();
@@ -286,7 +248,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         // Execute multiple 'transfer' transactions on the deployed contract,
         const txResult =
-            await thorSoloClient.contracts.executeMultipleClausesTransaction(
+            await thorTestnetClient.contracts.executeMultipleClausesTransaction(
                 [
                     contract.clause.transfer(
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
@@ -301,7 +263,7 @@ describe('ThorClient - ERC20 Contracts', () => {
                         3000
                     )
                 ],
-                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
             );
 
         await txResult.wait();
@@ -317,5 +279,5 @@ describe('ThorClient - ERC20 Contracts', () => {
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
             )
         ).toEqual([BigInt(4000)]);
-    }, 10000);
+    }, 30000);
 });
