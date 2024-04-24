@@ -20,6 +20,7 @@ import {
 } from '../../../../../core';
 import { RPC_METHODS } from '../../../provider';
 import { assert, JSONRPC, TRANSACTION } from '@vechain/sdk-errors';
+import { assertTransactionCanBeSigned } from '../../../assertions';
 
 /**
  * Basic vechain signer.
@@ -199,6 +200,13 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
                     nonce: Hex0x.of(secp256k1.randomBytes(6))
                 }
             );
+
+        // Assert if the transaction can be signed
+        assertTransactionCanBeSigned(
+            'signTransaction',
+            this.privateKey,
+            transactionBody
+        );
 
         // 6 - Sign the transaction
         return delegator !== null
