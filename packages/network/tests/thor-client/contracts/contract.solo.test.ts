@@ -423,6 +423,9 @@ describe('ThorClient - Contracts', () => {
         }
     );
 
+    /**
+     * Tests the error test cases for the `TestingContract` functions.
+     */
     testingContractNegativeTestCases.forEach(
         ({ description, functionName, params, expected }) => {
             test(description, async () => {
