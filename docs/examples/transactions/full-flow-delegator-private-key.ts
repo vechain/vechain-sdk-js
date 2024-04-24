@@ -96,6 +96,7 @@ const rawDelegateSigned = await signer.signTransactionWithDelegator(
         senderAccount.address
     )
 );
+
 const delegatedSigned = TransactionHandler.decode(
     Buffer.from(rawDelegateSigned.slice(2), 'hex'),
     true

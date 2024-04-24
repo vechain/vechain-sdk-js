@@ -526,6 +526,7 @@ const rawDelegateSigned = await signer.signTransactionWithDelegator(
         senderAccount.address
     )
 );
+
 const delegatedSigned = TransactionHandler.decode(
     Buffer.from(rawDelegateSigned.slice(2), 'hex'),
     true
@@ -544,6 +545,8 @@ const txReceipt = await thorSoloClient.transactions.waitForTransaction(
 3. **Delegation with URL**: This example will showcase the use of a delegation URL for fee delegation. The sender will specify a delegation URL in the `signTransaction` options, allowing a designated sponsor to pay the transaction fee. We'll cover the full process, from building clauses to verifying the transaction on-chain.
 
 ```typescript { name=full-flow-delegator-url, category=example }
+// START_SNIPPET: FullFlowDelegatorUrlSnippet
+
 // 1 - Create the thor client
 const _testnetUrl = 'https://testnet.vechain.org/';
 const thorClient = ThorClient.fromUrl(_testnetUrl, {
@@ -563,6 +566,30 @@ const senderAccount = {
 const delegatorAccount = {
     URL: 'https://sponsor-testnet.vechain.energy/by/269'
 };
+
+// Create the provider (used in this case to sign the transaction with getSigner() method)
+const providerWithDelegationEnabled = new VechainProvider(
+    // Thor client used by the provider
+    thorClient,
+
+    // Internal wallet used by the provider (needed to call the getSigner() method)
+    new ProviderInternalBaseWallet(
+        [
+            {
+                privateKey: Buffer.from(senderAccount.privateKey, 'hex'),
+                address: senderAccount.address
+            }
+        ],
+        {
+            delegator: {
+                delegatorUrl: delegatorAccount.URL
+            }
+        }
+    ),
+
+    // Enable fee delegation
+    true
+);
 
 // 2 - Create the transaction clauses
 const transaction = {

@@ -1,6 +1,10 @@
 import { clauseBuilder, unitsUtils } from '@vechain/sdk-core';
-import { ThorClient } from '@vechain/sdk-network';
-import { expect } from 'expect';
+import {
+    ProviderInternalBaseWallet,
+    ThorClient,
+    VechainProvider
+} from '@vechain/sdk-network';
+import { expect } from 'expect'; // START_SNIPPET: FullFlowDelegatorUrlSnippet
 
 // START_SNIPPET: FullFlowDelegatorUrlSnippet
 
@@ -23,6 +27,30 @@ const senderAccount = {
 const delegatorAccount = {
     URL: 'https://sponsor-testnet.vechain.energy/by/269'
 };
+
+// Create the provider (used in this case to sign the transaction with getSigner() method)
+const providerWithDelegationEnabled = new VechainProvider(
+    // Thor client used by the provider
+    thorClient,
+
+    // Internal wallet used by the provider (needed to call the getSigner() method)
+    new ProviderInternalBaseWallet(
+        [
+            {
+                privateKey: Buffer.from(senderAccount.privateKey, 'hex'),
+                address: senderAccount.address
+            }
+        ],
+        {
+            delegator: {
+                delegatorUrl: delegatorAccount.URL
+            }
+        }
+    ),
+
+    // Enable fee delegation
+    true
+);
 
 // 2 - Create the transaction clauses
 const transaction = {
