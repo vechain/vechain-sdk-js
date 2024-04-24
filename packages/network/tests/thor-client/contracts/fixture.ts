@@ -712,6 +712,53 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         expected: [10000000000000000000000000000n],
         reverted: false,
         isReadOnly: true
+    },
+    {
+        description:
+            'should return the `provedWork` of the current transaction',
+        functionName: 'getTxProvedWork',
+        params: [],
+        expected: [0n],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description:
+            'should return the transaction ID of the current transaction',
+        functionName: 'getTxID',
+        params: [],
+        expected: [
+            '0x0000000000000000000000000000000000000000000000000000000000000000'
+        ],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description: 'should return the `blockRef` of the current transaction',
+        functionName: 'getTxBlockRef',
+        params: [],
+        expected: ['0x0000000000000000'],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description:
+            'should return the `expiration` of the current transaction',
+        functionName: 'getTxExpiration',
+        params: [],
+        expected: [0n],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description: 'should return the data hashed using Blake2b256',
+        functionName: 'calculateBlake2b256',
+        params: ['0x'],
+        expected: [
+            '0x0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8'
+        ],
+        reverted: false,
+        isReadOnly: true
     }
 ];
 
