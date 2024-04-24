@@ -677,6 +677,38 @@ const testingContractNegativeTestCases: TestCase[] = [
         expected: 'Value must be greater than 10',
         reverted: true,
         isReadOnly: true
+    },
+    {
+        description: 'testAssertError() test',
+        functionName: 'testAssertError',
+        params: [1],
+        expected: 'Panic(0x01)',
+        reverted: true,
+        isReadOnly: true
+    },
+    {
+        description: 'testRevertError() test',
+        functionName: 'testRevertError',
+        params: [4],
+        expected: 'Value must be at least 5',
+        reverted: true,
+        isReadOnly: true
+    },
+    {
+        description: 'testOverflowError() test',
+        functionName: 'testOverflowError',
+        params: [255],
+        expected: 'Panic(0x11)',
+        reverted: true,
+        isReadOnly: true
+    },
+    {
+        description: 'testInvalidOpcodeError() test',
+        functionName: 'testInvalidOpcodeError',
+        params: [],
+        expected: '',
+        reverted: true,
+        isReadOnly: true
     }
 ];
 

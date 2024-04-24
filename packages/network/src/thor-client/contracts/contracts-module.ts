@@ -79,7 +79,7 @@ class ContractsModule {
         functionFragment: FunctionFragment,
         functionData: unknown[],
         contractCallOptions?: ContractCallOptions
-    ): Promise<ContractCallResult | string | undefined> {
+    ): Promise<ContractCallResult | string> {
         // Simulate the transaction to get the result of the contract call
         const response = await this.thor.transactions.simulateTransaction(
             [
@@ -94,7 +94,6 @@ class ContractsModule {
             contractCallOptions
         );
 
-        // check if the transaction reverted
         if (response[0].reverted) {
             /**
              * The decoded revert reason of the transaction.
@@ -102,7 +101,7 @@ class ContractsModule {
              *
              * @link see [Error handling: Assert, Require, Revert and Exceptions](https://docs.soliditylang.org/en/latest/control-structures.html#error-handling-assert-require-revert-and-exceptions)
              */
-            return decodeRevertReason(response[0].data);
+            return decodeRevertReason(response[0].data) ?? '';
         } else {
             return new abi.Function(functionFragment).decodeOutput(
                 response[0].data

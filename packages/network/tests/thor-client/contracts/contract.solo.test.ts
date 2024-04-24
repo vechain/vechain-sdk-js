@@ -424,7 +424,7 @@ describe('ThorClient - Contracts', () => {
     );
 
     testingContractNegativeTestCases.forEach(
-        ({ description, functionName, params }) => {
+        ({ description, functionName, params, expected }) => {
             test(description, async () => {
                 const response = await thorSoloClient.contracts.executeCall(
                     TESTING_CONTRACT_ADDRESS,
@@ -433,7 +433,7 @@ describe('ThorClient - Contracts', () => {
                         .getFunction(functionName) as FunctionFragment,
                     params
                 );
-                expect(response).toBe('aaa');
+                expect(response).toBe(expected);
             });
         }
     );
