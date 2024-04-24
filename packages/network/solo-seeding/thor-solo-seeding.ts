@@ -5,11 +5,11 @@ import {
     TransactionHandler,
     unitsUtils
 } from '@vechain/sdk-core';
-import { ALL_ACCOUNTS, soloNetwork } from '../tests/fixture';
 import { BUILT_IN_CONTRACTS } from '../tests/built-in-fixture';
 import { ThorClient } from '../src';
 import { expect } from '@jest/globals';
 import { TESTING_CONTRACT_BYTECODE } from './const';
+import { ALL_ACCOUNTS, soloUrl } from '../tests/fixture';
 
 /**
  * Constructs clauses for transferring VTHO tokens.
