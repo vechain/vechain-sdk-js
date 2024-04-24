@@ -89,6 +89,7 @@ const txBody = await thorSoloClient.transactions.buildTransactionBody(
 const signer = await providerWithDelegationEnabled.getSigner(
     senderAccount.address
 );
+
 const rawDelegateSigned = await signer.signTransactionWithDelegator(
     signerUtils.transactionBodyToTransactionRequestInput(
         txBody,
