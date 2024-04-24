@@ -1,4 +1,4 @@
-import { describe, expect, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import {
     buildTransactionBodyClausesTestCases,
     signTransactionTestCases
@@ -6,15 +6,23 @@ import {
 import {
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS,
-    testnetUrl
+    testnetUrl,
+    THOR_SOLO_ACCOUNTS_BASE_WALLET
 } from '../../fixture';
 import {
     addressUtils,
     clauseBuilder,
     coder,
-    type FunctionFragment
+    type FunctionFragment,
+    TransactionHandler
 } from '@vechain/sdk-core';
-import { ThorClient } from '../../../src';
+import {
+    ProviderInternalBaseWallet,
+    signerUtils,
+    ThorClient,
+    VechainBaseSigner,
+    VechainProvider
+} from '../../../src';
 
 /**
  * Transactions module tests suite.
@@ -22,6 +30,31 @@ import { ThorClient } from '../../../src';
  * @group integration/clients/thor-client/transactions
  */
 describe('Transactions module Testnet tests suite', () => {
+    /**
+     * ThorClient and provider instances
+     */
+    let thorClient: ThorClient;
+    let provider: VechainProvider;
+
+    /**
+     * Init thor client and provider before each test
+     */
+    beforeEach(() => {
+        thorClient = ThorClient.fromUrl(testnetUrl);
+        provider = new VechainProvider(
+            thorClient,
+            THOR_SOLO_ACCOUNTS_BASE_WALLET,
+            false
+        );
+    });
+
+    /**
+     * Destroy thor client and provider after each test
+     */
+    afterEach(() => {
+        provider.destroy();
+    });
+
     /**
      * Test suite for buildTransactionBody method
      */
@@ -99,12 +132,35 @@ describe('Transactions module Testnet tests suite', () => {
                             }
                         );
 
-                    const signedTx =
-                        await thorClient.transactions.signTransaction(
-                            txBody,
-                            origin.privateKey,
-                            options
-                        );
+                    // Get the signer and sign the transaction
+                    const signer = new VechainBaseSigner(
+                        Buffer.from(origin.privateKey, 'hex'),
+                        new VechainProvider(
+                            thorClient,
+                            new ProviderInternalBaseWallet([], {
+                                delegator: options
+                            }),
+                            isDelegated
+                        )
+                    );
+
+                    const signedRawTx = isDelegated
+                        ? await signer.signTransactionWithDelegator(
+                              signerUtils.transactionBodyToTransactionRequestInput(
+                                  txBody,
+                                  origin.address
+                              )
+                          )
+                        : await signer.signTransaction(
+                              signerUtils.transactionBodyToTransactionRequestInput(
+                                  txBody,
+                                  origin.address
+                              )
+                          );
+                    const signedTx = TransactionHandler.decode(
+                        Buffer.from(signedRawTx.slice(2), 'hex'),
+                        true
+                    );
 
                     expect(signedTx).toBeDefined();
                     expect(signedTx.body).toMatchObject(expected.body);
