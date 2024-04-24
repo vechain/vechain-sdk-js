@@ -441,6 +441,8 @@ const txReceipt = await thorSoloClient.transactions.waitForTransaction(
 2. **Delegation with Private Key**: Here, we'll extend the previous example by incorporating fee delegation. The transaction sender will delegate the transaction fee payment to another entity (delegator), and we'll guide you through the steps of building, signing, and sending such a transaction.
 
 ```typescript { name=full-flow-delegator-private-key, category=example }
+// START_SNIPPET: FullFlowDelegatorPrivateKeySnippet
+
 // 1 - Create the thor client
 const _soloUrl = 'http://localhost:8669/';
 const thorSoloClient = ThorClient.fromUrl(_soloUrl, {
@@ -460,6 +462,30 @@ const delegatorAccount = {
         '521b7793c6eb27d137b617627c6b85d57c0aa303380e9ca4e30a30302fbc6676',
     address: '0x062F167A905C1484DE7e75B88EDC7439f82117DE'
 };
+
+// Create the provider (used in this case to sign the transaction with getSigner() method)
+const providerWithDelegationEnabled = new VechainProvider(
+    // Thor client used by the provider
+    thorSoloClient,
+
+    // Internal wallet used by the provider (needed to call the getSigner() method)
+    new ProviderInternalBaseWallet(
+        [
+            {
+                privateKey: Buffer.from(senderAccount.privateKey, 'hex'),
+                address: senderAccount.address
+            }
+        ],
+        {
+            delegator: {
+                delegatorPrivateKey: delegatorAccount.privateKey
+            }
+        }
+    ),
+
+    // Enable fee delegation
+    true
+);
 
 // 2 - Create the transaction clauses
 const transaction = {
@@ -490,17 +516,23 @@ const txBody = await thorSoloClient.transactions.buildTransactionBody(
 );
 
 // 4 - Sign the transaction
-const rawDelegatedSigned = await thorSoloClient.transactions.signTransaction(
-    txBody,
-    senderAccount.privateKey,
-    {
-        delegatorPrivateKey: delegatorAccount.privateKey
-    }
+const signer = await providerWithDelegationEnabled.getSigner(
+    senderAccount.address
+);
+const rawDelegateSigned = await signer.signTransactionWithDelegator(
+    signerUtils.transactionBodyToTransactionRequestInput(
+        txBody,
+        senderAccount.address
+    )
+);
+const delegatedSigned = TransactionHandler.decode(
+    Buffer.from(rawDelegateSigned.slice(2), 'hex'),
+    true
 );
 
 // 5 - Send the transaction
 const sendTransactionResult =
-    await thorSoloClient.transactions.sendTransaction(rawDelegatedSigned);
+    await thorSoloClient.transactions.sendTransaction(delegatedSigned);
 
 // 6 - Wait for transaction receipt
 const txReceipt = await thorSoloClient.transactions.waitForTransaction(
