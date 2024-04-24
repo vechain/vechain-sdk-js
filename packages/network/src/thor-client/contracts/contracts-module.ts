@@ -15,7 +15,10 @@ import type {
     ContractCallResult,
     ContractTransactionOptions
 } from './types';
-import { type SendTransactionResult } from '../transactions';
+import {
+    type SendTransactionResult,
+    type SignTransactionOptions
+} from '../transactions';
 import { type ThorClient } from '../thor-client';
 import { Contract, ContractFactory } from './model';
 
@@ -142,7 +145,8 @@ class ContractsModule {
         // Sign the transaction with the private key
         const signedTx = await this.thor.transactions.signTransaction(
             txBody,
-            privateKey
+            privateKey,
+            this.buildSignTransactionOptions(options)
         );
 
         const result = await this.thor.transactions.sendTransaction(signedTx);
@@ -208,6 +212,36 @@ class ContractsModule {
                 .getFunction('get') as FunctionFragment,
             [dataUtils.encodeBytes32String('base-gas-price')]
         );
+    }
+
+    /**
+     * Build the sign transaction options based on the contract transaction options.
+     * @param options - The contract transaction options.
+     * @returns The sign transaction options to be used for signing the transaction.
+     * @private
+     */
+    private buildSignTransactionOptions(
+        options: ContractTransactionOptions | undefined
+    ): SignTransactionOptions | undefined {
+        let signTransactionOptions: SignTransactionOptions | undefined;
+
+        if (
+            options?.signTransactionOptions?.delegatorPrivateKey !== undefined
+        ) {
+            signTransactionOptions = {
+                delegatorPrivateKey:
+                    options.signTransactionOptions?.delegatorPrivateKey,
+                delegatorUrl: undefined
+            };
+        } else if (
+            options?.signTransactionOptions?.delegatorUrl !== undefined
+        ) {
+            signTransactionOptions = {
+                delegatorPrivateKey: undefined,
+                delegatorUrl: options.signTransactionOptions?.delegatorUrl
+            };
+        }
+        return signTransactionOptions;
     }
 }
 
