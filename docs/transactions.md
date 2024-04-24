@@ -620,17 +620,25 @@ const txBody = await thorClient.transactions.buildTransactionBody(
 );
 
 // 4 - Sign the transaction
-const signedTx = await thorClient.transactions.signTransaction(
-    txBody,
-    senderAccount.privateKey,
-    {
-        delegatorUrl: delegatorAccount.URL
-    }
+const signer = await providerWithDelegationEnabled.getSigner(
+    senderAccount.address
+);
+
+const rawDelegateSigned = await signer.signTransactionWithDelegator(
+    signerUtils.transactionBodyToTransactionRequestInput(
+        txBody,
+        senderAccount.address
+    )
+);
+
+const delegatedSigned = TransactionHandler.decode(
+    Buffer.from(rawDelegateSigned.slice(2), 'hex'),
+    true
 );
 
 // 5 - Send the transaction
 const sendTransactionResult =
-    await thorClient.transactions.sendTransaction(signedTx);
+    await thorClient.transactions.sendTransaction(delegatedSigned);
 
 // 6 - Wait for transaction receipt
 const txReceipt = await thorClient.transactions.waitForTransaction(
