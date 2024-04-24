@@ -1,19 +1,14 @@
-/**
- * Vechain provider tests
- *
- * @group integration/providers/vechain-provider
- */
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     ThorClient,
     VechainBaseSigner,
     VechainProvider
 } from '../../../../src';
-import { testnetUrl } from '../../../fixture';
 import {
+    testnetUrl,
     THOR_SOLO_ACCOUNTS_BASE_WALLET,
     THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR
-} from '../../../provider/fixture';
+} from '../../../fixture';
 import { signTransactionTestCases } from '../../../thor-client/transactions/fixture';
 
 /**

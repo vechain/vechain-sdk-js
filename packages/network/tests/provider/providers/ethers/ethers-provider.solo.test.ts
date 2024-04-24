@@ -5,7 +5,7 @@ import {
     ProviderInternalBaseWallet,
     type SubscriptionEvent
 } from '../../../../src';
-import { soloUrl } from '../../fixture';
+import { soloUrl } from '../../../fixture';
 
 import { SOLO_NETWORK } from '@vechain/sdk-core';
 import { providerMethodsTestCasesSolo } from '../fixture';

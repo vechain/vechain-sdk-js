@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
+    ALL_ACCOUNTS,
     soloUrl,
-    TEST_ACCOUNTS_THOR_SOLO,
     THOR_SOLO_ACCOUNTS_BASE_WALLET,
     THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR
-} from '../../../fixture';
+} from '../../../../fixture';
 import {
     ProviderInternalBaseWallet,
     RPC_METHODS,
@@ -282,18 +282,15 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                 new ProviderInternalBaseWallet([
                     {
                         privateKey: Buffer.from(
-                            TEST_ACCOUNTS_THOR_SOLO[0].privateKey,
+                            ALL_ACCOUNTS[0].privateKey,
                             'hex'
                         ),
                         publicKey: Buffer.from(
                             secp256k1.derivePublicKey(
-                                Buffer.from(
-                                    TEST_ACCOUNTS_THOR_SOLO[0].privateKey,
-                                    'hex'
-                                )
+                                Buffer.from(ALL_ACCOUNTS[0].privateKey, 'hex')
                             )
                         ),
-                        address: TEST_ACCOUNTS_THOR_SOLO[0].address
+                        address: ALL_ACCOUNTS[0].address
                     }
                 ])
             );

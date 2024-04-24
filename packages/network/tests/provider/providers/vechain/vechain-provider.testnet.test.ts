@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 
 import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
-import { testnetUrl } from '../../fixture';
+import { testnetUrl } from '../../../fixture';
 import { providerMethodsTestCasesTestnet } from '../fixture';
 import { waitForMessage } from '../helpers';
 import { ThorClient, VechainProvider } from '../../../../src';

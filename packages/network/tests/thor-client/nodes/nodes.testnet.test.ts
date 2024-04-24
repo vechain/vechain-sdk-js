@@ -2,6 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { HTTPClientError } from '@vechain/sdk-errors';
 import { testnetUrl } from '../../fixture';
 import { ThorClient } from '../../../src';
+
 /**
  * Node integration tests
  * @group integration/clients/thor-client/nodes

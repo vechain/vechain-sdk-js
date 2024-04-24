@@ -15,7 +15,7 @@ const privateKeyDeployer =
 
 // Create thor client for solo network
 const _soloUrl = 'http://localhost:8669/';
-const thorSoloClient = ThorClient.fromUrl(_soloUrl)
+const thorSoloClient = ThorClient.fromUrl(_soloUrl);
 
 // Defining a function for deploying the ERC20 contract
 const setupERC20Contract = async (): Promise<Contract> => {

@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 
 import { InvalidDataTypeError } from '@vechain/sdk-errors';
-import { soloUrl } from '../../fixture';
+import { soloUrl } from '../../../fixture';
 import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
 import {
     deployERC20Contract,
