@@ -6,7 +6,7 @@
 import { type HardhatUserConfig, type HttpNetworkConfig } from 'hardhat/types';
 
 import '../../../src/index';
-import { VET_DERIVATION_PATH } from '@vechain/sdk-core/dist';
+import { VET_DERIVATION_PATH } from '@vechain/sdk-core';
 
 /**
  * Simple configuration for testing
