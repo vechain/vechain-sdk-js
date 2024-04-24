@@ -54,7 +54,13 @@ C4Context
             }        
         }
         
-        Boundary(b5, "External Blockchain Interaction") {
+        Boundary(b5, "Signer") {
+            Boundary(b51, "Signers") {
+                System(signers, "Signers", "List of available signers")
+            }        
+        }
+        
+        Boundary(b6, "External Blockchain Interaction") {
             System_Ext(vechainthor, "Thor Blockchain", "Represents the blockchain platform with which the SDK interacts")
         }
        

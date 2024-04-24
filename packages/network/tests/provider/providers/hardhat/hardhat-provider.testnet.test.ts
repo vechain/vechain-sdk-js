@@ -4,7 +4,8 @@ import { providerMethodsTestCasesTestnet } from '../fixture';
 import { waitForMessage } from '../helpers';
 import {
     HardhatVechainProvider,
-    ProviderInternalBaseWallet
+    ProviderInternalBaseWallet,
+    type VechainProvider
 } from '../../../../src';
 
 /**
@@ -79,7 +80,7 @@ describe('Hardhat provider tests - testnet', () => {
             params: ['newHeads']
         });
 
-        const messageReceived = waitForMessage(provider);
+        const messageReceived = waitForMessage(provider as VechainProvider);
 
         const message = await messageReceived;
 

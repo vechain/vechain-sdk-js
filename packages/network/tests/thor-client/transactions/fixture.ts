@@ -1,15 +1,15 @@
 import {
-    type TransactionBody,
-    unitsUtils,
+    coder,
     networkInfo,
-    coder
+    type TransactionBody,
+    unitsUtils
 } from '@vechain/sdk-core';
 import { BUILT_IN_CONTRACTS } from '../../built-in-fixture';
 import {
-    TESTING_CONTRACT_ABI,
-    TESTNET_DELEGATE_URL,
     TEST_ACCOUNTS,
-    TESTING_CONTRACT_ADDRESS
+    TESTING_CONTRACT_ABI,
+    TESTING_CONTRACT_ADDRESS,
+    TESTNET_DELEGATE_URL
 } from '../../fixture';
 import {
     InvalidSecp256k1PrivateKeyError,

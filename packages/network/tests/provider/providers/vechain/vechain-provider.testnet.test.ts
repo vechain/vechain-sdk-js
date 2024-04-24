@@ -118,4 +118,14 @@ describe('Vechain provider tests - testnet', () => {
             new VechainProvider(thorClient, undefined, true);
         }).toThrowError(ProviderRpcError);
     });
+
+    /**
+     * Return null signer if wallet is not defined
+     */
+    test('Should throw an error if delegation is enabled and delegator is not defined', async () => {
+        const nullSigner = await provider.getSigner(
+            '0x0000000000000000000000000000456e65726779'
+        );
+        expect(nullSigner).toBeNull();
+    });
 });

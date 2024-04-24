@@ -6,7 +6,6 @@ import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
 import { type VechainProvider } from '../../../../../providers';
 import { ethSendRawTransaction } from '../eth_sendRawTransaction';
 import { type TransactionObjectInput } from './types';
-import { type ProviderInternalWallet } from '../../../../../helpers';
 import { type VechainSigner } from '../../../../../../signer';
 
 /**
@@ -80,10 +79,7 @@ const ethSendTransaction = async (
 
     try {
         // Get the signer of the provider
-        const signer = (await (
-            provider?.wallet as ProviderInternalWallet
-        ).getSigner(
-            provider as VechainProvider,
+        const signer = (await (provider as VechainProvider).getSigner(
             transaction.from
         )) as VechainSigner<VechainProvider>;
 
@@ -100,10 +96,7 @@ const ethSendTransaction = async (
         // Sign the transaction
         const signedTransaction =
             isDelegated && canBeDelegated
-                ? await signer.signTransactionWithDelegator(
-                      transaction,
-                      provider?.wallet?.delegator
-                  )
+                ? await signer.signTransactionWithDelegator(transaction)
                 : await signer.signTransaction(transaction);
 
         // Return the result

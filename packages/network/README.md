@@ -16,6 +16,8 @@ Explore the rich feature set of the vechain SDK Network package, tailored for Ve
 - **Transactions**: Initiate various transactions on the VechainThor blockchain using vechain SDK Network. Developers can create and broadcast transactions, including token transfers, contract interactions, and asset management.
 - **Certificates**: Manage certificates and certificate-related operations on the blockchain with vechain SDK Network. Certificates play a crucial role in identity verification and access control within dApps.
 - **Queries**: Efficiently retrieve specific data from the blockchain using vechain SDK Network's querying system. This includes querying transaction details, contract state, and other relevant blockchain information for streamlined dApp development.
+- **Provider**: Provider, with his internal wallet (ProviderInternalWallet) allows the user to exploit the standard Provider structure (EIP-1193). Thanks to this, we can have the RPC on vechain!
+- **Signer**: Signer is a class that allows to sign transactions and messages.
 
 Vechain SDK Network is your all-in-one solution for seamlessly integrating with the VechainThor blockchain, providing a reliable and feature-rich experience for dApp developers. Dive into the world of vechain SDK Network and elevate your decentralized applications with ease.
 

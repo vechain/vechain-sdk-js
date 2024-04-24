@@ -1,19 +1,23 @@
-import { type AvailableVechainProviders, type VechainSigner } from '../types';
+import {
+    type AvailableVechainProviders,
+    type TransactionRequestInput,
+    type VechainSigner
+} from '../types';
 import {
     DelegationHandler,
     type SignTransactionOptions,
     type ThorClient
 } from '../../../thor-client';
 import {
+    addressUtils,
     clauseBuilder,
+    Hex,
     Hex0x,
     secp256k1,
-    Transaction,
-    type TransactionBody,
-    type TransactionClause,
-    TransactionHandler
+    type TransactionClause
 } from '../../../../../core';
-import { type TransactionObjectInput } from '../../../provider';
+import { RPC_METHODS } from '../../../provider';
+import { assert, JSONRPC } from '@vechain/sdk-errors';
 
 /**
  * Basic vechain signer.
@@ -35,7 +39,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
      * @param provider - The provider to connect to
      */
     constructor(
-        readonly privateKey: Buffer,
+        private readonly privateKey: Buffer,
         provider: TProviderType | null
     ) {
         // Store provider and delegator
@@ -43,19 +47,61 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
     }
 
     /**
-     * Signs %%transactionToSign%%, returning the fully signed transaction. This does not
-     * populate any additional properties within the transaction.
+     *  Returns a new instance of this Signer connected to //provider// or detached
+     *  from any Provider if null.
      *
-     * @param transactionToSign - The transaction to sign
+     * @param provider - The provider to connect to
+     * @returns a new instance of this Signer connected to //provider// or detached
+     */
+    connect(provider: TProviderType | null): this {
+        return new VechainBaseSigner(this.privateKey, provider) as this;
+    }
+
+    /**
+     * Get the address of the Signer.
+     *
+     * @returns the address of the signer
+     */
+    async getAddress(): Promise<string> {
+        return await Promise.resolve(
+            addressUtils.fromPrivateKey(this.privateKey)
+        );
+    }
+
+    /**
+     *  Gets the next nonce required for this Signer to send a transaction.
+     *
+     *  @param blockTag - The blocktag to base the transaction count on, keep in mind
+     *         many nodes do not honour this value and silently ignore it [default: ``"latest"``]
+     *
+     *  @NOTE: This method generates a random number as nonce. It is because the nonce in vechain is a 6-byte number.
+     */
+    async getNonce(blockTag?: string): Promise<string> {
+        // If provider is available, get the nonce from the provider using eth_getTransactionCount
+        if (this.provider !== null) {
+            return (await this.provider.request({
+                method: RPC_METHODS.eth_getTransactionCount,
+                params: [await this.getAddress(), blockTag]
+            })) as string;
+        }
+
+        // Otherwise return a random number
+        return await Promise.resolve(Hex0x.of(secp256k1.randomBytes(6)));
+    }
+
+    /**
+     * Signs %%transactionToSign%%, returning the fully signed transaction. This does not
+     * populate any additional properties witheth_getTransactionCount: RPC_METHODS, p0: (string | undefined)[], args: EIP1193RequestArguments* @param transactionToSign - The transaction to sign
      * @returns The fully signed transaction
      */
     async signTransaction(
-        transactionToSign: TransactionObjectInput
+        transactionToSign: TransactionRequestInput
     ): Promise<string> {
         return await this._sign(
             transactionToSign,
             null,
-            (this.provider as TProviderType).thorClient
+            (this.provider as TProviderType).thorClient,
+            this.privateKey
         );
     }
 
@@ -63,41 +109,75 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
      * Sign a transaction with the delegator
      *
      * @param transactionToSign - the transaction to sign
-     * @param delegator - the delegator to use
      * @returns the fully signed transaction
      */
     async signTransactionWithDelegator(
-        transactionToSign: TransactionObjectInput,
-        delegator: SignTransactionOptions
+        transactionToSign: TransactionRequestInput
     ): Promise<string> {
+        // Get the delegator
+        const delegator = DelegationHandler(
+            await this.provider?.wallet?.getDelegator()
+        ).delegatorOrNull();
+
+        // Throw an error if the delegator is not available
+        assert(
+            'signTransactionWithDelegator',
+            delegator !== null,
+            JSONRPC.INVALID_PARAMS,
+            'Delegator not found. Ensure that the provider contains the delegator used to sign the transaction.'
+        );
+
         return await this._sign(
             transactionToSign,
-            delegator,
-            (this.provider as TProviderType).thorClient
+            DelegationHandler(
+                await this.provider?.wallet?.getDelegator()
+            ).delegatorOrNull(),
+            (this.provider as TProviderType).thorClient,
+            this.privateKey
         );
     }
 
     /**
-     * Signs a transaction internal method
+     * Build the transaction clauses
+     * form a transaction given as input
+     *
+     * @param transaction - The transaction to sign
+     * @returns The transaction clauses
      */
-    private async _sign(
-        transaction: TransactionObjectInput,
+    private _buildClauses(
+        transaction: TransactionRequestInput
+    ): TransactionClause[] {
+        return transaction.to !== undefined
+            ? // Normal transaction
+              [
+                  {
+                      to: transaction.to,
+                      data: transaction.data ?? '0x',
+                      value: transaction.value ?? '0x0'
+                  } satisfies TransactionClause
+              ]
+            : // If 'to' address is not provided, it will be assumed that the transaction is a contract creation transaction.
+              [clauseBuilder.deployContract(transaction.data ?? '0x')];
+    }
+
+    /**
+     * Signs a transaction internal method
+     *
+     * @param transaction - The transaction to sign
+     * @param delegator - The delegator to use
+     * @param thorClient - The ThorClient instance
+     * @param privateKey - The private key of the signer
+     * @returns The fully signed transaction
+     */
+    async _sign(
+        transaction: TransactionRequestInput,
         delegator: SignTransactionOptions | null,
-        thorClient: ThorClient
+        thorClient: ThorClient,
+        privateKey: Buffer
     ): Promise<string> {
         // 1 - Initiate the transaction clauses
         const transactionClauses: TransactionClause[] =
-            transaction.to !== undefined
-                ? // Normal transaction
-                  [
-                      {
-                          to: transaction.to,
-                          data: transaction.data ?? '0x',
-                          value: transaction.value ?? '0x0'
-                      } satisfies TransactionClause
-                  ]
-                : // If 'to' address is not provided, it will be assumed that the transaction is a contract creation transaction.
-                  [clauseBuilder.deployContract(transaction.data ?? '0x')];
+            transaction.clauses ?? this._buildClauses(transaction);
 
         // 2 - Estimate gas
         const gasResult = await thorClient.gas.estimateGas(
@@ -111,84 +191,21 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
                 transactionClauses,
                 gasResult.totalGas,
                 {
-                    isDelegated: DelegationHandler(delegator).isDelegated()
+                    isDelegated: DelegationHandler(delegator).isDelegated(),
+
+                    // @NOTE: To be compliant with the standard and to avoid nonce overflow, we generate a random nonce of 6 bytes
+                    nonce: Hex0x.of(secp256k1.randomBytes(6))
                 }
             );
 
-        // 5 - Generate nonce.
-        // @NOTE: To be compliant with the standard and to avoid nonce overflow, we generate a random nonce of 6 bytes
-
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { nonce, ...transactionBodyWithoutNonce } = transactionBody;
-        const newNonce = Hex0x.of(secp256k1.randomBytes(6));
-
-        const finalTransactionBody: TransactionBody = {
-            nonce: newNonce,
-            ...transactionBodyWithoutNonce
-        };
-
         // 6 - Sign the transaction
-
-        const signedTransaction = DelegationHandler(delegator).isDelegated()
-            ? await this._signTransactionBodyWithDelegator(
-                  transaction.from,
-                  finalTransactionBody,
-                  delegator as SignTransactionOptions,
-                  thorClient
-              )
-            : TransactionHandler.sign(finalTransactionBody, this.privateKey);
+        const signedTransaction = await thorClient.transactions.signTransaction(
+            transactionBody,
+            Hex.of(privateKey),
+            DelegationHandler(delegator).delegatorOrUndefined()
+        );
 
         return Hex0x.of(signedTransaction.encoded);
-    }
-
-    /**
-     * Sign a transaction with the delegator.
-     * The signature of the delegator into the wallet will be used to sign the transaction.
-     *
-     * @param transactionOrigin - The origin address of the transaction (the 'from' field).
-     * @param transactionToSign - The transaction to sign.
-     * @param thorClient - The ThorClient instance used to sign using the url
-     * @returns The transaction signed by the delegator.
-     *
-     */
-    private async _signTransactionBodyWithDelegator(
-        transactionOrigin: string,
-        transactionToSign: TransactionBody,
-        delegator: SignTransactionOptions,
-        thorClient: ThorClient
-    ): Promise<Transaction> {
-        // 1 - Sign with delegatorPrivateKey
-        if (delegator?.delegatorPrivateKey !== undefined) {
-            return TransactionHandler.signWithDelegator(
-                transactionToSign,
-                this.privateKey,
-                Buffer.from(delegator.delegatorPrivateKey, 'hex')
-            );
-        }
-
-        // 2 - Sign the transaction with the delegator url
-        const delegatorSignatureWithUrl = await DelegationHandler(
-            delegator
-        ).getDelegationSignatureUsingUrl(
-            new Transaction(transactionToSign),
-            transactionOrigin,
-            thorClient.httpClient
-        );
-
-        // Sign transaction with origin private key
-        const originSignature = secp256k1.sign(
-            new Transaction(transactionToSign).getSignatureHash(),
-            this.privateKey
-        );
-
-        // Sign the transaction with both signatures. Concat both signatures to get the final signature
-        const signature = Buffer.concat([
-            originSignature,
-            delegatorSignatureWithUrl
-        ]);
-
-        // Return new signed transaction
-        return new Transaction(transactionToSign, signature);
     }
 }
 

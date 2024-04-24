@@ -1,4 +1,4 @@
-import { HDNode, mnemonic } from '@vechain/sdk-core';
+import { addressUtils, HDNode, mnemonic } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // START_SNIPPET: Bip32Snippet
@@ -17,8 +17,11 @@ const hdnode = HDNode.fromMnemonic(randomMnemonic);
 // 3 - Derive 5 child private keys
 
 for (let i = 0; i < 5; i++) {
-    const child = hdnode.derive(i);
-    console.log(`children ${i} address`, child.address);
+    const child = hdnode.deriveChild(i);
+    console.log(
+        `children ${i} address`,
+        addressUtils.fromPublicKey(child.publicKey)
+    );
     console.log(`children ${i} private key`, child.privateKey);
     // children 0 0x...
     // children 1 0x...
@@ -29,4 +32,4 @@ for (let i = 0; i < 5; i++) {
 // END_SNIPPET: Bip32Snippet
 
 // In the recovery process, validation is recommended
-expect(mnemonic.validate(randomMnemonic)).toBeTruthy();
+expect(mnemonic.isValid(randomMnemonic)).toBeTruthy();
