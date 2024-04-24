@@ -1,6 +1,15 @@
-import { clauseBuilder, unitsUtils } from '@vechain/sdk-core';
-import { ThorClient } from '@vechain/sdk-network';
-import { expect } from 'expect';
+import {
+    clauseBuilder,
+    TransactionHandler,
+    unitsUtils
+} from '@vechain/sdk-core';
+import {
+    ProviderInternalBaseWallet,
+    signerUtils,
+    ThorClient,
+    VechainProvider
+} from '@vechain/sdk-network';
+import { expect } from 'expect'; // START_SNIPPET: FullFlowNoDelegatorSnippet
 
 // START_SNIPPET: FullFlowNoDelegatorSnippet
 
@@ -16,6 +25,23 @@ const senderAccount = {
         'f9fc826b63a35413541d92d2bfb6661128cd5075fcdca583446d20c59994ba26',
     address: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6'
 };
+
+// Create the provider (used in this case to sign the transaction with getSigner() method)
+const provider = new VechainProvider(
+    // Thor client used by the provider
+    thorSoloClient,
+
+    // Internal wallet used by the provider (needed to call the getSigner() method)
+    new ProviderInternalBaseWallet([
+        {
+            privateKey: Buffer.from(senderAccount.privateKey, 'hex'),
+            address: senderAccount.address
+        }
+    ]),
+
+    // Disable fee delegation (BY DEFAULT IT IS DISABLED)
+    false
+);
 
 // 2 - Create the transaction clauses
 const transaction = {
@@ -43,9 +69,18 @@ const txBody = await thorSoloClient.transactions.buildTransactionBody(
 );
 
 // 4 - Sign the transaction
-const signedTransaction = await thorSoloClient.transactions.signTransaction(
-    txBody,
-    senderAccount.privateKey
+const signer = await provider.getSigner(senderAccount.address);
+
+const rawSignedTransaction = await signer.signTransaction(
+    signerUtils.transactionBodyToTransactionRequestInput(
+        txBody,
+        senderAccount.address
+    )
+);
+
+const signedTransaction = TransactionHandler.decode(
+    Buffer.from(rawSignedTransaction.slice(2), 'hex'),
+    true
 );
 
 // 5 - Send the transaction

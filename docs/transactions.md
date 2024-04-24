@@ -384,6 +384,8 @@ In the following complete examples, we will explore the entire lifecycle of a Ve
 1. **No Delegation (Signing Only with an Origin Private Key)**: In this scenario, we'll demonstrate the basic process of creating a transaction, signing it with the origin private key, and sending it to the VechainThor blockchain without involving fee delegation.
 
 ```typescript { name=full-flow-no-delegator, category=example }
+// START_SNIPPET: FullFlowNoDelegatorSnippet
+
 // 1 - Create the thor client
 const _soloUrl = 'http://localhost:8669/';
 const thorSoloClient = ThorClient.fromUrl(_soloUrl, {
@@ -396,6 +398,23 @@ const senderAccount = {
         'f9fc826b63a35413541d92d2bfb6661128cd5075fcdca583446d20c59994ba26',
     address: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6'
 };
+
+// Create the provider (used in this case to sign the transaction with getSigner() method)
+const provider = new VechainProvider(
+    // Thor client used by the provider
+    thorSoloClient,
+
+    // Internal wallet used by the provider (needed to call the getSigner() method)
+    new ProviderInternalBaseWallet([
+        {
+            privateKey: Buffer.from(senderAccount.privateKey, 'hex'),
+            address: senderAccount.address
+        }
+    ]),
+
+    // Disable fee delegation (BY DEFAULT IT IS DISABLED)
+    false
+);
 
 // 2 - Create the transaction clauses
 const transaction = {
@@ -423,9 +442,18 @@ const txBody = await thorSoloClient.transactions.buildTransactionBody(
 );
 
 // 4 - Sign the transaction
-const signedTransaction = await thorSoloClient.transactions.signTransaction(
-    txBody,
-    senderAccount.privateKey
+const signer = await provider.getSigner(senderAccount.address);
+
+const rawSignedTransaction = await signer.signTransaction(
+    signerUtils.transactionBodyToTransactionRequestInput(
+        txBody,
+        senderAccount.address
+    )
+);
+
+const signedTransaction = TransactionHandler.decode(
+    Buffer.from(rawSignedTransaction.slice(2), 'hex'),
+    true
 );
 
 // 5 - Send the transaction
