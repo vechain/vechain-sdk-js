@@ -93,3 +93,28 @@ This section highlights the methodology for constructing a clause that facilitat
 
 This document, designed to be both informative and practical, equips developers with the necessary tools and knowledge to effectively interact with smart contracts on the vechain blockchain, from deployment to function invocation.
 
+## Delegating a Contract Call
+
+### Overview
+
+Vechain allows for the delegation of contract calls, enabling developers to execute contract functions in which the fees are payed by the delegator.
+
+Here is an example of how to delegate a contract call:
+
+```typescript { name=contract-delegation-erc20, category=example }
+// Transferring 10000 tokens to another address with a delegated transaction
+const transferResult = await contract.transact.transfer(
+    '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+    10000,
+    {
+        delegatorPrivateKey: delegatorAccount.privateKey
+    }
+);
+
+// Wait for the transfer transaction to complete and obtain its receipt
+const transactionReceiptTransfer =
+    (await transferResult.wait()) as TransactionReceipt;
+
+// Asserting that the transaction has not been reverted
+expect(transactionReceiptTransfer.reverted).toEqual(false);
+```
