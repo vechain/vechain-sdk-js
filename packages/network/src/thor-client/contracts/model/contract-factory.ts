@@ -2,7 +2,8 @@ import {
     addressUtils,
     clauseBuilder,
     type DeployParams,
-    type InterfaceAbi
+    type InterfaceAbi,
+    TransactionHandler
 } from '@vechain/sdk-core';
 import type { ContractTransactionOptions } from '../types';
 import { type ThorClient } from '../../thor-client';
@@ -12,6 +13,8 @@ import {
     type SendTransactionResult,
     type TransactionReceipt
 } from '../../transactions';
+import { signerUtils, VechainBaseSigner } from '../../../signer';
+import { VechainProvider } from '../../../provider';
 
 /**
  * A factory class for deploying smart contracts to a blockchain using a ThorClient.
@@ -100,14 +103,24 @@ class ContractFactory {
         );
 
         // Sign the transaction with the provided private key
-        const signedTx = await this.thor.transactions.signTransaction(
-            txBody,
-            this.privateKey
+        const signer = new VechainBaseSigner(
+            Buffer.from(this.privateKey, 'hex'),
+            new VechainProvider(this.thor)
+        );
+        const signedTx = await signer.signTransaction(
+            signerUtils.transactionBodyToTransactionRequestInput(
+                txBody,
+                addressUtils.fromPrivateKey(Buffer.from(this.privateKey, 'hex'))
+            )
         );
 
         // Send the signed transaction to the blockchain
-        this.deployTransaction =
-            await this.thor.transactions.sendTransaction(signedTx);
+        this.deployTransaction = await this.thor.transactions.sendTransaction(
+            TransactionHandler.decode(
+                Buffer.from(signedTx.slice(2), 'hex'),
+                true
+            )
+        );
 
         return this;
     }
