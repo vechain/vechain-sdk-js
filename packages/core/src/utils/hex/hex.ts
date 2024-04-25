@@ -56,7 +56,7 @@ enum ErrorMessage {
      * @type {string}
      * @see Hex.canon
      */
-    NOT_FIT = `Arg 'bytes' not enough to fit 'exp'`,
+    NOT_FIT = `Arg 'bytes' not enough to fit 'exp'.`,
 
     /**
      * Error message constant for invalid hexadecimal expression
@@ -65,7 +65,7 @@ enum ErrorMessage {
      * @type {string}
      * @see Hex.canon
      */
-    NOT_HEX = `Arg 'n' not an hexadecimal expression`,
+    NOT_HEX = `Arg 'n' not an hexadecimal expression.`,
 
     /**
      * String constant representing an error message when the argument 'n' is not an integer.
