@@ -1,5 +1,5 @@
 import * as utils from '@noble/curves/abstract/utils';
-import { DECIMAL_INTEGER_REGEX, NUMERIC_REGEX } from '../const';
+import { INTEGER_REGEX, NUMERIC_REGEX } from '../const';
 import { Hex0x, Hex } from '../hex';
 import { assert, buildError, DATA } from '@vechain/sdk-errors';
 
@@ -15,7 +15,7 @@ import { ethers } from 'ethers';
  * @returns A boolean indicating whether the input is a valid decimal string.
  */
 const isDecimalString = (data: string): boolean => {
-    return DECIMAL_INTEGER_REGEX.test(data);
+    return INTEGER_REGEX.test(data);
 };
 
 /**
@@ -62,21 +62,21 @@ const encodeBytes32String = (
  * Decode a bytes32 hex string to a string. The bytes32 string can be padded with zeros to the left or right.
  * An example of usage is to decode a bytes32 string returned by a smart contract function.
  *
- * @param value - The bytes32 hex string to decode.
+ * @param hexExpression - The bytes32 hex string to decode.
  * @returns The decoded string.
  *
  * @throws If the value cannot be decoded to string. (e.g. if the value is not a valid hex string, or it is not 64 characters long)
  */
-const decodeBytes32String = (value: string): string => {
+const decodeBytes32String = (hexExpression: string): string => {
     assert(
         'decodeBytes32String',
-        Hex0x.isValid(value) && Hex.canon(value).length === 64,
+        Hex0x.isValid(hexExpression) && Hex.canon(hexExpression).length === 64,
         DATA.INVALID_DATA_TYPE,
-        `Failed to decode value ${value} to string. Value is not a valid hex string or it is not 64 characters long`,
-        { value }
+        `Failed to decode value ${hexExpression} to string. Value is not a valid hex string or it is not 64 characters long`,
+        { value: hexExpression }
     );
 
-    const valueInBytes = utils.hexToBytes(Hex.canon(value));
+    const valueInBytes = utils.hexToBytes(Hex.canon(hexExpression));
 
     // find the first zero byte
     const firstZeroIndex = valueInBytes.findIndex((byte) => byte === 0);
