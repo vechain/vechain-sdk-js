@@ -105,7 +105,9 @@ type HexRepresentable = bigint | Uint8Array | number | string;
  *
  * @param {bigint} bi - The bigint number to be represented as hexadecimal string.
  * @param {number} bytes - The number of bytes the resulting hexadecimal representation should be padded to.
+ *
  * @returns {string} - The padded hexadecimal representation of the bigint number.
+ *
  * @throws {ErrorMessage} - If n is negative.
  */
 function ofBigInt(bi: bigint, bytes: number): string {
@@ -126,7 +128,10 @@ function ofBigInt(bi: bigint, bytes: number): string {
  *
  * @param {HexString} n - The hexadecimal string representing the number.
  * @param {number} [bytes=0] - The number of bytes the resulting hexadecimal string should be padded to. Defaults to 0.
+ *
  * @returns {string} - The padded lowercase hexadecimal string.
+ *
+ * @throws {InvalidDataTypeError} - If the provided hexadecimal string is not valid.
  */
 function ofHexString(n: HexString, bytes: number): string {
     assert(
@@ -146,7 +151,7 @@ function ofHexString(n: HexString, bytes: number): string {
  * @param {number} bytes - The number of bytes the resulting hexadecimal representation should be padded to.
  * @returns {string} The padded hexadecimal representation of the number.
  *
- * @throws Throws an error if the provided number is not an integer or is not positive.
+ * @throws {InvalidDataTypeError} an error if the provided number is not an integer or is not positive.
  */
 function ofNumber(n: number, bytes: number): string {
     assert(
@@ -327,7 +332,7 @@ const Hex = {
      * @param {number} [bytes] - The number of bytes to include in the canonical form.
      * If not specified, all bytes will be included.
      * @returns {string} The canonical representation of the given string expression.
-     * @throws {Error} if `exp` is not a valid hexadecimal expression,
+     * @throws {InvalidDataTypeError} if `exp` is not a valid hexadecimal expression,
      * if `bytes` is not integer and greater or equal to zero.
      */
     canon: function (exp: string, bytes?: number): string {
