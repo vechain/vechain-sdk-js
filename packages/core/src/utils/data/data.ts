@@ -106,6 +106,13 @@ const isNumeric = (value: string): boolean => {
     return NUMERIC_REGEX.test(value);
 };
 
+/**
+ * Converts a given string to UTF-8 bytes.
+ *
+ * @param {string} txt - The input string.
+ * @param {UnicodeNormalizationForm} [form] - The [Unicode Normalization Forms](https://unicode.org/reports/tr15/) to use. Defaults to `null`.
+ * @returns {Uint8Array} - The UTF-8 byte representation of the input string.
+ */
 function utf8BytesOf(txt: string, form?: UnicodeNormalizationForm): Uint8Array {
     const result: number[] = [];
     const str = form != null ? txt.normalize(form) : txt;
@@ -150,5 +157,6 @@ export const dataUtils = {
     decodeBytes32String,
     encodeBytes32String,
     isDecimalString,
-    isNumeric
+    isNumeric,
+    utf8BytesOf
 };
