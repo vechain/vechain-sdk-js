@@ -669,6 +669,99 @@ const testingContractTestCases: TestCase[] = [
     }
 ];
 
+const testingContractEVMExtensionTestCases: TestCase[] = [
+    {
+        description: 'should return the blockID of the given block number',
+        functionName: 'getBlockID',
+        params: [1],
+        expected: [
+            '0x00000001fb5387f59d35a8e76dcce151cb229a3910ac5f4731ff55f7ca36a809'
+        ],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description:
+            'should return the block total score of the given block defined by the block number',
+        functionName: 'getBlockTotalScore',
+        params: [1],
+        expected: [1n],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description: 'should return the block time of the given block number',
+        functionName: 'getBlockTime',
+        params: [1],
+        expected: [1702231120n],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description: 'should return the block signer of the given block number',
+        functionName: 'getBlockSigner',
+        params: [1],
+        expected: ['0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description: 'should return the total supply of VET',
+        functionName: 'getTotalSupply',
+        params: [],
+        expected: [10000000000000000000000000000n],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description:
+            'should return the `provedWork` of the current transaction',
+        functionName: 'getTxProvedWork',
+        params: [],
+        expected: [0n],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description:
+            'should return the transaction ID of the current transaction',
+        functionName: 'getTxID',
+        params: [],
+        expected: [
+            '0x0000000000000000000000000000000000000000000000000000000000000000'
+        ],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description: 'should return the `blockRef` of the current transaction',
+        functionName: 'getTxBlockRef',
+        params: [],
+        expected: ['0x0000000000000000'],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description:
+            'should return the `expiration` of the current transaction',
+        functionName: 'getTxExpiration',
+        params: [],
+        expected: [0n],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description: 'should return the data hashed using Blake2b256',
+        functionName: 'calculateBlake2b256',
+        params: ['0x'],
+        expected: [
+            '0x0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8'
+        ],
+        reverted: false,
+        isReadOnly: true
+    }
+];
+
 interface FunctionCallTestCase {
     functionName: string;
     params: unknown[];
@@ -1020,6 +1113,7 @@ export {
     deployedContractAbi,
     deployedERC20Abi,
     testingContractTestCases,
+    testingContractEVMExtensionTestCases,
     filterContractEventsTestCases,
     depositContractAbi,
     depositContractBytecode,
