@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { soloUrl } from '../../../fixture';
+import { soloUrl } from '../../../../fixture';
 import { getReceiptCorrectCasesSoloNetwork } from './fixture';
 
 /**

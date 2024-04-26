@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { NotImplementedError } from '@vechain/sdk-errors';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { testnetUrl } from '../../../fixture';
+import { testnetUrl } from '../../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'debug_getRawBlock' method

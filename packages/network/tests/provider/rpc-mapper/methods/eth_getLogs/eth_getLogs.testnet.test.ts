@@ -5,7 +5,7 @@ import {
     RPCMethodsMap,
     ThorClient
 } from '../../../../../src';
-import { testnetUrl } from '../../../fixture';
+import { testnetUrl } from '../../../../fixture';
 import { logsFixture } from './fixture';
 import { InvalidDataTypeError } from '@vechain/sdk-errors';
 

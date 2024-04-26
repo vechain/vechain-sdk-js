@@ -5,7 +5,7 @@ import {
     RPCMethodsMap,
     ThorClient
 } from '../../../../../src';
-import { soloUrl } from '../../../fixture';
+import { soloUrl } from '../../../../fixture';
 import { ProviderRpcError } from '@vechain/sdk-errors';
 import { logsFixture, mockLogsFixture } from './fixture';
 

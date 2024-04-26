@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 
-import { soloUrl, TEST_ACCOUNTS_THOR_SOLO } from '../../../fixture';
+import { ALL_ACCOUNTS, soloUrl } from '../../../../fixture';
 import {
     Hex0x,
     type TransactionClause,
@@ -39,8 +39,8 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
             // 1 - Init sender and receiver
 
             const actors = {
-                sender: TEST_ACCOUNTS_THOR_SOLO[1],
-                receiver: TEST_ACCOUNTS_THOR_SOLO[2]
+                sender: ALL_ACCOUNTS[1],
+                receiver: ALL_ACCOUNTS[2]
             };
 
             // 2- Init transaction

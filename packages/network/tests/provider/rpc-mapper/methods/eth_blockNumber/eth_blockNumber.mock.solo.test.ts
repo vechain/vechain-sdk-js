@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { ProviderRpcError } from '@vechain/sdk-errors';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { soloUrl } from '../../../fixture';
+import { soloUrl } from '../../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_blockNumber' method with Solo Network and mocked functionality

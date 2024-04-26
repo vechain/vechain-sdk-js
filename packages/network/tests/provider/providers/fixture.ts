@@ -1,12 +1,14 @@
 import { type InterfaceAbi, Quantity, unitsUtils } from '@vechain/sdk-core';
 import { zeroBlock } from '../rpc-mapper/methods/eth_getBlockByNumber/fixture';
 import {
-    TEST_ACCOUNTS_THOR_SOLO,
-    TESTING_CONTRACT_ADDRESS,
-    TESTING_CONTRACT_BYTECODE,
     validTransactionDetailTestnet,
     validTransactionHashTestnet
 } from '../fixture';
+import {
+    ALL_ACCOUNTS,
+    TESTING_CONTRACT_ADDRESS,
+    TESTING_CONTRACT_BYTECODE
+} from '../../fixture';
 
 /**
  * Test cases for provider methods - Testnet
@@ -41,7 +43,7 @@ const providerMethodsTestCasesSolo = [
         description:
             'Should be able to call eth_getBalance of an address with balance more than 0 VET',
         method: 'eth_getBalance',
-        params: [TEST_ACCOUNTS_THOR_SOLO[0].address, 'latest'],
+        params: [ALL_ACCOUNTS[0].address, 'latest'],
         expected: Quantity.of(unitsUtils.parseVET('500000000'))
     },
     {

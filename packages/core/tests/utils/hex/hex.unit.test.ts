@@ -1,11 +1,11 @@
 import { describe, expect, test } from '@jest/globals';
-import { Hex0x, Hex, Quantity } from '../../../src';
+import { Hex, Hex0x, Quantity } from '../../../src';
 import {
     invalidThorIDs,
     prefixedAndUnprefixedStrings,
     validThorIDs
 } from '../data/fixture';
-import { InvalidDataTypeError } from '@vechain/sdk-errors/dist';
+import { InvalidDataTypeError } from '@vechain/sdk-errors';
 
 /**
  * Text Hex representation from TS types prefixed with `0x`.

@@ -1,6 +1,15 @@
-import { clauseBuilder, unitsUtils } from '@vechain/sdk-core';
-import { ThorClient } from '@vechain/sdk-network';
-import { expect } from 'expect';
+import {
+    clauseBuilder,
+    TransactionHandler,
+    unitsUtils
+} from '@vechain/sdk-core';
+import {
+    ProviderInternalBaseWallet,
+    signerUtils,
+    ThorClient,
+    VechainProvider
+} from '@vechain/sdk-network';
+import { expect } from 'expect'; // START_SNIPPET: FullFlowDelegatorUrlSnippet
 
 // START_SNIPPET: FullFlowDelegatorUrlSnippet
 
@@ -23,6 +32,30 @@ const senderAccount = {
 const delegatorAccount = {
     URL: 'https://sponsor-testnet.vechain.energy/by/269'
 };
+
+// Create the provider (used in this case to sign the transaction with getSigner() method)
+const providerWithDelegationEnabled = new VechainProvider(
+    // Thor client used by the provider
+    thorClient,
+
+    // Internal wallet used by the provider (needed to call the getSigner() method)
+    new ProviderInternalBaseWallet(
+        [
+            {
+                privateKey: Buffer.from(senderAccount.privateKey, 'hex'),
+                address: senderAccount.address
+            }
+        ],
+        {
+            delegator: {
+                delegatorUrl: delegatorAccount.URL
+            }
+        }
+    ),
+
+    // Enable fee delegation
+    true
+);
 
 // 2 - Create the transaction clauses
 const transaction = {
@@ -53,17 +86,25 @@ const txBody = await thorClient.transactions.buildTransactionBody(
 );
 
 // 4 - Sign the transaction
-const signedTx = await thorClient.transactions.signTransaction(
-    txBody,
-    senderAccount.privateKey,
-    {
-        delegatorUrl: delegatorAccount.URL
-    }
+const signer = await providerWithDelegationEnabled.getSigner(
+    senderAccount.address
+);
+
+const rawDelegateSigned = await signer.signTransactionWithDelegator(
+    signerUtils.transactionBodyToTransactionRequestInput(
+        txBody,
+        senderAccount.address
+    )
+);
+
+const delegatedSigned = TransactionHandler.decode(
+    Buffer.from(rawDelegateSigned.slice(2), 'hex'),
+    true
 );
 
 // 5 - Send the transaction
 const sendTransactionResult =
-    await thorClient.transactions.sendTransaction(signedTx);
+    await thorClient.transactions.sendTransaction(delegatedSigned);
 
 // 6 - Wait for transaction receipt
 const txReceipt = await thorClient.transactions.waitForTransaction(
@@ -73,8 +114,8 @@ const txReceipt = await thorClient.transactions.waitForTransaction(
 // END_SNIPPET: FullFlowDelegatorUrlSnippet
 
 // Check the signed transaction
-expect(signedTx.isSigned).toEqual(true);
-expect(signedTx.isDelegated).toEqual(true);
+expect(delegatedSigned.isSigned).toEqual(true);
+expect(delegatedSigned.isDelegated).toEqual(true);
 // expect(signedTx.delegator).toEqual(delegatorAccount.address); ---
 
 // Check the transaction receipt

@@ -1,6 +1,6 @@
 import { Hex0x, Quantity, unitsUtils, ZERO_BYTES } from '@vechain/sdk-core';
-import { TEST_ACCOUNTS_THOR_SOLO } from '../../../fixture';
 import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
+import { ALL_ACCOUNTS } from '../../../../fixture';
 
 /**
  * eth_getBalance RPC call tests - Positive cases
@@ -8,19 +8,19 @@ import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
 const ethGetBalanceTestCases = [
     {
         description: 'Should return correct balance of the test account',
-        params: [TEST_ACCOUNTS_THOR_SOLO[0].address, 'latest'],
+        params: [ALL_ACCOUNTS[0].address, 'latest'],
         expected: Quantity.of(unitsUtils.parseVET('500000000'))
     },
     {
         description: 'Should return correct balance of the test account',
-        params: [TEST_ACCOUNTS_THOR_SOLO[0].address, 'best'],
+        params: [ALL_ACCOUNTS[0].address, 'best'],
         expected: Quantity.of(unitsUtils.parseVET('500000000'))
     },
     {
         description:
             'Should return correct balance of the test account before seeding',
         params: [
-            TEST_ACCOUNTS_THOR_SOLO[0].address,
+            ALL_ACCOUNTS[0].address,
             Quantity.of(0) // 0 is the genesis block
         ],
         expected: '0x0' // Expected balance is 0
@@ -37,7 +37,7 @@ const ethGetBalanceTestCases = [
     },
     {
         description: 'Should return error for block number not as hex string',
-        params: [TEST_ACCOUNTS_THOR_SOLO[0].address, '1'], // VechainThor also supports block number as number instead of hex string
+        params: [ALL_ACCOUNTS[0].address, '1'], // VechainThor also supports block number as number instead of hex string
         expected: '0x0' // Expected balance is 0
     }
 ];
@@ -48,7 +48,7 @@ const ethGetBalanceTestCases = [
 const invalidEthGetBalanceTestCases = [
     {
         description: 'Should throw error for too many params',
-        params: [TEST_ACCOUNTS_THOR_SOLO[0].address, 'latest', 'latest'],
+        params: [ALL_ACCOUNTS[0].address, 'latest', 'latest'],
         expectedError: InvalidDataTypeError
     },
     {
@@ -58,12 +58,12 @@ const invalidEthGetBalanceTestCases = [
     },
     {
         description: 'Should throw error for invalid block number',
-        params: [TEST_ACCOUNTS_THOR_SOLO[0].address, '0x123z'],
+        params: [ALL_ACCOUNTS[0].address, '0x123z'],
         expectedError: ProviderRpcError
     },
     {
         description: 'Should throw error for too few params',
-        params: [TEST_ACCOUNTS_THOR_SOLO[0].address],
+        params: [ALL_ACCOUNTS[0].address],
         expectedError: InvalidDataTypeError
     }
 ];

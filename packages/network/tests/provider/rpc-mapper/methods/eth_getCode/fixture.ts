@@ -2,7 +2,7 @@ import { VTHO_ADDRESS } from '@vechain/sdk-core';
 import {
     TESTING_CONTRACT_ADDRESS,
     TESTING_CONTRACT_BYTECODE
-} from '../../../fixture';
+} from '../../../../fixture';
 import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
 
 /**

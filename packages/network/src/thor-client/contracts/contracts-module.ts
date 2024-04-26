@@ -1,14 +1,16 @@
 import {
+    abi,
+    addressUtils,
+    clauseBuilder,
     coder,
+    dataUtils,
+    type FunctionFragment,
     type InterfaceAbi,
     PARAMS_ABI,
     PARAMS_ADDRESS,
-    dataUtils,
-    addressUtils,
-    type FunctionFragment,
-    abi,
-    clauseBuilder,
-    type TransactionClause
+    type TransactionBody,
+    type TransactionClause,
+    TransactionHandler
 } from '@vechain/sdk-core';
 import type {
     ContractCallOptions,
@@ -18,6 +20,8 @@ import type {
 import { type SendTransactionResult } from '../transactions';
 import { type ThorClient } from '../thor-client';
 import { Contract, ContractFactory } from './model';
+import { signerUtils, VechainBaseSigner } from '../../signer';
+import { VechainProvider } from '../../provider';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -140,17 +144,45 @@ class ContractsModule {
         );
 
         // Sign the transaction with the private key
-        const signedTx = await this.thor.transactions.signTransaction(
-            txBody,
-            privateKey
-        );
-
-        const result = await this.thor.transactions.sendTransaction(signedTx);
+        const result = await this._signContractTransaction(privateKey, txBody);
 
         result.wait = async () =>
             await this.thor.transactions.waitForTransaction(result.id);
 
         return result;
+    }
+
+    /**
+     * Internal function used to sign a contract transaction
+     * with the provided private key.
+     *
+     * @param privateKey - The private key for signing the transaction.
+     * @param txBody - The transaction body to sign.
+     *
+     * @private
+     */
+    private async _signContractTransaction(
+        privateKey: string,
+        txBody: TransactionBody
+    ): Promise<SendTransactionResult> {
+        const signer = new VechainBaseSigner(
+            Buffer.from(privateKey, 'hex'),
+            new VechainProvider(this.thor)
+        );
+
+        const signedTx = await signer.signTransaction(
+            signerUtils.transactionBodyToTransactionRequestInput(
+                txBody,
+                addressUtils.fromPrivateKey(Buffer.from(privateKey, 'hex'))
+            )
+        );
+
+        return await this.thor.transactions.sendTransaction(
+            TransactionHandler.decode(
+                Buffer.from(signedTx.slice(2), 'hex'),
+                true
+            )
+        );
     }
 
     /**
@@ -178,12 +210,7 @@ class ContractsModule {
         );
 
         // Sign the transaction with the private key
-        const signedTx = await this.thor.transactions.signTransaction(
-            txBody,
-            privateKey
-        );
-
-        const result = await this.thor.transactions.sendTransaction(signedTx);
+        const result = await this._signContractTransaction(privateKey, txBody);
 
         result.wait = async () =>
             await this.thor.transactions.waitForTransaction(result.id);

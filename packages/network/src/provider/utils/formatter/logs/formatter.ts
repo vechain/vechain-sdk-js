@@ -1,5 +1,5 @@
 import { type LogsRPC } from './types';
-import { Quantity } from '@vechain/sdk-core/dist';
+import { Quantity } from '@vechain/sdk-core';
 import { type EventCriteria, type EventLogs } from '../../../../thor-client';
 
 /**

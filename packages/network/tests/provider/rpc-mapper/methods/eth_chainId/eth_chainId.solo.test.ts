@@ -5,7 +5,7 @@ import {
     RPCMethodsMap,
     ThorClient
 } from '../../../../../src';
-import { soloUrl } from '../../../fixture';
+import { soloUrl } from '../../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_chainId' method
