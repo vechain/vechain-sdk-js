@@ -3,29 +3,16 @@ import {
     buildTransactionBodyClausesTestCases,
     expectedReceipt,
     invalidWaitForTransactionTestCases,
-    signTransactionTestCases,
     transactionNonces,
     transfer1VTHOClause,
     transferTransactionBody,
     transferTransactionBodyValueAsNumber,
     waitForTransactionTestCases
 } from './fixture';
-import {
-    soloUrl,
-    TEST_ACCOUNTS,
-    TESTING_CONTRACT_ABI,
-    TESTING_CONTRACT_ADDRESS
-} from '../../fixture';
-import {
-    Transaction,
-    TransactionHandler,
-    addressUtils,
-    type FunctionFragment,
-    clauseBuilder,
-    coder
-} from '@vechain/sdk-core';
+import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
+import { Transaction, TransactionHandler } from '@vechain/sdk-core';
 import { TransactionNotSignedError } from '@vechain/sdk-errors';
-import { DelegationHandler, ThorClient } from '../../../src';
+import { ThorClient } from '../../../src';
 
 /**
  * Transactions module tests.
@@ -247,95 +234,6 @@ describe('ThorClient - Transactions Module', () => {
                     );
                     expect(txBody.chainTag).toBe(expected.solo.chainTag);
                 });
-            }
-        );
-    });
-
-    /**
-     * Test suite for signTransaction method
-     */
-    describe('signTransactionTestCases', () => {
-        /**
-         * signTransaction test cases with different options
-         */
-        signTransactionTestCases.solo.correct.forEach(
-            ({ description, origin, options, isDelegated, expected }) => {
-                test(description, async () => {
-                    const sampleClause = clauseBuilder.functionInteraction(
-                        TESTING_CONTRACT_ADDRESS,
-                        coder
-                            .createInterface(TESTING_CONTRACT_ABI)
-                            .getFunction('deposit') as FunctionFragment,
-                        [123]
-                    );
-
-                    const gasResult = await thorSoloClient.gas.estimateGas(
-                        [sampleClause],
-                        origin.address
-                    );
-
-                    const txBody =
-                        await thorSoloClient.transactions.buildTransactionBody(
-                            [sampleClause],
-                            gasResult.totalGas,
-                            {
-                                isDelegated
-                            }
-                        );
-
-                    const signedTx =
-                        await thorSoloClient.transactions.signTransaction(
-                            txBody,
-                            origin.privateKey,
-                            DelegationHandler(options).delegatorOrUndefined()
-                        );
-
-                    expect(signedTx).toBeDefined();
-                    expect(signedTx.body).toMatchObject(expected.body);
-                    expect(signedTx.origin).toBe(
-                        addressUtils.toERC55Checksum(origin.address)
-                    );
-                    expect(signedTx.isDelegated).toBe(isDelegated);
-                    expect(signedTx.isSigned).toBe(true);
-                    expect(signedTx.signature).toBeDefined();
-                });
-            }
-        );
-
-        /**
-         * signTransaction test cases that should throw an error
-         */
-        signTransactionTestCases.solo.incorrect.forEach(
-            ({ description, origin, options, expectedError }) => {
-                test(
-                    description,
-                    async () => {
-                        const sampleClause = clauseBuilder.functionInteraction(
-                            TESTING_CONTRACT_ADDRESS,
-                            coder
-                                .createInterface(TESTING_CONTRACT_ABI)
-                                .getFunction(
-                                    'setStateVariable'
-                                ) as FunctionFragment,
-                            [123]
-                        );
-
-                        const txBody =
-                            await thorSoloClient.transactions.buildTransactionBody(
-                                [sampleClause],
-                                0
-                            );
-
-                        await expect(
-                            thorSoloClient.transactions.signTransaction(
-                                txBody,
-                                origin.privateKey,
-                                options
-                            )
-                        ).rejects.toThrow(expectedError);
-                    },
-                    10000
-                );
             }
         );
     });

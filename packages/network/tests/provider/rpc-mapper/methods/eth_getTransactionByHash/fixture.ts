@@ -1,4 +1,4 @@
-import { ZERO_BUFFER, Hex0x } from '@vechain/sdk-core';
+import { Hex0x, ZERO_BUFFER } from '@vechain/sdk-core';
 import {
     validTransactionDetailTestnet,
     validTransactionHashTestnet

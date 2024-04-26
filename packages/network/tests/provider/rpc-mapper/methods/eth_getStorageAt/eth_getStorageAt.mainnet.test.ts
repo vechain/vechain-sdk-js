@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { mainNetwork } from '../../../fixture';
+import { mainNetwork } from '../../../../fixture';
 import {
     ethGetStorageAtTestCases,
     invalidEthGetStorageAtTestCases

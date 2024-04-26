@@ -5,7 +5,7 @@ import {
     ProviderInternalBaseWallet,
     type SubscriptionEvent
 } from '../../../../src';
-import { testnetUrl } from '../../fixture';
+import { testnetUrl } from '../../../fixture';
 
 import { TESTNET_NETWORK } from '@vechain/sdk-core';
 import { providerMethodsTestCasesTestnet } from '../fixture';

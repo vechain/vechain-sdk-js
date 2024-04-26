@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { testnetUrl } from '../../../fixture';
+import { testnetUrl } from '../../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_chainId' method
