@@ -2,7 +2,6 @@ import * as utils from '@noble/curves/abstract/utils';
 import { Hex0x, Hex } from '../hex';
 import { INTEGER_REGEX, NUMERIC_REGEX, ZERO_BYTES } from '../const';
 import { assert, buildError, DATA } from '@vechain/sdk-errors';
-import { type UnicodeNormalizationForm } from './types';
 
 /**
  * Decodes a hexadecimal string representing a bytes32 value into a string.
@@ -57,7 +56,7 @@ const encodeBytes32String = (
 ): string => {
     // Wrap any error raised by utf8BytesOf(value).
     try {
-        const valueInBytes = utf8BytesOf(value);
+        const valueInBytes = new TextEncoder().encode(value);
         assert(
             'dataUtils.encodeBytes32String',
             valueInBytes.length <= 32,
@@ -106,57 +105,9 @@ const isNumeric = (value: string): boolean => {
     return NUMERIC_REGEX.test(value);
 };
 
-/**
- * Converts a given string to UTF-8 bytes.
- *
- * @param {string} txt - The input string.
- * @param {UnicodeNormalizationForm} [form] - The [Unicode Normalization Forms](https://unicode.org/reports/tr15/) to use. Defaults to `null`.
- * @returns {Uint8Array} - The UTF-8 byte representation of the input string.
- */
-function utf8BytesOf(txt: string, form?: UnicodeNormalizationForm): Uint8Array {
-    const result: number[] = [];
-    const str = form != null ? txt.normalize(form) : txt;
-    for (let i = 0; i < str.length; i++) {
-        const char = str.charCodeAt(i);
-        if (char < 0x80) {
-            result.push(char);
-        } else if (char < 0x800) {
-            result.push((char >> 6) | 0xc0);
-            result.push((char & 0x3f) | 0x80);
-        } else if ((char & 0xfc00) === 0xd800) {
-            i++;
-            const nextChar = str.charCodeAt(i);
-            assert(
-                'dataUtils.utf8BytesOf',
-                i < str.length && (nextChar & 0xfc00) === 0xdc00,
-                DATA.INVALID_DATA_TYPE,
-                `Invalid surrogate ${char}${nextChar} at position ${i} in ${str}.`,
-                {
-                    char,
-                    nextChar,
-                    i,
-                    str
-                }
-            );
-            const surrogatePair =
-                0x10000 + ((char & 0x03ff) << 10) + (nextChar & 0x03ff);
-            result.push((surrogatePair >> 18) | 0xf0);
-            result.push(((surrogatePair >> 12) & 0x3f) | 0x80);
-            result.push(((surrogatePair >> 6) & 0x3f) | 0x80);
-            result.push((surrogatePair & 0x3f) | 0x80);
-        } else {
-            result.push((char >> 12) | 0xe0);
-            result.push(((char >> 6) & 0x3f) | 0x80);
-            result.push((char & 0x3f) | 0x80);
-        }
-    }
-    return new Uint8Array(result);
-}
-
 export const dataUtils = {
     decodeBytes32String,
     encodeBytes32String,
     isDecimalString,
-    isNumeric,
-    utf8BytesOf
+    isNumeric
 };
