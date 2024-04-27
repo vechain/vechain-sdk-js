@@ -93,17 +93,23 @@ async function decrypt(
 }
 
 /**
- * Validates if the provided keystore adheres to the expected format and structure.
+ * Checks if a given keystore object is valid parsing its JSON representation
+ * to catch any parsing errors, only valid keystore having version 3 are accepted.
  *
- * @param keystore - The keystore to be validated.
- * @returns A boolean indicating whether the keystore is valid or not.
+ * @param {Keystore} keystore - The keystore object to validate.
+ * @return {boolean} Returns true if the keystore is valid, false otherwise.
  */
 function isValid(keystore: Keystore): boolean {
-    return ethers.isKeystoreJson(JSON.stringify(keystore));
+    try {
+        const copy = JSON.parse(JSON.stringify(keystore)) as Keystore;
+        if (copy.version === 3) {
+            return true;
+        }
+    } catch (error) {} // Return false if parsing fails.
+    return false;
 }
 
 /**
  * Exports the keystore functions for encryption, decryption, and validation.
  */
-const keystore = { encrypt, decrypt, isValid };
-export { keystore };
+export const keystore = { decrypt, encrypt, isValid };
