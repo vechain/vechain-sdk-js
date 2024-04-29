@@ -24,12 +24,12 @@ interface TransactionRequestInput {
     /**
      *  The target of the transaction.
      */
-    to?: string;
+    to?: null | string;
 
     /**
      *  The sender of the transaction.
      */
-    from: string;
+    from?: null | string;
 
     /**
      * Nonce value for various purposes.
@@ -267,26 +267,23 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
     getNonce: (blockTag?: string) => Promise<string>;
 
     /**
-     * --- START: TEMPORARY COMMENT ---
-     * To be implemented in the future
-     * --- END: TEMPORARY COMMENT ---
-     *
-     *  Prepares a {@link vechain_sdk_core_ethers.TransactionRequest} for calling:
+     *  Prepares a {@link TransactionRequestInput} for calling:
      *  - resolves ``to`` and ``from`` addresses
      *  - if ``from`` is specified, check that it matches this Signer
      *
+     *  @note: Here the base support of multi-clause transaction is added.
+     *  So, if clauses are provided in the transaction, it will be used as it is.
+     *  Otherwise, standard transaction will be prepared.
+     *
      *  @param tx - The call to prepare
+     *  @returns the prepared call transaction
      */
-    // populateCall: (
-    //     tx: vechain_sdk_core_ethers.TransactionRequest
-    // ) => Promise<vechain_sdk_core_ethers.TransactionLike<string>>;
+    populateCall: (
+        tx: TransactionRequestInput
+    ) => Promise<TransactionRequestInput>;
 
     /**
-     * --- START: TEMPORARY COMMENT ---
-     * To be implemented in the future
-     * --- END: TEMPORARY COMMENT ---
-     *
-     *  Prepares a {@link vechain_sdk_core_ethers.TransactionRequest} for sending to the network by
+     *  Prepares a {@link TransactionRequestInput} for sending to the network by
      *  populating any missing properties:
      *  - resolves ``to`` and ``from`` addresses
      *  - if ``from`` is specified , check that it matches this Signer
@@ -302,9 +299,9 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
      *
      *  @param tx - The call to prepare
      */
-    // populateTransaction: (
-    //     tx: vechain_sdk_core_ethers.TransactionRequest
-    // ) => Promise<vechain_sdk_core_ethers.TransactionLike<string>>;
+    populateTransaction: (
+        tx: TransactionRequestInput
+    ) => Promise<TransactionRequestInput>;
 
     /**
      * --- START: TEMPORARY COMMENT ---
