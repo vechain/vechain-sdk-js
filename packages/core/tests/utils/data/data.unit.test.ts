@@ -12,21 +12,34 @@ import {
  * Hex data tests
  * @group unit/utils-data
  */
-describe('utils/hex', () => {
+describe('dataUtils', () => {
     /**
-     * Verification of numbers in string format
+     * Decode bytes32 string
      */
-    describe('isNumeric', () => {
+    describe('decodeBytes32String', () => {
         /**
-         * Test cases for isNumeric function.
+         * Test cases for decodeBytes32String function.
          */
-        isNumericTestCases.forEach(({ value, expected }) => {
+        decodeBytes32StringTestCases.forEach(({ value, expected }) => {
             test(`should return ${expected} for ${JSON.stringify(
                 value
             )}`, () => {
-                expect(dataUtils.isNumeric(value)).toBe(expected);
+                expect(dataUtils.decodeBytes32String(value)).toBe(expected);
             });
         });
+
+        /**
+         * Test cases for invalid decodeBytes32String function.
+         */
+        invalidDecodeBytes32StringTestCases.forEach(
+            ({ value, expectedError }) => {
+                test(`should throw for ${JSON.stringify(value)}`, () => {
+                    expect(() =>
+                        dataUtils.decodeBytes32String(value)
+                    ).toThrowError(expectedError);
+                });
+            }
+        );
     });
 
     /**
@@ -63,31 +76,18 @@ describe('utils/hex', () => {
     });
 
     /**
-     * Decode bytes32 string
+     * Verification of numbers in string format
      */
-    describe('decodeBytes32String', () => {
+    describe('isNumeric', () => {
         /**
-         * Test cases for decodeBytes32String function.
+         * Test cases for isNumeric function.
          */
-        decodeBytes32StringTestCases.forEach(({ value, expected }) => {
+        isNumericTestCases.forEach(({ value, expected }) => {
             test(`should return ${expected} for ${JSON.stringify(
                 value
             )}`, () => {
-                expect(dataUtils.decodeBytes32String(value)).toBe(expected);
+                expect(dataUtils.isNumeric(value)).toBe(expected);
             });
         });
-
-        /**
-         * Test cases for invalid decodeBytes32String function.
-         */
-        invalidDecodeBytes32StringTestCases.forEach(
-            ({ value, expectedError }) => {
-                test(`should throw for ${JSON.stringify(value)}`, () => {
-                    expect(() =>
-                        dataUtils.decodeBytes32String(value)
-                    ).toThrowError(expectedError);
-                });
-            }
-        );
     });
 });
