@@ -34,6 +34,24 @@ describe('HDNode', () => {
             );
         });
 
+        test('fromMnemonic - invalid - word list leak check', () => {
+            const words =
+                'denial pet squirrel other broom bar gas better priority spoil cross'.split(
+                    ' '
+                );
+            try {
+                HDNode.fromMnemonic(words);
+                expect(true).toBeFalsy();
+            } catch (error) {
+                (error as Error)
+                    .toString()
+                    .split(' ')
+                    .forEach((word) => {
+                        expect(words.includes(word)).toBeFalsy();
+                    });
+            }
+        });
+
         test('fromMnemonic - valid - address sequence', () => {
             const root = HDNode.fromMnemonic(words);
             for (let i = 0; i < 5; i++) {
