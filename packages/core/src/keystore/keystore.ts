@@ -1,12 +1,17 @@
 /**
  * Implements the JSON Keystore v3 Wallet encryption, decryption, and validation functionality.
  */
-import { addressUtils } from '../address';
-import { secp256k1 } from '../secp256k1';
-import { ethers } from 'ethers';
 import { Hex0x, SCRYPT_PARAMS } from '../utils';
-import { type Keystore, type KeystoreAccount } from './types';
+import { addressUtils } from '../address';
 import { assert, buildError, KEYSTORE } from '@vechain/sdk-errors';
+import { secp256k1 } from '../secp256k1';
+import {
+    type EncryptOptions,
+    type Keystore,
+    type KeystoreAccount
+} from './types';
+
+import { ethers } from 'ethers';
 
 /**
  * Encrypts a given private key into a keystore format using the specified password.
@@ -16,23 +21,19 @@ import { assert, buildError, KEYSTORE } from '@vechain/sdk-errors';
  * @returns A Promise that resolves to the encrypted keystore.
  */
 async function encrypt(
-    privateKey: Buffer,
+    privateKey: Uint8Array,
     password: string
 ): Promise<Keystore> {
-    // Public and Address are derived from private key
-    const derivePublicKey = secp256k1.derivePublicKey(privateKey);
-    const deriveAddress = addressUtils.fromPublicKey(
-        Buffer.from(derivePublicKey)
-    );
-
-    // Create keystore account compatible with ethers
-    const keystoreAccount: ethers.KeystoreAccount = {
-        address: deriveAddress,
+    // Public and Address are derived from private key.
+    const keystoreAccount: KeystoreAccount = {
+        address: addressUtils.fromPublicKey(
+            secp256k1.derivePublicKey(privateKey)
+        ),
         privateKey: Hex0x.of(privateKey)
     };
-
+    privateKey.fill(0); // Clear private key from memory.
     // Scrypt options
-    const encryptOptions: ethers.EncryptOptions = {
+    const encryptOptions: EncryptOptions = {
         scrypt: {
             N: SCRYPT_PARAMS.N,
             r: SCRYPT_PARAMS.r,

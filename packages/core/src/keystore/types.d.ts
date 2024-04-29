@@ -1,7 +1,42 @@
+import type { ProgressCallback } from 'ethers/src.ts/crypto';
+import type { BytesLike } from 'ethers/src.ts/utils';
+
 /**
- * Types of ciphers for keystore encryption
+ * Represents a cipher algorithm supported by the keystore encryption.
+ *
+ * @typedef {('aes-128-ctr' | 'aes-128-cbc' | 'aes-256-cbc')} Cipher
  */
 type Cipher = 'aes-128-ctr' | 'aes-128-cbc' | 'aes-256-cbc';
+
+/**
+ * Represents options for encrypting data,
+ * compatible with [ethers EncryptOptions](https://github.com/ethers-io/ethers.js/blob/main/src.ts/wallet/json-keystore.ts).
+ *
+ * @typedef {Object} EncryptOptions
+ * @property {ProgressCallback} [progressCallback] - A callback function to track the encryption progress.
+ * @property {BytesLike} [iv] - The initialization vector used for encryption.
+ * @property {BytesLike} [entropy] - The entropy used for generating the encryption key.
+ * @property {string} [client] - The client identifier.
+ * @property {BytesLike} [salt] - The salt value used for key derivation.
+ * @property {string} [uuid] - The UUID identifier.
+ * @property {Object} [scrypt] - The parameters for scrypt key derivation function.
+ * @property {number} [scrypt.N] - The CPU/memory cost parameter (N).
+ * @property {number} [scrypt.r] - The block size parameter (r).
+ * @property {number} [scrypt.p] - The parallelization parameter (p).
+ */
+interface EncryptOptions {
+    progressCallback?: ProgressCallback;
+    iv?: BytesLike;
+    entropy?: BytesLike;
+    client?: string;
+    salt?: BytesLike;
+    uuid?: string;
+    scrypt?: {
+        N?: number;
+        r?: number;
+        p?: number;
+    };
+}
 
 /**
  * Scrypt parameters for keystore encryption
@@ -45,8 +80,16 @@ interface Keystore {
 }
 
 /**
- * Keystore account type
- * Output of decryption function.
+ * Interface representing a keystore account,
+ * compatible with [ethers KeystoreAccount](https://github.com/ethers-io/ethers.js/blob/main/src.ts/wallet/json-keystore.ts).
+ *
+ * @interface
+ * @property {string} address - The address associated with the account.
+ * @property {string} privateKey - The private key associated with the account.
+ * @property {Object} mnemonic - The mnemonic (optional) associated with the account.
+ * @property {string} mnemonic.path - The path (optional) of the mnemonic.
+ * @property {string} mnemonic.locale - The locale (optional) of the mnemonic.
+ * @property {string} mnemonic.entropy - The entropy of the mnemonic.
  */
 interface KeystoreAccount {
     address: string;
@@ -60,6 +103,7 @@ interface KeystoreAccount {
 
 export {
     type Cipher,
+    type EncryptOptions,
     type ScryptParams,
     type PBKDF2SHA256Params,
     type Keystore,
