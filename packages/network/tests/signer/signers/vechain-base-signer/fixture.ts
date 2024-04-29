@@ -154,12 +154,17 @@ const populateCallTestCases = {
     positive: [
         // Already defined clauses
         {
-            description: 'Should populate call with clauses already defined',
+            description:
+                'Should populate call with clauses already defined BUT empty',
             transactionToPopulate: {
                 clauses: []
             } satisfies TransactionRequestInput,
             expected: {
-                clauses: []
+                clauses: [],
+                from: addressUtils.toERC55Checksum(
+                    populateCallTestCasesAccount.address
+                ),
+                to: null
             }
         },
         {
@@ -180,7 +185,13 @@ const populateCallTestCases = {
                         value: 0,
                         data: '0x'
                     }
-                ] as TransactionClause[]
+                ] as TransactionClause[],
+                data: '0x',
+                from: addressUtils.toERC55Checksum(
+                    populateCallTestCasesAccount.address
+                ),
+                to: '0x',
+                value: 0
             }
         },
 
