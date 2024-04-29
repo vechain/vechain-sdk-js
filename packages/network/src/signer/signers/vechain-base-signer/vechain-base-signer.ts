@@ -6,7 +6,8 @@ import {
 import {
     DelegationHandler,
     type SignTransactionOptions,
-    type ThorClient
+    type ThorClient,
+    type TransactionSimulationResult
 } from '../../../thor-client';
 import {
     addressUtils,
@@ -222,12 +223,44 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
      *  (e.g. running a Contract's getters) or to simulate the effect of a transaction
      *  before actually performing an operation.
      *
-     *  @param tx - The transaction to evaluate
+     *  @param transactionToEvaluate - The transaction to evaluate
+     *  @param revision - The block number or block ID of which the transaction simulation is based on
      *  @returns the result of the evaluation
      */
-    // async call(
-    //     tx: TransactionRequestInput
-    // ): Promise<TransactionSimulationResult[]> {}
+    async call(
+        transactionToEvaluate: TransactionRequestInput,
+        revision?: string
+    ): Promise<TransactionSimulationResult[]> {
+        // 1 - Get the thor client
+        assert(
+            'call',
+            (this.provider as TProviderType).thorClient !== null,
+            JSONRPC.INVALID_PARAMS,
+            'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.'
+        );
+        const thorClient = (this.provider as TProviderType).thorClient;
+
+        // 2 - Populate the call, to get proper from and to address (compatible with multi-clause transactions)
+        const populatedTransaction = await this.populateCall(
+            transactionToEvaluate
+        );
+
+        // 3 - Evaluate the transaction
+        return await thorClient.transactions.simulateTransaction(
+            populatedTransaction.clauses ??
+                this._buildClauses(populatedTransaction),
+            {
+                revision: revision ?? undefined,
+                gas: (populatedTransaction.gas as number) ?? undefined,
+                gasPrice: populatedTransaction.gasPrice ?? undefined,
+                caller: populatedTransaction.from ?? undefined,
+                provedWork: populatedTransaction.provedWork ?? undefined,
+                gasPayer: populatedTransaction.gasPayer ?? undefined,
+                expiration: populatedTransaction.expiration ?? undefined,
+                blockRef: populatedTransaction.blockRef ?? undefined
+            }
+        );
+    }
 
     /**
      *  Gets the next nonce required for this Signer to send a transaction.

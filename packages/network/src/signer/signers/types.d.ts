@@ -6,6 +6,7 @@ import {
     type HardhatVechainProvider,
     type VechainProvider
 } from '../../provider';
+import { type TransactionSimulationResult } from '../../thor-client';
 
 /**
  * Available types for the VechainProvider's
@@ -145,6 +146,21 @@ interface TransactionRequestInput {
          */
         unused?: Buffer[];
     };
+
+    /**
+     * The VechainThor blockchain allows for transaction-level proof of work (PoW) and converts the proved work into extra gas price that will be used by
+     * the system to generate more reward to the block generator, the Authority Masternode, that validates the transaction.
+     * In other words, users can utilize their local computational power to make their transactions more likely to be included in a new block.
+     *
+     * @link [VechainThor Proof of Work](https://docs.vechain.org/core-concepts/transactions/transaction-calculation#proof-of-work)
+     */
+    provedWork?: string;
+
+    /**
+     * The address that pays for the gas fee of the transaction simulation.
+     * If different from the caller, then a delegated transaction is simulated.
+     */
+    gasPayer?: string;
 
     // START: NOT SUPPORTED FIELDS in vechain BUT added to take compatibility with ethers
 
@@ -304,20 +320,14 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
      *  (e.g. running a Contract's getters) or to simulate the effect of a transaction
      *  before actually performing an operation.
      *
-     *  @param tx - The transaction to evaluate
+     *  @param transactionToEvaluate - The transaction to evaluate
+     *  @param revision - The revision to evaluate the transaction against
      *  @returns the result of the evaluation
      */
-    // call: (
-    //     tx: TransactionRequestInput
-    // ) => Promise<TransactionSimulationResult[]>;
-
-    /**
-     *  Resolves an ENS Name to an address.
-     */
-    // resolveName: (name: string) => Promise<null | string>;
-
-    /// /////////////////
-    // Signing
+    call: (
+        transactionToEvaluate: TransactionRequestInput,
+        revision?: string
+    ) => Promise<TransactionSimulationResult[]>;
 
     /**
      * Signs %%transactionToSign%%, returning the fully signed transaction. This does not
@@ -374,6 +384,11 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
     //     types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
     //     value: Record<string, unknown>
     // ) => Promise<string>;
+
+    /**
+     *  Resolves an ENS Name to an address.
+     */
+    // resolveName: (name: string) => Promise<null | string>;
 
     // END: Standard ethers signer methods adapted for vechain
 }
