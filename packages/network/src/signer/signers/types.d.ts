@@ -70,7 +70,7 @@ interface TransactionRequestInput {
     /**
      *  The transaction value (in wei).
      */
-    value?: string;
+    value?: string | number;
 
     /**
      *  When using ``call`` or ``estimateGas``, this allows a specific
@@ -104,65 +104,6 @@ interface TransactionRequestInput {
      * Last byte of genesis block ID
      */
     chainTag?: number;
-
-    /**
-     *  The chain ID for the network this transaction is valid on.
-     *
-     * @note: NOT SUPPORTED in vechain BUT added to take compatibility with ethers
-     */
-    chainId?: string;
-
-    /**
-     *  The [[link-eip-2930]] access list. Storage slots included in the access
-     *  list are //warmed// by pre-loading them, so their initial cost to
-     *  fetch is guaranteed, but then each additional access is cheaper.
-     *
-     * @note: NOT SUPPORTED in vechain BUT added to take compatibility with ethers
-     */
-    accessList?: null | vechain_sdk_core_ethers.AccessListish;
-
-    /**
-     *  A custom object, which can be passed along for network-specific
-     *  values.
-     *
-     *  @note: NOT SUPPORTED in vechain BUT added to take compatibility with ethers
-     */
-    customData?: unknown;
-
-    /**
-     *  The [[link-eip-1559]] maximum priority fee to pay per gas.
-     *
-     * @note: NOT SUPPORTED in vechain BUT added to take compatibility with ethers
-     */
-    maxPriorityFeePerGas?: string;
-
-    /**
-     *  The [[link-eip-1559]] maximum total fee to pay per gas. The actual
-     *  value used is protocol enforced to be the block's base fee.
-     *
-     * @note: NOT SUPPORTED in vechain BUT added to take compatibility with ethers
-     */
-    maxFeePerGas?: string;
-
-    /**
-     *  The transaction type.
-     *
-     *  @note: NOT SUPPORTED in vechain BUT added to take compatibility with ethers
-     */
-    type?: null | number;
-
-    /**
-     *  When using ``call``, this enables CCIP-read, which permits the
-     *  provider to be redirected to web-based content during execution,
-     *  which is then further validated by the contract.
-     *
-     *  There are potential security implications allowing CCIP-read, as
-     *  it could be used to expose the IP address or user activity during
-     *  the fetch to unexpected parties.
-     *
-     *  @note: NOT SUPPORTED in vechain BUT added to take compatibility with ethers
-     */
-    enableCcipRead?: boolean;
 
     /**
      * A reserved field intended for features use.
@@ -204,6 +145,55 @@ interface TransactionRequestInput {
          */
         unused?: Buffer[];
     };
+
+    // START: NOT SUPPORTED FIELDS in vechain BUT added to take compatibility with ethers
+
+    /**
+     *  The chain ID for the network this transaction is valid on.
+     */
+    chainId?: string;
+
+    /**
+     *  The [[link-eip-2930]] access list. Storage slots included in the access
+     *  list are //warmed// by pre-loading them, so their initial cost to
+     *  fetch is guaranteed, but then each additional access is cheaper.
+     */
+    accessList?: null | vechain_sdk_core_ethers.AccessListish;
+
+    /**
+     *  A custom object, which can be passed along for network-specific
+     *  values.
+     */
+    customData?: unknown;
+
+    /**
+     *  The [[link-eip-1559]] maximum priority fee to pay per gas.
+     */
+    maxPriorityFeePerGas?: string;
+
+    /**
+     *  The [[link-eip-1559]] maximum total fee to pay per gas. The actual
+     *  value used is protocol enforced to be the block's base fee.
+     */
+    maxFeePerGas?: string;
+
+    /**
+     *  The transaction type.
+     */
+    type?: null | number;
+
+    /**
+     *  When using ``call``, this enables CCIP-read, which permits the
+     *  provider to be redirected to web-based content during execution,
+     *  which is then further validated by the contract.
+     *
+     *  There are potential security implications allowing CCIP-read, as
+     *  it could be used to expose the IP address or user activity during
+     *  the fetch to unexpected parties.
+     */
+    enableCcipRead?: boolean;
+
+    // END: NOT SUPPORTED FIELDS in vechain BUT added to take compatibility with ethers
 }
 
 /**
@@ -213,9 +203,7 @@ interface TransactionRequestInput {
  * We use our supported providers instead of ethers providers
  */
 interface VechainSigner<TProviderType extends AvailableVechainProviders> {
-    /**
-     * ********* START: Delegator needed methods *********
-     */
+    // START: Delegator needed methods
 
     /**
      * Sign a transaction with the delegator
@@ -227,13 +215,9 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
         transactionToSign: TransactionRequestInput
     ) => Promise<string>;
 
-    /**
-     * ********* END: Delegator needed methods *********
-     */
+    // END: Delegator needed methods
 
-    /**
-     * ********* START: Standard ethers signer methods adapted for vechain *********
-     */
+    // START: Standard ethers signer methods adapted for vechain
 
     /**
      * The provider attached to this Signer (if any).
@@ -275,11 +259,11 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
      *  So, if clauses are provided in the transaction, it will be used as it is.
      *  Otherwise, standard transaction will be prepared.
      *
-     *  @param tx - The call to prepare
+     *  @param transactionToPopulate - The call to prepare
      *  @returns the prepared call transaction
      */
     populateCall: (
-        tx: TransactionRequestInput
+        transactionToPopulate: TransactionRequestInput
     ) => Promise<TransactionRequestInput>;
 
     /**
@@ -288,58 +272,44 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
      *  - resolves ``to`` and ``from`` addresses
      *  - if ``from`` is specified , check that it matches this Signer
      *  - populates ``nonce`` via ``signer.getNonce("pending")``
-     *  - populates ``gasLimit`` via ``signer.estimateGas(tx)``
-     *  - populates ``chainId`` via ``signer.provider.getNetwork()``
-     *  - populates ``type`` and relevant fee data for that type (``gasPrice``
-     *    for legacy transactions, ``maxFeePerGas`` for EIP-1559, etc)
+     *  - populates gas parameters via ``signer.estimateGas(tx)``
+     *  - ... and other necessary properties
      *
-     *  @note Some Signer implementations may skip populating properties that
-     *        are populated downstream; for example JsonRpcSigner defers to the
-     *        node to populate the nonce and fee data.
-     *
-     *  @param tx - The call to prepare
+     *  @param transactionToPopulate - The call to prepare
+     *  @returns the prepared transaction
      */
     populateTransaction: (
-        tx: TransactionRequestInput
-    ) => Promise<TransactionRequestInput>;
+        transactionToPopulate: TransactionRequestInput
+    ) => Promise<TransactionBody>;
 
     /**
-     * --- START: TEMPORARY COMMENT ---
-     * To be implemented in the future
-     * --- END: TEMPORARY COMMENT ---
-     *
      *  Estimates the required gas required to execute //tx// on the Blockchain. This
-     *  will be the expected amount a transaction will require as its ``gasLimit``
+     *  will be the expected amount a transaction will require
      *  to successfully run all the necessary computations and store the needed state
      *  that the transaction intends.
      *
-     *  Keep in mind that this is **best efforts**, since the state of the Blockchain
-     *  is in flux, which could affect transaction gas requirements.
-     *
-     *  @throws UNPREDICTABLE_GAS_LIMIT A transaction believed by the node to likely
-     *          fail will throw an error during gas estimation. This could indicate that it
-     *          will actually fail or that the circumstances are simply too complex for the
-     *          node to take into account. In these cases, a manually determined ``gasLimit``
-     *          will need to be made.
+     *  @param transactionToEstimate - The transaction to estimate gas for
+     *  @returns the total estimated gas required
      */
-    // estimateGas: (
-    //     tx: vechain_sdk_core_ethers.TransactionRequest
-    // ) => Promise<bigint>;
+    estimateGas: (
+        transactionToEstimate: TransactionRequestInput
+    ) => Promise<number>;
 
     /**
-     * --- START: TEMPORARY COMMENT ---
-     * To be implemented in the future
-     * --- END: TEMPORARY COMMENT ---
-     *
      *  Evaluates the //tx// by running it against the current Blockchain state. This
-     *  cannot change state and has no cost in ether, as it is effectively simulating
+     *  cannot change state and has no cost, as it is effectively simulating
      *  execution.
      *
      *  This can be used to have the Blockchain perform computations based on its state
      *  (e.g. running a Contract's getters) or to simulate the effect of a transaction
      *  before actually performing an operation.
+     *
+     *  @param tx - The transaction to evaluate
+     *  @returns the result of the evaluation
      */
-    // call: (tx: vechain_sdk_core_ethers.TransactionRequest) => Promise<string>;
+    // call: (
+    //     tx: TransactionRequestInput
+    // ) => Promise<TransactionSimulationResult[]>;
 
     /**
      *  Resolves an ENS Name to an address.
@@ -362,16 +332,19 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
 
     /**
      * --- START: TEMPORARY COMMENT ---
-     * To be implemented in the future
+     * Probably add in the future with vechain_sdk_core_ethers.TransactionRequest as a return type
      * --- END: TEMPORARY COMMENT ---
      *
-     *  Sends %%tx%% to the Network. The ``signer.populateTransaction(tx)``
+     *  Sends %%transactionToSend%% to the Network. The ``signer.populateTransaction(transactionToSend)``
      *  is called first to ensure all necessary properties for the
-     *  transaction to be valid have been popualted first.
+     *  transaction to be valid have been populated first.
+     *
+     *  @param transactionToSend - The transaction to send
+     *  @returns The transaction response
      */
-    // sendTransaction: (
-    //     tx: vechain_sdk_core_ethers.TransactionRequest
-    // ) => Promise<vechain_sdk_core_ethers.TransactionResponse>;
+    sendTransaction: (
+        transactionToSend: TransactionRequestInput
+    ) => Promise<string>;
 
     /**
      * --- START: TEMPORARY COMMENT ---
@@ -402,9 +375,7 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
     //     value: Record<string, unknown>
     // ) => Promise<string>;
 
-    /**
-     * ********* END: Standard ethers signer methods adapted for vechain *********
-     */
+    // END: Standard ethers signer methods adapted for vechain
 }
 
 export {

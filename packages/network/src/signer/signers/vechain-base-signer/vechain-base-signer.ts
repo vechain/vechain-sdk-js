@@ -80,30 +80,49 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
      *  So, if clauses are provided in the transaction, it will be used as it is.
      *  Otherwise, standard transaction will be prepared.
      *
-     *  @param tx - The call to prepare
+     *  @param transactionToPopulate - The call to prepare
      *  @returns the prepared call transaction
      */
     async populateCall(
-        tx: TransactionRequestInput
+        transactionToPopulate: TransactionRequestInput
     ): Promise<TransactionRequestInput> {
-        // Use clauses if provided
-        if (tx.clauses !== undefined) return await Promise.resolve(tx);
-
-        // Clauses are not provided, prepare the transaction
-        if (tx.from === undefined) tx.from = await this.getAddress();
+        // 1 - Add from field (if not provided)
+        if (
+            transactionToPopulate.from === undefined ||
+            transactionToPopulate.from === null
+        )
+            transactionToPopulate.from = addressUtils.toERC55Checksum(
+                await this.getAddress()
+            );
+        // Throw an error if the from address does not match the signer address
+        // @note: this because we cannot sign a transaction with a different address
         else
             assert(
                 'populateCall',
-                tx.from === (await this.getAddress()),
+                addressUtils.toERC55Checksum(transactionToPopulate.from) ===
+                    addressUtils.toERC55Checksum(await this.getAddress()),
                 JSONRPC.INVALID_PARAMS,
                 'From address does not match the signer address.'
             );
 
-        // Set to field
-        if (tx.to === undefined) tx.to = null;
+        // 2 - Set to field
+        if (transactionToPopulate.to === undefined)
+            transactionToPopulate.to = null;
+
+        // 3 - Use directly clauses, if they are provided
+        if (
+            transactionToPopulate.clauses !== undefined &&
+            transactionToPopulate.clauses.length > 0
+        ) {
+            // 2.1 - Set to, value and data fields to be consistent
+            transactionToPopulate.to = transactionToPopulate.clauses[0].to;
+            transactionToPopulate.value =
+                transactionToPopulate.clauses[0].value;
+            transactionToPopulate.data = transactionToPopulate.clauses[0].data;
+        }
 
         // Return the transaction
-        return await Promise.resolve(tx);
+        return transactionToPopulate;
     }
 
     /**
@@ -112,22 +131,103 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
      *  - resolves ``to`` and ``from`` addresses
      *  - if ``from`` is specified , check that it matches this Signer
      *  - populates ``nonce`` via ``signer.getNonce("pending")``
-     *  - populates ``gasLimit`` via ``signer.estimateGas(tx)``
-     *  - populates ``chainId`` via ``signer.provider.getNetwork()``
-     *  - populates ``type`` and relevant fee data for that type (``gasPrice``
-     *    for legacy transactions, ``maxFeePerGas`` for EIP-1559, etc)
+     *  - populates gas parameters via ``signer.estimateGas(tx)``
+     *  - ... and other necessary properties
      *
-     *  @note Some Signer implementations may skip populating properties that
-     *        are populated downstream; for example JsonRpcSigner defers to the
-     *        node to populate the nonce and fee data.
-     *
-     *  @param tx - The call to prepare
+     *  @param transactionToPopulate - The call to prepare
+     *  @returns the prepared transaction
      */
     async populateTransaction(
-        tx: TransactionRequestInput
-    ): Promise<TransactionRequestInput> {
-        return await Promise.resolve(tx);
+        transactionToPopulate: TransactionRequestInput
+    ): Promise<TransactionBody> {
+        // 1 - Get the thor client
+        assert(
+            'populateTransaction',
+            (this.provider as TProviderType).thorClient !== null,
+            JSONRPC.INVALID_PARAMS,
+            'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.'
+        );
+        const thorClient = (this.provider as TProviderType).thorClient;
+
+        // 2 - Populate the call, to get proper 'from' and 'to' address (compatible with multi-clause transactions)
+        const populatedTransaction = await this.populateCall(
+            transactionToPopulate
+        );
+
+        // 3 - Estimate gas
+        const totalGasResult = await this.estimateGas(transactionToPopulate);
+
+        // 4 - Build the transaction body
+        return await thorClient.transactions.buildTransactionBody(
+            populatedTransaction.clauses ??
+                this._buildClauses(populatedTransaction),
+            totalGasResult,
+            {
+                isDelegated: this.provider?.enableDelegation ?? false,
+                nonce:
+                    populatedTransaction.nonce ??
+                    (await this.getNonce('pending')),
+                blockRef: populatedTransaction.blockRef ?? undefined,
+                chainTag: populatedTransaction.chainTag ?? undefined,
+                dependsOn: populatedTransaction.dependsOn ?? undefined,
+                expiration: populatedTransaction.expiration,
+                gasPriceCoef: populatedTransaction.gasPriceCoef ?? undefined
+            }
+        );
     }
+
+    /**
+     *  Estimates the required gas required to execute //tx// on the Blockchain. This
+     *  will be the expected amount a transaction will require
+     *  to successfully run all the necessary computations and store the needed state
+     *  that the transaction intends.
+     *
+     *  @param transactionToEstimate - The transaction to estimate gas for
+     *  @returns the total estimated gas required
+     */
+    async estimateGas(
+        transactionToEstimate: TransactionRequestInput
+    ): Promise<number> {
+        // 1 - Get the thor client
+        assert(
+            'populateTransaction',
+            (this.provider as TProviderType).thorClient !== null,
+            JSONRPC.INVALID_PARAMS,
+            'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.'
+        );
+        const thorClient = (this.provider as TProviderType).thorClient;
+
+        // 2 - Populate the call, to get proper from and to address (compatible with multi-clause transactions)
+        const populatedTransaction = await this.populateCall(
+            transactionToEstimate
+        );
+
+        // 3 - Estimate gas
+        const gasEstimation = await thorClient.gas.estimateGas(
+            populatedTransaction.clauses ??
+                this._buildClauses(populatedTransaction),
+            populatedTransaction.from ?? undefined
+        );
+
+        // Return the gas estimation
+        return gasEstimation.totalGas;
+    }
+
+    /**
+     *  Evaluates the //tx// by running it against the current Blockchain state. This
+     *  cannot change state and has no cost, as it is effectively simulating
+     *  execution.
+     *
+     *  This can be used to have the Blockchain perform computations based on its state
+     *  (e.g. running a Contract's getters) or to simulate the effect of a transaction
+     *  before actually performing an operation.
+     *
+     *  @param tx - The transaction to evaluate
+     *  @returns the result of the evaluation
+     */
+    // async call(
+    //     tx: TransactionRequestInput
+    // ): Promise<TransactionSimulationResult[]> {}
 
     /**
      *  Gets the next nonce required for this Signer to send a transaction.
@@ -199,6 +299,45 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
     }
 
     /**
+     * --- START: TEMPORARY COMMENT ---
+     * Probably add in the future with vechain_sdk_core_ethers.TransactionRequest as a return type
+     * --- END: TEMPORARY COMMENT ---
+     *
+     *  Sends %%transactionToSend%% to the Network. The ``signer.populateTransaction(transactionToSend)``
+     *  is called first to ensure all necessary properties for the
+     *  transaction to be valid have been populated first.
+     *
+     *  @param transactionToSend - The transaction to send
+     *  @returns The transaction response
+     */
+    async sendTransaction(
+        transactionToSend: TransactionRequestInput
+    ): Promise<string> {
+        // 1 - Get the provider (needed to send the raw transaction)
+        assert(
+            'sendTransaction',
+            this.provider !== null,
+            JSONRPC.INVALID_PARAMS,
+            'Thor provider is not found into the signer. Please attach a Provider to your signer instance.'
+        );
+        const provider = this.provider as TProviderType;
+
+        // 2 - Understand if the transaction is delegated or not
+        const isDelegated = provider.enableDelegation ?? false;
+
+        // 3 - Sign the transaction
+        const signedTransaction = isDelegated
+            ? await this.signTransactionWithDelegator(transactionToSend)
+            : await this.signTransaction(transactionToSend);
+
+        // 4 - Send the signed transaction
+        return (await provider.request({
+            method: RPC_METHODS.eth_sendRawTransaction,
+            params: [signedTransaction]
+        })) as string;
+    }
+
+    /**
      * Build the transaction clauses
      * form a transaction given as input
      *
@@ -208,7 +347,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
     private _buildClauses(
         transaction: TransactionRequestInput
     ): TransactionClause[] {
-        return transaction.to !== undefined || transaction.to === null
+        return transaction.to !== undefined && transaction.to !== null
             ? // Normal transaction
               [
                   {
@@ -236,46 +375,28 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
         thorClient: ThorClient,
         privateKey: Buffer
     ): Promise<string> {
-        // 1 - Initiate the transaction clauses
-        const transactionClauses: TransactionClause[] =
-            transaction.clauses ?? this._buildClauses(transaction);
-
-        // 2 - Estimate gas
-        const gasResult = await thorClient.gas.estimateGas(
-            transactionClauses,
-            transaction.from as string
-        );
-
-        // 3 - Create transaction body
-        const transactionBody =
-            await thorClient.transactions.buildTransactionBody(
-                transactionClauses,
-                gasResult.totalGas,
-                {
-                    isDelegated: DelegationHandler(delegator).isDelegated(),
-
-                    // @NOTE: To be compliant with the standard and to avoid nonce overflow, we generate a random nonce of 6 bytes
-                    nonce: Hex0x.of(secp256k1.randomBytes(6))
-                }
-            );
+        // // 1 - Populate the call, to get proper from and to address (compatible with multi-clause transactions)
+        const populatedTransaction =
+            await this.populateTransaction(transaction);
 
         // Assert if the transaction can be signed
         assertTransactionCanBeSigned(
             'signTransaction',
             this.privateKey,
-            transactionBody
+            populatedTransaction
         );
 
         // 6 - Sign the transaction
         return delegator !== null
             ? await this._signWithDelegator(
-                  transactionBody,
+                  populatedTransaction,
                   privateKey,
                   thorClient,
                   delegator
               )
             : Hex0x.of(
-                  TransactionHandler.sign(transactionBody, privateKey).encoded
+                  TransactionHandler.sign(populatedTransaction, privateKey)
+                      .encoded
               );
     }
 
