@@ -8,10 +8,12 @@ import { secp256k1 } from '../secp256k1';
 import {
     type EncryptOptions,
     type Keystore,
-    type KeystoreAccount
+    type KeystoreAccount, ScryptParams
 } from './types';
 
-import { ethers } from 'ethers';
+import { ethers, getBytes } from 'ethers';
+import { getPassword } from 'ethers/lib.esm/wallet/utils';
+import { randomBytes } from '@noble/hashes/utils';
 
 /**
  * Encrypts a given private key into a keystore format using the specified password.
@@ -50,6 +52,50 @@ async function encrypt(
 
     return JSON.parse(keystoreJsonString) as Keystore;
 }
+
+// async function _encryptKeystoreJson(
+//     account: KeystoreAccount,
+//     password: string | Uint8Array,
+//     options?: EncryptOptions
+// ): Promise<string> {
+//     if (options == null) {
+//         options = {};
+//     }
+//
+//     const passwordBytes = getPassword(password);
+//     const kdf = getEncryptKdfParams(options);
+//     const key = await scrypt(
+//         passwordBytes,
+//         kdf.salt,
+//         kdf.N,
+//         kdf.r,
+//         kdf.p,
+//         64,
+//         options.progressCallback
+//     );
+//     return encryptKeystore(getBytes(key), kdf, account, options);
+// }
+
+// function getEncryptKdfParams(options: EncryptOptions): ScryptParams {
+//     // Check/generate the salt
+//     const salt =
+//         options.salt != null
+//             ? getBytes(options.salt, 'options.salt')
+//             : randomBytes(32);
+//
+//     // Override the scrypt password-based key derivation function parameters
+//     let N = (1 << 17), r = 8, p = 1;
+//     if (options.scrypt) {
+//         if (options.scrypt.N) { N = options.scrypt.N; }
+//         if (options.scrypt.r) { r = options.scrypt.r; }
+//         if (options.scrypt.p) { p = options.scrypt.p; }
+//     }
+//     assertArgument(typeof(N) === "number" && N > 0 && Number.isSafeInteger(N) && (BigInt(N) & BigInt(N - 1)) === BigInt(0), "invalid scrypt N parameter", "options.N", N);
+//     assertArgument(typeof(r) === "number" && r > 0 && Number.isSafeInteger(r), "invalid scrypt r parameter", "options.r", r);
+//     assertArgument(typeof(p) === "number" && p > 0 && Number.isSafeInteger(p), "invalid scrypt p parameter", "options.p", p);
+//
+//     return { name: "scrypt", dkLen: 32, salt, N, r, p };
+// }
 
 /**
  * Decrypts a keystore to obtain the private key using the given password.
