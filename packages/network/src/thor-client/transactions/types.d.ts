@@ -126,7 +126,7 @@ interface SimulateTransactionOptions {
      */
     caller?: string;
 
-    // ------ EXTENDED EVM CONTEXT OPTIONS Start ------ //
+    // ------ START: EXTENDED EVM CONTEXT OPTIONS ------ //
 
     /*
         The following options are useful when simulating transactions that provide additional context to the EVM.
@@ -164,7 +164,7 @@ interface SimulateTransactionOptions {
      */
     blockRef?: string;
 
-    // ------ EXTENDED EVM CONTEXT OPTIONS Start ------ //
+    // ------ END: EXTENDED EVM CONTEXT OPTIONS ------ //
 }
 
 /* --- Input options end --- */
