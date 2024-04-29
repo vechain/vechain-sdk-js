@@ -66,9 +66,67 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
      * @returns the address of the signer
      */
     async getAddress(): Promise<string> {
-        return await Promise.resolve(
-            addressUtils.fromPrivateKey(this.privateKey)
+        return addressUtils.toERC55Checksum(
+            await Promise.resolve(addressUtils.fromPrivateKey(this.privateKey))
         );
+    }
+
+    /**
+     *  Prepares a {@link TransactionRequestInput} for calling:
+     *  - resolves ``to`` and ``from`` addresses
+     *  - if ``from`` is specified, check that it matches this Signer
+     *
+     *  @note: Here the base support of multi-clause transaction is added.
+     *  So, if clauses are provided in the transaction, it will be used as it is.
+     *  Otherwise, standard transaction will be prepared.
+     *
+     *  @param tx - The call to prepare
+     *  @returns the prepared call transaction
+     */
+    async populateCall(
+        tx: TransactionRequestInput
+    ): Promise<TransactionRequestInput> {
+        // Use clauses if provided
+        if (tx.clauses !== undefined) return await Promise.resolve(tx);
+
+        // Clauses are not provided, prepare the transaction
+        if (tx.from === undefined) tx.from = await this.getAddress();
+        else
+            assert(
+                'populateCall',
+                tx.from === (await this.getAddress()),
+                JSONRPC.INVALID_PARAMS,
+                'From address does not match the signer address.'
+            );
+
+        // Set to field
+        if (tx.to === undefined) tx.to = null;
+
+        // Return the transaction
+        return await Promise.resolve(tx);
+    }
+
+    /**
+     *  Prepares a {@link TransactionRequestInput} for sending to the network by
+     *  populating any missing properties:
+     *  - resolves ``to`` and ``from`` addresses
+     *  - if ``from`` is specified , check that it matches this Signer
+     *  - populates ``nonce`` via ``signer.getNonce("pending")``
+     *  - populates ``gasLimit`` via ``signer.estimateGas(tx)``
+     *  - populates ``chainId`` via ``signer.provider.getNetwork()``
+     *  - populates ``type`` and relevant fee data for that type (``gasPrice``
+     *    for legacy transactions, ``maxFeePerGas`` for EIP-1559, etc)
+     *
+     *  @note Some Signer implementations may skip populating properties that
+     *        are populated downstream; for example JsonRpcSigner defers to the
+     *        node to populate the nonce and fee data.
+     *
+     *  @param tx - The call to prepare
+     */
+    async populateTransaction(
+        tx: TransactionRequestInput
+    ): Promise<TransactionRequestInput> {
+        return await Promise.resolve(tx);
     }
 
     /**
@@ -150,7 +208,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
     private _buildClauses(
         transaction: TransactionRequestInput
     ): TransactionClause[] {
-        return transaction.to !== undefined
+        return transaction.to !== undefined || transaction.to === null
             ? // Normal transaction
               [
                   {
@@ -185,7 +243,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
         // 2 - Estimate gas
         const gasResult = await thorClient.gas.estimateGas(
             transactionClauses,
-            transaction.from
+            transaction.from as string
         );
 
         // 3 - Create transaction body
