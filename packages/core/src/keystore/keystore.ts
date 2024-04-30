@@ -40,7 +40,7 @@ async function encrypt(
     privateKey: Uint8Array,
     password: string
 ): Promise<Keystore> {
-    // Public key and sddress are derived from private key.
+    // Public key and address are derived from private key.
     const keystoreAccount: KeystoreAccount = {
         address: addressUtils.fromPublicKey(
             secp256k1.derivePublicKey(privateKey)
@@ -231,37 +231,31 @@ function getEncryptKdfParams(options: EncryptOptions): ScryptParams {
             p = options.scrypt.p;
         }
     }
-    assertArgument(
-        typeof N === 'number' &&
-            N > 0 &&
+    assert(
+        'keystore.encrypt',
+        N > 0 &&
             Number.isSafeInteger(N) &&
             (BigInt(N) & BigInt(N - 1)) === BigInt(0),
-        'invalid scrypt N parameter',
-        'options.N',
-        N
+        KEYSTORE.INVALID_KEYSTORE,
+        'Invalid options.scrypt.N parameter.',
+        { N }
     );
-    assertArgument(
-        typeof r === 'number' && r > 0 && Number.isSafeInteger(r),
-        'invalid scrypt r parameter',
-        'options.r',
-        r
+    assert(
+        'keystore.encrypt',
+        r > 0 && Number.isSafeInteger(r),
+        KEYSTORE.INVALID_KEYSTORE,
+        'invalid options.scrypt.r parameter.',
+        { r }
     );
-    assertArgument(
-        typeof p === 'number' && p > 0 && Number.isSafeInteger(p),
-        'invalid scrypt p parameter',
-        'options.p',
-        p
+    assert(
+        'keystore.encrypt',
+        p > 0 && Number.isSafeInteger(p),
+        KEYSTORE.INVALID_KEYSTORE,
+        'Invalid options.scrypt.p parameter.',
+        { p }
     );
     return { name: 'scrypt', dkLen: 32, salt, N, r, p };
 }
-
-// function _getPassword(password: string | Uint8Array): Uint8Array {
-//     if (typeof password === 'string') {
-//         // return toUtf8Bytes(password, 'NFKC');
-//         return new TextEncoder().encode(password);
-//     }
-//     return getBytesCopy(password);
-// }
 
 /**
  * Decrypts a keystore to obtain the private key using the given password.
