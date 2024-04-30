@@ -36,7 +36,8 @@ import { CTR } from 'aes-js';
  * @param password - The password used for the encryption.
  * @returns A Promise that resolves to the encrypted keystore.
  */
-function encrypt(privateKey: Uint8Array, password: string): Keystore {
+// new TextEncoder().encode(password.normalize('NFKC'))
+function encrypt(privateKey: Uint8Array, password: Uint8Array): Keystore {
     // Public key and address are derived from private key.
     const keystoreAccount: KeystoreAccount = {
         address: addressUtils.fromPublicKey(
@@ -45,17 +46,13 @@ function encrypt(privateKey: Uint8Array, password: string): Keystore {
         privateKey: Hex0x.of(privateKey)
     };
     privateKey.fill(0); // Clear private key from memory.
-    const keystoreJsonString = _encryptKeystoreJson(
-        keystoreAccount,
-        new TextEncoder().encode(password.normalize('NFKC')),
-        {
-            scrypt: {
-                N: SCRYPT_PARAMS.N,
-                r: SCRYPT_PARAMS.r,
-                p: SCRYPT_PARAMS.p
-            }
+    const keystoreJsonString = _encryptKeystoreJson(keystoreAccount, password, {
+        scrypt: {
+            N: SCRYPT_PARAMS.N,
+            r: SCRYPT_PARAMS.r,
+            p: SCRYPT_PARAMS.p
         }
-    );
+    });
 
     return JSON.parse(keystoreJsonString) as Keystore;
 }

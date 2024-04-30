@@ -13,6 +13,9 @@ import {
  * @group unit/keystore
  */
 describe('Keystore', () => {
+    const password = new TextEncoder().encode(
+        encryptionPassword.normalize('NFKC')
+    );
     /**
      * Encrypt private key to keystore with given password
      */
@@ -21,10 +24,7 @@ describe('Keystore', () => {
         const privateKey = secp256k1.generatePrivateKey();
 
         //  Create keystore
-        const myKeystore = keystore.encrypt(
-            Buffer.from(privateKey),
-            encryptionPassword
-        );
+        const myKeystore = keystore.encrypt(Buffer.from(privateKey), password);
 
         // Verify keystore
         expect(myKeystore.version).toBe(3);
@@ -43,10 +43,7 @@ describe('Keystore', () => {
     test('encrypt wrong private key', () => {
         //  Create keystore
         expect(() =>
-            keystore.encrypt(
-                Buffer.from('wrong private key', 'hex'),
-                encryptionPassword
-            )
+            keystore.encrypt(Buffer.from('wrong private key', 'hex'), password)
         ).toThrowError(InvalidSecp256k1PrivateKeyError);
     });
 
@@ -58,10 +55,7 @@ describe('Keystore', () => {
         const privateKey = secp256k1.generatePrivateKey();
 
         //  Create keystore
-        const myKeystore = keystore.encrypt(
-            Buffer.from(privateKey),
-            encryptionPassword
-        );
+        const myKeystore = keystore.encrypt(Buffer.from(privateKey), password);
 
         // Decrypt keystore
         const decryptedKeystore = await keystore.decrypt(
@@ -83,10 +77,7 @@ describe('Keystore', () => {
         const privateKey = secp256k1.generatePrivateKey();
 
         //  Create keystore
-        const myKeystore = keystore.encrypt(
-            Buffer.from(privateKey),
-            encryptionPassword
-        );
+        const myKeystore = keystore.encrypt(Buffer.from(privateKey), password);
 
         // Decrypt with invalid password the keystore
         await expect(
@@ -106,10 +97,7 @@ describe('Keystore', () => {
         const privateKey = secp256k1.generatePrivateKey();
 
         //  Create keystore
-        const myKeystore = keystore.encrypt(
-            Buffer.from(privateKey),
-            encryptionPassword
-        );
+        const myKeystore = keystore.encrypt(Buffer.from(privateKey), password);
 
         // Verify keystore -> False
         const invalidKeystore: string = JSON.stringify({
@@ -135,10 +123,7 @@ describe('Keystore', () => {
         const privateKey = secp256k1.generatePrivateKey();
 
         //  Create keystore
-        const myKeystore = keystore.encrypt(
-            Buffer.from(privateKey),
-            encryptionPassword
-        );
+        const myKeystore = keystore.encrypt(Buffer.from(privateKey), password);
 
         // Verify keystore -> True
         expect(keystore.isValid(myKeystore)).toBe(true);
