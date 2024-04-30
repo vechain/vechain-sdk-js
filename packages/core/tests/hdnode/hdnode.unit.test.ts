@@ -2,7 +2,7 @@ import { addresses, words, wrongDerivationPath, wrongWords } from './fixture';
 import { describe, expect, test } from '@jest/globals';
 import {
     HDNode,
-    ZERO_BUFFER,
+    ZERO_BYTES,
     addressUtils,
     mnemonic,
     secp256k1,
@@ -124,13 +124,13 @@ describe('HDNode', () => {
     describe('derivePrivateKey', () => {
         test('derivePrivateKey - invalid - chain code', () => {
             expect(() =>
-                HDNode.fromPrivateKey(ZERO_BUFFER(32), ZERO_BUFFER(31))
+                HDNode.fromPrivateKey(ZERO_BYTES(32), ZERO_BYTES(31))
             ).toThrowError(InvalidHDNodeChaincodeError);
         });
 
         test('derivePrivateKey - invalid - private key', () => {
             expect(() =>
-                HDNode.fromPrivateKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
+                HDNode.fromPrivateKey(ZERO_BYTES(31), ZERO_BYTES(32))
             ).toThrowError(InvalidHDNodePrivateKeyError);
         });
 
@@ -171,13 +171,13 @@ describe('HDNode', () => {
     describe('derivePublicKey', () => {
         test('derivePublicKey - invalid - chain code', () => {
             expect(() =>
-                HDNode.fromPublicKey(ZERO_BUFFER(32), ZERO_BUFFER(31))
+                HDNode.fromPublicKey(ZERO_BYTES(32), ZERO_BYTES(31))
             ).toThrowError(InvalidHDNodeChaincodeError);
         });
 
         test('derivePublicKey - invalid - public key', () => {
             expect(() =>
-                HDNode.fromPublicKey(ZERO_BUFFER(31), ZERO_BUFFER(32))
+                HDNode.fromPublicKey(ZERO_BYTES(31), ZERO_BYTES(32))
             ).toThrowError(InvalidHDNodePublicKeyError);
         });
 
