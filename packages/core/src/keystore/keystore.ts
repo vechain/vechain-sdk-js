@@ -45,7 +45,7 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): Keystore {
         ),
         privateKey: Hex0x.of(privateKey)
     };
-    privateKey.fill(0); // Clear private key from memory.
+    privateKey.fill(0); // Clear the private key from memory.
     const keystoreJsonString = _encryptKeystoreJson(keystoreAccount, password, {
         scrypt: {
             N: SCRYPT_PARAMS.N,
@@ -53,7 +53,7 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): Keystore {
             p: SCRYPT_PARAMS.p
         }
     });
-
+    // password.fill(0); // Clear the password from memory.
     return JSON.parse(keystoreJsonString) as Keystore;
 }
 
