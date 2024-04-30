@@ -9,7 +9,7 @@ import type { BytesLike } from 'ethers/src.ts/utils';
 type Cipher = 'aes-128-ctr' | 'aes-128-cbc' | 'aes-256-cbc';
 
 /**
- * Represents options for encrypting data,
+ * Represents options for keystore encryption,
  * compatible with [ethers EncryptOptions](https://github.com/ethers-io/ethers.js/blob/main/src.ts/wallet/json-keystore.ts).
  *
  * @typedef {Object} EncryptOptions
@@ -39,14 +39,16 @@ interface EncryptOptions {
 }
 
 /**
- * Scrypt parameters for keystore encryption
+ * Scrypt parameters for keystore encryption,
+ * compatible with [ethers ScryptParams](https://github.com/ethers-io/ethers.js/blob/main/src.ts/wallet/json-keystore.ts).
  */
 interface ScryptParams {
-    dklen: number;
-    n: number;
+    N: number;
+    dkLen: number;
+    name: 'scrypt';
     p: number;
     r: number;
-    salt: Uint8Array | string;
+    salt: Uint8Array;
 }
 
 /**

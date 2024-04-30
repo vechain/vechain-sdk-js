@@ -41,7 +41,7 @@ async function encrypt(
     privateKey: Uint8Array,
     password: string
 ): Promise<Keystore> {
-    // Public and Address are derived from private key.
+    // Public key and sddress are derived from private key.
     const keystoreAccount: KeystoreAccount = {
         address: addressUtils.fromPublicKey(
             secp256k1.derivePublicKey(privateKey)
@@ -49,21 +49,16 @@ async function encrypt(
         privateKey: Hex0x.of(privateKey)
     };
     privateKey.fill(0); // Clear private key from memory.
-    // Scrypt options
-    const encryptOptions: EncryptOptions = {
-        scrypt: {
-            N: SCRYPT_PARAMS.N,
-            r: SCRYPT_PARAMS.r,
-            p: SCRYPT_PARAMS.p
-        }
-    };
-
-    // String version of keystore
-    // const keystoreJsonString = await ethers.encryptKeystoreJson(
     const keystoreJsonString = await _encryptKeystoreJson(
         keystoreAccount,
         password,
-        encryptOptions
+        {
+            scrypt: {
+                N: SCRYPT_PARAMS.N,
+                r: SCRYPT_PARAMS.r,
+                p: SCRYPT_PARAMS.p
+            }
+        }
     );
 
     return JSON.parse(keystoreJsonString) as Keystore;
@@ -83,7 +78,7 @@ async function _encryptKeystoreJson(
     const key = await scrypt(
         passwordBytes,
         kdf.salt,
-        kdf.n,
+        kdf.N,
         kdf.r,
         kdf.p,
         64,
@@ -156,7 +151,7 @@ function _encryptKeystore(
             kdf: 'scrypt',
             kdfparams: {
                 salt: hexlify(kdf.salt).substring(2),
-                n: kdf.n,
+                n: kdf.N,
                 dklen: 32,
                 p: kdf.p,
                 r: kdf.r
@@ -258,8 +253,7 @@ function getEncryptKdfParams(options: EncryptOptions): ScryptParams {
         'options.p',
         p
     );
-    return { dklen: 32, n: N, p, r, salt };
-    // return { name: 'scrypt', dkLen: 32, salt, N, r, p };
+    return { name: 'scrypt', dkLen: 32, salt, N, r, p };
 }
 
 function _getPassword(password: string | Uint8Array): Uint8Array {
