@@ -1,7 +1,8 @@
 /**
  * Implements the JSON Keystore v3 Wallet encryption, decryption, and validation functionality.
  */
-import { Hex0x, SCRYPT_PARAMS } from '../utils';
+import * as utils from '@noble/curves/abstract/utils';
+import { Hex, Hex0x, SCRYPT_PARAMS } from '../utils';
 import { addressUtils } from '../address';
 import { assert, buildError, KEYSTORE } from '@vechain/sdk-errors';
 import { secp256k1 } from '../secp256k1';
@@ -49,7 +50,7 @@ async function encrypt(
     privateKey.fill(0); // Clear private key from memory.
     const keystoreJsonString = await _encryptKeystoreJson(
         keystoreAccount,
-        password,
+        new TextEncoder().encode(password),
         {
             scrypt: {
                 N: SCRYPT_PARAMS.N,
@@ -64,26 +65,25 @@ async function encrypt(
 
 async function _encryptKeystoreJson(
     account: KeystoreAccount,
-    password: string,
+    password: Uint8Array,
     options?: EncryptOptions
 ): Promise<string> {
     if (options == null) {
         options = {};
     }
-
-    // const passwordBytes = _getPassword(password);
-    const passwordBytes = new TextEncoder().encode(password);
     const kdf = getEncryptKdfParams(options);
-    const key = await scrypt(
-        passwordBytes,
-        kdf.salt,
-        kdf.N,
-        kdf.r,
-        kdf.p,
-        64,
-        options.progressCallback
+    const key = Hex.canon(
+        await scrypt(
+            password,
+            kdf.salt,
+            kdf.N,
+            kdf.r,
+            kdf.p,
+            64,
+            options.progressCallback
+        )
     );
-    return _encryptKeystore(getBytes(key), kdf, account, options);
+    return _encryptKeystore(utils.hexToBytes(key), kdf, account, options);
 }
 
 /**
