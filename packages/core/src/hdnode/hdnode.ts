@@ -1,9 +1,8 @@
 import * as bip32 from '@scure/bip32';
 import * as bip39 from '@scure/bip39';
 import * as utils from '@noble/curves/abstract/utils';
-import { assert, buildError, HDNODE } from '@vechain/sdk-errors';
+import { buildError, HDNODE } from '@vechain/sdk-errors';
 import { base58 } from '@scure/base';
-import { mnemonic } from '../mnemonic';
 import { secp256k1 } from '../secp256k1';
 import { sha256 } from '../hash';
 import { VET_DERIVATION_PATH } from '../utils';
@@ -47,12 +46,11 @@ function fromMnemonic(
             bip39.mnemonicToSeedSync(words.join(' ').toLowerCase())
         );
     } catch (error) {
+        // The error masks any mnemonic words leak.
         throw buildError(
             'HDNode.fromMnemonic',
             HDNODE.INVALID_HDNODE_MNEMONICS,
-            (error as Error).message,
-            { mnemonic },
-            error
+            'Invalid mnemonic words.'
         );
     }
     try {
@@ -89,32 +87,35 @@ function fromPrivateKey(
     privateKey: Uint8Array,
     chainCode: Uint8Array
 ): bip32.HDKey {
-    assert(
-        'HDNode.fromPrivateKey',
-        privateKey.length === 32,
-        HDNODE.INVALID_HDNODE_PRIVATE_KEY,
-        'Invalid private key. Length must be exactly 32 bytes.',
-        { privateKey }
-    );
-    const header = utils.concatBytes(
-        X_PRIV_PREFIX,
-        chainCode,
-        Uint8Array.of(0),
-        privateKey
-    );
-    const checksum = sha256(sha256(header)).subarray(0, 4);
-    const expandedPrivateKey = utils.concatBytes(header, checksum);
-    try {
-        return bip32.HDKey.fromExtendedKey(base58.encode(expandedPrivateKey));
-    } catch (error) {
-        throw buildError(
-            'HDNode.fromPrivateKey',
-            HDNODE.INVALID_HDNODE_CHAIN_CODE,
-            (error as Error).message,
-            { chainCode },
-            error
+    if (privateKey.length === 32) {
+        const header = utils.concatBytes(
+            X_PRIV_PREFIX,
+            chainCode,
+            Uint8Array.of(0),
+            privateKey
         );
+        privateKey.fill(0); // Clear the private key from memory.
+        const checksum = sha256(sha256(header)).subarray(0, 4);
+        const expandedPrivateKey = utils.concatBytes(header, checksum);
+        try {
+            return bip32.HDKey.fromExtendedKey(
+                base58.encode(expandedPrivateKey)
+            );
+        } catch (error) {
+            throw buildError(
+                'HDNode.fromPrivateKey',
+                HDNODE.INVALID_HDNODE_CHAIN_CODE,
+                (error as Error).message,
+                { chainCode }
+            );
+        }
     }
+    privateKey.fill(0); // Clear the private key from memory, albeit it is invalid.
+    throw buildError(
+        'HDNode.fromPrivateKey',
+        HDNODE.INVALID_HDNODE_PRIVATE_KEY,
+        'Invalid private key. Length must be exactly 32 bytes.'
+    );
 }
 
 /**
@@ -132,31 +133,34 @@ function fromPublicKey(
     publicKey: Uint8Array,
     chainCode: Uint8Array
 ): bip32.HDKey {
-    assert(
+    if (chainCode.length === 32) {
+        const header = utils.concatBytes(
+            X_PUB_PREFIX,
+            chainCode,
+            secp256k1.compressPublicKey(publicKey)
+        );
+        const checksum = sha256(sha256(header)).subarray(0, 4);
+        const expandedPublicKey = utils.concatBytes(header, checksum);
+        try {
+            return bip32.HDKey.fromExtendedKey(
+                base58.encode(expandedPublicKey)
+            );
+        } catch (error) {
+            throw buildError(
+                'HDNode.fromPublicKey',
+                HDNODE.INVALID_HDNODE_PUBLIC_KEY,
+                'Invalid public key.',
+                { publicKey },
+                error
+            );
+        }
+    }
+    throw buildError(
         'HDNode.fromPublicKey',
-        chainCode.length === 32,
         HDNODE.INVALID_HDNODE_CHAIN_CODE,
         'Invalid chain code. Length must be exactly 32 bytes.',
         { chainCode }
     );
-    const header = utils.concatBytes(
-        X_PUB_PREFIX,
-        chainCode,
-        secp256k1.compressPublicKey(publicKey)
-    );
-    const checksum = sha256(sha256(header)).subarray(0, 4);
-    const expandedPublicKey = utils.concatBytes(header, checksum);
-    try {
-        return bip32.HDKey.fromExtendedKey(base58.encode(expandedPublicKey));
-    } catch (error) {
-        throw buildError(
-            'HDNode.fromPublicKey',
-            HDNODE.INVALID_HDNODE_PUBLIC_KEY,
-            'Invalid public key.',
-            { publicKey },
-            error
-        );
-    }
 }
 
 export const HDNode = {
