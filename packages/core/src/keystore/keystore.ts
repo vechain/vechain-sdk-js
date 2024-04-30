@@ -18,11 +18,9 @@ import {
     defaultPath,
     ethers,
     getBytes,
-    getBytesCopy,
     hexlify,
     keccak256,
     scrypt,
-    toUtf8Bytes,
     uuidV4
 } from 'ethers';
 
@@ -66,14 +64,15 @@ async function encrypt(
 
 async function _encryptKeystoreJson(
     account: KeystoreAccount,
-    password: string | Uint8Array,
+    password: string,
     options?: EncryptOptions
 ): Promise<string> {
     if (options == null) {
         options = {};
     }
 
-    const passwordBytes = _getPassword(password);
+    // const passwordBytes = _getPassword(password);
+    const passwordBytes = new TextEncoder().encode(password);
     const kdf = getEncryptKdfParams(options);
     const key = await scrypt(
         passwordBytes,
@@ -256,12 +255,13 @@ function getEncryptKdfParams(options: EncryptOptions): ScryptParams {
     return { name: 'scrypt', dkLen: 32, salt, N, r, p };
 }
 
-function _getPassword(password: string | Uint8Array): Uint8Array {
-    if (typeof password === 'string') {
-        return toUtf8Bytes(password, 'NFKC');
-    }
-    return getBytesCopy(password);
-}
+// function _getPassword(password: string | Uint8Array): Uint8Array {
+//     if (typeof password === 'string') {
+//         // return toUtf8Bytes(password, 'NFKC');
+//         return new TextEncoder().encode(password);
+//     }
+//     return getBytesCopy(password);
+// }
 
 /**
  * Decrypts a keystore to obtain the private key using the given password.
