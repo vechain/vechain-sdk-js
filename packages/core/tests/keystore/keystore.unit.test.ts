@@ -16,12 +16,12 @@ describe('Keystore', () => {
     /**
      * Encrypt private key to keystore with given password
      */
-    test('encrypt', async () => {
+    test('encrypt', () => {
         // Generate a random private key
         const privateKey = secp256k1.generatePrivateKey();
 
         //  Create keystore
-        const myKeystore = await keystore.encrypt(
+        const myKeystore = keystore.encrypt(
             Buffer.from(privateKey),
             encryptionPassword
         );
@@ -40,15 +40,14 @@ describe('Keystore', () => {
     /**
      * Encrypt wrong private key to keystore with given password
      */
-    test('encrypt wrong private key', async () => {
+    test('encrypt wrong private key', () => {
         //  Create keystore
-        await expect(
-            async () =>
-                await keystore.encrypt(
-                    Buffer.from('wrong private key', 'hex'),
-                    encryptionPassword
-                )
-        ).rejects.toThrowError(InvalidSecp256k1PrivateKeyError);
+        expect(() =>
+            keystore.encrypt(
+                Buffer.from('wrong private key', 'hex'),
+                encryptionPassword
+            )
+        ).toThrowError(InvalidSecp256k1PrivateKeyError);
     });
 
     /**
@@ -59,7 +58,7 @@ describe('Keystore', () => {
         const privateKey = secp256k1.generatePrivateKey();
 
         //  Create keystore
-        const myKeystore = await keystore.encrypt(
+        const myKeystore = keystore.encrypt(
             Buffer.from(privateKey),
             encryptionPassword
         );
@@ -84,7 +83,7 @@ describe('Keystore', () => {
         const privateKey = secp256k1.generatePrivateKey();
 
         //  Create keystore
-        const myKeystore = await keystore.encrypt(
+        const myKeystore = keystore.encrypt(
             Buffer.from(privateKey),
             encryptionPassword
         );
@@ -107,7 +106,7 @@ describe('Keystore', () => {
         const privateKey = secp256k1.generatePrivateKey();
 
         //  Create keystore
-        const myKeystore = await keystore.encrypt(
+        const myKeystore = keystore.encrypt(
             Buffer.from(privateKey),
             encryptionPassword
         );
@@ -131,12 +130,12 @@ describe('Keystore', () => {
     /**
      * Keystore validation
      */
-    test('validation', async () => {
+    test('validation', () => {
         // Generate a random private key
         const privateKey = secp256k1.generatePrivateKey();
 
         //  Create keystore
-        const myKeystore = await keystore.encrypt(
+        const myKeystore = keystore.encrypt(
             Buffer.from(privateKey),
             encryptionPassword
         );

@@ -29,7 +29,7 @@ interface EncryptOptions {
     iv?: BytesLike;
     entropy?: BytesLike;
     client?: string;
-    salt?: BytesLike;
+    salt?: Uint8Array;
     uuid?: string;
     scrypt?: {
         N?: number;

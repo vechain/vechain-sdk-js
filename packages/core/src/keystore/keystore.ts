@@ -21,7 +21,7 @@ import {
     getBytes,
     hexlify,
     keccak256,
-    scrypt,
+    scryptSync,
     uuidV4
 } from 'ethers';
 
@@ -36,10 +36,7 @@ import { CTR } from 'aes-js';
  * @param password - The password used for the encryption.
  * @returns A Promise that resolves to the encrypted keystore.
  */
-async function encrypt(
-    privateKey: Uint8Array,
-    password: string
-): Promise<Keystore> {
+function encrypt(privateKey: Uint8Array, password: string): Keystore {
     // Public key and address are derived from private key.
     const keystoreAccount: KeystoreAccount = {
         address: addressUtils.fromPublicKey(
@@ -48,9 +45,9 @@ async function encrypt(
         privateKey: Hex0x.of(privateKey)
     };
     privateKey.fill(0); // Clear private key from memory.
-    const keystoreJsonString = await _encryptKeystoreJson(
+    const keystoreJsonString = _encryptKeystoreJson(
         keystoreAccount,
-        new TextEncoder().encode(password),
+        new TextEncoder().encode(password.normalize('NFKC')),
         {
             scrypt: {
                 N: SCRYPT_PARAMS.N,
@@ -63,25 +60,17 @@ async function encrypt(
     return JSON.parse(keystoreJsonString) as Keystore;
 }
 
-async function _encryptKeystoreJson(
+function _encryptKeystoreJson(
     account: KeystoreAccount,
     password: Uint8Array,
     options?: EncryptOptions
-): Promise<string> {
+): string {
     if (options == null) {
         options = {};
     }
     const kdf = getEncryptKdfParams(options);
     const key = Hex.canon(
-        await scrypt(
-            password,
-            kdf.salt,
-            kdf.N,
-            kdf.r,
-            kdf.p,
-            64,
-            options.progressCallback
-        )
+        scryptSync(password, kdf.salt, kdf.N, kdf.r, kdf.p, 64)
     );
     return _encryptKeystore(utils.hexToBytes(key), kdf, account, options);
 }
@@ -210,13 +199,9 @@ function _encryptKeystore(
 }
 
 function getEncryptKdfParams(options: EncryptOptions): ScryptParams {
-    // Check/generate the salt
-    const salt =
-        options.salt != null
-            ? getBytes(options.salt, 'options.salt')
-            : randomBytes(32);
-
-    // Override the scrypt password-based key derivation function parameters
+    // Use or generate the salt.
+    const salt = options.salt ?? secp256k1.randomBytes(32);
+    // Override the scrypt password-based key derivation function parameters,
     let N = 1 << 17;
     let r = 8;
     let p = 1;
