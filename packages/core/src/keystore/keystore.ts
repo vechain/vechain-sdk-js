@@ -58,25 +58,20 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): Keystore {
 function _encryptKeystoreJson(
     account: KeystoreAccount,
     password: Uint8Array,
-    options?: EncryptOptions
+    options: EncryptOptions = {}
 ): string {
-    if (options == null) {
-        options = {};
-    }
-    const kdf = getEncryptKdfParams(options);
-    const key = _scryptSync(password, kdf.salt, kdf.N, kdf.r, kdf.p, 64);
-    return _encryptKeystore(key, kdf, account, options);
-}
-
-function _scryptSync(
-    password: Uint8Array,
-    salt: Uint8Array,
-    N: number,
-    r: number,
-    p: number,
-    dkLen: number
-): Uint8Array {
-    return scrypt(password, salt, { N, r, p, dkLen });
+    const scryptParams = getScryptParams(options);
+    return _encryptKeystore(
+        scrypt(password, scryptParams.salt, {
+            N: scryptParams.N,
+            r: scryptParams.r,
+            p: scryptParams.p,
+            dkLen: scryptParams.dkLen
+        }),
+        scryptParams,
+        account,
+        options
+    );
 }
 
 /**
@@ -202,7 +197,7 @@ function _encryptKeystore(
     return JSON.stringify(data);
 }
 
-function getEncryptKdfParams(options: EncryptOptions): ScryptParams {
+function getScryptParams(options: EncryptOptions): ScryptParams {
     // Use or generate the salt.
     const salt = options.salt ?? secp256k1.randomBytes(32);
     // Override the scrypt password-based key derivation function parameters,
@@ -243,7 +238,7 @@ function getEncryptKdfParams(options: EncryptOptions): ScryptParams {
         'Invalid options.scrypt.p parameter.',
         { p }
     );
-    return { name: 'scrypt', dkLen: 32, salt, N, r, p };
+    return { name: 'scrypt', dkLen: 64, salt, N, r, p };
 }
 
 /**
