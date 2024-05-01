@@ -1,7 +1,7 @@
 import * as utils from '@noble/curves/abstract/utils';
 import { describe, test, expect } from '@jest/globals';
 import { encryptionPassword } from './fixture';
-import { type Keystore } from '../../src';
+import { type KeyStore } from '../../src';
 import {
     Hex0x,
     ZERO_BYTES,
@@ -119,7 +119,7 @@ describe('keystore', () => {
         await expect(
             async () =>
                 await keystore.decrypt(
-                    JSON.parse(invalidKeystore) as Keystore,
+                    JSON.parse(invalidKeystore) as KeyStore,
                     encryptionPassword
                 )
         ).rejects.toThrowError(InvalidKeystoreError);
@@ -134,7 +134,7 @@ describe('keystore', () => {
                     ...keystore.encrypt(privateKey, password),
                     version: 4
                 })
-            ) as Keystore;
+            ) as KeyStore;
             expect(keystore.isValid(invalidKeystore)).toBeFalsy();
         });
 

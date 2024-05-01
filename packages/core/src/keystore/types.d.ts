@@ -37,7 +37,7 @@ interface ScryptParams {
  * Keystore type.
  * Output of encryption function.
  */
-interface Keystore {
+interface KeyStore {
     address: string;
     crypto: {
         cipher: Cipher;
@@ -78,7 +78,7 @@ interface KeystoreAccount {
 export {
     type Cipher,
     type EncryptOptions,
-    type Keystore,
+    type KeyStore,
     type KeystoreAccount,
     type ScryptParams
 };

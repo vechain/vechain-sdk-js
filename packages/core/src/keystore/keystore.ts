@@ -10,7 +10,7 @@ import { scrypt } from '@noble/hashes/scrypt';
 import { secp256k1 } from '../secp256k1';
 import {
     type EncryptOptions,
-    type Keystore,
+    type KeyStore,
     type KeystoreAccount,
     type ScryptParams
 } from './types';
@@ -23,13 +23,15 @@ import { CTR } from 'aes-js';
  * Encrypts a private key with a password to returns a keystore object
  * compliant with [Web3 Secret Storage Definition](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/).
  *
- * @param {Uint8Array} privateKey - The private key to encrypt.
- * @param {Uint8Array} password - The password to use for encryption.
+ * @param {Uint8Array} privateKey - The private key to encrypt, the memory location is wiped after use.
+ * @param {Uint8Array} password - The password to use for encryption, the memory location is wiped after use.
  *
- * @returns {Keystore} - The encrypted keystore object.
+ * @returns {KeyStore} - The encrypted keystore object.
  *
+ * @throws {InvalidSecp256k1PrivateKeyError} - If the private key is invalid.
+ * @throws {InvalidKeystoreError} - If an error occurs during encryption.
  */
-function encrypt(privateKey: Uint8Array, password: Uint8Array): Keystore {
+function encrypt(privateKey: Uint8Array, password: Uint8Array): KeyStore {
     try {
         // Public key and address are derived from private key.
         const keystoreAccount: KeystoreAccount = {
@@ -50,7 +52,7 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): Keystore {
             }
         );
 
-        const keystore = JSON.parse(keystoreJsonString) as Keystore;
+        const keystore = JSON.parse(keystoreJsonString) as KeyStore;
         return keystore;
     } finally {
         privateKey.fill(0); // Clear the private key from memory.
@@ -212,7 +214,7 @@ function getScryptParams(options: EncryptOptions): ScryptParams {
  * @returns A Promise that resolves to the decrypted KeystoreAccount or rejects if the keystore or password is invalid.
  */
 async function decrypt(
-    keystore: Keystore,
+    keystore: KeyStore,
     password: string
 ): Promise<KeystoreAccount> {
     // Invalid keystore
@@ -249,12 +251,12 @@ async function decrypt(
  * Checks if a given keystore object is valid parsing its JSON representation
  * to catch any parsing errors, only valid keystore having version 3 are accepted.
  *
- * @param {Keystore} keystore - The keystore object to validate.
+ * @param {KeyStore} keystore - The keystore object to validate.
  * @return {boolean} Returns true if the keystore is valid, false otherwise.
  */
-function isValid(keystore: Keystore): boolean {
+function isValid(keystore: KeyStore): boolean {
     try {
-        const copy = JSON.parse(JSON.stringify(keystore)) as Keystore;
+        const copy = JSON.parse(JSON.stringify(keystore)) as KeyStore;
         if (copy.version === 3) {
             return true;
         }
