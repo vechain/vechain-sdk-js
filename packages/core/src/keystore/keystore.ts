@@ -15,7 +15,7 @@ import {
     type ScryptParams
 } from './types';
 
-import { defaultPath, ethers, getBytes, hexlify, uuidV4 } from 'ethers';
+import { defaultPath, ethers, getBytes, hexlify } from 'ethers';
 
 import { CTR } from 'aes-js';
 
@@ -119,12 +119,12 @@ function _encryptKeystore(
         Crypto: {
             cipher: 'aes-128-ctr',
             cipherparams: {
-                iv: hexlify(iv).substring(2)
+                iv: Hex.of(iv)
             },
-            ciphertext: hexlify(ciphertext).substring(2),
+            ciphertext: Hex.of(ciphertext),
             kdf: 'scrypt',
             kdfparams: {
-                salt: hexlify(kdf.salt).substring(2),
+                salt: Hex.of(kdf.salt),
                 n: kdf.N,
                 dklen: 32,
                 p: kdf.p,
@@ -280,6 +280,24 @@ function isValid(keystore: Keystore): boolean {
         }
     } catch (error) {} // Return false if parsing fails.
     return false;
+}
+
+function uuidV4(bytes: Uint8Array): string {
+    // Section: 4.1.3:
+    // - time_hi_and_version[12:16] = 0b0100
+    bytes[6] = (bytes[6] & 0x0f) | 0x40;
+    // Section 4.4
+    // - clock_seq_hi_and_reserved[6] = 0b0
+    // - clock_seq_hi_and_reserved[7] = 0b1
+    bytes[8] = (bytes[8] & 0x3f) | 0x80;
+    const value = Hex.of(bytes);
+    return [
+        value.substring(0, 8),
+        value.substring(8, 12),
+        value.substring(12, 16),
+        value.substring(16, 20),
+        value.substring(20, 32)
+    ].join('-');
 }
 
 function _zpad(value: string | number, length: number): string {
