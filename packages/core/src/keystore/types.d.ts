@@ -1,6 +1,4 @@
 import type { ProgressCallback } from 'ethers/src.ts/crypto';
-import type { BytesLike } from 'ethers/src.ts/utils';
-
 /**
  * Represents a cipher algorithm supported by the keystore encryption.
  *
@@ -26,8 +24,8 @@ type Cipher = 'aes-128-ctr' | 'aes-128-cbc' | 'aes-256-cbc';
  */
 interface EncryptOptions {
     progressCallback?: ProgressCallback;
-    iv?: BytesLike;
-    entropy?: BytesLike;
+    iv?: Uint8Array;
+    entropy?: Uint8Array;
     client?: string;
     salt?: Uint8Array;
     uuid?: string;

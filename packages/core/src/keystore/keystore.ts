@@ -5,6 +5,7 @@ import * as utils from '@noble/curves/abstract/utils';
 import { Hex, Hex0x, SCRYPT_PARAMS } from '../utils';
 import { addressUtils } from '../address';
 import { assert, buildError, KEYSTORE } from '@vechain/sdk-errors';
+import { scrypt } from '@noble/hashes/scrypt';
 import { secp256k1 } from '../secp256k1';
 import {
     type EncryptOptions,
@@ -21,13 +22,13 @@ import {
     getBytes,
     hexlify,
     keccak256,
-    scryptSync,
     uuidV4
 } from 'ethers';
 
 import { randomBytes } from '@noble/hashes/utils';
 
 import { CTR } from 'aes-js';
+import type { BytesLike } from 'ethers/src.ts/utils';
 
 /**
  * Encrypts a given private key into a keystore format using the specified password.
@@ -67,9 +68,22 @@ function _encryptKeystoreJson(
     }
     const kdf = getEncryptKdfParams(options);
     const key = Hex.canon(
-        scryptSync(password, kdf.salt, kdf.N, kdf.r, kdf.p, 64)
+        _scryptSync(password, kdf.salt, kdf.N, kdf.r, kdf.p, 64)
     );
     return _encryptKeystore(utils.hexToBytes(key), kdf, account, options);
+}
+
+function _scryptSync(
+    _passwd: BytesLike,
+    _salt: BytesLike,
+    N: number,
+    r: number,
+    p: number,
+    dkLen: number
+): string {
+    const passwd = getBytes(_passwd, 'passwd');
+    const salt = getBytes(_salt, 'salt');
+    return hexlify(scrypt(passwd, salt, { N, r, p, dkLen }));
 }
 
 /**
