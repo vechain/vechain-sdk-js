@@ -21,18 +21,20 @@ import {
  * @group unit/keystore
  */
 describe('keystore', () => {
+    const PASSWORD = new TextEncoder().encode(
+        encryptionPassword.normalize('NFKC')
+    );
+    const PASSWORD_IS_WIPED = ZERO_BYTES(PASSWORD.length);
     const PRIVATE_KEY_IS_WIPED = ZERO_BYTES(32);
 
     describe('encrypt', () => {
         test('encrypt - valid', () => {
             const privateKey = secp256k1.generatePrivateKey();
             const escrowKey = new Uint8Array(privateKey);
-            const password = new TextEncoder().encode(
-                encryptionPassword.normalize('NFKC')
-            );
+            const password = new Uint8Array(PASSWORD);
             const keyStore = keystore.encrypt(privateKey, password);
             expect(privateKey).toEqual(PRIVATE_KEY_IS_WIPED);
-            expect(password).toEqual(ZERO_BYTES(password.length));
+            expect(password).toEqual(PASSWORD_IS_WIPED);
             expect(keyStore.version).toBe(3);
             const keyStoreAddress = addressUtils.toERC55Checksum(
                 Hex0x.canon(keyStore.address)
@@ -45,14 +47,12 @@ describe('keystore', () => {
 
         test('encrypt - invalid private key', () => {
             const privateKey = utils.hexToBytes('c0ffee');
-            const password = new TextEncoder().encode(
-                encryptionPassword.normalize('NFKC')
-            );
+            const password = new Uint8Array(PASSWORD);
             expect(() => keystore.encrypt(privateKey, password)).toThrowError(
                 InvalidSecp256k1PrivateKeyError
             );
             expect(privateKey).toEqual(ZERO_BYTES(privateKey.length));
-            expect(password).toEqual(ZERO_BYTES(password.length));
+            expect(password).toEqual(PASSWORD_IS_WIPED);
         });
     });
 
@@ -63,9 +63,7 @@ describe('keystore', () => {
         // Generate a random private key
         const privateKey = secp256k1.generatePrivateKey();
         const escrowKey = new Uint8Array(privateKey);
-        const password = new TextEncoder().encode(
-            encryptionPassword.normalize('NFKC')
-        );
+        const password = new Uint8Array(PASSWORD);
         //  Create keystore
         const myKeystore = keystore.encrypt(Buffer.from(privateKey), password);
 
@@ -87,9 +85,7 @@ describe('keystore', () => {
     test('decrypt with invalid password', async () => {
         // Generate a random private key
         const privateKey = secp256k1.generatePrivateKey();
-        const password = new TextEncoder().encode(
-            encryptionPassword.normalize('NFKC')
-        );
+        const password = new Uint8Array(PASSWORD);
         //  Create keystore
         const myKeystore = keystore.encrypt(Buffer.from(privateKey), password);
 
@@ -109,9 +105,7 @@ describe('keystore', () => {
     test('decrypt invalid keystore', async () => {
         // Generate a random private key
         const privateKey = secp256k1.generatePrivateKey();
-        const password = new TextEncoder().encode(
-            encryptionPassword.normalize('NFKC')
-        );
+        const password = new Uint8Array(PASSWORD);
         //  Create keystore
         const myKeystore = keystore.encrypt(Buffer.from(privateKey), password);
 
@@ -134,26 +128,20 @@ describe('keystore', () => {
     describe('isValid', () => {
         test('isValid - false', () => {
             const privateKey = secp256k1.generatePrivateKey();
-            const password = new TextEncoder().encode(
-                encryptionPassword.normalize('NFKC')
-            );
+            const password = new Uint8Array(PASSWORD);
             const invalidKeystore = JSON.parse(
                 JSON.stringify({
                     ...keystore.encrypt(privateKey, password),
                     version: 4
                 })
             ) as Keystore;
-            expect(privateKey).toEqual(PRIVATE_KEY_IS_WIPED);
             expect(keystore.isValid(invalidKeystore)).toBeFalsy();
         });
 
         test('isValid - true', () => {
             const privateKey = secp256k1.generatePrivateKey();
-            const password = new TextEncoder().encode(
-                encryptionPassword.normalize('NFKC')
-            );
+            const password = new Uint8Array(PASSWORD);
             const keyStore = keystore.encrypt(privateKey, password);
-            expect(privateKey).toEqual(PRIVATE_KEY_IS_WIPED);
             expect(keystore.isValid(keyStore)).toBeTruthy();
         });
     });
