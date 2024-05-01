@@ -6,22 +6,6 @@ import type { ProgressCallback } from 'ethers/src.ts/crypto';
  */
 type Cipher = 'aes-128-ctr' | 'aes-128-cbc' | 'aes-256-cbc';
 
-/**
- * Represents options for keystore encryption,
- * compatible with [ethers EncryptOptions](https://github.com/ethers-io/ethers.js/blob/main/src.ts/wallet/json-keystore.ts).
- *
- * @typedef {Object} EncryptOptions
- * @property {ProgressCallback} [progressCallback] - A callback function to track the encryption progress.
- * @property {Uint8Array} [iv] - The initialization vector used for encryption.
- * @property {BytesLike} [entropy] - The entropy used for generating the encryption key.
- * @property {string} [client] - The client identifier.
- * @property {Uint8Array} [salt] - The salt value used for key derivation.
- * @property {Uint8Array} [uuid] - The UUID identifier.
- * @property {Object} [scrypt] - The parameters for scrypt key derivation function.
- * @property {number} [scrypt.N] - The CPU/memory cost parameter (N).
- * @property {number} [scrypt.r] - The block size parameter (r).
- * @property {number} [scrypt.p] - The parallelization parameter (p).
- */
 interface EncryptOptions {
     progressCallback?: ProgressCallback;
     iv?: Uint8Array;
@@ -50,16 +34,6 @@ interface ScryptParams {
 }
 
 /**
- * PBKDF2SHA256 parameters for keystore encryption
- */
-interface PBKDF2SHA256Params {
-    c: number;
-    dklen: number;
-    prf: 'hmac-sha256';
-    salt: Uint8Array | string;
-}
-
-/**
  * Keystore type.
  * Output of encryption function.
  */
@@ -72,7 +46,7 @@ interface Keystore {
         };
         ciphertext: string;
         kdf: 'pbkdf2' | 'scrypt';
-        kdfparams: ScryptParams | PBKDF2SHA256Params;
+        kdfparams: ScryptParams;
         mac: string;
     };
     id: string;
@@ -104,8 +78,7 @@ interface KeystoreAccount {
 export {
     type Cipher,
     type EncryptOptions,
-    type ScryptParams,
-    type PBKDF2SHA256Params,
     type Keystore,
-    type KeystoreAccount
+    type KeystoreAccount,
+    type ScryptParams
 };

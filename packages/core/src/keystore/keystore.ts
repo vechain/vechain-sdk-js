@@ -20,32 +20,42 @@ import { ethers } from 'ethers';
 import { CTR } from 'aes-js';
 
 /**
- * Encrypts a given private key into a keystore format using the specified password.
+ * Encrypts a private key with a password to returns a keystore object
+ * compliant with [Web3 Secret Storage Definition](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/).
  *
- * @param privateKey - The private key to be encrypted.
- * @param password - The password used for the encryption.
- * @returns A Promise that resolves to the encrypted keystore.
+ * @param {Uint8Array} privateKey - The private key to encrypt.
+ * @param {Uint8Array} password - The password to use for encryption.
+ *
+ * @returns {Keystore} - The encrypted keystore object.
+ *
  */
 function encrypt(privateKey: Uint8Array, password: Uint8Array): Keystore {
-    // Public key and address are derived from private key.
-    const keystoreAccount: KeystoreAccount = {
-        address: addressUtils.fromPublicKey(
-            secp256k1.derivePublicKey(privateKey)
-        ),
-        privateKey: Hex0x.of(privateKey) // remove this conversion
-    };
-    privateKey.fill(0); // Clear the private key from memory.
-    const keystoreJsonString = _encryptKeystoreJson(keystoreAccount, password, {
-        scrypt: {
-            N: SCRYPT_PARAMS.N,
-            r: SCRYPT_PARAMS.r,
-            p: SCRYPT_PARAMS.p
-        }
-    });
-    // password.fill(0); // Clear the password from memory.
-    const keystore = JSON.parse(keystoreJsonString) as Keystore;
-    return keystore;
-    // return keystoreJsonString;
+    try {
+        // Public key and address are derived from private key.
+        const keystoreAccount: KeystoreAccount = {
+            address: addressUtils.fromPublicKey(
+                secp256k1.derivePublicKey(privateKey)
+            ),
+            privateKey: Hex0x.of(privateKey) // remove this conversion
+        };
+        const keystoreJsonString = _encryptKeystoreJson(
+            keystoreAccount,
+            password,
+            {
+                scrypt: {
+                    N: SCRYPT_PARAMS.N,
+                    r: SCRYPT_PARAMS.r,
+                    p: SCRYPT_PARAMS.p
+                }
+            }
+        );
+
+        const keystore = JSON.parse(keystoreJsonString) as Keystore;
+        return keystore;
+    } finally {
+        privateKey.fill(0); // Clear the private key from memory.
+        password.fill(0); // Clear the password from memory.
+    }
 }
 
 function _encryptKeystoreJson(
