@@ -64,19 +64,19 @@ interface PBKDF2SHA256Params {
  * Output of encryption function.
  */
 interface Keystore {
+    address: string;
     crypto: {
         cipher: Cipher;
-        ciphertext: string;
         cipherparams: {
             iv: string;
         };
+        ciphertext: string;
         kdf: 'pbkdf2' | 'scrypt';
         kdfparams: ScryptParams | PBKDF2SHA256Params;
         mac: string;
     };
     id: string;
     version: 3;
-    address: string;
 }
 
 /**

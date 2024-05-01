@@ -43,7 +43,9 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): Keystore {
         }
     });
     // password.fill(0); // Clear the password from memory.
-    return JSON.parse(keystoreJsonString) as Keystore;
+    const keystore = JSON.parse(keystoreJsonString) as Keystore;
+    return keystore;
+    // return keystoreJsonString;
 }
 
 function _encryptKeystoreJson(
@@ -64,12 +66,6 @@ function _encryptKeystoreJson(
         options
     );
 }
-
-/**
- *  The current version of Ethers.
- */
-const version: string = '6.11.1';
-const defaultPath: string = "m/44'/60'/0'/0/0";
 
 function _encryptKeystore(
     key: Uint8Array,
@@ -115,9 +111,7 @@ function _encryptKeystore(
     // See: https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition
     const data: Record<string, unknown> = {
         address: Hex.canon(account.address),
-        id: uuidV4(uuidRandom),
-        version: 3,
-        Crypto: {
+        crypto: {
             cipher: 'aes-128-ctr',
             cipherparams: {
                 iv: Hex.of(iv)
@@ -126,50 +120,32 @@ function _encryptKeystore(
             kdf: 'scrypt',
             kdfparams: {
                 salt: Hex.of(kdf.salt),
-                n: kdf.N,
-                dklen: 32,
+                N: kdf.N,
+                dkLen: 32,
                 p: kdf.p,
                 r: kdf.r
             },
             mac: Hex.of(mac)
-        }
+        },
+        id: uuidV4(uuidRandom),
+        version: 3
     };
 
-    // If we have a mnemonic, encrypt it into the JSON wallet
-    if (account.mnemonic != null) {
-        const client = options.client ?? `ethers/${version}`;
-        const path = account.mnemonic.path ?? defaultPath;
-        const locale = account.mnemonic.locale ?? 'en';
-        const mnemonicKey = key.slice(32, 64);
-        const entropy = utils.hexToBytes(Hex.canon(account.mnemonic.entropy));
-        const mnemonicIv = secp256k1.randomBytes(16);
-        const mnemonicAesCtr = new CTR(mnemonicKey, mnemonicIv);
-        const mnemonicCiphertext = mnemonicAesCtr.encrypt(entropy);
-        const now = new Date();
-        const timestamp =
-            now.getUTCFullYear() +
-            '-' +
-            _zpad(now.getUTCMonth() + 1, 2) +
-            '-' +
-            _zpad(now.getUTCDate(), 2) +
-            'T' +
-            _zpad(now.getUTCHours(), 2) +
-            '-' +
-            _zpad(now.getUTCMinutes(), 2) +
-            '-' +
-            _zpad(now.getUTCSeconds(), 2) +
-            '.0Z';
-        const gethFilename = `UTC--${timestamp}--${data.address as string}`;
-        data['x-ethers'] = {
-            client,
-            gethFilename,
-            path,
-            locale,
-            mnemonicCounter: Hex.of(mnemonicIv),
-            mnemonicCiphertext: Hex.of(mnemonicCiphertext),
-            version: '0.1'
-        };
-    }
+    // const ks: Keystore = {
+    //     address: Hex.canon(account.address),
+    //     crypto: {
+    //         cipher: 'aes-128-ctr',
+    //         cipherparams: {
+    //             iv: Hex.of(iv)
+    //         },
+    //         ciphertext: Hex.of(ciphertext),
+    //         kdf: 'scrypt',
+    //         kdfparams: kdf,
+    //         mac: Hex.of(mac)
+    //     },
+    //     id: uuidV4(uuidRandom),
+    //     version: 3
+    // };
     return JSON.stringify(data);
 }
 
@@ -292,14 +268,6 @@ function uuidV4(bytes: Uint8Array): string {
         value.substring(16, 20),
         value.substring(20, 32)
     ].join('-');
-}
-
-function _zpad(value: string | number, length: number): string {
-    value = String(value);
-    while (value.length < length) {
-        value = '0' + value;
-    }
-    return value;
 }
 
 /**
