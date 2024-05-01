@@ -77,7 +77,7 @@ function _encryptKeystoreJson(
 /**
  *  The current version of Ethers.
  */
-export const version: string = '6.11.1';
+const version: string = '6.11.1';
 
 function _encryptKeystore(
     key: Uint8Array,
