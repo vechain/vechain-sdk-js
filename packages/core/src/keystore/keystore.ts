@@ -1,8 +1,7 @@
 /**
  * Implements the JSON Keystore v3 Wallet encryption, decryption, and validation functionality.
  */
-import * as utils from '@noble/curves/abstract/utils';
-import { Hex, Hex0x, SCRYPT_PARAMS } from '../utils';
+import { Hex0x, SCRYPT_PARAMS } from '../utils';
 import { addressUtils } from '../address';
 import { assert, buildError, KEYSTORE } from '@vechain/sdk-errors';
 import { scrypt } from '@noble/hashes/scrypt';
@@ -65,10 +64,8 @@ function _encryptKeystoreJson(
         options = {};
     }
     const kdf = getEncryptKdfParams(options);
-    const key = Hex.canon(
-        _scryptSync(password, kdf.salt, kdf.N, kdf.r, kdf.p, 64)
-    );
-    return _encryptKeystore(utils.hexToBytes(key), kdf, account, options);
+    const key = _scryptSync(password, kdf.salt, kdf.N, kdf.r, kdf.p, 64);
+    return _encryptKeystore(key, kdf, account, options);
 }
 
 function _scryptSync(
@@ -78,8 +75,8 @@ function _scryptSync(
     r: number,
     p: number,
     dkLen: number
-): string {
-    return hexlify(scrypt(password, salt, { N, r, p, dkLen }));
+): Uint8Array {
+    return scrypt(password, salt, { N, r, p, dkLen });
 }
 
 /**
