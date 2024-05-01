@@ -1,9 +1,11 @@
 /**
  * Implements the JSON Keystore v3 Wallet encryption, decryption, and validation functionality.
  */
-import { Hex0x, SCRYPT_PARAMS } from '../utils';
+import * as utils from '@noble/curves/abstract/utils';
+import { Hex, Hex0x, SCRYPT_PARAMS } from '../utils';
 import { addressUtils } from '../address';
 import { assert, buildError, KEYSTORE } from '@vechain/sdk-errors';
+import { keccak256 } from '../hash';
 import { scrypt } from '@noble/hashes/scrypt';
 import { secp256k1 } from '../secp256k1';
 import {
@@ -13,18 +15,7 @@ import {
     type ScryptParams
 } from './types';
 
-import {
-    assertArgument,
-    concat,
-    defaultPath,
-    ethers,
-    getBytes,
-    hexlify,
-    keccak256,
-    uuidV4
-} from 'ethers';
-
-import { randomBytes } from '@noble/hashes/utils';
+import { defaultPath, ethers, getBytes, hexlify, uuidV4 } from 'ethers';
 
 import { CTR } from 'aes-js';
 
@@ -41,7 +32,7 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): Keystore {
         address: addressUtils.fromPublicKey(
             secp256k1.derivePublicKey(privateKey)
         ),
-        privateKey: Hex0x.of(privateKey)
+        privateKey: Hex0x.of(privateKey) // remove this conversion
     };
     privateKey.fill(0); // Clear the private key from memory.
     const keystoreJsonString = _encryptKeystoreJson(keystoreAccount, password, {
@@ -85,33 +76,29 @@ function _encryptKeystore(
     account: KeystoreAccount,
     options: EncryptOptions
 ): string {
-    const privateKey = getBytes(account.privateKey, 'privateKey');
+    const privateKey = utils.hexToBytes(Hex.canon(account.privateKey));
 
-    // Override initialization vector
-    const iv =
-        options.iv != null
-            ? getBytes(options.iv, 'options.iv')
-            : randomBytes(16);
-    assertArgument(
+    // Override initialization vector.
+    const iv = options.iv ?? secp256k1.randomBytes(16);
+    assert(
+        'keystore.encrypt',
         iv.length === 16,
-        'invalid options.iv length',
-        'options.iv',
-        options.iv
+        KEYSTORE.INVALID_KEYSTORE,
+        'Invalid options.iv length.',
+        { iv }
     );
 
-    // Override the uuid
-    const uuidRandom =
-        options.uuid != null
-            ? getBytes(options.uuid, 'options.uuid')
-            : randomBytes(16);
-    assertArgument(
+    // Override the uuid.
+    const uuidRandom = options.uuid ?? secp256k1.randomBytes(16);
+    assert(
+        'keystore.encrypt',
         uuidRandom.length === 16,
-        'invalid options.uuid length',
-        'options.uuid',
-        options.iv
+        KEYSTORE.INVALID_KEYSTORE,
+        'Invalid options.uuid length.',
+        { iv }
     );
 
-    // This will be used to encrypt the wallet (as per Web3 secret storage)
+    // This will be used to encrypt the wallet (as per Web3 secret storage).
     // - 32 bytes   As normal for the Web3 secret storage (derivedKey, macPrefix)
     // - 32 bytes   AES key to encrypt mnemonic with (required here to be Ethers Wallet)
     const derivedKey = key.slice(0, 16);
@@ -119,14 +106,14 @@ function _encryptKeystore(
 
     // Encrypt the private key
     const aesCtr = new CTR(derivedKey, iv);
-    const ciphertext = getBytes(aesCtr.encrypt(privateKey));
+    const ciphertext = aesCtr.encrypt(privateKey);
 
     // Compute the message authentication code, used to check the password
-    const mac = keccak256(concat([macPrefix, ciphertext]));
+    const mac = keccak256(utils.concatBytes(macPrefix, ciphertext));
 
     // See: https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition
     const data: Record<string, unknown> = {
-        address: account.address.substring(2).toLowerCase(),
+        address: Hex.canon(account.address),
         id: uuidV4(uuidRandom),
         version: 3,
         Crypto: {
@@ -143,7 +130,7 @@ function _encryptKeystore(
                 p: kdf.p,
                 r: kdf.r
             },
-            mac: mac.substring(2)
+            mac: Hex.of(mac)
         }
     };
 
@@ -153,17 +140,12 @@ function _encryptKeystore(
 
         const path = account.mnemonic.path ?? defaultPath;
         const locale = account.mnemonic.locale ?? 'en';
-
-        // const path = account.mnemonic.path || defaultPath;
-        // const locale = account.mnemonic.locale || 'en';
-
         const mnemonicKey = key.slice(32, 64);
-
         const entropy = getBytes(
             account.mnemonic.entropy,
             'account.mnemonic.entropy'
         );
-        const mnemonicIv = randomBytes(16);
+        const mnemonicIv = secp256k1.randomBytes(16);
         const mnemonicAesCtr = new CTR(mnemonicKey, mnemonicIv);
         const mnemonicCiphertext = getBytes(mnemonicAesCtr.encrypt(entropy));
 

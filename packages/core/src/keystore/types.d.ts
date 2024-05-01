@@ -12,11 +12,11 @@ type Cipher = 'aes-128-ctr' | 'aes-128-cbc' | 'aes-256-cbc';
  *
  * @typedef {Object} EncryptOptions
  * @property {ProgressCallback} [progressCallback] - A callback function to track the encryption progress.
- * @property {BytesLike} [iv] - The initialization vector used for encryption.
+ * @property {Uint8Array} [iv] - The initialization vector used for encryption.
  * @property {BytesLike} [entropy] - The entropy used for generating the encryption key.
  * @property {string} [client] - The client identifier.
- * @property {BytesLike} [salt] - The salt value used for key derivation.
- * @property {string} [uuid] - The UUID identifier.
+ * @property {Uint8Array} [salt] - The salt value used for key derivation.
+ * @property {Uint8Array} [uuid] - The UUID identifier.
  * @property {Object} [scrypt] - The parameters for scrypt key derivation function.
  * @property {number} [scrypt.N] - The CPU/memory cost parameter (N).
  * @property {number} [scrypt.r] - The block size parameter (r).
@@ -28,7 +28,7 @@ interface EncryptOptions {
     entropy?: Uint8Array;
     client?: string;
     salt?: Uint8Array;
-    uuid?: string;
+    uuid?: Uint8Array;
     scrypt?: {
         N?: number;
         r?: number;
