@@ -15,7 +15,7 @@ import {
     type ScryptParams
 } from './types';
 
-import { defaultPath, ethers, getBytes, hexlify } from 'ethers';
+import { ethers } from 'ethers';
 
 import { CTR } from 'aes-js';
 
@@ -69,6 +69,7 @@ function _encryptKeystoreJson(
  *  The current version of Ethers.
  */
 const version: string = '6.11.1';
+const defaultPath: string = "m/44'/60'/0'/0/0";
 
 function _encryptKeystore(
     key: Uint8Array,
@@ -76,7 +77,7 @@ function _encryptKeystore(
     account: KeystoreAccount,
     options: EncryptOptions
 ): string {
-    const privateKey = utils.hexToBytes(Hex.canon(account.privateKey));
+    const privateKey = utils.hexToBytes(Hex.canon(account.privateKey)); // remove this conversion
 
     // Override initialization vector.
     const iv = options.iv ?? secp256k1.randomBytes(16);
@@ -137,18 +138,13 @@ function _encryptKeystore(
     // If we have a mnemonic, encrypt it into the JSON wallet
     if (account.mnemonic != null) {
         const client = options.client ?? `ethers/${version}`;
-
         const path = account.mnemonic.path ?? defaultPath;
         const locale = account.mnemonic.locale ?? 'en';
         const mnemonicKey = key.slice(32, 64);
-        const entropy = getBytes(
-            account.mnemonic.entropy,
-            'account.mnemonic.entropy'
-        );
+        const entropy = utils.hexToBytes(Hex.canon(account.mnemonic.entropy));
         const mnemonicIv = secp256k1.randomBytes(16);
         const mnemonicAesCtr = new CTR(mnemonicKey, mnemonicIv);
-        const mnemonicCiphertext = getBytes(mnemonicAesCtr.encrypt(entropy));
-
+        const mnemonicCiphertext = mnemonicAesCtr.encrypt(entropy);
         const now = new Date();
         const timestamp =
             now.getUTCFullYear() +
@@ -163,19 +159,17 @@ function _encryptKeystore(
             '-' +
             _zpad(now.getUTCSeconds(), 2) +
             '.0Z';
-
         const gethFilename = `UTC--${timestamp}--${data.address as string}`;
         data['x-ethers'] = {
             client,
             gethFilename,
             path,
             locale,
-            mnemonicCounter: hexlify(mnemonicIv).substring(2),
-            mnemonicCiphertext: hexlify(mnemonicCiphertext).substring(2),
+            mnemonicCounter: Hex.of(mnemonicIv),
+            mnemonicCiphertext: Hex.of(mnemonicCiphertext),
             version: '0.1'
         };
     }
-
     return JSON.stringify(data);
 }
 
