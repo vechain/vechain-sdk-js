@@ -28,7 +28,6 @@ import {
 import { randomBytes } from '@noble/hashes/utils';
 
 import { CTR } from 'aes-js';
-import type { BytesLike } from 'ethers/src.ts/utils';
 
 /**
  * Encrypts a given private key into a keystore format using the specified password.
@@ -37,7 +36,6 @@ import type { BytesLike } from 'ethers/src.ts/utils';
  * @param password - The password used for the encryption.
  * @returns A Promise that resolves to the encrypted keystore.
  */
-// new TextEncoder().encode(password.normalize('NFKC'))
 function encrypt(privateKey: Uint8Array, password: Uint8Array): Keystore {
     // Public key and address are derived from private key.
     const keystoreAccount: KeystoreAccount = {
@@ -74,16 +72,14 @@ function _encryptKeystoreJson(
 }
 
 function _scryptSync(
-    _passwd: BytesLike,
-    _salt: BytesLike,
+    password: Uint8Array,
+    salt: Uint8Array,
     N: number,
     r: number,
     p: number,
     dkLen: number
 ): string {
-    const passwd = getBytes(_passwd, 'passwd');
-    const salt = getBytes(_salt, 'salt');
-    return hexlify(scrypt(passwd, salt, { N, r, p, dkLen }));
+    return hexlify(scrypt(password, salt, { N, r, p, dkLen }));
 }
 
 /**
