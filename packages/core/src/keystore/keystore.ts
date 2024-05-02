@@ -29,7 +29,6 @@ import {
     scryptSync,
     toUtf8Bytes
 } from 'ethers';
-import { encryptionPassword } from '../../tests/keystore/fixture';
 
 /**
  * Encrypts a private key with a password to returns a keystore object
@@ -171,7 +170,7 @@ function getScryptParams(options: EncryptOptions): ScryptParams {
  * @param password - The password used to decrypt the keystore.
  * @returns A Promise that resolves to the decrypted KeystoreAccount or rejects if the keystore or password is invalid.
  */
-function decrypt(keystore: KeyStore, password: string): KeystoreAccount {
+function decrypt(keystore: KeyStore, password: Uint8Array): KeystoreAccount {
     // Invalid keystore
     assert(
         'keystore.decrypt',
@@ -199,16 +198,11 @@ function decrypt(keystore: KeyStore, password: string): KeystoreAccount {
     }
 }
 
-
-
 function _decryptKeystoreJsonSync(
     json: string,
-    _password: string | Uint8Array
+    password: Uint8Array
 ): KeystoreAccount {
     const data = JSON.parse(json) as KeyStore;
-
-    const password = getPassword(_password);
-
     const params = getDecryptKdfParams(data);
     if (params.name === 'pbkdf2') {
         const { salt, count, dkLen, algorithm } = params;
@@ -367,12 +361,12 @@ function _decrypt(
     throw new Error('unsupported cipher');
 }
 
-function getPassword(password: string | Uint8Array): Uint8Array {
-    if (typeof password === 'string') {
-        return toUtf8Bytes(password, 'NFKC');
-    }
-    return getBytesCopy(password);
-}
+// function getPassword(password: string | Uint8Array): Uint8Array {
+//     if (typeof password === 'string') {
+//         return toUtf8Bytes(password, 'NFKC');
+//     }
+//     return getBytesCopy(password);
+// }
 
 function looseArrayify(hexString: string): Uint8Array {
     if (typeof hexString === 'string' && !hexString.startsWith('0x')) {

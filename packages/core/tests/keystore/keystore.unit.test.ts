@@ -59,19 +59,17 @@ describe('keystore', () => {
     /**
      * Decrypt private key from keystore
      */
-    test('decrypt', async () => {
+    test('decrypt', () => {
         // Generate a random private key
         const privateKey = secp256k1.generatePrivateKey();
         const escrowKey = new Uint8Array(privateKey);
         const password = new Uint8Array(PASSWORD);
+        const escrowPassword = new Uint8Array(password);
         //  Create keystore
         const myKeystore = keystore.encrypt(Buffer.from(privateKey), password);
 
         // Decrypt keystore
-        const decryptedKeystore = keystore.decrypt(
-            myKeystore,
-            encryptionPassword
-        );
+        const decryptedKeystore = keystore.decrypt(myKeystore, escrowPassword);
 
         // Verify private key (slice(2) is used to remove 0x prefix)
         expect(decryptedKeystore.privateKey.slice(2)).toEqual(
@@ -82,21 +80,19 @@ describe('keystore', () => {
     /**
      * Decrypt private key from keystore with invalid password
      */
-    test('decrypt with invalid password', async () => {
+    test('decrypt with invalid password', () => {
         // Generate a random private key
         const privateKey = secp256k1.generatePrivateKey();
         const password = new Uint8Array(PASSWORD);
         //  Create keystore
         const myKeystore = keystore.encrypt(Buffer.from(privateKey), password);
-
+        const invalidPassword = new TextEncoder().encode(
+            `WRONG_${encryptionPassword}`.normalize('NFKC')
+        );
         // Decrypt with invalid password the keystore
-        await expect(
-            async () =>
-                await keystore.decrypt(
-                    myKeystore,
-                    `WRONG_${encryptionPassword}`
-                )
-        ).rejects.toThrowError(InvalidKeystorePasswordError);
+        expect(() =>
+            keystore.decrypt(myKeystore, invalidPassword)
+        ).toThrowError(InvalidKeystorePasswordError);
     });
 
     /**
@@ -106,6 +102,7 @@ describe('keystore', () => {
         // Generate a random private key
         const privateKey = secp256k1.generatePrivateKey();
         const password = new Uint8Array(PASSWORD);
+        const escrowPassword = new Uint8Array(password);
         //  Create keystore
         const myKeystore = keystore.encrypt(Buffer.from(privateKey), password);
 
@@ -114,15 +111,13 @@ describe('keystore', () => {
             ...myKeystore,
             version: 4
         });
-
         // Decrypt invalid keystore
-        await expect(
-            async () =>
-                await keystore.decrypt(
-                    JSON.parse(invalidKeystore) as KeyStore,
-                    encryptionPassword
-                )
-        ).rejects.toThrowError(InvalidKeystoreError);
+        expect(() =>
+            keystore.decrypt(
+                JSON.parse(invalidKeystore) as KeyStore,
+                escrowPassword
+            )
+        ).toThrowError(InvalidKeystoreError);
     });
 
     describe('isValid', () => {
