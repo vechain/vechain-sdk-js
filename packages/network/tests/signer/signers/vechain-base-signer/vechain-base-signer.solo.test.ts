@@ -170,6 +170,23 @@ describe('Vechain base signer tests - testnet', () => {
      */
     describe('call', () => {
         /**
+         * Test call function without clauses
+         */
+        test('call with no clauses transaction', async () => {
+            const signer = new VechainBaseSigner(
+                Buffer.from(ALL_ACCOUNTS[0].privateKey, 'hex'),
+                new VechainProvider(
+                    thorClient,
+                    new ProviderInternalBaseWallet([]),
+                    false
+                )
+            );
+
+            const result = await signer.call({});
+            expect(result).toBeDefined();
+        });
+
+        /**
          * Simulate transfer transactions
          */
         simulateTransaction.correct.transfer.forEach(

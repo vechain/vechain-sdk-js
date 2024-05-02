@@ -164,7 +164,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
                 this._buildClauses(populatedTransaction),
             totalGasResult,
             {
-                isDelegated: this.provider?.enableDelegation ?? false,
+                isDelegated: this.provider?.enableDelegation as boolean,
                 nonce:
                     populatedTransaction.nonce ??
                     (await this.getNonce('pending')),
@@ -207,7 +207,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
         const gasEstimation = await thorClient.gas.estimateGas(
             populatedTransaction.clauses ??
                 this._buildClauses(populatedTransaction),
-            populatedTransaction.from ?? undefined
+            populatedTransaction.from as string
         );
 
         // Return the gas estimation
@@ -253,7 +253,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
                 revision: revision ?? undefined,
                 gas: (populatedTransaction.gas as number) ?? undefined,
                 gasPrice: populatedTransaction.gasPrice ?? undefined,
-                caller: populatedTransaction.from ?? undefined,
+                caller: populatedTransaction.from as string,
                 provedWork: populatedTransaction.provedWork ?? undefined,
                 gasPayer: populatedTransaction.gasPayer ?? undefined,
                 expiration: populatedTransaction.expiration ?? undefined,
@@ -356,7 +356,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
         const provider = this.provider as TProviderType;
 
         // 2 - Understand if the transaction is delegated or not
-        const isDelegated = provider.enableDelegation ?? false;
+        const isDelegated = provider.enableDelegation as boolean;
 
         // 3 - Sign the transaction
         const signedTransaction = isDelegated
