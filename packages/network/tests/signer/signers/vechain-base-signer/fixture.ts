@@ -8,7 +8,11 @@ import {
     type TransactionRequestInput
 } from '../../../../src';
 import { addressUtils, type TransactionClause } from '@vechain/sdk-core';
-import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
+import {
+    InvalidSecp256k1PrivateKeyError,
+    JSONRPCInvalidParams,
+    TransactionDelegationError
+} from '@vechain/sdk-errors';
 
 /**
  * SignTransaction test cases
@@ -16,6 +20,9 @@ import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
  */
 const signTransactionTestCases = {
     solo: {
+        /**
+         * Correct test cases
+         */
         correct: [
             {
                 description: 'Should sign a transaction without delegation',
@@ -69,41 +76,29 @@ const signTransactionTestCases = {
             }
         ],
         /**
-         * ----- START: TEMPORARY COMMENT -----
-         * Make more incorrect tst cases coherent with the new structure
-         * ----- END: TEMPORARY COMMENT -----
+         * Incorrect test cases
          */
         incorrect: [
-            // {
-            //     description:
-            //         "Should throw error when delegator's private key is invalid",
-            //     origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
-            //     options: {
-            //         delegatorPrivateKey: 'INVALID_PRIVATE_KEY'
-            //     } satisfies SignTransactionOptions,
-            //     isDelegated: true,
-            //     expectedError: InvalidSecp256k1PrivateKeyError
-            // }
-            // {
-            //     description:
-            //         'Should throw error when delegator private key is invalid',
-            //     origin: {
-            //         privateKey: '0x',
-            //         address: '0x'
-            //     },
-            //     isDelegated: true,
-            //     expectedError: InvalidSecp256k1PrivateKeyError
-            // },
-            // {
-            //     description:
-            //         "Should throw error when using delegator url on solo network due to no server providing the delegator's signature through an endpoint",
-            //     origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
-            //     options: {
-            //         delegatorUrl: 'https://example.com'
-            //     } satisfies SignTransactionOptions,
-            //     isDelegated: true,
-            //     expectedError: TransactionDelegationError
-            // }
+            {
+                description:
+                    "Should throw error when delegator's private key is invalid",
+                origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
+                options: {
+                    delegatorPrivateKey: 'INVALID_PRIVATE_KEY'
+                } satisfies SignTransactionOptions,
+                isDelegated: true,
+                expectedError: InvalidSecp256k1PrivateKeyError
+            },
+            {
+                description:
+                    "Should throw error when using delegator url on solo network due to no server providing the delegator's signature through an endpoint",
+                origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
+                options: {
+                    delegatorUrl: 'https://example.com'
+                } satisfies SignTransactionOptions,
+                isDelegated: true,
+                expectedError: TransactionDelegationError
+            }
         ]
     },
     testnet: {

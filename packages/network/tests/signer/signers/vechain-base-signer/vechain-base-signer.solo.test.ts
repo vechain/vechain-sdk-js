@@ -114,55 +114,51 @@ describe('Vechain base signer tests - testnet', () => {
 
         /**
          * signTransaction test cases that should throw an error
-         *
-         * ----- START: TEMPORARY COMMENT -----
-         * Make more incorrect tst cases coherent with the new structure
-         * ----- END: TEMPORARY COMMENT -----
          */
-        // signTransactionTestCases.solo.incorrect.forEach(
-        //     ({ description, origin, options, expectedError }) => {
-        //         test(
-        //             description,
-        //             async () => {
-        //                 const sampleClause = clauseBuilder.functionInteraction(
-        //                     TESTING_CONTRACT_ADDRESS,
-        //                     coder
-        //                         .createInterface(TESTING_CONTRACT_ABI)
-        //                         .getFunction(
-        //                             'setStateVariable'
-        //                         ) as FunctionFragment,
-        //                     [123]
-        //                 );
-        //
-        //                 const txBody =
-        //                     await thorClient.transactions.buildTransactionBody(
-        //                         [sampleClause],
-        //                         0
-        //                     );
-        //
-        //                 const signer = new VechainBaseSigner(
-        //                     Buffer.from(origin.privateKey, 'hex'),
-        //                     new VechainProvider(
-        //                         thorClient,
-        //                         new ProviderInternalBaseWallet([], {
-        //                             delegator: options
-        //                         }),
-        //                         true
-        //                     )
-        //                 );
-        //
-        //                 await expect(() => {
-        //                     await signer.signTransactionWithDelegator(
-        //                         signerUtils.transactionBodyToTransactionRequestInput(
-        //                             txBody,
-        //                             origin.address
-        //                         )
-        //                     );
-        //                 }).rejects.toThrowError(expectedError);
-        //             },
-        //             10000
-        //         );
-        //     }
-        // );
+        signTransactionTestCases.solo.incorrect.forEach(
+            ({ description, origin, options, expectedError }) => {
+                test(
+                    description,
+                    async () => {
+                        const sampleClause = clauseBuilder.functionInteraction(
+                            TESTING_CONTRACT_ADDRESS,
+                            coder
+                                .createInterface(TESTING_CONTRACT_ABI)
+                                .getFunction(
+                                    'setStateVariable'
+                                ) as FunctionFragment,
+                            [123]
+                        );
+
+                        const txBody =
+                            await thorClient.transactions.buildTransactionBody(
+                                [sampleClause],
+                                0
+                            );
+
+                        const signer = new VechainBaseSigner(
+                            Buffer.from(origin.privateKey, 'hex'),
+                            new VechainProvider(
+                                thorClient,
+                                new ProviderInternalBaseWallet([], {
+                                    delegator: options
+                                }),
+                                true
+                            )
+                        );
+
+                        await expect(
+                            signer.signTransactionWithDelegator(
+                                signerUtils.transactionBodyToTransactionRequestInput(
+                                    txBody,
+                                    origin.address
+                                )
+                            )
+                        ).rejects.toThrowError(expectedError);
+                    },
+                    10000
+                );
+            }
+        );
     });
 });
