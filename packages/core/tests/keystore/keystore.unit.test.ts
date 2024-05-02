@@ -68,7 +68,7 @@ describe('keystore', () => {
         const myKeystore = keystore.encrypt(Buffer.from(privateKey), password);
 
         // Decrypt keystore
-        const decryptedKeystore = await keystore.decrypt(
+        const decryptedKeystore = keystore.decrypt(
             myKeystore,
             encryptionPassword
         );

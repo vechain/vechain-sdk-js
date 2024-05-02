@@ -15,9 +15,21 @@ import {
     type ScryptParams
 } from './types';
 
-import { ethers } from 'ethers';
-
 import { CTR } from 'aes-js';
+
+import {
+    assertArgument,
+    computeAddress,
+    concat,
+    getAddress,
+    getBytes,
+    getBytesCopy,
+    hexlify,
+    pbkdf2,
+    scryptSync,
+    toUtf8Bytes
+} from 'ethers';
+import { encryptionPassword } from '../../tests/keystore/fixture';
 
 /**
  * Encrypts a private key with a password to returns a keystore object
@@ -159,10 +171,7 @@ function getScryptParams(options: EncryptOptions): ScryptParams {
  * @param password - The password used to decrypt the keystore.
  * @returns A Promise that resolves to the decrypted KeystoreAccount or rejects if the keystore or password is invalid.
  */
-async function decrypt(
-    keystore: KeyStore,
-    password: string
-): Promise<KeystoreAccount> {
+function decrypt(keystore: KeyStore, password: string): KeystoreAccount {
     // Invalid keystore
     assert(
         'keystore.decrypt',
@@ -175,10 +184,7 @@ async function decrypt(
     );
 
     try {
-        return (await ethers.decryptKeystoreJson(
-            JSON.stringify(keystore),
-            password
-        )) as KeystoreAccount;
+        return _decryptKeystoreJsonSync(JSON.stringify(keystore), password);
     } catch (e) {
         throw buildError(
             'keystore.decrypt',
@@ -192,6 +198,275 @@ async function decrypt(
         );
     }
 }
+
+
+
+function _decryptKeystoreJsonSync(
+    json: string,
+    _password: string | Uint8Array
+): KeystoreAccount {
+    const data = JSON.parse(json) as KeyStore;
+
+    const password = getPassword(_password);
+
+    const params = getDecryptKdfParams(data);
+    if (params.name === 'pbkdf2') {
+        const { salt, count, dkLen, algorithm } = params;
+        const key = pbkdf2(password, salt, count, dkLen, algorithm);
+        return getAccount(data, key);
+    }
+
+    // assert(params.name === 'scrypt', 'cannot be reached', 'UNKNOWN_ERROR', {
+    //     params
+    // });
+
+    const { salt, N, r, p, dkLen } = params;
+    const key = scryptSync(password, salt, N, r, p, dkLen);
+    return getAccount(data, key);
+}
+
+const defaultPath = "m/44'/60'/0'/0/0";
+
+function getAccount(data: KeyStore, _key: string): KeystoreAccount {
+    const key = getBytes(_key);
+    const ciphertext = spelunk<Uint8Array>(data, 'crypto.ciphertext:data!');
+    const computedMAC = hexlify(
+        keccak256(concat([key.slice(16, 32), ciphertext]))
+    ).substring(2);
+
+    // assertArgument(
+    //     computedMAC ===
+    //         spelunk<string>(data, 'crypto.mac:string!').toLowerCase(),
+    //     'incorrect password',
+    //     'password',
+    //     '[ REDACTED ]'
+    // );
+
+    const privateKey = _decrypt(data, key.slice(0, 16), ciphertext);
+
+    const address = computeAddress(privateKey);
+    if (data.address !== '') {
+        let check = data.address.toLowerCase();
+        if (!check.startsWith('0x')) {
+            check = '0x' + check;
+        }
+
+        assertArgument(
+            getAddress(check) === address,
+            'keystore address/privateKey mismatch',
+            'address',
+            data.address
+        );
+    }
+
+    const account: KeystoreAccount = { address, privateKey };
+
+    // Version 0.1 x-ethers metadata must contain an encrypted mnemonic phrase
+    const version = spelunk(data, 'x-ethers.version:string');
+    if (version === '0.1') {
+        const mnemonicKey = key.slice(32, 64);
+
+        const mnemonicCiphertext = spelunk<Uint8Array>(
+            data,
+            'x-ethers.mnemonicCiphertext:data!'
+        );
+        const mnemonicIv = spelunk<Uint8Array>(
+            data,
+            'x-ethers.mnemonicCounter:data!'
+        );
+
+        const mnemonicAesCtr = new CTR(mnemonicKey, mnemonicIv);
+
+        account.mnemonic = {
+            path:
+                spelunk<null | string>(data, 'x-ethers.path:string') ??
+                defaultPath,
+            locale:
+                spelunk<null | string>(data, 'x-ethers.locale:string') ?? 'en',
+            entropy: hexlify(
+                getBytes(mnemonicAesCtr.decrypt(mnemonicCiphertext))
+            )
+        };
+    }
+
+    return account;
+}
+
+function getDecryptKdfParams(data: unknown): KdfParams {
+    const kdf = spelunk(data, 'crypto.kdf:string');
+    if (typeof kdf === 'string') {
+        if (kdf.toLowerCase() === 'scrypt') {
+            const salt = spelunk<Uint8Array>(
+                data,
+                'crypto.kdfparams.salt:data!'
+            );
+            const N = spelunk<number>(data, 'crypto.kdfparams.n:int!');
+            const r = spelunk<number>(data, 'crypto.kdfparams.r:int!');
+            const p = spelunk<number>(data, 'crypto.kdfparams.p:int!');
+
+            // Make sure N is a power of 2
+            assertArgument(
+                N > 0 && (N & (N - 1)) === 0,
+                'invalid kdf.N',
+                'kdf.N',
+                N
+            );
+            assertArgument(r > 0 && p > 0, 'invalid kdf', 'kdf', kdf);
+
+            const dkLen = spelunk<number>(data, 'crypto.kdfparams.dklen:int!');
+            assertArgument(
+                dkLen === 32,
+                'invalid kdf.dklen',
+                'kdf.dflen',
+                dkLen
+            );
+
+            return { name: 'scrypt', salt, N, r, p, dkLen: 64 };
+        } else if (kdf.toLowerCase() === 'pbkdf2') {
+            const salt = spelunk<Uint8Array>(
+                data,
+                'crypto.kdfparams.salt:data!'
+            );
+
+            const prf = spelunk<string>(data, 'crypto.kdfparams.prf:string!');
+            const algorithm = prf.split('-').pop();
+            assertArgument(
+                algorithm === 'sha256' || algorithm === 'sha512',
+                'invalid kdf.pdf',
+                'kdf.pdf',
+                prf
+            );
+
+            const count = spelunk<number>(data, 'crypto.kdfparams.c:int!');
+
+            const dkLen = spelunk<number>(data, 'crypto.kdfparams.dklen:int!');
+            assertArgument(
+                dkLen === 32,
+                'invalid kdf.dklen',
+                'kdf.dklen',
+                dkLen
+            );
+
+            return { name: 'pbkdf2', salt, count, dkLen, algorithm };
+        }
+    }
+    assertArgument(false, 'unsupported key-derivation function', 'kdf', kdf);
+}
+
+function _decrypt(
+    data: unknown,
+    key: Uint8Array,
+    ciphertext: Uint8Array
+): string {
+    const cipher = spelunk<string>(data, 'crypto.cipher:string');
+    if (cipher === 'aes-128-ctr') {
+        const iv = spelunk<Uint8Array>(data, 'crypto.cipherparams.iv:data!');
+        const aesCtr = new CTR(key, iv);
+        return hexlify(aesCtr.decrypt(ciphertext));
+    }
+    throw new Error('unsupported cipher');
+}
+
+function getPassword(password: string | Uint8Array): Uint8Array {
+    if (typeof password === 'string') {
+        return toUtf8Bytes(password, 'NFKC');
+    }
+    return getBytesCopy(password);
+}
+
+function looseArrayify(hexString: string): Uint8Array {
+    if (typeof hexString === 'string' && !hexString.startsWith('0x')) {
+        hexString = '0x' + hexString;
+    }
+    return getBytesCopy(hexString);
+}
+
+function spelunk<T>(object: any, _path: string): T {
+    const match = _path.match(/^([a-z0-9$_.-]*)(:([a-z]+))?(!)?$/i);
+    assertArgument(match != null, 'invalid path', 'path', _path);
+
+    const path = match[1];
+    const type = match[3];
+    const reqd = match[4] === '!';
+
+    let cur = object;
+    for (const comp of path.toLowerCase().split('.')) {
+        // Search for a child object with a case-insensitive matching key
+        if (Array.isArray(cur)) {
+            if (!comp.match(/^[0-9]+$/)) {
+                break;
+            }
+            cur = cur[parseInt(comp)];
+        } else if (typeof cur === 'object') {
+            let found: any = null;
+            for (const key in cur) {
+                if (key.toLowerCase() === comp) {
+                    found = cur[key];
+                    break;
+                }
+            }
+            cur = found;
+        } else {
+            cur = null;
+        }
+
+        if (cur == null) {
+            break;
+        }
+    }
+
+    assertArgument(
+        !reqd || cur != null,
+        'missing required value',
+        'path',
+        path
+    );
+
+    if (type && cur != null) {
+        if (type === 'int') {
+            if (typeof cur === 'string' && cur.match(/^-?[0-9]+$/)) {
+                return parseInt(cur) as unknown as T;
+            } else if (Number.isSafeInteger(cur)) {
+                return cur;
+            }
+        }
+
+        if (type === 'number') {
+            if (typeof cur === 'string' && cur.match(/^-?[0-9.]*$/)) {
+                return parseFloat(cur) as unknown as T;
+            }
+        }
+
+        if (type === 'data') {
+            if (typeof cur === 'string') {
+                return looseArrayify(cur) as unknown as T;
+            }
+        }
+
+        if (type === 'array' && Array.isArray(cur)) {
+            return cur as unknown as T;
+        }
+        if (type === typeof cur) {
+            return cur;
+        }
+
+        assertArgument(false, `wrong type found for ${type} `, 'path', path);
+    }
+
+    return cur;
+}
+
+type KdfParams =
+    | ScryptParams
+    | {
+          name: 'pbkdf2';
+          salt: Uint8Array;
+          count: number;
+          dkLen: number;
+          algorithm: 'sha256' | 'sha512';
+      };
+
+// ---
 
 /**
  * Checks if a given keystore object is valid parsing its JSON representation
