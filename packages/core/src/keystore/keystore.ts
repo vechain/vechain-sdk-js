@@ -64,6 +64,7 @@ function encryptKeystore(
         'keystore.encrypt',
         iv.length === 16,
         KEYSTORE.INVALID_KEYSTORE,
+
         'Invalid options.iv length.',
         { iv }
     );
@@ -76,12 +77,9 @@ function encryptKeystore(
         'Invalid options.uuid length.',
         { iv }
     );
-    // This will be used to encrypt the wallet (as per Web3 secret storage).
-    // - 32 bytes   As normal for the Web3 secret storage (derivedKey, macPrefix)
-    // - 32 bytes   AES key to encrypt mnemonic with (required here to be Ethers Wallet)
-    // const derivedKey = key.slice(0, 16);
+    // Message Authentication Code prefix.
     const macPrefix = key.slice(16, 32);
-    // Encrypt the private key
+    // Encrypt the private key: 32 bytes for the Web3 Secret Storage (derivedKey, macPrefix)
     const ciphertext = new CTR(key.slice(0, 16), iv).encrypt(privateKey);
     return {
         address: Hex.canon(
