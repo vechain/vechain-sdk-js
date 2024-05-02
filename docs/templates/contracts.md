@@ -43,3 +43,13 @@ After deploying a smart contract, interacting with its functions is the next ste
 This section highlights the methodology for constructing a clause that facilitates interaction with a deployed smart contract's functions on the vechain network, thereby enabling developers to manipulate and query smart contract states efficiently.
 
 This document, designed to be both informative and practical, equips developers with the necessary tools and knowledge to effectively interact with smart contracts on the vechain blockchain, from deployment to function invocation.
+
+## Delegating a Contract Call
+
+### Overview
+
+Vechain allows for the delegation of contract calls, enabling developers to execute contract functions in which the fees are payed by the delegator.
+
+Here is an example of how to delegate a contract call:
+
+[ERC20FunctionCallDelegatedSnippet](examples/contracts/contract-delegation-ERC20.ts)
