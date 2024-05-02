@@ -79,14 +79,11 @@ function encryptKeystore(
     // This will be used to encrypt the wallet (as per Web3 secret storage).
     // - 32 bytes   As normal for the Web3 secret storage (derivedKey, macPrefix)
     // - 32 bytes   AES key to encrypt mnemonic with (required here to be Ethers Wallet)
-    const derivedKey = key.slice(0, 16);
+    // const derivedKey = key.slice(0, 16);
     const macPrefix = key.slice(16, 32);
     // Encrypt the private key
-    const aesCtr = new CTR(derivedKey, iv);
-    const ciphertext = aesCtr.encrypt(privateKey);
-    // Compute the message authentication code, used to check the password.
-    const mac = keccak256(utils.concatBytes(macPrefix, ciphertext));
-    const keyStore: KeyStore = {
+    const ciphertext = new CTR(key.slice(0, 16), iv).encrypt(privateKey);
+    return {
         address: Hex.canon(
             addressUtils.fromPublicKey(secp256k1.derivePublicKey(privateKey))
         ),
@@ -104,12 +101,12 @@ function encryptKeystore(
                 r: kdf.r,
                 salt: Hex.of(kdf.salt)
             },
-            mac: Hex.of(mac)
+            // Compute the message authentication code, used to check the password.
+            mac: Hex.of(keccak256(utils.concatBytes(macPrefix, ciphertext)))
         },
         id: uuidV4(uuidRandom),
         version: 3
-    };
-    return keyStore;
+    } satisfies KeyStore;
 }
 
 function getScryptParams(options: EncryptOptions): ScryptParams {
