@@ -2,7 +2,7 @@
  * Implements the JSON Keystore v3 Wallet encryption, decryption, and validation functionality.
  */
 import * as utils from '@noble/curves/abstract/utils';
-import { Hex, Hex0x, SCRYPT_PARAMS } from '../utils';
+import { Hex, SCRYPT_PARAMS } from '../utils';
 import { addressUtils } from '../address';
 import { assert, buildError, KEYSTORE } from '@vechain/sdk-errors';
 import { keccak256 } from '../hash';
@@ -33,25 +33,14 @@ import { CTR } from 'aes-js';
  */
 function encrypt(privateKey: Uint8Array, password: Uint8Array): KeyStore {
     try {
-        // Public key and address are derived from private key.
-        const keystoreAccount: KeystoreAccount = {
-            address: addressUtils.fromPublicKey(
-                secp256k1.derivePublicKey(privateKey)
-            ),
-            privateKey: Hex0x.of(privateKey) // remove this conversion
-        };
-        const keystoreJsonString = _encryptKeystoreJson(
-            keystoreAccount,
-            password,
-            {
-                scrypt: {
-                    N: SCRYPT_PARAMS.N,
-                    r: SCRYPT_PARAMS.r,
-                    p: SCRYPT_PARAMS.p
-                }
+        const keyStore = _encryptKeystoreJson(privateKey, password, {
+            scrypt: {
+                N: SCRYPT_PARAMS.N,
+                r: SCRYPT_PARAMS.r,
+                p: SCRYPT_PARAMS.p
             }
-        );
-        return keystoreJsonString;
+        });
+        return keyStore;
     } finally {
         privateKey.fill(0); // Clear the private key from memory.
         password.fill(0); // Clear the password from memory.
@@ -59,31 +48,31 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): KeyStore {
 }
 
 function _encryptKeystoreJson(
-    account: KeystoreAccount,
+    privateKey: Uint8Array,
     password: Uint8Array,
     options: EncryptOptions = {}
 ): KeyStore {
-    const scryptParams = getScryptParams(options);
+    const kdf = getScryptParams(options);
     return _encryptKeystore(
-        scrypt(password, scryptParams.salt, {
-            N: scryptParams.N,
-            r: scryptParams.r,
-            p: scryptParams.p,
-            dkLen: scryptParams.dkLen
+        privateKey,
+        scrypt(password, kdf.salt, {
+            N: kdf.N,
+            r: kdf.r,
+            p: kdf.p,
+            dkLen: kdf.dkLen
         }),
-        scryptParams,
-        account,
+        kdf,
         options
     );
 }
 
 function _encryptKeystore(
+    privateKey: Uint8Array,
     key: Uint8Array,
     kdf: ScryptParams,
-    account: KeystoreAccount,
     options: EncryptOptions
 ): KeyStore {
-    const privateKey = utils.hexToBytes(Hex.canon(account.privateKey)); // remove this conversion
+    // const privateKey = utils.hexToBytes(Hex.canon(account.privateKey)); // remove this conversion
     // Override initialization vector.
     const iv = options.iv ?? secp256k1.randomBytes(16);
     assert(
@@ -114,7 +103,9 @@ function _encryptKeystore(
     // Compute the message authentication code, used to check the password
     const mac = keccak256(utils.concatBytes(macPrefix, ciphertext));
     const keyStore: KeyStore = {
-        address: Hex.canon(account.address),
+        address: Hex.canon(
+            addressUtils.fromPublicKey(secp256k1.derivePublicKey(privateKey))
+        ),
         crypto: {
             cipher: 'aes-128-ctr',
             cipherparams: {
