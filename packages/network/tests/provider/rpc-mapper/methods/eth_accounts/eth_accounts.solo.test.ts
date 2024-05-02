@@ -6,7 +6,7 @@ import {
     ThorClient,
     VechainProvider
 } from '../../../../../src';
-import { soloUrl, THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../fixture';
+import { soloUrl, THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_accounts' method

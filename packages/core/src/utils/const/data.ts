@@ -1,13 +1,3 @@
-import { Buffer } from 'buffer';
-
-/**
- * Zero Buffer
- * @internal
- *
- * @example ZERO_BUFFER(8) -> 0x00000000 , ... , ZERO_BUFFER(n) -> 0x0...0
- */
-const ZERO_BUFFER = (size: number): Buffer => Buffer.from(ZERO_BYTES(size));
-
 /**
  * Create a Uint8Array filled with zero bytes of the specified size.
  *
@@ -17,15 +7,29 @@ const ZERO_BUFFER = (size: number): Buffer => Buffer.from(ZERO_BYTES(size));
 const ZERO_BYTES = (size: number): Uint8Array => new Uint8Array(size);
 
 /**
- * Regular expression for validating base 10 integer number format strings.
+ * Regular expression pattern for matching integers expressed as base 10 strings.
+ *
+ * @type {RegExp}
+ * @constant
  */
-const DECIMAL_INTEGER_REGEX = /^\d+$/;
+const INTEGER_REGEX = /^\d+$/;
 
 /**
- * Regular expression for validating base 10 numeric number format strings.
- * Allows optional "-" prefix and validates both integer and floating point numbers.
- * Also allows for numbers with no leading digits (i.e. ".123", which is equivalent to "0.123").
+ * Regular expression for matching numeric values expressed as base 10 strings.
+ *
+ * The regular expression matches the following numeric patterns:
+ *    - Whole numbers:
+ *      - Positive whole numbers: 1, 2, 3, ...
+ *      - Negative whole numbers: -1, -2, -3, ...
+ *    - Decimal numbers:
+ *      - Positive decimal numbers: 1.0, 2.5, 3.14, ...
+ *      - Negative decimal numbers: -1.0, -2.5, -3.14, ...
+ *      - Decimal numbers without whole part:
+ *        - Positive decimal numbers: .1, .5, .75, ...
+ *        - Negative decimal numbers: -.1, -.5, -.75, ...
+ *
+ * @constant {RegExp} NUMERIC_REGEX
  */
 const NUMERIC_REGEX = /(^-?\d+(\.\d+)?)$|(^-?\.\d+)$/;
 
-export { ZERO_BUFFER, ZERO_BYTES, DECIMAL_INTEGER_REGEX, NUMERIC_REGEX };
+export { INTEGER_REGEX, NUMERIC_REGEX, ZERO_BYTES };

@@ -8,15 +8,16 @@ import {
 import { type DataType, ErrorClassMap, type ErrorCode } from '../../types';
 
 /**
- * Build RPC error object according to the error code provided.
+ * Builds a ProviderRpcError object with the given code, message, and data,
+ * according [Rpc Errors](https://eips.ethereum.org/EIPS/eip-1193#rpc-errors)
  *
- * @link [Rpc Errors](https://eips.ethereum.org/EIPS/eip-1193#rpc-errors)
+ * @param {EIP1193 | JSONRPC} code - The error code.
+ * @param {string} message - The error message.
+ * @param {DataTypeT} [data] - Optional data associated with the error.
+ * @return {ProviderRpcError} - The constructed ProviderRpcError object.
  *
- * @param code - The error code as specified in EIP-1193 or EIP-1474
- * @param message - The error message
- * @param data - Contains optional extra information about the error
- *
- * @returns the error object
+ * @remarks
+ * **IMPORTANT: no sensitive data should be passed as any parameter.**
  */
 function buildProviderError<
     ErrorCodeT extends ErrorCode,
@@ -40,9 +41,11 @@ function buildProviderError<
 }
 
 /**
- * Check if the code is an EIP1193 code
- * @param code - The code to be checked
- * @returns true if the code is an EIP1193 code
+ * Checks if the given code is EIP1193 code.
+ *
+ * @param {EIP1193 | JSONRPC} code - The code to check.
+ *
+ * @return {boolean} - True if the code is an instance of EIP1193, otherwise false.
  */
 function isEIP1193Code(code: EIP1193 | JSONRPC): code is EIP1193 {
     return Object.values(EIP1193).includes(code as EIP1193);

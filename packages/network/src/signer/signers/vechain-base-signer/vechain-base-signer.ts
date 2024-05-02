@@ -11,13 +11,16 @@ import {
 import {
     addressUtils,
     clauseBuilder,
-    Hex,
     Hex0x,
     secp256k1,
-    type TransactionClause
+    Transaction,
+    type TransactionBody,
+    type TransactionClause,
+    TransactionHandler
 } from '../../../../../core';
 import { RPC_METHODS } from '../../../provider';
-import { assert, JSONRPC } from '@vechain/sdk-errors';
+import { assert, JSONRPC, TRANSACTION } from '@vechain/sdk-errors';
+import { assertTransactionCanBeSigned } from '../../../assertions';
 
 /**
  * Basic vechain signer.
@@ -97,7 +100,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
     async signTransaction(
         transactionToSign: TransactionRequestInput
     ): Promise<string> {
-        return await this._sign(
+        return await this._signFlow(
             transactionToSign,
             null,
             (this.provider as TProviderType).thorClient,
@@ -127,7 +130,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
             'Delegator not found. Ensure that the provider contains the delegator used to sign the transaction.'
         );
 
-        return await this._sign(
+        return await this._signFlow(
             transactionToSign,
             DelegationHandler(
                 await this.provider?.wallet?.getDelegator()
@@ -169,7 +172,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
      * @param privateKey - The private key of the signer
      * @returns The fully signed transaction
      */
-    async _sign(
+    async _signFlow(
         transaction: TransactionRequestInput,
         delegator: SignTransactionOptions | null,
         thorClient: ThorClient,
@@ -198,14 +201,94 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
                 }
             );
 
-        // 6 - Sign the transaction
-        const signedTransaction = await thorClient.transactions.signTransaction(
-            transactionBody,
-            Hex.of(privateKey),
-            DelegationHandler(delegator).delegatorOrUndefined()
+        // Assert if the transaction can be signed
+        assertTransactionCanBeSigned(
+            'signTransaction',
+            this.privateKey,
+            transactionBody
         );
 
-        return Hex0x.of(signedTransaction.encoded);
+        // 6 - Sign the transaction
+        return delegator !== null
+            ? await this._signWithDelegator(
+                  transactionBody,
+                  privateKey,
+                  thorClient,
+                  delegator
+              )
+            : Hex0x.of(
+                  TransactionHandler.sign(transactionBody, privateKey).encoded
+              );
+    }
+
+    /**
+     * Signs a transaction where the gas fee is paid by a delegator.
+     *
+     * @param unsignedTransactionBody - The unsigned transaction body to sign.
+     * @param originPrivateKey - The private key of the origin account.
+     * @param  - (Optional) The private key of the delegator account.
+     * @param thorClient - The ThorClient instance.
+     * @param delegatorOptions - Optional parameters for the request. Includes the `delegatorUrl` and `delegatorPrivateKey` fields.
+     *                  Only one of the following options can be specified: `delegatorUrl`, `delegatorPrivateKey`.
+     *
+     * @returns A promise that resolves to the signed transaction.
+     *
+     * @throws an error if the delegation fails.
+     */
+    private async _signWithDelegator(
+        unsignedTransactionBody: TransactionBody,
+        originPrivateKey: Buffer,
+        thorClient: ThorClient,
+        delegatorOptions?: SignTransactionOptions
+    ): Promise<string> {
+        // Only one of the `SignTransactionOptions` options can be specified
+        assert(
+            '_signWithDelegator',
+            !(
+                delegatorOptions?.delegatorUrl !== undefined &&
+                delegatorOptions?.delegatorPrivateKey !== undefined
+            ),
+            TRANSACTION.INVALID_DELEGATION,
+            'Only one of the following options can be specified: delegatorUrl, delegatorPrivateKey'
+        );
+
+        // Address of the origin account
+        const originAddress = addressUtils.fromPublicKey(
+            Buffer.from(secp256k1.derivePublicKey(originPrivateKey))
+        );
+
+        const unsignedTx = new Transaction(unsignedTransactionBody);
+
+        // Sign transaction with origin private key and delegator private key
+        if (delegatorOptions?.delegatorPrivateKey !== undefined)
+            return Hex0x.of(
+                TransactionHandler.signWithDelegator(
+                    unsignedTransactionBody,
+                    originPrivateKey,
+                    Buffer.from(delegatorOptions?.delegatorPrivateKey, 'hex')
+                ).encoded
+            );
+
+        // Otherwise, get the signature of the delegator from the delegator endpoint
+        const delegatorSignature = await DelegationHandler(
+            delegatorOptions
+        ).getDelegationSignatureUsingUrl(
+            unsignedTx,
+            originAddress,
+            thorClient.httpClient
+        );
+
+        // Sign transaction with origin private key
+        const originSignature = secp256k1.sign(
+            unsignedTx.getSignatureHash(),
+            originPrivateKey
+        );
+
+        // Sign the transaction with both signatures. Concat both signatures to get the final signature
+        const signature = Buffer.concat([originSignature, delegatorSignature]);
+
+        // Return new signed transaction
+        return Hex0x.of(new Transaction(unsignedTx.body, signature).encoded);
     }
 }
 

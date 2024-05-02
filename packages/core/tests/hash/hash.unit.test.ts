@@ -3,7 +3,7 @@ import { hashFunctionsToTest } from './fixture';
 import { ethers } from 'ethers';
 import { InvalidDataReturnTypeError } from '@vechain/sdk-errors';
 import { Buffer } from 'buffer';
-import { ZERO_BUFFER } from '../../src';
+import { ZERO_BYTES } from '../../src';
 
 /**
  * Test hash functions
@@ -23,7 +23,7 @@ describe('Hash', () => {
                 );
 
                 // Zero bytes hash
-                expect(hashFunction.hashFunction(ZERO_BUFFER(0), 'hex')).toBe(
+                expect(hashFunction.hashFunction(ZERO_BYTES(0), 'hex')).toBe(
                     hashFunction.results.ZERO_BUFFER_HASH_VALUE_HEX
                 );
             });
@@ -42,12 +42,12 @@ describe('Hash', () => {
 
                 // Zero bytes hash
                 expect(
-                    hashFunction.hashFunction(ZERO_BUFFER(0), 'buffer')
+                    hashFunction.hashFunction(ZERO_BYTES(0), 'buffer')
                 ).toStrictEqual(
                     hashFunction.results.ZERO_BUFFER_HASH_VALUE_BUFFER
                 );
 
-                expect(hashFunction.hashFunction(ZERO_BUFFER(0))).toStrictEqual(
+                expect(hashFunction.hashFunction(ZERO_BYTES(0))).toStrictEqual(
                     hashFunction.results.ZERO_BUFFER_HASH_VALUE_BUFFER
                 );
             });

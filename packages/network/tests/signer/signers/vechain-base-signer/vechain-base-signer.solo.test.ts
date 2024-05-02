@@ -7,11 +7,9 @@ import {
     VechainProvider
 } from '../../../../src';
 import {
+    soloUrl,
     TESTING_CONTRACT_ABI,
-    TESTING_CONTRACT_ADDRESS,
-    testnetUrl,
-    THOR_SOLO_ACCOUNTS_BASE_WALLET,
-    THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR
+    TESTING_CONTRACT_ADDRESS
 } from '../../../fixture';
 import {
     addressUtils,
@@ -23,9 +21,9 @@ import {
 import { signTransactionTestCases } from './fixture';
 
 /**
- * Vechain base signer tests - testnet
+ * Vechain base signer tests - solo
  *
- * @group integration/signers/vechain-base-signer-testnet
+ * @group integration/signers/vechain-base-signer-solo
  */
 describe('Vechain base signer tests - testnet', () => {
     /**
@@ -37,89 +35,24 @@ describe('Vechain base signer tests - testnet', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(testnetUrl);
+        thorClient = ThorClient.fromUrl(soloUrl);
     });
 
     /**
-     * Positive case tests
-     */
-    describe('Positive case - Signature', () => {
-        /**
-         * Should be able to sign transaction NOT delegated
-         */
-        test('Should be able to sign transaction - NOT DELEGATED CASES', async () => {
-            for (const fixture of signTransactionTestCases.testnet.correct) {
-                if (!fixture.isDelegated) {
-                    // Init the signer
-                    const signer = new VechainBaseSigner(
-                        Buffer.from(fixture.origin.privateKey, 'hex'),
-                        new VechainProvider(
-                            thorClient,
-                            THOR_SOLO_ACCOUNTS_BASE_WALLET,
-                            false
-                        )
-                    );
-
-                    // Sign the transaction
-                    const signedTransaction = await signer.signTransaction({
-                        from: fixture.origin.address
-                    });
-
-                    expect(signedTransaction).toBeDefined();
-                }
-            }
-        });
-
-        /**
-         * Should be able to sign transaction delegated
-         */
-        test('Should be able to sign transaction - DELEGATED CASES', async () => {
-            for (const fixture of signTransactionTestCases.testnet.correct) {
-                if (fixture.isDelegated) {
-                    // Init the signer
-                    const signer = new VechainBaseSigner(
-                        Buffer.from(fixture.origin.privateKey, 'hex'),
-                        new VechainProvider(
-                            thorClient,
-                            THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR(
-                                fixture.options
-                            ),
-                            true
-                        )
-                    );
-
-                    // Sign the transaction
-                    const signedTransaction =
-                        await signer.signTransactionWithDelegator({
-                            from: fixture.origin.address
-                        });
-
-                    expect(signedTransaction).toBeDefined();
-                }
-            }
-        });
-    });
-
-    /**
-     * Test suite for signTransaction using build transaction flow.
-     * Test retro compatibility with thorClient signing flow.
+     * Test suite for signTransaction method
      */
     describe('signTransactionTestCases', () => {
         /**
-         * Correct test cases
+         * signTransaction test cases with different options
          */
-        signTransactionTestCases.testnet.correct.forEach(
+        signTransactionTestCases.solo.correct.forEach(
             ({ description, origin, options, isDelegated, expected }) => {
                 test(description, async () => {
-                    const thorClient = ThorClient.fromUrl(testnetUrl);
-
                     const sampleClause = clauseBuilder.functionInteraction(
                         TESTING_CONTRACT_ADDRESS,
                         coder
                             .createInterface(TESTING_CONTRACT_ABI)
-                            .getFunction(
-                                'setStateVariable'
-                            ) as FunctionFragment,
+                            .getFunction('deposit') as FunctionFragment,
                         [123]
                     );
 
@@ -178,5 +111,58 @@ describe('Vechain base signer tests - testnet', () => {
                 });
             }
         );
+
+        /**
+         * signTransaction test cases that should throw an error
+         *
+         * ----- START: TEMPORARY COMMENT -----
+         * Make more incorrect tst cases coherent with the new structure
+         * ----- END: TEMPORARY COMMENT -----
+         */
+        // signTransactionTestCases.solo.incorrect.forEach(
+        //     ({ description, origin, options, expectedError }) => {
+        //         test(
+        //             description,
+        //             async () => {
+        //                 const sampleClause = clauseBuilder.functionInteraction(
+        //                     TESTING_CONTRACT_ADDRESS,
+        //                     coder
+        //                         .createInterface(TESTING_CONTRACT_ABI)
+        //                         .getFunction(
+        //                             'setStateVariable'
+        //                         ) as FunctionFragment,
+        //                     [123]
+        //                 );
+        //
+        //                 const txBody =
+        //                     await thorClient.transactions.buildTransactionBody(
+        //                         [sampleClause],
+        //                         0
+        //                     );
+        //
+        //                 const signer = new VechainBaseSigner(
+        //                     Buffer.from(origin.privateKey, 'hex'),
+        //                     new VechainProvider(
+        //                         thorClient,
+        //                         new ProviderInternalBaseWallet([], {
+        //                             delegator: options
+        //                         }),
+        //                         true
+        //                     )
+        //                 );
+        //
+        //                 await expect(() => {
+        //                     await signer.signTransactionWithDelegator(
+        //                         signerUtils.transactionBodyToTransactionRequestInput(
+        //                             txBody,
+        //                             origin.address
+        //                         )
+        //                     );
+        //                 }).rejects.toThrowError(expectedError);
+        //             },
+        //             10000
+        //         );
+        //     }
+        // );
     });
 });

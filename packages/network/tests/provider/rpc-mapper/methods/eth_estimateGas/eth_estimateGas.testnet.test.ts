@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-
-import { testnetUrl } from '../../../fixture';
+import { testnetUrl } from '../../../../fixture';
 import { negativeCasesFixtures, positiveCasesFixtures } from './fixture';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
+
 /**
  * RPC Mapper integration tests for 'eth_estimateGas' method
  *

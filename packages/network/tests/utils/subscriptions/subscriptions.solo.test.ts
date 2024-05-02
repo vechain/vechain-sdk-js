@@ -1,18 +1,22 @@
-import { describe, expect, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import {
-    subscriptions,
-    type EventLogs,
-    type EventFragment,
-    type TransferLogs,
-    ThorClient,
     type Clause,
-    type CompressedBlockDetail
+    type CompressedBlockDetail,
+    type EventFragment,
+    type EventLogs,
+    signerUtils,
+    subscriptions,
+    ThorClient,
+    type TransferLogs,
+    type VechainBaseSigner,
+    VechainProvider
 } from '../../../src';
 import {
-    TESTING_CONTRACT_ABI,
+    soloUrl,
     TEST_ACCOUNTS,
+    TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS,
-    soloUrl
+    THOR_SOLO_ACCOUNTS_BASE_WALLET
 } from '../../fixture';
 import WebSocket from 'ws';
 import {
@@ -20,6 +24,7 @@ import {
     clauseBuilder,
     coder,
     type FunctionFragment,
+    TransactionHandler,
     unitsUtils
 } from '@vechain/sdk-core';
 
@@ -31,6 +36,31 @@ const TIMEOUT = 15000; // 15-second timeout
  * @group integration/utils/subscriptions
  */
 describe('Subscriptions Solo network tests', () => {
+    /**
+     * ThorClient and provider instances
+     */
+    let thorClient: ThorClient;
+    let provider: VechainProvider;
+
+    /**
+     * Init thor client and provider before each test
+     */
+    beforeEach(() => {
+        thorClient = ThorClient.fromUrl(soloUrl);
+        provider = new VechainProvider(
+            thorClient,
+            THOR_SOLO_ACCOUNTS_BASE_WALLET,
+            false
+        );
+    });
+
+    /**
+     * Destroy thor client and provider after each test
+     */
+    afterEach(() => {
+        provider.destroy();
+    });
+
     test(
         'Should receive new blocks from the block subscription',
         async () => {
@@ -153,12 +183,27 @@ describe('Subscriptions Solo network tests', () => {
                     [clause],
                     gasResult.totalGas
                 );
-            const tx = await thorSoloClient.transactions.signTransaction(
-                txBody,
-                TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.privateKey
+
+            // Create a signer to sign the transaction
+            const signer = (await provider.getSigner(
+                TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
+            )) as VechainBaseSigner<VechainProvider>;
+
+            // Get the raw transaction
+            const raw = await signer.signTransaction(
+                signerUtils.transactionBodyToTransactionRequestInput(
+                    txBody,
+                    TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
+                )
             );
+
             // Send the signed transaction to the blockchain
-            await thorSoloClient.transactions.sendTransaction(tx);
+            await thorSoloClient.transactions.sendTransaction(
+                TransactionHandler.decode(
+                    Buffer.from(raw.slice(2), 'hex'),
+                    true
+                )
+            );
 
             // Wait for the WebSocket message or a timeout
             await expect(waitForMessage).resolves.toBe(true);
@@ -219,12 +264,24 @@ describe('Subscriptions Solo network tests', () => {
             [clause],
             gasResult.totalGas
         );
-        const tx = await thorSoloClient.transactions.signTransaction(
-            txBody,
-            TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION.privateKey
+
+        // Create a signer to sign the transaction
+        const signer = (await provider.getSigner(
+            TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION.address
+        )) as VechainBaseSigner<VechainProvider>;
+
+        // Get the raw transaction
+        const raw = await signer.signTransaction(
+            signerUtils.transactionBodyToTransactionRequestInput(
+                txBody,
+                TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION.address
+            )
         );
+
         // Send the signed transaction to the blockchain
-        await thorSoloClient.transactions.sendTransaction(tx);
+        await thorSoloClient.transactions.sendTransaction(
+            TransactionHandler.decode(Buffer.from(raw.slice(2), 'hex'), true)
+        );
 
         // Wait for the WebSocket message or a timeout
         await expect(waitForMessage).resolves.toBe(true);

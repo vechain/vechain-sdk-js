@@ -7,7 +7,7 @@ import {
     ThorClient,
     VechainProvider
 } from '../../../../../src';
-import { soloUrl, THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../fixture';
+import { soloUrl, THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../../fixture';
 import { ProviderRpcError } from '@vechain/sdk-errors';
 
 /**

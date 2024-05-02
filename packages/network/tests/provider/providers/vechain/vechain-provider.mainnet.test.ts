@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { InvalidDataTypeError } from '@vechain/sdk-errors';
-import { mainNetwork } from '../../fixture';
+import { mainNetwork } from '../../../fixture';
 import { providerMethodsTestCasesMainnet } from '../fixture';
 import { ThorClient, VechainProvider } from '../../../../src';
 

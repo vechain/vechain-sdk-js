@@ -8,14 +8,20 @@ import { assertInnerError } from '../assert';
 import { buildErrorMessage } from '../error-message-builder';
 
 /**
- * Build error object according to the error code provided.
- * The error code determines the error type returned and the data type to be provided.
- * @param methodName - The method name where the error was thrown.
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @param innerError - The inner error.
- * @returns the error object.
+ * Builds an error object with the error code provided and specified parameters.
+ *
+ * @param {string} methodName - The name of the method where the error occurred.
+ * @param {ErrorCodeT} code - The error code.
+ * @param {string} message - The error message.
+ * @param {DataTypeT} [data] - Additional data associated with the error.
+ * @param {unknown} [innerError] - An inner error associated with the error.
+ *
+ * @returns {ErrorType<ErrorCodeT>} - The error object.
+ *
+ * @throws {Error} - If the error code is invalid.
+ *
+ * @remarks
+ * **IMPORTANT: no sensitive data should be passed as any parameter.**
  */
 function buildError<
     ErrorCodeT extends ErrorCode,
