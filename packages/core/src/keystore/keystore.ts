@@ -52,27 +52,22 @@ function _encryptKeystoreJson(
     password: Uint8Array,
     options: EncryptOptions = {}
 ): KeyStore {
-    const kdf = getScryptParams(options);
-    return _encryptKeystore(
-        privateKey,
-        scrypt(password, kdf.salt, {
-            N: kdf.N,
-            r: kdf.r,
-            p: kdf.p,
-            dkLen: kdf.dkLen
-        }),
-        kdf,
-        options
-    );
+    // const kdf = getScryptParams(options);
+    return _encryptKeystore(privateKey, password, options);
 }
 
 function _encryptKeystore(
     privateKey: Uint8Array,
-    key: Uint8Array,
-    kdf: ScryptParams,
+    password: Uint8Array,
     options: EncryptOptions
 ): KeyStore {
-    // const privateKey = utils.hexToBytes(Hex.canon(account.privateKey)); // remove this conversion
+    const kdf = getScryptParams(options);
+    const key = scrypt(password, kdf.salt, {
+        N: kdf.N,
+        r: kdf.r,
+        p: kdf.p,
+        dkLen: kdf.dkLen
+    });
     // Override initialization vector.
     const iv = options.iv ?? secp256k1.randomBytes(16);
     assert(
