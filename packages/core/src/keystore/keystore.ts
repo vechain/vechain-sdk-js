@@ -33,30 +33,20 @@ import { CTR } from 'aes-js';
  */
 function encrypt(privateKey: Uint8Array, password: Uint8Array): KeyStore {
     try {
-        const keyStore = _encryptKeystoreJson(privateKey, password, {
+        return encryptKeystore(privateKey, password, {
             scrypt: {
                 N: SCRYPT_PARAMS.N,
                 r: SCRYPT_PARAMS.r,
                 p: SCRYPT_PARAMS.p
             }
         });
-        return keyStore;
     } finally {
         privateKey.fill(0); // Clear the private key from memory.
         password.fill(0); // Clear the password from memory.
     }
 }
 
-function _encryptKeystoreJson(
-    privateKey: Uint8Array,
-    password: Uint8Array,
-    options: EncryptOptions = {}
-): KeyStore {
-    // const kdf = getScryptParams(options);
-    return _encryptKeystore(privateKey, password, options);
-}
-
-function _encryptKeystore(
+function encryptKeystore(
     privateKey: Uint8Array,
     password: Uint8Array,
     options: EncryptOptions
@@ -94,8 +84,7 @@ function _encryptKeystore(
     // Encrypt the private key
     const aesCtr = new CTR(derivedKey, iv);
     const ciphertext = aesCtr.encrypt(privateKey);
-
-    // Compute the message authentication code, used to check the password
+    // Compute the message authentication code, used to check the password.
     const mac = keccak256(utils.concatBytes(macPrefix, ciphertext));
     const keyStore: KeyStore = {
         address: Hex.canon(
