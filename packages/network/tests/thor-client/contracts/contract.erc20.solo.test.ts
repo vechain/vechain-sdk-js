@@ -194,6 +194,82 @@ describe('ThorClient - ERC20 Contracts', () => {
     }, 10000);
 
     /**
+     * Test transaction execution with delegation.
+     */
+    test('transaction execution with delegation', async () => {
+        // Deploy the ERC20 contract
+        let factory = thorSoloClient.contracts.createContractFactory(
+            deployedERC20Abi,
+            erc20ContractBytecode,
+            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+        );
+
+        factory = await factory.startDeployment();
+
+        const contract: Contract = await factory.waitForDeployment();
+
+        contract.setContractTransactOptions({
+            signTransactionOptions: {
+                delegatorPrivateKey:
+                    TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey
+            },
+            isDelegated: true
+        });
+
+        await (
+            await contract.transact.transfer(
+                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                1000
+            )
+        ).wait();
+
+        console.log(
+            await contract.read.balanceOf(
+                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+            )
+        );
+
+        await expect(
+            async () => await contract.filters.EventNotFound().get()
+        ).rejects.toThrowError(InvalidAbiFunctionError);
+    }, 10000);
+
+    /**
+     * Test transaction execution with delegation set from contract.
+     */
+    test('transaction execution with delegation set from contract', async () => {
+        // Deploy the ERC20 contract
+        let factory = thorSoloClient.contracts.createContractFactory(
+            deployedERC20Abi,
+            erc20ContractBytecode,
+            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+        );
+
+        factory = await factory.startDeployment();
+
+        const contract: Contract = await factory.waitForDeployment();
+
+        const txResult = await (
+            await contract.transact.transfer(
+                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                1000,
+                {
+                    delegatorPrivateKey:
+                        TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey
+                }
+            )
+        ).wait();
+
+        expect(txResult?.reverted).toBe(false);
+
+        expect(
+            await contract.read.balanceOf(
+                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+            )
+        ).toEqual([BigInt(1000)]);
+    }, 10000);
+
+    /**
      * Tests the execution of multiple ERC20 contract clauses using a blockchain client.
      */
     test('Execute multiples ERC20 contract clauses', async () => {
