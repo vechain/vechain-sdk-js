@@ -51,9 +51,7 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): KeyStore {
                 }
             }
         );
-
-        const keystore = JSON.parse(keystoreJsonString) as KeyStore;
-        return keystore;
+        return keystoreJsonString;
     } finally {
         privateKey.fill(0); // Clear the private key from memory.
         password.fill(0); // Clear the password from memory.
@@ -64,7 +62,7 @@ function _encryptKeystoreJson(
     account: KeystoreAccount,
     password: Uint8Array,
     options: EncryptOptions = {}
-): string {
+): KeyStore {
     const scryptParams = getScryptParams(options);
     return _encryptKeystore(
         scrypt(password, scryptParams.salt, {
@@ -84,9 +82,8 @@ function _encryptKeystore(
     kdf: ScryptParams,
     account: KeystoreAccount,
     options: EncryptOptions
-): string {
+): KeyStore {
     const privateKey = utils.hexToBytes(Hex.canon(account.privateKey)); // remove this conversion
-
     // Override initialization vector.
     const iv = options.iv ?? secp256k1.randomBytes(16);
     assert(
@@ -96,7 +93,6 @@ function _encryptKeystore(
         'Invalid options.iv length.',
         { iv }
     );
-
     // Override the uuid.
     const uuidRandom = options.uuid ?? secp256k1.randomBytes(16);
     assert(
@@ -106,22 +102,18 @@ function _encryptKeystore(
         'Invalid options.uuid length.',
         { iv }
     );
-
     // This will be used to encrypt the wallet (as per Web3 secret storage).
     // - 32 bytes   As normal for the Web3 secret storage (derivedKey, macPrefix)
     // - 32 bytes   AES key to encrypt mnemonic with (required here to be Ethers Wallet)
     const derivedKey = key.slice(0, 16);
     const macPrefix = key.slice(16, 32);
-
     // Encrypt the private key
     const aesCtr = new CTR(derivedKey, iv);
     const ciphertext = aesCtr.encrypt(privateKey);
 
     // Compute the message authentication code, used to check the password
     const mac = keccak256(utils.concatBytes(macPrefix, ciphertext));
-
-    // See: https://github.com/ethereum/wiki/wiki/Web3-Secret-Storage-Definition
-    const data: Record<string, unknown> = {
+    const keyStore: KeyStore = {
         address: Hex.canon(account.address),
         crypto: {
             cipher: 'aes-128-ctr',
@@ -131,34 +123,18 @@ function _encryptKeystore(
             ciphertext: Hex.of(ciphertext),
             kdf: 'scrypt',
             kdfparams: {
-                salt: Hex.of(kdf.salt),
-                N: kdf.N,
-                dkLen: 32,
+                dklen: 32,
+                n: kdf.N,
                 p: kdf.p,
-                r: kdf.r
+                r: kdf.r,
+                salt: Hex.of(kdf.salt)
             },
             mac: Hex.of(mac)
         },
         id: uuidV4(uuidRandom),
         version: 3
     };
-
-    // const ks: Keystore = {
-    //     address: Hex.canon(account.address),
-    //     crypto: {
-    //         cipher: 'aes-128-ctr',
-    //         cipherparams: {
-    //             iv: Hex.of(iv)
-    //         },
-    //         ciphertext: Hex.of(ciphertext),
-    //         kdf: 'scrypt',
-    //         kdfparams: kdf,
-    //         mac: Hex.of(mac)
-    //     },
-    //     id: uuidV4(uuidRandom),
-    //     version: 3
-    // };
-    return JSON.stringify(data);
+    return keyStore;
 }
 
 function getScryptParams(options: EncryptOptions): ScryptParams {

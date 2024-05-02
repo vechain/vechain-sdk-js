@@ -46,7 +46,13 @@ interface KeyStore {
         };
         ciphertext: string;
         kdf: 'pbkdf2' | 'scrypt';
-        kdfparams: ScryptParams;
+        kdfparams: {
+            dklen: number;
+            n: number;
+            p: number;
+            r: number;
+            salt: string;
+        };
         mac: string;
     };
     id: string;
