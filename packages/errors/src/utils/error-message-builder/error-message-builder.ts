@@ -33,13 +33,17 @@ const stringifyData = (data: unknown): string => {
 };
 
 /**
- * Function to build an error message
+ * Builds an error message with the specified method name, error message, input data, and optional inner error.
  *
- * @param methodName - The method name where the error was thrown.
- * @param errorMessage - The error message.
- * @param inputData - The input data.
- * @param innerError - The inner error.
- * @returns The error message string.
+ * @param {string} methodName - The name of the method that failed.
+ * @param {string} errorMessage - The specific reason for the failure.
+ * @param {DataType} inputData - The input data used by the method.
+ * @param {Error} [innerError] - An optional inner error that caused the failure.
+ *
+ * @return {string} - The built error message.
+ *
+ * @remarks
+ * **IMPORTANT: no sensitive data should be passed as any parameter.**
  */
 function buildErrorMessage<
     ErrorCodeT extends ErrorCode,

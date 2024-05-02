@@ -75,6 +75,7 @@ function deriveAddress(words: string[], path: string = 'm/0'): string {
  */
 function derivePrivateKey(words: string[], path: string = 'm/0'): Uint8Array {
     const root = HDNode.fromMnemonic(words);
+    // Any exception involving mnemonic words is thrown before this point: words are not leaked next.
     try {
         // Derived from root, private key is always available.
         return root.derive(path).privateKey as Uint8Array;
@@ -87,7 +88,6 @@ function derivePrivateKey(words: string[], path: string = 'm/0'): Uint8Array {
             error
         );
     }
-    // return HDNode.fromMnemonic(words).derivePath(path).privateKey as Uint8Array;
 }
 
 /* --- Overloaded functions start --- */

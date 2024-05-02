@@ -1,4 +1,4 @@
-import { Hex0x, Quantity, unitsUtils, ZERO_BUFFER } from '@vechain/sdk-core';
+import { Hex0x, Quantity, unitsUtils, ZERO_BYTES } from '@vechain/sdk-core';
 import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
 import { ALL_ACCOUNTS } from '../../../../fixture';
 
@@ -30,7 +30,7 @@ const ethGetBalanceTestCases = [
             'Should return correct balance of the test account after seeding',
         params: [
             // Zero address
-            Hex0x.of(ZERO_BUFFER(20)),
+            Hex0x.of(ZERO_BYTES(20)),
             Quantity.of(1)
         ],
         expected: '0x0'
