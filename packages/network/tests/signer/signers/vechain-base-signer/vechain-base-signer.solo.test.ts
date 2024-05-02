@@ -7,6 +7,7 @@ import {
     VechainProvider
 } from '../../../../src';
 import {
+    ALL_ACCOUNTS,
     soloUrl,
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS
@@ -19,6 +20,7 @@ import {
     TransactionHandler
 } from '../../../../../core';
 import { signTransactionTestCases } from './fixture';
+import { simulateTransaction } from '../../../thor-client/transactions/fixture-thorest';
 
 /**
  * Vechain base signer tests - solo
@@ -158,6 +160,91 @@ describe('Vechain base signer tests - testnet', () => {
                     },
                     10000
                 );
+            }
+        );
+    });
+
+    /**
+     * Test suite for call function.
+     * @note Take some test cases are the same as the signTransaction function
+     */
+    describe('call', () => {
+        /**
+         * Simulate transfer transactions
+         */
+        simulateTransaction.correct.transfer.forEach(
+            ({ testName, transaction, expected }) => {
+                test(testName, async () => {
+                    const signer = new VechainBaseSigner(
+                        Buffer.from(
+                            transaction.simulateTransactionOptions
+                                .callerPrivateKey,
+                            'hex'
+                        ),
+                        new VechainProvider(
+                            thorClient,
+                            new ProviderInternalBaseWallet([]),
+                            false
+                        )
+                    );
+
+                    const simulatedTx = await signer.call({
+                        clauses: transaction.clauses
+                    });
+
+                    expect(simulatedTx).toBeDefined();
+                    /**
+                     * The result of the simulation tx is an array of simulation results.
+                     * Each result represents the simulation of transaction clause.
+                     */
+                    expect(simulatedTx).toHaveLength(
+                        transaction.clauses.length
+                    );
+
+                    /**
+                     * Compare each simulation result with the expected result.
+                     */
+                    for (let i = 0; i < simulatedTx.length; i++) {
+                        expect(JSON.stringify(simulatedTx[i])).toStrictEqual(
+                            JSON.stringify(expected.simulationResults[i])
+                        );
+                    }
+                });
+            }
+        );
+
+        /**
+         * Simulate smart contract call transactions
+         */
+        simulateTransaction.correct.smartContractCall.forEach(
+            ({ testName, transaction, expected }) => {
+                test(testName, async () => {
+                    const signer = new VechainBaseSigner(
+                        Buffer.from(ALL_ACCOUNTS[0].privateKey, 'hex'),
+                        new VechainProvider(
+                            thorClient,
+                            new ProviderInternalBaseWallet([]),
+                            false
+                        )
+                    );
+
+                    const simulatedTx = await signer.call(
+                        {
+                            clauses: transaction.clauses
+                        },
+                        transaction.simulateTransactionOptions != null
+                            ? transaction.simulateTransactionOptions.revision
+                            : undefined
+                    );
+
+                    expect(simulatedTx).toBeDefined();
+
+                    expect(simulatedTx).toHaveLength(1);
+
+                    expect(JSON.stringify(simulatedTx[0])).toStrictEqual(
+                        JSON.stringify(expected.simulationResults[0])
+                    );
+                });
             }
         );
     });
