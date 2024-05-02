@@ -1,6 +1,7 @@
 import type {
     TransactionBodyOptions,
-    SimulateTransactionOptions
+    SimulateTransactionOptions,
+    SignTransactionOptions
 } from '../transactions';
 
 import type { vechain_sdk_core_ethers } from '@vechain/sdk-core';
@@ -10,10 +11,10 @@ import type { vechain_sdk_core_ethers } from '@vechain/sdk-core';
 /**
  * Defines the options for executing a contract transaction.
  */
-type ContractTransactionOptions = { value?: number } & Omit<
-    TransactionBodyOptions,
-    'isDelegated'
->;
+type ContractTransactionOptions = {
+    value?: number;
+    signTransactionOptions?: SignTransactionOptions;
+} & TransactionBodyOptions;
 
 /**
  * Defines the options for executing a contract call within a blockchain environment.
