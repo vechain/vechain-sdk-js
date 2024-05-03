@@ -14,6 +14,7 @@ import {
     filterContractEventsTestCases,
     fourArgsEventAbi,
     multipleClausesTestCases,
+    testingContractNegativeTestCases,
     testingContractEVMExtensionTestCases,
     testingContractTestCases
 } from './fixture';
@@ -424,6 +425,24 @@ describe('ThorClient - Contracts', () => {
     );
 
     /**
+     * Tests the error test cases for the `TestingContract` functions.
+     */
+    testingContractNegativeTestCases.forEach(
+        ({ description, functionName, params, expected }) => {
+            test(description, async () => {
+                const response = await thorSoloClient.contracts.executeCall(
+                    TESTING_CONTRACT_ADDRESS,
+                    coder
+                        .createInterface(TESTING_CONTRACT_ABI)
+                        .getFunction(functionName) as FunctionFragment,
+                    params
+                );
+                expect(response).toBe(expected);
+            });
+        }
+    );
+
+    /**
      * Test cases for EVM Extension functions
      */
     testingContractEVMExtensionTestCases.forEach(
@@ -436,7 +455,6 @@ describe('ThorClient - Contracts', () => {
                         .getFunction(functionName) as FunctionFragment,
                     params
                 );
-
                 expect(response).toEqual(expected);
             });
         }

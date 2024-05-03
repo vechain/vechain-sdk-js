@@ -30,7 +30,7 @@ function getReadProxy(contract: Contract): ContractFunctionRead {
         get: (_target, prop) => {
             // Otherwise, assume that the function is a contract method
             return async (...args: unknown[]): Promise<ContractCallResult> => {
-                return await contract.thor.contracts.executeCall(
+                return (await contract.thor.contracts.executeCall(
                     contract.address,
                     contract.getFunctionFragment(prop),
                     args,
@@ -46,7 +46,7 @@ function getReadProxy(contract: Contract): ContractFunctionRead {
                                 : undefined,
                         ...contract.getContractReadOptions()
                     }
-                );
+                )) as ContractCallResult;
             };
         }
     });
