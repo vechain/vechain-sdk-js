@@ -171,6 +171,7 @@ function decrypt(keyStore: KeyStore, password: Uint8Array): KeystoreAccount {
  * @param keyStore
  * @param password
  */
+// Version 0.1 x-ethers metadata must contain an encrypted mnemonic phrase
 function decryptKeystore(
     keyStore: KeyStore,
     password: Uint8Array
@@ -183,7 +184,32 @@ function decryptKeystore(
             p: kdf.p,
             dkLen: kdf.dkLen
         });
-        return getAccount(keyStore, key);
+        const ciphertext = utils.hexToBytes(keyStore.crypto.ciphertext);
+        assert(
+            'keystore.decrypt',
+            keyStore.crypto.mac ===
+                Hex.of(
+                    keccak256(utils.concatBytes(key.slice(16, 32), ciphertext))
+                ),
+            KEYSTORE.INVALID_PASSWORD,
+            'Decryption failed: invalid password for the given keystore.'
+        );
+        const privateKey = _decrypt(keyStore, key.slice(0, 16), ciphertext);
+        const address = addressUtils.fromPrivateKey(privateKey);
+        if (keyStore.address !== '') {
+            assert(
+                'keystore.decrypt',
+                address ===
+                    addressUtils.toERC55Checksum(Hex0x.canon(keyStore.address)),
+                KEYSTORE.INVALID_KEYSTORE,
+                'Decryption failed: address/password mismatch.',
+                { keyStore }
+            );
+        }
+        return {
+            address,
+            privateKey: Hex0x.of(privateKey)
+        } satisfies KeystoreAccount;
     } catch (e) {
         throw buildError(
             'keystore.decrypt',
@@ -193,34 +219,6 @@ function decryptKeystore(
             e
         );
     }
-}
-
-// Version 0.1 x-ethers metadata must contain an encrypted mnemonic phrase
-function getAccount(keyStore: KeyStore, key: Uint8Array): KeystoreAccount {
-    const ciphertext = utils.hexToBytes(keyStore.crypto.ciphertext);
-    assert(
-        'keystore.decrypt',
-        keyStore.crypto.mac ===
-            Hex.of(keccak256(utils.concatBytes(key.slice(16, 32), ciphertext))),
-        KEYSTORE.INVALID_PASSWORD,
-        'Decryption failed: invalid password for the given keystore.'
-    );
-    const privateKey = _decrypt(keyStore, key.slice(0, 16), ciphertext);
-    const address = addressUtils.fromPrivateKey(privateKey);
-    if (keyStore.address !== '') {
-        assert(
-            'keystore.decrypt',
-            address ===
-                addressUtils.toERC55Checksum(Hex0x.canon(keyStore.address)),
-            KEYSTORE.INVALID_KEYSTORE,
-            'Decryption failed: address/password mismatch.',
-            { keyStore }
-        );
-    }
-    return {
-        address,
-        privateKey: Hex0x.of(privateKey)
-    } satisfies KeystoreAccount;
 }
 
 /**
