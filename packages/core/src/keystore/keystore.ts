@@ -21,10 +21,8 @@ import {
     assertArgument,
     computeAddress,
     getAddress,
-    getBytes,
     getBytesCopy,
-    hexlify,
-    scryptSync
+    hexlify
 } from 'ethers';
 
 /**
@@ -195,14 +193,12 @@ function decryptKeystore(
 ): KeystoreAccount {
     const kdf = decodeScryptParams(keyStore);
     try {
-        const key = scryptSync(
-            password,
-            kdf.salt,
-            kdf.N,
-            kdf.r,
-            kdf.p,
-            kdf.dkLen
-        );
+        const key = scrypt(password, kdf.salt, {
+            N: kdf.N,
+            r: kdf.r,
+            p: kdf.p,
+            dkLen: kdf.dkLen
+        });
         return getAccount(keyStore, key);
     } catch (e) {
         throw buildError(
@@ -218,8 +214,8 @@ function decryptKeystore(
 }
 
 // Version 0.1 x-ethers metadata must contain an encrypted mnemonic phrase
-function getAccount(data: KeyStore, _key: string): KeystoreAccount {
-    const key = getBytes(_key);
+function getAccount(data: KeyStore, key: Uint8Array): KeystoreAccount {
+    // const key = getBytes(_key);
     const ciphertext = spelunk<Uint8Array>(data, 'crypto.ciphertext:data!');
     // const computedMAC = hexlify(
     //     keccak256(concat([key.slice(16, 32), ciphertext]))
@@ -329,13 +325,6 @@ function _decrypt(
     }
     throw new Error('unsupported cipher');
 }
-
-// function getPassword(password: string | Uint8Array): Uint8Array {
-//     if (typeof password === 'string') {
-//         return toUtf8Bytes(password, 'NFKC');
-//     }
-//     return getBytesCopy(password);
-// }
 
 function looseArrayify(hexString: string): Uint8Array {
     if (typeof hexString === 'string' && !hexString.startsWith('0x')) {
