@@ -73,7 +73,7 @@ function encryptKeystore(
         iv.length === 16,
         KEYSTORE.INVALID_KEYSTORE,
 
-        'Invalid options.iv length.',
+        'Encryption failed: invalid options.iv length.',
         { iv }
     );
     // Override the uuid.
@@ -82,7 +82,7 @@ function encryptKeystore(
         'keystore.encrypt',
         uuidRandom.length === 16,
         KEYSTORE.INVALID_KEYSTORE,
-        'Invalid options.uuid length.',
+        'Encryption failed: options.uuid length mustbe 16',
         { iv }
     );
     // Message Authentication Code prefix.
@@ -139,22 +139,22 @@ function getScryptParams(options: EncryptOptions): ScryptParams {
             Number.isSafeInteger(N) &&
             (BigInt(N) & BigInt(N - 1)) === BigInt(0),
         KEYSTORE.INVALID_KEYSTORE,
-        'Invalid options.scrypt.N parameter.',
-        { N }
+        'Encryption failed: invalid options.scrypt.N parameter.',
+        { options }
     );
     assert(
         'keystore.encrypt',
         r > 0 && Number.isSafeInteger(r),
         KEYSTORE.INVALID_KEYSTORE,
-        'invalid options.scrypt.r parameter.',
-        { r }
+        'Encryption failed: invalid options.scrypt.r parameter.',
+        { options }
     );
     assert(
         'keystore.encrypt',
         p > 0 && Number.isSafeInteger(p),
         KEYSTORE.INVALID_KEYSTORE,
-        'Invalid options.scrypt.p parameter.',
-        { p }
+        'Encryption failed: invalid options.scrypt.p parameter.',
+        { options }
     );
     return { name: 'scrypt', dkLen: 64, salt, N, r, p };
 }
