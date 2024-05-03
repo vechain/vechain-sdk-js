@@ -2,7 +2,7 @@
  * Implements the JSON Keystore v3 Wallet encryption, decryption, and validation functionality.
  */
 import * as utils from '@noble/curves/abstract/utils';
-import { Hex, SCRYPT_PARAMS } from '../utils';
+import { Hex, Hex0x, SCRYPT_PARAMS } from '../utils';
 import { addressUtils } from '../address';
 import { assert, buildError, KEYSTORE } from '@vechain/sdk-errors';
 import { keccak256 } from '../hash';
@@ -17,12 +17,7 @@ import {
 
 import { CTR } from 'aes-js';
 
-import {
-    assertArgument,
-    computeAddress,
-    getAddress, getBytesCopy,
-    hexlify
-} from 'ethers';
+import { assertArgument, computeAddress, getAddress } from 'ethers';
 
 /**
  * Encrypts a private key with a password to returns a keystore object
@@ -312,9 +307,11 @@ function _decrypt(
 ): string {
     const cipher = data.crypto.cipher;
     if (cipher === 'aes-128-ctr') {
-        const iv = utils.hexToBytes(data.crypto.cipherparams.iv);
-        const aesCtr = new CTR(key, iv);
-        return hexlify(aesCtr.decrypt(ciphertext));
+        const aesCtr = new CTR(
+            key,
+            utils.hexToBytes(data.crypto.cipherparams.iv)
+        );
+        return Hex0x.of(aesCtr.decrypt(ciphertext));
     }
     throw new Error('unsupported cipher');
 }
