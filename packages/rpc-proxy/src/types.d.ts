@@ -17,10 +17,12 @@ interface Config {
     /**
      * Accounts to use for signing transactions
      */
-    accounts: {
-        mnemonic: string;
-        count: number;
-    };
+    accounts:
+        | {
+              mnemonic: string;
+              count: number;
+          }
+        | string[];
 
     /**
      *
