@@ -1,6 +1,8 @@
 import {
     HttpClient,
+    ProviderInternalBaseWallet,
     ProviderInternalHDWallet,
+    type ProviderInternalWallet,
     ThorClient,
     VechainProvider
 } from '@vechain/sdk-network';
@@ -14,7 +16,11 @@ import {
     JSONRPC,
     stringifyData
 } from '@vechain/sdk-errors';
-import { VET_DERIVATION_PATH } from '@vechain/sdk-core';
+import {
+    addressUtils,
+    secp256k1,
+    VET_DERIVATION_PATH
+} from '@vechain/sdk-core';
 
 /**
  * Simple function to log an error.
@@ -61,13 +67,39 @@ function startProxy(): void {
 
     // Initialize the provider
     const thorClient = new ThorClient(new HttpClient(config.url));
-    const wallet = new ProviderInternalHDWallet(
-        config.accounts.mnemonic.split(' '),
-        config.accounts.count,
-        0,
-        VET_DERIVATION_PATH,
-        { delegator: config.delegator }
-    );
+
+    // Create the wallet
+    const wallet: ProviderInternalWallet = Array.isArray(config.accounts)
+        ? new ProviderInternalBaseWallet(
+              config.accounts.map((privateKey: string) => {
+                  // Convert the private key to a buffer
+                  const privateKeyBuffer = Buffer.from(
+                      privateKey.startsWith('0x')
+                          ? privateKey.slice(2)
+                          : privateKey,
+                      'hex'
+                  );
+
+                  // Derive the public key and address from the private key
+                  return {
+                      privateKey: privateKeyBuffer,
+                      publicKey: Buffer.from(
+                          secp256k1.derivePublicKey(privateKeyBuffer)
+                      ),
+                      address: addressUtils.fromPrivateKey(privateKeyBuffer)
+                  };
+              }),
+              {
+                  delegator: config.delegator
+              }
+          )
+        : new ProviderInternalHDWallet(
+              config.accounts.mnemonic.split(' '),
+              config.accounts.count,
+              0,
+              VET_DERIVATION_PATH,
+              { delegator: config.delegator }
+          );
     const provider = new VechainProvider(
         thorClient,
         wallet,
