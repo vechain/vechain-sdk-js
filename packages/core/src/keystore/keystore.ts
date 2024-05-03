@@ -194,15 +194,6 @@ function decryptKeystore(
     password: Uint8Array
 ): KeystoreAccount {
     const kdf = getDecryptKdfParams(keyStore);
-    assert(
-        'keystore.decrypt',
-        kdf.name === 'scrypt',
-        KEYSTORE.INVALID_KEYSTORE,
-        'Decryption failed: invalid keystore.crypto.kdf Scrypt parameters',
-        {
-            keystore: keyStore
-        }
-    );
     try {
         const key = scryptSync(
             password,
@@ -265,6 +256,17 @@ function getAccount(data: KeyStore, _key: string): KeystoreAccount {
     } satisfies KeystoreAccount;
 }
 
+/**
+ * Retrieves the decryption key-derivation function parameters from the given key store.
+ *
+ * Only [Scrypt](https://en.wikipedia.org/wiki/Scrypt) is supported as key-derivation function.
+ *
+ * @param {KeyStore} keyStore - The key store object.
+ * @returns {ScryptParams} - The decryption key-derivation function parameters.
+ * @throws {InvalidKeystoreError} - if [Scrypt](https://en.wikipedia.org/wiki/Scrypt)
+ * is not the key-derivation function required by `keyStore` or if any parameter
+ * encoded in the keystore is invalid.
+ */
 function getDecryptKdfParams(keyStore: KeyStore): ScryptParams {
     if (keyStore.crypto.kdf.toLowerCase() === 'scrypt') {
         const salt = utils.hexToBytes(keyStore.crypto.kdfparams.salt);
@@ -413,16 +415,6 @@ function spelunk<T>(object: any, _path: string): T {
 
     return cur;
 }
-
-type KdfParams =
-    | ScryptParams
-    | {
-          name: 'pbkdf2';
-          salt: Uint8Array;
-          count: number;
-          dkLen: number;
-          algorithm: 'sha256' | 'sha512';
-      };
 
 // ---
 
