@@ -20,7 +20,7 @@ import {
     TransactionHandler
 } from '../../../../../core';
 import { RPC_METHODS } from '../../../provider';
-import { assert, JSONRPC, TRANSACTION } from '@vechain/sdk-errors';
+import { assert, DATA, JSONRPC, TRANSACTION } from '@vechain/sdk-errors';
 import { assertTransactionCanBeSigned } from '../../../assertions';
 
 /**
@@ -102,8 +102,16 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
                 'populateCall',
                 addressUtils.toERC55Checksum(transactionToPopulate.from) ===
                     addressUtils.toERC55Checksum(await this.getAddress()),
-                JSONRPC.INVALID_PARAMS,
-                'From address does not match the signer address.'
+                DATA.INVALID_DATA_TYPE,
+                'From address does not match the signer address.',
+                {
+                    signerAddress: addressUtils.toERC55Checksum(
+                        await this.getAddress()
+                    ),
+                    fromAddress: addressUtils.toERC55Checksum(
+                        transactionToPopulate.from
+                    )
+                }
             );
 
         // 2 - Set to field

@@ -9,8 +9,8 @@ import {
 } from '../../../../src';
 import { addressUtils, type TransactionClause } from '@vechain/sdk-core';
 import {
+    InvalidDataTypeError,
     InvalidSecp256k1PrivateKeyError,
-    JSONRPCInvalidParams,
     TransactionDelegationError
 } from '@vechain/sdk-errors';
 
@@ -250,7 +250,7 @@ const populateCallTestCases = {
             transactionToPopulate: {
                 from: '0x0000000000000000000000000000000000000000'
             } satisfies TransactionRequestInput,
-            expectedError: JSONRPCInvalidParams
+            expectedError: InvalidDataTypeError
         }
     ]
 };
