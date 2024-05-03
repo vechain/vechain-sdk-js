@@ -98,7 +98,7 @@ describe('keystore', () => {
     /**
      * Decrypt invalid keystore
      */
-    test('decrypt invalid keystore', async () => {
+    test('decrypt invalid keystore', () => {
         // Generate a random private key
         const privateKey = secp256k1.generatePrivateKey();
         const password = new Uint8Array(PASSWORD);

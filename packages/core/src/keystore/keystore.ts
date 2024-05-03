@@ -17,8 +17,6 @@ import {
 
 import { CTR } from 'aes-js';
 
-import { assertArgument, computeAddress, getAddress } from 'ethers';
-
 /**
  * Encrypts a private key with a password to returns a keystore object
  * compliant with [Web3 Secret Storage Definition](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/).
@@ -160,9 +158,7 @@ function decrypt(keyStore: KeyStore, password: Uint8Array): KeystoreAccount {
         isValid(keyStore),
         KEYSTORE.INVALID_KEYSTORE,
         'Invalid keystore. Ensure the keystore is properly formatted and contains the necessary data.',
-        {
-            keystore: keyStore
-        }
+        { keyStore }
     );
     return decryptKeystore(keyStore, password);
 }
@@ -193,9 +189,7 @@ function decryptKeystore(
             'keystore.decrypt',
             KEYSTORE.INVALID_PASSWORD,
             'Decryption failed: invalid password for the given keystore.',
-            {
-                keystore: keyStore
-            },
+            { keyStore },
             e
         );
     }
@@ -218,25 +212,20 @@ function getAccount(keyStore: KeyStore, key: Uint8Array): KeystoreAccount {
     //   );
 
     const privateKey = _decrypt(keyStore, key.slice(0, 16), ciphertext);
-
-    const address = computeAddress(privateKey);
+    const address = addressUtils.fromPrivateKey(privateKey);
     if (keyStore.address !== '') {
-        let check = keyStore.address.toLowerCase();
-        if (!check.startsWith('0x')) {
-            check = '0x' + check;
-        }
-
-        assertArgument(
-            getAddress(check) === address,
-            'keystore address/privateKey mismatch',
-            'address',
-            keyStore.address
+        assert(
+            'keystore.decrypt',
+            address ===
+                addressUtils.toERC55Checksum(Hex0x.canon(keyStore.address)),
+            KEYSTORE.INVALID_KEYSTORE,
+            'Decryption failed: address/password mismatch.',
+            { keyStore }
         );
     }
-
     return {
         address,
-        privateKey
+        privateKey: Hex0x.of(privateKey)
     } satisfies KeystoreAccount;
 }
 
@@ -304,14 +293,14 @@ function _decrypt(
     data: KeyStore,
     key: Uint8Array,
     ciphertext: Uint8Array
-): string {
+): Uint8Array {
     const cipher = data.crypto.cipher;
     if (cipher === 'aes-128-ctr') {
         const aesCtr = new CTR(
             key,
             utils.hexToBytes(data.crypto.cipherparams.iv)
         );
-        return Hex0x.of(aesCtr.decrypt(ciphertext));
+        return aesCtr.decrypt(ciphertext);
     }
     throw new Error('unsupported cipher');
 }
