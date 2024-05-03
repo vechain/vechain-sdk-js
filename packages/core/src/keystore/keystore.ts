@@ -20,7 +20,6 @@ import { CTR } from 'aes-js';
 import {
     assertArgument,
     computeAddress,
-    concat,
     getAddress,
     getBytes,
     getBytesCopy,
@@ -137,8 +136,8 @@ function getScryptParams(options: EncryptOptions): ScryptParams {
     assert(
         'keystore.encrypt',
         N > 0 &&
-        Number.isSafeInteger(N) &&
-        (BigInt(N) & BigInt(N - 1)) === BigInt(0),
+            Number.isSafeInteger(N) &&
+            (BigInt(N) & BigInt(N - 1)) === BigInt(0),
         KEYSTORE.INVALID_KEYSTORE,
         'Invalid options.scrypt.N parameter.',
         { N }
@@ -227,14 +226,13 @@ function decryptKeystore(
     }
 }
 
-const defaultPath = 'm/44\'/60\'/0\'/0/0';
-
+// Version 0.1 x-ethers metadata must contain an encrypted mnemonic phrase
 function getAccount(data: KeyStore, _key: string): KeystoreAccount {
     const key = getBytes(_key);
     const ciphertext = spelunk<Uint8Array>(data, 'crypto.ciphertext:data!');
-    const computedMAC = hexlify(
-        keccak256(concat([key.slice(16, 32), ciphertext]))
-    ).substring(2);
+    // const computedMAC = hexlify(
+    //     keccak256(concat([key.slice(16, 32), ciphertext]))
+    // ).substring(2);
 
     // assertArgument(
     //       computedMAC ===
@@ -261,37 +259,10 @@ function getAccount(data: KeyStore, _key: string): KeystoreAccount {
         );
     }
 
-    const account: KeystoreAccount = { address, privateKey };
-
-    // Version 0.1 x-ethers metadata must contain an encrypted mnemonic phrase
-    const version = spelunk(data, 'x-ethers.version:string');
-    if (version === '0.1') {
-        const mnemonicKey = key.slice(32, 64);
-
-        const mnemonicCiphertext = spelunk<Uint8Array>(
-            data,
-            'x-ethers.mnemonicCiphertext:data!'
-        );
-        const mnemonicIv = spelunk<Uint8Array>(
-            data,
-            'x-ethers.mnemonicCounter:data!'
-        );
-
-        const mnemonicAesCtr = new CTR(mnemonicKey, mnemonicIv);
-
-        account.mnemonic = {
-            path:
-                spelunk<null | string>(data, 'x-ethers.path:string') ??
-                defaultPath,
-            locale:
-                spelunk<null | string>(data, 'x-ethers.locale:string') ?? 'en',
-            entropy: hexlify(
-                getBytes(mnemonicAesCtr.decrypt(mnemonicCiphertext))
-            )
-        };
-    }
-
-    return account;
+    return {
+        address,
+        privateKey
+    } satisfies KeystoreAccount;
 }
 
 function getDecryptKdfParams(data: unknown): KdfParams {
@@ -461,12 +432,12 @@ function spelunk<T>(object: any, _path: string): T {
 type KdfParams =
     | ScryptParams
     | {
-    name: 'pbkdf2';
-    salt: Uint8Array;
-    count: number;
-    dkLen: number;
-    algorithm: 'sha256' | 'sha512';
-};
+          name: 'pbkdf2';
+          salt: Uint8Array;
+          count: number;
+          dkLen: number;
+          algorithm: 'sha256' | 'sha512';
+      };
 
 // ---
 
@@ -483,8 +454,7 @@ function isValid(keystore: KeyStore): boolean {
         if (copy.version === 3) {
             return true;
         }
-    } catch (error) {
-    } // Return false if parsing fails.
+    } catch (error) {} // Return false if parsing fails.
     return false;
 }
 
