@@ -268,70 +268,50 @@ function getAccount(data: KeyStore, _key: string): KeystoreAccount {
 function getDecryptKdfParams(keyStore: KeyStore): KdfParams {
     // const kdf = spelunk(data, 'crypto.kdf:string');
     const kdf = keyStore.crypto.kdf;
-    if (typeof kdf === 'string') {
-        if (kdf.toLowerCase() === 'scrypt') {
-            const salt = spelunk<Uint8Array>(
-                keyStore,
-                'crypto.kdfparams.salt:data!'
-            );
-            const N = spelunk<number>(keyStore, 'crypto.kdfparams.n:int!');
-            const r = spelunk<number>(keyStore, 'crypto.kdfparams.r:int!');
-            const p = spelunk<number>(keyStore, 'crypto.kdfparams.p:int!');
+    if (kdf.toLowerCase() === 'scrypt') {
+        const salt = utils.hexToBytes(keyStore.crypto.kdfparams.salt);
+        // const salt = spelunk<Uint8Array>(
+        //     keyStore,
+        //     'crypto.kdfparams.salt:data!'
+        // );
+        const N = spelunk<number>(keyStore, 'crypto.kdfparams.n:int!');
+        const r = spelunk<number>(keyStore, 'crypto.kdfparams.r:int!');
+        const p = spelunk<number>(keyStore, 'crypto.kdfparams.p:int!');
 
-            // Make sure N is a power of 2
-            assertArgument(
-                N > 0 && (N & (N - 1)) === 0,
-                'invalid kdf.N',
-                'kdf.N',
-                N
-            );
-            assertArgument(r > 0 && p > 0, 'invalid kdf', 'kdf', kdf);
+        // Make sure N is a power of 2
+        assertArgument(
+            N > 0 && (N & (N - 1)) === 0,
+            'invalid kdf.N',
+            'kdf.N',
+            N
+        );
+        assertArgument(r > 0 && p > 0, 'invalid kdf', 'kdf', kdf);
 
-            const dkLen = spelunk<number>(
-                keyStore,
-                'crypto.kdfparams.dklen:int!'
-            );
-            assertArgument(
-                dkLen === 32,
-                'invalid kdf.dklen',
-                'kdf.dflen',
-                dkLen
-            );
+        const dkLen = spelunk<number>(keyStore, 'crypto.kdfparams.dklen:int!');
+        assertArgument(dkLen === 32, 'invalid kdf.dklen', 'kdf.dflen', dkLen);
 
-            return { name: 'scrypt', salt, N, r, p, dkLen: 64 };
-        } else if (kdf.toLowerCase() === 'pbkdf2') {
-            const salt = spelunk<Uint8Array>(
-                keyStore,
-                'crypto.kdfparams.salt:data!'
-            );
+        return { name: 'scrypt', salt, N, r, p, dkLen: 64 };
+    } else if (kdf.toLowerCase() === 'pbkdf2') {
+        const salt = spelunk<Uint8Array>(
+            keyStore,
+            'crypto.kdfparams.salt:data!'
+        );
 
-            const prf = spelunk<string>(
-                keyStore,
-                'crypto.kdfparams.prf:string!'
-            );
-            const algorithm = prf.split('-').pop();
-            assertArgument(
-                algorithm === 'sha256' || algorithm === 'sha512',
-                'invalid kdf.pdf',
-                'kdf.pdf',
-                prf
-            );
+        const prf = spelunk<string>(keyStore, 'crypto.kdfparams.prf:string!');
+        const algorithm = prf.split('-').pop();
+        assertArgument(
+            algorithm === 'sha256' || algorithm === 'sha512',
+            'invalid kdf.pdf',
+            'kdf.pdf',
+            prf
+        );
 
-            const count = spelunk<number>(keyStore, 'crypto.kdfparams.c:int!');
+        const count = spelunk<number>(keyStore, 'crypto.kdfparams.c:int!');
 
-            const dkLen = spelunk<number>(
-                keyStore,
-                'crypto.kdfparams.dklen:int!'
-            );
-            assertArgument(
-                dkLen === 32,
-                'invalid kdf.dklen',
-                'kdf.dklen',
-                dkLen
-            );
+        const dkLen = spelunk<number>(keyStore, 'crypto.kdfparams.dklen:int!');
+        assertArgument(dkLen === 32, 'invalid kdf.dklen', 'kdf.dklen', dkLen);
 
-            return { name: 'pbkdf2', salt, count, dkLen, algorithm };
-        }
+        return { name: 'pbkdf2', salt, count, dkLen, algorithm };
     }
     assertArgument(false, 'unsupported key-derivation function', 'kdf', kdf);
 }
