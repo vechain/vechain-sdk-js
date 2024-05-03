@@ -82,7 +82,6 @@ const ethSendTransaction = async (
         // Return the result
         return await signer.sendTransaction(transaction);
     } catch (e) {
-        console.error(e);
         throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,
             `Method 'eth_sendTransaction' failed: Error sending the transaction\n
