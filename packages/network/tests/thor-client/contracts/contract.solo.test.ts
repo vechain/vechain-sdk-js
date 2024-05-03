@@ -249,8 +249,7 @@ describe('ThorClient - Contracts', () => {
             expiration: 32
         });
 
-        // ----- TEMPORARY COMMENT: Understand why it fails -----
-        // await expect(contract.transact.set(22323)).rejects.toThrow();
+        await expect(contract.transact.set(22323)).rejects.toThrow();
 
         contract.clearContractTransactOptions();
 
