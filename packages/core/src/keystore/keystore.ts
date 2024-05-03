@@ -25,9 +25,7 @@ import {
     getBytes,
     getBytesCopy,
     hexlify,
-    pbkdf2,
-    scryptSync,
-    toUtf8Bytes
+    scryptSync
 } from 'ethers';
 
 /**
@@ -139,8 +137,8 @@ function getScryptParams(options: EncryptOptions): ScryptParams {
     assert(
         'keystore.encrypt',
         N > 0 &&
-            Number.isSafeInteger(N) &&
-            (BigInt(N) & BigInt(N - 1)) === BigInt(0),
+        Number.isSafeInteger(N) &&
+        (BigInt(N) & BigInt(N - 1)) === BigInt(0),
         KEYSTORE.INVALID_KEYSTORE,
         'Invalid options.scrypt.N parameter.',
         { N }
@@ -166,60 +164,70 @@ function getScryptParams(options: EncryptOptions): ScryptParams {
  * Decrypts a keystore to obtain the private key using the given password.
  *
  * @throws{InvalidKeystoreError, InvalidKeystorePasswordError}
- * @param keystore - The keystore containing the encrypted private key.
+ * @param keyStore - The keystore containing the encrypted private key.
  * @param password - The password used to decrypt the keystore.
  * @returns A Promise that resolves to the decrypted KeystoreAccount or rejects if the keystore or password is invalid.
  */
-function decrypt(keystore: KeyStore, password: Uint8Array): KeystoreAccount {
+function decrypt(keyStore: KeyStore, password: Uint8Array): KeystoreAccount {
     // Invalid keystore
     assert(
         'keystore.decrypt',
-        isValid(keystore),
+        isValid(keyStore),
         KEYSTORE.INVALID_KEYSTORE,
         'Invalid keystore. Ensure the keystore is properly formatted and contains the necessary data.',
         {
-            keystore
+            keystore: keyStore
         }
     );
+    return decryptKeystore(keyStore, password);
+}
 
+/**
+ * Decrypts a keystore to obtain the private key using the given password.
+ *
+ * [PBKDF2](https://en.wikipedia.org/wiki/PBKDF2) not supported yet.
+ *
+ * @param keyStore
+ * @param password
+ */
+function decryptKeystore(
+    keyStore: KeyStore,
+    password: Uint8Array
+): KeystoreAccount {
+    const kdf = getDecryptKdfParams(keyStore) as ScryptParams;
+    assert(
+        'keystore.decrypt',
+        kdf.name === 'scrypt',
+        KEYSTORE.INVALID_KEYSTORE,
+        'Decryption failed: invalid keystore.crypto.kdf Scrypt parameters',
+        {
+            keystore: keyStore
+        }
+    );
     try {
-        return _decryptKeystoreJsonSync(JSON.stringify(keystore), password);
+        const key = scryptSync(
+            password,
+            kdf.salt,
+            kdf.N,
+            kdf.r,
+            kdf.p,
+            kdf.dkLen
+        );
+        return getAccount(keyStore, key);
     } catch (e) {
         throw buildError(
             'keystore.decrypt',
             KEYSTORE.INVALID_PASSWORD,
-            'Decryption failed: Invalid Password for the given keystore.',
+            'Decryption failed: invalid password for the given keystore.',
             {
-                keystore,
-                password
+                keystore: keyStore
             },
             e
         );
     }
 }
 
-function _decryptKeystoreJsonSync(
-    json: string,
-    password: Uint8Array
-): KeystoreAccount {
-    const data = JSON.parse(json) as KeyStore;
-    const params = getDecryptKdfParams(data);
-    if (params.name === 'pbkdf2') {
-        const { salt, count, dkLen, algorithm } = params;
-        const key = pbkdf2(password, salt, count, dkLen, algorithm);
-        return getAccount(data, key);
-    }
-
-    // assert(params.name === 'scrypt', 'cannot be reached', 'UNKNOWN_ERROR', {
-    //     params
-    // });
-
-    const { salt, N, r, p, dkLen } = params;
-    const key = scryptSync(password, salt, N, r, p, dkLen);
-    return getAccount(data, key);
-}
-
-const defaultPath = "m/44'/60'/0'/0/0";
+const defaultPath = 'm/44\'/60\'/0\'/0/0';
 
 function getAccount(data: KeyStore, _key: string): KeystoreAccount {
     const key = getBytes(_key);
@@ -229,12 +237,12 @@ function getAccount(data: KeyStore, _key: string): KeystoreAccount {
     ).substring(2);
 
     // assertArgument(
-    //     computedMAC ===
-    //         spelunk<string>(data, 'crypto.mac:string!').toLowerCase(),
-    //     'incorrect password',
-    //     'password',
-    //     '[ REDACTED ]'
-    // );
+    //       computedMAC ===
+    //           spelunk<string>(data, 'crypto.mac:string!').toLowerCase(),
+    //       'incorrect password',
+    //       'password',
+    //       '[ REDACTED ]'
+    //   );
 
     const privateKey = _decrypt(data, key.slice(0, 16), ciphertext);
 
@@ -453,12 +461,12 @@ function spelunk<T>(object: any, _path: string): T {
 type KdfParams =
     | ScryptParams
     | {
-          name: 'pbkdf2';
-          salt: Uint8Array;
-          count: number;
-          dkLen: number;
-          algorithm: 'sha256' | 'sha512';
-      };
+    name: 'pbkdf2';
+    salt: Uint8Array;
+    count: number;
+    dkLen: number;
+    algorithm: 'sha256' | 'sha512';
+};
 
 // ---
 
@@ -475,7 +483,8 @@ function isValid(keystore: KeyStore): boolean {
         if (copy.version === 3) {
             return true;
         }
-    } catch (error) {} // Return false if parsing fails.
+    } catch (error) {
+    } // Return false if parsing fails.
     return false;
 }
 
