@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 
-import { mainnetUrl } from '../../fixture';
+import { mainnetUrl } from '../../../fixture';
 
 import { VechainSDKLogger } from '@vechain/sdk-logging';
 import {

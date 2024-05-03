@@ -24,7 +24,7 @@ as `input` parameter.
 ```typescript { name=debug-retrieve-storage-range, category=example }
 // 1 - Create thor client for testnet
 const _testnetUrl = 'https://testnet.vechain.org';
-const thorClient = ThorClient.fromUrl(_testnetUrl)
+const thorClient = ThorClient.fromUrl(_testnetUrl);
 
 // 2 - Retrieve the storage range.
 const result = await thorClient.debug.retrieveStorageRange({

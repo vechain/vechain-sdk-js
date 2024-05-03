@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { mainnetUrl } from '../../fixture';
+import { mainnetUrl } from '../../../fixture';
 import { providerMethodsTestCasesMainnet } from '../fixture';
 import {
     HardhatVechainProvider,

@@ -3,14 +3,21 @@ import { buildError } from '../error-builder';
 import { stringifyData } from '../error-message-builder';
 
 /**
- * Assert that the condition is true, otherwise throw an error.
+ * Asserts that a given condition is true. If the condition is false, an error is thrown.
  *
- * @param methodName - The method name where the error was thrown.
- * @param condition - The condition to be asserted.
- * @param code - The error code from the error types enum.
- * @param message - The error message.
- * @param data - The error data.
- * @param innerError - The inner error.
+ * @param {string} methodName - The name of the method or function being asserted.
+ * @param {boolean} condition - The condition to be asserted.
+ * @param {ErrorCode} code - The error code to be associated with the error if the condition is false.
+ * @param {string} message - The error message to be associated with the error if the condition is false.
+ * @param {DataType} [data] - Additional data to be associated with the error if the condition is false.
+ * @param {unknown} [innerError] - The inner error to be associated with the error if the condition is false.
+ *
+ * @returns {void}
+ *
+ * @throws {Error} An error object if the condition is false.
+ *
+ * @remarks
+ * **IMPORTANT: no sensitive data should be passed as any parameter.**
  */
 function assert<
     ErrorCodeT extends ErrorCode,
@@ -36,9 +43,15 @@ function assert<
 }
 
 /**
- * Assert that the inner error object is an instance of Error
- * @param error an unknown object to be asserted as an instance of Error
- * @returns an Error object
+ * Asserts that the given error is an instance of the Error class.
+ * If the error is an instance of Error, it is returned.
+ * If the error is not an instance of Error, a new Error object is created with a descriptive message.
+ *
+ * @param {unknown} error - The error to be asserted.
+ * @return {Error} - The error if it is an instance of Error, or a new Error object if it is not.
+ *
+ * @remarks
+ * **IMPORTANT: no sensitive data should be passed as any parameter.**
  */
 function assertInnerError(error: unknown): Error {
     if (error instanceof Error) {

@@ -1,4 +1,4 @@
-import { DECIMAL_INTEGER_REGEX } from '../const';
+import { INTEGER_REGEX } from '../const';
 
 /**
  * Checks if derivation path single component is valid
@@ -17,10 +17,9 @@ function _checkDerivationPathSingleComponentValid(
         // m
         (index === 0 ? component === 'm' : false) ||
         // "number"
-        DECIMAL_INTEGER_REGEX.test(component) ||
+        INTEGER_REGEX.test(component) ||
         // "number'"
-        (DECIMAL_INTEGER_REGEX.test(component.slice(0, -1)) &&
-            component.endsWith("'"))
+        (INTEGER_REGEX.test(component.slice(0, -1)) && component.endsWith("'"))
     );
 }
 

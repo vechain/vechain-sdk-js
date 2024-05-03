@@ -6,8 +6,7 @@ import {
     jest,
     test
 } from '@jest/globals';
-
-import { testnetUrl } from '../../../fixture';
+import { testnetUrl } from '../../../../fixture';
 import {
     RPC_METHODS,
     RPCMethodsMap,

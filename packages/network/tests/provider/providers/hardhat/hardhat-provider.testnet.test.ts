@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { testnetUrl } from '../../fixture';
+import { testnetUrl } from '../../../fixture';
 import { providerMethodsTestCasesTestnet } from '../fixture';
 import { waitForMessage } from '../helpers';
 import {

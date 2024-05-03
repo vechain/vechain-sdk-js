@@ -52,7 +52,7 @@ const invalidThorIDs = [
 ];
 
 /**
- * Prefixd and unprefixed strings
+ * Prefixed and unprefixed strings
  */
 const prefixedAndUnprefixedStrings: Array<{
     prefixed: string;

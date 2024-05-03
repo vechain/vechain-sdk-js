@@ -1,103 +1,113 @@
-import { ethers } from 'ethers';
-import { DECIMAL_INTEGER_REGEX, NUMERIC_REGEX } from '../const';
-import { assert, buildError, DATA } from '@vechain/sdk-errors';
+import * as utils from '@noble/curves/abstract/utils';
 import { Hex0x, Hex } from '../hex';
+import { INTEGER_REGEX, NUMERIC_REGEX, ZERO_BYTES } from '../const';
+import { assert, buildError, DATA } from '@vechain/sdk-errors';
 
 /**
- * Checks whether the provided data is a valid decimal string.
+ * Decodes a hexadecimal string representing a bytes32 value into a string.
+ * The bytes32 string can be padded with zeros to the left or right.
+ * An example of usage is to decode a bytes32 string returned by a smart contract function.
  *
- * @remarks
- * Validation is performed based on a regular expression for decimal values.
+ * @param {string} hex - The hexadecimal string to decode.
+ * @returns {string} - The decoded string value.
  *
- * @param data - The string data to check.
- * @returns A boolean indicating whether the input is a valid decimal string.
+ * @throws {InvalidDataTypeError} - If the input hex string is invalid or not 64 characters long.
  */
-const isDecimalString = (data: string): boolean => {
-    return DECIMAL_INTEGER_REGEX.test(data);
+const decodeBytes32String = (hex: string): string => {
+    assert(
+        'decodeBytes32String',
+        Hex0x.isValid(hex) && Hex.canon(hex).length === 64,
+        DATA.INVALID_DATA_TYPE,
+        `Failed to decode value ${hex} to string. Value is not a valid hex string or it is not 64 characters long`,
+        { value: hex }
+    );
+    const textDecoder = new TextDecoder();
+    const valueInBytes = utils.hexToBytes(Hex.canon(hex));
+    // Find the first zero byte.
+    const firstZeroIndex = valueInBytes.findIndex((byte) => byte === 0);
+    // If the first byte is zero, then the encoded bytes 32 string is padded with zeros to the left.
+    if (firstZeroIndex === 0) {
+        // Find the first non-zero byte.
+        const firstNotZeroIndex = valueInBytes.findIndex((byte) => byte !== 0);
+        // Decode the encoded bytes 32 string to string by removing the padded zeros.
+        return textDecoder.decode(valueInBytes.subarray(firstNotZeroIndex));
+    } else if (firstZeroIndex !== -1) {
+        // Decode the encoded bytes 32 string to string by removing the padded zeros.
+        return textDecoder.decode(valueInBytes.subarray(0, firstZeroIndex));
+    } else {
+        return textDecoder.decode(valueInBytes);
+    }
 };
 
 /**
- * Checks whether the provided string is a valid decimal numeric string.
- * @param value - The string to check.
- * @returns - A boolean indicating whether the input is a valid numeric string.
- */
-const isNumeric = (value: string): boolean => {
-    return NUMERIC_REGEX.test(value);
-};
-
-/**
- * Encode a string to bytes32 string.
- * An example of usage is to encode a string to bytes32 string to be used as a parameter for a smart contract function.
+ * Encodes a string into a bytes32 hexadecimal expression with optional zero padding.
+ * The encoded bytes32 string can be used as a parameter for a smart contract function.
  *
- * @param value - The string to encode.
- * @param zeroPadding - The zero padding direction. Represents on which side of the encoded bytes32 string the zeros will be padded.
- *                      The default value is 'left'.
- * @returns The encoded bytes32 string as a hex string.
+ * @param {string} value - The value to encode.
+ * @param {'left' | 'right'} [zeroPadding='left'] - The type of zero padding to apply.
  *
- * @throws If the value cannot be encoded to bytes32 string. (e.g. if the value is longer than 32 bytes)
+ * @returns {string} The encoded bytes32 string is a hexadecimal expression prefixed with `0x.
+ *
+ * @throws {InvalidDataTypeError} If the value exceeds 32 bytes or fails to encode.
  */
 const encodeBytes32String = (
     value: string,
     zeroPadding: 'left' | 'right' = 'left'
 ): string => {
+    // Wrap any error raised by utf8BytesOf(value).
     try {
-        const valueInBytes = ethers.toUtf8Bytes(value);
+        const valueInBytes = new TextEncoder().encode(value);
+        assert(
+            'dataUtils.encodeBytes32String',
+            valueInBytes.length <= 32,
+            DATA.INVALID_DATA_TYPE,
+            `Value '${value}' exceeds 32 bytes.`,
+            { value }
+        );
+        const pad = ZERO_BYTES(32 - valueInBytes.length);
         return zeroPadding === 'left'
-            ? ethers.zeroPadValue(valueInBytes, 32) // calls internal `zeroPad` ethers method which pads zeros to the left
-            : ethers.zeroPadBytes(valueInBytes, 32); // calls internal `zeroPad` ethers method which pads zeros to the right
+            ? Hex0x.of(utils.concatBytes(pad, valueInBytes))
+            : Hex0x.of(utils.concatBytes(valueInBytes, pad));
     } catch (e) {
         throw buildError(
-            'encodeBytes32String',
+            'dataUtils.encodeBytes32String',
             DATA.INVALID_DATA_TYPE,
-            `Encoding to bytes32 failed: Value '${value}' exceeds 32 bytes or is otherwise invalid.`,
-            { value, zeroPadding },
+            `Failed to encode value ${value} to bytes32 string.`,
+            { value },
             e
         );
     }
 };
 
 /**
- * Decode a bytes32 hex string to a string. The bytes32 string can be padded with zeros to the left or right.
- * An example of usage is to decode a bytes32 string returned by a smart contract function.
+ * Checks whether the given string is a decimal number.
  *
- * @param value - The bytes32 hex string to decode.
- * @returns The decoded string.
+ * @param {string} data - The string to be checked.
  *
- * @throws If the value cannot be decoded to string. (e.g. if the value is not a valid hex string, or it is not 64 characters long)
+ * @returns {boolean} - True if the string represents a decimal number, false otherwise.
+ *
+ * @see {@link INTEGER_REGEX}
  */
-const decodeBytes32String = (value: string): string => {
-    assert(
-        'decodeBytes32String',
-        Hex0x.isValid(value) && Hex.canon(value).length === 64,
-        DATA.INVALID_DATA_TYPE,
-        `Failed to decode value ${value} to string. Value is not a valid hex string or it is not 64 characters long`,
-        { value }
-    );
+const isDecimalString = (data: string): boolean => {
+    return INTEGER_REGEX.test(data);
+};
 
-    const valueInBytes = Buffer.from(Hex.canon(value), 'hex');
-
-    // find the first zero byte
-    const firstZeroIndex = valueInBytes.findIndex((byte) => byte === 0);
-
-    // if the first byte is zero, then the encoded bytes 32 string is padded with zeros to the left
-    if (firstZeroIndex === 0) {
-        // find the first non-zero byte
-        const nonZeroIndex = valueInBytes.findIndex((byte) => byte !== 0);
-
-        // Decode the encoded bytes 32 string to string by removing the padded zeros
-        return ethers.toUtf8String(valueInBytes.subarray(nonZeroIndex));
-    } else if (firstZeroIndex !== -1) {
-        // Decode the encoded bytes 32 string to string by removing the padded zeros
-        return ethers.toUtf8String(valueInBytes.subarray(0, firstZeroIndex));
-    } else {
-        // The encoded bytes 32 string is not padded with zeros
-        return ethers.toUtf8String(valueInBytes);
-    }
+/**
+ * Checks whether the provided string is a valid decimal numeric string.
+ *
+ * @param {string} value - The value to check.
+ *
+ * @returns {boolean} - Returns true if the value is numeric, false otherwise.
+ *
+ * @see {@link NUMERIC_REGEX}
+ */
+const isNumeric = (value: string): boolean => {
+    return NUMERIC_REGEX.test(value);
 };
 
 export const dataUtils = {
-    isDecimalString,
-    isNumeric,
+    decodeBytes32String,
     encodeBytes32String,
-    decodeBytes32String
+    isDecimalString,
+    isNumeric
 };

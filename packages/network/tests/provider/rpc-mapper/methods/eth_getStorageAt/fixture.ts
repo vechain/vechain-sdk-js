@@ -1,4 +1,4 @@
-import { Hex0x, ZERO_BUFFER } from '@vechain/sdk-core';
+import { Hex0x, ZERO_BYTES } from '@vechain/sdk-core';
 import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
 
 /**
@@ -35,7 +35,7 @@ const ethGetStorageAtTestCases: Array<{
         description:
             'Should return null slot value for an address that does not have a storage slot value at the given position',
         params: [
-            Hex0x.of(ZERO_BUFFER(20)),
+            Hex0x.of(ZERO_BYTES(20)),
             '0x1',
             'latest' // Block n. 17497585
         ],

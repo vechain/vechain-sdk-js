@@ -21,6 +21,8 @@ const erc721ContractBytecode: string =
 const depositContractBytecode: string =
     '0x608060405234801561001057600080fd5b50610405806100206000396000f3fe6080604052600436106100345760003560e01c806327e235e314610039578063d0e30db014610076578063f8b2cb4f14610080575b600080fd5b34801561004557600080fd5b50610060600480360381019061005b9190610268565b6100bd565b60405161006d91906102ae565b60405180910390f35b61007e6100d5565b005b34801561008c57600080fd5b506100a760048036038101906100a29190610268565b6101bd565b6040516100b491906102ae565b60405180910390f35b60006020528060005260406000206000915090505481565b60003411610118576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040161010f9061034c565b60405180910390fd5b346000803373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff1681526020019081526020016000206000828254610166919061039b565b925050819055503373ffffffffffffffffffffffffffffffffffffffff167fd15c9547ea5c06670c0010ce19bc32d54682a4b3801ece7f3ab0c3f17106b4bb346040516101b391906102ae565b60405180910390a2565b60008060008373ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff168152602001908152602001600020549050919050565b600080fd5b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b60006102358261020a565b9050919050565b6102458161022a565b811461025057600080fd5b50565b6000813590506102628161023c565b92915050565b60006020828403121561027e5761027d610205565b5b600061028c84828501610253565b91505092915050565b6000819050919050565b6102a881610295565b82525050565b60006020820190506102c3600083018461029f565b92915050565b600082825260208201905092915050565b7f4465706f73697420616d6f756e74206d7573742062652067726561746572207460008201527f68616e2030000000000000000000000000000000000000000000000000000000602082015250565b60006103366025836102c9565b9150610341826102da565b604082019050919050565b6000602082019050818103600083015261036581610329565b9050919050565b7f4e487b7100000000000000000000000000000000000000000000000000000000600052601160045260246000fd5b60006103a682610295565b91506103b183610295565b92508282019050808211156103c9576103c861036c565b5b9291505056fea2646970667358221220fd4fcedf2b3aacc02a6c483409206998028d766cf51d642f6c5c35d6f81118e864736f6c63430008180033';
 
+const TESTNET_DELEGATE_URL = 'https://sponsor-testnet.vechain.energy/by/90';
+
 const depositContractAbi: InterfaceAbi = [
     {
         anonymous: false,
@@ -712,6 +714,99 @@ const testingContractNegativeTestCases: TestCase[] = [
     }
 ];
 
+const testingContractEVMExtensionTestCases: TestCase[] = [
+    {
+        description: 'should return the blockID of the given block number',
+        functionName: 'getBlockID',
+        params: [1],
+        expected: [
+            '0x00000001fb5387f59d35a8e76dcce151cb229a3910ac5f4731ff55f7ca36a809'
+        ],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description:
+            'should return the block total score of the given block defined by the block number',
+        functionName: 'getBlockTotalScore',
+        params: [1],
+        expected: [1n],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description: 'should return the block time of the given block number',
+        functionName: 'getBlockTime',
+        params: [1],
+        expected: [1702231120n],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description: 'should return the block signer of the given block number',
+        functionName: 'getBlockSigner',
+        params: [1],
+        expected: ['0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description: 'should return the total supply of VET',
+        functionName: 'getTotalSupply',
+        params: [],
+        expected: [10000000000000000000000000000n],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description:
+            'should return the `provedWork` of the current transaction',
+        functionName: 'getTxProvedWork',
+        params: [],
+        expected: [0n],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description:
+            'should return the transaction ID of the current transaction',
+        functionName: 'getTxID',
+        params: [],
+        expected: [
+            '0x0000000000000000000000000000000000000000000000000000000000000000'
+        ],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description: 'should return the `blockRef` of the current transaction',
+        functionName: 'getTxBlockRef',
+        params: [],
+        expected: ['0x0000000000000000'],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description:
+            'should return the `expiration` of the current transaction',
+        functionName: 'getTxExpiration',
+        params: [],
+        expected: [0n],
+        reverted: false,
+        isReadOnly: true
+    },
+    {
+        description: 'should return the data hashed using Blake2b256',
+        functionName: 'calculateBlake2b256',
+        params: ['0x'],
+        expected: [
+            '0x0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8'
+        ],
+        reverted: false,
+        isReadOnly: true
+    }
+];
+
 interface FunctionCallTestCase {
     functionName: string;
     params: unknown[];
@@ -1064,8 +1159,10 @@ export {
     deployedERC20Abi,
     testingContractTestCases,
     testingContractNegativeTestCases,
+    testingContractEVMExtensionTestCases,
     filterContractEventsTestCases,
     depositContractAbi,
     depositContractBytecode,
-    multipleClausesTestCases
+    multipleClausesTestCases,
+    TESTNET_DELEGATE_URL
 };
