@@ -186,12 +186,23 @@ class ContractsModule {
             )
         );
 
-        const signedTx = await signer.signTransaction(
-            signerUtils.transactionBodyToTransactionRequestInput(
-                txBody,
-                addressUtils.fromPrivateKey(Buffer.from(privateKey, 'hex'))
-            )
-        );
+        const signedTx = DelegationHandler(signTransactionOptions).isDelegated()
+            ? await signer.signTransactionWithDelegator(
+                  signerUtils.transactionBodyToTransactionRequestInput(
+                      txBody,
+                      addressUtils.fromPrivateKey(
+                          Buffer.from(privateKey, 'hex')
+                      )
+                  )
+              )
+            : await signer.signTransaction(
+                  signerUtils.transactionBodyToTransactionRequestInput(
+                      txBody,
+                      addressUtils.fromPrivateKey(
+                          Buffer.from(privateKey, 'hex')
+                      )
+                  )
+              );
 
         return await this.thor.transactions.sendTransaction(
             TransactionHandler.decode(
