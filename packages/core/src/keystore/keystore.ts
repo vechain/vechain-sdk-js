@@ -59,7 +59,7 @@ function encryptKeystore(
     password: Uint8Array,
     options: EncryptOptions
 ): KeyStore {
-    const kdf = getScryptParams(options);
+    const kdf = encodeScryptParams(options);
     const key = scrypt(password, kdf.salt, {
         N: kdf.N,
         r: kdf.r,
@@ -115,7 +115,7 @@ function encryptKeystore(
     } satisfies KeyStore;
 }
 
-function getScryptParams(options: EncryptOptions): ScryptParams {
+function encodeScryptParams(options: EncryptOptions): ScryptParams {
     // Use or generate the salt.
     const salt = options.salt ?? secp256k1.randomBytes(32);
     // Override the scrypt password-based key derivation function parameters,
@@ -193,7 +193,7 @@ function decryptKeystore(
     keyStore: KeyStore,
     password: Uint8Array
 ): KeystoreAccount {
-    const kdf = getDecryptKdfParams(keyStore);
+    const kdf = decodeScryptParams(keyStore);
     try {
         const key = scryptSync(
             password,
@@ -260,14 +260,17 @@ function getAccount(data: KeyStore, _key: string): KeystoreAccount {
  * Retrieves the decryption key-derivation function parameters from the given key store.
  *
  * Only [Scrypt](https://en.wikipedia.org/wiki/Scrypt) is supported as key-derivation function.
+ * [PBKDF2](https://en.wikipedia.org/wiki/PBKDF2) not supported yet.
  *
  * @param {KeyStore} keyStore - The key store object.
  * @returns {ScryptParams} - The decryption key-derivation function parameters.
  * @throws {InvalidKeystoreError} - if [Scrypt](https://en.wikipedia.org/wiki/Scrypt)
  * is not the key-derivation function required by `keyStore` or if any parameter
  * encoded in the keystore is invalid.
+ *
+ * @see encodeScryptParams
  */
-function getDecryptKdfParams(keyStore: KeyStore): ScryptParams {
+function decodeScryptParams(keyStore: KeyStore): ScryptParams {
     if (keyStore.crypto.kdf.toLowerCase() === 'scrypt') {
         const salt = utils.hexToBytes(keyStore.crypto.kdfparams.salt);
         const N = keyStore.crypto.kdfparams.n;
