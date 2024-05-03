@@ -271,7 +271,7 @@ class ContractsModule {
             coder
                 .createInterface(PARAMS_ABI)
                 .getFunction('get') as FunctionFragment,
-            [dataUtils.encodeBytes32String('base-gas-price')]
+            [dataUtils.encodeBytes32String('base-gas-price', 'left')]
         );
     }
 

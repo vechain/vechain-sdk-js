@@ -201,12 +201,11 @@ const encodeBytes32StringTestCases: Array<{
         expected:
             '0x000000000000000000000000000000000000626173652d6761732d7072696365'
     },
-
     {
-        value: 'base-gas-price',
+        value: '1',
         zeroPadding: undefined,
         expected:
-            '0x000000000000000000000000000000000000626173652d6761732d7072696365'
+            '0x3100000000000000000000000000000000000000000000000000000000000000'
     },
     {
         value: 'base-gas-price',

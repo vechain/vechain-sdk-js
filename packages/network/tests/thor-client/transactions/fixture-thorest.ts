@@ -320,7 +320,8 @@ const simulateTransaction = {
                                 'get',
                                 [
                                     dataUtils.encodeBytes32String(
-                                        'base-gas-price'
+                                        'base-gas-price',
+                                        'left'
                                     )
                                 ]
                             )

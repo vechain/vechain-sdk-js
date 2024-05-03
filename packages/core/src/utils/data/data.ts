@@ -52,7 +52,7 @@ const decodeBytes32String = (hex: string): string => {
  */
 const encodeBytes32String = (
     value: string,
-    zeroPadding: 'left' | 'right' = 'left'
+    zeroPadding: 'left' | 'right' = 'right' // Default to 'right' as ethers.js does.
 ): string => {
     // Wrap any error raised by utf8BytesOf(value).
     try {
