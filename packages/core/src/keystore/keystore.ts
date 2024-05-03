@@ -149,8 +149,6 @@ function encodeScryptParams(options: EncryptOptions): ScryptParams {
     return { name: 'scrypt', dkLen: 64, salt, N, r, p };
 }
 
-// ---
-
 function decrypt(keyStore: KeyStore, password: Uint8Array): KeystoreAccount {
     // Check for invalid keystore.
     assert(
@@ -176,49 +174,47 @@ function decryptKeystore(
     keyStore: KeyStore,
     password: Uint8Array
 ): KeystoreAccount {
+    assert(
+        'keystore.decrypt',
+        keyStore.crypto.cipher === 'aes-128-ctr',
+        KEYSTORE.INVALID_KEYSTORE,
+        'Decryption failed: unsupported cipher.',
+        { keyStore }
+    );
     const kdf = decodeScryptParams(keyStore);
-    try {
-        const key = scrypt(password, kdf.salt, {
-            N: kdf.N,
-            r: kdf.r,
-            p: kdf.p,
-            dkLen: kdf.dkLen
-        });
-        const ciphertext = utils.hexToBytes(keyStore.crypto.ciphertext);
+    const key = scrypt(password, kdf.salt, {
+        N: kdf.N,
+        r: kdf.r,
+        p: kdf.p,
+        dkLen: kdf.dkLen
+    });
+    const ciphertext = utils.hexToBytes(keyStore.crypto.ciphertext);
+    assert(
+        'keystore.decrypt',
+        keyStore.crypto.mac ===
+            Hex.of(keccak256(utils.concatBytes(key.slice(16, 32), ciphertext))),
+        KEYSTORE.INVALID_PASSWORD,
+        'Decryption failed: invalid password for the given keystore.'
+    );
+    const privateKey = new CTR(
+        key.slice(0, 16),
+        utils.hexToBytes(keyStore.crypto.cipherparams.iv)
+    ).decrypt(ciphertext);
+    const address = addressUtils.fromPrivateKey(privateKey);
+    if (keyStore.address !== '') {
         assert(
             'keystore.decrypt',
-            keyStore.crypto.mac ===
-                Hex.of(
-                    keccak256(utils.concatBytes(key.slice(16, 32), ciphertext))
-                ),
-            KEYSTORE.INVALID_PASSWORD,
-            'Decryption failed: invalid password for the given keystore.'
-        );
-        const privateKey = _decrypt(keyStore, key.slice(0, 16), ciphertext);
-        const address = addressUtils.fromPrivateKey(privateKey);
-        if (keyStore.address !== '') {
-            assert(
-                'keystore.decrypt',
-                address ===
-                    addressUtils.toERC55Checksum(Hex0x.canon(keyStore.address)),
-                KEYSTORE.INVALID_KEYSTORE,
-                'Decryption failed: address/password mismatch.',
-                { keyStore }
-            );
-        }
-        return {
-            address,
-            privateKey: Hex0x.of(privateKey)
-        } satisfies KeystoreAccount;
-    } catch (e) {
-        throw buildError(
-            'keystore.decrypt',
-            KEYSTORE.INVALID_PASSWORD,
-            'Decryption failed: invalid password for the given keystore.',
-            { keyStore },
-            e
+            address ===
+                addressUtils.toERC55Checksum(Hex0x.canon(keyStore.address)),
+            KEYSTORE.INVALID_KEYSTORE,
+            'Decryption failed: address/password mismatch.',
+            { keyStore }
         );
     }
+    return {
+        address,
+        privateKey: Hex0x.of(privateKey)
+    } satisfies KeystoreAccount;
 }
 
 /**
@@ -279,22 +275,6 @@ function decodeScryptParams(keyStore: KeyStore): ScryptParams {
         'Decryption failed: unsupported key-derivation function.',
         { keyStore }
     );
-}
-
-function _decrypt(
-    data: KeyStore,
-    key: Uint8Array,
-    ciphertext: Uint8Array
-): Uint8Array {
-    const cipher = data.crypto.cipher;
-    if (cipher === 'aes-128-ctr') {
-        const aesCtr = new CTR(
-            key,
-            utils.hexToBytes(data.crypto.cipherparams.iv)
-        );
-        return aesCtr.decrypt(ciphertext);
-    }
-    throw new Error('unsupported cipher');
 }
 
 /**
