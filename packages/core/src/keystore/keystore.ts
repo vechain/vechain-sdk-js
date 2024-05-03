@@ -18,6 +18,110 @@ import {
 import { CTR } from 'aes-js';
 
 /**
+ * Retrieves the decryption key-derivation function parameters from the given key store.
+ *
+ * Only [Scrypt](https://en.wikipedia.org/wiki/Scrypt) is supported as key-derivation function.
+ * [PBKDF2](https://en.wikipedia.org/wiki/PBKDF2) not supported yet.
+ *
+ * @param {KeyStore} keyStore - The key store object.
+ * @returns {ScryptParams} - The decryption key-derivation function parameters.
+ * @throws {InvalidKeystoreError} - if [Scrypt](https://en.wikipedia.org/wiki/Scrypt)
+ * is not the key-derivation function required by `keyStore` or if any parameter
+ * encoded in the keystore is invalid.
+ *
+ * @see encodeScryptParams
+ */
+function decodeScryptParams(keyStore: KeyStore): ScryptParams {
+    if (keyStore.crypto.kdf.toLowerCase() === 'scrypt') {
+        const salt = utils.hexToBytes(keyStore.crypto.kdfparams.salt);
+        const N = keyStore.crypto.kdfparams.n;
+        const r = keyStore.crypto.kdfparams.r;
+        const p: number = keyStore.crypto.kdfparams.p;
+        // Make sure N is a power of 2
+        assert(
+            'keystore.decrypt',
+            N > 0 && (N & (N - 1)) === 0,
+            KEYSTORE.INVALID_KEYSTORE,
+            'Decryption failed: invalid  keystore.crypto.kdfparams.n parameter.',
+            { keyStore }
+        );
+        assert(
+            'keystore.decrypt',
+            r > 0 && p > 0,
+            KEYSTORE.INVALID_KEYSTORE,
+            'Decryption failed: both keystore.crypto.kdfparams.r or keystore.crypto.kdfparams.p parameter must be > 0.',
+            { keyStore }
+        );
+        const dkLen = keyStore.crypto.kdfparams.dklen;
+        assert(
+            'keystore.decrypt',
+            dkLen === 32,
+            KEYSTORE.INVALID_KEYSTORE,
+            'Decryption failed: keystore.crypto.kdfparams.dklen parameter must be 32.',
+            { keyStore }
+        );
+        return {
+            name: 'scrypt',
+            salt,
+            N,
+            r,
+            p,
+            dkLen: 64
+        } satisfies ScryptParams;
+    }
+    throw buildError(
+        'keystore.decrypt',
+        KEYSTORE.INVALID_KEYSTORE,
+        'Decryption failed: unsupported key-derivation function.',
+        { keyStore }
+    );
+}
+
+function encodeScryptParams(options: EncryptOptions): ScryptParams {
+    // Use or generate the salt.
+    const salt = options.salt ?? secp256k1.randomBytes(32);
+    // Override the scrypt password-based key derivation function parameters,
+    let N = 1 << 17;
+    let r = 8;
+    let p = 1;
+    if (options.scrypt != null) {
+        if (options.scrypt.N != null) {
+            N = options.scrypt.N;
+        }
+        if (options.scrypt.r != null) {
+            r = options.scrypt.r;
+        }
+        if (options.scrypt.p != null) {
+            p = options.scrypt.p;
+        }
+    }
+    assert(
+        'keystore.encrypt',
+        N > 0 &&
+            Number.isSafeInteger(N) &&
+            (BigInt(N) & BigInt(N - 1)) === BigInt(0),
+        KEYSTORE.INVALID_KEYSTORE,
+        'Encryption failed: invalid options.scrypt.N parameter.',
+        { options }
+    );
+    assert(
+        'keystore.encrypt',
+        r > 0 && Number.isSafeInteger(r),
+        KEYSTORE.INVALID_KEYSTORE,
+        'Encryption failed: invalid options.scrypt.r parameter.',
+        { options }
+    );
+    assert(
+        'keystore.encrypt',
+        p > 0 && Number.isSafeInteger(p),
+        KEYSTORE.INVALID_KEYSTORE,
+        'Encryption failed: invalid options.scrypt.p parameter.',
+        { options }
+    );
+    return { name: 'scrypt', dkLen: 64, salt, N, r, p };
+}
+
+/**
  * Encrypts a private key with a password to returns a keystore object
  * compliant with [Web3 Secret Storage Definition](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/).
  *
@@ -105,50 +209,6 @@ function encryptKeystore(
     } satisfies KeyStore;
 }
 
-function encodeScryptParams(options: EncryptOptions): ScryptParams {
-    // Use or generate the salt.
-    const salt = options.salt ?? secp256k1.randomBytes(32);
-    // Override the scrypt password-based key derivation function parameters,
-    let N = 1 << 17;
-    let r = 8;
-    let p = 1;
-    if (options.scrypt != null) {
-        if (options.scrypt.N != null) {
-            N = options.scrypt.N;
-        }
-        if (options.scrypt.r != null) {
-            r = options.scrypt.r;
-        }
-        if (options.scrypt.p != null) {
-            p = options.scrypt.p;
-        }
-    }
-    assert(
-        'keystore.encrypt',
-        N > 0 &&
-            Number.isSafeInteger(N) &&
-            (BigInt(N) & BigInt(N - 1)) === BigInt(0),
-        KEYSTORE.INVALID_KEYSTORE,
-        'Encryption failed: invalid options.scrypt.N parameter.',
-        { options }
-    );
-    assert(
-        'keystore.encrypt',
-        r > 0 && Number.isSafeInteger(r),
-        KEYSTORE.INVALID_KEYSTORE,
-        'Encryption failed: invalid options.scrypt.r parameter.',
-        { options }
-    );
-    assert(
-        'keystore.encrypt',
-        p > 0 && Number.isSafeInteger(p),
-        KEYSTORE.INVALID_KEYSTORE,
-        'Encryption failed: invalid options.scrypt.p parameter.',
-        { options }
-    );
-    return { name: 'scrypt', dkLen: 64, salt, N, r, p };
-}
-
 function decrypt(keyStore: KeyStore, password: Uint8Array): KeystoreAccount {
     // Check for invalid keystore.
     assert(
@@ -215,66 +275,6 @@ function decryptKeystore(
         address,
         privateKey: Hex0x.of(privateKey)
     } satisfies KeystoreAccount;
-}
-
-/**
- * Retrieves the decryption key-derivation function parameters from the given key store.
- *
- * Only [Scrypt](https://en.wikipedia.org/wiki/Scrypt) is supported as key-derivation function.
- * [PBKDF2](https://en.wikipedia.org/wiki/PBKDF2) not supported yet.
- *
- * @param {KeyStore} keyStore - The key store object.
- * @returns {ScryptParams} - The decryption key-derivation function parameters.
- * @throws {InvalidKeystoreError} - if [Scrypt](https://en.wikipedia.org/wiki/Scrypt)
- * is not the key-derivation function required by `keyStore` or if any parameter
- * encoded in the keystore is invalid.
- *
- * @see encodeScryptParams
- */
-function decodeScryptParams(keyStore: KeyStore): ScryptParams {
-    if (keyStore.crypto.kdf.toLowerCase() === 'scrypt') {
-        const salt = utils.hexToBytes(keyStore.crypto.kdfparams.salt);
-        const N = keyStore.crypto.kdfparams.n;
-        const r = keyStore.crypto.kdfparams.r;
-        const p: number = keyStore.crypto.kdfparams.p;
-        // Make sure N is a power of 2
-        assert(
-            'keystore.decrypt',
-            N > 0 && (N & (N - 1)) === 0,
-            KEYSTORE.INVALID_KEYSTORE,
-            'Decryption failed: invalid  keystore.crypto.kdfparams.n parameter.',
-            { keyStore }
-        );
-        assert(
-            'keystore.decrypt',
-            r > 0 && p > 0,
-            KEYSTORE.INVALID_KEYSTORE,
-            'Decryption failed: both keystore.crypto.kdfparams.r or keystore.crypto.kdfparams.p parameter must be > 0.',
-            { keyStore }
-        );
-        const dkLen = keyStore.crypto.kdfparams.dklen;
-        assert(
-            'keystore.decrypt',
-            dkLen === 32,
-            KEYSTORE.INVALID_KEYSTORE,
-            'Decryption failed: keystore.crypto.kdfparams.dklen parameter must be 32.',
-            { keyStore }
-        );
-        return {
-            name: 'scrypt',
-            salt,
-            N,
-            r,
-            p,
-            dkLen: 64
-        } satisfies ScryptParams;
-    }
-    throw buildError(
-        'keystore.decrypt',
-        KEYSTORE.INVALID_KEYSTORE,
-        'Decryption failed: unsupported key-derivation function.',
-        { keyStore }
-    );
 }
 
 /**
