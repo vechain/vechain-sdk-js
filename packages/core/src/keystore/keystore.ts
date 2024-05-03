@@ -193,7 +193,7 @@ function decryptKeystore(
     keyStore: KeyStore,
     password: Uint8Array
 ): KeystoreAccount {
-    const kdf = getDecryptKdfParams(keyStore) as ScryptParams;
+    const kdf = getDecryptKdfParams(keyStore);
     assert(
         'keystore.decrypt',
         kdf.name === 'scrypt',
@@ -265,55 +265,50 @@ function getAccount(data: KeyStore, _key: string): KeystoreAccount {
     } satisfies KeystoreAccount;
 }
 
-function getDecryptKdfParams(keyStore: KeyStore): KdfParams {
-    // const kdf = spelunk(data, 'crypto.kdf:string');
-    const kdf = keyStore.crypto.kdf;
-    if (kdf.toLowerCase() === 'scrypt') {
+function getDecryptKdfParams(keyStore: KeyStore): ScryptParams {
+    if (keyStore.crypto.kdf.toLowerCase() === 'scrypt') {
         const salt = utils.hexToBytes(keyStore.crypto.kdfparams.salt);
-        // const salt = spelunk<Uint8Array>(
-        //     keyStore,
-        //     'crypto.kdfparams.salt:data!'
-        // );
-        const N = spelunk<number>(keyStore, 'crypto.kdfparams.n:int!');
-        const r = spelunk<number>(keyStore, 'crypto.kdfparams.r:int!');
-        const p = spelunk<number>(keyStore, 'crypto.kdfparams.p:int!');
-
+        const N = keyStore.crypto.kdfparams.n;
+        const r = keyStore.crypto.kdfparams.r;
+        const p: number = keyStore.crypto.kdfparams.p;
         // Make sure N is a power of 2
-        assertArgument(
+        assert(
+            'keystore.decrypt',
             N > 0 && (N & (N - 1)) === 0,
-            'invalid kdf.N',
-            'kdf.N',
-            N
+            KEYSTORE.INVALID_KEYSTORE,
+            'Decryption failed: invalid  keystore.crypto.kdfparams.n parameter.',
+            { keyStore }
         );
-        assertArgument(r > 0 && p > 0, 'invalid kdf', 'kdf', kdf);
-
-        const dkLen = spelunk<number>(keyStore, 'crypto.kdfparams.dklen:int!');
-        assertArgument(dkLen === 32, 'invalid kdf.dklen', 'kdf.dflen', dkLen);
-
-        return { name: 'scrypt', salt, N, r, p, dkLen: 64 };
-    } else if (kdf.toLowerCase() === 'pbkdf2') {
-        const salt = spelunk<Uint8Array>(
-            keyStore,
-            'crypto.kdfparams.salt:data!'
+        assert(
+            'keystore.decrypt',
+            r > 0 && p > 0,
+            KEYSTORE.INVALID_KEYSTORE,
+            'Decryption failed: both keystore.crypto.kdfparams.r or keystore.crypto.kdfparams.p parameter must be > 0.',
+            { keyStore }
         );
-
-        const prf = spelunk<string>(keyStore, 'crypto.kdfparams.prf:string!');
-        const algorithm = prf.split('-').pop();
-        assertArgument(
-            algorithm === 'sha256' || algorithm === 'sha512',
-            'invalid kdf.pdf',
-            'kdf.pdf',
-            prf
+        const dkLen = keyStore.crypto.kdfparams.dklen;
+        assert(
+            'keystore.decrypt',
+            dkLen === 32,
+            KEYSTORE.INVALID_KEYSTORE,
+            'Decryption failed: keystore.crypto.kdfparams.dklen parameter must be 32.',
+            { keyStore }
         );
-
-        const count = spelunk<number>(keyStore, 'crypto.kdfparams.c:int!');
-
-        const dkLen = spelunk<number>(keyStore, 'crypto.kdfparams.dklen:int!');
-        assertArgument(dkLen === 32, 'invalid kdf.dklen', 'kdf.dklen', dkLen);
-
-        return { name: 'pbkdf2', salt, count, dkLen, algorithm };
+        return {
+            name: 'scrypt',
+            salt,
+            N,
+            r,
+            p,
+            dkLen: 64
+        } satisfies ScryptParams;
     }
-    assertArgument(false, 'unsupported key-derivation function', 'kdf', kdf);
+    throw buildError(
+        'keystore.decrypt',
+        KEYSTORE.INVALID_KEYSTORE,
+        'Decryption failed: unsupported key-derivation function.',
+        { keyStore }
+    );
 }
 
 function _decrypt(
