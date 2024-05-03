@@ -265,17 +265,18 @@ function getAccount(data: KeyStore, _key: string): KeystoreAccount {
     } satisfies KeystoreAccount;
 }
 
-function getDecryptKdfParams(data: unknown): KdfParams {
-    const kdf = spelunk(data, 'crypto.kdf:string');
+function getDecryptKdfParams(keyStore: KeyStore): KdfParams {
+    // const kdf = spelunk(data, 'crypto.kdf:string');
+    const kdf = keyStore.crypto.kdf;
     if (typeof kdf === 'string') {
         if (kdf.toLowerCase() === 'scrypt') {
             const salt = spelunk<Uint8Array>(
-                data,
+                keyStore,
                 'crypto.kdfparams.salt:data!'
             );
-            const N = spelunk<number>(data, 'crypto.kdfparams.n:int!');
-            const r = spelunk<number>(data, 'crypto.kdfparams.r:int!');
-            const p = spelunk<number>(data, 'crypto.kdfparams.p:int!');
+            const N = spelunk<number>(keyStore, 'crypto.kdfparams.n:int!');
+            const r = spelunk<number>(keyStore, 'crypto.kdfparams.r:int!');
+            const p = spelunk<number>(keyStore, 'crypto.kdfparams.p:int!');
 
             // Make sure N is a power of 2
             assertArgument(
@@ -286,7 +287,10 @@ function getDecryptKdfParams(data: unknown): KdfParams {
             );
             assertArgument(r > 0 && p > 0, 'invalid kdf', 'kdf', kdf);
 
-            const dkLen = spelunk<number>(data, 'crypto.kdfparams.dklen:int!');
+            const dkLen = spelunk<number>(
+                keyStore,
+                'crypto.kdfparams.dklen:int!'
+            );
             assertArgument(
                 dkLen === 32,
                 'invalid kdf.dklen',
@@ -297,11 +301,14 @@ function getDecryptKdfParams(data: unknown): KdfParams {
             return { name: 'scrypt', salt, N, r, p, dkLen: 64 };
         } else if (kdf.toLowerCase() === 'pbkdf2') {
             const salt = spelunk<Uint8Array>(
-                data,
+                keyStore,
                 'crypto.kdfparams.salt:data!'
             );
 
-            const prf = spelunk<string>(data, 'crypto.kdfparams.prf:string!');
+            const prf = spelunk<string>(
+                keyStore,
+                'crypto.kdfparams.prf:string!'
+            );
             const algorithm = prf.split('-').pop();
             assertArgument(
                 algorithm === 'sha256' || algorithm === 'sha512',
@@ -310,9 +317,12 @@ function getDecryptKdfParams(data: unknown): KdfParams {
                 prf
             );
 
-            const count = spelunk<number>(data, 'crypto.kdfparams.c:int!');
+            const count = spelunk<number>(keyStore, 'crypto.kdfparams.c:int!');
 
-            const dkLen = spelunk<number>(data, 'crypto.kdfparams.dklen:int!');
+            const dkLen = spelunk<number>(
+                keyStore,
+                'crypto.kdfparams.dklen:int!'
+            );
             assertArgument(
                 dkLen === 32,
                 'invalid kdf.dklen',
