@@ -20,8 +20,7 @@ import { CTR } from 'aes-js';
 import {
     assertArgument,
     computeAddress,
-    getAddress,
-    getBytesCopy,
+    getAddress, getBytesCopy,
     hexlify
 } from 'ethers';
 
@@ -157,16 +156,10 @@ function encodeScryptParams(options: EncryptOptions): ScryptParams {
     return { name: 'scrypt', dkLen: 64, salt, N, r, p };
 }
 
-/**
- * Decrypts a keystore to obtain the private key using the given password.
- *
- * @throws{InvalidKeystoreError, InvalidKeystorePasswordError}
- * @param keyStore - The keystore containing the encrypted private key.
- * @param password - The password used to decrypt the keystore.
- * @returns A Promise that resolves to the decrypted KeystoreAccount or rejects if the keystore or password is invalid.
- */
+// ---
+
 function decrypt(keyStore: KeyStore, password: Uint8Array): KeystoreAccount {
-    // Invalid keystore
+    // Check for invalid keystore.
     assert(
         'keystore.decrypt',
         isValid(keyStore),
@@ -214,9 +207,9 @@ function decryptKeystore(
 }
 
 // Version 0.1 x-ethers metadata must contain an encrypted mnemonic phrase
-function getAccount(data: KeyStore, key: Uint8Array): KeystoreAccount {
-    // const key = getBytes(_key);
-    const ciphertext = spelunk<Uint8Array>(data, 'crypto.ciphertext:data!');
+function getAccount(keyStore: KeyStore, key: Uint8Array): KeystoreAccount {
+    const ciphertext = utils.hexToBytes(keyStore.crypto.ciphertext);
+    // const ciphertext = spelunk<Uint8Array>(keyStore, 'crypto.ciphertext:data!');
     // const computedMAC = hexlify(
     //     keccak256(concat([key.slice(16, 32), ciphertext]))
     // ).substring(2);
@@ -229,11 +222,11 @@ function getAccount(data: KeyStore, key: Uint8Array): KeystoreAccount {
     //       '[ REDACTED ]'
     //   );
 
-    const privateKey = _decrypt(data, key.slice(0, 16), ciphertext);
+    const privateKey = _decrypt(keyStore, key.slice(0, 16), ciphertext);
 
     const address = computeAddress(privateKey);
-    if (data.address !== '') {
-        let check = data.address.toLowerCase();
+    if (keyStore.address !== '') {
+        let check = keyStore.address.toLowerCase();
         if (!check.startsWith('0x')) {
             check = '0x' + check;
         }
@@ -242,7 +235,7 @@ function getAccount(data: KeyStore, key: Uint8Array): KeystoreAccount {
             getAddress(check) === address,
             'keystore address/privateKey mismatch',
             'address',
-            data.address
+            keyStore.address
         );
     }
 
@@ -313,102 +306,18 @@ function decodeScryptParams(keyStore: KeyStore): ScryptParams {
 }
 
 function _decrypt(
-    data: unknown,
+    data: KeyStore,
     key: Uint8Array,
     ciphertext: Uint8Array
 ): string {
-    const cipher = spelunk<string>(data, 'crypto.cipher:string');
+    const cipher = data.crypto.cipher;
     if (cipher === 'aes-128-ctr') {
-        const iv = spelunk<Uint8Array>(data, 'crypto.cipherparams.iv:data!');
+        const iv = utils.hexToBytes(data.crypto.cipherparams.iv);
         const aesCtr = new CTR(key, iv);
         return hexlify(aesCtr.decrypt(ciphertext));
     }
     throw new Error('unsupported cipher');
 }
-
-function looseArrayify(hexString: string): Uint8Array {
-    if (typeof hexString === 'string' && !hexString.startsWith('0x')) {
-        hexString = '0x' + hexString;
-    }
-    return getBytesCopy(hexString);
-}
-
-function spelunk<T>(object: any, _path: string): T {
-    const match = _path.match(/^([a-z0-9$_.-]*)(:([a-z]+))?(!)?$/i);
-    assertArgument(match != null, 'invalid path', 'path', _path);
-
-    const path = match[1];
-    const type = match[3];
-    const reqd = match[4] === '!';
-
-    let cur = object;
-    for (const comp of path.toLowerCase().split('.')) {
-        // Search for a child object with a case-insensitive matching key
-        if (Array.isArray(cur)) {
-            if (!comp.match(/^[0-9]+$/)) {
-                break;
-            }
-            cur = cur[parseInt(comp)];
-        } else if (typeof cur === 'object') {
-            let found: any = null;
-            for (const key in cur) {
-                if (key.toLowerCase() === comp) {
-                    found = cur[key];
-                    break;
-                }
-            }
-            cur = found;
-        } else {
-            cur = null;
-        }
-
-        if (cur == null) {
-            break;
-        }
-    }
-
-    assertArgument(
-        !reqd || cur != null,
-        'missing required value',
-        'path',
-        path
-    );
-
-    if (type && cur != null) {
-        if (type === 'int') {
-            if (typeof cur === 'string' && cur.match(/^-?[0-9]+$/)) {
-                return parseInt(cur) as unknown as T;
-            } else if (Number.isSafeInteger(cur)) {
-                return cur;
-            }
-        }
-
-        if (type === 'number') {
-            if (typeof cur === 'string' && cur.match(/^-?[0-9.]*$/)) {
-                return parseFloat(cur) as unknown as T;
-            }
-        }
-
-        if (type === 'data') {
-            if (typeof cur === 'string') {
-                return looseArrayify(cur) as unknown as T;
-            }
-        }
-
-        if (type === 'array' && Array.isArray(cur)) {
-            return cur as unknown as T;
-        }
-        if (type === typeof cur) {
-            return cur;
-        }
-
-        assertArgument(false, `wrong type found for ${type} `, 'path', path);
-    }
-
-    return cur;
-}
-
-// ---
 
 /**
  * Checks if a given keystore object is valid parsing its JSON representation
