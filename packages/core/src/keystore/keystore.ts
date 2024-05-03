@@ -198,19 +198,13 @@ function decryptKeystore(
 // Version 0.1 x-ethers metadata must contain an encrypted mnemonic phrase
 function getAccount(keyStore: KeyStore, key: Uint8Array): KeystoreAccount {
     const ciphertext = utils.hexToBytes(keyStore.crypto.ciphertext);
-    // const ciphertext = spelunk<Uint8Array>(keyStore, 'crypto.ciphertext:data!');
-    // const computedMAC = hexlify(
-    //     keccak256(concat([key.slice(16, 32), ciphertext]))
-    // ).substring(2);
-
-    // assertArgument(
-    //       computedMAC ===
-    //           spelunk<string>(data, 'crypto.mac:string!').toLowerCase(),
-    //       'incorrect password',
-    //       'password',
-    //       '[ REDACTED ]'
-    //   );
-
+    assert(
+        'keystore.decrypt',
+        keyStore.crypto.mac ===
+            Hex.of(keccak256(utils.concatBytes(key.slice(16, 32), ciphertext))),
+        KEYSTORE.INVALID_PASSWORD,
+        'Decryption failed: invalid password for the given keystore.'
+    );
     const privateKey = _decrypt(keyStore, key.slice(0, 16), ciphertext);
     const address = addressUtils.fromPrivateKey(privateKey);
     if (keyStore.address !== '') {
