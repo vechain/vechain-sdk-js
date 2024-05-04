@@ -1,10 +1,4 @@
 import type { ProgressCallback } from 'ethers/src.ts/crypto';
-/**
- * Represents a cipher algorithm supported by the keystore encryption.
- *
- * @typedef {('aes-128-ctr' | 'aes-128-cbc' | 'aes-256-cbc')} Cipher
- */
-type Cipher = 'aes-128-ctr' | 'aes-128-cbc' | 'aes-256-cbc';
 
 interface EncryptOptions {
     progressCallback?: ProgressCallback;
@@ -62,12 +56,12 @@ interface ScryptParams {
 interface KeyStore {
     address: string;
     crypto: {
-        cipher: Cipher;
+        cipher: 'aes-128-ctr';
         cipherparams: {
             iv: string;
         };
         ciphertext: string;
-        kdf: 'pbkdf2' | 'scrypt';
+        kdf: 'scrypt';
         kdfparams: {
             dklen: number;
             n: number;
@@ -104,7 +98,6 @@ interface KeystoreAccount {
 }
 
 export {
-    type Cipher,
     type EncryptOptions,
     type KeyStore,
     type KeystoreAccount,

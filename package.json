@@ -75,6 +75,8 @@
     "peerDependencies": {
         "hardhat": "^2.22.3"
     },
-    "version": "v1.22.22"
+    "version": "v1.22.22",
+    "dependencies": {
+        "@noble/ciphers": "^0.5.2"
+    }
 }
-

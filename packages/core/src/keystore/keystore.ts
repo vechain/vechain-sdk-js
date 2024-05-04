@@ -5,6 +5,7 @@ import * as utils from '@noble/curves/abstract/utils';
 import { Hex, Hex0x, SCRYPT_PARAMS } from '../utils';
 import { addressUtils } from '../address';
 import { assert, buildError, KEYSTORE } from '@vechain/sdk-errors';
+import { ctr } from '@noble/ciphers/aes';
 import { keccak256 } from '../hash';
 import { scrypt } from '@noble/hashes/scrypt';
 import { secp256k1 } from '../secp256k1';
@@ -15,8 +16,6 @@ import {
     type ScryptParams
 } from './types';
 
-import { CTR } from 'aes-js';
-
 /**
  * Retrieves the decryption key-derivation function parameters from the given key store.
  *
@@ -25,6 +24,7 @@ import { CTR } from 'aes-js';
  *
  * @param {KeyStore} keyStore - The key store object.
  * @returns {ScryptParams} - The decryption key-derivation function parameters.
+ *
  * @throws {InvalidKeystoreError} - if [Scrypt](https://en.wikipedia.org/wiki/Scrypt)
  * is not the key-derivation function required by `keyStore` or if any parameter
  * encoded in the keystore is invalid.
@@ -182,7 +182,7 @@ function encryptKeystore(
     // Message Authentication Code prefix.
     const macPrefix = key.slice(16, 32);
     // Encrypt the private key: 32 bytes for the Web3 Secret Storage (derivedKey, macPrefix)
-    const ciphertext = new CTR(key.slice(0, 16), iv).encrypt(privateKey);
+    const ciphertext = ctr(key.slice(0, 16), iv).encrypt(privateKey);
     return {
         address: Hex.canon(
             addressUtils.fromPublicKey(secp256k1.derivePublicKey(privateKey))
@@ -256,7 +256,7 @@ function decryptKeystore(
         KEYSTORE.INVALID_PASSWORD,
         'Decryption failed: invalid password for the given keystore.'
     );
-    const privateKey = new CTR(
+    const privateKey = ctr(
         key.slice(0, 16),
         utils.hexToBytes(keyStore.crypto.cipherparams.iv)
     ).decrypt(ciphertext);
