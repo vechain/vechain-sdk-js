@@ -27,13 +27,11 @@ import { assertTransactionCanBeSigned } from '../../../assertions';
  * Basic vechain signer.
  * This signer can be initialized using a private key.
  */
-class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
-    implements VechainSigner<TProviderType>
-{
+class VechainBaseSigner implements VechainSigner {
     /**
      * The provider attached to this Signer (if any).
      */
-    provider: TProviderType | null;
+    provider: AvailableVechainProviders | null;
 
     /**
      * Create a new VechainBaseSigner.
@@ -44,7 +42,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
      */
     constructor(
         private readonly privateKey: Buffer,
-        provider: TProviderType | null
+        provider: AvailableVechainProviders | null
     ) {
         // Store provider and delegator
         this.provider = provider;
@@ -57,7 +55,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
      * @param provider - The provider to connect to
      * @returns a new instance of this Signer connected to //provider// or detached
      */
-    connect(provider: TProviderType | null): this {
+    connect(provider: AvailableVechainProviders | null): this {
         return new VechainBaseSigner(this.privateKey, provider) as this;
     }
 
@@ -152,11 +150,12 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
         // 1 - Get the thor client
         assert(
             'populateTransaction',
-            (this.provider as TProviderType).thorClient !== null,
+            (this.provider as AvailableVechainProviders).thorClient !== null,
             JSONRPC.INVALID_PARAMS,
             'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.'
         );
-        const thorClient = (this.provider as TProviderType).thorClient;
+        const thorClient = (this.provider as AvailableVechainProviders)
+            .thorClient;
 
         // 2 - Populate the call, to get proper 'from' and 'to' address (compatible with multi-clause transactions)
         const populatedTransaction = await this.populateCall(
@@ -200,11 +199,12 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
         // 1 - Get the thor client
         assert(
             'populateTransaction',
-            (this.provider as TProviderType).thorClient !== null,
+            (this.provider as AvailableVechainProviders).thorClient !== null,
             JSONRPC.INVALID_PARAMS,
             'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.'
         );
-        const thorClient = (this.provider as TProviderType).thorClient;
+        const thorClient = (this.provider as AvailableVechainProviders)
+            .thorClient;
 
         // 2 - Populate the call, to get proper from and to address (compatible with multi-clause transactions)
         const populatedTransaction = await this.populateCall(
@@ -242,11 +242,12 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
         // 1 - Get the thor client
         assert(
             'call',
-            (this.provider as TProviderType).thorClient !== null,
+            (this.provider as AvailableVechainProviders).thorClient !== null,
             JSONRPC.INVALID_PARAMS,
             'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.'
         );
-        const thorClient = (this.provider as TProviderType).thorClient;
+        const thorClient = (this.provider as AvailableVechainProviders)
+            .thorClient;
 
         // 2 - Populate the call, to get proper from and to address (compatible with multi-clause transactions)
         const populatedTransaction = await this.populateCall(
@@ -302,7 +303,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
         return await this._signFlow(
             transactionToSign,
             null,
-            (this.provider as TProviderType).thorClient,
+            (this.provider as AvailableVechainProviders).thorClient,
             this.privateKey
         );
     }
@@ -334,7 +335,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
             DelegationHandler(
                 await this.provider?.wallet?.getDelegator()
             ).delegatorOrNull(),
-            (this.provider as TProviderType).thorClient,
+            (this.provider as AvailableVechainProviders).thorClient,
             this.privateKey
         );
     }
@@ -361,7 +362,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
             JSONRPC.INVALID_PARAMS,
             'Thor provider is not found into the signer. Please attach a Provider to your signer instance.'
         );
-        const provider = this.provider as TProviderType;
+        const provider = this.provider as AvailableVechainProviders;
 
         // 2 - Understand if the transaction is delegated or not
         const isDelegated = provider.enableDelegation as boolean;
