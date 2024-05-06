@@ -1,5 +1,4 @@
 import {
-    addressUtils,
     clauseBuilder,
     type DeployParams,
     type InterfaceAbi,
@@ -13,8 +12,7 @@ import {
     type SendTransactionResult,
     type TransactionReceipt
 } from '../../transactions';
-import { signerUtils, VechainBaseSigner } from '../../../signer';
-import { VechainProvider } from '../../../provider';
+import { signerUtils, type VechainSigner } from '../../../signer';
 
 /**
  * A factory class for deploying smart contracts to a blockchain using a ThorClient.
@@ -31,9 +29,9 @@ class ContractFactory {
     private readonly bytecode: string;
 
     /**
-     * The private key used for signing transactions.
+     * The signer used for signing transactions.
      */
-    private readonly privateKey: string;
+    private readonly signer: VechainSigner;
 
     /**
      * An instance of ThorClient to interact with the blockchain.
@@ -49,18 +47,18 @@ class ContractFactory {
      * Initializes a new instance of the `ContractFactory` class.
      * @param abi The Application Binary Interface (ABI) of the contract, which defines the contract's methods and events.
      * @param bytecode The compiled bytecode of the contract, representing the contract's executable code.
-     * @param privateKey The private key used for signing transactions during contract deployment, ensuring the deployer's identity.
+     * @param signer The signer used for signing transactions during contract deployment, ensuring the deployer's identity.
      * @param thor An instance of ThorClient to interact with the blockchain.
      */
     constructor(
         abi: InterfaceAbi,
         bytecode: string,
-        privateKey: string,
+        signer: VechainSigner,
         thor: ThorClient
     ) {
         this.abi = abi;
         this.bytecode = bytecode;
-        this.privateKey = privateKey;
+        this.signer = signer;
         this.thor = thor;
     }
 
@@ -71,7 +69,7 @@ class ContractFactory {
      * 1. Builds a transaction clause for deploying the contract.
      * 2. Estimates the gas cost required for the transaction.
      * 3. Constructs the transaction body with the estimated gas cost.
-     * 4. Signs the transaction using the provided private key.
+     * 4. Signs the transaction using the provided signer.
      * 5. Sends the signed transaction to the blockchain.
      *
      * @param {DeployParams?} deployParams (Optional) parameters for contract deployment.
@@ -93,7 +91,7 @@ class ContractFactory {
         // Estimate the gas cost of the transaction
         const gasResult = await this.thor.gas.estimateGas(
             [deployContractClause],
-            addressUtils.fromPrivateKey(Buffer.from(this.privateKey, 'hex'))
+            await this.signer.getAddress()
         );
 
         const txBody = await this.thor.transactions.buildTransactionBody(
@@ -102,15 +100,11 @@ class ContractFactory {
             options
         );
 
-        // Sign the transaction with the provided private key
-        const signer = new VechainBaseSigner(
-            Buffer.from(this.privateKey, 'hex'),
-            new VechainProvider(this.thor)
-        );
-        const signedTx = await signer.signTransaction(
+        // Sign the transaction
+        const signedTx = await this.signer.signTransaction(
             signerUtils.transactionBodyToTransactionRequestInput(
                 txBody,
-                addressUtils.fromPrivateKey(Buffer.from(this.privateKey, 'hex'))
+                await this.signer.getAddress()
             )
         );
 
@@ -169,7 +163,7 @@ class ContractFactory {
             transactionReceipt?.outputs[0].contractAddress as string,
             this.abi,
             this.thor,
-            this.privateKey,
+            this.signer,
             transactionReceipt as TransactionReceipt
         );
     }
