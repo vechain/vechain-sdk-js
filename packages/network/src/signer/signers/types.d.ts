@@ -219,22 +219,6 @@ interface TransactionRequestInput {
  * We use our supported providers instead of ethers providers
  */
 interface VechainSigner {
-    // START: Delegator needed methods
-
-    /**
-     * Sign a transaction with the delegator
-     *
-     * @param transactionToSign - the transaction to sign
-     * @returns the fully signed transaction
-     */
-    signTransactionWithDelegator: (
-        transactionToSign: TransactionRequestInput
-    ) => Promise<string>;
-
-    // END: Delegator needed methods
-
-    // START: Standard ethers signer methods adapted for vechain
-
     /**
      * The provider attached to this Signer (if any).
      */
@@ -389,8 +373,6 @@ interface VechainSigner {
      *  Resolves an ENS Name to an address.
      */
     // resolveName: (name: string) => Promise<null | string>;
-
-    // END: Standard ethers signer methods adapted for vechain
 }
 
 export {

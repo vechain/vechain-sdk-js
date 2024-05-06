@@ -302,36 +302,6 @@ class VechainBaseSigner implements VechainSigner {
     ): Promise<string> {
         return await this._signFlow(
             transactionToSign,
-            null,
-            (this.provider as AvailableVechainProviders).thorClient,
-            this.privateKey
-        );
-    }
-
-    /**
-     * Sign a transaction with the delegator
-     *
-     * @param transactionToSign - the transaction to sign
-     * @returns the fully signed transaction
-     */
-    async signTransactionWithDelegator(
-        transactionToSign: TransactionRequestInput
-    ): Promise<string> {
-        // Get the delegator
-        const delegator = DelegationHandler(
-            await this.provider?.wallet?.getDelegator()
-        ).delegatorOrNull();
-
-        // Throw an error if the delegator is not available
-        assert(
-            'signTransactionWithDelegator',
-            delegator !== null,
-            JSONRPC.INVALID_PARAMS,
-            'Delegator not found. Ensure that the provider contains the delegator used to sign the transaction.'
-        );
-
-        return await this._signFlow(
-            transactionToSign,
             DelegationHandler(
                 await this.provider?.wallet?.getDelegator()
             ).delegatorOrNull(),
@@ -364,15 +334,10 @@ class VechainBaseSigner implements VechainSigner {
         );
         const provider = this.provider as AvailableVechainProviders;
 
-        // 2 - Understand if the transaction is delegated or not
-        const isDelegated = provider.enableDelegation as boolean;
+        // 2 - Sign the transaction
+        const signedTransaction = await this.signTransaction(transactionToSend);
 
-        // 3 - Sign the transaction
-        const signedTransaction = isDelegated
-            ? await this.signTransactionWithDelegator(transactionToSend)
-            : await this.signTransaction(transactionToSend);
-
-        // 4 - Send the signed transaction
+        // 3 - Send the signed transaction
         return (await provider.request({
             method: RPC_METHODS.eth_sendRawTransaction,
             params: [signedTransaction]
