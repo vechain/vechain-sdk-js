@@ -42,13 +42,16 @@ const provider = new VechainProvider(
     }),
     true
 );
+const signer = (await provider.getSigner(
+    deployerAccount.address
+)) as VechainSigner;
 
 // Defining a function for deploying the ERC20 contract
 const setupERC20Contract = async (): Promise<Contract> => {
     const contractFactory = thorSoloClient.contracts.createContractFactory(
         VIP180_ABI,
         erc20ContractBytecode,
-        (await provider.getSigner(deployerAccount.address)) as VechainSigner
+        signer
     );
 
     // Deploying the contract

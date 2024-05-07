@@ -38,12 +38,15 @@ const provider = new VechainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount])
 );
+const signer = (await provider.getSigner(
+    deployerAccount.address
+)) as VechainSigner;
 
 // Creating the contract factory
 const contractFactory = thorSoloClient.contracts.createContractFactory(
     VIP180_ABI,
     erc20ContractBytecode,
-    (await provider.getSigner(deployerAccount.address)) as VechainSigner
+    signer
 );
 
 // Deploying the contract

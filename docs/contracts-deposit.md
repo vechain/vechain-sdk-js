@@ -19,7 +19,7 @@ The main deployment steps are as follows:
 const contractFactory = thorSoloClient.contracts.createContractFactory(
     depositContractAbi,
     depositContractBytecode,
-    (await provider.getSigner(deployerAccount.address)) as VechainSigner
+    signer
 );
 
 const contract = await (

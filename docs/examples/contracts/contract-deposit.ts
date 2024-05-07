@@ -95,6 +95,9 @@ const provider = new VechainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount])
 );
+const signer = (await provider.getSigner(
+    deployerAccount.address
+)) as VechainSigner;
 
 // START_SNIPPET: DepositContractSnippet
 
@@ -102,7 +105,7 @@ const provider = new VechainProvider(
 const contractFactory = thorSoloClient.contracts.createContractFactory(
     depositContractAbi,
     depositContractBytecode,
-    (await provider.getSigner(deployerAccount.address)) as VechainSigner
+    signer
 );
 
 const contract = await (
