@@ -187,7 +187,7 @@ describe('Subscriptions Solo network tests', () => {
             // Create a signer to sign the transaction
             const signer = (await provider.getSigner(
                 TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
-            )) as VechainBaseSigner<VechainProvider>;
+            )) as VechainBaseSigner;
 
             // Get the raw transaction
             const raw = await signer.signTransaction(
@@ -268,7 +268,7 @@ describe('Subscriptions Solo network tests', () => {
         // Create a signer to sign the transaction
         const signer = (await provider.getSigner(
             TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION.address
-        )) as VechainBaseSigner<VechainProvider>;
+        )) as VechainBaseSigner;
 
         // Get the raw transaction
         const raw = await signer.signTransaction(

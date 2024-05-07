@@ -12,13 +12,13 @@ import {
 import { type Contract } from './contract';
 import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 import {
-    addressUtils,
     clauseBuilder,
     fragment,
     type TransactionClause
 } from '@vechain/sdk-core';
 import { type ContractCallResult } from '../types';
 import { ContractFilter } from './contract-filter';
+import { type VechainSigner } from '../../../signer';
 
 /**
  * Creates a Proxy object for reading contract state, allowing for the dynamic invocation of contract read operations.
@@ -36,13 +36,8 @@ function getReadProxy(contract: Contract): ContractFunctionRead {
                     args,
                     {
                         caller:
-                            contract.getCallerPrivateKey() !== undefined
-                                ? addressUtils.fromPrivateKey(
-                                      Buffer.from(
-                                          contract.getCallerPrivateKey() as string,
-                                          'hex'
-                                      )
-                                  )
+                            contract.getSigner() !== undefined
+                                ? await contract.getSigner()?.getAddress()
                                 : undefined,
                         ...contract.getContractReadOptions()
                     }
@@ -65,11 +60,11 @@ function getTransactProxy(contract: Contract): ContractFunctionTransact {
             return async (
                 ...args: unknown[]
             ): Promise<SendTransactionResult> => {
-                if (contract.getCallerPrivateKey() === undefined) {
+                if (contract.getSigner() === undefined) {
                     throw buildError(
                         'Contract.getTransactProxy',
                         ERROR_CODES.TRANSACTION.MISSING_PRIVATE_KEY,
-                        'Caller private key is required to transact with the contract.',
+                        'Caller signer is required to transact with the contract.',
                         { prop }
                     );
                 }
@@ -97,7 +92,7 @@ function getTransactProxy(contract: Contract): ContractFunctionTransact {
                 }
 
                 return await contract.thor.contracts.executeTransaction(
-                    contract.getCallerPrivateKey() as string,
+                    contract.getSigner() as VechainSigner,
                     contract.address,
                     contract.getFunctionFragment(prop),
                     args,

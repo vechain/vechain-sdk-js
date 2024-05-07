@@ -548,7 +548,7 @@ const signer = await providerWithDelegationEnabled.getSigner(
     senderAccount.address
 );
 
-const rawDelegateSigned = await signer.signTransactionWithDelegator(
+const rawDelegateSigned = await signer.signTransaction(
     signerUtils.transactionBodyToTransactionRequestInput(
         txBody,
         senderAccount.address
@@ -652,7 +652,7 @@ const signer = await providerWithDelegationEnabled.getSigner(
     senderAccount.address
 );
 
-const rawDelegateSigned = await signer.signTransactionWithDelegator(
+const rawDelegateSigned = await signer.signTransaction(
     signerUtils.transactionBodyToTransactionRequestInput(
         txBody,
         senderAccount.address

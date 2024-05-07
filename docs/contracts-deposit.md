@@ -19,7 +19,7 @@ The main deployment steps are as follows:
 const contractFactory = thorSoloClient.contracts.createContractFactory(
     depositContractAbi,
     depositContractBytecode,
-    privateKeyDeployer
+    signer
 );
 
 const contract = await (
@@ -28,7 +28,7 @@ const contract = await (
 
 await (await contract.transact.deposit({ value: 1000 })).wait();
 
-const balance = await contract.read.getBalance(privateKeyAddress);
+const balance = await contract.read.getBalance(deployerAccount.address);
 
 expect(balance).toEqual([BigInt(1000)]);
 ```

@@ -34,12 +34,19 @@ Once the contract is compiled, we can deploy it using the vechain SDK. The follo
 // Create thor client for solo network
 const _soloUrl = 'http://localhost:8669/';
 const thorSoloClient = ThorClient.fromUrl(_soloUrl);
+const provider = new VechainProvider(
+    thorSoloClient,
+    new ProviderInternalBaseWallet([deployerAccount])
+);
+const signer = (await provider.getSigner(
+    deployerAccount.address
+)) as VechainSigner;
 
 // Creating the contract factory
 const contractFactory = thorSoloClient.contracts.createContractFactory(
     VIP180_ABI,
     erc20ContractBytecode,
-    privateKeyDeployer
+    signer
 );
 
 // Deploying the contract
@@ -54,9 +61,7 @@ const receipt = contract.deployTransactionReceipt;
 // Asserting that the contract deployment didn't revert, indicating a successful deployment
 expect(receipt.reverted).toEqual(false);
 
-const balance = await contract.read.balanceOf(
-    addressUtils.fromPrivateKey(Buffer.from(privateKeyDeployer, 'hex'))
-);
+const balance = await contract.read.balanceOf(deployerAccount.address);
 
 // Asserting that the initial balance of the deployer is the expected amount (1e24)
 expect(balance).toEqual([unitsUtils.parseUnits('1', 24)]);

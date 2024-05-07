@@ -130,6 +130,35 @@ const signTransactionTestCases = {
                     }
                 }
             }
+        ],
+        incorrect: [
+            {
+                description:
+                    'Should NOT sign a transaction with delegation when no delegator is provided',
+                origin: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER,
+                options: undefined,
+                isDelegated: true,
+                expected: {
+                    body: {
+                        chainTag: 39,
+                        clauses: [
+                            {
+                                data: '0x01cb08c5000000000000000000000000000000000000000000000000000000000000007b',
+                                to: '0xb2c20a6de401003a671659b10629eb82ff254fb8',
+                                value: 0
+                            }
+                        ],
+                        dependsOn: null,
+                        expiration: 32,
+                        gas: 21464,
+                        gasPriceCoef: 0,
+                        reserved: {
+                            features: 1
+                        }
+                    }
+                },
+                expectedError: TransactionDelegationError
+            }
         ]
     }
 };
