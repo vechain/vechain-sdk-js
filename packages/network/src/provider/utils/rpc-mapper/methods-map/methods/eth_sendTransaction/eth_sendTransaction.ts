@@ -1,10 +1,6 @@
-import {
-    DelegationHandler,
-    type ThorClient
-} from '../../../../../../thor-client';
+import { type ThorClient } from '../../../../../../thor-client';
 import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
 import { type VechainProvider } from '../../../../../providers';
-import { ethSendRawTransaction } from '../eth_sendRawTransaction';
 import { type TransactionObjectInput } from './types';
 import { type VechainSigner } from '../../../../../../signer';
 
@@ -81,26 +77,10 @@ const ethSendTransaction = async (
         // Get the signer of the provider
         const signer = (await (provider as VechainProvider).getSigner(
             transaction.from
-        )) as VechainSigner<VechainProvider>;
-
-        // Understand if use delegation or not
-        const isDelegated =
-            provider?.enableDelegation !== undefined &&
-            provider?.enableDelegation;
-
-        // Understand if transaction can be delegated or not
-        const canBeDelegated = DelegationHandler(
-            provider?.wallet?.delegator
-        ).isDelegated();
-
-        // Sign the transaction
-        const signedTransaction =
-            isDelegated && canBeDelegated
-                ? await signer.signTransactionWithDelegator(transaction)
-                : await signer.signTransaction(transaction);
+        )) as VechainSigner;
 
         // Return the result
-        return await ethSendRawTransaction(thorClient, [signedTransaction]);
+        return await signer.sendTransaction(transaction);
     } catch (e) {
         throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,

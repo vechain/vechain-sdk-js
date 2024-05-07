@@ -1,11 +1,13 @@
+import { VIP180_ABI } from '@vechain/sdk-core';
 import {
+    type Contract,
     ProviderInternalBaseWallet,
     type ProviderInternalWalletAccount,
     ThorClient,
+    type TransactionReceipt,
     VechainProvider,
     type VechainSigner
 } from '@vechain/sdk-network';
-import { unitsUtils, VIP180_ABI } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // ERC20 contract bytecode
@@ -21,41 +23,63 @@ const deployerAccount: ProviderInternalWalletAccount = {
     address: '0xf02f557c753edf5fcdcbfe4c1c3a448b3cc84d54'
 };
 
-// START_SNIPPET: CreateERC20TokenSnippet
+// Defining the delegator account, which has VTHO for transaction costs
+const delegatorAccount = {
+    privateKey:
+        '521b7793c6eb27d137b617627c6b85d57c0aa303380e9ca4e30a30302fbc6676',
+    address: '0x062F167A905C1484DE7e75B88EDC7439f82117DE'
+};
 
 // Create thor client for solo network
 const _soloUrl = 'http://localhost:8669/';
 const thorSoloClient = ThorClient.fromUrl(_soloUrl);
 const provider = new VechainProvider(
     thorSoloClient,
-    new ProviderInternalBaseWallet([deployerAccount])
+    new ProviderInternalBaseWallet([deployerAccount], {
+        delegator: {
+            delegatorPrivateKey: delegatorAccount.privateKey
+        }
+    }),
+    true
 );
 const signer = (await provider.getSigner(
     deployerAccount.address
 )) as VechainSigner;
 
-// Creating the contract factory
-const contractFactory = thorSoloClient.contracts.createContractFactory(
-    VIP180_ABI,
-    erc20ContractBytecode,
-    signer
+// Defining a function for deploying the ERC20 contract
+const setupERC20Contract = async (): Promise<Contract> => {
+    const contractFactory = thorSoloClient.contracts.createContractFactory(
+        VIP180_ABI,
+        erc20ContractBytecode,
+        signer
+    );
+
+    // Deploying the contract
+    await contractFactory.startDeployment();
+
+    // Waiting for the contract to be deployed
+    return await contractFactory.waitForDeployment();
+};
+
+// Setting up the ERC20 contract and getting its address
+const contract = await setupERC20Contract();
+
+// START_SNIPPET: ERC20FunctionCallDelegatedSnippet
+
+// Transferring 10000 tokens to another address with a delegated transaction
+const transferResult = await contract.transact.transfer(
+    '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+    10000,
+    {
+        delegatorPrivateKey: delegatorAccount.privateKey
+    }
 );
 
-// Deploying the contract
-await contractFactory.startDeployment();
+// Wait for the transfer transaction to complete and obtain its receipt
+const transactionReceiptTransfer =
+    (await transferResult.wait()) as TransactionReceipt;
 
-// Awaiting the contract deployment
-const contract = await contractFactory.waitForDeployment();
+// Asserting that the transaction has not been reverted
+expect(transactionReceiptTransfer.reverted).toEqual(false);
 
-// Awaiting the transaction receipt to confirm successful contract deployment
-const receipt = contract.deployTransactionReceipt;
-
-// Asserting that the contract deployment didn't revert, indicating a successful deployment
-expect(receipt.reverted).toEqual(false);
-
-const balance = await contract.read.balanceOf(deployerAccount.address);
-
-// Asserting that the initial balance of the deployer is the expected amount (1e24)
-expect(balance).toEqual([unitsUtils.parseUnits('1', 24)]);
-
-// END_SNIPPET: CreateERC20TokenSnippet
+// END_SNIPPET: ERC20FunctionCallDelegatedSnippet

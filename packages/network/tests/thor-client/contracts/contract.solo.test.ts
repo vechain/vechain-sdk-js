@@ -15,6 +15,7 @@ import {
     fourArgsEventAbi,
     multipleClausesTestCases,
     testingContractEVMExtensionTestCases,
+    testingContractNegativeTestCases,
     testingContractTestCases
 } from './fixture';
 import {
@@ -27,7 +28,10 @@ import {
     Contract,
     type ContractFactory,
     ThorClient,
-    type TransactionReceipt
+    type TransactionReceipt,
+    VechainBaseSigner,
+    VechainProvider,
+    type VechainSigner
 } from '../../../src';
 import {
     ContractDeploymentFailedError,
@@ -46,8 +50,18 @@ describe('ThorClient - Contracts', () => {
     // ThorClient instance
     let thorSoloClient: ThorClient;
 
+    // Signer instance
+    let signer: VechainSigner;
+
     beforeEach(() => {
         thorSoloClient = ThorClient.fromUrl(soloUrl);
+        signer = new VechainBaseSigner(
+            Buffer.from(
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
+                'hex'
+            ),
+            new VechainProvider(thorSoloClient)
+        );
     });
 
     /**
@@ -61,7 +75,7 @@ describe('ThorClient - Contracts', () => {
         const contractFactory = thorSoloClient.contracts.createContractFactory(
             deployedContractAbi,
             contractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+            signer
         );
 
         // Start the deployment of the contract
@@ -77,7 +91,7 @@ describe('ThorClient - Contracts', () => {
             '0x123',
             deployedContractAbi,
             thorSoloClient,
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+            signer
         );
         expect(contract.address).toBeDefined();
         expect(contract.abi).toBeDefined();
@@ -92,7 +106,7 @@ describe('ThorClient - Contracts', () => {
             '0x123',
             deployedContractAbi,
             thorSoloClient,
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+            signer
         );
         expect(contract.address).toBeDefined();
         expect(contract.abi).toBeDefined();
@@ -135,7 +149,7 @@ describe('ThorClient - Contracts', () => {
         let contractFactory = thorSoloClient.contracts.createContractFactory(
             deployedContractAbi,
             contractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+            signer
         );
 
         // Start the deployment of the contract
@@ -155,7 +169,7 @@ describe('ThorClient - Contracts', () => {
         const contractFactory = thorSoloClient.contracts.createContractFactory(
             deployedContractAbi,
             contractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+            signer
         );
 
         // Waiting for a deployment that has not started
@@ -249,8 +263,7 @@ describe('ThorClient - Contracts', () => {
             expiration: 32
         });
 
-        // ----- TEMPORARY COMMENT: Understand why it fails -----
-        // await expect(contract.transact.set(22323)).rejects.toThrow();
+        await expect(contract.transact.set(22323)).rejects.toThrow();
 
         contract.clearContractTransactOptions();
 
@@ -262,21 +275,25 @@ describe('ThorClient - Contracts', () => {
     /**
      * Test case for calling a contract function with different private keys.
      */
-    test('call a contract function with different private keys', async () => {
+    test('call a contract function with different signer', async () => {
         // Create a contract factory that is already deploying the example contract
         const factory = await createExampleContractFactory();
 
         // Wait for the deployment to complete and obtain the contract instance
         const contract: Contract = await factory.waitForDeployment();
 
-        contract.setCallerPrivateKey('');
+        // Set signer with invalid private key
+        contract.setSigner(
+            new VechainBaseSigner(
+                Buffer.from('', 'hex'),
+                new VechainProvider(thorSoloClient)
+            )
+        );
 
         // The contract call should fail because the private key is not set
         await expect(contract.transact.set(123)).rejects.toThrow();
 
-        contract.setCallerPrivateKey(
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
-        );
+        contract.setSigner(signer);
 
         await (await contract.transact.set(123)).wait();
 
@@ -307,9 +324,7 @@ describe('ThorClient - Contracts', () => {
         expect(callFunctionGetResult).toEqual([BigInt(100)]);
 
         // Set the private key of the caller for signing transactions
-        loadedContract.setCallerPrivateKey(
-            contract.getCallerPrivateKey() as string
-        );
+        loadedContract.setSigner(contract.getSigner() as VechainSigner);
 
         // Call the set function of the loaded contract to set the value to 123
         const callFunctionSetResponse = await loadedContract.transact.set(123);
@@ -378,7 +393,7 @@ describe('ThorClient - Contracts', () => {
             thorSoloClient.contracts.createContractFactory(
                 depositContractAbi,
                 depositContractBytecode,
-                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+                signer
             );
 
         const depositContract = await depositContractFactory.startDeployment();
@@ -425,6 +440,24 @@ describe('ThorClient - Contracts', () => {
     );
 
     /**
+     * Tests the error test cases for the `TestingContract` functions.
+     */
+    testingContractNegativeTestCases.forEach(
+        ({ description, functionName, params, expected }) => {
+            test(description, async () => {
+                const response = await thorSoloClient.contracts.executeCall(
+                    TESTING_CONTRACT_ADDRESS,
+                    coder
+                        .createInterface(TESTING_CONTRACT_ABI)
+                        .getFunction(functionName) as FunctionFragment,
+                    params
+                );
+                expect(response).toBe(expected);
+            });
+        }
+    );
+
+    /**
      * Test cases for EVM Extension functions
      */
     testingContractEVMExtensionTestCases.forEach(
@@ -437,7 +470,6 @@ describe('ThorClient - Contracts', () => {
                         .getFunction(functionName) as FunctionFragment,
                     params
                 );
-
                 expect(response).toEqual(expected);
             });
         }
@@ -447,7 +479,7 @@ describe('ThorClient - Contracts', () => {
         const contract = thorSoloClient.contracts.load(
             TESTING_CONTRACT_ADDRESS,
             TESTING_CONTRACT_ABI,
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+            signer
         );
 
         await (await contract.transact.setStateVariable(123)).wait();
@@ -487,7 +519,10 @@ describe('ThorClient - Contracts', () => {
                         thorSoloClient.contracts.createContractFactory(
                             contractAbi,
                             contractBytecode,
-                            contractCaller
+                            new VechainBaseSigner(
+                                Buffer.from(contractCaller, 'hex'),
+                                new VechainProvider(thorSoloClient)
+                            )
                         );
 
                     const factory = await contractFactory.startDeployment();
@@ -548,8 +583,14 @@ describe('ThorClient - Contracts', () => {
                             return thorSoloClient.contracts.createContractFactory(
                                 contract.contractAbi,
                                 contract.contractBytecode,
-                                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
-                                    .privateKey
+                                new VechainBaseSigner(
+                                    Buffer.from(
+                                        TEST_ACCOUNTS.TRANSACTION
+                                            .CONTRACT_MANAGER.privateKey,
+                                        'hex'
+                                    ),
+                                    new VechainProvider(thorSoloClient)
+                                )
                             );
                         });
 
@@ -587,8 +628,14 @@ describe('ThorClient - Contracts', () => {
                     const transactionResult =
                         await thorSoloClient.contracts.executeMultipleClausesTransaction(
                             contractClauses,
-                            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
-                                .privateKey
+                            new VechainBaseSigner(
+                                Buffer.from(
+                                    TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
+                                        .privateKey,
+                                    'hex'
+                                ),
+                                new VechainProvider(thorSoloClient)
+                            )
                         );
 
                     const result = await transactionResult.wait();

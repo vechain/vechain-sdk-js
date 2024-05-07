@@ -247,7 +247,10 @@ const simulateTransaction = {
                     ],
                     simulateTransactionOptions: {
                         caller: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
-                            .address
+                            .address,
+                        callerPrivateKey:
+                            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER
+                                .privateKey
                     }
                 },
                 expected: {
@@ -317,7 +320,8 @@ const simulateTransaction = {
                                 'get',
                                 [
                                     dataUtils.encodeBytes32String(
-                                        'base-gas-price'
+                                        'base-gas-price',
+                                        'left'
                                     )
                                 ]
                             )

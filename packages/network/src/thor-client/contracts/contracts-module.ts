@@ -1,6 +1,5 @@
 import {
     abi,
-    addressUtils,
     clauseBuilder,
     coder,
     dataUtils,
@@ -20,8 +19,8 @@ import type {
 import { type SendTransactionResult } from '../transactions';
 import { type ThorClient } from '../thor-client';
 import { Contract, ContractFactory } from './model';
-import { signerUtils, VechainBaseSigner } from '../../signer';
-import { VechainProvider } from '../../provider';
+import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
+import { signerUtils, type VechainSigner } from '../../signer';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -34,20 +33,20 @@ class ContractsModule {
     constructor(readonly thor: ThorClient) {}
 
     /**
-     * Creates a new instance of `ContractFactory` configured with the specified ABI, bytecode, and private key.
+     * Creates a new instance of `ContractFactory` configured with the specified ABI, bytecode, and signer.
      * This factory is used to deploy new smart contracts to the blockchain network managed by this instance.
      *
      * @param abi - The Application Binary Interface (ABI) of the contract, which defines the contract's methods and events.
      * @param bytecode - The compiled bytecode of the contract, representing the contract's executable code.
-     * @param privateKey - The private key used for signing transactions during contract deployment, ensuring the deployer's identity.
-     * @returns An instance of `ContractFactory` configured with the provided ABI, bytecode, and private key, ready for deploying contracts.
+     * @param signer - The signer used for signing transactions during contract deployment, ensuring the deployer's identity.
+     * @returns An instance of `ContractFactory` configured with the provided ABI, bytecode, and signer, ready for deploying contracts.
      */
     public createContractFactory(
         abi: InterfaceAbi,
         bytecode: string,
-        privateKey: string
+        signer: VechainSigner
     ): ContractFactory {
-        return new ContractFactory(abi, bytecode, privateKey, this.thor);
+        return new ContractFactory(abi, bytecode, signer, this.thor);
     }
 
     /**
@@ -55,15 +54,15 @@ class ContractsModule {
      *
      * @param address - The blockchain address of the contract to load.
      * @param abi - The Application Binary Interface (ABI) of the contract, which defines the contract's methods and structures.
-     * @param callerPrivateKey - Optional. The private key of the caller, used for signing transactions when interacting with the contract.
-     * @returns A new instance of the Contract, initialized with the provided address, ABI, and optionally, a caller private key.
+     * @param signer - Optional. The signer caller, used for signing transactions when interacting with the contract.
+     * @returns A new instance of the Contract, initialized with the provided address, ABI, and optionally, a signer.
      */
     public load(
         address: string,
         abi: InterfaceAbi,
-        callerPrivateKey?: string
+        signer?: VechainSigner
     ): Contract {
-        return new Contract(address, abi, this.thor, callerPrivateKey);
+        return new Contract(address, abi, this.thor, signer);
     }
 
     /**
@@ -82,7 +81,7 @@ class ContractsModule {
         functionFragment: FunctionFragment,
         functionData: unknown[],
         contractCallOptions?: ContractCallOptions
-    ): Promise<ContractCallResult> {
+    ): Promise<ContractCallResult | string> {
         // Simulate the transaction to get the result of the contract call
         const response = await this.thor.transactions.simulateTransaction(
             [
@@ -97,15 +96,25 @@ class ContractsModule {
             contractCallOptions
         );
 
-        return new abi.Function(functionFragment).decodeOutput(
-            response[0].data
-        );
+        if (response[0].reverted) {
+            /**
+             * The decoded revert reason of the transaction.
+             * Solidity may revert with Error(string) or Panic(uint256).
+             *
+             * @link see [Error handling: Assert, Require, Revert and Exceptions](https://docs.soliditylang.org/en/latest/control-structures.html#error-handling-assert-require-revert-and-exceptions)
+             */
+            return decodeRevertReason(response[0].data) ?? '';
+        } else {
+            return new abi.Function(functionFragment).decodeOutput(
+                response[0].data
+            );
+        }
     }
 
     /**
      * Executes a transaction to interact with a smart contract function.
      *
-     * @param privateKey - The private key for signing the transaction.
+     * @param signer - The signer used for signing the transaction.
      * @param contractAddress - The address of the smart contract.
      * @param functionFragment - The function fragment, including the name and types of the function to be called, derived from the contract's ABI.
      * @param functionData - The input data for the function.
@@ -116,7 +125,7 @@ class ContractsModule {
      * @returns A promise resolving to a SendTransactionResult object.
      */
     public async executeTransaction(
-        privateKey: string,
+        signer: VechainSigner,
         contractAddress: string,
         functionFragment: FunctionFragment,
         functionData: unknown[],
@@ -133,7 +142,7 @@ class ContractsModule {
         // Estimate the gas cost of the transaction
         const gasResult = await this.thor.gas.estimateGas(
             [clause],
-            addressUtils.fromPrivateKey(Buffer.from(privateKey, 'hex'))
+            await signer.getAddress()
         );
 
         // Build a transaction for calling the contract function
@@ -143,8 +152,8 @@ class ContractsModule {
             options
         );
 
-        // Sign the transaction with the private key
-        const result = await this._signContractTransaction(privateKey, txBody);
+        // Sign the transaction
+        const result = await this._signContractTransaction(signer, txBody);
 
         result.wait = async () =>
             await this.thor.transactions.waitForTransaction(result.id);
@@ -154,26 +163,21 @@ class ContractsModule {
 
     /**
      * Internal function used to sign a contract transaction
-     * with the provided private key.
+     * with the provided signer
      *
-     * @param privateKey - The private key for signing the transaction.
+     * @param signer - The signer used for signing the transaction.
      * @param txBody - The transaction body to sign.
      *
      * @private
      */
     private async _signContractTransaction(
-        privateKey: string,
+        signer: VechainSigner,
         txBody: TransactionBody
     ): Promise<SendTransactionResult> {
-        const signer = new VechainBaseSigner(
-            Buffer.from(privateKey, 'hex'),
-            new VechainProvider(this.thor)
-        );
-
         const signedTx = await signer.signTransaction(
             signerUtils.transactionBodyToTransactionRequestInput(
                 txBody,
-                addressUtils.fromPrivateKey(Buffer.from(privateKey, 'hex'))
+                await signer.getAddress()
             )
         );
 
@@ -188,18 +192,18 @@ class ContractsModule {
     /**
      * Executes a transaction to interact with multiple smart contract functions.
      * @param clauses - An array of transaction clauses to interact with the contract functions.
-     * @param privateKey - The private key for signing the transaction.
+     * @param signer - The signer used to signing the transaction.
      * @param options - (Optional) An object containing options for the transaction body. Includes all options of the `buildTransactionBody` method
      */
     public async executeMultipleClausesTransaction(
         clauses: TransactionClause[],
-        privateKey: string,
+        signer: VechainSigner,
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
         // Estimate the gas cost of the transaction
         const gasResult = await this.thor.gas.estimateGas(
             clauses,
-            addressUtils.fromPrivateKey(Buffer.from(privateKey, 'hex'))
+            await signer.getAddress()
         );
 
         // Build a transaction for calling the contract function
@@ -209,8 +213,8 @@ class ContractsModule {
             options
         );
 
-        // Sign the transaction with the private key
-        const result = await this._signContractTransaction(privateKey, txBody);
+        // Sign the transaction
+        const result = await this._signContractTransaction(signer, txBody);
 
         result.wait = async () =>
             await this.thor.transactions.waitForTransaction(result.id);
@@ -233,7 +237,7 @@ class ContractsModule {
             coder
                 .createInterface(PARAMS_ABI)
                 .getFunction('get') as FunctionFragment,
-            [dataUtils.encodeBytes32String('base-gas-price')]
+            [dataUtils.encodeBytes32String('base-gas-price', 'left')]
         );
     }
 }

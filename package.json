@@ -66,11 +66,11 @@
         "prettier": "^3.2.5",
         "ts-jest": "^29.1.2",
         "tsup": "^8.0.2",
-        "turbo": "^1.13.2",
+        "turbo": "^1.13.3",
         "typedoc": "^0.25.13",
         "typedoc-plugin-missing-exports": "^2.2.0",
         "typescript": "^5.4.4",
-        "ws": "^8.16.0"
+        "ws": "^8.17.0"
     },
     "peerDependencies": {
         "hardhat": "^2.22.3"

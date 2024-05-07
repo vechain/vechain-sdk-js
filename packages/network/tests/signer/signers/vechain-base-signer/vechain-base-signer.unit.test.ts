@@ -11,6 +11,7 @@ import {
 } from '../../../../src';
 import { testnetUrl } from '../../../fixture';
 import { addressUtils } from '../../../../../core';
+import { populateCallTestCases, populateCallTestCasesAccount } from './fixture';
 
 /**
  * Vechain base signer tests
@@ -97,6 +98,55 @@ describe('Vechain base signer tests', () => {
                 const nonce = await signer.getNonce('latest');
                 expect(nonce).toBeDefined();
             }
+        });
+
+        /**
+         * Should be able to populate call
+         */
+        describe('populateCall method', () => {
+            /**
+             * Positive case tests
+             */
+            populateCallTestCases.positive.forEach((fixture) => {
+                test(fixture.description, async () => {
+                    // Test with provider attached and detached
+
+                    const signer = new VechainBaseSigner(
+                        Buffer.from(
+                            populateCallTestCasesAccount.privateKey,
+                            'hex'
+                        ),
+                        null
+                    );
+                    const populatedCallTransaction = await signer.populateCall(
+                        fixture.transactionToPopulate
+                    );
+                    expect(populatedCallTransaction).toStrictEqual(
+                        fixture.expected
+                    );
+                });
+            });
+
+            /**
+             * Negative case tests
+             */
+            populateCallTestCases.negative.forEach((fixture) => {
+                test(fixture.description, async () => {
+                    // Test with provider attached and detached
+
+                    const signer = new VechainBaseSigner(
+                        Buffer.from(
+                            populateCallTestCasesAccount.privateKey,
+                            'hex'
+                        ),
+                        null
+                    );
+
+                    await expect(
+                        signer.populateCall(fixture.transactionToPopulate)
+                    ).rejects.toThrowError(fixture.expectedError);
+                });
+            });
         });
     });
 });

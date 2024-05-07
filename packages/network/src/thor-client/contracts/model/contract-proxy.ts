@@ -5,17 +5,20 @@ import {
     type ContractFunctionTransact,
     type TransactionValue
 } from './types';
-import { type SendTransactionResult } from '../../transactions';
+import {
+    type SendTransactionResult,
+    type SignTransactionOptions
+} from '../../transactions';
 import { type Contract } from './contract';
 import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 import {
-    addressUtils,
     clauseBuilder,
     fragment,
     type TransactionClause
 } from '@vechain/sdk-core';
 import { type ContractCallResult } from '../types';
 import { ContractFilter } from './contract-filter';
+import { type VechainSigner } from '../../../signer';
 
 /**
  * Creates a Proxy object for reading contract state, allowing for the dynamic invocation of contract read operations.
@@ -27,23 +30,18 @@ function getReadProxy(contract: Contract): ContractFunctionRead {
         get: (_target, prop) => {
             // Otherwise, assume that the function is a contract method
             return async (...args: unknown[]): Promise<ContractCallResult> => {
-                return await contract.thor.contracts.executeCall(
+                return (await contract.thor.contracts.executeCall(
                     contract.address,
                     contract.getFunctionFragment(prop),
                     args,
                     {
                         caller:
-                            contract.getCallerPrivateKey() !== undefined
-                                ? addressUtils.fromPrivateKey(
-                                      Buffer.from(
-                                          contract.getCallerPrivateKey() as string,
-                                          'hex'
-                                      )
-                                  )
+                            contract.getSigner() !== undefined
+                                ? await contract.getSigner()?.getAddress()
                                 : undefined,
                         ...contract.getContractReadOptions()
                     }
-                );
+                )) as ContractCallResult;
             };
         }
     });
@@ -62,11 +60,11 @@ function getTransactProxy(contract: Contract): ContractFunctionTransact {
             return async (
                 ...args: unknown[]
             ): Promise<SendTransactionResult> => {
-                if (contract.getCallerPrivateKey() === undefined) {
+                if (contract.getSigner() === undefined) {
                     throw buildError(
                         'Contract.getTransactProxy',
                         ERROR_CODES.TRANSACTION.MISSING_PRIVATE_KEY,
-                        'Caller private key is required to transact with the contract.',
+                        'Caller signer is required to transact with the contract.',
                         { prop }
                     );
                 }
@@ -78,13 +76,23 @@ function getTransactProxy(contract: Contract): ContractFunctionTransact {
                 // check if the transaction value is provided as an argument
                 const transactionValue = getTransactionValue(args);
 
+                const signTransactionOptions = getSignTransactionOptions(args);
+
                 // if present remove the transaction value argument from the list of arguments
                 if (transactionValue !== undefined) {
                     args = args.filter((arg) => !isTransactionValue(arg));
                 }
 
+                // if present remove the sign transaction options argument from the list of arguments
+                if (signTransactionOptions !== undefined) {
+                    args = args.filter((arg) => !isSignTransactionOptions(arg));
+                    transactionOptions.signTransactionOptions =
+                        signTransactionOptions;
+                    transactionOptions.isDelegated = true;
+                }
+
                 return await contract.thor.contracts.executeTransaction(
-                    contract.getCallerPrivateKey() as string,
+                    contract.getSigner() as VechainSigner,
                     contract.address,
                     contract.getFunctionFragment(prop),
                     args,
@@ -188,12 +196,35 @@ function getTransactionValue(args: unknown[]): TransactionValue | undefined {
 }
 
 /**
+ * Extracts the sign transaction options from the list of arguments, if present.
+ * @param args - The list of arguments to search for the sign transaction options.
+ */
+function getSignTransactionOptions(
+    args: unknown[]
+): SignTransactionOptions | undefined {
+    return args.find((arg) => isSignTransactionOptions(arg)) as
+        | SignTransactionOptions
+        | undefined;
+}
+
+/**
  * Type guard function to check if an object is a TransactionValue.
  * @param obj - The object to check.
  * @returns True if the object is a TransactionValue, false otherwise.
  */
 function isTransactionValue(obj: unknown): obj is TransactionValue {
     return (obj as TransactionValue).value !== undefined;
+}
+
+/**
+ * Type guard function to check if an object is a SignTransactionOptions.
+ * @param obj - The object to check.
+ */
+function isSignTransactionOptions(obj: unknown): obj is SignTransactionOptions {
+    return (
+        (obj as SignTransactionOptions).delegatorPrivateKey !== undefined ||
+        (obj as SignTransactionOptions).delegatorUrl !== undefined
+    );
 }
 
 export { getReadProxy, getTransactProxy, getFilterProxy, getClauseProxy };
