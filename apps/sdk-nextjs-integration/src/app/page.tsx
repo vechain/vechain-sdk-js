@@ -7,6 +7,7 @@ import {
     type FilterTransferLogsOptions
 } from '@vechain/sdk-network';
 import { unitsUtils } from '@vechain/sdk-core';
+import { getClientSecret } from '@/app/addClientSecret';
 
 // Url of the vechain mainnet
 const mainnetUrl = 'https://mainnet.vechain.org';
@@ -41,7 +42,7 @@ export default function Home(): JSX.Element {
      * Function to get the history for the provided address
      * @param address The address to get the history for
      */
-    async function getHistoryFor(address: string) {
+    async function getHistoryFor(address: string): Promise<void> {
         try {
             // Get the latest block
             const bestBlock = await thorClient.blocks.getBestBlockCompressed();
@@ -81,7 +82,8 @@ export default function Home(): JSX.Element {
 
     // Update the history when the address changes
     useEffect(() => {
-        getHistoryFor(address);
+        void getHistoryFor(address);
+        getClientSecret();
     }, [address]);
 
     return (
