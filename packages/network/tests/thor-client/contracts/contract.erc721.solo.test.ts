@@ -1,7 +1,13 @@
 // Global variable to hold contract address
 import { erc721ContractBytecode, erc721ContractTestCases } from './fixture';
-import { expect, test, beforeAll, describe } from '@jest/globals';
-import { ThorClient, type TransactionReceipt } from '../../../src';
+import { beforeAll, describe, expect, test } from '@jest/globals';
+import {
+    ThorClient,
+    type TransactionReceipt,
+    VechainBaseSigner,
+    VechainProvider,
+    type VechainSigner
+} from '../../../src';
 import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
 import {
     coder,
@@ -20,6 +26,9 @@ import {
 describe('ThorClient - ERC721 Contracts', () => {
     // ThorClient instance
     let thorSoloClient: ThorClient;
+
+    // Signer instance
+    let signer: VechainSigner;
 
     let contractAddress: string;
 
@@ -43,13 +52,20 @@ describe('ThorClient - ERC721 Contracts', () => {
      */
     beforeAll(async () => {
         thorSoloClient = ThorClient.fromUrl(soloUrl);
+        signer = new VechainBaseSigner(
+            Buffer.from(
+                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+                'hex'
+            ),
+            new VechainProvider(thorSoloClient)
+        );
 
         // Create the ERC721 contract factory
 
         const factory = thorSoloClient.contracts.createContractFactory(
             ERC721_ABI,
             erc721ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            signer
         );
 
         await factory.startDeployment();
@@ -89,8 +105,7 @@ describe('ThorClient - ERC721 Contracts', () => {
                     } else {
                         response =
                             await thorSoloClient.contracts.executeTransaction(
-                                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
-                                    .privateKey,
+                                signer,
                                 contractAddress,
                                 coder
                                     .createInterface(ERC721_ABI)

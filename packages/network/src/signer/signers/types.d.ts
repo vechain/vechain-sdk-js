@@ -218,27 +218,11 @@ interface TransactionRequestInput {
  * @NOTE: Su support completely our providers (that already support ethers provider format)
  * We use our supported providers instead of ethers providers
  */
-interface VechainSigner<TProviderType extends AvailableVechainProviders> {
-    // START: Delegator needed methods
-
-    /**
-     * Sign a transaction with the delegator
-     *
-     * @param transactionToSign - the transaction to sign
-     * @returns the fully signed transaction
-     */
-    signTransactionWithDelegator: (
-        transactionToSign: TransactionRequestInput
-    ) => Promise<string>;
-
-    // END: Delegator needed methods
-
-    // START: Standard ethers signer methods adapted for vechain
-
+interface VechainSigner {
     /**
      * The provider attached to this Signer (if any).
      */
-    provider: TProviderType | null;
+    provider: AvailableVechainProviders | null;
 
     /**
      *  Returns a new instance of this Signer connected to //provider// or detached
@@ -247,7 +231,7 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
      * @param provider - The provider to connect to
      * @returns a new instance of this Signer connected to //provider// or detached
      */
-    connect: (provider: TProviderType | null) => this;
+    connect: (provider: AvailableVechainProviders | null) => this;
 
     /**
      * Get the address of the Signer.
@@ -389,8 +373,6 @@ interface VechainSigner<TProviderType extends AvailableVechainProviders> {
      *  Resolves an ENS Name to an address.
      */
     // resolveName: (name: string) => Promise<null | string>;
-
-    // END: Standard ethers signer methods adapted for vechain
 }
 
 export {

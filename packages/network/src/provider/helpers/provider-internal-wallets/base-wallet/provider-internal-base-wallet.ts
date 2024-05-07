@@ -55,10 +55,10 @@ class ProviderInternalBaseWallet implements ProviderInternalWallet {
      * @param address - Address of the account.
      * @returns The signer for the given address.
      */
-    async getSigner<TProviderType extends AvailableVechainProviders>(
-        parentProvider: TProviderType,
+    async getSigner(
+        parentProvider: AvailableVechainProviders,
         address: string
-    ): Promise<VechainSigner<TProviderType> | null> {
+    ): Promise<VechainSigner | null> {
         // Get the account from the wallet
         const signerAccount = await this.getAccount(address);
 

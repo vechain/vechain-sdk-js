@@ -20,6 +20,7 @@ import {
     getReadProxy,
     getTransactProxy
 } from './contract-proxy';
+import { type VechainSigner } from '../../../signer';
 
 /**
  * A class representing a smart contract deployed on the blockchain.
@@ -28,7 +29,7 @@ class Contract {
     readonly thor: ThorClient;
     readonly address: string;
     readonly abi: InterfaceAbi;
-    private callerPrivateKey?: string;
+    private signer?: VechainSigner;
 
     readonly deployTransactionReceipt: TransactionReceipt | undefined;
 
@@ -45,21 +46,21 @@ class Contract {
      * @param address The address of the contract.
      * @param abi The Application Binary Interface (ABI) of the contract, which defines the contract's methods and events.
      * @param thor An instance of ThorClient to interact with the blockchain.
-     * @param callerPrivateKey The private key used for signing transactions.
+     * @param signer The signer caller used for signing transactions.
      * @param transactionReceipt (Optional) The transaction receipt of the contract deployment.
      */
     constructor(
         address: string,
         abi: InterfaceAbi,
         thor: ThorClient,
-        callerPrivateKey?: string,
+        signer?: VechainSigner,
         transactionReceipt?: TransactionReceipt
     ) {
         this.abi = abi;
         this.thor = thor;
         this.address = address;
         this.deployTransactionReceipt = transactionReceipt;
-        this.callerPrivateKey = callerPrivateKey;
+        this.signer = signer;
         this.read = getReadProxy(this);
         this.transact = getTransactProxy(this);
         this.filters = getFilterProxy(this);
@@ -130,23 +131,23 @@ class Contract {
 
     /**
      * Sets the private key of the caller for signing transactions.
-     * @param privateKey
+     * @param signer - The caller signer
      */
-    public setCallerPrivateKey(privateKey: string): string {
-        this.callerPrivateKey = privateKey;
+    public setSigner(signer: VechainSigner): VechainSigner {
+        this.signer = signer;
 
-        // initialize the proxy with the new private key
+        // initialize the proxy with the new signer
         this.transact = getTransactProxy(this);
         this.read = getReadProxy(this);
-        return this.callerPrivateKey;
+        return this.signer;
     }
 
     /**
-     * Get the private key of the caller for signing transactions.
-     * @returns The private key of the caller.
+     * Get the caller signer used for signing transactions.
+     * @returns The signer used for signing transactions.
      */
-    public getCallerPrivateKey(): string | undefined {
-        return this.callerPrivateKey;
+    public getSigner(): VechainSigner | undefined {
+        return this.signer;
     }
 
     /**

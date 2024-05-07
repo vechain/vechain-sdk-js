@@ -27,13 +27,11 @@ import { assertTransactionCanBeSigned } from '../../../assertions';
  * Basic vechain signer.
  * This signer can be initialized using a private key.
  */
-class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
-    implements VechainSigner<TProviderType>
-{
+class VechainBaseSigner implements VechainSigner {
     /**
      * The provider attached to this Signer (if any).
      */
-    provider: TProviderType | null;
+    provider: AvailableVechainProviders | null;
 
     /**
      * Create a new VechainBaseSigner.
@@ -44,7 +42,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
      */
     constructor(
         private readonly privateKey: Buffer,
-        provider: TProviderType | null
+        provider: AvailableVechainProviders | null
     ) {
         // Store provider and delegator
         this.provider = provider;
@@ -57,7 +55,7 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
      * @param provider - The provider to connect to
      * @returns a new instance of this Signer connected to //provider// or detached
      */
-    connect(provider: TProviderType | null): this {
+    connect(provider: AvailableVechainProviders | null): this {
         return new VechainBaseSigner(this.privateKey, provider) as this;
     }
 
@@ -152,11 +150,12 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
         // 1 - Get the thor client
         assert(
             'populateTransaction',
-            (this.provider as TProviderType).thorClient !== null,
+            (this.provider as AvailableVechainProviders).thorClient !== null,
             JSONRPC.INVALID_PARAMS,
             'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.'
         );
-        const thorClient = (this.provider as TProviderType).thorClient;
+        const thorClient = (this.provider as AvailableVechainProviders)
+            .thorClient;
 
         // 2 - Populate the call, to get proper 'from' and 'to' address (compatible with multi-clause transactions)
         const populatedTransaction = await this.populateCall(
@@ -200,11 +199,12 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
         // 1 - Get the thor client
         assert(
             'populateTransaction',
-            (this.provider as TProviderType).thorClient !== null,
+            (this.provider as AvailableVechainProviders).thorClient !== null,
             JSONRPC.INVALID_PARAMS,
             'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.'
         );
-        const thorClient = (this.provider as TProviderType).thorClient;
+        const thorClient = (this.provider as AvailableVechainProviders)
+            .thorClient;
 
         // 2 - Populate the call, to get proper from and to address (compatible with multi-clause transactions)
         const populatedTransaction = await this.populateCall(
@@ -242,11 +242,12 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
         // 1 - Get the thor client
         assert(
             'call',
-            (this.provider as TProviderType).thorClient !== null,
+            (this.provider as AvailableVechainProviders).thorClient !== null,
             JSONRPC.INVALID_PARAMS,
             'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.'
         );
-        const thorClient = (this.provider as TProviderType).thorClient;
+        const thorClient = (this.provider as AvailableVechainProviders)
+            .thorClient;
 
         // 2 - Populate the call, to get proper from and to address (compatible with multi-clause transactions)
         const populatedTransaction = await this.populateCall(
@@ -301,40 +302,10 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
     ): Promise<string> {
         return await this._signFlow(
             transactionToSign,
-            null,
-            (this.provider as TProviderType).thorClient,
-            this.privateKey
-        );
-    }
-
-    /**
-     * Sign a transaction with the delegator
-     *
-     * @param transactionToSign - the transaction to sign
-     * @returns the fully signed transaction
-     */
-    async signTransactionWithDelegator(
-        transactionToSign: TransactionRequestInput
-    ): Promise<string> {
-        // Get the delegator
-        const delegator = DelegationHandler(
-            await this.provider?.wallet?.getDelegator()
-        ).delegatorOrNull();
-
-        // Throw an error if the delegator is not available
-        assert(
-            'signTransactionWithDelegator',
-            delegator !== null,
-            JSONRPC.INVALID_PARAMS,
-            'Delegator not found. Ensure that the provider contains the delegator used to sign the transaction.'
-        );
-
-        return await this._signFlow(
-            transactionToSign,
             DelegationHandler(
                 await this.provider?.wallet?.getDelegator()
             ).delegatorOrNull(),
-            (this.provider as TProviderType).thorClient,
+            (this.provider as AvailableVechainProviders).thorClient,
             this.privateKey
         );
     }
@@ -361,17 +332,12 @@ class VechainBaseSigner<TProviderType extends AvailableVechainProviders>
             JSONRPC.INVALID_PARAMS,
             'Thor provider is not found into the signer. Please attach a Provider to your signer instance.'
         );
-        const provider = this.provider as TProviderType;
+        const provider = this.provider as AvailableVechainProviders;
 
-        // 2 - Understand if the transaction is delegated or not
-        const isDelegated = provider.enableDelegation as boolean;
+        // 2 - Sign the transaction
+        const signedTransaction = await this.signTransaction(transactionToSend);
 
-        // 3 - Sign the transaction
-        const signedTransaction = isDelegated
-            ? await this.signTransactionWithDelegator(transactionToSend)
-            : await this.signTransaction(transactionToSend);
-
-        // 4 - Send the signed transaction
+        // 3 - Send the signed transaction
         return (await provider.request({
             method: RPC_METHODS.eth_sendRawTransaction,
             params: [signedTransaction]

@@ -1,10 +1,16 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { type Contract, ThorClient } from '../../../src';
+import {
+    type Contract,
+    ThorClient,
+    VechainBaseSigner,
+    VechainProvider,
+    type VechainSigner
+} from '../../../src';
 import { TEST_ACCOUNTS, testnetUrl } from '../../fixture';
 import {
-    TESTNET_DELEGATE_URL,
     deployedERC20Abi,
-    erc20ContractBytecode
+    erc20ContractBytecode,
+    TESTNET_DELEGATE_URL
 } from './fixture';
 
 /**
@@ -18,8 +24,18 @@ describe('ThorClient - ERC20 Contracts on testnet', () => {
     // ThorClient instance
     let thorTestnetClient: ThorClient;
 
+    // Signer instance
+    let signer: VechainSigner;
+
     beforeEach(() => {
         thorTestnetClient = ThorClient.fromUrl(testnetUrl);
+        signer = new VechainBaseSigner(
+            Buffer.from(
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
+                'hex'
+            ),
+            new VechainProvider(thorTestnetClient)
+        );
     });
 
     /**
@@ -30,7 +46,7 @@ describe('ThorClient - ERC20 Contracts on testnet', () => {
         let factory = thorTestnetClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey
+            signer
         );
 
         factory = await factory.startDeployment();

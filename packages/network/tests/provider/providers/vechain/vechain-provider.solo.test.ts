@@ -10,9 +10,11 @@ import {
 } from '../helpers';
 import { coder, type FunctionFragment } from '@vechain/sdk-core';
 import {
+    ProviderInternalBaseWallet,
     type SubscriptionEvent,
     ThorClient,
-    VechainProvider
+    VechainProvider,
+    type VechainSigner
 } from '../../../../src';
 
 /**
@@ -32,7 +34,15 @@ describe('Vechain provider tests - solo', () => {
      */
     beforeEach(() => {
         thorClient = ThorClient.fromUrl(soloUrl);
-        provider = new VechainProvider(thorClient);
+        provider = new VechainProvider(
+            thorClient,
+            new ProviderInternalBaseWallet([
+                {
+                    privateKey: Buffer.from(TEST_ACCOUNT.privateKey, 'hex'),
+                    address: TEST_ACCOUNT.address
+                }
+            ])
+        );
     });
 
     /**
@@ -166,7 +176,10 @@ describe('Vechain provider tests - solo', () => {
      * @throws {Error} If the received message doesn't match the expected format or if the log event details are incorrect, indicating an issue with the subscription or the event emission process.
      */
     test('Should be able to get to subscribe to the latest logs of an erc20 contract', async () => {
-        const contract = await deployERC20Contract(thorClient);
+        const contract = await deployERC20Contract(
+            thorClient,
+            (await provider.getSigner(TEST_ACCOUNT.address)) as VechainSigner
+        );
 
         const logsParams = {
             address: [contract.address],
@@ -183,7 +196,7 @@ describe('Vechain provider tests - solo', () => {
 
         // Execute a contract transaction to generate a log event
         await thorClient.contracts.executeTransaction(
-            TEST_ACCOUNT.privateKey,
+            (await provider.getSigner(TEST_ACCOUNT.address)) as VechainSigner,
             contract.address,
             coder
                 .createInterface(contract.abi)
@@ -243,8 +256,14 @@ describe('Vechain provider tests - solo', () => {
      */
     test('Should be able to subscribe to the latest logs of an erc20 and erc721 contract', async () => {
         // Test setup: Deploy contracts and set up event subscriptions
-        const erc20Contract = await deployERC20Contract(thorClient);
-        const erc721Contract = await deployERC721Contract(thorClient);
+        const erc20Contract = await deployERC20Contract(
+            thorClient,
+            (await provider.getSigner(TEST_ACCOUNT.address)) as VechainSigner
+        );
+        const erc721Contract = await deployERC721Contract(
+            thorClient,
+            (await provider.getSigner(TEST_ACCOUNT.address)) as VechainSigner
+        );
 
         const erc20logsParams = {
             address: [erc20Contract.address],
@@ -280,7 +299,7 @@ describe('Vechain provider tests - solo', () => {
 
         // Execute transactions that should emit events
         await thorClient.contracts.executeTransaction(
-            TEST_ACCOUNT.privateKey,
+            (await provider.getSigner(TEST_ACCOUNT.address)) as VechainSigner,
             erc20Contract.address,
             coder
                 .createInterface(erc20Contract.abi)
@@ -289,7 +308,7 @@ describe('Vechain provider tests - solo', () => {
         );
 
         await thorClient.contracts.executeTransaction(
-            TEST_ACCOUNT.privateKey,
+            (await provider.getSigner(TEST_ACCOUNT.address)) as VechainSigner,
             erc721Contract.address,
             coder
                 .createInterface(erc721Contract.abi)

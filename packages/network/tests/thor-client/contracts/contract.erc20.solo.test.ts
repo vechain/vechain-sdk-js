@@ -2,7 +2,10 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     type Contract,
     ThorClient,
-    type TransactionReceipt
+    type TransactionReceipt,
+    VechainBaseSigner,
+    VechainProvider,
+    type VechainSigner
 } from '../../../src';
 import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
 import { deployedERC20Abi, erc20ContractBytecode } from './fixture';
@@ -20,8 +23,18 @@ describe('ThorClient - ERC20 Contracts', () => {
     // ThorClient instance
     let thorSoloClient: ThorClient;
 
+    // Signer instance
+    let signer: VechainSigner;
+
     beforeEach(() => {
         thorSoloClient = ThorClient.fromUrl(soloUrl);
+        signer = new VechainBaseSigner(
+            Buffer.from(
+                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
+                'hex'
+            ),
+            new VechainProvider(thorSoloClient)
+        );
     });
 
     /**
@@ -32,7 +45,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            signer
         );
 
         factory = await factory.startDeployment();
@@ -60,7 +73,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            signer
         );
 
         factory = await factory.startDeployment();
@@ -99,7 +112,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            signer
         );
 
         factory = await factory.startDeployment();
@@ -161,7 +174,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            signer
         );
 
         factory = await factory.startDeployment();
@@ -181,7 +194,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            signer
         );
 
         factory = await factory.startDeployment();
@@ -201,7 +214,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            signer
         );
 
         factory = await factory.startDeployment();
@@ -242,7 +255,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            signer
         );
 
         factory = await factory.startDeployment();
@@ -277,7 +290,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+            signer
         );
 
         factory = await factory.startDeployment();
@@ -301,7 +314,7 @@ describe('ThorClient - ERC20 Contracts', () => {
                         3000
                     )
                 ],
-                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey
+                signer
             );
 
         await txResult.wait();

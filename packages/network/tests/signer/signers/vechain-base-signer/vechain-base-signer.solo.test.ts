@@ -84,19 +84,12 @@ describe('Vechain base signer tests - testnet', () => {
                         )
                     );
 
-                    const signedRawTx = isDelegated
-                        ? await signer.signTransactionWithDelegator(
-                              signerUtils.transactionBodyToTransactionRequestInput(
-                                  txBody,
-                                  origin.address
-                              )
-                          )
-                        : await signer.signTransaction(
-                              signerUtils.transactionBodyToTransactionRequestInput(
-                                  txBody,
-                                  origin.address
-                              )
-                          );
+                    const signedRawTx = await signer.signTransaction(
+                        signerUtils.transactionBodyToTransactionRequestInput(
+                            txBody,
+                            origin.address
+                        )
+                    );
                     const signedTx = TransactionHandler.decode(
                         Buffer.from(signedRawTx.slice(2), 'hex'),
                         true
@@ -150,7 +143,7 @@ describe('Vechain base signer tests - testnet', () => {
                         );
 
                         await expect(
-                            signer.signTransactionWithDelegator(
+                            signer.signTransaction(
                                 signerUtils.transactionBodyToTransactionRequestInput(
                                     txBody,
                                     origin.address
