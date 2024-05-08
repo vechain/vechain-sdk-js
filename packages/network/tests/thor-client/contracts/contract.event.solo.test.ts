@@ -168,6 +168,91 @@ describe('ThorClient - ERC20 Contracts', () => {
         ]);
     }, 10000); // Set a timeout of 10000ms for this test
 
+    /**
+     * Tests the listening to ERC20 contract operations using a blockchain client.
+     */
+    test('listen to ERC20 contract operations with multiple criterias', async () => {
+        // Deploy the ERC20 contract
+        let factory = thorSoloClient.contracts.createContractFactory(
+            deployedERC20Abi,
+            erc20ContractBytecode,
+            signer
+        );
+
+        factory = await factory.startDeployment();
+
+        const contract: Contract = await factory.waitForDeployment();
+
+        // Execute a 'transfer' transaction on the deployed contract,
+        // transferring a specified amount of tokens
+        await (
+            await contract.transact.transfer(
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                1000
+            )
+        ).wait();
+
+        await (
+            await contract.transact.transfer(
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                5000
+            )
+        ).wait();
+
+        await (
+            await contract.transact.transfer(
+                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                5000
+            )
+        ).wait();
+
+        const transferCriteria = contract.criteria.Transfer(
+            undefined,
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+        );
+
+        const transferCriteriaDelegator = contract.criteria.Transfer(
+            undefined,
+            TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+        );
+
+        const events = await thorSoloClient.logs.filterEventLogs({
+            criteriaSet: [transferCriteria, transferCriteriaDelegator]
+        });
+
+        expect(
+            events.map((event) => {
+                return event.data;
+            })
+        ).toEqual([
+            '0x00000000000000000000000000000000000000000000000000000000000003e8',
+            '0x0000000000000000000000000000000000000000000000000000000000001388',
+            '0x0000000000000000000000000000000000000000000000000000000000001388'
+        ]);
+
+        expect(
+            events.map((event) => {
+                return event.topics;
+            })
+        ).toEqual([
+            [
+                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
+                '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
+            ],
+            [
+                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
+                '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
+            ],
+            [
+                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
+                '0x00000000000000000000000088b2551c3ed42ca663796c10ce68c88a65f73fe2'
+            ]
+        ]);
+    }, 20000); // Set a timeout of 10000ms for this test
+
     test('listen to a non existing ERC20 event', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
