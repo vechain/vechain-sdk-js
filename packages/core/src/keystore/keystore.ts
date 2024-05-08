@@ -79,7 +79,7 @@ interface EncryptOptions {
 /**
  * Retrieves the
  * [Key Derivation Function](https://en.wikipedia.org/wiki/Key_derivation_function)
- * parameters from the given key store.
+ * parameters from the given keystore.
  *
  * Only [Scrypt](https://en.wikipedia.org/wiki/Scrypt) is supported as key-derivation function.
  * [PBKDF2](https://en.wikipedia.org/wiki/PBKDF2) superseded by Scrypt, hence
@@ -141,14 +141,33 @@ function decodeScryptParams(keyStore: KeyStore): ScryptParams {
     );
 }
 
+/**
+ * Encodes the parameters of the
+ * [Scrypt](https://en.wikipedia.org/wiki/Scrypt) algorithm of the
+ * [Key Derivation Function](https://en.wikipedia.org/wiki/Key_derivation_function)
+ * used in the keystore encryption.
+ *
+ * @param {EncryptOptions} options - The encryption options used to override
+ * the default Scrypt parameters:
+ * - N: CPU/memory cost = 131072.
+ * - p: Parallelization parameter = 1,
+ * - r: Blocksize parameter = 8.
+ *
+ * @returns {ScryptParams} - The encoded scrypt parameters.
+ *
+ * @throws {InvalidKeystoreError} if any parameter value is invalid.
+ *
+ * @see {decodeScryptParams}
+ * @see {encryptKeystore}
+ */
 function encodeScryptParams(options: EncryptOptions): ScryptParams {
     // Use or generate the salt.
     const salt =
         options.salt ?? secp256k1.randomBytes(KEYSTORE_CRYPTO_PARAMS_DKLEN);
     // Override the scrypt password-based key derivation function parameters,
     let N = 1 << 17;
-    let r = 8;
     let p = 1;
+    let r = 8;
     if (options.scrypt != null) {
         if (options.scrypt.N != null) {
             N = options.scrypt.N;
@@ -188,7 +207,21 @@ function encodeScryptParams(options: EncryptOptions): ScryptParams {
 
 /**
  * Encrypts a private key with a password to returns a keystore object
- * compliant with [Web3 Secret Storage Definition](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/).
+ * compliant with [Web3 Secret Storage Definition](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/)
+ * version 3.
+ *
+ * The private key is encoded using the
+ * [Advanced Encryption Standard](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
+ * 128 bits Counter Mode as defined by
+ * [NIST AES Recommendation for Block Cipher Modes of Operation](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation).
+ *
+ * The [Key Derivation Function](https://en.wikipedia.org/wiki/Key_derivation_function)
+ * algorithm is [Scrypt](https://en.wikipedia.org/wiki/Scrypt).
+ *
+ * Secure audit function.
+ * - {@link encryptKeystore}.
+ * - password wiped after use.
+ * - privateKey: wiped after use.
  *
  * @param {Uint8Array} privateKey - The private key to encrypt, the memory location is wiped after use.
  * @param {Uint8Array} password - The password to use for encryption, the memory location is wiped after use.
@@ -197,6 +230,8 @@ function encodeScryptParams(options: EncryptOptions): ScryptParams {
  *
  * @throws {InvalidSecp256k1PrivateKeyError} - If the private key is invalid.
  * @throws {InvalidKeystoreError} - If an error occurs during encryption.
+ *
+ * @see {@link encryptKeystore}
  */
 function encrypt(privateKey: Uint8Array, password: Uint8Array): KeyStore {
     try {
