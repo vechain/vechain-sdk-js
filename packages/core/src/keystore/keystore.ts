@@ -70,7 +70,7 @@ const SCRYPT_PARAMS = {
  * @property {Uint8Array} salt - Random bytes to protect against [Rainbow table](https://en.wikipedia.org/wiki/Rainbow_table).
  * @property {number} scrypt.N - CPU/memory cost parameter.
  * @property {number} scrypt.p - Parallelization parameter.
- * @property {number} scrypt.r - Blocksize parameter.
+ * @property {number} scrypt.r - Block size parameter.
  *
  * @see {encodeScryptParams}
  */
@@ -98,7 +98,7 @@ interface EncryptOptions {
  * @property {number} dkLen - Derived key length in bytes.
  * @property {string} name - constant "scrypt".
  * @property {number} p - Parallelization parameter.
- * @property {number} r - Blocksize parameter.
+ * @property {number} r - Block size parameter.
  * @property {Uint8Array} salt - Random bytes to protect against [Rainbow table](https://en.wikipedia.org/wiki/Rainbow_table).
  */
 interface ScryptParams {
@@ -185,7 +185,7 @@ function decodeScryptParams(keyStore: KeyStore): ScryptParams {
  * the default Scrypt parameters:
  * - N: CPU/memory cost,
  * - p: Parallelization parameter,
- * - r: Blocksize parameter.
+ * - r: Block size parameter.
  *
  * @returns {ScryptParams} - The encoded scrypt parameters.
  *
