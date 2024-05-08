@@ -74,10 +74,10 @@ interface KeyStore {
  * Interface representing a keystore account.
  *
  * **WARNING:** call
- * ```javascrypt
+ * ```javascript
  * privateKey.fill(0)
  * ```
- * after use to avoid to invalidate any security audit and certification granted to this code.**
+ * after use to avoid to invalidate any security audit and certification granted to this code.
  *
  * @property {string} address - The address associated with the account.
  * @property {Uint8Array} privateKey - The private key associated with the account.

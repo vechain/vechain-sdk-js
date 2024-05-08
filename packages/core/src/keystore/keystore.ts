@@ -400,7 +400,7 @@ function encryptKeystore(
  * ```javascrypt
  * privateKey.fill(0)
  * ```
- * after use to avoid to invalidate any security audit and certification granted to this code.**
+ * after use to avoid to invalidate any security audit and certification granted to this code.
  *
  * The private key should be encoded using the
  * [Advanced Encryption Standard](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
@@ -451,7 +451,7 @@ function decrypt(keyStore: KeyStore, password: Uint8Array): KeystoreAccount {
  * ```javascrypt
  * privateKey.fill(0)
  * ```
- * after use to avoid to invalidate any security audit and certification granted to this code.**
+ * after use to avoid to invalidate any security audit and certification granted to this code.
  *
  * The private key should be encoded using the
  * [Advanced Encryption Standard](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
