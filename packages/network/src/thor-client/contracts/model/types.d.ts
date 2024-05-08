@@ -2,6 +2,7 @@ import type { ContractCallResult } from '../types';
 import type { SendTransactionResult } from '../../transactions';
 import { type ContractFilter } from './contract-filter';
 import { type TransactionClause } from '@vechain/sdk-core';
+import { type EventCriteria } from '../../logs';
 
 /**
  * Represents a generic contract function type that accepts an arbitrary number of arguments
@@ -79,6 +80,11 @@ type ContractFunctionClause = Record<
     ContractFunctionSync<TransactionClause>
 >;
 
+type ContractFunctionCriteria = Record<
+    string,
+    ContractFunctionSync<EventCriteria>
+>;
+
 /**
  * Represents the amount of VET to transfer in a transaction.
  */
@@ -93,5 +99,6 @@ export type {
     ContractFunctionTransact,
     ContractFunctionFilter,
     ContractFunctionClause,
+    ContractFunctionCriteria,
     TransactionValue
 };
