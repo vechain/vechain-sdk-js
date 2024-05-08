@@ -541,7 +541,12 @@ function decryptKeystore(
  * Checks if a given keystore object is valid parsing its JSON representation
  * to catch any parsing errors, only valid
  * [Web3 Secret Storage Definition](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/)
- * version 3 keystore are accepted.
+ * version 3 keystore are accepted, using
+ * [Advanced Encryption Standard](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
+ * [128 bits Counter Mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation)
+ * to encrypt the private key and using
+ * [Scrypt](https://en.wikipedia.org/wiki/Scrypt) as
+ * [Key Derivation Function](https://en.wikipedia.org/wiki/Key_derivation_function).
  *
  * @param {KeyStore} keystore - The keystore object to validate.
  * @return {boolean} Returns true if the keystore is valid, false otherwise.
@@ -549,7 +554,11 @@ function decryptKeystore(
 function isValid(keystore: KeyStore): boolean {
     try {
         const copy = JSON.parse(JSON.stringify(keystore)) as KeyStore;
-        if (copy.version === KEYSTORE_VERSION) {
+        if (
+            copy.crypto.cipher.toLowerCase() === KEYSTORE_CRYPTO_CIPHER &&
+            copy.crypto.kdf.toLowerCase() === KEYSTORE_CRYPTO_KDF &&
+            copy.version === KEYSTORE_VERSION
+        ) {
             return true;
         }
     } catch (error) {} // Return false if parsing fails.
