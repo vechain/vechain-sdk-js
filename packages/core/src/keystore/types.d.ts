@@ -1,20 +1,18 @@
-interface EncryptOptions {
-    iv?: Uint8Array;
-    entropy?: Uint8Array;
-    client?: string;
-    salt?: Uint8Array;
-    uuid?: Uint8Array;
-    scrypt?: {
-        N?: number;
-        r?: number;
-        p?: number;
-    };
-}
-
 /**
- * Scrypt parameters for keystore encryption,
- * compatible with
+ * ScryptParams interfaces defines the parameters of the
+ * [Scrypt](https://en.wikipedia.org/wiki/Scrypt) algorithm for the
+ * [Key Derivation Function](https://en.wikipedia.org/wiki/Key_derivation_function)
+ * used in keystore encryption.
+ *
+ * Compatible with
  * [ethers ScryptParams](https://github.com/ethers-io/ethers.js/blob/main/src.ts/wallet/json-keystore.ts).
+ *
+ * @property {number} N - CPU/memory cost parameter.
+ * @property {number} dkLen - Derived key length in bytes.
+ * @property {string} name - constant "scrypt".
+ * @property {number} p - Parallelization parameter.
+ * @property {number} r - Blocksize parameter.
+ * @property {Uint8Array} salt - Random bytes to protect against [Rainbow table](https://en.wikipedia.org/wiki/Rainbow_table).
  */
 interface ScryptParams {
     N: number;
@@ -95,9 +93,4 @@ interface KeystoreAccount {
     };
 }
 
-export {
-    type EncryptOptions,
-    type KeyStore,
-    type KeystoreAccount,
-    type ScryptParams
-};
+export { type KeyStore, type KeystoreAccount, type ScryptParams };

@@ -10,25 +10,80 @@ import { keccak256 } from '../hash';
 import { scrypt } from '@noble/hashes/scrypt';
 import { secp256k1 } from '../secp256k1';
 import {
-    type EncryptOptions,
     type KeyStore,
     type KeystoreAccount,
     type ScryptParams
 } from './types';
 
+/**
+ * The cryptographic algorithm used to store the private key in the
+ * keystore is the
+ * [Advanced Encryption Standard](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
+ * 128 bits Counter Mode as defined by
+ * [NIST AES Recommendation for Block Cipher Modes of Operation](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation).
+ *
+ * @constant {string}
+ */
 const KEYSTORE_CRYPTO_CIPHER = 'aes-128-ctr';
 
+/**
+ * The length of the key returned by the
+ * [Scrypt](https://en.wikipedia.org/wiki/Scrypt)
+ * [Key Derivation Function](https://en.wikipedia.org/wiki/Key_derivation_function)
+ * used in the keystore.
+ */
 const KEYSTORE_CRYPTO_PARAMS_DKLEN = 32;
 
+/**
+ * The [Key Derivation Function](https://en.wikipedia.org/wiki/Key_derivation_function)
+ * of the keystore is [Scrypt](https://en.wikipedia.org/wiki/Scrypt).
+ */
 const KEYSTORE_CRYPTO_KDF = 'scrypt';
 
+/**
+ * The version number of the
+ * [Web3 Secret Storage Definition](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage)
+ * specifications used in keystore.
+ *
+ * @constant
+ * @type {number}
+ * @default 3
+ */
 const KEYSTORE_VERSION = 3;
 
 /**
- * Retrieves the decryption key-derivation function parameters from the given key store.
+ * EncryptOptions interface defines the options of the
+ * [Scrypt](https://en.wikipedia.org/wiki/Scrypt) algorithm for the
+ * [Key Derivation Function](https://en.wikipedia.org/wiki/Key_derivation_function)
+ * used in keystore encryption.
+ *
+ * @property {Uint8Array} iv - Initialization Vector.
+ * @property {Uint8Array} salt - Random bytes to protect against [Rainbow table](https://en.wikipedia.org/wiki/Rainbow_table).
+ * @property {number} scrypt.N - CPU/memory cost parameter.
+ * @property {number} scrypt.p - Parallelization parameter.
+ * @property {number} scrypt.r - Blocksize parameter.
+ *
+ * @see {encodeScryptParams}
+ */
+interface EncryptOptions {
+    iv?: Uint8Array;
+    salt?: Uint8Array;
+    uuid?: Uint8Array;
+    scrypt?: {
+        N?: number;
+        p?: number;
+        r?: number;
+    };
+}
+
+/**
+ * Retrieves the
+ * [Key Derivation Function](https://en.wikipedia.org/wiki/Key_derivation_function)
+ * parameters from the given key store.
  *
  * Only [Scrypt](https://en.wikipedia.org/wiki/Scrypt) is supported as key-derivation function.
- * [PBKDF2](https://en.wikipedia.org/wiki/PBKDF2) not supported yet.
+ * [PBKDF2](https://en.wikipedia.org/wiki/PBKDF2) superseded by Scrypt, hence
+ * not implemented.
  *
  * @param {KeyStore} keyStore - The key store object.
  * @returns {ScryptParams} - The decryption key-derivation function parameters.
