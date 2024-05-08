@@ -322,6 +322,7 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): KeyStore {
  * attack**.
  *
  * @see {encrypt}
+ * @see {uuidV4}
  */
 function encryptKeystore(
     privateKey: Uint8Array,
@@ -390,6 +391,45 @@ function encryptKeystore(
     }
 }
 
+/**
+ * Decrypts a keystore compliant with
+ * [Web3 Secret Storage Definition](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/)
+ * version 3, using the given password to obtain the private key and wallet address.
+ *
+ * **WARNING:** call
+ * ```javascrypt
+ * privateKey.fill(0)
+ * ```
+ * after use to avoid to invalidate any security audit and certification granted to this code.**
+ *
+ * The private key should be encoded using the
+ * [Advanced Encryption Standard](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
+ * [128 bits Counter Mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation)
+ * as defined by
+ * [NIST AES Recommendation for Block Cipher Modes of Operation](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf),
+ * any different encryption not supported.
+ *
+ * The [Key Derivation Function](https://en.wikipedia.org/wiki/Key_derivation_function)
+ * algorithm should be [Scrypt](https://en.wikipedia.org/wiki/Scrypt),
+ * any different KDF function not supported.
+ *
+ * Secure audit function.
+ * - {@link decryptKeystore}
+ *
+ * @param {KeyStore} keyStore - The keystore object to decrypt.
+ * @param {Uint8Array} password - The password used for decryption, wiped after use.
+ *
+ * @return {KeystoreAccount} - The decrypted keystore account object.
+ *
+ * @throws {InvalidKeystoreError} if any parameter stored is invalid for
+ * **AES 128 CTR** encryption** or **Scrypt** derived key function.
+ * @throws {InvalidKeystorePasswordError} if the password is wrong:
+ * the Message Authentication Code stored doesn't match with the output of
+ * computer Key Derivation Function output.
+ *
+ * @see {decryptKeystore}
+ * @see {isValid}
+ */
 function decrypt(keyStore: KeyStore, password: Uint8Array): KeystoreAccount {
     // Check for invalid keystore.
     assert(
@@ -406,6 +446,12 @@ function decrypt(keyStore: KeyStore, password: Uint8Array): KeystoreAccount {
  * Decrypts a keystore compliant with
  * [Web3 Secret Storage Definition](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/)
  * using the given password to obtain the private key and wallet address.
+ *
+ * **WARNING:** call
+ * ```javascrypt
+ * privateKey.fill(0)
+ * ```
+ * after use to avoid to invalidate any security audit and certification granted to this code.**
  *
  * The private key should be encoded using the
  * [Advanced Encryption Standard](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
@@ -429,9 +475,15 @@ function decrypt(keyStore: KeyStore, password: Uint8Array): KeystoreAccount {
  *
  * @return {KeystoreAccount} - The decrypted keystore account object.
  *
+ * @throws {InvalidKeystoreError} if any parameter stored is invalid for
+ * **AES 128 CTR** encryption** or **Scrypt** derived key function.
+ * @throws {InvalidKeystorePasswordError} if the password is wrong:
+ * the Message Authentication Code stored doesn't match with the output of
+ * computer Key Derivation Function output.
+ *
  * @see {decodeScryptParams}
+ * @see {decrypt}
  */
-// Version 0.1 x-ethers metadata must contain an encrypted mnemonic phrase
 function decryptKeystore(
     keyStore: KeyStore,
     password: Uint8Array
@@ -487,7 +539,9 @@ function decryptKeystore(
 
 /**
  * Checks if a given keystore object is valid parsing its JSON representation
- * to catch any parsing errors, only valid keystore having version 3 are accepted.
+ * to catch any parsing errors, only valid
+ * [Web3 Secret Storage Definition](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/)
+ * version 3 keystore are accepted.
  *
  * @param {KeyStore} keystore - The keystore object to validate.
  * @return {boolean} Returns true if the keystore is valid, false otherwise.
@@ -502,6 +556,14 @@ function isValid(keystore: KeyStore): boolean {
     return false;
 }
 
+/**
+ * Generates a version 4
+ * [UUID (Universally Unique Identifier)](https://en.wikipedia.org/wiki/Universally_unique_identifier)
+ * based on the given bytes.
+ *
+ * @param {Uint8Array} bytes - The byte array used to generate the UUID.
+ * @returns {string} The generated UUID.
+ */
 function uuidV4(bytes: Uint8Array): string {
     // Section: 4.1.3:
     // - time_hi_and_version[12:16] = 0b0100

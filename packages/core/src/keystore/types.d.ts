@@ -43,7 +43,9 @@
  * @property {string} crypto.kdfparams.salt - The salt value used in the KDF.
  * @property {string} crypto.mac - The MAC (Message Authentication Code)
  * to match the KDF function with the private key derived by the cyphered text stored.
- * @property {string} id - The unique identifier for the key store.
+ * @property {string} id - The
+ * [unique identifier version 4](https://en.wikipedia.org/wiki/Universally_unique_identifier)
+ * for the key store.
  * @property {number} version - The version number of the key store.
  */
 interface KeyStore {
