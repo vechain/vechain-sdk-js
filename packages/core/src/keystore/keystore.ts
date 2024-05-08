@@ -289,8 +289,8 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): KeyStore {
 }
 
 /**
- * Encrypts a private key with a password to returns a keystore object
- * compliant with [Web3 Secret Storage Definition](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/)
+ * Encrypts a private key with a password to returns a keystore object compliant with
+ * [Web3 Secret Storage Definition](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/)
  * version {@link KEYSTORE_VERSION}.
  *
  * The private key is encoded using the
@@ -403,59 +403,86 @@ function decrypt(keyStore: KeyStore, password: Uint8Array): KeystoreAccount {
 }
 
 /**
- * Decrypts a keystore to obtain the private key using the given password.
+ * Decrypts a keystore compliant with
+ * [Web3 Secret Storage Definition](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/)
+ * using the given password to obtain the private key and wallet address.
  *
- * [PBKDF2](https://en.wikipedia.org/wiki/PBKDF2) not supported yet.
+ * The private key should be encoded using the
+ * [Advanced Encryption Standard](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
+ * [128 bits Counter Mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation)
+ * as defined by
+ * [NIST AES Recommendation for Block Cipher Modes of Operation](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf),
+ * any different encryption not supported.
  *
- * @param keyStore
- * @param password
+ * The [Key Derivation Function](https://en.wikipedia.org/wiki/Key_derivation_function)
+ * algorithm should be [Scrypt](https://en.wikipedia.org/wiki/Scrypt),
+ * any different KDF function not supported.
+ *
+ * Secure audit function.
+ * - {@link addressUtils}
+ * - [ctr](https://github.com/paulmillr/noble-ciphers?tab=readme-ov-file#aes).
+ * - `password` wiped after use.
+ * - [scrypt](https://github.com/paulmillr/noble-hashes/?tab=readme-ov-file#scrypt).
+ *
+ * @param {KeyStore} keyStore - The keystore object to decrypt.
+ * @param {Uint8Array} password - The password used for decryption, wiped after use.
+ *
+ * @return {KeystoreAccount} - The decrypted keystore account object.
+ *
+ * @see {decodeScryptParams}
  */
 // Version 0.1 x-ethers metadata must contain an encrypted mnemonic phrase
 function decryptKeystore(
     keyStore: KeyStore,
     password: Uint8Array
 ): KeystoreAccount {
-    assert(
-        'keystore.decrypt',
-        keyStore.crypto.cipher.toLowerCase() === KEYSTORE_CRYPTO_CIPHER,
-        KEYSTORE.INVALID_KEYSTORE,
-        'Decryption failed: unsupported cipher.',
-        { keyStore }
-    );
-    const kdf = decodeScryptParams(keyStore);
-    const key = scrypt(password, kdf.salt, {
-        N: kdf.N,
-        r: kdf.r,
-        p: kdf.p,
-        dkLen: kdf.dkLen
-    });
-    const ciphertext = utils.hexToBytes(keyStore.crypto.ciphertext);
-    assert(
-        'keystore.decrypt',
-        keyStore.crypto.mac ===
-            Hex.of(keccak256(utils.concatBytes(key.slice(16, 32), ciphertext))),
-        KEYSTORE.INVALID_PASSWORD,
-        'Decryption failed: invalid password for the given keystore.'
-    );
-    const privateKey = ctr(
-        key.slice(0, 16),
-        utils.hexToBytes(keyStore.crypto.cipherparams.iv)
-    ).decrypt(ciphertext);
-    const address = addressUtils.fromPrivateKey(privateKey);
-    if (keyStore.address !== '') {
+    try {
         assert(
             'keystore.decrypt',
-            address ===
-                addressUtils.toERC55Checksum(Hex0x.canon(keyStore.address)),
+            keyStore.crypto.cipher.toLowerCase() === KEYSTORE_CRYPTO_CIPHER,
             KEYSTORE.INVALID_KEYSTORE,
-            'Decryption failed: address/password mismatch.',
+            'Decryption failed: unsupported cipher.',
             { keyStore }
         );
+        const kdf = decodeScryptParams(keyStore);
+        const key = scrypt(password, kdf.salt, {
+            N: kdf.N,
+            r: kdf.r,
+            p: kdf.p,
+            dkLen: kdf.dkLen
+        });
+        const ciphertext = utils.hexToBytes(keyStore.crypto.ciphertext);
+        assert(
+            'keystore.decrypt',
+            keyStore.crypto.mac ===
+                Hex.of(
+                    keccak256(utils.concatBytes(key.slice(16, 32), ciphertext))
+                ),
+            KEYSTORE.INVALID_PASSWORD,
+            'Decryption failed: invalid password for the given keystore.'
+        );
+        const privateKey = ctr(
+            key.slice(0, 16),
+            utils.hexToBytes(keyStore.crypto.cipherparams.iv)
+        ).decrypt(ciphertext);
+        const address = addressUtils.fromPrivateKey(privateKey);
+        if (keyStore.address !== '') {
+            assert(
+                'keystore.decrypt',
+                address ===
+                    addressUtils.toERC55Checksum(Hex0x.canon(keyStore.address)),
+                KEYSTORE.INVALID_KEYSTORE,
+                'Decryption failed: address/password mismatch.',
+                { keyStore }
+            );
+        }
+        return {
+            address,
+            privateKey
+        } satisfies KeystoreAccount;
+    } finally {
+        password.fill(0); // Clear the password from memory.
     }
-    return {
-        address: address,
-        privateKey: privateKey
-    } satisfies KeystoreAccount;
 }
 
 /**

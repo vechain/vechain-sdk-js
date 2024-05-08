@@ -71,6 +71,12 @@ interface KeyStore {
 /**
  * Interface representing a keystore account.
  *
+ * **WARNING:** call
+ * ```javascrypt
+ * privateKey.fill(0)
+ * ```
+ * after use to avoid to invalidate any security audit and certification granted to this code.**
+ *
  * @property {string} address - The address associated with the account.
  * @property {Uint8Array} privateKey - The private key associated with the account.
  *
@@ -78,8 +84,7 @@ interface KeyStore {
  * [ethers KeystoreAccount](https://github.com/ethers-io/ethers.js/blob/main/src.ts/wallet/json-keystore.ts),
  * this type represents the private key as a buffer of bytes to avoid
  * [Memory Dumping](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#memory-dumping)
- * attack.
- * Mnemonic phrase is symmetrically related with the private hence is not
+ * attack.**
  */
 interface KeystoreAccount {
     address: string;
