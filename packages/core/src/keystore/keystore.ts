@@ -92,7 +92,8 @@ interface EncryptOptions {
  * is not the key-derivation function required by `keyStore` or if any parameter
  * encoded in the keystore is invalid.
  *
- * @see encodeScryptParams
+ * @see {decryptKeystore}
+ * @see {encodeScryptParams}
  */
 function decodeScryptParams(keyStore: KeyStore): ScryptParams {
     if (keyStore.crypto.kdf.toLowerCase() === KEYSTORE_CRYPTO_KDF) {
