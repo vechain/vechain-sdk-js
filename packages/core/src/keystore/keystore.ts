@@ -1,26 +1,25 @@
 /**
- * Implements the JSON Keystore v3 Wallet encryption, decryption, and validation functionality.
+ * Implements the
+ * [JSON Keystore v3 Wallet](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage)
+ * encryption, decryption, and validation functionality.
  */
 import * as utils from '@noble/curves/abstract/utils';
-import { Hex, Hex0x, SCRYPT_PARAMS } from '../utils';
+import { Hex, Hex0x } from '../utils';
 import { addressUtils } from '../address';
 import { assert, buildError, KEYSTORE } from '@vechain/sdk-errors';
 import { ctr } from '@noble/ciphers/aes';
 import { keccak256 } from '../hash';
 import { scrypt } from '@noble/hashes/scrypt';
 import { secp256k1 } from '../secp256k1';
-import {
-    type KeyStore,
-    type KeystoreAccount,
-    type ScryptParams
-} from './types';
+import { type KeyStore, type KeystoreAccount } from './types';
 
 /**
  * The cryptographic algorithm used to store the private key in the
  * keystore is the
  * [Advanced Encryption Standard](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
- * 128 bits Counter Mode as defined by
- * [NIST AES Recommendation for Block Cipher Modes of Operation](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation).
+ * [128 bits Counter Mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation)
+ * as defined by
+ * [NIST AES Recommendation for Block Cipher Modes of Operation](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf).
  *
  * @constant {string}
  */
@@ -44,12 +43,22 @@ const KEYSTORE_CRYPTO_KDF = 'scrypt';
  * The version number of the
  * [Web3 Secret Storage Definition](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage)
  * specifications used in keystore.
- *
- * @constant
- * @type {number}
- * @default 3
  */
 const KEYSTORE_VERSION = 3;
+
+/**
+ * The [Scrypt](https://en.wikipedia.org/wiki/Scrypt) parameters
+ * used in the keystore encryption.
+ *
+ * @property {number} N - The CPU/memory cost parameter = 2^17 = 131072.
+ * @property {number} r - The block size parameter = 8.
+ * @property {number} p - The parallelization parameter = 1.
+ */
+const SCRYPT_PARAMS = {
+    N: 131072,
+    r: 8,
+    p: 1
+};
 
 /**
  * EncryptOptions interface defines the options of the
@@ -74,6 +83,31 @@ interface EncryptOptions {
         p?: number;
         r?: number;
     };
+}
+
+/**
+ * ScryptParams interfaces defines the parameters of the
+ * [Scrypt](https://en.wikipedia.org/wiki/Scrypt) algorithm for the
+ * [Key Derivation Function](https://en.wikipedia.org/wiki/Key_derivation_function)
+ * used in keystore encryption.
+ *
+ * Compatible with
+ * [ethers ScryptParams](https://github.com/ethers-io/ethers.js/blob/main/src.ts/wallet/json-keystore.ts).
+ *
+ * @property {number} N - CPU/memory cost parameter.
+ * @property {number} dkLen - Derived key length in bytes.
+ * @property {string} name - constant "scrypt".
+ * @property {number} p - Parallelization parameter.
+ * @property {number} r - Blocksize parameter.
+ * @property {Uint8Array} salt - Random bytes to protect against [Rainbow table](https://en.wikipedia.org/wiki/Rainbow_table).
+ */
+interface ScryptParams {
+    N: number;
+    dkLen: number;
+    name: string;
+    p: number;
+    r: number;
+    salt: Uint8Array;
 }
 
 /**
@@ -149,9 +183,9 @@ function decodeScryptParams(keyStore: KeyStore): ScryptParams {
  *
  * @param {EncryptOptions} options - The encryption options used to override
  * the default Scrypt parameters:
- * - N: CPU/memory cost = 131072.
- * - p: Parallelization parameter = 1,
- * - r: Blocksize parameter = 8.
+ * - N: CPU/memory cost,
+ * - p: Parallelization parameter,
+ * - r: Blocksize parameter.
  *
  * @returns {ScryptParams} - The encoded scrypt parameters.
  *
@@ -165,9 +199,9 @@ function encodeScryptParams(options: EncryptOptions): ScryptParams {
     const salt =
         options.salt ?? secp256k1.randomBytes(KEYSTORE_CRYPTO_PARAMS_DKLEN);
     // Override the scrypt password-based key derivation function parameters,
-    let N = 1 << 17;
-    let p = 1;
-    let r = 8;
+    let N = SCRYPT_PARAMS.N;
+    let r = SCRYPT_PARAMS.r;
+    let p = SCRYPT_PARAMS.p;
     if (options.scrypt != null) {
         if (options.scrypt.N != null) {
             N = options.scrypt.N;
@@ -202,7 +236,14 @@ function encodeScryptParams(options: EncryptOptions): ScryptParams {
         'Encryption failed: invalid options.scrypt.p parameter.',
         { options }
     );
-    return { name: 'scrypt', dkLen: 64, salt, N, r, p };
+    return {
+        name: KEYSTORE_CRYPTO_KDF,
+        dkLen: KEYSTORE_CRYPTO_PARAMS_DKLEN,
+        N,
+        p,
+        r,
+        salt
+    } satisfies ScryptParams;
 }
 
 /**
@@ -212,100 +253,129 @@ function encodeScryptParams(options: EncryptOptions): ScryptParams {
  *
  * The private key is encoded using the
  * [Advanced Encryption Standard](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
- * 128 bits Counter Mode as defined by
- * [NIST AES Recommendation for Block Cipher Modes of Operation](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation).
+ * [128 bits Counter Mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation)
+ * as defined by
+ * [NIST AES Recommendation for Block Cipher Modes of Operation](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf).
  *
  * The [Key Derivation Function](https://en.wikipedia.org/wiki/Key_derivation_function)
  * algorithm is [Scrypt](https://en.wikipedia.org/wiki/Scrypt).
  *
  * Secure audit function.
  * - {@link encryptKeystore}.
- * - password wiped after use.
- * - privateKey: wiped after use.
+ * - `password` wiped after use.
+ * - `privateKey` wiped after use.
  *
  * @param {Uint8Array} privateKey - The private key to encrypt, the memory location is wiped after use.
  * @param {Uint8Array} password - The password to use for encryption, the memory location is wiped after use.
  *
  * @returns {KeyStore} - The encrypted keystore object.
  *
- * @throws {InvalidSecp256k1PrivateKeyError} - If the private key is invalid.
  * @throws {InvalidKeystoreError} - If an error occurs during encryption.
  *
  * @see {@link encryptKeystore}
  */
 function encrypt(privateKey: Uint8Array, password: Uint8Array): KeyStore {
-    try {
-        return encryptKeystore(privateKey, password, {
-            scrypt: {
-                N: SCRYPT_PARAMS.N,
-                r: SCRYPT_PARAMS.r,
-                p: SCRYPT_PARAMS.p
-            }
-        });
-    } finally {
-        privateKey.fill(0); // Clear the private key from memory.
-        password.fill(0); // Clear the password from memory.
-    }
+    return encryptKeystore(privateKey, password, {
+        scrypt: {
+            N: SCRYPT_PARAMS.N,
+            r: SCRYPT_PARAMS.r,
+            p: SCRYPT_PARAMS.p
+        }
+    });
 }
 
+/**
+ * Encrypts a private key with a password to returns a keystore object
+ * compliant with [Web3 Secret Storage Definition](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/)
+ * version {@link KEYSTORE_VERSION}.
+ *
+ * @param privateKey - The private key to encrypt, the memory location is wiped after use.
+ * @param password - The password to use for encryption, the memory location is wiped after use.
+ *
+ * The private key is encoded using the
+ * [Advanced Encryption Standard](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
+ * [128 bits Counter Mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation)
+ * as defined by
+ * [NIST AES Recommendation for Block Cipher Modes of Operation](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf).
+ *
+ * The [Key Derivation Function](https://en.wikipedia.org/wiki/Key_derivation_function)
+ * algorithm is [Scrypt](https://en.wikipedia.org/wiki/Scrypt).
+ *
+ * Secure audit function.
+ * - [ctr](https://github.com/paulmillr/noble-ciphers?tab=readme-ov-file#aes).
+ * - {@link encryptKeystore}.
+ * - {@link keccak256}
+ * - `password` wiped after use.
+ * - `privateKey` wiped after use.
+ * - {@link secp256k1}
+ *
+ * @param options
+ */
 function encryptKeystore(
     privateKey: Uint8Array,
     password: Uint8Array,
     options: EncryptOptions
 ): KeyStore {
-    const kdf = encodeScryptParams(options);
-    const key = scrypt(password, kdf.salt, {
-        N: kdf.N,
-        r: kdf.r,
-        p: kdf.p,
-        dkLen: kdf.dkLen
-    });
-    // Override initialization vector.
-    const iv = options.iv ?? secp256k1.randomBytes(16);
-    assert(
-        'keystore.encrypt',
-        iv.length === 16,
-        KEYSTORE.INVALID_KEYSTORE,
-        'Encryption failed: invalid options.iv length.',
-        { iv }
-    );
-    // Override the uuid.
-    const uuidRandom = options.uuid ?? secp256k1.randomBytes(16);
-    assert(
-        'keystore.encrypt',
-        uuidRandom.length === 16,
-        KEYSTORE.INVALID_KEYSTORE,
-        'Encryption failed: options.uuid length must be 16',
-        { iv }
-    );
-    // Message Authentication Code prefix.
-    const macPrefix = key.slice(16, 32);
-    // Encrypt the private key: 32 bytes for the Web3 Secret Storage (derivedKey, macPrefix)
-    const ciphertext = ctr(key.slice(0, 16), iv).encrypt(privateKey);
-    return {
-        address: Hex.canon(
-            addressUtils.fromPublicKey(secp256k1.derivePublicKey(privateKey))
-        ),
-        crypto: {
-            cipher: KEYSTORE_CRYPTO_CIPHER,
-            cipherparams: {
-                iv: Hex.of(iv)
+    try {
+        const kdf = encodeScryptParams(options);
+        const key = scrypt(password, kdf.salt, {
+            N: kdf.N,
+            r: kdf.r,
+            p: kdf.p,
+            dkLen: kdf.dkLen
+        });
+        // Override initialization vector.
+        const iv = options.iv ?? secp256k1.randomBytes(16);
+        assert(
+            'keystore.encrypt',
+            iv.length === 16,
+            KEYSTORE.INVALID_KEYSTORE,
+            'Encryption failed: invalid options.iv length.',
+            { iv }
+        );
+        // Override the uuid.
+        const uuidRandom = options.uuid ?? secp256k1.randomBytes(16);
+        assert(
+            'keystore.encrypt',
+            uuidRandom.length === 16,
+            KEYSTORE.INVALID_KEYSTORE,
+            'Encryption failed: options.uuid length must be 16',
+            { iv }
+        );
+        // Message Authentication Code prefix.
+        const macPrefix = key.slice(16, 32);
+        // Encrypt the private key: 32 bytes for the Web3 Secret Storage (derivedKey, macPrefix)
+        const ciphertext = ctr(key.slice(0, 16), iv).encrypt(privateKey);
+        return {
+            address: Hex.canon(
+                addressUtils.fromPublicKey(
+                    secp256k1.derivePublicKey(privateKey)
+                )
+            ),
+            crypto: {
+                cipher: KEYSTORE_CRYPTO_CIPHER,
+                cipherparams: {
+                    iv: Hex.of(iv)
+                },
+                ciphertext: Hex.of(ciphertext),
+                kdf: 'scrypt',
+                kdfparams: {
+                    dklen: KEYSTORE_CRYPTO_PARAMS_DKLEN,
+                    n: kdf.N,
+                    p: kdf.p,
+                    r: kdf.r,
+                    salt: Hex.of(kdf.salt)
+                },
+                // Compute the message authentication code, used to check the password.
+                mac: Hex.of(keccak256(utils.concatBytes(macPrefix, ciphertext)))
             },
-            ciphertext: Hex.of(ciphertext),
-            kdf: 'scrypt',
-            kdfparams: {
-                dklen: KEYSTORE_CRYPTO_PARAMS_DKLEN,
-                n: kdf.N,
-                p: kdf.p,
-                r: kdf.r,
-                salt: Hex.of(kdf.salt)
-            },
-            // Compute the message authentication code, used to check the password.
-            mac: Hex.of(keccak256(utils.concatBytes(macPrefix, ciphertext)))
-        },
-        id: uuidV4(uuidRandom),
-        version: KEYSTORE_VERSION
-    } satisfies KeyStore;
+            id: uuidV4(uuidRandom),
+            version: KEYSTORE_VERSION
+        } satisfies KeyStore;
+    } finally {
+        privateKey.fill(0); // Clear the private key from memory.
+        password.fill(0); // Clear the password from memory.
+    }
 }
 
 function decrypt(keyStore: KeyStore, password: Uint8Array): KeystoreAccount {

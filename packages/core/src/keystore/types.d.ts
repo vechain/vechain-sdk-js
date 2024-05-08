@@ -1,33 +1,4 @@
 /**
- * ScryptParams interfaces defines the parameters of the
- * [Scrypt](https://en.wikipedia.org/wiki/Scrypt) algorithm for the
- * [Key Derivation Function](https://en.wikipedia.org/wiki/Key_derivation_function)
- * used in keystore encryption.
- *
- * Compatible with
- * [ethers ScryptParams](https://github.com/ethers-io/ethers.js/blob/main/src.ts/wallet/json-keystore.ts).
- *
- * @property {number} N - CPU/memory cost parameter.
- * @property {number} dkLen - Derived key length in bytes.
- * @property {string} name - constant "scrypt".
- * @property {number} p - Parallelization parameter.
- * @property {number} r - Blocksize parameter.
- * @property {Uint8Array} salt - Random bytes to protect against [Rainbow table](https://en.wikipedia.org/wiki/Rainbow_table).
- */
-interface ScryptParams {
-    N: number;
-    dkLen: number;
-    name: string;
-    p: number;
-    r: number;
-    salt: Uint8Array;
-}
-
-/**
- * Keystore type.
- * Output of encryption function.
- */
-/**
  * Represents a KeyStore object, which contains encrypted information about a cryptocurrency wallet
  * according [Web3 Secret Storage Definition](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/).
  *
@@ -72,10 +43,10 @@ interface KeyStore {
 }
 
 /**
- * Interface representing a keystore account,
- * compatible with [ethers KeystoreAccount](https://github.com/ethers-io/ethers.js/blob/main/src.ts/wallet/json-keystore.ts).
+ * Interface representing a keystore account.
+ * Differently from
+ * [ethers KeystoreAccount](https://github.com/ethers-io/ethers.js/blob/main/src.ts/wallet/json-keystore.ts).
  *
- * @interface
  * @property {string} address - The address associated with the account.
  * @property {string} privateKey - The private key associated with the account.
  * @property {Object} mnemonic - The mnemonic (optional) associated with the account.
@@ -93,4 +64,4 @@ interface KeystoreAccount {
     };
 }
 
-export { type KeyStore, type KeystoreAccount, type ScryptParams };
+export { type KeyStore, type KeystoreAccount };
