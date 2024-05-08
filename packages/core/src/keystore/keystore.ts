@@ -272,7 +272,11 @@ function encodeScryptParams(options: EncryptOptions): ScryptParams {
  *
  * @throws {InvalidKeystoreError} - If an error occurs during encryption.
  *
- * @see {@link encryptKeystore}
+ * @see {encryptKeystore}
+ *
+ * @remark **The private key must not be represented as string to avoid the
+ * [Memory Dumping](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#memory-dumping)
+ * attack**.
  */
 function encrypt(privateKey: Uint8Array, password: Uint8Array): KeyStore {
     return encryptKeystore(privateKey, password, {
@@ -289,9 +293,6 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): KeyStore {
  * compliant with [Web3 Secret Storage Definition](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage/)
  * version {@link KEYSTORE_VERSION}.
  *
- * @param privateKey - The private key to encrypt, the memory location is wiped after use.
- * @param password - The password to use for encryption, the memory location is wiped after use.
- *
  * The private key is encoded using the
  * [Advanced Encryption Standard](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
  * [128 bits Counter Mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation)
@@ -307,9 +308,20 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): KeyStore {
  * - {@link keccak256}
  * - `password` wiped after use.
  * - `privateKey` wiped after use.
- * - {@link secp256k1}
+ * - {@link secp256k1}.
+ * - [scrypt](https://github.com/paulmillr/noble-hashes/?tab=readme-ov-file#scrypt).
  *
- * @param options
+ * @param privateKey - The private key to encrypt, the memory location is wiped after use.
+ * @param password - The password to use for encryption, the memory location is wiped after use.
+ * @param options - Parameters used to configure the **AES** encryption of the private key and the **Scrypt** derivation key function.
+ *
+ * @returns {KeyStore} - The encrypted keystore object.
+ *
+ * @remark **The private key must not be represented as string to avoid the
+ * [Memory Dumping](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#memory-dumping)
+ * attack**.
+ *
+ * @see {encrypt}
  */
 function encryptKeystore(
     privateKey: Uint8Array,
