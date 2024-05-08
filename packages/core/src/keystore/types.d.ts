@@ -1,7 +1,4 @@
-import type { ProgressCallback } from 'ethers/src.ts/crypto';
-
 interface EncryptOptions {
-    progressCallback?: ProgressCallback;
     iv?: Uint8Array;
     entropy?: Uint8Array;
     client?: string;
@@ -16,12 +13,13 @@ interface EncryptOptions {
 
 /**
  * Scrypt parameters for keystore encryption,
- * compatible with [ethers ScryptParams](https://github.com/ethers-io/ethers.js/blob/main/src.ts/wallet/json-keystore.ts).
+ * compatible with
+ * [ethers ScryptParams](https://github.com/ethers-io/ethers.js/blob/main/src.ts/wallet/json-keystore.ts).
  */
 interface ScryptParams {
     N: number;
     dkLen: number;
-    name: 'scrypt';
+    name: string;
     p: number;
     r: number;
     salt: Uint8Array;
@@ -56,12 +54,12 @@ interface ScryptParams {
 interface KeyStore {
     address: string;
     crypto: {
-        cipher: 'aes-128-ctr';
+        cipher: string;
         cipherparams: {
             iv: string;
         };
         ciphertext: string;
-        kdf: 'scrypt';
+        kdf: string;
         kdfparams: {
             dklen: number;
             n: number;
@@ -72,7 +70,7 @@ interface KeyStore {
         mac: string;
     };
     id: string;
-    version: 3;
+    version: number;
 }
 
 /**

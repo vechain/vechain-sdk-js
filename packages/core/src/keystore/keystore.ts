@@ -16,6 +16,14 @@ import {
     type ScryptParams
 } from './types';
 
+const KEYSTORE_CRYPTO_CIPHER = 'aes-128-ctr';
+
+const KEYSTORE_CRYPTO_PARAMS_DKLEN = 32;
+
+const KEYSTORE_CRYPTO_KDF = 'scrypt';
+
+const KEYSTORE_VERSION = 3;
+
 /**
  * Retrieves the decryption key-derivation function parameters from the given key store.
  *
@@ -32,7 +40,7 @@ import {
  * @see encodeScryptParams
  */
 function decodeScryptParams(keyStore: KeyStore): ScryptParams {
-    if (keyStore.crypto.kdf.toLowerCase() === 'scrypt') {
+    if (keyStore.crypto.kdf.toLowerCase() === KEYSTORE_CRYPTO_KDF) {
         const salt = utils.hexToBytes(keyStore.crypto.kdfparams.salt);
         const N = keyStore.crypto.kdfparams.n;
         const r = keyStore.crypto.kdfparams.r;
@@ -55,18 +63,18 @@ function decodeScryptParams(keyStore: KeyStore): ScryptParams {
         const dkLen = keyStore.crypto.kdfparams.dklen;
         assert(
             'keystore.decrypt',
-            dkLen === 32,
+            dkLen === KEYSTORE_CRYPTO_PARAMS_DKLEN,
             KEYSTORE.INVALID_KEYSTORE,
-            'Decryption failed: keystore.crypto.kdfparams.dklen parameter must be 32.',
+            `Decryption failed: keystore.crypto.kdfparams.dklen parameter must be ${KEYSTORE_CRYPTO_PARAMS_DKLEN}`,
             { keyStore }
         );
         return {
-            name: 'scrypt',
-            salt,
             N,
-            r,
+            dkLen: KEYSTORE_CRYPTO_PARAMS_DKLEN,
+            name: KEYSTORE_CRYPTO_KDF,
             p,
-            dkLen: 64
+            r,
+            salt
         } satisfies ScryptParams;
     }
     throw buildError(
@@ -79,7 +87,8 @@ function decodeScryptParams(keyStore: KeyStore): ScryptParams {
 
 function encodeScryptParams(options: EncryptOptions): ScryptParams {
     // Use or generate the salt.
-    const salt = options.salt ?? secp256k1.randomBytes(32);
+    const salt =
+        options.salt ?? secp256k1.randomBytes(KEYSTORE_CRYPTO_PARAMS_DKLEN);
     // Override the scrypt password-based key derivation function parameters,
     let N = 1 << 17;
     let r = 8;
@@ -166,7 +175,6 @@ function encryptKeystore(
         'keystore.encrypt',
         iv.length === 16,
         KEYSTORE.INVALID_KEYSTORE,
-
         'Encryption failed: invalid options.iv length.',
         { iv }
     );
@@ -176,7 +184,7 @@ function encryptKeystore(
         'keystore.encrypt',
         uuidRandom.length === 16,
         KEYSTORE.INVALID_KEYSTORE,
-        'Encryption failed: options.uuid length mustbe 16',
+        'Encryption failed: options.uuid length must be 16',
         { iv }
     );
     // Message Authentication Code prefix.
@@ -188,14 +196,14 @@ function encryptKeystore(
             addressUtils.fromPublicKey(secp256k1.derivePublicKey(privateKey))
         ),
         crypto: {
-            cipher: 'aes-128-ctr',
+            cipher: KEYSTORE_CRYPTO_CIPHER,
             cipherparams: {
                 iv: Hex.of(iv)
             },
             ciphertext: Hex.of(ciphertext),
             kdf: 'scrypt',
             kdfparams: {
-                dklen: 32,
+                dklen: KEYSTORE_CRYPTO_PARAMS_DKLEN,
                 n: kdf.N,
                 p: kdf.p,
                 r: kdf.r,
@@ -205,7 +213,7 @@ function encryptKeystore(
             mac: Hex.of(keccak256(utils.concatBytes(macPrefix, ciphertext)))
         },
         id: uuidV4(uuidRandom),
-        version: 3
+        version: KEYSTORE_VERSION
     } satisfies KeyStore;
 }
 
@@ -236,7 +244,7 @@ function decryptKeystore(
 ): KeystoreAccount {
     assert(
         'keystore.decrypt',
-        keyStore.crypto.cipher === 'aes-128-ctr',
+        keyStore.crypto.cipher.toLowerCase() === KEYSTORE_CRYPTO_CIPHER,
         KEYSTORE.INVALID_KEYSTORE,
         'Decryption failed: unsupported cipher.',
         { keyStore }
@@ -287,7 +295,7 @@ function decryptKeystore(
 function isValid(keystore: KeyStore): boolean {
     try {
         const copy = JSON.parse(JSON.stringify(keystore)) as KeyStore;
-        if (copy.version === 3) {
+        if (copy.version === KEYSTORE_VERSION) {
             return true;
         }
     } catch (error) {} // Return false if parsing fails.
