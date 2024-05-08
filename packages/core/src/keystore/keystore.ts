@@ -6,7 +6,7 @@
 import * as utils from '@noble/curves/abstract/utils';
 import { Hex, Hex0x } from '../utils';
 import { addressUtils } from '../address';
-import { assert, buildError, KEYSTORE } from '@vechain/sdk-errors';
+import { assert, KEYSTORE } from '@vechain/sdk-errors';
 import { ctr } from '@noble/ciphers/aes';
 import { keccak256 } from '../hash';
 import { scrypt } from '@noble/hashes/scrypt';
@@ -122,57 +122,47 @@ interface ScryptParams {
  * @param {KeyStore} keyStore - The key store object.
  * @returns {ScryptParams} - The decryption key-derivation function parameters.
  *
- * @throws {InvalidKeystoreError} - if [Scrypt](https://en.wikipedia.org/wiki/Scrypt)
- * is not the key-derivation function required by `keyStore` or if any parameter
- * encoded in the keystore is invalid.
+ * @throws {InvalidKeystoreError} - If any parameter encoded in the keystore is invalid.
  *
  * @see {decryptKeystore}
  * @see {encodeScryptParams}
  */
 function decodeScryptParams(keyStore: KeyStore): ScryptParams {
-    if (keyStore.crypto.kdf.toLowerCase() === KEYSTORE_CRYPTO_KDF) {
-        const salt = utils.hexToBytes(keyStore.crypto.kdfparams.salt);
-        const N = keyStore.crypto.kdfparams.n;
-        const r = keyStore.crypto.kdfparams.r;
-        const p: number = keyStore.crypto.kdfparams.p;
-        // Make sure N is a power of 2
-        assert(
-            'keystore.decrypt',
-            N > 0 && (N & (N - 1)) === 0,
-            KEYSTORE.INVALID_KEYSTORE,
-            'Decryption failed: invalid  keystore.crypto.kdfparams.n parameter.',
-            { keyStore }
-        );
-        assert(
-            'keystore.decrypt',
-            r > 0 && p > 0,
-            KEYSTORE.INVALID_KEYSTORE,
-            'Decryption failed: both keystore.crypto.kdfparams.r or keystore.crypto.kdfparams.p parameter must be > 0.',
-            { keyStore }
-        );
-        const dkLen = keyStore.crypto.kdfparams.dklen;
-        assert(
-            'keystore.decrypt',
-            dkLen === KEYSTORE_CRYPTO_PARAMS_DKLEN,
-            KEYSTORE.INVALID_KEYSTORE,
-            `Decryption failed: keystore.crypto.kdfparams.dklen parameter must be ${KEYSTORE_CRYPTO_PARAMS_DKLEN}`,
-            { keyStore }
-        );
-        return {
-            N,
-            dkLen: KEYSTORE_CRYPTO_PARAMS_DKLEN,
-            name: KEYSTORE_CRYPTO_KDF,
-            p,
-            r,
-            salt
-        } satisfies ScryptParams;
-    }
-    throw buildError(
+    const salt = utils.hexToBytes(keyStore.crypto.kdfparams.salt);
+    const N = keyStore.crypto.kdfparams.n;
+    const r = keyStore.crypto.kdfparams.r;
+    const p: number = keyStore.crypto.kdfparams.p;
+    // Make sure N is a power of 2
+    assert(
         'keystore.decrypt',
+        N > 0 && (N & (N - 1)) === 0,
         KEYSTORE.INVALID_KEYSTORE,
-        'Decryption failed: unsupported key-derivation function.',
+        'Decryption failed: invalid  keystore.crypto.kdfparams.n parameter.',
         { keyStore }
     );
+    assert(
+        'keystore.decrypt',
+        r > 0 && p > 0,
+        KEYSTORE.INVALID_KEYSTORE,
+        'Decryption failed: both keystore.crypto.kdfparams.r or keystore.crypto.kdfparams.p parameter must be > 0.',
+        { keyStore }
+    );
+    const dkLen = keyStore.crypto.kdfparams.dklen;
+    assert(
+        'keystore.decrypt',
+        dkLen === KEYSTORE_CRYPTO_PARAMS_DKLEN,
+        KEYSTORE.INVALID_KEYSTORE,
+        `Decryption failed: keystore.crypto.kdfparams.dklen parameter must be ${KEYSTORE_CRYPTO_PARAMS_DKLEN}`,
+        { keyStore }
+    );
+    return {
+        N,
+        dkLen: KEYSTORE_CRYPTO_PARAMS_DKLEN,
+        name: KEYSTORE_CRYPTO_KDF,
+        p,
+        r,
+        salt
+    } satisfies ScryptParams;
 }
 
 /**
@@ -431,14 +421,6 @@ function encryptKeystore(
  * @see {isValid}
  */
 function decrypt(keyStore: KeyStore, password: Uint8Array): KeystoreAccount {
-    // Check for invalid keystore.
-    assert(
-        'keystore.decrypt',
-        isValid(keyStore),
-        KEYSTORE.INVALID_KEYSTORE,
-        'Invalid keystore. Ensure the keystore is properly formatted and contains the necessary data.',
-        { keyStore }
-    );
     return decryptKeystore(keyStore, password);
 }
 
@@ -493,7 +475,21 @@ function decryptKeystore(
             'keystore.decrypt',
             keyStore.crypto.cipher.toLowerCase() === KEYSTORE_CRYPTO_CIPHER,
             KEYSTORE.INVALID_KEYSTORE,
-            'Decryption failed: unsupported cipher.',
+            'Decryption failed: unsupported crypto cipher algorithm.',
+            { keyStore }
+        );
+        assert(
+            'keystore.decrypt',
+            keyStore.crypto.kdf.toLowerCase() === KEYSTORE_CRYPTO_KDF,
+            KEYSTORE.INVALID_KEYSTORE,
+            'Decryption failed: unsupported crypto key derivation function.',
+            { keyStore }
+        );
+        assert(
+            'keystore.decrypt',
+            keyStore.version === KEYSTORE_VERSION,
+            KEYSTORE.INVALID_KEYSTORE,
+            'Decryption failed: unsupported keystore version.',
             { keyStore }
         );
         const kdf = decodeScryptParams(keyStore);

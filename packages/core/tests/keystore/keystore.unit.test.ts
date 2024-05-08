@@ -66,19 +66,46 @@ describe('keystore', () => {
             expect(keystoreAccount.privateKey).toEqual(escrowKey);
         });
 
-        test('decrypt - invalid password', () => {
+        test('decrypt - invalid crypto cipher', () => {
             const privateKey = secp256k1.generatePrivateKey();
             const password = new Uint8Array(PASSWORD);
+            const escrowPassword = new Uint8Array(password);
             const keyStore = keystore.encrypt(privateKey, password);
-            const invalidPassword = new TextEncoder().encode(
-                `WRONG_${encryptionPassword}`.normalize('NFKC')
-            );
+            const invalidKeystore: string = JSON.stringify({
+                ...keyStore,
+                crypto: {
+                    cipher: 'chacha'
+                }
+            });
             expect(() =>
-                keystore.decrypt(keyStore, invalidPassword)
-            ).toThrowError(InvalidKeystorePasswordError);
+                keystore.decrypt(
+                    JSON.parse(invalidKeystore) as KeyStore,
+                    escrowPassword
+                )
+            ).toThrowError(InvalidKeystoreError);
         });
 
-        test('decrypt - invalid keystore', () => {
+        test('decrypt - invalid crypto kdf', () => {
+            const privateKey = secp256k1.generatePrivateKey();
+            const password = new Uint8Array(PASSWORD);
+            const escrowPassword = new Uint8Array(password);
+            const keyStore = keystore.encrypt(privateKey, password);
+            const invalidKeystore: string = JSON.stringify({
+                ...keyStore,
+                crypto: {
+                    cipher: 'aes-128-ctr',
+                    kdf: 'pdkdf2'
+                }
+            });
+            expect(() =>
+                keystore.decrypt(
+                    JSON.parse(invalidKeystore) as KeyStore,
+                    escrowPassword
+                )
+            ).toThrowError(InvalidKeystoreError);
+        });
+
+        test('decrypt - invalid version', () => {
             const privateKey = secp256k1.generatePrivateKey();
             const password = new Uint8Array(PASSWORD);
             const escrowPassword = new Uint8Array(password);
@@ -93,6 +120,18 @@ describe('keystore', () => {
                     escrowPassword
                 )
             ).toThrowError(InvalidKeystoreError);
+        });
+
+        test('decrypt - invalid password', () => {
+            const privateKey = secp256k1.generatePrivateKey();
+            const password = new Uint8Array(PASSWORD);
+            const keyStore = keystore.encrypt(privateKey, password);
+            const invalidPassword = new TextEncoder().encode(
+                `WRONG_${encryptionPassword}`.normalize('NFKC')
+            );
+            expect(() =>
+                keystore.decrypt(keyStore, invalidPassword)
+            ).toThrowError(InvalidKeystorePasswordError);
         });
     });
 
