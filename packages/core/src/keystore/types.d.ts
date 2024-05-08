@@ -20,6 +20,32 @@
  * @property {string} id - The unique identifier of the KeyStore object.
  * @property {number} version - The version number of the KeyStore object.
  */
+
+/**
+ * @interface KeyStore
+ * Represents a
+ * [Web3 Secret Storage](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage)
+ * keystore object that holds information about a private cryptographic key.
+ * and its associated wallet address.
+ *
+ * @property {string} address - The wallet address associated with the stored private key.
+ * @property {Object} crypto - The encryption information for the key.
+ * @property {string} crypto.cipher - The encryption algorithm used.
+ * @property {Object} crypto.cipherparams - Additional parameters for the encryption algorithm.
+ * @property {string} crypto.cipherparams.iv - The initialization vector (IV) used for encryption.
+ * @property {string} crypto.ciphertext - The encrypted private key.
+ * @property {string} crypto.kdf - The key derivation function (KDF) used.
+ * @property {Object} crypto.kdfparams - Additional parameters for the KDF.
+ * @property {number} crypto.kdfparams.dklen - The derived private key length.
+ * @property {number} crypto.kdfparams.n - The CPU/memory cost parameter for the key derivation function.
+ * @property {number} crypto.kdfparams.p - The parallelization factor.
+ * @property {number} crypto.kdfparams.r - The block size factor.
+ * @property {string} crypto.kdfparams.salt - The salt value used in the KDF.
+ * @property {string} crypto.mac - The MAC (Message Authentication Code)
+ * to match the KDF function with the private key derived by the cyphered text stored.
+ * @property {string} id - The unique identifier for the key store.
+ * @property {number} version - The version number of the key store.
+ */
 interface KeyStore {
     address: string;
     crypto: {
@@ -44,24 +70,20 @@ interface KeyStore {
 
 /**
  * Interface representing a keystore account.
- * Differently from
- * [ethers KeystoreAccount](https://github.com/ethers-io/ethers.js/blob/main/src.ts/wallet/json-keystore.ts).
  *
  * @property {string} address - The address associated with the account.
- * @property {string} privateKey - The private key associated with the account.
- * @property {Object} mnemonic - The mnemonic (optional) associated with the account.
- * @property {string} mnemonic.path - The path (optional) of the mnemonic.
- * @property {string} mnemonic.locale - The locale (optional) of the mnemonic.
- * @property {string} mnemonic.entropy - The entropy of the mnemonic.
+ * @property {Uint8Array} privateKey - The private key associated with the account.
+ *
+ * @remark **Differently from
+ * [ethers KeystoreAccount](https://github.com/ethers-io/ethers.js/blob/main/src.ts/wallet/json-keystore.ts),
+ * this type represents the private key as a buffer of bytes to avoid
+ * [Memory Dumping](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#memory-dumping)
+ * attack.
+ * Mnemonic phrase is symmetrically related with the private hence is not
  */
 interface KeystoreAccount {
     address: string;
-    privateKey: string;
-    mnemonic?: {
-        path?: string;
-        locale?: string;
-        entropy: string;
-    };
+    privateKey: Uint8Array;
 }
 
 export { type KeyStore, type KeystoreAccount };

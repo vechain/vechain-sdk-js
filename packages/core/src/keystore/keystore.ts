@@ -453,8 +453,8 @@ function decryptKeystore(
         );
     }
     return {
-        address,
-        privateKey: Hex0x.of(privateKey)
+        address: address,
+        privateKey: privateKey
     } satisfies KeystoreAccount;
 }
 
