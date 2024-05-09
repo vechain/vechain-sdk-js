@@ -181,9 +181,33 @@ describe('ThorClient - ERC20 Contracts', () => {
     }, 10000);
 
     /**
+     * Tests the execution of multiple ERC20 contract read clauses using a blockchain client.
+     */
+    test('Execute multiple ERC20 read contract clauses', async () => {
+        // Deploy the ERC20 contract
+        let factory = thorSoloClient.contracts.createContractFactory(
+            deployedERC20Abi,
+            erc20ContractBytecode,
+            signer
+        );
+
+        factory = await factory.startDeployment();
+
+        const contract: Contract = await factory.waitForDeployment();
+
+        const contractRead =
+            await thorSoloClient.contracts.executeMultipleClausesCall([
+                contract.clause.name(),
+                contract.clause.symbol(),
+                contract.clause.decimals()
+            ]);
+        console.log(contractRead);
+    }, 10000);
+
+    /**
      * Tests the execution of multiple ERC20 contract clauses using a blockchain client.
      */
-    test('Execute multiples ERC20 contract clauses', async () => {
+    test('Execute multiple ERC20 contract clauses', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
