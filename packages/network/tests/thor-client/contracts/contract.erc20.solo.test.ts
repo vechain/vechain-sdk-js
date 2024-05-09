@@ -217,16 +217,19 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         await txResult.wait();
 
-        expect(
-            await contract.read.balanceOf(
-                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
-            )
-        ).toEqual([BigInt(1000)]);
+        const reads = await thorSoloClient.contracts.executeMultipleClausesCall(
+            [
+                contract.clause.balanceOf(
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+                ),
+                contract.clause.balanceOf(
+                    TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+                )
+            ]
+        );
 
-        expect(
-            await contract.read.balanceOf(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
-            )
-        ).toEqual([BigInt(4000)]);
+        expect(reads[0]).toEqual([BigInt(1000)]);
+
+        expect(reads[1]).toEqual([BigInt(4000)]);
     }, 10000);
 });

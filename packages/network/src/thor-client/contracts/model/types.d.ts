@@ -1,7 +1,6 @@
-import type { ContractCallResult } from '../types';
+import type { ContractCallResult, ContractClause } from '../types';
 import type { SendTransactionResult } from '../../transactions';
 import { type ContractFilter } from './contract-filter';
-import { type TransactionClause } from '@vechain/sdk-core';
 import { type EventCriteria } from '../../logs';
 
 /**
@@ -73,11 +72,11 @@ type ContractFunctionFilter = Record<
  * a transaction clause that can be used to interact with the contract.
  *
  * The keys of this record represent the names of the contract functions, and the values are the contract
- * functions themselves, adhering to the `ContractFunctionSync` type with `TransactionClause` as the return type.
+ * functions themselves, adhering to the `ContractFunctionSync` type with `ContractClause` as the return type.
  */
 type ContractFunctionClause = Record<
     string,
-    ContractFunctionSync<TransactionClause>
+    ContractFunctionSync<ContractClause>
 >;
 
 type ContractFunctionCriteria = Record<

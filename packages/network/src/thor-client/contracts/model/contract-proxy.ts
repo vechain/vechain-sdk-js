@@ -12,12 +12,8 @@ import {
 } from '../../transactions';
 import { type Contract } from './contract';
 import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
-import {
-    clauseBuilder,
-    fragment,
-    type TransactionClause
-} from '@vechain/sdk-core';
-import { type ContractCallResult } from '../types';
+import { clauseBuilder, fragment } from '@vechain/sdk-core';
+import { type ContractCallResult, type ContractClause } from '../types';
 import { ContractFilter } from './contract-filter';
 import { type VechainSigner } from '../../../signer';
 import { type EventCriteria } from '../../logs';
@@ -137,7 +133,7 @@ function getFilterProxy(contract: Contract): ContractFunctionFilter {
 function getClauseProxy(contract: Contract): ContractFunctionClause {
     return new Proxy(contract.clause, {
         get: (_target, prop) => {
-            return (...args: unknown[]): TransactionClause => {
+            return (...args: unknown[]): ContractClause => {
                 // get the transaction options for the contract
                 const transactionOptions =
                     contract.getContractTransactOptions();
@@ -150,13 +146,16 @@ function getClauseProxy(contract: Contract): ContractFunctionClause {
                     args = args.filter((arg) => !isTransactionValue(arg));
                 }
 
-                // Create the vechain sdk event fragment starting from the contract ABI event fragment
-                return clauseBuilder.functionInteraction(
-                    contract.address,
-                    contract.getFunctionFragment(prop),
-                    args,
-                    transactionOptions.value ?? transactionValue?.value ?? 0
-                );
+                // return the contract clause
+                return {
+                    clause: clauseBuilder.functionInteraction(
+                        contract.address,
+                        contract.getFunctionFragment(prop),
+                        args,
+                        transactionOptions.value ?? transactionValue?.value ?? 0
+                    ),
+                    functionFragment: contract.getFunctionFragment(prop)
+                };
             };
         }
     });

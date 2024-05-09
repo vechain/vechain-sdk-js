@@ -4,7 +4,10 @@ import type {
     SignTransactionOptions
 } from '../transactions';
 
-import type { vechain_sdk_core_ethers } from '@vechain/sdk-core';
+import type {
+    TransactionClause,
+    vechain_sdk_core_ethers
+} from '@vechain/sdk-core';
 
 /* --------- Input types Start --------- */
 
@@ -28,8 +31,17 @@ type ContractCallOptions = SimulateTransactionOptions;
  */
 type ContractCallResult = vechain_sdk_core_ethers.Result;
 
+/**
+ * Represents a contract clause, which includes the clause and the corresponding function fragment.
+ */
+interface ContractClause {
+    clause: TransactionClause;
+    functionFragment: vechain_sdk_core_ethers.FunctionFragment;
+}
+
 export type {
     ContractTransactionOptions,
     ContractCallOptions,
-    ContractCallResult
+    ContractCallResult,
+    ContractClause
 };
