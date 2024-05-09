@@ -4,6 +4,11 @@
   "description": "This module is dedicated to managing and customizing errors within the SDK",
   "author": "vechain Foundation",
   "license": "MIT",
+  "homepage": "https://github.com/vechain/vechain-sdk-js",
+  "repository": {
+    "type": "git",
+    "url": "github:vechain/vechain-sdk-js"
+  },
   "keywords": [
     "vechain",
     "error"
