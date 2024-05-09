@@ -4,6 +4,11 @@
   "description": "This module serves as a crucial bridge between the standard Ethereum tooling provided by Hardhat and the unique features of the vechain thor blockchain",
   "author": "vechain Foundation",
   "license": "MIT",
+  "homepage": "https://github.com/vechain/vechain-sdk-js",
+  "repository": {
+    "type": "git",
+    "url": "github:vechain/vechain-sdk-js"
+  },
   "keywords": [
     "vechain",
     "ethers",

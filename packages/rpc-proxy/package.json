@@ -4,6 +4,11 @@
   "description": "Proxy Thor's RESTful API to Eth JSON-RPC",
   "author": "vechain Foundation",
   "license": "MIT",
+  "homepage": "https://github.com/vechain/vechain-sdk-js",
+  "repository": {
+    "type": "git",
+    "url": "github:vechain/vechain-sdk-js"
+  },
   "keywords": [
     "vechain",
     "RPC",

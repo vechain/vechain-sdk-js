@@ -4,6 +4,11 @@
   "description": "Includes modules for fundamental operations like hashing and cryptography",
   "author": "vechain Foundation",
   "license": "MIT",
+  "homepage": "https://github.com/vechain/vechain-sdk-js",
+  "repository": {
+    "type": "git",
+    "url": "github:vechain/vechain-sdk-js"
+  },
   "keywords": [
     "vechain",
     "contract",

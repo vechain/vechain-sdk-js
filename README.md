@@ -221,6 +221,7 @@ The vechain SDK uses `Changesets CLI`. To publish a new release:
 yarn prepare-packages X.Y.Z
 yarn changeset publish
 ```
+Finally, update also the [documentation](https://github.com/vechain/vechain-docs).
 
 ## Contact information
 
