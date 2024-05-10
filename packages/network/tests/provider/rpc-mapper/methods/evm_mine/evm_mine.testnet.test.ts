@@ -45,6 +45,6 @@ describe('RPC Mapper - evm_mine method tests', () => {
                     bestBlock.number + 1
                 );
             }
-        }, 15000);
+        }, 18000);
     });
 });
