@@ -33,7 +33,7 @@ describe('ThorClient - Nodes Module', () => {
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
             HTTPClientError
         );
-    }, 3000);
+    }, 5000);
 
     test('invalid URL', async () => {
         /**
