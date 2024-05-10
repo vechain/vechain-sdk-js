@@ -294,11 +294,11 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): KeyStore {
  *
  * Secure audit function.
  * - [ctr](https://github.com/paulmillr/noble-ciphers?tab=readme-ov-file#aes).
- * - {@link encryptKeystore}.
  * - {@link keccak256}
  * - `password` wiped after use.
  * - `privateKey` wiped after use.
- * - {@link secp256k1}.
+ * - {@link secp256k1.derivePublicKey}.
+ * - {@link secp256k1.randomBytes}.
  * - [scrypt](https://github.com/paulmillr/noble-hashes/?tab=readme-ov-file#scrypt).
  *
  * @param privateKey - The private key to encrypt, the memory location is wiped after use.
@@ -447,7 +447,7 @@ function decrypt(keyStore: KeyStore, password: Uint8Array): KeystoreAccount {
  * any different KDF function not supported.
  *
  * Secure audit function.
- * - {@link addressUtils}
+ * - {@link addressUtils.fromPrivateKey}
  * - [ctr](https://github.com/paulmillr/noble-ciphers?tab=readme-ov-file#aes).
  * - `password` wiped after use.
  * - [scrypt](https://github.com/paulmillr/noble-hashes/?tab=readme-ov-file#scrypt).
