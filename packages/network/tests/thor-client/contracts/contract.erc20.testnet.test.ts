@@ -9,7 +9,7 @@ import {
 import { TEST_ACCOUNTS, testnetUrl } from '../../fixture';
 import {
     deployedERC20Abi,
-    erc20ContractBytecode,
+    ERC20_CONTRACT_ADDRESS_ON_TESTNET,
     TESTNET_DELEGATE_URL
 } from './fixture';
 
@@ -42,16 +42,13 @@ describe('ThorClient - ERC20 Contracts on testnet', () => {
      * Test transaction  execution with url delegation set from contract.
      */
     test('transaction execution with url delegation set from contract', async () => {
-        // Deploy the ERC20 contract
-        let factory = thorTestnetClient.contracts.createContractFactory(
+        const contract: Contract = thorTestnetClient.contracts.load(
+            ERC20_CONTRACT_ADDRESS_ON_TESTNET,
             deployedERC20Abi,
-            erc20ContractBytecode,
             signer
         );
 
-        factory = await factory.startDeployment();
-
-        const contract: Contract = await factory.waitForDeployment();
+        console.log('contract', contract.address);
 
         const txResult = await (
             await contract.transact.transfer(

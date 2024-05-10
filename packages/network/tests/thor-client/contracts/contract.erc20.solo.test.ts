@@ -201,7 +201,10 @@ describe('ThorClient - ERC20 Contracts', () => {
                 contract.clause.symbol(),
                 contract.clause.decimals()
             ]);
-        console.log(contractRead);
+
+        expect(contractRead[0]).toEqual(['SampleToken']);
+        expect(contractRead[1]).toEqual(['ST']);
+        expect(contractRead[2]).toEqual([BigInt(18)]);
     }, 10000);
 
     /**
