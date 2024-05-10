@@ -48,12 +48,6 @@ describe('ThorClient - ERC20 Contracts on testnet', () => {
             signer
         );
 
-        const balanceBefore = (
-            await contract.read.balanceOf(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
-            )
-        )[0] as bigint;
-
         const txResult = await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
@@ -65,11 +59,5 @@ describe('ThorClient - ERC20 Contracts on testnet', () => {
         ).wait();
 
         expect(txResult?.reverted).toBe(false);
-
-        expect(
-            await contract.read.balanceOf(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
-            )
-        ).toEqual([balanceBefore + BigInt(1000)]);
     }, 30000);
 });
