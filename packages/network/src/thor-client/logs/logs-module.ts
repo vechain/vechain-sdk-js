@@ -1,11 +1,13 @@
 import {
-    type FilterEventLogsOptions,
     type EventLogs,
+    type FilterCriteria,
+    type FilterEventLogsOptions,
     type FilterTransferLogsOptions,
     type TransferLogs
 } from './types';
 import { thorest } from '../../utils';
 import { type ThorClient } from '../thor-client';
+import { abi, type Result } from '../../../../core';
 
 /**
  * The `LogsClient` class provides methods to interact with log-related endpoints
@@ -36,6 +38,30 @@ class LogsModule {
                 headers: {}
             }
         )) as EventLogs[];
+    }
+
+    /**
+     * Filters event logs based on the provided criteria.
+     *
+     * @param criteria
+     * @param filterOptions - An object specifying filtering criteria for event logs.
+     * @returns A promise that resolves to filtered event logs.
+     */
+    public async filterDecodedEventLogs(
+        criteria: FilterCriteria[],
+        filterOptions: FilterEventLogsOptions
+    ): Promise<Result[]> {
+        filterOptions.criteriaSet = criteria.map((c) => c.criteria);
+
+        const eventLogs = await this.filterEventLogs(filterOptions);
+
+        return eventLogs.map((log, index) => {
+            const eventFragment = new abi.Event(criteria[index].eventFragment);
+            return eventFragment.decodeEventLog({
+                data: log.data,
+                topics: log.topics
+            });
+        });
     }
 
     /**

@@ -20,7 +20,7 @@ import {
 import { type ContractCallResult } from '../types';
 import { ContractFilter } from './contract-filter';
 import { type VechainSigner } from '../../../signer';
-import { type EventCriteria } from '../../logs';
+import { type FilterCriteria } from '../../logs';
 
 /**
  * Creates a Proxy object for reading contract state, allowing for the dynamic invocation of contract read operations.
@@ -123,7 +123,7 @@ function getFilterProxy(contract: Contract): ContractFunctionFilter {
             return (...args: unknown[]): ContractFilter => {
                 const criteriaSet = buildCriteria(contract, prop, args);
 
-                return new ContractFilter(contract, [criteriaSet]);
+                return new ContractFilter(contract, [criteriaSet.criteria]);
             };
         }
     });
@@ -170,7 +170,7 @@ function getClauseProxy(contract: Contract): ContractFunctionClause {
 function getCriteriaProxy(contract: Contract): ContractFunctionCriteria {
     return new Proxy(contract.criteria, {
         get: (_target, prop) => {
-            return (...args: unknown[]): EventCriteria => {
+            return (...args: unknown[]): FilterCriteria => {
                 return buildCriteria(contract, prop, args);
             };
         }
@@ -188,7 +188,7 @@ function buildCriteria(
     contract: Contract,
     prop: string | symbol,
     args: unknown[]
-): EventCriteria {
+): FilterCriteria {
     // Create the vechain sdk event fragment starting from the contract ABI event fragment
     const eventFragment = new fragment.Event(contract.getEventFragment(prop));
 
@@ -201,12 +201,15 @@ function buildCriteria(
 
     // Create the criteria set for the contract filter
     return {
-        address: contract.address,
-        topic0: topics.get(0) as string, // the first topic is always defined since it's the event signature
-        topic1: topics.has(1) ? topics.get(1) : undefined,
-        topic2: topics.has(2) ? topics.get(2) : undefined,
-        topic3: topics.has(3) ? topics.get(3) : undefined,
-        topic4: topics.has(4) ? topics.get(4) : undefined
+        criteria: {
+            address: contract.address,
+            topic0: topics.get(0) as string, // the first topic is always defined since it's the event signature
+            topic1: topics.has(1) ? topics.get(1) : undefined,
+            topic2: topics.has(2) ? topics.get(2) : undefined,
+            topic3: topics.has(3) ? topics.get(3) : undefined,
+            topic4: topics.has(4) ? topics.get(4) : undefined
+        },
+        eventFragment: eventFragment.fragment
     };
 }
 

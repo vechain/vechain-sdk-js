@@ -1,5 +1,7 @@
 /* --- Input options start --- */
 
+import { type EventFragment } from '@vechain/sdk-core';
+
 /**
  * Range interface for specifying a range of data.
  */
@@ -33,6 +35,14 @@ interface PaginationOptions {
      * Limit for the number of results to return.
      */
     limit?: number;
+}
+
+/**
+ * FilterCriteria interface for filtering event logs.
+ */
+interface FilterCriteria {
+    criteria: EventCriteria;
+    eventFragment: EventFragment;
 }
 
 /**
@@ -226,6 +236,7 @@ export type {
     Transfer,
     TransferLogs,
     EventCriteria,
+    FilterCriteria,
     Range,
     PaginationOptions,
     EventDisplayOrder
