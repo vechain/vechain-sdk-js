@@ -182,7 +182,7 @@ Note: links that are to be expanded must have a text \[example]
 
 It's also possible to include just a code snippet from an example file. For instance:
 
-\[DeployContractSnippet](examples/contracts/contract-create-ERC20-token.ts)
+[DeployContractSnippet](examples/contracts/contract-create-ERC20-token.ts)
 
 Will just include into the documentation the code snippet between the comments `// START_SNIPPET: DeployContractSnippet` and `// END_SNIPPET: DeployContractSnippet` in the file `examples/contracts/contract-create-ERC20-token.ts`.
 
@@ -204,6 +204,34 @@ For a comprehensive overview of the package structure, please refer to our [Arch
 
 - You can also create and test your examples using `yarn test:examples` command (with solo `yarn test:examples:solo`).
 
+## Troubleshooting
+
+### Next.js
+
+Projects based on [Next.js](https://nextjs.org/) need the root `tsconfig.json` file includes the options
+
+```json
+{
+  "compilerOptions": {
+    "target": "es2020",
+    "types": [
+      "@testing-library/jest-dom"
+    ]
+  }
+}
+```
+to define the runtime and the test framework to be compatible with the
+[ECMAScript 2020](https://262.ecma-international.org/11.0/)
+language specifications.
+
+An example of **Next.js** [tsconfig.json](apps/sdk-nextjs-integration/tsconfig.json) is available in
+the module [sdk-nextjs-integration](apps/sdk-nextjs-integration).
+
+**Next.js** caches data types when dependencies are installed and the project is built. To be sure
+the options defined in `tsconfig.json` are effective when changed,
+delete the directories `.next`, `node_modules` and the file `next-env.d.ts`
+from the root directory of the project, then rebuild the project.
+
 ## Contributing
 
 If you want to contribute to this project and make it better, your help is very welcome. Contributing is also a great way to learn more about social coding on GitHub, new technologies and their ecosystems and how to make constructive, helpful bug reports, feature requests and the noblest of all contributions: a good, clean pull request.
@@ -221,6 +249,7 @@ The vechain SDK uses `Changesets CLI`. To publish a new release:
 yarn prepare-packages X.Y.Z
 yarn changeset publish
 ```
+Finally, update also the [documentation](https://github.com/vechain/vechain-docs).
 
 ## Contact information
 

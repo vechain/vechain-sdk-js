@@ -4,6 +4,11 @@
   "description": "This module provides functionality to logging data for vechain-sdk",
   "author": "vechain Foundation",
   "license": "MIT",
+  "homepage": "https://github.com/vechain/vechain-sdk-js",
+  "repository": {
+    "type": "git",
+    "url": "github:vechain/vechain-sdk-js"
+  },
   "keywords": [
     "vechain",
     "logging"
