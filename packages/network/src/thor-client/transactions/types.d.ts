@@ -116,7 +116,7 @@ interface SimulateTransactionOptions {
     /**
      * The offered gas for the transaction simulation
      */
-    gas?: number;
+    gas?: string | number;
     /**
      * The price of gas for the transaction simulation
      */
