@@ -134,18 +134,26 @@ const privateKey = secp256k1.generatePrivateKey();
 
 // 2 - Encrypt/decrypt private key using Ethereum's keystore scheme
 
+// @NOTE the password should not be represented as a string,
+// the Ethereum canonical representation to of password used in
+// keystore encryption is UTF-8 NFKC.
 const keyStorePassword = 'your password';
-const newKeyStore = await keystore.encrypt(
-    Buffer.from(privateKey),
-    keyStorePassword
+
+const newKeyStore = keystore.encrypt(
+    privateKey,
+    new TextEncoder().encode(keyStorePassword.normalize('NFKC'))
 );
+
+// @NOTE the `encrypt` function wipes private key and password after use.
 
 // 3 - Throw for wrong password
 
-const recoveredPrivateKey = await keystore.decrypt(
+const recoveredPrivateKey = keystore.decrypt(
     newKeyStore,
-    keyStorePassword
+    new TextEncoder().encode(keyStorePassword.normalize('NFKC'))
 );
+
+// @NOTE the `decrypt`` function wipes private key and password after use.
 
 console.log(recoveredPrivateKey.privateKey.toString());
 // 0x...

@@ -1,7 +1,14 @@
+import * as utils from '@noble/curves/abstract/utils';
 import { describe, test, expect } from '@jest/globals';
-import { secp256k1, addressUtils, keystore, Hex } from '../../src';
-import { type Keystore } from '../../src';
 import { encryptionPassword } from './fixture';
+import { type KeyStore } from '../../src';
+import {
+    Hex0x,
+    ZERO_BYTES,
+    addressUtils,
+    keystore,
+    secp256k1
+} from '../../src';
 import {
     InvalidKeystoreError,
     InvalidKeystorePasswordError,
@@ -12,145 +19,168 @@ import {
  * Keystore tests
  * @group unit/keystore
  */
-describe('Keystore', () => {
-    /**
-     * Encrypt private key to keystore with given password
-     */
-    test('encrypt', async () => {
-        // Generate a random private key
-        const privateKey = secp256k1.generatePrivateKey();
+describe('keystore', () => {
+    const PASSWORD = new TextEncoder().encode(
+        encryptionPassword.normalize('NFKC')
+    );
+    const PASSWORD_IS_WIPED = ZERO_BYTES(PASSWORD.length);
+    const PRIVATE_KEY_IS_WIPED = ZERO_BYTES(32);
 
-        //  Create keystore
-        const myKeystore = await keystore.encrypt(
-            Buffer.from(privateKey),
-            encryptionPassword
-        );
-
-        // Verify keystore
-        expect(myKeystore.version).toBe(3);
-        const keyStoreAddress = addressUtils.toERC55Checksum(
-            `0x` + myKeystore.address
-        );
-        const addressFromPrivateKey = addressUtils.fromPublicKey(
-            Buffer.from(secp256k1.derivePublicKey(privateKey))
-        );
-        expect(keyStoreAddress).toEqual(addressFromPrivateKey);
-    });
-
-    /**
-     * Encrypt wrong private key to keystore with given password
-     */
-    test('encrypt wrong private key', async () => {
-        //  Create keystore
-        await expect(
-            async () =>
-                await keystore.encrypt(
-                    Buffer.from('wrong private key', 'hex'),
-                    encryptionPassword
-                )
-        ).rejects.toThrowError(InvalidSecp256k1PrivateKeyError);
-    });
-
-    /**
-     * Decrypt private key from keystore
-     */
-    test('decrypt', async () => {
-        // Generate a random private key
-        const privateKey = secp256k1.generatePrivateKey();
-
-        //  Create keystore
-        const myKeystore = await keystore.encrypt(
-            Buffer.from(privateKey),
-            encryptionPassword
-        );
-
-        // Decrypt keystore
-        const decryptedKeystore = await keystore.decrypt(
-            myKeystore,
-            encryptionPassword
-        );
-
-        // Verify private key (slice(2) is used to remove 0x prefix)
-        expect(decryptedKeystore.privateKey.slice(2)).toEqual(
-            Hex.of(privateKey)
-        );
-    });
-
-    /**
-     * Decrypt private key from keystore with invalid password
-     */
-    test('decrypt with invalid password', async () => {
-        // Generate a random private key
-        const privateKey = secp256k1.generatePrivateKey();
-
-        //  Create keystore
-        const myKeystore = await keystore.encrypt(
-            Buffer.from(privateKey),
-            encryptionPassword
-        );
-
-        // Decrypt with invalid password the keystore
-        await expect(
-            async () =>
-                await keystore.decrypt(
-                    myKeystore,
-                    `WRONG_${encryptionPassword}`
-                )
-        ).rejects.toThrowError(InvalidKeystorePasswordError);
-    });
-
-    /**
-     * Decrypt invalid keystore
-     */
-    test('decrypt invalid keystore', async () => {
-        // Generate a random private key
-        const privateKey = secp256k1.generatePrivateKey();
-
-        //  Create keystore
-        const myKeystore = await keystore.encrypt(
-            Buffer.from(privateKey),
-            encryptionPassword
-        );
-
-        // Verify keystore -> False
-        const invalidKeystore: string = JSON.stringify({
-            ...myKeystore,
-            version: 4
+    describe('encrypt', () => {
+        test('encrypt - valid', () => {
+            const privateKey = secp256k1.generatePrivateKey();
+            const escrowKey = new Uint8Array(privateKey);
+            const password = new Uint8Array(PASSWORD);
+            const keyStore = keystore.encrypt(privateKey, password);
+            expect(privateKey).toEqual(PRIVATE_KEY_IS_WIPED);
+            expect(password).toEqual(PASSWORD_IS_WIPED);
+            expect(keyStore.version).toBe(3);
+            const keyStoreAddress = addressUtils.toERC55Checksum(
+                Hex0x.canon(keyStore.address)
+            );
+            const addressFromPrivateKey = addressUtils.fromPublicKey(
+                Buffer.from(secp256k1.derivePublicKey(escrowKey))
+            );
+            expect(keyStoreAddress).toEqual(addressFromPrivateKey);
         });
 
-        // Decrypt invalid keystore
-        await expect(
-            async () =>
-                await keystore.decrypt(
-                    JSON.parse(invalidKeystore) as Keystore,
-                    encryptionPassword
-                )
-        ).rejects.toThrowError(InvalidKeystoreError);
+        test('encrypt - invalid private key', () => {
+            const privateKey = utils.hexToBytes('c0ffee');
+            const password = new Uint8Array(PASSWORD);
+            expect(() => keystore.encrypt(privateKey, password)).toThrowError(
+                InvalidSecp256k1PrivateKeyError
+            );
+            expect(privateKey).toEqual(ZERO_BYTES(privateKey.length));
+            expect(password).toEqual(PASSWORD_IS_WIPED);
+        });
     });
 
-    /**
-     * Keystore validation
-     */
-    test('validation', async () => {
-        // Generate a random private key
-        const privateKey = secp256k1.generatePrivateKey();
-
-        //  Create keystore
-        const myKeystore = await keystore.encrypt(
-            Buffer.from(privateKey),
-            encryptionPassword
-        );
-
-        // Verify keystore -> True
-        expect(keystore.isValid(myKeystore)).toBe(true);
-
-        // Verify keystore -> False
-        const invalidKeystore: string = JSON.stringify({
-            ...myKeystore,
-            version: 4
+    describe('decrypt', () => {
+        test('decrypt - valid', () => {
+            const privateKey = secp256k1.generatePrivateKey();
+            const escrowKey = new Uint8Array(privateKey);
+            const password = new Uint8Array(PASSWORD);
+            const escrowPassword = new Uint8Array(password);
+            const keyStore = keystore.encrypt(privateKey, password);
+            const keystoreAccount = keystore.decrypt(keyStore, escrowPassword);
+            expect(keystoreAccount.privateKey).toEqual(escrowKey);
         });
-        expect(keystore.isValid(JSON.parse(invalidKeystore) as Keystore)).toBe(
-            false
-        );
+
+        test('decrypt - invalid crypto cipher', () => {
+            const privateKey = secp256k1.generatePrivateKey();
+            const password = new Uint8Array(PASSWORD);
+            const escrowPassword = new Uint8Array(password);
+            const keyStore = keystore.encrypt(privateKey, password);
+            const invalidKeystore: string = JSON.stringify({
+                ...keyStore,
+                crypto: {
+                    cipher: 'chacha'
+                }
+            });
+            expect(() =>
+                keystore.decrypt(
+                    JSON.parse(invalidKeystore) as KeyStore,
+                    escrowPassword
+                )
+            ).toThrowError(InvalidKeystoreError);
+        });
+
+        test('decrypt - invalid crypto kdf', () => {
+            const privateKey = secp256k1.generatePrivateKey();
+            const password = new Uint8Array(PASSWORD);
+            const escrowPassword = new Uint8Array(password);
+            const keyStore = keystore.encrypt(privateKey, password);
+            const invalidKeystore: string = JSON.stringify({
+                ...keyStore,
+                crypto: {
+                    cipher: 'aes-128-ctr',
+                    kdf: 'pdkdf2'
+                }
+            });
+            expect(() =>
+                keystore.decrypt(
+                    JSON.parse(invalidKeystore) as KeyStore,
+                    escrowPassword
+                )
+            ).toThrowError(InvalidKeystoreError);
+        });
+
+        test('decrypt - invalid version', () => {
+            const privateKey = secp256k1.generatePrivateKey();
+            const password = new Uint8Array(PASSWORD);
+            const escrowPassword = new Uint8Array(password);
+            const keyStore = keystore.encrypt(privateKey, password);
+            const invalidKeystore: string = JSON.stringify({
+                ...keyStore,
+                version: 4
+            });
+            expect(() =>
+                keystore.decrypt(
+                    JSON.parse(invalidKeystore) as KeyStore,
+                    escrowPassword
+                )
+            ).toThrowError(InvalidKeystoreError);
+        });
+
+        test('decrypt - invalid password', () => {
+            const privateKey = secp256k1.generatePrivateKey();
+            const password = new Uint8Array(PASSWORD);
+            const keyStore = keystore.encrypt(privateKey, password);
+            const invalidPassword = new TextEncoder().encode(
+                `WRONG_${encryptionPassword}`.normalize('NFKC')
+            );
+            expect(() =>
+                keystore.decrypt(keyStore, invalidPassword)
+            ).toThrowError(InvalidKeystorePasswordError);
+        });
+    });
+
+    describe('isValid', () => {
+        test('isValid - false - invalid crypto cipher', () => {
+            const privateKey = secp256k1.generatePrivateKey();
+            const password = new Uint8Array(PASSWORD);
+            const invalidKeystore = JSON.parse(
+                JSON.stringify({
+                    ...keystore.encrypt(privateKey, password),
+                    crypto: {
+                        cipher: 'chacha'
+                    }
+                })
+            ) as KeyStore;
+            expect(keystore.isValid(invalidKeystore)).toBeFalsy();
+        });
+
+        test('isValid - false - invalid crypto kdf', () => {
+            const privateKey = secp256k1.generatePrivateKey();
+            const password = new Uint8Array(PASSWORD);
+            const invalidKeystore = JSON.parse(
+                JSON.stringify({
+                    ...keystore.encrypt(privateKey, password),
+                    crypto: {
+                        kdf: 'pdkdf2'
+                    }
+                })
+            ) as KeyStore;
+            expect(keystore.isValid(invalidKeystore)).toBeFalsy();
+        });
+
+        test('isValid - false - invalid version', () => {
+            const privateKey = secp256k1.generatePrivateKey();
+            const password = new Uint8Array(PASSWORD);
+            const invalidKeystore = JSON.parse(
+                JSON.stringify({
+                    ...keystore.encrypt(privateKey, password),
+                    version: 4
+                })
+            ) as KeyStore;
+            expect(keystore.isValid(invalidKeystore)).toBeFalsy();
+        });
+
+        test('isValid - true', () => {
+            const privateKey = secp256k1.generatePrivateKey();
+            const password = new Uint8Array(PASSWORD);
+            const keyStore = keystore.encrypt(privateKey, password);
+            expect(keystore.isValid(keyStore)).toBeTruthy();
+        });
     });
 });
