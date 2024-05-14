@@ -231,7 +231,7 @@ class TransactionsModule {
         return {
             blockRef,
             chainTag,
-            clauses: await this.resolveNamesForClauses(clauses),
+            clauses: await this.resolveNamesInClauses(clauses),
             dependsOn: options?.dependsOn ?? null,
             expiration: options?.expiration ?? 32,
             gas,
@@ -242,24 +242,56 @@ class TransactionsModule {
         };
     }
 
-    public async resolveNamesForClauses(
+    /**
+     * Ensures that names in clauses are resolved to addresses
+     *
+     * @param clauses - The clauses of the transaction.
+     * @returns A promise that resolves to clauses with resolved addresses
+     */
+    public async resolveNamesInClauses(
         clauses: TransactionClause[]
     ): Promise<TransactionClause[]> {
-        return await Promise.all(
-            clauses.map(async (clause) => {
-                if (typeof clause.to === 'string' && clause.to.includes('.')) {
-                    const provider = new VechainProvider(this.thor);
-                    const [to] = await resolveNames(provider, [clause.to]);
-                    if (to !== null) {
-                        return {
-                            ...clause,
-                            to
-                        };
-                    }
-                }
+        // find unique names in the clause list
+        const uniqueNames = clauses.reduce((map, clause) => {
+            if (
+                typeof clause.to === 'string' &&
+                !map.has(clause.to) &&
+                clause.to.includes('.')
+            ) {
+                map.set(clause.to, clause.to);
+            }
+            return map;
+        }, new Map<string, string>());
+
+        const nameList = [...uniqueNames.keys()];
+
+        // no names, return the original clauses
+        if (uniqueNames.size === 0) {
+            return clauses;
+        }
+
+        // resolve the names to addresses
+        const provider = new VechainProvider(this.thor);
+        const addresses = await resolveNames(provider, nameList);
+
+        // map unique names with resolved addresses
+        addresses.forEach((address, index) => {
+            if (address !== null) {
+                uniqueNames.set(nameList[index], address);
+            }
+        });
+
+        // replace names with resolved addresses, or leave unchanged
+        return clauses.map((clause) => {
+            if (typeof clause.to !== 'string') {
                 return clause;
-            })
-        );
+            }
+
+            return {
+                ...clause,
+                to: uniqueNames.get(clause.to) ?? clause.to
+            };
+        });
     }
 
     /**
@@ -302,7 +334,7 @@ class TransactionsModule {
             {
                 query: buildQuery({ revision }),
                 body: {
-                    clauses: await this.resolveNamesForClauses(
+                    clauses: await this.resolveNamesInClauses(
                         clauses.map((clause) => {
                             return {
                                 ...clause,
