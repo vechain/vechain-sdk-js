@@ -322,6 +322,12 @@ const getRevertReasonTestCasesFixture = [
         revertedTransactionHash:
             '0xcc9ce45f0c7c0d95e0c1afbd4c0c5cee01876968c8b610e0f02d7ff8d6344682',
         expected: null
+    },
+    {
+        description: 'Should return null if transaction IS NOT found',
+        revertedTransactionHash:
+            '0x00000000000000000000000d4c0c5cee01876960000000000000000000000000',
+        expected: null
     }
 ];
 

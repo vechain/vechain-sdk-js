@@ -33,9 +33,9 @@ import {
 } from './types';
 import { assert, buildError, DATA, TRANSACTION } from '@vechain/sdk-errors';
 import { type ThorClient } from '../thor-client';
-import { BlocksModule, type ExpandedBlockDetail } from '../blocks';
+import { type ExpandedBlockDetail } from '../blocks';
 import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
-import { type CallNameReturnType, DebugModule } from '../debug';
+import { type CallNameReturnType } from '../debug';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -347,8 +347,8 @@ class TransactionsModule {
         transactionHash: string
     ): Promise<string | null> {
         // 1 - Init Blocks and Debug modules
-        const blocksModule = new BlocksModule(this.thor);
-        const debugModule = new DebugModule(this.thor);
+        const blocksModule = this.thor.blocks;
+        const debugModule = this.thor.debug;
 
         // 2 - Get the transaction details
         const transaction = (await this.getTransaction(
@@ -356,9 +356,12 @@ class TransactionsModule {
         )) as TransactionDetailNoRaw;
 
         // 3 - Get the block details (to get the transaction index)
-        const block = (await blocksModule.getBlockExpanded(
-            transaction.meta.blockID
-        )) as ExpandedBlockDetail;
+        const block =
+            transaction !== null
+                ? ((await blocksModule.getBlockExpanded(
+                      transaction.meta.blockID
+                  )) as ExpandedBlockDetail)
+                : null;
 
         // Block or transaction not found
         if (block === null || transaction === null) return null;
