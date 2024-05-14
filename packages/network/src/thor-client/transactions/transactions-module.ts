@@ -10,7 +10,8 @@ import {
     type TransactionClause,
     TransactionHandler
 } from '@vechain/sdk-core';
-import { buildQuery, Poll, thorest } from '../../utils';
+import { VechainProvider } from '../../';
+import { buildQuery, Poll, resolveNames, thorest } from '../../utils';
 import {
     type GetTransactionInputOptions,
     type GetTransactionReceiptInputOptions,
@@ -230,7 +231,7 @@ class TransactionsModule {
         return {
             blockRef,
             chainTag,
-            clauses,
+            clauses: await this.resolveNamesForClauses(clauses),
             dependsOn: options?.dependsOn ?? null,
             expiration: options?.expiration ?? 32,
             gas,
@@ -239,6 +240,26 @@ class TransactionsModule {
             reserved:
                 options?.isDelegated === true ? { features: 1 } : undefined
         };
+    }
+
+    public async resolveNamesForClauses(
+        clauses: TransactionClause[]
+    ): Promise<TransactionClause[]> {
+        return await Promise.all(
+            clauses.map(async (clause) => {
+                if (typeof clause.to === 'string' && clause.to.includes('.')) {
+                    const provider = new VechainProvider(this.thor);
+                    const [to] = await resolveNames(provider, [clause.to]);
+                    if (to !== null) {
+                        return {
+                            ...clause,
+                            to
+                        };
+                    }
+                }
+                return clause;
+            })
+        );
     }
 
     /**
@@ -281,12 +302,14 @@ class TransactionsModule {
             {
                 query: buildQuery({ revision }),
                 body: {
-                    clauses: clauses.map((clause) => {
-                        return {
-                            ...clause,
-                            value: BigInt(clause.value).toString()
-                        };
-                    }),
+                    clauses: await this.resolveNamesForClauses(
+                        clauses.map((clause) => {
+                            return {
+                                ...clause,
+                                value: BigInt(clause.value).toString()
+                            };
+                        })
+                    ),
                     gas,
                     gasPrice,
                     caller,
