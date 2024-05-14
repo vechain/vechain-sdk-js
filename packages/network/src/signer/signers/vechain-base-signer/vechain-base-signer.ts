@@ -17,14 +17,13 @@ import {
     Transaction,
     type TransactionBody,
     type TransactionClause,
-    TransactionHandler,
-    VNS_NETWORK_CONFIGURATION,
-    ZERO_ADDRESS,
-    type FunctionFragment
+    TransactionHandler
 } from '../../../../../core';
 import { RPC_METHODS } from '../../../provider';
 import { assert, DATA, JSONRPC, TRANSACTION } from '@vechain/sdk-errors';
 import { assertTransactionCanBeSigned } from '../../../assertions';
+import { resolveNames } from '../../../utils';
+
 /**
  * Basic vechain signer.
  * This signer can be initialized using a private key.
@@ -479,32 +478,18 @@ class VechainBaseSigner implements VechainSigner {
         return Hex0x.of(new Transaction(unsignedTx.body, signature).encoded);
     }
 
+    /**
+     * Use vet.domains to resolve name to adress
+     * @param name - The name to resolve
+     * @returns the address for a name or null
+     */
     async resolveName(name: string): Promise<null | string> {
         if (this.provider === null) {
             return null;
         }
 
-        const chainId = (await this.provider.request({
-            method: RPC_METHODS.eth_chainId,
-            params: []
-        })) as string;
-
-        if (VNS_NETWORK_CONFIGURATION[chainId] === undefined) {
-            return null;
-        }
-
-        const addresses: string[][] =
-            (await this.provider.thorClient.contracts.executeCall(
-                VNS_NETWORK_CONFIGURATION[chainId].resolveUtils,
-                'function getAddresses(string[] names) returns (address[] addresses)' as unknown as FunctionFragment,
-                [[name]]
-            )) as string[][];
-
-        const [[address]] = addresses;
-        if (address !== ZERO_ADDRESS && addressUtils.isAddress(address)) {
-            return address;
-        }
-        return null;
+        const addresses = await resolveNames(this.provider, [name]);
+        return addresses[0] ?? null;
     }
 }
 

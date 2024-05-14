@@ -3,16 +3,29 @@
  *
  * @group integration/providers/vechain-provider
  */
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import {
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    jest,
+    test
+} from '@jest/globals';
 import {
     ThorClient,
     VechainBaseSigner,
-    VechainProvider
-} from '../../../../src';
+    VechainProvider,
+    resolveNames
+} from '../../../../src/';
 import { testnetUrl } from '../../../fixture';
 import { addressUtils } from '../../../../../core';
 import { populateCallTestCases, populateCallTestCasesAccount } from './fixture';
 
+jest.mock('../../../../src/utils/vns', () => ({
+    resolveNames: jest.fn((_, names: string[]) =>
+        names.map(() => '0x0000000000000000000000000000000000000000')
+    )
+}));
 /**
  * Vechain base signer tests
  *
@@ -147,6 +160,20 @@ describe('Vechain base signer tests', () => {
                     ).rejects.toThrowError(fixture.expectedError);
                 });
             });
+        });
+    });
+    describe('resolveName(name)', () => {
+        test('Should use VNS.resolveNames() to resolve an address by name', async () => {
+            const signer = new VechainBaseSigner(
+                Buffer.from(
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
+                    'hex'
+                ),
+                provider
+            );
+            const name = 'test-sdk.vet';
+            await signer.resolveName(name);
+            expect(resolveNames).toHaveBeenCalledWith(provider, [name]);
         });
     });
 });
