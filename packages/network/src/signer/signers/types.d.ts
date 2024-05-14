@@ -372,7 +372,7 @@ interface VechainSigner {
     /**
      *  Resolves an ENS Name to an address.
      */
-    // resolveName: (name: string) => Promise<null | string>;
+    resolveName: (name: string) => Promise<null | string>;
 }
 
 export {

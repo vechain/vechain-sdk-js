@@ -17,12 +17,14 @@ import {
     Transaction,
     type TransactionBody,
     type TransactionClause,
-    TransactionHandler
+    TransactionHandler,
+    VNS_NETWORK_CONFIGURATION,
+    ZERO_ADDRESS,
+    type FunctionFragment
 } from '../../../../../core';
 import { RPC_METHODS } from '../../../provider';
 import { assert, DATA, JSONRPC, TRANSACTION } from '@vechain/sdk-errors';
 import { assertTransactionCanBeSigned } from '../../../assertions';
-
 /**
  * Basic vechain signer.
  * This signer can be initialized using a private key.
@@ -475,6 +477,34 @@ class VechainBaseSigner implements VechainSigner {
 
         // Return new signed transaction
         return Hex0x.of(new Transaction(unsignedTx.body, signature).encoded);
+    }
+
+    async resolveName(name: string): Promise<null | string> {
+        if (this.provider === null) {
+            return null;
+        }
+
+        const chainId = (await this.provider.request({
+            method: RPC_METHODS.eth_chainId,
+            params: []
+        })) as string;
+
+        if (VNS_NETWORK_CONFIGURATION[chainId] === undefined) {
+            return null;
+        }
+
+        const addresses: string[][] =
+            (await this.provider.thorClient.contracts.executeCall(
+                VNS_NETWORK_CONFIGURATION[chainId].resolveUtils,
+                'function getAddresses(string[] names) returns (address[] addresses)' as unknown as FunctionFragment,
+                [[name]]
+            )) as string[][];
+
+        const [[address]] = addresses;
+        if (address !== ZERO_ADDRESS && addressUtils.isAddress(address)) {
+            return address;
+        }
+        return null;
     }
 }
 
