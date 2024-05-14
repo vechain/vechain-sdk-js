@@ -15,7 +15,7 @@ interface CallNameReturnType {
     gasUsed: string;
     to: string;
     input: string;
-    output: string;
+    output?: string;
 
     /**
      * Transaction errors (if any)
