@@ -23,9 +23,16 @@ import { populateCallTestCases, populateCallTestCasesAccount } from './fixture';
 
 jest.mock('../../../../src/utils/vns', () => ({
     resolveNames: jest.fn((_, names: string[]) =>
-        names.map(() => '0x0000000000000000000000000000000000000000')
+        names
+            .filter((name) => name !== 'error.vet')
+            .map((name) =>
+                name === 'address1.vet'
+                    ? '0x0000000000000000000000000000000000000001'
+                    : '0x0000000000000000000000000000000000000000'
+            )
     )
 }));
+
 /**
  * Vechain base signer tests
  *
@@ -163,7 +170,7 @@ describe('Vechain base signer tests', () => {
         });
     });
     describe('resolveName(name)', () => {
-        test('Should use VNS.resolveNames() to resolve an address by name', async () => {
+        test('Should use resolveNames() to resolve an address by name', async () => {
             const signer = new VechainBaseSigner(
                 Buffer.from(
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
@@ -174,6 +181,35 @@ describe('Vechain base signer tests', () => {
             const name = 'test-sdk.vet';
             await signer.resolveName(name);
             expect(resolveNames).toHaveBeenCalledWith(provider, [name]);
+        });
+
+        test('Should return null if resolveNames() has invalid result', async () => {
+            const signer = new VechainBaseSigner(
+                Buffer.from(
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
+                    'hex'
+                ),
+                provider
+            );
+            const name = 'error.vet';
+            const address = await signer.resolveName(name);
+            expect(address).toEqual(null);
+        });
+
+        test('Should pass address provided by resolveNames()', async () => {
+            const signer = new VechainBaseSigner(
+                Buffer.from(
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
+                    'hex'
+                ),
+                provider
+            );
+            const name = 'address1.vet';
+
+            const address = await signer.resolveName(name);
+            expect(address).toEqual(
+                '0x0000000000000000000000000000000000000001'
+            );
         });
     });
 });
