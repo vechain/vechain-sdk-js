@@ -53,7 +53,7 @@ const formatToRPCStandard = (
         sha3Uncles: Hex0x.of(ZERO_BYTES(32)),
         nonce: Hex0x.of(ZERO_BYTES(8)),
         logsBloom: Hex0x.of(ZERO_BYTES(256)),
-        extraData: '0x0',
+        extraData: '0x',
         baseFeePerGas: '0x0',
         mixHash: Hex0x.of(ZERO_BYTES(32))
     };
