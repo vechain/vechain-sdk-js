@@ -291,7 +291,7 @@ const buildTransactionBodyClausesTestCases = [
         }
     },
     {
-        description: 'Should build resolve names into addresses in all clauses',
+        description: 'Should resolve names into addresses in all clauses',
         clauses: [
             {
                 to: 'vtho.test-sdk.vet',
@@ -312,6 +312,27 @@ const buildTransactionBodyClausesTestCases = [
                 '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f' // Any valid tx id
         },
         expected: {
+            solo: {
+                chainTag: 246,
+                clauses: [
+                    {
+                        data: '0x',
+                        to: '0x0000000000000000000000000000456E65726779',
+                        value: '0'
+                    },
+                    {
+                        data: '0x',
+                        to: '0x0000000000000000000000000000506172616D73',
+                        value: '1000000000000000000'
+                    }
+                ],
+                dependsOn:
+                    '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f',
+                expiration: 1000,
+                gas: 52046,
+                gasPriceCoef: 255,
+                reserved: { features: 1 }
+            },
             testnet: {
                 chainTag: 39,
                 clauses: [

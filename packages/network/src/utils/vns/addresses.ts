@@ -20,7 +20,7 @@ const NetworkContracts: Record<
 
     [SOLO_NETWORK.genesisBlock.id]: {
         registry: '0x1c4a602ed21f3d1dddd1142c81f231ef1a08c921',
-        resolveUtils: '0xaa4cbee6ae8e51764680a9d55a9a3440886ec1c6'
+        resolveUtils: '0xb2f08bbfa8a42b1fbe63feec604cb147385203d7'
     }
 };
 
