@@ -331,4 +331,39 @@ describe('ThorClient - ERC20 Contracts', () => {
             )
         ).toEqual([BigInt(4000)]);
     }, 10000);
+
+    /**
+     * Test transaction execution with url delegation set from contract.
+     */
+    test('transaction execution with private key delegation', async () => {
+        // Deploy the ERC20 contract
+        let factory = thorSoloClient.contracts.createContractFactory(
+            deployedERC20Abi,
+            erc20ContractBytecode,
+            signer
+        );
+
+        factory = await factory.startDeployment();
+
+        const contract: Contract = await factory.waitForDeployment();
+
+        const txResult = await (
+            await contract.transact.transfer(
+                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                1000,
+                {
+                    delegatorPrivateKey:
+                        TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey
+                }
+            )
+        ).wait();
+
+        expect(txResult?.reverted).toBe(false);
+
+        expect(
+            await contract.read.balanceOf(
+                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+            )
+        ).toEqual([BigInt(1000)]);
+    }, 30000);
 });
