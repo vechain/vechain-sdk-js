@@ -61,3 +61,10 @@ In the following complete examples, we will explore the entire lifecycle of a Ve
 [FullFlowDelegatorUrlSnippet](examples/transactions/full-flow-delegator-url.ts)
 
 By examining these complete examples, developers can gain a comprehensive understanding of transaction handling in the vechain SDK. Each example demonstrates the steps involved in initiating, signing, and sending transactions, as well as the nuances associated with fee delegation.
+
+# Errors handling on transactions
+You can find the transaction revert reason by using `getRevertReason` method with the transaction hash.
+
+[RevertReasonSnippet](examples/transactions/revert_reason.ts)
+
+This method will return the revert reason of the transaction if it failed, otherwise it will return `null`.

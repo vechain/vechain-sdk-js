@@ -675,3 +675,19 @@ const txReceipt = await thorClient.transactions.waitForTransaction(
 ```
 
 By examining these complete examples, developers can gain a comprehensive understanding of transaction handling in the vechain SDK. Each example demonstrates the steps involved in initiating, signing, and sending transactions, as well as the nuances associated with fee delegation.
+
+# Errors handling on transactions
+You can find the transaction revert reason by using `getRevertReason` method with the transaction hash.
+
+```typescript { name=revert_reason, category=example }
+// Define transaction id's
+const transactionHash =
+    '0x0a5177fb83346bb6ff7ca8408889f0c99f44b2b1b5c8bf6f0eb53c4b2e81d98d';
+
+// Get the revert reason
+const revertReason =
+    await thorClient.transactions.getRevertReason(transactionHash);
+console.log(revertReason);
+```
+
+This method will return the revert reason of the transaction if it failed, otherwise it will return `null`.
