@@ -480,19 +480,28 @@ class VechainBaseSigner implements VechainSigner {
 
     /**
      * Use vet.domains to resolve name to adress
-     * @param name - The name to resolve
+     * @param vnsName - The name to resolve
      * @returns the address for a name or null
      */
-    async resolveName(name: string): Promise<null | string> {
+    async resolveName(vnsName: string): Promise<null | string> {
         if (this.provider === null) {
             return null;
         }
 
-        const addresses = await vnsUtils.resolveNames(
-            this.provider.thorClient,
-            [name]
-        );
-        return addresses[0] ?? null;
+        return await vnsUtils.resolveName(this.provider.thorClient, vnsName);
+    }
+
+    /**
+     * Use vet.domains to lookup a verified primary name for an address
+     * @param address - The address to lookup
+     * @returns the primary name for an address or null
+     */
+    async lookupAddress(address: string): Promise<null | string> {
+        if (this.provider === null) {
+            return null;
+        }
+
+        return await vnsUtils.lookupAddress(this.provider.thorClient, address);
     }
 }
 

@@ -157,8 +157,9 @@ describe('Vechain base signer tests', () => {
             });
         });
     });
-    describe('resolveName(name)', () => {
-        test('Should use resolveNames() to resolve an address by name', async () => {
+
+    describe('resolveName(vnsName)', () => {
+        test('Should use vnsUtils.resolveName() to resolve an address by name', async () => {
             const signer = new VechainBaseSigner(
                 Buffer.from(
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
@@ -167,16 +168,16 @@ describe('Vechain base signer tests', () => {
                 provider
             );
 
-            jest.spyOn(vnsUtils, 'resolveNames');
+            jest.spyOn(vnsUtils, 'resolveName');
             const name = 'test-sdk.vet';
             await signer.resolveName(name);
-            expect(vnsUtils.resolveNames).toHaveBeenCalledWith(
+            expect(vnsUtils.resolveName).toHaveBeenCalledWith(
                 provider.thorClient,
-                [name]
+                name
             );
         });
 
-        test('Should return null if resolveNames() has invalid result', async () => {
+        test('Should return null if there were invalid result', async () => {
             const signer = new VechainBaseSigner(
                 Buffer.from(
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
@@ -203,17 +204,69 @@ describe('Vechain base signer tests', () => {
                 provider
             );
             const name = 'address1.vet';
-            jest.spyOn(vnsUtils, 'resolveNames').mockImplementation(
-                async () => {
-                    return await Promise.resolve([
-                        '0x0000000000000000000000000000000000000001'
-                    ]);
-                }
-            );
+            jest.spyOn(vnsUtils, 'resolveName').mockImplementation(async () => {
+                return await Promise.resolve(
+                    '0x0000000000000000000000000000000000000001'
+                );
+            });
             const address = await signer.resolveName(name);
             expect(address).toEqual(
                 '0x0000000000000000000000000000000000000001'
             );
+        });
+    });
+
+    describe('lookupAddress(address)', () => {
+        test('Should use vnsUtils.lookupAddress() to resolve an address by name', async () => {
+            const signer = new VechainBaseSigner(
+                Buffer.from(
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
+                    'hex'
+                ),
+                provider
+            );
+
+            jest.spyOn(vnsUtils, 'lookupAddress');
+            const address = '0x105199a26b10e55300CB71B46c5B5e867b7dF427';
+            await signer.lookupAddress(address);
+            expect(vnsUtils.lookupAddress).toHaveBeenCalledWith(
+                provider.thorClient,
+                address
+            );
+        });
+
+        test('Should return null if there were invalid results', async () => {
+            const signer = new VechainBaseSigner(
+                Buffer.from(
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
+                    'hex'
+                ),
+                provider
+            );
+            const address = '0x0000000000000000000000000000000000000001';
+            jest.spyOn(vnsUtils, 'lookupAddresses').mockImplementation(
+                async () => {
+                    return await Promise.resolve([]);
+                }
+            );
+            const name = await signer.lookupAddress(address);
+            expect(name).toEqual(null);
+        });
+
+        test('Should pass name provided by vnsUtils.resolveName()', async () => {
+            const signer = new VechainBaseSigner(
+                Buffer.from(
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
+                    'hex'
+                ),
+                provider
+            );
+            const address = '0x0000000000000000000000000000000000000001';
+            jest.spyOn(vnsUtils, 'resolveName').mockImplementation(async () => {
+                return await Promise.resolve('test.vet');
+            });
+            const name = await signer.resolveName(address);
+            expect(name).toEqual('test.vet');
         });
     });
 });
