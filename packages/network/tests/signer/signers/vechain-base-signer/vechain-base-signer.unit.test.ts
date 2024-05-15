@@ -15,23 +15,11 @@ import {
     ThorClient,
     VechainBaseSigner,
     VechainProvider,
-    resolveNames
+    vnsUtils
 } from '../../../../src/';
 import { testnetUrl } from '../../../fixture';
 import { addressUtils } from '../../../../../core';
 import { populateCallTestCases, populateCallTestCasesAccount } from './fixture';
-
-jest.mock('../../../../src/utils/vns', () => ({
-    resolveNames: jest.fn((_, names: string[]) =>
-        names
-            .filter((name) => name !== 'error.vet')
-            .map((name) =>
-                name === 'address1.vet'
-                    ? '0x0000000000000000000000000000000000000001'
-                    : '0x0000000000000000000000000000000000000000'
-            )
-    )
-}));
 
 /**
  * Vechain base signer tests
@@ -178,9 +166,14 @@ describe('Vechain base signer tests', () => {
                 ),
                 provider
             );
+
+            jest.spyOn(vnsUtils, 'resolveNames');
             const name = 'test-sdk.vet';
             await signer.resolveName(name);
-            expect(resolveNames).toHaveBeenCalledWith(provider, [name]);
+            expect(vnsUtils.resolveNames).toHaveBeenCalledWith(
+                provider.thorClient,
+                [name]
+            );
         });
 
         test('Should return null if resolveNames() has invalid result', async () => {
@@ -192,6 +185,11 @@ describe('Vechain base signer tests', () => {
                 provider
             );
             const name = 'error.vet';
+            jest.spyOn(vnsUtils, 'resolveNames').mockImplementation(
+                async () => {
+                    return await Promise.resolve([]);
+                }
+            );
             const address = await signer.resolveName(name);
             expect(address).toEqual(null);
         });
@@ -205,7 +203,13 @@ describe('Vechain base signer tests', () => {
                 provider
             );
             const name = 'address1.vet';
-
+            jest.spyOn(vnsUtils, 'resolveNames').mockImplementation(
+                async () => {
+                    return await Promise.resolve([
+                        '0x0000000000000000000000000000000000000001'
+                    ]);
+                }
+            );
             const address = await signer.resolveName(name);
             expect(address).toEqual(
                 '0x0000000000000000000000000000000000000001'

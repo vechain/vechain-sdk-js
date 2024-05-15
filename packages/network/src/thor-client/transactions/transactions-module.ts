@@ -10,8 +10,7 @@ import {
     type TransactionClause,
     TransactionHandler
 } from '@vechain/sdk-core';
-import { VechainProvider } from '../../';
-import { buildQuery, Poll, resolveNames, thorest } from '../../utils';
+import { buildQuery, Poll, vnsUtils, thorest } from '../../utils';
 import {
     type GetTransactionInputOptions,
     type GetTransactionReceiptInputOptions,
@@ -271,8 +270,7 @@ class TransactionsModule {
         }
 
         // resolve the names to addresses
-        const provider = new VechainProvider(this.thor);
-        const addresses = await resolveNames(provider, nameList);
+        const addresses = await vnsUtils.resolveNames(this.thor, nameList);
 
         // map unique names with resolved addresses
         addresses.forEach((address, index) => {

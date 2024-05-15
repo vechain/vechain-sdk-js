@@ -1,41 +1,36 @@
-import { type AvailableVechainProviders, RPC_METHODS } from '../../';
-
+import { NetworkContracts } from './addresses';
+import { type ThorClient } from '../../thor-client';
 import {
     addressUtils,
-    VNS_NETWORK_CONFIGURATION,
     ZERO_ADDRESS,
     type FunctionFragment
 } from '../../../../core';
 
 const resolveNames = async (
-    provider: AvailableVechainProviders,
+    thor: ThorClient,
     names: string[]
 ): Promise<Array<null | string>> => {
-    // use chainId to identify the contracts to use
-    const chainId = (await provider.request({
-        method: RPC_METHODS.eth_chainId,
-        params: []
-    })) as string;
+    // identify current chain
+    const genesisBlock = await thor.blocks.getGenesisBlock();
 
     // verify configuration for chain exists
     if (
-        !addressUtils.isAddress(
-            VNS_NETWORK_CONFIGURATION[chainId]?.resolveUtils
-        )
+        genesisBlock === null ||
+        !addressUtils.isAddress(NetworkContracts[genesisBlock.id]?.resolveUtils)
     ) {
         return names.map(() => null);
     }
 
-    const resolveUtilsAddress = VNS_NETWORK_CONFIGURATION[chainId].resolveUtils;
+    const resolveUtilsAddress = NetworkContracts[genesisBlock.id].resolveUtils;
 
     // use the resolveUtils to lookup names
-    const addresses = (await provider.thorClient.contracts.executeCall(
+    const [addresses] = (await thor.contracts.executeCall(
         resolveUtilsAddress,
         'function getAddresses(string[] names) returns (address[] addresses)' as unknown as FunctionFragment,
         [names]
     )) as string[][];
 
-    return addresses[0].map((address) => {
+    return addresses.map((address) => {
         // zero addresses are missing configuration entries
         if (address !== ZERO_ADDRESS && addressUtils.isAddress(address)) {
             return address;
@@ -45,4 +40,4 @@ const resolveNames = async (
     });
 };
 
-export { resolveNames };
+export const vnsUtils = { resolveNames };

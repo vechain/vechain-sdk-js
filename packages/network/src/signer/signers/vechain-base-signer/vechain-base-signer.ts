@@ -22,7 +22,7 @@ import {
 import { RPC_METHODS } from '../../../provider';
 import { assert, DATA, JSONRPC, TRANSACTION } from '@vechain/sdk-errors';
 import { assertTransactionCanBeSigned } from '../../../assertions';
-import { resolveNames } from '../../../utils';
+import { vnsUtils } from '../../../utils';
 
 /**
  * Basic vechain signer.
@@ -488,7 +488,10 @@ class VechainBaseSigner implements VechainSigner {
             return null;
         }
 
-        const addresses = await resolveNames(this.provider, [name]);
+        const addresses = await vnsUtils.resolveNames(
+            this.provider.thorClient,
+            [name]
+        );
         return addresses[0] ?? null;
     }
 }
