@@ -93,9 +93,7 @@ const deployTestContractTransaction = (): Transaction => {
                     {
                         to: null,
                         value: '0x0',
-                        data:
-                            TESTING_CONTRACT_BYTECODE ??
-                            TESTING_CONTRACT_BYTECODE
+                        data: TESTING_CONTRACT_BYTECODE
                     }
                 ]
             },
