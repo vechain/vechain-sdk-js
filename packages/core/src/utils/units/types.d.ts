@@ -1,10 +1,4 @@
 /**
- * BigNumberish type
- * @typedef {string | number | bigint} BigNumberish
- */
-type BigNumberish = string | number | bigint;
-
-/**
  * The supported units of Ether currency which are supported by VechainThor too.
  *
  * wei - The smallest unit of currency. 1 wei is equal to 10^-18 VET.
@@ -24,4 +18,4 @@ type WEI_UNITS =
     | 'finney'
     | 'ether';
 
-export type { BigNumberish, WEI_UNITS };
+export type { WEI_UNITS };
