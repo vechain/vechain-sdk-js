@@ -373,11 +373,6 @@ interface VechainSigner {
      *  Resolves an VNS Name to an address.
      */
     resolveName: (vnsName: string) => Promise<null | string>;
-
-    /**
-     * Resolves to the VNS name associated for the address or null if the primary name is not correctly configured.
-     */
-    lookupAddress: (address: string) => Promise<null | string>;
 }
 
 export {

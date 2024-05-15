@@ -1,10 +1,17 @@
-import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
+import {
+    afterEach,
+    beforeEach,
+    describe,
+    expect,
+    test,
+    jest
+} from '@jest/globals';
 
 import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
 import { testnetUrl } from '../../../fixture';
 import { providerMethodsTestCasesTestnet } from '../fixture';
 import { waitForMessage } from '../helpers';
-import { ThorClient, VechainProvider } from '../../../../src';
+import { ThorClient, VechainProvider, vnsUtils } from '../../../../src';
 
 /**
  * Vechain provider tests
@@ -127,5 +134,73 @@ describe('Vechain provider tests - testnet', () => {
             '0x0000000000000000000000000000456e65726779'
         );
         expect(nullSigner).toBeNull();
+    });
+
+    describe('resolveName(vnsName)', () => {
+        test('Should use vnsUtils.resolveNames() to resolve an address by name', async () => {
+            jest.spyOn(vnsUtils, 'resolveName');
+            const name = 'test-sdk.vet';
+            await provider.resolveName(name);
+            expect(vnsUtils.resolveName).toHaveBeenCalledWith(
+                provider.thorClient,
+                name
+            );
+        });
+
+        test('Should return null if there were invalid result', async () => {
+            const name = 'error.vet';
+            jest.spyOn(vnsUtils, 'resolveNames').mockImplementation(
+                async () => {
+                    return await Promise.resolve([]);
+                }
+            );
+            const address = await provider.resolveName(name);
+            expect(address).toEqual(null);
+        });
+
+        test('Should pass address provided by resolveNames()', async () => {
+            const name = 'address1.vet';
+            jest.spyOn(vnsUtils, 'resolveName').mockImplementation(async () => {
+                return await Promise.resolve(
+                    '0x0000000000000000000000000000000000000001'
+                );
+            });
+            const address = await provider.resolveName(name);
+            expect(address).toEqual(
+                '0x0000000000000000000000000000000000000001'
+            );
+        });
+    });
+
+    describe('lookupAddress(address)', () => {
+        test('Should use vnsUtils.lookupAddress() to resolve an address by name', async () => {
+            jest.spyOn(vnsUtils, 'lookupAddress');
+            const address = '0x105199a26b10e55300CB71B46c5B5e867b7dF427';
+            await provider.lookupAddress(address);
+            expect(vnsUtils.lookupAddress).toHaveBeenCalledWith(
+                provider.thorClient,
+                address
+            );
+        });
+
+        test('Should return null if there were invalid results', async () => {
+            const address = '0x0000000000000000000000000000000000000001';
+            jest.spyOn(vnsUtils, 'lookupAddresses').mockImplementation(
+                async () => {
+                    return await Promise.resolve([]);
+                }
+            );
+            const name = await provider.lookupAddress(address);
+            expect(name).toEqual(null);
+        });
+
+        test('Should pass name provided by vnsUtils.resolveName()', async () => {
+            const address = '0x0000000000000000000000000000000000000001';
+            jest.spyOn(vnsUtils, 'resolveName').mockImplementation(async () => {
+                return await Promise.resolve('test.vet');
+            });
+            const name = await provider.resolveName(address);
+            expect(name).toEqual('test.vet');
+        });
     });
 });
