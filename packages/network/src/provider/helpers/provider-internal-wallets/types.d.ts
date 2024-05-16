@@ -54,14 +54,14 @@ interface ProviderInternalWallet {
     getSigner: (
         parentProvider: TProviderType,
         address: string
-    ) => Promise<VechainSigner | null>;
+    ) => VechainSigner | null;
 
     /**
      * Get the list of addresses in the wallet.
      *
      * @returns The list of addresses in the wallet.
      */
-    getAddresses: () => Promise<string[]>;
+    getAddresses: () => string[];
 
     /**
      * Get an account by address.
@@ -69,16 +69,14 @@ interface ProviderInternalWallet {
      * @param address - Address of the account.
      * @returns The account with the given address, or null if not found.
      */
-    getAccount: (
-        address: string
-    ) => Promise<ProviderInternalWalletAccount | null>;
+    getAccount: (address: string) => ProviderInternalWalletAccount | null;
 
     /**
      * Get the options for signing a transaction with delegator (if any).
      *
      * @returns The options for signing a transaction with delegator.
      */
-    getDelegator: () => Promise<SignTransactionOptions | null>;
+    getDelegator: () => SignTransactionOptions | null;
 }
 
 export { type ProviderInternalWallet, type ProviderInternalWalletAccount };

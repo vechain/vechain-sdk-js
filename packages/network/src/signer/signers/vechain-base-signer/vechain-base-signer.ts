@@ -303,7 +303,7 @@ class VechainBaseSigner implements VechainSigner {
         return await this._signFlow(
             transactionToSign,
             DelegationHandler(
-                await this.provider?.wallet?.getDelegator()
+                this.provider?.wallet?.getDelegator()
             ).delegatorOrNull(),
             (this.provider as AvailableVechainProviders).thorClient,
             this.privateKey

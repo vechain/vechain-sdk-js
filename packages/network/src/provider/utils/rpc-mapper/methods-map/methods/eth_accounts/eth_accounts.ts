@@ -8,7 +8,7 @@ import { type VechainProvider } from '../../../../../providers';
 const ethAccounts = async (provider?: VechainProvider): Promise<string[]> => {
     // ProviderInternalWallet exists
     if (provider?.wallet !== undefined)
-        return await provider?.wallet.getAddresses();
+        return await Promise.resolve(provider?.wallet.getAddresses());
 
     // In error case (if wallet is not defined), return an empty array
     return [];

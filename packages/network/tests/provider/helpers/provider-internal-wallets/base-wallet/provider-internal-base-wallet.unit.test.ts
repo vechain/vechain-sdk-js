@@ -20,7 +20,7 @@ describe('Base wallet tests', () => {
         /**
          * Test without blocking execution on steps
          */
-        test('Should be able to create a wallet and get addresses from them', async () => {
+        test('Should be able to create a wallet and get addresses from them', () => {
             // Initialize a wallet with the accounts
             const baseWallet = new ProviderInternalBaseWallet(accountsFixture);
 
@@ -28,7 +28,7 @@ describe('Base wallet tests', () => {
             expect(baseWallet.accounts).toEqual(accountsFixture);
 
             // Get the addresses from the wallet
-            const addresses = await baseWallet.getAddresses();
+            const addresses = baseWallet.getAddresses();
             expect(addresses).toEqual(
                 accountsFixture.map((account) => account.address)
             );
@@ -42,7 +42,7 @@ describe('Base wallet tests', () => {
         /**
          * Should be able to get an account by address
          */
-        test('Should be able to get an account by address', async () => {
+        test('Should be able to get an account by address', () => {
             // Initialize a wallet with the accounts
             const baseWallet = new ProviderInternalBaseWallet(accountsFixture);
 
@@ -53,7 +53,7 @@ describe('Base wallet tests', () => {
                 ];
 
             // Get the account by address
-            const randomAccountFromWallet = await baseWallet.getAccount(
+            const randomAccountFromWallet = baseWallet.getAccount(
                 randomAccount.address
             );
 
@@ -63,13 +63,12 @@ describe('Base wallet tests', () => {
         /**
          * Should get null when trying to get an account by a not existing address
          */
-        test('Should get null when trying to get an account by a not existing address', async () => {
+        test('Should get null when trying to get an account by a not existing address', () => {
             // Initialize a wallet with the accounts
             const baseWallet = new ProviderInternalBaseWallet(accountsFixture);
 
             // Get the account by not existing address
-            const notExistingAccount =
-                await baseWallet.getAccount(ZERO_ADDRESS);
+            const notExistingAccount = baseWallet.getAccount(ZERO_ADDRESS);
 
             expect(notExistingAccount).toEqual(null);
         });
@@ -83,6 +82,7 @@ describe('Base wallet tests', () => {
 
             // Get the account by address
             const invalidAddress = 'INVALID_ADDRESS';
+
             await expect(
                 baseWallet.getAccount(invalidAddress)
             ).rejects.toThrowError(InvalidDataTypeError);
@@ -96,7 +96,7 @@ describe('Base wallet tests', () => {
         /**
          * Should be able to get the delegator options
          */
-        test('Should be able to get the delegator', async () => {
+        test('Should be able to get the delegator', () => {
             // Initialize delegator
             const delegators: SignTransactionOptions[] = [
                 {
@@ -118,8 +118,7 @@ describe('Base wallet tests', () => {
                 );
 
                 // Get the delegator from the wallet
-                const currentDelegator =
-                    await baseWalletWithDelegator.getDelegator();
+                const currentDelegator = baseWalletWithDelegator.getDelegator();
 
                 expect(currentDelegator).toEqual(delegator);
             }
@@ -128,14 +127,14 @@ describe('Base wallet tests', () => {
         /**
          * Should get null if delegator is not set
          */
-        test('Should get null if delegator is not set', async () => {
+        test('Should get null if delegator is not set', () => {
             // Initialize a wallet with the accounts
             const baseWalletWithoutDelegator = new ProviderInternalBaseWallet(
                 accountsFixture
             );
 
             // Get the delegator from the wallet that has no delegator
-            const delegator = await baseWalletWithoutDelegator.getDelegator();
+            const delegator = baseWalletWithoutDelegator.getDelegator();
 
             expect(delegator).toBeNull();
         });

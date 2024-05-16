@@ -23,7 +23,7 @@ describe('ProviderInternalHDWallet wallet tests', () => {
             /**
              * Test wallet creation and execution of wallet functions
              */
-            test('Should be able to create a wallet and execute functions', async () => {
+            test('Should be able to create a wallet and execute functions', () => {
                 const hdWallet = new ProviderInternalHDWallet(
                     hdNodeFixture.mnemonic.split(' '),
                     hdNodeFixture.count,
@@ -32,8 +32,8 @@ describe('ProviderInternalHDWallet wallet tests', () => {
                     { delegator: hdNodeFixture.delegator }
                 );
 
-                const addresses = await hdWallet.getAddresses();
-                const delegator = await hdWallet.getDelegator();
+                const addresses = hdWallet.getAddresses();
+                const delegator = hdWallet.getDelegator();
 
                 expect(addresses).toEqual(hdNodeFixture.expectedAddress);
                 expect(delegator).toEqual(

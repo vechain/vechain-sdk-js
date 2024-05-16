@@ -75,9 +75,9 @@ const ethSendTransaction = async (
 
     try {
         // Get the signer of the provider
-        const signer = (await (provider as VechainProvider).getSigner(
+        const signer = (provider as VechainProvider).getSigner(
             transaction.from
-        )) as VechainSigner;
+        ) as VechainSigner;
 
         // Return the result
         return await signer.sendTransaction(transaction);

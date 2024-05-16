@@ -116,10 +116,10 @@ class HardhatVechainProvider extends VechainProvider {
         try {
             // Debug mode - get the request and the accounts
             if (this.debug) {
-                const accounts = await (
+                const accounts = (
                     this.wallet as ProviderInternalWallet
                 ).getAddresses();
-                const delegator = await (
+                const delegator = (
                     this.wallet as ProviderInternalWallet
                 ).getDelegator();
 

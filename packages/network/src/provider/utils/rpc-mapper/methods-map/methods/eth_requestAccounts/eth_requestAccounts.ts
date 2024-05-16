@@ -11,7 +11,7 @@ const ethRequestAccounts = async (
     provider?: VechainProvider
 ): Promise<string[]> => {
     // Get the accounts from the wallet
-    const accounts = await ethAccounts(provider);
+    const accounts = ethAccounts(provider);
 
     // If there are no accounts, throw error
     // @NOTE: eth_accounts returns an empty array if there are no accounts OR wallet is not defined.
@@ -23,7 +23,7 @@ const ethRequestAccounts = async (
         );
 
     // Otherwise, return the accounts
-    return accounts;
+    return await Promise.resolve(accounts);
 };
 
 export { ethRequestAccounts };

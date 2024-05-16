@@ -55,17 +55,18 @@ class ProviderInternalBaseWallet implements ProviderInternalWallet {
      * @param address - Address of the account.
      * @returns The signer for the given address.
      */
-    async getSigner(
+    getSigner(
         parentProvider: AvailableVechainProviders,
         address: string
-    ): Promise<VechainSigner | null> {
+    ): VechainSigner | null {
         // Get the account from the wallet
-        const signerAccount = await this.getAccount(address);
+        const signerAccount = this.getAccount(address);
 
         // Return a new signer (if exists)
         if (signerAccount?.privateKey !== undefined) {
-            return await Promise.resolve(
-                new VechainBaseSigner(signerAccount.privateKey, parentProvider)
+            return new VechainBaseSigner(
+                signerAccount.privateKey,
+                parentProvider
             );
         }
 
@@ -78,10 +79,8 @@ class ProviderInternalBaseWallet implements ProviderInternalWallet {
      *
      * @returns The list of addresses in the wallet.
      */
-    async getAddresses(): Promise<string[]> {
-        return await Promise.resolve(
-            this.accounts.map((account) => account.address)
-        );
+    getAddresses(): string[] {
+        return this.accounts.map((account) => account.address);
     }
 
     /**
@@ -90,9 +89,7 @@ class ProviderInternalBaseWallet implements ProviderInternalWallet {
      * @param address - Address of the account.
      * @returns The account with the given address, or null if not found.
      */
-    async getAccount(
-        address: string
-    ): Promise<ProviderInternalWalletAccount | null> {
+    getAccount(address: string): ProviderInternalWalletAccount | null {
         // Check if the address is valid
         assert(
             'getAccount',
@@ -108,7 +105,7 @@ class ProviderInternalBaseWallet implements ProviderInternalWallet {
                 addressUtils.toERC55Checksum(account.address) ===
                 addressUtils.toERC55Checksum(address)
         );
-        return await Promise.resolve(account ?? null);
+        return account ?? null;
     }
 
     /**
@@ -116,10 +113,8 @@ class ProviderInternalBaseWallet implements ProviderInternalWallet {
      *
      * @returns The options for signing a transaction with delegator.
      */
-    async getDelegator(): Promise<SignTransactionOptions | null> {
-        return await Promise.resolve(
-            DelegationHandler(this.delegator).delegatorOrNull()
-        );
+    getDelegator(): SignTransactionOptions | null {
+        return DelegationHandler(this.delegator).delegatorOrNull();
     }
 }
 

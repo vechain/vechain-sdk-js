@@ -22,12 +22,12 @@ describe('Provider Hardhat Helpers', () => {
          */
         createWalletFromHardhatNetworkConfigPositiveCasesFixture.forEach(
             (fixture) => {
-                test(fixture.test, async () => {
+                test(fixture.test, () => {
                     const wallet = createWalletFromHardhatNetworkConfig(
                         fixture.networkConfig as HttpNetworkConfig
                     );
-                    const addresses = await wallet.getAddresses();
-                    const delegator = await wallet.getDelegator();
+                    const addresses = wallet.getAddresses();
+                    const delegator = wallet.getDelegator();
 
                     expect(addresses).toEqual(fixture.expectedAddresses);
                     expect(delegator).toEqual(

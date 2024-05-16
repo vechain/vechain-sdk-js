@@ -178,7 +178,7 @@ describe('Vechain provider tests - solo', () => {
     test('Should be able to get to subscribe to the latest logs of an erc20 contract', async () => {
         const contract = await deployERC20Contract(
             thorClient,
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VechainSigner
+            provider.getSigner(TEST_ACCOUNT.address) as VechainSigner
         );
 
         const logsParams = {
@@ -196,7 +196,7 @@ describe('Vechain provider tests - solo', () => {
 
         // Execute a contract transaction to generate a log event
         await thorClient.contracts.executeTransaction(
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VechainSigner,
+            provider.getSigner(TEST_ACCOUNT.address) as VechainSigner,
             contract.address,
             coder
                 .createInterface(contract.abi)
@@ -258,11 +258,11 @@ describe('Vechain provider tests - solo', () => {
         // Test setup: Deploy contracts and set up event subscriptions
         const erc20Contract = await deployERC20Contract(
             thorClient,
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VechainSigner
+            provider.getSigner(TEST_ACCOUNT.address) as VechainSigner
         );
         const erc721Contract = await deployERC721Contract(
             thorClient,
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VechainSigner
+            provider.getSigner(TEST_ACCOUNT.address) as VechainSigner
         );
 
         const erc20logsParams = {
@@ -299,7 +299,7 @@ describe('Vechain provider tests - solo', () => {
 
         // Execute transactions that should emit events
         await thorClient.contracts.executeTransaction(
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VechainSigner,
+            provider.getSigner(TEST_ACCOUNT.address) as VechainSigner,
             erc20Contract.address,
             coder
                 .createInterface(erc20Contract.abi)
@@ -308,7 +308,7 @@ describe('Vechain provider tests - solo', () => {
         );
 
         await thorClient.contracts.executeTransaction(
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VechainSigner,
+            provider.getSigner(TEST_ACCOUNT.address) as VechainSigner,
             erc721Contract.address,
             coder
                 .createInterface(erc721Contract.abi)

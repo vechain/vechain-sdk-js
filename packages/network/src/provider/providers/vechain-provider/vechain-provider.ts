@@ -277,11 +277,11 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
      * @param address - Address of the account.
      * @returns The signer for the given address.
      */
-    async getSigner(address: string): Promise<VechainSigner | null> {
+    getSigner(address: string): VechainSigner | null {
         if (this.wallet === undefined) {
             return null;
         }
-        return await this.wallet?.getSigner(this, address);
+        return this.wallet?.getSigner(this, address);
     }
 }
 
