@@ -973,6 +973,13 @@
     "@vechain/sdk-ethers-adapter" "1.0.0-beta.4"
     "@vechain/sdk-network" "1.0.0-beta.4"
 
+"@vechain/sdk-logging@1.0.0-beta.4":
+  version "1.0.0-beta.4"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-beta.4.tgz#d47d4a01a472068bfeb5b83bb67a66f10b299955"
+  integrity sha512-mLvxoNIBtccTeKbobqJ0RURlGvXDGE5MP+Y1Wca6G4gX4O8zY3Owb2HRSeZqgsu2u2OBS1XWaJr3bzot0hj1xQ==
+  dependencies:
+    "@vechain/sdk-errors" "1.0.0-beta.4"
+
 "@vechain/sdk-network@1.0.0-beta.4", "@vechain/sdk-network@^1.0.0-beta.2":
   version "1.0.0-beta.4"
   resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.4.tgz#1862f669e7b07a6c7fc91217f6017692f04e2944"
