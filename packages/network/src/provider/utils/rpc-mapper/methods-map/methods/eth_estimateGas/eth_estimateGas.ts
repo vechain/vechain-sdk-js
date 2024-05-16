@@ -4,6 +4,8 @@ import {
     type SimulateTransactionClause,
     type ThorClient
 } from '../../../../../../thor-client';
+import { getCorrectBlockNumberRPCToVechain } from '../../../../const';
+import { type BlockQuantityInputRPC } from '../../../types';
 
 /**
  * RPC Method eth_estimateGas implementation
@@ -26,9 +28,7 @@ const ethEstimateGas = async (
     // Check input params
     assert(
         'eth_estimateGas',
-        params.length === 2 &&
-            typeof params[0] === 'object' &&
-            typeof params[1] === 'string',
+        [1, 2].includes(params.length) && typeof params[0] === 'object',
         DATA.INVALID_DATA_TYPE,
         `Invalid params length, expected 1 object containing transaction info with following properties: \n {` +
             `\tfrom: 20 bytes Address the transaction is sent from.` +
@@ -39,14 +39,17 @@ const ethEstimateGas = async (
             `\tmaxFeePerGas: Maximum total fee (base fee + priority fee), in Wei, the sender is willing to pay per gas` +
             `\tvalue: Hexadecimal of the value sent with this transaction.` +
             `\tdata: Hash of the method signature and encoded parameters` +
-            `}\n\n and the block number parameter. An hexadecimal number or (latest, earliest or pending).`
+            `}\n\n and, OPTIONALLY, the block number parameter. An hexadecimal number or (latest, earliest or pending).`
     );
 
     try {
         // NOTE: The standard requires block parameter.
         // Here it is ignored and can be added in the future compatibility reasons.
         // (INPUT CHECK TAKE CARE OF THIS)
-        const [inputOptions] = params as [TransactionObjectInput];
+        const [inputOptions, revision] = params as [
+            TransactionObjectInput,
+            BlockQuantityInputRPC?
+        ];
 
         const estimatedGas = await thorClient.gas.estimateGas(
             [
@@ -56,7 +59,13 @@ const ethEstimateGas = async (
                     data: inputOptions.data ?? '0x0'
                 } satisfies SimulateTransactionClause
             ],
-            inputOptions.from
+            inputOptions.from,
+            {
+                revision:
+                    revision !== undefined
+                        ? getCorrectBlockNumberRPCToVechain(revision)
+                        : undefined
+            }
         );
 
         // Convert intrinsic gas to hex string and return
