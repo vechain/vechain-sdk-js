@@ -16,7 +16,7 @@ const ethRequestAccounts = async (
     // If there are no accounts, throw error
     // @NOTE: eth_accounts returns an empty array if there are no accounts OR wallet is not defined.
     // Here, instead, if there are no accounts into wallet OR wallet is not defined, we throw an error
-    if (accounts.length === 0)
+    if ((await accounts).length === 0)
         throw buildProviderError(
             JSONRPC.DEFAULT,
             'No wallet is defined. Please, define a wallet before calling eth_requestAccounts.'
