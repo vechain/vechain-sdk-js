@@ -131,7 +131,7 @@ describe('Vechain base signer tests', () => {
              * Negative case tests
              */
             populateCallTestCases.negative.forEach((fixture) => {
-                test(fixture.description, async () => {
+                test(fixture.description, () => {
                     // Test with provider attached and detached
 
                     const signer = new VechainBaseSigner(
@@ -142,9 +142,9 @@ describe('Vechain base signer tests', () => {
                         null
                     );
 
-                    await expect(
+                    expect(() =>
                         signer.populateCall(fixture.transactionToPopulate)
-                    ).rejects.toThrowError(fixture.expectedError);
+                    ).toThrowError(fixture.expectedError);
                 });
             });
         });

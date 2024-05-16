@@ -76,16 +76,16 @@ describe('Base wallet tests', () => {
         /**
          * Should throw error when trying to get an account by invalid address
          */
-        test('Should throw error when trying to get an account by invalid address', async () => {
+        test('Should throw error when trying to get an account by invalid address', () => {
             // Initialize a wallet with the accounts
             const baseWallet = new ProviderInternalBaseWallet(accountsFixture);
 
             // Get the account by address
             const invalidAddress = 'INVALID_ADDRESS';
 
-            await expect(
-                baseWallet.getAccount(invalidAddress)
-            ).rejects.toThrowError(InvalidDataTypeError);
+            expect(() => baseWallet.getAccount(invalidAddress)).toThrowError(
+                InvalidDataTypeError
+            );
         });
     });
 
