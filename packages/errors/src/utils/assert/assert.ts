@@ -39,7 +39,7 @@ function assert<
         innerError
     ) as ErrorType<ErrorCodeT> as Error;
 
-    if (!condition) throw error;
+    if (!condition && typeof error === 'object') throw error;
 }
 
 /**
