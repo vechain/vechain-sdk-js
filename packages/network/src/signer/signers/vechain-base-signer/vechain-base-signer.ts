@@ -64,9 +64,9 @@ class VechainBaseSigner implements VechainSigner {
      *
      * @returns the address of the signer
      */
-    async getAddress(): Promise<string> {
+    getAddress(): string {
         return addressUtils.toERC55Checksum(
-            await Promise.resolve(addressUtils.fromPrivateKey(this.privateKey))
+            addressUtils.fromPrivateKey(this.privateKey)
         );
     }
 
@@ -82,16 +82,16 @@ class VechainBaseSigner implements VechainSigner {
      *  @param transactionToPopulate - The call to prepare
      *  @returns the prepared call transaction
      */
-    async populateCall(
+    populateCall(
         transactionToPopulate: TransactionRequestInput
-    ): Promise<TransactionRequestInput> {
+    ): TransactionRequestInput {
         // 1 - Add from field (if not provided)
         if (
             transactionToPopulate.from === undefined ||
             transactionToPopulate.from === null
         )
             transactionToPopulate.from = addressUtils.toERC55Checksum(
-                await this.getAddress()
+                this.getAddress()
             );
         // Throw an error if the from address does not match the signer address
         // @note: this because we cannot sign a transaction with a different address
@@ -99,12 +99,12 @@ class VechainBaseSigner implements VechainSigner {
             assert(
                 'populateCall',
                 addressUtils.toERC55Checksum(transactionToPopulate.from) ===
-                    addressUtils.toERC55Checksum(await this.getAddress()),
+                    addressUtils.toERC55Checksum(this.getAddress()),
                 DATA.INVALID_DATA_TYPE,
                 'From address does not match the signer address.',
                 {
                     signerAddress: addressUtils.toERC55Checksum(
-                        await this.getAddress()
+                        this.getAddress()
                     ),
                     fromAddress: addressUtils.toERC55Checksum(
                         transactionToPopulate.from
@@ -158,9 +158,7 @@ class VechainBaseSigner implements VechainSigner {
             .thorClient;
 
         // 2 - Populate the call, to get proper 'from' and 'to' address (compatible with multi-clause transactions)
-        const populatedTransaction = await this.populateCall(
-            transactionToPopulate
-        );
+        const populatedTransaction = this.populateCall(transactionToPopulate);
 
         // 3 - Estimate gas
         const totalGasResult = await this.estimateGas(transactionToPopulate);
@@ -207,9 +205,7 @@ class VechainBaseSigner implements VechainSigner {
             .thorClient;
 
         // 2 - Populate the call, to get proper from and to address (compatible with multi-clause transactions)
-        const populatedTransaction = await this.populateCall(
-            transactionToEstimate
-        );
+        const populatedTransaction = this.populateCall(transactionToEstimate);
 
         // 3 - Estimate gas
         const gasEstimation = await thorClient.gas.estimateGas(
@@ -250,9 +246,7 @@ class VechainBaseSigner implements VechainSigner {
             .thorClient;
 
         // 2 - Populate the call, to get proper from and to address (compatible with multi-clause transactions)
-        const populatedTransaction = await this.populateCall(
-            transactionToEvaluate
-        );
+        const populatedTransaction = this.populateCall(transactionToEvaluate);
 
         // 3 - Evaluate the transaction
         return await thorClient.transactions.simulateTransaction(
@@ -284,12 +278,12 @@ class VechainBaseSigner implements VechainSigner {
         if (this.provider !== null) {
             return (await this.provider.request({
                 method: RPC_METHODS.eth_getTransactionCount,
-                params: [await this.getAddress(), blockTag]
+                params: [this.getAddress(), blockTag]
             })) as string;
         }
 
         // Otherwise return a random number
-        return await Promise.resolve(Hex0x.of(secp256k1.randomBytes(6)));
+        return Hex0x.of(secp256k1.randomBytes(6));
     }
 
     /**

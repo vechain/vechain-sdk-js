@@ -171,7 +171,7 @@ interface TransactionRequestInput {
 
     /**
      *  The [[link-eip-2930]] access list. Storage slots included in the access
-     *  list are //warmed// by pre-loading them, so their initial cost to
+     *  list are //warmed// by preloading them, so their initial cost to
      *  fetch is guaranteed, but then each additional access is cheaper.
      */
     accessList?: null | vechain_sdk_core_ethers.AccessListish;
@@ -238,7 +238,7 @@ interface VechainSigner {
      *
      * @returns the address of the signer
      */
-    getAddress: () => Promise<string>;
+    getAddress: () => string;
 
     /**
      *  Gets the next nonce required for this Signer to send a transaction.
@@ -264,7 +264,7 @@ interface VechainSigner {
      */
     populateCall: (
         transactionToPopulate: TransactionRequestInput
-    ) => Promise<TransactionRequestInput>;
+    ) => TransactionRequestInput;
 
     /**
      *  Prepares a {@link TransactionRequestInput} for sending to the network by

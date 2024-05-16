@@ -91,7 +91,7 @@ class ContractFactory {
         // Estimate the gas cost of the transaction
         const gasResult = await this.thor.gas.estimateGas(
             [deployContractClause],
-            await this.signer.getAddress()
+            this.signer.getAddress()
         );
 
         const txBody = await this.thor.transactions.buildTransactionBody(
@@ -104,7 +104,7 @@ class ContractFactory {
         const signedTx = await this.signer.signTransaction(
             signerUtils.transactionBodyToTransactionRequestInput(
                 txBody,
-                await this.signer.getAddress()
+                this.signer.getAddress()
             )
         );
 

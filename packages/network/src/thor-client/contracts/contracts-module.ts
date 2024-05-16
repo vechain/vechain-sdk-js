@@ -142,7 +142,7 @@ class ContractsModule {
         // Estimate the gas cost of the transaction
         const gasResult = await this.thor.gas.estimateGas(
             [clause],
-            await signer.getAddress()
+            signer.getAddress()
         );
 
         // Build a transaction for calling the contract function
@@ -177,7 +177,7 @@ class ContractsModule {
         const signedTx = await signer.signTransaction(
             signerUtils.transactionBodyToTransactionRequestInput(
                 txBody,
-                await signer.getAddress()
+                signer.getAddress()
             )
         );
 
@@ -203,7 +203,7 @@ class ContractsModule {
         // Estimate the gas cost of the transaction
         const gasResult = await this.thor.gas.estimateGas(
             clauses,
-            await signer.getAddress()
+            signer.getAddress()
         );
 
         // Build a transaction for calling the contract function

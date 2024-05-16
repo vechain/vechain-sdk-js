@@ -1,4 +1,4 @@
-import { type TraceReturnType } from '../../../../thor-client/debug';
+import { type TraceReturnType } from '../../../../thor-client';
 
 /**
  * Available tracers for the RPC standard.

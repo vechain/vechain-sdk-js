@@ -66,7 +66,7 @@ describe('Vechain base signer tests', () => {
         /**
          * Should be able to get the address of the signer
          */
-        test('Should be able to get the address of the signer', async () => {
+        test('Should be able to get the address of the signer', () => {
             const signer = new VechainBaseSigner(
                 Buffer.from(
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
@@ -74,7 +74,7 @@ describe('Vechain base signer tests', () => {
                 ),
                 provider
             );
-            const address = await signer.getAddress();
+            const address = signer.getAddress();
             expect(address).toBe(
                 addressUtils.toERC55Checksum(
                     '0x3db469a79593dcc67f07de1869d6682fc1eaf535'
@@ -108,7 +108,7 @@ describe('Vechain base signer tests', () => {
              * Positive case tests
              */
             populateCallTestCases.positive.forEach((fixture) => {
-                test(fixture.description, async () => {
+                test(fixture.description, () => {
                     // Test with provider attached and detached
 
                     const signer = new VechainBaseSigner(
@@ -118,7 +118,7 @@ describe('Vechain base signer tests', () => {
                         ),
                         null
                     );
-                    const populatedCallTransaction = await signer.populateCall(
+                    const populatedCallTransaction = signer.populateCall(
                         fixture.transactionToPopulate
                     );
                     expect(populatedCallTransaction).toStrictEqual(

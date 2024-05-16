@@ -17,7 +17,7 @@ import {
  */
 class JSONRPCEthersProvider extends vechain_sdk_core_ethers.JsonRpcApiProvider {
     /**
-     * Instance of Hardhat vechian proider to wrap
+     * Instance of Hardhat vechain provider to wrap
      */
     hardhatProvider: HardhatVechainProvider;
 

@@ -37,7 +37,7 @@ function getReadProxy(contract: Contract): ContractFunctionRead {
                     {
                         caller:
                             contract.getSigner() !== undefined
-                                ? await contract.getSigner()?.getAddress()
+                                ? contract.getSigner()?.getAddress()
                                 : undefined,
                         ...contract.getContractReadOptions()
                     }
