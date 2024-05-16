@@ -34,7 +34,7 @@ const vechainTestNetwork: HttpNetworkConfig = {
             'ea5383ac1f9e625220039a4afac6a7f868bf1ad4f48ce3a1dd78bd214ee4ace5'
     },
     debug: true,
-    enbaleDelegation: true
+    enableDelegation: true
 };
 
 /**
@@ -48,7 +48,7 @@ const vechainSoloNetwork = {
     ],
     debug: false,
     delegator: undefined,
-    enbaleDelegation: false,
+    enableDelegation: false,
     gas: 'auto',
     gasPrice: 'auto',
     gasMultiplier: 1,
