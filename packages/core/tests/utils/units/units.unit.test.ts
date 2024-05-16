@@ -8,45 +8,33 @@ import { unitsUtils, type WEI_UNITS } from '../../../src';
 describe('unitsUtils', () => {
     describe('formatUnits', () => {
         test('invalid - not a number - decimal', () => {
-            const value = 'c0fee';
-            try {
-                unitsUtils.formatUnits(value);
-                throw new Error('fail');
-            } catch (e) {
-                expect(e).toBeInstanceOf(InvalidDataTypeError);
-            }
+            const value = 'c0ffee';
+            expect(() => unitsUtils.formatUnits(value)).toThrowError(
+                InvalidDataTypeError
+            );
         });
 
         test('invalid - not a number - hex', () => {
-            const value = '0xcOfee';
-            try {
-                unitsUtils.formatUnits(value);
-                throw new Error('fail');
-            } catch (e) {
-                expect(e).toBeInstanceOf(InvalidDataTypeError);
-            }
+            const value = '0xcOffee';
+            expect(() => unitsUtils.formatUnits(value)).toThrowError(
+                InvalidDataTypeError
+            );
         });
 
         test('invalid - not a wei unit', () => {
             const value = 1;
             const unit = 'bitcoin' as WEI_UNITS;
-            try {
-                unitsUtils.formatUnits(value, unit);
-                throw new Error('fail');
-            } catch (e) {
-                expect(e).toBeInstanceOf(InvalidDataTypeError);
-            }
+            expect(() => unitsUtils.formatUnits(value, unit)).toThrowError(
+                InvalidDataTypeError
+            );
         });
 
         test('invalid - negative decimals', () => {
             const value = 1;
             const decimals = -1;
-            try {
-                unitsUtils.formatUnits(value, decimals);
-                throw new Error('fail');
-            } catch (e) {
-                expect(e).toBeInstanceOf(InvalidDataTypeError);
-            }
+            expect(() => unitsUtils.formatUnits(value, decimals)).toThrowError(
+                InvalidDataTypeError
+            );
         });
 
         test('valid - bigint 10^42 - default 10^18', () => {
@@ -180,34 +168,24 @@ describe('unitsUtils', () => {
     describe('parseUnits', () => {
         test('invalid - not a number - decimal', () => {
             const value = 'c0fee';
-            try {
-                unitsUtils.parseUnits(value);
-                throw new Error('fail');
-            } catch (e) {
-                expect(e).toBeInstanceOf(InvalidDataTypeError);
-            }
+            expect(() => unitsUtils.parseUnits(value)).toThrowError(
+                InvalidDataTypeError
+            );
         });
 
         test('invalid - not a number - hex', () => {
             const value = '0xcOfee';
-            try {
-                unitsUtils.parseUnits(value);
-                throw new Error('fail');
-            } catch (e) {
-                expect(e).toBeInstanceOf(InvalidDataTypeError);
-            }
+            expect(() => unitsUtils.parseUnits(value)).toThrowError(
+                InvalidDataTypeError
+            );
         });
 
         test('invalid - unit overflow', () => {
             const exp = '1';
             const decimals = 81;
-            // expect(unitsUtils.parseUnits(exp)).toThrowError(InvalidDataTypeError);
-            try {
-                unitsUtils.parseUnits(exp, decimals);
-                // throw new Error('expected error');
-            } catch (e) {
-                expect(e).toBeInstanceOf(InvalidDataTypeError);
-            }
+            expect(() => unitsUtils.parseUnits(exp, decimals)).toThrowError(
+                InvalidDataTypeError
+            );
         });
 
         test('valid - bigint - number 10^4', () => {

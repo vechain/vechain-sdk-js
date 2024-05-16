@@ -1,7 +1,7 @@
 import * as utils from '@noble/curves/abstract/utils';
 import { BigNumber } from 'bignumber.js';
 import { Hex, Hex0x } from '../hex';
-import { buildError, DATA } from '@vechain/sdk-errors';
+import { assert, buildError, DATA } from '@vechain/sdk-errors';
 import { type WEI_UNITS } from './types';
 
 /**
@@ -65,15 +65,13 @@ function bigNumberOf(value: bigint | number | string): BigNumber {
             }
         }
     }
-    if (bn.isNaN()) {
-        // assert methods fails to serialize bigint.
-        throw buildError(
-            'unitsUtils.bigNumberOf',
-            DATA.INVALID_DATA_TYPE,
-            'Not a number.',
-            { value }
-        );
-    }
+    assert(
+        'unitsUtils.bigNumberOf',
+        !bn.isNaN(),
+        DATA.INVALID_DATA_TYPE,
+        'Not a number.',
+        { value: value.toString() }
+    );
     return bn;
 }
 
@@ -148,23 +146,21 @@ function digitsOfUnit(digitsOrUnit: bigint | number | WEI_UNITS): number {
             digits = index * 3;
         }
     }
-    if (digits > BIG_NUMBER_PRECISION) {
-        throw buildError(
-            'unitsUtils.digitOfUnit',
-            DATA.INVALID_DATA_TYPE,
-            'Precision overflow (digits or unit name).',
-            { digitsOrUnit }
-        );
-    } else if (digits < 0) {
-        throw buildError(
-            'unitsUtils.digitOfUnit',
-            DATA.INVALID_DATA_TYPE,
-            'Negative precision (digits or unit name).',
-            { digitsOrUnit }
-        );
-    } else {
-        return digits;
-    }
+    assert(
+        'unitsUtils.digitOfUnit',
+        digits <= BIG_NUMBER_PRECISION,
+        DATA.INVALID_DATA_TYPE,
+        'Precision overflow (digits or unit name).',
+        { digitsOrUnit: digitsOrUnit.toString() }
+    );
+    assert(
+        'unitsUtils.digitOfUnit',
+        digits >= 0,
+        DATA.INVALID_DATA_TYPE,
+        'Negative precision (digits or unit name).',
+        { digitsOrUnit: digitsOrUnit.toString() }
+    );
+    return digits;
 }
 
 /**
@@ -277,6 +273,7 @@ function parseUnits(
         );
     }
 }
+
 /**
  * Parses the given value as a VET (VechainThor) amount and returns it as a bigint.
  *
