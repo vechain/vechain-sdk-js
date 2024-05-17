@@ -7,7 +7,7 @@ import {
 } from './types';
 import { thorest } from '../../utils';
 import { type ThorClient } from '../thor-client';
-import { abi, type Result } from '../../../../core';
+import { abi } from '../../../../core';
 
 /**
  * The `LogsClient` class provides methods to interact with log-related endpoints
@@ -21,7 +21,7 @@ class LogsModule {
     constructor(readonly thor: ThorClient) {}
 
     /**
-     * Filters event logs based on the provided criteria.
+     * Filters event logs based on the provided criteria. Raw event logs are not decoded.
      *
      * @param filterOptions - An object specifying filtering criteria for event logs.
      * @returns A promise that resolves to filtered event logs.
@@ -46,7 +46,7 @@ class LogsModule {
      */
     public async filterEventLogs(
         filterOptions: FilterEventLogsOptions
-    ): Promise<Result[]> {
+    ): Promise<EventLogs[]> {
         // Extract criteria and fragments from filter options
         const criteriaSet = filterOptions.criteriaSet?.map((c) => c.criteria);
         const fragments = filterOptions.criteriaSet?.map(
@@ -73,7 +73,10 @@ class LogsModule {
             );
             if (fragment !== undefined) {
                 const eventFragment = new abi.Event(fragment[0]);
-                return eventFragment.decodeEventLog(log);
+                return {
+                    ...log,
+                    decodedData: eventFragment.decodeEventLog(log)
+                };
             } else {
                 throw new Error(
                     `No matching event fragment found for topic hash: ${log.topics[0]}`

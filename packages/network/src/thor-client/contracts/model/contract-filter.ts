@@ -3,10 +3,10 @@ import type {
     PaginationOptions,
     EventDisplayOrder,
     FilterCriteria,
-    FilterEventLogsOptions
+    FilterEventLogsOptions,
+    EventLogs
 } from '../../logs';
 import { type Contract } from './contract';
-import { type Result } from '@vechain/sdk-core';
 
 /**
  * Represents a filter for events emitted by a smart contract. This class allows for the specification of criteria to filter
@@ -45,7 +45,7 @@ class ContractFilter {
         range?: Range,
         options?: PaginationOptions,
         order?: EventDisplayOrder
-    ): Promise<Result[]> {
+    ): Promise<EventLogs[]> {
         const filterEventLogsOptions: FilterEventLogsOptions = {
             range: range ?? {
                 unit: 'block',

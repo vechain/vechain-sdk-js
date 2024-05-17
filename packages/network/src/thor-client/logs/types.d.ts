@@ -1,6 +1,6 @@
 /* --- Input options start --- */
 
-import { type EventFragment } from '@vechain/sdk-core';
+import type { EventFragment, Result } from '@vechain/sdk-core';
 
 /**
  * Range interface for specifying a range of data.
@@ -236,6 +236,11 @@ interface EventLogs extends Event {
      * Event logs with associated metadata
      */
     meta: Metadata;
+
+    /**
+     * The decoded data from the event.
+     */
+    decodedData?: Result[];
 }
 
 /**

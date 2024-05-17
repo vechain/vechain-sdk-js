@@ -74,7 +74,7 @@ describe('ThorClient - ERC20 Contracts', () => {
             )
             .get();
 
-        expect(events).toEqual([
+        expect(events.map((x) => x.decodedData)).toEqual([
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
                 '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
@@ -124,8 +124,8 @@ describe('ThorClient - ERC20 Contracts', () => {
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
         );
 
-        const events = await thorSoloClient.logs.filterRawEventLogs({
-            criteriaSet: [transferCriteria.criteria]
+        const events = await thorSoloClient.logs.filterEventLogs({
+            criteriaSet: [transferCriteria]
         });
 
         expect(
@@ -195,7 +195,7 @@ describe('ThorClient - ERC20 Contracts', () => {
             criteriaSet: [transferCriteria]
         });
 
-        expect(events).toEqual([
+        expect(events.map((x) => x.decodedData)).toEqual([
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
                 '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
@@ -257,11 +257,8 @@ describe('ThorClient - ERC20 Contracts', () => {
             TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
         );
 
-        const events = await thorSoloClient.logs.filterRawEventLogs({
-            criteriaSet: [
-                transferCriteria.criteria,
-                transferCriteriaDelegator.criteria
-            ]
+        const events = await thorSoloClient.logs.filterEventLogs({
+            criteriaSet: [transferCriteria, transferCriteriaDelegator]
         });
 
         expect(
@@ -349,7 +346,7 @@ describe('ThorClient - ERC20 Contracts', () => {
             criteriaSet: [transferCriteria, transferCriteriaDelegator]
         });
 
-        expect(events).toEqual([
+        expect(events.map((x) => x.decodedData)).toEqual([
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
                 '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',

@@ -37,6 +37,7 @@ describe('ThorClient - Logs Module', () => {
         const transferLogs = await thorClient.logs.filterTransferLogs(
             argFilterTransferLogs
         );
+        //
         expect(transferLogs).toStrictEqual(expectedFilterTransferLogs);
     }, 3000);
 });
