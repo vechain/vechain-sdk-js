@@ -381,11 +381,11 @@ describe('ThorClient - Contracts', () => {
         );
 
         expect(contractFilter).toBeDefined();
-        expect(contractFilter.criteriaSet[0].topic0).toBeDefined();
-        expect(contractFilter.criteriaSet[0].topic1).toBeDefined();
-        expect(contractFilter.criteriaSet[0].topic2).toBeDefined();
-        expect(contractFilter.criteriaSet[0].topic3).toBeDefined();
-        expect(contractFilter.criteriaSet[0].topic4).toBeDefined();
+        expect(contractFilter.criteriaSet[0].criteria.topic0).toBeDefined();
+        expect(contractFilter.criteriaSet[0].criteria.topic1).toBeDefined();
+        expect(contractFilter.criteriaSet[0].criteria.topic2).toBeDefined();
+        expect(contractFilter.criteriaSet[0].criteria.topic3).toBeDefined();
+        expect(contractFilter.criteriaSet[0].criteria.topic4).toBeDefined();
     }, 10000);
 
     test('deploy the deposit contract and call the deposit method', async () => {
@@ -494,9 +494,7 @@ describe('ThorClient - Contracts', () => {
 
         expect(events).toBeDefined();
 
-        expect(events.at(events.length - 1)?.topics[1]).toBe(
-            '0x000000000000000000000000000000000000000000000000000000000000007b'
-        );
+        expect(events.at(events.length - 1)?.decodedData?.at(0)).toBe(123n);
     });
 
     filterContractEventsTestCases.forEach(
@@ -509,7 +507,6 @@ describe('ThorClient - Contracts', () => {
             eventName,
             getParams,
             args,
-            expectedTopics,
             expectedData
         }) => {
             test(
@@ -552,17 +549,9 @@ describe('ThorClient - Contracts', () => {
                         getParams?.order
                     );
 
-                    expect(
-                        eventLogs.map((event) => {
-                            return event.data;
-                        })
-                    ).toEqual(expectedData);
-
-                    expect(
-                        eventLogs.map((event) => {
-                            return event.topics;
-                        })
-                    ).toEqual(expectedTopics);
+                    expect(eventLogs.map((x) => x.decodedData)).toEqual(
+                        expectedData
+                    );
                 },
                 10000
             );

@@ -1,9 +1,9 @@
 import {
-    type FilterEventLogsOptions,
+    type FilterRawEventLogsOptions,
     type FilterTransferLogsOptions
 } from '../../../src';
 
-const argFilterEventLogs: FilterEventLogsOptions = {
+const argFilterEventLogs: FilterRawEventLogsOptions = {
     range: {
         unit: 'block',
         from: 0,

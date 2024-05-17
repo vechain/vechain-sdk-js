@@ -118,7 +118,7 @@ const thorClient = ThorClient.fromUrl(_testnetUrl);
 
 // 2 - Filter event logs based on the provided criteria. (EXAMPLE 1)
 
-const eventLogs = await thorClient.logs.filterEventLogs({
+const eventLogs = await thorClient.logs.filterRawEventLogs({
     // Specify the range of blocks to search for events
     range: {
         unit: 'block',

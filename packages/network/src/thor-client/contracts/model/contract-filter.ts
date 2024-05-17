@@ -1,10 +1,10 @@
-import {
-    type EventCriteria,
-    type EventLogs,
-    type FilterEventLogsOptions,
-    type Range,
-    type PaginationOptions,
-    type EventDisplayOrder
+import type {
+    Range,
+    PaginationOptions,
+    EventDisplayOrder,
+    FilterCriteria,
+    FilterEventLogsOptions,
+    EventLogs
 } from '../../logs';
 import { type Contract } from './contract';
 
@@ -20,7 +20,7 @@ class ContractFilter {
     /**
      * A set of criteria used to filter events.
      */
-    public criteriaSet: EventCriteria[];
+    public criteriaSet: FilterCriteria[];
 
     /**
      * Constructs an instance of the `ContractFilter` class.
@@ -28,7 +28,7 @@ class ContractFilter {
      * @param contract - The smart contract instance to apply the filter on.
      * @param criteriaSet - A set of criteria used to filter events.
      */
-    constructor(contract: Contract, criteriaSet: EventCriteria[]) {
+    constructor(contract: Contract, criteriaSet: FilterCriteria[]) {
         this.contract = contract;
         this.criteriaSet = criteriaSet;
     }
