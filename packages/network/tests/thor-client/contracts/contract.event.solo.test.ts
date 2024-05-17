@@ -8,7 +8,10 @@ import {
 } from '../../../src';
 import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
 import { deployedERC20Abi, erc20ContractBytecode } from './fixture';
-import { InvalidAbiFunctionError } from '@vechain/sdk-errors';
+import {
+    InvalidAbiEventError,
+    InvalidAbiFunctionError
+} from '@vechain/sdk-errors';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -208,6 +211,57 @@ describe('ThorClient - ERC20 Contracts', () => {
             ]
         ]);
     }, 10000); // Set a timeout of 10000ms for this test
+
+    /**
+     * Tests the listening to ERC20 contract operations using a blockchain client.
+     */
+    test('listen to ERC20 contract operations building the criterias and failing to decode the event logs due to wrong event fragment', async () => {
+        // Deploy the ERC20 contract
+        let factory = thorSoloClient.contracts.createContractFactory(
+            deployedERC20Abi,
+            erc20ContractBytecode,
+            signer
+        );
+
+        factory = await factory.startDeployment();
+
+        const contract: Contract = await factory.waitForDeployment();
+
+        // Execute a 'transfer' transaction on the deployed contract,
+        // transferring a specified amount of tokens
+        await (
+            await contract.transact.transfer(
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                1000
+            )
+        ).wait();
+
+        await (
+            await contract.transact.transfer(
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                5000
+            )
+        ).wait();
+
+        const transferCriteria = contract.criteria.Transfer(
+            undefined,
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+        );
+
+        const approvalCriteria = contract.criteria.Approval();
+
+        await expect(
+            async () =>
+                await thorSoloClient.logs.filterEventLogs({
+                    criteriaSet: [
+                        {
+                            criteria: transferCriteria.criteria,
+                            eventFragment: approvalCriteria.eventFragment
+                        }
+                    ]
+                })
+        ).rejects.toThrowError(InvalidAbiEventError);
+    }, 30000); // Set a timeout of 10000ms for this test
 
     /**
      * Tests the listening to ERC20 contract operations using a blockchain client.

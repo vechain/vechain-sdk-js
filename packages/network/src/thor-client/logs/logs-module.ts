@@ -8,6 +8,7 @@ import {
 import { thorest } from '../../utils';
 import { type ThorClient } from '../thor-client';
 import { abi } from '../../../../core';
+import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 
 /**
  * The `LogsClient` class provides methods to interact with log-related endpoints
@@ -71,15 +72,18 @@ class LogsModule {
             const fragment = fragments?.filter(
                 (f) => f.topicHash === log.topics[0]
             );
-            if (fragment !== undefined) {
+            if (fragment !== undefined && fragment.length > 0) {
                 const eventFragment = new abi.Event(fragment[0]);
                 return {
                     ...log,
                     decodedData: eventFragment.decodeEventLog(log)
                 };
             } else {
-                throw new Error(
-                    `No matching event fragment found for topic hash: ${log.topics[0]}`
+                throw buildError(
+                    'filterEventLogs',
+                    ERROR_CODES.ABI.INVALID_EVENT,
+                    `No matching event fragment found for topic hash: ${log.topics[0]}`,
+                    { log }
                 );
             }
         });
