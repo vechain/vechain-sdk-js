@@ -46,7 +46,7 @@ class LogsModule {
      */
     public async filterEventLogs(
         filterOptions: FilterEventLogsOptions
-    ): Promise<Array<Result | undefined>> {
+    ): Promise<Result[]> {
         // Extract criteria and fragments from filter options
         const criteriaSet = filterOptions.criteriaSet?.map((c) => c.criteria);
         const fragments = filterOptions.criteriaSet?.map(
@@ -75,7 +75,9 @@ class LogsModule {
                 const eventFragment = new abi.Event(fragment[0]);
                 return eventFragment.decodeEventLog(log);
             } else {
-                return undefined;
+                throw new Error(
+                    `No matching event fragment found for topic hash: ${log.topics[0]}`
+                );
             }
         });
     }

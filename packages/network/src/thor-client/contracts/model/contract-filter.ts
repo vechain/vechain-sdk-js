@@ -1,12 +1,12 @@
-import {
-    type EventLogs,
-    type Range,
-    type PaginationOptions,
-    type EventDisplayOrder,
-    type FilterCriteria,
-    type FilterRawEventLogsOptions
+import type {
+    Range,
+    PaginationOptions,
+    EventDisplayOrder,
+    FilterCriteria,
+    FilterEventLogsOptions
 } from '../../logs';
 import { type Contract } from './contract';
+import { type Result } from '@vechain/sdk-core';
 
 /**
  * Represents a filter for events emitted by a smart contract. This class allows for the specification of criteria to filter
@@ -45,19 +45,19 @@ class ContractFilter {
         range?: Range,
         options?: PaginationOptions,
         order?: EventDisplayOrder
-    ): Promise<EventLogs[]> {
-        const filterEventLogsOptions: FilterRawEventLogsOptions = {
+    ): Promise<Result[]> {
+        const filterEventLogsOptions: FilterEventLogsOptions = {
             range: range ?? {
                 unit: 'block',
                 from: 0,
                 to: (await this.contract.thor.blocks.getBestBlockCompressed())
                     ?.number
             },
-            criteriaSet: this.criteriaSet.map((c) => c.criteria),
+            criteriaSet: this.criteriaSet,
             options,
             order: order ?? 'asc'
         };
-        return await this.contract.thor.logs.filterRawEventLogs(
+        return await this.contract.thor.logs.filterEventLogs(
             filterEventLogsOptions
         );
     }

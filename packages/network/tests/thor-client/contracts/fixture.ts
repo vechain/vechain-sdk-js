@@ -830,8 +830,7 @@ interface FilterEventTestCase {
         order?: EventDisplayOrder;
     };
     args: unknown[];
-    expectedTopics: string[][];
-    expectedData: string[];
+    expectedData: unknown[];
 }
 
 interface MultipleClausesTestCase {
@@ -958,15 +957,7 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
         ],
         eventName: 'ValueSet',
         args: [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
-        expectedTopics: [
-            [
-                '0xf3f57717dff9f5f10af315efdbfadc60c42152c11fc0c3c413bbfbdc661f143c',
-                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54'
-            ]
-        ],
-        expectedData: [
-            '0x00000000000000000000000000000000000000000000000000000000000003e8'
-        ]
+        expectedData: [['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 1000n]]
     },
     {
         description:
@@ -977,15 +968,12 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
         functionCalls: [],
         eventName: 'Transfer',
         args: [undefined, TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
-        expectedTopics: [
-            [
-                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                '0x0000000000000000000000000000000000000000000000000000000000000000',
-                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54'
-            ]
-        ],
         expectedData: [
-            '0x00000000000000000000000000000000000000000000d3c21bcecceda1000000'
+            [
+                '0x0000000000000000000000000000000000000000',
+                '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
+                1000000000000000000000000n
+            ]
         ]
     },
     {
@@ -1004,7 +992,6 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
             }
         },
         args: [undefined, TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
-        expectedTopics: [],
         expectedData: []
     },
     {
@@ -1035,21 +1022,17 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
             undefined,
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
         ],
-        expectedTopics: [
+        expectedData: [
             [
-                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
-                '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
+                '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
+                '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
+                1000n
             ],
             [
-                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
-                '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
+                '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
+                '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
+                5000n
             ]
-        ],
-        expectedData: [
-            '0x00000000000000000000000000000000000000000000000000000000000003e8',
-            '0x0000000000000000000000000000000000000000000000000000000000001388'
         ]
     },
     {
@@ -1084,21 +1067,17 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
             undefined,
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
         ],
-        expectedTopics: [
+        expectedData: [
             [
-                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
-                '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
+                '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
+                '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
+                5000n
             ],
             [
-                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
-                '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
+                '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
+                '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
+                1000n
             ]
-        ],
-        expectedData: [
-            '0x0000000000000000000000000000000000000000000000000000000000001388',
-            '0x00000000000000000000000000000000000000000000000000000000000003e8'
         ]
     },
     {
@@ -1127,27 +1106,22 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
         ],
         eventName: 'Transfer',
         args: [undefined, undefined, 5000],
-        expectedTopics: [
-            [
-                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                '0x0000000000000000000000000000000000000000000000000000000000000000',
-                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54'
-            ],
-            [
-                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
-                '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
-            ],
-            [
-                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
-                '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
-            ]
-        ],
         expectedData: [
-            '0x00000000000000000000000000000000000000000000d3c21bcecceda1000000',
-            '0x00000000000000000000000000000000000000000000000000000000000003e8',
-            '0x0000000000000000000000000000000000000000000000000000000000001388'
+            [
+                '0x0000000000000000000000000000000000000000',
+                '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
+                1000000000000000000000000n
+            ],
+            [
+                '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
+                '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
+                1000n
+            ],
+            [
+                '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
+                '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
+                5000n
+            ]
         ]
     }
 ];

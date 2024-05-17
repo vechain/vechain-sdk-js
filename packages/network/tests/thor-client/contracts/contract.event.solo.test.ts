@@ -74,29 +74,16 @@ describe('ThorClient - ERC20 Contracts', () => {
             )
             .get();
 
-        expect(
-            events.map((event) => {
-                return event.data;
-            })
-        ).toEqual([
-            '0x00000000000000000000000000000000000000000000000000000000000003e8',
-            '0x0000000000000000000000000000000000000000000000000000000000001388'
-        ]);
-
-        expect(
-            events.map((event) => {
-                return event.topics;
-            })
-        ).toEqual([
+        expect(events).toEqual([
             [
-                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
-                '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
+                '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
+                '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
+                1000n
             ],
             [
-                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
-                '0x0000000000000000000000009e7911de289c3c856ce7f421034f66b6cde49c39'
+                '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
+                '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
+                5000n
             ]
         ]);
     }, 10000); // Set a timeout of 10000ms for this test
