@@ -69,10 +69,7 @@ const contract = await setupERC20Contract();
 // Transferring 10000 tokens to another address with a delegated transaction
 const transferResult = await contract.transact.transfer(
     '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-    10000,
-    {
-        delegatorPrivateKey: delegatorAccount.privateKey
-    }
+    10000
 );
 
 // Wait for the transfer transaction to complete and obtain its receipt
