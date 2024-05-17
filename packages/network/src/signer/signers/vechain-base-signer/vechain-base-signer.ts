@@ -18,7 +18,7 @@ import {
     type TransactionBody,
     type TransactionClause,
     TransactionHandler
-} from '../../../../../core';
+} from '@vechain/sdk-core';
 import { RPC_METHODS } from '../../../provider';
 import { assert, DATA, JSONRPC, TRANSACTION } from '@vechain/sdk-errors';
 import { assertTransactionCanBeSigned } from '../../../assertions';
@@ -346,29 +346,6 @@ class VechainBaseSigner implements VechainSigner {
     }
 
     /**
-     * Build the transaction clauses
-     * form a transaction given as input
-     *
-     * @param transaction - The transaction to sign
-     * @returns The transaction clauses
-     */
-    private _buildClauses(
-        transaction: TransactionRequestInput
-    ): TransactionClause[] {
-        return transaction.to !== undefined && transaction.to !== null
-            ? // Normal transaction
-              [
-                  {
-                      to: transaction.to,
-                      data: transaction.data ?? '0x',
-                      value: transaction.value ?? '0x0'
-                  } satisfies TransactionClause
-              ]
-            : // If 'to' address is not provided, it will be assumed that the transaction is a contract creation transaction.
-              [clauseBuilder.deployContract(transaction.data ?? '0x')];
-    }
-
-    /**
      * Signs a transaction internal method
      *
      * @param transaction - The transaction to sign
@@ -406,6 +383,42 @@ class VechainBaseSigner implements VechainSigner {
                   TransactionHandler.sign(populatedTransaction, privateKey)
                       .encoded
               );
+    }
+
+    /**
+     * Use vet.domains to resolve name to adress
+     * @param vnsName - The name to resolve
+     * @returns the address for a name or null
+     */
+    async resolveName(vnsName: string): Promise<null | string> {
+        if (this.provider === null) {
+            return null;
+        }
+
+        return await vnsUtils.resolveName(this.provider.thorClient, vnsName);
+    }
+
+    /**
+     * Build the transaction clauses
+     * form a transaction given as input
+     *
+     * @param transaction - The transaction to sign
+     * @returns The transaction clauses
+     */
+    private _buildClauses(
+        transaction: TransactionRequestInput
+    ): TransactionClause[] {
+        return transaction.to !== undefined && transaction.to !== null
+            ? // Normal transaction
+              [
+                  {
+                      to: transaction.to,
+                      data: transaction.data ?? '0x',
+                      value: transaction.value ?? '0x0'
+                  } satisfies TransactionClause
+              ]
+            : // If 'to' address is not provided, it will be assumed that the transaction is a contract creation transaction.
+              [clauseBuilder.deployContract(transaction.data ?? '0x')];
     }
 
     /**
@@ -476,19 +489,6 @@ class VechainBaseSigner implements VechainSigner {
 
         // Return new signed transaction
         return Hex0x.of(new Transaction(unsignedTx.body, signature).encoded);
-    }
-
-    /**
-     * Use vet.domains to resolve name to adress
-     * @param vnsName - The name to resolve
-     * @returns the address for a name or null
-     */
-    async resolveName(vnsName: string): Promise<null | string> {
-        if (this.provider === null) {
-            return null;
-        }
-
-        return await vnsUtils.resolveName(this.provider.thorClient, vnsName);
     }
 }
 
