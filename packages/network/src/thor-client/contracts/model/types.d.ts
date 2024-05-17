@@ -80,6 +80,11 @@ type ContractFunctionClause = Record<
     ContractFunctionSync<TransactionClause>
 >;
 
+/**
+ * Defines a mapping of contract function names to their corresponding filter criteria contract functions.
+ * Each function in this record is expected to return a value of type `FilterCriteria`, which represents
+ * the criteria used to filter events emitted by the contract.
+ */
 type ContractFunctionCriteria = Record<
     string,
     ContractFunctionSync<FilterCriteria>

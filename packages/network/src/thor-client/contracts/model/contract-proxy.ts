@@ -178,7 +178,7 @@ function getCriteriaProxy(contract: Contract): ContractFunctionCriteria {
 }
 
 /**
- * Builds the event criteria for the contract filter.
+ * Builds the filter criteria for the contract filter.
  * @param contract - The contract instance to create the criteria for.
  * @param prop - The property name of the contract event.
  * @param args - The arguments to filter the event.

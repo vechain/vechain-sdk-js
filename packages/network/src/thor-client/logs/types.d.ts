@@ -69,7 +69,7 @@ interface EventCriteria {
 type EventDisplayOrder = 'asc' | 'desc';
 
 /**
- * FilterEventLogsArg interface for filtering event logs.
+ * FilterRawEventLogsArg interface for filtering raw event logs.
  */
 interface FilterRawEventLogsOptions {
     /**
@@ -90,6 +90,9 @@ interface FilterRawEventLogsOptions {
     order?: EventDisplayOrder;
 }
 
+/**
+ * FilterEventLogsArg interface for filtering decoded event logs.
+ */
 interface FilterEventLogsOptions {
     /**
      * Block range
