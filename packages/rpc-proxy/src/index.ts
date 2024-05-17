@@ -103,7 +103,7 @@ function startProxy(): void {
     const provider = new VechainProvider(
         thorClient,
         wallet,
-        config.enbaleDelegation
+        config.enableDelegation
     );
 
     // Start the express proxy server
@@ -121,7 +121,7 @@ function startProxy(): void {
                 // Get result
                 const result = await provider.request(requestBody);
                 res.json({
-                    jsonrpc: 2.0,
+                    jsonrpc: '2.0',
                     result,
                     id: requestBody.id
                 });
@@ -130,7 +130,7 @@ function startProxy(): void {
                 logRequest(requestBody, result);
             } catch (e) {
                 res.json({
-                    jsonrpc: 2.0,
+                    jsonrpc: '2.0',
                     error: e,
                     id: requestBody.id
                 });
@@ -149,7 +149,7 @@ function startProxy(): void {
                 const result = await provider.request(requestBody);
 
                 res.json({
-                    jsonrpc: 2.0,
+                    jsonrpc: '2.0',
                     result,
                     id: requestBody.id
                 });
@@ -158,7 +158,7 @@ function startProxy(): void {
                 logRequest(requestBody, result);
             } catch (e) {
                 res.json({
-                    jsonrpc: 2.0,
+                    jsonrpc: '2.0',
                     error: e,
                     id: requestBody.id
                 });

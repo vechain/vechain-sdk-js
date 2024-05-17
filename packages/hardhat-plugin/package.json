@@ -4,6 +4,11 @@
   "description": "This module allows to create smart contracts and interact with them using the vechain SDK and Hardhat",
   "author": "vechain Foundation",
   "license": "MIT",
+  "homepage": "https://github.com/vechain/vechain-sdk-js",
+  "repository": {
+    "type": "git",
+    "url": "github:vechain/vechain-sdk-js"
+  },
   "keywords": [
     "vechain",
     "hardhat",
@@ -33,6 +38,6 @@
     "@vechain/sdk-ethers-adapter": "1.0.0-beta.4"
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-ethers": "^3.0.5"
+    "@nomicfoundation/hardhat-ethers": "^3.0.6"
   }
 }

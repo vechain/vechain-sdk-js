@@ -1,5 +1,5 @@
 import { describe, test } from '@jest/globals';
-import { seedThorSolo } from '../../solo-seeding';
+import { seedThorSolo, seedVnsSolo } from '../../solo-seeding';
 
 /**
  * Test suite for seeding thor solo
@@ -13,4 +13,8 @@ describe('Seeding', () => {
     test('Should seed thor solo', async () => {
         await seedThorSolo();
     }, 20000);
+
+    test('Should seed vns for thor solo', async () => {
+        await seedVnsSolo();
+    }, 30000);
 });

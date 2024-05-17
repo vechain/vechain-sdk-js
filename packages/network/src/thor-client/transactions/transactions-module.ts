@@ -1,4 +1,5 @@
 import {
+    abi,
     assertIsSignedTransaction,
     assertValidTransactionHead,
     assertValidTransactionID,
@@ -10,7 +11,14 @@ import {
     type TransactionClause,
     TransactionHandler
 } from '@vechain/sdk-core';
-import { buildQuery, Poll, thorest } from '../../utils';
+import {
+    buildQuery,
+    ERROR_SELECTOR,
+    PANIC_SELECTOR,
+    Poll,
+    thorest,
+    vnsUtils
+} from '../../utils';
 import {
     type GetTransactionInputOptions,
     type GetTransactionReceiptInputOptions,
@@ -19,12 +27,16 @@ import {
     type SimulateTransactionOptions,
     type TransactionBodyOptions,
     type TransactionDetail,
+    type TransactionDetailNoRaw,
     type TransactionReceipt,
     type TransactionSimulationResult,
     type WaitForTransactionOptions
 } from './types';
 import { assert, buildError, DATA, TRANSACTION } from '@vechain/sdk-errors';
 import { type ThorClient } from '../thor-client';
+import { type ExpandedBlockDetail } from '../blocks';
+import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
+import { type CallNameReturnType } from '../debug';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -230,7 +242,7 @@ class TransactionsModule {
         return {
             blockRef,
             chainTag,
-            clauses,
+            clauses: await this.resolveNamesInClauses(clauses),
             dependsOn: options?.dependsOn ?? null,
             expiration: options?.expiration ?? 32,
             gas,
@@ -239,6 +251,57 @@ class TransactionsModule {
             reserved:
                 options?.isDelegated === true ? { features: 1 } : undefined
         };
+    }
+
+    /**
+     * Ensures that names in clauses are resolved to addresses
+     *
+     * @param clauses - The clauses of the transaction.
+     * @returns A promise that resolves to clauses with resolved addresses
+     */
+    public async resolveNamesInClauses(
+        clauses: TransactionClause[]
+    ): Promise<TransactionClause[]> {
+        // find unique names in the clause list
+        const uniqueNames = clauses.reduce((map, clause) => {
+            if (
+                typeof clause.to === 'string' &&
+                !map.has(clause.to) &&
+                clause.to.includes('.')
+            ) {
+                map.set(clause.to, clause.to);
+            }
+            return map;
+        }, new Map<string, string>());
+
+        const nameList = [...uniqueNames.keys()];
+
+        // no names, return the original clauses
+        if (uniqueNames.size === 0) {
+            return clauses;
+        }
+
+        // resolve the names to addresses
+        const addresses = await vnsUtils.resolveNames(this.thor, nameList);
+
+        // map unique names with resolved addresses
+        addresses.forEach((address, index) => {
+            if (address !== null) {
+                uniqueNames.set(nameList[index], address);
+            }
+        });
+
+        // replace names with resolved addresses, or leave unchanged
+        return clauses.map((clause) => {
+            if (typeof clause.to !== 'string') {
+                return clause;
+            }
+
+            return {
+                ...clause,
+                to: uniqueNames.get(clause.to) ?? clause.to
+            };
+        });
     }
 
     /**
@@ -281,12 +344,14 @@ class TransactionsModule {
             {
                 query: buildQuery({ revision }),
                 body: {
-                    clauses: clauses.map((clause) => {
-                        return {
-                            ...clause,
-                            value: BigInt(clause.value).toString()
-                        };
-                    }),
+                    clauses: await this.resolveNamesInClauses(
+                        clauses.map((clause) => {
+                            return {
+                                ...clause,
+                                value: BigInt(clause.value).toString()
+                            };
+                        })
+                    ),
                     gas,
                     gasPrice,
                     caller,
@@ -297,6 +362,100 @@ class TransactionsModule {
                 }
             }
         )) as TransactionSimulationResult[];
+    }
+
+    /**
+     * Decode the revert reason from the encoded revert reason into a transaction.
+     *
+     * @param encodedRevertReason - The encoded revert reason to decode.
+     * @returns A promise that resolves to the decoded revert reason.
+     * Revert reason can be a string error or Panic(error_code)
+     */
+    public decodeRevertReason(encodedRevertReason: string): string {
+        // Error selector
+        if (encodedRevertReason.startsWith(ERROR_SELECTOR))
+            return abi.decode<string>(
+                'string',
+                `0x${encodedRevertReason.slice(ERROR_SELECTOR.length)}`
+            );
+        // Panic selector
+        else if (encodedRevertReason.startsWith(PANIC_SELECTOR)) {
+            const decoded = abi.decode<string>(
+                'uint256',
+                `0x${encodedRevertReason.slice(PANIC_SELECTOR.length)}`
+            );
+            return `Panic(0x${parseInt(decoded).toString(16).padStart(2, '0')})`;
+        }
+
+        // Unknown revert reason (we know ONLY that transaction is reverted)
+        return ``;
+    }
+
+    /**
+     * Get the revert reason of an existing transaction.
+     *
+     * @param transactionHash - The hash of the transaction to get the revert reason for.
+     * @returns A promise that resolves to the revert reason of the transaction.
+     */
+    public async getRevertReason(
+        transactionHash: string
+    ): Promise<string | null> {
+        // 1 - Init Blocks and Debug modules
+        const blocksModule = this.thor.blocks;
+        const debugModule = this.thor.debug;
+
+        // 2 - Get the transaction details
+        const transaction = (await this.getTransaction(
+            transactionHash
+        )) as TransactionDetailNoRaw;
+
+        // 3 - Get the block details (to get the transaction index)
+        const block =
+            transaction !== null
+                ? ((await blocksModule.getBlockExpanded(
+                      transaction.meta.blockID
+                  )) as ExpandedBlockDetail)
+                : null;
+
+        // Block or transaction not found
+        if (block === null || transaction === null) return null;
+
+        // 4 - Get the transaction index into the block (we know the transaction is in the block)
+        const transactionIndex = getTransactionIndexIntoBlock(
+            blocksFormatter.formatToRPCStandard(block, ''),
+            transactionHash
+        );
+
+        // 5 - Get the error or panic reason. By iterating over the clauses of the transaction
+        for (
+            let transactionClauseIndex = 0;
+            transactionClauseIndex < transaction.clauses.length;
+            transactionClauseIndex++
+        ) {
+            // 5.1 - Debug the clause
+            const debuggedClause = (await debugModule.traceTransactionClause(
+                {
+                    target: {
+                        blockID: block.id,
+                        transaction: transactionIndex,
+                        clauseIndex: transactionClauseIndex
+                    },
+                    // Optimized for top call
+                    config: {
+                        OnlyTopCall: true
+                    }
+                },
+                'call'
+            )) as CallNameReturnType;
+
+            // 5.2 - Error or panic present, so decode the revert reason
+            if (debuggedClause.output !== undefined) {
+                return this.decodeRevertReason(debuggedClause.output);
+            }
+        }
+
+        // No revert reason found
+        return null;
     }
 }
 

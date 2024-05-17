@@ -1,5 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { buildTransactionBodyClausesTestCases } from './fixture';
+import {
+    buildTransactionBodyClausesTestCases,
+    getRevertReasonTestCasesFixture
+} from './fixture';
 import { testnetUrl, THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../fixture';
 import { ThorClient, VechainProvider } from '../../../src';
 
@@ -76,5 +79,24 @@ describe('Transactions module Testnet tests suite', () => {
                 });
             }
         );
+    });
+
+    /**
+     * Test suite for getRevertReason method
+     */
+    describe('getRevertReason', () => {
+        /**
+         * Get revert info test case
+         */
+        getRevertReasonTestCasesFixture.forEach((testCase) => {
+            test(testCase.description, async () => {
+                const revertReason =
+                    await thorClient.transactions.getRevertReason(
+                        testCase.revertedTransactionHash
+                    );
+                expect(revertReason).toStrictEqual(testCase.expected);
+                console.log(revertReason);
+            });
+        });
     });
 });

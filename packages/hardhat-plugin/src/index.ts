@@ -46,8 +46,8 @@ extendEnvironment((hre) => {
 
     // 1.4 - Get fee delegation mode enabled or not
     const enableDelegation =
-        networkConfig.enbaleDelegation !== undefined &&
-        networkConfig.enbaleDelegation;
+        networkConfig.enableDelegation !== undefined &&
+        networkConfig.enableDelegation;
 
     // 2 - Check if network is vechain
 

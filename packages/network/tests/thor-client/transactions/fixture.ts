@@ -289,6 +289,111 @@ const buildTransactionBodyClausesTestCases = [
                 reserved: { features: 1 }
             }
         }
+    },
+    {
+        description: 'Should resolve names into addresses in all clauses',
+        clauses: [
+            {
+                to: 'vtho.test-sdk.vet',
+                value: '0',
+                data: '0x'
+            },
+            {
+                to: 'params.test-sdk.vet',
+                value: unitsUtils.parseVET('1').toString(),
+                data: '0x'
+            }
+        ],
+        options: {
+            gasPriceCoef: 255,
+            expiration: 1000,
+            isDelegated: true,
+            dependsOn:
+                '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f' // Any valid tx id
+        },
+        expected: {
+            solo: {
+                chainTag: 246,
+                clauses: [
+                    {
+                        data: '0x',
+                        to: '0x0000000000000000000000000000456E65726779',
+                        value: '0'
+                    },
+                    {
+                        data: '0x',
+                        to: '0x0000000000000000000000000000506172616D73',
+                        value: '1000000000000000000'
+                    }
+                ],
+                dependsOn:
+                    '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f',
+                expiration: 1000,
+                gas: 52046,
+                gasPriceCoef: 255,
+                reserved: { features: 1 }
+            },
+            testnet: {
+                chainTag: 39,
+                clauses: [
+                    {
+                        data: '0x',
+                        to: '0x0000000000000000000000000000456E65726779',
+                        value: '0'
+                    },
+                    {
+                        data: '0x',
+                        to: '0x0000000000000000000000000000506172616D73',
+                        value: '1000000000000000000'
+                    }
+                ],
+                dependsOn:
+                    '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f',
+                expiration: 1000,
+                gas: 52046,
+                gasPriceCoef: 255,
+                reserved: { features: 1 }
+            }
+        }
+    }
+];
+
+/**
+ * Fixture for getRevertReason method
+ */
+const getRevertReasonTestCasesFixture = [
+    {
+        description:
+            'Should be able to get Error message from reverted transaction',
+        revertedTransactionHash:
+            '0xf464a7dbdf0c89452261dc00d6cb31f1ce87aee2212c30c8d1eceea8ee31528e',
+        expected: 'SUBMISSION_ALREADY_MADE'
+    },
+    {
+        description:
+            'Should be able to get Panic message code from reverted transaction',
+        revertedTransactionHash:
+            '0x0a5177fb83346bb6ff7ca8408889f0c99f44b2b1b5c8bf6f0eb53c4b2e81d98d',
+        expected: 'Panic(0x12)'
+    },
+    {
+        description:
+            'Should return empty string if reverted transaction has no revert reason',
+        revertedTransactionHash:
+            '0x6417ee27afe19acc9765eb35e3d05fcca7a0b98d3a321855acaa981696c816a1',
+        expected: ''
+    },
+    {
+        description: 'Should return null if transaction IS NOT reverted',
+        revertedTransactionHash:
+            '0xcc9ce45f0c7c0d95e0c1afbd4c0c5cee01876968c8b610e0f02d7ff8d6344682',
+        expected: null
+    },
+    {
+        description: 'Should return null if transaction IS NOT found',
+        revertedTransactionHash:
+            '0x00000000000000000000000d4c0c5cee01876960000000000000000000000000',
+        expected: null
     }
 ];
 
@@ -300,5 +405,6 @@ export {
     transferTransactionBodyValueAsNumber,
     expectedReceipt,
     transfer1VTHOClause,
-    buildTransactionBodyClausesTestCases
+    buildTransactionBodyClausesTestCases,
+    getRevertReasonTestCasesFixture
 };

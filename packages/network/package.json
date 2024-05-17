@@ -4,6 +4,11 @@
   "description": "This module allows to connect you seamlessly to the VechainThor blockchain",
   "author": "vechain Foundation",
   "license": "MIT",
+  "homepage": "https://github.com/vechain/vechain-sdk-js",
+  "repository": {
+    "type": "git",
+    "url": "github:vechain/vechain-sdk-js"
+  },
   "keywords": [
     "vechain",
     "transaction",
