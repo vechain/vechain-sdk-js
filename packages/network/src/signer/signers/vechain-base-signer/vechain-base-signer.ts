@@ -22,6 +22,7 @@ import {
 import { RPC_METHODS } from '../../../provider';
 import { assert, DATA, JSONRPC, TRANSACTION } from '@vechain/sdk-errors';
 import { assertTransactionCanBeSigned } from '../../../assertions';
+import { vnsUtils } from '../../../utils';
 
 /**
  * Basic vechain signer.
@@ -475,6 +476,19 @@ class VechainBaseSigner implements VechainSigner {
 
         // Return new signed transaction
         return Hex0x.of(new Transaction(unsignedTx.body, signature).encoded);
+    }
+
+    /**
+     * Use vet.domains to resolve name to adress
+     * @param vnsName - The name to resolve
+     * @returns the address for a name or null
+     */
+    async resolveName(vnsName: string): Promise<null | string> {
+        if (this.provider === null) {
+            return null;
+        }
+
+        return await vnsUtils.resolveName(this.provider.thorClient, vnsName);
     }
 }
 

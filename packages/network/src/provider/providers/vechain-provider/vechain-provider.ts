@@ -16,7 +16,7 @@ import {
     type SubscriptionManager
 } from './types';
 import { Quantity } from '@vechain/sdk-core';
-import { type EventPoll, Poll } from '../../../utils';
+import { type EventPoll, Poll, vnsUtils } from '../../../utils';
 import {
     type CompressedBlockDetail,
     type ThorClient
@@ -282,6 +282,24 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
             return null;
         }
         return await this.wallet?.getSigner(this, address);
+    }
+
+    /**
+     * Use vet.domains to resolve name to adress
+     * @param vnsName - The name to resolve
+     * @returns the address for a name or null
+     */
+    async resolveName(vnsName: string): Promise<null | string> {
+        return await vnsUtils.resolveName(this.thorClient, vnsName);
+    }
+
+    /**
+     * Use vet.domains to lookup a verified primary name for an address
+     * @param address - The address to lookup
+     * @returns the primary name for an address or null
+     */
+    async lookupAddress(address: string): Promise<null | string> {
+        return await vnsUtils.lookupAddress(this.thorClient, address);
     }
 }
 

@@ -16,7 +16,8 @@ import {
     ERROR_SELECTOR,
     PANIC_SELECTOR,
     Poll,
-    thorest
+    thorest,
+    vnsUtils
 } from '../../utils';
 import {
     type GetTransactionInputOptions,
@@ -241,7 +242,7 @@ class TransactionsModule {
         return {
             blockRef,
             chainTag,
-            clauses,
+            clauses: await this.resolveNamesInClauses(clauses),
             dependsOn: options?.dependsOn ?? null,
             expiration: options?.expiration ?? 32,
             gas,
@@ -250,6 +251,57 @@ class TransactionsModule {
             reserved:
                 options?.isDelegated === true ? { features: 1 } : undefined
         };
+    }
+
+    /**
+     * Ensures that names in clauses are resolved to addresses
+     *
+     * @param clauses - The clauses of the transaction.
+     * @returns A promise that resolves to clauses with resolved addresses
+     */
+    public async resolveNamesInClauses(
+        clauses: TransactionClause[]
+    ): Promise<TransactionClause[]> {
+        // find unique names in the clause list
+        const uniqueNames = clauses.reduce((map, clause) => {
+            if (
+                typeof clause.to === 'string' &&
+                !map.has(clause.to) &&
+                clause.to.includes('.')
+            ) {
+                map.set(clause.to, clause.to);
+            }
+            return map;
+        }, new Map<string, string>());
+
+        const nameList = [...uniqueNames.keys()];
+
+        // no names, return the original clauses
+        if (uniqueNames.size === 0) {
+            return clauses;
+        }
+
+        // resolve the names to addresses
+        const addresses = await vnsUtils.resolveNames(this.thor, nameList);
+
+        // map unique names with resolved addresses
+        addresses.forEach((address, index) => {
+            if (address !== null) {
+                uniqueNames.set(nameList[index], address);
+            }
+        });
+
+        // replace names with resolved addresses, or leave unchanged
+        return clauses.map((clause) => {
+            if (typeof clause.to !== 'string') {
+                return clause;
+            }
+
+            return {
+                ...clause,
+                to: uniqueNames.get(clause.to) ?? clause.to
+            };
+        });
     }
 
     /**
@@ -292,12 +344,14 @@ class TransactionsModule {
             {
                 query: buildQuery({ revision }),
                 body: {
-                    clauses: clauses.map((clause) => {
-                        return {
-                            ...clause,
-                            value: BigInt(clause.value).toString()
-                        };
-                    }),
+                    clauses: await this.resolveNamesInClauses(
+                        clauses.map((clause) => {
+                            return {
+                                ...clause,
+                                value: BigInt(clause.value).toString()
+                            };
+                        })
+                    ),
                     gas,
                     gasPrice,
                     caller,

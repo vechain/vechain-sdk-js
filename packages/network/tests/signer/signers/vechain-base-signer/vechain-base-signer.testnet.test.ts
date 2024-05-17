@@ -175,4 +175,38 @@ describe('Vechain base signer tests - testnet', () => {
             }
         );
     });
+
+    describe('resolveName(name)', () => {
+        test('Should be able to resolve an address by name', async () => {
+            const signer = new VechainBaseSigner(
+                Buffer.from(
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
+                    'hex'
+                ),
+                new VechainProvider(
+                    thorClient,
+                    THOR_SOLO_ACCOUNTS_BASE_WALLET,
+                    false
+                )
+            );
+            const address = await signer.resolveName('test-sdk.vet');
+            expect(address).toBe('0x105199a26b10e55300CB71B46c5B5e867b7dF427');
+        });
+
+        test('Should resolve to null for unknown names', async () => {
+            const signer = new VechainBaseSigner(
+                Buffer.from(
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
+                    'hex'
+                ),
+                new VechainProvider(
+                    thorClient,
+                    THOR_SOLO_ACCOUNTS_BASE_WALLET,
+                    false
+                )
+            );
+            const address = await signer.resolveName('unknown.test-sdk.vet');
+            expect(address).toBe(null);
+        });
+    });
 });

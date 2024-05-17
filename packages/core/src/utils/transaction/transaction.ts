@@ -25,10 +25,10 @@ function intrinsicGas(clauses: TransactionClause[]): number {
     // Some clauses
     return clauses.reduce((sum, clause: TransactionClause) => {
         if (clause.to !== null) {
-            // Invalid address
+            // Invalid address or no vet.domains name
             assert(
                 'intrinsicGas',
-                addressUtils.isAddress(clause.to),
+                addressUtils.isAddress(clause.to) || clause.to.includes('.'),
                 DATA.INVALID_DATA_TYPE,
                 `Invalid data type in clause. Each 'to' field must be a valid address.`,
                 { clause }
