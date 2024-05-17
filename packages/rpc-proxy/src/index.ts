@@ -103,7 +103,7 @@ function startProxy(): void {
     const provider = new VechainProvider(
         thorClient,
         wallet,
-        config.enbaleDelegation
+        config.enableDelegation
     );
 
     // Start the express proxy server
