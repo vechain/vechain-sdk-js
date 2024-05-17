@@ -1143,5 +1143,7 @@ export {
     depositContractBytecode,
     multipleClausesTestCases,
     TESTNET_DELEGATE_URL,
-    ERC20_CONTRACT_ADDRESS_ON_TESTNET
+    ERC20_CONTRACT_ADDRESS_ON_TESTNET,
+    eventExampleBytecode,
+    eventExampleAbi
 };

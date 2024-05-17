@@ -7,7 +7,12 @@ import {
     type VechainSigner
 } from '../../../src';
 import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
-import { deployedERC20Abi, erc20ContractBytecode } from './fixture';
+import {
+    deployedERC20Abi,
+    erc20ContractBytecode,
+    eventExampleAbi,
+    eventExampleBytecode
+} from './fixture';
 import {
     InvalidAbiEventError,
     InvalidAbiFunctionError
@@ -415,6 +420,66 @@ describe('ThorClient - ERC20 Contracts', () => {
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
                 '0x88B2551c3Ed42cA663796c10Ce68C88A65f73FE2',
                 5000n
+            ]
+        ]);
+    }, 20000); // Set a timeout of 10000ms for this test
+
+    /**
+     * Tests the listening to ERC20 contract operations with multiple criteria decoding the result.
+     */
+    test('listen to multiple contract operations with multiple criteria', async () => {
+        // Deploy the ERC20 contract
+        let erc20Factory = thorSoloClient.contracts.createContractFactory(
+            deployedERC20Abi,
+            erc20ContractBytecode,
+            signer
+        );
+
+        erc20Factory = await erc20Factory.startDeployment();
+
+        const contractERC20: Contract = await erc20Factory.waitForDeployment();
+
+        // Deploy the EventExample contract
+        let factoryEventExample =
+            thorSoloClient.contracts.createContractFactory(
+                eventExampleAbi,
+                eventExampleBytecode,
+                signer
+            );
+
+        factoryEventExample = await factoryEventExample.startDeployment();
+
+        const contractEventExample: Contract =
+            await factoryEventExample.waitForDeployment();
+
+        await (
+            await contractERC20.transact.transfer(
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                5000
+            )
+        ).wait();
+
+        await (await contractEventExample.transact.setValue(3000)).wait();
+
+        const transferCriteria = contractERC20.criteria.Transfer(
+            undefined,
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+        );
+
+        const valueCriteria = contractEventExample.criteria.ValueSet();
+
+        const events = await thorSoloClient.logs.filterEventLogs({
+            criteriaSet: [transferCriteria, valueCriteria]
+        });
+
+        expect(events.map((x) => x.decodedData)).toEqual([
+            [
+                [
+                    '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
+                    '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
+                    5000n
+                ],
+                ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
             ]
         ]);
     }, 20000); // Set a timeout of 10000ms for this test
