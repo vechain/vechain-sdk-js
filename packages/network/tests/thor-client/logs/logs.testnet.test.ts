@@ -26,7 +26,7 @@ describe('ThorClient - Logs Module', () => {
      */
     test('filterEventLogs', async () => {
         const eventLogs =
-            await thorClient.logs.filterEventLogs(argFilterEventLogs);
+            await thorClient.logs.filterRawEventLogs(argFilterEventLogs);
         expect(eventLogs).toStrictEqual(expectedFilterEventLogs);
     }, 3000);
 

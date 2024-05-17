@@ -381,11 +381,11 @@ describe('ThorClient - Contracts', () => {
         );
 
         expect(contractFilter).toBeDefined();
-        expect(contractFilter.criteriaSet[0].topic0).toBeDefined();
-        expect(contractFilter.criteriaSet[0].topic1).toBeDefined();
-        expect(contractFilter.criteriaSet[0].topic2).toBeDefined();
-        expect(contractFilter.criteriaSet[0].topic3).toBeDefined();
-        expect(contractFilter.criteriaSet[0].topic4).toBeDefined();
+        expect(contractFilter.criteriaSet[0].criteria.topic0).toBeDefined();
+        expect(contractFilter.criteriaSet[0].criteria.topic1).toBeDefined();
+        expect(contractFilter.criteriaSet[0].criteria.topic2).toBeDefined();
+        expect(contractFilter.criteriaSet[0].criteria.topic3).toBeDefined();
+        expect(contractFilter.criteriaSet[0].criteria.topic4).toBeDefined();
     }, 10000);
 
     test('deploy the deposit contract and call the deposit method', async () => {

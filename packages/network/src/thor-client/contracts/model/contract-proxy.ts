@@ -123,7 +123,7 @@ function getFilterProxy(contract: Contract): ContractFunctionFilter {
             return (...args: unknown[]): ContractFilter => {
                 const criteriaSet = buildCriteria(contract, prop, args);
 
-                return new ContractFilter(contract, [criteriaSet.criteria]);
+                return new ContractFilter(contract, [criteriaSet]);
             };
         }
     });

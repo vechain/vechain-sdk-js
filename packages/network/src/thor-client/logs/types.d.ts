@@ -71,7 +71,7 @@ type EventDisplayOrder = 'asc' | 'desc';
 /**
  * FilterEventLogsArg interface for filtering event logs.
  */
-interface FilterEventLogsOptions {
+interface FilterRawEventLogsOptions {
     /**
      * Block range
      */
@@ -84,6 +84,25 @@ interface FilterEventLogsOptions {
      * Event filters
      */
     criteriaSet?: EventCriteria[];
+    /**
+     * Sorting order
+     */
+    order?: EventDisplayOrder;
+}
+
+interface FilterEventLogsOptions {
+    /**
+     * Block range
+     */
+    range?: Range;
+    /**
+     * Pagination options
+     */
+    options?: PaginationOptions;
+    /**
+     * Event filters
+     */
+    criteriaSet?: FilterCriteria[];
     /**
      * Sorting order
      */
@@ -233,6 +252,7 @@ export type {
     Event,
     EventLogs,
     FilterTransferLogsOptions,
+    FilterRawEventLogsOptions,
     Transfer,
     TransferLogs,
     EventCriteria,

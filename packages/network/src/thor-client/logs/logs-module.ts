@@ -1,7 +1,7 @@
 import {
     type EventLogs,
-    type FilterCriteria,
     type FilterEventLogsOptions,
+    type FilterRawEventLogsOptions,
     type FilterTransferLogsOptions,
     type TransferLogs
 } from './types';
@@ -26,8 +26,8 @@ class LogsModule {
      * @param filterOptions - An object specifying filtering criteria for event logs.
      * @returns A promise that resolves to filtered event logs.
      */
-    public async filterEventLogs(
-        filterOptions: FilterEventLogsOptions
+    public async filterRawEventLogs(
+        filterOptions: FilterRawEventLogsOptions
     ): Promise<EventLogs[]> {
         return (await this.thor.httpClient.http(
             'POST',
@@ -41,26 +41,42 @@ class LogsModule {
     }
 
     /**
-     * Filters event logs based on the provided criteria.
-     *
-     * @param criteria
-     * @param filterOptions - An object specifying filtering criteria for event logs.
-     * @returns A promise that resolves to filtered event logs.
+     * Filters event logs based on the provided criteria and decodes them using the provided fragments.
+     * @param filterOptions
      */
-    public async filterDecodedEventLogs(
-        criteria: FilterCriteria[],
+    public async filterEventLogs(
         filterOptions: FilterEventLogsOptions
-    ): Promise<Result[]> {
-        filterOptions.criteriaSet = criteria.map((c) => c.criteria);
+    ): Promise<Array<Result | undefined>> {
+        // Extract criteria and fragments from filter options
+        const criteriaSet = filterOptions.criteriaSet?.map((c) => c.criteria);
+        const fragments = filterOptions.criteriaSet?.map(
+            (c) => c.eventFragment
+        );
 
-        const eventLogs = await this.filterEventLogs(filterOptions);
+        // Create new filter options with the criteria set
+        const filterRawEventLogsOptions: FilterRawEventLogsOptions = {
+            range: filterOptions.range,
+            criteriaSet,
+            options: filterOptions.options,
+            order: filterOptions.order
+        };
 
-        return eventLogs.map((log, index) => {
-            const eventFragment = new abi.Event(criteria[index].eventFragment);
-            return eventFragment.decodeEventLog({
-                data: log.data,
-                topics: log.topics
-            });
+        // Filter event logs based on the provided criteria
+        const eventLogs = await this.filterRawEventLogs(
+            filterRawEventLogsOptions
+        );
+
+        // Decode event logs using the provided fragments. Take the first fragment that matches the topic hash.
+        return eventLogs.map((log) => {
+            const fragment = fragments?.filter(
+                (f) => f.topicHash === log.topics[0]
+            );
+            if (fragment !== undefined) {
+                const eventFragment = new abi.Event(fragment[0]);
+                return eventFragment.decodeEventLog(log);
+            } else {
+                return undefined;
+            }
         });
     }
 

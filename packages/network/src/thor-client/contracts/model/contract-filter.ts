@@ -1,10 +1,10 @@
 import {
-    type EventCriteria,
     type EventLogs,
-    type FilterEventLogsOptions,
     type Range,
     type PaginationOptions,
-    type EventDisplayOrder
+    type EventDisplayOrder,
+    type FilterCriteria,
+    type FilterRawEventLogsOptions
 } from '../../logs';
 import { type Contract } from './contract';
 
@@ -20,7 +20,7 @@ class ContractFilter {
     /**
      * A set of criteria used to filter events.
      */
-    public criteriaSet: EventCriteria[];
+    public criteriaSet: FilterCriteria[];
 
     /**
      * Constructs an instance of the `ContractFilter` class.
@@ -28,7 +28,7 @@ class ContractFilter {
      * @param contract - The smart contract instance to apply the filter on.
      * @param criteriaSet - A set of criteria used to filter events.
      */
-    constructor(contract: Contract, criteriaSet: EventCriteria[]) {
+    constructor(contract: Contract, criteriaSet: FilterCriteria[]) {
         this.contract = contract;
         this.criteriaSet = criteriaSet;
     }
@@ -46,18 +46,18 @@ class ContractFilter {
         options?: PaginationOptions,
         order?: EventDisplayOrder
     ): Promise<EventLogs[]> {
-        const filterEventLogsOptions: FilterEventLogsOptions = {
+        const filterEventLogsOptions: FilterRawEventLogsOptions = {
             range: range ?? {
                 unit: 'block',
                 from: 0,
                 to: (await this.contract.thor.blocks.getBestBlockCompressed())
                     ?.number
             },
-            criteriaSet: this.criteriaSet,
+            criteriaSet: this.criteriaSet.map((c) => c.criteria),
             options,
             order: order ?? 'asc'
         };
-        return await this.contract.thor.logs.filterEventLogs(
+        return await this.contract.thor.logs.filterRawEventLogs(
             filterEventLogsOptions
         );
     }

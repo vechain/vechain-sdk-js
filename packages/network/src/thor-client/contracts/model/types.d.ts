@@ -2,7 +2,7 @@ import type { ContractCallResult } from '../types';
 import type { SendTransactionResult } from '../../transactions';
 import { type ContractFilter } from './contract-filter';
 import { type TransactionClause } from '@vechain/sdk-core';
-import { type EventCriteria } from '../../logs';
+import { type FilterCriteria } from '../../logs';
 
 /**
  * Represents a generic contract function type that accepts an arbitrary number of arguments
@@ -82,7 +82,7 @@ type ContractFunctionClause = Record<
 
 type ContractFunctionCriteria = Record<
     string,
-    ContractFunctionSync<EventCriteria>
+    ContractFunctionSync<FilterCriteria>
 >;
 
 /**
