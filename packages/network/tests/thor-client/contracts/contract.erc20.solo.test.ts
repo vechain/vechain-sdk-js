@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     type Contract,
+    ProviderInternalBaseWallet,
     ThorClient,
     type TransactionReceipt,
     VechainBaseSigner,
@@ -10,7 +11,6 @@ import {
 import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
 import { deployedERC20Abi, erc20ContractBytecode } from './fixture';
 import { addressUtils } from '@vechain/sdk-core';
-import { InvalidAbiFunctionError } from '@vechain/sdk-errors';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -26,6 +26,8 @@ describe('ThorClient - ERC20 Contracts', () => {
     // Signer instance
     let signer: VechainSigner;
 
+    let providerWithDelegationPrivateKeyEnabled: VechainProvider;
+
     beforeEach(() => {
         thorSoloClient = ThorClient.fromUrl(soloUrl);
         signer = new VechainBaseSigner(
@@ -34,6 +36,36 @@ describe('ThorClient - ERC20 Contracts', () => {
                 'hex'
             ),
             new VechainProvider(thorSoloClient)
+        );
+
+        // Create the provider (used in this case to sign the transaction with getSigner() method)
+        providerWithDelegationPrivateKeyEnabled = new VechainProvider(
+            // Thor client used by the provider
+            thorSoloClient,
+
+            // Internal wallet used by the provider (needed to call the getSigner() method)
+            new ProviderInternalBaseWallet(
+                [
+                    {
+                        privateKey: Buffer.from(
+                            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
+                                .privateKey,
+                            'hex'
+                        ),
+                        address:
+                            TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
+                    }
+                ],
+                {
+                    delegator: {
+                        delegatorPrivateKey:
+                            TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey
+                    }
+                }
+            ),
+
+            // Enable fee delegation
+            true
         );
     });
 
@@ -105,47 +137,6 @@ describe('ThorClient - ERC20 Contracts', () => {
     }, 10000); // Set a timeout of 10000ms for this test
 
     /**
-     * Test transaction execution with delegation.
-     */
-    test('transaction execution with delegation', async () => {
-        // Deploy the ERC20 contract
-        let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
-            erc20ContractBytecode,
-            signer
-        );
-
-        factory = await factory.startDeployment();
-
-        const contract: Contract = await factory.waitForDeployment();
-
-        contract.setContractTransactOptions({
-            signTransactionOptions: {
-                delegatorPrivateKey:
-                    TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey
-            },
-            isDelegated: true
-        });
-
-        await (
-            await contract.transact.transfer(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
-                1000
-            )
-        ).wait();
-
-        console.log(
-            await contract.read.balanceOf(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
-            )
-        );
-
-        await expect(
-            async () => await contract.filters.EventNotFound().get()
-        ).rejects.toThrowError(InvalidAbiFunctionError);
-    }, 10000);
-
-    /**
      * Test transaction execution with delegation set from contract.
      */
     test('transaction execution with delegation set from contract', async () => {
@@ -153,7 +144,9 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            signer
+            (await providerWithDelegationPrivateKeyEnabled.getSigner(
+                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
+            )) as VechainSigner
         );
 
         factory = await factory.startDeployment();
@@ -163,11 +156,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         const txResult = await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
-                1000,
-                {
-                    delegatorPrivateKey:
-                        TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey
-                }
+                1000
             )
         ).wait();
 
@@ -238,7 +227,9 @@ describe('ThorClient - ERC20 Contracts', () => {
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
             erc20ContractBytecode,
-            signer
+            (await providerWithDelegationPrivateKeyEnabled.getSigner(
+                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
+            )) as VechainSigner
         );
 
         factory = await factory.startDeployment();
@@ -248,11 +239,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         const txResult = await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
-                1000,
-                {
-                    delegatorPrivateKey:
-                        TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey
-                }
+                1000
             )
         ).wait();
 

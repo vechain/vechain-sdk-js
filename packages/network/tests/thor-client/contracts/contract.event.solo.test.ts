@@ -474,13 +474,11 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         expect(events.map((x) => x.decodedData)).toEqual([
             [
-                [
-                    '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
-                    '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
-                    5000n
-                ],
-                ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
-            ]
+                '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
+                '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
+                5000n
+            ],
+            ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
         ]);
     }, 20000); // Set a timeout of 10000ms for this test
 

@@ -6,10 +6,7 @@ import {
     type ContractFunctionTransact,
     type TransactionValue
 } from './types';
-import {
-    type SendTransactionResult,
-    type SignTransactionOptions
-} from '../../transactions';
+import { type SendTransactionResult } from '../../transactions';
 import { type Contract } from './contract';
 import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 import {
@@ -78,19 +75,9 @@ function getTransactProxy(contract: Contract): ContractFunctionTransact {
                 // check if the transaction value is provided as an argument
                 const transactionValue = getTransactionValue(args);
 
-                const signTransactionOptions = getSignTransactionOptions(args);
-
                 // if present remove the transaction value argument from the list of arguments
                 if (transactionValue !== undefined) {
                     args = args.filter((arg) => !isTransactionValue(arg));
-                }
-
-                // if present remove the sign transaction options argument from the list of arguments
-                if (signTransactionOptions !== undefined) {
-                    args = args.filter((arg) => !isSignTransactionOptions(arg));
-                    transactionOptions.signTransactionOptions =
-                        signTransactionOptions;
-                    transactionOptions.isDelegated = true;
                 }
 
                 return await contract.thor.contracts.executeTransaction(
@@ -225,35 +212,12 @@ function getTransactionValue(args: unknown[]): TransactionValue | undefined {
 }
 
 /**
- * Extracts the sign transaction options from the list of arguments, if present.
- * @param args - The list of arguments to search for the sign transaction options.
- */
-function getSignTransactionOptions(
-    args: unknown[]
-): SignTransactionOptions | undefined {
-    return args.find((arg) => isSignTransactionOptions(arg)) as
-        | SignTransactionOptions
-        | undefined;
-}
-
-/**
  * Type guard function to check if an object is a TransactionValue.
  * @param obj - The object to check.
  * @returns True if the object is a TransactionValue, false otherwise.
  */
 function isTransactionValue(obj: unknown): obj is TransactionValue {
     return (obj as TransactionValue).value !== undefined;
-}
-
-/**
- * Type guard function to check if an object is a SignTransactionOptions.
- * @param obj - The object to check.
- */
-function isSignTransactionOptions(obj: unknown): obj is SignTransactionOptions {
-    return (
-        (obj as SignTransactionOptions).delegatorPrivateKey !== undefined ||
-        (obj as SignTransactionOptions).delegatorUrl !== undefined
-    );
 }
 
 export {
