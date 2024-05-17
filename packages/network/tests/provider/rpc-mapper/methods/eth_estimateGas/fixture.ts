@@ -27,6 +27,16 @@ const positiveCasesFixtures = [
             'latest'
         ],
         expected: '0x45015'
+    },
+    {
+        description: 'Missing block reference',
+        input: [
+            {
+                from: '0x37cce5c8bd6141cbe8172b277faa65af5cc83c6a',
+                data: '0x'
+            }
+        ],
+        expected: '0xcf08'
     }
 ];
 

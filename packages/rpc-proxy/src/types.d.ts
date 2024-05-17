@@ -33,7 +33,7 @@ interface Config {
     /**
      * Enable delegation
      */
-    enbaleDelegation?: boolean;
+    enableDelegation?: boolean;
 }
 
 /**
