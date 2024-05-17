@@ -370,9 +370,9 @@ interface VechainSigner {
     // ) => Promise<string>;
 
     /**
-     *  Resolves an ENS Name to an address.
+     *  Resolves an VNS Name to an address.
      */
-    // resolveName: (name: string) => Promise<null | string>;
+    resolveName: (vnsName: string) => Promise<null | string>;
 }
 
 export {
