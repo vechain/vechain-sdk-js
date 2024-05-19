@@ -239,6 +239,33 @@ describe('ThorClient - ERC20 Contracts', () => {
     }, 10000);
 
     /**
+     * Tests the execution of multiple ERC20 reverted read clauses.
+     */
+    test('Execute multiple ERC20 read contract clauses that reverts', async () => {
+        // Deploy the ERC20 contract
+        let factory = thorSoloClient.contracts.createContractFactory(
+            deployedERC20Abi,
+            erc20ContractBytecode,
+            signer
+        );
+
+        factory = await factory.startDeployment();
+
+        const contract: Contract = await factory.waitForDeployment();
+
+        const contractRead =
+            await thorSoloClient.contracts.executeMultipleClausesCall([
+                contract.clause.name(),
+                contract.clause.symbol(),
+                contract.clause.decimals()
+            ]);
+
+        expect(contractRead[0]).toEqual(['SampleToken']);
+        expect(contractRead[1]).toEqual(['ST']);
+        expect(contractRead[2]).toEqual([BigInt(18)]);
+    }, 10000);
+
+    /**
      * Tests the execution of multiple ERC20 contract clauses using a blockchain client.
      */
     test('Execute multiple ERC20 contract clauses', async () => {

@@ -1126,6 +1126,43 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
     }
 ];
 
+const OWNER_RESTRICTION_ABI: InterfaceAbi = [
+    {
+        inputs: [],
+        stateMutability: 'nonpayable',
+        type: 'constructor'
+    },
+    {
+        inputs: [],
+        name: 'getSecretData',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'newData',
+                type: 'uint256'
+            }
+        ],
+        name: 'setSecretData',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    }
+];
+
+const OWNER_RESTRICTION_BYTECODE =
+    '0x6080604052348015600f57600080fd5b50336000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550602a6001819055506102eb806100676000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c80637ea1e23c1461003b578063c21250fc14610057575b600080fd5b610055600480360381019061005091906101e1565b610075565b005b61005f61010d565b60405161006c919061021d565b60405180910390f35b60008054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614610103576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016100fa90610295565b60405180910390fd5b8060018190555050565b60008060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff161461019e576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040161019590610295565b60405180910390fd5b600154905090565b600080fd5b6000819050919050565b6101be816101ab565b81146101c957600080fd5b50565b6000813590506101db816101b5565b92915050565b6000602082840312156101f7576101f66101a6565b5b6000610205848285016101cc565b91505092915050565b610217816101ab565b82525050565b6000602082019050610232600083018461020e565b92915050565b600082825260208201905092915050565b7f4e6f742074686520636f6e7472616374206f776e657200000000000000000000600082015250565b600061027f601683610238565b915061028a82610249565b602082019050919050565b600060208201905081810360008301526102ae81610272565b905091905056fea26469706673582212200719d4ab638d395991460f36ead3fd54bf340678d7805bce38f901b5533bf69664736f6c63430008190033';
+
 export {
     contractBytecode,
     erc20ContractBytecode,
@@ -1145,5 +1182,7 @@ export {
     TESTNET_DELEGATE_URL,
     ERC20_CONTRACT_ADDRESS_ON_TESTNET,
     eventExampleBytecode,
-    eventExampleAbi
+    eventExampleAbi,
+    OWNER_RESTRICTION_ABI,
+    OWNER_RESTRICTION_BYTECODE
 };

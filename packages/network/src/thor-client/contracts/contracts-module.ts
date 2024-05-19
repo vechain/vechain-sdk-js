@@ -129,13 +129,9 @@ class ContractsModule {
             options
         );
         return response.map((res, index) => {
-            if (res.reverted) {
-                return decodeRevertReason(res.data) ?? '';
-            } else {
-                return new abi.Function(
-                    clauses[index].functionFragment
-                ).decodeOutput(res.data);
-            }
+            return new abi.Function(
+                clauses[index].functionFragment
+            ).decodeOutput(res.data);
         });
     }
 
