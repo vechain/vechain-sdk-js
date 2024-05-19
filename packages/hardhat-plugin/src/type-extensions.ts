@@ -37,7 +37,7 @@ declare module 'hardhat/types/runtime' {
  *
  * - Add `delegator` to `HttpNetworkConfig`
  * - Add `debug` to `HttpNetworkConfig`
- * - Add `enbaleDelegation` to `HttpNetworkConfig`
+ * - Add `enableDelegation` to `HttpNetworkConfig`
  */
 declare module 'hardhat/types/config' {
     export interface HttpNetworkConfig {
@@ -58,6 +58,6 @@ declare module 'hardhat/types/config' {
         /**
          * Enable or not the fee's delegation of the transaction.
          */
-        enbaleDelegation?: boolean;
+        enableDelegation?: boolean;
     }
 }

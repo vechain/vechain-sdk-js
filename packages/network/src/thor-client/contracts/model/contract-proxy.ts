@@ -6,17 +6,14 @@ import {
     type ContractFunctionTransact,
     type TransactionValue
 } from './types';
-import {
-    type SendTransactionResult,
-    type SignTransactionOptions
-} from '../../transactions';
+import { type SendTransactionResult } from '../../transactions';
 import { type Contract } from './contract';
 import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 import { clauseBuilder, fragment } from '@vechain/sdk-core';
 import { type ContractCallResult, type ContractClause } from '../types';
 import { ContractFilter } from './contract-filter';
 import { type VechainSigner } from '../../../signer';
-import { type EventCriteria } from '../../logs';
+import { type FilterCriteria } from '../../logs';
 
 /**
  * Creates a Proxy object for reading contract state, allowing for the dynamic invocation of contract read operations.
@@ -74,19 +71,9 @@ function getTransactProxy(contract: Contract): ContractFunctionTransact {
                 // check if the transaction value is provided as an argument
                 const transactionValue = getTransactionValue(args);
 
-                const signTransactionOptions = getSignTransactionOptions(args);
-
                 // if present remove the transaction value argument from the list of arguments
                 if (transactionValue !== undefined) {
                     args = args.filter((arg) => !isTransactionValue(arg));
-                }
-
-                // if present remove the sign transaction options argument from the list of arguments
-                if (signTransactionOptions !== undefined) {
-                    args = args.filter((arg) => !isSignTransactionOptions(arg));
-                    transactionOptions.signTransactionOptions =
-                        signTransactionOptions;
-                    transactionOptions.isDelegated = true;
                 }
 
                 return await contract.thor.contracts.executeTransaction(
@@ -169,7 +156,7 @@ function getClauseProxy(contract: Contract): ContractFunctionClause {
 function getCriteriaProxy(contract: Contract): ContractFunctionCriteria {
     return new Proxy(contract.criteria, {
         get: (_target, prop) => {
-            return (...args: unknown[]): EventCriteria => {
+            return (...args: unknown[]): FilterCriteria => {
                 return buildCriteria(contract, prop, args);
             };
         }
@@ -177,7 +164,7 @@ function getCriteriaProxy(contract: Contract): ContractFunctionCriteria {
 }
 
 /**
- * Builds the event criteria for the contract filter.
+ * Builds the filter criteria for the contract filter.
  * @param contract - The contract instance to create the criteria for.
  * @param prop - The property name of the contract event.
  * @param args - The arguments to filter the event.
@@ -187,7 +174,7 @@ function buildCriteria(
     contract: Contract,
     prop: string | symbol,
     args: unknown[]
-): EventCriteria {
+): FilterCriteria {
     // Create the vechain sdk event fragment starting from the contract ABI event fragment
     const eventFragment = new fragment.Event(contract.getEventFragment(prop));
 
@@ -200,12 +187,15 @@ function buildCriteria(
 
     // Create the criteria set for the contract filter
     return {
-        address: contract.address,
-        topic0: topics.get(0) as string, // the first topic is always defined since it's the event signature
-        topic1: topics.has(1) ? topics.get(1) : undefined,
-        topic2: topics.has(2) ? topics.get(2) : undefined,
-        topic3: topics.has(3) ? topics.get(3) : undefined,
-        topic4: topics.has(4) ? topics.get(4) : undefined
+        criteria: {
+            address: contract.address,
+            topic0: topics.get(0) as string, // the first topic is always defined since it's the event signature
+            topic1: topics.has(1) ? topics.get(1) : undefined,
+            topic2: topics.has(2) ? topics.get(2) : undefined,
+            topic3: topics.has(3) ? topics.get(3) : undefined,
+            topic4: topics.has(4) ? topics.get(4) : undefined
+        },
+        eventFragment: eventFragment.fragment
     };
 }
 
@@ -221,35 +211,12 @@ function getTransactionValue(args: unknown[]): TransactionValue | undefined {
 }
 
 /**
- * Extracts the sign transaction options from the list of arguments, if present.
- * @param args - The list of arguments to search for the sign transaction options.
- */
-function getSignTransactionOptions(
-    args: unknown[]
-): SignTransactionOptions | undefined {
-    return args.find((arg) => isSignTransactionOptions(arg)) as
-        | SignTransactionOptions
-        | undefined;
-}
-
-/**
  * Type guard function to check if an object is a TransactionValue.
  * @param obj - The object to check.
  * @returns True if the object is a TransactionValue, false otherwise.
  */
 function isTransactionValue(obj: unknown): obj is TransactionValue {
     return (obj as TransactionValue).value !== undefined;
-}
-
-/**
- * Type guard function to check if an object is a SignTransactionOptions.
- * @param obj - The object to check.
- */
-function isSignTransactionOptions(obj: unknown): obj is SignTransactionOptions {
-    return (
-        (obj as SignTransactionOptions).delegatorPrivateKey !== undefined ||
-        (obj as SignTransactionOptions).delegatorUrl !== undefined
-    );
 }
 
 export {

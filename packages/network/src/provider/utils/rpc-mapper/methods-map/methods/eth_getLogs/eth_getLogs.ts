@@ -64,7 +64,7 @@ const ethGetLogs = async (
         });
 
         // Call thor client to get logs
-        const logs: EventLogs[] = await thorClient.logs.filterEventLogs({
+        const logs: EventLogs[] = await thorClient.logs.filterRawEventLogs({
             range: {
                 unit: 'block',
                 from:

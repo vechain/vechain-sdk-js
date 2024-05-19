@@ -173,12 +173,16 @@ class ContractsModule {
             await signer.getAddress()
         );
 
+        console.log(options);
+
         // Build a transaction for calling the contract function
         const txBody = await this.thor.transactions.buildTransactionBody(
             [clause],
             gasResult.totalGas,
             options
         );
+
+        console.log('txBody:', txBody);
 
         // Sign the transaction
         const result = await this._signContractTransaction(signer, txBody);
