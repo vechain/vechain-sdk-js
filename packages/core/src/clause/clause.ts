@@ -1,4 +1,3 @@
-// import { isAddress } from 'ethers';
 import { abi, coder, type FunctionFragment } from '../abi';
 import { type TransactionClause } from '../transaction';
 import type { DeployParams } from './types';
