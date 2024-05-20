@@ -1,5 +1,6 @@
 import { type Keystore, type KeystoreAccount } from './types';
 import { keystoreEthers, keystoreExperimental } from './cryptography';
+import { VechainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * A boolean indicating whether the keystore cryptography is experimental or not.
@@ -24,6 +25,15 @@ async function encrypt(
     privateKey: Buffer,
     password: string
 ): Promise<Keystore> {
+    if (EXPERIMENTAL_CRYPTOGRAPHY)
+        VechainSDKLogger('warning').log({
+            title: `Experimental cryptography`,
+            messages: [
+                `Remember, you are using an experimental cryptography library.`,
+                'functions: keystore.encrypt'
+            ]
+        });
+
     return EXPERIMENTAL_CRYPTOGRAPHY
         ? keystoreExperimental.encrypt(
               privateKey,
@@ -44,6 +54,15 @@ async function decrypt(
     keystore: Keystore,
     password: string
 ): Promise<KeystoreAccount> {
+    if (EXPERIMENTAL_CRYPTOGRAPHY)
+        VechainSDKLogger('warning').log({
+            title: `Experimental cryptography`,
+            messages: [
+                `Remember, you are using an experimental cryptography library.`,
+                'functions: keystore.decrypt'
+            ]
+        });
+
     return EXPERIMENTAL_CRYPTOGRAPHY
         ? keystoreExperimental.decrypt(
               keystore,
@@ -59,6 +78,15 @@ async function decrypt(
  * @returns A boolean indicating whether the keystore is valid or not.
  */
 function isValid(keystore: Keystore): boolean {
+    if (EXPERIMENTAL_CRYPTOGRAPHY)
+        VechainSDKLogger('warning').log({
+            title: `Experimental cryptography`,
+            messages: [
+                `Remember, you are using an experimental cryptography library.`,
+                'functions: keystore.isValid'
+            ]
+        });
+
     return EXPERIMENTAL_CRYPTOGRAPHY
         ? keystoreExperimental.isValid(keystore)
         : keystoreEthers.isValid(keystore);
