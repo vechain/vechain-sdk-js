@@ -40,7 +40,7 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
                 // Mock the getGenesisBlock method to return null
                 jest.spyOn(
                     thorClient.logs,
-                    'filterEventLogs'
+                    'filterRawEventLogs'
                 ).mockResolvedValue([]);
 
                 // Call RPC method
@@ -62,7 +62,7 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
          */
         test('eth_getLogs - Should throw error if request is invalid', async () => {
             // Mock the filterEventLogs method to throw error
-            jest.spyOn(thorClient.logs, 'filterEventLogs').mockRejectedValue(
+            jest.spyOn(thorClient.logs, 'filterRawEventLogs').mockRejectedValue(
                 new Error()
             );
 

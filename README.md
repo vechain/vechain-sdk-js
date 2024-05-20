@@ -204,6 +204,16 @@ For a comprehensive overview of the package structure, please refer to our [Arch
 
 - You can also create and test your examples using `yarn test:examples` command (with solo `yarn test:examples:solo`).
 
+## Experimental Features
+We are continuously working on new features and improvements to enhance the SDK.
+You can enable experimental features of specific cryptographic modules by use `useExperimentalCryptography` function of a specific module.
+
+For example:
+
+```typescript
+keystore.useExperimentalCryptography(true)
+```
+
 ## Troubleshooting
 
 ### Next.js

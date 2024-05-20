@@ -1,5 +1,7 @@
 /* --- Input options start --- */
 
+import type { EventFragment, Result } from '@vechain/sdk-core';
+
 /**
  * Range interface for specifying a range of data.
  */
@@ -36,6 +38,14 @@ interface PaginationOptions {
 }
 
 /**
+ * FilterCriteria interface for filtering event logs.
+ */
+interface FilterCriteria {
+    criteria: EventCriteria;
+    eventFragment: EventFragment;
+}
+
+/**
  * EventCriteria interface for filtering event logs.
  */
 interface EventCriteria {
@@ -59,7 +69,29 @@ interface EventCriteria {
 type EventDisplayOrder = 'asc' | 'desc';
 
 /**
- * FilterEventLogsArg interface for filtering event logs.
+ * FilterRawEventLogsArg interface for filtering raw event logs.
+ */
+interface FilterRawEventLogsOptions {
+    /**
+     * Block range
+     */
+    range?: Range;
+    /**
+     * Pagination options
+     */
+    options?: PaginationOptions;
+    /**
+     * Event filters
+     */
+    criteriaSet?: EventCriteria[];
+    /**
+     * Sorting order
+     */
+    order?: EventDisplayOrder;
+}
+
+/**
+ * FilterEventLogsArg interface for filtering decoded event logs.
  */
 interface FilterEventLogsOptions {
     /**
@@ -73,7 +105,7 @@ interface FilterEventLogsOptions {
     /**
      * Event filters
      */
-    criteriaSet?: EventCriteria[];
+    criteriaSet?: FilterCriteria[];
     /**
      * Sorting order
      */
@@ -204,6 +236,11 @@ interface EventLogs extends Event {
      * Event logs with associated metadata
      */
     meta: Metadata;
+
+    /**
+     * The decoded data from the event.
+     */
+    decodedData?: Result[];
 }
 
 /**
@@ -223,9 +260,11 @@ export type {
     Event,
     EventLogs,
     FilterTransferLogsOptions,
+    FilterRawEventLogsOptions,
     Transfer,
     TransferLogs,
     EventCriteria,
+    FilterCriteria,
     Range,
     PaginationOptions,
     EventDisplayOrder

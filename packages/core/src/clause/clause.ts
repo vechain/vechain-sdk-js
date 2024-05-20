@@ -1,9 +1,9 @@
-import { isAddress } from 'ethers';
 import { abi, coder, type FunctionFragment } from '../abi';
 import { type TransactionClause } from '../transaction';
 import type { DeployParams } from './types';
 import { ERC721_ABI, VIP180_ABI } from '../utils';
 import { assert, buildError, DATA } from '@vechain/sdk-errors';
+import { addressUtils } from '../address';
 
 /**
  * Builds a clause for deploying a smart contract.
@@ -157,7 +157,7 @@ function transferNFT(
 
     assert(
         'transferNFT',
-        isAddress(contractAddress),
+        addressUtils.isAddress(contractAddress),
         DATA.INVALID_DATA_TYPE,
         `Invalid 'contractAddress' parameter. Expected a contract address but received ${contractAddress}.`
     );

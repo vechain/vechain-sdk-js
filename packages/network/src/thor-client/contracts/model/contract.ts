@@ -10,12 +10,14 @@ import type { ContractCallOptions, ContractTransactionOptions } from '../types';
 import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 import {
     type ContractFunctionClause,
+    type ContractFunctionCriteria,
     type ContractFunctionFilter,
     type ContractFunctionRead,
     type ContractFunctionTransact
 } from './types';
 import {
     getClauseProxy,
+    getCriteriaProxy,
     getFilterProxy,
     getReadProxy,
     getTransactProxy
@@ -37,6 +39,7 @@ class Contract {
     public transact: ContractFunctionTransact = {};
     public filters: ContractFunctionFilter = {};
     public clause: ContractFunctionClause = {};
+    public criteria: ContractFunctionCriteria = {};
 
     private contractCallOptions: ContractCallOptions = {};
     private contractTransactionOptions: ContractTransactionOptions = {};
@@ -65,6 +68,7 @@ class Contract {
         this.transact = getTransactProxy(this);
         this.filters = getFilterProxy(this);
         this.clause = getClauseProxy(this);
+        this.criteria = getCriteriaProxy(this);
     }
 
     /**
