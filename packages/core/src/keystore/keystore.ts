@@ -9,6 +9,8 @@ let EXPERIMENTAL_CRYPTOGRAPHY: boolean = false;
 
 /**
  * Sets the keystore cryptography to experimental mode.
+ *
+ * @param experimentalCryptography - A boolean indicating whether the keystore cryptography is experimental or not.
  */
 function useExperimentalCryptography(experimentalCryptography: boolean): void {
     EXPERIMENTAL_CRYPTOGRAPHY = experimentalCryptography;
