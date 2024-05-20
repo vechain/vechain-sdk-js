@@ -17,7 +17,7 @@ const HEX_ADDRESS_REGEX = /^0x[0-9a-f]{40}$/i;
  * - {@link secp256k1.derivePublicKey}
  *
  * @param {Uint8Array} privateKey - The private key used to compute the public key
- * from wihich the address is computed.
+ * from which the address is computed.
  * @returns {string} - The string representation of the address,
  * prefixed with `0x` according the
  * [ERC-55: Mixed-case checksum address encoding](https://eips.ethereum.org/EIPS/eip-55).
