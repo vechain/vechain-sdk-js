@@ -1,5 +1,5 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { HttpClient, ThorClient } from '../../../src';
+import { BlocksModule, HttpClient, ThorClient } from '../../../src';
 import { soloUrl } from '../../fixture';
 
 /**
@@ -28,5 +28,19 @@ describe('ThorClient - Blocks Module mock tests', () => {
         await expect(
             thorSoloClient.blocks.getBlockExpanded('best')
         ).resolves.toBeNull();
+    });
+
+    test('getGenesisBlock should throw an error if genesis block is not found', async () => {
+        const thorSoloClient = ThorClient.fromUrl(soloUrl);
+
+        // Mock the getGenesisBlock method to return null
+        jest.spyOn(
+            BlocksModule.prototype,
+            'getBlockCompressed'
+        ).mockResolvedValueOnce(null);
+
+        await expect(
+            thorSoloClient.blocks.getGenesisBlock()
+        ).rejects.toThrowError();
     });
 });

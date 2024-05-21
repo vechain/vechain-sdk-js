@@ -58,7 +58,9 @@ import {
     JSONRPCDefaultError,
     CONTRACT,
     ContractDeploymentFailedError,
-    TransactionMissingPrivateKeyError
+    TransactionMissingPrivateKeyError,
+    BLOCK,
+    BlockGenesisNotFound
 } from '../src';
 
 /**
@@ -320,6 +322,15 @@ const ErrorsCodeAndClassesMapsFixture = [
             {
                 errorCode: CONTRACT.CONTRACT_DEPLOYMENT_FAILED,
                 classExpected: ContractDeploymentFailedError
+            }
+        ]
+    },
+    {
+        name: 'Block',
+        elements: [
+            {
+                errorCode: BLOCK.GENESIS_BLOCK_NOT_FOUND,
+                classExpected: BlockGenesisNotFound
             }
         ]
     }

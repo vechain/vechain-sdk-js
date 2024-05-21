@@ -1,6 +1,7 @@
 export * from './abi';
 export * from './address';
 export * from './bloom';
+export * from './block';
 export * from './certificate';
 export * from './contract';
 export * from './data';

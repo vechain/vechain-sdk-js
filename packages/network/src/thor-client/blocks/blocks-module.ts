@@ -1,4 +1,4 @@
-import { assert, DATA } from '@vechain/sdk-errors';
+import { assert, buildError, DATA, ERROR_CODES } from '@vechain/sdk-errors';
 import { buildQuery, type EventPoll, Poll, thorest } from '../../utils';
 import {
     type BlocksModuleOptions,
@@ -254,9 +254,19 @@ class BlocksModule {
      * Retrieves details of the genesis block.
      *
      * @returns A promise that resolves to an object containing the block details of the genesis block.
+     * @throws An error if the genesis block is not found.
      */
-    public async getGenesisBlock(): Promise<CompressedBlockDetail | null> {
-        return await this.getBlockCompressed(0);
+    public async getGenesisBlock(): Promise<CompressedBlockDetail> {
+        const genesis = await this.getBlockCompressed(0);
+        if (genesis === null) {
+            throw buildError(
+                'BlocksModule.getGenesisBlock',
+                ERROR_CODES.BLOCK.GENESIS_BLOCK_NOT_FOUND,
+                'Cannot find the genesis block.'
+            );
+        }
+
+        return genesis;
     }
 }
 

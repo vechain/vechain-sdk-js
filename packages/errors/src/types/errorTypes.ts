@@ -62,9 +62,12 @@ import {
     TransactionBodyError,
     TransactionDelegationError,
     TransactionMissingPrivateKeyError,
-    TransactionNotSignedError
+    TransactionNotSignedError,
+    BLOCK,
+    BlockGenesisNotFound,
+    CONTRACT,
+    ContractDeploymentFailedError
 } from '../model';
-import { CONTRACT, ContractDeploymentFailedError } from '../model';
 
 /**
  * @note: REGISTER YOUR NEW FANCY ERRORS BELOW!
@@ -96,7 +99,8 @@ type ErrorCode =
     | FUNCTION
     | EIP1193
     | JSONRPC
-    | CONTRACT;
+    | CONTRACT
+    | BLOCK;
 
 /**
  * Conditional type to get the error data type from the error code.
@@ -144,6 +148,7 @@ const ERROR_CODES = {
     KEYSTORE,
     HDNODE,
     BLOOM,
+    BLOCK,
     CERTIFICATE,
     ABI,
     RLP,
@@ -269,7 +274,9 @@ type ErrorType<ErrorCodeT> =
                                                                                             ? JSONRPCDefaultError
                                                                                             : ErrorCodeT extends CONTRACT.CONTRACT_DEPLOYMENT_FAILED
                                                                                               ? ContractDeploymentFailedError
-                                                                                              : never;
+                                                                                              : ErrorCodeT extends BLOCK.GENESIS_BLOCK_NOT_FOUND
+                                                                                                ? BlockGenesisNotFound
+                                                                                                : never;
 
 /**
  * Map to get the error class from the error code.
@@ -362,7 +369,10 @@ const ErrorClassMap = new Map<
     [JSONRPC.DEFAULT, JSONRPCDefaultError],
 
     // CONTRACT
-    [CONTRACT.CONTRACT_DEPLOYMENT_FAILED, ContractDeploymentFailedError]
+    [CONTRACT.CONTRACT_DEPLOYMENT_FAILED, ContractDeploymentFailedError],
+
+    // BLOCK
+    [BLOCK.GENESIS_BLOCK_NOT_FOUND, BlockGenesisNotFound]
 ]);
 
 export {
