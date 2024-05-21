@@ -514,8 +514,8 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         const contract: Contract = await factory.waitForDeployment();
 
-        await expect(
-            async () => await contract.filters.EventNotFound().get()
-        ).rejects.toThrowError(InvalidAbiFunctionError);
+        expect(() => contract.filters.EventNotFound()).toThrowError(
+            InvalidAbiFunctionError
+        );
     }, 10000);
 });

@@ -11,23 +11,22 @@ import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 import {
     type ContractFunctionClause,
     type ContractFunctionCriteria,
-    type ContractFunctionFilter,
     type ContractFunctionRead,
     type ContractFunctionTransact
 } from './types';
 import {
     getClauseProxy,
     getCriteriaProxy,
-    getFilterProxy,
     getReadProxy,
     getTransactProxy
 } from './contract-proxy';
 import { type VechainSigner } from '../../../signer';
+import { BaseContract, type ContractRunner, Interface } from 'ethers';
 
 /**
  * A class representing a smart contract deployed on the blockchain.
  */
-class Contract {
+class Contract extends BaseContract {
     readonly thor: ThorClient;
     readonly address: string;
     readonly abi: InterfaceAbi;
@@ -37,7 +36,6 @@ class Contract {
 
     public read: ContractFunctionRead = {};
     public transact: ContractFunctionTransact = {};
-    public filters: ContractFunctionFilter = {};
     public clause: ContractFunctionClause = {};
     public criteria: ContractFunctionCriteria = {};
 
@@ -56,17 +54,16 @@ class Contract {
         address: string,
         abi: InterfaceAbi,
         thor: ThorClient,
-        signer?: VechainSigner,
+        runner?: ContractRunner,
         transactionReceipt?: TransactionReceipt
     ) {
+        super(address, new Interface(abi), runner);
         this.abi = abi;
         this.thor = thor;
         this.address = address;
         this.deployTransactionReceipt = transactionReceipt;
-        this.signer = signer;
         this.read = getReadProxy(this);
         this.transact = getTransactProxy(this);
-        this.filters = getFilterProxy(this);
         this.clause = getClauseProxy(this);
         this.criteria = getCriteriaProxy(this);
     }

@@ -1,10 +1,8 @@
 import {
     clauseBuilder,
     type DeployParams,
-    type InterfaceAbi,
-    TransactionHandler
+    type InterfaceAbi
 } from '@vechain/sdk-core';
-import type { ContractTransactionOptions } from '../types';
 import { type ThorClient } from '../../thor-client';
 import { Contract } from './contract';
 import { assert, buildError, ERROR_CODES } from '@vechain/sdk-errors';
@@ -12,7 +10,15 @@ import {
     type SendTransactionResult,
     type TransactionReceipt
 } from '../../transactions';
-import { signerUtils, type VechainSigner } from '../../../signer';
+import {
+    type ContractRunner,
+    type TransactionRequest,
+    type TransactionResponse
+} from 'ethers';
+
+type VechainContractRunner = ContractRunner & {
+    sendTransaction: (tx: TransactionRequest) => Promise<TransactionResponse>;
+};
 
 /**
  * A factory class for deploying smart contracts to a blockchain using a ThorClient.
@@ -31,7 +37,7 @@ class ContractFactory {
     /**
      * The signer used for signing transactions.
      */
-    private readonly signer: VechainSigner;
+    private readonly runner: VechainContractRunner;
 
     /**
      * An instance of ThorClient to interact with the blockchain.
@@ -53,12 +59,17 @@ class ContractFactory {
     constructor(
         abi: InterfaceAbi,
         bytecode: string,
-        signer: VechainSigner,
+        runner: VechainContractRunner,
         thor: ThorClient
     ) {
+        if (runner.sendTransaction === undefined) {
+            throw new Error(
+                'ContractFactory requires a runner with sendTransaction'
+            );
+        }
         this.abi = abi;
         this.bytecode = bytecode;
-        this.signer = signer;
+        this.runner = runner;
         this.thor = thor;
     }
 
@@ -79,42 +90,27 @@ class ContractFactory {
      * @throws {Error} Throws an error if any step in the deployment process fails.
      */
     public async startDeployment(
-        deployParams?: DeployParams,
-        options?: ContractTransactionOptions
+        deployParams?: DeployParams
     ): Promise<ContractFactory> {
-        // Build a transaction for deploying the smart contract
         const deployContractClause = clauseBuilder.deployContract(
             this.bytecode,
             deployParams
         );
 
-        // Estimate the gas cost of the transaction
-        const gasResult = await this.thor.gas.estimateGas(
-            [deployContractClause],
-            await this.signer.getAddress()
-        );
-
-        const txBody = await this.thor.transactions.buildTransactionBody(
-            [deployContractClause],
-            gasResult.totalGas,
-            options
-        );
-
-        // Sign the transaction
-        const signedTx = await this.signer.signTransaction(
-            signerUtils.transactionBodyToTransactionRequestInput(
-                txBody,
-                await this.signer.getAddress()
-            )
-        );
+        const txRes = await this.runner.sendTransaction({
+            data: deployContractClause.data,
+            value: deployContractClause.value
+        });
 
         // Send the signed transaction to the blockchain
-        this.deployTransaction = await this.thor.transactions.sendTransaction(
-            TransactionHandler.decode(
-                Buffer.from(signedTx.slice(2), 'hex'),
-                true
-            )
-        );
+        this.deployTransaction = {
+            id: txRes.hash,
+            wait: async () => {
+                return await this.thor.transactions.waitForTransaction(
+                    txRes.hash
+                );
+            }
+        };
 
         return this;
     }
