@@ -1,7 +1,7 @@
 /**
- * Vechain provider tests
+ * vnsUtils vet.domains tests
  *
- * @group integration/providers/vechain-provider
+ * @group unit/utils/vnsUtils
  */
 import {
     afterEach,
@@ -13,7 +13,6 @@ import {
 } from '@jest/globals';
 import { ThorClient, vnsUtils } from '../../../src';
 import { testnetUrl } from '../../fixture';
-// import { addressUtils, TESTNET_NETWORK } from '../../../../core';
 
 /**
  * vet.domains Name Service Utilities
