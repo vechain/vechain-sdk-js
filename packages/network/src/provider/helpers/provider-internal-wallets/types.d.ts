@@ -48,12 +48,12 @@ interface ProviderInternalWallet {
      * for the given address.
      *
      * @param parentProvider - The parent provider of the Internal Wallet.
-     * @param address - Address of the account.
+     * @param addressOrIndex - Address or index of the account.
      * @returns The signer for the given address.
      */
     getSigner: (
         parentProvider: TProviderType,
-        address: string
+        addressOrIndex?: string | number
     ) => Promise<VechainSigner | null>;
 
     /**
