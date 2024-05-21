@@ -7,8 +7,7 @@ import {
     type InterfaceAbi,
     PARAMS_ABI,
     PARAMS_ADDRESS,
-    type TransactionBody,
-    TransactionHandler
+    type TransactionBody
 } from '@vechain/sdk-core';
 import type {
     ContractCallOptions,
@@ -23,7 +22,7 @@ import {
 import { type ThorClient } from '../thor-client';
 import { Contract, ContractFactory } from './model';
 import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
-import { signerUtils, type VechainSigner } from '../../signer';
+import { type VechainSigner } from '../../signer';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
