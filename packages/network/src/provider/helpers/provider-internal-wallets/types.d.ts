@@ -1,5 +1,8 @@
 import { type SignTransactionOptions } from '../../../thor-client';
-import { type VechainSigner } from '../../../signer';
+import {
+    type AvailableVechainProviders,
+    type VechainSigner
+} from '../../../signer';
 
 /**
  * Represent a single account in a provider internal wallet.
@@ -52,7 +55,7 @@ interface ProviderInternalWallet {
      * @returns The signer for the given address.
      */
     getSigner: (
-        parentProvider: TProviderType,
+        parentProvider: AvailableVechainProviders,
         addressOrIndex?: string | number
     ) => Promise<VechainSigner | null>;
 
