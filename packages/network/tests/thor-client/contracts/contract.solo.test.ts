@@ -14,6 +14,8 @@ import {
     filterContractEventsTestCases,
     fourArgsEventAbi,
     multipleClausesTestCases,
+    OWNER_RESTRICTION_ABI,
+    OWNER_RESTRICTION_BYTECODE,
     testingContractEVMExtensionTestCases,
     testingContractNegativeTestCases,
     testingContractTestCases
@@ -53,11 +55,22 @@ describe('ThorClient - Contracts', () => {
     // Signer instance
     let signer: VechainSigner;
 
+    // Signer instance
+    let receiverSigner: VechainSigner;
+
     beforeEach(() => {
         thorSoloClient = ThorClient.fromUrl(soloUrl);
         signer = new VechainBaseSigner(
             Buffer.from(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
+                'hex'
+            ),
+            new VechainProvider(thorSoloClient)
+        );
+
+        receiverSigner = new VechainBaseSigner(
+            Buffer.from(
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.privateKey,
                 'hex'
             ),
             new VechainProvider(thorSoloClient)
@@ -413,6 +426,33 @@ describe('ThorClient - Contracts', () => {
             )
         ).toEqual([BigInt(1000)]);
     }, 10000);
+
+    /**
+     * Test case for deploying a contract with ownership restrictions.
+     */
+    test('deploy the ownership restricted contract and call it', async () => {
+        const contractFactory = thorSoloClient.contracts.createContractFactory(
+            OWNER_RESTRICTION_ABI,
+            OWNER_RESTRICTION_BYTECODE,
+            signer
+        );
+
+        const factory = await contractFactory.startDeployment();
+
+        const deployedContract = await factory.waitForDeployment();
+
+        const secretData = await deployedContract.read.getSecretData();
+
+        expect(secretData[0]).toEqual(42n);
+
+        const loadedContract = thorSoloClient.contracts.load(
+            deployedContract.address,
+            OWNER_RESTRICTION_ABI,
+            receiverSigner
+        );
+        const secretDataNotOwner = await loadedContract.read.getSecretData();
+        expect(secretDataNotOwner).toEqual('Not the contract owner');
+    });
 
     /**
      * Tests the `TestingContract` functions.

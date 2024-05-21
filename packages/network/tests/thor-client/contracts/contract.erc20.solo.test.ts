@@ -11,6 +11,7 @@ import {
 import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
 import { deployedERC20Abi, erc20ContractBytecode } from './fixture';
 import { addressUtils } from '@vechain/sdk-core';
+import { InvalidAbiFunctionError } from '@vechain/sdk-errors/dist';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -137,6 +138,47 @@ describe('ThorClient - ERC20 Contracts', () => {
     }, 10000); // Set a timeout of 10000ms for this test
 
     /**
+     * Test transaction execution with delegation.
+     */
+    test('transaction execution with delegation', async () => {
+        // Deploy the ERC20 contract
+        let factory = thorSoloClient.contracts.createContractFactory(
+            deployedERC20Abi,
+            erc20ContractBytecode,
+            signer
+        );
+
+        factory = await factory.startDeployment();
+
+        const contract: Contract = await factory.waitForDeployment();
+
+        contract.setContractTransactOptions({
+            signTransactionOptions: {
+                delegatorPrivateKey:
+                    TEST_ACCOUNTS.TRANSACTION.DELEGATOR.privateKey
+            },
+            isDelegated: true
+        });
+
+        await (
+            await contract.transact.transfer(
+                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
+                1000
+            )
+        ).wait();
+
+        console.log(
+            await contract.read.balanceOf(
+                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+            )
+        );
+
+        await expect(
+            async () => await contract.filters.EventNotFound().get()
+        ).rejects.toThrowError(InvalidAbiFunctionError);
+    }, 10000);
+
+    /**
      * Test transaction execution with delegation set from contract.
      */
     test('transaction execution with delegation set from contract', async () => {
@@ -170,9 +212,63 @@ describe('ThorClient - ERC20 Contracts', () => {
     }, 10000);
 
     /**
+     * Tests the execution of multiple ERC20 contract read clauses using a blockchain client.
+     */
+    test('Execute multiple ERC20 read contract clauses', async () => {
+        // Deploy the ERC20 contract
+        let factory = thorSoloClient.contracts.createContractFactory(
+            deployedERC20Abi,
+            erc20ContractBytecode,
+            signer
+        );
+
+        factory = await factory.startDeployment();
+
+        const contract: Contract = await factory.waitForDeployment();
+
+        const contractRead =
+            await thorSoloClient.contracts.executeMultipleClausesCall([
+                contract.clause.name(),
+                contract.clause.symbol(),
+                contract.clause.decimals()
+            ]);
+
+        expect(contractRead[0]).toEqual(['SampleToken']);
+        expect(contractRead[1]).toEqual(['ST']);
+        expect(contractRead[2]).toEqual([BigInt(18)]);
+    }, 10000);
+
+    /**
+     * Tests the execution of multiple ERC20 reverted read clauses.
+     */
+    test('Execute multiple ERC20 read contract clauses that reverts', async () => {
+        // Deploy the ERC20 contract
+        let factory = thorSoloClient.contracts.createContractFactory(
+            deployedERC20Abi,
+            erc20ContractBytecode,
+            signer
+        );
+
+        factory = await factory.startDeployment();
+
+        const contract: Contract = await factory.waitForDeployment();
+
+        const contractRead =
+            await thorSoloClient.contracts.executeMultipleClausesCall([
+                contract.clause.name(),
+                contract.clause.symbol(),
+                contract.clause.decimals()
+            ]);
+
+        expect(contractRead[0]).toEqual(['SampleToken']);
+        expect(contractRead[1]).toEqual(['ST']);
+        expect(contractRead[2]).toEqual([BigInt(18)]);
+    }, 10000);
+
+    /**
      * Tests the execution of multiple ERC20 contract clauses using a blockchain client.
      */
-    test('Execute multiples ERC20 contract clauses', async () => {
+    test('Execute multiple ERC20 contract clauses', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
             deployedERC20Abi,
@@ -206,17 +302,20 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         await txResult.wait();
 
-        expect(
-            await contract.read.balanceOf(
-                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
-            )
-        ).toEqual([BigInt(1000)]);
+        const reads = await thorSoloClient.contracts.executeMultipleClausesCall(
+            [
+                contract.clause.balanceOf(
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+                ),
+                contract.clause.balanceOf(
+                    TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+                )
+            ]
+        );
 
-        expect(
-            await contract.read.balanceOf(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
-            )
-        ).toEqual([BigInt(4000)]);
+        expect(reads[0]).toEqual([BigInt(1000)]);
+
+        expect(reads[1]).toEqual([BigInt(4000)]);
     }, 10000);
 
     /**
