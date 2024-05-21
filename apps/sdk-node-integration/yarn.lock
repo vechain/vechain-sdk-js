@@ -697,10 +697,22 @@
   dependencies:
     "@noble/hashes" "1.3.2"
 
+"@noble/curves@~1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-1.4.0.tgz#f05771ef64da724997f69ee1261b2417a49522d6"
+  integrity sha512-p+4cb332SFCrReJkCYe8Xzm0OWi4Jji5jVdIZRL/PmacmDkFNw6MrrV+gGpiPxLHbV+zKFRywUWbaseT+tZRXg==
+  dependencies:
+    "@noble/hashes" "1.4.0"
+
 "@noble/hashes@1.3.2":
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.3.2.tgz#6f26dbc8fbc7205873ce3cee2f690eba0d421b39"
   integrity sha512-MVC8EAQp7MvEcm30KWENFjgR+Mkmf+D189XJTkFIlwohU5hcBbn1ZkKq7KVTi2Hme3PMGF390DaL52beVrIihQ==
+
+"@noble/hashes@1.4.0", "@noble/hashes@~1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.4.0.tgz#45814aa329f30e4fe0ba49426f49dfccdd066426"
+  integrity sha512-V1JJ1WTRUqHHrOSh597hURcMqVKVGL/ea3kv0gSnEdsEZ0/+VyPghM1lMNGc00z7CIQorSvbKpuJkxvuHbvdbg==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -807,6 +819,28 @@
   version "4.17.2"
   resolved "https://registry.yarnpkg.com/@rollup/rollup-win32-x64-msvc/-/rollup-win32-x64-msvc-4.17.2.tgz#5a2d08b81e8064b34242d5cc9973ef8dd1e60503"
   integrity sha512-TGGO7v7qOq4CYmSBVEYpI1Y5xDuCEnbVC5Vth8mOsW0gDSzxNrVERPc790IGHsrT2dQSimgMr9Ub3Y1Jci5/8w==
+
+"@scure/base@~1.1.6":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@scure/base/-/base-1.1.6.tgz#8ce5d304b436e4c84f896e0550c83e4d88cb917d"
+  integrity sha512-ok9AWwhcgYuGG3Zfhyqg+zwl+Wn5uE+dwC0NV/2qQkx4dABbb/bx96vWu8NSj+BNjjSjno+JRYRjle1jV08k3g==
+
+"@scure/bip32@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@scure/bip32/-/bip32-1.4.0.tgz#4e1f1e196abedcef395b33b9674a042524e20d67"
+  integrity sha512-sVUpc0Vq3tXCkDGYVWGIZTRfnvu8LoTDaev7vbwh0omSvVORONr960MQWdKqJDCReIEmTj3PAr73O3aoxz7OPg==
+  dependencies:
+    "@noble/curves" "~1.4.0"
+    "@noble/hashes" "~1.4.0"
+    "@scure/base" "~1.1.6"
+
+"@scure/bip39@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@scure/bip39/-/bip39-1.3.0.tgz#0f258c16823ddd00739461ac31398b4e7d6a18c3"
+  integrity sha512-disdg7gHuTDZtY+ZdkmLpPCk7fxZSu3gBiEGuoC1XYxv9cGx3Z6cpTggCgW6odSOOIXCiDjuGejW+aJKCY/pIQ==
+  dependencies:
+    "@noble/hashes" "~1.4.0"
+    "@scure/base" "~1.1.6"
 
 "@sinclair/typebox@^0.27.8":
   version "0.27.8"
@@ -961,31 +995,44 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@vechain/sdk-core@1.0.0-beta.4":
-  version "1.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.4.tgz#eb8f091c6118df25252a3485edd605138f51a48c"
-  integrity sha512-ECVq0YQI1mAWQwOja0dNvleTa+v+G2uTThgM6ZafInUqXUtGFVkf0kZ1jtVWRn3lTNFa+hcLG0tkkjw5dJ40dg==
+"@vechain/sdk-core@1.0.0-beta.5":
+  version "1.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.5.tgz#588d707cea22194203648cffc8d4a593d31d8af1"
+  integrity sha512-x7gZc46P2XC2w15hrEF5cwCmYLjrg5Vs/TdcCm/Z/36Do75oSJS5UyLdHaSCmIorwEzQrV+vtoDkuwCPrypC6w==
   dependencies:
     "@ethereumjs/rlp" "^5.0.2"
+    "@scure/bip32" "^1.4.0"
+    "@scure/bip39" "^1.3.0"
     "@types/elliptic" "^6.4.18"
-    "@vechain/sdk-errors" "1.0.0-beta.4"
+    "@vechain/sdk-errors" "1.0.0-beta.5"
+    "@vechain/sdk-logging" "1.0.0-beta.5"
+    bignumber.js "^9.1.2"
     blakejs "^1.2.1"
     elliptic "^6.5.5"
     ethers "6.12.1"
+    fast-json-stable-stringify "^2.1.0"
 
-"@vechain/sdk-errors@1.0.0-beta.4":
-  version "1.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.4.tgz#01ba5925b91438a5b82dee5ddc5ae09ce71dc01c"
-  integrity sha512-G4pxRaCHpvS9iC8RoC7nLkA5iPYwSntg0iHjPkfM4/ae4idliZBlIj5xv15u3PPmn8qFrf/XtqjX8sG2tybfbw==
+"@vechain/sdk-errors@1.0.0-beta.5":
+  version "1.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.5.tgz#9fe4505776c4118a174ca236762152eff3ac5b77"
+  integrity sha512-zQlspFfIkuBZMx7NraZa3lFnETHyNecCEfCnCSnxyGIEyl1oWezbUaAULKaEYv/AVFwMNf7Wt1EZ/dyN9J2F2Q==
 
-"@vechain/sdk-network@1.0.0-beta.4":
-  version "1.0.0-beta.4"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.4.tgz#1862f669e7b07a6c7fc91217f6017692f04e2944"
-  integrity sha512-arzsH209xYlO3GJN1Dx86sG3dyqQdEz/k3xlfYDxlcgkEFdiGdSveqSJoECafBIvgdidj7kmydJGsobFoLBrfw==
+"@vechain/sdk-logging@1.0.0-beta.5", "@vechain/sdk-logging@^1.0.0-beta.5":
+  version "1.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-beta.5.tgz#f9e607ee852eb0446f9b7a1c115058547ddd0017"
+  integrity sha512-ZVv13wjaXWGxjDmpZJZ6MKC5mBYKBWs6h8KlSi7OnupijwyQTnksYqm8pLGxE4c2Jkj1KuIgcVUCVFmOEYp8lQ==
+  dependencies:
+    "@vechain/sdk-errors" "1.0.0-beta.5"
+
+"@vechain/sdk-network@1.0.0-beta.5":
+  version "1.0.0-beta.5"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.5.tgz#365d782e0115787d1447bd20e9edcbf9c3d7ff63"
+  integrity sha512-4HnttA2Tpg69TrVUz5pS3m+NNAOyloDksPc8FCs3+p1W+XFsTGP5++lWtD0A7+I8U/nEZCVEdfJ9hdF4KMEQ3Q==
   dependencies:
     "@types/ws" "^8.5.10"
-    "@vechain/sdk-core" "1.0.0-beta.4"
-    "@vechain/sdk-errors" "1.0.0-beta.4"
+    "@vechain/sdk-core" "1.0.0-beta.5"
+    "@vechain/sdk-errors" "1.0.0-beta.5"
+    "@vechain/sdk-logging" "^1.0.0-beta.5"
     axios "^1.6.7"
 
 acorn-walk@^8.1.1:
@@ -1152,6 +1199,11 @@ balanced-match@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
+
+bignumber.js@^9.1.2:
+  version "9.1.2"
+  resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.1.2.tgz#b7c4242259c008903b13707983b5f4bbd31eda0c"
+  integrity sha512-2/mKyZH9K85bzOEfhXDBFZTGd1CTs+5IHpeFQo9luiBG7hghdC851Pj2WAhb6E3R6b9tZj/XKhbg4fum+Kepug==
 
 binary-extensions@^2.0.0:
   version "2.3.0"

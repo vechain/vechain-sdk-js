@@ -139,18 +139,18 @@ const privateKey = secp256k1.generatePrivateKey();
 // keystore encryption is UTF-8 NFKC.
 const keyStorePassword = 'your password';
 
-const newKeyStore = keystore.encrypt(
-    privateKey,
-    new TextEncoder().encode(keyStorePassword.normalize('NFKC'))
+const newKeyStore = await keystore.encrypt(
+    Buffer.from(privateKey),
+    keyStorePassword
 );
 
 // @NOTE the `encrypt` function wipes private key and password after use.
 
-// 3 - Throw for wrong password
+// 3 - Throw the wrong password
 
-const recoveredPrivateKey = keystore.decrypt(
+const recoveredPrivateKey = await keystore.decrypt(
     newKeyStore,
-    new TextEncoder().encode(keyStorePassword.normalize('NFKC'))
+    keyStorePassword
 );
 
 // @NOTE the `decrypt`` function wipes private key and password after use.

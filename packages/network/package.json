@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-network",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.5",
   "description": "This module allows to connect you seamlessly to the VechainThor blockchain",
   "author": "vechain Foundation",
   "license": "MIT",
@@ -39,9 +39,9 @@
   },
   "dependencies": {
     "@types/ws": "^8.5.10",
-    "@vechain/sdk-core": "1.0.0-beta.4",
-    "@vechain/sdk-errors": "1.0.0-beta.4",
-    "@vechain/sdk-logging": "^1.0.0-beta.4",
+    "@vechain/sdk-core": "1.0.0-beta.5",
+    "@vechain/sdk-errors": "1.0.0-beta.5",
+    "@vechain/sdk-logging": "^1.0.0-beta.5",
     "axios": "^1.6.7"
   }
 }

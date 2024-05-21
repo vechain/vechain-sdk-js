@@ -8,15 +8,18 @@ import {
     PARAMS_ABI,
     PARAMS_ADDRESS,
     type TransactionBody,
-    type TransactionClause,
     TransactionHandler
 } from '@vechain/sdk-core';
 import type {
     ContractCallOptions,
     ContractCallResult,
+    ContractClause,
     ContractTransactionOptions
 } from './types';
-import { type SendTransactionResult } from '../transactions';
+import {
+    type SendTransactionResult,
+    type SimulateTransactionOptions
+} from '../transactions';
 import { type ThorClient } from '../thor-client';
 import { Contract, ContractFactory } from './model';
 import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
@@ -112,6 +115,27 @@ class ContractsModule {
     }
 
     /**
+     * Executes a read-only call to multiple smart contract functions, simulating the transaction to obtain the results.
+     * @param clauses - An array of contract clauses to interact with the contract functions.
+     * @param options - (Optional) Additional options for the contract call, such as the sender's address, gas limit, and gas price, which can affect the simulation's context.
+     */
+    public async executeMultipleClausesCall(
+        clauses: ContractClause[],
+        options?: SimulateTransactionOptions
+    ): Promise<Array<ContractCallResult | string>> {
+        // Simulate the transaction to get the result of the contract call
+        const response = await this.thor.transactions.simulateTransaction(
+            clauses.map((clause) => clause.clause),
+            options
+        );
+        return response.map((res, index) => {
+            return new abi.Function(
+                clauses[index].functionFragment
+            ).decodeOutput(res.data);
+        });
+    }
+
+    /**
      * Executes a transaction to interact with a smart contract function.
      *
      * @param signer - The signer used for signing the transaction.
@@ -200,19 +224,21 @@ class ContractsModule {
      * @param options - (Optional) An object containing options for the transaction body. Includes all options of the `buildTransactionBody` method
      */
     public async executeMultipleClausesTransaction(
-        clauses: TransactionClause[],
+        clauses: ContractClause[],
         signer: VechainSigner,
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
+        const innerClauses = clauses.map((clause) => clause.clause);
+
         // Estimate the gas cost of the transaction
         const gasResult = await this.thor.gas.estimateGas(
-            clauses,
+            innerClauses,
             await signer.getAddress()
         );
 
         // Build a transaction for calling the contract function
         const txBody = await this.thor.transactions.buildTransactionBody(
-            clauses,
+            innerClauses,
             gasResult.totalGas,
             options
         );
