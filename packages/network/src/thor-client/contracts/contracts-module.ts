@@ -202,19 +202,15 @@ class ContractsModule {
         signer: VechainSigner,
         txBody: TransactionBody
     ): Promise<SendTransactionResult> {
-        const signedTx = await signer.signTransaction(
-            signerUtils.transactionBodyToTransactionRequestInput(
-                txBody,
-                await signer.getAddress()
-            )
-        );
+        const id = await signer.sendTransaction({
+            clauses: txBody.clauses
+        });
 
-        return await this.thor.transactions.sendTransaction(
-            TransactionHandler.decode(
-                Buffer.from(signedTx.slice(2), 'hex'),
-                true
-            )
-        );
+        return {
+            id,
+            wait: async () =>
+                await this.thor.transactions.waitForTransaction(id)
+        };
     }
 
     /**
