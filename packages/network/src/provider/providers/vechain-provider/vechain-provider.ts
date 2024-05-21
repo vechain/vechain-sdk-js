@@ -51,7 +51,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
     constructor(
         readonly thorClient: ThorClient,
         readonly wallet?: ProviderInternalWallet,
-        private readonly enableDelegation: boolean = false
+        readonly enableDelegation: boolean = false
     ) {
         super();
 
