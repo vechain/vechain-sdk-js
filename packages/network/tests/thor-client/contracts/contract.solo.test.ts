@@ -277,12 +277,12 @@ describe('ThorClient - Contracts', () => {
         });
 
         await expect(contract.transact.set(22323)).rejects.toThrow();
+        expect(callFunctionGetResult).toEqual([BigInt(123)]);
 
         contract.clearContractTransactOptions();
 
         await (await contract.transact.set(22323)).wait();
-
-        expect(callFunctionGetResult).toEqual([BigInt(123)]);
+        expect(callFunctionGetResult).toEqual([BigInt(22323)]);
     }, 15000);
 
     /**
