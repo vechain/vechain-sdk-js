@@ -1,3 +1,3 @@
 export * from './utils';
-export * from './vechain-base-signer';
+export * from './vechain-private-key-signer';
 export * from './types.d';

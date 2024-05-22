@@ -25,17 +25,17 @@ import { assertTransactionCanBeSigned } from '../../../assertions';
 import { vnsUtils } from '../../../utils';
 
 /**
- * Basic vechain signer.
+ * Basic vechain signer with the private key.
  * This signer can be initialized using a private key.
  */
-class VechainBaseSigner implements VechainSigner {
+class VechainPrivateKeySigner implements VechainSigner {
     /**
      * The provider attached to this Signer (if any).
      */
     provider: AvailableVechainProviders | null;
 
     /**
-     * Create a new VechainBaseSigner.
+     * Create a new VechainPrivateKeySigner.
      * A signer can be initialized using a private key.
      *
      * @param privateKey - The private key of the signer
@@ -57,7 +57,7 @@ class VechainBaseSigner implements VechainSigner {
      * @returns a new instance of this Signer connected to //provider// or detached
      */
     connect(provider: AvailableVechainProviders | null): this {
-        return new VechainBaseSigner(this.privateKey, provider) as this;
+        return new VechainPrivateKeySigner(this.privateKey, provider) as this;
     }
 
     /**
@@ -492,4 +492,4 @@ class VechainBaseSigner implements VechainSigner {
     }
 }
 
-export { VechainBaseSigner };
+export { VechainPrivateKeySigner };

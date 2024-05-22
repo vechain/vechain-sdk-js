@@ -4,7 +4,7 @@ import {
     ProviderInternalBaseWallet,
     ThorClient,
     type TransactionReceipt,
-    VechainBaseSigner,
+    VechainPrivateKeySigner,
     VechainProvider,
     type VechainSigner
 } from '../../../src';
@@ -31,7 +31,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
     beforeEach(() => {
         thorSoloClient = ThorClient.fromUrl(soloUrl);
-        signer = new VechainBaseSigner(
+        signer = new VechainPrivateKeySigner(
             Buffer.from(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
                 'hex'

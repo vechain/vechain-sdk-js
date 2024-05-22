@@ -10,7 +10,7 @@ import {
 } from '../../../../thor-client';
 import {
     type AvailableVechainProviders,
-    VechainBaseSigner,
+    VechainPrivateKeySigner,
     type VechainSigner
 } from '../../../../signer';
 
@@ -52,7 +52,7 @@ class ProviderInternalBaseWallet implements ProviderInternalWallet {
      * for the given address.
      *
      * @param parentProvider - The parent provider of the Internal Wallet.
-     * @param address - Address of the account.
+     * @param addressOrIndex - Address of the account.
      * @returns The signer for the given address.
      */
     async getSigner(
@@ -65,7 +65,10 @@ class ProviderInternalBaseWallet implements ProviderInternalWallet {
         // Return a new signer (if exists)
         if (signerAccount?.privateKey !== undefined) {
             return await Promise.resolve(
-                new VechainBaseSigner(signerAccount.privateKey, parentProvider)
+                new VechainPrivateKeySigner(
+                    signerAccount.privateKey,
+                    parentProvider
+                )
             );
         }
 
