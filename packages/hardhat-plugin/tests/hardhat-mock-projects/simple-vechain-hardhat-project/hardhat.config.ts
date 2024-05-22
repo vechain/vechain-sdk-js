@@ -25,7 +25,7 @@ const vechainTestNetwork: HttpNetworkConfig = {
         path: VET_DERIVATION_PATH,
         count: 3,
         initialIndex: 0,
-        passphrase: 'vechainthor'
+        passphrase: 'VeChainThor'
     },
 
     // Custom parameters

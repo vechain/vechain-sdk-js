@@ -12,7 +12,7 @@ import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 
 /**
  * The `LogsClient` class provides methods to interact with log-related endpoints
- * of the VechainThor blockchain. It allows filtering event and transfer logs.
+ * of the VeChainThor blockchain. It allows filtering event and transfer logs.
  */
 class LogsModule {
     /**

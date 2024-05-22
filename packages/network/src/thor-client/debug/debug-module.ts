@@ -14,7 +14,7 @@ import { assert, DATA } from '@vechain/sdk-errors';
 import { addressUtils, Hex0x } from '@vechain/sdk-core';
 
 /** The `DebugModule` class encapsulates functionality to handle Debug
- * on the VechainThor blockchain.
+ * on the VeChainThor blockchain.
  */
 class DebugModule {
     /**

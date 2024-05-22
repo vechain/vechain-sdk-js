@@ -148,11 +148,11 @@ interface TransactionRequestInput {
     };
 
     /**
-     * The VechainThor blockchain allows for transaction-level proof of work (PoW) and converts the proved work into extra gas price that will be used by
+     * The VeChainThor blockchain allows for transaction-level proof of work (PoW) and converts the proved work into extra gas price that will be used by
      * the system to generate more reward to the block generator, the Authority Masternode, that validates the transaction.
      * In other words, users can utilize their local computational power to make their transactions more likely to be included in a new block.
      *
-     * @link [VechainThor Proof of Work](https://docs.vechain.org/core-concepts/transactions/transaction-calculation#proof-of-work)
+     * @link [VeChainThor Proof of Work](https://docs.vechain.org/core-concepts/transactions/transaction-calculation#proof-of-work)
      */
     provedWork?: string;
 

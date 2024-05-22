@@ -275,7 +275,7 @@ contract TestingContract {
 
     // ------ Error Handling End ------ //
 
-    // ------ VechainThor EVM Extension functions Start ------ //
+    // ------ VeChainThor EVM Extension functions Start ------ //
 
     /// @notice Get the blockID of the given block number
     /// @param blockNum The block number to query
@@ -333,5 +333,5 @@ contract TestingContract {
         return extension.blake2b256(_data);
     }
 
-    // ------ VechainThor EVM Extension functions End ------ //
+    // ------ VeChainThor EVM Extension functions End ------ //
 }

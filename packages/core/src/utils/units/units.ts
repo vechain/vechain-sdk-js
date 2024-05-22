@@ -214,7 +214,7 @@ function formatUnits(
 /**
  * Converts a value to decimal string assuming 18 digits.
  *
- * VET is the native token of the VechainThor blockchain.
+ * VET is the native token of the VeChainThor blockchain.
  * It has 18 decimals.
  *
  * This method can format any numeric value with 18 decimals, VTHO balance too.
@@ -275,9 +275,9 @@ function parseUnits(
 }
 
 /**
- * Parses the given value as a VET (VechainThor) amount and returns it as a bigint.
+ * Parses the given value as a VET (VeChainThor) amount and returns it as a bigint.
  *
- * VET is the native token of the VechainThor blockchain.
+ * VET is the native token of the VeChainThor blockchain.
  * It has 18 decimals.
  *
  * This method can parse any numeric string with 18 decimals, VTHO balance too.

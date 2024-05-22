@@ -15,7 +15,7 @@ C4Context
             System(accounts_module, "Accounts Module", "Provides API methods for account management")
             System(blocks_module, "Blocks Module", "Enables querying and interacting with blockchain blocks")
             System(contracts_module, "Contracts Module", "Handles smart contract interactions including deployment and execution")
-            System(debug_module, "Debug Module", "Encapsulates functionality to handle Debug on the VechainThor blockchain")
+            System(debug_module, "Debug Module", "Encapsulates functionality to handle Debug on the VeChainThor blockchain")
             System(gas_module, "Gas Module", "Handles gas related operations and provides convenient methods for estimating the gas cost of a transaction")
             System(logs_module, "Logs Module", "Facilitates retrieval and monitoring of transaction logs")
             System(nodes_module, "Nodes Module", "Manages node operations such as health checks and network status")
@@ -61,7 +61,7 @@ C4Context
         }
         
         Boundary(b6, "External Blockchain Interaction") {
-            System_Ext(vechainthor, "Thor Blockchain", "Represents the blockchain platform with which the SDK interacts")
+            System_Ext(VeChainThor, "Thor Blockchain", "Represents the blockchain platform with which the SDK interacts")
         }
        
     }

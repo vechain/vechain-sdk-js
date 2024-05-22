@@ -15,7 +15,7 @@
 
 ## Introduction
 
-🚀 Welcome to the **vechain SDK**, your passport to the dazzling universe of decentralized wonders on the vechain blockchain. Brace yourself for a coding adventure like no other! Whether you're a blockchain bard or a coding wizard, our SDK is your key to unlocking the mysteries of secure and seamless blockchain development. Join us in this epic journey, where lines of code transform into spells of innovation, and every commit propels you deeper into the enchanted realms of VechainThor. Ready to embark on a coding odyssey? Let the vechain SDK be your guide! 🌌🔮
+🚀 Welcome to the **vechain SDK**, your passport to the dazzling universe of decentralized wonders on the vechain blockchain. Brace yourself for a coding adventure like no other! Whether you're a blockchain bard or a coding wizard, our SDK is your key to unlocking the mysteries of secure and seamless blockchain development. Join us in this epic journey, where lines of code transform into spells of innovation, and every commit propels you deeper into the enchanted realms of VeChainThor. Ready to embark on a coding odyssey? Let the vechain SDK be your guide! 🌌🔮
 
 ## Repository Structure
 
@@ -27,7 +27,7 @@ Welcome to the vechain SDK repository! Here's a breakdown of our organized struc
    - `./packages/errors`: Delve into the world of error handling with the error package. This module is dedicated to managing and customizing errors within the SDK, ensuring your development experience remains resilient and smooth.
    - `./packages/hardhat-plugin`: Seamlessly integrate the vechain SDK with Hardhat, the Ethereum development environment. This plugin provides a bridge between the vechain SDK and the Ethereum ecosystem, enabling you to leverage the best of both worlds.
    - `./packages/logging`: The logging package provides a simple and easy-to-use logging system for the vechain SDK. This module is dedicated to managing and customizing logs within the SDK, ensuring your development experience remains transparent and insightful.
-   - `./packages/network`: Embark on a journey through the network module, your gateway to all things related to blockchain interaction and transaction dissemination. Here, the vechain SDK connects you seamlessly to the VechainThor blockchain.
+   - `./packages/network`: Embark on a journey through the network module, your gateway to all things related to blockchain interaction and transaction dissemination. Here, the vechain SDK connects you seamlessly to the VeChainThor blockchain.
    - `./packages/rpc-proxy`: This package is designed to bridge the gap between Thor's RESTful API and Ethereum's JSON-RPC.
 
 Explore, experiment, and let the vechain SDK empowers your blockchain adventures!

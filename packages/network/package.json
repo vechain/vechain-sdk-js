@@ -1,7 +1,7 @@
 {
   "name": "@vechain/sdk-network",
   "version": "1.0.0-beta.5",
-  "description": "This module allows to connect you seamlessly to the VechainThor blockchain",
+  "description": "This module allows to connect you seamlessly to the VeChainThor blockchain",
   "author": "vechain Foundation",
   "license": "MIT",
   "homepage": "https://github.com/vechain/vechain-sdk-js",

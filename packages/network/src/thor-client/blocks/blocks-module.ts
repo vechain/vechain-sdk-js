@@ -10,7 +10,7 @@ import { assertIsRevisionForBlock } from '@vechain/sdk-core';
 import { type ThorClient } from '../thor-client';
 
 /** The `BlocksModule` class encapsulates functionality for interacting with blocks
- * on the VechainThor blockchain.
+ * on the VeChainThor blockchain.
  */
 class BlocksModule {
     /**

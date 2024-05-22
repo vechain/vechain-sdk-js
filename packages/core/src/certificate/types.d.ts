@@ -1,5 +1,5 @@
 /**
- * In the VechainThor blockchain, a certificate is a data structure used for client-side self-signed certificates.
+ * In the VeChainThor blockchain, a certificate is a data structure used for client-side self-signed certificates.
  * It plays a crucial role in providing a mechanism for secure identification and validation of data.
  *
  * Certificates are primarily used for purposes like attestation, validation, and verification of data authenticity.
