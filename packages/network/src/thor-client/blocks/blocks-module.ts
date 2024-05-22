@@ -136,7 +136,7 @@ class BlocksModule {
             throw buildError(
                 'BlocksModule.bestBlockNotFound',
                 ERROR_CODES.BLOCK.BEST_BLOCK_NOT_FOUND,
-                'Cannot find the genesis block.'
+                'There was an error fetching the best block.'
             );
         }
 
