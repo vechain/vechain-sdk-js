@@ -159,6 +159,20 @@ describe('Vechain base signer tests', () => {
     });
 
     describe('resolveName(vnsName)', () => {
+        test('Should return null if provider is not set', async () => {
+            const signer = new VechainBaseSigner(
+                Buffer.from(
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
+                    'hex'
+                ),
+                null
+            );
+
+            const name = 'test-sdk.vet';
+            const result = await signer.resolveName(name);
+            expect(result).toEqual(null);
+        });
+
         test('Should use vnsUtils.resolveName() to resolve an address by name', async () => {
             const signer = new VechainBaseSigner(
                 Buffer.from(
