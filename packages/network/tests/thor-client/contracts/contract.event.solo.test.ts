@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     type Contract,
     ThorClient,
-    VechainBaseSigner,
+    VechainPrivateKeySigner,
     VechainProvider,
     type VechainSigner
 } from '../../../src';
@@ -35,7 +35,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
     beforeEach(() => {
         thorSoloClient = ThorClient.fromUrl(soloUrl);
-        signer = new VechainBaseSigner(
+        signer = new VechainPrivateKeySigner(
             Buffer.from(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
                 'hex'

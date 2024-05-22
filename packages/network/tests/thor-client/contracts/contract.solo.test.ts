@@ -31,7 +31,7 @@ import {
     type ContractFactory,
     ThorClient,
     type TransactionReceipt,
-    VechainBaseSigner,
+    VechainPrivateKeySigner,
     VechainProvider,
     type VechainSigner
 } from '../../../src';
@@ -60,7 +60,7 @@ describe('ThorClient - Contracts', () => {
 
     beforeEach(() => {
         thorSoloClient = ThorClient.fromUrl(soloUrl);
-        signer = new VechainBaseSigner(
+        signer = new VechainPrivateKeySigner(
             Buffer.from(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
                 'hex'
@@ -68,7 +68,7 @@ describe('ThorClient - Contracts', () => {
             new VechainProvider(thorSoloClient)
         );
 
-        receiverSigner = new VechainBaseSigner(
+        receiverSigner = new VechainPrivateKeySigner(
             Buffer.from(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.privateKey,
                 'hex'
@@ -295,7 +295,7 @@ describe('ThorClient - Contracts', () => {
 
         // Set signer with invalid private key
         contract.setSigner(
-            new VechainBaseSigner(
+            new VechainPrivateKeySigner(
                 Buffer.from('', 'hex'),
                 new VechainProvider(thorSoloClient)
             )
@@ -554,7 +554,7 @@ describe('ThorClient - Contracts', () => {
                         thorSoloClient.contracts.createContractFactory(
                             contractAbi,
                             contractBytecode,
-                            new VechainBaseSigner(
+                            new VechainPrivateKeySigner(
                                 Buffer.from(contractCaller, 'hex'),
                                 new VechainProvider(thorSoloClient)
                             )
@@ -610,7 +610,7 @@ describe('ThorClient - Contracts', () => {
                             return thorSoloClient.contracts.createContractFactory(
                                 contract.contractAbi,
                                 contract.contractBytecode,
-                                new VechainBaseSigner(
+                                new VechainPrivateKeySigner(
                                     Buffer.from(
                                         TEST_ACCOUNTS.TRANSACTION
                                             .CONTRACT_MANAGER.privateKey,
@@ -655,7 +655,7 @@ describe('ThorClient - Contracts', () => {
                     const transactionResult =
                         await thorSoloClient.contracts.executeMultipleClausesTransaction(
                             contractClauses,
-                            new VechainBaseSigner(
+                            new VechainPrivateKeySigner(
                                 Buffer.from(
                                     TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
                                         .privateKey,
