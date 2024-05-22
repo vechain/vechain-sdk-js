@@ -167,12 +167,6 @@ describe('ThorClient - ERC20 Contracts', () => {
             )
         ).wait();
 
-        console.log(
-            await contract.read.balanceOf(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
-            )
-        );
-
         await expect(
             async () => await contract.filters.EventNotFound().get()
         ).rejects.toThrowError(InvalidAbiFunctionError);

@@ -1,11 +1,11 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-    ValueChangedEventData,
     contractABI,
     contractABIWithEvents,
-    contractStorageABI
+    contractStorageABI,
+    ValueChangedEventData
 } from './fixture';
-import { coder, abi, ERC721_ABI } from '../../src';
+import { abi, coder, ERC721_ABI } from '../../src';
 import { ethers } from 'ethers';
 import {
     InvalidAbiDataToDecodeError,
@@ -170,14 +170,12 @@ describe('Contract interface for ABI encoding/decoding', () => {
      */
     test('parse a bad formatted event log and throw an error', () => {
         expect(() => {
-            console.log(
-                coder.parseLog(ERC721_ABI, '0x1', [
-                    '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-                    '',
-                    '0x000000000000000000000000f02f557c753edf5fcdcbfe4c',
-                    '0x00000000000000000000000000000000000000000001'
-                ])
-            );
+            coder.parseLog(ERC721_ABI, '0x1', [
+                '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
+                '',
+                '0x000000000000000000000000f02f557c753edf5fcdcbfe4c',
+                '0x00000000000000000000000000000000000000000001'
+            ]);
         }).toThrowError(InvalidAbiDataToDecodeError);
     });
 

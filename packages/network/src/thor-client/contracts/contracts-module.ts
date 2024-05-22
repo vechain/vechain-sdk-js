@@ -7,8 +7,7 @@ import {
     type InterfaceAbi,
     PARAMS_ABI,
     PARAMS_ADDRESS,
-    type TransactionBody,
-    TransactionHandler
+    type TransactionBody
 } from '@vechain/sdk-core';
 import type {
     ContractCallOptions,
@@ -23,7 +22,7 @@ import {
 import { type ThorClient } from '../thor-client';
 import { Contract, ContractFactory } from './model';
 import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
-import { signerUtils, type VeChainSigner } from '../../signer';
+import { type VeChainSigner } from '../../signer';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -169,16 +168,12 @@ class ContractsModule {
             await signer.getAddress()
         );
 
-        console.log(options);
-
         // Build a transaction for calling the contract function
         const txBody = await this.thor.transactions.buildTransactionBody(
             [clause],
             gasResult.totalGas,
             options
         );
-
-        console.log('txBody:', txBody);
 
         // Sign the transaction
         const result = await this._signContractTransaction(signer, txBody);
@@ -202,19 +197,15 @@ class ContractsModule {
         signer: VeChainSigner,
         txBody: TransactionBody
     ): Promise<SendTransactionResult> {
-        const signedTx = await signer.signTransaction(
-            signerUtils.transactionBodyToTransactionRequestInput(
-                txBody,
-                await signer.getAddress()
-            )
-        );
+        const id = await signer.sendTransaction({
+            clauses: txBody.clauses
+        });
 
-        return await this.thor.transactions.sendTransaction(
-            TransactionHandler.decode(
-                Buffer.from(signedTx.slice(2), 'hex'),
-                true
-            )
-        );
+        return {
+            id,
+            wait: async () =>
+                await this.thor.transactions.waitForTransaction(id)
+        };
     }
 
     /**

@@ -74,8 +74,7 @@ describe('Custom network configuration hardhat - testnet', () => {
          */
         test('Get signer', async () => {
             const signer = (await hre.ethers.getSigners())[0];
-
-            console.log('signer', JSON.stringify(signer));
+            expect(signer).toBeDefined();
 
             const impersonatedSigner = await hre.ethers.getSigner(
                 '0x3db469a79593dcc67f07DE1869d6682fC1eaf535'
@@ -89,8 +88,7 @@ describe('Custom network configuration hardhat - testnet', () => {
          */
         test('Get impersonated signer', async () => {
             const signer = (await hre.ethers.getSigners())[0];
-
-            console.log('signer', JSON.stringify(signer));
+            expect(signer).toBeDefined();
 
             await expect(
                 async () =>
@@ -105,8 +103,6 @@ describe('Custom network configuration hardhat - testnet', () => {
          */
         test('Should deploy the hello world contract', async () => {
             const signer = (await hre.ethers.getSigners())[0];
-
-            console.log('signer', JSON.stringify(signer));
 
             const helloWorldContract = await hre.ethers.deployContract(
                 'VechainHelloWorld',
@@ -126,8 +122,6 @@ describe('Custom network configuration hardhat - testnet', () => {
         test('Should invoke the hello world contract', async () => {
             const signer = (await hre.ethers.getSigners())[0];
 
-            console.log('signer', JSON.stringify(signer));
-
             const helloWorldContract = await (
                 await hre.ethers.getContractFactory('VechainHelloWorld', signer)
             ).deploy();
@@ -144,8 +138,6 @@ describe('Custom network configuration hardhat - testnet', () => {
          */
         test('Should invoke the hello world contract using getContractFactoryFromArtifact', async () => {
             const signer = (await hre.ethers.getSigners())[0];
-
-            console.log('signer', JSON.stringify(signer));
 
             const helloWorldContractArtifact =
                 await hre.artifacts.readArtifact('VechainHelloWorld');

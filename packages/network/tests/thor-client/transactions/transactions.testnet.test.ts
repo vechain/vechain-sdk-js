@@ -95,7 +95,6 @@ describe('Transactions module Testnet tests suite', () => {
                         testCase.revertedTransactionHash
                     );
                 expect(revertReason).toStrictEqual(testCase.expected);
-                console.log(revertReason);
             });
         });
     });

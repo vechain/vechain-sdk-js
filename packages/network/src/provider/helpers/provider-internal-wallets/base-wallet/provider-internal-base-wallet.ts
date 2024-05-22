@@ -57,10 +57,10 @@ class ProviderInternalBaseWallet implements ProviderInternalWallet {
      */
     async getSigner(
         parentProvider: AvailableVeChainProviders,
-        address: string
-    ): Promise<VeChainSigner | null> {
+        addressOrIndex?: string | number
+    ): Promise<VechainSigner | null> {
         // Get the account from the wallet
-        const signerAccount = await this.getAccount(address);
+        const signerAccount = await this.getAccount(addressOrIndex);
 
         // Return a new signer (if exists)
         if (signerAccount?.privateKey !== undefined) {
@@ -87,26 +87,33 @@ class ProviderInternalBaseWallet implements ProviderInternalWallet {
     /**
      * Get an account by address.
      *
-     * @param address - Address of the account.
+     * @param addressOrIndex - Address or index of the account.
      * @returns The account with the given address, or null if not found.
      */
     async getAccount(
-        address: string
+        addressOrIndex?: string | number
     ): Promise<ProviderInternalWalletAccount | null> {
+        if (
+            addressOrIndex === undefined ||
+            typeof addressOrIndex === 'number'
+        ) {
+            return this.accounts[addressOrIndex ?? 0] ?? null;
+        }
+
         // Check if the address is valid
         assert(
             'getAccount',
-            addressUtils.isAddress(address),
+            addressUtils.isAddress(addressOrIndex),
             DATA.INVALID_DATA_TYPE,
             'Invalid params expected an address.',
-            { address }
+            { addressOrIndex }
         );
 
         // Get the account by address
         const account = this.accounts.find(
             (account) =>
                 addressUtils.toERC55Checksum(account.address) ===
-                addressUtils.toERC55Checksum(address)
+                addressUtils.toERC55Checksum(addressOrIndex)
         );
         return await Promise.resolve(account ?? null);
     }
