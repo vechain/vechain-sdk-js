@@ -58,7 +58,7 @@ class ProviderInternalBaseWallet implements ProviderInternalWallet {
     async getSigner(
         parentProvider: AvailableVeChainProviders,
         addressOrIndex?: string | number
-    ): Promise<VechainSigner | null> {
+    ): Promise<VeChainSigner | null> {
         // Get the account from the wallet
         const signerAccount = await this.getAccount(addressOrIndex);
 
