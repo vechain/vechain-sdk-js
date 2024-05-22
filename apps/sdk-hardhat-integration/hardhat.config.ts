@@ -1,13 +1,9 @@
-import { type HardhatUserConfig, task } from 'hardhat/config';
+import { type HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
 import '@vechain/sdk-hardhat-plugin';
 
 import { VET_DERIVATION_PATH } from '@vechain/sdk-core';
 import { type HttpNetworkConfig } from 'hardhat/types';
-
-task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
-    console.log(await hre.network.provider.request({ method: 'eth_accounts' }));
-});
 
 /**
  * Main hardhat configuration
