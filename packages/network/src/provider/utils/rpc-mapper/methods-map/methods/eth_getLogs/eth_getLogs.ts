@@ -5,7 +5,6 @@ import {
     type LogsRPC
 } from '../../../../formatter/logs';
 import {
-    type CompressedBlockDetail,
     type EventCriteria,
     type EventLogs,
     type ThorClient
@@ -54,8 +53,7 @@ const ethGetLogs = async (
 
     try {
         // Get the latest block (if fromBlock or toBlock is not defined, we will use the latest block)
-        const latestBlock =
-            (await thorClient.blocks.getBestBlockCompressed()) as CompressedBlockDetail;
+        const latestBlock = await thorClient.blocks.getBestBlockCompressed();
 
         // Get criteria set from input
         const criteriaSet: EventCriteria[] = getCriteriaSetForInput({

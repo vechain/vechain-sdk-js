@@ -65,6 +65,7 @@ import {
     TransactionNotSignedError,
     BLOCK,
     BlockGenesisNotFound,
+    BestBlockNotFound,
     CONTRACT,
     ContractDeploymentFailedError
 } from '../model';
@@ -276,7 +277,9 @@ type ErrorType<ErrorCodeT> =
                                                                                               ? ContractDeploymentFailedError
                                                                                               : ErrorCodeT extends BLOCK.GENESIS_BLOCK_NOT_FOUND
                                                                                                 ? BlockGenesisNotFound
-                                                                                                : never;
+                                                                                                : ErrorCodeT extends BLOCK.BEST_BLOCK_NOT_FOUND
+                                                                                                  ? BestBlockNotFound
+                                                                                                  : never;
 
 /**
  * Map to get the error class from the error code.
@@ -372,7 +375,8 @@ const ErrorClassMap = new Map<
     [CONTRACT.CONTRACT_DEPLOYMENT_FAILED, ContractDeploymentFailedError],
 
     // BLOCK
-    [BLOCK.GENESIS_BLOCK_NOT_FOUND, BlockGenesisNotFound]
+    [BLOCK.GENESIS_BLOCK_NOT_FOUND, BlockGenesisNotFound],
+    [BLOCK.BEST_BLOCK_NOT_FOUND, BestBlockNotFound]
 ]);
 
 export {

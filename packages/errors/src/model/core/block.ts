@@ -9,11 +9,17 @@ class BlockGenesisNotFound extends ErrorBase<
     DefaultErrorData
 > {}
 
+class BestBlockNotFound extends ErrorBase<
+    BLOCK.BEST_BLOCK_NOT_FOUND,
+    DefaultErrorData
+> {}
+
 /**
  * Errors enum.
  */
 enum BLOCK {
-    GENESIS_BLOCK_NOT_FOUND = 'GENESIS_BLOCK_NOT_FOUND'
+    GENESIS_BLOCK_NOT_FOUND = 'GENESIS_BLOCK_NOT_FOUND',
+    BEST_BLOCK_NOT_FOUND = 'BEST_BLOCK_NOT_FOUND'
 }
 
-export { BlockGenesisNotFound, BLOCK };
+export { BlockGenesisNotFound, BestBlockNotFound, BLOCK };
