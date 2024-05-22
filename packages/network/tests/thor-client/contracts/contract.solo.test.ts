@@ -261,6 +261,7 @@ describe('ThorClient - Contracts', () => {
         const contract: Contract = await factory.waitForDeployment();
 
         await (await contract.transact.set(123)).wait();
+        expect(await contract.read.get()).toEqual([BigInt(123)]);
 
         contract.setContractReadOptions({ caller: 'invalid address' });
 
@@ -269,20 +270,17 @@ describe('ThorClient - Contracts', () => {
 
         contract.clearContractReadOptions();
 
-        const callFunctionGetResult = await contract.read.get();
-
         contract.setContractTransactOptions({
             gasPriceCoef: 2442442,
             expiration: 32
         });
 
-        await expect(contract.transact.set(22323)).rejects.toThrow();
-        expect(callFunctionGetResult).toEqual([BigInt(123)]);
+        await expect(contract.transact.set('INVALID_DATA')).rejects.toThrow();
 
         contract.clearContractTransactOptions();
 
         await (await contract.transact.set(22323)).wait();
-        expect(callFunctionGetResult).toEqual([BigInt(22323)]);
+        expect(await contract.read.get()).toEqual([BigInt(22323)]);
     }, 15000);
 
     /**
