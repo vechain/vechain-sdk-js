@@ -8,7 +8,7 @@ In the VeChainThor blockchain, a certificate is a data structure used for client
 
 ## Purpose of Certificates
 
-Certificates are primarily used for purposes like attestation, validation, and verification of data authenticity. They are used as proofs of authenticity and origin for data exchanged within the vechain ecosystem.
+Certificates are primarily used for purposes like attestation, validation, and verification of data authenticity. They are used as proofs of authenticity and origin for data exchanged within theVeChain ecosystem.
 
 ## Structure of a Certificate
 

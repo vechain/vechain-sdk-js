@@ -1,5 +1,5 @@
 import {
-    type HardhatVechainProvider,
+    type HardhatVeChainProvider,
     type SignTransactionOptions
 } from '@vechain/sdk-network';
 
@@ -14,15 +14,15 @@ import { type HardhatEthersHelpers } from '@nomicfoundation/hardhat-ethers/types
 /**
  * Hardhat runtime environment extension
  *
- * - Add `vechainProvider` to `HardhatRuntimeEnvironment`
+ * - Add `VeChainProvider` to `HardhatRuntimeEnvironment`
  */
 declare module 'hardhat/types/runtime' {
     interface HardhatRuntimeEnvironment {
         /**
-         * The vechain provider.
+         * TheVeChain provider.
          * Useful to have for custom functionality.
          */
-        vechainProvider?: HardhatVechainProvider;
+        VeChainProvider?: HardhatVeChainProvider;
 
         /**
          * The ethers object.

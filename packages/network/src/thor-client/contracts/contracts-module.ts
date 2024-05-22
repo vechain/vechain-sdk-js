@@ -23,7 +23,7 @@ import {
 import { type ThorClient } from '../thor-client';
 import { Contract, ContractFactory } from './model';
 import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
-import { signerUtils, type VechainSigner } from '../../signer';
+import { signerUtils, type VeChainSigner } from '../../signer';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -31,7 +31,7 @@ import { signerUtils, type VechainSigner } from '../../signer';
 class ContractsModule {
     /**
      * Initializes a new instance of the `Thor` class.
-     * @param thor - The Thor instance used to interact with the vechain blockchain API.
+     * @param thor - The Thor instance used to interact with theVeChain blockchain API.
      */
     constructor(readonly thor: ThorClient) {}
 
@@ -47,7 +47,7 @@ class ContractsModule {
     public createContractFactory(
         abi: InterfaceAbi,
         bytecode: string,
-        signer: VechainSigner
+        signer: VeChainSigner
     ): ContractFactory {
         return new ContractFactory(abi, bytecode, signer, this.thor);
     }
@@ -63,7 +63,7 @@ class ContractsModule {
     public load(
         address: string,
         abi: InterfaceAbi,
-        signer?: VechainSigner
+        signer?: VeChainSigner
     ): Contract {
         return new Contract(address, abi, this.thor, signer);
     }
@@ -149,7 +149,7 @@ class ContractsModule {
      * @returns A promise resolving to a SendTransactionResult object.
      */
     public async executeTransaction(
-        signer: VechainSigner,
+        signer: VeChainSigner,
         contractAddress: string,
         functionFragment: FunctionFragment,
         functionData: unknown[],
@@ -199,7 +199,7 @@ class ContractsModule {
      * @private
      */
     private async _signContractTransaction(
-        signer: VechainSigner,
+        signer: VeChainSigner,
         txBody: TransactionBody
     ): Promise<SendTransactionResult> {
         const signedTx = await signer.signTransaction(
@@ -225,7 +225,7 @@ class ContractsModule {
      */
     public async executeMultipleClausesTransaction(
         clauses: ContractClause[],
-        signer: VechainSigner,
+        signer: VeChainSigner,
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
         const innerClauses = clauses.map((clause) => clause.clause);

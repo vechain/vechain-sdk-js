@@ -1,7 +1,7 @@
 import { type ThorClient } from '../../../../../../thor-client';
 import {
     type FilterOptions,
-    type VechainProvider
+    type VeChainProvider
 } from '../../../../../providers';
 import { buildProviderError, JSONRPC } from '@vechain/sdk-errors';
 import { Hex } from '@vechain/sdk-core';
@@ -38,7 +38,7 @@ type ethSubscribeParams = [SUBSCRIPTION_TYPE, string | string[]] | unknown[];
  * @param params - Parameters for the subscription, conforming to `ethSubscribeParams`. The first
  *                 element of the array specifies the type of subscription, and the second element
  *                 (if present) provides additional options, such as filter criteria for log subscriptions.
- * @param provider - An optional `VechainProvider` instance that contains the subscription manager.
+ * @param provider - An optional `VeChainProvider` instance that contains the subscription manager.
  *                   The subscription manager is used to store and manage active subscriptions.
  *                   If the provider is not provided or is undefined, the function throws an error.
  *
@@ -50,7 +50,7 @@ type ethSubscribeParams = [SUBSCRIPTION_TYPE, string | string[]] | unknown[];
 const ethSubscribe = async (
     thorClient: ThorClient,
     params: ethSubscribeParams,
-    provider?: VechainProvider
+    provider?: VeChainProvider
 ): Promise<string> => {
     if (provider === undefined) {
         throw buildProviderError(

@@ -1,7 +1,7 @@
 import {
-    type AvailableVechainProviders,
+    type AvailableVeChainProviders,
     type TransactionRequestInput,
-    type VechainSigner
+    type VeChainSigner
 } from '../types';
 import {
     DelegationHandler,
@@ -25,17 +25,17 @@ import { assertTransactionCanBeSigned } from '../../../assertions';
 import { vnsUtils } from '../../../utils';
 
 /**
- * Basic vechain signer.
+ * BasicVeChain signer.
  * This signer can be initialized using a private key.
  */
-class VechainBaseSigner implements VechainSigner {
+class VeChainBaseSigner implements VeChainSigner {
     /**
      * The provider attached to this Signer (if any).
      */
-    provider: AvailableVechainProviders | null;
+    provider: AvailableVeChainProviders | null;
 
     /**
-     * Create a new VechainBaseSigner.
+     * Create a new VeChainBaseSigner.
      * A signer can be initialized using a private key.
      *
      * @param privateKey - The private key of the signer
@@ -43,7 +43,7 @@ class VechainBaseSigner implements VechainSigner {
      */
     constructor(
         private readonly privateKey: Buffer,
-        provider: AvailableVechainProviders | null
+        provider: AvailableVeChainProviders | null
     ) {
         // Store provider and delegator
         this.provider = provider;
@@ -56,8 +56,8 @@ class VechainBaseSigner implements VechainSigner {
      * @param provider - The provider to connect to
      * @returns a new instance of this Signer connected to //provider// or detached
      */
-    connect(provider: AvailableVechainProviders | null): this {
-        return new VechainBaseSigner(this.privateKey, provider) as this;
+    connect(provider: AvailableVeChainProviders | null): this {
+        return new VeChainBaseSigner(this.privateKey, provider) as this;
     }
 
     /**
@@ -151,11 +151,11 @@ class VechainBaseSigner implements VechainSigner {
         // 1 - Get the thor client
         assert(
             'populateTransaction',
-            (this.provider as AvailableVechainProviders).thorClient !== null,
+            (this.provider as AvailableVeChainProviders).thorClient !== null,
             JSONRPC.INVALID_PARAMS,
             'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.'
         );
-        const thorClient = (this.provider as AvailableVechainProviders)
+        const thorClient = (this.provider as AvailableVeChainProviders)
             .thorClient;
 
         // 2 - Populate the call, to get proper 'from' and 'to' address (compatible with multi-clause transactions)
@@ -200,11 +200,11 @@ class VechainBaseSigner implements VechainSigner {
         // 1 - Get the thor client
         assert(
             'populateTransaction',
-            (this.provider as AvailableVechainProviders).thorClient !== null,
+            (this.provider as AvailableVeChainProviders).thorClient !== null,
             JSONRPC.INVALID_PARAMS,
             'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.'
         );
-        const thorClient = (this.provider as AvailableVechainProviders)
+        const thorClient = (this.provider as AvailableVeChainProviders)
             .thorClient;
 
         // 2 - Populate the call, to get proper from and to address (compatible with multi-clause transactions)
@@ -243,11 +243,11 @@ class VechainBaseSigner implements VechainSigner {
         // 1 - Get the thor client
         assert(
             'call',
-            (this.provider as AvailableVechainProviders).thorClient !== null,
+            (this.provider as AvailableVeChainProviders).thorClient !== null,
             JSONRPC.INVALID_PARAMS,
             'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.'
         );
-        const thorClient = (this.provider as AvailableVechainProviders)
+        const thorClient = (this.provider as AvailableVeChainProviders)
             .thorClient;
 
         // 2 - Populate the call, to get proper from and to address (compatible with multi-clause transactions)
@@ -278,7 +278,7 @@ class VechainBaseSigner implements VechainSigner {
      *  @param blockTag - The blocktag to base the transaction count on, keep in mind
      *         many nodes do not honour this value and silently ignore it [default: ``"latest"``]
      *
-     *  @NOTE: This method generates a random number as nonce. It is because the nonce in vechain is a 6-byte number.
+     *  @NOTE: This method generates a random number as nonce. It is because the nonce inVeChain is a 6-byte number.
      */
     async getNonce(blockTag?: string): Promise<string> {
         // If provider is available, get the nonce from the provider using eth_getTransactionCount
@@ -306,7 +306,7 @@ class VechainBaseSigner implements VechainSigner {
             DelegationHandler(
                 await this.provider?.wallet?.getDelegator()
             ).delegatorOrNull(),
-            (this.provider as AvailableVechainProviders).thorClient,
+            (this.provider as AvailableVeChainProviders).thorClient,
             this.privateKey
         );
     }
@@ -333,7 +333,7 @@ class VechainBaseSigner implements VechainSigner {
             JSONRPC.INVALID_PARAMS,
             'Thor provider is not found into the signer. Please attach a Provider to your signer instance.'
         );
-        const provider = this.provider as AvailableVechainProviders;
+        const provider = this.provider as AvailableVeChainProviders;
 
         // 2 - Sign the transaction
         const signedTransaction = await this.signTransaction(transactionToSend);
@@ -492,4 +492,4 @@ class VechainBaseSigner implements VechainSigner {
     }
 }
 
-export { VechainBaseSigner };
+export { VeChainBaseSigner };

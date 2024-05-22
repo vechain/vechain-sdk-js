@@ -4,9 +4,9 @@ import {
     ProviderInternalBaseWallet,
     ThorClient,
     type TransactionReceipt,
-    VechainBaseSigner,
-    VechainProvider,
-    type VechainSigner
+    VeChainBaseSigner,
+    VeChainProvider,
+    type VeChainSigner
 } from '../../../src';
 import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
 import { deployedERC20Abi, erc20ContractBytecode } from './fixture';
@@ -25,22 +25,22 @@ describe('ThorClient - ERC20 Contracts', () => {
     let thorSoloClient: ThorClient;
 
     // Signer instance
-    let signer: VechainSigner;
+    let signer: VeChainSigner;
 
-    let providerWithDelegationPrivateKeyEnabled: VechainProvider;
+    let providerWithDelegationPrivateKeyEnabled: VeChainProvider;
 
     beforeEach(() => {
         thorSoloClient = ThorClient.fromUrl(soloUrl);
-        signer = new VechainBaseSigner(
+        signer = new VeChainBaseSigner(
             Buffer.from(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
                 'hex'
             ),
-            new VechainProvider(thorSoloClient)
+            new VeChainProvider(thorSoloClient)
         );
 
         // Create the provider (used in this case to sign the transaction with getSigner() method)
-        providerWithDelegationPrivateKeyEnabled = new VechainProvider(
+        providerWithDelegationPrivateKeyEnabled = new VeChainProvider(
             // Thor client used by the provider
             thorSoloClient,
 
@@ -188,7 +188,7 @@ describe('ThorClient - ERC20 Contracts', () => {
             erc20ContractBytecode,
             (await providerWithDelegationPrivateKeyEnabled.getSigner(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
-            )) as VechainSigner
+            )) as VeChainSigner
         );
 
         factory = await factory.startDeployment();
@@ -328,7 +328,7 @@ describe('ThorClient - ERC20 Contracts', () => {
             erc20ContractBytecode,
             (await providerWithDelegationPrivateKeyEnabled.getSigner(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
-            )) as VechainSigner
+            )) as VeChainSigner
         );
 
         factory = await factory.startDeployment();

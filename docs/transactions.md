@@ -400,7 +400,7 @@ const senderAccount = {
 };
 
 // Create the provider (used in this case to sign the transaction with getSigner() method)
-const provider = new VechainProvider(
+const provider = new VeChainProvider(
     // Thor client used by the provider
     thorSoloClient,
 
@@ -492,7 +492,7 @@ const delegatorAccount = {
 };
 
 // Create the provider (used in this case to sign the transaction with getSigner() method)
-const providerWithDelegationEnabled = new VechainProvider(
+const providerWithDelegationEnabled = new VeChainProvider(
     // Thor client used by the provider
     thorSoloClient,
 
@@ -596,7 +596,7 @@ const delegatorAccount = {
 };
 
 // Create the provider (used in this case to sign the transaction with getSigner() method)
-const providerWithDelegationEnabled = new VechainProvider(
+const providerWithDelegationEnabled = new VeChainProvider(
     // Thor client used by the provider
     thorClient,
 
@@ -674,7 +674,7 @@ const txReceipt = await thorClient.transactions.waitForTransaction(
 );
 ```
 
-By examining these complete examples, developers can gain a comprehensive understanding of transaction handling in the vechain SDK. Each example demonstrates the steps involved in initiating, signing, and sending transactions, as well as the nuances associated with fee delegation.
+By examining these complete examples, developers can gain a comprehensive understanding of transaction handling in theVeChain SDK. Each example demonstrates the steps involved in initiating, signing, and sending transactions, as well as the nuances associated with fee delegation.
 
 # Errors handling on transactions
 You can find the transaction revert reason by using `getRevertReason` method with the transaction hash.

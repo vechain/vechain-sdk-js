@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import {
-    HardhatVechainProvider,
+    HardhatVeChainProvider,
     JSONRPCEthersProvider,
     ProviderInternalBaseWallet,
     type SubscriptionEvent
@@ -11,19 +11,19 @@ import { MAINNET_NETWORK } from '@vechain/sdk-core';
 import { providerMethodsTestCasesMainnet } from '../fixture';
 
 /**
- * Vechain provider tests - Main Network
+ *VeChain provider tests - Main Network
  *
  * @group integration/providers/vechain-provider-mainnet
  */
 describe('Vechain provider tests - solo', () => {
-    let hardhatVechainProvider: HardhatVechainProvider;
+    let hardhatVeChainProvider: HardhatVeChainProvider;
     let jsonRPCEthersProvider: JSONRPCEthersProvider;
 
     /**
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        hardhatVechainProvider = new HardhatVechainProvider(
+        hardhatVeChainProvider = new HardhatVeChainProvider(
             new ProviderInternalBaseWallet([]),
             mainnetUrl,
             (message: string, parent?: Error) => new Error(message, parent),
@@ -32,7 +32,7 @@ describe('Vechain provider tests - solo', () => {
         jsonRPCEthersProvider = new JSONRPCEthersProvider(
             MAINNET_NETWORK.chainTag,
             mainnetUrl,
-            hardhatVechainProvider
+            hardhatVeChainProvider
         );
     });
 
@@ -40,7 +40,7 @@ describe('Vechain provider tests - solo', () => {
      * Destroy thor client and provider after each test
      */
     afterEach(() => {
-        hardhatVechainProvider.destroy();
+        hardhatVeChainProvider.destroy();
         jsonRPCEthersProvider.destroy();
     });
 

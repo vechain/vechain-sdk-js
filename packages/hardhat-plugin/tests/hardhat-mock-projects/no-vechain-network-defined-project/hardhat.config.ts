@@ -1,5 +1,5 @@
 /**
- * Simple project without vechain network defined
+ * Simple project withoutVeChain network defined
  */
 
 // We load the plugin here.

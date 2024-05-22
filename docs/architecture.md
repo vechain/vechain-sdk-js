@@ -1,6 +1,6 @@
 # Architecture
 
-The chapter is designed to provide a high-level understanding of the vechain SDK architecture and structure. 
+The chapter is designed to provide a high-level understanding of theVeChain SDK architecture and structure. 
 Comprehensive diagrams, following the C4 model, are available for reference in the project's [GitHub repository](https://github.com/vechain/vechain-sdk-js/tree/main/docs/diagrams/architecture).
 
 ## Introduction
@@ -31,11 +31,11 @@ The network package is the network interaction responsible package of the vechai
 It is responsible for all interactions with the blockchain.
 
 ### Hardhat Plugin Package
-Seamlessly integrate the vechain SDK with Hardhat, the Ethereum development environment. 
-This plugin provides a bridge between the vechain SDK and the Ethereum ecosystem, enabling you to leverage the best of both worlds.
+Seamlessly integrate theVeChain SDK with Hardhat, the Ethereum development environment. 
+This plugin provides a bridge between theVeChain SDK and the Ethereum ecosystem, enabling you to leverage the best of both worlds.
 
 ### Logging Package
-The logging package provides a simple and easy-to-use logging system for the vechain SDK. 
+The logging package provides a simple and easy-to-use logging system for theVeChain SDK. 
 This module is dedicated to managing and customizing logs within the SDK, ensuring your development experience remains transparent and insightful.
 
 ### Provider Package

@@ -1,6 +1,6 @@
 # sdk-nextjs-integration
 
-This is a simple web application built with React and the vechain SDK that allows users to view transaction history associated with a specific address on the vechain blockchain.
+This is a simple web application built with React and theVeChain SDK that allows users to view transaction history associated with a specific address on theVeChain blockchain.
 
 ## Getting Started
 
@@ -27,6 +27,6 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 ## Usage
 
- - Enter the vechain address you want to retrieve transaction history for in the input field.
+ - Enter theVeChain address you want to retrieve transaction history for in the input field.
  - The application will fetch and display the transaction history associated with the provided address.
  - Scroll horizontally to view all columns in the transaction history table.

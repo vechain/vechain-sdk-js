@@ -4,13 +4,13 @@ import {
     ProviderInternalHDWallet,
     type ProviderInternalWallet,
     ThorClient,
-    VechainProvider
+    VeChainProvider
 } from '@vechain/sdk-network';
 import importConfig from '../config.json';
 import express, { type Express, type Request, type Response } from 'express';
 import cors from 'cors';
 import { type Config, type RequestBody } from './types';
-import { VechainSDKLogger } from '@vechain/sdk-logging';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 import {
     getJSONRPCErrorCode,
     JSONRPC,
@@ -29,7 +29,7 @@ import {
  * @param e - The error object
  */
 function logError(requestBody: RequestBody, e: unknown): void {
-    VechainSDKLogger('error').log({
+    VeChainSDKLogger('error').log({
         errorCode: JSONRPC.INTERNAL_ERROR,
         errorMessage: `Error sending request - ${requestBody.method}`,
         errorData: {
@@ -47,7 +47,7 @@ function logError(requestBody: RequestBody, e: unknown): void {
  * @param result - The result of the request
  */
 function logRequest(requestBody: RequestBody, result: unknown): void {
-    VechainSDKLogger('log').log({
+    VeChainSDKLogger('log').log({
         title: `Sending request - ${requestBody.method}`,
         messages: [`response: ${stringifyData(result)}`]
     });
@@ -56,7 +56,7 @@ function logRequest(requestBody: RequestBody, result: unknown): void {
 /**
  * Start the proxy function.
  * @note
- * * This is a simple proxy server that converts and forwards RPC requests to the vechain network.
+ * * This is a simple proxy server that converts and forwards RPC requests to theVeChain network.
  * * Don't use this in production, it's just for testing purposes.
  */
 function startProxy(): void {
@@ -100,7 +100,7 @@ function startProxy(): void {
               VET_DERIVATION_PATH,
               { delegator: config.delegator }
           );
-    const provider = new VechainProvider(
+    const provider = new VeChainProvider(
         thorClient,
         wallet,
         config.enableDelegation

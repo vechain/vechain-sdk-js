@@ -12,7 +12,7 @@ task('accounts', 'Prints the list of accounts', async (taskArgs, hre) => {
 /**
  * Main hardhat configuration
  *
- * Here we have custom vechain networks: 'vechain_mainnet', 'vechain_testnet' and 'vechain_solo'
+ * Here we have customVeChain networks: 'vechain_mainnet', 'vechain_testnet' and 'vechain_solo'
  *
  * They have custom parameters:
  * - debug: whether to enable debug mode

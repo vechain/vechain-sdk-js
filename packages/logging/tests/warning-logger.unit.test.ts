@@ -1,5 +1,5 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { VechainSDKLogger } from '../src';
+import { VeChainSDKLogger } from '../src';
 
 /**
  * Warning logger tests
@@ -11,9 +11,9 @@ describe('Warning logger tests', () => {
      * Should be able to log a generic log
      */
     test('Should be able to log a warning', () => {
-        const logSpy = jest.spyOn(VechainSDKLogger('warning'), 'log');
+        const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
 
-        VechainSDKLogger('warning').log({
+        VeChainSDKLogger('warning').log({
             title: 'Title of the warning message ...',
             messages: [
                 'Warning message to log 1...',

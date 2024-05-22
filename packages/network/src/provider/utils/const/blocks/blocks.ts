@@ -24,7 +24,7 @@ const getCorrectBlockNumberRPCToVechain = (
             block === 'safe' ||
             block === 'pending'
         )
-            // 'best' is the alias for 'latest', 'finalized' and 'safe' in vechain Thorest
+            // 'best' is the alias for 'latest', 'finalized' and 'safe' inVeChain Thorest
             return 'best';
 
         // Earliest block

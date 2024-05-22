@@ -9,7 +9,7 @@ import {
     ProviderInternalBaseWallet,
     RPC_METHODS,
     ThorClient,
-    VechainProvider
+    VeChainProvider
 } from '../../../../../src';
 import {
     delegatorPrivateKeyFixture,
@@ -36,8 +36,8 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
     /**
      * Provider instance
      */
-    let provider: VechainProvider;
-    let providerWithDelegator: VechainProvider;
+    let provider: VeChainProvider;
+    let providerWithDelegator: VeChainProvider;
 
     /**
      * Init thor client before each test
@@ -47,14 +47,14 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
         thorClient = ThorClient.fromUrl(soloUrl);
 
         // Init provider
-        provider = new VechainProvider(
+        provider = new VeChainProvider(
             thorClient,
             THOR_SOLO_ACCOUNTS_BASE_WALLET
         );
 
         // Init provider with delegator
         // @NOTE due to the fact we are testing on thor-solo, we can delegate ONLY with a private key!
-        providerWithDelegator = new VechainProvider(
+        providerWithDelegator = new VeChainProvider(
             thorClient,
             THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR({
                 delegatorPrivateKey: delegatorPrivateKeyFixture
@@ -255,7 +255,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
          */
         test('eth_sendTransaction - Should throw error if the provider has not a wallet', async () => {
             // Empty wallet provider
-            const providerWithoutWallet = new VechainProvider(thorClient);
+            const providerWithoutWallet = new VeChainProvider(thorClient);
 
             // Send a transaction with invalid provider
             await expect(
@@ -277,7 +277,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
          */
         test('eth_sendTransaction - Should throw error if the provider has not a the signer private key into wallet', async () => {
             // Empty wallet provider
-            const providerWithoutFromPrivateKey = new VechainProvider(
+            const providerWithoutFromPrivateKey = new VeChainProvider(
                 thorClient,
                 new ProviderInternalBaseWallet([
                     {

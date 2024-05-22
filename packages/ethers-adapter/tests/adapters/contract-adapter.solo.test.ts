@@ -1,10 +1,10 @@
 /**
- * Vechain provider tests - Solo Network
+ *VeChain provider tests - Solo Network
  *
  * @group integration/providers/vechain-provider-solo
  */
 import {
-    HardhatVechainProvider,
+    HardhatVeChainProvider,
     ProviderInternalBaseWallet,
     ThorClient
 } from '@vechain/sdk-network';
@@ -15,7 +15,7 @@ import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
 import { helpers } from '../../src/adapters/helpers';
 
 /**
- * Vechain adapters tests - Solo Network
+ *VeChain adapters tests - Solo Network
  *
  * @group integration/adapter/contract-adapter-solo
  */
@@ -24,14 +24,14 @@ describe('Hardhat contract adapter tests', () => {
      * ThorClient and provider instances
      */
     let thorClient: ThorClient;
-    let provider: HardhatVechainProvider;
+    let provider: HardhatVeChainProvider;
 
     /**
      * Init thor client and provider before each test
      */
     beforeEach(() => {
         thorClient = ThorClient.fromUrl(soloUrl);
-        provider = new HardhatVechainProvider(
+        provider = new HardhatVeChainProvider(
             new ProviderInternalBaseWallet([]),
             soloUrl,
             (message: string, parent?: Error) => new Error(message, parent)

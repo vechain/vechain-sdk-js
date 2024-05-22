@@ -1,16 +1,16 @@
-import type { HardhatVechainProvider } from '@vechain/sdk-network';
+import type { HardhatVeChainProvider } from '@vechain/sdk-network';
 import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
 
 /**
- * Factory adapter for the vechain hardhat plugin
+ * Factory adapter for theVeChain hardhat plugin
  *
- * @param contractFactory - The contract factory to adapt to the vechain network
- * @param hardhatVechainProvider - The hardhat vechain provider
+ * @param contractFactory - The contract factory to adapt to theVeChain network
+ * @param hardhatVeChainProvider - The hardhatVeChain provider
  * @returns The adapted contract factory
  */
 function factoryAdapter<A extends unknown[], I>(
     contractFactory: vechain_sdk_core_ethers.ContractFactory<A, I>,
-    hardhatVechainProvider: HardhatVechainProvider
+    hardhatVeChainProvider: HardhatVeChainProvider
 ): vechain_sdk_core_ethers.ContractFactory<A, I> {
     contractFactory.deploy = async function (
         ...args: vechain_sdk_core_ethers.ContractMethodArgs<A>
@@ -30,7 +30,7 @@ function factoryAdapter<A extends unknown[], I>(
         const sentTx = await this.runner.sendTransaction(tx);
 
         const receipt =
-            await hardhatVechainProvider.thorClient.transactions.waitForTransaction(
+            await hardhatVeChainProvider.thorClient.transactions.waitForTransaction(
                 sentTx.hash
             );
 

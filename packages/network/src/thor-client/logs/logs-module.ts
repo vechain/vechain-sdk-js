@@ -17,7 +17,7 @@ import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 class LogsModule {
     /**
      * Initializes a new instance of the `Thor` class.
-     * @param thor - The Thor instance used to interact with the vechain blockchain API.
+     * @param thor - The Thor instance used to interact with theVeChain blockchain API.
      */
     constructor(readonly thor: ThorClient) {}
 

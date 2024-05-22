@@ -1,5 +1,5 @@
 /**
- * Vechain provider tests
+ *VeChain provider tests
  *
  * @group integration/providers/vechain-provider
  */
@@ -13,8 +13,8 @@ import {
 } from '@jest/globals';
 import {
     ThorClient,
-    VechainBaseSigner,
-    VechainProvider,
+    VeChainBaseSigner,
+    VeChainProvider,
     vnsUtils
 } from '../../../../src/';
 import { testnetUrl } from '../../../fixture';
@@ -22,7 +22,7 @@ import { addressUtils } from '../../../../../core';
 import { populateCallTestCases, populateCallTestCasesAccount } from './fixture';
 
 /**
- * Vechain base signer tests
+ *VeChain base signer tests
  *
  * @group unit/signers/vechain-base-signer
  */
@@ -31,14 +31,14 @@ describe('Vechain base signer tests', () => {
      * ThorClient and provider instances
      */
     let thorClient: ThorClient;
-    let provider: VechainProvider;
+    let provider: VeChainProvider;
 
     /**
      * Init thor client and provider before each test
      */
     beforeEach(() => {
         thorClient = ThorClient.fromUrl(testnetUrl);
-        provider = new VechainProvider(thorClient);
+        provider = new VeChainProvider(thorClient);
     });
 
     /**
@@ -57,7 +57,7 @@ describe('Vechain base signer tests', () => {
          */
         test('Should be able to connect with a provider', () => {
             // Provider is NOT attached
-            const signerWithoutProvider = new VechainBaseSigner(
+            const signerWithoutProvider = new VeChainBaseSigner(
                 Buffer.from(
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
                     'hex'
@@ -75,7 +75,7 @@ describe('Vechain base signer tests', () => {
          * Should be able to get the address of the signer
          */
         test('Should be able to get the address of the signer', async () => {
-            const signer = new VechainBaseSigner(
+            const signer = new VeChainBaseSigner(
                 Buffer.from(
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
                     'hex'
@@ -96,7 +96,7 @@ describe('Vechain base signer tests', () => {
         test('Should be able to get the nonce', async () => {
             // Generate nonce (provider attached and detached)
             for (const tempProvider of [provider, null]) {
-                const signer = new VechainBaseSigner(
+                const signer = new VeChainBaseSigner(
                     Buffer.from(
                         '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
                         'hex'
@@ -119,7 +119,7 @@ describe('Vechain base signer tests', () => {
                 test(fixture.description, async () => {
                     // Test with provider attached and detached
 
-                    const signer = new VechainBaseSigner(
+                    const signer = new VeChainBaseSigner(
                         Buffer.from(
                             populateCallTestCasesAccount.privateKey,
                             'hex'
@@ -142,7 +142,7 @@ describe('Vechain base signer tests', () => {
                 test(fixture.description, async () => {
                     // Test with provider attached and detached
 
-                    const signer = new VechainBaseSigner(
+                    const signer = new VeChainBaseSigner(
                         Buffer.from(
                             populateCallTestCasesAccount.privateKey,
                             'hex'
@@ -160,7 +160,7 @@ describe('Vechain base signer tests', () => {
 
     describe('resolveName(vnsName)', () => {
         test('Should use vnsUtils.resolveName() to resolve an address by name', async () => {
-            const signer = new VechainBaseSigner(
+            const signer = new VeChainBaseSigner(
                 Buffer.from(
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
                     'hex'
@@ -178,7 +178,7 @@ describe('Vechain base signer tests', () => {
         });
 
         test('Should return null if there were invalid result', async () => {
-            const signer = new VechainBaseSigner(
+            const signer = new VeChainBaseSigner(
                 Buffer.from(
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
                     'hex'
@@ -196,7 +196,7 @@ describe('Vechain base signer tests', () => {
         });
 
         test('Should pass address provided by resolveNames()', async () => {
-            const signer = new VechainBaseSigner(
+            const signer = new VeChainBaseSigner(
                 Buffer.from(
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
                     'hex'

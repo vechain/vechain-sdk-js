@@ -7,7 +7,7 @@ import {
     ProviderInternalBaseWallet,
     signerUtils,
     ThorClient,
-    VechainProvider
+   VeChainProvider
 } from '@vechain/sdk-network';
 import { expect } from 'expect'; // START_SNIPPET: FullFlowDelegatorPrivateKeySnippet
 
@@ -34,7 +34,7 @@ const delegatorAccount = {
 };
 
 // Create the provider (used in this case to sign the transaction with getSigner() method)
-const providerWithDelegationEnabled = new VechainProvider(
+const providerWithDelegationEnabled = new VeChainProvider(
     // Thor client used by the provider
     thorSoloClient,
 

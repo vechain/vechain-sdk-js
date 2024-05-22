@@ -1,6 +1,6 @@
 import { type Keystore, type KeystoreAccount } from './types';
 import { keystoreEthers, keystoreExperimental } from './cryptography';
-import { VechainSDKLogger } from '@vechain/sdk-logging';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * A boolean indicating whether the keystore cryptography is experimental or not.
@@ -28,7 +28,7 @@ async function encrypt(
     password: string
 ): Promise<Keystore> {
     if (EXPERIMENTAL_CRYPTOGRAPHY)
-        VechainSDKLogger('warning').log({
+        VeChainSDKLogger('warning').log({
             title: `Experimental cryptography`,
             messages: [
                 `Remember, you are using an experimental cryptography library.`,
@@ -57,7 +57,7 @@ async function decrypt(
     password: string
 ): Promise<KeystoreAccount> {
     if (EXPERIMENTAL_CRYPTOGRAPHY)
-        VechainSDKLogger('warning').log({
+        VeChainSDKLogger('warning').log({
             title: `Experimental cryptography`,
             messages: [
                 `Remember, you are using an experimental cryptography library.`,
@@ -81,7 +81,7 @@ async function decrypt(
  */
 function isValid(keystore: Keystore): boolean {
     if (EXPERIMENTAL_CRYPTOGRAPHY)
-        VechainSDKLogger('warning').log({
+        VeChainSDKLogger('warning').log({
             title: `Experimental cryptography`,
             messages: [
                 `Remember, you are using an experimental cryptography library.`,

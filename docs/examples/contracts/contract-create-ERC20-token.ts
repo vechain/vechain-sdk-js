@@ -2,8 +2,8 @@ import {
     ProviderInternalBaseWallet,
     type ProviderInternalWalletAccount,
     ThorClient,
-    VechainProvider,
-    type VechainSigner
+   VeChainProvider,
+    type VeChainSigner
 } from '@vechain/sdk-network';
 import { unitsUtils, VIP180_ABI } from '@vechain/sdk-core';
 import { expect } from 'expect';
@@ -26,13 +26,13 @@ const deployerAccount: ProviderInternalWalletAccount = {
 // Create thor client for solo network
 const _soloUrl = 'http://localhost:8669/';
 const thorSoloClient = ThorClient.fromUrl(_soloUrl);
-const provider = new VechainProvider(
+const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount])
 );
 const signer = (await provider.getSigner(
     deployerAccount.address
-)) as VechainSigner;
+)) as VeChainSigner;
 
 // Creating the contract factory
 const contractFactory = thorSoloClient.contracts.createContractFactory(

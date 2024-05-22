@@ -12,7 +12,7 @@ import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 import { clauseBuilder, fragment } from '@vechain/sdk-core';
 import { type ContractCallResult, type ContractClause } from '../types';
 import { ContractFilter } from './contract-filter';
-import { type VechainSigner } from '../../../signer';
+import { type VeChainSigner } from '../../../signer';
 import { type FilterCriteria } from '../../logs';
 
 /**
@@ -77,7 +77,7 @@ function getTransactProxy(contract: Contract): ContractFunctionTransact {
                 }
 
                 return await contract.thor.contracts.executeTransaction(
-                    contract.getSigner() as VechainSigner,
+                    contract.getSigner() as VeChainSigner,
                     contract.address,
                     contract.getFunctionFragment(prop),
                     args,
@@ -175,7 +175,7 @@ function buildCriteria(
     prop: string | symbol,
     args: unknown[]
 ): FilterCriteria {
-    // Create the vechain sdk event fragment starting from the contract ABI event fragment
+    // Create theVeChain sdk event fragment starting from the contract ABI event fragment
     const eventFragment = new fragment.Event(contract.getEventFragment(prop));
 
     // Create a map of encoded filter topics for the event

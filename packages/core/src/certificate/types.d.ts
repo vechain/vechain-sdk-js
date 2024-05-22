@@ -3,7 +3,7 @@
  * It plays a crucial role in providing a mechanism for secure identification and validation of data.
  *
  * Certificates are primarily used for purposes like attestation, validation, and verification of data authenticity.
- * They are used as proofs of authenticity and origin for data exchanged within the vechain ecosystem.
+ * They are used as proofs of authenticity and origin for data exchanged within theVeChain ecosystem.
  */
 interface Certificate {
     /**

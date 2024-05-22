@@ -35,12 +35,12 @@ type WarningLoggerData = LogLoggerData;
  *
  * -e.g.-
  *
- * VechainSDKLogger('log').log({
+ * VeChainSDKLogger('log').log({
  *     title: 'Title of the log message ...',
  *     messages: ['Message to log 1...', 'Message to log 2...', ...]
  * });
  *
- * VechainSDKLogger('error').log({
+ * VeChainSDKLogger('error').log({
  *     errorCode: DATA.INVALID_DATA_TYPE,
  *     errorMessage: 'Message we want to use for invalid data type ...',
  *     errorData: input,

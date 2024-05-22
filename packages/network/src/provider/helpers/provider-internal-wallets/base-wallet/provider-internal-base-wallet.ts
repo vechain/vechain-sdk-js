@@ -9,9 +9,9 @@ import {
     type SignTransactionOptions
 } from '../../../../thor-client';
 import {
-    type AvailableVechainProviders,
-    VechainBaseSigner,
-    type VechainSigner
+    type AvailableVeChainProviders,
+    VeChainBaseSigner,
+    type VeChainSigner
 } from '../../../../signer';
 
 /**
@@ -56,16 +56,16 @@ class ProviderInternalBaseWallet implements ProviderInternalWallet {
      * @returns The signer for the given address.
      */
     async getSigner(
-        parentProvider: AvailableVechainProviders,
+        parentProvider: AvailableVeChainProviders,
         address: string
-    ): Promise<VechainSigner | null> {
+    ): Promise<VeChainSigner | null> {
         // Get the account from the wallet
         const signerAccount = await this.getAccount(address);
 
         // Return a new signer (if exists)
         if (signerAccount?.privateKey !== undefined) {
             return await Promise.resolve(
-                new VechainBaseSigner(signerAccount.privateKey, parentProvider)
+                new VeChainBaseSigner(signerAccount.privateKey, parentProvider)
             );
         }
 

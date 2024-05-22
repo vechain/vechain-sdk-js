@@ -8,7 +8,7 @@ import {
 } from '@vechain/sdk-network';
 import { unitsUtils } from '@vechain/sdk-core';
 
-// Url of the vechain mainnet
+// Url of theVeChain mainnet
 const mainnetUrl = 'https://mainnet.vechain.org';
 
 // Thor client

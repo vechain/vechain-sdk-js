@@ -3,18 +3,18 @@ import {
     type vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
 import {
-    type HardhatVechainProvider,
-    type VechainProvider
+    type HardhatVeChainProvider,
+    type VeChainProvider
 } from '../../provider';
 import { type TransactionSimulationResult } from '../../thor-client';
 
 /**
- * Available types for the VechainProvider's
+ * Available types for the VeChainProvider's
  *
  * @NOTE: We use our supported providers instead of ethers providers.
  * If you create a new provider, you need to add it here.
  */
-type AvailableVechainProviders = VechainProvider | HardhatVechainProvider;
+type AvailableVeChainProviders = VeChainProvider | HardhatVeChainProvider;
 
 /**
  * Type for transaction input
@@ -162,7 +162,7 @@ interface TransactionRequestInput {
      */
     gasPayer?: string;
 
-    // START: NOT SUPPORTED FIELDS in vechain BUT added to take compatibility with ethers
+    // START: NOT SUPPORTED FIELDS inVeChain BUT added to take compatibility with ethers
 
     /**
      *  The chain ID for the network this transaction is valid on.
@@ -209,20 +209,20 @@ interface TransactionRequestInput {
      */
     enableCcipRead?: boolean;
 
-    // END: NOT SUPPORTED FIELDS in vechain BUT added to take compatibility with ethers
+    // END: NOT SUPPORTED FIELDS inVeChain BUT added to take compatibility with ethers
 }
 
 /**
- * A signer for vechain, adding specific methods for vechain to the ethers signer
+ * A signer for vechain, adding specific methods forVeChain to the ethers signer
  *
  * @NOTE: Su support completely our providers (that already support ethers provider format)
  * We use our supported providers instead of ethers providers
  */
-interface VechainSigner {
+interface VeChainSigner {
     /**
      * The provider attached to this Signer (if any).
      */
-    provider: AvailableVechainProviders | null;
+    provider: AvailableVeChainProviders | null;
 
     /**
      *  Returns a new instance of this Signer connected to //provider// or detached
@@ -231,7 +231,7 @@ interface VechainSigner {
      * @param provider - The provider to connect to
      * @returns a new instance of this Signer connected to //provider// or detached
      */
-    connect: (provider: AvailableVechainProviders | null) => this;
+    connect: (provider: AvailableVeChainProviders | null) => this;
 
     /**
      * Get the address of the Signer.
@@ -246,7 +246,7 @@ interface VechainSigner {
      *  @param blockTag - The blocktag to base the transaction count on, keep in mind
      *         many nodes do not honour this value and silently ignore it [default: ``"latest"``]
      *
-     *  @NOTE: This method generates a random number as nonce. It is because the nonce in vechain is a 6-byte number.
+     *  @NOTE: This method generates a random number as nonce. It is because the nonce inVeChain is a 6-byte number.
      */
     getNonce: (blockTag?: string) => Promise<string>;
 
@@ -376,7 +376,7 @@ interface VechainSigner {
 }
 
 export {
-    type VechainSigner,
-    type AvailableVechainProviders,
+    type VeChainSigner,
+    type AvailableVeChainProviders,
     type TransactionRequestInput
 };

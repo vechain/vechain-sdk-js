@@ -1,5 +1,5 @@
 /**
- * Vechain provider tests
+ *VeChain provider tests
  *
  * @group integration/providers/vechain-provider
  */

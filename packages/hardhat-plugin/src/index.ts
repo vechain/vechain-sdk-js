@@ -14,8 +14,8 @@ import {
 } from '@nomicfoundation/hardhat-ethers/internal/helpers';
 
 // Custom provider for ethers
-import { HardhatVechainProvider } from '@vechain/sdk-network';
-import { VechainSDKLogger } from '@vechain/sdk-logging';
+import { HardhatVeChainProvider } from '@vechain/sdk-network';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 // Import needed to customize ethers functionality
 import { vechain_sdk_core_ethers as ethers } from '@vechain/sdk-core';
@@ -28,7 +28,7 @@ import { contractAdapter, factoryAdapter } from '@vechain/sdk-ethers-adapter';
 import { type FactoryOptions } from '@nomicfoundation/hardhat-ethers/src/types';
 
 /**
- * Extend the environment with provider to be able to use vechain functions
+ * Extend the environment with provider to be able to useVeChain functions
  */
 extendEnvironment((hre) => {
     // 1 - Get parameters
@@ -52,23 +52,23 @@ extendEnvironment((hre) => {
     // 2 - Check if network is vechain
 
     if (!networkName.includes('vechain')) {
-        VechainSDKLogger('warning').log({
+        VeChainSDKLogger('warning').log({
             title: 'You are operating on a non-vechain network',
             messages: [
                 'Ensure your hardhat config file has a network that:',
-                '\t1. Is a vechain valid network (set url and optionally delegator parameter)',
+                '\t1. Is aVeChain valid network (set url and optionally delegator parameter)',
                 '\t2. Has the name of the network containing "vechain" (e.g. "vechain_mainnet", "vechain_testnet", "vechain_solo", ...)',
                 '',
-                'This is required to use the vechain provider and its functions. Note that this is only a warning and you can hardhat without a vechain network.',
+                'This is required to use theVeChain provider and its functions. Note that this is only a warning and you can hardhat without aVeChain network.',
                 "BUT it's possible that some functionalities will not be available."
             ]
         });
     }
 
-    // 3 - Extend environment with the 'HardhatVechainProvider'
+    // 3 - Extend environment with the 'HardhatVeChainProvider'
 
     // 3.1 - Create the provider
-    const hardhatVechainProvider = new HardhatVechainProvider(
+    const hardhatVeChainProvider = new HardhatVeChainProvider(
         createWalletFromHardhatNetworkConfig(networkConfig),
         networkConfig.url,
         (message: string, parent?: Error) =>
@@ -82,16 +82,16 @@ extendEnvironment((hre) => {
     );
 
     // 3.2 - Extend environment
-    hre.vechainProvider = lazyObject(() => hardhatVechainProvider);
+    hre.VeChainProvider = lazyObject(() => hardhatVeChainProvider);
 
     // 3.3 - Set provider for the network
-    hre.network.provider = hardhatVechainProvider;
+    hre.network.provider = hardhatVeChainProvider;
 
     hre.ethers = lazyObject(() => {
         // 4 - Customise ethers functionality
 
         const vechainNewHardhatProvider = new HardhatEthersProvider(
-            hardhatVechainProvider,
+            hardhatVeChainProvider,
             hre.network.name
         );
 
@@ -101,7 +101,7 @@ extendEnvironment((hre) => {
                 const deployContractBound = deployContract.bind(null, hre);
                 // @ts-expect-error args types depend on the function signature
                 return await deployContractBound(...args).then((contract) =>
-                    contractAdapter(contract, hardhatVechainProvider)
+                    contractAdapter(contract, hardhatVeChainProvider)
                 );
             },
 
@@ -109,7 +109,7 @@ extendEnvironment((hre) => {
                 const contractFactoryBound = getContractFactory.bind(null, hre);
                 // @ts-expect-error args types depend on the function signature
                 return await contractFactoryBound(...args).then((factory) =>
-                    factoryAdapter(factory, hardhatVechainProvider)
+                    factoryAdapter(factory, hardhatVeChainProvider)
                 );
             },
 
@@ -130,7 +130,7 @@ extendEnvironment((hre) => {
                     artifact,
                     signerOrOptions
                 ).then((factory) =>
-                    factoryAdapter(factory, hardhatVechainProvider)
+                    factoryAdapter(factory, hardhatVeChainProvider)
                 );
             },
 

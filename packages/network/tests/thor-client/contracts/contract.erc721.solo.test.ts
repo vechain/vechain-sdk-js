@@ -4,9 +4,9 @@ import { beforeAll, describe, expect, test } from '@jest/globals';
 import {
     ThorClient,
     type TransactionReceipt,
-    VechainBaseSigner,
-    VechainProvider,
-    type VechainSigner
+    VeChainBaseSigner,
+    VeChainProvider,
+    type VeChainSigner
 } from '../../../src';
 import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
 import {
@@ -28,7 +28,7 @@ describe('ThorClient - ERC721 Contracts', () => {
     let thorSoloClient: ThorClient;
 
     // Signer instance
-    let signer: VechainSigner;
+    let signer: VeChainSigner;
 
     let contractAddress: string;
 
@@ -52,12 +52,12 @@ describe('ThorClient - ERC721 Contracts', () => {
      */
     beforeAll(async () => {
         thorSoloClient = ThorClient.fromUrl(soloUrl);
-        signer = new VechainBaseSigner(
+        signer = new VeChainBaseSigner(
             Buffer.from(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
                 'hex'
             ),
-            new VechainProvider(thorSoloClient)
+            new VeChainProvider(thorSoloClient)
         );
 
         // Create the ERC721 contract factory

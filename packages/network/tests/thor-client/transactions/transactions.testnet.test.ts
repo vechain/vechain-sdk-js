@@ -4,7 +4,7 @@ import {
     getRevertReasonTestCasesFixture
 } from './fixture';
 import { testnetUrl, THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../fixture';
-import { ThorClient, VechainProvider } from '../../../src';
+import { ThorClient, VeChainProvider } from '../../../src';
 
 /**
  * Transactions module tests suite.
@@ -16,14 +16,14 @@ describe('Transactions module Testnet tests suite', () => {
      * ThorClient and provider instances
      */
     let thorClient: ThorClient;
-    let provider: VechainProvider;
+    let provider: VeChainProvider;
 
     /**
      * Init thor client and provider before each test
      */
     beforeEach(() => {
         thorClient = ThorClient.fromUrl(testnetUrl);
-        provider = new VechainProvider(
+        provider = new VeChainProvider(
             thorClient,
             THOR_SOLO_ACCOUNTS_BASE_WALLET,
             false

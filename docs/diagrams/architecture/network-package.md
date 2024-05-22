@@ -37,7 +37,7 @@ C4Context
             }
     
             Boundary(b42, "Providers") {
-                System(hardhat-provider, "Hardhat Provider", "It exposes the interface that Hardhat expects, and uses the VechainProvider as wrapped provider")
+                System(hardhat-provider, "Hardhat Provider", "It exposes the interface that Hardhat expects, and uses the VeChainProvider as wrapped provider")
                 System(vechain-provider, "Vechain Provider", "Core provider class for vechain")
             }
     
