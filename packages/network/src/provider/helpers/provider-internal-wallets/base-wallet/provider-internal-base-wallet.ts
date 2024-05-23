@@ -10,7 +10,7 @@ import {
 } from '../../../../thor-client';
 import {
     type AvailableVechainProviders,
-    VechainBaseSigner,
+    VechainPrivateKeySigner,
     type VechainSigner
 } from '../../../../signer';
 
@@ -52,20 +52,23 @@ class ProviderInternalBaseWallet implements ProviderInternalWallet {
      * for the given address.
      *
      * @param parentProvider - The parent provider of the Internal Wallet.
-     * @param address - Address of the account.
+     * @param addressOrIndex - Address of the account.
      * @returns The signer for the given address.
      */
     async getSigner(
         parentProvider: AvailableVechainProviders,
-        address: string
+        addressOrIndex?: string | number
     ): Promise<VechainSigner | null> {
         // Get the account from the wallet
-        const signerAccount = await this.getAccount(address);
+        const signerAccount = await this.getAccount(addressOrIndex);
 
         // Return a new signer (if exists)
         if (signerAccount?.privateKey !== undefined) {
             return await Promise.resolve(
-                new VechainBaseSigner(signerAccount.privateKey, parentProvider)
+                new VechainPrivateKeySigner(
+                    signerAccount.privateKey,
+                    parentProvider
+                )
             );
         }
 
@@ -87,26 +90,33 @@ class ProviderInternalBaseWallet implements ProviderInternalWallet {
     /**
      * Get an account by address.
      *
-     * @param address - Address of the account.
+     * @param addressOrIndex - Address or index of the account.
      * @returns The account with the given address, or null if not found.
      */
     async getAccount(
-        address: string
+        addressOrIndex?: string | number
     ): Promise<ProviderInternalWalletAccount | null> {
+        if (
+            addressOrIndex === undefined ||
+            typeof addressOrIndex === 'number'
+        ) {
+            return this.accounts[addressOrIndex ?? 0] ?? null;
+        }
+
         // Check if the address is valid
         assert(
             'getAccount',
-            addressUtils.isAddress(address),
+            addressUtils.isAddress(addressOrIndex),
             DATA.INVALID_DATA_TYPE,
             'Invalid params expected an address.',
-            { address }
+            { addressOrIndex }
         );
 
         // Get the account by address
         const account = this.accounts.find(
             (account) =>
                 addressUtils.toERC55Checksum(account.address) ===
-                addressUtils.toERC55Checksum(address)
+                addressUtils.toERC55Checksum(addressOrIndex)
         );
         return await Promise.resolve(account ?? null);
     }

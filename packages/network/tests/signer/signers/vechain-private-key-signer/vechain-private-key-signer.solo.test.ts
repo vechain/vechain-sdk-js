@@ -3,7 +3,7 @@ import {
     ProviderInternalBaseWallet,
     signerUtils,
     ThorClient,
-    VechainBaseSigner,
+    VechainPrivateKeySigner,
     VechainProvider
 } from '../../../../src';
 import {
@@ -75,7 +75,7 @@ describe('Vechain base signer tests - testnet', () => {
                             );
 
                         // Get the signer and sign the transaction
-                        const signer = new VechainBaseSigner(
+                        const signer = new VechainPrivateKeySigner(
                             Buffer.from(origin.privateKey, 'hex'),
                             new VechainProvider(
                                 thorClient,
@@ -135,7 +135,7 @@ describe('Vechain base signer tests - testnet', () => {
                                 0
                             );
 
-                        const signer = new VechainBaseSigner(
+                        const signer = new VechainPrivateKeySigner(
                             Buffer.from(origin.privateKey, 'hex'),
                             new VechainProvider(
                                 thorClient,
@@ -170,7 +170,7 @@ describe('Vechain base signer tests - testnet', () => {
          * Test call function without clauses
          */
         test('call with no clauses transaction', async () => {
-            const signer = new VechainBaseSigner(
+            const signer = new VechainPrivateKeySigner(
                 Buffer.from(ALL_ACCOUNTS[0].privateKey, 'hex'),
                 new VechainProvider(
                     thorClient,
@@ -189,7 +189,7 @@ describe('Vechain base signer tests - testnet', () => {
         simulateTransaction.correct.transfer.forEach(
             ({ testName, transaction, expected }) => {
                 test(testName, async () => {
-                    const signer = new VechainBaseSigner(
+                    const signer = new VechainPrivateKeySigner(
                         Buffer.from(
                             transaction.simulateTransactionOptions
                                 .callerPrivateKey,
@@ -233,7 +233,7 @@ describe('Vechain base signer tests - testnet', () => {
         simulateTransaction.correct.smartContractCall.forEach(
             ({ testName, transaction, expected }) => {
                 test(testName, async () => {
-                    const signer = new VechainBaseSigner(
+                    const signer = new VechainPrivateKeySigner(
                         Buffer.from(ALL_ACCOUNTS[0].privateKey, 'hex'),
                         new VechainProvider(
                             thorClient,

@@ -61,6 +61,41 @@ describe('Base wallet tests', () => {
         });
 
         /**
+         * Should be able to get an account by index
+         */
+        test('Should be able to get an account by index', async () => {
+            // Initialize a wallet with the accounts
+            const baseWallet = new ProviderInternalBaseWallet(accountsFixture);
+
+            // Random index
+            const randomIndex = Math.floor(
+                Math.random() * accountsFixture.length
+            );
+
+            // Get the addresses from the wallet
+            const randomAccount = accountsFixture[randomIndex];
+
+            // Get the account by address
+            const randomAccountFromWallet =
+                await baseWallet.getAccount(randomIndex);
+
+            expect(randomAccountFromWallet).toEqual(randomAccount);
+        });
+
+        /**
+         * Should be able to get the first account if account index is not provided
+         */
+        test('Should be able to get the first account', async () => {
+            // Initialize a wallet with the accounts
+            const baseWallet = new ProviderInternalBaseWallet(accountsFixture);
+
+            // Get the account by address
+            const randomAccountFromWallet = await baseWallet.getAccount();
+
+            expect(randomAccountFromWallet).toEqual(accountsFixture[0]);
+        });
+
+        /**
          * Should get null when trying to get an account by a not existing address
          */
         test('Should get null when trying to get an account by a not existing address', async () => {

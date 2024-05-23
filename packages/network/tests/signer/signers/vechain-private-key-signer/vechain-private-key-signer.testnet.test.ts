@@ -3,7 +3,7 @@ import {
     ProviderInternalBaseWallet,
     signerUtils,
     ThorClient,
-    VechainBaseSigner,
+    VechainPrivateKeySigner,
     VechainProvider
 } from '../../../../src';
 import {
@@ -51,7 +51,7 @@ describe('Vechain base signer tests - testnet', () => {
             for (const fixture of signTransactionTestCases.testnet.correct) {
                 if (!fixture.isDelegated) {
                     // Init the signer
-                    const signer = new VechainBaseSigner(
+                    const signer = new VechainPrivateKeySigner(
                         Buffer.from(fixture.origin.privateKey, 'hex'),
                         new VechainProvider(
                             thorClient,
@@ -77,7 +77,7 @@ describe('Vechain base signer tests - testnet', () => {
             for (const fixture of signTransactionTestCases.testnet.correct) {
                 if (fixture.isDelegated) {
                     // Init the signer
-                    const signer = new VechainBaseSigner(
+                    const signer = new VechainPrivateKeySigner(
                         Buffer.from(fixture.origin.privateKey, 'hex'),
                         new VechainProvider(
                             thorClient,
@@ -139,7 +139,7 @@ describe('Vechain base signer tests - testnet', () => {
                             );
 
                         // Get the signer and sign the transaction
-                        const signer = new VechainBaseSigner(
+                        const signer = new VechainPrivateKeySigner(
                             Buffer.from(origin.privateKey, 'hex'),
                             new VechainProvider(
                                 thorClient,
@@ -178,7 +178,7 @@ describe('Vechain base signer tests - testnet', () => {
 
     describe('resolveName(name)', () => {
         test('Should be able to resolve an address by name', async () => {
-            const signer = new VechainBaseSigner(
+            const signer = new VechainPrivateKeySigner(
                 Buffer.from(
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
                     'hex'
@@ -194,7 +194,7 @@ describe('Vechain base signer tests - testnet', () => {
         });
 
         test('Should resolve to null for unknown names', async () => {
-            const signer = new VechainBaseSigner(
+            const signer = new VechainPrivateKeySigner(
                 Buffer.from(
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
                     'hex'
