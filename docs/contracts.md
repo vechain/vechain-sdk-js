@@ -102,6 +102,38 @@ Vechain allows for the delegation of contract calls, enabling developers to exec
 Here is an example of how to delegate a contract call:
 
 ```typescript { name=contract-delegation-erc20, category=example }
+const thorSoloClient = ThorClient.fromUrl(_soloUrl);
+const provider = new VechainProvider(
+    thorSoloClient,
+    new ProviderInternalBaseWallet([deployerAccount], {
+        delegator: {
+            delegatorPrivateKey: delegatorAccount.privateKey
+        }
+    }),
+    true
+);
+const signer = (await provider.getSigner(
+    deployerAccount.address
+)) as VechainSigner;
+
+// Defining a function for deploying the ERC20 contract
+const setupERC20Contract = async (): Promise<Contract> => {
+    const contractFactory = thorSoloClient.contracts.createContractFactory(
+        VIP180_ABI,
+        erc20ContractBytecode,
+        signer
+    );
+
+    // Deploying the contract
+    await contractFactory.startDeployment();
+
+    // Waiting for the contract to be deployed
+    return await contractFactory.waitForDeployment();
+};
+
+// Setting up the ERC20 contract and getting its address
+const contract = await setupERC20Contract();
+
 // Transferring 10000 tokens to another address with a delegated transaction
 const transferResult = await contract.transact.transfer(
     '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
@@ -114,4 +146,30 @@ const transactionReceiptTransfer =
 
 // Asserting that the transaction has not been reverted
 expect(transactionReceiptTransfer.reverted).toEqual(false);
+```
+
+## Multi-Clause Contract Interaction
+
+### Multiple clauses read
+
+Vechain supports the execution of multiple clauses in a single transaction, allowing developers to interact with multiple contracts or perform multiple operations within a single transaction.
+
+Here is an example of how to interact with multiple read clauses in a single transaction:
+
+```typescript { name=contract-create-erc20-token, category=example }
+// Reading the total supply of the ERC20 token
+
+// Reading data from multiple clauses in a single call
+const multipleClausesResult =
+    await thorSoloClient.contracts.executeMultipleClausesCall([
+        contract.clause.totalSupply(),
+        contract.clause.name(),
+        contract.clause.symbol(),
+        contract.clause.decimals()
+    ]);
+
+expect(multipleClausesResult[0]).toEqual([unitsUtils.parseUnits('1', 24)]);
+expect(multipleClausesResult[1]).toEqual(['SampleToken']);
+expect(multipleClausesResult[2]).toEqual(['ST']);
+expect(multipleClausesResult[3]).toEqual([18n]);
 ```

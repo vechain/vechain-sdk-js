@@ -32,6 +32,9 @@ const delegatorAccount = {
 
 // Create thor client for solo network
 const _soloUrl = 'http://localhost:8669/';
+
+// START_SNIPPET: ERC20FunctionCallDelegatedSnippet
+
 const thorSoloClient = ThorClient.fromUrl(_soloUrl);
 const provider = new VechainProvider(
     thorSoloClient,
@@ -63,8 +66,6 @@ const setupERC20Contract = async (): Promise<Contract> => {
 
 // Setting up the ERC20 contract and getting its address
 const contract = await setupERC20Contract();
-
-// START_SNIPPET: ERC20FunctionCallDelegatedSnippet
 
 // Transferring 10000 tokens to another address with a delegated transaction
 const transferResult = await contract.transact.transfer(

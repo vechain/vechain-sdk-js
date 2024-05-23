@@ -53,3 +53,13 @@ Vechain allows for the delegation of contract calls, enabling developers to exec
 Here is an example of how to delegate a contract call:
 
 [ERC20FunctionCallDelegatedSnippet](examples/contracts/contract-delegation-ERC20.ts)
+
+## Multi-Clause Contract Interaction
+
+### Multiple clauses read
+
+Vechain supports the execution of multiple clauses in a single transaction, allowing developers to interact with multiple contracts or perform multiple operations within a single transaction.
+
+Here is an example of how to interact with multiple read clauses in a single transaction:
+
+[ERC20MultiClausesReadSnippet](examples/contracts/contract-create-ERC20-token.ts)
