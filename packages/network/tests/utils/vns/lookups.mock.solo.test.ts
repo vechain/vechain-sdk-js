@@ -10,9 +10,9 @@ import { ThorClient, vnsUtils } from '../../../src';
 import { testnetUrl } from '../../fixture';
 
 /**
- * vet.domains Name Service Utilities
+ * vnsUtils vet.domains tests
  *
- * @group unit/utils/vns
+ * @group unit/utils/vnsUtils
  */
 describe('vnsUtils', () => {
     /**
