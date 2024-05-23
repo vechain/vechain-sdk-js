@@ -7,7 +7,7 @@ import {
 } from './types';
 import { thorest } from '../../utils';
 import { type ThorClient } from '../thor-client';
-import { abi } from '../../../../core';
+import { abi } from '@vechain/sdk-core';
 import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 
 /**
