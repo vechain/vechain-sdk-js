@@ -148,22 +148,20 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
          * Positive case 2 - Should be able to send a transaction with undefined value
          */
         test('eth_sendTransaction - Should be able to send a transaction with value undefined', async () => {
+            // THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE.receiver.address
+            // const from = '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6';
+            const from = '0xabef6032b9176c186f6bf984f548bda53349f70a';
+            // THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE.receiver.address
+            // const to = '0xb717b660cd51109334bd10b2c168986055f58c1a';
+            const to = '0x865306084235bf804c8bba8a8d56890940ca8f0b';
             // Get the balance of the sender and the receiver before sending the transaction
             const balanceSenderBefore = (await provider.request({
                 method: RPC_METHODS.eth_getBalance,
-                params: [
-                    THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE.sender
-                        .address,
-                    'latest'
-                ]
+                params: [from, 'latest']
             })) as string;
             const balanceReceiverBefore = (await provider.request({
                 method: RPC_METHODS.eth_getBalance,
-                params: [
-                    THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE.receiver
-                        .address,
-                    'latest'
-                ]
+                params: [to, 'latest']
             })) as string;
 
             // Send a transaction
@@ -171,10 +169,8 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                 method: RPC_METHODS.eth_sendTransaction,
                 params: [
                     {
-                        from: THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE
-                            .sender.address,
-                        to: THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE
-                            .receiver.address
+                        from,
+                        to
                     }
                 ]
             })) as string;
@@ -187,19 +183,11 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
             // Get the balance of the sender and the receiver after sending the transaction
             const balanceSenderAfter = (await provider.request({
                 method: RPC_METHODS.eth_getBalance,
-                params: [
-                    THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE.sender
-                        .address,
-                    'latest'
-                ]
+                params: [from, 'latest']
             })) as string;
             const balanceReceiverAfter = (await provider.request({
                 method: RPC_METHODS.eth_getBalance,
-                params: [
-                    THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE.receiver
-                        .address,
-                    'latest'
-                ]
+                params: [to, 'latest']
             })) as string;
 
             // Compare the balances (they will remain the same)
