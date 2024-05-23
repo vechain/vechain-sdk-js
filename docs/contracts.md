@@ -157,8 +157,6 @@ Vechain supports the execution of multiple clauses in a single transaction, allo
 Here is an example of how to interact with multiple read clauses in a single transaction:
 
 ```typescript { name=contract-create-erc20-token, category=example }
-// Reading the total supply of the ERC20 token
-
 // Reading data from multiple clauses in a single call
 const multipleClausesResult =
     await thorSoloClient.contracts.executeMultipleClausesCall([

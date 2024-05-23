@@ -62,8 +62,6 @@ expect(balance).toEqual([unitsUtils.parseUnits('1', 24)]);
 
 // START_SNIPPET: ERC20MultiClausesReadSnippet
 
-// Reading the total supply of the ERC20 token
-
 // Reading data from multiple clauses in a single call
 const multipleClausesResult =
     await thorSoloClient.contracts.executeMultipleClausesCall([
