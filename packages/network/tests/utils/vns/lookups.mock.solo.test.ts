@@ -1,8 +1,3 @@
-/**
- * vnsUtils vet.domains tests
- *
- * @group unit/utils/vnsUtils
- */
 import {
     afterEach,
     beforeEach,
@@ -17,7 +12,7 @@ import { testnetUrl } from '../../fixture';
 /**
  * vet.domains Name Service Utilities
  *
- * @group unit/utils/vns
+ * @group integration/utils/vns
  */
 describe('vnsUtils', () => {
     /**

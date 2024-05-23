@@ -1,8 +1,3 @@
-/**
- * vnsUtils vet.domains tests
- *
- * @group unit/utils/vnsUtils
- */
 import {
     afterEach,
     beforeEach,
