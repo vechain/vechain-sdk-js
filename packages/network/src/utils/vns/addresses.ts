@@ -2,7 +2,7 @@ import {
     MAINNET_NETWORK,
     SOLO_NETWORK,
     TESTNET_NETWORK
-} from '../../../../core';
+} from '@vechain/sdk-core';
 
 const NetworkContracts: Record<
     string,
