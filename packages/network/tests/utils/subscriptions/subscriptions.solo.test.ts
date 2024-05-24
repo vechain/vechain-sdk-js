@@ -8,7 +8,7 @@ import {
     subscriptions,
     ThorClient,
     type TransferLogs,
-    type VeChainBaseSigner,
+    type VeChainPrivateKeySigner,
     VeChainProvider
 } from '../../../src';
 import {
@@ -187,7 +187,7 @@ describe('Subscriptions Solo network tests', () => {
             // Create a signer to sign the transaction
             const signer = (await provider.getSigner(
                 TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
-            )) as VeChainBaseSigner;
+            )) as VeChainPrivateKeySigner;
 
             // Get the raw transaction
             const raw = await signer.signTransaction(
@@ -268,7 +268,7 @@ describe('Subscriptions Solo network tests', () => {
         // Create a signer to sign the transaction
         const signer = (await provider.getSigner(
             TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION.address
-        )) as VeChainBaseSigner;
+        )) as VeChainPrivateKeySigner;
 
         // Get the raw transaction
         const raw = await signer.signTransaction(

@@ -256,8 +256,9 @@ This project is licensed under the [MIT license](./.github/LICENSE.md).
 
 TheVeChain SDK uses `Changesets CLI`. To publish a new release:
 ``` bash
-yarn prepare-packages X.Y.Z
+yarn pre-release X.Y.Z
 yarn changeset publish
+yarn post-release X.Y.Z
 ```
 Finally, update also the [documentation](https://github.com/vechain/vechain-docs).
 

@@ -37,30 +37,6 @@ const updatePackageVersions = (version: string): void => {
         fs.writeFileSync(pkgJsonPath, JSON.stringify(pkgJson, null, 2));
     }
 
-    // Update versions in the apps directory
-    const appsPath = path.resolve(__dirname, '../apps');
-
-    const appPackages = fs.readdirSync(appsPath);
-
-    for (const app of appPackages) {
-        const appPath = path.resolve(appsPath, app);
-        const appPackageJsonPath = path.resolve(appPath, './package.json');
-        const appPackageJson = JSON.parse(
-            fs.readFileSync(appPackageJsonPath, 'utf8')
-        );
-
-        for (const dep of Object.keys(appPackageJson.dependencies)) {
-            if (packageNames.includes(dep)) {
-                appPackageJson.dependencies[dep] = version;
-            }
-        }
-
-        fs.writeFileSync(
-            appPackageJsonPath,
-            JSON.stringify(appPackageJson, null, 2)
-        );
-    }
-
     // Update versions in the docs directory
     const docsPath = path.resolve(__dirname, `../docs`);
     const docsJsonPath = path.resolve(docsPath, './package.json');
@@ -82,7 +58,8 @@ const updatePackageVersions = (version: string): void => {
 const preparePackages = async () => {
     const version = process.argv[2];
 
-    if (!version?.match(/^\d+\.\d+\.\d+$/)) {
+    // NOTE: Remote the beta tag from the version in the future
+    if (!version?.match(/^\d+\.\d+\.\d+(-beta\.\d+)?$/)) {
         console.error(
             `🚨 You must specify a semantic version as the first argument  🚨`
         );

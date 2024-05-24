@@ -6,8 +6,7 @@ import {
     type FunctionFragment,
     type InterfaceAbi,
     PARAMS_ABI,
-    PARAMS_ADDRESS,
-    type TransactionBody
+    PARAMS_ADDRESS
 } from '@vechain/sdk-core';
 import type {
     ContractCallOptions,
@@ -154,51 +153,17 @@ class ContractsModule {
         functionData: unknown[],
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
-        // Build a clause to interact with the contract function
-        const clause = clauseBuilder.functionInteraction(
-            contractAddress,
-            functionFragment,
-            functionData,
-            options?.value ?? 0
-        );
-
-        // Estimate the gas cost of the transaction
-        const gasResult = await this.thor.gas.estimateGas(
-            [clause],
-            await signer.getAddress()
-        );
-
-        // Build a transaction for calling the contract function
-        const txBody = await this.thor.transactions.buildTransactionBody(
-            [clause],
-            gasResult.totalGas,
-            options
-        );
-
         // Sign the transaction
-        const result = await this._signContractTransaction(signer, txBody);
-
-        result.wait = async () =>
-            await this.thor.transactions.waitForTransaction(result.id);
-
-        return result;
-    }
-
-    /**
-     * Internal function used to sign a contract transaction
-     * with the provided signer
-     *
-     * @param signer - The signer used for signing the transaction.
-     * @param txBody - The transaction body to sign.
-     *
-     * @private
-     */
-    private async _signContractTransaction(
-        signer: VeChainSigner,
-        txBody: TransactionBody
-    ): Promise<SendTransactionResult> {
         const id = await signer.sendTransaction({
-            clauses: txBody.clauses
+            clauses: [
+                // Build a clause to interact with the contract function
+                clauseBuilder.functionInteraction(
+                    contractAddress,
+                    functionFragment,
+                    functionData,
+                    options?.value ?? 0
+                )
+            ]
         });
 
         return {
@@ -212,35 +177,20 @@ class ContractsModule {
      * Executes a transaction to interact with multiple smart contract functions.
      * @param clauses - An array of transaction clauses to interact with the contract functions.
      * @param signer - The signer used to signing the transaction.
-     * @param options - (Optional) An object containing options for the transaction body. Includes all options of the `buildTransactionBody` method
      */
     public async executeMultipleClausesTransaction(
         clauses: ContractClause[],
-        signer: VeChainSigner,
-        options?: ContractTransactionOptions
+        signer: VeChainSigner
     ): Promise<SendTransactionResult> {
-        const innerClauses = clauses.map((clause) => clause.clause);
+        const id = await signer.sendTransaction({
+            clauses: clauses.map((clause) => clause.clause)
+        });
 
-        // Estimate the gas cost of the transaction
-        const gasResult = await this.thor.gas.estimateGas(
-            innerClauses,
-            await signer.getAddress()
-        );
-
-        // Build a transaction for calling the contract function
-        const txBody = await this.thor.transactions.buildTransactionBody(
-            innerClauses,
-            gasResult.totalGas,
-            options
-        );
-
-        // Sign the transaction
-        const result = await this._signContractTransaction(signer, txBody);
-
-        result.wait = async () =>
-            await this.thor.transactions.waitForTransaction(result.id);
-
-        return result;
+        return {
+            id,
+            wait: async () =>
+                await this.thor.transactions.waitForTransaction(id)
+        };
     }
 
     /**
