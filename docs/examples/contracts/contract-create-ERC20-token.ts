@@ -59,3 +59,21 @@ const balance = await contract.read.balanceOf(deployerAccount.address);
 expect(balance).toEqual([unitsUtils.parseUnits('1', 24)]);
 
 // END_SNIPPET: CreateERC20TokenSnippet
+
+// START_SNIPPET: ERC20MultiClausesReadSnippet
+
+// Reading data from multiple clauses in a single call
+const multipleClausesResult =
+    await thorSoloClient.contracts.executeMultipleClausesCall([
+        contract.clause.totalSupply(),
+        contract.clause.name(),
+        contract.clause.symbol(),
+        contract.clause.decimals()
+    ]);
+
+expect(multipleClausesResult[0]).toEqual([unitsUtils.parseUnits('1', 24)]);
+expect(multipleClausesResult[1]).toEqual(['SampleToken']);
+expect(multipleClausesResult[2]).toEqual(['ST']);
+expect(multipleClausesResult[3]).toEqual([18n]);
+
+// END_SNIPPET: ERC20MultiClausesReadSnippet
