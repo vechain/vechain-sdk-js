@@ -48,7 +48,7 @@ This document, designed to be both informative and practical, equips developers 
 
 ### Overview
 
-Vechain allows for the delegation of contract calls, enabling developers to execute contract functions in which the fees are payed by the delegator.
+VeChain allows for the delegation of contract calls, enabling developers to execute contract functions in which the fees are payed by the delegator.
 
 Here is an example of how to delegate a contract call:
 
@@ -58,7 +58,7 @@ Here is an example of how to delegate a contract call:
 
 ### Multiple clauses read
 
-Vechain supports the execution of multiple clauses in a single transaction, allowing developers to interact with multiple contracts or perform multiple operations within a single transaction.
+VeChain supports the execution of multiple clauses in a single transaction, allowing developers to interact with multiple contracts or perform multiple operations within a single transaction.
 
 Here is an example of how to interact with multiple read clauses in a single transaction:
 
