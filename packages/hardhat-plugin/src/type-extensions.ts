@@ -19,7 +19,7 @@ import { type HardhatEthersHelpers } from '@nomicfoundation/hardhat-ethers/types
 declare module 'hardhat/types/runtime' {
     interface HardhatRuntimeEnvironment {
         /**
-         * TheVeChain provider.
+         * The VeChain provider.
          * Useful to have for custom functionality.
          */
         VeChainProvider?: HardhatVeChainProvider;

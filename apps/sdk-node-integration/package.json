@@ -1,6 +1,6 @@
 {
   "name": "sdk-user",
-  "description": "A node sample app using theVeChain SDK",
+  "description": "A node sample app using the VeChain SDK",
   "version": "1.0.0-beta.5",
   "main": "dist/index.js",
   "types": "src/index.ts",

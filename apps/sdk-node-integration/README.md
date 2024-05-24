@@ -1,6 +1,6 @@
 # sdk-node-integration:VeChain Transaction Logger
 
-TheVeChain Transaction Logger is a TypeScript class that provides methods to monitor the transactions of a specificVeChain account and optionally send webhook notifications when new transactions occur.
+The VeChain Transaction Logger is a TypeScript class that provides methods to monitor the transactions of a specificVeChain account and optionally send webhook notifications when new transactions occur.
 
 ## Features
 
@@ -22,7 +22,7 @@ logger.stopLogging();
 ```
 ## Configuration
 
-- `new VeChainTransactionLogger(url: string, webhookUrl?: string)`: Constructor to initialize the logger. Requires the URL of theVeChain node. Optionally accepts the URL of the webhook endpoint.
+- `new VeChainTransactionLogger(url: string, webhookUrl?: string)`: Constructor to initialize the logger. Requires the URL of the VeChain node. Optionally accepts the URL of the webhook endpoint.
 - `startLogging(address: string)`: Method to start monitoring transactions for the specifiedVeChain account address.
 - `stopLogging()`: Method to stop monitoring transactions.
 

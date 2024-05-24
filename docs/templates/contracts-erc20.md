@@ -5,7 +5,7 @@ The ERC20 token standard is widely used for creating and issuing smart contracts
 
 ### Example
 
-TheVeChain SDK allows to create a sample ERC20 token with a few lines of code. The example below shows how to create a sample ERC20 token with the name "SampleToken" and symbol "ST" with a total supply of 1000000000000000000000000.
+The VeChain SDK allows to create a sample ERC20 token with a few lines of code. The example below shows how to create a sample ERC20 token with the name "SampleToken" and symbol "ST" with a total supply of 1000000000000000000000000.
 
 #### Compile the contract
 
@@ -27,7 +27,7 @@ contract SampleToken is ERC20 {
 
 #### Deploy the contract
 
-Once the contract is compiled, we can deploy it using theVeChain SDK. The following code shows how to deploy the contract:
+Once the contract is compiled, we can deploy it using the VeChain SDK. The following code shows how to deploy the contract:
 
 
 [CreateERC20TokenSnippet](examples/contracts/contract-create-ERC20-token.ts)
@@ -35,7 +35,7 @@ Once the contract is compiled, we can deploy it using theVeChain SDK. The follow
 
 #### Transfer tokens to another address
 
-Once the contract is deployed, we can transfer tokens to another address using theVeChain SDK. The following code shows how to transfer 10000 token smallest unit to another address:
+Once the contract is deployed, we can transfer tokens to another address using the VeChain SDK. The following code shows how to transfer 10000 token smallest unit to another address:
 
 [ERC20FunctionCallSnippet](examples/contracts/contract-transfer-ERC20-token.ts)
 

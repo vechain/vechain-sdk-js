@@ -162,7 +162,7 @@ interface TransactionRequestInput {
      */
     gasPayer?: string;
 
-    // START: NOT SUPPORTED FIELDS inVeChain BUT added to take compatibility with ethers
+    // START: NOT SUPPORTED FIELDS in VeChain BUT added to take compatibility with ethers
 
     /**
      *  The chain ID for the network this transaction is valid on.
@@ -209,7 +209,7 @@ interface TransactionRequestInput {
      */
     enableCcipRead?: boolean;
 
-    // END: NOT SUPPORTED FIELDS inVeChain BUT added to take compatibility with ethers
+    // END: NOT SUPPORTED FIELDS in VeChain BUT added to take compatibility with ethers
 }
 
 /**
@@ -246,7 +246,7 @@ interface VeChainSigner {
      *  @param blockTag - The blocktag to base the transaction count on, keep in mind
      *         many nodes do not honour this value and silently ignore it [default: ``"latest"``]
      *
-     *  @NOTE: This method generates a random number as nonce. It is because the nonce inVeChain is a 6-byte number.
+     *  @NOTE: This method generates a random number as nonce. It is because the nonce in VeChain is a 6-byte number.
      */
     getNonce: (blockTag?: string) => Promise<string>;
 

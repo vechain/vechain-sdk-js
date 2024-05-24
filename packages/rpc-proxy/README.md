@@ -1,9 +1,9 @@
 # @vechain/sdk-remix-proxy
 
-Welcome to the **remix proxy** of theVeChain SDK!
+Welcome to the **remix proxy** of the VeChain SDK!
 
 ## Introduction
-This project is designed to bridge the gap between Thor's RESTful API and Ethereum's JSON-RPC, for example to support the Remix IDE. By leveraging this proxy, users can seamlessly interact with theVeChain Thor blockchain.
+This project is designed to bridge the gap between Thor's RESTful API and Ethereum's JSON-RPC, for example to support the Remix IDE. By leveraging this proxy, users can seamlessly interact with the VeChain Thor blockchain.
 
 ## Commands
 
@@ -22,12 +22,12 @@ Feel free to leverage these resources and don't hesitate to reach out if you hav
 2. Run `yarn start` to start the proxy server.
 3. Enjoy!
 
-Happy coding with theVeChain SDK!
+Happy coding with the VeChain SDK!
 ## Configuration
 
 The `config.json` file is used to configure the proxy server. It contains the following fields:
 
-- `url`: The URL of theVeChain Thor node.
+- `url`: The URL of the VeChain Thor node.
 - `port`: The port of the proxy server.
 - `accounts`: The accounts that the proxy server will use to sign transactions.
 - `debug`: Whether to enable debug mode.

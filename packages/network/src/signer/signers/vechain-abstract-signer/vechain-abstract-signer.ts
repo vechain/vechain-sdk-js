@@ -262,7 +262,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
      *  @param blockTag - The blocktag to base the transaction count on, keep in mind
      *         many nodes do not honour this value and silently ignore it [default: ``"latest"``]
      *
-     *  @NOTE: This method generates a random number as nonce. It is because the nonce inVeChain is a 6-byte number.
+     *  @NOTE: This method generates a random number as nonce. It is because the nonce in VeChain is a 6-byte number.
      */
     async getNonce(blockTag?: string): Promise<string> {
         // If provider is available, get the nonce from the provider using eth_getTransactionCount

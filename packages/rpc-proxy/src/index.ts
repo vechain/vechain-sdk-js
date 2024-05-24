@@ -56,7 +56,7 @@ function logRequest(requestBody: RequestBody, result: unknown): void {
 /**
  * Start the proxy function.
  * @note
- * * This is a simple proxy server that converts and forwards RPC requests to theVeChain network.
+ * * This is a simple proxy server that converts and forwards RPC requests to the VeChain network.
  * * Don't use this in production, it's just for testing purposes.
  */
 function startProxy(): void {

@@ -6,7 +6,7 @@ This SDK provides developers with tools and resources to integrateVeChain blockc
 
 ## Installation
 
-To start using theVeChain SDK, you can install specific packages based on your needs. The SDK is a monorepo that includes various packages. Here are the packages available:
+To start using the VeChain SDK, you can install specific packages based on your needs. The SDK is a monorepo that includes various packages. Here are the packages available:
  - [@vechain/sdk-core](https://www.npmjs.com/package/@vechain/sdk-core)
  - [@vechain/sdk-network](https://www.npmjs.com/package/@vechain/sdk-network)
  - [@vechain/sdk-errors](https://www.npmjs.com/package/@vechain/sdk-errors)
@@ -29,8 +29,8 @@ yarn add @vechain/sdk-network
 
 ## Contributing
 
-We welcome contributions from the community to improve theVeChain SDK. If you want to contribute, please review our Contribution Guidelines for more information.
+We welcome contributions from the community to improve the VeChain SDK. If you want to contribute, please review our Contribution Guidelines for more information.
 
 ## License
 
-TheVeChain SDK is licensed under the MIT License, which allows for both personal and commercial use.
+The VeChain SDK is licensed under the MIT License, which allows for both personal and commercial use.

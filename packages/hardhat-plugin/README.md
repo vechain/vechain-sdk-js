@@ -1,14 +1,14 @@
 # @vechain/sdk-hardhat-plugin
 
-Welcome to the **hardhat-plugin package** of theVeChain SDK!
+Welcome to the **hardhat-plugin package** of the VeChain SDK!
 
 ## Introduction
 
-TheVeChain SDK Hardhat plugin is a crucial tool that bridges the gap between Hardhat and theVeChain SDK, providing a seamless interface for developers. This versatile package is indispensable for smart contract development on the VeChainThor blockchain network.
+The VeChain SDK Hardhat plugin is a crucial tool that bridges the gap between Hardhat and the VeChain SDK, providing a seamless interface for developers. This versatile package is indispensable for smart contract development on the VeChainThor blockchain network.
 
 ## Key Features
 
-The plugin streamlines the process of creating, testing, deploying and interacting with smart contracts, making it easier for developers to build robust decentralized applications (dApps) and services on VeChainThor. By integrating theVeChain SDK into Hardhat, developers can leverage the full power of vechain's blockchain infrastructure while enjoying the familiar development environment provided by Hardhat.
+The plugin streamlines the process of creating, testing, deploying and interacting with smart contracts, making it easier for developers to build robust decentralized applications (dApps) and services on VeChainThor. By integrating the VeChain SDK into Hardhat, developers can leverage the full power of vechain's blockchain infrastructure while enjoying the familiar development environment provided by Hardhat.
 
 ## Example
 
@@ -20,4 +20,4 @@ Explore examples of how to use this package in real-world scenarios at [vechain 
 
 Feel free to leverage these resources and don't hesitate to reach out if you have any questions or need further assistance.
 
-Happy coding with theVeChain SDK!
+Happy coding with the VeChain SDK!

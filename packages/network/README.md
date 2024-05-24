@@ -1,6 +1,6 @@
 # @vechain/sdk-network
 
-Welcome to the **network package** of theVeChain SDK!
+Welcome to the **network package** of the VeChain SDK!
 
 ## Introduction
 
@@ -8,7 +8,7 @@ Vechain SDK Network serves as the standard interface connecting decentralized ap
 
 ## Key Features
 
-Explore the rich feature set of theVeChain SDK Network package, tailored for VeChainThor blockchain and dApp development:
+Explore the rich feature set of the VeChain SDK Network package, tailored for VeChainThor blockchain and dApp development:
 
 - **Blocks and Node Status**: Interact with and retrieve information about blocks on the VeChainThor blockchain.VeChain SDK Network allows developers to access block data and query the status of connectedVeChain nodes.
 - **Accounts**: Facilitate interactions with Externally Owned Accounts (EOAs), empowering developers to manage and transact with individual user accounts on the VeChainThor blockchain. This includes sending VET tokens and interacting with VTHO (VeThor) tokens.
@@ -37,4 +37,4 @@ Explore examples of how to use this package in real-world scenarios at [vechain 
 
 Feel free to leverage these resources and don't hesitate to reach out if you have any questions or need further assistance.
 
-Happy coding with theVeChain SDK!
+Happy coding with the VeChain SDK!

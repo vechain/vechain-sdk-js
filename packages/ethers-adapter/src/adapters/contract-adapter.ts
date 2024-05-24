@@ -3,9 +3,9 @@ import { type HardhatVeChainProvider } from '@vechain/sdk-network';
 import { helpers } from './helpers';
 
 /**
- * Contract adapter for theVeChain hardhat plugin
+ * Contract adapter for the VeChain hardhat plugin
  *
- * @param contract - The contract to adapt to theVeChain network
+ * @param contract - The contract to adapt to the VeChain network
  * @param hardhatVeChainProvider - The hardhatVeChain provider
  * @returns The adapted contract
  */

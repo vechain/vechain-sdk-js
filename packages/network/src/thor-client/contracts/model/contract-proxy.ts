@@ -175,7 +175,7 @@ function buildCriteria(
     prop: string | symbol,
     args: unknown[]
 ): FilterCriteria {
-    // Create theVeChain sdk event fragment starting from the contract ABI event fragment
+    // Create the VeChain sdk event fragment starting from the contract ABI event fragment
     const eventFragment = new fragment.Event(contract.getEventFragment(prop));
 
     // Create a map of encoded filter topics for the event

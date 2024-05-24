@@ -245,7 +245,7 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
     }
 
     /**
-     * Fetches the current block details from theVeChain node.
+     * Fetches the current block details from the VeChain node.
      *
      * @private
      */

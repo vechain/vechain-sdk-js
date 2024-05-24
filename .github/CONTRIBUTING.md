@@ -2,8 +2,8 @@
 
 ## Introduction
 
-Thank you for considering contributing to theVeChain SDK project.
-This SDK is an important part of theVeChain ecosystem, and your contributions are greatly appreciated.
+Thank you for considering contributing to the VeChain SDK project.
+This SDK is an important part of the VeChain ecosystem, and your contributions are greatly appreciated.
 This document outlines the process and guidelines for contributing.
 
 ## Getting Started
@@ -125,7 +125,7 @@ public static parseInteger(s: string): number {
 ```
 ## Tests
 
-Testing is a crucial aspect of maintaining a high-quality codebase in theVeChain SDK project. Tests not only validate the correctness of the code but also ensure that future changes do not inadvertently introduce bugs or regressions. It is imperative that all new features and bug fixes are accompanied by corresponding tests to verify their functionality. Additionally, existing code should have adequate test coverage to maintain its stability over time. We aim for 100% test coverage to guarantee the reliability of the SDK.
+Testing is a crucial aspect of maintaining a high-quality codebase in the VeChain SDK project. Tests not only validate the correctness of the code but also ensure that future changes do not inadvertently introduce bugs or regressions. It is imperative that all new features and bug fixes are accompanied by corresponding tests to verify their functionality. Additionally, existing code should have adequate test coverage to maintain its stability over time. We aim for 100% test coverage to guarantee the reliability of the SDK.
 
 ### Test Group Tagging
 
@@ -224,7 +224,7 @@ All submissions, including submissions by project members, require a review. We 
 
 ## Code of Conduct
 
-We are committed to providing a welcoming and inclusive environment for everyone who contributes to or interacts with theVeChain SDK project. To ensure a positive experience for our community, we have established a [Code of Conduct](CODE_OF_CONDUCT.md) that outlines our expectations for behavior. We encourage all contributors, maintainers, and users to familiarize themselves with this code, as it reflects our commitment to creating a diverse and respectful community. Thank you for helping us maintain a welcoming and collaborative space for all.
+We are committed to providing a welcoming and inclusive environment for everyone who contributes to or interacts with the VeChain SDK project. To ensure a positive experience for our community, we have established a [Code of Conduct](CODE_OF_CONDUCT.md) that outlines our expectations for behavior. We encourage all contributors, maintainers, and users to familiarize themselves with this code, as it reflects our commitment to creating a diverse and respectful community. Thank you for helping us maintain a welcoming and collaborative space for all.
 
 ## Thank You
 

@@ -1,6 +1,6 @@
 # @vechain/sdk-core
 
-Welcome to the **core package** of theVeChain SDK!
+Welcome to the **core package** of the VeChain SDK!
 
 ## Introduction
 
@@ -34,4 +34,4 @@ Explore examples of how to use this package in real-world scenarios at [vechain 
 
 Feel free to leverage these resources and don't hesitate to reach out if you have any questions or need further assistance.
 
-Happy coding with theVeChain SDK!
+Happy coding with the VeChain SDK!
