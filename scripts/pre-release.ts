@@ -36,6 +36,23 @@ const updatePackageVersions = (version: string): void => {
 
         fs.writeFileSync(pkgJsonPath, JSON.stringify(pkgJson, null, 2));
     }
+
+    // Update versions in the docs directory
+    const docsPath = path.resolve(__dirname, `../docs`);
+    const docsJsonPath = path.resolve(docsPath, './package.json');
+    const docsJson = JSON.parse(fs.readFileSync(docsJsonPath, 'utf8'));
+    docsJson.version = version;
+    fs.writeFileSync(docsJsonPath, JSON.stringify(docsJson, null, 2));
+
+    if (docsJson.dependencies != null) {
+        for (const dep of Object.keys(docsJson.dependencies)) {
+            if (packageNames.includes(dep)) {
+                docsJson.dependencies[dep] = version;
+            }
+        }
+    }
+
+    fs.writeFileSync(docsJsonPath, JSON.stringify(docsJson, null, 2));
 };
 
 const preparePackages = async () => {
@@ -59,10 +76,10 @@ const preparePackages = async () => {
     await exec('yarn build');
     console.log('\t- ✅  Built!');
 
-    // console.log(' Test:');
-    // console.log('\t- 🧪 Testing packages...');
-    // await exec('yarn test:solo');
-    // console.log('\t- ✅  Success!');
+    console.log(' Test:');
+    console.log('\t- 🧪 Testing packages...');
+    await exec('yarn test:solo');
+    console.log('\t- ✅  Success!');
 
     console.log(' Version:');
     console.log(`\t- 🏷 Updating package versions to ${version}...`);
