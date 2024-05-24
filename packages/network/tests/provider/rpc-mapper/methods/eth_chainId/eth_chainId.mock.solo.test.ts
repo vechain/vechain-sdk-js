@@ -45,8 +45,8 @@ describe('RPC Mapper - eth_chainId method tests mock on solo', () => {
          */
         test('Should return `0x0` if the genesis block is not defined', async () => {
             // Mock the getGenesisBlock method to return null
-            jest.spyOn(thorClient.blocks, 'getGenesisBlock').mockResolvedValue(
-                null
+            jest.spyOn(thorClient.blocks, 'getGenesisBlock').mockRejectedValue(
+                new Error()
             );
 
             await expect(

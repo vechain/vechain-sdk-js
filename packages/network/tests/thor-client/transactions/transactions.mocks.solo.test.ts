@@ -39,7 +39,7 @@ describe('buildTransactionBody with mocks', () => {
         jest.spyOn(
             thorSoloClient.blocks,
             'getBestBlockCompressed'
-        ).mockResolvedValue(null);
+        ).mockRejectedValue(TransactionBodyError);
 
         const gas = await thorSoloClient.gas.estimateGas(
             [transferTransactionBody.clauses[0]],

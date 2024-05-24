@@ -112,17 +112,8 @@ class BlocksModule {
      *
      * @returns A promise that resolves to an object containing the compressed block details.
      */
-    public async getBestBlockCompressed(): Promise<CompressedBlockDetail> {
-        const bestBlock = await this.getBlockCompressed('best');
-        if (bestBlock === null) {
-            throw buildError(
-                'BlocksModule.bestBlockNotFound',
-                ERROR_CODES.BLOCK.BEST_BLOCK_NOT_FOUND,
-                'There was an error fetching the best block.'
-            );
-        }
-
-        return bestBlock;
+    public async getBestBlockCompressed(): Promise<CompressedBlockDetail | null> {
+        return await this.getBlockCompressed('best');
     }
 
     /**
@@ -130,17 +121,8 @@ class BlocksModule {
      *
      * @returns A promise that resolves to an object containing the expanded block details.
      */
-    public async getBestBlockExpanded(): Promise<ExpandedBlockDetail> {
-        const bestBlock = await this.getBlockExpanded('best');
-        if (bestBlock === null) {
-            throw buildError(
-                'BlocksModule.bestBlockNotFound',
-                ERROR_CODES.BLOCK.BEST_BLOCK_NOT_FOUND,
-                'There was an error fetching the best block.'
-            );
-        }
-
-        return bestBlock;
+    public async getBestBlockExpanded(): Promise<ExpandedBlockDetail | null> {
+        return await this.getBlockExpanded('best');
     }
 
     /**

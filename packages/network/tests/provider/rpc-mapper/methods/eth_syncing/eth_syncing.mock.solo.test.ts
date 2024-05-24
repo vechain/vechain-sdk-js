@@ -116,13 +116,13 @@ describe('RPC Mapper - eth_syncing method tests', () => {
                     jest.spyOn(
                         thorClient.blocks,
                         'getBestBlockCompressed'
-                    ).mockResolvedValue(null);
+                    ).mockRejectedValue(new Error());
 
                     // Mock the getGenesisBlock method to return null
                     jest.spyOn(
                         thorClient.blocks,
                         'getGenesisBlock'
-                    ).mockResolvedValue(null);
+                    ).mockRejectedValue(new Error());
 
                     const status = (await RPCMethodsMap(thorClient)[
                         RPC_METHODS.eth_syncing

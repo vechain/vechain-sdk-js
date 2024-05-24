@@ -57,10 +57,9 @@ describe('vnsUtils', () => {
 
         test('Should return null if genesisBlock can not be loaded', async () => {
             // Mock the getGenesisBlock method to return null
-            jest.spyOn(
-                thorClient.blocks,
-                'getGenesisBlock'
-            ).mockResolvedValueOnce(null);
+            jest.spyOn(thorClient.blocks, 'getGenesisBlock').mockRejectedValue(
+                new Error()
+            );
 
             const addresses = await vnsUtils.resolveNames(thorClient, [
                 'test-sdk.vet'
@@ -128,10 +127,9 @@ describe('vnsUtils', () => {
 
         test('Should return null if genesisBlock can not be loaded', async () => {
             // Mock the  method to return null
-            jest.spyOn(
-                thorClient.blocks,
-                'getGenesisBlock'
-            ).mockResolvedValueOnce(null);
+            jest.spyOn(thorClient.blocks, 'getGenesisBlock').mockRejectedValue(
+                new Error()
+            );
 
             const names = await vnsUtils.lookupAddresses(thorClient, [
                 '0x0000000000000000000000000000000000000000'

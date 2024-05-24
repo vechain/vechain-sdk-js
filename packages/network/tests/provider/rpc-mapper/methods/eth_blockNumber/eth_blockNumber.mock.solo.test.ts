@@ -49,7 +49,7 @@ describe('RPC Mapper - eth_blockNumber method tests', () => {
             jest.spyOn(
                 thorClient.blocks,
                 'getBestBlockCompressed'
-            ).mockResolvedValue(null);
+            ).mockRejectedValue(new Error());
 
             const rpcCallChainId = (await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_blockNumber
