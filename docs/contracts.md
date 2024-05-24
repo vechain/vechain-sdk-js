@@ -171,3 +171,41 @@ expect(multipleClausesResult[1]).toEqual(['SampleToken']);
 expect(multipleClausesResult[2]).toEqual(['ST']);
 expect(multipleClausesResult[3]).toEqual([18n]);
 ```
+
+
+## Multi-Clause Event filtering
+
+### Overview
+
+VeChain allows developers to filter multiple events from diffent contracts in a single call, enabling efficient event monitoring and processing.
+
+To do so, developers needs the contract address and the event signature.
+
+Here is an example of how to filter multiple events from different contracts:
+
+```typescript { name=contract-event-filter, category=example }
+const contractEventExample: Contract = await setupEventExampleContract();
+
+await (await contractEventExample.transact.setValue(3000)).wait();
+
+const transferCriteria = contractErc20.criteria.Transfer(
+    undefined,
+    '0x9e7911de289c3c856ce7f421034f66b6cde49c39'
+);
+
+const valueCriteria = contractEventExample.criteria.ValueSet();
+
+const events = await thorSoloClient.logs.filterEventLogs({
+    criteriaSet: [transferCriteria, valueCriteria]
+});
+
+// Asserting that I'm filtering a previous transfer event and the new value set event
+expect(events.map((x) => x.decodedData)).toEqual([
+    [
+        '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
+        '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
+        10000n
+    ],
+    ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
+]);
+```

@@ -63,3 +63,16 @@ VeChain supports the execution of multiple clauses in a single transaction, allo
 Here is an example of how to interact with multiple read clauses in a single transaction:
 
 [ERC20MultiClausesReadSnippet](examples/contracts/contract-create-ERC20-token.ts)
+
+
+## Multi-Clause Event filtering
+
+### Overview
+
+VeChain allows developers to filter multiple events from diffent contracts in a single call, enabling efficient event monitoring and processing.
+
+To do so, developers needs the contract address and the event signature.
+
+Here is an example of how to filter multiple events from different contracts:
+
+[ERC20FilterMultipleEventCriteriaSnippet](examples/contracts/contract-event-filter.ts)
