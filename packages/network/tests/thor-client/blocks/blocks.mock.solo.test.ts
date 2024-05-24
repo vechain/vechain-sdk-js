@@ -1,6 +1,7 @@
 import { describe, expect, jest, test } from '@jest/globals';
 import { BlocksModule, HttpClient, ThorClient } from '../../../src';
 import { soloUrl } from '../../fixture';
+import { BlockGenesisNotFound } from '@vechain/sdk-errors';
 
 /**
  * Blocks module tests with mocks.
@@ -37,7 +38,7 @@ describe('ThorClient - Blocks Module mock tests', () => {
         jest.spyOn(
             BlocksModule.prototype,
             'getBlockCompressed'
-        ).mockResolvedValueOnce(null);
+        ).mockRejectedValue(BlockGenesisNotFound);
 
         await expect(
             thorSoloClient.blocks.getGenesisBlock()
