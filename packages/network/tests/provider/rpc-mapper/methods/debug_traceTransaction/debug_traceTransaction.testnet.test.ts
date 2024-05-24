@@ -39,7 +39,7 @@ describe('RPC Mapper - debug_traceTransaction method tests', () => {
                 ](fixture.input.params);
                 expect(result).toEqual(fixture.input.expected);
             }
-        }, 20000);
+        }, 30000);
     });
 
     /**
