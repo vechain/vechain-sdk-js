@@ -1048,45 +1048,45 @@
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
-"@vechain/sdk-core@1.0.0-beta.5":
-  version "1.0.0-beta.5"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.5.tgz#588d707cea22194203648cffc8d4a593d31d8af1"
-  integrity sha512-x7gZc46P2XC2w15hrEF5cwCmYLjrg5Vs/TdcCm/Z/36Do75oSJS5UyLdHaSCmIorwEzQrV+vtoDkuwCPrypC6w==
+"@vechain/sdk-core@1.0.0-beta.6":
+  version "1.0.0-beta.6"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.6.tgz#026ec059dde4dd28538f287db7fc9875d03353ef"
+  integrity sha512-oy306FPZ5vdnMqkqn4QismEicHyFleYubbH/DL8cqB0UTaLxSFddZQeYKEmdN+oF93J7BlkVXQFZt1e1XIFxag==
   dependencies:
     "@ethereumjs/rlp" "^5.0.2"
     "@scure/bip32" "^1.4.0"
     "@scure/bip39" "^1.3.0"
     "@types/elliptic" "^6.4.18"
-    "@vechain/sdk-errors" "1.0.0-beta.5"
-    "@vechain/sdk-logging" "1.0.0-beta.5"
+    "@vechain/sdk-errors" "1.0.0-beta.6"
+    "@vechain/sdk-logging" "1.0.0-beta.6"
     bignumber.js "^9.1.2"
     blakejs "^1.2.1"
     elliptic "^6.5.5"
     ethers "6.12.1"
     fast-json-stable-stringify "^2.1.0"
 
-"@vechain/sdk-errors@1.0.0-beta.5":
-  version "1.0.0-beta.5"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.5.tgz#9fe4505776c4118a174ca236762152eff3ac5b77"
-  integrity sha512-zQlspFfIkuBZMx7NraZa3lFnETHyNecCEfCnCSnxyGIEyl1oWezbUaAULKaEYv/AVFwMNf7Wt1EZ/dyN9J2F2Q==
+"@vechain/sdk-errors@1.0.0-beta.6":
+  version "1.0.0-beta.6"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.6.tgz#bde1a1abddaf2bb176b38566950923db41cb23f8"
+  integrity sha512-IOT52YeAH4JA8qIdyrQNTntMDhai8CczXkzICDWUVgTqNDziJf1iRBQnQDEv8ubH2WblQKdcfa597bVIEnjXLw==
 
-"@vechain/sdk-logging@1.0.0-beta.5", "@vechain/sdk-logging@^1.0.0-beta.5":
-  version "1.0.0-beta.5"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-beta.5.tgz#f9e607ee852eb0446f9b7a1c115058547ddd0017"
-  integrity sha512-ZVv13wjaXWGxjDmpZJZ6MKC5mBYKBWs6h8KlSi7OnupijwyQTnksYqm8pLGxE4c2Jkj1KuIgcVUCVFmOEYp8lQ==
+"@vechain/sdk-logging@1.0.0-beta.6":
+  version "1.0.0-beta.6"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-beta.6.tgz#358eba506fc38bb28da1580798de8c7552ff372f"
+  integrity sha512-57eF6tetAl7GMT8f6Lu0iGJMcoNbS/z/w+VUON4ssYhWjvgkUi/YfNJupc1kAArKEc5OglgL4fs9gak0ppD9/Q==
   dependencies:
-    "@vechain/sdk-errors" "1.0.0-beta.5"
+    "@vechain/sdk-errors" "1.0.0-beta.6"
 
-"@vechain/sdk-network@1.0.0-beta.5":
-  version "1.0.0-beta.5"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.5.tgz#365d782e0115787d1447bd20e9edcbf9c3d7ff63"
-  integrity sha512-4HnttA2Tpg69TrVUz5pS3m+NNAOyloDksPc8FCs3+p1W+XFsTGP5++lWtD0A7+I8U/nEZCVEdfJ9hdF4KMEQ3Q==
+"@vechain/sdk-network@1.0.0-beta.6":
+  version "1.0.0-beta.6"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.6.tgz#b5594eb30baedb4ff1ef6b5c6bdb51dc0e8ad6b1"
+  integrity sha512-zCkO32OVApuvobfqRsQSq0jmyGmZXzbRwVrSsVdh9OuoNHSVB477YnSowDfkcH6pF2bMnXDpEpzJ+TDBCFKQwg==
   dependencies:
     "@types/ws" "^8.5.10"
-    "@vechain/sdk-core" "1.0.0-beta.5"
-    "@vechain/sdk-errors" "1.0.0-beta.5"
-    "@vechain/sdk-logging" "^1.0.0-beta.5"
-    axios "^1.6.7"
+    "@vechain/sdk-core" "1.0.0-beta.6"
+    "@vechain/sdk-errors" "1.0.0-beta.6"
+    "@vechain/sdk-logging" "1.0.0-beta.6"
+    axios "^1.7.2"
 
 abab@^2.0.6:
   version "2.0.6"
@@ -1361,10 +1361,10 @@ axe-core@=4.7.0:
   resolved "https://registry.yarnpkg.com/axe-core/-/axe-core-4.7.0.tgz#34ba5a48a8b564f67e103f0aa5768d76e15bbbbf"
   integrity sha512-M0JtH+hlOL5pLQwHOLNYZaXuhqmvS8oExsqB1SBYgA4Dk7u/xx+YdGHXaK5pyUfed5mYXdlYiphWq3G8cRi5JQ==
 
-axios@^1.6.7:
-  version "1.6.8"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-1.6.8.tgz#66d294951f5d988a00e87a0ffb955316a619ea66"
-  integrity sha512-v/ZHtJDU39mDpyBoFVkETcd/uNdxrWRrg3bKpOKzXFA6Bvqopts6ALSMU3y6ijYxbw2B+wPrIv46egTzJXCLGQ==
+axios@^1.7.2:
+  version "1.7.2"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.2.tgz#b625db8a7051fbea61c35a3cbb3a1daa7b9c7621"
+  integrity sha512-2A8QhOMrbomlDuiLeK9XibIBzuHeRcqqNOHp0Cyp5EoJ1IFDh+XZH3A6BkXtv0K4gFGCI0Y4BM7B1wOEi0Rmgw==
   dependencies:
     follow-redirects "^1.15.6"
     form-data "^4.0.0"
@@ -4577,16 +4577,7 @@ string-length@^4.0.1:
     char-regex "^1.0.2"
     strip-ansi "^6.0.0"
 
-"string-width-cjs@npm:string-width@^4.2.0":
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
-  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
-  dependencies:
-    emoji-regex "^8.0.0"
-    is-fullwidth-code-point "^3.0.0"
-    strip-ansi "^6.0.1"
-
-string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
+"string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -4650,14 +4641,7 @@ string.prototype.trimstart@^1.0.8:
     define-properties "^1.2.1"
     es-object-atoms "^1.0.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
-  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
-  dependencies:
-    ansi-regex "^5.0.1"
-
-strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -5103,16 +5087,7 @@ word-wrap@^1.2.5:
   resolved "https://registry.yarnpkg.com/word-wrap/-/word-wrap-1.2.5.tgz#d2c45c6dd4fbce621a66f136cbe328afd0410b34"
   integrity sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
-  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
-  dependencies:
-    ansi-styles "^4.0.0"
-    string-width "^4.1.0"
-    strip-ansi "^6.0.0"
-
-wrap-ansi@^7.0.0:
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==

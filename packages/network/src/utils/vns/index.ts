@@ -2,9 +2,9 @@ import { NetworkContracts } from './addresses';
 import { type ThorClient } from '../../thor-client';
 import {
     addressUtils,
-    ZERO_ADDRESS,
-    type FunctionFragment
-} from '../../../../core';
+    type FunctionFragment,
+    ZERO_ADDRESS
+} from '@vechain/sdk-core';
 
 /**
  * Returns a single address or null for a name resolved at vet.domains
