@@ -355,6 +355,88 @@ const buildTransactionBodyClausesTestCases = [
                 reserved: { features: 1 }
             }
         }
+    },
+    {
+        description:
+            'Should not modify "to" part of clauses when no name is used',
+        clauses: [
+            {
+                to: '0x0000000000000000000000000000456E65726779',
+                value: '0',
+                data: '0x'
+            },
+            {
+                to: null,
+                value: '0',
+                data: '0x'
+            },
+            {
+                to: 'vtho.test-sdk.vet',
+                value: '0',
+                data: '0x'
+            }
+        ],
+        options: {
+            gasPriceCoef: 255,
+            expiration: 1000,
+            isDelegated: true,
+            dependsOn:
+                '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f' // Any valid tx id
+        },
+        expected: {
+            solo: {
+                chainTag: 246,
+                clauses: [
+                    {
+                        data: '0x',
+                        to: '0x0000000000000000000000000000456E65726779',
+                        value: '0'
+                    },
+                    {
+                        to: null,
+                        data: '0x',
+                        value: '0'
+                    },
+                    {
+                        data: '0x',
+                        to: '0x0000000000000000000000000000456E65726779',
+                        value: '0'
+                    }
+                ],
+                dependsOn:
+                    '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f',
+                expiration: 1000,
+                gas: 100046,
+                gasPriceCoef: 255,
+                reserved: { features: 1 }
+            },
+            testnet: {
+                chainTag: 39,
+                clauses: [
+                    {
+                        data: '0x',
+                        to: '0x0000000000000000000000000000456E65726779',
+                        value: '0'
+                    },
+                    {
+                        to: null,
+                        data: '0x',
+                        value: '0'
+                    },
+                    {
+                        data: '0x',
+                        to: '0x0000000000000000000000000000456E65726779',
+                        value: '0'
+                    }
+                ],
+                dependsOn:
+                    '0x9140e36f05000508465fd55d70947b99a78c84b3afa5e068b955e366b560935f',
+                expiration: 1000,
+                gas: 100046,
+                gasPriceCoef: 255,
+                reserved: { features: 1 }
+            }
+        }
     }
 ];
 
