@@ -103,7 +103,7 @@ Here is an example of how to delegate a contract call:
 
 ```typescript { name=contract-delegation-erc20, category=example }
 const thorSoloClient = ThorClient.fromUrl(_soloUrl);
-const provider = new VechainProvider(
+const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount], {
         delegator: {
@@ -114,7 +114,7 @@ const provider = new VechainProvider(
 );
 const signer = (await provider.getSigner(
     deployerAccount.address
-)) as VechainSigner;
+)) as VeChainSigner;
 
 // Defining a function for deploying the ERC20 contract
 const setupERC20Contract = async (): Promise<Contract> => {

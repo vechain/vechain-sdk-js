@@ -1,5 +1,5 @@
 import {
-    type AvailableVechainProviders,
+    type AvailableVeChainProviders,
     type TransactionRequestInput
 } from '../types';
 import {
@@ -18,13 +18,13 @@ import {
 import { RPC_METHODS } from '../../../provider';
 import { assert, JSONRPC, TRANSACTION } from '@vechain/sdk-errors';
 import { assertTransactionCanBeSigned } from '../../../assertions';
-import { VechainAbstractSigner } from '../vechain-abstract-signer';
+import { VeChainAbstractSigner } from '../vechain-abstract-signer';
 
 /**
  * Basic vechain signer with the private key.
  * This signer can be initialized using a private key.
  */
-class VechainPrivateKeySigner extends VechainAbstractSigner {
+class VeChainPrivateKeySigner extends VeChainAbstractSigner {
     /**
      * Create a new VechainPrivateKeySigner.
      * A signer can be initialized using a private key.
@@ -34,7 +34,7 @@ class VechainPrivateKeySigner extends VechainAbstractSigner {
      */
     constructor(
         private readonly privateKey: Buffer,
-        provider: AvailableVechainProviders | null
+        provider: AvailableVeChainProviders | null
     ) {
         // Call the parent constructor
         super(provider);
@@ -47,8 +47,8 @@ class VechainPrivateKeySigner extends VechainAbstractSigner {
      * @param provider - The provider to connect to
      * @returns a new instance of this Signer connected to //provider// or detached
      */
-    connect(provider: AvailableVechainProviders | null): this {
-        return new VechainPrivateKeySigner(this.privateKey, provider) as this;
+    connect(provider: AvailableVeChainProviders | null): this {
+        return new VeChainPrivateKeySigner(this.privateKey, provider) as this;
     }
 
     /**
@@ -75,7 +75,7 @@ class VechainPrivateKeySigner extends VechainAbstractSigner {
             DelegationHandler(
                 await this.provider?.wallet?.getDelegator()
             ).delegatorOrNull(),
-            (this.provider as AvailableVechainProviders).thorClient,
+            (this.provider as AvailableVeChainProviders).thorClient,
             this.privateKey
         );
     }
@@ -102,7 +102,7 @@ class VechainPrivateKeySigner extends VechainAbstractSigner {
             JSONRPC.INVALID_PARAMS,
             'Thor provider is not found into the signer. Please attach a Provider to your signer instance.'
         );
-        const provider = this.provider as AvailableVechainProviders;
+        const provider = this.provider as AvailableVeChainProviders;
 
         // 2 - Sign the transaction
         const signedTransaction = await this.signTransaction(transactionToSend);
@@ -225,4 +225,4 @@ class VechainPrivateKeySigner extends VechainAbstractSigner {
     }
 }
 
-export { VechainPrivateKeySigner };
+export { VeChainPrivateKeySigner };
