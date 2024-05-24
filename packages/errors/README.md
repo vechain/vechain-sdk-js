@@ -4,7 +4,7 @@ Welcome to the **errors package** of the VeChain SDK!
 
 ## Introduction
 
-The VeChain SDK Error package is specifically designed to handle custom errors seamlessly integrated into the Core and Network packages. It serves as a dedicated solution for managing and communicating errors within these essential components, ensuring a streamlined and robust development experience. By leveragingVeChain SDK Error, developers can enhance error handling and reporting, contributing to the overall reliability and resilience of the Core and Network functionalities within the VeChain SDK ecosystem.
+The VeChain SDK Error package is specifically designed to handle custom errors seamlessly integrated into the Core and Network packages. It serves as a dedicated solution for managing and communicating errors within these essential components, ensuring a streamlined and robust development experience. By leveraging VeChain SDK Error, developers can enhance error handling and reporting, contributing to the overall reliability and resilience of the Core and Network functionalities within the VeChain SDK ecosystem.
 
 ## Commands
 

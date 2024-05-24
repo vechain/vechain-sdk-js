@@ -2,7 +2,7 @@ import type { VeChainProvider } from '../../../../../providers';
 import { buildProviderError, JSONRPC } from '@vechain/sdk-errors';
 
 /**
- * Asynchronously unsubscribes from aVeChain event subscription.
+ * Asynchronously unsubscribes from a VeChain event subscription.
  * This function attempts to unsubscribe from either 'newHeads' or log subscriptions
  * based on the provided `subscriptionId`. If the provider is not available or the
  * `subscriptionId` does not match any active subscriptions, it may throw an error

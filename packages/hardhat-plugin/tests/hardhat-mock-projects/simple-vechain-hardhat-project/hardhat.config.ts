@@ -1,5 +1,5 @@
 /**
- * Simple hardhat configuration for testing with aVeChain network defined
+ * Simple hardhat configuration for testing with a VeChain network defined
  */
 
 // We load the plugin here.

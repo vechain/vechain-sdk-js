@@ -32,11 +32,11 @@ Example:
 
 ## HardHat Provider
 
-The Hardhat Provider is a wrapper around the coreVeChain Provider specifically designed for Hardhat integration. It simplifies the process of using the VeChain Provider within a Hardhat environment.
+The Hardhat Provider is a wrapper around the core VeChain Provider specifically designed for Hardhat integration. It simplifies the process of using the VeChain Provider within a Hardhat environment.
 
 ### Features
 
- - Wrapper around the coreVeChain Provider.
+ - Wrapper around the core VeChain Provider.
  - Simplified integration with Hardhat projects.
 
 ### Usage

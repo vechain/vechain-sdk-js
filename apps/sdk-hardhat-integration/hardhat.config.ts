@@ -8,7 +8,7 @@ import { type HttpNetworkConfig } from 'hardhat/types';
 /**
  * Main hardhat configuration
  *
- * Here we have customVeChain networks: 'vechain_mainnet', 'vechain_testnet' and 'vechain_solo'
+ * Here we have custom VeChain networks: 'vechain_mainnet', 'vechain_testnet' and 'vechain_solo'
  *
  * They have custom parameters:
  * - debug: whether to enable debug mode

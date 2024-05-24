@@ -181,7 +181,7 @@ const isInBloom = (filter: string, k: number, data: string): boolean => {
  * @remarks
  * This function first checks if `addressToCheck` adheres to the expected address format
  * and then verifies its possible existence in the set represented by the Bloom filter.
- * The address must be a validVeChain thor address, and the Bloom filter should adhere to
+ * The address must be a valid VeChain thor address, and the Bloom filter should adhere to
  * specified Bloom filter format constraints.
  *
  * @param {string} filter - The Bloom filter encoded as a hexadecimal string.
@@ -190,7 +190,7 @@ const isInBloom = (filter: string, k: number, data: string): boolean => {
  * [ERC-55  Mixed-case checksum address encoding ](https://eips.ethereum.org/EIPS/eip-55) supported.
  * @returns {boolean} - True if the address is possibly present in the Bloom Filter, false otherwise.
  *
- * @throws{InvalidAddressError} If `addressToCheck` is not a validVeChain Thor address.
+ * @throws{InvalidAddressError} If `addressToCheck` is not a valid VeChain Thor address.
  * @throws{InvalidBloomError} If `filter` is not in a valid Bloom filter format.
  * @throws{InvalidKError} If `k` is not a positive integer.
  */
@@ -203,7 +203,7 @@ const isAddressInBloom = (
         'bloomUtils.isAddressInBloom',
         addressUtils.isAddress(address),
         ADDRESS.INVALID_ADDRESS,
-        'Invalid address given as input in Bloom filter. Ensure it is a validVeChain thor address.',
+        'Invalid address given as input in Bloom filter. Ensure it is a valid VeChain thor address.',
         { addressToCheck: address }
     );
     return isInBloom(filter, k, address);

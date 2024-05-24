@@ -28,7 +28,7 @@ import { contractAdapter, factoryAdapter } from '@vechain/sdk-ethers-adapter';
 import { type FactoryOptions } from '@nomicfoundation/hardhat-ethers/src/types';
 
 /**
- * Extend the environment with provider to be able to useVeChain functions
+ * Extend the environment with provider to be able to use VeChain functions
  */
 extendEnvironment((hre) => {
     // 1 - Get parameters
@@ -56,10 +56,10 @@ extendEnvironment((hre) => {
             title: 'You are operating on a non-vechain network',
             messages: [
                 'Ensure your hardhat config file has a network that:',
-                '\t1. Is aVeChain valid network (set url and optionally delegator parameter)',
+                '\t1. Is a VeChain valid network (set url and optionally delegator parameter)',
                 '\t2. Has the name of the network containing "vechain" (e.g. "vechain_mainnet", "vechain_testnet", "vechain_solo", ...)',
                 '',
-                'This is required to use the VeChain provider and its functions. Note that this is only a warning and you can hardhat without aVeChain network.',
+                'This is required to use the VeChain provider and its functions. Note that this is only a warning and you can hardhat without a VeChain network.',
                 "BUT it's possible that some functionalities will not be available."
             ]
         });

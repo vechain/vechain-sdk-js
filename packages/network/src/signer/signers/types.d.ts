@@ -213,7 +213,7 @@ interface TransactionRequestInput {
 }
 
 /**
- * A signer for vechain, adding specific methods forVeChain to the ethers signer
+ * A signer for vechain, adding specific methods for VeChain to the ethers signer
  *
  * @NOTE: Su support completely our providers (that already support ethers provider format)
  * We use our supported providers instead of ethers providers

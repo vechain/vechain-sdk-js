@@ -1,15 +1,15 @@
 /**
- * Constant definingVeChain mainnet chain tag. The chain tag is the last byte of the genesis block ID
+ * Constant defining VeChain mainnet chain tag. The chain tag is the last byte of the genesis block ID
  */
 const VECHAIN_MAINNET_CHAIN_TAG = 0x4a;
 
 /**
- * Constant definingVeChain testnet chain tag. The chain tag is the last byte of the genesis block ID
+ * Constant defining VeChain testnet chain tag. The chain tag is the last byte of the genesis block ID
  */
 const VECHAIN_TESTNET_CHAIN_TAG = 0x27;
 
 /**
- * Constant definingVeChain testnet chain tag. The chain tag is the last byte of the genesis block ID
+ * Constant defining VeChain testnet chain tag. The chain tag is the last byte of the genesis block ID
  */
 const VECHAIN_SOLO_CHAIN_TAG = 0xf6;
 
@@ -29,7 +29,7 @@ const VTHO_ADDRESS = '0x0000000000000000000000000000456e65726779';
 const PARAMS_ADDRESS = '0x0000000000000000000000000000506172616d73';
 
 /**
- * Genesis block forVeChain mainnet
+ * Genesis block for VeChain mainnet
  */
 const mainnetGenesisBlock = {
     number: 0,
@@ -55,7 +55,7 @@ const mainnetGenesisBlock = {
 };
 
 /**
- * Genesis block forVeChain testnet
+ * Genesis block for VeChain testnet
  */
 const testnetGenesisBlock = {
     number: 0,
@@ -81,7 +81,7 @@ const testnetGenesisBlock = {
 };
 
 /**
- * Genesis block forVeChain solo network
+ * Genesis block for VeChain solo network
  */
 const soloGenesisBlock = {
     number: 0,
@@ -107,7 +107,7 @@ const soloGenesisBlock = {
 };
 
 /**
- * Constant definingVeChain mainnet information
+ * Constant defining VeChain mainnet information
  */
 const MAINNET_NETWORK = {
     genesisBlock: mainnetGenesisBlock,
@@ -115,7 +115,7 @@ const MAINNET_NETWORK = {
 };
 
 /**
- * Constant definingVeChain testnet information
+ * Constant defining VeChain testnet information
  */
 const TESTNET_NETWORK = {
     genesisBlock: testnetGenesisBlock,
@@ -123,7 +123,7 @@ const TESTNET_NETWORK = {
 };
 
 /**
- * Constant definingVeChain solo network information
+ * Constant defining VeChain solo network information
  */
 const SOLO_NETWORK = {
     genesisBlock: soloGenesisBlock,
@@ -131,7 +131,7 @@ const SOLO_NETWORK = {
 };
 
 /**
- * Constant definingVeChain mainnet and testnet network information
+ * Constant defining VeChain mainnet and testnet network information
  */
 const networkInfo = {
     mainnet: MAINNET_NETWORK,

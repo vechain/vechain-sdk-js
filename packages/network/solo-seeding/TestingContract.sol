@@ -5,7 +5,7 @@ pragma solidity 0.8.19;
 import "./builtin-contracts/builtin.sol";
 
 
-/// @title TestingContract forVeChain SDK Integration
+/// @title TestingContract for VeChain SDK Integration
 /// @notice This contract is designed for testing various data types, error handling, 
 /// and state management in Solidity, particularly for SDK integration.
 contract TestingContract {
