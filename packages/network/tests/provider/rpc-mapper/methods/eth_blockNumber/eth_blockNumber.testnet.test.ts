@@ -48,7 +48,7 @@ describe('RPC Mapper - eth_blockNumber method tests', () => {
             expect(rpcCallUpdatedLatestBlockNumber).toBe(
                 Quantity.of(Number(rpcCallLatestBlockNumber) + 1)
             );
-        }, 15000);
+        }, 20000);
     });
 
     /**
