@@ -65,14 +65,14 @@ describe('Bloom Filter', () => {
             const filter2 = gen2.generate(m, k);
             const filterUnion = filter1.compose(filter2);
             keys1.forEach((key) => {
-                expect(filterUnion.contains(textEncoder.encode(key))).toBe(
-                    true
-                );
+                expect(
+                    filterUnion.contains(textEncoder.encode(key))
+                ).toBeTruthy();
             });
             keys2.forEach((key) => {
-                expect(filterUnion.contains(textEncoder.encode(key))).toBe(
-                    true
-                );
+                expect(
+                    filterUnion.contains(textEncoder.encode(key))
+                ).toBeTruthy();
             });
         });
 
@@ -88,11 +88,9 @@ describe('Bloom Filter', () => {
             const filter1 = gen1.generate(m, k);
             const filter2 = gen2.generate(m, k);
             const filterUnion = filter1.compose(filter2);
-            keys1.forEach((key) => {
-                expect(filterUnion.contains(textEncoder.encode(key))).toBe(
-                    true
-                );
-            });
+            expect(
+                filterUnion.contains(textEncoder.encode('alien'))
+            ).toBeFalsy();
         });
     });
 
