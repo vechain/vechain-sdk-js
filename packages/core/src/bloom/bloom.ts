@@ -9,6 +9,7 @@
  * Reference: [Bloom Filter in VeChain Thor](https://github.com/vechain/thor/blob/master/thor/bloom/bloom.go).
  */
 import * as utils from '@noble/curves/abstract/utils';
+import { assert, BLOOM } from '@vechain/sdk-errors';
 import { blake2b256 } from '../hash';
 
 /**
@@ -125,6 +126,45 @@ class Filter {
     }
 
     /**
+     * Composes the current filter with another filter by performing a bitwise OR operation on the filter bits.
+     * Both filters must have been generated with the same number of hash functions, and they must have the same length.
+     *
+     * @param {Filter} other - The filter to compose with.
+     * @returns {Filter} - A new filter that is the result of the composition.
+     *
+     * @throws InvalidBloomError If the other filter has a different length.
+     * @throws InvalidKError if the other filter was generated with a different `k` number of hash functions.
+     */
+    public compose(other: Filter): Filter {
+        assert(
+            'Filter.compose',
+            this.bits.length === other.bits.length,
+            BLOOM.INVALID_BLOOM,
+            'Filters have different lengths',
+            {
+                this: this,
+                other
+            }
+        );
+        assert(
+            'Filter.compose',
+            this.k === other.k,
+            BLOOM.INVALID_K,
+            'Filters generated with different k number of hash functions',
+            {
+                this: this,
+                other
+            }
+        );
+        return new Filter(
+            new Uint8Array(
+                this.bits.map((bit, index) => bit | other.bits[index])
+            ),
+            this.k
+        );
+    }
+
+    /**
      * Checks if the Bloom filter may contain the specified key.
      * Note: false positives are possible, but false negatives are not.
      *
@@ -141,6 +181,19 @@ class Filter {
                 return (this.bits[index] & bit) === bit;
             }
         );
+    }
+
+    /**
+     * Checks if the current filter is composable with another filter.
+     * Two filters are composable if they have the same 'k' value expressing the number of hash function used for
+     * the generation of the filters, and the same number of bits.
+     *
+     * @param {Filter} other - The filter to compare with.
+     *
+     * @return {boolean} - True if the filters are composable, false otherwise.
+     */
+    public isComposableWith(other: Filter): boolean {
+        return this.k === other.k && this.bits.length === other.bits.length;
     }
 }
 
@@ -170,7 +223,7 @@ class Generator {
      * Generates a Bloom filter with the specified number of bits per key and number of hash functions.
      * The generator will be reset after generation.
      *
-     * @param {number} bitsPerKey - The desired number of bits per key in the Bloom filter.
+     * @param {number} bitsPerKey - The desired number of bits per key in the Bloom filter (`m` in math literature).
      * @param {number} k - The number of hash functions to use in the Bloom filter.
      * @returns {Filter} - The generated Bloom filter.
      */

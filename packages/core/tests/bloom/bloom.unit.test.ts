@@ -2,6 +2,7 @@ import * as utils from '@noble/curves/abstract/utils';
 import { describe, expect, test } from '@jest/globals';
 import { bloom, Hex } from '../../src';
 import { bloomKTestCases } from './fixture';
+import { InvalidBloomError, InvalidKError } from '../../../errors';
 
 /**
  * Bloom filter tests
@@ -12,6 +13,137 @@ import { bloomKTestCases } from './fixture';
  */
 describe('Bloom Filter', () => {
     const textEncoder = new TextEncoder();
+
+    describe('compose', () => {
+        const m = 20; // Bits per key.
+        const k = bloom.calculateK(m);
+        const keys1 = ['key1.1', 'key1.2', 'key1.3'];
+        const keys2 = ['key2.1', 'key2.2', 'key2.3'];
+
+        test('compose - invalid - different length', () => {
+            const gen1 = new bloom.Generator();
+            keys1.forEach((key) => {
+                gen1.add(textEncoder.encode(key));
+            });
+            const gen2 = new bloom.Generator();
+            keys2.forEach((key) => {
+                gen2.add(textEncoder.encode(key));
+            });
+            const filter1 = gen1.generate(m, k);
+            const filter2 = gen2.generate(m * m, k);
+            expect(() => {
+                filter1.compose(filter2);
+            }).toThrow(InvalidBloomError);
+        });
+
+        test('compose - invalid - different k', () => {
+            const gen1 = new bloom.Generator();
+            keys1.forEach((key) => {
+                gen1.add(textEncoder.encode(key));
+            });
+            const gen2 = new bloom.Generator();
+            keys2.forEach((key) => {
+                gen2.add(textEncoder.encode(key));
+            });
+            const filter1 = gen1.generate(m, k);
+            const filter2 = gen2.generate(m, k - 1);
+            expect(() => {
+                filter1.compose(filter2);
+            }).toThrow(InvalidKError);
+        });
+
+        test('compose - valid - possibly in set', () => {
+            const gen1 = new bloom.Generator();
+            keys1.forEach((key) => {
+                gen1.add(textEncoder.encode(key));
+            });
+            const gen2 = new bloom.Generator();
+            keys2.forEach((key) => {
+                gen2.add(textEncoder.encode(key));
+            });
+            const filter1 = gen1.generate(m, k);
+            const filter2 = gen2.generate(m, k);
+            const filterUnion = filter1.compose(filter2);
+            keys1.forEach((key) => {
+                expect(filterUnion.contains(textEncoder.encode(key))).toBe(
+                    true
+                );
+            });
+            keys2.forEach((key) => {
+                expect(filterUnion.contains(textEncoder.encode(key))).toBe(
+                    true
+                );
+            });
+        });
+
+        test('compose - valid - not in set', () => {
+            const gen1 = new bloom.Generator();
+            keys1.forEach((key) => {
+                gen1.add(textEncoder.encode(key));
+            });
+            const gen2 = new bloom.Generator();
+            keys2.forEach((key) => {
+                gen2.add(textEncoder.encode(key));
+            });
+            const filter1 = gen1.generate(m, k);
+            const filter2 = gen2.generate(m, k);
+            const filterUnion = filter1.compose(filter2);
+            keys1.forEach((key) => {
+                expect(filterUnion.contains(textEncoder.encode(key))).toBe(
+                    true
+                );
+            });
+        });
+    });
+
+    describe('isComposable', () => {
+        const m = 20; // Bits per key.
+        const k = bloom.calculateK(m);
+        const keys1 = ['key1.1', 'key1.2', 'key1.3'];
+        const keys2 = ['key2.1', 'key2.2', 'key2.3'];
+
+        test('isComposable - false - different length', () => {
+            const gen1 = new bloom.Generator();
+            keys1.forEach((key) => {
+                gen1.add(textEncoder.encode(key));
+            });
+            const gen2 = new bloom.Generator();
+            keys2.forEach((key) => {
+                gen2.add(textEncoder.encode(key));
+            });
+            const filter1 = gen1.generate(m, k);
+            const filter2 = gen2.generate(m * m, k);
+            expect(filter1.isComposableWith(filter2)).toBeFalsy();
+        });
+
+        test('isComposable - false - different k', () => {
+            const gen1 = new bloom.Generator();
+            keys1.forEach((key) => {
+                gen1.add(textEncoder.encode(key));
+            });
+            const gen2 = new bloom.Generator();
+            keys2.forEach((key) => {
+                gen2.add(textEncoder.encode(key));
+            });
+            const filter1 = gen1.generate(m, k);
+            const filter2 = gen2.generate(m, k - 1);
+            expect(filter1.isComposableWith(filter2)).toBeFalsy();
+        });
+
+        test('isComposable - true', () => {
+            const gen1 = new bloom.Generator();
+            keys1.forEach((key) => {
+                gen1.add(textEncoder.encode(key));
+            });
+            const gen2 = new bloom.Generator();
+            keys2.forEach((key) => {
+                gen2.add(textEncoder.encode(key));
+            });
+            const filter1 = gen1.generate(m, k);
+            const filter2 = gen2.generate(m, k);
+            expect(filter1.isComposableWith(filter2)).toBeTruthy();
+        });
+    });
 
     /**
      * Test estimate K function
