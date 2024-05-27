@@ -1,6 +1,6 @@
 pragma solidity 0.8.19;
 
-/// @title Params stores the governance params of Vechainthor.
+/// @title Params stores the governance params of VeChainThor.
 /// The params can be set by the executor, a contract that is authorized to modify governance params by a voting Committee.
 /// Anyone can get the params just by calling "get" funtion.
 /// The governance params is written in genesis block at launch time.

@@ -1,5 +1,5 @@
 /**
- * Simple hardhat configuration for testing with a vechain network defined
+ * Simple hardhat configuration for testing with a VeChain network defined
  */
 
 // We load the plugin here.
@@ -25,7 +25,7 @@ const vechainTestNetwork: HttpNetworkConfig = {
         path: VET_DERIVATION_PATH,
         count: 3,
         initialIndex: 0,
-        passphrase: 'vechainthor'
+        passphrase: 'VeChainThor'
     },
 
     // Custom parameters

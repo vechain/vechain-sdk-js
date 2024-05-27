@@ -1,5 +1,5 @@
 import {
-    HardhatVechainProvider,
+    HardhatVeChainProvider,
     ProviderInternalBaseWallet
 } from '@vechain/sdk-network';
 import { expect } from 'expect';
@@ -9,7 +9,7 @@ import { expect } from 'expect';
 const testnetUrl = 'https://testnet.vechain.org';
 
 // 1 - Init provider
-const provider = new HardhatVechainProvider(
+const provider = new HardhatVeChainProvider(
     new ProviderInternalBaseWallet([]),
     testnetUrl,
     (message: string, parent?: Error) => new Error(message, parent)

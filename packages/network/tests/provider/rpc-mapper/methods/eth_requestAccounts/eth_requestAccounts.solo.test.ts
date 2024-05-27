@@ -5,7 +5,7 @@ import {
     RPC_METHODS,
     RPCMethodsMap,
     ThorClient,
-    VechainProvider
+    VeChainProvider
 } from '../../../../../src';
 import { soloUrl, THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../../fixture';
 import { ProviderRpcError } from '@vechain/sdk-errors';
@@ -24,7 +24,7 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
     /**
      * Provider instance
      */
-    let provider: VechainProvider;
+    let provider: VeChainProvider;
 
     /**
      * Init thor client before each test
@@ -34,7 +34,7 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
         thorClient = ThorClient.fromUrl(soloUrl);
 
         // Init provider
-        provider = new VechainProvider(
+        provider = new VeChainProvider(
             thorClient,
             THOR_SOLO_ACCOUNTS_BASE_WALLET as ProviderInternalWallet
         );

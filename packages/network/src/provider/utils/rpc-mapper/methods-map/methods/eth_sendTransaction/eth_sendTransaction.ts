@@ -1,8 +1,8 @@
 import { type ThorClient } from '../../../../../../thor-client';
 import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
-import { type VechainProvider } from '../../../../../providers';
+import { type VeChainProvider } from '../../../../../providers';
 import { type TransactionObjectInput } from './types';
-import { type VechainSigner } from '../../../../../../signer';
+import { type VeChainSigner } from '../../../../../../signer';
 
 /**
  * RPC Method eth_sendTransaction implementation
@@ -35,7 +35,7 @@ import { type VechainSigner } from '../../../../../../signer';
 const ethSendTransaction = async (
     thorClient: ThorClient,
     params: unknown[],
-    provider?: VechainProvider
+    provider?: VeChainProvider
 ): Promise<string> => {
     // Input validation
     assert(
@@ -75,9 +75,9 @@ const ethSendTransaction = async (
 
     try {
         // Get the signer of the provider
-        const signer = (await (provider as VechainProvider).getSigner(
+        const signer = (await (provider as VeChainProvider).getSigner(
             transaction.from
-        )) as VechainSigner;
+        )) as VeChainSigner;
 
         // Return the result
         return await signer.sendTransaction(transaction);

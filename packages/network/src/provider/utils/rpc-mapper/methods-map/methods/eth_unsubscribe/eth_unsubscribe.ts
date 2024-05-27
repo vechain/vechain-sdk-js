@@ -1,8 +1,8 @@
-import type { VechainProvider } from '../../../../../providers';
+import type { VeChainProvider } from '../../../../../providers';
 import { buildProviderError, JSONRPC } from '@vechain/sdk-errors';
 
 /**
- * Asynchronously unsubscribes from a vechain event subscription.
+ * Asynchronously unsubscribes from a VeChain event subscription.
  * This function attempts to unsubscribe from either 'newHeads' or log subscriptions
  * based on the provided `subscriptionId`. If the provider is not available or the
  * `subscriptionId` does not match any active subscriptions, it may throw an error
@@ -11,7 +11,7 @@ import { buildProviderError, JSONRPC } from '@vechain/sdk-errors';
  * @param params - An array containing the subscription ID as its first element.
  * The subscription ID is used to identify and unsubscribe from the corresponding
  * Ethereum event subscription.
- * @param provider - An optional `VechainProvider` instance that contains the
+ * @param provider - An optional `VeChainProvider` instance that contains the
  * subscription manager. This manager holds the active subscriptions and is used
  * to unsubscribe from them. If the provider is not provided or is undefined,
  * the function throws an error indicating that the provider is not available.
@@ -25,7 +25,7 @@ import { buildProviderError, JSONRPC } from '@vechain/sdk-errors';
  */
 const ethUnsubscribe = async (
     params: unknown[],
-    provider?: VechainProvider
+    provider?: VeChainProvider
 ): Promise<boolean> => {
     let result: boolean = false;
 

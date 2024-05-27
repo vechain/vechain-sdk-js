@@ -37,7 +37,7 @@ const ethGetBalanceTestCases = [
     },
     {
         description: 'Should return error for block number not as hex string',
-        params: [ALL_ACCOUNTS[0].address, '1'], // VechainThor also supports block number as number instead of hex string
+        params: [ALL_ACCOUNTS[0].address, '1'], // VeChainThor also supports block number as number instead of hex string
         expected: '0x0' // Expected balance is 0
     }
 ];

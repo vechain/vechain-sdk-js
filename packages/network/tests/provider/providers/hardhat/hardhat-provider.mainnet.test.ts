@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { mainnetUrl } from '../../../fixture';
 import { providerMethodsTestCasesMainnet } from '../fixture';
 import {
-    HardhatVechainProvider,
+    HardhatVeChainProvider,
     ProviderInternalBaseWallet
 } from '../../../../src';
 
@@ -15,13 +15,13 @@ describe('Hardhat provider tests', () => {
     /**
      * Hardhat provider instances
      */
-    let provider: HardhatVechainProvider;
+    let provider: HardhatVeChainProvider;
 
     /**
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        provider = new HardhatVechainProvider(
+        provider = new HardhatVeChainProvider(
             new ProviderInternalBaseWallet([]),
             mainnetUrl,
             (message: string, parent?: Error) => new Error(message, parent)

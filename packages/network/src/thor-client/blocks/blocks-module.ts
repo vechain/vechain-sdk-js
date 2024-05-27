@@ -10,7 +10,7 @@ import { assertIsRevisionForBlock } from '@vechain/sdk-core';
 import { type ThorClient } from '../thor-client';
 
 /** The `BlocksModule` class encapsulates functionality for interacting with blocks
- * on the VechainThor blockchain.
+ * on the VeChainThor blockchain.
  */
 class BlocksModule {
     /**
@@ -32,7 +32,7 @@ class BlocksModule {
 
     /**
      * Initializes a new instance of the `Thor` class.
-     * @param thor - The Thor instance used to interact with the vechain blockchain API.
+     * @param thor - The Thor instance used to interact with the VeChain blockchain API.
      * @param options - (Optional) Other optional parameters for polling and error handling.
      */
     constructor(

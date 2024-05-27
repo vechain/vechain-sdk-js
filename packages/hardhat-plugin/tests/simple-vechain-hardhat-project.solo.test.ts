@@ -49,8 +49,8 @@ describe('Custom network configuration hardhat - testnet', () => {
             expect(
                 (hre.config.networks.vechain_testnet as HttpNetworkConfig).debug
             ).toBeDefined();
-            expect(hre.vechainProvider).toBeDefined();
-            expect(hre.vechainProvider?.send('eth_accounts', [])).toBeDefined();
+            expect(hre.VeChainProvider).toBeDefined();
+            expect(hre.VeChainProvider?.send('eth_accounts', [])).toBeDefined();
         });
     });
 
@@ -63,7 +63,7 @@ describe('Custom network configuration hardhat - testnet', () => {
          */
         test('Should throw an error when a send call goes wrong', async () => {
             await expect(
-                hre.vechainProvider?.send('WRONG_ENDPOINT', [])
+                hre.VeChainProvider?.send('WRONG_ENDPOINT', [])
             ).rejects.toThrowError(HardhatPluginError);
         });
     });

@@ -140,11 +140,11 @@ interface SimulateTransactionOptions {
     */
 
     /**
-     * The VechainThor blockchain allows for transaction-level proof of work (PoW) and converts the proved work into extra gas price that will be used by
+     * The VeChainThor blockchain allows for transaction-level proof of work (PoW) and converts the proved work into extra gas price that will be used by
      * the system to generate more reward to the block generator, the Authority Masternode, that validates the transaction.
      * In other words, users can utilize their local computational power to make their transactions more likely to be included in a new block.
      *
-     * @link [VechainThor Proof of Work](https://docs.vechain.org/core-concepts/transactions/transaction-calculation#proof-of-work)
+     * @link [VeChainThor Proof of Work](https://docs.vechain.org/core-concepts/transactions/transaction-calculation#proof-of-work)
      */
     provedWork?: string;
     /**
@@ -154,13 +154,13 @@ interface SimulateTransactionOptions {
     gasPayer?: string;
     /**
      * The expiration of the transaction simulation.
-     * Represents how long, in terms of the number of blocks, the transaction will be allowed to be mined in VechainThor
+     * Represents how long, in terms of the number of blocks, the transaction will be allowed to be mined in VeChainThor
      */
     expiration?: number;
     /**
      * BlockRef stores the reference to a particular block whose next block is the earliest block the current transaction can be included.
      *
-     * @link [VechainThor BlockRef](https://docs.vechain.org/core-concepts/transactions/meta-transaction-features/controllable-transaction-lifecycle)
+     * @link [VeChainThor BlockRef](https://docs.vechain.org/core-concepts/transactions/meta-transaction-features/controllable-transaction-lifecycle)
      */
     blockRef?: string;
 

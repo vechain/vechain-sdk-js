@@ -12,7 +12,7 @@ import {
     type SendTransactionResult,
     type TransactionReceipt
 } from '../../transactions';
-import { signerUtils, type VechainSigner } from '../../../signer';
+import { signerUtils, type VeChainSigner } from '../../../signer';
 
 /**
  * A factory class for deploying smart contracts to a blockchain using a ThorClient.
@@ -31,7 +31,7 @@ class ContractFactory {
     /**
      * The signer used for signing transactions.
      */
-    private readonly signer: VechainSigner;
+    private readonly signer: VeChainSigner;
 
     /**
      * An instance of ThorClient to interact with the blockchain.
@@ -53,7 +53,7 @@ class ContractFactory {
     constructor(
         abi: InterfaceAbi,
         bytecode: string,
-        signer: VechainSigner,
+        signer: VeChainSigner,
         thor: ThorClient
     ) {
         this.abi = abi;

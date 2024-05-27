@@ -1,6 +1,6 @@
 pragma solidity 0.8.19;
 
-// Prototype is an account management model of VechainThor.
+// Prototype is an account management model of VeChainThor.
 // In the account management model every contract has a master account, which, by default, is the creator of a contract.
 // The master account plays the role of a contract manager, which has some authorities including 
 // "setMaster", "setCreditPlan", "addUser", "removeUser" and "selectSponsor".

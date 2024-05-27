@@ -14,12 +14,12 @@ import { assert, DATA } from '@vechain/sdk-errors';
 import { addressUtils, Hex0x } from '@vechain/sdk-core';
 
 /** The `DebugModule` class encapsulates functionality to handle Debug
- * on the VechainThor blockchain.
+ * on the VeChainThor blockchain.
  */
 class DebugModule {
     /**
      * Initializes a new instance of the `Thor` class.
-     * @param thor - The Thor instance used to interact with the vechain blockchain API.
+     * @param thor - The Thor instance used to interact with the VeChain blockchain API.
      */
     constructor(readonly thor: ThorClient) {}
 

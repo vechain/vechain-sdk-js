@@ -8,16 +8,16 @@ import {
 } from '../helpers';
 import { coder, type FunctionFragment } from '@vechain/sdk-core';
 import {
-    HardhatVechainProvider,
+    HardhatVeChainProvider,
     ProviderInternalBaseWallet,
     type SubscriptionEvent,
     ThorClient,
-    type VechainProvider,
-    type VechainSigner
+    type VeChainProvider,
+    type VeChainSigner
 } from '../../../../src';
 
 /**
- * Vechain provider tests - Solo Network
+ *VeChain provider tests - Solo Network
  *
  * @group integration/providers/vechain-provider-solo
  */
@@ -26,14 +26,14 @@ describe('Hardhat provider tests', () => {
      * ThorClient and provider instances
      */
     let thorClient: ThorClient;
-    let provider: HardhatVechainProvider;
+    let provider: HardhatVeChainProvider;
 
     /**
      * Init thor client and provider before each test
      */
     beforeEach(() => {
         thorClient = ThorClient.fromUrl(soloUrl);
-        provider = new HardhatVechainProvider(
+        provider = new HardhatVeChainProvider(
             new ProviderInternalBaseWallet([
                 {
                     privateKey: Buffer.from(TEST_ACCOUNT.privateKey, 'hex'),
@@ -179,7 +179,7 @@ describe('Hardhat provider tests', () => {
     test('Should be able to get to subscribe to the latest logs of an erc20 contract', async () => {
         const contract = await deployERC20Contract(
             thorClient,
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VechainSigner
+            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner
         );
 
         const logsParams = {
@@ -193,11 +193,11 @@ describe('Hardhat provider tests', () => {
             params: ['logs', logsParams]
         });
         // Wait for the subscription to receive a message (log event)
-        const messageReceived = waitForMessage(provider as VechainProvider);
+        const messageReceived = waitForMessage(provider as VeChainProvider);
 
         // Execute a contract transaction to generate a log event
         await thorClient.contracts.executeTransaction(
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VechainSigner,
+            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,
             contract.address,
             coder
                 .createInterface(contract.abi)
@@ -259,11 +259,11 @@ describe('Hardhat provider tests', () => {
         // Test setup: Deploy contracts and set up event subscriptions
         const erc20Contract = await deployERC20Contract(
             thorClient,
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VechainSigner
+            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner
         );
         const erc721Contract = await deployERC721Contract(
             thorClient,
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VechainSigner
+            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner
         );
 
         const erc20logsParams = {
@@ -300,7 +300,7 @@ describe('Hardhat provider tests', () => {
 
         // Execute transactions that should emit events
         await thorClient.contracts.executeTransaction(
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VechainSigner,
+            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,
             erc20Contract.address,
             coder
                 .createInterface(erc20Contract.abi)
@@ -309,7 +309,7 @@ describe('Hardhat provider tests', () => {
         );
 
         await thorClient.contracts.executeTransaction(
-            (await provider.getSigner(TEST_ACCOUNT.address)) as VechainSigner,
+            (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,
             erc721Contract.address,
             coder
                 .createInterface(erc721Contract.abi)

@@ -5,11 +5,11 @@ import { type HardhatRuntimeEnvironment } from 'hardhat/types';
 import { setHardhatContext } from './test-utils';
 
 /**
- * Simple hardhat project without vechain network configuration defined
+ * Simple hardhat project withoutVeChain network configuration defined
  *
  * @group unit/no-vechain-network-defined-project
  */
-describe('Custom network configuration hardhat without vechain network defined', () => {
+describe('Custom network configuration hardhat withoutVeChain network defined', () => {
     /**
      * Init hardhat runtime environment
      */

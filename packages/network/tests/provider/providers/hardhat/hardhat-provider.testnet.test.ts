@@ -3,13 +3,13 @@ import { testnetUrl } from '../../../fixture';
 import { providerMethodsTestCasesTestnet } from '../fixture';
 import { waitForMessage } from '../helpers';
 import {
-    HardhatVechainProvider,
+    HardhatVeChainProvider,
     ProviderInternalBaseWallet,
-    type VechainProvider
+    type VeChainProvider
 } from '../../../../src';
 
 /**
- * Vechain provider tests
+ *VeChain provider tests
  *
  * @group integration/providers/vechain-provider-testnet
  */
@@ -17,14 +17,14 @@ describe('Hardhat provider tests - testnet', () => {
     /**
      * Hardhat provider instances
      */
-    let provider: HardhatVechainProvider;
+    let provider: HardhatVeChainProvider;
 
     /**
      * Init thor client and provider before each test
      */
     beforeEach(() => {
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        provider = new HardhatVechainProvider(
+        provider = new HardhatVeChainProvider(
             new ProviderInternalBaseWallet([]),
             testnetUrl,
             (message: string, parent?: Error) => new Error(message, parent)
@@ -80,7 +80,7 @@ describe('Hardhat provider tests - testnet', () => {
             params: ['newHeads']
         });
 
-        const messageReceived = waitForMessage(provider as VechainProvider);
+        const messageReceived = waitForMessage(provider as VeChainProvider);
 
         const message = await messageReceived;
 
