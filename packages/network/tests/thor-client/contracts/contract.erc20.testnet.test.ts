@@ -3,8 +3,8 @@ import {
     type Contract,
     ProviderInternalBaseWallet,
     ThorClient,
-    VechainProvider,
-    type VechainSigner
+    VeChainProvider,
+    type VeChainSigner
 } from '../../../src';
 import { TEST_ACCOUNTS, testnetUrl } from '../../fixture';
 import {
@@ -23,12 +23,12 @@ import {
 describe('ThorClient - ERC20 Contracts on testnet', () => {
     // ThorClient instance
     let thorTestnetClient: ThorClient;
-    let providerWithDelegationEnabled: VechainProvider;
+    let providerWithDelegationEnabled: VeChainProvider;
 
     beforeEach(() => {
         thorTestnetClient = ThorClient.fromUrl(testnetUrl);
         // Create the provider (used in this case to sign the transaction with getSigner() method)
-        providerWithDelegationEnabled = new VechainProvider(
+        providerWithDelegationEnabled = new VeChainProvider(
             // Thor client used by the provider
             thorTestnetClient,
 
@@ -66,7 +66,7 @@ describe('ThorClient - ERC20 Contracts on testnet', () => {
             deployedERC20Abi,
             (await providerWithDelegationEnabled.getSigner(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-            )) as VechainSigner
+            )) as VeChainSigner
         );
 
         const txResult = await (

@@ -5,8 +5,8 @@ import {
     type ProviderInternalWalletAccount,
     ThorClient,
     type TransactionReceipt,
-    VechainProvider,
-    type VechainSigner
+   VeChainProvider,
+    type VeChainSigner
 } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
@@ -36,7 +36,7 @@ const _soloUrl = 'http://localhost:8669/';
 // START_SNIPPET: ERC20FunctionCallDelegatedSnippet
 
 const thorSoloClient = ThorClient.fromUrl(_soloUrl);
-const provider = new VechainProvider(
+const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount], {
         delegator: {
@@ -47,7 +47,7 @@ const provider = new VechainProvider(
 );
 const signer = (await provider.getSigner(
     deployerAccount.address
-)) as VechainSigner;
+)) as VeChainSigner;
 
 // Defining a function for deploying the ERC20 contract
 const setupERC20Contract = async (): Promise<Contract> => {

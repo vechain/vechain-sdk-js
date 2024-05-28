@@ -6,7 +6,7 @@
  * that is used to test whether an element is a member of a set.
  * False positive matches are possible, but false negatives are not.
  *
- * Reference: [Bloom Filter in Vechain Thor](https://github.com/vechain/thor/blob/master/thor/bloom/bloom.go).
+ * Reference: [Bloom Filter in VeChain Thor](https://github.com/vechain/thor/blob/master/thor/bloom/bloom.go).
  */
 import * as utils from '@noble/curves/abstract/utils';
 import { blake2b256 } from '../hash';

@@ -31,9 +31,9 @@ import {
     type ContractFactory,
     ThorClient,
     type TransactionReceipt,
-    VechainPrivateKeySigner,
-    VechainProvider,
-    type VechainSigner
+    VeChainPrivateKeySigner,
+    VeChainProvider,
+    type VeChainSigner
 } from '../../../src';
 import {
     ContractDeploymentFailedError,
@@ -53,27 +53,27 @@ describe('ThorClient - Contracts', () => {
     let thorSoloClient: ThorClient;
 
     // Signer instance
-    let signer: VechainSigner;
+    let signer: VeChainSigner;
 
     // Signer instance
-    let receiverSigner: VechainSigner;
+    let receiverSigner: VeChainSigner;
 
     beforeEach(() => {
         thorSoloClient = ThorClient.fromUrl(soloUrl);
-        signer = new VechainPrivateKeySigner(
+        signer = new VeChainPrivateKeySigner(
             Buffer.from(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
                 'hex'
             ),
-            new VechainProvider(thorSoloClient)
+            new VeChainProvider(thorSoloClient)
         );
 
-        receiverSigner = new VechainPrivateKeySigner(
+        receiverSigner = new VeChainPrivateKeySigner(
             Buffer.from(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.privateKey,
                 'hex'
             ),
-            new VechainProvider(thorSoloClient)
+            new VeChainProvider(thorSoloClient)
         );
     });
 
@@ -295,9 +295,9 @@ describe('ThorClient - Contracts', () => {
 
         // Set signer with invalid private key
         contract.setSigner(
-            new VechainPrivateKeySigner(
+            new VeChainPrivateKeySigner(
                 Buffer.from('', 'hex'),
-                new VechainProvider(thorSoloClient)
+                new VeChainProvider(thorSoloClient)
             )
         );
 
@@ -335,7 +335,7 @@ describe('ThorClient - Contracts', () => {
         expect(callFunctionGetResult).toEqual([BigInt(100)]);
 
         // Set the private key of the caller for signing transactions
-        loadedContract.setSigner(contract.getSigner() as VechainSigner);
+        loadedContract.setSigner(contract.getSigner() as VeChainSigner);
 
         // Call the set function of the loaded contract to set the value to 123
         const callFunctionSetResponse = await loadedContract.transact.set(123);
@@ -554,9 +554,9 @@ describe('ThorClient - Contracts', () => {
                         thorSoloClient.contracts.createContractFactory(
                             contractAbi,
                             contractBytecode,
-                            new VechainPrivateKeySigner(
+                            new VeChainPrivateKeySigner(
                                 Buffer.from(contractCaller, 'hex'),
-                                new VechainProvider(thorSoloClient)
+                                new VeChainProvider(thorSoloClient)
                             )
                         );
 
@@ -610,13 +610,13 @@ describe('ThorClient - Contracts', () => {
                             return thorSoloClient.contracts.createContractFactory(
                                 contract.contractAbi,
                                 contract.contractBytecode,
-                                new VechainPrivateKeySigner(
+                                new VeChainPrivateKeySigner(
                                     Buffer.from(
                                         TEST_ACCOUNTS.TRANSACTION
                                             .CONTRACT_MANAGER.privateKey,
                                         'hex'
                                     ),
-                                    new VechainProvider(thorSoloClient)
+                                    new VeChainProvider(thorSoloClient)
                                 )
                             );
                         });
@@ -655,13 +655,13 @@ describe('ThorClient - Contracts', () => {
                     const transactionResult =
                         await thorSoloClient.contracts.executeMultipleClausesTransaction(
                             contractClauses,
-                            new VechainPrivateKeySigner(
+                            new VeChainPrivateKeySigner(
                                 Buffer.from(
                                     TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
                                         .privateKey,
                                     'hex'
                                 ),
-                                new VechainProvider(thorSoloClient)
+                                new VeChainProvider(thorSoloClient)
                             )
                         );
 

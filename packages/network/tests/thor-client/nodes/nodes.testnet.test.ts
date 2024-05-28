@@ -23,7 +23,7 @@ describe('ThorClient - Nodes Module', () => {
         expect(Array.isArray(peerNodes)).toBe(true);
     }, 3000);
 
-    test('valid URL but inaccessible vechain node', async () => {
+    test('valid URL but inaccessible VeChain node', async () => {
         /**
          *  client required to access a node
          *  @internal

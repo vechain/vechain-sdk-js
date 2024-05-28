@@ -8,10 +8,10 @@ import {
 } from '@jest/globals';
 
 import { testnetUrl } from '../../../fixture';
-import { ThorClient, VechainProvider, vnsUtils } from '../../../../src';
+import { ThorClient, VeChainProvider, vnsUtils } from '../../../../src';
 
 /**
- * Vechain provider tests
+ *VeChain provider tests
  *
  * @group integration/providers/vechain-provider
  */
@@ -20,14 +20,14 @@ describe('Vechain provider tests', () => {
      * ThorClient and provider instances
      */
     let thorClient: ThorClient;
-    let provider: VechainProvider;
+    let provider: VeChainProvider;
 
     /**
      * Init thor client and provider before each test
      */
     beforeEach(() => {
         thorClient = ThorClient.fromUrl(testnetUrl);
-        provider = new VechainProvider(thorClient);
+        provider = new VeChainProvider(thorClient);
     });
 
     /**

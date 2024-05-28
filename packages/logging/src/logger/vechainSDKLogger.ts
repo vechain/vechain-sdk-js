@@ -6,7 +6,7 @@ import { _logWarningFunction } from './warning-logger';
 /**
  * Logger function that returns a log function based on the logger type.
  */
-const VechainSDKLogger = <TLoggerType extends LoggerType>(
+const VeChainSDKLogger = <TLoggerType extends LoggerType>(
     loggerType: TLoggerType
 ): LogFunctionType<typeof loggerType> => {
     if (loggerType === 'error')
@@ -18,4 +18,4 @@ const VechainSDKLogger = <TLoggerType extends LoggerType>(
     return _logLogFunction as LogFunctionType<typeof loggerType>;
 };
 
-export { VechainSDKLogger };
+export { VeChainSDKLogger };

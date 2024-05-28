@@ -1,5 +1,5 @@
 /**
- * The supported units of Ether currency which are supported by VechainThor too.
+ * The supported units of Ether currency which are supported by VeChainThor too.
  *
  * wei - The smallest unit of currency. 1 wei is equal to 10^-18 VET.
  * kewi - 1 kewi is equal to 10^3 wei.

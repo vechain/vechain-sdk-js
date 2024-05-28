@@ -1,7 +1,7 @@
-import { VechainProvider } from '../vechain-provider';
+import { VeChainProvider } from '../vechain-provider';
 import type { EIP1193RequestArguments } from '../../eip1193';
 import { getJSONRPCErrorCode, JSONRPC } from '@vechain/sdk-errors';
-import { VechainSDKLogger } from '@vechain/sdk-logging';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 import {
     type BuildHardhatErrorFunction,
     type JsonRpcRequest,
@@ -12,11 +12,11 @@ import { ThorClient } from '../../../thor-client';
 import { type ProviderInternalWallet } from '../../helpers';
 
 /**
- * This class is a wrapper for the VechainProvider that Hardhat uses.
+ * This class is a wrapper for the VeChainProvider that Hardhat uses.
  *
- * It exposes the interface that Hardhat expects, and uses the VechainProvider as wrapped provider.
+ * It exposes the interface that Hardhat expects, and uses the VeChainProvider as wrapped provider.
  */
-class HardhatVechainProvider extends VechainProvider {
+class HardhatVeChainProvider extends VeChainProvider {
     /**
      * Debug mode.
      */
@@ -108,7 +108,7 @@ class HardhatVechainProvider extends VechainProvider {
     }
 
     /**
-     * It sends the request through the VechainProvider.
+     * It sends the request through the VeChainProvider.
      *
      * @param args - The request arguments.
      */
@@ -123,7 +123,7 @@ class HardhatVechainProvider extends VechainProvider {
                     this.wallet as ProviderInternalWallet
                 ).getDelegator();
 
-                VechainSDKLogger('log').log({
+                VeChainSDKLogger('log').log({
                     title: `Sending request - ${args.method}`,
                     messages: [
                         `params: ${JSON.stringify(args.params)}`,
@@ -142,7 +142,7 @@ class HardhatVechainProvider extends VechainProvider {
 
             // Debug mode - get the result
             if (this.debug) {
-                VechainSDKLogger('log').log({
+                VeChainSDKLogger('log').log({
                     title: `Get request - ${args.method} result`,
                     messages: [`result: ${JSON.stringify(result)}`]
                 });
@@ -152,7 +152,7 @@ class HardhatVechainProvider extends VechainProvider {
         } catch (e) {
             // Debug the error
             if (this.debug) {
-                VechainSDKLogger('error').log({
+                VeChainSDKLogger('error').log({
                     errorCode: JSONRPC.INTERNAL_ERROR,
                     errorMessage: `Error on request - ${args.method}`,
                     errorData: {
@@ -172,4 +172,4 @@ class HardhatVechainProvider extends VechainProvider {
     }
 }
 
-export { HardhatVechainProvider };
+export { HardhatVeChainProvider };

@@ -83,7 +83,7 @@ import {
 } from '../formatter';
 import { ethRequestAccounts } from './methods-map/methods/eth_requestAccounts';
 import { type LogsRPC } from '../formatter/logs';
-import { type VechainProvider } from '../../providers';
+import { type VeChainProvider } from '../../providers';
 import { type TracerReturnTypeRPC } from '../formatter/debug';
 import { type ThorClient } from '../../../thor-client';
 
@@ -100,7 +100,7 @@ import { type ThorClient } from '../../../thor-client';
  */
 const RPCMethodsMap = (
     thorClient: ThorClient,
-    provider?: VechainProvider
+    provider?: VeChainProvider
 ): Record<string, MethodHandlerType<unknown, unknown>> => {
     /**
      * Returns a map of RPC methods to their implementations with our SDK.

@@ -1,5 +1,5 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { VechainSDKLogger } from '../src';
+import { VeChainSDKLogger } from '../src';
 
 /**
  * Log logger tests
@@ -11,9 +11,9 @@ describe('Log logger tests', () => {
      * Should be able to log a generic log
      */
     test('Should be able to log a log', () => {
-        const logSpy = jest.spyOn(VechainSDKLogger('log'), 'log');
+        const logSpy = jest.spyOn(VeChainSDKLogger('log'), 'log');
 
-        VechainSDKLogger('log').log({
+        VeChainSDKLogger('log').log({
             title: 'Title of the log message ...',
             messages: ['Message to log 1...', 'Message to log 2...']
         });

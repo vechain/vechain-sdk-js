@@ -11,7 +11,7 @@ import {
     RPC_METHODS,
     RPCMethodsMap,
     ThorClient,
-    VechainProvider
+    VeChainProvider
 } from '../../../../../src';
 import { ProviderRpcError } from '@vechain/sdk-errors';
 
@@ -25,14 +25,14 @@ describe('RPC Mapper - eth_subscribe method tests', () => {
      * ThorClient and provider instances
      */
     let thorClient: ThorClient;
-    let provider: VechainProvider;
+    let provider: VeChainProvider;
 
     /**
      * Init thor client and provider before each test
      */
     beforeEach(() => {
         thorClient = ThorClient.fromUrl(testnetUrl);
-        provider = new VechainProvider(thorClient);
+        provider = new VeChainProvider(thorClient);
     });
 
     /**

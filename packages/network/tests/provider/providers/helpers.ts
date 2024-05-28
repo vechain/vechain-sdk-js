@@ -5,12 +5,12 @@ import {
     type Contract,
     type SubscriptionEvent,
     type ThorClient,
-    type VechainProvider,
-    type VechainSigner
+    type VeChainProvider,
+    type VeChainSigner
 } from '../../../src';
 
 export async function waitForMessage(
-    provider: VechainProvider
+    provider: VeChainProvider
 ): Promise<SubscriptionEvent> {
     return await new Promise((resolve) => {
         provider.on('message', (message) => {
@@ -22,7 +22,7 @@ export async function waitForMessage(
 
 export async function deployERC20Contract(
     thorClient: ThorClient,
-    signer: VechainSigner
+    signer: VeChainSigner
 ): Promise<Contract> {
     const factory = thorClient.contracts.createContractFactory(
         ERC20_ABI,
@@ -37,7 +37,7 @@ export async function deployERC20Contract(
 
 export async function deployERC721Contract(
     thorClient: ThorClient,
-    signer: VechainSigner
+    signer: VeChainSigner
 ): Promise<Contract> {
     const factory = thorClient.contracts.createContractFactory(
         ERC721_ABI,

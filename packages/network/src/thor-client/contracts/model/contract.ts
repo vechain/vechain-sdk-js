@@ -22,7 +22,7 @@ import {
     getReadProxy,
     getTransactProxy
 } from './contract-proxy';
-import { type VechainSigner } from '../../../signer';
+import { type VeChainSigner } from '../../../signer';
 
 /**
  * A class representing a smart contract deployed on the blockchain.
@@ -31,7 +31,7 @@ class Contract {
     readonly thor: ThorClient;
     readonly address: string;
     readonly abi: InterfaceAbi;
-    private signer?: VechainSigner;
+    private signer?: VeChainSigner;
 
     readonly deployTransactionReceipt: TransactionReceipt | undefined;
 
@@ -56,7 +56,7 @@ class Contract {
         address: string,
         abi: InterfaceAbi,
         thor: ThorClient,
-        signer?: VechainSigner,
+        signer?: VeChainSigner,
         transactionReceipt?: TransactionReceipt
     ) {
         this.abi = abi;
@@ -137,7 +137,7 @@ class Contract {
      * Sets the private key of the caller for signing transactions.
      * @param signer - The caller signer
      */
-    public setSigner(signer: VechainSigner): VechainSigner {
+    public setSigner(signer: VeChainSigner): VeChainSigner {
         this.signer = signer;
 
         // initialize the proxy with the new signer
@@ -150,7 +150,7 @@ class Contract {
      * Get the caller signer used for signing transactions.
      * @returns The signer used for signing transactions.
      */
-    public getSigner(): VechainSigner | undefined {
+    public getSigner(): VeChainSigner | undefined {
         return this.signer;
     }
 

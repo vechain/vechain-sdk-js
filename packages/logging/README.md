@@ -1,13 +1,13 @@
 # @vechain/sdk-logging
 
-Welcome to the **logging package** of the vechain SDK!
+Welcome to the **logging package** of the VeChain SDK!
 
 ## Introduction
-Logging package provides a simple and easy-to-use logging system for the vechain SDK.
+Logging package provides a simple and easy-to-use logging system for the VeChain SDK.
 
 ## Key Features
 
-The vechain SDK Logging package provides features for logging, including:
+The VeChain SDK Logging package provides features for logging, including:
 * `Error` logging
 * `Info` logging
 * `Warning` logging
@@ -28,4 +28,4 @@ Explore examples of how to use this package in real-world scenarios at [vechain 
 
 Feel free to leverage these resources and don't hesitate to reach out if you have any questions or need further assistance.
 
-Happy coding with the vechain SDK!
+Happy coding with the VeChain SDK!

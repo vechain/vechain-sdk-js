@@ -1,5 +1,5 @@
 import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
-import { type HardhatVechainProvider } from '../hardhat-provider';
+import { type HardhatVeChainProvider } from '../hardhat-provider';
 import {
     type JsonRpcError,
     type JsonRpcPayload,
@@ -19,7 +19,7 @@ class JSONRPCEthersProvider extends vechain_sdk_core_ethers.JsonRpcApiProvider {
     /**
      * Instance of Hardhat vechian proider to wrap
      */
-    hardhatProvider: HardhatVechainProvider;
+    hardhatProvider: HardhatVeChainProvider;
 
     /**
      * Constructor with parameters.
@@ -31,7 +31,7 @@ class JSONRPCEthersProvider extends vechain_sdk_core_ethers.JsonRpcApiProvider {
     constructor(
         chainId: number,
         networkName: string,
-        hardhatProvider: HardhatVechainProvider
+        hardhatProvider: HardhatVeChainProvider
     ) {
         super({ name: networkName, chainId });
         this.hardhatProvider = hardhatProvider;

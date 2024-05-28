@@ -39,7 +39,7 @@ const ethGetTransactionByHash = async (
     try {
         const [hash] = params as [string];
 
-        // Get the VechainThor transaction
+        // Get the VeChainThor transaction
         const tx = (await thorClient.transactions.getTransaction(
             hash
         )) as TransactionDetailNoRaw | null;

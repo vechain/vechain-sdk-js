@@ -21,7 +21,7 @@ import {
 import { type ThorClient } from '../thor-client';
 import { Contract, ContractFactory } from './model';
 import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
-import { type VechainSigner } from '../../signer';
+import { type VeChainSigner } from '../../signer';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -29,7 +29,7 @@ import { type VechainSigner } from '../../signer';
 class ContractsModule {
     /**
      * Initializes a new instance of the `Thor` class.
-     * @param thor - The Thor instance used to interact with the vechain blockchain API.
+     * @param thor - The Thor instance used to interact with the VeChain blockchain API.
      */
     constructor(readonly thor: ThorClient) {}
 
@@ -45,7 +45,7 @@ class ContractsModule {
     public createContractFactory(
         abi: InterfaceAbi,
         bytecode: string,
-        signer: VechainSigner
+        signer: VeChainSigner
     ): ContractFactory {
         return new ContractFactory(abi, bytecode, signer, this.thor);
     }
@@ -61,7 +61,7 @@ class ContractsModule {
     public load(
         address: string,
         abi: InterfaceAbi,
-        signer?: VechainSigner
+        signer?: VeChainSigner
     ): Contract {
         return new Contract(address, abi, this.thor, signer);
     }
@@ -147,7 +147,7 @@ class ContractsModule {
      * @returns A promise resolving to a SendTransactionResult object.
      */
     public async executeTransaction(
-        signer: VechainSigner,
+        signer: VeChainSigner,
         contractAddress: string,
         functionFragment: FunctionFragment,
         functionData: unknown[],
@@ -180,7 +180,7 @@ class ContractsModule {
      */
     public async executeMultipleClausesTransaction(
         clauses: ContractClause[],
-        signer: VechainSigner
+        signer: VeChainSigner
     ): Promise<SendTransactionResult> {
         const id = await signer.sendTransaction({
             clauses: clauses.map((clause) => clause.clause)

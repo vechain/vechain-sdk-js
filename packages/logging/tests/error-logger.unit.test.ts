@@ -1,6 +1,6 @@
 import { describe, expect, jest, test } from '@jest/globals';
 import { DATA } from '@vechain/sdk-errors';
-import { VechainSDKLogger } from '../src';
+import { VeChainSDKLogger } from '../src';
 
 /**
  * Error logger tests
@@ -12,9 +12,9 @@ describe('Error logger tests', () => {
      * Should be able to log an error
      */
     test('Should be able to log an error', () => {
-        const logSpy = jest.spyOn(VechainSDKLogger('error'), 'log');
+        const logSpy = jest.spyOn(VeChainSDKLogger('error'), 'log');
 
-        VechainSDKLogger('error').log({
+        VeChainSDKLogger('error').log({
             errorCode: DATA.INVALID_DATA_TYPE,
             errorMessage: 'Message we want to use for invalid data type ...',
             errorData: {
