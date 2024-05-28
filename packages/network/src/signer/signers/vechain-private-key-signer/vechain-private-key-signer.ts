@@ -129,7 +129,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         thorClient: ThorClient,
         privateKey: Buffer
     ): Promise<string> {
-        // // 1 - Populate the call, to get proper from and to address (compatible with multi-clause transactions)
+        // 1 - Populate the call, to get proper from and to address (compatible with multi-clause transactions)
         const populatedTransaction =
             await this.populateTransaction(transaction);
 
