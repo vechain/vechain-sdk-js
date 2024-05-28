@@ -101,7 +101,7 @@ For instance, once an ERC20 token contract is deployed, we can filter the Transf
 
 ```typescript { name=contract-event-filter, category=example }
 // Starting from a deployed contract instance, transfer some tokens to a specific address
-const transferResult = await contract.transact.transfer(
+const transferResult = await contractErc20.transact.transfer(
     '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
     10000
 );
@@ -114,7 +114,7 @@ const transactionReceiptTransfer =
 expect(transactionReceiptTransfer.reverted).toEqual(false);
 
 // Check transfer event logs by also passing the destination address
-const transferEvents = await contract.filters
+const transferEvents = await contractErc20.filters
     .Transfer(undefined, '0x9e7911de289c3c856ce7f421034f66b6cde49c39')
     .get();
 
