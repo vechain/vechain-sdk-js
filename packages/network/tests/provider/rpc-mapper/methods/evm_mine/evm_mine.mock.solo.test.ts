@@ -65,7 +65,7 @@ describe('RPC Mapper - evm_mine method tests', () => {
             jest.spyOn(
                 thorClient.blocks,
                 'getBestBlockExpanded'
-            ).mockRejectedValue(new Error());
+            ).mockResolvedValue(null);
 
             const newBlock = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.evm_mine

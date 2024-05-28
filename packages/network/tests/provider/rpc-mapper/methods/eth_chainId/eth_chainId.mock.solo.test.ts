@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { ProviderRpcError } from '@vechain/sdk-errors';
+import { BlockGenesisNotFound, ProviderRpcError } from '@vechain/sdk-errors';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
 import { soloUrl } from '../../../../fixture';
 
@@ -46,7 +46,7 @@ describe('RPC Mapper - eth_chainId method tests mock on solo', () => {
         test('Should return `0x0` if the genesis block is not defined', async () => {
             // Mock the getGenesisBlock method to return null
             jest.spyOn(thorClient.blocks, 'getGenesisBlock').mockRejectedValue(
-                new Error()
+                BlockGenesisNotFound
             );
 
             await expect(

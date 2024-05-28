@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { ProviderRpcError } from '@vechain/sdk-errors';
+import { BlockGenesisNotFound, ProviderRpcError } from '@vechain/sdk-errors';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
 import { soloUrl } from '../../../../fixture';
 
@@ -49,7 +49,7 @@ describe('RPC Mapper - eth_blockNumber method tests', () => {
             jest.spyOn(
                 thorClient.blocks,
                 'getBestBlockCompressed'
-            ).mockRejectedValue(new Error());
+            ).mockRejectedValue(BlockGenesisNotFound);
 
             const rpcCallChainId = (await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_blockNumber
