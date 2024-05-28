@@ -4,15 +4,15 @@ description: Certificate related functions.
 
 # Certificates
 
-In the VechainThor blockchain, a certificate is a data structure used for client-side self-signed certificates. It plays a crucial role in providing a mechanism for secure identification and validation of data. For example, when signing in to a Dapp, users typically need to sign a certificate as part of the authentication process. This certificate serves as cryptographic proof of their identity and authorization. Users use their private keys to sign the certificate, demonstrating their ownership and enabling secure access to the Dapp's services.
+In the VeChainThor blockchain, a certificate is a data structure used for client-side self-signed certificates. It plays a crucial role in providing a mechanism for secure identification and validation of data. For example, when signing in to a Dapp, users typically need to sign a certificate as part of the authentication process. This certificate serves as cryptographic proof of their identity and authorization. Users use their private keys to sign the certificate, demonstrating their ownership and enabling secure access to the Dapp's services.
 
 ## Purpose of Certificates
 
-Certificates are primarily used for purposes like attestation, validation, and verification of data authenticity. They are used as proofs of authenticity and origin for data exchanged within the vechain ecosystem.
+Certificates are primarily used for purposes like attestation, validation, and verification of data authenticity. They are used as proofs of authenticity and origin for data exchanged within the VeChain ecosystem.
 
 ## Structure of a Certificate
 
-A Certificate in the VechainThor blockchain typically consists of the following components:
+A Certificate in the VeChainThor blockchain typically consists of the following components:
 
 1. **Purpose**: The purpose field indicates the intended use or context of the certificate. For example, it could be used for identification, verification, or attestation.
 2. **Payload**: The payload field holds the actual content of the certificate. This content can be of various types, such as text, images, or other data.
@@ -23,7 +23,7 @@ A Certificate in the VechainThor blockchain typically consists of the following 
 
 ## Usage of Certificates
 
-Certificates are used in various scenarios within the VechainThor blockchain, including:
+Certificates are used in various scenarios within the VeChainThor blockchain, including:
 
 * **Proof of Authenticity**: Certificates can be used to prove the authenticity and origin of data, ensuring that the data has not been tampered with or altered.
 * **Identification**: Certificates can be employed to establish the identity of a specific entity or participant within the blockchain ecosystem.
@@ -31,7 +31,7 @@ Certificates are used in various scenarios within the VechainThor blockchain, in
 
 ## Self-Signed Certificates
 
-It's important to note that certificates in the VechainThor blockchain are self-signed, which means that they are issued and signed by the same entity or user. The signature from the issuer's private key serves as proof of the certificate's authenticity.
+It's important to note that certificates in the VeChainThor blockchain are self-signed, which means that they are issued and signed by the same entity or user. The signature from the issuer's private key serves as proof of the certificate's authenticity.
 
 ```typescript { name=sign_verify, category=example }
 // 1 - Generate a private key and address for the signer

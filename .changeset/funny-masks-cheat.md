@@ -8,4 +8,4 @@
 "@vechain/sdk-rpc-proxy": patch
 ---
 
-First BETA release of the vechain SDK! :D
+First BETA release of the VeChain SDK! :D

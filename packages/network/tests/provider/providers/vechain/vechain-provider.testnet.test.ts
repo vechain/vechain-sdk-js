@@ -4,10 +4,10 @@ import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
 import { testnetUrl } from '../../../fixture';
 import { providerMethodsTestCasesTestnet } from '../fixture';
 import { waitForMessage } from '../helpers';
-import { ThorClient, VechainProvider } from '../../../../src';
+import { ThorClient, VeChainProvider } from '../../../../src';
 
 /**
- * Vechain provider tests
+ *VeChain provider tests
  *
  * @group integration/providers/vechain-provider
  */
@@ -16,14 +16,14 @@ describe('Vechain provider tests - testnet', () => {
      * ThorClient and provider instances
      */
     let thorClient: ThorClient;
-    let provider: VechainProvider;
+    let provider: VeChainProvider;
 
     /**
      * Init thor client and provider before each test
      */
     beforeEach(() => {
         thorClient = ThorClient.fromUrl(testnetUrl);
-        provider = new VechainProvider(thorClient);
+        provider = new VeChainProvider(thorClient);
     });
 
     /**
@@ -115,7 +115,7 @@ describe('Vechain provider tests - testnet', () => {
     test('Should throw an error if delegation is enabled and delegator is not defined', () => {
         expect(() => {
             // eslint-disable-next-line no-new
-            new VechainProvider(thorClient, undefined, true);
+            new VeChainProvider(thorClient, undefined, true);
         }).toThrowError(ProviderRpcError);
     });
 

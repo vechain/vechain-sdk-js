@@ -10,9 +10,9 @@ import { addressUtils, Hex0x, secp256k1 } from '@vechain/sdk-core';
  *                * params[0]: address: string, is the address to get the number of transactions from.
  *                * params[1]: A string representing a block number, or one of the string tags latest, earliest, or pending.
  *
- * @note: To respect differences between vechain and Ethereum, in this function we will give a random number as output.
+ * @note: To respect differences between VeChain and Ethereum, in this function we will give a random number as output.
  * Basically Ethereum to get nonce to use the number of transactions sent from an address,
- * while vechain uses a random number.
+ * while VeChain uses a random number.
  *
  * @throws {InvalidDataTypeError} - When address parameter is invalid.
  */

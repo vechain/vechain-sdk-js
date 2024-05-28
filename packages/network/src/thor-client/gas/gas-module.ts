@@ -12,7 +12,7 @@ import { type ThorClient } from '../thor-client';
 class GasModule {
     /**
      * Initializes a new instance of the `Thor` class.
-     * @param thor - The Thor instance used to interact with the vechain blockchain API.
+     * @param thor - The Thor instance used to interact with the VeChain blockchain API.
      */
     constructor(readonly thor: ThorClient) {}
 

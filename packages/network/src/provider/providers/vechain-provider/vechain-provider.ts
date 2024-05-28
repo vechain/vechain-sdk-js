@@ -22,12 +22,12 @@ import {
     type ThorClient
 } from '../../../thor-client';
 import { type ProviderInternalWallet } from '../../helpers';
-import type { VechainSigner } from '../../../signer';
+import type { VeChainSigner } from '../../../signer';
 
 /**
  * Our core provider class for vechain
  */
-class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
+class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
     public readonly subscriptionManager: SubscriptionManager = {
         logSubscriptions: new Map(),
         currentBlockNumber: 0
@@ -41,7 +41,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
     private pollInstance?: EventPoll<SubscriptionEvent[]>;
 
     /**
-     * Constructor for VechainProvider
+     * Constructor for VeChainProvider
      *
      * @param thorClient - ThorClient instance.
      * @param wallet - ProviderInternalWallet instance. It is optional because the majority of the methods do not require a wallet.
@@ -245,7 +245,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
     }
 
     /**
-     * Fetches the current block details from the vechain node.
+     * Fetches the current block details from the VeChain node.
      *
      * @private
      */
@@ -279,7 +279,7 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
      */
     async getSigner(
         addressOrIndex?: string | number
-    ): Promise<VechainSigner | null> {
+    ): Promise<VeChainSigner | null> {
         if (this.wallet === undefined) {
             return null;
         }
@@ -305,4 +305,4 @@ class VechainProvider extends EventEmitter implements EIP1193ProviderMessage {
     }
 }
 
-export { VechainProvider };
+export { VeChainProvider };

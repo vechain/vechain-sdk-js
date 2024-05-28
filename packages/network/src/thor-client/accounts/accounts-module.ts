@@ -15,13 +15,13 @@ import { type ThorClient } from '../thor-client';
 
 /**
  * The `AccountModule` class provides methods to interact with account-related endpoints
- * of the VechainThor blockchain. It allows fetching details, bytecode, and storage data
+ * of the VeChainThor blockchain. It allows fetching details, bytecode, and storage data
  * for a specific blockchain account.
  */
 class AccountsModule {
     /**
      * Initializes a new instance of the `Thor` class.
-     * @param thor - The Thor instance used to interact with the vechain blockchain API.
+     * @param thor - The Thor instance used to interact with the VeChain blockchain API.
      */
     constructor(readonly thor: ThorClient) {}
 

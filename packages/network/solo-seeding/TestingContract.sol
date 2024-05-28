@@ -5,7 +5,7 @@ pragma solidity 0.8.19;
 import "./builtin-contracts/builtin.sol";
 
 
-/// @title TestingContract for vechain SDK Integration
+/// @title TestingContract for VeChain SDK Integration
 /// @notice This contract is designed for testing various data types, error handling, 
 /// and state management in Solidity, particularly for SDK integration.
 contract TestingContract {
@@ -275,7 +275,7 @@ contract TestingContract {
 
     // ------ Error Handling End ------ //
 
-    // ------ VechainThor EVM Extension functions Start ------ //
+    // ------ VeChainThor EVM Extension functions Start ------ //
 
     /// @notice Get the blockID of the given block number
     /// @param blockNum The block number to query
@@ -333,5 +333,5 @@ contract TestingContract {
         return extension.blake2b256(_data);
     }
 
-    // ------ VechainThor EVM Extension functions End ------ //
+    // ------ VeChainThor EVM Extension functions End ------ //
 }

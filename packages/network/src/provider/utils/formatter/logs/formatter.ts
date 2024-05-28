@@ -66,7 +66,7 @@ const _scatterArrayTopic = (
 /**
  * Get the criteria set for the input.
  *
- * Basically with vechain swagger we have:
+ * Basically with VeChain swagger we have:
  *
  * {
  *     address = string | undefined;

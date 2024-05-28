@@ -1,10 +1,10 @@
-# Vechain SDK Code of Conduct
+#VeChain SDK Code of Conduct
 
 ## 1. Introduction
 
-The vechain SDK community is dedicated to providing a welcoming, inclusive, and harassment-free environment for everyone, regardless of age, gender, gender identity and expression, sexual orientation, disability, physical appearance, body size, race, ethnicity, nationality, religion, or technical experience. This Code of Conduct outlines our expectations for all members of the vechain SDK community, as well as the consequences for unacceptable behavior.
+The VeChain SDK community is dedicated to providing a welcoming, inclusive, and harassment-free environment for everyone, regardless of age, gender, gender identity and expression, sexual orientation, disability, physical appearance, body size, race, ethnicity, nationality, religion, or technical experience. This Code of Conduct outlines our expectations for all members of the VeChain SDK community, as well as the consequences for unacceptable behavior.
 
-We invite all those who participate in vechain SDK to help us create a safe and positive environment for everyone.
+We invite all those who participate in VeChain SDK to help us create a safe and positive environment for everyone.
 
 ## 2. Expected Behavior
 

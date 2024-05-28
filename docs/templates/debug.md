@@ -5,7 +5,7 @@ description: Thor debug functionalities.
 # Debug
 
 The [DebugModule](../packages/network/src/thor-client/debug/debug-module.ts) 
-class encapsulates functionality to debug the VechainThor blockchain.
+class encapsulates functionality to debug the VeChainThor blockchain.
 
 The module provides methods to interact with the debug end points provided by 
 

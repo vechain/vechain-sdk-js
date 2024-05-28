@@ -1,6 +1,6 @@
 pragma solidity 0.8.19;
 
-/// @title Energy represents the sub-token in VechainThor which conforms VIP180(ERC20) standard.
+/// @title Energy represents the sub-token in VeChainThor which conforms VIP180(ERC20) standard.
 /// The name of token is "VeThor" and 1 THOR equals to 1e18 wei. The main function of VeThor is to pay for the transaction fee. 
 /// VeThor is generated from VET, so the initial supply of VeThor is zero in the genesis block.
 /// The growth rate of VeThor is 5000000000 wei per token(VET) per second, that is to say 1 VET will produce about 0.000432 THOR per day.

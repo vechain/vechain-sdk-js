@@ -2,9 +2,9 @@ import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 
 import { mainnetUrl } from '../../../fixture';
 
-import { VechainSDKLogger } from '@vechain/sdk-logging';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 import {
-    HardhatVechainProvider,
+    HardhatVeChainProvider,
     ProviderInternalBaseWallet
 } from '../../../../src';
 
@@ -17,13 +17,13 @@ describe('Hardhat provider tests', () => {
     /**
      * Hardhat provider instances
      */
-    let providerInDebugMode: HardhatVechainProvider;
+    let providerInDebugMode: HardhatVeChainProvider;
 
     /**
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        providerInDebugMode = new HardhatVechainProvider(
+        providerInDebugMode = new HardhatVeChainProvider(
             new ProviderInternalBaseWallet([]),
             mainnetUrl,
             (message: string, parent?: Error) => new Error(message, parent),
@@ -35,8 +35,8 @@ describe('Hardhat provider tests', () => {
      * Test debug mode.
      */
     test('Should be able to enable debug mode', async () => {
-        // Spy on VechainSDKLogger
-        const logSpy = jest.spyOn(VechainSDKLogger('log'), 'log');
+        // Spy on VeChainSDKLogger
+        const logSpy = jest.spyOn(VeChainSDKLogger('log'), 'log');
 
         // Call an RPC function (e.g., eth_blockNumber)
         await providerInDebugMode.request({
@@ -56,8 +56,8 @@ describe('Hardhat provider tests', () => {
      * Test debug mode errors in send function.
      */
     test('Should be able to log errors in debug mode - send function', async () => {
-        // Spy on VechainSDKLogger
-        const logSpy = jest.spyOn(VechainSDKLogger('error'), 'log');
+        // Spy on VeChainSDKLogger
+        const logSpy = jest.spyOn(VeChainSDKLogger('error'), 'log');
 
         // Error during call
         await expect(

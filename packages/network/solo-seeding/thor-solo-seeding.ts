@@ -429,7 +429,7 @@ const seedVnsSolo = async (): Promise<void> => {
  * @remarks
  * This function signs and sends transactions to distribute VTHO and VET tokens
  * to the first 10 accounts in the `ALL_ACCOUNTS` array. It uses the ThorestClient
- * to interact with the VechainThor blockchain.
+ * to interact with the VeChainThor blockchain.
  *
  * @returns A Promise that resolves when all transactions have been processed.
  */

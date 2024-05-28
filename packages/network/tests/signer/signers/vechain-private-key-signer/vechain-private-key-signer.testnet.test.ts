@@ -3,8 +3,8 @@ import {
     ProviderInternalBaseWallet,
     signerUtils,
     ThorClient,
-    VechainPrivateKeySigner,
-    VechainProvider
+    VeChainPrivateKeySigner,
+    VeChainProvider
 } from '../../../../src';
 import {
     TESTING_CONTRACT_ABI,
@@ -23,7 +23,7 @@ import {
 import { signTransactionTestCases } from './fixture';
 
 /**
- * Vechain base signer tests - testnet
+ *VeChain base signer tests - testnet
  *
  * @group integration/signers/vechain-base-signer-testnet
  */
@@ -51,9 +51,9 @@ describe('Vechain base signer tests - testnet', () => {
             for (const fixture of signTransactionTestCases.testnet.correct) {
                 if (!fixture.isDelegated) {
                     // Init the signer
-                    const signer = new VechainPrivateKeySigner(
+                    const signer = new VeChainPrivateKeySigner(
                         Buffer.from(fixture.origin.privateKey, 'hex'),
-                        new VechainProvider(
+                        new VeChainProvider(
                             thorClient,
                             THOR_SOLO_ACCOUNTS_BASE_WALLET,
                             false
@@ -77,9 +77,9 @@ describe('Vechain base signer tests - testnet', () => {
             for (const fixture of signTransactionTestCases.testnet.correct) {
                 if (fixture.isDelegated) {
                     // Init the signer
-                    const signer = new VechainPrivateKeySigner(
+                    const signer = new VeChainPrivateKeySigner(
                         Buffer.from(fixture.origin.privateKey, 'hex'),
-                        new VechainProvider(
+                        new VeChainProvider(
                             thorClient,
                             THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR(
                                 fixture.options
@@ -139,9 +139,9 @@ describe('Vechain base signer tests - testnet', () => {
                             );
 
                         // Get the signer and sign the transaction
-                        const signer = new VechainPrivateKeySigner(
+                        const signer = new VeChainPrivateKeySigner(
                             Buffer.from(origin.privateKey, 'hex'),
-                            new VechainProvider(
+                            new VeChainProvider(
                                 thorClient,
                                 new ProviderInternalBaseWallet([], {
                                     delegator: options
@@ -178,12 +178,12 @@ describe('Vechain base signer tests - testnet', () => {
 
     describe('resolveName(name)', () => {
         test('Should be able to resolve an address by name', async () => {
-            const signer = new VechainPrivateKeySigner(
+            const signer = new VeChainPrivateKeySigner(
                 Buffer.from(
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
                     'hex'
                 ),
-                new VechainProvider(
+                new VeChainProvider(
                     thorClient,
                     THOR_SOLO_ACCOUNTS_BASE_WALLET,
                     false
@@ -194,12 +194,12 @@ describe('Vechain base signer tests - testnet', () => {
         });
 
         test('Should resolve to null for unknown names', async () => {
-            const signer = new VechainPrivateKeySigner(
+            const signer = new VeChainPrivateKeySigner(
                 Buffer.from(
                     '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
                     'hex'
                 ),
-                new VechainProvider(
+                new VeChainProvider(
                     thorClient,
                     THOR_SOLO_ACCOUNTS_BASE_WALLET,
                     false

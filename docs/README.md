@@ -1,12 +1,12 @@
-# Vechain SDK
+#VeChain SDK
 
-Welcome to the official documentation for the JavaScript vechain SDK!
+Welcome to the official documentation for the JavaScriptVeChain SDK!
 
-This SDK provides developers with tools and resources to integrate vechain blockchain functionality into their applications with ease. Whether you're building decentralized applications (dApps), managing digital assets, or exploring blockchain-based solutions, this SDK offers a comprehensive set of features to interact with the VeChainThor blockchain.
+This SDK provides developers with tools and resources to integrate VeChain blockchain functionality into their applications with ease. Whether you're building decentralized applications (dApps), managing digital assets, or exploring blockchain-based solutions, this SDK offers a comprehensive set of features to interact with the VeChainThor blockchain.
 
 ## Installation
 
-To start using the vechain SDK, you can install specific packages based on your needs. The SDK is a monorepo that includes various packages. Here are the packages available:
+To start using the VeChain SDK, you can install specific packages based on your needs. The SDK is a monorepo that includes various packages. Here are the packages available:
  - [@vechain/sdk-core](https://www.npmjs.com/package/@vechain/sdk-core)
  - [@vechain/sdk-network](https://www.npmjs.com/package/@vechain/sdk-network)
  - [@vechain/sdk-errors](https://www.npmjs.com/package/@vechain/sdk-errors)
@@ -29,8 +29,8 @@ yarn add @vechain/sdk-network
 
 ## Contributing
 
-We welcome contributions from the community to improve the vechain SDK. If you want to contribute, please review our Contribution Guidelines for more information.
+We welcome contributions from the community to improve the VeChain SDK. If you want to contribute, please review our Contribution Guidelines for more information.
 
 ## License
 
-The vechain SDK is licensed under the MIT License, which allows for both personal and commercial use.
+The VeChain SDK is licensed under the MIT License, which allows for both personal and commercial use.
