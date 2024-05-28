@@ -2,6 +2,7 @@ import * as utils from '@noble/curves/abstract/utils';
 import { describe, expect, test } from '@jest/globals';
 import { bloom, Hex } from '../../src';
 import { bloomKTestCases } from './fixture';
+import { InvalidBloomError, InvalidKError } from '../../../errors';
 
 /**
  * Bloom filter tests
@@ -12,6 +13,177 @@ import { bloomKTestCases } from './fixture';
  */
 describe('Bloom Filter', () => {
     const textEncoder = new TextEncoder();
+
+    /**
+     * Test the composition of Bloom filters,
+     * those are compatible if generated from the same `k` number of hashing functions
+     * and represents the entry with the same `m` number of bits,
+     * since the `k` and `m` parameters are used to compute the best length of the
+     * filter, if those are equals for two different filters, the different
+     * filters have the same length.
+     */
+    describe('compose', () => {
+        const m = 20; // Bits per key.
+        const k = bloom.calculateK(m);
+        const keys1 = ['key1.1', 'key1.2', 'key1.3'];
+        const keys2 = ['key2.1', 'key2.2', 'key2.3'];
+
+        /**
+         * Test should fail because the filters are forged with different length,
+         * hence the number of bits per key entry are different.
+         */
+        test('compose - invalid - different length', () => {
+            const gen1 = new bloom.Generator();
+            keys1.forEach((key) => {
+                gen1.add(textEncoder.encode(key));
+            });
+            const gen2 = new bloom.Generator();
+            keys2.forEach((key) => {
+                gen2.add(textEncoder.encode(key));
+            });
+            const filter1 = gen1.generate(m, k);
+            const filter2 = gen2.generate(m * m, k);
+            expect(() => {
+                filter1.compose(filter2);
+            }).toThrow(InvalidBloomError);
+        });
+
+        /**
+         * Test should fail because the filters are forged with different `k` number of
+         * hashing functions.
+         */
+        test('compose - invalid - different k', () => {
+            const gen1 = new bloom.Generator();
+            keys1.forEach((key) => {
+                gen1.add(textEncoder.encode(key));
+            });
+            const gen2 = new bloom.Generator();
+            keys2.forEach((key) => {
+                gen2.add(textEncoder.encode(key));
+            });
+            const filter1 = gen1.generate(m, k);
+            const filter2 = gen2.generate(m, k - 1);
+            expect(() => {
+                filter1.compose(filter2);
+            }).toThrow(InvalidKError);
+        });
+
+        /**
+         * Test should succeed suggesting all the elements of the two filters are elements
+         * of the composed filter.
+         */
+        test('compose - valid - possibly in set', () => {
+            const gen1 = new bloom.Generator();
+            keys1.forEach((key) => {
+                gen1.add(textEncoder.encode(key));
+            });
+            const gen2 = new bloom.Generator();
+            keys2.forEach((key) => {
+                gen2.add(textEncoder.encode(key));
+            });
+            const filter1 = gen1.generate(m, k);
+            const filter2 = gen2.generate(m, k);
+            const filterUnion = filter1.compose(filter2);
+            keys1.forEach((key) => {
+                expect(
+                    filterUnion.contains(textEncoder.encode(key))
+                ).toBeTruthy();
+            });
+            keys2.forEach((key) => {
+                expect(
+                    filterUnion.contains(textEncoder.encode(key))
+                ).toBeTruthy();
+            });
+        });
+
+        /**
+         * Test should succeed cofirming an alien element not
+         * belonging to any of the filters is not part of the composed filter.
+         */
+        test('compose - valid - not in set', () => {
+            const gen1 = new bloom.Generator();
+            keys1.forEach((key) => {
+                gen1.add(textEncoder.encode(key));
+            });
+            const gen2 = new bloom.Generator();
+            keys2.forEach((key) => {
+                gen2.add(textEncoder.encode(key));
+            });
+            const filter1 = gen1.generate(m, k);
+            const filter2 = gen2.generate(m, k);
+            const filterUnion = filter1.compose(filter2);
+            expect(
+                filterUnion.contains(textEncoder.encode('alien'))
+            ).toBeFalsy();
+        });
+    });
+
+    /**
+     * Test the possibility to compose different Bloom filters,
+     * those are compatible if generated from the same `k` number of hashing functions
+     * and represents the entry with the same `m` number of bits,
+     * since the `k` and `m` parameters are used to compute the best length of the
+     * filter, if those are equals for two different filters, the different
+     * filters have the same length.
+     */
+    describe('isComposable', () => {
+        const m = 20; // Bits per key.
+        const k = bloom.calculateK(m);
+        const keys1 = ['key1.1', 'key1.2', 'key1.3'];
+        const keys2 = ['key2.1', 'key2.2', 'key2.3'];
+
+        /**
+         * Test should return false because the filters re forged with different length.
+         */
+        test('isComposable - false - different length', () => {
+            const gen1 = new bloom.Generator();
+            keys1.forEach((key) => {
+                gen1.add(textEncoder.encode(key));
+            });
+            const gen2 = new bloom.Generator();
+            keys2.forEach((key) => {
+                gen2.add(textEncoder.encode(key));
+            });
+            const filter1 = gen1.generate(m, k);
+            const filter2 = gen2.generate(m * m, k);
+            expect(filter1.isComposableWith(filter2)).toBeFalsy();
+        });
+
+        /**
+         * Test should return flase because filters are forged with different `k` number of hashing functions.
+         */
+        test('isComposable - false - different k', () => {
+            const gen1 = new bloom.Generator();
+            keys1.forEach((key) => {
+                gen1.add(textEncoder.encode(key));
+            });
+            const gen2 = new bloom.Generator();
+            keys2.forEach((key) => {
+                gen2.add(textEncoder.encode(key));
+            });
+            const filter1 = gen1.generate(m, k);
+            const filter2 = gen2.generate(m, k - 1);
+            expect(filter1.isComposableWith(filter2)).toBeFalsy();
+        });
+
+        /**
+         * Test shold return true because the filters are generated with compatible
+         * `k` and `m` parameters hence they have the same length.
+         */
+        test('isComposable - true', () => {
+            const gen1 = new bloom.Generator();
+            keys1.forEach((key) => {
+                gen1.add(textEncoder.encode(key));
+            });
+            const gen2 = new bloom.Generator();
+            keys2.forEach((key) => {
+                gen2.add(textEncoder.encode(key));
+            });
+            const filter1 = gen1.generate(m, k);
+            const filter2 = gen2.generate(m, k);
+            expect(filter1.isComposableWith(filter2)).toBeTruthy();
+        });
+    });
 
     /**
      * Test estimate K function
