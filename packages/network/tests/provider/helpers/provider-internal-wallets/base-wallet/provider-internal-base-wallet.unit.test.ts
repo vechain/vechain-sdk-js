@@ -16,7 +16,7 @@ describe('Base wallet tests', () => {
     /**
      * Test 'getAddresses' function.
      */
-    describe('getAddresses', () => {
+    describe('getAddresses sync and async version', () => {
         /**
          * Test without blocking execution on steps
          */
@@ -32,13 +32,22 @@ describe('Base wallet tests', () => {
             expect(addresses).toEqual(
                 accountsFixture.map((account) => account.address)
             );
+
+            // Get addresses synchronously
+            const addressesSync = baseWallet.getAddressesSync();
+            expect(addressesSync).toEqual(
+                accountsFixture.map((account) => account.address)
+            );
+
+            // Expect the addresses to be the same
+            expect(addresses).toEqual(addressesSync);
         });
     });
 
     /**
      * Test 'getAccount' function.
      */
-    describe('getAccount', () => {
+    describe('getAccount sync and async version', () => {
         /**
          * Should be able to get an account by address
          */
@@ -56,8 +65,18 @@ describe('Base wallet tests', () => {
             const randomAccountFromWallet = await baseWallet.getAccount(
                 randomAccount.address
             );
-
             expect(randomAccountFromWallet).toEqual(randomAccount);
+
+            // Get the account by address synchronously
+            const randomAccountFromWalletSync = baseWallet.getAccountSync(
+                randomAccount.address
+            );
+            expect(randomAccountFromWalletSync).toEqual(randomAccount);
+
+            // Expect the addresses to be the same
+            expect(randomAccountFromWallet).toEqual(
+                randomAccountFromWalletSync
+            );
         });
 
         /**
@@ -122,12 +141,25 @@ describe('Base wallet tests', () => {
                 baseWallet.getAccount(invalidAddress)
             ).rejects.toThrowError(InvalidDataTypeError);
         });
+
+        /**
+         * Should get null when trying to get an account by a not existing index
+         */
+        test('Should get null when trying to get an account by a wallet without accounts', async () => {
+            // Initialize a wallet with the accounts
+            const baseWallet = new ProviderInternalBaseWallet([]);
+
+            // Get the account by not existing index
+            const notExistingAccount = await baseWallet.getAccount();
+
+            expect(notExistingAccount).toEqual(null);
+        });
     });
 
     /**
      * Test 'getDelegator' function.
      */
-    describe('getDelegator', () => {
+    describe('getDelegator sync and async version', () => {
         /**
          * Should be able to get the delegator options
          */
@@ -155,8 +187,15 @@ describe('Base wallet tests', () => {
                 // Get the delegator from the wallet
                 const currentDelegator =
                     await baseWalletWithDelegator.getDelegator();
-
                 expect(currentDelegator).toEqual(delegator);
+
+                // Get the delegator from the wallet synchronously
+                const currentDelegatorSync =
+                    baseWalletWithDelegator.getDelegatorSync();
+                expect(currentDelegatorSync).toEqual(delegator);
+
+                // Expect the delegators to be the same
+                expect(currentDelegator).toEqual(currentDelegatorSync);
             }
         });
 
