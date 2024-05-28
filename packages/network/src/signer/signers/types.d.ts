@@ -6,7 +6,6 @@ import {
     type HardhatVeChainProvider,
     type VeChainProvider
 } from '../../provider';
-import { type TransactionSimulationResult } from '../../thor-client';
 
 /**
  * Available types for the VeChainProvider's
@@ -311,7 +310,7 @@ interface VeChainSigner {
     call: (
         transactionToEvaluate: TransactionRequestInput,
         revision?: string
-    ) => Promise<TransactionSimulationResult[]>;
+    ) => Promise<string>;
 
     /**
      * Signs %%transactionToSign%%, returning the fully signed transaction. This does not
