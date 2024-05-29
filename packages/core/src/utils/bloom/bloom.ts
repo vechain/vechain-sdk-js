@@ -3,11 +3,6 @@ import { ADDRESS, assert, BLOOM, DATA } from '@vechain/sdk-errors';
 import { Hex, Hex0x } from '../hex';
 import { addressUtils } from '../../address';
 import { bloom } from '../../bloom';
-import type {
-    ExpandedBlockDetail,
-    TransactionsExpandedBlockDetail
-} from '@vechain/sdk-network';
-import { type TransactionClause } from '../../transaction';
 
 /**
  * Regular expression pattern to match the uppercase hexadecimal strings
@@ -29,54 +24,12 @@ const BLOOM_REGEX = /^(0x)?[0-9a-f]{16,}$/i;
 const BLOOM_DEFAULT_K = 5;
 
 /**
- * Retrieves all addresses involved in a given block. This includes beneficiary, signer, clauses,
- * delegator, gas payer, origin, contract addresses, event addresses, and transfer recipients and senders.
- *
- * @param {ExpandedBlockDetail} block - The block object to extract addresses from.
- *
- * @returns {string[]} - An array of addresses involved in the block, included
- * empty addresses, duplicate elements are removed.
- *
- * @see {filterOf}
- */
-const addressesOf = (block: ExpandedBlockDetail): string[] => {
-    const addresses = new Set<string>();
-    addresses.add(block.beneficiary);
-    addresses.add(block.signer);
-    block.transactions.forEach(
-        (transaction: TransactionsExpandedBlockDetail) => {
-            transaction.clauses.forEach((clause: TransactionClause) => {
-                if (typeof clause.to === 'string') {
-                    addresses.add(clause.to);
-                }
-            });
-            addresses.add(transaction.delegator);
-            addresses.add(transaction.gasPayer);
-            addresses.add(transaction.origin);
-            transaction.outputs.forEach((output) => {
-                if (typeof output.contractAddress === 'string') {
-                    addresses.add(output.contractAddress);
-                }
-                output.events.forEach((event) => {
-                    addresses.add(event.address);
-                });
-                output.transfers.forEach((transfer) => {
-                    addresses.add(transfer.recipient);
-                    addresses.add(transfer.sender);
-                });
-            });
-        }
-    );
-    return Array.from(addresses);
-};
-
-/**
  * Generates a Bloom Filter(https://en.wikipedia.org/wiki/Bloom_filter)
  * from a list of addresses ignoring elements of the list are notVeChain Thor addresses
  * and duplicate elements to avoid to corrupt the resulting filters with empty strings.
  *
- * Use {@link addressesOf} to build the Bloom Filter for the addresses of
- * a an {@link ExpandedBlockDetail}.
+ * Use {thorClient.blocks.getAllAddressesIntoABlock} to build the Bloom Filter for the addresses of
+ * an ExpandedBlockDetail.
  *
  * Secure audit function.
  * * {@link bloom.Generator}
@@ -89,7 +42,7 @@ const addressesOf = (block: ExpandedBlockDetail): string[] => {
  *
  * @returns {string} The generated bloom filter in hexadecimal format.
  *
- * @see {addressesOf}.
+ * @see {thorClient.blocks.getAllAddressesIntoABlock}.
  */
 const filterOf = (addresses: string[], k: number = 5): string => {
     const keys = new Set<Uint8Array>();
@@ -118,9 +71,6 @@ const filterOf = (addresses: string[], k: number = 5): string => {
  * @returns {boolean} True if the string is a valid filter string, false otherwise.
  */
 const isBloom = (filter: string): boolean => {
-    if (typeof filter !== 'string') {
-        return false;
-    }
     return BLOOM_REGEX.test(filter);
 };
 
@@ -211,7 +161,6 @@ const isAddressInBloom = (
 
 export const bloomUtils = {
     BLOOM_DEFAULT_K,
-    addressesOf,
     filterOf,
     isBloom,
     isInBloom,

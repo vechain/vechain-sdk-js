@@ -1,5 +1,6 @@
-import { beforeEach, afterEach, describe, expect, test } from '@jest/globals';
+import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import {
+    expandedBlockDetailFixture,
     invalidBlockRevisions,
     validCompressedBlockRevisions,
     validExpandedBlockRevisions,
@@ -7,7 +8,13 @@ import {
 } from './fixture';
 import { HttpClient, Poll, ThorClient } from '../../../src';
 import { testnetUrl } from '../../fixture';
-import { networkInfo } from '@vechain/sdk-core';
+import {
+    addressUtils,
+    bloom,
+    bloomUtils,
+    Hex0x,
+    networkInfo
+} from '@vechain/sdk-core';
 
 /**
  * Blocks Module integration tests
@@ -92,6 +99,76 @@ describe('ThorClient - Blocks Module', () => {
             },
             12000 * waitForBlockTestCases.length
         );
+    });
+
+    describe('getAllAddressesIntoABlock', () => {
+        /**
+         * Test for getAllAddressesIntoABlock function
+         */
+        test('getAllAddressesIntoABlock', () => {
+            const expected = [
+                '0x0000000000000000000000000000456e65726779',
+                '0x1a8abd6d5627eb26ad71c0c7ae5224cdc640faf3',
+                '0x1eef8963e1222417af4dac0d98553abddb4a76b5',
+                '0x23a46368e4acc7bb2fe0afeb054def51ec56aa74',
+                '0x45429a2255e7248e57fce99e7239aed3f84b7a53',
+                '0x576da7124c7bb65a692d95848276367e5a844d95',
+                '0x5db3c8a942333f6468176a870db36eef120a34dc',
+                '0x6298c7a54720febdefd741d0899d287c70954c68',
+                '0x95fe74d1ae072ee45bdb09879a157364e5341565',
+                '0x9a107a75cff525b033a3e53cadafe3d193b570ec',
+                '0xa416bdda32b00e218f08ace220bab512c863ff2f',
+                '0xb2c20a6de401003a671659b10629eb82ff254fb8',
+                '0xb7591602c0c9d525bc3a7cf3c729fd91b8bf5bf6',
+                '0xbeae4bef0121f11d269aedf6adb227259d4314ad'
+            ];
+            thorClient.blocks
+                .getAllAddressesIntoABlock(expandedBlockDetailFixture)
+                .filter((address) => {
+                    return addressUtils.isAddress(address); // Remove empty addresses.
+                })
+                .forEach((actual) => {
+                    expect(expected.includes(actual)).toBeTruthy();
+                });
+        });
+
+        test('getAllAddressesIntoABlock combined with boolUtils.filterOf - bit per key - default', () => {
+            const addresses = thorClient.blocks
+                .getAllAddressesIntoABlock(expandedBlockDetailFixture)
+                .filter((address) => {
+                    return addressUtils.isAddress(address);
+                });
+            const filter = bloomUtils.filterOf(addresses);
+            addresses.forEach((address) => {
+                expect(
+                    bloomUtils.isAddressInBloom(
+                        filter,
+                        bloomUtils.BLOOM_DEFAULT_K,
+                        Hex0x.canon(address)
+                    )
+                ).toBeTruthy();
+            });
+        });
+
+        test('getAllAddressesIntoABlock combined with boolUtils.filterOf -  bit per key - set', () => {
+            const k = 16;
+            const addresses = thorClient.blocks
+                .getAllAddressesIntoABlock(expandedBlockDetailFixture)
+                .filter((address) => {
+                    return addressUtils.isAddress(address);
+                });
+
+            const filter = bloomUtils.filterOf(addresses, k);
+            addresses.forEach((address) => {
+                expect(
+                    bloomUtils.isAddressInBloom(
+                        filter,
+                        bloom.calculateK(k),
+                        Hex0x.canon(address)
+                    )
+                ).toBeTruthy();
+            });
+        });
     });
 
     test('waitForBlockCompressed - invalid blockNumber', async () => {

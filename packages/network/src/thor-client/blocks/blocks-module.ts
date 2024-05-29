@@ -4,9 +4,13 @@ import {
     type BlocksModuleOptions,
     type CompressedBlockDetail,
     type ExpandedBlockDetail,
+    type TransactionsExpandedBlockDetail,
     type WaitForBlockOptions
 } from './types';
-import { assertIsRevisionForBlock } from '@vechain/sdk-core';
+import {
+    assertIsRevisionForBlock,
+    type TransactionClause
+} from '@vechain/sdk-core';
 import { type ThorClient } from '../thor-client';
 
 /** The `BlocksModule` class encapsulates functionality for interacting with blocks
@@ -257,6 +261,48 @@ class BlocksModule {
      */
     public async getGenesisBlock(): Promise<CompressedBlockDetail | null> {
         return await this.getBlockCompressed(0);
+    }
+
+    /**
+     * Retrieves all addresses involved in a given block. This includes beneficiary, signer, clauses,
+     * delegator, gas payer, origin, contract addresses, event addresses, and transfer recipients and senders.
+     *
+     * @param {ExpandedBlockDetail} block - The block object to extract addresses from.
+     *
+     * @returns {string[]} - An array of addresses involved in the block, included
+     * empty addresses, duplicate elements are removed.
+     *
+     * @see {bloomUtils.filterOf}
+     */
+    public getAllAddressesIntoABlock(block: ExpandedBlockDetail): string[] {
+        const addresses = new Set<string>();
+        addresses.add(block.beneficiary);
+        addresses.add(block.signer);
+        block.transactions.forEach(
+            (transaction: TransactionsExpandedBlockDetail) => {
+                transaction.clauses.forEach((clause: TransactionClause) => {
+                    if (typeof clause.to === 'string') {
+                        addresses.add(clause.to);
+                    }
+                });
+                addresses.add(transaction.delegator);
+                addresses.add(transaction.gasPayer);
+                addresses.add(transaction.origin);
+                transaction.outputs.forEach((output) => {
+                    if (typeof output.contractAddress === 'string') {
+                        addresses.add(output.contractAddress);
+                    }
+                    output.events.forEach((event) => {
+                        addresses.add(event.address);
+                    });
+                    output.transfers.forEach((transfer) => {
+                        addresses.add(transfer.recipient);
+                        addresses.add(transfer.sender);
+                    });
+                });
+            }
+        );
+        return Array.from(addresses);
     }
 }
 
