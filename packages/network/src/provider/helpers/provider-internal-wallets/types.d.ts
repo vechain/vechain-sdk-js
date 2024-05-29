@@ -60,6 +60,21 @@ interface ProviderInternalWallet {
     ) => Promise<VeChainSigner | null>;
 
     /**
+     * SYNC Version of getSigner()
+     *
+     * Get a signer into the internal wallet provider
+     * for the given address.
+     *
+     * @param parentProvider - The parent provider of the Internal Wallet.
+     * @param addressOrIndex - Address or index of the account.
+     * @returns The signer for the given address.
+     */
+    getSignerSync: (
+        parentProvider: AvailableVeChainProviders,
+        addressOrIndex?: string | number
+    ) => VeChainSigner | null;
+
+    /**
      * Get the list of addresses in the wallet.
      *
      * @returns The list of addresses in the wallet.
@@ -67,14 +82,35 @@ interface ProviderInternalWallet {
     getAddresses: () => Promise<string[]>;
 
     /**
-     * Get an account by address.
+     * SYNC Version of getAddresses()
      *
-     * @param address - Address of the account.
+     * Get the list of addresses in the wallet.
+     *
+     * @returns The list of addresses in the wallet.
+     */
+    getAddressesSync: () => string[];
+
+    /**
+     * Get an account given an address or an index.
+     *
+     * @param addressOrIndex - Address or index of the account.
      * @returns The account with the given address, or null if not found.
      */
     getAccount: (
-        address: string
+        addressOrIndex?: string | number
     ) => Promise<ProviderInternalWalletAccount | null>;
+
+    /**
+     * SYNC Version of getAccount()
+     *
+     * Get an account given an address or an index.
+     *
+     * @param addressOrIndex - Address or index of the account.
+     * @returns The account with the given address, or null if not found.
+     */
+    getAccountSync: (
+        addressOrIndex?: string | number
+    ) => ProviderInternalWalletAccount | null;
 
     /**
      * Get the options for signing a transaction with delegator (if any).
@@ -82,6 +118,15 @@ interface ProviderInternalWallet {
      * @returns The options for signing a transaction with delegator.
      */
     getDelegator: () => Promise<SignTransactionOptions | null>;
+
+    /**
+     * SYNC Version of getDelegator()
+     *
+     * Get the options for signing a transaction with delegator (if any).
+     *
+     * @returns The options for signing a transaction with delegator.
+     */
+    getDelegatorSync: () => SignTransactionOptions | null;
 }
 
 export { type ProviderInternalWallet, type ProviderInternalWalletAccount };

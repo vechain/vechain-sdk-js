@@ -27,7 +27,7 @@ import { simulateTransaction } from '../../../thor-client/transactions/fixture-t
  *
  * @group integration/signers/vechain-base-signer-solo
  */
-describe('Vechain base signer tests - testnet', () => {
+describe('Vechain base signer tests - solo', () => {
     /**
      * ThorClient and provider instances
      */
@@ -180,7 +180,7 @@ describe('Vechain base signer tests - testnet', () => {
             );
 
             const result = await signer.call({});
-            expect(result).toBeDefined();
+            expect(result).toBe('0x');
         });
 
         /**
@@ -218,11 +218,9 @@ describe('Vechain base signer tests - testnet', () => {
                     /**
                      * Compare each simulation result with the expected result.
                      */
-                    for (let i = 0; i < simulatedTx.length; i++) {
-                        expect(JSON.stringify(simulatedTx[i])).toStrictEqual(
-                            JSON.stringify(expected.simulationResults[i])
-                        );
-                    }
+                    expect(simulatedTx).toStrictEqual(
+                        expected.simulationResults[0].data
+                    );
                 });
             }
         );
@@ -252,11 +250,8 @@ describe('Vechain base signer tests - testnet', () => {
                     );
 
                     expect(simulatedTx).toBeDefined();
-
-                    expect(simulatedTx).toHaveLength(1);
-
-                    expect(JSON.stringify(simulatedTx[0])).toStrictEqual(
-                        JSON.stringify(expected.simulationResults[0])
+                    expect(simulatedTx).toBe(
+                        expected.simulationResults[0].data
                     );
                 });
             }

@@ -3,7 +3,6 @@ import {
     type TransactionRequestInput,
     type VeChainSigner
 } from '../types';
-import { type TransactionSimulationResult } from '../../../thor-client';
 import {
     addressUtils,
     clauseBuilder,
@@ -15,6 +14,7 @@ import {
 import { RPC_METHODS } from '../../../provider';
 import { assert, DATA, JSONRPC } from '@vechain/sdk-errors';
 import { vnsUtils } from '../../../utils';
+import { type TransactionSimulationResult } from '../../../thor-client';
 
 /**
  * Abstract vechain signer.
@@ -223,7 +223,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
     async call(
         transactionToEvaluate: TransactionRequestInput,
         revision?: string
-    ): Promise<TransactionSimulationResult[]> {
+    ): Promise<string> {
         // 1 - Get the thor client
         assert(
             'call',
@@ -240,20 +240,24 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         );
 
         // 3 - Evaluate the transaction
-        return await thorClient.transactions.simulateTransaction(
-            populatedTransaction.clauses ??
-                this._buildClauses(populatedTransaction),
-            {
-                revision: revision ?? undefined,
-                gas: (populatedTransaction.gas as number) ?? undefined,
-                gasPrice: populatedTransaction.gasPrice ?? undefined,
-                caller: populatedTransaction.from as string,
-                provedWork: populatedTransaction.provedWork ?? undefined,
-                gasPayer: populatedTransaction.gasPayer ?? undefined,
-                expiration: populatedTransaction.expiration ?? undefined,
-                blockRef: populatedTransaction.blockRef ?? undefined
-            }
-        );
+        const simulation: TransactionSimulationResult[] =
+            await thorClient.transactions.simulateTransaction(
+                populatedTransaction.clauses ??
+                    this._buildClauses(populatedTransaction),
+                {
+                    revision: revision ?? undefined,
+                    gas: (populatedTransaction.gas as number) ?? undefined,
+                    gasPrice: populatedTransaction.gasPrice ?? undefined,
+                    caller: populatedTransaction.from as string,
+                    provedWork: populatedTransaction.provedWork ?? undefined,
+                    gasPayer: populatedTransaction.gasPayer ?? undefined,
+                    expiration: populatedTransaction.expiration ?? undefined,
+                    blockRef: populatedTransaction.blockRef ?? undefined
+                }
+            );
+
+        // 4 - Return the result of the evaluation
+        return simulation[0].data;
     }
 
     /**
