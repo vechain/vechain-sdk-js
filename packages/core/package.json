@@ -45,6 +45,7 @@
     "blakejs": "^1.2.1",
     "elliptic": "^6.5.5",
     "ethers": "6.12.1",
-    "fast-json-stable-stringify": "^2.1.0"
+    "fast-json-stable-stringify": "^2.1.0",
+    "@noble/ciphers": "^0.5.2"
   }
 }
