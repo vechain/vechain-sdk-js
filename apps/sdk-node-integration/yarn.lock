@@ -999,45 +999,45 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@vechain/sdk-core@1.0.0-beta.9":
-  version "1.0.0-beta.9"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.9.tgz#ca680e3dabd483778c128fee3deb58090b9ff490"
-  integrity sha512-fXYTMoyhl9GSnaQ9AOwkfKmJ1glik5EqnybnzPXkexXvJj963vhUm57NyuSRCf/3du7hX8UDculM+GagRa68qA==
+"@vechain/sdk-core@1.0.0-beta.10":
+  version "1.0.0-beta.10"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.10.tgz#7c8b8cb06657d2862aef1441f2a6c4251ff4674d"
+  integrity sha512-MLdygUuFtlJHMp0nZyyTp9U/VxELyCOSD/y9HO0ufp1qfcDiXy/Ul6XPntYTxIpyrp0x311yEPjmnC1VMSkf4g==
   dependencies:
     "@ethereumjs/rlp" "^5.0.2"
     "@noble/ciphers" "^0.5.2"
     "@scure/bip32" "^1.4.0"
     "@scure/bip39" "^1.3.0"
     "@types/elliptic" "^6.4.18"
-    "@vechain/sdk-errors" "1.0.0-beta.9"
-    "@vechain/sdk-logging" "1.0.0-beta.9"
+    "@vechain/sdk-errors" "1.0.0-beta.10"
+    "@vechain/sdk-logging" "1.0.0-beta.10"
     bignumber.js "^9.1.2"
     blakejs "^1.2.1"
     elliptic "^6.5.5"
     ethers "6.12.1"
     fast-json-stable-stringify "^2.1.0"
 
-"@vechain/sdk-errors@1.0.0-beta.9":
-  version "1.0.0-beta.9"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.9.tgz#48d8950b9d4086b0fbbf8d208a42555384511509"
-  integrity sha512-OJx8lXLoPs48prgGWwKNuRyQ+R+EB24Ces30hOq7tkZ4H6A6HnFB7/HAjuLOjTqhWQrCQ8EnOnlMmtk6PNH13g==
+"@vechain/sdk-errors@1.0.0-beta.10":
+  version "1.0.0-beta.10"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.10.tgz#1a81091e556237ffc752451816cd9c190dcedc10"
+  integrity sha512-IIckZJRL66l28dvHK0ZKiNjIK47GhLmrjUydMRAypmPpHrBeR416fL8q8IjO1RQhnR2bWkDg6DGB5LH6JXM/Hw==
 
-"@vechain/sdk-logging@1.0.0-beta.9":
-  version "1.0.0-beta.9"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-beta.9.tgz#4daac10f27cd432e98ce9e05fca48193ec93a58e"
-  integrity sha512-WRiy/R1Z8y3xoURppmyLOyY4Ei3ySd3R8DMs913rR/JZ4k+MG+jD6vxq5Phk8TuZYo+1XAaOMx3Z3Gc6uCxmnA==
+"@vechain/sdk-logging@1.0.0-beta.10":
+  version "1.0.0-beta.10"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-beta.10.tgz#b12951742afbfe17cbbb7d8cf454dfbe954fae57"
+  integrity sha512-TxUn/ojZnMkKaqXQBHTbtrZ8xEOJTAAjMaJmdX58hAAgZ46/1U3jukCHB0eFTEVDdPx+FazN+dvDJtBsy0B1lQ==
   dependencies:
-    "@vechain/sdk-errors" "1.0.0-beta.9"
+    "@vechain/sdk-errors" "1.0.0-beta.10"
 
-"@vechain/sdk-network@1.0.0-beta.9":
-  version "1.0.0-beta.9"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.9.tgz#63d574fa3b580f9fd6472dbf1188a27a3f3a314a"
-  integrity sha512-Uf3nYV2rfM8+m41InNu7w3cPrqOYRnAN58/4T5ntE4garFTvI24ipuUPpPB7gMSBoOplWTXibaRDuuZiLo3bLA==
+"@vechain/sdk-network@1.0.0-beta.10":
+  version "1.0.0-beta.10"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.10.tgz#b228ffc653e1a283d65819d086c465f3ee0dfbe0"
+  integrity sha512-kaWmo2ktd2NO11rarBGCl2gAGB11Ly/aCxMIQwZ2CQ6y2zkkg/e4iEWs9a4i+e7NOOaGb0RKt4cC9GtjkeiALw==
   dependencies:
     "@types/ws" "^8.5.10"
-    "@vechain/sdk-core" "1.0.0-beta.9"
-    "@vechain/sdk-errors" "1.0.0-beta.9"
-    "@vechain/sdk-logging" "1.0.0-beta.9"
+    "@vechain/sdk-core" "1.0.0-beta.10"
+    "@vechain/sdk-errors" "1.0.0-beta.10"
+    "@vechain/sdk-logging" "1.0.0-beta.10"
     axios "^1.7.2"
 
 acorn-walk@^8.1.1:
@@ -2867,16 +2867,7 @@ string-length@^4.0.1:
     char-regex "^1.0.2"
     strip-ansi "^6.0.0"
 
-"string-width-cjs@npm:string-width@^4.2.0":
-  version "4.2.3"
-  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
-  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
-  dependencies:
-    emoji-regex "^8.0.0"
-    is-fullwidth-code-point "^3.0.0"
-    strip-ansi "^6.0.1"
-
-string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
+"string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -2894,14 +2885,7 @@ string-width@^5.0.1, string-width@^5.1.2:
     emoji-regex "^9.2.2"
     strip-ansi "^7.0.1"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
-  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
-  dependencies:
-    ansi-regex "^5.0.1"
-
-strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -3154,16 +3138,7 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
-  version "7.0.0"
-  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
-  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
-  dependencies:
-    ansi-styles "^4.0.0"
-    string-width "^4.1.0"
-    strip-ansi "^6.0.0"
-
-wrap-ansi@^7.0.0:
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
