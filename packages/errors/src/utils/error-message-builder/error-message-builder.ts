@@ -17,8 +17,8 @@ const stringifyData = (data: unknown): string => {
         value: unknown
     ) => unknown) => {
         const seen = new WeakSet();
-        return (key: string, value: unknown) => {
-            if (typeof value === 'object' && value !== null) {
+        return (_key: string, value: unknown) => {
+            if (typeof value === 'object' && value !== null && _key !== '') {
                 if (seen.has(value)) {
                     return;
                 }
