@@ -1,4 +1,4 @@
-import { assert, RLP } from '@vechain/sdk-errors';
+import { assert, RLP_ERRORS } from '@vechain/sdk-errors';
 
 /**
  * Asserts that the data is a hex string of the correct length.
@@ -16,7 +16,7 @@ const assertFixedHexBlobKindData = (
     assert(
         'assertFixedHexBlobKindData',
         data.length === bytes * 2 + 2,
-        RLP.INVALID_RLP,
+        RLP_ERRORS.INVALID_RLP,
         `Validation error: Hex string in ${context} must be exactly ${bytes} bytes in length.`,
         { data, context }
     );
@@ -39,7 +39,7 @@ const assertFixedHexBlobKindBuffer = (
     assert(
         'assertFixedHexBlobKindBuffer',
         buffer.length === bytes,
-        RLP.INVALID_RLP,
+        RLP_ERRORS.INVALID_RLP,
         `Validation error: Buffer in ${context} must be exactly ${bytes} bytes in length.`,
         { buffer, context }
     );

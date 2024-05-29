@@ -1,4 +1,4 @@
-import { RLP as rlp } from '@ethereumjs/rlp';
+import { RLP } from '@ethereumjs/rlp';
 import {
     type RLPInput,
     type RLPOutput,
@@ -6,8 +6,8 @@ import {
     type RLPValidObject,
     type RLPValueType
 } from './types';
-import { RLP } from '.';
-import { assert, RLP as RLPError } from '@vechain/sdk-errors';
+import { RLPProfiles } from '.';
+import { assert, RLP_ERRORS } from '@vechain/sdk-errors';
 import { assertIsArray } from '../../assertions';
 
 /**
@@ -16,7 +16,7 @@ import { assertIsArray } from '../../assertions';
  * @returns The encoded data as a Buffer.
  */
 function encode(data: RLPInput): Buffer {
-    const encodedData = rlp.encode(data);
+    const encodedData = RLP.encode(data);
     return Buffer.from(encodedData);
 }
 
@@ -26,7 +26,7 @@ function encode(data: RLPInput): Buffer {
  * @returns The decoded data or null if decoding fails.
  */
 function decode(encodedData: Buffer): RLPOutput {
-    return rlp.decode(encodedData);
+    return RLP.decode(encodedData);
 }
 
 /**
@@ -36,27 +36,27 @@ function decode(encodedData: Buffer): RLPOutput {
 class Profiler {
     /**
      * Creates a new Profiler instance.
-     * @param profile - RLP profile for encoding/decoding structures.
+     * @param profile - RLP_CODER profile for encoding/decoding structures.
      */
     constructor(readonly profile: RLPProfile) {}
 
     /**
-     * Encodes an object following the provided RLP profile.
+     * Encodes an object following the provided RLP_CODER profile.
      * @param data - Object to be encoded.
      * @returns - Encoded data as a Buffer.
      */
     public encodeObject(data: RLPValidObject): Buffer {
         const packedData = _packData(data, this.profile, '');
-        return Buffer.from(rlp.encode(packedData));
+        return Buffer.from(RLP.encode(packedData));
     }
 
     /**
-     * Decodes an object following the provided RLP profile.
+     * Decodes an object following the provided RLP_CODER profile.
      * @param encodedData - Data to be decoded.
      * @returns - Decoded data as RLPValueType.
      */
     public decodeObject(encodedData: Buffer): RLPValueType {
-        const packedData = rlp.decode(encodedData);
+        const packedData = RLP.decode(encodedData);
         return _unpackData(packedData, this.profile, '');
     }
 }
@@ -67,7 +67,7 @@ class Profiler {
  *
  * @throws{InvalidRLPError}
  * @param obj - The object data to be packed.
- * @param profile - RLP profile for encoding structures.
+ * @param profile - RLP_CODER profile for encoding structures.
  * @param context - Encoding context for error tracing.
  * @returns Packed data as RLPInput.
  *
@@ -82,7 +82,7 @@ const _packData = (
     const kind = profile.kind;
 
     // ScalarKind: direct encoding using the provided method.
-    if (kind instanceof RLP.ScalarKind) {
+    if (kind instanceof RLPProfiles.ScalarKind) {
         return kind.data(obj, context).encode();
     }
 
@@ -115,7 +115,7 @@ const _packData = (
  *
  * @throws{InvalidRLPError}
  * @param packed - The packed data to be unpacked.
- * @param profile - RLP profile for decoding structures.
+ * @param profile - RLP_CODER profile for decoding structures.
  * @param context - Decoding context for error tracing.
  * @returns Unpacked data as RLPValueType.
  *
@@ -131,11 +131,11 @@ const _unpackData = (
     const kind = profile.kind;
 
     // ScalarKind: Direct decoding using the provided method.
-    if (kind instanceof RLP.ScalarKind) {
+    if (kind instanceof RLPProfiles.ScalarKind) {
         assert(
             '_unpackData',
             Buffer.isBuffer(packed) || packed instanceof Uint8Array,
-            RLPError.INVALID_RLP,
+            RLP_ERRORS.INVALID_RLP,
             'Unpacking error: Expected data type is Buffer.',
             { context }
         );
@@ -152,7 +152,7 @@ const _unpackData = (
         assert(
             '_unpackData',
             parts.length === kind.length,
-            RLPError.INVALID_RLP,
+            RLP_ERRORS.INVALID_RLP,
             `Unpacking error: Expected ${kind.length} items, but got ${parts.length}.`,
             { context }
         );

@@ -1,15 +1,21 @@
 import { describe, expect, test } from '@jest/globals';
-import { Hex, RLP } from '../../src';
+import { Hex, RLP_CODER } from '../../src';
 import {
+    compactFixedHexBlobKindDecodeTestCases,
+    compactFixedHexBlobKindEncodeTestCases,
     decodeBufferProfileTestCases,
+    decodeCompactFixedHexBlobProfileTestCases,
     decodeHexBlobProfileTestCases,
+    decodeMixedKindProfileTestCases,
     decodeNumericProfileTestCases,
     decodeTestCases,
     encodeBufferProfileTestCases,
+    encodeCompactFixedHexBlobProfileTestCases,
     encodeFixedHexBlobProfileTestCases,
     encodeHexBlobProfileTestCases,
-    encodeOptionalFixedHexBlobProfileTestCases,
+    encodeMixedKindProfileTestCases,
     encodeNumericProfileTestCases,
+    encodeOptionalFixedHexBlobProfileTestCases,
     encodeTestCases,
     fixedHexBlobKindDecodeTestCases,
     fixedHexBlobKindEncodeTestCases,
@@ -25,35 +31,31 @@ import {
     invalidNumericKindDecodeTestCases,
     invalidNumericKindEncodeTestCases,
     numericKindDecodeTestCases,
-    numericKindEncodeTestCases,
-    encodeCompactFixedHexBlobProfileTestCases,
-    decodeCompactFixedHexBlobProfileTestCases,
-    encodeMixedKindProfileTestCases,
-    decodeMixedKindProfileTestCases,
-    compactFixedHexBlobKindEncodeTestCases,
-    compactFixedHexBlobKindDecodeTestCases
+    numericKindEncodeTestCases
 } from './rlp.fixture';
 import { InvalidRLPError } from '@vechain/sdk-errors';
 
 /**
- * Test suite for RLP encoding/decoding functionality
+ * Test suite for RLP_CODER encoding/decoding functionality
  * @group unit/rlp
  */
 describe('RLP', () => {
-    // Testing RLP encoding functionality
+    // Testing RLP_CODER encoding functionality
     describe('encode', () => {
         encodeTestCases.forEach(({ input, expected, description }) => {
             test(description, () => {
-                expect(Hex.of(RLP.encode(input))).toEqual(expected);
+                expect(Hex.of(RLP_CODER.encode(input))).toEqual(expected);
             });
         });
     });
 
-    // Testing RLP decoding functionality
+    // Testing RLP_CODER decoding functionality
     describe('decode', () => {
         decodeTestCases.forEach(({ input, expected, description }) => {
             test(description, () => {
-                expect(RLP.decode(Buffer.from(input, 'hex'))).toEqual(expected);
+                expect(RLP_CODER.decode(Buffer.from(input, 'hex'))).toEqual(
+                    expected
+                );
             });
         });
     });
@@ -272,7 +274,7 @@ describe('RLP', () => {
             encodeBufferProfileTestCases.forEach(
                 ({ profile, data, expected, description }) => {
                     test(description, () => {
-                        const rlp = new RLP.Profiler(profile);
+                        const rlp = new RLP_CODER.Profiler(profile);
 
                         const encoded = rlp.encodeObject(data);
 
@@ -287,7 +289,7 @@ describe('RLP', () => {
             encodeNumericProfileTestCases.forEach(
                 ({ profile, data, expected, description }) => {
                     test(description, () => {
-                        const rlp = new RLP.Profiler(profile);
+                        const rlp = new RLP_CODER.Profiler(profile);
 
                         const encoded = rlp.encodeObject(data);
 
@@ -302,7 +304,7 @@ describe('RLP', () => {
             encodeHexBlobProfileTestCases.forEach(
                 ({ profile, data, expected, description }) => {
                     test(description, () => {
-                        const rlp = new RLP.Profiler(profile);
+                        const rlp = new RLP_CODER.Profiler(profile);
 
                         const encoded = rlp.encodeObject(data);
 
@@ -316,7 +318,7 @@ describe('RLP', () => {
             encodeFixedHexBlobProfileTestCases.forEach(
                 ({ profile, data, expected, description }) => {
                     test(description, () => {
-                        const rlp = new RLP.Profiler(profile);
+                        const rlp = new RLP_CODER.Profiler(profile);
 
                         const encoded = rlp.encodeObject(data);
 
@@ -331,7 +333,7 @@ describe('RLP', () => {
             encodeOptionalFixedHexBlobProfileTestCases.forEach(
                 ({ profile, data, expected, description }) => {
                     test(description, () => {
-                        const rlp = new RLP.Profiler(profile);
+                        const rlp = new RLP_CODER.Profiler(profile);
 
                         const encoded = rlp.encodeObject(data);
 
@@ -346,7 +348,7 @@ describe('RLP', () => {
             encodeCompactFixedHexBlobProfileTestCases.forEach(
                 ({ profile, data, expected, description }) => {
                     test(description, () => {
-                        const rlp = new RLP.Profiler(profile);
+                        const rlp = new RLP_CODER.Profiler(profile);
 
                         const encoded = rlp.encodeObject(data);
 
@@ -361,7 +363,7 @@ describe('RLP', () => {
             encodeMixedKindProfileTestCases.forEach(
                 ({ profile, data, expected, description }) => {
                     test(description, () => {
-                        const rlp = new RLP.Profiler(profile);
+                        const rlp = new RLP_CODER.Profiler(profile);
 
                         const encoded = rlp.encodeObject(data);
 
@@ -376,7 +378,7 @@ describe('RLP', () => {
             invalidEncodeObjectTestCases.forEach(
                 ({ profile, data, description }) => {
                     test(description, () => {
-                        const rlp = new RLP.Profiler(profile);
+                        const rlp = new RLP_CODER.Profiler(profile);
 
                         expect(() => {
                             rlp.encodeObject(data);
@@ -396,7 +398,7 @@ describe('RLP', () => {
             decodeBufferProfileTestCases.forEach(
                 ({ profile, data, expected, description }) => {
                     test(description, () => {
-                        const rlp = new RLP.Profiler(profile);
+                        const rlp = new RLP_CODER.Profiler(profile);
 
                         const decoded = rlp.decodeObject(data);
 
@@ -411,7 +413,7 @@ describe('RLP', () => {
             decodeNumericProfileTestCases.forEach(
                 ({ profile, data, expected, description }) => {
                     test(description, () => {
-                        const rlp = new RLP.Profiler(profile);
+                        const rlp = new RLP_CODER.Profiler(profile);
 
                         const decoded = rlp.decodeObject(data);
 
@@ -426,7 +428,7 @@ describe('RLP', () => {
             decodeHexBlobProfileTestCases.forEach(
                 ({ profile, data, expected, description }) => {
                     test(description, () => {
-                        const rlp = new RLP.Profiler(profile);
+                        const rlp = new RLP_CODER.Profiler(profile);
 
                         const decoded = rlp.decodeObject(data);
 
@@ -441,7 +443,7 @@ describe('RLP', () => {
             decodeCompactFixedHexBlobProfileTestCases.forEach(
                 ({ profile, data, expected, description }) => {
                     test(description, () => {
-                        const rlp = new RLP.Profiler(profile);
+                        const rlp = new RLP_CODER.Profiler(profile);
 
                         const decoded = rlp.decodeObject(data);
 
@@ -456,7 +458,7 @@ describe('RLP', () => {
             decodeMixedKindProfileTestCases.forEach(
                 ({ profile, data, expected, description }) => {
                     test(description, () => {
-                        const rlp = new RLP.Profiler(profile);
+                        const rlp = new RLP_CODER.Profiler(profile);
 
                         const decoded = rlp.decodeObject(data);
 
@@ -471,7 +473,7 @@ describe('RLP', () => {
             invalidDecodeObjectTestCases.forEach(
                 ({ profile, data, description }) => {
                     test(description, () => {
-                        const rlp = new RLP.Profiler(profile);
+                        const rlp = new RLP_CODER.Profiler(profile);
 
                         expect(() => {
                             rlp.decodeObject(data);

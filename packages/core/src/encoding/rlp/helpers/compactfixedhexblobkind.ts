@@ -1,4 +1,4 @@
-import { assert, RLP } from '@vechain/sdk-errors';
+import { assert, RLP_ERRORS } from '@vechain/sdk-errors';
 import { Hex0x } from '../../../utils';
 
 /**
@@ -17,7 +17,7 @@ const assertCompactFixedHexBlobBuffer = (
     assert(
         'assertCompactFixedHexBlobBuffer',
         buffer.length <= bytes,
-        RLP.INVALID_RLP,
+        RLP_ERRORS.INVALID_RLP,
         `Validation error: Buffer in ${context} must be at most ${bytes} bytes.`,
         { buffer, context }
     );
@@ -25,7 +25,7 @@ const assertCompactFixedHexBlobBuffer = (
     assert(
         'assertCompactFixedHexBlobBuffer',
         buffer.length === 0 || buffer[0] !== 0,
-        RLP.INVALID_RLP,
+        RLP_ERRORS.INVALID_RLP,
         `Validation error: Buffer in ${context} should not have leading zero bytes.`,
         {
             buffer,
