@@ -1,6 +1,8 @@
+// disable eslint for the entire file
+/* eslint-disable */
+
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
-    type Contract,
     ProviderInternalBaseWallet,
     ThorClient,
     type TransactionReceipt,
@@ -11,7 +13,7 @@ import {
 import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
 import { deployedERC20Abi, erc20ContractBytecode } from './fixture';
 import { addressUtils } from '@vechain/sdk-core';
-import { InvalidAbiFunctionError } from '@vechain/sdk-errors/dist';
+import { InvalidAbiFunctionError } from '@vechain/sdk-errors';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -85,7 +87,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         expect(factory.getDeployTransaction()).not.toBe(undefined);
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         expect(contract.address).not.toBe(null);
         expect(addressUtils.isAddress(contract.address)).toBe(true);
@@ -111,13 +113,13 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         // Execute a 'transfer' transaction on the deployed contract,
         // transferring a specified amount of tokens
         const transferResult = await contract.transact.transfer(
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-            1000
+            1000n
         );
 
         // Wait for the transfer transaction to complete and obtain its receipt
@@ -150,7 +152,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         contract.setContractTransactOptions({
             signTransactionOptions: {
@@ -163,7 +165,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
-                1000
+                1000n
             )
         ).wait();
 
@@ -187,12 +189,12 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         const txResult = await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
-                1000
+                1000n
             )
         ).wait();
 
@@ -218,7 +220,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         const contractRead =
             await thorSoloClient.contracts.executeMultipleClausesCall([
@@ -245,7 +247,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         const contractRead =
             await thorSoloClient.contracts.executeMultipleClausesCall([
@@ -272,7 +274,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         // Execute multiple 'transfer' transactions on the deployed contract,
         const txResult =
@@ -327,12 +329,12 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         const txResult = await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
-                1000
+                1000n
             )
         ).wait();
 

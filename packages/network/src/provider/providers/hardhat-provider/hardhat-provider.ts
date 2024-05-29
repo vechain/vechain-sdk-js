@@ -1,7 +1,6 @@
 import { VeChainProvider } from '../vechain-provider';
 import type { EIP1193RequestArguments } from '../../eip1193';
 import { getJSONRPCErrorCode, JSONRPC } from '@vechain/sdk-errors';
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
 import {
     type BuildHardhatErrorFunction,
     type JsonRpcRequest,
@@ -10,6 +9,7 @@ import {
 import { HttpClient } from '../../../utils';
 import { ThorClient } from '../../../thor-client';
 import { type ProviderInternalWallet } from '../../helpers';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * This class is a wrapper for the VeChainProvider that Hardhat uses.

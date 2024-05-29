@@ -22,12 +22,13 @@ import {
     getReadProxy,
     getTransactProxy
 } from './contract-proxy';
+import { type Abi, type ExtractAbiFunctionNames } from 'abitype';
 import { type VeChainSigner } from '../../../signer';
 
 /**
  * A class representing a smart contract deployed on the blockchain.
  */
-class Contract {
+class Contract<TAbi extends Abi> {
     readonly thor: ThorClient;
     readonly address: string;
     readonly abi: InterfaceAbi;
@@ -35,8 +36,24 @@ class Contract {
 
     readonly deployTransactionReceipt: TransactionReceipt | undefined;
 
-    public read: ContractFunctionRead = {};
-    public transact: ContractFunctionTransact = {};
+    public read: ContractFunctionRead<
+        TAbi,
+        ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    > = {} as ContractFunctionRead<
+        TAbi,
+        ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>
+    >;
+
+    public transact: ContractFunctionTransact<
+        TAbi,
+        ExtractAbiFunctionNames<TAbi, 'payable' | 'nonpayable'>
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    > = {} as ContractFunctionTransact<
+        TAbi,
+        ExtractAbiFunctionNames<TAbi, 'payable' | 'nonpayable'>
+    >;
+
     public filters: ContractFunctionFilter = {};
     public clause: ContractFunctionClause = {};
     public criteria: ContractFunctionCriteria = {};

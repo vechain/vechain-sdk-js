@@ -1,6 +1,6 @@
+/* eslint-disable */
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
-    type Contract,
     ThorClient,
     VeChainPrivateKeySigner,
     VeChainProvider,
@@ -57,32 +57,37 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         // Execute a 'transfer' transaction on the deployed contract,
         // transferring a specified amount of tokens
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                1000
+                1000n
             )
         ).wait();
 
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                5000
+                5000n
             )
         ).wait();
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
         const events = await contract.filters
             .Transfer(
                 undefined,
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
             )
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             .get();
 
-        expect(events.map((x) => x.decodedData)).toEqual([
+        expect(
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+            events.map((x: { decodedData: never }) => x.decodedData)
+        ).toEqual([
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
                 '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
@@ -109,21 +114,21 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         // Execute a 'transfer' transaction on the deployed contract,
         // transferring a specified amount of tokens
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                1000
+                1000n
             )
         ).wait();
 
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                5000
+                5000n
             )
         ).wait();
 
@@ -176,21 +181,21 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         // Execute a 'transfer' transaction on the deployed contract,
         // transferring a specified amount of tokens
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                1000
+                1000n
             )
         ).wait();
 
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                5000
+                5000n
             )
         ).wait();
 
@@ -230,21 +235,21 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         // Execute a 'transfer' transaction on the deployed contract,
         // transferring a specified amount of tokens
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                1000
+                1000n
             )
         ).wait();
 
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                5000
+                5000n
             )
         ).wait();
 
@@ -281,28 +286,28 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         // Execute a 'transfer' transaction on the deployed contract,
         // transferring a specified amount of tokens
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                1000
+                1000n
             )
         ).wait();
 
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                5000
+                5000n
             )
         ).wait();
 
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
-                5000
+                5000n
             )
         ).wait();
 
@@ -366,28 +371,28 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         // Execute a 'transfer' transaction on the deployed contract,
         // transferring a specified amount of tokens
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                1000
+                1000n
             )
         ).wait();
 
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                5000
+                5000n
             )
         ).wait();
 
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
-                5000
+                5000n
             )
         ).wait();
 
@@ -437,7 +442,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         erc20Factory = await erc20Factory.startDeployment();
 
-        const contractERC20: Contract = await erc20Factory.waitForDeployment();
+        const contractERC20 = await erc20Factory.waitForDeployment();
 
         // Deploy the EventExample contract
         let factoryEventExample =
@@ -449,17 +454,17 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factoryEventExample = await factoryEventExample.startDeployment();
 
-        const contractEventExample: Contract =
+        const contractEventExample =
             await factoryEventExample.waitForDeployment();
 
         await (
             await contractERC20.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                5000
+                5000n
             )
         ).wait();
 
-        await (await contractEventExample.transact.setValue(3000)).wait();
+        await (await contractEventExample.transact.setValue(3000n)).wait();
 
         const transferCriteria = contractERC20.criteria.Transfer(
             undefined,
@@ -492,9 +497,10 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         await expect(
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-return
             async () => await contract.filters.EventNotFound().get()
         ).rejects.toThrowError(InvalidAbiFunctionError);
     }, 10000);
@@ -512,9 +518,10 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         await expect(
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
             async () => await contract.filters.EventNotFound().get()
         ).rejects.toThrowError(InvalidAbiFunctionError);
     }, 10000);

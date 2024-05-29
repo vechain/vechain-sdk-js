@@ -22,6 +22,7 @@ import { type ThorClient } from '../thor-client';
 import { Contract, ContractFactory } from './model';
 import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
 import { type VeChainSigner } from '../../signer';
+import { type Abi } from 'abitype';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -42,12 +43,17 @@ class ContractsModule {
      * @param signer - The signer used for signing transactions during contract deployment, ensuring the deployer's identity.
      * @returns An instance of `ContractFactory` configured with the provided ABI, bytecode, and signer, ready for deploying contracts.
      */
-    public createContractFactory(
-        abi: InterfaceAbi,
+    public createContractFactory<TAbi extends Abi>(
+        abi: TAbi,
         bytecode: string,
         signer: VeChainSigner
-    ): ContractFactory {
-        return new ContractFactory(abi, bytecode, signer, this.thor);
+    ): ContractFactory<TAbi> {
+        return new ContractFactory<TAbi>(
+            abi as InterfaceAbi,
+            bytecode,
+            signer,
+            this.thor
+        );
     }
 
     /**
@@ -58,12 +64,17 @@ class ContractsModule {
      * @param signer - Optional. The signer caller, used for signing transactions when interacting with the contract.
      * @returns A new instance of the Contract, initialized with the provided address, ABI, and optionally, a signer.
      */
-    public load(
+    public load<Tabi extends Abi>(
         address: string,
-        abi: InterfaceAbi,
+        abi: Tabi,
         signer?: VeChainSigner
-    ): Contract {
-        return new Contract(address, abi, this.thor, signer);
+    ): Contract<Tabi> {
+        return new Contract<Tabi>(
+            address,
+            abi as InterfaceAbi,
+            this.thor,
+            signer
+        );
     }
 
     /**

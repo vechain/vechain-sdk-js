@@ -2,6 +2,12 @@ import type { ContractCallResult, ContractClause } from '../types';
 import type { SendTransactionResult } from '../../transactions';
 import { type ContractFilter } from './contract-filter';
 import { type FilterCriteria } from '../../logs';
+import {
+    type Abi,
+    type ExtractAbiFunctionNames,
+    type ExtractAbiFunction,
+    type AbiParametersToPrimitiveTypes
+} from 'abitype';
 
 /**
  * Represents a generic contract function type that accepts an arbitrary number of arguments
@@ -25,7 +31,15 @@ type ContractFunctionSync<T = unknown> = (...args: unknown[]) => T;
  *               are not specified, allowing for flexibility in function signatures.
  * @returns A promise that resolves to the type `T`, representing the result of the contract function execution.
  */
-type ContractFunctionAsync<T = unknown> = (...args: unknown[]) => Promise<T>;
+type ContractFunctionAsync<T = unknown, TAbi, TFunctionName> = (
+    ...args: [
+        ...Partial<{ value: number }>,
+        ...AbiParametersToPrimitiveTypes<
+            ExtractAbiFunction<TAbi, TFunctionName>['inputs'],
+            'inputs'
+        >
+    ]
+) => Promise<T>;
 
 /**
  * Defines a mapping of contract function names to their corresponding read-only contract functions.
@@ -35,9 +49,12 @@ type ContractFunctionAsync<T = unknown> = (...args: unknown[]) => Promise<T>;
  * The keys of this record represent the names of the contract functions, and the values are the contract
  * functions themselves, adhering to the `ContractFunctionAsync` type with `ContractCallResult` as the return type.
  */
-type ContractFunctionRead = Record<
-    string,
-    ContractFunctionAsync<ContractCallResult>
+type ContractFunctionRead<
+    TAbi extends Abi,
+    TFunctionName extends ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>
+> = Record<
+    TFunctionName,
+    ContractFunctionAsync<ContractCallResult, TAbi, TFunctionName>
 >;
 
 /**
@@ -48,9 +65,15 @@ type ContractFunctionRead = Record<
  * The keys of this record represent the names of the contract functions, and the values are the contract
  * functions themselves, adhering to the `ContractFunctionAsync` type with `SendTransactionResult` as the return type.
  */
-type ContractFunctionTransact = Record<
-    string,
-    ContractFunctionAsync<SendTransactionResult>
+type ContractFunctionTransact<
+    TAbi extends Abi,
+    TFunctionName extends ExtractAbiFunctionNames<
+        TAbi,
+        'payable' | 'non payable'
+    >
+> = Record<
+    TFunctionName,
+    ContractFunctionAsync<SendTransactionResult, TAbi, TFunctionName>
 >;
 
 /**

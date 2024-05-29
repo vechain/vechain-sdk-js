@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
-    type Contract,
     ProviderInternalBaseWallet,
     ThorClient,
     VeChainProvider,
@@ -61,7 +60,7 @@ describe('ThorClient - ERC20 Contracts on testnet', () => {
      * Test transaction  execution with url delegation set from contract.
      */
     test('transaction execution with url delegation set from contract', async () => {
-        const contract: Contract = thorTestnetClient.contracts.load(
+        const contract = thorTestnetClient.contracts.load(
             ERC20_CONTRACT_ADDRESS_ON_TESTNET,
             deployedERC20Abi,
             (await providerWithDelegationEnabled.getSigner(
@@ -72,7 +71,7 @@ describe('ThorClient - ERC20 Contracts on testnet', () => {
         const txResult = await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
-                1000
+                1000n
             )
         ).wait();
 

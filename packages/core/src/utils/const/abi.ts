@@ -338,7 +338,7 @@ const VIP180_ABI = JSON.stringify([
     }
 ]);
 
-const ERC721_ABI = JSON.stringify([
+const ERC721_ABI = [
     {
         inputs: [],
         stateMutability: 'nonpayable',
@@ -796,6 +796,6 @@ const ERC721_ABI = JSON.stringify([
         stateMutability: 'nonpayable',
         type: 'function'
     }
-]);
+] as const;
 
 export { PARAMS_ABI, VIP180_ABI, ERC721_ABI };
