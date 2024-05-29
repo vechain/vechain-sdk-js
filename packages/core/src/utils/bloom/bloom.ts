@@ -1,13 +1,13 @@
 import * as utils from '@noble/curves/abstract/utils';
 import { ADDRESS, assert, BLOOM, DATA } from '@vechain/sdk-errors';
-import { Hex0x, Hex } from '../hex';
+import { Hex, Hex0x } from '../hex';
 import { addressUtils } from '../../address';
 import { bloom } from '../../bloom';
 import type {
-    Clause,
     ExpandedBlockDetail,
     TransactionsExpandedBlockDetail
 } from '@vechain/sdk-network';
+import { type TransactionClause } from '../../transaction';
 
 /**
  * Regular expression pattern to match the uppercase hexadecimal strings
@@ -45,7 +45,7 @@ const addressesOf = (block: ExpandedBlockDetail): string[] => {
     addresses.add(block.signer);
     block.transactions.forEach(
         (transaction: TransactionsExpandedBlockDetail) => {
-            transaction.clauses.forEach((clause: Clause) => {
+            transaction.clauses.forEach((clause: TransactionClause) => {
                 if (typeof clause.to === 'string') {
                     addresses.add(clause.to);
                 }
