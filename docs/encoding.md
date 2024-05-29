@@ -105,9 +105,9 @@ By supporting ABI and RLP encoding handling, VeChainSDK equips developers with t
 const profile = {
     name: 'clause',
     kind: [
-        { name: 'to', kind: new RLP.OptionalFixedHexBlobKind(20) },
-        { name: 'value', kind: new RLP.NumericKind(32) },
-        { name: 'data', kind: new RLP.HexBlobKind() }
+        { name: 'to', kind: new RLP_CODER.OptionalFixedHexBlobKind(20) },
+        { name: 'value', kind: new RLP_CODER.NumericKind(32) },
+        { name: 'data', kind: new RLP_CODER.HexBlobKind() }
     ]
 };
 
@@ -119,9 +119,9 @@ const clause = {
     data: '0x'
 };
 
-// 3 - RLP Instance to encode and decode
+// 3 - RLP_CODER Instance to encode and decode
 
-const rlp = new RLP.Profiler(profile);
+const rlp = new RLP_CODER.Profiler(profile);
 
 // Encoding and Decoding
 const data = rlp.encodeObject(clause);

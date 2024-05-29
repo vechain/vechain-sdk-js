@@ -1,4 +1,4 @@
-import { assert, RLP as RLPError, RLP } from '@vechain/sdk-errors';
+import { assert, RLP_ERRORS } from '@vechain/sdk-errors';
 import { type RLPInput } from '../../encoding';
 
 /**
@@ -18,7 +18,7 @@ function assertIsValidBuffer(
     assert(
         `assertIsValidBuffer - ${methodName}`,
         Buffer.isBuffer(bufferToCheck),
-        RLP.INVALID_RLP,
+        RLP_ERRORS.INVALID_RLP,
         `Validation error: Expected a Buffer type in ${context}.`,
         {
             bufferToCheck,
@@ -44,7 +44,7 @@ function assertIsArray<ArrayType>(
     assert(
         `assertIsArray - ${methodName}`,
         Array.isArray(arrayToCheck),
-        RLPError.INVALID_RLP,
+        RLP_ERRORS.INVALID_RLP,
         `Validation error: Expected an array in ${context}.`,
         {
             context

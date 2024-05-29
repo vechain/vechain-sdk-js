@@ -50,7 +50,7 @@ describe('Error handler test', () => {
      * Verify that the error with additional data thrown is an instance of the expected error InvalidRLPError and
      * that the additional data has the expected fields
      */
-    test('Throw Invalid RLP Exception with data', () => {
+    test('Throw Invalid RLP_ERRORS Exception with data', () => {
         try {
             throw buildError(
                 'test',

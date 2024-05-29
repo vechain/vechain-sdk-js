@@ -6,6 +6,8 @@ import {
     CertificateInvalidSignatureFormatError,
     CertificateInvalidSignerError,
     CertificateNotSignedError,
+    CONTRACT,
+    ContractDeploymentFailedError,
     ContractInterfaceError,
     DATA,
     EIP1193,
@@ -55,7 +57,7 @@ import {
     POLL_ERROR,
     type PollErrorData,
     PollExecutionError,
-    RLP,
+    RLP_ERRORS,
     SECP256K1,
     TRANSACTION,
     TransactionAlreadySignedError,
@@ -64,7 +66,6 @@ import {
     TransactionMissingPrivateKeyError,
     TransactionNotSignedError
 } from '../model';
-import { CONTRACT, ContractDeploymentFailedError } from '../model';
 
 /**
  * @note: REGISTER YOUR NEW FANCY ERRORS BELOW!
@@ -88,7 +89,7 @@ type ErrorCode =
     | BLOOM
     | CERTIFICATE
     | ABI
-    | RLP
+    | RLP_ERRORS
     | DATA
     | TRANSACTION
     | HTTP_CLIENT
@@ -105,8 +106,8 @@ type ErrorCode =
  * @param ErrorCodeT - The error code type from the error types enum.
  */
 type DataType<ErrorCodeT extends ErrorCode> =
-    // RLP
-    ErrorCodeT extends RLP.INVALID_RLP
+    // RLP_ERRORS
+    ErrorCodeT extends RLP_ERRORS.INVALID_RLP
         ? InvalidRLPErrorData
         : // HTTP_CLIENT
           ErrorCodeT extends HTTP_CLIENT.INVALID_HTTP_REQUEST
@@ -146,7 +147,7 @@ const ERROR_CODES = {
     BLOOM,
     CERTIFICATE,
     ABI,
-    RLP,
+    RLP: RLP_ERRORS,
     DATA,
     TRANSACTION,
     HTTP_CLIENT,
@@ -219,8 +220,8 @@ type ErrorType<ErrorCodeT> =
                                                   ? InvalidAbiFunctionError
                                                   : ErrorCodeT extends ABI.CONTRACT_INTERFACE_ERROR
                                                     ? ContractInterfaceError
-                                                    : // RLP
-                                                      ErrorCodeT extends RLP.INVALID_RLP
+                                                    : // RLP_ERRORS
+                                                      ErrorCodeT extends RLP_ERRORS.INVALID_RLP
                                                       ? InvalidRLPError
                                                       : // DATA
                                                         ErrorCodeT extends DATA.INVALID_DATA_TYPE
@@ -325,8 +326,8 @@ const ErrorClassMap = new Map<
     [ABI.INVALID_FUNCTION, InvalidAbiFunctionError],
     [ABI.CONTRACT_INTERFACE_ERROR, ContractInterfaceError],
 
-    // RLP
-    [RLP.INVALID_RLP, InvalidRLPError],
+    // RLP_ERRORS
+    [RLP_ERRORS.INVALID_RLP, InvalidRLPError],
 
     // DATA
     [DATA.INVALID_DATA_TYPE, InvalidDataTypeError],
