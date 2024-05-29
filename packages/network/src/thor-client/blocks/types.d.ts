@@ -1,6 +1,7 @@
 /* --- Input options start --- */
 
 import { type Event, type Transfer } from '../logs';
+import { type TransactionClause } from '@vechain/sdk-core';
 
 /**
  * Input options for Blocks module.
@@ -149,26 +150,7 @@ interface ExpandedBlockDetail extends BlockDetail {
 }
 
 /**
- * Clause represents the individual operation in a blockchain transaction.
- */
-interface Clause {
-    /**
-     * Destination or contract address of the clause.
-     */
-    to: string | null;
-    /**
-     * Amount of VET transferred in the clause. Zero value if no VET is transferred and we are
-     * performing a smart contract transaction.
-     */
-    value: string;
-    /**
-     * Data sent along with the clause. Zero value if no data is sent.
-     */
-    data: string;
-}
-
-/**
- * Output represent the result or consequence of a blockchain transaction.
+ * Output represents the result or consequence of a blockchain transaction.
  */
 interface Output {
     /**
@@ -212,7 +194,7 @@ interface TransactionsExpandedBlockDetail {
     /**
      * Clauses represent the individual conditions or terms in a blockchain transaction.
      */
-    clauses: Clause[];
+    clauses: TransactionClause[];
 
     /**
      * Gas price coefficient for the transaction.
@@ -288,7 +270,6 @@ export {
     type CompressedBlockDetail,
     type ExpandedBlockDetail,
     type TransactionsExpandedBlockDetail,
-    type Clause,
     type Output,
     type WaitForBlockOptions
 };

@@ -1,6 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import {
-    type Clause,
     type CompressedBlockDetail,
     type EventFragment,
     type EventLogs,
@@ -24,6 +23,7 @@ import {
     clauseBuilder,
     coder,
     type FunctionFragment,
+    type TransactionClause,
     TransactionHandler,
     unitsUtils
 } from '@vechain/sdk-core';
@@ -250,7 +250,7 @@ describe('Subscriptions Solo network tests', () => {
         });
 
         // Trigger the smart contract function that emits the event
-        const clause: Clause = {
+        const clause: TransactionClause = {
             to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
             value: unitsUtils.parseVET('1').toString(),
             data: '0x'
