@@ -15,7 +15,7 @@ import {
 } from '../../../../signer';
 
 /**
- * Abstarct implementation of Provider internal wallet class.
+ * Abstract implementation of Provider internal wallet class.
  */
 abstract class AbstractProviderInternalWallet
     implements ProviderInternalWallet
