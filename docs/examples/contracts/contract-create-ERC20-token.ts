@@ -2,7 +2,7 @@ import {
     ProviderInternalBaseWallet,
     type ProviderInternalWalletAccount,
     ThorClient,
-   VeChainProvider,
+    VeChainProvider,
     type VeChainSigner
 } from '@vechain/sdk-network';
 import { unitsUtils, VIP180_ABI } from '@vechain/sdk-core';

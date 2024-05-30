@@ -7,7 +7,7 @@ import {
     ProviderInternalBaseWallet,
     signerUtils,
     ThorClient,
-   VeChainProvider
+    VeChainProvider
 } from '@vechain/sdk-network';
 import { expect } from 'expect'; // START_SNIPPET: FullFlowNoDelegatorSnippet
 
@@ -20,7 +20,7 @@ const thorSoloClient = ThorClient.fromUrl(_soloUrl, {
 });
 
 // Sender account with private key
-const senderAccount = {
+const senderAccount: { privateKey: string; address: `0x${string}` } = {
     privateKey:
         'f9fc826b63a35413541d92d2bfb6661128cd5075fcdca583446d20c59994ba26',
     address: '0x7a28e7361fd10f4f058f9fefc77544349ecff5d6'

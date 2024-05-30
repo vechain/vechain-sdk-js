@@ -79,7 +79,7 @@ const PARAMS_ABI = JSON.stringify([
  *
  * @see [VIP 180](https://github.com/vechain/VIPs/blob/master/vips/VIP-180.md)
  */
-const VIP180_ABI = JSON.stringify([
+const VIP180_ABI = [
     {
         constant: true,
         inputs: [],
@@ -336,7 +336,7 @@ const VIP180_ABI = JSON.stringify([
         name: 'Approval',
         type: 'event'
     }
-]);
+] as const;
 
 const ERC721_ABI = [
     {

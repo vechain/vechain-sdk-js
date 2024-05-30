@@ -13,10 +13,8 @@ import {
     type SubscriptionEvent,
     ThorClient,
     type VeChainProvider,
-    type VeChainSigner,
-    type Contract
+    type VeChainSigner
 } from '../../../../src';
-import { type Abi } from 'abitype';
 
 /**
  *VeChain provider tests - Solo Network
@@ -179,7 +177,7 @@ describe('Hardhat provider tests', () => {
      * @throws {Error} If the received message doesn't match the expected format or if the log event details are incorrect, indicating an issue with the subscription or the event emission process.
      */
     test('Should be able to get to subscribe to the latest logs of an erc20 contract', async () => {
-        const contract: Contract<Abi> = await deployERC20Contract(
+        const contract = await deployERC20Contract(
             thorClient,
             (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner
         );

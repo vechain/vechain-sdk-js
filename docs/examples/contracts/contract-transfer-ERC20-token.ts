@@ -5,7 +5,7 @@ import {
     type ProviderInternalWalletAccount,
     ThorClient,
     type TransactionReceipt,
-   VeChainProvider,
+    VeChainProvider,
     type VeChainSigner
 } from '@vechain/sdk-network';
 import { expect } from 'expect';
@@ -35,7 +35,7 @@ const signer = (await provider.getSigner(
 )) as VeChainSigner;
 
 // Defining a function for deploying the ERC20 contract
-const setupERC20Contract = async (): Promise<Contract> => {
+const setupERC20Contract = async (): Promise<Contract<typeof VIP180_ABI>> => {
     const contractFactory = thorSoloClient.contracts.createContractFactory(
         VIP180_ABI,
         erc20ContractBytecode,
@@ -56,7 +56,7 @@ const contract = await setupERC20Contract();
 
 const transferResult = await contract.transact.transfer(
     '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-    10000
+    10000n
 );
 
 // Wait for the transfer transaction to complete and obtain its receipt
