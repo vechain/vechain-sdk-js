@@ -30,6 +30,7 @@ import {
 } from '@vechain/sdk-core';
 import {
     Contract,
+    type ContractFactory,
     ThorClient,
     type TransactionReceipt,
     VeChainPrivateKeySigner,
@@ -82,7 +83,9 @@ describe('ThorClient - Contracts', () => {
      *
      * @returns A promise that resolves to a `TransactionSendResult` object representing the result of the deployment.
      */
-    async function createExampleContractFactory() {
+    async function createExampleContractFactory(): Promise<
+        ContractFactory<typeof deployedContractAbi>
+    > {
         const deployParams: DeployParams = { types: ['uint'], values: ['100'] };
 
         const contractFactory = thorSoloClient.contracts.createContractFactory(
@@ -365,9 +368,9 @@ describe('ThorClient - Contracts', () => {
 
         const contractFilter = loadedContract.filters.DataUpdated(
             '0x0000000000000000000000000000456e65726779',
-            10,
-            10,
-            10
+            10n,
+            10n,
+            10n
         );
 
         expect(contractFilter).toBeDefined();
@@ -567,11 +570,9 @@ describe('ThorClient - Contracts', () => {
                         getParams?.order
                     );
 
-                    expect(
-                        eventLogs.map(
-                            (x: { decodedData: any }) => x.decodedData
-                        )
-                    ).toEqual(expectedData);
+                    expect(eventLogs.map((x) => x.decodedData)).toEqual(
+                        expectedData
+                    );
                 },
                 10000
             );

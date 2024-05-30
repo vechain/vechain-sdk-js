@@ -82,7 +82,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         expect(
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-            events.map((x: { decodedData: never }) => x.decodedData)
+            events.map((x) => x.decodedData)
         ).toEqual([
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',

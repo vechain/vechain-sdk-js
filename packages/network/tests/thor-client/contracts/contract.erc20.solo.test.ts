@@ -1,6 +1,3 @@
-// disable eslint for the entire file
-/* eslint-disable */
-
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     ProviderInternalBaseWallet,
@@ -277,15 +274,15 @@ describe('ThorClient - ERC20 Contracts', () => {
                 [
                     contract.clause.transfer(
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                        1000
+                        1000n
                     ),
                     contract.clause.transfer(
                         TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
-                        1000
+                        1000n
                     ),
                     contract.clause.transfer(
                         TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
-                        3000
+                        3000n
                     )
                 ],
                 signer
