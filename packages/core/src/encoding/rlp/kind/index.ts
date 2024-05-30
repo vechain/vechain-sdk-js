@@ -2,14 +2,14 @@ import { BufferKind } from './bufferkind';
 import { NumericKind } from './numerickind';
 import { ScalarKind } from './scalarkind.abstract';
 import {
-    HexBlobKind,
+    CompactFixedHexBlobKind,
     FixedHexBlobKind,
-    OptionalFixedHexBlobKind,
-    CompactFixedHexBlobKind
+    HexBlobKind,
+    OptionalFixedHexBlobKind
 } from './hexblobkinds';
 
 /**
- * RLP profile classes.
+ * RLP_CODER profile classes.
  */
 export const RLPProfiles = {
     ScalarKind,

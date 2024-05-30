@@ -1,6 +1,6 @@
-import { dataUtils, Hex0x, Hex } from '../../../utils';
+import { dataUtils, Hex, Hex0x } from '../../../utils';
 import { type RLPInput } from '../types';
-import { assert, RLP } from '@vechain/sdk-errors';
+import { assert, RLP_ERRORS } from '@vechain/sdk-errors';
 
 /**
  * Validates and converts the input data to a BigInt.
@@ -16,7 +16,7 @@ const validateNumericKindData = (data: RLPInput, context: string): bigint => {
     assert(
         'validateNumericKindData',
         typeof data === 'number' || typeof data === 'string',
-        RLP.INVALID_RLP,
+        RLP_ERRORS.INVALID_RLP,
         `Validation error: Input in ${context} must be a string or number.`,
         { data, context }
     );
@@ -46,7 +46,7 @@ const _validateNumericKindNumber = (num: number, context: string): void => {
     assert(
         'validateNumericKindNumber',
         Number.isSafeInteger(num) && num >= 0,
-        RLP.INVALID_RLP,
+        RLP_ERRORS.INVALID_RLP,
         `Validation error: Number in ${context} must be a safe and non-negative integer.`,
         {
             num,
@@ -75,7 +75,7 @@ const _validateNumericKindString = (str: string, context: string): void => {
     assert(
         '_validateNumericKindString',
         isHex || isDecimal,
-        RLP.INVALID_RLP,
+        RLP_ERRORS.INVALID_RLP,
         `Validation error: String in ${context} must represent a non-negative integer in hex or decimal format.`,
         { str, context }
     );
@@ -84,7 +84,7 @@ const _validateNumericKindString = (str: string, context: string): void => {
     assert(
         '_validateNumericKindString',
         !isHex || str.length > 2,
-        RLP.INVALID_RLP,
+        RLP_ERRORS.INVALID_RLP,
         `Validation error: Hex string number in ${context} must be of valid length.`,
         { str, context }
     );
@@ -111,7 +111,7 @@ const assertValidNumericKindBuffer = (
     assert(
         'assertValidNumericKindBuffer',
         maxBytes === undefined || buf.length <= maxBytes,
-        RLP.INVALID_RLP,
+        RLP_ERRORS.INVALID_RLP,
         `Validation error: Buffer in ${context} must be less than ${maxBytes} bytes.`,
         { maxBytes, context }
     );
@@ -120,7 +120,7 @@ const assertValidNumericKindBuffer = (
     assert(
         'assertValidNumericKindBuffer',
         buf[0] !== 0,
-        RLP.INVALID_RLP,
+        RLP_ERRORS.INVALID_RLP,
         `Validation error: Buffer in ${context} must represent a canonical integer (no leading zeros).`,
         { buf, context }
     );
@@ -145,7 +145,7 @@ const encodeBigIntToBuffer = (
     assert(
         'encodeBigIntToBuffer',
         maxBytes === undefined || hex.length <= maxBytes * 2,
-        RLP.INVALID_RLP,
+        RLP_ERRORS.INVALID_RLP,
         `Validation error: Encoded number in ${context} must fit within ${maxBytes} bytes.`,
         { maxBytes, hex, context }
     );
