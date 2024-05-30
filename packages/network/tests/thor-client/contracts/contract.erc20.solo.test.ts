@@ -13,7 +13,6 @@ import {
 import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
 import { deployedERC20Abi, erc20ContractBytecode } from './fixture';
 import { addressUtils } from '@vechain/sdk-core';
-import { InvalidAbiFunctionError } from '@vechain/sdk-errors';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -168,10 +167,6 @@ describe('ThorClient - ERC20 Contracts', () => {
                 1000n
             )
         ).wait();
-
-        await expect(
-            async () => await contract.filters.EventNotFound().get()
-        ).rejects.toThrowError(InvalidAbiFunctionError);
     }, 10000);
 
     /**

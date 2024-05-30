@@ -22,7 +22,11 @@ import {
     getReadProxy,
     getTransactProxy
 } from './contract-proxy';
-import { type Abi, type ExtractAbiFunctionNames } from 'abitype';
+import {
+    type Abi,
+    type ExtractAbiEventNames,
+    type ExtractAbiFunctionNames
+} from 'abitype';
 import { type VeChainSigner } from '../../../signer';
 
 /**
@@ -54,9 +58,25 @@ class Contract<TAbi extends Abi> {
         ExtractAbiFunctionNames<TAbi, 'payable' | 'nonpayable'>
     >;
 
-    public filters: ContractFunctionFilter = {};
-    public clause: ContractFunctionClause = {};
-    public criteria: ContractFunctionCriteria = {};
+    public filters: ContractFunctionFilter<TAbi, ExtractAbiEventNames<TAbi>> =
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+        {} as ContractFunctionFilter<TAbi, ExtractAbiEventNames<TAbi>>;
+
+    public clause: ContractFunctionClause<
+        TAbi,
+        ExtractAbiFunctionNames<TAbi>
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    > = {} as ContractFunctionClause<
+        TAbi,
+        ExtractAbiFunctionNames<TAbi>
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    >;
+
+    public criteria: ContractFunctionCriteria<
+        TAbi,
+        ExtractAbiEventNames<TAbi>
+        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    > = {} as ContractFunctionCriteria<TAbi, ExtractAbiEventNames<TAbi>>;
 
     private contractCallOptions: ContractCallOptions = {};
     private contractTransactionOptions: ContractTransactionOptions = {};

@@ -17,6 +17,7 @@ import { type FilterCriteria } from '../../logs';
 import type {
     Abi,
     AbiParametersToPrimitiveTypes,
+    ExtractAbiEventNames,
     ExtractAbiFunction,
     ExtractAbiFunctionNames
 } from 'abitype';
@@ -121,14 +122,14 @@ function getTransactProxy<TAbi extends Abi>(
  */
 function getFilterProxy<TAbi extends Abi>(
     contract: Contract<TAbi>
-): ContractFunctionFilter {
+): ContractFunctionFilter<TAbi, ExtractAbiEventNames<TAbi>> {
     return new Proxy(contract.filters, {
         get: (_target, prop) => {
             // Otherwise, assume that the function is a contract method
             return (...args: unknown[]): ContractFilter<TAbi> => {
                 const criteriaSet = buildCriteria(contract, prop, args);
 
-                return new ContractFilter(contract, [criteriaSet]);
+                return new ContractFilter<TAbi>(contract, [criteriaSet]);
             };
         }
     });
@@ -141,7 +142,7 @@ function getFilterProxy<TAbi extends Abi>(
  */
 function getClauseProxy<TAbi extends Abi>(
     contract: Contract<TAbi>
-): ContractFunctionClause {
+): ContractFunctionClause<TAbi, ExtractAbiFunctionNames<TAbi>> {
     return new Proxy(contract.clause, {
         get: (_target, prop) => {
             return (...args: unknown[]): ContractClause => {
@@ -179,7 +180,7 @@ function getClauseProxy<TAbi extends Abi>(
  */
 function getCriteriaProxy<TAbi extends Abi>(
     contract: Contract<TAbi>
-): ContractFunctionCriteria {
+): ContractFunctionCriteria<TAbi, ExtractAbiEventNames<TAbi>> {
     return new Proxy(contract.criteria, {
         get: (_target, prop) => {
             return (...args: unknown[]): FilterCriteria => {
