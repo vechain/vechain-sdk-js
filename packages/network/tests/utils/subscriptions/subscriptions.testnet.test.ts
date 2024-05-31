@@ -41,12 +41,7 @@ describe('Subscriptions Testnet', () => {
                     ).toEqual(expectedURL);
 
                     // Test the connection to the websocket
-                    // ********** START: TEMPORARY COMMENT **********
-                    //     Understand why subscriptions.testnet.test.ts is not working
-                    //     and why the testWebSocketConnection function is not working
-                    // ********** END: TEMPORARY COMMENT **********
-                    await Promise.resolve(0); // TO AVOID LINT ERROR (WE WILL REMOVE THIS LINE)
-                    // await testWebSocketConnection(expectedURL)
+                    await testWebSocketConnection(expectedURL);
                 }, 10000);
             }
         );
@@ -68,12 +63,7 @@ describe('Subscriptions Testnet', () => {
                 ).toEqual(expectedURL);
 
                 // Test the connection to the websocket
-                // ********** START: TEMPORARY COMMENT **********
-                //     Understand why subscriptions.testnet.test.ts is not working
-                //     and why the testWebSocketConnection function is not working
-                // ********** END: TEMPORARY COMMENT **********
-                await Promise.resolve(0); // TO AVOID LINT ERROR (WE WILL REMOVE THIS LINE)
-                // await testWebSocketConnection(expectedURL);
+                await testWebSocketConnection(expectedURL);
             });
         });
     });
@@ -98,12 +88,7 @@ describe('Subscriptions Testnet', () => {
                     ).toEqual(expectedURL);
 
                     // Test the connection to the websocket
-                    // ********** START: TEMPORARY COMMENT **********
-                    //     Understand why subscriptions.testnet.test.ts is not working
-                    //     and why the testWebSocketConnection function is not working
-                    // ********** END: TEMPORARY COMMENT **********
-                    await Promise.resolve(0); // TO AVOID LINT ERROR (WE WILL REMOVE THIS LINE)
-                    // await testWebSocketConnection(expectedURL);
+                    await testWebSocketConnection(expectedURL);
                 });
             }
         );
@@ -120,12 +105,7 @@ describe('Subscriptions Testnet', () => {
                 ).toEqual(expectedURL);
 
                 // Test the connection to the websocket
-                // ********** START: TEMPORARY COMMENT **********
-                //     Understand why subscriptions.testnet.test.ts is not working
-                //     and why the testWebSocketConnection function is not working
-                // ********** END: TEMPORARY COMMENT **********
-                await Promise.resolve(0); // TO AVOID LINT ERROR (WE WILL REMOVE THIS LINE)
-                // await testWebSocketConnection(expectedURL);
+                await testWebSocketConnection(expectedURL);
             });
         });
     });
@@ -147,12 +127,7 @@ describe('Subscriptions Testnet', () => {
                     ).toEqual(expectedURL);
 
                     // Test the connection to the websocket
-                    // ********** START: TEMPORARY COMMENT **********
-                    //     Understand why subscriptions.testnet.test.ts is not working
-                    //     and why the testWebSocketConnection function is not working
-                    // ********** END: TEMPORARY COMMENT **********
-                    await Promise.resolve(0); // TO AVOID LINT ERROR (WE WILL REMOVE THIS LINE)
-                    // await testWebSocketConnection(expectedURL);
+                    await testWebSocketConnection(expectedURL);
                 });
             }
         );
@@ -178,12 +153,7 @@ describe('Subscriptions Testnet', () => {
                     ).toEqual(expectedURL);
 
                     // Test the connection to the websocket
-                    // ********** START: TEMPORARY COMMENT **********
-                    //     Understand why subscriptions.testnet.test.ts is not working
-                    //     and why the testWebSocketConnection function is not working
-                    // ********** END: TEMPORARY COMMENT **********
-                    await Promise.resolve(0); // TO AVOID LINT ERROR (WE WILL REMOVE THIS LINE)
-                    // await testWebSocketConnection(expectedURL);
+                    await testWebSocketConnection(expectedURL);
                 });
             }
         );
