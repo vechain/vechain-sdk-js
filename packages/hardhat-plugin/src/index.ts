@@ -63,6 +63,9 @@ extendEnvironment((hre) => {
                 "BUT it's possible that some functionalities will not be available."
             ]
         });
+
+        // @NOTE: This is a warning. If vechain network is not found, we will return to not break the hardhat execution
+        return;
     }
 
     // 3 - Extend environment with the 'HardhatVeChainProvider'
