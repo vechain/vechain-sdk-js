@@ -1,5 +1,6 @@
 import { RLP_CODER } from '@vechain/sdk-core';
 import { expect } from 'expect';
+import { stringifyData } from '@vechain/sdk-errors';
 
 // START_SNIPPET: RlpSnippet
 
@@ -35,4 +36,4 @@ const obj = rlp.decodeObject(data);
 expect(data.toString('hex')).toBe(
     'd7947567d83b7b8d80addcb281a71d54fc7b3364ffed0a80'
 );
-expect(JSON.stringify(obj)).toBe(JSON.stringify(clause));
+expect(stringifyData(obj)).toBe(stringifyData(clause));

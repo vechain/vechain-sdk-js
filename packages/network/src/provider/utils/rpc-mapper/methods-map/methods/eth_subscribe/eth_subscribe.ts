@@ -3,7 +3,11 @@ import {
     type FilterOptions,
     type VeChainProvider
 } from '../../../../../providers';
-import { buildProviderError, JSONRPC } from '@vechain/sdk-errors';
+import {
+    buildProviderError,
+    JSONRPC,
+    stringifyData
+} from '@vechain/sdk-errors';
 import { Hex } from '@vechain/sdk-core';
 
 /**
@@ -56,7 +60,7 @@ const ethSubscribe = async (
         throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,
             `Method 'ethSubscribe' failed: provider not available\n
-            Params: ${JSON.stringify(params)}\n
+            Params: ${stringifyData(params)}\n
             URL: ${thorClient.httpClient.baseURL}`,
             {
                 params,
@@ -71,7 +75,7 @@ const ethSubscribe = async (
         throw buildProviderError(
             JSONRPC.INVALID_PARAMS,
             `Method 'ethSubscribe' failed: Invalid subscription type param\n
-            Params: ${JSON.stringify(params)}\n
+            Params: ${stringifyData(params)}\n
             URL: ${thorClient.httpClient.baseURL}`,
             {
                 params
@@ -89,7 +93,7 @@ const ethSubscribe = async (
             throw buildProviderError(
                 JSONRPC.INTERNAL_ERROR,
                 `Method 'ethSubscribe' failed: Best block not available\n
-            Params: ${JSON.stringify(params)}\n
+            Params: ${stringifyData(params)}\n
             URL: ${thorClient.httpClient.baseURL}`,
                 {
                     params

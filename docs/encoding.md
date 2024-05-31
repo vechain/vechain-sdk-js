@@ -53,7 +53,7 @@ The contract interface is used to provide a higher level of abstraction to allow
 ```typescript { name=contract, category=example }
 // 1 - Create a new function
 
-const contractABI = JSON.stringify([
+const contractABI = stringifyData([
     {
         constant: false,
         inputs: [

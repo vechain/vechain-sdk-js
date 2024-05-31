@@ -1,6 +1,10 @@
 import { type ThorClient } from '../../../../../../thor-client';
 import { blocksFormatter, type BlocksRPC } from '../../../../formatter';
-import { buildProviderError, JSONRPC } from '@vechain/sdk-errors';
+import {
+    buildProviderError,
+    JSONRPC,
+    stringifyData
+} from '@vechain/sdk-errors';
 import { RPCMethodsMap } from '../../../rpc-mapper';
 import { RPC_METHODS } from '../../../../const';
 
@@ -37,7 +41,7 @@ const evmMine = async (thorClient: ThorClient): Promise<BlocksRPC | null> => {
             `Method 'evm_mine' failed: Error while getting last block\n
             URL: ${thorClient.httpClient.baseURL}`,
             {
-                innerError: JSON.stringify(e)
+                innerError: stringifyData(e)
             }
         );
     }

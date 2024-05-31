@@ -8,7 +8,10 @@ import {
     Hex,
     secp256k1
 } from '../../../src';
-import { InvalidSecp256k1PrivateKeyError } from '@vechain/sdk-errors';
+import {
+    InvalidSecp256k1PrivateKeyError,
+    stringifyData
+} from '@vechain/sdk-errors';
 
 /**
  * Transaction assertions
@@ -88,7 +91,7 @@ describe('Transaction assertions', () => {
          */
         transactionAssertionsTests.assertIsSignedTransaction.valid.forEach(
             ({ value }) => {
-                test(`should not throw error for assertIsSignedTransaction of ${JSON.stringify(
+                test(`should not throw error for assertIsSignedTransaction of ${stringifyData(
                     value
                 )}`, () => {
                     // Expect assertIsSignedTransaction to not throw
@@ -104,7 +107,7 @@ describe('Transaction assertions', () => {
          */
         transactionAssertionsTests.assertIsSignedTransaction.invalid.forEach(
             ({ value }) => {
-                test(`should throw error for assertIsSignedTransaction of ${JSON.stringify(
+                test(`should throw error for assertIsSignedTransaction of ${stringifyData(
                     value
                 )}`, () => {
                     // Expect assertIsSignedTransaction to throw

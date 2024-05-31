@@ -3,6 +3,7 @@ import { estimateGasTestCases, invalidEstimateGasTestCases } from './fixture';
 import { ThorClient } from '../../../src';
 import { soloUrl } from '../../fixture';
 import { generateRandomValidAddress } from '@vechain/sdk-core/tests/fixture';
+import { stringifyData } from '@vechain/sdk-errors';
 
 /**
  * Gas module tests.
@@ -70,9 +71,9 @@ describe('ThorClient - Gas Module', () => {
          */
         invalidEstimateGasTestCases.forEach(
             ({ clauses, options, expectedError }) => {
-                test(`Should throw an error with clauses: ${JSON.stringify(
+                test(`Should throw an error with clauses: ${stringifyData(
                     clauses
-                )}, options: ${JSON.stringify(options)}`, async () => {
+                )}, options: ${stringifyData(options)}`, async () => {
                     await expect(
                         thorSoloClient.gas.estimateGas(
                             clauses,

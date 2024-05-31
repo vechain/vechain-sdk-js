@@ -1,11 +1,12 @@
 import { coder } from '@vechain/sdk-core';
 import { expect } from 'expect';
+import { stringifyData } from '@vechain/sdk-errors';
 
 // START_SNIPPET: ContractSnippet
 
 // 1 - Create a new function
 
-const contractABI = JSON.stringify([
+const contractABI = stringifyData([
     {
         constant: false,
         inputs: [

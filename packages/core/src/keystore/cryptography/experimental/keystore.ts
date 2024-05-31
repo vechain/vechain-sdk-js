@@ -4,7 +4,7 @@
  * encryption, decryption, and validation functionality.
  */
 import * as utils from '@noble/curves/abstract/utils';
-import { assert, KEYSTORE } from '@vechain/sdk-errors';
+import { assert, KEYSTORE, stringifyData } from '@vechain/sdk-errors';
 import { ctr } from '@noble/ciphers/aes';
 import { scrypt } from '@noble/hashes/scrypt';
 import { type Keystore, type KeystoreAccount } from '../../types';
@@ -550,7 +550,7 @@ function decryptKeystore(
  */
 function isValid(keystore: Keystore): boolean {
     try {
-        const copy = JSON.parse(JSON.stringify(keystore)) as Keystore;
+        const copy = JSON.parse(stringifyData(keystore)) as Keystore;
         if (
             copy.crypto.cipher.toLowerCase() === KEYSTORE_CRYPTO_CIPHER &&
             copy.crypto.kdf.toLowerCase() === KEYSTORE_CRYPTO_KDF &&

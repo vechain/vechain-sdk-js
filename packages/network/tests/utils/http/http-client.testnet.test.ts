@@ -2,7 +2,12 @@ import { describe, expect, test } from '@jest/globals';
 import { type HttpParams } from '../../../src';
 import { testnetGenesisBlock } from './fixture';
 import { testAccount, testNetwork } from '../../fixture';
-import { buildError, HTTP_CLIENT, HTTPClientError } from '@vechain/sdk-errors';
+import {
+    buildError,
+    HTTP_CLIENT,
+    HTTPClientError,
+    stringifyData
+} from '@vechain/sdk-errors';
 
 /**
  * Timeout for each test.
@@ -29,8 +34,8 @@ describe('Test HttpClient class on Testnet', () => {
             );
 
             // Assert that the response matches the expected firstTestnetBlock
-            expect(JSON.stringify(response)).toEqual(
-                JSON.stringify(testnetGenesisBlock)
+            expect(stringifyData(response)).toEqual(
+                stringifyData(testnetGenesisBlock)
             );
         },
         TIMEOUT
