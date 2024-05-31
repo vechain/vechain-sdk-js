@@ -60,9 +60,10 @@ function startProxy(): void {
     if (options.config != null) {
         config = readConfigFile(options.config as string);
     }
+    console.log('[rpc-proxy]: Configuration loaded ', config);
     console.log('[rpc-proxy]: Starting VeChain RPC Proxy');
 
-    const thorClient = new ThorClient(new HttpClient(options.node as string));
+    const thorClient = new ThorClient(new HttpClient(config.url));
     // Create the wallet
     // Create the wallet
     const wallet: ProviderInternalWallet = Array.isArray(config.accounts)
@@ -112,8 +113,8 @@ function startProxy(): void {
     app.post('*', handleRequest);
     app.get('*', handleRequest);
 
-    app.listen(options.port, () => {
-        console.log(`[rpc-proxy]: Proxy is running on port ${options.port}`);
+    app.listen(config.port, () => {
+        console.log(`[rpc-proxy]: Proxy is running on port ${config.port}`);
     }).on('error', (err: Error) => {
         console.error(`[rpc-proxy]: Error starting proxy: ${err.message}`);
     });
@@ -132,7 +133,7 @@ function startProxy(): void {
                 });
 
                 // Log the request and the response
-                if (options.verbose != null) {
+                if (config.verbose != null) {
                     VeChainSDKLogger('log').log({
                         title: `Sending request - ${requestBody.method}`,
                         messages: [`response: ${stringifyData(result)}`]

@@ -5,6 +5,16 @@ import { type SignTransactionOptions } from '@vechain/sdk-network';
  */
 interface Config {
     /**
+     * Port to run the proxy on
+     */
+    port?: number;
+
+    /**
+     * URL of the blockchain node
+     */
+    url: string;
+
+    /**
      * Accounts to use for signing transactions
      */
     accounts:
@@ -19,6 +29,11 @@ interface Config {
      * Delegator configuration
      */
     delegator?: SignTransactionOptions;
+
+    /**
+     * Enable verbose logging
+     */
+    verbose?: boolean;
 
     /**
      * Enable delegation
