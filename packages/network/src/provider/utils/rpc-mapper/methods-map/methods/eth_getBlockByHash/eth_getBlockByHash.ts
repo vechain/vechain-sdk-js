@@ -1,5 +1,11 @@
 import { type ThorClient } from '../../../../../../thor-client';
-import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
+import {
+    assert,
+    buildProviderError,
+    DATA,
+    JSONRPC,
+    stringifyData
+} from '@vechain/sdk-errors';
 import { type BlocksRPC } from '../../../../formatter';
 import { Hex0x } from '@vechain/sdk-core';
 import { ethGetBlockByNumber } from '../eth_getBlockByNumber';
@@ -41,11 +47,11 @@ const ethGetBlockByHash = async (
             `Method 'eth_getBlockByHash' failed: Error while getting block ${
                 params[0] as string
             }\n
-            Params: ${JSON.stringify(params)}\n
+            Params: ${stringifyData(params)}\n
             URL: ${thorClient.httpClient.baseURL}`,
             {
                 params,
-                innerError: JSON.stringify(e)
+                innerError: stringifyData(e)
             }
         );
     }

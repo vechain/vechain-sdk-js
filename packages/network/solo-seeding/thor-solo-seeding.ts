@@ -14,6 +14,7 @@ import { expect } from '@jest/globals';
 import { TESTING_CONTRACT_BYTECODE } from './const';
 import { ALL_ACCOUNTS, soloUrl } from '../tests/fixture';
 import * as ethers from 'ethers';
+import { stringifyData } from '@vechain/sdk-errors';
 
 /**
  * Constructs clauses for transferring VTHO tokens.
@@ -475,7 +476,7 @@ const seedThorSolo = async (): Promise<void> => {
         ALL_ACCOUNTS[4].address
     );
 
-    console.log('Deploy contract simulation: ', JSON.stringify(simulations));
+    console.log('Deploy contract simulation: ', stringifyData(simulations));
 
     const resp = await thorSoloClient.transactions.sendTransaction(deployTx);
 

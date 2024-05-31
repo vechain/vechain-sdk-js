@@ -4,6 +4,7 @@ import {
     type SignTransactionOptions
 } from '../src';
 import { secp256k1 } from '../../core';
+import { stringifyData } from '@vechain/sdk-errors';
 
 /**
  * Url of the mainnet fixture
@@ -245,7 +246,7 @@ const TESTING_CONTRACT_BYTECODE =
 /**
  * ABI of the `TestingContract` smart contract.
  */
-const TESTING_CONTRACT_ABI = JSON.stringify([
+const TESTING_CONTRACT_ABI = stringifyData([
     {
         inputs: [
             {

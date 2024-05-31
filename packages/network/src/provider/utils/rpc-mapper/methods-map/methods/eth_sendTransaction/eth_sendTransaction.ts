@@ -1,5 +1,11 @@
 import { type ThorClient } from '../../../../../../thor-client';
-import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
+import {
+    assert,
+    buildProviderError,
+    DATA,
+    JSONRPC,
+    stringifyData
+} from '@vechain/sdk-errors';
 import { type VeChainProvider } from '../../../../../providers';
 import { type TransactionObjectInput } from './types';
 import { type VeChainSigner } from '../../../../../../signer';
@@ -85,11 +91,11 @@ const ethSendTransaction = async (
         throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,
             `Method 'eth_sendTransaction' failed: Error sending the transaction\n
-            Params: ${JSON.stringify(params)}\n
+            Params: ${stringifyData(params)}\n
             URL: ${thorClient.httpClient.baseURL}`,
             {
                 params,
-                innerError: JSON.stringify(e)
+                innerError: stringifyData(e)
             }
         );
     }

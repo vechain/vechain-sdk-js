@@ -3,7 +3,12 @@
  */
 import { ethers } from 'ethers';
 import { type Keystore, type KeystoreAccount } from '../../types';
-import { assert, buildError, KEYSTORE } from '@vechain/sdk-errors';
+import {
+    assert,
+    buildError,
+    KEYSTORE,
+    stringifyData
+} from '@vechain/sdk-errors';
 import { secp256k1 } from '../../../secp256k1';
 import { addressUtils } from '../../../address';
 import { Hex0x } from '../../../utils';
@@ -76,7 +81,7 @@ async function decrypt(
 
     try {
         return (await ethers.decryptKeystoreJson(
-            JSON.stringify(keystore),
+            stringifyData(keystore),
             password
         )) as KeystoreAccount;
     } catch (e) {
@@ -100,7 +105,7 @@ async function decrypt(
  * @returns A boolean indicating whether the keystore is valid or not.
  */
 function isValid(keystore: Keystore): boolean {
-    return ethers.isKeystoreJson(JSON.stringify(keystore));
+    return ethers.isKeystoreJson(stringifyData(keystore));
 }
 
 /**

@@ -11,7 +11,7 @@ import {
 import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
 import { deployedERC20Abi, erc20ContractBytecode } from './fixture';
 import { addressUtils } from '@vechain/sdk-core';
-import { InvalidAbiFunctionError } from '@vechain/sdk-errors/dist';
+import { InvalidAbiFunctionError } from '@vechain/sdk-errors';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.

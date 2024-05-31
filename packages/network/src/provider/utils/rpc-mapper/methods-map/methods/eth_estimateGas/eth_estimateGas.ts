@@ -1,4 +1,10 @@
-import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
+import {
+    assert,
+    buildProviderError,
+    DATA,
+    JSONRPC,
+    stringifyData
+} from '@vechain/sdk-errors';
 import { type TransactionObjectInput } from './types';
 import {
     type SimulateTransactionClause,
@@ -76,10 +82,10 @@ const ethEstimateGas = async (
             `Method 'eth_estimateGas' failed: Error while calculating gas for ${
                 params[0] as string
             } transaction\n
-            Params: ${JSON.stringify(params)}\n`,
+            Params: ${stringifyData(params)}\n`,
             {
                 params,
-                innerError: JSON.stringify(e)
+                innerError: stringifyData(e)
             }
         );
     }
