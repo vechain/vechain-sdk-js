@@ -268,10 +268,9 @@ function parseUnits(
         const powerOfTen = digitsOfUnit(digitsOrUnit);
         const multiplier = BigNumber(10).pow(powerOfTen);
         const result = bn.times(multiplier);
-        const f = digitsOfFractionalPart(result);
-        const i = digitsOfIntegerPart(result);
-        const text = result.toPrecision(f + i);
-        return BigInt(text);
+        const fractionDigits = digitsOfFractionalPart(result);
+        const integerDigits = digitsOfIntegerPart(result);
+        return BigInt(result.toPrecision(fractionDigits + integerDigits));
     } catch (e) {
         throw buildError(
             'unitsUtils.parseUnits',
