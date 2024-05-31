@@ -47,12 +47,12 @@ program
     .parse(process.argv);
 const options = program.opts();
 
-if (options.node != null) {
-    console.log(
-        'Please provide all required options. Use --help for more information'
-    );
-    process.exit(1);
-}
+// if (options.node != null) {
+//     console.log(
+//         'Please provide all required options. Use --help for more information'
+//     );
+//     process.exit(1);
+// }
 
 /**
  * Start the proxy function.
@@ -134,10 +134,12 @@ function startProxy(): void {
                 });
 
                 // Log the request and the response
-                VeChainSDKLogger('log').log({
-                    title: `Sending request - ${requestBody.method}`,
-                    messages: [`response: ${stringifyData(result)}`]
-                });
+                if (options.verbose != null) {
+                    VeChainSDKLogger('log').log({
+                        title: `Sending request - ${requestBody.method}`,
+                        messages: [`response: ${stringifyData(result)}`]
+                    });
+                }
             } catch (e) {
                 res.json({
                     jsonrpc: '2.0',
