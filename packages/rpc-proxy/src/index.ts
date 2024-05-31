@@ -60,11 +60,10 @@ function startProxy(): void {
     if (options.config != null) {
         config = readConfigFile(options.config as string);
     }
-    console.log('[rpc-proxy]: Configuration loaded ', config);
+
     console.log('[rpc-proxy]: Starting VeChain RPC Proxy');
 
     const thorClient = new ThorClient(new HttpClient(config.url));
-    // Create the wallet
     // Create the wallet
     const wallet: ProviderInternalWallet = Array.isArray(config.accounts)
         ? new ProviderInternalBaseWallet(
