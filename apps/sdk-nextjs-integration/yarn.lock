@@ -1052,45 +1052,45 @@
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
-"@vechain/sdk-core@1.0.0-beta.11":
-  version "1.0.0-beta.11"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.11.tgz#8fb65553d51082b30785a7bccc993a66fb04553a"
-  integrity sha512-jOHp2St2+T0Jz8Mjo8NF2jT6mGIEX0kysEJ6Hl44YPYhQx5fTpORvLJjFbT1lyYvjDGgJy/K537VthN8DOE/rw==
+"@vechain/sdk-core@1.0.0-beta.12":
+  version "1.0.0-beta.12"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.12.tgz#b2909f2a0b6f532005b672a1e9ad3e6ba50670d3"
+  integrity sha512-JUKuamlOKI3cniy2U/pVIHUlX3OC3DZXfvl1wYIAVU4JIbqgSFA9I7164yIwPv1zqjK3+Drd36ezWA8V/F1XEw==
   dependencies:
     "@ethereumjs/rlp" "^5.0.2"
     "@noble/ciphers" "^0.5.2"
     "@scure/bip32" "^1.4.0"
     "@scure/bip39" "^1.3.0"
     "@types/elliptic" "^6.4.18"
-    "@vechain/sdk-errors" "1.0.0-beta.11"
-    "@vechain/sdk-logging" "1.0.0-beta.11"
+    "@vechain/sdk-errors" "1.0.0-beta.12"
+    "@vechain/sdk-logging" "1.0.0-beta.12"
     bignumber.js "^9.1.2"
     blakejs "^1.2.1"
     elliptic "^6.5.5"
     ethers "6.12.1"
     fast-json-stable-stringify "^2.1.0"
 
-"@vechain/sdk-errors@1.0.0-beta.11":
-  version "1.0.0-beta.11"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.11.tgz#eafbb6d3f88ad0696c3d5b88bd77cd5c35df2e16"
-  integrity sha512-gMQglQ8KQ9jIHBlR8wexTmyhaU6Gqup1AOKy0KuL3bbsBJMJQnNLdRxpspl7VCh0OpS5p3/0HtkqYuga7xTlAQ==
+"@vechain/sdk-errors@1.0.0-beta.12":
+  version "1.0.0-beta.12"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.12.tgz#5685740f6035a02c3585bbde9d3fe25164d9933b"
+  integrity sha512-Nn+cZYGiRKyYeaaAtiTO1L9tsT3aS18wl4JBUke+Tvo8v7VSt/PbDwhZNC4YNzgPtI0GzviIrnEymVu/XvEHig==
 
-"@vechain/sdk-logging@1.0.0-beta.11":
-  version "1.0.0-beta.11"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-beta.11.tgz#4c3dfcb6cd8e8f08a15dfa1b66e0884a3a428179"
-  integrity sha512-VMfsbYVEPLWks/S2K+4LyxKU4Zh3UaATdC4Rv+URj7EGX1kRfCl341gh92QUsoGZoW77U2ZrHSTpCvxuUrXf2A==
+"@vechain/sdk-logging@1.0.0-beta.12":
+  version "1.0.0-beta.12"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-beta.12.tgz#fa35b5a92d7797f020e034068ae0792069229a26"
+  integrity sha512-eUKMBqHF7d2wFupcg0LddB6V3PKOmmp+O+iyvk7sTqOyr+W1yWVlm3hViMpdSOdykaI6+h5o1aYk7NGTPSamKQ==
   dependencies:
-    "@vechain/sdk-errors" "1.0.0-beta.11"
+    "@vechain/sdk-errors" "1.0.0-beta.12"
 
-"@vechain/sdk-network@1.0.0-beta.11":
-  version "1.0.0-beta.11"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.11.tgz#3f29a4c6360597ecac4b82075623fd710a837688"
-  integrity sha512-6XGS1V7Wn22h25zhQ7p833Zhd/a3nM7PYbbn0nVD8K69Ni5LkHjkTFEbLcgA7VirN0+Byz2UIynIcxruB+2hyg==
+"@vechain/sdk-network@1.0.0-beta.12":
+  version "1.0.0-beta.12"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.12.tgz#af950d98a4363c2831769f53649fc4d194a2da6d"
+  integrity sha512-EWJkI/kqpKlAIxQ89FcJgzsD4m1J8fjO07dSuVB895CtCGdP0Gu3Ovv5MI7/5/NVNuL9Btw+U3Vt4rfwp7qPKQ==
   dependencies:
     "@types/ws" "^8.5.10"
-    "@vechain/sdk-core" "1.0.0-beta.11"
-    "@vechain/sdk-errors" "1.0.0-beta.11"
-    "@vechain/sdk-logging" "1.0.0-beta.11"
+    "@vechain/sdk-core" "1.0.0-beta.12"
+    "@vechain/sdk-errors" "1.0.0-beta.12"
+    "@vechain/sdk-logging" "1.0.0-beta.12"
     axios "^1.7.2"
 
 abab@^2.0.6:
