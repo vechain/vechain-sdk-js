@@ -11,7 +11,15 @@ import {
 /**
  * RLP_CODER profile classes.
  */
-export const RLPProfiles = {
+export const RLPProfiles: {
+    ScalarKind: typeof ScalarKind;
+    BufferKind: typeof BufferKind;
+    NumericKind: typeof NumericKind;
+    HexBlobKind: typeof HexBlobKind;
+    FixedHexBlobKind: typeof FixedHexBlobKind;
+    OptionalFixedHexBlobKind: typeof OptionalFixedHexBlobKind;
+    CompactFixedHexBlobKind: typeof CompactFixedHexBlobKind;
+} = {
     ScalarKind,
     BufferKind,
     NumericKind,
