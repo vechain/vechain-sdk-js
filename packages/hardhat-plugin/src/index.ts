@@ -59,7 +59,8 @@ extendEnvironment((hre) => {
                 '\t1. Is a VeChain valid network (set url and optionally delegator parameter)',
                 '\t2. Has the name of the network containing "vechain" (e.g. "vechain_mainnet", "vechain_testnet", "vechain_solo", ...)',
                 '',
-                'This is required to use the VeChain provider and its functions. Note that this is only a warning and you can hardhat without a VeChain network.',
+                'This is required to use the VeChain provider and its functions.',
+                'Note that this is only a warning and you can use hardhat without a VeChain network.',
                 "BUT it's possible that some functionalities will not be available."
             ]
         });
