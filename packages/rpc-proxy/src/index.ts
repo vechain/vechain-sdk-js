@@ -17,6 +17,8 @@ import {
 } from '@vechain/sdk-errors';
 import importConfig from '../config.json';
 import { type Config, type RequestBody } from './types';
+import fs from 'fs';
+import path from 'path';
 
 // Import the version from the package.json
 import packageJson from '../package.json';
@@ -26,6 +28,16 @@ import {
     secp256k1
 } from '@vechain/sdk-core';
 
+// Function to read and parse the configuration file
+function readConfigFile(filePath: string): Config {
+    const absolutePath = path.resolve(filePath);
+    if (!fs.existsSync(absolutePath)) {
+        throw new Error(`Configuration file not found: ${absolutePath}`);
+    }
+    const fileContent = fs.readFileSync(absolutePath, 'utf-8');
+    return JSON.parse(fileContent) as Config;
+}
+
 const version: string = packageJson.version;
 
 // Create the program to parse the command line arguments and options
@@ -33,26 +45,9 @@ const program = new Command();
 program
     .version(version)
     .description('VeChain RPC Proxy')
-    .addOption(
-        new Option('-n, --node <url>', 'Node URL of the blockchain')
-            .env('NODE_URL')
-            .default('https://mainnet.vechain.org/')
-    )
-    .addOption(
-        new Option('-p, --port <port>', 'Port to listen')
-            .env('PORT')
-            .default('8545')
-    )
-    .addOption(new Option('-v, --verbose', 'Enables more detailed logging'))
+    .addOption(new Option('-c, --config <file>', 'Path to configuration file'))
     .parse(process.argv);
 const options = program.opts();
-
-// if (options.node != null) {
-//     console.log(
-//         'Please provide all required options. Use --help for more information'
-//     );
-//     process.exit(1);
-// }
 
 /**
  * Start the proxy function.
@@ -61,7 +56,10 @@ const options = program.opts();
  * * Don't use this in production, it's just for testing purposes.
  */
 function startProxy(): void {
-    const config: Config = importConfig as Config;
+    let config: Config = importConfig as Config;
+    if (options.config != null) {
+        config = readConfigFile(options.config as string);
+    }
     console.log('[rpc-proxy]: Starting VeChain RPC Proxy');
 
     const thorClient = new ThorClient(new HttpClient(options.node as string));
