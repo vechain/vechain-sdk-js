@@ -1,17 +1,30 @@
 import { Command, Option } from 'commander';
-import { HttpClient, ThorClient, VeChainProvider } from '@vechain/sdk-network';
+import {
+    HttpClient,
+    ProviderInternalBaseWallet,
+    ProviderInternalHDWallet,
+    type ProviderInternalWallet,
+    ThorClient,
+    VeChainProvider
+} from '@vechain/sdk-network';
 import express, { type Express, type Request, type Response } from 'express';
 import cors from 'cors';
-import { type RequestBody } from './types';
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
 import {
     getJSONRPCErrorCode,
     JSONRPC,
     stringifyData
 } from '@vechain/sdk-errors';
+import importConfig from '../config.json';
+import { type Config, type RequestBody } from './types';
 
 // Import the version from the package.json
 import packageJson from '../package.json';
+import {
+    VET_DERIVATION_PATH,
+    addressUtils,
+    secp256k1
+} from '@vechain/sdk-core';
 
 const version: string = packageJson.version;
 
@@ -42,47 +55,54 @@ if (options.node != null) {
 }
 
 /**
- * Simple function to log an error.
- *
- * @param requestBody - The request body of error request
- * @param e - The error object
- */
-function logError(requestBody: RequestBody, e: unknown): void {
-    VeChainSDKLogger('error').log({
-        errorCode: JSONRPC.INTERNAL_ERROR,
-        errorMessage: `Error sending request - ${requestBody.method}`,
-        errorData: {
-            code: getJSONRPCErrorCode(JSONRPC.INVALID_REQUEST),
-            message: `Error on request - ${requestBody.method}`
-        },
-        innerError: e
-    });
-}
-
-/**
- * Simple function to log a request.
- *
- * @param requestBody - The request body of the request
- * @param result - The result of the request
- */
-function logRequest(requestBody: RequestBody, result: unknown): void {
-    VeChainSDKLogger('log').log({
-        title: `Sending request - ${requestBody.method}`,
-        messages: [`response: ${stringifyData(result)}`]
-    });
-}
-
-/**
  * Start the proxy function.
  * @note
  * * This is a simple proxy server that converts and forwards RPC requests to the VeChain network.
  * * Don't use this in production, it's just for testing purposes.
  */
 function startProxy(): void {
+    const config: Config = importConfig as Config;
     console.log('[rpc-proxy]: Starting VeChain RPC Proxy');
 
     const thorClient = new ThorClient(new HttpClient(options.node as string));
-    const provider = new VeChainProvider(thorClient);
+    // Create the wallet
+    // Create the wallet
+    const wallet: ProviderInternalWallet = Array.isArray(config.accounts)
+        ? new ProviderInternalBaseWallet(
+              config.accounts.map((privateKey: string) => {
+                  // Convert the private key to a buffer
+                  const privateKeyBuffer = Buffer.from(
+                      privateKey.startsWith('0x')
+                          ? privateKey.slice(2)
+                          : privateKey,
+                      'hex'
+                  );
+
+                  // Derive the public key and address from the private key
+                  return {
+                      privateKey: privateKeyBuffer,
+                      publicKey: Buffer.from(
+                          secp256k1.derivePublicKey(privateKeyBuffer)
+                      ),
+                      address: addressUtils.fromPrivateKey(privateKeyBuffer)
+                  };
+              }),
+              {
+                  delegator: config.delegator
+              }
+          )
+        : new ProviderInternalHDWallet(
+              config.accounts.mnemonic.split(' '),
+              config.accounts.count,
+              0,
+              VET_DERIVATION_PATH,
+              { delegator: config.delegator }
+          );
+    const provider = new VeChainProvider(
+        thorClient,
+        wallet,
+        config.enableDelegation
+    );
 
     // Start the express proxy server
     const app: Express = express();
@@ -114,7 +134,10 @@ function startProxy(): void {
                 });
 
                 // Log the request and the response
-                logRequest(requestBody, result);
+                VeChainSDKLogger('log').log({
+                    title: `Sending request - ${requestBody.method}`,
+                    messages: [`response: ${stringifyData(result)}`]
+                });
             } catch (e) {
                 res.json({
                     jsonrpc: '2.0',
@@ -123,7 +146,15 @@ function startProxy(): void {
                 });
 
                 // Log the error
-                logError(requestBody, e);
+                VeChainSDKLogger('error').log({
+                    errorCode: JSONRPC.INTERNAL_ERROR,
+                    errorMessage: `Error sending request - ${requestBody.method}`,
+                    errorData: {
+                        code: getJSONRPCErrorCode(JSONRPC.INVALID_REQUEST),
+                        message: `Error on request - ${requestBody.method}`
+                    },
+                    innerError: e
+                });
             }
         })();
     }
