@@ -5,6 +5,7 @@ import {
     toQueryStringTestCases
 } from './fixture';
 import { sanitizeWebsocketBaseURL, toQueryString } from '../../../src';
+import { stringifyData } from '@vechain/sdk-errors';
 
 /**
  * Thorest Helpers test suite
@@ -16,7 +17,7 @@ describe('Thorest Helpers', () => {
      * Test the toQueryString function
      */
     toQueryStringTestCases.forEach(({ records, expected }) => {
-        test(`toQueryString: ${JSON.stringify(records)}`, () => {
+        test(`toQueryString: ${stringifyData(records)}`, () => {
             expect(toQueryString(records)).toEqual(expected);
         });
     });

@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { TEST_ACCOUNTS, soloUrl } from '../../fixture';
+import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
 import { Hex0x, TransactionHandler } from '@vechain/sdk-core';
 import { sendTransactionErrors, simulateTransaction } from './fixture-thorest';
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { InvalidDataTypeError, stringifyData } from '@vechain/sdk-errors';
 import { ThorClient } from '../../../src';
 
 /**
@@ -165,8 +165,8 @@ describe('ThorClient - Transactions Module', () => {
                      * Compare each simulation result with the expected result.
                      */
                     for (let i = 0; i < simulatedTx.length; i++) {
-                        expect(JSON.stringify(simulatedTx[i])).toStrictEqual(
-                            JSON.stringify(expected.simulationResults[i])
+                        expect(stringifyData(simulatedTx[i])).toStrictEqual(
+                            stringifyData(expected.simulationResults[i])
                         );
                     }
                 });
@@ -191,8 +191,8 @@ describe('ThorClient - Transactions Module', () => {
 
                     expect(simulatedTx).toHaveLength(1);
 
-                    expect(JSON.stringify(simulatedTx[0])).toStrictEqual(
-                        JSON.stringify(expected.simulationResults[0])
+                    expect(stringifyData(simulatedTx[0])).toStrictEqual(
+                        stringifyData(expected.simulationResults[0])
                     );
                 });
             }
@@ -213,8 +213,8 @@ describe('ThorClient - Transactions Module', () => {
 
                     expect(simulatedTx).toHaveLength(1);
 
-                    expect(JSON.stringify(simulatedTx[0])).toStrictEqual(
-                        JSON.stringify(expected.simulationResults[0])
+                    expect(stringifyData(simulatedTx[0])).toStrictEqual(
+                        stringifyData(expected.simulationResults[0])
                     );
                 });
             }

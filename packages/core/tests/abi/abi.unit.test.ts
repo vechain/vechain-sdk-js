@@ -16,7 +16,8 @@ import {
     InvalidAbiDataToEncodeError,
     InvalidAbiEventError,
     InvalidAbiFormatTypeError,
-    InvalidAbiFunctionError
+    InvalidAbiFunctionError,
+    stringifyData
 } from '@vechain/sdk-errors';
 
 /**
@@ -432,7 +433,7 @@ describe('Abi - Function & Event', () => {
         topicsEventTestCases.forEach(
             ({ event, valuesToEncode, expectedTopics }) => {
                 test(`Encode Event topics - ${
-                    typeof event === 'string' ? event : JSON.stringify(event)
+                    typeof event === 'string' ? event : stringifyData(event)
                 }`, () => {
                     const ev = new abi.Event(event);
 
@@ -448,7 +449,7 @@ describe('Abi - Function & Event', () => {
          */
         invalidTopicsEventTestCases.forEach(
             ({ event, valuesToEncode, expectedError }) => {
-                test(`Encode Event topics - ${JSON.stringify(event)}`, () => {
+                test(`Encode Event topics - ${stringifyData(event)}`, () => {
                     const ev = new abi.Event(event);
 
                     expect(() =>

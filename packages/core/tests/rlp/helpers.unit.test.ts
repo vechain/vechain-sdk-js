@@ -1,15 +1,15 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-    assertValidNumericKindBuffer,
-    validateNumericKindData,
-    assertValidHexBlobKindData,
-    assertValidHexBlobKindBuffer,
-    assertFixedHexBlobKindData,
-    assertFixedHexBlobKindBuffer,
     assertCompactFixedHexBlobBuffer,
+    assertFixedHexBlobKindBuffer,
+    assertFixedHexBlobKindData,
+    assertValidHexBlobKindBuffer,
+    assertValidHexBlobKindData,
+    assertValidNumericKindBuffer,
     decodeBufferToHexWithLeadingZeros,
     encodeBigIntToBuffer,
-    Hex
+    Hex,
+    validateNumericKindData
 } from '../../src';
 import {
     invalidCompactFixedHexBlobKindBufferTestCases,
@@ -19,15 +19,15 @@ import {
     invalidHexBlobKindDataTestCases,
     invalidNumberTestCases,
     invalidNumericBufferTestCases,
+    validateNumberTestCases,
     validCompactFixedHexBlobKindBufferTestCases,
     validFixedHexBlobKindBufferTestCases,
     validFixedHexBlobKindDataTestCases,
     validHexBlobKindBufferTestCases,
     validHexBlobKindDataTestCases,
-    validNumericBufferTestCases,
-    validateNumberTestCases
+    validNumericBufferTestCases
 } from './helpers.fixture';
-import { InvalidRLPError } from '@vechain/sdk-errors';
+import { InvalidRLPError, stringifyData } from '@vechain/sdk-errors';
 
 /**
  * Test suite for BigInt helper functions
@@ -95,7 +95,7 @@ describe('NumericKind helpers', () => {
          * asserting that the function throws an error with a corresponding message.
          */
         invalidNumberTestCases.forEach(({ number, context }) => {
-            test(`should throw error when data is invalid ${JSON.stringify(
+            test(`should throw error when data is invalid ${stringifyData(
                 number
             )}`, () => {
                 expect(() => {
@@ -193,7 +193,7 @@ describe('HexBlobKind helpers', () => {
         });
 
         invalidHexBlobKindBufferTestCases.forEach(({ buffer, context }) => {
-            test(`should throw error when buffer is invalid ${JSON.stringify(
+            test(`should throw error when buffer is invalid ${stringifyData(
                 buffer
             )}`, () => {
                 expect(() => {
@@ -255,7 +255,7 @@ describe('FixedHexBlobKind helpers', () => {
 
         invalidFixedHexBlobKindBufferTestCases.forEach(
             ({ buffer, context, bytes }) => {
-                test(`should throw error when buffer is invalid ${JSON.stringify(
+                test(`should throw error when buffer is invalid ${stringifyData(
                     buffer
                 )}`, () => {
                     expect(() => {
@@ -289,7 +289,7 @@ describe('CompactFixedHexBlobKind helpers', () => {
 
         invalidCompactFixedHexBlobKindBufferTestCases.forEach(
             ({ buffer, context, bytes }) => {
-                test(`should throw error when buffer is invalid ${JSON.stringify(
+                test(`should throw error when buffer is invalid ${stringifyData(
                     buffer
                 )}`, () => {
                     expect(() => {

@@ -1,6 +1,7 @@
 import { expect } from 'expect';
 import { ThorClient } from '@vechain/sdk-network';
 import { clauseBuilder, unitsUtils } from '@vechain/sdk-core';
+import { stringifyData } from '@vechain/sdk-errors';
 
 // START_SNIPPET: SimulationSnippet
 
@@ -107,4 +108,4 @@ const expected2 = [
 ];
 
 // 3 - Check the result
-expect(JSON.stringify(simulatedTx2)).toStrictEqual(JSON.stringify(expected2));
+expect(stringifyData(simulatedTx2)).toStrictEqual(stringifyData(expected2));

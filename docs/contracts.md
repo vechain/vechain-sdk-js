@@ -38,7 +38,7 @@ After deploying a smart contract, interacting with its functions is the next ste
 
 ```typescript { name=contract-function-call, category=example }
 // 1 - Init a simple contract ABI
-const contractABI = JSON.stringify([
+const contractABI = stringifyData([
     {
         constant: false,
         inputs: [

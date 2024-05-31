@@ -1,9 +1,11 @@
+import { stringifyData } from '@vechain/sdk-errors';
+
 /**
  * ABI of the Params built-in contract.
  *
  * @link see [params.sol](https://docs.vechain.org/developer-resources/built-in-contracts#params-sol)
  */
-const PARAMS_ABI = JSON.stringify([
+const PARAMS_ABI = stringifyData([
     {
         constant: false,
         inputs: [
@@ -79,7 +81,7 @@ const PARAMS_ABI = JSON.stringify([
  *
  * @see [VIP 180](https://github.com/vechain/VIPs/blob/master/vips/VIP-180.md)
  */
-const VIP180_ABI = JSON.stringify([
+const VIP180_ABI = stringifyData([
     {
         constant: true,
         inputs: [],
@@ -338,7 +340,7 @@ const VIP180_ABI = JSON.stringify([
     }
 ]);
 
-const ERC721_ABI = JSON.stringify([
+const ERC721_ABI = stringifyData([
     {
         inputs: [],
         stateMutability: 'nonpayable',

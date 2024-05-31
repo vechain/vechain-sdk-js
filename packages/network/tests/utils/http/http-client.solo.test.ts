@@ -2,7 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { ZERO_ADDRESS, zeroAddressAccountDetails } from './fixture';
 import { HttpClient, type HttpParams } from '../../../src';
 import { soloUrl, testAccount } from '../../fixture';
-import { HTTPClientError } from '@vechain/sdk-errors';
+import { HTTPClientError, stringifyData } from '@vechain/sdk-errors';
 
 /**
  * HttpClient class tests.
@@ -20,8 +20,8 @@ describe('Test HttpClient class on Solo node', () => {
             `/accounts/${ZERO_ADDRESS}`
         );
 
-        expect(JSON.stringify(response)).toEqual(
-            JSON.stringify(zeroAddressAccountDetails)
+        expect(stringifyData(response)).toEqual(
+            stringifyData(zeroAddressAccountDetails)
         );
     });
 

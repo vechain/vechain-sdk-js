@@ -1,9 +1,15 @@
-import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
+import {
+    assert,
+    buildProviderError,
+    DATA,
+    JSONRPC,
+    stringifyData
+} from '@vechain/sdk-errors';
 import {
     formatToLogsRPC,
     getCriteriaSetForInput,
     type LogsRPC
-} from '../../../../formatter/logs';
+} from '../../../../formatter';
 import {
     type CompressedBlockDetail,
     type EventCriteria,
@@ -92,11 +98,11 @@ const ethGetLogs = async (
             `Method 'ethGetLogs' failed: Error while getting logs ${
                 params[0] as string
             }\n
-            Params: ${JSON.stringify(params)}\n
+            Params: ${stringifyData(params)}\n
             URL: ${thorClient.httpClient.baseURL}`,
             {
                 params,
-                innerError: JSON.stringify(e)
+                innerError: stringifyData(e)
             }
         );
     }

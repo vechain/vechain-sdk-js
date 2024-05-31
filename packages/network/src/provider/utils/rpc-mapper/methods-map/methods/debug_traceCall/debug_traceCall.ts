@@ -1,15 +1,21 @@
-import { type ThorClient } from '../../../../../../thor-client';
-import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
+import {
+    type ThorClient,
+    type TraceReturnType,
+    type TracerName
+} from '../../../../../../thor-client';
+import {
+    assert,
+    buildProviderError,
+    DATA,
+    JSONRPC,
+    stringifyData
+} from '@vechain/sdk-errors';
 import {
     debugFormatter,
     type TracerReturnTypeRPC
-} from '../../../../formatter/debug';
+} from '../../../../formatter';
 
 import { type TraceCallRPC, type TransactionObjectInput } from './types';
-import {
-    type TraceReturnType,
-    type TracerName
-} from '../../../../../../thor-client/debug';
 
 /**
  * RPC Method debug_traceCall implementation
@@ -96,11 +102,11 @@ const debugTraceCall = async (
         throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,
             `Method 'debug_traceCall' failed: Error while debug tracer call\n
-            Params: ${JSON.stringify(params)}\n
+            Params: ${stringifyData(params)}\n
             URL: ${thorClient.httpClient.baseURL}`,
             {
                 params,
-                innerError: JSON.stringify(e)
+                innerError: stringifyData(e)
             }
         );
     }
