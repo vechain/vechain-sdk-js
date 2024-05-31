@@ -31,8 +31,9 @@
     "start": "yarn build && node dist/index.js"
   },
   "dependencies": {
-    "@vechain/sdk-network": "1.0.0-beta.10",
     "@vechain/sdk-logging": "1.0.0-beta.10",
+    "@vechain/sdk-network": "1.0.0-beta.10",
+    "commander": "^12.1.0",
     "cors": "^2.8.5",
     "express": "^4.19.2"
   },

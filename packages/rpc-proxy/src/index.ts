@@ -1,26 +1,45 @@
-import {
-    HttpClient,
-    ProviderInternalBaseWallet,
-    ProviderInternalHDWallet,
-    type ProviderInternalWallet,
-    ThorClient,
-    VeChainProvider
-} from '@vechain/sdk-network';
-import importConfig from '../config.json';
+import { Command, Option } from 'commander';
+import { HttpClient, ThorClient, VeChainProvider } from '@vechain/sdk-network';
 import express, { type Express, type Request, type Response } from 'express';
 import cors from 'cors';
-import { type Config, type RequestBody } from './types';
+import { type RequestBody } from './types';
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
 import {
     getJSONRPCErrorCode,
     JSONRPC,
     stringifyData
 } from '@vechain/sdk-errors';
-import {
-    addressUtils,
-    secp256k1,
-    VET_DERIVATION_PATH
-} from '@vechain/sdk-core';
+
+// Import the version from the package.json
+import packageJson from '../package.json';
+
+const version: string = packageJson.version;
+
+// Create the program to parse the command line arguments and options
+const program = new Command();
+program
+    .version(version)
+    .description('VeChain RPC Proxy')
+    .addOption(
+        new Option('-n, --node <url>', 'Node URL of the blockchain')
+            .env('NODE_URL')
+            .default('https://mainnet.vechain.org/')
+    )
+    .addOption(
+        new Option('-p, --port <port>', 'Port to listen')
+            .env('PORT')
+            .default('8545')
+    )
+    .addOption(new Option('-v, --verbose', 'Enables more detailed logging'))
+    .parse(process.argv);
+const options = program.opts();
+
+if (options.node != null) {
+    console.log(
+        'Please provide all required options. Use --help for more information'
+    );
+    process.exit(1);
+}
 
 /**
  * Simple function to log an error.
@@ -60,51 +79,10 @@ function logRequest(requestBody: RequestBody, result: unknown): void {
  * * Don't use this in production, it's just for testing purposes.
  */
 function startProxy(): void {
-    // Initialize the proxy server
-    const config: Config = importConfig as Config;
-    const port = config.port ?? 8545;
-    console.log(`[rpc-proxy]: Starting proxy on port ${port}`);
+    console.log('[rpc-proxy]: Starting VeChain RPC Proxy');
 
-    // Initialize the provider
-    const thorClient = new ThorClient(new HttpClient(config.url));
-
-    // Create the wallet
-    const wallet: ProviderInternalWallet = Array.isArray(config.accounts)
-        ? new ProviderInternalBaseWallet(
-              config.accounts.map((privateKey: string) => {
-                  // Convert the private key to a buffer
-                  const privateKeyBuffer = Buffer.from(
-                      privateKey.startsWith('0x')
-                          ? privateKey.slice(2)
-                          : privateKey,
-                      'hex'
-                  );
-
-                  // Derive the public key and address from the private key
-                  return {
-                      privateKey: privateKeyBuffer,
-                      publicKey: Buffer.from(
-                          secp256k1.derivePublicKey(privateKeyBuffer)
-                      ),
-                      address: addressUtils.fromPrivateKey(privateKeyBuffer)
-                  };
-              }),
-              {
-                  delegator: config.delegator
-              }
-          )
-        : new ProviderInternalHDWallet(
-              config.accounts.mnemonic.split(' '),
-              config.accounts.count,
-              0,
-              VET_DERIVATION_PATH,
-              { delegator: config.delegator }
-          );
-    const provider = new VeChainProvider(
-        thorClient,
-        wallet,
-        config.enableDelegation
-    );
+    const thorClient = new ThorClient(new HttpClient(options.node as string));
+    const provider = new VeChainProvider(thorClient);
 
     // Start the express proxy server
     const app: Express = express();
@@ -113,67 +91,42 @@ function startProxy(): void {
     );
     app.use(express.json());
 
-    app.post('*', (req: Request, res: Response) => {
-        void (async () => {
-            const requestBody = req.body as RequestBody;
+    app.post('*', handleRequest);
+    app.get('*', handleRequest);
 
-            try {
-                // Get result
-                const result = await provider.request(requestBody);
-                res.json({
-                    jsonrpc: '2.0',
-                    result,
-                    id: requestBody.id
-                });
-
-                // Log the request and the response
-                logRequest(requestBody, result);
-            } catch (e) {
-                res.json({
-                    jsonrpc: '2.0',
-                    error: e,
-                    id: requestBody.id
-                });
-
-                // Log the error
-                logError(requestBody, e);
-            }
-        })();
-    });
-
-    app.get('*', (req: Request, res: Response) => {
-        void (async () => {
-            const requestBody = req.body as RequestBody;
-            try {
-                // Get result
-                const result = await provider.request(requestBody);
-
-                res.json({
-                    jsonrpc: '2.0',
-                    result,
-                    id: requestBody.id
-                });
-
-                // Log the request and the response
-                logRequest(requestBody, result);
-            } catch (e) {
-                res.json({
-                    jsonrpc: '2.0',
-                    error: e,
-                    id: requestBody.id
-                });
-
-                // Log the error
-                logError(requestBody, e);
-            }
-        })();
-    });
-
-    app.listen(port, () => {
-        console.log(`[rpc-proxy]: Proxy is running on port ${port}`);
+    app.listen(options.port, () => {
+        console.log(`[rpc-proxy]: Proxy is running on port ${options.port}`);
     }).on('error', (err: Error) => {
         console.error(`[rpc-proxy]: Error starting proxy: ${err.message}`);
     });
+
+    function handleRequest(req: Request, res: Response): void {
+        void (async () => {
+            const requestBody = req.body as RequestBody;
+            try {
+                // Get result
+                const result = await provider.request(requestBody);
+
+                res.json({
+                    jsonrpc: '2.0',
+                    result,
+                    id: requestBody.id
+                });
+
+                // Log the request and the response
+                logRequest(requestBody, result);
+            } catch (e) {
+                res.json({
+                    jsonrpc: '2.0',
+                    error: e,
+                    id: requestBody.id
+                });
+
+                // Log the error
+                logError(requestBody, e);
+            }
+        })();
+    }
 }
 
 startProxy();
