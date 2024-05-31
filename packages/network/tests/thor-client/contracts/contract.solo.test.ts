@@ -335,6 +335,33 @@ describe('ThorClient - Contracts', () => {
     }, 10000);
 
     /**
+     * Test case for loading a deployed contract and trying to get not existing functions and events.
+     */
+    test('load a deployed contract and try to get not existing functions and events', async () => {
+        // Create a contract factory that is already deploying the example contract
+        const factory = await createExampleContractFactory();
+
+        // Wait for the deployment to complete and obtain the contract instance
+        const contract = await factory.waitForDeployment();
+
+        // Load the deployed contract using the contract address, ABI and private key
+        const loadedContract = thorSoloClient.contracts.load(
+            contract.address,
+            deployedContractAbi
+        );
+
+        // The get function fragment call should fail because the function does not exist
+        expect(() =>
+            loadedContract.getFunctionFragment('notExistingFunction')
+        ).toThrow();
+
+        // The get event fragment call should fail because the event does not exist
+        expect(() =>
+            loadedContract.getEventFragment('notExistingFunction')
+        ).toThrow();
+    }, 10000);
+
+    /**
      * Test case for loading a deployed contract without adding a private key
      */
     test('load a deployed contract without adding a private key and transact', async () => {
