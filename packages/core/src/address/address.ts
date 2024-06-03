@@ -25,7 +25,7 @@ const HEX_ADDRESS_REGEX = /^0x[0-9a-f]{40}$/i;
  * @see {secp256k1.derivePublicKey}
  * @see {fromPublicKey}
  */
-function fromPrivateKey(privateKey: Uint8Array): string {
+function fromPrivateKey(privateKey: Uint8Array): `0x${string}` {
     return fromPublicKey(secp256k1.derivePublicKey(privateKey));
 }
 /**
@@ -53,7 +53,7 @@ function fromPrivateKey(privateKey: Uint8Array): string {
  * @see {secp256k1.inflatePublicKey}
  */
 
-function fromPublicKey(publicKey: Uint8Array): string {
+function fromPublicKey(publicKey: Uint8Array): `0x${string}` {
     return toERC55Checksum(
         Hex0x.of(
             keccak256(secp256k1.inflatePublicKey(publicKey).slice(1)).slice(12)
@@ -90,7 +90,7 @@ function isAddress(addressToVerify: string): boolean {
  *
  * @see {isAddress}
  */
-function toERC55Checksum(address: string): string {
+function toERC55Checksum(address: string): `0x${string}` {
     assert(
         'addressUtils.toERC55Checksum',
         isAddress(address),
@@ -100,7 +100,7 @@ function toERC55Checksum(address: string): string {
     );
     const digits = Hex.canon(address.toLowerCase());
     const hash = Hex.of(keccak256(digits));
-    let result = '0x';
+    let result: `0x${string}` = '0x';
     for (let i = 0; i < digits.length; i++) {
         if (parseInt(hash[i], 16) >= 8) {
             result += digits[i].toUpperCase();

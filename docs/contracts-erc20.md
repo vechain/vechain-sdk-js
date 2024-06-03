@@ -75,7 +75,7 @@ Once the contract is deployed, we can transfer tokens to another address using t
 ```typescript { name=contract-transfer-erc20-token, category=example }
 const transferResult = await contract.transact.transfer(
     '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-    10000
+    10000n
 );
 
 // Wait for the transfer transaction to complete and obtain its receipt
@@ -103,7 +103,7 @@ For instance, once an ERC20 token contract is deployed, we can filter the Transf
 // Starting from a deployed contract instance, transfer some tokens to a specific address
 const transferResult = await contractErc20.transact.transfer(
     '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-    10000
+    10000n
 );
 
 // Wait for the transfer transaction to complete and obtain its receipt

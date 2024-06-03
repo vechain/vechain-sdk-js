@@ -81,7 +81,7 @@ const PARAMS_ABI = stringifyData([
  *
  * @see [VIP 180](https://github.com/vechain/VIPs/blob/master/vips/VIP-180.md)
  */
-const VIP180_ABI = stringifyData([
+const VIP180_ABI = [
     {
         constant: true,
         inputs: [],
@@ -338,9 +338,9 @@ const VIP180_ABI = stringifyData([
         name: 'Approval',
         type: 'event'
     }
-]);
+] as const;
 
-const ERC721_ABI = stringifyData([
+const ERC721_ABI = [
     {
         inputs: [],
         stateMutability: 'nonpayable',
@@ -798,6 +798,6 @@ const ERC721_ABI = stringifyData([
         stateMutability: 'nonpayable',
         type: 'function'
     }
-]);
+] as const;
 
 export { PARAMS_ABI, VIP180_ABI, ERC721_ABI };

@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     soloUrl,
@@ -37,7 +39,6 @@ import {
 } from '../../../src';
 import {
     ContractDeploymentFailedError,
-    InvalidAbiFunctionError,
     TransactionMissingPrivateKeyError
 } from '@vechain/sdk-errors';
 
@@ -82,7 +83,9 @@ describe('ThorClient - Contracts', () => {
      *
      * @returns A promise that resolves to a `TransactionSendResult` object representing the result of the deployment.
      */
-    async function createExampleContractFactory(): Promise<ContractFactory> {
+    async function createExampleContractFactory(): Promise<
+        ContractFactory<typeof deployedContractAbi>
+    > {
         const deployParams: DeployParams = { types: ['uint'], values: ['100'] };
 
         const contractFactory = thorSoloClient.contracts.createContractFactory(
@@ -100,7 +103,7 @@ describe('ThorClient - Contracts', () => {
      */
     test('create a new contract and call it', () => {
         // Poll until the transaction receipt is available
-        const contract: Contract = new Contract(
+        const contract = new Contract(
             '0x123',
             deployedContractAbi,
             thorSoloClient,
@@ -115,7 +118,7 @@ describe('ThorClient - Contracts', () => {
      */
     test('create a new contract', () => {
         // Poll until the transaction receipt is available
-        const contract: Contract = new Contract(
+        const contract = new Contract(
             '0x123',
             deployedContractAbi,
             thorSoloClient,
@@ -133,7 +136,7 @@ describe('ThorClient - Contracts', () => {
         const response = await createExampleContractFactory();
 
         // Poll until the transaction receipt is available
-        const contract: Contract = await response.waitForDeployment();
+        const contract = await response.waitForDeployment();
 
         expect(contract.address).toBeDefined();
         expect(contract.abi).toBeDefined();
@@ -199,7 +202,7 @@ describe('ThorClient - Contracts', () => {
         const factory = await createExampleContractFactory();
 
         // Wait for the deployment to complete and obtain the contract instance
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         // Retrieve the bytecode of the deployed contract
         const contractBytecodeResponse =
@@ -217,9 +220,9 @@ describe('ThorClient - Contracts', () => {
         const factory = await createExampleContractFactory();
 
         // Wait for the deployment to complete and obtain the contract instance
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
-        const callFunctionSetResponse = await contract.transact.set(123);
+        const callFunctionSetResponse = await contract.transact.set(123n);
 
         const transactionReceiptCallSetContract =
             (await callFunctionSetResponse.wait()) as TransactionReceipt;
@@ -232,25 +235,6 @@ describe('ThorClient - Contracts', () => {
     }, 10000);
 
     /**
-     * Test case for calling an undefined contract function.
-     */
-    test('call an undefined contract function', async () => {
-        // Create a contract factory that is already deploying the example contract
-        const factory = await createExampleContractFactory();
-
-        // Wait for the deployment to complete and obtain the contract instance
-        const contract: Contract = await factory.waitForDeployment();
-
-        await expect(
-            async () => await contract.read.undefinedFunction()
-        ).rejects.toThrowError(InvalidAbiFunctionError);
-
-        await expect(
-            async () => await contract.transact.undefinedFunction()
-        ).rejects.toThrowError(InvalidAbiFunctionError);
-    }, 10000);
-
-    /**
      * Test case for calling a contract function with options.
      */
     test('call a contract function with options', async () => {
@@ -258,9 +242,9 @@ describe('ThorClient - Contracts', () => {
         const factory = await createExampleContractFactory();
 
         // Wait for the deployment to complete and obtain the contract instance
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
-        await (await contract.transact.set(123)).wait();
+        await (await contract.transact.set(123n)).wait();
         expect(await contract.read.get()).toEqual([BigInt(123)]);
 
         contract.setContractReadOptions({ caller: 'invalid address' });
@@ -275,11 +259,9 @@ describe('ThorClient - Contracts', () => {
             expiration: 32
         });
 
-        await expect(contract.transact.set('INVALID_DATA')).rejects.toThrow();
-
         contract.clearContractTransactOptions();
 
-        await (await contract.transact.set(22323)).wait();
+        await (await contract.transact.set(22323n)).wait();
         expect(await contract.read.get()).toEqual([BigInt(22323)]);
     }, 15000);
 
@@ -291,7 +273,7 @@ describe('ThorClient - Contracts', () => {
         const factory = await createExampleContractFactory();
 
         // Wait for the deployment to complete and obtain the contract instance
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         // Set signer with invalid private key
         contract.setSigner(
@@ -302,11 +284,11 @@ describe('ThorClient - Contracts', () => {
         );
 
         // The contract call should fail because the private key is not set
-        await expect(contract.transact.set(123)).rejects.toThrow();
+        await expect(contract.transact.set(123n)).rejects.toThrow();
 
         contract.setSigner(signer);
 
-        await (await contract.transact.set(123)).wait();
+        await (await contract.transact.set(123n)).wait();
 
         const callFunctionGetResult = await contract.read.get();
 
@@ -321,12 +303,12 @@ describe('ThorClient - Contracts', () => {
         const factory = await createExampleContractFactory();
 
         // Wait for the deployment to complete and obtain the contract instance
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         // Load the deployed contract using the contract address, ABI and private key
         const loadedContract = thorSoloClient.contracts.load(
             contract.address,
-            contract.abi
+            deployedContractAbi
         );
 
         // Call the get function of the loaded contract to verify that the stored value is 100
@@ -338,7 +320,7 @@ describe('ThorClient - Contracts', () => {
         loadedContract.setSigner(contract.getSigner() as VeChainSigner);
 
         // Call the set function of the loaded contract to set the value to 123
-        const callFunctionSetResponse = await loadedContract.transact.set(123);
+        const callFunctionSetResponse = await loadedContract.transact.set(123n);
 
         // Wait for the transaction to complete and obtain the transaction receipt
         const transactionReceiptCallSetContract =
@@ -353,6 +335,33 @@ describe('ThorClient - Contracts', () => {
     }, 10000);
 
     /**
+     * Test case for loading a deployed contract and trying to get not existing functions and events.
+     */
+    test('load a deployed contract and try to get not existing functions and events', async () => {
+        // Create a contract factory that is already deploying the example contract
+        const factory = await createExampleContractFactory();
+
+        // Wait for the deployment to complete and obtain the contract instance
+        const contract = await factory.waitForDeployment();
+
+        // Load the deployed contract using the contract address, ABI and private key
+        const loadedContract = thorSoloClient.contracts.load(
+            contract.address,
+            deployedContractAbi
+        );
+
+        // The get function fragment call should fail because the function does not exist
+        expect(() =>
+            loadedContract.getFunctionFragment('notExistingFunction')
+        ).toThrow();
+
+        // The get event fragment call should fail because the event does not exist
+        expect(() =>
+            loadedContract.getEventFragment('notExistingFunction')
+        ).toThrow();
+    }, 10000);
+
+    /**
      * Test case for loading a deployed contract without adding a private key
      */
     test('load a deployed contract without adding a private key and transact', async () => {
@@ -360,16 +369,16 @@ describe('ThorClient - Contracts', () => {
         const factory = await createExampleContractFactory();
 
         // Wait for the deployment to complete and obtain the contract instance
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         // Load the deployed contract using the contract address, ABI and private key
         const loadedContract = thorSoloClient.contracts.load(
             contract.address,
-            contract.abi
+            deployedContractAbi
         );
 
         // The contract call should fail because the private key is not set
-        await expect(loadedContract.transact.set(123)).rejects.toThrowError(
+        await expect(loadedContract.transact.set(123n)).rejects.toThrowError(
             TransactionMissingPrivateKeyError
         );
     }, 10000);
@@ -386,9 +395,9 @@ describe('ThorClient - Contracts', () => {
 
         const contractFilter = loadedContract.filters.DataUpdated(
             '0x0000000000000000000000000000456e65726779',
-            10,
-            10,
-            10
+            10n,
+            10n,
+            10n
         );
 
         expect(contractFilter).toBeDefined();
@@ -520,7 +529,7 @@ describe('ThorClient - Contracts', () => {
             signer
         );
 
-        await (await contract.transact.setStateVariable(123)).wait();
+        await (await contract.transact.setStateVariable(123n)).wait();
 
         const events = await contract.filters
             .StateChanged(
@@ -562,20 +571,21 @@ describe('ThorClient - Contracts', () => {
 
                     const factory = await contractFactory.startDeployment();
 
-                    const contract: Contract =
-                        await factory.waitForDeployment();
+                    const contract = await factory.waitForDeployment();
 
                     for (const functionCall of functionCalls) {
                         if (functionCall.type === 'read') {
+                            // @ts-ignore
                             await contract.read[functionCall.functionName](
                                 ...functionCall.params
                             );
                         } else {
-                            await (
-                                await contract.transact[
-                                    functionCall.functionName
-                                ](...functionCall.params)
-                            ).wait();
+                            // @ts-ignore
+                            const result = await contract.transact[
+                                functionCall.functionName
+                            ](...functionCall.params);
+
+                            await result.wait();
                         }
                     }
 
@@ -605,21 +615,20 @@ describe('ThorClient - Contracts', () => {
                 x.description,
                 async () => {
                     // Create contract factories
-                    const contractsFactories: ContractFactory[] =
-                        x.contracts.map((contract) => {
-                            return thorSoloClient.contracts.createContractFactory(
-                                contract.contractAbi,
-                                contract.contractBytecode,
-                                new VeChainPrivateKeySigner(
-                                    Buffer.from(
-                                        TEST_ACCOUNTS.TRANSACTION
-                                            .CONTRACT_MANAGER.privateKey,
-                                        'hex'
-                                    ),
-                                    new VeChainProvider(thorSoloClient)
-                                )
-                            );
-                        });
+                    const contractsFactories = x.contracts.map((contract) => {
+                        return thorSoloClient.contracts.createContractFactory(
+                            contract.contractAbi,
+                            contract.contractBytecode,
+                            new VeChainPrivateKeySigner(
+                                Buffer.from(
+                                    TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER
+                                        .privateKey,
+                                    'hex'
+                                ),
+                                new VeChainProvider(thorSoloClient)
+                            )
+                        );
+                    });
 
                     // Deploy contracts
                     const deployments = contractsFactories.map(

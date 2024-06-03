@@ -1,7 +1,16 @@
-import type { ContractCallResult, ContractClause } from '../types';
+import type { ContractClause } from '../types';
 import type { SendTransactionResult } from '../../transactions';
 import { type ContractFilter } from './contract-filter';
 import { type FilterCriteria } from '../../logs';
+import {
+    type Abi,
+    type ExtractAbiFunctionNames,
+    type ExtractAbiFunction,
+    type AbiParametersToPrimitiveTypes,
+    type ExtractAbiEventNames,
+    type AbiFunction,
+    type ExtractAbiEvent
+} from 'abitype';
 
 /**
  * Represents a generic contract function type that accepts an arbitrary number of arguments
@@ -13,7 +22,24 @@ import { type FilterCriteria } from '../../logs';
  *               are not specified, allowing for flexibility in function signatures.
  * @returns A value of type `T`, representing the result of the contract function execution.
  */
-type ContractFunctionSync<T = unknown> = (...args: unknown[]) => T;
+type ContractFunctionSync<T = unknown, TABIFunction> = (
+    ...args: AbiParametersToPrimitiveTypes<TABIFunction['inputs'], 'inputs'>
+) => T;
+
+/**
+ * Defines a synchronous function type for handling contract events.
+ *
+ * @template T - The return type of the contract event function. Defaults to `unknown`.
+ * @template TAbiEvent - The ABI event type for the contract event.
+ *
+ * This type represents a function that takes a variable number of arguments, which are partial
+ * representations of the input parameters defined in the ABI for the event, and returns a value of type `T`.
+ */
+type ContractEventSync<T = unknown, TABIEvent> = (
+    ...args: Partial<
+        AbiParametersToPrimitiveTypes<TABIEvent['inputs'], 'inputs'>
+    >
+) => T;
 
 /**
  * Represents a generic contract function type that accepts an arbitrary number of arguments
@@ -25,7 +51,12 @@ type ContractFunctionSync<T = unknown> = (...args: unknown[]) => T;
  *               are not specified, allowing for flexibility in function signatures.
  * @returns A promise that resolves to the type `T`, representing the result of the contract function execution.
  */
-type ContractFunctionAsync<T = unknown> = (...args: unknown[]) => Promise<T>;
+type ContractFunctionAsync<T = unknown, TAbiFunction> = (
+    ...args: [
+        ...Partial<{ value: number }>,
+        ...AbiParametersToPrimitiveTypes<TAbiFunction['inputs'], 'inputs'>
+    ]
+) => Promise<T>;
 
 /**
  * Defines a mapping of contract function names to their corresponding read-only contract functions.
@@ -34,10 +65,21 @@ type ContractFunctionAsync<T = unknown> = (...args: unknown[]) => Promise<T>;
  *
  * The keys of this record represent the names of the contract functions, and the values are the contract
  * functions themselves, adhering to the `ContractFunctionAsync` type with `ContractCallResult` as the return type.
+ *
+ * @template TAbi - The ABI of the contract which includes the contract functions.
+ * @template TFunctionName - The names of the contract functions extracted from the ABI that are either 'pure' or 'view'.
+ * @template TAbiFunction - The contract function extracted from the ABI based on the function name.
  */
-type ContractFunctionRead = Record<
-    string,
-    ContractFunctionAsync<ContractCallResult>
+type ContractFunctionRead<
+    TAbi extends Abi,
+    TFunctionName extends ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>,
+    TAbiFunction extends AbiFunction = ExtractAbiFunction<TAbi, TFunctionName>
+> = Record<
+    TFunctionName,
+    ContractFunctionAsync<
+        AbiParametersToPrimitiveTypes<TAbiFunction['outputs'], 'outputs'>,
+        TAbiFunction
+    >
 >;
 
 /**
@@ -47,24 +89,40 @@ type ContractFunctionRead = Record<
  *
  * The keys of this record represent the names of the contract functions, and the values are the contract
  * functions themselves, adhering to the `ContractFunctionAsync` type with `SendTransactionResult` as the return type.
+ *
+ * @template TAbi - The ABI of the contract which includes the contract functions.
+ * @template TFunctionName - The names of the contract functions extracted from the ABI that are either 'payable' or 'nonpayable'.
+ * @template TAbiFunction - The contract function extracted from the ABI based on the function name.
  */
-type ContractFunctionTransact = Record<
-    string,
-    ContractFunctionAsync<SendTransactionResult>
+type ContractFunctionTransact<
+    TAbi extends Abi,
+    TFunctionName extends ExtractAbiFunctionNames<
+        TAbi,
+        'payable' | 'non payable'
+    >,
+    TAbiFunction extends AbiFunction = ExtractAbiFunction<TAbi, TFunctionName>
+> = Record<
+    TFunctionName,
+    ContractFunctionAsync<SendTransactionResult, TAbiFunction>
 >;
 
 /**
- * Defines a mapping of contract function names to their corresponding filter contract functions.
+ * Defines a mapping of contract event names to their corresponding filter contract functions.
  * Each function in this record is expected to return a `ContractFilter` instance, which can be used to
  * filter events emitted by the contract.
  *
- * The keys of this record represent the names of the contract functions, and the values are the contract
- * functions themselves, adhering to the `ContractFunctionAsync` type with `ContractFilter` as the return type.
+ * The keys of this record represent the names of the contract events, and the values are the contract
+ * functions themselves, adhering to the `ContractEventSync` type with `ContractFilter` as the return type.
+ *
+ * @template TAbi - The ABI (Application Binary Interface) of the contract.
+ * @template TEventName - The names of the events extracted from the ABI.
+ * @template TAbiEvent - The event type extracted from the ABI for a given event name.
  */
-type ContractFunctionFilter = Record<
-    string,
-    ContractFunctionSync<ContractFilter>
->;
+type ContractFunctionFilter<
+    TAbi extends Abi,
+    TEventName extends ExtractAbiEventNames<TAbi>,
+    TAbiEvent extends AbiFunction = ExtractAbiEvent<TAbi, TEventName>
+> = Record<TEventName, ContractEventSync<ContractFilter<TAbi>, TAbiEvent>>;
 
 /**
  * Defines a mapping of contract function names to their corresponding transactional contract functions.
@@ -73,21 +131,34 @@ type ContractFunctionFilter = Record<
  *
  * The keys of this record represent the names of the contract functions, and the values are the contract
  * functions themselves, adhering to the `ContractFunctionSync` type with `ContractClause` as the return type.
+ *
+ * @template TAbi - The ABI (Application Binary Interface) of the contract.
+ * @template TFunctionName - The names of the functions extracted from the ABI, restricted to 'pure' or 'view' functions.
+ * @template TAbiFunction - The function type extracted from the ABI for a given function name.
  */
-type ContractFunctionClause = Record<
-    string,
-    ContractFunctionSync<ContractClause>
->;
+type ContractFunctionClause<
+    TAbi extends Abi,
+    TFunctionName extends ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>,
+    TAbiFunction extends AbiFunction = ExtractAbiFunction<TAbi, TFunctionName>
+> = Record<TFunctionName, ContractFunctionSync<ContractClause, TAbiFunction>>;
 
 /**
- * Defines a mapping of contract function names to their corresponding filter criteria contract functions.
+ * Defines a mapping of contract event names to their corresponding filter criteria contract functions.
  * Each function in this record is expected to return a value of type `FilterCriteria`, which represents
  * the criteria used to filter events emitted by the contract.
+ *
+ * The keys of this record represent the names of the contract events, and the values are the contract
+ * functions themselves, adhering to the `ContractEventSync` type with `FilterCriteria` as the return type.
+ *
+ * @template TAbi - The ABI (Application Binary Interface) of the contract.
+ * @template TEventName - The names of the events extracted from the ABI.
+ * @template TAbiEvent - The event type extracted from the ABI for a given event name.
  */
-type ContractFunctionCriteria = Record<
-    string,
-    ContractFunctionSync<FilterCriteria>
->;
+type ContractFunctionCriteria<
+    TAbi extends Abi,
+    TEventName extends ExtractAbiEventNames<TAbi>,
+    TAbiEvent extends AbiFunction = ExtractAbiEvent<TAbi, TEventName>
+> = Record<TEventName, ContractEventSync<FilterCriteria, TAbiEvent>>;
 
 /**
  * Represents the amount of VET to transfer in a transaction.

@@ -14,20 +14,36 @@ import { type ContractCallResult, type ContractClause } from '../types';
 import { ContractFilter } from './contract-filter';
 import { type VeChainSigner } from '../../../signer';
 import { type FilterCriteria } from '../../logs';
+import type {
+    Abi,
+    AbiParametersToPrimitiveTypes,
+    ExtractAbiEventNames,
+    ExtractAbiFunction,
+    ExtractAbiFunctionNames
+} from 'abitype';
 
 /**
  * Creates a Proxy object for reading contract state, allowing for the dynamic invocation of contract read operations.
  * @param contract - The contract instance to create the read proxy for.
  * @returns A Proxy that intercepts calls to read contract functions, automatically handling the invocation with the configured options.
  */
-function getReadProxy(contract: Contract): ContractFunctionRead {
+function getReadProxy<TAbi extends Abi>(
+    contract: Contract<TAbi>
+): ContractFunctionRead<TAbi, ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>> {
     return new Proxy(contract.read, {
         get: (_target, prop) => {
             // Otherwise, assume that the function is a contract method
-            return async (...args: unknown[]): Promise<ContractCallResult> => {
+            return async (
+                ...args: AbiParametersToPrimitiveTypes<
+                    ExtractAbiFunction<TAbi, 'balanceOf'>['inputs'],
+                    'inputs'
+                >
+            ): Promise<ContractCallResult> => {
                 return (await contract.thor.contracts.executeCall(
                     contract.address,
                     contract.getFunctionFragment(prop),
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
                     args,
                     {
                         caller:
@@ -48,7 +64,12 @@ function getReadProxy(contract: Contract): ContractFunctionRead {
  * @returns A Proxy that intercepts calls to transaction contract functions, automatically handling the invocation with the configured options.
  * @private
  */
-function getTransactProxy(contract: Contract): ContractFunctionTransact {
+function getTransactProxy<TAbi extends Abi>(
+    contract: Contract<TAbi>
+): ContractFunctionTransact<
+    TAbi,
+    ExtractAbiFunctionNames<TAbi, 'nonpayable' | 'payable'>
+> {
     return new Proxy(contract.transact, {
         get: (_target, prop) => {
             // Otherwise, assume that the function is a contract method
@@ -99,14 +120,16 @@ function getTransactProxy(contract: Contract): ContractFunctionTransact {
  * @param contract - The contract instance to create the filter proxy for.
  * @returns A Proxy that intercepts calls to filter contract events, automatically handling the invocation with the configured options.
  */
-function getFilterProxy(contract: Contract): ContractFunctionFilter {
+function getFilterProxy<TAbi extends Abi>(
+    contract: Contract<TAbi>
+): ContractFunctionFilter<TAbi, ExtractAbiEventNames<TAbi>> {
     return new Proxy(contract.filters, {
         get: (_target, prop) => {
             // Otherwise, assume that the function is a contract method
-            return (...args: unknown[]): ContractFilter => {
+            return (...args: unknown[]): ContractFilter<TAbi> => {
                 const criteriaSet = buildCriteria(contract, prop, args);
 
-                return new ContractFilter(contract, [criteriaSet]);
+                return new ContractFilter<TAbi>(contract, [criteriaSet]);
             };
         }
     });
@@ -117,7 +140,9 @@ function getFilterProxy(contract: Contract): ContractFunctionFilter {
  * @param contract - The contract instance to create the clause proxy for.
  * @returns A Proxy that intercepts calls to contract functions, automatically handling the invocation with the configured options.
  */
-function getClauseProxy(contract: Contract): ContractFunctionClause {
+function getClauseProxy<TAbi extends Abi>(
+    contract: Contract<TAbi>
+): ContractFunctionClause<TAbi, ExtractAbiFunctionNames<TAbi>> {
     return new Proxy(contract.clause, {
         get: (_target, prop) => {
             return (...args: unknown[]): ContractClause => {
@@ -153,7 +178,9 @@ function getClauseProxy(contract: Contract): ContractFunctionClause {
  * @param contract - The contract instance to create the criteria proxy for.
  * @returns A Proxy that intercepts calls to build event criteria, automatically handling the invocation with the configured options.
  */
-function getCriteriaProxy(contract: Contract): ContractFunctionCriteria {
+function getCriteriaProxy<TAbi extends Abi>(
+    contract: Contract<TAbi>
+): ContractFunctionCriteria<TAbi, ExtractAbiEventNames<TAbi>> {
     return new Proxy(contract.criteria, {
         get: (_target, prop) => {
             return (...args: unknown[]): FilterCriteria => {
@@ -170,8 +197,8 @@ function getCriteriaProxy(contract: Contract): ContractFunctionCriteria {
  * @param args - The arguments to filter the event.
  * @returns The event criteria for the contract filter.
  */
-function buildCriteria(
-    contract: Contract,
+function buildCriteria<TAbi extends Abi>(
+    contract: Contract<TAbi>,
     prop: string | symbol,
     args: unknown[]
 ): FilterCriteria {

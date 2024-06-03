@@ -4,7 +4,6 @@ import {
     type SignTransactionOptions
 } from '../src';
 import { secp256k1 } from '../../core';
-import { stringifyData } from '@vechain/sdk-errors';
 
 /**
  * Url of the mainnet fixture
@@ -44,7 +43,7 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 /**
  * All available accounts for testing purposes
  */
-const ALL_ACCOUNTS = [
+const ALL_ACCOUNTS: Array<{ privateKey: string; address: `0x${string}` }> = [
     /* ----------- NEW ACCOUNTS ----------- */
     /**
      * Each new account starts with
@@ -246,7 +245,7 @@ const TESTING_CONTRACT_BYTECODE =
 /**
  * ABI of the `TestingContract` smart contract.
  */
-const TESTING_CONTRACT_ABI = stringifyData([
+const TESTING_CONTRACT_ABI = [
     {
         inputs: [
             {
@@ -1013,7 +1012,7 @@ const TESTING_CONTRACT_ABI = stringifyData([
         stateMutability: 'nonpayable',
         type: 'function'
     }
-]);
+] as const;
 
 export {
     mainnetUrl,

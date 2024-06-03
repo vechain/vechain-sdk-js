@@ -13,11 +13,12 @@ import {
     type TransactionReceipt
 } from '../../transactions';
 import { signerUtils, type VeChainSigner } from '../../../signer';
+import { type Abi } from 'abitype';
 
 /**
  * A factory class for deploying smart contracts to a blockchain using a ThorClient.
  */
-class ContractFactory {
+class ContractFactory<TAbi extends Abi> {
     /**
      * The ABI (Application Binary Interface) of the contract.
      */
@@ -81,7 +82,7 @@ class ContractFactory {
     public async startDeployment(
         deployParams?: DeployParams,
         options?: ContractTransactionOptions
-    ): Promise<ContractFactory> {
+    ): Promise<ContractFactory<TAbi>> {
         // Build a transaction for deploying the smart contract
         const deployContractClause = clauseBuilder.deployContract(
             this.bytecode,
@@ -131,7 +132,7 @@ class ContractFactory {
      * @returns {Promise<Contract>} A promise that resolves to a `Contract` instance
      *          once the deployment transaction is completed.
      */
-    public async waitForDeployment(): Promise<Contract> {
+    public async waitForDeployment(): Promise<Contract<TAbi>> {
         // Check if the deploy transaction result is available
         if (this.deployTransaction === undefined) {
             throw buildError(
@@ -159,7 +160,7 @@ class ContractFactory {
         );
 
         // Construct and return a new Contract instance
-        return new Contract(
+        return new Contract<TAbi>(
             transactionReceipt?.outputs[0].contractAddress as string,
             this.abi,
             this.thor,
