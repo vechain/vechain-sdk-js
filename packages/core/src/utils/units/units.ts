@@ -10,11 +10,6 @@ import { type WEI_UNITS } from './types';
 const BIG_NUMBER_PRECISION = 80;
 
 /**
- * Set the {@link BIG_NUMBER_PRECISION} for the fixed precision math.
- */
-BigNumber.set({ DECIMAL_PLACES: BIG_NUMBER_PRECISION });
-
-/**
  * One VET is 10^18.
  *
  * @see {formatUnits}
@@ -190,6 +185,11 @@ function formatUnits(
     value: bigint | number | string,
     decimalsOrUnit: bigint | number | WEI_UNITS = VET_DECIMAL_EXPONENT
 ): string {
+    const bnConfig = BigNumber.config();
+    BigNumber.set({
+        DECIMAL_PLACES: BIG_NUMBER_PRECISION,
+        ROUNDING_MODE: BigNumber.ROUND_HALF_UP
+    });
     try {
         const bn = bigNumberOf(value);
         const powerOfTen = digitsOfUnit(decimalsOrUnit);
@@ -208,6 +208,8 @@ function formatUnits(
             { value, digitsOrUnit: decimalsOrUnit },
             e
         );
+    } finally {
+        BigNumber.set(bnConfig);
     }
 }
 
@@ -256,13 +258,19 @@ function parseUnits(
     value: bigint | number | string,
     digitsOrUnit: bigint | number | WEI_UNITS = VET_DECIMAL_EXPONENT
 ): bigint {
+    const bnConfig = BigNumber.config();
+    BigNumber.set({
+        DECIMAL_PLACES: BIG_NUMBER_PRECISION,
+        ROUNDING_MODE: BigNumber.ROUND_HALF_UP
+    });
     try {
         const bn = bigNumberOf(value);
         const powerOfTen = digitsOfUnit(digitsOrUnit);
         const multiplier = BigNumber(10).pow(powerOfTen);
         const result = bn.times(multiplier);
-        const precisionDigits = digitsOfIntegerPart(bn) + powerOfTen;
-        return BigInt(result.toPrecision(precisionDigits));
+        const fractionDigits = digitsOfFractionalPart(result);
+        const integerDigits = digitsOfIntegerPart(result);
+        return BigInt(result.toPrecision(fractionDigits + integerDigits));
     } catch (e) {
         throw buildError(
             'unitsUtils.parseUnits',
@@ -271,6 +279,8 @@ function parseUnits(
             { value, decimalsOrUnit: digitsOrUnit },
             e
         );
+    } finally {
+        BigNumber.set(bnConfig);
     }
 }
 
@@ -283,7 +293,7 @@ function parseUnits(
  * This method can parse any numeric string with 18 decimals, VTHO balance too.
  *
  * @param {string} value - The value to parse as a VET amount.
- * hexadecimal supported previxed with `0x`.
+ * hexadecimal supported prefixed with `0x`.
  *
  * @returns {bigint} The parsed value as a bigint.
  *

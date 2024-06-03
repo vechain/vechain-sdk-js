@@ -1,5 +1,6 @@
-import { describe, expect, test } from '@jest/globals';
+import { ethers } from 'ethers';
 import { InvalidDataTypeError } from '../../../../errors';
+import { describe, expect, test } from '@jest/globals';
 import { unitsUtils, type WEI_UNITS } from '../../../src';
 
 /**
@@ -166,6 +167,20 @@ describe('unitsUtils', () => {
     });
 
     describe('parseUnits', () => {
+        test('ethers drop-in compatibility', () => {
+            const numberStrings = [
+                '0.100000000000000000',
+                '0.000000000000000001',
+                '0.099999999999999999',
+                '0.001000000000000000'
+            ];
+            numberStrings.forEach((str) => {
+                const expected = ethers.parseUnits(str, 18);
+                const actual = unitsUtils.parseUnits(str, 18);
+                expect(expected === actual).toBeTruthy();
+            });
+        });
+
         test('invalid - not a number - decimal', () => {
             const value = 'c0fee';
             expect(() => unitsUtils.parseUnits(value)).toThrowError(
@@ -295,7 +310,6 @@ describe('unitsUtils', () => {
             const expected =
                 100000000000000000000000000000000000000000000000000000000000000000000000000000000n;
             const actual = unitsUtils.parseUnits(value, decimals);
-            // const actual = BigInt(BigNumber(10).pow(80).toPrecision(81));
             expect(actual).toEqual(expected);
         });
 
