@@ -1,5 +1,11 @@
 import { Hex0x } from '@vechain/sdk-core';
-import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
+import {
+    assert,
+    buildProviderError,
+    DATA,
+    JSONRPC,
+    stringifyData
+} from '@vechain/sdk-errors';
 import { type ThorClient } from '../../../../../../thor-client';
 import type { BlockQuantityInputRPC } from '../../../types';
 import { getCorrectBlockNumberRPCToVechain } from '../../../../const';
@@ -63,11 +69,11 @@ const ethGetStorageAt = async (
             `Method 'eth_getStorageAt' failed: Error while getting the storage slot for the following address: ${
                 params[0] as string
             }, and storage position: ${params[1] as string}\n
-            Params: ${JSON.stringify(params)}\n
+            Params: ${stringifyData(params)}\n
             URL: ${thorClient.httpClient.baseURL}`,
             {
                 params,
-                innerError: JSON.stringify(e)
+                innerError: stringifyData(e)
             }
         );
     }

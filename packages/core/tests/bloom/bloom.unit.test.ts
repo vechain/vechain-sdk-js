@@ -2,7 +2,11 @@ import * as utils from '@noble/curves/abstract/utils';
 import { describe, expect, test } from '@jest/globals';
 import { bloom, Hex } from '../../src';
 import { bloomKTestCases } from './fixture';
-import { InvalidBloomError, InvalidKError } from '../../../errors';
+import {
+    InvalidBloomError,
+    InvalidKError,
+    stringifyData
+} from '../../../errors';
 
 /**
  * Bloom filter tests
@@ -286,8 +290,8 @@ describe('Bloom Filter', () => {
         expect(filter.bits.byteLength).toBe(25);
         expect(filter.k).toBe(k);
 
-        expect(JSON.stringify(filter.bits)).toBe(
-            JSON.stringify(
+        expect(stringifyData(filter.bits)).toBe(
+            stringifyData(
                 utils.hexToBytes(
                     'a4d641159d68d829345f86f40d50676cf042f6265072075a94'
                 )

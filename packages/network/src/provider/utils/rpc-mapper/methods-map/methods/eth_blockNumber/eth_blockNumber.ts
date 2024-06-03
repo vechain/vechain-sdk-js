@@ -1,4 +1,8 @@
-import { JSONRPC, buildProviderError } from '@vechain/sdk-errors';
+import {
+    buildProviderError,
+    JSONRPC,
+    stringifyData
+} from '@vechain/sdk-errors';
 import { type ThorClient } from '../../../../../../thor-client';
 
 /**
@@ -26,7 +30,7 @@ const ethBlockNumber = async (thorClient: ThorClient): Promise<string> => {
             `Method 'eth_blockNumber' failed: Error while getting the latest block number.\n
             URL: ${thorClient.httpClient.baseURL}`,
             {
-                innerError: JSON.stringify(e)
+                innerError: stringifyData(e)
             }
         );
     }

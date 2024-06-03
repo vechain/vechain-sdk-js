@@ -1,4 +1,8 @@
-import { buildProviderError, JSONRPC } from '@vechain/sdk-errors';
+import {
+    buildProviderError,
+    JSONRPC,
+    stringifyData
+} from '@vechain/sdk-errors';
 import { Quantity } from '@vechain/sdk-core';
 import {
     type CompressedBlockDetail,
@@ -81,7 +85,7 @@ const ethSyncing = async (
             `Method 'eth_syncing' failed: Error while getting last syncing information\n
             URL: ${thorClient.httpClient.baseURL}`,
             {
-                innerError: JSON.stringify(e)
+                innerError: stringifyData(e)
             }
         );
     }

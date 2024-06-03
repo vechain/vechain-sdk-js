@@ -7,6 +7,7 @@ import {
     invalidEncodeBytes32StringTestCases,
     isNumericTestCases
 } from './fixture';
+import { stringifyData } from '../../../../errors';
 
 /**
  * Hex data tests
@@ -21,7 +22,7 @@ describe('dataUtils', () => {
          * Test cases for decodeBytes32String function.
          */
         decodeBytes32StringTestCases.forEach(({ value, expected }) => {
-            test(`should return ${expected} for ${JSON.stringify(
+            test(`should return ${expected} for ${stringifyData(
                 value
             )}`, () => {
                 expect(dataUtils.decodeBytes32String(value)).toBe(expected);
@@ -33,7 +34,7 @@ describe('dataUtils', () => {
          */
         invalidDecodeBytes32StringTestCases.forEach(
             ({ value, expectedError }) => {
-                test(`should throw for ${JSON.stringify(value)}`, () => {
+                test(`should throw for ${stringifyData(value)}`, () => {
                     expect(() =>
                         dataUtils.decodeBytes32String(value)
                     ).toThrowError(expectedError);
@@ -51,7 +52,7 @@ describe('dataUtils', () => {
          */
         encodeBytes32StringTestCases.forEach(
             ({ value, zeroPadding, expected }) => {
-                test(`should return ${expected} for ${JSON.stringify(
+                test(`should return ${expected} for ${stringifyData(
                     value
                 )}`, () => {
                     expect(
@@ -66,7 +67,7 @@ describe('dataUtils', () => {
          */
         invalidEncodeBytes32StringTestCases.forEach(
             ({ value, zeroPadding, expectedError }) => {
-                test(`should throw for ${JSON.stringify(value)}`, () => {
+                test(`should throw for ${stringifyData(value)}`, () => {
                     expect(() =>
                         dataUtils.encodeBytes32String(value, zeroPadding)
                     ).toThrowError(expectedError);
@@ -83,7 +84,7 @@ describe('dataUtils', () => {
          * Test cases for isNumeric function.
          */
         isNumericTestCases.forEach(({ value, expected }) => {
-            test(`should return ${expected} for ${JSON.stringify(
+            test(`should return ${expected} for ${stringifyData(
                 value
             )}`, () => {
                 expect(dataUtils.isNumeric(value)).toBe(expected);

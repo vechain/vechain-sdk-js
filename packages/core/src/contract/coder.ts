@@ -1,5 +1,10 @@
 import { Interface as EthersInterface, type InterfaceAbi } from 'ethers';
-import { ABI, buildError, ERROR_CODES } from '@vechain/sdk-errors';
+import {
+    ABI,
+    buildError,
+    ERROR_CODES,
+    stringifyData
+} from '@vechain/sdk-errors';
 import type { BytesLike, Interface, Log, Result } from '../abi';
 import { abi } from '../abi';
 
@@ -36,7 +41,7 @@ function encodeFunctionInput(
             ERROR_CODES.ABI.INVALID_DATA_TO_ENCODE,
             `Method 'encodeFunctionInput' failed while encoding input for function '${functionName}'. ` +
                 `Input must match ABI specifications and be correctly formatted.\n` +
-                `Parameters: ${JSON.stringify(functionData)}.\n` +
+                `Parameters: ${stringifyData(functionData)}.\n` +
                 `Ethers' error message: ${(e as Error).message}.`,
             { functionName, functionData },
             e

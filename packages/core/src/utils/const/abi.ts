@@ -1,9 +1,11 @@
+import { stringifyData } from '@vechain/sdk-errors';
+
 /**
  * ABI of the Params built-in contract.
  *
  * @link see [params.sol](https://docs.vechain.org/developer-resources/built-in-contracts#params-sol)
  */
-const PARAMS_ABI = JSON.stringify([
+const PARAMS_ABI = stringifyData([
     {
         constant: false,
         inputs: [

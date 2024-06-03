@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-errors",
-  "version": "1.0.0-beta.10",
+  "version": "1.0.0-beta.12",
   "description": "This module is dedicated to managing and customizing errors within the SDK",
   "author": "vechain Foundation",
   "license": "MIT",
@@ -15,7 +15,7 @@
   ],
   "private": false,
   "main": "dist/index.js",
-  "types": "src/index.ts",
+  "types": "dist/index.d.ts",
   "files": [
     "dist",
     "src",
