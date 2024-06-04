@@ -31,6 +31,11 @@ interface Config {
     delegator?: SignTransactionOptions;
 
     /**
+     * Enable verbose logging
+     */
+    verbose?: boolean;
+
+    /**
      * Enable delegation
      */
     enableDelegation?: boolean;

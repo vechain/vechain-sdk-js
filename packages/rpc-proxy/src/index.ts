@@ -1,3 +1,4 @@
+import { Command, Option } from 'commander';
 import {
     HttpClient,
     ProviderInternalBaseWallet,
@@ -6,52 +7,45 @@ import {
     ThorClient,
     VeChainProvider
 } from '@vechain/sdk-network';
-import importConfig from '../config.json';
 import express, { type Express, type Request, type Response } from 'express';
 import cors from 'cors';
-import { type Config, type RequestBody } from './types';
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
 import {
     getJSONRPCErrorCode,
     JSONRPC,
     stringifyData
 } from '@vechain/sdk-errors';
+import importConfig from '../config.json';
+import { type Config, type RequestBody } from './types';
+import fs from 'fs';
+import path from 'path';
 import {
+    VET_DERIVATION_PATH,
     addressUtils,
-    secp256k1,
-    VET_DERIVATION_PATH
+    secp256k1
 } from '@vechain/sdk-core';
+import packageJson from '../package.json';
 
-/**
- * Simple function to log an error.
- *
- * @param requestBody - The request body of error request
- * @param e - The error object
- */
-function logError(requestBody: RequestBody, e: unknown): void {
-    VeChainSDKLogger('error').log({
-        errorCode: JSONRPC.INTERNAL_ERROR,
-        errorMessage: `Error sending request - ${requestBody.method}`,
-        errorData: {
-            code: getJSONRPCErrorCode(JSONRPC.INVALID_REQUEST),
-            message: `Error on request - ${requestBody.method}`
-        },
-        innerError: e
-    });
+// Function to read and parse the configuration file
+function readConfigFile(filePath: string): Config {
+    const absolutePath = path.resolve(filePath);
+    if (!fs.existsSync(absolutePath)) {
+        throw new Error(`Configuration file not found: ${absolutePath}`);
+    }
+    const fileContent = fs.readFileSync(absolutePath, 'utf-8');
+    return JSON.parse(fileContent) as Config;
 }
 
-/**
- * Simple function to log a request.
- *
- * @param requestBody - The request body of the request
- * @param result - The result of the request
- */
-function logRequest(requestBody: RequestBody, result: unknown): void {
-    VeChainSDKLogger('log').log({
-        title: `Sending request - ${requestBody.method}`,
-        messages: [`response: ${stringifyData(result)}`]
-    });
-}
+const version: string = packageJson.version;
+
+// Create the program to parse the command line arguments and options
+const program = new Command();
+program
+    .version(version)
+    .description('VeChain RPC Proxy')
+    .addOption(new Option('-c, --config <file>', 'Path to configuration file'))
+    .parse(process.argv);
+const options = program.opts();
 
 /**
  * Start the proxy function.
@@ -60,14 +54,14 @@ function logRequest(requestBody: RequestBody, result: unknown): void {
  * * Don't use this in production, it's just for testing purposes.
  */
 function startProxy(): void {
-    // Initialize the proxy server
-    const config: Config = importConfig as Config;
-    const port = config.port ?? 8545;
-    console.log(`[rpc-proxy]: Starting proxy on port ${port}`);
+    let config: Config = importConfig as Config;
+    if (options.config != null) {
+        config = readConfigFile(options.config as string);
+    }
 
-    // Initialize the provider
+    console.log('[rpc-proxy]: Starting VeChain RPC Proxy');
+
     const thorClient = new ThorClient(new HttpClient(config.url));
-
     // Create the wallet
     const wallet: ProviderInternalWallet = Array.isArray(config.accounts)
         ? new ProviderInternalBaseWallet(
@@ -113,67 +107,55 @@ function startProxy(): void {
     );
     app.use(express.json());
 
-    app.post('*', (req: Request, res: Response) => {
-        void (async () => {
-            const requestBody = req.body as RequestBody;
+    app.post('*', handleRequest);
+    app.get('*', handleRequest);
 
-            try {
-                // Get result
-                const result = await provider.request(requestBody);
-                res.json({
-                    jsonrpc: '2.0',
-                    result,
-                    id: requestBody.id
-                });
-
-                // Log the request and the response
-                logRequest(requestBody, result);
-            } catch (e) {
-                res.json({
-                    jsonrpc: '2.0',
-                    error: e,
-                    id: requestBody.id
-                });
-
-                // Log the error
-                logError(requestBody, e);
-            }
-        })();
-    });
-
-    app.get('*', (req: Request, res: Response) => {
-        void (async () => {
-            const requestBody = req.body as RequestBody;
-            try {
-                // Get result
-                const result = await provider.request(requestBody);
-
-                res.json({
-                    jsonrpc: '2.0',
-                    result,
-                    id: requestBody.id
-                });
-
-                // Log the request and the response
-                logRequest(requestBody, result);
-            } catch (e) {
-                res.json({
-                    jsonrpc: '2.0',
-                    error: e,
-                    id: requestBody.id
-                });
-
-                // Log the error
-                logError(requestBody, e);
-            }
-        })();
-    });
-
-    app.listen(port, () => {
-        console.log(`[rpc-proxy]: Proxy is running on port ${port}`);
+    app.listen(config.port, () => {
+        console.log(`[rpc-proxy]: Proxy is running on port ${config.port}`);
     }).on('error', (err: Error) => {
         console.error(`[rpc-proxy]: Error starting proxy: ${err.message}`);
     });
+
+    function handleRequest(req: Request, res: Response): void {
+        void (async () => {
+            const requestBody = req.body as RequestBody;
+            try {
+                // Get result
+                const result = await provider.request(requestBody);
+
+                res.json({
+                    jsonrpc: '2.0',
+                    result,
+                    id: requestBody.id
+                });
+
+                // Log the request and the response
+                if (config.verbose === true) {
+                    VeChainSDKLogger('log').log({
+                        title: `Sending request - ${requestBody.method}`,
+                        messages: [`response: ${stringifyData(result)}`]
+                    });
+                }
+            } catch (e) {
+                res.json({
+                    jsonrpc: '2.0',
+                    error: e,
+                    id: requestBody.id
+                });
+
+                // Log the error
+                VeChainSDKLogger('error').log({
+                    errorCode: JSONRPC.INTERNAL_ERROR,
+                    errorMessage: `Error sending request - ${requestBody.method}`,
+                    errorData: {
+                        code: getJSONRPCErrorCode(JSONRPC.INVALID_REQUEST),
+                        message: `Error on request - ${requestBody.method}`
+                    },
+                    innerError: e
+                });
+            }
+        })();
+    }
 }
 
 startProxy();
