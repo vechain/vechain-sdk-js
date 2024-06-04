@@ -19,14 +19,12 @@ import importConfig from '../config.json';
 import { type Config, type RequestBody } from './types';
 import fs from 'fs';
 import path from 'path';
-
-// Import the version from the package.json
-import packageJson from '../package.json';
 import {
     VET_DERIVATION_PATH,
     addressUtils,
     secp256k1
 } from '@vechain/sdk-core';
+import packageJson from '../package.json';
 
 // Function to read and parse the configuration file
 function readConfigFile(filePath: string): Config {
@@ -132,7 +130,7 @@ function startProxy(): void {
                 });
 
                 // Log the request and the response
-                if (config.verbose != null) {
+                if (config.verbose === true) {
                     VeChainSDKLogger('log').log({
                         title: `Sending request - ${requestBody.method}`,
                         messages: [`response: ${stringifyData(result)}`]

@@ -29,5 +29,6 @@ The `config.json` file is used to configure the proxy server. It contains the fo
 
 - `url`: The URL of the VeChain Thor node.
 - `port`: The port of the proxy server.
-- `accounts`: The accounts that the proxy server will use to sign transactions.
+- `accounts`: The accounts that the proxy server will use to sign transactions (can be a mnemonic or an array of private keys).
+- `verbose`: Wheter to enable verbose logging.
 - `debug`: Whether to enable debug mode.
