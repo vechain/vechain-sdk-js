@@ -10,13 +10,16 @@
     "url": "github:vechain/vechain-sdk-js"
   },
   "keywords": [
-    "vechain",
+    "VeChain",
     "RPC",
     "proxy"
   ],
   "private": false,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "rpc-proxy": "dist/index.js"
+  },
   "files": [
     "dist",
     "src",
@@ -28,7 +31,7 @@
     "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
     "lint": "eslint --ext .ts src --ext .ts",
     "format": "prettier --write src/**/*.ts",
-    "start": "yarn build && node dist/index.js"
+    "start": "node dist/index.js"
   },
   "dependencies": {
     "@vechain/sdk-network": "1.0.0-beta.13",
