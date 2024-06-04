@@ -22,6 +22,12 @@ Or:
 rpc-proxy --config <json config file>
 ```
 
+# Run as docker
+``` bash
+docker build . -t vechain-rpc-proxy
+docker run -d -p 8545:8545 -t vechain-rpc-proxy
+```
+
 ## Configuration
 
 The `config.json` file is used to configure the proxy server. It contains the following fields:
