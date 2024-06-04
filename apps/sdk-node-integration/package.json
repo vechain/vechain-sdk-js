@@ -11,7 +11,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@vechain/sdk-network": "1.0.0-beta.13",
+    "@vechain/sdk-network": "1.0.0-beta.14",
     "axios": "^1.6.8",
     "typescript": "^5.3.3"
   },
