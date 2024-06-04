@@ -1,15 +1,16 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-    getEventSubscriptionUrlTestCases,
-    getBlockSubscriptionUrlTestCases,
-    getLegacyBeatSubscriptionUrlTestCases,
     getBeatSubscriptionUrlTestCases,
+    getBlockSubscriptionUrlTestCases,
+    getEventSubscriptionUrlTestCases,
+    getLegacyBeatSubscriptionUrlTestCases,
     getNewTransactionsSubscriptionUrlTestCases,
     getVETtransfersSubscriptionUrlTestCases,
     testWebSocketConnection
 } from './fixture';
 import { subscriptions } from '../../../src';
 import { testnetUrl } from '../../fixture';
+import { stringifyData } from '@vechain/sdk-errors';
 
 /**
  * Test suite for the Subscriptions utility methods for getting the subscription URLs
@@ -28,7 +29,7 @@ describe('Subscriptions Testnet', () => {
         getEventSubscriptionUrlTestCases.forEach(
             ({ event, valuesToEncode, options, expectedURL }) => {
                 test(`getEventSubscriptionUrl: ${
-                    typeof event === 'string' ? event : JSON.stringify(event)
+                    typeof event === 'string' ? event : stringifyData(event)
                 } with ${valuesToEncode?.toString()}`, async () => {
                     expect(
                         subscriptions.getEventSubscriptionUrl(
@@ -54,7 +55,7 @@ describe('Subscriptions Testnet', () => {
          * Test the getBlockSubscriptionUrl function
          */
         getBlockSubscriptionUrlTestCases.forEach(({ options, expectedURL }) => {
-            test(`getBlockSubscriptionUrl: ${JSON.stringify(
+            test(`getBlockSubscriptionUrl: ${stringifyData(
                 options
             )}`, async () => {
                 expect(
@@ -76,7 +77,7 @@ describe('Subscriptions Testnet', () => {
          */
         getLegacyBeatSubscriptionUrlTestCases.forEach(
             ({ options, expectedURL }) => {
-                test(`getLegacyBeatSubscriptionUrl: ${JSON.stringify(
+                test(`getLegacyBeatSubscriptionUrl: ${stringifyData(
                     options
                 )}`, async () => {
                     expect(
@@ -96,7 +97,7 @@ describe('Subscriptions Testnet', () => {
          * Test the getBeatSubscriptionUrl function
          */
         getBeatSubscriptionUrlTestCases.forEach(({ options, expectedURL }) => {
-            test(`getBeatSubscriptionUrl: ${JSON.stringify(
+            test(`getBeatSubscriptionUrl: ${stringifyData(
                 options
             )}`, async () => {
                 expect(
@@ -141,7 +142,7 @@ describe('Subscriptions Testnet', () => {
          */
         getVETtransfersSubscriptionUrlTestCases.forEach(
             ({ options, expectedURL }) => {
-                test(`getVETtransfersSubscriptionUrl: ${JSON.stringify(
+                test(`getVETtransfersSubscriptionUrl: ${stringifyData(
                     options
                 )}`, async () => {
                     expect(

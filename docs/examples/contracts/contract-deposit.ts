@@ -1,10 +1,9 @@
 import { expect } from 'expect';
-import { type InterfaceAbi } from '@vechain/sdk-core';
 import {
     ProviderInternalBaseWallet,
     type ProviderInternalWalletAccount,
     ThorClient,
-   VeChainProvider,
+    VeChainProvider,
     type VeChainSigner
 } from '@vechain/sdk-network'; // Deposit contract bytecode
 
@@ -21,7 +20,7 @@ const deployerAccount: ProviderInternalWalletAccount = {
     address: '0xf02f557c753edf5fcdcbfe4c1c3a448b3cc84d54'
 };
 
-const depositContractAbi: InterfaceAbi = [
+const depositContractAbi = [
     {
         anonymous: false,
         inputs: [
@@ -86,7 +85,7 @@ const depositContractAbi: InterfaceAbi = [
         stateMutability: 'view',
         type: 'function'
     }
-];
+] as const;
 
 // Create thor client for solo network
 const _soloUrl = 'http://localhost:8669/';

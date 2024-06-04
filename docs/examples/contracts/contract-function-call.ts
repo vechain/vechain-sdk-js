@@ -1,10 +1,11 @@
 import { clauseBuilder, coder, type FunctionFragment } from '@vechain/sdk-core';
 import { expect } from 'expect';
+import { stringifyData } from '@vechain/sdk-errors';
 
 // START_SNIPPET: ContractFunctionCallSnippet
 
 // 1 - Init a simple contract ABI
-const contractABI = JSON.stringify([
+const contractABI = stringifyData([
     {
         constant: false,
         inputs: [

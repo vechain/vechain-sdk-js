@@ -38,7 +38,7 @@ After deploying a smart contract, interacting with its functions is the next ste
 
 ```typescript { name=contract-function-call, category=example }
 // 1 - Init a simple contract ABI
-const contractABI = JSON.stringify([
+const contractABI = stringifyData([
     {
         constant: false,
         inputs: [
@@ -117,7 +117,7 @@ const signer = (await provider.getSigner(
 )) as VeChainSigner;
 
 // Defining a function for deploying the ERC20 contract
-const setupERC20Contract = async (): Promise<Contract> => {
+const setupERC20Contract = async (): Promise<Contract<typeof VIP180_ABI>> => {
     const contractFactory = thorSoloClient.contracts.createContractFactory(
         VIP180_ABI,
         erc20ContractBytecode,
@@ -137,7 +137,7 @@ const contract = await setupERC20Contract();
 // Transferring 10000 tokens to another address with a delegated transaction
 const transferResult = await contract.transact.transfer(
     '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-    10000
+    10000n
 );
 
 // Wait for the transfer transaction to complete and obtain its receipt
@@ -184,9 +184,9 @@ To do so, developers needs the contract address and the event signature.
 Here is an example of how to filter multiple events from different contracts:
 
 ```typescript { name=contract-event-filter, category=example }
-const contractEventExample: Contract = await setupEventExampleContract();
+const contractEventExample = await setupEventExampleContract();
 
-await (await contractEventExample.transact.setValue(3000)).wait();
+await (await contractEventExample.transact.setValue(3000n)).wait();
 
 const transferCriteria = contractErc20.criteria.Transfer(
     undefined,

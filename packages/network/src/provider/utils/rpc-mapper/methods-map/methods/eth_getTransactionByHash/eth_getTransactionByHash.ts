@@ -1,4 +1,10 @@
-import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
+import {
+    assert,
+    buildProviderError,
+    DATA,
+    JSONRPC,
+    stringifyData
+} from '@vechain/sdk-errors';
 import {
     type BlocksRPC,
     type TransactionRPC,
@@ -66,11 +72,11 @@ const ethGetTransactionByHash = async (
             `Method 'eth_getTransactionByHash' failed: Error while getting the transaction ${
                 params[0] as string
             }\n
-        Params: ${JSON.stringify(params)}\n
+        Params: ${stringifyData(params)}\n
         URL: ${thorClient.httpClient.baseURL}`,
             {
                 params,
-                innerError: JSON.stringify(e)
+                innerError: stringifyData(e)
             }
         );
     }

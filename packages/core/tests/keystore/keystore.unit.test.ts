@@ -10,7 +10,8 @@ import { encryptionPassword } from './fixture';
 import {
     InvalidKeystoreError,
     InvalidKeystorePasswordError,
-    InvalidSecp256k1PrivateKeyError
+    InvalidSecp256k1PrivateKeyError,
+    stringifyData
 } from '@vechain/sdk-errors';
 
 /**
@@ -125,7 +126,7 @@ import {
             );
 
             // Verify keystore -> False
-            const invalidKeystore: string = JSON.stringify({
+            const invalidKeystore: string = stringifyData({
                 ...myKeystore,
                 version: 4
             });
@@ -157,7 +158,7 @@ import {
             expect(keystore.isValid(myKeystore)).toBe(true);
 
             // Verify keystore -> False
-            const invalidKeystore: string = JSON.stringify({
+            const invalidKeystore: string = stringifyData({
                 ...myKeystore,
                 version: 4
             });

@@ -154,7 +154,28 @@ const config: HardhatUserConfig = {
             gasMultiplier: 1,
             timeout: 20000,
             httpHeaders: {}
-        } satisfies HttpNetworkConfig
+        } satisfies HttpNetworkConfig,
+
+        /**
+         * Default hardhat network configuration
+         */
+        hardhat: {
+            // Testnet
+            accounts: {
+                mnemonic:
+                    'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
+                path: VET_DERIVATION_PATH,
+                count: 3,
+                initialIndex: 0
+            },
+            debug: true,
+            delegator: undefined,
+            gas: 'auto',
+            gasPrice: 'auto',
+            gasMultiplier: 1,
+            timeout: 20000,
+            httpHeaders: {}
+        }
     }
 };
 

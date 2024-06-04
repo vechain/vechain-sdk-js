@@ -2,11 +2,11 @@ import { ERC20_ABI, ERC20_BYTECODE, ERC721_BYTECODE } from './fixture';
 
 import { ERC721_ABI } from '@vechain/sdk-core';
 import {
-    type Contract,
     type SubscriptionEvent,
     type ThorClient,
     type VeChainProvider,
-    type VeChainSigner
+    type VeChainSigner,
+    type Contract
 } from '../../../src';
 
 export async function waitForMessage(
@@ -23,7 +23,7 @@ export async function waitForMessage(
 export async function deployERC20Contract(
     thorClient: ThorClient,
     signer: VeChainSigner
-): Promise<Contract> {
+): Promise<Contract<typeof ERC20_ABI>> {
     const factory = thorClient.contracts.createContractFactory(
         ERC20_ABI,
         ERC20_BYTECODE,
@@ -38,7 +38,7 @@ export async function deployERC20Contract(
 export async function deployERC721Contract(
     thorClient: ThorClient,
     signer: VeChainSigner
-): Promise<Contract> {
+): Promise<Contract<typeof ERC721_ABI>> {
     const factory = thorClient.contracts.createContractFactory(
         ERC721_ABI,
         ERC721_BYTECODE,

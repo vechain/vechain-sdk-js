@@ -1,9 +1,10 @@
-import { FunctionFragment, coder } from '@vechain/sdk-core';
-import { ThorClient } from '@vechain/sdk-network'
+import { coder, type FunctionFragment } from '@vechain/sdk-core';
+import { ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
+import { stringifyData } from '@vechain/sdk-errors';
 
 // ABI of the `TestingContract` smart contract
-const TESTING_CONTRACT_ABI = JSON.stringify([
+const TESTING_CONTRACT_ABI = stringifyData([
     {
         inputs: [
             {

@@ -12,7 +12,7 @@ interface ProviderInternalWalletAccount {
     /**
      * Address of the account.
      */
-    address: string;
+    address: `0x${string}`;
 
     /**
      * Private key of the account.

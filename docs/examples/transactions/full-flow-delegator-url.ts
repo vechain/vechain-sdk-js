@@ -7,7 +7,7 @@ import {
     ProviderInternalBaseWallet,
     signerUtils,
     ThorClient,
-   VeChainProvider
+    VeChainProvider
 } from '@vechain/sdk-network';
 import { expect } from 'expect'; // START_SNIPPET: FullFlowDelegatorUrlSnippet
 
@@ -20,7 +20,11 @@ const thorClient = ThorClient.fromUrl(_testnetUrl, {
 });
 
 // Sender account with private key
-const senderAccount = {
+const senderAccount: {
+    mnemonic: string;
+    privateKey: string;
+    address: `0x${string}`;
+} = {
     mnemonic:
         'fat draw position use tenant force south job notice soul time fruit',
     privateKey:

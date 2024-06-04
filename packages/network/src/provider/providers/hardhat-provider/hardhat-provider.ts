@@ -1,7 +1,10 @@
 import { VeChainProvider } from '../vechain-provider';
 import type { EIP1193RequestArguments } from '../../eip1193';
-import { getJSONRPCErrorCode, JSONRPC } from '@vechain/sdk-errors';
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
+import {
+    getJSONRPCErrorCode,
+    JSONRPC,
+    stringifyData
+} from '@vechain/sdk-errors';
 import {
     type BuildHardhatErrorFunction,
     type JsonRpcRequest,
@@ -10,6 +13,7 @@ import {
 import { HttpClient } from '../../../utils';
 import { ThorClient } from '../../../thor-client';
 import { type ProviderInternalWallet } from '../../helpers';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * This class is a wrapper for the VeChainProvider that Hardhat uses.
@@ -126,9 +130,9 @@ class HardhatVeChainProvider extends VeChainProvider {
                 VeChainSDKLogger('log').log({
                     title: `Sending request - ${args.method}`,
                     messages: [
-                        `params: ${JSON.stringify(args.params)}`,
-                        `accounts: ${JSON.stringify(accounts)}`,
-                        `delegator: ${JSON.stringify(delegator)}`,
+                        `params: ${stringifyData(args.params)}`,
+                        `accounts: ${stringifyData(accounts)}`,
+                        `delegator: ${stringifyData(delegator)}`,
                         `url: ${this.thorClient.httpClient.baseURL}`
                     ]
                 });
@@ -144,7 +148,7 @@ class HardhatVeChainProvider extends VeChainProvider {
             if (this.debug) {
                 VeChainSDKLogger('log').log({
                     title: `Get request - ${args.method} result`,
-                    messages: [`result: ${JSON.stringify(result)}`]
+                    messages: [`result: ${stringifyData(result)}`]
                 });
             }
 

@@ -1,5 +1,11 @@
 import { type ThorClient } from '../../../../../../thor-client';
-import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
+import {
+    assert,
+    buildProviderError,
+    DATA,
+    JSONRPC,
+    stringifyData
+} from '@vechain/sdk-errors';
 import { Hex0x } from '@vechain/sdk-core';
 import { transactionsFormatter } from '../../../../formatter';
 
@@ -47,11 +53,11 @@ const ethSendRawTransaction = async (
             `Method 'eth_sendRawTransaction' failed: Error while sending the transaction ${
                 params[0] as string
             }\n
-            Params: ${JSON.stringify(params)}\n
+            Params: ${stringifyData(params)}\n
             URL: ${thorClient.httpClient.baseURL}`,
             {
                 params,
-                innerError: JSON.stringify(e)
+                innerError: stringifyData(e)
             }
         );
     }

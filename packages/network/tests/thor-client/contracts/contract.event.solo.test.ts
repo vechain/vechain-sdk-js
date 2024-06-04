@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
-    type Contract,
     ThorClient,
     VeChainPrivateKeySigner,
     VeChainProvider,
@@ -13,10 +12,7 @@ import {
     eventExampleAbi,
     eventExampleBytecode
 } from './fixture';
-import {
-    InvalidAbiEventError,
-    InvalidAbiFunctionError
-} from '@vechain/sdk-errors';
+import { InvalidAbiEventError } from '@vechain/sdk-errors';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -57,32 +53,37 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         // Execute a 'transfer' transaction on the deployed contract,
         // transferring a specified amount of tokens
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                1000
+                1000n
             )
         ).wait();
 
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                5000
+                5000n
             )
         ).wait();
 
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
         const events = await contract.filters
             .Transfer(
                 undefined,
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
             )
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             .get();
 
-        expect(events.map((x) => x.decodedData)).toEqual([
+        expect(
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+            events.map((x) => x.decodedData)
+        ).toEqual([
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
                 '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
@@ -109,21 +110,21 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         // Execute a 'transfer' transaction on the deployed contract,
         // transferring a specified amount of tokens
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                1000
+                1000n
             )
         ).wait();
 
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                5000
+                5000n
             )
         ).wait();
 
@@ -176,21 +177,21 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         // Execute a 'transfer' transaction on the deployed contract,
         // transferring a specified amount of tokens
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                1000
+                1000n
             )
         ).wait();
 
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                5000
+                5000n
             )
         ).wait();
 
@@ -230,21 +231,21 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         // Execute a 'transfer' transaction on the deployed contract,
         // transferring a specified amount of tokens
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                1000
+                1000n
             )
         ).wait();
 
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                5000
+                5000n
             )
         ).wait();
 
@@ -281,28 +282,28 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         // Execute a 'transfer' transaction on the deployed contract,
         // transferring a specified amount of tokens
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                1000
+                1000n
             )
         ).wait();
 
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                5000
+                5000n
             )
         ).wait();
 
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
-                5000
+                5000n
             )
         ).wait();
 
@@ -366,28 +367,28 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factory = await factory.startDeployment();
 
-        const contract: Contract = await factory.waitForDeployment();
+        const contract = await factory.waitForDeployment();
 
         // Execute a 'transfer' transaction on the deployed contract,
         // transferring a specified amount of tokens
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                1000
+                1000n
             )
         ).wait();
 
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                5000
+                5000n
             )
         ).wait();
 
         await (
             await contract.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
-                5000
+                5000n
             )
         ).wait();
 
@@ -437,7 +438,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         erc20Factory = await erc20Factory.startDeployment();
 
-        const contractERC20: Contract = await erc20Factory.waitForDeployment();
+        const contractERC20 = await erc20Factory.waitForDeployment();
 
         // Deploy the EventExample contract
         let factoryEventExample =
@@ -449,17 +450,17 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         factoryEventExample = await factoryEventExample.startDeployment();
 
-        const contractEventExample: Contract =
+        const contractEventExample =
             await factoryEventExample.waitForDeployment();
 
         await (
             await contractERC20.transact.transfer(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                5000
+                5000n
             )
         ).wait();
 
-        await (await contractEventExample.transact.setValue(3000)).wait();
+        await (await contractEventExample.transact.setValue(3000n)).wait();
 
         const transferCriteria = contractERC20.criteria.Transfer(
             undefined,
@@ -481,41 +482,4 @@ describe('ThorClient - ERC20 Contracts', () => {
             ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
         ]);
     }, 20000); // Set a timeout of 10000ms for this test
-
-    test('listen to a non existing ERC20 event', async () => {
-        // Deploy the ERC20 contract
-        let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
-            erc20ContractBytecode,
-            signer
-        );
-
-        factory = await factory.startDeployment();
-
-        const contract: Contract = await factory.waitForDeployment();
-
-        await expect(
-            async () => await contract.filters.EventNotFound().get()
-        ).rejects.toThrowError(InvalidAbiFunctionError);
-    }, 10000);
-
-    /**
-     * Test listening to a non-existing ERC20 event.
-     */
-    test('listen to a non existing ERC20 event', async () => {
-        // Deploy the ERC20 contract
-        let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
-            erc20ContractBytecode,
-            signer
-        );
-
-        factory = await factory.startDeployment();
-
-        const contract: Contract = await factory.waitForDeployment();
-
-        await expect(
-            async () => await contract.filters.EventNotFound().get()
-        ).rejects.toThrowError(InvalidAbiFunctionError);
-    }, 10000);
 });

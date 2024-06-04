@@ -1,6 +1,9 @@
 import { addressUtils, Hex0x } from '../../src';
 import { generateRandomValidAddress } from '../fixture';
-import { InvalidAbiDataToEncodeError } from '@vechain/sdk-errors';
+import {
+    InvalidAbiDataToEncodeError,
+    stringifyData
+} from '@vechain/sdk-errors';
 
 /**
  * Simple functions fixtures
@@ -438,7 +441,7 @@ const encodedDecodedInvalidValues = [
     }
 ];
 
-const contractABI = JSON.stringify([
+const contractABI = stringifyData([
     {
         constant: false,
         inputs: [
@@ -469,7 +472,7 @@ const contractABI = JSON.stringify([
     }
 ]);
 
-const contractABIWithEvents = JSON.stringify([
+const contractABIWithEvents = stringifyData([
     {
         constant: false,
         inputs: [
@@ -517,7 +520,7 @@ const contractABIWithEvents = JSON.stringify([
     }
 ]);
 
-const contractStorageABI = JSON.stringify([
+const contractStorageABI = stringifyData([
     {
         inputs: [],
         name: 'getValue',

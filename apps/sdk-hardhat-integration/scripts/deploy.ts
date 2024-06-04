@@ -1,4 +1,5 @@
 import { ethers } from 'hardhat';
+import { stringifyData } from '@vechain/sdk-errors';
 
 async function main(): Promise<void> {
     const signer = (await ethers.getSigners())[0];
@@ -12,7 +13,7 @@ async function main(): Promise<void> {
 
     console.log(
         'Contract deployment with the following transaction:',
-        JSON.stringify(txResponse)
+        stringifyData(txResponse)
     );
 }
 

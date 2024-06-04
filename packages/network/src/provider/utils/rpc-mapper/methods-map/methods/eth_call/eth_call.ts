@@ -1,4 +1,10 @@
-import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
+import {
+    assert,
+    buildProviderError,
+    DATA,
+    JSONRPC,
+    stringifyData
+} from '@vechain/sdk-errors';
 import { getCorrectBlockNumberRPCToVechain } from '../../../../const';
 import { type TransactionObjectInput } from './types';
 import { type BlockQuantityInputRPC } from '../../../types';
@@ -77,11 +83,11 @@ const ethCall = async (
         throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,
             `Method 'eth_call' failed: Error while simulating transaction\n
-            Params: ${JSON.stringify(params)}\n
+            Params: ${stringifyData(params)}\n
             URL: ${thorClient.httpClient.baseURL}`,
             {
                 params,
-                innerError: JSON.stringify(e)
+                innerError: stringifyData(e)
             }
         );
     }

@@ -5,7 +5,7 @@ import {
     type ProviderInternalWalletAccount,
     ThorClient,
     type TransactionReceipt,
-   VeChainProvider,
+    VeChainProvider,
     type VeChainSigner
 } from '@vechain/sdk-network';
 import { expect } from 'expect';
@@ -63,7 +63,7 @@ const eventExampleAbi = [
         stateMutability: 'view',
         type: 'function'
     }
-];
+] as const;
 
 // Defining the deployer account, which has VTHO for deployment costs
 const deployerAccount: ProviderInternalWalletAccount = {
@@ -86,7 +86,7 @@ const signer = (await provider.getSigner(
 )) as VeChainSigner;
 
 // Defining a function for deploying the ERC20 contract
-const setupERC20Contract = async (): Promise<Contract> => {
+const setupERC20Contract = async (): Promise<Contract<typeof VIP180_ABI>> => {
     const contractFactory = thorSoloClient.contracts.createContractFactory(
         VIP180_ABI,
         erc20ContractBytecode,
@@ -100,7 +100,9 @@ const setupERC20Contract = async (): Promise<Contract> => {
     return await contractFactory.waitForDeployment();
 };
 
-const setupEventExampleContract = async (): Promise<Contract> => {
+const setupEventExampleContract = async (): Promise<
+    Contract<typeof eventExampleAbi>
+> => {
     const contractFactory = thorSoloClient.contracts.createContractFactory(
         eventExampleAbi,
         eventExampleBytecode,
@@ -122,7 +124,7 @@ const contractErc20 = await setupERC20Contract();
 // Starting from a deployed contract instance, transfer some tokens to a specific address
 const transferResult = await contractErc20.transact.transfer(
     '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-    10000
+    10000n
 );
 
 // Wait for the transfer transaction to complete and obtain its receipt
@@ -147,9 +149,9 @@ console.log(transferEvents);
 
 // START_SNIPPET: ERC20FilterMultipleEventCriteriaSnippet
 
-const contractEventExample: Contract = await setupEventExampleContract();
+const contractEventExample = await setupEventExampleContract();
 
-await (await contractEventExample.transact.setValue(3000)).wait();
+await (await contractEventExample.transact.setValue(3000n)).wait();
 
 const transferCriteria = contractErc20.criteria.Transfer(
     undefined,
