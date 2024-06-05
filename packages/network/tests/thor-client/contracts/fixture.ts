@@ -1157,6 +1157,7 @@ const OWNER_RESTRICTION_ABI = [
     }
 ] as const;
 
+// IMPORTANT NOTE: This vebetterdao contract abi is just for testing purposes. It should never be used in production.
 const xAllocationVotingGovernorABI = [
     {
         inputs: [
@@ -2722,6 +2723,7 @@ const xAllocationVotingGovernorABI = [
     }
 ] as const;
 
+// IMPORTANT NOTE: This vebetterdao contract abi is just for testing purposes. It should never be used in production.
 const emissionsABI = [
     {
         inputs: [],
