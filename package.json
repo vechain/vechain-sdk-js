@@ -76,5 +76,8 @@
     "peerDependencies": {
         "hardhat": "^2.22.4"
     },
-    "version": "v1.22.22"
+    "version": "v1.22.22",
+    "dependencies": {
+        "thor-devkit": "^2.0.9"
+    }
 }

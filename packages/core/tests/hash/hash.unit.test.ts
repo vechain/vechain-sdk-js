@@ -5,11 +5,32 @@ import { InvalidDataReturnTypeError } from '@vechain/sdk-errors';
 import { Buffer } from 'buffer';
 import { ZERO_BYTES } from '../../src';
 
+import { cert } from '../certificate/fixture';
+import { bytesToHex } from '@noble/ciphers/utils';
+
 /**
  * Test hash functions
  * @group unit/hash
  */
 describe('Hash', () => {
+    test('thordevkit', () => {
+        const json = JSON.stringify(cert);
+        console.log(json);
+        // const blake_dev_dir = ThorDevKit.blake2b256(json);
+        // console.log('dir', blake_dev_dir);
+        const buffer = Buffer.from(json, `utf8`);
+        console.log(bytesToHex(buffer));
+        const textEncoder = new TextEncoder();
+        console.log(textEncoder.encoding);
+        // form: "NFC" | "NFD" | "NFKC" | "NFKD"): string
+        const array = textEncoder.encode(json.normalize('NFKD'));
+        console.log(bytesToHex(array));
+        // const blake_dev_ind = ThorDevKit.blake2b256(buffer);
+        // console.log('ind', blake_dev_ind);
+        // const blake_sdk = blake2b256(buffer);
+        // console.log('sdk', blake_sdk);
+    });
+
     /**
      * Test each hash function
      */

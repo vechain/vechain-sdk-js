@@ -1,5 +1,5 @@
 import * as utils from '@noble/curves/abstract/utils';
-import { blake2b256, keccak256, sha256 } from '../../src';
+import { blake2b256, keccak256, sha256, ZERO_BYTES } from '../../src';
 
 /**
  * Hash functions to test
@@ -52,4 +52,18 @@ const hashFunctionsToTest = [
     }
 ];
 
-export { hashFunctionsToTest };
+const BLAKE2B256_CONTENT = 'Hello world - Здравствуйте - こんにちは!';
+const BLAKE2B256_CONTENT_HASH =
+    '0x6a908bb80109908919c0bf5d0594c890700dd46acc097f9f28bfc85a0a2e6c0c';
+
+const BLAKE2B256_NO_CONTENT = ZERO_BYTES(0);
+const BLAKE2B256_NO_CONTENT_HASH =
+    '0x0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8';
+
+export {
+    BLAKE2B256_CONTENT,
+    BLAKE2B256_CONTENT_HASH,
+    BLAKE2B256_NO_CONTENT,
+    BLAKE2B256_NO_CONTENT_HASH,
+    hashFunctionsToTest
+};
