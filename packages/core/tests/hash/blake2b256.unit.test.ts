@@ -1,3 +1,4 @@
+// To be introduced once thor-dev-kit dependency clash solved.
 // import * as ThorDevKit from 'thor-devkit';
 import { blake2b256, blake2b256OfHex, Hex, type ReturnType } from '../../src';
 import { describe, expect, test } from '@jest/globals';
@@ -19,6 +20,7 @@ import {
  */
 describe('blake2b256', () => {
     describe('blake2b256', () => {
+        // To be introduced once thor-dev-kit dependency clash solved.
         // test('blake2b256 - compatibility - thor-dev-kit', () => {
         //     const expected = new Uint8Array(
         //         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
@@ -83,6 +85,7 @@ describe('blake2b256', () => {
 
         const zeroContent = Hex.of(BLAKE2B256_NO_CONTENT);
 
+        // To be introduced once thor-dev-kit dependency clash solved.
         // test('blake2b256OfHex - compatibility - thor-dev-kit', () => {
         //     const expected = new Uint8Array(
         //         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
