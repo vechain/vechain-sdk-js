@@ -541,7 +541,7 @@ describe('ThorClient - Contracts', () => {
 
         expect(events).toBeDefined();
 
-        expect(events.at(events.length - 1)?.decodedData?.at(0)).toBe(123n);
+        expect(events[0].at(events.length - 1)?.decodedData?.at(0)).toBe(123n);
     });
 
     filterContractEventsTestCases.forEach(
@@ -597,7 +597,7 @@ describe('ThorClient - Contracts', () => {
                         getParams?.order
                     );
 
-                    expect(eventLogs.map((x) => x.decodedData)).toEqual(
+                    expect(eventLogs[0].map((x) => x.decodedData)).toEqual(
                         expectedData
                     );
                 },

@@ -82,7 +82,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         expect(
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-            events.map((x) => x.decodedData)
+            events[0].map((x) => x.decodedData)
         ).toEqual([
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
@@ -138,18 +138,22 @@ describe('ThorClient - ERC20 Contracts', () => {
         });
 
         expect(
-            events.map((event) => {
-                return event.data;
-            })
+            events
+                .get(transferCriteria.eventFragment.topicHash)
+                ?.map((event) => {
+                    return event.data;
+                })
         ).toEqual([
             '0x00000000000000000000000000000000000000000000000000000000000003e8',
             '0x0000000000000000000000000000000000000000000000000000000000001388'
         ]);
 
         expect(
-            events.map((event) => {
-                return event.topics;
-            })
+            events
+                .get(transferCriteria.eventFragment.topicHash)
+                ?.map((event) => {
+                    return event.topics;
+                })
         ).toEqual([
             [
                 '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
@@ -204,7 +208,11 @@ describe('ThorClient - ERC20 Contracts', () => {
             criteriaSet: [transferCriteria]
         });
 
-        expect(events.map((x) => x.decodedData)).toEqual([
+        expect(
+            events
+                .get(transferCriteria.eventFragment.topicHash)
+                ?.map((x) => x.decodedData)
+        ).toEqual([
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
                 '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
@@ -322,9 +330,11 @@ describe('ThorClient - ERC20 Contracts', () => {
         });
 
         expect(
-            events.map((event) => {
-                return event.data;
-            })
+            events
+                .get(transferCriteria.eventFragment.topicHash)
+                ?.map((event) => {
+                    return event.data;
+                })
         ).toEqual([
             '0x00000000000000000000000000000000000000000000000000000000000003e8',
             '0x0000000000000000000000000000000000000000000000000000000000001388',
@@ -332,9 +342,11 @@ describe('ThorClient - ERC20 Contracts', () => {
         ]);
 
         expect(
-            events.map((event) => {
-                return event.topics;
-            })
+            events
+                .get(transferCriteria.eventFragment.topicHash)
+                ?.map((event) => {
+                    return event.topics;
+                })
         ).toEqual([
             [
                 '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
@@ -406,7 +418,11 @@ describe('ThorClient - ERC20 Contracts', () => {
             criteriaSet: [transferCriteria, transferCriteriaDelegator]
         });
 
-        expect(events.map((x) => x.decodedData)).toEqual([
+        expect(
+            events
+                .get(transferCriteria.eventFragment.topicHash)
+                ?.map((x) => x.decodedData)
+        ).toEqual([
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
                 '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
@@ -473,13 +489,22 @@ describe('ThorClient - ERC20 Contracts', () => {
             criteriaSet: [transferCriteria, valueCriteria]
         });
 
-        expect(events.map((x) => x.decodedData)).toEqual([
+        expect(
+            events
+                .get(transferCriteria.eventFragment.topicHash)
+                ?.map((x) => x.decodedData)
+        ).toEqual([
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
                 '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
                 5000n
-            ],
-            ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
+            ]
         ]);
+
+        expect(
+            events
+                .get(valueCriteria.eventFragment.topicHash)
+                ?.map((x) => x.decodedData)
+        ).toEqual([['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]]);
     }, 20000); // Set a timeout of 10000ms for this test
 });

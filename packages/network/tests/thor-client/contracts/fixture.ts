@@ -1157,6 +1157,2657 @@ const OWNER_RESTRICTION_ABI = [
     }
 ] as const;
 
+const xAllocationVotingGovernorABI = [
+    {
+        inputs: [
+            {
+                internalType: 'contract IVotes',
+                name: '_vot3Token',
+                type: 'address'
+            },
+            {
+                internalType: 'uint256',
+                name: '_quorumPercentage',
+                type: 'uint256'
+            },
+            {
+                internalType: 'uint32',
+                name: '_initialVotingPeriod',
+                type: 'uint32'
+            },
+            {
+                internalType: 'address',
+                name: 'b3trGovernor_',
+                type: 'address'
+            },
+            {
+                internalType: 'address',
+                name: '_voterRewards',
+                type: 'address'
+            },
+            {
+                internalType: 'address[]',
+                name: '_admins',
+                type: 'address[]'
+            },
+            {
+                internalType: 'string',
+                name: '_xAppsBaseURI',
+                type: 'string'
+            }
+        ],
+        stateMutability: 'nonpayable',
+        type: 'constructor'
+    },
+    {
+        inputs: [],
+        name: 'AccessControlBadConfirmation',
+        type: 'error'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'account',
+                type: 'address'
+            },
+            {
+                internalType: 'bytes32',
+                name: 'neededRole',
+                type: 'bytes32'
+            }
+        ],
+        name: 'AccessControlUnauthorizedAccount',
+        type: 'error'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'account',
+                type: 'address'
+            }
+        ],
+        name: 'B3TRGovernorOnlyExecutor',
+        type: 'error'
+    },
+    {
+        inputs: [],
+        name: 'CheckpointUnorderedInsertion',
+        type: 'error'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'timepoint',
+                type: 'uint256'
+            },
+            {
+                internalType: 'uint48',
+                name: 'clock',
+                type: 'uint48'
+            }
+        ],
+        name: 'ERC5805FutureLookup',
+        type: 'error'
+    },
+    {
+        inputs: [],
+        name: 'ERC6372InconsistentClock',
+        type: 'error'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'voter',
+                type: 'address'
+            }
+        ],
+        name: 'GovernorAlreadyCastVote',
+        type: 'error'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'appId',
+                type: 'bytes32'
+            }
+        ],
+        name: 'GovernorAppNotAvailableForVoting',
+        type: 'error'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'quorumNumerator',
+                type: 'uint256'
+            },
+            {
+                internalType: 'uint256',
+                name: 'quorumDenominator',
+                type: 'uint256'
+            }
+        ],
+        name: 'GovernorInvalidQuorumFraction',
+        type: 'error'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'votingPeriod',
+                type: 'uint256'
+            }
+        ],
+        name: 'GovernorInvalidVotingPeriod',
+        type: 'error'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            }
+        ],
+        name: 'GovernorNonexistentRound',
+        type: 'error'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            },
+            {
+                internalType: 'enum IXAllocationVotingGovernor.RoundState',
+                name: 'current',
+                type: 'uint8'
+            },
+            {
+                internalType: 'bytes32',
+                name: 'expectedStates',
+                type: 'bytes32'
+            }
+        ],
+        name: 'GovernorUnexpectedRoundState',
+        type: 'error'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'account',
+                type: 'address'
+            },
+            {
+                internalType: 'uint256',
+                name: 'currentNonce',
+                type: 'uint256'
+            }
+        ],
+        name: 'InvalidAccountNonce',
+        type: 'error'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint8',
+                name: 'bits',
+                type: 'uint8'
+            },
+            {
+                internalType: 'uint256',
+                name: 'value',
+                type: 'uint256'
+            }
+        ],
+        name: 'SafeCastOverflowedUintDowncast',
+        type: 'error'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'value',
+                type: 'uint256'
+            },
+            {
+                internalType: 'uint256',
+                name: 'length',
+                type: 'uint256'
+            }
+        ],
+        name: 'StringsInsufficientHexLength',
+        type: 'error'
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: 'address',
+                name: 'voter',
+                type: 'address'
+            },
+            {
+                indexed: true,
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            },
+            {
+                indexed: false,
+                internalType: 'bytes32[]',
+                name: 'appsIds',
+                type: 'bytes32[]'
+            },
+            {
+                indexed: false,
+                internalType: 'uint256[]',
+                name: 'voteWeights',
+                type: 'uint256[]'
+            }
+        ],
+        name: 'AllocationVoteCast',
+        type: 'event'
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: 'bytes32',
+                name: 'id',
+                type: 'bytes32'
+            },
+            {
+                indexed: false,
+                internalType: 'address',
+                name: 'addr',
+                type: 'address'
+            },
+            {
+                indexed: false,
+                internalType: 'string',
+                name: 'name',
+                type: 'string'
+            },
+            {
+                indexed: false,
+                internalType: 'bool',
+                name: 'appAvailableForAllocationVoting',
+                type: 'bool'
+            }
+        ],
+        name: 'AppAdded',
+        type: 'event'
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: false,
+                internalType: 'uint256',
+                name: 'oldQuorumNumerator',
+                type: 'uint256'
+            },
+            {
+                indexed: false,
+                internalType: 'uint256',
+                name: 'newQuorumNumerator',
+                type: 'uint256'
+            }
+        ],
+        name: 'QuorumNumeratorUpdated',
+        type: 'event'
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: 'bytes32',
+                name: 'role',
+                type: 'bytes32'
+            },
+            {
+                indexed: true,
+                internalType: 'bytes32',
+                name: 'previousAdminRole',
+                type: 'bytes32'
+            },
+            {
+                indexed: true,
+                internalType: 'bytes32',
+                name: 'newAdminRole',
+                type: 'bytes32'
+            }
+        ],
+        name: 'RoleAdminChanged',
+        type: 'event'
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: 'bytes32',
+                name: 'role',
+                type: 'bytes32'
+            },
+            {
+                indexed: true,
+                internalType: 'address',
+                name: 'account',
+                type: 'address'
+            },
+            {
+                indexed: true,
+                internalType: 'address',
+                name: 'sender',
+                type: 'address'
+            }
+        ],
+        name: 'RoleGranted',
+        type: 'event'
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: 'bytes32',
+                name: 'role',
+                type: 'bytes32'
+            },
+            {
+                indexed: true,
+                internalType: 'address',
+                name: 'account',
+                type: 'address'
+            },
+            {
+                indexed: true,
+                internalType: 'address',
+                name: 'sender',
+                type: 'address'
+            }
+        ],
+        name: 'RoleRevoked',
+        type: 'event'
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: false,
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            },
+            {
+                indexed: false,
+                internalType: 'address',
+                name: 'proposer',
+                type: 'address'
+            },
+            {
+                indexed: false,
+                internalType: 'uint256',
+                name: 'voteStart',
+                type: 'uint256'
+            },
+            {
+                indexed: false,
+                internalType: 'uint256',
+                name: 'voteEnd',
+                type: 'uint256'
+            }
+        ],
+        name: 'RoundCreated',
+        type: 'event'
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: 'bytes32',
+                name: 'appId',
+                type: 'bytes32'
+            },
+            {
+                indexed: false,
+                internalType: 'bool',
+                name: 'isAvailable',
+                type: 'bool'
+            }
+        ],
+        name: 'VotingElegibilityChanged',
+        type: 'event'
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: false,
+                internalType: 'uint256',
+                name: 'oldVotingPeriod',
+                type: 'uint256'
+            },
+            {
+                indexed: false,
+                internalType: 'uint256',
+                name: 'newVotingPeriod',
+                type: 'uint256'
+            }
+        ],
+        name: 'VotingPeriodSet',
+        type: 'event'
+    },
+    {
+        inputs: [],
+        name: 'CLOCK_MODE',
+        outputs: [
+            {
+                internalType: 'string',
+                name: '',
+                type: 'string'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'COUNTING_MODE',
+        outputs: [
+            {
+                internalType: 'string',
+                name: '',
+                type: 'string'
+            }
+        ],
+        stateMutability: 'pure',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'DEFAULT_ADMIN_ROLE',
+        outputs: [
+            {
+                internalType: 'bytes32',
+                name: '',
+                type: 'bytes32'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'appAddress',
+                type: 'address'
+            },
+            {
+                internalType: 'string',
+                name: 'appName',
+                type: 'string'
+            }
+        ],
+        name: 'addApp',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'allElegibleApps',
+        outputs: [
+            {
+                internalType: 'bytes32[]',
+                name: '',
+                type: 'bytes32[]'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'appId',
+                type: 'bytes32'
+            }
+        ],
+        name: 'appURI',
+        outputs: [
+            {
+                internalType: 'string',
+                name: '',
+                type: 'string'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'b3trGovernor',
+        outputs: [
+            {
+                internalType: 'contract IGovernor',
+                name: '',
+                type: 'address'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'baseURI',
+        outputs: [
+            {
+                internalType: 'string',
+                name: '',
+                type: 'string'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            },
+            {
+                internalType: 'bytes32[]',
+                name: 'appIds',
+                type: 'bytes32[]'
+            },
+            {
+                internalType: 'uint256[]',
+                name: 'voteWeights',
+                type: 'uint256[]'
+            }
+        ],
+        name: 'castVote',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'clock',
+        outputs: [
+            {
+                internalType: 'uint48',
+                name: '',
+                type: 'uint48'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'currentRoundId',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            }
+        ],
+        name: 'finalize',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'getAllApps',
+        outputs: [
+            {
+                components: [
+                    {
+                        internalType: 'bytes32',
+                        name: 'id',
+                        type: 'bytes32'
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'receiverAddress',
+                        type: 'address'
+                    },
+                    {
+                        internalType: 'string',
+                        name: 'name',
+                        type: 'string'
+                    },
+                    {
+                        internalType: 'uint48',
+                        name: 'createdAt',
+                        type: 'uint48'
+                    }
+                ],
+                internalType: 'struct XApps.App[]',
+                name: '',
+                type: 'tuple[]'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'id',
+                type: 'bytes32'
+            }
+        ],
+        name: 'getApp',
+        outputs: [
+            {
+                components: [
+                    {
+                        internalType: 'bytes32',
+                        name: 'id',
+                        type: 'bytes32'
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'receiverAddress',
+                        type: 'address'
+                    },
+                    {
+                        internalType: 'string',
+                        name: 'name',
+                        type: 'string'
+                    },
+                    {
+                        internalType: 'uint48',
+                        name: 'createdAt',
+                        type: 'uint48'
+                    }
+                ],
+                internalType: 'struct XApps.App',
+                name: '',
+                type: 'tuple'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'appId',
+                type: 'bytes32'
+            }
+        ],
+        name: 'getAppReceiverAddress',
+        outputs: [
+            {
+                internalType: 'address',
+                name: '',
+                type: 'address'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            },
+            {
+                internalType: 'bytes32',
+                name: 'app',
+                type: 'bytes32'
+            }
+        ],
+        name: 'getAppVotes',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'getCurrentAllocationRoundSnapshot',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'role',
+                type: 'bytes32'
+            }
+        ],
+        name: 'getRoleAdmin',
+        outputs: [
+            {
+                internalType: 'bytes32',
+                name: '',
+                type: 'bytes32'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            }
+        ],
+        name: 'getRoundApps',
+        outputs: [
+            {
+                internalType: 'bytes32[]',
+                name: '',
+                type: 'bytes32[]'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            }
+        ],
+        name: 'getRoundAppsWithDetails',
+        outputs: [
+            {
+                components: [
+                    {
+                        internalType: 'bytes32',
+                        name: 'id',
+                        type: 'bytes32'
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'receiverAddress',
+                        type: 'address'
+                    },
+                    {
+                        internalType: 'string',
+                        name: 'name',
+                        type: 'string'
+                    },
+                    {
+                        internalType: 'uint48',
+                        name: 'createdAt',
+                        type: 'uint48'
+                    }
+                ],
+                internalType: 'struct XApps.App[]',
+                name: '',
+                type: 'tuple[]'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'account',
+                type: 'address'
+            },
+            {
+                internalType: 'uint256',
+                name: 'timepoint',
+                type: 'uint256'
+            }
+        ],
+        name: 'getVotes',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'role',
+                type: 'bytes32'
+            },
+            {
+                internalType: 'address',
+                name: 'account',
+                type: 'address'
+            }
+        ],
+        name: 'grantRole',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'role',
+                type: 'bytes32'
+            },
+            {
+                internalType: 'address',
+                name: 'account',
+                type: 'address'
+            }
+        ],
+        name: 'hasRole',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            },
+            {
+                internalType: 'address',
+                name: 'user',
+                type: 'address'
+            }
+        ],
+        name: 'hasVoted',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'user',
+                type: 'address'
+            }
+        ],
+        name: 'hasVotedOnce',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'string',
+                name: 'appName',
+                type: 'string'
+            }
+        ],
+        name: 'hashName',
+        outputs: [
+            {
+                internalType: 'bytes32',
+                name: '',
+                type: 'bytes32'
+            }
+        ],
+        stateMutability: 'pure',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            }
+        ],
+        name: 'isActive',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'appId',
+                type: 'bytes32'
+            }
+        ],
+        name: 'isElegibleForVoteLatestCheckpoint',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'appId',
+                type: 'bytes32'
+            },
+            {
+                internalType: 'uint256',
+                name: 'timepoint',
+                type: 'uint256'
+            }
+        ],
+        name: 'isElegibleForVotePastCheckpoint',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'appId',
+                type: 'bytes32'
+            },
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            }
+        ],
+        name: 'isEligibleForVote',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            }
+        ],
+        name: 'isFinalized',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            }
+        ],
+        name: 'latestSucceededRoundId',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'name',
+        outputs: [
+            {
+                internalType: 'string',
+                name: '',
+                type: 'string'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'owner',
+                type: 'address'
+            }
+        ],
+        name: 'nonces',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'blockNumber',
+                type: 'uint256'
+            }
+        ],
+        name: 'quorum',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'quorumDenominator',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'timepoint',
+                type: 'uint256'
+            }
+        ],
+        name: 'quorumNumerator',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'quorumNumerator',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            }
+        ],
+        name: 'quorumReached',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'role',
+                type: 'bytes32'
+            },
+            {
+                internalType: 'address',
+                name: 'callerConfirmation',
+                type: 'address'
+            }
+        ],
+        name: 'renounceRole',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'role',
+                type: 'bytes32'
+            },
+            {
+                internalType: 'address',
+                name: 'account',
+                type: 'address'
+            }
+        ],
+        name: 'revokeRole',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            }
+        ],
+        name: 'roundDeadline',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            }
+        ],
+        name: 'roundProposer',
+        outputs: [
+            {
+                internalType: 'address',
+                name: '',
+                type: 'address'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            }
+        ],
+        name: 'roundQuorum',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            }
+        ],
+        name: 'roundSnapshot',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: '_newAdmin',
+                type: 'address'
+            }
+        ],
+        name: 'setAdminRole',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'b3trGovernor_',
+                type: 'address'
+            }
+        ],
+        name: 'setB3trGovernanceAddress',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'string',
+                name: 'baseURI_',
+                type: 'string'
+            }
+        ],
+        name: 'setBaseURI',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'appId',
+                type: 'bytes32'
+            },
+            {
+                internalType: 'bool',
+                name: 'isElegible',
+                type: 'bool'
+            }
+        ],
+        name: 'setVotingElegibility',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint32',
+                name: 'newVotingPeriod',
+                type: 'uint32'
+            }
+        ],
+        name: 'setVotingPeriod',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'startNewRound',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            }
+        ],
+        name: 'state',
+        outputs: [
+            {
+                internalType: 'enum IXAllocationVotingGovernor.RoundState',
+                name: '',
+                type: 'uint8'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes4',
+                name: 'interfaceId',
+                type: 'bytes4'
+            }
+        ],
+        name: 'supportsInterface',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'token',
+        outputs: [
+            {
+                internalType: 'contract IERC5805',
+                name: '',
+                type: 'address'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            }
+        ],
+        name: 'totalVoters',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'roundId',
+                type: 'uint256'
+            }
+        ],
+        name: 'totalVotes',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'appId',
+                type: 'bytes32'
+            },
+            {
+                internalType: 'address',
+                name: 'newReceiverAddress',
+                type: 'address'
+            }
+        ],
+        name: 'updateAppReceiverAddress',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'newQuorumNumerator',
+                type: 'uint256'
+            }
+        ],
+        name: 'updateQuorumNumerator',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'version',
+        outputs: [
+            {
+                internalType: 'string',
+                name: '',
+                type: 'string'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'voterRewards',
+        outputs: [
+            {
+                internalType: 'contract IVoterRewards',
+                name: '',
+                type: 'address'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'votingPeriod',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    }
+] as const;
+
+const emissionsABI = [
+    {
+        inputs: [],
+        stateMutability: 'nonpayable',
+        type: 'constructor'
+    },
+    {
+        inputs: [],
+        name: 'AccessControlBadConfirmation',
+        type: 'error'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'account',
+                type: 'address'
+            },
+            {
+                internalType: 'bytes32',
+                name: 'neededRole',
+                type: 'bytes32'
+            }
+        ],
+        name: 'AccessControlUnauthorizedAccount',
+        type: 'error'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'target',
+                type: 'address'
+            }
+        ],
+        name: 'AddressEmptyCode',
+        type: 'error'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'implementation',
+                type: 'address'
+            }
+        ],
+        name: 'ERC1967InvalidImplementation',
+        type: 'error'
+    },
+    {
+        inputs: [],
+        name: 'ERC1967NonPayable',
+        type: 'error'
+    },
+    {
+        inputs: [],
+        name: 'FailedInnerCall',
+        type: 'error'
+    },
+    {
+        inputs: [],
+        name: 'InvalidInitialization',
+        type: 'error'
+    },
+    {
+        inputs: [],
+        name: 'NotInitializing',
+        type: 'error'
+    },
+    {
+        inputs: [],
+        name: 'ReentrancyGuardReentrantCall',
+        type: 'error'
+    },
+    {
+        inputs: [],
+        name: 'UUPSUnauthorizedCallContext',
+        type: 'error'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'slot',
+                type: 'bytes32'
+            }
+        ],
+        name: 'UUPSUnsupportedProxiableUUID',
+        type: 'error'
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: 'uint256',
+                name: 'cycle',
+                type: 'uint256'
+            },
+            {
+                indexed: false,
+                internalType: 'uint256',
+                name: 'xAllocations',
+                type: 'uint256'
+            },
+            {
+                indexed: false,
+                internalType: 'uint256',
+                name: 'vote2Earn',
+                type: 'uint256'
+            },
+            {
+                indexed: false,
+                internalType: 'uint256',
+                name: 'treasury',
+                type: 'uint256'
+            }
+        ],
+        name: 'EmissionDistributed',
+        type: 'event'
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: false,
+                internalType: 'uint64',
+                name: 'version',
+                type: 'uint64'
+            }
+        ],
+        name: 'Initialized',
+        type: 'event'
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: 'bytes32',
+                name: 'role',
+                type: 'bytes32'
+            },
+            {
+                indexed: true,
+                internalType: 'bytes32',
+                name: 'previousAdminRole',
+                type: 'bytes32'
+            },
+            {
+                indexed: true,
+                internalType: 'bytes32',
+                name: 'newAdminRole',
+                type: 'bytes32'
+            }
+        ],
+        name: 'RoleAdminChanged',
+        type: 'event'
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: 'bytes32',
+                name: 'role',
+                type: 'bytes32'
+            },
+            {
+                indexed: true,
+                internalType: 'address',
+                name: 'account',
+                type: 'address'
+            },
+            {
+                indexed: true,
+                internalType: 'address',
+                name: 'sender',
+                type: 'address'
+            }
+        ],
+        name: 'RoleGranted',
+        type: 'event'
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: 'bytes32',
+                name: 'role',
+                type: 'bytes32'
+            },
+            {
+                indexed: true,
+                internalType: 'address',
+                name: 'account',
+                type: 'address'
+            },
+            {
+                indexed: true,
+                internalType: 'address',
+                name: 'sender',
+                type: 'address'
+            }
+        ],
+        name: 'RoleRevoked',
+        type: 'event'
+    },
+    {
+        anonymous: false,
+        inputs: [
+            {
+                indexed: true,
+                internalType: 'address',
+                name: 'implementation',
+                type: 'address'
+            }
+        ],
+        name: 'Upgraded',
+        type: 'event'
+    },
+    {
+        inputs: [],
+        name: 'DEFAULT_ADMIN_ROLE',
+        outputs: [
+            {
+                internalType: 'bytes32',
+                name: '',
+                type: 'bytes32'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'MINTER_ROLE',
+        outputs: [
+            {
+                internalType: 'bytes32',
+                name: '',
+                type: 'bytes32'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'UPGRADER_ROLE',
+        outputs: [
+            {
+                internalType: 'bytes32',
+                name: '',
+                type: 'bytes32'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'UPGRADE_INTERFACE_VERSION',
+        outputs: [
+            {
+                internalType: 'string',
+                name: '',
+                type: 'string'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'b3tr',
+        outputs: [
+            {
+                internalType: 'contract IB3TR',
+                name: '',
+                type: 'address'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'bootstrap',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'cycleDuration',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'distribute',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'cycle',
+                type: 'uint256'
+            }
+        ],
+        name: 'emissions',
+        outputs: [
+            {
+                components: [
+                    {
+                        internalType: 'uint256',
+                        name: 'xAllocations',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'vote2Earn',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'treasury',
+                        type: 'uint256'
+                    }
+                ],
+                internalType: 'struct Emissions.Emission',
+                name: '',
+                type: 'tuple'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'getCurrentCycle',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'getNextCycleBlock',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'getRemainingEmissions',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'role',
+                type: 'bytes32'
+            }
+        ],
+        name: 'getRoleAdmin',
+        outputs: [
+            {
+                internalType: 'bytes32',
+                name: '',
+                type: 'bytes32'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'cycle',
+                type: 'uint256'
+            }
+        ],
+        name: 'getTreasuryAmount',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'cycle',
+                type: 'uint256'
+            }
+        ],
+        name: 'getVote2EarnAmount',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'cycle',
+                type: 'uint256'
+            }
+        ],
+        name: 'getXAllocationAmount',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'role',
+                type: 'bytes32'
+            },
+            {
+                internalType: 'address',
+                name: 'account',
+                type: 'address'
+            }
+        ],
+        name: 'grantRole',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'role',
+                type: 'bytes32'
+            },
+            {
+                internalType: 'address',
+                name: 'account',
+                type: 'address'
+            }
+        ],
+        name: 'hasRole',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'initialXAppAllocation',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                components: [
+                    {
+                        internalType: 'address',
+                        name: 'minter',
+                        type: 'address'
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'admin',
+                        type: 'address'
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'upgrader',
+                        type: 'address'
+                    },
+                    {
+                        internalType: 'address',
+                        name: 'b3trAddress',
+                        type: 'address'
+                    },
+                    {
+                        internalType: 'address[3]',
+                        name: 'destinations',
+                        type: 'address[3]'
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'initialXAppAllocation',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'cycleDuration',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint256[4]',
+                        name: 'decaySettings',
+                        type: 'uint256[4]'
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'treasuryPercentage',
+                        type: 'uint256'
+                    },
+                    {
+                        internalType: 'uint256',
+                        name: 'maxVote2EarnDecay',
+                        type: 'uint256'
+                    }
+                ],
+                internalType: 'struct Emissions.InitializationData',
+                name: 'data',
+                type: 'tuple'
+            }
+        ],
+        name: 'initialize',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'cycle',
+                type: 'uint256'
+            }
+        ],
+        name: 'isCycleDistributed',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: 'cycle',
+                type: 'uint256'
+            }
+        ],
+        name: 'isCycleEnded',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'isNextCycleDistributable',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'lastEmissionBlock',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'maxVote2EarnDecay',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'nextCycle',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'proxiableUUID',
+        outputs: [
+            {
+                internalType: 'bytes32',
+                name: '',
+                type: 'bytes32'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'role',
+                type: 'bytes32'
+            },
+            {
+                internalType: 'address',
+                name: 'callerConfirmation',
+                type: 'address'
+            }
+        ],
+        name: 'renounceRole',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes32',
+                name: 'role',
+                type: 'bytes32'
+            },
+            {
+                internalType: 'address',
+                name: 'account',
+                type: 'address'
+            }
+        ],
+        name: 'revokeRole',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'scalingFactor',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: '_cycleDuration',
+                type: 'uint256'
+            }
+        ],
+        name: 'setCycleDuration',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: '_maxVote2EarnDecay',
+                type: 'uint256'
+            }
+        ],
+        name: 'setMaxVote2EarnDecay',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: '_scalingFactor',
+                type: 'uint256'
+            }
+        ],
+        name: 'setScalingFactor',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'treasuryAddress',
+                type: 'address'
+            }
+        ],
+        name: 'setTreasuryAddress',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: '_percentage',
+                type: 'uint256'
+            }
+        ],
+        name: 'setTreasuryPercentage',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'vote2EarnAddress',
+                type: 'address'
+            }
+        ],
+        name: 'setVote2EarnAddress',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: '_decay',
+                type: 'uint256'
+            }
+        ],
+        name: 'setVote2EarnDecay',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: '_period',
+                type: 'uint256'
+            }
+        ],
+        name: 'setVote2EarnDecayPeriod',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: '_decay',
+                type: 'uint256'
+            }
+        ],
+        name: 'setXAllocationsDecay',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'uint256',
+                name: '_period',
+                type: 'uint256'
+            }
+        ],
+        name: 'setXAllocationsDecayPeriod',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: '_xAllocationsGovernor',
+                type: 'address'
+            }
+        ],
+        name: 'setXAllocationsGovernorAddress',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'xAllocationAddress',
+                type: 'address'
+            }
+        ],
+        name: 'setXallocationsAddress',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'start',
+        outputs: [],
+        stateMutability: 'nonpayable',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'bytes4',
+                name: 'interfaceId',
+                type: 'bytes4'
+            }
+        ],
+        name: 'supportsInterface',
+        outputs: [
+            {
+                internalType: 'bool',
+                name: '',
+                type: 'bool'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'totalEmissions',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'treasury',
+        outputs: [
+            {
+                internalType: 'address',
+                name: '',
+                type: 'address'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'treasuryPercentage',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [
+            {
+                internalType: 'address',
+                name: 'newImplementation',
+                type: 'address'
+            },
+            {
+                internalType: 'bytes',
+                name: 'data',
+                type: 'bytes'
+            }
+        ],
+        name: 'upgradeToAndCall',
+        outputs: [],
+        stateMutability: 'payable',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'version',
+        outputs: [
+            {
+                internalType: 'string',
+                name: '',
+                type: 'string'
+            }
+        ],
+        stateMutability: 'pure',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'vote2Earn',
+        outputs: [
+            {
+                internalType: 'address',
+                name: '',
+                type: 'address'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'vote2EarnDecay',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'vote2EarnDecayPeriod',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'xAllocations',
+        outputs: [
+            {
+                internalType: 'address',
+                name: '',
+                type: 'address'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'xAllocationsDecay',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'xAllocationsDecayPeriod',
+        outputs: [
+            {
+                internalType: 'uint256',
+                name: '',
+                type: 'uint256'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    },
+    {
+        inputs: [],
+        name: 'xAllocationsGovernor',
+        outputs: [
+            {
+                internalType: 'contract IXAllocationVotingGovernor',
+                name: '',
+                type: 'address'
+            }
+        ],
+        stateMutability: 'view',
+        type: 'function'
+    }
+] as const;
+
+const emissionAddress = '0x3d7616213191a10460e49cfdb7edbf88d6a10942';
+
+const xAllocationAddress = '0x90c1a329e11ce6429eef0ab9b8f7daab68694e7d';
+
 const OWNER_RESTRICTION_BYTECODE =
     '0x6080604052348015600f57600080fd5b50336000806101000a81548173ffffffffffffffffffffffffffffffffffffffff021916908373ffffffffffffffffffffffffffffffffffffffff160217905550602a6001819055506102eb806100676000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c80637ea1e23c1461003b578063c21250fc14610057575b600080fd5b610055600480360381019061005091906101e1565b610075565b005b61005f61010d565b60405161006c919061021d565b60405180910390f35b60008054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff1614610103576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004016100fa90610295565b60405180910390fd5b8060018190555050565b60008060009054906101000a900473ffffffffffffffffffffffffffffffffffffffff1673ffffffffffffffffffffffffffffffffffffffff163373ffffffffffffffffffffffffffffffffffffffff161461019e576040517f08c379a000000000000000000000000000000000000000000000000000000000815260040161019590610295565b60405180910390fd5b600154905090565b600080fd5b6000819050919050565b6101be816101ab565b81146101c957600080fd5b50565b6000813590506101db816101b5565b92915050565b6000602082840312156101f7576101f66101a6565b5b6000610205848285016101cc565b91505092915050565b610217816101ab565b82525050565b6000602082019050610232600083018461020e565b92915050565b600082825260208201905092915050565b7f4e6f742074686520636f6e7472616374206f776e657200000000000000000000600082015250565b600061027f601683610238565b915061028a82610249565b602082019050919050565b600060208201905081810360008301526102ae81610272565b905091905056fea26469706673582212200719d4ab638d395991460f36ead3fd54bf340678d7805bce38f901b5533bf69664736f6c63430008190033';
 
@@ -1181,5 +3832,9 @@ export {
     eventExampleBytecode,
     eventExampleAbi,
     OWNER_RESTRICTION_ABI,
-    OWNER_RESTRICTION_BYTECODE
+    OWNER_RESTRICTION_BYTECODE,
+    xAllocationVotingGovernorABI,
+    emissionsABI,
+    emissionAddress,
+    xAllocationAddress
 };
