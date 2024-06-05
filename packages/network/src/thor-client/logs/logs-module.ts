@@ -43,13 +43,13 @@ class LogsModule {
     /**
      * Filters event logs based on the provided criteria and decodes them using the provided fragments.
      * The decoded data is added to the event logs as a new property.
-     * The result is a map where each key is a unique fragment topic hash and the value is an array of event logs associated with that fragment.
+     * The result is an array of event logs grouped by the event topic hash.
      * @param filterOptions
-     * @returns A promise that resolves to a map of event logs.
+     * @returns A promise that resolves to an array of event logs grouped by event.
      */
     public async filterEventLogs(
         filterOptions: FilterEventLogsOptions
-    ): Promise<Map<string, EventLogs[]>> {
+    ): Promise<EventLogs[][]> {
         // Extract criteria and fragments from filter options
         const criteriaSet = filterOptions.criteriaSet?.map((c) => c.criteria);
         const fragments = filterOptions.criteriaSet?.map(
@@ -90,7 +90,7 @@ class LogsModule {
             });
         }
 
-        return result;
+        return Array.from(result.values());
     }
 
     /**

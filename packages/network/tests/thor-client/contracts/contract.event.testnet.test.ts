@@ -47,15 +47,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         expect(xAllocationVotingEvents).toBeDefined();
         expect(Array.from(xAllocationVotingEvents.keys()).length).toEqual(2);
-        expect(
-            xAllocationVotingEvents.get(
-                roundCreatedCriteria.eventFragment.topicHash
-            )?.length
-        ).toBeGreaterThan(0);
-        expect(
-            xAllocationVotingEvents.get(
-                emissionDistributedCriteria.eventFragment.topicHash
-            )?.length
-        ).toBeGreaterThan(0);
+        expect(xAllocationVotingEvents[0].length).toBeGreaterThan(0);
+        expect(xAllocationVotingEvents[1].length).toBeGreaterThan(0);
     }, 30000);
 });
