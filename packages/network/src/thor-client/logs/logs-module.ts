@@ -5,10 +5,9 @@ import {
     type FilterTransferLogsOptions,
     type TransferLogs
 } from './types';
-import { thorest } from '../../utils';
+import { type EventFragment, thorest } from '../../utils';
 import { type ThorClient } from '../thor-client';
 import { abi } from '@vechain/sdk-core';
-import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 
 /**
  * The `LogsClient` class provides methods to interact with log-related endpoints
@@ -43,11 +42,14 @@ class LogsModule {
 
     /**
      * Filters event logs based on the provided criteria and decodes them using the provided fragments.
+     * The decoded data is added to the event logs as a new property.
+     * The result is an array of event logs grouped by the event topic hash.
      * @param filterOptions
+     * @returns A promise that resolves to an array of event logs grouped by event.
      */
     public async filterEventLogs(
         filterOptions: FilterEventLogsOptions
-    ): Promise<EventLogs[]> {
+    ): Promise<EventLogs[][]> {
         // Extract criteria and fragments from filter options
         const criteriaSet = filterOptions.criteriaSet?.map((c) => c.criteria);
         const fragments = filterOptions.criteriaSet?.map(
@@ -56,10 +58,14 @@ class LogsModule {
 
         // Create new filter options with the criteria set
         const filterRawEventLogsOptions: FilterRawEventLogsOptions = {
-            range: filterOptions.range,
+            range: filterOptions.range ?? {
+                unit: 'block',
+                from: 0,
+                to: (await this.thor.blocks.getBestBlockCompressed())?.number
+            },
             criteriaSet,
             options: filterOptions.options,
-            order: filterOptions.order
+            order: filterOptions.order ?? 'asc'
         };
 
         // Filter event logs based on the provided criteria
@@ -67,26 +73,43 @@ class LogsModule {
             filterRawEventLogsOptions
         );
 
-        // Decode event logs using the provided fragments. Take the first fragment that matches the topic hash.
-        return eventLogs.map((log) => {
-            const fragment = fragments?.filter(
-                (f) => f.topicHash === log.topics[0]
-            );
-            if (fragment !== undefined && fragment.length > 0) {
-                const eventFragment = new abi.Event(fragment[0]);
-                return {
-                    ...log,
-                    decodedData: eventFragment.decodeEventLog(log)
-                };
-            } else {
-                throw buildError(
-                    'filterEventLogs',
-                    ERROR_CODES.ABI.INVALID_EVENT,
-                    `No matching event fragment found for topic hash: ${log.topics[0]}`,
-                    { log }
+        const result = new Map<string, EventLogs[]>();
+
+        if (fragments !== null && fragments !== undefined) {
+            const uniqueFragments = this.removeDuplicatedFragments(fragments);
+
+            // Initialize the result map with empty arrays for each unique fragment
+            uniqueFragments.forEach((f) => result.set(f.topicHash, []));
+
+            eventLogs.forEach((log) => {
+                const eventFragment = new abi.Event(
+                    uniqueFragments.get(log.topics[0])
                 );
+                log.decodedData = eventFragment.decodeEventLog(log);
+                result.get(log.topics[0])?.push(log);
+            });
+        }
+
+        return Array.from(result.values());
+    }
+
+    /**
+     * Removes duplicated fragments from the provided array. Fragments are considered duplicated if they have the same topic hash.
+     * @param fragments - An array of event fragments.
+     * @private Returns a map of unique fragments.
+     */
+    private removeDuplicatedFragments(
+        fragments: EventFragment[]
+    ): Map<string, EventFragment> {
+        const uniqueFragments = new Map<string, EventFragment>();
+
+        fragments.forEach((obj) => {
+            if (!uniqueFragments.has(obj.topicHash)) {
+                uniqueFragments.set(obj.topicHash, obj);
             }
         });
+
+        return uniqueFragments;
     }
 
     /**
