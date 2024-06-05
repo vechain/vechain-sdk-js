@@ -1,4 +1,4 @@
-import { beforeEach, describe, test } from '@jest/globals';
+import { beforeEach, describe, expect, test } from '@jest/globals';
 import { ThorClient } from '../../../src';
 import { testnetUrl } from '../../fixture';
 import {
@@ -27,21 +27,17 @@ describe('ThorClient - ERC20 Contracts', () => {
             emissionsABI
         );
 
+        const roundCreatedCriteria =
+            xAllocationVotingContract.criteria.RoundCreated();
+        const emissionDistributedCriteria =
+            emissionsContract.criteria.EmissionDistributed();
+
         const xAllocationVotingEvents =
             await thorTestnetClient.logs.filterEventLogs({
                 criteriaSet: [
-                    xAllocationVotingContract.criteria.RoundCreated(),
-                    emissionsContract.criteria.EmissionDistributed(),
-                    xAllocationVotingContract.criteria.RoundCreated()
+                    roundCreatedCriteria,
+                    emissionDistributedCriteria
                 ],
-
-                range: {
-                    unit: 'block',
-                    from: 0,
-                    to: (
-                        await thorTestnetClient.blocks.getBestBlockCompressed()
-                    )?.number
-                },
                 options: {
                     offset: 0,
                     limit: 256
@@ -49,6 +45,17 @@ describe('ThorClient - ERC20 Contracts', () => {
                 order: 'asc'
             });
 
-        console.log(xAllocationVotingEvents);
+        expect(xAllocationVotingEvents).toBeDefined();
+        expect(Array.from(xAllocationVotingEvents.keys()).length).toEqual(2);
+        expect(
+            xAllocationVotingEvents.get(
+                roundCreatedCriteria.eventFragment.topicHash
+            )?.length
+        ).toBeGreaterThan(0);
+        expect(
+            xAllocationVotingEvents.get(
+                emissionDistributedCriteria.eventFragment.topicHash
+            )?.length
+        ).toBeGreaterThan(0);
     }, 30000);
 });

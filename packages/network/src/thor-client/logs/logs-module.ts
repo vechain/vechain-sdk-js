@@ -29,7 +29,6 @@ class LogsModule {
     public async filterRawEventLogs(
         filterOptions: FilterRawEventLogsOptions
     ): Promise<EventLogs[]> {
-        console.log('filterRawEventLogs', filterOptions);
         return (await this.thor.httpClient.http(
             'POST',
             thorest.logs.post.EVENT_LOGS(),
