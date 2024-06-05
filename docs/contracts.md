@@ -200,11 +200,7 @@ const events = await thorSoloClient.logs.filterEventLogs({
 });
 
 // Asserting that I'm filtering a previous transfer event and the new value set event
-expect(
-    events
-        .get(transferCriteria.eventFragment.topicHash)
-        .map((x) => x.decodedData)
-).toEqual([
+expect(events[0].map((x) => x.decodedData)).toEqual([
     [
         '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
         '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
@@ -212,5 +208,7 @@ expect(
     ]
 ]);
 
-['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n];
+expect(events[1].map((x) => x.decodedData)).toEqual([
+    ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
+]);
 ```
