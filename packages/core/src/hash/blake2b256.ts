@@ -91,9 +91,11 @@ function blake2b256(
 ): Uint8Array | string {
     assertIsValidReturnType('blake2b256', returnType);
     if (data instanceof Uint8Array) {
-        return cast(blake2b256OfArray(data), returnType);
+        const hash = blake2b256OfArray(data);
+        return returnType === 'hex' ? Hex0x.of(hash) : hash;
     } else {
-        return cast(blake2b256OfString(data), returnType);
+        const hash = blake2b256OfString(data);
+        return returnType === 'hex' ? Hex0x.of(hash) : hash;
     }
 }
 
@@ -129,7 +131,8 @@ function blake2b256OfHex(
 ): string | Uint8Array {
     assertIsValidReturnType('blake2b256', returnType);
     try {
-        return cast(blake2b256OfArray(hexToBytes(Hex.canon(hex))), returnType);
+        const hash = blake2b256OfArray(hexToBytes(Hex.canon(hex)));
+        return returnType === 'hex' ? Hex0x.of(hash) : hash;
     } catch (e) {
         throw buildError(
             'blake2b256OfHex',
@@ -156,29 +159,6 @@ function blake2b256OfString(txt: string): Uint8Array {
     return blake2b256OfArray(
         utf8ToBytes(txt.normalize(NORMALIZATION_FORM_CANONICAL_COMPOSITION))
     );
-}
-
-/**
- * Casts a hash to the specified return type.
- *
- * @param {Uint8Array} hash - The hash to be cast.
- * @param {string} returnType - The return type of the cast (either 'buffer' or 'hex').
- * @returns {string|Uint8Array} - The cast hash.
- * @throws {InvalidDataReturnTypeError} - If the specified return type is invalid.
- */
-function cast(hash: Uint8Array, returnType: ReturnType): string | Uint8Array {
-    if (returnType === 'hex') {
-        return Hex0x.of(hash);
-    } else if (returnType === 'buffer') {
-        return hash;
-    } else {
-        throw buildError(
-            'cast',
-            DATA.INVALID_DATA_TYPE,
-            "Validation error: Invalid return type. Return type in hash function must be 'buffer' or 'hex'.",
-            { returnType }
-        );
-    }
 }
 
 export { blake2b256, blake2b256OfHex };
