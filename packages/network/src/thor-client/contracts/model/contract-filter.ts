@@ -40,13 +40,13 @@ class ContractFilter<TAbi extends Abi> {
      * @param range - The block range to fetch the events from. Defaults to the entire blockchain history if not provided.
      * @param options - Pagination options for fetching the events.
      * @param order - The order in which to display the events. Defaults to ascending ('asc') if not provided.
-     * @returns A promise that resolves to an array of event logs matching the filter criteria.
+     * @returns An array of event logs that match the specified criteria.
      */
     public async get(
         range?: Range,
         options?: PaginationOptions,
         order?: EventDisplayOrder
-    ): Promise<EventLogs[]> {
+    ): Promise<EventLogs[][]> {
         const filterEventLogsOptions: FilterEventLogsOptions = {
             range: range ?? {
                 unit: 'block',
@@ -58,9 +58,10 @@ class ContractFilter<TAbi extends Abi> {
             options,
             order: order ?? 'asc'
         };
-        return await this.contract.thor.logs.filterEventLogs(
+        const result = await this.contract.thor.logs.filterEventLogs(
             filterEventLogsOptions
         );
+        return Array.from(result.values());
     }
 }
 export { ContractFilter };

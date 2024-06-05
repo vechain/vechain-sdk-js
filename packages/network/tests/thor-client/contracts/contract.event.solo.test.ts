@@ -82,7 +82,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         expect(
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-            events.map((x) => x.decodedData)
+            events[0].map((x) => x.decodedData)
         ).toEqual([
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
@@ -138,7 +138,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         });
 
         expect(
-            events.map((event) => {
+            events[0].map((event) => {
                 return event.data;
             })
         ).toEqual([
@@ -147,7 +147,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         ]);
 
         expect(
-            events.map((event) => {
+            events[0].map((event) => {
                 return event.topics;
             })
         ).toEqual([
@@ -204,7 +204,7 @@ describe('ThorClient - ERC20 Contracts', () => {
             criteriaSet: [transferCriteria]
         });
 
-        expect(events.map((x) => x.decodedData)).toEqual([
+        expect(events[0].map((x) => x.decodedData)).toEqual([
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
                 '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
@@ -322,7 +322,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         });
 
         expect(
-            events.map((event) => {
+            events[0].map((event) => {
                 return event.data;
             })
         ).toEqual([
@@ -332,7 +332,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         ]);
 
         expect(
-            events.map((event) => {
+            events[0].map((event) => {
                 return event.topics;
             })
         ).toEqual([
@@ -406,7 +406,7 @@ describe('ThorClient - ERC20 Contracts', () => {
             criteriaSet: [transferCriteria, transferCriteriaDelegator]
         });
 
-        expect(events.map((x) => x.decodedData)).toEqual([
+        expect(events[0].map((x) => x.decodedData)).toEqual([
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
                 '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
@@ -473,12 +473,17 @@ describe('ThorClient - ERC20 Contracts', () => {
             criteriaSet: [transferCriteria, valueCriteria]
         });
 
-        expect(events.map((x) => x.decodedData)).toEqual([
+        console.log(events);
+
+        expect(events[0].map((x) => x.decodedData)).toEqual([
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
                 '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
                 5000n
-            ],
+            ]
+        ]);
+
+        expect(events[1].map((x) => x.decodedData)).toEqual([
             ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
         ]);
     }, 20000); // Set a timeout of 10000ms for this test
