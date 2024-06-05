@@ -43,7 +43,7 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 /**
  * All available accounts for testing purposes
  */
-const ALL_ACCOUNTS: Array<{ privateKey: string; address: `0x${string}` }> = [
+const ALL_ACCOUNTS: Array<{ privateKey: string; address: string }> = [
     /* ----------- NEW ACCOUNTS ----------- */
     /**
      * Each new account starts with
