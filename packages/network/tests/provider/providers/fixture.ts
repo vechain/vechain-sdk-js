@@ -264,7 +264,7 @@ const ERC20_ABI = [
     }
 ] as const;
 
-const TEST_ACCOUNT: { privateKey: string; address: `0x${string}` } = {
+const TEST_ACCOUNT: { privateKey: string; address: string } = {
     privateKey:
         '706e6acd567fdc22db54aead12cb39db01c4832f149f95299aa8dd8bef7d28ff',
     address: '0xf02f557c753edf5fcdcbfe4c1c3a448b3cc84d54'

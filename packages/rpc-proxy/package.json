@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-rpc-proxy",
-  "version": "1.0.0-beta.13",
+  "version": "1.0.0-beta.14",
   "description": "Proxy Thor's RESTful API to Eth JSON-RPC",
   "author": "vechain Foundation",
   "license": "MIT",
@@ -10,13 +10,16 @@
     "url": "github:vechain/vechain-sdk-js"
   },
   "keywords": [
-    "vechain",
+    "VeChain",
     "RPC",
     "proxy"
   ],
   "private": false,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "rpc-proxy": "dist/index.js"
+  },
   "files": [
     "dist",
     "src",
@@ -28,11 +31,11 @@
     "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
     "lint": "eslint --ext .ts src --ext .ts",
     "format": "prettier --write src/**/*.ts",
-    "start": "yarn build && node dist/index.js"
+    "start": "node dist/index.js"
   },
   "dependencies": {
-    "@vechain/sdk-network": "1.0.0-beta.13",
-    "@vechain/sdk-logging": "1.0.0-beta.13",
+    "@vechain/sdk-network": "1.0.0-beta.14",
+    "@vechain/sdk-logging": "1.0.0-beta.14",
     "commander": "^12.1.0",
     "cors": "^2.8.5",
     "express": "^4.19.2"
@@ -40,6 +43,6 @@
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
-    "@types/node": "^20.12.12"
+    "@types/node": "^20.14.1"
   }
 }

@@ -23,7 +23,7 @@ const thorClient = ThorClient.fromUrl(_testnetUrl, {
 const senderAccount: {
     mnemonic: string;
     privateKey: string;
-    address: `0x${string}`;
+    address: string;
 } = {
     mnemonic:
         'fat draw position use tenant force south job notice soul time fruit',
