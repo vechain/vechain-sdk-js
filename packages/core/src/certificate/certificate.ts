@@ -66,7 +66,7 @@ function match(cert: Uint8Array, address: string, signature: string): void {
     );
     try {
         // The `encode` method could throw `InvalidAddressError`.
-        const signingHash = blake2b256(cert);
+        const signingHash = blake2b256(cert, 'buffer');
         const signingPublicKey = secp256k1.recover(
             signingHash,
             hexToBytes(Hex.canon(signature))
@@ -144,7 +144,7 @@ function verify(cert: Certificate): void {
                 .encode({ ...cert, signature: undefined })
                 .normalize('NFC')
         );
-        match(encoded, cert.signer, cert.signature as string);
+        match(new Uint8Array(encoded), cert.signer, cert.signature as string);
     } catch (e) {
         throw buildError(
             'certificate.verify',
