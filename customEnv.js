@@ -1,4 +1,4 @@
-import { TestEnvironment } from 'jest-environment-jsdom';
+const { TestEnvironment } = require('jest-environment-jsdom');
 
 /**
  * Jest creates a new VM context for each test and doesn't add in all
@@ -16,7 +16,6 @@ class CustomizedTestEnvironment extends TestEnvironment {
         // These seem to be needed for @noble/hashes
         this.global.TextEncoder = globalThis.TextEncoder;
         this.global.Uint8Array = globalThis.Uint8Array;
-        this.global.WebSocket = globalThis.WebSocket;
     }
 }
 
