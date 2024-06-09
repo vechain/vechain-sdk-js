@@ -1,5 +1,5 @@
 import { subscriptions } from '@vechain/sdk-network';
-import WebSocket from 'ws';
+import { WebSocket } from 'isomorphic-ws';
 
 // The URL of the node to request the subscription from.
 const testnetUrl = 'https://testnet.vechain.org';
