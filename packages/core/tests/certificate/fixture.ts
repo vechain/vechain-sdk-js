@@ -18,7 +18,7 @@ const privKey = utils.hexToBytes(
 /**
  * Certificate n.1 to be used for testing, mostly for encoding and verify functions
  */
-const cert = {
+const cert1 = {
     purpose: 'identification',
     payload: {
         type: 'text',
@@ -36,7 +36,7 @@ const cert2 = {
     domain: 'localhost',
     timestamp: 1545035330,
     purpose: 'identification',
-    signer: cert.signer,
+    signer: cert1.signer,
     payload: {
         content: 'fyi',
         type: 'text'
@@ -46,8 +46,8 @@ const cert2 = {
 /**
  * Signature of Certificate n.1
  */
-const sig = Hex0x.of(
-    secp256k1.sign(blake2b256(certificate.encode(cert)), privKey)
+const sig1 = Hex0x.of(
+    secp256k1.sign(blake2b256(certificate.encode(cert1)), privKey)
 );
 
 /**
@@ -62,6 +62,6 @@ const sig2 = Hex0x.of(
  */
 const invalidSignature =
     '0xBAD' +
-    Hex.of(secp256k1.sign(blake2b256(certificate.encode(cert)), privKey));
+    Hex.of(secp256k1.sign(blake2b256(certificate.encode(cert1)), privKey));
 
-export { privKey, cert, cert2, sig, sig2, invalidSignature };
+export { privKey, cert1, cert2, sig1, sig2, invalidSignature };
