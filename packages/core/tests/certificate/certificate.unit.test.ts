@@ -103,5 +103,36 @@ describe('certificate', () => {
                 });
             }).toThrowError(CertificateInvalidSignatureFormatError);
         });
+
+        // test('compatible with thor-dev-kit', () => {
+        //     let myCert: Certificate = {
+        //         purpose: 'identification',
+        //         payload: {
+        //             type: 'text',
+        //             content:
+        //                 'The following dApp would like to see your public address: https://stackblitzstartersmtgkxg-tcrt--3000--12d46890.local-credentialless.webcontainer.io'
+        //         },
+        //         signature:
+        //             '0x69b0d95df24db73b30eb109e4dffab955d586edf919001be466ceceed6168d4372715b6f8fe489214e46f24d8252fba587da6fc241a33599109d80e328267fc300',
+        //         signer: '0x105199a26b10e55300cb71b46c5b5e867b7df427',
+        //         domain: 'stackblitzstartersmtgkxg-tcrt--3000--12d46890.local-credentialless.webcontainer.io',
+        //         timestamp: 1717150342
+        //     };
+        //     // myCert = cert1;
+        //     const encoded = new TextEncoder().encode(
+        //         certificate
+        //             .encode({ ...cert1, signature: undefined })
+        //             .normalize('NFC')
+        //     );
+        //     const signature = Hex0x.of(
+        //         secp256k1.sign(blake2b256(encoded), privKey)
+        //     );
+        //     expect(() => {
+        //         certificate.match(encoded, myCert.signer, signature);
+        //         // certificate.verify({ ...cert1, signature: sig1 });
+        //         // certificate.verify({ ...myCert, signature: myCert.signature });
+        //         // certificate.verify(cert1);
+        //     }).not.toThrowError();
+        // });
     });
 });

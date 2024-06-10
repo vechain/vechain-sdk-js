@@ -7,11 +7,71 @@ import { hexToBytes } from '@noble/curves/abstract/utils';
 import { secp256k1 } from '../secp256k1';
 import { type Certificate } from './types';
 
+const TEXT_ENCODER = new TextEncoder();
+
+function _encode(cert: Certificate): Uint8Array {
+    return TEXT_ENCODER.encode(
+        // The following `fastJsonStableStringify` strips blank chars and serialize alphabtically sorted properties.
+        fastJsonStableStringify({
+            purpose: cert.purpose,
+            payload: {
+                type: cert.payload.type,
+                content: cert.payload.content
+            },
+            domain: cert.domain,
+            timestamp: cert.timestamp,
+            signer: addressUtils.toERC55Checksum(cert.signer)
+        }).normalize('NFC')
+    );
+}
+
+function _sign(cert: Certificate, privateKey: Uint8Array): Certificate {
+    return {
+        ...cert,
+        signature: Hex0x.of(
+            secp256k1.sign(blake2b256(_encode(cert)), privateKey)
+        )
+    };
+}
+
+function _verify(cert: Certificate): void {
+    assert(
+        'certificate.verify',
+        cert.signature !== undefined && cert.signature !== null,
+        CERTIFICATE.CERTIFICATE_NOT_SIGNED,
+        "Verification failed: certificate's signature is missing.",
+        { cert }
+    );
+    // Invalid hexadecimal as signature.
+    assert(
+        'certificate.verify',
+        Hex0x.isValid(cert.signature as string, false, true),
+        CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT,
+        'Verification failed: signature format is invalid.',
+        { cert }
+    );
+    const sign = hexToBytes(Hex.canon(cert.signature as string));
+    const hash = blake2b256(_encode(cert));
+    const signer = addressUtils
+        .fromPublicKey(secp256k1.recover(hash, sign))
+        .toLowerCase();
+    assert(
+        'certificate.verify',
+        signer === cert.signature?.toLowerCase(),
+        CERTIFICATE.CERTIFICATE_INVALID_SIGNER,
+        "Verification failed: signature does not correspond to the signer's public key.",
+        { cert }
+    );
+}
+
 /**
- * Encodes a certificate object to a JSON string.
- *
- * The JSON representation of the signer's address is represented according the
- * [EIP/ERC-55: Mixed-case checksum address encoding](https://eips.ethereum.org/EIPS/eip-55).
+ * Encodes a certificate object to a JSON string with the following aspects enforced:
+ * * `"` is used to delimit keys and values,
+ * * not meaningful blank characters are removed,
+ * * properties are sorted according their keys in ascending alphabetic order,
+ * * the address of the signer is represented according the
+ * [EIP/ERC-55: Mixed-case checksum address encoding](https://eips.ethereum.org/EIPS/eip-55),
+ * * only the properties of {@link Certificate} interface are encoded, extended properties are ignored.
  *
  * Secure audit function.
  * - {@link addressUtils.toERC55Checksum}
@@ -22,11 +82,19 @@ import { type Certificate } from './types';
  * @throws {InvalidAddressError} if `address` is not a valid hexadecimal
  * representation 40 digits long, prefixed with `0x`.
  *
+ * @see [json-fast-stable-stringify](https://www.npmjs.com/package/json-stable-stringify)
  * @see {verify}
  */
 function encode(cert: Certificate): string {
+    // The following `fastJsonStableStringify` strips blank chars and serialize alphabtically sorted properties.
     return fastJsonStableStringify({
-        ...cert,
+        purpose: cert.purpose,
+        payload: {
+            type: cert.payload.type,
+            content: cert.payload.content
+        },
+        domain: cert.domain,
+        timestamp: cert.timestamp,
         signer: addressUtils.toERC55Checksum(cert.signer),
         signature: cert.signature
     });
@@ -139,12 +207,13 @@ function verify(cert: Certificate): void {
     );
     try {
         // Encode the certificate without the signature.
-        const encoded = new TextEncoder().encode(
-            certificate
-                .encode({ ...cert, signature: undefined })
-                .normalize('NFC')
-        );
-        match(new Uint8Array(encoded), cert.signer, cert.signature as string);
+        // const encoded = new TextEncoder().encode(
+        //     certificate
+        //         .encode({ ...cert, signature: undefined })
+        //         .normalize('NFC')
+        // );
+        const encoded = _encode({ ...cert, signature: undefined });
+        match(encoded, cert.signer, cert.signature as string);
     } catch (e) {
         throw buildError(
             'certificate.verify',
@@ -159,4 +228,4 @@ function verify(cert: Certificate): void {
 /**
  * Exposes the certificate encoding and verification functions.
  */
-export const certificate = { encode, match, verify };
+export const certificate = { _sign, _verify, _encode, encode, match, verify };

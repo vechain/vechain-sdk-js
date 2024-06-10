@@ -23,7 +23,7 @@ function assertIsValidPrivateKey(
 }
 
 /**
- * Assert if message hash is valid
+ * Assert if message hash is valid.
  *
  * @param methodName - The name of the method calling this assertion.
  * @param msgHash - Message hash to assert
