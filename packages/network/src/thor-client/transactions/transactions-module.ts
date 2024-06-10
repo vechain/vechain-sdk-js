@@ -73,7 +73,7 @@ class TransactionsModule {
                 query: buildQuery({
                     raw: options?.raw,
                     head: options?.head,
-                    options: options?.pending
+                    pending: options?.pending
                 })
             }
         )) as TransactionDetail | null;
