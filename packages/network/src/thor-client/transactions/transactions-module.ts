@@ -137,13 +137,19 @@ class TransactionsModule {
             );
         }
 
-        return (await this.thor.httpClient.http(
+        const transactionResult = (await this.thor.httpClient.http(
             'POST',
             thorest.transactions.post.TRANSACTION(),
             {
                 body: { raw }
             }
         )) as SendTransactionResult;
+
+        return {
+            id: transactionResult.id,
+            wait: async () =>
+                await this.waitForTransaction(transactionResult.id)
+        };
     }
 
     /**

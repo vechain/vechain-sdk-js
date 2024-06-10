@@ -134,7 +134,7 @@ class ContractFactory<TAbi extends Abi> {
      */
     public async waitForDeployment(): Promise<Contract<TAbi>> {
         // Check if the deploy transaction result is available
-        if (this.deployTransaction === undefined) {
+        if (this.deployTransaction?.id === undefined) {
             throw buildError(
                 'ContractFactory.waitForDeployment',
                 ERROR_CODES.CONTRACT.CONTRACT_DEPLOYMENT_FAILED,
@@ -144,10 +144,7 @@ class ContractFactory<TAbi extends Abi> {
         }
 
         // Wait for the transaction to be processed
-        const transactionReceipt =
-            await this.thor.transactions.waitForTransaction(
-                this.deployTransaction.id
-            );
+        const transactionReceipt = await this.deployTransaction.wait();
 
         // Ensure that the transaction receipt is valid
         assert(
