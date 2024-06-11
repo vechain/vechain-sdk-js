@@ -9,6 +9,12 @@ import type {
     vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
 
+declare module 'abitype' {
+    export interface Register {
+        AddressType: string;
+    }
+}
+
 /* --------- Input types Start --------- */
 
 /**
