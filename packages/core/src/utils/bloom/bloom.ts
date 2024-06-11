@@ -104,7 +104,7 @@ const isInBloom = (filter: string, k: number, data: string): boolean => {
     );
     assert(
         'bloomUtils.isInBloom',
-        Hex0x.isValid(data, true),
+        typeof data === 'string' && Hex0x.isValid(data, true),
         DATA.INVALID_DATA_TYPE,
         'Invalid data type. Data should be an hexadecimal string',
         { data }
