@@ -1,4 +1,4 @@
-import { type TraceReturnType } from '../../../../thor-client/debug';
+import { type TraceReturnType } from '../../../../thor-client';
 
 /**
  * Available tracers for the RPC standard.
@@ -18,10 +18,10 @@ type TracerReturnTypeRPC<TracerNameType extends TracerNameRPC> =
  */
 type CallTracerRPC = TraceReturnType<'call'> & {
     /**
-     * Same of the 'call' tracer of vechain,
+     * Same of the 'call' tracer of VeChain,
      * BUT with the addition of the revertReason field.
      *
-     * @note This is not part of the vechain's 'call' tracer.
+     * @note This is not part of the VeChain's 'call' tracer.
      * For this reason, it will have a default value of ''.
      */
     revertReason?: '';
@@ -38,12 +38,12 @@ type PrestateTracerRPC = Record<
         storage?: Record<string, string>;
 
         /**
-         * Same of the 'prestate' tracer of vechain,
+         * Same of the 'prestate' tracer of VeChain,
          * BUT with the addition of the nonce field.
          * This field substitutes the 'energy' field
-         * of the vechain's 'prestate' tracer.
+         * of the VeChain's 'prestate' tracer.
          *
-         * @note This is not part of the vechain's 'prestate' tracer.
+         * @note This is not part of the VeChain's 'prestate' tracer.
          * For this reason, it will have a default value of 0.
          */
         nonce: 0;

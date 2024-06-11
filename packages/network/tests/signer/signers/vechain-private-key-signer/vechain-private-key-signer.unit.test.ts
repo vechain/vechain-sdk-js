@@ -18,7 +18,7 @@ import {
     vnsUtils
 } from '../../../../src/';
 import { testnetUrl } from '../../../fixture';
-import { addressUtils } from '../../../../../core';
+import { addressUtils } from '@vechain/sdk-core';
 import { populateCallTestCases, populateCallTestCasesAccount } from './fixture';
 
 /**
@@ -26,7 +26,7 @@ import { populateCallTestCases, populateCallTestCasesAccount } from './fixture';
  *
  * @group unit/signers/vechain-base-signer
  */
-describe('Vechain base signer tests', () => {
+describe('VeChain base signer tests', () => {
     /**
      * ThorClient and provider instances
      */

@@ -135,7 +135,7 @@ describe('Events poll unit tests', () => {
         });
 
         /**
-         * Test the error event without stoppoing the poll loop.
+         * Test the error event without stopping the poll loop.
          */
         test('Test the error event - polling loop no-stop', async () => {
             jest.useFakeTimers({

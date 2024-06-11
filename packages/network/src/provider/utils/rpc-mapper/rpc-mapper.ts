@@ -79,12 +79,12 @@ import {
     type BlocksRPC,
     type SyncBlockRPC,
     type TransactionReceiptRPC,
-    type TransactionRPC
+    type TransactionRPC,
+    type LogsRPC,
+    type TracerReturnTypeRPC
 } from '../formatter';
 import { ethRequestAccounts } from './methods-map/methods/eth_requestAccounts';
-import { type LogsRPC } from '../formatter/logs';
 import { type VeChainProvider } from '../../providers';
-import { type TracerReturnTypeRPC } from '../formatter/debug';
 import { type ThorClient } from '../../../thor-client';
 
 /**

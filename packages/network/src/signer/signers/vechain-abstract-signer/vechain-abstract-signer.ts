@@ -17,7 +17,7 @@ import { vnsUtils } from '../../../utils';
 import { type TransactionSimulationResult } from '../../../thor-client';
 
 /**
- * Abstract vechain signer.
+ * Abstract VeChain signer.
  * This abstract class avoids people every time implementing standard signer
  * methods.
  * By implementing this abstract class, it will be easier to create new signers
@@ -34,7 +34,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
      *
      * @param provider - The provider to connect to
      */
-    constructor(provider: AvailableVeChainProviders | null) {
+    protected constructor(provider: AvailableVeChainProviders | null) {
         // Store provider and delegator
         this.provider = provider;
     }
@@ -283,7 +283,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
 
     /**
      * Signs %%transactionToSign%%, returning the fully signed transaction. This does not
-     * populate any additional properties witheth_getTransactionCount: RPC_METHODS, p0: (string | undefined)[], args: EIP1193RequestArguments* @param transactionToSign - The transaction to sign
+     * populate any additional properties with eth_getTransactionCount: RPC_METHODS, p0: (string | undefined)[], args: EIP1193RequestArguments* @param transactionToSign - The transaction to sign
      * @returns The fully signed transaction
      */
     abstract signTransaction(
@@ -307,7 +307,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
     ): Promise<string>;
 
     /**
-     * Use vet.domains to resolve name to adress
+     * Use vet.domains to resolve name to address
      * @param vnsName - The name to resolve
      * @returns the address for a name or null
      */

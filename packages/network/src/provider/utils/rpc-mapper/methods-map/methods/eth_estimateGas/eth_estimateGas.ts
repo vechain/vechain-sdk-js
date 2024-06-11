@@ -10,7 +10,7 @@ import {
     type SimulateTransactionClause,
     type ThorClient
 } from '../../../../../../thor-client';
-import { getCorrectBlockNumberRPCToVechain } from '../../../../const';
+import { getCorrectBlockNumberRPCToVeChain } from '../../../../const';
 import { type BlockQuantityInputRPC } from '../../../types';
 
 /**
@@ -69,7 +69,7 @@ const ethEstimateGas = async (
             {
                 revision:
                     revision !== undefined
-                        ? getCorrectBlockNumberRPCToVechain(revision)
+                        ? getCorrectBlockNumberRPCToVeChain(revision)
                         : undefined
             }
         );

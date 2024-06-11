@@ -126,7 +126,7 @@ interface BlockDetail {
 
     /**
      * Since there is no computational competition in PoA, the “longest chain” rule does not apply.
-     * Instead, we consider the better branch as the one witnessed by more AMs (Authority Masternodes).
+     * Instead, we consider the better branch as the one witnessed by more AMs (Authority Master nodes).
      *
      * @link see [VeChainThor Trunk](https://docs.vechain.org/introduction-to-vechain/about-the-vechain-blockchain/consensus-deep-dive#meta-transaction-features-3)
      */

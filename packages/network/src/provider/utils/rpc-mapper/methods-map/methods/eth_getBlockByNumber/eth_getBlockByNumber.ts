@@ -9,7 +9,7 @@ import {
 import { blocksFormatter, type BlocksRPC } from '../../../../formatter';
 import { RPCMethodsMap } from '../../../rpc-mapper';
 import {
-    getCorrectBlockNumberRPCToVechain,
+    getCorrectBlockNumberRPCToVeChain,
     RPC_METHODS
 } from '../../../../const';
 
@@ -56,7 +56,7 @@ const ethGetBlockByNumber = async (
             )) as string;
 
         const block = await thorClient.blocks.getBlockExpanded(
-            getCorrectBlockNumberRPCToVechain(blockNumber)
+            getCorrectBlockNumberRPCToVeChain(blockNumber)
         );
 
         return block !== null
