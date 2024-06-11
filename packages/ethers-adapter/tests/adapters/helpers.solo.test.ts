@@ -7,7 +7,7 @@ import {
 } from '@vechain/sdk-network';
 import { soloUrl } from '../fixture';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { helpers } from '../../src/adapters/helpers';
+import { helpers } from '../../src';
 
 /**
  *VeChain helpers tests - Solo Network
