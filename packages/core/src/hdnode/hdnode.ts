@@ -5,17 +5,7 @@ import { buildError, HDNODE } from '@vechain/sdk-errors';
 import { base58 } from '@scure/base';
 import { secp256k1 } from '../secp256k1';
 import { sha256 } from '../hash';
-import { VET_DERIVATION_PATH } from '../utils';
-
-/**
- * Prefix for extended private key
- */
-const X_PRIV_PREFIX = utils.hexToBytes('0488ade4000000000000000000');
-
-/**
- * Prefix for extended public key
- */
-const X_PUB_PREFIX = utils.hexToBytes('0488b21e000000000000000000');
+import { VET_DERIVATION_PATH, X_PRIV_PREFIX, X_PUB_PREFIX } from '../utils';
 
 /**
  * Creates a [BIP32 Hierarchical Deterministic Key](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
@@ -38,7 +28,7 @@ const X_PUB_PREFIX = utils.hexToBytes('0488b21e000000000000000000');
  */
 function fromMnemonic(
     words: string[],
-    path = VET_DERIVATION_PATH
+    path: string = VET_DERIVATION_PATH
 ): bip32.HDKey {
     let master: bip32.HDKey;
     try {

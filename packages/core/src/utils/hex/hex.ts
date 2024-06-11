@@ -27,7 +27,7 @@ const RADIX: number = 16;
  * @see Hex0x.of
  * @see HexString
  */
-const REGEX_FOR_0X_PREFIX_HEX = /^0x[0-9a-f]*$/i;
+const REGEX_FOR_0X_PREFIX_HEX: RegExp = /^0x[0-9a-f]*$/i;
 
 /**
  * Regular expression for matching a string in the format `/^(0x)?[0-9a-f]*$/i;`
@@ -35,7 +35,7 @@ const REGEX_FOR_0X_PREFIX_HEX = /^0x[0-9a-f]*$/i;
  * @type {RegExp}
  * @see HexString
  */
-const REGEX_FOR_OPTIONAL_0X_PREFIX_HEX = /^(0x)?[0-9a-f]*$/i;
+const REGEX_FOR_OPTIONAL_0X_PREFIX_HEX: RegExp = /^(0x)?[0-9a-f]*$/i;
 
 /**
  * Default length of thor id hex string.

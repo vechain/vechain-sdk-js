@@ -67,7 +67,7 @@ function signWithDelegator(
         'signer'
     );
     assertIsValidTransactionSigningPrivateKey(
-        'signWithDelgator',
+        'signWithDelegator',
         delegatorPrivateKey,
         secp256k1.isValidPrivateKey,
         'delegator'
