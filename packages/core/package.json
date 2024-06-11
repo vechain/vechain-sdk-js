@@ -33,7 +33,7 @@
     "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
     "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
     "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
-    "test:browser": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit --env ../../customEnv.js"
+    "test:browser": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit --config ./jest.config.browser.js"
   },
   "dependencies": {
     "@ethereumjs/rlp": "^5.0.2",
