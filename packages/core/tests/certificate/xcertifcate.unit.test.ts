@@ -6,7 +6,8 @@ import {
     blake2b256,
     certificate,
     secp256k1,
-    type Certificate
+    type Certificate,
+    Hex0x
 } from '../../src';
 
 import {
@@ -96,5 +97,32 @@ describe('certificate', () => {
         });
     });
 
-    describe('verify', () => {});
+    describe('sign & verify', () => {
+        console.log(CERT_A.signer);
+    });
+
+    describe('verify', () => {
+        test('sign - valid - thor-devkit compatibility', () => {
+            const pk = secp256k1.generatePrivateKey();
+            const cert = {
+                purpose: 'identification',
+                payload: {
+                    type: 'text',
+                    content: 'fyi'
+                },
+                domain: 'localhost',
+                timestamp: 1545035330,
+                signer: addressUtils.fromPrivateKey(pk)
+            };
+            const signature = secp256k1.sign(
+                blake2b256(certificate._encode(cert)),
+                pk
+            );
+            const signedCert = certificate._sign(cert, pk);
+            console.log(Hex0x.of(signature));
+            console.log(signedCert.signature);
+            certificate.verify(signedCert);
+            certificate._verify(signedCert);
+        });
+    });
 });

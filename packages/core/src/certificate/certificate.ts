@@ -57,7 +57,7 @@ function _verify(cert: Certificate): void {
         .toLowerCase();
     assert(
         'certificate.verify',
-        signer === cert.signature?.toLowerCase(),
+        signer === cert.signer?.toLowerCase(),
         CERTIFICATE.CERTIFICATE_INVALID_SIGNER,
         "Verification failed: signature does not correspond to the signer's public key.",
         { cert }
