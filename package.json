@@ -17,6 +17,7 @@
         "packages/*",
         "docs"
     ],
+    "packageManager": "yarn@1.22.22",
     "scripts": {
         "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose up -d --wait && echo '\nThor solo node started ...'",
         "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose down && echo 'Thor solo node stopped ...'",
@@ -67,10 +68,10 @@
         "jest-runner": "^29.7.0",
         "jest-runner-groups": "^2.2.0",
         "nyc": "^15.1.0",
-        "prettier": "^3.2.5",
+        "prettier": "^3.3.2",
         "ts-jest": "^29.1.4",
         "tsup": "^8.1.0",
-        "turbo": "^1.13.3",
+        "turbo": "^2.0.1",
         "typedoc": "^0.25.13",
         "typedoc-plugin-missing-exports": "^2.2.0",
         "typescript": "^5.4.4",
