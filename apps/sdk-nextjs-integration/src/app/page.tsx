@@ -46,6 +46,7 @@ export default function Home(): JSX.Element {
             // Get the transfer logs
             const logs =
                 await thorClient.logs.filterTransferLogs(filterOptions);
+
             // Map the logs to the transfer interface
             const transfers = logs.map((log) => {
                 return {
@@ -69,6 +70,7 @@ export default function Home(): JSX.Element {
 
     return (
         <main className="isolate bg-white px-6 py-24 sm:py-32 lg:px-8">
+            {/* Background gradient */}
             <div
                 className="absolute inset-x-0 top-[-10rem] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[-20rem]"
                 aria-hidden="true"
@@ -100,7 +102,7 @@ export default function Home(): JSX.Element {
                     placeholder="0xc3bE339D3D20abc1B731B320959A96A08D479583"
                 />
             </div>
-            <div className="table-container mx-auto max-w-4xl overflow-x-auto">
+            <div className="table-container mx-auto max-w-4xl overflow-x-auto text-center justify-center flex flex-col">
                 <table className="table-auto">
                     <thead>
                         <tr>
