@@ -11,7 +11,7 @@ import { bloom } from '../../bloom';
  * @type {RegExp}
  * @see {isBloom}
  */
-const BLOOM_REGEX = /^(0x)?[0-9a-f]{16,}$/i;
+const BLOOM_REGEX: RegExp = /^(0x)?[0-9a-f]{16,}$/i;
 
 /**
  * Bloom Filter *k* parameter set to 5 (hence 5 hashes functions are

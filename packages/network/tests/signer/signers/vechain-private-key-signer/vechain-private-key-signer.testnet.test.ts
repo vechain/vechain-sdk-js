@@ -19,7 +19,7 @@ import {
     coder,
     type FunctionFragment,
     TransactionHandler
-} from '../../../../../core';
+} from '@vechain/sdk-core';
 import { signTransactionTestCases } from './fixture';
 
 /**
@@ -27,7 +27,7 @@ import { signTransactionTestCases } from './fixture';
  *
  * @group integration/signers/vechain-base-signer-testnet
  */
-describe('Vechain base signer tests - testnet', () => {
+describe('VeChain base signer tests - testnet', () => {
     /**
      * ThorClient and provider instances
      */

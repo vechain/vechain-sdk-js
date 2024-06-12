@@ -9,7 +9,7 @@ import { ThorClient, VeChainProvider } from '../../../../src';
  *
  * @group integration/providers/vechain-provider-mainnet
  */
-describe('Vechain provider tests - mainnet', () => {
+describe('VeChain provider tests - mainnet', () => {
     /**
      * ThorClient and provider instances
      */

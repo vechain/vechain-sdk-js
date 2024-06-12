@@ -12,7 +12,7 @@ import { Hex0x } from '@vechain/sdk-core';
  *  * Currently VeChainThor supports 'earliest', 'latest' and 'finalized' as block tags.
  *  So 'pending' and 'safe' are converted to 'best' which is the alias for 'latest' and 'finalized' in VeChainThor.
  */
-const getCorrectBlockNumberRPCToVechain = (
+const getCorrectBlockNumberRPCToVeChain = (
     block: BlockQuantityInputRPC
 ): string => {
     // Tag block number
@@ -24,7 +24,7 @@ const getCorrectBlockNumberRPCToVechain = (
             block === 'safe' ||
             block === 'pending'
         )
-            // 'best' is the alias for 'latest', 'finalized' and 'safe' in VeChain Thorest
+            // 'best' is the alias for 'latest', 'finalized' and 'safe' in VeChainThor
             return 'best';
 
         // Earliest block
@@ -43,4 +43,4 @@ const getCorrectBlockNumberRPCToVechain = (
     return block.blockHash;
 };
 
-export { getCorrectBlockNumberRPCToVechain };
+export { getCorrectBlockNumberRPCToVeChain };

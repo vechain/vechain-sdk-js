@@ -7,7 +7,7 @@ import {
     stringifyData
 } from '@vechain/sdk-errors';
 import type { BlockQuantityInputRPC } from '../../../types';
-import { getCorrectBlockNumberRPCToVechain } from '../../../../const';
+import { getCorrectBlockNumberRPCToVeChain } from '../../../../const';
 
 /**
  * RPC Method eth_getBalance implementation
@@ -48,7 +48,7 @@ const ethGetBalance = async (
 
         // Get the account details
         const accountDetails = await thorClient.accounts.getAccount(address, {
-            revision: getCorrectBlockNumberRPCToVechain(block)
+            revision: getCorrectBlockNumberRPCToVeChain(block)
         });
 
         return accountDetails.balance;

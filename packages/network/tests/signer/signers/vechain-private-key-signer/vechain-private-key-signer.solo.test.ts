@@ -18,7 +18,7 @@ import {
     coder,
     type FunctionFragment,
     TransactionHandler
-} from '../../../../../core';
+} from '@vechain/sdk-core';
 import { signTransactionTestCases } from './fixture';
 import { simulateTransaction } from '../../../thor-client/transactions/fixture-thorest';
 
@@ -27,7 +27,7 @@ import { simulateTransaction } from '../../../thor-client/transactions/fixture-t
  *
  * @group integration/signers/vechain-base-signer-solo
  */
-describe('Vechain base signer tests - solo', () => {
+describe('VeChain base signer tests - solo', () => {
     /**
      * ThorClient and provider instances
      */

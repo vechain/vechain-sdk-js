@@ -22,7 +22,7 @@ import {
  *
  * @group integration/providers/vechain-provider-solo
  */
-describe('Vechain provider tests - solo', () => {
+describe('VeChain provider tests - solo', () => {
     /**
      * ThorClient and provider instances
      */

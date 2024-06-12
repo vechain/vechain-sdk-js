@@ -12,7 +12,7 @@ const ZERO_BYTES = (size: number): Uint8Array => new Uint8Array(size);
  * @type {RegExp}
  * @constant
  */
-const INTEGER_REGEX = /^\d+$/;
+const INTEGER_REGEX: RegExp = /^\d+$/;
 
 /**
  * Regular expression for matching numeric values expressed as base 10 strings.

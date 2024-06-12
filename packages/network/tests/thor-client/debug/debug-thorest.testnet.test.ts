@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { testnetUrl } from '../../fixture';
 import { ThorClient } from '../../../src';
-import { type TracerName } from '../../../src/thor-client/debug';
+import { type TracerName } from '../../../src';
 import {
     firstTransactionTraceContractCallTestnetFixture,
     firstTransactionTraceTransactionClauseTestnetFixture,

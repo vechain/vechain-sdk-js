@@ -11,7 +11,6 @@ import {
 import { blocksFormatter } from '../blocks';
 import {
     type ExpandedBlockDetail,
-    type SendTransactionResult,
     type TransactionDetailNoRaw,
     type TransactionReceipt,
     type TransactionsExpandedBlockDetail
@@ -194,21 +193,8 @@ function formatTransactionReceiptToRPCStandard(
     };
 }
 
-/**
- * Output formatter for Send Raw Transaction result.
- * It converts the SendTransactionResult into the RPC standard.
- *
- * @param transaction - The transaction result to be formatted.
- */
-const formatSendRawTransactionToRPCStandard = (
-    transaction: SendTransactionResult
-): string => {
-    return transaction.id;
-};
-
 export {
     formatToRPCStandard,
     formatExpandedBlockToRPCStandard,
-    formatTransactionReceiptToRPCStandard,
-    formatSendRawTransactionToRPCStandard
+    formatTransactionReceiptToRPCStandard
 };

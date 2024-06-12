@@ -15,7 +15,7 @@ import { providerMethodsTestCasesMainnet } from '../fixture';
  *
  * @group integration/providers/vechain-provider-mainnet
  */
-describe('Vechain provider tests - solo', () => {
+describe('VeChain provider tests - solo', () => {
     let hardhatVeChainProvider: HardhatVeChainProvider;
     let jsonRPCEthersProvider: JSONRPCEthersProvider;
 

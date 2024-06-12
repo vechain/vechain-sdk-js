@@ -52,7 +52,6 @@ function fromPrivateKey(privateKey: Uint8Array): string {
  *
  * @see {secp256k1.inflatePublicKey}
  */
-
 function fromPublicKey(publicKey: Uint8Array): string {
     return toERC55Checksum(
         Hex0x.of(

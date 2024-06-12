@@ -1,5 +1,5 @@
 /**
- * Polling interval for the subscription events polling mechanism for vechain-provider.
+ * Polling interval for the subscription events polling mechanism for the VeChain provider.
  */
 const POLLING_INTERVAL: number = 5000;
 

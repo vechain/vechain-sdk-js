@@ -37,6 +37,7 @@ function blake2b256(data: string | Uint8Array): Uint8Array;
  * If `data` is a string this is normalized using the {@link NORMALIZATION_FORM_CANONICAL_COMPOSITION} encoding.
  *
  * @param {string | Uint8Array} data - The input data to be hashed.
+ * @param {string} returnType - The return type of the hash. It can be 'buffer'.
  *
  * @return {Uint8Array} - The Blake2b-256 hash of the given data as a Uint8Array.
  *

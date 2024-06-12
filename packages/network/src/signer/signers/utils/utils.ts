@@ -5,6 +5,8 @@ import { type TransactionRequestInput } from '../types';
  * Utility method to convert a transaction body to a transaction request input
  *
  * @param transactionBody - The transaction body to convert
+ * @param from - The address of the sender
+ *
  * @returns The transaction request input
  */
 function transactionBodyToTransactionRequestInput(

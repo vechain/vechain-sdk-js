@@ -17,17 +17,6 @@ import { type ReturnType } from './types';
 function sha256(data: string | Uint8Array): Uint8Array;
 
 /**
- * Computes the sha256 hash of the given data.
- * Returns the hash as a Uint8Array.
- *
- * Secure audit function.
- * * {@link sha256}
- *
- * @param data - The input data (either a Uint8Array or string) for which the hash needs to be computed.
- * @param returnType - The format in which to return the hash. Either 'buffer' or 'hex'.
- * @returns {Uint8Array} A Uint8Array containing the 256-bit sha256 hash of the provided data.
- */
-/**
  * Calculates the SHA-256 hash of the given data.
  *
  * @param {string | Uint8Array} data - The data to calculate the SHA-256 hash for.

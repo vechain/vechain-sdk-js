@@ -8,7 +8,7 @@ import {
 } from '@vechain/sdk-errors';
 import { type ThorClient } from '../../../../../../thor-client';
 import type { BlockQuantityInputRPC } from '../../../types';
-import { getCorrectBlockNumberRPCToVechain } from '../../../../const';
+import { getCorrectBlockNumberRPCToVeChain } from '../../../../const';
 
 /**
  * RPC Method eth_getStorageAt implementation
@@ -60,7 +60,7 @@ const ethGetStorageAt = async (
             address,
             Hex0x.canon(storagePosition, 32),
             {
-                revision: getCorrectBlockNumberRPCToVechain(block)
+                revision: getCorrectBlockNumberRPCToVeChain(block)
             }
         );
     } catch (e) {

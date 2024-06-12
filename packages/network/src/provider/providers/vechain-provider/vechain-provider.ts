@@ -25,7 +25,7 @@ import { type ProviderInternalWallet } from '../../helpers';
 import type { VeChainSigner } from '../../../signer';
 
 /**
- * Our core provider class for vechain
+ * Our core provider class for VeChain
  */
 class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
     public readonly subscriptionManager: SubscriptionManager = {
@@ -274,7 +274,7 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
      * Get a signer into the internal wallet provider
      * for the given address.
      *
-     * @param address - Address of the account.
+     * @param addressOrIndex - Address of index of the account.
      * @returns The signer for the given address.
      */
     async getSigner(
@@ -287,7 +287,7 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
     }
 
     /**
-     * Use vet.domains to resolve name to adress
+     * Use vet.domains to resolve name to address
      * @param vnsName - The name to resolve
      * @returns the address for a name or null
      */
@@ -296,7 +296,7 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
     }
 
     /**
-     * Use vet.domains to lookup a verified primary name for an address
+     * Use vet.domains to look up a verified primary name for an address
      * @param address - The address to lookup
      * @returns the primary name for an address or null
      */

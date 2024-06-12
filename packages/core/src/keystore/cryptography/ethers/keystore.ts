@@ -46,7 +46,7 @@ async function encrypt(
         }
     };
 
-    // Stirng version of keystore
+    // String version of keystore
     const keystoreJsonString = await ethers.encryptKeystoreJson(
         keystoreAccount,
         password,

@@ -21,12 +21,12 @@ import { assertTransactionCanBeSigned } from '../../../assertions';
 import { VeChainAbstractSigner } from '../vechain-abstract-signer';
 
 /**
- * Basic vechain signer with the private key.
+ * Basic VeChain signer with the private key.
  * This signer can be initialized using a private key.
  */
 class VeChainPrivateKeySigner extends VeChainAbstractSigner {
     /**
-     * Create a new VechainPrivateKeySigner.
+     * Create a new VeChainPrivateKeySigner.
      * A signer can be initialized using a private key.
      *
      * @param privateKey - The private key of the signer
@@ -64,7 +64,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
 
     /**
      * Signs %%transactionToSign%%, returning the fully signed transaction. This does not
-     * populate any additional properties witheth_getTransactionCount: RPC_METHODS, p0: (string | undefined)[], args: EIP1193RequestArguments* @param transactionToSign - The transaction to sign
+     * populate any additional properties with eth_getTransactionCount: RPC_METHODS, p0: (string | undefined)[], args: EIP1193RequestArguments* @param transactionToSign - The transaction to sign
      * @returns The fully signed transaction
      */
     async signTransaction(
