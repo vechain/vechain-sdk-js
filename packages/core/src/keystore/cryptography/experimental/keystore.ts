@@ -387,7 +387,7 @@ function encryptKeystore(
  * version 3, using the given password to obtain the private key and wallet address.
  *
  * **WARNING:** call
- * ```javascrypt
+ * ```javascript
  * privateKey.fill(0)
  * ```
  * after use to avoid to invalidate any security audit and certification granted to this code.
@@ -430,7 +430,7 @@ function decrypt(keystore: Keystore, password: Uint8Array): KeystoreAccount {
  * using the given password to obtain the private key and wallet address.
  *
  * **WARNING:** call
- * ```javascrypt
+ * ```javascript
  * privateKey.fill(0)
  * ```
  * after use to avoid to invalidate any security audit and certification granted to this code.

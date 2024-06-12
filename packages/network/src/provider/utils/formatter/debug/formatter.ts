@@ -1,5 +1,5 @@
 import { type TracerNameRPC, type TracerReturnTypeRPC } from './types';
-import { type TraceReturnType } from '../../../../thor-client/debug';
+import { type TraceReturnType } from '../../../../thor-client';
 
 /**
  * Output formatter for RPC debug endpoints:

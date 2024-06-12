@@ -7,7 +7,7 @@ import {
     stringifyData
 } from '@vechain/sdk-errors';
 import type { BlockQuantityInputRPC } from '../../../types';
-import { getCorrectBlockNumberRPCToVechain } from '../../../../const';
+import { getCorrectBlockNumberRPCToVeChain } from '../../../../const';
 
 /**
  * RPC Method eth_getCode implementation
@@ -49,7 +49,7 @@ const ethGetCode = async (
 
         // Get the account details
         return await thorClient.accounts.getBytecode(address, {
-            revision: getCorrectBlockNumberRPCToVechain(block)
+            revision: getCorrectBlockNumberRPCToVeChain(block)
         });
     } catch (e) {
         throw buildProviderError(

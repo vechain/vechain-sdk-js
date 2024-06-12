@@ -41,7 +41,7 @@ const formatToLogsRPC = (eventLogs: EventLogs[]): LogsRPC[] => {
 /**
  * Convert the criteria topics into an array of topics.
  *
- * This because the criteria topics are not an array of topics in vechain,
+ * This because the criteria topics are not an array of topics in VeChain,
  * but they are directly enumerated (topic0, topic1, topic2, topic3, topic4).
  *
  * RPC standard requires an array of topics instead.

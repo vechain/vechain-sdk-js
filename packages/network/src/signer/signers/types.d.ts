@@ -44,7 +44,7 @@ interface TransactionRequestInput {
     gas?: string | number;
 
     /**
-     *  The maximum amount of gas to allow this transaction to consime.
+     *  The maximum amount of gas to allow this transaction to consume.
      */
     gasLimit?: string;
 
@@ -170,7 +170,7 @@ interface TransactionRequestInput {
 
     /**
      *  The [[link-eip-2930]] access list. Storage slots included in the access
-     *  list are //warmed// by pre-loading them, so their initial cost to
+     *  list are //warmed// by preloading them, so their initial cost to
      *  fetch is guaranteed, but then each additional access is cheaper.
      */
     accessList?: null | vechain_sdk_core_ethers.AccessListish;
@@ -212,7 +212,7 @@ interface TransactionRequestInput {
 }
 
 /**
- * A signer for vechain, adding specific methods for VeChain to the ethers signer
+ * A signer for VeChain, adding specific methods for VeChain to the ethers signer
  *
  * @NOTE: Su support completely our providers (that already support ethers provider format)
  * We use our supported providers instead of ethers providers

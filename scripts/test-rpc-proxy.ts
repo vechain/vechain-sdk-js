@@ -30,27 +30,30 @@ const endpointsTestCases = [
         ],
         expected: '0x'
     }
-]
+];
 
 async function testRPCProxy() {
-  const proxyUrl = 'http://localhost:8545';
+    const proxyUrl = 'http://localhost:8545';
 
-  try {
-    // Send RPC requests to test it
-    endpointsTestCases.forEach(async({method, params, expected})=>{
-        const response = await axios.post(proxyUrl, {
-            jsonrpc: '2.0',
-            method: method,
-            params: params
+    try {
+        // Send RPC requests to test it
+        endpointsTestCases.forEach(async({method, params, expected})=>{
+            const response = await axios.post(proxyUrl, {
+                jsonrpc: '2.0',
+                method,
+                params
+            });
+            assert.ok(response.data && response.data.result, 'Response does not contain result');
+            assert.strictEqual(response.data.result, expected, 'Expected a different result');
+            return 0;
         });
-        assert.ok(response.data && response.data.result, 'Response does not contain result');
-        assert.strictEqual(response.data.result, expected, 'Expected a different result');
-        return 0;
-    })
-  } catch (error) {
-    console.error('Error occurred while testing RPC Proxy:', (error as Error).message);
-    return 1;
-  }
+    } catch (error) {
+        console.error(
+            'Error occurred while testing RPC Proxy:',
+            (error as Error).message
+        );
+        return 1;
+    }
 }
 
 testRPCProxy();

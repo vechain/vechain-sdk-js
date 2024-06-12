@@ -5,7 +5,7 @@ import {
     JSONRPC,
     stringifyData
 } from '@vechain/sdk-errors';
-import { getCorrectBlockNumberRPCToVechain } from '../../../../const';
+import { getCorrectBlockNumberRPCToVeChain } from '../../../../const';
 import { type TransactionObjectInput } from './types';
 import { type BlockQuantityInputRPC } from '../../../types';
 import {
@@ -67,7 +67,7 @@ const ethCall = async (
                 } satisfies SimulateTransactionClause
             ],
             {
-                revision: getCorrectBlockNumberRPCToVechain(block),
+                revision: getCorrectBlockNumberRPCToVeChain(block),
                 gas:
                     inputOptions.gas !== undefined
                         ? parseInt(inputOptions.gas, 16)
