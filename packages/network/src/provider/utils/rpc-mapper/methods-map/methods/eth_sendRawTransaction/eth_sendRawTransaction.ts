@@ -7,7 +7,6 @@ import {
     stringifyData
 } from '@vechain/sdk-errors';
 import { Hex0x } from '@vechain/sdk-core';
-import { transactionsFormatter } from '../../../../formatter';
 
 /**
  * RPC Method eth_sendRawTransaction implementation
@@ -44,9 +43,7 @@ const ethSendRawTransaction = async (
                 signedTransactionData
             );
 
-        return transactionsFormatter.formatSendRawTransactionToRPCStandard(
-            sentTransaction
-        );
+        return sentTransaction.id;
     } catch (e) {
         throw buildProviderError(
             JSONRPC.INTERNAL_ERROR,

@@ -115,10 +115,7 @@ describe('ThorClient - ERC721 Contracts', () => {
                                 params
                             );
 
-                        const result =
-                            await thorSoloClient.transactions.waitForTransaction(
-                                response.id
-                            );
+                        const result = await response.wait();
 
                         expect(result).toBeDefined();
                         expect(result?.outputs).toBeDefined();
