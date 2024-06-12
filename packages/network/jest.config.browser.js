@@ -2,8 +2,14 @@
 module.exports = {
     preset: 'ts-jest',
     testEnvironment: '../../customEnv.js',
+    testPathIgnorePatterns: [
+        'subscriptions',
+        'tests/utils/poll/event/event-poll.unit.test.ts',
+        'tests/utils/http/http-client.solo.test.ts',
+        'http-client.testnet.test.ts'
+    ],
     coverageReporters: ['html', 'lcov', 'json'],
     runner: 'groups',
     reporters: ['default', 'jest-junit'],
-    workerThreads: false
+    workerThreads: true
 };

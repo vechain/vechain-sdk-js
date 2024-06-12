@@ -4,6 +4,5 @@ module.exports = {
     testEnvironment: '../../customEnv.js',
     coverageReporters: ['html', 'lcov', 'json'],
     runner: 'groups',
-    reporters: ['default', 'jest-junit'],
-    workerThreads: false
+    reporters: ['default', 'jest-junit']
 };
