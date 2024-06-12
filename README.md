@@ -121,6 +121,17 @@ There are two ways to run tests:
    - For a more straightforward approach, use `yarn test:solo`.
    - This command handles the thor-Solo node's start and stop processes for you.
 
+
+#### Running tests in a browser-like environment
+
+The SDK fully support execution in a browser environment. To run the tests in a browser-like environment, you can use the `yarn test:browser` command. This command requires a local thor-solo node to be running.
+Alternatively, you can run the tests with thor-solo by using the `yarn test:browser:solo` command. This command will start thor-solo, run the tests, and stop thor-solo at the end.
+
+
+
+```bash
+
+
 ### Custom thor-solo Data Starting Point
 
 For advanced testing scenarios, you may require a custom data starting point with thor-solo. This involves creating a custom snapshot of thor's LevelDB.

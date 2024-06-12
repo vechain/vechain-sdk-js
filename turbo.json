@@ -13,6 +13,10 @@
             "outputs": ["coverage/**"],
             "dependsOn": ["^build"]
         },
+        "test:browser": {
+            "outputs": ["coverage/**"],
+            "dependsOn": ["^build"]
+        },
         "test:integration":{
             "outputs": ["coverage/**"],
             "dependsOn": ["^build"]

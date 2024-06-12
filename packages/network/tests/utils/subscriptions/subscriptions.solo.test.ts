@@ -17,7 +17,7 @@ import {
     TESTING_CONTRACT_ADDRESS,
     THOR_SOLO_ACCOUNTS_BASE_WALLET
 } from '../../fixture';
-import WebSocket from 'ws';
+import WebSocket from 'isomorphic-ws';
 import {
     addressUtils,
     clauseBuilder,

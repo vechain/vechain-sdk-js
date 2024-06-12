@@ -36,7 +36,9 @@
         "test:examples": "turbo test:examples",
         "test:examples:solo": "(yarn start-thor-solo && yarn test:examples && yarn stop-thor-solo) || yarn stop-thor-solo",
         "test": "turbo test --force && yarn merge-coverage",
+        "test:browser": "turbo test:browser --force && yarn merge-coverage",
         "test:solo": "(yarn start-thor-solo && yarn test && yarn stop-thor-solo) || yarn stop-thor-solo",
+        "test:browser:solo": "(yarn start-thor-solo && yarn test:browser && yarn stop-thor-solo) || yarn stop-thor-solo",
         "merge-coverage": "ts-node scripts/merge-coverage.ts",
         "check-tests-naming": "ts-node scripts/check-tests-naming.ts"
     },
@@ -61,6 +63,7 @@
         "husky": "^9.0.11",
         "jest": "^29.7.0",
         "jest-docblock": "^29",
+        "jest-environment-jsdom": "^29.7.0",
         "jest-junit": "^16.0.0",
         "jest-runner": "^29.7.0",
         "jest-runner-groups": "^2.2.0",
