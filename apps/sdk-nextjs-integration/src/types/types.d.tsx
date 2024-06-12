@@ -17,4 +17,13 @@ interface Transfer {
     };
 }
 
-export { type Transfer };
+/**
+ * Hashed content example type.
+ */
+interface HashedContent {
+    blake2b256: string;
+    keccak256: string;
+    sha256: string;
+}
+
+export { type Transfer, type HashedContent };
