@@ -139,10 +139,7 @@ describe('ThorClient - Transactions Module', () => {
             expect(sendTransactionResult.id).toBeDefined();
 
             // Wait for the transaction to be included in a block
-            const txReceipt =
-                await thorSoloClient.transactions.waitForTransaction(
-                    sendTransactionResult.id
-                );
+            const txReceipt = await sendTransactionResult.wait();
 
             expect(txReceipt).toBeDefined();
             expect(txReceipt?.reverted).toBe(expectedReceipt.reverted);
