@@ -12,7 +12,7 @@ import { reduceHexStringSize } from '@/utils';
 import Link from 'next/link';
 import { Header } from '@/components';
 
-export default function EventLogsPage(): JSX.Element {
+export default function TransferLogs(): JSX.Element {
     // State to store the transfer history
     const [transfers, setTransfers] = useState<Transfer[]>([]);
 
@@ -79,7 +79,7 @@ export default function EventLogsPage(): JSX.Element {
                 <input
                     type="text"
                     name="address"
-                    id="address"
+                    data-testid="address"
                     onChange={(e) => {
                         setAddress(e.target.value);
                     }}
@@ -103,9 +103,13 @@ export default function EventLogsPage(): JSX.Element {
                         {transfers.map((transfer, index) => (
                             <tr key={index}>
                                 <td className="px-4 py-2">
-                                    {new Date(
-                                        transfer.meta.blockTimestamp * 1000
-                                    ).toISOString()}
+                                    <p
+                                        data-testid={`timestamp-${transfer.meta.blockTimestamp}`}
+                                    >
+                                        {new Date(
+                                            transfer.meta.blockTimestamp * 1000
+                                        ).toISOString()}
+                                    </p>
                                 </td>
                                 <td className="px-4 py-2">
                                     <Link
@@ -114,8 +118,11 @@ export default function EventLogsPage(): JSX.Element {
                                         className={
                                             'text-blue-500 hover:underline'
                                         }
+                                        data-testid={`transfer-from-${transfer.from.slice(2, 10)}`}
                                     >
-                                        {reduceHexStringSize(transfer.from)}
+                                        <p>
+                                            {reduceHexStringSize(transfer.from)}
+                                        </p>
                                     </Link>
                                 </td>
                                 <td className="px-4 py-2">
@@ -125,12 +132,17 @@ export default function EventLogsPage(): JSX.Element {
                                         className={
                                             'text-blue-500 hover:underline'
                                         }
+                                        data-testid={`transfer-to-${transfer.to.slice(2, 10)}`}
                                     >
                                         {reduceHexStringSize(transfer.to)}
                                     </Link>
                                 </td>
                                 <td className="px-4 py-2">
-                                    {unitsUtils.formatVET(transfer.amount)}
+                                    <p
+                                        data-testid={`transfer-amount-${transfer.amount}`}
+                                    >
+                                        {unitsUtils.formatVET(transfer.amount)}
+                                    </p>
                                 </td>
                                 <td className="px-4 py-2">
                                     <Link
@@ -139,6 +151,7 @@ export default function EventLogsPage(): JSX.Element {
                                         className={
                                             'text-blue-500 hover:underline'
                                         }
+                                        data-testid={`transaction-id-${transfer.meta.txID.slice(2, 10)}`}
                                     >
                                         {reduceHexStringSize(
                                             transfer.meta.txID
