@@ -3,35 +3,18 @@
 import { useState, useEffect } from 'react';
 import {
     type CompressedBlockDetail,
-    ThorClient,
     type FilterTransferLogsOptions
 } from '@vechain/sdk-network';
 import { unitsUtils } from '@vechain/sdk-core';
-
-// Url of the VeChain mainnet
-const mainnetUrl = 'https://mainnet.vechain.org';
-
-// Thor client
-const thorClient = ThorClient.fromUrl(mainnetUrl);
-
-// Transfer interface definition for the transfer history
-interface Transfer {
-    from: string;
-    to: string;
-    amount: string;
-    meta: {
-        blockID: string; // Block identifier associated with the entity
-        blockNumber: number; // Block number associated with the entity
-        blockTimestamp: number; // Timestamp of the block
-        txID: string; // Transaction ID associated with the entity
-        txOrigin: string; // Transaction origin information
-        clauseIndex: number; // Index of the clause
-    };
-}
+import { type Transfer } from '@/types';
+import { explorerUrl, thorClient } from '@/const';
+import { reduceHexStringSize } from '@/utils';
+import Link from 'next/link';
 
 export default function Home(): JSX.Element {
     // State to store the transfer history
     const [transfers, setTransfers] = useState<Transfer[]>([]);
+
     // State to store the address
     const [address, setAddress] = useState(
         '0xc3bE339D3D20abc1B731B320959A96A08D479583'
@@ -98,12 +81,12 @@ export default function Home(): JSX.Element {
                     }}
                 ></div>
             </div>
-            <div className="mx-auto max-w-2xl text-center">
-                <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            <div className="my-20 mx-auto max-w-2xl text-center">
+                <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl my-10">
                     sdk-nextsjs-integration
                 </h2>
-                <p className="mt-2 text-lg leading-8 text-gray-600">
-                    Sample NextJs app
+                <p className="my-5 text-lg leading-8 text-gray-600">
+                    Insert an address to get the transfer history
                 </p>
                 <input
                     type="text"
@@ -113,7 +96,7 @@ export default function Home(): JSX.Element {
                         setAddress(e.target.value);
                     }}
                     value={address}
-                    className="block mx-auto w-full sm:max-w-md border-2 border-transparent focus:border-purple-500 bg-transparent py-2 px-4 text-lg text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 outline-none rounded-md"
+                    className="block mx-auto w-full sm:max-w-md border-2 border-dark focus:border-purple-500 bg-transparent py-2 px-4 text-lg text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6 outline-none rounded-md"
                     placeholder="0xc3bE339D3D20abc1B731B320959A96A08D479583"
                 />
             </div>
@@ -136,13 +119,43 @@ export default function Home(): JSX.Element {
                                         transfer.meta.blockTimestamp * 1000
                                     ).toISOString()}
                                 </td>
-                                <td className="px-4 py-2">{transfer.from}</td>
-                                <td className="px-4 py-2">{transfer.to}</td>
+                                <td className="px-4 py-2">
+                                    <Link
+                                        href={`${explorerUrl}/accounts/${transfer.from}`}
+                                        target={'_blank'}
+                                        className={
+                                            'text-blue-500 hover:underline'
+                                        }
+                                    >
+                                        {reduceHexStringSize(transfer.from)}
+                                    </Link>
+                                </td>
+                                <td className="px-4 py-2">
+                                    <Link
+                                        href={`${explorerUrl}/accounts/${transfer.to}`}
+                                        target={'_blank'}
+                                        className={
+                                            'text-blue-500 hover:underline'
+                                        }
+                                    >
+                                        {reduceHexStringSize(transfer.to)}
+                                    </Link>
+                                </td>
                                 <td className="px-4 py-2">
                                     {unitsUtils.formatVET(transfer.amount)}
                                 </td>
                                 <td className="px-4 py-2">
-                                    {transfer.meta.txID}
+                                    <Link
+                                        href={`${explorerUrl}/transactions/${transfer.meta.txID}`}
+                                        target={'_blank'}
+                                        className={
+                                            'text-blue-500 hover:underline'
+                                        }
+                                    >
+                                        {reduceHexStringSize(
+                                            transfer.meta.txID
+                                        )}
+                                    </Link>
                                 </td>
                             </tr>
                         ))}
