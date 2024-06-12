@@ -1,18 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import {
-    type CompressedBlockDetail,
-    type FilterTransferLogsOptions
-} from '@vechain/sdk-network';
-import { blake2b256, keccak256, sha256, unitsUtils } from '@vechain/sdk-core';
-import { type HashedContent, type Transfer } from '@/types';
-import { explorerUrl, thorClient } from '@/const';
-import { reduceHexStringSize } from '@/utils';
-import Link from 'next/link';
+
+import { blake2b256, keccak256, sha256 } from '@vechain/sdk-core';
+import { type HashedContent } from '@/types';
 import { Header } from '@/components';
 
-export default function Hash(): JSX.Element {
+export default function HashPage(): JSX.Element {
     // State of content to hash
     const [contentToHash, setContentToHash] = useState<string>('Hello World!');
 
@@ -25,7 +19,7 @@ export default function Hash(): JSX.Element {
 
     /**
      * Function to get the history for the provided address
-     * @param address The address to get the history for
+     * @param content The address to get the history for
      */
     function hashContent(content: string): void {
         try {
@@ -61,7 +55,7 @@ export default function Hash(): JSX.Element {
                 <input
                     type="text"
                     name="contentToHash"
-                    id="contentToHash"
+                    data-testid="contentToHash"
                     onChange={(e) => {
                         setContentToHash(e.target.value);
                     }}
@@ -71,13 +65,13 @@ export default function Hash(): JSX.Element {
                 />
             </div>
             <div className="table-container mx-auto max-w-4xl overflow-x-auto text-center justify-center flex flex-col">
-                <p className="px-4 py-2">
+                <p className="px-4 py-2" data-testid="blake2b256HashLabel">
                     <b>Blake2b256</b>: {hashedContent.blake2b256}
                 </p>
-                <p className="px-4 py-2">
+                <p className="px-4 py-2" data-testid="keccak256HashLabel">
                     <b>Keccak256</b>: {hashedContent.keccak256}
                 </p>
-                <p className="px-4 py-2">
+                <p className="px-4 py-2" data-testid="sha256HashLabel">
                     <b>Sha256</b>: {hashedContent.sha256}
                 </p>
             </div>

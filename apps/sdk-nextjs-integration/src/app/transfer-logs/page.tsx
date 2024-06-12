@@ -12,7 +12,7 @@ import { reduceHexStringSize } from '@/utils';
 import Link from 'next/link';
 import { Header } from '@/components';
 
-export default function EventLogs(): JSX.Element {
+export default function EventLogsPage(): JSX.Element {
     // State to store the transfer history
     const [transfers, setTransfers] = useState<Transfer[]>([]);
 
