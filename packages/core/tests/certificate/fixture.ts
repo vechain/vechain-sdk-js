@@ -4,7 +4,7 @@ import * as utils from '@noble/curves/abstract/utils';
 /**
  * https://en.wikipedia.org/wiki/Unicode_compatibility_characters
  */
-const HANA_KANJI = '戀說零遼倫痢臨輻礼﨩墨碑臭舘';
+const HANA_KANJI_AMBIGUITY_CHALLENGE = '戀說零遼倫痢臨輻礼﨩墨碑臭舘';
 
 /**
  * Private Key used for digital signature during certificate creation
@@ -14,13 +14,13 @@ const certPrivateKey = utils.hexToBytes(
 );
 
 /**
- * Certificate n.1 to be used for testing, mostly for encoding and verify functions
+ * Certificate to be used for testing, mostly for encoding and verify functions
  */
 const cert = {
     purpose: 'identification',
     payload: {
         type: 'text',
-        content: HANA_KANJI
+        content: HANA_KANJI_AMBIGUITY_CHALLENGE
     },
     domain: 'localhost',
     timestamp: 1545035330,
