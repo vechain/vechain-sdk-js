@@ -5,6 +5,7 @@ import type {
 } from '../transactions';
 
 import type {
+    ClauseOptions,
     TransactionClause,
     vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
@@ -23,12 +24,13 @@ declare module 'abitype' {
 type ContractTransactionOptions = {
     value?: number;
     signTransactionOptions?: SignTransactionOptions;
-} & TransactionBodyOptions;
+} & TransactionBodyOptions &
+    ClauseOptions;
 
 /**
  * Defines the options for executing a contract call within a blockchain environment.
  */
-type ContractCallOptions = SimulateTransactionOptions;
+type ContractCallOptions = SimulateTransactionOptions & ClauseOptions;
 
 /* --------- Input types End --------- */
 

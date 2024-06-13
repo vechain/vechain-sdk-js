@@ -77,7 +77,8 @@ const transferTokenClausesTestCases = [
             value: 0,
             data: `0xa9059cbb000000000000000000000000${recipientAddress.slice(
                 2
-            )}0000000000000000000000000000000000000000000000000000000000000001`
+            )}0000000000000000000000000000000000000000000000000000000000000001`,
+            comment: undefined
         }
     },
     {
@@ -89,7 +90,8 @@ const transferTokenClausesTestCases = [
             value: 0,
             data: `0xa9059cbb000000000000000000000000${recipientAddress.slice(
                 2
-            )}0000000000000000000000000000000000000000000000000000000000000001`
+            )}0000000000000000000000000000000000000000000000000000000000000001`,
+            comment: undefined
         }
     },
     {
@@ -101,7 +103,8 @@ const transferTokenClausesTestCases = [
             value: 0,
             data: `0xa9059cbb000000000000000000000000${recipientAddress.slice(
                 2
-            )}0000000000000000000000000000000000000000000000000de0b6b3a7640000`
+            )}0000000000000000000000000000000000000000000000000de0b6b3a7640000`,
+            comment: undefined
         }
     },
     {
@@ -113,7 +116,8 @@ const transferTokenClausesTestCases = [
             value: 0,
             data: `0xa9059cbb000000000000000000000000${recipientAddress.slice(
                 2
-            )}0000000000000000000000000000000000000000019d971e4fe8401e74000000`
+            )}0000000000000000000000000000000000000000019d971e4fe8401e74000000`,
+            comment: undefined
         }
     },
     {
@@ -125,7 +129,8 @@ const transferTokenClausesTestCases = [
             value: 0,
             data: `0xa9059cbb000000000000000000000000${recipientAddress.slice(
                 2
-            )}0000000000000000000000000000000000000000000000000000000000000064`
+            )}0000000000000000000000000000000000000000000000000000000000000064`,
+            comment: undefined
         }
     }
 ];
@@ -170,7 +175,8 @@ const transferVETtestCases = [
         expected: {
             to: recipientAddress,
             value: '0x1',
-            data: '0x'
+            data: '0x',
+            comment: undefined
         }
     },
     {
@@ -179,7 +185,8 @@ const transferVETtestCases = [
         expected: {
             to: recipientAddress,
             value: '0x1',
-            data: '0x'
+            data: '0x',
+            comment: undefined
         }
     },
     {
@@ -188,7 +195,8 @@ const transferVETtestCases = [
         expected: {
             to: recipientAddress,
             value: '0xde0b6b3a7640000',
-            data: '0x'
+            data: '0x',
+            comment: undefined
         }
     },
     {
@@ -197,7 +205,8 @@ const transferVETtestCases = [
         expected: {
             to: recipientAddress,
             value: '0x19d971e4fe8401e74000000',
-            data: '0x'
+            data: '0x',
+            comment: undefined
         }
     },
     {
@@ -206,7 +215,8 @@ const transferVETtestCases = [
         expected: {
             to: recipientAddress,
             value: '0x64',
-            data: '0x'
+            data: '0x',
+            comment: undefined
         }
     }
 ];
@@ -227,7 +237,8 @@ const transferNFTtestCases = [
                 senderAddress,
                 recipientAddress,
                 '0'
-            ])
+            ]),
+            comment: undefined
         }
     }
 ];

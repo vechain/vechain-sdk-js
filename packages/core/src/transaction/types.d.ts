@@ -20,6 +20,26 @@ interface TransactionClause {
      * Input data for contract method invocation or deployment
      */
     data: string;
+
+    /**
+     * Optional comment for the clause, helpful for displaying what the clause is doing.
+     */
+    comment?: string;
+
+    /**
+     * Optional ABI for the contract method invocation.
+     */
+    abi?: string;
+}
+
+/**
+ * Options for creating a clause.
+ */
+interface ClauseOptions {
+    /**
+     * Optional comment for the clause, helpful for displaying what the clause is doing.
+     */
+    comment?: string;
 }
 
 /**
@@ -110,4 +130,4 @@ interface TransactionBody {
     };
 }
 
-export type { TransactionBody, TransactionClause };
+export type { TransactionBody, TransactionClause, ClauseOptions };

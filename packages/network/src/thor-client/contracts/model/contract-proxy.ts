@@ -1,4 +1,6 @@
 import {
+    type ClauseAdditionalOptions,
+    type ClauseComment,
     type ContractFunctionClause,
     type ContractFunctionCriteria,
     type ContractFunctionFilter,
@@ -39,18 +41,26 @@ function getReadProxy<TAbi extends Abi>(
                     'inputs'
                 >
             ): Promise<ContractCallResult> => {
+                // check if the clause comment is provided as an argument
+
+                const extractOptionsResult = extractAndRemoveAdditionalOptions(
+                    args as unknown[]
+                );
+
+                const clauseComment =
+                    extractOptionsResult.clauseAdditionalOptions?.comment;
+
                 return (await contract.thor.contracts.executeCall(
                     contract.address,
                     contract.getFunctionFragment(prop),
-                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                    // @ts-expect-error
-                    args,
+                    extractOptionsResult.args,
                     {
                         caller:
                             contract.getSigner() !== undefined
                                 ? await contract.getSigner()?.getAddress()
                                 : undefined,
-                        ...contract.getContractReadOptions()
+                        ...contract.getContractReadOptions(),
+                        comment: clauseComment
                     }
                 )) as ContractCallResult;
             };
@@ -90,12 +100,19 @@ function getTransactProxy<TAbi extends Abi>(
                     contract.getContractTransactOptions();
 
                 // check if the transaction value is provided as an argument
-                const transactionValue = getTransactionValue(args);
 
-                // if present remove the transaction value argument from the list of arguments
-                if (transactionValue !== undefined) {
-                    args = args.filter((arg) => !isTransactionValue(arg));
-                }
+                const extractAdditionalOptionsResult =
+                    extractAndRemoveAdditionalOptions(args);
+
+                const transactionValue =
+                    extractAdditionalOptionsResult.clauseAdditionalOptions
+                        ?.value;
+
+                const clauseComment =
+                    extractAdditionalOptionsResult.clauseAdditionalOptions
+                        ?.comment;
+
+                args = extractAdditionalOptionsResult.args;
 
                 return await contract.thor.contracts.executeTransaction(
                     contract.getSigner() as VeChainSigner,
@@ -105,9 +122,8 @@ function getTransactProxy<TAbi extends Abi>(
                     {
                         ...transactionOptions,
                         value:
-                            transactionOptions.value ??
-                            transactionValue?.value ??
-                            0
+                            transactionOptions.value ?? transactionValue ?? 0,
+                        comment: clauseComment
                     }
                 );
             };
@@ -151,12 +167,18 @@ function getClauseProxy<TAbi extends Abi>(
                     contract.getContractTransactOptions();
 
                 // check if the transaction value is provided as an argument
-                const transactionValue = getTransactionValue(args);
+                const extractAdditionalOptionsResult =
+                    extractAndRemoveAdditionalOptions(args);
 
-                // if present remove the transaction value argument from the list of arguments
-                if (transactionValue !== undefined) {
-                    args = args.filter((arg) => !isTransactionValue(arg));
-                }
+                const transactionValue =
+                    extractAdditionalOptionsResult.clauseAdditionalOptions
+                        ?.value;
+
+                const clauseComment =
+                    extractAdditionalOptionsResult.clauseAdditionalOptions
+                        ?.comment;
+
+                args = extractAdditionalOptionsResult.args;
 
                 // return the contract clause
                 return {
@@ -164,7 +186,10 @@ function getClauseProxy<TAbi extends Abi>(
                         contract.address,
                         contract.getFunctionFragment(prop),
                         args,
-                        transactionOptions.value ?? transactionValue?.value ?? 0
+                        transactionOptions.value ?? transactionValue ?? 0,
+                        {
+                            comment: clauseComment
+                        }
                     ),
                     functionFragment: contract.getFunctionFragment(prop)
                 };
@@ -226,6 +251,30 @@ function buildCriteria<TAbi extends Abi>(
     };
 }
 
+function extractAndRemoveAdditionalOptions(args: unknown[]): {
+    args: unknown[];
+    clauseAdditionalOptions: ClauseAdditionalOptions | undefined;
+} {
+    // check if the transaction value is provided as an argument
+    const transactionValue = getTransactionValue(args);
+    const clauseComment = getClauseComment(args);
+
+    // if present remove the transaction value argument from the list of arguments
+    if (transactionValue !== undefined || clauseComment !== undefined) {
+        args = args.filter(
+            (arg) => !(isTransactionValue(arg) || isTransactionComment(arg))
+        );
+    }
+
+    return {
+        args,
+        clauseAdditionalOptions: {
+            value: transactionValue?.value,
+            comment: clauseComment?.comment
+        }
+    };
+}
+
 /**
  * Extracts the transaction value from the list of arguments, if present.
  * @param args - The list of arguments to search for the transaction value.
@@ -238,12 +287,32 @@ function getTransactionValue(args: unknown[]): TransactionValue | undefined {
 }
 
 /**
+ * Extracts the clause comment from the list of arguments, if present.
+ * @param args - The list of arguments to search for the clause comment.
+ * @returns The clause comment object, if found in the arguments list.
+ */
+function getClauseComment(args: unknown[]): ClauseComment | undefined {
+    return args.find((arg) => isTransactionComment(arg)) as
+        | ClauseComment
+        | undefined;
+}
+
+/**
  * Type guard function to check if an object is a TransactionValue.
  * @param obj - The object to check.
  * @returns True if the object is a TransactionValue, false otherwise.
  */
-function isTransactionValue(obj: unknown): obj is TransactionValue {
-    return (obj as TransactionValue).value !== undefined;
+function isTransactionValue(obj: unknown): obj is ClauseAdditionalOptions {
+    return (obj as ClauseAdditionalOptions).value !== undefined;
+}
+
+/**
+ * Type guard function to check if an object is a ClauseComment.
+ * @param obj - The object to check.
+ * @returns True if the object is a ClauseComment, false otherwise.
+ */
+function isTransactionComment(obj: unknown): obj is ClauseAdditionalOptions {
+    return (obj as ClauseAdditionalOptions).comment !== undefined;
 }
 
 export {

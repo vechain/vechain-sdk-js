@@ -23,7 +23,10 @@ import {
  * @returns A value of type `T`, representing the result of the contract function execution.
  */
 type ContractFunctionSync<T = unknown, TABIFunction> = (
-    ...args: AbiParametersToPrimitiveTypes<TABIFunction['inputs'], 'inputs'>
+    ...args: [
+        ...Partial<{ value: number; comment: string }>,
+        ...AbiParametersToPrimitiveTypes<TABIFunction['inputs'], 'inputs'>
+    ]
 ) => T;
 
 /**
@@ -51,10 +54,10 @@ type ContractEventSync<T = unknown, TABIEvent> = (
  *               are not specified, allowing for flexibility in function signatures.
  * @returns A promise that resolves to the type `T`, representing the result of the contract function execution.
  */
-type ContractFunctionAsync<T = unknown, TAbiFunction> = (
+type ContractFunctionAsync<T = unknown, TABIFunction> = (
     ...args: [
-        ...Partial<{ value: number }>,
-        ...AbiParametersToPrimitiveTypes<TAbiFunction['inputs'], 'inputs'>
+        ...Partial<{ value: number; comment: string }>,
+        ...AbiParametersToPrimitiveTypes<TABIFunction['inputs'], 'inputs'>
     ]
 ) => Promise<T>;
 
@@ -167,6 +170,18 @@ interface TransactionValue {
     value: number;
 }
 
+/**
+ * Represents a comment for a transaction clause.
+ */
+interface ClauseComment {
+    comment: string;
+}
+
+interface ClauseAdditionalOptions {
+    value: number | undefined;
+    comment: string | undefined;
+}
+
 export type {
     ContractFunctionAsync,
     ContractFunctionSync,
@@ -175,5 +190,7 @@ export type {
     ContractFunctionFilter,
     ContractFunctionClause,
     ContractFunctionCriteria,
-    TransactionValue
+    TransactionValue,
+    ClauseComment,
+    ClauseAdditionalOptions
 };

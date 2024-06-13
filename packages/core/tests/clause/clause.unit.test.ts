@@ -9,7 +9,11 @@ import {
     transferTokenClausesTestCases,
     transferVETtestCases
 } from './fixture';
-import { type DeployParams, clauseBuilder } from '../../src';
+import {
+    type DeployParams,
+    clauseBuilder,
+    type ClauseOptions
+} from '../../src';
 import { coder } from '../../src';
 import { type FunctionFragment } from 'ethers';
 /**
@@ -42,6 +46,22 @@ describe('Contract', () => {
         expect(clause.data.length).toBeGreaterThan(
             exampleContractBytecode.length
         );
+    });
+
+    test('Build a clause to deploy a contract with a comment', () => {
+        const clauseOptions: ClauseOptions = {
+            comment: 'Deploying a contract with a comment'
+        };
+
+        const clause = clauseBuilder.deployContract(
+            exampleContractBytecode,
+            undefined,
+            clauseOptions
+        );
+
+        expect(clause.data).toEqual(exampleContractBytecode);
+        expect(clause.to).toBe(null);
+        expect(clause.value).toBe(0);
     });
 
     test('Build a clause to call a contract function', () => {

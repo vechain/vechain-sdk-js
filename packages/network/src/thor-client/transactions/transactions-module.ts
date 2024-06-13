@@ -304,8 +304,9 @@ class TransactionsModule {
             }
 
             return {
-                ...clause,
-                to: uniqueNames.get(clause.to) ?? clause.to
+                to: uniqueNames.get(clause.to) ?? clause.to,
+                data: clause.data,
+                value: clause.value
             };
         });
     }
@@ -353,7 +354,8 @@ class TransactionsModule {
                     clauses: await this.resolveNamesInClauses(
                         clauses.map((clause) => {
                             return {
-                                ...clause,
+                                to: clause.to,
+                                data: clause.data,
                                 value: BigInt(clause.value).toString()
                             };
                         })
