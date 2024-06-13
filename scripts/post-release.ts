@@ -25,6 +25,8 @@ const updatePackageVersions = (version: string): void => {
         const appPackageJson = JSON.parse(
             fs.readFileSync(appPackageJsonPath, 'utf8')
         );
+        appPackageJson.version = version;
+        fs.writeFileSync(appPackageJsonPath, JSON.stringify(appPackageJson, null, 2));
 
         for (const dep of Object.keys(appPackageJson.dependencies)) {
             if (packageNames.includes(dep)) {
