@@ -1059,47 +1059,48 @@
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
-"@vechain/sdk-core@1.0.0-beta.15":
-  version "1.0.0-beta.15"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.15.tgz#6cb51484255d3045a8fe0489bde198908208a2e6"
-  integrity sha512-BwhJ02wJ/YmZlQNtjElMlCHItM1GwbewV+7Y6zNXjm5U9N7MILSbjbFNwVJjlCFjDUdrhWJno+dehAiKMZP3Fw==
+"@vechain/sdk-core@1.0.0-beta.16":
+  version "1.0.0-beta.16"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.16.tgz#765eed0d3559b06d39484db936379bf187db81e4"
+  integrity sha512-9nmf/uqOsdbONJfkXzEYXxKV7yU9PQfUu/jM/kGUbBPrEUxqTXxK8pESIvUxT9yNh1kMfK1qySzzhB0B5T68xA==
   dependencies:
     "@ethereumjs/rlp" "^5.0.2"
     "@noble/ciphers" "^0.5.2"
     "@scure/bip32" "^1.4.0"
     "@scure/bip39" "^1.3.0"
     "@types/elliptic" "^6.4.18"
-    "@vechain/sdk-errors" "1.0.0-beta.15"
-    "@vechain/sdk-logging" "1.0.0-beta.15"
+    "@vechain/sdk-errors" "1.0.0-beta.16"
+    "@vechain/sdk-logging" "1.0.0-beta.16"
     bignumber.js "^9.1.2"
     blakejs "^1.2.1"
     elliptic "^6.5.5"
     ethers "6.13.0"
     fast-json-stable-stringify "^2.1.0"
 
-"@vechain/sdk-errors@1.0.0-beta.15":
-  version "1.0.0-beta.15"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.15.tgz#9165c621c8b38dcb880c903b0646be50416936d9"
-  integrity sha512-Z/payso5NlA7+S90CDHWiNBbS7ZvxToWCqTiCXPkgozsjAbAcPwTMnohQsERhQ9qJKokU7QipQ5nLse6s/KN6w==
+"@vechain/sdk-errors@1.0.0-beta.16":
+  version "1.0.0-beta.16"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.16.tgz#566451dd10b0378da6ba874c4eff0e6fca5c30bd"
+  integrity sha512-0BmxCiKcwrFqqaFXo1w19CmTOvOHqOoKXnDJEcEBcqYN8nEqOSOz8GimJoP8Wh1d8Lf+eCOJrFDr8usK8IU4aw==
 
-"@vechain/sdk-logging@1.0.0-beta.15":
-  version "1.0.0-beta.15"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-beta.15.tgz#138cd26063912deed2487421f6879658c9ab05d9"
-  integrity sha512-L7CnWKmhXzhwD4ekerSBK3biaPt69xP78HxSYP1Qm/YZo9p4ypMdgRtw863jXAdox7v0dRWOIqxaxBPuCnWEdw==
+"@vechain/sdk-logging@1.0.0-beta.16":
+  version "1.0.0-beta.16"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-beta.16.tgz#4d057b7c072fd623ea014cfc5f689881488e2574"
+  integrity sha512-OaTs8j/OrsJYv+Z1BhyDrfrCN64fydklOBsgVS+r8yYjPXNfWw+w/A8YZesYwWYfZBIiOfTJTj6MXpoiHs8pow==
   dependencies:
-    "@vechain/sdk-errors" "1.0.0-beta.15"
+    "@vechain/sdk-errors" "1.0.0-beta.16"
 
-"@vechain/sdk-network@1.0.0-beta.15":
-  version "1.0.0-beta.15"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.15.tgz#c239ea78fb2e30903e627bac26fae6ed6152b0aa"
-  integrity sha512-ohLLcqMZrpbAJqakhqLYVTptXvLFTW9tUb0/5UG38SAF59nB0MaDaw5/r6fJZYUG7cSL1Zl5H+lgu7/FjjqENQ==
+"@vechain/sdk-network@1.0.0-beta.16":
+  version "1.0.0-beta.16"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.16.tgz#9feda1cd92fe4fd3fdd3bf539fc4fd8a03332484"
+  integrity sha512-ZSxZ5M1tpugTQsU0gJd1dhgv0J16CRU+SAmwpm+DCS4PLqXBazo7pEWV0dv7mQnLV245/eRtkUQHvMKYI4/0pQ==
   dependencies:
     "@types/ws" "^8.5.10"
-    "@vechain/sdk-core" "1.0.0-beta.15"
-    "@vechain/sdk-errors" "1.0.0-beta.15"
-    "@vechain/sdk-logging" "1.0.0-beta.15"
+    "@vechain/sdk-core" "1.0.0-beta.16"
+    "@vechain/sdk-errors" "1.0.0-beta.16"
+    "@vechain/sdk-logging" "1.0.0-beta.16"
     abitype "^1.0.2"
     axios "^1.7.2"
+    isomorphic-ws "^5.0.0"
 
 abab@^2.0.6:
   version "2.0.6"
@@ -3033,6 +3034,11 @@ isexe@^2.0.0:
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
   integrity sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==
 
+isomorphic-ws@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/isomorphic-ws/-/isomorphic-ws-5.0.0.tgz#e5529148912ecb9b451b46ed44d53dae1ce04bbf"
+  integrity sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==
+
 istanbul-lib-coverage@^3.0.0, istanbul-lib-coverage@^3.2.0:
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/istanbul-lib-coverage/-/istanbul-lib-coverage-3.2.2.tgz#2d166c4b0644d43a39f04bf6c2edd1e585f31756"
@@ -4535,7 +4541,16 @@ string-length@^4.0.1:
     char-regex "^1.0.2"
     strip-ansi "^6.0.0"
 
-"string-width-cjs@npm:string-width@^4.2.0", string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
+"string-width-cjs@npm:string-width@^4.2.0":
+  version "4.2.3"
+  resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
+  integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
+  dependencies:
+    emoji-regex "^8.0.0"
+    is-fullwidth-code-point "^3.0.0"
+    strip-ansi "^6.0.1"
+
+string-width@^4.1.0, string-width@^4.2.0, string-width@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/string-width/-/string-width-4.2.3.tgz#269c7117d27b05ad2e536830a8ec895ef9c6d010"
   integrity sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g==
@@ -4599,7 +4614,14 @@ string.prototype.trimstart@^1.0.8:
     define-properties "^1.2.1"
     es-object-atoms "^1.0.0"
 
-"strip-ansi-cjs@npm:strip-ansi@^6.0.1", strip-ansi@^6.0.0, strip-ansi@^6.0.1:
+"strip-ansi-cjs@npm:strip-ansi@^6.0.1":
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
+  integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
+  dependencies:
+    ansi-regex "^5.0.1"
+
+strip-ansi@^6.0.0, strip-ansi@^6.0.1:
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-6.0.1.tgz#9e26c63d30f53443e9489495b2105d37b67a85d9"
   integrity sha512-Y38VPSHcqkFrCpFnQ9vuSXmquuv5oXOKpGeT6aGrr3o3Gc9AlVa6JBfUSOCnbxGGZF+/0ooI7KrPuUSztUdU5A==
@@ -5045,7 +5067,16 @@ word-wrap@^1.2.5:
   resolved "https://registry.yarnpkg.com/word-wrap/-/word-wrap-1.2.5.tgz#d2c45c6dd4fbce621a66f136cbe328afd0410b34"
   integrity sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==
 
-"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+"wrap-ansi-cjs@npm:wrap-ansi@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
+  integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
+  dependencies:
+    ansi-styles "^4.0.0"
+    string-width "^4.1.0"
+    strip-ansi "^6.0.0"
+
+wrap-ansi@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==

@@ -1,7 +1,7 @@
 {
   "name": "vechain-sdk-nextjs",
   "description": "A Next.js sample app using the VeChain SDK",
-  "version": "1.0.0-beta.5",
+  "version": "1.0.0-beta.16",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -12,8 +12,8 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@vechain/sdk-core": "1.0.0-beta.15",
-    "@vechain/sdk-network": "1.0.0-beta.15",
+    "@vechain/sdk-core": "1.0.0-beta.16",
+    "@vechain/sdk-network": "1.0.0-beta.16",
     "install": "^0.13.0",
     "next": "14",
     "react": "^18",

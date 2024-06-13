@@ -421,14 +421,7 @@
   dependencies:
     "@noble/hashes" "1.3.2"
 
-"@noble/curves@1.3.0", "@noble/curves@~1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-1.3.0.tgz#01be46da4fd195822dab821e72f71bf4aeec635e"
-  integrity sha512-t01iSXPuN+Eqzb4eBX0S5oubSqXbK/xXa1Ne18Hj8f9pStxztHCE2gfboSp/dZRLSqfuLpRK2nDXDK+W9puocA==
-  dependencies:
-    "@noble/hashes" "1.3.3"
-
-"@noble/curves@~1.4.0":
+"@noble/curves@1.4.0", "@noble/curves@~1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@noble/curves/-/curves-1.4.0.tgz#f05771ef64da724997f69ee1261b2417a49522d6"
   integrity sha512-p+4cb332SFCrReJkCYe8Xzm0OWi4Jji5jVdIZRL/PmacmDkFNw6MrrV+gGpiPxLHbV+zKFRywUWbaseT+tZRXg==
@@ -444,11 +437,6 @@
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.3.2.tgz#6f26dbc8fbc7205873ce3cee2f690eba0d421b39"
   integrity sha512-MVC8EAQp7MvEcm30KWENFjgR+Mkmf+D189XJTkFIlwohU5hcBbn1ZkKq7KVTi2Hme3PMGF390DaL52beVrIihQ==
-
-"@noble/hashes@1.3.3", "@noble/hashes@~1.3.2":
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/@noble/hashes/-/hashes-1.3.3.tgz#39908da56a4adc270147bb07968bf3b16cfe1699"
-  integrity sha512-V7/fPHgl+jsVPXqqeOzT8egNj2iBIVt+ECeMMG8TdcnTikP3oaBtUVqpT/gYCR68aEBJSF+XbYUxStjbFMqIIA==
 
 "@noble/hashes@1.4.0", "@noble/hashes@^1.4.0", "@noble/hashes@~1.4.0":
   version "1.4.0"
@@ -604,78 +592,60 @@
     table "^6.8.0"
     undici "^5.14.0"
 
-"@nomicfoundation/solidity-analyzer-darwin-arm64@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer-darwin-arm64/-/solidity-analyzer-darwin-arm64-0.1.1.tgz#4c858096b1c17fe58a474fe81b46815f93645c15"
-  integrity sha512-KcTodaQw8ivDZyF+D76FokN/HdpgGpfjc/gFCImdLUyqB6eSWVaZPazMbeAjmfhx3R0zm/NYVzxwAokFKgrc0w==
+"@nomicfoundation/solidity-analyzer-darwin-arm64@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer-darwin-arm64/-/solidity-analyzer-darwin-arm64-0.1.2.tgz#3a9c3b20d51360b20affb8f753e756d553d49557"
+  integrity sha512-JaqcWPDZENCvm++lFFGjrDd8mxtf+CtLd2MiXvMNTBD33dContTZ9TWETwNFwg7JTJT5Q9HEecH7FA+HTSsIUw==
 
-"@nomicfoundation/solidity-analyzer-darwin-x64@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer-darwin-x64/-/solidity-analyzer-darwin-x64-0.1.1.tgz#6e25ccdf6e2d22389c35553b64fe6f3fdaec432c"
-  integrity sha512-XhQG4BaJE6cIbjAVtzGOGbK3sn1BO9W29uhk9J8y8fZF1DYz0Doj8QDMfpMu+A6TjPDs61lbsmeYodIDnfveSA==
+"@nomicfoundation/solidity-analyzer-darwin-x64@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer-darwin-x64/-/solidity-analyzer-darwin-x64-0.1.2.tgz#74dcfabeb4ca373d95bd0d13692f44fcef133c28"
+  integrity sha512-fZNmVztrSXC03e9RONBT+CiksSeYcxI1wlzqyr0L7hsQlK1fzV+f04g2JtQ1c/Fe74ZwdV6aQBdd6Uwl1052sw==
 
-"@nomicfoundation/solidity-analyzer-freebsd-x64@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer-freebsd-x64/-/solidity-analyzer-freebsd-x64-0.1.1.tgz#0a224ea50317139caeebcdedd435c28a039d169c"
-  integrity sha512-GHF1VKRdHW3G8CndkwdaeLkVBi5A9u2jwtlS7SLhBc8b5U/GcoL39Q+1CSO3hYqePNP+eV5YI7Zgm0ea6kMHoA==
+"@nomicfoundation/solidity-analyzer-linux-arm64-gnu@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer-linux-arm64-gnu/-/solidity-analyzer-linux-arm64-gnu-0.1.2.tgz#4af5849a89e5a8f511acc04f28eb5d4460ba2b6a"
+  integrity sha512-3d54oc+9ZVBuB6nbp8wHylk4xh0N0Gc+bk+/uJae+rUgbOBwQSfuGIbAZt1wBXs5REkSmynEGcqx6DutoK0tPA==
 
-"@nomicfoundation/solidity-analyzer-linux-arm64-gnu@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer-linux-arm64-gnu/-/solidity-analyzer-linux-arm64-gnu-0.1.1.tgz#dfa085d9ffab9efb2e7b383aed3f557f7687ac2b"
-  integrity sha512-g4Cv2fO37ZsUENQ2vwPnZc2zRenHyAxHcyBjKcjaSmmkKrFr64yvzeNO8S3GBFCo90rfochLs99wFVGT/0owpg==
+"@nomicfoundation/solidity-analyzer-linux-arm64-musl@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer-linux-arm64-musl/-/solidity-analyzer-linux-arm64-musl-0.1.2.tgz#54036808a9a327b2ff84446c130a6687ee702a8e"
+  integrity sha512-iDJfR2qf55vgsg7BtJa7iPiFAsYf2d0Tv/0B+vhtnI16+wfQeTbP7teookbGvAo0eJo7aLLm0xfS/GTkvHIucA==
 
-"@nomicfoundation/solidity-analyzer-linux-arm64-musl@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer-linux-arm64-musl/-/solidity-analyzer-linux-arm64-musl-0.1.1.tgz#c9e06b5d513dd3ab02a7ac069c160051675889a4"
-  integrity sha512-WJ3CE5Oek25OGE3WwzK7oaopY8xMw9Lhb0mlYuJl/maZVo+WtP36XoQTb7bW/i8aAdHW5Z+BqrHMux23pvxG3w==
+"@nomicfoundation/solidity-analyzer-linux-x64-gnu@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer-linux-x64-gnu/-/solidity-analyzer-linux-x64-gnu-0.1.2.tgz#466cda0d6e43691986c944b909fc6dbb8cfc594e"
+  integrity sha512-9dlHMAt5/2cpWyuJ9fQNOUXFB/vgSFORg1jpjX1Mh9hJ/MfZXlDdHQ+DpFCs32Zk5pxRBb07yGvSHk9/fezL+g==
 
-"@nomicfoundation/solidity-analyzer-linux-x64-gnu@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer-linux-x64-gnu/-/solidity-analyzer-linux-x64-gnu-0.1.1.tgz#8d328d16839e52571f72f2998c81e46bf320f893"
-  integrity sha512-5WN7leSr5fkUBBjE4f3wKENUy9HQStu7HmWqbtknfXkkil+eNWiBV275IOlpXku7v3uLsXTOKpnnGHJYI2qsdA==
+"@nomicfoundation/solidity-analyzer-linux-x64-musl@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer-linux-x64-musl/-/solidity-analyzer-linux-x64-musl-0.1.2.tgz#2b35826987a6e94444140ac92310baa088ee7f94"
+  integrity sha512-GzzVeeJob3lfrSlDKQw2bRJ8rBf6mEYaWY+gW0JnTDHINA0s2gPR4km5RLIj1xeZZOYz4zRw+AEeYgLRqB2NXg==
 
-"@nomicfoundation/solidity-analyzer-linux-x64-musl@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer-linux-x64-musl/-/solidity-analyzer-linux-x64-musl-0.1.1.tgz#9b49d0634b5976bb5ed1604a1e1b736f390959bb"
-  integrity sha512-KdYMkJOq0SYPQMmErv/63CwGwMm5XHenEna9X9aB8mQmhDBrYrlAOSsIPgFCUSL0hjxE3xHP65/EPXR/InD2+w==
-
-"@nomicfoundation/solidity-analyzer-win32-arm64-msvc@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer-win32-arm64-msvc/-/solidity-analyzer-win32-arm64-msvc-0.1.1.tgz#e2867af7264ebbcc3131ef837878955dd6a3676f"
-  integrity sha512-VFZASBfl4qiBYwW5xeY20exWhmv6ww9sWu/krWSesv3q5hA0o1JuzmPHR4LPN6SUZj5vcqci0O6JOL8BPw+APg==
-
-"@nomicfoundation/solidity-analyzer-win32-ia32-msvc@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer-win32-ia32-msvc/-/solidity-analyzer-win32-ia32-msvc-0.1.1.tgz#0685f78608dd516c8cdfb4896ed451317e559585"
-  integrity sha512-JnFkYuyCSA70j6Si6cS1A9Gh1aHTEb8kOTBApp/c7NRTFGNMH8eaInKlyuuiIbvYFhlXW4LicqyYuWNNq9hkpQ==
-
-"@nomicfoundation/solidity-analyzer-win32-x64-msvc@0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer-win32-x64-msvc/-/solidity-analyzer-win32-x64-msvc-0.1.1.tgz#c9a44f7108646f083b82e851486e0f6aeb785836"
-  integrity sha512-HrVJr6+WjIXGnw3Q9u6KQcbZCtk0caVWhCdFADySvRyUxJ8PnzlaP+MhwNE8oyT8OZ6ejHBRrrgjSqDCFXGirw==
+"@nomicfoundation/solidity-analyzer-win32-x64-msvc@0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer-win32-x64-msvc/-/solidity-analyzer-win32-x64-msvc-0.1.2.tgz#e6363d13b8709ca66f330562337dbc01ce8bbbd9"
+  integrity sha512-Fdjli4DCcFHb4Zgsz0uEJXZ2K7VEO+w5KVv7HmT7WO10iODdU9csC2az4jrhEsRtiR9Gfd74FlG0NYlw1BMdyA==
 
 "@nomicfoundation/solidity-analyzer@^0.1.0":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer/-/solidity-analyzer-0.1.1.tgz#f5f4d36d3f66752f59a57e7208cd856f3ddf6f2d"
-  integrity sha512-1LMtXj1puAxyFusBgUIy5pZk3073cNXYnXUpuNKFghHbIit/xZgbk0AokpUADbNm3gyD6bFWl3LRFh3dhVdREg==
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@nomicfoundation/solidity-analyzer/-/solidity-analyzer-0.1.2.tgz#8bcea7d300157bf3a770a851d9f5c5e2db34ac55"
+  integrity sha512-q4n32/FNKIhQ3zQGGw5CvPF6GTvDCpYwIf7bEY/dZTZbgfDsHyjJwURxUJf3VQuuJj+fDIFl4+KkBVbw4Ef6jA==
   optionalDependencies:
-    "@nomicfoundation/solidity-analyzer-darwin-arm64" "0.1.1"
-    "@nomicfoundation/solidity-analyzer-darwin-x64" "0.1.1"
-    "@nomicfoundation/solidity-analyzer-freebsd-x64" "0.1.1"
-    "@nomicfoundation/solidity-analyzer-linux-arm64-gnu" "0.1.1"
-    "@nomicfoundation/solidity-analyzer-linux-arm64-musl" "0.1.1"
-    "@nomicfoundation/solidity-analyzer-linux-x64-gnu" "0.1.1"
-    "@nomicfoundation/solidity-analyzer-linux-x64-musl" "0.1.1"
-    "@nomicfoundation/solidity-analyzer-win32-arm64-msvc" "0.1.1"
-    "@nomicfoundation/solidity-analyzer-win32-ia32-msvc" "0.1.1"
-    "@nomicfoundation/solidity-analyzer-win32-x64-msvc" "0.1.1"
+    "@nomicfoundation/solidity-analyzer-darwin-arm64" "0.1.2"
+    "@nomicfoundation/solidity-analyzer-darwin-x64" "0.1.2"
+    "@nomicfoundation/solidity-analyzer-linux-arm64-gnu" "0.1.2"
+    "@nomicfoundation/solidity-analyzer-linux-arm64-musl" "0.1.2"
+    "@nomicfoundation/solidity-analyzer-linux-x64-gnu" "0.1.2"
+    "@nomicfoundation/solidity-analyzer-linux-x64-musl" "0.1.2"
+    "@nomicfoundation/solidity-analyzer-win32-x64-msvc" "0.1.2"
 
 "@openzeppelin/contracts@^5.0.2":
   version "5.0.2"
   resolved "https://registry.yarnpkg.com/@openzeppelin/contracts/-/contracts-5.0.2.tgz#b1d03075e49290d06570b2fd42154d76c2a5d210"
   integrity sha512-ytPc6eLGcHHnapAZ9S+5qsdomhjo6QBHTDRRBFfTxXIpsicMhVPouPgmUPebZZZGX7vt9USA+Z+0M0dSVtSUEA==
 
-"@scure/base@~1.1.0", "@scure/base@~1.1.4", "@scure/base@~1.1.6":
+"@scure/base@~1.1.0", "@scure/base@~1.1.6":
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/@scure/base/-/base-1.1.6.tgz#8ce5d304b436e4c84f896e0550c83e4d88cb917d"
   integrity sha512-ok9AWwhcgYuGG3Zfhyqg+zwl+Wn5uE+dwC0NV/2qQkx4dABbb/bx96vWu8NSj+BNjjSjno+JRYRjle1jV08k3g==
@@ -689,16 +659,7 @@
     "@noble/secp256k1" "~1.7.0"
     "@scure/base" "~1.1.0"
 
-"@scure/bip32@1.3.3":
-  version "1.3.3"
-  resolved "https://registry.yarnpkg.com/@scure/bip32/-/bip32-1.3.3.tgz#a9624991dc8767087c57999a5d79488f48eae6c8"
-  integrity sha512-LJaN3HwRbfQK0X1xFSi0Q9amqOgzQnnDngIt+ZlsBC3Bm7/nE7K0kwshZHyaru79yIVRv/e1mQAjZyuZG6jOFQ==
-  dependencies:
-    "@noble/curves" "~1.3.0"
-    "@noble/hashes" "~1.3.2"
-    "@scure/base" "~1.1.4"
-
-"@scure/bip32@^1.4.0":
+"@scure/bip32@1.4.0", "@scure/bip32@^1.4.0":
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/@scure/bip32/-/bip32-1.4.0.tgz#4e1f1e196abedcef395b33b9674a042524e20d67"
   integrity sha512-sVUpc0Vq3tXCkDGYVWGIZTRfnvu8LoTDaev7vbwh0omSvVORONr960MQWdKqJDCReIEmTj3PAr73O3aoxz7OPg==
@@ -715,15 +676,7 @@
     "@noble/hashes" "~1.2.0"
     "@scure/base" "~1.1.0"
 
-"@scure/bip39@1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@scure/bip39/-/bip39-1.2.2.tgz#f3426813f4ced11a47489cbcf7294aa963966527"
-  integrity sha512-HYf9TUXG80beW+hGAt3TRM8wU6pQoYur9iNypTROm42dorCGmLnFe3eWjz3gOq6G62H2WRh0FCzAR1PI+29zIA==
-  dependencies:
-    "@noble/hashes" "~1.3.2"
-    "@scure/base" "~1.1.4"
-
-"@scure/bip39@^1.3.0":
+"@scure/bip39@1.3.0", "@scure/bip39@^1.3.0":
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/@scure/bip39/-/bip39-1.3.0.tgz#0f258c16823ddd00739461ac31398b4e7d6a18c3"
   integrity sha512-disdg7gHuTDZtY+ZdkmLpPCk7fxZSu3gBiEGuoC1XYxv9cGx3Z6cpTggCgW6odSOOIXCiDjuGejW+aJKCY/pIQ==
@@ -969,63 +922,64 @@
   dependencies:
     "@types/node" "*"
 
-"@vechain/sdk-core@1.0.0-beta.15":
-  version "1.0.0-beta.15"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.15.tgz#6cb51484255d3045a8fe0489bde198908208a2e6"
-  integrity sha512-BwhJ02wJ/YmZlQNtjElMlCHItM1GwbewV+7Y6zNXjm5U9N7MILSbjbFNwVJjlCFjDUdrhWJno+dehAiKMZP3Fw==
+"@vechain/sdk-core@1.0.0-beta.16":
+  version "1.0.0-beta.16"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.16.tgz#765eed0d3559b06d39484db936379bf187db81e4"
+  integrity sha512-9nmf/uqOsdbONJfkXzEYXxKV7yU9PQfUu/jM/kGUbBPrEUxqTXxK8pESIvUxT9yNh1kMfK1qySzzhB0B5T68xA==
   dependencies:
     "@ethereumjs/rlp" "^5.0.2"
     "@noble/ciphers" "^0.5.2"
     "@scure/bip32" "^1.4.0"
     "@scure/bip39" "^1.3.0"
     "@types/elliptic" "^6.4.18"
-    "@vechain/sdk-errors" "1.0.0-beta.15"
-    "@vechain/sdk-logging" "1.0.0-beta.15"
+    "@vechain/sdk-errors" "1.0.0-beta.16"
+    "@vechain/sdk-logging" "1.0.0-beta.16"
     bignumber.js "^9.1.2"
     blakejs "^1.2.1"
     elliptic "^6.5.5"
     ethers "6.13.0"
     fast-json-stable-stringify "^2.1.0"
 
-"@vechain/sdk-errors@1.0.0-beta.15":
-  version "1.0.0-beta.15"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.15.tgz#9165c621c8b38dcb880c903b0646be50416936d9"
-  integrity sha512-Z/payso5NlA7+S90CDHWiNBbS7ZvxToWCqTiCXPkgozsjAbAcPwTMnohQsERhQ9qJKokU7QipQ5nLse6s/KN6w==
+"@vechain/sdk-errors@1.0.0-beta.16":
+  version "1.0.0-beta.16"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.16.tgz#566451dd10b0378da6ba874c4eff0e6fca5c30bd"
+  integrity sha512-0BmxCiKcwrFqqaFXo1w19CmTOvOHqOoKXnDJEcEBcqYN8nEqOSOz8GimJoP8Wh1d8Lf+eCOJrFDr8usK8IU4aw==
 
-"@vechain/sdk-ethers-adapter@1.0.0-beta.15":
-  version "1.0.0-beta.15"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-ethers-adapter/-/sdk-ethers-adapter-1.0.0-beta.15.tgz#d3d92330bb88883eab074d36cf578b74953ebeb6"
-  integrity sha512-XIrL7OpX3sFQSDSnNL8j5tHWx8Gku59fDeRhLgs3dxJNgq6K5SaaAuwrVHFIbsua9th7gS+n+SodubFyKIno6A==
+"@vechain/sdk-ethers-adapter@1.0.0-beta.16":
+  version "1.0.0-beta.16"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-ethers-adapter/-/sdk-ethers-adapter-1.0.0-beta.16.tgz#16ad267184859d5fe871ed44486bceeadada42a3"
+  integrity sha512-YAyp/L390uDXwkgx5bixAYdIhcsoyW/3C/a82p60AYHroLjphoDE6Ti0KCYt9sjH08mMSaqG08AltSLSlwmHIw==
   dependencies:
-    "@vechain/sdk-core" "1.0.0-beta.15"
-    "@vechain/sdk-network" "1.0.0-beta.15"
+    "@vechain/sdk-core" "1.0.0-beta.16"
+    "@vechain/sdk-network" "1.0.0-beta.16"
 
-"@vechain/sdk-hardhat-plugin@1.0.0-beta.15":
-  version "1.0.0-beta.15"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-hardhat-plugin/-/sdk-hardhat-plugin-1.0.0-beta.15.tgz#14bf4a381d4b58f7e5d4b0f4f198f8d3b20b8d80"
-  integrity sha512-LN1gdWClU0+PczQzi1XLUun0ZBLw6U58yjPn2nNAs4mzDnpR0P/gMRQsUkZArJRa1BzoOYjiRyEqYJtaVy6fBQ==
+"@vechain/sdk-hardhat-plugin@1.0.0-beta.16":
+  version "1.0.0-beta.16"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-hardhat-plugin/-/sdk-hardhat-plugin-1.0.0-beta.16.tgz#ca5a05f616cbbd9c97966ac0dbf6bb46f5452432"
+  integrity sha512-kD+Hbf0M9dkRr1SMjViKRsNiyIQNS1Y5YFsrhMXpo6tvNWLaismxJIB/pRY05c5l200TwTlkWEsm8vg/m7mK1w==
   dependencies:
-    "@vechain/sdk-ethers-adapter" "1.0.0-beta.15"
-    "@vechain/sdk-network" "1.0.0-beta.15"
+    "@vechain/sdk-ethers-adapter" "1.0.0-beta.16"
+    "@vechain/sdk-network" "1.0.0-beta.16"
 
-"@vechain/sdk-logging@1.0.0-beta.15":
-  version "1.0.0-beta.15"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-beta.15.tgz#138cd26063912deed2487421f6879658c9ab05d9"
-  integrity sha512-L7CnWKmhXzhwD4ekerSBK3biaPt69xP78HxSYP1Qm/YZo9p4ypMdgRtw863jXAdox7v0dRWOIqxaxBPuCnWEdw==
+"@vechain/sdk-logging@1.0.0-beta.16":
+  version "1.0.0-beta.16"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-beta.16.tgz#4d057b7c072fd623ea014cfc5f689881488e2574"
+  integrity sha512-OaTs8j/OrsJYv+Z1BhyDrfrCN64fydklOBsgVS+r8yYjPXNfWw+w/A8YZesYwWYfZBIiOfTJTj6MXpoiHs8pow==
   dependencies:
-    "@vechain/sdk-errors" "1.0.0-beta.15"
+    "@vechain/sdk-errors" "1.0.0-beta.16"
 
-"@vechain/sdk-network@1.0.0-beta.15":
-  version "1.0.0-beta.15"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.15.tgz#c239ea78fb2e30903e627bac26fae6ed6152b0aa"
-  integrity sha512-ohLLcqMZrpbAJqakhqLYVTptXvLFTW9tUb0/5UG38SAF59nB0MaDaw5/r6fJZYUG7cSL1Zl5H+lgu7/FjjqENQ==
+"@vechain/sdk-network@1.0.0-beta.16":
+  version "1.0.0-beta.16"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.16.tgz#9feda1cd92fe4fd3fdd3bf539fc4fd8a03332484"
+  integrity sha512-ZSxZ5M1tpugTQsU0gJd1dhgv0J16CRU+SAmwpm+DCS4PLqXBazo7pEWV0dv7mQnLV245/eRtkUQHvMKYI4/0pQ==
   dependencies:
     "@types/ws" "^8.5.10"
-    "@vechain/sdk-core" "1.0.0-beta.15"
-    "@vechain/sdk-errors" "1.0.0-beta.15"
-    "@vechain/sdk-logging" "1.0.0-beta.15"
+    "@vechain/sdk-core" "1.0.0-beta.16"
+    "@vechain/sdk-errors" "1.0.0-beta.16"
+    "@vechain/sdk-logging" "1.0.0-beta.16"
     abitype "^1.0.2"
     axios "^1.7.2"
+    isomorphic-ws "^5.0.0"
 
 abbrev@1:
   version "1.1.1"
@@ -1888,14 +1842,14 @@ ethereum-cryptography@^1.0.3:
     "@scure/bip39" "1.1.1"
 
 ethereum-cryptography@^2.0.0, ethereum-cryptography@^2.1.2:
-  version "2.1.3"
-  resolved "https://registry.yarnpkg.com/ethereum-cryptography/-/ethereum-cryptography-2.1.3.tgz#1352270ed3b339fe25af5ceeadcf1b9c8e30768a"
-  integrity sha512-BlwbIL7/P45W8FGW2r7LGuvoEZ+7PWsniMvQ4p5s2xCyw9tmaDlpfsN9HjAucbF+t/qpVHwZUisgfK24TCW8aA==
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/ethereum-cryptography/-/ethereum-cryptography-2.2.0.tgz#06e2d9c0d89f98ffc6a83818f55bf85afecd50dc"
+  integrity sha512-hsm9JhfytIf8QME/3B7j4bc8V+VdTU+Vas1aJlvIS96ffoNAosudXvGoEvWmc7QZYdkC8mrMJz9r0fcbw7GyCA==
   dependencies:
-    "@noble/curves" "1.3.0"
-    "@noble/hashes" "1.3.3"
-    "@scure/bip32" "1.3.3"
-    "@scure/bip39" "1.2.2"
+    "@noble/curves" "1.4.0"
+    "@noble/hashes" "1.4.0"
+    "@scure/bip32" "1.4.0"
+    "@scure/bip39" "1.3.0"
 
 ethereumjs-abi@^0.6.8:
   version "0.6.8"
@@ -2600,6 +2554,11 @@ isexe@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
   integrity sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==
+
+isomorphic-ws@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/isomorphic-ws/-/isomorphic-ws-5.0.0.tgz#e5529148912ecb9b451b46ed44d53dae1ce04bbf"
+  integrity sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==
 
 js-sha3@0.8.0, js-sha3@^0.8.0:
   version "0.8.0"
@@ -3778,9 +3737,9 @@ typical@^5.2.0:
   integrity sha512-dvdQgNDNJo+8B2uBQoqdb11eUCE1JQXhvjC/CZtgvZseVd5TYMXnq0+vuUemXbd/Se29cTaUuPX3YIc2xgbvIg==
 
 uglify-js@^3.1.4:
-  version "3.17.4"
-  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.17.4.tgz#61678cf5fa3f5b7eb789bb345df29afb8257c22c"
-  integrity sha512-T9q82TJI9e/C1TAxYvfb16xO120tMVFZrGA3f9/P4424DNu6ypK103y0GPFVa17yotwSyZW5iYXgjYHkGrJW/g==
+  version "3.18.0"
+  resolved "https://registry.yarnpkg.com/uglify-js/-/uglify-js-3.18.0.tgz#73b576a7e8fda63d2831e293aeead73e0a270deb"
+  integrity sha512-SyVVbcNBCk0dzr9XL/R/ySrmYf0s372K6/hFklzgcp2lBFyXtw4I7BOdDjlLhE1aVqaI/SHWXWmYdlZxuyF38A==
 
 undici-types@~5.26.4:
   version "5.26.5"
