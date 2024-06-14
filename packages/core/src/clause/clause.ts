@@ -1,5 +1,9 @@
 import { abi, coder, type FunctionFragment } from '../abi';
-import { type ClauseOptions, type TransactionClause } from '../transaction';
+import {
+    type ClauseOptions,
+    type ExtendedTransactionClause,
+    type TransactionClause
+} from '../transaction';
 import type { DeployParams } from './types';
 import { ERC721_ABI, VIP180_ABI } from '../utils';
 import { assert, buildError, DATA } from '@vechain/sdk-errors';
@@ -18,7 +22,7 @@ function deployContract(
     contractBytecode: string,
     deployParams?: DeployParams,
     clauseOptions?: ClauseOptions
-): TransactionClause {
+): TransactionClause | ExtendedTransactionClause {
     let encodedParams = '';
     if (deployParams != null) {
         encodedParams = abi
@@ -26,12 +30,20 @@ function deployContract(
             .replace('0x', '');
     }
 
-    return {
+    const transactionClause: TransactionClause = {
         to: null,
         value: 0,
-        data: contractBytecode + encodedParams,
-        comment: clauseOptions?.comment
+        data: contractBytecode + encodedParams
     };
+
+    if (clauseOptions?.comment !== undefined) {
+        return {
+            ...transactionClause,
+            comment: clauseOptions.comment
+        } satisfies ExtendedTransactionClause;
+    } else {
+        return transactionClause;
+    }
 }
 
 /**
@@ -53,13 +65,25 @@ function functionInteraction(
     args: unknown[],
     value = 0,
     clauseOptions?: ClauseOptions
-): TransactionClause {
-    return {
+): TransactionClause | ExtendedTransactionClause {
+    const transactionClause: TransactionClause = {
         to: contractAddress,
         value,
-        data: new abi.Function(functionFragment).encodeInput(args),
-        comment: clauseOptions?.comment
+        data: new abi.Function(functionFragment).encodeInput(args)
     };
+
+    if (clauseOptions !== undefined) {
+        return {
+            ...transactionClause,
+            comment: clauseOptions.comment,
+            abi:
+                clauseOptions.includeABI === true
+                    ? functionFragment.format('json')
+                    : undefined
+        } satisfies ExtendedTransactionClause;
+    } else {
+        return transactionClause;
+    }
 }
 
 /**
@@ -80,7 +104,7 @@ function transferToken(
     recipientAddress: string,
     amount: number | bigint | string,
     clauseOptions?: ClauseOptions
-): TransactionClause {
+): TransactionClause | ExtendedTransactionClause {
     try {
         return functionInteraction(
             tokenAddress,
@@ -114,7 +138,7 @@ function transferVET(
     recipientAddress: string,
     amount: number | bigint | string,
     clauseOptions?: ClauseOptions
-): TransactionClause {
+): TransactionClause | ExtendedTransactionClause {
     try {
         const bnAmount = BigInt(amount);
 
@@ -126,12 +150,20 @@ function transferVET(
             `Invalid 'amount' parameter. Expected a positive amount but received ${amount}.`
         );
 
-        return {
+        const transactionClause: TransactionClause = {
             to: recipientAddress,
             value: `0x${BigInt(amount).toString(16)}`,
-            data: '0x',
-            comment: clauseOptions?.comment
+            data: '0x'
         };
+
+        if (clauseOptions?.comment !== undefined) {
+            return {
+                ...transactionClause,
+                comment: clauseOptions.comment
+            } satisfies ExtendedTransactionClause;
+        } else {
+            return transactionClause;
+        }
     } catch (error) {
         throw buildError(
             'transferVET',
@@ -162,7 +194,7 @@ function transferNFT(
     recipientAddress: string,
     tokenId: string,
     clauseOptions?: ClauseOptions
-): TransactionClause {
+): TransactionClause | ExtendedTransactionClause {
     assert(
         'transferNFT',
         tokenId !== '',
@@ -177,11 +209,13 @@ function transferNFT(
         `Invalid 'contractAddress' parameter. Expected a contract address but received ${contractAddress}.`
     );
 
+    const functionFragment = coder
+        .createInterface(ERC721_ABI)
+        .getFunction('transferFrom') as FunctionFragment;
+
     return functionInteraction(
         contractAddress,
-        coder
-            .createInterface(ERC721_ABI)
-            .getFunction('transferFrom') as FunctionFragment,
+        functionFragment,
         [senderAddress, recipientAddress, tokenId],
         undefined,
         clauseOptions

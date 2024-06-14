@@ -60,7 +60,8 @@ function getReadProxy<TAbi extends Abi>(
                                 ? await contract.getSigner()?.getAddress()
                                 : undefined,
                         ...contract.getContractReadOptions(),
-                        comment: clauseComment
+                        comment: clauseComment,
+                        includeABI: true
                     }
                 )) as ContractCallResult;
             };
@@ -123,7 +124,8 @@ function getTransactProxy<TAbi extends Abi>(
                         ...transactionOptions,
                         value:
                             transactionOptions.value ?? transactionValue ?? 0,
-                        comment: clauseComment
+                        comment: clauseComment,
+                        includeABI: true
                     }
                 );
             };
@@ -188,7 +190,8 @@ function getClauseProxy<TAbi extends Abi>(
                         args,
                         transactionOptions.value ?? transactionValue ?? 0,
                         {
-                            comment: clauseComment
+                            comment: clauseComment,
+                            includeABI: true
                         }
                     ),
                     functionFragment: contract.getFunctionFragment(prop)

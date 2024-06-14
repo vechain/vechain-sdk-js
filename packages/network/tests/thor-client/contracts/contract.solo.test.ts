@@ -478,7 +478,9 @@ describe('ThorClient - Contracts', () => {
         );
 
         const clauseSet1 = loadedContract.clause.set(
-            { comment: 'set the value in the contract to 123' },
+            {
+                comment: 'set the value in the contract to 123'
+            },
             123n
         );
 
@@ -493,8 +495,14 @@ describe('ThorClient - Contracts', () => {
         expect(clauseSet1.clause.comment).toBe(
             'set the value in the contract to 123'
         );
+        expect(clauseSet1.clause.abi).toEqual(
+            '{"type":"function","name":"set","constant":false,"payable":false,"inputs":[{"type":"uint256","name":"x"}],"outputs":[]}'
+        );
         expect(clauseSet2.clause.comment).toBe(
             'set the value in the contract to 321'
+        );
+        expect(clauseSet2.clause.abi).toEqual(
+            '{"type":"function","name":"set","constant":false,"payable":false,"inputs":[{"type":"uint256","name":"x"}],"outputs":[]}'
         );
     }, 10000);
 
