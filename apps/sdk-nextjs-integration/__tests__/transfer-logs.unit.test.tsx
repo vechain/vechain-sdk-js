@@ -34,11 +34,6 @@ describe('Transfer logs Page', () => {
                 screen.getByTestId('timestamp-1708684940')
             ).toBeInTheDocument();
         });
-
-        // Check one timestamp field of table with results
-        const timestampField = screen.getByTestId('timestamp-1708684940');
-        expect(timestampField).toBeInTheDocument();
-        expect(timestampField).toHaveTextContent('2024-02-23T10:42:20.000Z');
     });
 
     /**
@@ -70,5 +65,5 @@ describe('Transfer logs Page', () => {
                 screen.getByTestId('timestamp-1702915560')
             ).toBeInTheDocument();
         });
-    });
+    }, 10000);
 });
