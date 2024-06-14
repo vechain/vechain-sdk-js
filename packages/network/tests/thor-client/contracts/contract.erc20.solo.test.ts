@@ -310,14 +310,17 @@ describe('ThorClient - ERC20 Contracts', () => {
             await thorSoloClient.contracts.executeMultipleClausesTransaction(
                 [
                     contract.clause.transfer(
+                        { comment: 'Transfer 1000 tokens' },
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
                         1000n
                     ),
                     contract.clause.transfer(
+                        { comment: 'Transfer 1000 tokens' },
                         TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
                         1000n
                     ),
                     contract.clause.transfer(
+                        { comment: 'Transfer 3000 tokens' },
                         TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
                         3000n
                     )
