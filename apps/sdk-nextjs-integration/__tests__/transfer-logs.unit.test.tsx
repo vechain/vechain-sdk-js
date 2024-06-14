@@ -13,7 +13,7 @@ describe('Transfer logs Page', () => {
      * Render the page and check if the components are rendered.
      * We also check the default values.
      */
-    it('Should be able to render the page with default values', async () => {
+    it('Should be able to render the page with default values', () => {
         // Render the page
         render(<TransferLogs />);
 
@@ -27,13 +27,6 @@ describe('Transfer logs Page', () => {
         expect(addressInput).toHaveValue(
             '0xc3bE339D3D20abc1B731B320959A96A08D479583'
         );
-
-        // Wait for the API call
-        // await waitFor(() => {
-        //     expect(
-        //         screen.getByTestId('timestamp-1708684940')
-        //     ).toBeInTheDocument();
-        // });
     });
 
     /**
@@ -58,12 +51,5 @@ describe('Transfer logs Page', () => {
         expect(addressInput).toHaveValue(
             '0x995711ADca070C8f6cC9ca98A5B9C5A99b8350b1'
         );
-
-        // Wait for the API call, new timestamp field of table with results
-        // await waitFor(() => {
-        //     expect(
-        //         screen.getByTestId('timestamp-1702915560')
-        //     ).toBeInTheDocument();
-        // });
-    }, 10000);
+    });
 });
