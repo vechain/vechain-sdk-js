@@ -1,39 +1,103 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Hex, Hex0x } from '../utils';
 import { addressUtils } from '../address';
-import { assert, buildError, CERTIFICATE } from '@vechain/sdk-errors';
-import { blake2b256 } from '../hash';
+import { assert, CERTIFICATE } from '@vechain/sdk-errors';
+import { blake2b256, NORMALIZATION_FORM_CANONICAL_COMPOSITION } from '../hash';
 import { hexToBytes } from '@noble/curves/abstract/utils';
 import { secp256k1 } from '../secp256k1';
 import { type Certificate } from './types';
 
 /**
- * Encodes a certificate object to a JSON string.
+ * Used to encode strings into UInt8Array
  *
- * The JSON representation of the signer's address is represented according the
- * [EIP/ERC-55: Mixed-case checksum address encoding](https://eips.ethereum.org/EIPS/eip-55).
- *
- * Secure audit function.
- * - {@link addressUtils.toERC55Checksum}
+ * @see {https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder TextEncoder}
+ */
+const TEXT_ENCODER = new TextEncoder();
+
+/**
+ * Encodes a certificate object to an array of bytes of its JSON representation after the following
+ * normalization operations are applied:
+ * * only the properties defined in the {@link Certificate} interface are evaluated;
+ * * the properties are sorted in ascending alphabetic order;
+ * * the key/value properties are delimited with `"`;
+ * * any not meaningful blank characters are ignored;
+ * * the `signer` property is a hexadecimal address represented lowercase to back compatible with the certificates
+ *   not implementing the [EIP/ERC-55: Mixed-case checksum address encoding](https://eips.ethereum.org/EIPS/eip-55);
+ * * the UTF-8 code is normalized according the
+ *   [normalization form for canonical composition](https://en.wikipedia.org/wiki/Unicode_equivalence#Normal_forms)
  *
  * @param {Certificate} cert - The certificate object to encode.
- * @return {string} - The encoded JSON string.
+ * @return {Uint8Array} - The byte encoded certificate.
  *
- * @throws {InvalidAddressError} if `address` is not a valid hexadecimal
- * representation 40 digits long, prefixed with `0x`.
  *
+ * @see {NORMALIZATION_FORM_CANONICAL_COMPOSITION}
+ * @see {TEXT_ENCODER}
+ * @see {https://www.npmjs.com/package/fast-json-stable-stringify fastJsonStableStringify}
+ * @see {sign}
  * @see {verify}
  */
-function encode(cert: Certificate): string {
-    return fastJsonStableStringify({
-        ...cert,
-        signer: addressUtils.toERC55Checksum(cert.signer),
-        signature: cert.signature
-    });
+function encode(cert: Certificate): Uint8Array {
+    return TEXT_ENCODER.encode(
+        // The following `fastJsonStableStringify` strips blank chars and serialize alphabetical sorted properties.
+        fastJsonStableStringify({
+            purpose: cert.purpose,
+            payload: {
+                type: cert.payload.type,
+                content: cert.payload.content
+            },
+            domain: cert.domain,
+            timestamp: cert.timestamp,
+            signer: cert.signer.toLowerCase()
+        }).normalize(NORMALIZATION_FORM_CANONICAL_COMPOSITION)
+    );
 }
 
 /**
- * Matches a certificate against a given address and signature.
+ * Signs a certificate using a private key.
+ *
+ * The signature is computed encoding the certificate according the following normalization rules:
+ * * only the properties defined in the {@link Certificate} interface are evaluated;
+ * * the properties are sorted in ascending alphabetic order;
+ * * the key/value properties are delimited with `"`;
+ * * any not meaningful blank characters are ignored;
+ * * the `signer` property is a hexadecimal address represented lowercase to back compatible with the certificates
+ *   not implementing the [EIP/ERC-55: Mixed-case checksum address encoding](https://eips.ethereum.org/EIPS/eip-55);
+ * * the UTF-8 code is normalized according the
+ *   [normalization form for canonical composition](https://en.wikipedia.org/wiki/Unicode_equivalence#Normal_forms).
+ *
+ * The [BLAKE2](https://en.wikipedia.org/wiki/BLAKE_(hash_function)#BLAKE2) hash is computed from the encoded
+ * certificate, then the hash is signed using the [SECP256K1](https://en.bitcoin.it/wiki/Secp256k1) parameters.
+ *
+ * [EIP/ERC-55: Mixed-case checksum address encoding](https://eips.ethereum.org/EIPS/eip-55).
+ * is supported.
+ *
+ * Secure audit function.
+ * - {@link blake2b256};
+ * - {@link secp256k1.sign}.
+ *
+ * @param {Certificate} cert - The certificate to be signed.
+ *                             Any instance extending the {@link Certificate} interface is supported.
+ * @param {Uint8Array} privateKey - The private key used for signing.
+ *
+ * @returns {Certificate} - A new instance of the certificate with the signature added.
+ *
+ * @throws {InvalidSecp256k1PrivateKeyError} - If the private key is invalid.
+ *
+ */
+function sign(cert: Certificate, privateKey: Uint8Array): Certificate {
+    return {
+        ...cert,
+        signature: Hex0x.of(
+            secp256k1.sign(blake2b256(encode(cert)), privateKey)
+        )
+    };
+}
+
+/**
+ * Verifies the validity of a certificate, throwing an error if the certificate is not valid.
+ *
+ * The certificate is valid when the signer's address computed from the signature
+ * matches with the property {@link Certificate.signer}.
  *
  * This method is insensitive to the case representation of the signer's address.
  *
@@ -44,84 +108,17 @@ function encode(cert: Certificate): string {
  * - {@link blake2b256};
  * - {@link secp256k1.recover}.
  *
- * @param {Uint8Array} cert - The certificate to match. computed from the certificate without the `signature` property.
- * @param {string} address - The address to match against, optionally prefixed with `0x`.
- * @param {string} signature - The signature to verify expressed in hexadecimal form, optionally prefixed with `0x`.
- *
- * @returns {void} - No return value.
- *
- * @throws CertificateInvalidSignatureFormatError - If  the certificate signature's is not a valid hexadecimal expression prefixed with `0x`.
- * @throws CertificateNotSignedError - If the certificate is not signed.
- * @throws CertificateInvalidSignerError - If the certificate's signature's doesn't match with the signer;s public key.
- *
- */
-function match(cert: Uint8Array, address: string, signature: string): void {
-    // Invalid hexadecimal as signature.
-    assert(
-        'certificate.match',
-        Hex0x.isValid(signature, true, true),
-        CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT,
-        'Verification failed: signature format is invalid.',
-        { signature }
-    );
-    try {
-        // The `encode` method could throw `InvalidAddressError`.
-        const signingHash = blake2b256(cert, 'buffer');
-        const signingPublicKey = secp256k1.recover(
-            signingHash,
-            hexToBytes(Hex.canon(signature))
-        );
-        const signingAddress = addressUtils.fromPublicKey(signingPublicKey);
-        // Signature does not match with the signer's public key.
-        assert(
-            'certificate.match',
-            signingAddress.toLowerCase() === address.toLowerCase(),
-            CERTIFICATE.CERTIFICATE_INVALID_SIGNER,
-            "Verification failed: signature does not correspond to the signer's public key.",
-            { pubKey: signingPublicKey, cert }
-        );
-    } catch (e) {
-        throw buildError(
-            'certificate.match',
-            CERTIFICATE.CERTIFICATE_INVALID_SIGNER,
-            (e as Error).message,
-            { address, certificate: cert, signature },
-            e
-        );
-    }
-}
-
-/**
- * Verifies the validity of a certificate.
- *
- * This method is insensitive to the case representation of the signer's address.
- *
- * [EIP/ERC-55: Mixed-case checksum address encoding](https://eips.ethereum.org/EIPS/eip-55).
- * is supported.
- *
- * Secure audit function.
- * - {@link certificate.encode};
- * - {@link match}.
- *
  * @param {Certificate} cert - The certificate to verify.
+ *                             Any instance extending the {@link Certificate} interface is supported.
  *
- * @returns {void} - No return value.
- *
- * @throws CertificateInvalidSignatureFormatError - If  the certificate signature's is not a valid hexadecimal expression prefixed with `0x`.
- * @throws CertificateNotSignedError - If the certificate is not signed.
- * @throws CertificateInvalidSignerError - If the certificate's signature's doesn't match with the signer;s public key.
- *
- * @remark This methods {@link certificate.encode} the `cert` instance
- * to extract its signer 's address and compare it with the address computed from the public key recovered from the
- * certificate using the
- * [BLAKE2](https://en.wikipedia.org/wiki/BLAKE_(hash_function)#BLAKE2)
- * hash of its JSON encoded representation.
+ * @throws {Error} CERTIFICATE.CERTIFICATE_NOT_SIGNED - If the certificate's signature is missing.
+ * @throws {Error} CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT - If the signature format is invalid.
+ * @throws {Error} CERTIFICATE.CERTIFICATE_INVALID_SIGNER - If the signature does not correspond to the signer's public key.
  *
  * @see {encode}
- * @see {match}
  */
 function verify(cert: Certificate): void {
-    // No signature.
+    // The certificate must be signed.
     assert(
         'certificate.verify',
         cert.signature !== undefined && cert.signature !== null,
@@ -137,26 +134,23 @@ function verify(cert: Certificate): void {
         'Verification failed: signature format is invalid.',
         { cert }
     );
-    try {
-        // Encode the certificate without the signature.
-        const encoded = new TextEncoder().encode(
-            certificate
-                .encode({ ...cert, signature: undefined })
-                .normalize('NFC')
-        );
-        match(new Uint8Array(encoded), cert.signer, cert.signature as string);
-    } catch (e) {
-        throw buildError(
-            'certificate.verify',
-            CERTIFICATE.CERTIFICATE_INVALID_SIGNER,
-            (e as Error).message,
-            { cert },
-            e
-        );
-    }
+    // If the signature is not a string, an exception is thrown above.
+    const sign = hexToBytes(Hex.canon(cert.signature as string));
+    const hash = blake2b256(encode(cert));
+    // The signer address is compared in lowercase to avoid
+    const signer = addressUtils
+        .fromPublicKey(secp256k1.recover(hash, sign))
+        .toLowerCase();
+    assert(
+        'certificate.verify',
+        signer === cert.signer?.toLowerCase(),
+        CERTIFICATE.CERTIFICATE_INVALID_SIGNER,
+        "Verification failed: signature does not correspond to the signer's public key.",
+        { cert }
+    );
 }
 
 /**
- * Exposes the certificate encoding and verification functions.
+ * Exposes the certificate sign and verification functions.
  */
-export const certificate = { encode, match, verify };
+export const certificate = { encode, sign, verify };

@@ -162,4 +162,8 @@ function blake2b256OfString(txt: string): Uint8Array {
     );
 }
 
-export { blake2b256, blake2b256OfHex };
+export {
+    NORMALIZATION_FORM_CANONICAL_COMPOSITION,
+    blake2b256,
+    blake2b256OfHex
+};
