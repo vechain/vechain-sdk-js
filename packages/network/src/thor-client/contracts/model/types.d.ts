@@ -178,11 +178,19 @@ interface ClauseComment {
 }
 
 /**
+ * Represents the revision of a transaction clause.
+ */
+interface ClauseRevision {
+    revision: string;
+}
+
+/**
  * Represents additional options for a transaction clause.
  */
 interface ClauseAdditionalOptions {
     value: number | undefined;
     comment: string | undefined;
+    revision: string | undefined;
 }
 
 export type {
@@ -195,5 +203,6 @@ export type {
     ContractFunctionCriteria,
     TransactionValue,
     ClauseComment,
+    ClauseRevision,
     ClauseAdditionalOptions
 };
