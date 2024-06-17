@@ -167,15 +167,18 @@ const transferVETtestCases = [
     {
         recipientAddress,
         amount: 1,
+        clauseOptions: { comment: 'transferring 1 VET' },
         expected: {
             to: recipientAddress,
             value: '0x1',
-            data: '0x'
+            data: '0x',
+            comment: 'transferring 1 VET'
         }
     },
     {
         recipientAddress,
         amount: '1',
+        clauseOptions: undefined,
         expected: {
             to: recipientAddress,
             value: '0x1',
@@ -185,6 +188,7 @@ const transferVETtestCases = [
     {
         recipientAddress,
         amount: unitsUtils.parseVET('1'),
+        clauseOptions: undefined,
         expected: {
             to: recipientAddress,
             value: '0xde0b6b3a7640000',
@@ -194,6 +198,7 @@ const transferVETtestCases = [
     {
         recipientAddress,
         amount: unitsUtils.parseVET('500000000'),
+        clauseOptions: undefined,
         expected: {
             to: recipientAddress,
             value: '0x19d971e4fe8401e74000000',
@@ -203,6 +208,7 @@ const transferVETtestCases = [
     {
         recipientAddress,
         amount: Number(unitsUtils.parseUnits('1', 2)),
+        clauseOptions: undefined,
         expected: {
             to: recipientAddress,
             value: '0x64',

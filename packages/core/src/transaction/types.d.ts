@@ -23,6 +23,36 @@ interface TransactionClause {
 }
 
 /**
+ * Extended type for transaction clause that includes wallet related properties.
+ */
+interface ExtendedTransactionClause extends TransactionClause {
+    /**
+     * Optional comment for the clause, helpful for displaying what the clause is doing.
+     */
+    comment?: string;
+
+    /**
+     * Optional ABI for the contract method invocation.
+     */
+    abi?: string;
+}
+
+/**
+ * Options for creating a clause.
+ */
+interface ClauseOptions {
+    /**
+     * Optional comment for the clause, helpful for displaying what the clause is doing.
+     */
+    comment?: string;
+
+    /**
+     * Optional ABI for the contract method invocation.
+     */
+    includeABI?: boolean;
+}
+
+/**
  * Type for transaction body.
  */
 interface TransactionBody {
@@ -110,4 +140,9 @@ interface TransactionBody {
     };
 }
 
-export type { TransactionBody, TransactionClause };
+export type {
+    TransactionBody,
+    TransactionClause,
+    ExtendedTransactionClause,
+    ClauseOptions
+};

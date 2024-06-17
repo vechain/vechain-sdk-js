@@ -87,6 +87,27 @@ const clause = clauseBuilder.functionInteraction(
 
 3. **Function Invocation**: In this example, the function `setValue` within the smart contract is invoked with a parameter of `123`. This action demonstrates how to interact with a function, altering the state within the smart contract based on the function's logic.
 
+## Commenting Contract Invocations
+
+### Overview
+
+When using the SDK with wallets, adding comments to operations can be beneficial. These comments inform users who are signing transactions about the nature and purpose of the transactions they are authorizing.
+
+Below is an example of how to add comments to operations:
+
+```typescript { name=contract-transfer-erc20-token, category=example }
+// Transfer tokens to another address with a comment
+
+const decimals = await contract.read.decimals();
+
+await contract.transact.transfer(
+    { comment: 'Transferring 100 ERC20 tokens' },
+    '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+    unitsUtils.parseUnits('100', decimals[0] as bigint)
+);
+```
+
+
 ### Conclusion
 
 This section highlights the methodology for constructing a clause that facilitates interaction with a deployed smart contract's functions on the VeChain network, thereby enabling developers to manipulate and query smart contract states efficiently.

@@ -1,4 +1,4 @@
-import { VIP180_ABI } from '@vechain/sdk-core';
+import { unitsUtils, VIP180_ABI } from '@vechain/sdk-core';
 import {
     type Contract,
     ProviderInternalBaseWallet,
@@ -67,3 +67,17 @@ const transactionReceiptTransfer =
 expect(transactionReceiptTransfer.reverted).toEqual(false);
 
 // END_SNIPPET: ERC20FunctionCallSnippet
+
+// START_SNIPPET: TransferCommentSnippet
+
+// Transfer tokens to another address with a comment
+
+const decimals = await contract.read.decimals();
+
+await contract.transact.transfer(
+    { comment: 'Transferring 100 ERC20 tokens' },
+    '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+    unitsUtils.parseUnits('100', decimals[0] as bigint)
+);
+
+// END_SNIPPET: TransferCommentSnippet
