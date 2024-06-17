@@ -462,6 +462,51 @@ describe('ThorClient - Contracts', () => {
     });
 
     /**
+     * Test case for loading a deployed contract and trying to get not existing functions and events.
+     */
+    test('load a deployed contract and create clauses with comments', async () => {
+        // Create a contract factory that is already deploying the example contract
+        const factory = await createExampleContractFactory();
+
+        // Wait for the deployment to complete and obtain the contract instance
+        const contract = await factory.waitForDeployment();
+
+        // Load the deployed contract using the contract address, ABI and private key
+        const loadedContract = thorSoloClient.contracts.load(
+            contract.address,
+            deployedContractAbi
+        );
+
+        const clauseSet1 = loadedContract.clause.set(
+            {
+                comment: 'set the value in the contract to 123'
+            },
+            123n
+        );
+
+        const clauseSet2 = loadedContract.clause.set(
+            { comment: 'set the value in the contract to 321' },
+            321n
+        );
+
+        expect(clauseSet1).toBeDefined();
+        expect(clauseSet2).toBeDefined();
+
+        expect(clauseSet1.clause.comment).toBe(
+            'set the value in the contract to 123'
+        );
+        expect(clauseSet1.clause.abi).toEqual(
+            '{"type":"function","name":"set","constant":false,"payable":false,"inputs":[{"type":"uint256","name":"x"}],"outputs":[]}'
+        );
+        expect(clauseSet2.clause.comment).toBe(
+            'set the value in the contract to 321'
+        );
+        expect(clauseSet2.clause.abi).toEqual(
+            '{"type":"function","name":"set","constant":false,"payable":false,"inputs":[{"type":"uint256","name":"x"}],"outputs":[]}'
+        );
+    }, 10000);
+
+    /**
      * Tests the `TestingContract` functions.
      *
      * This test iterates over an array of test cases, each representing a different function call

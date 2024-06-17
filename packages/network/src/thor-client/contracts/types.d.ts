@@ -5,7 +5,8 @@ import type {
 } from '../transactions';
 
 import type {
-    TransactionClause,
+    ClauseOptions,
+    ExtendedTransactionClause,
     vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
 
@@ -23,12 +24,13 @@ declare module 'abitype' {
 type ContractTransactionOptions = {
     value?: number;
     signTransactionOptions?: SignTransactionOptions;
-} & TransactionBodyOptions;
+} & TransactionBodyOptions &
+    ClauseOptions;
 
 /**
  * Defines the options for executing a contract call within a blockchain environment.
  */
-type ContractCallOptions = SimulateTransactionOptions;
+type ContractCallOptions = SimulateTransactionOptions & ClauseOptions;
 
 /* --------- Input types End --------- */
 
@@ -41,7 +43,7 @@ type ContractCallResult = vechain_sdk_core_ethers.Result;
  * Represents a contract clause, which includes the clause and the corresponding function fragment.
  */
 interface ContractClause {
-    clause: TransactionClause;
+    clause: ExtendedTransactionClause;
     functionFragment: vechain_sdk_core_ethers.FunctionFragment;
 }
 

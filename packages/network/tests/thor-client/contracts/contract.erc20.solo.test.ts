@@ -135,6 +135,43 @@ describe('ThorClient - ERC20 Contracts', () => {
         expect(balanceOfResult).toEqual([BigInt(1000)]);
     }, 10000); // Set a timeout of 10000ms for this test
 
+    test('Execute ERC20 contract operations with comments', async () => {
+        // Deploy the ERC20 contract
+        let factory = thorSoloClient.contracts.createContractFactory(
+            deployedERC20Abi,
+            erc20ContractBytecode,
+            signer
+        );
+
+        factory = await factory.startDeployment();
+
+        const contract = await factory.waitForDeployment();
+
+        // Execute a 'transfer' transaction on the deployed contract,
+        // transferring a specified amount of tokens
+        const transferResult = await contract.transact.transfer(
+            { value: 0, comment: 'Transfer 1000 tokens' },
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+            1000n
+        );
+
+        // Wait for the transfer transaction to complete and obtain its receipt
+        const transactionReceiptTransfer =
+            (await transferResult.wait()) as TransactionReceipt;
+
+        // Verify that the transfer transaction did not revert
+        expect(transactionReceiptTransfer.reverted).toBe(false);
+
+        // Execute a 'balanceOf' call on the contract to check the balance of the receiver
+        const balanceOfResult = await contract.read.balanceOf(
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+        );
+
+        // Ensure that the transfer transaction was successful and the balance is as expected
+        expect(transactionReceiptTransfer.reverted).toBe(false);
+        expect(balanceOfResult).toEqual([BigInt(1000)]);
+    }, 10000); // Set a timeout of 10000ms for this test
+
     /**
      * Test transaction execution with delegation.
      */
@@ -273,14 +310,17 @@ describe('ThorClient - ERC20 Contracts', () => {
             await thorSoloClient.contracts.executeMultipleClausesTransaction(
                 [
                     contract.clause.transfer(
+                        { comment: 'Transfer 1000 tokens' },
                         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
                         1000n
                     ),
                     contract.clause.transfer(
+                        { comment: 'Transfer 1000 tokens' },
                         TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
                         1000n
                     ),
                     contract.clause.transfer(
+                        { comment: 'Transfer 3000 tokens' },
                         TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
                         3000n
                     )
