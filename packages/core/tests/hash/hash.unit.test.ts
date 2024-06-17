@@ -5,7 +5,7 @@ import { InvalidDataReturnTypeError } from '@vechain/sdk-errors';
 import { Buffer } from 'buffer';
 import { ZERO_BYTES } from '../../src';
 
-import { cert1 } from '../certificate/fixture';
+import { cert } from '../certificate/fixture';
 import { bytesToHex } from '@noble/ciphers/utils';
 
 /**
@@ -14,7 +14,7 @@ import { bytesToHex } from '@noble/ciphers/utils';
  */
 describe('Hash', () => {
     test('thordevkit', () => {
-        const json = JSON.stringify(cert1);
+        const json = JSON.stringify(cert);
         console.log(json);
         // const blake_dev_dir = ThorDevKit.blake2b256(json);
         // console.log('dir', blake_dev_dir);
