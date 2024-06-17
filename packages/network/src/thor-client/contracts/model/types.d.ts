@@ -177,6 +177,9 @@ interface ClauseComment {
     comment: string;
 }
 
+/**
+ * Represents additional options for a transaction clause.
+ */
 interface ClauseAdditionalOptions {
     value: number | undefined;
     comment: string | undefined;

@@ -254,6 +254,11 @@ function buildCriteria<TAbi extends Abi>(
     };
 }
 
+/**
+ * Extracts the transaction value and comment from the list of arguments, if present.
+ * @param args - The list of arguments to search for the transaction value.
+ * @returns The transaction value and comment object, if found in the arguments list. Also returns the list of arguments with the clause options removed.
+ */
 function extractAndRemoveAdditionalOptions(args: unknown[]): {
     args: unknown[];
     clauseAdditionalOptions: ClauseAdditionalOptions | undefined;
