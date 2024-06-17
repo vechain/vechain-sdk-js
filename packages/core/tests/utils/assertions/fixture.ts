@@ -127,6 +127,9 @@ const blockAssertionsTests = {
             },
             {
                 value: 'best'
+            },
+            {
+                value: 'finalized'
             }
         ],
         invalid: [
@@ -135,9 +138,6 @@ const blockAssertionsTests = {
             },
             {
                 value: '0xG8656c6c6f'
-            },
-            {
-                value: 'finalized'
             }
         ]
     },
