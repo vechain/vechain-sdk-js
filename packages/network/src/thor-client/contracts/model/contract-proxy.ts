@@ -271,7 +271,7 @@ function extractAndRemoveAdditionalOptions(args: unknown[]): {
     // check if the transaction value is provided as an argument
     const transactionValue = getTransactionValue(args);
     const clauseComment = getClauseComment(args);
-    const ClauseRevision = getRevision(args);
+    const clauseRevision = getRevision(args);
 
     // if present remove the transaction value argument from the list of arguments
     if (transactionValue !== undefined || clauseComment !== undefined) {
@@ -285,7 +285,7 @@ function extractAndRemoveAdditionalOptions(args: unknown[]): {
         clauseAdditionalOptions: {
             value: transactionValue?.value,
             comment: clauseComment?.comment,
-            revision: ClauseRevision?.revision
+            revision: clauseRevision?.revision
         }
     };
 }
