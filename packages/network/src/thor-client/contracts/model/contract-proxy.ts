@@ -274,9 +274,18 @@ function extractAndRemoveAdditionalOptions(args: unknown[]): {
     const clauseRevision = getRevision(args);
 
     // if present remove the transaction value argument from the list of arguments
-    if (transactionValue !== undefined || clauseComment !== undefined) {
+    if (
+        transactionValue !== undefined ||
+        clauseComment !== undefined ||
+        clauseRevision !== undefined
+    ) {
         args = args.filter(
-            (arg) => !(isTransactionValue(arg) || isTransactionComment(arg))
+            (arg) =>
+                !(
+                    isTransactionValue(arg) ||
+                    isTransactionComment(arg) ||
+                    isRevision(arg)
+                )
         );
     }
 
