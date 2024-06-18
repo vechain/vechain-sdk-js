@@ -10,7 +10,11 @@
     "compile": "npx hardhat compile",
     "test": "npx hardhat test --network vechain_testnet",
     "deploy-solo": "npx hardhat run scripts/deploy.ts --network vechain_solo",
-    "deploy-testnet": "npx hardhat run scripts/deploy.ts --network vechain_testnet"
+    "deploy-testnet": "npx hardhat run scripts/deploy.ts --network vechain_testnet",
+    "deploy-erc20": "npx hardhat run scripts/erc20/deploy.ts --network vechain_testnet",
+    "interact-erc20": "npx hardhat run scripts/erc20/interact.ts --network vechain_testnet",
+    "deploy-erc721": "npx hardhat run scripts/erc721/deploy.ts --network vechain_testnet",
+    "interact-erc721": "npx hardhat run scripts/erc721/interact.ts --network vechain_testnet"
   },
   "dependencies": {
     "@vechain/sdk-core": "1.0.0-beta.16",

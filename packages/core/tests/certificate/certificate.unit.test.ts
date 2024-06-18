@@ -1,6 +1,6 @@
 import * as utils from '@noble/curves/abstract/utils';
 import { describe, expect, test } from '@jest/globals';
-import { certificate, type Certificate } from '../../src';
+import { Hex0x, certificate, type Certificate } from '../../src';
 import { cert, certPrivateKey } from './fixture';
 import { privateKey } from '../secp256k1/fixture';
 import {
@@ -9,14 +9,11 @@ import {
     CertificateNotSignedError,
     InvalidSecp256k1PrivateKeyError
 } from '@vechain/sdk-errors';
-// The tdk prefix is for thor-devkit.
-// NOTE: UNCOMMENT BELOW TO TEST THOR-DEVKIT COMPATIBILITY.
-// import {
-//     Certificate as tdk_certificate,
-//     blake2b256 as tdk_blake2b256,
-//     secp256k1 as tdk_secp256k1
-// } from 'thor-devkit';
-// NOTE: UNCOMMENT ABOVE TO TEST THOR-DEVKIT COMPATIBILITY.
+import {
+    Certificate as tdk_certificate,
+    blake2b256 as tdk_blake2b256,
+    secp256k1 as tdk_secp256k1
+} from 'thor-devkit';
 
 function isEqualEnough(cert: Certificate, other: Certificate): boolean {
     return (
@@ -36,39 +33,35 @@ function isEqualEnough(cert: Certificate, other: Certificate): boolean {
  */
 describe('certificate', () => {
     describe('sign', () => {
-        // NOTE: UNCOMMENT BELOW TO TEST THOR-DEVKIT COMPATIBILITY.
-        // test('compatibility - thor-devkit - compatible', () => {
-        //     // thor-dev-kit doesn't support UTF8 NFC encoding.
-        //     const tdkCompatibleCert = {
-        //         ...cert,
-        //         payload: { ...cert.payload, content: 'fyi' }
-        //     };
-        //     const tdkSignature = Hex0x.of(
-        //         tdk_secp256k1.sign(
-        //             tdk_blake2b256(tdk_certificate.encode(tdkCompatibleCert)),
-        //             Buffer.from(certPrivateKey)
-        //         )
-        //     );
-        //     expect(tdkSignature).toEqual(
-        //         certificate.sign(tdkCompatibleCert, certPrivateKey).signature
-        //     );
-        // });
-        // NOTE: UNCOMMENT ABOVE TO TEST THOR-DEVKIT COMPATIBILITY.
+        test('compatibility - thor-devkit - compatible', () => {
+            // thor-dev-kit doesn't support UTF8 NFC encoding.
+            const tdkCompatibleCert = {
+                ...cert,
+                payload: { ...cert.payload, content: 'fyi' }
+            };
+            const tdkSignature = Hex0x.of(
+                tdk_secp256k1.sign(
+                    tdk_blake2b256(tdk_certificate.encode(tdkCompatibleCert)),
+                    Buffer.from(certPrivateKey)
+                )
+            );
+            expect(tdkSignature).toEqual(
+                certificate.sign(tdkCompatibleCert, certPrivateKey).signature
+            );
+        });
 
-        // NOTE: UNCOMMENT BELOW TO TEST THOR-DEVKIT COMPATIBILITY.
-        // test('compatibility - thor-dev-kit - not compatible because UTF8 normalization not enforced ', () => {
-        //     // thor-dev-kit doesn't support UTF8 NFC encoding for
-        //     const tdkSignature = Hex0x.of(
-        //         tdk_secp256k1.sign(
-        //             tdk_blake2b256(tdk_certificate.encode(cert)),
-        //             Buffer.from(certPrivateKey)
-        //         )
-        //     );
-        //     expect(tdkSignature).not.toEqual(
-        //         certificate.sign(cert, certPrivateKey).signature
-        //     );
-        // });
-        // NOTE: UNCOMMENT ABOVE TO TEST THOR-DEVKIT COMPATIBILITY.
+        test('compatibility - thor-dev-kit - not compatible because UTF8 normalization not enforced ', () => {
+            // thor-dev-kit doesn't support UTF8 NFC encoding for
+            const tdkSignature = Hex0x.of(
+                tdk_secp256k1.sign(
+                    tdk_blake2b256(tdk_certificate.encode(cert)),
+                    Buffer.from(certPrivateKey)
+                )
+            );
+            expect(tdkSignature).not.toEqual(
+                certificate.sign(cert, certPrivateKey).signature
+            );
+        });
 
         test('invalid - illegal private key', () => {
             expect(() => {
@@ -112,27 +105,25 @@ describe('certificate', () => {
     });
 
     describe('verify', () => {
-        // NOTE: UNCOMMENT BELOW TO TEST THOR-DEVKIT COMPATIBILITY.
-        // test('compatibility - thor-devkit - compatible', () => {
-        //     const tdkCompatibleCert = {
-        //         ...cert,
-        //         payload: { ...cert.payload, content: 'fyi' }
-        //     };
-        //     const tdkSignature = Hex0x.of(
-        //         tdk_secp256k1.sign(
-        //             tdk_blake2b256(tdk_certificate.encode(tdkCompatibleCert)),
-        //             Buffer.from(certPrivateKey)
-        //         )
-        //     );
-        //     const tdkSignedCert = {
-        //         ...tdkCompatibleCert,
-        //         signature: tdkSignature
-        //     };
-        //     expect(() => {
-        //         certificate.verify(tdkSignedCert);
-        //     }).not.toThrowError();
-        // });
-        // NOTE: UNCOMMENT ABOVE TO TEST THOR-DEVKIT COMPATIBILITY.
+        test('compatibility - thor-devkit - compatible', () => {
+            const tdkCompatibleCert = {
+                ...cert,
+                payload: { ...cert.payload, content: 'fyi' }
+            };
+            const tdkSignature = Hex0x.of(
+                tdk_secp256k1.sign(
+                    tdk_blake2b256(tdk_certificate.encode(tdkCompatibleCert)),
+                    Buffer.from(certPrivateKey)
+                )
+            );
+            const tdkSignedCert = {
+                ...tdkCompatibleCert,
+                signature: tdkSignature
+            };
+            expect(() => {
+                certificate.verify(tdkSignedCert);
+            }).not.toThrowError();
+        });
 
         test('invalid - illegal signer address', () => {
             const signedCert = certificate.sign(cert, certPrivateKey);

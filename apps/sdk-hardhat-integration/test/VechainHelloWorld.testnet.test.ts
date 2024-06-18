@@ -5,18 +5,12 @@ import { expect } from 'chai';
  * Tests for the 'VechainHelloWorld' contract
  */
 describe('VechainHelloWorld', function () {
-    it('sayHello() should throw errors', async function () {
-        // const VechainHelloWorld =
-        //     await ethers.getContractFactory('VechainHelloWorld');
-        // const contract = await VechainHelloWorld.deploy();
+    it('sayHello() should return the correct message', async function () {
+        const VechainHelloWorld = await ethers.getContractFactory('VechainHelloWorld');
+        const contract = await VechainHelloWorld.deploy();
 
-        // @NOTE:
-        // CURRENTLY Function contract.sayHello()
-        // should throw because TEMPORARY we have not implemented ethers.getContractFactory.
-        // OUR SUPER TEAM WILL FIX THIS SOON.
-        // 💪
-        // await expect(contract.sayHello()).to.be.rejected;
-        // NOTE: This is a temporary test to make sure the test suite is working.
-        expect(true).to.be.true;
+        // Call the sayHello function and check the return value
+        const helloMessage = await contract.sayHello();
+        expect(helloMessage).to.equal('Hello world from Vechain!');
     });
 });
