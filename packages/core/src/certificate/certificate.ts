@@ -1,8 +1,9 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Hex, Hex0x } from '../utils';
+import { NORMALIZATION_FORM_CANONICAL_COMPOSITION } from '../utils/nfc/NFC';
 import { addressUtils } from '../address';
 import { assert, CERTIFICATE } from '@vechain/sdk-errors';
-import { blake2b256, NORMALIZATION_FORM_CANONICAL_COMPOSITION } from '../hash';
+import { blake2b256 } from '../hash';
 import { hexToBytes } from '@noble/curves/abstract/utils';
 import { secp256k1 } from '../secp256k1';
 import { type Certificate } from './types';

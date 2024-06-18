@@ -1,20 +1,10 @@
 import { Hex, Hex0x } from '../utils';
+import { NFC } from '../utils/nfc/NFC';
 import { assertIsValidReturnType } from '../assertions';
 import { blake2b } from '@noble/hashes/blake2b';
 import { buildError, DATA } from '@vechain/sdk-errors';
-import { hexToBytes, utf8ToBytes } from '@noble/hashes/utils';
+import { hexToBytes } from '@noble/hashes/utils';
 import { type ReturnType } from './types';
-
-/**
- * The [normalization form for canonical composition](https://en.wikipedia.org/wiki/Unicode_equivalence#Normal_forms).
- *
- * @constant {string} NORMALIZATION_FORM_CANONICAL_COMPOSITION
- * @description This constant represents the normalization form 'NFC'. It is used to specify the normalization form for converting strings to their canonical composition.
- *              Canonical composition refers to the transformation of the input string to the composed form, where each character is represented by a single Unicode codepoint.
- *              This normalization form is useful for comparing strings and ensuring consistency and interoperability.
- *
- */
-const NORMALIZATION_FORM_CANONICAL_COMPOSITION = 'NFC';
 
 /* --- Overloaded functions start --- */
 
@@ -157,13 +147,7 @@ function blake2b256OfHex(
  * @return {Uint8Array} - The BLAKE2b-256 hash as a Uint8Array.
  */
 function blake2b256OfString(txt: string): Uint8Array {
-    return blake2b256OfArray(
-        utf8ToBytes(txt.normalize(NORMALIZATION_FORM_CANONICAL_COMPOSITION))
-    );
+    return blake2b256OfArray(NFC.encode(txt));
 }
 
-export {
-    NORMALIZATION_FORM_CANONICAL_COMPOSITION,
-    blake2b256,
-    blake2b256OfHex
-};
+export { blake2b256, blake2b256OfHex };
