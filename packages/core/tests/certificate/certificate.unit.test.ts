@@ -1,6 +1,6 @@
 import * as utils from '@noble/curves/abstract/utils';
 import { describe, expect, test } from '@jest/globals';
-import { certificate, type Certificate } from '../../src';
+import { Hex0x, certificate, type Certificate } from '../../src';
 import { cert, certPrivateKey } from './fixture';
 import { privateKey } from '../secp256k1/fixture';
 import {
@@ -11,11 +11,11 @@ import {
 } from '@vechain/sdk-errors';
 // The tdk prefix is for thor-devkit.
 // NOTE: UNCOMMENT BELOW TO TEST THOR-DEVKIT COMPATIBILITY.
-// import {
-//     Certificate as tdk_certificate,
-//     blake2b256 as tdk_blake2b256,
-//     secp256k1 as tdk_secp256k1
-// } from 'thor-devkit';
+import {
+    Certificate as tdk_certificate,
+    blake2b256 as tdk_blake2b256,
+    secp256k1 as tdk_secp256k1
+} from 'thor-devkit';
 // NOTE: UNCOMMENT ABOVE TO TEST THOR-DEVKIT COMPATIBILITY.
 
 function isEqualEnough(cert: Certificate, other: Certificate): boolean {
@@ -37,22 +37,22 @@ function isEqualEnough(cert: Certificate, other: Certificate): boolean {
 describe('certificate', () => {
     describe('sign', () => {
         // NOTE: UNCOMMENT BELOW TO TEST THOR-DEVKIT COMPATIBILITY.
-        // test('compatibility - thor-devkit - compatible', () => {
-        //     // thor-dev-kit doesn't support UTF8 NFC encoding.
-        //     const tdkCompatibleCert = {
-        //         ...cert,
-        //         payload: { ...cert.payload, content: 'fyi' }
-        //     };
-        //     const tdkSignature = Hex0x.of(
-        //         tdk_secp256k1.sign(
-        //             tdk_blake2b256(tdk_certificate.encode(tdkCompatibleCert)),
-        //             Buffer.from(certPrivateKey)
-        //         )
-        //     );
-        //     expect(tdkSignature).toEqual(
-        //         certificate.sign(tdkCompatibleCert, certPrivateKey).signature
-        //     );
-        // });
+        test('compatibility - thor-devkit - compatible', () => {
+            // thor-dev-kit doesn't support UTF8 NFC encoding.
+            const tdkCompatibleCert = {
+                ...cert,
+                payload: { ...cert.payload, content: 'fyi' }
+            };
+            const tdkSignature = Hex0x.of(
+                tdk_secp256k1.sign(
+                    tdk_blake2b256(tdk_certificate.encode(tdkCompatibleCert)),
+                    Buffer.from(certPrivateKey)
+                )
+            );
+            expect(tdkSignature).toEqual(
+                certificate.sign(tdkCompatibleCert, certPrivateKey).signature
+            );
+        });
         // NOTE: UNCOMMENT ABOVE TO TEST THOR-DEVKIT COMPATIBILITY.
 
         // NOTE: UNCOMMENT BELOW TO TEST THOR-DEVKIT COMPATIBILITY.
