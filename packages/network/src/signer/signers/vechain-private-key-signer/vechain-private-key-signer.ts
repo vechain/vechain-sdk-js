@@ -114,6 +114,13 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         })) as string;
     }
 
+    async signMessage(message: string | Uint8Array): Promise<string> {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        return await new Promise<string>((resolve, reject) => {
+            resolve(message as string);
+        });
+    }
+
     /**
      * Signs a transaction internal method
      *

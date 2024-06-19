@@ -353,7 +353,7 @@ interface VeChainSigner {
      *  To sign that example as two bytes, the Uint8Array should be used
      *  (i.e. ``new Uint8Array([ 0x12, 0x34 ])``).
      */
-    // signMessage: (message: string | Uint8Array) => Promise<string>;
+    signMessage: (message: string | Uint8Array) => Promise<string>;
 
     /**
      * --- START: TEMPORARY COMMENT ---

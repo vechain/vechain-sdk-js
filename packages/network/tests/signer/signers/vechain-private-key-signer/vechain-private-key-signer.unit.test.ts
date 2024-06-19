@@ -17,9 +17,11 @@ import {
     VeChainProvider,
     vnsUtils
 } from '../../../../src/';
-import { testnetUrl } from '../../../fixture';
+import {ALL_ACCOUNTS, testnetUrl} from '../../../fixture';
 import { addressUtils } from '@vechain/sdk-core';
 import { populateCallTestCases, populateCallTestCasesAccount } from './fixture';
+
+import { ethers } from 'ethers';
 
 /**
  *VeChain base signer tests
@@ -227,6 +229,15 @@ describe('VeChain base signer tests', () => {
             expect(address).toEqual(
                 '0x0000000000000000000000000000000000000001'
             );
+        });
+    });
+
+    describe('ethers compatibility', () => {
+        test('ethers', async () => {
+            const signer = new ethers.Wallet(ALL_ACCOUNTS[0].privateKey);
+            const message = 'Hello world!';
+            const rawSign = await signer.signMessage(message);
+            console.log(rawSign);
         });
     });
 });

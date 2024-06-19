@@ -306,6 +306,8 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         transactionToSend: TransactionRequestInput
     ): Promise<string>;
 
+    abstract signMessage(message: string | Uint8Array): Promise<string>;
+
     /**
      * Use vet.domains to resolve name to address
      * @param vnsName - The name to resolve
