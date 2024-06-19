@@ -19,17 +19,6 @@ const config: HardhatUserConfig = {
     solidity: {
         compilers: [
             {
-                version: '0.8.17', // Specify the first Solidity version
-                settings: {
-                    // Additional compiler settings for this version
-                    optimizer: {
-                        enabled: true,
-                        runs: 200
-                    },
-                    evmVersion: 'london' // EVM version (e.g., "byzantium", "constantinople", "petersburg", "istanbul", "berlin", "london")
-                }
-            },
-            {
                 version: '0.8.20', // Specify the first Solidity version
                 settings: {
                     // Additional compiler settings for this version
