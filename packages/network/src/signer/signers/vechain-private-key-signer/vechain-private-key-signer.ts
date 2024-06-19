@@ -1,3 +1,18 @@
+import * as n_utils from '@noble/curves/abstract/utils';
+import { NFC } from '../../../../../core/src/utils/nfc/NFC';
+import { RPC_METHODS } from '../../../provider';
+import { VeChainAbstractSigner } from '../vechain-abstract-signer';
+import { assert, JSONRPC, TRANSACTION } from '@vechain/sdk-errors';
+import { assertTransactionCanBeSigned } from '../../../assertions';
+import {
+    addressUtils,
+    Hex0x,
+    keccak256,
+    secp256k1,
+    Transaction,
+    type TransactionBody,
+    TransactionHandler
+} from '@vechain/sdk-core';
 import {
     type AvailableVeChainProviders,
     type TransactionRequestInput
@@ -7,24 +22,17 @@ import {
     type SignTransactionOptions,
     type ThorClient
 } from '../../../thor-client';
-import {
-    addressUtils,
-    Hex0x,
-    secp256k1,
-    Transaction,
-    type TransactionBody,
-    TransactionHandler
-} from '@vechain/sdk-core';
-import { RPC_METHODS } from '../../../provider';
-import { assert, JSONRPC, TRANSACTION } from '@vechain/sdk-errors';
-import { assertTransactionCanBeSigned } from '../../../assertions';
-import { VeChainAbstractSigner } from '../vechain-abstract-signer';
+import { secp256k1 as n_secp256k1 } from '@noble/curves/secp256k1';
 
 /**
  * Basic VeChain signer with the private key.
  * This signer can be initialized using a private key.
  */
 class VeChainPrivateKeySigner extends VeChainAbstractSigner {
+    private readonly MESSAGE_PREFIX = NFC.encode(
+        '\x19Ethereum Signed Message:\n'
+    );
+
     /**
      * Create a new VeChainPrivateKeySigner.
      * A signer can be initialized using a private key.
@@ -115,9 +123,26 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
     }
 
     async signMessage(message: string | Uint8Array): Promise<string> {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        return await new Promise<string>((resolve, reject) => {
-            resolve(message as string);
+        return await new Promise((resolve, reject) => {
+            try {
+                const body =
+                    typeof message === 'string' ? NFC.encode(message) : message;
+                const sign = secp256k1.sign(
+                    keccak256(
+                        n_utils.concatBytes(
+                            this.MESSAGE_PREFIX,
+                            NFC.encode(String(body.length)),
+                            body
+                        )
+                    ),
+                    new Uint8Array(this.privateKey)
+                );
+                // explain...
+                sign[sign.length - 1] += 27;
+                resolve(Hex0x.of(sign));
+            } catch (e) {
+                reject(e);
+            }
         });
     }
 

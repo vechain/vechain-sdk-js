@@ -3,6 +3,11 @@
  *
  * @group integration/providers/vechain-provider
  */
+import * as n_utils from '@noble/curves/abstract/utils';
+import { ALL_ACCOUNTS, testnetUrl } from '../../../fixture';
+import { ethers } from 'ethers';
+import { addressUtils } from '@vechain/sdk-core';
+import { populateCallTestCases, populateCallTestCasesAccount } from './fixture';
 import {
     afterEach,
     beforeEach,
@@ -17,11 +22,6 @@ import {
     VeChainProvider,
     vnsUtils
 } from '../../../../src/';
-import {ALL_ACCOUNTS, testnetUrl} from '../../../fixture';
-import { addressUtils } from '@vechain/sdk-core';
-import { populateCallTestCases, populateCallTestCasesAccount } from './fixture';
-
-import { ethers } from 'ethers';
 
 /**
  *VeChain base signer tests
@@ -232,12 +232,18 @@ describe('VeChain base signer tests', () => {
         });
     });
 
-    describe('ethers compatibility', () => {
-        test('ethers', async () => {
-            const signer = new ethers.Wallet(ALL_ACCOUNTS[0].privateKey);
+    describe('ethers compatible', () => {
+        test('signMessage', async () => {
+            const privateKey = ALL_ACCOUNTS[0].privateKey;
             const message = 'Hello world!';
-            const rawSign = await signer.signMessage(message);
-            console.log(rawSign);
+            const expected = await new ethers.Wallet(privateKey).signMessage(
+                message
+            );
+            const actual = await new VeChainPrivateKeySigner(
+                Buffer.from(n_utils.hexToBytes(privateKey)),
+                provider
+            ).signMessage(message);
+            expect(actual).toBe(expected);
         });
     });
 });
