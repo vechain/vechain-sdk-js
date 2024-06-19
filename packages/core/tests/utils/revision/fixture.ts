@@ -8,7 +8,7 @@ const accountRevisions = [
     },
     {
         revision: 'finalized',
-        expected: false
+        expected: true
     },
     {
         revision: '0x34123',
