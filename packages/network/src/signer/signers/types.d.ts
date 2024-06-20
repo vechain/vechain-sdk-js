@@ -362,11 +362,11 @@ interface VeChainSigner {
      *
      *  Signs the [[link-eip-712]] typed data.
      */
-    // signTypedData: (
-    //     domain: vechain_sdk_core_ethers.TypedDataDomain,
-    //     types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
-    //     value: Record<string, unknown>
-    // ) => Promise<string>;
+    signTypedData: (
+        domain: vechain_sdk_core_ethers.TypedDataDomain,
+        types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
+        value: Record<string, unknown>
+    ) => Promise<string>;
 
     /**
      *  Resolves an VNS Name to an address.

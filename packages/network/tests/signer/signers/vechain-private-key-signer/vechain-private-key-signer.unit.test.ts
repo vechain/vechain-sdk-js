@@ -6,7 +6,7 @@
 import * as n_utils from '@noble/curves/abstract/utils';
 import { ALL_ACCOUNTS, testnetUrl } from '../../../fixture';
 import { ethers } from 'ethers';
-import { addressUtils } from '@vechain/sdk-core';
+import { addressUtils, Hex } from '@vechain/sdk-core';
 import { populateCallTestCases, populateCallTestCasesAccount } from './fixture';
 import {
     afterEach,
@@ -329,19 +329,28 @@ describe('VeChain base signer tests', () => {
             expect(actual).toBe(expected);
         });
 
-        test('signTypedData', async () => {});
-    });
-
-    test('signTypedData', async () => {
-        const expected = await new ethers.Wallet(
-            testCaseTypedData.privateKey
-        ).signTypedData(
-            testCaseTypedData.domain,
-            testCaseTypedData.types,
-            testCaseTypedData.data
-        );
-        console.log(expected);
-        expect(expected).toBe(testCaseTypedData.signature);
-        // assert.equal(expected, signature, 'signature');
+        test('signTypedData', async () => {
+            const expected = await new ethers.Wallet(
+                testCaseTypedData.privateKey
+            ).signTypedData(
+                testCaseTypedData.domain,
+                testCaseTypedData.types,
+                testCaseTypedData.data
+            );
+            console.log(expected);
+            expect(expected).toBe(testCaseTypedData.signature);
+            const actual = await new VeChainPrivateKeySigner(
+                Buffer.from(
+                    n_utils.hexToBytes(Hex.canon(testCaseTypedData.privateKey))
+                ),
+                provider
+            ).signTypedData(
+                testCaseTypedData.domain,
+                testCaseTypedData.types,
+                testCaseTypedData.data
+            );
+            console.log(actual);
+            // assert.equal(expected, signature, 'signature');
+        });
     });
 });

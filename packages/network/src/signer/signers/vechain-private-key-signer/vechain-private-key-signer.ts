@@ -4,14 +4,17 @@ import { RPC_METHODS } from '../../../provider';
 import { VeChainAbstractSigner } from '../vechain-abstract-signer';
 import { assert, JSONRPC, TRANSACTION } from '@vechain/sdk-errors';
 import { assertTransactionCanBeSigned } from '../../../assertions';
+import { ethers } from 'ethers';
 import {
     addressUtils,
+    Hex,
     Hex0x,
     keccak256,
     secp256k1,
     Transaction,
     type TransactionBody,
-    TransactionHandler
+    TransactionHandler,
+    type vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
 import {
     type AvailableVeChainProviders,
@@ -22,7 +25,6 @@ import {
     type SignTransactionOptions,
     type ThorClient
 } from '../../../thor-client';
-import { secp256k1 as n_secp256k1 } from '@noble/curves/secp256k1';
 
 /**
  * Basic VeChain signer with the private key.
@@ -135,6 +137,31 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                             body
                         )
                     ),
+                    new Uint8Array(this.privateKey)
+                );
+                // explain...
+                sign[sign.length - 1] += 27;
+                resolve(Hex0x.of(sign));
+            } catch (e) {
+                reject(e);
+            }
+        });
+    }
+
+    async signTypedData(
+        domain: vechain_sdk_core_ethers.TypedDataDomain,
+        types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
+        value: Record<string, unknown>
+    ): Promise<string> {
+        return await new Promise((resolve, reject) => {
+            try {
+                const hash = n_utils.hexToBytes(
+                    Hex.canon(
+                        ethers.TypedDataEncoder.hash(domain, types, value)
+                    )
+                );
+                const sign = secp256k1.sign(
+                    hash,
                     new Uint8Array(this.privateKey)
                 );
                 // explain...

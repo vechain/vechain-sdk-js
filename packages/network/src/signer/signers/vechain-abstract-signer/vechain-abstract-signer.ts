@@ -9,7 +9,8 @@ import {
     Hex0x,
     secp256k1,
     type TransactionBody,
-    type TransactionClause
+    type TransactionClause,
+    type vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
 import { RPC_METHODS } from '../../../provider';
 import { assert, DATA, JSONRPC } from '@vechain/sdk-errors';
@@ -307,6 +308,12 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
     ): Promise<string>;
 
     abstract signMessage(message: string | Uint8Array): Promise<string>;
+
+    abstract signTypedData(
+        domain: vechain_sdk_core_ethers.TypedDataDomain,
+        types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
+        value: Record<string, unknown>
+    ): Promise<string>;
 
     /**
      * Use vet.domains to resolve name to address
