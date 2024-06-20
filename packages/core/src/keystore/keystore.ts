@@ -1,6 +1,7 @@
-import { type Keystore, type KeystoreAccount } from './types';
-import { keystoreEthers, keystoreExperimental } from './cryptography';
+import { NFKC } from '../utils/txt/txt';
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
+import { keystoreEthers, keystoreExperimental } from './cryptography';
+import { type Keystore, type KeystoreAccount } from './types';
 
 /**
  * A boolean indicating whether the keystore cryptography is experimental or not.
@@ -37,10 +38,7 @@ async function encrypt(
         });
 
     return EXPERIMENTAL_CRYPTOGRAPHY
-        ? keystoreExperimental.encrypt(
-              privateKey,
-              new TextEncoder().encode(password.normalize('NFKC'))
-          )
+        ? keystoreExperimental.encrypt(privateKey, NFKC.encode(password))
         : await keystoreEthers.encrypt(privateKey, password);
 }
 
@@ -66,10 +64,7 @@ async function decrypt(
         });
 
     return EXPERIMENTAL_CRYPTOGRAPHY
-        ? keystoreExperimental.decrypt(
-              keystore,
-              new TextEncoder().encode(password.normalize('NFKC'))
-          )
+        ? keystoreExperimental.decrypt(keystore, NFKC.encode(password))
         : await keystoreEthers.decrypt(keystore, password);
 }
 
