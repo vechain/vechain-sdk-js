@@ -1,8 +1,8 @@
-import * as utils from '@noble/curves/abstract/utils';
+import * as n_utils from '@noble/curves/abstract/utils';
 import { Hex, SIGNATURE_LENGTH } from '../utils';
 import { assert, SECP256K1 } from '@vechain/sdk-errors';
 import { randomBytes as _randomBytes } from '@noble/hashes/utils';
-import { secp256k1 as ec } from '@noble/curves/secp256k1';
+import { secp256k1 as n_secp256k1 } from '@noble/curves/secp256k1';
 import {
     assertIsValidPrivateKey,
     assertIsValidSecp256k1MessageHash
@@ -13,7 +13,7 @@ import {
  *
  * Security audit function.
  * * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
- * * [utils](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
+ * * [n_utils](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
  *
  * @param {Uint8Array} publicKey - The uncompressed public key.
  *
@@ -30,7 +30,7 @@ function compressPublicKey(publicKey: Uint8Array): Uint8Array {
         const y = publicKey.slice(33, 65);
         const isYOdd = y[y.length - 1] & 1;
         // Prefix with 0x02 if Y coordinate is even, 0x03 if odd.
-        return utils.concatBytes(Uint8Array.of(2 + isYOdd), x);
+        return n_utils.concatBytes(Uint8Array.of(2 + isYOdd), x);
     } else {
         // Compressed.
         return publicKey;
@@ -60,7 +60,7 @@ function derivePublicKey(
         privateKey,
         isValidPrivateKey
     );
-    return ec.getPublicKey(privateKey, isCompressed);
+    return n_secp256k1.getPublicKey(privateKey, isCompressed);
 }
 
 /**
@@ -72,7 +72,7 @@ function derivePublicKey(
  * @returns {Uint8Array} The newly generated private key as a buffer.
  */
 function generatePrivateKey(): Uint8Array {
-    return ec.utils.randomPrivateKey();
+    return n_secp256k1.utils.randomPrivateKey();
 }
 
 /**
@@ -92,8 +92,8 @@ function inflatePublicKey(publicKey: Uint8Array): Uint8Array {
     if (prefix !== 4) {
         // To inflate.
         const x = publicKey.slice(0, 33);
-        const p = ec.ProjectivePoint.fromAffine(
-            ec.ProjectivePoint.fromHex(Hex.of(x)).toAffine()
+        const p = n_secp256k1.ProjectivePoint.fromAffine(
+            n_secp256k1.ProjectivePoint.fromHex(Hex.of(x)).toAffine()
         );
         return p.toRawBytes(false);
     } else {
@@ -107,7 +107,7 @@ function inflatePublicKey(publicKey: Uint8Array): Uint8Array {
  *
  * Security audit function.
  * * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
- * * [utils](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
+ * * [n_utils](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
  *
  * @param {Uint8Array} hash - The hash of the message to validate.
  * @return {boolean} - Returns `true` if the hash is a valid message hash,
@@ -129,7 +129,7 @@ function isValidMessageHash(hash: Uint8Array): boolean {
  * otherwise `false`.
  */
 function isValidPrivateKey(privateKey: Uint8Array): boolean {
-    return ec.utils.isValidPrivateKey(privateKey);
+    return n_secp256k1.utils.isValidPrivateKey(privateKey);
 }
 
 /**
@@ -191,7 +191,7 @@ function recover(messageHash: Uint8Array, sig: Uint8Array): Uint8Array {
         { recovery }
     );
 
-    return ec.Signature.fromCompact(sig.slice(0, 64))
+    return n_secp256k1.Signature.fromCompact(sig.slice(0, 64))
         .addRecoveryBit(recovery)
         .recoverPublicKey(messageHash)
         .toRawBytes(false);
@@ -202,7 +202,7 @@ function recover(messageHash: Uint8Array, sig: Uint8Array): Uint8Array {
  *
  * Security audit function.
  * * [`ec` for elliptic curve](https://github.com/paulmillr/noble-curves)
- * * [utils](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
+ * * [n_utils](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
  *
  * @param {Uint8Array} messageHash - The message hash to be signed.
  * @param {Uint8Array} privateKey - The private key to use for signing.
@@ -221,11 +221,11 @@ function sign(messageHash: Uint8Array, privateKey: Uint8Array): Uint8Array {
         isValidMessageHash
     );
     assertIsValidPrivateKey('secp256k1.sign', privateKey, isValidPrivateKey);
-    const sig = ec.sign(messageHash, privateKey);
-    return utils.concatBytes(
-        utils.numberToBytesBE(sig.r, 32),
-        utils.numberToBytesBE(sig.s, 32),
-        utils.numberToVarBytesBE(sig.recovery)
+    const sig = n_secp256k1.sign(messageHash, privateKey);
+    return n_utils.concatBytes(
+        n_utils.numberToBytesBE(sig.r, 32),
+        n_utils.numberToBytesBE(sig.s, 32),
+        n_utils.numberToVarBytesBE(sig.recovery)
     );
 }
 

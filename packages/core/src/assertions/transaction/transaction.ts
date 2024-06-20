@@ -73,8 +73,7 @@ function assertIsValidTransactionSigningPrivateKey(
         `assertIsValidTransactionSigningPrivateKey - ${methodName}`,
         isValidPrivateKeyFunction(privateKey),
         SECP256K1.INVALID_SECP256k1_PRIVATE_KEY,
-        `Invalid ${role} private key used to sign the transaction. Ensure it's a valid secp256k1 private key.`,
-        { privateKey }
+        `Invalid ${role} private key used to sign the transaction. Ensure it's a valid secp256k1 private key.`
     );
 }
 
