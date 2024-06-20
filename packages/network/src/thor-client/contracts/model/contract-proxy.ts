@@ -1,6 +1,7 @@
 import {
     type ClauseAdditionalOptions,
     type ClauseComment,
+    type ClauseRevision,
     type ContractFunctionClause,
     type ContractFunctionCriteria,
     type ContractFunctionFilter,
@@ -50,6 +51,9 @@ function getReadProxy<TAbi extends Abi>(
                 const clauseComment =
                     extractOptionsResult.clauseAdditionalOptions?.comment;
 
+                const revisionValue =
+                    extractOptionsResult.clauseAdditionalOptions?.revision;
+
                 return (await contract.thor.contracts.executeCall(
                     contract.address,
                     contract.getFunctionFragment(prop),
@@ -61,6 +65,7 @@ function getReadProxy<TAbi extends Abi>(
                                 : undefined,
                         ...contract.getContractReadOptions(),
                         comment: clauseComment,
+                        revision: revisionValue,
                         includeABI: true
                     }
                 )) as ContractCallResult;
@@ -266,11 +271,21 @@ function extractAndRemoveAdditionalOptions(args: unknown[]): {
     // check if the transaction value is provided as an argument
     const transactionValue = getTransactionValue(args);
     const clauseComment = getClauseComment(args);
+    const clauseRevision = getRevision(args);
 
     // if present remove the transaction value argument from the list of arguments
-    if (transactionValue !== undefined || clauseComment !== undefined) {
+    if (
+        transactionValue !== undefined ||
+        clauseComment !== undefined ||
+        clauseRevision !== undefined
+    ) {
         args = args.filter(
-            (arg) => !(isTransactionValue(arg) || isTransactionComment(arg))
+            (arg) =>
+                !(
+                    isTransactionValue(arg) ||
+                    isTransactionComment(arg) ||
+                    isRevision(arg)
+                )
         );
     }
 
@@ -278,7 +293,8 @@ function extractAndRemoveAdditionalOptions(args: unknown[]): {
         args,
         clauseAdditionalOptions: {
             value: transactionValue?.value,
-            comment: clauseComment?.comment
+            comment: clauseComment?.comment,
+            revision: clauseRevision?.revision
         }
     };
 }
@@ -306,6 +322,15 @@ function getClauseComment(args: unknown[]): ClauseComment | undefined {
 }
 
 /**
+ * Extracts the revision from the list of arguments, if present.
+ * @param args - The list of arguments to search for the revision.
+ * @returns The revision object, if found in the arguments list.
+ */
+function getRevision(args: unknown[]): ClauseRevision | undefined {
+    return args.find((arg) => isRevision(arg)) as ClauseRevision | undefined;
+}
+
+/**
  * Type guard function to check if an object is a TransactionValue.
  * @param obj - The object to check.
  * @returns True if the object is a TransactionValue, false otherwise.
@@ -321,6 +346,15 @@ function isTransactionValue(obj: unknown): obj is ClauseAdditionalOptions {
  */
 function isTransactionComment(obj: unknown): obj is ClauseAdditionalOptions {
     return (obj as ClauseAdditionalOptions).comment !== undefined;
+}
+
+/**
+ * Type guard function to check if an object is a revision.
+ * @param obj - The object to check.
+ * @returns True if the object is a revision, false otherwise.
+ */
+function isRevision(obj: unknown): obj is ClauseAdditionalOptions {
+    return (obj as ClauseAdditionalOptions).revision !== undefined;
 }
 
 export {

@@ -48,6 +48,11 @@ Below is an example of how to add comments to operations:
 
 [TransferCommentSnippet](examples/contracts/contract-transfer-ERC20-token.ts)
 
+## Adding revision on read functions
+
+### Overview
+
+If you want to specify the revision on read functions, you can do it in the same way as adding a comment. Instead of a comment, specify the revision. You can use 'best' or 'finalized' as the revision options.
 
 ### Conclusion
 
