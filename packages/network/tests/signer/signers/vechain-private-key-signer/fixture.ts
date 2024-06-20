@@ -285,7 +285,7 @@ const populateCallTestCases = {
 };
 
 export {
-    signTransactionTestCases,
     populateCallTestCasesAccount,
-    populateCallTestCases
+    populateCallTestCases,
+    signTransactionTestCases
 };
