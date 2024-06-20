@@ -3,7 +3,7 @@
  * [JSON Keystore v3 Wallet](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage)
  * encryption, decryption, and validation functionality.
  */
-import * as utils from '@noble/curves/abstract/utils';
+import * as n_utils from '@noble/curves/abstract/utils';
 import { assert, KEYSTORE, stringifyData } from '@vechain/sdk-errors';
 import { ctr } from '@noble/ciphers/aes';
 import { scrypt } from '@noble/hashes/scrypt';
@@ -128,7 +128,7 @@ interface ScryptParams {
  * @see {encodeScryptParams}
  */
 function decodeScryptParams(keystore: Keystore): ScryptParams {
-    const salt = utils.hexToBytes(keystore.crypto.kdfparams.salt);
+    const salt = n_utils.hexToBytes(keystore.crypto.kdfparams.salt);
     const N = keystore.crypto.kdfparams.n;
     const r = keystore.crypto.kdfparams.r;
     const p: number = keystore.crypto.kdfparams.p;
@@ -370,7 +370,9 @@ function encryptKeystore(
                     salt: Hex.of(kdf.salt)
                 },
                 // Compute the message authentication code, used to check the password.
-                mac: Hex.of(keccak256(utils.concatBytes(macPrefix, ciphertext)))
+                mac: Hex.of(
+                    keccak256(n_utils.concatBytes(macPrefix, ciphertext))
+                )
             },
             id: uuidV4(uuidRandom),
             version: KEYSTORE_VERSION
@@ -499,19 +501,21 @@ function decryptKeystore(
             p: kdf.p,
             dkLen: kdf.dkLen
         });
-        const ciphertext = utils.hexToBytes(keystore.crypto.ciphertext);
+        const ciphertext = n_utils.hexToBytes(keystore.crypto.ciphertext);
         assert(
             'keystore.decrypt',
             keystore.crypto.mac ===
                 Hex.of(
-                    keccak256(utils.concatBytes(key.slice(16, 32), ciphertext))
+                    keccak256(
+                        n_utils.concatBytes(key.slice(16, 32), ciphertext)
+                    )
                 ),
             KEYSTORE.INVALID_PASSWORD,
             'Decryption failed: invalid password for the given keystore.'
         );
         const privateKey = ctr(
             key.slice(0, 16),
-            utils.hexToBytes(keystore.crypto.cipherparams.iv)
+            n_utils.hexToBytes(keystore.crypto.cipherparams.iv)
         ).decrypt(ciphertext);
         const address = addressUtils.fromPrivateKey(privateKey);
         if (keystore.address !== '') {

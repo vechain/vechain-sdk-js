@@ -1,5 +1,5 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { NFC } from '../../../../../core/src/utils/nfc/NFC';
+import { NFC } from '../../../../../core/src/utils/txt/txt';
 import { RPC_METHODS } from '../../../provider';
 import { VeChainAbstractSigner } from '../vechain-abstract-signer';
 import { assert, JSONRPC, TRANSACTION } from '@vechain/sdk-errors';

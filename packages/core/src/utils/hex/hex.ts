@@ -1,4 +1,4 @@
-import * as utils from '@noble/curves/abstract/utils';
+import * as n_utils from '@noble/curves/abstract/utils';
 import { assert, buildError, DATA } from '@vechain/sdk-errors';
 import { randomBytes } from '@noble/hashes/utils';
 import { type HexString } from './types';
@@ -187,21 +187,21 @@ function ofNumber(n: number, bytes: number): string {
  * @see {ofUint8Array}
  */
 function ofString(txt: string, bytes: number): string {
-    return ofUint8Array(utils.utf8ToBytes(txt), bytes);
+    return ofUint8Array(n_utils.utf8ToBytes(txt), bytes);
 }
 
 /**
  * Convert an Uint8Array to a padded hexadecimal representation long the specified number of bytes.
  *
  * Secure audit function.
- * * [utils](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
+ * * [n_utils](https://github.com/paulmillr/noble-curves?tab=readme-ov-file#utils-useful-utilities)
  *
  * @param {Uint8Array} uint8Array - The Uint8Array to be represented as hexadecimal string.
  * @param {number} [bytes=0] - The number of bytes the resulting hexadecimal representation should be padded to.
  * @return {string} - The padded hexadecimal representation of the buffer.
  */
 function ofUint8Array(uint8Array: Uint8Array, bytes: number): string {
-    return pad(utils.bytesToHex(uint8Array), bytes);
+    return pad(n_utils.bytesToHex(uint8Array), bytes);
 }
 
 /**

@@ -1,4 +1,4 @@
-import * as utils from '@noble/curves/abstract/utils';
+import * as n_utils from '@noble/curves/abstract/utils';
 import { BigNumber } from 'bignumber.js';
 import { Hex, Hex0x } from '../hex';
 import { assert, buildError, DATA } from '@vechain/sdk-errors';
@@ -54,7 +54,9 @@ function bigNumberOf(value: bigint | number | string): BigNumber {
             break;
         case 'string': {
             if (Hex0x.isValid(value)) {
-                bn = BigNumber(utils.hexToNumber(Hex.canon(value)).toString());
+                bn = BigNumber(
+                    n_utils.hexToNumber(Hex.canon(value)).toString()
+                );
             } else {
                 bn = BigNumber(value);
             }

@@ -1,4 +1,5 @@
-import * as utils from '@noble/curves/abstract/utils';
+import * as n_utils from '@noble/curves/abstract/utils';
+import { NFC } from '../../src/utils/txt/txt';
 import { describe, expect, test } from '@jest/globals';
 import { bloom, Hex } from '../../src';
 import { bloomKTestCases } from './fixture';
@@ -11,13 +12,11 @@ import {
 /**
  * Bloom filter tests
  *
- * @NOTE different from ../utils/bloom/bloom.test.ts.
- * This tests bloom functionality, not the utils.
+ * @NOTE different from ../n_utils/bloom/bloom.test.ts.
+ * This tests bloom functionality, not the n_utils.
  * @group unit/bloom
  */
 describe('Bloom Filter', () => {
-    const textEncoder = new TextEncoder();
-
     /**
      * Test the composition of Bloom filters,
      * those are compatible if generated from the same `k` number of hashing functions
@@ -39,11 +38,11 @@ describe('Bloom Filter', () => {
         test('compose - invalid - different length', () => {
             const gen1 = new bloom.Generator();
             keys1.forEach((key) => {
-                gen1.add(textEncoder.encode(key));
+                gen1.add(NFC.encode(key));
             });
             const gen2 = new bloom.Generator();
             keys2.forEach((key) => {
-                gen2.add(textEncoder.encode(key));
+                gen2.add(NFC.encode(key));
             });
             const filter1 = gen1.generate(m, k);
             const filter2 = gen2.generate(m * m, k);
@@ -59,11 +58,11 @@ describe('Bloom Filter', () => {
         test('compose - invalid - different k', () => {
             const gen1 = new bloom.Generator();
             keys1.forEach((key) => {
-                gen1.add(textEncoder.encode(key));
+                gen1.add(NFC.encode(key));
             });
             const gen2 = new bloom.Generator();
             keys2.forEach((key) => {
-                gen2.add(textEncoder.encode(key));
+                gen2.add(NFC.encode(key));
             });
             const filter1 = gen1.generate(m, k);
             const filter2 = gen2.generate(m, k - 1);
@@ -79,24 +78,20 @@ describe('Bloom Filter', () => {
         test('compose - valid - possibly in set', () => {
             const gen1 = new bloom.Generator();
             keys1.forEach((key) => {
-                gen1.add(textEncoder.encode(key));
+                gen1.add(NFC.encode(key));
             });
             const gen2 = new bloom.Generator();
             keys2.forEach((key) => {
-                gen2.add(textEncoder.encode(key));
+                gen2.add(NFC.encode(key));
             });
             const filter1 = gen1.generate(m, k);
             const filter2 = gen2.generate(m, k);
             const filterUnion = filter1.compose(filter2);
             keys1.forEach((key) => {
-                expect(
-                    filterUnion.contains(textEncoder.encode(key))
-                ).toBeTruthy();
+                expect(filterUnion.contains(NFC.encode(key))).toBeTruthy();
             });
             keys2.forEach((key) => {
-                expect(
-                    filterUnion.contains(textEncoder.encode(key))
-                ).toBeTruthy();
+                expect(filterUnion.contains(NFC.encode(key))).toBeTruthy();
             });
         });
 
@@ -107,18 +102,16 @@ describe('Bloom Filter', () => {
         test('compose - valid - not in set', () => {
             const gen1 = new bloom.Generator();
             keys1.forEach((key) => {
-                gen1.add(textEncoder.encode(key));
+                gen1.add(NFC.encode(key));
             });
             const gen2 = new bloom.Generator();
             keys2.forEach((key) => {
-                gen2.add(textEncoder.encode(key));
+                gen2.add(NFC.encode(key));
             });
             const filter1 = gen1.generate(m, k);
             const filter2 = gen2.generate(m, k);
             const filterUnion = filter1.compose(filter2);
-            expect(
-                filterUnion.contains(textEncoder.encode('alien'))
-            ).toBeFalsy();
+            expect(filterUnion.contains(NFC.encode('alien'))).toBeFalsy();
         });
     });
 
@@ -142,11 +135,11 @@ describe('Bloom Filter', () => {
         test('isComposable - false - different length', () => {
             const gen1 = new bloom.Generator();
             keys1.forEach((key) => {
-                gen1.add(textEncoder.encode(key));
+                gen1.add(NFC.encode(key));
             });
             const gen2 = new bloom.Generator();
             keys2.forEach((key) => {
-                gen2.add(textEncoder.encode(key));
+                gen2.add(NFC.encode(key));
             });
             const filter1 = gen1.generate(m, k);
             const filter2 = gen2.generate(m * m, k);
@@ -159,11 +152,11 @@ describe('Bloom Filter', () => {
         test('isComposable - false - different k', () => {
             const gen1 = new bloom.Generator();
             keys1.forEach((key) => {
-                gen1.add(textEncoder.encode(key));
+                gen1.add(NFC.encode(key));
             });
             const gen2 = new bloom.Generator();
             keys2.forEach((key) => {
-                gen2.add(textEncoder.encode(key));
+                gen2.add(NFC.encode(key));
             });
             const filter1 = gen1.generate(m, k);
             const filter2 = gen2.generate(m, k - 1);
@@ -177,11 +170,11 @@ describe('Bloom Filter', () => {
         test('isComposable - true', () => {
             const gen1 = new bloom.Generator();
             keys1.forEach((key) => {
-                gen1.add(textEncoder.encode(key));
+                gen1.add(NFC.encode(key));
             });
             const gen2 = new bloom.Generator();
             keys2.forEach((key) => {
-                gen2.add(textEncoder.encode(key));
+                gen2.add(NFC.encode(key));
             });
             const filter1 = gen1.generate(m, k);
             const filter2 = gen2.generate(m, k);
@@ -222,7 +215,7 @@ describe('Bloom Filter', () => {
         const keys = ['key1', 'key2', 'key3'];
 
         keys.forEach((key) => {
-            generator.add(textEncoder.encode(key));
+            generator.add(NFC.encode(key));
         });
 
         const bitsPerKey = 20;
@@ -237,12 +230,12 @@ describe('Bloom Filter', () => {
 
         // Validate the generated filter with the expected behavior
         keys.forEach((key) => {
-            expect(filter.contains(textEncoder.encode(key))).toBe(true);
+            expect(filter.contains(NFC.encode(key))).toBe(true);
         });
 
         // Validate false positives/negatives, similar to how it's done in the Go test
         // Assuming 'falseKey1' does not exist in the filter
-        expect(filter.contains(textEncoder.encode('falseKey1'))).toBe(false);
+        expect(filter.contains(NFC.encode('falseKey1'))).toBe(false);
     });
 
     /**
@@ -275,7 +268,7 @@ describe('Bloom Filter', () => {
         }
 
         keys.forEach((key) => {
-            generator.add(textEncoder.encode(key));
+            generator.add(NFC.encode(key));
         });
 
         const bitsPerKey = 20;
@@ -292,7 +285,7 @@ describe('Bloom Filter', () => {
 
         expect(stringifyData(filter.bits)).toBe(
             stringifyData(
-                utils.hexToBytes(
+                n_utils.hexToBytes(
                     'a4d641159d68d829345f86f40d50676cf042f6265072075a94'
                 )
             )
@@ -300,7 +293,7 @@ describe('Bloom Filter', () => {
 
         // Validate the generated filter with the expected behavior
         keys.forEach((key) => {
-            expect(filter.contains(textEncoder.encode(key))).toBe(true);
+            expect(filter.contains(NFC.encode(key))).toBe(true);
         });
     });
 
@@ -314,7 +307,7 @@ describe('Bloom Filter', () => {
         const keys = ['🚀', '🌕', '\x00\x01\x02'];
 
         keys.forEach((key) => {
-            generator.add(textEncoder.encode(key));
+            generator.add(NFC.encode(key));
         });
 
         const bitsPerKey = 10;
@@ -328,7 +321,7 @@ describe('Bloom Filter', () => {
 
         // Validate the generated filter
         keys.forEach((key) => {
-            expect(filter.contains(textEncoder.encode(key))).toBe(true);
+            expect(filter.contains(NFC.encode(key))).toBe(true);
         });
     });
 
@@ -338,14 +331,14 @@ describe('Bloom Filter', () => {
     test('Should correctly handle empty string', () => {
         const generator = new bloom.Generator();
 
-        generator.add(textEncoder.encode('')); // Empty string
+        generator.add(NFC.encode('')); // Empty string
 
         const bitsPerKey = 10;
         const k = bloom.calculateK(bitsPerKey);
 
         const filter = generator.generate(bitsPerKey, k);
 
-        expect(filter.contains(textEncoder.encode(''))).toBe(true);
+        expect(filter.contains(NFC.encode(''))).toBe(true);
     });
 
     /**
@@ -356,7 +349,7 @@ describe('Bloom Filter', () => {
         const numKeys = 1000;
 
         for (let i = 0; i < numKeys; i++) {
-            generator.add(textEncoder.encode(`key${i}`));
+            generator.add(NFC.encode(`key${i}`));
         }
 
         const bitsPerKey = 10;
@@ -368,7 +361,7 @@ describe('Bloom Filter', () => {
         const numTests = 1000;
 
         for (let i = 0; i < numTests; i++) {
-            if (filter.contains(textEncoder.encode(`falseKey${i}`))) {
+            if (filter.contains(NFC.encode(`falseKey${i}`))) {
                 falsePositives++;
             }
         }

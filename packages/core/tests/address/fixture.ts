@@ -1,13 +1,13 @@
-import * as utils from '@noble/curves/abstract/utils';
+import * as n_utils from '@noble/curves/abstract/utils';
 
 /**
  * Simple private key and public key pair with corresponding address
  */
-const simplePrivateKey = utils.hexToBytes(
+const simplePrivateKey = n_utils.hexToBytes(
     '7582be841ca040aa940fff6c05773129e135623e41acce3e0b8ba520dc1ae26a'
 );
 
-const simpleUncompressedPublicKey = utils.hexToBytes(
+const simpleUncompressedPublicKey = n_utils.hexToBytes(
     '04b90e9bb2617387eba4502c730de65a33878ef384a46f1096d86f2da19043304afa67d0ad09cf2bea0c6f2d1767a9e62a7a7ecc41facf18f2fa505d92243a658f'
 );
 

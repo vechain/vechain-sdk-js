@@ -1,19 +1,12 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Hex, Hex0x } from '../utils';
-import { NORMALIZATION_FORM_CANONICAL_COMPOSITION } from '../utils/nfc/NFC';
+import { NFC } from '../utils/txt/txt';
 import { addressUtils } from '../address';
 import { assert, CERTIFICATE } from '@vechain/sdk-errors';
 import { blake2b256 } from '../hash';
 import { hexToBytes } from '@noble/curves/abstract/utils';
 import { secp256k1 } from '../secp256k1';
 import { type Certificate } from './types';
-
-/**
- * Used to encode strings into UInt8Array
- *
- * @see {https://developer.mozilla.org/en-US/docs/Web/API/TextEncoder TextEncoder}
- */
-const TEXT_ENCODER = new TextEncoder();
 
 /**
  * Encodes a certificate object to an array of bytes of its JSON representation after the following
@@ -38,7 +31,7 @@ const TEXT_ENCODER = new TextEncoder();
  * @see {verify}
  */
 function encode(cert: Certificate): Uint8Array {
-    return TEXT_ENCODER.encode(
+    return NFC.encode(
         // The following `fastJsonStableStringify` strips blank chars and serialize alphabetical sorted properties.
         fastJsonStableStringify({
             purpose: cert.purpose,
@@ -49,7 +42,7 @@ function encode(cert: Certificate): Uint8Array {
             domain: cert.domain,
             timestamp: cert.timestamp,
             signer: cert.signer.toLowerCase()
-        }).normalize(NORMALIZATION_FORM_CANONICAL_COMPOSITION)
+        })
     );
 }
 

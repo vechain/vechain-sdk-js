@@ -1,5 +1,5 @@
 import { Hex, Hex0x } from '../utils';
-import { NFC } from '../utils/nfc/NFC';
+import { NFC } from '../utils/txt/txt';
 import { assertIsValidReturnType } from '../assertions';
 import { blake2b } from '@noble/hashes/blake2b';
 import { buildError, DATA } from '@vechain/sdk-errors';
