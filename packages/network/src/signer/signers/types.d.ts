@@ -340,10 +340,6 @@ interface VeChainSigner {
     ) => Promise<string>;
 
     /**
-     * --- START: TEMPORARY COMMENT ---
-     * To be implemented in the future
-     * --- END: TEMPORARY COMMENT ---
-     *
      *  Signs an [[link-eip-191]] prefixed a personal message.
      *
      *  If the %%message%% is a string, it is signed as UTF-8 encoded bytes. It is **not**
@@ -356,10 +352,6 @@ interface VeChainSigner {
     signMessage: (message: string | Uint8Array) => Promise<string>;
 
     /**
-     * --- START: TEMPORARY COMMENT ---
-     * To be implemented in the future
-     * --- END: TEMPORARY COMMENT ---
-     *
      *  Signs the [[link-eip-712]] typed data.
      */
     signTypedData: (

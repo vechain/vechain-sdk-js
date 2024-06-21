@@ -307,8 +307,26 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         transactionToSend: TransactionRequestInput
     ): Promise<string>;
 
+    /**
+     * Signs an [[link-eip-191]] prefixed a personal message.
+     *
+     * @param {string|Uint8Array} message - The message to be signed.
+     *                                      If the %%message%% is a string, it is signed as UTF-8 encoded bytes.
+     *                                      It is **not** interpreted as a [[BytesLike]];
+     *                                      so the string ``"0x1234"`` is signed as six characters, **not** two bytes.
+     * @return {Promise<string>} - A Promise that resolves to the signature as a string.
+     */
     abstract signMessage(message: string | Uint8Array): Promise<string>;
 
+    /**
+     * Signs the [[link-eip-712]] typed data.
+     *
+     * @param {vechain_sdk_core_ethers.TypedDataDomain} domain - The domain parameters used for signing.
+     * @param {Record<string, vechain_sdk_core_ethers.TypedDataField[]>} types - The types used for signing.
+     * @param {Record<string, unknown>} value - The value data to be signed.
+     *
+     * @return {Promise<string>} - A promise that resolves with the signature string.
+     */
     abstract signTypedData(
         domain: vechain_sdk_core_ethers.TypedDataDomain,
         types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
