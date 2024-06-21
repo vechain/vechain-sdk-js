@@ -1,5 +1,5 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { NFC } from '../../../../../core/src/utils/txt/txt';
+import { txt } from '../../../../../core/src/utils/txt/txt';
 import { RPC_METHODS } from '../../../provider';
 import { VeChainAbstractSigner } from '../vechain-abstract-signer';
 import { assert, JSONRPC, TRANSACTION } from '@vechain/sdk-errors';
@@ -31,7 +31,7 @@ import {
  * This signer can be initialized using a private key.
  */
 class VeChainPrivateKeySigner extends VeChainAbstractSigner {
-    private readonly MESSAGE_PREFIX = NFC.encode(
+    private readonly MESSAGE_PREFIX = txt.encode(
         '\x19Ethereum Signed Message:\n'
     );
 
@@ -139,12 +139,12 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         return await new Promise((resolve, reject) => {
             try {
                 const body =
-                    typeof message === 'string' ? NFC.encode(message) : message;
+                    typeof message === 'string' ? txt.encode(message) : message;
                 const sign = secp256k1.sign(
                     keccak256(
                         n_utils.concatBytes(
                             this.MESSAGE_PREFIX,
-                            NFC.encode(String(body.length)),
+                            txt.encode(String(body.length)),
                             body
                         )
                     ),

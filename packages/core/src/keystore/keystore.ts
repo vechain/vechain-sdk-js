@@ -1,6 +1,6 @@
-import { NFKC } from '../utils/txt/txt';
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
 import { keystoreEthers, keystoreExperimental } from './cryptography';
+import { txt } from '../utils/txt/txt';
 import { type Keystore, type KeystoreAccount } from './types';
 
 /**
@@ -38,7 +38,7 @@ async function encrypt(
         });
 
     return EXPERIMENTAL_CRYPTOGRAPHY
-        ? keystoreExperimental.encrypt(privateKey, NFKC.encode(password))
+        ? keystoreExperimental.encrypt(privateKey, txt.encode(password))
         : await keystoreEthers.encrypt(privateKey, password);
 }
 
@@ -64,7 +64,7 @@ async function decrypt(
         });
 
     return EXPERIMENTAL_CRYPTOGRAPHY
-        ? keystoreExperimental.decrypt(keystore, NFKC.encode(password))
+        ? keystoreExperimental.decrypt(keystore, txt.encode(password))
         : await keystoreEthers.decrypt(keystore, password);
 }
 

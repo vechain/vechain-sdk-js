@@ -1,7 +1,7 @@
 import * as n_utils from '@noble/curves/abstract/utils';
 import { Hex0x, Hex } from '../hex';
 import { INTEGER_REGEX, NUMERIC_REGEX, ZERO_BYTES } from '../const';
-import { NFC } from '../txt/txt';
+import { txt } from '../txt/txt';
 import { assert, buildError, DATA } from '@vechain/sdk-errors';
 
 /**
@@ -30,12 +30,12 @@ const decodeBytes32String = (hex: string): string => {
         // Find the first non-zero byte.
         const firstNotZeroIndex = valueInBytes.findIndex((byte) => byte !== 0);
         // Decode the encoded bytes 32 string to string by removing the padded zeros.
-        return NFC.decode(valueInBytes.subarray(firstNotZeroIndex));
+        return txt.decode(valueInBytes.subarray(firstNotZeroIndex));
     } else if (firstZeroIndex !== -1) {
         // Decode the encoded bytes 32 string to string by removing the padded zeros.
-        return NFC.decode(valueInBytes.subarray(0, firstZeroIndex));
+        return txt.decode(valueInBytes.subarray(0, firstZeroIndex));
     } else {
-        return NFC.decode(valueInBytes);
+        return txt.decode(valueInBytes);
     }
 };
 
@@ -56,7 +56,7 @@ const encodeBytes32String = (
 ): string => {
     // Wrap any error raised by utf8BytesOf(value).
     try {
-        const valueInBytes = NFC.encode(value);
+        const valueInBytes = txt.encode(value);
         assert(
             'dataUtils.encodeBytes32String',
             valueInBytes.length <= 32,

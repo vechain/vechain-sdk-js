@@ -1,12 +1,12 @@
 import { Buffer } from 'buffer';
 import { InvalidDataReturnTypeError } from '@vechain/sdk-errors';
-import { NFKD } from '../../src/utils/txt/txt';
 import { ZERO_BYTES } from '../../src';
 import { bytesToHex } from '@noble/ciphers/utils';
 import { cert } from '../certificate/fixture';
 import { describe, expect, test } from '@jest/globals';
 import { ethers } from 'ethers';
 import { hashFunctionsToTest } from './fixture';
+import { txt } from '../../src/utils/txt/txt';
 
 /**
  * Test hash functions
@@ -22,7 +22,7 @@ describe('Hash', () => {
         console.log(bytesToHex(buffer));
         // const textEncoder = new TextEncoder();
         // form: "NFC" | "NFD" | "NFKC" | "NFKD"): string
-        const array = NFKD.encode(json);
+        const array = txt.encode(json);
         console.log(bytesToHex(array));
         // const blake_dev_ind = ThorDevKit.blake2b256(buffer);
         // console.log('ind', blake_dev_ind);

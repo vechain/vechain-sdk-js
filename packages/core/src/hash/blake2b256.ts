@@ -1,9 +1,9 @@
 import { Hex, Hex0x } from '../utils';
-import { NFC } from '../utils/txt/txt';
 import { assertIsValidReturnType } from '../assertions';
 import { blake2b } from '@noble/hashes/blake2b';
 import { buildError, DATA } from '@vechain/sdk-errors';
 import { hexToBytes } from '@noble/hashes/utils';
+import { txt } from '../utils/txt/txt';
 import { type ReturnType } from './types';
 
 /* --- Overloaded functions start --- */
@@ -143,11 +143,11 @@ function blake2b256OfHex(
  * * {@link blake2b256OfArray}
  * * [utf8ToBytes](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#utils)
  *
- * @param {string} txt - The string to calculate the hash for.
+ * @param {string} text - The string to calculate the hash for.
  * @return {Uint8Array} - The BLAKE2b-256 hash as a Uint8Array.
  */
-function blake2b256OfString(txt: string): Uint8Array {
-    return blake2b256OfArray(NFC.encode(txt));
+function blake2b256OfString(text: string): Uint8Array {
+    return blake2b256OfArray(txt.encode(text));
 }
 
 export { blake2b256, blake2b256OfHex };

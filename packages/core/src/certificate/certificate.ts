@@ -1,11 +1,11 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Hex, Hex0x } from '../utils';
-import { NFC } from '../utils/txt/txt';
 import { addressUtils } from '../address';
 import { assert, CERTIFICATE } from '@vechain/sdk-errors';
 import { blake2b256 } from '../hash';
 import { hexToBytes } from '@noble/curves/abstract/utils';
 import { secp256k1 } from '../secp256k1';
+import { txt } from '../utils/txt/txt';
 import { type Certificate } from './types';
 
 /**
@@ -25,13 +25,12 @@ import { type Certificate } from './types';
  *
  *
  * @see {NORMALIZATION_FORM_CANONICAL_COMPOSITION}
- * @see {TEXT_ENCODER}
  * @see {https://www.npmjs.com/package/fast-json-stable-stringify fastJsonStableStringify}
  * @see {sign}
  * @see {verify}
  */
 function encode(cert: Certificate): Uint8Array {
-    return NFC.encode(
+    return txt.encode(
         // The following `fastJsonStableStringify` strips blank chars and serialize alphabetical sorted properties.
         fastJsonStableStringify({
             purpose: cert.purpose,

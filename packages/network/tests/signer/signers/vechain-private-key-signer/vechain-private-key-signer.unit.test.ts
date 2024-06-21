@@ -4,7 +4,7 @@
  * @group integration/providers/vechain-provider
  */
 import * as n_utils from '@noble/curves/abstract/utils';
-import { NFC } from '../../../../../core/src/utils/txt/txt';
+import { txt } from '../../../../../core/src/utils/txt/txt';
 import { Hex, addressUtils, secp256k1 } from '@vechain/sdk-core';
 import { ethers } from 'ethers';
 import {
@@ -268,7 +268,7 @@ describe('VeChain base signer tests', () => {
         });
 
         test('signMessage - ethers compatible - uint8array', async () => {
-            const message = NFC.encode(EIP191_MESSAGE);
+            const message = txt.encode(EIP191_MESSAGE);
             const expected = await new ethers.Wallet(
                 EIP191_PRIVATE_KEY
             ).signMessage(message);

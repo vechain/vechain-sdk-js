@@ -1,5 +1,5 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { NFC } from '../../src/utils/txt/txt';
+import { txt } from '../../src/utils/txt/txt';
 import { keccak256 } from '../../src';
 
 /**
@@ -26,7 +26,7 @@ const signature = n_utils.hexToBytes(
  */
 const messageHashBuffer = keccak256('hello world');
 const validMessageHashes = [messageHashBuffer];
-const invalidMessageHashes = [NFC.encode('some_invalid_stuff')];
+const invalidMessageHashes = [txt.encode('some_invalid_stuff')];
 
 /**
  * Valid and invalid private keys

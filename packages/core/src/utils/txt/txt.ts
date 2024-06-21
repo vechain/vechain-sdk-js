@@ -2,44 +2,35 @@ const TEXT_DECODER = new TextDecoder();
 
 const TEXT_ENCODER = new TextEncoder();
 
-const NFC = {
+/**
+ * txt - A utility object for text encoding and decoding using the consistent
+ * [normalization form for canonical composition](https://en.wikipedia.org/wiki/Unicode_equivalence#Normal_forms).
+ * @namespace
+ */
+const txt = {
+    /**
+     * Decodes a Uint8Array content into a string, using the consistent
+     * [normalization form for canonical composition](https://en.wikipedia.org/wiki/Unicode_equivalence#Normal_forms).
+     *
+     * @param {Uint8Array} content - The Uint8Array content to decode.
+     * @returns {string} - The decoded string.
+     */
     decode: function (content: Uint8Array): string {
         return TEXT_DECODER.decode(content).normalize(
             NORMALIZATION_FORM_CANONICAL_COMPOSITION
         );
     },
 
-    encode: function (txt: string): Uint8Array {
+    /**
+     * Encodes the given text into a Uint8Array, using the consistent
+     * [normalization form for canonical composition](https://en.wikipedia.org/wiki/Unicode_equivalence#Normal_forms).
+     *
+     * @param {string} text - The text to encode.
+     * @returns {Uint8Array} - The encoded text as a Uint8Array.
+     */
+    encode: function (text: string): Uint8Array {
         return TEXT_ENCODER.encode(
-            txt.normalize(NORMALIZATION_FORM_CANONICAL_COMPOSITION)
-        );
-    }
-};
-
-const NFKC = {
-    decode: function (content: Uint8Array): string {
-        return TEXT_DECODER.decode(content).normalize(
-            NORMALIZATION_FORM_COMPATIBILITY_COMPOSITION
-        );
-    },
-
-    encode: function (txt: string): Uint8Array {
-        return TEXT_ENCODER.encode(
-            txt.normalize(NORMALIZATION_FORM_COMPATIBILITY_COMPOSITION)
-        );
-    }
-};
-
-const NFKD = {
-    decode: function (content: Uint8Array): string {
-        return TEXT_DECODER.decode(content).normalize(
-            NORMALIZATION_FORM_COMPATIBILITY_DECOMPOSITION
-        );
-    },
-
-    encode: function (txt: string): Uint8Array {
-        return TEXT_ENCODER.encode(
-            txt.normalize(NORMALIZATION_FORM_COMPATIBILITY_DECOMPOSITION)
+            text.normalize(NORMALIZATION_FORM_CANONICAL_COMPOSITION)
         );
     }
 };
@@ -54,22 +45,4 @@ const NFKD = {
  */
 const NORMALIZATION_FORM_CANONICAL_COMPOSITION = 'NFC';
 
-/**
- * The [normalization form for compatibility composition](https://en.wikipedia.org/wiki/Unicode_equivalence#Normal_forms).
- *
- * @constant {string} NORMALIZATION_FORM_COMPATIBILITY_COMPOSITION
- * @description This constant represents the normalization form 'NFKC'.
- *              Characters are decomposed by compatibility, then recomposed by canonical equivalence.
- */
-const NORMALIZATION_FORM_COMPATIBILITY_COMPOSITION = 'NFKC';
-
-/**
- * The [normalization form for compatibility decomposition](https://en.wikipedia.org/wiki/Unicode_equivalence#Normal_forms).
- *
- * @constant {string} NORMALIZATION_FORM_COMPATIBILITY_COMPOSITION
- * @description This constant represents the normalization form 'NFKD'.
- *              Characters are decomposed by compatibility, and multiple combining characters are arranged in a specific order.
- */
-const NORMALIZATION_FORM_COMPATIBILITY_DECOMPOSITION = 'NFKD';
-
-export { NFC, NFKC, NFKD };
+export { txt };
