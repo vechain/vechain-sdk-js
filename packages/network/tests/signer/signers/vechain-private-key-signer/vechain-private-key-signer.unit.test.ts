@@ -227,9 +227,10 @@ describe('VeChain base signer tests', () => {
                 provider
             );
             const name = 'address1.vet';
-            // eslint-disable-next-line @typescript-eslint/require-await
             jest.spyOn(vnsUtils, 'resolveName').mockImplementation(async () => {
-                return '0x0000000000000000000000000000000000000001';
+                return await Promise.resolve(
+                    '0x0000000000000000000000000000000000000001'
+                );
             });
             const address = await signer.resolveName(name);
             expect(address).toEqual(
