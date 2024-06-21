@@ -150,7 +150,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                     ),
                     new Uint8Array(this.privateKey)
                 );
-                // explain...
+                // SCP256K1 encodes the recovery flag in the last byte. EIP-191 adds 27 to it.
                 sign[sign.length - 1] += 27;
                 resolve(Hex0x.of(sign));
             } catch (e) {
@@ -187,7 +187,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                     hash,
                     new Uint8Array(this.privateKey)
                 );
-                // explain...
+                // SCP256K1 encodes the recovery flag in the last byte. EIP-712 adds 27 to it.
                 sign[sign.length - 1] += 27;
                 resolve(Hex0x.of(sign));
             } catch (e) {
