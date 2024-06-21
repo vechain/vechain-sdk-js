@@ -4,12 +4,15 @@
  * @group integration/providers/vechain-provider
  */
 import * as n_utils from '@noble/curves/abstract/utils';
-import { addressUtils, Hex } from '@vechain/sdk-core';
+import { NFC } from '../../../../../core/src/utils/txt/txt';
+import { Hex, addressUtils, secp256k1 } from '@vechain/sdk-core';
 import { ethers } from 'ethers';
 import {
+    EIP191_MESSAGE,
+    EIP191_PRIVATE_KEY,
+    eip712TestCases,
     populateCallTestCases,
-    populateCallTestCasesAccount,
-    eip712TestCases
+    populateCallTestCasesAccount
 } from './fixture';
 import { testnetUrl } from '../../../fixture';
 import {
@@ -224,10 +227,9 @@ describe('VeChain base signer tests', () => {
                 provider
             );
             const name = 'address1.vet';
+            // eslint-disable-next-line @typescript-eslint/require-await
             jest.spyOn(vnsUtils, 'resolveName').mockImplementation(async () => {
-                return await Promise.resolve(
-                    '0x0000000000000000000000000000000000000001'
-                );
+                return '0x0000000000000000000000000000000000000001';
             });
             const address = await signer.resolveName(name);
             expect(address).toEqual(
@@ -236,7 +238,49 @@ describe('VeChain base signer tests', () => {
         });
     });
 
-    describe('ethers compatible', () => {
+    describe('EIP-191', () => {
+        test('signMessage - invalid - simulate a signature error', async () => {
+            const signer = new VeChainPrivateKeySigner(
+                Buffer.from(
+                    n_utils.hexToBytes(
+                        Hex.canon(eip712TestCases.invalid.privateKey)
+                    )
+                ),
+                provider
+            );
+            jest.spyOn(secp256k1, 'sign').mockImplementationOnce(() => {
+                throw Error();
+            });
+            await expect(
+                signer.signMessage('Hello world!')
+            ).rejects.toThrowError();
+        });
+
+        test('signMessage - ethers compatible - string', async () => {
+            const expected = await new ethers.Wallet(
+                EIP191_PRIVATE_KEY
+            ).signMessage(EIP191_MESSAGE);
+            const actual = await new VeChainPrivateKeySigner(
+                Buffer.from(n_utils.hexToBytes(Hex.canon(EIP191_PRIVATE_KEY))),
+                provider
+            ).signMessage(EIP191_MESSAGE);
+            expect(actual).toBe(expected);
+        });
+
+        test('signMessage - ethers compatible - uint8array', async () => {
+            const message = NFC.encode(EIP191_MESSAGE);
+            const expected = await new ethers.Wallet(
+                EIP191_PRIVATE_KEY
+            ).signMessage(message);
+            const actual = await new VeChainPrivateKeySigner(
+                Buffer.from(n_utils.hexToBytes(Hex.canon(EIP191_PRIVATE_KEY))),
+                provider
+            ).signMessage(message);
+            expect(actual).toBe(expected);
+        });
+    });
+
+    describe('EIP-712', () => {
         test('signTypedData - invalid', async () => {
             const signer = new VeChainPrivateKeySigner(
                 Buffer.from(
@@ -255,7 +299,7 @@ describe('VeChain base signer tests', () => {
             ).rejects.toThrowError(TypeError);
         });
 
-        test('signTypedData - valid', async () => {
+        test('signTypedData - ethers compatible', async () => {
             const expected = await new ethers.Wallet(
                 eip712TestCases.valid.privateKey
             ).signTypedData(

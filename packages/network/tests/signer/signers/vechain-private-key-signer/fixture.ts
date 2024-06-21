@@ -312,6 +312,13 @@ const populateCallTestCases = {
     ]
 };
 
+// This is private for EIP-191 unit test cases only. Dummy key`'
+const EIP191_PRIVATE_KEY =
+    '0xc85ef7d79691fe79573b1a7064c19c1a9819ebdbd1faaab1a8ec92344438aaf3';
+
+// Used to challenge consistent test encoding.
+const EIP191_MESSAGE = 'Hello world! - こんにちは世界 - 👋🗺️!';
+
 // This is private for EIP-712 unit test cases only. Dummy key`'
 const EIP712_PRIVATE_KEY =
     '0xc85ef7d79691fe79573b1a7064c19c1a9819ebdbd1faaab1a8ec92344438aaf4';
@@ -415,8 +422,10 @@ const eip712TestCases = {
 };
 
 export {
+    EIP191_MESSAGE,
+    EIP191_PRIVATE_KEY,
+    eip712TestCases,
     populateCallTestCasesAccount,
     populateCallTestCases,
-    signTransactionTestCases,
-    eip712TestCases
+    signTransactionTestCases
 };
