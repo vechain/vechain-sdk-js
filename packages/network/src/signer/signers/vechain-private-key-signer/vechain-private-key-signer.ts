@@ -124,6 +124,17 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         })) as string;
     }
 
+    /**
+     * Signs an [EIP-191](https://eips.ethereum.org/EIPS/eip-191) prefixed a personal message.
+     *
+     * This function is a drop-in replacement for {@link ethers.BaseWallet.signMessage} function.
+     *
+     * @param {string|Uint8Array} message - The message to be signed.
+     *                                      If the %%message%% is a string, it is signed as UTF-8 encoded bytes.
+     *                                      It is **not** interpreted as a [[BytesLike]];
+     *                                      so the string ``"0x1234"`` is signed as six characters, **not** two bytes.
+     * @return {Promise<string>} - A Promise that resolves to the signature as a string.
+     */
     async signMessage(message: string | Uint8Array): Promise<string> {
         return await new Promise((resolve, reject) => {
             try {
@@ -148,6 +159,18 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         });
     }
 
+    /**
+     * Signs the [[link-eip-712]] typed data.
+     *
+     * This function is a drop-in replacement for {@link ethers.BaseWallet.signTypedData} function,
+     * albeit Ethereum Name Services are not resolved because he resolution depends on **ethers** provider implementation.
+     *
+     * @param {ethers.TypedDataDomain} domain - The domain parameters used for signing.
+     * @param {Record<string, ethers.TypedDataField[]>} types - The types used for signing.
+     * @param {Record<string, unknown>} value - The value data to be signed.
+     *
+     * @return {Promise<string>} - A promise that resolves with the signature string.
+     */
     async signTypedData(
         domain: vechain_sdk_core_ethers.TypedDataDomain,
         types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
