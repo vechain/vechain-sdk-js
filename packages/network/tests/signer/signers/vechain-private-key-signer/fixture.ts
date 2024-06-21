@@ -14,6 +14,34 @@ import {
     TransactionDelegationError
 } from '@vechain/sdk-errors';
 
+interface TestCaseTypedDataDomain {
+    name?: string;
+    version?: string;
+    chainId?: number;
+    verifyingContract?: string;
+    salt?: string;
+}
+
+interface TestCaseTypedDataType {
+    name: string;
+    type: string;
+}
+
+interface TestCaseTypedData {
+    name: string;
+
+    domain: TestCaseTypedDataDomain;
+    primaryType: string;
+    types: Record<string, TestCaseTypedDataType[]>;
+    data: Record<string, unknown>;
+
+    encoded: string;
+    digest: string;
+
+    privateKey: string;
+    signature: string;
+}
+
 /**
  * SignTransaction test cases
  * Has both correct and incorrect for solo and an example of using delegatorUrl on testnet
@@ -284,8 +312,111 @@ const populateCallTestCases = {
     ]
 };
 
+// This is private for EIP-712 unit test cases only. Dummy key`'
+const EIP712_PRIVATE_KEY =
+    '0xc85ef7d79691fe79573b1a7064c19c1a9819ebdbd1faaab1a8ec92344438aaf4';
+
+// This is private for EIP-712 unit test case only. Dummy address.
+const EIP712_CONTRACT = '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC';
+
+// This is private for EIP-712 unit test case only. Dummy address.
+const EIP712_FROM = '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826';
+
+// This is private for EIP-712 unit test case only. Dummy address.
+const EIP712_TO = '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB';
+
+const eip712TestCases = {
+    invalid: {
+        name: 'EIP712 example',
+        domain: {
+            name: 'Ether Mail',
+            version: '1',
+            chainId: 1,
+            verifyingContract: EIP712_CONTRACT
+        },
+        primaryType: 'Mail',
+        types: {
+            Mail: [
+                {
+                    name: 'from',
+                    type: 'invalid'
+                }
+            ]
+        },
+        data: {
+            from: {
+                name: 'Cow',
+                wallet: EIP712_FROM
+            },
+            to: {
+                name: 'Bob',
+                wallet: EIP712_TO
+            },
+            contents: 'Hello, Bob!'
+        },
+        encoded: 'ignored',
+        digest: 'ignored',
+        privateKey: EIP712_PRIVATE_KEY,
+        signature: 'ignored'
+    } satisfies TestCaseTypedData,
+    valid: {
+        name: 'EIP712 example',
+        domain: {
+            name: 'Ether Mail',
+            version: '1',
+            chainId: 1,
+            verifyingContract: EIP712_CONTRACT
+        },
+        primaryType: 'Mail',
+        types: {
+            Person: [
+                {
+                    name: 'name',
+                    type: 'string'
+                },
+                {
+                    name: 'wallet',
+                    type: 'address'
+                }
+            ],
+            Mail: [
+                {
+                    name: 'from',
+                    type: 'Person'
+                },
+                {
+                    name: 'to',
+                    type: 'Person'
+                },
+                {
+                    name: 'contents',
+                    type: 'string'
+                }
+            ]
+        },
+        data: {
+            from: {
+                name: 'Cow',
+                wallet: EIP712_FROM
+            },
+            to: {
+                name: 'Bob',
+                wallet: EIP712_TO
+            },
+            contents: 'Hello, Bob!'
+        },
+        encoded:
+            '0xa0cedeb2dc280ba39b857546d74f5549c3a1d7bdc2dd96bf881f76108e23dac2fc71e5fa27ff56c350aa531bc129ebdf613b772b6604664f5d8dbe21b85eb0c8cd54f074a4af31b4411ff6a60c9719dbd559c221c8ac3492d9d872b041d703d1b5aadf3154a261abdd9086fc627b61efca26ae5702701d05cd2305f7c52a2fc8',
+        digest: '0xbe609aee343fb3c4b28e1df9e632fca64fcfaede20f02e86244efddf30957bd2',
+        privateKey: EIP712_PRIVATE_KEY,
+        signature:
+            '0x4355c47d63924e8a72e509b65029052eb6c299d53a04e167c5775fd466751c9d07299936d304c153f6443dfa05f40ff007d72911b6f72307f996231605b915621c'
+    } satisfies TestCaseTypedData
+};
+
 export {
     populateCallTestCasesAccount,
     populateCallTestCases,
-    signTransactionTestCases
+    signTransactionTestCases,
+    eip712TestCases
 };

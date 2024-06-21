@@ -4,10 +4,14 @@
  * @group integration/providers/vechain-provider
  */
 import * as n_utils from '@noble/curves/abstract/utils';
-import { ALL_ACCOUNTS, testnetUrl } from '../../../fixture';
-import { ethers } from 'ethers';
 import { addressUtils, Hex } from '@vechain/sdk-core';
-import { populateCallTestCases, populateCallTestCasesAccount } from './fixture';
+import { ethers } from 'ethers';
+import {
+    populateCallTestCases,
+    populateCallTestCasesAccount,
+    eip712TestCases
+} from './fixture';
+import { testnetUrl } from '../../../fixture';
 import {
     afterEach,
     beforeEach,
@@ -22,89 +26,6 @@ import {
     VeChainProvider,
     vnsUtils
 } from '../../../../src/';
-
-interface TestCaseTypedDataDomain {
-    name?: string;
-    version?: string;
-    chainId?: number;
-    verifyingContract?: string;
-    salt?: string;
-}
-
-interface TestCaseTypedDataType {
-    name: string;
-    type: string;
-}
-
-interface TestCaseTypedData {
-    name: string;
-
-    domain: TestCaseTypedDataDomain;
-    primaryType: string;
-    types: Record<string, TestCaseTypedDataType[]>;
-    data: Record<string, unknown>;
-
-    encoded: string;
-    digest: string;
-
-    privateKey: string;
-    signature: string;
-}
-
-const testCaseTypedData: TestCaseTypedData = {
-    name: 'EIP712 example',
-    domain: {
-        name: 'Ether Mail',
-        version: '1',
-        chainId: 1,
-        verifyingContract: '0xCcCCccccCCCCcCCCCCCcCcCccCcCCCcCcccccccC'
-    },
-    primaryType: 'Mail',
-    types: {
-        Person: [
-            {
-                name: 'name',
-                type: 'string'
-            },
-            {
-                name: 'wallet',
-                type: 'address'
-            }
-        ],
-        Mail: [
-            {
-                name: 'from',
-                type: 'Person'
-            },
-            {
-                name: 'to',
-                type: 'Person'
-            },
-            {
-                name: 'contents',
-                type: 'string'
-            }
-        ]
-    },
-    data: {
-        from: {
-            name: 'Cow',
-            wallet: '0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826'
-        },
-        to: {
-            name: 'Bob',
-            wallet: '0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB'
-        },
-        contents: 'Hello, Bob!'
-    },
-    encoded:
-        '0xa0cedeb2dc280ba39b857546d74f5549c3a1d7bdc2dd96bf881f76108e23dac2fc71e5fa27ff56c350aa531bc129ebdf613b772b6604664f5d8dbe21b85eb0c8cd54f074a4af31b4411ff6a60c9719dbd559c221c8ac3492d9d872b041d703d1b5aadf3154a261abdd9086fc627b61efca26ae5702701d05cd2305f7c52a2fc8',
-    digest: '0xbe609aee343fb3c4b28e1df9e632fca64fcfaede20f02e86244efddf30957bd2',
-    privateKey:
-        '0xc85ef7d79691fe79573b1a7064c19c1a9819ebdbd1faaab1a8ec92344438aaf4',
-    signature:
-        '0x4355c47d63924e8a72e509b65029052eb6c299d53a04e167c5775fd466751c9d07299936d304c153f6443dfa05f40ff007d72911b6f72307f996231605b915621c'
-};
 
 /**
  *VeChain base signer tests
@@ -316,41 +237,46 @@ describe('VeChain base signer tests', () => {
     });
 
     describe('ethers compatible', () => {
-        test('signMessage', async () => {
-            const privateKey = ALL_ACCOUNTS[0].privateKey;
-            const message = 'Hello world!';
-            const expected = await new ethers.Wallet(privateKey).signMessage(
-                message
-            );
-            const actual = await new VeChainPrivateKeySigner(
-                Buffer.from(n_utils.hexToBytes(privateKey)),
+        test('signTypedData - invalid', async () => {
+            const signer = new VeChainPrivateKeySigner(
+                Buffer.from(
+                    n_utils.hexToBytes(
+                        Hex.canon(eip712TestCases.invalid.privateKey)
+                    )
+                ),
                 provider
-            ).signMessage(message);
-            expect(actual).toBe(expected);
+            );
+            await expect(
+                signer.signTypedData(
+                    eip712TestCases.invalid.domain,
+                    eip712TestCases.invalid.types,
+                    eip712TestCases.invalid.data
+                )
+            ).rejects.toThrowError(TypeError);
         });
 
-        test('signTypedData', async () => {
+        test('signTypedData - valid', async () => {
             const expected = await new ethers.Wallet(
-                testCaseTypedData.privateKey
+                eip712TestCases.valid.privateKey
             ).signTypedData(
-                testCaseTypedData.domain,
-                testCaseTypedData.types,
-                testCaseTypedData.data
+                eip712TestCases.valid.domain,
+                eip712TestCases.valid.types,
+                eip712TestCases.valid.data
             );
-            console.log(expected);
-            expect(expected).toBe(testCaseTypedData.signature);
+            expect(expected).toBe(eip712TestCases.valid.signature);
             const actual = await new VeChainPrivateKeySigner(
                 Buffer.from(
-                    n_utils.hexToBytes(Hex.canon(testCaseTypedData.privateKey))
+                    n_utils.hexToBytes(
+                        Hex.canon(eip712TestCases.valid.privateKey)
+                    )
                 ),
                 provider
             ).signTypedData(
-                testCaseTypedData.domain,
-                testCaseTypedData.types,
-                testCaseTypedData.data
+                eip712TestCases.valid.domain,
+                eip712TestCases.valid.types,
+                eip712TestCases.valid.data
             );
-            console.log(actual);
-            // assert.equal(expected, signature, 'signature');
+            expect(actual).toBe(expected);
         });
     });
 });
