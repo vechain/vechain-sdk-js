@@ -4,7 +4,6 @@ module.exports = {
     testEnvironment: '../../customEnv.js',
     setupFiles: ['./jest.browser-setup.js'],
     testPathIgnorePatterns: [
-        'subscriptions',
         'tests/utils/poll/event/event-poll.unit.test.ts',
         'tests/utils/http/http-client.solo.test.ts',
         'http-client.testnet.test.ts'
