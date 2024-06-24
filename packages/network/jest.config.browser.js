@@ -2,6 +2,7 @@
 module.exports = {
     preset: 'ts-jest',
     testEnvironment: '../../customEnv.js',
+    setupFiles: ['./jest.browser-setup.js'],
     testPathIgnorePatterns: [
         'tests/utils/poll/event/event-poll.unit.test.ts',
         'tests/utils/http/http-client.solo.test.ts',
