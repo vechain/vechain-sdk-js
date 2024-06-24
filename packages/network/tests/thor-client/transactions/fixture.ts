@@ -476,6 +476,13 @@ const getRevertReasonTestCasesFixture = [
         revertedTransactionHash:
             '0x00000000000000000000000d4c0c5cee01876960000000000000000000000000',
         expected: null
+    },
+    {
+        description: 'Should be able to read solidity errors',
+        revertedTransactionHash:
+            '0x8f443452163e8fbd17ea9b541baba5a633c25f7f28e1523f18ddbae16440d6e5',
+        expected: '0 input is not allowed',
+        errorFragment: 'error SimpleSolidityError(string message)'
     }
 ];
 

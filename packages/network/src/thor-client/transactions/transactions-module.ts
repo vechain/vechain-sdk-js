@@ -26,8 +26,8 @@ import {
     type SimulateTransactionClause,
     type SimulateTransactionOptions,
     type TransactionBodyOptions,
-    type TransactionDetail,
     type TransactionDetailNoRaw,
+    type TransactionDetailRaw,
     type TransactionReceipt,
     type TransactionSimulationResult,
     type WaitForTransactionOptions
@@ -37,6 +37,7 @@ import { type ThorClient } from '../thor-client';
 import { type ExpandedBlockDetail } from '../blocks';
 import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
 import { type CallNameReturnType } from '../debug';
+import { ethers } from 'ethers';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -59,7 +60,7 @@ class TransactionsModule {
     public async getTransaction(
         id: string,
         options?: GetTransactionInputOptions
-    ): Promise<TransactionDetail | null> {
+    ): Promise<TransactionDetailNoRaw | null> {
         // Invalid transaction ID
         assertValidTransactionID('getTransaction', id);
 
@@ -71,12 +72,42 @@ class TransactionsModule {
             thorest.transactions.get.TRANSACTION(id),
             {
                 query: buildQuery({
-                    raw: options?.raw,
+                    raw: false,
                     head: options?.head,
                     pending: options?.pending
                 })
             }
-        )) as TransactionDetail | null;
+        )) as TransactionDetailNoRaw | null;
+    }
+
+    /**
+     * Retrieves the details of a transaction.
+     *
+     * @param id - Transaction ID of the transaction to retrieve.
+     * @param options - (Optional) Other optional parameters for the request.
+     * @returns A promise that resolves to the details of the transaction.
+     */
+    public async getTransactionRaw(
+        id: string,
+        options?: GetTransactionInputOptions
+    ): Promise<TransactionDetailRaw | null> {
+        // Invalid transaction ID
+        assertValidTransactionID('getTransaction', id);
+
+        // Invalid head
+        assertValidTransactionHead('getTransaction', options?.head);
+
+        return (await this.thor.httpClient.http(
+            'GET',
+            thorest.transactions.get.TRANSACTION(id),
+            {
+                query: buildQuery({
+                    raw: true,
+                    head: options?.head,
+                    pending: options?.pending
+                })
+            }
+        )) as TransactionDetailRaw | null;
     }
 
     /**
@@ -376,10 +407,14 @@ class TransactionsModule {
      * Decode the revert reason from the encoded revert reason into a transaction.
      *
      * @param encodedRevertReason - The encoded revert reason to decode.
+     * @param errorFragment - (Optional) The error fragment to use to decode the revert reason (For Solidity custom errors).
      * @returns A promise that resolves to the decoded revert reason.
      * Revert reason can be a string error or Panic(error_code)
      */
-    public decodeRevertReason(encodedRevertReason: string): string {
+    public decodeRevertReason(
+        encodedRevertReason: string,
+        errorFragment?: string
+    ): string {
         // Error selector
         if (encodedRevertReason.startsWith(ERROR_SELECTOR))
             return abi.decode<string>(
@@ -395,6 +430,22 @@ class TransactionsModule {
             return `Panic(0x${parseInt(decoded).toString(16).padStart(2, '0')})`;
         }
 
+        // Solidity error
+        else {
+            // An error fragment is provided, so decode the revert reason using solidity error
+            if (errorFragment !== undefined) {
+                const errorInterface = new ethers.Interface([
+                    ethers.ErrorFragment.from(errorFragment)
+                ]);
+                return errorInterface
+                    .decodeErrorResult(
+                        ethers.ErrorFragment.from(errorFragment),
+                        encodedRevertReason
+                    )
+                    .toArray()[0] as string;
+            }
+        }
+
         // Unknown revert reason (we know ONLY that transaction is reverted)
         return ``;
     }
@@ -403,19 +454,19 @@ class TransactionsModule {
      * Get the revert reason of an existing transaction.
      *
      * @param transactionHash - The hash of the transaction to get the revert reason for.
+     * @param errorFragment - (Optional) The error fragment to use to decode the revert reason (For Solidity custom errors).
      * @returns A promise that resolves to the revert reason of the transaction.
      */
     public async getRevertReason(
-        transactionHash: string
+        transactionHash: string,
+        errorFragment?: string
     ): Promise<string | null> {
         // 1 - Init Blocks and Debug modules
         const blocksModule = this.thor.blocks;
         const debugModule = this.thor.debug;
 
         // 2 - Get the transaction details
-        const transaction = (await this.getTransaction(
-            transactionHash
-        )) as TransactionDetailNoRaw;
+        const transaction = await this.getTransaction(transactionHash);
 
         // 3 - Get the block details (to get the transaction index)
         const block =
@@ -458,7 +509,10 @@ class TransactionsModule {
 
             // 5.2 - Error or panic present, so decode the revert reason
             if (debuggedClause.output !== undefined) {
-                return this.decodeRevertReason(debuggedClause.output);
+                return this.decodeRevertReason(
+                    debuggedClause.output,
+                    errorFragment
+                );
             }
         }
 
