@@ -15,7 +15,7 @@ To break it down:
 ## Example: Signing and Decoding
 In this example a simple transaction with a single clause is created, signed, encoded and then decoded
 
-```typescript { name=sign_decode, category=example }
+```typescript { name=sign-decode, category=example }
 // 1 - Define clauses
 
 const clauses: TransactionClause[] = [
@@ -65,7 +65,7 @@ const decodedTx = TransactionHandler.decode(encodedRaw, true);
 In VeChainThor blockchain a transaction can be composed of multiple clauses. \
 Clauses allow to send multiple payloads to different recipients within a single transaction.
 
-```typescript { name=multiple_clauses, category=example }
+```typescript { name=multiple-clauses, category=example }
 // 1 - Define multiple clauses
 
 const clauses: TransactionClause[] = [
@@ -119,7 +119,7 @@ const decodedTx = TransactionHandler.decode(encodedRaw, true);
 ## Example: Fee Delegation
 Fee delegation is a feature on the VeChainThor blockchain which enables the transaction sender to request another entity, a sponsor, to pay for the transaction fee on the sender's behalf.
 
-```typescript { name=fee_delegation, category=example }
+```typescript { name=fee-delegation, category=example }
 // Sender account with private key
 const senderAccount = {
     privateKey:
@@ -193,7 +193,7 @@ const decodedTx = TransactionHandler.decode(encodedRaw, true);
 ## Example: BlockRef and Expiration
 Using the _BlockRef_ and _Expiration_ fields a transaction can be set to be processed or expired by a particular block. _BlockRef_ should match the first eight bytes of the ID of the block. The sum of _BlockRef_ and _Expiration_ defines the height of the last block that the transaction can be included.
 
-```typescript { name=blockref_expiration, category=example }
+```typescript { name=blockref-expiration, category=example }
 // 1 - Define clauses
 
 const clauses: TransactionClause[] = [
