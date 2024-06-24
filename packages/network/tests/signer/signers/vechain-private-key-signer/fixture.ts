@@ -14,6 +14,11 @@ import {
     TransactionDelegationError
 } from '@vechain/sdk-errors';
 
+/**
+ * This interface clones the `TestCaseTypedDataDomain` interface in
+ * [test-wallet.ts](https://github.com/ethers-io/ethers.js/blob/main/src.ts/_tests/test-wallet.ts)
+ * to implement [ethers](https://github.com/ethers-io/ethers.js) compatibility tests.
+ */
 interface TestCaseTypedDataDomain {
     name?: string;
     version?: string;
@@ -22,11 +27,21 @@ interface TestCaseTypedDataDomain {
     salt?: string;
 }
 
+/**
+ * This interface clones the `TestCaseTypedDataType` interface in
+ * [test-wallet.ts](https://github.com/ethers-io/ethers.js/blob/main/src.ts/_tests/test-wallet.ts)
+ * to implement [ethers](https://github.com/ethers-io/ethers.js) compatibility tests.
+ */
 interface TestCaseTypedDataType {
     name: string;
     type: string;
 }
 
+/**
+ * This interface clones the `TestCaseTypedData` interface in
+ * [test-wallet.ts](https://github.com/ethers-io/ethers.js/blob/main/src.ts/_tests/test-wallet.ts)
+ * to implement [ethers](https://github.com/ethers-io/ethers.js) compatibility tests.
+ */
 interface TestCaseTypedData {
     name: string;
 
