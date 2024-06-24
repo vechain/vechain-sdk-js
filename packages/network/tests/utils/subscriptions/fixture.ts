@@ -271,7 +271,7 @@ async function testWebSocketConnection(url: string): Promise<boolean> {
         };
 
         ws.onerror = (error: Event) => {
-            reject(error);
+            reject(new Error('WebSocket connection error'));
         };
 
         ws.onclose = (event: CloseEvent) => {
