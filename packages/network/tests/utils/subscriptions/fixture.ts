@@ -261,10 +261,12 @@ const getVETtransfersSubscriptionUrlTestCases = [
  */
 async function testWebSocketConnection(url: string): Promise<boolean> {
     return await new Promise((resolve, reject) => {
-        const isBrowser: boolean = typeof window?.document !== 'undefined';
-        const ws: WebSocket | NodeWebSocket = isBrowser
-            ? new WebSocket(url)
-            : new NodeWebSocket(url);
+        let ws: WebSocket | NodeWebSocket;
+        if (typeof WebSocket !== 'undefined') {
+            ws = new WebSocket(url);
+        } else {
+            ws = new NodeWebSocket(url);
+        }
 
         ws.onopen = () => {
             ws.close();

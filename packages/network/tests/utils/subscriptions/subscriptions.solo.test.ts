@@ -30,7 +30,6 @@ import {
 } from '@vechain/sdk-core';
 
 const TIMEOUT = 15000; // 15-second timeout
-const isBrowser: boolean = typeof window?.document !== 'undefined';
 
 /**
  * Test suite for the Subscriptions utility methods for listening to events obtained through a websocket connection.
@@ -67,11 +66,13 @@ describe('Subscriptions Solo network tests', () => {
         'Should receive new blocks from the block subscription',
         async () => {
             const wsURL = subscriptions.getBlockSubscriptionUrl(soloUrl);
-            const isBrowser: boolean = typeof window?.document !== 'undefined';
 
-            const ws: WebSocket | NodeWebSocket = isBrowser
-                ? new WebSocket(wsURL)
-                : new NodeWebSocket(wsURL);
+            let ws: WebSocket | NodeWebSocket;
+            if (typeof WebSocket !== 'undefined') {
+                ws = new WebSocket(wsURL);
+            } else {
+                ws = new NodeWebSocket(wsURL);
+            }
 
             await new Promise((resolve, reject) => {
                 const timeout = setTimeout(() => {
@@ -139,9 +140,12 @@ describe('Subscriptions Solo network tests', () => {
             );
 
             // Create a WebSocket connection
-            const ws: WebSocket | NodeWebSocket = isBrowser
-                ? new WebSocket(wsURL)
-                : new NodeWebSocket(wsURL);
+            let ws: WebSocket | NodeWebSocket;
+            if (typeof WebSocket !== 'undefined') {
+                ws = new WebSocket(wsURL);
+            } else {
+                ws = new NodeWebSocket(wsURL);
+            }
 
             // Set up a promise to handle WebSocket messages
             const waitForMessage = new Promise((resolve, reject) => {
@@ -241,9 +245,12 @@ describe('Subscriptions Solo network tests', () => {
                 .address
         });
 
-        const ws: WebSocket | NodeWebSocket = isBrowser
-            ? new WebSocket(wsURL)
-            : new NodeWebSocket(wsURL);
+        let ws: WebSocket | NodeWebSocket;
+        if (typeof WebSocket !== 'undefined') {
+            ws = new WebSocket(wsURL);
+        } else {
+            ws = new NodeWebSocket(wsURL);
+        }
 
         const waitForMessage = new Promise((resolve, reject) => {
             ws.onopen = () => {
