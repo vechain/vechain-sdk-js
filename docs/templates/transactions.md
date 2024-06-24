@@ -36,7 +36,7 @@ Using the _BlockRef_ and _Expiration_ fields a transaction can be set to be proc
 ## Example: Transaction Dependency
 A transaction can be set to only be processed after another transaction, therefore defining an execution order for transactions. The _DependsOn_ field is the Id of the transaction on which the current transaction depends on. If the transaction does not depend on others _DependsOn_ can be set to _null_
 
-[TxDependencySnippet](examples/transactions/tx_dependency.ts)
+[TxDependencySnippet](examples/transactions/tx-dependency.ts)
 
 ## Example: Transaction Simulation
 Simulation can be used to check if a transaction will fail before sending it. It can also be used to determine the gas cost of the transaction.
@@ -65,6 +65,13 @@ By examining these complete examples, developers can gain a comprehensive unders
 # Errors handling on transactions
 You can find the transaction revert reason by using `getRevertReason` method with the transaction hash.
 
-[RevertReasonSnippet](examples/transactions/revert_reason.ts)
+[RevertReasonSnippet](examples/transactions/revert-reason.ts)
 
 This method will return the revert reason of the transaction if it failed, otherwise it will return `null`.
+
+### Decoding revert reason when simulating a transaction
+Even when using the `simulateTransaction` method you can find the revert reason.
+
+[RevertReasonSimulationSnippet](examples/transactions/revert-reason-with-simulation.ts)
+
+In this case there is only a `TransactionSimulationResult`, so no need to loop.

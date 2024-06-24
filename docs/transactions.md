@@ -239,7 +239,7 @@ const decodedTx = TransactionHandler.decode(encodedRaw, true);
 ## Example: Transaction Dependency
 A transaction can be set to only be processed after another transaction, therefore defining an execution order for transactions. The _DependsOn_ field is the Id of the transaction on which the current transaction depends on. If the transaction does not depend on others _DependsOn_ can be set to _null_
 
-```typescript { name=tx_dependency, category=example }
+```typescript { name=tx-dependency, category=example }
 // 1 - Define transaction clauses
 
 const txAClauses: TransactionClause[] = [
@@ -683,7 +683,7 @@ By examining these complete examples, developers can gain a comprehensive unders
 # Errors handling on transactions
 You can find the transaction revert reason by using `getRevertReason` method with the transaction hash.
 
-```typescript { name=revert_reason, category=example }
+```typescript { name=revert-reason, category=example }
 // Define transaction id's
 const transactionHash =
     '0x0a5177fb83346bb6ff7ca8408889f0c99f44b2b1b5c8bf6f0eb53c4b2e81d98d';
@@ -695,3 +695,29 @@ console.log(revertReason);
 ```
 
 This method will return the revert reason of the transaction if it failed, otherwise it will return `null`.
+
+### Decoding revert reason when simulating a transaction
+Even when using the `simulateTransaction` method you can find the revert reason.
+
+```typescript { name=revert-reason-with-simulation, category=example }
+const simulatedTx: TransactionSimulationResult[] = await thorSoloClient.transactions.simulateTransaction(
+    [
+        {
+            to: '0x0000000000000000000000000000456e65726779',
+            value: '0',
+            data: coder.encodeFunctionInput(
+                energy_abi,
+                'transfer',
+                [
+                    '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+                    unitsUtils.parseVET('1000000000')
+                ]
+            )
+        }
+    ]
+);
+
+const revertReason = await thorSoloClient.transactions.decodeRevertReason(simulatedTx[0].data);
+```
+
+In this case there is only a `TransactionSimulationResult`, so no need to loop.
