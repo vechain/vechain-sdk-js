@@ -1,6 +1,7 @@
 import { generateRandomValidAddress } from '../../../../core/tests/fixture';
 import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
 import { TESTING_CONTRACT_ADDRESS } from '../../fixture';
+// eslint-disable-next-line import/no-named-default
 import { default as NodeWebSocket } from 'ws';
 
 /**
@@ -259,9 +260,9 @@ const getVETtransfersSubscriptionUrlTestCases = [
  * @returns A promise that resolves to true if the connection is valid, false otherwise.
  */
 async function testWebSocketConnection(url: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-        const isBrowser: boolean = typeof window !== 'undefined' && typeof window.document !== 'undefined';
-        let ws: WebSocket | NodeWebSocket = isBrowser
+    return await new Promise((resolve, reject) => {
+        const isBrowser: boolean = typeof window?.document !== 'undefined';
+        const ws: WebSocket | NodeWebSocket = isBrowser
             ? new WebSocket(url)
             : new NodeWebSocket(url);
 
@@ -270,13 +271,15 @@ async function testWebSocketConnection(url: string): Promise<boolean> {
             resolve(true);
         };
 
-        ws.onerror = (error: Event) => {
-            reject(new Error('WebSocket connection error'));
+        ws.onerror = () => {
+            reject(new Error('WebSocket connection error: '));
         };
 
         ws.onclose = (event: CloseEvent) => {
             if (event.wasClean) {
-                console.log(`Closed cleanly, code=${event.code} reason=${event.reason}`);
+                console.log(
+                    `Closed cleanly, code=${event.code} reason=${event.reason}`
+                );
             } else {
                 console.log('Connection died');
                 reject(new Error('Connection closed unexpectedly'));

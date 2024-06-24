@@ -17,6 +17,7 @@ import {
     TESTING_CONTRACT_ADDRESS,
     THOR_SOLO_ACCOUNTS_BASE_WALLET
 } from '../../fixture';
+// eslint-disable-next-line import/no-named-default
 import { default as NodeWebSocket } from 'ws';
 import {
     addressUtils,
@@ -29,7 +30,7 @@ import {
 } from '@vechain/sdk-core';
 
 const TIMEOUT = 15000; // 15-second timeout
-const isBrowser: boolean = typeof window !== 'undefined' && typeof window.document !== 'undefined';
+const isBrowser: boolean = typeof window?.document !== 'undefined';
 
 /**
  * Test suite for the Subscriptions utility methods for listening to events obtained through a websocket connection.
@@ -66,7 +67,7 @@ describe('Subscriptions Solo network tests', () => {
         'Should receive new blocks from the block subscription',
         async () => {
             const wsURL = subscriptions.getBlockSubscriptionUrl(soloUrl);
-            const isBrowser: boolean = typeof window !== 'undefined' && typeof window.document !== 'undefined';
+            const isBrowser: boolean = typeof window?.document !== 'undefined';
 
             const ws: WebSocket | NodeWebSocket = isBrowser
                 ? new WebSocket(wsURL)
@@ -86,7 +87,10 @@ describe('Subscriptions Solo network tests', () => {
                     clearTimeout(timeout); // Clear the timeout on receiving a message
                     ws.close(); // Close the WebSocket connection
 
-                    const data = event.data;
+                    const data: string =
+                        typeof event.data === 'string'
+                            ? event.data
+                            : JSON.stringify(event.data);
                     expect(data).toBeDefined(); // Basic assertion to ensure data is received
                     expect(data).not.toBeNull(); // Basic assertion to ensure data is received
 
@@ -146,11 +150,12 @@ describe('Subscriptions Solo network tests', () => {
                 };
 
                 ws.onmessage = (event: MessageEvent) => {
-                    const data = event.data;
+                    const data: string =
+                        typeof event.data === 'string'
+                            ? event.data
+                            : JSON.stringify(event.data);
                     try {
-                        const log = JSON.parse(
-                            data.toString()
-                        ) as EventLogs;
+                        const log = JSON.parse(data) as EventLogs;
                         expect(log).toBeDefined(); // Your assertion here
 
                         const decodedLog =
@@ -246,11 +251,12 @@ describe('Subscriptions Solo network tests', () => {
             };
 
             ws.onmessage = (event: MessageEvent) => {
-                const data = event.data;
+                const data: string =
+                    typeof event.data === 'string'
+                        ? event.data
+                        : JSON.stringify(event.data);
                 try {
-                    const log = JSON.parse(
-                        data.toString()
-                    ) as TransferLogs;
+                    const log = JSON.parse(data) as TransferLogs;
 
                     expect(log).toBeDefined(); // Your assertion here
 
