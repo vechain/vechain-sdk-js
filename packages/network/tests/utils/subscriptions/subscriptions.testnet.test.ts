@@ -167,7 +167,7 @@ describe('Subscriptions Testnet', () => {
             const wrongUrl = 'ws://wrong.url';
             await expect(
                 testWebSocketConnection(wrongUrl)
-            ).rejects.toThrowError('getaddrinfo ENOTFOUND wrong.url');
+            ).rejects.toThrowError('WebSocket connection error');
         });
     });
 });

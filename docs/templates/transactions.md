@@ -15,28 +15,28 @@ To break it down:
 ## Example: Signing and Decoding
 In this example a simple transaction with a single clause is created, signed, encoded and then decoded
 
-[SignDecodeSnippet](examples/transactions/sign_decode.ts)
+[SignDecodeSnippet](examples/transactions/sign-decode.ts)
 
 ## Example: Multiple Clauses
 In VeChainThor blockchain a transaction can be composed of multiple clauses. \
 Clauses allow to send multiple payloads to different recipients within a single transaction.
 
-[MultipleClausesSnippet](examples/transactions/multiple_clauses.ts)
+[MultipleClausesSnippet](examples/transactions/multiple-clauses.ts)
 
 ## Example: Fee Delegation
 Fee delegation is a feature on the VeChainThor blockchain which enables the transaction sender to request another entity, a sponsor, to pay for the transaction fee on the sender's behalf.
 
-[FeeDelegationSnippet](examples/transactions/fee_delegation.ts)
+[FeeDelegationSnippet](examples/transactions/fee-delegation.ts)
 
 ## Example: BlockRef and Expiration
 Using the _BlockRef_ and _Expiration_ fields a transaction can be set to be processed or expired by a particular block. _BlockRef_ should match the first eight bytes of the ID of the block. The sum of _BlockRef_ and _Expiration_ defines the height of the last block that the transaction can be included.
 
-[BlockrefExpirationSnippet](examples/transactions/blockref_expiration.ts)
+[BlockrefExpirationSnippet](examples/transactions/blockref-expiration.ts)
 
 ## Example: Transaction Dependency
 A transaction can be set to only be processed after another transaction, therefore defining an execution order for transactions. The _DependsOn_ field is the Id of the transaction on which the current transaction depends on. If the transaction does not depend on others _DependsOn_ can be set to _null_
 
-[TxDependencySnippet](examples/transactions/tx_dependency.ts)
+[TxDependencySnippet](examples/transactions/tx-dependency.ts)
 
 ## Example: Transaction Simulation
 Simulation can be used to check if a transaction will fail before sending it. It can also be used to determine the gas cost of the transaction.
@@ -65,6 +65,13 @@ By examining these complete examples, developers can gain a comprehensive unders
 # Errors handling on transactions
 You can find the transaction revert reason by using `getRevertReason` method with the transaction hash.
 
-[RevertReasonSnippet](examples/transactions/revert_reason.ts)
+[RevertReasonSnippet](examples/transactions/revert-reason.ts)
 
 This method will return the revert reason of the transaction if it failed, otherwise it will return `null`.
+
+### Decoding revert reason when simulating a transaction
+Even when using the `simulateTransaction` method you can find the revert reason.
+
+[RevertReasonSimulationSnippet](examples/transactions/revert-reason-with-simulation.ts)
+
+In this case there is only a `TransactionSimulationResult`, so no need to loop.

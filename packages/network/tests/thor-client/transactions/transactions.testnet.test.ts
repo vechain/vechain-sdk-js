@@ -100,7 +100,8 @@ describe('Transactions module Testnet tests suite', () => {
             test(testCase.description, async () => {
                 const revertReason =
                     await thorClient.transactions.getRevertReason(
-                        testCase.revertedTransactionHash
+                        testCase.revertedTransactionHash,
+                        testCase.errorFragment
                     );
                 expect(revertReason).toStrictEqual(testCase.expected);
             });

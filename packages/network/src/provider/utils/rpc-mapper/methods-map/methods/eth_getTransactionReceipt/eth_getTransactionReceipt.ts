@@ -14,8 +14,7 @@ import { RPCMethodsMap } from '../../../rpc-mapper';
 import { assertValidTransactionID } from '@vechain/sdk-core';
 import {
     type ExpandedBlockDetail,
-    type ThorClient,
-    type TransactionDetailNoRaw
+    type ThorClient
 } from '../../../../../../thor-client';
 
 /**
@@ -61,9 +60,7 @@ const ethGetTransactionReceipt = async (
 
             // Get transaction detail. @note: It cannot be null!. If some error occurs, it will be thrown.
             const transactionDetail =
-                (await thorClient.transactions.getTransaction(hash, {
-                    raw: false
-                })) as TransactionDetailNoRaw;
+                await thorClient.transactions.getTransaction(hash);
 
             // Get the chain id
             const chainId = (await RPCMethodsMap(thorClient)[
@@ -71,13 +68,15 @@ const ethGetTransactionReceipt = async (
             ]([])) as string;
 
             // Initialize the result
-            return transactionsFormatter.formatTransactionReceiptToRPCStandard(
-                hash,
-                receipt,
-                transactionDetail,
-                blockContainsTransaction,
-                chainId
-            );
+            if (transactionDetail !== null)
+                return transactionsFormatter.formatTransactionReceiptToRPCStandard(
+                    hash,
+                    receipt,
+                    transactionDetail,
+                    blockContainsTransaction,
+                    chainId
+                );
+            else return null;
         } else {
             return null;
         }

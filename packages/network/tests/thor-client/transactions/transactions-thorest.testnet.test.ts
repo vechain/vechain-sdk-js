@@ -33,15 +33,21 @@ describe('ThorClient - Transactions Module', () => {
 
                 // Check transaction block. If undefined, it is the 'best' block.
                 for (const blockNumber of [latestBlock, undefined]) {
-                    const transaction =
-                        await thorClient.transactions.getTransaction(
-                            testCase.transaction.id,
-                            {
-                                raw: testCase.transaction.raw,
-                                head: blockNumber?.id,
-                                pending: testCase.transaction.pending
-                            }
-                        );
+                    const transaction = testCase.transaction.raw
+                        ? await thorClient.transactions.getTransactionRaw(
+                              testCase.transaction.id,
+                              {
+                                  head: blockNumber?.id,
+                                  pending: testCase.transaction.pending
+                              }
+                          )
+                        : await thorClient.transactions.getTransaction(
+                              testCase.transaction.id,
+                              {
+                                  head: blockNumber?.id,
+                                  pending: testCase.transaction.pending
+                              }
+                          );
                     expect(transaction).toEqual(testCase.expected);
                 }
             });
@@ -56,7 +62,6 @@ describe('ThorClient - Transactions Module', () => {
                     thorClient.transactions.getTransaction(
                         testCase.transaction.id,
                         {
-                            raw: testCase.transaction.raw,
                             head: testCase.transaction.head
                         }
                     )

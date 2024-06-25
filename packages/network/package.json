@@ -45,7 +45,6 @@
     "@vechain/sdk-errors": "1.0.0-beta.17",
     "@vechain/sdk-logging": "1.0.0-beta.17",
     "abitype": "^1.0.2",
-    "axios": "^1.7.2",
-    "isomorphic-ws": "^5.0.0"
+    "axios": "^1.7.2"
   }
 }

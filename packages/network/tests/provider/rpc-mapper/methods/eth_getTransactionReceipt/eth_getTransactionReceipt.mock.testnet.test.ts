@@ -44,5 +44,22 @@ describe('RPC Mapper - eth_getTransactionReceipt method tests', () => {
                 ]([getReceiptCorrectCasesTestNetwork[0].hash])
             ).rejects.toThrowError(ProviderRpcError);
         });
+
+        /**
+         * Negative case 2 - Transaction details of existing transaction are not found (returns null)
+         */
+        test('eth_getTransactionReceipt - negative case 2', async () => {
+            // Mock the getTransactionReceipt method to throw an error
+            jest.spyOn(
+                thorClient.transactions,
+                'getTransaction'
+            ).mockResolvedValue(null);
+
+            // Call eth_getTransactionReceipt with a valid transaction hash BUT an error occurs while retrieving the transaction receipt
+            const receipt = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.eth_getTransactionReceipt
+            ]([getReceiptCorrectCasesTestNetwork[0].hash]);
+            expect(receipt).toBe(null);
+        });
     });
 });
