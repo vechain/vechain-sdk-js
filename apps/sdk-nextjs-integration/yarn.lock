@@ -1059,48 +1059,47 @@
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
-"@vechain/sdk-core@1.0.0-beta.17":
-  version "1.0.0-beta.17"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.17.tgz#76c142f873154d8cddf044e82f38b42fa19153b3"
-  integrity sha512-qJRF9AXtEJK6oIWCQ6+2ZXNETAvsgonMuzyo1hQJnN3WmR9QAqZSj5hgmSsEYY69IM1/tIJByLcy9nNuLmL3Fw==
+"@vechain/sdk-core@1.0.0-beta.18":
+  version "1.0.0-beta.18"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.18.tgz#47be764552bb4c26ab04addcca991988fb561e6e"
+  integrity sha512-2E8Wzit+IEn6M7GGyI+DynX4TG3K7e0SpfTCOTCR8aQwnvMBv43H//PsaAyzNHI4mVhBU1KIQpNx3GrhL2RsOQ==
   dependencies:
     "@ethereumjs/rlp" "^5.0.2"
     "@noble/ciphers" "^0.5.2"
     "@scure/bip32" "^1.4.0"
     "@scure/bip39" "^1.3.0"
     "@types/elliptic" "^6.4.18"
-    "@vechain/sdk-errors" "1.0.0-beta.17"
-    "@vechain/sdk-logging" "1.0.0-beta.17"
+    "@vechain/sdk-errors" "1.0.0-beta.18"
+    "@vechain/sdk-logging" "1.0.0-beta.18"
     bignumber.js "^9.1.2"
     blakejs "^1.2.1"
     elliptic "^6.5.5"
     ethers "6.13.1"
     fast-json-stable-stringify "^2.1.0"
 
-"@vechain/sdk-errors@1.0.0-beta.17":
-  version "1.0.0-beta.17"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.17.tgz#36fb2a32dbcfde4ccfc8283b366e2be1047ded7c"
-  integrity sha512-K+undZ/E2ZUo0SM2OwV0N/0aQGwde7j9Wd+GYYfPWuEQl7O9aCuW9RHsfy7p9UvXrrmeTUfy6JpY4lVEu6gptA==
+"@vechain/sdk-errors@1.0.0-beta.18":
+  version "1.0.0-beta.18"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.18.tgz#9ea2409cb726428ffda77dfc783f36a9e13c1fef"
+  integrity sha512-S7r6IAJ/xk/CmXZ6MVs0rVIsrEITh9jD6+esoOLWJoxUVn9AJ8CxD2Wx38JqBQb3HU4G/OOCMRsnFCxNWEz2qQ==
 
-"@vechain/sdk-logging@1.0.0-beta.17":
-  version "1.0.0-beta.17"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-beta.17.tgz#d541e13edf13db2b73080171fb38c74cc8f84cc6"
-  integrity sha512-nvHNLeka4g72qSdk11YXAxRwB1LKyG0uPhqwwg/fxV7PF/CeHTdxdDCl40VBTEXnStZUn2xItXNSjxoaQ4jLRw==
+"@vechain/sdk-logging@1.0.0-beta.18":
+  version "1.0.0-beta.18"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-beta.18.tgz#aec45ff749679dfe4d34af337e3ed9c406601d81"
+  integrity sha512-1VXzRtTg21I250wYXhdu+ccOA+ZNu4odiDN3sNEk3MtHjHhCeZs81KyYE7eBBCb0nhNogECPj8kc8EW4YE4q1A==
   dependencies:
-    "@vechain/sdk-errors" "1.0.0-beta.17"
+    "@vechain/sdk-errors" "1.0.0-beta.18"
 
-"@vechain/sdk-network@1.0.0-beta.17":
-  version "1.0.0-beta.17"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.17.tgz#bda2094d719edc9db7d1dd0397d36044e9e615f9"
-  integrity sha512-9tGBk8hUkhmMuOBUsgxw7ToNe2FrmW4feGm7hosExCp52iI0hT5Lpaj+s9VRLJBIGAO/c0vd97YsurV1Mj9ptw==
+"@vechain/sdk-network@1.0.0-beta.18":
+  version "1.0.0-beta.18"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.18.tgz#d3a226e1c9642da6ea36c6046139418ab4692464"
+  integrity sha512-O/GUPQCPtuVEJVCYin68iM+QFmBPxV6LGBCIJa/+3YVjo8VySXlrWbBDw1fcWafpe5ym7FBzfhtVCCTXsYAS/A==
   dependencies:
     "@types/ws" "^8.5.10"
-    "@vechain/sdk-core" "1.0.0-beta.17"
-    "@vechain/sdk-errors" "1.0.0-beta.17"
-    "@vechain/sdk-logging" "1.0.0-beta.17"
+    "@vechain/sdk-core" "1.0.0-beta.18"
+    "@vechain/sdk-errors" "1.0.0-beta.18"
+    "@vechain/sdk-logging" "1.0.0-beta.18"
     abitype "^1.0.2"
     axios "^1.7.2"
-    isomorphic-ws "^5.0.0"
 
 abab@^2.0.6:
   version "2.0.6"
@@ -1945,9 +1944,9 @@ eastasianwidth@^0.2.0:
   integrity sha512-I88TYZWc9XiYHRQ4/3c5rjjfgkjhLyW2luGIheGERbNQ6OY7yTybanSpDXZa8y7VUP9YmDcYa+eyq4ca7iLqWA==
 
 electron-to-chromium@^1.4.796:
-  version "1.4.810"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.810.tgz#7dee01b090b9e048e6db752f7b30921790230654"
-  integrity sha512-Kaxhu4T7SJGpRQx99tq216gCq2nMxJo+uuT6uzz9l8TVN2stL7M06MIIXAtr9jsrLs2Glflgf2vMQRepxawOdQ==
+  version "1.4.811"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.4.811.tgz#031c8b101e7d0a7cde1dfdb0623dbdb5e19655cd"
+  integrity sha512-CDyzcJ5XW78SHzsIOdn27z8J4ist8eaFLhdto2hSMSJQgsiwvbv2fbizcKUICryw1Wii1TI/FEkvzvJsR3awrA==
 
 elliptic@^6.5.5:
   version "6.5.5"
@@ -3090,11 +3089,6 @@ isexe@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/isexe/-/isexe-2.0.0.tgz#e8fbf374dc556ff8947a10dcb0572d633f2cfa10"
   integrity sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==
-
-isomorphic-ws@^5.0.0:
-  version "5.0.0"
-  resolved "https://registry.yarnpkg.com/isomorphic-ws/-/isomorphic-ws-5.0.0.tgz#e5529148912ecb9b451b46ed44d53dae1ce04bbf"
-  integrity sha512-muId7Zzn9ywDsyXgTIafTry2sV3nySZeUDe6YedVd1Hvuuep5AsIlqK+XefWpYTyJG5e503F2xIuT2lcU6rCSw==
 
 istanbul-lib-coverage@^3.0.0, istanbul-lib-coverage@^3.2.0:
   version "3.2.2"
