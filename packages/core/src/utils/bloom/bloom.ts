@@ -1,4 +1,4 @@
-import * as utils from '@noble/curves/abstract/utils';
+import * as n_utils from '@noble/curves/abstract/utils';
 import { ADDRESS, assert, BLOOM, DATA } from '@vechain/sdk-errors';
 import { Hex, Hex0x } from '../hex';
 import { addressUtils } from '../../address';
@@ -48,14 +48,14 @@ const filterOf = (addresses: string[], k: number = 5): string => {
     const keys = new Set<Uint8Array>();
     addresses.forEach((address) => {
         if (addressUtils.isAddress(Hex0x.canon(address))) {
-            keys.add(utils.hexToBytes(Hex.canon(address)));
+            keys.add(n_utils.hexToBytes(Hex.canon(address)));
         }
     });
     const generator = new bloom.Generator();
     keys.forEach((key) => {
         generator.add(key);
     });
-    return utils.bytesToHex(
+    return n_utils.bytesToHex(
         generator.generate(bloom.calculateBitsPerKey(k), k).bits
     );
 };
@@ -117,10 +117,10 @@ const isInBloom = (filter: string, k: number, data: string): boolean => {
         { k }
     );
     const bloomFilter = new bloom.Filter(
-        utils.hexToBytes(Hex.canon(filter)),
+        n_utils.hexToBytes(Hex.canon(filter)),
         k
     );
-    return bloomFilter.contains(utils.hexToBytes(Hex.canon(data)));
+    return bloomFilter.contains(n_utils.hexToBytes(Hex.canon(data)));
 };
 /**
  * Checks if an address is present in a Bloom Filter.

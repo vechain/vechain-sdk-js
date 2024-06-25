@@ -3,6 +3,18 @@
  *
  * @group integration/providers/vechain-provider
  */
+import * as n_utils from '@noble/curves/abstract/utils';
+import { txt } from '../../../../../core/src/utils/txt/txt';
+import { Hex, addressUtils, secp256k1 } from '@vechain/sdk-core';
+import { ethers } from 'ethers';
+import {
+    EIP191_MESSAGE,
+    EIP191_PRIVATE_KEY,
+    eip712TestCases,
+    populateCallTestCases,
+    populateCallTestCasesAccount
+} from './fixture';
+import { testnetUrl } from '../../../fixture';
 import {
     afterEach,
     beforeEach,
@@ -17,9 +29,6 @@ import {
     VeChainProvider,
     vnsUtils
 } from '../../../../src/';
-import { testnetUrl } from '../../../fixture';
-import { addressUtils } from '@vechain/sdk-core';
-import { populateCallTestCases, populateCallTestCasesAccount } from './fixture';
 
 /**
  *VeChain base signer tests
@@ -227,6 +236,92 @@ describe('VeChain base signer tests', () => {
             expect(address).toEqual(
                 '0x0000000000000000000000000000000000000001'
             );
+        });
+    });
+
+    describe('EIP-191', () => {
+        test('signMessage - invalid - simulate a signature error', async () => {
+            const signer = new VeChainPrivateKeySigner(
+                Buffer.from(
+                    n_utils.hexToBytes(
+                        Hex.canon(eip712TestCases.invalid.privateKey)
+                    )
+                ),
+                provider
+            );
+            jest.spyOn(secp256k1, 'sign').mockImplementationOnce(() => {
+                throw Error();
+            });
+            await expect(
+                signer.signMessage('Hello world!')
+            ).rejects.toThrowError();
+        });
+
+        test('signMessage - ethers compatible - string', async () => {
+            const expected = await new ethers.Wallet(
+                EIP191_PRIVATE_KEY
+            ).signMessage(EIP191_MESSAGE);
+            const actual = await new VeChainPrivateKeySigner(
+                Buffer.from(n_utils.hexToBytes(Hex.canon(EIP191_PRIVATE_KEY))),
+                provider
+            ).signMessage(EIP191_MESSAGE);
+            expect(actual).toBe(expected);
+        });
+
+        test('signMessage - ethers compatible - uint8array', async () => {
+            const message = txt.encode(EIP191_MESSAGE);
+            const expected = await new ethers.Wallet(
+                EIP191_PRIVATE_KEY
+            ).signMessage(message);
+            const actual = await new VeChainPrivateKeySigner(
+                Buffer.from(n_utils.hexToBytes(Hex.canon(EIP191_PRIVATE_KEY))),
+                provider
+            ).signMessage(message);
+            expect(actual).toBe(expected);
+        });
+    });
+
+    describe('EIP-712', () => {
+        test('signTypedData - invalid', async () => {
+            const signer = new VeChainPrivateKeySigner(
+                Buffer.from(
+                    n_utils.hexToBytes(
+                        Hex.canon(eip712TestCases.invalid.privateKey)
+                    )
+                ),
+                provider
+            );
+            await expect(
+                signer.signTypedData(
+                    eip712TestCases.invalid.domain,
+                    eip712TestCases.invalid.types,
+                    eip712TestCases.invalid.data
+                )
+            ).rejects.toThrowError(TypeError);
+        });
+
+        test('signTypedData - ethers compatible', async () => {
+            const expected = await new ethers.Wallet(
+                eip712TestCases.valid.privateKey
+            ).signTypedData(
+                eip712TestCases.valid.domain,
+                eip712TestCases.valid.types,
+                eip712TestCases.valid.data
+            );
+            expect(expected).toBe(eip712TestCases.valid.signature);
+            const actual = await new VeChainPrivateKeySigner(
+                Buffer.from(
+                    n_utils.hexToBytes(
+                        Hex.canon(eip712TestCases.valid.privateKey)
+                    )
+                ),
+                provider
+            ).signTypedData(
+                eip712TestCases.valid.domain,
+                eip712TestCases.valid.types,
+                eip712TestCases.valid.data
+            );
+            expect(actual).toBe(expected);
         });
     });
 });

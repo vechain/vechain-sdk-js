@@ -1,5 +1,5 @@
+import * as n_utils from '@noble/curves/abstract/utils';
 import { secp256k1, addressUtils } from '../../src';
-import * as utils from '@noble/curves/abstract/utils';
 
 /**
  * https://en.wikipedia.org/wiki/Unicode_compatibility_characters
@@ -9,7 +9,7 @@ const HANA_KANJI_AMBIGUITY_CHALLENGE = '戀說零遼倫痢臨輻礼﨩墨碑臭�
 /**
  * Private Key used for digital signature during certificate creation
  */
-const certPrivateKey = utils.hexToBytes(
+const certPrivateKey = n_utils.hexToBytes(
     '7582be841ca040aa940fff6c05773129e135623e41acce3e0b8ba520dc1ae26a'
 );
 

@@ -1,12 +1,12 @@
-import { describe, expect, test } from '@jest/globals';
-import { hashFunctionsToTest } from './fixture';
-import { ethers } from 'ethers';
-import { InvalidDataReturnTypeError } from '@vechain/sdk-errors';
 import { Buffer } from 'buffer';
+import { InvalidDataReturnTypeError } from '@vechain/sdk-errors';
 import { ZERO_BYTES } from '../../src';
-
-import { cert } from '../certificate/fixture';
 import { bytesToHex } from '@noble/ciphers/utils';
+import { cert } from '../certificate/fixture';
+import { describe, expect, test } from '@jest/globals';
+import { ethers } from 'ethers';
+import { hashFunctionsToTest } from './fixture';
+import { txt } from '../../src/utils/txt/txt';
 
 /**
  * Test hash functions
@@ -20,10 +20,9 @@ describe('Hash', () => {
         // console.log('dir', blake_dev_dir);
         const buffer = Buffer.from(json, `utf8`);
         console.log(bytesToHex(buffer));
-        const textEncoder = new TextEncoder();
-        console.log(textEncoder.encoding);
+        // const textEncoder = new TextEncoder();
         // form: "NFC" | "NFD" | "NFKC" | "NFKD"): string
-        const array = textEncoder.encode(json.normalize('NFKD'));
+        const array = txt.encode(json);
         console.log(bytesToHex(array));
         // const blake_dev_ind = ThorDevKit.blake2b256(buffer);
         // console.log('ind', blake_dev_ind);

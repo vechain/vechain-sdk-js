@@ -340,10 +340,6 @@ interface VeChainSigner {
     ) => Promise<string>;
 
     /**
-     * --- START: TEMPORARY COMMENT ---
-     * To be implemented in the future
-     * --- END: TEMPORARY COMMENT ---
-     *
      *  Signs an [[link-eip-191]] prefixed a personal message.
      *
      *  If the %%message%% is a string, it is signed as UTF-8 encoded bytes. It is **not**
@@ -353,20 +349,16 @@ interface VeChainSigner {
      *  To sign that example as two bytes, the Uint8Array should be used
      *  (i.e. ``new Uint8Array([ 0x12, 0x34 ])``).
      */
-    // signMessage: (message: string | Uint8Array) => Promise<string>;
+    signMessage: (message: string | Uint8Array) => Promise<string>;
 
     /**
-     * --- START: TEMPORARY COMMENT ---
-     * To be implemented in the future
-     * --- END: TEMPORARY COMMENT ---
-     *
      *  Signs the [[link-eip-712]] typed data.
      */
-    // signTypedData: (
-    //     domain: vechain_sdk_core_ethers.TypedDataDomain,
-    //     types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
-    //     value: Record<string, unknown>
-    // ) => Promise<string>;
+    signTypedData: (
+        domain: vechain_sdk_core_ethers.TypedDataDomain,
+        types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
+        value: Record<string, unknown>
+    ) => Promise<string>;
 
     /**
      *  Resolves an VNS Name to an address.

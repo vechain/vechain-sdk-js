@@ -1,5 +1,6 @@
 // To be introduced once thor-dev-kit dependency clash solved.
 // import * as ThorDevKit from 'thor-devkit';
+import { txt } from '../../src/utils/txt/txt';
 import { blake2b256, blake2b256OfHex, Hex, type ReturnType } from '../../src';
 import { describe, expect, test } from '@jest/globals';
 import { hexToBytes } from '@noble/hashes/utils';
@@ -31,9 +32,7 @@ describe('blake2b256', () => {
         // });
 
         test('blake2b256 - valid content - string', () => {
-            const content = new TextEncoder().encode(
-                BLAKE2B256_CONTENT.normalize('NFC')
-            );
+            const content = txt.encode(BLAKE2B256_CONTENT);
             const expected = hexToBytes(Hex.canon(BLAKE2B256_CONTENT_HASH));
             let actual: string | Uint8Array;
             actual = blake2b256(content);
@@ -79,9 +78,7 @@ describe('blake2b256', () => {
     });
 
     describe('blake2b256OfHex', () => {
-        const content = Hex.of(
-            new TextEncoder().encode(BLAKE2B256_CONTENT.normalize('NFC'))
-        );
+        const content = Hex.of(txt.encode(BLAKE2B256_CONTENT));
 
         const zeroContent = Hex.of(BLAKE2B256_NO_CONTENT);
 

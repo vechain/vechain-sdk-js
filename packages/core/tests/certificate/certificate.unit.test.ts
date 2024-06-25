@@ -1,4 +1,4 @@
-import * as utils from '@noble/curves/abstract/utils';
+import * as n_utils from '@noble/curves/abstract/utils';
 import { describe, expect, test } from '@jest/globals';
 import { Hex0x, certificate, type Certificate } from '../../src';
 import { cert, certPrivateKey } from './fixture';
@@ -65,7 +65,7 @@ describe('certificate', () => {
 
         test('invalid - illegal private key', () => {
             expect(() => {
-                certificate.sign(cert, utils.hexToBytes('c0ffeec1b8'));
+                certificate.sign(cert, n_utils.hexToBytes('c0ffeec1b8'));
             }).toThrowError(InvalidSecp256k1PrivateKeyError);
         });
 

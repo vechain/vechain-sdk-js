@@ -8,7 +8,7 @@
  *
  * Reference: [Bloom Filter in VeChain Thor](https://github.com/vechain/thor/blob/master/thor/bloom/bloom.go).
  */
-import * as utils from '@noble/curves/abstract/utils';
+import * as n_utils from '@noble/curves/abstract/utils';
 import { assert, BLOOM } from '@vechain/sdk-errors';
 import { blake2b256 } from '../hash';
 
@@ -102,7 +102,7 @@ function distribute(
  * @return {number} The computed hash value as a number.
  */
 function hash(key: Uint8Array): number {
-    return Number(utils.bytesToNumberBE(blake2b256(key).slice(0, 4)));
+    return Number(n_utils.bytesToNumberBE(blake2b256(key).slice(0, 4)));
 }
 
 /**

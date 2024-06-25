@@ -1,3 +1,21 @@
+import * as n_utils from '@noble/curves/abstract/utils';
+import { txt } from '../../../../../core/src/utils/txt/txt';
+import { RPC_METHODS } from '../../../provider';
+import { VeChainAbstractSigner } from '../vechain-abstract-signer';
+import { assert, JSONRPC, TRANSACTION } from '@vechain/sdk-errors';
+import { assertTransactionCanBeSigned } from '../../../assertions';
+import { ethers } from 'ethers';
+import {
+    addressUtils,
+    Hex,
+    Hex0x,
+    keccak256,
+    secp256k1,
+    Transaction,
+    type TransactionBody,
+    TransactionHandler,
+    type vechain_sdk_core_ethers
+} from '@vechain/sdk-core';
 import {
     type AvailableVeChainProviders,
     type TransactionRequestInput
@@ -7,24 +25,16 @@ import {
     type SignTransactionOptions,
     type ThorClient
 } from '../../../thor-client';
-import {
-    addressUtils,
-    Hex0x,
-    secp256k1,
-    Transaction,
-    type TransactionBody,
-    TransactionHandler
-} from '@vechain/sdk-core';
-import { RPC_METHODS } from '../../../provider';
-import { assert, JSONRPC, TRANSACTION } from '@vechain/sdk-errors';
-import { assertTransactionCanBeSigned } from '../../../assertions';
-import { VeChainAbstractSigner } from '../vechain-abstract-signer';
 
 /**
  * Basic VeChain signer with the private key.
  * This signer can be initialized using a private key.
  */
 class VeChainPrivateKeySigner extends VeChainAbstractSigner {
+    private readonly MESSAGE_PREFIX = txt.encode(
+        '\x19Ethereum Signed Message:\n'
+    );
+
     /**
      * Create a new VeChainPrivateKeySigner.
      * A signer can be initialized using a private key.
@@ -112,6 +122,78 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
             method: RPC_METHODS.eth_sendRawTransaction,
             params: [signedTransaction]
         })) as string;
+    }
+
+    /**
+     * Signs an [EIP-191](https://eips.ethereum.org/EIPS/eip-191) prefixed a personal message.
+     *
+     * This function is a drop-in replacement for {@link ethers.BaseWallet.signMessage} function.
+     *
+     * @param {string|Uint8Array} message - The message to be signed.
+     *                                      If the %%message%% is a string, it is signed as UTF-8 encoded bytes.
+     *                                      It is **not** interpreted as a [[BytesLike]];
+     *                                      so the string ``"0x1234"`` is signed as six characters, **not** two bytes.
+     * @return {Promise<string>} - A Promise that resolves to the signature as a string.
+     */
+    async signMessage(message: string | Uint8Array): Promise<string> {
+        return await new Promise((resolve, reject) => {
+            try {
+                const body =
+                    typeof message === 'string' ? txt.encode(message) : message;
+                const sign = secp256k1.sign(
+                    keccak256(
+                        n_utils.concatBytes(
+                            this.MESSAGE_PREFIX,
+                            txt.encode(String(body.length)),
+                            body
+                        )
+                    ),
+                    new Uint8Array(this.privateKey)
+                );
+                // SCP256K1 encodes the recovery flag in the last byte. EIP-191 adds 27 to it.
+                sign[sign.length - 1] += 27;
+                resolve(Hex0x.of(sign));
+            } catch (e) {
+                reject(e);
+            }
+        });
+    }
+
+    /**
+     * Signs the [[link-eip-712]] typed data.
+     *
+     * This function is a drop-in replacement for {@link ethers.BaseWallet.signTypedData} function,
+     * albeit Ethereum Name Services are not resolved because he resolution depends on **ethers** provider implementation.
+     *
+     * @param {ethers.TypedDataDomain} domain - The domain parameters used for signing.
+     * @param {Record<string, ethers.TypedDataField[]>} types - The types used for signing.
+     * @param {Record<string, unknown>} value - The value data to be signed.
+     *
+     * @return {Promise<string>} - A promise that resolves with the signature string.
+     */
+    async signTypedData(
+        domain: vechain_sdk_core_ethers.TypedDataDomain,
+        types: Record<string, vechain_sdk_core_ethers.TypedDataField[]>,
+        value: Record<string, unknown>
+    ): Promise<string> {
+        return await new Promise((resolve, reject) => {
+            try {
+                const hash = n_utils.hexToBytes(
+                    Hex.canon(
+                        ethers.TypedDataEncoder.hash(domain, types, value)
+                    )
+                );
+                const sign = secp256k1.sign(
+                    hash,
+                    new Uint8Array(this.privateKey)
+                );
+                // SCP256K1 encodes the recovery flag in the last byte. EIP-712 adds 27 to it.
+                sign[sign.length - 1] += 27;
+                resolve(Hex0x.of(sign));
+            } catch (e) {
+                reject(e);
+            }
+        });
     }
 
     /**

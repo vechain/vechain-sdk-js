@@ -1,6 +1,6 @@
-import * as bip32 from '@scure/bip32';
-import * as bip39 from '@scure/bip39';
-import * as utils from '@noble/curves/abstract/utils';
+import * as n_bip32 from '@scure/bip32';
+import * as n_bip39 from '@scure/bip39';
+import * as n_utils from '@noble/curves/abstract/utils';
 import { buildError, HDNODE } from '@vechain/sdk-errors';
 import { base58 } from '@scure/base';
 import { secp256k1 } from '../secp256k1';
@@ -14,26 +14,26 @@ import { VET_DERIVATION_PATH, X_PRIV_PREFIX, X_PUB_PREFIX } from '../utils';
  * derives a child HDKey node based on the given derivation path.
  *
  * Secure audit function.
- * - [bip32](https://github.com/paulmillr/scure-bip32).
- * - [bip39](https://github.com/paulmillr/scure-bip39)
+ * - [n_bip32](https://github.com/paulmillr/scure-bip32).
+ * - [n_bip39](https://github.com/paulmillr/scure-bip39)
  *
  * @param {string[]} words - An array of words representing the mnemonic.
  * @param {string} path - The derivation path to derive the child node.
  * Default value is {@link VET_DERIVATION_PATH}.
  *
- * @return {bip32.HDKey} - An instance of bip32.HDKey representing the derived child node.
+ * @return {bip32.HDKey} - An instance of n_bip32.HDKey representing the derived child node.
  *
- * @throws {InvalidHDNodeMnemonicsError} If an error occurs generating the master `bip32.HDKey` from `words`.
- * @throws {InvalidHDNodeDerivationPathError} If an error occurs deriving the `bip32.HDKey` at `path` from the master HDKey
+ * @throws {InvalidHDNodeMnemonicsError} If an error occurs generating the master `n_bip32.HDKey` from `words`.
+ * @throws {InvalidHDNodeDerivationPathError} If an error occurs deriving the `n_bip32.HDKey` at `path` from the master HDKey
  */
 function fromMnemonic(
     words: string[],
     path: string = VET_DERIVATION_PATH
-): bip32.HDKey {
-    let master: bip32.HDKey;
+): n_bip32.HDKey {
+    let master: n_bip32.HDKey;
     try {
-        master = bip32.HDKey.fromMasterSeed(
-            bip39.mnemonicToSeedSync(words.join(' ').toLowerCase())
+        master = n_bip32.HDKey.fromMasterSeed(
+            n_bip39.mnemonicToSeedSync(words.join(' ').toLowerCase())
         );
     } catch (error) {
         // The error masks any mnemonic words leak.
@@ -62,12 +62,12 @@ function fromMnemonic(
  *
  * Secure audit function.
  * - [base58](https://github.com/paulmillr/scure-base)
- * - [bip32](https://github.com/paulmillr/scure-bip32).
+ * - [n_bip32](https://github.com/paulmillr/scure-bip32).
  *
  * @param {Uint8Array} privateKey The private key.
  * @param {Uint8Array} chainCode The chain code.
  *
- * @returns {bip32.HDKey} The `bip32.HDKey` object.
+ * @returns {bip32.HDKey} The `n_bip32.HDKey` object.
  *
  * @throws {InvalidHDNodePrivateKeyError} If `privateKey` length is not exactly 32 bytes.
  * @throws {InvalidHDNodeChaincodeError} if an error occurs deriving the {@link bip32.HDNode}
@@ -76,9 +76,9 @@ function fromMnemonic(
 function fromPrivateKey(
     privateKey: Uint8Array,
     chainCode: Uint8Array
-): bip32.HDKey {
+): n_bip32.HDKey {
     if (privateKey.length === 32) {
-        const header = utils.concatBytes(
+        const header = n_utils.concatBytes(
             X_PRIV_PREFIX,
             chainCode,
             Uint8Array.of(0),
@@ -86,9 +86,9 @@ function fromPrivateKey(
         );
         privateKey.fill(0); // Clear the private key from memory.
         const checksum = sha256(sha256(header)).subarray(0, 4);
-        const expandedPrivateKey = utils.concatBytes(header, checksum);
+        const expandedPrivateKey = n_utils.concatBytes(header, checksum);
         try {
-            return bip32.HDKey.fromExtendedKey(
+            return n_bip32.HDKey.fromExtendedKey(
                 base58.encode(expandedPrivateKey)
             );
         } catch (error) {
@@ -115,24 +115,24 @@ function fromPrivateKey(
  * @param {Uint8Array} publicKey - The public key bytes.
  * @param {Uint8Array} chainCode - The chain code bytes.
  *
- * @returns {bip32.HDKey} - The `bip32.HDKey` object.
+ * @returns {bip32.HDKey} - The `n_bip32.HDKey` object.
  *
  * @throws {InvalidHDNodeChaincodeError} If `chainCode` length is not exactly 32 bytes.
  */
 function fromPublicKey(
     publicKey: Uint8Array,
     chainCode: Uint8Array
-): bip32.HDKey {
+): n_bip32.HDKey {
     if (chainCode.length === 32) {
-        const header = utils.concatBytes(
+        const header = n_utils.concatBytes(
             X_PUB_PREFIX,
             chainCode,
             secp256k1.compressPublicKey(publicKey)
         );
         const checksum = sha256(sha256(header)).subarray(0, 4);
-        const expandedPublicKey = utils.concatBytes(header, checksum);
+        const expandedPublicKey = n_utils.concatBytes(header, checksum);
         try {
-            return bip32.HDKey.fromExtendedKey(
+            return n_bip32.HDKey.fromExtendedKey(
                 base58.encode(expandedPublicKey)
             );
         } catch (error) {
