@@ -17,7 +17,8 @@ import {
     TESTING_CONTRACT_ADDRESS,
     THOR_SOLO_ACCOUNTS_BASE_WALLET
 } from '../../fixture';
-import WebSocket from 'isomorphic-ws';
+// eslint-disable-next-line import/no-named-default
+import { default as NodeWebSocket } from 'ws';
 import {
     addressUtils,
     clauseBuilder,
@@ -66,7 +67,12 @@ describe('Subscriptions Solo network tests', () => {
         async () => {
             const wsURL = subscriptions.getBlockSubscriptionUrl(soloUrl);
 
-            const ws = new WebSocket(wsURL);
+            let ws: WebSocket | NodeWebSocket;
+            if (typeof WebSocket !== 'undefined') {
+                ws = new WebSocket(wsURL);
+            } else {
+                ws = new NodeWebSocket(wsURL);
+            }
 
             await new Promise((resolve, reject) => {
                 const timeout = setTimeout(() => {
@@ -74,26 +80,34 @@ describe('Subscriptions Solo network tests', () => {
                     reject(new Error('Timeout: No block received'));
                 }, TIMEOUT); // 15-second timeout
 
-                ws.on('message', (data) => {
+                ws.onopen = () => {
+                    console.log('WebSocket connection opened.');
+                };
+
+                ws.onmessage = (event: MessageEvent) => {
                     clearTimeout(timeout); // Clear the timeout on receiving a message
                     ws.close(); // Close the WebSocket connection
 
+                    const data: string =
+                        typeof event.data === 'string'
+                            ? event.data
+                            : JSON.stringify(event.data);
                     expect(data).toBeDefined(); // Basic assertion to ensure data is received
                     expect(data).not.toBeNull(); // Basic assertion to ensure data is received
 
                     const block = JSON.parse(
-                        data.toLocaleString()
+                        data.toString()
                     ) as CompressedBlockDetail;
 
                     expect(block.number).toBeGreaterThan(0); // Basic assertion to ensure the block number is valid
 
                     resolve(true);
-                });
+                };
 
-                ws.on('error', (error) => {
+                ws.onerror = (error: Event) => {
                     clearTimeout(timeout); // Clear the timeout in case of an error
                     reject(error); // Reject the promise with the error
-                });
+                };
             });
         },
         TIMEOUT
@@ -126,15 +140,26 @@ describe('Subscriptions Solo network tests', () => {
             );
 
             // Create a WebSocket connection
-            const ws = new WebSocket(wsURL);
+            let ws: WebSocket | NodeWebSocket;
+            if (typeof WebSocket !== 'undefined') {
+                ws = new WebSocket(wsURL);
+            } else {
+                ws = new NodeWebSocket(wsURL);
+            }
 
             // Set up a promise to handle WebSocket messages
             const waitForMessage = new Promise((resolve, reject) => {
-                ws.on('message', (data) => {
+                ws.onopen = () => {
+                    console.log('WebSocket connection opened.');
+                };
+
+                ws.onmessage = (event: MessageEvent) => {
+                    const data: string =
+                        typeof event.data === 'string'
+                            ? event.data
+                            : JSON.stringify(event.data);
                     try {
-                        const log = JSON.parse(
-                            data.toLocaleString()
-                        ) as EventLogs;
+                        const log = JSON.parse(data) as EventLogs;
                         expect(log).toBeDefined(); // Your assertion here
 
                         const decodedLog =
@@ -158,11 +183,11 @@ describe('Subscriptions Solo network tests', () => {
                     } finally {
                         ws.close(); // Ensure WebSocket is closed
                     }
-                });
+                };
 
-                ws.on('error', (error) => {
+                ws.onerror = (error: Event) => {
                     reject(error); // Reject the promise on WebSocket error
-                });
+                };
             });
 
             // Trigger the smart contract function that emits the event
@@ -220,14 +245,25 @@ describe('Subscriptions Solo network tests', () => {
                 .address
         });
 
-        const ws = new WebSocket(wsURL);
+        let ws: WebSocket | NodeWebSocket;
+        if (typeof WebSocket !== 'undefined') {
+            ws = new WebSocket(wsURL);
+        } else {
+            ws = new NodeWebSocket(wsURL);
+        }
 
         const waitForMessage = new Promise((resolve, reject) => {
-            ws.on('message', (data) => {
+            ws.onopen = () => {
+                console.log('WebSocket connection opened.');
+            };
+
+            ws.onmessage = (event: MessageEvent) => {
+                const data: string =
+                    typeof event.data === 'string'
+                        ? event.data
+                        : JSON.stringify(event.data);
                 try {
-                    const log = JSON.parse(
-                        data.toLocaleString()
-                    ) as TransferLogs;
+                    const log = JSON.parse(data) as TransferLogs;
 
                     expect(log).toBeDefined(); // Your assertion here
 
@@ -242,11 +278,11 @@ describe('Subscriptions Solo network tests', () => {
                 } finally {
                     ws.close(); // Ensure WebSocket is closed
                 }
-            });
+            };
 
-            ws.on('error', (error) => {
+            ws.onerror = (error: Event) => {
                 reject(error); // Reject the promise on WebSocket error
-            });
+            };
         });
 
         // Trigger the smart contract function that emits the event
