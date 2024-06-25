@@ -13,10 +13,7 @@ import {
 import { RPCMethodsMap } from '../../../rpc-mapper';
 import { RPC_METHODS } from '../../../../const';
 import { getTransactionIndexIntoBlock } from '../../../../helpers';
-import {
-    type ThorClient,
-    type TransactionDetailNoRaw
-} from '../../../../../../thor-client';
+import { type ThorClient } from '../../../../../../thor-client';
 
 /**
  * RPC Method eth_getTransactionByHash implementation
@@ -46,9 +43,7 @@ const ethGetTransactionByHash = async (
         const [hash] = params as [string];
 
         // Get the VeChainThor transaction
-        const tx = (await thorClient.transactions.getTransaction(
-            hash
-        )) as TransactionDetailNoRaw | null;
+        const tx = await thorClient.transactions.getTransaction(hash);
 
         if (tx === null) return null;
 

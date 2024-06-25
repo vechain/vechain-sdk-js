@@ -95,11 +95,6 @@ interface GetTransactionReceiptInputOptions {
  */
 type GetTransactionInputOptions = GetTransactionReceiptInputOptions & {
     /**
-     * (Optional) If true, returns the raw transaction data instead of the parsed transaction object.
-     */
-    raw?: boolean;
-
-    /**
      * (Optional) If true, returns the pending transaction details instead of the final transaction details.
      */
     pending?: boolean;
@@ -236,11 +231,6 @@ type TransactionDetailNoRaw = TransactionBody & {
 };
 
 /**
- * Type for transaction detail.
- */
-type TransactionDetail = TransactionDetailRaw | TransactionDetailNoRaw;
-
-/**
  * Type for transaction receipt.
  */
 interface TransactionReceipt {
@@ -315,9 +305,9 @@ export type {
     GetTransactionInputOptions,
     GetTransactionReceiptInputOptions,
     TransactionReceipt,
-    TransactionDetail,
     TransactionSimulationResult,
     SimulateTransactionClause,
     SimulateTransactionOptions,
+    TransactionDetailRaw,
     TransactionDetailNoRaw
 };
