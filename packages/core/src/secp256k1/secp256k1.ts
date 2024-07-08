@@ -1,5 +1,5 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { Hex, SIGNATURE_LENGTH } from '../utils';
+import { HEX, SIGNATURE_LENGTH } from '../utils';
 import { assert, SECP256K1 } from '@vechain/sdk-errors';
 import { randomBytes as _randomBytes } from '@noble/hashes/utils';
 import { secp256k1 as n_secp256k1 } from '@noble/curves/secp256k1';
@@ -93,7 +93,7 @@ function inflatePublicKey(publicKey: Uint8Array): Uint8Array {
         // To inflate.
         const x = publicKey.slice(0, 33);
         const p = n_secp256k1.ProjectivePoint.fromAffine(
-            n_secp256k1.ProjectivePoint.fromHex(Hex.of(x)).toAffine()
+            n_secp256k1.ProjectivePoint.fromHex(HEX.of(x).hex).toAffine()
         );
         return p.toRawBytes(false);
     } else {
