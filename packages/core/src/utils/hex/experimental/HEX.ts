@@ -54,7 +54,7 @@ class HEX {
      *
      * @type {RegExp}
      */
-    private static readonly REGEX_PREFIX: RegExp = /^0x/i;
+    protected static readonly REGEX_PREFIX: RegExp = /^0x/i;
 
     /**
      * Regular expression pattern used to validate a hexadecimal value.
@@ -202,21 +202,6 @@ class HEX {
     }
 
     /**
-     * Trims leading zeros from a hexadecimal string.
-     *
-     * @param {string} hex - The hexadecimal string to trim.
-     * @protected
-     * @returns {string} - The trimmed hexadecimal string.
-     */
-    protected static trim(hex: string): string {
-        let i = 0;
-        while (i < hex.length && hex.at(i) === '0') {
-            i++;
-        }
-        return i === hex.length ? '0' : hex.slice(i);
-    }
-
-    /**
      * Return the BigInt representation of the hexadecimal value.
      *
      * @returns {bigint} - The BigInt representation of the hexadecimal value.
@@ -287,8 +272,8 @@ class HEX {
      *
      * @return {HEX} - A new HEX object with the trimmed value.
      */
-    public trim(): HEX {
-        return new HEX(HEX.trim(this.hex));
+    public trim(): Quant {
+        return new Quant(this.hex);
     }
 }
 
@@ -306,7 +291,7 @@ class Quant extends HEX {
      * @param {string} hex - The hex value to be passed to the constructor.
      */
     constructor(hex: string) {
-        super(HEX.trim(hex));
+        super(Quant.trim(HEX.REGEX_PREFIX.test(hex) ? hex.slice(2) : hex));
     }
 
     /**
@@ -317,7 +302,22 @@ class Quant extends HEX {
      * @return {Quant} A new `Quant` object created from the given `value`.
      */
     public static of(value: bigint | number | string | Uint8Array): Quant {
-        return new Quant(HEX.of(value, 0).toString());
+        return new Quant(HEX.of(value, 0).hex);
+    }
+
+    /**
+     * Trims leading zeros from a hexadecimal string.
+     *
+     * @param {string} hex - The hexadecimal string to trim.
+     * @protected
+     * @returns {string} - The trimmed hexadecimal string.
+     */
+    private static trim(hex: string): string {
+        let i = 0;
+        while (i < hex.length && hex.at(i) === '0') {
+            i++;
+        }
+        return i === hex.length ? '0' : hex.slice(i);
     }
 }
 

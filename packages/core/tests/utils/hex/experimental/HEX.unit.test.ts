@@ -1,4 +1,5 @@
-import { HEX } from '../../../../src';
+import * as nc_utils from '@noble/curves/abstract/utils';
+import { HEX, Quant } from '../../../../src';
 import { describe, expect, test } from '@jest/globals';
 
 /**
@@ -6,23 +7,23 @@ import { describe, expect, test } from '@jest/globals';
  * @group unit/utils/hex/experimental
  */
 describe('HEX class tests', () => {
-    test('Constructor should create new hex - prefix', () => {
+    test('constructor should create new hex - prefix', () => {
         const hex = new HEX('0x1234');
         expect(hex).toBeInstanceOf(HEX);
     });
 
-    test('Constructor should create new hex - no prefix', () => {
+    test('constructor should create new hex - no prefix', () => {
         const hex = new HEX('0x1234');
         expect(hex).toBeInstanceOf(HEX);
     });
 
-    test('isValid method should validate hex expressions', () => {
+    test('static isValid method should validate hex expressions', () => {
         expect(HEX.isValid('1234')).toBe(true);
         expect(HEX.isValid('0x123')).toBe(true);
         expect(HEX.isValid('ABCDEFG')).toBe(false);
     });
 
-    test('Static of method should return hexadecimal object depending on type of input', () => {
+    test('static of method should return hexadecimal object depending on type of input', () => {
         const buffer = new Uint8Array([1, 2, 3, 4]);
         let hex = HEX.of(buffer);
         expect(hex).toBeInstanceOf(HEX);
@@ -37,9 +38,21 @@ describe('HEX class tests', () => {
         expect(hex).toBeInstanceOf(HEX);
     });
 
-    test('Trim method should remove leading zeros', () => {
+    test('random method should generates hex random of specified length', () => {
+        const bytesLength = 3;
+        const hex = HEX.random(bytesLength);
+        expect(hex).toBeInstanceOf(HEX);
+        expect(hex.hex.length).toBe(bytesLength * 2);
+    });
+
+    test('trim method should remove leading zeros', () => {
         const hex = new HEX('000123');
         expect(hex.trim().toString()).toEqual('0x123');
+    });
+
+    test('trim method should return zero for zero value', () => {
+        const hex = new HEX('000000');
+        expect(hex.trim().toString()).toEqual('0x0');
     });
 
     test('bi getter should return bigint representation of hex', () => {
@@ -63,8 +76,48 @@ describe('HEX class tests', () => {
         expect(paddedHex.toString()).toEqual('0x000123');
     });
 
+    test('text method should return an consistent NFC encoded string', () => {
+        const text = 'Amélie';
+        const hex = HEX.of(text);
+        expect(hex.hex).toBe(
+            nc_utils.bytesToHex(new TextEncoder().encode(text.normalize('NFC')))
+        );
+        expect(hex.text).toBe(text);
+    });
+
     test('toString method should return string representation of hex with 0x prefix', () => {
         const hex = new HEX('1234');
         expect(hex.toString()).toEqual('0x1234');
+    });
+});
+
+describe('Quant class tests', () => {
+    test('constructor should create new hex - prefix', () => {
+        const expected = '1234';
+        const q = new Quant('0x00' + expected);
+        expect(q).toBeInstanceOf(Quant);
+        expect(q.hex).toBe(expected);
+    });
+
+    test('constructor should create new hex - no prefix', () => {
+        const expected = '1234';
+        const q = new Quant('0000' + expected);
+        expect(q).toBeInstanceOf(Quant);
+        expect(q.hex).toBe(expected);
+    });
+
+    test('static of method should return hexadecimal object depending on type of input', () => {
+        const buffer = new Uint8Array([1, 2, 3, 4]);
+        let q = Quant.of(buffer);
+        expect(q).toBeInstanceOf(Quant);
+
+        q = Quant.of(12357);
+        expect(q).toBeInstanceOf(Quant);
+
+        q = Quant.of(123457n);
+        expect(q).toBeInstanceOf(Quant);
+
+        q = Quant.of('Amélie');
+        expect(q).toBeInstanceOf(Quant);
     });
 });
