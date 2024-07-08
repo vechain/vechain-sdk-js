@@ -70,6 +70,48 @@ describe('HEX class tests', () => {
         expect(hex.bn.toString()).toEqual('1234');
     });
 
+    test('compareTo should be positive if this longer than that', () => {
+        const thisHex = new HEX('c1b8');
+        const thatHex = new HEX('c1');
+        expect(thisHex.compareTo(thatHex)).toBeGreaterThan(0);
+    });
+
+    test('compareTo should be positive if this > that, same length', () => {
+        const thisHex = new HEX('c1b9');
+        const thatHex = new HEX('C1B8');
+        expect(thisHex.compareTo(thatHex)).toBeGreaterThan(0);
+    });
+
+    test('compareTo should be negative if this shorter than that', () => {
+        const thisHex = new HEX('c1');
+        const thatHex = new HEX('c1b8');
+        expect(thisHex.compareTo(thatHex)).toBeLessThan(0);
+    });
+
+    test('compareTo should be negative if this < that, same length', () => {
+        const thisHex = new HEX('c1b8');
+        const thatHex = new HEX('C1B9');
+        expect(thisHex.compareTo(thatHex)).toBeLessThan(0);
+    });
+
+    test('compareTo should zero negative if this = that', () => {
+        const thisHex = new HEX('c1b8');
+        const thatHex = new HEX('C1B8');
+        expect(thisHex.compareTo(thatHex)).toBe(0);
+    });
+
+    test('isEqual should be false', () => {
+        const thisHex = new HEX('c1b8');
+        const thatHex = new HEX('cafe');
+        expect(thisHex.isEqual(thatHex)).toBeFalsy();
+    });
+
+    test('isEqual should be true', () => {
+        const thisHex = new HEX('c1b8');
+        const thatHex = new HEX('C1B8');
+        expect(thisHex.isEqual(thatHex)).toBeTruthy();
+    });
+
     test('pad method should pad hex string', () => {
         const hex = new HEX('123');
         const paddedHex = hex.pad(3);

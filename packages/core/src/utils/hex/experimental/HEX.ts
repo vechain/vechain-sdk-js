@@ -2,12 +2,13 @@ import * as nc_utils from '@noble/curves/abstract/utils';
 import * as nh_utils from '@noble/hashes/utils';
 import { assert, DATA } from '@vechain/sdk-errors';
 import { BigNumber } from 'bignumber.js';
+import { type Comparable } from '../../comparable';
 
 /**
  * Class representing a hexadecimal value.
  * @class
  */
-class HEX {
+class HEX implements Comparable<HEX> {
     /**
      * Represents a decoder for text used to normalize and decode texts in array of bytes expressed in hexadecimal form.
      *
@@ -50,18 +51,18 @@ class HEX {
     private static readonly RADIX: number = 16;
 
     /**
+     * Regular expression pattern used to validate a hexadecimal value.
+     *
+     * @type {RegExp}
+     */
+    private static readonly REGEX_HEX: RegExp = /^(0x)?[0-9a-f]*$/i;
+
+    /**
      * Regular expression pattern used to match strings starting with "0x" in a case-insensitive manner.
      *
      * @type {RegExp}
      */
     protected static readonly REGEX_PREFIX: RegExp = /^0x/i;
-
-    /**
-     * Regular expression pattern used to validate a hexadecimal value.
-     *
-     * @type {RegExp}
-     */
-    private static readonly REGEX_VALUE: RegExp = /^(0x)?[0-9a-f]*$/i;
 
     /**
      * Represents a hexadecimal value, normalized lower-case, no prefix.
@@ -77,6 +78,7 @@ class HEX {
      * optionally prefixed with `0x` case-insensitive.
      *
      * @return {void}
+     * @throws {InvalidDataTypeError} if `hex` is not a valid hexadecimal expression.
      */
     public constructor(hex: string) {
         let val = hex;
@@ -93,6 +95,26 @@ class HEX {
         this.hex = val.toLowerCase();
     }
 
+    public compareTo(that: HEX): number {
+        const thisBytes = this.bytes;
+        const thatBytes = that.bytes;
+        const compareLength = thisBytes.length - thatBytes.length;
+        if (compareLength === 0) {
+            let i = 0;
+            let compareByte = 0;
+            while (compareByte === 0 && i < thisBytes.length) {
+                compareByte = thisBytes[i] - thatBytes[i];
+                i++;
+            }
+            return compareByte;
+        }
+        return compareLength;
+    }
+
+    public isEqual(that: HEX): boolean {
+        return this.compareTo(that) === 0;
+    }
+
     /**
      * Checks if the given string expression is a valid hexadecimal value.
      *
@@ -102,7 +124,7 @@ class HEX {
      * optionally prefixed with `0x`; false otherwise.
      */
     public static isValid(exp: string): boolean {
-        return HEX.REGEX_VALUE.test(exp);
+        return HEX.REGEX_HEX.test(exp);
     }
 
     /**
