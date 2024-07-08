@@ -2,7 +2,7 @@ import { generateRandomValidAddress } from '../../../../core/tests/fixture';
 import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
 import { TESTING_CONTRACT_ADDRESS } from '../../fixture';
 // eslint-disable-next-line import/no-named-default
-import { default as NodeWebSocket } from 'ws';
+import { default as NodeWebSocket } from 'isomorphic-ws';
 
 /**
  * random address for `from` parameter
