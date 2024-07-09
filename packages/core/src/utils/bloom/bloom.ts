@@ -1,7 +1,7 @@
 import * as n_utils from '@noble/curves/abstract/utils';
 import { ADDRESS, assert, BLOOM, DATA } from '@vechain/sdk-errors';
 import { Hex, Hex0x } from '../hex';
-import { addressUtils } from '../../address';
+import { addressUtils } from '../../address-utils';
 import { bloom } from '../../bloom';
 
 /**

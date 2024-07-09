@@ -1,5 +1,5 @@
 import { assert, DATA } from '@vechain/sdk-errors';
-import { addressUtils } from '../../address';
+import { addressUtils } from '../../address-utils';
 
 /**
  * Assert if address is valid
