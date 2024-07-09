@@ -4,7 +4,7 @@ import { RPC_METHODS } from '../../../provider';
 import { VeChainAbstractSigner } from '../vechain-abstract-signer';
 import { assert, JSONRPC, TRANSACTION } from '@vechain/sdk-errors';
 import { assertTransactionCanBeSigned } from '../../../assertions';
-import { ethers } from 'ethers';
+import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
 import {
     addressUtils,
     Hex,
@@ -13,8 +13,7 @@ import {
     secp256k1,
     Transaction,
     type TransactionBody,
-    TransactionHandler,
-    type vechain_sdk_core_ethers
+    TransactionHandler
 } from '@vechain/sdk-core';
 import {
     type AvailableVeChainProviders,
@@ -180,7 +179,11 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
             try {
                 const hash = n_utils.hexToBytes(
                     Hex.canon(
-                        ethers.TypedDataEncoder.hash(domain, types, value)
+                        vechain_sdk_core_ethers.TypedDataEncoder.hash(
+                            domain,
+                            types,
+                            value
+                        )
                     )
                 );
                 const sign = secp256k1.sign(
