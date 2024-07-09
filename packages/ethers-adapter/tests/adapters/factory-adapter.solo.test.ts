@@ -4,10 +4,10 @@ import {
     ThorClient,
     type WaitForTransactionOptions
 } from '@vechain/sdk-network';
-import { erc20Abi, erc20ContractBytecode, soloUrl } from '../fixture';
+import { erc20ContractBytecode, soloUrl } from '../fixture';
 import { factoryAdapter } from '../../src';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
+import { ERC20_ABI, vechain_sdk_core_ethers } from '@vechain/sdk-core';
 
 /**
  *VeChain adapters tests - Solo Network
@@ -57,7 +57,7 @@ describe('Hardhat factory adapter tests', () => {
         });
 
         const contract = new vechain_sdk_core_ethers.ContractFactory(
-            erc20Abi,
+            ERC20_ABI,
             erc20ContractBytecode,
             signer
         );
@@ -70,7 +70,7 @@ describe('Hardhat factory adapter tests', () => {
 
     test('Should fail to deploy with a factory adapter', async () => {
         const contract = new vechain_sdk_core_ethers.ContractFactory(
-            erc20Abi,
+            ERC20_ABI,
             erc20ContractBytecode
         );
 
