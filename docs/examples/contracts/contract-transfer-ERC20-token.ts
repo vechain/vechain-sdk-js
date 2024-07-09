@@ -1,4 +1,4 @@
-import { unitsUtils, VIP180_ABI } from '@vechain/sdk-core';
+import { unitsUtils, ERC20_ABI } from '@vechain/sdk-core';
 import {
     type Contract,
     ProviderInternalBaseWallet,
@@ -35,9 +35,9 @@ const signer = (await provider.getSigner(
 )) as VeChainSigner;
 
 // Defining a function for deploying the ERC20 contract
-const setupERC20Contract = async (): Promise<Contract<typeof VIP180_ABI>> => {
+const setupERC20Contract = async (): Promise<Contract<typeof ERC20_ABI>> => {
     const contractFactory = thorSoloClient.contracts.createContractFactory(
-        VIP180_ABI,
+        ERC20_ABI,
         erc20ContractBytecode,
         signer
     );
