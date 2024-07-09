@@ -8,8 +8,8 @@ import {
     type VeChainSigner
 } from '../../../src';
 import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
-import { deployedERC20Abi, erc20ContractBytecode } from './fixture';
-import { addressUtils } from '@vechain/sdk-core';
+import { erc20ContractBytecode } from './fixture';
+import { addressUtils, ERC20_ABI } from '@vechain/sdk-core';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -74,7 +74,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     test('deployErc20Contract with Contract Factory', async () => {
         // Deploy the ERC20 contract and receive a response
         let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
+            ERC20_ABI,
             erc20ContractBytecode,
             signer
         );
@@ -102,7 +102,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     test('Execute ERC20 contract operations', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
+            ERC20_ABI,
             erc20ContractBytecode,
             signer
         );
@@ -138,7 +138,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     test('Execute ERC20 contract operations with comments', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
+            ERC20_ABI,
             erc20ContractBytecode,
             signer
         );
@@ -175,7 +175,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     test('Execute ERC20 contract operations with revision', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
+            ERC20_ABI,
             erc20ContractBytecode,
             signer
         );
@@ -215,7 +215,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     test('transaction execution with delegation', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
+            ERC20_ABI,
             erc20ContractBytecode,
             signer
         );
@@ -246,7 +246,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     test('transaction execution with delegation set from contract', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
+            ERC20_ABI,
             erc20ContractBytecode,
             (await providerWithDelegationPrivateKeyEnabled.getSigner(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
@@ -279,7 +279,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     test('Execute multiple ERC20 read contract clauses', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
+            ERC20_ABI,
             erc20ContractBytecode,
             signer
         );
@@ -306,7 +306,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     test('Execute multiple ERC20 read contract clauses that reverts', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
+            ERC20_ABI,
             erc20ContractBytecode,
             signer
         );
@@ -333,7 +333,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     test('Execute multiple ERC20 contract clauses', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
+            ERC20_ABI,
             erc20ContractBytecode,
             signer
         );
@@ -389,7 +389,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     test('transaction execution with private key delegation', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
+            ERC20_ABI,
             erc20ContractBytecode,
             (await providerWithDelegationPrivateKeyEnabled.getSigner(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
