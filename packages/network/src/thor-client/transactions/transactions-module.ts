@@ -37,7 +37,7 @@ import { type ThorClient } from '../thor-client';
 import { type ExpandedBlockDetail } from '../blocks';
 import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
 import { type CallNameReturnType } from '../debug';
-import { ethers } from 'ethers';
+import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -434,12 +434,14 @@ class TransactionsModule {
         else {
             // An error fragment is provided, so decode the revert reason using solidity error
             if (errorFragment !== undefined) {
-                const errorInterface = new ethers.Interface([
-                    ethers.ErrorFragment.from(errorFragment)
+                const errorInterface = new vechain_sdk_core_ethers.Interface([
+                    vechain_sdk_core_ethers.ErrorFragment.from(errorFragment)
                 ]);
                 return errorInterface
                     .decodeErrorResult(
-                        ethers.ErrorFragment.from(errorFragment),
+                        vechain_sdk_core_ethers.ErrorFragment.from(
+                            errorFragment
+                        ),
                         encodedRevertReason
                     )
                     .toArray()[0] as string;
