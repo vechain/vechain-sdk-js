@@ -9,9 +9,9 @@ import {
 } from './fixture';
 
 /**
- * Tests for address module
+ * Tests for address-utils module
  *
- * @group sdk-core/unit/address
+ * @group sdk-core/unit/addressUtils
  */
 describe('addressUtils', () => {
     /**
