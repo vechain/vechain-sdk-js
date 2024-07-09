@@ -2,36 +2,52 @@ import { InvalidAddressError } from '@vechain/sdk-errors';
 import { addressUtils } from '../../src';
 import { describe, expect, test } from '@jest/globals';
 import {
-    checksummedAndUnchecksummedAddresses,
-    simpleAddress,
-    simplePrivateKey,
-    simpleUncompressedPublicKey
+    checksummedAndUnchecksummedAddressesFixture,
+    simpleAddressFixture,
+    simplePrivateKeyFixture,
+    simpleUncompressedPublicKeyFixture
 } from './fixture';
 
 /**
- * Test address module
- * @group unit/address
+ * Tests for address module
+ *
+ * @group sdk-core/unit/address
  */
 describe('addressUtils', () => {
-    test('fromPrivateKey', () => {
-        expect(addressUtils.fromPrivateKey(simplePrivateKey)).toEqual(
-            simpleAddress
-        );
-    });
-
-    describe('fromPublicKey', () => {
-        test('public key -> address relation', () => {
+    /**
+     * Derivation of address from private key AND public key
+     */
+    describe('Address Derivation', () => {
+        /**
+         * Derive address from a private key positive test case
+         */
+        test('fromPrivateKey', () => {
             expect(
-                addressUtils.fromPublicKey(simpleUncompressedPublicKey)
-            ).toEqual(simpleAddress);
+                addressUtils.fromPrivateKey(simplePrivateKeyFixture)
+            ).toEqual(simpleAddressFixture);
+        });
+
+        /**
+         * Derive address from a public key positive test case
+         */
+        test('fromPublicKey', () => {
+            expect(
+                addressUtils.fromPublicKey(simpleUncompressedPublicKeyFixture)
+            ).toEqual(simpleAddressFixture);
         });
     });
 
-    describe('isAddress', () => {
+    describe('Check if is address', () => {
+        /**
+         * Is address case of not hex string
+         */
         test('isAddress - false - not hex', () => {
             expect(addressUtils.isAddress('not an address')).toEqual(false);
         });
 
+        /**
+         * Is address case of no 0x prefix
+         */
         test('isAddress - false - no 0x prefix', () => {
             expect(
                 addressUtils.isAddress(
@@ -40,6 +56,9 @@ describe('addressUtils', () => {
             ).toEqual(false);
         });
 
+        /**
+         * Is address correct address
+         */
         test('isAddress - true', () => {
             expect(
                 addressUtils.isAddress(
@@ -50,11 +69,11 @@ describe('addressUtils', () => {
     });
 
     /**
-     * Test address checksum
+     * Test address ERC55 checksum
      */
-    describe('toERC55Checksum', () => {
+    describe('Address ERC55 Checksum', () => {
         /**
-         * Invalid inputs
+         * Invalid inputs, not hex string
          */
         test('toERC55Checksum - invalid - no hex', () => {
             expect(() => {
@@ -62,6 +81,9 @@ describe('addressUtils', () => {
             }).toThrowError(InvalidAddressError);
         });
 
+        /**
+         * Invalid inputs, no 0x prefix
+         */
         test('toERC55Checksum - invalid - no 0x prefix', () => {
             expect(() => {
                 addressUtils.toERC55Checksum(
@@ -70,6 +92,9 @@ describe('addressUtils', () => {
             }).toThrowError(InvalidAddressError);
         });
 
+        /**
+         * Invalid inputs, wrong size address
+         */
         test('toERC55Checksum - invalid - wrong size', () => {
             expect(() => {
                 addressUtils.toERC55Checksum(
@@ -78,12 +103,17 @@ describe('addressUtils', () => {
             }).toThrowError(InvalidAddressError);
         });
 
+        /**
+         * Valid inputs, checksummed address
+         */
         test('toERC55Checksum - valid', () => {
-            checksummedAndUnchecksummedAddresses.forEach((addressPair) => {
-                expect(
-                    addressUtils.toERC55Checksum(addressPair.unchecksummed)
-                ).toEqual(addressPair.checksummed);
-            });
+            checksummedAndUnchecksummedAddressesFixture.forEach(
+                (addressPair) => {
+                    expect(
+                        addressUtils.toERC55Checksum(addressPair.unchecksummed)
+                    ).toEqual(addressPair.checksummed);
+                }
+            );
         });
     });
 });
