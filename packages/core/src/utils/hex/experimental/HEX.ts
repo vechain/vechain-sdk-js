@@ -48,7 +48,7 @@ class HEX implements Comparable<HEX> {
      * @constant
      * @default 16
      */
-    private static readonly RADIX: number = 16;
+    protected static readonly RADIX: number = 16;
 
     /**
      * Regular expression pattern used to validate a hexadecimal value.
@@ -80,7 +80,10 @@ class HEX implements Comparable<HEX> {
      * @return {void}
      * @throws {InvalidDataTypeError} if `hex` is not a valid hexadecimal expression.
      */
-    public constructor(hex: string) {
+    public constructor(
+        hex: string,
+        normalize: (exp: string) => string = (exp) => exp.toLowerCase()
+    ) {
         let val = hex;
         if (HEX.REGEX_PREFIX.test(val)) {
             val = val.slice(2);
@@ -92,7 +95,7 @@ class HEX implements Comparable<HEX> {
             'not an hexadecimal expression',
             { val }
         );
-        this.hex = val.toLowerCase();
+        this.hex = normalize(val);
     }
 
     public compareTo(that: HEX): number {

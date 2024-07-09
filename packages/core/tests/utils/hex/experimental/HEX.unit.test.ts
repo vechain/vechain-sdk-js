@@ -3,7 +3,7 @@ import { HEX, Quant } from '../../../../src';
 import { describe, expect, test } from '@jest/globals';
 
 /**
- * Text Hex representation from TS types prefixed with `0x`.
+ * Text HEX class.
  * @group unit/utils/hex/experimental
  */
 describe('HEX class tests', () => {

@@ -14,13 +14,13 @@ class Address extends HEX {
 
     constructor(hex: string) {
         assert(
-            'Hex.constructor',
+            'Address.constructor',
             Address.isValid(hex),
             DATA.INVALID_DATA_TYPE,
             'not an address expression',
             { hex }
         );
-        super(Address.checksum(hex));
+        super(hex, (exp: string) => Address.checksum(exp));
     }
 
     private static checksum(txt: string): string {
@@ -28,7 +28,7 @@ class Address extends HEX {
         const hash = nc_utils.bytesToHex(keccak256(lowc));
         let checksum = '';
         for (let i = 0; i < lowc.length; i++) {
-            if (parseInt(hash[i], 16) >= 8) {
+            if (parseInt(hash[i], HEX.RADIX) >= 8) {
                 checksum += lowc[i].toUpperCase();
             } else {
                 checksum += lowc[i];
@@ -41,15 +41,17 @@ class Address extends HEX {
         return Address.REGEX_ADDRESS.test(exp);
     }
 
+    public static of(value: Uint8Array): Address {
+        return new Address(nc_utils.bytesToHex(value));
+    }
+
     public static ofPrivateKey(privateKey: Uint8Array): Address {
         return Address.ofPublicKey(secp256k1.derivePublicKey(privateKey));
     }
 
     public static ofPublicKey(publicKey: Uint8Array): Address {
-        return new Address(
-            nc_utils.bytesToHex(
-                secp256k1.inflatePublicKey(publicKey).slice(1).slice(12)
-            )
+        return Address.of(
+            keccak256(secp256k1.inflatePublicKey(publicKey).slice(1)).slice(12)
         );
     }
 }
