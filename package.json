@@ -69,7 +69,7 @@
         "jest-runner-groups": "^2.2.0",
         "nyc": "^17.0.0",
         "prettier": "^3.3.2",
-        "ts-jest": "^29.1.5",
+        "ts-jest": "^29.2.0",
         "tsup": "^8.1.0",
         "typedoc": "^0.26.3",
         "typedoc-plugin-missing-exports": "^3.0.0",
