@@ -10,7 +10,7 @@ import {
     stringifyData
 } from '@vechain/sdk-errors';
 import { secp256k1 } from '../../../secp256k1';
-import { addressUtils } from '../../../address';
+import { addressUtils } from '../../../address-utils';
 import { Hex0x } from '../../../utils';
 import { SCRYPT_PARAMS } from './const';
 
