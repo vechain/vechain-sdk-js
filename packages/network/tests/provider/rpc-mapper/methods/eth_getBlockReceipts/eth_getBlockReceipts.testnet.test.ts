@@ -1,12 +1,13 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { NotImplementedError } from '@vechain/sdk-errors';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
 import { testnetUrl } from '../../../../fixture';
+import { blockReceiptsFixture, blockReceiptsInvalidFixture } from './fixture';
+import { InvalidDataTypeError } from '@vechain/sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_getBlockReceipts' method
  *
- * @group integration/rpc-mapper/methods/eth_getBlockReceipts
+ * @group integration/sdk-network/rpc-mapper/methods/eth_getBlockReceipts
  */
 describe('RPC Mapper - eth_getBlockReceipts method tests', () => {
     /**
@@ -27,17 +28,34 @@ describe('RPC Mapper - eth_getBlockReceipts method tests', () => {
      */
     describe('eth_getBlockReceipts - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Positive case 1 - Simple block receipts retrieval
          */
-        test('eth_getBlockReceipts - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.eth_getBlockReceipts
-                    ]([-1])
-            ).rejects.toThrowError(NotImplementedError);
-        });
+        test('Should be able to get block receipts', async () => {
+            for (const fixture of blockReceiptsFixture) {
+                // Call RPC function
+                const rpcCall = await RPCMethodsMap(thorClient)[
+                    RPC_METHODS.eth_getBlockReceipts
+                ]([fixture.blockNumber]);
+
+                // Compare the result with the expected value
+                expect(rpcCall).toEqual(fixture.expected);
+            }
+        }, 6000);
+
+        /**
+         * Should get a result with block tags 'latest' and 'finalized'
+         */
+        test('Should get a result with block tags "latest" and "finalized"', async () => {
+            for (const blockNumber of ['latest', 'finalized']) {
+                // Call RPC function
+                const rpcCall = await RPCMethodsMap(thorClient)[
+                    RPC_METHODS.eth_getBlockReceipts
+                ]([blockNumber]);
+
+                // Compare the result with the expected value
+                expect(rpcCall).toBeDefined();
+            }
+        }, 6000);
     });
 
     /**
@@ -45,16 +63,17 @@ describe('RPC Mapper - eth_getBlockReceipts method tests', () => {
      */
     describe('eth_getBlockReceipts - Negative cases', () => {
         /**
-         * Negative case 1 - ... Description ...
+         * Throw error if RPC parameters are invalid
          */
-        test('eth_getBlockReceipts - negative case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.eth_getBlockReceipts
-                    ](['SOME_RANDOM_PARAM'])
-            ).rejects.toThrowError(NotImplementedError);
+        test('Should throw error with invalid parameters', async () => {
+            for (const fixture of blockReceiptsInvalidFixture) {
+                await expect(
+                    async () =>
+                        await RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_getBlockReceipts
+                        ]([fixture])
+                ).rejects.toThrowError(InvalidDataTypeError);
+            }
         });
     });
 });
