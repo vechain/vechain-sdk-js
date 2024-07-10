@@ -20,7 +20,7 @@ class Address extends HEX {
             'not an address expression',
             { hex }
         );
-        super(hex, (exp: string) => Address.checksum(exp));
+        super(hex, (hex: string) => Address.checksum(hex));
     }
 
     private static checksum(txt: string): string {

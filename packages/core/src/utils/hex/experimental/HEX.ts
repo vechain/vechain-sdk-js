@@ -2,7 +2,7 @@ import * as nc_utils from '@noble/curves/abstract/utils';
 import * as nh_utils from '@noble/hashes/utils';
 import { assert, DATA } from '@vechain/sdk-errors';
 import { BigNumber } from 'bignumber.js';
-import { type Comparable } from '../../comparable';
+import { type Comparable } from '../../../experimental';
 
 /**
  * Class representing a hexadecimal value.
@@ -82,7 +82,7 @@ class HEX implements Comparable<HEX> {
      */
     public constructor(
         hex: string,
-        normalize: (exp: string) => string = (exp) => exp.toLowerCase()
+        normalize: (hex: string) => string = (exp) => exp.toLowerCase()
     ) {
         let val = hex;
         if (HEX.REGEX_PREFIX.test(val)) {
@@ -227,30 +227,39 @@ class HEX implements Comparable<HEX> {
     }
 
     /**
-     * Return the BigInt representation of the hexadecimal value.
+     * Return the BigInt value of this hexadecimal representation.
      *
-     * @returns {bigint} - The BigInt representation of the hexadecimal value.
+     * @returns {bigint} - The BigInt value of this hexadecimal representation.
      */
     public get bi(): bigint {
         return nc_utils.hexToNumber(this.hex);
     }
 
     /**
-     * Returns the bytes equivalent of the hexadecimal value stored in the object.
+     * Returns the array of bytes of this hexadecimal representation.
      *
-     * @returns {Uint8Array} The bytes representation of the hexadecimal value.
+     * @returns {Uint8Array} The array of bytes of this hexadecimal representation.
      */
     public get bytes(): Uint8Array {
         return nc_utils.hexToBytes(this.hex);
     }
 
     /**
-     * Retrieves the BigNumber value represented by this.bn.
+     * Returns the BigNumber value of this hexadecimal representation.
      *
-     * @return {BigNumber} The BigNumber value.
+     * @return {BigNumber} The BigNumber value of this hexadecimal representation.
      */
     public get bn(): BigNumber {
         return BigNumber(this.bi.toString());
+    }
+
+    /**
+     * Returns the number value of this hexadecimal representation.
+     *
+     * @returns {number} - The number value of this hexadecimal representation.
+     */
+    public get n(): number {
+        return this.bn.toNumber();
     }
 
     /**

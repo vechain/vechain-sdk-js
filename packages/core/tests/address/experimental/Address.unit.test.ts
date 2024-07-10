@@ -31,7 +31,7 @@ const AddressFixture = {
 describe('Address class tests', () => {
     describe('constructor should comply ERC55 checksum representation', () => {
         AddressFixture.erc55.forEach((erc55) => {
-            test(`constructor for ${erc55}`, () => {
+            test(`constructor for ${erc55} should comply ERC55 checksum representation`, () => {
                 const lc = new Address(erc55.toLowerCase());
                 const uc = new Address(erc55.toUpperCase());
                 expect(lc.toString()).toBe(erc55);
