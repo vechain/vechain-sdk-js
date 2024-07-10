@@ -40,7 +40,7 @@ describe('RPC Mapper - eth_getBlockReceipts method tests', () => {
                 // Compare the result with the expected value
                 expect(rpcCall).toEqual(fixture.expected);
             }
-        }, 6000);
+        }, 20000);
 
         /**
          * Should get a result with block tags 'latest' and 'finalized'
@@ -55,7 +55,7 @@ describe('RPC Mapper - eth_getBlockReceipts method tests', () => {
                 // Compare the result with the expected value
                 expect(rpcCall).toBeDefined();
             }
-        }, 6000);
+        }, 20000);
     });
 
     /**
