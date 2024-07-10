@@ -90,11 +90,10 @@ const _scatterArrayTopic = (
  */
 const getCriteriaSetForInput = (criteria: {
     address?: string | string[];
-    topics?: string[];
+    topics?: string[] | string[][];
 }): EventCriteria[] => {
     // String to an array of addresses and topics
     let criteriaAddress: string[] = [];
-    let criteriaTopics: string[] = [];
 
     // Convert in any case to an array of addresses
     if (criteria.address !== undefined)
@@ -103,15 +102,55 @@ const getCriteriaSetForInput = (criteria: {
                 ? [criteria.address]
                 : criteria.address;
 
-    // Convert in any case to an array of topics
-    if (criteria.topics !== undefined) criteriaTopics = criteria.topics;
+    const eventsCriteriaToFlat: EventCriteria[][] = criteriaAddress.map(
+        (addr: string) => {
+            return getTopicsPerAddress(addr, criteria.topics ?? []);
+        }
+    );
 
-    // Filtering considering the address and topics. For each address, we have to consider the topics
-    return criteriaAddress.length > 0
-        ? criteriaAddress.map((addr: string) => {
-              return _scatterArrayTopic(criteriaTopics, addr);
-          })
-        : [_scatterArrayTopic(criteriaTopics)];
+    // Flat the array
+    return eventsCriteriaToFlat.flat();
+};
+
+const getTopicsPerAddress = (
+    address: string,
+    topics: string[] | string[][]
+): EventCriteria[] => {
+    console.log('topics', topics);
+    const notArrayTopics: string[] = [];
+    const arrayTopics: string[][] = [];
+
+    topics.forEach((topic) => {
+        if (!Array.isArray(topic)) {
+            notArrayTopics.push(topic);
+        }
+        if (Array.isArray(topic)) {
+            arrayTopics.push(topic);
+        }
+    });
+
+    const criteriaSet: EventCriteria[] = [];
+
+    if (notArrayTopics.length > 0) {
+        criteriaSet.push(_scatterArrayTopic(notArrayTopics, address));
+    }
+
+    arrayTopics.forEach((topics) => {
+        topics.forEach((topic) => {
+            criteriaSet.push({
+                address,
+                topic0: topic,
+                topic1: undefined,
+                topic2: undefined,
+                topic3: undefined,
+                topic4: undefined
+            });
+        });
+    });
+
+    console.log('criteriaSet', criteriaSet);
+
+    return criteriaSet;
 };
 
 export { formatToLogsRPC, getCriteriaSetForInput };
