@@ -43,7 +43,7 @@
         "check-tests-naming": "ts-node scripts/check-tests-naming.ts"
     },
     "devDependencies": {
-        "@changesets/cli": "^2.27.5",
+        "@changesets/cli": "^2.27.7",
         "@commitlint/cli": "^19.3.0",
         "@commitlint/config-conventional": "^19.1.0",
         "@jest/globals": "^29.7.0",

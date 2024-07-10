@@ -1,7 +1,7 @@
 import * as bip39 from '@scure/bip39';
 import { HDNode } from '../hdnode';
 import { MNEMONIC_WORDLIST_ALLOWED_SIZES } from '../utils';
-import { addressUtils } from '../address';
+import { addressUtils } from '../address-utils';
 import { assert, buildError, HDNODE } from '@vechain/sdk-errors';
 import { secp256k1 } from '../secp256k1';
 import { wordlist } from '@scure/bip39/wordlists/english';

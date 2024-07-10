@@ -1,27 +1,28 @@
 import * as n_utils from '@noble/curves/abstract/utils';
 
 /**
- * Simple private key and public key pair with corresponding address
+ * Simple private key
  */
-const simplePrivateKey = n_utils.hexToBytes(
+const simplePrivateKeyFixture = n_utils.hexToBytes(
     '7582be841ca040aa940fff6c05773129e135623e41acce3e0b8ba520dc1ae26a'
 );
 
-const simpleUncompressedPublicKey = n_utils.hexToBytes(
+/**
+ * Simple public key uncompressed
+ */
+const simpleUncompressedPublicKeyFixture = n_utils.hexToBytes(
     '04b90e9bb2617387eba4502c730de65a33878ef384a46f1096d86f2da19043304afa67d0ad09cf2bea0c6f2d1767a9e62a7a7ecc41facf18f2fa505d92243a658f'
 );
 
-const simpleAddress = '0xd989829d88B0eD1B06eDF5C50174eCfA64F14A64';
-
 /**
- * Invalid private key
+ * Simple address
  */
-const invalidPrivateKey = Buffer.from('INVALID_PRIVATE_KEY', 'hex');
+const simpleAddressFixture = '0xd989829d88B0eD1B06eDF5C50174eCfA64F14A64';
 
 /**
  * Checksummed and unchecksummed addresses
  */
-const checksummedAndUnchecksummedAddresses = [
+const checksummedAndUnchecksummedAddressesFixture = [
     {
         unchecksummed: '0x8617E340B3D01FA5F11F306F4090FD50E238070D',
         checksummed: '0x8617E340B3D01FA5F11F306F4090FD50E238070D'
@@ -62,9 +63,8 @@ const checksummedAndUnchecksummedAddresses = [
 ];
 
 export {
-    simplePrivateKey,
-    simpleUncompressedPublicKey,
-    simpleAddress,
-    invalidPrivateKey,
-    checksummedAndUnchecksummedAddresses
+    simplePrivateKeyFixture,
+    simpleUncompressedPublicKeyFixture,
+    simpleAddressFixture,
+    checksummedAndUnchecksummedAddressesFixture
 };
