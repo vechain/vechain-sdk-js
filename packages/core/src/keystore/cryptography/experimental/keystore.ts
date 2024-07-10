@@ -8,7 +8,7 @@ import { assert, KEYSTORE, stringifyData } from '@vechain/sdk-errors';
 import { ctr } from '@noble/ciphers/aes';
 import { scrypt } from '@noble/hashes/scrypt';
 import { type Keystore, type KeystoreAccount } from '../../types';
-import { addressUtils } from '../../../address';
+import { addressUtils } from '../../../address-utils';
 import { Hex, Hex0x } from '../../../utils';
 import { secp256k1 } from '../../../secp256k1';
 import { keccak256 } from '../../../hash';

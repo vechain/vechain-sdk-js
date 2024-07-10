@@ -10,7 +10,7 @@ import { secp256k1 } from '../secp256k1';
 const HEX_ADDRESS_REGEX = /^0x[0-9a-f]{40}$/i;
 
 /**
- * Computes an VeChainThor address from a given private key.
+ * Computes a VeChainThor address from a given private key.
  *
  * Secure audit function.
  * - {@link fromPublicKey}
@@ -28,6 +28,7 @@ const HEX_ADDRESS_REGEX = /^0x[0-9a-f]{40}$/i;
 function fromPrivateKey(privateKey: Uint8Array): string {
     return fromPublicKey(secp256k1.derivePublicKey(privateKey));
 }
+
 /**
  * Computes a VeChainThor address from a public key.
  *
