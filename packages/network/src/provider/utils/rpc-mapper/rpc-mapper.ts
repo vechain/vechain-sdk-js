@@ -77,11 +77,11 @@ import {
 import { RPC_METHODS } from '../const';
 import {
     type BlocksRPC,
-    type SyncBlockRPC,
-    type TransactionReceiptRPC,
-    type TransactionRPC,
     type LogsRPC,
-    type TracerReturnTypeRPC
+    type SyncBlockRPC,
+    type TracerReturnTypeRPC,
+    type TransactionReceiptRPC,
+    type TransactionRPC
 } from '../formatter';
 import { ethRequestAccounts } from './methods-map/methods/eth_requestAccounts';
 import { type VeChainProvider } from '../../providers';
@@ -412,8 +412,10 @@ const RPCMethodsMap = (
             await ethCreateAccessList(thorClient, params);
         },
 
-        [RPC_METHODS.eth_getBlockReceipts]: async (params) => {
-            await ethGetBlockReceipts(thorClient, params);
+        [RPC_METHODS.eth_getBlockReceipts]: async (
+            params
+        ): Promise<TransactionReceiptRPC[] | null> => {
+            return await ethGetBlockReceipts(thorClient, params);
         },
 
         [RPC_METHODS.eth_getProof]: async (params) => {
