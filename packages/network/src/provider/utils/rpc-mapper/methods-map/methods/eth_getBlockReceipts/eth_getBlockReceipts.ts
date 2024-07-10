@@ -51,7 +51,7 @@ const ethGetBlockReceipts = async (
 
         // Block is not null, return the block receipts
         const transactionsIntoTheBlock: TransactionRPC[] =
-            block.transactions as TransactionRPC[] | [];
+            block.transactions as TransactionRPC[];
 
         const transactionReceipts: TransactionReceiptRPC[] = [];
 
@@ -59,6 +59,7 @@ const ethGetBlockReceipts = async (
             const receipt = (await ethGetTransactionReceipt(thorClient, [
                 tx.hash
             ])) as TransactionReceiptRPC;
+
             transactionReceipts.push(receipt);
         }
 
