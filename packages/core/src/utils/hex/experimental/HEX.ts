@@ -8,7 +8,7 @@ import { type Comparable } from '../../../experimental';
  * Class representing a hexadecimal value.
  * @class
  */
-class HEX implements Comparable<HEX> {
+class HEX extends String implements Comparable<HEX> {
     /**
      * Represents a decoder for text used to normalize and decode texts in array of bytes expressed in hexadecimal form.
      *
@@ -72,32 +72,42 @@ class HEX implements Comparable<HEX> {
     public readonly hex: string;
 
     /**
-     * Hex constructor
+     * HEX Constructor.
      *
-     * @param {string} hex - The hexadecimal value to be assigned to the hex property,
-     * optionally prefixed with `0x` case-insensitive.
-     *
-     * @return {void}
+     * @param {string} hex - The hexadecimal expression.
+     * @param {function} normalize - The normalization function to convert the hexadecimal expression to a normalized
+     *                              form. Defaults to converting the expression to lowercase.
+     * @returns {void}
      * @throws {InvalidDataTypeError} if `hex` is not a valid hexadecimal expression.
      */
     public constructor(
         hex: string,
         normalize: (hex: string) => string = (exp) => exp.toLowerCase()
     ) {
-        let val = hex;
-        if (HEX.REGEX_PREFIX.test(val)) {
-            val = val.slice(2);
+        let value = hex;
+        if (HEX.REGEX_PREFIX.test(value)) {
+            value = value.slice(2);
         }
         assert(
             'Hex.constructor',
-            HEX.isValid(val),
+            HEX.isValid(value),
             DATA.INVALID_DATA_TYPE,
             'not an hexadecimal expression',
-            { val }
+            { val: value }
         );
-        this.hex = normalize(val);
+        value = normalize(value);
+        super('0x' + value);
+        this.hex = value;
     }
 
+    /**
+     * Compares this HEX object with the specified HEX object.
+     *
+     * @param {HEX} that - The HEX object to compare with.
+     * @returns {number} - A negative integer if this HEX is less than the specified HEX,
+     *                    zero if they are equal, or a positive integer if this HEX is greater
+     *                    than the specified HEX.
+     */
     public compareTo(that: HEX): number {
         const thisBytes = this.bytes;
         const thatBytes = that.bytes;
@@ -114,6 +124,12 @@ class HEX implements Comparable<HEX> {
         return compareLength;
     }
 
+    /**
+     * Determines if the current HEX object is equal to the given HEX object.
+     *
+     * @param {HEX} that - The HEX object to compare with.
+     * @return {boolean} - True if the objects are equal, otherwise false.
+     */
     public isEqual(that: HEX): boolean {
         return this.compareTo(that) === 0;
     }
@@ -283,31 +299,21 @@ class HEX implements Comparable<HEX> {
     }
 
     /**
+     * Returns a new Quant object expressing the value of this hexadecimal representation.
+     *
+     * @return {Quant} The Quant object.
+     */
+    public get quant(): Quant {
+        return new Quant(this.hex);
+    }
+
+    /**
      * Retrieves the decoded text from the bytes using the HEX decoder.
      *
      * @returns A string representing the decoded text.
      */
     public get text(): string {
         return HEX.DECODER.decode(this.bytes);
-    }
-
-    /**
-     * Returns a string representation of the object.
-     * The returned string includes the hexadecimal value of the object.
-     *
-     * @return {string} The string representation of the object.
-     */
-    public toString(): string {
-        return '0x' + this.hex;
-    }
-
-    /**
-     * Trims leading and trailing whitespace from a HEX value.
-     *
-     * @return {HEX} - A new HEX object with the trimmed value.
-     */
-    public trim(): Quant {
-        return new Quant(this.hex);
     }
 }
 
@@ -325,7 +331,9 @@ class Quant extends HEX {
      * @param {string} hex - The hex value to be passed to the constructor.
      */
     constructor(hex: string) {
-        super(Quant.trim(HEX.REGEX_PREFIX.test(hex) ? hex.slice(2) : hex));
+        super(
+            Quant.zeroLeftTrim(HEX.REGEX_PREFIX.test(hex) ? hex.slice(2) : hex)
+        );
     }
 
     /**
@@ -346,7 +354,7 @@ class Quant extends HEX {
      * @protected
      * @returns {string} - The trimmed hexadecimal string.
      */
-    private static trim(hex: string): string {
+    private static zeroLeftTrim(hex: string): string {
         let i = 0;
         while (i < hex.length && hex.at(i) === '0') {
             i++;

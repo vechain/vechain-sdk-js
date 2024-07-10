@@ -45,16 +45,6 @@ describe('HEX class tests', () => {
         expect(hex.hex.length).toBe(bytesLength * 2);
     });
 
-    test('trim method should remove leading zeros', () => {
-        const hex = new HEX('000123');
-        expect(hex.trim().toString()).toEqual('0x123');
-    });
-
-    test('trim method should return zero for zero value', () => {
-        const hex = new HEX('000000');
-        expect(hex.trim().toString()).toEqual('0x0');
-    });
-
     test('bi getter should return bigint representation of hex', () => {
         const hex = HEX.of(123n);
         expect(hex.bi).toEqual(BigInt(123));
@@ -116,6 +106,16 @@ describe('HEX class tests', () => {
         const hex = new HEX('123');
         const paddedHex = hex.pad(3);
         expect(paddedHex.toString()).toEqual('0x000123');
+    });
+
+    test('quant getter should remove leading zeros', () => {
+        const hex = new HEX('000123');
+        expect(hex.quant.toString()).toEqual('0x123');
+    });
+
+    test('quant getter should return zero for zero value', () => {
+        const hex = new HEX('000000');
+        expect(hex.quant.toString()).toEqual('0x0');
     });
 
     test('text method should return an consistent NFC encoded string', () => {
