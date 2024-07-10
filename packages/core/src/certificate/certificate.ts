@@ -1,6 +1,6 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Hex, Hex0x } from '../utils';
-import { addressUtils } from '../address';
+import { addressUtils } from '../address-utils';
 import { assert, CERTIFICATE } from '@vechain/sdk-errors';
 import { blake2b256 } from '../hash';
 import { hexToBytes } from '@noble/curves/abstract/utils';

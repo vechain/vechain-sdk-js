@@ -2,7 +2,7 @@ import { ethers } from 'ethers';
 
 // Our core library
 export * from './abi';
-export * from './address';
+export * from './address-utils';
 export * from './bloom';
 export * from './certificate';
 export * from './encoding';
