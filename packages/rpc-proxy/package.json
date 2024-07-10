@@ -40,7 +40,7 @@
     "cors": "^2.8.5",
     "express": "^4.19.2",
     "tsup": "^8.1.0",
-    "typescript": "^5.4.5"
+    "typescript": "^5.5.3"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
