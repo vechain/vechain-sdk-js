@@ -7,7 +7,7 @@ import {
 import type { DeployParams } from './types';
 import { ERC721_ABI, VIP180_ABI } from '../utils';
 import { assert, buildError, DATA } from '@vechain/sdk-errors';
-import { addressUtils } from '../address';
+import { addressUtils } from '../address-utils';
 
 /**
  * Builds a clause for deploying a smart contract.

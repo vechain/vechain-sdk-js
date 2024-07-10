@@ -1,4 +1,4 @@
-import { addressUtils } from '../address';
+import { addressUtils } from '../address-utils';
 import { type RLPValidObject } from '../encoding';
 import { blake2b256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
