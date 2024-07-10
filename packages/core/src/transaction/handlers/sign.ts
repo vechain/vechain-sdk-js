@@ -1,4 +1,4 @@
-import { addressUtils } from '../../address';
+import { addressUtils } from '../../address-utils';
 import { secp256k1 } from '../../secp256k1';
 import { Transaction } from '../transaction';
 import { assert, TRANSACTION } from '@vechain/sdk-errors';

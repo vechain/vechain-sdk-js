@@ -1,4 +1,4 @@
-import { addressUtils } from '../../address';
+import { addressUtils } from '../../address-utils';
 import { type TransactionClause } from '../../transaction';
 import { TRANSACTIONS_GAS_CONSTANTS } from '../const';
 import { assert, DATA } from '@vechain/sdk-errors';
