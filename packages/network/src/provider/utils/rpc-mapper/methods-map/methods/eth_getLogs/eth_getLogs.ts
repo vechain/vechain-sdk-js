@@ -44,9 +44,6 @@ const ethGetLogs = async (
             `}`
     );
 
-    // Block max limit
-    const MAX_LIMIT = 256;
-
     // Input params
     const [filterOptions] = params as [
         {
@@ -85,8 +82,7 @@ const ethGetLogs = async (
             criteriaSet,
             order: 'asc',
             options: {
-                offset: 0,
-                limit: MAX_LIMIT
+                offset: 0
             }
         });
 
