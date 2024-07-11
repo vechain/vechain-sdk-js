@@ -36,6 +36,11 @@ describe('RPC Mapper - eth_getBlockByHash method tests', () => {
                 new Error()
             );
 
+            jest.spyOn(
+                thorClient.blocks,
+                'getBlockCompressed'
+            ).mockRejectedValue(new Error());
+
             await expect(
                 async () =>
                     await RPCMethodsMap(thorClient)[
