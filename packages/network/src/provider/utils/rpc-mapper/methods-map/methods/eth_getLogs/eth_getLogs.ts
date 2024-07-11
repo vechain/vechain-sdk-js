@@ -50,7 +50,7 @@ const ethGetLogs = async (
     // Input params
     const [filterOptions] = params as [
         {
-            address?: string | string[];
+            address?: string | string[] | null;
             fromBlock?: string;
             toBlock?: string;
             topics?: string[] | string[][];
@@ -65,7 +65,10 @@ const ethGetLogs = async (
 
         // Get criteria set from input
         const criteriaSet: EventCriteria[] = getCriteriaSetForInput({
-            address: filterOptions.address,
+            address:
+                filterOptions.address !== null
+                    ? filterOptions.address
+                    : undefined,
             topics: filterOptions.topics
         });
 
