@@ -55,9 +55,13 @@ const ethGetBlockByNumber = async (
                 []
             )) as string;
 
-        const block = await thorClient.blocks.getBlockExpanded(
-            getCorrectBlockNumberRPCToVeChain(blockNumber)
-        );
+        const block = isTxDetail
+            ? await thorClient.blocks.getBlockExpanded(
+                  getCorrectBlockNumberRPCToVeChain(blockNumber)
+              )
+            : await thorClient.blocks.getBlockCompressed(
+                  getCorrectBlockNumberRPCToVeChain(blockNumber)
+              );
 
         return block !== null
             ? blocksFormatter.formatToRPCStandard(block, chainId)
