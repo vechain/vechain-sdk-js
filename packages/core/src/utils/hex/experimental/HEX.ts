@@ -3,44 +3,13 @@ import * as nh_utils from '@noble/hashes/utils';
 import { assert, DATA } from '@vechain/sdk-errors';
 import { BigNumber } from 'bignumber.js';
 import { type Comparable } from '../../../experimental';
+import { TXT } from '../../txt/experimental/TXT';
 
 /**
  * Class representing a hexadecimal value.
  * @class
  */
 class HEX extends String implements Comparable<HEX> {
-    /**
-     * Represents a decoder for text used to normalize and decode texts in array of bytes expressed in hexadecimal form.
-     *
-     * @class
-     * @see {text}
-     */
-    private static readonly DECODER = new TextDecoder();
-
-    /**
-     * Represents an encoder for text used to normalize and encode texts in array of bytes expressed in hexadecimal form.
-     *
-     * @class
-     * @see {ofText}
-     */
-    private static readonly ENCODER = new TextEncoder();
-
-    /**
-     * The [Unicode Equivalence](https://en.wikipedia.org/wiki/Unicode_equivalence)
-     * Canonical Composition normalization form used for Unicode strings.
-     *
-     * @type {string}
-     * @constant
-     * @description
-     * The normalization form determines how Unicode characters are composed or decomposed.
-     * The value 'NFC' stands for Normalization Form Canonical Composition,
-     * which composes pre-composed characters and
-     * decomposes compatibility characters.
-     *
-     * @see {ofText}
-     */
-    private static readonly NORMALIZATION_FORM = 'NFC';
-
     /**
      * The radix variable represents the base used for representing integers as strings.
      *
@@ -219,16 +188,14 @@ class HEX extends String implements Comparable<HEX> {
 
     /**
      * Converts a given text string into a HEX object.
-     * The method normalizes the text in {@link NORMALIZATION_FORM} form and encodes it as an array of bytes.
+     * The method normalizes the text in {@link NFC} form and encodes it as an array of bytes.
      *
      * @param {string} txt - The text string to convert.
      * @private
      * @returns {HEX} - The HEX object representing the converted text string.
      */
     private static ofText(txt: string): HEX {
-        return this.ofBytes(
-            HEX.ENCODER.encode(txt.normalize(HEX.NORMALIZATION_FORM))
-        );
+        return this.ofBytes(new TXT(txt).bytes);
     }
 
     /**
@@ -252,21 +219,21 @@ class HEX extends String implements Comparable<HEX> {
     }
 
     /**
-     * Returns the array of bytes of this hexadecimal representation.
-     *
-     * @returns {Uint8Array} The array of bytes of this hexadecimal representation.
-     */
-    public get bytes(): Uint8Array {
-        return nc_utils.hexToBytes(this.hex);
-    }
-
-    /**
      * Returns the BigNumber value of this hexadecimal representation.
      *
      * @return {BigNumber} The BigNumber value of this hexadecimal representation.
      */
     public get bn(): BigNumber {
         return BigNumber(this.bi.toString());
+    }
+
+    /**
+     * Returns the array of bytes of this hexadecimal representation.
+     *
+     * @returns {Uint8Array} The array of bytes of this hexadecimal representation.
+     */
+    public get bytes(): Uint8Array {
+        return nc_utils.hexToBytes(this.hex);
     }
 
     /**
@@ -310,10 +277,10 @@ class HEX extends String implements Comparable<HEX> {
     /**
      * Retrieves the decoded text from the bytes using the HEX decoder.
      *
-     * @returns A string representing the decoded text.
+     * @returns A {@link TXT} string representing the decoded text.
      */
     public get text(): string {
-        return HEX.DECODER.decode(this.bytes);
+        return TXT.of(this).toString();
     }
 }
 
