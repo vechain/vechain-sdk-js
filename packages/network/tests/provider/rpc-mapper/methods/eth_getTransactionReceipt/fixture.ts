@@ -151,7 +151,7 @@ const getReceiptCorrectCasesTestNetwork = [
                         '0x0114b4a1182a9103113a4052b2d08e7785ea74901c6974f16661d352202d7bf6',
                     blockNumber: '0x114b4a1',
                     data: '0x0000000000000000000000000000000000000000000000024808a928fe542eed',
-                    logIndex: '0x1',
+                    logIndex: '0x2',
                     removed: false,
                     topics: [
                         '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
@@ -168,7 +168,7 @@ const getReceiptCorrectCasesTestNetwork = [
                         '0x0114b4a1182a9103113a4052b2d08e7785ea74901c6974f16661d352202d7bf6',
                     blockNumber: '0x114b4a1',
                     data: '0x0000000000000000000000000000000000000000000000043c47d85f5fdafe3d000000000000000000000000000000000000000000000006845081885e2f2d2a',
-                    logIndex: undefined,
+                    logIndex: '0x3',
                     removed: false,
                     topics: [
                         '0xdec2bacdd2f05b59de34da9b523dff8be42e5e38e818c82fdb0bae774387a724',
@@ -184,7 +184,7 @@ const getReceiptCorrectCasesTestNetwork = [
                         '0x0114b4a1182a9103113a4052b2d08e7785ea74901c6974f16661d352202d7bf6',
                     blockNumber: '0x114b4a1',
                     data: '0x0000000000000000000000000000000000000000000000024808a928fe542eed',
-                    logIndex: undefined,
+                    logIndex: '0x4',
                     removed: false,
                     topics: [
                         '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
