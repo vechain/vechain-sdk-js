@@ -53,7 +53,7 @@ const ethGetLogs = async (
             address?: string | string[] | null;
             fromBlock?: string;
             toBlock?: string;
-            topics?: string[];
+            topics?: string[] | string[][];
             blockhash?: string;
         }
     ];
