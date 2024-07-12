@@ -78,17 +78,20 @@ const getCriteriaSetForInput = (criteria: {
     topics?: string[] | string[][];
 }): EventCriteria[] => {
     // String to an array of addresses and topics
-    let criteriaAddress: string[] = [];
+    let criteriaAddress: string[] | undefined[] = [];
 
     // Convert in any case to an array of addresses
-    if (criteria.address !== undefined)
+    if (criteria.address !== undefined) {
         criteriaAddress =
             typeof criteria.address === 'string'
                 ? [criteria.address]
                 : criteria.address;
+    } else {
+        criteriaAddress = [undefined];
+    }
 
     const eventsCriteriaToFlat: EventCriteria[][] = criteriaAddress.map(
-        (addr: string) => {
+        (addr) => {
             return getTopicsPerAddress(addr, criteria.topics ?? []);
         }
     );
@@ -106,7 +109,7 @@ const getCriteriaSetForInput = (criteria: {
  * @returns {EventCriteria[]} An array of EventCriteria objects.
  */
 const getTopicsPerAddress = (
-    address: string,
+    address: string | undefined,
     topics: string[] | string[][]
 ): EventCriteria[] => {
     const notArrayTopics: string[] = [];

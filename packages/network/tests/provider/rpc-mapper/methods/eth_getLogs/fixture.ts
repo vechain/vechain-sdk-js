@@ -7,10 +7,7 @@ const logsFixture = [
     // Well defined input
     {
         input: {
-            address: [
-                '0x0000000000000000000000000000456e65726779',
-                '0x0000000000000000000000000000456e65726779'
-            ],
+            address: ['0x0000000000000000000000000000456e65726779'],
             fromBlock: Hex0x.of(0),
             toBlock: Hex0x.of(100000),
             topics: [
