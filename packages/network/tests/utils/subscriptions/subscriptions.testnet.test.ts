@@ -17,7 +17,7 @@ import { stringifyData } from '@vechain/sdk-errors';
  *
  * @group integration/utils/subscriptions
  */
-describe.skip('Subscriptions Testnet', () => {
+describe('Subscriptions Testnet', () => {
     /**
      * Test the Event Subscription URLs functionalities
      *
