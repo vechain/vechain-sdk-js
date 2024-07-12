@@ -143,6 +143,18 @@ const getTopicsPerAddress = (
         });
     });
 
+    // If no topics are provided, we add an empty criteria set
+    if (criteriaSet.length === 0) {
+        criteriaSet.push({
+            address,
+            topic0: undefined,
+            topic1: undefined,
+            topic2: undefined,
+            topic3: undefined,
+            topic4: undefined
+        });
+    }
+
     return criteriaSet;
 };
 
