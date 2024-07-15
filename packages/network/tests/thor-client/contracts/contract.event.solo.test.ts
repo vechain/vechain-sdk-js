@@ -267,7 +267,7 @@ describe('ThorClient - ERC20 Contracts', () => {
                     ]
                 })
         ).rejects.toThrowError(InvalidAbiFragment);
-    }, 30000); // Set a timeout of 10000ms for this test
+    }, 30000);
 
     /**
      * Tests the listening to ERC20 contract operations using a blockchain client.
