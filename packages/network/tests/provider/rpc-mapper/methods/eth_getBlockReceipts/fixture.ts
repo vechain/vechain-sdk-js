@@ -32,7 +32,8 @@ const blockReceiptsFixture = [
                         ],
                         data: '0x000000000000000000000000000000000000000000000002b5e3af16b1880000',
                         removed: false,
-                        transactionIndex: '0x0'
+                        transactionIndex: '0x0',
+                        logIndex: '0x0'
                     }
                 ],
                 status: '0x1',
