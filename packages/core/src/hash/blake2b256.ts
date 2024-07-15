@@ -1,10 +1,10 @@
 import { Hex, Hex0x } from '../utils';
 import { assertIsValidReturnType } from '../assertions';
 import { blake2b } from '@noble/hashes/blake2b';
-import { buildError, DATA } from '@vechain/sdk-errors';
 import { hexToBytes } from '@noble/hashes/utils';
 import { txt } from '../utils/txt/txt';
 import { type ReturnType } from './types';
+import { InvalidDataType } from '@vechain/sdk-errors';
 
 /* --- Overloaded functions start --- */
 
@@ -125,9 +125,8 @@ function blake2b256OfHex(
         const hash = blake2b256OfArray(hexToBytes(Hex.canon(hex)));
         return returnType === 'hex' ? Hex0x.of(hash) : hash;
     } catch (e) {
-        throw buildError(
+        throw new InvalidDataType(
             'blake2b256OfHex',
-            DATA.INVALID_DATA_TYPE,
             (e as Error).message,
             { hex },
             e

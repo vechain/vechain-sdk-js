@@ -1,7 +1,7 @@
 import { addressUtils, Hex0x } from '../../src';
 import { generateRandomValidAddress } from '../fixture';
 import {
-    InvalidAbiDataToEncodeError,
+    InvalidAbiDataToEncodeOrDecode,
     stringifyData
 } from '@vechain/sdk-errors';
 
@@ -371,7 +371,7 @@ const invalidTopicsEventTestCases = [
             fromRandomAddress,
             toRandomAddress
         ],
-        expectedError: InvalidAbiDataToEncodeError
+        expectedError: InvalidAbiDataToEncodeOrDecode
     }
 ];
 

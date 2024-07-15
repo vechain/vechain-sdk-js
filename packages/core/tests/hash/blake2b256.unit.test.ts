@@ -6,13 +6,13 @@ import { describe, expect, test } from '@jest/globals';
 import { hexToBytes } from '@noble/hashes/utils';
 import {
     BLAKE2B256_CONTENT,
+    BLAKE2B256_CONTENT_HASH,
     BLAKE2B256_NO_CONTENT,
-    BLAKE2B256_NO_CONTENT_HASH,
-    BLAKE2B256_CONTENT_HASH
+    BLAKE2B256_NO_CONTENT_HASH
 } from './fixture';
 import {
     InvalidDataReturnTypeError,
-    InvalidDataTypeError
+    InvalidDataType
 } from '@vechain/sdk-errors';
 
 /**
@@ -103,7 +103,7 @@ describe('blake2b256', () => {
 
         test('blake2b256OfHex - invalid hex', () => {
             expect(() => blake2b256OfHex('coffee')).toThrowError(
-                InvalidDataTypeError
+                InvalidDataType
             );
         });
 
