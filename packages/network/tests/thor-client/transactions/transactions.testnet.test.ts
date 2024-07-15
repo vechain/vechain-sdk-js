@@ -105,6 +105,6 @@ describe('Transactions module Testnet tests suite', () => {
                     );
                 expect(revertReason).toStrictEqual(testCase.expected);
             });
-        });
+        }, 10000);
     });
 });

@@ -52,6 +52,8 @@ class LogsModule {
     ): Promise<EventLogs[][]> {
         // Extract criteria and fragments from filter options
         const criteriaSet = filterOptions.criteriaSet?.map((c) => c.criteria);
+
+        console.log(criteriaSet);
         const fragments = filterOptions.criteriaSet?.map(
             (c) => c.eventFragment
         );
