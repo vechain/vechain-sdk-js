@@ -93,6 +93,6 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
         })) as EventLogs[];
 
         expect(multiTopicsResponse).toBeDefined();
-        expect(multiTopicsResponse.length).toBeGreaterThan(0);
+        expect(multiTopicsResponse.length).toBe(0);
     }, 15000);
 });

@@ -25,6 +25,8 @@ import {
  * @param params - The standard array of rpc call parameters.
  *
  * @returns An array of log objects, or an empty array if nothing has changed since last poll
+ *
+ * @note Limit is not set for the number of logs that can be fetched. Make sure to reduce the scope if needed.
  */
 const ethGetLogs = async (
     thorClient: ThorClient,
