@@ -7,8 +7,7 @@ import {
     type RLPValueType
 } from './types';
 import { RLPProfiles } from '.';
-import { assert, RLP_ERRORS } from '@vechain/sdk-errors';
-import { assertIsArray } from '../../assertions';
+import { InvalidRLP } from '@vechain/sdk-errors';
 
 /**
  * Encodes data using the Ethereumjs RLP library.
@@ -65,7 +64,7 @@ class Profiler {
  * Handles the RLP packing of data.
  * Recursively processes through object properties or array elements to prepare data for RLP encoding.
  *
- * @throws{InvalidRLPError}
+ * @throws{InvalidRLP}
  * @param obj - The object data to be packed.
  * @param profile - RLP_CODER profile for encoding structures.
  * @param context - Encoding context for error tracing.
@@ -94,7 +93,19 @@ const _packData = (
     }
 
     // Valid RLP array
-    assertIsArray('packData', obj, context);
+    if (!Array.isArray(obj)) {
+        throw new InvalidRLP(
+            '_packData()',
+            `Validation error: Expected an array in ${context}.`,
+            {
+                context,
+                data: {
+                    obj,
+                    profile
+                }
+            }
+        );
+    }
 
     // ArrayKind: recursively pack each array item based on the shared item profile.
     if ('item' in kind && Array.isArray(obj)) {
@@ -113,7 +124,7 @@ const _packData = (
  * Handles the RLP unpacking of data.
  * Recursively processes through packed properties or elements to prepare data post RLP decoding.
  *
- * @throws{InvalidRLPError}
+ * @throws{InvalidRLP}
  * @param packed - The packed data to be unpacked.
  * @param profile - RLP_CODER profile for decoding structures.
  * @param context - Decoding context for error tracing.
@@ -132,13 +143,19 @@ const _unpackData = (
 
     // ScalarKind: Direct decoding using the provided method.
     if (kind instanceof RLPProfiles.ScalarKind) {
-        assert(
-            '_unpackData',
-            Buffer.isBuffer(packed) || packed instanceof Uint8Array,
-            RLP_ERRORS.INVALID_RLP,
-            'Unpacking error: Expected data type is Buffer.',
-            { context }
-        );
+        if (!Buffer.isBuffer(packed) && !(packed instanceof Uint8Array)) {
+            throw new InvalidRLP(
+                '_unpackData()',
+                `Unpacking error: Expected data type is Buffer.`,
+                {
+                    context,
+                    data: {
+                        packed,
+                        profile
+                    }
+                }
+            );
+        }
 
         if (packed instanceof Uint8Array) packed = Buffer.from(packed);
 
@@ -149,13 +166,19 @@ const _unpackData = (
     if (Array.isArray(kind) && Array.isArray(packed)) {
         const parts = packed;
 
-        assert(
-            '_unpackData',
-            parts.length === kind.length,
-            RLP_ERRORS.INVALID_RLP,
-            `Unpacking error: Expected ${kind.length} items, but got ${parts.length}.`,
-            { context }
-        );
+        if (kind.length !== parts.length) {
+            throw new InvalidRLP(
+                '_unpackData()',
+                `Unpacking error: Expected ${kind.length} items, but got ${parts.length}.`,
+                {
+                    context,
+                    data: {
+                        packed,
+                        profile
+                    }
+                }
+            );
+        }
 
         return kind.reduce(
             (obj: RLPValidObject, profile: RLPProfile, index: number) => {
@@ -168,7 +191,19 @@ const _unpackData = (
     }
 
     // Valid RLP array
-    assertIsArray('_unpackData', packed, context);
+    if (!Array.isArray(packed)) {
+        throw new InvalidRLP(
+            '_unpackData()',
+            `Validation error: Expected an array in ${context}.`,
+            {
+                context,
+                data: {
+                    packed,
+                    profile
+                }
+            }
+        );
+    }
 
     // ArrayKind: Recursively unpack each array item based on the shared item profile.
     if ('item' in kind && Array.isArray(packed)) {

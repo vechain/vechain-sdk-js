@@ -7,16 +7,17 @@ import {
     assert,
     buildProviderError,
     DATA,
+    InvalidDataType,
     JSONRPC,
     stringifyData
 } from '@vechain/sdk-errors';
-import { assertValidTransactionID } from '@vechain/sdk-core';
 import { ethGetTransactionReceipt } from '../eth_getTransactionReceipt';
 import { type TraceOptionsRPC } from './types';
 import {
     debugFormatter,
     type TracerReturnTypeRPC
 } from '../../../../formatter';
+import { Hex0x } from '@vechain/sdk-core';
 
 /**
  * RPC Method debug_traceTransaction implementation
@@ -56,11 +57,17 @@ const debugTraceTransaction = async (
             `\n}.`
     );
 
-    // Assert valid transaction id
-    assertValidTransactionID('debug_traceTransaction', params[0] as string);
-
     // Init params
     const [transactionId, traceOptions] = params as [string, TraceOptionsRPC];
+
+    // Invalid transaction ID
+    if (!Hex0x.isThorId(transactionId)) {
+        throw new InvalidDataType(
+            'debug_traceTransaction()',
+            'Invalid transaction ID given as input. Input must be an hex string of length 64.',
+            { transactionId }
+        );
+    }
 
     // Tracer to use
     const tracerToUse: TracerName =

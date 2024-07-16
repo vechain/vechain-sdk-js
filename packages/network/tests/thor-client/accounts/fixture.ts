@@ -1,4 +1,4 @@
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { InvalidDataType, InvalidDataTypeError } from '@vechain/sdk-errors';
 import { testAccount } from '../../fixture';
 import { BUILT_IN_CONTRACTS } from '../../built-in-fixture';
 
@@ -112,7 +112,7 @@ const invalidGetStorageAtTests = [
         address: testSmartContract,
         position: testStoragePositionKey,
         revision: 'invalid-revision',
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     },
     {
         description: 'Should throw error for invalid position',
@@ -126,7 +126,7 @@ const invalidGetStorageAtTests = [
         address: 'invalid-address',
         position: '0x123',
         revision: '1',
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     }
 ];
 
@@ -138,13 +138,13 @@ const invalidGetAccountTests = [
         description: 'Should throw error for invalid revision',
         address: testAccount,
         revision: 'invalid-revision',
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     },
     {
         description: 'Should throw error for invalid address',
         address: 'invalid-address',
         revision: '1',
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     }
 ];
 
@@ -153,13 +153,13 @@ const invalidGetBytecodeTests = [
         description: 'Should throw error for invalid revision',
         address: testSmartContract,
         revision: 'invalid-revision',
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     },
     {
         description: 'Should throw error for invalid address',
         address: 'invalid-address',
         revision: '1',
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     }
 ];
 

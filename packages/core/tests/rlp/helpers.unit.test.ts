@@ -27,7 +27,7 @@ import {
     validHexBlobKindDataTestCases,
     validNumericBufferTestCases
 } from './helpers.fixture';
-import { InvalidRLPError, stringifyData } from '@vechain/sdk-errors';
+import { InvalidRLP, stringifyData } from '@vechain/sdk-errors';
 
 /**
  * Test suite for BigInt helper functions
@@ -101,7 +101,7 @@ describe('NumericKind helpers', () => {
                 expect(() => {
                     // @ts-expect-error - invalid input
                     validateNumericKindData(number, context);
-                }).toThrowError(InvalidRLPError);
+                }).toThrowError(InvalidRLP);
             });
         });
     });
@@ -143,7 +143,7 @@ describe('NumericKind helpers', () => {
                 )}`, () => {
                     expect(() => {
                         assertValidNumericKindBuffer(buffer, context, maxBytes);
-                    }).toThrowError(InvalidRLPError);
+                    }).toThrowError(InvalidRLP);
                 });
             }
         );
@@ -173,7 +173,7 @@ describe('HexBlobKind helpers', () => {
             test(`should throw error when data is invalid ${data}`, () => {
                 expect(() => {
                     assertValidHexBlobKindData(data, context);
-                }).toThrowError(InvalidRLPError);
+                }).toThrowError(InvalidRLP);
             });
         });
     });
@@ -199,7 +199,7 @@ describe('HexBlobKind helpers', () => {
                 expect(() => {
                     // @ts-expect-error - invalid input
                     assertValidHexBlobKindBuffer(buffer, context);
-                }).toThrowError(InvalidRLPError);
+                }).toThrowError(InvalidRLP);
             });
         });
     });
@@ -231,7 +231,7 @@ describe('FixedHexBlobKind helpers', () => {
                 test(`should throw error when data is invalid ${data}`, () => {
                     expect(() => {
                         assertFixedHexBlobKindData(data, context, bytes);
-                    }).toThrowError(InvalidRLPError);
+                    }).toThrowError(InvalidRLP);
                 });
             }
         );
@@ -260,7 +260,7 @@ describe('FixedHexBlobKind helpers', () => {
                 )}`, () => {
                     expect(() => {
                         assertFixedHexBlobKindBuffer(buffer, context, bytes);
-                    }).toThrowError(InvalidRLPError);
+                    }).toThrowError(InvalidRLP);
                 });
             }
         );
@@ -294,7 +294,7 @@ describe('CompactFixedHexBlobKind helpers', () => {
                 )}`, () => {
                     expect(() => {
                         assertCompactFixedHexBlobBuffer(buffer, context, bytes);
-                    }).toThrowError(InvalidRLPError);
+                    }).toThrowError(InvalidRLP);
                 });
             }
         );

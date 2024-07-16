@@ -1,4 +1,4 @@
-import { assert, DATA } from '@vechain/sdk-errors';
+import { assert, DATA, InvalidDataType } from '@vechain/sdk-errors';
 import { buildQuery, type EventPoll, Poll, thorest } from '../../utils';
 import {
     type BlocksModuleOptions,
@@ -7,10 +7,7 @@ import {
     type TransactionsExpandedBlockDetail,
     type WaitForBlockOptions
 } from './types';
-import {
-    assertIsRevisionForBlock,
-    type TransactionClause
-} from '@vechain/sdk-core';
+import { revisionUtils, type TransactionClause } from '@vechain/sdk-core';
 import { type ThorClient } from '../thor-client';
 
 /** The `BlocksModule` class encapsulates functionality for interacting with blocks
@@ -83,8 +80,18 @@ class BlocksModule {
     public async getBlockCompressed(
         revision: string | number
     ): Promise<CompressedBlockDetail | null> {
-        assertIsRevisionForBlock('getBlockCompressed', revision);
-
+        // Check if the revision is a valid block number or ID
+        if (
+            revision !== null &&
+            revision !== undefined &&
+            !revisionUtils.isRevisionBlock(revision)
+        ) {
+            throw new InvalidDataType(
+                'BlocksModule.getBlockCompressed()',
+                'Invalid revision. The revision must be a string representing a block number or block id (also "best" is accepted which represents the best block & "finalized" for the finalized block).',
+                { revision }
+            );
+        }
         return (await this.thor.httpClient.http(
             'GET',
             thorest.blocks.get.BLOCK_DETAIL(revision)
@@ -100,7 +107,18 @@ class BlocksModule {
     public async getBlockExpanded(
         revision: string | number
     ): Promise<ExpandedBlockDetail | null> {
-        assertIsRevisionForBlock('getBlockExpanded', revision);
+        // Check if the revision is a valid block number or ID
+        if (
+            revision !== null &&
+            revision !== undefined &&
+            !revisionUtils.isRevisionBlock(revision)
+        ) {
+            throw new InvalidDataType(
+                'BlocksModule.getBlockExpanded()',
+                'Invalid revision. The revision must be a string representing a block number or block id (also "best" is accepted which represents the best block & "finalized" for the finalized block).',
+                { revision }
+            );
+        }
 
         return (await this.thor.httpClient.http(
             'GET',

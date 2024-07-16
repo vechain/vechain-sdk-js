@@ -10,7 +10,7 @@ import { encryptionPassword } from './fixture';
 import {
     InvalidKeystoreError,
     InvalidKeystorePasswordError,
-    InvalidSecp256k1PrivateKeyError,
+    InvalidSecp256k1PrivateKey,
     stringifyData
 } from '@vechain/sdk-errors';
 
@@ -61,7 +61,7 @@ import {
                         Buffer.from('wrong private key', 'hex'),
                         encryptionPassword
                     )
-            ).rejects.toThrowError(InvalidSecp256k1PrivateKeyError);
+            ).rejects.toThrowError(InvalidSecp256k1PrivateKey);
         });
 
         /**

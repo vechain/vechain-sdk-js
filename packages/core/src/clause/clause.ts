@@ -6,7 +6,7 @@ import {
 } from '../transaction';
 import type { DeployParams } from './types';
 import { ERC721_ABI, VIP180_ABI } from '../utils';
-import { assert, buildError, DATA } from '@vechain/sdk-errors';
+import { assert, DATA, InvalidDataType } from '@vechain/sdk-errors';
 import { addressUtils } from '../address-utils';
 
 /**
@@ -116,10 +116,11 @@ function transferToken(
             clauseOptions
         );
     } catch (error) {
-        throw buildError(
-            'transferToken',
-            DATA.INVALID_DATA_TYPE,
-            `Invalid 'amount' parameter. Expected an integer but received ${amount}.`
+        throw new InvalidDataType(
+            'transferToken()',
+            `Invalid 'amount' parameter. Expected an integer but received ${amount}.`,
+            { amount },
+            error
         );
     }
 }
@@ -165,10 +166,11 @@ function transferVET(
             return transactionClause;
         }
     } catch (error) {
-        throw buildError(
-            'transferVET',
-            DATA.INVALID_DATA_TYPE,
-            `Invalid 'amount' parameter. Expected an integer but received ${amount}.`
+        throw new InvalidDataType(
+            'transferVET()',
+            `Invalid 'amount' parameter. Expected an integer but received ${amount}.`,
+            { amount },
+            error
         );
     }
 }

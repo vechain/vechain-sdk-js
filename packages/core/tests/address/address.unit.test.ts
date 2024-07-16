@@ -1,4 +1,4 @@
-import { InvalidAddressError } from '@vechain/sdk-errors';
+import { InvalidAddress } from '@vechain/sdk-errors';
 import { addressUtils } from '../../src';
 import { describe, expect, test } from '@jest/globals';
 import {
@@ -11,7 +11,7 @@ import {
 /**
  * Tests for address-utils module
  *
- * @group unit/sdk-core/addressUtils
+ * @group sdk-core/unit/addressUtils
  */
 describe('addressUtils', () => {
     /**
@@ -78,7 +78,7 @@ describe('addressUtils', () => {
         test('toERC55Checksum - invalid - no hex', () => {
             expect(() => {
                 addressUtils.toERC55Checksum('invalid data');
-            }).toThrowError(InvalidAddressError);
+            }).toThrowError(InvalidAddress);
         });
 
         /**
@@ -89,7 +89,7 @@ describe('addressUtils', () => {
                 addressUtils.toERC55Checksum(
                     '52908400098527886E0F7030069857D2E4169EE7'
                 );
-            }).toThrowError(InvalidAddressError);
+            }).toThrowError(InvalidAddress);
         });
 
         /**
@@ -100,7 +100,7 @@ describe('addressUtils', () => {
                 addressUtils.toERC55Checksum(
                     '0x52908400098527886E0F7030069857D9EE7'
                 );
-            }).toThrowError(InvalidAddressError);
+            }).toThrowError(InvalidAddress);
         });
 
         /**

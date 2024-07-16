@@ -1,15 +1,13 @@
 import {
     abi,
-    assertIsSignedTransaction,
-    assertValidTransactionHead,
-    assertValidTransactionID,
     Hex0x,
     revisionUtils,
     secp256k1,
     type Transaction,
     type TransactionBody,
     type TransactionClause,
-    TransactionHandler
+    TransactionHandler,
+    vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
 import {
     buildQuery,
@@ -32,12 +30,17 @@ import {
     type TransactionSimulationResult,
     type WaitForTransactionOptions
 } from './types';
-import { assert, buildError, DATA, TRANSACTION } from '@vechain/sdk-errors';
+import {
+    assert,
+    buildError,
+    DATA,
+    InvalidDataType,
+    TRANSACTION
+} from '@vechain/sdk-errors';
 import { type ThorClient } from '../thor-client';
 import { type ExpandedBlockDetail } from '../blocks';
 import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
 import { type CallNameReturnType } from '../debug';
-import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
 
 /**
  * The `TransactionsModule` handles transaction related operations and provides
@@ -62,10 +65,21 @@ class TransactionsModule {
         options?: GetTransactionInputOptions
     ): Promise<TransactionDetailNoRaw | null> {
         // Invalid transaction ID
-        assertValidTransactionID('getTransaction', id);
+        if (!Hex0x.isThorId(id)) {
+            throw new InvalidDataType(
+                'TransactionsModule.getTransaction()',
+                'Invalid transaction ID given as input. Input must be an hex string of length 64.',
+                { id }
+            );
+        }
 
         // Invalid head
-        assertValidTransactionHead('getTransaction', options?.head);
+        if (options?.head !== undefined && !Hex0x.isThorId(options.head))
+            throw new InvalidDataType(
+                'TransactionsModule.getTransaction()',
+                'Invalid head given as input. Input must be an hex string of length 64.',
+                { head: options?.head }
+            );
 
         return (await this.thor.httpClient.http(
             'GET',
@@ -92,10 +106,21 @@ class TransactionsModule {
         options?: GetTransactionInputOptions
     ): Promise<TransactionDetailRaw | null> {
         // Invalid transaction ID
-        assertValidTransactionID('getTransaction', id);
+        if (!Hex0x.isThorId(id)) {
+            throw new InvalidDataType(
+                'TransactionsModule.getTransactionRaw()',
+                'Invalid transaction ID given as input. Input must be an hex string of length 64.',
+                { id }
+            );
+        }
 
         // Invalid head
-        assertValidTransactionHead('getTransaction', options?.head);
+        if (options?.head !== undefined && !Hex0x.isThorId(options.head))
+            throw new InvalidDataType(
+                'TransactionsModule.getTransaction()',
+                'Invalid head given as input. Input must be an hex string of length 64.',
+                { head: options?.head }
+            );
 
         return (await this.thor.httpClient.http(
             'GET',
@@ -123,10 +148,21 @@ class TransactionsModule {
         options?: GetTransactionReceiptInputOptions
     ): Promise<TransactionReceipt | null> {
         // Invalid transaction ID
-        assertValidTransactionID('getTransactionReceipt', id);
+        if (!Hex0x.isThorId(id)) {
+            throw new InvalidDataType(
+                'TransactionsModule.getTransactionReceipt()',
+                'Invalid transaction ID given as input. Input must be an hex string of length 64.',
+                { id }
+            );
+        }
 
         // Invalid head
-        assertValidTransactionHead('getTransactionReceipt', options?.head);
+        if (options?.head !== undefined && !Hex0x.isThorId(options.head))
+            throw new InvalidDataType(
+                'TransactionsModule.getTransaction()',
+                'Invalid head given as input. Input must be an hex string of length 64.',
+                { head: options?.head }
+            );
 
         return (await this.thor.httpClient.http(
             'GET',
@@ -196,7 +232,13 @@ class TransactionsModule {
         signedTx: Transaction
     ): Promise<SendTransactionResult> {
         // Assert transaction is signed or not
-        assertIsSignedTransaction('sendTransaction', signedTx);
+        if (!signedTx.isSigned) {
+            throw new InvalidDataType(
+                'TransactionsModule.sendTransaction()',
+                'Invalid transaction given as input. Transaction must be signed.',
+                { signedTx }
+            );
+        }
 
         const rawTx = Hex0x.of(signedTx.encoded);
 
@@ -219,7 +261,14 @@ class TransactionsModule {
         txID: string,
         options?: WaitForTransactionOptions
     ): Promise<TransactionReceipt | null> {
-        assertValidTransactionID('waitForTransaction', txID);
+        // Invalid transaction ID
+        if (!Hex0x.isThorId(txID)) {
+            throw new InvalidDataType(
+                'TransactionsModule.waitForTransaction()',
+                'Invalid transaction ID given as input. Input must be an hex string of length 64.',
+                { txID }
+            );
+        }
 
         return await Poll.SyncPoll(
             async () =>

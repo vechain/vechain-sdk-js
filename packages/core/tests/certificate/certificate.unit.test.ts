@@ -1,17 +1,17 @@
 import * as n_utils from '@noble/curves/abstract/utils';
 import { describe, expect, test } from '@jest/globals';
-import { Hex0x, certificate, type Certificate } from '../../src';
+import { certificate, type Certificate, Hex0x } from '../../src';
 import { cert, certPrivateKey } from './fixture';
 import { privateKey } from '../secp256k1/fixture';
 import {
     CertificateInvalidSignatureFormatError,
     CertificateInvalidSignerError,
     CertificateNotSignedError,
-    InvalidSecp256k1PrivateKeyError
+    InvalidSecp256k1PrivateKey
 } from '@vechain/sdk-errors';
 import {
-    Certificate as tdk_certificate,
     blake2b256 as tdk_blake2b256,
+    Certificate as tdk_certificate,
     secp256k1 as tdk_secp256k1
 } from 'thor-devkit';
 
@@ -66,7 +66,7 @@ describe('certificate', () => {
         test('invalid - illegal private key', () => {
             expect(() => {
                 certificate.sign(cert, n_utils.hexToBytes('c0ffeec1b8'));
-            }).toThrowError(InvalidSecp256k1PrivateKeyError);
+            }).toThrowError(InvalidSecp256k1PrivateKey);
         });
 
         test('valid - challenge signer case sensitivity', () => {

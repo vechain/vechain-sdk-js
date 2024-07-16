@@ -1,7 +1,7 @@
-import { assertIsValidReturnType } from '../assertions';
 import { Hex0x } from '../utils';
 import { keccak_256 } from '@noble/hashes/sha3';
 import { type ReturnType } from './types';
+import { InvalidDataType } from '@vechain/sdk-errors';
 
 /* --- Overloaded functions start --- */
 
@@ -62,7 +62,14 @@ function keccak256(
     returnType: ReturnType = 'buffer'
 ): Uint8Array | string {
     // Assert that the returnType is valid
-    assertIsValidReturnType('keccak256', returnType);
+    if (!['hex', 'buffer'].includes(returnType)) {
+        throw new InvalidDataType(
+            'keccak256()',
+            "Validation error: Invalid return type. Return type in hash function must be 'buffer' or 'hex'.",
+            { returnType }
+        );
+    }
+
     const hash = keccak_256(data);
     return returnType === 'buffer' ? hash : Hex0x.of(hash);
 }
