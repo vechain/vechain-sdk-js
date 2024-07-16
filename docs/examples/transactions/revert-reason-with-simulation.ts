@@ -1,7 +1,11 @@
 import { coder, unitsUtils } from '@vechain/sdk-core';
 import { stringifyData } from '@vechain/sdk-errors';
-import { ThorClient, TransactionSimulationResult } from '@vechain/sdk-network';
+import {
+    ThorClient,
+    type TransactionSimulationResult
+} from '@vechain/sdk-network';
 import { expect } from 'expect';
+import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  * ABI of the Energy built-in contract. (VTHO)
@@ -267,29 +271,25 @@ const energy_abi = stringifyData([
     }
 ]);
 
-const _soloUrl = 'http://localhost:8669/';
-const thorSoloClient = ThorClient.fromUrl(_soloUrl);
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
 // START_SNIPPET: RevertReasonSimulationSnippet
 
-const simulatedTx: TransactionSimulationResult[] = await thorSoloClient.transactions.simulateTransaction(
-    [
+const simulatedTx: TransactionSimulationResult[] =
+    await thorSoloClient.transactions.simulateTransaction([
         {
             to: '0x0000000000000000000000000000456e65726779',
             value: '0',
-            data: coder.encodeFunctionInput(
-                energy_abi,
-                'transfer',
-                [
-                    '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-                    unitsUtils.parseVET('1000000000')
-                ]
-            )
+            data: coder.encodeFunctionInput(energy_abi, 'transfer', [
+                '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+                unitsUtils.parseVET('1000000000')
+            ])
         }
-    ]
-);
+    ]);
 
-const revertReason = await thorSoloClient.transactions.decodeRevertReason(simulatedTx[0].data);
+const revertReason = await thorSoloClient.transactions.decodeRevertReason(
+    simulatedTx[0].data
+);
 
 // END_SNIPPET: RevertReasonSimulationSnippet
 

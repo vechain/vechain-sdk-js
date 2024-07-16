@@ -9,6 +9,7 @@ import {
     type VeChainSigner
 } from '@vechain/sdk-network';
 import { expect } from 'expect';
+import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 // ERC20 contract bytecode
 const erc20ContractBytecode: string =
@@ -30,12 +31,9 @@ const delegatorAccount = {
     address: '0x062F167A905C1484DE7e75B88EDC7439f82117DE'
 };
 
-// Create thor client for solo network
-const _soloUrl = 'http://localhost:8669/';
-
 // START_SNIPPET: ERC20FunctionCallDelegatedSnippet
 
-const thorSoloClient = ThorClient.fromUrl(_soloUrl);
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount], {

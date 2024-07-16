@@ -5,7 +5,8 @@ import {
     ThorClient,
     VeChainProvider,
     type VeChainSigner
-} from '@vechain/sdk-network'; // Deposit contract bytecode
+} from '@vechain/sdk-network';
+import { THOR_SOLO_URL } from '@vechain/sdk-constant'; // Deposit contract bytecode
 
 // Deposit contract bytecode
 const depositContractBytecode: string =
@@ -88,8 +89,7 @@ const depositContractAbi = [
 ] as const;
 
 // Create thor client for solo network
-const _soloUrl = 'http://localhost:8669/';
-const thorSoloClient = ThorClient.fromUrl(_soloUrl);
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount])

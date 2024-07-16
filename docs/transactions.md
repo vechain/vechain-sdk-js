@@ -128,8 +128,7 @@ const senderAccount = {
 };
 
 // 1 - Create thor client for solo network
-const _soloUrl = 'http://localhost:8669/';
-const thorSoloClient = ThorClient.fromUrl(_soloUrl, {
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL, {
     isPollingEnabled: false
 });
 
@@ -326,8 +325,7 @@ Note - the result of a transaction might be different depending on the state(blo
 // And we demonstrate (1) how we can check the expected gas cost and (2) whether the transaction is successful
 
 // 1 - Create thor client for solo network
-const _soloUrl = 'http://localhost:8669';
-const thorSoloClient = ThorClient.fromUrl(_soloUrl);
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
 // 2(a) - create the transaction for a VET transfer
 const transaction1 = {
@@ -387,8 +385,7 @@ In the following complete examples, we will explore the entire lifecycle of a Ve
 // START_SNIPPET: FullFlowNoDelegatorSnippet
 
 // 1 - Create the thor client
-const _soloUrl = 'http://localhost:8669/';
-const thorSoloClient = ThorClient.fromUrl(_soloUrl, {
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL, {
     isPollingEnabled: false
 });
 
@@ -472,8 +469,7 @@ const txReceipt = await thorSoloClient.transactions.waitForTransaction(
 // START_SNIPPET: FullFlowDelegatorPrivateKeySnippet
 
 // 1 - Create the thor client
-const _soloUrl = 'http://localhost:8669/';
-const thorSoloClient = ThorClient.fromUrl(_soloUrl, {
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL, {
     isPollingEnabled: false
 });
 
@@ -699,24 +695,21 @@ This method will return the revert reason of the transaction if it failed, other
 Even when using the `simulateTransaction` method you can find the revert reason.
 
 ```typescript { name=revert-reason-with-simulation, category=example }
-const simulatedTx: TransactionSimulationResult[] = await thorSoloClient.transactions.simulateTransaction(
-    [
+const simulatedTx: TransactionSimulationResult[] =
+    await thorSoloClient.transactions.simulateTransaction([
         {
             to: '0x0000000000000000000000000000456e65726779',
             value: '0',
-            data: coder.encodeFunctionInput(
-                energy_abi,
-                'transfer',
-                [
-                    '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-                    unitsUtils.parseVET('1000000000')
-                ]
-            )
+            data: coder.encodeFunctionInput(energy_abi, 'transfer', [
+                '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+                unitsUtils.parseVET('1000000000')
+            ])
         }
-    ]
-);
+    ]);
 
-const revertReason = await thorSoloClient.transactions.decodeRevertReason(simulatedTx[0].data);
+const revertReason = await thorSoloClient.transactions.decodeRevertReason(
+    simulatedTx[0].data
+);
 ```
 
 In this case there is only a `TransactionSimulationResult`, so no need to loop.

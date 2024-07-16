@@ -1,11 +1,12 @@
 import {
-    TransactionHandler,
-    unitsUtils,
     clauseBuilder,
-    Hex0x
+    Hex0x,
+    TransactionHandler,
+    unitsUtils
 } from '@vechain/sdk-core';
 import { ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
+import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 // START_SNIPPET: TransactionsSnippet
 
@@ -18,8 +19,7 @@ const senderAccount = {
 
 // 1 - Create thor client for solo network
 
-const _soloUrl = 'http://localhost:8669';
-const thorSoloClient = ThorClient.fromUrl(_soloUrl);
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
 // 2 - Get latest block
 
