@@ -1,4 +1,5 @@
 ---
+"@vechain/sdk-constant": patch
 "@vechain/sdk-core": patch
 "@vechain/sdk-errors": patch
 "@vechain/ethers-adapter": patch
