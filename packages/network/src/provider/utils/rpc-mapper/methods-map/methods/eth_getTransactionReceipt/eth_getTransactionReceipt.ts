@@ -2,6 +2,7 @@ import {
     assert,
     buildProviderError,
     DATA,
+    InvalidDataType,
     JSONRPC,
     stringifyData
 } from '@vechain/sdk-errors';
@@ -11,11 +12,11 @@ import {
 } from '../../../../formatter';
 import { RPC_METHODS } from '../../../../const';
 import { RPCMethodsMap } from '../../../rpc-mapper';
-import { assertValidTransactionID } from '@vechain/sdk-core';
 import {
     type ExpandedBlockDetail,
     type ThorClient
 } from '../../../../../../thor-client';
+import { Hex0x } from '@vechain/sdk-core';
 
 /**
  * RPC Method eth_getTransactionReceipt implementation
@@ -31,6 +32,9 @@ const ethGetTransactionReceipt = async (
     thorClient: ThorClient,
     params: unknown[]
 ): Promise<TransactionReceiptRPC | null> => {
+    // Init the transaction ID
+    const [transactionID] = params as [string];
+
     // Assert valid parameters
     assert(
         'eth_getTransactionReceipt',
@@ -39,8 +43,14 @@ const ethGetTransactionReceipt = async (
         'Invalid params length, expected 1.\nThe params should be [hash: string]'
     );
 
-    // Assert valid transaction id
-    assertValidTransactionID('eth_getTransactionReceipt', params[0] as string);
+    // Invalid transaction ID
+    if (!Hex0x.isThorId(transactionID)) {
+        throw new InvalidDataType(
+            'eth_getTransactionReceipt()',
+            'Invalid transaction ID given as input. Input must be an hex string of length 64.',
+            { transactionID }
+        );
+    }
 
     try {
         // Get hash by params

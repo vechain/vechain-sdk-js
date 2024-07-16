@@ -11,7 +11,7 @@ import {
 } from './fixture';
 import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
 import { Transaction, TransactionHandler } from '@vechain/sdk-core';
-import { TransactionNotSignedError } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { ThorClient } from '../../../src';
 
 /**
@@ -45,7 +45,7 @@ describe('ThorClient - Transactions Module', () => {
 
             await expect(
                 thorSoloClient.transactions.sendTransaction(tx)
-            ).rejects.toThrow(TransactionNotSignedError);
+            ).rejects.toThrow(InvalidDataType);
         });
     });
 

@@ -2,9 +2,13 @@ import * as n_utils from '@noble/curves/abstract/utils';
 import { txt } from '../../../../../core/src/utils/txt/txt';
 import { RPC_METHODS } from '../../../provider';
 import { VeChainAbstractSigner } from '../vechain-abstract-signer';
-import { assert, JSONRPC, TRANSACTION } from '@vechain/sdk-errors';
-import { assertTransactionCanBeSigned } from '../../../assertions';
-import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
+import {
+    assert,
+    InvalidDataType,
+    InvalidSecp256k1PrivateKey,
+    JSONRPC,
+    TRANSACTION
+} from '@vechain/sdk-errors';
 import {
     addressUtils,
     Hex,
@@ -13,7 +17,8 @@ import {
     secp256k1,
     Transaction,
     type TransactionBody,
-    TransactionHandler
+    TransactionHandler,
+    vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
 import {
     type AvailableVeChainProviders,
@@ -219,11 +224,23 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
             await this.populateTransaction(transaction);
 
         // Assert if the transaction can be signed
-        assertTransactionCanBeSigned(
-            'signTransaction',
-            this.privateKey,
-            populatedTransaction
-        );
+        if (!secp256k1.isValidPrivateKey(this.privateKey))
+            throw new InvalidSecp256k1PrivateKey(
+                `VeChainPrivateKeySigner._signFlow()`,
+                "Invalid private key used to sign the transaction. Ensure it's a valid secp256k1 private key.",
+                undefined
+            );
+
+        // Check transaction body
+        if (!Transaction.isValidBody(populatedTransaction))
+            throw new InvalidDataType(
+                'VeChainPrivateKeySigner._signFlow()',
+                'Invalid transaction body provided, the transaction cannot be signed. Please check the transaction fields.',
+                {
+                    transaction,
+                    body: populatedTransaction
+                }
+            );
 
         // 6 - Sign the transaction
         return delegator !== null

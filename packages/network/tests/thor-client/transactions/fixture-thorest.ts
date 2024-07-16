@@ -1,4 +1,4 @@
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { InvalidDataType, InvalidDataTypeError } from '@vechain/sdk-errors';
 import { TEST_ACCOUNTS, ZERO_ADDRESS } from '../../fixture';
 import { BUILT_IN_CONTRACTS } from '../../built-in-fixture';
 import { coder, dataUtils, unitsUtils } from '@vechain/sdk-core';
@@ -67,7 +67,7 @@ const transactionDetails = {
             transaction: {
                 id: 'WRONG_ID'
             },
-            expected: InvalidDataTypeError
+            expected: InvalidDataType
         },
         {
             testName: 'Should throw error when invalid head of block is given',
@@ -77,7 +77,7 @@ const transactionDetails = {
                 pending: false,
                 head: 'WRONG_HEAD'
             },
-            expected: InvalidDataTypeError
+            expected: InvalidDataType
         }
     ]
 };
@@ -129,7 +129,7 @@ const transactionReceipts = {
             transaction: {
                 id: 'WRONG_ID'
             },
-            expected: InvalidDataTypeError
+            expected: InvalidDataType
         },
         {
             testName: 'Should throw error when invalid head of block is given',
@@ -137,7 +137,7 @@ const transactionReceipts = {
                 id: '0x46d195f69e1ac3922d42c207e4705a3d1642883d97e58f7efc72f179ea326adb',
                 head: 'WRONG_HEAD'
             },
-            expected: InvalidDataTypeError
+            expected: InvalidDataType
         },
         {
             testName:
@@ -146,7 +146,7 @@ const transactionReceipts = {
                 id: '0x46d195f69e1ac3922d42c207e4705a3d1642883d97e58f7efc72f179ea326adb',
                 head: '0x1234'
             },
-            expected: InvalidDataTypeError
+            expected: InvalidDataType
         }
     ]
 };

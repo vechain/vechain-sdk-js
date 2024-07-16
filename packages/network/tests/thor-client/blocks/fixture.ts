@@ -1,4 +1,4 @@
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import type { ExpandedBlockDetail } from '../../../src';
 
 /**
@@ -245,7 +245,7 @@ const invalidBlockRevisions = [
     {
         description: 'Should throw error for invalid revision',
         revision: 'invalid-revision',
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     }
 ];
 
