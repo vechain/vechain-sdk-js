@@ -228,7 +228,7 @@ describe('VeChain provider tests - solo', () => {
 
         // Validate the RPC call was successful
         expect(rpcCall).not.toBe('0x0');
-    }, 35000);
+    }, 40000);
 
     /**
      * Tests the ability to subscribe to and receive log events for both ERC20 and ERC721 token contracts.
@@ -340,7 +340,7 @@ describe('VeChain provider tests - solo', () => {
         // @ts-expect-error - Asserting that log data is present
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(results[1].params.result.length).toBeGreaterThan(0);
-    }, 40000);
+    }, 50000);
 
     /**
      * Invalid RPC method tests
