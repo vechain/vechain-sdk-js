@@ -5,7 +5,7 @@ import {
     VeChainProvider,
     type VeChainSigner
 } from '../../../src';
-import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
+import { TEST_ACCOUNTS } from '../../fixture';
 import {
     erc20ContractBytecode,
     eventExampleAbi,
@@ -13,6 +13,7 @@ import {
 } from './fixture';
 import { InvalidAbiFragment } from '@vechain/sdk-errors';
 import { ERC20_ABI } from '@vechain/sdk-core';
+import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -30,7 +31,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     let signer: VeChainSigner;
 
     beforeEach(() => {
-        thorSoloClient = ThorClient.fromUrl(soloUrl);
+        thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
         signer = new VeChainPrivateKeySigner(
             Buffer.from(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,

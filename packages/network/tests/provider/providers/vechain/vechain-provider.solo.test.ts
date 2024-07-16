@@ -1,7 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 
 import { InvalidDataTypeError } from '@vechain/sdk-errors';
-import { soloUrl } from '../../../fixture';
 import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
 import {
     deployERC20Contract,
@@ -16,6 +15,7 @@ import {
     VeChainProvider,
     type VeChainSigner
 } from '../../../../src';
+import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  *VeChain provider tests - Solo Network
@@ -33,7 +33,7 @@ describe('VeChain provider tests - solo', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(soloUrl);
+        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
         provider = new VeChainProvider(
             thorClient,
             new ProviderInternalBaseWallet([

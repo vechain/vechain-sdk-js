@@ -1,8 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
 import { ZERO_ADDRESS, zeroAddressAccountDetails } from './fixture';
 import { HttpClient, type HttpParams } from '../../../src';
-import { soloUrl, testAccount } from '../../fixture';
+import { testAccount } from '../../fixture';
 import { HTTPClientError, stringifyData } from '@vechain/sdk-errors';
+import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  * HttpClient class tests.
@@ -10,7 +11,7 @@ import { HTTPClientError, stringifyData } from '@vechain/sdk-errors';
  * @group integration/network
  */
 describe('Test HttpClient class on Solo node', () => {
-    const soloNetwork = new HttpClient(soloUrl);
+    const soloNetwork = new HttpClient(THOR_SOLO_URL);
     /**
      * HTTP Request tests
      */

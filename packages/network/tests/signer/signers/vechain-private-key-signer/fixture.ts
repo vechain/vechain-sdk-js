@@ -1,8 +1,4 @@
-import {
-    ALL_ACCOUNTS,
-    TEST_ACCOUNTS,
-    TESTNET_DELEGATE_URL
-} from '../../../fixture';
+import { TEST_ACCOUNTS, TESTNET_DELEGATE_URL } from '../../../fixture';
 import {
     type SignTransactionOptions,
     type TransactionRequestInput
@@ -13,6 +9,7 @@ import {
     InvalidSecp256k1PrivateKey,
     TransactionDelegationError
 } from '@vechain/sdk-errors';
+import { THOR_SOLO_ACCOUNTS } from '@vechain/sdk-constant';
 
 /**
  * This interface clones the `TestCaseTypedDataDomain` interface in
@@ -209,7 +206,7 @@ const signTransactionTestCases = {
 /**
  * Account to populate call test cases
  */
-const populateCallTestCasesAccount = ALL_ACCOUNTS[0];
+const populateCallTestCasesAccount = THOR_SOLO_ACCOUNTS[0];
 
 /**
  * Test cases for populateCall function
@@ -298,13 +295,13 @@ const populateCallTestCases = {
             description:
                 'Should set from address from signer and have tx.to defined',
             transactionToPopulate: {
-                to: addressUtils.toERC55Checksum(ALL_ACCOUNTS[1].address)
+                to: addressUtils.toERC55Checksum(THOR_SOLO_ACCOUNTS[1].address)
             } satisfies TransactionRequestInput,
             expected: {
                 from: addressUtils.toERC55Checksum(
                     populateCallTestCasesAccount.address
                 ),
-                to: addressUtils.toERC55Checksum(ALL_ACCOUNTS[1].address)
+                to: addressUtils.toERC55Checksum(THOR_SOLO_ACCOUNTS[1].address)
             } satisfies TransactionRequestInput
         }
     ],

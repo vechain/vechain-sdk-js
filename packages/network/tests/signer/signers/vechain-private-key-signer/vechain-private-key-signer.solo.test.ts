@@ -7,8 +7,6 @@ import {
     VeChainProvider
 } from '../../../../src';
 import {
-    ALL_ACCOUNTS,
-    soloUrl,
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS
 } from '../../../fixture';
@@ -21,6 +19,7 @@ import {
 } from '@vechain/sdk-core';
 import { signTransactionTestCases } from './fixture';
 import { simulateTransaction } from '../../../thor-client/transactions/fixture-thorest';
+import { THOR_SOLO_ACCOUNTS, THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  *VeChain base signer tests - solo
@@ -37,7 +36,7 @@ describe('VeChain base signer tests - solo', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(soloUrl);
+        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
     });
 
     /**
@@ -171,7 +170,7 @@ describe('VeChain base signer tests - solo', () => {
          */
         test('call with no clauses transaction', async () => {
             const signer = new VeChainPrivateKeySigner(
-                Buffer.from(ALL_ACCOUNTS[0].privateKey, 'hex'),
+                Buffer.from(THOR_SOLO_ACCOUNTS[0].privateKey, 'hex'),
                 new VeChainProvider(
                     thorClient,
                     new ProviderInternalBaseWallet([]),
@@ -232,7 +231,7 @@ describe('VeChain base signer tests - solo', () => {
             ({ testName, transaction, expected }) => {
                 test(testName, async () => {
                     const signer = new VeChainPrivateKeySigner(
-                        Buffer.from(ALL_ACCOUNTS[0].privateKey, 'hex'),
+                        Buffer.from(THOR_SOLO_ACCOUNTS[0].privateKey, 'hex'),
                         new VeChainProvider(
                             thorClient,
                             new ProviderInternalBaseWallet([]),

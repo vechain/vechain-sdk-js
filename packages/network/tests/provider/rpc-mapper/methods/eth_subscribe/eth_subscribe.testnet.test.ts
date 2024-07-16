@@ -6,7 +6,7 @@ import {
     jest,
     test
 } from '@jest/globals';
-import { testnetUrl } from '../../../../fixture';
+
 import {
     RPC_METHODS,
     RPCMethodsMap,
@@ -14,6 +14,7 @@ import {
     VeChainProvider
 } from '../../../../../src';
 import { ProviderRpcError } from '@vechain/sdk-errors';
+import { TESTNET_URL } from '@vechain/sdk-constant';
 
 /**
  * RPC Mapper integration tests for 'eth_subscribe' method
@@ -31,7 +32,7 @@ describe('RPC Mapper - eth_subscribe method tests', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(testnetUrl);
+        thorClient = ThorClient.fromUrl(TESTNET_URL);
         provider = new VeChainProvider(thorClient);
     });
 

@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { HTTPClientError } from '@vechain/sdk-errors';
-import { testnetUrl } from '../../fixture';
+import { TESTNET_URL } from '@vechain/sdk-constant';
 import { ThorClient } from '../../../src';
 
 /**
@@ -16,7 +16,7 @@ describe('ThorClient - Nodes Module', () => {
          *  client required accessing a node
          *  @internal
          */
-        const thorClient = ThorClient.fromUrl(testnetUrl);
+        const thorClient = ThorClient.fromUrl(TESTNET_URL);
         const peerNodes = await thorClient.nodes.getNodes();
 
         expect(peerNodes).toBeDefined();

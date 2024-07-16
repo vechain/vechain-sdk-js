@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { testnetUrl } from '../../../../fixture';
+import { TESTNET_URL } from '@vechain/sdk-constant';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
 import { ProviderRpcError } from '@vechain/sdk-errors';
 import { clauseBuilder, unitsUtils } from '@vechain/sdk-core';
@@ -20,7 +20,7 @@ describe('RPC Mapper - eth_estimateGas method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(testnetUrl);
+        thorClient = ThorClient.fromUrl(TESTNET_URL);
     });
 
     /**

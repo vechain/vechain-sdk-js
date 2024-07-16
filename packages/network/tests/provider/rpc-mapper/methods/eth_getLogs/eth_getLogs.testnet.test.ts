@@ -7,7 +7,7 @@ import {
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
-import { testnetUrl } from '../../../../fixture';
+import { TESTNET_URL } from '@vechain/sdk-constant';
 import { logsFixture } from './fixture';
 import { InvalidDataTypeError } from '@vechain/sdk-errors';
 import { Hex0x } from '@vechain/sdk-core';
@@ -28,7 +28,7 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(testnetUrl);
+        thorClient = ThorClient.fromUrl(TESTNET_URL);
     });
 
     /**

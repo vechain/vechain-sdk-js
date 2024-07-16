@@ -5,12 +5,13 @@ import {
     VeChainProvider,
     type VeChainSigner
 } from '../../../src';
-import { TEST_ACCOUNTS, testnetUrl } from '../../fixture';
+import { TEST_ACCOUNTS } from '../../fixture';
 import {
     ERC20_CONTRACT_ADDRESS_ON_TESTNET,
     TESTNET_DELEGATE_URL
 } from './fixture';
 import { ERC20_ABI } from '@vechain/sdk-core';
+import { TESTNET_URL } from '@vechain/sdk-constant';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -25,7 +26,7 @@ describe('ThorClient - ERC20 Contracts on testnet', () => {
     let providerWithDelegationEnabled: VeChainProvider;
 
     beforeEach(() => {
-        thorTestnetClient = ThorClient.fromUrl(testnetUrl);
+        thorTestnetClient = ThorClient.fromUrl(TESTNET_URL);
         // Create the provider (used in this case to sign the transaction with getSigner() method)
         providerWithDelegationEnabled = new VeChainProvider(
             // Thor client used by the provider

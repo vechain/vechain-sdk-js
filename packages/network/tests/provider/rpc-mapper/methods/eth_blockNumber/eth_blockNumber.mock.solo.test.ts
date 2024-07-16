@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { ProviderRpcError } from '@vechain/sdk-errors';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { soloUrl } from '../../../../fixture';
+import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  * RPC Mapper integration tests for 'eth_blockNumber' method with Solo Network and mocked functionality
@@ -19,7 +19,7 @@ describe('RPC Mapper - eth_blockNumber method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(soloUrl);
+        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
     });
 
     /**

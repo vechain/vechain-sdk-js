@@ -1,5 +1,4 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { testnetUrl } from '../../../fixture';
 import { providerMethodsTestCasesTestnet } from '../fixture';
 import { waitForMessage } from '../helpers';
 import {
@@ -7,6 +6,7 @@ import {
     ProviderInternalBaseWallet,
     type VeChainProvider
 } from '../../../../src';
+import { TESTNET_URL } from '@vechain/sdk-constant';
 
 /**
  *VeChain provider tests
@@ -26,7 +26,7 @@ describe('Hardhat provider tests - testnet', () => {
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
         provider = new HardhatVeChainProvider(
             new ProviderInternalBaseWallet([]),
-            testnetUrl,
+            TESTNET_URL,
             (message: string, parent?: Error) => new Error(message, parent)
         );
     });

@@ -1,5 +1,4 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { soloUrl } from '../../../fixture';
 import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
 import {
     deployERC20Contract,
@@ -15,6 +14,7 @@ import {
     type VeChainProvider,
     type VeChainSigner
 } from '../../../../src';
+import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  *VeChain provider tests - Solo Network
@@ -32,7 +32,7 @@ describe('Hardhat provider tests', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(soloUrl);
+        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
         provider = new HardhatVeChainProvider(
             new ProviderInternalBaseWallet([
                 {
@@ -40,7 +40,7 @@ describe('Hardhat provider tests', () => {
                     address: TEST_ACCOUNT.address
                 }
             ]),
-            soloUrl,
+            THOR_SOLO_URL,
             (message: string, parent?: Error) => new Error(message, parent),
             true
         );

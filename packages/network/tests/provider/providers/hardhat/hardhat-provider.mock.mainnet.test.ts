@@ -1,12 +1,11 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 
-import { mainnetUrl } from '../../../fixture';
-
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
 import {
     HardhatVeChainProvider,
     ProviderInternalBaseWallet
 } from '../../../../src';
+import { MAINNET_URL } from '@vechain/sdk-constant';
 
 /**
  * Hardhat provider tests - Mainnet
@@ -25,7 +24,7 @@ describe('Hardhat provider tests', () => {
     beforeEach(() => {
         providerInDebugMode = new HardhatVeChainProvider(
             new ProviderInternalBaseWallet([]),
-            mainnetUrl,
+            MAINNET_URL,
             (message: string, parent?: Error) => new Error(message, parent),
             true
         );

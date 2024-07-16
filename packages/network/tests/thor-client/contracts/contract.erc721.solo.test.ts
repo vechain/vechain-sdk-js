@@ -8,13 +8,14 @@ import {
     VeChainProvider,
     type VeChainSigner
 } from '../../../src';
-import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
+import { TEST_ACCOUNTS } from '../../fixture';
 import {
     coder,
     ERC721_ABI,
     type FunctionFragment,
     type Log
 } from '@vechain/sdk-core';
+import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  * Tests for the ERC721 Contract, specifically focusing on NFT contract-related functionality.
@@ -51,7 +52,7 @@ describe('ThorClient - ERC721 Contracts', () => {
      * blockchain transaction processing.
      */
     beforeAll(async () => {
-        thorSoloClient = ThorClient.fromUrl(soloUrl);
+        thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
         signer = new VeChainPrivateKeySigner(
             Buffer.from(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,

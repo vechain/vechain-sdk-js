@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { soloUrl } from '../../../../fixture';
 import { ethGetCodeTestCases, invalidEthGetCodeTestCases } from './fixture';
+import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  * RPC Mapper integration tests for 'eth_getCode' method - Solo Network
@@ -19,7 +19,7 @@ describe('RPC Mapper - eth_getCode method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(soloUrl);
+        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
     });
 
     /**

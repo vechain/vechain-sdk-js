@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { NotImplementedError } from '@vechain/sdk-errors';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { testnetUrl } from '../../../../fixture';
+import { TESTNET_URL } from '@vechain/sdk-constant';
 
 /**
  * RPC Mapper integration tests for 'engine_exchangeCapabilities' method
@@ -19,7 +19,7 @@ describe('RPC Mapper - engine_exchangeCapabilities method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(testnetUrl);
+        thorClient = ThorClient.fromUrl(TESTNET_URL);
     });
 
     /**

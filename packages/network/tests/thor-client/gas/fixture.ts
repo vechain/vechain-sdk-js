@@ -1,8 +1,8 @@
 import { coder, unitsUtils } from '@vechain/sdk-core';
-import { BUILT_IN_CONTRACTS } from '../../built-in-fixture';
+import { BUILT_IN_CONTRACTS } from '@vechain/sdk-constant';
 import {
-    TESTING_CONTRACT_ABI,
     TEST_ACCOUNTS,
+    TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS
 } from '../../fixture';
 import { transfer1VTHOClause } from '../transactions/fixture';

@@ -1,11 +1,5 @@
-/**
- *VeChain provider tests
- *
- * @group integration/providers/vechain-provider
- */
 import * as n_utils from '@noble/curves/abstract/utils';
-import { txt } from '../../../../../core/src/utils/txt/txt';
-import { Hex, addressUtils, secp256k1 } from '@vechain/sdk-core';
+import { addressUtils, Hex, secp256k1, txt } from '@vechain/sdk-core';
 import { ethers } from 'ethers';
 import {
     EIP191_MESSAGE,
@@ -14,7 +8,6 @@ import {
     populateCallTestCases,
     populateCallTestCasesAccount
 } from './fixture';
-import { testnetUrl } from '../../../fixture';
 import {
     afterEach,
     beforeEach,
@@ -29,9 +22,10 @@ import {
     VeChainProvider,
     vnsUtils
 } from '../../../../src/';
+import { TESTNET_URL } from '@vechain/sdk-constant';
 
 /**
- *VeChain base signer tests
+ * VeChain base signer tests
  *
  * @group unit/signers/vechain-base-signer
  */
@@ -46,7 +40,7 @@ describe('VeChain base signer tests', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(testnetUrl);
+        thorClient = ThorClient.fromUrl(TESTNET_URL);
         provider = new VeChainProvider(thorClient);
     });
 

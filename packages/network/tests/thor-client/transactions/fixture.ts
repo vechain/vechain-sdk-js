@@ -4,7 +4,7 @@ import {
     type TransactionBody,
     unitsUtils
 } from '@vechain/sdk-core';
-import { BUILT_IN_CONTRACTS } from '../../built-in-fixture';
+import { BUILT_IN_CONTRACTS } from '@vechain/sdk-constant';
 import {
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,

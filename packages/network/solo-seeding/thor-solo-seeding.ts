@@ -8,11 +8,14 @@ import {
     unitsUtils,
     ZERO_ADDRESS
 } from '@vechain/sdk-core';
-import { BUILT_IN_CONTRACTS } from '../tests/built-in-fixture';
+import {
+    BUILT_IN_CONTRACTS,
+    THOR_SOLO_ACCOUNTS,
+    THOR_SOLO_URL
+} from '@vechain/sdk-constant';
 import { ThorClient } from '../src';
 import { expect } from '@jest/globals';
 import { TESTING_CONTRACT_BYTECODE } from './const';
-import { ALL_ACCOUNTS, soloUrl } from '../tests/fixture';
 import * as ethers from 'ethers';
 import { stringifyData } from '@vechain/sdk-errors';
 
@@ -21,9 +24,9 @@ import { stringifyData } from '@vechain/sdk-errors';
  *
  * @remarks
  * This constant creates an array of transaction clauses for transferring VTHO tokens
- * from the built-in energy contract to the first 10 accounts in the `ALL_ACCOUNTS` array.
+ * from the built-in energy contract to the first 10 accounts in the `THOR_SOLO_ACCOUNTS` array.
  */
-const CLAUSES_VTHO = ALL_ACCOUNTS.slice(0, 10).map((account) => ({
+const CLAUSES_VTHO = THOR_SOLO_ACCOUNTS.slice(0, 10).map((account) => ({
     to: BUILT_IN_CONTRACTS.ENERGY_ADDRESS,
     value: 0,
     data: coder.encodeFunctionInput(BUILT_IN_CONTRACTS.ENERGY_ABI, 'transfer', [
@@ -37,9 +40,9 @@ const CLAUSES_VTHO = ALL_ACCOUNTS.slice(0, 10).map((account) => ({
  *
  * @remarks
  * This constant creates an array of transaction clauses for transferring VET tokens
- * to the first 10 accounts in the `ALL_ACCOUNTS` array.
+ * to the first 10 accounts in the `THOR_SOLO_ACCOUNTS` array.
  */
-const CLAUSES_VET = ALL_ACCOUNTS.slice(0, 10).map((account) => ({
+const CLAUSES_VET = THOR_SOLO_ACCOUNTS.slice(0, 10).map((account) => ({
     to: account.address,
     value: `0x${unitsUtils.parseVET('500000000').toString(16)}`,
     data: '0x'
@@ -80,7 +83,7 @@ const unsignedTxs = txBodies.map((txBody) => new Transaction(txBody));
 const txs = unsignedTxs.map((unsignedTx, index) =>
     TransactionHandler.sign(
         unsignedTx.body,
-        Buffer.from(ALL_ACCOUNTS[10 + index].privateKey, 'hex') // 10 is the index of the first thor-solo genesis account
+        Buffer.from(THOR_SOLO_ACCOUNTS[10 + index].privateKey, 'hex') // 10 is the index of the first thor-solo genesis account
     )
 );
 
@@ -102,7 +105,7 @@ const deployTestContractTransaction = (): Transaction => {
                     }
                 ]
             },
-            Buffer.from(ALL_ACCOUNTS[4].privateKey, 'hex')
+            Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
         );
     } catch (err) {
         console.log('Error creating deploy testing contract tx:', err);
@@ -111,7 +114,7 @@ const deployTestContractTransaction = (): Transaction => {
 };
 
 const seedVnsSolo = async (): Promise<void> => {
-    const thorSoloClient = ThorClient.fromUrl(soloUrl);
+    const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
     const tld = 'vet';
 
     let nonce = 0;
@@ -127,7 +130,7 @@ const seedVnsSolo = async (): Promise<void> => {
                     nonce: ++nonce,
                     clauses: [contract]
                 },
-                Buffer.from(ALL_ACCOUNTS[4].privateKey, 'hex')
+                Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
             )
         );
 
@@ -154,7 +157,7 @@ const seedVnsSolo = async (): Promise<void> => {
                     nonce: ++nonce,
                     clauses: [contract]
                 },
-                Buffer.from(ALL_ACCOUNTS[4].privateKey, 'hex')
+                Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
             )
         );
 
@@ -181,7 +184,7 @@ const seedVnsSolo = async (): Promise<void> => {
                     nonce: ++nonce,
                     clauses: [contract]
                 },
-                Buffer.from(ALL_ACCOUNTS[4].privateKey, 'hex')
+                Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
             )
         );
 
@@ -215,7 +218,7 @@ const seedVnsSolo = async (): Promise<void> => {
                             [
                                 '0x0000000000000000000000000000000000000000000000000000000000000000',
                                 ethers.id('reverse'),
-                                ALL_ACCOUNTS[4].address
+                                THOR_SOLO_ACCOUNTS[4].address
                             ]
                         ),
                         clauseBuilder.functionInteraction(
@@ -229,7 +232,7 @@ const seedVnsSolo = async (): Promise<void> => {
                         )
                     ]
                 },
-                Buffer.from(ALL_ACCOUNTS[4].privateKey, 'hex')
+                Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
             )
         );
 
@@ -258,7 +261,7 @@ const seedVnsSolo = async (): Promise<void> => {
                     nonce: ++nonce,
                     clauses: [contract]
                 },
-                Buffer.from(ALL_ACCOUNTS[4].privateKey, 'hex')
+                Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
             )
         );
 
@@ -283,7 +286,7 @@ const seedVnsSolo = async (): Promise<void> => {
                         )
                     ]
                 },
-                Buffer.from(ALL_ACCOUNTS[4].privateKey, 'hex')
+                Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
             )
         );
 
@@ -307,7 +310,7 @@ const seedVnsSolo = async (): Promise<void> => {
                     nonce: ++nonce,
                     clauses: [contract]
                 },
-                Buffer.from(ALL_ACCOUNTS[4].privateKey, 'hex')
+                Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
             )
         );
 
@@ -351,7 +354,7 @@ const seedVnsSolo = async (): Promise<void> => {
                         )
                     ]
                 },
-                Buffer.from(ALL_ACCOUNTS[4].privateKey, 'hex')
+                Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
             )
         );
 
@@ -382,7 +385,7 @@ const seedVnsSolo = async (): Promise<void> => {
                             [
                                 ethers.namehash(`${parentName}.${tld}`),
                                 ethers.id(name),
-                                ALL_ACCOUNTS[4].address
+                                THOR_SOLO_ACCOUNTS[4].address
                             ]
                         ),
                         clauseBuilder.functionInteraction(
@@ -397,7 +400,7 @@ const seedVnsSolo = async (): Promise<void> => {
                         )
                     ]
                 },
-                Buffer.from(ALL_ACCOUNTS[4].privateKey, 'hex')
+                Buffer.from(THOR_SOLO_ACCOUNTS[4].privateKey, 'hex')
             )
         );
 
@@ -410,7 +413,7 @@ const seedVnsSolo = async (): Promise<void> => {
         console.log('Registered', fullName, 'to', address);
     };
 
-    await registerName('test-sdk', ALL_ACCOUNTS[4].address);
+    await registerName('test-sdk', THOR_SOLO_ACCOUNTS[4].address);
 
     await registerSubName(
         'vtho',
@@ -429,16 +432,16 @@ const seedVnsSolo = async (): Promise<void> => {
  *
  * @remarks
  * This function signs and sends transactions to distribute VTHO and VET tokens
- * to the first 10 accounts in the `ALL_ACCOUNTS` array. It uses the ThorestClient
+ * to the first 10 accounts in the `THOR_SOLO_ACCOUNTS` array. It uses the ThorestClient
  * to interact with the VeChainThor blockchain.
  *
  * @returns A Promise that resolves when all transactions have been processed.
  */
 const seedThorSolo = async (): Promise<void> => {
-    const thorSoloClient = ThorClient.fromUrl(soloUrl);
+    const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
     console.log(
-        "Distributing balances to the first 10 accounts in the 'ALL_ACCOUNTS' array:"
+        "Distributing balances to the first 10 accounts in the 'THOR_SOLO_ACCOUNTS' array:"
     );
 
     let lastTxId = '';
@@ -454,7 +457,7 @@ const seedThorSolo = async (): Promise<void> => {
     await thorSoloClient.transactions.waitForTransaction(lastTxId);
 
     // Check that the balances have been distributed
-    for (const account of ALL_ACCOUNTS) {
+    for (const account of THOR_SOLO_ACCOUNTS) {
         const accountInfo = await thorSoloClient.accounts.getAccount(
             account.address
         );
@@ -473,7 +476,7 @@ const seedThorSolo = async (): Promise<void> => {
 
     const simulations = await thorSoloClient.gas.estimateGas(
         deployTx.body.clauses,
-        ALL_ACCOUNTS[4].address
+        THOR_SOLO_ACCOUNTS[4].address
     );
 
     console.log('Deploy contract simulation: ', stringifyData(simulations));

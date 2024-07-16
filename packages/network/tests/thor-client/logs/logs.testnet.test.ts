@@ -6,7 +6,7 @@ import {
     expectedFilterTransferLogs
 } from './fixture';
 import { ThorClient } from '../../../src';
-import { testnetUrl } from '../../fixture';
+import { TESTNET_URL } from '@vechain/sdk-constant';
 
 /**
  * ThorClient class tests
@@ -18,7 +18,7 @@ describe('ThorClient - Logs Module', () => {
     let thorClient: ThorClient;
 
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(testnetUrl);
+        thorClient = ThorClient.fromUrl(TESTNET_URL);
     });
 
     /**

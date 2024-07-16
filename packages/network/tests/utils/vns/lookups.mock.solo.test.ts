@@ -7,7 +7,7 @@ import {
     test
 } from '@jest/globals';
 import { ThorClient, vnsUtils } from '../../../src';
-import { testnetUrl } from '../../fixture';
+import { TESTNET_URL } from '@vechain/sdk-constant';
 
 /**
  * vnsUtils vet.domains tests
@@ -24,7 +24,7 @@ describe('vnsUtils', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(testnetUrl);
+        thorClient = ThorClient.fromUrl(TESTNET_URL);
     });
 
     /**

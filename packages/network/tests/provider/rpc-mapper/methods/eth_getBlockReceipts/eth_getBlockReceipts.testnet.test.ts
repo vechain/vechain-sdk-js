@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { testnetUrl } from '../../../../fixture';
+import { TESTNET_URL } from '@vechain/sdk-constant';
 import { blockReceiptsFixture, blockReceiptsInvalidFixture } from './fixture';
 import { InvalidDataTypeError } from '@vechain/sdk-errors';
 
@@ -20,7 +20,7 @@ describe('RPC Mapper - eth_getBlockReceipts method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(testnetUrl);
+        thorClient = ThorClient.fromUrl(TESTNET_URL);
     });
 
     /**

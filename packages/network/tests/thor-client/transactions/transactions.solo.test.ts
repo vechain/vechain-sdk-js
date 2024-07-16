@@ -9,10 +9,11 @@ import {
     transferTransactionBodyValueAsNumber,
     waitForTransactionTestCases
 } from './fixture';
-import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
+import { TEST_ACCOUNTS } from '../../fixture';
 import { Transaction, TransactionHandler } from '@vechain/sdk-core';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { ThorClient } from '../../../src';
+import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  * Transactions module tests.
@@ -21,7 +22,7 @@ import { ThorClient } from '../../../src';
  */
 describe('ThorClient - Transactions Module', () => {
     // ThorClient instance for the Solo network
-    const thorSoloClient = ThorClient.fromUrl(soloUrl);
+    const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
     /**
      * Test suite for sendTransaction method

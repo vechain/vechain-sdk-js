@@ -1,8 +1,9 @@
-import { jest, describe, test, expect } from '@jest/globals';
+import { describe, expect, jest, test } from '@jest/globals';
 import { ThorClient } from '../../../src';
 import { transactionNonces, transferTransactionBody } from './fixture';
-import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
+import { TEST_ACCOUNTS } from '../../fixture';
 import { TransactionBodyError } from '@vechain/sdk-errors';
+import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  * Transactions module tests with mocks.
@@ -11,7 +12,7 @@ import { TransactionBodyError } from '@vechain/sdk-errors';
  */
 describe('buildTransactionBody with mocks', () => {
     test('Should throw error when genesis block is not found', async () => {
-        const thorSoloClient = ThorClient.fromUrl(soloUrl);
+        const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
         // Mock the getBlock method to return null
         jest.spyOn(
@@ -33,7 +34,7 @@ describe('buildTransactionBody with mocks', () => {
     });
 
     test('Should throw error when get block is not found', async () => {
-        const thorSoloClient = ThorClient.fromUrl(soloUrl);
+        const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
         // Mock the getBestBlock method to return null
         jest.spyOn(
@@ -55,7 +56,7 @@ describe('buildTransactionBody with mocks', () => {
     });
 
     test('Should succeed when options are set', async () => {
-        const thorSoloClient = ThorClient.fromUrl(soloUrl);
+        const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
         const blockRef =
             (await thorSoloClient.blocks.getBestBlockRef()) as string;

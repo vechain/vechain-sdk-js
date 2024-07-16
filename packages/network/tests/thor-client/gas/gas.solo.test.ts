@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { estimateGasTestCases, invalidEstimateGasTestCases } from './fixture';
 import { ThorClient } from '../../../src';
-import { soloUrl } from '../../fixture';
-import { generateRandomValidAddress } from '@vechain/sdk-core/tests/fixture';
 import { stringifyData } from '@vechain/sdk-errors';
+import { Hex0x, secp256k1 } from '../../../../core/src';
+import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  * Gas module tests.
@@ -15,7 +15,7 @@ describe('ThorClient - Gas Module', () => {
     let thorSoloClient: ThorClient;
 
     beforeEach(() => {
-        thorSoloClient = ThorClient.fromUrl(soloUrl);
+        thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
     });
 
     /**
@@ -77,7 +77,8 @@ describe('ThorClient - Gas Module', () => {
                     await expect(
                         thorSoloClient.gas.estimateGas(
                             clauses,
-                            generateRandomValidAddress(),
+                            // Random address
+                            Hex0x.of(secp256k1.randomBytes(20)),
                             options
                         )
                     ).rejects.toThrow(expectedError);

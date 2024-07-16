@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { testnetUrl } from '../../fixture';
 import { ThorClient } from '../../../src';
+import { TESTNET_URL } from '@vechain/sdk-constant';
 
 /**
  * Transactions module tests suite.
@@ -12,7 +12,7 @@ describe('ThorClient - Gas Module', () => {
     let thorClient: ThorClient;
 
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(testnetUrl);
+        thorClient = ThorClient.fromUrl(TESTNET_URL);
     });
 
     /**
