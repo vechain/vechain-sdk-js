@@ -70,7 +70,8 @@ describe('Vechain provider tests - solo', () => {
                 // Compare the result with the expected value
                 expect(rpcCall).toStrictEqual(expected);
             });
-        }
+        },
+        8000
     );
 
     /**
