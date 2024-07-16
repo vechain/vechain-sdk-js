@@ -16,9 +16,7 @@ Subscribe to specific contract events through the `subscriptions.getEventSubscri
 ```typescript { name=event-subscriptions, category=example }
 import { subscriptions } from '@vechain/sdk-network';
 import WebSocket from 'isomorphic-ws';
-
-// The URL of the node to request the subscription from.
-const testnetUrl = 'https://testnet.vechain.org';
+import { TESTNET_URL } from '@vechain/sdk-constant';
 
 /**
  * The event to subscribe to.
@@ -36,7 +34,7 @@ const senderSampleAddress = '0x9e7911de289c3c856ce7f421034f66b6cde49c39';
 const toSampleAddress = '0xfe7911df289c3c856ce7f421034f66b6cd249c39';
 
 const wsURL = subscriptions.getEventSubscriptionUrl(
-    testnetUrl,
+    TESTNET_URL,
     swapEvent,
     /**
      * The values of the indexed parameters to construct the topic filters.
@@ -89,12 +87,10 @@ Subscribe to new blocks as they are added to the blockchain through the `subscri
 ```typescript { name=block-subscriptions, category=example }
 import { subscriptions } from '@vechain/sdk-network';
 import WebSocket from 'isomorphic-ws';
-
-// The URL of the node to request the subscription from.
-const testnetUrl = 'https://testnet.vechain.org';
+import { TESTNET_URL } from '@vechain/sdk-constant';
 
 // The URL for subscribing to the block
-const wsURL = subscriptions.getBlockSubscriptionUrl(testnetUrl);
+const wsURL = subscriptions.getBlockSubscriptionUrl(TESTNET_URL);
 
 // Any websocket library can be used to connect to the websocket
 const ws = new WebSocket(wsURL);

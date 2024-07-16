@@ -1,0 +1,53 @@
+{
+  "name": "@vechain/sdk-constant",
+  "version": "1.0.0-beta.21",
+  "description": "Includes main constants needed for strong developer",
+  "author": "vechain Foundation",
+  "license": "MIT",
+  "homepage": "https://github.com/vechain/vechain-sdk-js",
+  "repository": {
+    "type": "git",
+    "url": "github:vechain/vechain-sdk-js"
+  },
+  "keywords": [
+    "VeChain",
+    "constant",
+    "thor-solo"
+  ],
+  "private": false,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
+    "lint": "eslint --ext .ts src --ext .ts tests",
+    "format": "prettier --write src/**/*.ts tests/**/*.ts",
+    "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
+    "test:integration": "rm -rf ./coverageIntegration && jest --coverage --coverageDirectory=coverageIntegration --group=integration",
+    "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit",
+    "test:browser": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit --config ./jest.config.browser.js"
+  },
+  "dependencies": {
+    "@ethereumjs/rlp": "^5.0.2",
+    "@noble/ciphers": "^0.5.2",
+    "@scure/bip32": "^1.4.0",
+    "@scure/bip39": "^1.3.0",
+    "@types/elliptic": "^6.4.18",
+    "@vechain/sdk-errors": "1.0.0-beta.21",
+    "@vechain/sdk-logging": "1.0.0-beta.21",
+    "bignumber.js": "^9.1.2",
+    "blakejs": "^1.2.1",
+    "elliptic": "^6.5.5",
+    "ethers": "6.13.1",
+    "fast-json-stable-stringify": "^2.1.0"
+  },
+  "devDependencies": {
+    "thor-devkit": "^2.0.9"
+  }
+}

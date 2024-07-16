@@ -10,11 +10,11 @@ This section illustrates the methodology for monitoring the production of a new 
 ```typescript { name=sync-poll-wait-new-block, category=example }
 import { Poll, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
+import { TESTNET_URL } from '@vechain/sdk-constant';
 
 // 1 - Create thor client for testnet
 
-const _testnetUrl = 'https://testnet.vechain.org';
-const thorClient = ThorClient.fromUrl(_testnetUrl);
+const thorClient = ThorClient.fromUrl(TESTNET_URL);
 
 // 2 - Get current block
 
@@ -172,11 +172,11 @@ This example demonstrates the application of an asynchronous poll for tracking t
 ```typescript { name=event-poll-dapp, category=example }
 import { Poll, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
+import { TESTNET_URL } from '@vechain/sdk-constant';
 
 // 1 - Create thor client for testnet
 
-const _testnetUrl = 'https://testnet.vechain.org';
-const thorClient = ThorClient.fromUrl(_testnetUrl);
+const thorClient = ThorClient.fromUrl(TESTNET_URL);
 
 // 2 - Init accounts
 

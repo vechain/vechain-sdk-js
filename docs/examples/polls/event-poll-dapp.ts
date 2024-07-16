@@ -1,10 +1,10 @@
 import { Poll, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
+import { TESTNET_URL } from '@vechain/sdk-constant';
 
 // 1 - Create thor client for testnet
 
-const _testnetUrl = 'https://testnet.vechain.org';
-const thorClient = ThorClient.fromUrl(_testnetUrl);
+const thorClient = ThorClient.fromUrl(TESTNET_URL);
 
 // 2 - Init accounts
 

@@ -1,11 +1,11 @@
 import { ThorClient, VeChainProvider } from '@vechain/sdk-network';
 import { expect } from 'expect';
+import { TESTNET_URL } from '@vechain/sdk-constant';
 
 // START_SNIPPET: VeChainProviderSnippet
 
 // 1 - Create thor client for testnet
-const testnetUrl = 'https://testnet.vechain.org';
-const thorClient = ThorClient.fromUrl(testnetUrl);
+const thorClient = ThorClient.fromUrl(TESTNET_URL);
 
 // 2 - Init provider
 const provider = new VeChainProvider(thorClient);

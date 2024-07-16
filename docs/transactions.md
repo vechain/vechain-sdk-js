@@ -576,8 +576,7 @@ const txReceipt = await thorSoloClient.transactions.waitForTransaction(
 // START_SNIPPET: FullFlowDelegatorUrlSnippet
 
 // 1 - Create the thor client
-const _testnetUrl = 'https://testnet.vechain.org/';
-const thorClient = ThorClient.fromUrl(_testnetUrl, {
+const thorClient = ThorClient.fromUrl(TESTNET_URL, {
     isPollingEnabled: false
 });
 

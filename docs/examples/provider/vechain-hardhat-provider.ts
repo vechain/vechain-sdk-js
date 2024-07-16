@@ -3,15 +3,14 @@ import {
     ProviderInternalBaseWallet
 } from '@vechain/sdk-network';
 import { expect } from 'expect';
+import { TESTNET_URL } from '@vechain/sdk-constant';
 
 // START_SNIPPET: VechainHardhatProviderSnippet
-
-const testnetUrl = 'https://testnet.vechain.org';
 
 // 1 - Init provider
 const provider = new HardhatVeChainProvider(
     new ProviderInternalBaseWallet([]),
-    testnetUrl,
+    TESTNET_URL,
     (message: string, parent?: Error) => new Error(message, parent)
 );
 
