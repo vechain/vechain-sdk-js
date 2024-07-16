@@ -1,7 +1,7 @@
-import { ADDRESS, assert } from '@vechain/sdk-errors';
 import { Hex, Hex0x } from '../utils';
 import { keccak256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
+import { InvalidAddress } from '@vechain/sdk-errors';
 
 /**
  * Regular expression for validating hexadecimal addresses
@@ -91,13 +91,14 @@ function isAddress(addressToVerify: string): boolean {
  * @see {isAddress}
  */
 function toERC55Checksum(address: string): string {
-    assert(
-        'addressUtils.toERC55Checksum',
-        isAddress(address),
-        ADDRESS.INVALID_ADDRESS,
-        'Checksum failed: Input must be a valid VeChainThor address.',
-        { address }
-    );
+    if (!isAddress(address)) {
+        throw new InvalidAddress(
+            'addressUtils.toERC55Checksum()',
+            'Checksum failed: Input must be a valid VeChainThor address.',
+            { address }
+        );
+    }
+
     const digits = Hex.canon(address.toLowerCase());
     const hash = Hex.of(keccak256(digits));
     let result: string = '0x';

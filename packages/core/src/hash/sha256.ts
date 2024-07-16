@@ -1,7 +1,7 @@
 import { Hex0x } from '../utils';
-import { assertIsValidReturnType } from '../assertions';
 import { sha256 as _sha256 } from '@noble/hashes/sha256';
 import { type ReturnType } from './types';
+import { InvalidDataType } from '@vechain/sdk-errors';
 
 /* --- Overloaded functions start --- */
 
@@ -56,7 +56,14 @@ function sha256(
     returnType: ReturnType = 'buffer'
 ): Uint8Array | string {
     // Assert that the returnType is valid
-    assertIsValidReturnType('sha256', returnType);
+    if (!['hex', 'buffer'].includes(returnType)) {
+        throw new InvalidDataType(
+            'sha256()',
+            "Validation error: Invalid return type. Return type in hash function must be 'buffer' or 'hex'.",
+            { returnType }
+        );
+    }
+
     const hash = _sha256(data);
     return returnType === 'buffer' ? hash : Hex0x.of(hash);
 }

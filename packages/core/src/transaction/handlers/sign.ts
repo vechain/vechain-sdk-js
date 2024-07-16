@@ -1,9 +1,12 @@
 import { addressUtils } from '../../address-utils';
 import { secp256k1 } from '../../secp256k1';
 import { Transaction } from '../transaction';
-import { assert, TRANSACTION } from '@vechain/sdk-errors';
+import {
+    assert,
+    InvalidSecp256k1PrivateKey,
+    TRANSACTION
+} from '@vechain/sdk-errors';
 import { type TransactionBody } from '../types';
-import { assertIsValidTransactionSigningPrivateKey } from '../../assertions';
 
 /**
  * Sign a transaction with a given private key
@@ -17,18 +20,20 @@ function sign(
     transactionBody: TransactionBody,
     signerPrivateKey: Buffer
 ): Transaction {
-    // Invalid private key
-    assertIsValidTransactionSigningPrivateKey(
-        'sign',
-        signerPrivateKey,
-        secp256k1.isValidPrivateKey
-    );
+    // Check if the private key is valid
+    if (!secp256k1.isValidPrivateKey(signerPrivateKey)) {
+        throw new InvalidSecp256k1PrivateKey(
+            `TransactionHandler.sign()`,
+            "Invalid private key used to sign the transaction. Ensure it's a valid secp256k1 private key.",
+            undefined
+        );
+    }
 
     const transactionToSign = new Transaction(transactionBody);
 
     // Transaction is delegated
     assert(
-        'sign',
+        'sign()',
         !transactionToSign.isDelegated,
         TRANSACTION.INVALID_DELEGATION,
         'Transaction is delegated. Use signWithDelegator method instead.',
@@ -60,18 +65,23 @@ function signWithDelegator(
     delegatorPrivateKey: Buffer
 ): Transaction {
     // Invalid private keys (signer and delegator)
-    assertIsValidTransactionSigningPrivateKey(
-        'signWithDelegator',
-        signerPrivateKey,
-        secp256k1.isValidPrivateKey,
-        'signer'
-    );
-    assertIsValidTransactionSigningPrivateKey(
-        'signWithDelegator',
-        delegatorPrivateKey,
-        secp256k1.isValidPrivateKey,
-        'delegator'
-    );
+
+    // Check if the private key of the signer is valid
+    if (!secp256k1.isValidPrivateKey(signerPrivateKey)) {
+        throw new InvalidSecp256k1PrivateKey(
+            `TransactionHandler.signWithDelegator()`,
+            "Invalid signer private key used to sign the transaction. Ensure it's a valid secp256k1 private key.",
+            undefined
+        );
+    }
+    // Check if the private key of the delegator is valid
+    if (!secp256k1.isValidPrivateKey(delegatorPrivateKey)) {
+        throw new InvalidSecp256k1PrivateKey(
+            `TransactionHandler.signWithDelegator()`,
+            "Invalid delegator private key used to sign the transaction. Ensure it's a valid secp256k1 private key.",
+            undefined
+        );
+    }
 
     const transactionToSign = new Transaction(transactionBody);
 

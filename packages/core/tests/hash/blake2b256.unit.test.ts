@@ -10,10 +10,7 @@ import {
     BLAKE2B256_NO_CONTENT,
     BLAKE2B256_NO_CONTENT_HASH
 } from './fixture';
-import {
-    InvalidDataReturnTypeError,
-    InvalidDataType
-} from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
  * Test hash functions
@@ -98,7 +95,7 @@ describe('blake2b256', () => {
                     BLAKE2B256_CONTENT,
                     'invalid_return_type' as ReturnType
                 )
-            ).toThrowError(InvalidDataReturnTypeError);
+            ).toThrowError(InvalidDataType);
         });
 
         test('blake2b256OfHex - invalid hex', () => {
