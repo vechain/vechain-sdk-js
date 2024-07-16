@@ -1,4 +1,5 @@
-import { assertInnerError, stringifyData } from '../utils';
+import { assertInnerError } from '../utils';
+import { createErrorMessage } from '../helpers';
 
 /**
  * Generic error class for SDK errors.
@@ -15,7 +16,7 @@ class VechainSDKError<TErrorDataType> extends Error {
         readonly innerError?: unknown
     ) {
         super(
-            buildErrorMessage(
+            createErrorMessage(
                 methodName,
                 errorMessage,
                 data,
@@ -25,30 +26,6 @@ class VechainSDKError<TErrorDataType> extends Error {
             )
         );
     }
-}
-
-/**
- * Function to build the error message.
- * Here, we can customize the error message format.
- *
- * @param methodName The name of the method that failed.
- * @param errorMessage The error message.
- * @param inputData The input data that caused the error.
- * @param innerError The inner error that caused the error.
- * @returns The error message as a string.
- */
-function buildErrorMessage<TErrorDataType>(
-    methodName: string,
-    errorMessage: string,
-    inputData: TErrorDataType,
-    innerError?: Error
-): string {
-    return (
-        `Method '${methodName}' failed.` +
-        `\n-Reason: '${errorMessage}'` +
-        `\n-Parameters: \n\t${stringifyData(inputData)}` +
-        `\n-Internal error: \n\t${innerError?.message !== undefined ? innerError.message : 'No internal error given'}`
-    );
 }
 
 export { VechainSDKError };
