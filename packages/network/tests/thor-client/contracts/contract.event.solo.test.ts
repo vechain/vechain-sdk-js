@@ -7,12 +7,12 @@ import {
 } from '../../../src';
 import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
 import {
-    deployedERC20Abi,
     erc20ContractBytecode,
     eventExampleAbi,
     eventExampleBytecode
 } from './fixture';
 import { InvalidAbiEventError } from '@vechain/sdk-errors';
+import { ERC20_ABI } from '@vechain/sdk-core';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -46,7 +46,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     test('listen to ERC20 contract operations', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
+            ERC20_ABI,
             erc20ContractBytecode,
             signer
         );
@@ -103,7 +103,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     test('listen to ERC20 contract operations building the criterias', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
+            ERC20_ABI,
             erc20ContractBytecode,
             signer
         );
@@ -170,7 +170,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     test('listen to ERC20 contract operations building the criterias and decoding the event logs', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
+            ERC20_ABI,
             erc20ContractBytecode,
             signer
         );
@@ -224,7 +224,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     test('listen to ERC20 contract operations building the criterias and failing to decode the event logs due to wrong event fragment', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
+            ERC20_ABI,
             erc20ContractBytecode,
             signer
         );
@@ -275,7 +275,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     test('listen to ERC20 raw contract operations with multiple criterias', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
+            ERC20_ABI,
             erc20ContractBytecode,
             signer
         );
@@ -360,7 +360,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     test('listen to ERC20 decoded contract operations with multiple criterias', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
+            ERC20_ABI,
             erc20ContractBytecode,
             signer
         );
@@ -431,7 +431,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     test('listen to multiple contract operations with multiple criteria', async () => {
         // Deploy the ERC20 contract
         let erc20Factory = thorSoloClient.contracts.createContractFactory(
-            deployedERC20Abi,
+            ERC20_ABI,
             erc20ContractBytecode,
             signer
         );

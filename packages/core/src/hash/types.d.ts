@@ -1,3 +1,5 @@
+import { type BytesLike } from '../abi/types.d';
+
 /**
  * Input to hash function.
  */

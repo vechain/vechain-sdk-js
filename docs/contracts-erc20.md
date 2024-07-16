@@ -44,7 +44,7 @@ const signer = (await provider.getSigner(
 
 // Creating the contract factory
 const contractFactory = thorSoloClient.contracts.createContractFactory(
-    VIP180_ABI,
+    ERC20_ABI,
     erc20ContractBytecode,
     signer
 );

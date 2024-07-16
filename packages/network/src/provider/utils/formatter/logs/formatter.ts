@@ -64,54 +64,98 @@ const _scatterArrayTopic = (
 };
 
 /**
- * Get the criteria set for the input.
+ * Function to generate a set of event criteria based on input criteria.
+ * The function takes an object with optional address and topics properties,
+ * and returns an array of EventCriteria objects.
  *
- * Basically with VeChain swagger we have:
- *
- * {
- *     address = string | undefined;
- *     topic1: string | undefined;
- *     ...
- *     topic4: string | undefined;
- * }
- *
- * With RPC we can have an array of address:
- *
- * {
- *     **address = string | string[] | undefined;**
- *     topic1: string | undefined;
- * ...
- *     topic4: string | undefined;
- * }.
- *
- * To have a complete research space, we can filter by address and topics, and only by address.
- *
- * @param criteria - The criteria input.
+ * @param {Object} criteria - The input criteria object.
+ * @param {string|string[]} [criteria.address] - A single address string or an array of address strings.
+ * @param {string[]|string[][]} [criteria.topics] - A single array of topics or an array of arrays of topics.
+ * @returns {EventCriteria[]} An array of EventCriteria objects.
  */
 const getCriteriaSetForInput = (criteria: {
     address?: string | string[];
-    topics?: string[];
+    topics?: string[] | string[][];
 }): EventCriteria[] => {
     // String to an array of addresses and topics
-    let criteriaAddress: string[] = [];
-    let criteriaTopics: string[] = [];
+    let criteriaAddress: string[] | undefined[] = [];
 
     // Convert in any case to an array of addresses
-    if (criteria.address !== undefined)
+    if (criteria.address !== undefined) {
         criteriaAddress =
             typeof criteria.address === 'string'
                 ? [criteria.address]
                 : criteria.address;
+    } else {
+        criteriaAddress = [undefined];
+    }
 
-    // Convert in any case to an array of topics
-    if (criteria.topics !== undefined) criteriaTopics = criteria.topics;
+    const eventsCriteriaToFlat: EventCriteria[][] = criteriaAddress.map(
+        (addr) => {
+            return getTopicsPerAddress(addr, criteria.topics ?? []);
+        }
+    );
 
-    // Filtering considering the address and topics. For each address, we have to consider the topics
-    return criteriaAddress.length > 0
-        ? criteriaAddress.map((addr: string) => {
-              return _scatterArrayTopic(criteriaTopics, addr);
-          })
-        : [_scatterArrayTopic(criteriaTopics)];
+    // Flat the array
+    return eventsCriteriaToFlat.flat();
+};
+
+/**
+ * Function to generate a set of event criteria based on input topics and address.
+ * The function takes an address and an array of topics and returns an array of EventCriteria objects.
+ *
+ * @param {string} address - The address to filter.
+ * @param {string[]|string[][]} topics - A single array of topics or an array of arrays of topics.
+ * @returns {EventCriteria[]} An array of EventCriteria objects.
+ */
+const getTopicsPerAddress = (
+    address: string | undefined,
+    topics: string[] | string[][]
+): EventCriteria[] => {
+    const notArrayTopics: string[] = [];
+    const arrayTopics: string[][] = [];
+
+    topics.forEach((topic) => {
+        if (!Array.isArray(topic)) {
+            notArrayTopics.push(topic);
+        }
+        if (Array.isArray(topic)) {
+            arrayTopics.push(topic);
+        }
+    });
+
+    const criteriaSet: EventCriteria[] = [];
+
+    if (notArrayTopics.length > 0) {
+        criteriaSet.push(_scatterArrayTopic(notArrayTopics, address));
+    }
+
+    arrayTopics.forEach((topics) => {
+        topics.forEach((topic) => {
+            criteriaSet.push({
+                address,
+                topic0: topic,
+                topic1: undefined,
+                topic2: undefined,
+                topic3: undefined,
+                topic4: undefined
+            });
+        });
+    });
+
+    // If no topics are provided, we add an empty criteria set
+    if (criteriaSet.length === 0) {
+        criteriaSet.push({
+            address,
+            topic0: undefined,
+            topic1: undefined,
+            topic2: undefined,
+            topic3: undefined,
+            topic4: undefined
+        });
+    }
+
+    return criteriaSet;
 };
 
 export { formatToLogsRPC, getCriteriaSetForInput };

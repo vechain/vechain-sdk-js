@@ -146,16 +146,11 @@ function formatTransactionReceiptToRPCStandard(
         transactionHash,
         chainId
     );
-    const n = receipt.outputs.length > 0 ? receipt.outputs[0].events.length : 0;
-    const filledLogIndexes = new Array<number>(n)
-        .fill(logIndexOffset)
-        .map((_, i) => i + logIndexOffset);
-
-    const logIndexes: string[] = filledLogIndexes.map((i) => Quantity.of(i));
 
     const logs: TransactionReceiptLogsRPC[] = [];
+    let logIndex = logIndexOffset;
     receipt.outputs.forEach((output) => {
-        output.events.forEach((event, index) => {
+        output.events.forEach((event) => {
             logs.push({
                 blockHash: receipt.meta.blockID,
                 blockNumber: Quantity.of(receipt.meta.blockNumber),
@@ -165,8 +160,9 @@ function formatTransactionReceiptToRPCStandard(
                 data: event.data,
                 removed: false,
                 transactionIndex: Quantity.of(transactionIndex),
-                logIndex: logIndexes[index]
+                logIndex: Quantity.of(logIndex)
             });
+            logIndex++;
         });
     });
 

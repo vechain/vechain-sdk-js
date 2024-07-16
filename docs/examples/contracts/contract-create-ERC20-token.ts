@@ -5,7 +5,7 @@ import {
     VeChainProvider,
     type VeChainSigner
 } from '@vechain/sdk-network';
-import { unitsUtils, VIP180_ABI } from '@vechain/sdk-core';
+import { unitsUtils, ERC20_ABI } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // ERC20 contract bytecode
@@ -36,7 +36,7 @@ const signer = (await provider.getSigner(
 
 // Creating the contract factory
 const contractFactory = thorSoloClient.contracts.createContractFactory(
-    VIP180_ABI,
+    ERC20_ABI,
     erc20ContractBytecode,
     signer
 );

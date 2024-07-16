@@ -1,4 +1,4 @@
-import { addressUtils, type DeployParams } from '@vechain/sdk-core';
+import { addressUtils, type DeployParams, ERC20_ABI } from '@vechain/sdk-core';
 import { TEST_ACCOUNTS } from '../../fixture';
 import type { EventDisplayOrder, PaginationOptions, Range } from '../../../src';
 import { type Abi } from 'abitype';
@@ -102,178 +102,6 @@ const deployedContractAbi = [
         inputs: [{ internalType: 'uint256', name: 'x', type: 'uint256' }],
         name: 'set',
         outputs: [],
-        stateMutability: 'nonpayable',
-        type: 'function'
-    }
-] as const;
-
-const deployedERC20Abi = [
-    { inputs: [], stateMutability: 'nonpayable', type: 'constructor' },
-    {
-        inputs: [
-            { internalType: 'address', name: 'spender', type: 'address' },
-            { internalType: 'uint256', name: 'allowance', type: 'uint256' },
-            { internalType: 'uint256', name: 'needed', type: 'uint256' }
-        ],
-        name: 'ERC20InsufficientAllowance',
-        type: 'error'
-    },
-    {
-        inputs: [
-            { internalType: 'address', name: 'sender', type: 'address' },
-            { internalType: 'uint256', name: 'balance', type: 'uint256' },
-            { internalType: 'uint256', name: 'needed', type: 'uint256' }
-        ],
-        name: 'ERC20InsufficientBalance',
-        type: 'error'
-    },
-    {
-        inputs: [
-            { internalType: 'address', name: 'approver', type: 'address' }
-        ],
-        name: 'ERC20InvalidApprover',
-        type: 'error'
-    },
-    {
-        inputs: [
-            { internalType: 'address', name: 'receiver', type: 'address' }
-        ],
-        name: 'ERC20InvalidReceiver',
-        type: 'error'
-    },
-    {
-        inputs: [{ internalType: 'address', name: 'sender', type: 'address' }],
-        name: 'ERC20InvalidSender',
-        type: 'error'
-    },
-    {
-        inputs: [{ internalType: 'address', name: 'spender', type: 'address' }],
-        name: 'ERC20InvalidSpender',
-        type: 'error'
-    },
-    {
-        anonymous: false,
-        inputs: [
-            {
-                indexed: true,
-                internalType: 'address',
-                name: 'owner',
-                type: 'address'
-            },
-            {
-                indexed: true,
-                internalType: 'address',
-                name: 'spender',
-                type: 'address'
-            },
-            {
-                indexed: false,
-                internalType: 'uint256',
-                name: 'value',
-                type: 'uint256'
-            }
-        ],
-        name: 'Approval',
-        type: 'event'
-    },
-    {
-        anonymous: false,
-        inputs: [
-            {
-                indexed: true,
-                internalType: 'address',
-                name: 'from',
-                type: 'address'
-            },
-            {
-                indexed: true,
-                internalType: 'address',
-                name: 'to',
-                type: 'address'
-            },
-            {
-                indexed: false,
-                internalType: 'uint256',
-                name: 'value',
-                type: 'uint256'
-            }
-        ],
-        name: 'Transfer',
-        type: 'event'
-    },
-    {
-        inputs: [
-            { internalType: 'address', name: 'owner', type: 'address' },
-            { internalType: 'address', name: 'spender', type: 'address' }
-        ],
-        name: 'allowance',
-        outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-        stateMutability: 'view',
-        type: 'function'
-    },
-    {
-        inputs: [
-            { internalType: 'address', name: 'spender', type: 'address' },
-            { internalType: 'uint256', name: 'value', type: 'uint256' }
-        ],
-        name: 'approve',
-        outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
-        stateMutability: 'nonpayable',
-        type: 'function'
-    },
-    {
-        inputs: [{ internalType: 'address', name: 'account', type: 'address' }],
-        name: 'balanceOf',
-        outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-        stateMutability: 'view',
-        type: 'function'
-    },
-    {
-        inputs: [],
-        name: 'decimals',
-        outputs: [{ internalType: 'uint8', name: '', type: 'uint8' }],
-        stateMutability: 'view',
-        type: 'function'
-    },
-    {
-        inputs: [],
-        name: 'name',
-        outputs: [{ internalType: 'string', name: '', type: 'string' }],
-        stateMutability: 'view',
-        type: 'function'
-    },
-    {
-        inputs: [],
-        name: 'symbol',
-        outputs: [{ internalType: 'string', name: '', type: 'string' }],
-        stateMutability: 'view',
-        type: 'function'
-    },
-    {
-        inputs: [],
-        name: 'totalSupply',
-        outputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
-        stateMutability: 'view',
-        type: 'function'
-    },
-    {
-        inputs: [
-            { internalType: 'address', name: 'to', type: 'address' },
-            { internalType: 'uint256', name: 'value', type: 'uint256' }
-        ],
-        name: 'transfer',
-        outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
-        stateMutability: 'nonpayable',
-        type: 'function'
-    },
-    {
-        inputs: [
-            { internalType: 'address', name: 'from', type: 'address' },
-            { internalType: 'address', name: 'to', type: 'address' },
-            { internalType: 'uint256', name: 'value', type: 'uint256' }
-        ],
-        name: 'transferFrom',
-        outputs: [{ internalType: 'bool', name: '', type: 'bool' }],
         stateMutability: 'nonpayable',
         type: 'function'
     }
@@ -848,7 +676,7 @@ const multipleClausesTestCases: MultipleClausesTestCase[] = [
         contracts: [
             {
                 contractBytecode: erc20ContractBytecode,
-                contractAbi: deployedERC20Abi,
+                contractAbi: ERC20_ABI,
                 contractCaller:
                     TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
                 functionCalls: [
@@ -960,7 +788,7 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
         description:
             'should filter the first Transfer event of the initial supply',
         contractBytecode: erc20ContractBytecode,
-        contractAbi: deployedERC20Abi,
+        contractAbi: ERC20_ABI,
         contractCaller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
         functionCalls: [],
         eventName: 'Transfer',
@@ -977,7 +805,7 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
         description:
             'should not be able to filter the event, since I am checking just the block 0',
         contractBytecode: erc20ContractBytecode,
-        contractAbi: deployedERC20Abi,
+        contractAbi: ERC20_ABI,
         contractCaller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
         functionCalls: [],
         eventName: 'Transfer',
@@ -994,7 +822,7 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
     {
         description: 'should filter the two transfer events',
         contractBytecode: erc20ContractBytecode,
-        contractAbi: deployedERC20Abi,
+        contractAbi: ERC20_ABI,
         contractCaller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
         functionCalls: [
             {
@@ -1036,7 +864,7 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
         description:
             'should filter the two transfer events with descending order',
         contractBytecode: erc20ContractBytecode,
-        contractAbi: deployedERC20Abi,
+        contractAbi: ERC20_ABI,
         contractCaller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
         functionCalls: [
             {
@@ -1081,7 +909,7 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
         description:
             'should try to filter the second Transfer event for a specific value but since value is not indexed, all movements are returned',
         contractBytecode: erc20ContractBytecode,
-        contractAbi: deployedERC20Abi,
+        contractAbi: ERC20_ABI,
         contractCaller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
         functionCalls: [
             {
@@ -3821,7 +3649,6 @@ export {
     fourArgsEventAbi,
     deployedContractBytecode,
     deployedContractAbi,
-    deployedERC20Abi,
     testingContractTestCases,
     testingContractNegativeTestCases,
     testingContractEVMExtensionTestCases,

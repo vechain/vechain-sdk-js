@@ -7,10 +7,10 @@ import {
 } from '../../../src';
 import { TEST_ACCOUNTS, testnetUrl } from '../../fixture';
 import {
-    deployedERC20Abi,
     ERC20_CONTRACT_ADDRESS_ON_TESTNET,
     TESTNET_DELEGATE_URL
 } from './fixture';
+import { ERC20_ABI } from '@vechain/sdk-core';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -62,7 +62,7 @@ describe('ThorClient - ERC20 Contracts on testnet', () => {
     test('transaction execution with url delegation set from contract', async () => {
         const contract = thorTestnetClient.contracts.load(
             ERC20_CONTRACT_ADDRESS_ON_TESTNET,
-            deployedERC20Abi,
+            ERC20_ABI,
             (await providerWithDelegationEnabled.getSigner(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
             )) as VeChainSigner
