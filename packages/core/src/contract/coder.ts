@@ -1,10 +1,5 @@
 import { Interface as EthersInterface, type InterfaceAbi } from 'ethers';
-import {
-    ABI,
-    buildError,
-    ERROR_CODES,
-    stringifyData
-} from '@vechain/sdk-errors';
+import { InvalidAbiDataToEncodeOrDecode } from '@vechain/sdk-errors';
 import type { BytesLike, Interface, Log, Result } from '../abi';
 import { abi } from '../abi';
 
@@ -36,14 +31,10 @@ function encodeFunctionInput(
             contractInterface.getFunction(functionName)
         ).encodeInput(functionData);
     } catch (e) {
-        throw buildError(
-            'coder.encodeFunctionInput',
-            ERROR_CODES.ABI.INVALID_DATA_TO_ENCODE,
-            `Method 'encodeFunctionInput' failed while encoding input for function '${functionName}'. ` +
-                `Input must match ABI specifications and be correctly formatted.\n` +
-                `Parameters: ${stringifyData(functionData)}.\n` +
-                `Ethers' error message: ${(e as Error).message}.`,
-            { functionName, functionData },
+        throw new InvalidAbiDataToEncodeOrDecode(
+            'coder.encodeFunctionInput()',
+            `Encoding failed: Data format is invalid. Function data does not match the expected format for ABI type encoding.`,
+            { interfaceABI, functionName, functionData },
             e
         );
     }
@@ -69,11 +60,10 @@ function decodeFunctionInput(
             contractInterface.getFunction(functionName)
         ).decodeInput(encodedFunctionInput);
     } catch (e) {
-        throw buildError(
-            'coder.decodeFunctionInput',
-            ERROR_CODES.ABI.INVALID_DATA_TO_DECODE,
-            'Decoding failed: Function input must be properly encoded per ABI specifications.',
-            { functionName },
+        throw new InvalidAbiDataToEncodeOrDecode(
+            'coder.decodeFunctionInput()',
+            'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
+            { interfaceABI, functionName, encodedFunctionInput },
             e
         );
     }
@@ -110,11 +100,10 @@ function decodeFunctionOutput(
             contractInterface.getFunction(functionName)
         ).decodeOutput(encodedFunctionOutput);
     } catch (e) {
-        throw buildError(
-            'coder.decodeFunctionOutput',
-            ERROR_CODES.ABI.INVALID_DATA_TO_DECODE,
-            'Decoding failed: Function output must be properly encoded per ABI specifications.',
-            { functionName },
+        throw new InvalidAbiDataToEncodeOrDecode(
+            'coder.decodeFunctionOutput()',
+            `Decoding failed: Data must be a valid hex string encoding a compliant ABI type.`,
+            { interfaceABI, functionName, encodedFunctionOutput },
             e
         );
     }
@@ -142,12 +131,10 @@ function encodeEventLog(
             contractInterface.getEvent(eventName)
         ).encodeEventLog(dataToEncode);
     } catch (e) {
-        // Handle errors and throw a custom error with relevant details
-        throw buildError(
-            'coder.encodeEventLog',
-            ERROR_CODES.ABI.INVALID_EVENT,
-            'Encoding failed: Event log data must align with ABI specifications for encoding.',
-            { eventName },
+        throw new InvalidAbiDataToEncodeOrDecode(
+            'coder.encodeEventLog()',
+            `Encoding failed: Data format is invalid. Event data does not match the expected format for ABI type encoding.`,
+            { interfaceABI, eventName, dataToEncode },
             e
         );
     }
@@ -175,12 +162,10 @@ function decodeEventLog(
             contractInterface.getEvent(eventName)
         ).decodeEventLog(dataToDecode);
     } catch (e) {
-        // Handle errors and throw a custom error with relevant details
-        throw buildError(
-            'coder.decodeEventLog',
-            ERROR_CODES.ABI.INVALID_EVENT,
-            'Decoding failed: Event log data must be correctly encoded per ABI specifications.',
-            { eventName },
+        throw new InvalidAbiDataToEncodeOrDecode(
+            'coder.decodeEventLog()',
+            `Decoding failed: Data must be a valid hex string encoding a compliant ABI type.`,
+            { interfaceABI, eventName, dataToDecode },
             e
         );
     }
@@ -209,11 +194,10 @@ function parseLog(
         const contractInterface = createInterface(interfaceABI);
         return contractInterface.parseLog({ topics, data });
     } catch (e) {
-        throw buildError(
-            'coder.parseLog',
-            ABI.INVALID_DATA_TO_DECODE,
-            'Decoding failed: Data and topics must be correctly formatted for ABI-compliant decoding.',
-            { data },
+        throw new InvalidAbiDataToEncodeOrDecode(
+            'coder.parseLog()',
+            `Decoding failed: Data must be a valid hex string encoding a compliant ABI type.`,
+            { interfaceABI, data, topics },
             e
         );
     }

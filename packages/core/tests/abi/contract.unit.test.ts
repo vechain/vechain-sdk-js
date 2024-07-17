@@ -7,11 +7,7 @@ import {
 } from './fixture';
 import { abi, coder, ERC721_ABI } from '../../src';
 import { ethers } from 'ethers';
-import {
-    InvalidAbiDataToDecodeError,
-    InvalidAbiDataToEncodeError,
-    InvalidAbiEventError
-} from '@vechain/sdk-errors';
+import { InvalidAbiDataToEncodeOrDecode } from '@vechain/sdk-errors';
 
 /**
  * Contract tests - encode & decode
@@ -62,7 +58,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
     test('Fail to encode a contract function input', () => {
         expect(() =>
             coder.encodeFunctionInput(contractABI, 'undefined', [123])
-        ).toThrowError(InvalidAbiDataToEncodeError);
+        ).toThrowError(InvalidAbiDataToEncodeOrDecode);
     });
 
     /**
@@ -85,7 +81,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
     test('Fail to decode a contract function input', () => {
         expect(() =>
             coder.decodeFunctionInput(contractABI, 'setValue', '0x123')
-        ).toThrowError(InvalidAbiDataToDecodeError);
+        ).toThrowError(InvalidAbiDataToEncodeOrDecode);
     });
 
     /**
@@ -113,7 +109,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
     test('Fail to encode a contract event log', () => {
         expect(() =>
             coder.encodeEventLog(contractABI, 'undefined', [])
-        ).toThrowError(InvalidAbiEventError);
+        ).toThrowError(InvalidAbiDataToEncodeOrDecode);
     });
 
     /**
@@ -176,7 +172,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
                 '0x000000000000000000000000f02f557c753edf5fcdcbfe4c',
                 '0x00000000000000000000000000000000000000000001'
             ]);
-        }).toThrowError(InvalidAbiDataToDecodeError);
+        }).toThrowError(InvalidAbiDataToEncodeOrDecode);
     });
 
     /**
@@ -188,7 +184,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
                 data: '0x123',
                 topics: []
             })
-        ).toThrowError(InvalidAbiEventError);
+        ).toThrowError(InvalidAbiDataToEncodeOrDecode);
     });
 
     /**
@@ -230,7 +226,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
                 'invalidFunctionName',
                 encodedFunctionOutput
             )
-        ).toThrowError(InvalidAbiDataToDecodeError);
+        ).toThrowError(InvalidAbiDataToEncodeOrDecode);
     });
 
     /**
@@ -251,6 +247,6 @@ describe('Contract interface for ABI encoding/decoding', () => {
                 'getValue',
                 encodedFunctionOutput + 'InvalidDataString'
             )
-        ).toThrowError(InvalidAbiDataToDecodeError);
+        ).toThrowError(InvalidAbiDataToEncodeOrDecode);
     });
 });

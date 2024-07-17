@@ -1,7 +1,7 @@
 import { type BytesLike, type ParamType } from './types';
 import { ethers } from 'ethers';
 import { fragment } from './fragment';
-import { ABI, buildError } from '@vechain/sdk-errors';
+import { InvalidAbiDataToEncodeOrDecode } from '@vechain/sdk-errors';
 
 /**
  * Default AbiCoder instance from ethers.js.
@@ -21,11 +21,15 @@ const ethersCoder = new ethers.AbiCoder();
 function encode<ValueType>(type: string | ParamType, value: ValueType): string {
     try {
         return ethersCoder.encode([type], [value]);
-    } catch {
-        throw buildError(
-            'encode',
-            ABI.INVALID_DATA_TO_ENCODE,
-            'Encoding failed: Data must be a valid ABI type with corresponding valid data.'
+    } catch (e) {
+        throw new InvalidAbiDataToEncodeOrDecode(
+            'abi.encode()',
+            'Encoding failed: Data must be a valid ABI type with corresponding valid data.',
+            {
+                type,
+                value
+            },
+            e
         );
     }
 }
@@ -51,11 +55,15 @@ function encode<ValueType>(type: string | ParamType, value: ValueType): string {
 function encodeParams(types: string[] | ParamType[], values: string[]): string {
     try {
         return ethersCoder.encode(types, values);
-    } catch {
-        throw buildError(
-            'encodeParams',
-            ABI.INVALID_DATA_TO_ENCODE,
-            'Encoding failed: Data must be a valid ABI type with corresponding valid data.'
+    } catch (e) {
+        throw new InvalidAbiDataToEncodeOrDecode(
+            'abi.encodeParams()',
+            'Encoding failed: Data must be a valid ABI type with corresponding valid data.',
+            {
+                types,
+                values
+            },
+            e
         );
     }
 }
@@ -77,11 +85,15 @@ function decode<ReturnType>(
     try {
         const decoded = ethersCoder.decode([types], data).toArray();
         return decoded[0] as ReturnType;
-    } catch {
-        throw buildError(
-            'decode',
-            ABI.INVALID_DATA_TO_DECODE,
-            'Decoding failed: Data must be a valid hex string that encodes a valid ABI type.'
+    } catch (e) {
+        throw new InvalidAbiDataToEncodeOrDecode(
+            'abi.decode()',
+            'Decoding failed: Data must be a valid ABI type with corresponding valid data.',
+            {
+                types,
+                data
+            },
+            e
         );
     }
 }

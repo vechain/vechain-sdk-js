@@ -1,10 +1,9 @@
 import { Hex, Hex0x } from '../utils';
-import { assertIsValidReturnType } from '../assertions';
 import { blake2b } from '@noble/hashes/blake2b';
-import { buildError, DATA } from '@vechain/sdk-errors';
 import { hexToBytes } from '@noble/hashes/utils';
 import { txt } from '../utils/txt/txt';
 import { type ReturnType } from './types';
+import { InvalidDataType } from '@vechain/sdk-errors';
 
 /* --- Overloaded functions start --- */
 
@@ -80,7 +79,15 @@ function blake2b256(
     data: string | Uint8Array,
     returnType: ReturnType = 'buffer'
 ): Uint8Array | string {
-    assertIsValidReturnType('blake2b256', returnType);
+    // Assert that the returnType is valid
+    if (!['hex', 'buffer'].includes(returnType)) {
+        throw new InvalidDataType(
+            'blake2b256()',
+            "Validation error: Invalid return type. Return type in hash function must be 'buffer' or 'hex'.",
+            { returnType }
+        );
+    }
+
     if (data instanceof Uint8Array) {
         const hash = blake2b256OfArray(data);
         return returnType === 'hex' ? Hex0x.of(hash) : hash;
@@ -120,14 +127,21 @@ function blake2b256OfHex(
     hex: string,
     returnType: ReturnType = 'buffer'
 ): string | Uint8Array {
-    assertIsValidReturnType('blake2b256', returnType);
+    // Assert that the returnType is valid
+    if (!['hex', 'buffer'].includes(returnType)) {
+        throw new InvalidDataType(
+            'blake2b256OfHex()',
+            "Validation error: Invalid return type. Return type in hash function must be 'buffer' or 'hex'.",
+            { returnType }
+        );
+    }
+
     try {
         const hash = blake2b256OfArray(hexToBytes(Hex.canon(hex)));
         return returnType === 'hex' ? Hex0x.of(hash) : hash;
     } catch (e) {
-        throw buildError(
+        throw new InvalidDataType(
             'blake2b256OfHex',
-            DATA.INVALID_DATA_TYPE,
             (e as Error).message,
             { hex },
             e

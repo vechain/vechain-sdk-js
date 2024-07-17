@@ -12,11 +12,9 @@ import {
 import { abi, type FormatType } from '../../src';
 import { type ethers, ParamType } from 'ethers';
 import {
-    InvalidAbiDataToDecodeError,
-    InvalidAbiDataToEncodeError,
-    InvalidAbiEventError,
-    InvalidAbiFormatTypeError,
-    InvalidAbiFunctionError,
+    InvalidAbiDataToEncodeOrDecode,
+    InvalidAbiFragment,
+    InvalidAbiSignatureFormat,
     stringifyData
 } from '@vechain/sdk-errors';
 
@@ -57,14 +55,14 @@ describe('Abi - encode & decode', () => {
         encodedDecodedInvalidValues.forEach((encodedDecodedValue) => {
             expect(() =>
                 abi.encode(encodedDecodedValue.type, encodedDecodedValue.value)
-            ).toThrowError(InvalidAbiDataToEncodeError);
+            ).toThrowError(InvalidAbiDataToEncodeOrDecode);
 
             expect(() =>
                 abi.decode(
                     encodedDecodedValue.type,
                     encodedDecodedValue.encoded
                 )
-            ).toThrowError(InvalidAbiDataToDecodeError);
+            ).toThrowError(InvalidAbiDataToEncodeOrDecode);
         });
     });
 
@@ -176,7 +174,7 @@ describe('Abi - Function & Event', () => {
                         // Create a function from the format without any problems
                         expect(
                             () => new abi.Function(functionFormat.format)
-                        ).not.toThrowError();
+                        ).not.toThrowError(InvalidAbiFragment);
 
                         // Create a function from the format without any problems
                         const myFunction = new abi.Function(
@@ -256,7 +254,7 @@ describe('Abi - Function & Event', () => {
 
             // Expect the function to throw an error with the specific message
             expect(() => abi.encodeParams(abiTypes, values)).toThrowError(
-                InvalidAbiDataToEncodeError
+                InvalidAbiDataToEncodeOrDecode
             );
         });
 
@@ -265,7 +263,7 @@ describe('Abi - Function & Event', () => {
          */
         test('Invalid function', () => {
             expect(() => new abi.Function('INVALID_VALUE')).toThrowError(
-                InvalidAbiFunctionError
+                InvalidAbiFragment
             );
         });
 
@@ -278,11 +276,11 @@ describe('Abi - Function & Event', () => {
             // Encode
             expect(() =>
                 myFunction.encodeInput([1, 2, 'INVALID'])
-            ).toThrowError(InvalidAbiDataToEncodeError);
+            ).toThrowError(InvalidAbiDataToEncodeOrDecode);
 
             // Decode
             expect(() => myFunction.decodeInput('INVALID')).toThrowError(
-                InvalidAbiDataToDecodeError
+                InvalidAbiDataToEncodeOrDecode
             );
         });
 
@@ -293,7 +291,7 @@ describe('Abi - Function & Event', () => {
             const myFunction = new abi.Function(functions[0].full);
             const invalidFormat = 'invalid' as FormatType;
             expect(() => myFunction.signature(invalidFormat)).toThrowError(
-                InvalidAbiFormatTypeError
+                InvalidAbiSignatureFormat
             );
         });
     });
@@ -392,7 +390,7 @@ describe('Abi - Function & Event', () => {
          */
         test('Invalid event', () => {
             expect(() => new abi.Event('INVALID_VALUE')).toThrowError(
-                InvalidAbiEventError
+                InvalidAbiFragment
             );
         });
 
@@ -405,7 +403,7 @@ describe('Abi - Function & Event', () => {
             // Encode
             expect(() =>
                 myEvent.encodeEventLog([1, 2, 'INVALID'])
-            ).toThrowError(InvalidAbiDataToEncodeError);
+            ).toThrowError(InvalidAbiDataToEncodeOrDecode);
 
             // Decode
             expect(() =>
@@ -413,7 +411,7 @@ describe('Abi - Function & Event', () => {
                     data: 'INVALID',
                     topics: ['INVALID_1', 'INVALID_2']
                 })
-            ).toThrowError(InvalidAbiDataToDecodeError);
+            ).toThrowError(InvalidAbiDataToEncodeOrDecode);
         });
 
         /**
@@ -423,7 +421,7 @@ describe('Abi - Function & Event', () => {
             const myEvent = new abi.Event(events[0].full);
             const invalidFormat = 'invalid' as FormatType;
             expect(() => myEvent.signature(invalidFormat)).toThrowError(
-                InvalidAbiFormatTypeError
+                InvalidAbiSignatureFormat
             );
         });
 
