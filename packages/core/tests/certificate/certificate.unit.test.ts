@@ -157,6 +157,81 @@ describe('certificate', () => {
             }).toThrowError(CertificateNotSignedError);
         });
 
+        test('invalid - illegal signer address', () => {
+            const signedCert = certificate.sign(cert, certPrivateKey);
+            const invalidCert = {
+                ...cert,
+                signer: '0xC1b8C0fFeE',
+                signature: signedCert.signature
+            };
+            expect(() => {
+                certificate.verify(invalidCert);
+            }).toThrowError(CertificateInvalidSignerError);
+        });
+
+        test('invalid - tampered purpose', () => {
+            const signedCert = certificate.sign(cert, certPrivateKey);
+            const invalidCert = {
+                ...cert,
+                purpose: 'tamper',
+                signature: signedCert.signature
+            };
+            expect(() => {
+                certificate.verify(invalidCert);
+            }).toThrowError(CertificateInvalidSignerError);
+        });
+
+        test('invalid - tampered payload', () => {
+            const signedCert = certificate.sign(cert, certPrivateKey);
+            const invalidCert = {
+                ...cert,
+                payload: {
+                    type: 'data',
+                    content: 'dummy'
+                },
+                signature: signedCert.signature
+            };
+            expect(() => {
+                certificate.verify(invalidCert);
+            }).toThrowError(CertificateInvalidSignerError);
+        });
+
+        test('invalid - tampered domain', () => {
+            const signedCert = certificate.sign(cert, certPrivateKey);
+            const invalidCert = {
+                ...cert,
+                domain: 'tampered',
+                signature: signedCert.signature
+            };
+            expect(() => {
+                certificate.verify(invalidCert);
+            }).toThrowError(CertificateInvalidSignerError);
+        });
+
+        test('invalid - tampered timestamp', () => {
+            const signedCert = certificate.sign(cert, certPrivateKey);
+            const invalidCert = {
+                ...cert,
+                timestamp: cert.timestamp + 1,
+                signature: signedCert.signature
+            };
+            expect(() => {
+                certificate.verify(invalidCert);
+            }).toThrowError(CertificateInvalidSignerError);
+        });
+
+        test('valid - additional property', () => {
+            const signedCert = certificate.sign(cert, certPrivateKey);
+            const ectendedCert = {
+                ...cert,
+                extendedProperty: 'extended property',
+                signature: signedCert.signature
+            };
+            expect(() => {
+                certificate.verify(ectendedCert);
+            }).not.toThrowError();
+        });
+
         test('valid - happy path', () => {
             const signedCert = certificate.sign(cert, certPrivateKey);
             expect(() => {
