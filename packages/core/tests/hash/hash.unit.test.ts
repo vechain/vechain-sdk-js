@@ -1,5 +1,4 @@
 import { Buffer } from 'buffer';
-import { InvalidDataReturnTypeError } from '@vechain/sdk-errors';
 import { ZERO_BYTES } from '../../src';
 import { bytesToHex } from '@noble/ciphers/utils';
 import { cert } from '../certificate/fixture';
@@ -7,6 +6,7 @@ import { describe, expect, test } from '@jest/globals';
 import { ethers } from 'ethers';
 import { hashFunctionsToTest } from './fixture';
 import { txt } from '../../src/utils/txt/txt';
+import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
  * Test hash functions
@@ -156,7 +156,7 @@ describe('Hash', () => {
                 expect(() =>
                     // @ts-expect-error: Invalid return type
                     hashFunction.hashFunction('hello world', 'foo')
-                ).toThrowError(InvalidDataReturnTypeError);
+                ).toThrowError(InvalidDataType);
             });
         });
     });

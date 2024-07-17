@@ -1,12 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
-import { signer, delegator, transactions } from './fixture';
+import { delegator, signer, transactions } from './fixture';
 import { Hex, Transaction, TransactionHandler } from '../../src';
 import {
     InvalidAddressError,
     InvalidSecp256k1SignatureError,
     TransactionBodyError,
     TransactionDelegationError,
-    TransactionNotSignedError
+    UnavailableTransactionField
 } from '@vechain/sdk-errors';
 
 /**
@@ -36,12 +36,12 @@ describe('Transaction', () => {
 
                 // Get id from unsigned transaction (should throw error)
                 expect(() => unsignedTransaction.id).toThrowError(
-                    TransactionNotSignedError
+                    UnavailableTransactionField
                 );
 
                 // Get origin form unsigned transaction (should throw error)
                 expect(() => unsignedTransaction.origin).toThrowError(
-                    TransactionNotSignedError
+                    UnavailableTransactionField
                 );
 
                 // Get delegator form unsigned and undelegated transaction (should throw error)
@@ -124,17 +124,17 @@ describe('Transaction', () => {
 
                 // Get id from unsigned transaction (should throw error)
                 expect(() => unsignedTransaction.id).toThrowError(
-                    TransactionNotSignedError
+                    UnavailableTransactionField
                 );
 
                 // Get origin form unsigned transaction (should throw error)
                 expect(() => unsignedTransaction.origin).toThrowError(
-                    TransactionNotSignedError
+                    UnavailableTransactionField
                 );
 
                 // Get delegator form unsigned transaction (should throw error)
                 expect(() => unsignedTransaction.delegator).toThrowError(
-                    TransactionNotSignedError
+                    UnavailableTransactionField
                 );
 
                 // Encoding

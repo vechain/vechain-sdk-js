@@ -1,4 +1,4 @@
-import { describe, test, expect } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import { secp256k1, ZERO_BYTES } from '../../src';
 import {
     invalidMessageHashes,
@@ -11,8 +11,8 @@ import {
     validPrivateKeys
 } from './fixture';
 import {
-    InvalidSecp256k1MessageHashError,
-    InvalidSecp256k1PrivateKeyError,
+    InvalidSecp256k1MessageHash,
+    InvalidSecp256k1PrivateKey,
     InvalidSecp256k1SignatureError,
     InvalidSecp256k1SignatureRecoveryError
 } from '@vechain/sdk-errors';
@@ -52,7 +52,7 @@ describe('secp256k1', () => {
         test('secp256k1 - derivePublicKey - error', () => {
             expect(() =>
                 secp256k1.derivePublicKey(ZERO_BYTES(32))
-            ).toThrowError(InvalidSecp256k1PrivateKeyError);
+            ).toThrowError(InvalidSecp256k1PrivateKey);
         });
     });
 
@@ -121,7 +121,7 @@ describe('secp256k1', () => {
                     Buffer.from('some_invalid_stuff', 'hex'),
                     privateKey
                 )
-            ).toThrowError(InvalidSecp256k1MessageHashError);
+            ).toThrowError(InvalidSecp256k1MessageHash);
         });
 
         test('secp256k1 - sign - failure - invalid private key', () => {
@@ -133,7 +133,7 @@ describe('secp256k1', () => {
                         'hex'
                     )
                 )
-            ).toThrowError(InvalidSecp256k1PrivateKeyError);
+            ).toThrowError(InvalidSecp256k1PrivateKey);
         });
     });
 
@@ -162,7 +162,7 @@ describe('secp256k1', () => {
                     Buffer.from('some_invalid_stuff', 'hex'),
                     signature
                 )
-            ).toThrowError(InvalidSecp256k1MessageHashError);
+            ).toThrowError(InvalidSecp256k1MessageHash);
         });
 
         test('secp256k1 - recover - invalid signature', () => {

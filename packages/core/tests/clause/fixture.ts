@@ -2,7 +2,8 @@
 import { coder, ERC721_ABI, unitsUtils, VTHO_ADDRESS } from '../../src';
 import { generateRandomValidAddress } from '../fixture';
 import {
-    InvalidAbiDataToEncodeError,
+    InvalidAbiDataToEncodeOrDecode,
+    InvalidDataType,
     InvalidDataTypeError
 } from '@vechain/sdk-errors';
 
@@ -138,25 +139,25 @@ const invalidTransferTokenClausesTestCases = [
         tokenAddress: VTHO_ADDRESS,
         recipientAddress,
         amount: Number(unitsUtils.parseUnits('-1', 2)),
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     },
     {
         tokenAddress: VTHO_ADDRESS,
         recipientAddress,
         amount: -1,
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     },
     {
         tokenAddress: VTHO_ADDRESS,
         recipientAddress,
         amount: '1,2',
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     },
     {
         tokenAddress: VTHO_ADDRESS,
         recipientAddress,
         amount: 1.7,
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     }
 ];
 
@@ -254,14 +255,14 @@ const invalidNFTtestCases = [
         senderAddress,
         recipientAddress,
         tokenId: '-654',
-        expectedError: InvalidAbiDataToEncodeError
+        expectedError: InvalidAbiDataToEncodeOrDecode
     },
     {
         contractAddress,
         senderAddress,
         recipientAddress: '',
         tokenId: '0x00001',
-        expectedError: InvalidAbiDataToEncodeError
+        expectedError: InvalidAbiDataToEncodeOrDecode
     },
     {
         contractAddress: '',
@@ -279,27 +280,27 @@ const invalidTransferVETtestCases = [
     {
         recipientAddress,
         amount: Number(unitsUtils.parseUnits('-1', 2)),
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     },
     {
         recipientAddress,
         amount: -1,
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     },
     {
         recipientAddress,
         amount: '1,2',
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     },
     {
         recipientAddress,
         amount: '1.2',
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     },
     {
         recipientAddress,
         amount: 1.7,
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     }
 ];
 

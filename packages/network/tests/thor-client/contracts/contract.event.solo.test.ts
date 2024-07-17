@@ -11,7 +11,7 @@ import {
     eventExampleAbi,
     eventExampleBytecode
 } from './fixture';
-import { InvalidAbiEventError } from '@vechain/sdk-errors';
+import { InvalidAbiFragment } from '@vechain/sdk-errors';
 import { ERC20_ABI } from '@vechain/sdk-core';
 
 /**
@@ -266,8 +266,8 @@ describe('ThorClient - ERC20 Contracts', () => {
                         }
                     ]
                 })
-        ).rejects.toThrowError(InvalidAbiEventError);
-    }, 30000); // Set a timeout of 10000ms for this test
+        ).rejects.toThrowError(InvalidAbiFragment);
+    }, 30000);
 
     /**
      * Tests the listening to ERC20 contract operations using a blockchain client.

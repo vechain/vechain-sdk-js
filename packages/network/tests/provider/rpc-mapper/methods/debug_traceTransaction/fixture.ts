@@ -1,4 +1,4 @@
-import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
+import { InvalidDataType, ProviderRpcError } from '@vechain/sdk-errors';
 
 /**
  * debug_traceTransaction positive cases fixture.
@@ -126,7 +126,7 @@ const debugTraceTransactionNegativeCasesFixtureTestnet = [
                     tracerConfig: { onlyTopCall: true }
                 }
             ],
-            expectedError: InvalidDataTypeError
+            expectedError: InvalidDataType
         }
     },
     // Transaction not exists

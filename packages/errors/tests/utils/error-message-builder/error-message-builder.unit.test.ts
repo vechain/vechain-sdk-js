@@ -3,6 +3,12 @@ import { buildErrorMessage } from '../../../src';
 
 /**
  * Error message builder test
+ *
+ * ----- START: TEMPORARY COMMENT -----
+ * Remove previous tests when the new function is implemented
+ * ----- END: TEMPORARY COMMENT -----
+ *
+ *
  * @group unit/errors/error-message-builder
  */
 describe('Error message builder test', () => {

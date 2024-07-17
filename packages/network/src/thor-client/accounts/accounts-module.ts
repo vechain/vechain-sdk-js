@@ -1,4 +1,4 @@
-import { assert, DATA } from '@vechain/sdk-errors';
+import { assert, DATA, InvalidDataType } from '@vechain/sdk-errors';
 import { buildQuery, thorest } from '../../utils';
 import {
     type AccountDetail,
@@ -6,11 +6,7 @@ import {
     type ResponseBytecode,
     type ResponseStorage
 } from './types';
-import {
-    assertIsAddress,
-    assertIsRevisionForAccount,
-    Hex0x
-} from '@vechain/sdk-core';
+import { addressUtils, Hex0x, revisionUtils } from '@vechain/sdk-core';
 import { type ThorClient } from '../thor-client';
 
 /**
@@ -39,9 +35,27 @@ class AccountsModule {
         address: string,
         options?: AccountInputOptions
     ): Promise<AccountDetail> {
-        assertIsAddress('getAccount', address);
+        // Invalid address
+        if (!addressUtils.isAddress(address)) {
+            throw new InvalidDataType(
+                'AccountsModule.getAccount()',
+                'Invalid address. The address must be a valid VeChainThor address.',
+                { address }
+            );
+        }
 
-        assertIsRevisionForAccount('getAccount', options?.revision);
+        // Check if the revision is a valid block number or ID
+        if (
+            options?.revision !== null &&
+            options?.revision !== undefined &&
+            !revisionUtils.isRevisionBlock(options.revision)
+        ) {
+            throw new InvalidDataType(
+                'AccountsModule.getAccount()',
+                'Invalid revision. The revision must be a string representing a block number or block id (also "best" is accepted which represents the best block & "finalized" for the finalized block).',
+                { revision: options?.revision }
+            );
+        }
 
         return (await this.thor.httpClient.http(
             'GET',
@@ -66,9 +80,27 @@ class AccountsModule {
         address: string,
         options?: AccountInputOptions
     ): Promise<string> {
-        assertIsAddress('getBytecode', address);
+        // Invalid address
+        if (!addressUtils.isAddress(address)) {
+            throw new InvalidDataType(
+                'AccountsModule.getBytecode()',
+                'Invalid address. The address must be a valid VeChainThor address.',
+                { address }
+            );
+        }
 
-        assertIsRevisionForAccount('getBytecode', options?.revision);
+        // Check if the revision is a valid block number or ID
+        if (
+            options?.revision !== null &&
+            options?.revision !== undefined &&
+            !revisionUtils.isRevisionBlock(options.revision)
+        ) {
+            throw new InvalidDataType(
+                'AccountsModule.getBytecode()',
+                'Invalid revision. The revision must be a string representing a block number or block id (also "best" is accepted which represents the best block & "finalized" for the finalized block).',
+                { revision: options?.revision }
+            );
+        }
 
         const result = (await this.thor.httpClient.http(
             'GET',
@@ -97,9 +129,27 @@ class AccountsModule {
         position: string,
         options?: AccountInputOptions
     ): Promise<string> {
-        assertIsAddress('getStorageAt', address);
+        // Invalid address
+        if (!addressUtils.isAddress(address)) {
+            throw new InvalidDataType(
+                'AccountsModule.getStorageAt()',
+                'Invalid address. The address must be a valid VeChainThor address.',
+                { address }
+            );
+        }
 
-        assertIsRevisionForAccount('getStorageAt', options?.revision);
+        // Check if the revision is a valid block number or ID
+        if (
+            options?.revision !== null &&
+            options?.revision !== undefined &&
+            !revisionUtils.isRevisionBlock(options.revision)
+        ) {
+            throw new InvalidDataType(
+                'AccountsModule.getStorageAt()',
+                'Invalid revision. The revision must be a string representing a block number or block id (also "best" is accepted which represents the best block & "finalized" for the finalized block).',
+                { revision: options?.revision }
+            );
+        }
 
         // The position represents a slot in the VM storage. Each slot is 32 bytes.
         assert(

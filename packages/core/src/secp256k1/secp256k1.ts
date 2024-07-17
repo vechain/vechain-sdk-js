@@ -1,12 +1,13 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { HEX, SIGNATURE_LENGTH } from '../utils';
-import { assert, SECP256K1 } from '@vechain/sdk-errors';
+import { Hex, SIGNATURE_LENGTH } from '../utils';
+import {
+    assert,
+    InvalidSecp256k1MessageHash,
+    InvalidSecp256k1PrivateKey,
+    SECP256K1
+} from '@vechain/sdk-errors';
 import { randomBytes as _randomBytes } from '@noble/hashes/utils';
 import { secp256k1 as n_secp256k1 } from '@noble/curves/secp256k1';
-import {
-    assertIsValidPrivateKey,
-    assertIsValidSecp256k1MessageHash
-} from '../assertions';
 
 /**
  * Compresses a public key.
@@ -55,11 +56,14 @@ function derivePublicKey(
     privateKey: Uint8Array,
     isCompressed: boolean = true
 ): Uint8Array {
-    assertIsValidPrivateKey(
-        'secp256k1.derivePublicKey',
-        privateKey,
-        isValidPrivateKey
-    );
+    // Check if the private key is valid.
+    if (!isValidPrivateKey(privateKey)) {
+        throw new InvalidSecp256k1PrivateKey(
+            'secp256k1.derivePublicKey()',
+            'Invalid private key given as input. Ensure it is a valid 32-byte secp256k1 private key.',
+            undefined
+        );
+    }
     return n_secp256k1.getPublicKey(privateKey, isCompressed);
 }
 
@@ -93,7 +97,7 @@ function inflatePublicKey(publicKey: Uint8Array): Uint8Array {
         // To inflate.
         const x = publicKey.slice(0, 33);
         const p = n_secp256k1.ProjectivePoint.fromAffine(
-            n_secp256k1.ProjectivePoint.fromHex(HEX.of(x).hex).toAffine()
+            n_secp256k1.ProjectivePoint.fromHex(Hex.of(x)).toAffine()
         );
         return p.toRawBytes(false);
     } else {
@@ -168,11 +172,14 @@ function randomBytes(bytesLength?: number | undefined): Uint8Array {
  * @see assertIsValidSecp256k1MessageHash
  */
 function recover(messageHash: Uint8Array, sig: Uint8Array): Uint8Array {
-    assertIsValidSecp256k1MessageHash(
-        'secp256k1.recover',
-        messageHash,
-        isValidMessageHash
-    );
+    // Check if the message hash is valid.
+    if (!isValidMessageHash(messageHash)) {
+        throw new InvalidSecp256k1MessageHash(
+            'secp256k1.sign()',
+            'Invalid message hash given as input. Ensure it is a valid 32-byte message hash.',
+            { messageHash }
+        );
+    }
 
     assert(
         'secp256k1.recover',
@@ -215,12 +222,24 @@ function recover(messageHash: Uint8Array, sig: Uint8Array): Uint8Array {
  * @see assertIsValidPrivateKey
  */
 function sign(messageHash: Uint8Array, privateKey: Uint8Array): Uint8Array {
-    assertIsValidSecp256k1MessageHash(
-        'secp256k1.sign',
-        messageHash,
-        isValidMessageHash
-    );
-    assertIsValidPrivateKey('secp256k1.sign', privateKey, isValidPrivateKey);
+    // Check if the message hash is valid.
+    if (!isValidMessageHash(messageHash)) {
+        throw new InvalidSecp256k1MessageHash(
+            'secp256k1.sign()',
+            'Invalid message hash given as input. Ensure it is a valid 32-byte message hash.',
+            { messageHash }
+        );
+    }
+
+    // Check if the private key is valid.
+    if (!isValidPrivateKey(privateKey)) {
+        throw new InvalidSecp256k1PrivateKey(
+            'secp256k1.sign()',
+            'Invalid private key given as input. Ensure it is a valid 32-byte secp256k1 private key.',
+            undefined
+        );
+    }
+
     const sig = n_secp256k1.sign(messageHash, privateKey);
     return n_utils.concatBytes(
         n_utils.numberToBytesBE(sig.r, 32),

@@ -1,12 +1,7 @@
 /* eslint-disable */
 
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import {
-    soloUrl,
-    TEST_ACCOUNTS,
-    TESTING_CONTRACT_ABI,
-    TESTING_CONTRACT_ADDRESS
-} from '../../fixture';
+import { soloUrl, TEST_ACCOUNTS, TESTING_CONTRACT_ABI, TESTING_CONTRACT_ADDRESS } from '../../fixture';
 import {
     contractBytecode,
     deployedContractAbi,
@@ -22,12 +17,7 @@ import {
     testingContractNegativeTestCases,
     testingContractTestCases
 } from './fixture';
-import {
-    addressUtils,
-    coder,
-    type DeployParams,
-    type FunctionFragment
-} from '@vechain/sdk-core';
+import { addressUtils, coder, type DeployParams, type FunctionFragment } from '@vechain/sdk-core';
 import {
     Contract,
     type ContractFactory,
@@ -37,10 +27,7 @@ import {
     VeChainProvider,
     type VeChainSigner
 } from '../../../src';
-import {
-    ContractDeploymentFailedError,
-    TransactionMissingPrivateKeyError
-} from '@vechain/sdk-errors';
+import { ContractDeploymentFailedError, TransactionMissingPrivateKeyError } from '@vechain/sdk-errors';
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.
@@ -198,7 +185,7 @@ describe('ThorClient - Contracts', () => {
      * Test case for retrieving the bytecode of a deployed smart contract.
      */
     test('get Contract Bytecode', async () => {
-        // Create a contract factory that is already deploying the example contract
+        // Create a contract factory already deploying the example contract
         const factory = await createExampleContractFactory();
 
         // Wait for the deployment to complete and obtain the contract instance

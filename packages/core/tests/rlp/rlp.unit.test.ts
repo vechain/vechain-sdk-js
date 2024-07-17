@@ -33,7 +33,7 @@ import {
     numericKindDecodeTestCases,
     numericKindEncodeTestCases
 } from './rlp.fixture';
-import { InvalidRLPError } from '@vechain/sdk-errors';
+import { InvalidRLP } from '@vechain/sdk-errors';
 
 /**
  * Test suite for RLP_CODER encoding/decoding functionality
@@ -72,7 +72,7 @@ describe('RLP', () => {
                         expect(() => {
                             // @ts-expect-error - invalid input
                             kind.buffer(data, '').decode();
-                        }).toThrowError(InvalidRLPError);
+                        }).toThrowError(InvalidRLP);
                     });
                 }
             );
@@ -100,7 +100,7 @@ describe('RLP', () => {
                         expect(() => {
                             // @ts-expect-error - invalid input
                             kind.data(data, '').encode();
-                        }).toThrowError(InvalidRLPError);
+                        }).toThrowError(InvalidRLP);
                     });
                 }
             );
@@ -122,7 +122,7 @@ describe('RLP', () => {
                     test(description, () => {
                         expect(() => {
                             kind.buffer(data, '').decode();
-                        }).toThrowError(InvalidRLPError);
+                        }).toThrowError(InvalidRLP);
                     });
                 }
             );
@@ -151,7 +151,7 @@ describe('RLP', () => {
                         expect(() => {
                             // @ts-expect-error - invalid input
                             kind.data(data, '').encode();
-                        }).toThrowError(InvalidRLPError);
+                        }).toThrowError(InvalidRLP);
                     });
                 }
             );
@@ -174,7 +174,7 @@ describe('RLP', () => {
                         expect(() => {
                             // @ts-expect-error - invalid input
                             kind.buffer(data, '').decode();
-                        }).toThrowError(InvalidRLPError);
+                        }).toThrowError(InvalidRLP);
                     });
                 }
             );
@@ -203,7 +203,7 @@ describe('RLP', () => {
                         expect(() => {
                             // @ts-expect-error - invalid input
                             kind.data(data, '').encode();
-                        }).toThrowError(InvalidRLPError);
+                        }).toThrowError(InvalidRLP);
                     });
                 }
             );
@@ -227,7 +227,7 @@ describe('RLP', () => {
                         expect(() => {
                             // @ts-expect-error - invalid input
                             kind.buffer(data, '').decode();
-                        }).toThrowError(InvalidRLPError);
+                        }).toThrowError(InvalidRLP);
                     });
                 }
             );
@@ -382,7 +382,7 @@ describe('RLP', () => {
 
                         expect(() => {
                             rlp.encodeObject(data);
-                        }).toThrowError(InvalidRLPError);
+                        }).toThrowError(InvalidRLP);
                     });
                 }
             );
@@ -477,7 +477,7 @@ describe('RLP', () => {
 
                         expect(() => {
                             rlp.decodeObject(data);
-                        }).toThrowError(InvalidRLPError);
+                        }).toThrowError(InvalidRLP);
                     });
                 }
             );
