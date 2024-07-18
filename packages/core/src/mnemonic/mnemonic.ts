@@ -2,7 +2,7 @@ import * as bip39 from '@scure/bip39';
 import { HDNode } from '../hdnode';
 import { MNEMONIC_WORDLIST_ALLOWED_SIZES } from '../utils';
 import { addressUtils } from '../address-utils';
-import { assert, buildError, HDNODE } from '@vechain/sdk-errors';
+import { assert, HDNODE, InvalidHDNode } from '@vechain/sdk-errors';
 import { secp256k1 } from '../secp256k1';
 import { wordlist } from '@scure/bip39/wordlists/english';
 import {
@@ -42,11 +42,10 @@ function deriveAddress(words: string[], path: string = 'm/0'): string {
             root.derive(path).publicKey as Uint8Array
         );
     } catch (error) {
-        throw buildError(
-            'HDNode.fromMnemonic',
-            HDNODE.INVALID_HDNODE_DERIVATION_PATH,
-            'Invalid derivation path.',
-            { path },
+        throw new InvalidHDNode(
+            'mnemonic.deriveAddress()',
+            'Invalid derivation path given as input.',
+            { derivationPath: path },
             error
         );
     }
@@ -80,11 +79,10 @@ function derivePrivateKey(words: string[], path: string = 'm/0'): Uint8Array {
         // Derived from root, private key is always available.
         return root.derive(path).privateKey as Uint8Array;
     } catch (error) {
-        throw buildError(
-            'HDNode.fromMnemonic',
-            HDNODE.INVALID_HDNODE_DERIVATION_PATH,
-            'Invalid derivation path.',
-            { path },
+        throw new InvalidHDNode(
+            'mnemonic.derivePrivateKey()',
+            'Invalid derivation path given as input.',
+            { derivationPath: path },
             error
         );
     }

@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 import { type Keystore, type KeystoreAccount } from '../../types';
 import {
     assert,
-    buildError,
+    InvalidDataType,
     KEYSTORE,
     stringifyData
 } from '@vechain/sdk-errors';
@@ -85,15 +85,12 @@ async function decrypt(
             password
         )) as KeystoreAccount;
     } catch (e) {
-        throw buildError(
-            'keystore.decrypt',
-            KEYSTORE.INVALID_PASSWORD,
+        throw new InvalidDataType(
+            'keystore.decrypt()',
             'Decryption failed: Invalid Password for the given keystore.',
             {
-                keystore,
-                password
-            },
-            e
+                keystore
+            }
         );
     }
 }

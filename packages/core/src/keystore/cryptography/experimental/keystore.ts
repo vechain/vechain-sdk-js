@@ -4,7 +4,12 @@
  * encryption, decryption, and validation functionality.
  */
 import * as n_utils from '@noble/curves/abstract/utils';
-import { assert, KEYSTORE, stringifyData } from '@vechain/sdk-errors';
+import {
+    assert,
+    InvalidDataType,
+    KEYSTORE,
+    stringifyData
+} from '@vechain/sdk-errors';
 import { ctr } from '@noble/ciphers/aes';
 import { scrypt } from '@noble/hashes/scrypt';
 import { type Keystore, type KeystoreAccount } from '../../types';
@@ -502,17 +507,20 @@ function decryptKeystore(
             dkLen: kdf.dkLen
         });
         const ciphertext = n_utils.hexToBytes(keystore.crypto.ciphertext);
-        assert(
-            'keystore.decrypt',
-            keystore.crypto.mac ===
-                Hex.of(
-                    keccak256(
-                        n_utils.concatBytes(key.slice(16, 32), ciphertext)
-                    )
-                ),
-            KEYSTORE.INVALID_PASSWORD,
-            'Decryption failed: invalid password for the given keystore.'
-        );
+        if (
+            keystore.crypto.mac !==
+            Hex.of(
+                keccak256(n_utils.concatBytes(key.slice(16, 32), ciphertext))
+            )
+        ) {
+            throw new InvalidDataType(
+                '(EXPERIMENTAL) keystore.decrypt()',
+                'Decryption failed: Invalid Password for the given keystore.',
+                {
+                    keystore
+                }
+            );
+        }
         const privateKey = ctr(
             key.slice(0, 16),
             n_utils.hexToBytes(keystore.crypto.cipherparams.iv)

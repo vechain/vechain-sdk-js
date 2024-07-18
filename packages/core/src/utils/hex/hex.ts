@@ -1,5 +1,5 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { assert, buildError, DATA } from '@vechain/sdk-errors';
+import { assert, DATA, InvalidDataType } from '@vechain/sdk-errors';
 import { randomBytes } from '@noble/hashes/utils';
 import { type HexString } from './types';
 
@@ -342,12 +342,9 @@ const Hex = {
         } else if (REGEX_FOR_OPTIONAL_0X_PREFIX_HEX.test(exp)) {
             result = exp.toLowerCase();
         } else {
-            throw buildError(
-                `Hex.canon`,
-                DATA.INVALID_DATA_TYPE,
-                ErrorMessage.NOT_HEX,
-                { exp }
-            );
+            throw new InvalidDataType('Hex.canon()', ErrorMessage.NOT_HEX, {
+                exp
+            });
         }
         if (typeof bytes !== 'undefined') {
             assert(

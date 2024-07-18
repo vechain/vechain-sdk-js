@@ -1,7 +1,7 @@
 import * as n_utils from '@noble/curves/abstract/utils';
 import { BigNumber } from 'bignumber.js';
 import { Hex, Hex0x } from '../hex';
-import { assert, buildError, DATA } from '@vechain/sdk-errors';
+import { assert, DATA, InvalidDataType } from '@vechain/sdk-errors';
 import { type WEI_UNITS } from './types';
 
 /**
@@ -133,11 +133,12 @@ function digitsOfUnit(digitsOrUnit: bigint | number | WEI_UNITS): number {
             const index = WEI_UNIT_NAMES.indexOf(digitsOrUnit);
             if (index < 0) {
                 // assert method fails to serialize bigint.
-                throw buildError(
-                    'unitUtils.digitOfUnit',
-                    DATA.INVALID_DATA_TYPE,
-                    'Invalid unit name.',
-                    { digitsOrUnit }
+                throw new InvalidDataType(
+                    'unitUtils.digitOfUnit()',
+                    "Invalid unit name. Valid unit names are 'wei','kwei', 'mwei', 'gwei', 'szabo', 'finney', 'ether'",
+                    {
+                        digitsOrUnit
+                    }
                 );
             }
             digits = index * 3;
@@ -203,10 +204,9 @@ function formatUnits(
         }
         return result.toFixed(fixedDecimals);
     } catch (e) {
-        throw buildError(
-            'unitsUtils.formatUnits',
-            DATA.INVALID_DATA_TYPE,
-            (e as Error).message,
+        throw new InvalidDataType(
+            'unitsUtils.formatUnits()',
+            `Unable to format units: ${(e as Error).message}`,
             { value, digitsOrUnit: decimalsOrUnit },
             e
         );
@@ -274,10 +274,9 @@ function parseUnits(
         const integerDigits = digitsOfIntegerPart(result);
         return BigInt(result.toPrecision(fractionDigits + integerDigits));
     } catch (e) {
-        throw buildError(
-            'unitsUtils.parseUnits',
-            DATA.INVALID_DATA_TYPE,
-            (e as Error).message,
+        throw new InvalidDataType(
+            'unitsUtils.parseUnits()',
+            `Unable to format units: ${(e as Error).message}`,
             { value, decimalsOrUnit: digitsOrUnit },
             e
         );

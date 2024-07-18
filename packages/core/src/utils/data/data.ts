@@ -1,8 +1,8 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { Hex0x, Hex } from '../hex';
+import { Hex, Hex0x } from '../hex';
 import { INTEGER_REGEX, NUMERIC_REGEX, ZERO_BYTES } from '../const';
 import { txt } from '../txt/txt';
-import { assert, buildError, DATA } from '@vechain/sdk-errors';
+import { assert, DATA, InvalidDataType } from '@vechain/sdk-errors';
 
 /**
  * Decodes a hexadecimal string representing a bytes32 value into a string.
@@ -69,9 +69,8 @@ const encodeBytes32String = (
             ? Hex0x.of(n_utils.concatBytes(pad, valueInBytes))
             : Hex0x.of(n_utils.concatBytes(valueInBytes, pad));
     } catch (e) {
-        throw buildError(
-            'dataUtils.encodeBytes32String',
-            DATA.INVALID_DATA_TYPE,
+        throw new InvalidDataType(
+            'dataUtils.encodeBytes32String()',
             `Failed to encode value ${value} to bytes32 string.`,
             { value },
             e
