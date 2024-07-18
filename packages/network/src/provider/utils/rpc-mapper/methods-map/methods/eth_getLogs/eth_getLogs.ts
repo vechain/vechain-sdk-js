@@ -25,7 +25,6 @@ import {
  * @param params - The standard array of rpc call parameters.
  *
  * @returns An array of log objects, or an empty array if nothing has changed since last poll
- *
  */
 const ethGetLogs = async (
     thorClient: ThorClient,
@@ -44,6 +43,9 @@ const ethGetLogs = async (
             `\tblockhash: [optional] Restricts the logs returned to the single block referenced in the 32-byte hash blockHash. Using blockHash is equivalent to setting fromBlock and toBlock to the block number referenced in the blockHash. If blockHash is present in in the filter criteria, then neither fromBlock nor toBlock are allowed.` +
             `}`
     );
+
+    // Block max limit
+    const MAX_LIMIT = 1000;
 
     // Input params
     const [filterOptions] = params as [
@@ -87,7 +89,7 @@ const ethGetLogs = async (
             order: 'asc',
             options: {
                 offset: 0,
-                limit: 1000
+                limit: MAX_LIMIT
             }
         });
 
