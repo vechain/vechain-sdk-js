@@ -5,7 +5,7 @@ import { VechainSDKError } from '../sdk-error';
  *
  * This error is thrown when an invalid private key is detected.
  *
- * @note Data is null because for security reasons, the private key should not be logged!
+ * @note Data is undefined because for security reasons, the private key should not be logged!
  */
 class InvalidSecp256k1PrivateKey extends VechainSDKError<undefined> {}
 

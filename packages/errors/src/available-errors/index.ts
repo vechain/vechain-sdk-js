@@ -1,6 +1,7 @@
 export * from './abi';
 export * from './address';
 export * from './data';
+export * from './hdnode';
 export * from './rlp';
 export * from './secp256k1';
 export * from './transaction';
