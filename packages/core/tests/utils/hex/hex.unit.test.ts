@@ -5,7 +5,7 @@ import {
     prefixedAndUnprefixedStrings,
     validThorIDs
 } from '../data/fixture';
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { InvalidDataType, InvalidDataTypeError } from '@vechain/sdk-errors';
 
 /**
  * Text Hex representation from TS types prefixed with `0x`.
@@ -45,7 +45,7 @@ describe('Hex0x', () => {
     });
 
     test('canon - not hex', () => {
-        expect(() => Hex0x.canon('defg', 1)).toThrowError(InvalidDataTypeError);
+        expect(() => Hex0x.canon('defg', 1)).toThrowError(InvalidDataType);
     });
 
     test('canon - not fit', () => {

@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
-import { InvalidDataTypeError } from '../../../../errors';
 import { describe, expect, test } from '@jest/globals';
 import { unitsUtils, type WEI_UNITS } from '../../../src';
+import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
  * @group unit/utils-units
@@ -11,14 +11,14 @@ describe('unitsUtils', () => {
         test('invalid - not a number - decimal', () => {
             const value = 'c0ffee';
             expect(() => unitsUtils.formatUnits(value)).toThrowError(
-                InvalidDataTypeError
+                InvalidDataType
             );
         });
 
         test('invalid - not a number - hex', () => {
             const value = '0xcOffee';
             expect(() => unitsUtils.formatUnits(value)).toThrowError(
-                InvalidDataTypeError
+                InvalidDataType
             );
         });
 
@@ -26,7 +26,7 @@ describe('unitsUtils', () => {
             const value = 1;
             const unit = 'bitcoin' as WEI_UNITS;
             expect(() => unitsUtils.formatUnits(value, unit)).toThrowError(
-                InvalidDataTypeError
+                InvalidDataType
             );
         });
 
@@ -34,7 +34,7 @@ describe('unitsUtils', () => {
             const value = 1;
             const decimals = -1;
             expect(() => unitsUtils.formatUnits(value, decimals)).toThrowError(
-                InvalidDataTypeError
+                InvalidDataType
             );
         });
 
@@ -184,14 +184,14 @@ describe('unitsUtils', () => {
         test('invalid - not a number - decimal', () => {
             const value = 'c0fee';
             expect(() => unitsUtils.parseUnits(value)).toThrowError(
-                InvalidDataTypeError
+                InvalidDataType
             );
         });
 
         test('invalid - not a number - hex', () => {
             const value = '0xcOfee';
             expect(() => unitsUtils.parseUnits(value)).toThrowError(
-                InvalidDataTypeError
+                InvalidDataType
             );
         });
 
@@ -199,7 +199,7 @@ describe('unitsUtils', () => {
             const exp = '1';
             const decimals = 81;
             expect(() => unitsUtils.parseUnits(exp, decimals)).toThrowError(
-                InvalidDataTypeError
+                InvalidDataType
             );
         });
 

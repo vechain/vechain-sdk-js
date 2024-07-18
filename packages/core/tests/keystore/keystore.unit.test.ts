@@ -8,8 +8,8 @@ import {
 } from '../../src';
 import { encryptionPassword } from './fixture';
 import {
+    InvalidDataType,
     InvalidKeystoreError,
-    InvalidKeystorePasswordError,
     InvalidSecp256k1PrivateKey,
     stringifyData
 } from '@vechain/sdk-errors';
@@ -109,7 +109,7 @@ import {
                         myKeystore,
                         `WRONG_${encryptionPassword}`
                     )
-            ).rejects.toThrowError(InvalidKeystorePasswordError);
+            ).rejects.toThrowError(InvalidDataType);
         });
 
         /**

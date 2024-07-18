@@ -1,4 +1,4 @@
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { InvalidDataType, InvalidDataTypeError } from '@vechain/sdk-errors';
 
 /**
  * Valid hex strings.
@@ -221,12 +221,12 @@ const encodeBytes32StringTestCases: Array<{
 const invalidEncodeBytes32StringTestCases: Array<{
     value: string;
     zeroPadding?: 'left' | 'right';
-    expectedError: typeof InvalidDataTypeError;
+    expectedError: typeof InvalidDataType;
 }> = [
     {
         value: 'Too-many-characters-Too-many-characters-Too-many-characters-Too-many-characters-Too-many-characters-Too-many-characters-Too-many-characters',
         zeroPadding: 'left',
-        expectedError: InvalidDataTypeError // value exceeds 32 bytes
+        expectedError: InvalidDataType // value exceeds 32 bytes
     }
 ];
 

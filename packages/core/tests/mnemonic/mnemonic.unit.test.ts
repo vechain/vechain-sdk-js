@@ -1,5 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
-import { Hex, mnemonic } from '../../src';
+import {
+    addressUtils,
+    Hex,
+    mnemonic,
+    MNEMONIC_WORDLIST_ALLOWED_SIZES,
+    secp256k1,
+    type WordlistSizeType
+} from '../../src';
 import {
     customRandomGeneratorWithXor,
     derivationPaths,
@@ -7,13 +14,7 @@ import {
     wrongDerivationPath
 } from './fixture';
 import {
-    addressUtils,
-    MNEMONIC_WORDLIST_ALLOWED_SIZES,
-    secp256k1,
-    type WordlistSizeType
-} from '../../src';
-import {
-    InvalidHDNodeDerivationPathError,
+    InvalidHDNode,
     InvalidHDNodeMnemonicsError
 } from '@vechain/sdk-errors';
 
@@ -54,7 +55,7 @@ describe('mnemonic', () => {
         test('deriveAddress - wrong path', () => {
             expect(() =>
                 mnemonic.deriveAddress(words, wrongDerivationPath)
-            ).toThrowError(InvalidHDNodeDerivationPathError);
+            ).toThrowError(InvalidHDNode);
         });
     });
 
@@ -100,7 +101,7 @@ describe('mnemonic', () => {
         test('derivePrivateKey - wrong path', () => {
             expect(() =>
                 mnemonic.derivePrivateKey(words, wrongDerivationPath)
-            ).toThrowError(InvalidHDNodeDerivationPathError);
+            ).toThrowError(InvalidHDNode);
         });
     });
 
