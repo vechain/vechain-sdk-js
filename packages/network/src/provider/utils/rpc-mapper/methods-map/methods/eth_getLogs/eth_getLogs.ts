@@ -26,7 +26,6 @@ import {
  *
  * @returns An array of log objects, or an empty array if nothing has changed since last poll
  *
- * @note Limit is not set for the number of logs that can be fetched. Make sure to reduce the scope if needed.
  */
 const ethGetLogs = async (
     thorClient: ThorClient,
@@ -87,7 +86,8 @@ const ethGetLogs = async (
             criteriaSet,
             order: 'asc',
             options: {
-                offset: 0
+                offset: 0,
+                limit: 1000
             }
         });
 
