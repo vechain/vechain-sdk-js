@@ -9,7 +9,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                node: [18, lts/*]
+                node: [18, lts/*] #add 'latest' when turbo issue is solved
         steps:
             - name: Checkout repository
               uses: actions/checkout@v4
@@ -20,7 +20,7 @@ jobs:
                   node-version: ${{ matrix.node }}
 
             - name: Install & Patch packages
-              run: yarn install --no-lockfile
+              run: yarn install
 
             - name: Preliminary Stop of Thor solo node
               id: preliminary-stop-solo
