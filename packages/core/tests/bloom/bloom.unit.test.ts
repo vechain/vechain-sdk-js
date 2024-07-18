@@ -3,11 +3,7 @@ import { txt } from '../../src/utils/txt/txt';
 import { describe, expect, test } from '@jest/globals';
 import { bloom, Hex } from '../../src';
 import { bloomKTestCases } from './fixture';
-import {
-    InvalidBloomError,
-    InvalidKError,
-    stringifyData
-} from '../../../errors';
+import { InvalidDataType, stringifyData } from '@vechain/sdk-errors';
 
 /**
  * Bloom filter tests
@@ -48,7 +44,7 @@ describe('Bloom Filter', () => {
             const filter2 = gen2.generate(m * m, k);
             expect(() => {
                 filter1.compose(filter2);
-            }).toThrow(InvalidBloomError);
+            }).toThrow(InvalidDataType);
         });
 
         /**
@@ -68,7 +64,7 @@ describe('Bloom Filter', () => {
             const filter2 = gen2.generate(m, k - 1);
             expect(() => {
                 filter1.compose(filter2);
-            }).toThrow(InvalidKError);
+            }).toThrow(InvalidDataType);
         });
 
         /**

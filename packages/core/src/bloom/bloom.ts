@@ -9,7 +9,7 @@
  * Reference: [Bloom Filter in VeChain Thor](https://github.com/vechain/thor/blob/master/thor/bloom/bloom.go).
  */
 import * as n_utils from '@noble/curves/abstract/utils';
-import { assert, BLOOM } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { blake2b256 } from '../hash';
 
 /**
@@ -136,26 +136,30 @@ class Filter {
      * @throws InvalidKError if the other filter was generated with a different `k` number of hash functions.
      */
     public compose(other: Filter): Filter {
-        assert(
-            'Filter.compose',
-            this.bits.length === other.bits.length,
-            BLOOM.INVALID_BLOOM,
-            'Filters have different lengths',
-            {
-                this: this,
-                other
-            }
-        );
-        assert(
-            'Filter.compose',
-            this.k === other.k,
-            BLOOM.INVALID_K,
-            'Filters generated with different k number of hash functions',
-            {
-                this: this,
-                other
-            }
-        );
+        // Different length between filters
+        if (this.bits.length !== other.bits.length) {
+            throw new InvalidDataType(
+                'Filter.compose()',
+                'Filters have different lengths',
+                {
+                    this: this,
+                    other
+                }
+            );
+        }
+
+        // Different k value between
+        if (this.k !== other.k) {
+            throw new InvalidDataType(
+                'Filter.compose()',
+                'Filters have different k values',
+                {
+                    this: this,
+                    other
+                }
+            );
+        }
+
         return new Filter(
             new Uint8Array(
                 this.bits.map((bit, index) => bit | other.bits[index])
