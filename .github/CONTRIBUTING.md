@@ -192,17 +192,29 @@ Follow all code snapshots and convention related to it.
 The typical flow to handle errors is the following:
 
 ```typescript
-import { errors } from 'vechain-sdk';
+import { ErrorClass } from 'vechain-sdk';
 
 function some_function(input: any) {
-  assert(valid_input(input), ERROR_CODE, ERROR_MESSAGE);
+    if(!valid_input(input)) {
+        throw new ErrorClass('method_name', 'error_message', { error_data });
+    }
 }
 ```
 
-### Common assertions
+### Error thrown by a try/catch block
 
-It is often observed that certain assertions are applicable across various contexts. 
-Adhering to the principle of Don't Repeat Yourself (DRY), it is imperative that these assertions be consolidated in a universally accessible file.
+The typical flow to handle errors is the following:
+
+```typescript
+import { ErrorClass } from 'vechain-sdk';
+
+// ... Some code before ...
+try {
+    // Some code that an throw errors
+} catch (inner_error) {
+    throw new ErrorClass('method_name', 'error_message', { error_data }, inner_error);
+}
+```
 
 ## Issues
 
