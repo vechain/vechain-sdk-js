@@ -20,7 +20,7 @@ jobs:
                   node-version: ${{ matrix.node }}
 
             - name: Install & Patch packages
-              run: yarn install
+              run: yarn install --no-lockfile
 
             - name: Preliminary Stop of Thor solo node
               id: preliminary-stop-solo
