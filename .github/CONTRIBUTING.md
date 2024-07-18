@@ -214,6 +214,7 @@ try {
 } catch (inner_error) {
     throw new ErrorClass('method_name', 'error_message', { error_data }, inner_error);
 }
+// ... Some code after ...
 ```
 
 ## Issues
