@@ -4,9 +4,8 @@
 import { ethers } from 'ethers';
 import { type Keystore, type KeystoreAccount } from '../../types';
 import {
-    assert,
-    InvalidDataType,
-    KEYSTORE,
+    InvalidKeystore,
+    InvalidKeystoreParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import { secp256k1 } from '../../../secp256k1';
@@ -69,15 +68,13 @@ async function decrypt(
     password: string
 ): Promise<KeystoreAccount> {
     // Invalid keystore
-    assert(
-        'keystore.decrypt',
-        isValid(keystore),
-        KEYSTORE.INVALID_KEYSTORE,
-        'Invalid keystore. Ensure the keystore is properly formatted and contains the necessary data.',
-        {
-            keystore
-        }
-    );
+    if (!isValid(keystore)) {
+        throw new InvalidKeystore(
+            'keystore.decrypt()',
+            'Invalid keystore. Ensure the keystore is properly formatted and contains the necessary data.',
+            { keystore }
+        );
+    }
 
     try {
         return (await ethers.decryptKeystoreJson(
@@ -85,9 +82,10 @@ async function decrypt(
             password
         )) as KeystoreAccount;
     } catch (e) {
-        throw new InvalidDataType(
+        throw new InvalidKeystoreParams(
             'keystore.decrypt()',
             'Decryption failed: Invalid Password for the given keystore.',
+            // @NOTE: We are not exposing the password in the error data for security reasons.
             {
                 keystore
             }

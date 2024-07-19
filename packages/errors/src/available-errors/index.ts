@@ -1,5 +1,6 @@
 export * from './abi';
 export * from './address';
+export * from './bloom';
 export * from './certificate';
 export * from './data';
 export * from './hdnode';

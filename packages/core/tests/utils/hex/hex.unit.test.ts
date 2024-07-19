@@ -5,7 +5,7 @@ import {
     prefixedAndUnprefixedStrings,
     validThorIDs
 } from '../data/fixture';
-import { InvalidDataType, InvalidDataTypeError } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
  * Text Hex representation from TS types prefixed with `0x`.
@@ -49,17 +49,15 @@ describe('Hex0x', () => {
     });
 
     test('canon - not fit', () => {
-        expect(() => Hex0x.canon('001a', 1)).toThrowError(InvalidDataTypeError);
+        expect(() => Hex0x.canon('001a', 1)).toThrowError(InvalidDataType);
     });
 
     test('canon - non-integer length', () => {
-        expect(() => Hex0x.canon('1a', 31.5)).toThrowError(
-            InvalidDataTypeError
-        );
+        expect(() => Hex0x.canon('1a', 31.5)).toThrowError(InvalidDataType);
     });
 
     test('canon - not positive length', () => {
-        expect(() => Hex0x.canon('1a', -32)).toThrowError(InvalidDataTypeError);
+        expect(() => Hex0x.canon('1a', -32)).toThrowError(InvalidDataType);
     });
 
     test('of bigint', () => {

@@ -8,8 +8,8 @@ import {
 } from './fixture';
 import {
     InvalidSecp256k1PrivateKey,
-    TransactionBodyError,
-    TransactionDelegationError,
+    InvalidTransactionField,
+    NotDelegatedTransaction,
     UnavailableTransactionField
 } from '@vechain/sdk-errors';
 
@@ -39,7 +39,7 @@ describe('Transaction handler', () => {
                         signer.privateKey,
                         delegator.privateKey
                     )
-                ).toThrowError(TransactionDelegationError);
+                ).toThrowError(NotDelegatedTransaction);
 
                 // Checks on signature
                 expect(signedTransaction.isSigned).toBe(true);
@@ -53,7 +53,7 @@ describe('Transaction handler', () => {
                 expect(signedTransaction.origin).toBe(signer.address);
 
                 expect(() => signedTransaction.delegator).toThrowError(
-                    TransactionDelegationError
+                    NotDelegatedTransaction
                 );
                 expect(signedTransaction.isDelegated).toBe(false);
                 expect(signedTransaction.id).toBeDefined();
@@ -74,14 +74,14 @@ describe('Transaction handler', () => {
                 // Sign normally a delegated transaction
                 expect(() =>
                     TransactionHandler.sign(transaction.body, signer.privateKey)
-                ).toThrowError(TransactionDelegationError);
+                ).toThrowError(InvalidTransactionField);
 
                 expect(() =>
                     TransactionHandler.sign(
                         transaction.body,
                         delegator.privateKey
                     )
-                ).toThrowError(TransactionDelegationError);
+                ).toThrowError(InvalidTransactionField);
 
                 // Checks on signature
                 expect(signedTransaction.isSigned).toBe(true);
@@ -163,7 +163,7 @@ describe('Transaction handler', () => {
                     UnavailableTransactionField
                 );
                 expect(() => decodedUnsigned.delegator).toThrowError(
-                    TransactionDelegationError
+                    NotDelegatedTransaction
                 );
                 expect(decodedUnsigned.isDelegated).toBe(false);
                 expect(() => decodedUnsigned.id).toThrowError(
@@ -284,7 +284,7 @@ describe('Transaction handler', () => {
                     invalidDecodedNotTrimmedReserved,
                     false
                 )
-            ).toThrowError(TransactionBodyError);
+            ).toThrowError(InvalidTransactionField);
         });
     });
 });

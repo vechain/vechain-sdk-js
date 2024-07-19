@@ -1,10 +1,9 @@
 import * as n_utils from '@noble/curves/abstract/utils';
 import { Hex, SIGNATURE_LENGTH } from '../utils';
 import {
-    assert,
     InvalidSecp256k1MessageHash,
     InvalidSecp256k1PrivateKey,
-    SECP256K1
+    InvalidSecp256k1Signature
 } from '@vechain/sdk-errors';
 import { randomBytes as _randomBytes } from '@noble/hashes/utils';
 import { secp256k1 as n_secp256k1 } from '@noble/curves/secp256k1';
@@ -181,22 +180,20 @@ function recover(messageHash: Uint8Array, sig: Uint8Array): Uint8Array {
         );
     }
 
-    assert(
-        'secp256k1.recover',
-        sig.length === SIGNATURE_LENGTH,
-        SECP256K1.INVALID_SECP256k1_SIGNATURE,
-        'Invalid signature given as input. Length must be exactly 65 bytes.',
-        { sig }
-    );
+    if (sig.length !== SIGNATURE_LENGTH)
+        throw new InvalidSecp256k1Signature(
+            'secp256k1.recover()',
+            'Invalid signature given as input. Length must be exactly 65 bytes.',
+            { signature: sig }
+        );
 
     const recovery = sig[64];
-    assert(
-        'secp256k1.recover',
-        recovery === 0 || recovery === 1,
-        SECP256K1.INVALID_SECP256k1_SIGNATURE_RECOVERY,
-        'Invalid signature recovery value. Signature bytes at position 64 must be 0 or 1.',
-        { recovery }
-    );
+    if (recovery !== 0 && recovery !== 1)
+        throw new InvalidSecp256k1Signature(
+            'secp256k1.recover()',
+            'Invalid signature recovery value. Signature bytes at position 64 must be 0 or 1.',
+            { signature: sig, recovery }
+        );
 
     return n_secp256k1.Signature.fromCompact(sig.slice(0, 64))
         .addRecoveryBit(recovery)

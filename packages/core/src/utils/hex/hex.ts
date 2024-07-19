@@ -1,5 +1,5 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { assert, DATA, InvalidDataType } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { randomBytes } from '@noble/hashes/utils';
 import { type HexString } from './types';
 
@@ -111,15 +111,16 @@ type HexRepresentable = bigint | Uint8Array | number | string;
  * @throws {ErrorMessage} - If n is negative.
  */
 function ofBigInt(bi: bigint, bytes: number): string {
-    assert(
-        'hex.ts.ofBigInt',
-        bi >= 0,
-        DATA.INVALID_DATA_TYPE,
-        ErrorMessage.NOT_POSITIVE,
-        {
-            bi: bi.toString()
-        }
-    );
+    if (bi < 0) {
+        throw new InvalidDataType(
+            'Hex.ofBigInt()',
+            ErrorMessage.NOT_POSITIVE as string,
+            {
+                bi: bi.toString()
+            }
+        );
+    }
+
     return pad(bi.toString(RADIX), bytes);
 }
 
@@ -134,13 +135,14 @@ function ofBigInt(bi: bigint, bytes: number): string {
  * @throws {InvalidDataTypeError} - If the provided hexadecimal string is not valid.
  */
 function ofHexString(n: HexString, bytes: number): string {
-    assert(
-        'hex.ts.ofHexString',
-        Hex0x.isValid(n),
-        DATA.INVALID_DATA_TYPE,
-        ErrorMessage.NOT_HEX,
-        { n }
-    );
+    if (!Hex0x.isValid(n))
+        throw new InvalidDataType(
+            'Hex.ofHexString()',
+            ErrorMessage.NOT_HEX as string,
+            {
+                n
+            }
+        );
     return pad(n.slice(2).toLowerCase(), bytes);
 }
 
@@ -154,24 +156,21 @@ function ofHexString(n: HexString, bytes: number): string {
  * @throws {InvalidDataTypeError} an error if the provided number is not an integer or is not positive.
  */
 function ofNumber(n: number, bytes: number): string {
-    assert(
-        'hex.ts.ofNumber',
-        Number.isInteger(n),
-        DATA.INVALID_DATA_TYPE,
-        ErrorMessage.NOT_INTEGER,
-        {
-            n
-        }
-    );
-    assert(
-        'hex.ts.ofNumber',
-        n >= 0,
-        DATA.INVALID_DATA_TYPE,
-        ErrorMessage.NOT_POSITIVE,
-        {
-            n
-        }
-    );
+    if (!Number.isInteger(n)) {
+        throw new InvalidDataType(
+            'Hex.ofNumber()',
+            ErrorMessage.NOT_INTEGER as string,
+            { n }
+        );
+    }
+    if (n < 0) {
+        throw new InvalidDataType(
+            'Hex.ofNumber()',
+            ErrorMessage.NOT_POSITIVE as string,
+            { n }
+        );
+    }
+
     return pad(n.toString(RADIX), bytes);
 }
 
@@ -347,21 +346,27 @@ const Hex = {
             });
         }
         if (typeof bytes !== 'undefined') {
-            assert(
-                'Hex.canon',
-                Number.isInteger(bytes) && bytes >= 0,
-                DATA.INVALID_DATA_TYPE,
-                ErrorMessage.NOT_LENGTH,
-                { bytes }
-            );
+            if (!Number.isInteger(bytes) || bytes < 0) {
+                throw new InvalidDataType(
+                    'Hex.canon()',
+                    ErrorMessage.NOT_LENGTH as string,
+                    {
+                        bytes
+                    }
+                );
+            }
+
             result = pad(result, bytes);
-            assert(
-                'Hex.canon',
-                result.length <= bytes * 2,
-                DATA.INVALID_DATA_TYPE,
-                ErrorMessage.NOT_FIT,
-                { bytes }
-            );
+
+            if (result.length > bytes * 2) {
+                throw new InvalidDataType(
+                    'Hex.canon()',
+                    ErrorMessage.NOT_FIT as string,
+                    {
+                        bytes
+                    }
+                );
+            }
         }
         return result;
     },

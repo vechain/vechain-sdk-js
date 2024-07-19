@@ -2,7 +2,7 @@ import * as n_utils from '@noble/curves/abstract/utils';
 import { Hex, Hex0x } from '../hex';
 import { INTEGER_REGEX, NUMERIC_REGEX, ZERO_BYTES } from '../const';
 import { txt } from '../txt/txt';
-import { assert, DATA, InvalidDataType } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
  * Decodes a hexadecimal string representing a bytes32 value into a string.
@@ -15,13 +15,13 @@ import { assert, DATA, InvalidDataType } from '@vechain/sdk-errors';
  * @throws {InvalidDataTypeError} - If the input hex string is invalid or not 64 characters long.
  */
 const decodeBytes32String = (hex: string): string => {
-    assert(
-        'decodeBytes32String',
-        Hex0x.isValid(hex) && Hex.canon(hex).length === 64,
-        DATA.INVALID_DATA_TYPE,
-        `Failed to decode value ${hex} to string. Value is not a valid hex string or it is not 64 characters long`,
-        { value: hex }
-    );
+    if (!Hex0x.isValid(hex) || Hex.canon(hex).length !== 64)
+        throw new InvalidDataType(
+            'dataUtils.decodeBytes32String()',
+            `Failed to decode value ${hex} to string. Value is not a valid hex string or it is not 64 characters long`,
+            { value: hex }
+        );
+
     const valueInBytes = n_utils.hexToBytes(Hex.canon(hex));
     // Find the first zero byte.
     const firstZeroIndex = valueInBytes.findIndex((byte) => byte === 0);
@@ -57,13 +57,15 @@ const encodeBytes32String = (
     // Wrap any error raised by utf8BytesOf(value).
     try {
         const valueInBytes = txt.encode(value);
-        assert(
-            'dataUtils.encodeBytes32String',
-            valueInBytes.length <= 32,
-            DATA.INVALID_DATA_TYPE,
-            `Value '${value}' exceeds 32 bytes.`,
-            { value }
-        );
+
+        if (valueInBytes.length > 32) {
+            throw new InvalidDataType(
+                'dataUtils.encodeBytes32String()',
+                `Failed to encode value ${value} to bytes32 string. Value exceeds 32 bytes.`,
+                { value }
+            );
+        }
+
         const pad = ZERO_BYTES(32 - valueInBytes.length);
         return zeroPadding === 'left'
             ? Hex0x.of(n_utils.concatBytes(pad, valueInBytes))

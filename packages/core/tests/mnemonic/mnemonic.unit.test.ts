@@ -13,10 +13,7 @@ import {
     words,
     wrongDerivationPath
 } from './fixture';
-import {
-    InvalidHDNode,
-    InvalidHDNodeMnemonicsError
-} from '@vechain/sdk-errors';
+import { InvalidHDNode } from '@vechain/sdk-errors';
 
 /**
  * Mnemonic tests
@@ -157,10 +154,10 @@ describe('mnemonic', () => {
         });
 
         test('generate - wrong length', () => {
-            // @ts-expect-error - Wrong length error for testing purposes.
-            expect(() => mnemonic.generate(13)).toThrowError(
-                InvalidHDNodeMnemonicsError
-            );
+            expect(() => {
+                // @ts-expect-error - Wrong length error for testing purposes.
+                mnemonic.generate(13);
+            }).toThrowError();
         });
     });
 

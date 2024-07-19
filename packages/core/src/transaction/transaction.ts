@@ -13,10 +13,9 @@ import {
 } from '../utils';
 import { type TransactionBody } from './types';
 import {
-    ADDRESS,
-    assert,
-    SECP256K1,
-    TRANSACTION,
+    InvalidSecp256k1Signature,
+    InvalidTransactionField,
+    NotDelegatedTransaction,
     UnavailableTransactionField
 } from '@vechain/sdk-errors';
 
@@ -54,27 +53,26 @@ class Transaction {
      */
     constructor(body: TransactionBody, signature?: Buffer) {
         // Body
-        assert(
-            'Transaction constructor',
-            Transaction.isValidBody(body),
-            TRANSACTION.INVALID_TRANSACTION_BODY,
-            'Invalid transaction body. Ensure all required fields are correctly formatted and present.',
-            { body }
-        );
+        if (!Transaction.isValidBody(body)) {
+            throw new InvalidTransactionField(
+                'Transaction constructor',
+                'Invalid transaction body. Ensure all required fields are correctly formatted and present.',
+                { fieldName: 'body', body }
+            );
+        }
+
         this.body = body;
 
         // User passed a signature
-        if (signature !== undefined) {
-            assert(
+        if (signature !== undefined && !this._isSignatureValid(signature)) {
+            throw new InvalidSecp256k1Signature(
                 'Transaction constructor',
-                this._isSignatureValid(signature),
-                SECP256K1.INVALID_SECP256k1_SIGNATURE,
                 'Invalid transaction signature. Ensure it is correctly formatted.',
                 { signature }
             );
-
-            this.signature = signature;
         }
+
+        this.signature = signature;
     }
 
     // ********** PUBLIC GET ONLY FUNCTIONS **********
@@ -105,12 +103,12 @@ class Transaction {
      */
     public get delegator(): string {
         // Undelegated transaction
-        assert(
-            'delegator',
-            this.isDelegated,
-            TRANSACTION.INVALID_DELEGATION,
-            'Transaction is not delegated. Delegator information is unavailable.'
-        );
+        if (!this.isDelegated)
+            throw new NotDelegatedTransaction(
+                'Transaction.delegator()',
+                'Transaction is not delegated. Delegate information is unavailable.',
+                undefined
+            );
 
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
         if (!this.isSigned)
@@ -197,13 +195,13 @@ class Transaction {
      */
     public getSignatureHash(delegateFor?: string): Buffer {
         // Correct delegateFor address
-        assert(
-            'getSignatureHash',
-            delegateFor === undefined || addressUtils.isAddress(delegateFor),
-            ADDRESS.INVALID_ADDRESS,
-            'Invalid address given as input as delegateFor parameter. Ensure it is a valid address.',
-            { delegateFor }
-        );
+        if (delegateFor !== undefined && !addressUtils.isAddress(delegateFor)) {
+            throw new InvalidTransactionField(
+                'Transaction.getSignatureHash()',
+                'Invalid address given as input as delegateFor parameter. Ensure it is a valid address.',
+                { fieldName: 'delegateFor', delegateFor }
+            );
+        }
 
         // Encode transaction
         const transactionHash = blake2b256(this._encode(false));

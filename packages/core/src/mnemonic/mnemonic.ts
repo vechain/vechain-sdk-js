@@ -2,13 +2,14 @@ import * as bip39 from '@scure/bip39';
 import { HDNode } from '../hdnode';
 import { MNEMONIC_WORDLIST_ALLOWED_SIZES } from '../utils';
 import { addressUtils } from '../address-utils';
-import { assert, HDNODE, InvalidHDNode } from '@vechain/sdk-errors';
+import { InvalidHDNode } from '@vechain/sdk-errors';
 import { secp256k1 } from '../secp256k1';
 import { wordlist } from '@scure/bip39/wordlists/english';
 import {
     type WordListRandomGeneratorSizeInBytes,
     type WordlistSizeType
 } from './types';
+import { InvalidHDNodeMnemonic } from '../../../errors/src';
 
 /**
  * Derives the address from a given list of words of
@@ -155,14 +156,16 @@ function generate(
     ) => Uint8Array
 ): string[] {
     // Strange edge case in wordlist size
-    assert(
-        'mnemonic.generate',
-        wordlistSize === undefined ||
-            MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(wordlistSize),
-        HDNODE.INVALID_HDNODE_MNEMONICS,
-        'Invalid `wordlistSize` given as input. Allowed sizes are 12, 15, 18, 21, 24 words.',
-        { wordlistSize }
-    );
+    if (
+        wordlistSize !== undefined &&
+        !MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(wordlistSize)
+    ) {
+        throw new InvalidHDNodeMnemonic(
+            'mnemonic.generate()',
+            'Invalid `wordlistSize` given as input. Allowed sizes are 12, 15, 18, 21, 24 words.',
+            { wordlistSize }
+        );
+    }
 
     // Use randomBytes as default random generator if not provided.
     randomGenerator =

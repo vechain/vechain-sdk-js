@@ -1,7 +1,7 @@
 import * as n_utils from '@noble/curves/abstract/utils';
 import { BigNumber } from 'bignumber.js';
 import { Hex, Hex0x } from '../hex';
-import { assert, DATA, InvalidDataType } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { type WEI_UNITS } from './types';
 
 /**
@@ -62,13 +62,11 @@ function bigNumberOf(value: bigint | number | string): BigNumber {
             }
         }
     }
-    assert(
-        'unitsUtils.bigNumberOf',
-        !bn.isNaN(),
-        DATA.INVALID_DATA_TYPE,
-        'Not a number.',
-        { value: value.toString() }
-    );
+    if (bn.isNaN())
+        throw new InvalidDataType('unitUtils.bigNumberOf()', 'Not a number.', {
+            value: value.toString()
+        });
+
     return bn;
 }
 
@@ -144,20 +142,21 @@ function digitsOfUnit(digitsOrUnit: bigint | number | WEI_UNITS): number {
             digits = index * 3;
         }
     }
-    assert(
-        'unitsUtils.digitOfUnit',
-        digits <= BIG_NUMBER_PRECISION,
-        DATA.INVALID_DATA_TYPE,
-        'Precision overflow (digits or unit name).',
-        { digitsOrUnit: digitsOrUnit.toString() }
-    );
-    assert(
-        'unitsUtils.digitOfUnit',
-        digits >= 0,
-        DATA.INVALID_DATA_TYPE,
-        'Negative precision (digits or unit name).',
-        { digitsOrUnit: digitsOrUnit.toString() }
-    );
+
+    if (digits > BIG_NUMBER_PRECISION)
+        throw new InvalidDataType(
+            'unitsUtils.digitOfUnit()',
+            'Precision overflow (digits or unit name).',
+            { digitsOrUnit: digitsOrUnit.toString() }
+        );
+
+    if (digits < 0)
+        throw new InvalidDataType(
+            'unitsUtils.digitOfUnit()',
+            'Negative precision (digits or unit name).',
+            { digitsOrUnit: digitsOrUnit.toString() }
+        );
+
     return digits;
 }
 
