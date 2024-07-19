@@ -40,17 +40,17 @@ class ContractFilter<TAbi extends Abi> {
      * @param order - The order in which to display the events. Defaults to ascending ('asc') if not provided.
      * @returns An array of event logs that match the specified criteria.
      */
-    public async get(params: TransferFilterOptions): Promise<EventLogs[][]> {
+    public async get(param?: TransferFilterOptions): Promise<EventLogs[][]> {
         const filterEventLogsOptions: FilterEventLogsOptions = {
-            range: params.range ?? {
+            range: param?.range ?? {
                 unit: 'block',
                 from: 0,
                 to: (await this.contract.thor.blocks.getBestBlockCompressed())
                     ?.number
             },
             criteriaSet: this.criteriaSet,
-            options: params.options,
-            order: params.order ?? 'asc'
+            options: param?.options,
+            order: param?.order ?? 'asc'
         };
         const result = await this.contract.thor.logs.filterEventLogs(
             filterEventLogsOptions
