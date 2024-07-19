@@ -9,9 +9,9 @@ import { Hex0x } from '../hex';
  *
  * @note see the following link for more details: https://docs.vechain.org/core-concepts/transactions/transaction-calculation
  *
- * @throws{InvalidDataTypeError}
  * @param clauses - Transaction clauses
  * @returns Intrinsic gas of a set of clauses
+ * @throws {InvalidDataType}
  */
 function intrinsicGas(clauses: TransactionClause[]): number {
     // No clauses
@@ -45,9 +45,9 @@ function intrinsicGas(clauses: TransactionClause[]): number {
 /**
  * Calculates gas used by data.
  *
- * @throws{InvalidDataTypeError}
  * @param data Data to calculate gas
  * @returns Gas used by data
+ * @throws {InvalidDataType}
  */
 function _calculateDataUsedGas(data: string): number {
     // Invalid data

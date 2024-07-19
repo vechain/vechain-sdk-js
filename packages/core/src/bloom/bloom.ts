@@ -131,9 +131,7 @@ class Filter {
      *
      * @param {Filter} other - The filter to compose with.
      * @returns {Filter} - A new filter that is the result of the composition.
-     *
-     * @throws InvalidBloomError If the other filter has a different length.
-     * @throws InvalidKError if the other filter was generated with a different `k` number of hash functions.
+     * @throws {InvalidDataType}
      */
     public compose(other: Filter): Filter {
         // Different length between filters

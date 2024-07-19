@@ -47,9 +47,9 @@ class Transaction {
      * Constructor with parameters.
      * This constructor creates a transaction immutable object.
      *
-     * @throws{TransactionBodyError, InvalidSecp256k1SignatureError}
      * @param body - Transaction body
      * @param signature - Optional signature for the transaction
+     * @throws {InvalidTransactionField, InvalidSecp256k1Signature}
      */
     constructor(body: TransactionBody, signature?: Buffer) {
         // Body
@@ -98,8 +98,8 @@ class Transaction {
     /**
      * Get transaction delegator address from signature.
      *
-     * @throws{TransactionDelegationError, TransactionNotSignedError}
      * @returns Transaction delegator address
+     * @throws {NotDelegatedTransaction, UnavailableTransactionField}
      */
     public get delegator(): string {
         // Undelegated transaction
@@ -189,9 +189,9 @@ class Transaction {
      * )
      * ```
      *
-     * @throws{InvalidAddressError}
      * @param delegateFor - Address of the delegator
      * @returns Signing hash of the transaction
+     * @throws {InvalidTransactionField}
      */
     public getSignatureHash(delegateFor?: string): Buffer {
         // Correct delegateFor address
@@ -233,8 +233,8 @@ class Transaction {
     /**
      * Get transaction origin address from signature.
      *
-     * @throws{TransactionNotSignedError}
      * @returns Transaction origin
+     * @throws {UnavailableTransactionField}
      */
     public get origin(): string {
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)
@@ -262,8 +262,8 @@ class Transaction {
     /**
      * Get transaction ID from signature.
      *
-     * @throws{TransactionNotSignedError}
      * @returns Transaction ID
+     * @throws {UnavailableTransactionField}
      */
     get id(): string {
         // Unsigned transaction (@note we don't check if signature is valid or not, because we have checked it into constructor at creation time)

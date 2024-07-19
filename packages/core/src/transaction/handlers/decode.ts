@@ -66,9 +66,9 @@ function decode(rawTransaction: Buffer, isSigned: boolean): Transaction {
  * For this reason (as already done in _encodeReservedField in Transaction class)
  * we create an ad hoc method.
  *
- * @throws{TransactionBodyError}
  * @param reserved - Reserved field to decode
  * @returns Decoded reserved field
+ * @throws {InvalidTransactionField}
  */
 function _decodeReservedField(reserved: Buffer[]): {
     features?: number;

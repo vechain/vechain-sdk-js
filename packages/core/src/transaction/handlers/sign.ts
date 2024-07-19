@@ -11,10 +11,10 @@ import { type TransactionBody } from '../types';
 /**
  * Sign a transaction with a given private key
  *
- * @throws{InvalidSecp256k1PrivateKeyError, TransactionAlreadySignedError, TransactionDelegationError}
  * @param transactionBody - The body of the transaction to sign
  * @param signerPrivateKey - Private key used to sign the transaction
  * @returns Signed transaction
+ * @throws {InvalidSecp256k1PrivateKey, InvalidTransactionField}
  */
 function sign(
     transactionBody: TransactionBody,
@@ -52,11 +52,11 @@ function sign(
 /**
  * Sign a transaction with signer and delegator private keys
  *
- * @throws{InvalidSecp256k1PrivateKeyError, TransactionAlreadySignedError, TransactionDelegationError}
  * @param transactionBody - The body of the transaction to sign
  * @param signerPrivateKey - Signer private key (the origin)
  * @param delegatorPrivateKey - Delegate private key (the delegator)
  * @returns Signed transaction
+ * @throws {InvalidSecp256k1PrivateKey}
  */
 function signWithDelegator(
     transactionBody: TransactionBody,

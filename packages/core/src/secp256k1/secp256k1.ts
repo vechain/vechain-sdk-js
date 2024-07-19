@@ -46,8 +46,7 @@ function compressPublicKey(publicKey: Uint8Array): Uint8Array {
  * @param {Uint8Array} privateKey - The private key used to derive the public key.
  * @param {boolean} [isCompressed=true] - Boolean indicating whether the derived public key should be compressed or not.
  * @returns {Uint8Array} - The derived public key as a Uint8Array object.
- *
- * @throws{InvalidSecp256k1PrivateKeyError} if `privateKey` is invalid.
+ * @throws {InvalidSecp256k1PrivateKey}
  *
  * @see assertIsValidPrivateKey
  */
@@ -163,10 +162,7 @@ function randomBytes(bytesLength?: number | undefined): Uint8Array {
  * @param {Uint8Array} messageHash - The message hash to recover the public key from.
  * @param {Uint8Array} sig - The signature of the message.
  * @returns {Uint8Array} - The recovered public key.
- *
- * @throws{InvalidSecp256k1MessageHashError} - If the message hash is invalid.
- * @throws{InvalidSecp256k1SignatureError} - If the signature is invalid.
- * @throws{InvalidSecp256k1SignatureRecoveryError} - If the signature can't be used to recovery the public key.
+ * @throws {InvalidSecp256k1MessageHash, InvalidSecp256k1Signature}
  *
  * @see assertIsValidSecp256k1MessageHash
  */
@@ -211,9 +207,7 @@ function recover(messageHash: Uint8Array, sig: Uint8Array): Uint8Array {
  * @param {Uint8Array} messageHash - The message hash to be signed.
  * @param {Uint8Array} privateKey - The private key to use for signing.
  * @returns {Uint8Array} - The signature of the message hash.
- *
- * @throws {InvalidSecp256k1MessageHashError} - If the message hash is invalid.
- * @throws {InvalidSecp256k1PrivateKeyError} - If the private key is invalid.
+ * @throws {InvalidSecp256k1MessageHash, InvalidSecp256k1PrivateKey}
  *
  * @see assertIsValidSecp256k1MessageHash
  * @see assertIsValidPrivateKey

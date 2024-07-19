@@ -121,8 +121,7 @@ interface ScryptParams {
  *
  * @param {Keystore} keystore - The key store object.
  * @returns {ScryptParams} - The decryption key-derivation function parameters.
- *
- * @throws {InvalidKeystoreError} - If any parameter encoded in the keystore is invalid.
+ * @throws {InvalidKeystoreParams}
  *
  * @see {decryptKeystore}
  * @see {encodeScryptParams}
@@ -187,10 +186,8 @@ function decodeScryptParams(keystore: Keystore): ScryptParams {
  * - N: CPU/memory cost,
  * - p: Parallelization parameter,
  * - r: Block size parameter.
- *
  * @returns {ScryptParams} - The encoded scrypt parameters.
- *
- * @throws {InvalidKeystoreError} if any parameter value is invalid.
+ * @throws {InvalidKeystoreParams}
  *
  * @see {decodeScryptParams}
  * @see {encryptKeystore}
@@ -276,10 +273,8 @@ function encodeScryptParams(options: EncryptOptions): ScryptParams {
  *
  * @param {Uint8Array} privateKey - The private key to encrypt, the memory location is wiped after use.
  * @param {Uint8Array} password - The password to use for encryption, the memory location is wiped after use.
- *
  * @returns {Keystore} - The encrypted keystore object.
- *
- * @throws {InvalidKeystoreError} - If an error occurs during encryption.
+ * @throws {InvalidKeystoreParams}
  *
  * @see {encryptKeystore}
  *
@@ -323,8 +318,8 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): Keystore {
  * @param privateKey - The private key to encrypt, the memory location is wiped after use.
  * @param password - The password to use for encryption, the memory location is wiped after use.
  * @param options - Parameters used to configure the **AES** encryption of the private key and the **Scrypt** derivation key function.
- *
  * @returns {Keystore} - The encrypted keystore object.
+ * @throws {InvalidKeystoreParams}
  *
  * @remark **The private key must not be represented as string to avoid the
  * [Memory Dumping](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#memory-dumping)
@@ -430,14 +425,7 @@ function encryptKeystore(
  *
  * @param {Keystore} keystore - The keystore object to decrypt.
  * @param {Uint8Array} password - The password used for decryption, wiped after use.
- *
  * @return {KeystoreAccount} - The decrypted keystore account object.
- *
- * @throws {InvalidKeystoreError} if any parameter stored is invalid for
- * **AES 128 CTR** encryption** or **Scrypt** derived key function.
- * @throws {InvalidKeystorePasswordError} if the password is wrong:
- * the Message Authentication Code stored doesn't match with the output of
- * computer Key Derivation Function output.
  *
  * @see {decryptKeystore}
  * @see {isValid}
@@ -476,14 +464,8 @@ function decrypt(keystore: Keystore, password: Uint8Array): KeystoreAccount {
  *
  * @param {Keystore} keystore - The keystore object to decrypt.
  * @param {Uint8Array} password - The password used for decryption, wiped after use.
- *
  * @return {KeystoreAccount} - The decrypted keystore account object.
- *
- * @throws {InvalidKeystoreError} if any parameter stored is invalid for
- * **AES 128 CTR** encryption** or **Scrypt** derived key function.
- * @throws {InvalidKeystorePasswordError} if the password is wrong:
- * the Message Authentication Code stored doesn't match with the output of
- * computer Key Derivation Function output.
+ * @throws {InvalidKeystoreParams}
  *
  * @see {decodeScryptParams}
  * @see {decrypt}

@@ -24,11 +24,8 @@ import { VET_DERIVATION_PATH, X_PRIV_PREFIX, X_PUB_PREFIX } from '../utils';
  * @param {string[]} words - An array of words representing the mnemonic.
  * @param {string} path - The derivation path to derive the child node.
  * Default value is {@link VET_DERIVATION_PATH}.
- *
  * @return {bip32.HDKey} - An instance of n_bip32.HDKey representing the derived child node.
- *
- * @throws {InvalidHDNodeMnemonicsError} If an error occurs generating the master `n_bip32.HDKey` from `words`.
- * @throws {InvalidHDNodeDerivationPathError} If an error occurs deriving the `n_bip32.HDKey` at `path` from the master HDKey
+ * @throws {InvalidHDNodeMnemonic,InvalidHDNode}
  */
 function fromMnemonic(
     words: string[],
@@ -70,12 +67,8 @@ function fromMnemonic(
  *
  * @param {Uint8Array} privateKey The private key.
  * @param {Uint8Array} chainCode The chain code.
- *
  * @returns {bip32.HDKey} The `n_bip32.HDKey` object.
- *
- * @throws {InvalidHDNodePrivateKeyError} If `privateKey` length is not exactly 32 bytes.
- * @throws {InvalidHDNodeChaincodeError} if an error occurs deriving the {@link bip32.HDNode}
- * from the combination of `privateKey` and `chainCode`.
+ * @throws {InvalidSecp256k1PrivateKey}
  */
 function fromPrivateKey(
     privateKey: Uint8Array,
@@ -119,10 +112,8 @@ function fromPrivateKey(
  *
  * @param {Uint8Array} publicKey - The public key bytes.
  * @param {Uint8Array} chainCode - The chain code bytes.
- *
  * @returns {bip32.HDKey} - The `n_bip32.HDKey` object.
- *
- * @throws {InvalidHDNodeChaincodeError} If `chainCode` length is not exactly 32 bytes.
+ * @throws {InvalidHDNode}
  */
 function fromPublicKey(
     publicKey: Uint8Array,

@@ -58,10 +58,10 @@ async function encrypt(
 /**
  * Decrypts a keystore to obtain the private key using the given password.
  *
- * @throws{InvalidKeystoreError, InvalidKeystorePasswordError}
  * @param keystore - The keystore containing the encrypted private key.
  * @param password - The password used to decrypt the keystore.
  * @returns A Promise that resolves to the decrypted KeystoreAccount or rejects if the keystore or password is invalid.
+ * @throws {InvalidKeystore, InvalidKeystoreParams}
  */
 async function decrypt(
     keystore: Keystore,

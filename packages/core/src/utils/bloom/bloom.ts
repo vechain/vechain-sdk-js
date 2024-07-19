@@ -94,10 +94,7 @@ const isBloom = (filter: string): boolean => {
  * @param {number} k - The number of hash functions used by the Bloom Filter.
  * @param {string} data - The data string to be checked against the Bloom Filter.
  * @returns {boolean} True if the data is present in the Bloom Filter, false otherwise.
- *
- * @throws{InvalidBloomError} If `bloom` is not in a valid Bloom filter format.
- * @throws{InvalidDataTypeError} If `data` is not a valid hexadecimal string.
- * @throws{InvalidKError} If `k` is not a positive integer.
+ * @throws {InvalidBloom, InvalidDataType, InvalidBloomParams}
  */
 const isInBloom = (filter: string, k: number, data: string): boolean => {
     if (!isBloom(filter)) {
@@ -146,10 +143,7 @@ const isInBloom = (filter: string, k: number, data: string): boolean => {
  * @param {string} address - The address to check if it is present in the Bloom filter.
  * [ERC-55  Mixed-case checksum address encoding ](https://eips.ethereum.org/EIPS/eip-55) supported.
  * @returns {boolean} - True if the address is possibly present in the Bloom Filter, false otherwise.
- *
- * @throws{InvalidAddressError} If `addressToCheck` is not a valid VeChain Thor address.
- * @throws{InvalidBloomError} If `filter` is not in a valid Bloom filter format.
- * @throws{InvalidKError} If `k` is not a positive integer.
+ * @throws {InvalidAddress}
  */
 const isAddressInBloom = (
     filter: string,

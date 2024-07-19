@@ -11,8 +11,7 @@ import { InvalidDataType } from '@vechain/sdk-errors';
  *
  * @param {string} hex - The hexadecimal string to decode.
  * @returns {string} - The decoded string value.
- *
- * @throws {InvalidDataTypeError} - If the input hex string is invalid or not 64 characters long.
+ * @throws {InvalidDataType}
  */
 const decodeBytes32String = (hex: string): string => {
     if (!Hex0x.isValid(hex) || Hex.canon(hex).length !== 64)
@@ -45,10 +44,8 @@ const decodeBytes32String = (hex: string): string => {
  *
  * @param {string} value - The value to encode.
  * @param {'left' | 'right'} [zeroPadding='left'] - The type of zero padding to apply.
- *
  * @returns {string} The encoded bytes32 string is a hexadecimal expression prefixed with `0x.
- *
- * @throws {InvalidDataTypeError} If the value exceeds 32 bytes or fails to encode.
+ * @throws {InvalidDataType}
  */
 const encodeBytes32String = (
     value: string,
@@ -84,7 +81,6 @@ const encodeBytes32String = (
  * Checks whether the given string is a decimal number.
  *
  * @param {string} data - The string to be checked.
- *
  * @returns {boolean} - True if the string represents a decimal number, false otherwise.
  *
  * @see {@link INTEGER_REGEX}
@@ -97,7 +93,6 @@ const isDecimalString = (data: string): boolean => {
  * Checks whether the provided string is a valid decimal numeric string.
  *
  * @param {string} value - The value to check.
- *
  * @returns {boolean} - Returns true if the value is numeric, false otherwise.
  *
  * @see {@link NUMERIC_REGEX}

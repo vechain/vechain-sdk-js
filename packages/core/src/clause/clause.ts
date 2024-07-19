@@ -96,8 +96,7 @@ function functionInteraction(
  *
  * @param clauseOptions - Optional settings for the clause.
  * @returns A clause for transferring VIP180 tokens.
- *
- * @throws Will throw an error if the amount is not an integer or if the encoding of the function input fails.
+ * @throws {InvalidDataType}
  */
 function transferToken(
     tokenAddress: string,
@@ -132,8 +131,7 @@ function transferToken(
  * @param amount - The amount of VET to transfer in wei.
  * @param clauseOptions - Optional settings for the clause.
  * @returns A clause for transferring VET.
- *
- * @throws Will throw an error if the amount is not an integer.
+ * @throws {InvalidDataType}
  */
 function transferVET(
     recipientAddress: string,
@@ -188,8 +186,7 @@ function transferVET(
  * @param {string} tokenId - The unique identifier of the NFT to be transferred.
  * @param clauseOptions - Optional settings for the clause.
  * @returns {TransactionClause} - An object representing the transaction clause required for the transfer.
- *
- * @throws {InvalidDataType}.
+ * @throws {InvalidDataType}
  * */
 function transferNFT(
     contractAddress: string,

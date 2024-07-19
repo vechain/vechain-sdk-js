@@ -103,10 +103,7 @@ function sign(cert: Certificate, privateKey: Uint8Array): Certificate {
  *
  * @param {Certificate} cert - The certificate to verify.
  *                             Any instance extending the {@link Certificate} interface is supported.
- *
- * @throws {Error} CERTIFICATE.CERTIFICATE_NOT_SIGNED - If the certificate's signature is missing.
- * @throws {Error} CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT - If the signature format is invalid.
- * @throws {Error} CERTIFICATE.CERTIFICATE_INVALID_SIGNER - If the signature does not correspond to the signer's public key.
+ * @throws {CertificateSignature}
  *
  * @see {encode}
  */

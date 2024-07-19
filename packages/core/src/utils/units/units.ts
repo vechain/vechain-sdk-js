@@ -38,10 +38,8 @@ const WEI_UNIT_NAMES: WEI_UNITS[] = [
  *
  * @param {bigint | number | string} value - The value to be converted to BigNumber,
  * decimal or hexadecimal prefixed with `0x`.
- *
  * @returns {BigNumber} - The converted value as a BigNumber.
- *
- * @throws {InvalidDataTypeError} - If the conversion fails due to an invalid data type.
+ * @throws {InvalidDataType}
  */
 function bigNumberOf(value: bigint | number | string): BigNumber {
     let bn: BigNumber;
@@ -74,7 +72,6 @@ function bigNumberOf(value: bigint | number | string): BigNumber {
  * Calculates the number of digits in the fractional part of a given value.
  *
  * @param {BigNumber} value - The value to calculate the number of digits.
- *
  * @return {number} - The number of digits in the fractional part.
  */
 function digitsOfFractionalPart(value: BigNumber): number {
@@ -112,10 +109,8 @@ function digitsOfIntegerPart(value: BigNumber): number {
  *
  * @param {bigint | number | WEI_UNITS} digitsOrUnit - The meaningful digits,
  * to represent the unit if this parameter is a {@link WEI_UNITS} type.
- *
  * @returns {number} - The number of meaningful digits.
- *
- * @throws {InvalidDataTypeError} - If the `digitsOrUnit` doesn't express a valid
+ * @throws {InvalidDataType}
  * {@link WEI_UNITS} type, or it is a negative value.
  */
 function digitsOfUnit(digitsOrUnit: bigint | number | WEI_UNITS): number {
@@ -172,12 +167,10 @@ function digitsOfUnit(digitsOrUnit: bigint | number | WEI_UNITS): number {
  * or the name unit of measurement to use for formatting
  * (e.g. `gwei` for 9 decimal places).
  * Default value is {@link VET_DECIMAL_EXPONENT}.
- *
  * @return {string} - The formatted value as a string,
  * as [ethers.formatUnits](https://docs.ethers.org/v6/api/utils/#formatUnits)
  * it returns at least a fractional digit unless the `digitsOrUnits` is `wei`.
- *
- * @throws {Error} - If an error occurs during the formatting process.
+ * @throws {InvalidDataType}
  *
  * @remark This function is a drop-in replacement for
  * [ethers.formatUnits](https://docs.ethers.org/v6/api/utils/#formatUnits).
@@ -224,9 +217,6 @@ function formatUnits(
  *
  * @param {bigint | number | string} value - The value to be converted,
  * hexadecimal supported prefixed with `0x`.
- *
- * @throws {Error} - If an error occurs during the formatting process.
- *
  * @returns {string} The value in Ether format.
  *
  * @see {formatUnits}
@@ -247,10 +237,8 @@ const formatVET = (value: bigint | number | string): string => {
  * or the name of the unit of measurement to use for the conversion
  * (e.g. `gwei` for 9 decimal places),
  * Default value is VET_DECIMAL_EXPONENT.
- *
  * @returns {bigint} - The parsed value converted to units.
- *
- * @throws {Error} - Throws an error if the value cannot be parsed or converted.
+ * @throws {InvalidDataType}
  *
  * @remark This function is a drop-in replacement for
  * [ethers.parseUnits](https://docs.ethers.org/v6/api/utils/#parseUnits).
@@ -294,10 +282,7 @@ function parseUnits(
  *
  * @param {string} value - The value to parse as a VET amount.
  * hexadecimal supported prefixed with `0x`.
- *
  * @returns {bigint} The parsed value as a bigint.
- *
- * @throws {Error} - Throws an error if the value cannot be parsed or converted.
  *
  * @link See [ethers.js parseEther](https://docs.ethers.org/v6/api/utils/#parseEther).
  *
