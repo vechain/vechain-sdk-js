@@ -2,9 +2,10 @@ import { VechainSDKError } from '../sdk-error';
 import type { ObjectErrorData } from '../types';
 
 /**
- * Invalid RLP error is thrown.
+ * Invalid RLP error.
  *
- * This error is thrown when an invalid RLP is detected.
+ * WHEN TO USE:
+ * * Error will be thrown when the RLP is invalid.
  */
 class InvalidRLP extends VechainSDKError<{
     context: string;

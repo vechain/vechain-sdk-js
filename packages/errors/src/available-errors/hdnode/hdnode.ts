@@ -1,18 +1,22 @@
 import { VechainSDKError } from '../sdk-error';
 
 /**
- * Invalid mnemonic error to be thrown when an invalid mnemonic key is detected.
+ * Invalid HDNode mnemonic error.
  *
- * This error is thrown when an invalid mnemonic is detected.
+ * WHEN TO USE:
+ * * This error will be thrown when the HDNode mnemonic is invalid.
  *
- * @note Data is undefined because for security reasons, the mnemonic should not be logged!
+ * @note Data (mnemonic) is undefined for security reasons, the mnemonic should not be logged!
  */
-class InvalidHDNodeMnemonic extends VechainSDKError<undefined> {}
+class InvalidHDNodeMnemonic extends VechainSDKError<
+    undefined | { wordlistSize: number }
+> {}
 
 /**
- * Invalid derivation path / chain code or public key error to be thrown when an invalid derivation path / chain code or public key is detected.
+ * Invalid HDNode error.
  *
- * This error is thrown when an invalid derivation path / chain code or public key is detected.
+ * WHEN TO USE:
+ * * This error will be thrown when the HDNode is invalid (derivation path / chainCode / public key parameters).
  */
 class InvalidHDNode extends VechainSDKError<{
     derivationPath?: string;
