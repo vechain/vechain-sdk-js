@@ -1,5 +1,5 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { assert, buildError, DATA } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { randomBytes } from '@noble/hashes/utils';
 import { type HexString } from './types';
 
@@ -105,21 +105,20 @@ type HexRepresentable = bigint | Uint8Array | number | string;
  *
  * @param {bigint} bi - The bigint number to be represented as hexadecimal string.
  * @param {number} bytes - The number of bytes the resulting hexadecimal representation should be padded to.
- *
  * @returns {string} - The padded hexadecimal representation of the bigint number.
- *
- * @throws {ErrorMessage} - If n is negative.
+ * @throws {InvalidDataType}
  */
 function ofBigInt(bi: bigint, bytes: number): string {
-    assert(
-        'hex.ts.ofBigInt',
-        bi >= 0,
-        DATA.INVALID_DATA_TYPE,
-        ErrorMessage.NOT_POSITIVE,
-        {
-            bi: bi.toString()
-        }
-    );
+    if (bi < 0) {
+        throw new InvalidDataType(
+            'Hex.ofBigInt()',
+            ErrorMessage.NOT_POSITIVE as string,
+            {
+                bi: bi.toString()
+            }
+        );
+    }
+
     return pad(bi.toString(RADIX), bytes);
 }
 
@@ -128,19 +127,18 @@ function ofBigInt(bi: bigint, bytes: number): string {
  *
  * @param {HexString} n - The hexadecimal string representing the number.
  * @param {number} [bytes=0] - The number of bytes the resulting hexadecimal string should be padded to. Defaults to 0.
- *
  * @returns {string} - The padded lowercase hexadecimal string.
- *
- * @throws {InvalidDataTypeError} - If the provided hexadecimal string is not valid.
+ * @throws {InvalidDataType}
  */
 function ofHexString(n: HexString, bytes: number): string {
-    assert(
-        'hex.ts.ofHexString',
-        Hex0x.isValid(n),
-        DATA.INVALID_DATA_TYPE,
-        ErrorMessage.NOT_HEX,
-        { n }
-    );
+    if (!Hex0x.isValid(n))
+        throw new InvalidDataType(
+            'Hex.ofHexString()',
+            ErrorMessage.NOT_HEX as string,
+            {
+                n
+            }
+        );
     return pad(n.slice(2).toLowerCase(), bytes);
 }
 
@@ -150,28 +148,24 @@ function ofHexString(n: HexString, bytes: number): string {
  * @param {number} n - The number to be represented as hexadecimal string.
  * @param {number} bytes - The number of bytes the resulting hexadecimal representation should be padded to.
  * @returns {string} The padded hexadecimal representation of the number.
- *
- * @throws {InvalidDataTypeError} an error if the provided number is not an integer or is not positive.
+ * @throws {InvalidDataType}
  */
 function ofNumber(n: number, bytes: number): string {
-    assert(
-        'hex.ts.ofNumber',
-        Number.isInteger(n),
-        DATA.INVALID_DATA_TYPE,
-        ErrorMessage.NOT_INTEGER,
-        {
-            n
-        }
-    );
-    assert(
-        'hex.ts.ofNumber',
-        n >= 0,
-        DATA.INVALID_DATA_TYPE,
-        ErrorMessage.NOT_POSITIVE,
-        {
-            n
-        }
-    );
+    if (!Number.isInteger(n)) {
+        throw new InvalidDataType(
+            'Hex.ofNumber()',
+            ErrorMessage.NOT_INTEGER as string,
+            { n }
+        );
+    }
+    if (n < 0) {
+        throw new InvalidDataType(
+            'Hex.ofNumber()',
+            ErrorMessage.NOT_POSITIVE as string,
+            { n }
+        );
+    }
+
     return pad(n.toString(RADIX), bytes);
 }
 
@@ -209,7 +203,6 @@ function ofUint8Array(uint8Array: Uint8Array, bytes: number): string {
  *
  * @param {string} exp - The hexadecimal expression to pad.
  * @param {number} bytes - The number of bytes that the expression should occupy.
- *
  * @return {string} The padded hexadecimal expression.
  */
 function pad(exp: string, bytes: number): string {
@@ -332,8 +325,7 @@ const Hex = {
      * @param {number} [bytes] - The number of bytes to include in the canonical form.
      * If not specified, all bytes will be included.
      * @returns {string} The canonical representation of the given string expression.
-     * @throws {InvalidDataTypeError} if `exp` is not a valid hexadecimal expression,
-     * if `bytes` is not integer and greater or equal to zero.
+     * @throws {InvalidDataType}
      */
     canon: function (exp: string, bytes?: number): string {
         let result: string = '';
@@ -342,29 +334,32 @@ const Hex = {
         } else if (REGEX_FOR_OPTIONAL_0X_PREFIX_HEX.test(exp)) {
             result = exp.toLowerCase();
         } else {
-            throw buildError(
-                `Hex.canon`,
-                DATA.INVALID_DATA_TYPE,
-                ErrorMessage.NOT_HEX,
-                { exp }
-            );
+            throw new InvalidDataType('Hex.canon()', ErrorMessage.NOT_HEX, {
+                exp
+            });
         }
         if (typeof bytes !== 'undefined') {
-            assert(
-                'Hex.canon',
-                Number.isInteger(bytes) && bytes >= 0,
-                DATA.INVALID_DATA_TYPE,
-                ErrorMessage.NOT_LENGTH,
-                { bytes }
-            );
+            if (!Number.isInteger(bytes) || bytes < 0) {
+                throw new InvalidDataType(
+                    'Hex.canon()',
+                    ErrorMessage.NOT_LENGTH as string,
+                    {
+                        bytes
+                    }
+                );
+            }
+
             result = pad(result, bytes);
-            assert(
-                'Hex.canon',
-                result.length <= bytes * 2,
-                DATA.INVALID_DATA_TYPE,
-                ErrorMessage.NOT_FIT,
-                { bytes }
-            );
+
+            if (result.length > bytes * 2) {
+                throw new InvalidDataType(
+                    'Hex.canon()',
+                    ErrorMessage.NOT_FIT as string,
+                    {
+                        bytes
+                    }
+                );
+            }
         }
         return result;
     },

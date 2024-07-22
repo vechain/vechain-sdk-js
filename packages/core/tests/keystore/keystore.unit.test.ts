@@ -8,8 +8,8 @@ import {
 } from '../../src';
 import { encryptionPassword } from './fixture';
 import {
-    InvalidKeystoreError,
-    InvalidKeystorePasswordError,
+    InvalidKeystore,
+    InvalidKeystoreParams,
     InvalidSecp256k1PrivateKey,
     stringifyData
 } from '@vechain/sdk-errors';
@@ -109,7 +109,7 @@ import {
                         myKeystore,
                         `WRONG_${encryptionPassword}`
                     )
-            ).rejects.toThrowError(InvalidKeystorePasswordError);
+            ).rejects.toThrowError(InvalidKeystoreParams);
         });
 
         /**
@@ -138,7 +138,11 @@ import {
                         JSON.parse(invalidKeystore) as Keystore,
                         encryptionPassword
                     )
-            ).rejects.toThrowError(InvalidKeystoreError);
+            ).rejects.toThrowError(
+                experimentalCryptography
+                    ? InvalidKeystoreParams
+                    : InvalidKeystore
+            );
         });
 
         /**

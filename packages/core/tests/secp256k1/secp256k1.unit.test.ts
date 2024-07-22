@@ -13,8 +13,7 @@ import {
 import {
     InvalidSecp256k1MessageHash,
     InvalidSecp256k1PrivateKey,
-    InvalidSecp256k1SignatureError,
-    InvalidSecp256k1SignatureRecoveryError
+    InvalidSecp256k1Signature
 } from '@vechain/sdk-errors';
 
 /**
@@ -172,7 +171,7 @@ describe('secp256k1', () => {
                     messageHashBuffer,
                     Buffer.from('some_invalid_stuff', 'hex')
                 )
-            ).toThrowError(InvalidSecp256k1SignatureError);
+            ).toThrowError(InvalidSecp256k1Signature);
         });
 
         test('secp256k1 - recover - failure', () => {
@@ -184,7 +183,7 @@ describe('secp256k1', () => {
                     messageHashBuffer,
                     Buffer.from(invalidSignatureRecovery)
                 )
-            ).toThrowError(InvalidSecp256k1SignatureRecoveryError);
+            ).toThrowError(InvalidSecp256k1Signature);
         });
     });
 });

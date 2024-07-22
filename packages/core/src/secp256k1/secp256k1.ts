@@ -1,10 +1,9 @@
 import * as n_utils from '@noble/curves/abstract/utils';
 import { Hex, SIGNATURE_LENGTH } from '../utils';
 import {
-    assert,
     InvalidSecp256k1MessageHash,
     InvalidSecp256k1PrivateKey,
-    SECP256K1
+    InvalidSecp256k1Signature
 } from '@vechain/sdk-errors';
 import { randomBytes as _randomBytes } from '@noble/hashes/utils';
 import { secp256k1 as n_secp256k1 } from '@noble/curves/secp256k1';
@@ -47,8 +46,7 @@ function compressPublicKey(publicKey: Uint8Array): Uint8Array {
  * @param {Uint8Array} privateKey - The private key used to derive the public key.
  * @param {boolean} [isCompressed=true] - Boolean indicating whether the derived public key should be compressed or not.
  * @returns {Uint8Array} - The derived public key as a Uint8Array object.
- *
- * @throws{InvalidSecp256k1PrivateKeyError} if `privateKey` is invalid.
+ * @throws {InvalidSecp256k1PrivateKey}
  *
  * @see assertIsValidPrivateKey
  */
@@ -164,10 +162,7 @@ function randomBytes(bytesLength?: number | undefined): Uint8Array {
  * @param {Uint8Array} messageHash - The message hash to recover the public key from.
  * @param {Uint8Array} sig - The signature of the message.
  * @returns {Uint8Array} - The recovered public key.
- *
- * @throws{InvalidSecp256k1MessageHashError} - If the message hash is invalid.
- * @throws{InvalidSecp256k1SignatureError} - If the signature is invalid.
- * @throws{InvalidSecp256k1SignatureRecoveryError} - If the signature can't be used to recovery the public key.
+ * @throws {InvalidSecp256k1MessageHash, InvalidSecp256k1Signature}
  *
  * @see assertIsValidSecp256k1MessageHash
  */
@@ -181,22 +176,20 @@ function recover(messageHash: Uint8Array, sig: Uint8Array): Uint8Array {
         );
     }
 
-    assert(
-        'secp256k1.recover',
-        sig.length === SIGNATURE_LENGTH,
-        SECP256K1.INVALID_SECP256k1_SIGNATURE,
-        'Invalid signature given as input. Length must be exactly 65 bytes.',
-        { sig }
-    );
+    if (sig.length !== SIGNATURE_LENGTH)
+        throw new InvalidSecp256k1Signature(
+            'secp256k1.recover()',
+            'Invalid signature given as input. Length must be exactly 65 bytes.',
+            { signature: sig }
+        );
 
     const recovery = sig[64];
-    assert(
-        'secp256k1.recover',
-        recovery === 0 || recovery === 1,
-        SECP256K1.INVALID_SECP256k1_SIGNATURE_RECOVERY,
-        'Invalid signature recovery value. Signature bytes at position 64 must be 0 or 1.',
-        { recovery }
-    );
+    if (recovery !== 0 && recovery !== 1)
+        throw new InvalidSecp256k1Signature(
+            'secp256k1.recover()',
+            'Invalid signature recovery value. Signature bytes at position 64 must be 0 or 1.',
+            { signature: sig, recovery }
+        );
 
     return n_secp256k1.Signature.fromCompact(sig.slice(0, 64))
         .addRecoveryBit(recovery)
@@ -214,9 +207,7 @@ function recover(messageHash: Uint8Array, sig: Uint8Array): Uint8Array {
  * @param {Uint8Array} messageHash - The message hash to be signed.
  * @param {Uint8Array} privateKey - The private key to use for signing.
  * @returns {Uint8Array} - The signature of the message hash.
- *
- * @throws {InvalidSecp256k1MessageHashError} - If the message hash is invalid.
- * @throws {InvalidSecp256k1PrivateKeyError} - If the private key is invalid.
+ * @throws {InvalidSecp256k1MessageHash, InvalidSecp256k1PrivateKey}
  *
  * @see assertIsValidSecp256k1MessageHash
  * @see assertIsValidPrivateKey

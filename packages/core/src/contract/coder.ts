@@ -18,7 +18,7 @@ function createInterface(abi: InterfaceAbi): Interface {
  * @param functionName The name of the function defined in the ABI.
  * @param functionData The data to pass to the function.
  * @returns The encoded data that can be used to send a transaction.
- * @throws {InvalidAbiDataToDecodeError}
+ * @throws {InvalidAbiDataToEncodeOrDecode}
  */
 function encodeFunctionInput(
     interfaceABI: InterfaceAbi,
@@ -46,8 +46,7 @@ function encodeFunctionInput(
  * @param functionName The name of the function defined in the ABI.
  * @param encodedFunctionInput The encoded function data.
  * @returns an array of the decoded function data
- *
- * @throws {InvalidAbiDataToDecodeError}
+ * @throws {InvalidAbiDataToEncodeOrDecode}
  */
 function decodeFunctionInput(
     interfaceABI: InterfaceAbi,
@@ -79,9 +78,7 @@ function decodeFunctionInput(
  * @param encodedFunctionOutput - The encoded output data from the contract function.
  * @returns {Result} - The decoded output as a Result object, which provides a user-friendly way
  *                     to interact with the decoded data.
- *
- * @throws Will throw an error if decoding fails, typically due to incorrect encoding or mismatch
- *         with the ABI specifications. The error will provide details on the specific issue encountered.
+ * @throws {InvalidAbiDataToEncodeOrDecode}
  *
  * @example
  * // Example of decoding output for a function called "getValue":
@@ -115,7 +112,7 @@ function decodeFunctionOutput(
  * @param eventName - The name of the event to be encoded.
  * @param dataToEncode - An array of data to be encoded in the event log.
  * @returns An object containing the encoded data and topics.
- * @throws {InvalidAbiEventError} Throws an error if encoding fails, including relevant details.
+ * @throws {InvalidAbiDataToEncodeOrDecode}
  */
 function encodeEventLog(
     interfaceABI: InterfaceAbi,
@@ -146,7 +143,7 @@ function encodeEventLog(
  * @param eventName - The name of the event to be decoded.
  * @param dataToDecode - An object containing the data and topics to be decoded.
  * @returns The decoded data of the event log.
- * @throws {InvalidAbiEventError} Throws an error if decoding fails, including relevant details.
+ * @throws {InvalidAbiDataToEncodeOrDecode}
  */
 function decodeEventLog(
     interfaceABI: InterfaceAbi,
@@ -183,7 +180,7 @@ function decodeEventLog(
  * @param {string} data - The hexadecimal string of the data field in the log.
  * @param {string[]} topics - An array of hexadecimal strings representing the topics of the log.
  * @returns {Log | null} - A `Log` object representing the decoded log or null if decoding fails.
- * @throws {InvalidAbiDataToDecodeError} - if decoding fails due to invalid data or topics format.
+ * @throws {InvalidAbiDataToEncodeOrDecode}
  */
 function parseLog(
     interfaceABI: InterfaceAbi,

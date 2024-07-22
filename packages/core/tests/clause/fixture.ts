@@ -3,8 +3,7 @@ import { coder, ERC721_ABI, unitsUtils, VTHO_ADDRESS } from '../../src';
 import { generateRandomValidAddress } from '../fixture';
 import {
     InvalidAbiDataToEncodeOrDecode,
-    InvalidDataType,
-    InvalidDataTypeError
+    InvalidDataType
 } from '@vechain/sdk-errors';
 
 const exampleContractBytecode =
@@ -248,7 +247,7 @@ const invalidNFTtestCases = [
         senderAddress,
         recipientAddress,
         tokenId: '',
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     },
     {
         contractAddress,
@@ -269,7 +268,7 @@ const invalidNFTtestCases = [
         senderAddress,
         recipientAddress,
         tokenId: '0x00001',
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     }
 ];
 
