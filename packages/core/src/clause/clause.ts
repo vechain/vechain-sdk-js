@@ -6,7 +6,7 @@ import {
 } from '../transaction';
 import type { DeployParams } from './types';
 import { ERC721_ABI, VIP180_ABI } from '../utils';
-import { assert, DATA, InvalidDataType } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { addressUtils } from '../address-utils';
 
 /**
@@ -96,8 +96,7 @@ function functionInteraction(
  *
  * @param clauseOptions - Optional settings for the clause.
  * @returns A clause for transferring VIP180 tokens.
- *
- * @throws Will throw an error if the amount is not an integer or if the encoding of the function input fails.
+ * @throws {InvalidDataType}
  */
 function transferToken(
     tokenAddress: string,
@@ -132,8 +131,7 @@ function transferToken(
  * @param amount - The amount of VET to transfer in wei.
  * @param clauseOptions - Optional settings for the clause.
  * @returns A clause for transferring VET.
- *
- * @throws Will throw an error if the amount is not an integer.
+ * @throws {InvalidDataType}
  */
 function transferVET(
     recipientAddress: string,
@@ -144,12 +142,13 @@ function transferVET(
         const bnAmount = BigInt(amount);
 
         // The amount must be positive otherwise we would be transferring negative VET.
-        assert(
-            'transferVET',
-            bnAmount > 0,
-            DATA.INVALID_DATA_TYPE,
-            `Invalid 'amount' parameter. Expected a positive amount but received ${amount}.`
-        );
+        if (bnAmount < 0) {
+            throw new InvalidDataType(
+                'transferVET()',
+                `Invalid 'amount' parameter. Expected a positive amount but received ${amount}.`,
+                { amount }
+            );
+        }
 
         const transactionClause: TransactionClause = {
             to: recipientAddress,
@@ -187,8 +186,7 @@ function transferVET(
  * @param {string} tokenId - The unique identifier of the NFT to be transferred.
  * @param clauseOptions - Optional settings for the clause.
  * @returns {TransactionClause} - An object representing the transaction clause required for the transfer.
- *
- * @throws {InvalidDataTypeError, InvalidAbiDataToEncodeError}.
+ * @throws {InvalidDataType}
  * */
 function transferNFT(
     contractAddress: string,
@@ -197,19 +195,29 @@ function transferNFT(
     tokenId: string,
     clauseOptions?: ClauseOptions
 ): TransactionClause | ExtendedTransactionClause {
-    assert(
-        'transferNFT',
-        tokenId !== '',
-        DATA.INVALID_DATA_TYPE,
-        `Invalid 'tokenId' parameter. Expected an id but received ${tokenId}.`
-    );
+    if (tokenId === '') {
+        throw new InvalidDataType(
+            'transferNFT()',
+            `Invalid 'tokenId' parameter. Expected an id but received ${tokenId}.`,
+            { tokenId }
+        );
+    }
 
-    assert(
-        'transferNFT',
-        addressUtils.isAddress(contractAddress),
-        DATA.INVALID_DATA_TYPE,
-        `Invalid 'contractAddress' parameter. Expected a contract address but received ${contractAddress}.`
-    );
+    if (!addressUtils.isAddress(senderAddress)) {
+        throw new InvalidDataType(
+            'transferNFT()',
+            `Invalid 'senderAddress' parameter. Expected a contract address but received ${senderAddress}.`,
+            { senderAddress }
+        );
+    }
+
+    if (!addressUtils.isAddress(contractAddress)) {
+        throw new InvalidDataType(
+            'transferNFT()',
+            `Invalid 'senderAddress' parameter. Expected a contract address but received ${contractAddress}.`,
+            { contractAddress }
+        );
+    }
 
     const functionFragment = coder
         .createInterface(ERC721_ABI)

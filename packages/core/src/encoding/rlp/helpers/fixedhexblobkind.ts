@@ -3,10 +3,10 @@ import { InvalidRLP } from '@vechain/sdk-errors';
 /**
  * Asserts that the data is a hex string of the correct length.
  *
- * @throws{InvalidRLP} Will throw an error with a message containing the context if the data length is not equal to the specified bytes.
  * @param data - The data to validate.
  * @param context - Descriptive context for error messages.
  * @param bytes - The expected number of bytes that the data can contain.
+ * @throws {InvalidRLP}
  */
 const assertFixedHexBlobKindData = (
     data: string,
@@ -31,11 +31,10 @@ const assertFixedHexBlobKindData = (
 /**
  * Asserts that the buffer is of a specific length.
  *
- * @throws{InvalidRLP} - Will throw an error with a message containing the context if the buffer length is not equal to the specified bytes.
  * @param buffer - The buffer to validate.
  * @param context - Descriptive context for error messages.
  * @param bytes - The expected number of bytes that the buffer can contain.
- *
+ * @throws {InvalidRLP}
  */
 const assertFixedHexBlobKindBuffer = (
     buffer: Buffer,

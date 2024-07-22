@@ -71,7 +71,7 @@ function blake2b256(data: string | Uint8Array, returnType: 'hex'): string;
  *                                         It is `buffer` by default.
  * @return {Uint8Array | string} - The hash value of the input data in the specified return type.
  *                                 If `returnType` is `hex` it returns the hexadecimal expression of the hash prefixed with `0x`.
- * @throws {InvalidDataReturnTypeError} - If the specified return type is invalid.
+ * @throws {InvalidDataType}
  *
  * @remark Use {@link blake2b256OfHex} to hash a string representing an array of bytes in hexadecimal form.
  */
@@ -121,7 +121,7 @@ function blake2b256OfArray(array: Uint8Array): Uint8Array {
  * @param {string} returnType - The type of the return value. Must be either "buffer" or "hex", it's "buffer" by default.
  * @returns {string|Uint8Array} - The hash as either a hexadecimal string or Uint8Array, depending on the returnType parameter.
  * @throws {InvalidDataTypeError} - Throws an error if the conversion fails or the returnType is invalid.
- * @throws {InvalidDataReturnTypeError} - If the specified return type is invalid.
+ * @throws {InvalidDataType}
  */
 function blake2b256OfHex(
     hex: string,

@@ -2,16 +2,18 @@ import { VechainSDKError } from '../sdk-error';
 import { type ObjectErrorData } from '../types';
 
 /**
- * Invalid data to encode/decode abi.
+ * Invalid data to encode/decode abi error
  *
- * This error is thrown when the data to encode or decode into abi is invalid.
+ * WHEN TO USE:
+ * * This error will be thrown when the data to encode or decode into abi is invalid.
  */
 class InvalidAbiDataToEncodeOrDecode extends VechainSDKError<ObjectErrorData> {}
 
 /**
- * Invalid fragment type.
+ * Invalid abi fragment error
  *
- * This error is thrown when the fragment type is invalid.
+ * WHEN TO USE:
+ * * This error will be thrown when the abi fragment is invalid.
  */
 class InvalidAbiFragment extends VechainSDKError<{
     type: 'function' | 'event';
@@ -19,9 +21,10 @@ class InvalidAbiFragment extends VechainSDKError<{
 }> {}
 
 /**
- * Invalid abi signature format.
+ * Invalid abi signature format error
  *
- * This error is thrown when the abi signature format is invalid.
+ * WHEN TO USE:
+ * * This error will be thrown when the abi signature format is invalid.
  */
 class InvalidAbiSignatureFormat extends VechainSDKError<{
     signatureFormat: string;

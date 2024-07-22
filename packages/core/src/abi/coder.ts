@@ -13,10 +13,10 @@ const ethersCoder = new ethers.AbiCoder();
  *
  * @note `ValueType` is used to explicitly specify the type of the value to encode.
  *
- * @throws{InvalidAbiDataToEncodeError}
  * @param type - Type of the parameter.
  * @param value - Value to encode.
  * @returns Encoded parameter as a hexadecimal string.
+ * @throws {InvalidAbiDataToEncodeOrDecode}
  */
 function encode<ValueType>(type: string | ParamType, value: ValueType): string {
     try {
@@ -40,7 +40,7 @@ function encode<ValueType>(type: string | ParamType, value: ValueType): string {
  * @param types - An array of ABI types or an array of ParamType objects representing the types of the values to encode.
  * @param values - An array of values to be encoded according to the specified ABI types.
  * @returns The ABI-encoded string representing the given values.
- * @throws Throws an error if encoding fails. The error message indicates that the data must be a valid ABI type with corresponding valid data.
+ * @throws {InvalidAbiDataToEncodeOrDecode}
  *
  * @template ValueType - The type of the values being encoded.
  *
@@ -73,10 +73,10 @@ function encodeParams(types: string[] | ParamType[], values: string[]): string {
  *
  * @note `ReturnType` is used to explicitly specify the return type (the decoded value) of the function.
  *
- * @throws{InvalidAbiDataToDecodeError}
  * @param types - Types of parameters.
  * @param data - Data to decode.
  * @returns Decoded parameter value.
+ * @throws {InvalidAbiDataToEncodeOrDecode}
  */
 function decode<ReturnType>(
     types: string | ParamType,

@@ -1,5 +1,10 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { ADDRESS, assert, BLOOM, DATA } from '@vechain/sdk-errors';
+import {
+    InvalidAddress,
+    InvalidBloom,
+    InvalidBloomParams,
+    InvalidDataType
+} from '@vechain/sdk-errors';
 import { Hex, Hex0x } from '../hex';
 import { addressUtils } from '../../address-utils';
 import { bloom } from '../../bloom';
@@ -89,33 +94,32 @@ const isBloom = (filter: string): boolean => {
  * @param {number} k - The number of hash functions used by the Bloom Filter.
  * @param {string} data - The data string to be checked against the Bloom Filter.
  * @returns {boolean} True if the data is present in the Bloom Filter, false otherwise.
- *
- * @throws{InvalidBloomError} If `bloom` is not in a valid Bloom filter format.
- * @throws{InvalidDataTypeError} If `data` is not a valid hexadecimal string.
- * @throws{InvalidKError} If `k` is not a positive integer.
+ * @throws {InvalidBloom, InvalidDataType, InvalidBloomParams}
  */
 const isInBloom = (filter: string, k: number, data: string): boolean => {
-    assert(
-        'bloomUtils.isInBloom',
-        isBloom(filter),
-        BLOOM.INVALID_BLOOM,
-        'Invalid bloom filter format. Bloom filters must adhere to the format 0x[0-9a-fA-F]{16,}.',
-        { bloom: filter }
-    );
-    assert(
-        'bloomUtils.isInBloom',
-        typeof data === 'string' && Hex0x.isValid(data, true),
-        DATA.INVALID_DATA_TYPE,
-        'Invalid data type. Data should be an hexadecimal string',
-        { data }
-    );
-    assert(
-        'bloomUtils.isInBloom',
-        Number.isInteger(k) && k > 0,
-        BLOOM.INVALID_K,
-        'Invalid k. It should be a positive integer.',
-        { k }
-    );
+    if (!isBloom(filter)) {
+        throw new InvalidBloom(
+            'bloomUtils.isInBloom()',
+            'Invalid bloom filter format. Bloom filters must adhere to the format 0x[0-9a-fA-F]{16,}.',
+            { bloom: filter }
+        );
+    }
+
+    if (typeof data !== 'string' || !Hex0x.isValid(data, true)) {
+        throw new InvalidDataType(
+            'bloomUtils.isInBloom()',
+            'Invalid data type. Data should be an hexadecimal string.',
+            { data }
+        );
+    }
+
+    if (!Number.isInteger(k) || k <= 0) {
+        throw new InvalidBloomParams(
+            'bloomUtils.isInBloom()',
+            'Invalid k. It should be a positive integer.',
+            { k }
+        );
+    }
     const bloomFilter = new bloom.Filter(
         n_utils.hexToBytes(Hex.canon(filter)),
         k
@@ -139,23 +143,20 @@ const isInBloom = (filter: string, k: number, data: string): boolean => {
  * @param {string} address - The address to check if it is present in the Bloom filter.
  * [ERC-55  Mixed-case checksum address encoding ](https://eips.ethereum.org/EIPS/eip-55) supported.
  * @returns {boolean} - True if the address is possibly present in the Bloom Filter, false otherwise.
- *
- * @throws{InvalidAddressError} If `addressToCheck` is not a valid VeChain Thor address.
- * @throws{InvalidBloomError} If `filter` is not in a valid Bloom filter format.
- * @throws{InvalidKError} If `k` is not a positive integer.
+ * @throws {InvalidAddress}
  */
 const isAddressInBloom = (
     filter: string,
     k: number,
     address: string
 ): boolean => {
-    assert(
-        'bloomUtils.isAddressInBloom',
-        addressUtils.isAddress(address),
-        ADDRESS.INVALID_ADDRESS,
-        'Invalid address given as input in Bloom filter. Ensure it is a valid VeChain thor address.',
-        { addressToCheck: address }
-    );
+    if (!addressUtils.isAddress(address)) {
+        throw new InvalidAddress(
+            'bloomUtils.isAddressInBloom()',
+            'Invalid address given as input in Bloom filter. Ensure it is a valid VeChain thor address.',
+            { address }
+        );
+    }
     return isInBloom(filter, k, address);
 };
 

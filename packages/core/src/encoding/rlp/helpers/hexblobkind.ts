@@ -5,9 +5,9 @@ import { InvalidRLP } from '@vechain/sdk-errors';
 /**
  * Validates if the input is a proper hex string for HexBlobKind.
  *
- * @throws{InvalidRLP}
  * @param data - The input data to validate.
  * @param context - Additional context for error handling.
+ * @throws {InvalidRLP}
  */
 const assertValidHexBlobKindData = (data: RLPInput, context: string): void => {
     if (typeof data !== 'string') {
@@ -55,9 +55,9 @@ const assertValidHexBlobKindData = (data: RLPInput, context: string): void => {
 /**
  * Validates if the input buffer is valid for HexBlobKind.
  *
- * @throws{InvalidRLP}
  * @param buffer - The buffer to validate.
  * @param context - Additional context for error handling.
+ * @throws {InvalidRLP}
  */
 const assertValidHexBlobKindBuffer = (
     buffer: Buffer,

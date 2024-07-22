@@ -10,10 +10,10 @@ class BufferKind extends ScalarKind {
     /**
      * Encodes the input data into buffer format.
      *
-     * @throws{InvalidRLP}
      * @param data - The data to encode, expected to be of buffer type.
      * @param context - Descriptive context for error messages
      * @returns DataOutput object with an encode function.
+     * @throws {InvalidRLP}
      */
     public data(data: RLPInput, context: string): DataOutput {
         // Ensure that the data is indeed a Buffer before encoding.
@@ -37,10 +37,10 @@ class BufferKind extends ScalarKind {
     /**
      * Decodes the input buffer.
      *
-     * @throws{InvalidRLP}
      * @param buffer - The buffer to decode, expected to be of buffer type.
      * @param context - Descriptive context for error messages, usually representing the caller's identity.
      * @returns BufferOutput object with a decode function.
+     * @throws {InvalidRLP}
      */
     public buffer(buffer: Buffer, context: string): BufferOutput {
         // Ensure that the data is indeed a Buffer before encoding.

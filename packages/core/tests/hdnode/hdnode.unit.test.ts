@@ -1,19 +1,17 @@
 import { addresses, words, wrongDerivationPath, wrongWords } from './fixture';
 import { describe, expect, test } from '@jest/globals';
 import {
-    HDNode,
-    ZERO_BYTES,
     addressUtils,
+    HDNode,
     mnemonic,
     secp256k1,
-    type WordlistSizeType
+    type WordlistSizeType,
+    ZERO_BYTES
 } from '../../src';
 import {
-    InvalidHDNodeChaincodeError,
-    InvalidHDNodeDerivationPathError,
-    InvalidHDNodeMnemonicsError,
-    InvalidHDNodePrivateKeyError,
-    InvalidHDNodePublicKeyError
+    InvalidHDNode,
+    InvalidHDNodeMnemonic,
+    InvalidSecp256k1PrivateKey
 } from '@vechain/sdk-errors';
 
 /**
@@ -25,12 +23,12 @@ describe('HDNode', () => {
         test('fromMnemonic - invalid - path', () => {
             expect(() =>
                 HDNode.fromMnemonic(words, wrongDerivationPath)
-            ).toThrowError(InvalidHDNodeDerivationPathError);
+            ).toThrowError(InvalidHDNode);
         });
 
         test('fromMnemonic - invalid - word list', () => {
             expect(() => HDNode.fromMnemonic(wrongWords)).toThrowError(
-                InvalidHDNodeMnemonicsError
+                InvalidHDNodeMnemonic
             );
         });
 
@@ -125,13 +123,13 @@ describe('HDNode', () => {
         test('derivePrivateKey - invalid - chain code', () => {
             expect(() =>
                 HDNode.fromPrivateKey(ZERO_BYTES(32), ZERO_BYTES(31))
-            ).toThrowError(InvalidHDNodeChaincodeError);
+            ).toThrowError(InvalidSecp256k1PrivateKey);
         });
 
         test('derivePrivateKey - invalid - private key', () => {
             expect(() =>
                 HDNode.fromPrivateKey(ZERO_BYTES(31), ZERO_BYTES(32))
-            ).toThrowError(InvalidHDNodePrivateKeyError);
+            ).toThrowError(InvalidSecp256k1PrivateKey);
         });
 
         test('derivePrivateKey - valid - address sequence', () => {
@@ -172,13 +170,13 @@ describe('HDNode', () => {
         test('derivePublicKey - invalid - chain code', () => {
             expect(() =>
                 HDNode.fromPublicKey(ZERO_BYTES(32), ZERO_BYTES(31))
-            ).toThrowError(InvalidHDNodeChaincodeError);
+            ).toThrowError(InvalidHDNode);
         });
 
         test('derivePublicKey - invalid - public key', () => {
             expect(() =>
                 HDNode.fromPublicKey(ZERO_BYTES(31), ZERO_BYTES(32))
-            ).toThrowError(InvalidHDNodePublicKeyError);
+            ).toThrowError(InvalidHDNode);
         });
 
         test(`derivePublicKey - valid - address sequence, no private key`, () => {
