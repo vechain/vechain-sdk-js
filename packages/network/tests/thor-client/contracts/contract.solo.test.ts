@@ -653,11 +653,7 @@ describe('ThorClient - Contracts', () => {
 
                     const eventLogs = await contract.filters[eventName](
                         ...args
-                    ).get(
-                        getParams?.range,
-                        getParams?.options,
-                        getParams?.order
-                    );
+                    ).get(getParams);
 
                     expect(eventLogs[0].map((x) => x.decodedData)).toEqual(
                         expectedData
