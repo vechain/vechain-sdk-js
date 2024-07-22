@@ -1,5 +1,4 @@
 import { ThorClient, Poll, EventPoll, FilterTransferLogsOptions, TransferLogs } from '@vechain/sdk-network';
-import axios from 'axios';
 
 /**
  * The `VeChainTransactionLogger` class provides methods to monitor the transactions of an account
@@ -96,7 +95,18 @@ class VechainTransactionLogger {
     private async notifyWebhook(newLogs: TransferLogs[]): Promise<void> {
         try {
             // Make an HTTP POST request to the webhook URL with the new transaction data
-            await axios.post(this.webhookUrl as string, newLogs);
+            const response = await fetch(this.webhookUrl as string, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newLogs),
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
             console.log('Webhook notification sent successfully');
         } catch (error) {
             console.error('Error sending webhook notification:', error);
