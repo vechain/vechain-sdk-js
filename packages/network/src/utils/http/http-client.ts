@@ -1,5 +1,6 @@
 import { type HttpClientOptions, type HttpParams } from './types';
-import { convertError, DEFAULT_HTTP_TIMEOUT } from '../index';
+import { DEFAULT_HTTP_TIMEOUT } from '../index';
+import { buildError, HTTP_CLIENT } from '@vechain/sdk-errors';
 
 /**
  * Represents a concrete implementation of the `IHttpClient` interface, providing methods for making HTTP requests.
@@ -41,13 +42,16 @@ class HttpClient {
         try {
             url = new URL(path, this.baseURL);
         } catch (error) {
-            if (
-                error instanceof TypeError &&
-                error.message.includes('Invalid URL')
-            ) {
-                throw error; // Throw the original TypeError
-            }
-            throw convertError(error, `${this.baseURL}${path}`, method);
+            throw buildError(
+                'INVALID_HTTP_REQUEST',
+                HTTP_CLIENT.INVALID_HTTP_REQUEST,
+                `Invalid URL: ${this.baseURL}${path}`,
+                {
+                    method,
+                    url: `${this.baseURL}${path}`,
+                    message: 'Request failed'
+                }
+            );
         }
 
         if (params?.query != null) {
@@ -76,7 +80,16 @@ class HttpClient {
             clearTimeout(timeoutId);
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                throw buildError(
+                    'INVALID_HTTP_REQUEST',
+                    HTTP_CLIENT.INVALID_HTTP_REQUEST,
+                    `HTTP error! status: ${response.status}`,
+                    {
+                        method,
+                        url: url.toString(),
+                        status: response.status
+                    }
+                );
             }
 
             this.validateResponseHeader(
@@ -87,7 +100,16 @@ class HttpClient {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             return await response.json();
         } catch (err) {
-            throw convertError(err, url.toString(), method);
+            throw buildError(
+                'INVALID_HTTP_REQUEST',
+                HTTP_CLIENT.INVALID_HTTP_REQUEST,
+                `Invalid URL: ${this.baseURL}${path}`,
+                {
+                    method,
+                    url: url.toString(),
+                    message: 'Request failed'
+                }
+            );
         }
     }
 

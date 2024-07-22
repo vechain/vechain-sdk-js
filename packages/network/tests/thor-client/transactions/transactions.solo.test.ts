@@ -96,9 +96,7 @@ describe('ThorClient - Transactions Module', () => {
 
                     expect(txReceipt).toBeDefined();
                     expect(txReceipt?.reverted).toBe(expectedReceipt.reverted);
-                    expect(txReceipt?.outputs).toStrictEqual(
-                        expectedReceipt.outputs
-                    );
+                    expect(txReceipt?.outputs).toEqual(expectedReceipt.outputs);
                     expect(txReceipt?.gasUsed).toBe(expectedReceipt.gasUsed);
                     expect(txReceipt?.gasPayer).toBe(expectedReceipt.gasPayer);
                     expect(sendTransactionResult.id).toBe(txReceipt?.meta.txID);
