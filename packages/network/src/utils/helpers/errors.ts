@@ -1,47 +1,70 @@
-import { type AxiosError } from 'axios';
 import {
     buildError,
     HTTP_CLIENT,
-    type HTTPClientError,
-    stringifyData
+    type HTTPClientError
 } from '@vechain/sdk-errors';
 
 /**
- * Converts an AxiosError into a standard Error.
+ * Converts a Fetch error into a standardized HTTPClientError.
  *
- * This function converts an AxiosError, which may contain HTTP response details, into a standard Error.
- * It handles cases where the AxiosError has an HTTP response with status and data.
+ * This function handles errors that may occur during a Fetch request, including network errors and HTTP errors.
  *
- * @param error - The AxiosError to convert into an Error.
- * @returns A standard Error with a descriptive message.
+ * @param error - The error caught during the Fetch request.
+ * @param url - The URL of the request that caused the error.
+ * @param method - The HTTP method used for the request.
+ * @returns A standardized HTTPClientError.
  */
-const convertError = (error: AxiosError): HTTPClientError => {
-    // Error has a response
-    if (error.response != null) {
-        const resp = error.response;
-
+const convertError = (
+    error: unknown,
+    url: string,
+    method: string
+): HTTPClientError => {
+    if (error instanceof TypeError && error.message.includes('Invalid URL')) {
         return buildError(
             'convertError',
             HTTP_CLIENT.INVALID_HTTP_REQUEST,
-            `An error occurred while performing http request ${error.config?.url}`,
+            `Invalid URL: ${url}`,
             {
-                status: resp.status,
-                method: error.config?.method,
-                url: error.config?.url,
-                text: stringifyData(resp.data)
+                method,
+                url,
+                message: error.message
             }
         );
-    }
-    // Error does not have a response
-    else {
+    } else if (error instanceof TypeError) {
+        // Network error
         return buildError(
             'convertError',
             HTTP_CLIENT.INVALID_HTTP_REQUEST,
-            `An error occurred while performing http request ${error.config?.url}`,
+            `Network error occurred while performing HTTP request to ${url}`,
             {
-                method: error.config?.method,
-                url: error.config?.url,
+                method,
+                url,
                 message: error.message
+            }
+        );
+    } else if (error instanceof Response) {
+        // HTTP error
+        return buildError(
+            'convertError',
+            HTTP_CLIENT.INVALID_HTTP_REQUEST,
+            `An error occurred while performing HTTP request to ${url}`,
+            {
+                status: error.status,
+                method,
+                url,
+                text: error.statusText
+            }
+        );
+    } else {
+        // Unknown error
+        return buildError(
+            'convertError',
+            HTTP_CLIENT.INVALID_HTTP_REQUEST,
+            `An unknown error occurred while performing HTTP request to ${url}`,
+            {
+                method,
+                url,
+                message: error instanceof Error ? error.message : String(error)
             }
         );
     }
