@@ -1,5 +1,3 @@
-import { type AxiosInstance } from 'axios';
-
 /**
  * Represents the parameters for making an HTTP request.
  *
@@ -37,12 +35,6 @@ interface HttpClientOptions {
      * The timeout for an HTTP request, in milliseconds.
      */
     timeout?: number;
-
-    /**
-     * An Axios instance to use for sending HTTP requests.
-     * This is useful for customizing the HTTP client, such as adding a custom user agent.
-     */
-    axiosInstance?: AxiosInstance;
 }
 
 export type { HttpParams, HttpClientOptions };
