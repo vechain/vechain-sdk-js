@@ -1,7 +1,12 @@
 import type { ContractClause } from '../types';
 import type { SendTransactionResult } from '../../transactions';
 import { type ContractFilter } from './contract-filter';
-import { type FilterCriteria } from '../../logs';
+import type {
+    FilterCriteria,
+    Range,
+    PaginationOptions,
+    EventDisplayOrder
+} from '../../logs';
 import {
     type Abi,
     type ExtractAbiFunctionNames,
@@ -193,6 +198,15 @@ interface ClauseAdditionalOptions {
     revision: string | undefined;
 }
 
+/**
+ * Represents the options for the get method of the `ContractFilter` class.
+ */
+interface TransferFilterOptions {
+    range?: Range;
+    options?: PaginationOptions;
+    order?: EventDisplayOrder;
+}
+
 export type {
     ContractFunctionAsync,
     ContractFunctionSync,
@@ -204,5 +218,6 @@ export type {
     TransactionValue,
     ClauseComment,
     ClauseRevision,
-    ClauseAdditionalOptions
+    ClauseAdditionalOptions,
+    TransferFilterOptions
 };
