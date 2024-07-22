@@ -1,5 +1,5 @@
 import { coder, unitsUtils } from '@vechain/sdk-core';
-import { BUILT_IN_CONTRACTS } from '@vechain/sdk-constant';
+import { BUILT_IN_CONTRACTS } from '../../../src';
 import {
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,

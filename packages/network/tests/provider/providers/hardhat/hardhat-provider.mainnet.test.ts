@@ -2,9 +2,9 @@ import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import { providerMethodsTestCasesMainnet } from '../fixture';
 import {
     HardhatVeChainProvider,
+    MAINNET_URL,
     ProviderInternalBaseWallet
 } from '../../../../src';
-import { MAINNET_URL } from '@vechain/sdk-constant';
 
 /**
  * Hardhat provider tests - Mainnet

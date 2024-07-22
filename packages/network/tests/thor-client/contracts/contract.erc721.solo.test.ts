@@ -2,6 +2,7 @@
 import { erc721ContractBytecode, erc721ContractTestCases } from './fixture';
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import {
+    THOR_SOLO_URL,
     ThorClient,
     type TransactionReceipt,
     VeChainPrivateKeySigner,
@@ -15,7 +16,6 @@ import {
     type FunctionFragment,
     type Log
 } from '@vechain/sdk-core';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  * Tests for the ERC721 Contract, specifically focusing on NFT contract-related functionality.

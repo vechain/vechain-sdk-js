@@ -3,11 +3,11 @@ import {
     type LogsRPC,
     RPC_METHODS,
     RPCMethodsMap,
+    THOR_SOLO_URL,
     ThorClient
 } from '../../../../../src';
 import { ProviderRpcError } from '@vechain/sdk-errors';
 import { logsFixture, mockLogsFixture } from './fixture';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  * RPC Mapper integration tests for 'eth_getLogs' method

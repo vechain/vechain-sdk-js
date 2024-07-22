@@ -1,7 +1,11 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { NotImplementedError } from '@vechain/sdk-errors';
-import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { TESTNET_URL } from '@vechain/sdk-constant';
+import {
+    RPC_METHODS,
+    RPCMethodsMap,
+    TESTNET_URL,
+    ThorClient
+} from '../../../../../src';
 
 /**
  * RPC Mapper integration tests for 'eth_getFilterLogs' method

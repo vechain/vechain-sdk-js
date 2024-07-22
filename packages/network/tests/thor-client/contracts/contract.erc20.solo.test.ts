@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     ProviderInternalBaseWallet,
+    THOR_SOLO_URL,
     ThorClient,
     type TransactionReceipt,
     VeChainPrivateKeySigner,
@@ -10,7 +11,6 @@ import {
 import { TEST_ACCOUNTS } from '../../fixture';
 import { erc20ContractBytecode } from './fixture';
 import { addressUtils, ERC20_ABI } from '@vechain/sdk-core';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.

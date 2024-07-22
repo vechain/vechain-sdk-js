@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { TESTNET_URL } from '@vechain/sdk-constant';
 import {
     RPC_METHODS,
     RPCMethodsMap,
+    TESTNET_URL,
     ThorClient,
     VeChainProvider
 } from '../../../../../src';

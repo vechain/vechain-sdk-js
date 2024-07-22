@@ -1,7 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { HTTPClientError } from '@vechain/sdk-errors';
-import { TESTNET_URL } from '@vechain/sdk-constant';
-import { ThorClient } from '../../../src';
+import { TESTNET_URL, ThorClient } from '../../../src';
 
 /**
  * Node integration tests

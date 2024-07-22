@@ -1,14 +1,12 @@
 import {
     HttpClient,
-    ProviderInternalBaseWallet,
-    type SignTransactionOptions
-} from '../src';
-import { secp256k1 } from '@vechain/sdk-core';
-import {
     MAINNET_URL,
+    ProviderInternalBaseWallet,
+    type SignTransactionOptions,
     TESTNET_URL,
     THOR_SOLO_ACCOUNTS
-} from '@vechain/sdk-constant';
+} from '../src';
+import { secp256k1 } from '@vechain/sdk-core';
 
 /**
  * Main network instance fixture

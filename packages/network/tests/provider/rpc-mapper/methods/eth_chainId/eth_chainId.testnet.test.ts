@@ -3,9 +3,9 @@ import {
     CHAIN_ID,
     RPC_METHODS,
     RPCMethodsMap,
+    TESTNET_URL,
     ThorClient
 } from '../../../../../src';
-import { TESTNET_URL } from '@vechain/sdk-constant';
 
 /**
  * RPC Mapper integration tests for 'eth_chainId' method

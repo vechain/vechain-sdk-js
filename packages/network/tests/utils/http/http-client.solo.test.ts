@@ -1,9 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
 import { ZERO_ADDRESS, zeroAddressAccountDetails } from './fixture';
-import { HttpClient, type HttpParams } from '../../../src';
+import { HttpClient, type HttpParams, THOR_SOLO_URL } from '../../../src';
 import { testAccount } from '../../fixture';
 import { HTTPClientError, stringifyData } from '@vechain/sdk-errors';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  * HttpClient class tests.

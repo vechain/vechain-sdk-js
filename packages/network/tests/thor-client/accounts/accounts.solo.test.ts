@@ -2,8 +2,7 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import { TEST_ACCOUNTS, TESTING_CONTRACT_ADDRESS } from '../../fixture';
 import { unitsUtils } from '@vechain/sdk-core';
 import { TESTING_CONTRACT_BYTECODE } from './fixture';
-import { ThorClient } from '../../../src';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
+import { THOR_SOLO_URL, ThorClient } from '../../../src';
 
 /**
  * Prolong timeout due to block time which sometimes exceeds jest's default timeout of 5 seconds.

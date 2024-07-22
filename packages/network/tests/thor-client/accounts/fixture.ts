@@ -1,6 +1,6 @@
 import { InvalidDataType, InvalidDataTypeError } from '@vechain/sdk-errors';
 import { testAccount } from '../../fixture';
-import { BUILT_IN_CONTRACTS } from '@vechain/sdk-constant';
+import { BUILT_IN_CONTRACTS } from '../../../src';
 
 /**
  * Bytecode of the VTHO deployed contract

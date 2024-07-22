@@ -2,13 +2,13 @@ import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import {
     HardhatVeChainProvider,
     JSONRPCEthersProvider,
+    MAINNET_URL,
     ProviderInternalBaseWallet,
     type SubscriptionEvent
 } from '../../../../src';
 
 import { MAINNET_NETWORK } from '@vechain/sdk-core';
 import { providerMethodsTestCasesMainnet } from '../fixture';
-import { MAINNET_URL } from '@vechain/sdk-constant';
 
 /**
  *VeChain provider tests - Main Network

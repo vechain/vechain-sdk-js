@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { TESTNET_URL } from '@vechain/sdk-constant';
+import {
+    RPC_METHODS,
+    RPCMethodsMap,
+    TESTNET_URL,
+    ThorClient
+} from '../../../../../src';
 import { blockReceiptsFixture, blockReceiptsInvalidFixture } from './fixture';
 import { InvalidDataTypeError } from '@vechain/sdk-errors';
 

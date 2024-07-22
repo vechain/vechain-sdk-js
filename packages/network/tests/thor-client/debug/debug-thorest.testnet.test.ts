@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { TESTNET_URL } from '@vechain/sdk-constant';
-import { ThorClient, type TracerName } from '../../../src';
+import { TESTNET_URL, ThorClient, type TracerName } from '../../../src';
 import {
     firstTransactionTraceContractCallTestnetFixture,
     firstTransactionTraceTransactionClauseTestnetFixture,

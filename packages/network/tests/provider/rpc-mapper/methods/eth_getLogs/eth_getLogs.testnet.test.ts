@@ -4,10 +4,10 @@ import {
     type LogsRPC,
     RPC_METHODS,
     RPCMethodsMap,
+    TESTNET_URL,
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
-import { TESTNET_URL } from '@vechain/sdk-constant';
 import { logsFixture } from './fixture';
 import { InvalidDataTypeError } from '@vechain/sdk-errors';
 import { Hex0x } from '@vechain/sdk-core';

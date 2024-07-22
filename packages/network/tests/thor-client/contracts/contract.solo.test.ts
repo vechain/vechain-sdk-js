@@ -21,6 +21,7 @@ import { addressUtils, coder, type DeployParams, type FunctionFragment } from '@
 import {
     Contract,
     type ContractFactory,
+    THOR_SOLO_URL,
     ThorClient,
     type TransactionReceipt,
     VeChainPrivateKeySigner,
@@ -28,7 +29,6 @@ import {
     type VeChainSigner
 } from '../../../src';
 import { ContractDeploymentFailedError, TransactionMissingPrivateKeyError } from '@vechain/sdk-errors';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.

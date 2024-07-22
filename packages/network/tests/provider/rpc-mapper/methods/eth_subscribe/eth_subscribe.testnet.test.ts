@@ -6,15 +6,14 @@ import {
     jest,
     test
 } from '@jest/globals';
-
 import {
     RPC_METHODS,
     RPCMethodsMap,
+    TESTNET_URL,
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
 import { ProviderRpcError } from '@vechain/sdk-errors';
-import { TESTNET_URL } from '@vechain/sdk-constant';
 
 /**
  * RPC Mapper integration tests for 'eth_subscribe' method

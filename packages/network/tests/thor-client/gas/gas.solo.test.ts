@@ -1,9 +1,8 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { estimateGasTestCases, invalidEstimateGasTestCases } from './fixture';
-import { ThorClient } from '../../../src';
+import { THOR_SOLO_URL, ThorClient } from '../../../src';
 import { stringifyData } from '@vechain/sdk-errors';
-import { Hex0x, secp256k1 } from '../../../../core/src';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
+import { Hex0x, secp256k1 } from '@vechain/sdk-core';
 
 /**
  * Gas module tests.

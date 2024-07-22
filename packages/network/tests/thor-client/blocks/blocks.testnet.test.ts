@@ -6,8 +6,7 @@ import {
     validExpandedBlockRevisions,
     waitForBlockTestCases
 } from './fixture';
-import { HttpClient, Poll, ThorClient } from '../../../src';
-import { TESTNET_URL } from '@vechain/sdk-constant';
+import { HttpClient, Poll, TESTNET_URL, ThorClient } from '../../../src';
 import {
     addressUtils,
     bloom,

@@ -11,11 +11,11 @@ import { coder, type FunctionFragment } from '@vechain/sdk-core';
 import {
     ProviderInternalBaseWallet,
     type SubscriptionEvent,
+    THOR_SOLO_URL,
     ThorClient,
     VeChainProvider,
     type VeChainSigner
 } from '../../../../src';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  *VeChain provider tests - Solo Network

@@ -4,12 +4,12 @@ import {
     type TransactionBody,
     unitsUtils
 } from '@vechain/sdk-core';
-import { BUILT_IN_CONTRACTS } from '@vechain/sdk-constant';
 import {
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS
 } from '../../fixture';
+import { BUILT_IN_CONTRACTS } from '../../../src';
 
 /**
  * Some random transaction nonces to use into tests

@@ -3,8 +3,7 @@ import { TEST_ACCOUNTS } from '../../fixture';
 import { Hex0x, TransactionHandler } from '@vechain/sdk-core';
 import { sendTransactionErrors, simulateTransaction } from './fixture-thorest';
 import { InvalidDataTypeError, stringifyData } from '@vechain/sdk-errors';
-import { ThorClient } from '../../../src';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
+import { THOR_SOLO_URL, ThorClient } from '../../../src';
 
 /**
  * ThorClient class tests.

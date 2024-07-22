@@ -8,8 +8,7 @@ import {
     getVETtransfersSubscriptionUrlTestCases,
     testWebSocketConnection
 } from './fixture';
-import { subscriptions } from '../../../src';
-import { TESTNET_URL } from '@vechain/sdk-constant';
+import { subscriptions, TESTNET_URL } from '../../../src';
 import { stringifyData } from '@vechain/sdk-errors';
 
 /**

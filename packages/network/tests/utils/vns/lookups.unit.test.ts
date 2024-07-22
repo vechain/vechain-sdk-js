@@ -6,8 +6,7 @@ import {
     jest,
     test
 } from '@jest/globals';
-import { ThorClient, vnsUtils } from '../../../src';
-import { TESTNET_URL } from '@vechain/sdk-constant';
+import { TESTNET_URL, ThorClient, vnsUtils } from '../../../src';
 
 /**
  * vnsUtils vet.domains tests

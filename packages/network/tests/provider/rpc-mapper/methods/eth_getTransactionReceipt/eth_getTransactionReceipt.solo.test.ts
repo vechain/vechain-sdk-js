@@ -1,7 +1,11 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
+import {
+    RPC_METHODS,
+    RPCMethodsMap,
+    THOR_SOLO_URL,
+    ThorClient
+} from '../../../../../src';
 import { getReceiptCorrectCasesSoloNetwork } from './fixture';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  * RPC Mapper integration tests for 'eth_getTransactionReceipt' method

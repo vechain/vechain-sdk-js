@@ -6,6 +6,8 @@ import {
 import {
     ProviderInternalBaseWallet,
     RPC_METHODS,
+    THOR_SOLO_ACCOUNTS,
+    THOR_SOLO_URL,
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
@@ -19,7 +21,6 @@ import {
     ProviderRpcError
 } from '@vechain/sdk-errors';
 import { secp256k1 } from '@vechain/sdk-core';
-import { THOR_SOLO_ACCOUNTS, THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  * RPC Mapper integration tests for 'eth_sendTransaction' method

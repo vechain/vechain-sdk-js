@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
+import {
+    RPC_METHODS,
+    RPCMethodsMap,
+    THOR_SOLO_URL,
+    ThorClient
+} from '../../../../../src';
 
 /**
  * RPC Mapper integration tests for 'eth_blockNumber' method on Solo Network

@@ -4,9 +4,9 @@ import { waitForMessage } from '../helpers';
 import {
     HardhatVeChainProvider,
     ProviderInternalBaseWallet,
+    TESTNET_URL,
     type VeChainProvider
 } from '../../../../src';
-import { TESTNET_URL } from '@vechain/sdk-constant';
 
 /**
  *VeChain provider tests

@@ -2,6 +2,8 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     ProviderInternalBaseWallet,
     signerUtils,
+    THOR_SOLO_ACCOUNTS,
+    THOR_SOLO_URL,
     ThorClient,
     VeChainPrivateKeySigner,
     VeChainProvider
@@ -19,7 +21,6 @@ import {
 } from '@vechain/sdk-core';
 import { signTransactionTestCases } from './fixture';
 import { simulateTransaction } from '../../../thor-client/transactions/fixture-thorest';
-import { THOR_SOLO_ACCOUNTS, THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  *VeChain base signer tests - solo

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     ProviderInternalBaseWallet,
+    TESTNET_URL,
     ThorClient,
     VeChainProvider,
     type VeChainSigner
@@ -11,7 +12,6 @@ import {
     TESTNET_DELEGATE_URL
 } from './fixture';
 import { ERC20_ABI } from '@vechain/sdk-core';
-import { TESTNET_URL } from '@vechain/sdk-constant';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.

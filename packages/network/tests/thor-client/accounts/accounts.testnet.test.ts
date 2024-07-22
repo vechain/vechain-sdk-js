@@ -10,8 +10,7 @@ import {
     testStoragePositionKey
 } from './fixture';
 import { testAccount } from '../../fixture';
-import { ThorClient } from '../../../src';
-import { TESTNET_URL } from '@vechain/sdk-constant';
+import { TESTNET_URL, ThorClient } from '../../../src';
 
 /**
  * ThorClient class tests

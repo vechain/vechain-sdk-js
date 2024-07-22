@@ -1,7 +1,11 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { ProviderRpcError } from '@vechain/sdk-errors';
-import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
+import {
+    RPC_METHODS,
+    RPCMethodsMap,
+    THOR_SOLO_URL,
+    ThorClient
+} from '../../../../../src';
 
 /**
  * RPC Mapper integration tests for 'evm_mine' method with Solo Network and mocked functionality

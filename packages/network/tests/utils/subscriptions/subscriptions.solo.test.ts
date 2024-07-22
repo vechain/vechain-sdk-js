@@ -5,6 +5,7 @@ import {
     type EventLogs,
     signerUtils,
     subscriptions,
+    THOR_SOLO_URL,
     ThorClient,
     type TransferLogs,
     type VeChainPrivateKeySigner,
@@ -27,7 +28,6 @@ import {
     TransactionHandler,
     unitsUtils
 } from '@vechain/sdk-core';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 const TIMEOUT = 15000; // 15-second timeout
 

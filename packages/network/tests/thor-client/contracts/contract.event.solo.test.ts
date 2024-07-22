@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
+    THOR_SOLO_URL,
     ThorClient,
     VeChainPrivateKeySigner,
     VeChainProvider,
@@ -13,7 +14,6 @@ import {
 } from './fixture';
 import { InvalidAbiFragment } from '@vechain/sdk-errors';
 import { ERC20_ABI } from '@vechain/sdk-core';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.

@@ -1,4 +1,4 @@
-import { THOR_SOLO_ACCOUNTS } from '@vechain/sdk-constant';
+import { THOR_SOLO_ACCOUNTS } from '../../../../../src';
 
 /**
  * Thor solo accounts to use in the tests

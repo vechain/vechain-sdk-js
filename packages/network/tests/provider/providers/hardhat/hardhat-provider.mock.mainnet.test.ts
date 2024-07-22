@@ -3,9 +3,9 @@ import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
 import {
     HardhatVeChainProvider,
+    MAINNET_URL,
     ProviderInternalBaseWallet
 } from '../../../../src';
-import { MAINNET_URL } from '@vechain/sdk-constant';
 
 /**
  * Hardhat provider tests - Mainnet

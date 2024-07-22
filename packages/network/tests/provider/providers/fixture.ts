@@ -8,7 +8,7 @@ import {
     TESTING_CONTRACT_ADDRESS,
     TESTING_CONTRACT_BYTECODE
 } from '../../fixture';
-import { THOR_SOLO_ACCOUNTS } from '@vechain/sdk-constant';
+import { THOR_SOLO_ACCOUNTS } from '../../../src';
 
 /**
  * Test cases for provider methods - Testnet

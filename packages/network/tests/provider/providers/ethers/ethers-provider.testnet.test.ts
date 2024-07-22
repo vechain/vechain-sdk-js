@@ -3,12 +3,12 @@ import {
     HardhatVeChainProvider,
     JSONRPCEthersProvider,
     ProviderInternalBaseWallet,
-    type SubscriptionEvent
+    type SubscriptionEvent,
+    TESTNET_URL
 } from '../../../../src';
 
 import { TESTNET_NETWORK } from '@vechain/sdk-core';
 import { providerMethodsTestCasesTestnet } from '../fixture';
-import { TESTNET_URL } from '@vechain/sdk-constant';
 
 /**
  *VeChain provider tests - Test Network

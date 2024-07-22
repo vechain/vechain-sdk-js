@@ -4,8 +4,7 @@ import {
     getRevertReasonTestCasesFixture
 } from './fixture';
 import { THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../fixture';
-import { TESTNET_URL } from '@vechain/sdk-constant';
-import { ThorClient, VeChainProvider } from '../../../src';
+import { TESTNET_URL, ThorClient, VeChainProvider } from '../../../src';
 
 /**
  * Transactions module tests suite.

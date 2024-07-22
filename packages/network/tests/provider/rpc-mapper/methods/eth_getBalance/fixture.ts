@@ -1,6 +1,6 @@
 import { Hex0x, Quantity, unitsUtils, ZERO_BYTES } from '@vechain/sdk-core';
 import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
-import { THOR_SOLO_ACCOUNTS } from '@vechain/sdk-constant';
+import { THOR_SOLO_ACCOUNTS } from '../../../../../src';
 
 /**
  * eth_getBalance RPC call tests - Positive cases

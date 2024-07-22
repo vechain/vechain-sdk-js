@@ -1,6 +1,5 @@
 import { describe, expect, jest, test } from '@jest/globals';
-import { HttpClient, ThorClient } from '../../../src';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
+import { HttpClient, THOR_SOLO_URL, ThorClient } from '../../../src';
 
 /**
  * Blocks module tests with mocks.

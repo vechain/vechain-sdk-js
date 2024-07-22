@@ -1,11 +1,15 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { ProviderRpcError } from '@vechain/sdk-errors';
-import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
+import {
+    RPC_METHODS,
+    RPCMethodsMap,
+    THOR_SOLO_URL,
+    ThorClient
+} from '../../../../../src';
 import {
     mockedNotOutOfSyncBestBlockFixture,
     mockedOutOfSyncBestBlockFixture
 } from './fixture';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  * RPC Mapper integration tests for 'eth_syncing' method with Solo Network and mocked functionality

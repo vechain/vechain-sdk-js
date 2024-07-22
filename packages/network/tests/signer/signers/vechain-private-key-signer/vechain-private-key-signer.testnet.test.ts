@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     ProviderInternalBaseWallet,
     signerUtils,
+    TESTNET_URL,
     ThorClient,
     VeChainPrivateKeySigner,
     VeChainProvider
@@ -20,7 +21,6 @@ import {
     TransactionHandler
 } from '@vechain/sdk-core';
 import { signTransactionTestCases } from './fixture';
-import { TESTNET_URL } from '@vechain/sdk-constant';
 
 /**
  *VeChain base signer tests - testnet

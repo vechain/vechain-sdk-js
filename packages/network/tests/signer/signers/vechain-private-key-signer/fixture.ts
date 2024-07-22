@@ -1,6 +1,7 @@
 import { TEST_ACCOUNTS, TESTNET_DELEGATE_URL } from '../../../fixture';
 import {
     type SignTransactionOptions,
+    THOR_SOLO_ACCOUNTS,
     type TransactionRequestInput
 } from '../../../../src';
 import { addressUtils, type TransactionClause } from '@vechain/sdk-core';
@@ -9,7 +10,6 @@ import {
     InvalidSecp256k1PrivateKey,
     TransactionDelegationError
 } from '@vechain/sdk-errors';
-import { THOR_SOLO_ACCOUNTS } from '@vechain/sdk-constant';
 
 /**
  * This interface clones the `TestCaseTypedDataDomain` interface in

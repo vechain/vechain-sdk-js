@@ -17,12 +17,12 @@ import {
     test
 } from '@jest/globals';
 import {
+    TESTNET_URL,
     ThorClient,
     VeChainPrivateKeySigner,
     VeChainProvider,
     vnsUtils
 } from '../../../../src/';
-import { TESTNET_URL } from '@vechain/sdk-constant';
 
 /**
  * VeChain base signer tests
