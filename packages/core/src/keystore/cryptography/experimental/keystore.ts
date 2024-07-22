@@ -4,7 +4,7 @@
  * encryption, decryption, and validation functionality.
  */
 import * as n_utils from '@noble/curves/abstract/utils';
-import { assert, KEYSTORE, stringifyData } from '@vechain/sdk-errors';
+import { InvalidKeystoreParams, stringifyData } from '@vechain/sdk-errors';
 import { ctr } from '@noble/ciphers/aes';
 import { scrypt } from '@noble/hashes/scrypt';
 import { type Keystore, type KeystoreAccount } from '../../types';
@@ -121,8 +121,7 @@ interface ScryptParams {
  *
  * @param {Keystore} keystore - The key store object.
  * @returns {ScryptParams} - The decryption key-derivation function parameters.
- *
- * @throws {InvalidKeystoreError} - If any parameter encoded in the keystore is invalid.
+ * @throws {InvalidKeystoreParams}
  *
  * @see {decryptKeystore}
  * @see {encodeScryptParams}
@@ -133,28 +132,39 @@ function decodeScryptParams(keystore: Keystore): ScryptParams {
     const r = keystore.crypto.kdfparams.r;
     const p: number = keystore.crypto.kdfparams.p;
     // Make sure N is a power of 2
-    assert(
-        'keystore.decrypt',
-        N > 0 && (N & (N - 1)) === 0,
-        KEYSTORE.INVALID_KEYSTORE,
-        'Decryption failed: invalid  keystore.crypto.kdfparams.n parameter.',
-        { keystore }
-    );
-    assert(
-        'keystore.decrypt',
-        r > 0 && p > 0,
-        KEYSTORE.INVALID_KEYSTORE,
-        'Decryption failed: both keystore.crypto.kdfparams.r or keystore.crypto.kdfparams.p parameter must be > 0.',
-        { keystore }
-    );
+    if (N <= 0 || (N & (N - 1)) !== 0)
+        throw new InvalidKeystoreParams(
+            '(EXPERIMENTAL) keystore.decodeScryptParams()',
+            'Decryption failed: invalid  keystore.crypto.kdfparams.n parameter.',
+            {
+                keystore,
+                N
+            }
+        );
+
+    // Make sure r and p are positive
+    if (r <= 0 || p <= 0)
+        throw new InvalidKeystoreParams(
+            '(EXPERIMENTAL) keystore.decodeScryptParams()',
+            'Decryption failed: both keystore.crypto.kdfparams.r or keystore.crypto.kdfparams.p parameter must be > 0.',
+            {
+                keystore,
+                r,
+                p
+            }
+        );
     const dkLen = keystore.crypto.kdfparams.dklen;
-    assert(
-        'keystore.decrypt',
-        dkLen === KEYSTORE_CRYPTO_PARAMS_DKLEN,
-        KEYSTORE.INVALID_KEYSTORE,
-        `Decryption failed: keystore.crypto.kdfparams.dklen parameter must be ${KEYSTORE_CRYPTO_PARAMS_DKLEN}`,
-        { keystore }
-    );
+
+    if (dkLen !== KEYSTORE_CRYPTO_PARAMS_DKLEN)
+        throw new InvalidKeystoreParams(
+            '(EXPERIMENTAL) keystore.decodeScryptParams()',
+            `Decryption failed: keystore.crypto.kdfparams.dklen parameter must be ${KEYSTORE_CRYPTO_PARAMS_DKLEN}`,
+            {
+                keystore,
+                dkLen
+            }
+        );
+
     return {
         N,
         dkLen: KEYSTORE_CRYPTO_PARAMS_DKLEN,
@@ -176,10 +186,8 @@ function decodeScryptParams(keystore: Keystore): ScryptParams {
  * - N: CPU/memory cost,
  * - p: Parallelization parameter,
  * - r: Block size parameter.
- *
  * @returns {ScryptParams} - The encoded scrypt parameters.
- *
- * @throws {InvalidKeystoreError} if any parameter value is invalid.
+ * @throws {InvalidKeystoreParams}
  *
  * @see {decodeScryptParams}
  * @see {encryptKeystore}
@@ -203,29 +211,37 @@ function encodeScryptParams(options: EncryptOptions): ScryptParams {
             p = options.scrypt.p;
         }
     }
-    assert(
-        'keystore.encrypt',
-        N > 0 &&
-            Number.isSafeInteger(N) &&
-            (BigInt(N) & BigInt(N - 1)) === BigInt(0),
-        KEYSTORE.INVALID_KEYSTORE,
-        'Encryption failed: invalid options.scrypt.N parameter.',
-        { options }
-    );
-    assert(
-        'keystore.encrypt',
-        r > 0 && Number.isSafeInteger(r),
-        KEYSTORE.INVALID_KEYSTORE,
-        'Encryption failed: invalid options.scrypt.r parameter.',
-        { options }
-    );
-    assert(
-        'keystore.encrypt',
-        p > 0 && Number.isSafeInteger(p),
-        KEYSTORE.INVALID_KEYSTORE,
-        'Encryption failed: invalid options.scrypt.p parameter.',
-        { options }
-    );
+
+    if (N <= 0 || (BigInt(N) & BigInt(N - 1)) !== BigInt(0))
+        throw new InvalidKeystoreParams(
+            '(EXPERIMENTAL) keystore.encodeScryptParams()',
+            'Encryption failed: invalid options.scrypt.N parameter.',
+            {
+                options,
+                N
+            }
+        );
+
+    if (r <= 0 || !Number.isSafeInteger(r))
+        throw new InvalidKeystoreParams(
+            '(EXPERIMENTAL) keystore.encodeScryptParams()',
+            'Encryption failed: invalid options.scrypt.r parameter.',
+            {
+                options,
+                r
+            }
+        );
+
+    if (p <= 0 || !Number.isSafeInteger(p))
+        throw new InvalidKeystoreParams(
+            '(EXPERIMENTAL) keystore.encodeScryptParams()',
+            'Encryption failed: invalid options.scrypt.p parameter.',
+            {
+                options,
+                p
+            }
+        );
+
     return {
         name: KEYSTORE_CRYPTO_KDF,
         dkLen: KEYSTORE_CRYPTO_PARAMS_DKLEN,
@@ -257,10 +273,8 @@ function encodeScryptParams(options: EncryptOptions): ScryptParams {
  *
  * @param {Uint8Array} privateKey - The private key to encrypt, the memory location is wiped after use.
  * @param {Uint8Array} password - The password to use for encryption, the memory location is wiped after use.
- *
  * @returns {Keystore} - The encrypted keystore object.
- *
- * @throws {InvalidKeystoreError} - If an error occurs during encryption.
+ * @throws {InvalidKeystoreParams}
  *
  * @see {encryptKeystore}
  *
@@ -304,8 +318,8 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): Keystore {
  * @param privateKey - The private key to encrypt, the memory location is wiped after use.
  * @param password - The password to use for encryption, the memory location is wiped after use.
  * @param options - Parameters used to configure the **AES** encryption of the private key and the **Scrypt** derivation key function.
- *
  * @returns {Keystore} - The encrypted keystore object.
+ * @throws {InvalidKeystoreParams}
  *
  * @remark **The private key must not be represented as string to avoid the
  * [Memory Dumping](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#memory-dumping)
@@ -329,22 +343,23 @@ function encryptKeystore(
         });
         // Override initialization vector.
         const iv = options.iv ?? secp256k1.randomBytes(16);
-        assert(
-            'keystore.encrypt',
-            iv.length === 16,
-            KEYSTORE.INVALID_KEYSTORE,
-            'Encryption failed: invalid options.iv length.',
-            { iv }
-        );
+        if (iv.length !== 16)
+            throw new InvalidKeystoreParams(
+                '(EXPERIMENTAL) keystore.encryptKeystore()',
+                'Encryption failed: invalid options.iv length.',
+                { iv }
+            );
+
         // Override the uuid.
         const uuidRandom = options.uuid ?? secp256k1.randomBytes(16);
-        assert(
-            'keystore.encrypt',
-            uuidRandom.length === 16,
-            KEYSTORE.INVALID_KEYSTORE,
-            'Encryption failed: options.uuid length must be 16',
-            { iv }
-        );
+
+        if (uuidRandom.length !== 16)
+            throw new InvalidKeystoreParams(
+                '(EXPERIMENTAL) keystore.encryptKeystore()',
+                'Encryption failed: invalid options.uuid length.',
+                { uuidRandom }
+            );
+
         // Message Authentication Code prefix.
         const macPrefix = key.slice(16, 32);
         // Encrypt the private key: 32 bytes for the Web3 Secret Storage (derivedKey, macPrefix)
@@ -410,14 +425,7 @@ function encryptKeystore(
  *
  * @param {Keystore} keystore - The keystore object to decrypt.
  * @param {Uint8Array} password - The password used for decryption, wiped after use.
- *
  * @return {KeystoreAccount} - The decrypted keystore account object.
- *
- * @throws {InvalidKeystoreError} if any parameter stored is invalid for
- * **AES 128 CTR** encryption** or **Scrypt** derived key function.
- * @throws {InvalidKeystorePasswordError} if the password is wrong:
- * the Message Authentication Code stored doesn't match with the output of
- * computer Key Derivation Function output.
  *
  * @see {decryptKeystore}
  * @see {isValid}
@@ -456,14 +464,8 @@ function decrypt(keystore: Keystore, password: Uint8Array): KeystoreAccount {
  *
  * @param {Keystore} keystore - The keystore object to decrypt.
  * @param {Uint8Array} password - The password used for decryption, wiped after use.
- *
  * @return {KeystoreAccount} - The decrypted keystore account object.
- *
- * @throws {InvalidKeystoreError} if any parameter stored is invalid for
- * **AES 128 CTR** encryption** or **Scrypt** derived key function.
- * @throws {InvalidKeystorePasswordError} if the password is wrong:
- * the Message Authentication Code stored doesn't match with the output of
- * computer Key Derivation Function output.
+ * @throws {InvalidKeystoreParams}
  *
  * @see {decodeScryptParams}
  * @see {decrypt}
@@ -473,27 +475,27 @@ function decryptKeystore(
     password: Uint8Array
 ): KeystoreAccount {
     try {
-        assert(
-            'keystore.decrypt',
-            keystore.crypto.cipher.toLowerCase() === KEYSTORE_CRYPTO_CIPHER,
-            KEYSTORE.INVALID_KEYSTORE,
-            'Decryption failed: unsupported crypto cipher algorithm.',
-            { keystore }
-        );
-        assert(
-            'keystore.decrypt',
-            keystore.crypto.kdf.toLowerCase() === KEYSTORE_CRYPTO_KDF,
-            KEYSTORE.INVALID_KEYSTORE,
-            'Decryption failed: unsupported crypto key derivation function.',
-            { keystore }
-        );
-        assert(
-            'keystore.decrypt',
-            keystore.version === KEYSTORE_VERSION,
-            KEYSTORE.INVALID_KEYSTORE,
-            'Decryption failed: unsupported keystore version.',
-            { keystore }
-        );
+        if (keystore.crypto.cipher.toLowerCase() !== KEYSTORE_CRYPTO_CIPHER)
+            throw new InvalidKeystoreParams(
+                '(EXPERIMENTAL) keystore.decryptKeystore()',
+                'Decryption failed: unsupported crypto cipher algorithm.',
+                { cipher: keystore.crypto.cipher.toLowerCase() }
+            );
+
+        if (keystore.crypto.kdf.toLowerCase() !== KEYSTORE_CRYPTO_KDF)
+            throw new InvalidKeystoreParams(
+                '(EXPERIMENTAL) keystore.decryptKeystore()',
+                'Decryption failed: unsupported crypto key derivation function.',
+                { keyDerivationFunction: keystore.crypto.kdf.toLowerCase() }
+            );
+
+        if (keystore.version !== KEYSTORE_VERSION)
+            throw new InvalidKeystoreParams(
+                '(EXPERIMENTAL) keystore.decryptKeystore()',
+                'Decryption failed: unsupported keystore version.',
+                { version: keystore.version }
+            );
+
         const kdf = decodeScryptParams(keystore);
         const key = scrypt(password, kdf.salt, {
             N: kdf.N,
@@ -502,30 +504,35 @@ function decryptKeystore(
             dkLen: kdf.dkLen
         });
         const ciphertext = n_utils.hexToBytes(keystore.crypto.ciphertext);
-        assert(
-            'keystore.decrypt',
-            keystore.crypto.mac ===
-                Hex.of(
-                    keccak256(
-                        n_utils.concatBytes(key.slice(16, 32), ciphertext)
-                    )
-                ),
-            KEYSTORE.INVALID_PASSWORD,
-            'Decryption failed: invalid password for the given keystore.'
-        );
+        if (
+            keystore.crypto.mac !==
+            Hex.of(
+                keccak256(n_utils.concatBytes(key.slice(16, 32), ciphertext))
+            )
+        ) {
+            throw new InvalidKeystoreParams(
+                '(EXPERIMENTAL) keystore.decryptKeystore()',
+                'Decryption failed: Invalid Password for the given keystore.',
+                // @NOTE: We are not exposing the password in the error data for security reasons.
+                {
+                    keystore
+                }
+            );
+        }
         const privateKey = ctr(
             key.slice(0, 16),
             n_utils.hexToBytes(keystore.crypto.cipherparams.iv)
         ).decrypt(ciphertext);
         const address = addressUtils.fromPrivateKey(privateKey);
-        if (keystore.address !== '') {
-            assert(
-                'keystore.decrypt',
-                address ===
-                    addressUtils.toERC55Checksum(Hex0x.canon(keystore.address)),
-                KEYSTORE.INVALID_KEYSTORE,
+        if (
+            keystore.address !== '' &&
+            address !==
+                addressUtils.toERC55Checksum(Hex0x.canon(keystore.address))
+        ) {
+            throw new InvalidKeystoreParams(
+                '(EXPERIMENTAL) keystore.decryptKeystore()',
                 'Decryption failed: address/password mismatch.',
-                { keystore }
+                { keystoreAddress: keystore.address }
             );
         }
         return {

@@ -4,9 +4,7 @@ import { certificate, type Certificate, Hex0x } from '../../src';
 import { cert, certPrivateKey } from './fixture';
 import { privateKey } from '../secp256k1/fixture';
 import {
-    CertificateInvalidSignatureFormatError,
-    CertificateInvalidSignerError,
-    CertificateNotSignedError,
+    CertificateSignature,
     InvalidSecp256k1PrivateKey
 } from '@vechain/sdk-errors';
 import {
@@ -134,7 +132,7 @@ describe('certificate', () => {
             };
             expect(() => {
                 certificate.verify(invalidCert);
-            }).toThrowError(CertificateInvalidSignerError);
+            }).toThrowError(CertificateSignature);
         });
 
         test('invalid - because invalid signature format', () => {
@@ -144,7 +142,7 @@ describe('certificate', () => {
             };
             expect(() => {
                 certificate.verify(invalidCert);
-            }).toThrowError(CertificateInvalidSignatureFormatError);
+            }).toThrowError(CertificateSignature);
         });
 
         test('invalid - undefined signature', () => {
@@ -154,7 +152,82 @@ describe('certificate', () => {
             };
             expect(() => {
                 certificate.verify(invalidCert);
-            }).toThrowError(CertificateNotSignedError);
+            }).toThrowError(CertificateSignature);
+        });
+
+        test('invalid - illegal signer address', () => {
+            const signedCert = certificate.sign(cert, certPrivateKey);
+            const invalidCert = {
+                ...cert,
+                signer: '0xC1b8C0fFeE',
+                signature: signedCert.signature
+            };
+            expect(() => {
+                certificate.verify(invalidCert);
+            }).toThrowError(CertificateSignature);
+        });
+
+        test('invalid - tampered purpose', () => {
+            const signedCert = certificate.sign(cert, certPrivateKey);
+            const invalidCert = {
+                ...cert,
+                purpose: 'tamper',
+                signature: signedCert.signature
+            };
+            expect(() => {
+                certificate.verify(invalidCert);
+            }).toThrowError(CertificateSignature);
+        });
+
+        test('invalid - tampered payload', () => {
+            const signedCert = certificate.sign(cert, certPrivateKey);
+            const invalidCert = {
+                ...cert,
+                payload: {
+                    type: 'data',
+                    content: 'dummy'
+                },
+                signature: signedCert.signature
+            };
+            expect(() => {
+                certificate.verify(invalidCert);
+            }).toThrowError(CertificateSignature);
+        });
+
+        test('invalid - tampered domain', () => {
+            const signedCert = certificate.sign(cert, certPrivateKey);
+            const invalidCert = {
+                ...cert,
+                domain: 'tampered',
+                signature: signedCert.signature
+            };
+            expect(() => {
+                certificate.verify(invalidCert);
+            }).toThrowError(CertificateSignature);
+        });
+
+        test('invalid - tampered timestamp', () => {
+            const signedCert = certificate.sign(cert, certPrivateKey);
+            const invalidCert = {
+                ...cert,
+                timestamp: cert.timestamp + 1,
+                signature: signedCert.signature
+            };
+            expect(() => {
+                certificate.verify(invalidCert);
+            }).toThrowError(CertificateSignature);
+        });
+
+        test('valid - additional property', () => {
+            const signedCert = certificate.sign(cert, certPrivateKey);
+            const ectendedCert = {
+                ...cert,
+                extendedProperty: 'extended property',
+                signature: signedCert.signature
+            };
+            expect(() => {
+                certificate.verify(ectendedCert);
+            }).not.toThrowError();
         });
 
         test('valid - happy path', () => {

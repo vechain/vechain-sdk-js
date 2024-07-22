@@ -48,8 +48,8 @@ function sha256(data: string | Uint8Array, returnType: 'hex'): string;
  *
  * @param {string | Uint8Array} data - The data to compute the hash for.
  * @param {ReturnType} [returnType='buffer'] - The desired return type for the hash. Defaults to 'buffer'.
- *
  * @return {Uint8Array | string} - The computed SHA-256 hash.
+ * @throws {InvalidDataType}
  */
 function sha256(
     data: string | Uint8Array,

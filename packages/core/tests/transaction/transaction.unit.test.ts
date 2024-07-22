@@ -2,10 +2,9 @@ import { describe, expect, test } from '@jest/globals';
 import { delegator, signer, transactions } from './fixture';
 import { Hex, Transaction, TransactionHandler } from '../../src';
 import {
-    InvalidAddressError,
-    InvalidSecp256k1SignatureError,
-    TransactionBodyError,
-    TransactionDelegationError,
+    InvalidSecp256k1Signature,
+    InvalidTransactionField,
+    NotDelegatedTransaction,
     UnavailableTransactionField
 } from '@vechain/sdk-errors';
 
@@ -46,7 +45,7 @@ describe('Transaction', () => {
 
                 // Get delegator form unsigned and undelegated transaction (should throw error)
                 expect(() => unsignedTransaction.delegator).toThrowError(
-                    TransactionDelegationError
+                    NotDelegatedTransaction
                 );
 
                 // Encoding
@@ -60,7 +59,7 @@ describe('Transaction', () => {
                 // Try to get signature hash with invalid address
                 expect(() =>
                     unsignedTransaction.getSignatureHash('INVALID_ADDRESS')
-                ).toThrowError(InvalidAddressError);
+                ).toThrowError(InvalidTransactionField);
             });
         });
 
@@ -91,7 +90,7 @@ describe('Transaction', () => {
 
                 // Get delegator form undelegated signed transaction (should throw error)
                 expect(() => signedTransaction.delegator).toThrowError(
-                    TransactionDelegationError
+                    NotDelegatedTransaction
                 );
 
                 // Encoding
@@ -192,7 +191,7 @@ describe('Transaction', () => {
                     transactions.delegated[0].body,
                     Buffer.from('INVALID_SIGNATURE')
                 )
-        ).toThrowError(InvalidSecp256k1SignatureError);
+        ).toThrowError(InvalidSecp256k1Signature);
 
         // Invalid transaction body (should throw error)
         expect(
@@ -201,6 +200,6 @@ describe('Transaction', () => {
                     ...transactions.delegated[0].body,
                     blockRef: 'INVALID_BLOCK_REF'
                 })
-        ).toThrowError(TransactionBodyError);
+        ).toThrowError(InvalidTransactionField);
     });
 });

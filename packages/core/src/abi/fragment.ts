@@ -25,10 +25,10 @@ const allowedSignatureFormats = ['sighash', 'minimal', 'full', 'json'];
  * Generic implementation of a function that returns a signature.
  * Used to avoid code duplication.
  *
- * @throws{InvalidAbiFormatTypeError}
  * @param fragment - Fragment to use.
  * @param formatType - Format type of the signature.
  * @returns The signature.
+ * @throws {InvalidAbiSignatureFormat}
  */
 function getSignature(fragment: Fragment, formatType: FormatType): string {
     // If the formatType is not included in the allowed formats, throw an error.
@@ -65,8 +65,8 @@ class Function<ABIType> {
     /**
      * Creates a new Function instance from an ABI fragment.
      *
-     * @throws{InvalidAbiFunctionError}
      * @param source - ABI fragment to use.
+     * @throws {InvalidAbiFragment}
      */
     constructor(source: ABIType) {
         try {
@@ -107,9 +107,9 @@ class Function<ABIType> {
     /**
      * Decode data using the function's ABI.
      *
-     * @throws{InvalidAbiDataToDecodeError} - If the data cannot be decoded.
      * @param data - Data to decode.
      * @returns Decoding results.
+     * @throws {InvalidAbiDataToEncodeOrDecode}
      */
     public decodeInput(data: BytesLike): Result {
         try {
@@ -130,8 +130,7 @@ class Function<ABIType> {
      *
      * @param data - The `BytesLike` data to be decoded, typically representing the output of a contract function call.
      * @returns A `Result` object containing the decoded data.
-     *
-     * @throws{InvalidAbiDataToDecodeError} - If the data cannot be decoded.
+     * @throws {InvalidAbiDataToEncodeOrDecode}
      *
      * @example
      * ```typescript
@@ -155,9 +154,9 @@ class Function<ABIType> {
     /**
      * Encode data using the function's ABI.
      *
-     * @throws{InvalidAbiDataToEncodeError}
      * @param dataToEncode - Data to encode.
      * @returns Encoded data.
+     * @throws {InvalidAbiDataToEncodeOrDecode}
      */
     public encodeInput<TValue>(dataToEncode?: TValue[]): string {
         try {
@@ -192,8 +191,8 @@ class Event<ABIType> {
     /**
      * Creates a new Event instance from an ABI fragment.
      *
-     * @throws{InvalidAbiEventError}
      * @param source - ABI fragment to use.
+     * @throws {InvalidAbiFragment}
      */
     constructor(source: ABIType) {
         try {
@@ -234,9 +233,9 @@ class Event<ABIType> {
     /**
      * Decode event log data using the event's ABI.
      *
-     * @throws{InvalidAbiDataToDecodeError}
      * @param data - Data to decode.
      * @returns Decoding results.
+     * @throws {InvalidAbiDataToEncodeOrDecode}
      */
     public decodeEventLog(data: { data: string; topics: string[] }): Result {
         try {
@@ -258,9 +257,9 @@ class Event<ABIType> {
     /**
      * Encode event log data using the event's ABI.
      *
-     * @throws{InvalidAbiDataToEncodeError}
      * @param dataToEncode - Data to encode.
      * @returns Encoded data along with topics.
+     * @throws {InvalidAbiDataToEncodeOrDecode}
      */
     public encodeEventLog<TValue>(dataToEncode: TValue[]): {
         data: string;
@@ -283,8 +282,8 @@ class Event<ABIType> {
      *
      * @param valuesToEncode - values to encode as topics. Non-indexed values are ignored.
      *                         Only the values of the indexed parameters are needed.
-     *
      * @returns Encoded topics array.
+     * @throws {InvalidAbiDataToEncodeOrDecode}
      */
     public encodeFilterTopics<TValue>(
         valuesToEncode: TValue[]

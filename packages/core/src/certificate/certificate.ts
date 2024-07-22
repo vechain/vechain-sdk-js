@@ -1,7 +1,7 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Hex, Hex0x } from '../utils';
 import { addressUtils } from '../address-utils';
-import { assert, CERTIFICATE } from '@vechain/sdk-errors';
+import { CertificateSignature } from '@vechain/sdk-errors';
 import { blake2b256 } from '../hash';
 import { hexToBytes } from '@noble/curves/abstract/utils';
 import { secp256k1 } from '../secp256k1';
@@ -103,44 +103,45 @@ function sign(cert: Certificate, privateKey: Uint8Array): Certificate {
  *
  * @param {Certificate} cert - The certificate to verify.
  *                             Any instance extending the {@link Certificate} interface is supported.
- *
- * @throws {Error} CERTIFICATE.CERTIFICATE_NOT_SIGNED - If the certificate's signature is missing.
- * @throws {Error} CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT - If the signature format is invalid.
- * @throws {Error} CERTIFICATE.CERTIFICATE_INVALID_SIGNER - If the signature does not correspond to the signer's public key.
+ * @throws {CertificateSignature}
  *
  * @see {encode}
  */
 function verify(cert: Certificate): void {
     // The certificate must be signed.
-    assert(
-        'certificate.verify',
-        cert.signature !== undefined && cert.signature !== null,
-        CERTIFICATE.CERTIFICATE_NOT_SIGNED,
-        "Verification failed: certificate's signature is missing.",
-        { cert }
-    );
+    if (cert.signature === undefined || cert.signature === null) {
+        throw new CertificateSignature(
+            'certificate.verify()',
+            "Verification failed: certificate's signature is missing.",
+            { cert }
+        );
+    }
+
     // Invalid hexadecimal as signature.
-    assert(
-        'certificate.verify',
-        Hex0x.isValid(cert.signature as string, false, true),
-        CERTIFICATE.CERTIFICATE_INVALID_SIGNATURE_FORMAT,
-        'Verification failed: signature format is invalid.',
-        { cert }
-    );
+    if (!Hex0x.isValid(cert.signature, false, true)) {
+        throw new CertificateSignature(
+            'certificate.verify()',
+            'Verification failed: signature format is invalid.',
+            { cert }
+        );
+    }
+
     // If the signature is not a string, an exception is thrown above.
-    const sign = hexToBytes(Hex.canon(cert.signature as string));
+    const sign = hexToBytes(Hex.canon(cert.signature));
     const hash = blake2b256(encode(cert));
     // The signer address is compared in lowercase to avoid
     const signer = addressUtils
         .fromPublicKey(secp256k1.recover(hash, sign))
         .toLowerCase();
-    assert(
-        'certificate.verify',
-        signer === cert.signer?.toLowerCase(),
-        CERTIFICATE.CERTIFICATE_INVALID_SIGNER,
-        "Verification failed: signature does not correspond to the signer's public key.",
-        { cert }
-    );
+
+    // The signer's must match the signer property of certificate.
+    if (signer !== cert.signer?.toLowerCase()) {
+        throw new CertificateSignature(
+            'certificate.verify()',
+            "Verification failed: signature does not correspond to the signer's public key.",
+            { cert }
+        );
+    }
 }
 
 /**

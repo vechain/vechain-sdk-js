@@ -52,10 +52,8 @@ function keccak256(data: string | Uint8Array, returnType: 'hex'): string;
  *
  * @param {string | Uint8Array} data - The data to be hashed.
  * @param {ReturnType} [returnType='buffer'] - The return type of the hash. Defaults to 'buffer'.
- *
  * @return {Uint8Array | string} - The Keccak-256 hash data in the specified return type.
- *
- * @throws{InvalidDataReturnTypeError}
+ * @throws {InvalidDataType}
  */
 function keccak256(
     data: string | Uint8Array,

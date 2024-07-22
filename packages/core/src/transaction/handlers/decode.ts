@@ -6,7 +6,7 @@ import {
 } from '../../utils';
 import { Transaction } from '../transaction';
 import { type TransactionBody } from '../types';
-import { assert, TRANSACTION } from '@vechain/sdk-errors';
+import { InvalidTransactionField } from '@vechain/sdk-errors';
 
 /**
  * Decode a raw transaction.
@@ -66,22 +66,22 @@ function decode(rawTransaction: Buffer, isSigned: boolean): Transaction {
  * For this reason (as already done in _encodeReservedField in Transaction class)
  * we create an ad hoc method.
  *
- * @throws{TransactionBodyError}
  * @param reserved - Reserved field to decode
  * @returns Decoded reserved field
+ * @throws {InvalidTransactionField}
  */
 function _decodeReservedField(reserved: Buffer[]): {
     features?: number;
     unused?: Buffer[];
 } {
     // Not trimmed reserved field
-    assert(
-        '_decodeReservedField',
-        reserved[reserved.length - 1].length !== 0,
-        TRANSACTION.INVALID_TRANSACTION_BODY,
-        'Invalid reserved field. Fields in the reserved buffer must be properly trimmed.',
-        { reserved }
-    );
+    if (reserved[reserved.length - 1].length === 0) {
+        throw new InvalidTransactionField(
+            '_decodeReservedField()',
+            'Invalid reserved field. Fields in the reserved buffer must be properly trimmed.',
+            { fieldName: 'reserved', reserved }
+        );
+    }
 
     // Get features field
     const featuresField = TRANSACTION_FEATURES_KIND.kind

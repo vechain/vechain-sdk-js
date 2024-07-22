@@ -4,9 +4,8 @@
 import { ethers } from 'ethers';
 import { type Keystore, type KeystoreAccount } from '../../types';
 import {
-    assert,
-    buildError,
-    KEYSTORE,
+    InvalidKeystore,
+    InvalidKeystoreParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import { secp256k1 } from '../../../secp256k1';
@@ -59,25 +58,23 @@ async function encrypt(
 /**
  * Decrypts a keystore to obtain the private key using the given password.
  *
- * @throws{InvalidKeystoreError, InvalidKeystorePasswordError}
  * @param keystore - The keystore containing the encrypted private key.
  * @param password - The password used to decrypt the keystore.
  * @returns A Promise that resolves to the decrypted KeystoreAccount or rejects if the keystore or password is invalid.
+ * @throws {InvalidKeystore, InvalidKeystoreParams}
  */
 async function decrypt(
     keystore: Keystore,
     password: string
 ): Promise<KeystoreAccount> {
     // Invalid keystore
-    assert(
-        'keystore.decrypt',
-        isValid(keystore),
-        KEYSTORE.INVALID_KEYSTORE,
-        'Invalid keystore. Ensure the keystore is properly formatted and contains the necessary data.',
-        {
-            keystore
-        }
-    );
+    if (!isValid(keystore)) {
+        throw new InvalidKeystore(
+            'keystore.decrypt()',
+            'Invalid keystore. Ensure the keystore is properly formatted and contains the necessary data.',
+            { keystore }
+        );
+    }
 
     try {
         return (await ethers.decryptKeystoreJson(
@@ -85,15 +82,13 @@ async function decrypt(
             password
         )) as KeystoreAccount;
     } catch (e) {
-        throw buildError(
-            'keystore.decrypt',
-            KEYSTORE.INVALID_PASSWORD,
+        throw new InvalidKeystoreParams(
+            'keystore.decrypt()',
             'Decryption failed: Invalid Password for the given keystore.',
+            // @NOTE: We are not exposing the password in the error data for security reasons.
             {
-                keystore,
-                password
-            },
-            e
+                keystore
+            }
         );
     }
 }

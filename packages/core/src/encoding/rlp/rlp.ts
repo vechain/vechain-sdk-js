@@ -64,11 +64,11 @@ class Profiler {
  * Handles the RLP packing of data.
  * Recursively processes through object properties or array elements to prepare data for RLP encoding.
  *
- * @throws{InvalidRLP}
  * @param obj - The object data to be packed.
  * @param profile - RLP_CODER profile for encoding structures.
  * @param context - Encoding context for error tracing.
  * @returns Packed data as RLPInput.
+ * @throws {InvalidRLP}
  *
  * @private
  */
@@ -124,11 +124,11 @@ const _packData = (
  * Handles the RLP unpacking of data.
  * Recursively processes through packed properties or elements to prepare data post RLP decoding.
  *
- * @throws{InvalidRLP}
  * @param packed - The packed data to be unpacked.
  * @param profile - RLP_CODER profile for decoding structures.
  * @param context - Decoding context for error tracing.
  * @returns Unpacked data as RLPValueType.
+ * @throws {InvalidRLP}
  *
  * @private
  */
