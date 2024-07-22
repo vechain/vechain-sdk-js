@@ -1,8 +1,7 @@
 import { expect } from 'expect';
-import { ThorClient } from '@vechain/sdk-network';
+import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 import { clauseBuilder, unitsUtils } from '@vechain/sdk-core';
 import { stringifyData } from '@vechain/sdk-errors';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 // START_SNIPPET: SimulationSnippet
 

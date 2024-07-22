@@ -2,11 +2,11 @@ import { expect } from 'expect';
 import {
     ProviderInternalBaseWallet,
     type ProviderInternalWalletAccount,
+    THOR_SOLO_URL,
     ThorClient,
     VeChainProvider,
     type VeChainSigner
 } from '@vechain/sdk-network';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant'; // Deposit contract bytecode
 
 // Deposit contract bytecode
 const depositContractBytecode: string =

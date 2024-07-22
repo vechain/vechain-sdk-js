@@ -6,11 +6,11 @@ import {
 import {
     ProviderInternalBaseWallet,
     signerUtils,
+    TESTNET_URL,
     ThorClient,
     VeChainProvider
-} from '@vechain/sdk-network';
+} from '@vechain/sdk-network'; // START_SNIPPET: FullFlowDelegatorUrlSnippet
 import { expect } from 'expect';
-import { TESTNET_URL } from '@vechain/sdk-constant'; // START_SNIPPET: FullFlowDelegatorUrlSnippet
 
 // START_SNIPPET: FullFlowDelegatorUrlSnippet
 

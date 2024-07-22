@@ -1,11 +1,11 @@
 import { coder, unitsUtils } from '@vechain/sdk-core';
 import { stringifyData } from '@vechain/sdk-errors';
 import {
+    THOR_SOLO_URL,
     ThorClient,
     type TransactionSimulationResult
 } from '@vechain/sdk-network';
 import { expect } from 'expect';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  * ABI of the Energy built-in contract. (VTHO)

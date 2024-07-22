@@ -6,12 +6,12 @@
 import {
     HardhatVeChainProvider,
     ProviderInternalBaseWallet,
+    THOR_SOLO_URL,
     ThorClient
 } from '@vechain/sdk-network';
 import { contractAdapter, helpers } from '../../src';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  *VeChain adapters tests - Solo Network

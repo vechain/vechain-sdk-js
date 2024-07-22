@@ -1,7 +1,6 @@
-import { Poll, ThorClient } from '@vechain/sdk-network';
+import { Poll, THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 import { Hex0x, TransactionHandler } from '@vechain/sdk-core';
 import { expect } from 'expect';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 // 1 - Create thor client for solo network
 

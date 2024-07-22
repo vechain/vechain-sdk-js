@@ -10,8 +10,7 @@ import {
     unitsUtils
 } from '@vechain/sdk-core';
 import { expect } from 'expect';
-import { ThorClient } from '@vechain/sdk-network';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
+import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 
 // START_SNIPPET: FeeDelegationSnippet
 

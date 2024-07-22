@@ -4,9 +4,8 @@ import {
     TransactionHandler,
     unitsUtils
 } from '@vechain/sdk-core';
-import { ThorClient } from '@vechain/sdk-network';
+import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 // START_SNIPPET: TransactionsSnippet
 

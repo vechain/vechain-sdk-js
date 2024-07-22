@@ -1,5 +1,4 @@
-import { ThorClient, type TracerName } from '@vechain/sdk-network';
-import { TESTNET_URL } from '@vechain/sdk-constant';
+import { TESTNET_URL, ThorClient, type TracerName } from '@vechain/sdk-network';
 
 // START_SNIPPET: DebugTraceTransactionClauseSnippet
 

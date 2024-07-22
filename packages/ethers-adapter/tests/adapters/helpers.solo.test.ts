@@ -1,13 +1,13 @@
 import {
     HardhatVeChainProvider,
     ProviderInternalBaseWallet,
+    THOR_SOLO_URL,
     ThorClient,
     type TransactionReceipt,
     type WaitForTransactionOptions
 } from '@vechain/sdk-network';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { helpers } from '../../src';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  *VeChain helpers tests - Solo Network

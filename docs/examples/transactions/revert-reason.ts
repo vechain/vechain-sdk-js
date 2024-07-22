@@ -1,6 +1,5 @@
 // 1 - Create the thor client
-import { ThorClient } from '@vechain/sdk-network';
-import { TESTNET_URL } from '@vechain/sdk-constant';
+import { TESTNET_URL, ThorClient } from '@vechain/sdk-network';
 
 const thorClient = ThorClient.fromUrl(TESTNET_URL, {
     isPollingEnabled: false

@@ -1,6 +1,5 @@
-import { HttpClient, ThorClient } from '@vechain/sdk-network';
+import { HttpClient, TESTNET_URL, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
-import { TESTNET_URL } from '@vechain/sdk-constant';
 
 // START_SNIPPET: InitializingThorClientSnippet
 

@@ -1,13 +1,13 @@
 import {
     ProviderInternalBaseWallet,
     type ProviderInternalWalletAccount,
+    THOR_SOLO_URL,
     ThorClient,
     VeChainProvider,
     type VeChainSigner
 } from '@vechain/sdk-network';
 import { expect } from 'expect';
 import type { DeployParams } from '@vechain/sdk-core';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 // START_SNIPPET: ContractSnippet
 

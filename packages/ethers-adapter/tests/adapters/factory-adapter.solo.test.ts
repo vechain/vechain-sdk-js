@@ -1,6 +1,7 @@
 import {
     HardhatVeChainProvider,
     ProviderInternalBaseWallet,
+    THOR_SOLO_URL,
     ThorClient,
     type WaitForTransactionOptions
 } from '@vechain/sdk-network';
@@ -8,7 +9,6 @@ import { erc20ContractBytecode } from '../fixture';
 import { factoryAdapter } from '../../src';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { ERC20_ABI, vechain_sdk_core_ethers } from '@vechain/sdk-core';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 /**
  *VeChain adapters tests - Solo Network

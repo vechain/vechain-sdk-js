@@ -1,8 +1,7 @@
 import { coder, type FunctionFragment } from '@vechain/sdk-core';
-import { ThorClient } from '@vechain/sdk-network';
+import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
 import { stringifyData } from '@vechain/sdk-errors';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 // ABI of the `TestingContract` smart contract
 const TESTING_CONTRACT_ABI = stringifyData([

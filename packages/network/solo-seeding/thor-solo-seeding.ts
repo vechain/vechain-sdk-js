@@ -12,7 +12,7 @@ import {
     BUILT_IN_CONTRACTS,
     THOR_SOLO_ACCOUNTS,
     THOR_SOLO_URL
-} from '@vechain/sdk-constant';
+} from '@vechain/sdk-network';
 import { ThorClient } from '../src';
 import { expect } from '@jest/globals';
 import { TESTING_CONTRACT_BYTECODE } from './const';

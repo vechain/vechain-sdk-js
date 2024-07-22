@@ -3,13 +3,13 @@ import {
     type Contract,
     ProviderInternalBaseWallet,
     type ProviderInternalWalletAccount,
+    THOR_SOLO_URL,
     ThorClient,
     type TransactionReceipt,
     VeChainProvider,
     type VeChainSigner
 } from '@vechain/sdk-network';
 import { expect } from 'expect';
-import { THOR_SOLO_URL } from '@vechain/sdk-constant';
 
 // ERC20 contract bytecode
 const erc20ContractBytecode: string =

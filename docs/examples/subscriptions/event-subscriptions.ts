@@ -1,6 +1,5 @@
-import { subscriptions } from '@vechain/sdk-network';
+import { subscriptions, TESTNET_URL } from '@vechain/sdk-network';
 import WebSocket from 'isomorphic-ws';
-import { TESTNET_URL } from '@vechain/sdk-constant';
 
 /**
  * The event to subscribe to.
