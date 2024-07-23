@@ -23,8 +23,7 @@ as `input` parameter.
 
 ```typescript { name=debug-retrieve-storage-range, category=example }
 // 1 - Create thor client for testnet
-const _testnetUrl = 'https://testnet.vechain.org';
-const thorClient = ThorClient.fromUrl(_testnetUrl);
+const thorClient = ThorClient.fromUrl(TESTNET_URL);
 
 // 2 - Retrieve the storage range.
 const result = await thorClient.debug.retrieveStorageRange({
@@ -107,8 +106,7 @@ the `input` parameter.
 
 ```typescript { name=debug-trace-contract-call, category=example }
 // 1 - Create thor client for testnet
-const _testnetUrl = 'https://testnet.vechain.org';
-const thorClient = ThorClient.fromUrl(_testnetUrl);
+const thorClient = ThorClient.fromUrl(TESTNET_URL);
 
 // 2 - Trace the contract call.
 const result = await thorClient.debug.traceContractCall(
@@ -165,8 +163,7 @@ the `input` parameter.
 
 ```typescript { name=debug-trace-transaction-clause, category=example }
 // 1 - Create thor client for testnet
-const _testnetUrl = 'https://testnet.vechain.org';
-const thorClient = ThorClient.fromUrl(_testnetUrl);
+const thorClient = ThorClient.fromUrl(TESTNET_URL);
 
 // 2 - Trace the clause.
 const result = await thorClient.debug.traceTransactionClause(

@@ -3,8 +3,8 @@ import {
     buildTransactionBodyClausesTestCases,
     getRevertReasonTestCasesFixture
 } from './fixture';
-import { testnetUrl, THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../fixture';
-import { ThorClient, VeChainProvider } from '../../../src';
+import { THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../fixture';
+import { TESTNET_URL, ThorClient, VeChainProvider } from '../../../src';
 
 /**
  * Transactions module tests suite.
@@ -22,7 +22,7 @@ describe('Transactions module Testnet tests suite', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(testnetUrl);
+        thorClient = ThorClient.fromUrl(TESTNET_URL);
         provider = new VeChainProvider(
             thorClient,
             THOR_SOLO_ACCOUNTS_BASE_WALLET,
@@ -49,7 +49,7 @@ describe('Transactions module Testnet tests suite', () => {
                 test(
                     description,
                     async () => {
-                        const thorClient = ThorClient.fromUrl(testnetUrl);
+                        const thorClient = ThorClient.fromUrl(TESTNET_URL);
                         const gasResult = await thorClient.gas.estimateGas(
                             clauses,
                             '0x000000000000000000000000004d000000000000' // This address might not exist on testnet, thus the gasResult.reverted might be true

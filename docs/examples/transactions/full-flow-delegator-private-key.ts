@@ -6,16 +6,16 @@ import {
 import {
     ProviderInternalBaseWallet,
     signerUtils,
+    THOR_SOLO_URL,
     ThorClient,
     VeChainProvider
-} from '@vechain/sdk-network';
-import { expect } from 'expect'; // START_SNIPPET: FullFlowDelegatorPrivateKeySnippet
+} from '@vechain/sdk-network'; // START_SNIPPET: FullFlowDelegatorPrivateKeySnippet
+import { expect } from 'expect';
 
 // START_SNIPPET: FullFlowDelegatorPrivateKeySnippet
 
 // 1 - Create the thor client
-const _soloUrl = 'http://localhost:8669/';
-const thorSoloClient = ThorClient.fromUrl(_soloUrl, {
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL, {
     isPollingEnabled: false
 });
 

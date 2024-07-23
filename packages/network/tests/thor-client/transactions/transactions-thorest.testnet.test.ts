@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { testnetUrl } from '../../fixture';
 import { transactionDetails, transactionReceipts } from './fixture-thorest';
-import { ThorClient } from '../../../src';
+import { TESTNET_URL, ThorClient } from '../../../src';
 
 /**
  * ThorClient class tests
@@ -15,7 +14,7 @@ describe('ThorClient - Transactions Module', () => {
     let thorClient: ThorClient;
 
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(testnetUrl);
+        thorClient = ThorClient.fromUrl(TESTNET_URL);
     });
 
     /**

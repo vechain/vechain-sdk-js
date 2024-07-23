@@ -1,13 +1,14 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     ProviderInternalBaseWallet,
+    THOR_SOLO_URL,
     ThorClient,
     type TransactionReceipt,
     VeChainPrivateKeySigner,
     VeChainProvider,
     type VeChainSigner
 } from '../../../src';
-import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
+import { TEST_ACCOUNTS } from '../../fixture';
 import { erc20ContractBytecode } from './fixture';
 import { addressUtils, ERC20_ABI } from '@vechain/sdk-core';
 
@@ -28,7 +29,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     let providerWithDelegationPrivateKeyEnabled: VeChainProvider;
 
     beforeEach(() => {
-        thorSoloClient = ThorClient.fromUrl(soloUrl);
+        thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
         signer = new VeChainPrivateKeySigner(
             Buffer.from(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,

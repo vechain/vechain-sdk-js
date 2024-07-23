@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
+import { TEST_ACCOUNTS } from '../../fixture';
 import { Hex0x, TransactionHandler } from '@vechain/sdk-core';
 import { sendTransactionErrors, simulateTransaction } from './fixture-thorest';
 import { InvalidDataTypeError, stringifyData } from '@vechain/sdk-errors';
-import { ThorClient } from '../../../src';
+import { THOR_SOLO_URL, ThorClient } from '../../../src';
 
 /**
  * ThorClient class tests.
@@ -17,7 +17,7 @@ describe('ThorClient - Transactions Module', () => {
     let thorSoloClient: ThorClient;
 
     beforeEach(() => {
-        thorSoloClient = ThorClient.fromUrl(soloUrl);
+        thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
     });
 
     /**

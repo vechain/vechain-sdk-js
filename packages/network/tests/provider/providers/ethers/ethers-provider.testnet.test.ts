@@ -3,9 +3,9 @@ import {
     HardhatVeChainProvider,
     JSONRPCEthersProvider,
     ProviderInternalBaseWallet,
-    type SubscriptionEvent
+    type SubscriptionEvent,
+    TESTNET_URL
 } from '../../../../src';
-import { testnetUrl } from '../../../fixture';
 
 import { TESTNET_NETWORK } from '@vechain/sdk-core';
 import { providerMethodsTestCasesTestnet } from '../fixture';
@@ -25,13 +25,13 @@ describe('Vechain provider tests - solo', () => {
     beforeEach(() => {
         hardhatVeChainProvider = new HardhatVeChainProvider(
             new ProviderInternalBaseWallet([]),
-            testnetUrl,
+            TESTNET_URL,
             (message: string, parent?: Error) => new Error(message, parent),
             false
         );
         jsonRPCEthersProvider = new JSONRPCEthersProvider(
             TESTNET_NETWORK.chainTag,
-            testnetUrl,
+            TESTNET_URL,
             hardhatVeChainProvider
         );
     });

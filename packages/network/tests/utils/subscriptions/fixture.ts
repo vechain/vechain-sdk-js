@@ -1,18 +1,18 @@
-import { generateRandomValidAddress } from '../../../../core/tests/fixture';
 import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
 import { TESTING_CONTRACT_ADDRESS } from '../../fixture';
 // eslint-disable-next-line import/no-named-default
 import { default as NodeWebSocket } from 'isomorphic-ws';
+import { Hex0x, secp256k1 } from '../../../../core/src';
 
 /**
  * random address for `from` parameter
  */
-const fromRandomAddress = generateRandomValidAddress();
+const fromRandomAddress = Hex0x.of(secp256k1.randomBytes(20));
 
 /**
  * random address for `to` parameter
  */
-const toRandomAddress = generateRandomValidAddress();
+const toRandomAddress = Hex0x.of(secp256k1.randomBytes(20));
 
 /**
  * `value` random BigInt
