@@ -76,4 +76,8 @@ describe('Address class tests', () => {
             Address.ofPublicKey(AddressFixture.key.public.bytes)
         ).toStrictEqual(AddressFixture.key.address);
     });
+
+    /*
+    new Address(hex).at()
+     */
 });
