@@ -34,6 +34,18 @@ describe('ThorClient - Nodes Module', () => {
         );
     }, 5000);
 
+    test('null or empty URL or blank URL', async () => {
+        let thorClient = ThorClient.fromUrl('');
+        await expect(thorClient.nodes.isHealthy()).rejects.toThrow(
+            HTTPClientError
+        );
+
+        thorClient = ThorClient.fromUrl('   ');
+        await expect(thorClient.nodes.isHealthy()).rejects.toThrow(
+            HTTPClientError
+        );
+    });
+
     test('invalid URL', async () => {
         /**
          *  client required to access a node

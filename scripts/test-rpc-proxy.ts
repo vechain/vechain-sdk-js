@@ -1,4 +1,3 @@
-import axios from 'axios';
 import assert from 'assert';
 
 const endpointsTestCases = [
@@ -38,13 +37,22 @@ async function testRPCProxy() {
     try {
         // Send RPC requests to test it
         endpointsTestCases.forEach(async({method, params, expected})=>{
-            const response = await axios.post(proxyUrl, {
-                jsonrpc: '2.0',
-                method,
-                params
+            const response = await fetch(proxyUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    jsonrpc: '2.0',
+                    id: 1,
+                    method,
+                    params
+                })
             });
-            assert.ok(response.data && response.data.result, 'Response does not contain result');
-            assert.strictEqual(response.data.result, expected, 'Expected a different result');
+            const data = await response.json();
+
+            assert.ok(data && data.result, 'Response does not contain result');
+            assert.strictEqual(data.result, expected, 'Expected a different result');
             return 0;
         });
     } catch (error) {
