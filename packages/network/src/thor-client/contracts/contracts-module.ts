@@ -4,9 +4,7 @@ import {
     coder,
     dataUtils,
     type FunctionFragment,
-    type InterfaceAbi,
-    PARAMS_ABI,
-    PARAMS_ADDRESS
+    type InterfaceAbi
 } from '@vechain/sdk-core';
 import type {
     ContractCallOptions,
@@ -23,6 +21,7 @@ import { Contract, ContractFactory } from './model';
 import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
 import { type VeChainSigner } from '../../signer';
 import { type Abi } from 'abitype';
+import { BUILT_IN_CONTRACTS } from '../../utils';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -215,9 +214,9 @@ class ContractsModule {
      */
     public async getBaseGasPrice(): Promise<unknown> {
         return await this.executeCall(
-            PARAMS_ADDRESS,
+            BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
             coder
-                .createInterface(PARAMS_ABI)
+                .createInterface(BUILT_IN_CONTRACTS.PARAMS_ABI)
                 .getFunction('get') as FunctionFragment,
             [dataUtils.encodeBytes32String('base-gas-price', 'left')]
         );
