@@ -3,10 +3,11 @@ import {
     type ProviderInternalWallet,
     RPC_METHODS,
     RPCMethodsMap,
+    THOR_SOLO_URL,
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
-import { soloUrl, THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../../fixture';
+import { THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_accounts' method
@@ -29,7 +30,7 @@ describe('RPC Mapper - eth_accounts method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(soloUrl);
+        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
         // Init provider
         provider = new VeChainProvider(

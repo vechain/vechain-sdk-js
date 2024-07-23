@@ -1,7 +1,11 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { NotImplementedError } from '@vechain/sdk-errors';
-import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { testnetUrl } from '../../../../fixture';
+import {
+    RPC_METHODS,
+    RPCMethodsMap,
+    TESTNET_URL,
+    ThorClient
+} from '../../../../../src';
 
 /**
  * RPC Mapper integration tests for 'eth_getProof' method
@@ -19,7 +23,7 @@ describe('RPC Mapper - eth_getProof method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(testnetUrl);
+        thorClient = ThorClient.fromUrl(TESTNET_URL);
     });
 
     /**

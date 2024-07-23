@@ -1,14 +1,4 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { txt } from '../../../../../core/src/utils/txt/txt';
-import { RPC_METHODS } from '../../../provider';
-import { VeChainAbstractSigner } from '../vechain-abstract-signer';
-import {
-    assert,
-    InvalidDataType,
-    InvalidSecp256k1PrivateKey,
-    JSONRPC,
-    TRANSACTION
-} from '@vechain/sdk-errors';
 import {
     addressUtils,
     Hex,
@@ -18,8 +8,18 @@ import {
     Transaction,
     type TransactionBody,
     TransactionHandler,
+    txt,
     vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
+import { RPC_METHODS } from '../../../provider';
+import { VeChainAbstractSigner } from '../vechain-abstract-signer';
+import {
+    assert,
+    InvalidDataType,
+    InvalidSecp256k1PrivateKey,
+    JSONRPC,
+    TRANSACTION
+} from '@vechain/sdk-errors';
 import {
     type AvailableVeChainProviders,
     type TransactionRequestInput

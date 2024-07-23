@@ -1,15 +1,14 @@
-import { HttpClient, ThorClient } from '@vechain/sdk-network';
+import { HttpClient, TESTNET_URL, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
 
 // START_SNIPPET: InitializingThorClientSnippet
 
 // First way to initialize thor client
-const testnetUrl = 'https://testnet.vechain.org/';
-const httpClient = new HttpClient(testnetUrl);
+const httpClient = new HttpClient(TESTNET_URL);
 const thorClient = new ThorClient(httpClient);
 
 // Second way to initialize thor client
-const thorClient2 = ThorClient.fromUrl(testnetUrl);
+const thorClient2 = ThorClient.fromUrl(TESTNET_URL);
 
 // END_SNIPPET: InitializingThorClientSnippet
 

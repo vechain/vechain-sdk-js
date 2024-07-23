@@ -1,13 +1,13 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
-    ALL_ACCOUNTS,
-    soloUrl,
     THOR_SOLO_ACCOUNTS_BASE_WALLET,
     THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR
 } from '../../../../fixture';
 import {
     ProviderInternalBaseWallet,
     RPC_METHODS,
+    THOR_SOLO_ACCOUNTS,
+    THOR_SOLO_URL,
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
@@ -44,7 +44,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(soloUrl);
+        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
         // Init provider
         provider = new VeChainProvider(
@@ -148,8 +148,8 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
          * Positive case 2 - Should be able to send a transaction with undefined value
          */
         test('eth_sendTransaction - Should be able to send a transaction with value undefined', async () => {
-            const from = ALL_ACCOUNTS[18].address;
-            const to = ALL_ACCOUNTS[19].address;
+            const from = THOR_SOLO_ACCOUNTS[18].address;
+            const to = THOR_SOLO_ACCOUNTS[19].address;
             // Get the balance of the sender and the receiver before sending the transaction
             const balanceSenderBefore = (await provider.request({
                 method: RPC_METHODS.eth_getBalance,
@@ -266,15 +266,18 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                 new ProviderInternalBaseWallet([
                     {
                         privateKey: Buffer.from(
-                            ALL_ACCOUNTS[0].privateKey,
+                            THOR_SOLO_ACCOUNTS[0].privateKey,
                             'hex'
                         ),
                         publicKey: Buffer.from(
                             secp256k1.derivePublicKey(
-                                Buffer.from(ALL_ACCOUNTS[0].privateKey, 'hex')
+                                Buffer.from(
+                                    THOR_SOLO_ACCOUNTS[0].privateKey,
+                                    'hex'
+                                )
                             )
                         ),
-                        address: ALL_ACCOUNTS[0].address
+                        address: THOR_SOLO_ACCOUNTS[0].address
                     }
                 ])
             );

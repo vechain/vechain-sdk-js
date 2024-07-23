@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { soloUrl } from '../../../../fixture';
+import {
+    RPC_METHODS,
+    RPCMethodsMap,
+    THOR_SOLO_URL,
+    ThorClient
+} from '../../../../../src';
 import { getReceiptCorrectCasesSoloNetwork } from './fixture';
 
 /**
@@ -19,7 +23,7 @@ describe('RPC Mapper - eth_getTransactionReceipt method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(soloUrl);
+        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
     });
 
     /**

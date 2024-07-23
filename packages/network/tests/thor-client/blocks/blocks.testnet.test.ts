@@ -6,8 +6,7 @@ import {
     validExpandedBlockRevisions,
     waitForBlockTestCases
 } from './fixture';
-import { HttpClient, Poll, ThorClient } from '../../../src';
-import { testnetUrl } from '../../fixture';
+import { HttpClient, Poll, TESTNET_URL, ThorClient } from '../../../src';
 import {
     addressUtils,
     bloom,
@@ -26,7 +25,7 @@ describe('ThorClient - Blocks Module', () => {
     let thorClient: ThorClient;
 
     beforeEach(() => {
-        thorClient = new ThorClient(new HttpClient(testnetUrl), {
+        thorClient = new ThorClient(new HttpClient(TESTNET_URL), {
             isPollingEnabled: true
         });
     });

@@ -1,8 +1,5 @@
-import { subscriptions } from '@vechain/sdk-network';
+import { subscriptions, TESTNET_URL } from '@vechain/sdk-network';
 import WebSocket from 'isomorphic-ws';
-
-// The URL of the node to request the subscription from.
-const testnetUrl = 'https://testnet.vechain.org';
 
 /**
  * The event to subscribe to.
@@ -20,7 +17,7 @@ const senderSampleAddress = '0x9e7911de289c3c856ce7f421034f66b6cde49c39';
 const toSampleAddress = '0xfe7911df289c3c856ce7f421034f66b6cd249c39';
 
 const wsURL = subscriptions.getEventSubscriptionUrl(
-    testnetUrl,
+    TESTNET_URL,
     swapEvent,
     /**
      * The values of the indexed parameters to construct the topic filters.

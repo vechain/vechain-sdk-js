@@ -128,7 +128,7 @@ VeChain allows for the delegation of contract calls, enabling developers to exec
 Here is an example of how to delegate a contract call:
 
 ```typescript { name=contract-delegation-erc20, category=example }
-const thorSoloClient = ThorClient.fromUrl(_soloUrl);
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount], {

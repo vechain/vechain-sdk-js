@@ -128,8 +128,7 @@ const senderAccount = {
 };
 
 // 1 - Create thor client for solo network
-const _soloUrl = 'http://localhost:8669/';
-const thorSoloClient = ThorClient.fromUrl(_soloUrl, {
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL, {
     isPollingEnabled: false
 });
 
@@ -326,8 +325,7 @@ Note - the result of a transaction might be different depending on the state(blo
 // And we demonstrate (1) how we can check the expected gas cost and (2) whether the transaction is successful
 
 // 1 - Create thor client for solo network
-const _soloUrl = 'http://localhost:8669';
-const thorSoloClient = ThorClient.fromUrl(_soloUrl);
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
 // 2(a) - create the transaction for a VET transfer
 const transaction1 = {
@@ -384,11 +382,12 @@ In the following complete examples, we will explore the entire lifecycle of a Ve
 1. **No Delegation (Signing Only with an Origin Private Key)**: In this scenario, we'll demonstrate the basic process of creating a transaction, signing it with the origin private key, and sending it to the VeChainThor blockchain without involving fee delegation.
 
 ```typescript { name=full-flow-no-delegator, category=example }
+import { expect } from 'expect';
+
 // START_SNIPPET: FullFlowNoDelegatorSnippet
 
 // 1 - Create the thor client
-const _soloUrl = 'http://localhost:8669/';
-const thorSoloClient = ThorClient.fromUrl(_soloUrl, {
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL, {
     isPollingEnabled: false
 });
 
@@ -469,11 +468,12 @@ const txReceipt = await thorSoloClient.transactions.waitForTransaction(
 2. **Delegation with Private Key**: Here, we'll extend the previous example by incorporating fee delegation. The transaction sender will delegate the transaction fee payment to another entity (delegator), and we'll guide you through the steps of building, signing, and sending such a transaction.
 
 ```typescript { name=full-flow-delegator-private-key, category=example }
+import { expect } from 'expect';
+
 // START_SNIPPET: FullFlowDelegatorPrivateKeySnippet
 
 // 1 - Create the thor client
-const _soloUrl = 'http://localhost:8669/';
-const thorSoloClient = ThorClient.fromUrl(_soloUrl, {
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL, {
     isPollingEnabled: false
 });
 
@@ -573,11 +573,12 @@ const txReceipt = await thorSoloClient.transactions.waitForTransaction(
 3. **Delegation with URL**: This example will showcase the use of a delegation URL for fee delegation. The sender will specify a delegation URL in the `signTransaction` options, allowing a designated sponsor to pay the transaction fee. We'll cover the full process, from building clauses to verifying the transaction on-chain.
 
 ```typescript { name=full-flow-delegator-url, category=example }
+import { expect } from 'expect';
+
 // START_SNIPPET: FullFlowDelegatorUrlSnippet
 
 // 1 - Create the thor client
-const _testnetUrl = 'https://testnet.vechain.org/';
-const thorClient = ThorClient.fromUrl(_testnetUrl, {
+const thorClient = ThorClient.fromUrl(TESTNET_URL, {
     isPollingEnabled: false
 });
 
@@ -700,24 +701,21 @@ This method will return the revert reason of the transaction if it failed, other
 Even when using the `simulateTransaction` method you can find the revert reason.
 
 ```typescript { name=revert-reason-with-simulation, category=example }
-const simulatedTx: TransactionSimulationResult[] = await thorSoloClient.transactions.simulateTransaction(
-    [
+const simulatedTx: TransactionSimulationResult[] =
+    await thorSoloClient.transactions.simulateTransaction([
         {
             to: '0x0000000000000000000000000000456e65726779',
             value: '0',
-            data: coder.encodeFunctionInput(
-                energy_abi,
-                'transfer',
-                [
-                    '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-                    unitsUtils.parseVET('1000000000')
-                ]
-            )
+            data: coder.encodeFunctionInput(energy_abi, 'transfer', [
+                '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
+                unitsUtils.parseVET('1000000000')
+            ])
         }
-    ]
-);
+    ]);
 
-const revertReason = await thorSoloClient.transactions.decodeRevertReason(simulatedTx[0].data);
+const revertReason = await thorSoloClient.transactions.decodeRevertReason(
+    simulatedTx[0].data
+);
 ```
 
 In this case there is only a `TransactionSimulationResult`, so no need to loop.

@@ -1,10 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 
 import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
-import { testnetUrl } from '../../../fixture';
 import { providerMethodsTestCasesTestnet } from '../fixture';
 import { waitForMessage } from '../helpers';
-import { ThorClient, VeChainProvider } from '../../../../src';
+import { TESTNET_URL, ThorClient, VeChainProvider } from '../../../../src';
 
 /**
  *VeChain provider tests
@@ -22,7 +21,7 @@ describe('VeChain provider tests - testnet', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(testnetUrl);
+        thorClient = ThorClient.fromUrl(TESTNET_URL);
         provider = new VeChainProvider(thorClient);
     });
 
