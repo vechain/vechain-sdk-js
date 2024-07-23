@@ -47,5 +47,8 @@
     "abitype": "^1.0.5",
     "isomorphic-ws": "^5.0.0",
     "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "whatwg-fetch": "^3.6.20"
   }
 }

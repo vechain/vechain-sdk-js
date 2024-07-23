@@ -17,6 +17,11 @@ class CustomizedTestEnvironment extends TestEnvironment {
         this.global.TextEncoder = globalThis.TextEncoder;
         this.global.TextDecoder = globalThis.TextDecoder;
         this.global.Uint8Array = globalThis.Uint8Array;
+
+        // Add fetch to the global object
+        // if (!this.global.fetch) {
+        //     this.global.fetch = require('whatwg-fetch').fetch;
+        // }
     }
 }
 
