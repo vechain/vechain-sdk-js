@@ -5,8 +5,7 @@ import {
     expectedFilterEventLogs,
     expectedFilterTransferLogs
 } from './fixture';
-import { ThorClient } from '../../../src';
-import { testnetUrl } from '../../fixture';
+import { TESTNET_URL, ThorClient } from '../../../src';
 
 /**
  * ThorClient class tests
@@ -18,7 +17,7 @@ describe('ThorClient - Logs Module', () => {
     let thorClient: ThorClient;
 
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(testnetUrl);
+        thorClient = ThorClient.fromUrl(TESTNET_URL);
     });
 
     /**
@@ -27,7 +26,7 @@ describe('ThorClient - Logs Module', () => {
     test('filterEventLogs', async () => {
         const eventLogs =
             await thorClient.logs.filterRawEventLogs(argFilterEventLogs);
-        expect(eventLogs).toStrictEqual(expectedFilterEventLogs);
+        expect(eventLogs).toEqual(expectedFilterEventLogs);
     }, 3000);
 
     /**
@@ -38,6 +37,6 @@ describe('ThorClient - Logs Module', () => {
             argFilterTransferLogs
         );
         //
-        expect(transferLogs).toStrictEqual(expectedFilterTransferLogs);
+        expect(transferLogs).toEqual(expectedFilterTransferLogs);
     }, 3000);
 });

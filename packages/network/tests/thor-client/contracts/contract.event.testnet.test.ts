@@ -1,6 +1,5 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { ThorClient } from '../../../src';
-import { testnetUrl } from '../../fixture';
+import { TESTNET_URL, ThorClient } from '../../../src';
 import {
     emissionAddress,
     emissionsABI,
@@ -13,7 +12,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     let thorTestnetClient: ThorClient;
 
     beforeEach(() => {
-        thorTestnetClient = ThorClient.fromUrl(testnetUrl);
+        thorTestnetClient = ThorClient.fromUrl(TESTNET_URL);
     });
 
     test('Should filter x allocation events', async () => {

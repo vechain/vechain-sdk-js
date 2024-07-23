@@ -1,11 +1,12 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
+    THOR_SOLO_URL,
     ThorClient,
     VeChainPrivateKeySigner,
     VeChainProvider,
     type VeChainSigner
 } from '../../../src';
-import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
+import { TEST_ACCOUNTS } from '../../fixture';
 import {
     erc20ContractBytecode,
     eventExampleAbi,
@@ -30,7 +31,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     let signer: VeChainSigner;
 
     beforeEach(() => {
-        thorSoloClient = ThorClient.fromUrl(soloUrl);
+        thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
         signer = new VeChainPrivateKeySigner(
             Buffer.from(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,

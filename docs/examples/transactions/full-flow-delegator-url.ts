@@ -6,16 +6,16 @@ import {
 import {
     ProviderInternalBaseWallet,
     signerUtils,
+    TESTNET_URL,
     ThorClient,
     VeChainProvider
-} from '@vechain/sdk-network';
-import { expect } from 'expect'; // START_SNIPPET: FullFlowDelegatorUrlSnippet
+} from '@vechain/sdk-network'; // START_SNIPPET: FullFlowDelegatorUrlSnippet
+import { expect } from 'expect';
 
 // START_SNIPPET: FullFlowDelegatorUrlSnippet
 
 // 1 - Create the thor client
-const _testnetUrl = 'https://testnet.vechain.org/';
-const thorClient = ThorClient.fromUrl(_testnetUrl, {
+const thorClient = ThorClient.fromUrl(TESTNET_URL, {
     isPollingEnabled: false
 });
 

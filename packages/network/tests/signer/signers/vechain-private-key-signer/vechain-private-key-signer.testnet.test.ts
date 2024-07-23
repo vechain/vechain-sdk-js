@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     ProviderInternalBaseWallet,
     signerUtils,
+    TESTNET_URL,
     ThorClient,
     VeChainPrivateKeySigner,
     VeChainProvider
@@ -9,7 +10,6 @@ import {
 import {
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS,
-    testnetUrl,
     THOR_SOLO_ACCOUNTS_BASE_WALLET,
     THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR
 } from '../../../fixture';
@@ -37,7 +37,7 @@ describe('VeChain base signer tests - testnet', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(testnetUrl);
+        thorClient = ThorClient.fromUrl(TESTNET_URL);
     });
 
     /**
@@ -112,7 +112,7 @@ describe('VeChain base signer tests - testnet', () => {
                 test(
                     description,
                     async () => {
-                        const thorClient = ThorClient.fromUrl(testnetUrl);
+                        const thorClient = ThorClient.fromUrl(TESTNET_URL);
 
                         const sampleClause = clauseBuilder.functionInteraction(
                             TESTING_CONTRACT_ADDRESS,

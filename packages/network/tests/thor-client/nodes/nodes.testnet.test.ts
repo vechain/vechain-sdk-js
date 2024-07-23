@@ -1,7 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { HTTPClientError } from '@vechain/sdk-errors';
-import { testnetUrl } from '../../fixture';
-import { ThorClient } from '../../../src';
+import { TESTNET_URL, ThorClient } from '../../../src';
 
 /**
  * Node integration tests
@@ -16,7 +15,7 @@ describe('ThorClient - Nodes Module', () => {
          *  client required accessing a node
          *  @internal
          */
-        const thorClient = ThorClient.fromUrl(testnetUrl);
+        const thorClient = ThorClient.fromUrl(TESTNET_URL);
         const peerNodes = await thorClient.nodes.getNodes();
 
         expect(peerNodes).toBeDefined();
@@ -34,6 +33,18 @@ describe('ThorClient - Nodes Module', () => {
             HTTPClientError
         );
     }, 5000);
+
+    test('null or empty URL or blank URL', async () => {
+        let thorClient = ThorClient.fromUrl('');
+        await expect(thorClient.nodes.isHealthy()).rejects.toThrow(
+            HTTPClientError
+        );
+
+        thorClient = ThorClient.fromUrl('   ');
+        await expect(thorClient.nodes.isHealthy()).rejects.toThrow(
+            HTTPClientError
+        );
+    });
 
     test('invalid URL', async () => {
         /**

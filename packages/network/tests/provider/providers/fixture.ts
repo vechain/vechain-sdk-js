@@ -5,10 +5,10 @@ import {
     validTransactionHashTestnet
 } from '../fixture';
 import {
-    ALL_ACCOUNTS,
     TESTING_CONTRACT_ADDRESS,
     TESTING_CONTRACT_BYTECODE
 } from '../../fixture';
+import { THOR_SOLO_ACCOUNTS } from '../../../src';
 
 /**
  * Test cases for provider methods - Testnet
@@ -43,7 +43,7 @@ const providerMethodsTestCasesSolo = [
         description:
             'Should be able to call eth_getBalance of an address with balance more than 0 VET',
         method: 'eth_getBalance',
-        params: [ALL_ACCOUNTS[0].address, 'latest'],
+        params: [THOR_SOLO_ACCOUNTS[0].address, 'latest'],
         expected: Quantity.of(unitsUtils.parseVET('500000000'))
     },
     {

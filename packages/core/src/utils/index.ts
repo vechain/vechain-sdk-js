@@ -4,5 +4,6 @@ export * from './data';
 export * from './hdnode';
 export * from './hex';
 export * from './transaction';
+export * from './txt';
 export * from './units';
 export * from './revision';

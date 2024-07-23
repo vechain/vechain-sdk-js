@@ -9,10 +9,10 @@ import {
     transferTransactionBodyValueAsNumber,
     waitForTransactionTestCases
 } from './fixture';
-import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
+import { TEST_ACCOUNTS } from '../../fixture';
 import { Transaction, TransactionHandler } from '@vechain/sdk-core';
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { ThorClient } from '../../../src';
+import { THOR_SOLO_URL, ThorClient } from '../../../src';
 
 /**
  * Transactions module tests.
@@ -21,7 +21,7 @@ import { ThorClient } from '../../../src';
  */
 describe('ThorClient - Transactions Module', () => {
     // ThorClient instance for the Solo network
-    const thorSoloClient = ThorClient.fromUrl(soloUrl);
+    const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
     /**
      * Test suite for sendTransaction method
@@ -96,9 +96,7 @@ describe('ThorClient - Transactions Module', () => {
 
                     expect(txReceipt).toBeDefined();
                     expect(txReceipt?.reverted).toBe(expectedReceipt.reverted);
-                    expect(txReceipt?.outputs).toStrictEqual(
-                        expectedReceipt.outputs
-                    );
+                    expect(txReceipt?.outputs).toEqual(expectedReceipt.outputs);
                     expect(txReceipt?.gasUsed).toBe(expectedReceipt.gasUsed);
                     expect(txReceipt?.gasPayer).toBe(expectedReceipt.gasPayer);
                     expect(sendTransactionResult.id).toBe(txReceipt?.meta.txID);

@@ -30,8 +30,7 @@ To use the VeChain Provider in your project, follow these steps:
 Example:
 ```typescript { name=vechain-provider, category=example }
 // 1 - Create thor client for testnet
-const testnetUrl = 'https://testnet.vechain.org';
-const thorClient = ThorClient.fromUrl(testnetUrl);
+const thorClient = ThorClient.fromUrl(TESTNET_URL);
 
 // 2 - Init provider
 const provider = new VeChainProvider(thorClient);
@@ -70,12 +69,10 @@ To use the Hardhat Provider in your project, follow these steps:
 
 Example:
 ```typescript { name=vechain-hardhat-provider, category=example }
-const testnetUrl = 'https://testnet.vechain.org';
-
 // 1 - Init provider
 const provider = new HardhatVeChainProvider(
     new ProviderInternalBaseWallet([]),
-    testnetUrl,
+    TESTNET_URL,
     (message: string, parent?: Error) => new Error(message, parent)
 );
 

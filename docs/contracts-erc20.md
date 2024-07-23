@@ -31,9 +31,7 @@ Once the contract is compiled, we can deploy it using the VeChain SDK. The follo
 
 
 ```typescript { name=contract-create-erc20-token, category=example }
-// Create thor client for solo network
-const _soloUrl = 'http://localhost:8669/';
-const thorSoloClient = ThorClient.fromUrl(_soloUrl);
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount])

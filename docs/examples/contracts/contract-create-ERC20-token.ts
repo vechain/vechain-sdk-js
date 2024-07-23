@@ -1,11 +1,12 @@
 import {
     ProviderInternalBaseWallet,
     type ProviderInternalWalletAccount,
+    THOR_SOLO_URL,
     ThorClient,
     VeChainProvider,
     type VeChainSigner
 } from '@vechain/sdk-network';
-import { unitsUtils, ERC20_ABI } from '@vechain/sdk-core';
+import { ERC20_ABI, unitsUtils } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // ERC20 contract bytecode
@@ -23,9 +24,7 @@ const deployerAccount: ProviderInternalWalletAccount = {
 
 // START_SNIPPET: CreateERC20TokenSnippet
 
-// Create thor client for solo network
-const _soloUrl = 'http://localhost:8669/';
-const thorSoloClient = ThorClient.fromUrl(_soloUrl);
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount])

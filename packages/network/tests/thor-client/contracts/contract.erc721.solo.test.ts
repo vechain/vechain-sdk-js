@@ -2,13 +2,14 @@
 import { erc721ContractBytecode, erc721ContractTestCases } from './fixture';
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import {
+    THOR_SOLO_URL,
     ThorClient,
     type TransactionReceipt,
     VeChainPrivateKeySigner,
     VeChainProvider,
     type VeChainSigner
 } from '../../../src';
-import { soloUrl, TEST_ACCOUNTS } from '../../fixture';
+import { TEST_ACCOUNTS } from '../../fixture';
 import {
     coder,
     ERC721_ABI,
@@ -51,7 +52,7 @@ describe('ThorClient - ERC721 Contracts', () => {
      * blockchain transaction processing.
      */
     beforeAll(async () => {
-        thorSoloClient = ThorClient.fromUrl(soloUrl);
+        thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
         signer = new VeChainPrivateKeySigner(
             Buffer.from(
                 TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,

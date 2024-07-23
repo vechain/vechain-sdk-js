@@ -1,79 +1,114 @@
-import Axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios';
-import { Agent as HttpAgent } from 'http';
-import { Agent as HttpsAgent } from 'https';
 import { type HttpClientOptions, type HttpParams } from './types';
-import { convertError, DEFAULT_HTTP_TIMEOUT } from '../index';
+import { DEFAULT_HTTP_TIMEOUT } from '../index';
 import { buildError, HTTP_CLIENT } from '@vechain/sdk-errors';
 
 /**
  * Represents a concrete implementation of the `IHttpClient` interface, providing methods for making HTTP requests.
  *
- * This class leverages Axios for handling HTTP requests and allows for interaction with HTTP services.
+ * This class leverages the Fetch API for handling HTTP requests and allows for interaction with HTTP services.
  * It is configured with a base URL and request timeout upon instantiation.
  */
 class HttpClient {
-    /**
-     * Axios instance to make http requests
-     */
-    protected readonly axios: AxiosInstance;
+    private readonly timeout: number;
 
     /**
-     * Instantiates an `HttpClient` object with a specified base URL and HTTP request timeout.
+     * Instantiates an HttpClient object with a specified base URL and HTTP request timeout.
      *
      * @param baseURL - The base URL for all network requests.
-     * @param options - (Optional) An object containing additional configuration options for the HTTP client, such as a custom Axios instance and a request timeout.
+     * @param options - (Optional) An object containing additional configuration options for the HTTP client, such as a request timeout.
      */
     constructor(
         readonly baseURL: string,
         options?: HttpClientOptions
     ) {
-        this.axios =
-            options?.axiosInstance ??
-            Axios.create({
-                httpAgent: new HttpAgent({ keepAlive: false }),
-                httpsAgent: new HttpsAgent({ keepAlive: false }),
-                baseURL,
-                timeout: options?.timeout ?? DEFAULT_HTTP_TIMEOUT
-            });
+        this.timeout = options?.timeout ?? DEFAULT_HTTP_TIMEOUT;
     }
 
     /**
-     * Sends an HTTP request using the Axios library.
+     * Sends an HTTP request using the Fetch API.
      *
      * @param method - The HTTP method to be used ('GET' or 'POST').
      * @param path - The path to access on the server relative to the base URL.
      * @param params - (Optional) Additional request parameters such as query parameters, request body, and custom headers.
      * @returns A promise that resolves to the response data from the HTTP request.
-     * @throws {HTTPClientError} Will throw an error if the request fails, with more detailed information if the error is Axios-specific.
+     * @throws {HTTPClientError} Will throw an error if the request fails.
      */
     public async http(
         method: 'GET' | 'POST',
         path: string,
         params?: HttpParams
     ): Promise<unknown> {
-        const config: AxiosRequestConfig = {
+        let url: URL;
+        try {
+            url = new URL(path, this.baseURL);
+        } catch (error) {
+            throw buildError(
+                'INVALID_HTTP_REQUEST',
+                HTTP_CLIENT.INVALID_HTTP_REQUEST,
+                `Invalid URL: ${this.baseURL}${path}`,
+                {
+                    method,
+                    url: `${this.baseURL}${path}`,
+                    message: 'Request failed'
+                }
+            );
+        }
+
+        if (params?.query != null) {
+            Object.entries(params.query).forEach(([key, value]) => {
+                url.searchParams.append(key, String(value));
+            });
+        }
+
+        const config: RequestInit = {
             method,
-            url: path,
-            data: params?.body,
-            headers: params?.headers,
-            params: params?.query
+            headers: params?.headers as HeadersInit,
+            body: method !== 'GET' ? JSON.stringify(params?.body) : undefined
         };
 
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => {
+            controller.abort();
+        }, this.timeout);
+
         try {
-            const resp = await this.axios(config);
-            this.validateResponseHeader(params, resp.headers);
-            return resp.data as unknown;
-        } catch (err) {
-            if (Axios.isAxiosError(err)) {
-                throw convertError(err);
+            const response = await fetch(url.toString(), {
+                ...config,
+                signal: controller.signal
+            });
+
+            clearTimeout(timeoutId);
+
+            if (!response.ok) {
+                throw buildError(
+                    'INVALID_HTTP_REQUEST',
+                    HTTP_CLIENT.INVALID_HTTP_REQUEST,
+                    `HTTP error! status: ${response.status}`,
+                    {
+                        method,
+                        url: url.toString(),
+                        status: response.status
+                    }
+                );
             }
-            // If it's not an Axios error, re-throw the original error
+
+            this.validateResponseHeader(
+                params,
+                Object.fromEntries(response.headers.entries())
+            );
+
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+            return await response.json();
+        } catch (err) {
             throw buildError(
-                'http',
+                'INVALID_HTTP_REQUEST',
                 HTTP_CLIENT.INVALID_HTTP_REQUEST,
-                'HTTP request failed: Check method, path, and parameters for validity.',
-                { method, path, params },
-                err
+                `Invalid URL: ${this.baseURL}${path}`,
+                {
+                    method,
+                    url: url.toString(),
+                    message: 'Request failed'
+                }
             );
         }
     }
@@ -86,17 +121,10 @@ class HttpClient {
      */
     private validateResponseHeader(
         params?: HttpParams,
-        headers?: Record<string, unknown>
+        headers?: Record<string, string>
     ): void {
         if (params?.validateResponseHeader != null && headers != null) {
-            const responseHeaders: Record<string, string> = {};
-            for (const key in headers) {
-                const value = headers[key];
-                if (typeof value === 'string') {
-                    responseHeaders[key] = value;
-                }
-            }
-            params.validateResponseHeader(responseHeaders);
+            params.validateResponseHeader(headers);
         }
     }
 }
