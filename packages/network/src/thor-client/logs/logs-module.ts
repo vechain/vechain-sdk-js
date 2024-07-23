@@ -43,41 +43,55 @@ class LogsModule {
     /**
      * Filters event logs based on the provided criteria and decodes them using the provided fragments.
      * The decoded data is added to the event logs as a new property.
-     * The result is an array of event logs grouped by the event topic hash.
-     * @param filterOptions
-     * @returns A promise that resolves to an array of event logs grouped by event.
+     * @param filterOptions - An object specifying filtering criteria for event logs.
      */
     public async filterEventLogs(
         filterOptions: FilterEventLogsOptions
-    ): Promise<EventLogs[][]> {
-        // Extract criteria and fragments from filter options
-        const criteriaSet = filterOptions.criteriaSet?.map((c) => c.criteria);
-
-        console.log(criteriaSet);
+    ): Promise<EventLogs[]> {
+        // Extract raw event logs and fragments from filter options
         const fragments = filterOptions.criteriaSet?.map(
             (c) => c.eventFragment
         );
 
-        // Create new filter options with the criteria set
-        const filterRawEventLogsOptions: FilterRawEventLogsOptions = {
-            range: filterOptions.range ?? {
-                unit: 'block',
-                from: 0,
-                to: (await this.thor.blocks.getBestBlockCompressed())?.number
-            },
-            criteriaSet,
-            options: filterOptions.options,
-            order: filterOptions.order ?? 'asc'
-        };
+        const eventLogs = await this.getRawEventLogs(filterOptions);
 
-        // Filter event logs based on the provided criteria
-        const eventLogs = await this.filterRawEventLogs(
-            filterRawEventLogsOptions
+        const result: EventLogs[] = [];
+
+        if (fragments !== undefined) {
+            const uniqueFragments = this.removeDuplicatedFragments(fragments);
+
+            eventLogs.forEach((log) => {
+                const eventFragment = new abi.Event(
+                    uniqueFragments.get(log.topics[0])
+                );
+                log.decodedData = eventFragment.decodeEventLog(log);
+                result.push(log);
+            });
+        }
+
+        return result;
+    }
+
+    /**
+     * Filters event logs based on the provided criteria and decodes them using the provided fragments.
+     * The decoded data is added to the event logs as a new property.
+     * The result is an array of event logs grouped by the event topic hash.
+     * @param filterOptions
+     * @returns A promise that resolves to an array of event logs grouped by event.
+     */
+    public async filterGroupedEventLogs(
+        filterOptions: FilterEventLogsOptions
+    ): Promise<EventLogs[][]> {
+        // Extract raw event logs and fragments from filter options
+        const fragments = filterOptions.criteriaSet?.map(
+            (c) => c.eventFragment
         );
+
+        const eventLogs = await this.getRawEventLogs(filterOptions);
 
         const result = new Map<string, EventLogs[]>();
 
-        if (fragments !== null && fragments !== undefined) {
+        if (fragments !== undefined) {
             const uniqueFragments = this.removeDuplicatedFragments(fragments);
 
             // Initialize the result map with empty arrays for each unique fragment
@@ -93,6 +107,31 @@ class LogsModule {
         }
 
         return Array.from(result.values());
+    }
+
+    /**
+     * Filters event logs based on the provided criteria without decoding them.
+     * @param filterOptions - An object specifying filtering criteria for event logs.
+     * @private Returns a promise that resolves to filtered non decoded event logs.
+     */
+    private async getRawEventLogs(
+        filterOptions: FilterEventLogsOptions
+    ): Promise<EventLogs[]> {
+        const criteriaSet = filterOptions.criteriaSet?.map((c) => c.criteria);
+        // Create new filter options with the criteria set
+        const filterRawEventLogsOptions: FilterRawEventLogsOptions = {
+            range: filterOptions.range ?? {
+                unit: 'block',
+                from: 0,
+                to: (await this.thor.blocks.getBestBlockCompressed())?.number
+            },
+            criteriaSet,
+            options: filterOptions.options,
+            order: filterOptions.order ?? 'asc'
+        };
+
+        // Filter event logs based on the provided criteria
+        return await this.filterRawEventLogs(filterRawEventLogsOptions);
     }
 
     /**

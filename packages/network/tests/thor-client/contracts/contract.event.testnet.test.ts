@@ -47,6 +47,40 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         expect(xAllocationVotingEvents).toBeDefined();
         expect(Array.from(xAllocationVotingEvents.keys()).length).toEqual(2);
+        expect(xAllocationVotingEvents.length).toBeGreaterThan(0);
+    }, 30000);
+
+    test('Should filter x allocation events grouping them by type', async () => {
+        const xAllocationVotingContract = thorTestnetClient.contracts.load(
+            xAllocationAddress,
+            xAllocationVotingGovernorABI
+        );
+
+        const emissionsContract = thorTestnetClient.contracts.load(
+            emissionAddress,
+            emissionsABI
+        );
+
+        const roundCreatedCriteria =
+            xAllocationVotingContract.criteria.RoundCreated();
+        const emissionDistributedCriteria =
+            emissionsContract.criteria.EmissionDistributed();
+
+        const xAllocationVotingEvents =
+            await thorTestnetClient.logs.filterGroupedEventLogs({
+                criteriaSet: [
+                    roundCreatedCriteria,
+                    emissionDistributedCriteria
+                ],
+                options: {
+                    offset: 0,
+                    limit: 256
+                },
+                order: 'asc'
+            });
+
+        expect(xAllocationVotingEvents).toBeDefined();
+        expect(Array.from(xAllocationVotingEvents.keys()).length).toEqual(2);
         expect(xAllocationVotingEvents[0].length).toBeGreaterThan(0);
         expect(xAllocationVotingEvents[1].length).toBeGreaterThan(0);
     }, 30000);
