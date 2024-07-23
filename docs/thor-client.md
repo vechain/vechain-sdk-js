@@ -170,11 +170,11 @@ const transferLogs = await thorClient.logs.filterTransferLogs({
 
 In this example, the code initializes a Thor client for the VeChainThor testnet network and demonstrates two essential methods for interacting with logs:
 
- - `filterEventLogs(
+ - `filterGroupedEventLogs(
         filterOptions: FilterEventLogsOptions
     ): Promise<EventLogs[]>`
 
-The `filterEventLogs` method simplifies the process of retrieving event logs from the VeChainThor network. Developers can set criteria for the block range, apply pagination options, and define filters based on specific addresses and topics. The result is an array of event logs that match the specified criteria.
+The `filterGroupedEventLogs` method simplifies the process of retrieving event logs from the VeChainThor network. Developers can set criteria for the block range, apply pagination options, and define filters based on specific addresses and topics. The result is an array of event logs that match the specified criteria.
 
  - `filterTransferLogs(
         filterOptions: FilterTransferLogsOptions
