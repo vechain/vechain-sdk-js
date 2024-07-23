@@ -2,10 +2,10 @@ import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 import {
     HardhatVeChainProvider,
     JSONRPCEthersProvider,
+    MAINNET_URL,
     ProviderInternalBaseWallet,
     type SubscriptionEvent
 } from '../../../../src';
-import { mainnetUrl } from '../../../fixture';
 
 import { MAINNET_NETWORK } from '@vechain/sdk-core';
 import { providerMethodsTestCasesMainnet } from '../fixture';
@@ -25,13 +25,13 @@ describe('VeChain provider tests - solo', () => {
     beforeEach(() => {
         hardhatVeChainProvider = new HardhatVeChainProvider(
             new ProviderInternalBaseWallet([]),
-            mainnetUrl,
+            MAINNET_URL,
             (message: string, parent?: Error) => new Error(message, parent),
             false
         );
         jsonRPCEthersProvider = new JSONRPCEthersProvider(
             MAINNET_NETWORK.chainTag,
-            mainnetUrl,
+            MAINNET_URL,
             hardhatVeChainProvider
         );
     });

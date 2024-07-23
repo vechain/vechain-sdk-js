@@ -10,7 +10,7 @@ import {
     unitsUtils
 } from '@vechain/sdk-core';
 import { expect } from 'expect';
-import { ThorClient } from '@vechain/sdk-network';
+import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 
 // START_SNIPPET: FeeDelegationSnippet
 
@@ -22,8 +22,7 @@ const senderAccount = {
 };
 
 // 1 - Create thor client for solo network
-const _soloUrl = 'http://localhost:8669/';
-const thorSoloClient = ThorClient.fromUrl(_soloUrl, {
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL, {
     isPollingEnabled: false
 });
 

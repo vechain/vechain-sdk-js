@@ -1,11 +1,11 @@
-import { HardhatVeChainProvider } from '@vechain/sdk-network';
 import {
+    HardhatVeChainProvider,
     ProviderInternalBaseWallet,
+    THOR_SOLO_URL,
     ThorClient,
     type TransactionReceipt,
     type WaitForTransactionOptions
 } from '@vechain/sdk-network';
-import { soloUrl } from '../fixture';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { helpers } from '../../src';
 
@@ -25,10 +25,10 @@ describe('Helpers tests', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(soloUrl);
+        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
         provider = new HardhatVeChainProvider(
             new ProviderInternalBaseWallet([]),
-            soloUrl,
+            THOR_SOLO_URL,
             (message: string, parent?: Error) => new Error(message, parent)
         );
         expect(thorClient).toBeDefined();

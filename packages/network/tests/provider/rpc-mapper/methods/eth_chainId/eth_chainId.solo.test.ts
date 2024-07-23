@@ -3,9 +3,9 @@ import {
     CHAIN_ID,
     RPC_METHODS,
     RPCMethodsMap,
+    THOR_SOLO_URL,
     ThorClient
 } from '../../../../../src';
-import { soloUrl } from '../../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_chainId' method
@@ -23,7 +23,7 @@ describe('RPC Mapper - eth_chainId method tests solo', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(soloUrl);
+        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
     });
 
     /**

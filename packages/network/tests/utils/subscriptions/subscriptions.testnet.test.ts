@@ -8,8 +8,7 @@ import {
     getVETtransfersSubscriptionUrlTestCases,
     testWebSocketConnection
 } from './fixture';
-import { subscriptions } from '../../../src';
-import { testnetUrl } from '../../fixture';
+import { subscriptions, TESTNET_URL } from '../../../src';
 import { stringifyData } from '@vechain/sdk-errors';
 
 /**
@@ -33,7 +32,7 @@ describe('Subscriptions Testnet', () => {
                 } with ${valuesToEncode?.toString()}`, async () => {
                     expect(
                         subscriptions.getEventSubscriptionUrl(
-                            testnetUrl,
+                            TESTNET_URL,
                             event,
                             valuesToEncode,
                             options
@@ -59,7 +58,7 @@ describe('Subscriptions Testnet', () => {
                 options
             )}`, async () => {
                 expect(
-                    subscriptions.getBlockSubscriptionUrl(testnetUrl, options)
+                    subscriptions.getBlockSubscriptionUrl(TESTNET_URL, options)
                 ).toEqual(expectedURL);
 
                 // Test the connection to the websocket
@@ -82,7 +81,7 @@ describe('Subscriptions Testnet', () => {
                 )}`, async () => {
                     expect(
                         subscriptions.getLegacyBeatSubscriptionUrl(
-                            testnetUrl,
+                            TESTNET_URL,
                             options
                         )
                     ).toEqual(expectedURL);
@@ -101,7 +100,7 @@ describe('Subscriptions Testnet', () => {
                 options
             )}`, async () => {
                 expect(
-                    subscriptions.getBeatSubscriptionUrl(testnetUrl, options)
+                    subscriptions.getBeatSubscriptionUrl(TESTNET_URL, options)
                 ).toEqual(expectedURL);
 
                 // Test the connection to the websocket
@@ -122,7 +121,7 @@ describe('Subscriptions Testnet', () => {
                 test(`getNewTransactionsSubscriptionUrl`, async () => {
                     expect(
                         subscriptions.getNewTransactionsSubscriptionUrl(
-                            testnetUrl
+                            TESTNET_URL
                         )
                     ).toEqual(expectedURL);
 
@@ -147,7 +146,7 @@ describe('Subscriptions Testnet', () => {
                 )}`, async () => {
                     expect(
                         subscriptions.getVETtransfersSubscriptionUrl(
-                            testnetUrl,
+                            TESTNET_URL,
                             options
                         )
                     ).toEqual(expectedURL);

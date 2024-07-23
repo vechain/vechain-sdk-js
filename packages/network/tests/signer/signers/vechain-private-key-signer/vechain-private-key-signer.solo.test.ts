@@ -2,13 +2,13 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     ProviderInternalBaseWallet,
     signerUtils,
+    THOR_SOLO_ACCOUNTS,
+    THOR_SOLO_URL,
     ThorClient,
     VeChainPrivateKeySigner,
     VeChainProvider
 } from '../../../../src';
 import {
-    ALL_ACCOUNTS,
-    soloUrl,
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS
 } from '../../../fixture';
@@ -37,7 +37,7 @@ describe('VeChain base signer tests - solo', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(soloUrl);
+        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
     });
 
     /**
@@ -171,7 +171,7 @@ describe('VeChain base signer tests - solo', () => {
          */
         test('call with no clauses transaction', async () => {
             const signer = new VeChainPrivateKeySigner(
-                Buffer.from(ALL_ACCOUNTS[0].privateKey, 'hex'),
+                Buffer.from(THOR_SOLO_ACCOUNTS[0].privateKey, 'hex'),
                 new VeChainProvider(
                     thorClient,
                     new ProviderInternalBaseWallet([]),
@@ -232,7 +232,7 @@ describe('VeChain base signer tests - solo', () => {
             ({ testName, transaction, expected }) => {
                 test(testName, async () => {
                     const signer = new VeChainPrivateKeySigner(
-                        Buffer.from(ALL_ACCOUNTS[0].privateKey, 'hex'),
+                        Buffer.from(THOR_SOLO_ACCOUNTS[0].privateKey, 'hex'),
                         new VeChainProvider(
                             thorClient,
                             new ProviderInternalBaseWallet([]),

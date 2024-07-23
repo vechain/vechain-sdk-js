@@ -3,6 +3,7 @@ import {
     type Contract,
     ProviderInternalBaseWallet,
     type ProviderInternalWalletAccount,
+    THOR_SOLO_URL,
     ThorClient,
     type TransactionReceipt,
     VeChainProvider,
@@ -75,8 +76,7 @@ const deployerAccount: ProviderInternalWalletAccount = {
 };
 
 // Create thor client for solo network
-const _soloUrl = 'http://localhost:8669/';
-const thorSoloClient = ThorClient.fromUrl(_soloUrl);
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 const provider = new VeChainProvider(
     thorSoloClient,
     new ProviderInternalBaseWallet([deployerAccount])
