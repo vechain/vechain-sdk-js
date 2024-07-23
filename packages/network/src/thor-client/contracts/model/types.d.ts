@@ -80,15 +80,16 @@ type ContractFunctionAsync<T = unknown, TABIFunction> = (
  */
 type ContractFunctionRead<
     TAbi extends Abi,
-    TFunctionName extends ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>,
-    TAbiFunction extends AbiFunction = ExtractAbiFunction<TAbi, TFunctionName>
-> = Record<
-    TFunctionName,
-    ContractFunctionAsync<
-        AbiParametersToPrimitiveTypes<TAbiFunction['outputs'], 'outputs'>,
-        TAbiFunction
-    >
->;
+    TFunctionName extends ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>
+> = {
+    [K in TFunctionName]: (
+        ...args: AbiParametersToPrimitiveTypes<
+            ExtractAbiFunction<TAbi, K>['inputs']
+        >
+    ) => Promise<
+        AbiParametersToPrimitiveTypes<ExtractAbiFunction<TAbi, K>['outputs']>[0]
+    >;
+};
 
 /**
  * Defines a mapping of contract function names to their corresponding transactional contract functions.
@@ -207,6 +208,14 @@ interface TransferFilterOptions {
     order?: EventDisplayOrder;
 }
 
+type ReadFunctionNames<TAbi extends Abi> = Extract<
+    TAbi[number],
+    {
+        type: 'function';
+        stateMutability: 'view' | 'pure';
+    }
+>['name'];
+
 export type {
     ContractFunctionAsync,
     ContractFunctionSync,
@@ -219,5 +228,6 @@ export type {
     ClauseComment,
     ClauseRevision,
     ClauseAdditionalOptions,
-    TransferFilterOptions
+    TransferFilterOptions,
+    ReadFunctionNames
 };

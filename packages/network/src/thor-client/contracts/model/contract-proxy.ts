@@ -5,7 +5,6 @@ import {
     type ContractFunctionClause,
     type ContractFunctionCriteria,
     type ContractFunctionFilter,
-    type ContractFunctionRead,
     type ContractFunctionTransact,
     type TransactionValue
 } from './types';
@@ -13,15 +12,13 @@ import { type SendTransactionResult } from '../../transactions';
 import { type Contract } from './contract';
 import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 import { clauseBuilder, fragment } from '@vechain/sdk-core';
-import { type ContractCallResult, type ContractClause } from '../types';
+import { type ContractClause } from '../types';
 import { ContractFilter } from './contract-filter';
 import { type VeChainSigner } from '../../../signer';
 import { type FilterCriteria } from '../../logs';
 import type {
     Abi,
-    AbiParametersToPrimitiveTypes,
     ExtractAbiEventNames,
-    ExtractAbiFunction,
     ExtractAbiFunctionNames
 } from 'abitype';
 
@@ -32,31 +29,24 @@ import type {
  */
 function getReadProxy<TAbi extends Abi>(
     contract: Contract<TAbi>
-): ContractFunctionRead<TAbi, ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>> {
-    return new Proxy(contract.read, {
-        get: (_target, prop) => {
-            // Otherwise, assume that the function is a contract method
-            return async (
-                ...args: AbiParametersToPrimitiveTypes<
-                    ExtractAbiFunction<TAbi, 'balanceOf'>['inputs'],
-                    'inputs'
-                >
-            ): Promise<ContractCallResult> => {
-                // check if the clause comment is provided as an argument
+): Contract<TAbi>['read'] {
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    return new Proxy({} as Contract<TAbi>['read'], {
+        get: (_target, prop: string | symbol) => {
+            return async (...args: unknown[]): Promise<unknown> => {
+                const functionFragment = contract.getFunctionFragment(prop);
 
-                const extractOptionsResult = extractAndRemoveAdditionalOptions(
-                    args as unknown[]
-                );
+                const extractOptionsResult =
+                    extractAndRemoveAdditionalOptions(args);
 
                 const clauseComment =
                     extractOptionsResult.clauseAdditionalOptions?.comment;
-
                 const revisionValue =
                     extractOptionsResult.clauseAdditionalOptions?.revision;
 
-                return (await contract.thor.contracts.executeCall(
+                return await contract.thor.contracts.executeCall(
                     contract.address,
-                    contract.getFunctionFragment(prop),
+                    functionFragment,
                     extractOptionsResult.args,
                     {
                         caller:
@@ -68,7 +58,7 @@ function getReadProxy<TAbi extends Abi>(
                         revision: revisionValue,
                         includeABI: true
                     }
-                )) as ContractCallResult;
+                );
             };
         }
     });

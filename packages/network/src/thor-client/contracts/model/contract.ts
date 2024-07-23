@@ -8,12 +8,12 @@ import type { TransactionReceipt } from '../../transactions';
 import { type ThorClient } from '../../thor-client';
 import type { ContractCallOptions, ContractTransactionOptions } from '../types';
 import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
-import {
-    type ContractFunctionClause,
-    type ContractFunctionCriteria,
-    type ContractFunctionFilter,
-    type ContractFunctionRead,
-    type ContractFunctionTransact
+import type {
+    ContractFunctionClause,
+    ContractFunctionCriteria,
+    ContractFunctionFilter,
+    ContractFunctionTransact,
+    ReadFunctionNames
 } from './types';
 import {
     getClauseProxy,
@@ -22,10 +22,11 @@ import {
     getReadProxy,
     getTransactProxy
 } from './contract-proxy';
-import {
-    type Abi,
-    type ExtractAbiEventNames,
-    type ExtractAbiFunctionNames
+import type {
+    Abi,
+    AbiParametersToPrimitiveTypes,
+    ExtractAbiEventNames,
+    ExtractAbiFunctionNames
 } from 'abitype';
 import { type VeChainSigner } from '../../../signer';
 
@@ -40,14 +41,22 @@ class Contract<TAbi extends Abi> {
 
     readonly deployTransactionReceipt: TransactionReceipt | undefined;
 
-    public read: ContractFunctionRead<
-        TAbi,
-        ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    > = {} as ContractFunctionRead<
-        TAbi,
-        ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>
-    >;
+    public read: {
+        [K in ReadFunctionNames<TAbi>]: (
+            ...args: Array<
+                AbiParametersToPrimitiveTypes<
+                    Extract<
+                        TAbi[number],
+                        { name: K; type: 'function' }
+                    >['inputs']
+                >
+            >
+        ) => Promise<
+            AbiParametersToPrimitiveTypes<
+                Extract<TAbi[number], { name: K; type: 'function' }>['outputs']
+            >[0]
+        >;
+    };
 
     public transact: ContractFunctionTransact<
         TAbi,
