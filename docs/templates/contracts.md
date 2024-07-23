@@ -92,3 +92,14 @@ To do so, developers needs the contract address and the event signature.
 Here is an example of how to filter multiple events from different contracts:
 
 [ERC20FilterMultipleEventCriteriaSnippet](examples/contracts/contract-event-filter.ts)
+
+
+### Grouping events by topic hash
+
+It's possible to group events by topic hash, which can be useful for differentiating between events from different contracts or for categorizing events based on specific criteria.
+
+In the example below, we will use the method *filterGroupedEventLogs* to distinguish the transfer criteria from the value criteria.
+
+The results is an array composed of two arrays, one for each criteria.
+
+[ERC20FilterGroupedMultipleEventCriteriaSnippet](examples/contracts/contract-event-filter.ts

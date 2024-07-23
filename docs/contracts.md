@@ -225,8 +225,35 @@ const events = await thorSoloClient.logs.filterEventLogs({
     criteriaSet: [transferCriteria, valueCriteria]
 });
 
+console.log(events);
+
 // Asserting that I'm filtering a previous transfer event and the new value set event
-expect(events[0].map((x) => x.decodedData)).toEqual([
+expect(events.map((x) => x.decodedData)).toEqual([
+    [
+        '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
+        '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
+        10000n
+    ],
+    ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
+]);
+```
+
+
+### Grouping events by topic hash
+
+It's possible to group events by topic hash, which can be useful for differentiating between events from different contracts or for categorizing events based on specific criteria.
+
+In the example below, we will use the method *filterGroupedEventLogs* to distinguish the transfer criteria from the value criteria.
+
+The results is an array composed of two arrays, one for each criteria.
+
+```typescript { name=contract-event-filter, category=example }
+const groupedEvents = await thorSoloClient.logs.filterGroupedEventLogs({
+    criteriaSet: [transferCriteria, valueCriteria]
+});
+
+// Asserting that I'm filtering a previous transfer event and the new value set event
+expect(groupedEvents[0].map((x) => x.decodedData)).toEqual([
     [
         '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
         '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
@@ -234,7 +261,7 @@ expect(events[0].map((x) => x.decodedData)).toEqual([
     ]
 ]);
 
-expect(events[1].map((x) => x.decodedData)).toEqual([
+expect(groupedEvents[1].map((x) => x.decodedData)).toEqual([
     ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
 ]);
 ```

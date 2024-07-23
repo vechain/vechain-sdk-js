@@ -9,6 +9,7 @@ import {
     type VeChainSigner
 } from '@vechain/sdk-network';
 import { expect } from 'expect';
+import { icons } from 'typedoc/dist/lib/output/themes/default/partials/icon';
 
 // ERC20 contract bytecode
 const erc20ContractBytecode: string =
@@ -164,8 +165,28 @@ const events = await thorSoloClient.logs.filterEventLogs({
     criteriaSet: [transferCriteria, valueCriteria]
 });
 
+console.log(events);
+
 // Asserting that I'm filtering a previous transfer event and the new value set event
-expect(events[0].map((x) => x.decodedData)).toEqual([
+expect(events.map((x) => x.decodedData)).toEqual([
+    [
+        '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
+        '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
+        10000n
+    ],
+    ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
+]);
+
+// END_SNIPPET: ERC20FilterMultipleEventCriteriaSnippet
+
+// START_SNIPPET: ERC20FilterGroupedMultipleEventCriteriaSnippet
+
+const groupedEvents = await thorSoloClient.logs.filterGroupedEventLogs({
+    criteriaSet: [transferCriteria, valueCriteria]
+});
+
+// Asserting that I'm filtering a previous transfer event and the new value set event
+expect(groupedEvents[0].map((x) => x.decodedData)).toEqual([
     [
         '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
         '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
@@ -173,8 +194,8 @@ expect(events[0].map((x) => x.decodedData)).toEqual([
     ]
 ]);
 
-expect(events[1].map((x) => x.decodedData)).toEqual([
+expect(groupedEvents[1].map((x) => x.decodedData)).toEqual([
     ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
 ]);
 
-// END_SNIPPET: ERC20FilterMultipleEventCriteriaSnippet
+// END_SNIPPET: ERC20FilterGroupedMultipleEventCriteriaSnippet
