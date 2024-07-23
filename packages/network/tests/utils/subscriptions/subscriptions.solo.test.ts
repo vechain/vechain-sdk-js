@@ -5,13 +5,13 @@ import {
     type EventLogs,
     signerUtils,
     subscriptions,
+    THOR_SOLO_URL,
     ThorClient,
     type TransferLogs,
     type VeChainPrivateKeySigner,
     VeChainProvider
 } from '../../../src';
 import {
-    soloUrl,
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS,
@@ -47,7 +47,7 @@ describe('Subscriptions Solo network tests', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(soloUrl);
+        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
         provider = new VeChainProvider(
             thorClient,
             THOR_SOLO_ACCOUNTS_BASE_WALLET,
@@ -65,7 +65,7 @@ describe('Subscriptions Solo network tests', () => {
     test(
         'Should receive new blocks from the block subscription',
         async () => {
-            const wsURL = subscriptions.getBlockSubscriptionUrl(soloUrl);
+            const wsURL = subscriptions.getBlockSubscriptionUrl(THOR_SOLO_URL);
 
             let ws: WebSocket | NodeWebSocket;
             if (typeof WebSocket !== 'undefined') {
@@ -129,7 +129,7 @@ describe('Subscriptions Solo network tests', () => {
 
             // Get the URL for the event subscription
             const wsURL = subscriptions.getEventSubscriptionUrl(
-                soloUrl,
+                THOR_SOLO_URL,
                 eventFragment as EventFragment,
                 // Receive only events emitted that involve the EVENT_SUBSCRIPTION account address as the third indexed parameter of `event StateChanged(uint indexed newValue, uint indexed oldValue, address indexed sender, uint timestamp);`
                 [
@@ -198,7 +198,7 @@ describe('Subscriptions Solo network tests', () => {
                     .getFunction('setStateVariable') as FunctionFragment,
                 [1]
             );
-            const thorSoloClient = ThorClient.fromUrl(soloUrl);
+            const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
             const gasResult = await thorSoloClient.gas.estimateGas(
                 [clause],
                 TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION.address
@@ -240,10 +240,13 @@ describe('Subscriptions Solo network tests', () => {
      * Test the getVETtransfersSubscriptionUrl function
      */
     test('Should receive VET transfers from the VET transfers subscription', async () => {
-        const wsURL = subscriptions.getVETtransfersSubscriptionUrl(soloUrl, {
-            sender: TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION
-                .address
-        });
+        const wsURL = subscriptions.getVETtransfersSubscriptionUrl(
+            THOR_SOLO_URL,
+            {
+                sender: TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION
+                    .address
+            }
+        );
 
         let ws: WebSocket | NodeWebSocket;
         if (typeof WebSocket !== 'undefined') {
@@ -291,7 +294,7 @@ describe('Subscriptions Solo network tests', () => {
             value: unitsUtils.parseVET('1').toString(),
             data: '0x'
         };
-        const thorSoloClient = ThorClient.fromUrl(soloUrl);
+        const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
         const gasResult = await thorSoloClient.gas.estimateGas(
             [clause],
             TEST_ACCOUNTS.SUBSCRIPTION.VET_TRANSFERS_SUBSCRIPTION.address

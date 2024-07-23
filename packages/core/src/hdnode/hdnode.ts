@@ -1,7 +1,11 @@
 import * as n_bip32 from '@scure/bip32';
 import * as n_bip39 from '@scure/bip39';
 import * as n_utils from '@noble/curves/abstract/utils';
-import { buildError, HDNODE } from '@vechain/sdk-errors';
+import {
+    InvalidHDNode,
+    InvalidHDNodeMnemonic,
+    InvalidSecp256k1PrivateKey
+} from '@vechain/sdk-errors';
 import { base58 } from '@scure/base';
 import { secp256k1 } from '../secp256k1';
 import { sha256 } from '../hash';
@@ -20,11 +24,8 @@ import { VET_DERIVATION_PATH, X_PRIV_PREFIX, X_PUB_PREFIX } from '../utils';
  * @param {string[]} words - An array of words representing the mnemonic.
  * @param {string} path - The derivation path to derive the child node.
  * Default value is {@link VET_DERIVATION_PATH}.
- *
  * @return {bip32.HDKey} - An instance of n_bip32.HDKey representing the derived child node.
- *
- * @throws {InvalidHDNodeMnemonicsError} If an error occurs generating the master `n_bip32.HDKey` from `words`.
- * @throws {InvalidHDNodeDerivationPathError} If an error occurs deriving the `n_bip32.HDKey` at `path` from the master HDKey
+ * @throws {InvalidHDNodeMnemonic,InvalidHDNode}
  */
 function fromMnemonic(
     words: string[],
@@ -37,20 +38,20 @@ function fromMnemonic(
         );
     } catch (error) {
         // The error masks any mnemonic words leak.
-        throw buildError(
-            'HDNode.fromMnemonic',
-            HDNODE.INVALID_HDNODE_MNEMONICS,
-            'Invalid mnemonic words.'
+        throw new InvalidHDNodeMnemonic(
+            'HDNode.fromMnemonic()',
+            'Invalid mnemonic words given as input.',
+            undefined,
+            error
         );
     }
     try {
         return master.derive(path);
     } catch (error) {
-        throw buildError(
-            'HDNode.fromMnemonic',
-            HDNODE.INVALID_HDNODE_DERIVATION_PATH,
-            (error as Error).message,
-            { path },
+        throw new InvalidHDNode(
+            'HDNode.fromMnemonic()',
+            'Invalid derivation path given as input.',
+            { derivationPath: path },
             error
         );
     }
@@ -66,12 +67,8 @@ function fromMnemonic(
  *
  * @param {Uint8Array} privateKey The private key.
  * @param {Uint8Array} chainCode The chain code.
- *
  * @returns {bip32.HDKey} The `n_bip32.HDKey` object.
- *
- * @throws {InvalidHDNodePrivateKeyError} If `privateKey` length is not exactly 32 bytes.
- * @throws {InvalidHDNodeChaincodeError} if an error occurs deriving the {@link bip32.HDNode}
- * from the combination of `privateKey` and `chainCode`.
+ * @throws {InvalidSecp256k1PrivateKey}
  */
 function fromPrivateKey(
     privateKey: Uint8Array,
@@ -92,19 +89,20 @@ function fromPrivateKey(
                 base58.encode(expandedPrivateKey)
             );
         } catch (error) {
-            throw buildError(
-                'HDNode.fromPrivateKey',
-                HDNODE.INVALID_HDNODE_CHAIN_CODE,
-                (error as Error).message,
-                { chainCode }
+            throw new InvalidSecp256k1PrivateKey(
+                'HDNode.fromPrivateKey()',
+                'Invalid private key path given as input.',
+                undefined
             );
         }
     }
+
+    // We reach this case if privateKey length is not exactly 32 bytes.
     privateKey.fill(0); // Clear the private key from memory, albeit it is invalid.
-    throw buildError(
-        'HDNode.fromPrivateKey',
-        HDNODE.INVALID_HDNODE_PRIVATE_KEY,
-        'Invalid private key. Length must be exactly 32 bytes.'
+    throw new InvalidSecp256k1PrivateKey(
+        'HDNode.fromPrivateKey()',
+        'Invalid private key path given as input. Length must be exactly 32 bytes.',
+        undefined
     );
 }
 
@@ -114,10 +112,8 @@ function fromPrivateKey(
  *
  * @param {Uint8Array} publicKey - The public key bytes.
  * @param {Uint8Array} chainCode - The chain code bytes.
- *
  * @returns {bip32.HDKey} - The `n_bip32.HDKey` object.
- *
- * @throws {InvalidHDNodeChaincodeError} If `chainCode` length is not exactly 32 bytes.
+ * @throws {InvalidHDNode}
  */
 function fromPublicKey(
     publicKey: Uint8Array,
@@ -136,19 +132,19 @@ function fromPublicKey(
                 base58.encode(expandedPublicKey)
             );
         } catch (error) {
-            throw buildError(
-                'HDNode.fromPublicKey',
-                HDNODE.INVALID_HDNODE_PUBLIC_KEY,
-                'Invalid public key.',
+            throw new InvalidHDNode(
+                'HDNode.fromPublicKey()',
+                'Invalid public key path given as input.',
                 { publicKey },
                 error
             );
         }
     }
-    throw buildError(
-        'HDNode.fromPublicKey',
-        HDNODE.INVALID_HDNODE_CHAIN_CODE,
-        'Invalid chain code. Length must be exactly 32 bytes.',
+
+    // We reach this case if chainCode length is not exactly 32 bytes.
+    throw new InvalidHDNode(
+        'HDNode.fromPublicKey()',
+        'Invalid chain code given as input. Length must be exactly 32 bytes.',
         { chainCode }
     );
 }

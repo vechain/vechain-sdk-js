@@ -1,7 +1,7 @@
 import { addressUtils } from '../../address-utils';
 import { type TransactionClause } from '../../transaction';
 import { TRANSACTIONS_GAS_CONSTANTS } from '../const';
-import { assert, DATA } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { Hex0x } from '../hex';
 
 /**
@@ -9,9 +9,9 @@ import { Hex0x } from '../hex';
  *
  * @note see the following link for more details: https://docs.vechain.org/core-concepts/transactions/transaction-calculation
  *
- * @throws{InvalidDataTypeError}
  * @param clauses - Transaction clauses
  * @returns Intrinsic gas of a set of clauses
+ * @throws {InvalidDataType}
  */
 function intrinsicGas(clauses: TransactionClause[]): number {
     // No clauses
@@ -26,13 +26,12 @@ function intrinsicGas(clauses: TransactionClause[]): number {
     return clauses.reduce((sum, clause: TransactionClause) => {
         if (clause.to !== null) {
             // Invalid address or no vet.domains name
-            assert(
-                'intrinsicGas',
-                addressUtils.isAddress(clause.to) || clause.to.includes('.'),
-                DATA.INVALID_DATA_TYPE,
-                `Invalid data type in clause. Each 'to' field must be a valid address.`,
-                { clause }
-            );
+            if (!addressUtils.isAddress(clause.to) && !clause.to.includes('.'))
+                throw new InvalidDataType(
+                    'TransactionUtils.intrinsicGas()',
+                    `Invalid data type in clause. Each 'to' field must be a valid address.`,
+                    { clause }
+                );
 
             sum += TRANSACTIONS_GAS_CONSTANTS.CLAUSE_GAS;
         } else {
@@ -46,19 +45,18 @@ function intrinsicGas(clauses: TransactionClause[]): number {
 /**
  * Calculates gas used by data.
  *
- * @throws{InvalidDataTypeError}
  * @param data Data to calculate gas
  * @returns Gas used by data
+ * @throws {InvalidDataType}
  */
 function _calculateDataUsedGas(data: string): number {
     // Invalid data
-    assert(
-        '_calculateDataUsedGas',
-        data === '' || Hex0x.isValid(data),
-        DATA.INVALID_DATA_TYPE,
-        'Invalid data type for gas calculation. Data should be a hexadecimal string.',
-        { data }
-    );
+    if (data !== '' && !Hex0x.isValid(data))
+        throw new InvalidDataType(
+            '_calculateDataUsedGas()',
+            `Invalid data type for gas calculation. Data should be a hexadecimal string.`,
+            { data }
+        );
 
     let sum = 0;
     for (let i = 2; i < data.length; i += 2) {

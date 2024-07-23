@@ -1,14 +1,38 @@
 import { VechainSDKError } from '../sdk-error';
+import type { ObjectErrorData } from '../types';
 
 /**
- * Unavailable transaction field name.
+ * Unavailable transaction field (field name) error.
  *
- * This error is thrown a field name in a transaction is unavailable.
- *
- * e.g. we want to get the value of 'delegator' or 'id' or 'origin' from a not signed transaction
+ * WHEN TO USE:
+ * * Error will be thrown when a transaction (field name) in a transaction is unavailable.
  */
 class UnavailableTransactionField extends VechainSDKError<{
     fieldName: string;
 }> {}
 
-export { UnavailableTransactionField };
+/**
+ * Invalid transaction field (field name) error.
+ *
+ * WHEN TO USE:
+ * * Error will be thrown when a transaction (field name) in a transaction is invalid.
+ */
+class InvalidTransactionField extends VechainSDKError<
+    {
+        fieldName: string;
+    } & ObjectErrorData
+> {}
+
+/**
+ * Not delegated transaction error.
+ *
+ * WHEN TO USE:
+ * * Error will be thrown when the transaction is not delegated.
+ */
+class NotDelegatedTransaction extends VechainSDKError<undefined> {}
+
+export {
+    UnavailableTransactionField,
+    InvalidTransactionField,
+    NotDelegatedTransaction
+};

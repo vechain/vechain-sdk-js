@@ -24,11 +24,6 @@ const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const VTHO_ADDRESS = '0x0000000000000000000000000000456e65726779';
 
 /**
- * Parameters smart contract address (params.sol smart contract address)
- */
-const PARAMS_ADDRESS = '0x0000000000000000000000000000506172616d73';
-
-/**
  * Genesis block for VeChain mainnet
  */
 const mainnetGenesisBlock = {
@@ -142,7 +137,6 @@ const networkInfo = {
 export {
     networkInfo,
     VTHO_ADDRESS,
-    PARAMS_ADDRESS,
     ZERO_ADDRESS,
     MAINNET_NETWORK,
     TESTNET_NETWORK,

@@ -3,9 +3,9 @@ import {
     CHAIN_ID,
     RPC_METHODS,
     RPCMethodsMap,
+    TESTNET_URL,
     ThorClient
 } from '../../../../../src';
-import { testnetUrl } from '../../../../fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_chainId' method
@@ -23,7 +23,7 @@ describe('RPC Mapper - eth_chainId method tests testnet', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(testnetUrl);
+        thorClient = ThorClient.fromUrl(TESTNET_URL);
     });
 
     /**

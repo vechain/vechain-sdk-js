@@ -84,11 +84,7 @@ function isAddress(addressToVerify: string): boolean {
  * @param {string} address - The address to be converted,
  * it must be prefixed with `0x`.
  * @return {string} - The EIP/ERC-55 checksum address.
- *
- * @throws {InvalidAddressError} if `address` is not a valid hexadecimal
- * representation 40 digits long, prefixed with `0x`.
- *
- * @see {isAddress}
+ * @throws {InvalidAddress}
  */
 function toERC55Checksum(address: string): string {
     if (!isAddress(address)) {

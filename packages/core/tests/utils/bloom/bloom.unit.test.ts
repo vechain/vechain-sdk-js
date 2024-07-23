@@ -9,9 +9,9 @@ import {
     valueTypeBloomTestCases
 } from './fixture';
 import {
-    InvalidBloomError,
-    InvalidDataTypeError,
-    InvalidKError
+    InvalidBloom,
+    InvalidBloomParams,
+    InvalidDataType
 } from '@vechain/sdk-errors';
 
 /**
@@ -82,7 +82,7 @@ describe('utils/bloom', () => {
         test('Should throw an error for invalid bloom filter format', () => {
             expect(() => {
                 bloomUtils.isInBloom('0xINVALIDBLOOM', 3, '0x1234');
-            }).toThrowError(InvalidBloomError);
+            }).toThrowError(InvalidBloom);
         });
 
         /*
@@ -91,7 +91,7 @@ describe('utils/bloom', () => {
         test('Should throw an error for non-hexadecimal data string', () => {
             expect(() => {
                 bloomUtils.isInBloom('0x000000000000000000', 3, 'INVALIDHEX');
-            }).toThrowError(InvalidDataTypeError);
+            }).toThrowError(InvalidDataType);
         });
 
         /**
@@ -100,7 +100,7 @@ describe('utils/bloom', () => {
         test('Should throw an error for non-positive integer k', () => {
             expect(() => {
                 bloomUtils.isInBloom('0x000000000000000000', -3, '0x1234');
-            }).toThrowError(InvalidKError);
+            }).toThrowError(InvalidBloomParams);
         });
 
         /**
@@ -109,7 +109,7 @@ describe('utils/bloom', () => {
         test('Should throw an error for non-integer k', () => {
             expect(() => {
                 bloomUtils.isInBloom('0x000000000000000000', 3.5, '0x1234');
-            }).toThrowError(InvalidKError);
+            }).toThrowError(InvalidBloomParams);
         });
 
         /**
@@ -119,7 +119,7 @@ describe('utils/bloom', () => {
             expect(() => {
                 // @ts-expect-error: Intentionally passing a number to test error handling
                 bloomUtils.isInBloom('0x000000000000000000', 3, 1234);
-            }).toThrowError(InvalidDataTypeError);
+            }).toThrowError(InvalidDataType);
         });
     });
 

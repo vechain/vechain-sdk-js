@@ -3,12 +3,16 @@ import {
     beforeEach,
     describe,
     expect,
-    test,
-    jest
+    jest,
+    test
 } from '@jest/globals';
 
-import { testnetUrl } from '../../../fixture';
-import { ThorClient, VeChainProvider, vnsUtils } from '../../../../src';
+import {
+    TESTNET_URL,
+    ThorClient,
+    VeChainProvider,
+    vnsUtils
+} from '../../../../src';
 
 /**
  *VeChain provider tests
@@ -26,7 +30,7 @@ describe('VeChain provider tests', () => {
      * Init thor client and provider before each test
      */
     beforeEach(() => {
-        thorClient = ThorClient.fromUrl(testnetUrl);
+        thorClient = ThorClient.fromUrl(TESTNET_URL);
         provider = new VeChainProvider(thorClient);
     });
 

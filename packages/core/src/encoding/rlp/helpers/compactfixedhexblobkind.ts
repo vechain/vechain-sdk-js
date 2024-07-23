@@ -4,10 +4,10 @@ import { Hex0x } from '../../../utils';
 /**
  * Asserts that the provided buffer is of a specific length and does not contain leading zeros.
  *
- * @throws{InvalidRLP} - Will throw an error with a message containing the context if the buffer length is greater than the specified bytes OR if it has leading zero bytes.
  * @param buffer - The buffer to validate.
  * @param context - Descriptive context for error messages, usually representing the caller's identity.
  * @param bytes - The expected maximum number of bytes that the buffer can contain.
+ * @throws {InvalidRLP}
  */
 const assertCompactFixedHexBlobBuffer = (
     buffer: Buffer,

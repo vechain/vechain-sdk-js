@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { soloUrl, TEST_ACCOUNTS, TESTING_CONTRACT_ABI, TESTING_CONTRACT_ADDRESS } from '../../fixture';
+import { TEST_ACCOUNTS, TESTING_CONTRACT_ABI, TESTING_CONTRACT_ADDRESS } from '../../fixture';
 import {
     contractBytecode,
     deployedContractAbi,
@@ -21,6 +21,7 @@ import { addressUtils, coder, type DeployParams, type FunctionFragment } from '@
 import {
     Contract,
     type ContractFactory,
+    THOR_SOLO_URL,
     ThorClient,
     type TransactionReceipt,
     VeChainPrivateKeySigner,
@@ -47,7 +48,7 @@ describe('ThorClient - Contracts', () => {
     let receiverSigner: VeChainSigner;
 
     beforeEach(() => {
-        thorSoloClient = ThorClient.fromUrl(soloUrl);
+        thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
         signer = new VeChainPrivateKeySigner(
             Buffer.from(
                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,

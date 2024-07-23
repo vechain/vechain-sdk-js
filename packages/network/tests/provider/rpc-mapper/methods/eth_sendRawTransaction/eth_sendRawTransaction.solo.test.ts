@@ -1,12 +1,16 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-
-import { ALL_ACCOUNTS, soloUrl } from '../../../../fixture';
 import {
     Hex0x,
     type TransactionClause,
     TransactionHandler
 } from '@vechain/sdk-core';
-import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
+import {
+    RPC_METHODS,
+    RPCMethodsMap,
+    THOR_SOLO_ACCOUNTS,
+    THOR_SOLO_URL,
+    ThorClient
+} from '../../../../../src';
 import { InvalidDataTypeError } from '@vechain/sdk-errors';
 
 /**
@@ -25,7 +29,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(soloUrl);
+        thorClient = ThorClient.fromUrl(THOR_SOLO_URL);
     });
 
     /**
@@ -39,8 +43,8 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
             // 1 - Init sender and receiver
 
             const actors = {
-                sender: ALL_ACCOUNTS[1],
-                receiver: ALL_ACCOUNTS[2]
+                sender: THOR_SOLO_ACCOUNTS[1],
+                receiver: THOR_SOLO_ACCOUNTS[2]
             };
 
             // 2- Init transaction

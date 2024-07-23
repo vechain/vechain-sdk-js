@@ -1,9 +1,10 @@
 import { VechainSDKError } from '../sdk-error';
 
 /**
- * Invalid address error to be thrown when an invalid address is detected.
+ * Invalid address error
  *
- * This error is thrown when an invalid address is detected.
+ * WHEN TO USE:
+ * * This error will be thrown when the address is invalid.
  */
 class InvalidAddress extends VechainSDKError<{ address: string }> {}
 

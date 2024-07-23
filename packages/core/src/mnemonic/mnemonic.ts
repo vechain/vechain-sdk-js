@@ -2,13 +2,14 @@ import * as bip39 from '@scure/bip39';
 import { HDNode } from '../hdnode';
 import { MNEMONIC_WORDLIST_ALLOWED_SIZES } from '../utils';
 import { addressUtils } from '../address-utils';
-import { assert, buildError, HDNODE } from '@vechain/sdk-errors';
+import { InvalidHDNode } from '@vechain/sdk-errors';
 import { secp256k1 } from '../secp256k1';
 import { wordlist } from '@scure/bip39/wordlists/english';
 import {
     type WordListRandomGeneratorSizeInBytes,
     type WordlistSizeType
 } from './types';
+import { InvalidHDNodeMnemonic } from '../../../errors/src';
 
 /**
  * Derives the address from a given list of words of
@@ -26,12 +27,9 @@ import {
  *
  * @param {string[]} words - The list of words used to generate the HD node.
  * @param {string} [path='m/0'] - The derivation path from the current node.
- *
  * @return {string} - The derived address, prefixed with `0x` according the
  * [ERC-55: Mixed-case checksum address encoding](https://eips.ethereum.org/EIPS/eip-55).
- *
- * @throws {InvalidHDNodeMnemonicsError} If an error occurs generating the master `bip32.HDKey` from `words`.
- * @throws {InvalidHDNodeDerivationPathError} If an error occurs deriving the `bip32.HDKey` at `path` from the master HDKey
+ * @throws {InvalidHDNode}
  *
  */
 function deriveAddress(words: string[], path: string = 'm/0'): string {
@@ -42,11 +40,10 @@ function deriveAddress(words: string[], path: string = 'm/0'): string {
             root.derive(path).publicKey as Uint8Array
         );
     } catch (error) {
-        throw buildError(
-            'HDNode.fromMnemonic',
-            HDNODE.INVALID_HDNODE_DERIVATION_PATH,
-            'Invalid derivation path.',
-            { path },
+        throw new InvalidHDNode(
+            'mnemonic.deriveAddress()',
+            'Invalid derivation path given as input.',
+            { derivationPath: path },
             error
         );
     }
@@ -70,8 +67,7 @@ function deriveAddress(words: string[], path: string = 'm/0'): string {
  * @param {string} [path='m/0'] - The derivation path from the current node.
  * @returns {Uint8Array} - The derived private key as a Uint8Array.
  *
- * @throws {InvalidHDNodeMnemonicsError} If an error occurs generating the master `bip32.HDKey` from `words`.
- * @throws {InvalidHDNodeDerivationPathError} If an error occurs deriving the `bip32.HDKey` at `path` from the master HDKey
+ * @throws {InvalidHDNode}
  */
 function derivePrivateKey(words: string[], path: string = 'm/0'): Uint8Array {
     const root = HDNode.fromMnemonic(words);
@@ -80,11 +76,10 @@ function derivePrivateKey(words: string[], path: string = 'm/0'): Uint8Array {
         // Derived from root, private key is always available.
         return root.derive(path).privateKey as Uint8Array;
     } catch (error) {
-        throw buildError(
-            'HDNode.fromMnemonic',
-            HDNODE.INVALID_HDNODE_DERIVATION_PATH,
-            'Invalid derivation path.',
-            { path },
+        throw new InvalidHDNode(
+            'mnemonic.derivePrivateKey()',
+            'Invalid derivation path given as input.',
+            { derivationPath: path },
             error
         );
     }
@@ -148,6 +143,8 @@ function generate(wordlistSize?: WordlistSizeType): string[];
  * Valid sizes are 12, 15, 18, 21, 24.
  * @param {function} [randomGenerator] - The random generator function used to generate the entropy.
  * @returns {string[]} - An array of words representing the generated mnemonic phrase.
+ * @throws {InvalidHDNodeMnemonic}
+ *
  * Words are chosen among the [valid English word list](https://github.com/paulmillr/scure-bip39/blob/main/src/wordlists/english.ts).
  */
 function generate(
@@ -157,14 +154,16 @@ function generate(
     ) => Uint8Array
 ): string[] {
     // Strange edge case in wordlist size
-    assert(
-        'mnemonic.generate',
-        wordlistSize === undefined ||
-            MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(wordlistSize),
-        HDNODE.INVALID_HDNODE_MNEMONICS,
-        'Invalid `wordlistSize` given as input. Allowed sizes are 12, 15, 18, 21, 24 words.',
-        { wordlistSize }
-    );
+    if (
+        wordlistSize !== undefined &&
+        !MNEMONIC_WORDLIST_ALLOWED_SIZES.includes(wordlistSize)
+    ) {
+        throw new InvalidHDNodeMnemonic(
+            'mnemonic.generate()',
+            'Invalid `wordlistSize` given as input. Allowed sizes are 12, 15, 18, 21, 24 words.',
+            { wordlistSize }
+        );
+    }
 
     // Use randomBytes as default random generator if not provided.
     randomGenerator =

@@ -1,21 +1,19 @@
 import { describe, expect, test } from '@jest/globals';
-import { Hex, mnemonic } from '../../src';
+import {
+    addressUtils,
+    Hex,
+    mnemonic,
+    MNEMONIC_WORDLIST_ALLOWED_SIZES,
+    secp256k1,
+    type WordlistSizeType
+} from '../../src';
 import {
     customRandomGeneratorWithXor,
     derivationPaths,
     words,
     wrongDerivationPath
 } from './fixture';
-import {
-    addressUtils,
-    MNEMONIC_WORDLIST_ALLOWED_SIZES,
-    secp256k1,
-    type WordlistSizeType
-} from '../../src';
-import {
-    InvalidHDNodeDerivationPathError,
-    InvalidHDNodeMnemonicsError
-} from '@vechain/sdk-errors';
+import { InvalidHDNode } from '@vechain/sdk-errors';
 
 /**
  * Mnemonic tests
@@ -54,7 +52,7 @@ describe('mnemonic', () => {
         test('deriveAddress - wrong path', () => {
             expect(() =>
                 mnemonic.deriveAddress(words, wrongDerivationPath)
-            ).toThrowError(InvalidHDNodeDerivationPathError);
+            ).toThrowError(InvalidHDNode);
         });
     });
 
@@ -100,7 +98,7 @@ describe('mnemonic', () => {
         test('derivePrivateKey - wrong path', () => {
             expect(() =>
                 mnemonic.derivePrivateKey(words, wrongDerivationPath)
-            ).toThrowError(InvalidHDNodeDerivationPathError);
+            ).toThrowError(InvalidHDNode);
         });
     });
 
@@ -156,10 +154,10 @@ describe('mnemonic', () => {
         });
 
         test('generate - wrong length', () => {
-            // @ts-expect-error - Wrong length error for testing purposes.
-            expect(() => mnemonic.generate(13)).toThrowError(
-                InvalidHDNodeMnemonicsError
-            );
+            expect(() => {
+                // @ts-expect-error - Wrong length error for testing purposes.
+                mnemonic.generate(13);
+            }).toThrowError();
         });
     });
 

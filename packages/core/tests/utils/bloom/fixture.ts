@@ -1,4 +1,4 @@
-import { InvalidAddressError } from '@vechain/sdk-errors';
+import { InvalidAddress } from '@vechain/sdk-errors';
 import { Hex } from '../../../src';
 
 /**
@@ -85,21 +85,21 @@ const invalidAddressBloomTestCases = [
         bloom: 'c207aca13ca010db8b5f89b3689318',
         k: 13,
         address: '0xINVALIDADDRESS',
-        expected: InvalidAddressError,
+        expected: InvalidAddress,
         description: 'invalid address'
     },
     {
         bloom: 'c207aca13ca010db8b5f89b3689318',
         k: 13,
         address: 'INVALIDADDRESS',
-        expected: InvalidAddressError,
+        expected: InvalidAddress,
         description: 'invalid address without 0x prefix'
     },
     {
         bloom: 'c207aca13ca010db8b5f89b3689318',
         k: 13,
         address: '0xc9318',
-        expected: InvalidAddressError,
+        expected: InvalidAddress,
         description: 'invalid address too short'
     }
 ];

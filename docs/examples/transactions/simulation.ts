@@ -1,5 +1,5 @@
 import { expect } from 'expect';
-import { ThorClient } from '@vechain/sdk-network';
+import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 import { clauseBuilder, unitsUtils } from '@vechain/sdk-core';
 import { stringifyData } from '@vechain/sdk-errors';
 
@@ -9,8 +9,7 @@ import { stringifyData } from '@vechain/sdk-errors';
 // And we demonstrate (1) how we can check the expected gas cost and (2) whether the transaction is successful
 
 // 1 - Create thor client for solo network
-const _soloUrl = 'http://localhost:8669';
-const thorSoloClient = ThorClient.fromUrl(_soloUrl);
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
 // 2(a) - create the transaction for a VET transfer
 const transaction1 = {

@@ -1,5 +1,5 @@
 import { coder, type FunctionFragment } from '@vechain/sdk-core';
-import { ThorClient } from '@vechain/sdk-network';
+import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
 import { stringifyData } from '@vechain/sdk-errors';
 
@@ -780,8 +780,7 @@ const TESTING_CONTRACT_ADDRESS: string =
 // START_SNIPPET: EVMExtensionSnippet
 
 // Create an instance of the ThorClient class
-const _soloUrl = 'http://localhost:8669';
-const thorSoloClient = ThorClient.fromUrl(_soloUrl);
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
 
 // Call the getTotalSupply function of the `TestingContract` smart contract
 const totalSupply = await thorSoloClient.contracts.executeCall(

@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { RPC_METHODS, RPCMethodsMap, ThorClient } from '../../../../../src';
-import { testnetUrl } from '../../../../fixture';
+import {
+    RPC_METHODS,
+    RPCMethodsMap,
+    TESTNET_URL,
+    ThorClient
+} from '../../../../../src';
 
 /**
  * RPC Mapper integration tests for 'web3_clientVersion' method
@@ -18,7 +22,7 @@ describe('RPC Mapper - web3_clientVersion method tests', () => {
      */
     beforeEach(() => {
         // Init thor client
-        thorClient = ThorClient.fromUrl(testnetUrl);
+        thorClient = ThorClient.fromUrl(TESTNET_URL);
     });
 
     /**

@@ -2,19 +2,19 @@ import { addressUtils } from '../../address-utils';
 import { secp256k1 } from '../../secp256k1';
 import { Transaction } from '../transaction';
 import {
-    assert,
     InvalidSecp256k1PrivateKey,
-    TRANSACTION
+    InvalidTransactionField,
+    NotDelegatedTransaction
 } from '@vechain/sdk-errors';
 import { type TransactionBody } from '../types';
 
 /**
  * Sign a transaction with a given private key
  *
- * @throws{InvalidSecp256k1PrivateKeyError, TransactionAlreadySignedError, TransactionDelegationError}
  * @param transactionBody - The body of the transaction to sign
  * @param signerPrivateKey - Private key used to sign the transaction
  * @returns Signed transaction
+ * @throws {InvalidSecp256k1PrivateKey, InvalidTransactionField}
  */
 function sign(
     transactionBody: TransactionBody,
@@ -32,13 +32,12 @@ function sign(
     const transactionToSign = new Transaction(transactionBody);
 
     // Transaction is delegated
-    assert(
-        'sign()',
-        !transactionToSign.isDelegated,
-        TRANSACTION.INVALID_DELEGATION,
-        'Transaction is delegated. Use signWithDelegator method instead.',
-        { transactionBody }
-    );
+    if (transactionToSign.isDelegated)
+        throw new InvalidTransactionField(
+            `TransactionHandler.sign()`,
+            'Transaction is delegated. Use signWithDelegator method instead.',
+            { fieldName: 'delegator', transactionBody }
+        );
 
     // Sign transaction
     const signature = secp256k1.sign(
@@ -53,11 +52,11 @@ function sign(
 /**
  * Sign a transaction with signer and delegator private keys
  *
- * @throws{InvalidSecp256k1PrivateKeyError, TransactionAlreadySignedError, TransactionDelegationError}
  * @param transactionBody - The body of the transaction to sign
  * @param signerPrivateKey - Signer private key (the origin)
  * @param delegatorPrivateKey - Delegate private key (the delegator)
  * @returns Signed transaction
+ * @throws {InvalidSecp256k1PrivateKey}
  */
 function signWithDelegator(
     transactionBody: TransactionBody,
@@ -86,13 +85,12 @@ function signWithDelegator(
     const transactionToSign = new Transaction(transactionBody);
 
     // Transaction is not delegated
-    assert(
-        'signWithDelegator',
-        transactionToSign.isDelegated,
-        TRANSACTION.INVALID_DELEGATION,
-        'Transaction is not delegated. Use sign method instead.',
-        { transactionToSign }
-    );
+    if (!transactionToSign.isDelegated)
+        throw new NotDelegatedTransaction(
+            'signWithDelegator()',
+            "Transaction is not delegated. Use 'sign()' method instead.",
+            undefined
+        );
 
     const transactionHash = transactionToSign.getSignatureHash();
     const delegatedHash = transactionToSign.getSignatureHash(
