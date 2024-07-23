@@ -5,7 +5,6 @@ module.exports = {
     setupFiles: ['./jest.browser-setup.js'],
     testPathIgnorePatterns: [
         'tests/utils/poll/event/event-poll.unit.test.ts',
-        'http-client.testnet.test.ts'
     ],
     coverageReporters: ['html', 'lcov', 'json'],
     runner: 'groups',
