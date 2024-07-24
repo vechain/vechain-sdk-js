@@ -203,7 +203,7 @@ const sendTransactionErrors = {
             transaction: {
                 raw: '0x123456789abcdef'
             },
-            expected: InvalidDataTypeError
+            expected: InvalidDataType
         }
     ]
 };

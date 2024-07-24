@@ -2,7 +2,7 @@ import { describe, expect, jest, test } from '@jest/globals';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
 import { transactionNonces, transferTransactionBody } from './fixture';
 import { TEST_ACCOUNTS } from '../../fixture';
-import { TransactionBodyError } from '@vechain/sdk-errors';
+import { InvalidTransactionField } from '@vechain/sdk-errors';
 
 /**
  * Transactions module tests with mocks.
@@ -29,7 +29,7 @@ describe('buildTransactionBody with mocks', () => {
                 [transferTransactionBody.clauses[0]],
                 gas.totalGas
             )
-        ).rejects.toThrowError(TransactionBodyError);
+        ).rejects.toThrowError(InvalidTransactionField);
     });
 
     test('Should throw error when get block is not found', async () => {
@@ -51,7 +51,7 @@ describe('buildTransactionBody with mocks', () => {
                 [transferTransactionBody.clauses[0]],
                 gas.totalGas
             )
-        ).rejects.toThrowError(TransactionBodyError);
+        ).rejects.toThrowError(InvalidTransactionField);
     });
 
     test('Should succeed when options are set', async () => {

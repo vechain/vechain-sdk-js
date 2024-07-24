@@ -8,7 +8,7 @@ import { addressUtils, type TransactionClause } from '@vechain/sdk-core';
 import {
     InvalidDataTypeError,
     InvalidSecp256k1PrivateKey,
-    TransactionDelegationError
+    NotDelegatedTransaction
 } from '@vechain/sdk-errors';
 
 /**
@@ -137,7 +137,7 @@ const signTransactionTestCases = {
                     delegatorUrl: 'https://example.com'
                 } satisfies SignTransactionOptions,
                 isDelegated: true,
-                expectedError: TransactionDelegationError
+                expectedError: NotDelegatedTransaction
             }
         ]
     },
@@ -197,7 +197,7 @@ const signTransactionTestCases = {
                         }
                     }
                 },
-                expectedError: TransactionDelegationError
+                expectedError: NotDelegatedTransaction
             }
         ]
     }
