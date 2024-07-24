@@ -1,4 +1,4 @@
-import { Contract, ThorClient } from "@vechain/sdk-network";
+import { Contract, createTypedContract, ThorClient } from "@vechain/sdk-network";
 
 const abi = [
     {
@@ -1757,4 +1757,8 @@ const allocationContract = new Contract<MyContractAbi>(
     thorClient
 );
 
+const allocationContractTwo = createTypedContract(address, abi, thorClient);
+
 const currentRoundId = await allocationContract.read.currentRoundId();
+
+const currentRoundIdTwo = await allocationContract.read.currentRoundId();
