@@ -1,4 +1,4 @@
-import { buildError, DATA } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { HTTP_REGEX, HTTPS_REGEX } from '../const';
 
 /**
@@ -40,10 +40,10 @@ const sanitizeWebsocketBaseURL = (url: string): string => {
         /^(https?:\/\/)([a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*)(:\d+)?\/?$/;
 
     if (!urlRegex.test(url))
-        throw buildError(
-            'sanitizeWebsocketBaseURL',
-            DATA.INVALID_DATA_TYPE,
-            `Invalid url: ${url}. Must adhere to the regex: ${urlRegex}.`
+        throw new InvalidDataType(
+            'sanitizeWebsocketBaseURL()',
+            `Invalid url: ${url}. Must adhere to the regex: ${urlRegex}.`,
+            { url, urlRegex }
         );
 
     // Remove trailing slash

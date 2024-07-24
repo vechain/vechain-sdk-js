@@ -5,7 +5,7 @@ import { testAccount, testNetwork } from '../../fixture';
 import {
     buildError,
     HTTP_CLIENT,
-    HTTPClientError,
+    InvalidHTTPRequest,
     stringifyData
 } from '@vechain/sdk-errors';
 
@@ -50,7 +50,7 @@ describe('Test HttpClient class on Testnet', () => {
             // Assert that the HTTP request fails with an error
             await expect(
                 testNetwork.http('GET', '/error-test-path')
-            ).rejects.toThrowError(HTTPClientError);
+            ).rejects.toThrowError(InvalidHTTPRequest);
         },
         TIMEOUT
     );
@@ -108,6 +108,6 @@ describe('Test HttpClient class on Testnet', () => {
 
         await expect(
             testNetwork.http('GET', '/accounts/' + testAccount, customParams)
-        ).rejects.toThrowError(HTTPClientError);
+        ).rejects.toThrowError(InvalidHTTPRequest);
     });
 });

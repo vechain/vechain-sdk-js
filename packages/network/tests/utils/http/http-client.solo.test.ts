@@ -2,7 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { ZERO_ADDRESS, zeroAddressAccountDetails } from './fixture';
 import { HttpClient, type HttpParams, THOR_SOLO_URL } from '../../../src';
 import { testAccount } from '../../fixture';
-import { HTTPClientError, stringifyData } from '@vechain/sdk-errors';
+import { InvalidHTTPRequest, stringifyData } from '@vechain/sdk-errors';
 
 /**
  * HttpClient class tests.
@@ -32,7 +32,7 @@ describe('Test HttpClient class on Solo node', () => {
         // Assert that the HTTP request fails with an error
         await expect(
             soloNetwork.http('GET', '/error-test-path')
-        ).rejects.toThrowError(HTTPClientError);
+        ).rejects.toThrowError(InvalidHTTPRequest);
     });
 
     /**

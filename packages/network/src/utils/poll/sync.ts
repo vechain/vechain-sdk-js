@@ -1,5 +1,5 @@
 import { type SyncPollInputOptions } from './types';
-import { buildError, POLL_ERROR } from '@vechain/sdk-errors';
+import { PollExecution } from '@vechain/sdk-errors';
 import { assertPositiveIntegerForPollOptions } from './helpers/assertions';
 
 /**
@@ -122,9 +122,8 @@ function SyncPoll<TReturnType>(
 
                 return currentResult;
             } catch (error) {
-                throw buildError(
-                    'SyncPoll - waitUntil',
-                    POLL_ERROR.POLL_EXECUTION_ERROR,
+                throw new PollExecution(
+                    'SyncPoll.waitUntil()',
                     'Polling failed: Function execution error encountered during synchronous polling.',
                     {
                         functionName: pollingFunction.name
