@@ -61,7 +61,7 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
          * Negative case 2 - Should throw an error for invalid input if request is invalid
          */
         test('eth_getLogs - Should throw error if request is invalid', async () => {
-            // Mock the filterEventLogs method to throw error
+            // Mock the filterGroupedEventLogs method to throw error
             jest.spyOn(thorClient.logs, 'filterRawEventLogs').mockRejectedValue(
                 new Error()
             );

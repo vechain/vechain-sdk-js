@@ -21,7 +21,7 @@ describe('ThorClient - Logs Module', () => {
     });
 
     /**
-     * filterEventLogs tests
+     * filterGroupedEventLogs tests
      */
     test('filterEventLogs', async () => {
         const eventLogs =
