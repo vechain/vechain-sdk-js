@@ -136,11 +136,7 @@ expect(transactionReceiptTransfer.reverted).toEqual(false);
 
 // Check transfer event logs by also passing the destination address
 const transferEvents = await contractErc20.filters
-    .Transfer([
-        null,
-        '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-        null
-    ])
+    .Transfer([null, '0x9e7911de289c3c856ce7f421034f66b6cde49c39', null])
     .get();
 
 // Asserting that the transfer event has been emitted

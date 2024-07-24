@@ -439,7 +439,7 @@ describe('ThorClient - Contracts', () => {
 
         const secretData = await deployedContract.read.getSecretData();
 
-        expect(secretData).toEqual(42n);
+        expect(secretData).toEqual([42n]);
 
         const loadedContract = thorSoloClient.contracts.load(
             deployedContract.address,

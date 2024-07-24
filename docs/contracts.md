@@ -235,11 +235,11 @@ const contractEventExample = await setupEventExampleContract();
 
 await (await contractEventExample.transact.setValue(3000n)).wait();
 
-const transferCriteria = contractErc20.criteria.Transfer(
-    undefined,
+const transferCriteria = contractErc20.criteria.Transfer([
+    null,
     '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
     null
-);
+]);
 
 const valueCriteria = contractEventExample.criteria.ValueSet();
 
