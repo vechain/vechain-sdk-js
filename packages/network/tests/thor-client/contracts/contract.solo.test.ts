@@ -418,7 +418,7 @@ describe('ThorClient - Contracts', () => {
 
         expect(
             await deployedDepositContract.read.getBalance(
-                [TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address]
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
             )
         ).toEqual([BigInt(1000)]);
     }, 10000);
@@ -439,7 +439,7 @@ describe('ThorClient - Contracts', () => {
 
         const secretData = await deployedContract.read.getSecretData();
 
-        expect(secretData.toString()).toEqual(42n);
+        expect(secretData).toEqual(42n);
 
         const loadedContract = thorSoloClient.contracts.load(
             deployedContract.address,
@@ -597,9 +597,10 @@ describe('ThorClient - Contracts', () => {
 
         const events = await contract.filters
             .StateChanged(
-                undefined,
-                undefined,
-                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                undefined as any as bigint,
+                undefined as any as bigint,
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address,
+                undefined as any as bigint
             )
             .get();
 
@@ -639,6 +640,7 @@ describe('ThorClient - Contracts', () => {
 
                     for (const functionCall of functionCalls) {
                         if (functionCall.type === 'read') {
+                            // @ts-ignore
                             await contract.read[functionCall.functionName](
                                 ...functionCall.params
                             );
@@ -652,9 +654,9 @@ describe('ThorClient - Contracts', () => {
                         }
                     }
 
-                    const eventLogs = await contract.filters[eventName](
+                    const eventLogs = await contract.filters[eventName]([
                         ...args
-                    ).get(getParams);
+                    ]).get(getParams);
 
                     expect(eventLogs[0].map((x) => x.decodedData)).toEqual(
                         expectedData

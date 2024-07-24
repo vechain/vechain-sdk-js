@@ -11,7 +11,6 @@ import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
 import type {
     ContractFunctionClause,
     ContractFunctionCriteria,
-    ContractFunctionFilter,
     ContractFunctionTransact,
     ReadFunctionNames
 } from './types';
@@ -24,11 +23,14 @@ import {
 } from './contract-proxy';
 import type {
     Abi,
+    AbiParameter,
     AbiParametersToPrimitiveTypes,
+    AbiParameterToPrimitiveType,
     ExtractAbiEventNames,
     ExtractAbiFunctionNames
 } from 'abitype';
 import { type VeChainSigner } from '../../../signer';
+import { type ContractFilter } from './contract-filter';
 
 /**
  * A class representing a smart contract deployed on the blockchain.
@@ -42,20 +44,47 @@ class Contract<TAbi extends Abi> {
     readonly deployTransactionReceipt: TransactionReceipt | undefined;
 
     public read: {
-        [K in ReadFunctionNames<TAbi>]: (
-            ...args: Array<
-                AbiParametersToPrimitiveTypes<
-                    Extract<
-                        TAbi[number],
-                        { name: K; type: 'function' }
-                    >['inputs']
-                >
-            >
-        ) => Promise<
-            AbiParametersToPrimitiveTypes<
-                Extract<TAbi[number], { name: K; type: 'function' }>['outputs']
-            >[0]
-        >;
+        [K in ReadFunctionNames<TAbi>]: Extract<
+            TAbi[number],
+            { name: K; type: 'function' }
+        >['inputs'] extends readonly [infer SingleInput]
+            ? (
+                  arg:
+                      | AbiParameterToPrimitiveType<
+                            SingleInput & AbiParameter,
+                            'inputs'
+                        >
+                      | [
+                            AbiParameterToPrimitiveType<
+                                SingleInput & AbiParameter,
+                                'inputs'
+                            >
+                        ]
+              ) => Promise<
+                  AbiParametersToPrimitiveTypes<
+                      Extract<
+                          TAbi[number],
+                          { name: K; type: 'function' }
+                      >['outputs']
+                  >[0]
+              >
+            : (
+                  ...args: Array<
+                      AbiParametersToPrimitiveTypes<
+                          Extract<
+                              TAbi[number],
+                              { name: K; type: 'function' }
+                          >['inputs']
+                      >
+                  >
+              ) => Promise<
+                  AbiParametersToPrimitiveTypes<
+                      Extract<
+                          TAbi[number],
+                          { name: K; type: 'function' }
+                      >['outputs']
+                  >[0]
+              >;
     };
 
     public transact: ContractFunctionTransact<
@@ -67,9 +96,25 @@ class Contract<TAbi extends Abi> {
         ExtractAbiFunctionNames<TAbi, 'payable' | 'nonpayable'>
     >;
 
-    public filters: ContractFunctionFilter<TAbi, ExtractAbiEventNames<TAbi>> =
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        {} as ContractFunctionFilter<TAbi, ExtractAbiEventNames<TAbi>>;
+    public filters: {
+        [K in ExtractAbiEventNames<TAbi>]: (
+            ...args:
+                | AbiParametersToPrimitiveTypes<
+                      Extract<
+                          TAbi[number],
+                          { name: K; type: 'event' }
+                      >['inputs']
+                  >
+                | [
+                      AbiParametersToPrimitiveTypes<
+                          Extract<
+                              TAbi[number],
+                              { name: K; type: 'event' }
+                          >['inputs']
+                      >
+                  ]
+        ) => ContractFilter<TAbi>;
+    };
 
     public clause: ContractFunctionClause<
         TAbi,

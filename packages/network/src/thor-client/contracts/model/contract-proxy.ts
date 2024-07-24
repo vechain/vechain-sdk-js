@@ -36,8 +36,15 @@ function getReadProxy<TAbi extends Abi>(
             return async (...args: unknown[]): Promise<unknown> => {
                 const functionFragment = contract.getFunctionFragment(prop);
 
+                // Wrap single argument in an array if the function expects an array
+                const wrappedArgs =
+                    functionFragment.inputs.length === 1 &&
+                    !Array.isArray(args[0])
+                        ? [args[0]]
+                        : args;
+
                 const extractOptionsResult =
-                    extractAndRemoveAdditionalOptions(args);
+                    extractAndRemoveAdditionalOptions(wrappedArgs);
 
                 const clauseComment =
                     extractOptionsResult.clauseAdditionalOptions?.comment;
@@ -136,16 +143,38 @@ function getTransactProxy<TAbi extends Abi>(
 function getFilterProxy<TAbi extends Abi>(
     contract: Contract<TAbi>
 ): ContractFunctionFilter<TAbi, ExtractAbiEventNames<TAbi>> {
-    return new Proxy(contract.filters, {
-        get: (_target, prop) => {
-            // Otherwise, assume that the function is a contract method
+    const handler: ProxyHandler<
+        ContractFunctionFilter<TAbi, ExtractAbiEventNames<TAbi>>
+    > = {
+        get: (_target, prop: string | symbol) => {
             return (...args: unknown[]): ContractFilter<TAbi> => {
-                const criteriaSet = buildCriteria(contract, prop, args);
+                // Normalize args: if it's a single array argument, use it; otherwise, use the args as-is
+                const normalizedArgs =
+                    Array.isArray(args[0]) && args.length === 1
+                        ? args[0]
+                        : args;
+
+                const criteriaSet = buildCriteria(
+                    contract,
+                    prop,
+                    normalizedArgs
+                );
 
                 return new ContractFilter<TAbi>(contract, [criteriaSet]);
             };
         }
-    });
+    };
+
+    // Create an object with the correct structure
+    const filterObject: Partial<
+        ContractFunctionFilter<TAbi, ExtractAbiEventNames<TAbi>>
+    > = {};
+
+    // Use the Proxy to handle property access
+    return new Proxy(filterObject, handler) as ContractFunctionFilter<
+        TAbi,
+        ExtractAbiEventNames<TAbi>
+    >;
 }
 
 /**

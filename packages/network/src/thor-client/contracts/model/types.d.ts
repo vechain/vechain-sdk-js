@@ -44,9 +44,7 @@ type ContractFunctionSync<T = unknown, TABIFunction> = (
  * representations of the input parameters defined in the ABI for the event, and returns a value of type `T`.
  */
 type ContractEventSync<T = unknown, TABIEvent> = (
-    ...args: Partial<
-        AbiParametersToPrimitiveTypes<TABIEvent['inputs'], 'inputs'>
-    >
+    ...args: Array<AbiParametersToPrimitiveTypes<TABIEvent['inputs'], 'inputs'>>
 ) => T;
 
 /**
@@ -82,13 +80,39 @@ type ContractFunctionRead<
     TAbi extends Abi,
     TFunctionName extends ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>
 > = {
-    [K in TFunctionName]: (
-        ...args: AbiParametersToPrimitiveTypes<
-            ExtractAbiFunction<TAbi, K>['inputs']
-        >
-    ) => Promise<
-        AbiParametersToPrimitiveTypes<ExtractAbiFunction<TAbi, K>['outputs']>[0]
-    >;
+    [K in TFunctionName]: Extract<
+        TAbi[number],
+        { name: K; type: 'function' }
+    >['inputs'] extends [infer SingleInput]
+        ? (
+              arg:
+                  | AbiParametersToPrimitiveTypes<SingleInput, 'inputs'>
+                  | [AbiParametersToPrimitiveTypes<SingleInput, 'inputs'>]
+          ) => Promise<
+              AbiParametersToPrimitiveTypes<
+                  Extract<
+                      TAbi[number],
+                      { name: K; type: 'function' }
+                  >['outputs']
+              >[0]
+          >
+        : (
+              ...args: Array<
+                  AbiParametersToPrimitiveTypes<
+                      Extract<
+                          TAbi[number],
+                          { name: K; type: 'function' }
+                      >['inputs']
+                  >
+              >
+          ) => Promise<
+              AbiParametersToPrimitiveTypes<
+                  Extract<
+                      TAbi[number],
+                      { name: K; type: 'function' }
+                  >['outputs']
+              >[0]
+          >;
 };
 
 /**
@@ -129,9 +153,23 @@ type ContractFunctionTransact<
  */
 type ContractFunctionFilter<
     TAbi extends Abi,
-    TEventName extends ExtractAbiEventNames<TAbi>,
-    TAbiEvent extends AbiFunction = ExtractAbiEvent<TAbi, TEventName>
-> = Record<TEventName, ContractEventSync<ContractFilter<TAbi>, TAbiEvent>>;
+    TEventName extends ExtractAbiEventNames<TAbi>
+> = {
+    [K in TEventName]: (
+        ...args:
+            | AbiParametersToPrimitiveTypes<
+                  Extract<TAbi[number], { name: K; type: 'event' }>['inputs']
+              >
+            | [
+                  AbiParametersToPrimitiveTypes<
+                      Extract<
+                          TAbi[number],
+                          { name: K; type: 'event' }
+                      >['inputs']
+                  >
+              ]
+    ) => ContractFilter<TAbi>;
+};
 
 /**
  * Defines a mapping of contract function names to their corresponding transactional contract functions.
