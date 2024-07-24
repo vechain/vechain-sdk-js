@@ -52,7 +52,7 @@ class ContractFilter<TAbi extends Abi> {
             options: param?.options,
             order: param?.order ?? 'asc'
         };
-        const result = await this.contract.thor.logs.filterEventLogs(
+        const result = await this.contract.thor.logs.filterGroupedEventLogs(
             filterEventLogsOptions
         );
         return Array.from(result.values());

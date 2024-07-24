@@ -139,7 +139,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         });
 
         expect(
-            events[0].map((event) => {
+            events.map((event) => {
                 return event.data;
             })
         ).toEqual([
@@ -148,7 +148,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         ]);
 
         expect(
-            events[0].map((event) => {
+            events.map((event) => {
                 return event.topics;
             })
         ).toEqual([
@@ -205,7 +205,7 @@ describe('ThorClient - ERC20 Contracts', () => {
             criteriaSet: [transferCriteria]
         });
 
-        expect(events[0].map((x) => x.decodedData)).toEqual([
+        expect(events.map((x) => x.decodedData)).toEqual([
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
                 '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
@@ -323,7 +323,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         });
 
         expect(
-            events[0].map((event) => {
+            events.map((event) => {
                 return event.data;
             })
         ).toEqual([
@@ -333,7 +333,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         ]);
 
         expect(
-            events[0].map((event) => {
+            events.map((event) => {
                 return event.topics;
             })
         ).toEqual([
@@ -407,7 +407,7 @@ describe('ThorClient - ERC20 Contracts', () => {
             criteriaSet: [transferCriteria, transferCriteriaDelegator]
         });
 
-        expect(events[0].map((x) => x.decodedData)).toEqual([
+        expect(events.map((x) => x.decodedData)).toEqual([
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
                 '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
@@ -471,6 +471,68 @@ describe('ThorClient - ERC20 Contracts', () => {
         const valueCriteria = contractEventExample.criteria.ValueSet();
 
         const events = await thorSoloClient.logs.filterEventLogs({
+            criteriaSet: [transferCriteria, valueCriteria]
+        });
+
+        console.log(events);
+
+        expect(events[0].decodedData).toEqual([
+            '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
+            '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
+            5000n
+        ]);
+
+        expect(events[1].decodedData).toEqual([
+            '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
+            3000n
+        ]);
+    }, 20000); // Set a timeout of 10000ms for this test
+
+    /**
+     * Tests the listening to ERC20 contract operations with multiple criteria decoding the result using the method to group the event by topic.
+     */
+    test('listen to multiple contract operations with multiple criteria using the method to group the event by topic', async () => {
+        // Deploy the ERC20 contract
+        let erc20Factory = thorSoloClient.contracts.createContractFactory(
+            ERC20_ABI,
+            erc20ContractBytecode,
+            signer
+        );
+
+        erc20Factory = await erc20Factory.startDeployment();
+
+        const contractERC20 = await erc20Factory.waitForDeployment();
+
+        // Deploy the EventExample contract
+        let factoryEventExample =
+            thorSoloClient.contracts.createContractFactory(
+                eventExampleAbi,
+                eventExampleBytecode,
+                signer
+            );
+
+        factoryEventExample = await factoryEventExample.startDeployment();
+
+        const contractEventExample =
+            await factoryEventExample.waitForDeployment();
+
+        await (
+            await contractERC20.transact.transfer(
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                5000n
+            )
+        ).wait();
+
+        await (await contractEventExample.transact.setValue(3000n)).wait();
+
+        const transferCriteria = contractERC20.criteria.Transfer(
+            undefined,
+            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+        );
+
+        const valueCriteria = contractEventExample.criteria.ValueSet();
+
+        const events = await thorSoloClient.logs.filterGroupedEventLogs({
             criteriaSet: [transferCriteria, valueCriteria]
         });
 
