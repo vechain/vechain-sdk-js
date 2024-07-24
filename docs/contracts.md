@@ -79,6 +79,27 @@ const clause = clauseBuilder.functionInteraction(
 );
 ```
 
+Another simple way is to use the `new Contract`:
+
+```typescript { name=typed-contract, category=example }
+type MyContractAbi = typeof abi;
+const allocationContract = new Contract<MyContractAbi>(
+    address,
+    abi,
+    thorClient
+);
+
+const currentRoundId = await allocationContract.read.currentRoundId();
+```
+
+If you don't want to create the abi type, just use `createTypedContract`method:
+
+```typescript { name=typed-contract, category=example }
+const allocationContractTwo = createTypedContract(address, abi, thorClient);
+
+const currentRoundIdTwo = await allocationContractTwo.read.currentRoundId();
+```
+
 ### Process Breakdown
 
 1. **Understanding the ABI**: The ABI (Application Binary Interface) of the smart contract, usually defined in JSON format, describes the contract's functions and their respective parameters. This interface is pivotal for ensuring proper interaction with the contract's functions.

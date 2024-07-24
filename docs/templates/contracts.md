@@ -30,6 +30,14 @@ After deploying a smart contract, interacting with its functions is the next ste
 
 [ContractFunctionCallSnippet](examples/contracts/contract-function-call.ts)
 
+Another simple way is to use the `new Contract`:
+
+[TypedContractFirstSnippet](examples/contracts/typed-contract.ts)
+
+If you don't want to create the abi type, just use `createTypedContract`method:
+
+[TypedContractSecondSnippet](examples/contracts/typed-contract.ts)
+
 ### Process Breakdown
 
 1. **Understanding the ABI**: The ABI (Application Binary Interface) of the smart contract, usually defined in JSON format, describes the contract's functions and their respective parameters. This interface is pivotal for ensuring proper interaction with the contract's functions.

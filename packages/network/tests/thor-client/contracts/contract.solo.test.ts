@@ -21,6 +21,7 @@ import { addressUtils, coder, type DeployParams, type FunctionFragment } from '@
 import {
     Contract,
     type ContractFactory,
+    createTypedContract,
     THOR_SOLO_URL,
     ThorClient,
     type TransactionReceipt,
@@ -104,9 +105,9 @@ describe('ThorClient - Contracts', () => {
     /**
      * Test case for deploying a smart contract using the contract factory.
      */
-    test('create a new contract', () => {
+    test('create a new typed contract', () => {
         // Poll until the transaction receipt is available
-        const contract = new Contract(
+        const contract = createTypedContract(
             '0x123',
             deployedContractAbi,
             thorSoloClient,

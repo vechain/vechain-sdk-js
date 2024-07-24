@@ -1,4 +1,5 @@
 import { Contract, createTypedContract, ThorClient } from "@vechain/sdk-network";
+import { expect } from 'expect';
 
 const abi = [
     {
@@ -1744,21 +1745,25 @@ const abi = [
       "type": "function"
     }
 ] as const;
-
-type MyContractAbi = typeof abi;
-
 const address = "0x89A00Bb0947a30FF95BEeF77a66AEdE3842Fe5B7";
-
 const thorClient = ThorClient.fromUrl("https://mainnet.vechain.org");
 
+// START_SNIPPET: TypedContractFirstSnippet
+type MyContractAbi = typeof abi;
 const allocationContract = new Contract<MyContractAbi>(
     address,
     abi,
     thorClient
 );
 
+const currentRoundId = await allocationContract.read.currentRoundId();
+// END_SNIPPET: TypedContractFirstSnippet
+
+// START_SNIPPET: TypedContractSecondSnippet
 const allocationContractTwo = createTypedContract(address, abi, thorClient);
 
-const currentRoundId = await allocationContract.read.currentRoundId();
+const currentRoundIdTwo = await allocationContractTwo.read.currentRoundId();
+// END_SNIPPET: TypedContractSecondSnippet
 
-const currentRoundIdTwo = await allocationContract.read.currentRoundId();
+expect(currentRoundId).toBeDefined();
+expect(currentRoundIdTwo).toBeDefined();
