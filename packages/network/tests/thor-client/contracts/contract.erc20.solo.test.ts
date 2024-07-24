@@ -128,7 +128,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         // Execute a 'balanceOf' call on the contract to check the balance of the receiver
         const balanceOfResult = await contract.read.balanceOf(
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+            [TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address]
         );
 
         // Ensure that the transfer transaction was successful and the balance is as expected
@@ -165,7 +165,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         // Execute a 'balanceOf' call on the contract to check the balance of the receiver
         const balanceOfResult = await contract.read.balanceOf(
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+            [TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address]
         );
 
         // Ensure that the transfer transaction was successful and the balance is as expected
@@ -202,7 +202,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         // Execute a 'balanceOf' call on the contract to check the balance of the receiver
         const balanceOfResult = await contract.read.balanceOf(
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+            [TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address]
         );
 
         // Ensure that the transfer transaction was successful and the balance is as expected
@@ -269,7 +269,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         expect(
             await contract.read.balanceOf(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+                [TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address]
             )
         ).toEqual([BigInt(1000)]);
     }, 10000);
@@ -412,7 +412,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         expect(
             await contract.read.balanceOf(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+                [TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address]
             )
         ).toEqual([BigInt(1000)]);
     }, 30000);
