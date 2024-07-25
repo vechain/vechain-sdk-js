@@ -33,12 +33,13 @@ class ContractFilter<TAbi extends Abi> {
     }
 
     /**
-     * Retrieves event logs based on the specified filter criteria, range, pagination options, and order.
+     * Retrieves event logs based on the specified filter criteria and options.
      *
-     * @param range - The block range to fetch the events from. Defaults to the entire blockchain history if not provided.
-     * @param options - Pagination options for fetching the events.
-     * @param order - The order in which to display the events. Defaults to ascending ('asc') if not provided.
-     * @returns An array of event logs that match the specified criteria.
+     * @param param - Optional. An object containing filter options.
+     * @param param.range - Optional. The block range to fetch the events from. If not provided, defaults to the entire blockchain history.
+     * @param param.options - Optional. Pagination options for fetching the events.
+     * @param param.order - Optional. The order in which to display the events. Defaults to ascending ('asc') if not provided.
+     * @returns A Promise that resolves to a two-dimensional array of EventLogs. Each inner array represents a group of related event logs.
      */
     public async get(param?: TransferFilterOptions): Promise<EventLogs[][]> {
         const filterEventLogsOptions: FilterEventLogsOptions = {

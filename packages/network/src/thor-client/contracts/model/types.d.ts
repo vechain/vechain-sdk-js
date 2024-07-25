@@ -10,6 +10,7 @@ import {
     type ExtractAbiEventNames,
     type AbiFunction
 } from 'abitype';
+import type { EventFragment } from '../../../utils';
 
 /**
  * Represents a generic contract function type that accepts an arbitrary number of arguments
@@ -29,19 +30,6 @@ type ContractFunctionSync<T = unknown, TABIFunction> = (
 ) => T;
 
 /**
- * Defines a synchronous function type for handling contract events.
- *
- * @template T - The return type of the contract event function. Defaults to `unknown`.
- * @template TAbiEvent - The ABI event type for the contract event.
- *
- * This type represents a function that takes a variable number of arguments, which are partial
- * representations of the input parameters defined in the ABI for the event, and returns a value of type `T`.
- */
-type ContractEventSync<T = unknown, TABIEvent> = (
-    ...args: Array<AbiParametersToPrimitiveTypes<TABIEvent['inputs'], 'inputs'>>
-) => T;
-
-/**
  * Represents a generic contract function type that accepts an arbitrary number of arguments
  * and returns a promise that resolves to a generic type `T`. This type is typically used to
  * model the behavior of smart contract functions in a blockchain context.
@@ -57,57 +45,6 @@ type ContractFunctionAsync<T = unknown, TABIFunction> = (
         ...AbiParametersToPrimitiveTypes<TABIFunction['inputs'], 'inputs'>
     ]
 ) => Promise<T>;
-
-/**
- * Defines a mapping of contract function names to their corresponding read-only contract functions.
- * Each function in this record is expected to return a `Promise` that resolves to `ContractCallResult`,
- * which should encapsulate the result of a read-only contract call.
- *
- * The keys of this record represent the names of the contract functions, and the values are the contract
- * functions themselves, adhering to the `ContractFunctionAsync` type with `ContractCallResult` as the return type.
- *
- * @template TAbi - The ABI of the contract which includes the contract functions.
- * @template TFunctionName - The names of the contract functions extracted from the ABI that are either 'pure' or 'view'.
- * @template TAbiFunction - The contract function extracted from the ABI based on the function name.
- */
-type ContractFunctionRead<
-    TAbi extends Abi,
-    TFunctionName extends ExtractAbiFunctionNames<TAbi, 'pure' | 'view'>
-> = {
-    [K in TFunctionName]: Extract<
-        TAbi[number],
-        { name: K; type: 'function' }
-    >['inputs'] extends [infer SingleInput]
-        ? (
-              arg:
-                  | AbiParametersToPrimitiveTypes<SingleInput, 'inputs'>
-                  | [AbiParametersToPrimitiveTypes<SingleInput, 'inputs'>]
-          ) => Promise<
-              AbiParametersToPrimitiveTypes<
-                  Extract<
-                      TAbi[number],
-                      { name: K; type: 'function' }
-                  >['outputs']
-              >[0]
-          >
-        : (
-              ...args: Array<
-                  AbiParametersToPrimitiveTypes<
-                      Extract<
-                          TAbi[number],
-                          { name: K; type: 'function' }
-                      >['inputs']
-                  >
-              >
-          ) => Promise<
-              AbiParametersToPrimitiveTypes<
-                  Extract<
-                      TAbi[number],
-                      { name: K; type: 'function' }
-                  >['outputs']
-              >[0]
-          >;
-};
 
 /**
  * Defines a mapping of contract function names to their corresponding transactional contract functions.
@@ -249,19 +186,6 @@ type ReadFunctionNames<TAbi extends Abi> = Extract<
     }
 >['name'];
 
-type EventParameters<
-    TAbi extends Abi,
-    TEventName extends ExtractAbiEventNames<TAbi>
-> = Extract<TAbi[number], { name: TEventName; type: 'event' }>['inputs'];
-
-type EventParameterType<T> = T extends { type: infer R } ? R : never;
-
-type EventParameterTypes<T extends readonly unknown[]> = {
-    [K in keyof T]: EventParameterType<T[K]> extends string
-        ? AbiParameterToPrimitiveType<T[K], 'event'>
-        : never;
-};
-
 interface FilterCriteria {
     criteria: {
         address: string;
@@ -277,7 +201,6 @@ interface FilterCriteria {
 export type {
     ContractFunctionAsync,
     ContractFunctionSync,
-    ContractFunctionRead,
     ContractFunctionTransact,
     ContractFunctionFilter,
     ContractFunctionClause,
