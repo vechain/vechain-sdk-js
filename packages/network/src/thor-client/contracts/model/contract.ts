@@ -126,11 +126,7 @@ class Contract<TAbi extends Abi> {
         // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     >;
 
-    public criteria: ContractFunctionCriteria<
-        TAbi,
-        ExtractAbiEventNames<TAbi>
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    > = {} as ContractFunctionCriteria<TAbi, ExtractAbiEventNames<TAbi>>;
+    public criteria: ContractFunctionCriteria<TAbi, ExtractAbiEventNames<TAbi>>;
 
     private contractCallOptions: ContractCallOptions = {};
     private contractTransactionOptions: ContractTransactionOptions = {};

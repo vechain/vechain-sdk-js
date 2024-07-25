@@ -13,7 +13,7 @@ import {
     eventExampleBytecode
 } from './fixture';
 import { InvalidAbiFragment } from '@vechain/sdk-errors';
-import { ERC20_ABI } from '@vechain/sdk-core';
+import { ERC20_ABI, type EventFragment } from '@vechain/sdk-core';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -72,13 +72,14 @@ describe('ThorClient - ERC20 Contracts', () => {
             )
         ).wait();
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
         const events = await contract.filters
             .Transfer(
-                undefined,
-                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                null as any as string,
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                null as any as bigint
             )
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             .get();
 
         expect(
@@ -263,7 +264,8 @@ describe('ThorClient - ERC20 Contracts', () => {
                     criteriaSet: [
                         {
                             criteria: transferCriteria.criteria,
-                            eventFragment: approvalCriteria.eventFragment
+                            eventFragment:
+                                approvalCriteria.eventFragment as EventFragment
                         }
                     ]
                 })

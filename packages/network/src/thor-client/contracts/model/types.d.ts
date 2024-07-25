@@ -1,20 +1,14 @@
 import type { ContractClause } from '../types';
 import type { SendTransactionResult } from '../../transactions';
 import { type ContractFilter } from './contract-filter';
-import type {
-    FilterCriteria,
-    Range,
-    PaginationOptions,
-    EventDisplayOrder
-} from '../../logs';
+import type { Range, PaginationOptions, EventDisplayOrder } from '../../logs';
 import {
     type Abi,
     type ExtractAbiFunctionNames,
     type ExtractAbiFunction,
     type AbiParametersToPrimitiveTypes,
     type ExtractAbiEventNames,
-    type AbiFunction,
-    type ExtractAbiEvent
+    type AbiFunction
 } from 'abitype';
 
 /**
@@ -203,9 +197,10 @@ type ContractFunctionClause<
  */
 type ContractFunctionCriteria<
     TAbi extends Abi,
-    TEventName extends ExtractAbiEventNames<TAbi>,
-    TAbiEvent extends AbiFunction = ExtractAbiEvent<TAbi, TEventName>
-> = Record<TEventName, ContractEventSync<FilterCriteria, TAbiEvent>>;
+    TEventName extends ExtractAbiEventNames<TAbi>
+> = {
+    [K in TEventName]: (...args: unknown[]) => FilterCriteria;
+};
 
 /**
  * Represents the amount of VET to transfer in a transaction.
@@ -253,6 +248,31 @@ type ReadFunctionNames<TAbi extends Abi> = Extract<
         stateMutability: 'view' | 'pure';
     }
 >['name'];
+
+type EventParameters<
+    TAbi extends Abi,
+    TEventName extends ExtractAbiEventNames<TAbi>
+> = Extract<TAbi[number], { name: TEventName; type: 'event' }>['inputs'];
+
+type EventParameterType<T> = T extends { type: infer R } ? R : never;
+
+type EventParameterTypes<T extends readonly unknown[]> = {
+    [K in keyof T]: EventParameterType<T[K]> extends string
+        ? AbiParameterToPrimitiveType<T[K], 'event'>
+        : never;
+};
+
+interface FilterCriteria {
+    criteria: {
+        address: string;
+        topic0: string;
+        topic1?: string;
+        topic2?: string;
+        topic3?: string;
+        topic4?: string;
+    };
+    eventFragment: EventFragment;
+}
 
 export type {
     ContractFunctionAsync,

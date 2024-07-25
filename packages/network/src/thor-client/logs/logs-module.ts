@@ -45,9 +45,19 @@ class LogsModule {
      * The decoded data is added to the event logs as a new property.
      * @param filterOptions - An object specifying filtering criteria for event logs.
      */
-    public async filterEventLogs(
-        filterOptions: FilterEventLogsOptions
-    ): Promise<EventLogs[]> {
+    public async filterEventLogs(filterOptions: {
+        criteriaSet: Array<{
+            criteria: {
+                address: string;
+                topic0: string;
+                topic1?: string;
+                topic2?: string;
+                topic3?: string;
+                topic4?: string;
+            };
+            eventFragment: EventFragment;
+        }>;
+    }): Promise<EventLogs[]> {
         // Extract raw event logs and fragments from filter options
         const fragments = filterOptions.criteriaSet?.map(
             (c) => c.eventFragment

@@ -233,13 +233,24 @@ function getClauseProxy<TAbi extends Abi>(
 function getCriteriaProxy<TAbi extends Abi>(
     contract: Contract<TAbi>
 ): ContractFunctionCriteria<TAbi, ExtractAbiEventNames<TAbi>> {
-    return new Proxy(contract.criteria, {
-        get: (_target, prop) => {
+    const handler: ProxyHandler<
+        ContractFunctionCriteria<TAbi, ExtractAbiEventNames<TAbi>>
+    > = {
+        get: (_target, prop: string | symbol) => {
             return (...args: unknown[]): FilterCriteria => {
                 return buildCriteria(contract, prop, args);
             };
         }
-    });
+    };
+
+    const proxyTarget: Partial<
+        ContractFunctionCriteria<TAbi, ExtractAbiEventNames<TAbi>>
+    > = {};
+
+    return new Proxy(proxyTarget, handler) as ContractFunctionCriteria<
+        TAbi,
+        ExtractAbiEventNames<TAbi>
+    >;
 }
 
 /**
