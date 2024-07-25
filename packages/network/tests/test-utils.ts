@@ -11,7 +11,13 @@ import { jest } from '@jest/globals';
  */
 const advanceTimersByTimeAndTick = async (time: number): Promise<void> => {
     jest.advanceTimersByTime(time);
-    await new Promise((resolve) => setImmediate(resolve));
+    await new Promise((resolve) => {
+        if (typeof process !== 'undefined' && process.nextTick) {
+            process.nextTick(resolve);
+        } else {
+            setTimeout(resolve, 0);
+        }
+    });
 };
 
 export { advanceTimersByTimeAndTick };
