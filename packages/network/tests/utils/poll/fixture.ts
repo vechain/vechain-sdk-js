@@ -1,4 +1,4 @@
-import { buildError, DATA, InvalidDataTypeError } from '@vechain/sdk-errors';
+import { InvalidDataType, InvalidDataTypeError } from '@vechain/sdk-errors';
 
 /**
  * Simple increment function fixture
@@ -20,11 +20,12 @@ const simpleThrowErrorFunctionIfInputIs10 = async (
     a: number
 ): Promise<number> => {
     if (a === 10)
-        throw buildError(
-            'simpleThrowErrorFunctionIfInputIs10',
-            DATA.INVALID_DATA_RETURN_TYPE,
-            "Input value error: 'a' must not be 10."
+        throw new InvalidDataType(
+            'simpleThrowErrorFunctionIfInputIs10()',
+            "Input value error: 'a' must not be 10.",
+            { input: a }
         );
+
     return await simpleIncrementFunction(a, a + 1);
 };
 

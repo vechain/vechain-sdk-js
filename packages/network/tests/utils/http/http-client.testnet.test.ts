@@ -2,12 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { type HttpParams } from '../../../src';
 import { testnetGenesisBlock } from './fixture';
 import { testAccount, testNetwork } from '../../fixture';
-import {
-    buildError,
-    HTTP_CLIENT,
-    InvalidHTTPRequest,
-    stringifyData
-} from '@vechain/sdk-errors';
+import { InvalidHTTPRequest, stringifyData } from '@vechain/sdk-errors';
 
 /**
  * Timeout for each test.
@@ -98,10 +93,10 @@ describe('Test HttpClient class on Testnet', () => {
                 'X-Custom-Header': 'custom-value'
             },
             validateResponseHeader: function (): void {
-                throw buildError(
+                throw new InvalidHTTPRequest(
                     'validateResponseHeader',
-                    HTTP_CLIENT.INVALID_HTTP_REQUEST,
-                    `Forcing error on header validation.`
+                    'Forcing error on header validation.',
+                    { method: 'GET', url: '/accounts/' + testAccount }
                 );
             }
         };
