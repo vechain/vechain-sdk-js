@@ -10,4 +10,13 @@ import { type ObjectErrorData } from '../types';
  */
 class InvalidDataType extends VechainSDKError<ObjectErrorData> {}
 
-export { InvalidDataType };
+/**
+ * Unsupported operation error.
+ *
+ * WHEN TO USE:
+ * * This error will be thrown when an operation is not supported.
+ * -e.g.- into the ethers adapter, when the runner does not support sending transactions.
+ */
+class UnsupportedOperation extends VechainSDKError<ObjectErrorData> {}
+
+export { InvalidDataType, UnsupportedOperation };

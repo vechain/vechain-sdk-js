@@ -4,11 +4,7 @@ import {
     type GetDelegationSignatureResult,
     type SignTransactionOptions
 } from '../types';
-import {
-    assert,
-    NotDelegatedTransaction,
-    TRANSACTION
-} from '@vechain/sdk-errors';
+import { NotDelegatedTransaction } from '@vechain/sdk-errors';
 
 /**
  * Retrieves the signature of a delegation transaction from a delegator given the endpoint
@@ -141,17 +137,17 @@ const DelegationHandler = (
             httpClient: HttpClient
         ): Promise<Buffer> => {
             // Cannot be delegated by private key
-            assert(
-                'getDelegationSignatureUsingUrl',
-                isDelegatedWithUrl,
-                TRANSACTION.INVALID_DELEGATION,
-                'Delegation with url failed: delegatorUrl is not defined.',
-                { delegator, tx, originAddress }
-            );
+            if (!isDelegatedWithUrl) {
+                throw new NotDelegatedTransaction(
+                    'DelegationHandler.getDelegationSignatureUsingUrl()',
+                    'Delegation with url failed: delegatorUrl is not defined.',
+                    undefined
+                );
+            }
 
             return await _getDelegationSignature(
                 tx,
-                delegator?.delegatorUrl as string,
+                delegator?.delegatorUrl,
                 originAddress,
                 httpClient
             );

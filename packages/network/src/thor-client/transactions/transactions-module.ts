@@ -30,12 +30,7 @@ import {
     type TransactionSimulationResult,
     type WaitForTransactionOptions
 } from './types';
-import {
-    assert,
-    DATA,
-    InvalidDataType,
-    InvalidTransactionField
-} from '@vechain/sdk-errors';
+import { InvalidDataType, InvalidTransactionField } from '@vechain/sdk-errors';
 import { type ThorClient } from '../thor-client';
 import { type ExpandedBlockDetail } from '../blocks';
 import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
@@ -182,13 +177,13 @@ class TransactionsModule {
         raw: string
     ): Promise<SendTransactionResult> {
         // Validate raw transaction
-        assert(
-            'sendRawTransaction',
-            Hex0x.isValid(raw),
-            DATA.INVALID_DATA_TYPE,
-            'Sending failed: Input must be a valid raw transaction in hex format.',
-            { raw }
-        );
+        if (!Hex0x.isValid(raw)) {
+            throw new InvalidDataType(
+                'TransactionsModule.sendRawTransaction()',
+                'Sending failed: Input must be a valid raw transaction in hex format.',
+                { raw }
+            );
+        }
 
         // Decode raw transaction to check if raw is ok
         try {
@@ -412,15 +407,17 @@ class TransactionsModule {
             expiration,
             provedWork
         } = options ?? {};
-        assert(
-            'simulateTransaction',
-            revision === undefined ||
-                revision === null ||
-                revisionUtils.isRevisionAccount(revision),
-            DATA.INVALID_DATA_TYPE,
-            'Invalid revision given as input. Input must be a valid revision (i.e., a block number or block ID).',
-            { revision }
-        );
+        if (
+            revision !== undefined &&
+            revision !== null &&
+            !revisionUtils.isRevisionAccount(revision)
+        ) {
+            throw new InvalidDataType(
+                'TransactionsModule.simulateTransaction()',
+                'Invalid revision given as input. Input must be a valid revision (i.e., a block number or block ID).',
+                { revision }
+            );
+        }
 
         return (await this.thor.httpClient.http(
             'POST',

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import { TEST_ACCOUNTS } from '../../fixture';
 import { Hex0x, TransactionHandler } from '@vechain/sdk-core';
 import { sendTransactionErrors, simulateTransaction } from './fixture-thorest';
-import { InvalidDataTypeError, stringifyData } from '@vechain/sdk-errors';
+import { InvalidDataType, stringifyData } from '@vechain/sdk-errors';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
 
 /**
@@ -260,7 +260,7 @@ describe('ThorClient - Transactions Module', () => {
                     ],
                     { revision: 'invalid-revision' }
                 )
-            ).rejects.toThrow(InvalidDataTypeError);
+            ).rejects.toThrow(InvalidDataType);
         });
     });
 });

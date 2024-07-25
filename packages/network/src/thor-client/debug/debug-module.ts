@@ -10,7 +10,7 @@ import {
     type TransactionTraceTarget
 } from './types';
 import { thorest } from '../../utils';
-import { assert, DATA } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { addressUtils, Hex0x } from '@vechain/sdk-core';
 
 /** The `DebugModule` class encapsulates functionality to handle Debug
@@ -91,34 +91,36 @@ class DebugModule {
         // Validate contractInput
         if (
             input.contractInput?.to !== undefined &&
-            input.contractInput.to !== null
+            input.contractInput.to !== null &&
+            !addressUtils.isAddress(input.contractInput.to)
         ) {
-            assert(
-                'traceContractCall',
-                addressUtils.isAddress(input.contractInput.to),
-                DATA.INVALID_DATA_TYPE,
+            throw new InvalidDataType(
+                'DebugModule.traceContractCall()',
                 `Invalid address '${input.contractInput.to}' given as input for traceContractCall.`,
                 { address: input.contractInput.to }
             );
         }
 
-        if (input.contractInput?.data !== undefined)
-            assert(
-                'traceContractCall',
-                Hex0x.isValid(input.contractInput.data, true),
-                DATA.INVALID_DATA_TYPE,
+        if (
+            input.contractInput?.data !== undefined &&
+            !Hex0x.isValid(input.contractInput.data, true)
+        )
+            throw new InvalidDataType(
+                'DebugModule.traceContractCall()',
                 `Invalid data '${input.contractInput?.data}' given as input for traceContractCall.`,
                 { data: input.contractInput?.data }
             );
 
-        if (input.contractInput?.value !== undefined)
-            assert(
-                'traceContractCall',
-                Hex0x.isValid(input.contractInput.value),
-                DATA.INVALID_DATA_TYPE,
+        if (
+            input.contractInput?.value !== undefined &&
+            !Hex0x.isValid(input.contractInput.value)
+        ) {
+            throw new InvalidDataType(
+                'DebugModule.traceContractCall()',
                 `Invalid value '${input.contractInput?.value}' given as input for traceContractCall.`,
                 { value: input.contractInput?.value }
             );
+        }
 
         // Send request
         return (await this.thor.httpClient.http(
@@ -200,40 +202,40 @@ class DebugModule {
         functionName: string
     ): void {
         // Validate target - blockID
-        assert(
-            'validateTarget',
-            Hex0x.isThorId(target.blockID),
-            DATA.INVALID_DATA_TYPE,
-            `Invalid block ID '${target.blockID}' given as input for ${functionName}.`,
-            { blockId: target.blockID }
-        );
+        if (!Hex0x.isThorId(target.blockID)) {
+            throw new InvalidDataType(
+                'DebugModule.validateTarget()',
+                `Invalid block ID '${target.blockID}' given as input for ${functionName}.`,
+                { blockId: target.blockID }
+            );
+        }
 
         // Validate target - transaction
-        if (typeof target.transaction === 'string')
-            assert(
-                'validateTarget',
-                Hex0x.isThorId(target.transaction),
-                DATA.INVALID_DATA_TYPE,
-                `Invalid transaction id '${target.transaction}' given as input for ${functionName}.`,
-                { transaction: target.transaction }
-            );
-        else
-            assert(
-                'validateTarget',
-                target.transaction >= 0,
-                DATA.INVALID_DATA_TYPE,
-                `Invalid transaction index '${target.transaction}' given as input for ${functionName}.`,
-                { transaction: target.transaction }
-            );
+        if (typeof target.transaction === 'string') {
+            if (!Hex0x.isThorId(target.transaction))
+                throw new InvalidDataType(
+                    'DebugModule.validateTarget()',
+                    `Invalid transaction id '${target.transaction}' given as input for ${functionName}.`,
+                    { transaction: target.transaction }
+                );
+        } else {
+            if (target.transaction < 0) {
+                throw new InvalidDataType(
+                    'DebugModule.validateTarget()',
+                    `Invalid transaction index '${target.transaction}' given as input for ${functionName}.`,
+                    { transaction: target.transaction }
+                );
+            }
+        }
 
         // Validate target - clauseIndex
-        assert(
-            'validateTarget',
-            target.clauseIndex >= 0,
-            DATA.INVALID_DATA_TYPE,
-            `Invalid clause index '${target.clauseIndex}' given as input for ${functionName}.`,
-            { clauseIndex: target.clauseIndex }
-        );
+        if (target.clauseIndex < 0) {
+            throw new InvalidDataType(
+                'DebugModule.validateTarget()',
+                `Invalid clause index '${target.clauseIndex}' given as input for ${functionName}.`,
+                { clauseIndex: target.clauseIndex }
+            );
+        }
     }
 }
 

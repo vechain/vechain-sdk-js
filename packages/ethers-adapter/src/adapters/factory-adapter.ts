@@ -1,5 +1,6 @@
 import type { HardhatVeChainProvider } from '@vechain/sdk-network';
 import { vechain_sdk_core_ethers } from '@vechain/sdk-core';
+import { UnsupportedOperation } from '@vechain/sdk-errors';
 
 /**
  * Factory adapter for the VeChain hardhat plugin
@@ -17,15 +18,18 @@ function factoryAdapter<A extends unknown[], I>(
     ) {
         const tx = await this.getDeployTransaction(...args);
 
-        vechain_sdk_core_ethers.assert(
-            this.runner != null &&
-                typeof this.runner.sendTransaction === 'function',
-            'factory runner does not support sending transactions',
-            'UNSUPPORTED_OPERATION',
-            {
-                operation: 'sendTransaction'
-            }
-        );
+        if (
+            this.runner == null ||
+            typeof this.runner.sendTransaction !== 'function'
+        ) {
+            throw new UnsupportedOperation(
+                'factoryAdapter()',
+                'Runner does not support sending transactions',
+                {
+                    operation: 'sendTransaction'
+                }
+            );
+        }
 
         const sentTx = await this.runner.sendTransaction(tx);
 

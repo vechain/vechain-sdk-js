@@ -9,6 +9,7 @@ import { erc20ContractBytecode } from '../fixture';
 import { factoryAdapter } from '../../src';
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import { ERC20_ABI, vechain_sdk_core_ethers } from '@vechain/sdk-core';
+import { UnsupportedOperation } from '@vechain/sdk-errors';
 
 /**
  *VeChain adapters tests - Solo Network
@@ -78,7 +79,9 @@ describe('Hardhat factory adapter tests', () => {
         // Create a contract adapter
         const adapter = factoryAdapter(contract, provider);
 
-        await expect(async () => await adapter.deploy()).rejects.toThrowError();
+        await expect(async () => await adapter.deploy()).rejects.toThrowError(
+            UnsupportedOperation
+        );
 
         expect(adapter).toBeDefined();
     });
