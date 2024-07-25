@@ -30,8 +30,7 @@ import type {
 function getReadProxy<TAbi extends Abi>(
     contract: Contract<TAbi>
 ): Contract<TAbi>['read'] {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return new Proxy({} as Contract<TAbi>['read'], {
+    const handler: ProxyHandler<Contract<TAbi>['read']> = {
         get: (_target, prop: string | symbol) => {
             return async (...args: unknown[]): Promise<unknown> => {
                 const functionFragment = contract.getFunctionFragment(prop);
@@ -68,7 +67,9 @@ function getReadProxy<TAbi extends Abi>(
                 );
             };
         }
-    });
+    };
+
+    return new Proxy(Object.create(null) as Contract<TAbi>['read'], handler);
 }
 
 /**
