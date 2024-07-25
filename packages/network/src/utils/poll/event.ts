@@ -1,6 +1,5 @@
 import { EventEmitter } from 'events';
-import { buildError, POLL_ERROR } from '@vechain/sdk-errors';
-import { assertPositiveIntegerForPollOptions } from './helpers/assertions';
+import { buildError, InvalidDataType, POLL_ERROR } from '@vechain/sdk-errors';
 
 /**
  * Poll in an event based way.
@@ -67,11 +66,19 @@ class EventPoll<TReturnType> extends EventEmitter {
         this.hasToStopOnError = hasToStopOnError;
 
         // Positive number for request interval
-        assertPositiveIntegerForPollOptions(
-            'EventPoll constructor',
-            requestIntervalInMilliseconds,
-            'requestIntervalInMilliseconds'
-        );
+        if (
+            requestIntervalInMilliseconds !== undefined &&
+            (requestIntervalInMilliseconds <= 0 ||
+                !Number.isInteger(requestIntervalInMilliseconds))
+        ) {
+            throw new InvalidDataType(
+                'SyncPoll()',
+                'Polling failed: Invalid input for field "options?.maximumWaitingTimeInMilliseconds" it must be a positive number',
+                {
+                    requestIntervalInMilliseconds
+                }
+            );
+        }
 
         this.requestIntervalInMilliseconds = requestIntervalInMilliseconds;
     }
