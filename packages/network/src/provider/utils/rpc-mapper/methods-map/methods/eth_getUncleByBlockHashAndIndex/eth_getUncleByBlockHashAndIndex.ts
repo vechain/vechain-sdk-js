@@ -1,5 +1,5 @@
 import { type ThorClient } from '../../../../../../thor-client';
-import { buildError, FUNCTION } from '@vechain/sdk-errors';
+import { FunctionNotImplemented } from '@vechain/sdk-errors';
 
 /**
  * RPC Method eth_getUncleByBlockHashAndIndex implementation
@@ -19,13 +19,13 @@ const ethGetUncleByBlockHashAndIndex = async (
     await Promise.resolve(0);
 
     // Not implemented yet
-    throw buildError(
+    throw new FunctionNotImplemented(
         'eth_getUncleByBlockHashAndIndex',
-        FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_getUncleByBlockHashAndIndex" has not been implemented yet.',
         {
-            params,
-            thorClient
+            functionName: 'eth_getUncleByBlockHashAndIndex',
+            thorClient,
+            params
         }
     );
 };

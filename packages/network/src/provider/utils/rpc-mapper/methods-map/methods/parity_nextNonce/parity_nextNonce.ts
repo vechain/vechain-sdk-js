@@ -1,5 +1,5 @@
 import { type ThorClient } from '../../../../../../thor-client';
-import { buildError, FUNCTION } from '@vechain/sdk-errors';
+import { FunctionNotImplemented } from '@vechain/sdk-errors';
 
 /**
  * RPC Method parity_nextNonce implementation
@@ -19,13 +19,13 @@ const parityNextNonce = async (
     await Promise.resolve(0);
 
     // Not implemented yet
-    throw buildError(
+    throw new FunctionNotImplemented(
         'parity_nextNonce',
-        FUNCTION.NOT_IMPLEMENTED,
         'Method "parity_nextNonce" has not been implemented yet.',
         {
-            params,
-            thorClient
+            functionName: 'parity_nextNonce',
+            thorClient,
+            params
         }
     );
 };

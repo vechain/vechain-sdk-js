@@ -1,5 +1,5 @@
 import { type ThorClient } from '../../../../../../thor-client';
-import { buildError, FUNCTION } from '@vechain/sdk-errors';
+import { FunctionNotImplemented } from '@vechain/sdk-errors';
 
 /**
  * RPC Method engine_getPayloadV3 implementation
@@ -19,13 +19,13 @@ const engineGetPayloadV3 = async (
     await Promise.resolve(0);
 
     // Not implemented yet
-    throw buildError(
+    throw new FunctionNotImplemented(
         'engine_getPayloadV3',
-        FUNCTION.NOT_IMPLEMENTED,
         'Method "engine_getPayloadV3" has not been implemented yet.',
         {
-            params,
-            thorClient
+            functionName: 'engine_getPayloadV3',
+            thorClient,
+            params
         }
     );
 };

@@ -1,5 +1,5 @@
 import { type ThorClient } from '../../../../../../thor-client';
-import { buildError, FUNCTION } from '@vechain/sdk-errors';
+import { FunctionNotImplemented } from '@vechain/sdk-errors';
 
 /**
  * RPC Method net_peerCount implementation
@@ -19,13 +19,13 @@ const netPeerCount = async (
     await Promise.resolve(0);
 
     // Not implemented yet
-    throw buildError(
+    throw new FunctionNotImplemented(
         'net_peerCount',
-        FUNCTION.NOT_IMPLEMENTED,
         'Method "net_peerCount" has not been implemented yet.',
         {
-            params,
-            thorClient
+            functionName: 'net_peerCount',
+            thorClient,
+            params
         }
     );
 };

@@ -4,6 +4,7 @@ export * from './bloom';
 export * from './certificate';
 export * from './contract';
 export * from './data';
+export * from './function';
 export * from './hdnode';
 export * from './http';
 export * from './keystore';

@@ -1,5 +1,5 @@
 import { type ThorClient } from '../../../../../../thor-client';
-import { buildError, FUNCTION } from '@vechain/sdk-errors';
+import { FunctionNotImplemented } from '@vechain/sdk-errors';
 
 /**
  * RPC Method eth_coinbase implementation
@@ -19,13 +19,13 @@ const ethCoinbase = async (
     await Promise.resolve(0);
 
     // Not implemented yet
-    throw buildError(
+    throw new FunctionNotImplemented(
         'eth_coinbase',
-        FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_coinbase" has not been implemented yet.',
         {
-            params,
-            thorClient
+            functionName: 'eth_coinbase',
+            thorClient,
+            params
         }
     );
 };
