@@ -1,8 +1,7 @@
 import {
     assert,
-    buildProviderError,
     DATA,
-    JSONRPC,
+    JSONRPCInternalError,
     stringifyData
 } from '@vechain/sdk-errors';
 import {
@@ -96,15 +95,13 @@ const ethGetLogs = async (
         // Format logs to RPC
         return formatToLogsRPC(logs);
     } catch (e) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'ethGetLogs' failed: Error while getting logs ${
-                params[0] as string
-            }\n
-            Params: ${stringifyData(params)}\n
-            URL: ${thorClient.httpClient.baseURL}`,
+        throw new JSONRPCInternalError(
+            'ethGetLogs()',
+            -32603,
+            'Method "ethGetLogs" failed.',
             {
-                params,
+                params: stringifyData(params),
+                url: thorClient.httpClient.baseURL,
                 innerError: stringifyData(e)
             }
         );

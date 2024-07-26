@@ -1,9 +1,8 @@
 import { type ThorClient } from '../../../../../../thor-client';
 import {
     assert,
-    buildProviderError,
     DATA,
-    JSONRPC,
+    JSONRPCInternalError,
     stringifyData
 } from '@vechain/sdk-errors';
 import type { BlockQuantityInputRPC } from '../../../types';
@@ -53,15 +52,13 @@ const ethGetBalance = async (
 
         return accountDetails.balance;
     } catch (e) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'eth_getBalance' failed: Error while getting the account's balance for the following address: ${
-                params[0] as string
-            }\n
-            Params: ${stringifyData(params)}\n
-            URL: ${thorClient.httpClient.baseURL}`,
+        throw new JSONRPCInternalError(
+            'eth_getBalance()',
+            -32603,
+            'Method "eth_getBalance" failed.',
             {
-                params,
+                params: stringifyData(params),
+                url: thorClient.httpClient.baseURL,
                 innerError: stringifyData(e)
             }
         );

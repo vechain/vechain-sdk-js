@@ -1,4 +1,7 @@
-import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
+import {
+    InvalidDataTypeError,
+    JSONRPCInternalError
+} from '@vechain/sdk-errors';
 import { clauseBuilder, unitsUtils } from '@vechain/sdk-core';
 
 /**
@@ -57,7 +60,7 @@ const negativeCasesFixtures = [
             },
             'latest'
         ],
-        expected: ProviderRpcError
+        expected: JSONRPCInternalError
     }
 ];
 

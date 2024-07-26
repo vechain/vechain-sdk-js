@@ -46,12 +46,6 @@ import {
     InvalidSecp256k1PrivateKeyError,
     InvalidSecp256k1SignatureError,
     InvalidSecp256k1SignatureRecoveryError,
-    JSONRPC,
-    JSONRPCDefaultError,
-    type JSONRPCErrorData,
-    JSONRPCInternalError,
-    JSONRPCInvalidParams,
-    JSONRPCInvalidRequest,
     KEYSTORE,
     NotImplementedError,
     POLL_ERROR,
@@ -96,7 +90,6 @@ type ErrorCode =
     | POLL_ERROR
     | FUNCTION
     | EIP1193
-    | JSONRPC
     | CONTRACT;
 
 /**
@@ -126,15 +119,8 @@ type DataType<ErrorCodeT extends ErrorCode> =
                     ? EIP1193ProviderRpcErrorData
                     : ErrorCodeT extends EIP1193.CHAIN_DISCONNECTED
                       ? EIP1193ProviderRpcErrorData
-                      : // JSONRPC
-                        ErrorCodeT extends JSONRPC.INVALID_REQUEST
-                        ? JSONRPCErrorData
-                        : ErrorCodeT extends JSONRPC.INVALID_PARAMS
-                          ? JSONRPCErrorData
-                          : ErrorCodeT extends JSONRPC.INTERNAL_ERROR
-                            ? JSONRPCErrorData
-                            : // DEFAULT
-                              DefaultErrorData;
+                      : // DEFAULT
+                        DefaultErrorData;
 
 /**
  * Default error codes.
@@ -154,7 +140,6 @@ const ERROR_CODES = {
     POLL_ERROR,
     FUNCTION,
     EIP1193,
-    JSONRPC,
     CONTRACT
 };
 
@@ -259,18 +244,9 @@ type ErrorType<ErrorCodeT> =
                                                                                   : // FUNCTION
                                                                                     ErrorCodeT extends FUNCTION.NOT_IMPLEMENTED
                                                                                     ? NotImplementedError
-                                                                                    : // JSONRPC
-                                                                                      ErrorCodeT extends JSONRPC.INVALID_REQUEST
-                                                                                      ? JSONRPCInvalidRequest
-                                                                                      : ErrorCodeT extends JSONRPC.INVALID_PARAMS
-                                                                                        ? JSONRPCInvalidParams
-                                                                                        : ErrorCodeT extends JSONRPC.INTERNAL_ERROR
-                                                                                          ? JSONRPCInternalError
-                                                                                          : ErrorCodeT extends JSONRPC.DEFAULT
-                                                                                            ? JSONRPCDefaultError
-                                                                                            : ErrorCodeT extends CONTRACT.CONTRACT_DEPLOYMENT_FAILED
-                                                                                              ? ContractDeploymentFailedError
-                                                                                              : never;
+                                                                                    : ErrorCodeT extends CONTRACT.CONTRACT_DEPLOYMENT_FAILED
+                                                                                      ? ContractDeploymentFailedError
+                                                                                      : never;
 
 /**
  * Map to get the error class from the error code.
@@ -355,12 +331,6 @@ const ErrorClassMap = new Map<
     [EIP1193.UNSUPPORTED_METHOD, EIP1193UnsupportedMethod],
     [EIP1193.DISCONNECTED, EIP1193Disconnected],
     [EIP1193.CHAIN_DISCONNECTED, EIP1193ChainDisconnected],
-
-    // JSONRPC
-    [JSONRPC.INVALID_REQUEST, JSONRPCInvalidRequest],
-    [JSONRPC.INVALID_PARAMS, JSONRPCInvalidParams],
-    [JSONRPC.INTERNAL_ERROR, JSONRPCInternalError],
-    [JSONRPC.DEFAULT, JSONRPCDefaultError],
 
     // CONTRACT
     [CONTRACT.CONTRACT_DEPLOYMENT_FAILED, ContractDeploymentFailedError]

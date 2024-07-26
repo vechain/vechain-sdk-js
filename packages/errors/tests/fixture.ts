@@ -42,11 +42,6 @@ import {
     InvalidSecp256k1PrivateKeyError,
     InvalidSecp256k1SignatureError,
     InvalidSecp256k1SignatureRecoveryError,
-    JSONRPC,
-    JSONRPCDefaultError,
-    JSONRPCInternalError,
-    JSONRPCInvalidParams,
-    JSONRPCInvalidRequest,
     KEYSTORE,
     NotImplementedError,
     POLL_ERROR,
@@ -294,27 +289,6 @@ const ErrorsCodeAndClassesMapsFixture = [
         ]
     },
     {
-        name: 'JSONRPC',
-        elements: [
-            {
-                errorCode: JSONRPC.INVALID_REQUEST,
-                classExpected: JSONRPCInvalidRequest
-            },
-            {
-                errorCode: JSONRPC.INVALID_PARAMS,
-                classExpected: JSONRPCInvalidParams
-            },
-            {
-                errorCode: JSONRPC.INTERNAL_ERROR,
-                classExpected: JSONRPCInternalError
-            },
-            {
-                errorCode: JSONRPC.DEFAULT,
-                classExpected: JSONRPCDefaultError
-            }
-        ]
-    },
-    {
         name: 'Contract',
         elements: [
             {
@@ -348,23 +322,6 @@ const JSONrpcErrorsCodeAndClassesMapsFixture = [
             },
             {
                 errorCode: EIP1193.CHAIN_DISCONNECTED
-            }
-        ]
-    },
-    {
-        name: 'JSONRPC',
-        elements: [
-            {
-                errorCode: JSONRPC.INVALID_REQUEST
-            },
-            {
-                errorCode: JSONRPC.INVALID_PARAMS
-            },
-            {
-                errorCode: JSONRPC.INTERNAL_ERROR
-            },
-            {
-                errorCode: JSONRPC.DEFAULT
             }
         ]
     }

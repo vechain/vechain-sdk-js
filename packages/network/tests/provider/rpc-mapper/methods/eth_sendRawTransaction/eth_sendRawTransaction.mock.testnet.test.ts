@@ -5,7 +5,7 @@ import {
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
-import { ProviderRpcError } from '@vechain/sdk-errors';
+import { JSONRPCInternalError } from '@vechain/sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_sendRawTransaction' method
@@ -33,7 +33,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
         /**
          *  Test case where request fails
          */
-        test('Should throw `ProviderRpcError` when request fails', async () => {
+        test('Should throw `JSONRPCInternalError` when request fails', async () => {
             // Mock the getBlock method to throw error
             jest.spyOn(
                 thorClient.transactions,
@@ -44,7 +44,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
                 (await RPCMethodsMap(thorClient)[
                     RPC_METHODS.eth_sendRawTransaction
                 ](['0x123456789'])) as string;
-            }).rejects.toThrowError(ProviderRpcError);
+            }).rejects.toThrowError(JSONRPCInternalError);
         });
     });
 });

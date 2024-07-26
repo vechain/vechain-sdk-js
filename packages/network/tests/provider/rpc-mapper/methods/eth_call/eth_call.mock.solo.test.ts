@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { ProviderRpcError } from '@vechain/sdk-errors';
+import { JSONRPCInternalError } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     RPCMethodsMap,
@@ -50,7 +50,7 @@ describe('RPC Mapper - eth_call method tests', () => {
                     },
                     'latest'
                 ])
-            ).rejects.toThrowError(ProviderRpcError);
+            ).rejects.toThrowError(JSONRPCInternalError);
         });
     });
 });

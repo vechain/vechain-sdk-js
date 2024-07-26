@@ -1,9 +1,9 @@
 import { type ThorClient } from '../../../../../../thor-client';
 import {
     assert,
-    buildProviderError,
     DATA,
-    JSONRPC,
+    JSONRPCInternalError,
+    JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import { type VeChainProvider } from '../../../../../providers';
@@ -61,40 +61,44 @@ const ethSendTransaction = async (
     );
 
     // Provider must be defined
-    assert(
-        'eth_sendTransaction',
-        provider?.wallet !== undefined,
-        JSONRPC.INVALID_PARAMS,
-        'Provider must be defined with a wallet. Ensure that the provider is defined and connected to the network.'
-    );
+    if (provider?.wallet === undefined) {
+        throw new JSONRPCInvalidParams(
+            'eth_sendTransaction',
+            -32602,
+            'Provider must be defined with a wallet. Ensure that the provider is defined and connected to the network.',
+            { provider }
+        );
+    }
 
     // From field is required
-    assert(
-        'eth_sendTransaction',
-        (params[0] as TransactionObjectInput).from !== undefined,
-        JSONRPC.INVALID_PARAMS,
-        'From field is required in the transaction object.'
-    );
+    if ((params[0] as TransactionObjectInput).from === undefined) {
+        throw new JSONRPCInvalidParams(
+            'eth_sendTransaction',
+            -32602,
+            'From field is required in the transaction object.',
+            { provider }
+        );
+    }
 
     // Input params
     const [transaction] = params as [TransactionObjectInput];
 
     try {
         // Get the signer of the provider
-        const signer = (await (provider as VeChainProvider).getSigner(
+        const signer = (await provider.getSigner(
             transaction.from
         )) as VeChainSigner;
 
         // Return the result
         return await signer.sendTransaction(transaction);
     } catch (e) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'eth_sendTransaction' failed: Error sending the transaction\n
-            Params: ${stringifyData(params)}\n
-            URL: ${thorClient.httpClient.baseURL}`,
+        throw new JSONRPCInternalError(
+            'eth_sendTransaction()',
+            -32603,
+            'Method "eth_sendTransaction" failed.',
             {
-                params,
+                params: stringifyData(params),
+                url: thorClient.httpClient.baseURL,
                 innerError: stringifyData(e)
             }
         );

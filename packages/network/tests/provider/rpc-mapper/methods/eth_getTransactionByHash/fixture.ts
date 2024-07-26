@@ -1,9 +1,12 @@
-import { ZERO_BYTES, Hex0x } from '@vechain/sdk-core';
+import { Hex0x, ZERO_BYTES } from '@vechain/sdk-core';
 import {
     validTransactionDetailTestnet,
     validTransactionHashTestnet
 } from '../../../fixture';
-import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
+import {
+    InvalidDataTypeError,
+    JSONRPCInternalError
+} from '@vechain/sdk-errors';
 
 /**
  * Positive test cases for eth_getTransactionByHash
@@ -28,7 +31,7 @@ const invalidEthGetTransactionByHashTestCases = [
     {
         description: 'eth_getTransactionByHash with an invalid hash',
         params: ['0x123'],
-        expectedError: ProviderRpcError
+        expectedError: JSONRPCInternalError
     },
     {
         description: 'eth_getTransactionByHash with too many params',

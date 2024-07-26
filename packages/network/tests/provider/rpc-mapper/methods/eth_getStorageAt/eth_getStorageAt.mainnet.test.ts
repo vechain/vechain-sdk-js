@@ -64,7 +64,7 @@ describe('RPC Mapper - eth_getStorageAt method tests', () => {
                         );
 
                     // Compare the result with the expected value
-                    await expect(rpcCall).rejects.toThrow(expectedError);
+                    await expect(rpcCall).rejects.toThrowError(expectedError);
                 });
             }
         );

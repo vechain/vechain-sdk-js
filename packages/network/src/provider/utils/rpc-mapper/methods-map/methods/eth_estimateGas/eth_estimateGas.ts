@@ -1,8 +1,7 @@
 import {
     assert,
-    buildProviderError,
     DATA,
-    JSONRPC,
+    JSONRPCInternalError,
     stringifyData
 } from '@vechain/sdk-errors';
 import { type TransactionObjectInput } from './types';
@@ -77,14 +76,13 @@ const ethEstimateGas = async (
         // Convert intrinsic gas to hex string and return
         return await Promise.resolve('0x' + estimatedGas.totalGas.toString(16));
     } catch (e) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'eth_estimateGas' failed: Error while calculating gas for ${
-                params[0] as string
-            } transaction\n
-            Params: ${stringifyData(params)}\n`,
+        throw new JSONRPCInternalError(
+            'eth_estimateGas()',
+            -32603,
+            'Method "eth_estimateGas" failed.',
             {
-                params,
+                params: stringifyData(params),
+                url: thorClient.httpClient.baseURL,
                 innerError: stringifyData(e)
             }
         );

@@ -3,7 +3,7 @@ import {
     type EIP1193ProviderMessage,
     type EIP1193RequestArguments
 } from '../../eip1193';
-import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
+import { assert, DATA, JSONRPCInvalidParams } from '@vechain/sdk-errors';
 import {
     ethGetLogs,
     POLLING_INTERVAL,
@@ -57,12 +57,11 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
 
         // Throw an error if delegation is enabled but the delegator is not defined
         if (enableDelegation && wallet?.delegator === undefined) {
-            throw buildProviderError(
-                JSONRPC.INVALID_PARAMS,
+            throw new JSONRPCInvalidParams(
+                'VechainProvider constructor',
+                -32602,
                 'Delegation is enabled but the delegator is not defined. Ensure that the delegator is defined and connected to the network.',
-                {
-                    wallet
-                }
+                { wallet }
             );
         }
     }

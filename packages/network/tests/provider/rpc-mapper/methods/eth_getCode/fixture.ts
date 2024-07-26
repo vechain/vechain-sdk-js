@@ -3,7 +3,10 @@ import {
     TESTING_CONTRACT_ADDRESS,
     TESTING_CONTRACT_BYTECODE
 } from '../../../../fixture';
-import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
+import {
+    InvalidDataTypeError,
+    JSONRPCInternalError
+} from '@vechain/sdk-errors';
 
 /**
  * VTHO Contract bytecode on Solo Network
@@ -45,12 +48,12 @@ const invalidEthGetCodeTestCases = [
     {
         description: 'Should throw error for invalid address',
         params: ['0x123', 'latest'],
-        expectedError: ProviderRpcError
+        expectedError: JSONRPCInternalError
     },
     {
         description: 'Should throw error for invalid revision',
         params: ['VTHO_ADDRESS', '0x123'],
-        expectedError: ProviderRpcError
+        expectedError: JSONRPCInternalError
     }
 ];
 

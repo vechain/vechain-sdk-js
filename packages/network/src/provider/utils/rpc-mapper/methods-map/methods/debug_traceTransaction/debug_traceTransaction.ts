@@ -5,10 +5,9 @@ import {
 } from '../../../../../../thor-client';
 import {
     assert,
-    buildProviderError,
     DATA,
     InvalidDataType,
-    JSONRPC,
+    JSONRPCInternalError,
     stringifyData
 } from '@vechain/sdk-errors';
 import { ethGetTransactionReceipt } from '../eth_getTransactionReceipt';
@@ -95,13 +94,13 @@ const debugTraceTransaction = async (
             trace
         );
     } catch (e) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'debug_traceTransaction' failed: Error while debug transaction tracer\n
-            Params: ${stringifyData(params)}\n
-            URL: ${thorClient.httpClient.baseURL}`,
+        throw new JSONRPCInternalError(
+            'debug_traceTransaction()',
+            -32603,
+            'Method "debug_traceTransaction" failed.',
             {
-                params,
+                params: stringifyData(params),
+                url: thorClient.httpClient.baseURL,
                 innerError: stringifyData(e)
             }
         );

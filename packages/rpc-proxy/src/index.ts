@@ -12,19 +12,15 @@ import {
 import express, { type Express, type Request, type Response } from 'express';
 import cors from 'cors';
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
-import {
-    getJSONRPCErrorCode,
-    JSONRPC,
-    stringifyData
-} from '@vechain/sdk-errors';
+import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
 import importConfig from '../config.json';
 import { type Config, type RequestBody } from './types';
 import fs from 'fs';
 import path from 'path';
 import {
-    VET_DERIVATION_PATH,
     addressUtils,
-    secp256k1
+    secp256k1,
+    VET_DERIVATION_PATH
 } from '@vechain/sdk-core';
 import packageJson from '../package.json';
 
@@ -146,15 +142,15 @@ function startProxy(): void {
                 });
 
                 // Log the error
-                VeChainSDKLogger('error').log({
-                    errorCode: JSONRPC.INTERNAL_ERROR,
-                    errorMessage: `Error sending request - ${requestBody.method}`,
-                    errorData: {
-                        code: getJSONRPCErrorCode(JSONRPC.INVALID_REQUEST),
-                        message: `Error on request - ${requestBody.method}`
-                    },
-                    innerError: e
-                });
+                VeChainSDKLogger('error').log(
+                    new JSONRPCInternalError(
+                        requestBody.method,
+                        -32603,
+                        `Error on request - ${requestBody.method}`,
+                        { requestBody },
+                        e
+                    )
+                );
             }
         })();
     }

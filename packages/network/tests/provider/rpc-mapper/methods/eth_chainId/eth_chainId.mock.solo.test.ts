@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { ProviderRpcError } from '@vechain/sdk-errors';
+import { JSONRPCInternalError } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     RPCMethodsMap,
@@ -41,7 +41,7 @@ describe('RPC Mapper - eth_chainId method tests mock on solo', () => {
 
             await expect(
                 RPCMethodsMap(thorClient)[RPC_METHODS.eth_chainId]([])
-            ).rejects.toThrowError(ProviderRpcError);
+            ).rejects.toThrowError(JSONRPCInternalError);
         });
 
         /**
@@ -55,7 +55,7 @@ describe('RPC Mapper - eth_chainId method tests mock on solo', () => {
 
             await expect(
                 RPCMethodsMap(thorClient)[RPC_METHODS.eth_chainId]([])
-            ).rejects.toThrowError(ProviderRpcError);
+            ).rejects.toThrowError(JSONRPCInternalError);
         });
     });
 });

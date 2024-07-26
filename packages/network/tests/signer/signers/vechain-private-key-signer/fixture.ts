@@ -6,7 +6,7 @@ import {
 } from '../../../../src';
 import { addressUtils, type TransactionClause } from '@vechain/sdk-core';
 import {
-    InvalidDataTypeError,
+    InvalidDataType,
     InvalidSecp256k1PrivateKey,
     NotDelegatedTransaction
 } from '@vechain/sdk-errors';
@@ -319,7 +319,7 @@ const populateCallTestCases = {
             transactionToPopulate: {
                 from: '0x0000000000000000000000000000000000000000'
             } satisfies TransactionRequestInput,
-            expectedError: InvalidDataTypeError
+            expectedError: InvalidDataType
         }
     ]
 };

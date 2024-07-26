@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { ProviderRpcError } from '@vechain/sdk-errors';
+import { JSONRPCInternalError } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     RPCMethodsMap,
@@ -81,7 +81,7 @@ describe('RPC Mapper - eth_syncing method tests', () => {
             /**
              * Test case that mocks an error thrown by the getBestBlock method
              */
-            test('Should throw `ProviderRpcError` if an error occurs while retrieving the best block', async () => {
+            test('Should throw `JSONRPCInternalError` if an error occurs while retrieving the best block', async () => {
                 // Mock the getGenesisBlock method to return null
                 jest.spyOn(
                     thorClient.blocks,
@@ -90,13 +90,13 @@ describe('RPC Mapper - eth_syncing method tests', () => {
 
                 await expect(
                     RPCMethodsMap(thorClient)[RPC_METHODS.eth_syncing]([])
-                ).rejects.toThrowError(ProviderRpcError);
+                ).rejects.toThrowError(JSONRPCInternalError);
             });
 
             /**
              * Test case that mocks an error thrown by the getGenesisBlock method
              */
-            test('Should throw `ProviderRpcError` if an error occurs while retrieving the genesis block', async () => {
+            test('Should throw `JSONRPCInternalError` if an error occurs while retrieving the genesis block', async () => {
                 // Mock the getGenesisBlock method to return null
                 jest.spyOn(
                     thorClient.blocks,
@@ -105,7 +105,7 @@ describe('RPC Mapper - eth_syncing method tests', () => {
 
                 await expect(
                     RPCMethodsMap(thorClient)[RPC_METHODS.eth_syncing]([])
-                ).rejects.toThrowError(ProviderRpcError);
+                ).rejects.toThrowError(JSONRPCInternalError);
             });
 
             /**

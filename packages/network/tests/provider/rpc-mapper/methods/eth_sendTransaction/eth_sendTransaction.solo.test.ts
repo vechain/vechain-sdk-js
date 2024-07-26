@@ -17,8 +17,8 @@ import {
 } from './fixture';
 import {
     InvalidDataTypeError,
-    JSONRPCInvalidParams,
-    ProviderRpcError
+    JSONRPCInternalError,
+    JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
 import { secp256k1 } from '@vechain/sdk-core';
 
@@ -294,7 +294,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                             }
                         ]
                     })
-            ).rejects.toThrowError(ProviderRpcError);
+            ).rejects.toThrowError(JSONRPCInternalError);
         });
 
         /**

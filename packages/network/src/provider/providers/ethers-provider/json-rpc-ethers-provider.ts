@@ -5,11 +5,7 @@ import {
     type JsonRpcPayload,
     type JsonRpcResult
 } from './types';
-import {
-    getJSONRPCErrorCode,
-    JSONRPC,
-    stringifyData
-} from '@vechain/sdk-errors';
+import { stringifyData } from '@vechain/sdk-errors';
 
 /**
  * JSON RPC provider for ethers.
@@ -90,7 +86,7 @@ class JSONRPCEthersProvider extends vechain_sdk_core_ethers.JsonRpcApiProvider {
                 responses.push({
                     id: jsonRpcPayload.id,
                     error: {
-                        code: getJSONRPCErrorCode(JSONRPC.INTERNAL_ERROR),
+                        code: -32603,
                         message: stringifyData(e)
                     }
                 });

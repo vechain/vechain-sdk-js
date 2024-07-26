@@ -13,7 +13,7 @@ import {
     type vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
 import { RPC_METHODS } from '../../../provider';
-import { assert, DATA, JSONRPC } from '@vechain/sdk-errors';
+import { InvalidDataType, JSONRPCInvalidParams } from '@vechain/sdk-errors';
 import { vnsUtils } from '../../../utils';
 import { type TransactionSimulationResult } from '../../../thor-client';
 
@@ -81,22 +81,25 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
             );
         // Throw an error if the from address does not match the signer address
         // @note: this because we cannot sign a transaction with a different address
-        else
-            assert(
-                'populateCall',
-                addressUtils.toERC55Checksum(transactionToPopulate.from) ===
-                    addressUtils.toERC55Checksum(await this.getAddress()),
-                DATA.INVALID_DATA_TYPE,
-                'From address does not match the signer address.',
-                {
-                    signerAddress: addressUtils.toERC55Checksum(
-                        await this.getAddress()
-                    ),
-                    fromAddress: addressUtils.toERC55Checksum(
-                        transactionToPopulate.from
-                    )
-                }
-            );
+        else {
+            if (
+                addressUtils.toERC55Checksum(transactionToPopulate.from) !==
+                addressUtils.toERC55Checksum(await this.getAddress())
+            ) {
+                throw new InvalidDataType(
+                    'VeChainAbstractSigner.populateCall()',
+                    'From address does not match the signer address.',
+                    {
+                        signerAddress: addressUtils.toERC55Checksum(
+                            await this.getAddress()
+                        ),
+                        fromAddress: addressUtils.toERC55Checksum(
+                            transactionToPopulate.from
+                        )
+                    }
+                );
+            }
+        }
 
         // 2 - Set to field
         if (transactionToPopulate.to === undefined)
@@ -134,12 +137,15 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         transactionToPopulate: TransactionRequestInput
     ): Promise<TransactionBody> {
         // 1 - Get the thor client
-        assert(
-            'populateTransaction',
-            (this.provider as AvailableVeChainProviders).thorClient !== null,
-            JSONRPC.INVALID_PARAMS,
-            'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.'
-        );
+        if ((this.provider as AvailableVeChainProviders).thorClient === null) {
+            throw new JSONRPCInvalidParams(
+                'VechainAbstractSigner.populateTransaction()',
+                -32602,
+                'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.',
+                { provider: this.provider }
+            );
+        }
+
         const thorClient = (this.provider as AvailableVeChainProviders)
             .thorClient;
 
@@ -183,12 +189,15 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         transactionToEstimate: TransactionRequestInput
     ): Promise<number> {
         // 1 - Get the thor client
-        assert(
-            'populateTransaction',
-            (this.provider as AvailableVeChainProviders).thorClient !== null,
-            JSONRPC.INVALID_PARAMS,
-            'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.'
-        );
+        if ((this.provider as AvailableVeChainProviders).thorClient === null) {
+            throw new JSONRPCInvalidParams(
+                'VechainAbstractSigner.estimateGas()',
+                -32602,
+                'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.',
+                { provider: this.provider }
+            );
+        }
+
         const thorClient = (this.provider as AvailableVeChainProviders)
             .thorClient;
 
@@ -226,12 +235,14 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         revision?: string
     ): Promise<string> {
         // 1 - Get the thor client
-        assert(
-            'call',
-            (this.provider as AvailableVeChainProviders).thorClient !== null,
-            JSONRPC.INVALID_PARAMS,
-            'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.'
-        );
+        if ((this.provider as AvailableVeChainProviders).thorClient === null) {
+            throw new JSONRPCInvalidParams(
+                'VechainAbstractSigner.call()',
+                -32602,
+                'Thor client not found into the signer. Please attach a Provider with a thor client to your signer instance.',
+                { provider: this.provider }
+            );
+        }
         const thorClient = (this.provider as AvailableVeChainProviders)
             .thorClient;
 

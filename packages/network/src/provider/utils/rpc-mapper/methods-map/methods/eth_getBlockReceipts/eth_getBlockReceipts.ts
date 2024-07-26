@@ -1,9 +1,8 @@
 import { type ThorClient } from '../../../../../../thor-client';
 import {
     assert,
-    buildProviderError,
     DATA,
-    JSONRPC,
+    JSONRPCInternalError,
     stringifyData
 } from '@vechain/sdk-errors';
 import {
@@ -65,15 +64,13 @@ const ethGetBlockReceipts = async (
 
         return transactionReceipts;
     } catch (e) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'ethGetBlockReceipts' failed: Error while getting block receipts ${
-                params[0] as string
-            }\n
-            Params: ${stringifyData(params)}\n
-            URL: ${thorClient.httpClient.baseURL}`,
+        throw new JSONRPCInternalError(
+            'ethGetBlockReceipts()',
+            -32603,
+            'Method "ethGetBlockReceipts" failed.',
             {
-                params,
+                params: stringifyData(params),
+                url: thorClient.httpClient.baseURL,
                 innerError: stringifyData(e)
             }
         );

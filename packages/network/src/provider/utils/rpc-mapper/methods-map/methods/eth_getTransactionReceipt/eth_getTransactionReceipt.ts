@@ -1,9 +1,8 @@
 import {
     assert,
-    buildProviderError,
     DATA,
     InvalidDataType,
-    JSONRPC,
+    JSONRPCInternalError,
     stringifyData
 } from '@vechain/sdk-errors';
 import {
@@ -91,15 +90,13 @@ const ethGetTransactionReceipt = async (
             return null;
         }
     } catch (e) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'eth_getTransactionReceipt' failed: Error while getting the transaction receipt ${
-                params[0] as string
-            }\n
-        Params: ${stringifyData(params)}\n
-        URL: ${thorClient.httpClient.baseURL}`,
+        throw new JSONRPCInternalError(
+            'eth_getTransactionReceipt()',
+            -32603,
+            'Method "eth_getTransactionReceipt" failed.',
             {
-                params,
+                params: stringifyData(params),
+                url: thorClient.httpClient.baseURL,
                 innerError: stringifyData(e)
             }
         );

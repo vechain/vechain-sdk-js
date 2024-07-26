@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, jest, test } from '@jest/globals';
-import { ProviderRpcError } from '@vechain/sdk-errors';
+import { JSONRPCInternalError } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     RPCMethodsMap,
@@ -33,7 +33,7 @@ describe('RPC Mapper - evm_mine method tests', () => {
         /**
          * Test case that mocks an error thrown by the getBestBlock method
          */
-        test('Should throw `ProviderRpcError` if an error occurs while retrieving the block number', async () => {
+        test('Should throw `JSONRPCInternalError` if an error occurs while retrieving the block number', async () => {
             // Mock the getGenesisBlock method to return null
             jest.spyOn(
                 thorClient.blocks,
@@ -42,7 +42,7 @@ describe('RPC Mapper - evm_mine method tests', () => {
 
             await expect(
                 RPCMethodsMap(thorClient)[RPC_METHODS.evm_mine]([])
-            ).rejects.toThrowError(ProviderRpcError);
+            ).rejects.toThrowError(JSONRPCInternalError);
         });
 
         /**

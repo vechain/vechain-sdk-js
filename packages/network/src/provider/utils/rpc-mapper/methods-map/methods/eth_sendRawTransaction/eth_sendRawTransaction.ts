@@ -1,9 +1,8 @@
 import { type ThorClient } from '../../../../../../thor-client';
 import {
     assert,
-    buildProviderError,
     DATA,
-    JSONRPC,
+    JSONRPCInternalError,
     stringifyData
 } from '@vechain/sdk-errors';
 import { Hex0x } from '@vechain/sdk-core';
@@ -45,15 +44,13 @@ const ethSendRawTransaction = async (
 
         return sentTransaction.id;
     } catch (e) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'eth_sendRawTransaction' failed: Error while sending the transaction ${
-                params[0] as string
-            }\n
-            Params: ${stringifyData(params)}\n
-            URL: ${thorClient.httpClient.baseURL}`,
+        throw new JSONRPCInternalError(
+            'eth_sendRawTransaction()',
+            -32603,
+            'Method "eth_sendRawTransaction" failed.',
             {
-                params,
+                params: stringifyData(params),
+                url: thorClient.httpClient.baseURL,
                 innerError: stringifyData(e)
             }
         );

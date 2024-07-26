@@ -1,9 +1,8 @@
 import { type ThorClient } from '../../../../../../thor-client';
 import {
     assert,
-    buildProviderError,
     DATA,
-    JSONRPC,
+    JSONRPCInternalError,
     stringifyData
 } from '@vechain/sdk-errors';
 import { type BlocksRPC } from '../../../../formatter';
@@ -42,15 +41,13 @@ const ethGetBlockByHash = async (
         // Return the block by number (in this case, the block hash is the block number)
         return await ethGetBlockByNumber(thorClient, params);
     } catch (e) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'eth_getBlockByHash' failed: Error while getting block ${
-                params[0] as string
-            }\n
-            Params: ${stringifyData(params)}\n
-            URL: ${thorClient.httpClient.baseURL}`,
+        throw new JSONRPCInternalError(
+            'eth_getBlockByHash()',
+            -32603,
+            'Method "eth_getBlockByHash" failed.',
             {
-                params,
+                params: stringifyData(params),
+                url: thorClient.httpClient.baseURL,
                 innerError: stringifyData(e)
             }
         );
