@@ -1008,45 +1008,45 @@
   dependencies:
     "@types/yargs-parser" "*"
 
-"@vechain/sdk-core@1.0.0-beta.23":
-  version "1.0.0-beta.23"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.23.tgz#4e72ff100722339f26e6687c0a27ed1c1c8300be"
-  integrity sha512-haqzIrdNddB4E8j6yHBEAx4UZdrI0BDjzb0gM7STM/U5Rlx/6dHDED3RHmO0hQm+XWHLZtxYqofVuooemdLEoA==
+"@vechain/sdk-core@1.0.0-beta.24":
+  version "1.0.0-beta.24"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.24.tgz#8dafdf41bfef8ab82fec0ddb8c7827b77809dda6"
+  integrity sha512-Gc8zPethcrJoe4i/zdtlidYenSbltGefz6NGRmxxkf0A7wJWyNy+Ha9VjScrv9JWBHFycOiNiMxCf5w8H0mVVA==
   dependencies:
     "@ethereumjs/rlp" "^5.0.2"
     "@noble/ciphers" "^0.5.2"
     "@scure/bip32" "^1.4.0"
     "@scure/bip39" "^1.3.0"
     "@types/elliptic" "^6.4.18"
-    "@vechain/sdk-errors" "1.0.0-beta.23"
-    "@vechain/sdk-logging" "1.0.0-beta.23"
+    "@vechain/sdk-errors" "1.0.0-beta.24"
+    "@vechain/sdk-logging" "1.0.0-beta.24"
     bignumber.js "^9.1.2"
     blakejs "^1.2.1"
     elliptic "^6.5.6"
     ethers "6.13.1"
     fast-json-stable-stringify "^2.1.0"
 
-"@vechain/sdk-errors@1.0.0-beta.23":
-  version "1.0.0-beta.23"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.23.tgz#cb9849ddffb0c54c92c79a58e76fc7d0b4ca9b43"
-  integrity sha512-jzOjpKbXFDtbYrm63/B09n55LQw4JjR+mUUGw7E80KmTMz5StnzayC+WQ8YYHpaQfCZ+YUVOoMT5GZP4pbWo2w==
+"@vechain/sdk-errors@1.0.0-beta.24":
+  version "1.0.0-beta.24"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.24.tgz#4ab483ae6747eccf69226da2d74fafb61b704f37"
+  integrity sha512-evB+y904J5di65o1HTpt2/fgaC+HivoISwqjSRvWiBo7mOIAYDN5xK405dySBHcpl9rhOxGWp3NPRJwSdmUH9Q==
 
-"@vechain/sdk-logging@1.0.0-beta.23":
-  version "1.0.0-beta.23"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-beta.23.tgz#ee211e0e3f018fc7dd8db332c06791fcbae7cfec"
-  integrity sha512-qnC3HEr07hpPT5JqM6Vqqhuz4VLsxhUO0PZivZ+AU4tYr2aruU+ggGPbmBTcYJemeCrGsushvAEIW7eJ/mJBOA==
+"@vechain/sdk-logging@1.0.0-beta.24":
+  version "1.0.0-beta.24"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-beta.24.tgz#bc33466aa51653a209c53ba22b65c61997db490a"
+  integrity sha512-qGBtjEf+JXAOJh4etAN4ry0CmpvQbkMCESPga7awyQuQLP+C8Kw78B9loD5ji3U1OYyvx7Yu+STi+S91yhDN0g==
   dependencies:
-    "@vechain/sdk-errors" "1.0.0-beta.23"
+    "@vechain/sdk-errors" "1.0.0-beta.24"
 
-"@vechain/sdk-network@1.0.0-beta.23":
-  version "1.0.0-beta.23"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.23.tgz#1a60fb3b7134f4a35816e5efd16a472ff194646d"
-  integrity sha512-56E+gCQankIKKdZGczzqhqcL5Ix7+1VSK1y/+QQYHNLsROYGwlsIlOutBt6C5dwsh2salVTFjicFaB04O7ablg==
+"@vechain/sdk-network@1.0.0-beta.24":
+  version "1.0.0-beta.24"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.24.tgz#62d6b26271cf9b5c57a23989be55db787ec57c2b"
+  integrity sha512-ma+IWJ7mGBFfJ0ROj2O+F4gcdWsE1h9PYPy75J/MLhvfAuEXxd6noMWCgqEBpV1tvUhToNHX9GVgl763fPLQAg==
   dependencies:
     "@types/ws" "^8.5.11"
-    "@vechain/sdk-core" "1.0.0-beta.23"
-    "@vechain/sdk-errors" "1.0.0-beta.23"
-    "@vechain/sdk-logging" "1.0.0-beta.23"
+    "@vechain/sdk-core" "1.0.0-beta.24"
+    "@vechain/sdk-errors" "1.0.0-beta.24"
+    "@vechain/sdk-logging" "1.0.0-beta.24"
     abitype "^1.0.5"
     isomorphic-ws "^5.0.0"
     ws "^8.18.0"
@@ -1511,9 +1511,9 @@ ejs@^3.1.10:
     jake "^10.8.5"
 
 electron-to-chromium@^1.4.820:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.0.tgz#0d3123a9f09189b9c7ab4b5d6848d71b3c1fd0e8"
-  integrity sha512-Vb3xHHYnLseK8vlMJQKJYXJ++t4u1/qJ3vykuVrVjvdiOEhYyT1AuP4x03G8EnPmYvYOhe9T+dADTmthjRQMkA==
+  version "1.5.2"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.2.tgz#6126ad229ce45e781ec54ca40db0504787f23d19"
+  integrity sha512-kc4r3U3V3WLaaZqThjYz/Y6z8tJe+7K0bbjUVo3i+LWIypVdMx5nXCkwRe6SWbY6ILqLdc1rKcKmr3HoH7wjSQ==
 
 elliptic@^6.5.6:
   version "6.5.6"
@@ -3079,9 +3079,9 @@ tslib@2.4.0:
   integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
 
 tsup@^8.0.2:
-  version "8.2.2"
-  resolved "https://registry.yarnpkg.com/tsup/-/tsup-8.2.2.tgz#9a15f36bcf1187ea4d12b8d56e36eec0b5cbf9bf"
-  integrity sha512-MufIuzdSt6HYPOeOtjUXLR4rqRJySi6XsRNZdwvjC2XR+xghsu2L3vSmYmX+k4S1mO6j0OlUEyVQ3Fc0H66XcA==
+  version "8.2.3"
+  resolved "https://registry.yarnpkg.com/tsup/-/tsup-8.2.3.tgz#4a1ff2962a4d7c8265fea661b0dd9668de58916d"
+  integrity sha512-6YNT44oUfXRbZuSMNmN36GzwPPIlD2wBccY7looM2fkTcxkf2NEmwr3OZuDZoySklnrIG4hoEtzy8yUXYOqNcg==
   dependencies:
     bundle-require "^5.0.0"
     cac "^6.7.14"
