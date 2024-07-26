@@ -3,7 +3,7 @@ import { createErrorMessage } from '../../../src';
 
 /**
  * Error message builder test
- * @group unit/errors/error-message-creation
+ * @group unit/errors/helpers/error-message-creation
  */
 describe('Error message builder test', () => {
     /**

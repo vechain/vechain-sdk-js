@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events';
-import { buildError, InvalidDataType, POLL_ERROR } from '@vechain/sdk-errors';
+import { InvalidDataType, PollExecution } from '@vechain/sdk-errors';
 
 /**
  * Poll in an event based way.
@@ -104,12 +104,10 @@ class EventPoll<TReturnType> extends EventEmitter {
             this.emit('data', { data, eventPoll: this });
         } catch (error) {
             // Set error
-            this.error = buildError(
+            this.error = new PollExecution(
                 'EventPoll - main interval loop function',
-                POLL_ERROR.POLL_EXECUTION_ERROR,
-                'Error during the execution of the poll',
+                `Error during the execution of the poll ${(error as Error).message}`,
                 {
-                    message: (error as Error).message,
                     functionName: this.pollingFunction.name
                 }
             );
