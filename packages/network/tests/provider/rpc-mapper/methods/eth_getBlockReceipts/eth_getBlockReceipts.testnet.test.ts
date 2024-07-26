@@ -6,7 +6,7 @@ import {
     ThorClient
 } from '../../../../../src';
 import { blockReceiptsFixture, blockReceiptsInvalidFixture } from './fixture';
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_getBlockReceipts' method
@@ -76,7 +76,7 @@ describe('RPC Mapper - eth_getBlockReceipts method tests', () => {
                         await RPCMethodsMap(thorClient)[
                             RPC_METHODS.eth_getBlockReceipts
                         ]([fixture])
-                ).rejects.toThrowError(InvalidDataTypeError);
+                ).rejects.toThrowError(JSONRPCInvalidParams);
             }
         });
     });

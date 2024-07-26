@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { JSONRPCMethodNotFound } from '@vechain/sdk-errors';
 import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
 import {
     deployERC20Contract,
@@ -356,7 +356,7 @@ describe('VeChain provider tests - solo', () => {
                     method: 'INVALID_METHOD',
                     params: [-1]
                 })
-        ).rejects.toThrowError(InvalidDataTypeError);
+        ).rejects.toThrowError(JSONRPCMethodNotFound);
     });
 
     describe('resolveName(vnsName)', () => {

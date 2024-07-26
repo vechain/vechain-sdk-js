@@ -1,6 +1,6 @@
 import { blockWithTransactionsExpanded } from '../../../fixture';
 import { zeroBlock } from '../eth_getBlockByNumber/fixture';
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 
 /**
  * Test cases for eth_getBlockByHash RPC method
@@ -48,23 +48,23 @@ const invalidEthGetBlockByHashTestCases = [
     {
         description: 'Should throw an error when there are too many params',
         params: ['0x0', false, "I'm an extra param"],
-        expectedError: InvalidDataTypeError
+        expectedError: JSONRPCInvalidParams
     },
     {
         description: 'Should throw an error when first param is not a string',
         params: [0, false],
-        expectedError: InvalidDataTypeError
+        expectedError: JSONRPCInvalidParams
     },
     {
         description: 'Should throw an error when second param is not a boolean',
         params: ['0x0', 'false'],
-        expectedError: InvalidDataTypeError
+        expectedError: JSONRPCInvalidParams
     },
     {
         description:
             'Should throw an error when we use getBlockByNumber parameters for block number',
         params: ['latest', false],
-        expectedError: InvalidDataTypeError
+        expectedError: JSONRPCInvalidParams
     }
 ];
 

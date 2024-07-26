@@ -1,7 +1,7 @@
 import { Hex0x, ZERO_BYTES } from '@vechain/sdk-core';
 import {
-    InvalidDataTypeError,
-    JSONRPCInternalError
+    JSONRPCInternalError,
+    JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
 
 /**
@@ -59,12 +59,12 @@ const invalidEthGetStorageAtTestCases = [
             '0x10afdf1',
             '0x10afdf1'
         ],
-        expectedError: InvalidDataTypeError
+        expectedError: JSONRPCInvalidParams
     },
     {
         description: 'Should throw error for too few params',
         params: ['0x93Ae8aab337E58A6978E166f8132F59652cA6C56', '0x1'],
-        expectedError: InvalidDataTypeError
+        expectedError: JSONRPCInvalidParams
     },
     {
         description: 'Should throw error for invalid address',

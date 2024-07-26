@@ -1,6 +1,6 @@
 import {
-    InvalidDataTypeError,
-    JSONRPCInternalError
+    JSONRPCInternalError,
+    JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
 import { clauseBuilder, unitsUtils } from '@vechain/sdk-core';
 
@@ -50,7 +50,7 @@ const negativeCasesFixtures = [
     {
         description: 'No parameter passed',
         input: [],
-        expected: InvalidDataTypeError
+        expected: JSONRPCInvalidParams
     },
     {
         description: 'Missing parameters',

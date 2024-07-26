@@ -1,6 +1,6 @@
 import {
-    InvalidDataTypeError,
-    JSONRPCInternalError
+    JSONRPCInternalError,
+    JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
 
 /**
@@ -121,7 +121,7 @@ const debugTraceCallNegativeCasesFixtureTestnet = [
     {
         input: {
             params: ['INVALID'],
-            expectedError: InvalidDataTypeError
+            expectedError: JSONRPCInvalidParams
         }
     }
 ];

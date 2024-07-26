@@ -1,13 +1,13 @@
 import { Hex0x } from '@vechain/sdk-core';
 import {
-    assert,
-    DATA,
     JSONRPCInternalError,
+    JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import { type ThorClient } from '../../../../../../thor-client';
 import type { BlockQuantityInputRPC } from '../../../types';
 import { getCorrectBlockNumberRPCToVeChain } from '../../../../const';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
  * RPC Method eth_getStorageAt implementation
@@ -30,22 +30,19 @@ const ethGetStorageAt = async (
     thorClient: ThorClient,
     params: unknown[]
 ): Promise<string> => {
-    assert(
-        'eth_getStorageAt',
-        params.length === 3 &&
-            typeof params[0] === 'string' &&
-            typeof params[1] === 'string' &&
-            (typeof params[2] === 'object' || typeof params[2] === 'string'),
-        DATA.INVALID_DATA_TYPE,
-        `Invalid params length, expected 3.` +
-            `\nThe params should be:` +
-            `\naddress: string, storagePosition: string` +
-            `\nand the block tag parameter. 'latest', 'earliest', 'pending', 'safe' or 'finalized' or an object: \n{.` +
-            `\tblockNumber: The number of the block` +
-            `\n}\n\nOR\n\n{` +
-            `\tblockHash: The hash of block` +
-            `\n}`
-    );
+    // Input validation
+    if (
+        params.length !== 3 ||
+        typeof params[0] !== 'string' ||
+        typeof params[1] !== 'string' ||
+        (typeof params[2] !== 'object' && typeof params[2] !== 'string')
+    )
+        throw new JSONRPCInvalidParams(
+            'eth_getStorageAt',
+            -32602,
+            `Invalid input params for "eth_getStorageAt" method. See ${RPC_DOCUMENTATION_URL} for details.`,
+            { params }
+        );
 
     try {
         const [address, storagePosition, block] = params as [

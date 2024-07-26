@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { JSONRPCMethodNotFound } from '@vechain/sdk-errors';
 import { mainNetwork } from '../../../fixture';
 import { providerMethodsTestCasesMainnet } from '../fixture';
 import { ThorClient, VeChainProvider } from '../../../../src';
@@ -77,6 +77,6 @@ describe('VeChain provider tests - mainnet', () => {
                     method: 'INVALID_METHOD',
                     params: [-1]
                 })
-        ).rejects.toThrowError(InvalidDataTypeError);
+        ).rejects.toThrowError(JSONRPCMethodNotFound);
     });
 });

@@ -1,7 +1,7 @@
 import { Hex0x, Quantity, unitsUtils, ZERO_BYTES } from '@vechain/sdk-core';
 import {
-    InvalidDataTypeError,
-    JSONRPCInternalError
+    JSONRPCInternalError,
+    JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
 import { THOR_SOLO_ACCOUNTS } from '../../../../../src';
 
@@ -52,7 +52,7 @@ const invalidEthGetBalanceTestCases = [
     {
         description: 'Should throw error for too many params',
         params: [THOR_SOLO_ACCOUNTS[0].address, 'latest', 'latest'],
-        expectedError: InvalidDataTypeError
+        expectedError: JSONRPCInvalidParams
     },
     {
         description: 'Should throw error for invalid address',
@@ -67,7 +67,7 @@ const invalidEthGetBalanceTestCases = [
     {
         description: 'Should throw error for too few params',
         params: [THOR_SOLO_ACCOUNTS[0].address],
-        expectedError: InvalidDataTypeError
+        expectedError: JSONRPCInvalidParams
     }
 ];
 

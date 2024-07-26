@@ -1,8 +1,7 @@
 import { type ThorClient } from '../../../../../../thor-client';
 import {
-    assert,
-    DATA,
     JSONRPCInternalError,
+    JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import {
@@ -11,6 +10,7 @@ import {
 } from '../../../../formatter';
 import { ethGetBlockByNumber } from '../eth_getBlockByNumber';
 import { ethGetTransactionReceipt } from '../eth_getTransactionReceipt';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
  * RPC Method eth_getBlockReceipts implementation
@@ -26,12 +26,14 @@ const ethGetBlockReceipts = async (
     thorClient: ThorClient,
     params: unknown[]
 ): Promise<TransactionReceiptRPC[] | null> => {
-    assert(
-        'eth_getBlockReceipts',
-        params.length === 1 && typeof params[0] === 'string',
-        DATA.INVALID_DATA_TYPE,
-        'Invalid params length, expected 1.\nThe params should be [blockNumber: string (an hex number) | "latest" | "finalized"]'
-    );
+    // Input validation
+    if (params.length !== 1 || typeof params[0] !== 'string')
+        throw new JSONRPCInvalidParams(
+            'eth_getBlockReceipts',
+            -32602,
+            `Invalid input params for "eth_getBlockReceipts" method. See ${RPC_DOCUMENTATION_URL} for details.`,
+            { params }
+        );
 
     try {
         // Initialize the block number from the params

@@ -1,8 +1,8 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 
 import {
-    InvalidDataTypeError,
-    JSONRPCInvalidParams
+    JSONRPCInvalidParams,
+    JSONRPCMethodNotFound
 } from '@vechain/sdk-errors';
 import { providerMethodsTestCasesTestnet } from '../fixture';
 import { waitForMessage } from '../helpers';
@@ -108,7 +108,7 @@ describe('VeChain provider tests - testnet', () => {
                     method: 'INVALID_METHOD',
                     params: [-1]
                 })
-        ).rejects.toThrowError(InvalidDataTypeError);
+        ).rejects.toThrowError(JSONRPCMethodNotFound);
     });
 
     /**

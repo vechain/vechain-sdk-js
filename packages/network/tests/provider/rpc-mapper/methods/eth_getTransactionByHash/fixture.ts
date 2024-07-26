@@ -4,8 +4,8 @@ import {
     validTransactionHashTestnet
 } from '../../../fixture';
 import {
-    InvalidDataTypeError,
-    JSONRPCInternalError
+    JSONRPCInternalError,
+    JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
 
 /**
@@ -36,17 +36,17 @@ const invalidEthGetTransactionByHashTestCases = [
     {
         description: 'eth_getTransactionByHash with too many params',
         params: ['0x123', '0x123'],
-        expectedError: InvalidDataTypeError
+        expectedError: JSONRPCInvalidParams
     },
     {
         description: 'eth_getTransactionByHash with too few params',
         params: [],
-        expectedError: InvalidDataTypeError
+        expectedError: JSONRPCInvalidParams
     },
     {
         description: 'eth_getTransactionByHash with invalid param type',
         params: [123],
-        expectedError: InvalidDataTypeError
+        expectedError: JSONRPCInvalidParams
     }
 ];
 

@@ -1,8 +1,7 @@
 import {
-    assert,
-    DATA,
     InvalidDataType,
     JSONRPCInternalError,
+    JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import {
@@ -16,6 +15,7 @@ import {
     type ThorClient
 } from '../../../../../../thor-client';
 import { Hex0x } from '@vechain/sdk-core';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
  * RPC Method eth_getTransactionReceipt implementation
@@ -31,16 +31,17 @@ const ethGetTransactionReceipt = async (
     thorClient: ThorClient,
     params: unknown[]
 ): Promise<TransactionReceiptRPC | null> => {
+    // Input validation
+    if (params.length !== 1 || typeof params[0] !== 'string')
+        throw new JSONRPCInvalidParams(
+            'eth_getTransactionReceipt',
+            -32602,
+            `Invalid input params for "eth_getTransactionReceipt" method. See ${RPC_DOCUMENTATION_URL} for details.`,
+            { params }
+        );
+
     // Init the transaction ID
     const [transactionID] = params as [string];
-
-    // Assert valid parameters
-    assert(
-        'eth_getTransactionReceipt',
-        params.length === 1 && typeof params[0] === 'string',
-        DATA.INVALID_DATA_TYPE,
-        'Invalid params length, expected 1.\nThe params should be [hash: string]'
-    );
 
     // Invalid transaction ID
     if (!Hex0x.isThorId(transactionID)) {

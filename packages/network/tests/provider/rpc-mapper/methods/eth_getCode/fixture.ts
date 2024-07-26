@@ -4,8 +4,8 @@ import {
     TESTING_CONTRACT_BYTECODE
 } from '../../../../fixture';
 import {
-    InvalidDataTypeError,
-    JSONRPCInternalError
+    JSONRPCInternalError,
+    JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
 
 /**
@@ -38,12 +38,12 @@ const invalidEthGetCodeTestCases = [
     {
         description: 'Should throw error for too many params',
         params: [VTHO_ADDRESS, 'latest', 'latest'],
-        expectedError: InvalidDataTypeError
+        expectedError: JSONRPCInvalidParams
     },
     {
         description: 'Should throw error for too many params',
         params: [VTHO_ADDRESS],
-        expectedError: InvalidDataTypeError
+        expectedError: JSONRPCInvalidParams
     },
     {
         description: 'Should throw error for invalid address',

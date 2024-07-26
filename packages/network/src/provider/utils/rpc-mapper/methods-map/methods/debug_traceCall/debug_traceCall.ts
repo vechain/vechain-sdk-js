@@ -4,9 +4,8 @@ import {
     type TracerName
 } from '../../../../../../thor-client';
 import {
-    assert,
-    DATA,
     JSONRPCInternalError,
+    JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import {
@@ -15,6 +14,7 @@ import {
 } from '../../../../formatter';
 
 import { type TraceCallRPC, type TransactionObjectInput } from './types';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
  * RPC Method debug_traceCall implementation
@@ -43,27 +43,19 @@ const debugTraceCall = async (
     thorClient: ThorClient,
     params: unknown[]
 ): Promise<TracerReturnTypeRPC<'call'> | TracerReturnTypeRPC<'prestate'>> => {
-    assert(
-        'debug_traceCall',
-        params.length === 3 &&
-            typeof params[0] === 'object' &&
-            typeof params[1] === 'string' &&
-            typeof params[2] === 'object',
-        DATA.INVALID_DATA_TYPE,
-        `Invalid params length, expected:\n* One transaction object containing transaction info with following properties: \n {` +
-            `\n\tfrom: 20 bytes - Address the transaction is sent from.` +
-            `\n\tto: 20 bytes [Required] - Address the transaction is directed to.` +
-            `\n\tgas: Hexadecimal value of the gas provided for the transaction execution as hex string.` +
-            `\n\tgasPrice: Hexadecimal value of the gasPrice used for each paid gas.` +
-            `\n\tvalue: Hexadecimal of the value sent with this transaction.` +
-            `\n\tdata: Hash of the method signature and encoded parameters` +
-            `\n}.\n\n* the block number parameter. An hexadecimal number or (latest, earliest or pending).` +
-            `\n\nAnd lastly, one object containing the options for trace: \n {` +
-            `\n\ttracer - string to specify the type of tracer. Currently, it supports callTracer and prestateTracer.` +
-            `\n\ttracerConfig - Object to specify configurations for the tracer. It has the following parameters:` +
-            `\n\tonlyTopCall - boolean Setting this to true will only trace the main (top-level) call and none of the sub-calls. This avoids extra processing for each call frame if only the top-level call info are required (useful for getting revertReason)` +
-            `\n}.`
-    );
+    // Input validation
+    if (
+        params.length !== 3 ||
+        typeof params[0] !== 'object' ||
+        typeof params[1] !== 'string' ||
+        typeof params[2] !== 'object'
+    )
+        throw new JSONRPCInvalidParams(
+            'debug_traceCall',
+            -32602,
+            `Invalid input params for "debug_traceCall" method. See ${RPC_DOCUMENTATION_URL} for details.`,
+            { params }
+        );
 
     // Init params
     const transactionOptions = params[0] as TransactionObjectInput;

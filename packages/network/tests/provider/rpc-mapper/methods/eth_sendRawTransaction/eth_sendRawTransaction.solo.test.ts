@@ -11,7 +11,7 @@ import {
     THOR_SOLO_URL,
     ThorClient
 } from '../../../../../src';
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { JSONRPCInternalError } from '@vechain/sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_sendRawTransaction' method
@@ -112,7 +112,7 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
                 (await RPCMethodsMap(thorClient)[
                     RPC_METHODS.eth_sendRawTransaction
                 ](['INVALID'])) as string;
-            }).rejects.toThrowError(InvalidDataTypeError);
+            }).rejects.toThrowError(JSONRPCInternalError);
         });
     });
 });

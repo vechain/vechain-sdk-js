@@ -2,7 +2,7 @@ import {
     type ProviderInternalWallet,
     type ProviderInternalWalletAccount
 } from '../types';
-import { assert, DATA } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { addressUtils } from '@vechain/sdk-core';
 import {
     DelegationHandler,
@@ -135,13 +135,13 @@ abstract class AbstractProviderInternalWallet
         }
 
         // Check if the address is valid
-        assert(
-            'getAccount',
-            addressUtils.isAddress(addressOrIndex),
-            DATA.INVALID_DATA_TYPE,
-            'Invalid params expected an address.',
-            { addressOrIndex }
-        );
+        if (!addressUtils.isAddress(addressOrIndex)) {
+            throw new InvalidDataType(
+                'AbstractProviderInternalWallet.getAccountSync()',
+                'Invalid params expected an address.',
+                { addressOrIndex }
+            );
+        }
 
         // Get the account by address
         const account = this.accounts.find(

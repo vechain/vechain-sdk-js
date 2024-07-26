@@ -1,7 +1,5 @@
 import { type ThorClient } from '../../../../../../thor-client';
 import {
-    assert,
-    DATA,
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
@@ -9,6 +7,7 @@ import {
 import { type VeChainProvider } from '../../../../../providers';
 import { type TransactionObjectInput } from './types';
 import { type VeChainSigner } from '../../../../../../signer';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
  * RPC Method eth_sendTransaction implementation
@@ -36,7 +35,7 @@ import { type VeChainSigner } from '../../../../../../signer';
  * 'maxPriorityFeePerGas' and 'maxFeePerGas' are not supported in the current version.
  *
  * @throws {ProviderRpcError} - Will throw an error if the transaction fails.
- * @throws {InvalidDataTypeError} - Will throw an error if the params are invalid.ù
+ * @throws {InvalidDataTypeError} - Will throw an error if the params are invalid.
  */
 const ethSendTransaction = async (
     thorClient: ThorClient,
@@ -44,21 +43,13 @@ const ethSendTransaction = async (
     provider?: VeChainProvider
 ): Promise<string> => {
     // Input validation
-    assert(
-        'eth_sendTransaction',
-        params.length === 1 && typeof params[0] === 'object',
-        DATA.INVALID_DATA_TYPE,
-        `Invalid params, expected one transaction object containing following properties: \n {` +
-            `\n\tto: 20 bytes - Address the transaction is directed to.` +
-            `\n\tfrom: 20 bytes [Required] - Address the transaction is sent from.` +
-            `\n\tgas: Hexadecimal value of the gas provided for the transaction execution as hex string.` +
-            `\n\tgasPrice: Hexadecimal value of the gasPrice used for each paid gas.` +
-            `\n\tvalue: Hexadecimal of the value sent with this transaction.` +
-            `\n\tdata: Hash of the method signature and encoded parameters.` +
-            `\n\tmaxPriorityFeePerGas: Maximum fee per gas the sender is willing to pay to miners in wei. Used in 1559 transactions.` +
-            `\n\tmaxFeePerGas: The maximum total fee per gas the sender is willing to pay (includes the network / base fee and miner / priority fee) in wei. Used in 1559 transactions.` +
-            `\n}.`
-    );
+    if (params.length !== 1 || typeof params[0] !== 'object')
+        throw new JSONRPCInvalidParams(
+            'eth_sendTransaction',
+            -32602,
+            `Invalid input params for "eth_sendTransaction" method. See ${RPC_DOCUMENTATION_URL} for details.`,
+            { params }
+        );
 
     // Provider must be defined
     if (provider?.wallet === undefined) {

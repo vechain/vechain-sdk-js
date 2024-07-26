@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { accountsFixture } from './fixture';
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { Hex, secp256k1, ZERO_ADDRESS } from '@vechain/sdk-core';
 import {
     ProviderInternalBaseWallet,
@@ -139,7 +139,7 @@ describe('Base wallet tests', () => {
             const invalidAddress = 'INVALID_ADDRESS';
             await expect(
                 baseWallet.getAccount(invalidAddress)
-            ).rejects.toThrowError(InvalidDataTypeError);
+            ).rejects.toThrowError(InvalidDataType);
         });
 
         /**
