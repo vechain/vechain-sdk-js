@@ -155,7 +155,10 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         );
 
         // 3 - Estimate gas
-        const totalGasResult = await this.estimateGas(transactionToPopulate);
+        const totalGasResult =
+            transactionToPopulate.gas !== undefined
+                ? Number(transactionToPopulate.gas)
+                : await this.estimateGas(transactionToPopulate);
 
         // 4 - Build the transaction body
         return await thorClient.transactions.buildTransactionBody(

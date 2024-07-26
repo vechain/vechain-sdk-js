@@ -9,6 +9,7 @@ import {
     VeChainProvider
 } from '../../../../src';
 import {
+    TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS
 } from '../../../fixture';
@@ -256,5 +257,50 @@ describe('VeChain base signer tests - solo', () => {
                 });
             }
         );
+
+        test('perform a transaction with custom gas', async () => {
+            const sampleClause = clauseBuilder.functionInteraction(
+                TESTING_CONTRACT_ADDRESS,
+                coder
+                    .createInterface(TESTING_CONTRACT_ABI)
+                    .getFunction('deposit') as FunctionFragment,
+                [123]
+            );
+
+            const txBody = await thorClient.transactions.buildTransactionBody(
+                [sampleClause],
+                6000000
+            );
+
+            // Get the signer and sign the transaction
+            const signer = new VeChainPrivateKeySigner(
+                Buffer.from(
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.privateKey,
+                    'hex'
+                ),
+                new VeChainProvider(thorClient)
+            );
+
+            const signedRawTx = await signer.signTransaction(
+                signerUtils.transactionBodyToTransactionRequestInput(
+                    txBody,
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                )
+            );
+            const signedTx = TransactionHandler.decode(
+                Buffer.from(signedRawTx.slice(2), 'hex'),
+                true
+            );
+
+            expect(signedTx).toBeDefined();
+            expect(signedTx.body.gas).toEqual(6000000);
+            expect(signedTx.origin).toBe(
+                addressUtils.toERC55Checksum(
+                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                )
+            );
+            expect(signedTx.isSigned).toBe(true);
+            expect(signedTx.signature).toBeDefined();
+        }, 8000);
     });
 });
