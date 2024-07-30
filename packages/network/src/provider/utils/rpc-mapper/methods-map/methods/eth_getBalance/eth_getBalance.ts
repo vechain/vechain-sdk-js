@@ -1,13 +1,12 @@
 import { type ThorClient } from '../../../../../../thor-client';
 import {
-    assert,
-    buildProviderError,
-    DATA,
-    JSONRPC,
+    JSONRPCInternalError,
+    JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import type { BlockQuantityInputRPC } from '../../../types';
 import { getCorrectBlockNumberRPCToVeChain } from '../../../../const';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
  * RPC Method eth_getBalance implementation
@@ -29,19 +28,18 @@ const ethGetBalance = async (
     thorClient: ThorClient,
     params: unknown[]
 ): Promise<string> => {
-    assert(
-        'eth_getBalance',
-        params.length === 2 &&
-            typeof params[0] === 'string' &&
-            (typeof params[1] === 'object' || typeof params[1] === 'string'),
-        DATA.INVALID_DATA_TYPE,
-        `Invalid params length, expected 2.\nThe params should be address: string` +
-            `and the block tag parameter. 'latest', 'earliest', 'pending', 'safe' or 'finalized' or an object: \n{.` +
-            `\tblockNumber: The number of the block` +
-            `\n}\n\nOR\n\n{` +
-            `\tblockHash: The hash of block` +
-            `\n}`
-    );
+    // Input validation
+    if (
+        params.length !== 2 ||
+        typeof params[0] !== 'string' ||
+        (typeof params[1] !== 'object' && typeof params[1] !== 'string')
+    )
+        throw new JSONRPCInvalidParams(
+            'eth_getBalance',
+            -32602,
+            `Invalid input params for "eth_getBalance" method. See ${RPC_DOCUMENTATION_URL} for details.`,
+            { params }
+        );
 
     try {
         const [address, block] = params as [string, BlockQuantityInputRPC];
@@ -53,15 +51,13 @@ const ethGetBalance = async (
 
         return accountDetails.balance;
     } catch (e) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'eth_getBalance' failed: Error while getting the account's balance for the following address: ${
-                params[0] as string
-            }\n
-            Params: ${stringifyData(params)}\n
-            URL: ${thorClient.httpClient.baseURL}`,
+        throw new JSONRPCInternalError(
+            'eth_getBalance()',
+            -32603,
+            'Method "eth_getBalance" failed.',
             {
-                params,
+                params: stringifyData(params),
+                url: thorClient.httpClient.baseURL,
                 innerError: stringifyData(e)
             }
         );

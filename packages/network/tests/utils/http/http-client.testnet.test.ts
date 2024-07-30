@@ -2,12 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { type HttpParams } from '../../../src';
 import { testnetGenesisBlock } from './fixture';
 import { testAccount, testNetwork } from '../../fixture';
-import {
-    buildError,
-    HTTP_CLIENT,
-    HTTPClientError,
-    stringifyData
-} from '@vechain/sdk-errors';
+import { InvalidHTTPRequest, stringifyData } from '@vechain/sdk-errors';
 
 /**
  * Timeout for each test.
@@ -50,7 +45,7 @@ describe('Test HttpClient class on Testnet', () => {
             // Assert that the HTTP request fails with an error
             await expect(
                 testNetwork.http('GET', '/error-test-path')
-            ).rejects.toThrowError(HTTPClientError);
+            ).rejects.toThrowError(InvalidHTTPRequest);
         },
         TIMEOUT
     );
@@ -98,16 +93,16 @@ describe('Test HttpClient class on Testnet', () => {
                 'X-Custom-Header': 'custom-value'
             },
             validateResponseHeader: function (): void {
-                throw buildError(
+                throw new InvalidHTTPRequest(
                     'validateResponseHeader',
-                    HTTP_CLIENT.INVALID_HTTP_REQUEST,
-                    `Forcing error on header validation.`
+                    'Forcing error on header validation.',
+                    { method: 'GET', url: '/accounts/' + testAccount }
                 );
             }
         };
 
         await expect(
             testNetwork.http('GET', '/accounts/' + testAccount, customParams)
-        ).rejects.toThrowError(HTTPClientError);
+        ).rejects.toThrowError(InvalidHTTPRequest);
     });
 });

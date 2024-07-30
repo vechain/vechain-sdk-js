@@ -29,10 +29,24 @@ class InvalidTransactionField extends VechainSDKError<
  * WHEN TO USE:
  * * Error will be thrown when the transaction is not delegated.
  */
-class NotDelegatedTransaction extends VechainSDKError<undefined> {}
+class NotDelegatedTransaction extends VechainSDKError<
+    undefined | { delegatorUrl: string }
+> {}
+
+/**
+ * Cannot find transaction error.
+ *
+ * WHEN TO USE:
+ * * Error will be thrown when the transaction is not into the blockchain.
+ */
+class CannotFindTransaction extends VechainSDKError<{
+    transactionHash?: string;
+    networkUrl?: string;
+}> {}
 
 export {
     UnavailableTransactionField,
     InvalidTransactionField,
-    NotDelegatedTransaction
+    NotDelegatedTransaction,
+    CannotFindTransaction
 };

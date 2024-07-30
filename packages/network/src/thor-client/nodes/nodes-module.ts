@@ -1,5 +1,5 @@
 import { NODE_HEALTHCHECK_TOLERANCE_IN_SECONDS, thorest } from '../../utils';
-import { assert, DATA } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { type CompressedBlockDetail } from '../blocks';
 import { type ThorClient } from '../thor-client';
 import { type ConnectedPeer } from './types';
@@ -81,19 +81,21 @@ class NodesModule {
     private readonly getTimestampFromBlock = (
         response: CompressedBlockDetail | null
     ): number => {
-        assert(
-            'getTimestampFromBlock',
-            response !== null &&
-                response !== undefined &&
-                typeof response === 'object' &&
-                'timestamp' in response &&
-                typeof response.timestamp === 'number',
-            DATA.INVALID_DATA_TYPE,
-            'Invalid block format returned from node. The block must be an object with a timestamp key present of type number',
-            { response }
-        );
+        if (
+            response === null ||
+            response === undefined ||
+            typeof response !== 'object' ||
+            !('timestamp' in response) ||
+            typeof response.timestamp !== 'number'
+        ) {
+            throw new InvalidDataType(
+                'NodesModule.getTimestampFromBlock()',
+                'Sending failed: Input must be a valid raw transaction in hex format.',
+                { response }
+            );
+        }
 
-        return response?.timestamp as number;
+        return response?.timestamp;
     };
 }
 

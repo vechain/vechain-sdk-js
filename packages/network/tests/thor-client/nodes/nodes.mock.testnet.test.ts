@@ -1,10 +1,10 @@
-import { describe, expect, test, jest, beforeEach } from '@jest/globals';
+import { beforeEach, describe, expect, jest, test } from '@jest/globals';
 import {
+    blockWithInvalidTimeStampFormat,
     blockWithMissingTimeStamp,
-    blockWithOldTimeStamp,
-    blockWithInvalidTimeStampFormat
+    blockWithOldTimeStamp
 } from './fixture';
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { HttpClient, ThorClient } from '../../../src';
 
 /**
@@ -45,7 +45,7 @@ describe('ThorClient - Nodes Module', () => {
         jest.spyOn(HttpClient.prototype, 'http').mockResolvedValueOnce({});
 
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
-            InvalidDataTypeError
+            InvalidDataType
         );
 
         // Mock the response to force the JSON response to not be an object
@@ -53,7 +53,7 @@ describe('ThorClient - Nodes Module', () => {
             invalidKey: 1
         });
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
-            InvalidDataTypeError
+            InvalidDataType
         );
 
         // Mock the response to force the JSON response to have a timestamp non-existent
@@ -61,7 +61,7 @@ describe('ThorClient - Nodes Module', () => {
             blockWithMissingTimeStamp
         );
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
-            InvalidDataTypeError
+            InvalidDataType
         );
 
         // Mock the response to force the JSON response to have a timestamp not a number
@@ -69,7 +69,7 @@ describe('ThorClient - Nodes Module', () => {
             blockWithInvalidTimeStampFormat
         );
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
-            InvalidDataTypeError
+            InvalidDataType
         );
     });
 

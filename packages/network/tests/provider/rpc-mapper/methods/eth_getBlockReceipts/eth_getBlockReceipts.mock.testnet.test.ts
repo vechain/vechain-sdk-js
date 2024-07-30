@@ -5,7 +5,7 @@ import {
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
-import { ProviderRpcError } from '@vechain/sdk-errors';
+import { JSONRPCInternalError } from '@vechain/sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_getBlockReceipts' method
@@ -68,7 +68,7 @@ describe('RPC Mapper - eth_getBlockReceipts mock method tests', () => {
                     await RPCMethodsMap(thorClient)[
                         RPC_METHODS.eth_getBlockReceipts
                     ](['latest'])
-            ).rejects.toThrowError(ProviderRpcError);
+            ).rejects.toThrowError(JSONRPCInternalError);
         });
     });
 });

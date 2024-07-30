@@ -9,7 +9,7 @@ import {
     VeChainProvider
 } from '../../../../../src';
 import { THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../../../fixture';
-import { ProviderRpcError } from '@vechain/sdk-errors';
+import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_requestAccounts' method
@@ -75,7 +75,7 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
         test('eth_requestAccounts - Should throw error if wallet is not given', async () => {
             await expect(
                 RPCMethodsMap(thorClient)[RPC_METHODS.eth_requestAccounts]([])
-            ).rejects.toThrow(ProviderRpcError);
+            ).rejects.toThrowError(JSONRPCInvalidParams);
         });
 
         /**
@@ -87,7 +87,7 @@ describe('RPC Mapper - eth_requestAccounts method tests', () => {
                 RPCMethodsMap(thorClient, undefined)[
                     RPC_METHODS.eth_requestAccounts
                 ]([])
-            ).rejects.toThrow(ProviderRpcError);
+            ).rejects.toThrowError(JSONRPCInvalidParams);
         });
     });
 });

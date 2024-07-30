@@ -28,7 +28,7 @@ import {
     VeChainProvider,
     type VeChainSigner
 } from '../../../src';
-import { ContractDeploymentFailedError, TransactionMissingPrivateKeyError } from '@vechain/sdk-errors';
+import { CannotFindTransaction, ContractDeploymentFailed, InvalidTransactionField } from '@vechain/sdk-errors';
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.
@@ -161,7 +161,7 @@ describe('ThorClient - Contracts', () => {
 
         // Wait for the deployment to complete and obtain the contract instance
         await expect(contractFactory.waitForDeployment()).rejects.toThrow(
-            ContractDeploymentFailedError
+            ContractDeploymentFailed
         );
     }, 10000);
 
@@ -178,7 +178,7 @@ describe('ThorClient - Contracts', () => {
 
         // Waiting for a deployment that has not started
         await expect(contractFactory.waitForDeployment()).rejects.toThrow(
-            ContractDeploymentFailedError
+            CannotFindTransaction
         );
     }, 10000);
 
@@ -367,7 +367,7 @@ describe('ThorClient - Contracts', () => {
 
         // The contract call should fail because the private key is not set
         await expect(loadedContract.transact.set(123n)).rejects.toThrowError(
-            TransactionMissingPrivateKeyError
+            InvalidTransactionField
         );
     }, 10000);
 

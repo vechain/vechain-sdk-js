@@ -6,7 +6,7 @@ import {
     TESTING_CONTRACT_ADDRESS
 } from '../../fixture';
 import { transfer1VTHOClause } from '../transactions/fixture';
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
  * Test cases for `estimateGas` method
@@ -310,7 +310,7 @@ const invalidEstimateGasTestCases = [
     {
         clauses: [],
         options: {},
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     },
     {
         clauses: [
@@ -323,7 +323,7 @@ const invalidEstimateGasTestCases = [
         options: {
             gasPadding: 1.1
         },
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     },
     {
         clauses: [
@@ -336,7 +336,7 @@ const invalidEstimateGasTestCases = [
         options: {
             gasPadding: 0
         },
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     },
     {
         clauses: [
@@ -349,7 +349,7 @@ const invalidEstimateGasTestCases = [
         options: {
             gasPadding: -1
         },
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     }
 ];
 

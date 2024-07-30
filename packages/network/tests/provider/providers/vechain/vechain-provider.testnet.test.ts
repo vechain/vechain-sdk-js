@@ -1,6 +1,9 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 
-import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
+import {
+    JSONRPCInvalidParams,
+    JSONRPCMethodNotFound
+} from '@vechain/sdk-errors';
 import { providerMethodsTestCasesTestnet } from '../fixture';
 import { waitForMessage } from '../helpers';
 import { TESTNET_URL, ThorClient, VeChainProvider } from '../../../../src';
@@ -105,7 +108,7 @@ describe('VeChain provider tests - testnet', () => {
                     method: 'INVALID_METHOD',
                     params: [-1]
                 })
-        ).rejects.toThrowError(InvalidDataTypeError);
+        ).rejects.toThrowError(JSONRPCMethodNotFound);
     });
 
     /**
@@ -115,7 +118,7 @@ describe('VeChain provider tests - testnet', () => {
         expect(() => {
             // eslint-disable-next-line no-new
             new VeChainProvider(thorClient, undefined, true);
-        }).toThrowError(ProviderRpcError);
+        }).toThrowError(JSONRPCInvalidParams);
     });
 
     /**

@@ -1,5 +1,8 @@
 import { Hex0x, ZERO_BYTES } from '@vechain/sdk-core';
-import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
+import {
+    JSONRPCInternalError,
+    JSONRPCInvalidParams
+} from '@vechain/sdk-errors';
 
 /**
  * Test cases for eth_getStorageAt RPC method
@@ -56,22 +59,22 @@ const invalidEthGetStorageAtTestCases = [
             '0x10afdf1',
             '0x10afdf1'
         ],
-        expectedError: InvalidDataTypeError
+        expectedError: JSONRPCInvalidParams
     },
     {
         description: 'Should throw error for too few params',
         params: ['0x93Ae8aab337E58A6978E166f8132F59652cA6C56', '0x1'],
-        expectedError: InvalidDataTypeError
+        expectedError: JSONRPCInvalidParams
     },
     {
         description: 'Should throw error for invalid address',
         params: ['0x123', '0x1', '0x10afdf1'],
-        expectedError: ProviderRpcError
+        expectedError: JSONRPCInternalError
     },
     {
         description: 'Should throw error for invalid slot',
         params: ['0x123', `0x${'0'.repeat(65)}1`, '0x10afdf1'],
-        expectedError: ProviderRpcError
+        expectedError: JSONRPCInternalError
     }
 ];
 

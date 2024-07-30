@@ -1,4 +1,4 @@
-import { assert, DATA, InvalidDataType } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { buildQuery, thorest } from '../../utils';
 import {
     type AccountDetail,
@@ -152,13 +152,13 @@ class AccountsModule {
         }
 
         // The position represents a slot in the VM storage. Each slot is 32 bytes.
-        assert(
-            'getStorageAt',
-            Hex0x.isValid(position) && position.length === 66,
-            DATA.INVALID_DATA_TYPE,
-            'Invalid `position`. The position must be a hex string of 32 bytes (66 characters including `0x` prefix).',
-            { position }
-        );
+        if (!Hex0x.isValid(position) || position.length !== 66) {
+            throw new InvalidDataType(
+                'AccountsModule.getStorageAt()',
+                'Invalid `position`. The position must be a hex string of 32 bytes (66 characters including `0x` prefix).',
+                { position }
+            );
+        }
 
         const result = (await this.thor.httpClient.http(
             'GET',

@@ -1,5 +1,5 @@
 import { type ThorClient } from '../../../../../../thor-client';
-import { buildError, FUNCTION } from '@vechain/sdk-errors';
+import { FunctionNotImplemented } from '@vechain/sdk-errors';
 
 /**
  * RPC Method eth_getBlockTransactionCountByNumber implementation
@@ -19,13 +19,13 @@ const ethGetBlockTransactionCountByNumber = async (
     await Promise.resolve(0);
 
     // Not implemented yet
-    throw buildError(
+    throw new FunctionNotImplemented(
         'eth_getBlockTransactionCountByNumber',
-        FUNCTION.NOT_IMPLEMENTED,
         'Method "eth_getBlockTransactionCountByNumber" has not been implemented yet.',
         {
-            params,
-            thorClient
+            functionName: 'eth_getBlockTransactionCountByNumber',
+            thorClient,
+            params
         }
     );
 };

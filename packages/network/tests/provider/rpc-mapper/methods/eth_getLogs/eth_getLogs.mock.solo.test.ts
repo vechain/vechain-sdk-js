@@ -6,7 +6,7 @@ import {
     THOR_SOLO_URL,
     ThorClient
 } from '../../../../../src';
-import { ProviderRpcError } from '@vechain/sdk-errors';
+import { JSONRPCInternalError } from '@vechain/sdk-errors';
 import { logsFixture, mockLogsFixture } from './fixture';
 
 /**
@@ -72,7 +72,7 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
                     (await RPCMethodsMap(thorClient)[RPC_METHODS.eth_getLogs]([
                         logsFixture[0].input
                     ])) as LogsRPC[]
-            ).rejects.toThrowError(ProviderRpcError);
+            ).rejects.toThrowError(JSONRPCInternalError);
         });
     });
 });

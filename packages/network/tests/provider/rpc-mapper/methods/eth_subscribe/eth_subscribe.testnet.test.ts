@@ -13,7 +13,11 @@ import {
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
-import { ProviderRpcError } from '@vechain/sdk-errors';
+import {
+    JSONRPCInternalError,
+    JSONRPCInvalidParams,
+    JSONRPCServerError
+} from '@vechain/sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_subscribe' method
@@ -90,7 +94,7 @@ describe('RPC Mapper - eth_subscribe method tests', () => {
                         method: 'eth_subscribe',
                         params: ['invalidSubscriptionType']
                     })
-            ).rejects.toThrowError(ProviderRpcError); // Ideally, specify the expected error for more precise testing.
+            ).rejects.toThrowError(JSONRPCInvalidParams); // Ideally, specify the expected error for more precise testing.
         });
 
         /**
@@ -103,7 +107,7 @@ describe('RPC Mapper - eth_subscribe method tests', () => {
                     await RPCMethodsMap(thorClient)[RPC_METHODS.eth_subscribe](
                         []
                     )
-            ).rejects.toThrowError(ProviderRpcError);
+            ).rejects.toThrowError(JSONRPCInternalError);
         });
 
         test('eth_subscribe - no best block', async () => {
@@ -119,7 +123,7 @@ describe('RPC Mapper - eth_subscribe method tests', () => {
                         method: 'eth_subscribe',
                         params: ['newHeads']
                     })
-            ).rejects.toThrowError(ProviderRpcError);
+            ).rejects.toThrowError(JSONRPCServerError);
         });
     });
 });

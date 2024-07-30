@@ -9,7 +9,7 @@ import {
     VeChainProvider
 } from '../../../../../src';
 import { logsFixture } from './fixture';
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 import { Hex0x } from '@vechain/sdk-core';
 
 /**
@@ -64,7 +64,7 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
                     (await RPCMethodsMap(thorClient)[RPC_METHODS.eth_getLogs]([
                         'INVALID_INPUT'
                     ])) as LogsRPC[]
-            ).rejects.toThrowError(InvalidDataTypeError);
+            ).rejects.toThrowError(JSONRPCInvalidParams);
         });
     });
 

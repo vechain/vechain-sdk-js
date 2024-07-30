@@ -7,7 +7,7 @@ import {
 import type { TransactionReceipt } from '../../transactions';
 import { type ThorClient } from '../../thor-client';
 import type { ContractCallOptions, ContractTransactionOptions } from '../types';
-import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
+import { InvalidAbiFragment } from '@vechain/sdk-errors';
 import {
     type ContractFunctionClause,
     type ContractFunctionCriteria,
@@ -205,11 +205,13 @@ class Contract<TAbi extends Abi> {
             .getFunction(prop.toString());
 
         if (functionFragment == null) {
-            throw buildError(
-                'Contract.getFunctionFragment',
-                ERROR_CODES.ABI.INVALID_FUNCTION,
+            throw new InvalidAbiFragment(
+                'Contract.getFunctionFragment()',
                 `Function '${prop.toString()}' not found in contract ABI.`,
-                { prop }
+                {
+                    type: 'event',
+                    fragment: prop
+                }
             );
         }
         return functionFragment;
@@ -226,11 +228,13 @@ class Contract<TAbi extends Abi> {
             .getEvent(eventName.toString());
 
         if (eventFragment == null) {
-            throw buildError(
-                'Contract.getFunctionFragment',
-                ERROR_CODES.ABI.INVALID_FUNCTION,
+            throw new InvalidAbiFragment(
+                'Contract.getEventFragment()',
                 `Function '${eventName.toString()}' not found in contract ABI.`,
-                { eventName }
+                {
+                    type: 'event',
+                    fragment: eventName
+                }
             );
         }
         return eventFragment;

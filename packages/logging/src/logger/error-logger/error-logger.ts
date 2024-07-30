@@ -1,16 +1,16 @@
-import type { ErrorLoggerData, LogFunctionType } from '../types';
-import type { ErrorCode } from '@vechain/sdk-errors';
+import type { LogFunctionType } from '../types';
+import { type VechainSDKError } from '@vechain/sdk-errors';
 
 /**
  * Error logger internal function.
  */
 const _logErrorFunction: LogFunctionType<'error'> = {
-    log: <TErrorCode extends ErrorCode>(error: ErrorLoggerData<TErrorCode>) => {
+    log: <TErrorData>(error: VechainSDKError<TErrorData>) => {
         console.error(
-            `\n****************** ERROR: ${error.errorCode} ******************\n` +
+            `\n****************** ERROR ON: ${error.methodName} ******************\n` +
                 `- Error message: '${error.errorMessage}'` +
                 '\n- Error data:\n',
-            error.errorData,
+            error.data,
             `\n- Internal error:\n`,
             error.innerError,
             `\n`

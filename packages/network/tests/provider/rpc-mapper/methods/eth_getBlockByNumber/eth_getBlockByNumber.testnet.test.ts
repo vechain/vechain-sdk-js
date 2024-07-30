@@ -9,7 +9,7 @@ import {
     ethGetBlockByNumberTestCases,
     invalidEthGetBlockByNumberTestCases
 } from './fixture';
-import { ProviderRpcError } from '@vechain/sdk-errors';
+import { JSONRPCInternalError } from '@vechain/sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_getBlockByNumber' method
@@ -99,13 +99,13 @@ describe('RPC Mapper - eth_getBlockByNumber method tests', () => {
         /**
          * Test case where the block number is negative
          */
-        test('Should throw `ProviderRpcError` for negative block number', async () => {
+        test('Should throw `JSONRPCInternalError` for negative block number', async () => {
             await expect(
                 async () =>
                     await RPCMethodsMap(thorClient)[
                         RPC_METHODS.eth_getBlockByNumber
                     ]([`0x${BigInt(-1).toString(16)}`, false]) // Block number is negative (-1)
-            ).rejects.toThrowError(ProviderRpcError);
+            ).rejects.toThrowError(JSONRPCInternalError);
         });
     });
 });

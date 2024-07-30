@@ -3,7 +3,10 @@ import {
     type EIP1193ProviderMessage,
     type EIP1193RequestArguments
 } from '../../eip1193';
-import { assert, buildProviderError, DATA, JSONRPC } from '@vechain/sdk-errors';
+import {
+    JSONRPCInvalidParams,
+    JSONRPCMethodNotFound
+} from '@vechain/sdk-errors';
 import {
     ethGetLogs,
     POLLING_INTERVAL,
@@ -57,12 +60,11 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
 
         // Throw an error if delegation is enabled but the delegator is not defined
         if (enableDelegation && wallet?.delegator === undefined) {
-            throw buildProviderError(
-                JSONRPC.INVALID_PARAMS,
+            throw new JSONRPCInvalidParams(
+                'VechainProvider constructor',
+                -32602,
                 'Delegation is enabled but the delegator is not defined. Ensure that the delegator is defined and connected to the network.',
-                {
-                    wallet
-                }
+                { wallet }
             );
         }
     }
@@ -87,15 +89,18 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
      */
     public async request(args: EIP1193RequestArguments): Promise<unknown> {
         // Check if the method is supported
-        assert(
-            'request',
-            Object.values(RPC_METHODS)
+        if (
+            !Object.values(RPC_METHODS)
                 .map((key) => key.toString())
-                .includes(args.method),
-            DATA.INVALID_DATA_TYPE,
-            'Invalid RPC method given as input.',
-            { method: args.method }
-        );
+                .includes(args.method)
+        ) {
+            throw new JSONRPCMethodNotFound(
+                'VeChainProvider.request()',
+                -32601,
+                'Method not found. Invalid RPC method given as input.',
+                { method: args.method }
+            );
+        }
 
         // Get the method from the RPCMethodsMap and call it
         return await RPCMethodsMap(this.thorClient, this)[args.method](

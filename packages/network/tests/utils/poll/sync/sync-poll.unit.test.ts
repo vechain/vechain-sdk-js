@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { Poll } from '../../../../src';
-import { PollExecutionError } from '@vechain/sdk-errors';
+import { PollExecution } from '@vechain/sdk-errors';
 import {
     invalidOptionsParametersForPollTests,
     simpleIncrementFunction,
@@ -126,7 +126,7 @@ describe('Synchronous poll unit tests', () => {
                         // @IMPORTANT: Here this simple function will never reach 11. But who cares, we know that it will throw an error. And after throwing an error, it will stop.
                         return result === 11;
                     });
-                }).rejects.toThrowError(PollExecutionError);
+                }).rejects.toThrowError(PollExecution);
             }
         });
 

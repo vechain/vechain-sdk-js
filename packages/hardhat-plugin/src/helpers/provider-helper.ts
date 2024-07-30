@@ -1,10 +1,10 @@
 import {
-    ProviderInternalBaseWallet,
     DelegationHandler,
+    ProviderInternalBaseWallet,
     ProviderInternalHDWallet,
     type ProviderInternalWallet
 } from '@vechain/sdk-network';
-import { buildError, JSONRPC } from '@vechain/sdk-errors';
+import { JSONRPCInternalError } from '@vechain/sdk-errors';
 import { addressUtils, secp256k1 } from '@vechain/sdk-core';
 import {
     type HardhatNetworkAccountsConfig,
@@ -34,10 +34,11 @@ const createWalletFromHardhatNetworkConfig = (
     else {
         // Remote (not supported)
         if (accountFromConfig === 'remote')
-            throw buildError(
-                'createWalletFromHardhatNetworkConfig',
-                JSONRPC.INTERNAL_ERROR,
-                'Remote accounts are not supported in hardhat network configuration.'
+            throw new JSONRPCInternalError(
+                'createWalletFromHardhatNetworkConfig()',
+                -32603,
+                'Remote accounts are not supported in hardhat network configuration.',
+                { accountFromConfig, networkConfig }
             );
 
         // Base ProviderInternalWallet - From an array of private keys

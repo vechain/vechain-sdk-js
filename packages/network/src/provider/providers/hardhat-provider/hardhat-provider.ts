@@ -1,10 +1,6 @@
 import { VeChainProvider } from '../vechain-provider';
 import type { EIP1193RequestArguments } from '../../eip1193';
-import {
-    getJSONRPCErrorCode,
-    JSONRPC,
-    stringifyData
-} from '@vechain/sdk-errors';
+import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
 import {
     type BuildHardhatErrorFunction,
     type JsonRpcRequest,
@@ -156,15 +152,16 @@ class HardhatVeChainProvider extends VeChainProvider {
         } catch (e) {
             // Debug the error
             if (this.debug) {
-                VeChainSDKLogger('error').log({
-                    errorCode: JSONRPC.INTERNAL_ERROR,
-                    errorMessage: `Error on request - ${args.method}`,
-                    errorData: {
-                        code: getJSONRPCErrorCode(JSONRPC.INVALID_REQUEST),
-                        message: `Error on request - ${args.method} to endpoint ${this.thorClient.httpClient.baseURL}`
-                    },
-                    innerError: e
-                });
+                VeChainSDKLogger('error').log(
+                    new JSONRPCInternalError(
+                        args.method,
+                        -32603,
+                        `Error on request - ${args.method}`,
+                        {
+                            args
+                        }
+                    )
+                );
             }
 
             // Throw the error

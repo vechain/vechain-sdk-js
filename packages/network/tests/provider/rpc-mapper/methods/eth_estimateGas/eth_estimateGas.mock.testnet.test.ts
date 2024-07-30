@@ -5,7 +5,7 @@ import {
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
-import { ProviderRpcError } from '@vechain/sdk-errors';
+import { JSONRPCInternalError } from '@vechain/sdk-errors';
 import { clauseBuilder, unitsUtils } from '@vechain/sdk-core';
 
 /**
@@ -34,7 +34,7 @@ describe('RPC Mapper - eth_estimateGas method tests', () => {
         /**
          * Test case that mocks an error thrown by the estimateGas method
          */
-        test('Should throw `ProviderRpcError` if an error occurs while estimating the gas', async () => {
+        test('Should throw `JSONRPCInternalError` if an error occurs while estimating the gas', async () => {
             // Mock the estimateGas method to return null
             jest.spyOn(thorClient.gas, 'estimateGas').mockRejectedValue(
                 new Error()
@@ -48,7 +48,7 @@ describe('RPC Mapper - eth_estimateGas method tests', () => {
                     ),
                     'latest'
                 ])
-            ).rejects.toThrowError(ProviderRpcError);
+            ).rejects.toThrowError(JSONRPCInternalError);
         });
     });
 });

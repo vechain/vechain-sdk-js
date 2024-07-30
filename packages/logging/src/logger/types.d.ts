@@ -1,4 +1,8 @@
-import { type DataType, type ErrorCode } from '@vechain/sdk-errors';
+import {
+    type DataType,
+    type ErrorCode,
+    type VechainSDKError
+} from '@vechain/sdk-errors';
 
 /**
  * Type representing the different types of loggers.
@@ -40,21 +44,14 @@ type WarningLoggerData = LogLoggerData;
  *     messages: ['Message to log 1...', 'Message to log 2...', ...]
  * });
  *
- * VeChainSDKLogger('error').log({
- *     errorCode: DATA.INVALID_DATA_TYPE,
- *     errorMessage: 'Message we want to use for invalid data type ...',
- *     errorData: input,
- *     innerError: new Error('This is the inner error')
- * });
+ * VeChainSDKLogger('error').log(new JSONRPCInternalError('test-method', -32603, `Error on request`, { some: 'data' }));
  *
  */
 type LogFunctionType<TLoggerType extends LoggerType> =
     // Logger function type used for 'error' logs
     TLoggerType extends 'error'
         ? {
-              log: <TErrorCode extends ErrorCode>(
-                  error: ErrorLoggerData<TErrorCode>
-              ) => void;
+              log: <TErrorData>(error: VechainSDKError<TErrorData>) => void;
           }
         : // Logger function type used for 'log' logs
           TLoggerType extends 'log'

@@ -1,5 +1,6 @@
-import { assert, DATA } from '@vechain/sdk-errors';
+import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 import { addressUtils, Hex0x, secp256k1 } from '@vechain/sdk-core';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
  * RPC Method eth_getTransactionCount implementation
@@ -17,30 +18,27 @@ import { addressUtils, Hex0x, secp256k1 } from '@vechain/sdk-core';
  * @throws {InvalidDataTypeError} - When address parameter is invalid.
  */
 const ethGetTransactionCount = async (params: unknown[]): Promise<string> => {
-    // Input validation - Invalid params
-    assert(
-        'eth_getTransactionCount',
-        params.length === 2 &&
-            typeof params[0] === 'string' &&
-            (typeof params[1] === 'object' || typeof params[1] === 'string'),
+    // Input validation
+    if (
+        typeof params[0] !== 'string' ||
+        (typeof params[1] !== 'object' && typeof params[1] !== 'string')
+    )
+        throw new JSONRPCInvalidParams(
+            'eth_getTransactionCount',
+            -32602,
+            `Invalid input params for "eth_getTransactionCount" method. See ${RPC_DOCUMENTATION_URL} for details.`,
+            { params }
+        );
 
-        DATA.INVALID_DATA_TYPE,
-        `Invalid params length, expected 2.` +
-            `\nThe params should be address: string` +
-            `\nand the block tag parameter. 'latest', 'earliest', 'pending', 'safe' or 'finalized' or an object: \n{.` +
-            `\tblockNumber: The number of the block` +
-            `\n}\n\nOR\n\n{` +
-            `\tblockHash: The hash of block` +
-            `\n}`
-    );
-
-    // Input validation - Invalid address
-    assert(
-        'eth_getTransactionCount',
-        addressUtils.isAddress(params[0] as string),
-        DATA.INVALID_DATA_TYPE,
-        'Invalid address, expected a 20 bytes address string.'
-    );
+    // Invalid address
+    if (!addressUtils.isAddress(params[0])) {
+        throw new JSONRPCInvalidParams(
+            'eth_getTransactionCount',
+            -32602,
+            'Invalid address, expected a 20 bytes address string.',
+            { params }
+        );
+    }
 
     // Return a random number
     return await Promise.resolve(Hex0x.of(secp256k1.randomBytes(6)));
