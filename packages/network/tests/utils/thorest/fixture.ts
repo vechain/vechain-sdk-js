@@ -1,4 +1,4 @@
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
  * toQueryString test cases fixture
@@ -68,19 +68,19 @@ const sanitizeWebsocketBaseURLTestCases = [
 const invalidSanitizeWebsocketBaseURLTestCases = [
     {
         url: 'www.test',
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     },
     {
         url: 'http://www..test.com',
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     },
     {
         url: 'https://www.test..com',
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     },
     {
         url: 'localhost:8669',
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     }
 ];
 

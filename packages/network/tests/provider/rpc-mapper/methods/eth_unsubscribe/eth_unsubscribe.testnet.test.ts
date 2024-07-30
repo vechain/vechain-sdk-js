@@ -6,7 +6,7 @@ import {
     ThorClient,
     VeChainProvider
 } from '../../../../../src';
-import { ProviderRpcError } from '@vechain/sdk-errors';
+import { JSONRPCInternalError } from '@vechain/sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_unsubscribe' method
@@ -96,7 +96,7 @@ describe('RPC Mapper - eth_unsubscribe method tests', () => {
                     await RPCMethodsMap(thorClient)[
                         RPC_METHODS.eth_unsubscribe
                     ]([])
-            ).rejects.toThrowError(ProviderRpcError);
+            ).rejects.toThrowError(JSONRPCInternalError);
         });
     });
 });

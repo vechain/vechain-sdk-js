@@ -1,5 +1,4 @@
-import { assertInnerError } from '../utils';
-import { createErrorMessage } from '../helpers';
+import { assertInnerError, createErrorMessage } from '../helpers';
 
 /**
  * Generic error class for SDK errors.

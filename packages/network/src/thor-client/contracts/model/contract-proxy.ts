@@ -11,7 +11,7 @@ import {
 } from './types';
 import { type SendTransactionResult } from '../../transactions';
 import { type Contract } from './contract';
-import { buildError, ERROR_CODES } from '@vechain/sdk-errors';
+import { InvalidTransactionField } from '@vechain/sdk-errors';
 import { clauseBuilder, fragment } from '@vechain/sdk-core';
 import { type ContractCallResult, type ContractClause } from '../types';
 import { ContractFilter } from './contract-filter';
@@ -93,11 +93,10 @@ function getTransactProxy<TAbi extends Abi>(
                 ...args: unknown[]
             ): Promise<SendTransactionResult> => {
                 if (contract.getSigner() === undefined) {
-                    throw buildError(
-                        'Contract.getTransactProxy',
-                        ERROR_CODES.TRANSACTION.MISSING_PRIVATE_KEY,
+                    throw new InvalidTransactionField(
+                        'getTransactProxy()',
                         'Caller signer is required to transact with the contract.',
-                        { prop }
+                        { fieldName: 'signer', prop }
                     );
                 }
 

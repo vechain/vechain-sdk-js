@@ -1,6 +1,5 @@
 import { type SyncPollInputOptions } from './types';
-import { buildError, POLL_ERROR } from '@vechain/sdk-errors';
-import { assertPositiveIntegerForPollOptions } from './helpers/assertions';
+import { InvalidDataType, PollExecution } from '@vechain/sdk-errors';
 
 /**
  * Sleep for a given amount of time (in milliseconds).
@@ -37,26 +36,52 @@ function SyncPoll<TReturnType>(
         condition: (data: TReturnType) => boolean
     ) => Promise<TReturnType>;
 } {
-    // Positive number for request interval
-    assertPositiveIntegerForPollOptions(
-        'SyncPoll',
-        options?.requestIntervalInMilliseconds,
-        'options?.requestIntervalInMilliseconds'
-    );
+    // Positive number for the request interval
+    if (
+        options?.requestIntervalInMilliseconds !== undefined &&
+        (options.requestIntervalInMilliseconds <= 0 ||
+            !Number.isInteger(options.requestIntervalInMilliseconds))
+    ) {
+        throw new InvalidDataType(
+            'SyncPoll()',
+            'Polling failed: Invalid input for field "options?.requestIntervalInMilliseconds" it must be a positive number',
+            {
+                requestIntervalInMilliseconds:
+                    options.requestIntervalInMilliseconds
+            }
+        );
+    }
 
     // Positive number for maximum iterations
-    assertPositiveIntegerForPollOptions(
-        'SyncPoll',
-        options?.maximumIterations,
-        'options?.maximumIterations'
-    );
+    if (
+        options?.maximumIterations !== undefined &&
+        (options.maximumIterations <= 0 ||
+            !Number.isInteger(options.maximumIterations))
+    ) {
+        throw new InvalidDataType(
+            'SyncPoll()',
+            'Polling failed: Invalid input for field "options?.maximumIterations" it must be a positive number',
+            {
+                maximumIterations: options.maximumIterations
+            }
+        );
+    }
 
     // Positive number for maximum waiting time
-    assertPositiveIntegerForPollOptions(
-        'SyncPoll',
-        options?.maximumWaitingTimeInMilliseconds,
-        'options?.maximumWaitingTimeInMilliseconds'
-    );
+    if (
+        options?.maximumWaitingTimeInMilliseconds !== undefined &&
+        (options.maximumWaitingTimeInMilliseconds <= 0 ||
+            !Number.isInteger(options.maximumWaitingTimeInMilliseconds))
+    ) {
+        throw new InvalidDataType(
+            'SyncPoll()',
+            'Polling failed: Invalid input for field "options?.maximumWaitingTimeInMilliseconds" it must be a positive number',
+            {
+                maximumWaitingTimeInMilliseconds:
+                    options.maximumWaitingTimeInMilliseconds
+            }
+        );
+    }
 
     // Number of iterations
     let currentIteration = 0;
@@ -122,9 +147,8 @@ function SyncPoll<TReturnType>(
 
                 return currentResult;
             } catch (error) {
-                throw buildError(
-                    'SyncPoll - waitUntil',
-                    POLL_ERROR.POLL_EXECUTION_ERROR,
+                throw new PollExecution(
+                    'SyncPoll.waitUntil()',
                     'Polling failed: Function execution error encountered during synchronous polling.',
                     {
                         functionName: pollingFunction.name

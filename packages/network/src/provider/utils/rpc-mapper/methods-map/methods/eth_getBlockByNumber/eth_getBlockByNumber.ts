@@ -1,9 +1,7 @@
 import { type ThorClient } from '../../../../../../thor-client';
 import {
-    assert,
-    buildProviderError,
-    DATA,
-    JSONRPC,
+    JSONRPCInternalError,
+    JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import { blocksFormatter, type BlocksRPC } from '../../../../formatter';
@@ -12,6 +10,7 @@ import {
     getCorrectBlockNumberRPCToVeChain,
     RPC_METHODS
 } from '../../../../const';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
  * RPC Method eth_getBlockByNumber implementation
@@ -35,14 +34,18 @@ const ethGetBlockByNumber = async (
     thorClient: ThorClient,
     params: unknown[]
 ): Promise<BlocksRPC | null> => {
-    assert(
-        'eth_getBlockByNumber',
-        params.length === 2 &&
-            typeof params[0] === 'string' &&
-            typeof params[1] === 'boolean',
-        DATA.INVALID_DATA_TYPE,
-        'Invalid params length, expected 2.\nThe params should be [blockNumber: string (an hex number) | "latest" | "finalized", transactionDetailFlag: boolean]'
-    );
+    // Input validation
+    if (
+        params.length !== 2 ||
+        typeof params[0] !== 'string' ||
+        typeof params[1] !== 'boolean'
+    )
+        throw new JSONRPCInvalidParams(
+            'eth_getBlockByNumber',
+            -32602,
+            `Invalid input params for "eth_getBlockByNumber" method. See ${RPC_DOCUMENTATION_URL} for details.`,
+            { params }
+        );
 
     try {
         const [blockNumber, isTxDetail] = params as [string, boolean];
@@ -67,15 +70,13 @@ const ethGetBlockByNumber = async (
             ? blocksFormatter.formatToRPCStandard(block, chainId)
             : null;
     } catch (e) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'eth_getBlockByNumber' failed: Error while getting block ${
-                params[0] as string
-            }\n
-            Params: ${stringifyData(params)}\n
-            URL: ${thorClient.httpClient.baseURL}`,
+        throw new JSONRPCInternalError(
+            'eth_getBlockByNumber()',
+            -32603,
+            'Method "eth_getBlockByNumber" failed.',
             {
-                params,
+                params: stringifyData(params),
+                url: thorClient.httpClient.baseURL,
                 innerError: stringifyData(e)
             }
         );

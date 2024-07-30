@@ -1,9 +1,5 @@
 import type { VeChainProvider } from '../../../../../providers';
-import {
-    buildProviderError,
-    JSONRPC,
-    stringifyData
-} from '@vechain/sdk-errors';
+import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
 
 /**
  * Asynchronously unsubscribes from a VeChain event subscription.
@@ -34,13 +30,12 @@ const ethUnsubscribe = async (
     let result: boolean = false;
 
     if (provider === undefined) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'ethSubscribe' failed: provider not available\n
-            Params: ${stringifyData(params)}`,
+        throw new JSONRPCInternalError(
+            'ethSubscribe()',
+            -32603,
+            'Method "ethSubscribe" failed. Provider is not defined.',
             {
-                params,
-                provider
+                params: stringifyData(params)
             }
         );
     }

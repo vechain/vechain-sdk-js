@@ -5,7 +5,7 @@ import {
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
-import { ProviderRpcError } from '@vechain/sdk-errors';
+import { JSONRPCInternalError } from '@vechain/sdk-errors';
 import { ethGetBlockByHashTestCases } from './fixture';
 
 /**
@@ -34,7 +34,7 @@ describe('RPC Mapper - eth_getBlockByHash method tests', () => {
         /**
          * Test case where request fails
          */
-        test('Should throw `ProviderRpcError` when request fails', async () => {
+        test('Should throw `JSONRPCInternalError` when request fails', async () => {
             // Mock the getBlock method to throw error
             jest.spyOn(thorClient.blocks, 'getBlockExpanded').mockRejectedValue(
                 new Error()
@@ -50,7 +50,7 @@ describe('RPC Mapper - eth_getBlockByHash method tests', () => {
                     await RPCMethodsMap(thorClient)[
                         RPC_METHODS.eth_getBlockByHash
                     ](ethGetBlockByHashTestCases[0].params)
-            ).rejects.toThrowError(ProviderRpcError);
+            ).rejects.toThrowError(JSONRPCInternalError);
         });
     });
 });

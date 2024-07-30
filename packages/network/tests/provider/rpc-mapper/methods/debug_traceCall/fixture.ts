@@ -1,4 +1,7 @@
-import { InvalidDataTypeError, ProviderRpcError } from '@vechain/sdk-errors';
+import {
+    JSONRPCInternalError,
+    JSONRPCInvalidParams
+} from '@vechain/sdk-errors';
 
 /**
  * debug_traceCall positive cases fixture
@@ -90,7 +93,7 @@ const debugTraceCallNegativeCasesFixtureTestnet = [
                     }
                 }
             ],
-            expectedError: ProviderRpcError
+            expectedError: JSONRPCInternalError
         }
     },
     // Invalid data
@@ -111,14 +114,14 @@ const debugTraceCallNegativeCasesFixtureTestnet = [
                     }
                 }
             ],
-            expectedError: ProviderRpcError
+            expectedError: JSONRPCInternalError
         }
     },
     // Invalid input
     {
         input: {
             params: ['INVALID'],
-            expectedError: InvalidDataTypeError
+            expectedError: JSONRPCInvalidParams
         }
     }
 ];

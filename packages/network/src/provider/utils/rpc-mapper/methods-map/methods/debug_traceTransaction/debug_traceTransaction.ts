@@ -4,11 +4,9 @@ import {
     type TracerName
 } from '../../../../../../thor-client';
 import {
-    assert,
-    buildProviderError,
-    DATA,
     InvalidDataType,
-    JSONRPC,
+    JSONRPCInternalError,
+    JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import { ethGetTransactionReceipt } from '../eth_getTransactionReceipt';
@@ -18,6 +16,7 @@ import {
     type TracerReturnTypeRPC
 } from '../../../../formatter';
 import { Hex0x } from '@vechain/sdk-core';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
  * RPC Method debug_traceTransaction implementation
@@ -42,20 +41,18 @@ const debugTraceTransaction = async (
     thorClient: ThorClient,
     params: unknown[]
 ): Promise<TracerReturnTypeRPC<'call'> | TracerReturnTypeRPC<'prestate'>> => {
-    // Check input params
-    assert(
-        'debug_traceTransaction',
-        params.length === 2 &&
-            typeof params[0] === 'string' &&
-            typeof params[1] === 'object',
-        DATA.INVALID_DATA_TYPE,
-        `Invalid params length, expected the transactionHash and 1 object containing the options for trace: \n {` +
-            `\n\ttracer - string to specify the type of tracer. Currently, it supports callTracer and prestateTracer.` +
-            `\n\ttimeout - string - A duration string of decimal numbers that overrides the default timeout of 5 seconds for JavaScript-based tracing calls. Max timeout is "10s". Valid time units are "ns", "us", "ms", "s" each with an optional fraction, such as "300ms" or "2s45ms"` +
-            `\n\ttracerConfig - Object to specify configurations for the tracer. It has the following parameters:` +
-            `\n\tonlyTopCall - boolean Setting this to true will only trace the main (top-level) call and none of the sub-calls. This avoids extra processing for each call frame if only the top-level call info are required (useful for getting revertReason)` +
-            `\n}.`
-    );
+    // Input validation
+    if (
+        params.length !== 2 ||
+        typeof params[0] !== 'string' ||
+        typeof params[1] !== 'object'
+    )
+        throw new JSONRPCInvalidParams(
+            'debug_traceTransaction',
+            -32602,
+            `Invalid input params for "debug_traceTransaction" method. See ${RPC_DOCUMENTATION_URL} for details.`,
+            { params }
+        );
 
     // Init params
     const [transactionId, traceOptions] = params as [string, TraceOptionsRPC];
@@ -95,13 +92,13 @@ const debugTraceTransaction = async (
             trace
         );
     } catch (e) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'debug_traceTransaction' failed: Error while debug transaction tracer\n
-            Params: ${stringifyData(params)}\n
-            URL: ${thorClient.httpClient.baseURL}`,
+        throw new JSONRPCInternalError(
+            'debug_traceTransaction()',
+            -32603,
+            'Method "debug_traceTransaction" failed.',
             {
-                params,
+                params: stringifyData(params),
+                url: thorClient.httpClient.baseURL,
                 innerError: stringifyData(e)
             }
         );

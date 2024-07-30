@@ -30,13 +30,7 @@ import {
     type TransactionSimulationResult,
     type WaitForTransactionOptions
 } from './types';
-import {
-    assert,
-    buildError,
-    DATA,
-    InvalidDataType,
-    TRANSACTION
-} from '@vechain/sdk-errors';
+import { InvalidDataType, InvalidTransactionField } from '@vechain/sdk-errors';
 import { type ThorClient } from '../thor-client';
 import { type ExpandedBlockDetail } from '../blocks';
 import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
@@ -183,21 +177,20 @@ class TransactionsModule {
         raw: string
     ): Promise<SendTransactionResult> {
         // Validate raw transaction
-        assert(
-            'sendRawTransaction',
-            Hex0x.isValid(raw),
-            DATA.INVALID_DATA_TYPE,
-            'Sending failed: Input must be a valid raw transaction in hex format.',
-            { raw }
-        );
+        if (!Hex0x.isValid(raw)) {
+            throw new InvalidDataType(
+                'TransactionsModule.sendRawTransaction()',
+                'Sending failed: Input must be a valid raw transaction in hex format.',
+                { raw }
+            );
+        }
 
         // Decode raw transaction to check if raw is ok
         try {
             TransactionHandler.decode(Buffer.from(raw.slice(2), 'hex'), true);
         } catch (error) {
-            throw buildError(
-                'sendRawTransaction',
-                DATA.INVALID_DATA_TYPE,
+            throw new InvalidDataType(
+                'TransactionsModule.sendRawTransaction()',
                 'Sending failed: Input must be a valid raw transaction in hex format. Decoding error encountered.',
                 { raw },
                 error
@@ -306,22 +299,21 @@ class TransactionsModule {
         // Get the genesis block to get the chainTag
         const genesisBlock = await this.thor.blocks.getBlockCompressed(0);
         if (genesisBlock === null)
-            throw buildError(
-                'buildTransactionBody',
-                TRANSACTION.INVALID_TRANSACTION_BODY,
+            throw new InvalidTransactionField(
+                'TransactionsModule.buildTransactionBody()',
                 'Error while building transaction body: Cannot get genesis block.',
-                { clauses, options }
+                { fieldName: 'genesisBlock', genesisBlock, clauses, options }
             );
 
         const blockRef =
             options?.blockRef ?? (await this.thor.blocks.getBestBlockRef());
         if (blockRef === null)
-            throw buildError(
-                'TransactionsModule.buildTransactionBody',
-                TRANSACTION.INVALID_TRANSACTION_BODY,
-                'Error while building transaction body: Cannot get latest block.',
-                { clauses, options }
+            throw new InvalidTransactionField(
+                'TransactionsModule.buildTransactionBody()',
+                'Error while building transaction body: Cannot get blockRef.',
+                { fieldName: 'blockRef', blockRef, clauses, options }
             );
+
         const chainTag =
             options?.chainTag ?? Number(`0x${genesisBlock.id.slice(64)}`);
 
@@ -415,15 +407,17 @@ class TransactionsModule {
             expiration,
             provedWork
         } = options ?? {};
-        assert(
-            'simulateTransaction',
-            revision === undefined ||
-                revision === null ||
-                revisionUtils.isRevisionAccount(revision),
-            DATA.INVALID_DATA_TYPE,
-            'Invalid revision given as input. Input must be a valid revision (i.e., a block number or block ID).',
-            { revision }
-        );
+        if (
+            revision !== undefined &&
+            revision !== null &&
+            !revisionUtils.isRevisionAccount(revision)
+        ) {
+            throw new InvalidDataType(
+                'TransactionsModule.simulateTransaction()',
+                'Invalid revision given as input. Input must be a valid revision (i.e., a block number or block ID).',
+                { revision }
+            );
+        }
 
         return (await this.thor.httpClient.http(
             'POST',

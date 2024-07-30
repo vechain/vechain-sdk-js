@@ -1,4 +1,4 @@
-import { assert, DATA, InvalidDataType } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { buildQuery, type EventPoll, Poll, thorest } from '../../utils';
 import {
     type BlocksModuleOptions,
@@ -202,15 +202,17 @@ class BlocksModule {
         expanded: boolean,
         options?: WaitForBlockOptions
     ): Promise<CompressedBlockDetail | ExpandedBlockDetail | null> {
-        assert(
-            'waitForBlock',
-            blockNumber === undefined ||
-                blockNumber === null ||
-                blockNumber >= 0,
-            DATA.INVALID_DATA_TYPE,
-            'Invalid blockNumber. The blockNumber must be a number representing a block number.',
-            { blockNumber }
-        );
+        if (
+            blockNumber !== undefined &&
+            blockNumber !== null &&
+            blockNumber <= 0
+        ) {
+            throw new InvalidDataType(
+                'BlocksModule.waitForBlock()',
+                'Invalid blockNumber. The blockNumber must be a number representing a block number.',
+                { blockNumber }
+            );
+        }
 
         // Use the Poll.SyncPoll utility to repeatedly call getBestBlock with a specified interval
         return await Poll.SyncPoll(

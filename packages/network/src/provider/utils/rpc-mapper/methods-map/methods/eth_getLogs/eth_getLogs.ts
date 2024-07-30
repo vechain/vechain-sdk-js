@@ -1,8 +1,6 @@
 import {
-    assert,
-    buildProviderError,
-    DATA,
-    JSONRPC,
+    JSONRPCInternalError,
+    JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import {
@@ -16,6 +14,7 @@ import {
     type EventLogs,
     type ThorClient
 } from '../../../../../../thor-client';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
  * RPC Method eth_getLogs implementation
@@ -30,19 +29,14 @@ const ethGetLogs = async (
     thorClient: ThorClient,
     params: unknown[]
 ): Promise<LogsRPC[]> => {
-    // Check input params
-    assert(
-        'eth_getLogs',
-        params.length === 1 && typeof params[0] === 'object',
-        DATA.INVALID_DATA_TYPE,
-        `Invalid params length, expected 1 object with following properties: \n {` +
-            `\taddress: [optional] Contract address (20 bytes) or a list of addresses from which logs should originate.` +
-            `\tfromBlock: [optional, default is "latest"] A hexadecimal block number, or the string latest, earliest or pending. See the default block parameter.` +
-            `\ttoBlock: [optional, default is "latest"] A hexadecimal block number, or the string latest, earliest or pending. See the default block parameter.` +
-            `\ttopics: [optional] Array of 32 bytes DATA topics. Topics are order-dependent.` +
-            `\tblockhash: [optional] Restricts the logs returned to the single block referenced in the 32-byte hash blockHash. Using blockHash is equivalent to setting fromBlock and toBlock to the block number referenced in the blockHash. If blockHash is present in in the filter criteria, then neither fromBlock nor toBlock are allowed.` +
-            `}`
-    );
+    // Input validation
+    if (params.length !== 1 || typeof params[0] !== 'object')
+        throw new JSONRPCInvalidParams(
+            'eth_getLogs',
+            -32602,
+            `Invalid input params for "eth_getLogs" method. See ${RPC_DOCUMENTATION_URL} for details.`,
+            { params }
+        );
 
     // Block max limit
     const MAX_LIMIT = 1000;
@@ -96,15 +90,13 @@ const ethGetLogs = async (
         // Format logs to RPC
         return formatToLogsRPC(logs);
     } catch (e) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'ethGetLogs' failed: Error while getting logs ${
-                params[0] as string
-            }\n
-            Params: ${stringifyData(params)}\n
-            URL: ${thorClient.httpClient.baseURL}`,
+        throw new JSONRPCInternalError(
+            'ethGetLogs()',
+            -32603,
+            'Method "ethGetLogs" failed.',
             {
-                params,
+                params: stringifyData(params),
+                url: thorClient.httpClient.baseURL,
                 innerError: stringifyData(e)
             }
         );

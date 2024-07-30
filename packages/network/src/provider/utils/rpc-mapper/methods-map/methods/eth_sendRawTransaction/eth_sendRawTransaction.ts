@@ -1,12 +1,11 @@
 import { type ThorClient } from '../../../../../../thor-client';
 import {
-    assert,
-    buildProviderError,
-    DATA,
-    JSONRPC,
+    JSONRPCInternalError,
+    JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import { Hex0x } from '@vechain/sdk-core';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
  * RPC Method eth_sendRawTransaction implementation
@@ -26,14 +25,17 @@ const ethSendRawTransaction = async (
     thorClient: ThorClient,
     params: unknown[]
 ): Promise<string> => {
-    assert(
-        'eth_sendRawTransaction',
-        params.length === 1 &&
-            typeof params[0] === 'string' &&
-            Hex0x.isValid(params[0]),
-        DATA.INVALID_DATA_TYPE,
-        'Invalid params, expected 1.\nThe param should be [signedTransactionData: string (hex string)]'
-    );
+    // Input validation
+    if (
+        params.length !== 1 ||
+        (typeof params[0] !== 'string' && !Hex0x.isValid(params[0] as string))
+    )
+        throw new JSONRPCInvalidParams(
+            'eth_sendRawTransaction',
+            -32602,
+            `Invalid input params for "eth_sendRawTransaction" method. See ${RPC_DOCUMENTATION_URL} for details.`,
+            { params }
+        );
 
     try {
         const [signedTransactionData] = params as [string];
@@ -45,15 +47,13 @@ const ethSendRawTransaction = async (
 
         return sentTransaction.id;
     } catch (e) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'eth_sendRawTransaction' failed: Error while sending the transaction ${
-                params[0] as string
-            }\n
-            Params: ${stringifyData(params)}\n
-            URL: ${thorClient.httpClient.baseURL}`,
+        throw new JSONRPCInternalError(
+            'eth_sendRawTransaction()',
+            -32603,
+            'Method "eth_sendRawTransaction" failed.',
             {
-                params,
+                params: stringifyData(params),
+                url: thorClient.httpClient.baseURL,
                 innerError: stringifyData(e)
             }
         );

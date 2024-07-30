@@ -4,7 +4,7 @@ import {
     simpleIncrementFunction,
     simpleThrowErrorFunctionIfInputIs10
 } from '../fixture';
-import { PollExecutionError } from '@vechain/sdk-errors';
+import { PollExecution } from '@vechain/sdk-errors';
 import { advanceTimersByTimeAndTick } from '../../../test-utils';
 import { Poll } from '../../../../src';
 
@@ -126,7 +126,7 @@ describe('Events poll unit tests', () => {
                 1000
             ).onError((error) => {
                 expect(error).toBeDefined();
-                expect(error).toBeInstanceOf(PollExecutionError);
+                expect(error).toBeInstanceOf(PollExecution);
             });
 
             eventPoll.startListen();
@@ -148,7 +148,7 @@ describe('Events poll unit tests', () => {
                 1000
             ).onError((error) => {
                 expect(error).toBeDefined();
-                expect(error).toBeInstanceOf(PollExecutionError);
+                expect(error).toBeInstanceOf(PollExecution);
             });
 
             eventPoll.startListen();

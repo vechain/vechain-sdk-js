@@ -1,5 +1,5 @@
 import { ethAccounts } from '../eth_accounts/eth_accounts';
-import { buildProviderError, JSONRPC } from '@vechain/sdk-errors';
+import { JSONRPCInvalidParams, stringifyData } from '@vechain/sdk-errors';
 import { type VeChainProvider } from '../../../../../providers';
 
 /**
@@ -17,9 +17,13 @@ const ethRequestAccounts = async (
     // @NOTE: eth_accounts returns an empty array if there are no accounts OR wallet is not defined.
     // Here, instead, if there are no accounts into wallet OR wallet is not defined, we throw an error
     if (accounts.length === 0)
-        throw buildProviderError(
-            JSONRPC.DEFAULT,
-            'No wallet is defined. Please, define a wallet before calling eth_requestAccounts.'
+        throw new JSONRPCInvalidParams(
+            'eth_getTransactionReceipt()',
+            -32602,
+            'Method "ethRequestAccounts" failed.',
+            {
+                provider: stringifyData(provider)
+            }
         );
 
     // Otherwise, return the accounts

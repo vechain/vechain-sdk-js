@@ -6,7 +6,7 @@ import {
     ThorClient
 } from '../../../../../src';
 import { getReceiptCorrectCasesTestNetwork } from './fixture';
-import { ProviderRpcError } from '@vechain/sdk-errors';
+import { JSONRPCInternalError } from '@vechain/sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_getTransactionReceipt' method
@@ -46,7 +46,7 @@ describe('RPC Mapper - eth_getTransactionReceipt method tests', () => {
                 RPCMethodsMap(thorClient)[
                     RPC_METHODS.eth_getTransactionReceipt
                 ]([getReceiptCorrectCasesTestNetwork[0].hash])
-            ).rejects.toThrowError(ProviderRpcError);
+            ).rejects.toThrowError(JSONRPCInternalError);
         });
 
         /**

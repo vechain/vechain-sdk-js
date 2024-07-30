@@ -14,11 +14,10 @@ import {
 import { RPC_METHODS } from '../../../provider';
 import { VeChainAbstractSigner } from '../vechain-abstract-signer';
 import {
-    assert,
     InvalidDataType,
     InvalidSecp256k1PrivateKey,
-    JSONRPC,
-    TRANSACTION
+    JSONRPCInvalidParams,
+    NotDelegatedTransaction
 } from '@vechain/sdk-errors';
 import {
     type AvailableVeChainProviders,
@@ -110,13 +109,16 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         transactionToSend: TransactionRequestInput
     ): Promise<string> {
         // 1 - Get the provider (needed to send the raw transaction)
-        assert(
-            'sendTransaction',
-            this.provider !== null,
-            JSONRPC.INVALID_PARAMS,
-            'Thor provider is not found into the signer. Please attach a Provider to your signer instance.'
-        );
-        const provider = this.provider as AvailableVeChainProviders;
+        if (this.provider === null) {
+            throw new JSONRPCInvalidParams(
+                'VeChainPrivateKeySigner.sendTransaction()',
+                -32602,
+                'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
+                { transactionToSend }
+            );
+        }
+
+        const provider = this.provider;
 
         // 2 - Sign the transaction
         const signedTransaction = await this.signTransaction(transactionToSend);
@@ -277,15 +279,16 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         delegatorOptions?: SignTransactionOptions
     ): Promise<string> {
         // Only one of the `SignTransactionOptions` options can be specified
-        assert(
-            '_signWithDelegator',
-            !(
-                delegatorOptions?.delegatorUrl !== undefined &&
-                delegatorOptions?.delegatorPrivateKey !== undefined
-            ),
-            TRANSACTION.INVALID_DELEGATION,
-            'Only one of the following options can be specified: delegatorUrl, delegatorPrivateKey'
-        );
+        if (
+            delegatorOptions?.delegatorUrl !== undefined &&
+            delegatorOptions?.delegatorPrivateKey !== undefined
+        ) {
+            throw new NotDelegatedTransaction(
+                'VeChainPrivateKeySigner._signWithDelegator()',
+                'Only one of the following options can be specified: delegatorUrl, delegatorPrivateKey',
+                undefined
+            );
+        }
 
         // Address of the origin account
         const originAddress = addressUtils.fromPublicKey(

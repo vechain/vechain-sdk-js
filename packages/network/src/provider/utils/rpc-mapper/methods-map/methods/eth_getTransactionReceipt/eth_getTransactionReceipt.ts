@@ -1,9 +1,7 @@
 import {
-    assert,
-    buildProviderError,
-    DATA,
     InvalidDataType,
-    JSONRPC,
+    JSONRPCInternalError,
+    JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import {
@@ -17,6 +15,7 @@ import {
     type ThorClient
 } from '../../../../../../thor-client';
 import { Hex0x } from '@vechain/sdk-core';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
  * RPC Method eth_getTransactionReceipt implementation
@@ -32,16 +31,17 @@ const ethGetTransactionReceipt = async (
     thorClient: ThorClient,
     params: unknown[]
 ): Promise<TransactionReceiptRPC | null> => {
+    // Input validation
+    if (params.length !== 1 || typeof params[0] !== 'string')
+        throw new JSONRPCInvalidParams(
+            'eth_getTransactionReceipt',
+            -32602,
+            `Invalid input params for "eth_getTransactionReceipt" method. See ${RPC_DOCUMENTATION_URL} for details.`,
+            { params }
+        );
+
     // Init the transaction ID
     const [transactionID] = params as [string];
-
-    // Assert valid parameters
-    assert(
-        'eth_getTransactionReceipt',
-        params.length === 1 && typeof params[0] === 'string',
-        DATA.INVALID_DATA_TYPE,
-        'Invalid params length, expected 1.\nThe params should be [hash: string]'
-    );
 
     // Invalid transaction ID
     if (!Hex0x.isThorId(transactionID)) {
@@ -91,15 +91,13 @@ const ethGetTransactionReceipt = async (
             return null;
         }
     } catch (e) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'eth_getTransactionReceipt' failed: Error while getting the transaction receipt ${
-                params[0] as string
-            }\n
-        Params: ${stringifyData(params)}\n
-        URL: ${thorClient.httpClient.baseURL}`,
+        throw new JSONRPCInternalError(
+            'eth_getTransactionReceipt()',
+            -32603,
+            'Method "eth_getTransactionReceipt" failed.',
             {
-                params,
+                params: stringifyData(params),
+                url: thorClient.httpClient.baseURL,
                 innerError: stringifyData(e)
             }
         );

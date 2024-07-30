@@ -1,4 +1,4 @@
-import { InvalidDataType, InvalidDataTypeError } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { testAccount } from '../../fixture';
 import { BUILT_IN_CONTRACTS } from '../../../src';
 
@@ -119,7 +119,7 @@ const invalidGetStorageAtTests = [
         address: testSmartContract,
         position: 'invalid-position',
         revision: '1',
-        expectedError: InvalidDataTypeError
+        expectedError: InvalidDataType
     },
     {
         description: 'Should throw error for invalid address',

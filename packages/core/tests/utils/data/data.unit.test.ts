@@ -7,7 +7,7 @@ import {
     invalidEncodeBytes32StringTestCases,
     isNumericTestCases
 } from './fixture';
-import { stringifyData } from '../../../../errors';
+import { stringifyData } from '@vechain/sdk-errors';
 
 /**
  * Hex data tests

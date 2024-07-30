@@ -1,4 +1,4 @@
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
  * Debug traceTransactionClause tests fixture testnet
@@ -76,7 +76,7 @@ const traceTransactionClauseTestnetFixture = {
                 '0x2dbc8268a2dbf889abe828c0671cb9adce61f537aab8855480aff6967e0ed687',
             clauseIndex: 0,
             name: null,
-            expectedError: InvalidDataTypeError
+            expectedError: InvalidDataType
         },
         // Invalid transaction ID
         {
@@ -87,7 +87,7 @@ const traceTransactionClauseTestnetFixture = {
             transaction: 'INVALID',
             clauseIndex: 0,
             name: null,
-            expectedError: InvalidDataTypeError
+            expectedError: InvalidDataType
         },
         // Invalid transaction index
         {
@@ -98,7 +98,7 @@ const traceTransactionClauseTestnetFixture = {
             transaction: -1,
             clauseIndex: 0,
             name: null,
-            expectedError: InvalidDataTypeError
+            expectedError: InvalidDataType
         },
         // Invalid clause index
         {
@@ -109,7 +109,7 @@ const traceTransactionClauseTestnetFixture = {
             transaction: 0,
             clauseIndex: -1,
             name: null,
-            expectedError: InvalidDataTypeError
+            expectedError: InvalidDataType
         }
     ]
 };
@@ -200,7 +200,7 @@ const traceContractCallTestnetFixture = {
             value: '0x0',
             data: '0x0',
             caller: '0x',
-            expectedError: InvalidDataTypeError
+            expectedError: InvalidDataType
         },
         // Invalid value
         {
@@ -209,7 +209,7 @@ const traceContractCallTestnetFixture = {
             value: 'INVALID',
             data: '0x0',
             caller: '0x',
-            expectedError: InvalidDataTypeError
+            expectedError: InvalidDataType
         },
         // Invalid data
         {
@@ -218,7 +218,7 @@ const traceContractCallTestnetFixture = {
             value: '0x0',
             data: 'INVALID',
             caller: '0x',
-            expectedError: InvalidDataTypeError
+            expectedError: InvalidDataType
         }
     ]
 };
@@ -388,7 +388,7 @@ const retrieveStorageRangeTestnetFixture = {
             blockID: 'INVALID',
             transaction: 0,
             clauseIndex: 0,
-            expectedError: InvalidDataTypeError
+            expectedError: InvalidDataType
         },
         // Invalid transaction
         {
@@ -401,7 +401,7 @@ const retrieveStorageRangeTestnetFixture = {
                 '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
             transaction: -1,
             clauseIndex: 0,
-            expectedError: InvalidDataTypeError
+            expectedError: InvalidDataType
         },
         // Invalid transaction
         {
@@ -414,7 +414,7 @@ const retrieveStorageRangeTestnetFixture = {
                 '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
             transaction: 'INVALID',
             clauseIndex: 0,
-            expectedError: InvalidDataTypeError
+            expectedError: InvalidDataType
         },
         // Invalid clauseIndex
         {
@@ -427,7 +427,7 @@ const retrieveStorageRangeTestnetFixture = {
                 '0x010e80e3278e234b8a5d1195c376909456b94d1f7cf3cb7bfab1e8998dbcfa8f',
             transaction: 0,
             clauseIndex: -1,
-            expectedError: InvalidDataTypeError
+            expectedError: InvalidDataType
         }
     ]
 };

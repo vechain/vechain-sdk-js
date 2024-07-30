@@ -1,8 +1,6 @@
 import {
-    assert,
-    buildProviderError,
-    DATA,
-    JSONRPC,
+    JSONRPCInternalError,
+    JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import { type TransactionObjectInput } from './types';
@@ -12,6 +10,7 @@ import {
 } from '../../../../../../thor-client';
 import { getCorrectBlockNumberRPCToVeChain } from '../../../../const';
 import { type BlockQuantityInputRPC } from '../../../types';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
  * RPC Method eth_estimateGas implementation
@@ -31,22 +30,14 @@ const ethEstimateGas = async (
     thorClient: ThorClient,
     params: unknown[]
 ): Promise<string> => {
-    // Check input params
-    assert(
-        'eth_estimateGas',
-        [1, 2].includes(params.length) && typeof params[0] === 'object',
-        DATA.INVALID_DATA_TYPE,
-        `Invalid params length, expected 1 object containing transaction info with following properties: \n {` +
-            `\tfrom: 20 bytes Address the transaction is sent from.` +
-            `\tto: [Required] 20 bytes - Address the transaction is directed to.` +
-            `\tgas: Hexadecimal value of the gas provided for the transaction execution. eth_estimateGas consumes zero gas, but this parameter may be needed by some executions.` +
-            `\tgasPrice:Hexadecimal value of the gas price used for each paid gas.` +
-            `\tmaxPriorityFeePerGas: Maximum fee, in Wei, the sender is willing to pay per gas above the base fee` +
-            `\tmaxFeePerGas: Maximum total fee (base fee + priority fee), in Wei, the sender is willing to pay per gas` +
-            `\tvalue: Hexadecimal of the value sent with this transaction.` +
-            `\tdata: Hash of the method signature and encoded parameters` +
-            `}\n\n and, OPTIONALLY, the block number parameter. An hexadecimal number or (latest, earliest or pending).`
-    );
+    // Input validation
+    if (![1, 2].includes(params.length) || typeof params[0] !== 'object')
+        throw new JSONRPCInvalidParams(
+            'eth_estimateGas',
+            -32602,
+            `Invalid input params for "eth_estimateGas" method. See ${RPC_DOCUMENTATION_URL} for details.`,
+            { params }
+        );
 
     try {
         // NOTE: The standard requires block parameter.
@@ -77,14 +68,13 @@ const ethEstimateGas = async (
         // Convert intrinsic gas to hex string and return
         return await Promise.resolve('0x' + estimatedGas.totalGas.toString(16));
     } catch (e) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'eth_estimateGas' failed: Error while calculating gas for ${
-                params[0] as string
-            } transaction\n
-            Params: ${stringifyData(params)}\n`,
+        throw new JSONRPCInternalError(
+            'eth_estimateGas()',
+            -32603,
+            'Method "eth_estimateGas" failed.',
             {
-                params,
+                params: stringifyData(params),
+                url: thorClient.httpClient.baseURL,
                 innerError: stringifyData(e)
             }
         );

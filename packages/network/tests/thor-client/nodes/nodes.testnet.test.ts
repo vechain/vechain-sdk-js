@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { HTTPClientError } from '@vechain/sdk-errors';
+import { InvalidHTTPRequest } from '@vechain/sdk-errors';
 import { TESTNET_URL, ThorClient } from '../../../src';
 
 /**
@@ -30,19 +30,19 @@ describe('ThorClient - Nodes Module', () => {
         const thorClient = ThorClient.fromUrl('http://www.google.ie');
 
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
-            HTTPClientError
+            InvalidHTTPRequest
         );
     }, 5000);
 
     test('null or empty URL or blank URL', async () => {
         let thorClient = ThorClient.fromUrl('');
-        await expect(thorClient.nodes.isHealthy()).rejects.toThrow(
-            HTTPClientError
+        await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
+            InvalidHTTPRequest
         );
 
         thorClient = ThorClient.fromUrl('   ');
-        await expect(thorClient.nodes.isHealthy()).rejects.toThrow(
-            HTTPClientError
+        await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
+            InvalidHTTPRequest
         );
     });
 
@@ -54,7 +54,7 @@ describe('ThorClient - Nodes Module', () => {
         const thorClient = ThorClient.fromUrl('INVALID_URL');
 
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
-            HTTPClientError
+            InvalidHTTPRequest
         );
     });
 
@@ -68,12 +68,12 @@ describe('ThorClient - Nodes Module', () => {
     test('null or empty URL or blank URL', async () => {
         let thorClient = ThorClient.fromUrl('');
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
-            HTTPClientError
+            InvalidHTTPRequest
         );
 
         thorClient = ThorClient.fromUrl('   ');
         await expect(thorClient.nodes.isHealthy()).rejects.toThrowError(
-            HTTPClientError
+            InvalidHTTPRequest
         );
     });
 });

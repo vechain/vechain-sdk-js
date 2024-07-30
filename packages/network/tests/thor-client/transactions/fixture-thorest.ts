@@ -1,4 +1,4 @@
-import { InvalidDataType, InvalidDataTypeError } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { TEST_ACCOUNTS, ZERO_ADDRESS } from '../../fixture';
 import { BUILT_IN_CONTRACTS } from '../../../src';
 import { coder, dataUtils, unitsUtils } from '@vechain/sdk-core';
@@ -195,7 +195,7 @@ const sendTransactionErrors = {
             transaction: {
                 raw: 'INVALID_HEX_STRING'
             },
-            expected: InvalidDataTypeError
+            expected: InvalidDataType
         },
         {
             testName:
@@ -203,7 +203,7 @@ const sendTransactionErrors = {
             transaction: {
                 raw: '0x123456789abcdef'
             },
-            expected: InvalidDataTypeError
+            expected: InvalidDataType
         }
     ]
 };

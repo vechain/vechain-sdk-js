@@ -4,7 +4,7 @@ import {
     invalidGetTransactionIndexTestCases
 } from './fixture';
 
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { getTransactionIndexIntoBlock } from '../../../../src';
 
 /**
@@ -34,7 +34,7 @@ describe('Provider Transaction Helpers', () => {
             test(`should throw error for ${hash}`, () => {
                 expect(() =>
                     getTransactionIndexIntoBlock(block, hash)
-                ).toThrowError(InvalidDataTypeError);
+                ).toThrowError(InvalidDataType);
             });
         });
     });

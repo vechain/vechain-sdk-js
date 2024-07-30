@@ -16,9 +16,8 @@ import {
     THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE
 } from './fixture';
 import {
-    InvalidDataTypeError,
-    JSONRPCInvalidParams,
-    ProviderRpcError
+    JSONRPCInternalError,
+    JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
 import { secp256k1 } from '@vechain/sdk-core';
 
@@ -294,7 +293,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                             }
                         ]
                     })
-            ).rejects.toThrowError(ProviderRpcError);
+            ).rejects.toThrowError(JSONRPCInternalError);
         });
 
         /**
@@ -308,7 +307,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                         method: RPC_METHODS.eth_sendTransaction,
                         params: ['INVALID']
                     })
-            ).rejects.toThrowError(InvalidDataTypeError);
+            ).rejects.toThrowError(JSONRPCInvalidParams);
         });
     });
 });

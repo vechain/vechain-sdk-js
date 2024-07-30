@@ -7,11 +7,11 @@ import {
 import type { ContractTransactionOptions } from '../types';
 import { type ThorClient } from '../../thor-client';
 import { Contract } from './contract';
-import { assert, buildError, ERROR_CODES } from '@vechain/sdk-errors';
 import {
-    type SendTransactionResult,
-    type TransactionReceipt
-} from '../../transactions';
+    CannotFindTransaction,
+    ContractDeploymentFailed
+} from '@vechain/sdk-errors';
+import { type SendTransactionResult } from '../../transactions';
 import { signerUtils, type VeChainSigner } from '../../../signer';
 import { type Abi } from 'abitype';
 
@@ -135,11 +135,12 @@ class ContractFactory<TAbi extends Abi> {
     public async waitForDeployment(): Promise<Contract<TAbi>> {
         // Check if the deploy transaction result is available
         if (this.deployTransaction?.id === undefined) {
-            throw buildError(
-                'ContractFactory.waitForDeployment',
-                ERROR_CODES.CONTRACT.CONTRACT_DEPLOYMENT_FAILED,
-                'Cannot find a contract deployment transaction.',
-                { deployTransaction: this.deployTransaction }
+            throw new CannotFindTransaction(
+                'ContractFactory.waitForDeployment()',
+                'Cannot find a contract deployment transaction',
+                {
+                    networkUrl: this.thor.httpClient.baseURL
+                }
             );
         }
 
@@ -147,22 +148,26 @@ class ContractFactory<TAbi extends Abi> {
         const transactionReceipt = await this.deployTransaction.wait();
 
         // Ensure that the transaction receipt is valid
-        assert(
-            'ContractFactory.waitForDeployment',
-            transactionReceipt?.outputs[0]?.contractAddress !== null &&
-                transactionReceipt?.outputs[0]?.contractAddress !== undefined,
-            ERROR_CODES.CONTRACT.CONTRACT_DEPLOYMENT_FAILED,
-            'Contract deployment failed.',
-            { deployTransaction: this.deployTransaction }
-        );
+        if (
+            transactionReceipt?.outputs[0]?.contractAddress === null ||
+            transactionReceipt?.outputs[0]?.contractAddress === undefined
+        ) {
+            throw new ContractDeploymentFailed(
+                'ContractFactory.waitForDeployment()',
+                'Contract deployment failed.',
+                {
+                    deployTransaction: this.deployTransaction
+                }
+            );
+        }
 
         // Construct and return a new Contract instance
         return new Contract<TAbi>(
-            transactionReceipt?.outputs[0].contractAddress as string,
+            transactionReceipt?.outputs[0].contractAddress,
             this.abi,
             this.thor,
             this.signer,
-            transactionReceipt as TransactionReceipt
+            transactionReceipt
         );
     }
 

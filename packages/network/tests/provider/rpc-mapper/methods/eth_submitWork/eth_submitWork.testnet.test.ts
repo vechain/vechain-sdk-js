@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { NotImplementedError } from '@vechain/sdk-errors';
+import { FunctionNotImplemented } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     RPCMethodsMap,
@@ -40,7 +40,7 @@ describe('RPC Mapper - eth_submitWork method tests', () => {
                     await RPCMethodsMap(thorClient)[RPC_METHODS.eth_submitWork](
                         [-1]
                     )
-            ).rejects.toThrowError(NotImplementedError);
+            ).rejects.toThrowError(FunctionNotImplemented);
         });
     });
 
@@ -58,7 +58,7 @@ describe('RPC Mapper - eth_submitWork method tests', () => {
                     await RPCMethodsMap(thorClient)[RPC_METHODS.eth_submitWork](
                         ['SOME_RANDOM_PARAM']
                     )
-            ).rejects.toThrowError(NotImplementedError);
+            ).rejects.toThrowError(FunctionNotImplemented);
         });
     });
 });

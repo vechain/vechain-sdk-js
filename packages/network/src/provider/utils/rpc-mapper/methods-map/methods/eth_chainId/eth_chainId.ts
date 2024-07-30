@@ -1,7 +1,7 @@
 import { type ThorClient } from '../../../../../../thor-client';
 import {
-    buildProviderError,
-    JSONRPC,
+    JSONRPCInternalError,
+    JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import { CHAIN_ID } from '../../../../const';
@@ -22,11 +22,12 @@ const ethChainId = async (thorClient: ThorClient): Promise<string> => {
         const genesisBlock = await thorClient.blocks.getGenesisBlock();
 
         if (genesisBlock?.id === null || genesisBlock?.id === undefined) {
-            throw buildProviderError(
-                JSONRPC.INVALID_PARAMS,
-                `The genesis block id is null or undefined. Unable to get the chain id.`,
+            throw new JSONRPCInvalidParams(
+                'eth_chainId()',
+                -32602,
+                'The genesis block id is null or undefined. Unable to get the chain id.',
                 {
-                    block: genesisBlock
+                    url: thorClient.httpClient.baseURL
                 }
             );
         }
@@ -38,11 +39,12 @@ const ethChainId = async (thorClient: ThorClient): Promise<string> => {
         // Testnet OR Solo OR some other network
         return CHAIN_ID.TESTNET;
     } catch (e) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'eth_chainId' failed: Error while getting the chain id.\n
-            URL: ${thorClient.httpClient.baseURL}`,
+        throw new JSONRPCInternalError(
+            'eth_chainId()',
+            -32603,
+            'Method "eth_chainId" failed.',
             {
+                url: thorClient.httpClient.baseURL,
                 innerError: stringifyData(e)
             }
         );

@@ -4,8 +4,9 @@ import {
     type VeChainProvider
 } from '../../../../../providers';
 import {
-    buildProviderError,
-    JSONRPC,
+    JSONRPCInternalError,
+    JSONRPCInvalidParams,
+    JSONRPCServerError,
     stringifyData
 } from '@vechain/sdk-errors';
 import { Hex } from '@vechain/sdk-core';
@@ -57,14 +58,13 @@ const ethSubscribe = async (
     provider?: VeChainProvider
 ): Promise<string> => {
     if (provider === undefined) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'ethSubscribe' failed: provider not available\n
-            Params: ${stringifyData(params)}\n
-            URL: ${thorClient.httpClient.baseURL}`,
+        throw new JSONRPCInternalError(
+            'ethSubscribe()',
+            -32603,
+            'Method "ethSubscribe" failed. Provider is not defined.',
             {
-                params,
-                provider
+                url: thorClient.httpClient.baseURL,
+                params: stringifyData(params)
             }
         );
     }
@@ -72,13 +72,13 @@ const ethSubscribe = async (
         params[0] !== SUBSCRIPTION_TYPE.NEW_HEADS &&
         params[0] !== SUBSCRIPTION_TYPE.LOGS
     ) {
-        throw buildProviderError(
-            JSONRPC.INVALID_PARAMS,
-            `Method 'ethSubscribe' failed: Invalid subscription type param\n
-            Params: ${stringifyData(params)}\n
-            URL: ${thorClient.httpClient.baseURL}`,
+        throw new JSONRPCInvalidParams(
+            'ethSubscribe()',
+            -32602,
+            'Method "ethSubscribe" failed. Invalid subscription type param.',
             {
-                params
+                url: thorClient.httpClient.baseURL,
+                params: stringifyData(params)
             }
         );
     }
@@ -90,13 +90,13 @@ const ethSubscribe = async (
         if (block !== undefined && block !== null) {
             provider.subscriptionManager.currentBlockNumber = block.number;
         } else
-            throw buildProviderError(
-                JSONRPC.INTERNAL_ERROR,
-                `Method 'ethSubscribe' failed: Best block not available\n
-            Params: ${stringifyData(params)}\n
-            URL: ${thorClient.httpClient.baseURL}`,
+            throw new JSONRPCServerError(
+                'ethSubscribe()',
+                -32000,
+                'Method "ethSubscribe" failed. Best block not available.',
                 {
-                    params
+                    url: thorClient.httpClient.baseURL,
+                    params: stringifyData(params)
                 }
             );
 

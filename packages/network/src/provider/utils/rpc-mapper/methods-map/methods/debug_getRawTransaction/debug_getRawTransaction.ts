@@ -1,5 +1,5 @@
 import { type ThorClient } from '../../../../../../thor-client';
-import { buildError, FUNCTION } from '@vechain/sdk-errors';
+import { FunctionNotImplemented } from '@vechain/sdk-errors';
 
 /**
  * RPC Method debug_getRawTransaction implementation
@@ -19,13 +19,13 @@ const debugGetRawTransaction = async (
     await Promise.resolve(0);
 
     // Not implemented yet
-    throw buildError(
+    throw new FunctionNotImplemented(
         'debug_getRawTransaction',
-        FUNCTION.NOT_IMPLEMENTED,
         'Method "debug_getRawTransaction" has not been implemented yet.',
         {
-            params,
-            thorClient
+            functionName: 'debug_getRawTransaction',
+            thorClient,
+            params
         }
     );
 };

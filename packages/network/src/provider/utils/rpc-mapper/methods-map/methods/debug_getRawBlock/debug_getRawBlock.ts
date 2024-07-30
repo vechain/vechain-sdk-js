@@ -1,4 +1,4 @@
-import { buildError, FUNCTION } from '@vechain/sdk-errors';
+import { FunctionNotImplemented } from '@vechain/sdk-errors';
 import { type ThorClient } from '../../../../../../thor-client';
 
 /**
@@ -19,13 +19,13 @@ const debugGetRawBlock = async (
     await Promise.resolve(0);
 
     // Not implemented yet
-    throw buildError(
+    throw new FunctionNotImplemented(
         'debug_getRawBlock',
-        FUNCTION.NOT_IMPLEMENTED,
         'Method "debug_getRawBlock" has not been implemented yet.',
         {
-            params,
-            thorClient
+            functionName: 'debug_getRawBlock',
+            thorClient,
+            params
         }
     );
 };

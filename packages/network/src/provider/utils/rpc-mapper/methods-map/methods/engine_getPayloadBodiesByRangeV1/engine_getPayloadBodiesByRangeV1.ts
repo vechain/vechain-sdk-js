@@ -1,5 +1,5 @@
 import { type ThorClient } from '../../../../../../thor-client';
-import { buildError, FUNCTION } from '@vechain/sdk-errors';
+import { FunctionNotImplemented } from '@vechain/sdk-errors';
 
 /**
  * RPC Method engine_getPayloadBodiesByRangeV1 implementation
@@ -19,13 +19,13 @@ const engineGetPayloadBodiesByRangeV1 = async (
     await Promise.resolve(0);
 
     // Not implemented yet
-    throw buildError(
+    throw new FunctionNotImplemented(
         'engine_getPayloadBodiesByRangeV1',
-        FUNCTION.NOT_IMPLEMENTED,
         'Method "engine_getPayloadBodiesByRangeV1" has not been implemented yet.',
         {
-            params,
-            thorClient
+            functionName: 'engine_getPayloadBodiesByRangeV1',
+            thorClient,
+            params
         }
     );
 };

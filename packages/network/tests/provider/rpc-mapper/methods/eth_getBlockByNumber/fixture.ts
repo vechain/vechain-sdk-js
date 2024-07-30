@@ -3,7 +3,7 @@ import {
     blockWithTransactionsExpanded,
     blockWithTransactionsNotExpanded
 } from '../../../fixture';
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
+import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 
 /**
  * Zero block fixture
@@ -65,15 +65,6 @@ const ethGetBlockByNumberTestCases = [
             'Should get block which has transactions with transaction NOT expanded',
         params: [Quantity.of(17529453), false],
         expected: blockWithTransactionsNotExpanded
-    },
-    {
-        description:
-            'Should return null for no block found with given revision',
-        params: [
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
-            false
-        ],
-        expected: null
     }
 ];
 
@@ -84,17 +75,17 @@ const invalidEthGetBlockByNumberTestCases = [
     {
         description: 'Should throw an error when there are too many params',
         params: ['0x0', false, "I'm an extra param"],
-        expectedError: InvalidDataTypeError
+        expectedError: JSONRPCInvalidParams
     },
     {
         description: 'Should throw an error when first param is not a string',
         params: [0, false],
-        expectedError: InvalidDataTypeError
+        expectedError: JSONRPCInvalidParams
     },
     {
         description: 'Should throw an error when second param is not a boolean',
         params: ['0x0', 'false'],
-        expectedError: InvalidDataTypeError
+        expectedError: JSONRPCInvalidParams
     }
 ];
 

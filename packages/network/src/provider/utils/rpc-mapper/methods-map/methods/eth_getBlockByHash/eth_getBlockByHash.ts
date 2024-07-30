@@ -1,14 +1,13 @@
 import { type ThorClient } from '../../../../../../thor-client';
 import {
-    assert,
-    buildProviderError,
-    DATA,
-    JSONRPC,
+    JSONRPCInternalError,
+    JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import { type BlocksRPC } from '../../../../formatter';
 import { Hex0x } from '@vechain/sdk-core';
 import { ethGetBlockByNumber } from '../eth_getBlockByNumber';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
  * RPC Method eth_getBlockByHash implementation
@@ -28,29 +27,31 @@ const ethGetBlockByHash = async (
     thorClient: ThorClient,
     params: unknown[]
 ): Promise<BlocksRPC | null> => {
-    assert(
-        'eth_getBlockByHash',
-        params.length === 2 &&
-            typeof params[0] === 'string' &&
-            Boolean(Hex0x.isThorId(params[0])) &&
-            typeof params[1] === 'boolean',
-        DATA.INVALID_DATA_TYPE,
-        'Invalid params length, expected 2.\nThe params should be [hash: hash of block, transactionDetailFlag: boolean]'
-    );
+    // Input validation
+    if (
+        params.length !== 2 ||
+        typeof params[0] !== 'string' ||
+        !Hex0x.isThorId(params[0]) ||
+        typeof params[1] !== 'boolean'
+    )
+        throw new JSONRPCInvalidParams(
+            'eth_getBlockByHash',
+            -32602,
+            `Invalid input params for "eth_getBlockByHash" method. See ${RPC_DOCUMENTATION_URL} for details.`,
+            { params }
+        );
 
     try {
         // Return the block by number (in this case, the block hash is the block number)
         return await ethGetBlockByNumber(thorClient, params);
     } catch (e) {
-        throw buildProviderError(
-            JSONRPC.INTERNAL_ERROR,
-            `Method 'eth_getBlockByHash' failed: Error while getting block ${
-                params[0] as string
-            }\n
-            Params: ${stringifyData(params)}\n
-            URL: ${thorClient.httpClient.baseURL}`,
+        throw new JSONRPCInternalError(
+            'eth_getBlockByHash()',
+            -32603,
+            'Method "eth_getBlockByHash" failed.',
             {
-                params,
+                params: stringifyData(params),
+                url: thorClient.httpClient.baseURL,
                 innerError: stringifyData(e)
             }
         );
