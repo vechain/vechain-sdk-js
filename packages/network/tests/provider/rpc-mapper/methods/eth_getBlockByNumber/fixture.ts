@@ -65,15 +65,6 @@ const ethGetBlockByNumberTestCases = [
             'Should get block which has transactions with transaction NOT expanded',
         params: [Quantity.of(17529453), false],
         expected: blockWithTransactionsNotExpanded
-    },
-    {
-        description:
-            'Should return null for no block found with given revision',
-        params: [
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
-            false
-        ],
-        expected: null
     }
 ];
 

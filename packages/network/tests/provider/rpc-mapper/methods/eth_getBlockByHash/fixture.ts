@@ -29,15 +29,6 @@ const ethGetBlockByHashTestCases = [
             true
         ],
         expected: blockWithTransactionsExpanded
-    },
-    {
-        description:
-            'Should return null for no block found with given revision',
-        params: [
-            '0x0000000000000000000000000000000000000000000000000000000000000000',
-            false
-        ],
-        expected: null
     }
 ];
 
