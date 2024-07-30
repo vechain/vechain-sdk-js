@@ -2,16 +2,15 @@ import {
     Account,
     type AccountPoll
 } from '../../../../src/thor-client/accounts/experimental/Account';
-import { ThorClient } from '../../../../src';
+import { THOR_SOLO_URL, ThorClient } from '../../../../src';
 import { beforeEach, describe, test } from '@jest/globals';
-import { soloUrl } from '../../../fixture';
 
 describe('Account class tests', () => {
     // ThorClient instance
     let thorSoloClient: ThorClient;
 
     beforeEach(() => {
-        thorSoloClient = ThorClient.fromUrl(soloUrl);
+        thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
     });
 
     test('x', async () => {

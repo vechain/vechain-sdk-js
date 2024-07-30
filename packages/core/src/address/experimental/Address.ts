@@ -1,8 +1,8 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
 import { HEX } from '../../utils';
-import { assert, DATA } from '@vechain/sdk-errors';
 import { secp256k1 } from '../../secp256k1';
 import { keccak256 } from '../../hash';
+import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
  * Represents an address in Ethereum/Thor.
@@ -22,17 +22,17 @@ class Address extends HEX {
      * Creates a new instance of the Address class.
      *
      * @param {string} hex - The hexadecimal address expression.
-     * @throws {InvalidDataTypeError} if the hexadecimal expression is not an Ethereum/Thor address.
+     * @throws {InvalidDataType} if the hexadecimal expression is not an Ethereum/Thor address.
      */
     constructor(hex: string) {
-        assert(
-            'Address.constructor',
-            Address.isValid(hex),
-            DATA.INVALID_DATA_TYPE,
-            'not an address expression',
-            { hex }
-        );
-        super(hex, (hex: string) => Address.checksum(hex));
+        if (Address.isValid(hex)) {
+            super(hex, (hex: string) => Address.checksum(hex));
+        } else
+            throw new InvalidDataType(
+                'Address.constructor',
+                'not an address expression',
+                { hex }
+            );
     }
 
     /**
@@ -77,7 +77,7 @@ class Address extends HEX {
      *
      * @param {Uint8Array} value - The Uint8Array value used to create the Address object.
      * @return {Address} - The Address object created from the provided value.
-     * @throws {InvalidDataTypeError} if the hexadecimal expression is not an Ethereum/Thor address.
+     * @throws {InvalidDataType} if the hexadecimal expression is not an Ethereum/Thor address.
      */
     public static of(value: Uint8Array): Address {
         return new Address(nc_utils.bytesToHex(value));
@@ -88,7 +88,7 @@ class Address extends HEX {
      *
      * @param {Uint8Array} privateKey - The private key used to derive the public key.
      * @return {Address} - The generated Address.
-     * @throws {InvalidSecp256k1PrivateKeyError} if `privateKey` is invalid.
+     * @throws {InvalidSecp256k1PrivateKey} if `privateKey` is invalid.
      *
      * @remark Security Audited Function:
      * - {@link ofPublicKey},

@@ -1,7 +1,7 @@
 import { Address } from '../../../src/address/experimental/Address';
 import { HEX } from '../../../src';
-import { InvalidDataTypeError } from '@vechain/sdk-errors';
 import { describe, expect, test } from '@jest/globals';
+import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
  * Test Address class.
@@ -42,7 +42,7 @@ describe('Address class tests', () => {
     });
 
     test('constructor should fail for illegal address expression', () => {
-        expect(() => new Address('caffee')).toThrow(InvalidDataTypeError);
+        expect(() => new Address('caffee')).toThrow(InvalidDataType);
     });
 
     test('static isValid should return false', () => {

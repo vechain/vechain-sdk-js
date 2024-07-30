@@ -1,5 +1,5 @@
 import { HEX } from '../../hex';
-import { assert, DATA } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
  * Represents a revision for a Thor transaction or block.
@@ -45,22 +45,22 @@ class Revision extends String {
      * Creates a new Revision object from the given value.
      *
      * @param {HEX | number | string} value - The value to create the Revision from.
-     * @throws {InvalidDataTypeError} if the given value is not a valid revision: see {@link isValid}.
+     * @throws {InvalidDataType} if the given value is not a valid revision: see {@link isValid}.
      *
      * @returns {Revision} - The created Revision object.
      *
      * @remark The string representation of the revision is always expressed as a number in base 10.
      */
     public static of(value: HEX | number | string): Revision {
-        assert(
+        if (this.isValid(value)) {
+            return new Revision(
+                value instanceof HEX ? value.n.toString() : value.toString()
+            );
+        }
+        throw new InvalidDataType(
             'Revision.of',
-            this.isValid(value),
-            DATA.INVALID_DATA_TYPE,
             'value is not a Revision expression',
             { value }
-        );
-        return new Revision(
-            value instanceof HEX ? value.n.toString() : value.toString()
         );
     }
 }

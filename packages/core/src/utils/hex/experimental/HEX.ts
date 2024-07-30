@@ -1,6 +1,6 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
 import * as nh_utils from '@noble/hashes/utils';
-import { assert, DATA } from '@vechain/sdk-errors';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { BigNumber } from 'bignumber.js';
 import { type Comparable } from '../../../experimental';
 import { TXT } from '../../txt/experimental/TXT';
@@ -47,7 +47,7 @@ class HEX extends String implements Comparable<HEX> {
      * @param {function} normalize - The normalization function to convert the hexadecimal expression to a normalized
      *                              form. Defaults to converting the expression to lowercase.
      * @returns {void}
-     * @throws {InvalidDataTypeError} if `hex` is not a valid hexadecimal expression.
+     * @throws {InvalidDataType} if `hex` is not a valid hexadecimal expression.
      */
     public constructor(
         hex: string,
@@ -57,16 +57,17 @@ class HEX extends String implements Comparable<HEX> {
         if (HEX.REGEX_PREFIX.test(value)) {
             value = value.slice(2);
         }
-        assert(
-            'Hex.constructor',
-            HEX.isValid(value),
-            DATA.INVALID_DATA_TYPE,
-            'not an hexadecimal expression',
-            { val: value }
-        );
-        value = normalize(value);
-        super('0x' + value);
-        this.hex = value;
+        if (HEX.isValid(value)) {
+            value = normalize(value);
+            super('0x' + value);
+            this.hex = value;
+        } else {
+            throw new InvalidDataType(
+                'Hex.constructor',
+                'not an hexadecimal expression',
+                { value }
+            );
+        }
     }
 
     /**
@@ -122,7 +123,7 @@ class HEX extends String implements Comparable<HEX> {
      * Strings are NFC normalized and encoded as array of bytes. To represent hexadecimal literals use the class constructor.
      * @param {number} [bytesLength=1] - The number of bytes to pad the resulting hexadecimal representation with. Default is 1.
      * @returns {HEX} - The hexadecimal representation of the provided value.
-     * @throws {InvalidDataTypeError} - If the given value is negative number.
+     * @throws {InvalidDataType} - If the given value is negative number.
      */
     public static of(
         value: bigint | number | string | Uint8Array,
@@ -143,17 +144,17 @@ class HEX extends String implements Comparable<HEX> {
      * @param {bigint} bi - The bigint value to convert to HEX.
      * @private
      * @returns {HEX} - The new HEX instance.
-     * @throws {InvalidDataTypeError} - If the given bigint value is negative.
+     * @throws {InvalidDataType} - If the given bigint value is negative.
      */
     private static ofBigInt(bi: bigint): HEX {
-        assert(
+        if (bi >= 0n) {
+            return new HEX(bi.toString(HEX.RADIX));
+        }
+        throw new InvalidDataType(
             'Hex.ofBigInt',
-            bi >= 0n,
-            DATA.INVALID_DATA_TYPE,
             'negative value is not an hexadecimal expression',
             { bi: bi.toString() }
         );
-        return new HEX(bi.toString(HEX.RADIX));
     }
 
     /**
@@ -173,17 +174,17 @@ class HEX extends String implements Comparable<HEX> {
      * @param {number} n - The number to convert.
      * @private
      * @returns {HEX} - The hexadecimal representation of the number.
-     * @throws {InvalidDataTypeError} - If the given number value is negative.
+     * @throws {InvalidDataType} - If the given number value is negative.
      */
     private static ofNumber(n: number): HEX {
-        assert(
+        if (n >= 0n) {
+            return new HEX(nc_utils.numberToHexUnpadded(n));
+        }
+        throw new InvalidDataType(
             'Hex.ofBigInt',
-            n >= 0n,
-            DATA.INVALID_DATA_TYPE,
             'negative value is not an hexadecimal expression',
             { n }
         );
-        return new HEX(nc_utils.numberToHexUnpadded(n));
     }
 
     /**
