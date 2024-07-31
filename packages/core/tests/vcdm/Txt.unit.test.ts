@@ -7,7 +7,11 @@ import { describe, expect, test } from '@jest/globals';
 
 const TEXT_ENCODER = new TextEncoder();
 
-describe('Txt class', () => {
+/**
+ * Test Txt class.
+ * @group unit/vcdm
+ */
+describe('Txt class tests', () => {
     test('bi getter should return a BigInt representation of the integer value', () => {
         const txt = Txt.of('123');
         expect(txt.bi).toBe(BigInt(123));
