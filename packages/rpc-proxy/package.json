@@ -39,7 +39,7 @@
     "commander": "^12.1.0",
     "cors": "^2.8.5",
     "express": "^4.19.2",
-    "tsup": "^8.1.2",
+    "tsup": "^8.2.3",
     "typescript": "^5.5.4"
   },
   "devDependencies": {
