@@ -16,7 +16,7 @@
     "workspaces": [
         "packages/*",
         "docs",
-        "sdk-cloudflare-integration"
+        "aaps/*"
     ],
     "packageManager": "yarn@1.22.22",
     "scripts": {
