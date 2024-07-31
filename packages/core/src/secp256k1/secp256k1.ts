@@ -74,7 +74,9 @@ function derivePublicKey(
  * @returns {Uint8Array} The newly generated private key as a buffer.
  */
 async function generatePrivateKey(): Promise<Uint8Array> {
-    if (typeof crypto?.subtle?.generateKey === 'function') {
+    try {
+        return n_secp256k1.utils.randomPrivateKey();
+    } catch (error) {
         // Generate an ECDSA key pair
         const cryptoKey = await global.crypto.subtle.generateKey(
             {
@@ -91,8 +93,6 @@ async function generatePrivateKey(): Promise<Uint8Array> {
         // Convert the ArrayBuffer to Uint8Array
         return new Uint8Array(rawKey);
     }
-
-    return n_secp256k1.utils.randomPrivateKey();
 }
 
 /**
@@ -168,11 +168,11 @@ function isValidPrivateKey(privateKey: Uint8Array): boolean {
  * available at runtime.
  */
 function randomBytes(bytesLength?: number | undefined): Uint8Array {
-    if (typeof crypto?.getRandomValues === 'function') {
+    try {
+        return _randomBytes(bytesLength);
+    } catch (error) {
         return global.crypto.getRandomValues(new Uint8Array(bytesLength ?? 32));
     }
-
-    return _randomBytes(bytesLength);
 }
 
 /**
