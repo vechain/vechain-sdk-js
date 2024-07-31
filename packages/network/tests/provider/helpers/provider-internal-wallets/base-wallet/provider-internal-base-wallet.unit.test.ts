@@ -164,10 +164,12 @@ describe('Base wallet tests', () => {
          * Should be able to get the delegator options
          */
         test('Should be able to get the delegator', async () => {
-            // Initialize delegator
+            // Initialize delegatora
             const delegators: SignTransactionOptions[] = [
                 {
-                    delegatorPrivateKey: Hex.of(secp256k1.generatePrivateKey())
+                    delegatorPrivateKey: Hex.of(
+                        await secp256k1.generatePrivateKey()
+                    )
                 },
                 {
                     delegatorUrl:
