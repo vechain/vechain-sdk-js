@@ -8,12 +8,13 @@ import { type ProviderInternalWalletAccount } from '../../../../../src';
 const accountsFixture: ProviderInternalWalletAccount[] = Array.from(
     { length: 10 },
     () => {
-        const privateKey = Buffer.from(secp256k1.generatePrivateKey());
+        const privateKey = await secp256k1.generatePrivateKey();
+        const privateKeyBuffer = Buffer.from(privateKey);
         const publicKey = Buffer.from(secp256k1.derivePublicKey(privateKey));
         const address = addressUtils.fromPublicKey(publicKey);
 
         return {
-            privateKey,
+            privateKey: privateKeyBuffer,
             publicKey,
             address
         } satisfies ProviderInternalWalletAccount;
