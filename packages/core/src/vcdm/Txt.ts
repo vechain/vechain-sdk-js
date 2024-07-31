@@ -1,16 +1,15 @@
-import { type VCDM } from './VCDM';
+import { type VeChainDataModel } from './VeChainDataModel';
 import { InvalidCastType } from './InvalidCastType';
-import { InvalidDataType } from '@vechain/sdk-errors';
 
-class Txt extends String implements VCDM<Txt> {
+class Txt extends String implements VeChainDataModel<Txt> {
     private static readonly DECODER = new TextDecoder();
 
     private static readonly NFC = 'NFC';
 
     private static readonly ENCODER = new TextEncoder();
 
-    protected constructor(text: string) {
-        super(text.normalize(Txt.NFC));
+    protected constructor(exp: string) {
+        super(exp.normalize(Txt.NFC));
     }
 
     get bi(): bigint {
@@ -46,19 +45,13 @@ class Txt extends String implements VCDM<Txt> {
         return this.valueOf();
     }
 
-    static of<T>(exp: bigint | number | string | VCDM<T> | Uint8Array): Txt {
-        if (typeof exp === 'bigint' || typeof exp === 'number') {
-            return new Txt(exp.toString());
-        } else if (typeof exp === 'string') {
-            return new Txt(exp);
-        } else if (exp instanceof Txt) {
-            return exp;
-        } else if (exp instanceof Uint8Array) {
+    public static of(exp: bigint | number | string | Uint8Array): Txt {
+        if (exp instanceof Uint8Array) {
             return new Txt(Txt.DECODER.decode(exp));
+        } else if (typeof exp === 'bigint' || typeof exp === 'number') {
+            return new Txt(exp.toString());
         }
-        throw new InvalidDataType('Text.of', 'invalid data type', {
-            exp
-        });
+        return new Txt(exp);
     }
 }
 

@@ -1,6 +1,6 @@
-import { type VCDM } from '../../src/vcdm/VCDM';
+import { type VeChainDataModel } from '../../src/vcdm/VeChainDataModel';
 
-class InvalidVCDM extends String implements VCDM<string> {
+class InvalidVCDM extends String implements VeChainDataModel<string> {
     get bi(): bigint {
         throw new Error('Method not implemented.');
     }

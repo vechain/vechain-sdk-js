@@ -1,8 +1,8 @@
-export interface VCDM<T> {
+export interface VeChainDataModel<T> {
     // Properties.
     /**
-     * Return this object value cast to a big integer.
-     * @throws InvalidDataType if this object can't cast to a big integer.
+     * Return this object cast to a big integer.
+     * @throws InvalidCastType if this object can't cast to a big integer.
      */
     get bi(): bigint;
     get bytes(): Uint8Array;
