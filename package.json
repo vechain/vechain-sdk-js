@@ -16,7 +16,7 @@
     "workspaces": [
         "packages/*",
         "docs",
-        "aaps/*"
+        "apps/*"
     ],
     "packageManager": "yarn@1.22.22",
     "scripts": {
