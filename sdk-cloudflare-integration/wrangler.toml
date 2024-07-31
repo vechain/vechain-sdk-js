@@ -1,0 +1,4 @@
+name = "sdk-cloudflare-integration"
+main = "src/index.ts"
+compatibility_date = "2024-07-31"
+node_compat = true

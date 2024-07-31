@@ -1,0 +1,18 @@
+{
+  "name": "sdk-cloudflare-integration",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "wrangler dev",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240725.0",
+    "vitest": "^2.0.4",
+    "wrangler": "^3.67.1"
+  },
+  "dependencies": {
+    "@vechain/sdk-core": "^1.0.0-beta.24"
+  }
+}
