@@ -2,6 +2,8 @@
   "name": "sdk-cloudflare-integration",
   "version": "1.0.0",
   "main": "index.js",
+  "author": "vechain Foundation",
+  "keywords": [],
   "license": "MIT",
   "scripts": {
     "dev": "wrangler dev",

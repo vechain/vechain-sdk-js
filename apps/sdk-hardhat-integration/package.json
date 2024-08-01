@@ -5,7 +5,7 @@
   "main": "index.js",
   "author": "vechain Foundation",
   "keywords": [],
-  "license": "ISC",
+  "license": "MIT",
   "scripts": {
     "compile": "npx hardhat compile",
     "test": "npx hardhat test --network vechain_testnet",
