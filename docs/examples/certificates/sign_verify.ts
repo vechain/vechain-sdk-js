@@ -11,7 +11,7 @@ import {
 
 // 1 - Generate a private key and address for the signer
 
-const privateKey = secp256k1.generatePrivateKey();
+const privateKey = await secp256k1.generatePrivateKey();
 const publicKey = secp256k1.derivePublicKey(privateKey);
 const signerAddress = addressUtils.fromPublicKey(Buffer.from(publicKey));
 

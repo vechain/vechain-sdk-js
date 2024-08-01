@@ -48,7 +48,7 @@ Secp256k1 is mainly used for generating public and private key pairs in cryptogr
 ```typescript { name=secp256k1, category=example }
 // 1 - Generate a private key.
 
-const privateKey = secp256k1.generatePrivateKey();
+const privateKey = await secp256k1.generatePrivateKey();
 console.log('Private key:', Hex.of(privateKey));
 // Private key: ...SOME_PRIVATE_KEY...
 
