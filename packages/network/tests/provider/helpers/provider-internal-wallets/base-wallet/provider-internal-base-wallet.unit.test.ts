@@ -167,7 +167,9 @@ describe('Base wallet tests', () => {
             // Initialize delegator
             const delegators: SignTransactionOptions[] = [
                 {
-                    delegatorPrivateKey: Hex.of(secp256k1.generatePrivateKey())
+                    delegatorPrivateKey: Hex.of(
+                        await secp256k1.generatePrivateKey()
+                    )
                 },
                 {
                     delegatorUrl:
