@@ -1,7 +1,7 @@
 import { Hex, Hex0x } from '../utils';
+import { Txt } from '../vcdm/Txt';
 import { blake2b } from '@noble/hashes/blake2b';
 import { hexToBytes } from '@noble/hashes/utils';
-import { txt } from '../utils/txt/txt';
 import { type ReturnType } from './types';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
@@ -161,7 +161,7 @@ function blake2b256OfHex(
  * @return {Uint8Array} - The BLAKE2b-256 hash as a Uint8Array.
  */
 function blake2b256OfString(text: string): Uint8Array {
-    return blake2b256OfArray(txt.encode(text));
+    return blake2b256OfArray(Txt.of(text).bytes);
 }
 
 export { blake2b256, blake2b256OfHex };

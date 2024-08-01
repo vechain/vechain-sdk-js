@@ -1,5 +1,5 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { addressUtils, Hex, secp256k1, txt } from '@vechain/sdk-core';
+import { addressUtils, Hex, Txt, secp256k1 } from '@vechain/sdk-core';
 import { ethers } from 'ethers';
 import {
     EIP191_MESSAGE,
@@ -263,7 +263,7 @@ describe('VeChain base signer tests', () => {
         });
 
         test('signMessage - ethers compatible - uint8array', async () => {
-            const message = txt.encode(EIP191_MESSAGE);
+            const message = Txt.of(EIP191_MESSAGE).bytes;
             const expected = await new ethers.Wallet(
                 EIP191_PRIVATE_KEY
             ).signMessage(message);

@@ -3,12 +3,12 @@ import {
     addressUtils,
     Hex,
     Hex0x,
+    Txt,
     keccak256,
     secp256k1,
     Transaction,
     type TransactionBody,
     TransactionHandler,
-    txt,
     vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
 import { RPC_METHODS } from '../../../provider';
@@ -34,9 +34,8 @@ import {
  * This signer can be initialized using a private key.
  */
 class VeChainPrivateKeySigner extends VeChainAbstractSigner {
-    private readonly MESSAGE_PREFIX = txt.encode(
-        '\x19Ethereum Signed Message:\n'
-    );
+    private readonly MESSAGE_PREFIX = Txt.of('\x19Ethereum Signed Message:\n')
+        .bytes;
 
     /**
      * Create a new VeChainPrivateKeySigner.
@@ -145,12 +144,14 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         return await new Promise((resolve, reject) => {
             try {
                 const body =
-                    typeof message === 'string' ? txt.encode(message) : message;
+                    typeof message === 'string'
+                        ? Txt.of(message).bytes
+                        : message;
                 const sign = secp256k1.sign(
                     keccak256(
                         n_utils.concatBytes(
                             this.MESSAGE_PREFIX,
-                            txt.encode(String(body.length)),
+                            Txt.of(body.length).bytes,
                             body
                         )
                     ),

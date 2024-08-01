@@ -1,7 +1,7 @@
 import * as n_utils from '@noble/curves/abstract/utils';
 import { Hex, Hex0x } from '../hex';
+import { Txt } from '../../vcdm/Txt';
 import { INTEGER_REGEX, NUMERIC_REGEX, ZERO_BYTES } from '../const';
-import { txt } from '../txt/txt';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
@@ -29,12 +29,12 @@ const decodeBytes32String = (hex: string): string => {
         // Find the first non-zero byte.
         const firstNotZeroIndex = valueInBytes.findIndex((byte) => byte !== 0);
         // Decode the encoded bytes 32 string to string by removing the padded zeros.
-        return txt.decode(valueInBytes.subarray(firstNotZeroIndex));
+        return Txt.of(valueInBytes.subarray(firstNotZeroIndex)).toString();
     } else if (firstZeroIndex !== -1) {
         // Decode the encoded bytes 32 string to string by removing the padded zeros.
-        return txt.decode(valueInBytes.subarray(0, firstZeroIndex));
+        return Txt.of(valueInBytes.subarray(0, firstZeroIndex)).toString();
     } else {
-        return txt.decode(valueInBytes);
+        return Txt.of(valueInBytes).toString();
     }
 };
 
@@ -53,7 +53,7 @@ const encodeBytes32String = (
 ): string => {
     // Wrap any error raised by utf8BytesOf(value).
     try {
-        const valueInBytes = txt.encode(value);
+        const valueInBytes = Txt.of(value).bytes;
 
         if (valueInBytes.length > 32) {
             throw new InvalidDataType(

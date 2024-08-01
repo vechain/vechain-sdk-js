@@ -2,10 +2,10 @@ import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Hex, Hex0x } from '../utils';
 import { addressUtils } from '../address-utils';
 import { CertificateSignature } from '@vechain/sdk-errors';
+import { Txt } from '../vcdm/Txt';
 import { blake2b256 } from '../hash';
 import { hexToBytes } from '@noble/curves/abstract/utils';
 import { secp256k1 } from '../secp256k1';
-import { txt } from '../utils/txt/txt';
 import { type Certificate } from './types';
 
 /**
@@ -30,7 +30,7 @@ import { type Certificate } from './types';
  * @see {verify}
  */
 function encode(cert: Certificate): Uint8Array {
-    return txt.encode(
+    return Txt.of(
         // The following `fastJsonStableStringify` strips blank chars and serialize alphabetical sorted properties.
         fastJsonStableStringify({
             purpose: cert.purpose,
@@ -42,7 +42,7 @@ function encode(cert: Certificate): Uint8Array {
             timestamp: cert.timestamp,
             signer: cert.signer.toLowerCase()
         })
-    );
+    ).bytes;
 }
 
 /**
