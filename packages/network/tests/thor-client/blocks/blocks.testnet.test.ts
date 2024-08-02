@@ -11,7 +11,7 @@ import {
     addressUtils,
     bloom,
     bloomUtils,
-    Hex0x,
+    _Hex0x,
     networkInfo
 } from '@vechain/sdk-core';
 
@@ -143,7 +143,7 @@ describe('ThorClient - Blocks Module', () => {
                     bloomUtils.isAddressInBloom(
                         filter,
                         bloomUtils.BLOOM_DEFAULT_K,
-                        Hex0x.canon(address)
+                        _Hex0x.canon(address)
                     )
                 ).toBeTruthy();
             });
@@ -163,7 +163,7 @@ describe('ThorClient - Blocks Module', () => {
                     bloomUtils.isAddressInBloom(
                         filter,
                         bloom.calculateK(k),
-                        Hex0x.canon(address)
+                        _Hex0x.canon(address)
                     )
                 ).toBeTruthy();
             });

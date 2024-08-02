@@ -5,7 +5,7 @@ import {
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
-import { Quantity } from '@vechain/sdk-core';
+import { _Quantity } from '@vechain/sdk-core';
 
 /**
  * RPC Mapper integration tests for 'eth_blockNumber' method on Testnet Network
@@ -50,7 +50,7 @@ describe('RPC Mapper - eth_blockNumber method tests', () => {
 
             expect(rpcCallUpdatedLatestBlockNumber).not.toBe('0x0');
             expect(rpcCallUpdatedLatestBlockNumber).toBe(
-                Quantity.of(Number(rpcCallLatestBlockNumber) + 1)
+                _Quantity.of(Number(rpcCallLatestBlockNumber) + 1)
             );
         }, 20000);
     });

@@ -1,5 +1,5 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { addressUtils, Hex, Txt, secp256k1 } from '@vechain/sdk-core';
+import { addressUtils, _Hex, Txt, secp256k1 } from '@vechain/sdk-core';
 import { ethers } from 'ethers';
 import {
     EIP191_MESSAGE,
@@ -238,7 +238,7 @@ describe('VeChain base signer tests', () => {
             const signer = new VeChainPrivateKeySigner(
                 Buffer.from(
                     n_utils.hexToBytes(
-                        Hex.canon(eip712TestCases.invalid.privateKey)
+                        _Hex.canon(eip712TestCases.invalid.privateKey)
                     )
                 ),
                 provider
@@ -256,7 +256,7 @@ describe('VeChain base signer tests', () => {
                 EIP191_PRIVATE_KEY
             ).signMessage(EIP191_MESSAGE);
             const actual = await new VeChainPrivateKeySigner(
-                Buffer.from(n_utils.hexToBytes(Hex.canon(EIP191_PRIVATE_KEY))),
+                Buffer.from(n_utils.hexToBytes(_Hex.canon(EIP191_PRIVATE_KEY))),
                 provider
             ).signMessage(EIP191_MESSAGE);
             expect(actual).toBe(expected);
@@ -268,7 +268,7 @@ describe('VeChain base signer tests', () => {
                 EIP191_PRIVATE_KEY
             ).signMessage(message);
             const actual = await new VeChainPrivateKeySigner(
-                Buffer.from(n_utils.hexToBytes(Hex.canon(EIP191_PRIVATE_KEY))),
+                Buffer.from(n_utils.hexToBytes(_Hex.canon(EIP191_PRIVATE_KEY))),
                 provider
             ).signMessage(message);
             expect(actual).toBe(expected);
@@ -280,7 +280,7 @@ describe('VeChain base signer tests', () => {
             const signer = new VeChainPrivateKeySigner(
                 Buffer.from(
                     n_utils.hexToBytes(
-                        Hex.canon(eip712TestCases.invalid.privateKey)
+                        _Hex.canon(eip712TestCases.invalid.privateKey)
                     )
                 ),
                 provider
@@ -306,7 +306,7 @@ describe('VeChain base signer tests', () => {
             const actual = await new VeChainPrivateKeySigner(
                 Buffer.from(
                     n_utils.hexToBytes(
-                        Hex.canon(eip712TestCases.valid.privateKey)
+                        _Hex.canon(eip712TestCases.valid.privateKey)
                     )
                 ),
                 provider

@@ -1,4 +1,4 @@
-import { Quantity } from '@vechain/sdk-core';
+import { _Quantity } from '@vechain/sdk-core';
 import {
     blockWithTransactionsExpanded,
     blockWithTransactionsNotExpanded
@@ -46,24 +46,24 @@ const ethGetBlockByNumberTestCases = [
     // NOTE: hydrate true or false is the same, Because genesis block doesn't have any transactions on testnet
     {
         description: "Should get block by number '0x0'",
-        params: [Quantity.of(0), false],
+        params: [_Quantity.of(0), false],
         expected: zeroBlock
     },
     {
         description:
             "Should get block by number '0x0' with transaction details",
-        params: [Quantity.of(0), true],
+        params: [_Quantity.of(0), true],
         expected: zeroBlock
     },
     {
         description: 'Should get block which has transactions with details',
-        params: [Quantity.of(17529453), true],
+        params: [_Quantity.of(17529453), true],
         expected: blockWithTransactionsExpanded
     },
     {
         description:
             'Should get block which has transactions with transaction NOT expanded',
-        params: [Quantity.of(17529453), false],
+        params: [_Quantity.of(17529453), false],
         expected: blockWithTransactionsNotExpanded
     }
 ];

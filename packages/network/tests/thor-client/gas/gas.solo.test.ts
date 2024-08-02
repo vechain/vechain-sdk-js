@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, test } from '@jest/globals';
 import { estimateGasTestCases, invalidEstimateGasTestCases } from './fixture';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
 import { stringifyData } from '@vechain/sdk-errors';
-import { Hex0x, secp256k1 } from '@vechain/sdk-core';
+import { _Hex0x, secp256k1 } from '@vechain/sdk-core';
 
 /**
  * Gas module tests.
@@ -77,7 +77,7 @@ describe('ThorClient - Gas Module', () => {
                         thorSoloClient.gas.estimateGas(
                             clauses,
                             // Random address
-                            Hex0x.of(secp256k1.randomBytes(20)),
+                            _Hex0x.of(secp256k1.randomBytes(20)),
                             options
                         )
                     ).rejects.toThrow(expectedError);
