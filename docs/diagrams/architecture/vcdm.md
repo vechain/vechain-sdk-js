@@ -6,6 +6,9 @@ classDiagram
     class BloomFilter
     class Contract
     class HDNode
+    class Hash {
+        <<abstract>>
+    }
     class Hex
     class Keccak256 
     class Keystore
