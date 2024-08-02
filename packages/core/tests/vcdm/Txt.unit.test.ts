@@ -1,6 +1,5 @@
-import { InvalidCastType } from '../../src/vcdm/InvalidCastType'; // '@vechain/sdk-errors';
+import { InvalidCastType, Txt } from '../../src'; // '@vechain/sdk-errors';
 import { TextEncoder } from 'util';
-import { Txt } from '../../src/vcdm/Txt';
 import { describe, expect, test } from '@jest/globals';
 
 const TEXT_ENCODER = new TextEncoder();

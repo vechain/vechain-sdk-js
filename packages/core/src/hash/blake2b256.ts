@@ -1,5 +1,5 @@
 import { Hex, Hex0x } from '../utils';
-import { Txt } from '../vcdm/Txt';
+import { Txt } from '../vcdm';
 import { blake2b } from '@noble/hashes/blake2b';
 import { hexToBytes } from '@noble/hashes/utils';
 import { type ReturnType } from './types';
@@ -9,13 +9,12 @@ import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
  * Computes the Blake2bB-256 hash of the given data.
- * If `data` is a string this is normalized using the {@link NORMALIZATION_FORM_CANONICAL_COMPOSITION} encoding.
  *
  * @param {string | Uint8Array} data - The data to compute the hash for. It can be either a string or a Uint8Array.
  *
  * @return {Uint8Array} - The computed hash as a Uint8Array.
  *
- * @throws {InvalidDataReturnTypeError} - If the specified return type is invalid.
+ * @throws {InvalidDataReturnType} - If the specified return type is invalid.
  *
  * @remark Use {@link blake2b256OfHex} to hash a string representing an array of bytes in hexadecimal form.
  */
@@ -23,7 +22,6 @@ function blake2b256(data: string | Uint8Array): Uint8Array;
 
 /**
  * Calculates the Blake2b-256 hash of the given data.
- * If `data` is a string this is normalized using the {@link NORMALIZATION_FORM_CANONICAL_COMPOSITION} encoding.
  *
  * @param {string | Uint8Array} data - The input data to be hashed.
  * @param {string} returnType - The return type of the hash. It can be 'buffer'.
@@ -41,7 +39,6 @@ function blake2b256(
 
 /**
  * Computes the blake2b-256 hash of the input data.
- * If `data` is a string this is normalized using the {@link NORMALIZATION_FORM_CANONICAL_COMPOSITION} encoding.
  *
  * @param {string | Uint8Array} data - The input data to be hashed.
  * @param {string} returnType - The return type of the hash. It can be 'hex'.
@@ -58,7 +55,6 @@ function blake2b256(data: string | Uint8Array, returnType: 'hex'): string;
 
 /**
  * Calculates the Blake2b-256 hash of the given input data.
- * If `data` is a string this is normalized using the {@link NORMALIZATION_FORM_CANONICAL_COMPOSITION} encoding.
  *
  * Secure audit function.
  * * {@link blake2b256OfArray}
@@ -151,7 +147,6 @@ function blake2b256OfHex(
 
 /**
  * Calculates the BLAKE2b-256 hash of a given string.
- * The string is normalized using the {@link NORMALIZATION_FORM_CANONICAL_COMPOSITION} encoding.
  *
  * Secure audit function.
  * * {@link blake2b256OfArray}

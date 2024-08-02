@@ -1,5 +1,5 @@
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
-import { Txt } from '../vcdm/Txt';
+import { Txt } from '../vcdm';
 import { keystoreEthers, keystoreExperimental } from './cryptography';
 import { type Keystore, type KeystoreAccount } from './types';
 
