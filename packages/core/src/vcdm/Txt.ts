@@ -1,4 +1,4 @@
-import { InvalidCastType } from './InvalidCastType'; // '@vechain/sdk-errors/src/available-errors/vcdm/InvalidCastType';
+import { InvalidCastType } from '@vechain/sdk-errors';
 import { type VeChainDataModel } from './VeChainDataModel';
 
 /**

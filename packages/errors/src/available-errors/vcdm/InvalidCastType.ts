@@ -1,5 +1,5 @@
-// import { VechainSDKError } from '../sdk-error';
+import { VechainSDKError } from '../sdk-error';
 
-// class InvalidCastType<T> extends VechainSDKError<T> {}
+class InvalidCastType<T> extends VechainSDKError<T> {}
 
-// export { InvalidCastType };
+export { InvalidCastType };

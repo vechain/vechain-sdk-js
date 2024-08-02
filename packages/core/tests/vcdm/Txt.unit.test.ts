@@ -1,4 +1,5 @@
-import { InvalidCastType, Txt } from '../../src'; // '@vechain/sdk-errors';
+import { Txt } from '../../src';
+import { InvalidCastType } from '@vechain/sdk-errors';
 import { TextEncoder } from 'util';
 import { describe, expect, test } from '@jest/globals';
 
