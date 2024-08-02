@@ -6,7 +6,7 @@ import {
 import {
     addressUtils,
     clauseBuilder,
-    Hex0x,
+    _Hex0x,
     secp256k1,
     type TransactionBody,
     type TransactionClause,
@@ -293,7 +293,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         }
 
         // Otherwise return a random number
-        return await Promise.resolve(Hex0x.of(secp256k1.randomBytes(6)));
+        return await Promise.resolve(_Hex0x.of(secp256k1.randomBytes(6)));
     }
 
     /**

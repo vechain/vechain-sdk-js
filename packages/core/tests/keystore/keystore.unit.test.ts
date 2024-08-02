@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
     addressUtils,
-    Hex,
+    _Hex,
     keystore,
     type Keystore,
     secp256k1
@@ -85,7 +85,7 @@ import {
 
             // Verify private key (slice(2) is used to remove 0x prefix)
             expect(decryptedKeystore.privateKey.slice(2)).toEqual(
-                Hex.of(privateKey)
+                _Hex.of(privateKey)
             );
         });
 

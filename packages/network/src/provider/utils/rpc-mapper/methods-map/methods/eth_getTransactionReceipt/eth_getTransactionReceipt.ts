@@ -14,7 +14,7 @@ import {
     type ExpandedBlockDetail,
     type ThorClient
 } from '../../../../../../thor-client';
-import { Hex0x } from '@vechain/sdk-core';
+import { _Hex0x } from '@vechain/sdk-core';
 import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
@@ -44,7 +44,7 @@ const ethGetTransactionReceipt = async (
     const [transactionID] = params as [string];
 
     // Invalid transaction ID
-    if (!Hex0x.isThorId(transactionID)) {
+    if (!_Hex0x.isThorId(transactionID)) {
         throw new InvalidDataType(
             'eth_getTransactionReceipt()',
             'Invalid transaction ID given as input. Input must be an hex string of length 64.',

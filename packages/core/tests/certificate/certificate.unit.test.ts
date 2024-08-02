@@ -1,6 +1,6 @@
 import * as n_utils from '@noble/curves/abstract/utils';
 import { describe, expect, test } from '@jest/globals';
-import { certificate, type Certificate, Hex0x } from '../../src';
+import { certificate, type Certificate, _Hex0x } from '../../src';
 import { cert, certPrivateKey } from './fixture';
 import { privateKey } from '../secp256k1/fixture';
 import {
@@ -37,7 +37,7 @@ describe('certificate', () => {
                 ...cert,
                 payload: { ...cert.payload, content: 'fyi' }
             };
-            const tdkSignature = Hex0x.of(
+            const tdkSignature = _Hex0x.of(
                 tdk_secp256k1.sign(
                     tdk_blake2b256(tdk_certificate.encode(tdkCompatibleCert)),
                     Buffer.from(certPrivateKey)
@@ -50,7 +50,7 @@ describe('certificate', () => {
 
         test('compatibility - thor-dev-kit - not compatible because UTF8 normalization not enforced ', () => {
             // thor-dev-kit doesn't support UTF8 NFC encoding for
-            const tdkSignature = Hex0x.of(
+            const tdkSignature = _Hex0x.of(
                 tdk_secp256k1.sign(
                     tdk_blake2b256(tdk_certificate.encode(cert)),
                     Buffer.from(certPrivateKey)
@@ -108,7 +108,7 @@ describe('certificate', () => {
                 ...cert,
                 payload: { ...cert.payload, content: 'fyi' }
             };
-            const tdkSignature = Hex0x.of(
+            const tdkSignature = _Hex0x.of(
                 tdk_secp256k1.sign(
                     tdk_blake2b256(tdk_certificate.encode(tdkCompatibleCert)),
                     Buffer.from(certPrivateKey)

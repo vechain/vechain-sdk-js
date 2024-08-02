@@ -9,7 +9,7 @@ import { type HexString } from './types';
  *
  * @constant {string}
  * @default '0x'
- * @see {Hex0x.of}
+ * @see {_Hex0x.of}
  */
 const PREFIX: string = '0x';
 
@@ -24,7 +24,7 @@ const RADIX: number = 16;
  * Regular expression for matching a string in the format `/^0x[0-9a-f]*$/i;`
  *
  * @type {RegExp}
- * @see Hex0x.of
+ * @see _Hex0x.of
  * @see HexString
  */
 const REGEX_FOR_0X_PREFIX_HEX: RegExp = /^0x[0-9a-f]*$/i;
@@ -45,7 +45,7 @@ const REGEX_FOR_OPTIONAL_0X_PREFIX_HEX: RegExp = /^(0x)?[0-9a-f]*$/i;
 const THOR_ID_LENGTH = 64;
 
 /**
- * Represents the error messages used in the {@link Hex} object.
+ * Represents the error messages used in the {@link _Hex} object.
  * @enum {string}
  */
 enum ErrorMessage {
@@ -54,7 +54,7 @@ enum ErrorMessage {
      * to fit the expected value.
      *
      * @type {string}
-     * @see Hex.canon
+     * @see _Hex.canon
      */
     NOT_FIT = `Arg 'bytes' not enough to fit 'exp'.`,
 
@@ -63,7 +63,7 @@ enum ErrorMessage {
      * not matching {@link REGEX_FOR_0X_PREFIX_HEX}.
      *
      * @type {string}
-     * @see Hex.canon
+     * @see _Hex.canon
      */
     NOT_HEX = `Arg 'n' not an hexadecimal expression.`,
 
@@ -79,7 +79,7 @@ enum ErrorMessage {
      * Variable representing an error message when the argument 'bytes' is not a valid length.
      *
      * @type {string}
-     * @see Hex.canon
+     * @see _Hex.canon
      */
     NOT_LENGTH = `Arg 'bytes' not a length.`,
 
@@ -131,7 +131,7 @@ function ofBigInt(bi: bigint, bytes: number): string {
  * @throws {InvalidDataType}
  */
 function ofHexString(n: HexString, bytes: number): string {
-    if (!Hex0x.isValid(n))
+    if (!_Hex0x.isValid(n))
         throw new InvalidDataType(
             'Hex.ofHexString()',
             ErrorMessage.NOT_HEX as string,
@@ -224,7 +224,7 @@ function pad(exp: string, bytes: number): string {
  *
  * @param {string} exp - The string to trim.
  * @returns {string} - The trimmed string.
- * @see Quantity.of
+ * @see _Quantity.of
  */
 function trim(exp: string): string {
     let i = 0;
@@ -237,7 +237,7 @@ function trim(exp: string): string {
 /**
  * Helper for encoding hexadecimal values prefixed with '0x'.
  */
-const Hex0x = {
+const _Hex0x = {
     /**
      * Converts a given string expression to a canonical representation prefixed with `0x`,
      * optionally specifying the number of bytes to include in the canonical form.
@@ -250,7 +250,7 @@ const Hex0x = {
      * if `bytes` is not integer and greater or equal to zero.
      */
     canon: function (exp: string, bytes?: number): string {
-        return `${PREFIX}${Hex.canon(exp, bytes)}`;
+        return `${PREFIX}${_Hex.canon(exp, bytes)}`;
     },
 
     /**
@@ -298,25 +298,25 @@ const Hex0x = {
     /**
      * Returns a hexadecimal representation from the given input data prefixed with `0x`.
      *
-     * **Note:** this method calls {@link Hex.of} to generate the hexadecimal representation of n,
+     * **Note:** this method calls {@link _Hex.of} to generate the hexadecimal representation of n,
      * then it prefixes the result with `0x`.
      *
      * @param {HexRepresentable} n - The input data to be represented.
      * @param {number} [bytes=0] - If not `0` by default, the hexadecimal representation encodes at least {number}  bytes.
      * @returns {Uint8Array} - The resulting hexadecimal representation,
      * it is guaranteed to be even characters long.
-     * @see Hex
+     * @see _Hex
      * @see HexRepresentable
      */
     of: function (n: HexRepresentable, bytes: number = 0): string {
-        return `${PREFIX}${Hex.of(n, bytes)}`;
+        return `${PREFIX}${_Hex.of(n, bytes)}`;
     }
 };
 
 /**
  * Helper for encoding hexadecimal values.
  */
-const Hex = {
+const _Hex = {
     /**
      * Converts a given string expression to a canonical representation prefixed with `0x`,
      * optionally specifying the number of bytes to include in the canonical form.
@@ -374,12 +374,12 @@ const Hex = {
      * * {@link ofUint8Array} if `n` is an instance of {@link Uint8Array}.
      *
      * **Note:** the returned string is not prefixed with `0x`,
-     * see {@link Hex0x.of} to make a hexadecimal representation prefixed with `0x`.
+     * see {@link _Hex0x.of} to make a hexadecimal representation prefixed with `0x`.
      *
      * **Note:** [HexString](https://docs.ethers.org/v6/api/utils/#HexString)
      * definition overlaps `string` TS completely as an alias.
      * This function tests if the given input starts with `0x`
-     * and is positive to {@link Hex0x.isValid}
+     * and is positive to {@link _Hex0x.isValid}
      * processing it as {@link HexString} type,
      * else it considers the string as an array of bytes and
      * returns its hexadecimal representation.
@@ -399,7 +399,7 @@ const Hex = {
         if (n instanceof Uint8Array) return ofUint8Array(n, bytes);
         if (typeof n === 'bigint') return ofBigInt(n, bytes);
         if (typeof n === `number`) return ofNumber(n, bytes);
-        if (Hex0x.isValid(n)) return ofHexString(n, bytes);
+        if (_Hex0x.isValid(n)) return ofHexString(n, bytes);
         return ofString(n, bytes);
     },
 
@@ -418,7 +418,7 @@ const Hex = {
 /**
  * Helper for encoding hexadecimal values as used to represent Ethereum quantities.
  */
-const Quantity = {
+const _Quantity = {
     /**
      *  Returns a hexadecimal representation for the given input data
      *  - without any not meaningful `0` digit on the left side,
@@ -434,8 +434,8 @@ const Quantity = {
      * @see HexRepresentable
      */
     of(n: HexRepresentable): string {
-        return `${PREFIX}${trim(Hex.of(n))}`;
+        return `${PREFIX}${trim(_Hex.of(n))}`;
     }
 };
 
-export { Hex, Hex0x, Quantity };
+export { _Hex, _Hex0x, _Quantity };

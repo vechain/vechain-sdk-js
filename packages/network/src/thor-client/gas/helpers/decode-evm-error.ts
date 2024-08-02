@@ -7,7 +7,7 @@ import { SOLIDITY_ERROR_SELECTOR, SOLIDITY_PANIC_SELECTOR } from './const';
 /**
  * Decodes revert reasons from a given hex-encoded data string, identifying whether the revert is due to an "Error(string)" or a "Panic(uint256)".
  *
- * @param data - Hex-encoded data containing revert information.
+ * @param data - _Hex-encoded data containing revert information.
  * @returns Decoded revert reason or an error message if decoding fails.
  *
  * @example

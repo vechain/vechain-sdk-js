@@ -15,7 +15,7 @@ import {
     debugFormatter,
     type TracerReturnTypeRPC
 } from '../../../../formatter';
-import { Hex0x } from '@vechain/sdk-core';
+import { _Hex0x } from '@vechain/sdk-core';
 import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
@@ -58,7 +58,7 @@ const debugTraceTransaction = async (
     const [transactionId, traceOptions] = params as [string, TraceOptionsRPC];
 
     // Invalid transaction ID
-    if (!Hex0x.isThorId(transactionId)) {
+    if (!_Hex0x.isThorId(transactionId)) {
         throw new InvalidDataType(
             'debug_traceTransaction()',
             'Invalid transaction ID given as input. Input must be an hex string of length 64.',

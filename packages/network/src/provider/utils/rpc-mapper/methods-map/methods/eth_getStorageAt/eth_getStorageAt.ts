@@ -1,4 +1,4 @@
-import { Hex0x } from '@vechain/sdk-core';
+import { _Hex0x } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
@@ -54,7 +54,7 @@ const ethGetStorageAt = async (
         // Get the account details
         return await thorClient.accounts.getStorageAt(
             address,
-            Hex0x.canon(storagePosition, 32),
+            _Hex0x.canon(storagePosition, 32),
             {
                 revision: getCorrectBlockNumberRPCToVeChain(block)
             }

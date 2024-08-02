@@ -1,4 +1,4 @@
-import { Hex0x } from '../utils';
+import { _Hex0x } from '../utils';
 import { keccak_256 } from '@noble/hashes/sha3';
 import { type ReturnType } from './types';
 import { InvalidDataType } from '@vechain/sdk-errors';
@@ -69,7 +69,7 @@ function keccak256(
     }
 
     const hash = keccak_256(data);
-    return returnType === 'buffer' ? hash : Hex0x.of(hash);
+    return returnType === 'buffer' ? hash : _Hex0x.of(hash);
 }
 
 export { keccak256 };

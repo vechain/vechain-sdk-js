@@ -1,5 +1,5 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { Hex, Hex0x } from '../utils';
+import { _Hex, _Hex0x } from '../utils';
 import { addressUtils } from '../address-utils';
 import { CertificateSignature } from '@vechain/sdk-errors';
 import { Txt } from '../vcdm';
@@ -79,7 +79,7 @@ function encode(cert: Certificate): Uint8Array {
 function sign(cert: Certificate, privateKey: Uint8Array): Certificate {
     return {
         ...cert,
-        signature: Hex0x.of(
+        signature: _Hex0x.of(
             secp256k1.sign(blake2b256(encode(cert)), privateKey)
         )
     };
@@ -117,7 +117,7 @@ function verify(cert: Certificate): void {
     }
 
     // Invalid hexadecimal as signature.
-    if (!Hex0x.isValid(cert.signature, false, true)) {
+    if (!_Hex0x.isValid(cert.signature, false, true)) {
         throw new CertificateSignature(
             'certificate.verify()',
             'Verification failed: signature format is invalid.',
@@ -126,7 +126,7 @@ function verify(cert: Certificate): void {
     }
 
     // If the signature is not a string, an exception is thrown above.
-    const sign = hexToBytes(Hex.canon(cert.signature));
+    const sign = hexToBytes(_Hex.canon(cert.signature));
     const hash = blake2b256(encode(cert));
     // The signer address is compared in lowercase to avoid
     const signer = addressUtils

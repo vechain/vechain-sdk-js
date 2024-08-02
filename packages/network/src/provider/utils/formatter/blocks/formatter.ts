@@ -1,5 +1,5 @@
 import { type BlocksRPC } from './types';
-import { Hex0x, Quantity, ZERO_BYTES } from '@vechain/sdk-core';
+import { _Hex0x, _Quantity, ZERO_BYTES } from '@vechain/sdk-core';
 import { transactionsFormatter } from '../transactions';
 import {
     type CompressedBlockDetail,
@@ -35,14 +35,14 @@ const formatToRPCStandard = (
         // Supported fields converted to RPC standard
         hash: block.id,
         parentHash: block.parentID,
-        number: Quantity.of(block.number),
-        size: Quantity.of(block.size),
+        number: _Quantity.of(block.number),
+        size: _Quantity.of(block.size),
         stateRoot: block.stateRoot,
         receiptsRoot: block.receiptsRoot,
         transactionsRoot: block.txsRoot,
-        timestamp: Quantity.of(block.timestamp),
-        gasLimit: Quantity.of(block.gasLimit),
-        gasUsed: Quantity.of(block.gasUsed),
+        timestamp: _Quantity.of(block.timestamp),
+        gasLimit: _Quantity.of(block.gasLimit),
+        gasUsed: _Quantity.of(block.gasUsed),
         transactions,
         miner: block.beneficiary,
 
@@ -50,12 +50,12 @@ const formatToRPCStandard = (
         difficulty: '0x0',
         totalDifficulty: '0x0',
         uncles: [],
-        sha3Uncles: Hex0x.of(ZERO_BYTES(32)),
-        nonce: Hex0x.of(ZERO_BYTES(8)),
-        logsBloom: Hex0x.of(ZERO_BYTES(256)),
+        sha3Uncles: _Hex0x.of(ZERO_BYTES(32)),
+        nonce: _Hex0x.of(ZERO_BYTES(8)),
+        logsBloom: _Hex0x.of(ZERO_BYTES(256)),
         extraData: '0x',
         baseFeePerGas: '0x0',
-        mixHash: Hex0x.of(ZERO_BYTES(32))
+        mixHash: _Hex0x.of(ZERO_BYTES(32))
     };
 };
 

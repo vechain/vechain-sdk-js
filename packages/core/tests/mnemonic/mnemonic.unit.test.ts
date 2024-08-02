@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import {
     addressUtils,
-    Hex,
+    _Hex,
     mnemonic,
     MNEMONIC_WORDLIST_ALLOWED_SIZES,
     secp256k1,
@@ -65,7 +65,7 @@ describe('mnemonic', () => {
                 .forEach((path) => {
                     test(path.testName, () => {
                         expect(
-                            Hex.of(
+                            _Hex.of(
                                 mnemonic.derivePrivateKey(
                                     words,
                                     path.derivationPath
@@ -84,7 +84,7 @@ describe('mnemonic', () => {
                 .forEach((path) => {
                     test(path.testName, () => {
                         expect(
-                            Hex.of(
+                            _Hex.of(
                                 mnemonic.derivePrivateKey(
                                     words,
                                     path.derivationPath

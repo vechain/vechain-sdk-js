@@ -8,7 +8,7 @@ import {
     assertValidNumericKindBuffer,
     decodeBufferToHexWithLeadingZeros,
     encodeBigIntToBuffer,
-    Hex,
+    _Hex,
     validateNumericKindData
 } from '../../src';
 import {
@@ -37,7 +37,7 @@ describe('encodeBigIntToBuffer', () => {
     test('encodeBigIntToBuffer', () => {
         const bi = 123456789012345678901n; // or any BigInt you want to test with
         const buffer = encodeBigIntToBuffer(bi, 9, 'encodeBigIntToBuffer');
-        expect(Hex.of(buffer)).toBe('06b14e9f812f366c35');
+        expect(_Hex.of(buffer)).toBe('06b14e9f812f366c35');
     });
 });
 

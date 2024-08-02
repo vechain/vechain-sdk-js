@@ -1,5 +1,5 @@
 import { type LogsRPC } from './types';
-import { Quantity } from '@vechain/sdk-core';
+import { _Quantity } from '@vechain/sdk-core';
 import { type EventCriteria, type EventLogs } from '../../../../thor-client';
 
 /**
@@ -14,7 +14,7 @@ const formatToLogsRPC = (eventLogs: EventLogs[]): LogsRPC[] => {
         return {
             address: eventLog.address,
             blockHash: eventLog.meta.blockID,
-            blockNumber: Quantity.of(eventLog.meta.blockNumber),
+            blockNumber: _Quantity.of(eventLog.meta.blockNumber),
             data: eventLog.data,
             logIndex: '0x0',
             // Always false for now

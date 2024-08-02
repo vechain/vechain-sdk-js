@@ -1,4 +1,4 @@
-import { Hex, Hex0x } from '../utils';
+import { _Hex, _Hex0x } from '../utils';
 import { Txt } from '../vcdm';
 import { blake2b } from '@noble/hashes/blake2b';
 import { hexToBytes } from '@noble/hashes/utils';
@@ -86,10 +86,10 @@ function blake2b256(
 
     if (data instanceof Uint8Array) {
         const hash = blake2b256OfArray(data);
-        return returnType === 'hex' ? Hex0x.of(hash) : hash;
+        return returnType === 'hex' ? _Hex0x.of(hash) : hash;
     } else {
         const hash = blake2b256OfString(data);
-        return returnType === 'hex' ? Hex0x.of(hash) : hash;
+        return returnType === 'hex' ? _Hex0x.of(hash) : hash;
     }
 }
 
@@ -133,8 +133,8 @@ function blake2b256OfHex(
     }
 
     try {
-        const hash = blake2b256OfArray(hexToBytes(Hex.canon(hex)));
-        return returnType === 'hex' ? Hex0x.of(hash) : hash;
+        const hash = blake2b256OfArray(hexToBytes(_Hex.canon(hex)));
+        return returnType === 'hex' ? _Hex0x.of(hash) : hash;
     } catch (e) {
         throw new InvalidDataType(
             'blake2b256OfHex',

@@ -1,5 +1,5 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { Hex, Hex0x } from '../hex';
+import { _Hex, _Hex0x } from '../hex';
 import { Txt } from '../../vcdm';
 import { INTEGER_REGEX, NUMERIC_REGEX, ZERO_BYTES } from '../const';
 import { InvalidDataType } from '@vechain/sdk-errors';
@@ -14,14 +14,14 @@ import { InvalidDataType } from '@vechain/sdk-errors';
  * @throws {InvalidDataType}
  */
 const decodeBytes32String = (hex: string): string => {
-    if (!Hex0x.isValid(hex) || Hex.canon(hex).length !== 64)
+    if (!_Hex0x.isValid(hex) || _Hex.canon(hex).length !== 64)
         throw new InvalidDataType(
             'dataUtils.decodeBytes32String()',
             `Failed to decode value ${hex} to string. Value is not a valid hex string or it is not 64 characters long`,
             { value: hex }
         );
 
-    const valueInBytes = n_utils.hexToBytes(Hex.canon(hex));
+    const valueInBytes = n_utils.hexToBytes(_Hex.canon(hex));
     // Find the first zero byte.
     const firstZeroIndex = valueInBytes.findIndex((byte) => byte === 0);
     // If the first byte is zero, then the encoded bytes 32 string is padded with zeros to the left.
@@ -65,8 +65,8 @@ const encodeBytes32String = (
 
         const pad = ZERO_BYTES(32 - valueInBytes.length);
         return zeroPadding === 'left'
-            ? Hex0x.of(n_utils.concatBytes(pad, valueInBytes))
-            : Hex0x.of(n_utils.concatBytes(valueInBytes, pad));
+            ? _Hex0x.of(n_utils.concatBytes(pad, valueInBytes))
+            : _Hex0x.of(n_utils.concatBytes(valueInBytes, pad));
     } catch (e) {
         throw new InvalidDataType(
             'dataUtils.encodeBytes32String()',

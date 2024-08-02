@@ -1,6 +1,6 @@
 import {
     abi,
-    Hex0x,
+    _Hex0x,
     revisionUtils,
     secp256k1,
     type Transaction,
@@ -59,7 +59,7 @@ class TransactionsModule {
         options?: GetTransactionInputOptions
     ): Promise<TransactionDetailNoRaw | null> {
         // Invalid transaction ID
-        if (!Hex0x.isThorId(id)) {
+        if (!_Hex0x.isThorId(id)) {
             throw new InvalidDataType(
                 'TransactionsModule.getTransaction()',
                 'Invalid transaction ID given as input. Input must be an hex string of length 64.',
@@ -68,7 +68,7 @@ class TransactionsModule {
         }
 
         // Invalid head
-        if (options?.head !== undefined && !Hex0x.isThorId(options.head))
+        if (options?.head !== undefined && !_Hex0x.isThorId(options.head))
             throw new InvalidDataType(
                 'TransactionsModule.getTransaction()',
                 'Invalid head given as input. Input must be an hex string of length 64.',
@@ -100,7 +100,7 @@ class TransactionsModule {
         options?: GetTransactionInputOptions
     ): Promise<TransactionDetailRaw | null> {
         // Invalid transaction ID
-        if (!Hex0x.isThorId(id)) {
+        if (!_Hex0x.isThorId(id)) {
             throw new InvalidDataType(
                 'TransactionsModule.getTransactionRaw()',
                 'Invalid transaction ID given as input. Input must be an hex string of length 64.',
@@ -109,7 +109,7 @@ class TransactionsModule {
         }
 
         // Invalid head
-        if (options?.head !== undefined && !Hex0x.isThorId(options.head))
+        if (options?.head !== undefined && !_Hex0x.isThorId(options.head))
             throw new InvalidDataType(
                 'TransactionsModule.getTransaction()',
                 'Invalid head given as input. Input must be an hex string of length 64.',
@@ -142,7 +142,7 @@ class TransactionsModule {
         options?: GetTransactionReceiptInputOptions
     ): Promise<TransactionReceipt | null> {
         // Invalid transaction ID
-        if (!Hex0x.isThorId(id)) {
+        if (!_Hex0x.isThorId(id)) {
             throw new InvalidDataType(
                 'TransactionsModule.getTransactionReceipt()',
                 'Invalid transaction ID given as input. Input must be an hex string of length 64.',
@@ -151,7 +151,7 @@ class TransactionsModule {
         }
 
         // Invalid head
-        if (options?.head !== undefined && !Hex0x.isThorId(options.head))
+        if (options?.head !== undefined && !_Hex0x.isThorId(options.head))
             throw new InvalidDataType(
                 'TransactionsModule.getTransaction()',
                 'Invalid head given as input. Input must be an hex string of length 64.',
@@ -177,7 +177,7 @@ class TransactionsModule {
         raw: string
     ): Promise<SendTransactionResult> {
         // Validate raw transaction
-        if (!Hex0x.isValid(raw)) {
+        if (!_Hex0x.isValid(raw)) {
             throw new InvalidDataType(
                 'TransactionsModule.sendRawTransaction()',
                 'Sending failed: Input must be a valid raw transaction in hex format.',
@@ -233,7 +233,7 @@ class TransactionsModule {
             );
         }
 
-        const rawTx = Hex0x.of(signedTx.encoded);
+        const rawTx = _Hex0x.of(signedTx.encoded);
 
         return await this.sendRawTransaction(rawTx);
     }
@@ -255,7 +255,7 @@ class TransactionsModule {
         options?: WaitForTransactionOptions
     ): Promise<TransactionReceipt | null> {
         // Invalid transaction ID
-        if (!Hex0x.isThorId(txID)) {
+        if (!_Hex0x.isThorId(txID)) {
             throw new InvalidDataType(
                 'TransactionsModule.waitForTransaction()',
                 'Invalid transaction ID given as input. Input must be an hex string of length 64.',
@@ -325,7 +325,7 @@ class TransactionsModule {
             expiration: options?.expiration ?? 32,
             gas,
             gasPriceCoef: options?.gasPriceCoef ?? 0,
-            nonce: options?.nonce ?? Hex0x.of(secp256k1.randomBytes(8)),
+            nonce: options?.nonce ?? _Hex0x.of(secp256k1.randomBytes(8)),
             reserved:
                 options?.isDelegated === true ? { features: 1 } : undefined
         };

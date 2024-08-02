@@ -11,7 +11,7 @@ import {
 } from './types';
 import { thorest } from '../../utils';
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { addressUtils, Hex0x } from '@vechain/sdk-core';
+import { addressUtils, _Hex0x } from '@vechain/sdk-core';
 
 /** The `DebugModule` class encapsulates functionality to handle Debug
  * on the VeChainThor blockchain.
@@ -103,7 +103,7 @@ class DebugModule {
 
         if (
             input.contractInput?.data !== undefined &&
-            !Hex0x.isValid(input.contractInput.data, true)
+            !_Hex0x.isValid(input.contractInput.data, true)
         )
             throw new InvalidDataType(
                 'DebugModule.traceContractCall()',
@@ -113,7 +113,7 @@ class DebugModule {
 
         if (
             input.contractInput?.value !== undefined &&
-            !Hex0x.isValid(input.contractInput.value)
+            !_Hex0x.isValid(input.contractInput.value)
         ) {
             throw new InvalidDataType(
                 'DebugModule.traceContractCall()',
@@ -202,7 +202,7 @@ class DebugModule {
         functionName: string
     ): void {
         // Validate target - blockID
-        if (!Hex0x.isThorId(target.blockID)) {
+        if (!_Hex0x.isThorId(target.blockID)) {
             throw new InvalidDataType(
                 'DebugModule.validateTarget()',
                 `Invalid block ID '${target.blockID}' given as input for ${functionName}.`,
@@ -212,7 +212,7 @@ class DebugModule {
 
         // Validate target - transaction
         if (typeof target.transaction === 'string') {
-            if (!Hex0x.isThorId(target.transaction))
+            if (!_Hex0x.isThorId(target.transaction))
                 throw new InvalidDataType(
                     'DebugModule.validateTarget()',
                     `Invalid transaction id '${target.transaction}' given as input for ${functionName}.`,

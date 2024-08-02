@@ -2,7 +2,7 @@ import { addressUtils } from '../../address-utils';
 import { type TransactionClause } from '../../transaction';
 import { TRANSACTIONS_GAS_CONSTANTS } from '../const';
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { Hex0x } from '../hex';
+import { _Hex0x } from '../hex';
 
 /**
  * Calculates intrinsic gas that a tx costs with the given set of clauses.
@@ -51,7 +51,7 @@ function intrinsicGas(clauses: TransactionClause[]): number {
  */
 function _calculateDataUsedGas(data: string): number {
     // Invalid data
-    if (data !== '' && !Hex0x.isValid(data))
+    if (data !== '' && !_Hex0x.isValid(data))
         throw new InvalidDataType(
             '_calculateDataUsedGas()',
             `Invalid data type for gas calculation. Data should be a hexadecimal string.`,

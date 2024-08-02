@@ -1,8 +1,8 @@
 import * as n_utils from '@noble/curves/abstract/utils';
 import {
     addressUtils,
-    Hex,
-    Hex0x,
+    _Hex,
+    _Hex0x,
     Txt,
     keccak256,
     secp256k1,
@@ -159,7 +159,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                 );
                 // SCP256K1 encodes the recovery flag in the last byte. EIP-191 adds 27 to it.
                 sign[sign.length - 1] += 27;
-                resolve(Hex0x.of(sign));
+                resolve(_Hex0x.of(sign));
             } catch (e) {
                 reject(e);
             }
@@ -186,7 +186,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         return await new Promise((resolve, reject) => {
             try {
                 const hash = n_utils.hexToBytes(
-                    Hex.canon(
+                    _Hex.canon(
                         vechain_sdk_core_ethers.TypedDataEncoder.hash(
                             domain,
                             types,
@@ -200,7 +200,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                 );
                 // SCP256K1 encodes the recovery flag in the last byte. EIP-712 adds 27 to it.
                 sign[sign.length - 1] += 27;
-                resolve(Hex0x.of(sign));
+                resolve(_Hex0x.of(sign));
             } catch (e) {
                 reject(e);
             }
@@ -253,7 +253,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                   thorClient,
                   delegator
               )
-            : Hex0x.of(
+            : _Hex0x.of(
                   TransactionHandler.sign(populatedTransaction, privateKey)
                       .encoded
               );
@@ -300,7 +300,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
 
         // Sign transaction with origin private key and delegator private key
         if (delegatorOptions?.delegatorPrivateKey !== undefined)
-            return Hex0x.of(
+            return _Hex0x.of(
                 TransactionHandler.signWithDelegator(
                     unsignedTransactionBody,
                     originPrivateKey,
@@ -327,7 +327,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         const signature = Buffer.concat([originSignature, delegatorSignature]);
 
         // Return new signed transaction
-        return Hex0x.of(new Transaction(unsignedTx.body, signature).encoded);
+        return _Hex0x.of(new Transaction(unsignedTx.body, signature).encoded);
     }
 }
 

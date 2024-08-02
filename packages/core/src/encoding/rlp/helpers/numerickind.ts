@@ -1,4 +1,4 @@
-import { dataUtils, Hex, Hex0x } from '../../../utils';
+import { dataUtils, _Hex, _Hex0x } from '../../../utils';
 import { type RLPInput } from '../types';
 import { InvalidRLP } from '@vechain/sdk-errors';
 
@@ -75,7 +75,7 @@ const _validateNumericKindNumber = (num: number, context: string): void => {
  * @private
  */
 const _validateNumericKindString = (str: string, context: string): void => {
-    const isHex = Hex0x.isValid(str);
+    const isHex = _Hex0x.isValid(str);
     const isDecimal = dataUtils.isDecimalString(str);
 
     // Ensure the string is either a hex or decimal number.
@@ -170,7 +170,7 @@ const encodeBigIntToBuffer = (
     context: string
 ): Buffer => {
     if (bi === 0n) return Buffer.alloc(0);
-    const hex = Hex.of(bi);
+    const hex = _Hex.of(bi);
 
     if (maxBytes !== undefined && hex.length > maxBytes * 2) {
         throw new InvalidRLP(
@@ -197,7 +197,7 @@ const encodeBigIntToBuffer = (
 const decodeBufferToNumberOrHex = (buffer: Buffer): number | string => {
     if (buffer.length === 0) return 0;
 
-    const bi = BigInt(Hex0x.of(buffer));
+    const bi = BigInt(_Hex0x.of(buffer));
     const num = Number(bi);
 
     // Return number or hex based on integer safety

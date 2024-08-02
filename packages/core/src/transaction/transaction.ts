@@ -4,7 +4,7 @@ import { blake2b256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import {
     BLOCK_REF_LENGTH,
-    Hex0x,
+    _Hex0x,
     SIGNATURE_LENGTH,
     SIGNED_TRANSACTION_RLP,
     TRANSACTION_FEATURES_KIND,
@@ -428,7 +428,7 @@ class Transaction {
             body.chainTag <= 255 &&
             // Block reference
             body.blockRef !== undefined &&
-            Hex0x.isValid(body.blockRef) &&
+            _Hex0x.isValid(body.blockRef) &&
             Buffer.from(body.blockRef.slice(2), 'hex').length ===
                 BLOCK_REF_LENGTH &&
             // Expiration

@@ -1,4 +1,4 @@
-import { Hex, Hex0x } from '../utils';
+import { _Hex, _Hex0x } from '../utils';
 import { keccak256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import { InvalidAddress } from '@vechain/sdk-errors';
@@ -55,7 +55,7 @@ function fromPrivateKey(privateKey: Uint8Array): string {
  */
 function fromPublicKey(publicKey: Uint8Array): string {
     return toERC55Checksum(
-        Hex0x.of(
+        _Hex0x.of(
             keccak256(secp256k1.inflatePublicKey(publicKey).slice(1)).slice(12)
         )
     );
@@ -95,8 +95,8 @@ function toERC55Checksum(address: string): string {
         );
     }
 
-    const digits = Hex.canon(address.toLowerCase());
-    const hash = Hex.of(keccak256(digits));
+    const digits = _Hex.canon(address.toLowerCase());
+    const hash = _Hex.of(keccak256(digits));
     let result: string = '0x';
     for (let i = 0; i < digits.length; i++) {
         if (parseInt(hash[i], 16) >= 8) {

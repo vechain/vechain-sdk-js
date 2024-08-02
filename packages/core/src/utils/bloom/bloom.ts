@@ -5,7 +5,7 @@ import {
     InvalidBloomParams,
     InvalidDataType
 } from '@vechain/sdk-errors';
-import { Hex, Hex0x } from '../hex';
+import { _Hex, _Hex0x } from '../hex';
 import { addressUtils } from '../../address-utils';
 import { bloom } from '../../bloom';
 
@@ -52,8 +52,8 @@ const BLOOM_DEFAULT_K = 5;
 const filterOf = (addresses: string[], k: number = 5): string => {
     const keys = new Set<Uint8Array>();
     addresses.forEach((address) => {
-        if (addressUtils.isAddress(Hex0x.canon(address))) {
-            keys.add(n_utils.hexToBytes(Hex.canon(address)));
+        if (addressUtils.isAddress(_Hex0x.canon(address))) {
+            keys.add(n_utils.hexToBytes(_Hex.canon(address)));
         }
     });
     const generator = new bloom.Generator();
@@ -105,7 +105,7 @@ const isInBloom = (filter: string, k: number, data: string): boolean => {
         );
     }
 
-    if (typeof data !== 'string' || !Hex0x.isValid(data, true)) {
+    if (typeof data !== 'string' || !_Hex0x.isValid(data, true)) {
         throw new InvalidDataType(
             'bloomUtils.isInBloom()',
             'Invalid data type. Data should be an hexadecimal string.',
@@ -121,10 +121,10 @@ const isInBloom = (filter: string, k: number, data: string): boolean => {
         );
     }
     const bloomFilter = new bloom.Filter(
-        n_utils.hexToBytes(Hex.canon(filter)),
+        n_utils.hexToBytes(_Hex.canon(filter)),
         k
     );
-    return bloomFilter.contains(n_utils.hexToBytes(Hex.canon(data)));
+    return bloomFilter.contains(n_utils.hexToBytes(_Hex.canon(data)));
 };
 /**
  * Checks if an address is present in a Bloom Filter.
