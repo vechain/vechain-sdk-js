@@ -1,11 +1,10 @@
 import { Buffer } from 'buffer';
-import { ZERO_BYTES } from '../../src';
+import { Txt, ZERO_BYTES } from '../../src';
 import { bytesToHex } from '@noble/ciphers/utils';
 import { cert } from '../certificate/fixture';
 import { describe, expect, test } from '@jest/globals';
 import { ethers } from 'ethers';
 import { hashFunctionsToTest } from './fixture';
-import { txt } from '../../src/utils/txt/txt';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
@@ -22,7 +21,7 @@ describe('Hash', () => {
         console.log(bytesToHex(buffer));
         // const textEncoder = new TextEncoder();
         // form: "NFC" | "NFD" | "NFKC" | "NFKD"): string
-        const array = txt.encode(json);
+        const array = Txt.of(json).bytes;
         console.log(bytesToHex(array));
         // const blake_dev_ind = ThorDevKit.blake2b256(buffer);
         // console.log('ind', blake_dev_ind);
