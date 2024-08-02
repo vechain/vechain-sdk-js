@@ -1,5 +1,5 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import { InvalidCastType, InvalidDataType } from '@vechain/sdk-errors';
 import { type VeChainDataModel } from './VeChainDataModel';
 
 class Hex extends String implements VeChainDataModel<Hex> {
@@ -41,7 +41,15 @@ class Hex extends String implements VeChainDataModel<Hex> {
     }
 
     get n(): number {
-        return new DataView(this.bytes.buffer).getFloat64(0);
+        if (this.isNumber()) {
+            return new DataView(this.bytes.buffer).getFloat64(0);
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        throw new InvalidCastType<Hex>(
+            'Hex.n',
+            'not an IEEE 754 float 64 number',
+            this
+        );
     }
 
     compareTo(that: Hex): number {
@@ -62,6 +70,10 @@ class Hex extends String implements VeChainDataModel<Hex> {
 
     isEqual(that: Hex): boolean {
         return this.compareTo(that) === 0;
+    }
+
+    isNumber(): boolean {
+        return this.hex.length === 32;
     }
 
     /**
