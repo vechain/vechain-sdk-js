@@ -50,3 +50,12 @@ export default {
 	// 	return new Response(JSON.stringify(decodedTx));
 	// }
 };
+
+export async function handleRequest(request: Request): Promise<Response> {
+	// Your Worker logic here
+	return new Response("Hello World");
+	}
+
+	addEventListener("fetch", (event) => {
+	event.respondWith(handleRequest(event.request));
+});
