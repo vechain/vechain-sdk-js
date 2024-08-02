@@ -56,7 +56,7 @@ const txBBody: TransactionBody = {
 };
 
 // Define the senders private key
-const senderPrivateKey = secp256k1.generatePrivateKey();
+const senderPrivateKey = await secp256k1.generatePrivateKey();
 
 // To define transaction B as dependant on transaction A
 // We need to sign transaction A, and then get its Id
