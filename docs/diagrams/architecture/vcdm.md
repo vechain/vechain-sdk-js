@@ -9,7 +9,10 @@ classDiagram
     class Hash {
         <<abstract>>
     }
-    class Hex
+    class Hex {
+        +Hex fit(number digits)
+        +boolean isValid(string exp)$
+    }
     class Keccak256 
     class Keystore
     class Quantity
@@ -25,6 +28,7 @@ classDiagram
       +number n
       +number compareTo(~T~ that)
       +boolean isEqual(~T~ that)
+      +boolean isNumber()
       +VeChainDataModel of(bigint|number|string|Uint8Array exp)$
     }
     Address <|-- Account

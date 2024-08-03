@@ -27,7 +27,11 @@ import {
     validHexBlobKindDataTestCases,
     validNumericBufferTestCases
 } from './helpers.fixture';
-import { InvalidRLP, stringifyData } from '@vechain/sdk-errors';
+import {
+    InvalidOperation,
+    InvalidRLP,
+    stringifyData
+} from '@vechain/sdk-errors';
 
 /**
  * Test suite for BigInt helper functions
@@ -46,14 +50,14 @@ describe('encodeBigIntToBuffer', () => {
  * @group unit/numerickind-helpers
  */
 describe('decodeBufferToHexWithLeadingZeros', () => {
+    const buffer: Buffer = Buffer.alloc(1);
+    buffer[0] = 10;
     test('decodeBufferToHexWithLeadingZeros zero bytes', () => {
-        const buffer: Buffer = Buffer.alloc(1);
-        buffer[0] = 10;
-        expect(decodeBufferToHexWithLeadingZeros(buffer, 0)).toBe('0x0a');
+        expect(() => decodeBufferToHexWithLeadingZeros(buffer, 0)).toThrow(
+            InvalidOperation
+        );
     });
     test('decodeBufferToHexWithLeadingZeros with bytes', () => {
-        const buffer: Buffer = Buffer.alloc(1);
-        buffer[0] = 10;
         expect(decodeBufferToHexWithLeadingZeros(buffer, 4)).toBe('0x0000000a');
     });
 });

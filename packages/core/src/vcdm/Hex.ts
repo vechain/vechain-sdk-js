@@ -1,5 +1,9 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { InvalidCastType, InvalidDataType } from '@vechain/sdk-errors';
+import {
+    InvalidCastType,
+    InvalidDataType,
+    InvalidOperation
+} from '@vechain/sdk-errors';
 import { type VeChainDataModel } from './VeChainDataModel';
 
 class Hex extends String implements VeChainDataModel<Hex> {
@@ -68,10 +72,42 @@ class Hex extends String implements VeChainDataModel<Hex> {
         return compareLength;
     }
 
+    public fit(digits: number): Hex {
+        if (digits < this.hex.length) {
+            // Cut.
+            let cue = 0;
+            while (this.hex.length - cue > digits && this.hex.at(cue) === '0') {
+                cue++;
+            }
+            if (this.hex.length - cue === digits) {
+                return new Hex(this.hex.slice(cue));
+            }
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            throw new InvalidOperation<Hex>(
+                'Hex.fit',
+                `can't fit in ${digits} digits`,
+                this
+            );
+        }
+        if (digits > this.hex.length) {
+            // Pad.
+            return new Hex('0'.repeat(digits - this.hex.length) + this.hex);
+        }
+        return this;
+    }
+
     isEqual(that: Hex): boolean {
         return this.compareTo(that) === 0;
     }
 
+    /**
+     * Checks if this instance expresses a valid {@link Number} value
+     * according the
+     * [IEEE 754 double precision floating point format](https://en.wikipedia.org/wiki/Double-precision_floating-point_format).
+     *
+     * @returns {boolean} Returns true if this instance expresses 32 hex digits (16 bytes, 128 bits) needed to represent
+     * a {@link Number} value, else it returns false.
+     */
     isNumber(): boolean {
         return this.hex.length === 32;
     }
