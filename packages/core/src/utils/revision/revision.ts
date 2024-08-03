@@ -1,5 +1,5 @@
+import { Hex } from '../../vcdm/Hex';
 import { dataUtils } from '../data';
-import { _Hex0x } from '../hex';
 
 /**
  * Determines whether the provided revision is a valid for blocks functions.
@@ -30,7 +30,9 @@ const isRevisionAccount = (revision: string | number): boolean => {
     return (
         revision === 'best' ||
         revision === 'finalized' ||
-        (typeof revision === 'string' && _Hex0x.isValid(revision)) ||
+        (typeof revision === 'string' &&
+            Hex.isValid(revision) &&
+            revision.startsWith('0x')) ||
         (typeof revision === 'string' && dataUtils.isDecimalString(revision)) ||
         (typeof revision === 'number' && revision >= 0)
     );
