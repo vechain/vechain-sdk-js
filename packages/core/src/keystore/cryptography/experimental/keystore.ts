@@ -4,14 +4,14 @@
  * encryption, decryption, and validation functionality.
  */
 import * as n_utils from '@noble/curves/abstract/utils';
+import { Hex } from '../../../vcdm/Hex';
 import { InvalidKeystoreParams, stringifyData } from '@vechain/sdk-errors';
 import { ctr } from '@noble/ciphers/aes';
-import { scrypt } from '@noble/hashes/scrypt';
-import { type Keystore, type KeystoreAccount } from '../../types';
 import { addressUtils } from '../../../address-utils';
-import { _Hex, _Hex0x } from '../../../utils';
-import { secp256k1 } from '../../../secp256k1';
 import { keccak256 } from '../../../hash';
+import { scrypt } from '@noble/hashes/scrypt';
+import { secp256k1 } from '../../../secp256k1';
+import { type Keystore, type KeystoreAccount } from '../../types';
 
 /**
  * The cryptographic algorithm used to store the private key in the
@@ -365,29 +365,29 @@ function encryptKeystore(
         // Encrypt the private key: 32 bytes for the Web3 Secret Storage (derivedKey, macPrefix)
         const ciphertext = ctr(key.slice(0, 16), iv).encrypt(privateKey);
         return {
-            address: _Hex.canon(
+            address: Hex.of(
                 addressUtils.fromPublicKey(
                     secp256k1.derivePublicKey(privateKey)
                 )
-            ),
+            ).hex,
             crypto: {
                 cipher: KEYSTORE_CRYPTO_CIPHER,
                 cipherparams: {
-                    iv: _Hex.of(iv)
+                    iv: Hex.of(iv).hex
                 },
-                ciphertext: _Hex.of(ciphertext),
+                ciphertext: Hex.of(ciphertext).hex,
                 kdf: 'scrypt',
                 kdfparams: {
                     dklen: KEYSTORE_CRYPTO_PARAMS_DKLEN,
                     n: kdf.N,
                     p: kdf.p,
                     r: kdf.r,
-                    salt: _Hex.of(kdf.salt)
+                    salt: Hex.of(kdf.salt).hex
                 },
                 // Compute the message authentication code, used to check the password.
-                mac: _Hex.of(
+                mac: Hex.of(
                     keccak256(n_utils.concatBytes(macPrefix, ciphertext))
-                )
+                ).hex
             },
             id: uuidV4(uuidRandom),
             version: KEYSTORE_VERSION
@@ -506,9 +506,9 @@ function decryptKeystore(
         const ciphertext = n_utils.hexToBytes(keystore.crypto.ciphertext);
         if (
             keystore.crypto.mac !==
-            _Hex.of(
+            Hex.of(
                 keccak256(n_utils.concatBytes(key.slice(16, 32), ciphertext))
-            )
+            ).hex
         ) {
             throw new InvalidKeystoreParams(
                 '(EXPERIMENTAL) keystore.decryptKeystore()',
@@ -527,7 +527,9 @@ function decryptKeystore(
         if (
             keystore.address !== '' &&
             address !==
-                addressUtils.toERC55Checksum(_Hex0x.canon(keystore.address))
+                addressUtils.toERC55Checksum(
+                    Hex.of(keystore.address).toString()
+                )
         ) {
             throw new InvalidKeystoreParams(
                 '(EXPERIMENTAL) keystore.decryptKeystore()',
@@ -538,7 +540,7 @@ function decryptKeystore(
         return {
             address,
             // @note: Convert the private key to a string to be compatible with ethers
-            privateKey: _Hex0x.of(privateKey)
+            privateKey: Hex.of(privateKey).toString()
         } satisfies KeystoreAccount;
     } finally {
         password.fill(0); // Clear the password from memory.
@@ -589,7 +591,7 @@ function uuidV4(bytes: Uint8Array): string {
     // - clock_seq_hi_and_reserved[6] = 0b0
     // - clock_seq_hi_and_reserved[7] = 0b1
     bytes[8] = (bytes[8] & 0x3f) | 0x80;
-    const value = _Hex.of(bytes);
+    const value = Hex.of(bytes).hex;
     return [
         value.substring(0, 8),
         value.substring(8, 12),
