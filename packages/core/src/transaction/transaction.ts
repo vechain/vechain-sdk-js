@@ -4,7 +4,6 @@ import { blake2b256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import {
     BLOCK_REF_LENGTH,
-    _Hex0x,
     SIGNATURE_LENGTH,
     SIGNED_TRANSACTION_RLP,
     TRANSACTION_FEATURES_KIND,
@@ -18,6 +17,7 @@ import {
     NotDelegatedTransaction,
     UnavailableTransactionField
 } from '@vechain/sdk-errors';
+import { Hex } from '../vcdm/Hex';
 
 /**
  * Represents an immutable transaction entity.
@@ -428,7 +428,9 @@ class Transaction {
             body.chainTag <= 255 &&
             // Block reference
             body.blockRef !== undefined &&
-            _Hex0x.isValid(body.blockRef) &&
+            Hex.isValid(body.blockRef) &&
+            // PROVISIONAL: until transaction OOP refactored.
+            body.blockRef.startsWith('0x') &&
             Buffer.from(body.blockRef.slice(2), 'hex').length ===
                 BLOCK_REF_LENGTH &&
             // Expiration
