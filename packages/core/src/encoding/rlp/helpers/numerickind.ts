@@ -1,6 +1,7 @@
-import { dataUtils, _Hex, _Hex0x } from '../../../utils';
-import { type RLPInput } from '../types';
+import { dataUtils } from '../../../utils';
 import { InvalidRLP } from '@vechain/sdk-errors';
+import { Hex } from '../../../vcdm/Hex';
+import { type RLPInput } from '../types';
 
 /**
  * Validates and converts the input data to a BigInt.
@@ -75,7 +76,7 @@ const _validateNumericKindNumber = (num: number, context: string): void => {
  * @private
  */
 const _validateNumericKindString = (str: string, context: string): void => {
-    const isHex = _Hex0x.isValid(str);
+    const isHex = Hex.isValid(str) && str.startsWith('0x');
     const isDecimal = dataUtils.isDecimalString(str);
 
     // Ensure the string is either a hex or decimal number.
@@ -170,7 +171,7 @@ const encodeBigIntToBuffer = (
     context: string
 ): Buffer => {
     if (bi === 0n) return Buffer.alloc(0);
-    const hex = _Hex.of(bi);
+    const hex = Hex.of(bi).hex;
 
     if (maxBytes !== undefined && hex.length > maxBytes * 2) {
         throw new InvalidRLP(
@@ -197,7 +198,7 @@ const encodeBigIntToBuffer = (
 const decodeBufferToNumberOrHex = (buffer: Buffer): number | string => {
     if (buffer.length === 0) return 0;
 
-    const bi = BigInt(_Hex0x.of(buffer));
+    const bi = Hex.of(buffer).bi;
     const num = Number(bi);
 
     // Return number or hex based on integer safety
