@@ -1,6 +1,5 @@
-import * as n_utils from '@noble/curves/abstract/utils';
 import { BigNumber } from 'bignumber.js';
-import { _Hex, _Hex0x } from '../hex';
+import { Hex } from '../../vcdm/Hex';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { type WEI_UNITS } from './types';
 
@@ -51,10 +50,8 @@ function bigNumberOf(value: bigint | number | string): BigNumber {
             bn = BigNumber(value);
             break;
         case 'string': {
-            if (_Hex0x.isValid(value)) {
-                bn = BigNumber(
-                    n_utils.hexToNumber(_Hex.canon(value)).toString()
-                );
+            if (Hex.isValid(value) && value.startsWith('0x')) {
+                bn = BigNumber(Hex.of(value).bi.toString());
             } else {
                 bn = BigNumber(value);
             }
