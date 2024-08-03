@@ -1,5 +1,5 @@
 import { type BlockQuantityInputRPC } from '../../rpc-mapper';
-import { _Hex0x } from '@vechain/sdk-core';
+import { Hex } from '@vechain/sdk-core';
 
 /**
  * Get the correct block number for the given block number.
@@ -28,15 +28,15 @@ const getCorrectBlockNumberRPCToVeChain = (
             return 'best';
 
         // Earliest block
-        if (block === 'earliest') return _Hex0x.of(0);
+        if (block === 'earliest') return Hex.of(0).toString();
 
-        // _Hex number of block
+        // Hex number of block
         return block;
     }
 
     // Object with block number
     if (block.blockNumber !== undefined) {
-        return _Hex0x.of(block.blockNumber);
+        return Hex.of(block.blockNumber).toString();
     }
 
     // Object with block hash - Default case
