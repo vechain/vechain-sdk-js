@@ -1,7 +1,8 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { describe, expect, test } from '@jest/globals';
-import { certificate, type Certificate, _Hex0x } from '../../src';
+import { Hex } from '../../src/vcdm/Hex';
+import { certificate, type Certificate } from '../../src';
 import { cert, certPrivateKey } from './fixture';
+import { describe, expect, test } from '@jest/globals';
 import { privateKey } from '../secp256k1/fixture';
 import {
     CertificateSignature,
@@ -37,12 +38,12 @@ describe('certificate', () => {
                 ...cert,
                 payload: { ...cert.payload, content: 'fyi' }
             };
-            const tdkSignature = _Hex0x.of(
+            const tdkSignature = Hex.of(
                 tdk_secp256k1.sign(
                     tdk_blake2b256(tdk_certificate.encode(tdkCompatibleCert)),
                     Buffer.from(certPrivateKey)
                 )
-            );
+            ).toString();
             expect(tdkSignature).toEqual(
                 certificate.sign(tdkCompatibleCert, certPrivateKey).signature
             );
@@ -50,12 +51,12 @@ describe('certificate', () => {
 
         test('compatibility - thor-dev-kit - not compatible because UTF8 normalization not enforced ', () => {
             // thor-dev-kit doesn't support UTF8 NFC encoding for
-            const tdkSignature = _Hex0x.of(
+            const tdkSignature = Hex.of(
                 tdk_secp256k1.sign(
                     tdk_blake2b256(tdk_certificate.encode(cert)),
                     Buffer.from(certPrivateKey)
                 )
-            );
+            ).toString();
             expect(tdkSignature).not.toEqual(
                 certificate.sign(cert, certPrivateKey).signature
             );
@@ -108,12 +109,12 @@ describe('certificate', () => {
                 ...cert,
                 payload: { ...cert.payload, content: 'fyi' }
             };
-            const tdkSignature = _Hex0x.of(
+            const tdkSignature = Hex.of(
                 tdk_secp256k1.sign(
                     tdk_blake2b256(tdk_certificate.encode(tdkCompatibleCert)),
                     Buffer.from(certPrivateKey)
                 )
-            );
+            ).toString();
             const tdkSignedCert = {
                 ...tdkCompatibleCert,
                 signature: tdkSignature

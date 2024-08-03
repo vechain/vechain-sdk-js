@@ -1,5 +1,6 @@
+import { Hex } from '../../src/vcdm/Hex';
+import { SIGNATURE_LENGTH, TransactionHandler } from '../../src';
 import { describe, expect, test } from '@jest/globals';
-import { _Hex, SIGNATURE_LENGTH, TransactionHandler } from '../../src';
 import {
     delegator,
     invalidDecodedNotTrimmedReserved,
@@ -173,7 +174,7 @@ describe('Transaction handler', () => {
                 expect(decodedUnsigned.getSignatureHash()).toBeDefined();
                 expect(decodedUnsigned.getSignatureHash().length).toBe(32);
                 expect(decodedUnsigned.encoded).toBeDefined();
-                expect(_Hex.of(decodedUnsigned.encoded)).toBe(
+                expect(Hex.of(decodedUnsigned.encoded).hex).toBe(
                     transactions.undelegated[0].encodedUnsignedExpected.toString(
                         'hex'
                     )
@@ -198,7 +199,7 @@ describe('Transaction handler', () => {
                 expect(decodedSigned.getSignatureHash()).toBeDefined();
                 expect(decodedSigned.getSignatureHash().length).toBe(32);
                 expect(decodedSigned.encoded).toBeDefined();
-                expect(_Hex.of(decodedSigned.encoded)).toBe(
+                expect(Hex.of(decodedSigned.encoded).hex).toBe(
                     transactions.undelegated[0].encodedSignedExpected.toString(
                         'hex'
                     )
@@ -235,8 +236,8 @@ describe('Transaction handler', () => {
                 expect(decodedUnsigned.getSignatureHash()).toBeDefined();
                 expect(decodedUnsigned.getSignatureHash().length).toBe(32);
                 expect(decodedUnsigned.encoded).toBeDefined();
-                expect(_Hex.of(decodedUnsigned.encoded)).toBe(
-                    _Hex.of(transaction.encodedUnsignedExpected)
+                expect(Hex.of(decodedUnsigned.encoded)).toEqual(
+                    Hex.of(transaction.encodedUnsignedExpected)
                 );
                 const encodedSignedDelegated =
                     TransactionHandler.signWithDelegator(
@@ -264,8 +265,8 @@ describe('Transaction handler', () => {
                 expect(decodedSigned.getSignatureHash()).toBeDefined();
                 expect(decodedSigned.getSignatureHash().length).toBe(32);
                 expect(decodedSigned.encoded).toBeDefined();
-                expect(_Hex.of(decodedSigned.encoded)).toBe(
-                    _Hex.of(encodedSignedDelegated.encoded)
+                expect(Hex.of(decodedSigned.encoded)).toEqual(
+                    Hex.of(encodedSignedDelegated.encoded)
                 );
                 expect(decodedSigned.signature).toBeDefined();
                 expect(decodedSigned.signature?.length).toBe(

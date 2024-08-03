@@ -1,6 +1,7 @@
 import * as n_utils from '@noble/curves/abstract/utils';
+import { Hex } from '../../src/vcdm/Hex';
+import { Txt, bloom } from '../../src';
 import { describe, expect, test } from '@jest/globals';
-import { _Hex, Txt, bloom } from '../../src';
 import { bloomKTestCases } from './fixture';
 import { InvalidDataType, stringifyData } from '@vechain/sdk-errors';
 
@@ -219,7 +220,7 @@ describe('Bloom Filter', () => {
         // Generate the bloom filter
         const filter = generator.generate(bitsPerKey, k);
 
-        expect(_Hex.of(filter.bits)).toBe('96b298d634155950');
+        expect(Hex.of(filter.bits).hex).toBe('96b298d634155950');
         expect(filter.bits.byteLength).toBe(8); // 64 bits
         expect(filter.k).toBe(k);
 
@@ -247,7 +248,7 @@ describe('Bloom Filter', () => {
 
         expect(filter.bits.byteLength).toBe(8);
         expect(filter.k).toBe(k);
-        expect(_Hex.of(filter.bits)).toBe('0000000000000000'); // 16 groups of 4 bits, all 0 -> 64 bits
+        expect(Hex.of(filter.bits).hex).toBe('0000000000000000'); // 16 groups of 4 bits, all 0 -> 64 bits
     });
 
     /**
@@ -272,7 +273,7 @@ describe('Bloom Filter', () => {
         // Generate the bloom filter
         const filter = generator.generate(bitsPerKey, k);
 
-        expect(_Hex.of(filter.bits)).toBe(
+        expect(Hex.of(filter.bits).hex).toBe(
             'a4d641159d68d829345f86f40d50676cf042f6265072075a94'
         );
         expect(filter.bits.byteLength).toBe(25);
@@ -312,7 +313,7 @@ describe('Bloom Filter', () => {
 
         const filter = generator.generate(bitsPerKey, k);
 
-        expect(_Hex.of(filter.bits)).toBe('1190199325088200');
+        expect(Hex.of(filter.bits).hex).toBe('1190199325088200');
 
         // Validate the generated filter
         keys.forEach((key) => {
