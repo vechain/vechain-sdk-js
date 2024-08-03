@@ -1,10 +1,10 @@
+import { FixedHexBlobKind } from './fixedhexblob';
+import { Hex } from '../../../../vcdm/Hex';
 import {
     assertCompactFixedHexBlobBuffer,
     encodeCompactFixedHexBlob
 } from '../../helpers';
 import { type BufferOutput, type DataOutput, type RLPInput } from '../../types';
-import { FixedHexBlobKind } from './fixedhexblob';
-import { _Hex0x } from '../../../../utils';
 
 /**
  * Represents a fixed hex blob kind with zero trimming and padding functionality.
@@ -38,7 +38,11 @@ class CompactFixedHexBlobKind extends FixedHexBlobKind {
         assertCompactFixedHexBlobBuffer(buffer, context, this.bytes);
 
         return {
-            decode: () => _Hex0x.of(buffer, this.bytes) // Decode the buffer, returning a hex string with leading zeros.
+            decode: () =>
+                // Decode the buffer, returning a hex string with leading zeros.
+                Hex.of(buffer)
+                    .fit(this.bytes * 2)
+                    .toString()
         };
     }
 }
