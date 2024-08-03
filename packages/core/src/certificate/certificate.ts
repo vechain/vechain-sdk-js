@@ -1,10 +1,9 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { _Hex, _Hex0x } from '../utils';
-import { addressUtils } from '../address-utils';
 import { CertificateSignature } from '@vechain/sdk-errors';
+import { Hex } from '../vcdm/Hex';
 import { Txt } from '../vcdm';
+import { addressUtils } from '../address-utils';
 import { blake2b256 } from '../hash';
-import { hexToBytes } from '@noble/curves/abstract/utils';
 import { secp256k1 } from '../secp256k1';
 import { type Certificate } from './types';
 
@@ -73,15 +72,15 @@ function encode(cert: Certificate): Uint8Array {
  *
  * @returns {Certificate} - A new instance of the certificate with the signature added.
  *
- * @throws {InvalidSecp256k1PrivateKeyError} - If the private key is invalid.
+ * @throws {InvalidSecp256k1PrivateKey} - If the private key is invalid.
  *
  */
 function sign(cert: Certificate, privateKey: Uint8Array): Certificate {
     return {
         ...cert,
-        signature: _Hex0x.of(
+        signature: Hex.of(
             secp256k1.sign(blake2b256(encode(cert)), privateKey)
-        )
+        ).toString()
     };
 }
 
@@ -117,7 +116,13 @@ function verify(cert: Certificate): void {
     }
 
     // Invalid hexadecimal as signature.
-    if (!_Hex0x.isValid(cert.signature, false, true)) {
+    // if (!_Hex0x.isValid(cert.signature, false, true)) {
+    // PROVISIONAL: until 1119 Certificate OOP
+    if (
+        !Hex.isValid(cert.signature) ||
+        cert.signature.length % 2 !== 0 ||
+        !cert.signature.startsWith('0x')
+    ) {
         throw new CertificateSignature(
             'certificate.verify()',
             'Verification failed: signature format is invalid.',
@@ -126,7 +131,7 @@ function verify(cert: Certificate): void {
     }
 
     // If the signature is not a string, an exception is thrown above.
-    const sign = hexToBytes(_Hex.canon(cert.signature));
+    const sign = Hex.of(cert.signature).bytes;
     const hash = blake2b256(encode(cert));
     // The signer address is compared in lowercase to avoid
     const signer = addressUtils
