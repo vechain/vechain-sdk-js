@@ -30,9 +30,7 @@ const isRevisionAccount = (revision: string | number): boolean => {
     return (
         revision === 'best' ||
         revision === 'finalized' ||
-        (typeof revision === 'string' &&
-            Hex.isValid(revision) &&
-            revision.startsWith('0x')) ||
+        (typeof revision === 'string' && Hex.isValid0x(revision)) ||
         (typeof revision === 'string' && dataUtils.isDecimalString(revision)) ||
         (typeof revision === 'number' && revision >= 0)
     );

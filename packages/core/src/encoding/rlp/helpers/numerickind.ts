@@ -76,7 +76,7 @@ const _validateNumericKindNumber = (num: number, context: string): void => {
  * @private
  */
 const _validateNumericKindString = (str: string, context: string): void => {
-    const isHex = Hex.isValid(str) && str.startsWith('0x');
+    const isHex = Hex.isValid0x(str);
     const isDecimal = dataUtils.isDecimalString(str);
 
     // Ensure the string is either a hex or decimal number.

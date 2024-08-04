@@ -118,11 +118,7 @@ function verify(cert: Certificate): void {
     // Invalid hexadecimal as signature.
     // if (!_Hex0x.isValid(cert.signature, false, true)) {
     // PROVISIONAL: until 1119 Certificate OOP
-    if (
-        !Hex.isValid(cert.signature) ||
-        cert.signature.length % 2 !== 0 ||
-        !cert.signature.startsWith('0x')
-    ) {
+    if (!Hex.isValid0x(cert.signature) || cert.signature.length % 2 !== 0) {
         throw new CertificateSignature(
             'certificate.verify()',
             'Verification failed: signature format is invalid.',

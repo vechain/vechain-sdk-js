@@ -428,9 +428,7 @@ class Transaction {
             body.chainTag <= 255 &&
             // Block reference
             body.blockRef !== undefined &&
-            Hex.isValid(body.blockRef) &&
-            // PROVISIONAL: until transaction OOP refactored.
-            body.blockRef.startsWith('0x') &&
+            Hex.isValid0x(body.blockRef) &&
             Buffer.from(body.blockRef.slice(2), 'hex').length ===
                 BLOCK_REF_LENGTH &&
             // Expiration

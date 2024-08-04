@@ -50,7 +50,7 @@ function bigNumberOf(value: bigint | number | string): BigNumber {
             bn = BigNumber(value);
             break;
         case 'string': {
-            if (Hex.isValid(value) && value.startsWith('0x')) {
+            if (Hex.isValid0x(value)) {
                 bn = BigNumber(Hex.of(value).bi.toString());
             } else {
                 bn = BigNumber(value);
