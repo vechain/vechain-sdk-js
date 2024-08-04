@@ -54,7 +54,6 @@ const ethGetStorageAt = async (
         // Get the account details
         return await thorClient.accounts.getStorageAt(
             address,
-            // _Hex0x.canon(storagePosition, 32),
             ThorId.of(storagePosition).toString(),
             {
                 revision: getCorrectBlockNumberRPCToVeChain(block)

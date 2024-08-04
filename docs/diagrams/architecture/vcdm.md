@@ -14,6 +14,7 @@ classDiagram
         +boolean isValid(string exp)$
         +boolean isValid0x(string exp)$
         +Hex of(bigint|number|string|Uint8Array exp)$
+        +Hex random(number bytes)$
     }
     class Keccak256 
     class Keystore

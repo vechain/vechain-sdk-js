@@ -42,7 +42,6 @@ const ethGetTransactionCount = async (params: unknown[]): Promise<string> => {
     }
 
     // Return a random number
-    // return await Promise.resolve(_Hex0x.of(secp256k1.randomBytes(6)));
     return Hex.of(secp256k1.randomBytes(6)).toString();
 };
 

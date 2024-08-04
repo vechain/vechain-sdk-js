@@ -1,15 +1,15 @@
-import { type ThorClient } from '../../../../../../thor-client';
-import {
-    type FilterOptions,
-    type VeChainProvider
-} from '../../../../../providers';
+import { Hex } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     JSONRPCServerError,
     stringifyData
 } from '@vechain/sdk-errors';
-import { _Hex } from '@vechain/sdk-core';
+import { type ThorClient } from '../../../../../../thor-client';
+import {
+    type FilterOptions,
+    type VeChainProvider
+} from '../../../../../providers';
 
 /**
  * Enumerates the types of subscriptions supported by the`eth_subscribe` RPC method.
@@ -102,7 +102,7 @@ const ethSubscribe = async (
 
         provider.startSubscriptionsPolling();
     }
-    const subscriptionId: string = _Hex.random(16);
+    const subscriptionId: string = Hex.random(16).hex;
 
     if (params.includes(SUBSCRIPTION_TYPE.NEW_HEADS)) {
         provider.subscriptionManager.newHeadsSubscription = {

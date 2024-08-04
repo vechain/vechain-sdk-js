@@ -55,7 +55,7 @@ interface ResponseBytecode {
  */
 interface ResponseStorage {
     /**
-     * _Hex string of the storage data
+     * Hex string of the storage data
      */
     value: string;
 }

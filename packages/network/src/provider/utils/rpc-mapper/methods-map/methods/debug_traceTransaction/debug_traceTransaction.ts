@@ -58,7 +58,6 @@ const debugTraceTransaction = async (
     const [transactionId, traceOptions] = params as [string, TraceOptionsRPC];
 
     // Invalid transaction ID
-    // if (!_Hex0x.isThorId(transactionId)) {
     if (!ThorId.isValid(transactionId)) {
         throw new InvalidDataType(
             'debug_traceTransaction()',

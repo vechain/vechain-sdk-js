@@ -1,3 +1,4 @@
+import * as nh_utils from '@noble/hashes/utils';
 import * as nc_utils from '@noble/curves/abstract/utils';
 import { InvalidCastType, InvalidDataType } from '@vechain/sdk-errors';
 import { type VeChainDataModel } from './VeChainDataModel';
@@ -134,6 +135,10 @@ class Hex extends String implements VeChainDataModel<Hex> {
             return Hex.of(new Uint8Array(dataView.buffer));
         }
         return new Hex(exp);
+    }
+
+    public static random(bytes: number): Hex {
+        return Hex.of(nh_utils.randomBytes(bytes));
     }
 }
 
