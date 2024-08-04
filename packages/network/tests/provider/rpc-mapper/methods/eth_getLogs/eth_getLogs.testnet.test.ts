@@ -1,4 +1,4 @@
-import { _Hex0x, Hex } from '@vechain/sdk-core';
+import { Hex } from '@vechain/sdk-core';
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { logsFixture } from './fixture';
@@ -66,11 +66,6 @@ describe('RPC Mapper - eth_getLogs method tests', () => {
                     ])) as LogsRPC[]
             ).rejects.toThrowError(JSONRPCInvalidParams);
         });
-    });
-
-    test('x', () => {
-        console.log(_Hex0x.of(19000000));
-        console.log(Hex.of(19000000n).toString());
     });
 
     test('eth_getLogs - array of an array of topics as input', async () => {
