@@ -1,8 +1,8 @@
+import { Hex } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
-import { _Hex0x } from '@vechain/sdk-core';
 
 /**
  * Fixtures for positive cases
@@ -85,7 +85,7 @@ const positiveCasesFixtures = [
                 data: '0x'
             },
             {
-                blockHash: _Hex0x.of(0)
+                blockHash: Hex.of(0).toString()
             }
         ],
         expected: '0x'
@@ -100,7 +100,7 @@ const positiveCasesFixtures = [
                 value: '1000000000000000000',
                 data: '0x'
             },
-            _Hex0x.of(0)
+            Hex.of(0).toString()
         ],
         expected: '0x'
     },

@@ -1,4 +1,4 @@
-import { _Hex0x, _Quantity, unitsUtils, ZERO_BYTES } from '@vechain/sdk-core';
+import { _Quantity, Hex, unitsUtils, ZERO_BYTES } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams
@@ -33,7 +33,7 @@ const ethGetBalanceTestCases = [
             'Should return correct balance of the test account after seeding',
         params: [
             // Zero address
-            _Hex0x.of(ZERO_BYTES(20)),
+            Hex.of(ZERO_BYTES(20)).toString(),
             _Quantity.of(1)
         ],
         expected: '0x0'

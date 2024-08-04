@@ -1,10 +1,10 @@
-import { _Hex0x, type Transaction } from '@vechain/sdk-core';
-import { type HttpClient } from '../../../utils';
+import { Hex, type Transaction } from '@vechain/sdk-core';
+import { NotDelegatedTransaction } from '@vechain/sdk-errors';
 import {
     type GetDelegationSignatureResult,
     type SignTransactionOptions
 } from '../types';
-import { NotDelegatedTransaction } from '@vechain/sdk-errors';
+import { type HttpClient } from '../../../utils';
 
 /**
  * Retrieves the signature of a delegation transaction from a delegator given the endpoint
@@ -27,7 +27,7 @@ const _getDelegationSignature = async (
     originAddress: string,
     httpClient: HttpClient
 ): Promise<Buffer> => {
-    const rawTx = _Hex0x.of(tx.encoded);
+    const rawTx = Hex.of(tx.encoded).toString();
 
     /**
      * The request body for the delegation transaction.
