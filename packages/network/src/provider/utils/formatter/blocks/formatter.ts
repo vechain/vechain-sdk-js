@@ -1,5 +1,5 @@
 import { type BlocksRPC } from './types';
-import { _Hex0x, _Quantity, ZERO_BYTES } from '@vechain/sdk-core';
+import { _Quantity, Hex, ZERO_BYTES } from '@vechain/sdk-core';
 import { transactionsFormatter } from '../transactions';
 import {
     type CompressedBlockDetail,
@@ -50,12 +50,12 @@ const formatToRPCStandard = (
         difficulty: '0x0',
         totalDifficulty: '0x0',
         uncles: [],
-        sha3Uncles: _Hex0x.of(ZERO_BYTES(32)),
-        nonce: _Hex0x.of(ZERO_BYTES(8)),
-        logsBloom: _Hex0x.of(ZERO_BYTES(256)),
+        sha3Uncles: Hex.of(ZERO_BYTES(32)).toString(),
+        nonce: Hex.of(ZERO_BYTES(8)).toString(),
+        logsBloom: Hex.of(ZERO_BYTES(256)).toString(),
         extraData: '0x',
         baseFeePerGas: '0x0',
-        mixHash: _Hex0x.of(ZERO_BYTES(32))
+        mixHash: Hex.of(ZERO_BYTES(32)).toString()
     };
 };
 

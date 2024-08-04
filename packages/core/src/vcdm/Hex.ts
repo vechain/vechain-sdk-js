@@ -1,9 +1,5 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
-import {
-    InvalidCastType,
-    InvalidDataType,
-    InvalidOperation
-} from '@vechain/sdk-errors';
+import { InvalidCastType, InvalidDataType } from '@vechain/sdk-errors';
 import { type VeChainDataModel } from './VeChainDataModel';
 
 class Hex extends String implements VeChainDataModel<Hex> {
@@ -82,11 +78,10 @@ class Hex extends String implements VeChainDataModel<Hex> {
             if (this.hex.length - cue === digits) {
                 return new Hex(this.hex.slice(cue));
             }
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-            throw new InvalidOperation<Hex>(
+            throw new InvalidDataType(
                 'Hex.fit',
                 `can't fit in ${digits} digits`,
-                this
+                { digits, hex: this }
             );
         }
         if (digits > this.hex.length) {

@@ -3,7 +3,7 @@ import {
     type TransactionReceiptRPC,
     type TransactionRPC
 } from './types';
-import { _Hex0x, _Quantity, ZERO_BYTES } from '@vechain/sdk-core';
+import { Hex, _Quantity, ZERO_BYTES } from '@vechain/sdk-core';
 import {
     getNumberOfLogsAheadOfTransactionIntoBlockExpanded,
     getTransactionIndexIntoBlock
@@ -185,7 +185,7 @@ function formatTransactionReceiptToRPCStandard(
         transactionIndex: _Quantity.of(transactionIndex),
 
         // Incompatible fields
-        logsBloom: _Hex0x.of(ZERO_BYTES(256)),
+        logsBloom: Hex.of(ZERO_BYTES(256)).toString(),
         cumulativeGasUsed: '0x0',
         effectiveGasPrice: '0x0',
         type: '0x0'

@@ -1,5 +1,5 @@
-import { type BlockQuantityInputRPC } from '../../rpc-mapper';
 import { Hex } from '@vechain/sdk-core';
+import { type BlockQuantityInputRPC } from '../../rpc-mapper';
 
 /**
  * Get the correct block number for the given block number.

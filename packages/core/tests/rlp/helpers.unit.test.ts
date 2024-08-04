@@ -1,6 +1,6 @@
-import { Hex } from '../../src/vcdm/Hex';
 import { describe, expect, test } from '@jest/globals';
 import {
+    Hex,
     assertCompactFixedHexBlobBuffer,
     assertFixedHexBlobKindBuffer,
     assertFixedHexBlobKindData,
@@ -28,7 +28,7 @@ import {
     validNumericBufferTestCases
 } from './helpers.fixture';
 import {
-    InvalidOperation,
+    InvalidDataType,
     InvalidRLP,
     stringifyData
 } from '@vechain/sdk-errors';
@@ -54,7 +54,7 @@ describe('decodeBufferToHexWithLeadingZeros', () => {
     buffer[0] = 10;
     test('decodeBufferToHexWithLeadingZeros zero bytes', () => {
         expect(() => decodeBufferToHexWithLeadingZeros(buffer, 0)).toThrow(
-            InvalidOperation
+            InvalidDataType
         );
     });
     test('decodeBufferToHexWithLeadingZeros with bytes', () => {

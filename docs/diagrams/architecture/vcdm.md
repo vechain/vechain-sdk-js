@@ -12,6 +12,7 @@ classDiagram
     class Hex {
         +Hex fit(number digits)
         +boolean isValid(string exp)$
+        +Hex of(bigint|number|string|Uint8Array exp)$
     }
     class Keccak256 
     class Keystore
@@ -19,7 +20,12 @@ classDiagram
     class Revision
     class Sha256
     class String
-    class Txt
+    class ThorId {
+        +ThorId of(bigint|number|string|Uint8Array|Hex exp)$
+    }
+    class Txt {
+        +Txt of(bigint|number|string|Uint8Array exp)$
+    }
     class String
     class VeChainDataModel{
         <<interface>>
@@ -29,7 +35,6 @@ classDiagram
       +number compareTo(~T~ that)
       +boolean isEqual(~T~ that)
       +boolean isNumber()
-      +VeChainDataModel of(bigint|number|string|Uint8Array exp)$
     }
     Address <|-- Account
     Address <|-- Contract
@@ -43,6 +48,7 @@ classDiagram
     Hex <|-- Keystore
     Hex <|-- Quantity
     Hex <|-- Revision
+    Hex <|-- ThorId
     String <|-- Hex
     String <|-- Txt
     VeChainDataModel <|.. Hex
