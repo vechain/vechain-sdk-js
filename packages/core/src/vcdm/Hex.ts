@@ -119,6 +119,10 @@ class Hex extends String implements VeChainDataModel<Hex> {
         return Hex.REGEX_HEX.test(exp);
     }
 
+    public static isValid0x(exp: string): boolean {
+        return Hex.REGEX_PREFIX.test(exp) && Hex.isValid(exp);
+    }
+
     public static of(exp: bigint | number | string | Uint8Array): Hex {
         if (exp instanceof Uint8Array) {
             return new Hex(nc_utils.bytesToHex(exp));

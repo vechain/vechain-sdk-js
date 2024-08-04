@@ -12,6 +12,7 @@ classDiagram
     class Hex {
         +Hex fit(number digits)
         +boolean isValid(string exp)$
+        +boolean isValid0x(string exp)$
         +Hex of(bigint|number|string|Uint8Array exp)$
     }
     class Keccak256 
@@ -41,7 +42,6 @@ classDiagram
     Hash <|-- Blake2b256
     Hash <|-- Keccak256
     Hash <|-- Sha256
-    Hex <|-- Address
     Hex <|-- BloomFilter
     Hex <|-- HDNode
     Hex <|-- Hash
@@ -51,6 +51,7 @@ classDiagram
     Hex <|-- ThorId
     String <|-- Hex
     String <|-- Txt
+    ThorId <|-- Address
     VeChainDataModel <|.. Hex
     VeChainDataModel <|.. Txt
 ```

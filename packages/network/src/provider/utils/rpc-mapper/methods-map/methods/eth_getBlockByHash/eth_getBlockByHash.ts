@@ -1,13 +1,13 @@
-import { type ThorClient } from '../../../../../../thor-client';
+import { ThorId } from '@vechain/sdk-core';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
+import { ethGetBlockByNumber } from '../eth_getBlockByNumber';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import { type BlocksRPC } from '../../../../formatter';
-import { _Hex0x } from '@vechain/sdk-core';
-import { ethGetBlockByNumber } from '../eth_getBlockByNumber';
-import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
+import { type ThorClient } from '../../../../../../thor-client';
 
 /**
  * RPC Method eth_getBlockByHash implementation
@@ -31,7 +31,7 @@ const ethGetBlockByHash = async (
     if (
         params.length !== 2 ||
         typeof params[0] !== 'string' ||
-        !_Hex0x.isThorId(params[0]) ||
+        !ThorId.isValid(params[0]) ||
         typeof params[1] !== 'boolean'
     )
         throw new JSONRPCInvalidParams(
