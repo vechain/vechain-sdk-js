@@ -102,6 +102,7 @@ const ethSubscribe = async (
 
         provider.startSubscriptionsPolling();
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
     const subscriptionId: string = Hex.random(16).hex;
 
     if (params.includes(SUBSCRIPTION_TYPE.NEW_HEADS)) {
