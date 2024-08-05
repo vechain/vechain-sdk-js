@@ -1,5 +1,5 @@
 import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
-import { _Quantity } from '@vechain/sdk-core';
+import { Quantity } from '@vechain/sdk-core';
 import {
     type CompressedBlockDetail,
     type ThorClient
@@ -40,9 +40,9 @@ const ethSyncing = async (
         // Get the highest block number
         const highestBlockNumber: string | null =
             genesisBlock !== null
-                ? _Quantity.of(
+                ? Quantity.of(
                       Math.floor((Date.now() - genesisBlock.timestamp) / 10000)
-                  )
+                  ).toString()
                 : null;
 
         // Check the latest block
