@@ -18,6 +18,7 @@ import {
  *
  * @param networkConfig - The hardhat network configuration.
  * @returns The wallet.
+ * @throws {JSONRPCInternalError}
  */
 const createWalletFromHardhatNetworkConfig = (
     networkConfig: NetworkConfig

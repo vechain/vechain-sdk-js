@@ -14,8 +14,8 @@ import { networkInfo } from '@vechain/sdk-core';
  * @link [Chain IDs](https://chainlist.org/?search=vechain&testnets=true)
  *
  * @param thorClient - ThorClient instance.
- *
  * @returns The chain id
+ * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
  */
 const ethChainId = async (thorClient: ThorClient): Promise<string> => {
     try {

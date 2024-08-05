@@ -53,6 +53,7 @@ class TransactionsModule {
      * @param id - Transaction ID of the transaction to retrieve.
      * @param options - (Optional) Other optional parameters for the request.
      * @returns A promise that resolves to the details of the transaction.
+     * @throws {InvalidDataType}
      */
     public async getTransaction(
         id: string,
@@ -94,6 +95,7 @@ class TransactionsModule {
      * @param id - Transaction ID of the transaction to retrieve.
      * @param options - (Optional) Other optional parameters for the request.
      * @returns A promise that resolves to the details of the transaction.
+     * @throws {InvalidDataType}
      */
     public async getTransactionRaw(
         id: string,
@@ -136,6 +138,7 @@ class TransactionsModule {
      * @param options - (Optional) Other optional parameters for the request.
      *                  If `head` is not specified, the receipt of the transaction at the best block is returned.
      * @returns A promise that resolves to the receipt of the transaction.
+     * @throws {InvalidDataType}
      */
     public async getTransactionReceipt(
         id: string,
@@ -172,6 +175,7 @@ class TransactionsModule {
      *
      * @param raw - The raw transaction.
      * @returns The transaction id of send transaction.
+     * @throws {InvalidDataType}
      */
     public async sendRawTransaction(
         raw: string
@@ -216,10 +220,8 @@ class TransactionsModule {
      * Sends a signed transaction to the network.
      *
      * @param signedTx - the transaction to send. It must be signed.
-     *
      * @returns A promise that resolves to the transaction ID of the sent transaction.
-     *
-     * @throws an error if the transaction is not signed or if the transaction object is invalid.
+     * @throws {InvalidDataType}
      */
     public async sendTransaction(
         signedTx: Transaction
@@ -244,11 +246,9 @@ class TransactionsModule {
      * @param txID - The transaction ID of the transaction to wait for.
      * @param options - Optional parameters for the request. Includes the timeout and interval between requests.
      *                  Both parameters are in milliseconds. If the timeout is not specified, the request will not time out!
-     *
      * @returns A promise that resolves to the transaction receipt of the transaction. If the transaction is not included in a block before the timeout,
      *          the promise will resolve to `null`.
-     *
-     * @throws an error if the transaction ID is invalid.
+     * @throws {InvalidDataType}
      */
     public async waitForTransaction(
         txID: string,
@@ -389,9 +389,9 @@ class TransactionsModule {
      *
      * @param clauses - The clauses of the transaction to simulate.
      * @param options - (Optional) The options for simulating the transaction.
-     *
      * @returns A promise that resolves to an array of simulation results.
      *          Each element of the array represents the result of simulating a clause.
+     * @throws {InvalidDataType}
      */
     public async simulateTransaction(
         clauses: SimulateTransactionClause[],

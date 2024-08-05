@@ -17,18 +17,16 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
  *
  * @link [eth_getBlockByNumber](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_getblockbynumber)
  *
- * @param thorClient - The thor client instance to use.
- * @param params - The standard array of rpc call parameters.
- *                 * params[0]: The block number to get as a hex string or "latest" or "finalized".
- *                 * params[1]: The transaction detail flag. If true, the block will contain the transaction details, otherwise it will only contain the transaction hashes.
- *
- * @returns the block at the given block number formatted to the RPC standard or null if the block does not exist.
- *
  * @note
  *  * Standard RPC method `eth_getBlockByNumber` support following block numbers: hex number of block, 'earliest', 'latest', 'safe', 'finalized', 'pending'. (@see https://ethereum.org/en/developers/docs/apis/json-rpc#default-block)
  *  * Currently, VeChainonly supports hex number of block, 'latest' and 'finalized'.
  *
- * @throws {ProviderRpcError} - Will throw an error if the retrieval of the block fails.
+ * @param thorClient - The thor client instance to use.
+ * @param params - The standard array of rpc call parameters.
+ *                 * params[0]: The block number to get as a hex string or "latest" or "finalized".
+ *                 * params[1]: The transaction detail flag. If true, the block will contain the transaction details, otherwise it will only contain the transaction hashes.
+ * @returns the block at the given block number formatted to the RPC standard or null if the block does not exist.
+ * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
  */
 const ethGetBlockByNumber = async (
     thorClient: ThorClient,

@@ -15,11 +15,7 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
  *                 * params[0]: The signed transaction data as a hex string.
- *
- * @returns void
- *
- * @throws {ProviderRpcError} - Will throw an error if the transaction fails.
- * @throws {InvalidDataTypeError} - Will throw an error if the params are invalid.
+ * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
  */
 const ethSendRawTransaction = async (
     thorClient: ThorClient,

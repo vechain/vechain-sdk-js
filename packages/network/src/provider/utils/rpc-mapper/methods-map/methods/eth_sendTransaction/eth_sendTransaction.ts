@@ -14,6 +14,13 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
  *
  * @link [eth_sendTransaction](https://docs.metamask.io/wallet/reference/eth_sendtransaction/)
  *
+ * @NOTE: If 'to' address is not provided.
+ * It will be assumed that the transaction is a contract creation transaction.
+ * The 'data' field of the transaction will be used as the contract initialization code.
+ *
+ * @NOTE: 'gasPrice' cannot be used together with 'maxPriorityFeePerGas' and 'maxFeePerGas'.
+ * 'maxPriorityFeePerGas' and 'maxFeePerGas' are not supported in the current version.
+ *
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
  *               * params[0]: transaction - object - This describes the transaction info with following properties:
@@ -26,16 +33,7 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
  *                   * maxPriorityFeePerGas: Maximum fee per gas the sender is willing to pay to miners in wei. Used in 1559 transactions.
  *                   * maxFeePerGas: The maximum total fee per gas the sender is willing to pay (includes the network / base fee and miner / priority fee) in wei. Used in 1559 transactions.
  * @param provider - The provider instance to use.
- *
- * @NOTE: If 'to' address is not provided.
- * It will be assumed that the transaction is a contract creation transaction.
- * The 'data' field of the transaction will be used as the contract initialization code.
- *
- * @NOTE: 'gasPrice' cannot be used together with 'maxPriorityFeePerGas' and 'maxFeePerGas'.
- * 'maxPriorityFeePerGas' and 'maxFeePerGas' are not supported in the current version.
- *
- * @throws {ProviderRpcError} - Will throw an error if the transaction fails.
- * @throws {InvalidDataTypeError} - Will throw an error if the params are invalid.
+ * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
  */
 const ethSendTransaction = async (
     thorClient: ThorClient,

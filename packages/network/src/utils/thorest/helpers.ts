@@ -30,6 +30,7 @@ const toQueryString = (
  *
  * @param url - The URL to validate.
  * @returns The sanitized URL without the protocol.
+ * @throws {InvalidDataType}
  */
 const sanitizeWebsocketBaseURL = (url: string): string => {
     // Clean the url

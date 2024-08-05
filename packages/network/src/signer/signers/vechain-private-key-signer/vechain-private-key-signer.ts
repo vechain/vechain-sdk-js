@@ -3,12 +3,12 @@ import {
     addressUtils,
     Hex,
     Hex0x,
-    Txt,
     keccak256,
     secp256k1,
     Transaction,
     type TransactionBody,
     TransactionHandler,
+    Txt,
     vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
 import { RPC_METHODS } from '../../../provider';
@@ -103,6 +103,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      *
      *  @param transactionToSend - The transaction to send
      *  @returns The transaction response
+     * @throws {JSONRPCInvalidParams}
      */
     async sendTransaction(
         transactionToSend: TransactionRequestInput
@@ -215,6 +216,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      * @param thorClient - The ThorClient instance
      * @param privateKey - The private key of the signer
      * @returns The fully signed transaction
+     * @throws {InvalidSecp256k1PrivateKey, InvalidDataType}
      */
     async _signFlow(
         transaction: TransactionRequestInput,
@@ -268,10 +270,8 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      * @param thorClient - The ThorClient instance.
      * @param delegatorOptions - Optional parameters for the request. Includes the `delegatorUrl` and `delegatorPrivateKey` fields.
      *                  Only one of the following options can be specified: `delegatorUrl`, `delegatorPrivateKey`.
-     *
      * @returns A promise that resolves to the signed transaction.
-     *
-     * @throws an error if the delegation fails.
+     * @throws {NotDelegatedTransaction}
      */
     private async _signWithDelegator(
         unsignedTransactionBody: TransactionBody,

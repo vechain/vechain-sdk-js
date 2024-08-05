@@ -34,8 +34,6 @@ class DebugModule {
      * * target - The target of the tracer. It is a combination of blockID, transaction (transaction ID or index into block), and clauseIndex.
      * * config - The configuration of the tracer. It is specific to the name of the tracer.
      * @param name - The name of the tracer to use. It determines Output and Input configuration.
-     *
-     * @throws{InvalidDataTypeError} - If the input is invalid.
      */
     public async traceTransactionClause(
         input: {
@@ -77,8 +75,8 @@ class DebugModule {
      * * config - The configuration of the tracer. It is specific to the name of the tracer.
      * * transactionOptions - The transaction options.
      * @param name - The name of the tracer to use. It determines Output and Input configuration.
-     *
-     * @throws{InvalidDataTypeError} - If the input is invalid.
+     * @returns The trace result.
+     * @throws{InvalidDataType}
      */
     public async traceContractCall(
         input: {
@@ -192,10 +190,8 @@ class DebugModule {
      *
      * @param target - Target of traceTransactionClause and retrieveStorageRange to validate.
      * @param functionName - The name of the function.
-     *
+     * @throws{InvalidDataType}
      * @private
-     *
-     * @throws{InvalidDataTypeError} - If the input is invalid.
      */
     private validateTarget(
         target: TransactionTraceTarget,
