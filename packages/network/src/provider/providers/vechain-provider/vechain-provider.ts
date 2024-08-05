@@ -18,7 +18,7 @@ import {
     type SubscriptionEvent,
     type SubscriptionManager
 } from './types';
-import { _Quantity } from '@vechain/sdk-core';
+import { Quantity } from '@vechain/sdk-core';
 import { type EventPoll, Poll, vnsUtils } from '../../../utils';
 import {
     type CompressedBlockDetail,
@@ -220,9 +220,9 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
         const promises = Array.from(
             this.subscriptionManager.logSubscriptions.entries()
         ).map(async ([subscriptionId, subscriptionDetails]) => {
-            const currentBlock = _Quantity.of(
+            const currentBlock = Quantity.of(
                 this.subscriptionManager.currentBlockNumber
-            );
+            ).toString();
             // Construct filter options for the Ethereum logs query based on the subscription details
             const filterOptions: FilterOptions = {
                 address: subscriptionDetails.options?.address, // Contract address to filter the logs by

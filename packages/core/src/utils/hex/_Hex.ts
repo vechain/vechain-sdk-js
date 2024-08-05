@@ -1,5 +1,6 @@
 import * as n_utils from '@noble/curves/abstract/utils';
 import { InvalidDataType } from '@vechain/sdk-errors';
+import { Quantity } from '../../vcdm';
 import { randomBytes } from '@noble/hashes/utils';
 import { type HexString } from './types';
 
@@ -226,13 +227,13 @@ function pad(exp: string, bytes: number): string {
  * @returns {string} - The trimmed string.
  * @see _Quantity.of
  */
-function trim(exp: string): string {
-    let i = 0;
-    while (i < exp.length && exp.at(i) === '0') {
-        i++;
-    }
-    return i === exp.length ? '0' : exp.slice(i);
-}
+// function trim(exp: string): string {
+//     let i = 0;
+//     while (i < exp.length && exp.at(i) === '0') {
+//         i++;
+//     }
+//     return i === exp.length ? '0' : exp.slice(i);
+// }
 
 /**
  * Helper for encoding hexadecimal values prefixed with '0x'.
@@ -434,7 +435,8 @@ const _Quantity = {
      * @see HexRepresentable
      */
     of(n: HexRepresentable): string {
-        return `${PREFIX}${trim(_Hex.of(n))}`;
+        // return `${PREFIX}${trim(_Hex.of(n))}`;
+        return Quantity.of(n).toString();
     }
 };
 

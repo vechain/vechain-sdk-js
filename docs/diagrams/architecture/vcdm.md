@@ -18,7 +18,9 @@ classDiagram
     }
     class Keccak256 
     class Keystore
-    class Quantity
+    class Quantity {
+        +Quantity of(bigint|number|string|Uint8Array|Hex exp)$
+    }
     class Revision
     class Sha256
     class String
