@@ -1,30 +1,46 @@
+import * as nc_utils from '@noble/curves/abstract/utils';
 import { Hex } from './Hex';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
 class Quantity extends Hex {
-    protected constructor(hex: Hex) {
-        let i = 0;
-        while (i < hex.hex.length && hex.hex.at(i) === '0') {
-            i++;
+    protected constructor(exp: string) {
+        let value = exp;
+        if (Hex.REGEX_PREFIX.test(value)) {
+            value = value.slice(2);
         }
-        super(i === hex.hex.length ? '0' : hex.hex.slice(i));
+        if (Hex.isValid(value)) {
+            let cue = 0;
+            while (cue < value.length && value.at(cue) === '0') {
+                cue++;
+            }
+            if (cue === value.length) {
+                super('0');
+            } else {
+                super(value.slice(cue));
+            }
+        } else {
+            throw new InvalidDataType(
+                'Quantity.constructor',
+                'not an hexadecimal expression',
+                { value }
+            );
+        }
     }
 
     public static of(
         exp: bigint | number | string | Hex | Uint8Array
     ): Quantity {
         if (exp instanceof Hex) {
-            return new Quantity(exp);
+            return new Quantity(exp.hex);
         }
-        if (typeof exp === 'number') {
-            if (Number.isInteger(exp)) {
-                return new Quantity(Hex.of(BigInt(exp)));
-            }
-            throw new InvalidDataType('Quantity.of', 'not a safe integer', {
-                exp
-            });
+        if (exp instanceof Uint8Array) {
+            return new Quantity(nc_utils.bytesToHex(exp));
+        } else if (typeof exp === 'bigint') {
+            return new Quantity(nc_utils.numberToHexUnpadded(exp));
+        } else if (typeof exp === 'number') {
+            return new Quantity(nc_utils.numberToHexUnpadded(exp));
         }
-        return new Quantity(Hex.of(exp));
+        return new Hex(exp);
     }
 }
 
