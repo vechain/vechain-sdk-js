@@ -10,6 +10,8 @@ classDiagram
         <<abstract>>
     }
     class Hex {
+        +number sign
+        +Hex alignToBytes()
         +Hex fit(number digits)
         +boolean isValid(string exp)$
         +boolean isValid0x(string exp)$

@@ -38,14 +38,13 @@ class Hex extends String implements VeChainDataModel<Hex> {
     }
 
     get bytes(): Uint8Array {
-        return nc_utils.hexToBytes(this.hex);
+        return nc_utils.hexToBytes(this.alignToBytes().hex);
     }
 
     get n(): number {
         if (this.isNumber()) {
             return new DataView(this.bytes.buffer).getFloat64(0);
         }
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
         throw new InvalidCastType<Hex>(
             'Hex.n',
             'not an IEEE 754 float 64 number',
@@ -53,20 +52,21 @@ class Hex extends String implements VeChainDataModel<Hex> {
         );
     }
 
+    public alignToBytes(): Hex {
+        return this.hex.length % 2 === 0 ? this : new Hex('0' + this.hex);
+    }
+
     compareTo(that: Hex): number {
-        const thisBytes = this.bytes;
-        const thatBytes = that.bytes;
-        const compareLength = thisBytes.length - thatBytes.length;
-        if (compareLength === 0) {
-            let i = 0;
-            let compareByte = 0;
-            while (compareByte === 0 && i < thisBytes.length) {
-                compareByte = thisBytes[i] - thatBytes[i];
-                i++;
-            }
-            return compareByte;
+        const digits = Math.max(this.hex.length, that.hex.length);
+        const thisBytes = this.fit(digits).bytes;
+        const thatBytes = that.fit(digits).bytes;
+        let i = 0;
+        let compareByte = 0;
+        while (compareByte === 0 && i < thisBytes.length) {
+            compareByte = thisBytes[i] - thatBytes[i];
+            i++;
         }
-        return compareLength;
+        return compareByte;
     }
 
     public fit(digits: number): Hex {
@@ -138,7 +138,12 @@ class Hex extends String implements VeChainDataModel<Hex> {
     }
 
     public static random(bytes: number): Hex {
-        return Hex.of(nh_utils.randomBytes(bytes));
+        if (bytes > 0) {
+            return Hex.of(nh_utils.randomBytes(bytes));
+        }
+        throw new InvalidDataType('Hex.random', 'bytes argument not > 0', {
+            bytes
+        });
     }
 }
 
