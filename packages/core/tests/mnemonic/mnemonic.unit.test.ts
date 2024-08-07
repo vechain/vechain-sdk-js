@@ -1,7 +1,7 @@
+import { Hex } from '../../src/vcdm/Hex';
 import { describe, expect, test } from '@jest/globals';
 import {
     addressUtils,
-    Hex,
     mnemonic,
     MNEMONIC_WORDLIST_ALLOWED_SIZES,
     secp256k1,
@@ -70,7 +70,7 @@ describe('mnemonic', () => {
                                     words,
                                     path.derivationPath
                                 )
-                            )
+                            ).hex
                         ).toEqual(path.resultingPrivateKey);
                     });
                 });
@@ -89,7 +89,7 @@ describe('mnemonic', () => {
                                     words,
                                     path.derivationPath
                                 )
-                            )
+                            ).hex
                         ).toEqual(path.resultingPrivateKey);
                     });
                 });

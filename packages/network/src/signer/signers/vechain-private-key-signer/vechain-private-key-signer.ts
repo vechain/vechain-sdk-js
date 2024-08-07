@@ -1,15 +1,14 @@
 import * as n_utils from '@noble/curves/abstract/utils';
 import {
-    addressUtils,
     Hex,
-    Hex0x,
+    Transaction,
+    TransactionHandler,
     Txt,
+    addressUtils,
     keccak256,
     secp256k1,
-    Transaction,
-    type TransactionBody,
-    TransactionHandler,
-    vechain_sdk_core_ethers
+    vechain_sdk_core_ethers,
+    type TransactionBody
 } from '@vechain/sdk-core';
 import { RPC_METHODS } from '../../../provider';
 import { VeChainAbstractSigner } from '../vechain-abstract-signer';
@@ -159,7 +158,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                 );
                 // SCP256K1 encodes the recovery flag in the last byte. EIP-191 adds 27 to it.
                 sign[sign.length - 1] += 27;
-                resolve(Hex0x.of(sign));
+                resolve(Hex.of(sign).toString());
             } catch (e) {
                 reject(e);
             }
@@ -186,13 +185,13 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         return await new Promise((resolve, reject) => {
             try {
                 const hash = n_utils.hexToBytes(
-                    Hex.canon(
+                    Hex.of(
                         vechain_sdk_core_ethers.TypedDataEncoder.hash(
                             domain,
                             types,
                             value
                         )
-                    )
+                    ).hex
                 );
                 const sign = secp256k1.sign(
                     hash,
@@ -200,7 +199,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                 );
                 // SCP256K1 encodes the recovery flag in the last byte. EIP-712 adds 27 to it.
                 sign[sign.length - 1] += 27;
-                resolve(Hex0x.of(sign));
+                resolve(Hex.of(sign).toString());
             } catch (e) {
                 reject(e);
             }
@@ -253,10 +252,10 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                   thorClient,
                   delegator
               )
-            : Hex0x.of(
+            : Hex.of(
                   TransactionHandler.sign(populatedTransaction, privateKey)
                       .encoded
-              );
+              ).toString();
     }
 
     /**
@@ -300,13 +299,13 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
 
         // Sign transaction with origin private key and delegator private key
         if (delegatorOptions?.delegatorPrivateKey !== undefined)
-            return Hex0x.of(
+            return Hex.of(
                 TransactionHandler.signWithDelegator(
                     unsignedTransactionBody,
                     originPrivateKey,
                     Buffer.from(delegatorOptions?.delegatorPrivateKey, 'hex')
                 ).encoded
-            );
+            ).toString();
 
         // Otherwise, get the signature of the delegator from the delegator endpoint
         const delegatorSignature = await DelegationHandler(
@@ -327,7 +326,9 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         const signature = Buffer.concat([originSignature, delegatorSignature]);
 
         // Return new signed transaction
-        return Hex0x.of(new Transaction(unsignedTx.body, signature).encoded);
+        return Hex.of(
+            new Transaction(unsignedTx.body, signature).encoded
+        ).toString();
     }
 }
 

@@ -1,6 +1,6 @@
 import {
     clauseBuilder,
-    Hex0x,
+    Hex,
     TransactionHandler,
     unitsUtils
 } from '@vechain/sdk-core';
@@ -79,7 +79,7 @@ const send = await thorSoloClient.transactions.sendRawTransaction(
 );
 expect(send).toBeDefined();
 expect(send).toHaveProperty('id');
-expect(Hex0x.isValid(send.id)).toBe(true);
+expect(Hex.isValid0x(send.id)).toBe(true);
 
 // 7 - Get transaction details and receipt
 
@@ -96,6 +96,6 @@ const transactionReceipt =
 
 expect(send).toBeDefined();
 expect(send).toHaveProperty('id');
-expect(Hex0x.isValid(send.id)).toBe(true);
+expect(Hex.isValid0x(send.id)).toBe(true);
 expect(transactionDetails).toBeDefined();
 expect(transactionReceipt).toBeDefined();

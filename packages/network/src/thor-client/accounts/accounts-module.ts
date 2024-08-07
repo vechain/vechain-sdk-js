@@ -1,4 +1,5 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
+import { addressUtils, revisionUtils, ThorId } from '@vechain/sdk-core';
 import { buildQuery, thorest } from '../../utils';
 import {
     type AccountDetail,
@@ -6,7 +7,6 @@ import {
     type ResponseBytecode,
     type ResponseStorage
 } from './types';
-import { addressUtils, Hex0x, revisionUtils } from '@vechain/sdk-core';
 import { type ThorClient } from '../thor-client';
 
 /**
@@ -152,7 +152,7 @@ class AccountsModule {
         }
 
         // The position represents a slot in the VM storage. Each slot is 32 bytes.
-        if (!Hex0x.isValid(position) || position.length !== 66) {
+        if (!ThorId.isValid(position)) {
             throw new InvalidDataType(
                 'AccountsModule.getStorageAt()',
                 'Invalid `position`. The position must be a hex string of 32 bytes (66 characters including `0x` prefix).',

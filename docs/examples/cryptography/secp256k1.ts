@@ -12,7 +12,7 @@ import { expect } from 'expect';
 // 1 - Generate a private key.
 
 const privateKey = await secp256k1.generatePrivateKey();
-console.log('Private key:', Hex.of(privateKey));
+console.log('Private key:', Hex.of(privateKey).toString());
 // Private key: ...SOME_PRIVATE_KEY...
 
 // 2 - Derive the public key and address from private key.
@@ -30,7 +30,7 @@ const hash = keccak256(messageToSign);
 console.log(`Hash: ${hash.toString()}`);
 
 const signature = secp256k1.sign(hash, privateKey);
-console.log('Signature:', Hex.of(signature));
+console.log('Signature:', Hex.of(signature).toString());
 // Signature: ...SOME_SIGNATURE...
 
 // END_SNIPPET: Secp256k1Snippet
@@ -41,6 +41,8 @@ console.log('Signature:', Hex.of(signature));
 //     convert public keys among compressed and uncompressed form.
 
 const recoveredPublicKey = secp256k1.recover(hash, signature);
-expect(publicKey).toStrictEqual(secp256k1.compressPublicKey(recoveredPublicKey));
+expect(publicKey).toStrictEqual(
+    secp256k1.compressPublicKey(recoveredPublicKey)
+);
 expect(secp256k1.inflatePublicKey(publicKey)).toStrictEqual(recoveredPublicKey);
 // Recovered public key is correct: true
