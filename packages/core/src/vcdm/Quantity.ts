@@ -2,7 +2,18 @@ import * as nc_utils from '@noble/curves/abstract/utils';
 import { Hex } from './Hex';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
+/**
+ * A class representing a quantity in hexadecimal format.
+ * @extends Hex
+ * @experimental
+ */
 class Quantity extends Hex {
+    /**
+     * Constructs a new Quantity object with the given hexadecimal expression.
+     *
+     * @param {string} exp - The hexadecimal expression to use.
+     * @protected
+     */
     protected constructor(exp: string) {
         let value = exp;
         if (Hex.REGEX_PREFIX.test(value)) {
@@ -27,6 +38,13 @@ class Quantity extends Hex {
         }
     }
 
+    /**
+     * Creates a new Quantity object from the given input.
+     *
+     * @param {bigint | number | string | Hex | Uint8Array} exp - The input value to create Quantity from.
+     * @returns {Quantity} A new Quantity object.
+     * @experimental
+     */
     public static of(
         exp: bigint | number | string | Hex | Uint8Array
     ): Quantity {
