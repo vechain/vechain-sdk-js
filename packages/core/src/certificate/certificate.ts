@@ -1,7 +1,6 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { CertificateSignature } from '@vechain/sdk-errors';
-import { Hex } from '../vcdm/Hex';
-import { Txt } from '../vcdm';
+import { Hex, Txt } from '../vcdm';
 import { addressUtils } from '../address-utils';
 import { blake2b256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
@@ -116,7 +115,6 @@ function verify(cert: Certificate): void {
     }
 
     // Invalid hexadecimal as signature.
-    // if (!_Hex0x.isValid(cert.signature, false, true)) {
     // PROVISIONAL: until 1119 Certificate OOP
     if (!Hex.isValid0x(cert.signature) || cert.signature.length % 2 !== 0) {
         throw new CertificateSignature(

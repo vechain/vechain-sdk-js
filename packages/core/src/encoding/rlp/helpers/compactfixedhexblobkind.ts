@@ -1,4 +1,4 @@
-import { Hex } from '../../../vcdm/Hex';
+import { Hex } from '../../../vcdm';
 import { InvalidRLP } from '@vechain/sdk-errors';
 
 /**
@@ -70,7 +70,7 @@ const decodeBufferToHexWithLeadingZeros = (
 ): string => {
     return Hex.of(buffer)
         .fit(bytes * 2)
-        .toString(); // _Hex0x.of(buffer, bytes);
+        .toString();
 };
 
 export {
