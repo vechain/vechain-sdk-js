@@ -229,6 +229,9 @@ class Hex extends String implements VeChainDataModel<Hex> {
      * @param {number} bytes - The number of bytes to generate.
      * @throws {InvalidDataType} - If the bytes argument is not greater than 0.
      * @returns {Hex} - A randomly generated Hex value.
+     *
+     * @remark Security auditable method, depends on
+     * * [`nh_utils.randomBytes`](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#utils).
      */
     public static random(bytes: number): Hex {
         if (bytes > 0) {
