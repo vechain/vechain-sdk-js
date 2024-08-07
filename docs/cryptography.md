@@ -49,7 +49,7 @@ Secp256k1 is mainly used for generating public and private key pairs in cryptogr
 // 1 - Generate a private key.
 
 const privateKey = await secp256k1.generatePrivateKey();
-console.log('Private key:', Hex.of(privateKey));
+console.log('Private key:', Hex.of(privateKey).toString());
 // Private key: ...SOME_PRIVATE_KEY...
 
 // 2 - Derive the public key and address from private key.
@@ -67,6 +67,6 @@ const hash = keccak256(messageToSign);
 console.log(`Hash: ${hash.toString()}`);
 
 const signature = secp256k1.sign(hash, privateKey);
-console.log('Signature:', Hex.of(signature));
+console.log('Signature:', Hex.of(signature).toString());
 // Signature: ...SOME_SIGNATURE...
 ```
