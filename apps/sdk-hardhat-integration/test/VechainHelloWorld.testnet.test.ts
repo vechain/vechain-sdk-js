@@ -6,7 +6,8 @@ import { expect } from 'chai';
  */
 describe('VechainHelloWorld', function () {
     it('sayHello() should return the correct message', async function () {
-        const VechainHelloWorld = await ethers.getContractFactory('VechainHelloWorld');
+        const VechainHelloWorld =
+            await ethers.getContractFactory('VechainHelloWorld');
         const contract = await VechainHelloWorld.deploy();
 
         // Call the sayHello function and check the return value
