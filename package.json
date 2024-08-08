@@ -15,7 +15,8 @@
     "private": true,
     "workspaces": [
         "packages/*",
-        "docs"
+        "docs",
+        "apps/sdk-node-integration"
     ],
     "packageManager": "yarn@1.22.22",
     "scripts": {
