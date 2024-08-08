@@ -21,6 +21,9 @@ classDiagram
     class HexInt {
         +HexInt of(bigint|number|string|Uint8Array|Hex exp)$
     }
+    class HexUInt {
+        +HexUInt of(bigint|number|string|Uint8Array|HexInt exp)$
+    }
     class Keccak256 
     class Keystore
     class Revision
@@ -47,16 +50,17 @@ classDiagram
     Hash <|-- Blake2b256
     Hash <|-- Keccak256
     Hash <|-- Sha256
-    Hex <|-- BloomFilter
-    Hex <|-- HDNode
-    Hex <|-- Hash
     Hex <|-- HexInt
-    Hex <|-- Keystore
-    Hex <|-- Revision
-    Hex <|-- ThorId
+    HexUInt <|-- Address
+    HexUInt <|-- BloomFilter
+    HexUInt <|-- HDNode
+    HexInt <|-- HexUInt
+    HexUInt <|-- Hash
+    HexUInt <|-- ThorId
+    HexUInt <|-- Keystore
+    HexUInt <|-- Revision
     String <|-- Hex
     String <|-- Txt
-    ThorId <|-- Address
     VeChainDataModel <|.. Hex
     VeChainDataModel <|.. Txt
 ```

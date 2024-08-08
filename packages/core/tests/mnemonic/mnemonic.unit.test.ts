@@ -70,7 +70,7 @@ describe('mnemonic', () => {
                                     words,
                                     path.derivationPath
                                 )
-                            ).hex
+                            ).toString()
                         ).toEqual(path.resultingPrivateKey);
                     });
                 });
@@ -89,7 +89,7 @@ describe('mnemonic', () => {
                                     words,
                                     path.derivationPath
                                 )
-                            ).hex
+                            ).toString()
                         ).toEqual(path.resultingPrivateKey);
                     });
                 });

@@ -1,5 +1,5 @@
-import { describe, expect, test } from '@jest/globals';
 import { Hex, Txt } from '../../src';
+import { describe, expect, test } from '@jest/globals';
 import { InvalidCastType, InvalidDataType } from '@vechain/sdk-errors';
 
 /**
@@ -198,6 +198,11 @@ describe('Hex class tests', () => {
     });
 
     describe('isValid method tests', () => {
+        test('Return true for empty input', () => {
+            const exp = '';
+            expect(Hex.isValid(exp)).toBeTruthy();
+        });
+
         test('Return false for invalid hex', () => {
             const exp = 'G00dB0y';
             expect(Hex.isValid(exp)).toBeFalsy();
@@ -225,6 +230,11 @@ describe('Hex class tests', () => {
     });
 
     describe('isValid0x method tests', () => {
+        test('Return true for empty input', () => {
+            const exp = '0x';
+            expect(Hex.isValid(exp)).toBeTruthy();
+        });
+
         test('Return false for invalid hex', () => {
             const exp = '0xG00dB0y';
             expect(Hex.isValid0x(exp)).toBeFalsy();

@@ -78,9 +78,9 @@ import {
                 encryptionPassword
             );
 
-            // Verify private key (slice(2) is used to remove 0x prefix)
-            expect(decryptedKeystore.privateKey.slice(2)).toEqual(
-                Hex.of(privateKey).hex
+            // Verify private key
+            expect(decryptedKeystore.privateKey).toEqual(
+                Hex.of(privateKey).toString()
             );
         });
 

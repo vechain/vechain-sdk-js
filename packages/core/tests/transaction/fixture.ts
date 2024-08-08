@@ -1,4 +1,4 @@
-import { addressUtils, secp256k1, type TransactionBody } from '../../src';
+import { addressUtils, Hex, secp256k1, type TransactionBody } from '../../src';
 
 /**
  * Simple correct transaction body fixture
@@ -33,7 +33,7 @@ const transactions = {
         {
             body: _correctTransactionBody,
             signatureHashExpected:
-                '2a1c25ce0d66f45276a5f308b99bf410e2fc7d5b6ea37a49f2ab9f1da9446478',
+                '0x2a1c25ce0d66f45276a5f308b99bf410e2fc7d5b6ea37a49f2ab9f1da9446478',
             signedTransactionIdExpected:
                 '0xda90eaea52980bc4bb8d40cb2ff84d78433b3b4a6e7d50b75736c5e3e77b71ec',
             encodedUnsignedExpected: Buffer.from(
@@ -57,7 +57,7 @@ const transactions = {
                 }
             },
             signatureHashExpected:
-                '005fb0b47dfd16b7f2f61bb17df791242bc37ed1fffe9b05fa55fb0fe069f9a3',
+                '0x005fb0b47dfd16b7f2f61bb17df791242bc37ed1fffe9b05fa55fb0fe069f9a3',
             encodedUnsignedExpected: Buffer.from(
                 'f8550184aabbccdd20f840df947567d83b7b8d80addcb281a71d54fc7b3364ffed82271086000000606060df947567d83b7b8d80addcb281a71d54fc7b3364ffed824e208600000060606081808252088083bc614ec101',
                 'hex'
@@ -79,7 +79,7 @@ const transactions = {
                 }
             },
             signatureHashExpected:
-                'd6e8f162e3e08585ee8fcf81868e5bd57a59966fef218528339766ee2587726c',
+                '0xd6e8f162e3e08585ee8fcf81868e5bd57a59966fef218528339766ee2587726c',
             encodedUnsignedExpected: Buffer.from(
                 'f8610184aabbccdd20f840df947567d83b7b8d80addcb281a71d54fc7b3364ffed82271086000000606060df947567d83b7b8d80addcb281a71d54fc7b3364ffed824e208600000060606081808252088083bc614ecd01853078303030853078303030',
                 'hex'
@@ -97,28 +97,24 @@ const transactions = {
 /**
  * Simple private key fixture
  */
-const _signerPrivateKey = Buffer.from(
-    '7582be841ca040aa940fff6c05773129e135623e41acce3e0b8ba520dc1ae26a',
-    'hex'
-);
+const _signerPrivateKey =
+    '7582be841ca040aa940fff6c05773129e135623e41acce3e0b8ba520dc1ae26a';
 const signer = {
     privateKey: _signerPrivateKey,
     address: addressUtils.fromPublicKey(
-        Buffer.from(secp256k1.derivePublicKey(_signerPrivateKey))
+        secp256k1.derivePublicKey(Hex.of(_signerPrivateKey).bytes)
     )
 };
 
 /**
  * Simple private key of transaction delegator fixture
  */
-const _delegatorPrivateKey = Buffer.from(
-    '40de805e918403683fb9a6081c3fba072cdc5c88232c62a9509165122488dab7',
-    'hex'
-);
+const _delegatorPrivateKey =
+    '40de805e918403683fb9a6081c3fba072cdc5c88232c62a9509165122488dab7';
 const delegator = {
     privateKey: _delegatorPrivateKey,
     address: addressUtils.fromPublicKey(
-        Buffer.from(secp256k1.derivePublicKey(_delegatorPrivateKey))
+        secp256k1.derivePublicKey(Hex.of(_delegatorPrivateKey).bytes)
     )
 };
 

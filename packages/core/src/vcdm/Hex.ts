@@ -11,8 +11,9 @@ import { type VeChainDataModel } from './VeChainDataModel';
  * @implements {VeChainDataModel<Hex>}
  * @description This hexadecimal notation is coherent with the decimal notation:
  * * the sign is only expressed for negative values, and it is always the first symbol,
- * * the `0x` tags the string as an hexaecimal expression,
+ * * the `0x` tags the string as a hexadecimal expression,
  * * hexadecimal digits follow.
+ * * An empty content results is no digits.
  */
 class Hex extends String implements VeChainDataModel<Hex> {
     /**
@@ -38,6 +39,7 @@ class Hex extends String implements VeChainDataModel<Hex> {
 
     /**
      * Regular expression for matching hexadecimal strings.
+     * An empty input is represented as a empty digits.
      *
      * @type {RegExp}
      */
