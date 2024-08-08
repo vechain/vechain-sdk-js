@@ -57,8 +57,8 @@ class Txt extends String implements VeChainDataModel<Txt> {
             return BigInt(this.toString());
         } catch (e) {
             throw new InvalidCastType<Txt>(
-                'Txt.bi',
-                "can't cast to big integer",
+                'Txt.bi()',
+                "Can't cast to big integer",
                 this,
                 e
             );
