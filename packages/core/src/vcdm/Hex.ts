@@ -8,12 +8,14 @@ import { type VeChainDataModel } from './VeChainDataModel';
  * * `-` sign if the value is negative,
  * * `0x` hexadecimal notation tag,
  * * a not empty string of hexadecimal digits from `0` to `9` and from `a` to `f`.
- * @implements {VeChainDataModel<Hex>}
+ *
  * @description This hexadecimal notation is coherent with the decimal notation:
  * * the sign is only expressed for negative values, and it is always the first symbol,
  * * the `0x` tags the string as a hexadecimal expression,
  * * hexadecimal digits follow.
  * * An empty content results is no digits.
+ *
+ * @implements {VeChainDataModel<Hex>}
  */
 class Hex extends String implements VeChainDataModel<Hex> {
     /**
@@ -238,7 +240,7 @@ class Hex extends String implements VeChainDataModel<Hex> {
     /**
      * Create a Hex instance from a bigint, number, string, or Uint8Array.
      *
-     * @param {bigint | number | string | Uint8Array} exp - The input value to convert to a Hex instance:
+     * @param {bigint | number | string | Uint8Array} exp - The value to convert to a Hex instance:
      * * bigint, converted to a signed hexadecimal expression of its absolute value;
      * * number, encoded as [IEEE 754 double precision 64 bits floating point format](https://en.wikipedia.org/wiki/Double-precision_floating-point_format);
      * * string, parsed as a hexadecimal expression, optionally signed `-`, optionally tagged with `0x`;
