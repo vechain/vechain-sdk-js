@@ -6,4 +6,6 @@ const logger = new VechainTransactionLogger('https://testnet.vechain.org/');
 logger.startLogging('0xc3bE339D3D20abc1B731B320959A96A08D479583');
 
 // Stop logging after one minute
-setTimeout( () => logger.stopLogging(), 60000);
+setTimeout(() => {
+    logger.stopLogging();
+}, 60000);
