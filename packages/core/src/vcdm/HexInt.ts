@@ -41,7 +41,7 @@ class HexInt extends Hex {
      */
     public override get n(): number {
         const bi = this.bi;
-        if (Number.MIN_SAFE_INTEGER <= bi && bi <= Number.MAX_VALUE) {
+        if (Number.MIN_SAFE_INTEGER <= bi && bi <= Number.MAX_SAFE_INTEGER) {
             return Number(bi);
         }
         throw new InvalidDataType('HexInt.of', 'not in the safe number range', {
@@ -78,6 +78,7 @@ class HexInt extends Hex {
                 if (Number.isInteger(exp)) {
                     return new HexInt(Hex.of(BigInt(exp)));
                 }
+                // noinspection ExceptionCaughtLocallyJS
                 throw new InvalidDataType('HexInt.of', 'not an integer', {
                     exp
                 });

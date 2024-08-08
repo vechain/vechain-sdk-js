@@ -127,6 +127,22 @@ describe('Hex class tests', () => {
             expect('-' + hex.hex).toEqual(exp.toLowerCase()); // Normalized from is lower case.
         });
 
+        test('Return an Hex instance if the passed argument is an empty string with 0x prefix', () => {
+            const exp = '0x';
+            const hex = Hex.of(exp);
+            expect(hex).toBeInstanceOf(Hex);
+            expect(hex.toString()).toEqual(exp);
+            expect(hex.hex.length).toEqual(0);
+        });
+
+        test('Return an Hex instance if the passed argument is an empty string without 0x prefix', () => {
+            const exp = '';
+            const hex = Hex.of(exp);
+            expect(hex).toBeInstanceOf(Hex);
+            expect(hex.toString()).toEqual('0x');
+            expect(hex.hex.length).toEqual(0);
+        });
+
         test('Return an Hex instance if the passed argument is UInt8Array', () => {
             const exp = Uint8Array.of(0xc0, 0xff, 0xee);
             const hex = Hex.of(exp);

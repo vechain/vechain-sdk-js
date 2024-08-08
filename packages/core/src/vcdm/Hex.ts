@@ -56,6 +56,8 @@ class Hex extends String implements VeChainDataModel<Hex> {
 
     /**
      * Returns the hexadecimal digits expressing this absolute value, sign and `0x` prefix omitted.
+
+     * @remark An empty content results in an empty string returned.
      */
     public readonly hex: string;
 
@@ -287,6 +289,7 @@ class Hex extends String implements VeChainDataModel<Hex> {
                     this.REGEX_PREFIX.test(exp) ? exp.slice(2) : exp
                 );
             }
+            // noinspection ExceptionCaughtLocallyJS
             throw new InvalidDataType('Hex.of', 'not an hexadecimal string', {
                 exp
             });
