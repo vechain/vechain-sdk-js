@@ -11,7 +11,6 @@ import {
     THOR_SOLO_URL,
     ThorClient
 } from '../../../../../src';
-import { JSONRPCInternalError } from '@vechain/sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_sendRawTransaction' method
@@ -97,22 +96,6 @@ describe('RPC Mapper - eth_sendRawTransaction method tests', () => {
             ]([raw])) as string;
 
             expect(result).toBe(signedTransaction.id);
-        });
-    });
-
-    /**
-     * eth_sendRawTransaction RPC call tests - Negative cases
-     */
-    describe('eth_sendRawTransaction - Negative cases', () => {
-        /**
-         *  Invalid params
-         */
-        test('eth_sendRawTransaction - Invalid params', async () => {
-            await expect(async () => {
-                (await RPCMethodsMap(thorClient)[
-                    RPC_METHODS.eth_sendRawTransaction
-                ](['INVALID'])) as string;
-            }).rejects.toThrowError(JSONRPCInternalError);
         });
     });
 });

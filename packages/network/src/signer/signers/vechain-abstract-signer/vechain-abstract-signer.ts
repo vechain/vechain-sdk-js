@@ -139,7 +139,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         transactionToPopulate: TransactionRequestInput
     ): Promise<TransactionBody> {
         // 1 - Get the thor client
-        if ((this.provider as AvailableVeChainProviders).thorClient === null) {
+        if ((this.provider as AvailableVeChainProviders) === null) {
             throw new JSONRPCInvalidParams(
                 'VechainAbstractSigner.populateTransaction()',
                 -32602,
@@ -195,7 +195,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         transactionToEstimate: TransactionRequestInput
     ): Promise<number> {
         // 1 - Get the thor client
-        if ((this.provider as AvailableVeChainProviders).thorClient === null) {
+        if ((this.provider as AvailableVeChainProviders) === null) {
             throw new JSONRPCInvalidParams(
                 'VechainAbstractSigner.estimateGas()',
                 -32602,
@@ -242,7 +242,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         revision?: string
     ): Promise<string> {
         // 1 - Get the thor client
-        if ((this.provider as AvailableVeChainProviders).thorClient === null) {
+        if ((this.provider as AvailableVeChainProviders) === null) {
             throw new JSONRPCInvalidParams(
                 'VechainAbstractSigner.call()',
                 -32602,

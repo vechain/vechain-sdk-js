@@ -1,6 +1,7 @@
 import {
     type CompressedBlockDetail,
-    type ExpandedBlockDetail
+    type ExpandedBlockDetail,
+    type TransactionDetailNoRaw
 } from '../../../src';
 
 /**
@@ -311,4 +312,56 @@ const blockFixtures = [
     }
 ];
 
-export { blockFixtures };
+/**
+ * Transaction fixtures
+ */
+const transactionFixtures = [
+    {
+        testName: 'No clauses transaction',
+        transaction: {
+            id: '0xb2e3f6e9782f462d797b72f9cbf5a4c38ca20cabcc1a091f9de6d3e6736c1f7c',
+            chainTag: 39,
+            blockRef: '0x010b7b5e57827fe3',
+            expiration: 18,
+            clauses: [],
+            gasPriceCoef: 0,
+            gas: 399535,
+            origin: '0x8c59c63d6458c71b6ff88d57698437524a703084',
+            delegator: null,
+            nonce: '0x19b4782',
+            dependsOn: null,
+            size: 709,
+            meta: {
+                blockID:
+                    '0x010b7b5f0192003f70bf2a6a502221e075cb32d676e3443614d21003cc2ee440',
+                blockNumber: 17529695,
+                blockTimestamp: 1705328340
+            }
+        } satisfies TransactionDetailNoRaw,
+        expected: {
+            blockHash:
+                '0x010b7b5f0192003f70bf2a6a502221e075cb32d676e3443614d21003cc2ee440',
+            blockNumber: '0x10b7b5f',
+            from: '0x8c59c63d6458c71b6ff88d57698437524a703084',
+            gas: '0x618af',
+            chainId: '0x0',
+            hash: '0xb2e3f6e9782f462d797b72f9cbf5a4c38ca20cabcc1a091f9de6d3e6736c1f7c',
+            nonce: '0x19b4782',
+            transactionIndex: '0x0',
+            input: '',
+            to: null,
+            value: '',
+            gasPrice: '0x0',
+            type: '0x0',
+            v: '0x0',
+            r: '0x0',
+            s: '0x0',
+            accessList: [],
+            maxFeePerGas: '0x0',
+            maxPriorityFeePerGas: '0x0',
+            yParity: '0x0'
+        }
+    }
+];
+
+export { blockFixtures, transactionFixtures };

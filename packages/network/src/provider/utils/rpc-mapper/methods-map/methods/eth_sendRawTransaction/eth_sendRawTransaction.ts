@@ -22,16 +22,23 @@ const ethSendRawTransaction = async (
     params: unknown[]
 ): Promise<string> => {
     // Input validation
-    if (
-        params.length !== 1 ||
-        (typeof params[0] !== 'string' && !Hex0x.isValid(params[0] as string))
-    )
+    if (params.length !== 1 || typeof params[0] !== 'string')
         throw new JSONRPCInvalidParams(
-            'eth_sendRawTransaction',
+            'eth_sendRawTransaction()',
             -32602,
             `Invalid input params for "eth_sendRawTransaction" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
+
+    // Invalid transaction encoded data
+    if (!Hex0x.isValid(params[0])) {
+        throw new JSONRPCInvalidParams(
+            'eth_sendRawTransaction()',
+            -32602,
+            'Invalid transaction encoded data given as input. Input must be a hex string.',
+            { params }
+        );
+    }
 
     try {
         const [signedTransactionData] = params as [string];

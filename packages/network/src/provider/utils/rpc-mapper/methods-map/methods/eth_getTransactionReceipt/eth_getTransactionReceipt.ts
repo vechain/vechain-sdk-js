@@ -1,5 +1,4 @@
 import {
-    InvalidDataType,
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
@@ -32,21 +31,19 @@ const ethGetTransactionReceipt = async (
     // Input validation
     if (params.length !== 1 || typeof params[0] !== 'string')
         throw new JSONRPCInvalidParams(
-            'eth_getTransactionReceipt',
+            'eth_getTransactionReceipt()',
             -32602,
             `Invalid input params for "eth_getTransactionReceipt" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
 
-    // Init the transaction ID
-    const [transactionID] = params as [string];
-
     // Invalid transaction ID
-    if (!Hex0x.isThorId(transactionID)) {
-        throw new InvalidDataType(
+    if (!Hex0x.isThorId(params[0])) {
+        throw new JSONRPCInvalidParams(
             'eth_getTransactionReceipt()',
+            -32602,
             'Invalid transaction ID given as input. Input must be an hex string of length 64.',
-            { transactionID }
+            { params }
         );
     }
 
