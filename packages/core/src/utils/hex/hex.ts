@@ -131,14 +131,6 @@ function ofBigInt(bi: bigint, bytes: number): string {
  * @throws {InvalidDataType}
  */
 function ofHexString(n: HexString, bytes: number): string {
-    if (!Hex0x.isValid(n))
-        throw new InvalidDataType(
-            'Hex.ofHexString()',
-            ErrorMessage.NOT_HEX as string,
-            {
-                n
-            }
-        );
     return pad(n.slice(2).toLowerCase(), bytes);
 }
 
