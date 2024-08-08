@@ -3,7 +3,7 @@ import {
     type TransactionReceiptRPC,
     type TransactionRPC
 } from './types';
-import { Hex0x, Quantity, ZERO_BYTES } from '@vechain/sdk-core';
+import { Hex, Quantity, ZERO_BYTES } from '@vechain/sdk-core';
 import {
     getNumberOfLogsAheadOfTransactionIntoBlockExpanded,
     getTransactionIndexIntoBlock
@@ -37,13 +37,13 @@ const _formatTransactionToRPC = (
     return {
         // Supported fields
         blockHash,
-        blockNumber: Quantity.of(blockNumber),
+        blockNumber: Quantity.of(blockNumber).toString(),
         from: tx.origin,
-        gas: Quantity.of(tx.gas),
+        gas: Quantity.of(tx.gas).toString(),
         chainId,
         hash: tx.id,
         nonce: tx.nonce as string,
-        transactionIndex: Quantity.of(txIndex),
+        transactionIndex: Quantity.of(txIndex).toString(),
 
         /**
          * `input`, `to`, `value` are being referred to the first clause.
@@ -54,7 +54,7 @@ const _formatTransactionToRPC = (
         to: tx.clauses[0]?.to !== undefined ? tx.clauses[0].to : null,
         value:
             tx.clauses[0]?.value !== undefined
-                ? Quantity.of(tx.clauses[0].value)
+                ? Quantity.of(tx.clauses[0].value).toString()
                 : '',
 
         // Unsupported fields
@@ -156,14 +156,14 @@ function formatTransactionReceiptToRPCStandard(
         output.events.forEach((event) => {
             logs.push({
                 blockHash: receipt.meta.blockID,
-                blockNumber: Quantity.of(receipt.meta.blockNumber),
+                blockNumber: Quantity.of(receipt.meta.blockNumber).toString(),
                 transactionHash: receipt.meta.txID as string,
                 address: event.address,
                 topics: event.topics.map((topic) => topic),
                 data: event.data,
                 removed: false,
-                transactionIndex: Quantity.of(transactionIndex),
-                logIndex: Quantity.of(logIndex)
+                transactionIndex: Quantity.of(transactionIndex).toString(),
+                logIndex: Quantity.of(logIndex).toString()
             });
             logIndex++;
         });
@@ -171,21 +171,21 @@ function formatTransactionReceiptToRPCStandard(
 
     return {
         blockHash: receipt.meta.blockID,
-        blockNumber: Quantity.of(receipt.meta.blockNumber),
+        blockNumber: Quantity.of(receipt.meta.blockNumber).toString(),
         contractAddress:
             receipt.outputs.length > 0
                 ? receipt.outputs[0].contractAddress
                 : null,
         from: transaction.origin,
-        gasUsed: Quantity.of(receipt.gasUsed),
+        gasUsed: Quantity.of(receipt.gasUsed).toString(),
         logs,
         status: receipt.reverted ? '0x0' : '0x1',
         to: transaction.clauses[0].to,
         transactionHash: receipt.meta.txID as string,
-        transactionIndex: Quantity.of(transactionIndex),
+        transactionIndex: Quantity.of(transactionIndex).toString(),
 
         // Incompatible fields
-        logsBloom: Hex0x.of(ZERO_BYTES(256)),
+        logsBloom: Hex.of(ZERO_BYTES(256)).toString(),
         cumulativeGasUsed: '0x0',
         effectiveGasPrice: '0x0',
         type: '0x0'

@@ -42,7 +42,7 @@ const ethSyncing = async (
             genesisBlock !== null
                 ? Quantity.of(
                       Math.floor((Date.now() - genesisBlock.timestamp) / 10000)
-                  )
+                  ).toString()
                 : null;
 
         // Check the latest block

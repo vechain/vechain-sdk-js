@@ -1,17 +1,17 @@
 /**
  * Implements the JSON Keystore v3 Wallet encryption, decryption, and validation functionality.
  */
+import { Hex } from '../../../vcdm/Hex';
+import { SCRYPT_PARAMS } from './const';
+import { addressUtils } from '../../../address-utils';
 import { ethers } from 'ethers';
-import { type Keystore, type KeystoreAccount } from '../../types';
+import { secp256k1 } from '../../../secp256k1';
 import {
     InvalidKeystore,
     InvalidKeystoreParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import { secp256k1 } from '../../../secp256k1';
-import { addressUtils } from '../../../address-utils';
-import { Hex0x } from '../../../utils';
-import { SCRYPT_PARAMS } from './const';
+import { type Keystore, type KeystoreAccount } from '../../types';
 
 /**
  * Encrypts a given private key into a keystore format using the specified password.
@@ -33,7 +33,7 @@ async function encrypt(
     // Create keystore account compatible with ethers
     const keystoreAccount: ethers.KeystoreAccount = {
         address: deriveAddress,
-        privateKey: Hex0x.of(privateKey)
+        privateKey: Hex.of(privateKey).toString()
     };
 
     // Scrypt options

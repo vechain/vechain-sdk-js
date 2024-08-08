@@ -1,4 +1,4 @@
-import { Hex0x } from '@vechain/sdk-core';
+import { Hex } from '@vechain/sdk-core';
 
 /**
  * Fixtures for eth_getLogs positive cases
@@ -8,8 +8,8 @@ const logsFixture = [
     {
         input: {
             address: ['0x0000000000000000000000000000456e65726779'],
-            fromBlock: Hex0x.of(0),
-            toBlock: Hex0x.of(100000),
+            fromBlock: Hex.of(0).toString(),
+            toBlock: Hex.of(100000n).toString(), // Same integer has different hex representations for bigint and number IEEE 754.
             topics: [
                 '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
                 '0x0000000000000000000000005034aa590125b64023a0262112b98d72e3c8e40e',
@@ -90,8 +90,8 @@ const logsFixture = [
     {
         input: {
             address: null,
-            fromBlock: Hex0x.of(0),
-            toBlock: Hex0x.of(100000),
+            fromBlock: Hex.of(0).toString(),
+            toBlock: Hex.of(100000n).toString(), // Same integer has different hex representations for bigint and number IEEE 754.
             topics: [
                 '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
                 '0x0000000000000000000000005034aa590125b64023a0262112b98d72e3c8e40e',
@@ -187,8 +187,8 @@ const mockLogsFixture = [
                 '0x0000000000000000000000005034aa590125b64023a0262112b98d72e3c8e40e',
                 '0x0000000000000000000000005034aa590125b64023a0262112b98d72e3c8e40e'
             ],
-            fromBlock: Hex0x.of(0),
-            toBlock: Hex0x.of(1)
+            fromBlock: Hex.of(0).toString(),
+            toBlock: Hex.of(1n).toString() // Same integer has different hex representations for bigint and number IEEE 754.
         },
         expected: []
     },
@@ -205,8 +205,8 @@ const mockLogsFixture = [
                 '0x0000000000000000000000005034aa590125b64023a0262112b98d72e3c8e40e',
                 '0x0000000000000000000000005034aa590125b64023a0262112b98d72e3c8e40e'
             ],
-            fromBlock: Hex0x.of(0),
-            toBlock: Hex0x.of(1)
+            fromBlock: Hex.of(0).toString(),
+            toBlock: Hex.of(1n).toString() // Same integer has different hex representations for bigint and number IEEE 754.
         },
         expected: []
     },
@@ -218,8 +218,8 @@ const mockLogsFixture = [
                 '0x0000000000000000000000000000456e65726779',
                 '0x0000000000000000000000000000456e65726779'
             ],
-            fromBlock: Hex0x.of(0),
-            toBlock: Hex0x.of(1)
+            fromBlock: Hex.of(0).toString(),
+            toBlock: Hex.of(1n).toString() // Same integer has different hex representations for bigint and number IEEE 754.
         },
         expected: []
     },
@@ -230,8 +230,8 @@ const mockLogsFixture = [
             topics: [
                 '0x0000000000000000000000005034aa590125b64023a0262112b98d72e3c8e40e'
             ],
-            fromBlock: Hex0x.of(0),
-            toBlock: Hex0x.of(1)
+            fromBlock: Hex.of(0).toString(),
+            toBlock: Hex.of(1n).toString() // Same integer has different hex representations for bigint and number IEEE 754.
         },
         expected: []
     },

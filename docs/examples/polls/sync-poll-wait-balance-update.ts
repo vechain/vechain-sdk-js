@@ -1,5 +1,5 @@
 import { Poll, THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
-import { Hex0x, TransactionHandler } from '@vechain/sdk-core';
+import { Hex, TransactionHandler } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // 1 - Create thor client for solo network
@@ -82,7 +82,7 @@ const sentTransaction =
 // 4.1 - Check if the transaction is sent successfully (check if the transaction id is a valid hex string)
 expect(sentTransaction).toBeDefined();
 expect(sentTransaction).toHaveProperty('id');
-expect(Hex0x.isValid(sentTransaction.id)).toBe(true);
+expect(Hex.isValid0x(sentTransaction.id)).toBe(true);
 
 // 4 -Wait until balance is updated
 

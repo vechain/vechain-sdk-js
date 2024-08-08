@@ -1,3 +1,7 @@
+import { ThorId } from '@vechain/sdk-core';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
+import { RPC_METHODS } from '../../../../const';
+import { RPCMethodsMap } from '../../../rpc-mapper';
 import {
     InvalidDataType,
     JSONRPCInternalError,
@@ -5,17 +9,13 @@ import {
     stringifyData
 } from '@vechain/sdk-errors';
 import {
-    type TransactionReceiptRPC,
-    transactionsFormatter
+    transactionsFormatter,
+    type TransactionReceiptRPC
 } from '../../../../formatter';
-import { RPC_METHODS } from '../../../../const';
-import { RPCMethodsMap } from '../../../rpc-mapper';
 import {
     type ExpandedBlockDetail,
     type ThorClient
 } from '../../../../../../thor-client';
-import { Hex0x } from '@vechain/sdk-core';
-import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
  * RPC Method eth_getTransactionReceipt implementation
@@ -44,7 +44,7 @@ const ethGetTransactionReceipt = async (
     const [transactionID] = params as [string];
 
     // Invalid transaction ID
-    if (!Hex0x.isThorId(transactionID)) {
+    if (!ThorId.isValid(transactionID)) {
         throw new InvalidDataType(
             'eth_getTransactionReceipt()',
             'Invalid transaction ID given as input. Input must be an hex string of length 64.',

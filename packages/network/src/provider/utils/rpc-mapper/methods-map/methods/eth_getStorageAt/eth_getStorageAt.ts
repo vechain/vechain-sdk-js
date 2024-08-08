@@ -1,13 +1,13 @@
-import { Hex0x } from '@vechain/sdk-core';
+import { ThorId } from '@vechain/sdk-core';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
+import { getCorrectBlockNumberRPCToVeChain } from '../../../../const';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import { type ThorClient } from '../../../../../../thor-client';
 import type { BlockQuantityInputRPC } from '../../../types';
-import { getCorrectBlockNumberRPCToVeChain } from '../../../../const';
-import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
+import { type ThorClient } from '../../../../../../thor-client';
 
 /**
  * RPC Method eth_getStorageAt implementation
@@ -54,7 +54,7 @@ const ethGetStorageAt = async (
         // Get the account details
         return await thorClient.accounts.getStorageAt(
             address,
-            Hex0x.canon(storagePosition, 32),
+            ThorId.of(storagePosition).toString(),
             {
                 revision: getCorrectBlockNumberRPCToVeChain(block)
             }

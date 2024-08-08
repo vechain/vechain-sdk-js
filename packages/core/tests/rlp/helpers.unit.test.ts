@@ -1,5 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import {
+    Hex,
     assertCompactFixedHexBlobBuffer,
     assertFixedHexBlobKindBuffer,
     assertFixedHexBlobKindData,
@@ -8,7 +9,6 @@ import {
     assertValidNumericKindBuffer,
     decodeBufferToHexWithLeadingZeros,
     encodeBigIntToBuffer,
-    Hex,
     validateNumericKindData
 } from '../../src';
 import {
@@ -27,7 +27,11 @@ import {
     validHexBlobKindDataTestCases,
     validNumericBufferTestCases
 } from './helpers.fixture';
-import { InvalidRLP, stringifyData } from '@vechain/sdk-errors';
+import {
+    InvalidDataType,
+    InvalidRLP,
+    stringifyData
+} from '@vechain/sdk-errors';
 
 /**
  * Test suite for BigInt helper functions
@@ -37,7 +41,7 @@ describe('encodeBigIntToBuffer', () => {
     test('encodeBigIntToBuffer', () => {
         const bi = 123456789012345678901n; // or any BigInt you want to test with
         const buffer = encodeBigIntToBuffer(bi, 9, 'encodeBigIntToBuffer');
-        expect(Hex.of(buffer)).toBe('06b14e9f812f366c35');
+        expect(Hex.of(buffer).hex).toBe('06b14e9f812f366c35');
     });
 });
 
@@ -46,14 +50,14 @@ describe('encodeBigIntToBuffer', () => {
  * @group unit/numerickind-helpers
  */
 describe('decodeBufferToHexWithLeadingZeros', () => {
+    const buffer: Buffer = Buffer.alloc(1);
+    buffer[0] = 10;
     test('decodeBufferToHexWithLeadingZeros zero bytes', () => {
-        const buffer: Buffer = Buffer.alloc(1);
-        buffer[0] = 10;
-        expect(decodeBufferToHexWithLeadingZeros(buffer, 0)).toBe('0x0a');
+        expect(() => decodeBufferToHexWithLeadingZeros(buffer, 0)).toThrow(
+            InvalidDataType
+        );
     });
     test('decodeBufferToHexWithLeadingZeros with bytes', () => {
-        const buffer: Buffer = Buffer.alloc(1);
-        buffer[0] = 10;
         expect(decodeBufferToHexWithLeadingZeros(buffer, 4)).toBe('0x0000000a');
     });
 });

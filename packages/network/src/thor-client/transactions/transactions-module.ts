@@ -1,14 +1,5 @@
-import {
-    abi,
-    Hex0x,
-    revisionUtils,
-    secp256k1,
-    type Transaction,
-    type TransactionBody,
-    type TransactionClause,
-    TransactionHandler,
-    vechain_sdk_core_ethers
-} from '@vechain/sdk-core';
+import { InvalidDataType, InvalidTransactionField } from '@vechain/sdk-errors';
+import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
 import {
     buildQuery,
     ERROR_SELECTOR,
@@ -17,6 +8,17 @@ import {
     thorest,
     vnsUtils
 } from '../../utils';
+import {
+    Hex,
+    ThorId,
+    TransactionHandler,
+    abi,
+    revisionUtils,
+    vechain_sdk_core_ethers,
+    type Transaction,
+    type TransactionBody,
+    type TransactionClause
+} from '@vechain/sdk-core';
 import {
     type GetTransactionInputOptions,
     type GetTransactionReceiptInputOptions,
@@ -30,10 +32,8 @@ import {
     type TransactionSimulationResult,
     type WaitForTransactionOptions
 } from './types';
-import { InvalidDataType, InvalidTransactionField } from '@vechain/sdk-errors';
 import { type ThorClient } from '../thor-client';
 import { type ExpandedBlockDetail } from '../blocks';
-import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
 import { type CallNameReturnType } from '../debug';
 
 /**
@@ -59,7 +59,7 @@ class TransactionsModule {
         options?: GetTransactionInputOptions
     ): Promise<TransactionDetailNoRaw | null> {
         // Invalid transaction ID
-        if (!Hex0x.isThorId(id)) {
+        if (!ThorId.isValid(id)) {
             throw new InvalidDataType(
                 'TransactionsModule.getTransaction()',
                 'Invalid transaction ID given as input. Input must be an hex string of length 64.',
@@ -68,7 +68,7 @@ class TransactionsModule {
         }
 
         // Invalid head
-        if (options?.head !== undefined && !Hex0x.isThorId(options.head))
+        if (options?.head !== undefined && !ThorId.isValid(options.head))
             throw new InvalidDataType(
                 'TransactionsModule.getTransaction()',
                 'Invalid head given as input. Input must be an hex string of length 64.',
@@ -100,7 +100,7 @@ class TransactionsModule {
         options?: GetTransactionInputOptions
     ): Promise<TransactionDetailRaw | null> {
         // Invalid transaction ID
-        if (!Hex0x.isThorId(id)) {
+        if (!ThorId.isValid(id)) {
             throw new InvalidDataType(
                 'TransactionsModule.getTransactionRaw()',
                 'Invalid transaction ID given as input. Input must be an hex string of length 64.',
@@ -109,7 +109,7 @@ class TransactionsModule {
         }
 
         // Invalid head
-        if (options?.head !== undefined && !Hex0x.isThorId(options.head))
+        if (options?.head !== undefined && !ThorId.isValid(options.head))
             throw new InvalidDataType(
                 'TransactionsModule.getTransaction()',
                 'Invalid head given as input. Input must be an hex string of length 64.',
@@ -142,7 +142,7 @@ class TransactionsModule {
         options?: GetTransactionReceiptInputOptions
     ): Promise<TransactionReceipt | null> {
         // Invalid transaction ID
-        if (!Hex0x.isThorId(id)) {
+        if (!ThorId.isValid(id)) {
             throw new InvalidDataType(
                 'TransactionsModule.getTransactionReceipt()',
                 'Invalid transaction ID given as input. Input must be an hex string of length 64.',
@@ -151,7 +151,7 @@ class TransactionsModule {
         }
 
         // Invalid head
-        if (options?.head !== undefined && !Hex0x.isThorId(options.head))
+        if (options?.head !== undefined && !ThorId.isValid(options.head))
             throw new InvalidDataType(
                 'TransactionsModule.getTransaction()',
                 'Invalid head given as input. Input must be an hex string of length 64.',
@@ -177,7 +177,7 @@ class TransactionsModule {
         raw: string
     ): Promise<SendTransactionResult> {
         // Validate raw transaction
-        if (!Hex0x.isValid(raw)) {
+        if (!Hex.isValid0x(raw)) {
             throw new InvalidDataType(
                 'TransactionsModule.sendRawTransaction()',
                 'Sending failed: Input must be a valid raw transaction in hex format.',
@@ -233,7 +233,7 @@ class TransactionsModule {
             );
         }
 
-        const rawTx = Hex0x.of(signedTx.encoded);
+        const rawTx = Hex.of(signedTx.encoded).toString();
 
         return await this.sendRawTransaction(rawTx);
     }
@@ -255,7 +255,7 @@ class TransactionsModule {
         options?: WaitForTransactionOptions
     ): Promise<TransactionReceipt | null> {
         // Invalid transaction ID
-        if (!Hex0x.isThorId(txID)) {
+        if (!ThorId.isValid(txID)) {
             throw new InvalidDataType(
                 'TransactionsModule.waitForTransaction()',
                 'Invalid transaction ID given as input. Input must be an hex string of length 64.',
@@ -325,7 +325,8 @@ class TransactionsModule {
             expiration: options?.expiration ?? 32,
             gas,
             gasPriceCoef: options?.gasPriceCoef ?? 0,
-            nonce: options?.nonce ?? Hex0x.of(secp256k1.randomBytes(8)),
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+            nonce: options?.nonce ?? Hex.random(8).toString(),
             reserved:
                 options?.isDelegated === true ? { features: 1 } : undefined
         };

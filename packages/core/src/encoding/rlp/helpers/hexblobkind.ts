@@ -1,6 +1,6 @@
-import { Hex0x } from '../../../utils';
-import { type RLPInput } from '../types';
+import { Hex } from '../../../vcdm/Hex';
 import { InvalidRLP } from '@vechain/sdk-errors';
+import { type RLPInput } from '../types';
 
 /**
  * Validates if the input is a proper hex string for HexBlobKind.
@@ -24,7 +24,7 @@ const assertValidHexBlobKindData = (data: RLPInput, context: string): void => {
     }
 
     // Check if data is a valid hex string with '0x' prefix.
-    if (!Hex0x.isValid(data)) {
+    if (!Hex.isValid(data)) {
         throw new InvalidRLP(
             'assertValidHexBlobKindData()',
             `Validation error: Input must be a valid hex string with a '0x' prefix.`,

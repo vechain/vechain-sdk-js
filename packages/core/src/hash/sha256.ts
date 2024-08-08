@@ -1,7 +1,7 @@
-import { Hex0x } from '../utils';
+import { Hex } from '../vcdm/Hex';
+import { InvalidDataType } from '@vechain/sdk-errors';
 import { sha256 as _sha256 } from '@noble/hashes/sha256';
 import { type ReturnType } from './types';
-import { InvalidDataType } from '@vechain/sdk-errors';
 
 /* --- Overloaded functions start --- */
 
@@ -65,7 +65,7 @@ function sha256(
     }
 
     const hash = _sha256(data);
-    return returnType === 'buffer' ? hash : Hex0x.of(hash);
+    return returnType === 'buffer' ? hash : Hex.of(hash).toString();
 }
 
 export { sha256 };
