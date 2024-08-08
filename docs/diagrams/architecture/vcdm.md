@@ -18,11 +18,11 @@ classDiagram
         +Hex of(bigint|number|string|Uint8Array exp)$
         +Hex random(number bytes)$
     }
+    class HexInt {
+        +HexInt of(bigint|number|string|Uint8Array|Hex exp)$
+    }
     class Keccak256 
     class Keystore
-    class Quantity {
-        +Quantity of(bigint|number|string|Uint8Array|Hex exp)$
-    }
     class Revision
     class Sha256
     class String
@@ -50,8 +50,8 @@ classDiagram
     Hex <|-- BloomFilter
     Hex <|-- HDNode
     Hex <|-- Hash
+    Hex <|-- HexInt
     Hex <|-- Keystore
-    Hex <|-- Quantity
     Hex <|-- Revision
     Hex <|-- ThorId
     String <|-- Hex

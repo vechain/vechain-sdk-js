@@ -8,8 +8,14 @@ import { InvalidCastType, InvalidDataType } from '@vechain/sdk-errors';
  */
 describe('Hex class tests', () => {
     describe('VeChain Data Model tests', () => {
-        test('Return a bi value from a bi expression', () => {
-            const exp = BigInt(12357);
+        test('Return a bi value from a negative bi expression', () => {
+            const exp = -12357n; // From literal.
+            const hex = Hex.of(exp);
+            expect(hex.bi).toEqual(exp);
+        });
+
+        test('Return a bi value from a positive bi expression', () => {
+            const exp = BigInt(12357); // From constructor.
             const hex = Hex.of(exp);
             expect(hex.bi).toEqual(exp);
         });
@@ -18,6 +24,7 @@ describe('Hex class tests', () => {
             const exp = Txt.of('👋🌐');
             const hex = Hex.of(exp.bytes);
             expect(hex.bytes).toEqual(exp.bytes);
+            expect(hex.sign).toBeGreaterThan(0);
             expect(Txt.of(hex.bytes).isEqual(exp)).toBeTruthy();
         });
 
@@ -39,12 +46,19 @@ describe('Hex class tests', () => {
             expect(() => hex.n).toThrow(InvalidCastType);
         });
 
-        test('compareTo metthod tests', () => {
+        test('compareTo method tests - same signs', () => {
             const hex1 = Hex.of('0x123');
             const hex2 = Hex.of('0x456');
             expect(hex1.compareTo(hex2)).toBeLessThan(0);
             expect(hex2.compareTo(hex1)).toBeGreaterThan(0);
             expect(hex1.compareTo(hex1)).toEqual(0);
+        });
+
+        test('compareTo method tests - opposite signs', () => {
+            const hex1 = Hex.of('-0x123');
+            const hex2 = Hex.of('0x123');
+            expect(hex1.compareTo(hex2)).toBeLessThan(0);
+            expect(hex2.compareTo(hex1)).toBeGreaterThan(0);
         });
 
         test('isEqual method tests', () => {
@@ -57,12 +71,18 @@ describe('Hex class tests', () => {
     });
 
     describe('Construction tests', () => {
-        test('Return an Hex instance if the passed argument is negative bigint', () => {});
+        test('Return an Hex instance if the passed argument is negative bigint', () => {
+            const exp = -12357n;
+            const hex = Hex.of(exp);
+            expect(hex).toBeInstanceOf(Hex);
+            expect(hex.bi).toEqual(exp);
+        });
 
         test('Return an Hex instance if the passed argument is positive bigint', () => {
             const exp = BigInt(12357);
             const hex = Hex.of(exp);
             expect(hex).toBeInstanceOf(Hex);
+            expect(hex.bi).toEqual(exp);
         });
 
         test('Return an Hex instance if the passed argument is negative number', () => {
@@ -91,6 +111,20 @@ describe('Hex class tests', () => {
             const hex = Hex.of(exp);
             expect(hex).toBeInstanceOf(Hex);
             expect(hex.hex).toEqual(exp.toLowerCase()); // Normalized from is lower case.
+        });
+
+        test('Return an Hex instance if the passed argument is string - negative value with 0x prefix', () => {
+            const exp = '-0xc0fFeE';
+            const hex = Hex.of(exp);
+            expect(hex).toBeInstanceOf(Hex);
+            expect(hex.toString()).toEqual(exp.toLowerCase()); // Normalized from is lower case.
+        });
+
+        test('Return an Hex instance if the passed argument is string - negative value without 0x prefix', () => {
+            const exp = '-C0c0a';
+            const hex = Hex.of(exp);
+            expect(hex).toBeInstanceOf(Hex);
+            expect('-' + hex.hex).toEqual(exp.toLowerCase()); // Normalized from is lower case.
         });
 
         test('Return an Hex instance if the passed argument is UInt8Array', () => {
@@ -169,12 +203,22 @@ describe('Hex class tests', () => {
             expect(Hex.isValid(exp)).toBeFalsy();
         });
 
-        test('Return true for valid hex with 0x prefix', () => {
+        test('Return true for valid negative hex with 0x prefix', () => {
+            const exp = '-0xBadBabe';
+            expect(Hex.isValid(exp)).toBeTruthy();
+        });
+
+        test('Return true for valid negative hex without 0x prefix', () => {
+            const exp = '-BadBabe';
+            expect(Hex.isValid(exp)).toBeTruthy();
+        });
+
+        test('Return true for valid positive hex with 0x prefix', () => {
             const exp = '0xBadBabe';
             expect(Hex.isValid(exp)).toBeTruthy();
         });
 
-        test('Return true for valid hex without 0x prefix', () => {
+        test('Return true for valid positive hex without 0x prefix', () => {
             const exp = 'BadBabe';
             expect(Hex.isValid(exp)).toBeTruthy();
         });
@@ -186,12 +230,22 @@ describe('Hex class tests', () => {
             expect(Hex.isValid0x(exp)).toBeFalsy();
         });
 
-        test('Return false for valid hex without 0x prefix', () => {
+        test('Return false for valid negative hex without 0x prefix', () => {
+            const exp = '-BadBabe';
+            expect(Hex.isValid0x(exp)).toBeFalsy();
+        });
+
+        test('Return true for valid positive hex with 0x prefix', () => {
+            const exp = '-0xBadBabe';
+            expect(Hex.isValid0x(exp)).toBeTruthy();
+        });
+
+        test('Return false for valid positive hex without 0x prefix', () => {
             const exp = 'BadBabe';
             expect(Hex.isValid0x(exp)).toBeFalsy();
         });
 
-        test('Return true for valid hex with 0x prefix', () => {
+        test('Return true for valid positive hex with 0x prefix', () => {
             const exp = '0xBadBabe';
             expect(Hex.isValid0x(exp)).toBeTruthy();
         });

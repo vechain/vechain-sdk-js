@@ -1,6 +1,6 @@
 import * as n_utils from '@noble/curves/abstract/utils';
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { Quantity } from '../../vcdm';
+import { HexInt } from '../../vcdm';
 import { randomBytes } from '@noble/hashes/utils';
 import { type HexString } from './types';
 
@@ -436,7 +436,7 @@ const _Quantity = {
      */
     of(n: HexRepresentable): string {
         // return `${PREFIX}${trim(_Hex.of(n))}`;
-        return Quantity.of(n).toString();
+        return HexInt.of(n).toString();
     }
 };
 
