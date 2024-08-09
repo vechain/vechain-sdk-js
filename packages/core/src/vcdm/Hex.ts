@@ -88,6 +88,15 @@ class Hex extends String implements VeChainDataModel<Hex> {
     }
 
     /**
+     * Returns the absolute value of this Hex object.
+     *
+     * @return {Hex} A new Hex object representing the absolute value of this Hex.
+     */
+    public get abs(): Hex {
+        return new Hex(Hex.POSITIVE, this.hex);
+    }
+
+    /**
      * Returns the value of `bi` as a `BigInt` type.
      *
      * @returns {bigint} The value of `bi` as a `BigInt`.
