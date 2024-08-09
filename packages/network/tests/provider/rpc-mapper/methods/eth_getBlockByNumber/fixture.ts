@@ -1,4 +1,4 @@
-import { Quantity } from '@vechain/sdk-core';
+import { HexInt } from '@vechain/sdk-core';
 import {
     blockWithTransactionsExpanded,
     blockWithTransactionsNotExpanded
@@ -46,24 +46,24 @@ const ethGetBlockByNumberTestCases = [
     // NOTE: hydrate true or false is the same, Because genesis block doesn't have any transactions on testnet
     {
         description: "Should get block by number '0x0'",
-        params: [Quantity.of(0).toString(), false],
+        params: [HexInt.of(0).toString(), false],
         expected: zeroBlock
     },
     {
         description:
             "Should get block by number '0x0' with transaction details",
-        params: [Quantity.of(0).toString(), true],
+        params: [HexInt.of(0).toString(), true],
         expected: zeroBlock
     },
     {
         description: 'Should get block which has transactions with details',
-        params: [Quantity.of(17529453).toString(), true],
+        params: [HexInt.of(17529453).toString(), true],
         expected: blockWithTransactionsExpanded
     },
     {
         description:
             'Should get block which has transactions with transaction NOT expanded',
-        params: [Quantity.of(17529453).toString(), false],
+        params: [HexInt.of(17529453).toString(), false],
         expected: blockWithTransactionsNotExpanded
     }
 ];

@@ -30,15 +30,15 @@ describe('Transaction handler', () => {
             transactions.undelegated.forEach((transaction) => {
                 const signedTransaction = TransactionHandler.sign(
                     transaction.body,
-                    signer.privateKey
+                    Buffer.from(Hex.of(signer.privateKey).bytes)
                 );
 
                 // Sign a non-delegated transaction with delegator
                 expect(() =>
                     TransactionHandler.signWithDelegator(
                         transaction.body,
-                        signer.privateKey,
-                        delegator.privateKey
+                        Buffer.from(Hex.of(signer.privateKey).bytes),
+                        Buffer.from(Hex.of(delegator.privateKey).bytes)
                     )
                 ).toThrowError(NotDelegatedTransaction);
 
@@ -68,19 +68,22 @@ describe('Transaction handler', () => {
             transactions.delegated.forEach((transaction) => {
                 const signedTransaction = TransactionHandler.signWithDelegator(
                     transaction.body,
-                    signer.privateKey,
-                    delegator.privateKey
+                    Buffer.from(Hex.of(signer.privateKey).bytes),
+                    Buffer.from(Hex.of(delegator.privateKey).bytes)
                 );
 
                 // Sign normally a delegated transaction
                 expect(() =>
-                    TransactionHandler.sign(transaction.body, signer.privateKey)
+                    TransactionHandler.sign(
+                        transaction.body,
+                        Buffer.from(Hex.of(signer.privateKey).bytes)
+                    )
                 ).toThrowError(InvalidTransactionField);
 
                 expect(() =>
                     TransactionHandler.sign(
                         transaction.body,
-                        delegator.privateKey
+                        Buffer.from(Hex.of(delegator.privateKey).bytes)
                     )
                 ).toThrowError(InvalidTransactionField);
 
@@ -118,14 +121,14 @@ describe('Transaction handler', () => {
                 TransactionHandler.signWithDelegator(
                     transactions.delegated[0].body,
                     Buffer.from('INVALID', 'hex'),
-                    delegator.privateKey
+                    Buffer.from(Hex.of(delegator.privateKey).bytes)
                 );
             }).toThrowError(InvalidSecp256k1PrivateKey);
 
             expect(() => {
                 TransactionHandler.signWithDelegator(
                     transactions.delegated[0].body,
-                    signer.privateKey,
+                    Buffer.from(Hex.of(signer.privateKey).bytes),
                     Buffer.from('INVALID', 'hex')
                 );
             }).toThrowError(InvalidSecp256k1PrivateKey);
@@ -151,7 +154,7 @@ describe('Transaction handler', () => {
             transactions.undelegated.forEach((transaction) => {
                 // Unsigned transaction
                 const decodedUnsigned = TransactionHandler.decode(
-                    transaction.encodedUnsignedExpected,
+                    Buffer.from(transaction.encodedUnsignedExpected),
                     false
                 );
 
@@ -182,7 +185,7 @@ describe('Transaction handler', () => {
 
                 // Signed transaction
                 const decodedSigned = TransactionHandler.decode(
-                    transaction.encodedSignedExpected,
+                    Buffer.from(transaction.encodedSignedExpected),
                     true
                 );
 
@@ -242,8 +245,8 @@ describe('Transaction handler', () => {
                 const encodedSignedDelegated =
                     TransactionHandler.signWithDelegator(
                         transactions.delegated[0].body,
-                        signer.privateKey,
-                        delegator.privateKey
+                        Buffer.from(Hex.of(signer.privateKey).bytes),
+                        Buffer.from(Hex.of(delegator.privateKey).bytes)
                     );
 
                 // Signed transaction

@@ -17,11 +17,10 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
  * RPC Method eth_call implementation
  *
  * @link [eth_call](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_call)
- *
  * @param thorClient - The thor client instance to use.
  * @param params - The transaction call object
- *
  * @returns The return value of executed contract.
+ * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
  */
 const ethCall = async (
     thorClient: ThorClient,

@@ -3,14 +3,13 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 import { RPC_METHODS } from '../../../../const';
 import { RPCMethodsMap } from '../../../rpc-mapper';
 import {
-    InvalidDataType,
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import {
-    transactionsFormatter,
-    type TransactionReceiptRPC
+    type TransactionReceiptRPC,
+    transactionsFormatter
 } from '../../../../formatter';
 import {
     type ExpandedBlockDetail,
@@ -40,15 +39,13 @@ const ethGetTransactionReceipt = async (
             { params }
         );
 
-    // Init the transaction ID
-    const [transactionID] = params as [string];
-
     // Invalid transaction ID
-    if (!ThorId.isValid(transactionID)) {
-        throw new InvalidDataType(
-            'eth_getTransactionReceipt()',
+    if (!ThorId.isValid(params[0])) {
+        throw new JSONRPCInvalidParams(
+            'eth_getTransactionReceipt',
+            -32602,
             'Invalid transaction ID given as input. Input must be an hex string of length 64.',
-            { transactionID }
+            { params }
         );
     }
 

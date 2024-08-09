@@ -4,10 +4,34 @@ import { InvalidCastType, InvalidDataType } from '@vechain/sdk-errors';
 import { type VeChainDataModel } from './VeChainDataModel';
 
 /**
- * Represents a hexadecimal value.
+ * Represents a hexadecimal value expressed as
+ * * `-` sign if the value is negative,
+ * * `0x` hexadecimal notation tag,
+ * * a not empty string of hexadecimal digits from `0` to `9` and from `a` to `f`.
+ *
+ * @description This hexadecimal notation is coherent with the decimal notation:
+ * * the sign is only expressed for negative values, and it is always the first symbol,
+ * * the `0x` tags the string as a hexadecimal expression,
+ * * hexadecimal digits follow.
+ * * An empty content results is no digits.
+ *
  * @implements {VeChainDataModel<Hex>}
  */
 class Hex extends String implements VeChainDataModel<Hex> {
+    /**
+     * Negative multiplier of the {@link hex} absolute value.
+     *
+     * @type {number}
+     */
+    protected static readonly NEGATIVE: number = -1;
+
+    /**
+     * Positive multiplier of the {@link hex} absolute value.
+     *
+     * @type {number}
+     */
+    protected static readonly POSITIVE: number = 1;
+
     /**
      * The radix used for representing numbers base 16 in a positional numeral notation system.
      *
@@ -15,39 +39,61 @@ class Hex extends String implements VeChainDataModel<Hex> {
      */
     protected static readonly RADIX: number = 16;
 
-    private static readonly REGEX_HEX: RegExp = /^(0x)?[0-9a-f]*$/i;
+    /**
+     * Regular expression for matching hexadecimal strings.
+     * An empty input is represented as a empty digits.
+     *
+     * @type {RegExp}
+     */
+    private static readonly REGEX_HEX: RegExp = /^-?(0x)?[0-9a-f]*$/i;
 
-    protected static readonly REGEX_PREFIX: RegExp = /^0x/i;
+    /**
+     * Regular expression pattern to match a prefix indicating hexadecimal number.
+     *
+     * @type {RegExp}
+     */
+    protected static readonly REGEX_PREFIX: RegExp = /^-?0x/i;
 
+    /**
+     * Returns the hexadecimal digits expressing this absolute value, sign and `0x` prefix omitted.
+
+     * @remark An empty content results in an empty string returned.
+     */
     public readonly hex: string;
 
     /**
-     * Creates a new instance of this class representing the `exp` hexadecimal expression.
+     * Represents the sign multiplier of a given number:
+     * * {@link NEGATIVE} `-1` if negative,
+     * * {@link POSITIVE} `1` if positive.
+     */
+    public readonly sign;
+
+    /**
+     * Creates a new instance of this class to represent the value
+     * built multiplying `sign` for the absolute value expressed by the hexadecimal `digits`.
      *
-     * @param {string} exp - The hexadecimal expression.
-     * @param {function} normalize - A function used to normalize the hexadecimal expression. Defaults to converting it to lowercase.
-     *
-     * @throws {InvalidDataType} - Thrown when the exp parameter is not a valid hexadecimal expression.
+     * @param {number} sign - The sign of the value.
+     * @param {string} digits - The digits of the absolute value in hexadecimal base.
+     * @param {function} [normalize] - The function used to normalize the digits. Defaults to converting digits to lowercase.
      */
     protected constructor(
-        exp: string,
-        normalize: (exp: string) => string = (exp) => exp.toLowerCase()
+        sign: number,
+        digits: string,
+        normalize: (digits: string) => string = (digits) => digits.toLowerCase()
     ) {
-        let value = exp;
-        if (Hex.REGEX_PREFIX.test(value)) {
-            value = value.slice(2);
-        }
-        if (Hex.isValid(value)) {
-            value = normalize(value);
-            super('0x' + value);
-            this.hex = value;
-        } else {
-            throw new InvalidDataType(
-                'Hex.constructor',
-                'not an hexadecimal expression',
-                { value }
-            );
-        }
+        const normalizedDigits = normalize(digits);
+        super((sign < 0 ? '-0x' : '0x') + normalizedDigits);
+        this.hex = normalizedDigits;
+        this.sign = sign;
+    }
+
+    /**
+     * Returns the absolute value of this Hex object.
+     *
+     * @return {Hex} A new Hex object representing the absolute value of this Hex.
+     */
+    public get abs(): Hex {
+        return new Hex(Hex.POSITIVE, this.hex);
     }
 
     /**
@@ -56,7 +102,7 @@ class Hex extends String implements VeChainDataModel<Hex> {
      * @returns {bigint} The value of `bi` as a `BigInt`.
      */
     get bi(): bigint {
-        return nc_utils.hexToNumber(this.hex);
+        return BigInt(this.sign) * nc_utils.hexToNumber(this.hex);
     }
 
     /**
@@ -72,11 +118,13 @@ class Hex extends String implements VeChainDataModel<Hex> {
      * Retrieves the value of n.
      *
      * @return {number} The value of n.
+     *
      * @throws {InvalidCastType<Hex>} Throws an error if this instance doesn't represent
      * an [IEEE 754 double precision 64 bits floating point format](https://en.wikipedia.org/wiki/Double-precision_floating-point_format).
      */
     get n(): number {
         if (this.isNumber()) {
+            // The sign is part of the IEEE 754 representation hence no need to consider `this.sign` property.
             return new DataView(this.bytes.buffer).getFloat64(0);
         }
         throw new InvalidCastType<Hex>(
@@ -92,27 +140,33 @@ class Hex extends String implements VeChainDataModel<Hex> {
      * @returns {Hex} - The aligned hexadecimal string.
      */
     public alignToBytes(): Hex {
-        return this.hex.length % 2 === 0 ? this : new Hex('0' + this.hex);
+        return this.hex.length % 2 === 0
+            ? this
+            : new Hex(this.sign, '0' + this.hex);
     }
 
     /**
      * Compares the current Hex object with another Hex object.
      *
      * @param {Hex} that - The Hex object to compare with.
+     *
      * @return {number} - Returns a negative number if the current Hex object is less than the given Hex object,
      *                    zero if they are equal, or a positive number if the current Hex object is greater than the given Hex object.
      */
     compareTo(that: Hex): number {
-        const digits = Math.max(this.hex.length, that.hex.length);
-        const thisBytes = this.fit(digits).bytes;
-        const thatBytes = that.fit(digits).bytes;
-        let i = 0;
-        let compareByte = 0;
-        while (compareByte === 0 && i < thisBytes.length) {
-            compareByte = thisBytes[i] - thatBytes[i];
-            i++;
+        if (this.sign === that.sign) {
+            const digits = Math.max(this.hex.length, that.hex.length);
+            const thisBytes = this.fit(digits).bytes;
+            const thatBytes = that.fit(digits).bytes;
+            let i = 0;
+            let compareByte = 0;
+            while (compareByte === 0 && i < thisBytes.length) {
+                compareByte = thisBytes[i] - thatBytes[i];
+                i++;
+            }
+            return compareByte;
         }
-        return compareByte;
+        return this.sign - that.sign;
     }
 
     /**
@@ -132,7 +186,7 @@ class Hex extends String implements VeChainDataModel<Hex> {
                 cue++;
             }
             if (this.hex.length - cue === digits) {
-                return new Hex(this.hex.slice(cue));
+                return new Hex(this.sign, this.hex.slice(cue));
             }
             throw new InvalidDataType(
                 'Hex.fit',
@@ -142,7 +196,10 @@ class Hex extends String implements VeChainDataModel<Hex> {
         }
         if (digits > this.hex.length) {
             // Pad.
-            return new Hex('0'.repeat(digits - this.hex.length) + this.hex);
+            return new Hex(
+                this.sign,
+                '0'.repeat(digits - this.hex.length) + this.hex
+            );
         }
         return this;
     }
@@ -194,30 +251,62 @@ class Hex extends String implements VeChainDataModel<Hex> {
     /**
      * Create a Hex instance from a bigint, number, string, or Uint8Array.
      *
-     * @param {bigint | number | string | Uint8Array} exp - The input value to convert to a Hex instance:
-     * * bigint encoded as hexadecimal expression of the bytes representing its absolute value;
-     * * number encoded as [IEEE 754 double precision 64 bits floating point format](https://en.wikipedia.org/wiki/Double-precision_floating-point_format);
-     * * string parsed as a hexadecimal expression, optionally prefixed with `0x`;
-     * * Uint8Array encoded as hexadecimal expression of the bytes represented in the provided expression;
+     * @param {bigint | number | string | Uint8Array} exp - The value to convert to a Hex instance:
+     * * bigint, converted to a signed hexadecimal expression of its absolute value;
+     * * number, encoded as [IEEE 754 double precision 64 bits floating point format](https://en.wikipedia.org/wiki/Double-precision_floating-point_format);
+     * * string, parsed as a hexadecimal expression, optionally signed `-`, optionally tagged with `0x`;
+     * * Uint8Array, encoded as hexadecimal expression of the bytes represented in the provided expression;
+     *
      * @returns {Hex} - A Hex instance representing the input value.
+     *
+     * @throws {InvalidDataType} if the given `exp` can't be represented as a hexadecimal expression.
      */
     public static of(exp: bigint | number | string | Uint8Array): Hex {
         try {
             if (exp instanceof Uint8Array) {
-                return new Hex(nc_utils.bytesToHex(exp));
+                return new Hex(this.POSITIVE, nc_utils.bytesToHex(exp));
             } else if (typeof exp === 'bigint') {
-                return new Hex(nc_utils.numberToHexUnpadded(exp));
+                if (exp < 0n) {
+                    return new Hex(
+                        this.NEGATIVE,
+                        nc_utils.numberToHexUnpadded(-1n * exp)
+                    );
+                }
+                return new Hex(
+                    this.POSITIVE,
+                    nc_utils.numberToHexUnpadded(exp)
+                );
             } else if (typeof exp === 'number') {
                 const dataView = new DataView(new ArrayBuffer(16));
                 dataView.setFloat64(0, exp);
-                return Hex.of(new Uint8Array(dataView.buffer));
+                return new Hex(
+                    exp < 0 ? this.NEGATIVE : this.POSITIVE,
+                    nc_utils.bytesToHex(new Uint8Array(dataView.buffer))
+                );
             }
-            return new Hex(exp);
+            if (this.isValid(exp)) {
+                if (exp.startsWith('-')) {
+                    return new Hex(
+                        this.NEGATIVE,
+                        this.REGEX_PREFIX.test(exp)
+                            ? exp.slice(3)
+                            : exp.slice(1)
+                    );
+                }
+                return new Hex(
+                    this.POSITIVE,
+                    this.REGEX_PREFIX.test(exp) ? exp.slice(2) : exp
+                );
+            }
+            // noinspection ExceptionCaughtLocallyJS
+            throw new InvalidDataType('Hex.of', 'not an hexadecimal string', {
+                exp
+            });
         } catch (e) {
             throw new InvalidDataType(
                 'Hex.of',
                 'not an hexadecimal expression',
-                { exp },
+                { exp: `${exp}` }, // Needed to serialize bigint values.
                 e
             );
         }
