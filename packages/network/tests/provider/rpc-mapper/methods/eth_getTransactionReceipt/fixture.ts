@@ -1,3 +1,5 @@
+import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
+
 /**
  * Fixture for eth_getTransactionReceipt correct cases for solo network
  */
@@ -214,4 +216,26 @@ const getReceiptCorrectCasesTestNetwork = [
     }
 ];
 
-export { getReceiptCorrectCasesSoloNetwork, getReceiptCorrectCasesTestNetwork };
+/**
+ * Fixture for eth_getTransactionReceipt incorrect cases for test network
+ */
+const getReceiptIncorrectCasesTestNetwork = [
+    {
+        testCase:
+            'eth_getTransactionReceipt - Should throw error for invalid params length',
+        params: [],
+        expectedError: JSONRPCInvalidParams
+    },
+    {
+        testCase:
+            'eth_getTransactionReceipt - Should throw error for invalid transaction id',
+        params: ['0x_INVALID_TRANSACTION_ID'],
+        expectedError: JSONRPCInvalidParams
+    }
+];
+
+export {
+    getReceiptCorrectCasesSoloNetwork,
+    getReceiptCorrectCasesTestNetwork,
+    getReceiptIncorrectCasesTestNetwork
+};

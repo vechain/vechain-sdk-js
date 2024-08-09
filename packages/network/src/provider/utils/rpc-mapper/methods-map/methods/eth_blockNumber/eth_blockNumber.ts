@@ -7,10 +7,8 @@ import { type ThorClient } from '../../../../../../thor-client';
  * @link [eth_blockNumber](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_blocknumber)
  *
  * @param thorClient - The thor client instance to use.
- *
- * @returns the latest block number as a hex string. If the block number cannot be retrieved, it will return '0x0'.
- *
- * @throws {ProviderRpcError} - Will throw an error if the retrieval of the block number fails.
+ * @returns the latest block number as a hex string. If the block number cannot be retrieved, it will return '0x0'
+ * @throws {JSONRPCInternalError}
  */
 const ethBlockNumber = async (thorClient: ThorClient): Promise<string> => {
     try {
