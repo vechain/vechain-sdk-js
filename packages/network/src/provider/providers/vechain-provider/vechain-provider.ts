@@ -49,6 +49,7 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
      * @param thorClient - ThorClient instance.
      * @param wallet - ProviderInternalWallet instance. It is optional because the majority of the methods do not require a wallet.
      * @param enableDelegation - Enable fee delegation or not.
+     * @throws {JSONRPCInvalidParams}
      *
      */
     constructor(
@@ -86,6 +87,8 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
      * Basically, it is a wrapper around the RPCMethodsMap.
      *
      * @param args - Method and parameters to be used for the request.
+     * @returns The result of the request.
+     * @throws {JSONRPCMethodNotFound}
      */
     public async request(args: EIP1193RequestArguments): Promise<unknown> {
         // Check if the method is supported

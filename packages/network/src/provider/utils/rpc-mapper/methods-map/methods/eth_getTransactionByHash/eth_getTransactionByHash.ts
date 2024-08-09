@@ -22,10 +22,8 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
  *                 * params[0]: The transaction hash to get as a hex string.
- *
  * @returns the transaction at the given hash formatted to the RPC standard or null if the transaction does not exist.
- *
- * @throws {ProviderRpcError} - Will throw an error if the retrieval of the transaction fails.
+ * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
  */
 const ethGetTransactionByHash = async (
     thorClient: ThorClient,

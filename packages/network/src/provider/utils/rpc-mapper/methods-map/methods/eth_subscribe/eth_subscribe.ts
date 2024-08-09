@@ -48,9 +48,7 @@ type ethSubscribeParams = [SUBSCRIPTION_TYPE, string | string[]] | unknown[];
  *                   If the provider is not provided or is undefined, the function throws an error.
  *
  * @returns A `Promise` that resolves to a string representing the unique ID of the created subscription.
- *
- * @throws An error if the provider is undefined, indicating that the provider is not available,
- *         or if the first parameter in `params` is not a valid subscription type.
+ * @throws {JSONRPCInternalError, JSONRPCInvalidParams, JSONRPCServerError}
  */
 const ethSubscribe = async (
     thorClient: ThorClient,

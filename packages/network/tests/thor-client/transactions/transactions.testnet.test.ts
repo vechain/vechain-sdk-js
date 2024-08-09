@@ -5,6 +5,7 @@ import {
 } from './fixture';
 import { THOR_SOLO_ACCOUNTS_BASE_WALLET } from '../../fixture';
 import { TESTNET_URL, ThorClient, VeChainProvider } from '../../../src';
+import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
  * Transactions module tests suite.
@@ -106,5 +107,37 @@ describe('Transactions module Testnet tests suite', () => {
                 expect(revertReason).toStrictEqual(testCase.expected);
             });
         }, 10000);
+    });
+
+    /**
+     * Test negative cases
+     */
+    describe('Negative cases', () => {
+        /**
+         * waitForTransaction() with invalid transaction id
+         */
+        test('waitForTransaction with invalid transaction id', async () => {
+            await expect(async () => {
+                await thorClient.transactions.waitForTransaction('0xINVALID');
+            }).rejects.toThrow(InvalidDataType);
+        });
+
+        /**
+         * getTransactionRaw() with invalid input data
+         */
+        test('getTransactionRaw with invalid input data', async () => {
+            // Invalid transaction id
+            await expect(async () => {
+                await thorClient.transactions.getTransactionRaw('0xINVALID');
+            }).rejects.toThrow(InvalidDataType);
+
+            // Invalid block id
+            await expect(async () => {
+                await thorClient.transactions.getTransactionRaw(
+                    getRevertReasonTestCasesFixture[0].revertedTransactionHash,
+                    { head: '0xINVALID' }
+                );
+            }).rejects.toThrow(InvalidDataType);
+        });
     });
 });

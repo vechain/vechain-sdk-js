@@ -15,13 +15,9 @@ import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
  * subscription manager. This manager holds the active subscriptions and is used
  * to unsubscribe from them. If the provider is not provided or is undefined,
  * the function throws an error indicating that the provider is not available.
- *
  * @returns A `Promise` that resolves to `true` if the unsubscription was successful,
  * or `false` if the specified subscription ID does not match any active subscriptions.
- *
- * @throws An error with a JSON-RPC internal error code (-32603) if the provider is
- * not available. The error includes a message indicating that the provider is
- * not defined.
+ * @throws {JSONRPCInternalError}
  */
 const ethUnsubscribe = async (
     params: unknown[],

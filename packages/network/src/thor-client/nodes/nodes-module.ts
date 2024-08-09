@@ -73,10 +73,7 @@ class NodesModule {
      * This function throws an error if the timestamp key does not exist in the response from the API call to the node
      * @param response the response from the API call to the node
      * @returns the timestamp from the block
-     * @throws {InvalidDataTypeError} - if the timestamp key does not exist in the response from the API call to the node
-     * @throws {InvalidDataTypeError} - if the timestamp key exists in the response from the API call to the node but the value is not a number
-     * @throws {InvalidDataTypeError} - if the response from the API call to the node is not an object
-     * @throws {InvalidDataTypeError} - if the response from the API call to the node is null or undefined
+     * @throws{InvalidDataType}
      */
     private readonly getTimestampFromBlock = (
         response: CompressedBlockDetail | null

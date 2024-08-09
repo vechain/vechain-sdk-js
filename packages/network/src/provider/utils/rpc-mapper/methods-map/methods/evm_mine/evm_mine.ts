@@ -10,8 +10,8 @@ import { RPC_METHODS } from '../../../../const';
  * @link [evm_mine](https://hardhat.org/hardhat-network/docs/explanation/mining-modes)
  *
  * @param thorClient - The thor client instance to use.
- *
  * @returns The new block or null if the block is not available.
+ * @throws {JSONRPCInternalError}
  */
 const evmMine = async (thorClient: ThorClient): Promise<BlocksRPC | null> => {
     try {
