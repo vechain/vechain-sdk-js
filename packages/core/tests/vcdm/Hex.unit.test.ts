@@ -156,6 +156,20 @@ describe('Hex class tests', () => {
         });
     });
 
+    describe('abs property test', () => {
+        test('Return a positive Hex instance for a negative argument', () => {
+            const exp = '-0xA01fe';
+            const hex = Hex.of(exp);
+            expect(hex.abs.isEqual(Hex.of(exp.slice(1)))).toBeTruthy();
+        });
+
+        test('Return a positive Hex instance for a positive argument', () => {
+            const exp = '0xA01fe';
+            const hex = Hex.of(exp);
+            expect(hex.abs.isEqual(hex)).toBeTruthy();
+        });
+    });
+
     describe('alignToBytes method tests', () => {
         test('Return bytes aligned from aligned expression', () => {
             const hex = Hex.of('0xc0fee');

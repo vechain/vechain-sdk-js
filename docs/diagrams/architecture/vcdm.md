@@ -10,6 +10,7 @@ classDiagram
         <<abstract>>
     }
     class Hex {
+        +Hex abs
         +number sign
         +Hex alignToBytes()
         +Hex fit(number digits)
