@@ -1,13 +1,13 @@
-import { type ThorClient } from '../../../../../../thor-client';
+import { ThorId } from '@vechain/sdk-core';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
+import { ethGetBlockByNumber } from '../eth_getBlockByNumber';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
 import { type BlocksRPC } from '../../../../formatter';
-import { Hex0x } from '@vechain/sdk-core';
-import { ethGetBlockByNumber } from '../eth_getBlockByNumber';
-import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
+import { type ThorClient } from '../../../../../../thor-client';
 
 /**
  * RPC Method eth_getBlockByHash implementation
@@ -18,10 +18,8 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
  * @param params - The standard array of rpc call parameters.
  *                 * params[0]: The block hash of block to get.
  *                 * params[1]: The transaction detail flag. If true, the block will contain the transaction details, otherwise it will only contain the transaction hashes.
- *
  * @returns the block at the given block hash formatted to the RPC standard or null if the block does not exist.
- *
- * @throws {ProviderRpcError} - Will throw an error if the retrieval of the block fails.
+ * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
  */
 const ethGetBlockByHash = async (
     thorClient: ThorClient,
@@ -31,7 +29,7 @@ const ethGetBlockByHash = async (
     if (
         params.length !== 2 ||
         typeof params[0] !== 'string' ||
-        !Hex0x.isThorId(params[0]) ||
+        !ThorId.isValid(params[0]) ||
         typeof params[1] !== 'boolean'
     )
         throw new JSONRPCInvalidParams(

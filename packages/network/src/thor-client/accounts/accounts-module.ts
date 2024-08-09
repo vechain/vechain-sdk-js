@@ -1,4 +1,5 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
+import { addressUtils, revisionUtils, ThorId } from '@vechain/sdk-core';
 import { buildQuery, thorest } from '../../utils';
 import {
     type AccountDetail,
@@ -6,7 +7,6 @@ import {
     type ResponseBytecode,
     type ResponseStorage
 } from './types';
-import { addressUtils, Hex0x, revisionUtils } from '@vechain/sdk-core';
 import { type ThorClient } from '../thor-client';
 
 /**
@@ -27,9 +27,7 @@ class AccountsModule {
      * @param address - The account address to query details for.
      * @param options - (Optional) Other optional parameters for the request.
      * @returns A promise that resolves to an object containing the account details (balance, energy, hasCode).
-     *
-     * @throws {InvalidDataTypeError} - Will throw an error if the revision is not a valid block number or ID
-     *         or if the address is not a valid address.
+     * @throws {InvalidDataType}
      */
     public async getAccount(
         address: string,
@@ -72,9 +70,7 @@ class AccountsModule {
      * @param address - The contract address to get the bytecode for.
      * @param options - (Optional) Other optional parameters for the request.
      * @returns A promise that resolves to the contract bytecode as a string.
-     *
-     * @throws {InvalidDataTypeError} - Will throw an error if the revision is not a valid block number or ID
-     *         or if the address is not a valid address.
+     * @throws {InvalidDataType}
      */
     public async getBytecode(
         address: string,
@@ -120,9 +116,7 @@ class AccountsModule {
      * @param position - The position in the storage to retrieve the value from. Must be a 32 bytes hex string (66 characters including `0x` prefix).
      * @param options - (Optional) Other optional parameters for the request.
      * @returns A promise that resolves to the storage value in hex string format.
-     *
-     * @throws {InvalidDataTypeError} - Will throw an error if the revision is not a valid block number or ID
-     *         or if the position is not a 32 bytes hex string or if the address is not a valid address.
+     * @throws {InvalidDataType}
      */
     public async getStorageAt(
         address: string,
@@ -152,7 +146,7 @@ class AccountsModule {
         }
 
         // The position represents a slot in the VM storage. Each slot is 32 bytes.
-        if (!Hex0x.isValid(position) || position.length !== 66) {
+        if (!ThorId.isValid(position)) {
             throw new InvalidDataType(
                 'AccountsModule.getStorageAt()',
                 'Invalid `position`. The position must be a hex string of 32 bytes (66 characters including `0x` prefix).',

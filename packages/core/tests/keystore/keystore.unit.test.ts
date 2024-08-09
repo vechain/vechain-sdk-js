@@ -1,11 +1,6 @@
+import { Hex } from '../../src/vcdm/Hex';
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import {
-    addressUtils,
-    Hex,
-    keystore,
-    type Keystore,
-    secp256k1
-} from '../../src';
+import { addressUtils, keystore, type Keystore, secp256k1 } from '../../src';
 import { encryptionPassword } from './fixture';
 import {
     InvalidKeystore,
@@ -83,9 +78,9 @@ import {
                 encryptionPassword
             );
 
-            // Verify private key (slice(2) is used to remove 0x prefix)
-            expect(decryptedKeystore.privateKey.slice(2)).toEqual(
-                Hex.of(privateKey)
+            // Verify private key
+            expect(decryptedKeystore.privateKey).toEqual(
+                Hex.of(privateKey).toString()
             );
         });
 

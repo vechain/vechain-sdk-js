@@ -1,12 +1,13 @@
 import { describe, expect, test } from '@jest/globals';
 import { delegator, signer, transactions } from './fixture';
-import { Hex, Transaction, TransactionHandler } from '../../src';
+import { Transaction, TransactionHandler } from '../../src';
 import {
     InvalidSecp256k1Signature,
     InvalidTransactionField,
     NotDelegatedTransaction,
     UnavailableTransactionField
 } from '@vechain/sdk-errors';
+import { Hex } from '../../src/vcdm/Hex';
 
 /**
  * Test transaction module
@@ -29,9 +30,9 @@ describe('Transaction', () => {
                 expect(unsignedTransaction.signature).toBeUndefined();
                 expect(unsignedTransaction.isSigned).toEqual(false);
                 expect(unsignedTransaction.isDelegated).toEqual(false);
-                expect(Hex.of(unsignedTransaction.getSignatureHash())).toEqual(
-                    transaction.signatureHashExpected
-                );
+                expect(
+                    Hex.of(unsignedTransaction.getSignatureHash()).toString()
+                ).toEqual(transaction.signatureHashExpected);
 
                 // Get id from unsigned transaction (should throw error)
                 expect(() => unsignedTransaction.id).toThrowError(
@@ -50,7 +51,9 @@ describe('Transaction', () => {
 
                 // Encoding
                 expect(unsignedTransaction.encoded).toEqual(
-                    transaction.encodedUnsignedExpected
+                    Buffer.from(
+                        Hex.of(transaction.encodedUnsignedExpected).bytes
+                    )
                 );
 
                 // Intrinsic gas
@@ -71,16 +74,16 @@ describe('Transaction', () => {
                 // Init unsigned transaction from body
                 const signedTransaction = TransactionHandler.sign(
                     transaction.body,
-                    signer.privateKey
+                    Buffer.from(Hex.of(signer.privateKey).bytes)
                 );
 
                 // Checks on signature
                 expect(signedTransaction.signature).toBeDefined();
                 expect(signedTransaction.isSigned).toEqual(true);
                 expect(signedTransaction.isDelegated).toEqual(false);
-                expect(Hex.of(signedTransaction.getSignatureHash())).toEqual(
-                    transaction.signatureHashExpected
-                );
+                expect(
+                    Hex.of(signedTransaction.getSignatureHash()).toString()
+                ).toEqual(transaction.signatureHashExpected);
 
                 // Checks on origin, id and delegator
                 expect(signedTransaction.origin).toEqual(signer.address);
@@ -95,7 +98,7 @@ describe('Transaction', () => {
 
                 // Encoding
                 expect(signedTransaction.encoded).toEqual(
-                    transaction.encodedSignedExpected
+                    Buffer.from(Hex.of(transaction.encodedSignedExpected).bytes)
                 );
             });
         });
@@ -117,9 +120,9 @@ describe('Transaction', () => {
                 expect(unsignedTransaction.signature).toBeUndefined();
                 expect(unsignedTransaction.isSigned).toEqual(false);
                 expect(unsignedTransaction.isDelegated).toEqual(true);
-                expect(Hex.of(unsignedTransaction.getSignatureHash())).toEqual(
-                    transaction.signatureHashExpected
-                );
+                expect(
+                    Hex.of(unsignedTransaction.getSignatureHash()).toString()
+                ).toEqual(transaction.signatureHashExpected);
 
                 // Get id from unsigned transaction (should throw error)
                 expect(() => unsignedTransaction.id).toThrowError(
@@ -153,17 +156,17 @@ describe('Transaction', () => {
             transactions.delegated.forEach((transaction) => {
                 const signedTransaction = TransactionHandler.signWithDelegator(
                     transaction.body,
-                    signer.privateKey,
-                    delegator.privateKey
+                    Buffer.from(Hex.of(signer.privateKey).bytes),
+                    Buffer.from(Hex.of(delegator.privateKey).bytes)
                 );
 
                 // Checks on signature
                 expect(signedTransaction.signature).toBeDefined();
                 expect(signedTransaction.isSigned).toEqual(true);
                 expect(signedTransaction.isDelegated).toEqual(true);
-                expect(Hex.of(signedTransaction.getSignatureHash())).toEqual(
-                    transaction.signatureHashExpected
-                );
+                expect(
+                    Hex.of(signedTransaction.getSignatureHash()).toString()
+                ).toEqual(transaction.signatureHashExpected);
 
                 // Checks on origin, id and delegator
                 expect(signedTransaction.origin).toEqual(signer.address);

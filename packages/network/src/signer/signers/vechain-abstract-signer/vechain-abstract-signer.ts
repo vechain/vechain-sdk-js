@@ -4,10 +4,9 @@ import {
     type VeChainSigner
 } from '../types';
 import {
+    Hex,
     addressUtils,
     clauseBuilder,
-    Hex0x,
-    secp256k1,
     type TransactionBody,
     type TransactionClause,
     type vechain_sdk_core_ethers
@@ -67,6 +66,7 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
      *
      *  @param transactionToPopulate - The call to prepare
      *  @returns the prepared call transaction
+     * @throws {InvalidDataType}
      */
     async populateCall(
         transactionToPopulate: TransactionRequestInput
@@ -132,12 +132,13 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
      *
      *  @param transactionToPopulate - The call to prepare
      *  @returns the prepared transaction
+     *  @throws {JSONRPCInvalidParams}
      */
     async populateTransaction(
         transactionToPopulate: TransactionRequestInput
     ): Promise<TransactionBody> {
         // 1 - Get the thor client
-        if ((this.provider as AvailableVeChainProviders).thorClient === null) {
+        if ((this.provider as AvailableVeChainProviders) === null) {
             throw new JSONRPCInvalidParams(
                 'VechainAbstractSigner.populateTransaction()',
                 -32602,
@@ -180,19 +181,20 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
     }
 
     /**
-     *  Estimates the required gas required to execute //tx// on the Blockchain. This
-     *  will be the expected amount a transaction will require
-     *  to successfully run all the necessary computations and store the needed state
-     *  that the transaction intends.
+     * Estimates the required gas required to execute //tx// on the Blockchain. This
+     * will be the expected amount a transaction will require
+     * to successfully run all the necessary computations and store the needed state
+     * that the transaction intends.
      *
-     *  @param transactionToEstimate - The transaction to estimate gas for
-     *  @returns the total estimated gas required
+     * @param transactionToEstimate - The transaction to estimate gas for
+     * @returns the total estimated gas required
+     * @throws {JSONRPCInvalidParams}
      */
     async estimateGas(
         transactionToEstimate: TransactionRequestInput
     ): Promise<number> {
         // 1 - Get the thor client
-        if ((this.provider as AvailableVeChainProviders).thorClient === null) {
+        if ((this.provider as AvailableVeChainProviders) === null) {
             throw new JSONRPCInvalidParams(
                 'VechainAbstractSigner.estimateGas()',
                 -32602,
@@ -221,24 +223,25 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
     }
 
     /**
-     *  Evaluates the //tx// by running it against the current Blockchain state. This
-     *  cannot change state and has no cost, as it is effectively simulating
-     *  execution.
+     * Evaluates the //tx// by running it against the current Blockchain state. This
+     * cannot change state and has no cost, as it is effectively simulating
+     * execution.
      *
-     *  This can be used to have the Blockchain perform computations based on its state
-     *  (e.g. running a Contract's getters) or to simulate the effect of a transaction
-     *  before actually performing an operation.
+     * This can be used to have the Blockchain perform computations based on its state
+     * (e.g. running a Contract's getters) or to simulate the effect of a transaction
+     * before actually performing an operation.
      *
-     *  @param transactionToEvaluate - The transaction to evaluate
-     *  @param revision - The block number or block ID of which the transaction simulation is based on
-     *  @returns the result of the evaluation
+     * @param transactionToEvaluate - The transaction to evaluate
+     * @param revision - The block number or block ID of which the transaction simulation is based on
+     * @returns the result of the evaluation
+     * @throws {JSONRPCInvalidParams}
      */
     async call(
         transactionToEvaluate: TransactionRequestInput,
         revision?: string
     ): Promise<string> {
         // 1 - Get the thor client
-        if ((this.provider as AvailableVeChainProviders).thorClient === null) {
+        if ((this.provider as AvailableVeChainProviders) === null) {
             throw new JSONRPCInvalidParams(
                 'VechainAbstractSigner.call()',
                 -32602,
@@ -293,7 +296,8 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         }
 
         // Otherwise return a random number
-        return await Promise.resolve(Hex0x.of(secp256k1.randomBytes(6)));
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+        return Hex.random(6).toString();
     }
 
     /**

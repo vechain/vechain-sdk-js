@@ -55,6 +55,7 @@ class EventPoll<TReturnType> extends EventEmitter {
      * @param {Function} pollingFunction - The function to be executed repeatedly.
      * @param {number} requestIntervalInMilliseconds - The interval in milliseconds between each execution of the polling function.
      * @param {boolean} [hasToStopOnError=true] - Indicates whether to stop polling if an error occurs.
+     * @throws {InvalidDataType}
      */
     constructor(
         pollingFunction: () => Promise<TReturnType>,

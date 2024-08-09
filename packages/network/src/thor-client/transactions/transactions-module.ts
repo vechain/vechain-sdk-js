@@ -1,14 +1,5 @@
-import {
-    abi,
-    Hex0x,
-    revisionUtils,
-    secp256k1,
-    type Transaction,
-    type TransactionBody,
-    type TransactionClause,
-    TransactionHandler,
-    vechain_sdk_core_ethers
-} from '@vechain/sdk-core';
+import { InvalidDataType, InvalidTransactionField } from '@vechain/sdk-errors';
+import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
 import {
     buildQuery,
     ERROR_SELECTOR,
@@ -17,6 +8,17 @@ import {
     thorest,
     vnsUtils
 } from '../../utils';
+import {
+    Hex,
+    ThorId,
+    TransactionHandler,
+    abi,
+    revisionUtils,
+    vechain_sdk_core_ethers,
+    type Transaction,
+    type TransactionBody,
+    type TransactionClause
+} from '@vechain/sdk-core';
 import {
     type GetTransactionInputOptions,
     type GetTransactionReceiptInputOptions,
@@ -30,10 +32,8 @@ import {
     type TransactionSimulationResult,
     type WaitForTransactionOptions
 } from './types';
-import { InvalidDataType, InvalidTransactionField } from '@vechain/sdk-errors';
 import { type ThorClient } from '../thor-client';
 import { type ExpandedBlockDetail } from '../blocks';
-import { blocksFormatter, getTransactionIndexIntoBlock } from '../../provider';
 import { type CallNameReturnType } from '../debug';
 
 /**
@@ -53,13 +53,14 @@ class TransactionsModule {
      * @param id - Transaction ID of the transaction to retrieve.
      * @param options - (Optional) Other optional parameters for the request.
      * @returns A promise that resolves to the details of the transaction.
+     * @throws {InvalidDataType}
      */
     public async getTransaction(
         id: string,
         options?: GetTransactionInputOptions
     ): Promise<TransactionDetailNoRaw | null> {
         // Invalid transaction ID
-        if (!Hex0x.isThorId(id)) {
+        if (!ThorId.isValid(id)) {
             throw new InvalidDataType(
                 'TransactionsModule.getTransaction()',
                 'Invalid transaction ID given as input. Input must be an hex string of length 64.',
@@ -68,7 +69,7 @@ class TransactionsModule {
         }
 
         // Invalid head
-        if (options?.head !== undefined && !Hex0x.isThorId(options.head))
+        if (options?.head !== undefined && !ThorId.isValid(options.head))
             throw new InvalidDataType(
                 'TransactionsModule.getTransaction()',
                 'Invalid head given as input. Input must be an hex string of length 64.',
@@ -94,13 +95,14 @@ class TransactionsModule {
      * @param id - Transaction ID of the transaction to retrieve.
      * @param options - (Optional) Other optional parameters for the request.
      * @returns A promise that resolves to the details of the transaction.
+     * @throws {InvalidDataType}
      */
     public async getTransactionRaw(
         id: string,
         options?: GetTransactionInputOptions
     ): Promise<TransactionDetailRaw | null> {
         // Invalid transaction ID
-        if (!Hex0x.isThorId(id)) {
+        if (!ThorId.isValid(id)) {
             throw new InvalidDataType(
                 'TransactionsModule.getTransactionRaw()',
                 'Invalid transaction ID given as input. Input must be an hex string of length 64.',
@@ -109,7 +111,7 @@ class TransactionsModule {
         }
 
         // Invalid head
-        if (options?.head !== undefined && !Hex0x.isThorId(options.head))
+        if (options?.head !== undefined && !ThorId.isValid(options.head))
             throw new InvalidDataType(
                 'TransactionsModule.getTransaction()',
                 'Invalid head given as input. Input must be an hex string of length 64.',
@@ -136,13 +138,14 @@ class TransactionsModule {
      * @param options - (Optional) Other optional parameters for the request.
      *                  If `head` is not specified, the receipt of the transaction at the best block is returned.
      * @returns A promise that resolves to the receipt of the transaction.
+     * @throws {InvalidDataType}
      */
     public async getTransactionReceipt(
         id: string,
         options?: GetTransactionReceiptInputOptions
     ): Promise<TransactionReceipt | null> {
         // Invalid transaction ID
-        if (!Hex0x.isThorId(id)) {
+        if (!ThorId.isValid(id)) {
             throw new InvalidDataType(
                 'TransactionsModule.getTransactionReceipt()',
                 'Invalid transaction ID given as input. Input must be an hex string of length 64.',
@@ -151,7 +154,7 @@ class TransactionsModule {
         }
 
         // Invalid head
-        if (options?.head !== undefined && !Hex0x.isThorId(options.head))
+        if (options?.head !== undefined && !ThorId.isValid(options.head))
             throw new InvalidDataType(
                 'TransactionsModule.getTransaction()',
                 'Invalid head given as input. Input must be an hex string of length 64.',
@@ -172,12 +175,13 @@ class TransactionsModule {
      *
      * @param raw - The raw transaction.
      * @returns The transaction id of send transaction.
+     * @throws {InvalidDataType}
      */
     public async sendRawTransaction(
         raw: string
     ): Promise<SendTransactionResult> {
         // Validate raw transaction
-        if (!Hex0x.isValid(raw)) {
+        if (!Hex.isValid0x(raw)) {
             throw new InvalidDataType(
                 'TransactionsModule.sendRawTransaction()',
                 'Sending failed: Input must be a valid raw transaction in hex format.',
@@ -216,10 +220,8 @@ class TransactionsModule {
      * Sends a signed transaction to the network.
      *
      * @param signedTx - the transaction to send. It must be signed.
-     *
      * @returns A promise that resolves to the transaction ID of the sent transaction.
-     *
-     * @throws an error if the transaction is not signed or if the transaction object is invalid.
+     * @throws {InvalidDataType}
      */
     public async sendTransaction(
         signedTx: Transaction
@@ -233,7 +235,7 @@ class TransactionsModule {
             );
         }
 
-        const rawTx = Hex0x.of(signedTx.encoded);
+        const rawTx = Hex.of(signedTx.encoded).toString();
 
         return await this.sendRawTransaction(rawTx);
     }
@@ -244,18 +246,16 @@ class TransactionsModule {
      * @param txID - The transaction ID of the transaction to wait for.
      * @param options - Optional parameters for the request. Includes the timeout and interval between requests.
      *                  Both parameters are in milliseconds. If the timeout is not specified, the request will not time out!
-     *
      * @returns A promise that resolves to the transaction receipt of the transaction. If the transaction is not included in a block before the timeout,
      *          the promise will resolve to `null`.
-     *
-     * @throws an error if the transaction ID is invalid.
+     * @throws {InvalidDataType}
      */
     public async waitForTransaction(
         txID: string,
         options?: WaitForTransactionOptions
     ): Promise<TransactionReceipt | null> {
         // Invalid transaction ID
-        if (!Hex0x.isThorId(txID)) {
+        if (!ThorId.isValid(txID)) {
             throw new InvalidDataType(
                 'TransactionsModule.waitForTransaction()',
                 'Invalid transaction ID given as input. Input must be an hex string of length 64.',
@@ -325,7 +325,8 @@ class TransactionsModule {
             expiration: options?.expiration ?? 32,
             gas,
             gasPriceCoef: options?.gasPriceCoef ?? 0,
-            nonce: options?.nonce ?? Hex0x.of(secp256k1.randomBytes(8)),
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+            nonce: options?.nonce ?? Hex.random(8).toString(),
             reserved:
                 options?.isDelegated === true ? { features: 1 } : undefined
         };
@@ -389,9 +390,9 @@ class TransactionsModule {
      *
      * @param clauses - The clauses of the transaction to simulate.
      * @param options - (Optional) The options for simulating the transaction.
-     *
      * @returns A promise that resolves to an array of simulation results.
      *          Each element of the array represents the result of simulating a clause.
+     * @throws {InvalidDataType}
      */
     public async simulateTransaction(
         clauses: SimulateTransactionClause[],

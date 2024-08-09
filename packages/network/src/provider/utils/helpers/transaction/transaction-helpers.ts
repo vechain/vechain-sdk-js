@@ -11,10 +11,8 @@ import { type ExpandedBlockDetail } from '../../../../thor-client';
  *
  * @param block - The block to search in.
  * @param hash - The hash of the transaction to search for.
- *
  * @returns the index of the transaction in the block or null if the transaction is not in the block.
- *
- * @throws Will throw an error if the transaction is not in the block.
+ * @throws {InvalidDataType}
  */
 const getTransactionIndexIntoBlock = (
     block: BlocksRPC,

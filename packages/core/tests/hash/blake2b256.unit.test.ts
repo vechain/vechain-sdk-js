@@ -1,9 +1,7 @@
 // To be introduced once thor-dev-kit dependency clash solved.
 // import * as ThorDevKit from 'thor-devkit';
-import { txt } from '../../src/utils/txt/txt';
-import { blake2b256, blake2b256OfHex, Hex, type ReturnType } from '../../src';
+import { Txt, blake2b256, blake2b256OfHex, type ReturnType } from '../../src';
 import { describe, expect, test } from '@jest/globals';
-import { hexToBytes } from '@noble/hashes/utils';
 import {
     BLAKE2B256_CONTENT,
     BLAKE2B256_CONTENT_HASH,
@@ -11,6 +9,7 @@ import {
     BLAKE2B256_NO_CONTENT_HASH
 } from './fixture';
 import { InvalidDataType } from '@vechain/sdk-errors';
+import { Hex } from '../../src/vcdm/Hex';
 
 /**
  * Test hash functions
@@ -29,8 +28,8 @@ describe('blake2b256', () => {
         // });
 
         test('blake2b256 - valid content - string', () => {
-            const content = txt.encode(BLAKE2B256_CONTENT);
-            const expected = hexToBytes(Hex.canon(BLAKE2B256_CONTENT_HASH));
+            const content = Txt.of(BLAKE2B256_CONTENT).bytes;
+            const expected = Hex.of(BLAKE2B256_CONTENT_HASH).bytes;
             let actual: string | Uint8Array;
             actual = blake2b256(content);
             expect(actual).toEqual(expected);
@@ -41,7 +40,7 @@ describe('blake2b256', () => {
         });
 
         test('blake2b256 - valid content - Uint8Array', () => {
-            const expected = hexToBytes(Hex.canon(BLAKE2B256_CONTENT_HASH));
+            const expected = Hex.of(BLAKE2B256_CONTENT_HASH).bytes;
             let actual: string | Uint8Array;
             actual = blake2b256(BLAKE2B256_CONTENT);
             expect(actual).toEqual(expected);
@@ -52,7 +51,7 @@ describe('blake2b256', () => {
         });
 
         test('blake2b256 - valid no content - Uint8Array', () => {
-            const expected = hexToBytes(Hex.canon(BLAKE2B256_NO_CONTENT_HASH));
+            const expected = Hex.of(BLAKE2B256_NO_CONTENT_HASH).bytes;
             let actual: string | Uint8Array;
             actual = blake2b256(BLAKE2B256_NO_CONTENT);
             expect(actual).toEqual(expected);
@@ -63,7 +62,7 @@ describe('blake2b256', () => {
         });
 
         test('blake2b256 - valid zero content - string', () => {
-            const expected = hexToBytes(Hex.canon(BLAKE2B256_NO_CONTENT_HASH));
+            const expected = Hex.of(BLAKE2B256_NO_CONTENT_HASH).bytes;
             let actual: string | Uint8Array;
             actual = blake2b256('');
             expect(actual).toEqual(expected);
@@ -75,9 +74,9 @@ describe('blake2b256', () => {
     });
 
     describe('blake2b256OfHex', () => {
-        const content = Hex.of(txt.encode(BLAKE2B256_CONTENT));
+        const content = Hex.of(Txt.of(BLAKE2B256_CONTENT).bytes).hex;
 
-        const zeroContent = Hex.of(BLAKE2B256_NO_CONTENT);
+        const zeroContent = Hex.of(BLAKE2B256_NO_CONTENT).hex;
 
         // To be introduced once thor-dev-kit dependency clash solved.
         // test('blake2b256OfHex - compatibility - thor-dev-kit', () => {
@@ -105,7 +104,7 @@ describe('blake2b256', () => {
         });
 
         test('blake2b256OfHex - valid - content', () => {
-            const expected = hexToBytes(Hex.canon(BLAKE2B256_CONTENT_HASH));
+            const expected = Hex.of(BLAKE2B256_CONTENT_HASH).bytes;
             let actual = blake2b256OfHex(content);
             expect(actual).toEqual(expected);
             actual = blake2b256OfHex(content, 'hex');
@@ -113,7 +112,7 @@ describe('blake2b256', () => {
         });
 
         test('blake2b256OfHex - valid - no content', () => {
-            const expected = hexToBytes(Hex.canon(BLAKE2B256_NO_CONTENT_HASH));
+            const expected = Hex.of(BLAKE2B256_NO_CONTENT_HASH).bytes;
             let actual = blake2b256OfHex(zeroContent);
             expect(actual).toEqual(expected);
             actual = blake2b256OfHex(zeroContent, 'hex');

@@ -1,11 +1,9 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { Hex, Hex0x } from '../utils';
-import { addressUtils } from '../address-utils';
 import { CertificateSignature } from '@vechain/sdk-errors';
+import { Hex, Txt } from '../vcdm';
+import { addressUtils } from '../address-utils';
 import { blake2b256 } from '../hash';
-import { hexToBytes } from '@noble/curves/abstract/utils';
 import { secp256k1 } from '../secp256k1';
-import { txt } from '../utils/txt/txt';
 import { type Certificate } from './types';
 
 /**
@@ -24,13 +22,12 @@ import { type Certificate } from './types';
  * @return {Uint8Array} - The byte encoded certificate.
  *
  *
- * @see {NORMALIZATION_FORM_CANONICAL_COMPOSITION}
  * @see {https://www.npmjs.com/package/fast-json-stable-stringify fastJsonStableStringify}
  * @see {sign}
  * @see {verify}
  */
 function encode(cert: Certificate): Uint8Array {
-    return txt.encode(
+    return Txt.of(
         // The following `fastJsonStableStringify` strips blank chars and serialize alphabetical sorted properties.
         fastJsonStableStringify({
             purpose: cert.purpose,
@@ -42,7 +39,7 @@ function encode(cert: Certificate): Uint8Array {
             timestamp: cert.timestamp,
             signer: cert.signer.toLowerCase()
         })
-    );
+    ).bytes;
 }
 
 /**
@@ -74,15 +71,15 @@ function encode(cert: Certificate): Uint8Array {
  *
  * @returns {Certificate} - A new instance of the certificate with the signature added.
  *
- * @throws {InvalidSecp256k1PrivateKeyError} - If the private key is invalid.
+ * @throws {InvalidSecp256k1PrivateKey} - If the private key is invalid.
  *
  */
 function sign(cert: Certificate, privateKey: Uint8Array): Certificate {
     return {
         ...cert,
-        signature: Hex0x.of(
+        signature: Hex.of(
             secp256k1.sign(blake2b256(encode(cert)), privateKey)
-        )
+        ).toString()
     };
 }
 
@@ -118,7 +115,8 @@ function verify(cert: Certificate): void {
     }
 
     // Invalid hexadecimal as signature.
-    if (!Hex0x.isValid(cert.signature, false, true)) {
+    // PROVISIONAL: until 1119 Certificate OOP
+    if (!Hex.isValid0x(cert.signature) || cert.signature.length % 2 !== 0) {
         throw new CertificateSignature(
             'certificate.verify()',
             'Verification failed: signature format is invalid.',
@@ -127,7 +125,7 @@ function verify(cert: Certificate): void {
     }
 
     // If the signature is not a string, an exception is thrown above.
-    const sign = hexToBytes(Hex.canon(cert.signature));
+    const sign = Hex.of(cert.signature).bytes;
     const hash = blake2b256(encode(cert));
     // The signer address is compared in lowercase to avoid
     const signer = addressUtils

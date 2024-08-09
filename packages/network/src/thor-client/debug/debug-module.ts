@@ -1,4 +1,6 @@
-import { type ThorClient } from '../thor-client';
+import { Hex, ThorId, addressUtils } from '@vechain/sdk-core';
+import { InvalidDataType } from '@vechain/sdk-errors';
+import { thorest } from '../../utils';
 import {
     type ContractCallTraceContractTargetInput,
     type ContractCallTraceTransactionOptionsInput,
@@ -9,9 +11,7 @@ import {
     type TracerName,
     type TransactionTraceTarget
 } from './types';
-import { thorest } from '../../utils';
-import { InvalidDataType } from '@vechain/sdk-errors';
-import { addressUtils, Hex0x } from '@vechain/sdk-core';
+import { type ThorClient } from '../thor-client';
 
 /** The `DebugModule` class encapsulates functionality to handle Debug
  * on the VeChainThor blockchain.
@@ -34,8 +34,6 @@ class DebugModule {
      * * target - The target of the tracer. It is a combination of blockID, transaction (transaction ID or index into block), and clauseIndex.
      * * config - The configuration of the tracer. It is specific to the name of the tracer.
      * @param name - The name of the tracer to use. It determines Output and Input configuration.
-     *
-     * @throws{InvalidDataTypeError} - If the input is invalid.
      */
     public async traceTransactionClause(
         input: {
@@ -77,8 +75,8 @@ class DebugModule {
      * * config - The configuration of the tracer. It is specific to the name of the tracer.
      * * transactionOptions - The transaction options.
      * @param name - The name of the tracer to use. It determines Output and Input configuration.
-     *
-     * @throws{InvalidDataTypeError} - If the input is invalid.
+     * @returns The trace result.
+     * @throws{InvalidDataType}
      */
     public async traceContractCall(
         input: {
@@ -103,7 +101,7 @@ class DebugModule {
 
         if (
             input.contractInput?.data !== undefined &&
-            !Hex0x.isValid(input.contractInput.data, true)
+            !Hex.isValid(input.contractInput.data)
         )
             throw new InvalidDataType(
                 'DebugModule.traceContractCall()',
@@ -113,7 +111,7 @@ class DebugModule {
 
         if (
             input.contractInput?.value !== undefined &&
-            !Hex0x.isValid(input.contractInput.value)
+            !Hex.isValid0x(input.contractInput.value)
         ) {
             throw new InvalidDataType(
                 'DebugModule.traceContractCall()',
@@ -192,17 +190,15 @@ class DebugModule {
      *
      * @param target - Target of traceTransactionClause and retrieveStorageRange to validate.
      * @param functionName - The name of the function.
-     *
+     * @throws{InvalidDataType}
      * @private
-     *
-     * @throws{InvalidDataTypeError} - If the input is invalid.
      */
     private validateTarget(
         target: TransactionTraceTarget,
         functionName: string
     ): void {
         // Validate target - blockID
-        if (!Hex0x.isThorId(target.blockID)) {
+        if (!ThorId.isValid(target.blockID)) {
             throw new InvalidDataType(
                 'DebugModule.validateTarget()',
                 `Invalid block ID '${target.blockID}' given as input for ${functionName}.`,
@@ -212,7 +208,7 @@ class DebugModule {
 
         // Validate target - transaction
         if (typeof target.transaction === 'string') {
-            if (!Hex0x.isThorId(target.transaction))
+            if (!ThorId.isValid(target.transaction))
                 throw new InvalidDataType(
                     'DebugModule.validateTarget()',
                     `Invalid transaction id '${target.transaction}' given as input for ${functionName}.`,

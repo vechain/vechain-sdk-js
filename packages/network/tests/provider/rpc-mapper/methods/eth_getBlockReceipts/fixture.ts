@@ -1,4 +1,4 @@
-import { Quantity } from '@vechain/sdk-core';
+import { HexInt } from '@vechain/sdk-core';
 
 /**
  * Fixtures for the `eth_getBlockReceipts` RPC method.
@@ -50,7 +50,7 @@ const blockReceiptsFixture = [
         ]
     },
     {
-        blockNumber: Quantity.of(17529453),
+        blockNumber: HexInt.of(17529453).toString(),
         expected: [
             {
                 blockHash:

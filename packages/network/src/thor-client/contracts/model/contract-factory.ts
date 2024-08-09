@@ -127,10 +127,9 @@ class ContractFactory<TAbi extends Abi> {
      * waits for the transaction to be processed. Upon successful processing, it
      * constructs and returns a new `Contract` instance based on the transaction receipt.
      *
-     * @throws An error if the deployed transaction result is not found or if the
-     *         contract deployment fails.
      * @returns {Promise<Contract>} A promise that resolves to a `Contract` instance
      *          once the deployment transaction is completed.
+     * @throws {CannotFindTransaction, ContractDeploymentFailed}
      */
     public async waitForDeployment(): Promise<Contract<TAbi>> {
         // Check if the deploy transaction result is available

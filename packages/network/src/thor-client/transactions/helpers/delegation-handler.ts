@@ -1,25 +1,23 @@
-import { Hex0x, type Transaction } from '@vechain/sdk-core';
-import { type HttpClient } from '../../../utils';
+import { Hex, type Transaction } from '@vechain/sdk-core';
+import { NotDelegatedTransaction } from '@vechain/sdk-errors';
 import {
     type GetDelegationSignatureResult,
     type SignTransactionOptions
 } from '../types';
-import { NotDelegatedTransaction } from '@vechain/sdk-errors';
+import { type HttpClient } from '../../../utils';
 
 /**
  * Retrieves the signature of a delegation transaction from a delegator given the endpoint
  * from which to retrieve the signature.
  *
+ * @see [Simple Gas Payer Standard](https://github.com/vechain/VIPs/blob/master/vips/VIP-201.md)
+ *
  * @param tx - The transaction to delegate.
  * @param delegatorUrl - The URL of the endpoint of the delegator.
  * @param originAddress - The address of the origin account.
  * @param httpClient - The HTTP client instance used for making HTTP requests.
- *
  * @returns A promise that resolves to the signature of the delegation transaction.
- *
- * @see [Simple Gas Payer Standard](https://github.com/vechain/VIPs/blob/master/vips/VIP-201.md)
- *
- * @throws an error if the delegation fails.
+ * @throws {NotDelegatedTransaction}
  */
 const _getDelegationSignature = async (
     tx: Transaction,
@@ -27,7 +25,7 @@ const _getDelegationSignature = async (
     originAddress: string,
     httpClient: HttpClient
 ): Promise<Buffer> => {
-    const rawTx = Hex0x.of(tx.encoded);
+    const rawTx = Hex.of(tx.encoded).toString();
 
     /**
      * The request body for the delegation transaction.
@@ -121,15 +119,13 @@ const DelegationHandler = (
          * Retrieves the signature of a delegation transaction from a delegator given the endpoint
          * from which to retrieve the signature.
          *
+         * @see [Simple Gas Payer Standard](https://github.com/vechain/VIPs/blob/master/vips/VIP-201.md)
+         *
          * @param tx - The transaction to delegate.
          * @param originAddress - The address of the origin account.
          * @param httpClient - The HTTP client instance used for making HTTP requests.
-         *
          * @returns A promise that resolves to the signature of the delegation transaction.
-         *
-         * @see [Simple Gas Payer Standard](https://github.com/vechain/VIPs/blob/master/vips/VIP-201.md)
-         *
-         * @throws an error if the delegation fails.
+         * @throws {NotDelegatedTransaction}
          */
         getDelegationSignatureUsingUrl: async (
             tx: Transaction,

@@ -1,7 +1,7 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { Hex, Hex0x } from '../hex';
+import { Hex } from '../../vcdm/Hex';
 import { INTEGER_REGEX, NUMERIC_REGEX, ZERO_BYTES } from '../const';
-import { txt } from '../txt/txt';
+import { Txt } from '../../vcdm';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
@@ -14,14 +14,14 @@ import { InvalidDataType } from '@vechain/sdk-errors';
  * @throws {InvalidDataType}
  */
 const decodeBytes32String = (hex: string): string => {
-    if (!Hex0x.isValid(hex) || Hex.canon(hex).length !== 64)
+    if (!Hex.isValid(hex) || Hex.of(hex).hex.length !== 64)
         throw new InvalidDataType(
             'dataUtils.decodeBytes32String()',
             `Failed to decode value ${hex} to string. Value is not a valid hex string or it is not 64 characters long`,
             { value: hex }
         );
 
-    const valueInBytes = n_utils.hexToBytes(Hex.canon(hex));
+    const valueInBytes = Hex.of(hex).bytes;
     // Find the first zero byte.
     const firstZeroIndex = valueInBytes.findIndex((byte) => byte === 0);
     // If the first byte is zero, then the encoded bytes 32 string is padded with zeros to the left.
@@ -29,12 +29,12 @@ const decodeBytes32String = (hex: string): string => {
         // Find the first non-zero byte.
         const firstNotZeroIndex = valueInBytes.findIndex((byte) => byte !== 0);
         // Decode the encoded bytes 32 string to string by removing the padded zeros.
-        return txt.decode(valueInBytes.subarray(firstNotZeroIndex));
+        return Txt.of(valueInBytes.subarray(firstNotZeroIndex)).toString();
     } else if (firstZeroIndex !== -1) {
         // Decode the encoded bytes 32 string to string by removing the padded zeros.
-        return txt.decode(valueInBytes.subarray(0, firstZeroIndex));
+        return Txt.of(valueInBytes.subarray(0, firstZeroIndex)).toString();
     } else {
-        return txt.decode(valueInBytes);
+        return Txt.of(valueInBytes).toString();
     }
 };
 
@@ -53,7 +53,7 @@ const encodeBytes32String = (
 ): string => {
     // Wrap any error raised by utf8BytesOf(value).
     try {
-        const valueInBytes = txt.encode(value);
+        const valueInBytes = Txt.of(value).bytes;
 
         if (valueInBytes.length > 32) {
             throw new InvalidDataType(
@@ -65,8 +65,8 @@ const encodeBytes32String = (
 
         const pad = ZERO_BYTES(32 - valueInBytes.length);
         return zeroPadding === 'left'
-            ? Hex0x.of(n_utils.concatBytes(pad, valueInBytes))
-            : Hex0x.of(n_utils.concatBytes(valueInBytes, pad));
+            ? Hex.of(n_utils.concatBytes(pad, valueInBytes)).toString()
+            : Hex.of(n_utils.concatBytes(valueInBytes, pad)).toString();
     } catch (e) {
         throw new InvalidDataType(
             'dataUtils.encodeBytes32String()',

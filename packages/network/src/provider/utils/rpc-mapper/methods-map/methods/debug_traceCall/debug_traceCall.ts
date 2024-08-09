@@ -35,9 +35,7 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
  *                   * tracer - string to specify the type of tracer. Currently, it supports callTracer and prestateTracer.
  *                   * tracerConfig - Object to specify configurations for the tracer. It has the following parameters:
  *                      * onlyTopCall - boolean Setting this to true will only trace the main (top-level) call and none of the sub-calls. This avoids extra processing for each call frame if only the top-level call info are required (useful for getting revertReason).
- *
- * @throws {ProviderRpcError} - Will throw an error if the debug fails.
- * @throws {InvalidDataTypeError} - Will throw an error if the params are invalid.
+ * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
  */
 const debugTraceCall = async (
     thorClient: ThorClient,

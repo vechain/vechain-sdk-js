@@ -1,4 +1,4 @@
-import { Hex0x, ZERO_BYTES } from '@vechain/sdk-core';
+import { Hex, ZERO_BYTES } from '@vechain/sdk-core';
 import {
     validTransactionDetailTestnet,
     validTransactionHashTestnet
@@ -19,7 +19,7 @@ const ethGetTransactionByHashTestCases = [
     },
     {
         description: "eth_getTransactionByHash with a hash that doesn't exist",
-        params: [Hex0x.of(ZERO_BYTES(32))],
+        params: [Hex.of(ZERO_BYTES(32)).toString()],
         expected: null
     }
 ];

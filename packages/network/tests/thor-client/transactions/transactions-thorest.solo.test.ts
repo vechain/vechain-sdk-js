@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { TEST_ACCOUNTS } from '../../fixture';
-import { Hex0x, TransactionHandler } from '@vechain/sdk-core';
+import { Hex, TransactionHandler } from '@vechain/sdk-core';
 import { sendTransactionErrors, simulateTransaction } from './fixture-thorest';
 import { InvalidDataType, stringifyData } from '@vechain/sdk-errors';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
@@ -98,11 +98,11 @@ describe('ThorClient - Transactions Module', () => {
                 for (const raw of [rawNormalSigned, rawDelegatedSigned]) {
                     const send =
                         await thorSoloClient.transactions.sendRawTransaction(
-                            Hex0x.of(raw)
+                            Hex.of(raw).toString()
                         );
                     expect(send).toBeDefined();
                     expect(send).toHaveProperty('id');
-                    expect(Hex0x.isValid(send.id)).toBe(true);
+                    expect(Hex.isValid0x(send.id)).toBe(true);
 
                     // 3 - Get transaction AND transaction receipt
                     const transaction =

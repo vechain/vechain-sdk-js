@@ -20,10 +20,9 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
  * RPC Method eth_getLogs implementation
  *
  * @param thorClient - The thor client instance to use.
- *
  * @param params - The standard array of rpc call parameters.
- *
  * @returns An array of log objects, or an empty array if nothing has changed since last poll
+ * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
  */
 const ethGetLogs = async (
     thorClient: ThorClient,
