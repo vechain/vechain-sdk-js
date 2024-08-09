@@ -978,9 +978,9 @@
   integrity sha512-I4q9QU9MQv4oEOz4tAHJtNz1cwuLxn2F3xcc2iV5WdqLPpUnj30aUuxt1mAxYTG+oe8CZMV/+6rU4S4gRDzqtQ==
 
 "@types/yargs@^17.0.8":
-  version "17.0.32"
-  resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-17.0.32.tgz#030774723a2f7faafebf645f4e5a48371dca6229"
-  integrity sha512-xQ67Yc/laOG5uMfX/093MRlGGCIBzZMarVa+gfNKJxWAIgykYpVGkBdbqEzGDDfCrVUj6Hiff4mTZ5BA6TmAog==
+  version "17.0.33"
+  resolved "https://registry.yarnpkg.com/@types/yargs/-/yargs-17.0.33.tgz#8c32303da83eec050a84b3c7ae7b9f922d13e32d"
+  integrity sha512-WpxBCKWPLr4xSsHgz511rFJAM+wS28w2zEO1QDNY5zM/S8ok70NNfztH0xwhqKyaK0OHCbN98LDAZuy1ctxDkA==
   dependencies:
     "@types/yargs-parser" "*"
 
@@ -1035,46 +1035,46 @@
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
-"@vechain/sdk-core@1.0.0-beta.27":
-  version "1.0.0-beta.27"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.27.tgz#7b9fae76b1ab980e5995c4120f362de61ad19d11"
-  integrity sha512-bEnH0Hxie7KY5mINzD6F+QMCot4diMZXOEiSf1mTIiMuo9BTmWuci/CkN6Cy8CxtSntXPh4/cDjincIgxrg1/g==
+"@vechain/sdk-core@1.0.0-beta.29":
+  version "1.0.0-beta.29"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-core/-/sdk-core-1.0.0-beta.29.tgz#43b191901b5d7bfb8e04358a2280117b32de5a3c"
+  integrity sha512-a23t6wO3bB1NdNryNCs4qZBHfoc1GSC8o/SkEG7Mmeow/QbZFRcaFd0PMhaHw8mLwqvNXV44P45HUIC0KJRMKQ==
   dependencies:
     "@ethereumjs/rlp" "^5.0.2"
     "@noble/ciphers" "^0.5.2"
     "@scure/bip32" "^1.4.0"
     "@scure/bip39" "^1.3.0"
     "@types/elliptic" "^6.4.18"
-    "@vechain/sdk-errors" "1.0.0-beta.27"
-    "@vechain/sdk-logging" "1.0.0-beta.27"
+    "@vechain/sdk-errors" "1.0.0-beta.29"
+    "@vechain/sdk-logging" "1.0.0-beta.29"
     bignumber.js "^9.1.2"
     blakejs "^1.2.1"
     elliptic "^6.5.6"
     ethers "6.13.1"
     fast-json-stable-stringify "^2.1.0"
 
-"@vechain/sdk-errors@1.0.0-beta.27":
-  version "1.0.0-beta.27"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.27.tgz#f477b690067a0ceb886819b8d8c2f57fd71a8ca0"
-  integrity sha512-eX0jUIZz0U0QkBRNoFofhsQxJY+MJvd6tQYRtKAvhv1Cvn4hN6ownZIXg4d+YzYp/o86k/bgqCqJjuTciD8l/w==
+"@vechain/sdk-errors@1.0.0-beta.29":
+  version "1.0.0-beta.29"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-errors/-/sdk-errors-1.0.0-beta.29.tgz#2cc8fae1c1c478651c59d292e9600dfeabfce5fa"
+  integrity sha512-EpD0B1K3Pxm9/A1uyecxUllDKeU7OCp26w2qz+G6SN0RVszVp3aG7u36rJtDTmTZwjqaTfWLjitVz2qEmlG8fw==
 
-"@vechain/sdk-logging@1.0.0-beta.27":
-  version "1.0.0-beta.27"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-beta.27.tgz#0c2966df21c0b442f8a64d1776a56bd33c5306f0"
-  integrity sha512-MwTdIo2l6Vo+HDrRLtOO+yczzx1pID6TrYc2xtdAN89WBjcbHRt2pVkwGVRCUvQjEmgXcoxXDepKd71SReF30Q==
+"@vechain/sdk-logging@1.0.0-beta.29":
+  version "1.0.0-beta.29"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-logging/-/sdk-logging-1.0.0-beta.29.tgz#eba0bd7c67a0bae051e80a8f0371e7aee5d5ce88"
+  integrity sha512-cXr0wH13t8Rz8JbVoMGc22IPphx4HTzWcoBhz8mq8jX4naA/6p3dKUVKl75Wj0d3yhyqheLcpEKPdnnVJt0vDQ==
   dependencies:
-    "@vechain/sdk-errors" "1.0.0-beta.27"
+    "@vechain/sdk-errors" "1.0.0-beta.29"
 
-"@vechain/sdk-network@1.0.0-beta.27":
-  version "1.0.0-beta.27"
-  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.27.tgz#393bf7faff1bd6a4ca0afc4fc4f458ab84004a9e"
-  integrity sha512-vtKV/PYDB0bC6GOfBksxPMPUCsfpRO7WZrx8fH3OBof1zysQRFxTaw6UVTNOuYQ9FUq85yWBV9tdGSR1pi1PAQ==
+"@vechain/sdk-network@1.0.0-beta.29":
+  version "1.0.0-beta.29"
+  resolved "https://registry.yarnpkg.com/@vechain/sdk-network/-/sdk-network-1.0.0-beta.29.tgz#3cfe1a0bb15406b5e94d02ab0050b6b4533fa7a1"
+  integrity sha512-4zNLygMREpV8DO/O7EEoOaOC6S72Epe/iyvUlsFTbKj+uffPmIjdZuevQOo3vyh+QkMzF14cgwzZOcXQk4mOKg==
   dependencies:
     "@types/ws" "^8.5.12"
-    "@vechain/sdk-core" "1.0.0-beta.27"
-    "@vechain/sdk-errors" "1.0.0-beta.27"
-    "@vechain/sdk-logging" "1.0.0-beta.27"
-    abitype "^1.0.5"
+    "@vechain/sdk-core" "1.0.0-beta.29"
+    "@vechain/sdk-errors" "1.0.0-beta.29"
+    "@vechain/sdk-logging" "1.0.0-beta.29"
+    abitype "^1.0.6"
     isomorphic-ws "^5.0.0"
     ws "^8.18.0"
 
@@ -1083,10 +1083,10 @@ abab@^2.0.6:
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.6.tgz#41b80f2c871d19686216b82309231cfd3cb3d291"
   integrity sha512-j2afSsaIENvHZN2B8GOpF566vZ5WVk5opAiMTvWgaQT8DkbOqsTfvNAvHoRGU2zzP8cPoqys+xHTRDWW8L+/BA==
 
-abitype@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/abitype/-/abitype-1.0.5.tgz#29d0daa3eea867ca90f7e4123144c1d1270774b6"
-  integrity sha512-YzDhti7cjlfaBhHutMaboYB21Ha3rXR9QTkNJFzYC4kC8YclaiwPBBBJY8ejFdu2wnJeZCVZSMlQJ7fi8S6hsw==
+abitype@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/abitype/-/abitype-1.0.6.tgz#76410903e1d88e34f1362746e2d407513c38565b"
+  integrity sha512-MMSqYh4+C/aVqI2RQaWqbvI4Kxo5cQV40WQ4QFtDnNzCkqChm8MuENhElmynZlO0qUy/ObkEUaXtKqYnx1Kp3A==
 
 acorn-globals@^7.0.0:
   version "7.0.1"
@@ -1528,9 +1528,9 @@ camelcase@^6.2.0:
   integrity sha512-Gmy6FhYlCY7uOElZUSbxo2UCDH8owEk996gkbrpsgGtrJLM3J7jGxl9Ic7Qwwj4ivOE5AWZWRMecDdF7hqGjFA==
 
 caniuse-lite@^1.0.30001579, caniuse-lite@^1.0.30001646:
-  version "1.0.30001649"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001649.tgz#3ec700309ca0da2b0d3d5fb03c411b191761c992"
-  integrity sha512-fJegqZZ0ZX8HOWr6rcafGr72+xcgJKI9oWfDW5DrD7ExUtgZC7a7R7ZYmZqplh7XDocFdGeIFn7roAxhOeYrPQ==
+  version "1.0.30001651"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001651.tgz#52de59529e8b02b1aedcaaf5c05d9e23c0c28138"
+  integrity sha512-9Cf+Xv1jJNe1xPZLGuUXLNkE1BoDkqRqYyFJ9TDYSqhduqA4hu4oR9HluGoWYQC/aj8WHjsGVV+bwkh0+tegRg==
 
 chalk@^2.4.2:
   version "2.4.2"
@@ -2465,9 +2465,9 @@ for-each@^0.3.3:
     is-callable "^1.1.3"
 
 foreground-child@^3.1.0:
-  version "3.2.1"
-  resolved "https://registry.yarnpkg.com/foreground-child/-/foreground-child-3.2.1.tgz#767004ccf3a5b30df39bed90718bab43fe0a59f7"
-  integrity sha512-PXUUyLqrR2XCWICfv6ukppP96sdFwWbNEnfEMt7jNsISjMsvaLNinAHNDYyvkyU+SZG2BTSbT5NjG+vZslfGTA==
+  version "3.3.0"
+  resolved "https://registry.yarnpkg.com/foreground-child/-/foreground-child-3.3.0.tgz#0ac8644c06e431439f8561db8ecf29a7b5519c77"
+  integrity sha512-Ld2g8rrAyMYFXBhEqMz8ZAHBi4J4uS1i/CxGMDnjyFWddMXLVcDp051DZfu+t7+ab7Wv6SMqpWmyFIj5UbfFvg==
   dependencies:
     cross-spawn "^7.0.0"
     signal-exit "^4.0.1"
@@ -4745,9 +4745,9 @@ symbol-tree@^3.2.4:
   integrity sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==
 
 tailwindcss@^3.3.0:
-  version "3.4.7"
-  resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-3.4.7.tgz#6092f18767f5933f59375b9afe558e592fc77201"
-  integrity sha512-rxWZbe87YJb4OcSopb7up2Ba4U82BoiSGUdoDr3Ydrg9ckxFS/YWsvhN323GMcddgU65QRy7JndC7ahhInhvlQ==
+  version "3.4.9"
+  resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-3.4.9.tgz#9e04cddce1924d530df62af37d3520f0e2a9d85e"
+  integrity sha512-1SEOvRr6sSdV5IDf9iC+NU4dhwdqzF4zKKq3sAbasUWHEM6lsMhX+eNN5gkPx1BvLFEnZQEUFbXnGj8Qlp83Pg==
   dependencies:
     "@alloc/quick-lru" "^5.2.0"
     arg "^5.0.2"
