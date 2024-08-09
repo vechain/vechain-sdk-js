@@ -34,8 +34,7 @@ import { type TraceOptionsRPC } from './types';
  *                       * onlyTopCall - boolean Setting this to true will only trace the main (top-level) call and none of the sub-calls.
  *                         This avoids extra processing for each call frame if only the top-level call info are required (useful for getting revertReason).
  *
- * @throws {ProviderRpcError} - Will throw an error if the debug fails.
- * @throws {InvalidDataTypeError} - Will throw an error if the params are invalid.
+ * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
  */
 const debugTraceTransaction = async (
     thorClient: ThorClient,

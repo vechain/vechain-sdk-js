@@ -195,8 +195,7 @@ class Contract<TAbi extends Abi> {
      * Retrieves the function fragment for the specified function name.
      * @param prop - The name of the function.
      * @private
-     * @throws An error if the specified function name or symbol is not found in the contract's ABI. The error includes
-     * the `ERROR_CODES.ABI.INVALID_FUNCTION` code and a message indicating the function is not present in the ABI.
+     * @throws {InvalidAbiFragment}
      *
      */
     public getFunctionFragment(prop: string | symbol): FunctionFragment {
@@ -221,6 +220,7 @@ class Contract<TAbi extends Abi> {
      * Retrieves the event fragment for the specified event name.
      * @param eventName - The name of the event.
      * @return The event fragment for the specified event name.
+     * @throws {InvalidAbiFragment}
      */
     public getEventFragment(eventName: string | symbol): EventFragment {
         const eventFragment = coder

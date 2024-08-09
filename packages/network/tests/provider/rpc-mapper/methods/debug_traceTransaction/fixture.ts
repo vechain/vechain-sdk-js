@@ -1,4 +1,8 @@
-import { InvalidDataType, JSONRPCInternalError } from '@vechain/sdk-errors';
+import {
+    InvalidDataType,
+    JSONRPCInternalError,
+    JSONRPCInvalidParams
+} from '@vechain/sdk-errors';
 
 /**
  * debug_traceTransaction positive cases fixture.
@@ -141,6 +145,13 @@ const debugTraceTransactionNegativeCasesFixtureTestnet = [
                 }
             ],
             expectedError: JSONRPCInternalError
+        }
+    },
+    // Invalid input
+    {
+        input: {
+            params: ['INVALID'],
+            expectedError: JSONRPCInvalidParams
         }
     }
 ];

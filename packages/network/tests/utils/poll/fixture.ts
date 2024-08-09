@@ -62,6 +62,12 @@ const invalidOptionsParametersForPollTests = [
         requestIntervalInMilliseconds: 5,
         maximumIterations: 1.7,
         expectedError: InvalidDataType
+    },
+    {
+        requestIntervalInMilliseconds: 1,
+        maximumIterations: 1,
+        maximumWaitingTimeInMilliseconds: -1,
+        expectedError: InvalidDataType
     }
 ];
 export {

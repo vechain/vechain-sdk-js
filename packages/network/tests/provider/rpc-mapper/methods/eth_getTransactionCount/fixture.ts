@@ -10,8 +10,14 @@ const invalidEthGetTransactionCountTestCases = [
         expectedError: JSONRPCInvalidParams
     },
     {
-        description: 'eth_getTransactionCount - Invalid address param',
+        description:
+            'eth_getTransactionCount - Invalid address param AND params number',
         params: ['0xINVALID_ADDRESS'],
+        expectedError: JSONRPCInvalidParams
+    },
+    {
+        description: 'eth_getTransactionCount - Invalid address format',
+        params: ['0xINVALID_ADDDRESS', 'latest'],
         expectedError: JSONRPCInvalidParams
     }
 ];

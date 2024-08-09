@@ -6,7 +6,7 @@ import { blocksFormatter } from '../../../src';
  * Blocks formatter unit test
  * @group unit/provider/formatter/blocks
  */
-describe('Block formatter unit test', () => {
+describe('Blocks formatter unit test', () => {
     /**
      * Should be able to format a block
      */

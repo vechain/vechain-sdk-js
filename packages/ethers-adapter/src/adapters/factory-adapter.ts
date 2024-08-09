@@ -8,6 +8,7 @@ import { UnsupportedOperation } from '@vechain/sdk-errors';
  * @param contractFactory - The contract factory to adapt to the VeChain network
  * @param hardhatVeChainProvider - The hardhatVeChain provider
  * @returns The adapted contract factory
+ * @throws {UnsupportedOperation}
  */
 function factoryAdapter<A extends unknown[], I>(
     contractFactory: vechain_sdk_core_ethers.ContractFactory<A, I>,

@@ -93,7 +93,9 @@ describe('Synchronous poll unit tests', () => {
                             requestIntervalInMilliseconds:
                                 invalidParameter.requestIntervalInMilliseconds,
                             maximumIterations:
-                                invalidParameter.maximumIterations
+                                invalidParameter.maximumIterations,
+                            maximumWaitingTimeInMilliseconds:
+                                invalidParameter.maximumWaitingTimeInMilliseconds
                         }
                     ).waitUntil((result) => {
                         return result === 10;

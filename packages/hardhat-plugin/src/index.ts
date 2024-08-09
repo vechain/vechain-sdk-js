@@ -26,6 +26,7 @@ import './type-extensions';
 import { HardhatEthersProvider } from '@nomicfoundation/hardhat-ethers/internal/hardhat-ethers-provider';
 import { contractAdapter, factoryAdapter } from '@vechain/sdk-ethers-adapter';
 import { type FactoryOptions } from '@nomicfoundation/hardhat-ethers/src/types';
+import { FunctionNotImplemented } from '@vechain/sdk-errors';
 
 /**
  * Extend the environment with provider to be able to use VeChain functions
@@ -139,7 +140,11 @@ extendEnvironment((hre) => {
             },
 
             getImpersonatedSigner: (_address: string) => {
-                throw new Error('Not implemented yet');
+                throw new FunctionNotImplemented(
+                    'getImpersonatedSigner()',
+                    'Method not implemented',
+                    { functionName: 'getImpersonatedSigner' }
+                );
             },
 
             getContractAtFromArtifact: getContractAtFromArtifact.bind(
