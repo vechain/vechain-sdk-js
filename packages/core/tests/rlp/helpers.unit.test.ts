@@ -41,7 +41,7 @@ describe('encodeBigIntToBuffer', () => {
     test('encodeBigIntToBuffer', () => {
         const bi = 123456789012345678901n; // or any BigInt you want to test with
         const buffer = encodeBigIntToBuffer(bi, 9, 'encodeBigIntToBuffer');
-        expect(Hex.of(buffer).hex).toBe('06b14e9f812f366c35');
+        expect(Hex.of(buffer).toString()).toBe('0x06b14e9f812f366c35');
     });
 });
 

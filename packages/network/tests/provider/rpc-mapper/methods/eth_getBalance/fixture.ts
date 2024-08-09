@@ -1,4 +1,4 @@
-import { Hex, Quantity, ZERO_BYTES, unitsUtils } from '@vechain/sdk-core';
+import { Hex, HexInt, ZERO_BYTES, unitsUtils } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams
@@ -12,19 +12,19 @@ const ethGetBalanceTestCases = [
     {
         description: 'Should return correct balance of the test account',
         params: [THOR_SOLO_ACCOUNTS[0].address, 'latest'],
-        expected: Quantity.of(unitsUtils.parseVET('500000000')).toString()
+        expected: HexInt.of(unitsUtils.parseVET('500000000')).toString()
     },
     {
         description: 'Should return correct balance of the test account',
         params: [THOR_SOLO_ACCOUNTS[0].address, 'best'],
-        expected: Quantity.of(unitsUtils.parseVET('500000000')).toString()
+        expected: HexInt.of(unitsUtils.parseVET('500000000')).toString()
     },
     {
         description:
             'Should return correct balance of the test account before seeding',
         params: [
             THOR_SOLO_ACCOUNTS[0].address,
-            Quantity.of(0).toString() // 0 is the genesis block
+            HexInt.of(0).toString() // 0 is the genesis block
         ],
         expected: '0x0' // Expected balance is 0
     },
@@ -34,7 +34,7 @@ const ethGetBalanceTestCases = [
         params: [
             // Zero address
             Hex.of(ZERO_BYTES(20)).toString(),
-            Quantity.of(1).toString()
+            HexInt.of(1).toString()
         ],
         expected: '0x0'
     },

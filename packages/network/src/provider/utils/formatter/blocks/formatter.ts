@@ -1,5 +1,5 @@
 import { type BlocksRPC } from './types';
-import { Quantity, Hex, ZERO_BYTES } from '@vechain/sdk-core';
+import { Hex, HexInt, ZERO_BYTES } from '@vechain/sdk-core';
 import { transactionsFormatter } from '../transactions';
 import {
     type CompressedBlockDetail,
@@ -35,14 +35,14 @@ const formatToRPCStandard = (
         // Supported fields converted to RPC standard
         hash: block.id,
         parentHash: block.parentID,
-        number: Quantity.of(block.number).toString(),
-        size: Quantity.of(block.size).toString(),
+        number: HexInt.of(block.number).toString(),
+        size: HexInt.of(block.size).toString(),
         stateRoot: block.stateRoot,
         receiptsRoot: block.receiptsRoot,
         transactionsRoot: block.txsRoot,
-        timestamp: Quantity.of(block.timestamp).toString(),
-        gasLimit: Quantity.of(block.gasLimit).toString(),
-        gasUsed: Quantity.of(block.gasUsed).toString(),
+        timestamp: HexInt.of(block.timestamp).toString(),
+        gasLimit: HexInt.of(block.gasLimit).toString(),
+        gasUsed: HexInt.of(block.gasUsed).toString(),
         transactions,
         miner: block.beneficiary,
 

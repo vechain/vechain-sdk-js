@@ -202,15 +202,13 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
     ): Promise<string> {
         return await new Promise((resolve, reject) => {
             try {
-                const hash = n_utils.hexToBytes(
-                    Hex.of(
-                        vechain_sdk_core_ethers.TypedDataEncoder.hash(
-                            domain,
-                            types,
-                            value
-                        )
-                    ).hex
-                );
+                const hash = Hex.of(
+                    vechain_sdk_core_ethers.TypedDataEncoder.hash(
+                        domain,
+                        types,
+                        value
+                    )
+                ).bytes;
                 const sign = secp256k1.sign(
                     hash,
                     new Uint8Array(this.privateKey)
