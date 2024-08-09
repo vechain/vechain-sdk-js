@@ -1,5 +1,5 @@
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
-import { addressUtils, Hex0x, secp256k1 } from '@vechain/sdk-core';
+import { Hex, addressUtils, secp256k1 } from '@vechain/sdk-core';
 import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
@@ -16,6 +16,7 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
  *                * params[1]: A string representing a block number, or one of the string tags latest, earliest, or pending.
  * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
  */
+// eslint-disable-next-line @typescript-eslint/require-await
 const ethGetTransactionCount = async (params: unknown[]): Promise<string> => {
     // Input validation
     if (
@@ -40,7 +41,7 @@ const ethGetTransactionCount = async (params: unknown[]): Promise<string> => {
     }
 
     // Return a random number
-    return await Promise.resolve(Hex0x.of(secp256k1.randomBytes(6)));
+    return Hex.of(secp256k1.randomBytes(6)).toString();
 };
 
 export { ethGetTransactionCount };

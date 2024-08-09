@@ -56,6 +56,7 @@ class Txt extends String implements VeChainDataModel<Txt> {
         try {
             return BigInt(this.toString());
         } catch (e) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             throw new InvalidCastType<Txt>(
                 'Txt.bi()',
                 "Can't cast to big integer",

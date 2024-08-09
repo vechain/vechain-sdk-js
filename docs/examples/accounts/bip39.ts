@@ -15,7 +15,7 @@ console.log('Mnemonic words', randomMnemonic);
 // Defined for VET at https://github.com/satoshilabs/slips/blob/master/slip-0044.md
 const privateKey = mnemonic.derivePrivateKey(randomMnemonic);
 
-console.log(Hex.of(privateKey));
+console.log(Hex.of(privateKey).toString());
 // ...SOME PRIVATE KEY...
 
 // END_SNIPPET: Bip39Snippet

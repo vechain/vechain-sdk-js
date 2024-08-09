@@ -1,22 +1,22 @@
+import { ThorId } from '@vechain/sdk-core';
+import { ethGetTransactionReceipt } from '../eth_getTransactionReceipt';
 import {
-    type ThorClient,
-    type TraceReturnType,
-    type TracerName
-} from '../../../../../../thor-client';
+    debugFormatter,
+    type TracerReturnTypeRPC
+} from '../../../../formatter';
 import {
     InvalidDataType,
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import { ethGetTransactionReceipt } from '../eth_getTransactionReceipt';
-import { type TraceOptionsRPC } from './types';
 import {
-    debugFormatter,
-    type TracerReturnTypeRPC
-} from '../../../../formatter';
-import { Hex0x } from '@vechain/sdk-core';
+    type ThorClient,
+    type TraceReturnType,
+    type TracerName
+} from '../../../../../../thor-client';
 import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
+import { type TraceOptionsRPC } from './types';
 
 /**
  * RPC Method debug_traceTransaction implementation
@@ -57,7 +57,7 @@ const debugTraceTransaction = async (
     const [transactionId, traceOptions] = params as [string, TraceOptionsRPC];
 
     // Invalid transaction ID
-    if (!Hex0x.isThorId(transactionId)) {
+    if (!ThorId.isValid(transactionId)) {
         throw new InvalidDataType(
             'debug_traceTransaction()',
             'Invalid transaction ID given as input. Input must be an hex string of length 64.',

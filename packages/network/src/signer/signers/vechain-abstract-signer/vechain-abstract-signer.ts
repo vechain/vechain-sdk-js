@@ -4,10 +4,9 @@ import {
     type VeChainSigner
 } from '../types';
 import {
+    Hex,
     addressUtils,
     clauseBuilder,
-    Hex0x,
-    secp256k1,
     type TransactionBody,
     type TransactionClause,
     type vechain_sdk_core_ethers
@@ -297,7 +296,8 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
         }
 
         // Otherwise return a random number
-        return await Promise.resolve(Hex0x.of(secp256k1.randomBytes(6)));
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+        return Hex.random(6).toString();
     }
 
     /**

@@ -1,8 +1,8 @@
+import { Hex } from '@vechain/sdk-core';
+import { THOR_SOLO_URL, ThorClient } from '../../../src';
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { estimateGasTestCases, invalidEstimateGasTestCases } from './fixture';
-import { THOR_SOLO_URL, ThorClient } from '../../../src';
 import { stringifyData } from '@vechain/sdk-errors';
-import { Hex0x, secp256k1 } from '@vechain/sdk-core';
 
 /**
  * Gas module tests.
@@ -77,7 +77,8 @@ describe('ThorClient - Gas Module', () => {
                         thorSoloClient.gas.estimateGas(
                             clauses,
                             // Random address
-                            Hex0x.of(secp256k1.randomBytes(20)),
+                            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-call
+                            Hex.random(20).toString(),
                             options
                         )
                     ).rejects.toThrow(expectedError);

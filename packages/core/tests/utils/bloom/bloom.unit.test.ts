@@ -1,5 +1,6 @@
+import { Hex } from '../../../src/vcdm/Hex';
+import { bloom, bloomUtils } from '../../../src';
 import { describe, expect, test } from '@jest/globals';
-import { bloom, bloomUtils, Hex0x } from '../../../src';
 import {
     blockAddressesFixture,
     blooms,
@@ -26,7 +27,7 @@ describe('utils/bloom', () => {
                 bloomUtils.isAddressInBloom(
                     filter,
                     bloomUtils.BLOOM_DEFAULT_K,
-                    Hex0x.canon(address)
+                    Hex.of(address).toString()
                 )
             ).toBeTruthy();
         });
@@ -40,7 +41,7 @@ describe('utils/bloom', () => {
                 bloomUtils.isAddressInBloom(
                     filter,
                     bloom.calculateK(k),
-                    Hex0x.canon(address)
+                    Hex.of(address).toString()
                 )
             ).toBeTruthy();
         });

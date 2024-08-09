@@ -225,7 +225,7 @@ class VeChainProvider extends EventEmitter implements EIP1193ProviderMessage {
         ).map(async ([subscriptionId, subscriptionDetails]) => {
             const currentBlock = Quantity.of(
                 this.subscriptionManager.currentBlockNumber
-            );
+            ).toString();
             // Construct filter options for the Ethereum logs query based on the subscription details
             const filterOptions: FilterOptions = {
                 address: subscriptionDetails.options?.address, // Contract address to filter the logs by

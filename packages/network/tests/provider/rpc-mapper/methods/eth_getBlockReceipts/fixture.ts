@@ -50,7 +50,7 @@ const blockReceiptsFixture = [
         ]
     },
     {
-        blockNumber: Quantity.of(17529453),
+        blockNumber: Quantity.of(17529453).toString(),
         expected: [
             {
                 blockHash:

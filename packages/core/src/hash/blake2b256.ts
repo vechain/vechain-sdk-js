@@ -1,4 +1,4 @@
-import { Hex, Hex0x } from '../utils';
+import { Hex } from '../vcdm/Hex';
 import { Txt } from '../vcdm';
 import { blake2b } from '@noble/hashes/blake2b';
 import { hexToBytes } from '@noble/hashes/utils';
@@ -14,7 +14,7 @@ import { InvalidDataType } from '@vechain/sdk-errors';
  *
  * @return {Uint8Array} - The computed hash as a Uint8Array.
  *
- * @throws {InvalidDataReturnType} - If the specified return type is invalid.
+ * @throws {InvalidDataReturnError} - If the specified return type is invalid.
  *
  * @remark Use {@link blake2b256OfHex} to hash a string representing an array of bytes in hexadecimal form.
  */
@@ -86,10 +86,10 @@ function blake2b256(
 
     if (data instanceof Uint8Array) {
         const hash = blake2b256OfArray(data);
-        return returnType === 'hex' ? Hex0x.of(hash) : hash;
+        return returnType === 'hex' ? Hex.of(hash).toString() : hash;
     } else {
         const hash = blake2b256OfString(data);
-        return returnType === 'hex' ? Hex0x.of(hash) : hash;
+        return returnType === 'hex' ? Hex.of(hash).toString() : hash;
     }
 }
 
@@ -133,8 +133,8 @@ function blake2b256OfHex(
     }
 
     try {
-        const hash = blake2b256OfArray(hexToBytes(Hex.canon(hex)));
-        return returnType === 'hex' ? Hex0x.of(hash) : hash;
+        const hash = blake2b256OfArray(hexToBytes(Hex.of(hex).hex));
+        return returnType === 'hex' ? Hex.of(hash).toString() : hash;
     } catch (e) {
         throw new InvalidDataType(
             'blake2b256OfHex',

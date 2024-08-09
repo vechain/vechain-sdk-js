@@ -1,3 +1,7 @@
+import { ThorId } from '@vechain/sdk-core';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
+import { RPC_METHODS } from '../../../../const';
+import { RPCMethodsMap } from '../../../rpc-mapper';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
@@ -7,22 +11,20 @@ import {
     type TransactionReceiptRPC,
     transactionsFormatter
 } from '../../../../formatter';
-import { RPC_METHODS } from '../../../../const';
-import { RPCMethodsMap } from '../../../rpc-mapper';
 import {
     type ExpandedBlockDetail,
     type ThorClient
 } from '../../../../../../thor-client';
-import { Hex0x } from '@vechain/sdk-core';
-import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
  * RPC Method eth_getTransactionReceipt implementation
  *
  * @param thorClient - The thor client instance to use.
+ *
  * @param params - The standard array of rpc call parameters.
  *                 * params[0]: The transaction hash to get as a hex string.
- * @throws {JSONRPCInvalidParams, InvalidDataType, JSONRPCInternalError}
+ *
+ * @throws {ProviderRpcError} - Will throw an error if the retrieval of the transaction fails.
  */
 const ethGetTransactionReceipt = async (
     thorClient: ThorClient,
@@ -31,16 +33,16 @@ const ethGetTransactionReceipt = async (
     // Input validation
     if (params.length !== 1 || typeof params[0] !== 'string')
         throw new JSONRPCInvalidParams(
-            'eth_getTransactionReceipt()',
+            'eth_getTransactionReceipt',
             -32602,
             `Invalid input params for "eth_getTransactionReceipt" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
 
     // Invalid transaction ID
-    if (!Hex0x.isThorId(params[0])) {
+    if (!ThorId.isValid(params[0])) {
         throw new JSONRPCInvalidParams(
-            'eth_getTransactionReceipt()',
+            'eth_getTransactionReceipt',
             -32602,
             'Invalid transaction ID given as input. Input must be an hex string of length 64.',
             { params }

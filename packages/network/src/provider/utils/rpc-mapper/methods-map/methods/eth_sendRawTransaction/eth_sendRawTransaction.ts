@@ -4,7 +4,7 @@ import {
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import { Hex0x } from '@vechain/sdk-core';
+import { Hex } from '@vechain/sdk-core';
 import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
@@ -31,7 +31,7 @@ const ethSendRawTransaction = async (
         );
 
     // Invalid transaction encoded data
-    if (!Hex0x.isValid(params[0])) {
+    if (!Hex.isValid0x(params[0])) {
         throw new JSONRPCInvalidParams(
             'eth_sendRawTransaction()',
             -32602,

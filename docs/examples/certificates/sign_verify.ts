@@ -1,5 +1,5 @@
 import {
-    Hex0x,
+    Hex,
     addressUtils,
     blake2b256,
     certificate,
@@ -34,7 +34,7 @@ const jsonStr = certificate.encode(cert);
 const signature = secp256k1.sign(blake2b256(jsonStr), privateKey);
 
 // Add 0x to signature
-cert.signature = Hex0x.of(signature);
+cert.signature = Hex.of(signature).toString();
 
 // Verify certificate
 certificate.verify(cert);
