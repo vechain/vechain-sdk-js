@@ -5,7 +5,12 @@ export default defineWorkersConfig({
         poolOptions: {
             workers: {
                 wrangler: { configPath: './wrangler.toml' }
-            },
+            }
         },
-    },
+        server: {
+            deps: {
+                inline: ['crypto', 'ethers', '@vechain/sdk-core']
+            }
+        }
+    }
 });
