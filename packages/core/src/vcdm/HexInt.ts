@@ -88,7 +88,6 @@ class HexInt extends Hex {
             throw new InvalidDataType(
                 'HexInt.of',
                 'not an hexadecimal integer expression',
-                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                 { exp: `${exp}`, e } // Needed to serialize bigint values.
             );
         }

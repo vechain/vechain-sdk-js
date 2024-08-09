@@ -306,7 +306,6 @@ class Hex extends String implements VeChainDataModel<Hex> {
             throw new InvalidDataType(
                 'Hex.of',
                 'not an hexadecimal expression',
-                // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
                 { exp: `${exp}` }, // Needed to serialize bigint values.
                 e
             );
