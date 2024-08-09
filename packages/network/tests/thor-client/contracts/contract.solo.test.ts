@@ -1,7 +1,11 @@
 /* eslint-disable */
 
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { TEST_ACCOUNTS, TESTING_CONTRACT_ABI, TESTING_CONTRACT_ADDRESS } from '../../fixture';
+import {
+    TEST_ACCOUNTS,
+    TESTING_CONTRACT_ABI,
+    TESTING_CONTRACT_ADDRESS
+} from '../../fixture';
 import {
     contractBytecode,
     deployedContractAbi,
@@ -17,7 +21,12 @@ import {
     testingContractNegativeTestCases,
     testingContractTestCases
 } from './fixture';
-import { addressUtils, coder, type DeployParams, type FunctionFragment } from '@vechain/sdk-core';
+import {
+    addressUtils,
+    coder,
+    type DeployParams,
+    type FunctionFragment
+} from '@vechain/sdk-core';
 import {
     Contract,
     type ContractFactory,
@@ -28,7 +37,11 @@ import {
     VeChainProvider,
     type VeChainSigner
 } from '../../../src';
-import { CannotFindTransaction, ContractDeploymentFailed, InvalidTransactionField } from '@vechain/sdk-errors';
+import {
+    CannotFindTransaction,
+    ContractDeploymentFailed,
+    InvalidTransactionField
+} from '@vechain/sdk-errors';
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.
@@ -381,12 +394,12 @@ describe('ThorClient - Contracts', () => {
             fourArgsEventAbi
         );
 
-        const contractFilter = loadedContract.filters.DataUpdated(
-            '0x0000000000000000000000000000456e65726779',
-            10n,
-            10n,
-            10n
-        );
+        const contractFilter = loadedContract.filters.DataUpdated({
+            sender: '0x0000000000000000000000000000456e65726779',
+            key: 10n,
+            oldValue: 10n,
+            newValue: 10n
+        });
 
         expect(contractFilter).toBeDefined();
         expect(contractFilter.criteriaSet[0].criteria.topic0).toBeDefined();
@@ -595,11 +608,11 @@ describe('ThorClient - Contracts', () => {
         await (await contract.transact.setStateVariable(123n)).wait();
 
         const events = await contract.filters
-            .StateChanged(
-                undefined,
-                undefined,
-                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-            )
+            .StateChanged({
+                newValue: undefined,
+                oldValue: undefined,
+                sender: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+            })
             .get();
 
         expect(events).toBeDefined();
@@ -652,9 +665,8 @@ describe('ThorClient - Contracts', () => {
                         }
                     }
 
-                    const eventLogs = await contract.filters[eventName](
-                        ...args
-                    ).get(getParams);
+                    const eventLogs =
+                        await contract.filters[eventName](args).get(getParams);
 
                     expect(eventLogs[0].map((x) => x.decodedData)).toEqual(
                         expectedData

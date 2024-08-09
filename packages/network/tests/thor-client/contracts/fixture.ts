@@ -654,7 +654,7 @@ interface FilterEventTestCase {
         options?: PaginationOptions;
         order?: EventDisplayOrder;
     };
-    args: unknown[];
+    args: Record<string, unknown>;
     expectedData: unknown[];
 }
 
@@ -781,7 +781,7 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
             }
         ],
         eventName: 'ValueSet',
-        args: [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
+        args: { _setter: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address },
         expectedData: [['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 1000n]]
     },
     {
@@ -792,7 +792,10 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
         contractCaller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
         functionCalls: [],
         eventName: 'Transfer',
-        args: [undefined, TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
+        args: {
+            from: undefined,
+            to: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
+        },
         expectedData: [
             [
                 '0x0000000000000000000000000000000000000000',
@@ -816,7 +819,10 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
                 to: 0
             }
         },
-        args: [undefined, TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
+        args: {
+            from: undefined,
+            to: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
+        },
         expectedData: []
     },
     {
@@ -843,10 +849,10 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
             }
         ],
         eventName: 'Transfer',
-        args: [
-            undefined,
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
-        ],
+        args: {
+            from: undefined,
+            to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+        },
         expectedData: [
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
@@ -888,10 +894,10 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
         getParams: {
             order: 'desc'
         },
-        args: [
-            undefined,
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
-        ],
+        args: {
+            from: undefined,
+            to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+        },
         expectedData: [
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
@@ -930,7 +936,11 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
             }
         ],
         eventName: 'Transfer',
-        args: [undefined, undefined, 5000],
+        args: {
+            from: undefined,
+            to: undefined,
+            value: 5000n
+        },
         expectedData: [
             [
                 '0x0000000000000000000000000000000000000000',

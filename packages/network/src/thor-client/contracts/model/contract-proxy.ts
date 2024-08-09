@@ -19,6 +19,7 @@ import { type VeChainSigner } from '../../../signer';
 import { type FilterCriteria } from '../../logs';
 import type {
     Abi,
+    AbiEvent,
     AbiParametersToPrimitiveTypes,
     ExtractAbiEventNames,
     ExtractAbiFunction,
@@ -148,8 +149,22 @@ function getFilterProxy<TAbi extends Abi>(
     return new Proxy(contract.filters, {
         get: (_target, prop) => {
             // Otherwise, assume that the function is a contract method
-            return (...args: unknown[]): ContractFilter<TAbi> => {
-                const criteriaSet = buildCriteria(contract, prop, args);
+            return (args: Record<string, unknown>): ContractFilter<TAbi> => {
+                const eventsArgsMap = getEventArgsMap(
+                    contract.abi as Abi,
+                    prop as string
+                );
+                const mappedObj = mapObjectToEventArgs(args, eventsArgsMap);
+                const extractedArgs = Object.entries(mappedObj).map(
+                    ([_key, value]) => {
+                        return value;
+                    }
+                );
+                const criteriaSet = buildCriteria(
+                    contract,
+                    prop,
+                    extractedArgs
+                );
 
                 return new ContractFilter<TAbi>(contract, [criteriaSet]);
             };
@@ -354,6 +369,43 @@ function isTransactionComment(obj: unknown): obj is ClauseAdditionalOptions {
  */
 function isRevision(obj: unknown): obj is ClauseAdditionalOptions {
     return (obj as ClauseAdditionalOptions).revision !== undefined;
+}
+
+// Function to extract argument names and types from the ABI
+function getEventArgsMap(abi: Abi, eventName: string): Record<string, string> {
+    const event = abi.find(
+        (item) => item.type === 'event' && item.name === eventName
+    ) as AbiEvent | undefined;
+
+    if (event == null) {
+        throw new Error(`Event with name ${eventName} not found in ABI`);
+    }
+
+    const argsMap: Record<string, string> = {};
+
+    event.inputs.forEach((input) => {
+        argsMap[input.name as string] = input.type;
+    });
+
+    return argsMap;
+}
+
+// Function to map an object to its corresponding fields in the event argument map
+function mapObjectToEventArgs(
+    obj: Record<string, unknown>,
+    eventArgsMap: Record<string, string>
+): Record<string, unknown> {
+    const mappedObject: Record<string, unknown> = {};
+
+    for (const [argName] of Object.entries(eventArgsMap)) {
+        if (Object.prototype.hasOwnProperty.call(obj, argName)) {
+            mappedObject[argName] = obj[argName];
+        } else {
+            mappedObject[argName] = undefined;
+        }
+    }
+
+    return mappedObject;
 }
 
 export {

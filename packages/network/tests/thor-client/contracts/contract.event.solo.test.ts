@@ -72,13 +72,11 @@ describe('ThorClient - ERC20 Contracts', () => {
             )
         ).wait();
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
         const events = await contract.filters
-            .Transfer(
-                undefined,
-                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
-            )
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            .Transfer({
+                from: undefined,
+                to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+            })
             .get();
 
         expect(

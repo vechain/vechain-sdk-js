@@ -16,6 +16,7 @@ import {
     type AbiFunction,
     type ExtractAbiEvent
 } from 'abitype';
+import { type GetEventArgs } from 'viem';
 
 /**
  * Represents a generic contract function type that accepts an arbitrary number of arguments
@@ -126,12 +127,9 @@ type ContractFunctionTransact<
  * @template TEventName - The names of the events extracted from the ABI.
  * @template TAbiEvent - The event type extracted from the ABI for a given event name.
  */
-type ContractFunctionFilter<
-    TAbi extends Abi,
-    TEventName extends ExtractAbiEventNames<TAbi>,
-    TAbiEvent extends AbiFunction = ExtractAbiEvent<TAbi, TEventName>
-> = Record<TEventName, ContractEventSync<ContractFilter<TAbi>, TAbiEvent>>;
-
+type ContractFunctionFilter<TAbi extends Abi, TEventNames extends string> = {
+    [K in TEventNames]: (args: GetEventArgs<TAbi, K>) => ContractFilter<TAbi>;
+};
 /**
  * Defines a mapping of contract function names to their corresponding transactional contract functions.
  * Each function in this record is expected to return a value of type `TransactionClause`, which represents
