@@ -1,7 +1,6 @@
 import { Hex } from '../vcdm/Hex';
 import { Txt } from '../vcdm';
 import { blake2b } from '@noble/hashes/blake2b';
-import { hexToBytes } from '@noble/hashes/utils';
 import { type ReturnType } from './types';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
@@ -133,7 +132,7 @@ function blake2b256OfHex(
     }
 
     try {
-        const hash = blake2b256OfArray(hexToBytes(Hex.of(hex).hex));
+        const hash = blake2b256OfArray(Hex.of(hex).bytes);
         return returnType === 'hex' ? Hex.of(hash).toString() : hash;
     } catch (e) {
         throw new InvalidDataType(

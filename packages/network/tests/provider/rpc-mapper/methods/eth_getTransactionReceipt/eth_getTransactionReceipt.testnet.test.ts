@@ -5,7 +5,10 @@ import {
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
-import { getReceiptCorrectCasesTestNetwork } from './fixture';
+import {
+    getReceiptCorrectCasesTestNetwork,
+    getReceiptIncorrectCasesTestNetwork
+} from './fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_getTransactionReceipt' method
@@ -42,6 +45,29 @@ describe('RPC Mapper - eth_getTransactionReceipt method tests', () => {
                     ]([testCase.hash]);
 
                     expect(receipt).toEqual(testCase.expected);
+                },
+                7000
+            );
+        });
+    });
+
+    /**
+     * eth_getTransactionReceipt RPC call tests - Negative cases
+     */
+    describe('eth_getTransactionReceipt - Negative cases', () => {
+        /**
+         * Negative cases - Test network
+         */
+        getReceiptIncorrectCasesTestNetwork.forEach((fixture) => {
+            test(
+                fixture.testCase,
+                async () => {
+                    await expect(
+                        async () =>
+                            await RPCMethodsMap(thorClient)[
+                                RPC_METHODS.eth_getTransactionReceipt
+                            ](fixture.params)
+                    ).rejects.toThrowError(fixture.expectedError);
                 },
                 7000
             );

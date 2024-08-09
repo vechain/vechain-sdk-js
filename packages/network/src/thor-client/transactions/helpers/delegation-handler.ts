@@ -10,16 +10,14 @@ import { type HttpClient } from '../../../utils';
  * Retrieves the signature of a delegation transaction from a delegator given the endpoint
  * from which to retrieve the signature.
  *
+ * @see [Simple Gas Payer Standard](https://github.com/vechain/VIPs/blob/master/vips/VIP-201.md)
+ *
  * @param tx - The transaction to delegate.
  * @param delegatorUrl - The URL of the endpoint of the delegator.
  * @param originAddress - The address of the origin account.
  * @param httpClient - The HTTP client instance used for making HTTP requests.
- *
  * @returns A promise that resolves to the signature of the delegation transaction.
- *
- * @see [Simple Gas Payer Standard](https://github.com/vechain/VIPs/blob/master/vips/VIP-201.md)
- *
- * @throws an error if the delegation fails.
+ * @throws {NotDelegatedTransaction}
  */
 const _getDelegationSignature = async (
     tx: Transaction,
@@ -121,15 +119,13 @@ const DelegationHandler = (
          * Retrieves the signature of a delegation transaction from a delegator given the endpoint
          * from which to retrieve the signature.
          *
+         * @see [Simple Gas Payer Standard](https://github.com/vechain/VIPs/blob/master/vips/VIP-201.md)
+         *
          * @param tx - The transaction to delegate.
          * @param originAddress - The address of the origin account.
          * @param httpClient - The HTTP client instance used for making HTTP requests.
-         *
          * @returns A promise that resolves to the signature of the delegation transaction.
-         *
-         * @see [Simple Gas Payer Standard](https://github.com/vechain/VIPs/blob/master/vips/VIP-201.md)
-         *
-         * @throws an error if the delegation fails.
+         * @throws {NotDelegatedTransaction}
          */
         getDelegationSignatureUsingUrl: async (
             tx: Transaction,

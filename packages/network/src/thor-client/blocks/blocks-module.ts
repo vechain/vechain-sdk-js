@@ -76,6 +76,7 @@ class BlocksModule {
      *
      * @param revision - The block number or ID to query details for.
      * @returns A promise that resolves to an object containing the details of the compressed block.
+     * @throws {InvalidDataType}
      */
     public async getBlockCompressed(
         revision: string | number
@@ -103,6 +104,7 @@ class BlocksModule {
      *
      * @param revision - The block number or ID to query details for.
      * @returns A promise that resolves to an object containing the details of the expanded block.
+     * @throws {InvalidDataType}
      */
     public async getBlockExpanded(
         revision: string | number
@@ -196,6 +198,7 @@ class BlocksModule {
      * @param expanded - A boolean indicating whether to wait for an expanded block.
      * @param options - (Optional) Allows to specify timeout and interval in milliseconds
      * @returns A promise that resolves to an object containing the compressed block.
+     * @throws {InvalidDataType}
      */
     private async _waitForBlock(
         blockNumber: number,

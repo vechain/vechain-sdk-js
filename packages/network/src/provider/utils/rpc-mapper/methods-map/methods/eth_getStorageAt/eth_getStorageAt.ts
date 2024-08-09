@@ -14,17 +14,15 @@ import { type ThorClient } from '../../../../../../thor-client';
  *
  * @link [eth_getStorageAt](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_getstorageat)
  *
+ * @note Only 'latest' and 'finalized' block numbers are supported.
+ *
  * @param thorClient - ThorClient instance.
  * @param params - The standard array of rpc call parameters.
  *               * params[0]: The address to get the storage slot for as a hex string.
  *               * params[1]: The storage position to get as a hex string.
  *               * params[2]: The block number to get the storage slot at as a hex string or "latest".
- *
  * @returns The storage slot of the account at the given address formatted to the RPC standard.
- *
- * @note Only 'latest' and 'finalized' block numbers are supported.
- *
- * @throws {ProviderRpcError} - Will throw an error if the retrieval of the storage slot fails.
+ * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
  */
 const ethGetStorageAt = async (
     thorClient: ThorClient,

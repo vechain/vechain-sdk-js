@@ -123,6 +123,7 @@ abstract class AbstractProviderInternalWallet
      *
      * @param addressOrIndex - Address or index of the account.
      * @returns The account with the given address, or null if not found.
+     * @throws {InvalidDataType}
      */
     getAccountSync(
         addressOrIndex?: string | number

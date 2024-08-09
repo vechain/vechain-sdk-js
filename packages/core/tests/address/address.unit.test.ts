@@ -11,7 +11,7 @@ import {
 /**
  * Tests for address-utils module
  *
- * @group sdk-core/unit/addressUtils
+ * @group unit/addressUtils
  */
 describe('addressUtils', () => {
     /**

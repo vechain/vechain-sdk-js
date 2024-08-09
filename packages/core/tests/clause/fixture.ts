@@ -269,6 +269,13 @@ const invalidNFTtestCases = [
         recipientAddress,
         tokenId: '0x00001',
         expectedError: InvalidDataType
+    },
+    {
+        contractAddress,
+        senderAddress: '',
+        recipientAddress,
+        tokenId: '0x00001',
+        expectedError: InvalidDataType
     }
 ];
 

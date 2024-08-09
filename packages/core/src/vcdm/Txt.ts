@@ -58,8 +58,8 @@ class Txt extends String implements VeChainDataModel<Txt> {
         } catch (e) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             throw new InvalidCastType<Txt>(
-                'Txt.bi',
-                "can't cast to big integer",
+                'Txt.bi()',
+                "Can't cast to big integer",
                 this,
                 e
             );

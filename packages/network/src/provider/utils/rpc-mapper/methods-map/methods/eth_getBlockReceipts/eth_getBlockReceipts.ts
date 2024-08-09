@@ -18,9 +18,8 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
  * @note:
- * * params[0]: ...
- * * params[1]: ...
- * * params[n]: ...
+ * * params[0]: blockNumber - The block number to get the receipts for as a hex string or "latest".
+ * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
  */
 const ethGetBlockReceipts = async (
     thorClient: ThorClient,
