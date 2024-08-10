@@ -1,13 +1,14 @@
 ```mermaid
 classDiagram
-    class Account
     class Address
-    class Blake2b256
-    class BloomFilter
-    class Contract
-    class HDNode
-    class Hash {
+    class Currency {
         <<abstract>>
+        +bigint units
+        +bigint fraction
+        +string code
+    }
+    class Hash {
+        <<interface>>
     }
     class Hex {
         +Hex abs
@@ -25,18 +26,12 @@ classDiagram
     class HexUInt {
         +HexUInt of(bigint|number|string|Uint8Array|HexInt exp)$
     }
-    class Keccak256 
-    class Keystore
-    class Revision
-    class Sha256
-    class String
-    class ThorId {
-        +ThorId of(bigint|number|string|Uint8Array|Hex exp)$
-    }
     class Txt {
         +Txt of(bigint|number|string|Uint8Array exp)$
     }
-    class String
+    class Sha256 {
+        +Sha256 of(bigint|number|string|Uint8Array|Hex exp)$
+    }
     class VeChainDataModel{
         <<interface>>
       +bigint bi
@@ -46,22 +41,14 @@ classDiagram
       +boolean isEqual(~T~ that)
       +boolean isNumber()
     }
-    Address <|-- Account
-    Address <|-- Contract
-    Hash <|-- Blake2b256
-    Hash <|-- Keccak256
+    class Wei
+    Currency <|-- Wei
     Hash <|-- Sha256
     Hex <|-- HexInt
-    HexUInt <|-- Address
-    HexUInt <|-- BloomFilter
-    HexUInt <|-- HDNode
     HexInt <|-- HexUInt
-    HexUInt <|-- Hash
-    HexUInt <|-- ThorId
-    HexUInt <|-- Keystore
-    HexUInt <|-- Revision
-    String <|-- Hex
-    String <|-- Txt
+    HexUInt <|-- Sha256
+    HexUInt <|-- Address
+    VeChainDataModel <|.. Currency
     VeChainDataModel <|.. Hex
     VeChainDataModel <|.. Txt
 ```

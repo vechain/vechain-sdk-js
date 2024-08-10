@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { InvalidCastType, VechainSDKError } from '../../src';
+import { InvalidOperation, VechainSDKError } from '../../src';
 
 /**
  * Available errors test - VCDM
@@ -7,13 +7,13 @@ import { InvalidCastType, VechainSDKError } from '../../src';
  */
 describe('Error package Available errors test - VCDM', () => {
     /**
-     * InvalidCastType
+     * InvalidOperation
      */
-    test('InvalidCastType', () => {
+    test('InvalidOperation', () => {
         // Inner error
         [undefined, new Error('error')].forEach((innerError) => {
             expect(() => {
-                throw new InvalidCastType<{ data: string }>(
+                throw new InvalidOperation(
                     'method',
                     'message',
                     { data: 'data' },

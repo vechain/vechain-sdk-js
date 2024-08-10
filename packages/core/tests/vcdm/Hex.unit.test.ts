@@ -1,9 +1,9 @@
-import { Hex, Txt } from '../../src';
 import { describe, expect, test } from '@jest/globals';
-import { InvalidCastType, InvalidDataType } from '@vechain/sdk-errors';
+import { Hex, Txt } from '../../src';
+import { InvalidDataType, InvalidOperation } from '@vechain/sdk-errors';
 
 /**
- * Test Txt class.
+ * Test Hex class.
  * @group unit/vcdm
  */
 describe('Hex class tests', () => {
@@ -43,7 +43,7 @@ describe('Hex class tests', () => {
         test('Throw an exception casting n from a not IEEE expression', () => {
             const exp = 12357n;
             const hex = Hex.of(exp);
-            expect(() => hex.n).toThrow(InvalidCastType);
+            expect(() => hex.n).toThrow(InvalidOperation);
         });
 
         test('compareTo method tests - same signs', () => {

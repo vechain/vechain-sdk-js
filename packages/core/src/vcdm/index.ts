@@ -1,3 +1,5 @@
+export * from './Currency';
+export * from './Hash';
 export * from './Hex';
 export * from './HexInt';
 export * from './HexUInt';

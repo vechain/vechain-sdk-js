@@ -3,7 +3,7 @@ import { HexUInt } from '../../src';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
- * Test Txt class.
+ * Test HexUInt class.
  * @group unit/vcdm
  */
 describe('HexUInt class tests', () => {

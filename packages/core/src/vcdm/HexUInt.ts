@@ -43,7 +43,7 @@ class HexUInt extends HexInt {
             throw new InvalidDataType(
                 'HexUInt.of',
                 'not a hexadecimal positive integer expression',
-                { exp },
+                { exp: `${exp}`, e }, // Needed to serialize bigint values.
                 e
             );
         }

@@ -1,6 +1,6 @@
 import * as nh_utils from '@noble/hashes/utils';
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { InvalidCastType, InvalidDataType } from '@vechain/sdk-errors';
+import { InvalidOperation, InvalidDataType } from '@vechain/sdk-errors';
 import { type VeChainDataModel } from './VeChainDataModel';
 
 /**
@@ -17,7 +17,7 @@ import { type VeChainDataModel } from './VeChainDataModel';
  *
  * @implements {VeChainDataModel<Hex>}
  */
-class Hex extends String implements VeChainDataModel<Hex> {
+class Hex implements VeChainDataModel<Hex> {
     /**
      * Negative multiplier of the {@link hex} absolute value.
      *
@@ -82,7 +82,6 @@ class Hex extends String implements VeChainDataModel<Hex> {
         normalize: (digits: string) => string = (digits) => digits.toLowerCase()
     ) {
         const normalizedDigits = normalize(digits);
-        super((sign < 0 ? '-0x' : '0x') + normalizedDigits);
         this.hex = normalizedDigits;
         this.sign = sign;
     }
@@ -119,7 +118,7 @@ class Hex extends String implements VeChainDataModel<Hex> {
      *
      * @return {number} The value of n.
      *
-     * @throws {InvalidCastType<Hex>} Throws an error if this instance doesn't represent
+     * @throws {InvalidOperation<Hex>} Throws an error if this instance doesn't represent
      * an [IEEE 754 double precision 64 bits floating point format](https://en.wikipedia.org/wiki/Double-precision_floating-point_format).
      */
     get n(): number {
@@ -127,11 +126,9 @@ class Hex extends String implements VeChainDataModel<Hex> {
             // The sign is part of the IEEE 754 representation hence no need to consider `this.sign` property.
             return new DataView(this.bytes.buffer).getFloat64(0);
         }
-        throw new InvalidCastType<Hex>(
-            'Hex.n',
-            'not an IEEE 754 float 64 number',
-            this
-        );
+        throw new InvalidOperation('Hex.n', 'not an IEEE 754 float 64 number', {
+            hex: this.toString()
+        });
     }
 
     /**
@@ -329,6 +326,15 @@ class Hex extends String implements VeChainDataModel<Hex> {
         throw new InvalidDataType('Hex.random', 'bytes argument not > 0', {
             bytes
         });
+    }
+
+    /**
+     * Returns a string representation of the object.
+     *
+     * @return {string} The string representation of the object.
+     */
+    public toString(): string {
+        return (this.sign < 0 ? '-0x' : '0x') + this.hex;
     }
 }
 
