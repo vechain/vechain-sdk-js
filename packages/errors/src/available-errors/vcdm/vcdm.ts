@@ -1,11 +1,12 @@
 import { VechainSDKError } from '../sdk-error';
+import { type ObjectErrorData } from '../types';
 
 /**
  * Invalid cast type error.
  *
  * WHEN TO USE:
- * * Error will be thrown when a cast between types is invalid.
+ * * Error will be thrown when a method call or property read fails.
  */
-class InvalidCastType<T> extends VechainSDKError<T> {}
+class InvalidOperation extends VechainSDKError<ObjectErrorData> {}
 
-export { InvalidCastType };
+export { InvalidOperation };

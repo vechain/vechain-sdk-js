@@ -8,7 +8,7 @@ import {
 } from '@vechain/sdk-errors';
 import { base58 } from '@scure/base';
 import { secp256k1 } from '../secp256k1';
-import { sha256 } from '../hash';
+import { Sha256 } from '../hash';
 import { VET_DERIVATION_PATH, X_PRIV_PREFIX, X_PUB_PREFIX } from '../utils';
 
 /**
@@ -82,7 +82,7 @@ function fromPrivateKey(
             privateKey
         );
         privateKey.fill(0); // Clear the private key from memory.
-        const checksum = sha256(sha256(header)).subarray(0, 4);
+        const checksum = Sha256.of(Sha256.of(header)).bytes.subarray(0, 4);
         const expandedPrivateKey = n_utils.concatBytes(header, checksum);
         try {
             return n_bip32.HDKey.fromExtendedKey(
@@ -125,7 +125,7 @@ function fromPublicKey(
             chainCode,
             secp256k1.compressPublicKey(publicKey)
         );
-        const checksum = sha256(sha256(header)).subarray(0, 4);
+        const checksum = Sha256.of(Sha256.of(header)).bytes.subarray(0, 4);
         const expandedPublicKey = n_utils.concatBytes(header, checksum);
         try {
             return n_bip32.HDKey.fromExtendedKey(
