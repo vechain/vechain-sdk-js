@@ -16,14 +16,14 @@ const NO_CONTENT_SHA256 = Hex.of(
  */
 describe('Sha256 class tests', () => {
     test('Return hash for content', () => {
-        const sha256 = Sha256.of(CONTENT);
-        expect(sha256.isEqual(CONTENT_SHA256)).toBe(true);
+        const hash = Sha256.of(CONTENT);
+        expect(hash.isEqual(CONTENT_SHA256)).toBe(true);
     });
 
     test('Return hash for no content', () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        const sha256 = Sha256.of(NO_CONTENT);
-        expect(sha256.isEqual(NO_CONTENT_SHA256)).toBe(true);
+        const hash = Sha256.of(NO_CONTENT);
+        expect(hash.isEqual(NO_CONTENT_SHA256)).toBe(true);
     });
 
     test('Throw an exception for illegal content', () => {

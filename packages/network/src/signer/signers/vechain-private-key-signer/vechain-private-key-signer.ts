@@ -2,7 +2,7 @@ import * as n_utils from '@noble/curves/abstract/utils';
 import {
     addressUtils,
     Hex,
-    keccak256,
+    _keccak256,
     secp256k1,
     Transaction,
     type TransactionBody,
@@ -165,7 +165,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                         ? Txt.of(message).bytes
                         : message;
                 const sign = secp256k1.sign(
-                    keccak256(
+                    _keccak256(
                         n_utils.concatBytes(
                             this.MESSAGE_PREFIX,
                             Txt.of(body.length).bytes,

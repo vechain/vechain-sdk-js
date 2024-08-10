@@ -26,6 +26,9 @@ classDiagram
     class HexUInt {
         +HexUInt of(bigint|number|string|Uint8Array|HexInt exp)$
     }
+    class Keccak256 {
+        +Keccak256 of(bigint|number|string|Uint8Array|Hex exp)$
+    }
     class Txt {
         +Txt of(bigint|number|string|Uint8Array exp)$
     }
@@ -43,11 +46,13 @@ classDiagram
     }
     class Wei
     Currency <|-- Wei
+    Hash <|-- Keccak256
     Hash <|-- Sha256
     Hex <|-- HexInt
     HexInt <|-- HexUInt
-    HexUInt <|-- Sha256
     HexUInt <|-- Address
+    HexUInt <|-- Keccak256
+    HexUInt <|-- Sha256
     VeChainDataModel <|.. Currency
     VeChainDataModel <|.. Hex
     VeChainDataModel <|.. Txt

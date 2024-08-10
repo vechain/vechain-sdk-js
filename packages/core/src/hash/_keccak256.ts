@@ -1,4 +1,4 @@
-import { Hex } from '../vcdm/Hex';
+import { Hex } from '../vcdm';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { keccak_256 } from '@noble/hashes/sha3';
 import { type ReturnType } from './types';
@@ -9,38 +9,41 @@ import { type ReturnType } from './types';
  * Calculates the Keccak-256 hash of the given data.
  *
  * Secure audit function
- * * {@link keccak256}
+ * * {@link _keccak256}
  *
  * @param {string | Uint8Array} data - The data to hash. It can be either a string or a Uint8Array.
  *
  * @return {Uint8Array} - The Keccak-256 hash of the data.
  */
-function keccak256(data: string | Uint8Array): Uint8Array;
+function _keccak256(data: string | Uint8Array): Uint8Array;
 
 /**
  * Calculates the Keccak-256 hash of the provided data.
  *
  * Secure audit function.
- * * {@link keccak256}
+ * * {@link _keccak256}
  *
  * @param {string | Uint8Array} data - The data to hash.
  * @param {'buffer'} returnType - The type of return value. Only 'buffer' is currently supported.
  *
  * @returns {Uint8Array} - The calculated Keccak-256 hash as a Uint8Array.
  */
-function keccak256(data: string | Uint8Array, returnType: 'buffer'): Uint8Array;
+function _keccak256(
+    data: string | Uint8Array,
+    returnType: 'buffer'
+): Uint8Array;
 
 /**
  * Returns the Keccak-256 hash of the given data.
  *
  * Secure audit function.
- * * {@link keccak256}
+ * * {@link _keccak256}
  *
  * @param {string | Uint8Array} data - The data to hash.
  * @param {'hex'} returnType - The type of the return value. Only 'hex' is supported.
  * @return {string} The hash value in hexadecimal format.
  */
-function keccak256(data: string | Uint8Array, returnType: 'hex'): string;
+function _keccak256(data: string | Uint8Array, returnType: 'hex'): string;
 
 /* --- Overloaded functions end --- */
 
@@ -55,7 +58,7 @@ function keccak256(data: string | Uint8Array, returnType: 'hex'): string;
  * @return {Uint8Array | string} - The Keccak-256 hash data in the specified return type.
  * @throws {InvalidDataType}
  */
-function keccak256(
+function _keccak256(
     data: string | Uint8Array,
     returnType: ReturnType = 'buffer'
 ): Uint8Array | string {
@@ -72,4 +75,4 @@ function keccak256(
     return returnType === 'buffer' ? hash : Hex.of(hash).toString();
 }
 
-export { keccak256 };
+export { _keccak256 };

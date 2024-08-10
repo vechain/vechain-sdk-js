@@ -1,10 +1,11 @@
-import { Hex, HexUInt, type Hash } from '../vcdm';
 import * as nh_sha256 from '@noble/hashes/sha256';
+import { Hex, HexUInt, type Hash } from '../vcdm';
 import { InvalidOperation } from '@vechain/sdk-errors';
 
 /**
  * Represents the result of an [SHA256](https://en.wikipedia.org/wiki/SHA-2) hash operation.
  *
+ * @extends HexUInt
  * @implements Hash
  */
 class Sha256 extends HexUInt implements Hash {
@@ -12,7 +13,6 @@ class Sha256 extends HexUInt implements Hash {
      * Creates a new instance of this class to represent the absolute `hui` hash result.
      *
      * @param hui The hash result.
-     * @protected
      */
     protected constructor(hui: HexUInt) {
         super(hui);
@@ -28,7 +28,7 @@ class Sha256 extends HexUInt implements Hash {
      *  @throws {InvalidOperation} - If a hash error occurs.
      *
      * @remark Security auditable method, depends on
-     * * [`nh_sha256.sha256`](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#sha2-sha256-sha384-sha512-and-others).
+     * * [`nh_sha256.sha256`](https://github.com/paulmillr/noble-hashes#sha2-sha256-sha384-sha512-and-others).
      */
     public static of(exp: bigint | number | string | Uint8Array | Hex): Sha256 {
         try {

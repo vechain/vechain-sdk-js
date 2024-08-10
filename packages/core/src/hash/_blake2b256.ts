@@ -1,5 +1,4 @@
-import { Hex } from '../vcdm/Hex';
-import { Txt } from '../vcdm';
+import { Hex, Txt } from '../vcdm';
 import { blake2b } from '@noble/hashes/blake2b';
 import { type ReturnType } from './types';
 import { InvalidDataType } from '@vechain/sdk-errors';
@@ -17,7 +16,7 @@ import { InvalidDataType } from '@vechain/sdk-errors';
  *
  * @remark Use {@link blake2b256OfHex} to hash a string representing an array of bytes in hexadecimal form.
  */
-function blake2b256(data: string | Uint8Array): Uint8Array;
+function _blake2b256(data: string | Uint8Array): Uint8Array;
 
 /**
  * Calculates the Blake2b-256 hash of the given data.
@@ -31,7 +30,7 @@ function blake2b256(data: string | Uint8Array): Uint8Array;
  *
  * @remark Use {@link blake2b256OfHex} to hash a string representing an array of bytes in hexadecimal form.
  */
-function blake2b256(
+function _blake2b256(
     data: string | Uint8Array,
     returnType: 'buffer'
 ): Uint8Array;
@@ -48,7 +47,7 @@ function blake2b256(
  *
  * @remark Use {@link blake2b256OfHex} to hash a string representing an array of bytes in hexadecimal form.
  */
-function blake2b256(data: string | Uint8Array, returnType: 'hex'): string;
+function _blake2b256(data: string | Uint8Array, returnType: 'hex'): string;
 
 /* --- Overloaded functions end --- */
 
@@ -70,7 +69,7 @@ function blake2b256(data: string | Uint8Array, returnType: 'hex'): string;
  *
  * @remark Use {@link blake2b256OfHex} to hash a string representing an array of bytes in hexadecimal form.
  */
-function blake2b256(
+function _blake2b256(
     data: string | Uint8Array,
     returnType: ReturnType = 'buffer'
 ): Uint8Array | string {
@@ -118,7 +117,7 @@ function blake2b256OfArray(array: Uint8Array): Uint8Array {
  * @throws {InvalidDataTypeError} - Throws an error if the conversion fails or the returnType is invalid.
  * @throws {InvalidDataType}
  */
-function blake2b256OfHex(
+function _blake2b256OfHex(
     hex: string,
     returnType: ReturnType = 'buffer'
 ): string | Uint8Array {
@@ -158,4 +157,4 @@ function blake2b256OfString(text: string): Uint8Array {
     return blake2b256OfArray(Txt.of(text).bytes);
 }
 
-export { blake2b256, blake2b256OfHex };
+export { _blake2b256, _blake2b256OfHex };

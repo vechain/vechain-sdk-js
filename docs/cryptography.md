@@ -9,11 +9,11 @@ description: Main cryptography related functions.
 Hash functions are algorithms that take input data of differing size as an input, and it produces a fixed-size output.
 The output of a hash function is typically represented as a sequence of numbers and letters. Hash functions are commonly used in computer science for various purposes, such as ensuring data integrity, securing storing passwords, and creating unique identifiers for data.
 
-vechain sdk supports blake2b256 and keccak256 hash functions.
+vechain sdk supports _blake2b256 and _keccak256 hash functions.
 
 ### Blake2b256
 
-Blake2b256 is a specific type of hash function known for its speed and security. It takes any input data and generates a 256-bit (32-byte) hash value. The blake2b256 part refers to the specific design of the algorithm, and the 256 indicates the length of the resulting hash code. Blake2b256 is widely used in cryptographic applications, blockchain technologies, and secure data storage.
+Blake2b256 is a specific type of hash function known for its speed and security. It takes any input data and generates a 256-bit (32-byte) hash value. The _blake2b256 part refers to the specific design of the algorithm, and the 256 indicates the length of the resulting hash code. Blake2b256 is widely used in cryptographic applications, blockchain technologies, and secure data storage.
 
 ```typescript { name=blake2b256, category=example }
 // Input of hash function (it can be a string or a Buffer)
@@ -70,3 +70,4 @@ const signature = secp256k1.sign(hash, privateKey);
 console.log('Signature:', Hex.of(signature).toString());
 // Signature: ...SOME_SIGNATURE...
 ```
+

@@ -1,6 +1,6 @@
 import { addressUtils } from '../address-utils';
 import { type RLPValidObject } from '../encoding';
-import { blake2b256 } from '../hash';
+import { _blake2b256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import {
     BLOCK_REF_LENGTH,
@@ -17,7 +17,7 @@ import {
     NotDelegatedTransaction,
     UnavailableTransactionField
 } from '@vechain/sdk-errors';
-import { Hex } from '../vcdm/Hex';
+import { Hex } from '../vcdm';
 
 /**
  * Represents an immutable transaction entity.
@@ -204,12 +204,12 @@ class Transaction {
         }
 
         // Encode transaction
-        const transactionHash = blake2b256(this._encode(false));
+        const transactionHash = _blake2b256(this._encode(false));
 
         // There is a delegateFor address (@note we already know that it is a valid address)
         if (delegateFor !== undefined) {
             return Buffer.from(
-                blake2b256(
+                _blake2b256(
                     Buffer.concat([
                         Buffer.from(transactionHash),
                         Buffer.from(delegateFor.slice(2), 'hex')
@@ -275,7 +275,7 @@ class Transaction {
             );
 
         // Return transaction ID
-        return blake2b256(
+        return _blake2b256(
             Buffer.concat([
                 this.getSignatureHash(),
                 Buffer.from(this.origin.slice(2), 'hex')

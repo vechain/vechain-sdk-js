@@ -4,11 +4,11 @@
  * encryption, decryption, and validation functionality.
  */
 import * as n_utils from '@noble/curves/abstract/utils';
-import { Hex } from '../../../vcdm/Hex';
+import { Hex } from '../../../vcdm';
 import { InvalidKeystoreParams, stringifyData } from '@vechain/sdk-errors';
 import { ctr } from '@noble/ciphers/aes';
 import { addressUtils } from '../../../address-utils';
-import { keccak256 } from '../../../hash';
+import { _keccak256 } from '../../../hash';
 import { scrypt } from '@noble/hashes/scrypt';
 import { secp256k1 } from '../../../secp256k1';
 import { type Keystore, type KeystoreAccount } from '../../types';
@@ -308,7 +308,7 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): Keystore {
  *
  * Secure audit function.
  * - [ctr](https://github.com/paulmillr/noble-ciphers?tab=readme-ov-file#aes).
- * - {@link keccak256}
+ * - {@link _keccak256}
  * - `password` wiped after use.
  * - `privateKey` wiped after use.
  * - {@link secp256k1.derivePublicKey}.
@@ -386,7 +386,7 @@ function encryptKeystore(
                 },
                 // Compute the message authentication code, used to check the password.
                 mac: Hex.of(
-                    keccak256(n_utils.concatBytes(macPrefix, ciphertext))
+                    _keccak256(n_utils.concatBytes(macPrefix, ciphertext))
                 ).hex
             },
             id: uuidV4(uuidRandom),
@@ -507,7 +507,7 @@ function decryptKeystore(
         if (
             keystore.crypto.mac !==
             Hex.of(
-                keccak256(n_utils.concatBytes(key.slice(16, 32), ciphertext))
+                _keccak256(n_utils.concatBytes(key.slice(16, 32), ciphertext))
             ).hex
         ) {
             throw new InvalidKeystoreParams(
