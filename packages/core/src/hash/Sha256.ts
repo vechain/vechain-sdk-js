@@ -26,6 +26,9 @@ class Sha256 extends HexUInt implements Hash {
      * @returns {Sha256} - The [SHA256](https://en.wikipedia.org/wiki/SHA-2) hash of the input value.
      *
      *  @throws {InvalidOperation} - If a hash error occurs.
+     *
+     * @remark Security auditable method, depends on
+     * * [`nh_sha256.sha256`](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#sha2-sha256-sha384-sha512-and-others).
      */
     public static of(exp: bigint | number | string | Uint8Array | Hex): Sha256 {
         try {
