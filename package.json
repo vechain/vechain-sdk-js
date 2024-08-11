@@ -21,7 +21,7 @@
     "scripts": {
         "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose up -d --wait && echo '\nThor solo node started ...'",
         "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose down && echo 'Thor solo node stopped ...'",
-        "postinstall": "husky install",
+        "postinstall": "husky",
         "build": "turbo build",
         "pre-release": "ts-node scripts/pre-release.ts",
         "post-release": "ts-node scripts/post-release.ts",
