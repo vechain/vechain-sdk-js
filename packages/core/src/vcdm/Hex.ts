@@ -251,11 +251,11 @@ class Hex implements VeChainDataModel<Hex> {
     /**
      * Create a Hex instance from a bigint, number, string, or Uint8Array.
      *
-     * @param {bigint | number | string | Uint8Array} exp - The value to convert to a Hex instance:
-     * * bigint, converted to a signed hexadecimal expression of its absolute value;
+     * @param {bigint | number | string | Uint8Array} exp - The value to represent in a Hex instance:
+     * * bigint is always representable in hexadecimal base notation;
      * * number, encoded as [IEEE 754 double precision 64 bits floating point format](https://en.wikipedia.org/wiki/Double-precision_floating-point_format);
-     * * string, parsed as a hexadecimal expression, optionally signed `-`, optionally tagged with `0x`;
-     * * Uint8Array, encoded as hexadecimal expression of the bytes represented in the provided expression;
+     * * string is parsed as the hexadecimal expression of a bigint value, optionally tagged with `0x`;
+     * * Uint8Array is interpreted as the sequence of bytes.
      *
      * @returns {Hex} - A Hex instance representing the input value.
      *

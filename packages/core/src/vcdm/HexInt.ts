@@ -33,18 +33,17 @@ class HexInt extends Hex {
     /**
      * Create a HexInt instance from a bigint, number, string, Uint8Array, or {@link Hex}.
      *
-     * @param {bigint | number | string | Uint8Array | Hex} exp - The value to convert to a HexInt instance:
-     * * bigint is converted to its hexadecimal expression,
-     * * number is cast to a bigint then converted to its hexadecimal expression,
-     *   it throws {@link InvalidDataType} if not an integer value,
-     * * string is parsed as a bigint hexadecimal expression,
-     * * Uint8Array is interpreted as the sequence of bytes expressing a bigint value,
-     *   then concerted to its hexadecimal expression,
+     * @param {bigint | number | string | Uint8Array | Hex} exp - The expression to be interpreted as an integer:
+     * * bigint is always representable in hexadecimal base notation;
+     * * number is converted to a bigint then represented in hexadecimal base notation;
+     *   it throws {@link InvalidDataType} if not an integer value;
+     * * string is parsed as the hexadecimal expression of a bigint value, optionally tagged with `0x`;
+     * * Uint8Array is interpreted as the sequence of bytes expressing a bigint value;
      * * {@link Hex} is interpreted as expressing a bigint value.
      *
-     * @returns {HexInt} - The converted HexInt object.
+     * @returns {HexInt} - The new HexInt object representing the given `exp`.
      *
-     * @throws {InvalidDataType} - If the value is not a valid hexadecimal integer expression,
+     * @throws {InvalidDataType} - If the given `exp` is not a valid hexadecimal integer expression,
      * if `exp` is a not integer number.
      *
      * @remark This class makes equal instances created from the same value as number or as bigint.

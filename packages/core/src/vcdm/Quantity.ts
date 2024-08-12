@@ -17,9 +17,9 @@ import { InvalidDataType } from '@vechain/sdk-errors';
 class Quantity extends HexUInt {
     /**
      * Creates a Quantity instance from a bigint or number given expression
-     .     *
+     *
      * @param {bigint | number} exp - The value to be expressed as Quantity object:
-     * * bigint must be positive,
+     * * bigint must be positive;
      * * number must be positive, it is converted to bigint to create the Quantity.
      *
      * @returns {Quantity} - The new Quantity object.
