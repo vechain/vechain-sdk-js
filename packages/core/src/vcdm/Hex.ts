@@ -344,7 +344,7 @@ class Hex extends String implements VeChainDataModel<Hex> {
      * @param {ObjectErrorData} data - The data to include in the error.
      * @throws {InvalidDataType} - Throws an error with the given message and data.
      */
-    protected static invalidDataTypeHandler(
+    protected static throwInvalidDataType(
         error: unknown,
         methodName: string,
         errorMessage: string,

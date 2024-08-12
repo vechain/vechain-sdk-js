@@ -17,7 +17,7 @@ class Address extends HexUInt {
      *
      * @type {RegExp}
      */
-    private static readonly REGEX_ADDRESS: RegExp = /^(0x)?[0-9a-f]{40}$/i;
+    private static readonly REGEX_ADDRESS: RegExp = /^(0x)?[0-9a-fA-F]{40}$/i;
 
     /**
      * Creates a new instance of this class to represent the absolute `hi` value.
@@ -65,7 +65,7 @@ class Address extends HexUInt {
         try {
             return new Address(HexUInt.of(exp));
         } catch (error) {
-            this.invalidDataTypeHandler(
+            this.throwInvalidDataType(
                 error,
                 'Address.of',
                 'not a valid hexadecimal positive integer expression',
@@ -100,7 +100,7 @@ class Address extends HexUInt {
                 secp256k1.derivePublicKey(privateKey, isCompressed)
             );
         } catch (error) {
-            this.invalidDataTypeHandler(
+            this.throwInvalidDataType(
                 error,
                 'Address.ofPrivateKey',
                 'not a valid private key',
@@ -121,7 +121,7 @@ class Address extends HexUInt {
             const publicKeyHash = keccak256(publicKeyInflated.slice(1));
             return Address.of(publicKeyHash.slice(12));
         } catch (error) {
-            this.invalidDataTypeHandler(
+            this.throwInvalidDataType(
                 error,
                 'Address.ofPublicKey',
                 'not a valid public key',
