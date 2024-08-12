@@ -169,7 +169,7 @@ describe('Base wallet tests', () => {
                 {
                     delegatorPrivateKey: Hex.of(
                         await secp256k1.generatePrivateKey()
-                    ).hex
+                    ).digits
                 },
                 {
                     delegatorUrl:

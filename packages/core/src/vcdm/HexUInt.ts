@@ -9,23 +9,6 @@ import { InvalidDataType } from '@vechain/sdk-errors';
  */
 class HexUInt extends HexInt {
     /**
-     * Creates a new instance of this class to represent the absolute `hi` value.
-     *
-     * @param {HexInt} hi - The HexInt object representing the hexadecimal value.
-     *
-     * @throws {InvalidDataType} Throws an error if the sign of hi is not positive.
-     */
-    protected constructor(hi: HexInt) {
-        if (hi.sign >= Hex.POSITIVE) {
-            super(hi);
-        } else {
-            throw new InvalidDataType('HexUInt.constructor', 'not positive', {
-                hi
-            });
-        }
-    }
-
-    /**
      * Create a HexUInt instance from the given expression interprete as an unsigned integer.
      *
      * @param exp The expression to convert. It can be of type bigint, number, string, Uint8Array, or HexInt.
@@ -38,7 +21,15 @@ class HexUInt extends HexInt {
         exp: bigint | number | string | Uint8Array | HexInt
     ): HexUInt {
         try {
-            return new HexUInt(HexInt.of(exp));
+            const hxi = HexInt.of(exp);
+            if (hxi.sign >= Hex.POSITIVE) {
+                return new HexUInt(hxi.sign, hxi.digits);
+            }
+            throw new InvalidDataType(
+                'HexUInt.of',
+                'not positive',
+                { exp: `${exp}` } // Needed to serialize bigint values.
+            );
         } catch (e) {
             throw new InvalidDataType(
                 'HexUInt.of',

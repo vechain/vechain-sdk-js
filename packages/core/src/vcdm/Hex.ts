@@ -19,14 +19,14 @@ import { type VeChainDataModel } from './VeChainDataModel';
  */
 class Hex implements VeChainDataModel<Hex> {
     /**
-     * Negative multiplier of the {@link hex} absolute value.
+     * Negative multiplier of the {@link digits} absolute value.
      *
      * @type {number}
      */
     protected static readonly NEGATIVE: number = -1;
 
     /**
-     * Positive multiplier of the {@link hex} absolute value.
+     * Positive multiplier of the {@link digits} absolute value.
      *
      * @type {number}
      */
@@ -59,7 +59,7 @@ class Hex implements VeChainDataModel<Hex> {
 
      * @remark An empty content results in an empty string returned.
      */
-    public readonly hex: string;
+    public readonly digits: string;
 
     /**
      * Represents the sign multiplier of a given number:
@@ -81,7 +81,7 @@ class Hex implements VeChainDataModel<Hex> {
         digits: string,
         normalize: (digits: string) => string = (digits) => digits.toLowerCase()
     ) {
-        this.hex = normalize(digits);
+        this.digits = normalize(digits);
         this.sign = sign;
     }
 
@@ -91,7 +91,7 @@ class Hex implements VeChainDataModel<Hex> {
      * @return {Hex} A new Hex object representing the absolute value of this Hex.
      */
     public get abs(): Hex {
-        return new Hex(Hex.POSITIVE, this.hex);
+        return new Hex(Hex.POSITIVE, this.digits);
     }
 
     /**
@@ -100,7 +100,7 @@ class Hex implements VeChainDataModel<Hex> {
      * @returns {bigint} The value of `bi` as a `BigInt`.
      */
     get bi(): bigint {
-        return BigInt(this.sign) * nc_utils.hexToNumber(this.hex);
+        return BigInt(this.sign) * nc_utils.hexToNumber(this.digits);
     }
 
     /**
@@ -109,7 +109,7 @@ class Hex implements VeChainDataModel<Hex> {
      * @return {Uint8Array} The Uint8Array representation of the aligned bytes.
      */
     get bytes(): Uint8Array {
-        return nc_utils.hexToBytes(this.alignToBytes().hex);
+        return nc_utils.hexToBytes(this.alignToBytes().digits);
     }
 
     /**
@@ -137,9 +137,9 @@ class Hex implements VeChainDataModel<Hex> {
      * @returns {Hex} - The aligned hexadecimal string.
      */
     public alignToBytes(): Hex {
-        return this.hex.length % 2 === 0
+        return this.digits.length % 2 === 0
             ? this
-            : new Hex(this.sign, '0' + this.hex);
+            : new Hex(this.sign, '0' + this.digits);
     }
 
     /**
@@ -152,7 +152,7 @@ class Hex implements VeChainDataModel<Hex> {
      */
     compareTo(that: Hex): number {
         if (this.sign === that.sign) {
-            const digits = Math.max(this.hex.length, that.hex.length);
+            const digits = Math.max(this.digits.length, that.digits.length);
             const thisBytes = this.fit(digits).bytes;
             const thatBytes = that.fit(digits).bytes;
             let i = 0;
@@ -176,14 +176,17 @@ class Hex implements VeChainDataModel<Hex> {
      * @throws {InvalidDataType} - If the Hex value cannot be fit into the specified number of digits.
      */
     public fit(digits: number): Hex {
-        if (digits < this.hex.length) {
+        if (digits < this.digits.length) {
             // Cut.
             let cue = 0;
-            while (this.hex.length - cue > digits && this.hex.at(cue) === '0') {
+            while (
+                this.digits.length - cue > digits &&
+                this.digits.at(cue) === '0'
+            ) {
                 cue++;
             }
-            if (this.hex.length - cue === digits) {
-                return new Hex(this.sign, this.hex.slice(cue));
+            if (this.digits.length - cue === digits) {
+                return new Hex(this.sign, this.digits.slice(cue));
             }
             throw new InvalidDataType(
                 'Hex.fit',
@@ -191,11 +194,11 @@ class Hex implements VeChainDataModel<Hex> {
                 { digits, hex: this }
             );
         }
-        if (digits > this.hex.length) {
+        if (digits > this.digits.length) {
             // Pad.
             return new Hex(
                 this.sign,
-                '0'.repeat(digits - this.hex.length) + this.hex
+                '0'.repeat(digits - this.digits.length) + this.digits
             );
         }
         return this;
@@ -220,7 +223,7 @@ class Hex implements VeChainDataModel<Hex> {
      * a {@link Number} value, else it returns false.
      */
     isNumber(): boolean {
-        return this.hex.length === 32;
+        return this.digits.length === 32;
     }
 
     /**
@@ -334,7 +337,7 @@ class Hex implements VeChainDataModel<Hex> {
      * @return {string} The string representation of the object.
      */
     public toString(): string {
-        return (this.sign < 0 ? '-0x' : '0x') + this.hex;
+        return (this.sign < 0 ? '-0x' : '0x') + this.digits;
     }
 }
 

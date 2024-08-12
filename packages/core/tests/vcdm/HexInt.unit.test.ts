@@ -13,7 +13,7 @@ describe('HexInt class tests', () => {
             const hex = HexInt.of(exp);
             expect(hex.bi).toEqual(exp);
             expect(hex.n).toEqual(Number(exp));
-            expect(hex.toString()).toEqual('-0xc0c0a');
+            expect(hex.toString()).toEqual('-0x0c0c0a');
         });
 
         test('Return equals values for bi and n properties from number value', () => {

@@ -114,7 +114,7 @@ function inflatePublicKey(publicKey: Uint8Array): Uint8Array {
         // To inflate.
         const x = publicKey.slice(0, 33);
         const p = n_secp256k1.ProjectivePoint.fromAffine(
-            n_secp256k1.ProjectivePoint.fromHex(Hex.of(x).hex).toAffine()
+            n_secp256k1.ProjectivePoint.fromHex(Hex.of(x).digits).toAffine()
         );
         return p.toRawBytes(false);
     } else {

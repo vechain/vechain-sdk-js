@@ -1,4 +1,4 @@
-import { HexInt, unitsUtils } from '@vechain/sdk-core';
+import { Quantity, unitsUtils } from '@vechain/sdk-core';
 import { zeroBlock } from '../rpc-mapper/methods/eth_getBlockByNumber/fixture';
 import {
     validTransactionDetailTestnet,
@@ -18,7 +18,7 @@ const providerMethodsTestCasesTestnet = [
         description:
             "Should be able to call eth_getBlockByNumber with '0x0' as the block number",
         method: 'eth_getBlockByNumber',
-        params: [HexInt.of(0).toString(), false],
+        params: [Quantity.of(0).toString(), false],
         expected: zeroBlock
     },
     {
@@ -44,7 +44,7 @@ const providerMethodsTestCasesSolo = [
             'Should be able to call eth_getBalance of an address with balance more than 0 VET',
         method: 'eth_getBalance',
         params: [THOR_SOLO_ACCOUNTS[0].address, 'latest'],
-        expected: HexInt.of(unitsUtils.parseVET('500000000')).toString()
+        expected: Quantity.of(unitsUtils.parseVET('500000000')).toString()
     },
     {
         description: 'Should be able to call eth_getCode of a smart contract',
@@ -59,8 +59,8 @@ const logsInput = {
         '0x0000000000000000000000000000456e65726779',
         '0x0000000000000000000000000000456e65726779'
     ],
-    fromBlock: HexInt.of(0).toString(),
-    toBlock: HexInt.of(100000).toString(),
+    fromBlock: Quantity.of(0).toString(),
+    toBlock: Quantity.of(100000).toString(),
     topics: [
         '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
         '0x0000000000000000000000005034aa590125b64023a0262112b98d72e3c8e40e',

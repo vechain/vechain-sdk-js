@@ -10,7 +10,7 @@
  */
 import * as n_utils from '@noble/curves/abstract/utils';
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { _blake2b256 } from '../hash';
+import { Blake2b256 } from '../hash';
 
 /**
  * Adds two numbers with wraparound behavior, treating them as unsigned 32-bit integers.
@@ -96,13 +96,15 @@ function distribute(
  * Computes the hash of the given key using blake2b256 algorithm.
  *
  * Secure audit function.
- * * {@link _blake2b256}
+ * * {@link Blake2b256.of}
  *
  * @param {Uint8Array} key - The key to be hashed.
  * @return {number} The computed hash value as a number.
  */
 function hash(key: Uint8Array): number {
-    return Number(n_utils.bytesToNumberBE(_blake2b256(key).slice(0, 4)));
+    return Number(
+        n_utils.bytesToNumberBE(Blake2b256.of(key).bytes.slice(0, 4))
+    );
 }
 
 /**

@@ -1,6 +1,6 @@
 import { addressUtils } from '../address-utils';
 import { type RLPValidObject } from '../encoding';
-import { _blake2b256 } from '../hash';
+import { _blake2b256, Blake2b256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import {
     BLOCK_REF_LENGTH,
@@ -204,7 +204,8 @@ class Transaction {
         }
 
         // Encode transaction
-        const transactionHash = _blake2b256(this._encode(false));
+        // const transactionHash = _blake2b256(this._encode(false));
+        const transactionHash = Blake2b256.of(this._encode(false)).bytes;
 
         // There is a delegateFor address (@note we already know that it is a valid address)
         if (delegateFor !== undefined) {

@@ -369,25 +369,25 @@ function encryptKeystore(
                 addressUtils.fromPublicKey(
                     secp256k1.derivePublicKey(privateKey)
                 )
-            ).hex,
+            ).digits,
             crypto: {
                 cipher: KEYSTORE_CRYPTO_CIPHER,
                 cipherparams: {
-                    iv: Hex.of(iv).hex
+                    iv: Hex.of(iv).digits
                 },
-                ciphertext: Hex.of(ciphertext).hex,
+                ciphertext: Hex.of(ciphertext).digits,
                 kdf: 'scrypt',
                 kdfparams: {
                     dklen: KEYSTORE_CRYPTO_PARAMS_DKLEN,
                     n: kdf.N,
                     p: kdf.p,
                     r: kdf.r,
-                    salt: Hex.of(kdf.salt).hex
+                    salt: Hex.of(kdf.salt).digits
                 },
                 // Compute the message authentication code, used to check the password.
                 mac: Hex.of(
                     _keccak256(n_utils.concatBytes(macPrefix, ciphertext))
-                ).hex
+                ).digits
             },
             id: uuidV4(uuidRandom),
             version: KEYSTORE_VERSION
@@ -508,7 +508,7 @@ function decryptKeystore(
             keystore.crypto.mac !==
             Hex.of(
                 _keccak256(n_utils.concatBytes(key.slice(16, 32), ciphertext))
-            ).hex
+            ).digits
         ) {
             throw new InvalidKeystoreParams(
                 '(EXPERIMENTAL) keystore.decryptKeystore()',
@@ -591,7 +591,7 @@ function uuidV4(bytes: Uint8Array): string {
     // - clock_seq_hi_and_reserved[6] = 0b0
     // - clock_seq_hi_and_reserved[7] = 0b1
     bytes[8] = (bytes[8] & 0x3f) | 0x80;
-    const value = Hex.of(bytes).hex;
+    const value = Hex.of(bytes).digits;
     return [
         value.substring(0, 8),
         value.substring(8, 12),

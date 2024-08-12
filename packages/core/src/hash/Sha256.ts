@@ -10,15 +10,6 @@ import { InvalidOperation } from '@vechain/sdk-errors';
  */
 class Sha256 extends HexUInt implements Hash {
     /**
-     * Creates a new instance of this class to represent the absolute `hui` hash result.
-     *
-     * @param hui The hash result.
-     */
-    protected constructor(hui: HexUInt) {
-        super(hui);
-    }
-
-    /**
      * Generates the [SHA256](https://en.wikipedia.org/wiki/SHA-2) hash of the given input.
      *
      * @param {bigint | number | string | Uint8Array | Hex} exp - The input value to hash.
@@ -32,13 +23,10 @@ class Sha256 extends HexUInt implements Hash {
      */
     public static of(exp: bigint | number | string | Uint8Array | Hex): Sha256 {
         try {
-            return new Sha256(
-                HexUInt.of(
-                    nh_sha256.sha256(
-                        (exp instanceof Hex ? exp : Hex.of(exp)).bytes
-                    )
-                )
+            const hxi = HexUInt.of(
+                nh_sha256.sha256((exp instanceof Hex ? exp : Hex.of(exp)).bytes)
             );
+            return new Sha256(hxi.sign, hxi.digits);
         } catch (e) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             throw new InvalidOperation('Sha256.of', 'hash error', {

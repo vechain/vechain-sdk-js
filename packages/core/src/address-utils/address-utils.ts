@@ -95,8 +95,8 @@ function toERC55Checksum(address: string): string {
         );
     }
 
-    const digits = Hex.of(address).hex;
-    const hash = Hex.of(_keccak256(digits)).hex;
+    const digits = Hex.of(address).digits;
+    const hash = Hex.of(_keccak256(digits)).digits;
     let result: string = '0x';
     for (let i = 0; i < digits.length; i++) {
         if (parseInt(hash[i], 16) >= 8) {

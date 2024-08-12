@@ -74,9 +74,9 @@ describe('blake2b256', () => {
     });
 
     describe('blake2b256OfHex', () => {
-        const content = Hex.of(Txt.of(BLAKE2B256_CONTENT).bytes).hex;
+        const content = Hex.of(Txt.of(BLAKE2B256_CONTENT).bytes).digits;
 
-        const zeroContent = Hex.of(BLAKE2B256_NO_CONTENT).hex;
+        const zeroContent = Hex.of(BLAKE2B256_NO_CONTENT).digits;
 
         // To be introduced once thor-dev-kit dependency clash solved.
         // test('blake2b256OfHex - compatibility - thor-dev-kit', () => {
