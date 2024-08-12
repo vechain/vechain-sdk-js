@@ -4,7 +4,7 @@
  * @extends {HexUInt}
  */
 
-import { bytesToHex } from '@noble/ciphers/utils';
+import { bytesToHex, hexToBytes } from '@noble/ciphers/utils';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { keccak256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
@@ -17,6 +17,8 @@ class Address extends HexUInt {
      * @type {RegExp}
      */
     private static readonly REGEX_ADDRESS: RegExp = /^(0x)?[0-9a-fA-F]{40}$/i;
+
+    private static readonly ENCODER = new TextEncoder();
 
     /**
      * Creates a new instance of this class to represent the absolute `hi` value.
@@ -93,17 +95,21 @@ class Address extends HexUInt {
     /**
      * Create a Address instance from the given private key.
      *
-     * @param {Uint8Array} privateKey The private key to convert.
+     * @param {string | Uint8Array} privateKey The private key to convert.
      * @param {boolean} [isCompressed=true] The flag to indicate if the derived public key should be compressed.
      * @returns {Address} The converted address.
      */
     public static ofPrivateKey(
-        privateKey: Uint8Array,
+        privateKey: string | Uint8Array,
         isCompressed: boolean = true
     ): Address {
         try {
+            const privateKeyUInt8Array =
+                typeof privateKey === 'string'
+                    ? hexToBytes(privateKey)
+                    : privateKey;
             return Address.ofPublicKey(
-                secp256k1.derivePublicKey(privateKey, isCompressed)
+                secp256k1.derivePublicKey(privateKeyUInt8Array, isCompressed)
             );
         } catch (error) {
             this.throwInvalidDataType(
@@ -118,12 +124,17 @@ class Address extends HexUInt {
     /**
      * Create a Address instance from the given public key.
      *
-     * @param {Uint8Array} publicKey The public key to convert.
+     * @param {string | Uint8Array} publicKey The public key to convert.
      * @returns {Address} The converted address.
      */
-    public static ofPublicKey(publicKey: Uint8Array): Address {
+    public static ofPublicKey(publicKey: string | Uint8Array): Address {
         try {
-            const publicKeyInflated = secp256k1.inflatePublicKey(publicKey);
+            const publicKeyUInt8Array =
+                typeof publicKey === 'string'
+                    ? hexToBytes(publicKey)
+                    : publicKey;
+            const publicKeyInflated =
+                secp256k1.inflatePublicKey(publicKeyUInt8Array);
             const publicKeyHash = keccak256(publicKeyInflated.slice(1));
             return Address.of(publicKeyHash.slice(12));
         } catch (error) {

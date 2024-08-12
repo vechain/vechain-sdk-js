@@ -57,4 +57,22 @@ describe('Address class tests', () => {
             }
         });
     });
+    describe('Key tests', () => {
+        test('Should get the address from a given private key', () => {
+            const privateKey =
+                '5434c159b817c377a55f6be66369622976014e78bce2adfd3e44e5de88ce502f';
+            const address = Address.ofPrivateKey(privateKey);
+            expect(address.toString()).toBe(
+                '0x769e8aa372c8309c834ea6749b88861ff73581ff'
+            );
+        });
+        test('Should get the address from a given public key', () => {
+            const publicKey =
+                '04a6711e14234b1d4e69aeed2acf18b9c3bd0e97db317b509516bd3a87e5b732685ccaf855d9f8a955bc1f420b4ebf8f682c2e480d98a360e7fd0c08e6eef65607';
+            const address = Address.ofPublicKey(publicKey);
+            expect(address.toString()).toBe(
+                '0x769e8aa372c8309c834ea6749b88861ff73581ff'
+            );
+        });
+    });
 });
