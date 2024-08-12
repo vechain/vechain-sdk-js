@@ -40,12 +40,19 @@ class Address extends HexUInt {
         }
     }
 
-    private static checksum(hex: string): string {
-        const hash: string = bytesToHex(keccak256(hex));
+    /**
+     * It checksums a given hexadecimal address.
+     * @param {string} stringAddress String representation of the address (lower case).
+     * @returns {string} The checksummed address.
+     */
+    private static checksum(stringAddress: string): string {
+        const hash: string = bytesToHex(keccak256(stringAddress));
         let checksum = '';
-        for (let i = 0; i < hex.length; i++) {
+        for (let i = 0; i < stringAddress.length; i++) {
             checksum +=
-                parseInt(hash[i], 16) > 7 ? hex[i].toUpperCase() : hex[i];
+                parseInt(hash[i], 16) > 7
+                    ? stringAddress[i].toUpperCase()
+                    : stringAddress[i];
         }
 
         return checksum;
