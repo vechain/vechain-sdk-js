@@ -3,7 +3,7 @@ import {
     type TransactionReceiptRPC,
     type TransactionRPC
 } from './types';
-import { Hex, Quantity, ZERO_BYTES } from '@vechain/sdk-core';
+import { Hex, HexUInt, Quantity, ZERO_BYTES } from '@vechain/sdk-core';
 import {
     getNumberOfLogsAheadOfTransactionIntoBlockExpanded,
     getTransactionIndexIntoBlock
@@ -39,7 +39,7 @@ const _formatTransactionToRPC = (
         blockHash,
         blockNumber: Quantity.of(blockNumber).toString(),
         from: tx.origin,
-        gas: Quantity.of(tx.gas).toString(),
+        gas: Quantity.of(HexUInt.of(tx.gas).bi).toString(),
         chainId,
         hash: tx.id,
         nonce: tx.nonce as string,
@@ -54,7 +54,7 @@ const _formatTransactionToRPC = (
         to: tx.clauses[0]?.to !== undefined ? tx.clauses[0].to : null,
         value:
             tx.clauses[0]?.value !== undefined
-                ? Quantity.of(tx.clauses[0].value).toString()
+                ? Quantity.of(HexUInt.of(tx.clauses[0].value).bi).toString()
                 : '',
 
         // Unsupported fields
