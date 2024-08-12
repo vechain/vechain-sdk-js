@@ -83,8 +83,8 @@ class Address extends HexUInt {
 
     /**
      * Validate the given expression to be a valid address.
-     * @param exp Expression to validate
-     * @returns true if the expression is a valid address, false otherwise
+     * @param {string} exp Expression to validate
+     * @returns {boolean} true if the expression is a valid address, false otherwise
      */
 
     public static isValid(exp: string): boolean {
