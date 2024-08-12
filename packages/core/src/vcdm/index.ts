@@ -1,3 +1,4 @@
+export * from './Address';
 export * from './Hex';
 export * from './HexInt';
 export * from './HexUInt';
