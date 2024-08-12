@@ -26,11 +26,14 @@ classDiagram
     class Keccak256 {
         +Keccak256 of(bigint|number|string|Uint8Array|Hex exp)$
     }
-    class Txt {
-        +Txt of(bigint|number|string|Uint8Array exp)$
+    class Quantity {
+        +Quantity of(bigint|number exp)$
     }
     class Sha256 {
         +Sha256 of(bigint|number|string|Uint8Array|Hex exp)$
+    }
+    class Txt {
+        +Txt of(bigint|number|string|Uint8Array exp)$
     }
     class VeChainDataModel{
         <<interface>>
@@ -49,6 +52,7 @@ classDiagram
     HexUInt <|-- Address
     HexUInt <|-- Blake2b256
     HexUInt <|-- Keccak256
+    HexUInt <|-- Quantity
     HexUInt <|-- Sha256
     VeChainDataModel <|.. Hex
     VeChainDataModel <|.. Txt
