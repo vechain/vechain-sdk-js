@@ -4,12 +4,11 @@
  * @extends {HexUInt}
  */
 
+import { bytesToHex } from '@noble/ciphers/utils';
+import { InvalidDataType } from '@vechain/sdk-errors';
+import { keccak256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import { HexUInt } from './HexUInt';
-import { keccak256 } from '../hash';
-import { bytesToHex } from '@noble/ciphers/utils';
-import { Hex } from './Hex';
-import { InvalidDataType } from '@vechain/sdk-errors';
 
 class Address extends HexUInt {
     /**
@@ -28,7 +27,7 @@ class Address extends HexUInt {
     protected constructor(huint: HexUInt) {
         if (Address.isValid(huint.hex)) {
             const addressChecksummed: string = Address.checksum(huint.hex);
-            super(Hex.of(addressChecksummed));
+            super(HexUInt.of(addressChecksummed));
         } else {
             throw new InvalidDataType(
                 'Address.constructor',
