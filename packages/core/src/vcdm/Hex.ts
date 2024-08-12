@@ -337,6 +337,7 @@ class Hex extends String implements VeChainDataModel<Hex> {
 
     /**
      * Error handler for Hex and its subclasses so we do not hide them.
+     * To be used only for nested errors.
      *
      * @param error - The error to handle from the subclass.
      * @param methodName - The name of the method that threw the error.
