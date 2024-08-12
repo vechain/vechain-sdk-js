@@ -353,7 +353,7 @@ class Hex extends String implements VeChainDataModel<Hex> {
         if (error instanceof InvalidDataType) {
             throw error;
         }
-        throw new InvalidDataType(methodName, errorMessage, data);
+        throw new InvalidDataType(methodName, errorMessage, data, error);
     }
 }
 

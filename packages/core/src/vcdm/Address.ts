@@ -7,6 +7,9 @@
 import { secp256k1 } from '../secp256k1';
 import { HexUInt } from './HexUInt';
 import { keccak256 } from '../hash';
+import { bytesToHex } from '@noble/ciphers/utils';
+import { Hex } from './Hex';
+import { InvalidDataType } from '@vechain/sdk-errors';
 
 class Address extends HexUInt {
     /**
@@ -20,9 +23,32 @@ class Address extends HexUInt {
      * Creates a new instance of this class to represent the absolute `hi` value.
      *
      * @param {HexUInt} huint - The HexUInt object representing the hexadecimal value.
+     * @throws {InvalidDataType} Throws an error if huint is an invalid address.
      */
     protected constructor(huint: HexUInt) {
-        super(huint);
+        if (Address.isValid(huint.hex)) {
+            const addressChecksummed: string = Address.checksum(huint.hex);
+            super(Hex.of(addressChecksummed));
+        } else {
+            throw new InvalidDataType(
+                'Address.constructor',
+                'not a valid address',
+                {
+                    huint
+                }
+            );
+        }
+    }
+
+    private static checksum(hex: string): string {
+        const hash: string = bytesToHex(keccak256(hex));
+        let checksum = '';
+        for (let i = 0; i < hex.length; i++) {
+            checksum +=
+                parseInt(hash[i], 16) > 7 ? hex[i].toUpperCase() : hex[i];
+        }
+
+        return checksum;
     }
 
     /**
