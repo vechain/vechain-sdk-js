@@ -34,13 +34,8 @@ class Keccak256 extends HexUInt implements Hash {
         exp: bigint | number | string | Uint8Array | Hex
     ): Keccak256 {
         try {
-            return new Keccak256(
-                HexUInt.of(
-                    nh_sha3.keccak_256(
-                        (exp instanceof Hex ? exp : Hex.of(exp)).bytes
-                    )
-                )
-            );
+            const b = (exp instanceof Hex ? exp : Hex.of(exp)).bytes;
+            return new Keccak256(HexUInt.of(nh_sha3.keccak_256(b)));
         } catch (e) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             throw new InvalidOperation('Keccak256.of', 'hash error', {
