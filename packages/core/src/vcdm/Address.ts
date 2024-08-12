@@ -19,10 +19,10 @@ class Address extends HexUInt {
     /**
      * Creates a new instance of this class to represent the absolute `hi` value.
      *
-     * @param {HexUInt} hi - The HexUInt object representing the hexadecimal value.
+     * @param {HexUInt} huint - The HexUInt object representing the hexadecimal value.
      */
-    protected constructor(hi: HexUInt) {
-        super(hi);
+    protected constructor(huint: HexUInt) {
+        super(huint);
     }
 
     /**
@@ -39,7 +39,7 @@ class Address extends HexUInt {
         try {
             return new Address(HexUInt.of(exp));
         } catch (error) {
-            this.errorHandler(
+            this.invalidDataTypeHandler(
                 error,
                 'Address.of',
                 'not a valid hexadecimal positive integer expression',
@@ -74,7 +74,7 @@ class Address extends HexUInt {
                 secp256k1.derivePublicKey(privateKey, isCompressed)
             );
         } catch (error) {
-            this.errorHandler(
+            this.invalidDataTypeHandler(
                 error,
                 'Address.ofPrivateKey',
                 'not a valid private key',
@@ -95,7 +95,7 @@ class Address extends HexUInt {
             const publicKeyHash = keccak256(publicKeyInflated.slice(1));
             return Address.of(publicKeyHash.slice(12));
         } catch (error) {
-            this.errorHandler(
+            this.invalidDataTypeHandler(
                 error,
                 'Address.ofPublicKey',
                 'not a valid public key',
