@@ -5,6 +5,7 @@ classDiagram
     class Blake2b256
     class BloomFilter
     class Contract
+    class ExternallyOwnedAccount
     class HDNode
     class Hash {
         <<abstract>>
@@ -47,7 +48,8 @@ classDiagram
       +boolean isNumber()
     }
     Address <|-- Account
-    Address <|-- Contract
+    Account <|-- ExternallyOwnedAccount
+    Account <|-- Contract
     Hash <|-- Blake2b256
     Hash <|-- Keccak256
     Hash <|-- Sha256
