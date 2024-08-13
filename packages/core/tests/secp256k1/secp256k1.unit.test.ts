@@ -56,8 +56,8 @@ describe('secp256k1', () => {
     });
 
     describe('secp256k1 - generatePublicKey', () => {
-        test('secp256k1 - generatePrivateKey', async () => {
-            const randomPrivateKey = await secp256k1.generatePrivateKey();
+        test('secp256k1 - generatePrivateKey', () => {
+            const randomPrivateKey = secp256k1.generatePrivateKey();
             // Length of private key should be 32 bytes
             expect(randomPrivateKey.length).toBe(32);
             // Private key should be valid
