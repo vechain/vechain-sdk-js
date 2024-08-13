@@ -2,6 +2,7 @@ import { describe, expect, test } from '@jest/globals';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { fail } from 'assert';
 import { Address } from '../../src';
+import { hexToBytes } from '@noble/ciphers/utils';
 
 /**
  * Test Address class.
@@ -61,10 +62,32 @@ describe('Address class tests', () => {
         test('Should get the address from a given private key', () => {
             const privateKey =
                 '5434c159b817c377a55f6be66369622976014e78bce2adfd3e44e5de88ce502f';
-            const address = Address.ofPrivateKey(privateKey);
+            let address = Address.ofPrivateKey(privateKey);
             expect(address.toString()).toBe(
                 '0x769e8aa372c8309c834ea6749b88861ff73581ff'
             );
+            const privateKeyUInt8Array = hexToBytes(privateKey);
+            address = Address.ofPrivateKey(privateKeyUInt8Array);
+            expect(address.toString()).toBe(
+                '0x769e8aa372c8309c834ea6749b88861ff73581ff'
+            );
+        });
+        test('Should throw an invalid data type error if the private key is invalid', () => {
+            const privateKey = 'wrong';
+            try {
+                Address.ofPrivateKey(privateKey);
+                fail('This should have thrown an error');
+            } catch (e) {
+                expect(e).toBeInstanceOf(InvalidDataType);
+                if (e instanceof InvalidDataType) {
+                    expect(e.message).toBe(
+                        `Method 'Address.ofPrivateKey' failed.` +
+                            `\n-Reason: 'not a valid private key'` +
+                            `\n-Parameters: \n\t{"privateKey":"${privateKey}","error":{}}` +
+                            `\n-Internal error: \n\tpadded hex string expected, got unpadded hex of length 5`
+                    );
+                }
+            }
         });
         test('Should get the address from a given public key', () => {
             const publicKey =
@@ -73,6 +96,23 @@ describe('Address class tests', () => {
             expect(address.toString()).toBe(
                 '0x769e8aa372c8309c834ea6749b88861ff73581ff'
             );
+        });
+        test('Should throw an invalid data type error if the public key is invalid', () => {
+            const publicKey = 'wrong';
+            try {
+                Address.ofPublicKey(publicKey);
+                fail('This should have thrown an error');
+            } catch (e) {
+                expect(e).toBeInstanceOf(InvalidDataType);
+                if (e instanceof InvalidDataType) {
+                    expect(e.message).toBe(
+                        `Method 'Address.ofPublicKey' failed.` +
+                            `\n-Reason: 'not a valid public key'` +
+                            `\n-Parameters: \n\t{"publicKey":"${publicKey}","error":{}}` +
+                            `\n-Internal error: \n\tpadded hex string expected, got unpadded hex of length 5`
+                    );
+                }
+            }
         });
     });
 });
