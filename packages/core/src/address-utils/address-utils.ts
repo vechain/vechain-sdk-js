@@ -1,7 +1,8 @@
 import { Hex } from '../vcdm';
-import { _keccak256 } from '../hash';
+import { Keccak256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import { InvalidAddress } from '@vechain/sdk-errors';
+import { keccak_256 } from '@noble/hashes/sha3';
 
 /**
  * Regular expression for validating hexadecimal addresses
@@ -34,7 +35,7 @@ function fromPrivateKey(privateKey: Uint8Array): string {
  *
  * Secure audit function.
  * - {@link secp256k1.inflatePublicKey}
- * - {@link _keccak256}
+ * - {@link Keccak256.of}
  *
  * @param {Uint8Array} publicKey - The public key to convert,
  * either in compressed or uncompressed.
@@ -56,7 +57,9 @@ function fromPrivateKey(privateKey: Uint8Array): string {
 function fromPublicKey(publicKey: Uint8Array): string {
     return toERC55Checksum(
         Hex.of(
-            _keccak256(secp256k1.inflatePublicKey(publicKey).slice(1)).slice(12)
+            Keccak256.of(
+                secp256k1.inflatePublicKey(publicKey).slice(1)
+            ).bytes.slice(12)
         ).toString()
     );
 }
@@ -79,7 +82,7 @@ function isAddress(addressToVerify: string): boolean {
  * representation.
  *
  * Secure audit function.
- * - {@link _keccak256}
+ * - {@link Keccak256.of}
  *
  * @param {string} address - The address to be converted,
  * it must be prefixed with `0x`.
@@ -95,14 +98,15 @@ function toERC55Checksum(address: string): string {
         );
     }
 
-    const digits = Hex.of(address).digits;
-    const hash = Hex.of(_keccak256(digits)).digits;
+    const a = Hex.of(address);
+    const h = keccak_256(a.digits); // _keccak256(digits);
+    const hash = Hex.of(h).digits;
     let result: string = '0x';
-    for (let i = 0; i < digits.length; i++) {
+    for (let i = 0; i < a.digits.length; i++) {
         if (parseInt(hash[i], 16) >= 8) {
-            result += digits[i].toUpperCase();
+            result += a.digits[i].toUpperCase();
         } else {
-            result += digits[i];
+            result += a.digits[i];
         }
     }
     return result;

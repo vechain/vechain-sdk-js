@@ -21,14 +21,11 @@ class Sha256 extends HexUInt implements Hash {
      * @remark Security auditable method, depends on
      * * [`nh_sha256.sha256`](https://github.com/paulmillr/noble-hashes#sha2-sha256-sha384-sha512-and-others).
      */
-    public static of(exp: bigint | number | string | Uint8Array | Hex): Sha256 {
+    public static of(exp: bigint | number | string | Uint8Array): Sha256 {
         try {
-            const hxi = HexUInt.of(
-                nh_sha256.sha256((exp instanceof Hex ? exp : Hex.of(exp)).bytes)
-            );
-            return new Sha256(hxi.sign, hxi.digits);
+            const hash = nh_sha256.sha256(HexUInt.of(exp).bytes);
+            return new Sha256(Hex.POSITIVE, HexUInt.of(hash).digits);
         } catch (e) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
             throw new InvalidOperation('Sha256.of', 'hash error', {
                 exp: `${exp}`, // Needed to serialize bigint values.
                 e

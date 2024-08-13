@@ -291,6 +291,22 @@ describe('Hex class tests', () => {
         });
     });
 
+    describe('Polymorphism equivalence', () => {
+        test('Equal for bigint, bytes, hex expression', () => {
+            const ofBi = Hex.of(255n);
+            const ofBytes = Hex.of(Uint8Array.of(255));
+            const ofHex = Hex.of('0xff');
+            expect(ofBi.isEqual(ofBytes)).toBeTruthy();
+            expect(ofBytes.isEqual(ofHex)).toBeTruthy();
+        });
+
+        test('Not equal for bigint, bytes, hex expression and number expression (IEEE 745)', () => {
+            const ofBi = Hex.of(255n);
+            const ofN = Hex.of(255);
+            expect(ofBi.isEqual(ofN)).toBeFalsy();
+        });
+    });
+
     describe('random method tests', () => {
         test('Return a random hex with specified number of bytes', () => {
             const bytes = 16;

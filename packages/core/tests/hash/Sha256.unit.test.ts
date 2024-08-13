@@ -15,14 +15,25 @@ const NO_CONTENT_SHA256 = Hex.of(
  * @group unit/hash
  */
 describe('Sha256 class tests', () => {
+    describe('Polymorphism equivalence', () => {
+        test('Equal for bigint, bytes, hex expression, number', () => {
+            const ofBi = Sha256.of(255n);
+            const ofBytes = Sha256.of(Uint8Array.of(255));
+            const ofHex = Sha256.of('0xff');
+            const ofN = Sha256.of(255);
+            expect(ofBi.isEqual(ofBytes)).toBeTruthy();
+            expect(ofBytes.isEqual(ofHex)).toBeTruthy();
+            expect(ofHex.isEqual(ofN)).toBeTruthy();
+        });
+    });
+
     test('Return hash for content', () => {
-        const hash = Sha256.of(CONTENT);
+        const hash = Sha256.of(CONTENT.bytes);
         expect(hash.isEqual(CONTENT_SHA256)).toBe(true);
     });
 
     test('Return hash for no content', () => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        const hash = Sha256.of(NO_CONTENT);
+        const hash = Sha256.of(NO_CONTENT.bytes);
         expect(hash.isEqual(NO_CONTENT_SHA256)).toBe(true);
     });
 

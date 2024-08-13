@@ -82,7 +82,10 @@ function fromPrivateKey(
             privateKey
         );
         privateKey.fill(0); // Clear the private key from memory.
-        const checksum = Sha256.of(Sha256.of(header)).bytes.subarray(0, 4);
+        const checksum = Sha256.of(Sha256.of(header).bytes).bytes.subarray(
+            0,
+            4
+        );
         const expandedPrivateKey = n_utils.concatBytes(header, checksum);
         try {
             return n_bip32.HDKey.fromExtendedKey(
@@ -125,7 +128,10 @@ function fromPublicKey(
             chainCode,
             secp256k1.compressPublicKey(publicKey)
         );
-        const checksum = Sha256.of(Sha256.of(header)).bytes.subarray(0, 4);
+        const checksum = Sha256.of(Sha256.of(header).bytes).bytes.subarray(
+            0,
+            4
+        );
         const expandedPublicKey = n_utils.concatBytes(header, checksum);
         try {
             return n_bip32.HDKey.fromExtendedKey(

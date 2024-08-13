@@ -1,29 +1,29 @@
 import { describe, expect, test } from '@jest/globals';
-import { Blake2b256, Hex } from '../../src';
+import { Keccak256, Hex } from '../../src';
 import { CONTENT, NO_CONTENT } from './fixture';
 import { InvalidOperation } from '@vechain/sdk-errors';
 
 // Hex on purpose because it must be equal to the returned HxUInt hash.
-const CONTENT_BLAKE2B256 = Hex.of(
-    '0x6a908bb80109908919c0bf5d0594c890700dd46acc097f9f28bfc85a0a2e6c0c'
+const CONTENT_KECCAK256 = Hex.of(
+    '0x1e86a83a4fcab1b47b8c961f7ab6c5d32927eefa8af20af81f6eab0bc3be582a'
 );
 
 // Hex on purpose because it must be equal to the returned HxUInt hash.
-const NO_CONTENT_BLAKE2B256 = Hex.of(
-    '0x0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8'
+const NO_CONTENT_KECCAK256 = Hex.of(
+    '0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470'
 );
 
 /**
- * Test Blake2b256 class.
+ * Test Keccak256 class.
  * @group unit/hash
  */
-describe('Blake2b256 class tests', () => {
+describe('Keccak256 class tests', () => {
     describe('Polymorphism equivalence', () => {
         test('Equal for bigint, bytes, hex expression, number', () => {
-            const ofBi = Blake2b256.of(255n);
-            const ofBytes = Blake2b256.of(Uint8Array.of(255));
-            const ofHex = Blake2b256.of('0xff');
-            const ofN = Blake2b256.of(255);
+            const ofBi = Keccak256.of(255n);
+            const ofBytes = Keccak256.of(Uint8Array.of(255));
+            const ofHex = Keccak256.of('0xff');
+            const ofN = Keccak256.of(255);
             expect(ofBi.isEqual(ofBytes)).toBeTruthy();
             expect(ofBytes.isEqual(ofHex)).toBeTruthy();
             expect(ofHex.isEqual(ofN)).toBeTruthy();
@@ -31,17 +31,17 @@ describe('Blake2b256 class tests', () => {
     });
 
     test('Return hash for content', () => {
-        const hash = Blake2b256.of(CONTENT);
-        expect(hash.isEqual(CONTENT_BLAKE2B256)).toBe(true);
+        const hash = Keccak256.of(CONTENT);
+        expect(hash.isEqual(CONTENT_KECCAK256)).toBe(true);
     });
 
     test('Return hash for no content', () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        const hash = Blake2b256.of(NO_CONTENT);
-        expect(hash.isEqual(NO_CONTENT_BLAKE2B256)).toBe(true);
+        const hash = Keccak256.of(NO_CONTENT);
+        expect(hash.isEqual(NO_CONTENT_KECCAK256)).toBe(true);
     });
 
     test('Throw an exception for illegal content', () => {
-        expect(() => Blake2b256.of('0xfoe')).toThrow(InvalidOperation);
+        expect(() => Keccak256.of('0xfoe')).toThrow(InvalidOperation);
     });
 });

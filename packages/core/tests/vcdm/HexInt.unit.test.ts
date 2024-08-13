@@ -74,4 +74,16 @@ describe('HexInt class tests', () => {
             expect(() => HexInt.of(exp)).toThrow(InvalidDataType);
         });
     });
+
+    describe('Polymorphism equivalence', () => {
+        test('Equal for bigint, bytes, hex expression, number', () => {
+            const ofBi = HexInt.of(255n);
+            const ofBytes = HexInt.of(Uint8Array.of(255));
+            const ofHex = HexInt.of('0xff');
+            const ofN = HexInt.of(255);
+            expect(ofBi.isEqual(ofBytes)).toBeTruthy();
+            expect(ofBytes.isEqual(ofHex)).toBeTruthy();
+            expect(ofHex.isEqual(ofN)).toBeTruthy();
+        });
+    });
 });
