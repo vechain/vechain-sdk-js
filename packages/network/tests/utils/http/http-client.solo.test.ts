@@ -1,8 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
-import { ZERO_ADDRESS, zeroAddressAccountDetails } from './fixture';
+import { InvalidHTTPRequest, stringifyData } from '@vechain/sdk-errors';
+import { fail } from 'assert';
 import { HttpClient, type HttpParams, THOR_SOLO_URL } from '../../../src';
 import { testAccount } from '../../fixture';
-import { InvalidHTTPRequest, stringifyData } from '@vechain/sdk-errors';
+import { ZERO_ADDRESS, zeroAddressAccountDetails } from './fixture';
 
 /**
  * HttpClient class tests.
@@ -30,9 +31,24 @@ describe('Test HttpClient class on Solo node', () => {
      */
     test('Should reject with an error if the HTTP request fails', async () => {
         // Assert that the HTTP request fails with an error
-        await expect(
-            soloNetwork.http('GET', '/error-test-path')
-        ).rejects.toThrowError(InvalidHTTPRequest);
+        try {
+            await soloNetwork.http('GET', '/error-test-path');
+            fail('should not get here');
+        } catch (error) {
+            expect(error).toBeInstanceOf(InvalidHTTPRequest);
+            if (error instanceof InvalidHTTPRequest) {
+                expect(error.message).toBe(
+                    `Method 'HttpClient.http()' failed.` +
+                        `\n-Reason: 'Invalid URL: http://localhost:8669/error-test-path'` +
+                        `\n-Parameters: \n\t{"method":"GET","url":"http://localhost:8669/error-test-path","message":"Request failed"}` +
+                        `\n-Internal error: ` +
+                        `\n\tMethod 'HttpClient.http()' failed.` +
+                        `\n-Reason: 'Invalid URL: http://localhost:8669/error-test-path'` +
+                        `\n-Parameters: \n\t{"method":"GET","url":"http://localhost:8669/error-test-path","status":404,"message":"404 page not found\\n"}` +
+                        `\n-Internal error: \n\tNo internal error given`
+                );
+            }
+        }
     });
 
     /**
