@@ -18,8 +18,6 @@ class Address extends HexUInt {
      */
     private static readonly REGEX_ADDRESS: RegExp = /^(0x)?[0-9a-fA-F]{40}$/i;
 
-    private static readonly ENCODER = new TextEncoder();
-
     /**
      * Creates a new instance of this class to represent the absolute `hi` value.
      *
