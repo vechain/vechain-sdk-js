@@ -1,7 +1,7 @@
 import { NetworkContracts } from './addresses';
 import { type ThorClient } from '../../thor-client';
 import {
-    addressUtils,
+    Address,
     type FunctionFragment,
     ZERO_ADDRESS
 } from '@vechain/sdk-core';
@@ -38,7 +38,7 @@ const resolveNames = async (
     // verify configuration for chain exists
     if (
         genesisBlock === null ||
-        !addressUtils.isAddress(NetworkContracts[genesisBlock.id]?.resolveUtils)
+        !Address.isValid(NetworkContracts[genesisBlock.id]?.resolveUtils)
     ) {
         return names.map(() => null);
     }
@@ -54,7 +54,7 @@ const resolveNames = async (
 
     return addresses.map((address) => {
         // zero addresses are missing configuration entries
-        if (address === ZERO_ADDRESS || !addressUtils.isAddress(address)) {
+        if (address === ZERO_ADDRESS || !Address.isValid(address)) {
             return null;
         }
 
@@ -94,7 +94,7 @@ const lookupAddresses = async (
     // verify configuration for chain exists
     if (
         genesisBlock === null ||
-        !addressUtils.isAddress(NetworkContracts[genesisBlock.id]?.resolveUtils)
+        !Address.isValid(NetworkContracts[genesisBlock.id]?.resolveUtils)
     ) {
         return addresses.map(() => null);
     }

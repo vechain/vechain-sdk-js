@@ -1,9 +1,8 @@
+import { CertificateSignature } from '@vechain/sdk-errors';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Blake2b256 } from '../hash';
-import { CertificateSignature } from '@vechain/sdk-errors';
-import { Hex, Txt } from '../vcdm';
-import { addressUtils } from '../address-utils';
 import { secp256k1 } from '../secp256k1';
+import { Address, Hex, Txt } from '../vcdm';
 import { type Certificate } from './types';
 
 /**
@@ -128,8 +127,8 @@ function verify(cert: Certificate): void {
     const sign = Hex.of(cert.signature).bytes;
     const hash = Blake2b256.of(encode(cert)).bytes;
     // The signer address is compared in lowercase to avoid
-    const signer = addressUtils
-        .fromPublicKey(secp256k1.recover(hash, sign))
+    const signer = Address.ofPublicKey(secp256k1.recover(hash, sign))
+        .toString()
         .toLowerCase();
 
     // The signer's must match the signer property of certificate.

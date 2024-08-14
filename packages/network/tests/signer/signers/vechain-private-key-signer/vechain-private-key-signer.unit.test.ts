@@ -1,4 +1,4 @@
-import { Hex, Txt, addressUtils, secp256k1 } from '@vechain/sdk-core';
+import { Hex, Txt, Address, secp256k1, HexUInt } from '@vechain/sdk-core';
 import { ethers } from 'ethers';
 import {
     EIP191_MESSAGE,
@@ -86,8 +86,8 @@ describe('VeChain base signer tests', () => {
             );
             const address = await signer.getAddress();
             expect(address).toBe(
-                addressUtils.toERC55Checksum(
-                    '0x3db469a79593dcc67f07de1869d6682fc1eaf535'
+                Address.checksum(
+                    HexUInt.of('0x3db469a79593dcc67f07de1869d6682fc1eaf535')
                 )
             );
         });

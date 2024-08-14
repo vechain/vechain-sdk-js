@@ -170,7 +170,7 @@ const delegatorPrivateKey = nodeDelegate.privateKey;
 
 // 5 - Get address of delegate
 
-const delegatorAddress = addressUtils.fromPublicKey(nodeDelegate.publicKey);
+const delegatorAddress = Address.ofPublicKey(nodeDelegate.publicKey).toString();
 
 // 6 - Sign transaction as sender and delegate
 

@@ -1,5 +1,5 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { addressUtils, revisionUtils, ThorId } from '@vechain/sdk-core';
+import { Address, revisionUtils, ThorId } from '@vechain/sdk-core';
 import { buildQuery, thorest } from '../../utils';
 import {
     type AccountDetail,
@@ -34,7 +34,7 @@ class AccountsModule {
         options?: AccountInputOptions
     ): Promise<AccountDetail> {
         // Invalid address
-        if (!addressUtils.isAddress(address)) {
+        if (!Address.isValid(address)) {
             throw new InvalidDataType(
                 'AccountsModule.getAccount()',
                 'Invalid address. The address must be a valid VeChainThor address.',
@@ -77,7 +77,7 @@ class AccountsModule {
         options?: AccountInputOptions
     ): Promise<string> {
         // Invalid address
-        if (!addressUtils.isAddress(address)) {
+        if (!Address.isValid(address)) {
             throw new InvalidDataType(
                 'AccountsModule.getBytecode()',
                 'Invalid address. The address must be a valid VeChainThor address.',
@@ -124,7 +124,7 @@ class AccountsModule {
         options?: AccountInputOptions
     ): Promise<string> {
         // Invalid address
-        if (!addressUtils.isAddress(address)) {
+        if (!Address.isValid(address)) {
             throw new InvalidDataType(
                 'AccountsModule.getStorageAt()',
                 'Invalid address. The address must be a valid VeChainThor address.',

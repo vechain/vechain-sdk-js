@@ -20,7 +20,8 @@ import {
 // eslint-disable-next-line import/no-named-default
 import { default as NodeWebSocket } from 'isomorphic-ws';
 import {
-    addressUtils,
+    Address,
+    HexUInt,
     clauseBuilder,
     coder,
     type FunctionFragment,
@@ -171,9 +172,11 @@ describe('Subscriptions Solo network tests', () => {
 
                         expect(decodedLog.length).toBe(4);
                         expect(decodedLog[2]).toBe(
-                            addressUtils.toERC55Checksum(
-                                TEST_ACCOUNTS.SUBSCRIPTION.EVENT_SUBSCRIPTION
-                                    .address
+                            Address.checksum(
+                                HexUInt.of(
+                                    TEST_ACCOUNTS.SUBSCRIPTION
+                                        .EVENT_SUBSCRIPTION.address
+                                )
                             )
                         );
 

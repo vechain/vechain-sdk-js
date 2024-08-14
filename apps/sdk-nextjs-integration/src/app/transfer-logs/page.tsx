@@ -5,7 +5,7 @@ import {
     type CompressedBlockDetail,
     type FilterTransferLogsOptions
 } from '@vechain/sdk-network';
-import { addressUtils, unitsUtils } from '@vechain/sdk-core';
+import { Address, unitsUtils } from '@vechain/sdk-core';
 import { type Transfer } from '@/types';
 import { explorerUrl, thorClient } from '@/const';
 import { reduceHexStringSize } from '@/utils';
@@ -66,7 +66,7 @@ export default function TransferLogs(): JSX.Element {
 
     // Update the history when the address changes
     useEffect(() => {
-        if (addressUtils.isAddress(address)) {
+        if (Address.isValid(address)) {
             void getHistoryFor(address);
         }
     }, [address]);

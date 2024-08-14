@@ -1,6 +1,5 @@
 import * as n_utils from '@noble/curves/abstract/utils';
 import { Hex } from '../../vcdm/Hex';
-import { addressUtils } from '../../address-utils';
 import { bloom } from '../../bloom';
 import {
     InvalidAddress,
@@ -8,6 +7,7 @@ import {
     InvalidBloomParams,
     InvalidDataType
 } from '@vechain/sdk-errors';
+import { Address } from '../../vcdm';
 
 /**
  * Regular expression pattern to match the uppercase hexadecimal strings
@@ -53,7 +53,7 @@ const filterOf = (addresses: string[], k: number = 5): string => {
     const keys = new Set<Uint8Array>();
     addresses.forEach((address) => {
         const hex = Hex.of(address);
-        if (addressUtils.isAddress(hex.toString())) {
+        if (Address.isValid(hex.toString())) {
             keys.add(hex.bytes);
         }
     });
@@ -148,7 +148,7 @@ const isAddressInBloom = (
     k: number,
     address: string
 ): boolean => {
-    if (!addressUtils.isAddress(address)) {
+    if (!Address.isValid(address)) {
         throw new InvalidAddress(
             'bloomUtils.isAddressInBloom()',
             'Invalid address given as input in Bloom filter. Ensure it is a valid VeChain thor address.',

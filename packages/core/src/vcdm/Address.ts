@@ -27,7 +27,7 @@ class Address extends HexUInt {
      * @param {HexUInt} huint The HexUInt object representing the hexadecimal value.
      * @returns {string} The checksummed address.
      */
-    private static checksum(huint: HexUInt): string {
+    public static checksum(huint: HexUInt): string {
         const stringAddress: string = huint.digits;
         const hash: string = bytesToHex(Keccak256.of(stringAddress).bytes);
         let checksum = '';

@@ -1,7 +1,7 @@
 import { Hex } from '../../src/vcdm/Hex';
 import { describe, expect, test } from '@jest/globals';
 import {
-    addressUtils,
+    Address,
     mnemonic,
     MNEMONIC_WORDLIST_ALLOWED_SIZES,
     secp256k1,
@@ -140,9 +140,7 @@ describe('mnemonic', () => {
                             42
                         );
                         expect(
-                            addressUtils.isAddress(
-                                mnemonic.deriveAddress(words)
-                            )
+                            Address.isValid(mnemonic.deriveAddress(words))
                         ).toBe(true);
                     });
                 }

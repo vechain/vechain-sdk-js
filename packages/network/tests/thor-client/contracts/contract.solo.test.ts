@@ -22,7 +22,7 @@ import {
     testingContractTestCases
 } from './fixture';
 import {
-    addressUtils,
+    Address,
     coder,
     type DeployParams,
     type FunctionFragment
@@ -155,7 +155,7 @@ describe('ThorClient - Contracts', () => {
         expect(contract.deployTransactionReceipt?.reverted).toBe(false);
         expect(contract.deployTransactionReceipt?.outputs).toHaveLength(1);
         expect(contractAddress).not.toBeNull();
-        expect(addressUtils.isAddress(contractAddress)).toBe(true);
+        expect(Address.isValid(contractAddress)).toBe(true);
     }, 10000);
 
     /**

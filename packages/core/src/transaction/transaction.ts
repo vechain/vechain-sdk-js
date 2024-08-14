@@ -1,8 +1,12 @@
-import { Blake2b256 } from '../hash';
-import { Hex } from '../vcdm';
-import { addressUtils } from '../address-utils';
-import { secp256k1 } from '../secp256k1';
+import {
+    InvalidSecp256k1Signature,
+    InvalidTransactionField,
+    NotDelegatedTransaction,
+    UnavailableTransactionField
+} from '@vechain/sdk-errors';
 import { type RLPValidObject } from '../encoding';
+import { Blake2b256 } from '../hash';
+import { secp256k1 } from '../secp256k1';
 import {
     BLOCK_REF_LENGTH,
     SIGNATURE_LENGTH,
@@ -11,13 +15,8 @@ import {
     TransactionUtils,
     UNSIGNED_TRANSACTION_RLP
 } from '../utils';
+import { Address, Hex } from '../vcdm';
 import { type TransactionBody } from './types';
-import {
-    InvalidSecp256k1Signature,
-    InvalidTransactionField,
-    NotDelegatedTransaction,
-    UnavailableTransactionField
-} from '@vechain/sdk-errors';
 
 /**
  * Represents an immutable transaction entity.
@@ -132,7 +131,7 @@ class Transaction {
         );
 
         // Address from public key
-        return addressUtils.fromPublicKey(Buffer.from(delegatorPublicKey));
+        return Address.ofPublicKey(Buffer.from(delegatorPublicKey)).toString();
     }
 
     /**
@@ -195,7 +194,7 @@ class Transaction {
      */
     public getSignatureHash(delegateFor?: string): Buffer {
         // Correct delegateFor address
-        if (delegateFor !== undefined && !addressUtils.isAddress(delegateFor)) {
+        if (delegateFor !== undefined && !Address.isValid(delegateFor)) {
             throw new InvalidTransactionField(
                 'Transaction.getSignatureHash()',
                 'Invalid address given as input as delegateFor parameter. Ensure it is a valid address.',
@@ -256,7 +255,7 @@ class Transaction {
         );
 
         // Address from public key
-        return addressUtils.fromPublicKey(Buffer.from(originPublicKey));
+        return Address.ofPublicKey(Buffer.from(originPublicKey)).toString();
     }
 
     /**
