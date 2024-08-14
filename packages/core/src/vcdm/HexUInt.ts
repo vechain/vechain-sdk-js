@@ -3,34 +3,26 @@ import { Hex } from './Hex';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
- * Represents a hexadecimal unsigned integer.
+ * Represents a hexadecimal unsigned integer value.
  *
  * @extends HexInt
  */
 class HexUInt extends HexInt {
     /**
-     * Creates a new instance of this class to represent the absolute `hi` value.
+     * Create a HexUInt instance from a bigint, number, string, Uint8Array, or {@link HexInt}.
      *
-     * @param {HexInt} hi - The HexInt object representing the hexadecimal value.
+     * @param {bigint | number | string | Uint8Array | HexInt} exp - The expression to be interpreted as an unsigned integer:
+     * * bigint is always representable in hexadecimal base notation,
+     *   it throws {@link InvalidDataType} if not positive;
+     * * number is converted to a bigint then represented in hexadecimal base notation,
+     *   it throws {@link InvalidDataType} if not a positive integer value;
+     * * string is parsed as the hexadecimal expression of a bigint value, optionally tagged with `0x`;
+     *   it throws {@link InvalidDataType} if not positive;
+     * * Uint8Array is interpreted as the sequence of bytes expressing a positive bigint value;
+     * * {@link HexInt} is interpreted as expressing a bigint value,
+     *   it throws {@link InvalidDataType} if not positive.
      *
-     * @throws {InvalidDataType} Throws an error if the sign of hi is not positive.
-     */
-    protected constructor(hi: HexInt) {
-        if (hi.sign >= Hex.POSITIVE) {
-            super(hi);
-        } else {
-            throw new InvalidDataType('HexUInt.constructor', 'not positive', {
-                hi
-            });
-        }
-    }
-
-    /**
-     * Create a HexUInt instance from the given expression interprete as an unsigned integer.
-     *
-     * @param exp The expression to convert. It can be of type bigint, number, string, Uint8Array, or HexInt.
-     *
-     * @returns {HexUInt} The converted hexadecimal unsigned integer.
+     * @returns {HexUInt} he new HexInt object representing the given `exp`.
      *
      * @throws {InvalidDataType} If the given expression is not a valid hexadecimal positive integer expression.
      */
@@ -38,12 +30,20 @@ class HexUInt extends HexInt {
         exp: bigint | number | string | Uint8Array | HexInt
     ): HexUInt {
         try {
-            return new HexUInt(HexInt.of(exp));
+            const hxi = HexInt.of(exp);
+            if (hxi.sign >= Hex.POSITIVE) {
+                return new HexUInt(hxi.sign, hxi.digits);
+            }
+            throw new InvalidDataType(
+                'HexUInt.of',
+                'not positive',
+                { exp: `${exp}` } // Needed to serialize bigint values.
+            );
         } catch (e) {
             throw new InvalidDataType(
                 'HexUInt.of',
                 'not a hexadecimal positive integer expression',
-                { exp },
+                { exp: `${exp}`, e }, // Needed to serialize bigint values.
                 e
             );
         }

@@ -171,7 +171,7 @@ const encodeBigIntToBuffer = (
     context: string
 ): Buffer => {
     if (bi === 0n) return Buffer.alloc(0);
-    const hex = Hex.of(bi).hex;
+    const hex = Hex.of(bi).digits;
 
     if (maxBytes !== undefined && hex.length > maxBytes * 2) {
         throw new InvalidRLP(

@@ -1,7 +1,7 @@
 import {
     Hex,
     addressUtils,
-    blake2b256,
+    Blake2b256,
     certificate,
     secp256k1,
     type Certificate
@@ -31,7 +31,7 @@ const cert: Certificate = {
 // 3 - Sign certificate
 
 const jsonStr = certificate.encode(cert);
-const signature = secp256k1.sign(blake2b256(jsonStr), privateKey);
+const signature = secp256k1.sign(Blake2b256.of(jsonStr).bytes, privateKey);
 
 // Add 0x to signature
 cert.signature = Hex.of(signature).toString();

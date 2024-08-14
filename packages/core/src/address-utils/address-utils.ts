@@ -1,5 +1,5 @@
-import { Hex } from '../vcdm/Hex';
-import { keccak256 } from '../hash';
+import { Hex, Txt } from '../vcdm';
+import { Keccak256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import { InvalidAddress } from '@vechain/sdk-errors';
 
@@ -34,7 +34,7 @@ function fromPrivateKey(privateKey: Uint8Array): string {
  *
  * Secure audit function.
  * - {@link secp256k1.inflatePublicKey}
- * - {@link keccak256}
+ * - {@link Keccak256.of}
  *
  * @param {Uint8Array} publicKey - The public key to convert,
  * either in compressed or uncompressed.
@@ -56,7 +56,9 @@ function fromPrivateKey(privateKey: Uint8Array): string {
 function fromPublicKey(publicKey: Uint8Array): string {
     return toERC55Checksum(
         Hex.of(
-            keccak256(secp256k1.inflatePublicKey(publicKey).slice(1)).slice(12)
+            Keccak256.of(
+                secp256k1.inflatePublicKey(publicKey).slice(1)
+            ).bytes.slice(12)
         ).toString()
     );
 }
@@ -79,7 +81,7 @@ function isAddress(addressToVerify: string): boolean {
  * representation.
  *
  * Secure audit function.
- * - {@link keccak256}
+ * - {@link Keccak256.of}
  *
  * @param {string} address - The address to be converted,
  * it must be prefixed with `0x`.
@@ -95,14 +97,14 @@ function toERC55Checksum(address: string): string {
         );
     }
 
-    const digits = Hex.of(address).hex;
-    const hash = Hex.of(keccak256(digits)).hex;
+    const addressDigits = Hex.of(address).digits;
+    const hashDigits = Keccak256.of(Txt.of(addressDigits).bytes).digits;
     let result: string = '0x';
-    for (let i = 0; i < digits.length; i++) {
-        if (parseInt(hash[i], 16) >= 8) {
-            result += digits[i].toUpperCase();
+    for (let i = 0; i < addressDigits.length; i++) {
+        if (parseInt(hashDigits[i], 16) >= 8) {
+            result += addressDigits[i].toUpperCase();
         } else {
-            result += digits[i];
+            result += addressDigits[i];
         }
     }
     return result;

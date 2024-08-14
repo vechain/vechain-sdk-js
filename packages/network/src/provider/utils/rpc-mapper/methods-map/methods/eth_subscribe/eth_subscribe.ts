@@ -100,7 +100,7 @@ const ethSubscribe = async (
 
         provider.startSubscriptionsPolling();
     }
-    const subscriptionId: string = Hex.random(16).hex;
+    const subscriptionId: string = Hex.random(16).digits;
 
     if (params.includes(SUBSCRIPTION_TYPE.NEW_HEADS)) {
         provider.subscriptionManager.newHeadsSubscription = {

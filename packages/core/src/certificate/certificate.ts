@@ -1,8 +1,8 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
+import { Blake2b256 } from '../hash';
 import { CertificateSignature } from '@vechain/sdk-errors';
 import { Hex, Txt } from '../vcdm';
 import { addressUtils } from '../address-utils';
-import { blake2b256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import { type Certificate } from './types';
 
@@ -62,7 +62,7 @@ function encode(cert: Certificate): Uint8Array {
  * is supported.
  *
  * Secure audit function.
- * - {@link blake2b256};
+ * - {@link Blake2b256.of};
  * - {@link secp256k1.sign}.
  *
  * @param {Certificate} cert - The certificate to be signed.
@@ -78,7 +78,7 @@ function sign(cert: Certificate, privateKey: Uint8Array): Certificate {
     return {
         ...cert,
         signature: Hex.of(
-            secp256k1.sign(blake2b256(encode(cert)), privateKey)
+            secp256k1.sign(Blake2b256.of(encode(cert)).bytes, privateKey)
         ).toString()
     };
 }
@@ -95,7 +95,7 @@ function sign(cert: Certificate, privateKey: Uint8Array): Certificate {
  * is supported.
  *
  * Secure audit function.
- * - {@link blake2b256};
+ * - {@link Blake2b256.of};
  * - {@link secp256k1.recover}.
  *
  * @param {Certificate} cert - The certificate to verify.
@@ -126,7 +126,7 @@ function verify(cert: Certificate): void {
 
     // If the signature is not a string, an exception is thrown above.
     const sign = Hex.of(cert.signature).bytes;
-    const hash = blake2b256(encode(cert));
+    const hash = Blake2b256.of(encode(cert)).bytes;
     // The signer address is compared in lowercase to avoid
     const signer = addressUtils
         .fromPublicKey(secp256k1.recover(hash, sign))

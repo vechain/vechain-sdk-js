@@ -22,8 +22,8 @@ class ThorId extends Hex {
      * @experiemntal
      */
     protected constructor(hex: Hex) {
-        if (ThorId.isValid(hex.hex)) {
-            super(Hex.POSITIVE, hex.hex);
+        if (ThorId.isValid(hex.digits)) {
+            super(Hex.POSITIVE, hex.digits);
         } else {
             throw new InvalidDataType(
                 'ThorId.constructor',
