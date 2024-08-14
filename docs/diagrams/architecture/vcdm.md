@@ -32,6 +32,7 @@ classDiagram
     class Sha256 {
         +Sha256 of(bigint|number|string|Uint8Array|Hex exp)$
     }
+    class String
     class Txt {
         +Txt of(bigint|number|string|Uint8Array exp)$
     }
@@ -54,6 +55,7 @@ classDiagram
     HexUInt <|-- Keccak256
     HexUInt <|-- Quantity
     HexUInt <|-- Sha256
+    String <|-- Txt
     VeChainDataModel <|.. Hex
     VeChainDataModel <|.. Txt
 ```

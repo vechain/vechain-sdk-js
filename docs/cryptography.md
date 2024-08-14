@@ -16,10 +16,11 @@ vechain sdk supports _blake2b256 and _keccak256 hash functions.
 Blake2b256 is a specific type of hash function known for its speed and security. It takes any input data and generates a 256-bit (32-byte) hash value. The _blake2b256 part refers to the specific design of the algorithm, and the 256 indicates the length of the resulting hash code. Blake2b256 is widely used in cryptographic applications, blockchain technologies, and secure data storage.
 
 ```typescript { name=blake2b256, category=example }
-// Input of hash function (it can be a string or a Buffer)
-const toHash: HashInput = 'hello world';
+// Input of hash function must be an expression representable as an array of bytes.
+// The class Txt assures a consistent byte encoding for textual strings.
+const toHash = Txt.of('hello world');
 
-const hash = blake2b256(toHash);
+const hash = Blake2b256.of(toHash.bytes);
 ```
 
 ### Keccak256
@@ -27,10 +28,7 @@ const hash = blake2b256(toHash);
 Keccak256 is another type of hash function, and it's particularly well-known for its use in the blockchain world, specifically in cryptocurrencies like Ethereum. Similar to Blake2b256, Keccak256 also takes input data and generates a 256-bit (32-byte) hash value. The Keccak part refers to the family of algorithms, and again, 256 denotes the length of the output hash code.
 
 ```typescript { name=keccak256, category=example }
-// Input of hash function (it can be a string or a Buffer)
-const toHash: HashInput = 'hello world';
-
-const hash = keccak256(toHash);
+Content not found between specified comments.
 ```
 
 ## Public key cryptography
@@ -62,11 +60,11 @@ console.log('User address:', userAddress);
 
 // 3 - Sign message
 
-const messageToSign: HashInput = 'hello world';
-const hash = keccak256(messageToSign);
+const messageToSign = Txt.of('hello world');
+const hash = Keccak256.of(messageToSign.bytes);
 console.log(`Hash: ${hash.toString()}`);
 
-const signature = secp256k1.sign(hash, privateKey);
+const signature = secp256k1.sign(hash.bytes, privateKey);
 console.log('Signature:', Hex.of(signature).toString());
 // Signature: ...SOME_SIGNATURE...
 ```

@@ -1,9 +1,9 @@
 import {
     Hex,
-    keccak256,
+    Keccak256,
+    Txt,
     secp256k1,
-    addressUtils,
-    type HashInput
+    addressUtils
 } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
@@ -25,11 +25,11 @@ console.log('User address:', userAddress);
 
 // 3 - Sign message
 
-const messageToSign: HashInput = 'hello world';
-const hash = keccak256(messageToSign);
+const messageToSign = Txt.of('hello world');
+const hash = Keccak256.of(messageToSign.bytes);
 console.log(`Hash: ${hash.toString()}`);
 
-const signature = secp256k1.sign(hash, privateKey);
+const signature = secp256k1.sign(hash.bytes, privateKey);
 console.log('Signature:', Hex.of(signature).toString());
 // Signature: ...SOME_SIGNATURE...
 
@@ -40,7 +40,7 @@ console.log('Signature:', Hex.of(signature).toString());
 //     The methods `secp256k1.inflatePublicKey` and `secp256k1.compressPublicKey`
 //     convert public keys among compressed and uncompressed form.
 
-const recoveredPublicKey = secp256k1.recover(hash, signature);
+const recoveredPublicKey = secp256k1.recover(hash.bytes, signature);
 expect(publicKey).toStrictEqual(
     secp256k1.compressPublicKey(recoveredPublicKey)
 );
