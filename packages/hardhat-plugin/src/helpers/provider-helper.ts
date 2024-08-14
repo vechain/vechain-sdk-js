@@ -60,7 +60,8 @@ const createWalletFromHardhatNetworkConfig = (
                         publicKey: Buffer.from(
                             secp256k1.derivePublicKey(privateKeyBuffer)
                         ),
-                        address: Address.of(privateKeyBuffer).toString()
+                        address:
+                            Address.ofPrivateKey(privateKeyBuffer).toString()
                     };
                 }),
                 {

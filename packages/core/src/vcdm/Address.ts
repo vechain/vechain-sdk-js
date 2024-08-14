@@ -62,13 +62,9 @@ class Address extends HexUInt {
                     huintChecksummed.digits
                 );
             } else {
-                throw new InvalidDataType(
-                    'Address.constructor',
-                    'not a valid address',
-                    {
-                        huint
-                    }
-                );
+                throw new InvalidDataType('Address.of', 'not a valid address', {
+                    huint
+                });
             }
         } catch (error) {
             this.throwInvalidDataType(
