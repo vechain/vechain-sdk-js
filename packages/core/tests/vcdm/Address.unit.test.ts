@@ -32,11 +32,11 @@ describe('Address class tests', () => {
                     expect(e.message).toBe(
                         `Method 'HexUInt.of' failed.` +
                             `\n-Reason: 'not a hexadecimal positive integer expression'` +
-                            `\n-Parameters: \n\t{"exp":"${exp}"}` +
+                            `\n-Parameters: \n\t{"exp":"${exp}","e":{"methodName":"HexUInt.of","errorMessage":"not positive","data":{"exp":"-0xcaffee"}}}` +
                             `\n-Internal error: ` +
-                            `\n\tMethod 'HexUInt.constructor' failed.` +
+                            `\n\tMethod 'HexUInt.of' failed.` +
                             `\n-Reason: 'not positive'` +
-                            `\n-Parameters: \n\t{"hi":"${exp}"}` +
+                            `\n-Parameters: \n\t{"exp":"${exp}"}` +
                             `\n-Internal error: \n\tNo internal error given`
                     );
                 }
