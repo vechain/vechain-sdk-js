@@ -97,8 +97,8 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
             }
         },
         expectedAddresses: [
-            '0x783DE01F06b4F2a068A7b3Bb6ff3db821A08f8c1',
-            '0x2406180BCa83983d40191Febc6d939C62152B71b'
+            '0x783de01f06b4f2a068a7b3bb6ff3db821a08f8c1',
+            '0x2406180bca83983d40191febc6d939c62152b71b'
         ]
     },
     {
