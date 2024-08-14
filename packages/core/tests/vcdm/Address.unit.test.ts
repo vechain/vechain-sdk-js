@@ -69,7 +69,7 @@ describe('Address class tests', () => {
             );
         });
         test('Should throw an invalid data type error if the private key is invalid', () => {
-            const privateKey = hexToBytes('wrong');
+            const privateKey = new Uint8Array([1, 2, 3, 4, 5]);
             try {
                 Address.ofPrivateKey(privateKey);
                 fail('This should have thrown an error');
