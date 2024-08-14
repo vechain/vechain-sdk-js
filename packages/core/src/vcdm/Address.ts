@@ -6,33 +6,12 @@
 
 import { bytesToHex } from '@noble/ciphers/utils';
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { keccak256 } from '../hash';
+import { Keccak256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import { HexUInt } from './HexUInt';
 import { Hex } from './Hex';
 
 class Address extends HexUInt {
-    /**
-     * Creates a new instance of this class to represent a VeChain address.
-     *
-     * @param {HexUInt} huint - The HexUInt object representing the hexadecimal value of an address.
-     * @throws {InvalidDataType} Throws an error if huint is an invalid address.
-     */
-    protected constructor(huint: HexUInt) {
-        if (Address.isValid(huint.toString())) {
-            const addressChecksummed: string = Address.checksum(huint);
-            super(HexUInt.of(addressChecksummed));
-        } else {
-            throw new InvalidDataType(
-                'Address.constructor',
-                'not a valid address',
-                {
-                    huint
-                }
-            );
-        }
-    }
-
     /**
      * Validate the given expression to be a valid address.
      * @param {string} exp Expression to validate
@@ -49,8 +28,8 @@ class Address extends HexUInt {
      * @returns {string} The checksummed address.
      */
     private static checksum(huint: HexUInt): string {
-        const stringAddress: string = huint.hex;
-        const hash: string = bytesToHex(keccak256(stringAddress));
+        const stringAddress: string = huint.digits;
+        const hash: string = bytesToHex(Keccak256.of(stringAddress).bytes);
         let checksum = '';
         for (let i = 0; i < stringAddress.length; i++) {
             checksum +=
@@ -74,7 +53,23 @@ class Address extends HexUInt {
         exp: bigint | number | string | Uint8Array | HexUInt
     ): Address {
         try {
-            return new Address(HexUInt.of(exp));
+            const huint = HexUInt.of(exp);
+            if (Address.isValid(huint.toString())) {
+                const addressChecksummed: string = Address.checksum(huint);
+                const huintChecksummed = HexUInt.of(addressChecksummed);
+                return new Address(
+                    huintChecksummed.sign,
+                    huintChecksummed.digits
+                );
+            } else {
+                throw new InvalidDataType(
+                    'Address.constructor',
+                    'not a valid address',
+                    {
+                        huint
+                    }
+                );
+            }
         } catch (error) {
             this.throwInvalidDataType(
                 error,
@@ -119,7 +114,9 @@ class Address extends HexUInt {
     public static ofPublicKey(publicKey: Uint8Array): Address {
         try {
             const publicKeyInflated = secp256k1.inflatePublicKey(publicKey);
-            const publicKeyHash = keccak256(publicKeyInflated.slice(1));
+            const publicKeyHash = Keccak256.of(
+                publicKeyInflated.slice(1)
+            ).bytes;
             return Address.of(publicKeyHash.slice(12));
         } catch (error) {
             this.throwInvalidDataType(

@@ -6,7 +6,7 @@ import "./builtin-contracts/builtin.sol";
 
 
 /// @title TestingContract for VeChain SDK Integration
-/// @notice This contract is designed for testing various data types, error handling, 
+/// @notice This contract is designed for testing various data types, error handling,
 /// and state management in Solidity, particularly for SDK integration.
 contract TestingContract {
 
@@ -16,7 +16,7 @@ contract TestingContract {
     /// @dev This is a builtin contract that provides access to extended EVM builtin functions
     /// @dev See: [Thor Built-ins](https://github.com/vechain/thor-builtins)
     Extension extension = Builtin.getExtension();
-    
+
     // Custom struct type
     struct ExampleStruct {
         uint id;
@@ -164,28 +164,28 @@ contract TestingContract {
         uint[] memory _dynamicArrayData,
         ExampleStruct memory _structData,
         ExampleEnum _enumData
-    ) 
-        public 
-        pure 
+    )
+        public
+        pure
         returns (
-            uint, 
-            address, 
-            bytes32, 
-            string memory, 
-            uint[3] memory, 
-            uint[] memory, 
-            ExampleStruct memory, 
+            uint,
+            address,
+            bytes32,
+            string memory,
+            uint[3] memory,
+            uint[] memory,
+            ExampleStruct memory,
             ExampleEnum
-        ) 
+        )
     {
-        return ( 
-            _uintData, 
-            _addressData, 
-            _byteData, 
-            _stringData, 
-            _fixedArrayData, 
-            _dynamicArrayData, 
-            _structData, 
+        return (
+            _uintData,
+            _addressData,
+            _byteData,
+            _stringData,
+            _fixedArrayData,
+            _dynamicArrayData,
+            _structData,
             _enumData
         );
     }
@@ -201,9 +201,9 @@ contract TestingContract {
         uint64 _uint64Data,
         uint160 _uint160Data,
         uint256 _uint256Data
-    ) 
-        public 
-        pure 
+    )
+        public
+        pure
         returns (
             uint8,
             uint16,
@@ -211,9 +211,9 @@ contract TestingContract {
             uint64,
             uint160,
             uint256
-        ) 
+        )
     {
-        return ( 
+        return (
             _uint8Data,
             _uint16Data,
             _uint32Data,
@@ -221,7 +221,7 @@ contract TestingContract {
             _uint160Data,
             _uint256Data
         );
-    }    
+    }
 
     // ------ Data Types End ------ //
 
@@ -330,7 +330,7 @@ contract TestingContract {
     /// @notice Get the data hashed using Blake2b256
     /// @param _data The data to hash
     function calculateBlake2b256(bytes memory _data) public view returns (bytes32) {
-        return extension.blake2b256(_data);
+        return extension._blake2b256(_data);
     }
 
     // ------ VeChainThor EVM Extension functions End ------ //

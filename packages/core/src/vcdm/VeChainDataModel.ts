@@ -1,6 +1,8 @@
 /**
  * Root interface for all the classes part of the `VeChain Data Model`
  * to provide a coherent API to represent, encode, and cast data among data types.
+ *
+ * @interface
  */
 export interface VeChainDataModel<T> {
     // Properties.
