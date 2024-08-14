@@ -9,19 +9,31 @@ import { type LogsRPC } from './types';
  * @param eventLogs - The Event logs to be formatted.
  */
 const formatToLogsRPC = (eventLogs: EventLogs[]): LogsRPC[] => {
+    // Tx ID -> Index
+    const txIndexMap: Record<string, number> = {};
+    let currentIndex = 0;
+    for (let i = 0; i < eventLogs.length; i++) {
+        const txId = eventLogs[i].meta.txID;
+        if (txIndexMap[txId] === undefined) {
+            txIndexMap[txId] = currentIndex;
+            currentIndex++;
+        }
+    }
+
     // Final RPC event logs formatted
-    return eventLogs.map((eventLog: EventLogs) => {
+    return eventLogs.map((eventLog: EventLogs, i) => {
         return {
             address: eventLog.address,
             blockHash: eventLog.meta.blockID,
             blockNumber: HexInt.of(eventLog.meta.blockNumber).toString(),
             data: eventLog.data,
-            logIndex: '0x0',
-            // Always false for now
+            logIndex: HexInt.of(i).toString(),
             removed: false,
             topics: eventLog.topics,
             transactionHash: eventLog.meta.txID,
-            transactionIndex: '0x0'
+            transactionIndex: HexInt.of(
+                txIndexMap[eventLog.meta.txID]
+            ).toString()
 
             // @NOTE: logIndex and transactionIndex are not implemented yet. This for performance reasons.
             //
@@ -37,7 +49,6 @@ const formatToLogsRPC = (eventLogs: EventLogs[]): LogsRPC[] => {
         } satisfies LogsRPC;
     });
 };
-
 /**
  * Convert the criteria topics into an array of topics.
  *
