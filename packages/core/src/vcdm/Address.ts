@@ -15,7 +15,7 @@ class Address extends HexUInt {
     /**
      * Creates a new instance of this class to represent a VeChain address.
      *
-     * @param {HexUInt} huint - The HexUInt object representing the hexadecimal value.
+     * @param {HexUInt} huint - The HexUInt object representing the hexadecimal value of an address.
      * @throws {InvalidDataType} Throws an error if huint is an invalid address.
      */
     protected constructor(huint: HexUInt) {
