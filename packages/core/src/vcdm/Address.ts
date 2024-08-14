@@ -40,7 +40,7 @@ class Address extends HexUInt {
      */
 
     public static isValid(exp: string): boolean {
-        return Hex.isValid(exp) && exp.length === 42;
+        return Hex.isValid0x(exp) && exp.length === 42;
     }
 
     /**
