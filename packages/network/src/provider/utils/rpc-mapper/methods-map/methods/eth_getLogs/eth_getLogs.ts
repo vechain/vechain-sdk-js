@@ -16,6 +16,9 @@ import {
 } from '../../../../../../thor-client';
 import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
+// Block max limit
+const MAX_LIMIT = 1000;
+
 /**
  * RPC Method eth_getLogs implementation
  *
@@ -36,9 +39,6 @@ const ethGetLogs = async (
             `Invalid input params for "eth_getLogs" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
-
-    // Block max limit
-    const MAX_LIMIT = 1000;
 
     // Input params
     const [filterOptions] = params as [
@@ -66,25 +66,36 @@ const ethGetLogs = async (
         });
 
         // Call thor client to get logs
-        const logs: EventLogs[] = await thorClient.logs.filterRawEventLogs({
-            range: {
-                unit: 'block',
-                from:
-                    filterOptions.fromBlock !== undefined
-                        ? parseInt(filterOptions.fromBlock, 16)
-                        : latestBlock.number,
-                to:
-                    filterOptions.toBlock !== undefined
-                        ? parseInt(filterOptions.toBlock, 16)
-                        : latestBlock.number
-            },
-            criteriaSet,
-            order: 'asc',
-            options: {
-                offset: 0,
-                limit: MAX_LIMIT
-            }
-        });
+        const logs: EventLogs[] = [];
+        let offset = 0;
+
+        while (true) {
+            const page = await thorClient.logs.filterRawEventLogs({
+                range: {
+                    unit: 'block',
+                    from:
+                        filterOptions.fromBlock !== undefined
+                            ? parseInt(filterOptions.fromBlock, 16)
+                            : latestBlock.number,
+                    to:
+                        filterOptions.toBlock !== undefined
+                            ? parseInt(filterOptions.toBlock, 16)
+                            : latestBlock.number
+                },
+                criteriaSet,
+                order: 'asc',
+                options: {
+                    offset,
+                    limit: MAX_LIMIT
+                }
+            });
+
+            // Break if no logs found
+            if (page.length === 0 || page.length < MAX_LIMIT) break;
+
+            logs.push(...page);
+            offset += MAX_LIMIT;
+        }
 
         // Format logs to RPC
         return formatToLogsRPC(logs);
