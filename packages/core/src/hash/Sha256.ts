@@ -10,13 +10,13 @@ import { InvalidOperation } from '@vechain/sdk-errors';
  */
 class Sha256 extends HexUInt implements Hash {
     /**
-     * Generates the [SHA256](https://en.wikipedia.org/wiki/SHA-2) hash of the given input.
+     * Generates the [SHA 256](https://en.wikipedia.org/wiki/SHA-2) hash of the given input.
      *
      * @param {bigint | number | string | Uint8Array | Hex} exp - The input value to hash.
      *
      * @returns {Sha256} - The [SHA256](https://en.wikipedia.org/wiki/SHA-2) hash of the input value.
      *
-     *  @throws {InvalidOperation} - If a hash error occurs.
+     * @throws {InvalidOperation} - If a hash error occurs.
      *
      * @remark Security auditable method, depends on
      * * [`nh_sha256.sha256`](https://github.com/paulmillr/noble-hashes#sha2-sha256-sha384-sha512-and-others).

@@ -1,8 +1,7 @@
-import { Hex } from '../vcdm';
+import { Hex, Txt } from '../vcdm';
 import { Keccak256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import { InvalidAddress } from '@vechain/sdk-errors';
-import { keccak_256 } from '@noble/hashes/sha3';
 
 /**
  * Regular expression for validating hexadecimal addresses
@@ -98,15 +97,14 @@ function toERC55Checksum(address: string): string {
         );
     }
 
-    const a = Hex.of(address);
-    const h = keccak_256(a.digits); // _keccak256(digits);
-    const hash = Hex.of(h).digits;
+    const addressDigits = Hex.of(address).digits;
+    const hashDigits = Keccak256.of(Txt.of(addressDigits).bytes).digits;
     let result: string = '0x';
-    for (let i = 0; i < a.digits.length; i++) {
-        if (parseInt(hash[i], 16) >= 8) {
-            result += a.digits[i].toUpperCase();
+    for (let i = 0; i < addressDigits.length; i++) {
+        if (parseInt(hashDigits[i], 16) >= 8) {
+            result += addressDigits[i].toUpperCase();
         } else {
-            result += a.digits[i];
+            result += addressDigits[i];
         }
     }
     return result;
