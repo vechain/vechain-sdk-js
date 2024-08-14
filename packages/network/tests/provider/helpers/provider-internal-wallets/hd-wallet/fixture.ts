@@ -31,12 +31,12 @@ const hdNodeFixtures = [
         delegator: {
             delegatorUrl: 'https://sponsor-testnet.vechain.energy/by/269'
         } satisfies SignTransactionOptions,
-        expectedAddress: ['0x8ef651aC457C9bf5206EC3D2cbD4232Df0438607']
+        expectedAddress: ['0x8ef651ac457c9bf5206ec3d2cbd4232df0438607']
     },
     {
         mnemonic:
             'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
-        expectedAddress: ['0x783DE01F06b4F2a068A7b3Bb6ff3db821A08f8c1']
+        expectedAddress: ['0x783de01f06b4f2a068a7b3bb6ff3db821a08f8c1']
     }
 ];
 
