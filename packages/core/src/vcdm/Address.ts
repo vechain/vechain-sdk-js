@@ -9,15 +9,9 @@ import { InvalidDataType } from '@vechain/sdk-errors';
 import { keccak256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
 import { HexUInt } from './HexUInt';
+import { Hex } from './Hex';
 
 class Address extends HexUInt {
-    /**
-     * Regular expression pattern used to validate an address.
-     *
-     * @type {RegExp}
-     */
-    private static readonly REGEX_ADDRESS: RegExp = /^(0x)?[0-9a-fA-F]{40}$/i;
-
     /**
      * Creates a new instance of this class to represent the absolute `hi` value.
      *
@@ -25,7 +19,7 @@ class Address extends HexUInt {
      * @throws {InvalidDataType} Throws an error if huint is an invalid address.
      */
     protected constructor(huint: HexUInt) {
-        if (Address.isValid(huint.hex)) {
+        if (Address.isValid(huint.toString())) {
             const addressChecksummed: string = Address.checksum(huint);
             super(HexUInt.of(addressChecksummed));
         } else {
@@ -37,6 +31,16 @@ class Address extends HexUInt {
                 }
             );
         }
+    }
+
+    /**
+     * Validate the given expression to be a valid address.
+     * @param {string} exp Expression to validate
+     * @returns {boolean} true if the expression is a valid address, false otherwise
+     */
+
+    public static isValid(exp: string): boolean {
+        return Hex.isValid(exp) && exp.length === 42;
     }
 
     /**
@@ -79,16 +83,6 @@ class Address extends HexUInt {
                 { exp: `${exp}`, error }
             );
         }
-    }
-
-    /**
-     * Validate the given expression to be a valid address.
-     * @param {string} exp Expression to validate
-     * @returns {boolean} true if the expression is a valid address, false otherwise
-     */
-
-    public static isValid(exp: string): boolean {
-        return Address.REGEX_ADDRESS.test(exp);
     }
 
     /**

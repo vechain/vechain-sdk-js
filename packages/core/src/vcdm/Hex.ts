@@ -49,7 +49,7 @@ class Hex extends String implements VeChainDataModel<Hex> {
      *
      * @type {RegExp}
      */
-    private static readonly REGEX_HEX: RegExp = /^-?(0x)?[0-9a-f]*$/i;
+    private static readonly REGEX_HEX: RegExp = /^-?(0x)?[0-9a-fA-F]*$/i;
 
     /**
      * Regular expression pattern to match a prefix indicating hexadecimal number.

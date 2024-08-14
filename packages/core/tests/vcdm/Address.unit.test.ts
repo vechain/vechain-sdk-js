@@ -79,8 +79,12 @@ describe('Address class tests', () => {
                     expect(e.message).toBe(
                         `Method 'Address.ofPrivateKey' failed.` +
                             `\n-Reason: 'not a valid private key'` +
-                            `\n-Parameters: \n\t{"privateKey":"${privateKey}","error":{}}` +
-                            `\n-Internal error: \n\tpadded hex string expected, got unpadded hex of length 5`
+                            `\n-Parameters: \n\t{"privateKey":"1,2,3,4,5","error":{"methodName":"secp256k1.derivePublicKey()","errorMessage":"Invalid private key given as input. Ensure it is a valid 32-byte secp256k1 private key."}}` +
+                            `\n-Internal error: ` +
+                            `\n\tMethod 'secp256k1.derivePublicKey()' failed.` +
+                            `\n-Reason: 'Invalid private key given as input. Ensure it is a valid 32-byte secp256k1 private key.'` +
+                            `\n-Parameters: \n\tundefined` +
+                            `\n-Internal error: \n\tNo internal error given`
                     );
                 }
             }
@@ -95,7 +99,7 @@ describe('Address class tests', () => {
             );
         });
         test('Should throw an invalid data type error if the public key is invalid', () => {
-            const publicKey = hexToBytes('wrong');
+            const publicKey = new Uint8Array([1, 2, 3, 4, 5]);
             try {
                 Address.ofPublicKey(publicKey);
                 fail('This should have thrown an error');
@@ -106,7 +110,7 @@ describe('Address class tests', () => {
                         `Method 'Address.ofPublicKey' failed.` +
                             `\n-Reason: 'not a valid public key'` +
                             `\n-Parameters: \n\t{"publicKey":"${publicKey}","error":{}}` +
-                            `\n-Internal error: \n\tpadded hex string expected, got unpadded hex of length 5`
+                            `\n-Internal error: \n\tPoint of length 5 was invalid. Expected 33 compressed bytes or 65 uncompressed bytes`
                     );
                 }
             }
