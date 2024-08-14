@@ -4,7 +4,7 @@
  * @extends {HexUInt}
  */
 
-import { bytesToHex, hexToBytes } from '@noble/ciphers/utils';
+import { bytesToHex } from '@noble/ciphers/utils';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { keccak256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
@@ -26,7 +26,7 @@ class Address extends HexUInt {
      */
     protected constructor(huint: HexUInt) {
         if (Address.isValid(huint.hex)) {
-            const addressChecksummed: string = Address.checksum(huint.hex);
+            const addressChecksummed: string = Address.checksum(huint);
             super(HexUInt.of(addressChecksummed));
         } else {
             throw new InvalidDataType(
@@ -41,10 +41,11 @@ class Address extends HexUInt {
 
     /**
      * It checksums a given hexadecimal address.
-     * @param {string} stringAddress String representation of the address (lower case).
+     * @param {HexUInt} huint The HexUInt object representing the hexadecimal value.
      * @returns {string} The checksummed address.
      */
-    private static checksum(stringAddress: string): string {
+    private static checksum(huint: HexUInt): string {
+        const stringAddress: string = huint.hex;
         const hash: string = bytesToHex(keccak256(stringAddress));
         let checksum = '';
         for (let i = 0; i < stringAddress.length; i++) {
@@ -93,21 +94,17 @@ class Address extends HexUInt {
     /**
      * Create a Address instance from the given private key.
      *
-     * @param {string | Uint8Array} privateKey The private key to convert.
+     * @param {Uint8Array} privateKey The private key to convert.
      * @param {boolean} [isCompressed=true] The flag to indicate if the derived public key should be compressed.
      * @returns {Address} The converted address.
      */
     public static ofPrivateKey(
-        privateKey: string | Uint8Array,
+        privateKey: Uint8Array,
         isCompressed: boolean = true
     ): Address {
         try {
-            const privateKeyUInt8Array =
-                typeof privateKey === 'string'
-                    ? hexToBytes(privateKey)
-                    : privateKey;
             return Address.ofPublicKey(
-                secp256k1.derivePublicKey(privateKeyUInt8Array, isCompressed)
+                secp256k1.derivePublicKey(privateKey, isCompressed)
             );
         } catch (error) {
             this.throwInvalidDataType(
@@ -122,17 +119,12 @@ class Address extends HexUInt {
     /**
      * Create a Address instance from the given public key.
      *
-     * @param {string | Uint8Array} publicKey The public key to convert.
+     * @param {Uint8Array} publicKey The public key to convert.
      * @returns {Address} The converted address.
      */
-    public static ofPublicKey(publicKey: string | Uint8Array): Address {
+    public static ofPublicKey(publicKey: Uint8Array): Address {
         try {
-            const publicKeyUInt8Array =
-                typeof publicKey === 'string'
-                    ? hexToBytes(publicKey)
-                    : publicKey;
-            const publicKeyInflated =
-                secp256k1.inflatePublicKey(publicKeyUInt8Array);
+            const publicKeyInflated = secp256k1.inflatePublicKey(publicKey);
             const publicKeyHash = keccak256(publicKeyInflated.slice(1));
             return Address.of(publicKeyHash.slice(12));
         } catch (error) {
