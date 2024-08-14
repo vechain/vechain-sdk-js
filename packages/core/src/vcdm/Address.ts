@@ -13,7 +13,7 @@ import { Hex } from './Hex';
 
 class Address extends HexUInt {
     /**
-     * Creates a new instance of this class to represent the absolute `hi` value.
+     * Creates a new instance of this class to represent a VeChain address.
      *
      * @param {HexUInt} huint - The HexUInt object representing the hexadecimal value.
      * @throws {InvalidDataType} Throws an error if huint is an invalid address.
