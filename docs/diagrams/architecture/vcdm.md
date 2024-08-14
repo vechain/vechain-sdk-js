@@ -1,11 +1,8 @@
 ```mermaid
 classDiagram
     class Address
-    class Currency {
-        <<abstract>>
-        +bigint units
-        +bigint fraction
-        +string code
+    class Blake2b256 {
+        +Blake2b256 of(bigint|string|Uint8Array|Hex exp)$
     }
     class Hash {
         <<interface>>
@@ -26,11 +23,18 @@ classDiagram
     class HexUInt {
         +HexUInt of(bigint|number|string|Uint8Array|HexInt exp)$
     }
-    class Txt {
-        +Txt of(bigint|number|string|Uint8Array exp)$
+    class Keccak256 {
+        +Keccak256 of(bigint|number|string|Uint8Array|Hex exp)$
+    }
+    class Quantity {
+        +Quantity of(bigint|number exp)$
     }
     class Sha256 {
         +Sha256 of(bigint|number|string|Uint8Array|Hex exp)$
+    }
+    class String
+    class Txt {
+        +Txt of(bigint|number|string|Uint8Array exp)$
     }
     class VeChainDataModel{
         <<interface>>
@@ -41,14 +45,17 @@ classDiagram
       +boolean isEqual(~T~ that)
       +boolean isNumber()
     }
-    class Wei
-    Currency <|-- Wei
-    Hash <|-- Sha256
+    Hash <|.. Blake2b256
+    Hash <|.. Keccak256
+    Hash <|.. Sha256
     Hex <|-- HexInt
     HexInt <|-- HexUInt
-    HexUInt <|-- Sha256
     HexUInt <|-- Address
-    VeChainDataModel <|.. Currency
+    HexUInt <|-- Blake2b256
+    HexUInt <|-- Keccak256
+    HexUInt <|-- Quantity
+    HexUInt <|-- Sha256
+    String <|-- Txt
     VeChainDataModel <|.. Hex
     VeChainDataModel <|.. Txt
 ```

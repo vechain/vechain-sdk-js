@@ -3,6 +3,7 @@ export * from './Hash';
 export * from './Hex';
 export * from './HexInt';
 export * from './HexUInt';
+export * from './Quantity';
 export * from './ThorId';
 export * from './Txt';
 export * from './VeChainDataModel';

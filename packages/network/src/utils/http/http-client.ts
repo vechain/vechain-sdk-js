@@ -80,13 +80,15 @@ class HttpClient {
             clearTimeout(timeoutId);
 
             if (!response.ok) {
+                const message = await response.text();
                 throw new InvalidHTTPRequest(
                     'HttpClient.http()',
                     `Invalid URL: ${this.baseURL}${path}`,
                     {
                         method,
                         url: url.toString(),
-                        status: response.status
+                        status: response.status,
+                        message
                     }
                 );
             }

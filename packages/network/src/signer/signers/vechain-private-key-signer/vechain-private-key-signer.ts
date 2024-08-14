@@ -1,13 +1,13 @@
 import * as n_utils from '@noble/curves/abstract/utils';
 import {
-    addressUtils,
     Hex,
-    keccak256,
-    secp256k1,
+    Keccak256,
     Transaction,
-    type TransactionBody,
     TransactionHandler,
     Txt,
+    addressUtils,
+    secp256k1,
+    type TransactionBody,
     vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
 import { RPC_METHODS } from '../../../provider';
@@ -165,13 +165,13 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                         ? Txt.of(message).bytes
                         : message;
                 const sign = secp256k1.sign(
-                    keccak256(
+                    Keccak256.of(
                         n_utils.concatBytes(
                             this.MESSAGE_PREFIX,
                             Txt.of(body.length).bytes,
                             body
                         )
-                    ),
+                    ).bytes,
                     new Uint8Array(this.privateKey)
                 );
                 // SCP256K1 encodes the recovery flag in the last byte. EIP-191 adds 27 to it.

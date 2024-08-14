@@ -1,7 +1,8 @@
+import { Blake2b256 } from '../hash';
+import { Hex } from '../vcdm';
 import { addressUtils } from '../address-utils';
-import { type RLPValidObject } from '../encoding';
-import { blake2b256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
+import { type RLPValidObject } from '../encoding';
 import {
     BLOCK_REF_LENGTH,
     SIGNATURE_LENGTH,
@@ -17,7 +18,6 @@ import {
     NotDelegatedTransaction,
     UnavailableTransactionField
 } from '@vechain/sdk-errors';
-import { Hex } from '../vcdm/Hex';
 
 /**
  * Represents an immutable transaction entity.
@@ -204,17 +204,17 @@ class Transaction {
         }
 
         // Encode transaction
-        const transactionHash = blake2b256(this._encode(false));
+        const transactionHash = Blake2b256.of(this._encode(false)).bytes;
 
         // There is a delegateFor address (@note we already know that it is a valid address)
         if (delegateFor !== undefined) {
             return Buffer.from(
-                blake2b256(
+                Blake2b256.of(
                     Buffer.concat([
                         Buffer.from(transactionHash),
                         Buffer.from(delegateFor.slice(2), 'hex')
                     ])
-                )
+                ).bytes
             );
         }
 
@@ -275,13 +275,12 @@ class Transaction {
             );
 
         // Return transaction ID
-        return blake2b256(
+        return Blake2b256.of(
             Buffer.concat([
                 this.getSignatureHash(),
                 Buffer.from(this.origin.slice(2), 'hex')
-            ]),
-            'hex'
-        );
+            ])
+        ).toString();
     }
 
     // ********** INTERNAL PRIVATE FUNCTIONS **********

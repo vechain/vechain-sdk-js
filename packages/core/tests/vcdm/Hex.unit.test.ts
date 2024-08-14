@@ -110,7 +110,7 @@ describe('Hex class tests', () => {
             const exp = 'C0c0a';
             const hex = Hex.of(exp);
             expect(hex).toBeInstanceOf(Hex);
-            expect(hex.hex).toEqual(exp.toLowerCase()); // Normalized from is lower case.
+            expect(hex.digits).toEqual(exp.toLowerCase()); // Normalized from is lower case.
         });
 
         test('Return an Hex instance if the passed argument is string - negative value with 0x prefix', () => {
@@ -124,7 +124,7 @@ describe('Hex class tests', () => {
             const exp = '-C0c0a';
             const hex = Hex.of(exp);
             expect(hex).toBeInstanceOf(Hex);
-            expect('-' + hex.hex).toEqual(exp.toLowerCase()); // Normalized from is lower case.
+            expect('-' + hex.digits).toEqual(exp.toLowerCase()); // Normalized from is lower case.
         });
 
         test('Return an Hex instance if the passed argument is an empty string with 0x prefix', () => {
@@ -132,7 +132,7 @@ describe('Hex class tests', () => {
             const hex = Hex.of(exp);
             expect(hex).toBeInstanceOf(Hex);
             expect(hex.toString()).toEqual(exp);
-            expect(hex.hex.length).toEqual(0);
+            expect(hex.digits.length).toEqual(0);
         });
 
         test('Return an Hex instance if the passed argument is an empty string without 0x prefix', () => {
@@ -140,7 +140,7 @@ describe('Hex class tests', () => {
             const hex = Hex.of(exp);
             expect(hex).toBeInstanceOf(Hex);
             expect(hex.toString()).toEqual('0x');
-            expect(hex.hex.length).toEqual(0);
+            expect(hex.digits.length).toEqual(0);
         });
 
         test('Return an Hex instance if the passed argument is UInt8Array', () => {
@@ -174,7 +174,7 @@ describe('Hex class tests', () => {
         test('Return bytes aligned from aligned expression', () => {
             const hex = Hex.of('0xc0fee');
             const actual = hex.alignToBytes();
-            expect(actual.hex.length % 2).toEqual(0);
+            expect(actual.digits.length % 2).toEqual(0);
             // Byte alignment doesn't change hex value.
             expect(actual.isEqual(hex)).toBeTruthy();
         });
@@ -182,7 +182,7 @@ describe('Hex class tests', () => {
         test('Return bytes aligned from unaligned expression', () => {
             const hex = Hex.of('0xc0fe');
             const actual = hex.alignToBytes();
-            expect(actual.hex.length % 2).toEqual(0);
+            expect(actual.digits.length % 2).toEqual(0);
             // Byte alignment doesn't change hex value.
             expect(actual.isEqual(hex)).toBeTruthy();
         });
@@ -288,6 +288,22 @@ describe('Hex class tests', () => {
         test('Return true for valid positive hex with 0x prefix', () => {
             const exp = '0xBadBabe';
             expect(Hex.isValid0x(exp)).toBeTruthy();
+        });
+    });
+
+    describe('Polymorphism equivalence', () => {
+        test('Equal for bigint, bytes, hex expression', () => {
+            const ofBi = Hex.of(255n);
+            const ofBytes = Hex.of(Uint8Array.of(255));
+            const ofHex = Hex.of('0xff');
+            expect(ofBi.isEqual(ofBytes)).toBeTruthy();
+            expect(ofBytes.isEqual(ofHex)).toBeTruthy();
+        });
+
+        test('Not equal for bigint, bytes, hex expression and number expression (IEEE 745)', () => {
+            const ofBi = Hex.of(255n);
+            const ofN = Hex.of(255);
+            expect(ofBi.isEqual(ofN)).toBeFalsy();
         });
     });
 
