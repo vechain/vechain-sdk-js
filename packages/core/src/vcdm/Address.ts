@@ -4,13 +4,15 @@
  * @extends {HexUInt}
  */
 
-import { bytesToHex } from '@noble/ciphers/utils';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import {
+    InvalidDataType,
+    InvalidSecp256k1PrivateKey
+} from '@vechain/sdk-errors';
 import { Keccak256 } from '../hash';
 import { secp256k1 } from '../secp256k1';
-import { HexUInt } from './HexUInt';
 import { Hex } from './Hex';
-
+import { HexUInt } from './HexUInt';
+import { Txt } from './Txt';
 class Address extends HexUInt {
     /**
      * Validate the given expression to be a valid address.
@@ -29,7 +31,8 @@ class Address extends HexUInt {
      */
     public static checksum(huint: HexUInt): string {
         const stringAddress: string = huint.digits;
-        const hash: string = bytesToHex(Keccak256.of(stringAddress).bytes);
+        const hash: string = Keccak256.of(Txt.of(stringAddress).bytes).digits;
+
         let checksum = '';
         for (let i = 0; i < stringAddress.length; i++) {
             checksum +=
@@ -92,6 +95,9 @@ class Address extends HexUInt {
                 secp256k1.derivePublicKey(privateKey, isCompressed)
             );
         } catch (error) {
+            if (error instanceof InvalidSecp256k1PrivateKey) {
+                throw error;
+            }
             this.throwInvalidDataType(
                 error,
                 'Address.ofPrivateKey',

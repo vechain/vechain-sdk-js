@@ -14,7 +14,7 @@ const THOR_SOLO_ACCOUNTS: Array<{ privateKey: string; address: string }> = [
     {
         privateKey:
             '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
-        address: '0x3db469a79593dcc67f07de1869d6682fc1eaf535'
+        address: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535'
     },
     {
         privateKey:

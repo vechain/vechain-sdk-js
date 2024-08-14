@@ -45,7 +45,6 @@ import {
             const keyStoreAddress = Address.checksum(
                 HexUInt.of(myKeystore.address)
             );
-            console.log('LLEGA', keyStoreAddress);
             const addressFromPrivateKey =
                 Address.ofPrivateKey(privateKey).toString();
             expect(keyStoreAddress).toEqual(addressFromPrivateKey);

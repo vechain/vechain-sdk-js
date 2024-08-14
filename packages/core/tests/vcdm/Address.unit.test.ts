@@ -1,6 +1,9 @@
 import { describe, expect, test } from '@jest/globals';
 import { hexToBytes } from '@noble/ciphers/utils';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import {
+    InvalidDataType,
+    InvalidSecp256k1PrivateKey
+} from '@vechain/sdk-errors';
 import { fail } from 'assert';
 import { Address } from '../../src';
 
@@ -65,7 +68,7 @@ describe('Address class tests', () => {
             );
             const address = Address.ofPrivateKey(privateKey);
             expect(address.toString()).toBe(
-                '0x769e8aa372c8309C834eA6749B88861ff73581FF'
+                '0x769E8AA372c8309c834EA6749B88861FF73581FF'
             );
         });
         test('Should throw an invalid data type error if the private key is invalid', () => {
@@ -74,14 +77,10 @@ describe('Address class tests', () => {
                 Address.ofPrivateKey(privateKey);
                 fail('This should have thrown an error');
             } catch (e) {
-                expect(e).toBeInstanceOf(InvalidDataType);
-                if (e instanceof InvalidDataType) {
+                expect(e).toBeInstanceOf(InvalidSecp256k1PrivateKey);
+                if (e instanceof InvalidSecp256k1PrivateKey) {
                     expect(e.message).toBe(
-                        `Method 'Address.ofPrivateKey' failed.` +
-                            `\n-Reason: 'not a valid private key'` +
-                            `\n-Parameters: \n\t{"privateKey":"1,2,3,4,5","error":{"methodName":"secp256k1.derivePublicKey()","errorMessage":"Invalid private key given as input. Ensure it is a valid 32-byte secp256k1 private key."}}` +
-                            `\n-Internal error: ` +
-                            `\n\tMethod 'secp256k1.derivePublicKey()' failed.` +
+                        `Method 'secp256k1.derivePublicKey()' failed.` +
                             `\n-Reason: 'Invalid private key given as input. Ensure it is a valid 32-byte secp256k1 private key.'` +
                             `\n-Parameters: \n\tundefined` +
                             `\n-Internal error: \n\tNo internal error given`
@@ -95,7 +94,7 @@ describe('Address class tests', () => {
             );
             const address = Address.ofPublicKey(publicKey);
             expect(address.toString()).toBe(
-                '0x769e8aa372c8309C834eA6749B88861ff73581FF'
+                '0x769E8AA372c8309c834EA6749B88861FF73581FF'
             );
         });
         test('Should throw an invalid data type error if the public key is invalid', () => {

@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 
+import { HardhatPluginError } from 'hardhat/plugins';
 import { resetHardhatContext } from 'hardhat/plugins-testing';
 import {
     type HardhatRuntimeEnvironment,
     type HttpNetworkConfig
 } from 'hardhat/types';
 import { setHardhatContext } from './test-utils';
-import { HardhatPluginError } from 'hardhat/plugins';
 
 /**
  * Tests for hardhat plugin with custom network configuration.
@@ -77,7 +77,7 @@ describe('Custom network configuration hardhat - testnet', () => {
             expect(signer).toBeDefined();
 
             const impersonatedSigner = await hre.ethers.getSigner(
-                '0x3db469a79593dcc67f07de1869d6682fc1eaf535'
+                '0x3db469a79593dcc67f07DE1869d6682fC1eaf535'
             );
 
             expect(impersonatedSigner).toBeDefined();
@@ -93,7 +93,7 @@ describe('Custom network configuration hardhat - testnet', () => {
             await expect(
                 async () =>
                     await hre.ethers.getImpersonatedSigner(
-                        '0x3db469a79593dcc67f07de1869d6682fc1eaf535'
+                        '0x3db469a79593dcc67f07DE1869d6682fC1eaf535'
                     )
             ).rejects.toThrowError();
         }, 10000);

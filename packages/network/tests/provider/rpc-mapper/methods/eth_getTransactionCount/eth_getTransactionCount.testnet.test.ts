@@ -37,7 +37,7 @@ describe('RPC Mapper - eth_getTransactionCount method tests', () => {
             // Random nonce
             const transactionCount = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_getTransactionCount
-            ](['0x0b41c56e19c5151122568873a039fea090937fe2', 'latest']);
+            ](['0x0b41c56e19c5151122568873a039fEa090937Fe2', 'latest']);
             expect(transactionCount).toBeDefined();
         });
     });

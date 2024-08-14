@@ -24,8 +24,8 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
             ]
         },
         expectedAddresses: [
-            '0x3db469a79593dcc67f07de1869d6682fc1eaf535',
-            '0x768ca51b9c9c2b520c845ebea9ddfaa54513b595'
+            '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
+            '0x768Ca51b9C9C2b520c845EBea9DDfaA54513b595'
         ]
     },
     {
@@ -44,8 +44,8 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
             }
         },
         expectedAddresses: [
-            '0x3db469a79593dcc67f07de1869d6682fc1eaf535',
-            '0x768ca51b9c9c2b520c845ebea9ddfaa54513b595'
+            '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
+            '0x768Ca51b9C9C2b520c845EBea9DDfaA54513b595'
         ]
     },
     {
@@ -59,8 +59,8 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
             ]
         },
         expectedAddresses: [
-            '0x3db469a79593dcc67f07de1869d6682fc1eaf535',
-            '0x768ca51b9c9c2b520c845ebea9ddfaa54513b595'
+            '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
+            '0x768Ca51b9C9C2b520c845EBea9DDfaA54513b595'
         ]
     },
     {
@@ -79,8 +79,8 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
             }
         },
         expectedAddresses: [
-            '0x3db469a79593dcc67f07de1869d6682fc1eaf535',
-            '0x768ca51b9c9c2b520c845ebea9ddfaa54513b595'
+            '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
+            '0x768Ca51b9C9C2b520c845EBea9DDfaA54513b595'
         ]
     },
     {
@@ -97,8 +97,8 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
             }
         },
         expectedAddresses: [
-            '0x783de01f06b4f2a068a7b3bb6ff3db821a08f8c1',
-            '0x2406180bca83983d40191febc6d939c62152b71b'
+            '0x783DE01F06b4F2a068A7b3Bb6ff3db821A08f8c1',
+            '0x2406180BCa83983d40191Febc6d939C62152B71b'
         ]
     },
     {
@@ -120,8 +120,8 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
             }
         },
         expectedAddresses: [
-            '0x783de01f06b4f2a068a7b3bb6ff3db821a08f8c1',
-            '0x2406180bca83983d40191febc6d939c62152b71b'
+            '0x783DE01F06b4F2a068A7b3Bb6ff3db821A08f8c1',
+            '0x2406180BCa83983d40191Febc6d939C62152B71b'
         ]
     }
 ];
@@ -142,6 +142,6 @@ const createWalletFromHardhatNetworkConfigNegativeCasesFixture = [
 ];
 
 export {
-    createWalletFromHardhatNetworkConfigPositiveCasesFixture,
-    createWalletFromHardhatNetworkConfigNegativeCasesFixture
+    createWalletFromHardhatNetworkConfigNegativeCasesFixture,
+    createWalletFromHardhatNetworkConfigPositiveCasesFixture
 };
