@@ -16,11 +16,11 @@ const hdNodeFixtures = [
                 '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
         } satisfies SignTransactionOptions,
         expectedAddress: [
-            '0x783de01f06b4f2a068a7b3bb6ff3db821a08f8c1',
-            '0x2406180bca83983d40191febc6d939c62152b71b',
-            '0xb381e7da548601b1ccb05c66d415b20bae40d828',
-            '0x9829ef01ad8f7c042613d4dc5a54d54e2c140bae',
-            '0x2c5d39ebb1be41a62bcc9c50f4f49149dc1bb256'
+            '0x783De01F06B4F2a068a7b3bB6fF3Db821A08f8C1',
+            '0x2406180bcA83983D40191FEbC6D939C62152b71B',
+            '0xB381e7dA548601B1CCb05C66d415B20bAE40D828',
+            '0x9829Ef01Ad8f7C042613D4dc5a54D54e2C140bAE',
+            '0x2C5d39ebb1Be41a62BcC9c50F4F49149Dc1bb256'
         ]
     },
     {
@@ -31,12 +31,12 @@ const hdNodeFixtures = [
         delegator: {
             delegatorUrl: 'https://sponsor-testnet.vechain.energy/by/269'
         } satisfies SignTransactionOptions,
-        expectedAddress: ['0x8ef651ac457c9bf5206ec3d2cbd4232df0438607']
+        expectedAddress: ['0x8eF651AC457C9Bf5206Ec3d2cbd4232df0438607']
     },
     {
         mnemonic:
             'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
-        expectedAddress: ['0x783de01f06b4f2a068a7b3bb6ff3db821a08f8c1']
+        expectedAddress: ['0x783De01F06B4F2a068a7b3bB6fF3Db821A08f8C1']
     }
 ];
 

@@ -38,7 +38,7 @@ class Address extends HexUInt {
                     : stringAddress[i];
         }
 
-        return checksum;
+        return '0x' + checksum;
     }
 
     /**
@@ -56,10 +56,10 @@ class Address extends HexUInt {
             const huint = HexUInt.of(exp);
             if (Address.isValid(huint.toString())) {
                 const addressChecksummed: string = Address.checksum(huint);
-                const huintChecksummed = HexUInt.of(addressChecksummed);
                 return new Address(
-                    huintChecksummed.sign,
-                    huintChecksummed.digits
+                    Hex.POSITIVE,
+                    '0x0', // When we normalize we return the checksummed address as digits
+                    () => addressChecksummed.substring(2)
                 );
             } else {
                 throw new InvalidDataType('Address.of', 'not a valid address', {

@@ -65,7 +65,7 @@ describe('Address class tests', () => {
             );
             const address = Address.ofPrivateKey(privateKey);
             expect(address.toString()).toBe(
-                '0x769e8aa372c8309c834ea6749b88861ff73581ff'
+                '0x769e8aa372c8309C834eA6749B88861ff73581FF'
             );
         });
         test('Should throw an invalid data type error if the private key is invalid', () => {
@@ -95,7 +95,7 @@ describe('Address class tests', () => {
             );
             const address = Address.ofPublicKey(publicKey);
             expect(address.toString()).toBe(
-                '0x769e8aa372c8309c834ea6749b88861ff73581ff'
+                '0x769e8aa372c8309C834eA6749B88861ff73581FF'
             );
         });
         test('Should throw an invalid data type error if the public key is invalid', () => {

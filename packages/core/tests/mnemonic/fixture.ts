@@ -28,14 +28,14 @@ const derivationPaths = [
         derivationPath: undefined,
         resultingPrivateKey:
             '0x27196338e7d0b5e7bf1be1c0327c53a244a18ef0b102976980e341500f492425',
-        resultingAddress: '0x339fb3c438606519e2c75bbf531fb43a0f449a70'
+        resultingAddress: '0x339fb3C438606519E2c75bbf531fb43A0F449A70'
     },
     {
         testName: 'Derive private key with standard derivation path',
         derivationPath: 'm/0',
         resultingPrivateKey:
             '0x27196338e7d0b5e7bf1be1c0327c53a244a18ef0b102976980e341500f492425',
-        resultingAddress: '0x339fb3c438606519e2c75bbf531fb43a0f449a70'
+        resultingAddress: '0x339fb3C438606519E2c75bbf531fb43A0F449A70'
     },
     {
         testName: 'Derive private key with custom derivation path',
