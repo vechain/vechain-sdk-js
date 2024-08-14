@@ -3,12 +3,12 @@ import { Blake2b256, Hex } from '../../src';
 import { CONTENT, NO_CONTENT } from './fixture';
 import { InvalidOperation } from '@vechain/sdk-errors';
 
-// Hex on purpose because it must be equal to the returned HxUInt hash.
+// Hex on purpose because it must be equal to the returned HexUInt hash.
 const CONTENT_BLAKE2B256 = Hex.of(
     '0x6a908bb80109908919c0bf5d0594c890700dd46acc097f9f28bfc85a0a2e6c0c'
 );
 
-// Hex on purpose because it must be equal to the returned HxUInt hash.
+// Hex on purpose because it must be equal to the returned HexUInt hash.
 const NO_CONTENT_BLAKE2B256 = Hex.of(
     '0x0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8'
 );

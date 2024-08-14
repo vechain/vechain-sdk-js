@@ -3,12 +3,12 @@ import { Keccak256, Hex } from '../../src';
 import { CONTENT, NO_CONTENT } from './fixture';
 import { InvalidOperation } from '@vechain/sdk-errors';
 
-// Hex on purpose because it must be equal to the returned HxUInt hash.
+// Hex on purpose because it must be equal to the returned HexUInt hash.
 const CONTENT_KECCAK256 = Hex.of(
     '0x1e86a83a4fcab1b47b8c961f7ab6c5d32927eefa8af20af81f6eab0bc3be582a'
 );
 
-// Hex on purpose because it must be equal to the returned HxUInt hash.
+// Hex on purpose because it must be equal to the returned HexUInt hash.
 const NO_CONTENT_KECCAK256 = Hex.of(
     '0xc5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470'
 );

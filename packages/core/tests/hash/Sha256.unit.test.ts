@@ -3,9 +3,12 @@ import { CONTENT, NO_CONTENT } from './fixture';
 import { Hex, Sha256 } from '../../src';
 import { InvalidOperation } from '@vechain/sdk-errors';
 
+// Hex on purpose because it must be equal to the returned HexUInt hash.
 const CONTENT_SHA256 = Hex.of(
     '0xdb484f1fdd0c7ae9268a04a876ee4d1b1c40f801e80e56ff718b198aa2f1166f'
 );
+
+// Hex on purpose because it must be equal to the returned HexUInt hash.
 const NO_CONTENT_SHA256 = Hex.of(
     '0xe3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
 );

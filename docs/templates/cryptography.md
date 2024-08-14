@@ -21,7 +21,7 @@ Blake2b256 is a specific type of hash function known for its speed and security.
 
 Keccak256 is another type of hash function, and it's particularly well-known for its use in the blockchain world, specifically in cryptocurrencies like Ethereum. Similar to Blake2b256, Keccak256 also takes input data and generates a 256-bit (32-byte) hash value. The Keccak part refers to the family of algorithms, and again, 256 denotes the length of the output hash code.
 
-[Kekkak256Snippet](examples/cryptography/keccak256.ts)
+[Keccak256Snippet](examples/cryptography/keccak256.ts)
 
 ## Public key cryptography
 
