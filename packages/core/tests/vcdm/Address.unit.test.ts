@@ -49,9 +49,9 @@ describe('Address class tests', () => {
                 expect(e).toBeInstanceOf(InvalidDataType);
                 if (e instanceof InvalidDataType) {
                     expect(e.message).toBe(
-                        `Method 'Address.constructor' failed.` +
+                        `Method 'Address.of' failed.` +
                             `\n-Reason: 'not a valid address'` +
-                            `\n-Parameters: \n\t{"huint":"${exp}"}` +
+                            `\n-Parameters: \n\t{"huint":{"digits":"caffee","sign":1}}` +
                             `\n-Internal error: \n\tNo internal error given`
                     );
                 }

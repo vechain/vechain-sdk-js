@@ -43,7 +43,7 @@ import {
             // Verify keystore
             expect(myKeystore.version).toBe(3);
             const keyStoreAddress = Address.checksum(
-                HexUInt.of(`0x` + myKeystore.address)
+                HexUInt.of(myKeystore.address)
             );
             const addressFromPrivateKey =
                 Address.ofPrivateKey(privateKey).toString();
