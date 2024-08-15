@@ -43,7 +43,7 @@ class Blake2b256 extends HexUInt implements Hash {
 const blake2b256 = (
     hex: string,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    returnType: 'buffer' | 'hex' = 'hex'
+    returnType: 'buffer' | 'hex' = 'buffer'
 ): string | Uint8Array =>
     returnType === 'buffer'
         ? Blake2b256.of(Txt.of(hex).bytes).bytes
