@@ -35,6 +35,10 @@ classDiagram
     class Quantity {
         +Quantity of(bigint|number exp)$
     }
+    class Revision {
+        +boolean isValid(bigint|number|string|Hex|Txt value)$
+        +Revision of(bigint|number|string|Uint8Array|Hex|Txt value)$
+    }
     class Sha256 {
         +Sha256 of(bigint|number|string|Uint8Array|Hex exp)$
     }
@@ -62,6 +66,7 @@ classDiagram
     HexUInt <|-- Quantity
     HexUInt <|-- Sha256
     String <|-- Txt
+    Txt <|-- Revision
     VeChainDataModel <|.. Hex
     VeChainDataModel <|.. Txt
 ```

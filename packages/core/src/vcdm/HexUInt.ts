@@ -30,9 +30,9 @@ class HexUInt extends HexInt {
         exp: bigint | number | string | Uint8Array | HexInt
     ): HexUInt {
         try {
-            const hxi = HexInt.of(exp);
-            if (hxi.sign >= Hex.POSITIVE) {
-                return new HexUInt(hxi.sign, hxi.digits);
+            const hint = HexInt.of(exp);
+            if (hint.sign >= Hex.POSITIVE) {
+                return new HexUInt(hint.sign, hint.digits);
             }
             throw new InvalidDataType(
                 'HexUInt.of',
