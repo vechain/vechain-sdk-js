@@ -1,6 +1,6 @@
-import { Hex, HexUInt, type Hash } from '../vcdm';
-import { InvalidOperation } from '@vechain/sdk-errors';
 import { keccak_256 as nh_keccak_256 } from '@noble/hashes/sha3';
+import { InvalidOperation } from '@vechain/sdk-errors';
+import { Hex, HexUInt, Txt, type Hash } from '../vcdm';
 
 /**
  * Represents the result of an [SHA-3](https://en.wikipedia.org/wiki/SHA-3) [KECCAK 256](https://keccak.team/keccak.html) hash operation.
@@ -44,7 +44,7 @@ const keccak256 = (
     returnType: 'buffer' | 'hex' = 'buffer'
 ): string | Uint8Array =>
     returnType === 'buffer'
-        ? Keccak256.of(hex).bytes
-        : Keccak256.of(hex).toString();
+        ? Keccak256.of(Txt.of(hex).bytes).bytes
+        : Keccak256.of(Txt.of(hex).bytes).toString();
 
 export { Keccak256, keccak256 };

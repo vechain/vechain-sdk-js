@@ -1,4 +1,4 @@
-import { Hex, HexUInt, type Hash } from '../vcdm';
+import { Hex, HexUInt, Txt, type Hash } from '../vcdm';
 import { InvalidOperation } from '@vechain/sdk-errors';
 import { blake2b as nh_blake2b } from '@noble/hashes/blake2b';
 /**
@@ -46,7 +46,7 @@ const blake2b256 = (
     returnType: 'buffer' | 'hex' = 'hex'
 ): string | Uint8Array =>
     returnType === 'buffer'
-        ? Blake2b256.of(hex).bytes
-        : Blake2b256.of(hex).toString();
+        ? Blake2b256.of(Txt.of(hex).bytes).bytes
+        : Blake2b256.of(Txt.of(hex).bytes).toString();
 
 export { Blake2b256, blake2b256 };

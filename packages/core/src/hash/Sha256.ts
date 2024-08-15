@@ -1,6 +1,6 @@
 import * as nh_sha256 from '@noble/hashes/sha256';
-import { Hex, HexUInt, type Hash } from '../vcdm';
 import { InvalidOperation } from '@vechain/sdk-errors';
+import { Hex, HexUInt, Txt, type Hash } from '../vcdm';
 
 /**
  * Represents the result of an [SHA256](https://en.wikipedia.org/wiki/SHA-2) hash operation.
@@ -41,6 +41,8 @@ const sha256 = (
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     returnType: 'buffer' | 'hex' = 'buffer'
 ): string | Uint8Array =>
-    returnType === 'buffer' ? Sha256.of(hex).bytes : Sha256.of(hex).toString();
+    returnType === 'buffer'
+        ? Sha256.of(Txt.of(hex).bytes).bytes
+        : Sha256.of(Txt.of(hex).bytes).toString();
 
 export { Sha256, sha256 };
