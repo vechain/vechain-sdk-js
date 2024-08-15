@@ -40,7 +40,6 @@ class HexUInt extends HexInt {
                 { exp: `${exp}` } // Needed to serialize bigint values.
             );
         } catch (e) {
-            console.log('LLEGA2', e);
             throw new InvalidDataType(
                 'HexUInt.of',
                 'not a hexadecimal positive integer expression',
