@@ -1,9 +1,3 @@
-/**
- * Represents a VeChain Address as unsigned integer.
- *
- * @extends {HexUInt}
- */
-
 import {
     InvalidDataType,
     InvalidSecp256k1PrivateKey
@@ -13,20 +7,18 @@ import { secp256k1 } from '../secp256k1';
 import { Hex } from './Hex';
 import { HexUInt } from './HexUInt';
 import { Txt } from './Txt';
+
+/**
+ * Represents a VeChain Address as unsigned integer.
+ *
+ * @extends {HexUInt}
+ */
 class Address extends HexUInt {
     /**
-     * Validate the given expression to be a valid address.
-     * @param {string} exp Expression to validate
-     * @returns {boolean} true if the expression is a valid address, false otherwise
-     */
-
-    public static isValid(exp: string): boolean {
-        return Hex.isValid0x(exp) && exp.length === 42;
-    }
-
-    /**
      * It checksums a given hexadecimal address.
+     *
      * @param {HexUInt} huint The HexUInt object representing the hexadecimal value.
+     *
      * @returns {string} The checksummed address.
      */
     public static checksum(huint: HexUInt): string {
@@ -45,11 +37,23 @@ class Address extends HexUInt {
     }
 
     /**
-     * Create a Address instance from the given expression interprete as an unsigned integer.
+     * Validate the given expression to be a valid address.
+     *
+     *  @param {string} exp Expression to validate
+     *
+     * @returns {boolean} true if the expression is a valid address, false otherwise
+     */
+    public static isValid(exp: string): boolean {
+        return Hex.isValid0x(exp) && exp.length === 42;
+    }
+
+    /**
+     * Create ab Address instance from the given expression interpreted as an unsigned integer.
      *
      * @param exp The expression to convert. It can be of type bigint, number, string, Uint8Array, or HexUInt.
      *
      * @returns {Address} The converted hexadecimal unsigned integer.
+     *
      * @throws {InvalidDataType} If the expression is not a valid hexadecimal positive integer expression.
      */
     public static of(
@@ -80,11 +84,16 @@ class Address extends HexUInt {
     }
 
     /**
-     * Create a Address instance from the given private key.
+     * Create an Address instance from the given private key.
      *
      * @param {Uint8Array} privateKey The private key to convert.
+     *
      * @param {boolean} [isCompressed=true] The flag to indicate if the derived public key should be compressed.
+     *
      * @returns {Address} The converted address.
+     *
+     * @remark Security auditable method, depends on
+     * * {@link secp256k1.derivePublicKey}.
      */
     public static ofPrivateKey(
         privateKey: Uint8Array,
@@ -108,10 +117,14 @@ class Address extends HexUInt {
     }
 
     /**
-     * Create a Address instance from the given public key.
+     * Create an Address instance from the given public key.
      *
      * @param {Uint8Array} publicKey The public key to convert.
+     *
      * @returns {Address} The converted address.
+     *
+     * @remark Security auditable method, depends on
+     * * {@link secp256k1.inflatePublicKey}.
      */
     public static ofPublicKey(publicKey: Uint8Array): Address {
         try {
