@@ -16,33 +16,11 @@ jobs:
               with:
                   node-version: v20.11.0
 
-            - name: Install & Patch packages
-              run: |
-                # Absolute path to the 'apps' directory
-                apps_directory="$(pwd)/apps"
-            
-                # Iterate over each folder in /apps
-                for current_app_directory in "$apps_directory"/*; do
-                  if [ -d "$current_app_directory" ]; then
-                    # LOG
-                    echo "Running yarn in $current_app_directory"
-                  
-                    # Navigate to the directory using absolute path
-                    cd "$current_app_directory"
-                  
-                    # Check if the directory name is "sdk-nextjs-integration" and remove yarn.lock
-                    if [ "$(basename "$current_app_directory")" = "sdk-nextjs-integration" ]; then
-                      echo "Removing yarn.lock in $current_app_directory"
-                      rm yarn.lock
-                    fi
-
-                    # Install dependencies
-                    yarn install
-                  
-                    # Return to the original directory using absolute path
-                    cd "../"
-                  fi
-                done
+            - name: Install packages
+              run: yarn install
+                
+            - name: Build
+              run: yarn build
 
             - name: Test apps
               run: |
