@@ -1,6 +1,12 @@
 ```mermaid
 classDiagram
-    class Address
+    class Address {
+        +string checksum(HexUInt huint)$
+        +boolean isValid(string exp)$
+        +Address of(bigint|number|string|Uint8Array|HexUInt exp)$
+        +Address ofPrivateKey(Uint8Array privateKey, boolean: isCompressed)$
+        +Address ofPublicKey(Uint8Array privateKey)$
+    }
     class Blake2b256 {
         +Blake2b256 of(bigint|string|Uint8Array|Hex exp)$
     }
