@@ -9,7 +9,7 @@ import {
 import { HttpClient, Poll, TESTNET_URL, ThorClient } from '../../../src';
 import {
     Hex,
-    addressUtils,
+    Address,
     bloom,
     bloomUtils,
     networkInfo
@@ -124,7 +124,7 @@ describe('ThorClient - Blocks Module', () => {
             thorClient.blocks
                 .getAllAddressesIntoABlock(expandedBlockDetailFixture)
                 .filter((address) => {
-                    return addressUtils.isAddress(address); // Remove empty addresses.
+                    return Address.isValid(address); // Remove empty addresses.
                 })
                 .forEach((actual) => {
                     expect(expected.includes(actual)).toBeTruthy();
@@ -135,7 +135,7 @@ describe('ThorClient - Blocks Module', () => {
             const addresses = thorClient.blocks
                 .getAllAddressesIntoABlock(expandedBlockDetailFixture)
                 .filter((address) => {
-                    return addressUtils.isAddress(address);
+                    return Address.isValid(address);
                 });
             const filter = bloomUtils.filterOf(addresses);
             addresses.forEach((address) => {
@@ -154,7 +154,7 @@ describe('ThorClient - Blocks Module', () => {
             const addresses = thorClient.blocks
                 .getAllAddressesIntoABlock(expandedBlockDetailFixture)
                 .filter((address) => {
-                    return addressUtils.isAddress(address);
+                    return Address.isValid(address);
                 });
 
             const filter = bloomUtils.filterOf(addresses, k);

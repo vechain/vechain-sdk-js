@@ -1,10 +1,4 @@
-import {
-    Hex,
-    Keccak256,
-    Txt,
-    secp256k1,
-    addressUtils
-} from '@vechain/sdk-core';
+import { Address, Hex, Keccak256, Txt, secp256k1 } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // START_SNIPPET: Secp256k1Snippet
@@ -19,7 +13,7 @@ console.log('Private key:', Hex.of(privateKey).toString());
 //     By default, the key is returned in compressed form.
 
 const publicKey = secp256k1.derivePublicKey(privateKey);
-const userAddress = addressUtils.fromPublicKey(Buffer.from(publicKey));
+const userAddress = Address.ofPublicKey(Buffer.from(publicKey)).toString();
 console.log('User address:', userAddress);
 // User address: 0x...SOME_ADDRESS...
 

@@ -1,4 +1,4 @@
-import { addressUtils, HDNode } from '@vechain/sdk-core';
+import { Address, HDNode } from '@vechain/sdk-core';
 import * as utils from '@noble/curves/abstract/utils';
 
 // START_SNIPPET: PubKeySnippet
@@ -22,7 +22,7 @@ const hdnode = HDNode.fromPublicKey(Buffer.from(xpub), Buffer.from(chainCode));
 for (let i = 0; i < 5; i++) {
     const child = hdnode.deriveChild(i);
 
-    console.log(`children ${i}`, addressUtils.fromPublicKey(child.publicKey));
+    console.log(`children ${i}`, Address.ofPublicKey(child.publicKey));
     // children 0 0x...
     // children 1 0x...
     // ...

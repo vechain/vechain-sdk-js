@@ -1,15 +1,15 @@
-import { TEST_ACCOUNTS, TESTNET_DELEGATE_URL } from '../../../fixture';
-import {
-    type SignTransactionOptions,
-    THOR_SOLO_ACCOUNTS,
-    type TransactionRequestInput
-} from '../../../../src';
-import { addressUtils, type TransactionClause } from '@vechain/sdk-core';
+import { Address, HexUInt, type TransactionClause } from '@vechain/sdk-core';
 import {
     InvalidDataType,
     InvalidSecp256k1PrivateKey,
     NotDelegatedTransaction
 } from '@vechain/sdk-errors';
+import {
+    type SignTransactionOptions,
+    THOR_SOLO_ACCOUNTS,
+    type TransactionRequestInput
+} from '../../../../src';
+import { TEST_ACCOUNTS, TESTNET_DELEGATE_URL } from '../../../fixture';
 
 /**
  * This interface clones the `TestCaseTypedDataDomain` interface in
@@ -225,8 +225,8 @@ const populateCallTestCases = {
             } satisfies TransactionRequestInput,
             expected: {
                 clauses: [],
-                from: addressUtils.toERC55Checksum(
-                    populateCallTestCasesAccount.address
+                from: Address.checksum(
+                    HexUInt.of(populateCallTestCasesAccount.address)
                 ),
                 to: null
             }
@@ -251,8 +251,8 @@ const populateCallTestCases = {
                     }
                 ] as TransactionClause[],
                 data: '0x',
-                from: addressUtils.toERC55Checksum(
-                    populateCallTestCasesAccount.address
+                from: Address.checksum(
+                    HexUInt.of(populateCallTestCasesAccount.address)
                 ),
                 to: '0x',
                 value: 0
@@ -267,8 +267,8 @@ const populateCallTestCases = {
                 'Should use signer address as from address if not defined AND to address as null if to is not defined',
             transactionToPopulate: {} satisfies TransactionRequestInput,
             expected: {
-                from: addressUtils.toERC55Checksum(
-                    populateCallTestCasesAccount.address
+                from: Address.checksum(
+                    HexUInt.of(populateCallTestCasesAccount.address)
                 ),
                 to: null
             } satisfies TransactionRequestInput
@@ -278,13 +278,13 @@ const populateCallTestCases = {
         {
             description: 'Should set from address from tx.from',
             transactionToPopulate: {
-                from: addressUtils.toERC55Checksum(
-                    populateCallTestCasesAccount.address
+                from: Address.checksum(
+                    HexUInt.of(populateCallTestCasesAccount.address)
                 )
             } satisfies TransactionRequestInput,
             expected: {
-                from: addressUtils.toERC55Checksum(
-                    populateCallTestCasesAccount.address
+                from: Address.checksum(
+                    HexUInt.of(populateCallTestCasesAccount.address)
                 ),
                 to: null
             } satisfies TransactionRequestInput
@@ -295,13 +295,13 @@ const populateCallTestCases = {
             description:
                 'Should set from address from signer and have tx.to defined',
             transactionToPopulate: {
-                to: addressUtils.toERC55Checksum(THOR_SOLO_ACCOUNTS[1].address)
+                to: Address.checksum(HexUInt.of(THOR_SOLO_ACCOUNTS[1].address))
             } satisfies TransactionRequestInput,
             expected: {
-                from: addressUtils.toERC55Checksum(
-                    populateCallTestCasesAccount.address
+                from: Address.checksum(
+                    HexUInt.of(populateCallTestCasesAccount.address)
                 ),
-                to: addressUtils.toERC55Checksum(THOR_SOLO_ACCOUNTS[1].address)
+                to: Address.checksum(HexUInt.of(THOR_SOLO_ACCOUNTS[1].address))
             } satisfies TransactionRequestInput
         }
     ],
@@ -437,7 +437,7 @@ export {
     EIP191_MESSAGE,
     EIP191_PRIVATE_KEY,
     eip712TestCases,
-    populateCallTestCasesAccount,
     populateCallTestCases,
+    populateCallTestCasesAccount,
     signTransactionTestCases
 };

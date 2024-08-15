@@ -1,20 +1,21 @@
 import {
-    type AvailableVeChainProviders,
-    type TransactionRequestInput,
-    type VeChainSigner
-} from '../types';
-import {
-    Hex,
-    addressUtils,
+    Address,
     clauseBuilder,
+    Hex,
+    HexUInt,
     type TransactionBody,
     type TransactionClause,
     type vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
-import { RPC_METHODS } from '../../../provider';
 import { InvalidDataType, JSONRPCInvalidParams } from '@vechain/sdk-errors';
-import { vnsUtils } from '../../../utils';
+import { RPC_METHODS } from '../../../provider';
 import { type TransactionSimulationResult } from '../../../thor-client';
+import { vnsUtils } from '../../../utils';
+import {
+    type AvailableVeChainProviders,
+    type TransactionRequestInput,
+    type VeChainSigner
+} from '../types';
 
 /**
  * Abstract VeChain signer.
@@ -76,25 +77,25 @@ abstract class VeChainAbstractSigner implements VeChainSigner {
             transactionToPopulate.from === undefined ||
             transactionToPopulate.from === null
         )
-            transactionToPopulate.from = addressUtils.toERC55Checksum(
-                await this.getAddress()
+            transactionToPopulate.from = Address.checksum(
+                HexUInt.of(await this.getAddress())
             );
         // Throw an error if the from address does not match the signer address
         // @note: this because we cannot sign a transaction with a different address
         else {
             if (
-                addressUtils.toERC55Checksum(transactionToPopulate.from) !==
-                addressUtils.toERC55Checksum(await this.getAddress())
+                Address.checksum(HexUInt.of(transactionToPopulate.from)) !==
+                Address.checksum(HexUInt.of(await this.getAddress()))
             ) {
                 throw new InvalidDataType(
                     'VeChainAbstractSigner.populateCall()',
                     'From address does not match the signer address.',
                     {
-                        signerAddress: addressUtils.toERC55Checksum(
-                            await this.getAddress()
+                        signerAddress: Address.checksum(
+                            HexUInt.of(await this.getAddress())
                         ),
-                        fromAddress: addressUtils.toERC55Checksum(
-                            transactionToPopulate.from
+                        fromAddress: Address.checksum(
+                            HexUInt.of(transactionToPopulate.from)
                         )
                     }
                 );

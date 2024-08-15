@@ -10,7 +10,7 @@ import {
 } from '../../../src';
 import { TEST_ACCOUNTS } from '../../fixture';
 import { erc20ContractBytecode } from './fixture';
-import { addressUtils, ERC20_ABI } from '@vechain/sdk-core';
+import { Address, ERC20_ABI } from '@vechain/sdk-core';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -87,7 +87,7 @@ describe('ThorClient - ERC20 Contracts', () => {
         const contract = await factory.waitForDeployment();
 
         expect(contract.address).not.toBe(null);
-        expect(addressUtils.isAddress(contract.address)).toBe(true);
+        expect(Address.isValid(contract.address)).toBe(true);
     }, 10000);
 
     /**

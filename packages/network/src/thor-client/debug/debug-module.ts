@@ -1,6 +1,7 @@
-import { Hex, ThorId, addressUtils } from '@vechain/sdk-core';
+import { Address, Hex, ThorId } from '@vechain/sdk-core';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { thorest } from '../../utils';
+import { type ThorClient } from '../thor-client';
 import {
     type ContractCallTraceContractTargetInput,
     type ContractCallTraceTransactionOptionsInput,
@@ -11,7 +12,6 @@ import {
     type TracerName,
     type TransactionTraceTarget
 } from './types';
-import { type ThorClient } from '../thor-client';
 
 /** The `DebugModule` class encapsulates functionality to handle Debug
  * on the VeChainThor blockchain.
@@ -90,7 +90,7 @@ class DebugModule {
         if (
             input.contractInput?.to !== undefined &&
             input.contractInput.to !== null &&
-            !addressUtils.isAddress(input.contractInput.to)
+            !Address.isValid(input.contractInput.to)
         ) {
             throw new InvalidDataType(
                 'DebugModule.traceContractCall()',

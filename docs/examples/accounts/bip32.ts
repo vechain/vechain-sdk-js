@@ -1,4 +1,4 @@
-import { addressUtils, HDNode, mnemonic } from '@vechain/sdk-core';
+import { Address, HDNode, mnemonic } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // START_SNIPPET: Bip32Snippet
@@ -20,7 +20,7 @@ for (let i = 0; i < 5; i++) {
     const child = hdnode.deriveChild(i);
     console.log(
         `children ${i} address`,
-        addressUtils.fromPublicKey(child.publicKey)
+        Address.ofPublicKey(child.publicKey).toString()
     );
     console.log(`children ${i} private key`, child.privateKey);
     // children 0 0x...

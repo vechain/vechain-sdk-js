@@ -1,5 +1,13 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
+    Address,
+    clauseBuilder,
+    coder,
+    type FunctionFragment,
+    HexUInt,
+    TransactionHandler
+} from '@vechain/sdk-core';
+import {
     ProviderInternalBaseWallet,
     signerUtils,
     THOR_SOLO_ACCOUNTS,
@@ -13,15 +21,8 @@ import {
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS
 } from '../../../fixture';
-import {
-    addressUtils,
-    clauseBuilder,
-    coder,
-    type FunctionFragment,
-    TransactionHandler
-} from '@vechain/sdk-core';
-import { signTransactionTestCases } from './fixture';
 import { simulateTransaction } from '../../../thor-client/transactions/fixture-thorest';
+import { signTransactionTestCases } from './fixture';
 
 /**
  *VeChain base signer tests - solo
@@ -101,7 +102,7 @@ describe('VeChain base signer tests - solo', () => {
                         expect(signedTx).toBeDefined();
                         expect(signedTx.body).toMatchObject(expected.body);
                         expect(signedTx.origin).toBe(
-                            addressUtils.toERC55Checksum(origin.address)
+                            Address.checksum(HexUInt.of(origin.address))
                         );
                         expect(signedTx.isDelegated).toBe(isDelegated);
                         expect(signedTx.isSigned).toBe(true);
@@ -295,8 +296,10 @@ describe('VeChain base signer tests - solo', () => {
             expect(signedTx).toBeDefined();
             expect(signedTx.body.gas).toEqual(6000000);
             expect(signedTx.origin).toBe(
-                addressUtils.toERC55Checksum(
-                    TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                Address.checksum(
+                    HexUInt.of(
+                        TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+                    )
                 )
             );
             expect(signedTx.isSigned).toBe(true);

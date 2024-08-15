@@ -1,30 +1,31 @@
 import * as n_utils from '@noble/curves/abstract/utils';
 import {
+    Address,
     Hex,
+    HexUInt,
     Keccak256,
     Transaction,
     TransactionHandler,
     Txt,
-    addressUtils,
     secp256k1,
-    type TransactionBody,
-    vechain_sdk_core_ethers
+    vechain_sdk_core_ethers,
+    type TransactionBody
 } from '@vechain/sdk-core';
-import { RPC_METHODS } from '../../../provider';
-import { VeChainAbstractSigner } from '../vechain-abstract-signer';
 import {
     InvalidSecp256k1PrivateKey,
     JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
-import {
-    type AvailableVeChainProviders,
-    type TransactionRequestInput
-} from '../types';
+import { RPC_METHODS } from '../../../provider';
 import {
     DelegationHandler,
     type SignTransactionOptions,
     type ThorClient
 } from '../../../thor-client';
+import {
+    type AvailableVeChainProviders,
+    type TransactionRequestInput
+} from '../types';
+import { VeChainAbstractSigner } from '../vechain-abstract-signer';
 
 /**
  * Basic VeChain signer with the private key.
@@ -75,8 +76,12 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      * @returns the address of the signer
      */
     async getAddress(): Promise<string> {
-        return addressUtils.toERC55Checksum(
-            await Promise.resolve(addressUtils.fromPrivateKey(this.privateKey))
+        return Address.checksum(
+            HexUInt.of(
+                await Promise.resolve(
+                    Address.ofPrivateKey(this.privateKey).toString()
+                )
+            )
         );
     }
 
@@ -273,9 +278,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         delegatorOptions?: SignTransactionOptions
     ): Promise<string> {
         // Address of the origin account
-        const originAddress = addressUtils.fromPublicKey(
-            Buffer.from(secp256k1.derivePublicKey(originPrivateKey))
-        );
+        const originAddress = Address.ofPrivateKey(originPrivateKey).toString();
 
         const unsignedTx = new Transaction(unsignedTransactionBody);
 

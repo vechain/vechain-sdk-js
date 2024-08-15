@@ -1,10 +1,10 @@
-import { Hex } from '../../src/vcdm/Hex';
-import { addressUtils } from '../../src';
-import { generateRandomValidAddress } from '../fixture';
 import {
     InvalidAbiDataToEncodeOrDecode,
     stringifyData
 } from '@vechain/sdk-errors';
+import { Address, HexUInt } from '../../src';
+import { Hex } from '../../src/vcdm/Hex';
+import { generateRandomValidAddress } from '../fixture';
 
 /**
  * Simple functions fixtures
@@ -103,22 +103,22 @@ const functions = [
  */
 const simpleParametersDataForFunction2 = [
     {
-        master: addressUtils.toERC55Checksum(
-            '0x0e8fd586e022f825a109848832d7e552132bc332'
+        master: Address.checksum(
+            HexUInt.of('0x0e8fd586e022f825a109848832d7e552132bc332')
         ),
-        endorsor: addressUtils.toERC55Checksum(
-            '0x224626926a7a12225a60e127cec119c939db4a5c'
+        endorsor: Address.checksum(
+            HexUInt.of('0x224626926a7a12225a60e127cec119c939db4a5c')
         ),
         identity:
             '0xdbf2712e19af00dc4d376728f7cb06cc215c8e7c53b94cb47cefb4a26ada2a6c',
         active: false
     },
     {
-        master: addressUtils.toERC55Checksum(
-            '0x4977d68df97bb313b23238520580d8d3a59939bf'
+        master: Address.checksum(
+            HexUInt.of('0x4977d68df97bb313b23238520580d8d3a59939bf')
         ),
-        endorsor: addressUtils.toERC55Checksum(
-            '0x7ad1d568b3fe5bad3fc264aca70bc7bcd5e4a6ff'
+        endorsor: Address.checksum(
+            HexUInt.of('0x7ad1d568b3fe5bad3fc264aca70bc7bcd5e4a6ff')
         ),
         identity:
             '0x83b137cf7e30864b8a4e56453eb1f094b4434685d86895de38ac2edcf5d3f534',
@@ -560,15 +560,15 @@ const ValueChangedEventData = {
 };
 
 export {
-    events,
-    functions,
-    simpleParametersDataForFunction2,
-    encodedDecodedValues,
-    encodedDecodedInvalidValues,
     contractABI,
     contractABIWithEvents,
-    ValueChangedEventData,
-    topicsEventTestCases,
+    contractStorageABI,
+    encodedDecodedInvalidValues,
+    encodedDecodedValues,
+    events,
+    functions,
     invalidTopicsEventTestCases,
-    contractStorageABI
+    simpleParametersDataForFunction2,
+    topicsEventTestCases,
+    ValueChangedEventData
 };

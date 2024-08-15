@@ -14,7 +14,8 @@ import {
     THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR
 } from '../../../fixture';
 import {
-    addressUtils,
+    Address,
+    HexUInt,
     clauseBuilder,
     coder,
     type FunctionFragment,
@@ -168,7 +169,7 @@ describe('VeChain base signer tests - testnet', () => {
                         expect(signedTx).toBeDefined();
                         expect(signedTx.body).toMatchObject(expected.body);
                         expect(signedTx.origin).toBe(
-                            addressUtils.toERC55Checksum(origin.address)
+                            Address.checksum(HexUInt.of(origin.address))
                         );
                         expect(signedTx.isDelegated).toBe(isDelegated);
                         expect(signedTx.isSigned).toBe(true);

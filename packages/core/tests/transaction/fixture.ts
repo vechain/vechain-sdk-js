@@ -1,4 +1,5 @@
-import { addressUtils, Hex, secp256k1, type TransactionBody } from '../../src';
+import { hexToBytes } from '@noble/ciphers/utils';
+import { Address, type TransactionBody } from '../../src';
 
 /**
  * Simple correct transaction body fixture
@@ -101,9 +102,7 @@ const _signerPrivateKey =
     '7582be841ca040aa940fff6c05773129e135623e41acce3e0b8ba520dc1ae26a';
 const signer = {
     privateKey: _signerPrivateKey,
-    address: addressUtils.fromPublicKey(
-        secp256k1.derivePublicKey(Hex.of(_signerPrivateKey).bytes)
-    )
+    address: Address.ofPrivateKey(hexToBytes(_signerPrivateKey)).toString()
 };
 
 /**
@@ -113,9 +112,7 @@ const _delegatorPrivateKey =
     '40de805e918403683fb9a6081c3fba072cdc5c88232c62a9509165122488dab7';
 const delegator = {
     privateKey: _delegatorPrivateKey,
-    address: addressUtils.fromPublicKey(
-        secp256k1.derivePublicKey(Hex.of(_delegatorPrivateKey).bytes)
-    )
+    address: Address.ofPrivateKey(hexToBytes(_delegatorPrivateKey)).toString()
 };
 
 /**
@@ -126,4 +123,4 @@ const invalidDecodedNotTrimmedReserved = Buffer.from(
     'hex'
 );
 
-export { transactions, signer, delegator, invalidDecodedNotTrimmedReserved };
+export { delegator, invalidDecodedNotTrimmedReserved, signer, transactions };

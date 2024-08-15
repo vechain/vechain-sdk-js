@@ -1,6 +1,12 @@
 import { Hex } from '../../src/vcdm/Hex';
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { addressUtils, keystore, type Keystore, secp256k1 } from '../../src';
+import {
+    Address,
+    HexUInt,
+    keystore,
+    type Keystore,
+    secp256k1
+} from '../../src';
 import { encryptionPassword } from './fixture';
 import {
     InvalidKeystore,
@@ -36,12 +42,11 @@ import {
 
             // Verify keystore
             expect(myKeystore.version).toBe(3);
-            const keyStoreAddress = addressUtils.toERC55Checksum(
-                `0x` + myKeystore.address
+            const keyStoreAddress = Address.checksum(
+                HexUInt.of(myKeystore.address)
             );
-            const addressFromPrivateKey = addressUtils.fromPublicKey(
-                Buffer.from(secp256k1.derivePublicKey(privateKey))
-            );
+            const addressFromPrivateKey =
+                Address.ofPrivateKey(privateKey).toString();
             expect(keyStoreAddress).toEqual(addressFromPrivateKey);
         });
 
