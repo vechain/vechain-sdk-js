@@ -36,4 +36,15 @@ class Keccak256 extends HexUInt implements Hash {
     }
 }
 
-export { Keccak256 };
+// TODO: Backwards compatibility, remove in future release.
+
+const keccak256 = (
+    hex: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    returnType: 'buffer' | 'hex' = 'buffer'
+): string | Uint8Array =>
+    returnType === 'buffer'
+        ? Keccak256.of(hex).bytes
+        : Keccak256.of(hex).toString();
+
+export { Keccak256, keccak256 };
