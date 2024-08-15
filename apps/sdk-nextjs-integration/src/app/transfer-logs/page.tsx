@@ -1,16 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Header } from '@/components';
+import { explorerUrl, thorClient } from '@/const';
+import { type Transfer } from '@/types';
+import { reduceHexStringSize } from '@/utils';
+import { addressUtils, unitsUtils } from '@vechain/sdk-core';
 import {
     type CompressedBlockDetail,
     type FilterTransferLogsOptions
 } from '@vechain/sdk-network';
-import { Address, unitsUtils } from '@vechain/sdk-core';
-import { type Transfer } from '@/types';
-import { explorerUrl, thorClient } from '@/const';
-import { reduceHexStringSize } from '@/utils';
 import Link from 'next/link';
-import { Header } from '@/components';
+import { useEffect, useState } from 'react';
 
 export default function TransferLogs(): JSX.Element {
     // State to store the transfer history
@@ -66,7 +66,8 @@ export default function TransferLogs(): JSX.Element {
 
     // Update the history when the address changes
     useEffect(() => {
-        if (Address.isValid(address)) {
+        // Backwards compatibility, from now on use Address.isValid
+        if (addressUtils.isAddress(address)) {
             void getHistoryFor(address);
         }
     }, [address]);
