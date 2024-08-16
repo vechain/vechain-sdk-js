@@ -203,12 +203,13 @@ class Mnemonic extends Txt {
 
     /**
      * Check if the given mnemonic words are valid.
-     * @param words The mnemonic words to check.
+     * @param {string | string[]} words The mnemonic words to check.
      * @returns {boolean} true if the words are valid, false otherwise.
      * @remark This method is a wrapper around the `validateMnemonic` function from the `bip39` package.
      */
-    public static isValid(words: string): boolean {
-        return validateMnemonic(words, wordlist);
+    public static isValid(words: string | string[]): boolean {
+        const wordsToValidate = Array.isArray(words) ? words.join(' ') : words;
+        return validateMnemonic(wordsToValidate, wordlist);
     }
 }
 
@@ -229,3 +230,4 @@ const mnemonic = {
 };
 
 export { Mnemonic, mnemonic };
+export type { WordListRandomGeneratorSizeInBytes, WordlistSizeType };

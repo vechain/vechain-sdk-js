@@ -8,8 +8,8 @@ import { expect } from 'expect';
 const privateKey = await secp256k1.generatePrivateKey();
 
 // @NOTE you can use BIP 39 too!
-// const words = mnemonic.generate()
-// const privateKey = mnemonic.derivePrivateKey(words)
+// const words = Mnemonic.generate().getWords()
+// const privateKey = Mnemonic.toPrivateKey(words)
 
 // ...
 
