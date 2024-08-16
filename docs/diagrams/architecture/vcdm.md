@@ -32,7 +32,9 @@ classDiagram
     class Keccak256 {
         +Keccak256 of(bigint|number|string|Uint8Array|Hex exp)$
     }
-    class Mnemonic
+    class Mnemonic {
+        +Mnemonic of(string exp)$
+    }
     class Quantity {
         +Quantity of(bigint|number exp)$
     }
