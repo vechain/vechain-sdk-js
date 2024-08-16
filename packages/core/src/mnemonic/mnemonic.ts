@@ -1,10 +1,10 @@
 import * as bip39 from '@scure/bip39';
-import { HDNode } from '../hdnode';
-import { MNEMONIC_WORDLIST_ALLOWED_SIZES } from '../utils';
-import { addressUtils } from '../address-utils';
-import { InvalidHDNode, InvalidHDNodeMnemonic } from '@vechain/sdk-errors';
-import { secp256k1 } from '../secp256k1';
 import { wordlist } from '@scure/bip39/wordlists/english';
+import { InvalidHDNode, InvalidHDNodeMnemonic } from '@vechain/sdk-errors';
+import { HDNode } from '../hdnode';
+import { secp256k1 } from '../secp256k1';
+import { MNEMONIC_WORDLIST_ALLOWED_SIZES } from '../utils';
+import { Address } from '../vcdm';
 import {
     type WordListRandomGeneratorSizeInBytes,
     type WordlistSizeType
@@ -35,9 +35,9 @@ function deriveAddress(words: string[], path: string = 'm/0'): string {
     const root = HDNode.fromMnemonic(words);
     try {
         // Public key is always available.
-        return addressUtils.fromPublicKey(
+        return Address.ofPublicKey(
             root.derive(path).publicKey as Uint8Array
-        );
+        ).toString();
     } catch (error) {
         throw new InvalidHDNode(
             'mnemonic.deriveAddress()',

@@ -14,7 +14,7 @@ import { InvalidDataType } from '@vechain/sdk-errors';
  * @throws {InvalidDataType}
  */
 const decodeBytes32String = (hex: string): string => {
-    if (!Hex.isValid(hex) || Hex.of(hex).hex.length !== 64)
+    if (!Hex.isValid(hex) || Hex.of(hex).digits.length !== 64)
         throw new InvalidDataType(
             'dataUtils.decodeBytes32String()',
             `Failed to decode value ${hex} to string. Value is not a valid hex string or it is not 64 characters long`,

@@ -1,12 +1,3 @@
-import { Hex, Txt, addressUtils, secp256k1 } from '@vechain/sdk-core';
-import { ethers } from 'ethers';
-import {
-    EIP191_MESSAGE,
-    EIP191_PRIVATE_KEY,
-    eip712TestCases,
-    populateCallTestCases,
-    populateCallTestCasesAccount
-} from './fixture';
 import {
     afterEach,
     beforeEach,
@@ -15,6 +6,8 @@ import {
     jest,
     test
 } from '@jest/globals';
+import { Address, Hex, HexUInt, secp256k1, Txt } from '@vechain/sdk-core';
+import { ethers } from 'ethers';
 import {
     TESTNET_URL,
     ThorClient,
@@ -22,6 +15,13 @@ import {
     VeChainProvider,
     vnsUtils
 } from '../../../../src/';
+import {
+    EIP191_MESSAGE,
+    EIP191_PRIVATE_KEY,
+    eip712TestCases,
+    populateCallTestCases,
+    populateCallTestCasesAccount
+} from './fixture';
 
 /**
  * VeChain base signer tests
@@ -86,8 +86,8 @@ describe('VeChain base signer tests', () => {
             );
             const address = await signer.getAddress();
             expect(address).toBe(
-                addressUtils.toERC55Checksum(
-                    '0x3db469a79593dcc67f07de1869d6682fc1eaf535'
+                Address.checksum(
+                    HexUInt.of('0x3db469a79593dcc67f07DE1869d6682fC1eaf535')
                 )
             );
         });

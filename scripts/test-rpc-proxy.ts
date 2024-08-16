@@ -21,7 +21,7 @@ const endpointsTestCases = [
         params: [
             {
                 from: '0x7487d912d03ab9de786278f679592b3730bdd540',
-                to: '0x3db469a79593dcc67f07de1869d6682fc1eaf535',
+                to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
                 value: '1000000000000000000',
                 data: '0x'
             },

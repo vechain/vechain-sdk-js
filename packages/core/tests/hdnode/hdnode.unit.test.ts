@@ -1,7 +1,7 @@
 import { addresses, words, wrongDerivationPath, wrongWords } from './fixture';
 import { describe, expect, test } from '@jest/globals';
 import {
-    addressUtils,
+    Address,
     HDNode,
     mnemonic,
     secp256k1,
@@ -56,7 +56,9 @@ describe('HDNode', () => {
                 const child = root.deriveChild(i);
                 expect(child.publicKey).toBeDefined();
                 expect(
-                    addressUtils.fromPublicKey(child.publicKey as Uint8Array)
+                    Address.ofPublicKey(
+                        child.publicKey as Uint8Array
+                    ).toString()
                 ).toEqual(addresses[i]);
                 // do we need <child>.address?
             }
@@ -81,18 +83,26 @@ describe('HDNode', () => {
             );
             expect(lowercase.publicKey).toBeDefined();
             expect(
-                addressUtils.fromPublicKey(lowercase.publicKey as Uint8Array)
+                Address.ofPublicKey(
+                    lowercase.publicKey as Uint8Array
+                ).toString()
             ).toBe(
-                addressUtils.fromPublicKey(reference.publicKey as Uint8Array)
+                Address.ofPublicKey(
+                    reference.publicKey as Uint8Array
+                ).toString()
             );
             const uppercase = HDNode.fromMnemonic(
                 words.map((w) => w.toUpperCase())
             );
             expect(uppercase.publicKey).toBeDefined();
             expect(
-                addressUtils.fromPublicKey(uppercase.publicKey as Uint8Array)
+                Address.ofPublicKey(
+                    uppercase.publicKey as Uint8Array
+                ).toString()
             ).toBe(
-                addressUtils.fromPublicKey(reference.publicKey as Uint8Array)
+                Address.ofPublicKey(
+                    reference.publicKey as Uint8Array
+                ).toString()
             );
         });
 
@@ -143,7 +153,9 @@ describe('HDNode', () => {
             for (let i = 0; i < 5; i++) {
                 const child = extendedRoot.deriveChild(i);
                 expect(
-                    addressUtils.fromPublicKey(child.publicKey as Uint8Array)
+                    Address.ofPublicKey(
+                        child.publicKey as Uint8Array
+                    ).toString()
                 ).toEqual(addresses[i]);
             }
         });
@@ -192,7 +204,9 @@ describe('HDNode', () => {
                 expect(child.privateKey).toBeNull();
                 expect(child.publicKey).toBeDefined();
                 expect(
-                    addressUtils.fromPublicKey(child.publicKey as Uint8Array)
+                    Address.ofPublicKey(
+                        child.publicKey as Uint8Array
+                    ).toString()
                 ).toEqual(addresses[i]);
             }
         });

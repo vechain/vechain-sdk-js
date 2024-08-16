@@ -1,10 +1,10 @@
 ---
-description: Overview of vechain-sdk-core addressUtils module.
+description: Overview of vechain-sdk-core Address class.
 ---
 
-# Address utils
+# Address class
 
-This module handles all address related operations:
+This class handles all address related operations:
 
 * Address derivation (from the private and public key)
 * Address checking
@@ -15,7 +15,7 @@ This module handles all address related operations:
 ```mermaid
 graph TD
 ;
-    A[vechain-sdk-core] --> B[Address utils module];
+    A[vechain-sdk-core] --> B[Address class];
     B -->|Derivation| C[From Private Key];
     C --- D[From Public Key];
     B -->|Checksum| E[ERC55];
@@ -27,14 +27,14 @@ graph TD
 ## Address Derivation
 
 Here we have a simple example of address derivation:
-[AddressDerivationSnippet](examples/address-utils/address-derivation.ts)
+[AddressDerivationSnippet](examples/address/address-derivation.ts)
 
 ## Address Validation
 
 Here we have a simple example of address validation:
-[AddressValidationSnippet](examples/address-utils/address-validation.ts)
+[AddressValidationSnippet](examples/address/address-validation.ts)
 
 ## Address Checksum
 
 Here we have a simple example of address ERC55 checksum:
-[AddressERC55ChecksumSnippet](examples/address-utils/address-erc55-checksum.ts)
+[AddressERC55ChecksumSnippet](examples/address/address-erc55-checksum.ts)

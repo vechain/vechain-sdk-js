@@ -3,7 +3,6 @@
  */
 import { Hex } from '../../../vcdm/Hex';
 import { SCRYPT_PARAMS } from './const';
-import { addressUtils } from '../../../address-utils';
 import { ethers } from 'ethers';
 import { secp256k1 } from '../../../secp256k1';
 import {
@@ -12,6 +11,7 @@ import {
     stringifyData
 } from '@vechain/sdk-errors';
 import { type Keystore, type KeystoreAccount } from '../../types';
+import { Address } from '../../../vcdm';
 
 /**
  * Encrypts a given private key into a keystore format using the specified password.
@@ -26,9 +26,9 @@ async function encrypt(
 ): Promise<Keystore> {
     // Public and Address are derived from a private key
     const derivePublicKey = secp256k1.derivePublicKey(privateKey);
-    const deriveAddress = addressUtils.fromPublicKey(
+    const deriveAddress = Address.ofPublicKey(
         Buffer.from(derivePublicKey)
-    );
+    ).toString();
 
     // Create keystore account compatible with ethers
     const keystoreAccount: ethers.KeystoreAccount = {

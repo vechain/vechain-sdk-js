@@ -1,6 +1,8 @@
 #! /usr/bin/env node
 
-import { Command, Option } from 'commander';
+import { Address, secp256k1, VET_DERIVATION_PATH } from '@vechain/sdk-core';
+import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 import {
     HttpClient,
     ProviderInternalBaseWallet,
@@ -9,20 +11,14 @@ import {
     ThorClient,
     VeChainProvider
 } from '@vechain/sdk-network';
-import express, { type Express, type Request, type Response } from 'express';
+import { Command, Option } from 'commander';
 import cors from 'cors';
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
-import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
-import importConfig from '../config.json';
-import { type Config, type RequestBody } from './types';
+import express, { type Express, type Request, type Response } from 'express';
 import fs from 'fs';
 import path from 'path';
-import {
-    addressUtils,
-    secp256k1,
-    VET_DERIVATION_PATH
-} from '@vechain/sdk-core';
+import importConfig from '../config.json';
 import packageJson from '../package.json';
+import { type Config, type RequestBody } from './types';
 
 // Function to read and parse the configuration file
 function readConfigFile(filePath: string): Config {
@@ -78,7 +74,7 @@ function startProxy(): void {
                       publicKey: Buffer.from(
                           secp256k1.derivePublicKey(privateKeyBuffer)
                       ),
-                      address: addressUtils.fromPrivateKey(privateKeyBuffer)
+                      address: Address.ofPrivateKey(privateKeyBuffer).toString()
                   };
               }),
               {

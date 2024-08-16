@@ -1,5 +1,5 @@
 import {
-    addressUtils,
+    Address,
     clauseBuilder,
     HDNode,
     mnemonic,
@@ -9,8 +9,8 @@ import {
     TransactionHandler,
     unitsUtils
 } from '@vechain/sdk-core';
-import { expect } from 'expect';
 import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
+import { expect } from 'expect';
 
 // START_SNIPPET: FeeDelegationSnippet
 
@@ -64,7 +64,7 @@ const delegatorPrivateKey = nodeDelegate.privateKey;
 
 // 5 - Get address of delegate
 
-const delegatorAddress = addressUtils.fromPublicKey(nodeDelegate.publicKey);
+const delegatorAddress = Address.ofPublicKey(nodeDelegate.publicKey).toString();
 
 // 6 - Sign transaction as sender and delegate
 

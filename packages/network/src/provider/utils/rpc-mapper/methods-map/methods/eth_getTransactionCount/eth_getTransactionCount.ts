@@ -1,5 +1,5 @@
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
-import { Hex, addressUtils, secp256k1 } from '@vechain/sdk-core';
+import { Hex, Address, secp256k1 } from '@vechain/sdk-core';
 import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
@@ -31,7 +31,7 @@ const ethGetTransactionCount = async (params: unknown[]): Promise<string> => {
         );
 
     // Invalid address
-    if (!addressUtils.isAddress(params[0])) {
+    if (!Address.isValid(params[0])) {
         throw new JSONRPCInvalidParams(
             'eth_getTransactionCount',
             -32602,

@@ -7,7 +7,7 @@ import {
 import type { DeployParams } from './types';
 import { ERC721_ABI, VIP180_ABI } from '../utils';
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { addressUtils } from '../address-utils';
+import { Address } from '../vcdm';
 
 /**
  * Builds a clause for deploying a smart contract.
@@ -203,7 +203,7 @@ function transferNFT(
         );
     }
 
-    if (!addressUtils.isAddress(senderAddress)) {
+    if (!Address.isValid(senderAddress)) {
         throw new InvalidDataType(
             'transferNFT()',
             `Invalid 'senderAddress' parameter. Expected a contract address but received ${senderAddress}.`,
@@ -211,7 +211,7 @@ function transferNFT(
         );
     }
 
-    if (!addressUtils.isAddress(contractAddress)) {
+    if (!Address.isValid(contractAddress)) {
         throw new InvalidDataType(
             'transferNFT()',
             `Invalid 'senderAddress' parameter. Expected a contract address but received ${contractAddress}.`,

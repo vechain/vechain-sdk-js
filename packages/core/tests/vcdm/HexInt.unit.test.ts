@@ -3,7 +3,7 @@ import { Hex, HexInt } from '../../src';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
- * Test Txt class.
+ * Test HexInt class.
  * @group unit/vcdm
  */
 describe('HexInt class tests', () => {
@@ -13,7 +13,7 @@ describe('HexInt class tests', () => {
             const hex = HexInt.of(exp);
             expect(hex.bi).toEqual(exp);
             expect(hex.n).toEqual(Number(exp));
-            expect(hex.toString()).toEqual('-0xc0c0a');
+            expect(hex.toString()).toEqual('-0x0c0c0a');
         });
 
         test('Return equals values for bi and n properties from number value', () => {
@@ -72,6 +72,18 @@ describe('HexInt class tests', () => {
         test('Throw an exception if the passed argument is not an integer number', () => {
             const exp = 123.57;
             expect(() => HexInt.of(exp)).toThrow(InvalidDataType);
+        });
+    });
+
+    describe('Polymorphism equivalence', () => {
+        test('Equal for bigint, bytes, hex expression, number', () => {
+            const ofBi = HexInt.of(255n);
+            const ofBytes = HexInt.of(Uint8Array.of(255));
+            const ofHex = HexInt.of('0xff');
+            const ofN = HexInt.of(255);
+            expect(ofBi.isEqual(ofBytes)).toBeTruthy();
+            expect(ofBytes.isEqual(ofHex)).toBeTruthy();
+            expect(ofHex.isEqual(ofN)).toBeTruthy();
         });
     });
 });
