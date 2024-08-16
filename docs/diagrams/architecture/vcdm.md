@@ -32,6 +32,7 @@ classDiagram
     class Keccak256 {
         +Keccak256 of(bigint|number|string|Uint8Array|Hex exp)$
     }
+    class Mnemonic
     class Quantity {
         +Quantity of(bigint|number exp)$
     }
@@ -62,6 +63,7 @@ classDiagram
     HexUInt <|-- Quantity
     HexUInt <|-- Sha256
     String <|-- Txt
+    Txt <|-- Mnemonic
     VeChainDataModel <|.. Hex
     VeChainDataModel <|.. Txt
 ```
