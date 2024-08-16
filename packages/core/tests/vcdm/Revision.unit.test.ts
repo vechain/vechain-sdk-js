@@ -8,16 +8,6 @@ import { Hex, Revision, Txt } from '../../src';
  */
 describe('Revision class tests', () => {
     describe('isValid method tests', () => {
-        describe('isValid for bigint value', () => {
-            test('Return false for negative value', () => {
-                expect(Revision.isValid(-12357n)).toBeFalsy();
-            });
-
-            test('Return true for positive value', () => {
-                expect(Revision.isValid(12357n)).toBeTruthy();
-            });
-        });
-
         describe('isValid for number value', () => {
             test('Return false for negative value', () => {
                 expect(Revision.isValid(-12357)).toBeFalsy();
@@ -42,7 +32,15 @@ describe('Revision class tests', () => {
             });
 
             test('Return false for not numeric nor `best` nor `finalized` value', () => {
-                expect(Revision.isValid('ABadbabe')).toBeFalsy();
+                expect(Revision.isValid('ABadBabe')).toBeFalsy();
+            });
+
+            test('Return false for negative hex value', () => {
+                expect(Revision.isValid('0x-ABadBabe')).toBeFalsy();
+            });
+
+            test('Return true for positive hex value', () => {
+                expect(Revision.isValid('0xABadBabe')).toBeTruthy();
             });
 
             test('Return true for positive value', () => {
@@ -57,49 +55,15 @@ describe('Revision class tests', () => {
                 expect(Revision.isValid('finalized')).toBeTruthy();
             });
         });
-
-        describe('isValid for Hex value', () => {
-            test('Return false negative value', () => {
-                expect(Revision.isValid(Hex.of('-0xABadBabe'))).toBeFalsy();
-            });
-
-            test('Return true for positive value', () => {
-                expect(Revision.isValid(Hex.of('0xABadBabe'))).toBeTruthy();
-            });
-        });
-
-        describe('isValid for Txt value', () => {
-            test('Return false for negative value', () => {
-                expect(Revision.isValid(Txt.of('-12357'))).toBeFalsy();
-            });
-
-            test('Return false for not integer value', () => {
-                expect(Revision.isValid(Txt.of('123.57'))).toBeFalsy();
-            });
-
-            test('Return false for not numeric nor `best` nor `finalized` value', () => {
-                expect(Revision.isValid(Txt.of('ABadbabe'))).toBeFalsy();
-            });
-
-            test('Return true for positive value', () => {
-                expect(Revision.isValid(Txt.of('12357'))).toBeTruthy();
-            });
-
-            test('Return true for `best` value', () => {
-                expect(Revision.isValid(Txt.of('best'))).toBeTruthy();
-            });
-
-            test('Return true for `finalized` value', () => {
-                expect(Revision.isValid(Txt.of('finalized'))).toBeTruthy();
-            });
-        });
     });
 
     describe('Construction tests', () => {
         describe('From bigint value', () => {
             test('Return a Revision instance for a valid value', () => {
-                const rev = Revision.of(12357n);
+                const value = 12357n;
+                const rev = Revision.of(value);
                 expect(rev).toBeInstanceOf(Revision);
+                expect(rev.bi).toEqual(value);
             });
 
             test('Throw an exception for an invalid value', () => {
@@ -109,8 +73,10 @@ describe('Revision class tests', () => {
 
         describe('From number value', () => {
             test('Return a Revision instance for a valid value', () => {
-                const rev = Revision.of(12357);
+                const value = 12357;
+                const rev = Revision.of(value);
                 expect(rev).toBeInstanceOf(Revision);
+                expect(rev.n).toEqual(value);
             });
 
             test('Throw an exception for an invalid value', () => {
@@ -119,9 +85,32 @@ describe('Revision class tests', () => {
         });
 
         describe('From string value', () => {
-            test('Return a Revision instance for a valid value', () => {
-                const rev = Revision.of('best');
+            test('Return a Revision instance for a valid `best`', () => {
+                const value = 'best';
+                const rev = Revision.of(value);
                 expect(rev).toBeInstanceOf(Revision);
+                expect(rev.toString()).toEqual(value);
+            });
+
+            test('Return a Revision instance for a valid `finalized`', () => {
+                const value = 'finalized';
+                const rev = Revision.of(value);
+                expect(rev).toBeInstanceOf(Revision);
+                expect(rev.toString()).toEqual(value);
+            });
+
+            test('Return a Revision instance for a valid decimal value', () => {
+                const value = 12357;
+                const rev = Revision.of(value.toString());
+                expect(rev).toBeInstanceOf(Revision);
+                expect(rev.n).toEqual(value);
+            });
+
+            test('Return a Revision instance for a valid hex value', () => {
+                const value = '0xff';
+                const rev = Revision.of(value);
+                expect(rev).toBeInstanceOf(Revision);
+                expect(rev.n).toEqual(255);
             });
 
             test('Throw an exception for an invalid value', () => {
@@ -137,19 +126,6 @@ describe('Revision class tests', () => {
 
             test('Throw an exception for an invalid value', () => {
                 expect(() => Revision.of(Hex.of('-0x0FF1CE'))).toThrow(
-                    InvalidDataType
-                );
-            });
-        });
-
-        describe('From Txt value', () => {
-            test('Return a Revision instance for a valid value', () => {
-                const rev = Revision.of(Txt.of('best'));
-                expect(rev).toBeInstanceOf(Revision);
-            });
-
-            test('Throw an exception for an invalid value', () => {
-                expect(() => Revision.of(Txt.of('worst'))).toThrow(
                     InvalidDataType
                 );
             });

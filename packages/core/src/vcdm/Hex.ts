@@ -56,7 +56,7 @@ class Hex implements VeChainDataModel<Hex> {
      *
      * @type {RegExp}
      */
-    protected static readonly REGEX_PREFIX: RegExp = /^-?0x/i;
+    protected static readonly REGEX_HEX_PREFIX: RegExp = /^-?0x/i;
 
     /**
      * Returns the hexadecimal digits expressing this absolute value, sign and `0x` prefix omitted.
@@ -249,7 +249,7 @@ class Hex implements VeChainDataModel<Hex> {
      * @return {boolean} - True if the string is a valid hexadecimal number prefixed with '0x', otherwise false.
      */
     public static isValid0x(exp: string): boolean {
-        return Hex.REGEX_PREFIX.test(exp) && Hex.isValid(exp);
+        return Hex.REGEX_HEX_PREFIX.test(exp) && Hex.isValid(exp);
     }
 
     /**
@@ -292,14 +292,14 @@ class Hex implements VeChainDataModel<Hex> {
                 if (exp.startsWith('-')) {
                     return new Hex(
                         this.NEGATIVE,
-                        this.REGEX_PREFIX.test(exp)
+                        this.REGEX_HEX_PREFIX.test(exp)
                             ? exp.slice(3)
                             : exp.slice(1)
                     );
                 }
                 return new Hex(
                     this.POSITIVE,
-                    this.REGEX_PREFIX.test(exp) ? exp.slice(2) : exp
+                    this.REGEX_HEX_PREFIX.test(exp) ? exp.slice(2) : exp
                 );
             }
             // noinspection ExceptionCaughtLocallyJS

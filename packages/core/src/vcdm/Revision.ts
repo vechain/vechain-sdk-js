@@ -1,6 +1,7 @@
 import { Txt } from './Txt';
 import { Hex } from './Hex';
 import { InvalidDataType } from '@vechain/sdk-errors';
+import { HexUInt } from './HexUInt';
 
 /**
  * Represents a revision for a Thor transaction or block.
@@ -19,62 +20,65 @@ class Revision extends Txt {
      *
      * @type {RegExp}
      */
-    private static readonly REGEX_REVISION = /^(best|finalized|\d+)$/;
+    private static readonly REGEX_DECIMAL_REVISION = /^(best|finalized|\d+)$/;
 
     /**
      * Determines if the given value is valid.
      * This is true if the given value is
      * - "best" string or {@link Txt}: indicating the best revision;
      * - "finalized" string or {@link Txt}: indicating a finalized revision;
-     * - a {@link Hex} positive value;
-     * - a positive bigint value;
      * - a positive number;
-     * - a positive numeric string or {@link Txt} indicating a specific revision,
+     * - a positive numeric decimal or `0x` prefixed hexadecimal string indicating a specific revision,
      *
      * @param {bigint | number | string | Hex | Txt} value - The value to be validated.
      * @returns {boolean} - Returns `true` if the value is valid, `false` otherwise.
      */
-    public static isValid(
-        value: bigint | number | string | Hex | Txt
-    ): boolean {
-        if (typeof value === 'bigint') {
-            return value >= 0;
-        } else if (typeof value === 'number') {
+    public static isValid(value: number | string): boolean {
+        if (typeof value === 'number') {
             return Number.isInteger(value) && value >= 0;
-        } else if (typeof value === 'string') {
-            return Revision.REGEX_REVISION.test(value);
-        } else if (value instanceof Txt) {
-            return Revision.REGEX_REVISION.test(value.toString());
         }
-        return value.sign >= 0;
+        return (
+            HexUInt.isValid0x(value) ||
+            Revision.REGEX_DECIMAL_REVISION.test(value)
+        );
     }
 
     /**
      * Creates a new Revision object from the given value.
      *
-     * @param {bigint | number | string | Uint8Array | Hex | Txt} value - The value to create the Revision from.
-     * @throws {InvalidDataType} if the given value is not a valid revision: see {@link isValid}.
+     * @param {bigint | number | string | Uint8Array | Hex } value - The value to create the Revision from:
+     * * {@link Hex} must be positive;
+     * * {@link Uint8Array} is decoded as a string: see {@link Txt.of}.
      *
      * @returns {Revision} - The created Revision object.
      *
+     *  @throws {InvalidDataType} if the given value is not a valid revision: see {@link isValid}.
+     *
      * @remark The string representation of the revision is always expressed as a number in base 10.
-     * @remark The {@link Uint8Array} value is decoded as a string content.
+     * @remark The {@link Uint8Array} value is decoded as a string content: see {@link Txt.of}.
      */
-    public static of(
-        value: bigint | number | string | Uint8Array | Hex | Txt
-    ): Txt {
-        const txt =
-            value instanceof Hex
-                ? Txt.of(value.bi)
-                : value instanceof Txt
-                  ? value
-                  : Txt.of(value);
-        if (Revision.isValid(txt)) {
-            return new Revision(txt.toString());
+    public static of(value: bigint | number | string | Uint8Array | Hex): Txt {
+        try {
+            let txt: string;
+            if (value instanceof Hex) {
+                txt = value.bi.toString();
+            } else if (value instanceof Uint8Array) {
+                txt = Txt.of(value).toString();
+            } else {
+                txt = `${value}`;
+            }
+            if (Revision.isValid(txt)) {
+                return new Revision(txt);
+            }
+            throw new InvalidDataType('Revision.of', 'not a revision', {
+                value: `${value}`
+            });
+        } catch (e) {
+            throw new InvalidDataType('Revision.of', 'not a revision', {
+                value: `${value}`,
+                e
+            });
         }
-        throw new InvalidDataType('Revision.of', 'not a revision', {
-            value: `${value}`
-        });
     }
 }
 
