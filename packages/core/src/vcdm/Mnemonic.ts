@@ -69,10 +69,11 @@ class Mnemonic extends Txt {
             if (error instanceof InvalidHDNodeMnemonic) {
                 throw error;
             }
-            throw new InvalidDataType(
+            throw new InvalidHDNodeMnemonic(
                 'Mnemonic.of',
                 'not a valid mnemonic expression',
-                { error }
+                { wordlistSize: -1 },
+                error
             );
         }
     }
@@ -148,7 +149,8 @@ class Mnemonic extends Txt {
             throw new InvalidHDNodeMnemonic(
                 'Mnemonic.generate',
                 'error while generating mnemonic',
-                { wordlistSize }
+                { wordlistSize },
+                error
             );
         }
     }
