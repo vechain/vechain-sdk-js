@@ -1,10 +1,16 @@
 import {
-    validateMnemonic,
+    entropyToMnemonic,
     generateMnemonic,
-    entropyToMnemonic
+    validateMnemonic
 } from '@scure/bip39';
 import { wordlist } from '@scure/bip39/wordlists/english';
-import { InvalidDataType, InvalidHDNodeMnemonic } from '@vechain/sdk-errors';
+import {
+    InvalidDataType,
+    InvalidHDNode,
+    InvalidHDNodeMnemonic
+} from '@vechain/sdk-errors';
+import { HDNode } from '../hdnode';
+import { Address } from './Address';
 import { Txt } from './Txt';
 
 /**
@@ -108,6 +114,46 @@ class Mnemonic extends Txt {
         }
     }
 
+    // TODO: Legacy method, probably should be part of a Private Key class (ofMnemonic)
+    /**
+     * Derives a private key from a given list of
+     * [BIP39 Mnemonic Words](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
+     * and a derivation path as in the examples.
+     *
+     * Secure audit function.
+     * - {@link bip32.HDKey}(https://github.com/paulmillr/scure-bip32)
+     * - {@link HDNode}
+     *
+     * @example `m/0` (default)
+     * @example `m/0/2`
+     * @example `m/0/2/4/6`
+     *
+     *
+     * @param {string[]} words - The set of words used for mnemonic generation.
+     * @param {string} [path='m/0'] - The derivation path from the current node.
+     * @returns {Uint8Array} - The derived private key as a Uint8Array.
+     *
+     * @throws {InvalidHDNode}
+     */
+    public static toPrivateKey(
+        words: string[],
+        path: string = 'm/0'
+    ): Uint8Array {
+        const root = HDNode.fromMnemonic(words);
+        // Any exception involving mnemonic words is thrown before this point: words are not leaked next.
+        try {
+            // Derived from root, private key is always available.
+            return root.derive(path).privateKey as Uint8Array;
+        } catch (error) {
+            throw new InvalidHDNode(
+                'mnemonic.derivePrivateKey()',
+                'Invalid derivation path given as input.',
+                { derivationPath: path },
+                error
+            );
+        }
+    }
+
     /**
      * Generates a
      * [BIP39 Mnemonic Words](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
@@ -166,4 +212,20 @@ class Mnemonic extends Txt {
     }
 }
 
-export { Mnemonic };
+// TODO: Backwards compatibility, remove in future versions
+
+const mnemonic = {
+    deriveAddress: (words: string[], path: string = 'm/0'): string =>
+        Address.ofMnemonic(Mnemonic.of(words.join(' ')), path).toString(),
+    derivePrivateKey: (words: string[], path: string = 'm/0'): Uint8Array =>
+        Mnemonic.toPrivateKey(words, path),
+    generate: (
+        wordlistSize?: WordlistSizeType,
+        randomGenerator?: (
+            numberOfBytes: WordListRandomGeneratorSizeInBytes
+        ) => Uint8Array
+    ): string[] => Mnemonic.generate(wordlistSize, randomGenerator).getWords(),
+    isValid: (words: string[]): boolean => Mnemonic.isValid(words.join(' '))
+};
+
+export { Mnemonic, mnemonic };
