@@ -82,4 +82,13 @@ class Revision extends Txt {
     }
 }
 
-export { Revision };
+// TODO: Backwards compatibility, remove when it is matured enough
+
+const revisionUtils = {
+    isRevisionAccount: (revision: string | number): boolean =>
+        Revision.isValid(revision),
+    isRevisionBlock: (revision: string | number): boolean =>
+        Revision.isValid(revision)
+};
+
+export { Revision, revisionUtils };
