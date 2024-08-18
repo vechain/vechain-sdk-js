@@ -41,7 +41,7 @@ class ThorId extends Hex {
      * @experimental
      */
     public static isValid(exp: string): boolean {
-        return Hex.isValid(exp) && Hex.REGEX_PREFIX.test(exp)
+        return Hex.isValid(exp) && Hex.REGEX_HEX_PREFIX.test(exp)
             ? exp.length === ThorId.DIGITS + 2
             : exp.length === ThorId.DIGITS;
     }
@@ -54,7 +54,7 @@ class ThorId extends Hex {
      * @experimental
      */
     public static isValid0x(exp: string): boolean {
-        return Hex.REGEX_PREFIX.test(exp) && ThorId.isValid(exp);
+        return Hex.REGEX_HEX_PREFIX.test(exp) && ThorId.isValid(exp);
     }
 
     /**

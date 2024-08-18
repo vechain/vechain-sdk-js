@@ -7,7 +7,7 @@ import {
     type TransactionsExpandedBlockDetail,
     type WaitForBlockOptions
 } from './types';
-import { revisionUtils, type TransactionClause } from '@vechain/sdk-core';
+import { Revision, type TransactionClause } from '@vechain/sdk-core';
 import { type ThorClient } from '../thor-client';
 
 /** The `BlocksModule` class encapsulates functionality for interacting with blocks
@@ -85,7 +85,7 @@ class BlocksModule {
         if (
             revision !== null &&
             revision !== undefined &&
-            !revisionUtils.isRevisionBlock(revision)
+            !Revision.isValid(revision)
         ) {
             throw new InvalidDataType(
                 'BlocksModule.getBlockCompressed()',
@@ -113,7 +113,7 @@ class BlocksModule {
         if (
             revision !== null &&
             revision !== undefined &&
-            !revisionUtils.isRevisionBlock(revision)
+            !Revision.isValid(revision)
         ) {
             throw new InvalidDataType(
                 'BlocksModule.getBlockExpanded()',
