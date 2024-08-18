@@ -1,6 +1,6 @@
 import { describe, expect, test } from '@jest/globals';
 import { accountRevisions, blockRevisions } from './fixture';
-import { revisionUtils } from '../../../src';
+import { Revision } from '../../../src';
 
 /**
  * Unit tests for the blockUtils module.
@@ -13,7 +13,7 @@ describe('blockUtils', () => {
      */
     test('isBlockRevision', () => {
         blockRevisions.forEach(({ revision, expected }) => {
-            expect(revisionUtils.isRevisionBlock(revision)).toBe(expected);
+            expect(Revision.isValid(revision)).toBe(expected);
         });
     });
 
@@ -22,7 +22,7 @@ describe('blockUtils', () => {
      */
     test('isAccountRevision', () => {
         accountRevisions.forEach(({ revision, expected }) => {
-            expect(revisionUtils.isRevisionAccount(revision)).toBe(expected);
+            expect(Revision.isValid(revision)).toBe(expected);
         });
     });
 });

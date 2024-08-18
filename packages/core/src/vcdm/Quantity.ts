@@ -28,14 +28,14 @@ class Quantity extends HexUInt {
      */
     public static of(exp: bigint | number): Quantity {
         try {
-            const hxu = HexUInt.of(exp);
+            const huint = HexUInt.of(exp);
             let cue = 0;
-            while (cue < hxu.digits.length && hxu.digits.at(cue) === '0') {
+            while (cue < huint.digits.length && huint.digits.at(cue) === '0') {
                 cue++;
             }
             return new Quantity(
-                hxu.sign,
-                cue === hxu.digits.length ? '0' : hxu.digits.slice(cue)
+                huint.sign,
+                cue === huint.digits.length ? '0' : huint.digits.slice(cue)
             );
         } catch (e) {
             throw new InvalidDataType(

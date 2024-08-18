@@ -9,6 +9,43 @@ import { InvalidDataType } from '@vechain/sdk-errors';
  */
 class HexUInt extends HexInt {
     /**
+     * Regular expression for matching hexadecimal strings.
+     * An empty input is represented as a empty digits.
+     *
+     * @type {RegExp}
+     */
+    private static readonly REGEX_HEXUINT: RegExp = /^(0x)?[0-9a-f]*$/i;
+
+    /**
+     * Regular expression pattern to match a prefix indicating hexadecimal number.
+     *
+     * @type {RegExp}
+     */
+    protected static readonly REGEX_HEXUINT_PREFIX: RegExp = /^0x/i;
+
+    /**
+     * Checks if the given string expression is a valid unsigned hexadecimal value.
+     *
+     * @param {string} exp - The string representation of a hexadecimal value.
+     *
+     * @return {boolean} - True if the expression is a valid unsigned hexadecimal value, case-insensitive,
+     * optionally prefixed with `0x`; false otherwise.
+     */
+    public static isValid(exp: string): boolean {
+        return HexUInt.REGEX_HEXUINT.test(exp);
+    }
+
+    /**
+     * Determines whether the given string is a valid unsigned hexadecimal number prefixed with '0x'.
+     *
+     * @param {string} exp - The string to be evaluated.
+     * @return {boolean} - True if the string is a valid unsigned hexadecimal number prefixed with '0x', otherwise false.
+     */
+    public static isValid0x(exp: string): boolean {
+        return HexUInt.REGEX_HEX_PREFIX.test(exp) && Hex.isValid(exp);
+    }
+
+    /**
      * Create a HexUInt instance from a bigint, number, string, Uint8Array, or {@link HexInt}.
      *
      * @param {bigint | number | string | Uint8Array | HexInt} exp - The expression to be interpreted as an unsigned integer:
@@ -30,9 +67,9 @@ class HexUInt extends HexInt {
         exp: bigint | number | string | Uint8Array | HexInt
     ): HexUInt {
         try {
-            const hxi = HexInt.of(exp);
-            if (hxi.sign >= Hex.POSITIVE) {
-                return new HexUInt(hxi.sign, hxi.digits);
+            const hint = HexInt.of(exp);
+            if (hint.sign >= Hex.POSITIVE) {
+                return new HexUInt(hint.sign, hint.digits);
             }
             throw new InvalidDataType(
                 'HexUInt.of',
