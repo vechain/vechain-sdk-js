@@ -1,4 +1,5 @@
 export * from './Address';
+export * from './BloomFilter';
 export * from './Currency';
 export * from './Hash';
 export * from './Hex';
