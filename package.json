@@ -15,7 +15,8 @@
     "private": true,
     "workspaces": [
         "packages/*",
-        "docs"
+        "docs",
+        "apps/sdk-nextjs-integration"
     ],
     "packageManager": "yarn@1.22.22",
     "scripts": {
@@ -71,9 +72,9 @@
         "prettier": "^3.3.2",
         "ts-jest": "^29.2.4",
         "tsup": "^8.2.4",
+        "turbo": "^2.0.12",
         "typedoc": "^0.26.5",
         "typedoc-plugin-missing-exports": "^3.0.0",
-        "turbo": "^2.0.12",
         "typescript": "^5.5.4"
     },
     "peerDependencies": {
