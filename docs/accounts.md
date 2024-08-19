@@ -23,7 +23,7 @@ BIP-39 provides several benefits:
 ```typescript { name=bip39, category=example }
 // 1 - Generate BIP39 mnemonic words, default to 12 words (128bit strength)
 
-const randomMnemonic = mnemonic.generate();
+const randomMnemonic = Mnemonic.generate().getWords();
 
 console.log('Mnemonic words', randomMnemonic);
 // Mnemonic words: "w1 w2 ... w12"
@@ -50,7 +50,7 @@ This hierarchy provides several advantages, including:
 ```typescript { name=bip32, category=example }
 // 1 - Generate BIP39 mnemonic words, default to 12 words (128bit strength)
 
-const randomMnemonic = mnemonic.generate();
+const randomMnemonic = Mnemonic.generate().getWords();
 
 console.log('Mnemonic words', randomMnemonic);
 // Mnemonic words: "w1 w2 ... w12"
@@ -127,8 +127,8 @@ Through the use of mnemonics and keystore, VeChainSDK ensures secure and user-fr
 const privateKey = await secp256k1.generatePrivateKey();
 
 // @NOTE you can use BIP 39 too!
-// const words = mnemonic.generate()
-// const privateKey = mnemonic.derivePrivateKey(words)
+// const words = Mnemonic.generate().getWords()
+// const privateKey = Mnemonic.toPrivateKey(words)
 
 // ...
 
