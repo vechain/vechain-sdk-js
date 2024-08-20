@@ -15,7 +15,12 @@ class ExternallyOwnedAccount extends Account {
     private readonly mnemonic: Mnemonic;
     // TODO: Review whether we need to add the SECP256k1 key pair here.
 
-    constructor(address: Address, balance: Currency, mnemonic: Mnemonic) {
+    constructor(
+        address: Address,
+        balance: Currency,
+        mnemonic: Mnemonic,
+        transactions?: string[]
+    ) {
         if (!ExternallyOwnedAccount.isValid(address, mnemonic)) {
             throw new InvalidDataType(
                 'ExternallyOwnedAccount.constructor',
@@ -23,7 +28,7 @@ class ExternallyOwnedAccount extends Account {
                 { address: address.toString() }
             );
         }
-        super(address, balance);
+        super(address, balance, transactions);
         this.mnemonic = mnemonic;
     }
 
