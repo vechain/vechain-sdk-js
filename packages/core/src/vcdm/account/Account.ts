@@ -11,10 +11,10 @@ type AccountType = 'EOA' | 'Contract';
  * @implements {VeChainDataModel<Account>}
  */
 abstract class Account implements VeChainDataModel<Account> {
-    protected readonly address: Address;
-    protected readonly balance: Currency;
+    public readonly address: Address;
+    public readonly balance: Currency;
     // TODO: Replace the string array with a Transaction class.
-    protected readonly transactions: string[];
+    public readonly transactions: string[];
     protected abstract get type(): AccountType;
 
     constructor(address: Address, balance: Currency, transactions?: string[]) {
@@ -69,39 +69,12 @@ abstract class Account implements VeChainDataModel<Account> {
     }
 
     /**
-     * Returns the address of the account.
-     * @returns {Address} The address of the account.
-     * @remark The address is the unique identifier of the account.
-     */
-    public getAddress(): Address {
-        return this.address;
-    }
-
-    /**
-     * Returns the balance of the account.
-     * @returns {Currency} The balance of the account.
-     * @remark The balance is the amount of currency the account holds.
-     */
-    public getBalance(): Currency {
-        return this.balance;
-    }
-
-    /**
      * Adds a transaction to the account.
      * @param {string} transaction The transaction to add.
      */
     public addTransaction(transaction: string): void {
         // TODO: replace body once Transaction class is implemented.
         this.transactions.push(transaction);
-    }
-
-    /**
-     * Returns the transactions of the account.
-     * @returns {string[]} The transactions of the account.
-     * @remark The transactions are the list of transactions the account is involved in.
-     */
-    public getTransactions(): string[] {
-        return this.transactions;
     }
 
     /**
