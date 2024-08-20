@@ -1,20 +1,32 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { Address, type Currency, Mnemonic } from '../../../src';
+import { Address, Mnemonic } from '../../../src';
 import { Account, ExternallyOwnedAccount } from '../../../src/vcdm/account';
+import { type Currency } from '../../../src/vcdm/Currency';
+
+// TODO: Use actual Currency subclasses once they are implemented.
+const mockCurrency: Currency = {
+    compareTo: jest.fn().mockReturnValue(0),
+    bi: 0n,
+    code: 'VET',
+    n: 0,
+    isEqual: jest.fn().mockReturnValue(true),
+    bytes: new Uint8Array(0)
+    // Add other methods and properties if needed
+};
 
 /**
  * Test ExternallyOwnedAccount class.
  * @group unit/vcdm
  */
 describe('Account class tests', () => {
-    const balance = 1000000000000000000n;
+    const balance = mockCurrency;
     const mnemonic = Mnemonic.generate();
     describe('Construction tests', () => {
         test('Return an Account instance if the passed arguments are valid', () => {
             const address = Address.ofMnemonic(mnemonic);
             const account = new ExternallyOwnedAccount(
                 address,
-                balance as unknown as Currency,
+                balance,
                 mnemonic
             );
             expect(account).toBeInstanceOf(Account);
@@ -27,11 +39,7 @@ describe('Account class tests', () => {
                 '0x7Fa3c67d905886Cf5A4E4243F557d69282393693'
             );
             const createAccount = (): ExternallyOwnedAccount => {
-                return new ExternallyOwnedAccount(
-                    address,
-                    balance as unknown as Currency,
-                    mnemonic
-                );
+                return new ExternallyOwnedAccount(address, balance, mnemonic);
             };
 
             expect(createAccount).toThrow(InvalidDataType);
@@ -54,7 +62,7 @@ describe('Account class tests', () => {
             const address = Address.ofMnemonic(mnemonic);
             const account = new ExternallyOwnedAccount(
                 address,
-                balance as unknown as Currency,
+                balance,
                 mnemonic
             );
             expect(() => account.bi).toThrow();
@@ -63,7 +71,7 @@ describe('Account class tests', () => {
             const address = Address.ofMnemonic(mnemonic);
             const account = new ExternallyOwnedAccount(
                 address,
-                balance as unknown as Currency,
+                balance,
                 mnemonic
             );
             expect(() => account.bytes).toThrow();
@@ -72,10 +80,51 @@ describe('Account class tests', () => {
             const address = Address.ofMnemonic(mnemonic);
             const account = new ExternallyOwnedAccount(
                 address,
-                balance as unknown as Currency,
+                balance,
                 mnemonic
             );
             expect(() => account.n).toThrow();
+        });
+    });
+    describe('VCDM interface tests', () => {
+        test('compareTo - compare two ExternallyOwnedAccount instances', () => {
+            const address = Address.ofMnemonic(mnemonic);
+            const account1 = new ExternallyOwnedAccount(
+                address,
+                balance,
+                mnemonic
+            );
+            const account2 = new ExternallyOwnedAccount(
+                address,
+                balance,
+                mnemonic
+            );
+            expect(account1.compareTo(account2)).toBe(0);
+        });
+        test('isEqual - compare two ExternallyOwnedAccount instances', () => {
+            const address = Address.ofMnemonic(mnemonic);
+            const account1 = new ExternallyOwnedAccount(
+                address,
+                balance,
+                mnemonic
+            );
+            const account2 = new ExternallyOwnedAccount(
+                address,
+                balance,
+                mnemonic
+            );
+            expect(account1.isEqual(account2)).toBe(true);
+        });
+        test('toString - get a string representation of the ExternallyOwnedAccount', () => {
+            const address = Address.ofMnemonic(mnemonic);
+            const account = new ExternallyOwnedAccount(
+                address,
+                balance,
+                mnemonic
+            );
+            expect(account.toString()).toBe(
+                `EOA Address: ${address.toString()} Balance: 0 Mnemonic: ${mnemonic.toString()}`
+            );
         });
     });
 });
