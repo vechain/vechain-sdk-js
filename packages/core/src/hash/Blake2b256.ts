@@ -1,4 +1,4 @@
-import { Hex, HexUInt, type Hash } from '../vcdm';
+import { Hex, HexUInt, Txt, type Hash } from '../vcdm';
 import { InvalidOperation } from '@vechain/sdk-errors';
 import { blake2b as nh_blake2b } from '@noble/hashes/blake2b';
 /**
@@ -38,4 +38,15 @@ class Blake2b256 extends HexUInt implements Hash {
     }
 }
 
-export { Blake2b256 };
+// TODO: Backwards compatibility, remove in future release.
+
+const blake2b256 = (
+    hex: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    returnType: 'buffer' | 'hex' = 'buffer'
+): string | Uint8Array =>
+    returnType === 'buffer'
+        ? Blake2b256.of(Txt.of(hex).bytes).bytes
+        : Blake2b256.of(Txt.of(hex).bytes).toString();
+
+export { Blake2b256, blake2b256 };

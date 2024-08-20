@@ -15,8 +15,14 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version: v20.11.0
+ 
+            - name: Install packages
+              run: yarn install
+                
+            - name: Build packages
+              run: yarn build
 
-            - name: Install & Patch packages
+            - name: Install & Patch apps
               run: |
                 # Absolute path to the 'apps' directory
                 apps_directory="$(pwd)/apps"

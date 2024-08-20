@@ -1,11 +1,14 @@
 import {
     InvalidDataType,
+    InvalidHDNode,
     InvalidSecp256k1PrivateKey
 } from '@vechain/sdk-errors';
 import { Keccak256 } from '../hash';
+import { HDNode } from '../hdnode';
 import { secp256k1 } from '../secp256k1';
 import { Hex } from './Hex';
 import { HexUInt } from './HexUInt';
+import { type Mnemonic } from './Mnemonic';
 import { Txt } from './Txt';
 
 /**
@@ -139,6 +142,46 @@ class Address extends HexUInt {
                 'Address.ofPublicKey',
                 'not a valid public key',
                 { publicKey: `${publicKey}`, error }
+            );
+        }
+    }
+
+    /**
+     * Derives the address from a given list of words of
+     * [BIP39 Mnemonic Words](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
+     * and a [BIP44 Derivation Path](https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
+     * as in the examples.
+     *
+     * Secure audit function.
+     * - {@link bip32.HDKey}(https://github.com/paulmillr/scure-bip32)
+     * - {@link HDNode}
+     *
+     * @example `m/0` (default)
+     * @example `m/0/2`
+     * @example `m/0/2/4/6`
+     *
+     * @param {Mnemonic} mnemonic - Mnemonic used to generate the HD node.
+     * @param {string} [path='m/0'] - The derivation path from the current node.
+     * @return {Address} - The derived address.
+     * @throws {InvalidHDNode}
+     *
+     */
+    public static ofMnemonic(
+        mnemonic: Mnemonic,
+        path: string = 'm/0'
+    ): Address {
+        const root = HDNode.fromMnemonic(mnemonic.getWords());
+        try {
+            // Public key is always available.
+            return Address.ofPublicKey(
+                root.derive(path).publicKey as Uint8Array
+            );
+        } catch (error) {
+            throw new InvalidHDNode(
+                'mnemonic.deriveAddress()',
+                'Invalid derivation path given as input.',
+                { derivationPath: path },
+                error
             );
         }
     }

@@ -1,5 +1,5 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { Address, revisionUtils, ThorId } from '@vechain/sdk-core';
+import { Address, Revision, ThorId } from '@vechain/sdk-core';
 import { buildQuery, thorest } from '../../utils';
 import {
     type AccountDetail,
@@ -46,7 +46,7 @@ class AccountsModule {
         if (
             options?.revision !== null &&
             options?.revision !== undefined &&
-            !revisionUtils.isRevisionBlock(options.revision)
+            !Revision.isValid(options.revision)
         ) {
             throw new InvalidDataType(
                 'AccountsModule.getAccount()',
@@ -89,7 +89,7 @@ class AccountsModule {
         if (
             options?.revision !== null &&
             options?.revision !== undefined &&
-            !revisionUtils.isRevisionBlock(options.revision)
+            !Revision.isValid(options.revision)
         ) {
             throw new InvalidDataType(
                 'AccountsModule.getBytecode()',
@@ -136,7 +136,7 @@ class AccountsModule {
         if (
             options?.revision !== null &&
             options?.revision !== undefined &&
-            !revisionUtils.isRevisionBlock(options.revision)
+            !Revision.isValid(options.revision)
         ) {
             throw new InvalidDataType(
                 'AccountsModule.getStorageAt()',

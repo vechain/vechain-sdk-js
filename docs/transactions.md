@@ -165,7 +165,7 @@ const body: TransactionBody = {
 
 // 4 - Create private keys of sender and delegate
 
-const nodeDelegate = HDNode.fromMnemonic(mnemonic.generate());
+const nodeDelegate = HDNode.fromMnemonic(Mnemonic.generate().getWords());
 const delegatorPrivateKey = nodeDelegate.privateKey;
 
 // 5 - Get address of delegate

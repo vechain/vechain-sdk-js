@@ -13,7 +13,7 @@ import {
     ThorId,
     TransactionHandler,
     abi,
-    revisionUtils,
+    Revision,
     vechain_sdk_core_ethers,
     type Transaction,
     type TransactionBody,
@@ -411,7 +411,7 @@ class TransactionsModule {
         if (
             revision !== undefined &&
             revision !== null &&
-            !revisionUtils.isRevisionAccount(revision)
+            !Revision.isValid(revision)
         ) {
             throw new InvalidDataType(
                 'TransactionsModule.simulateTransaction()',

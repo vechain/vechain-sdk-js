@@ -28,7 +28,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
+    "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --external @noble/hashes --dts",
     "lint": "eslint --ext .ts src --ext .ts tests",
     "format": "prettier --write src/**/*.ts tests/**/*.ts",
     "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
@@ -46,7 +46,7 @@
     "@vechain/sdk-logging": "1.0.0-beta.29",
     "bignumber.js": "^9.1.2",
     "blakejs": "^1.2.1",
-    "elliptic": "^6.5.6",
+    "elliptic": "^6.5.7",
     "ethers": "6.13.2",
     "fast-json-stable-stringify": "^2.1.0"
   },

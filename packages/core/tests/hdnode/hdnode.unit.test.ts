@@ -1,5 +1,9 @@
-import { addresses, words, wrongDerivationPath, wrongWords } from './fixture';
 import { describe, expect, test } from '@jest/globals';
+import {
+    InvalidHDNode,
+    InvalidHDNodeMnemonic,
+    InvalidSecp256k1PrivateKey
+} from '@vechain/sdk-errors';
 import {
     Address,
     HDNode,
@@ -8,11 +12,7 @@ import {
     type WordlistSizeType,
     ZERO_BYTES
 } from '../../src';
-import {
-    InvalidHDNode,
-    InvalidHDNodeMnemonic,
-    InvalidSecp256k1PrivateKey
-} from '@vechain/sdk-errors';
+import { addresses, words, wrongDerivationPath, wrongWords } from './fixture';
 
 /**
  * Mnemonic tests

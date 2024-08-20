@@ -1,11 +1,11 @@
-import { Hex, mnemonic } from '@vechain/sdk-core';
+import { Hex, Mnemonic, mnemonic } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // START_SNIPPET: Bip39Snippet
 
 // 1 - Generate BIP39 mnemonic words, default to 12 words (128bit strength)
 
-const randomMnemonic = mnemonic.generate();
+const randomMnemonic = Mnemonic.generate().getWords();
 
 console.log('Mnemonic words', randomMnemonic);
 // Mnemonic words: "w1 w2 ... w12"
@@ -21,4 +21,4 @@ console.log(Hex.of(privateKey).toString());
 // END_SNIPPET: Bip39Snippet
 
 // In recovery process, validation is recommended
-expect(mnemonic.isValid(randomMnemonic)).toBeTruthy();
+expect(Mnemonic.isValid(randomMnemonic)).toBeTruthy();
