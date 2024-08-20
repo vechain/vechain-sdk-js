@@ -20,7 +20,7 @@ class ExternallyOwnedAccount extends Account {
             throw new InvalidDataType(
                 'ExternallyOwnedAccount.constructor',
                 'The address and mnemonic do not match.',
-                { address }
+                { address: address.toString() }
             );
         }
         super(address, balance);
