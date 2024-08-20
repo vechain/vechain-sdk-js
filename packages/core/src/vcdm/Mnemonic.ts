@@ -211,6 +211,15 @@ class Mnemonic extends Txt {
         const wordsToValidate = Array.isArray(words) ? words.join(' ') : words;
         return validateMnemonic(wordsToValidate, wordlist);
     }
+
+    /**
+     * Returns an empty string to prevent printing the mnemonic.
+     *
+     * @returns {string} An empty string
+     */
+    public toString(): string {
+        return '';
+    }
 }
 
 // TODO: Backwards compatibility, remove in future versions
