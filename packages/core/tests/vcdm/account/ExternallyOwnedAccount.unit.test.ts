@@ -11,7 +11,6 @@ const mockCurrency: Currency = {
     n: 0,
     isEqual: jest.fn().mockReturnValue(true),
     bytes: new Uint8Array(0)
-    // Add other methods and properties if needed
 };
 
 /**
