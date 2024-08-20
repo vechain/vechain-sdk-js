@@ -1,3 +1,4 @@
+export * from './account';
 export * from './Address';
 export * from './Currency';
 export * from './Hash';
