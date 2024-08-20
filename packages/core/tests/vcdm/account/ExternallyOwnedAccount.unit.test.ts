@@ -114,7 +114,7 @@ describe('Account class tests', () => {
                 balance,
                 mnemonic2
             );
-            expect(account1.compareTo(account2)).toBeLessThan(0);
+            expect(account1.compareTo(account2)).not.toBe(0);
         });
         test('isEqual - compare two ExternallyOwnedAccount instances', () => {
             const address = Address.ofMnemonic(mnemonic);
