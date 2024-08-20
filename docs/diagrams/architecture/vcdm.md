@@ -1,9 +1,16 @@
 ```mermaid
 classDiagram
-    class Account
+    class Account {
+        <<abstract>>
+        #address: Address
+        #balance: Currency
+        #mnemonic: Mnemonic
+    }
     class ExternallyOwnedAccount
     class Contract
-    interface Currency
+    class Currency {
+        <<interface>>
+    }
     class Address {
         +string checksum(HexUInt huint)$
         +boolean isValid(string exp)$
