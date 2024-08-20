@@ -100,6 +100,22 @@ describe('Account class tests', () => {
             );
             expect(account1.compareTo(account2)).toBe(0);
         });
+        test('compareTo - compare two ExternallyOwnedAccount instances with different addresses', () => {
+            const address1 = Address.ofMnemonic(mnemonic);
+            const mnemonic2 = Mnemonic.generate();
+            const address2 = Address.ofMnemonic(mnemonic2);
+            const account1 = new ExternallyOwnedAccount(
+                address1,
+                balance,
+                mnemonic
+            );
+            const account2 = new ExternallyOwnedAccount(
+                address2,
+                balance,
+                mnemonic2
+            );
+            expect(account1.compareTo(account2)).toBeLessThan(0);
+        });
         test('isEqual - compare two ExternallyOwnedAccount instances', () => {
             const address = Address.ofMnemonic(mnemonic);
             const account1 = new ExternallyOwnedAccount(
