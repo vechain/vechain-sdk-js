@@ -3,6 +3,7 @@ classDiagram
     class Account
     class ExternallyOwnedAccount
     class Contract
+    interface Currency
     class Address {
         +string checksum(HexUInt huint)$
         +boolean isValid(string exp)$
@@ -62,6 +63,8 @@ classDiagram
       +boolean isNumber()
     }
     Account "1" ..|> "1" Address : has
+    Account "1" ..|> "1" Mnemonic : has
+    Account "1" ..|> "1" Currency : has
     Account <|-- ExternallyOwnedAccount
     Account <|-- Contract
     Hash <|.. Blake2b256
