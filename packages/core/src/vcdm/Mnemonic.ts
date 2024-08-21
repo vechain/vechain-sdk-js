@@ -114,7 +114,7 @@ class Mnemonic extends Txt {
         }
     }
 
-    // TODO: Legacy method, probably should be part of a Private Key class (ofMnemonic)
+    // Legacy method, probably should be part of a Private Key class (ofMnemonic) #1122
     /**
      * Derives a private key from a given list of
      * [BIP39 Mnemonic Words](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
@@ -211,9 +211,18 @@ class Mnemonic extends Txt {
         const wordsToValidate = Array.isArray(words) ? words.join(' ') : words;
         return validateMnemonic(wordsToValidate, wordlist);
     }
+
+    /**
+     * Returns an empty string to prevent printing the mnemonic.
+     *
+     * @returns {string} An empty string
+     */
+    public toString(): string {
+        return '';
+    }
 }
 
-// TODO: Backwards compatibility, remove in future versions
+// Backwards compatibility, remove in future versions #1184
 
 const mnemonic = {
     deriveAddress: (words: string[], path: string = 'm/0'): string =>
