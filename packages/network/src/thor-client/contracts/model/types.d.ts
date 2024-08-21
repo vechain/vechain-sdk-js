@@ -127,8 +127,18 @@ type ContractFunctionTransact<
  * @template TEventName - The names of the events extracted from the ABI.
  * @template TAbiEvent - The event type extracted from the ABI for a given event name.
  */
-type ContractFunctionFilter<TAbi extends Abi, TEventNames extends string> = {
-    [K in TEventNames]: (args: GetEventArgs<TAbi, K>) => ContractFilter<TAbi>;
+type ContractFunctionFilter<
+    TAbi extends Abi,
+    TEventNames extends string,
+    TABIEvent extends AbiFunction = ExtractAbiEvent<TAbi, TEventNames>
+> = {
+    [K in TEventNames]: (
+        args:
+            | GetEventArgs<TAbi, K>
+            | Partial<
+                  AbiParametersToPrimitiveTypes<TABIEvent['inputs'], 'inputs'>
+              >
+    ) => ContractFilter<TAbi>;
 };
 /**
  * Defines a mapping of contract function names to their corresponding transactional contract functions.

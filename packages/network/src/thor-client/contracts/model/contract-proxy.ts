@@ -148,23 +148,32 @@ function getFilterProxy<TAbi extends Abi>(
 ): ContractFunctionFilter<TAbi, ExtractAbiEventNames<TAbi>> {
     return new Proxy(contract.filters, {
         get: (_target, prop) => {
-            // Otherwise, assume that the function is a contract method
-            return (args: Record<string, unknown>): ContractFilter<TAbi> => {
-                const eventsArgsMap = getEventArgsMap(
-                    contract.abi as Abi,
-                    prop as string
-                );
-                const mappedObj = mapObjectToEventArgs(args, eventsArgsMap);
-                const extractedArgs = Object.entries(mappedObj).map(
-                    ([_key, value]) => {
-                        return value;
-                    }
-                );
-                const criteriaSet = buildCriteria(
-                    contract,
-                    prop,
-                    extractedArgs
-                );
+            return (
+                args: Record<string, unknown> | unknown[]
+            ): ContractFilter<TAbi> => {
+                let argsArray: unknown[] = [];
+
+                if (Array.isArray(args)) {
+                    argsArray = args;
+                } else {
+                    // extract the event arguments from the abi
+                    const eventsArgsMap = getEventArgsMap(
+                        contract.abi as Abi,
+                        prop as string
+                    );
+
+                    // map the args as input to the event arguments
+                    const mappedObj = mapObjectToEventArgs(args, eventsArgsMap);
+
+                    // turn the mapped args into an array
+                    argsArray = Object.entries(mappedObj).map(
+                        ([_key, value]) => {
+                            return value;
+                        }
+                    );
+                }
+
+                const criteriaSet = buildCriteria(contract, prop, argsArray);
 
                 return new ContractFilter<TAbi>(contract, [criteriaSet]);
             };

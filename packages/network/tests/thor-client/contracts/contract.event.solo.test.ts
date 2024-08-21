@@ -44,7 +44,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     /**
      * Tests the listening to ERC20 contract operations using a blockchain client.
      */
-    test('listen to ERC20 contract operations', async () => {
+    test('listen to ERC20 contract operations with the input as an args object and args array', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
             ERC20_ABI,
@@ -72,17 +72,15 @@ describe('ThorClient - ERC20 Contracts', () => {
             )
         ).wait();
 
-        const events = await contract.filters
-            .Transfer({
-                from: undefined,
-                to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
-            })
+        // listen with an array of args
+        const eventsWithArgsArray = await contract.filters
+            .Transfer([
+                undefined,
+                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+            ])
             .get();
 
-        expect(
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-            events[0].map((x) => x.decodedData)
-        ).toEqual([
+        const expectedEvents = [
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
                 '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
@@ -93,7 +91,26 @@ describe('ThorClient - ERC20 Contracts', () => {
                 '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
                 5000n
             ]
-        ]);
+        ];
+
+        expect(
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+            eventsWithArgsArray[0].map((x) => x.decodedData)
+        ).toEqual(expectedEvents);
+
+        // listen with an args object
+
+        const eventsWithAnArgsObject = await contract.filters
+            .Transfer({
+                from: undefined,
+                to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+            })
+            .get();
+
+        expect(
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
+            eventsWithAnArgsObject[0].map((x) => x.decodedData)
+        ).toEqual(expectedEvents);
     }, 10000); // Set a timeout of 10000ms for this test
 
     /**
