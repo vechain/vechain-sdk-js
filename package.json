@@ -73,7 +73,7 @@
         "ts-jest": "^29.2.4",
         "tsup": "^8.2.4",
         "turbo": "^2.0.12",
-        "typedoc": "^0.26.5",
+        "typedoc": "^0.26.6",
         "typedoc-plugin-missing-exports": "^3.0.0",
         "typescript": "^5.5.4"
     },
