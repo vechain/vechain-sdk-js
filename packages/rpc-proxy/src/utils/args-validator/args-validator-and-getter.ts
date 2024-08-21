@@ -23,12 +23,11 @@ const ArgsValidatorAndGetter = {
         options: OptionValues,
         defaultConfiguration: Config
     ): Config => {
-        if (
-            ArgsValidator.configurationFile(
-                options.configurationFile as string
-            ) !== null
-        ) {
-            return getConfigObjectFromFile(options.configurationFile as string);
+        const field = ArgsValidator.configurationFile(
+            options.configurationFile as string
+        );
+        if (field !== null) {
+            return getConfigObjectFromFile(field);
         }
         return defaultConfiguration;
     },
@@ -38,13 +37,15 @@ const ArgsValidatorAndGetter = {
      *
      * @param options Command line arguments options
      * @param currentConfiguration Default configuration to use if no field is provided
+     * @returns Configuration object
      * @throws {InvalidCommandLineArguments}
      */
     port: (options: OptionValues, currentConfiguration: Config): Config => {
-        if (ArgsValidator.port(options.port as string) !== null) {
+        const field = ArgsValidator.port(options.port as string);
+        if (field !== null) {
             return {
                 ...currentConfiguration,
-                port: Number(options.port as string)
+                port: field
             };
         }
         return currentConfiguration;
@@ -55,13 +56,34 @@ const ArgsValidatorAndGetter = {
      *
      * @param options Command line arguments options
      * @param currentConfiguration Default configuration to use if no field is provided
+     * @returns Configuration object
      * @throws {InvalidCommandLineArguments}
      */
     url: (options: OptionValues, currentConfiguration: Config): Config => {
-        if (ArgsValidator.url(options.url as string) !== null) {
+        const field = ArgsValidator.url(options.url as string);
+        if (field !== null) {
             return {
                 ...currentConfiguration,
-                url: options.url as string
+                url: field
+            };
+        }
+        return currentConfiguration;
+    },
+
+    /**
+     * Validate 'accounts' configuration field
+     *
+     * @param options Command line arguments options
+     * @param currentConfiguration Default configuration to use if no field is provided
+     * @returns Configuration object
+     * @throws {InvalidCommandLineArguments}
+     */
+    accounts: (options: OptionValues, currentConfiguration: Config): Config => {
+        const field = ArgsValidator.accounts(options.accounts as string);
+        if (field !== null) {
+            return {
+                ...currentConfiguration,
+                accounts: field
             };
         }
         return currentConfiguration;

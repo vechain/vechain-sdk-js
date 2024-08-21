@@ -1,5 +1,6 @@
 import { checkValidConfigurationFile } from '../configuration-file';
 import { InvalidCommandLineArguments } from '@vechain/sdk-errors';
+import { Hex, secp256k1 } from '@vechain/sdk-core';
 
 /**
  * Check if the url is valid function
@@ -114,6 +115,46 @@ const ArgsValidator = {
         } else {
             console.log(
                 '[rpc-proxy]: No url provided with command line arguments. Default port will be used.'
+            );
+        }
+        return null;
+    },
+
+    /**
+     * Validate 'accounts' configuration field
+     *
+     * @param accounts Accounts to validate
+     * @returns Accounts as a list of private keys, if provided AND valid, null otherwise
+     * @throws {InvalidCommandLineArguments}
+     */
+    accounts: (accounts?: string | null): string[] | null => {
+        if (accounts !== undefined && accounts !== null) {
+            const accountsList: string[] = accounts.split(' ');
+
+            accountsList
+                .map(
+                    (accountPrivateKeyAsString) =>
+                        Hex.of(accountPrivateKeyAsString).bytes
+                )
+                .forEach((privateKey: Uint8Array) => {
+                    if (
+                        !secp256k1.isValidPrivateKey(Hex.of(privateKey).bytes)
+                    ) {
+                        throw new InvalidCommandLineArguments(
+                            '_parseConfiguration()',
+                            'An invalid account private key is present in the configuration file',
+                            {
+                                flag: '-a , --accounts',
+                                value: 'Value will not be shown for security reasons'
+                            }
+                        );
+                    }
+                });
+
+            return accountsList;
+        } else {
+            console.log(
+                '[rpc-proxy]: No accounts provided with command line arguments. Default port will be used.'
             );
         }
         return null;

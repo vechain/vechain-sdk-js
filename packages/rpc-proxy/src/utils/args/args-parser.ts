@@ -48,6 +48,9 @@ function parseArgsOptionsAndGetConfig(
 
         // B.3 - Get and validate url field
         configuration = ArgsValidatorAndGetter.url(options, configuration);
+
+        // B.4 - Get and validate accounts field
+        configuration = ArgsValidatorAndGetter.accounts(options, configuration);
     }
 
     // Return the configuration
