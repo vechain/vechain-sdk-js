@@ -13,16 +13,14 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
  *
  * @link [eth_getCode](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_getcode)
  *
+ * @note Only 'latest' and 'finalized' block numbers are supported.
+ *
  * @param thorClient - ThorClient instance.
  * @param params - The standard array of rpc call parameters.
  *               * params[0]: The address to get the code for as a hex string.
  *               * params[1]: The block number to get the code at as a hex string or "latest".
- *
  * @returns The code of the account at the given address formatted to the RPC standard.
- *
- * @note Only 'latest' and 'finalized' block numbers are supported.
- *
- * @throws {ProviderRpcError} - Will throw an error if the retrieval of the code fails.
+ * @throws {JSONRPCInternalError}
  */
 const ethGetCode = async (
     thorClient: ThorClient,

@@ -1,5 +1,5 @@
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
-import { addressUtils, Hex0x, secp256k1 } from '@vechain/sdk-core';
+import { Hex, Address, secp256k1 } from '@vechain/sdk-core';
 import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
@@ -7,16 +7,16 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
  *
  * @link [eth_getTransactionCount](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_gettransactioncount)
  *
- * @param params - The standard array of rpc call parameters.
- *                * params[0]: address: string, is the address to get the number of transactions from.
- *                * params[1]: A string representing a block number, or one of the string tags latest, earliest, or pending.
- *
  * @note: To respect differences between VeChain and Ethereum, in this function we will give a random number as output.
  * Basically Ethereum to get nonce to use the number of transactions sent from an address,
  * while VeChain uses a random number.
  *
- * @throws {InvalidDataTypeError} - When address parameter is invalid.
+ * @param params - The standard array of rpc call parameters.
+ *                * params[0]: address: string, is the address to get the number of transactions from.
+ *                * params[1]: A string representing a block number, or one of the string tags latest, earliest, or pending.
+ * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
  */
+// eslint-disable-next-line @typescript-eslint/require-await
 const ethGetTransactionCount = async (params: unknown[]): Promise<string> => {
     // Input validation
     if (
@@ -31,7 +31,7 @@ const ethGetTransactionCount = async (params: unknown[]): Promise<string> => {
         );
 
     // Invalid address
-    if (!addressUtils.isAddress(params[0])) {
+    if (!Address.isValid(params[0])) {
         throw new JSONRPCInvalidParams(
             'eth_getTransactionCount',
             -32602,
@@ -41,7 +41,7 @@ const ethGetTransactionCount = async (params: unknown[]): Promise<string> => {
     }
 
     // Return a random number
-    return await Promise.resolve(Hex0x.of(secp256k1.randomBytes(6)));
+    return Hex.of(secp256k1.randomBytes(6)).toString();
 };
 
 export { ethGetTransactionCount };

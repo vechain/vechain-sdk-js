@@ -13,16 +13,14 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
  *
  * @link [eth_getBalance](https://docs.infura.io/networks/ethereum/json-rpc-methods/eth_getbalance)
  *
+ * @note Only 'latest' and 'finalized' block numbers are supported.
+ *
  * @param thorClient - ThorClient instance.
  * @param params - The standard array of rpc call parameters.
  *                * params[0]: The address to get the balance for as a hex string.
  *                * params[1]: The block number to get the balance at as a hex string or "latest".
- *
  * @returns the balance of the account at the given address formatted to the RPC standard.
- *
- * @note Only 'latest' and 'finalized' block numbers are supported.
- *
- * @throws {ProviderRpcError} - Will throw an error if the retrieval of the balance fails.
+ * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
  */
 const ethGetBalance = async (
     thorClient: ThorClient,

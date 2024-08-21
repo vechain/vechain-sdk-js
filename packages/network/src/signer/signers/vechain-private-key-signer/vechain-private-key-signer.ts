@@ -1,33 +1,31 @@
 import * as n_utils from '@noble/curves/abstract/utils';
 import {
-    addressUtils,
+    Address,
     Hex,
-    Hex0x,
-    Txt,
-    keccak256,
-    secp256k1,
+    HexUInt,
+    Keccak256,
     Transaction,
-    type TransactionBody,
     TransactionHandler,
-    vechain_sdk_core_ethers
+    Txt,
+    secp256k1,
+    vechain_sdk_core_ethers,
+    type TransactionBody
 } from '@vechain/sdk-core';
-import { RPC_METHODS } from '../../../provider';
-import { VeChainAbstractSigner } from '../vechain-abstract-signer';
 import {
-    InvalidDataType,
     InvalidSecp256k1PrivateKey,
-    JSONRPCInvalidParams,
-    NotDelegatedTransaction
+    JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
-import {
-    type AvailableVeChainProviders,
-    type TransactionRequestInput
-} from '../types';
+import { RPC_METHODS } from '../../../provider';
 import {
     DelegationHandler,
     type SignTransactionOptions,
     type ThorClient
 } from '../../../thor-client';
+import {
+    type AvailableVeChainProviders,
+    type TransactionRequestInput
+} from '../types';
+import { VeChainAbstractSigner } from '../vechain-abstract-signer';
 
 /**
  * Basic VeChain signer with the private key.
@@ -48,6 +46,15 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         private readonly privateKey: Buffer,
         provider: AvailableVeChainProviders | null
     ) {
+        // Assert if the transaction can be signed
+        if (!secp256k1.isValidPrivateKey(privateKey)) {
+            throw new InvalidSecp256k1PrivateKey(
+                `VeChainPrivateKeySigner.constructor()`,
+                "Invalid private key used to sign initialize the signer. Ensure it's a valid secp256k1 private key.",
+                undefined
+            );
+        }
+
         // Call the parent constructor
         super(provider);
     }
@@ -69,8 +76,12 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      * @returns the address of the signer
      */
     async getAddress(): Promise<string> {
-        return addressUtils.toERC55Checksum(
-            await Promise.resolve(addressUtils.fromPrivateKey(this.privateKey))
+        return Address.checksum(
+            HexUInt.of(
+                await Promise.resolve(
+                    Address.ofPrivateKey(this.privateKey).toString()
+                )
+            )
         );
     }
 
@@ -82,13 +93,23 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
     async signTransaction(
         transactionToSign: TransactionRequestInput
     ): Promise<string> {
+        // Check the provider (needed to sign the transaction)
+        if (this.provider === null) {
+            throw new JSONRPCInvalidParams(
+                'VeChainPrivateKeySigner.signTransaction()',
+                -32602,
+                'Thor provider is not found into the signer. Please attach a Provider to your signer instance.',
+                { transactionToSign }
+            );
+        }
+
+        // Sign the transaction
         return await this._signFlow(
             transactionToSign,
             DelegationHandler(
                 await this.provider?.wallet?.getDelegator()
             ).delegatorOrNull(),
-            (this.provider as AvailableVeChainProviders).thorClient,
-            this.privateKey
+            this.provider.thorClient
         );
     }
 
@@ -103,6 +124,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      *
      *  @param transactionToSend - The transaction to send
      *  @returns The transaction response
+     * @throws {JSONRPCInvalidParams}
      */
     async sendTransaction(
         transactionToSend: TransactionRequestInput
@@ -148,18 +170,18 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                         ? Txt.of(message).bytes
                         : message;
                 const sign = secp256k1.sign(
-                    keccak256(
+                    Keccak256.of(
                         n_utils.concatBytes(
                             this.MESSAGE_PREFIX,
                             Txt.of(body.length).bytes,
                             body
                         )
-                    ),
+                    ).bytes,
                     new Uint8Array(this.privateKey)
                 );
                 // SCP256K1 encodes the recovery flag in the last byte. EIP-191 adds 27 to it.
                 sign[sign.length - 1] += 27;
-                resolve(Hex0x.of(sign));
+                resolve(Hex.of(sign).toString());
             } catch (e) {
                 reject(e);
             }
@@ -185,22 +207,20 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
     ): Promise<string> {
         return await new Promise((resolve, reject) => {
             try {
-                const hash = n_utils.hexToBytes(
-                    Hex.canon(
-                        vechain_sdk_core_ethers.TypedDataEncoder.hash(
-                            domain,
-                            types,
-                            value
-                        )
+                const hash = Hex.of(
+                    vechain_sdk_core_ethers.TypedDataEncoder.hash(
+                        domain,
+                        types,
+                        value
                     )
-                );
+                ).bytes;
                 const sign = secp256k1.sign(
                     hash,
                     new Uint8Array(this.privateKey)
                 );
                 // SCP256K1 encodes the recovery flag in the last byte. EIP-712 adds 27 to it.
                 sign[sign.length - 1] += 27;
-                resolve(Hex0x.of(sign));
+                resolve(Hex.of(sign).toString());
             } catch (e) {
                 reject(e);
             }
@@ -213,50 +233,30 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      * @param transaction - The transaction to sign
      * @param delegator - The delegator to use
      * @param thorClient - The ThorClient instance
-     * @param privateKey - The private key of the signer
      * @returns The fully signed transaction
+     * @throws {InvalidSecp256k1PrivateKey, InvalidDataType}
      */
     async _signFlow(
         transaction: TransactionRequestInput,
         delegator: SignTransactionOptions | null,
-        thorClient: ThorClient,
-        privateKey: Buffer
+        thorClient: ThorClient
     ): Promise<string> {
-        // 1 - Populate the call, to get proper from and to address (compatible with multi-clause transactions)
+        // Populate the call, to get proper from and to address (compatible with multi-clause transactions)
         const populatedTransaction =
             await this.populateTransaction(transaction);
 
-        // Assert if the transaction can be signed
-        if (!secp256k1.isValidPrivateKey(this.privateKey))
-            throw new InvalidSecp256k1PrivateKey(
-                `VeChainPrivateKeySigner._signFlow()`,
-                "Invalid private key used to sign the transaction. Ensure it's a valid secp256k1 private key.",
-                undefined
-            );
-
-        // Check transaction body
-        if (!Transaction.isValidBody(populatedTransaction))
-            throw new InvalidDataType(
-                'VeChainPrivateKeySigner._signFlow()',
-                'Invalid transaction body provided, the transaction cannot be signed. Please check the transaction fields.',
-                {
-                    transaction,
-                    body: populatedTransaction
-                }
-            );
-
-        // 6 - Sign the transaction
+        // Sign the transaction
         return delegator !== null
             ? await this._signWithDelegator(
                   populatedTransaction,
-                  privateKey,
+                  this.privateKey,
                   thorClient,
                   delegator
               )
-            : Hex0x.of(
-                  TransactionHandler.sign(populatedTransaction, privateKey)
+            : Hex.of(
+                  TransactionHandler.sign(populatedTransaction, this.privateKey)
                       .encoded
-              );
+              ).toString();
     }
 
     /**
@@ -268,10 +268,8 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
      * @param thorClient - The ThorClient instance.
      * @param delegatorOptions - Optional parameters for the request. Includes the `delegatorUrl` and `delegatorPrivateKey` fields.
      *                  Only one of the following options can be specified: `delegatorUrl`, `delegatorPrivateKey`.
-     *
      * @returns A promise that resolves to the signed transaction.
-     *
-     * @throws an error if the delegation fails.
+     * @throws {NotDelegatedTransaction}
      */
     private async _signWithDelegator(
         unsignedTransactionBody: TransactionBody,
@@ -279,34 +277,20 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         thorClient: ThorClient,
         delegatorOptions?: SignTransactionOptions
     ): Promise<string> {
-        // Only one of the `SignTransactionOptions` options can be specified
-        if (
-            delegatorOptions?.delegatorUrl !== undefined &&
-            delegatorOptions?.delegatorPrivateKey !== undefined
-        ) {
-            throw new NotDelegatedTransaction(
-                'VeChainPrivateKeySigner._signWithDelegator()',
-                'Only one of the following options can be specified: delegatorUrl, delegatorPrivateKey',
-                undefined
-            );
-        }
-
         // Address of the origin account
-        const originAddress = addressUtils.fromPublicKey(
-            Buffer.from(secp256k1.derivePublicKey(originPrivateKey))
-        );
+        const originAddress = Address.ofPrivateKey(originPrivateKey).toString();
 
         const unsignedTx = new Transaction(unsignedTransactionBody);
 
         // Sign transaction with origin private key and delegator private key
         if (delegatorOptions?.delegatorPrivateKey !== undefined)
-            return Hex0x.of(
+            return Hex.of(
                 TransactionHandler.signWithDelegator(
                     unsignedTransactionBody,
                     originPrivateKey,
                     Buffer.from(delegatorOptions?.delegatorPrivateKey, 'hex')
                 ).encoded
-            );
+            ).toString();
 
         // Otherwise, get the signature of the delegator from the delegator endpoint
         const delegatorSignature = await DelegationHandler(
@@ -327,7 +311,9 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         const signature = Buffer.concat([originSignature, delegatorSignature]);
 
         // Return new signed transaction
-        return Hex0x.of(new Transaction(unsignedTx.body, signature).encoded);
+        return Hex.of(
+            new Transaction(unsignedTx.body, signature).encoded
+        ).toString();
     }
 }
 

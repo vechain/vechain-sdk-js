@@ -14,18 +14,23 @@ import {
     THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR
 } from '../../../fixture';
 import {
-    addressUtils,
+    Address,
+    HexUInt,
     clauseBuilder,
     coder,
     type FunctionFragment,
     TransactionHandler
 } from '@vechain/sdk-core';
 import { signTransactionTestCases } from './fixture';
+import {
+    InvalidSecp256k1PrivateKey,
+    JSONRPCInvalidParams
+} from '@vechain/sdk-errors';
 
 /**
  *VeChain base signer tests - testnet
  *
- * @group integration/signers/vechain-base-signer-testnet
+ * @group integration/network/signers/vechain-base-signer-testnet
  */
 describe('VeChain base signer tests - testnet', () => {
     /**
@@ -164,7 +169,7 @@ describe('VeChain base signer tests - testnet', () => {
                         expect(signedTx).toBeDefined();
                         expect(signedTx.body).toMatchObject(expected.body);
                         expect(signedTx.origin).toBe(
-                            addressUtils.toERC55Checksum(origin.address)
+                            Address.checksum(HexUInt.of(origin.address))
                         );
                         expect(signedTx.isDelegated).toBe(isDelegated);
                         expect(signedTx.isSigned).toBe(true);
@@ -207,6 +212,59 @@ describe('VeChain base signer tests - testnet', () => {
             );
             const address = await signer.resolveName('unknown.test-sdk.vet');
             expect(address).toBe(null);
+        });
+    });
+
+    /**
+     * Signer negative cases
+     */
+    describe('Negative cases', () => {
+        /**
+         * Wrong private key
+         */
+        test('Should throw an error when the private key is wrong', () => {
+            expect(
+                () =>
+                    new VeChainPrivateKeySigner(Buffer.from('10', 'hex'), null)
+            ).toThrowError(InvalidSecp256k1PrivateKey);
+        });
+
+        /**
+         * When thorClient / provider are not set, some function cannot be called
+         */
+        test('Signer without a provider should throw errors when call some functions', async () => {
+            const noProviderSigner = new VeChainPrivateKeySigner(
+                Buffer.from(
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
+                    'hex'
+                ),
+                null
+            );
+
+            // Impossible to call "populateTransaction" without a provider
+            await expect(
+                noProviderSigner.populateTransaction({})
+            ).rejects.toThrowError(JSONRPCInvalidParams);
+
+            // Impossible to call "estimateGas" without a provider
+            await expect(noProviderSigner.estimateGas({})).rejects.toThrowError(
+                JSONRPCInvalidParams
+            );
+
+            // Impossible to call "call" without a provider
+            await expect(noProviderSigner.call({})).rejects.toThrowError(
+                JSONRPCInvalidParams
+            );
+
+            // Impossible to call "sendTransaction" without a provider
+            await expect(
+                noProviderSigner.sendTransaction({})
+            ).rejects.toThrowError(JSONRPCInvalidParams);
+
+            // Impossible to call "signTransaction" without a provider
+            await expect(
+                noProviderSigner.signTransaction({})
+            ).rejects.toThrowError(JSONRPCInvalidParams);
         });
     });
 });

@@ -1,18 +1,18 @@
-import {
-    type ProviderInternalWallet,
-    type ProviderInternalWalletAccount
-} from '../types';
+import { Address, HexUInt } from '@vechain/sdk-core';
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { addressUtils } from '@vechain/sdk-core';
-import {
-    DelegationHandler,
-    type SignTransactionOptions
-} from '../../../../thor-client';
 import {
     type AvailableVeChainProviders,
     VeChainPrivateKeySigner,
     type VeChainSigner
 } from '../../../../signer';
+import {
+    DelegationHandler,
+    type SignTransactionOptions
+} from '../../../../thor-client';
+import {
+    type ProviderInternalWallet,
+    type ProviderInternalWalletAccount
+} from '../types';
 
 /**
  * Abstract implementation of Provider internal wallet class.
@@ -123,6 +123,7 @@ abstract class AbstractProviderInternalWallet
      *
      * @param addressOrIndex - Address or index of the account.
      * @returns The account with the given address, or null if not found.
+     * @throws {InvalidDataType}
      */
     getAccountSync(
         addressOrIndex?: string | number
@@ -135,7 +136,7 @@ abstract class AbstractProviderInternalWallet
         }
 
         // Check if the address is valid
-        if (!addressUtils.isAddress(addressOrIndex)) {
+        if (!Address.isValid(addressOrIndex)) {
             throw new InvalidDataType(
                 'AbstractProviderInternalWallet.getAccountSync()',
                 'Invalid params expected an address.',
@@ -146,8 +147,8 @@ abstract class AbstractProviderInternalWallet
         // Get the account by address
         const account = this.accounts.find(
             (account) =>
-                addressUtils.toERC55Checksum(account.address) ===
-                addressUtils.toERC55Checksum(addressOrIndex)
+                Address.checksum(HexUInt.of(account.address)) ===
+                Address.checksum(HexUInt.of(addressOrIndex))
         );
         return account ?? null;
     }

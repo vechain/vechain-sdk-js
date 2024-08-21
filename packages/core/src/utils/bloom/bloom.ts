@@ -1,13 +1,13 @@
 import * as n_utils from '@noble/curves/abstract/utils';
+import { Hex } from '../../vcdm/Hex';
+import { bloom } from '../../bloom';
 import {
     InvalidAddress,
     InvalidBloom,
     InvalidBloomParams,
     InvalidDataType
 } from '@vechain/sdk-errors';
-import { Hex, Hex0x } from '../hex';
-import { addressUtils } from '../../address-utils';
-import { bloom } from '../../bloom';
+import { Address } from '../../vcdm';
 
 /**
  * Regular expression pattern to match the uppercase hexadecimal strings
@@ -52,8 +52,9 @@ const BLOOM_DEFAULT_K = 5;
 const filterOf = (addresses: string[], k: number = 5): string => {
     const keys = new Set<Uint8Array>();
     addresses.forEach((address) => {
-        if (addressUtils.isAddress(Hex0x.canon(address))) {
-            keys.add(n_utils.hexToBytes(Hex.canon(address)));
+        const hex = Hex.of(address);
+        if (Address.isValid(hex.toString())) {
+            keys.add(hex.bytes);
         }
     });
     const generator = new bloom.Generator();
@@ -105,7 +106,7 @@ const isInBloom = (filter: string, k: number, data: string): boolean => {
         );
     }
 
-    if (typeof data !== 'string' || !Hex0x.isValid(data, true)) {
+    if (typeof data !== 'string' || !Hex.isValid(data)) {
         throw new InvalidDataType(
             'bloomUtils.isInBloom()',
             'Invalid data type. Data should be an hexadecimal string.',
@@ -120,11 +121,8 @@ const isInBloom = (filter: string, k: number, data: string): boolean => {
             { k }
         );
     }
-    const bloomFilter = new bloom.Filter(
-        n_utils.hexToBytes(Hex.canon(filter)),
-        k
-    );
-    return bloomFilter.contains(n_utils.hexToBytes(Hex.canon(data)));
+    const bloomFilter = new bloom.Filter(Hex.of(filter).bytes, k);
+    return bloomFilter.contains(Hex.of(data).bytes);
 };
 /**
  * Checks if an address is present in a Bloom Filter.
@@ -150,7 +148,7 @@ const isAddressInBloom = (
     k: number,
     address: string
 ): boolean => {
-    if (!addressUtils.isAddress(address)) {
+    if (!Address.isValid(address)) {
         throw new InvalidAddress(
             'bloomUtils.isAddressInBloom()',
             'Invalid address given as input in Bloom filter. Ensure it is a valid VeChain thor address.',

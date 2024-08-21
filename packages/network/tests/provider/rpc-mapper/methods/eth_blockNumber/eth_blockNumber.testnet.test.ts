@@ -50,7 +50,7 @@ describe('RPC Mapper - eth_blockNumber method tests', () => {
 
             expect(rpcCallUpdatedLatestBlockNumber).not.toBe('0x0');
             expect(rpcCallUpdatedLatestBlockNumber).toBe(
-                Quantity.of(Number(rpcCallLatestBlockNumber) + 1)
+                Quantity.of(Number(rpcCallLatestBlockNumber) + 1).toString()
             );
         }, 20000);
     });

@@ -79,6 +79,7 @@ function getReadProxy<TAbi extends Abi>(
  * Creates a Proxy object for transacting with contract functions, allowing for the dynamic invocation of contract transaction operations.
  * @param contract - The contract instance
  * @returns A Proxy that intercepts calls to transaction contract functions, automatically handling the invocation with the configured options.
+ * @throws {InvalidTransactionField}
  * @private
  */
 function getTransactProxy<TAbi extends Abi>(

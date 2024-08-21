@@ -8,10 +8,10 @@ import {
 } from './fixture';
 import { HttpClient, Poll, TESTNET_URL, ThorClient } from '../../../src';
 import {
-    addressUtils,
+    Hex,
+    Address,
     bloom,
     bloomUtils,
-    Hex0x,
     networkInfo
 } from '@vechain/sdk-core';
 
@@ -124,7 +124,7 @@ describe('ThorClient - Blocks Module', () => {
             thorClient.blocks
                 .getAllAddressesIntoABlock(expandedBlockDetailFixture)
                 .filter((address) => {
-                    return addressUtils.isAddress(address); // Remove empty addresses.
+                    return Address.isValid(address); // Remove empty addresses.
                 })
                 .forEach((actual) => {
                     expect(expected.includes(actual)).toBeTruthy();
@@ -135,7 +135,7 @@ describe('ThorClient - Blocks Module', () => {
             const addresses = thorClient.blocks
                 .getAllAddressesIntoABlock(expandedBlockDetailFixture)
                 .filter((address) => {
-                    return addressUtils.isAddress(address);
+                    return Address.isValid(address);
                 });
             const filter = bloomUtils.filterOf(addresses);
             addresses.forEach((address) => {
@@ -143,7 +143,7 @@ describe('ThorClient - Blocks Module', () => {
                     bloomUtils.isAddressInBloom(
                         filter,
                         bloomUtils.BLOOM_DEFAULT_K,
-                        Hex0x.canon(address)
+                        Hex.of(address).toString()
                     )
                 ).toBeTruthy();
             });
@@ -154,7 +154,7 @@ describe('ThorClient - Blocks Module', () => {
             const addresses = thorClient.blocks
                 .getAllAddressesIntoABlock(expandedBlockDetailFixture)
                 .filter((address) => {
-                    return addressUtils.isAddress(address);
+                    return Address.isValid(address);
                 });
 
             const filter = bloomUtils.filterOf(addresses, k);
@@ -163,7 +163,7 @@ describe('ThorClient - Blocks Module', () => {
                     bloomUtils.isAddressInBloom(
                         filter,
                         bloom.calculateK(k),
-                        Hex0x.canon(address)
+                        Hex.of(address).toString()
                     )
                 ).toBeTruthy();
             });

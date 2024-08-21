@@ -31,7 +31,7 @@ class HttpClient {
      * @param path - The path to access on the server relative to the base URL.
      * @param params - (Optional) Additional request parameters such as query parameters, request body, and custom headers.
      * @returns A promise that resolves to the response data from the HTTP request.
-     * @throws {HTTPClientError} Will throw an error if the request fails.
+     * @throws {InvalidHTTPRequest}
      */
     public async http(
         method: 'GET' | 'POST',
@@ -80,13 +80,15 @@ class HttpClient {
             clearTimeout(timeoutId);
 
             if (!response.ok) {
+                const message = await response.text();
                 throw new InvalidHTTPRequest(
                     'HttpClient.http()',
                     `Invalid URL: ${this.baseURL}${path}`,
                     {
                         method,
                         url: url.toString(),
-                        status: response.status
+                        status: response.status,
+                        message
                     }
                 );
             }

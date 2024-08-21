@@ -146,6 +146,10 @@ describe('secp256k1', () => {
             const result = secp256k1.randomBytes(16);
             expect(result.length).toBe(16);
         });
+
+        test('secp256k1 - randomBytes - with param', () => {
+            expect(() => secp256k1.randomBytes(28)).toBeDefined();
+        });
     });
 
     describe('secp256k1 - recover', () => {

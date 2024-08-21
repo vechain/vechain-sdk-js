@@ -1,15 +1,15 @@
-import { type ThorClient } from '../../../../../../thor-client';
-import {
-    type FilterOptions,
-    type VeChainProvider
-} from '../../../../../providers';
+import { Hex } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams,
     JSONRPCServerError,
     stringifyData
 } from '@vechain/sdk-errors';
-import { Hex } from '@vechain/sdk-core';
+import { type ThorClient } from '../../../../../../thor-client';
+import {
+    type FilterOptions,
+    type VeChainProvider
+} from '../../../../../providers';
 
 /**
  * Enumerates the types of subscriptions supported by the`eth_subscribe` RPC method.
@@ -48,9 +48,7 @@ type ethSubscribeParams = [SUBSCRIPTION_TYPE, string | string[]] | unknown[];
  *                   If the provider is not provided or is undefined, the function throws an error.
  *
  * @returns A `Promise` that resolves to a string representing the unique ID of the created subscription.
- *
- * @throws An error if the provider is undefined, indicating that the provider is not available,
- *         or if the first parameter in `params` is not a valid subscription type.
+ * @throws {JSONRPCInternalError, JSONRPCInvalidParams, JSONRPCServerError}
  */
 const ethSubscribe = async (
     thorClient: ThorClient,
@@ -102,7 +100,7 @@ const ethSubscribe = async (
 
         provider.startSubscriptionsPolling();
     }
-    const subscriptionId: string = Hex.random(16);
+    const subscriptionId: string = Hex.random(16).digits;
 
     if (params.includes(SUBSCRIPTION_TYPE.NEW_HEADS)) {
         provider.subscriptionManager.newHeadsSubscription = {

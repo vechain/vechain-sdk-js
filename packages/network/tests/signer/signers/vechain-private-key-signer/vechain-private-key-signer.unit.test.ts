@@ -1,13 +1,3 @@
-import * as n_utils from '@noble/curves/abstract/utils';
-import { addressUtils, Hex, Txt, secp256k1 } from '@vechain/sdk-core';
-import { ethers } from 'ethers';
-import {
-    EIP191_MESSAGE,
-    EIP191_PRIVATE_KEY,
-    eip712TestCases,
-    populateCallTestCases,
-    populateCallTestCasesAccount
-} from './fixture';
 import {
     afterEach,
     beforeEach,
@@ -16,6 +6,8 @@ import {
     jest,
     test
 } from '@jest/globals';
+import { Address, Hex, HexUInt, secp256k1, Txt } from '@vechain/sdk-core';
+import { ethers } from 'ethers';
 import {
     TESTNET_URL,
     ThorClient,
@@ -23,6 +15,13 @@ import {
     VeChainProvider,
     vnsUtils
 } from '../../../../src/';
+import {
+    EIP191_MESSAGE,
+    EIP191_PRIVATE_KEY,
+    eip712TestCases,
+    populateCallTestCases,
+    populateCallTestCasesAccount
+} from './fixture';
 
 /**
  * VeChain base signer tests
@@ -87,8 +86,8 @@ describe('VeChain base signer tests', () => {
             );
             const address = await signer.getAddress();
             expect(address).toBe(
-                addressUtils.toERC55Checksum(
-                    '0x3db469a79593dcc67f07de1869d6682fc1eaf535'
+                Address.checksum(
+                    HexUInt.of('0x3db469a79593dcc67f07DE1869d6682fC1eaf535')
                 )
             );
         });
@@ -236,11 +235,7 @@ describe('VeChain base signer tests', () => {
     describe('EIP-191', () => {
         test('signMessage - invalid - simulate a signature error', async () => {
             const signer = new VeChainPrivateKeySigner(
-                Buffer.from(
-                    n_utils.hexToBytes(
-                        Hex.canon(eip712TestCases.invalid.privateKey)
-                    )
-                ),
+                Buffer.from(Hex.of(eip712TestCases.invalid.privateKey).bytes),
                 provider
             );
             jest.spyOn(secp256k1, 'sign').mockImplementationOnce(() => {
@@ -256,7 +251,7 @@ describe('VeChain base signer tests', () => {
                 EIP191_PRIVATE_KEY
             ).signMessage(EIP191_MESSAGE);
             const actual = await new VeChainPrivateKeySigner(
-                Buffer.from(n_utils.hexToBytes(Hex.canon(EIP191_PRIVATE_KEY))),
+                Buffer.from(Hex.of(EIP191_PRIVATE_KEY).bytes),
                 provider
             ).signMessage(EIP191_MESSAGE);
             expect(actual).toBe(expected);
@@ -268,7 +263,7 @@ describe('VeChain base signer tests', () => {
                 EIP191_PRIVATE_KEY
             ).signMessage(message);
             const actual = await new VeChainPrivateKeySigner(
-                Buffer.from(n_utils.hexToBytes(Hex.canon(EIP191_PRIVATE_KEY))),
+                Buffer.from(Hex.of(EIP191_PRIVATE_KEY).bytes),
                 provider
             ).signMessage(message);
             expect(actual).toBe(expected);
@@ -278,11 +273,7 @@ describe('VeChain base signer tests', () => {
     describe('EIP-712', () => {
         test('signTypedData - invalid', async () => {
             const signer = new VeChainPrivateKeySigner(
-                Buffer.from(
-                    n_utils.hexToBytes(
-                        Hex.canon(eip712TestCases.invalid.privateKey)
-                    )
-                ),
+                Buffer.from(Hex.of(eip712TestCases.invalid.privateKey).bytes),
                 provider
             );
             await expect(
@@ -304,11 +295,7 @@ describe('VeChain base signer tests', () => {
             );
             expect(expected).toBe(eip712TestCases.valid.signature);
             const actual = await new VeChainPrivateKeySigner(
-                Buffer.from(
-                    n_utils.hexToBytes(
-                        Hex.canon(eip712TestCases.valid.privateKey)
-                    )
-                ),
+                Buffer.from(Hex.of(eip712TestCases.valid.privateKey).bytes),
                 provider
             ).signTypedData(
                 eip712TestCases.valid.domain,

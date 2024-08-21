@@ -1,7 +1,7 @@
 import {
-    Hex0x,
-    addressUtils,
-    blake2b256,
+    Hex,
+    Address,
+    Blake2b256,
     certificate,
     secp256k1,
     type Certificate
@@ -13,7 +13,7 @@ import {
 
 const privateKey = await secp256k1.generatePrivateKey();
 const publicKey = secp256k1.derivePublicKey(privateKey);
-const signerAddress = addressUtils.fromPublicKey(Buffer.from(publicKey));
+const signerAddress = Address.ofPublicKey(Buffer.from(publicKey)).toString();
 
 // 2 - Create a certificate
 
@@ -31,10 +31,10 @@ const cert: Certificate = {
 // 3 - Sign certificate
 
 const jsonStr = certificate.encode(cert);
-const signature = secp256k1.sign(blake2b256(jsonStr), privateKey);
+const signature = secp256k1.sign(Blake2b256.of(jsonStr).bytes, privateKey);
 
 // Add 0x to signature
-cert.signature = Hex0x.of(signature);
+cert.signature = Hex.of(signature).toString();
 
 // Verify certificate
 certificate.verify(cert);

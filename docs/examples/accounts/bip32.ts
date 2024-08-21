@@ -1,11 +1,11 @@
-import { addressUtils, HDNode, mnemonic } from '@vechain/sdk-core';
+import { Address, HDNode, Mnemonic } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // START_SNIPPET: Bip32Snippet
 
 // 1 - Generate BIP39 mnemonic words, default to 12 words (128bit strength)
 
-const randomMnemonic = mnemonic.generate();
+const randomMnemonic = Mnemonic.generate().getWords();
 
 console.log('Mnemonic words', randomMnemonic);
 // Mnemonic words: "w1 w2 ... w12"
@@ -20,7 +20,7 @@ for (let i = 0; i < 5; i++) {
     const child = hdnode.deriveChild(i);
     console.log(
         `children ${i} address`,
-        addressUtils.fromPublicKey(child.publicKey)
+        Address.ofPublicKey(child.publicKey).toString()
     );
     console.log(`children ${i} private key`, child.privateKey);
     // children 0 0x...
@@ -32,4 +32,4 @@ for (let i = 0; i < 5; i++) {
 // END_SNIPPET: Bip32Snippet
 
 // In the recovery process, validation is recommended
-expect(mnemonic.isValid(randomMnemonic)).toBeTruthy();
+expect(Mnemonic.isValid(randomMnemonic)).toBeTruthy();

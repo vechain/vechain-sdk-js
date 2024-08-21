@@ -1,8 +1,8 @@
+import { Hex } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
-import { Hex0x } from '@vechain/sdk-core';
 
 /**
  * Fixtures for positive cases
@@ -13,7 +13,7 @@ const positiveCasesFixtures = [
         input: [
             {
                 from: '0x7487d912d03ab9de786278f679592b3730bdd540',
-                to: '0x3db469a79593dcc67f07de1869d6682fc1eaf535',
+                to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
                 value: '1000000000000000000',
                 data: '0x'
             },
@@ -26,7 +26,7 @@ const positiveCasesFixtures = [
         input: [
             {
                 from: '0x7487d912d03ab9de786278f679592b3730bdd540',
-                to: '0x3db469a79593dcc67f07de1869d6682fc1eaf535',
+                to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
                 value: '1000000000000000000',
                 data: '0x'
             },
@@ -39,7 +39,7 @@ const positiveCasesFixtures = [
         input: [
             {
                 from: '0x7487d912d03ab9de786278f679592b3730bdd540',
-                to: '0x3db469a79593dcc67f07de1869d6682fc1eaf535',
+                to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
                 value: '1000000000000000000',
                 data: '0x'
             },
@@ -52,7 +52,7 @@ const positiveCasesFixtures = [
         input: [
             {
                 from: '0x7487d912d03ab9de786278f679592b3730bdd540',
-                to: '0x3db469a79593dcc67f07de1869d6682fc1eaf535',
+                to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
                 value: '1000000000000000000',
                 data: '0x'
             },
@@ -65,7 +65,7 @@ const positiveCasesFixtures = [
         input: [
             {
                 from: '0x7487d912d03ab9de786278f679592b3730bdd540',
-                to: '0x3db469a79593dcc67f07de1869d6682fc1eaf535',
+                to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
                 value: '1000000000000000000',
                 data: '0x'
             },
@@ -80,12 +80,12 @@ const positiveCasesFixtures = [
         input: [
             {
                 from: '0x7487d912d03ab9de786278f679592b3730bdd540',
-                to: '0x3db469a79593dcc67f07de1869d6682fc1eaf535',
+                to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
                 value: '1000000000000000000',
                 data: '0x'
             },
             {
-                blockHash: Hex0x.of(0)
+                blockHash: Hex.of(0).toString()
             }
         ],
         expected: '0x'
@@ -96,11 +96,11 @@ const positiveCasesFixtures = [
         input: [
             {
                 from: '0x7487d912d03ab9de786278f679592b3730bdd540',
-                to: '0x3db469a79593dcc67f07de1869d6682fc1eaf535',
+                to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
                 value: '1000000000000000000',
                 data: '0x'
             },
-            Hex0x.of(0)
+            Hex.of(0).toString()
         ],
         expected: '0x'
     },
@@ -109,7 +109,7 @@ const positiveCasesFixtures = [
         input: [
             {
                 from: '0x7487d912d03ab9de786278f679592b3730bdd540',
-                to: '0x3db469a79593dcc67f07de1869d6682fc1eaf535',
+                to: '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
                 value: '1000000000000000000',
                 data: '0x'
             },
@@ -170,4 +170,4 @@ const negativeCasesFixtures = [
     }
 ];
 
-export { positiveCasesFixtures, negativeCasesFixtures };
+export { negativeCasesFixtures, positiveCasesFixtures };

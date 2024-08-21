@@ -1,5 +1,5 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { Txt, keccak256 } from '../../src';
+import { Keccak256, Txt } from '../../src';
 
 /**
  * Simple public key and private key pair with corresponding signature
@@ -23,7 +23,7 @@ const signature = n_utils.hexToBytes(
 /**
  * Simple message hashes
  */
-const messageHashBuffer = keccak256('hello world');
+const messageHashBuffer = Keccak256.of(Txt.of('hello world').bytes).bytes;
 const validMessageHashes = [messageHashBuffer];
 const invalidMessageHashes = [Txt.of('some_invalid_stuff').bytes];
 

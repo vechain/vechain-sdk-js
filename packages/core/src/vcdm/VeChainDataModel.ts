@@ -1,12 +1,14 @@
 /**
  * Root interface for all the classes part of the `VeChain Data Model`
  * to provide a coherent API to represent, encode, and cast data among data types.
+ *
+ * @interface
  */
 export interface VeChainDataModel<T> {
     // Properties.
     /**
      * Return this instance cast to a big integer value
-     * @throws InvalidCastType if this object can't cast to a big integer.
+     * @throws InvalidOperation if this object can't cast to a big integer.
      */
     get bi(): bigint;
 
@@ -17,7 +19,7 @@ export interface VeChainDataModel<T> {
 
     /**
      * Return this object cast to number value.
-     * @throws InvalidCastType if this object can't cast to a big integer.
+     * @throws InvalidOperation if this object can't cast to a big integer.
      */
     get n(): number;
 

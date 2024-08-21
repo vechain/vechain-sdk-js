@@ -1,4 +1,4 @@
-import { InvalidCastType } from '@vechain/sdk-errors';
+import { InvalidOperation } from '@vechain/sdk-errors';
 import { type VeChainDataModel } from './VeChainDataModel';
 
 /**
@@ -50,16 +50,17 @@ class Txt extends String implements VeChainDataModel<Txt> {
      * Converts the current Txt string to a BigInt.
      *
      * @returns {bigint} The BigInt representation of the Txt string.
-     * @throws {InvalidCastType} If the conversion to BigInt fails because this Txt string doesn't represent an integer.
+     * @throws {InvalidOperation} If the conversion to BigInt fails because this Txt string doesn't represent an integer.
      */
     get bi(): bigint {
         try {
             return BigInt(this.toString());
         } catch (e) {
-            throw new InvalidCastType<Txt>(
-                'Txt.bi',
-                "can't cast to big integer",
-                this,
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+            throw new InvalidOperation(
+                'Txt.bi()',
+                "Can't cast to big integer",
+                { txt: this.toString() },
                 e
             );
         }
@@ -83,7 +84,7 @@ class Txt extends String implements VeChainDataModel<Txt> {
      * Converts the current Txt string to a number.
      *
      * @returns {number} The numeric value of the Txt string.
-     * @throws {InvalidCastType} If the conversion to number fails because this Txt string doesn't represent a decimal number.
+     * @throws {InvalidOperation} If the conversion to number fails because this Txt string doesn't represent a decimal number.
      */
     get n(): number {
         return Number(this.toString());

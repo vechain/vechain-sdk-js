@@ -4,7 +4,7 @@ import {
     JSONRPCInvalidParams,
     stringifyData
 } from '@vechain/sdk-errors';
-import { Hex0x } from '@vechain/sdk-core';
+import { Hex } from '@vechain/sdk-core';
 import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
@@ -15,27 +15,30 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
  *                 * params[0]: The signed transaction data as a hex string.
- *
- * @returns void
- *
- * @throws {ProviderRpcError} - Will throw an error if the transaction fails.
- * @throws {InvalidDataTypeError} - Will throw an error if the params are invalid.
+ * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
  */
 const ethSendRawTransaction = async (
     thorClient: ThorClient,
     params: unknown[]
 ): Promise<string> => {
     // Input validation
-    if (
-        params.length !== 1 ||
-        (typeof params[0] !== 'string' && !Hex0x.isValid(params[0] as string))
-    )
+    if (params.length !== 1 || typeof params[0] !== 'string')
         throw new JSONRPCInvalidParams(
-            'eth_sendRawTransaction',
+            'eth_sendRawTransaction()',
             -32602,
             `Invalid input params for "eth_sendRawTransaction" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
+
+    // Invalid transaction encoded data
+    if (!Hex.isValid0x(params[0])) {
+        throw new JSONRPCInvalidParams(
+            'eth_sendRawTransaction()',
+            -32602,
+            'Invalid transaction encoded data given as input. Input must be a hex string.',
+            { params }
+        );
+    }
 
     try {
         const [signedTransactionData] = params as [string];

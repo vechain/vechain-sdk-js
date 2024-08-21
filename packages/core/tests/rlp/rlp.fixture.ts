@@ -4,21 +4,21 @@ import { RLP_CODER, type RLPProfile, type RLPValidObject } from '../../src';
 const encodeTestCases = [
     {
         input: [1, 2, 3, [4, 5]],
-        expected: 'c6010203c20405',
+        expected: '0xc6010203c20405',
         description: 'array with multiple and nested items'
     },
-    { input: 42, expected: '2a', description: 'single value' },
-    { input: [], expected: 'c0', description: 'empty array' }
+    { input: 42, expected: '0x2a', description: 'single value' },
+    { input: [], expected: '0xc0', description: 'empty array' }
 ];
 
 /* Simple RLP_CODER decode */
 const decodeTestCases = [
     {
-        input: '2a',
+        input: '0x2a',
         expected: Buffer.from([42]),
         description: 'single value'
     },
-    { input: 'c0', expected: [], description: 'empty array' }
+    { input: '0xc0', expected: [], description: 'empty array' }
 ];
 
 /* NumericKind encode */
@@ -26,55 +26,55 @@ const numericKindEncodeTestCases = [
     {
         kind: new RLP_CODER.NumericKind(8),
         data: '0x0',
-        expected: '',
+        expected: '0x',
         description: 'zero hex string'
     },
     {
         kind: new RLP_CODER.NumericKind(8),
         data: '0x123',
-        expected: '0123',
+        expected: '0x0123',
         description: 'hex string'
     },
     {
         kind: new RLP_CODER.NumericKind(8),
         data: '0',
-        expected: '',
+        expected: '0x',
         description: 'zero number string'
     },
     {
         kind: new RLP_CODER.NumericKind(8),
         data: '100',
-        expected: '64',
+        expected: '0x64',
         description: 'number string'
     },
     {
         kind: new RLP_CODER.NumericKind(8),
         data: 0,
-        expected: '',
+        expected: '0x',
         description: 'zero number'
     },
     {
         kind: new RLP_CODER.NumericKind(8),
         data: 0x123,
-        expected: '0123',
+        expected: '0x0123',
         description: 'number in hex format'
     },
     {
         kind: new RLP_CODER.NumericKind(8),
         data: 12524,
-        expected: '30ec',
+        expected: '0x30ec',
         description: 'number non hex format'
     },
     {
         kind: new RLP_CODER.NumericKind(1),
         data: '5',
-        expected: '05',
+        expected: '0x05',
         description: 'number in hex format'
     },
     {
         kind: new RLP_CODER.NumericKind(1),
         data: 255,
-        expected: 'ff',
+        expected: '0xff',
         description: 'number non hex format'
     }
 ];
@@ -171,7 +171,7 @@ const hexBlobKindEncodeTestCases = [
     {
         kind: new RLP_CODER.HexBlobKind(),
         data: '0x010203',
-        expected: '010203',
+        expected: '0x010203',
         description: 'hex string'
     }
 ];
@@ -199,7 +199,7 @@ const fixedHexBlobKindEncodeTestCases = [
     {
         kind: new RLP_CODER.FixedHexBlobKind(1),
         data: '0x01',
-        expected: '01',
+        expected: '0x01',
         description: 'hex string'
     }
 ];
@@ -296,13 +296,13 @@ const compactFixedHexBlobKindEncodeTestCases = [
         kind: new RLP_CODER.CompactFixedHexBlobKind(4),
         data: '0x00112233',
         description: 'buffer with data',
-        expected: '112233'
+        expected: '0x112233'
     },
     {
         kind: new RLP_CODER.CompactFixedHexBlobKind(1),
         data: '0x00',
         description: 'buffer with data',
-        expected: ''
+        expected: '0x'
     }
 ];
 
@@ -648,19 +648,19 @@ const encodeNumericProfileTestCases = [
     {
         profile: numericProfile,
         data: numericData,
-        expected: 'd10102cec60304c3c20708c60506c3c2800a',
+        expected: '0xd10102cec60304c3c20708c60506c3c2800a',
         description: 'encode numeric profile'
     },
     {
         profile: numericProfileWithMaxBytes,
         data: numericDataWithMaxBytes,
-        expected: 'c90102c6c20304c20506',
+        expected: '0xc90102c6c20304c20506',
         description: 'encode numeric profile with max bytes'
     },
     {
         profile: numericProfileWithMaxBytes,
         data: numericDataWithString,
-        expected: 'c90102c6c20304c20506',
+        expected: '0xc90102c6c20304c20506',
         description: 'encode numeric profile with string'
     }
 ];
@@ -669,7 +669,7 @@ const encodeBufferProfileTestCases = [
     {
         profile: bufferProfile,
         data: bufferData,
-        expected: 'c88301020383040506',
+        expected: '0xc88301020383040506',
         description: 'encode buffer profile'
     }
 ];
@@ -678,7 +678,7 @@ const encodeHexBlobProfileTestCases = [
     {
         profile: hexBlobProfile,
         data: hexBlobData,
-        expected: 'c88301020383040506',
+        expected: '0xc88301020383040506',
         description: 'encode hex blob profile'
     }
 ];
@@ -687,7 +687,7 @@ const encodeFixedHexBlobProfileTestCases = [
     {
         profile: fixedHexBlobProfile,
         data: fixedHexBlobData,
-        expected: 'c50183010203',
+        expected: '0xc50183010203',
         description: 'encode fixed hex blob profile'
     }
 ];
@@ -696,31 +696,31 @@ const encodeOptionalFixedHexBlobProfileTestCases = [
     {
         profile: optionalFixedHexBlobProfile,
         data: optionalFixedHexBlobData,
-        expected: 'c50183010203',
+        expected: '0xc50183010203',
         description: 'encode nullable fixed hex blob profile'
     },
     {
         profile: optionalFixedHexBlobProfile,
         data: optionalFixedHexBlobDataNull,
-        expected: 'c28080',
+        expected: '0xc28080',
         description: 'encode nullable fixed hex blob profile with null'
     },
     {
         profile: optionalFixedHexBlobProfile,
         data: optionalFixedHexBlobDataMixed,
-        expected: 'c20180',
+        expected: '0xc20180',
         description: 'encode nullable fixed hex blob profile with mixed data'
     },
     {
         profile: optionalFixedHexBlobProfile,
         data: optionalFixedHexBlobDataMixed2,
-        expected: 'c58083010203',
+        expected: '0xc58083010203',
         description: 'encode nullable fixed hex blob profile with mixed data 2'
     },
     {
         profile: optionalFixedHexBlobProfile,
         data: optionalFixedHexBlobDataMixed3,
-        expected: 'c28080',
+        expected: '0xc28080',
         description: 'encode nullable fixed hex blob profile with mixed data 3'
     }
 ];
@@ -729,7 +729,7 @@ const encodeCompactFixedHexBlobProfileTestCases = [
     {
         profile: compactFixedHexBlobProfile,
         data: compactFixedHexBlobData,
-        expected: 'c50183010203',
+        expected: '0xc50183010203',
         description: 'encode compact fixed hex blob profile'
     }
 ];
@@ -738,14 +738,14 @@ const encodeMixedKindProfileTestCases = [
     {
         profile: mixedKindProfile1,
         data: mixedKindData1,
-        expected: 'd17b8412345678cac4118204d2c41282162e',
+        expected: '0xd17b8412345678cac4118204d2c41282162e',
         description: 'encode mixed kind profile'
     },
     {
         profile: mixedKindProfile2,
         data: mixedKindData2,
         expected:
-            'f8530184aabbccdd20f840df947567d83b7b8d80addcb281a71d54fc7b3364ffed82271086000000606060df947567d83b7b8d80addcb281a71d54fc7b3364ffed824e208600000060606081808252088083bc614e',
+            '0xf8530184aabbccdd20f840df947567d83b7b8d80addcb281a71d54fc7b3364ffed82271086000000606060df947567d83b7b8d80addcb281a71d54fc7b3364ffed824e208600000060606081808252088083bc614e',
         description: 'encode mixed kind profile with transaction like data'
     }
 ];

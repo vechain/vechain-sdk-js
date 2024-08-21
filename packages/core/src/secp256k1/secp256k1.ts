@@ -1,12 +1,13 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { Hex, SIGNATURE_LENGTH } from '../utils';
+import { Hex } from '../vcdm/Hex';
+import { SIGNATURE_LENGTH } from '../utils';
+import { randomBytes as _randomBytes } from '@noble/hashes/utils';
+import { secp256k1 as n_secp256k1 } from '@noble/curves/secp256k1';
 import {
     InvalidSecp256k1MessageHash,
     InvalidSecp256k1PrivateKey,
     InvalidSecp256k1Signature
 } from '@vechain/sdk-errors';
-import { randomBytes as _randomBytes } from '@noble/hashes/utils';
-import { secp256k1 as n_secp256k1 } from '@noble/curves/secp256k1';
 
 /**
  * Compresses a public key.
@@ -113,7 +114,7 @@ function inflatePublicKey(publicKey: Uint8Array): Uint8Array {
         // To inflate.
         const x = publicKey.slice(0, 33);
         const p = n_secp256k1.ProjectivePoint.fromAffine(
-            n_secp256k1.ProjectivePoint.fromHex(Hex.of(x)).toAffine()
+            n_secp256k1.ProjectivePoint.fromHex(Hex.of(x).digits).toAffine()
         );
         return p.toRawBytes(false);
     } else {

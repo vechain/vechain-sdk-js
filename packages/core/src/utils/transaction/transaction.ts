@@ -1,8 +1,8 @@
-import { addressUtils } from '../../address-utils';
-import { type TransactionClause } from '../../transaction';
-import { TRANSACTIONS_GAS_CONSTANTS } from '../const';
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { Hex0x } from '../hex';
+import { type TransactionClause } from '../../transaction';
+import { Address } from '../../vcdm';
+import { Hex } from '../../vcdm/Hex';
+import { TRANSACTIONS_GAS_CONSTANTS } from '../const';
 
 /**
  * Calculates intrinsic gas that a tx costs with the given set of clauses.
@@ -26,7 +26,7 @@ function intrinsicGas(clauses: TransactionClause[]): number {
     return clauses.reduce((sum, clause: TransactionClause) => {
         if (clause.to !== null) {
             // Invalid address or no vet.domains name
-            if (!addressUtils.isAddress(clause.to) && !clause.to.includes('.'))
+            if (!Address.isValid(clause.to) && !clause.to.includes('.'))
                 throw new InvalidDataType(
                     'TransactionUtils.intrinsicGas()',
                     `Invalid data type in clause. Each 'to' field must be a valid address.`,
@@ -51,7 +51,7 @@ function intrinsicGas(clauses: TransactionClause[]): number {
  */
 function _calculateDataUsedGas(data: string): number {
     // Invalid data
-    if (data !== '' && !Hex0x.isValid(data))
+    if (data !== '' && !Hex.isValid(data))
         throw new InvalidDataType(
             '_calculateDataUsedGas()',
             `Invalid data type for gas calculation. Data should be a hexadecimal string.`,

@@ -27,6 +27,7 @@ async function sleep(delayInMilliseconds: number): Promise<void> {
  * @param options - Polling options. @see {SyncPollInputOptions} type. If not specified, the default values are used. In particular: `requestIntervalInMilliseconds` is 1000, `maximumIterations` is not specified
  *                  and `maximumWaitingTimeInMilliseconds` is not specified.
  * @returns An object with a `waitUntil` method. It blocks execution until the condition is met. When the condition is met, it returns the result of the poll.
+ * @throws {InvalidDataType, PollExecution}
  */
 function SyncPoll<TReturnType>(
     pollingFunction: () => Promise<TReturnType> | TReturnType,

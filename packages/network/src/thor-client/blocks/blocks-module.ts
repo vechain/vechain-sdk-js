@@ -7,7 +7,7 @@ import {
     type TransactionsExpandedBlockDetail,
     type WaitForBlockOptions
 } from './types';
-import { revisionUtils, type TransactionClause } from '@vechain/sdk-core';
+import { Revision, type TransactionClause } from '@vechain/sdk-core';
 import { type ThorClient } from '../thor-client';
 
 /** The `BlocksModule` class encapsulates functionality for interacting with blocks
@@ -76,6 +76,7 @@ class BlocksModule {
      *
      * @param revision - The block number or ID to query details for.
      * @returns A promise that resolves to an object containing the details of the compressed block.
+     * @throws {InvalidDataType}
      */
     public async getBlockCompressed(
         revision: string | number
@@ -84,7 +85,7 @@ class BlocksModule {
         if (
             revision !== null &&
             revision !== undefined &&
-            !revisionUtils.isRevisionBlock(revision)
+            !Revision.isValid(revision)
         ) {
             throw new InvalidDataType(
                 'BlocksModule.getBlockCompressed()',
@@ -103,6 +104,7 @@ class BlocksModule {
      *
      * @param revision - The block number or ID to query details for.
      * @returns A promise that resolves to an object containing the details of the expanded block.
+     * @throws {InvalidDataType}
      */
     public async getBlockExpanded(
         revision: string | number
@@ -111,7 +113,7 @@ class BlocksModule {
         if (
             revision !== null &&
             revision !== undefined &&
-            !revisionUtils.isRevisionBlock(revision)
+            !Revision.isValid(revision)
         ) {
             throw new InvalidDataType(
                 'BlocksModule.getBlockExpanded()',
@@ -196,6 +198,7 @@ class BlocksModule {
      * @param expanded - A boolean indicating whether to wait for an expanded block.
      * @param options - (Optional) Allows to specify timeout and interval in milliseconds
      * @returns A promise that resolves to an object containing the compressed block.
+     * @throws {InvalidDataType}
      */
     private async _waitForBlock(
         blockNumber: number,

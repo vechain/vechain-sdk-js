@@ -142,6 +142,6 @@ const createWalletFromHardhatNetworkConfigNegativeCasesFixture = [
 ];
 
 export {
-    createWalletFromHardhatNetworkConfigPositiveCasesFixture,
-    createWalletFromHardhatNetworkConfigNegativeCasesFixture
+    createWalletFromHardhatNetworkConfigNegativeCasesFixture,
+    createWalletFromHardhatNetworkConfigPositiveCasesFixture
 };

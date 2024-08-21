@@ -1,7 +1,8 @@
+import { Hex } from '../../src/vcdm/Hex';
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
-    addressUtils,
-    Hex,
+    Address,
+    HexUInt,
     keystore,
     type Keystore,
     secp256k1
@@ -41,12 +42,11 @@ import {
 
             // Verify keystore
             expect(myKeystore.version).toBe(3);
-            const keyStoreAddress = addressUtils.toERC55Checksum(
-                `0x` + myKeystore.address
+            const keyStoreAddress = Address.checksum(
+                HexUInt.of(myKeystore.address)
             );
-            const addressFromPrivateKey = addressUtils.fromPublicKey(
-                Buffer.from(secp256k1.derivePublicKey(privateKey))
-            );
+            const addressFromPrivateKey =
+                Address.ofPrivateKey(privateKey).toString();
             expect(keyStoreAddress).toEqual(addressFromPrivateKey);
         });
 
@@ -83,9 +83,9 @@ import {
                 encryptionPassword
             );
 
-            // Verify private key (slice(2) is used to remove 0x prefix)
-            expect(decryptedKeystore.privateKey.slice(2)).toEqual(
-                Hex.of(privateKey)
+            // Verify private key
+            expect(decryptedKeystore.privateKey).toEqual(
+                Hex.of(privateKey).toString()
             );
         });
 

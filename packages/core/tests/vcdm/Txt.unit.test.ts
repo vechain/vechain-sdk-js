@@ -1,5 +1,5 @@
 import { Txt } from '../../src';
-import { InvalidCastType } from '@vechain/sdk-errors';
+import { InvalidOperation } from '@vechain/sdk-errors';
 import { TextEncoder } from 'util';
 import { describe, expect, test } from '@jest/globals';
 
@@ -13,7 +13,7 @@ describe('Txt class tests', () => {
     describe('VeChain Data Model tests', () => {
         test('bi getter should throw an error if a decimal value is cast to big integer', () => {
             const txt = Txt.of('12.3');
-            expect(() => txt.bi).toThrow(InvalidCastType);
+            expect(() => txt.bi).toThrow(InvalidOperation);
         });
 
         test('bi getter should return a BigInt representation of the integer value', () => {

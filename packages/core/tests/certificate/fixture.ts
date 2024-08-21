@@ -1,5 +1,5 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { secp256k1, addressUtils } from '../../src';
+import { secp256k1, Address } from '../../src';
 
 /**
  * https://en.wikipedia.org/wiki/Unicode_compatibility_characters
@@ -24,9 +24,9 @@ const cert = {
     },
     domain: 'localhost',
     timestamp: 1545035330,
-    signer: addressUtils.fromPublicKey(
+    signer: Address.ofPublicKey(
         secp256k1.derivePublicKey(certPrivateKey)
-    )
+    ).toString()
 };
 
 export { certPrivateKey, cert };

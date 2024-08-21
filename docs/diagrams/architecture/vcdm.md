@@ -1,23 +1,65 @@
 ```mermaid
 classDiagram
-    class Account
-    class Address
-    class Blake2b256
-    class BloomFilter
-    class Contract
-    class HDNode
-    class Hash {
+    class Account {
         <<abstract>>
+        #address: Address
+        #balance: Currency
+        #mnemonic: Mnemonic
     }
-    class Hex
-    class Keccak256 
-    class Keystore
-    class Quantity
-    class Revision
-    class Sha256
+    class ExternallyOwnedAccount
+    class Contract
+    class Currency {
+        <<interface>>
+    }
+    class Address {
+        +string checksum(HexUInt huint)$
+        +boolean isValid(string exp)$
+        +Address of(bigint|number|string|Uint8Array|HexUInt exp)$
+        +Address ofPrivateKey(Uint8Array privateKey, boolean: isCompressed)$
+        +Address ofPublicKey(Uint8Array privateKey)$
+    }
+    class Blake2b256 {
+        +Blake2b256 of(bigint|string|Uint8Array|Hex exp)$
+    }
+    class Hash {
+        <<interface>>
+    }
+    class Hex {
+        +Hex abs
+        +number sign
+        +Hex alignToBytes()
+        +Hex fit(number digits)
+        +boolean isValid(string exp)$
+        +boolean isValid0x(string exp)$
+        +Hex of(bigint|number|string|Uint8Array exp)$
+        +Hex random(number bytes)$
+    }
+    class HexInt {
+        +HexInt of(bigint|number|string|Uint8Array|Hex exp)$
+    }
+    class HexUInt {
+        +HexUInt of(bigint|number|string|Uint8Array|HexInt exp)$
+    }
+    class Keccak256 {
+        +Keccak256 of(bigint|number|string|Uint8Array|Hex exp)$
+    }
+    class Mnemonic {
+        +Mnemonic of(string exp)$
+    }
+    class Quantity {
+        +Quantity of(bigint|number exp)$
+    }
+    class Revision {
+        +boolean isValid(number|string value)$
+        +Revision of(bigint|number|string|Uint8Array|Hex value)$
+    }
+    class Sha256 {
+        +Sha256 of(bigint|number|string|Uint8Array|Hex exp)$
+    }
     class String
-    class Txt
-    class String
+    class Txt {
+        +Txt of(bigint|number|string|Uint8Array exp)$
+    }
     class VeChainDataModel{
         <<interface>>
       +bigint bi
@@ -25,22 +67,26 @@ classDiagram
       +number n
       +number compareTo(~T~ that)
       +boolean isEqual(~T~ that)
-      +VeChainDataModel of(bigint|number|string|Uint8Array exp)$
+      +boolean isNumber()
     }
-    Address <|-- Account
-    Address <|-- Contract
-    Hash <|-- Blake2b256
-    Hash <|-- Keccak256
-    Hash <|-- Sha256
-    Hex <|-- Address
-    Hex <|-- BloomFilter
-    Hex <|-- HDNode
-    Hex <|-- Hash
-    Hex <|-- Keystore
-    Hex <|-- Quantity
-    Hex <|-- Revision
-    String <|-- Hex
+    Account "1" ..|> "1" Address : has
+    Account "1" ..|> "1" Mnemonic : has
+    Account "1" ..|> "1" Currency : has
+    Account <|-- ExternallyOwnedAccount
+    Account <|-- Contract
+    Hash <|.. Blake2b256
+    Hash <|.. Keccak256
+    Hash <|.. Sha256
+    Hex <|-- HexInt
+    HexInt <|-- HexUInt
+    HexUInt <|-- Address
+    HexUInt <|-- Blake2b256
+    HexUInt <|-- Keccak256
+    HexUInt <|-- Quantity
+    HexUInt <|-- Sha256
     String <|-- Txt
+    Txt <|-- Revision
+    Txt <|-- Mnemonic
     VeChainDataModel <|.. Hex
     VeChainDataModel <|.. Txt
 ```

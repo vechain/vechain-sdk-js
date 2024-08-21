@@ -1,12 +1,12 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 
+import { HardhatPluginError } from 'hardhat/plugins';
 import { resetHardhatContext } from 'hardhat/plugins-testing';
 import {
     type HardhatRuntimeEnvironment,
     type HttpNetworkConfig
 } from 'hardhat/types';
 import { setHardhatContext } from './test-utils';
-import { HardhatPluginError } from 'hardhat/plugins';
 
 /**
  * Tests for hardhat plugin with custom network configuration.
