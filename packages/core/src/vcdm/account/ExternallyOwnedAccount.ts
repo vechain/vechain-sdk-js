@@ -13,7 +13,7 @@ class ExternallyOwnedAccount extends Account {
     readonly type: AccountType = 'EOA';
 
     private readonly mnemonic: Mnemonic;
-    // TODO: Review whether we need to add the SECP256k1 key pair here.
+    // Review whether we need to add the SECP256k1 key pair here #1122
 
     constructor(
         address: Address,

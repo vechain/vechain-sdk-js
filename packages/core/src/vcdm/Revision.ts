@@ -82,7 +82,7 @@ class Revision extends Txt {
     }
 }
 
-// TODO: Backwards compatibility, remove when it is matured enough
+// Backwards compatibility, remove when it is matured enough #1184
 
 const revisionUtils = {
     isRevisionAccount: (revision: string | number): boolean =>

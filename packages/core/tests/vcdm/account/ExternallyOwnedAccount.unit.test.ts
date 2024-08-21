@@ -3,7 +3,7 @@ import { Address, Mnemonic } from '../../../src';
 import { Account, ExternallyOwnedAccount } from '../../../src/vcdm/account';
 import { type Currency } from '../../../src/vcdm/Currency';
 
-// TODO: Use actual Currency subclasses once they are implemented.
+// Use actual Currency subclasses once they are implemented.
 const mockCurrency: Currency = {
     compareTo: jest.fn().mockReturnValue(0),
     bi: 0n,

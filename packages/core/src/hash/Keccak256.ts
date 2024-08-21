@@ -36,7 +36,7 @@ class Keccak256 extends HexUInt implements Hash {
     }
 }
 
-// TODO: Backwards compatibility, remove in future release.
+// Backwards compatibility, remove in future release #1184
 
 const keccak256 = (
     hex: string,

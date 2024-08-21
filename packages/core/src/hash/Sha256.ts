@@ -34,7 +34,7 @@ class Sha256 extends HexUInt implements Hash {
     }
 }
 
-// TODO: Backwards compatibility, remove in future release.
+// Backwards compatibility, remove in future release #1184
 
 const sha256 = (
     hex: string,

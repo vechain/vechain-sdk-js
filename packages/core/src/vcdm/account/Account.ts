@@ -13,7 +13,7 @@ type AccountType = 'EOA' | 'Contract';
 abstract class Account implements VeChainDataModel<Account> {
     public readonly address: Address;
     public readonly balance: Currency;
-    // TODO: Replace the string array with a Transaction class.
+    // Replace the string array with a Transaction class #1162
     public readonly transactions: string[];
     protected abstract get type(): AccountType;
 
@@ -73,7 +73,7 @@ abstract class Account implements VeChainDataModel<Account> {
      * @param {string} transaction The transaction to add.
      */
     public addTransaction(transaction: string): void {
-        // TODO: replace body once Transaction class is implemented.
+        // Replace body once Transaction class is implemented #1162
         this.transactions.push(transaction);
     }
 

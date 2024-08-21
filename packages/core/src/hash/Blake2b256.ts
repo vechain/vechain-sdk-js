@@ -1,6 +1,6 @@
-import { Hex, HexUInt, Txt, type Hash } from '../vcdm';
-import { InvalidOperation } from '@vechain/sdk-errors';
 import { blake2b as nh_blake2b } from '@noble/hashes/blake2b';
+import { InvalidOperation } from '@vechain/sdk-errors';
+import { Hex, HexUInt, Txt, type Hash } from '../vcdm';
 /**
  * Represents the result of an [BLAKE](https://en.wikipedia.org/wiki/BLAKE_(hash_function)) [BlAKE2B 256](https://www.blake2.net/) hash operation.
  *
@@ -38,7 +38,7 @@ class Blake2b256 extends HexUInt implements Hash {
     }
 }
 
-// TODO: Backwards compatibility, remove in future release.
+// Backwards compatibility, remove in future release #1184
 
 const blake2b256 = (
     hex: string,
