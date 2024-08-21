@@ -21,7 +21,7 @@ describe('Error package Available errors test - RPC Proxy', () => {
                 throw new InvalidCommandLineArguments(
                     'method',
                     'message',
-                    { flags: ['flag1', 'flag2'], message: 'Some message' },
+                    { flag: 'flag1', value: 'value1' },
                     innerError
                 );
             }).toThrowError(VechainSDKError);

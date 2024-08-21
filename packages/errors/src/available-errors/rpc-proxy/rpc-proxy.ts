@@ -7,8 +7,8 @@ import { VechainSDKError } from '../sdk-error';
  * * When the RPC proxy is called with invalid command line arguments
  */
 class InvalidCommandLineArguments extends VechainSDKError<{
-    flags: string[];
-    message: string;
+    flag: string;
+    value: string;
 }> {}
 
 /**
