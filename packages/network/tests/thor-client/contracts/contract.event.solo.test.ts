@@ -144,10 +144,10 @@ describe('ThorClient - ERC20 Contracts', () => {
             )
         ).wait();
 
-        const transferCriteria = contract.criteria.Transfer(
+        const transferCriteria = contract.criteria.Transfer([
             undefined,
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
-        );
+        ]);
 
         const events = await thorSoloClient.logs.filterEventLogs({
             criteriaSet: [transferCriteria]
@@ -211,10 +211,10 @@ describe('ThorClient - ERC20 Contracts', () => {
             )
         ).wait();
 
-        const transferCriteria = contract.criteria.Transfer(
+        const transferCriteria = contract.criteria.Transfer([
             undefined,
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
-        );
+        ]);
 
         const events = await thorSoloClient.logs.filterEventLogs({
             criteriaSet: [transferCriteria]
@@ -265,10 +265,10 @@ describe('ThorClient - ERC20 Contracts', () => {
             )
         ).wait();
 
-        const transferCriteria = contract.criteria.Transfer(
+        const transferCriteria = contract.criteria.Transfer([
             undefined,
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
-        );
+        ]);
 
         const approvalCriteria = contract.criteria.Approval();
 
@@ -323,15 +323,15 @@ describe('ThorClient - ERC20 Contracts', () => {
             )
         ).wait();
 
-        const transferCriteria = contract.criteria.Transfer(
+        const transferCriteria = contract.criteria.Transfer([
             undefined,
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
-        );
+        ]);
 
-        const transferCriteriaDelegator = contract.criteria.Transfer(
+        const transferCriteriaDelegator = contract.criteria.Transfer([
             undefined,
             TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
-        );
+        ]);
 
         const events = await thorSoloClient.logs.filterEventLogs({
             criteriaSet: [transferCriteria, transferCriteriaDelegator]
@@ -408,15 +408,15 @@ describe('ThorClient - ERC20 Contracts', () => {
             )
         ).wait();
 
-        const transferCriteria = contract.criteria.Transfer(
+        const transferCriteria = contract.criteria.Transfer([
             undefined,
             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
-        );
+        ]);
 
-        const transferCriteriaDelegator = contract.criteria.Transfer(
+        const transferCriteriaDelegator = contract.criteria.Transfer([
             undefined,
             TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
-        );
+        ]);
 
         const events = await thorSoloClient.logs.filterEventLogs({
             criteriaSet: [transferCriteria, transferCriteriaDelegator]
@@ -478,10 +478,9 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         await (await contractEventExample.transact.setValue(3000n)).wait();
 
-        const transferCriteria = contractERC20.criteria.Transfer(
-            undefined,
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
-        );
+        const transferCriteria = contractERC20.criteria.Transfer({
+            to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+        });
 
         const valueCriteria = contractEventExample.criteria.ValueSet();
 
@@ -540,10 +539,9 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         await (await contractEventExample.transact.setValue(3000n)).wait();
 
-        const transferCriteria = contractERC20.criteria.Transfer(
-            undefined,
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
-        );
+        const transferCriteria = contractERC20.criteria.Transfer({
+            to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+        });
 
         const valueCriteria = contractEventExample.criteria.ValueSet();
 

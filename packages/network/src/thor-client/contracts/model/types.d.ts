@@ -12,7 +12,6 @@ import {
     type ExtractAbiFunctionNames,
     type ExtractAbiFunction,
     type AbiParametersToPrimitiveTypes,
-    type ExtractAbiEventNames,
     type AbiFunction,
     type ExtractAbiEvent
 } from 'abitype';
@@ -116,15 +115,13 @@ type ContractFunctionTransact<
 >;
 
 /**
- * Defines a mapping of contract event names to their corresponding filter contract functions.
- * Each function in this record is expected to return a `ContractFilter` instance, which can be used to
- * filter events emitted by the contract.
- *
+ * Defines a mapping of contract event names to their corresponding filter criteria contract functions.
+ * Each function in this record is expected to return a value of type `ContractFilter`, which represents
+ * a filter that can be used to query events emitted by the contract.
  * The keys of this record represent the names of the contract events, and the values are the contract
- * functions themselves, adhering to the `ContractEventSync` type with `ContractFilter` as the return type.
- *
+ * functions themselves.
  * @template TAbi - The ABI (Application Binary Interface) of the contract.
- * @template TEventName - The names of the events extracted from the ABI.
+ * @template TEventNames - The names of the events extracted from the ABI.
  * @template TAbiEvent - The event type extracted from the ABI for a given event name.
  */
 type ContractFunctionFilter<
@@ -133,7 +130,7 @@ type ContractFunctionFilter<
     TABIEvent extends AbiFunction = ExtractAbiEvent<TAbi, TEventNames>
 > = {
     [K in TEventNames]: (
-        args:
+        args?:
             | GetEventArgs<TAbi, K>
             | Partial<
                   AbiParametersToPrimitiveTypes<TABIEvent['inputs'], 'inputs'>
@@ -161,20 +158,26 @@ type ContractFunctionClause<
 /**
  * Defines a mapping of contract event names to their corresponding filter criteria contract functions.
  * Each function in this record is expected to return a value of type `FilterCriteria`, which represents
- * the criteria used to filter events emitted by the contract.
- *
+ * a filter that can be used to query events emitted by the contract.
  * The keys of this record represent the names of the contract events, and the values are the contract
- * functions themselves, adhering to the `ContractEventSync` type with `FilterCriteria` as the return type.
- *
+ * functions themselves.
  * @template TAbi - The ABI (Application Binary Interface) of the contract.
- * @template TEventName - The names of the events extracted from the ABI.
- * @template TAbiEvent - The event type extracted from the ABI for a given event name.
+ * @template TEventNames - The names of the events extracted from the ABI.
+ * @template TABIEvent - The event type extracted from the ABI for a given event name.
  */
 type ContractFunctionCriteria<
     TAbi extends Abi,
-    TEventName extends ExtractAbiEventNames<TAbi>,
-    TAbiEvent extends AbiFunction = ExtractAbiEvent<TAbi, TEventName>
-> = Record<TEventName, ContractEventSync<FilterCriteria, TAbiEvent>>;
+    TEventNames extends string,
+    TABIEvent extends AbiFunction = ExtractAbiEvent<TAbi, TEventNames>
+> = {
+    [K in TEventNames]: (
+        args?:
+            | GetEventArgs<TAbi, K>
+            | Partial<
+                  AbiParametersToPrimitiveTypes<TABIEvent['inputs'], 'inputs'>
+              >
+    ) => FilterCriteria;
+};
 
 /**
  * Represents the amount of VET to transfer in a transaction.

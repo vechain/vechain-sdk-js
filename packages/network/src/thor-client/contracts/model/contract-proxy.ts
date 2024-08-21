@@ -149,29 +149,13 @@ function getFilterProxy<TAbi extends Abi>(
     return new Proxy(contract.filters, {
         get: (_target, prop) => {
             return (
-                args: Record<string, unknown> | unknown[]
+                args: Record<string, unknown> | unknown[] | undefined
             ): ContractFilter<TAbi> => {
-                let argsArray: unknown[] = [];
-
-                if (Array.isArray(args)) {
-                    argsArray = args;
-                } else {
-                    // extract the event arguments from the abi
-                    const eventsArgsMap = getEventArgsMap(
-                        contract.abi as Abi,
-                        prop as string
-                    );
-
-                    // map the args as input to the event arguments
-                    const mappedObj = mapObjectToEventArgs(args, eventsArgsMap);
-
-                    // turn the mapped args into an array
-                    argsArray = Object.entries(mappedObj).map(
-                        ([_key, value]) => {
-                            return value;
-                        }
-                    );
-                }
+                const argsArray = extractArgsArray(
+                    args,
+                    contract,
+                    prop as string
+                );
 
                 const criteriaSet = buildCriteria(contract, prop, argsArray);
 
@@ -239,8 +223,16 @@ function getCriteriaProxy<TAbi extends Abi>(
 ): ContractFunctionCriteria<TAbi, ExtractAbiEventNames<TAbi>> {
     return new Proxy(contract.criteria, {
         get: (_target, prop) => {
-            return (...args: unknown[]): FilterCriteria => {
-                return buildCriteria(contract, prop, args);
+            return (
+                args: Record<string, unknown> | unknown[] | undefined
+            ): FilterCriteria => {
+                const argsArray = extractArgsArray(
+                    args,
+                    contract,
+                    prop as string
+                );
+
+                return buildCriteria(contract, prop, argsArray);
             };
         }
     });
@@ -415,6 +407,41 @@ function mapObjectToEventArgs(
     }
 
     return mappedObject;
+}
+
+/**
+ * Extracts the arguments as an array from the provided arguments object.
+ * @param args - The arguments object to extract the arguments from.
+ * @param contract - The contract instance to extract the event arguments for.
+ * @param prop - The property name of the contract event.
+ * @returns The arguments as an array.
+ */
+function extractArgsArray<TAbi extends Abi>(
+    args: Record<string, unknown> | unknown[] | undefined,
+    contract: Contract<TAbi>,
+    prop: string
+): unknown[] {
+    if (args === undefined) {
+        return [];
+    }
+
+    let argsArray: unknown[] = [];
+
+    if (Array.isArray(args)) {
+        argsArray = args;
+    } else {
+        // extract the event arguments from the abi
+        const eventsArgsMap = getEventArgsMap(contract.abi as Abi, prop);
+
+        // map the args as input to the event arguments
+        const mappedObj = mapObjectToEventArgs(args, eventsArgsMap);
+
+        // turn the mapped args into an array
+        argsArray = Object.entries(mappedObj).map(([_key, value]) => {
+            return value;
+        });
+    }
+    return argsArray;
 }
 
 export {
