@@ -7,7 +7,7 @@ This is a simple web application built with React and the VeChain SDK that allow
 Install dependencies:
 
 ```bash
-yar install
+yarn install
 ```
 
 Run the development server:

@@ -1,5 +1,16 @@
 ```mermaid
 classDiagram
+    class Account {
+        <<abstract>>
+        #address: Address
+        #balance: Currency
+        #mnemonic: Mnemonic
+    }
+    class ExternallyOwnedAccount
+    class Contract
+    class Currency {
+        <<interface>>
+    }
     class Address {
         +string checksum(HexUInt huint)$
         +boolean isValid(string exp)$
@@ -58,6 +69,11 @@ classDiagram
       +boolean isEqual(~T~ that)
       +boolean isNumber()
     }
+    Account "1" ..|> "1" Address : has
+    Account "1" ..|> "1" Mnemonic : has
+    Account "1" ..|> "1" Currency : has
+    Account <|-- ExternallyOwnedAccount
+    Account <|-- Contract
     Hash <|.. Blake2b256
     Hash <|.. Keccak256
     Hash <|.. Sha256

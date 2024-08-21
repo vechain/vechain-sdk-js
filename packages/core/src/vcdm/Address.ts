@@ -187,7 +187,7 @@ class Address extends HexUInt {
     }
 }
 
-// TODO: Backwards compatibility, remove when it is matured enough
+// Backwards compatibility, remove when it is matured enough #1184
 
 const addressUtils = {
     fromPrivateKey: (privateKey: Uint8Array): string =>
