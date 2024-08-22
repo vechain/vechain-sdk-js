@@ -40,13 +40,21 @@ class Blake2b256 extends HexUInt implements Hash {
 
 // Backwards compatibility, remove in future release #1184
 
-const blake2b256 = (
-    hex: string,
+function blake2b256(
+    data: string | Uint8Array,
+    returnType: 'buffer'
+): Uint8Array;
+
+function blake2b256(data: string | Uint8Array, returnType: 'hex'): string;
+
+function blake2b256(
+    data: string | Uint8Array,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     returnType: 'buffer' | 'hex' = 'buffer'
-): string | Uint8Array =>
-    returnType === 'buffer'
-        ? Blake2b256.of(Txt.of(hex).bytes).bytes
-        : Blake2b256.of(Txt.of(hex).bytes).toString();
+): string | Uint8Array {
+    return returnType === 'buffer'
+        ? Blake2b256.of(Txt.of(data).bytes).bytes
+        : Blake2b256.of(Txt.of(data).bytes).toString();
+}
 
 export { Blake2b256, blake2b256 };

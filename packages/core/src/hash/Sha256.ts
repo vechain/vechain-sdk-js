@@ -36,13 +36,18 @@ class Sha256 extends HexUInt implements Hash {
 
 // Backwards compatibility, remove in future release #1184
 
-const sha256 = (
-    hex: string,
+function sha256(data: string | Uint8Array, returnType: 'buffer'): Uint8Array;
+
+function sha256(data: string | Uint8Array, returnType: 'hex'): string;
+
+function sha256(
+    data: string | Uint8Array,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     returnType: 'buffer' | 'hex' = 'buffer'
-): string | Uint8Array =>
-    returnType === 'buffer'
-        ? Sha256.of(Txt.of(hex).bytes).bytes
-        : Sha256.of(Txt.of(hex).bytes).toString();
+): string | Uint8Array {
+    return returnType === 'buffer'
+        ? Sha256.of(Txt.of(data).bytes).bytes
+        : Sha256.of(Txt.of(data).bytes).toString();
+}
 
 export { Sha256, sha256 };
