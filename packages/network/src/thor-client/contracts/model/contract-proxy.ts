@@ -254,9 +254,6 @@ function buildCriteria<TAbi extends Abi>(
     // Create the VeChain sdk event fragment starting from the contract ABI event fragment
     const eventFragment = new fragment.Event(contract.getEventFragment(prop));
 
-    console.log('eventFragment', eventFragment.fragment.inputs);
-    console.log('args', args);
-
     // Create a map of encoded filter topics for the event
     const topics = new Map<number, string | undefined>(
         eventFragment

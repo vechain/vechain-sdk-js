@@ -44,8 +44,6 @@ const sanitizeValuesToEncode = (
         }
     }
 
-    console.log('sanitized value to encode', sanitizedValuesToEncode);
-
     return sanitizedValuesToEncode;
 };
 
