@@ -38,13 +38,18 @@ class Keccak256 extends HexUInt implements Hash {
 
 // Backwards compatibility, remove in future release #1184
 
-const keccak256 = (
-    hex: string,
+function keccak256(data: string | Uint8Array, returnType: 'buffer'): Uint8Array;
+
+function keccak256(data: string | Uint8Array, returnType: 'hex'): string;
+
+function keccak256(
+    data: string | Uint8Array,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     returnType: 'buffer' | 'hex' = 'buffer'
-): string | Uint8Array =>
-    returnType === 'buffer'
-        ? Keccak256.of(Txt.of(hex).bytes).bytes
-        : Keccak256.of(Txt.of(hex).bytes).toString();
+): string | Uint8Array {
+    return returnType === 'buffer'
+        ? Keccak256.of(Txt.of(data).bytes).bytes
+        : Keccak256.of(Txt.of(data).bytes).toString();
+}
 
 export { Keccak256, keccak256 };

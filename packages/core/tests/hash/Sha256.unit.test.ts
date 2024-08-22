@@ -55,7 +55,7 @@ describe('Backwards compatibility tests', () => {
     });
     test('Should return the hash as buffer', () => {
         const rawString = 'Hello, World!';
-        const hash = sha256(rawString) as Uint8Array;
+        const hash = sha256(rawString, 'buffer');
         expect(bytesToHex(hash)).toBe(
             'dffd6021bb2bd5b0af676290809ec3a53191dd81c7f70a4b28688a362182986f'
         );
