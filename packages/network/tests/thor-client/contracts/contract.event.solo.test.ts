@@ -95,7 +95,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         expect(
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-            eventsWithArgsArray[0].map((x) => x.decodedData)
+            eventsWithArgsArray.map((x) => x.decodedData)
         ).toEqual(expectedEvents);
 
         // listen with an args object
@@ -109,7 +109,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         expect(
             // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
-            eventsWithAnArgsObject[0].map((x) => x.decodedData)
+            eventsWithAnArgsObject.map((x) => x.decodedData)
         ).toEqual(expectedEvents);
     }, 10000); // Set a timeout of 10000ms for this test
 
