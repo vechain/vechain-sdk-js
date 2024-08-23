@@ -37,6 +37,9 @@ interface HttpClientOptions {
     timeout?: number;
 }
 
+/**
+ * Represents an HTTP client that provides methods for making HTTP requests.
+ */
 interface IHttpClient {
     http: (
         method: 'GET' | 'POST',
