@@ -37,4 +37,14 @@ interface HttpClientOptions {
     timeout?: number;
 }
 
-export type { HttpParams, HttpClientOptions };
+interface IHttpClient {
+    http: (
+        method: 'GET' | 'POST',
+        path: string,
+        params?: HttpParams
+    ) => Promise<unknown>;
+
+    baseURL: string;
+}
+
+export type { HttpParams, HttpClientOptions, IHttpClient };

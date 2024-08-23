@@ -5,7 +5,7 @@ import { ContractsModule } from './contracts';
 import { TransactionsModule } from './transactions';
 import { LogsModule } from './logs';
 import { GasModule } from './gas';
-import { HttpClient } from '../utils';
+import { HttpClient, type IHttpClient } from '../utils';
 import { DebugModule } from './debug';
 
 /**
@@ -61,7 +61,7 @@ class ThorClient {
      * @param options - (Optional) Other optional parameters for polling and error handling.
      */
     constructor(
-        readonly httpClient: HttpClient,
+        readonly httpClient: IHttpClient,
         options?: BlocksModuleOptions
     ) {
         this.accounts = new AccountsModule(this);
