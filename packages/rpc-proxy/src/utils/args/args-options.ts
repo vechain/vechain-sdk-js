@@ -2,6 +2,26 @@ import { Command, Option, type OptionValues } from 'commander';
 
 /**
  * Get the command line arguments options
+ *
+ * Options:
+ * rpc-proxy {-u|--url} <url> - The URL of the blockchain node
+ * rpc-proxy {-p|--port} <port> - The port to run the proxy on
+ *
+ * rpc-proxy {-a|--accounts} <accounts> - List of accounts private keys to use for signing transactions
+ * * Where accounts is a space separated list of private keys (e.g. "PK1 PK2 PK3 ...")
+ *
+ * rpc-proxy {-m|--mnemonic} <mnemonic> - Mnemonic to use for signing transactions
+ * rpc-proxy {-mc|--mnemonicCount} <count> - Number of accounts to derive from the mnemonic
+ * rpc-proxy {-mi|--mnemonicInitialIndex} <index> - Initial index to start deriving accounts from the mnemonic
+ *
+ * rpc-proxy {-e|--enableDelegation} - Enable delegation
+ * rpc-proxy {-dp|--delegatorPrivateKey} <delegatorPrivateKey> - Delegator private key
+ * rpc-proxy {-du|--delegatorUrl} <delegatorUrl> - Delegator URL
+ *
+ * rpc-proxy {-v|--verbose} - Enable verbose logging
+ *
+ * rpc-proxy {-c|--configurationFile} <configuration_file_path> - Path to configuration file
+ *
  * @param proxyVersion - Version of the proxy
  * @returns Command line arguments options
  */

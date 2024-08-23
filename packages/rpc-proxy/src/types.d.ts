@@ -21,6 +21,7 @@ interface Config {
         | {
               mnemonic: string;
               count: number;
+              initialIndex: number;
           }
         | string[];
 

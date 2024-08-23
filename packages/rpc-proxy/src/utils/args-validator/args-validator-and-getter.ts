@@ -2,6 +2,7 @@ import { type Config } from '../../types';
 import { type OptionValues } from 'commander';
 import { getConfigObjectFromFile } from '../configuration-file';
 import { ArgsValidator } from './args-validator';
+import { InvalidCommandLineArguments } from '@vechain/sdk-errors';
 
 /**
  * Main args validator AND getter object.
@@ -46,7 +47,7 @@ const ArgsValidatorAndGetter = {
             return {
                 ...currentConfiguration,
                 port: field
-            };
+            } satisfies Config;
         }
         return currentConfiguration;
     },
@@ -65,7 +66,7 @@ const ArgsValidatorAndGetter = {
             return {
                 ...currentConfiguration,
                 url: field
-            };
+            } satisfies Config;
         }
         return currentConfiguration;
     },
@@ -84,7 +85,71 @@ const ArgsValidatorAndGetter = {
             return {
                 ...currentConfiguration,
                 accounts: field
-            };
+            } satisfies Config;
+        }
+        return currentConfiguration;
+    },
+
+    /**
+     * Validate 'mnemonic' configuration field
+     *
+     * @param options Command line arguments options
+     * @param currentConfiguration Default configuration to use if no field is provided
+     * @returns Configuration object
+     * @throws {InvalidCommandLineArguments}
+     */
+    mnemonic: (options: OptionValues, currentConfiguration: Config): Config => {
+        const field = ArgsValidator.mnemonic(options.mnemonic as string);
+
+        // Mnemonic count must be provided if mnemonic is provided
+        if (
+            (field !== null && options.mnemonicCount === undefined) ||
+            options.mnemonicCount === null
+        ) {
+            throw new InvalidCommandLineArguments(
+                'ArgsValidatorAndGetter.mnemonic()',
+                'No mnemonic count provided. A mnemonic count must be provided',
+                {
+                    flag: '-mc , --mnemonicCount',
+                    value: 'not provided'
+                }
+            );
+        }
+
+        // Mnemonic initial index must be provided if mnemonic is provided
+        if (
+            (field !== null && options.mnemonicInitialIndex === undefined) ||
+            options.mnemonicInitialIndex === null
+        ) {
+            throw new InvalidCommandLineArguments(
+                'ArgsValidatorAndGetter.mnemonic()',
+                'No mnemonic initial index provided. A mnemonic initial index must be provided',
+                {
+                    flag: '-mi , --mnemonicInitialIndex',
+                    value: 'not provided'
+                }
+            );
+        }
+
+        // @note: This field must be provided otherwise previous validation fails!
+        const field2 = ArgsValidator.mnemonicCount(
+            options.mnemonicCount as string
+        );
+
+        // @note: This field must be provided otherwise previous validation fails!
+        const field3 = ArgsValidator.mnemonicInitialIndex(
+            options.mnemonicInitialIndex as string
+        );
+
+        if (field !== null) {
+            return {
+                ...currentConfiguration,
+                accounts: {
+                    mnemonic: field,
+                    count: field2,
+                    initialIndex: field3
+                }
+            } satisfies Config;
         }
         return currentConfiguration;
     }

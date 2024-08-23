@@ -32,11 +32,13 @@ function startProxy(): void {
 
     // Get the command line arguments options. This will be used to parse the command line arguments
     const options = getOptionsFromCommandLine(packageJson.version);
+    console.log(options);
 
     // Parse the SEMANTIC of the arguments and throw an error if the options are not valid
     // Throws an error if the options are not valid
     const config = parseArgsOptionsAndGetConfig(options, defaultConfiguration);
 
+    // TO REMOVE
     console.log('[rpc-proxy]: Configuration: \n', config, '\n');
     console.log('[rpc-proxy]: Starting VeChain RPC Proxy');
 
@@ -69,7 +71,7 @@ function startProxy(): void {
         : new ProviderInternalHDWallet(
               config.accounts.mnemonic.split(' '),
               config.accounts.count,
-              0,
+              config.accounts.initialIndex,
               VET_DERIVATION_PATH,
               { delegator: config.delegator }
           );

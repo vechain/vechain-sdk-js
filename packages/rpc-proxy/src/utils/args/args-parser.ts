@@ -51,6 +51,9 @@ function parseArgsOptionsAndGetConfig(
 
         // B.4 - Get and validate accounts field
         configuration = ArgsValidatorAndGetter.accounts(options, configuration);
+
+        // B.5 - Get and validate mnemonic field
+        configuration = ArgsValidatorAndGetter.mnemonic(options, configuration);
     }
 
     // Return the configuration

@@ -129,7 +129,6 @@ function getConfigObjectFromFile(filePath: string): Config {
  * Check if:
  * * The configuration file exists
  * * The configuration file is a valid JSON
- * * Check the semantic of the configuration file
  *
  * @param filePath The path to the configuration file.
  * @returns The configuration object.
