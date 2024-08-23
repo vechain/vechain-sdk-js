@@ -111,16 +111,24 @@ const transactionReceiptTransfer =
 // Asserting that the transaction has not been reverted
 expect(transactionReceiptTransfer.reverted).toEqual(false);
 
-// Check transfer event logs by also passing the destination address
-const transferEvents = await contractErc20.filters
-    .Transfer(undefined, '0x9e7911de289c3c856ce7f421034f66b6cde49c39')
+// 1. passing an array of arguments
+const transferEventsArrayArgs = await contractErc20.filters
+    .Transfer([undefined, '0x9e7911de289c3c856ce7f421034f66b6cde49c39'])
+    .get();
+
+// 2. passing an object with the arguments as properties
+const transferEventsObjectArgs = await contractErc20.filters
+    .Transfer({
+        to: '0x9e7911de289c3c856ce7f421034f66b6cde49c39'
+    })
     .get();
 
 // Asserting that the transfer event has been emitted
-expect(transferEvents.length).toEqual(1);
+expect(transferEventsArrayArgs.length).toEqual(1);
+expect(transferEventsObjectArgs.length).toEqual(1);
 
 // log the transfer events
-console.log(transferEvents);
+console.log(transferEventsArrayArgs);
 ```
 
 We are transferring tokens from the deployer address to another address. We can filter the Transfer event to get the transfer details by passing the receiver address (to restrict the event logs to a specific receiver). The filter parameters depend on the event signature and the indexed parameters of the event. In this example, the Transfer event has two indexed parameters, `from` and `to`. We are filtering the event logs by passing the `to` address.

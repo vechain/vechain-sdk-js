@@ -1,7 +1,7 @@
 import type {
+    EventLogs,
     FilterCriteria,
-    FilterEventLogsOptions,
-    EventLogs
+    FilterEventLogsOptions
 } from '../../logs';
 import { type Contract } from './contract';
 import { type Abi } from 'abitype';
@@ -35,12 +35,10 @@ class ContractFilter<TAbi extends Abi> {
     /**
      * Retrieves event logs based on the specified filter criteria, range, pagination options, and order.
      *
-     * @param range - The block range to fetch the events from. Defaults to the entire blockchain history if not provided.
-     * @param options - Pagination options for fetching the events.
-     * @param order - The order in which to display the events. Defaults to ascending ('asc') if not provided.
      * @returns An array of event logs that match the specified criteria.
+     * @param param - The filter options to apply to the event logs.
      */
-    public async get(param?: TransferFilterOptions): Promise<EventLogs[][]> {
+    public async get(param?: TransferFilterOptions): Promise<EventLogs[]> {
         const filterEventLogsOptions: FilterEventLogsOptions = {
             range: param?.range ?? {
                 unit: 'block',
@@ -52,10 +50,9 @@ class ContractFilter<TAbi extends Abi> {
             options: param?.options,
             order: param?.order ?? 'asc'
         };
-        const result = await this.contract.thor.logs.filterGroupedEventLogs(
+        return await this.contract.thor.logs.filterEventLogs(
             filterEventLogsOptions
         );
-        return Array.from(result.values());
     }
 }
 export { ContractFilter };
