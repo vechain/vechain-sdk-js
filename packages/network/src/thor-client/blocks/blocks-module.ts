@@ -295,7 +295,6 @@ class BlocksModule {
      * @returns {string[]} - An array of addresses involved in the block, included
      * empty addresses, duplicate elements are removed.
      *
-     * @see {bloomUtils.filterOf}
      */
     public getAllAddressesIntoABlock(block: ExpandedBlockDetail): string[] {
         const addresses = new Set<string>();

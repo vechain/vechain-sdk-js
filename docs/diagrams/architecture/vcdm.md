@@ -17,9 +17,12 @@ classDiagram
         +Blake2b256 of(bigint|string|Uint8Array|Hex exp)$
     }
     class BloomFilter {
+        +number k
         +number computeBestBitsPerKey(number k)$
         +number computeBestHashFunctionsQuantity(number m)$
         +boolean contains(Hex|Uint8Array key)
+        +boolean isJoinable(BloomFilter other)
+        +BloomFilter join(BloomFilter other)
         +BloomFilter of(Hex[]|Uint8Array[] ...keys)$
     }
     class Contract

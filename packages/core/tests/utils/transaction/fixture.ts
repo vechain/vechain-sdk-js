@@ -70,7 +70,7 @@ const smartContractTransactions = (
                 data: ''
             }
         ],
-        expectedK:
+        expected:
             TRANSACTIONS_GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
             TRANSACTIONS_GAS_CONSTANTS.TX_GAS
     },
@@ -84,7 +84,7 @@ const smartContractTransactions = (
                 data: '0x' + '00'.repeat(numberOfZeroBytes)
             }
         ],
-        expectedK:
+        expected:
             TRANSACTIONS_GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
             TRANSACTIONS_GAS_CONSTANTS.TX_GAS +
             TRANSACTIONS_GAS_CONSTANTS.ZERO_GAS_DATA * numberOfZeroBytes
@@ -99,7 +99,7 @@ const smartContractTransactions = (
                 data: '0x' + '10'.repeat(numberOfNonZeroBytes)
             }
         ],
-        expectedK:
+        expected:
             TRANSACTIONS_GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
             TRANSACTIONS_GAS_CONSTANTS.TX_GAS +
             TRANSACTIONS_GAS_CONSTANTS.NON_ZERO_GAS_DATA * numberOfNonZeroBytes
@@ -117,7 +117,7 @@ const smartContractTransactions = (
                     '10'.repeat(numberOfNonZeroBytes)
             }
         ],
-        expectedK:
+        expected:
             TRANSACTIONS_GAS_CONSTANTS.CLAUSE_GAS_CONTRACT_CREATION +
             TRANSACTIONS_GAS_CONSTANTS.TX_GAS +
             TRANSACTIONS_GAS_CONSTANTS.ZERO_GAS_DATA * numberOfZeroBytes +
