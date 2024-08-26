@@ -1,4 +1,4 @@
-import { Hex } from '../../../../vcdm/Hex';
+import { Hex } from '../../../../vcdm';
 import { ScalarKind } from '../scalarkind.abstract';
 import {
     assertValidHexBlobKindBuffer,
@@ -10,7 +10,7 @@ import { type DataOutput, type BufferOutput, type RLPInput } from '../../types';
  * Represents a scalar kind with hex blob functionality.
  * This class extends the {@link ScalarKind} class.
  *
- * @remarkss
+ * @remarks
  * A hex blob is a hex string that is prefixed with '0x' and has even length.
  */
 class HexBlobKind extends ScalarKind {

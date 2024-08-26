@@ -125,7 +125,7 @@ interface TransactionBody {
      * isDelegated = (111111 & 111111) === 111111; // true (delegated)
      * ```
      *
-     * @remarkss
+     * @remarks
      * For more information on the subject, refer to {@link https://github.com/vechain/VIPs/blob/master/vips/VIP-191.md | VIP-191}.
      */
     reserved?: {
