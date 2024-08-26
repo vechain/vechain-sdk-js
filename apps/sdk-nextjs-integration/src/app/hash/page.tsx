@@ -24,9 +24,9 @@ export default function HashPage(): JSX.Element {
     function hashContent(content: string): void {
         try {
             setHashedContent({
-                blake2b256: blake2b256(content, 'hex') as string,
-                keccak256: keccak256(content, 'hex') as string,
-                sha256: sha256(content, 'hex') as string
+                blake2b256: blake2b256(content, 'hex'),
+                keccak256: keccak256(content, 'hex'),
+                sha256: sha256(content, 'hex')
             });
         } catch (error) {
             setHashedContent({

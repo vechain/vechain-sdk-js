@@ -10,7 +10,6 @@ import {
     type VeChainSigner
 } from '@vechain/sdk-network';
 import { expect } from 'expect';
-import { icons } from 'typedoc/dist/lib/output/themes/default/partials/icon';
 
 // ERC20 contract bytecode
 const erc20ContractBytecode: string =
@@ -135,16 +134,24 @@ const transactionReceiptTransfer =
 // Asserting that the transaction has not been reverted
 expect(transactionReceiptTransfer.reverted).toEqual(false);
 
-// Check transfer event logs by also passing the destination address
-const transferEvents = await contractErc20.filters
-    .Transfer(undefined, '0x9e7911de289c3c856ce7f421034f66b6cde49c39')
+// 1. passing an array of arguments
+const transferEventsArrayArgs = await contractErc20.filters
+    .Transfer([undefined, '0x9e7911de289c3c856ce7f421034f66b6cde49c39'])
+    .get();
+
+// 2. passing an object with the arguments as properties
+const transferEventsObjectArgs = await contractErc20.filters
+    .Transfer({
+        to: '0x9e7911de289c3c856ce7f421034f66b6cde49c39'
+    })
     .get();
 
 // Asserting that the transfer event has been emitted
-expect(transferEvents.length).toEqual(1);
+expect(transferEventsArrayArgs.length).toEqual(1);
+expect(transferEventsObjectArgs.length).toEqual(1);
 
 // log the transfer events
-console.log(transferEvents);
+console.log(transferEventsArrayArgs);
 
 // END_SNIPPET: ERC20FilterEventSnippet
 
@@ -154,10 +161,9 @@ const contractEventExample = await setupEventExampleContract();
 
 await (await contractEventExample.transact.setValue(3000n)).wait();
 
-const transferCriteria = contractErc20.criteria.Transfer(
-    undefined,
-    '0x9e7911de289c3c856ce7f421034f66b6cde49c39'
-);
+const transferCriteria = contractErc20.criteria.Transfer({
+    to: '0x9e7911de289c3c856ce7f421034f66b6cde49c39'
+});
 
 const valueCriteria = contractEventExample.criteria.ValueSet();
 

@@ -56,7 +56,7 @@ describe('Backwards compatibility tests', () => {
     });
     test('Should return the hash as buffer', () => {
         const rawString = 'Hello, World!';
-        const hash = keccak256(rawString) as Uint8Array;
+        const hash = keccak256(rawString, 'buffer');
         expect(bytesToHex(hash)).toBe(
             'acaf3289d7b601cbd114fb36c4d29c85bbfd5e133f14cb355c3fd8d99367964f'
         );
