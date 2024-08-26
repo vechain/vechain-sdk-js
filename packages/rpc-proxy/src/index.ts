@@ -3,10 +3,7 @@
 import defaultProxyConfig from '../default-proxy-config.json';
 import packageJson from '../package.json';
 import { type Config, type RequestBody } from './types';
-import {
-    getOptionsFromCommandLine,
-    parseArgsOptionsAndGetConfig
-} from './utils';
+import { getOptionsFromCommandLine, parseAndGetFinalConfig } from './utils';
 import {
     ProviderInternalBaseWallet,
     ProviderInternalHDWallet,
@@ -32,14 +29,11 @@ function startProxy(): void {
 
     // Get the command line arguments options. This will be used to parse the command line arguments
     const options = getOptionsFromCommandLine(packageJson.version);
-    console.log(options);
 
     // Parse the SEMANTIC of the arguments and throw an error if the options are not valid
-    // Throws an error if the options are not valid
-    const config = parseArgsOptionsAndGetConfig(options, defaultConfiguration);
+    const config = parseAndGetFinalConfig(options, defaultConfiguration);
 
-    // TO REMOVE
-    console.log('[rpc-proxy]: Configuration: \n', config, '\n');
+    // Log the RPC Proxy start
     console.log('[rpc-proxy]: Starting VeChain RPC Proxy');
 
     // Create all necessary objects to init Provider and Signer

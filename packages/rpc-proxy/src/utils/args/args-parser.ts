@@ -21,7 +21,7 @@ import { ArgsValidatorAndGetter } from '../args-validator';
  * @param defaultConfiguration Default configuration to use if no configuration file or arguments are provided
  * @throws {InvalidCommandLineArguments, InvalidConfigurationFilePath, InvalidConfigurationFile}
  */
-function parseArgsOptionsAndGetConfig(
+function parseAndGetFinalConfig(
     options: OptionValues,
     defaultConfiguration: Config
 ): Config {
@@ -49,15 +49,24 @@ function parseArgsOptionsAndGetConfig(
         // B.3 - Get and validate url field
         configuration = ArgsValidatorAndGetter.url(options, configuration);
 
-        // B.4 - Get and validate accounts field
-        configuration = ArgsValidatorAndGetter.accounts(options, configuration);
+        // B.4 - Verbosity
+        if (options.verbose !== undefined) {
+            configuration.verbose = options.verbose as boolean;
+        }
 
-        // B.5 - Get and validate mnemonic field
-        configuration = ArgsValidatorAndGetter.mnemonic(options, configuration);
+        // ********* START: TEMPORARY COMMENT *********
+        // The below methods will be implemented in the future.
+        // ********* END: TEMPORARY COMMENT ********
+
+        // // B.4 - Get and validate accounts field
+        // configuration = ArgsValidatorAndGetter.accounts(options, configuration);
+        //
+        // // B.5 - Get and validate mnemonic field
+        // configuration = ArgsValidatorAndGetter.mnemonic(options, configuration);
     }
 
     // Return the configuration
     return configuration;
 }
 
-export { parseArgsOptionsAndGetConfig };
+export { parseAndGetFinalConfig };

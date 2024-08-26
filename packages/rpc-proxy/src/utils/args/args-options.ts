@@ -1,6 +1,10 @@
 import { Command, Option, type OptionValues } from 'commander';
 
 /**
+ * ********* START: TEMPORARY COMMENT *********
+ * Some of the options are commented out because they are not implemented yet.
+ * ********* END: TEMPORARY COMMENT ********
+ *
  * Get the command line arguments options
  *
  * Options:
@@ -43,48 +47,48 @@ function getOptionsFromCommandLine(proxyVersion: string): OptionValues {
         .addOption(new Option('-p, --port <port>', 'Port to run the proxy on'))
 
         // Accounts to use for signing transactions (LIST OF PRIVATE KEYS)
-        .addOption(
-            new Option(
-                '-a, --accounts <accounts>',
-                'List of accounts private keys to use for signing transactions'
-            )
-        )
+        // .addOption(
+        //     new Option(
+        //         '-a, --accounts <accounts>',
+        //         'List of accounts private keys to use for signing transactions'
+        //     )
+        // )
 
         // Accounts to use for signing transactions (HD WALLET MNEUMONIC)
-        .addOption(
-            new Option(
-                '-m, --mnemonic <mnemonic>',
-                'Mnemonic to use for signing transactions'
-            )
-        )
-        .addOption(
-            new Option(
-                '-mc, --mnemonicCount <count>',
-                'Number of accounts to derive from the mnemonic'
-            )
-        )
-        .addOption(
-            new Option(
-                '-mi, --mnemonicInitialIndex <index>',
-                'Initial index to start deriving accounts from the mnemonic'
-            )
-        )
+        // .addOption(
+        //     new Option(
+        //         '-m, --mnemonic <mnemonic>',
+        //         'Mnemonic to use for signing transactions'
+        //     )
+        // )
+        // .addOption(
+        //     new Option(
+        //         '-mc, --mnemonicCount <count>',
+        //         'Number of accounts to derive from the mnemonic'
+        //     )
+        // )
+        // .addOption(
+        //     new Option(
+        //         '-mi, --mnemonicInitialIndex <index>',
+        //         'Initial index to start deriving accounts from the mnemonic'
+        //     )
+        // )
 
         // Enable delegation boolean
-        .addOption(new Option('-e, --enableDelegation', 'Enable delegation'))
+        // .addOption(new Option('-e, --enableDelegation', 'Enable delegation'))
 
         // Delegator configuration (private key)
-        .addOption(
-            new Option(
-                '-dp, --delegatorPrivateKey <delegatorPrivateKey>',
-                'Delegator private key'
-            )
-        )
+        // .addOption(
+        //     new Option(
+        //         '-dp, --delegatorPrivateKey <delegatorPrivateKey>',
+        //         'Delegator private key'
+        //     )
+        // )
 
         // Delegator configuration (url)
-        .addOption(
-            new Option('-du, --delegatorUrl <delegatorUrl>', 'Delegator URL')
-        )
+        // .addOption(
+        //     new Option('-du, --delegatorUrl <delegatorUrl>', 'Delegator URL')
+        // )
 
         // Enable verbose logging
         .addOption(new Option('-v, --verbose', 'Enable verbose logging'))
