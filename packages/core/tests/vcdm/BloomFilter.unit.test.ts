@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { BloomFilter, Hex, Txt } from '../../src';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import { BloomFilter, Hex, HexUInt, Txt } from '../../src';
+import { InvalidDataType, InvalidOperation } from '@vechain/sdk-errors';
 
 const BloomFilterFixture = {
     emptySetBytes: Uint8Array.of(0, 0, 0, 0, 0, 0, 0, 0),
@@ -114,9 +114,148 @@ describe('BloomFilter class tests.', () => {
             expect(bf).toBeInstanceOf(BloomFilter);
             expect(bf.bytes).toEqual(BloomFilterFixture.setABytes);
         });
+
+        test('Return a not empty filter with custom k and m', () => {
+            const m = 32; // Bits per key.
+            const k = BloomFilter.computeBestHashFunctionsQuantity(m);
+            const keys: HexUInt[] = [];
+            for (let i = 0; i < 255; i++) {
+                keys.push(HexUInt.of(i));
+            }
+            const bf = BloomFilter.of(...keys).build(k, m);
+            expect(bf).toBeInstanceOf(BloomFilter);
+            expect(bf.k).toBe(k);
+            expect(bf.bytes.byteLength).toEqual(1020);
+        });
     });
 
-    test('computeBestBitsPerKey (m) test', () => {
+    describe('contains method test', () => {
+        test('Return false for not set members as bytes', () => {
+            const bf = BloomFilter.of(...BloomFilterFixture.setA).build();
+            BloomFilterFixture.setB
+                .map((e) => e.bytes)
+                .forEach((key) => {
+                    expect(bf.contains(key)).toBe(false);
+                });
+        });
+
+        test('Return false for not set members as Hex', () => {
+            const bf = BloomFilter.of(...BloomFilterFixture.setA).build();
+            BloomFilterFixture.setB.forEach((key) => {
+                expect(bf.contains(key)).toBe(false);
+            });
+        });
+
+        test('Return true for set members as bytes', () => {
+            const bf = BloomFilter.of(...BloomFilterFixture.setA).build();
+            BloomFilterFixture.setA
+                .map((e) => e.bytes)
+                .forEach((key) => {
+                    expect(bf.contains(key)).toBe(true);
+                });
+        });
+
+        test('Return true for set members as Hex', () => {
+            const bf = BloomFilter.of(...BloomFilterFixture.setA).build();
+            BloomFilterFixture.setA.forEach((key) => {
+                expect(bf.contains(key)).toBe(true);
+            });
+        });
+
+        test('Return true for members of a set built with custom k and m', () => {
+            const m = 16; // Bits per key.
+            const k = BloomFilter.computeBestHashFunctionsQuantity(m);
+            const keys: HexUInt[] = [];
+            for (let i = 0; i < 255; i++) {
+                keys.push(HexUInt.of(i));
+            }
+            const bf = BloomFilter.of(...keys).build(k, m);
+            keys.forEach((key) => {
+                expect(bf.contains(key)).toBe(true);
+            });
+        });
+
+        test('Should maintain a reasonable false positive rate', () => {
+            const m = 16; // Bits per key.
+            const k = BloomFilter.computeBestHashFunctionsQuantity(m);
+            const size = 1024;
+            const aliens: HexUInt[] = [];
+            const members: HexUInt[] = [];
+            for (let i = 0; i < size; i++) {
+                members.push(HexUInt.of(i));
+                aliens.push(HexUInt.of(size * i)); // Aliens most be values far enough from members' value.
+            }
+            const bf = BloomFilter.of(...members).build(k, m);
+            let falsePositives = 0;
+            for (let i = 0; i < size; i++) {
+                if (bf.contains(aliens[i])) {
+                    falsePositives++;
+                }
+            }
+            const falsePositiveRate = falsePositives / size;
+            // Uncomment for false positive rate percentage.
+            // console.debug(`False positive rate: ${falsePositiveRate * 100}%`);
+            expect(falsePositiveRate).toBeLessThan(0.01);
+        });
+    });
+
+    describe('isJoinable method test', () => {
+        test('Return false for different k values', () => {
+            const bf1 = BloomFilter.of(...BloomFilterFixture.setA).build();
+            const bf2 = BloomFilter.of(...BloomFilterFixture.setA).build(16);
+            expect(bf1.isJoinable(bf2)).toBeFalsy();
+        });
+
+        test('Return false for different length values', () => {
+            const k = 8;
+            const m1 = 32; // Number of hash functions for the first set.
+            const m2 = 32 ** 2; // The number of hash functions for second set must be very different to result in different sets' sizes when k is the same.
+            const bf1 = BloomFilter.of(...BloomFilterFixture.setA).build(k, m1);
+            const bf2 = BloomFilter.of(...BloomFilterFixture.setA).build(k, m2);
+            expect(bf1.isJoinable(bf2)).toBeFalsy();
+        });
+
+        test('Return true for same length and k values', () => {
+            const bfA = BloomFilter.of(...BloomFilterFixture.setA).build();
+            const bfB = BloomFilter.of(...BloomFilterFixture.setB).build();
+            expect(bfA.isJoinable(bfB)).toBeTruthy();
+        });
+    });
+
+    describe('join method test', () => {
+        test('Return the join set', () => {
+            const bfA = BloomFilter.of(...BloomFilterFixture.setA).build();
+            const bfB = BloomFilter.of(...BloomFilterFixture.setB).build();
+            const bfJ = bfA.join(bfB);
+            BloomFilterFixture.setA.forEach((key) => {
+                expect(bfJ.contains(key)).toBe(true);
+            });
+            BloomFilterFixture.setB.forEach((key) => {
+                expect(bfJ.contains(key)).toBe(true);
+            });
+        });
+
+        test('Throw an exception when k values are different', () => {
+            const bf1 = BloomFilter.of(...BloomFilterFixture.setA).build();
+            const bf2 = BloomFilter.of(...BloomFilterFixture.setA).build(16);
+            expect(() => {
+                bf1.join(bf2);
+            }).toThrow(InvalidOperation);
+        });
+
+        test('Throw an exception when length values are different', () => {
+            const k = 8;
+            const m1 = 32; // Number of hash functions for the first set.
+            const m2 = 32 ** 2; // The number of hash functions for second set must be very different to result in different sets' sizes when k is the same.
+            const bf1 = BloomFilter.of(...BloomFilterFixture.setA).build(k, m1);
+            const bf2 = BloomFilter.of(...BloomFilterFixture.setA).build(k, m2);
+            expect(() => {
+                bf1.join(bf2);
+            }).toThrow(InvalidOperation);
+        });
+    });
+
+    test('computeBestBitsPerKey (m) method test', () => {
         BloomFilterFixture.setK.forEach((testCase) => {
             expect(
                 BloomFilter.computeBestBitsPerKey(
@@ -128,7 +267,7 @@ describe('BloomFilter class tests.', () => {
         });
     });
 
-    test('computeBestHashFunctionsQuantity (k) test', () => {
+    test('computeBestHashFunctionsQuantity (k) method test', () => {
         BloomFilterFixture.setK.forEach((testCase) => {
             expect(
                 BloomFilter.computeBestHashFunctionsQuantity(testCase.actualK)

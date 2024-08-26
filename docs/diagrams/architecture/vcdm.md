@@ -19,6 +19,7 @@ classDiagram
     class BloomFilter {
         +number computeBestBitsPerKey(number k)$
         +number computeBestHashFunctionsQuantity(number m)$
+        +boolean contains(Hex|Uint8Array key)
         +BloomFilter of(Hex[]|Uint8Array[] ...keys)$
     }
     class Contract

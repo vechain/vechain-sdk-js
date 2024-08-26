@@ -1,7 +1,7 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
 import { Blake2b256 } from '../hash';
 import { Hex } from './Hex';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import { InvalidDataType, InvalidOperation } from '@vechain/sdk-errors';
 import { type VeChainDataModel } from './VeChainDataModel';
 
 class BloomFilter implements VeChainDataModel<BloomFilter> {
@@ -44,6 +44,17 @@ class BloomFilter implements VeChainDataModel<BloomFilter> {
         return this.bi === that.bi && this.k === that.k;
     }
 
+    public contains(key: Hex | Uint8Array): boolean {
+        return distribute(
+            hash(key instanceof Hex ? key.bytes : key),
+            this.k,
+            this.bytes.byteLength * 8,
+            (index, bit) => {
+                return (this.bytes[index] & bit) === bit;
+            }
+        );
+    }
+
     /**
      * Calculates the optimal number of bits per key (`m` in math literature) based
      * on the number of hash functions (`k` in math literature) used to generate the Bloom Filter.
@@ -79,31 +90,51 @@ class BloomFilter implements VeChainDataModel<BloomFilter> {
         return k > 30 ? 30 : k;
     }
 
+    public isJoinable(other: BloomFilter): boolean {
+        return this.k === other.k && this.bytes.length === other.bytes.length;
+    }
+
+    public join(other: BloomFilter): BloomFilter {
+        if (this.k === other.k) {
+            if (this.bytes.length === other.bytes.length) {
+                return new BloomFilter(
+                    new Uint8Array(
+                        this.bytes.map(
+                            (byte, index) => byte | other.bytes[index]
+                        )
+                    ),
+                    this.k
+                );
+            }
+            throw new InvalidOperation(
+                'BloomFilter.join',
+                'different length values',
+                { this: this, other }
+            );
+        }
+        throw new InvalidOperation('BloomFilter.join', 'different k values', {
+            this: this,
+            other
+        });
+    }
+
     public static of(...keys: Hex[] | Uint8Array[]): BloomFilterBuilder {
         const builder = new BloomFilterBuilder();
         builder.add(...keys);
         return builder;
     }
-}
+} // ~ BloomFilter
 
 class BloomFilterBuilder {
     private static readonly DEFAULT_K = 5;
-    private static readonly UINT32_LIMIT = 2 ** 32;
 
     private readonly hashMap = new Map<number, boolean>();
 
     public add(...keys: Hex[] | Uint8Array[]): this {
         for (const key of keys) {
-            this.hashMap.set(
-                BloomFilterBuilder.hash(key instanceof Hex ? key.bytes : key),
-                true
-            );
+            this.hashMap.set(hash(key instanceof Hex ? key.bytes : key), true);
         }
         return this;
-    }
-
-    private static addAndWrapAsUInt32(a: number, b: number): number {
-        return (a + b) % BloomFilterBuilder.UINT32_LIMIT;
     }
 
     public build(
@@ -118,36 +149,42 @@ class BloomFilterBuilder {
         // Filter bit length
         const nBits = nBytes * 8;
         for (const hash of this.hashMap.keys()) {
-            BloomFilterBuilder.distribute(hash, k, nBits, (index, bit) => {
+            distribute(hash, k, nBits, (index, bit) => {
                 bits[index] |= bit;
                 return true;
             });
         }
         return new BloomFilter(bits, k);
     }
+} // ~ BloomFilterBuilder
 
-    private static distribute(
-        hash: number,
-        k: number,
-        nBits: number,
-        cb: (index: number, bit: number) => boolean
-    ): boolean {
-        const delta = ((hash >>> 17) | (hash << 15)) >>> 0;
-        for (let i = 0; i < k; i++) {
-            const bitPos = hash % nBits;
-            if (!cb(Math.floor(bitPos / 8), 1 << bitPos % 8)) {
-                return false;
-            }
-            hash = BloomFilterBuilder.addAndWrapAsUInt32(hash, delta);
+const UINT32_LIMIT = 2 ** 32;
+
+function addAndWrapAsUInt32(a: number, b: number): number {
+    return (a + b) % UINT32_LIMIT;
+}
+
+function distribute(
+    hash: number,
+    k: number,
+    nBits: number,
+    collision: (index: number, bit: number) => boolean
+): boolean {
+    const delta = ((hash >>> 17) | (hash << 15)) >>> 0;
+    for (let i = 0; i < k; i++) {
+        const bitPos = hash % nBits;
+        if (!collision(Math.floor(bitPos / 8), 1 << bitPos % 8)) {
+            return false;
         }
-        return true;
+        hash = addAndWrapAsUInt32(hash, delta);
     }
+    return true;
+}
 
-    private static hash(key: Uint8Array): number {
-        return Number(
-            nc_utils.bytesToNumberBE(Blake2b256.of(key).bytes.slice(0, 4))
-        );
-    }
+function hash(key: Uint8Array): number {
+    return Number(
+        nc_utils.bytesToNumberBE(Blake2b256.of(key).bytes.slice(0, 4))
+    );
 }
 
 export { BloomFilter };
