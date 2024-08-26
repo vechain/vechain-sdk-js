@@ -18,7 +18,7 @@ class Keccak256 extends HexUInt implements Hash {
      *
      * @throws {InvalidOperation} - If a hash error occurs.
      *
-     * @remark Security auditable method, depends on
+     * @remarks Security auditable method, depends on
      * * [`nh_keccak_256`](https://github.com/paulmillr/noble-hashes#sha3-fips-shake-keccak).
      */
     public static of(

@@ -10,7 +10,7 @@ import { type DataOutput, type BufferOutput, type RLPInput } from '../../types';
  * Represents a scalar kind with hex blob functionality.
  * This class extends the {@link ScalarKind} class.
  *
- * @remarks
+ * @remarkss
  * A hex blob is a hex string that is prefixed with '0x' and has even length.
  */
 class HexBlobKind extends ScalarKind {

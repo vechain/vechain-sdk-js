@@ -39,7 +39,7 @@ const validateNumericKindData = (data: RLPInput, context: string): bigint => {
 /**
  * Ensures that a numeric input is a safe and non-negative integer.
  *
- * @remarks
+ * @remarkss
  * A "safe integer" in JavaScript is an integer that can be precisely represented
  * without rounding in the double-precision floating point format used by the language,
  * i.e., between 0 and 2^53 - 1, since we're ensuring non-negativity.
@@ -66,7 +66,7 @@ const _validateNumericKindNumber = (num: number, context: string): void => {
 /**
  * Validates a string to ensure it represents a valid non-negative integer.
  *
- * @remarks
+ * @remarkss
  * The input string can represent an integer in either decimal or hexadecimal format.
  *
  * @param str - A string expected to represent a non-negative integer.

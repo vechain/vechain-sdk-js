@@ -21,7 +21,7 @@ import { type TransactionBody } from './types';
 /**
  * Represents an immutable transaction entity.
  *
- * @remarks
+ * @remarkss
  * Properties should be treated as read-only to avoid unintended side effects.
  * Any modifications create a new transaction instance which should be handled by the TransactionHandler component.
  *
@@ -154,7 +154,7 @@ class Transaction {
      *  - No 'delegateFor': return txHash
      * - 'delegateFor' return txHash +  hash('delegateFor' address)
      *
-     * @remarks
+     * @remarkss
      * delegateFor is used to sign a transaction on behalf of another account.
      * In fact when the delegator sign the transaction, delegator will add the address
      * of who send the transaction to sign (in this case the 'delegateFor' address parameter)

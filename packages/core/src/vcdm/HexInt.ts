@@ -4,7 +4,7 @@ import { InvalidDataType } from '@vechain/sdk-errors';
 /**
  * Represents a hexadecimal signed integer value.
  *
- * @remark This class makes equal instances created from the same value as number or as bigint.
+ * @remarks This class makes equal instances created from the same value as number or as bigint.
  *
  * @extends {Hex}
  */
@@ -17,7 +17,7 @@ class HexInt extends Hex {
      * @throws {InvalidDataType} If n is not within the safe number range, if the number representation of this
      * instance results approximated.
      *
-     * @remark This class makes equal instances created from the same value as number or as bigint.
+     * @remarks This class makes equal instances created from the same value as number or as bigint.
      */
     public override get n(): number {
         const bi = this.bi;
@@ -46,7 +46,7 @@ class HexInt extends Hex {
      * @throws {InvalidDataType} - If the given `exp` is not a valid hexadecimal integer expression,
      * if `exp` is a not integer number.
      *
-     * @remark This class makes equal instances created from the same value as number or as bigint.
+     * @remarks This class makes equal instances created from the same value as number or as bigint.
      */
     public static of(exp: bigint | number | string | Uint8Array | Hex): HexInt {
         try {

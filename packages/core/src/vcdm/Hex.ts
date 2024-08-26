@@ -61,7 +61,7 @@ class Hex implements VeChainDataModel<Hex> {
     /**
      * Returns the hexadecimal digits expressing this absolute value, sign and `0x` prefix omitted.
 
-     * @remark An empty content results in an empty string returned.
+     * @remarks An empty content results in an empty string returned.
      */
     public readonly digits: string;
 
@@ -117,7 +117,7 @@ class Hex implements VeChainDataModel<Hex> {
     }
 
     /**
-     * Retrieves the value of n.
+     * Returns the value of n.
      *
      * @return {number} The value of n.
      *
@@ -323,7 +323,7 @@ class Hex implements VeChainDataModel<Hex> {
      * @throws {InvalidDataType} - If the bytes argument is not greater than 0.
      * @returns {Hex} - A randomly generated Hex value.
      *
-     * @remark Security auditable method, depends on
+     * @remarks Security auditable method, depends on
      * * [`nh_utils.randomBytes`](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#utils).
      */
     public static random(bytes: number): Hex {
