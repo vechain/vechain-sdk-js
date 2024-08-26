@@ -1,19 +1,30 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import TransferLogs from '@/app/transfer-logs/page';
-import { HttpClient } from '@vechain/sdk-network';
+import userEvent from '@testing-library/user-event';
+import { CompressedBlockDetail } from '@vechain/sdk-network';
+import { thorClient } from '@/const';
 
-jest.mock('@vechain/sdk-network', () => ({
-    ...jest.requireActual('@vechain/sdk-network'),
-    HttpClient: {
-        http: jest.fn().mockResolvedValue({
-          // Mock response data here
-          number: '123456',
-          id: '0x0128380fc2a99149b2aa9056027d347c2da2ef7068f94245a45b1640ab35d89d',
-          size: 17201,
-          timestamp: 1724658220
-        }),
+// Create mock types
+type MockBlocksModule = {
+    getBestBlockCompressed: jest.Mock<Promise<CompressedBlockDetail | null>>;
+};
+
+type MockLogsModule = {
+    filterTransferLogs: jest.Mock<Promise<FilterTransferLogs[]>>;
+};
+
+// Mock the thorClient
+jest.mock('../src/const', () => ({
+    thorClient: {
+        blocks: {
+            getBestBlockCompressed: jest.fn(),
+        } as MockBlocksModule,
+        logs: {
+            filterTransferLogs: jest.fn(),
+        } as MockLogsModule,
     },
+    explorerUrl: 'https://testnet.vechain.org',
 }));
 
 /**
@@ -22,6 +33,38 @@ jest.mock('@vechain/sdk-network', () => ({
  * Basically, we test @vechain-sdk-network functions integration.
  */
 describe('Transfer logs Page', () => {
+    beforeEach(() => {
+        // Clear all mocks before each test
+        jest.clearAllMocks();
+
+        // Mock getBestBlockCompressed
+        (thorClient.blocks.getBestBlockCompressed as jest.Mock).mockResolvedValue({
+            number: '123456',
+            id: '0x0128380fc2a99149b2aa9056027d347c2da2ef7068f94245a45b1640ab35d89d',
+            size: 17201,
+            timestamp: 1724658220
+        });
+
+        // Mock filterTransferLogs
+        (thorClient.logs.filterTransferLogs as jest.Mock).mockResolvedValue([
+            {
+                sender: '0xSender1',
+                recipient: '0xRecipient1',
+                amount: '1000000000000000000',
+                meta: {
+                    blockTimestamp: 1624658220,
+                    txID: '0xTransaction1'
+                }
+            },
+            // Add more mock log entries as needed
+        ]);
+    });
+
+    afterEach(() => {
+        // Restore all mocks after each test
+        jest.restoreAllMocks();
+    });
+
     /**
      * Render the page and check if the components are rendered.
      * We also check the default values.
@@ -52,23 +95,23 @@ describe('Transfer logs Page', () => {
      * Render and customize the page with custom values.
      * We also check the new values.
      */
-    // it('Should be able to customize values and get results', async () => {
-    //     // Render the page
-    //     render(<TransferLogs />);
+    it('Should be able to customize values and get results', async () => {
+        // Render the page
+        render(<TransferLogs />);
 
-    //     // Init user event
-    //     const user = userEvent.setup();
+        // Init user event
+        const user = userEvent.setup();
 
-    //     // Get the content input
-    //     const addressInput = screen.getByTestId('address');
-    //     await user.clear(addressInput);
-    //     await user.type(
-    //         addressInput,
-    //         '0x995711ADca070C8f6cC9ca98A5B9C5A99b8350b1'
-    //     );
-    //     expect(addressInput).toBeInTheDocument();
-    //     expect(addressInput).toHaveValue(
-    //         '0x995711ADca070C8f6cC9ca98A5B9C5A99b8350b1'
-    //     );
-    // });
+        // Get the content input
+        const addressInput = screen.getByTestId('address');
+        await user.clear(addressInput);
+        await user.type(
+            addressInput,
+            '0x995711ADca070C8f6cC9ca98A5B9C5A99b8350b1'
+        );
+        expect(addressInput).toBeInTheDocument();
+        expect(addressInput).toHaveValue(
+            '0x995711ADca070C8f6cC9ca98A5B9C5A99b8350b1'
+        );
+    });
 });
