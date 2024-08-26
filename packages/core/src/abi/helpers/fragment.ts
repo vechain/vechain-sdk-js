@@ -26,11 +26,22 @@ const sanitizeValuesToEncode = (
 
     const eventInputs = event.inputs;
 
-    // For each input, if it is indexed, push the value to encode, otherwise push null
     for (const input of eventInputs) {
-        input.indexed === true
-            ? sanitizedValuesToEncode.push(valuesToEncode.shift())
-            : sanitizedValuesToEncode.push(null);
+        // push the value if it is indexed and not undefined
+        if (
+            input.indexed === true &&
+            valuesToEncode.length > 0 &&
+            valuesToEncode[0] !== undefined
+        ) {
+            sanitizedValuesToEncode.push(valuesToEncode.shift());
+        } else {
+            // shift the value if it is not indexed and undefined
+            if (valuesToEncode.length > 0 && valuesToEncode[0] === undefined) {
+                valuesToEncode.shift();
+            }
+            // push a null value if the value is not indexed and undefined
+            sanitizedValuesToEncode.push(null);
+        }
     }
 
     return sanitizedValuesToEncode;

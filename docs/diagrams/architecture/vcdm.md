@@ -1,5 +1,16 @@
 ```mermaid
 classDiagram
+    class Account {
+        <<abstract>>
+        #address: Address
+        #balance: Currency
+        #mnemonic: Mnemonic
+    }
+    class ExternallyOwnedAccount
+    class Contract
+    class Currency {
+        <<interface>>
+    }
     class Address {
         +string checksum(HexUInt huint)$
         +boolean isValid(string exp)$
@@ -32,6 +43,9 @@ classDiagram
     class Keccak256 {
         +Keccak256 of(bigint|number|string|Uint8Array|Hex exp)$
     }
+    class Mnemonic {
+        +Mnemonic of(string exp)$
+    }
     class Quantity {
         +Quantity of(bigint|number exp)$
     }
@@ -55,6 +69,11 @@ classDiagram
       +boolean isEqual(~T~ that)
       +boolean isNumber()
     }
+    Account "1" ..|> "1" Address : has
+    Account "1" ..|> "1" Mnemonic : has
+    Account "1" ..|> "1" Currency : has
+    Account <|-- ExternallyOwnedAccount
+    Account <|-- Contract
     Hash <|.. Blake2b256
     Hash <|.. Keccak256
     Hash <|.. Sha256
@@ -67,6 +86,7 @@ classDiagram
     HexUInt <|-- Sha256
     String <|-- Txt
     Txt <|-- Revision
+    Txt <|-- Mnemonic
     VeChainDataModel <|.. Hex
     VeChainDataModel <|.. Txt
 ```
