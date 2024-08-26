@@ -20,7 +20,7 @@ const ethGetStorageAtTestCases: Array<{
             '0x1',
             '0x10afdf1' // Block n. 17497585
         ],
-        expected:
+        expectedK:
             '0x0000000000000000000000000000000000000000000000000000000061474260'
     },
     {
@@ -31,7 +31,7 @@ const ethGetStorageAtTestCases: Array<{
             '0x0000000000000000000000000000000000000000000000000000000000000001',
             '0x10afdf1' // Block n. 17497585
         ],
-        expected:
+        expectedK:
             '0x0000000000000000000000000000000000000000000000000000000061474260'
     },
     {
@@ -42,7 +42,7 @@ const ethGetStorageAtTestCases: Array<{
             '0x1',
             'latest' // Block n. 17497585
         ],
-        expected:
+        expectedK:
             '0x0000000000000000000000000000000000000000000000000000000000000000'
     }
 ];

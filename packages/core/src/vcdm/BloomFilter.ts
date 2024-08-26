@@ -1,22 +1,55 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
 import { Blake2b256 } from '../hash';
 import { Hex } from './Hex';
+import { InvalidDataType } from '@vechain/sdk-errors';
+import { type VeChainDataModel } from './VeChainDataModel';
 
-class BloomFilter {
-    public readonly bits: Uint8Array;
+class BloomFilter implements VeChainDataModel<BloomFilter> {
+    public readonly bytes: Uint8Array;
     public readonly k: number;
 
-    constructor(bits: Uint8Array, k: number) {
-        this.bits = bits;
+    constructor(bytes: Uint8Array, k: number) {
+        this.bytes = bytes;
         this.k = k;
+    }
+
+    get bi(): bigint {
+        return nc_utils.bytesToNumberBE(this.bytes);
+    }
+
+    get n(): number {
+        const bi = this.bi;
+        if (Number.MIN_SAFE_INTEGER <= bi && bi <= Number.MAX_SAFE_INTEGER) {
+            return Number(bi);
+        }
+        throw new InvalidDataType(
+            'BloomFilter.n',
+            'not in the safe number range',
+            {
+                bytes: this.bytes,
+                k: this.k
+            }
+        );
+    }
+
+    compareTo(that: BloomFilter): number {
+        return this.bi < that.bi
+            ? -1
+            : this.bi === that.bi
+              ? this.k - that.k
+              : 1;
+    }
+
+    isEqual(that: BloomFilter): boolean {
+        return this.bi === that.bi && this.k === that.k;
     }
 
     /**
      * Calculates the optimal number of bits per key (`m` in math literature) based
      * on the number of hash functions (`k` in math literature) used to generate the Bloom Filter.
      *
-     * Mathematically, `bitsPerkey` is approximated as `(k / ln(2))` which is simplified
-     * to the higher integer close to `(bitsPerKey / 0.69)` for computational efficiency.
+     * Mathematically, `m` is approximated as `(k / ln(2))` which is simplified
+     * to the higher integer close to `(m / 0.69)` for computational efficiency.
      * It also ensures that `k` is within a practical range [1, 30], hence the function
      * - returns `2` for `k = 1`,
      * - returns `44` for `k >= 30`.
@@ -33,15 +66,15 @@ class BloomFilter {
      * Calculates the optimal number of hash functions (`k` in math literature)
      * based on bits per key (`m` in math literature).
      *
-     * Mathematically, `k` is approximated as `(bitsPerKey * ln(2))` which is simplified
-     * to the lower integer close to `(bitsPerKey * 0.69)` for computational efficiency.
+     * Mathematically, `k` is approximated as `(m * ln(2))` which is simplified
+     * to the lower integer close to `(m * 0.69)` for computational efficiency.
      * It also ensures that `k` stays within a practical range [1, 30].
      *
-     * @param bitsPerKey - The number of bits per key.
+     * @param m - The number of bits per key.
      * @returns The calculated optimal `k` value.
      */
-    public static computeBestK(bitsPerKey: number): number {
-        const k = Math.floor(bitsPerKey * 0.69); // bitsPerKey * ln(2),  0.69 =~ ln(2)
+    public static computeBestHashFunctionsQuantity(m: number): number {
+        const k = Math.floor(m * 0.69); // m * ln(2),  0.69 =~ ln(2)
         if (k < 1) return 1;
         return k > 30 ? 30 : k;
     }
@@ -75,10 +108,10 @@ class BloomFilterBuilder {
 
     public build(
         k: number = BloomFilterBuilder.DEFAULT_K,
-        bitsPerKey: number = BloomFilter.computeBestBitsPerKey(k)
+        m: number = BloomFilter.computeBestBitsPerKey(k)
     ): BloomFilter {
         // Compute bloom filter size in bytes
-        let nBytes = Math.floor((this.hashMap.size * bitsPerKey + 7) / 8);
+        let nBytes = Math.floor((this.hashMap.size * m + 7) / 8);
         // Enforce a minimum bloom filter length to reduce very high false positive rate for small n
         nBytes = nBytes < 8 ? 8 : nBytes;
         const bits = new Uint8Array(nBytes);

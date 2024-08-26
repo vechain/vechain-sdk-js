@@ -174,43 +174,43 @@ const encodeBytes32StringTestCases: Array<{
     {
         value: 'Hello',
         zeroPadding: 'left',
-        expected:
+        expectedK:
             '0x00000000000000000000000000000000000000000000000000000048656c6c6f'
     },
     {
         value: 'Hello',
         zeroPadding: 'right',
-        expected:
+        expectedK:
             '0x48656c6c6f000000000000000000000000000000000000000000000000000000'
     },
     {
         value: "Hello World! I'm  with  32 bytes",
         zeroPadding: 'left',
-        expected:
+        expectedK:
             '0x48656c6c6f20576f726c64212049276d20207769746820203332206279746573'
     },
     {
         value: "Hello World! I'm  with  32 bytes",
         zeroPadding: 'right',
-        expected:
+        expectedK:
             '0x48656c6c6f20576f726c64212049276d20207769746820203332206279746573'
     },
     {
         value: 'base-gas-price',
         zeroPadding: 'left',
-        expected:
+        expectedK:
             '0x000000000000000000000000000000000000626173652d6761732d7072696365'
     },
     {
         value: '1',
         zeroPadding: undefined,
-        expected:
+        expectedK:
             '0x3100000000000000000000000000000000000000000000000000000000000000'
     },
     {
         value: 'base-gas-price',
         zeroPadding: 'right',
-        expected:
+        expectedK:
             '0x626173652d6761732d7072696365000000000000000000000000000000000000'
     }
 ];

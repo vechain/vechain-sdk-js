@@ -245,7 +245,7 @@ const erc721ContractTestCases: TestCase[] = [
         description: 'should mint an NFT for the caller address',
         functionName: 'mintItem',
         params: [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
-        expected: [
+        expectedK: [
             '0x0000000000000000000000000000000000000000',
             Address.checksum(
                 HexUInt.of(TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address)
@@ -259,7 +259,7 @@ const erc721ContractTestCases: TestCase[] = [
         description: 'should mint an NFT for the caller address',
         functionName: 'mintItem',
         params: [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
-        expected: [
+        expectedK: [
             '0x0000000000000000000000000000000000000000',
             Address.checksum(
                 HexUInt.of(TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address)
@@ -274,7 +274,7 @@ const erc721ContractTestCases: TestCase[] = [
             'should mint an NFT for the specific address of another user',
         functionName: 'mintItem',
         params: [TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address],
-        expected: [
+        expectedK: [
             '0x0000000000000000000000000000000000000000',
             Address.checksum(
                 HexUInt.of(
@@ -291,7 +291,7 @@ const erc721ContractTestCases: TestCase[] = [
             'should get the current NFT balance of the CONTRACT_MANAGER address',
         functionName: 'balanceOf',
         params: [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
-        expected: [2n],
+        expectedK: [2n],
         reverted: false,
         isReadOnly: true
     },
@@ -300,7 +300,7 @@ const erc721ContractTestCases: TestCase[] = [
             'should get the current NFT balance of the DELEGATOR address',
         functionName: 'balanceOf',
         params: [TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address],
-        expected: [1n],
+        expectedK: [1n],
         reverted: false,
         isReadOnly: true
     },
@@ -312,7 +312,7 @@ const erc721ContractTestCases: TestCase[] = [
             TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address,
             1n
         ],
-        expected: [
+        expectedK: [
             Address.checksum(
                 HexUInt.of(TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address)
             ),
@@ -329,7 +329,7 @@ const erc721ContractTestCases: TestCase[] = [
             'should get the current NFT balance of the CONTRACT_MANAGER address',
         functionName: 'balanceOf',
         params: [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
-        expected: [1n],
+        expectedK: [1n],
         reverted: false,
         isReadOnly: true
     },
@@ -338,7 +338,7 @@ const erc721ContractTestCases: TestCase[] = [
             'should get the current NFT balance of the DELEGATOR address',
         functionName: 'balanceOf',
         params: [TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address],
-        expected: [2n],
+        expectedK: [2n],
         reverted: false,
         isReadOnly: true
     }
@@ -349,7 +349,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the bool value false',
         functionName: 'boolData',
         params: [false],
-        expected: [false],
+        expectedK: [false],
         reverted: false,
         isReadOnly: true
     },
@@ -357,7 +357,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the bool value true',
         functionName: 'boolData',
         params: [true],
-        expected: [true],
+        expectedK: [true],
         reverted: false,
         isReadOnly: true
     },
@@ -365,7 +365,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the bool value false when passed undefined',
         functionName: 'boolData',
         params: [undefined],
-        expected: [false],
+        expectedK: [false],
         reverted: false,
         isReadOnly: true
     },
@@ -373,7 +373,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the int value 1',
         functionName: 'intData',
         params: [1],
-        expected: [1n],
+        expectedK: [1n],
         reverted: false,
         isReadOnly: true
     },
@@ -381,7 +381,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the int value -1',
         functionName: 'intData',
         params: [-1],
-        expected: [-1n],
+        expectedK: [-1n],
         reverted: false,
         isReadOnly: true
     },
@@ -389,7 +389,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the int value 0',
         functionName: 'intData',
         params: [0],
-        expected: [0n],
+        expectedK: [0n],
         reverted: false,
         isReadOnly: true
     },
@@ -397,7 +397,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the uint value 0',
         functionName: 'uintData',
         params: [0],
-        expected: [0n],
+        expectedK: [0n],
         reverted: false,
         isReadOnly: true
     },
@@ -405,7 +405,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the uint value 1',
         functionName: 'uintData',
         params: [1],
-        expected: [1n],
+        expectedK: [1n],
         reverted: false,
         isReadOnly: true
     },
@@ -414,7 +414,7 @@ const testingContractTestCases: TestCase[] = [
             'should return the address value 0x0000000000000000000000000000000000000000',
         functionName: 'addressData',
         params: ['0x0000000000000000000000000000000000000000'],
-        expected: ['0x0000000000000000000000000000000000000000'],
+        expectedK: ['0x0000000000000000000000000000000000000000'],
         reverted: false,
         isReadOnly: true
     },
@@ -425,7 +425,7 @@ const testingContractTestCases: TestCase[] = [
         params: [
             '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0'
         ],
-        expected: [
+        expectedK: [
             '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0'
         ],
         reverted: false,
@@ -435,7 +435,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the string value "a"',
         functionName: 'stringData',
         params: ['a'],
-        expected: ['a'],
+        expectedK: ['a'],
         reverted: false,
         isReadOnly: true
     },
@@ -443,7 +443,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the passed fixed array',
         functionName: 'fixedArrayData',
         params: [[123, 456, 789]],
-        expected: [[123n, 456n, 789n]],
+        expectedK: [[123n, 456n, 789n]],
         reverted: false,
         isReadOnly: true
     },
@@ -451,7 +451,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the passed dynamic array',
         functionName: 'dynamicArrayData',
         params: [[123, 456, 789, 323, 123]],
-        expected: [[123n, 456n, 789n, 323n, 123n]],
+        expectedK: [[123n, 456n, 789n, 323n, 123n]],
         reverted: false,
         isReadOnly: true
     },
@@ -459,7 +459,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the passed struct',
         functionName: 'structData',
         params: [{ id: 10, name: 'test' }],
-        expected: [[10n, 'test']],
+        expectedK: [[10n, 'test']],
         reverted: false,
         isReadOnly: true
     },
@@ -467,7 +467,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the passed enum',
         functionName: 'enumData',
         params: [ExampleEnum.SMALL],
-        expected: [BigInt(ExampleEnum.SMALL)],
+        expectedK: [BigInt(ExampleEnum.SMALL)],
         reverted: false,
         isReadOnly: true
     },
@@ -484,7 +484,7 @@ const testingContractTestCases: TestCase[] = [
             { id: 10, name: 'test' },
             ExampleEnum.SMALL
         ],
-        expected: [
+        expectedK: [
             1n,
             '0x0000000000000000000000000000000000000000',
             '0x123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef0',
@@ -501,7 +501,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the passed multiple int values',
         functionName: 'multipleIntData',
         params: [1, 222, 333, 287274, 390343843, 123223663],
-        expected: [1n, 222n, 333n, 287274n, 390343843n, 123223663n],
+        expectedK: [1n, 222n, 333n, 287274n, 390343843n, 123223663n],
         reverted: false,
         isReadOnly: true
     }
@@ -512,7 +512,7 @@ const testingContractNegativeTestCases: TestCase[] = [
         description: 'testRequireError() test',
         functionName: 'testRequireError',
         params: [8],
-        expected: 'Value must be greater than 10',
+        expectedK: 'Value must be greater than 10',
         reverted: true,
         isReadOnly: true
     },
@@ -520,7 +520,7 @@ const testingContractNegativeTestCases: TestCase[] = [
         description: 'testAssertError() test',
         functionName: 'testAssertError',
         params: [1],
-        expected: 'Panic(0x01)',
+        expectedK: 'Panic(0x01)',
         reverted: true,
         isReadOnly: true
     },
@@ -528,7 +528,7 @@ const testingContractNegativeTestCases: TestCase[] = [
         description: 'testRevertError() test',
         functionName: 'testRevertError',
         params: [4],
-        expected: 'Value must be at least 5',
+        expectedK: 'Value must be at least 5',
         reverted: true,
         isReadOnly: true
     },
@@ -536,7 +536,7 @@ const testingContractNegativeTestCases: TestCase[] = [
         description: 'testOverflowError() test',
         functionName: 'testOverflowError',
         params: [255],
-        expected: 'Panic(0x11)',
+        expectedK: 'Panic(0x11)',
         reverted: true,
         isReadOnly: true
     },
@@ -544,7 +544,7 @@ const testingContractNegativeTestCases: TestCase[] = [
         description: 'testInvalidOpcodeError() test',
         functionName: 'testInvalidOpcodeError',
         params: [],
-        expected: '',
+        expectedK: '',
         reverted: true,
         isReadOnly: true
     }
@@ -555,7 +555,7 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         description: 'should return the blockID of the given block number',
         functionName: 'getBlockID',
         params: [1],
-        expected: [
+        expectedK: [
             '0x00000001fb5387f59d35a8e76dcce151cb229a3910ac5f4731ff55f7ca36a809'
         ],
         reverted: false,
@@ -566,7 +566,7 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
             'should return the block total score of the given block defined by the block number',
         functionName: 'getBlockTotalScore',
         params: [1],
-        expected: [1n],
+        expectedK: [1n],
         reverted: false,
         isReadOnly: true
     },
@@ -574,7 +574,7 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         description: 'should return the block time of the given block number',
         functionName: 'getBlockTime',
         params: [1],
-        expected: [1702231120n],
+        expectedK: [1702231120n],
         reverted: false,
         isReadOnly: true
     },
@@ -582,7 +582,7 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         description: 'should return the block signer of the given block number',
         functionName: 'getBlockSigner',
         params: [1],
-        expected: ['0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'],
+        expectedK: ['0xf077b491b355E64048cE21E3A6Fc4751eEeA77fa'],
         reverted: false,
         isReadOnly: true
     },
@@ -590,7 +590,7 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         description: 'should return the total supply of VET',
         functionName: 'getTotalSupply',
         params: [],
-        expected: [10000000000000000000000000000n],
+        expectedK: [10000000000000000000000000000n],
         reverted: false,
         isReadOnly: true
     },
@@ -599,7 +599,7 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
             'should return the `provedWork` of the current transaction',
         functionName: 'getTxProvedWork',
         params: [],
-        expected: [0n],
+        expectedK: [0n],
         reverted: false,
         isReadOnly: true
     },
@@ -608,7 +608,7 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
             'should return the transaction ID of the current transaction',
         functionName: 'getTxID',
         params: [],
-        expected: [
+        expectedK: [
             '0x0000000000000000000000000000000000000000000000000000000000000000'
         ],
         reverted: false,
@@ -618,7 +618,7 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         description: 'should return the `blockRef` of the current transaction',
         functionName: 'getTxBlockRef',
         params: [],
-        expected: ['0x0000000000000000'],
+        expectedK: ['0x0000000000000000'],
         reverted: false,
         isReadOnly: true
     },
@@ -627,7 +627,7 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
             'should return the `expiration` of the current transaction',
         functionName: 'getTxExpiration',
         params: [],
-        expected: [0n],
+        expectedK: [0n],
         reverted: false,
         isReadOnly: true
     },
@@ -635,7 +635,7 @@ const testingContractEVMExtensionTestCases: TestCase[] = [
         description: 'should return the data hashed using Blake2b256',
         functionName: 'calculateBlake2b256',
         params: ['0x'],
-        expected: [
+        expectedK: [
             '0x0e5751c026e543b2e8ab2eb06099daa1d1e5df47778f7787faab45cdf12fe3a8'
         ],
         reverted: false,

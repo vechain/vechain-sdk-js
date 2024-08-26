@@ -24,7 +24,7 @@ class HexInt extends Hex {
         if (Number.MIN_SAFE_INTEGER <= bi && bi <= Number.MAX_SAFE_INTEGER) {
             return Number(bi);
         }
-        throw new InvalidDataType('HexInt.of', 'not in the safe number range', {
+        throw new InvalidDataType('HexInt.n', 'not in the safe number range', {
             bi: `${bi}`,
             hex: this.toString()
         });
