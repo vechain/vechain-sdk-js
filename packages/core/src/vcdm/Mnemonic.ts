@@ -202,7 +202,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
                 throw error;
             }
             throw new InvalidHDNodeMnemonic(
-                'Mnemonic.generate',
+                'Mnemonic.of',
                 'error while generating mnemonic',
                 { wordlistSize },
                 error
