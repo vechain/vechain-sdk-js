@@ -51,7 +51,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
     /**
      * Generates a mnemonic as encoded bytes.
      *
-     * @returns {Uint8Array} The bytes representation of the Txt string.
+     * @returns {Uint8Array} The bytes representation of the words with spaces.
      */
     get bytes(): Uint8Array {
         return Mnemonic.ENCODER.encode(Mnemonic.of().join(' '));
