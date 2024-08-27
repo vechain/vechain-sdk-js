@@ -25,7 +25,7 @@ type WordlistSizeType = 12 | 15 | 18 | 21 | 24;
  */
 type WordListRandomGeneratorSizeInBytes = 16 | 20 | 24 | 28 | 32;
 
-class Mnemonic extends String implements VeChainDataModel<Mnemonic> {
+class Mnemonic implements VeChainDataModel<Mnemonic> {
     /**
      * A TextEncoder instance used for encoding text to bytes.
      *
