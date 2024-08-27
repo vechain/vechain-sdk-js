@@ -38,7 +38,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      * @returns {bigint} The BigInt representation of the mnemonic.
      * @throws {InvalidOperation} The mnemonic cannot be represented as a bigint.
      * @override {@link VeChainDataModel#bi}
-     * @remark The conversion to BigInt is not supported for an mnemonic.
+     * @remark The conversion to BigInt is not supported for a mnemonic.
      */
     public get bi(): bigint {
         throw new InvalidOperation(
@@ -67,7 +67,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
     public get n(): number {
         throw new InvalidOperation(
             'Mnemonic.n',
-            'There is no number representation for an mnemonic.',
+            'There is no number representation for a mnemonic.',
             { data: '' }
         );
     }
@@ -79,7 +79,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
     public compareTo(_that: Mnemonic): number {
         throw new InvalidOperation(
             'Mnemonic.compareTo',
-            'There is no comparison for an mnemonic since it is not stored in memory.',
+            'There is no comparison for a mnemonic since it is not stored in memory.',
             { data: '' }
         );
     }
@@ -87,7 +87,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
     public isEqual(_that: Mnemonic): boolean {
         throw new InvalidOperation(
             'Mnemonic.isEqual',
-            'There is no comparison for an mnemonic since it is not stored in memory.',
+            'There is no comparison for a mnemonic since it is not stored in memory.',
             { data: '' }
         );
     }
