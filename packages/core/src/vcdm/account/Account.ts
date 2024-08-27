@@ -10,16 +10,23 @@ type AccountType = 'EOA' | 'Contract';
  *
  * @implements {VeChainDataModel<Account>}
  */
-abstract class Account implements VeChainDataModel<Account> {
+class Account implements VeChainDataModel<Account> {
     public readonly address: Address;
     public readonly balance: Currency;
     // Replace the string array with a Transaction class #1162
     public readonly transactions: string[];
-    protected abstract get type(): AccountType;
 
-    constructor(address: Address, balance: Currency, transactions?: string[]) {
+    public readonly type: AccountType;
+
+    constructor(
+        address: Address,
+        balance: Currency,
+        type: AccountType = 'EOA',
+        transactions?: string[]
+    ) {
         this.address = address;
         this.balance = balance;
+        this.type = type;
         this.transactions = transactions ?? [];
     }
 

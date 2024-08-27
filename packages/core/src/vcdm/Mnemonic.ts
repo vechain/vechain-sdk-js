@@ -7,11 +7,12 @@ import { wordlist } from '@scure/bip39/wordlists/english';
 import {
     InvalidDataType,
     InvalidHDNode,
-    InvalidHDNodeMnemonic
+    InvalidHDNodeMnemonic,
+    InvalidOperation
 } from '@vechain/sdk-errors';
 import { HDNode } from '../hdnode';
 import { Address } from './Address';
-import { Txt } from './Txt';
+import { type VeChainDataModel } from './VeChainDataModel';
 
 /**
  * Type of the wordlist size.
@@ -24,64 +25,71 @@ type WordlistSizeType = 12 | 15 | 18 | 21 | 24;
  */
 type WordListRandomGeneratorSizeInBytes = 16 | 20 | 24 | 28 | 32;
 
-class Mnemonic extends Txt {
+class Mnemonic implements VeChainDataModel<Mnemonic> {
     /**
-     * The mnemonic words.
-     * @type {string[]}
+     * A TextEncoder instance used for encoding text to bytes.
+     *
+     * @type {TextEncoder}
      */
-    private readonly words: string[];
+    private static readonly ENCODER = new TextEncoder();
 
     /**
-     * Create a new Mnemonic instance.
-     *
-     * @param exp The mnemonic expression to convert. It can be of type string.
-     *
-     * @throws {InvalidDataType} If the expression is not a valid mnemonic expression.
+     * Throws an exception because the mnemonic cannot be represented as a big integer.
+     * @returns {bigint} The BigInt representation of the mnemonic.
+     * @throws {InvalidOperation} The mnemonic cannot be represented as a bigint.
+     * @override {@link VeChainDataModel#bi}
+     * @remark The conversion to BigInt is not supported for a mnemonic.
      */
-    private constructor(exp: string) {
-        super(exp);
-        if (!Mnemonic.isValid(exp)) {
-            throw new InvalidHDNodeMnemonic(
-                'Mnemonic.constructor',
-                'not a valid mnemonic string',
-                { wordlistSize: -1 }
-            );
-        }
-        this.words = exp.split(' ');
+    public get bi(): bigint {
+        throw new InvalidOperation(
+            'Mnemonic.bi',
+            'There is no big integer representation for a mnemonic.',
+            { data: '' }
+        );
     }
 
     /**
-     * Get the mnemonic words.
+     * Generates a mnemonic as encoded bytes.
      *
-     * @returns {string[]} The mnemonic words.
+     * @returns {Uint8Array} The bytes representation of the words with spaces.
      */
-    public getWords(): string[] {
-        return [...this.words]; // Return a copy to prevent modification (should already be prevented by readonly)
+    get bytes(): Uint8Array {
+        return Mnemonic.ENCODER.encode(Mnemonic.of().join(' '));
     }
 
     /**
-     * Create a Mnemonic instance from the given expression.
-     *
-     * @param exp The expression to convert. It can be of type string.
-     *
-     * @returns {Mnemonic} The converted mnemonic.
-     *
-     * @throws {InvalidDataType} If the expression is not a valid mnemonic expression.
+     * Throws an exception because the mnemonic cannot be represented as a number.
+     * @returns {bigint} The number representation of the mnemonic.
+     * @throws {InvalidOperation} The mnemonic cannot be represented as a number.
+     * @override {@link VeChainDataModel#n}
+     * @remark The conversion to number is not supported for a mnemonic.
      */
-    public static of(exp: string): Mnemonic {
-        try {
-            return new Mnemonic(exp);
-        } catch (error) {
-            if (error instanceof InvalidHDNodeMnemonic) {
-                throw error;
-            }
-            throw new InvalidHDNodeMnemonic(
-                'Mnemonic.of',
-                'not a valid mnemonic expression',
-                { wordlistSize: -1 },
-                error
-            );
-        }
+    public get n(): number {
+        throw new InvalidOperation(
+            'Mnemonic.n',
+            'There is no number representation for a mnemonic.',
+            { data: '' }
+        );
+    }
+
+    /**
+     *
+     * @param _that The mnemonic to compare with.
+     */
+    public compareTo(_that: Mnemonic): number {
+        throw new InvalidOperation(
+            'Mnemonic.compareTo',
+            'There is no comparison for a mnemonic since it is not stored in memory.',
+            { data: '' }
+        );
+    }
+
+    public isEqual(_that: Mnemonic): boolean {
+        throw new InvalidOperation(
+            'Mnemonic.isEqual',
+            'There is no comparison for a mnemonic since it is not stored in memory.',
+            { data: '' }
+        );
     }
 
     /**
@@ -171,28 +179,26 @@ class Mnemonic extends Txt {
      * * `randomGenerator` - **Must provide a cryptographic secure source of entropy
      *    else any secure audit certification related with this software is invalid.**
      */
-    public static generate(
+    public static of(
         wordlistSize: WordlistSizeType = 12,
         randomGenerator?: (
             numberOfBytes: WordListRandomGeneratorSizeInBytes
         ) => Uint8Array
-    ): Mnemonic {
+    ): string[] {
         try {
             const strength: number = Mnemonic.wordsNoToStrength(wordlistSize);
             if (randomGenerator != null) {
                 const numberOfBytes = (strength /
                     8) as WordListRandomGeneratorSizeInBytes;
-                return Mnemonic.of(
-                    entropyToMnemonic(randomGenerator(numberOfBytes), wordlist)
-                );
+                return entropyToMnemonic(
+                    randomGenerator(numberOfBytes),
+                    wordlist
+                ).split(' ');
             }
-            return Mnemonic.of(generateMnemonic(wordlist, strength));
+            return generateMnemonic(wordlist, strength).split(' ');
         } catch (error) {
-            if (error instanceof InvalidDataType) {
-                throw error;
-            }
             throw new InvalidHDNodeMnemonic(
-                'Mnemonic.generate',
+                'Mnemonic.of',
                 'error while generating mnemonic',
                 { wordlistSize },
                 error
@@ -214,22 +220,13 @@ class Mnemonic extends Txt {
         const wordsToValidate = Array.isArray(words) ? words.join(' ') : words;
         return validateMnemonic(wordsToValidate, wordlist);
     }
-
-    /**
-     * Returns an empty string to prevent printing the mnemonic.
-     *
-     * @returns {string} An empty string
-     */
-    public toString(): string {
-        return '';
-    }
 }
 
 // Backwards compatibility, remove in future versions #1184
 
 const mnemonic = {
     deriveAddress: (words: string[], path: string = 'm/0'): string =>
-        Address.ofMnemonic(Mnemonic.of(words.join(' ')), path).toString(),
+        Address.ofMnemonic(words, path).toString(),
     derivePrivateKey: (words: string[], path: string = 'm/0'): Uint8Array =>
         Mnemonic.toPrivateKey(words, path),
     generate: (
@@ -237,8 +234,8 @@ const mnemonic = {
         randomGenerator?: (
             numberOfBytes: WordListRandomGeneratorSizeInBytes
         ) => Uint8Array
-    ): string[] => Mnemonic.generate(wordlistSize, randomGenerator).getWords(),
-    isValid: (words: string[]): boolean => Mnemonic.isValid(words.join(' '))
+    ): string[] => Mnemonic.of(wordlistSize, randomGenerator),
+    isValid: (words: string[]): boolean => Mnemonic.isValid(words)
 };
 
 export { Mnemonic, mnemonic };

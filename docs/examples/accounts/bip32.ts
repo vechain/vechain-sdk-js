@@ -5,7 +5,7 @@ import { expect } from 'expect';
 
 // 1 - Generate BIP39 mnemonic words, default to 12 words (128bit strength)
 
-const randomMnemonic = Mnemonic.generate().getWords();
+const randomMnemonic = Mnemonic.of();
 
 console.log('Mnemonic words', randomMnemonic);
 // Mnemonic words: "w1 w2 ... w12"
