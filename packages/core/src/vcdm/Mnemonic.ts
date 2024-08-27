@@ -120,20 +120,19 @@ class Mnemonic extends Txt {
      * [BIP39 Mnemonic Words](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
      * and a derivation path as in the examples.
      *
-     * Secure audit function.
-     * - {@link bip32.HDKey}(https://github.com/paulmillr/scure-bip32)
-     * - {@link HDNode}
-     *
      * @example `m/0` (default)
      * @example `m/0/2`
      * @example `m/0/2/4/6`
      *
-     *
      * @param {string[]} words - The set of words used for mnemonic generation.
      * @param {string} [path='m/0'] - The derivation path from the current node.
+     *
      * @returns {Uint8Array} - The derived private key as a Uint8Array.
      *
      * @throws {InvalidHDNode}
+     *
+     * @remarks Security auditable method, depends on
+     * * {@link HDNode}.
      */
     public static toPrivateKey(
         words: string[],
@@ -159,18 +158,18 @@ class Mnemonic extends Txt {
      * [BIP39 Mnemonic Words](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
      * phrase using the specified wordlist size and random generator.
      *
-     * Secure audit function.
-     * - [bip39](https://github.com/paulmillr/scure-bip39)
-     * - `randomGenerator` - **Must provide a cryptographic secure source of entropy
-     *    else any secure audit certification related with this software is invalid.**
-     *
      * @param {WordlistSizeType} wordlistSize The number of words to generate the mnemonic.
      * @param {function} [randomGenerator] The random generator function used to generate the entropy.
      *
      * @returns {Mnemonic} The generated mnemonic.
      *
      * @throws {InvalidDataType} If the number of words is not valid.
-     * @remarks This method is a wrapper around the `generateMnemonic` function from the `bip39` package.
+     *
+     * @remarks Security auditable method, depends on
+     * * [entropyToMnemonic](https://github.com/paulmillr/scure-bip39);
+     * * [generateMnemonic](https://github.com/paulmillr/scure-bip39);
+     * * `randomGenerator` - **Must provide a cryptographic secure source of entropy
+     *    else any secure audit certification related with this software is invalid.**
      */
     public static generate(
         wordlistSize: WordlistSizeType = 12,
@@ -203,9 +202,13 @@ class Mnemonic extends Txt {
 
     /**
      * Check if the given mnemonic words are valid.
+     *
      * @param {string | string[]} words The mnemonic words to check.
+     *
      * @returns {boolean} true if the words are valid, false otherwise.
-     * @remarks This method is a wrapper around the `validateMnemonic` function from the `bip39` package.
+     *
+     * @remarks Security auditable method, depends on
+     * * [validateMnemonic](https://github.com/paulmillr/scure-bip39).
      */
     public static isValid(words: string | string[]): boolean {
         const wordsToValidate = Array.isArray(words) ? words.join(' ') : words;
