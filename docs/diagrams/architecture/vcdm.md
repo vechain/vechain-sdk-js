@@ -67,6 +67,10 @@ classDiagram
     class Txt {
         +Txt of(bigint|number|string|Uint8Array exp)$
     }
+    class ThorId {
+        +boolean isValid0x(string exp)
+        +ThorID of(bigint|number|string|Uint8Array|HexInt exp)$
+    }
     class VeChainDataModel{
         <<interface>>
       +bigint bi
@@ -89,6 +93,7 @@ classDiagram
     HexUInt <|-- Keccak256
     HexUInt <|-- Quantity
     HexUInt <|-- Sha256
+    HexUInt <|-- ThorId
     String <|-- Txt
     Txt <|-- Revision
     Txt <|-- Mnemonic
