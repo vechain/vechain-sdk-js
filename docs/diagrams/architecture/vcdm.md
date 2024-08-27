@@ -70,7 +70,6 @@ classDiagram
         +Txt of(bigint|number|string|Uint8Array exp)$
     }
     class ThorId {
-        +boolean isValid(string exp)
         +boolean isValid0x(string exp)
         +ThorID of(bigint|number|string|Uint8Array|HexInt exp)$
     }
