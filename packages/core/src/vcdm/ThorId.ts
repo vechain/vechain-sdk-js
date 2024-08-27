@@ -1,13 +1,17 @@
 import { Hex } from './Hex';
+import { HexUInt } from './HexUInt';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
- * Represents a ThorId.
- * @experiemntal
+ * The ThorId class represents a Thor ID value, which is a hexadecimal positive integer having 64 digits.
+ *
+ * @extends HexInt
  */
-class ThorId extends Hex {
+class ThorId extends HexUInt {
     /**
      * Number of digits to represent a Thor ID value.
+     *
+     * @remarks The `0x` prefix is excluded.
      *
      * @type {number}
      */
@@ -16,19 +20,18 @@ class ThorId extends Hex {
     /**
      * Constructs a ThorId object with the provided hexadecimal value.
      *
-     * @param {Hex} hex - The hexadecimal value representing the ThorId.
+     * @param {HexUInt} huint - The hexadecimal value representing the ThorId.
      *
      * @throws {InvalidDataType} - If the provided value is not a valid ThorId expression.
-     * @experiemntal
      */
-    protected constructor(hex: Hex) {
-        if (ThorId.isValid(hex.digits)) {
-            super(Hex.POSITIVE, hex.digits);
+    protected constructor(huint: HexUInt) {
+        if (ThorId.isValid(huint.digits)) {
+            super(Hex.POSITIVE, huint.digits);
         } else {
             throw new InvalidDataType(
                 'ThorId.constructor',
                 'not a ThorId expression',
-                { hex }
+                { hex: huint }
             );
         }
     }
@@ -37,11 +40,11 @@ class ThorId extends Hex {
      * Check if the given expression is a valid ThorId.
      *
      * @param {string} exp - The expression to be validated.
+     *
      * @return {boolean} Returns true if the expression is a valid ThorId, false otherwise.
-     * @experimental
      */
     public static isValid(exp: string): boolean {
-        return Hex.isValid(exp) && Hex.REGEX_HEX_PREFIX.test(exp)
+        return Hex.isValid(exp) && HexUInt.REGEX_HEXUINT_PREFIX.test(exp)
             ? exp.length === ThorId.DIGITS + 2
             : exp.length === ThorId.DIGITS;
     }
@@ -50,11 +53,11 @@ class ThorId extends Hex {
      * Determines whether the given string is a valid hex number prefixed with '0x'.
      *
      * @param {string} exp - The hex number to be checked.
-     * @returns {boolean} - True if the hex number is valid, false otherwise.
-     * @experimental
+     *
+     *  @returns {boolean} - True if the hex number is valid, false otherwise.
      */
     public static isValid0x(exp: string): boolean {
-        return Hex.REGEX_HEX_PREFIX.test(exp) && ThorId.isValid(exp);
+        return HexUInt.REGEX_HEXUINT_PREFIX.test(exp) && ThorId.isValid(exp);
     }
 
     /**
@@ -65,16 +68,29 @@ class ThorId extends Hex {
      *     - bigint: A BigInteger value that represents the ThorId.
      *     - number: A number value that represents the ThorId.
      *     - string: A string value that represents the ThorId.
-     *     - Hex: A Hex object that represents the ThorId.
+     *     - HexUInt: A HexUInt object that represents the ThorId.
      *     - Uint8Array: A Uint8Array object that represents the ThorId.
+     *
      * @returns {ThorId} - A new ThorId object created from the given expression.
-     * @experimntal
+     *
+     * @throws {InvalidDataType} If the given expression is not a valid hexadecimal positive integer expression.
      */
-    public static of(exp: bigint | number | string | Hex | Uint8Array): ThorId {
-        if (exp instanceof Hex) {
-            return new ThorId(exp.fit(this.DIGITS));
+    public static of(
+        exp: bigint | number | string | Uint8Array | HexUInt
+    ): ThorId {
+        try {
+            if (exp instanceof Hex) {
+                return new ThorId(exp.fit(this.DIGITS));
+            }
+            return new ThorId(HexUInt.of(exp).fit(ThorId.DIGITS));
+        } catch (e) {
+            throw new InvalidDataType(
+                'ThorId.of',
+                'not a ThorId expression',
+                { exp: `${exp}` }, // Needed to serialize bigint values.
+                e
+            );
         }
-        return new ThorId(Hex.of(exp).fit(ThorId.DIGITS));
     }
 }
 

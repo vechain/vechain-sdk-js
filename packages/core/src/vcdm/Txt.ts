@@ -50,7 +50,8 @@ class Txt extends String implements VeChainDataModel<Txt> {
      * Converts the current Txt string to a BigInt.
      *
      * @returns {bigint} The BigInt representation of the Txt string.
-     * @throws {InvalidOperation} If the conversion to BigInt fails because this Txt string doesn't represent an integer.
+     *
+     *  @throws {InvalidOperation} If the conversion to BigInt fails because this Txt string doesn't represent an integer.
      */
     get bi(): bigint {
         try {
@@ -84,6 +85,7 @@ class Txt extends String implements VeChainDataModel<Txt> {
      * Converts the current Txt string to a number.
      *
      * @returns {number} The numeric value of the Txt string.
+     *
      * @throws {InvalidOperation} If the conversion to number fails because this Txt string doesn't represent a decimal number.
      */
     get n(): number {
@@ -94,6 +96,7 @@ class Txt extends String implements VeChainDataModel<Txt> {
      * Compares the current instance to another instance of Txt.
      *
      * @param {Txt} that - The instance to compare with.
+     *
      * @return {number} - A negative number if the current instance is less than the specified instance,
      *                    zero if they are equal, or a positive number if the current instance is greater.
      */
@@ -105,7 +108,8 @@ class Txt extends String implements VeChainDataModel<Txt> {
      * Checks if the current Txt object is equal to the given Txt object.
      *
      * @param {Txt} that - The Txt object to compare with.
-     * @return {boolean} - True if the objects are equal, false otherwise.
+     *
+     *  @return {boolean} - True if the objects are equal, false otherwise.
      */
     public isEqual(that: Txt): boolean {
         return this.compareTo(that) === 0;
@@ -128,6 +132,7 @@ class Txt extends String implements VeChainDataModel<Txt> {
      * * {@link number} is represented as a {@link NFC} encoded string expressing the value in base 10;
      * * {@link string} is encoded as {@link NFC} string;
      * * {@link Uint8Array} is {@link NFC} decoded to a string.
+     *
      * @returns {Txt} - A new Txt instance.
      */
     public static of(exp: bigint | number | string | Uint8Array): Txt {
