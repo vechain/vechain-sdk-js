@@ -198,9 +198,6 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
             }
             return generateMnemonic(wordlist, strength).split(' ');
         } catch (error) {
-            if (error instanceof InvalidDataType) {
-                throw error;
-            }
             throw new InvalidHDNodeMnemonic(
                 'Mnemonic.of',
                 'error while generating mnemonic',
