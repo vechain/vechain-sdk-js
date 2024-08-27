@@ -58,7 +58,7 @@ const config: HardhatUserConfig = {
             url: 'https://testnet.vechain.org',
             accounts: {
                 mnemonic:
-                    'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
+                    'budget face code during envelope test best damage portion physical track youth',
                 path: VET_DERIVATION_PATH,
                 count: 3,
                 initialIndex: 0,

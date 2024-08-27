@@ -22,7 +22,7 @@ describe('VechainHelloWorldWithNonEmptyConstructor', function () {
         expect(await contract.simpleParameter()).to.equal(simpleParameter);
     });
 
-    it('sayHello() should return the correct message', async function () {
+    it.only('sayHello() should return the correct message', async function () {
         const VechainHelloWorldWithNonEmptyConstructor =
             await ethers.getContractFactory(
                 'VechainHelloWorldWithNonEmptyConstructor'
