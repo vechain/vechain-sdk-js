@@ -107,4 +107,41 @@ describe('Test HttpClient class on Solo node', () => {
         // You can also check the response data if needed
         expect(response).toBeDefined();
     });
+
+    test('Should timeout if request exceeds specified duration', async () => {
+        const customTimeout = 100; // 100ms timeout
+        const soloNetwork = new HttpClient(THOR_SOLO_URL, {
+            timeout: customTimeout
+        });
+
+        // Create a mock server that delays response
+        const mockServer = jest.fn().mockImplementation(async () => {
+            return await new Promise((resolve) =>
+                setTimeout(() => {
+                    resolve({
+                        ok: true,
+                        json: async () => await Promise.resolve({})
+                    });
+                }, customTimeout * 2)
+            ); // Delay longer than the timeout
+        });
+
+        global.fetch = mockServer as unknown as typeof fetch;
+
+        const start = Date.now();
+        await expect(
+            soloNetwork.http(
+                'GET',
+                '/accounts/0x0000000000000000000000000000000000000000'
+            )
+        ).rejects.toThrow(InvalidHTTPRequest);
+        const end = Date.now();
+
+        // Check if the request was aborted close to the timeout time
+        expect(end - start).toBeGreaterThanOrEqual(customTimeout);
+        expect(end - start).toBeLessThan(customTimeout + 500); // Allow some margin for execution time
+
+        // Verify that fetch was called
+        expect(mockServer).toHaveBeenCalled();
+    });
 });
