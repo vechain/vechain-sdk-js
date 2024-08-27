@@ -95,7 +95,7 @@ class Address extends HexUInt {
      *
      * @returns {Address} The converted address.
      *
-     * @remark Security auditable method, depends on
+     * @remarks Security auditable method, depends on
      * * {@link secp256k1.derivePublicKey}.
      */
     public static ofPrivateKey(
@@ -126,7 +126,7 @@ class Address extends HexUInt {
      *
      * @returns {Address} The converted address.
      *
-     * @remark Security auditable method, depends on
+     * @remarks Security auditable method, depends on
      * * {@link secp256k1.inflatePublicKey}.
      */
     public static ofPublicKey(publicKey: Uint8Array): Address {

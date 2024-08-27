@@ -277,7 +277,7 @@ function encodeScryptParams(options: EncryptOptions): ScryptParams {
  *
  * @see {encryptKeystore}
  *
- * @remark **The private key must not be represented as string to avoid the
+ * @remarks **The private key must not be represented as string to avoid the
  * [Memory Dumping](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#memory-dumping)
  * attack**.
  */
@@ -320,7 +320,7 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): Keystore {
  * @returns {Keystore} - The encrypted keystore object.
  * @throws {InvalidKeystoreParams}
  *
- * @remark **The private key must not be represented as string to avoid the
+ * @remarks **The private key must not be represented as string to avoid the
  * [Memory Dumping](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#memory-dumping)
  * attack**.
  *

@@ -7,13 +7,7 @@ import {
     waitForBlockTestCases
 } from './fixture';
 import { HttpClient, Poll, TESTNET_URL, ThorClient } from '../../../src';
-import {
-    Hex,
-    Address,
-    bloom,
-    bloomUtils,
-    networkInfo
-} from '@vechain/sdk-core';
+import { Address, BloomFilter, networkInfo } from '@vechain/sdk-core';
 
 /**
  * Blocks Module integration tests
@@ -137,15 +131,11 @@ describe('ThorClient - Blocks Module', () => {
                 .filter((address) => {
                     return Address.isValid(address);
                 });
-            const filter = bloomUtils.filterOf(addresses);
+            const filter = BloomFilter.of(
+                ...addresses.map((address) => Address.of(address))
+            ).build();
             addresses.forEach((address) => {
-                expect(
-                    bloomUtils.isAddressInBloom(
-                        filter,
-                        bloomUtils.BLOOM_DEFAULT_K,
-                        Hex.of(address).toString()
-                    )
-                ).toBeTruthy();
+                expect(filter.contains(Address.of(address))).toBeTruthy();
             });
         });
 
@@ -157,15 +147,11 @@ describe('ThorClient - Blocks Module', () => {
                     return Address.isValid(address);
                 });
 
-            const filter = bloomUtils.filterOf(addresses, k);
+            const filter = BloomFilter.of(
+                ...addresses.map((address) => Address.of(address))
+            ).build(k);
             addresses.forEach((address) => {
-                expect(
-                    bloomUtils.isAddressInBloom(
-                        filter,
-                        bloom.calculateK(k),
-                        Hex.of(address).toString()
-                    )
-                ).toBeTruthy();
+                expect(filter.contains(Address.of(address))).toBeTruthy();
             });
         });
     });

@@ -28,7 +28,7 @@ abstract class Account implements VeChainDataModel<Account> {
      * @returns {bigint} The BigInt representation of the account.
      * @throws {InvalidOperation} The account cannot be represented as a bigint.
      * @override {@link VeChainDataModel#bi}
-     * @remark The conversion to BigInt is not supported for an account.
+     * @remarks The conversion to BigInt is not supported for an account.
      */
     public get bi(): bigint {
         throw new InvalidOperation(
@@ -43,7 +43,7 @@ abstract class Account implements VeChainDataModel<Account> {
      * @returns {Uint8Array} The byte array representation of the account.
      * @throws {InvalidOperation} The account cannot be represented as a byte array.
      * @override {@link VeChainDataModel#bytes}
-     * @remark The conversion to byte array is not supported for an account.
+     * @remarks The conversion to byte array is not supported for an account.
      */
     public get bytes(): Uint8Array {
         throw new InvalidOperation(
@@ -58,7 +58,7 @@ abstract class Account implements VeChainDataModel<Account> {
      * @returns {bigint} The number representation of the account.
      * @throws {InvalidOperation} The account cannot be represented as a number.
      * @override {@link VeChainDataModel#n}
-     * @remark The conversion to number is not supported for an account.
+     * @remarks The conversion to number is not supported for an account.
      */
     public get n(): number {
         throw new InvalidOperation(

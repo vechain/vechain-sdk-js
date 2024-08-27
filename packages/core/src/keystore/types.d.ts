@@ -59,7 +59,7 @@ interface Keystore {
  * @property {string} address - The address associated with the account.
  * @property {Uint8Array} privateKey - The private key associated with the account.
  *
- * @remark **Differently from
+ * @remarks **Differently from
  * [ethers KeystoreAccount](https://github.com/ethers-io/ethers.js/blob/main/src.ts/wallet/json-keystore.ts),
  * this type represents the private key as a buffer of bytes to avoid
  * [Memory Dumping](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#memory-dumping)
