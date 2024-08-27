@@ -1,10 +1,8 @@
 ```mermaid
 classDiagram
     class Account {
-        <<abstract>>
         #address: Address
         #balance: Currency
-        #mnemonic: Mnemonic
     }
     class Address {
         +string checksum(HexUInt huint)$
@@ -69,6 +67,10 @@ classDiagram
     class Txt {
         +Txt of(bigint|number|string|Uint8Array exp)$
     }
+    class ThorId {
+        +boolean isValid0x(string exp)
+        +ThorID of(bigint|number|string|Uint8Array|HexInt exp)$
+    }
     class VeChainDataModel{
         <<interface>>
       +bigint bi
@@ -79,9 +81,7 @@ classDiagram
       +boolean isNumber()
     }
     Account "1" ..|> "1" Address : has
-    Account "1" ..|> "1" Mnemonic : has
     Account "1" ..|> "1" Currency : has
-    Account <|-- ExternallyOwnedAccount
     Account <|-- Contract
     Hash <|.. Blake2b256
     Hash <|.. Keccak256
@@ -93,6 +93,7 @@ classDiagram
     HexUInt <|-- Keccak256
     HexUInt <|-- Quantity
     HexUInt <|-- Sha256
+    HexUInt <|-- ThorId
     String <|-- Txt
     Txt <|-- Revision
     Txt <|-- Mnemonic
