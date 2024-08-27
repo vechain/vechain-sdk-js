@@ -13,7 +13,7 @@ const mockCurrency: Currency = {
 };
 
 /**
- * Test ExternallyOwnedAccount class.
+ * Test Account class.
  * @group unit/vcdm
  */
 describe('Account class tests', () => {
