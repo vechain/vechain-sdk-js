@@ -1,49 +1,21 @@
 #! /usr/bin/env node
 
-import { Command, Option } from 'commander';
+import defaultProxyConfig from '../default-proxy-config.json';
+import packageJson from '../package.json';
+import { type Config, type RequestBody } from './types';
+import { getOptionsFromCommandLine, parseAndGetFinalConfig } from './utils';
 import {
-    HttpClient,
     ProviderInternalBaseWallet,
     ProviderInternalHDWallet,
     type ProviderInternalWallet,
     ThorClient,
     VeChainProvider
 } from '@vechain/sdk-network';
-import express, { type Express, type Request, type Response } from 'express';
-import cors from 'cors';
+import { Address, secp256k1, VET_DERIVATION_PATH } from '@vechain/sdk-core';
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
 import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
-import importConfig from '../config.json';
-import { type Config, type RequestBody } from './types';
-import fs from 'fs';
-import path from 'path';
-import {
-    addressUtils,
-    secp256k1,
-    VET_DERIVATION_PATH
-} from '@vechain/sdk-core';
-import packageJson from '../package.json';
-
-// Function to read and parse the configuration file
-function readConfigFile(filePath: string): Config {
-    const absolutePath = path.resolve(filePath);
-    if (!fs.existsSync(absolutePath)) {
-        throw new Error(`Configuration file not found: ${absolutePath}`);
-    }
-    const fileContent = fs.readFileSync(absolutePath, 'utf-8');
-    return JSON.parse(fileContent) as Config;
-}
-
-const version: string = packageJson.version;
-
-// Create the program to parse the command line arguments and options
-const program = new Command();
-program
-    .version(version)
-    .description('VeChain RPC Proxy')
-    .addOption(new Option('-c, --config <file>', 'Path to configuration file'))
-    .parse(process.argv);
-const options = program.opts();
+import express, { type Express, type Request, type Response } from 'express';
+import cors from 'cors';
 
 /**
  * Start the proxy function.
@@ -52,15 +24,20 @@ const options = program.opts();
  * * Don't use this in production, it's just for testing purposes.
  */
 function startProxy(): void {
-    let config: Config = importConfig as Config;
-    if (options.config != null) {
-        config = readConfigFile(options.config as string);
-    }
+    // Init the default configuration
+    const defaultConfiguration: Config = defaultProxyConfig as Config;
 
+    // Get the command line arguments options. This will be used to parse the command line arguments
+    const options = getOptionsFromCommandLine(packageJson.version);
+
+    // Parse the SEMANTIC of the arguments and throw an error if the options are not valid
+    const config = parseAndGetFinalConfig(options, defaultConfiguration);
+
+    // Log the RPC Proxy start
     console.log('[rpc-proxy]: Starting VeChain RPC Proxy');
 
-    const thorClient = new ThorClient(new HttpClient(config.url));
-    // Create the wallet
+    // Create all necessary objects to init Provider and Signer
+    const thorClient = ThorClient.fromUrl(config.url);
     const wallet: ProviderInternalWallet = Array.isArray(config.accounts)
         ? new ProviderInternalBaseWallet(
               config.accounts.map((privateKey: string) => {
@@ -78,7 +55,7 @@ function startProxy(): void {
                       publicKey: Buffer.from(
                           secp256k1.derivePublicKey(privateKeyBuffer)
                       ),
-                      address: addressUtils.fromPrivateKey(privateKeyBuffer)
+                      address: Address.ofPrivateKey(privateKeyBuffer).toString()
                   };
               }),
               {
@@ -88,7 +65,7 @@ function startProxy(): void {
         : new ProviderInternalHDWallet(
               config.accounts.mnemonic.split(' '),
               config.accounts.count,
-              0,
+              config.accounts.initialIndex,
               VET_DERIVATION_PATH,
               { delegator: config.delegator }
           );

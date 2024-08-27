@@ -1,19 +1,13 @@
-import { Hex } from '../../src/vcdm/Hex';
 import { describe, expect, test } from '@jest/globals';
-import {
-    addressUtils,
-    mnemonic,
-    MNEMONIC_WORDLIST_ALLOWED_SIZES,
-    secp256k1,
-    type WordlistSizeType
-} from '../../src';
+import { InvalidHDNode } from '@vechain/sdk-errors';
+import { Address, mnemonic, secp256k1, type WordlistSizeType } from '../../src';
+import { Hex } from '../../src/vcdm/Hex';
 import {
     customRandomGeneratorWithXor,
     derivationPaths,
     words,
     wrongDerivationPath
 } from './fixture';
-import { InvalidHDNode } from '@vechain/sdk-errors';
 
 /**
  * Mnemonic tests
@@ -105,9 +99,9 @@ describe('mnemonic', () => {
     describe('generate', () => {
         test('generate - custom parameters', () => {
             // Loop on custom lengths.
-            MNEMONIC_WORDLIST_ALLOWED_SIZES.forEach(
+            [12, 15, 18, 21, 24].forEach(
                 // Loop on custom generators of entropy.
-                (length: WordlistSizeType) => {
+                (length) => {
                     [
                         customRandomGeneratorWithXor,
                         secp256k1.randomBytes,
@@ -115,7 +109,7 @@ describe('mnemonic', () => {
                     ].forEach((randomGenerator) => {
                         // Generate mnemonic words of expected length
                         const words = mnemonic.generate(
-                            length,
+                            length as WordlistSizeType,
                             randomGenerator
                         );
                         expect(words.length).toEqual(length);
@@ -140,9 +134,7 @@ describe('mnemonic', () => {
                             42
                         );
                         expect(
-                            addressUtils.isAddress(
-                                mnemonic.deriveAddress(words)
-                            )
+                            Address.isValid(mnemonic.deriveAddress(words))
                         ).toBe(true);
                     });
                 }

@@ -10,7 +10,7 @@ async function main(): Promise<void> {
     await gameItemContract.waitForDeployment();
 
     const tx = await gameItemContract.awardItem(
-        '0x3db469a79593dcc67f07de1869d6682fc1eaf535',
+        '0x3db469a79593dcc67f07DE1869d6682fC1eaf535',
         'URINotDefined'
     );
 

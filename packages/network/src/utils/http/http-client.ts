@@ -1,4 +1,8 @@
-import { type HttpClientOptions, type HttpParams } from './types';
+import {
+    type HttpClientOptions,
+    type HttpParams,
+    type IHttpClient
+} from './types';
 import { DEFAULT_HTTP_TIMEOUT } from '../index';
 import { InvalidHTTPRequest } from '@vechain/sdk-errors';
 
@@ -8,7 +12,7 @@ import { InvalidHTTPRequest } from '@vechain/sdk-errors';
  * This class leverages the Fetch API for handling HTTP requests and allows for interaction with HTTP services.
  * It is configured with a base URL and request timeout upon instantiation.
  */
-class HttpClient {
+class HttpClient implements IHttpClient {
     private readonly timeout: number;
 
     /**

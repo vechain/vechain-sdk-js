@@ -1,6 +1,6 @@
-import { Hex, HexUInt, type Hash } from '../vcdm';
-import { InvalidOperation } from '@vechain/sdk-errors';
 import { keccak_256 as nh_keccak_256 } from '@noble/hashes/sha3';
+import { InvalidOperation } from '@vechain/sdk-errors';
+import { Hex, HexUInt, Txt, type Hash } from '../vcdm';
 
 /**
  * Represents the result of an [SHA-3](https://en.wikipedia.org/wiki/SHA-3) [KECCAK 256](https://keccak.team/keccak.html) hash operation.
@@ -18,7 +18,7 @@ class Keccak256 extends HexUInt implements Hash {
      *
      * @throws {InvalidOperation} - If a hash error occurs.
      *
-     * @remark Security auditable method, depends on
+     * @remarks Security auditable method, depends on
      * * [`nh_keccak_256`](https://github.com/paulmillr/noble-hashes#sha3-fips-shake-keccak).
      */
     public static of(
@@ -36,4 +36,20 @@ class Keccak256 extends HexUInt implements Hash {
     }
 }
 
-export { Keccak256 };
+// Backwards compatibility, remove in future release #1184
+
+function keccak256(data: string | Uint8Array, returnType: 'buffer'): Uint8Array;
+
+function keccak256(data: string | Uint8Array, returnType: 'hex'): string;
+
+function keccak256(
+    data: string | Uint8Array,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    returnType: 'buffer' | 'hex' = 'buffer'
+): string | Uint8Array {
+    return returnType === 'buffer'
+        ? Keccak256.of(Txt.of(data).bytes).bytes
+        : Keccak256.of(Txt.of(data).bytes).toString();
+}
+
+export { Keccak256, keccak256 };

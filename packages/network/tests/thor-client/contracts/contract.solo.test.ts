@@ -22,7 +22,7 @@ import {
     testingContractTestCases
 } from './fixture';
 import {
-    addressUtils,
+    Address,
     coder,
     type DeployParams,
     type FunctionFragment
@@ -155,7 +155,7 @@ describe('ThorClient - Contracts', () => {
         expect(contract.deployTransactionReceipt?.reverted).toBe(false);
         expect(contract.deployTransactionReceipt?.outputs).toHaveLength(1);
         expect(contractAddress).not.toBeNull();
-        expect(addressUtils.isAddress(contractAddress)).toBe(true);
+        expect(Address.isValid(contractAddress)).toBe(true);
     }, 10000);
 
     /**
@@ -397,12 +397,12 @@ describe('ThorClient - Contracts', () => {
             fourArgsEventAbi
         );
 
-        const contractFilter = loadedContract.filters.DataUpdated(
-            '0x0000000000000000000000000000456e65726779',
-            10n,
-            10n,
-            10n
-        );
+        const contractFilter = loadedContract.filters.DataUpdated({
+            sender: '0x0000000000000000000000000000456e65726779',
+            key: 10n,
+            oldValue: 10n,
+            newValue: 10n
+        });
 
         expect(contractFilter).toBeDefined();
         expect(contractFilter.criteriaSet[0].criteria.topic0).toBeDefined();
@@ -611,16 +611,16 @@ describe('ThorClient - Contracts', () => {
         await (await contract.transact.setStateVariable(123n)).wait();
 
         const events = await contract.filters
-            .StateChanged(
-                undefined,
-                undefined,
-                TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
-            )
+            .StateChanged({
+                newValue: undefined,
+                oldValue: undefined,
+                sender: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_SENDER.address
+            })
             .get();
 
         expect(events).toBeDefined();
 
-        expect(events[0].at(events.length - 1)?.decodedData?.at(0)).toBe(123n);
+        expect(events.at(events.length - 1)?.decodedData?.at(0)).toBe(123n);
     });
 
     filterContractEventsTestCases.forEach(
@@ -668,11 +668,10 @@ describe('ThorClient - Contracts', () => {
                         }
                     }
 
-                    const eventLogs = await contract.filters[eventName](
-                        ...args
-                    ).get(getParams);
+                    const eventLogs =
+                        await contract.filters[eventName](args).get(getParams);
 
-                    expect(eventLogs[0].map((x) => x.decodedData)).toEqual(
+                    expect(eventLogs.map((x) => x.decodedData)).toEqual(
                         expectedData
                     );
                 },

@@ -18,7 +18,7 @@ describe('Hash Page', () => {
         render(<HashPage />);
 
         // Get the heading
-        const heading = screen.getByText('sdk-nextsjs-integration');
+        const heading = screen.getByText('sdk-nextjs-integration');
         expect(heading).toBeInTheDocument();
 
         // Get the content input

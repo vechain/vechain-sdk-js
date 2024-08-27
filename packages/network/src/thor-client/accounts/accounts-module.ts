@@ -1,5 +1,5 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { addressUtils, revisionUtils, ThorId } from '@vechain/sdk-core';
+import { Address, Revision, ThorId } from '@vechain/sdk-core';
 import { buildQuery, thorest } from '../../utils';
 import {
     type AccountDetail,
@@ -34,7 +34,7 @@ class AccountsModule {
         options?: AccountInputOptions
     ): Promise<AccountDetail> {
         // Invalid address
-        if (!addressUtils.isAddress(address)) {
+        if (!Address.isValid(address)) {
             throw new InvalidDataType(
                 'AccountsModule.getAccount()',
                 'Invalid address. The address must be a valid VeChainThor address.',
@@ -46,7 +46,7 @@ class AccountsModule {
         if (
             options?.revision !== null &&
             options?.revision !== undefined &&
-            !revisionUtils.isRevisionBlock(options.revision)
+            !Revision.isValid(options.revision)
         ) {
             throw new InvalidDataType(
                 'AccountsModule.getAccount()',
@@ -77,7 +77,7 @@ class AccountsModule {
         options?: AccountInputOptions
     ): Promise<string> {
         // Invalid address
-        if (!addressUtils.isAddress(address)) {
+        if (!Address.isValid(address)) {
             throw new InvalidDataType(
                 'AccountsModule.getBytecode()',
                 'Invalid address. The address must be a valid VeChainThor address.',
@@ -89,7 +89,7 @@ class AccountsModule {
         if (
             options?.revision !== null &&
             options?.revision !== undefined &&
-            !revisionUtils.isRevisionBlock(options.revision)
+            !Revision.isValid(options.revision)
         ) {
             throw new InvalidDataType(
                 'AccountsModule.getBytecode()',
@@ -124,7 +124,7 @@ class AccountsModule {
         options?: AccountInputOptions
     ): Promise<string> {
         // Invalid address
-        if (!addressUtils.isAddress(address)) {
+        if (!Address.isValid(address)) {
             throw new InvalidDataType(
                 'AccountsModule.getStorageAt()',
                 'Invalid address. The address must be a valid VeChainThor address.',
@@ -136,7 +136,7 @@ class AccountsModule {
         if (
             options?.revision !== null &&
             options?.revision !== undefined &&
-            !revisionUtils.isRevisionBlock(options.revision)
+            !Revision.isValid(options.revision)
         ) {
             throw new InvalidDataType(
                 'AccountsModule.getStorageAt()',

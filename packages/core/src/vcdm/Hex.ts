@@ -1,6 +1,10 @@
-import * as nh_utils from '@noble/hashes/utils';
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { InvalidOperation, InvalidDataType } from '@vechain/sdk-errors';
+import * as nh_utils from '@noble/hashes/utils';
+import {
+    InvalidOperation,
+    InvalidDataType,
+    type ObjectErrorData
+} from '@vechain/sdk-errors';
 import { type VeChainDataModel } from './VeChainDataModel';
 
 /**
@@ -52,12 +56,12 @@ class Hex implements VeChainDataModel<Hex> {
      *
      * @type {RegExp}
      */
-    protected static readonly REGEX_PREFIX: RegExp = /^-?0x/i;
+    protected static readonly REGEX_HEX_PREFIX: RegExp = /^-?0x/i;
 
     /**
      * Returns the hexadecimal digits expressing this absolute value, sign and `0x` prefix omitted.
 
-     * @remark An empty content results in an empty string returned.
+     * @remarks An empty content results in an empty string returned.
      */
     public readonly digits: string;
 
@@ -113,7 +117,7 @@ class Hex implements VeChainDataModel<Hex> {
     }
 
     /**
-     * Retrieves the value of n.
+     * Returns the value of n.
      *
      * @return {number} The value of n.
      *
@@ -245,7 +249,7 @@ class Hex implements VeChainDataModel<Hex> {
      * @return {boolean} - True if the string is a valid hexadecimal number prefixed with '0x', otherwise false.
      */
     public static isValid0x(exp: string): boolean {
-        return Hex.REGEX_PREFIX.test(exp) && Hex.isValid(exp);
+        return Hex.REGEX_HEX_PREFIX.test(exp) && Hex.isValid(exp);
     }
 
     /**
@@ -288,14 +292,14 @@ class Hex implements VeChainDataModel<Hex> {
                 if (exp.startsWith('-')) {
                     return new Hex(
                         this.NEGATIVE,
-                        this.REGEX_PREFIX.test(exp)
+                        this.REGEX_HEX_PREFIX.test(exp)
                             ? exp.slice(3)
                             : exp.slice(1)
                     );
                 }
                 return new Hex(
                     this.POSITIVE,
-                    this.REGEX_PREFIX.test(exp) ? exp.slice(2) : exp
+                    this.REGEX_HEX_PREFIX.test(exp) ? exp.slice(2) : exp
                 );
             }
             // noinspection ExceptionCaughtLocallyJS
@@ -319,7 +323,7 @@ class Hex implements VeChainDataModel<Hex> {
      * @throws {InvalidDataType} - If the bytes argument is not greater than 0.
      * @returns {Hex} - A randomly generated Hex value.
      *
-     * @remark Security auditable method, depends on
+     * @remarks Security auditable method, depends on
      * * [`nh_utils.randomBytes`](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#utils).
      */
     public static random(bytes: number): Hex {
@@ -329,6 +333,28 @@ class Hex implements VeChainDataModel<Hex> {
         throw new InvalidDataType('Hex.random', 'bytes argument not > 0', {
             bytes
         });
+    }
+
+    /**
+     * Error handler for Hex and its subclasses so we do not hide them.
+     * To be used only for nested errors.
+     *
+     * @param error - The error to handle from the subclass.
+     * @param methodName - The name of the method that threw the error.
+     * @param {string} errorMessage - The error message to throw.
+     * @param {ObjectErrorData} data - The data to include in the error.
+     * @throws {InvalidDataType} - Throws an error with the given message and data.
+     */
+    protected static throwInvalidDataType(
+        error: unknown,
+        methodName: string,
+        errorMessage: string,
+        data: ObjectErrorData
+    ): never {
+        if (error instanceof InvalidDataType) {
+            throw error;
+        }
+        throw new InvalidDataType(methodName, errorMessage, data, error);
     }
 
     /**

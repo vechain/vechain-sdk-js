@@ -1,7 +1,8 @@
 import { describe, expect, test } from '@jest/globals';
-import { Blake2b256, Hex } from '../../src';
-import { CONTENT, NO_CONTENT } from './fixture';
+import { bytesToHex } from '@noble/hashes/utils';
 import { InvalidOperation } from '@vechain/sdk-errors';
+import { blake2b256, Blake2b256, Hex } from '../../src';
+import { CONTENT, NO_CONTENT } from './fixture';
 
 // Hex on purpose because it must be equal to the returned HexUInt hash.
 const CONTENT_BLAKE2B256 = Hex.of(
@@ -43,5 +44,21 @@ describe('Blake2b256 class tests', () => {
 
     test('Throw an exception for illegal content', () => {
         expect(() => Blake2b256.of('0xfoe')).toThrow(InvalidOperation);
+    });
+});
+describe('Backwards compatibility tests', () => {
+    test('Should return the hash as hex', () => {
+        const rawString = 'Hello, World!';
+        const hash = blake2b256(rawString, 'hex');
+        expect(hash).toBe(
+            '0x511bc81dde11180838c562c82bb35f3223f46061ebde4a955c27b3f489cf1e03'
+        );
+    });
+    test('Should return the hash as buffer', () => {
+        const rawString = 'Hello, World!';
+        const hash = blake2b256(rawString, 'buffer');
+        expect(bytesToHex(hash)).toBe(
+            '511bc81dde11180838c562c82bb35f3223f46061ebde4a955c27b3f489cf1e03'
+        );
     });
 });

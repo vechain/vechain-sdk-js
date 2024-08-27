@@ -1,9 +1,35 @@
 ```mermaid
 classDiagram
-    class Address
+    class Account {
+        <<abstract>>
+        #address: Address
+        #balance: Currency
+        #mnemonic: Mnemonic
+    }
+    class Address {
+        +string checksum(HexUInt huint)$
+        +boolean isValid(string exp)$
+        +Address of(bigint|number|string|Uint8Array|HexUInt exp)$
+        +Address ofPrivateKey(Uint8Array privateKey, boolean: isCompressed)$
+        +Address ofPublicKey(Uint8Array privateKey)$
+    }
     class Blake2b256 {
         +Blake2b256 of(bigint|string|Uint8Array|Hex exp)$
     }
+    class BloomFilter {
+        +number k
+        +number computeBestBitsPerKey(number k)$
+        +number computeBestHashFunctionsQuantity(number m)$
+        +boolean contains(Hex|Uint8Array key)
+        +boolean isJoinable(BloomFilter other)
+        +BloomFilter join(BloomFilter other)
+        +BloomFilter of(Hex[]|Uint8Array[] ...keys)$
+    }
+    class Contract
+    class Currency {
+        <<interface>>
+    }
+    class ExternallyOwnedAccount
     class Hash {
         <<interface>>
     }
@@ -26,8 +52,15 @@ classDiagram
     class Keccak256 {
         +Keccak256 of(bigint|number|string|Uint8Array|Hex exp)$
     }
+    class Mnemonic {
+        +Mnemonic of(string exp)$
+    }
     class Quantity {
         +Quantity of(bigint|number exp)$
+    }
+    class Revision {
+        +boolean isValid(number|string value)$
+        +Revision of(bigint|number|string|Uint8Array|Hex value)$
     }
     class Sha256 {
         +Sha256 of(bigint|number|string|Uint8Array|Hex exp)$
@@ -45,6 +78,11 @@ classDiagram
       +boolean isEqual(~T~ that)
       +boolean isNumber()
     }
+    Account "1" ..|> "1" Address : has
+    Account "1" ..|> "1" Mnemonic : has
+    Account "1" ..|> "1" Currency : has
+    Account <|-- ExternallyOwnedAccount
+    Account <|-- Contract
     Hash <|.. Blake2b256
     Hash <|.. Keccak256
     Hash <|.. Sha256
@@ -56,6 +94,9 @@ classDiagram
     HexUInt <|-- Quantity
     HexUInt <|-- Sha256
     String <|-- Txt
+    Txt <|-- Revision
+    Txt <|-- Mnemonic
+    VeChainDataModel <|.. BloomFilter
     VeChainDataModel <|.. Hex
     VeChainDataModel <|.. Txt
 ```

@@ -1,11 +1,11 @@
-import { ProviderInternalBaseWallet } from '../base-wallet';
 import {
-    addressUtils,
+    Address,
     HDNode,
     secp256k1,
     VET_DERIVATION_PATH
 } from '@vechain/sdk-core';
 import { type SignTransactionOptions } from '../../../../thor-client';
+import { ProviderInternalBaseWallet } from '../base-wallet';
 
 class ProviderInternalHDWallet extends ProviderInternalBaseWallet {
     /**
@@ -61,7 +61,7 @@ class ProviderInternalHDWallet extends ProviderInternalBaseWallet {
                     publicKey: Buffer.from(
                         secp256k1.derivePublicKey(privateKeyBuffer)
                     ),
-                    address: addressUtils.fromPrivateKey(privateKeyBuffer)
+                    address: Address.ofPrivateKey(privateKeyBuffer).toString()
                 };
             }),
             options

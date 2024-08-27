@@ -1,6 +1,6 @@
 import { dataUtils } from '../../../utils';
 import { InvalidRLP } from '@vechain/sdk-errors';
-import { Hex } from '../../../vcdm/Hex';
+import { Hex } from '../../../vcdm';
 import { type RLPInput } from '../types';
 
 /**

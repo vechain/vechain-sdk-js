@@ -19,8 +19,11 @@ function Header(): JSX.Element {
             </div>
             {/* Title */}
             <div className="my-20 mx-auto max-w-2xl text-center">
-                <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl my-10">
-                    sdk-nextsjs-integration
+                <h2
+                    className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl my-10"
+                    data-testid="title"
+                >
+                    sdk-nextjs-integration
                 </h2>
             </div>
         </>

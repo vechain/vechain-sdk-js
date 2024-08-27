@@ -3,14 +3,13 @@
  * [JSON Keystore v3 Wallet](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage)
  * encryption, decryption, and validation functionality.
  */
-import * as n_utils from '@noble/curves/abstract/utils';
-import { Hex } from '../../../vcdm';
-import { InvalidKeystoreParams, stringifyData } from '@vechain/sdk-errors';
 import { ctr } from '@noble/ciphers/aes';
-import { addressUtils } from '../../../address-utils';
-import { Keccak256 } from '../../../hash';
+import * as n_utils from '@noble/curves/abstract/utils';
 import { scrypt } from '@noble/hashes/scrypt';
+import { InvalidKeystoreParams, stringifyData } from '@vechain/sdk-errors';
+import { Keccak256 } from '../../../hash';
 import { secp256k1 } from '../../../secp256k1';
+import { Address, Hex } from '../../../vcdm';
 import { type Keystore, type KeystoreAccount } from '../../types';
 
 /**
@@ -278,7 +277,7 @@ function encodeScryptParams(options: EncryptOptions): ScryptParams {
  *
  * @see {encryptKeystore}
  *
- * @remark **The private key must not be represented as string to avoid the
+ * @remarks **The private key must not be represented as string to avoid the
  * [Memory Dumping](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#memory-dumping)
  * attack**.
  */
@@ -321,7 +320,7 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): Keystore {
  * @returns {Keystore} - The encrypted keystore object.
  * @throws {InvalidKeystoreParams}
  *
- * @remark **The private key must not be represented as string to avoid the
+ * @remarks **The private key must not be represented as string to avoid the
  * [Memory Dumping](https://github.com/paulmillr/noble-hashes?tab=readme-ov-file#memory-dumping)
  * attack**.
  *
@@ -365,11 +364,7 @@ function encryptKeystore(
         // Encrypt the private key: 32 bytes for the Web3 Secret Storage (derivedKey, macPrefix)
         const ciphertext = ctr(key.slice(0, 16), iv).encrypt(privateKey);
         return {
-            address: Hex.of(
-                addressUtils.fromPublicKey(
-                    secp256k1.derivePublicKey(privateKey)
-                )
-            ).digits,
+            address: Address.ofPrivateKey(privateKey).toString(),
             crypto: {
                 cipher: KEYSTORE_CRYPTO_CIPHER,
                 cipherparams: {
@@ -456,7 +451,7 @@ function decrypt(keystore: Keystore, password: Uint8Array): KeystoreAccount {
  * any different KDF function not supported.
  *
  * Secure audit function.
- * - {@link addressUtils.fromPrivateKey}
+ * - {@link Address.ofPrivateKey}
  * - [ctr](https://github.com/paulmillr/noble-ciphers?tab=readme-ov-file#aes).
  * - `password` wiped after use.
  * - [scrypt](https://github.com/paulmillr/noble-hashes/?tab=readme-ov-file#scrypt).
@@ -521,13 +516,10 @@ function decryptKeystore(
             key.slice(0, 16),
             n_utils.hexToBytes(keystore.crypto.cipherparams.iv)
         ).decrypt(ciphertext);
-        const address = addressUtils.fromPrivateKey(privateKey);
+        const address = Address.ofPrivateKey(privateKey).toString();
         if (
             keystore.address !== '' &&
-            address !==
-                addressUtils.toERC55Checksum(
-                    Hex.of(keystore.address).toString()
-                )
+            address !== Address.checksum(Hex.of(keystore.address))
         ) {
             throw new InvalidKeystoreParams(
                 '(EXPERIMENTAL) keystore.decryptKeystore()',

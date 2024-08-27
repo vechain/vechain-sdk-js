@@ -1,7 +1,12 @@
-import { addressUtils, type DeployParams, ERC20_ABI } from '@vechain/sdk-core';
-import { TEST_ACCOUNTS } from '../../fixture';
-import type { EventDisplayOrder, PaginationOptions, Range } from '../../../src';
+import {
+    Address,
+    ERC20_ABI,
+    HexUInt,
+    type DeployParams
+} from '@vechain/sdk-core';
 import { type Abi } from 'abitype';
+import type { EventDisplayOrder, PaginationOptions, Range } from '../../../src';
+import { TEST_ACCOUNTS } from '../../fixture';
 
 const contractBytecode: string =
     '0x608060405234801561001057600080fd5b506040516102063803806102068339818101604052810190610032919061007a565b80600081905550506100a7565b600080fd5b6000819050919050565b61005781610044565b811461006257600080fd5b50565b6000815190506100748161004e565b92915050565b6000602082840312156100905761008f61003f565b5b600061009e84828501610065565b91505092915050565b610150806100b66000396000f3fe608060405234801561001057600080fd5b50600436106100365760003560e01c806360fe47b11461003b5780636d4ce63c14610057575b600080fd5b610055600480360381019061005091906100c3565b610075565b005b61005f61007f565b60405161006c91906100ff565b60405180910390f35b8060008190555050565b60008054905090565b600080fd5b6000819050919050565b6100a08161008d565b81146100ab57600080fd5b50565b6000813590506100bd81610097565b92915050565b6000602082840312156100d9576100d8610088565b5b60006100e7848285016100ae565b91505092915050565b6100f98161008d565b82525050565b600060208201905061011460008301846100f0565b9291505056fea2646970667358221220785262acbf50fa50a7b4dc8d8087ca8904c7e6b847a13674503fdcbac903b67e64736f6c63430008170033';
@@ -242,8 +247,8 @@ const erc721ContractTestCases: TestCase[] = [
         params: [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
         expected: [
             '0x0000000000000000000000000000000000000000',
-            addressUtils.toERC55Checksum(
-                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
+            Address.checksum(
+                HexUInt.of(TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address)
             ),
             0n
         ],
@@ -256,8 +261,8 @@ const erc721ContractTestCases: TestCase[] = [
         params: [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
         expected: [
             '0x0000000000000000000000000000000000000000',
-            addressUtils.toERC55Checksum(
-                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
+            Address.checksum(
+                HexUInt.of(TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address)
             ),
             1n
         ],
@@ -271,8 +276,10 @@ const erc721ContractTestCases: TestCase[] = [
         params: [TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address],
         expected: [
             '0x0000000000000000000000000000000000000000',
-            addressUtils.toERC55Checksum(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address.toLowerCase()
+            Address.checksum(
+                HexUInt.of(
+                    TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address.toLowerCase()
+                )
             ),
             2n
         ],
@@ -306,11 +313,11 @@ const erc721ContractTestCases: TestCase[] = [
             1n
         ],
         expected: [
-            addressUtils.toERC55Checksum(
-                TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
+            Address.checksum(
+                HexUInt.of(TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address)
             ),
-            addressUtils.toERC55Checksum(
-                TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address
+            Address.checksum(
+                HexUInt.of(TEST_ACCOUNTS.TRANSACTION.DELEGATOR.address)
             ),
             1n
         ],
@@ -654,7 +661,7 @@ interface FilterEventTestCase {
         options?: PaginationOptions;
         order?: EventDisplayOrder;
     };
-    args: unknown[];
+    args: Record<string, unknown>;
     expectedData: unknown[];
 }
 
@@ -781,7 +788,7 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
             }
         ],
         eventName: 'ValueSet',
-        args: [TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
+        args: { _setter: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address },
         expectedData: [['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 1000n]]
     },
     {
@@ -792,7 +799,10 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
         contractCaller: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.privateKey,
         functionCalls: [],
         eventName: 'Transfer',
-        args: [undefined, TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
+        args: {
+            from: undefined,
+            to: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
+        },
         expectedData: [
             [
                 '0x0000000000000000000000000000000000000000',
@@ -816,7 +826,10 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
                 to: 0
             }
         },
-        args: [undefined, TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address],
+        args: {
+            from: undefined,
+            to: TEST_ACCOUNTS.TRANSACTION.CONTRACT_MANAGER.address
+        },
         expectedData: []
     },
     {
@@ -843,10 +856,10 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
             }
         ],
         eventName: 'Transfer',
-        args: [
-            undefined,
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
-        ],
+        args: {
+            from: undefined,
+            to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+        },
         expectedData: [
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
@@ -888,10 +901,10 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
         getParams: {
             order: 'desc'
         },
-        args: [
-            undefined,
-            TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
-        ],
+        args: {
+            from: undefined,
+            to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address
+        },
         expectedData: [
             [
                 '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
@@ -930,7 +943,11 @@ const filterContractEventsTestCases: FilterEventTestCase[] = [
             }
         ],
         eventName: 'Transfer',
-        args: [undefined, undefined, 5000],
+        args: {
+            from: undefined,
+            to: undefined,
+            value: 5000n
+        },
         expectedData: [
             [
                 '0x0000000000000000000000000000000000000000',
@@ -3643,27 +3660,27 @@ const OWNER_RESTRICTION_BYTECODE =
 
 export {
     contractBytecode,
+    deployedContractAbi,
+    deployedContractBytecode,
+    depositContractAbi,
+    depositContractBytecode,
+    emissionAddress,
+    emissionsABI,
+    ERC20_CONTRACT_ADDRESS_ON_TESTNET,
     erc20ContractBytecode,
     erc721ContractBytecode,
     erc721ContractTestCases,
-    fourArgsEventAbi,
-    deployedContractBytecode,
-    deployedContractAbi,
-    testingContractTestCases,
-    testingContractNegativeTestCases,
-    testingContractEVMExtensionTestCases,
-    filterContractEventsTestCases,
-    depositContractAbi,
-    depositContractBytecode,
-    multipleClausesTestCases,
-    TESTNET_DELEGATE_URL,
-    ERC20_CONTRACT_ADDRESS_ON_TESTNET,
-    eventExampleBytecode,
     eventExampleAbi,
+    eventExampleBytecode,
+    filterContractEventsTestCases,
+    fourArgsEventAbi,
+    multipleClausesTestCases,
     OWNER_RESTRICTION_ABI,
     OWNER_RESTRICTION_BYTECODE,
-    xAllocationVotingGovernorABI,
-    emissionsABI,
-    emissionAddress,
-    xAllocationAddress
+    testingContractEVMExtensionTestCases,
+    testingContractNegativeTestCases,
+    testingContractTestCases,
+    TESTNET_DELEGATE_URL,
+    xAllocationAddress,
+    xAllocationVotingGovernorABI
 };

@@ -1,6 +1,6 @@
 import {
     Hex,
-    addressUtils,
+    Address,
     Blake2b256,
     certificate,
     secp256k1,
@@ -13,7 +13,7 @@ import {
 
 const privateKey = await secp256k1.generatePrivateKey();
 const publicKey = secp256k1.derivePublicKey(privateKey);
-const signerAddress = addressUtils.fromPublicKey(Buffer.from(publicKey));
+const signerAddress = Address.ofPublicKey(Buffer.from(publicKey)).toString();
 
 // 2 - Create a certificate
 

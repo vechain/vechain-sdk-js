@@ -59,8 +59,8 @@ const derivationPaths = [
 const wrongDerivationPath = 'm/0/1/4/2/4/h';
 
 export {
-    words,
+    customRandomGeneratorWithXor,
     derivationPaths,
-    wrongDerivationPath,
-    customRandomGeneratorWithXor
+    words,
+    wrongDerivationPath
 };

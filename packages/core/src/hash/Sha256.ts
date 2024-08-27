@@ -1,6 +1,6 @@
 import * as nh_sha256 from '@noble/hashes/sha256';
-import { Hex, HexUInt, type Hash } from '../vcdm';
 import { InvalidOperation } from '@vechain/sdk-errors';
+import { Hex, HexUInt, Txt, type Hash } from '../vcdm';
 
 /**
  * Represents the result of an [SHA256](https://en.wikipedia.org/wiki/SHA-2) hash operation.
@@ -18,7 +18,7 @@ class Sha256 extends HexUInt implements Hash {
      *
      * @throws {InvalidOperation} - If a hash error occurs.
      *
-     * @remark Security auditable method, depends on
+     * @remarks Security auditable method, depends on
      * * [`nh_sha256.sha256`](https://github.com/paulmillr/noble-hashes#sha2-sha256-sha384-sha512-and-others).
      */
     public static of(exp: bigint | number | string | Uint8Array): Sha256 {
@@ -34,4 +34,20 @@ class Sha256 extends HexUInt implements Hash {
     }
 }
 
-export { Sha256 };
+// Backwards compatibility, remove in future release #1184
+
+function sha256(data: string | Uint8Array, returnType: 'buffer'): Uint8Array;
+
+function sha256(data: string | Uint8Array, returnType: 'hex'): string;
+
+function sha256(
+    data: string | Uint8Array,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    returnType: 'buffer' | 'hex' = 'buffer'
+): string | Uint8Array {
+    return returnType === 'buffer'
+        ? Sha256.of(Txt.of(data).bytes).bytes
+        : Sha256.of(Txt.of(data).bytes).toString();
+}
+
+export { Sha256, sha256 };
