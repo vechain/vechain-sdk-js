@@ -1,7 +1,13 @@
 import { describe, expect, test } from '@jest/globals';
 import { InvalidHDNode } from '@vechain/sdk-errors';
-import { Address, mnemonic, secp256k1, type WordlistSizeType } from '../../src';
-import { Hex } from '../../src/vcdm/Hex';
+import {
+    Address,
+    mnemonic,
+    Mnemonic,
+    secp256k1,
+    type WordlistSizeType
+} from '../../../src';
+import { Hex } from '../../../src/vcdm/Hex';
 import {
     customRandomGeneratorWithXor,
     derivationPaths,
@@ -13,45 +19,9 @@ import {
  * Mnemonic tests
  * @group unit/mnemonic
  */
-describe('mnemonic', () => {
-    describe('deriveAddress', () => {
-        describe('deriveAddress - path defined', () => {
-            derivationPaths
-                .filter((path) => {
-                    return path.derivationPath !== undefined;
-                })
-                .forEach((path) => {
-                    test(path.testName, () => {
-                        expect(
-                            mnemonic.deriveAddress(words, path.derivationPath)
-                        ).toEqual(path.resultingAddress);
-                    });
-                });
-        });
-
-        describe('deriveAddress - path undefined', () => {
-            derivationPaths
-                .filter((path) => {
-                    return path.derivationPath === undefined;
-                })
-                .forEach((path) => {
-                    test(path.testName, () => {
-                        expect(
-                            mnemonic.deriveAddress(words, path.derivationPath)
-                        ).toEqual(path.resultingAddress);
-                    });
-                });
-        });
-
-        test('deriveAddress - wrong path', () => {
-            expect(() =>
-                mnemonic.deriveAddress(words, wrongDerivationPath)
-            ).toThrowError(InvalidHDNode);
-        });
-    });
-
-    describe('derivePrivateKey', () => {
-        describe('derivePrivateKey - path defined', () => {
+describe('Mnemonic', () => {
+    describe('toPrivateKey', () => {
+        describe('toPrivateKey - path defined', () => {
             derivationPaths
                 .filter((path) => {
                     return path.derivationPath !== undefined;
@@ -60,7 +30,7 @@ describe('mnemonic', () => {
                     test(path.testName, () => {
                         expect(
                             Hex.of(
-                                mnemonic.derivePrivateKey(
+                                Mnemonic.toPrivateKey(
                                     words,
                                     path.derivationPath
                                 )
@@ -89,15 +59,15 @@ describe('mnemonic', () => {
                 });
         });
 
-        test('derivePrivateKey - wrong path', () => {
+        test('toPrivateKey - wrong path', () => {
             expect(() =>
-                mnemonic.derivePrivateKey(words, wrongDerivationPath)
+                Mnemonic.toPrivateKey(words, wrongDerivationPath)
             ).toThrowError(InvalidHDNode);
         });
     });
 
-    describe('generate', () => {
-        test('generate - custom parameters', () => {
+    describe('of', () => {
+        test('of - custom parameters', () => {
             // Loop on custom lengths.
             [12, 15, 18, 21, 24].forEach(
                 // Loop on custom generators of entropy.
@@ -108,58 +78,60 @@ describe('mnemonic', () => {
                         undefined
                     ].forEach((randomGenerator) => {
                         // Generate mnemonic words of expected length
-                        const words = mnemonic.generate(
+                        const words = Mnemonic.of(
                             length as WordlistSizeType,
                             randomGenerator
                         );
                         expect(words.length).toEqual(length);
 
                         // Validate mnemonic words
-                        expect(mnemonic.isValid(words)).toEqual(true);
+                        expect(Mnemonic.isValid(words)).toEqual(true);
 
                         // Derive private key from mnemonic words
-                        expect(mnemonic.derivePrivateKey(words)).toBeDefined();
-                        expect(mnemonic.derivePrivateKey(words).length).toEqual(
-                            32
-                        );
+                        expect(Mnemonic.toPrivateKey(words)).toBeDefined();
+                        expect(Mnemonic.toPrivateKey(words).length).toEqual(32);
                         expect(
                             secp256k1.isValidPrivateKey(
-                                mnemonic.derivePrivateKey(words)
+                                Mnemonic.toPrivateKey(words)
                             )
                         ).toEqual(true);
 
                         // Derive address from mnemonic words
-                        expect(mnemonic.deriveAddress(words)).toBeDefined();
-                        expect(mnemonic.deriveAddress(words).length).toEqual(
-                            42
-                        );
+                        expect(Address.ofMnemonic(words)).toBeDefined();
                         expect(
-                            Address.isValid(mnemonic.deriveAddress(words))
+                            mnemonic.deriveAddress(words).toString().length
+                        ).toEqual(42);
+                        expect(
+                            Address.isValid(
+                                Address.ofMnemonic(words).toString()
+                            )
                         ).toBe(true);
                     });
                 }
             );
         });
 
-        test('generate - default length', () => {
-            expect(mnemonic.generate().length).toEqual(12);
+        test('of - default length', () => {
+            expect(Mnemonic.of().length).toEqual(12);
         });
 
-        test('generate - wrong length', () => {
+        test('of - wrong length', () => {
             expect(() => {
                 // @ts-expect-error - Wrong length error for testing purposes.
-                mnemonic.generate(13);
+                Mnemonic.of(13);
             }).toThrowError();
         });
     });
 
     describe('isValid', () => {
         test('isValid - false', () => {
+            expect(Mnemonic.isValid('hello world')).toBeFalsy();
             expect(mnemonic.isValid(['hello world'])).toBeFalsy();
         });
 
         test('isValid - true', () => {
-            expect(mnemonic.isValid(mnemonic.generate())).toBeTruthy();
+            expect(Mnemonic.isValid(Mnemonic.of())).toBeTruthy();
+            expect(mnemonic.isValid(Mnemonic.of())).toBeTruthy();
         });
     });
 });

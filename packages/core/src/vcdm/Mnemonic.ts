@@ -235,7 +235,7 @@ const mnemonic = {
             numberOfBytes: WordListRandomGeneratorSizeInBytes
         ) => Uint8Array
     ): string[] => Mnemonic.of(wordlistSize, randomGenerator),
-    isValid: (words: string[]): boolean => Mnemonic.isValid(words.join(' '))
+    isValid: (words: string[]): boolean => Mnemonic.isValid(words)
 };
 
 export { Mnemonic, mnemonic };
