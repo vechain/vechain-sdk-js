@@ -49,7 +49,7 @@ class ExternallyOwnedAccount extends Account {
      * @return {number} - A negative number if the current object is less than the given object,
      *                   zero if they are equal, or a positive number if the current object is greater.
      * @override {@link Account#compareTo}
-     * @remark The comparison is based on the address and mnemonic of the ExternallyOwnedAccount.
+     * @remarks The comparison is based on the address and mnemonic of the ExternallyOwnedAccount.
      */
     public compareTo(that: ExternallyOwnedAccount): number {
         const accountCompareTo = super.compareTo(that);
@@ -64,7 +64,7 @@ class ExternallyOwnedAccount extends Account {
      * @param {ExternallyOwnedAccount} that - The ExternallyOwnedAccount object to compare with.
      * @return {boolean} - True if the objects are equal, false otherwise.
      * @override {@link Account#isEqual}
-     * @remark The comparison is based on the address and mnemonic of the ExternallyOwnedAccount.
+     * @remarks The comparison is based on the address and mnemonic of the ExternallyOwnedAccount.
      */
     public isEqual(that: ExternallyOwnedAccount): boolean {
         return super.isEqual(that) && this.mnemonic.isEqual(that.mnemonic);
