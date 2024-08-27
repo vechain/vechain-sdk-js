@@ -8,7 +8,6 @@ import { HDNode } from '../hdnode';
 import { secp256k1 } from '../secp256k1';
 import { Hex } from './Hex';
 import { HexUInt } from './HexUInt';
-import { type Mnemonic } from './Mnemonic';
 import { Txt } from './Txt';
 
 /**
@@ -160,17 +159,17 @@ class Address extends HexUInt {
      * @example `m/0/2`
      * @example `m/0/2/4/6`
      *
-     * @param {Mnemonic} mnemonic - Mnemonic used to generate the HD node.
+     * @param {string[]} mnemonic - Mnemonic used to generate the HD node.
      * @param {string} [path='m/0'] - The derivation path from the current node.
      * @return {Address} - The derived address.
      * @throws {InvalidHDNode}
      *
      */
     public static ofMnemonic(
-        mnemonic: Mnemonic,
+        mnemonic: string[],
         path: string = 'm/0'
     ): Address {
-        const root = HDNode.fromMnemonic(mnemonic.getWords());
+        const root = HDNode.fromMnemonic(mnemonic);
         try {
             // Public key is always available.
             return Address.ofPublicKey(
