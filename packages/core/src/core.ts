@@ -2,7 +2,6 @@ import { ethers } from 'ethers';
 
 // Our core library
 export * from './abi';
-export * from './bloom';
 export * from './certificate';
 export * from './clause';
 export * from './contract';

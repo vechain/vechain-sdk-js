@@ -6,7 +6,7 @@ import { HexUInt } from './HexUInt';
 /**
  * Represents a revision for a Thor transaction or block.
  *
- * @remark The string representation of the revision is always expressed as a number in base 10.
+ * @remarks The string representation of the revision is always expressed as a number in base 10.
  *
  * @extends Txt
  */
@@ -54,8 +54,8 @@ class Revision extends Txt {
      *
      *  @throws {InvalidDataType} if the given value is not a valid revision: see {@link isValid}.
      *
-     * @remark The string representation of the revision is always expressed as a number in base 10.
-     * @remark The {@link Uint8Array} value is decoded as a string content: see {@link Txt.of}.
+     * @remarks The string representation of the revision is always expressed as a number in base 10.
+     * @remarks The {@link Uint8Array} value is decoded as a string content: see {@link Txt.of}.
      */
     public static of(value: bigint | number | string | Uint8Array | Hex): Txt {
         try {

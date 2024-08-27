@@ -169,7 +169,7 @@ function digitsOfUnit(digitsOrUnit: bigint | number | WEI_UNITS): number {
  * it returns at least a fractional digit unless the `digitsOrUnits` is `wei`.
  * @throws {InvalidDataType}
  *
- * @remark This function is a drop-in replacement for
+ * @remarks This function is a drop-in replacement for
  * [ethers.formatUnits](https://docs.ethers.org/v6/api/utils/#formatUnits).
  *
  */
@@ -237,7 +237,7 @@ const formatVET = (value: bigint | number | string): string => {
  * @returns {bigint} - The parsed value converted to units.
  * @throws {InvalidDataType}
  *
- * @remark This function is a drop-in replacement for
+ * @remarks This function is a drop-in replacement for
  * [ethers.parseUnits](https://docs.ethers.org/v6/api/utils/#parseUnits).
  */
 function parseUnits(
