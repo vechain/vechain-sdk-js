@@ -3,7 +3,8 @@
     "port": 8545,
     "accounts": {
         "mnemonic": "expire pair material agent north ostrich fortune level cousin snow mixture nurse",
-        "count": 10
+        "count": 10,
+        "initialIndex": 0
     },
     "enableDelegation": false
 }

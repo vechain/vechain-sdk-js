@@ -7,7 +7,7 @@ import { InvalidDataType } from '@vechain/sdk-errors';
  * [utils.toQuantity](https://docs.ethers.org/v6/api/utils/#toQuantity) function.
  * This is most commonly used for JSON-RPC numeric values.
  *
- * @remark A quantity instance:
+ * @remarks A quantity instance:
  * * has not empty content,
  * * the hexadecimal representation removes any not meaningful zero on the left side of the expression,
  * * represents only positive integers.

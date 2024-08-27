@@ -4,10 +4,6 @@ classDiagram
         #address: Address
         #balance: Currency
     }
-    class Contract
-    class Currency {
-        <<interface>>
-    }
     class Address {
         +string checksum(HexUInt huint)$
         +boolean isValid(string exp)$
@@ -18,6 +14,20 @@ classDiagram
     class Blake2b256 {
         +Blake2b256 of(bigint|string|Uint8Array|Hex exp)$
     }
+    class BloomFilter {
+        +number k
+        +number computeBestBitsPerKey(number k)$
+        +number computeBestHashFunctionsQuantity(number m)$
+        +boolean contains(Hex|Uint8Array key)
+        +boolean isJoinable(BloomFilter other)
+        +BloomFilter join(BloomFilter other)
+        +BloomFilter of(Hex[]|Uint8Array[] ...keys)$
+    }
+    class Contract
+    class Currency {
+        <<interface>>
+    }
+    class ExternallyOwnedAccount
     class Hash {
         <<interface>>
     }
@@ -82,6 +92,7 @@ classDiagram
     String <|-- Txt
     Txt <|-- Revision
     Txt <|-- Mnemonic
+    VeChainDataModel <|.. BloomFilter
     VeChainDataModel <|.. Hex
     VeChainDataModel <|.. Txt
 ```

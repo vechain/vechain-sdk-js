@@ -12,15 +12,7 @@ import { jest } from '@jest/globals';
 const advanceTimersByTimeAndTick = async (time: number): Promise<void> => {
     jest.advanceTimersByTime(time);
     await new Promise<void>((resolve) => {
-        if (
-            typeof process !== 'undefined' &&
-            process !== null &&
-            typeof process.nextTick === 'function'
-        ) {
-            process.nextTick(resolve);
-        } else {
-            setTimeout(resolve, 0);
-        }
+        process.nextTick(resolve);
     });
 };
 

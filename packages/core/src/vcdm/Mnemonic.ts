@@ -178,7 +178,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      * @returns {Mnemonic} The generated mnemonic.
      *
      * @throws {InvalidDataType} If the number of words is not valid.
-     * @remark This method is a wrapper around the `generateMnemonic` function from the `bip39` package.
+     * @remarks This method is a wrapper around the `generateMnemonic` function from the `bip39` package.
      */
     public static of(
         wordlistSize: WordlistSizeType = 12,
@@ -214,7 +214,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      * Check if the given mnemonic words are valid.
      * @param {string | string[]} words The mnemonic words to check.
      * @returns {boolean} true if the words are valid, false otherwise.
-     * @remark This method is a wrapper around the `validateMnemonic` function from the `bip39` package.
+     * @remarks This method is a wrapper around the `validateMnemonic` function from the `bip39` package.
      */
     public static isValid(words: string | string[]): boolean {
         const wordsToValidate = Array.isArray(words) ? words.join(' ') : words;
