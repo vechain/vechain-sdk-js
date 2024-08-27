@@ -82,7 +82,7 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
     }
 
     // Check the url
-    if (configFile.url === undefined && !isValidUrl(configFile.url)) {
+    if (configFile.url !== undefined && !isValidUrl(configFile.url)) {
         throw new InvalidConfigurationFile(
             '_checkIfConfigurationFileHasCorrectStructure()',
             `Invalid url in configuration file: ${absolutePath}. URL is required`,
