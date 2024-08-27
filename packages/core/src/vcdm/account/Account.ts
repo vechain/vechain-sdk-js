@@ -16,11 +16,17 @@ class Account implements VeChainDataModel<Account> {
     // Replace the string array with a Transaction class #1162
     public readonly transactions: string[];
 
-    protected readonly type = 'EOA';
+    public readonly type: AccountType;
 
-    constructor(address: Address, balance: Currency, transactions?: string[]) {
+    constructor(
+        address: Address,
+        balance: Currency,
+        type: AccountType = 'EOA',
+        transactions?: string[]
+    ) {
         this.address = address;
         this.balance = balance;
+        this.type = type;
         this.transactions = transactions ?? [];
     }
 
