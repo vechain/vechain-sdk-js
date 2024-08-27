@@ -17,7 +17,7 @@ import {
 
 /**
  * Mnemonic tests
- * @group unit/mnemonic
+ * @group unit/vcdm
  */
 describe('Mnemonic', () => {
     describe('toPrivateKey', () => {
@@ -123,6 +123,13 @@ describe('Mnemonic', () => {
         });
     });
 
+    describe('bytes', () => {
+        test('bytes - new mnemonic as bytes', () => {
+            const mnemonic = new Mnemonic();
+            expect(mnemonic.bytes).toBeInstanceOf(Uint8Array);
+        });
+    });
+
     describe('isValid', () => {
         test('isValid - false', () => {
             expect(Mnemonic.isValid('hello world')).toBeFalsy();
@@ -132,6 +139,25 @@ describe('Mnemonic', () => {
         test('isValid - true', () => {
             expect(Mnemonic.isValid(Mnemonic.of())).toBeTruthy();
             expect(mnemonic.isValid(Mnemonic.of())).toBeTruthy();
+        });
+    });
+
+    describe('Unused methods tests', () => {
+        test('bi - throw an error', () => {
+            const mnemonic = new Mnemonic();
+            expect(() => mnemonic.bi).toThrow();
+        });
+        test('n - throw an error', () => {
+            const mnemonic = new Mnemonic();
+            expect(() => mnemonic.n).toThrow();
+        });
+        test('compareTo - throw an error', () => {
+            const mnemonic = new Mnemonic();
+            expect(() => mnemonic.compareTo(new Mnemonic())).toThrow();
+        });
+        test('isEqual - throw an error', () => {
+            const mnemonic = new Mnemonic();
+            expect(() => mnemonic.isEqual(new Mnemonic())).toThrow();
         });
     });
 });
