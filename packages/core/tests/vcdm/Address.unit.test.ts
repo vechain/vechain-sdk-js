@@ -39,7 +39,7 @@ describe('Address class tests', () => {
                             `\n-Internal error: ` +
                             `\n\tMethod 'HexUInt.of' failed.` +
                             `\n-Reason: 'not positive'` +
-                            `\n-Parameters: \n\t{"exp":"${exp}"}` +
+                            `\n-Parameters: \n\t{\n  "exp": "${exp}"\n}` +
                             `\n-Internal error: \n\t`
                     );
                 }
