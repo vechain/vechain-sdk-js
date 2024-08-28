@@ -18,9 +18,7 @@ describe('Error package Available errors test - HTTP', () => {
                     'message',
                     {
                         method: 'method',
-                        url: 'url',
-                        message: 'message',
-                        status: 0
+                        url: 'url'
                     },
                     innerError
                 );
