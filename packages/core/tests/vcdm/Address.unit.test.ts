@@ -40,7 +40,7 @@ describe('Address class tests', () => {
                             `\n\tMethod 'HexUInt.of' failed.` +
                             `\n-Reason: 'not positive'` +
                             `\n-Parameters: \n\t{"exp":"${exp}"}` +
-                            `\n-Internal error: \n\tNo internal error given`
+                            `\n-Internal error: \n\t`
                     );
                 }
             }
@@ -55,7 +55,7 @@ describe('Address class tests', () => {
                         `Method 'Address.of' failed.` +
                             `\n-Reason: 'not a valid address'` +
                             `\n-Parameters: \n\t{"huint":{"digits":"caffee","sign":1}}` +
-                            `\n-Internal error: \n\tNo internal error given`
+                            `\n-Internal error: \n\t`
                     );
                 }
             }
@@ -108,7 +108,7 @@ describe('Address class tests', () => {
                     expect(e.message).toBe(
                         `Method 'Address.ofPublicKey' failed.` +
                             `\n-Reason: 'not a valid public key'` +
-                            `\n-Parameters: \n\t{"publicKey":"${publicKey}","error":{}}` +
+                            `\n-Parameters: \n\t{\n\t"publicKey":"${publicKey}",\n\t"error": {}\n}` +
                             `\n-Internal error: \n\tPoint of length 5 was invalid. Expected 33 compressed bytes or 65 uncompressed bytes`
                     );
                 }
