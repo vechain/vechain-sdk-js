@@ -8,6 +8,7 @@ export * from './HexInt';
 export * from './HexUInt';
 export * from './Mnemonic';
 export * from './Quantity';
+export * from './RationalNumber';
 export * from './Revision';
 export * from './ThorId';
 export * from './Txt';

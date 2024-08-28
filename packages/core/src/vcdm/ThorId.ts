@@ -21,19 +21,9 @@ class ThorId extends HexUInt {
      * Constructs a ThorId object with the provided hexadecimal value.
      *
      * @param {HexUInt} huint - The hexadecimal value representing the ThorId.
-     *
-     * @throws {InvalidDataType} - If the provided value is not a valid ThorId expression.
      */
     protected constructor(huint: HexUInt) {
-        if (ThorId.isValid(huint.digits)) {
-            super(Hex.POSITIVE, huint.digits);
-        } else {
-            throw new InvalidDataType(
-                'ThorId.constructor',
-                'not a ThorId expression',
-                { hex: huint }
-            );
-        }
+        super(Hex.POSITIVE, huint.fit(ThorId.DIGITS).digits);
     }
 
     /**
@@ -79,10 +69,10 @@ class ThorId extends HexUInt {
         exp: bigint | number | string | Uint8Array | HexUInt
     ): ThorId {
         try {
-            if (exp instanceof Hex) {
-                return new ThorId(exp.fit(this.DIGITS));
+            if (exp instanceof HexUInt) {
+                return new ThorId(exp);
             }
-            return new ThorId(HexUInt.of(exp).fit(ThorId.DIGITS));
+            return new ThorId(HexUInt.of(exp));
         } catch (e) {
             throw new InvalidDataType(
                 'ThorId.of',
