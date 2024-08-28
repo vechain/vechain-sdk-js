@@ -51,8 +51,7 @@ class HttpClient implements IHttpClient {
                 `Invalid URL: ${this.baseURL}${path}`,
                 {
                     method,
-                    url: `${this.baseURL}${path}`,
-                    message: 'Request failed'
+                    url: `${this.baseURL}${path}`
                 },
                 error
             );
@@ -87,12 +86,10 @@ class HttpClient implements IHttpClient {
                 const message = await response.text();
                 throw new InvalidHTTPRequest(
                     'HttpClient.http()',
-                    `Invalid URL: ${this.baseURL}${path}`,
+                    `Request failed${message !== '' ? ` with status ${response.status} and message ${message.trimEnd()}` : ''}`,
                     {
                         method,
-                        url: url.toString(),
-                        status: response.status,
-                        message
+                        url: url.toString()
                     }
                 );
             }
@@ -105,13 +102,15 @@ class HttpClient implements IHttpClient {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-return
             return await response.json();
         } catch (error) {
+            if (error instanceof InvalidHTTPRequest) {
+                throw error;
+            }
             throw new InvalidHTTPRequest(
                 'HttpClient.http()',
-                `Invalid URL: ${this.baseURL}${path}`,
+                'Error while validating the response header',
                 {
                     method,
-                    url: url.toString(),
-                    message: 'Request failed'
+                    url: url.toString()
                 },
                 error
             );

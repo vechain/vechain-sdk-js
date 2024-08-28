@@ -80,16 +80,16 @@ const ethSendTransaction = async (
 
         // Return the result
         return await signer.sendTransaction(transaction);
-    } catch (e) {
+    } catch (error) {
         throw new JSONRPCInternalError(
             'eth_sendTransaction()',
             -32603,
             'Method "eth_sendTransaction" failed.',
             {
                 params: stringifyData(params),
-                url: thorClient.httpClient.baseURL,
-                innerError: stringifyData(e)
-            }
+                url: thorClient.httpClient.baseURL
+            },
+            error
         );
     }
 };
