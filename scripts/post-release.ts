@@ -14,31 +14,26 @@ const updatePackageVersions = (version: string): void => {
         packageNames.push(pkgJson.name);
     }
 
-    // Update versions in the apps directory
-    const appsPath = path.resolve(__dirname, '../apps');
+    // Update version on sdk-hardhat-integration sample app
+    const appPath = path.resolve(__dirname, '../apps/sdk-hardhat-integration');
+    const appPackageJsonPath = path.resolve(appPath, './package.json');
+    const appPackageJson = JSON.parse(
+        fs.readFileSync(appPackageJsonPath, 'utf8')
+    );
+    appPackageJson.version = version;
+    fs.writeFileSync(appPackageJsonPath, JSON.stringify(appPackageJson, null, 2));
 
-    const appPackages = fs.readdirSync(appsPath);
-
-    for (const app of appPackages) {
-        const appPath = path.resolve(appsPath, app);
-        const appPackageJsonPath = path.resolve(appPath, './package.json');
-        const appPackageJson = JSON.parse(
-            fs.readFileSync(appPackageJsonPath, 'utf8')
-        );
-        appPackageJson.version = version;
-        fs.writeFileSync(appPackageJsonPath, JSON.stringify(appPackageJson, null, 2));
-
-        for (const dep of Object.keys(appPackageJson.dependencies)) {
-            if (packageNames.includes(dep)) {
-                appPackageJson.dependencies[dep] = version;
-            }
+    for (const dep of Object.keys(appPackageJson.dependencies)) {
+        if (packageNames.includes(dep)) {
+            appPackageJson.dependencies[dep] = version;
         }
-
-        fs.writeFileSync(
-            appPackageJsonPath,
-            JSON.stringify(appPackageJson, null, 2)
-        );
     }
+
+    fs.writeFileSync(
+        appPackageJsonPath,
+        JSON.stringify(appPackageJson, null, 2)
+    );
+
 };
 
 const preparePackages = async () => {
