@@ -53,7 +53,7 @@ const preparePackages = async () => {
     console.log('\t- ✅  Updated!');
 
     console.log('\n______________________________________________________\n\n');
-    console.log('Now please release also on GitHub.');
+    console.log('Now please go to `apps/sdk-hardhat-integration`, remove the yarn.lock and launch the yarn command. Then release also on GitHub.');
 };
 
 preparePackages().catch((e) => {
