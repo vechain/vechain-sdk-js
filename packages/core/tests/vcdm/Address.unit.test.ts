@@ -39,8 +39,7 @@ describe('Address class tests', () => {
                             `\n-Internal error: ` +
                             `\n\tMethod 'HexUInt.of' failed.` +
                             `\n-Reason: 'not positive'` +
-                            `\n-Parameters: \n\t{\n  "exp": "${exp}"\n}` +
-                            `\n-Internal error: \n\t`
+                            `\n-Parameters: \n\t{\n  "exp": "${exp}"\n}`
                     );
                 }
             }
@@ -54,8 +53,7 @@ describe('Address class tests', () => {
                     expect(e.message).toBe(
                         `Method 'Address.of' failed.` +
                             `\n-Reason: 'not a valid address'` +
-                            `\n-Parameters: \n\t{\n  "huint": {\n    "digits": "caffee",\n    "sign": 1\n  }\n}` +
-                            `\n-Internal error: \n\t`
+                            `\n-Parameters: \n\t{\n  "huint": {\n    "digits": "caffee",\n    "sign": 1\n  }\n}`
                     );
                 }
             }
@@ -82,8 +80,7 @@ describe('Address class tests', () => {
                     expect(e.message).toBe(
                         `Method 'secp256k1.derivePublicKey()' failed.` +
                             `\n-Reason: 'Invalid private key given as input. Ensure it is a valid 32-byte secp256k1 private key.'` +
-                            `\n-Parameters: \n\tundefined` +
-                            `\n-Internal error: \n\t`
+                            `\n-Parameters: \n\tundefined`
                     );
                 }
             }

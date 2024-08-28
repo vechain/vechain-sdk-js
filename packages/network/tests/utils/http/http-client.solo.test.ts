@@ -44,8 +44,7 @@ describe('Test HttpClient class on Solo node', () => {
                         `\n-Internal error: ` +
                         `\n\tMethod 'HttpClient.http()' failed.` +
                         `\n-Reason: 'Invalid URL: http://localhost:8669/error-test-path'` +
-                        `\n-Parameters: \n\t{"method":"GET","url":"http://localhost:8669/error-test-path","status":404,"message":"404 page not found\\n"}` +
-                        `\n-Internal error: \n\tNo internal error given`
+                        `\n-Parameters: \n\t{"method":"GET","url":"http://localhost:8669/error-test-path","status":404,"message":"404 page not found\\n"}`
                 );
             }
         }
@@ -73,8 +72,7 @@ describe('Test HttpClient class on Solo node', () => {
                         `\n-Internal error: ` +
                         `\n\tMethod 'HttpClient.http()' failed.` +
                         `\n-Reason: 'Invalid URL: http://localhost:8669/transactions'` +
-                        `\n-Parameters: \n\t{"method":"POST","url":"http://localhost:8669/transactions","status":400,"message":"bad tx: chain tag mismatch\\n"}` +
-                        `\n-Internal error: \n\tNo internal error given`
+                        `\n-Parameters: \n\t{"method":"POST","url":"http://localhost:8669/transactions","status":400,"message":"bad tx: chain tag mismatch\\n"}`
                 );
             }
         }

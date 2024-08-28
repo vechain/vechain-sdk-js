@@ -71,7 +71,7 @@ function createErrorMessage<TErrorDataType>(
         `Method '${methodName}' failed.` +
         `\n-Reason: '${errorMessage}'` +
         `\n-Parameters: \n\t${stringifyData(inputData)}` +
-        `\n-Internal error: \n\t${innerError?.message !== undefined ? innerError.message : ''}`
+        `${innerError?.message !== undefined ? `\n-Internal error: \n\t${innerError.message}` : ''}`
     );
 }
 
