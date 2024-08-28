@@ -42,7 +42,6 @@ describe('VechainHelloWorldWithNonEmptyConstructor', function () {
         const accountWithNoVTHO = await ethers.getSigner(
             '0xB381e7da548601B1CCB05C66d415b20baE40d828'
         );
-        console.log(accountWithNoVTHO);
         const VechainHelloWorldWithNonEmptyConstructor =
             await ethers.getContractFactory(
                 'VechainHelloWorldWithNonEmptyConstructor',
