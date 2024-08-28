@@ -54,7 +54,7 @@ describe('Address class tests', () => {
                     expect(e.message).toBe(
                         `Method 'Address.of' failed.` +
                             `\n-Reason: 'not a valid address'` +
-                            `\n-Parameters: \n\t{"huint":{"digits":"caffee","sign":1}}` +
+                            `\n-Parameters: \n\t{\n  "huint": {\n    "digits": "caffee",\n    "sign": 1\n  }\n}` +
                             `\n-Internal error: \n\t`
                     );
                 }
