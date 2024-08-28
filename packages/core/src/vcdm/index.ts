@@ -1,3 +1,4 @@
+export * from './ABI';
 export * from './account';
 export * from './Address';
 export * from './BloomFilter';
