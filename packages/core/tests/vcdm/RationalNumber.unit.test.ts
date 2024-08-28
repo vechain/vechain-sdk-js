@@ -6,8 +6,49 @@ import { RationalNumber } from '../../src';
  * @group unit/vcdm
  */
 describe('Revision class tests', () => {
+    describe('plus methods tests', () => {
+        test('with carry over', () => {
+            const a = new RationalNumber(123n, -2);
+            const b = new RationalNumber(277n, -2);
+            const r = a.plus(b);
+            console.log(r.toString());
+        });
+
+        test('without carry over', () => {
+            const a = new RationalNumber(123n, 3);
+            const b = new RationalNumber(456n, -3);
+            const r = a.plus(b);
+            console.log(r.toString());
+        });
+
+        /**
+         * @see https://mikemcl.github.io/bignumber.js/#plus
+         */
+        test('bignumber.js compatibility', () => {
+            const a = new RationalNumber(1n, -1);
+            const b = new RationalNumber(2n, -1);
+            const c = new RationalNumber(7n, -1);
+            const r = a.plus(b).plus(c);
+            console.log(r.toString());
+        });
+    });
+
     describe('scale method tests', () => {
-        describe('negative exponent', () => {
+        test('scale down', () => {
+            const rn = new RationalNumber(12345n, -2);
+            console.log(rn.toString());
+            console.log(rn.scale(-4).toString());
+            console.log(rn.scale().toString());
+        });
+
+        test('scale up', () => {
+            const rn = new RationalNumber(12345000n, -2);
+            console.log(rn.toString());
+            console.log(rn.scale(5).toString());
+            console.log(rn.scale().toString());
+        });
+
+        describe('negative exponent to zero', () => {
             test('negative exponent scale to 0', () => {
                 const rn = new RationalNumber(12345000n, -3).scale();
                 console.log(rn.toString());
@@ -19,7 +60,7 @@ describe('Revision class tests', () => {
             });
         });
 
-        describe('positive exponent', () => {
+        describe('positive exponent to zero', () => {
             test('positive exponent = 0', () => {
                 const rn = new RationalNumber(12345n, 0).scale();
                 console.log(rn.toString());

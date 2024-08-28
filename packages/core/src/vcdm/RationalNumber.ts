@@ -12,16 +12,23 @@ class RationalNumber {
         return bi < 0n ? -bi : bi;
     }
 
-    public scale(): RationalNumber {
+    public plus(that: RationalNumber): RationalNumber {
+        const mce = Math.min(this.exponent, that.exponent); // Minimum common exponent.
+        const a = this.scale(mce);
+        const b = that.scale(mce);
+        return new RationalNumber(a.mantissa + b.mantissa, mce).scale();
+    }
+
+    public scale(toExponent: number = 0): RationalNumber {
         let mantissa = this.mantissa;
         let exponent = this.exponent;
-        if (exponent < 0) {
+        if (exponent < toExponent) {
             while (mantissa % 10n === 0n) {
                 mantissa /= 10n;
                 exponent++;
             }
-        } else if (exponent > 0) {
-            while (exponent > 0) {
+        } else if (exponent > toExponent) {
+            while (exponent > toExponent) {
                 mantissa *= 10n;
                 exponent--;
             }
