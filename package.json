@@ -16,9 +16,7 @@
     "workspaces": [
         "packages/*",
         "docs",
-        "apps/sdk-nextjs-integration",
-        "apps/sdk-cloudflare-integration",
-        "apps/sdk-node-integration"
+        "apps/*"
     ],
     "packageManager": "yarn@1.22.22",
     "scripts": {

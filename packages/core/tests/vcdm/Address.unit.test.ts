@@ -35,12 +35,11 @@ describe('Address class tests', () => {
                     expect(e.message).toBe(
                         `Method 'HexUInt.of' failed.` +
                             `\n-Reason: 'not a hexadecimal positive integer expression'` +
-                            `\n-Parameters: \n\t{"exp":"${exp}","e":{"methodName":"HexUInt.of","errorMessage":"not positive","data":{"exp":"-0xcaffee"}}}` +
+                            `\n-Parameters: \n\t{\n  "exp": "${exp}",\n  "e": {\n    "methodName": "HexUInt.of",\n    "errorMessage": "not positive",\n    "data": {\n      "exp": "-0xcaffee"\n    }\n  }\n}` +
                             `\n-Internal error: ` +
                             `\n\tMethod 'HexUInt.of' failed.` +
                             `\n-Reason: 'not positive'` +
-                            `\n-Parameters: \n\t{"exp":"${exp}"}` +
-                            `\n-Internal error: \n\tNo internal error given`
+                            `\n-Parameters: \n\t{\n  "exp": "${exp}"\n}`
                     );
                 }
             }
@@ -54,8 +53,7 @@ describe('Address class tests', () => {
                     expect(e.message).toBe(
                         `Method 'Address.of' failed.` +
                             `\n-Reason: 'not a valid address'` +
-                            `\n-Parameters: \n\t{"huint":{"digits":"caffee","sign":1}}` +
-                            `\n-Internal error: \n\tNo internal error given`
+                            `\n-Parameters: \n\t{\n  "huint": {\n    "digits": "caffee",\n    "sign": 1\n  }\n}`
                     );
                 }
             }
@@ -82,8 +80,7 @@ describe('Address class tests', () => {
                     expect(e.message).toBe(
                         `Method 'secp256k1.derivePublicKey()' failed.` +
                             `\n-Reason: 'Invalid private key given as input. Ensure it is a valid 32-byte secp256k1 private key.'` +
-                            `\n-Parameters: \n\tundefined` +
-                            `\n-Internal error: \n\tNo internal error given`
+                            `\n-Parameters: \n\tundefined`
                     );
                 }
             }
@@ -108,7 +105,7 @@ describe('Address class tests', () => {
                     expect(e.message).toBe(
                         `Method 'Address.ofPublicKey' failed.` +
                             `\n-Reason: 'not a valid public key'` +
-                            `\n-Parameters: \n\t{"publicKey":"${publicKey}","error":{}}` +
+                            `\n-Parameters: \n\t{\n  "publicKey": "${publicKey}",\n  "error": {}\n}` +
                             `\n-Internal error: \n\tPoint of length 5 was invalid. Expected 33 compressed bytes or 65 uncompressed bytes`
                     );
                 }
