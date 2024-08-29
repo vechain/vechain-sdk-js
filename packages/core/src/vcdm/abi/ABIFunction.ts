@@ -12,7 +12,7 @@ import { type Hex } from '../Hex';
 import { ABI } from './ABI';
 
 /**
- * Represents a function call in the Event/Function ABI.
+ * Represents a function call in the Function ABI.
  * @extends ABI
  */
 class ABIFunction extends ABI {
