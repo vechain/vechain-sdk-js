@@ -99,7 +99,7 @@ describe('FPN class tests', () => {
     test('scale', () => {
         const a = FPN.of(-1, 18n);
         console.log(a);
-        console.log(a.scale(3n));
+        console.log(a.dp(3n));
     });
 
     describe('squareRoot methods tests', () => {

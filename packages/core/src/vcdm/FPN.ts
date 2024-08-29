@@ -2,24 +2,24 @@ class FPN {
     protected static readonly DEFAULT_FRACTIONAL_DECIMALS = 18n;
 
     /**
+     * Fractional Digits or decimal places.
+     * @private
+     */
+    private readonly fd: bigint;
+
+    /**
      * Scaled Value = value * 10 ^ fd.
      * @private
      */
     private readonly sv: bigint;
 
-    /**
-     * Fractional Digits
-     * @private
-     */
-    private readonly fd: bigint;
-
-    constructor(sv: bigint, fd: bigint) {
-        this.sv = sv;
+    constructor(fd: bigint, sv: bigint) {
         this.fd = fd;
+        this.sv = sv;
     }
 
     public abs(): FPN {
-        return new FPN(this.sv < 0n ? -this.sv : this.sv, this.fd);
+        return new FPN(this.fd, this.sv < 0n ? -this.sv : this.sv);
     }
 
     public absoluteValue(): FPN {
@@ -28,7 +28,7 @@ class FPN {
 
     public compareTo(that: FPN): number {
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
-        const delta = this.scale(fd).sv - that.scale(fd).sv;
+        const delta = this.dp(fd).sv - that.dp(fd).sv;
         return delta < 0n ? -1 : delta === 0n ? -0 : 1;
     }
 
@@ -38,10 +38,10 @@ class FPN {
 
     public div(that: FPN): FPN {
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
-        return new FPN(FPN.div(this.scale(fd).sv, that.scale(fd).sv, fd), fd);
+        return new FPN(fd, FPN.div(fd, this.dp(fd).sv, that.dp(fd).sv));
     }
 
-    private static div(dividend: bigint, divisor: bigint, fd: bigint): bigint {
+    private static div(fd: bigint, dividend: bigint, divisor: bigint): bigint {
         return (10n ** fd * dividend) / divisor;
     }
 
@@ -49,14 +49,28 @@ class FPN {
         return this.div(that);
     }
 
+    public dp(decimalPlaces: bigint | number): FPN {
+        const fp = BigInt(decimalPlaces);
+        const dd = fp - this.fd; // Fractional Decimals Difference.
+        if (dd < 0) {
+            return new FPN(fp, this.sv / 10n ** -dd);
+        } else {
+            return new FPN(fp, this.sv * 10n ** dd);
+        }
+    }
+
+    public decimalPlaces(decimalPlaces: bigint): FPN {
+        return this.dp(decimalPlaces - this.fd * decimalPlaces);
+    }
+
     public exponentiatedBy(that: FPN): FPN {
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
-        return new FPN(FPN.pow(this.scale(fd).sv, that.scale(fd).sv, fd), fd);
+        return new FPN(fd, FPN.pow(fd, this.dp(fd).sv, that.dp(fd).sv));
     }
 
     public minus(that: FPN): FPN {
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
-        return new FPN(this.scale(fd).sv - that.scale(fd).sv, fd);
+        return new FPN(fd, this.dp(fd).sv - that.dp(fd).sv);
     }
 
     private static mul(
@@ -73,9 +87,9 @@ class FPN {
 
     public static of(
         exp: number,
-        fractionalDecimals: bigint = this.DEFAULT_FRACTIONAL_DECIMALS
+        decimalPlaces: bigint = this.DEFAULT_FRACTIONAL_DECIMALS
     ): FPN {
-        return new FPN(this.nToSV(exp, fractionalDecimals), fractionalDecimals);
+        return new FPN(decimalPlaces, this.nToSV(exp, decimalPlaces));
     }
 
     private static nToSV(n: number, fd: bigint): bigint {
@@ -84,13 +98,13 @@ class FPN {
 
     public pow(that: FPN): FPN {
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
-        return new FPN(FPN.pow(this.scale(fd).sv, that.scale(fd).sv, fd), fd);
+        return new FPN(fd, FPN.pow(fd, this.dp(fd).sv, that.dp(fd).sv));
     }
 
-    private static pow(base: bigint, exponent: bigint, fd: bigint): bigint {
+    private static pow(fd: bigint, base: bigint, exponent: bigint): bigint {
         const sf = 10n ** fd; // Scale factor.
         if (exponent < 0n) {
-            return FPN.pow(FPN.div(sf, base, fd), -exponent, fd); // Recursive.
+            return FPN.pow(fd, FPN.div(fd, sf, base), -exponent); // Recursive.
         }
         if (exponent === 0n) {
             return 1n;
@@ -98,21 +112,12 @@ class FPN {
         if (exponent === sf) {
             return base;
         }
-        return FPN.pow(this.mul(base, base, fd), exponent - sf, fd); // Recursive.
+        return FPN.pow(fd, this.mul(base, base, fd), exponent - sf); // Recursive.
     }
 
     public plus(that: FPN): FPN {
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
-        return new FPN(this.scale(fd).sv + that.scale(fd).sv, fd);
-    }
-
-    public scale(fd: bigint): FPN {
-        const dd = fd - this.fd; // Fractional Decimals Difference.
-        if (dd < 0) {
-            return new FPN(this.sv / 10n ** -dd, fd);
-        } else {
-            return new FPN(this.sv * 10n ** dd, fd);
-        }
+        return new FPN(fd, this.dp(fd).sv + that.dp(fd).sv);
     }
 
     private static sqr(value: bigint, fd: bigint): bigint {
@@ -126,14 +131,14 @@ class FPN {
         while (actualResult !== storedResult && iteration < sf) {
             storedResult = actualResult;
             actualResult =
-                (actualResult + FPN.div(value, actualResult, fd)) / 2n;
+                (actualResult + FPN.div(fd, value, actualResult)) / 2n;
             iteration++;
         }
         return actualResult;
     }
 
     public sqrt(): FPN {
-        return new FPN(FPN.sqr(this.sv, this.fd), this.fd);
+        return new FPN(this.fd, FPN.sqr(this.sv, this.fd));
     }
 
     public squareRoot(): FPN {
@@ -142,7 +147,7 @@ class FPN {
 
     public times(that: FPN): FPN {
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
-        return new FPN(FPN.mul(this.scale(fd).sv, that.scale(fd).sv, fd), fd);
+        return new FPN(fd, FPN.mul(this.dp(fd).sv, that.dp(fd).sv, fd));
     }
 
     public toString(decimalSeparator = '.'): string {
