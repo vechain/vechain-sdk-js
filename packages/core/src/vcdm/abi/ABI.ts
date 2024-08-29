@@ -3,10 +3,13 @@ import {
     InvalidOperation
 } from '@vechain/sdk-errors';
 import {
+    type Abi,
     type AbiParameter,
     decodeAbiParameters,
     encodeAbiParameters,
-    parseAbiParameters
+    parseAbi,
+    parseAbiParameters,
+    toFunctionHash
 } from 'viem';
 import { Hex } from '../Hex';
 import { type VeChainDataModel } from '../VeChainDataModel';
@@ -14,6 +17,11 @@ import { type VeChainDataModel } from '../VeChainDataModel';
 class ABI implements VeChainDataModel<ABI> {
     private readonly types: readonly AbiParameter[];
     private readonly values: unknown[];
+    protected readonly abiRepresentation: Abi;
+    public readonly signature: string;
+
+    public constructor(types: string | AbiParameter[], values: unknown[]);
+    public constructor(signature: string);
 
     /**
      * ABI values to encode.
@@ -21,10 +29,25 @@ class ABI implements VeChainDataModel<ABI> {
      * @param {string | AbiParameter[]} types - An list of ABI types representing the types of the values to encode.
      * @param {unknown[]} values - An array of values to be encoded according to the specified ABI types.
      **/
-    public constructor(types: string | AbiParameter[], values: unknown[]) {
+    public constructor(
+        types: string | AbiParameter[] = [],
+        values: unknown[] = [],
+        signature: string = ''
+    ) {
         this.types =
             typeof types === 'string' ? parseAbiParameters(types) : types;
         this.values = values;
+        this.signature = signature;
+        this.abiRepresentation = parseAbi([signature]);
+    }
+
+    /**
+     * The signature hash of the ABI.
+     * @returns {string} The signature hash of the ABI.
+     * @remarks Wrapper for {@link toFunctionHash}.
+     **/
+    public get signatureHash(): string {
+        return toFunctionHash(this.signature);
     }
 
     /**
