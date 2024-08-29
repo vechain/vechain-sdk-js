@@ -9,11 +9,11 @@ class ABI implements VeChainDataModel<ABI> {
         this.parameters = parameters;
     }
 
-    public compareTo(that: ABI): number {
+    public compareTo(_that: ABI): number {
         return 0;
     }
 
-    public isEqual(that: ABI): boolean {
+    public isEqual(_that: ABI): boolean {
         return false;
     }
 

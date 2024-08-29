@@ -48,7 +48,8 @@
     "blakejs": "^1.2.1",
     "elliptic": "^6.5.7",
     "ethers": "6.13.2",
-    "fast-json-stable-stringify": "^2.1.0"
+    "fast-json-stable-stringify": "^2.1.0",
+    "viem": "^2.19.3"
   },
   "devDependencies": {
     "thor-devkit": "^2.0.9"
