@@ -1,20 +1,29 @@
-import { InvalidOperation } from '@vechain/sdk-errors';
-import { type AbiParameter, encodeAbiParameters } from 'viem';
-import { type VeChainDataModel } from './VeChainDataModel';
+import {
+    InvalidAbiDataToEncodeOrDecode,
+    InvalidOperation
+} from '@vechain/sdk-errors';
+import {
+    type AbiParameter,
+    decodeAbiParameters,
+    encodeAbiParameters,
+    parseAbiParameters
+} from 'viem';
 import { Hex } from './Hex';
+import { type VeChainDataModel } from './VeChainDataModel';
 
 class ABI implements VeChainDataModel<ABI> {
-    private readonly types: AbiParameter[];
-    private readonly values: AbiParameter[];
+    private readonly types: readonly AbiParameter[];
+    private readonly values: unknown[];
 
     /**
      * ABI values to encode.
      *
-     * @param types - An array of ABI types representing the types of the values to encode.
-     * @param values - An array of values to be encoded according to the specified ABI types.
+     * @param {string | AbiParameter[]} types - An list of ABI types representing the types of the values to encode.
+     * @param {unknow[]} values - An array of values to be encoded according to the specified ABI types.
      **/
-    public constructor(types: AbiParameter[], values: AbiParameter[]) {
-        this.types = types;
+    public constructor(types: string | AbiParameter[], values: unknown[]) {
+        this.types =
+            typeof types === 'string' ? parseAbiParameters(types) : types;
         this.values = values;
     }
 
@@ -69,11 +78,27 @@ class ABI implements VeChainDataModel<ABI> {
      * Encodes the values according to the specified ABI types when creating the ABI instance.
      *
      * @returns The ABI-encoded bytes representing the given values.
+     * @throws {InvalidAbiDataToEncodeOrDecode, InvalidDataType}
      */
     public get bytes(): Uint8Array {
-        return Hex.of(
-            encodeAbiParameters<AbiParameter[]>(this.types, this.values)
-        ).bytes;
+        try {
+            return Hex.of(
+                encodeAbiParameters<AbiParameter[]>(
+                    [...this.types],
+                    this.values
+                )
+            ).bytes;
+        } catch (error) {
+            throw new InvalidAbiDataToEncodeOrDecode(
+                'ABI.bytes',
+                'Encoding failed: Data must be a valid ABI type with corresponding valid data.',
+                {
+                    types: this.types,
+                    values: this.values
+                },
+                error
+            );
+        }
     }
 
     /**
@@ -89,6 +114,41 @@ class ABI implements VeChainDataModel<ABI> {
             'There is no number representation for an ABI.',
             { data: '' }
         );
+    }
+
+    /**
+     * Decodes the ABI values from the given ABI types and encoded data.
+     * @param {string| AbiParameter[]} types The list of ABI types representing the types of the values to decode.
+     * @param {Hex} dataEncoded The encoded data to decode.
+     * @returns An ABI instance with the decoded values.
+     */
+    public static of(types: string | AbiParameter[], dataEncoded: Hex): ABI {
+        try {
+            let values: unknown[] = [];
+            if (typeof types === 'string') {
+                const parsedAbiParams = parseAbiParameters(types);
+                values = decodeAbiParameters<AbiParameter[]>(
+                    [...parsedAbiParams],
+                    dataEncoded.bytes
+                );
+            } else {
+                values = decodeAbiParameters<AbiParameter[]>(
+                    [...types],
+                    dataEncoded.bytes
+                );
+            }
+            return new ABI(types, values);
+        } catch (error) {
+            throw new InvalidAbiDataToEncodeOrDecode(
+                'ABI.of',
+                'Decoding failed: Data must be a valid ABI type with corresponding valid data.',
+                {
+                    types,
+                    data: dataEncoded
+                },
+                error
+            );
+        }
     }
 }
 
