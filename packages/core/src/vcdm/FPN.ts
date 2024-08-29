@@ -26,10 +26,14 @@ class FPN {
         return this.abs();
     }
 
-    public comparedTo(that: FPN): number {
+    public compareTo(that: FPN): number {
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
         const delta = this.scale(fd).sv - that.scale(fd).sv;
         return delta < 0n ? -1 : delta === 0n ? -0 : 1;
+    }
+
+    public comparedTo(that: FPN): number {
+        return this.compareTo(that);
     }
 
     public div(that: FPN): FPN {
