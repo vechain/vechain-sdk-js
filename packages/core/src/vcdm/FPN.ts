@@ -141,15 +141,6 @@ class FPN {
         return new FPN(FPN.mul(this.scale(fd).sv, that.scale(fd).sv, fd), fd);
     }
 
-    private static trimEnd(str: string, sub: string = '0'): string {
-        // Check if the input string ends with the trailing substring
-        if (str.endsWith(sub)) {
-            // Remove the trailing substring recursively.
-            return FPN.trimEnd(str.substring(0, str.length - sub.length), sub);
-        }
-        return str;
-    }
-
     public toString(decimalSeparator = '.'): string {
         const sign = this.sv < 0n ? '-' : '';
         const digits =
@@ -163,6 +154,15 @@ class FPN {
             decimalSeparator +
             FPN.trimEnd(decimals)
         );
+    }
+
+    private static trimEnd(str: string, sub: string = '0'): string {
+        // Check if the input string ends with the trailing substring
+        if (str.endsWith(sub)) {
+            // Remove the trailing substring recursively.
+            return FPN.trimEnd(str.substring(0, str.length - sub.length), sub);
+        }
+        return str;
     }
 }
 
