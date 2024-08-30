@@ -1,41 +1,318 @@
-import { describe, test } from '@jest/globals';
+import { describe, expect, test } from '@jest/globals';
 import { FPN } from '../../src';
+import { BigNumber } from 'bignumber.js';
 
 describe('FPN class tests', () => {
     describe('absoluteValue method tests', () => {
-        test('positive value', () => {
-            const a = FPN.of(123.45);
-            const r = a.absoluteValue();
-            console.log(r);
+        test('n < 0', () => {
+            const n = -0.8;
+            const actual = FPN.of(n).abs();
+            // console.log(actual.toString());
+            const expected = BigNumber(n).abs();
+            expect(actual.n).toEqual(expected.toNumber());
         });
 
-        test('positive value', () => {
-            const a = FPN.of(-123.45);
-            const r = a.absoluteValue();
-            console.log(r);
+        test('n > 0', () => {
+            const n = 0.8;
+            const actual = FPN.of(n).abs();
+            // console.log(actual.toString());
+            const expected = BigNumber(n).abs();
+            expect(actual.n).toEqual(expected.toNumber());
         });
     });
 
-    describe('compareTo method tests', () => {
-        test('less than', () => {
-            const a = FPN.of(123.45);
-            const b = a.plus(a);
-            console.log(a.comparedTo(b));
+    describe('comparedTo method tests', () => {
+        test('NaN ~ n', () => {
+            const l = NaN;
+            const r = 123.45;
+            const actual = FPN.of(l).comparedTo(FPN.of(r));
+            // console.log(actual);
+            const expected = BigNumber(l).comparedTo(BigNumber(r));
+            expect(actual).toBe(expected);
         });
 
-        test('equal', () => {
-            const a = FPN.of(123.45);
-            const b = a.minus(a);
-            console.log(a.comparedTo(b));
+        test('n ~ NaN', () => {
+            const l = 123.45;
+            const r = NaN;
+            const actual = FPN.of(l).comparedTo(FPN.of(r));
+            // console.log(actual);
+            const expected = BigNumber(l).comparedTo(BigNumber(r));
+            expect(actual).toBe(expected);
+        });
+
+        test('-Infinity ~ n', () => {
+            const l = Number.NEGATIVE_INFINITY;
+            const r = 123.45;
+            const actual = FPN.of(l).comparedTo(FPN.of(r));
+            // console.log(actual);
+            const expected = BigNumber(l).comparedTo(BigNumber(r));
+            expect(actual).toBe(expected);
+        });
+
+        test('+Infinity ~ n', () => {
+            const l = Number.POSITIVE_INFINITY;
+            const r = 123.45;
+            const actual = FPN.of(l).comparedTo(FPN.of(r));
+            // console.log(actual);
+            const expected = BigNumber(l).comparedTo(BigNumber(r));
+            expect(actual).toBe(expected);
+        });
+
+        test('n ~ -Infinity', () => {
+            const l = Number.NEGATIVE_INFINITY;
+            const r = 123.45;
+            const actual = FPN.of(l).comparedTo(FPN.of(r));
+            // console.log(actual);
+            const expected = BigNumber(l).comparedTo(BigNumber(r));
+            expect(actual).toBe(expected);
+        });
+
+        test('n ~ +Infinity', () => {
+            const l = 123.45;
+            const r = Number.NEGATIVE_INFINITY;
+            const actual = FPN.of(l).comparedTo(FPN.of(r));
+            // console.log(actual);
+            const expected = BigNumber(l).comparedTo(BigNumber(r));
+            expect(actual).toBe(expected);
+        });
+
+        test('-Infinity ~ -Infinity', () => {
+            const l = Number.NEGATIVE_INFINITY;
+            const r = Number.NEGATIVE_INFINITY;
+            const actual = FPN.of(l).comparedTo(FPN.of(r));
+            // console.log(actual);
+            const expected = BigNumber(l).comparedTo(BigNumber(r));
+            expect(actual).toBe(expected);
+        });
+
+        test('-Infinity ~ +Infinity', () => {
+            const l = Number.NEGATIVE_INFINITY;
+            const r = Number.POSITIVE_INFINITY;
+            const actual = FPN.of(l).comparedTo(FPN.of(r));
+            // console.log(actual);
+            const expected = BigNumber(l).comparedTo(BigNumber(r));
+            expect(actual).toBe(expected);
+        });
+
+        test('+Infinity ~ -Infinity', () => {
+            const l = Number.POSITIVE_INFINITY;
+            const r = Number.NEGATIVE_INFINITY;
+            const actual = FPN.of(l).comparedTo(FPN.of(r));
+            // console.log(actual);
+            const expected = BigNumber(l).comparedTo(BigNumber(r));
+            expect(actual).toBe(expected);
+        });
+
+        test('+Infinity ~ +Infinity', () => {
+            const l = Number.POSITIVE_INFINITY;
+            const r = Number.POSITIVE_INFINITY;
+            const actual = FPN.of(l).comparedTo(FPN.of(r));
+            // console.log(actual);
+            const expected = BigNumber(l).comparedTo(BigNumber(r));
+            expect(actual).toBe(expected);
+        });
+
+        test('l < r', () => {
+            const l = 123.45;
+            const r = l * 2;
+            const actual = FPN.of(l).comparedTo(FPN.of(r));
+            // console.log(actual);
+            const expected = BigNumber(l).comparedTo(BigNumber(r));
+            expect(actual).toBe(expected);
+        });
+
+        test('l = r', () => {
+            const l = 123.45;
+            const r = l;
+            const actual = FPN.of(l).comparedTo(FPN.of(r));
+            // console.log(actual);
+            const expected = BigNumber(l).comparedTo(BigNumber(r));
+            expect(actual).toBe(expected);
+        });
+
+        test('l > r', () => {
+            const l = 123.45;
+            const r = l / 2;
+            const actual = FPN.of(l).comparedTo(FPN.of(r));
+            // console.log(actual);
+            const expected = BigNumber(l).comparedTo(BigNumber(r));
+            expect(actual).toBe(expected);
         });
     });
 
     describe('dividedBy method tests', () => {
-        test('periodic result', () => {
-            const a = FPN.of(-1);
-            const b = FPN.of(3, 0n);
-            const r = a.dividedBy(b);
-            console.log(r);
+        test('0/0 = NaN', () => {
+            const dividend = 0;
+            const divisor = 0;
+            const actual = FPN.of(dividend).dividedBy(FPN.of(divisor));
+            // console.log(actual.toString());
+            const expected = BigNumber(dividend).div(BigNumber(divisor));
+            expect(actual.toString()).toBe(expected.toString());
+        });
+
+        test('NaN / n = ', () => {
+            const dividend = NaN;
+            const divisor = 123.45;
+            const actual = FPN.of(dividend).dividedBy(FPN.of(divisor));
+            // console.log(actual.toString());
+            const expected = BigNumber(dividend).div(BigNumber(divisor));
+            expect(actual.toString()).toBe(expected.toString());
+        });
+
+        test('n / NaN = NaN', () => {
+            const dividend = 123.45;
+            const divisor = NaN;
+            const actual = FPN.of(dividend).dividedBy(FPN.of(divisor));
+            console.log(actual.toString());
+            const expected = BigNumber(dividend).div(BigNumber(divisor));
+            expect(actual.toString()).toBe(expected.toString());
+        });
+
+        test('n / -Infinity = 0', () => {
+            const dividend = 123.45;
+            const divisor = Number.NEGATIVE_INFINITY;
+            const actual = FPN.of(dividend).dividedBy(FPN.of(divisor));
+            // console.log(actual.toString());
+            const expected = BigNumber(dividend).div(BigNumber(divisor));
+            expect(actual.toString()).toBe(expected.toString());
+        });
+
+        test('n / +Infinity = 0', () => {
+            const dividend = 123.45;
+            const divisor = Number.POSITIVE_INFINITY;
+            const actual = FPN.of(dividend).dividedBy(FPN.of(divisor));
+            // console.log(actual.toString());
+            const expected = BigNumber(dividend).div(BigNumber(divisor));
+            expect(actual.toString()).toBe(expected.toString());
+        });
+
+        test('-n / 0 = -Infinity', () => {
+            const dividend = -123.45;
+            const divisor = 0;
+            const actual = FPN.of(dividend).dividedBy(FPN.of(divisor));
+            // console.log(actual.toString());
+            const expected = BigNumber(dividend).div(BigNumber(divisor));
+            expect(actual.toString()).toBe(expected.toString());
+        });
+
+        test('+n / 0 = +Infinity', () => {
+            const dividend = 123.45;
+            const divisor = 0;
+            const actual = FPN.of(dividend).dividedBy(FPN.of(divisor));
+            // console.log(actual.toString());
+            const expected = BigNumber(dividend).div(BigNumber(divisor));
+            expect(actual.toString()).toBe(expected.toString());
+        });
+
+        test('x / y = periodic', () => {
+            const dividend = -1;
+            const divisor = 3;
+            const actual = FPN.of(dividend).dividedBy(FPN.of(divisor));
+            // console.log(actual.toString());
+            const expected = BigNumber(dividend).div(BigNumber(divisor));
+            expect(actual.toString()).toBe(expected.toString());
+        });
+
+        test('x / y = real', () => {
+            const dividend = 355;
+            const divisor = 113;
+            const actual = FPN.of(dividend).dividedBy(FPN.of(divisor));
+            // console.log(actual.toString());
+            const expected = BigNumber(dividend).div(BigNumber(divisor));
+            const dp = 15; // BigNumber default precision diverges after 15 digits.
+            expect(actual.n.toFixed(dp)).toBe(expected.toNumber().toFixed(dp));
+        });
+
+        test('x / y = integer', () => {
+            const dividend = 355;
+            const divisor = -5;
+            const actual = FPN.of(dividend).dividedBy(FPN.of(divisor));
+            // console.log(actual.toString());
+            const expected = BigNumber(dividend).div(BigNumber(divisor));
+            expect(actual.n).toBe(expected.toNumber());
+        });
+    });
+
+    describe('dividedToIntegerBy method tests', () => {
+        test('0/0 = NaN', () => {
+            const dividend = 0;
+            const divisor = 0;
+            const actual = FPN.of(dividend).dividedToIntegerBy(FPN.of(divisor));
+            // console.log(actual.toString());
+            const expected = BigNumber(dividend).idiv(BigNumber(divisor));
+            expect(actual.toString()).toBe(expected.toString());
+        });
+
+        test('NaN / n = ', () => {
+            const dividend = NaN;
+            const divisor = 123.45;
+            const actual = FPN.of(dividend).dividedToIntegerBy(FPN.of(divisor));
+            // console.log(actual.toString());
+            const expected = BigNumber(dividend).idiv(BigNumber(divisor));
+            expect(actual.toString()).toBe(expected.toString());
+        });
+
+        test('n / NaN = NaN', () => {
+            const dividend = 123.45;
+            const divisor = NaN;
+            const actual = FPN.of(dividend).dividedToIntegerBy(FPN.of(divisor));
+            console.log(actual.toString());
+            const expected = BigNumber(dividend).idiv(BigNumber(divisor));
+            expect(actual.toString()).toBe(expected.toString());
+        });
+
+        test('n / -Infinity = 0', () => {
+            const dividend = 123.45;
+            const divisor = Number.NEGATIVE_INFINITY;
+            const actual = FPN.of(dividend).dividedToIntegerBy(FPN.of(divisor));
+            // console.log(actual.toString());
+            const expected = BigNumber(dividend).idiv(BigNumber(divisor));
+            expect(actual.toString()).toBe(expected.toString());
+        });
+
+        test('n / +Infinity = 0', () => {
+            const dividend = 123.45;
+            const divisor = Number.POSITIVE_INFINITY;
+            const actual = FPN.of(dividend).dividedToIntegerBy(FPN.of(divisor));
+            // console.log(actual.toString());
+            const expected = BigNumber(dividend).idiv(BigNumber(divisor));
+            expect(actual.toString()).toBe(expected.toString());
+        });
+
+        test('-n / 0 = -Infinity', () => {
+            const dividend = -123.45;
+            const divisor = 0;
+            const actual = FPN.of(dividend).dividedToIntegerBy(FPN.of(divisor));
+            // console.log(actual.toString());
+            const expected = BigNumber(dividend).idiv(BigNumber(divisor));
+            expect(actual.toString()).toBe(expected.toString());
+        });
+
+        test('+n / 0 = +Infinity', () => {
+            const dividend = 123.45;
+            const divisor = 0;
+            const actual = FPN.of(dividend).dividedToIntegerBy(FPN.of(divisor));
+            // console.log(actual.toString());
+            const expected = BigNumber(dividend).idiv(BigNumber(divisor));
+            expect(actual.toString()).toBe(expected.toString());
+        });
+
+        test('n / integer', () => {
+            const dividend = 5;
+            const divisor = 3;
+            const actual = FPN.of(dividend).dividedToIntegerBy(FPN.of(divisor));
+            // console.log(actual.toString());
+            const expected = BigNumber(dividend).idiv(BigNumber(divisor));
+            expect(actual.toString()).toBe(expected.toString());
+        });
+
+        test('n / rational', () => {
+            const dividend = 5;
+            const divisor = 0.7;
+            const actual = FPN.of(dividend).dividedToIntegerBy(FPN.of(divisor));
+            // console.log(actual.toString());
+            const expected = BigNumber(dividend).idiv(BigNumber(divisor));
+            expect(actual.toString()).toBe(expected.toString());
         });
     });
 
@@ -125,6 +402,18 @@ describe('FPN class tests', () => {
         test('> 1', () => {
             const n = FPN.of(123.456);
             console.log(n.toString());
+        });
+        test('NaN', () => {
+            const r = FPN.of(Number.NaN);
+            console.log(r.toString());
+        });
+        test('Negative infinite', () => {
+            const r = FPN.of(Number.NEGATIVE_INFINITY);
+            console.log(r.toString());
+        });
+        test('Positive infinite', () => {
+            const r = FPN.of(Number.POSITIVE_INFINITY);
+            console.log(r.toString());
         });
     });
 });
