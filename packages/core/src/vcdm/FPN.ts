@@ -153,14 +153,17 @@ class FPN {
      *
      * @see [bignumber.js decimalPlaces](https://mikemcl.github.io/bignumber.js/#dp).
      */
-    public decimalPlaces(decimalPlaces: bigint): FPN {
-        return this.dp(decimalPlaces - this.fd * decimalPlaces);
+    // TODO: implement round logic and return number if argument is null.
+    public decimalPlaces(decimalPlaces: number): FPN {
+        const dp = BigInt(decimalPlaces);
+        return this.dp(dp - this.fd * dp);
     }
 
     /**
      * Returns a FPN whose value is the value of this FPN divided by `that` FPN.
      *
      * Limit cases:
+     * - 0 / 0 = NaN;
      * - NaN / n = NaN;
      * - n / NaN = NaN;
      * - n / +/-Infinite = 0;
@@ -177,9 +180,11 @@ class FPN {
         if (this.isNaN() || that.isNaN()) return FPN.NaN;
         if (that.isInfinite()) return FPN.ZERO;
         if (that.isZero())
-            return this.isNegative()
-                ? FPN.NEGATIVE_INFINITY
-                : FPN.POSITIVE_INFINITY;
+            return this.isZero()
+                ? FPN.NaN
+                : this.isNegative()
+                  ? FPN.NEGATIVE_INFINITY
+                  : FPN.POSITIVE_INFINITY;
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
         try {
             return new FPN(fd, FPN.div(fd, this.dp(fd).sv, that.dp(fd).sv));
@@ -244,6 +249,10 @@ class FPN {
         }
     }
 
+    public eq(that: FPN): boolean {
+        return this.isEqualTo(that);
+    }
+
     public exponentiatedBy(that: FPN): FPN {
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
         return new FPN(fd, FPN.pow(fd, this.dp(fd).sv, that.dp(fd).sv));
@@ -254,6 +263,7 @@ class FPN {
      * by `that` fixed point number.
      *
      * Limit cases:
+     * - 0 / 0 = NaN;
      * - NaN / n = NaN;
      * - n / NaN = NaN;
      * - n / +/-Infinite = 0;
@@ -270,9 +280,11 @@ class FPN {
         if (this.isNaN() || that.isNaN()) return FPN.NaN;
         if (that.isInfinite()) return FPN.ZERO;
         if (that.isZero())
-            return this.isNegative()
-                ? FPN.NEGATIVE_INFINITY
-                : FPN.POSITIVE_INFINITY;
+            return this.isZero()
+                ? FPN.NaN
+                : this.isNegative()
+                  ? FPN.NEGATIVE_INFINITY
+                  : FPN.POSITIVE_INFINITY;
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
         return new FPN(fd, FPN.idiv(fd, this.dp(fd).sv, that.dp(fd).sv));
     }
@@ -288,6 +300,14 @@ class FPN {
      */
     private static idiv(fd: bigint, dividend: bigint, divisor: bigint): bigint {
         return (dividend / divisor) * 10n ** fd;
+    }
+
+    public isEqual(that: FPN): boolean {
+        return this.eq(that);
+    }
+
+    public isEqualTo(that: FPN): boolean {
+        return this.compareTo(that) === 0;
     }
 
     public isFinite(): boolean {
@@ -340,7 +360,7 @@ class FPN {
     }
 
     get n(): number {
-        if (this.isFinite()) return Number.NaN;
+        if (this.isNaN()) return Number.NaN;
         if (this.isNegativeInfinite()) return Number.NEGATIVE_INFINITY;
         if (this.isPositiveInfinite()) return Number.POSITIVE_INFINITY;
         if (this.isZero()) return 0;
@@ -417,8 +437,8 @@ class FPN {
         return new FPN(fd, FPN.mul(this.dp(fd).sv, that.dp(fd).sv, fd));
     }
 
-    toNumber(): number {
-        return Number(this.sv) * 10 ** -Number(this.fd);
+    public toNumber(): number {
+        return this.n;
     }
 
     public toString(decimalSeparator = '.'): string {
