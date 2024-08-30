@@ -12,7 +12,7 @@ import {
     toFunctionHash,
     type Abi as ViemABI
 } from 'viem';
-import { type BytesLike } from '../../abi';
+import { fragment, type BytesLike } from '../../abi';
 import { Hex } from '../Hex';
 import { type VeChainDataModel } from '../VeChainDataModel';
 
@@ -187,6 +187,7 @@ class ABI implements VeChainDataModel<ABI> {
 
 // TODO: rename to abi
 const abi2 = {
+    ...fragment,
     encode: <ValueType>(type: string | ParamType, value: ValueType): string =>
         ABI.toHex(new ABI(type as string, [value])).toString(),
     encodeParams: (types: string[] | ParamType[], values: string[]): string => {

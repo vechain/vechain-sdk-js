@@ -9,7 +9,8 @@ import {
     simpleParametersDataForFunction2,
     topicsEventTestCases
 } from './fixture';
-import { abi, type FormatType } from '../../src';
+import { type FormatType } from '../../src';
+import { abi2 } from '../../src';
 import { type ethers, ParamType } from 'ethers';
 import {
     InvalidAbiDataToEncodeOrDecode,
@@ -29,12 +30,12 @@ describe('Abi - encode & decode', () => {
     test('encode / decode single parameter', () => {
         // Encode and Decode - NO Errors
         encodedDecodedValues.forEach((encodedDecodedValue) => {
-            const encoded = abi.encode<string | string[]>(
+            const encoded = abi2.encode<string | string[]>(
                 encodedDecodedValue.type,
                 encodedDecodedValue.value
             );
 
-            const decoded = abi.decode<bigint | string | object>(
+            const decoded = abi2.decode<bigint | string | object>(
                 encodedDecodedValue.type,
                 encodedDecodedValue.encoded
             );
@@ -54,11 +55,11 @@ describe('Abi - encode & decode', () => {
         // Encode and Decode - Errors
         encodedDecodedInvalidValues.forEach((encodedDecodedValue) => {
             expect(() =>
-                abi.encode(encodedDecodedValue.type, encodedDecodedValue.value)
+                abi2.encode(encodedDecodedValue.type, encodedDecodedValue.value)
             ).toThrowError(InvalidAbiDataToEncodeOrDecode);
 
             expect(() =>
-                abi.decode(
+                abi2.decode(
                     encodedDecodedValue.type,
                     encodedDecodedValue.encoded
                 )
@@ -71,7 +72,7 @@ describe('Abi - encode & decode', () => {
      */
     test('encode/decode more parameters', () => {
         // Example encode of function 2 parameters
-        const encoded = abi.encode<
+        const encoded = abi2.encode<
             Array<{
                 master: string;
                 endorsor: string;
@@ -84,13 +85,13 @@ describe('Abi - encode & decode', () => {
         );
 
         // @NOTE: you can use encode and avoid types gymnastics.
-        // const encoded = abi.encode(
+        // const encoded = abi2.encode(
         //     ParamType.from(functions[1].objectAbi.outputs[0]),
         //     simpleParametersDataForFunction2
         // );
 
         // Example decode of function 2 parameters
-        const decoded = abi.decode<ethers.Result[][]>(
+        const decoded = abi2.decode<ethers.Result[][]>(
             ParamType.from(functions[1].objectAbi.outputs[0]),
             encoded
         );
@@ -173,11 +174,11 @@ describe('Abi - Function & Event', () => {
                     functionMultiformat.forEach((functionFormat) => {
                         // Create a function from the format without any problems
                         expect(
-                            () => new abi.Function(functionFormat.format)
+                            () => new abi2.Function(functionFormat.format)
                         ).not.toThrowError(InvalidAbiFragment);
 
                         // Create a function from the format without any problems
-                        const myFunction = new abi.Function(
+                        const myFunction = new abi2.Function(
                             functionFormat.format
                         );
 
@@ -234,7 +235,7 @@ describe('Abi - Function & Event', () => {
              *
              * @type {string}
              */
-            const params: string = abi.encodeParams(
+            const params: string = abi2.encodeParams(
                 ['uint256', 'uint256'],
                 ['123', '234']
             );
@@ -253,7 +254,7 @@ describe('Abi - Function & Event', () => {
             const values = ['123', '0x1567890123456789012345678901234567890']; // the address is invalid
 
             // Expect the function to throw an error with the specific message
-            expect(() => abi.encodeParams(abiTypes, values)).toThrowError(
+            expect(() => abi2.encodeParams(abiTypes, values)).toThrowError(
                 InvalidAbiDataToEncodeOrDecode
             );
         });
@@ -262,7 +263,7 @@ describe('Abi - Function & Event', () => {
          * Invalid function
          */
         test('Invalid function', () => {
-            expect(() => new abi.Function('INVALID_VALUE')).toThrowError(
+            expect(() => new abi2.Function('INVALID_VALUE')).toThrowError(
                 InvalidAbiFragment
             );
         });
@@ -271,7 +272,7 @@ describe('Abi - Function & Event', () => {
          * Invalid decode and encode
          */
         test('Invalid decode and encode', () => {
-            const myFunction = new abi.Function(functions[0].full);
+            const myFunction = new abi2.Function(functions[0].full);
 
             // Encode
             expect(() =>
@@ -288,7 +289,7 @@ describe('Abi - Function & Event', () => {
          * Invalid sighash
          */
         test('Invalid signature format type', () => {
-            const myFunction = new abi.Function(functions[0].full);
+            const myFunction = new abi2.Function(functions[0].full);
             const invalidFormat = 'invalid' as FormatType;
             expect(() => myFunction.signature(invalidFormat)).toThrowError(
                 InvalidAbiSignatureFormat
@@ -348,11 +349,11 @@ describe('Abi - Function & Event', () => {
                     eventMultiformat.forEach((eventFormat) => {
                         // Create an event from the format without any problems
                         expect(
-                            () => new abi.Event(eventFormat.format)
+                            () => new abi2.Event(eventFormat.format)
                         ).not.toThrowError();
 
                         // Create an event from the format without any problems
-                        const myEvent = new abi.Event(eventFormat.format);
+                        const myEvent = new abi2.Event(eventFormat.format);
 
                         // Expect to have a signature in each format
                         expect(myEvent.signature('full')).toBeDefined();
@@ -389,7 +390,7 @@ describe('Abi - Function & Event', () => {
          * Invalid event
          */
         test('Invalid event', () => {
-            expect(() => new abi.Event('INVALID_VALUE')).toThrowError(
+            expect(() => new abi2.Event('INVALID_VALUE')).toThrowError(
                 InvalidAbiFragment
             );
         });
@@ -398,7 +399,7 @@ describe('Abi - Function & Event', () => {
          * Invalid decode and encode
          */
         test('Invalid decode and encode', () => {
-            const myEvent = new abi.Event(events[0].full);
+            const myEvent = new abi2.Event(events[0].full);
 
             // Encode
             expect(() =>
@@ -418,7 +419,7 @@ describe('Abi - Function & Event', () => {
          * Invalid sighash
          */
         test('Invalid signature format type', () => {
-            const myEvent = new abi.Event(events[0].full);
+            const myEvent = new abi2.Event(events[0].full);
             const invalidFormat = 'invalid' as FormatType;
             expect(() => myEvent.signature(invalidFormat)).toThrowError(
                 InvalidAbiSignatureFormat
@@ -433,7 +434,7 @@ describe('Abi - Function & Event', () => {
                 test(`Encode Event topics - ${
                     typeof event === 'string' ? event : stringifyData(event)
                 }`, () => {
-                    const ev = new abi.Event(event);
+                    const ev = new abi2.Event(event);
 
                     const topics = ev.encodeFilterTopics(valuesToEncode);
 
@@ -448,7 +449,7 @@ describe('Abi - Function & Event', () => {
         invalidTopicsEventTestCases.forEach(
             ({ event, valuesToEncode, expectedError }) => {
                 test(`Encode Event topics - ${stringifyData(event)}`, () => {
-                    const ev = new abi.Event(event);
+                    const ev = new abi2.Event(event);
 
                     expect(() =>
                         ev.encodeFilterTopics(valuesToEncode)
