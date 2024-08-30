@@ -16,6 +16,10 @@ import { fragment, type BytesLike } from '../../abi';
 import { Hex } from '../Hex';
 import { type VeChainDataModel } from '../VeChainDataModel';
 
+/**
+ * Represents an ABI (Application Binary Interface) item.
+ * @extends VeChainDataModel
+ */
 class ABI implements VeChainDataModel<ABI> {
     private readonly types: readonly AbiParameter[];
     private readonly values: unknown[];
@@ -26,10 +30,11 @@ class ABI implements VeChainDataModel<ABI> {
     public constructor(signature: string);
 
     /**
-     * ABI values to encode.
+     * ABI constructor from types, values or signature.
      *
-     * @param {string | AbiParameter[]} types - An list of ABI types representing the types of the values to encode.
-     * @param {unknown[]} values - An array of values to be encoded according to the specified ABI types.
+     * @param {string | AbiParameter[]} types - An list of ABI types representing the types of the values.
+     * @param {unknown[]} values - An array of values according to the specified ABI types.
+     * @param {string} signature - The signature of the ABI item (Function, Event).
      **/
     public constructor(
         types: string | AbiParameter[] = [],
