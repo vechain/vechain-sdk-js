@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 
 // Our core library
-// TODO: Delete/move this types/values
+// TODO: Delete/move these types/values
 export {
     type FormatType,
     type FunctionFragment,
