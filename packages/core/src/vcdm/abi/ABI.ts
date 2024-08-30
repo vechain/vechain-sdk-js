@@ -6,11 +6,9 @@ import { ParamType } from 'ethers';
 import {
     decodeAbiParameters,
     encodeAbiParameters,
-    parseAbiItem,
     parseAbiParameters,
     toFunctionHash,
-    type AbiParameter,
-    type Abi as ViemABI
+    type AbiParameter
 } from 'viem';
 import { fragment, type BytesLike } from '../../abi';
 import { Hex } from '../Hex';
@@ -23,12 +21,7 @@ import { type VeChainDataModel } from '../VeChainDataModel';
 class ABI implements VeChainDataModel<ABI> {
     private readonly types: readonly AbiParameter[];
     private readonly values: unknown[];
-    protected readonly abiRepresentation?: ViemABI;
     public readonly signature: string;
-
-    public constructor(types: string | AbiParameter[], values: unknown[]);
-    public constructor(signature: string);
-
     /**
      * ABI constructor from types, values or signature.
      *
@@ -45,8 +38,6 @@ class ABI implements VeChainDataModel<ABI> {
             typeof types === 'string' ? parseAbiParameters(types) : types;
         this.values = values;
         this.signature = signature;
-        this.abiRepresentation =
-            signature !== '' ? parseAbiItem([signature]) : undefined;
     }
 
     /**

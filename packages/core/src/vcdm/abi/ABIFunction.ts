@@ -6,6 +6,7 @@ import {
     type DecodeFunctionResultReturnType,
     encodeFunctionData,
     type EncodeFunctionDataReturnType,
+    parseAbiItem,
     type Abi as ViemABI,
     type Hex as ViemHex
 } from 'viem';
@@ -19,9 +20,8 @@ import { ABI } from './ABI';
 class ABIFunction extends ABI {
     private readonly functionAbiRepresentation: ViemABI;
     public constructor(signature: string) {
-        super(signature);
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-        this.functionAbiRepresentation = this.abiRepresentation as ViemABI;
+        super(undefined, undefined, signature);
+        this.functionAbiRepresentation = parseAbiItem([signature]);
     }
 
     /**

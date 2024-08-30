@@ -3,6 +3,7 @@ import {
     type DecodeEventLogReturnType,
     encodeEventTopics,
     type EncodeEventTopicsReturnType,
+    parseAbiItem,
     type Abi as ViemABI,
     decodeEventLog as viemDecodeEventLog,
     type Hex as ViemHex
@@ -20,9 +21,8 @@ type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
 class ABIEvent extends ABI {
     private readonly eventAbiRepresentation: ViemABI;
     public constructor(signature: string) {
-        super(signature);
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-        this.eventAbiRepresentation = this.abiRepresentation as ViemABI;
+        super(undefined, undefined, signature);
+        this.eventAbiRepresentation = parseAbiItem([signature]);
     }
 
     /**
