@@ -302,6 +302,17 @@ class FPN {
         return (dividend / divisor) * 10n ** fd;
     }
 
+    /**
+     * Returns `true `if the value of thisFPN is equal to the value of `that` FPN, otherwise returns false.
+     *
+     * As with JavaScript, `NaN` does not equal `NaN`.
+     *
+     * @param {FPN} that - The FPN to compare against.
+     *
+     * @return {boolean} True if the FPN numbers are equal, otherwise false.
+     *
+     * @remarks This method uses {@link compareTo} internally.
+     */
     public isEqual(that: FPN): boolean {
         return this.eq(that);
     }
