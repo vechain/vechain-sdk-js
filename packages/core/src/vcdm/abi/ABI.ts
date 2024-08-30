@@ -139,10 +139,6 @@ class ABI implements VeChainDataModel<ABI> {
      */
     public static of(types: string | AbiParameter[], values: unknown[]): ABI {
         try {
-            // This condition is here to enable compatibility with ethers regarding tuple[] types.
-            if (typeof types === 'string') {
-                types.replace(' list', '');
-            }
             return new ABI(types, values);
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
@@ -194,10 +190,43 @@ class ABI implements VeChainDataModel<ABI> {
     }
 
     /**
+     * Recursively parses an object and collects the values of each attribute into an array,
+     * with nested arrays for nested objects.
+     * @param {object} obj - The object to parse.
+     * @returns {unknown[]} An array of values from the object, with nested arrays for nested objects.
+     */
+    private parseObjectValues(obj: object): unknown[] {
+        const values: unknown[] = [];
+
+        const recursiveParse = (currentObj: object): unknown[] => {
+            const currentValues: unknown[] = [];
+            for (const key in currentObj) {
+                if (Object.prototype.hasOwnProperty.call(currentObj, key)) {
+                    const value = (currentObj as never)[key];
+                    if (typeof value === 'object' && value !== null) {
+                        currentValues.push(recursiveParse(value));
+                    } else {
+                        currentValues.push(value);
+                    }
+                }
+            }
+            return currentValues;
+        };
+
+        values.push(...recursiveParse(obj));
+        return values;
+    }
+
+    /**
      * It gets the first decoded value from the ABI.
      * @returns {ReturnType} The first decoded value from the ABI.
      */
     public getFirstDecodedValue<ReturnType>(): ReturnType {
+        if (this.values[0] instanceof Object) {
+            return this.parseObjectValues(
+                this.values[0] as object
+            ) as ReturnType;
+        }
         return this.values[0] as ReturnType;
     }
 
@@ -230,7 +259,13 @@ class ABI implements VeChainDataModel<ABI> {
 const abi2 = {
     ...fragment,
     encode: <ValueType>(type: string | ParamType, value: ValueType): string =>
-        ABI.of(type instanceof ParamType ? type.format('full') : type, [value])
+        ABI.of(
+            type instanceof ParamType
+                ? // This condition is here to enable compatibility with ethers regarding tuple[] types.
+                  type.format('full').replace(' list', '')
+                : type,
+            [value]
+        )
             .toHex()
             .toString(),
     encodeParams: (types: string[] | ParamType[], values: string[]): string => {
@@ -242,7 +277,14 @@ const abi2 = {
     decode: <ReturnType>(
         types: string | ParamType,
         data: BytesLike
-    ): ReturnType => ABI.ofEncoded(types as string, data).getFirstDecodedValue()
+    ): ReturnType =>
+        ABI.ofEncoded(
+            types instanceof ParamType
+                ? // This condition is here to enable compatibility with ethers regarding tuple[] types.
+                  types.format('full').replace(' list', '')
+                : types,
+            data
+        ).getFirstDecodedValue()
 };
 
 export { ABI, abi2 };
