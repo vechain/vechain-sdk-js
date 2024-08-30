@@ -2,7 +2,7 @@ import {
     InvalidAbiDataToEncodeOrDecode,
     InvalidOperation
 } from '@vechain/sdk-errors';
-import { type ParamType } from 'ethers';
+import { ParamType } from 'ethers';
 import {
     decodeAbiParameters,
     encodeAbiParameters,
@@ -169,7 +169,7 @@ class ABI implements VeChainDataModel<ABI> {
             if (typeof types === 'string') {
                 const parsedAbiParams = parseAbiParameters(types);
                 values = decodeAbiParameters(
-                    [...parsedAbiParams],
+                    parsedAbiParams,
                     hexDataEncoded.bytes
                 );
             } else {
@@ -203,12 +203,11 @@ class ABI implements VeChainDataModel<ABI> {
      */
     public toHex(): Hex {
         try {
-            return Hex.of(
-                encodeAbiParameters<AbiParameter[]>(
-                    [...this.types],
-                    this.values
-                )
+            const abiParametersEncoded = encodeAbiParameters(
+                this.types,
+                this.values
             );
+            return Hex.of(abiParametersEncoded);
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABI.toHex',
@@ -227,7 +226,9 @@ class ABI implements VeChainDataModel<ABI> {
 const abi2 = {
     ...fragment,
     encode: <ValueType>(type: string | ParamType, value: ValueType): string =>
-        ABI.of(type as string, [value])
+        ABI.of(type instanceof ParamType ? type.format('sighash') : type, [
+            value
+        ])
             .toHex()
             .toString(),
     encodeParams: (types: string[] | ParamType[], values: string[]): string => {
