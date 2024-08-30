@@ -108,7 +108,7 @@ class ABI implements VeChainDataModel<ABI> {
      * @throws {InvalidAbiDataToEncodeOrDecode, InvalidDataType}
      */
     public get bytes(): Uint8Array {
-        return ABI.toHex(this).bytes;
+        return this.toHex().bytes;
     }
 
     /**
@@ -186,30 +186,31 @@ class ABI implements VeChainDataModel<ABI> {
 
     /**
      * It gets the first decoded value from the ABI.
-     * @param abi ABI to get the first decoded value from.
      * @returns {ReturnType} The first decoded value from the ABI.
      */
-    public static getFirstDecodedValue<ReturnType>(abi: ABI): ReturnType {
-        return abi.values[0] as ReturnType;
+    public getFirstDecodedValue<ReturnType>(): ReturnType {
+        return this.values[0] as ReturnType;
     }
 
     /**
      * Parses an ABI to its Hex representation.
-     * @param abi The ABI to parse.
      * @returns {Hex} The Hex representation of the ABI.
      */
-    public static toHex(abi: ABI): Hex {
+    public toHex(): Hex {
         try {
             return Hex.of(
-                encodeAbiParameters<AbiParameter[]>([...abi.types], abi.values)
+                encodeAbiParameters<AbiParameter[]>(
+                    [...this.types],
+                    this.values
+                )
             );
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABI.toHex',
                 'Encoding failed: Data must be a valid ABI type with corresponding valid data.',
                 {
-                    types: abi.types,
-                    values: abi.values
+                    types: this.types,
+                    values: this.values
                 },
                 error
             );
@@ -221,18 +222,19 @@ class ABI implements VeChainDataModel<ABI> {
 const abi2 = {
     ...fragment,
     encode: <ValueType>(type: string | ParamType, value: ValueType): string =>
-        ABI.toHex(ABI.of(type as string, [value])).toString(),
+        ABI.of(type as string, [value])
+            .toHex()
+            .toString(),
     encodeParams: (types: string[] | ParamType[], values: string[]): string => {
         const typesParam = parseAbiParameters((types as string[]).join(', '));
-        return ABI.toHex(ABI.of([...typesParam], values)).toString();
+        return ABI.of([...typesParam], values)
+            .toHex()
+            .toString();
     },
     decode: <ReturnType>(
         types: string | ParamType,
         data: BytesLike
-    ): ReturnType =>
-        ABI.getFirstDecodedValue<ReturnType>(
-            ABI.ofEncoded(types as string, data)
-        )
+    ): ReturnType => ABI.ofEncoded(types as string, data).getFirstDecodedValue()
 };
 
 export { ABI, abi2 };
