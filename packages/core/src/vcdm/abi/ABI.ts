@@ -127,22 +127,48 @@ class ABI implements VeChainDataModel<ABI> {
     }
 
     /**
+     * Instantiates an ABI object from the given types and values.
+     * @param {string | AbiParameter[]} types ABI parameters representing the types of the values.
+     * @param {unknown[]} values ABI values.
+     * @returns {ABI} The ABI object with the given types and values.
+     */
+    public static of(types: string | AbiParameter[], values: unknown[]): ABI {
+        try {
+            return new ABI(types, values);
+        } catch (error) {
+            throw new InvalidAbiDataToEncodeOrDecode(
+                'ABI.of',
+                'Types and values must be valid ABI parameters.',
+                {
+                    types,
+                    values
+                },
+                error
+            );
+        }
+    }
+
+    /**
      * Decodes the ABI values from the given ABI types and encoded data.
      * @param {string| AbiParameter[]} types The list of ABI types representing the types of the values to decode.
      * @param {Hex} dataEncoded The encoded data to decode.
      * @returns An ABI instance with the decoded values.
      */
-    public static of(types: string | AbiParameter[], dataEncoded: Hex): ABI {
+    public static ofEncoded(
+        types: string | AbiParameter[],
+        dataEncoded: string | Uint8Array
+    ): ABI {
         try {
+            const hexDataEncoded = Hex.of(dataEncoded);
             let values: readonly unknown[];
             if (typeof types === 'string') {
                 const parsedAbiParams = parseAbiParameters(types);
                 values = decodeAbiParameters(
                     [...parsedAbiParams],
-                    dataEncoded.bytes
+                    hexDataEncoded.bytes
                 );
             } else {
-                values = decodeAbiParameters([...types], dataEncoded.bytes);
+                values = decodeAbiParameters([...types], hexDataEncoded.bytes);
             }
             return new ABI(types, [...values]);
         } catch (error) {
@@ -158,6 +184,11 @@ class ABI implements VeChainDataModel<ABI> {
         }
     }
 
+    /**
+     * It gets the first decoded value from the ABI.
+     * @param abi ABI to get the first decoded value from.
+     * @returns {ReturnType} The first decoded value from the ABI.
+     */
     public static getFirstDecodedValue<ReturnType>(abi: ABI): ReturnType {
         return abi.values[0] as ReturnType;
     }
@@ -174,7 +205,7 @@ class ABI implements VeChainDataModel<ABI> {
             );
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
-                'ABI.encodeToHex',
+                'ABI.toHex',
                 'Encoding failed: Data must be a valid ABI type with corresponding valid data.',
                 {
                     types: abi.types,
@@ -190,17 +221,17 @@ class ABI implements VeChainDataModel<ABI> {
 const abi2 = {
     ...fragment,
     encode: <ValueType>(type: string | ParamType, value: ValueType): string =>
-        ABI.toHex(new ABI(type as string, [value])).toString(),
+        ABI.toHex(ABI.of(type as string, [value])).toString(),
     encodeParams: (types: string[] | ParamType[], values: string[]): string => {
         const typesParam = parseAbiParameters((types as string[]).join(', '));
-        return ABI.toHex(new ABI([...typesParam], values)).toString();
+        return ABI.toHex(ABI.of([...typesParam], values)).toString();
     },
     decode: <ReturnType>(
         types: string | ParamType,
         data: BytesLike
     ): ReturnType =>
         ABI.getFirstDecodedValue<ReturnType>(
-            ABI.of(types as string, Hex.of(data))
+            ABI.ofEncoded(types as string, data)
         )
 };
 
