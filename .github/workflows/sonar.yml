@@ -1,5 +1,8 @@
 name: Sonar Scan
 on:
+  workflow_run:
+    workflows: [Build]
+    types: [completed]
   workflow_call:
 
 jobs:
