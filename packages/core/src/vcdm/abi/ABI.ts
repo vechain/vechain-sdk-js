@@ -66,7 +66,6 @@ class ABI implements VeChainDataModel<ABI> {
      * @remark The comparison is done by comparing the types and values of the ABI instances.
      **/
     public compareTo(that: ABI): number {
-        // TODO: review the rest of attributes
         this.types.forEach((type, index) => {
             if (type !== that.types[index]) {
                 return -1;
@@ -77,7 +76,8 @@ class ABI implements VeChainDataModel<ABI> {
                 return 1;
             }
         });
-        return 0;
+        // We do not check abiRepresentation because it is generated from the signature.
+        return this.signature.localeCompare(that.signature);
     }
 
     /**
