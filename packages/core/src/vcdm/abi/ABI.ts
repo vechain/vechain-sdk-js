@@ -139,6 +139,10 @@ class ABI implements VeChainDataModel<ABI> {
      */
     public static of(types: string | AbiParameter[], values: unknown[]): ABI {
         try {
+            // This condition is here to enable compatibility with ethers regarding tuple[] types.
+            if (typeof types === 'string') {
+                types.replace(' list', '');
+            }
             return new ABI(types, values);
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
@@ -226,9 +230,7 @@ class ABI implements VeChainDataModel<ABI> {
 const abi2 = {
     ...fragment,
     encode: <ValueType>(type: string | ParamType, value: ValueType): string =>
-        ABI.of(type instanceof ParamType ? type.format('sighash') : type, [
-            value
-        ])
+        ABI.of(type instanceof ParamType ? type.format('full') : type, [value])
             .toHex()
             .toString(),
     encodeParams: (types: string[] | ParamType[], values: string[]): string => {
