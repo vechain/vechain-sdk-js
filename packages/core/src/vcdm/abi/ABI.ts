@@ -4,12 +4,12 @@ import {
 } from '@vechain/sdk-errors';
 import { type ParamType } from 'ethers';
 import {
-    type AbiParameter,
     decodeAbiParameters,
     encodeAbiParameters,
-    parseAbi,
+    parseAbiItem,
     parseAbiParameters,
     toFunctionHash,
+    type AbiParameter,
     type Abi as ViemABI
 } from 'viem';
 import { fragment, type BytesLike } from '../../abi';
@@ -19,7 +19,7 @@ import { type VeChainDataModel } from '../VeChainDataModel';
 class ABI implements VeChainDataModel<ABI> {
     private readonly types: readonly AbiParameter[];
     private readonly values: unknown[];
-    protected readonly abiRepresentation: ViemABI;
+    protected readonly abiRepresentation?: ViemABI;
     public readonly signature: string;
 
     public constructor(types: string | AbiParameter[], values: unknown[]);
@@ -40,7 +40,8 @@ class ABI implements VeChainDataModel<ABI> {
             typeof types === 'string' ? parseAbiParameters(types) : types;
         this.values = values;
         this.signature = signature;
-        this.abiRepresentation = parseAbi([signature]);
+        this.abiRepresentation =
+            signature !== '' ? parseAbiItem([signature]) : undefined;
     }
 
     /**

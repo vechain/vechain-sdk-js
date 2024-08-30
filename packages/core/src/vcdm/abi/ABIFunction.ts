@@ -6,6 +6,7 @@ import {
     type DecodeFunctionResultReturnType,
     encodeFunctionData,
     type EncodeFunctionDataReturnType,
+    type Abi as ViemABI,
     type Hex as ViemHex
 } from 'viem';
 import { type Hex } from '../Hex';
@@ -16,8 +17,11 @@ import { ABI } from './ABI';
  * @extends ABI
  */
 class ABIFunction extends ABI {
+    private readonly functionAbiRepresentation: ViemABI;
     public constructor(signature: string) {
         super(signature);
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+        this.functionAbiRepresentation = this.abiRepresentation as ViemABI;
     }
 
     /**
@@ -30,7 +34,7 @@ class ABIFunction extends ABI {
     public decodeData(data: Hex): DecodeFunctionDataReturnType {
         try {
             return decodeFunctionData({
-                abi: this.abiRepresentation,
+                abi: this.functionAbiRepresentation,
                 data: data.toString() as ViemHex
             });
         } catch (error) {
@@ -55,7 +59,7 @@ class ABIFunction extends ABI {
     ): EncodeFunctionDataReturnType {
         try {
             return encodeFunctionData({
-                abi: this.abiRepresentation,
+                abi: this.functionAbiRepresentation,
                 args: dataToEncode
             });
         } catch (e) {
@@ -85,7 +89,7 @@ class ABIFunction extends ABI {
     public decodeResult(data: Hex): DecodeFunctionResultReturnType {
         try {
             return decodeFunctionResult({
-                abi: this.abiRepresentation,
+                abi: this.functionAbiRepresentation,
                 data: data.toString() as ViemHex
             });
         } catch (error) {

@@ -4,7 +4,8 @@ import {
     encodeEventTopics,
     type EncodeEventTopicsReturnType,
     decodeEventLog as viemDecodeEventLog,
-    type Hex as ViemHex
+    type Hex as ViemHex,
+    type Abi as ViemABI
 } from 'viem';
 import { type Hex } from '../Hex';
 import { ABI } from './ABI';
@@ -16,8 +17,11 @@ type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
  * @extends ABI
  */
 class ABIEvent extends ABI {
+    private readonly eventAbiRepresentation: ViemABI;
     public constructor(signature: string) {
         super(signature);
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+        this.eventAbiRepresentation = this.abiRepresentation as ViemABI;
     }
 
     /**
@@ -33,7 +37,7 @@ class ABIEvent extends ABI {
     }): DecodeEventLogReturnType {
         try {
             return viemDecodeEventLog({
-                abi: this.abiRepresentation,
+                abi: this.eventAbiRepresentation,
                 data: event.data.toString() as ViemHex,
                 topics: event.topics.map((topic) => topic.toString()) as Topics
             });
@@ -62,7 +66,7 @@ class ABIEvent extends ABI {
     ): EncodeEventTopicsReturnType {
         try {
             return encodeEventTopics({
-                abi: this.abiRepresentation,
+                abi: this.eventAbiRepresentation,
                 args: valuesToEncode
             });
         } catch (e) {
