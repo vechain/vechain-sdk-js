@@ -25,7 +25,6 @@
         "postinstall": "husky",
         "build": "turbo build",
         "pre-release": "ts-node scripts/pre-release.ts",
-        "post-release": "ts-node scripts/post-release.ts",
         "test-rpc-proxy": "ts-node scripts/test-rpc-proxy.ts",
         "generate:apidocs": "typedoc --options typedoc.json --logLevel Error",
         "generate:apidocs-debug": "typedoc --options typedoc.json --logLevel Verbose --plugin typedoc-plugin-missing-exports --validation.notDocumented",
