@@ -3,11 +3,12 @@ import {
     type DecodeEventLogReturnType,
     encodeEventTopics,
     type EncodeEventTopicsReturnType,
+    type Abi as ViemABI,
     decodeEventLog as viemDecodeEventLog,
-    type Hex as ViemHex,
-    type Abi as ViemABI
+    type Hex as ViemHex
 } from 'viem';
-import { type Hex } from '../Hex';
+import { abi as ethersAbi, type FormatType, type Result } from '../../abi';
+import { Hex } from '../Hex';
 import { ABI } from './ABI';
 
 type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
@@ -79,5 +80,46 @@ class ABIEvent extends ABI {
         }
     }
 }
+class Event<ABIType> {
+    private readonly event: ABIEvent;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    private readonly ethersEvent: any;
+    constructor(abi: ABIType) {
+        this.event = new ABIEvent(abi as unknown as string);
+        this.ethersEvent = new ethersAbi.Event(abi);
+    }
 
-export { ABIEvent };
+    public signatureHash(): string {
+        return this.event.signatureHash;
+    }
+
+    public signature(_formatType: FormatType): string {
+        return this.event.signature;
+    }
+
+    // TODO: review this method
+    public decodeEventLog(data: { data: string; topics: string[] }): Result {
+        return this.event.decodeEventLog({
+            data: Hex.of(data.data),
+            topics: data.topics.map((topic) => Hex.of(topic))
+        }) as unknown as Result;
+    }
+
+    public encodeEventLog<TValue>(dataToEncode: TValue[]): {
+        data: string;
+        topics: string[];
+    } {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+        return this.ethersEvent.encodeEventLog(dataToEncode);
+    }
+
+    public encodeFilterTopics<TValue>(
+        valuesToEncode: TValue[]
+    ): Array<string | undefined> {
+        return this.event.encodeFilterTopics(
+            valuesToEncode
+        ) as unknown as Array<string | undefined>;
+    }
+}
+
+export { ABIEvent, Event };

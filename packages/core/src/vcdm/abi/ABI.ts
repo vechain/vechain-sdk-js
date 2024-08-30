@@ -255,8 +255,7 @@ class ABI implements VeChainDataModel<ABI> {
     }
 }
 
-// TODO: rename to abi
-const abi2 = {
+const ethersAbi = {
     ...fragment,
     encode: <ValueType>(type: string | ParamType, value: ValueType): string =>
         ABI.of(
@@ -287,4 +286,4 @@ const abi2 = {
         ).getFirstDecodedValue()
 };
 
-export { ABI, abi2 };
+export { ABI, ethersAbi };

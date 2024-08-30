@@ -1,3 +1,11 @@
-export * from './ABI';
-export * from './ABIEvent';
-export * from './ABIFunction';
+import { fragment } from '../../abi';
+import { ethersAbi } from './ABI';
+import { Event } from './ABIEvent';
+
+const abi = {
+    ...ethersAbi,
+    ...fragment.Function,
+    Event
+};
+
+export { abi };

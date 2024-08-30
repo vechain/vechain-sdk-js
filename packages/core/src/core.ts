@@ -1,7 +1,15 @@
 import { ethers } from 'ethers';
 
 // Our core library
-export * from './abi';
+// TODO: Delete/move this types/values
+export {
+    type FormatType,
+    type FunctionFragment,
+    type InterfaceAbi,
+    type EventFragment,
+    type Log,
+    fragment
+} from './abi';
 export * from './certificate';
 export * from './clause';
 export * from './contract';
