@@ -59,26 +59,24 @@ const updatePackageVersions = (version: string): void => {
     const appPackages = fs.readdirSync(appsPath);
 
     for (const app of appPackages) {
-        if(app !== 'sdk-hardhat-integration') {
-            const appPath = path.resolve(appsPath, app);
-            const appPackageJsonPath = path.resolve(appPath, './package.json');
-            const appPackageJson = JSON.parse(
-                fs.readFileSync(appPackageJsonPath, 'utf8')
-            );
-            appPackageJson.version = version;
-            fs.writeFileSync(appPackageJsonPath, JSON.stringify(appPackageJson, null, 2));
+        const appPath = path.resolve(appsPath, app);
+        const appPackageJsonPath = path.resolve(appPath, './package.json');
+        const appPackageJson = JSON.parse(
+            fs.readFileSync(appPackageJsonPath, 'utf8')
+        );
+        appPackageJson.version = version;
+        fs.writeFileSync(appPackageJsonPath, JSON.stringify(appPackageJson, null, 2));
 
-            for (const dep of Object.keys(appPackageJson.dependencies)) {
-                if (packageNames.includes(dep)) {
-                    appPackageJson.dependencies[dep] = version;
-                }
+        for (const dep of Object.keys(appPackageJson.dependencies)) {
+            if (packageNames.includes(dep)) {
+                appPackageJson.dependencies[dep] = version;
             }
-
-            fs.writeFileSync(
-                appPackageJsonPath,
-                JSON.stringify(appPackageJson, null, 2)
-            );
         }
+
+        fs.writeFileSync(
+            appPackageJsonPath,
+            JSON.stringify(appPackageJson, null, 2)
+        );
     }
 };
 
@@ -115,7 +113,7 @@ const preparePackages = async () => {
 
     console.log('\n______________________________________________________\n\n');
     console.log(' Publish:');
-    console.log(`\t- Run 'yarn changeset publish' to publish the packages`);
+    console.log(`\t- Run 'yarn changeset publish' to publish the packages, then release also on GitHub.`);
     console.log('\n______________________________________________________\n\n');
 };
 
