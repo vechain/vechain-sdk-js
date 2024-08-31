@@ -86,19 +86,11 @@ class FPN {
 
     /**
      * Returns a FPN whose value is the absolute value, i.e. the magnitude, of the value of this FPN.
-     */
-    public abs(): FPN {
-        return new FPN(this.fd, this.sv < 0n ? -this.sv : this.sv);
-    }
-
-    /**
-     * Returns a FPN whose value is the absolute value, i.e. the magnitude, of the value of this FPN.
-     * See {@link abs}.
      *
      * @see [bignumber.js absoluteValue](https://mikemcl.github.io/bignumber.js/#abs).
      */
-    public absoluteValue(): FPN {
-        return this.abs();
+    public abs(): FPN {
+        return new FPN(this.fd, this.sv < 0n ? -this.sv : this.sv);
     }
 
     /**
@@ -113,6 +105,8 @@ class FPN {
      * @return {null | number} A null if either instance is NaN;
      * -1, 0, or 1 if this instance is less than, equal to, or greater
      * than the specified instance, respectively.
+     *
+     * @see [bignumber.js comparedTo](https://mikemcl.github.io/bignumber.js/#cmp).
      */
     public compareTo(that: FPN): null | number {
         if (this.isNaN() || that.isNaN()) return null;
@@ -127,54 +121,23 @@ class FPN {
     }
 
     /**
-     * Compares this instance with the specified FPN instance.
-     * See {@link compareTo}.
-     *
-     * @param {FPN} that - The instance to compare with this instance.
-     *
-     * @return {null | number} A null if either instance is NaN;
-     * -1, 0, or 1 if this instance is less than, equal to, or greater
-     * than the specified instance, respectively.
-     *
-     * @see [bignumber.js comparedTo](https://mikemcl.github.io/bignumber.js/#cmp).
-     */
-    public comparedTo(that: FPN): null | number {
-        return this.compareTo(that);
-    }
-
-    /**
-     * Adjusts the precision of the floating-point number by the specified
-     * number of decimal places.
-     * See {@link dp}.
-     *
-     * @param {bigint | number} decimalPlaces - The number of decimal places to adjust to.
-     *
-     * @return {FPN} A new FPN instance with the adjusted precision.
-     *
-     * @see [bignumber.js decimalPlaces](https://mikemcl.github.io/bignumber.js/#dp).
-     */
-    // TODO: implement round logic and return number if argument is null.
-    public decimalPlaces(decimalPlaces: number): FPN {
-        const dp = BigInt(decimalPlaces);
-        return this.dp(dp - this.fd * dp);
-    }
-
-    /**
      * Returns a FPN whose value is the value of this FPN divided by `that` FPN.
      *
      * Limit cases:
-     * - 0 / 0 = NaN;
-     * - NaN / n = NaN;
-     * - n / NaN = NaN;
-     * - n / +/-Infinite = 0;
-     * - -n / 0 = -Infinite;
-     * - +n / 0 = +Infinite.
+     * - 0 / 0 = NaN
+     * - NaN / n = NaN
+     * - n / NaN = NaN
+     * - n / ±Infinite = 0
+     * - -n / 0 = -Infinite
+     * - +n / 0 = +Infinite
      *
      * @param {FPN} that - The fixed-point number to divide by.
      *
      * @return {FPN} The result of the division.
      *
      * @remarks The precision in the higher of the two operands.
+     *
+     * @see [bignumber.js dividedBy](https://mikemcl.github.io/bignumber.js/#div).
      */
     public div(that: FPN): FPN {
         if (this.isNaN() || that.isNaN()) return FPN.NaN;
@@ -208,30 +171,6 @@ class FPN {
     }
 
     /**
-     * Returns a FPN whose value is the value of this FPN divided by `that` FPN.
-     * See {@link div}.
-     *
-     * @param {FPN} that - The fixed-point number to divide by.
-     *
-     * @see [bignumber.js dividedBy](https://mikemcl.github.io/bignumber.js/#div).
-     */
-    public dividedBy(that: FPN): FPN {
-        return this.div(that);
-    }
-
-    /**
-     * Returns a FPN whose value is the integer part of dividing the value of this FPN by `that` FPN.
-     * See {@link idiv}.
-     *
-     * @param {FPN} that - The fixed-point number to divide by.
-     *
-     * @see [bignumber.js dividedToIntegerBy](https://mikemcl.github.io/bignumber.js/#divInt).
-     */
-    public dividedToIntegerBy(that: FPN): FPN {
-        return this.idiv(that);
-    }
-
-    /**
      * Adjusts the precision of the floating-point number by the specified
      * number of decimal places.
      *
@@ -249,10 +188,6 @@ class FPN {
         }
     }
 
-    public eq(that: FPN): boolean {
-        return this.isEqualTo(that);
-    }
-
     public exponentiatedBy(that: FPN): FPN {
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
         return new FPN(fd, FPN.pow(fd, this.dp(fd).sv, that.dp(fd).sv));
@@ -263,18 +198,20 @@ class FPN {
      * by `that` fixed point number.
      *
      * Limit cases:
-     * - 0 / 0 = NaN;
-     * - NaN / n = NaN;
-     * - n / NaN = NaN;
-     * - n / +/-Infinite = 0;
-     * - -n / 0 = -Infinite;
-     * - +n / 0 = +Infinite.
+     * - 0 / 0 = NaN
+     * - NaN / n = NaN
+     * - n / NaN = NaN
+     * - n / ±Infinite = 0
+     * - -n / 0 = -Infinite
+     * - +n / 0 = +Infinite
      *
      * @param {FPN} that - The fixed-point number to divide by.
      *
      * @return {FPN} The result of the division.
      *
      * @remarks The precision in the higher of the two operands.
+     *
+     * @see [bignumber.js dividedToIntegerBy](https://mikemcl.github.io/bignumber.js/#divInt).
      */
     public idiv(that: FPN): FPN {
         if (this.isNaN() || that.isNaN()) return FPN.NaN;
@@ -314,10 +251,6 @@ class FPN {
      * @remarks This method uses {@link compareTo} internally.
      */
     public isEqual(that: FPN): boolean {
-        return this.eq(that);
-    }
-
-    public isEqualTo(that: FPN): boolean {
         return this.compareTo(that) === 0;
     }
 
@@ -394,11 +327,47 @@ class FPN {
         return BigInt(Math.round(n * 10 ** Number(fd)));
     }
 
+    /**
+     * Returns a FPN whose value is the value of this FPN raised to the power of `that` FPN.
+     *
+     * Limit cases:
+     * - NaN ^ e = NaN
+     * - b ^ NaN = NaN
+     * - b ^ -Infinite = 0
+     * - b ^ 0 = 1
+     * - b ^ +Infinite = +Infinite
+     * - ±Infinite ^ -e = 0
+     * - ±Infinite ^ +e = +Infinite
+     *
+     * @param {FPN} that - The exponent as a fixed-point number.
+     *                     It can be negative, it can be not an integer value
+     *                     ([bignumber.js pow](https://mikemcl.github.io/bignumber.js/#pow)
+     *                     doesn't support not integer exponents).
+     * @return {FPN} - The result of raising this fixed-point number to the power of the given exponent.
+     *
+     * @remarks The precision in the higher of the two operands.
+     *
+     * @see [bignumber.js exponentiatedBy](https://mikemcl.github.io/bignumber.js/#pow)
+     */
     public pow(that: FPN): FPN {
+        if (this.isNaN() || that.isNaN()) return FPN.NaN;
+        if (this.isInfinite())
+            return that.isNegative() ? FPN.ZERO : FPN.POSITIVE_INFINITY;
+        if (that.isNegativeInfinite()) return FPN.ZERO;
+        if (that.isPositiveInfinite()) return FPN.POSITIVE_INFINITY;
+        if (that.isZero()) return FPN.of(1);
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
         return new FPN(fd, FPN.pow(fd, this.dp(fd).sv, that.dp(fd).sv));
     }
 
+    /**
+     * Computes the power of a given base raised to a specified exponent.
+     *
+     * @param {bigint} fd - The scale factor for decimal precision.
+     * @param {bigint} base - The base number to be raised to the power.
+     * @param {bigint} exponent - The exponent to which the base should be raised.
+     * @return {bigint} - The result of base raised to the power of exponent, scaled by the scale factor.
+     */
     private static pow(fd: bigint, base: bigint, exponent: bigint): bigint {
         const sf = 10n ** fd; // Scale factor.
         if (exponent < 0n) {
@@ -446,10 +415,6 @@ class FPN {
     public times(that: FPN): FPN {
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
         return new FPN(fd, FPN.mul(this.dp(fd).sv, that.dp(fd).sv, fd));
-    }
-
-    public toNumber(): number {
-        return this.n;
     }
 
     public toString(decimalSeparator = '.'): string {
