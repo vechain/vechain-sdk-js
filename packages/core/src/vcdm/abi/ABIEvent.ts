@@ -101,10 +101,16 @@ class Event<ABIType> {
 
     // TODO: review this method
     public decodeEventLog(data: { data: string; topics: string[] }): Result {
-        return this.event.decodeEventLog({
+        const eventLogDecoded = this.event.decodeEventLog({
             data: Hex.of(data.data),
             topics: data.topics.map((topic) => Hex.of(topic))
-        }) as unknown as Result;
+        });
+
+        if (eventLogDecoded.args instanceof Object) {
+            return Object.values(eventLogDecoded.args) as Result;
+        }
+
+        return eventLogDecoded as unknown as Result;
     }
 
     public encodeEventLog<TValue>(dataToEncode: TValue[]): {
