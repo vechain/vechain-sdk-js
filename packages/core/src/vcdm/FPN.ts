@@ -1,3 +1,5 @@
+import { InvalidOperation } from '@vechain/sdk-errors';
+
 class FPN {
     /**
      * The default number of decimal places to use for fixed-point math.
@@ -95,7 +97,38 @@ class FPN {
 
     /**
      * Compares this instance with `that` FPN instance.
-     * * Returns a null if either instance is NaN;
+     * * Returns 0 if this is equal to `that` FPN, including infinite with equal sign;
+     * * Returns -1, if this is -Infinite or less than `that` FPN;,
+     * * Returns 1 if this is +Infinite or greater than `that` FPN.
+     *
+     * @param {FPN} that - The instance to compare with this instance.
+     *
+     * @return {number} Returns -1, 0, or 1 if this instance is less than, equal to, or greater
+     * than the specified instance, respectively.
+     *
+     * @throw InvalidOperation If this or `that` FPN is {@link NaN}.
+     *
+     * @see [bignumber.js comparedTo](https://mikemcl.github.io/bignumber.js/#cmp)
+     */
+    public compareTo(that: FPN): number {
+        if (this.isNaN() || that.isNaN())
+            throw new InvalidOperation('FPN.compareTo', 'compare between NaN', {
+                this: `${this}`,
+                that: `${that}`
+            });
+        if (this.isNegativeInfinite())
+            return that.isNegativeInfinite() ? 0 : -1;
+        if (this.isPositiveInfinite()) return that.isPositiveInfinite() ? 0 : 1;
+        if (that.isNegativeInfinite()) return 1;
+        if (that.isPositiveInfinite()) return -1;
+        const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
+        const delta = this.dp(fd).sv - that.dp(fd).sv;
+        return delta < 0n ? -1 : delta === 0n ? 0 : 1;
+    }
+
+    /**
+     * Compares this instance with `that` FPN instance.
+     * * **Returns a null if either instance is NaN;**
      * * Returns 0 if this is equal to `that` FPN, including infinite with equal sign;
      * * Returns -1, if this is -Infinite or less than `that` FPN;,
      * * Returns 1 if this is +Infinite or greater than `that` FPN.
@@ -106,18 +139,16 @@ class FPN {
      * -1, 0, or 1 if this instance is less than, equal to, or greater
      * than the specified instance, respectively.
      *
-     * @see [bignumber.js comparedTo](https://mikemcl.github.io/bignumber.js/#cmp)
+     * @remarks This method uses internally {@link compareTo} wrapping the {@link InvalidOperation} exception
+     * when comparing between {@link NaN} values to behave according the
+     * [[bignumber.js comparedTo](https://mikemcl.github.io/bignumber.js/#cmp)] rules.
      */
-    public compareTo(that: FPN): null | number {
-        if (this.isNaN() || that.isNaN()) return null;
-        if (this.isNegativeInfinite())
-            return that.isNegativeInfinite() ? 0 : -1;
-        if (this.isPositiveInfinite()) return that.isPositiveInfinite() ? 0 : 1;
-        if (that.isNegativeInfinite()) return 1;
-        if (that.isPositiveInfinite()) return -1;
-        const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
-        const delta = this.dp(fd).sv - that.dp(fd).sv;
-        return delta < 0n ? -1 : delta === 0n ? 0 : 1;
+    public comparedTo(that: FPN): null | number {
+        try {
+            return this.compareTo(that);
+        } catch (e) {
+            return null;
+        }
     }
 
     /**
@@ -189,6 +220,35 @@ class FPN {
     }
 
     /**
+     * Returns `true `if the value of thisFPN is equal to the value of `that` FPN, otherwise returns `false`.
+     *
+     * As with JavaScript, `NaN` does not equal `NaN`.
+     *
+     * @param {FPN} that - The FPN to compare against.
+     *
+     * @return {boolean} `true` if the FPN numbers are equal, otherwise `false`.
+     *
+     * @remarks This method uses {@link comparedTo} internally.
+     */
+    public eq(that: FPN): boolean {
+        return this.comparedTo(that) === 0;
+    }
+
+    /**
+     * Returns `true` if the value of this FPN is greater than `that` FPN`, otherwise returns `false`.
+     *
+     * @param {FPN} that - The FPN to compare against.
+     *
+     * @return {boolean} `true` if this FPN is greater than `that` FPN, otherwise `false`.
+     *
+     * @remarks This method uses {@link comparedTo} internally.
+     */
+    public gt(that: FPN): boolean {
+        const cmp = this.comparedTo(that);
+        return cmp !== null && cmp > 0;
+    }
+
+    /**
      * Returns a fixed-point number whose value is the integer part of dividing the value of this fixed-point number
      * by `that` fixed point number.
      *
@@ -235,22 +295,7 @@ class FPN {
     }
 
     /**
-     * Returns `true `if the value of thisFPN is equal to the value of `that` FPN, otherwise returns false.
-     *
-     * As with JavaScript, `NaN` does not equal `NaN`.
-     *
-     * @param {FPN} that - The FPN to compare against.
-     *
-     * @return {boolean} True if the FPN numbers are equal, otherwise false.
-     *
-     * @remarks This method uses {@link compareTo} internally.
-     */
-    public isEqual(that: FPN): boolean {
-        return this.compareTo(that) === 0;
-    }
-
-    /**
-     * Returns `true` if the value of this FPN is a finite number, otherwise returns false.
+     * Returns `true` if the value of this FPN is a finite number, otherwise returns `false`.
      *
      * The only possible non-finite values of a FPN are {@link NaN}, {@link NEGATIVE_INFINITY} and {@link POSITIVE_INFINITY}.
      *
