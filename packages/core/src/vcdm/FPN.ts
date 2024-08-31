@@ -3,7 +3,7 @@ class FPN {
      * The default number of decimal places to use for fixed-point math.
      *
      * @see
-     * [bignumber.js DECIMAL_PLACES](https://mikemcl.github.io/bignumber.js/#decimal-places).
+     * [bignumber.js DECIMAL_PLACES](https://mikemcl.github.io/bignumber.js/#decimal-places)
      *
      * @constant {bigint}
      */
@@ -14,7 +14,7 @@ class FPN {
      *
      * @remarks {@link fd} and {@link sv} not meaningful.
      *
-     * @see [Number.NaN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/NaN).
+     * @see [Number.NaN](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/NaN)
      *
      */
     public static readonly NaN = new FPN(0n, 0n, NaN);
@@ -24,7 +24,7 @@ class FPN {
      *
      * @remarks {@link fd} and {@link sv} not meaningful.
      *
-     * @see [Number.NEGATIVE_INFINITY](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/NEGATIVE_INFINITY).
+     * @see [Number.NEGATIVE_INFINITY](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/NEGATIVE_INFINITY)
      */
     public static readonly NEGATIVE_INFINITY = new FPN(
         0n,
@@ -37,7 +37,7 @@ class FPN {
      *
      * @remarks {@link fd} and {@link sv} not meaningful.
      *
-     * @see [Number.POSITIVE_INFINITY](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/POSITIVE_INFINITY).
+     * @see [Number.POSITIVE_INFINITY](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/POSITIVE_INFINITY)
      */
     public static readonly POSITIVE_INFINITY = new FPN(
         0n,
@@ -87,7 +87,7 @@ class FPN {
     /**
      * Returns a FPN whose value is the absolute value, i.e. the magnitude, of the value of this FPN.
      *
-     * @see [bignumber.js absoluteValue](https://mikemcl.github.io/bignumber.js/#abs).
+     * @see [bignumber.js absoluteValue](https://mikemcl.github.io/bignumber.js/#abs)
      */
     public abs(): FPN {
         return new FPN(this.fd, this.sv < 0n ? -this.sv : this.sv);
@@ -106,7 +106,7 @@ class FPN {
      * -1, 0, or 1 if this instance is less than, equal to, or greater
      * than the specified instance, respectively.
      *
-     * @see [bignumber.js comparedTo](https://mikemcl.github.io/bignumber.js/#cmp).
+     * @see [bignumber.js comparedTo](https://mikemcl.github.io/bignumber.js/#cmp)
      */
     public compareTo(that: FPN): null | number {
         if (this.isNaN() || that.isNaN()) return null;
@@ -137,7 +137,7 @@ class FPN {
      *
      * @remarks The precision is the greater of the precision of the two operands.
      *
-     * @see [bignumber.js dividedBy](https://mikemcl.github.io/bignumber.js/#div).
+     * @see [bignumber.js dividedBy](https://mikemcl.github.io/bignumber.js/#div)
      */
     public div(that: FPN): FPN {
         if (this.isNaN() || that.isNaN()) return FPN.NaN;
@@ -188,11 +188,6 @@ class FPN {
         }
     }
 
-    public exponentiatedBy(that: FPN): FPN {
-        const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
-        return new FPN(fd, FPN.pow(fd, this.dp(fd).sv, that.dp(fd).sv));
-    }
-
     /**
      * Returns a fixed-point number whose value is the integer part of dividing the value of this fixed-point number
      * by `that` fixed point number.
@@ -211,7 +206,7 @@ class FPN {
      *
      * @remarks The precision is the greater of the precision of the two operands.
      *
-     * @see [bignumber.js dividedToIntegerBy](https://mikemcl.github.io/bignumber.js/#divInt).
+     * @see [bignumber.js dividedToIntegerBy](https://mikemcl.github.io/bignumber.js/#divInt)
      */
     public idiv(that: FPN): FPN {
         if (this.isNaN() || that.isNaN()) return FPN.NaN;
@@ -254,10 +249,21 @@ class FPN {
         return this.compareTo(that) === 0;
     }
 
+    /**
+     * Returns `true` if the value of this FPN is a finite number, otherwise returns false.
+     *
+     * The only possible non-finite values of a FPN are {@link NaN}, {@link NEGATIVE_INFINITY} and {@link POSITIVE_INFINITY}.
+     *
+     * @see [bignumber.js isFinite](https://mikemcl.github.io/bignumber.js/#isF)
+     */
     public isFinite(): boolean {
         return this.ef === 0;
     }
 
+    /**
+     * Return `true` if the value of this FPN is {@link NEGATIVE_INFINITY} and {@link POSITIVE_INFINITY},
+     * otherwise returns false.
+     */
     public isInfinite(): boolean {
         return this.isNegativeInfinite() || this.isPositiveInfinite();
     }

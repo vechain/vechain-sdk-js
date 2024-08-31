@@ -37,7 +37,7 @@ describe('FPN class tests', () => {
         });
 
         test('-Infinity ~ n', () => {
-            const l = Number.NEGATIVE_INFINITY;
+            const l = -Infinity;
             const r = 123.45;
             const actual = FPN.of(l).compareTo(FPN.of(r));
             const expected = BigNumber(l).comparedTo(BigNumber(r));
@@ -45,7 +45,7 @@ describe('FPN class tests', () => {
         });
 
         test('+Infinity ~ n', () => {
-            const l = Number.POSITIVE_INFINITY;
+            const l = Infinity;
             const r = 123.45;
             const actual = FPN.of(l).compareTo(FPN.of(r));
             const expected = BigNumber(l).comparedTo(BigNumber(r));
@@ -53,7 +53,7 @@ describe('FPN class tests', () => {
         });
 
         test('n ~ -Infinity', () => {
-            const l = Number.NEGATIVE_INFINITY;
+            const l = -Infinity;
             const r = 123.45;
             const actual = FPN.of(l).compareTo(FPN.of(r));
             const expected = BigNumber(l).comparedTo(BigNumber(r));
@@ -62,39 +62,39 @@ describe('FPN class tests', () => {
 
         test('n ~ +Infinity', () => {
             const l = 123.45;
-            const r = Number.NEGATIVE_INFINITY;
+            const r = -Infinity;
             const actual = FPN.of(l).compareTo(FPN.of(r));
             const expected = BigNumber(l).comparedTo(BigNumber(r));
             expect(actual).toBe(expected);
         });
 
         test('-Infinity ~ -Infinity', () => {
-            const l = Number.NEGATIVE_INFINITY;
-            const r = Number.NEGATIVE_INFINITY;
+            const l = -Infinity;
+            const r = -Infinity;
             const actual = FPN.of(l).compareTo(FPN.of(r));
             const expected = BigNumber(l).comparedTo(BigNumber(r));
             expect(actual).toBe(expected);
         });
 
         test('-Infinity ~ +Infinity', () => {
-            const l = Number.NEGATIVE_INFINITY;
-            const r = Number.POSITIVE_INFINITY;
+            const l = -Infinity;
+            const r = Infinity;
             const actual = FPN.of(l).compareTo(FPN.of(r));
             const expected = BigNumber(l).comparedTo(BigNumber(r));
             expect(actual).toBe(expected);
         });
 
         test('+Infinity ~ -Infinity', () => {
-            const l = Number.POSITIVE_INFINITY;
-            const r = Number.NEGATIVE_INFINITY;
+            const l = Infinity;
+            const r = -Infinity;
             const actual = FPN.of(l).compareTo(FPN.of(r));
             const expected = BigNumber(l).comparedTo(BigNumber(r));
             expect(actual).toBe(expected);
         });
 
         test('+Infinity ~ +Infinity', () => {
-            const l = Number.POSITIVE_INFINITY;
-            const r = Number.POSITIVE_INFINITY;
+            const l = Infinity;
+            const r = Infinity;
             const actual = FPN.of(l).compareTo(FPN.of(r));
             const expected = BigNumber(l).comparedTo(BigNumber(r));
             expect(actual).toBe(expected);
@@ -181,7 +181,7 @@ describe('FPN class tests', () => {
 
         test('n / -Infinity = 0', () => {
             const dividend = 123.45;
-            const divisor = Number.NEGATIVE_INFINITY;
+            const divisor = -Infinity;
             const actual = FPN.of(dividend).div(FPN.of(divisor));
             // console.log(actual.toString());
             const expected = BigNumber(dividend).div(BigNumber(divisor));
@@ -190,7 +190,7 @@ describe('FPN class tests', () => {
 
         test('n / +Infinity = 0', () => {
             const dividend = 123.45;
-            const divisor = Number.POSITIVE_INFINITY;
+            const divisor = Infinity;
             const actual = FPN.of(dividend).div(FPN.of(divisor));
             // console.log(actual.toString());
             const expected = BigNumber(dividend).div(BigNumber(divisor));
@@ -274,7 +274,7 @@ describe('FPN class tests', () => {
 
         test('n / -Infinity = 0', () => {
             const dividend = 123.45;
-            const divisor = Number.NEGATIVE_INFINITY;
+            const divisor = -Infinity;
             const actual = FPN.of(dividend).idiv(FPN.of(divisor));
             // console.log(actual.toString());
             const expected = BigNumber(dividend).idiv(BigNumber(divisor));
@@ -283,7 +283,7 @@ describe('FPN class tests', () => {
 
         test('n / +Infinity = 0', () => {
             const dividend = 123.45;
-            const divisor = Number.POSITIVE_INFINITY;
+            const divisor = Infinity;
             const actual = FPN.of(dividend).idiv(FPN.of(divisor));
             // console.log(actual.toString());
             const expected = BigNumber(dividend).idiv(BigNumber(divisor));
@@ -327,164 +327,6 @@ describe('FPN class tests', () => {
         });
     });
 
-    describe('pow method tests', () => {
-        test('NaN ^ ±e', () => {
-            const b = NaN;
-            const e = 123.45;
-            const actual = FPN.of(b).pow(FPN.of(e));
-            const expected = b ** e;
-            expect(actual.n).toBe(expected);
-            expect(FPN.of(-b).pow(FPN.of(e))).toEqual(actual);
-        });
-
-        test('±b ^ NaN', () => {
-            const b = 123.45;
-            const e = NaN;
-            const actual = FPN.of(b).pow(FPN.of(e));
-            const expected = b ** e;
-            expect(actual.n).toBe(expected);
-            expect(FPN.of(-b).pow(FPN.of(e))).toEqual(actual);
-        });
-
-        test('±b ^ -Infinity', () => {
-            const b = 123.45;
-            const e = Number.NEGATIVE_INFINITY;
-            const actual = FPN.of(b).pow(FPN.of(e));
-            const expected = b ** e;
-            expect(actual.n).toBe(expected);
-            expect(FPN.of(-b).pow(FPN.of(e))).toEqual(actual);
-        });
-
-        test('±b ^ +Infinity', () => {
-            const b = 123.45;
-            const e = Number.POSITIVE_INFINITY;
-            const actual = FPN.of(b).pow(FPN.of(e));
-            const expected = b ** e;
-            expect(actual.n).toBe(expected);
-            expect(FPN.of(-b).pow(FPN.of(e))).toEqual(actual);
-        });
-
-        test('-Infinity ^ 0', () => {
-            const b = Number.NEGATIVE_INFINITY;
-            const e = 0;
-            const actual = FPN.of(b).pow(FPN.of(e));
-            const expected = b ** e;
-            expect(actual.n).toBe(expected);
-        });
-
-        test('+Infinity ^ 0', () => {
-            const b = Number.POSITIVE_INFINITY;
-            const e = 0;
-            const actual = FPN.of(b).pow(FPN.of(e));
-            const expected = b ** e;
-            expect(actual.n).toBe(expected);
-        });
-
-        test('-Infinity ^ -e', () => {
-            const b = Number.NEGATIVE_INFINITY;
-            const e = -123.45;
-            const actual = FPN.of(b).pow(FPN.of(e));
-            const expected = b ** e;
-            expect(actual.n).toBe(expected);
-        });
-
-        test('-Infinity ^ +e', () => {
-            const b = Number.NEGATIVE_INFINITY;
-            const e = -123.45;
-            const actual = FPN.of(b).pow(FPN.of(e));
-            const expected = b ** e;
-            expect(actual.n).toBe(expected);
-        });
-
-        test('+Infinity ^ -e', () => {
-            const b = Number.POSITIVE_INFINITY;
-            const e = -123.45;
-            const actual = FPN.of(b).pow(FPN.of(e));
-            const expected = b ** e;
-            expect(actual.n).toBe(expected);
-        });
-
-        test('+Infinity ^ +e', () => {
-            const b = Number.POSITIVE_INFINITY;
-            const e = 123.45;
-            const actual = FPN.of(b).pow(FPN.of(e));
-            const expected = b ** e;
-            expect(actual.n).toBe(expected);
-        });
-
-        test('-Infinity ^ -Infinity', () => {
-            const b = Number.NEGATIVE_INFINITY;
-            const e = Number.NEGATIVE_INFINITY;
-            const actual = FPN.of(b).pow(FPN.of(e));
-            const expected = b ** e;
-            expect(actual.n).toBe(expected);
-        });
-
-        test('-Infinity ^ +Infinity', () => {
-            const b = Number.NEGATIVE_INFINITY;
-            const e = Number.POSITIVE_INFINITY;
-            const actual = FPN.of(b).pow(FPN.of(e));
-            const expected = b ** e;
-            expect(actual.n).toBe(expected);
-        });
-
-        test('+Infinity ^ -Infinity', () => {
-            const b = Number.NEGATIVE_INFINITY;
-            const e = Number.POSITIVE_INFINITY;
-            const actual = FPN.of(b).pow(FPN.of(e));
-            const expected = b ** e;
-            expect(actual.n).toBe(expected);
-        });
-
-        test('+Infinity ^ +Infinity', () => {
-            const b = Number.NEGATIVE_INFINITY;
-            const e = Number.POSITIVE_INFINITY;
-            const actual = FPN.of(b).pow(FPN.of(e));
-            const expected = b ** e;
-            expect(actual.n).toBe(expected);
-        });
-
-        test('±b ^ -e', () => {
-            const b = 3;
-            const e = -2;
-            const actual = FPN.of(b).pow(FPN.of(e));
-            const expected = BigNumber(b).pow(BigNumber(e));
-            const fd = 16; // Fractional digits before divergence.
-            expect(actual.n.toFixed(fd)).toBe(expected.toNumber().toFixed(fd));
-            expect(FPN.of(-b).pow(FPN.of(e))).toEqual(actual);
-        });
-
-        test('±b ^ +e', () => {});
-
-        test('power of < 1', () => {
-            const b = FPN.of(4, 18n);
-            const e = FPN.of(-2);
-            const r = b.exponentiatedBy(e);
-            console.log(r);
-        });
-
-        test('power of 0', () => {
-            const b = FPN.of(0.7);
-            const e = FPN.of(0);
-            const r = b.exponentiatedBy(e);
-            console.log(r);
-        });
-
-        test('power of 1', () => {
-            const b = FPN.of(0.7);
-            const e = FPN.of(1);
-            const r = b.exponentiatedBy(e);
-            console.log(r);
-        });
-
-        test('power of > 1', () => {
-            const b = FPN.of(1.5);
-            const e = FPN.of(3);
-            const r = b.exponentiatedBy(e);
-            console.log(r);
-        });
-    });
-
     describe('isEqual method tests', () => {
         test('NaN = n', () => {
             const l = NaN;
@@ -503,7 +345,7 @@ describe('FPN class tests', () => {
         });
 
         test('-Infinity = n', () => {
-            const l = Number.NEGATIVE_INFINITY;
+            const l = -Infinity;
             const r = 123.45;
             const actual = FPN.of(l).isEqual(FPN.of(r));
             const expected = BigNumber(l).isEqualTo(BigNumber(r));
@@ -511,7 +353,7 @@ describe('FPN class tests', () => {
         });
 
         test('+Infinity = n', () => {
-            const l = Number.POSITIVE_INFINITY;
+            const l = Infinity;
             const r = 123.45;
             const actual = FPN.of(l).isEqual(FPN.of(r));
             const expected = BigNumber(l).isEqualTo(BigNumber(r));
@@ -519,7 +361,7 @@ describe('FPN class tests', () => {
         });
 
         test('n = -Infinity', () => {
-            const l = Number.NEGATIVE_INFINITY;
+            const l = -Infinity;
             const r = 123.45;
             const actual = FPN.of(l).isEqual(FPN.of(r));
             const expected = BigNumber(l).isEqualTo(BigNumber(r));
@@ -528,39 +370,39 @@ describe('FPN class tests', () => {
 
         test('n = +Infinity', () => {
             const l = 123.45;
-            const r = Number.NEGATIVE_INFINITY;
+            const r = -Infinity;
             const actual = FPN.of(l).isEqual(FPN.of(r));
             const expected = BigNumber(l).isEqualTo(BigNumber(r));
             expect(actual).toBe(expected);
         });
 
         test('-Infinity = -Infinity', () => {
-            const l = Number.NEGATIVE_INFINITY;
-            const r = Number.NEGATIVE_INFINITY;
+            const l = -Infinity;
+            const r = -Infinity;
             const actual = FPN.of(l).isEqual(FPN.of(r));
             const expected = BigNumber(l).isEqualTo(BigNumber(r));
             expect(actual).toBe(expected);
         });
 
         test('-Infinity = +Infinity', () => {
-            const l = Number.NEGATIVE_INFINITY;
-            const r = Number.POSITIVE_INFINITY;
+            const l = -Infinity;
+            const r = Infinity;
             const actual = FPN.of(l).isEqual(FPN.of(r));
             const expected = BigNumber(l).isEqualTo(BigNumber(r));
             expect(actual).toBe(expected);
         });
 
         test('+Infinity = -Infinity', () => {
-            const l = Number.POSITIVE_INFINITY;
-            const r = Number.NEGATIVE_INFINITY;
+            const l = Infinity;
+            const r = -Infinity;
             const actual = FPN.of(l).isEqual(FPN.of(r));
             const expected = BigNumber(l).isEqualTo(BigNumber(r));
             expect(actual).toBe(expected);
         });
 
         test('+Infinity = +Infinity', () => {
-            const l = Number.POSITIVE_INFINITY;
-            const r = Number.POSITIVE_INFINITY;
+            const l = Infinity;
+            const r = Infinity;
             const actual = FPN.of(l).isEqual(FPN.of(r));
             const expected = BigNumber(l).isEqualTo(BigNumber(r));
             expect(actual).toBe(expected);
@@ -591,6 +433,62 @@ describe('FPN class tests', () => {
         });
     });
 
+    describe('isFinite method tests', () => {
+        test('NaN -> false', () => {
+            const n = NaN;
+            const actual = FPN.of(n).isFinite();
+            const expected = BigNumber(n).isFinite();
+            expect(actual).toBe(expected);
+        });
+
+        test('-Infinite -> false', () => {
+            const n = -Infinity;
+            const actual = FPN.of(n).isFinite();
+            const expected = BigNumber(n).isFinite();
+            expect(actual).toBe(expected);
+        });
+
+        test('+Infinite -> false', () => {
+            const n = Infinity;
+            const actual = FPN.of(n).isFinite();
+            const expected = BigNumber(n).isFinite();
+            expect(actual).toBe(expected);
+        });
+
+        test('n -> true', () => {
+            const n = 123.45;
+            const actual = FPN.of(n).isFinite();
+            const expected = BigNumber(n).isFinite();
+            expect(actual).toBe(expected);
+        });
+    });
+
+    describe(`isInfinite method tests`, () => {
+        test('NaN -> false', () => {
+            const n = NaN;
+            const actual = FPN.of(n).isInfinite();
+            expect(actual).toBe(false);
+        });
+
+        test('-Infinite -> true', () => {
+            const n = -Infinity;
+            const actual = FPN.of(n).isInfinite();
+            expect(actual).toBe(true);
+        });
+
+        test('+Infinite -> true', () => {
+            const n = Infinity;
+            const actual = FPN.of(n).isInfinite();
+            expect(actual).toBe(true);
+        });
+
+        test('n -> false', () => {
+            const n = 0;
+            const actual = FPN.of(n).isInfinite();
+            expect(actual).toBe(false);
+        });
+    });
+
     describe('minus method tests', () => {
         test('positive result', () => {
             const a = FPN.of(0.3);
@@ -615,6 +513,144 @@ describe('FPN class tests', () => {
             const b = FPN.of(2.5);
             const r = a.plus(b);
             console.log(r);
+        });
+    });
+
+    describe('pow method tests', () => {
+        test('NaN ^ ±e', () => {
+            const b = NaN;
+            const e = 123.45;
+            const actual = FPN.of(b).pow(FPN.of(e));
+            const expected = b ** e;
+            expect(actual.n).toBe(expected);
+            expect(FPN.of(-b).pow(FPN.of(e))).toEqual(actual);
+        });
+
+        test('±b ^ NaN', () => {
+            const b = 123.45;
+            const e = NaN;
+            const actual = FPN.of(b).pow(FPN.of(e));
+            const expected = b ** e;
+            expect(actual.n).toBe(expected);
+            expect(FPN.of(-b).pow(FPN.of(e))).toEqual(actual);
+        });
+
+        test('±b ^ -Infinity', () => {
+            const b = 123.45;
+            const e = -Infinity;
+            const actual = FPN.of(b).pow(FPN.of(e));
+            const expected = b ** e;
+            expect(actual.n).toBe(expected);
+            expect(FPN.of(-b).pow(FPN.of(e))).toEqual(actual);
+        });
+
+        test('±b ^ +Infinity', () => {
+            const b = 123.45;
+            const e = Infinity;
+            const actual = FPN.of(b).pow(FPN.of(e));
+            const expected = b ** e;
+            expect(actual.n).toBe(expected);
+            expect(FPN.of(-b).pow(FPN.of(e))).toEqual(actual);
+        });
+
+        test('-Infinity ^ 0', () => {
+            const b = -Infinity;
+            const e = 0;
+            const actual = FPN.of(b).pow(FPN.of(e));
+            const expected = b ** e;
+            expect(actual.n).toBe(expected);
+        });
+
+        test('+Infinity ^ 0', () => {
+            const b = Infinity;
+            const e = 0;
+            const actual = FPN.of(b).pow(FPN.of(e));
+            const expected = b ** e;
+            expect(actual.n).toBe(expected);
+        });
+
+        test('-Infinity ^ -e', () => {
+            const b = -Infinity;
+            const e = -123.45;
+            const actual = FPN.of(b).pow(FPN.of(e));
+            const expected = b ** e;
+            expect(actual.n).toBe(expected);
+        });
+
+        test('-Infinity ^ +e', () => {
+            const b = -Infinity;
+            const e = -123.45;
+            const actual = FPN.of(b).pow(FPN.of(e));
+            const expected = b ** e;
+            expect(actual.n).toBe(expected);
+        });
+
+        test('+Infinity ^ -e', () => {
+            const b = Infinity;
+            const e = -123.45;
+            const actual = FPN.of(b).pow(FPN.of(e));
+            const expected = b ** e;
+            expect(actual.n).toBe(expected);
+        });
+
+        test('+Infinity ^ +e', () => {
+            const b = Infinity;
+            const e = 123.45;
+            const actual = FPN.of(b).pow(FPN.of(e));
+            const expected = b ** e;
+            expect(actual.n).toBe(expected);
+        });
+
+        test('-Infinity ^ -Infinity', () => {
+            const b = -Infinity;
+            const e = -Infinity;
+            const actual = FPN.of(b).pow(FPN.of(e));
+            const expected = b ** e;
+            expect(actual.n).toBe(expected);
+        });
+
+        test('-Infinity ^ +Infinity', () => {
+            const b = -Infinity;
+            const e = Infinity;
+            const actual = FPN.of(b).pow(FPN.of(e));
+            const expected = b ** e;
+            expect(actual.n).toBe(expected);
+        });
+
+        test('+Infinity ^ -Infinity', () => {
+            const b = -Infinity;
+            const e = Infinity;
+            const actual = FPN.of(b).pow(FPN.of(e));
+            const expected = b ** e;
+            expect(actual.n).toBe(expected);
+        });
+
+        test('+Infinity ^ +Infinity', () => {
+            const b = -Infinity;
+            const e = Infinity;
+            const actual = FPN.of(b).pow(FPN.of(e));
+            const expected = b ** e;
+            expect(actual.n).toBe(expected);
+        });
+
+        test('±b ^ -e', () => {
+            const b = 3;
+            const e = -2;
+            const actual = FPN.of(b).pow(FPN.of(e));
+            const expected = BigNumber(b).pow(BigNumber(e));
+            const fd = 16; // Fractional digits before divergence.
+            expect(actual.n.toFixed(fd)).toBe(expected.toNumber().toFixed(fd));
+            expect(FPN.of(-b).pow(FPN.of(e))).toEqual(actual);
+        });
+
+        test('±b ^ +e', () => {
+            const b = 0.7;
+            const e = -2;
+            const actual = FPN.of(b).pow(FPN.of(e));
+            const expected = BigNumber(b).pow(BigNumber(e));
+            const fd = 14; // Fractional digits before divergence.
+            expect(actual.n.toFixed(fd)).toBe(expected.toNumber().toFixed(fd));
+            expect(FPN.of(-b).pow(FPN.of(e))).toEqual(actual);
         });
     });
 
@@ -653,11 +689,11 @@ describe('FPN class tests', () => {
             console.log(r.toString());
         });
         test('Negative infinite', () => {
-            const r = FPN.of(Number.NEGATIVE_INFINITY);
+            const r = FPN.of(-Infinity);
             console.log(r.toString());
         });
         test('Positive infinite', () => {
-            const r = FPN.of(Number.POSITIVE_INFINITY);
+            const r = FPN.of(Infinity);
             console.log(r.toString());
         });
     });
