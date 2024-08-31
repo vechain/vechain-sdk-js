@@ -19,9 +19,16 @@ import { ABI } from './ABI';
  */
 class ABIFunction extends ABI {
     private readonly functionAbiRepresentation: ViemABI;
-    public constructor(signature: string) {
-        super(undefined, undefined, signature);
-        this.functionAbiRepresentation = parseAbiItem([signature]);
+    public constructor(signature: string | ViemABI) {
+        if (signature instanceof String) {
+            super(undefined, undefined, signature as string);
+            this.functionAbiRepresentation = parseAbiItem([
+                signature as string
+            ]);
+        } else {
+            super();
+            this.functionAbiRepresentation = signature as ViemABI;
+        }
     }
 
     /**
