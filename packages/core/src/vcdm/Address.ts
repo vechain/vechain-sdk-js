@@ -76,11 +76,11 @@ class Address extends HexUInt {
                 });
             }
         } catch (error) {
-            this.throwInvalidDataType(
-                error,
+            throw new InvalidDataType(
                 'Address.of',
                 'not a valid hexadecimal positive integer expression',
-                { exp: `${exp}`, error }
+                { exp: `${exp}` },
+                error
             );
         }
     }
@@ -109,11 +109,11 @@ class Address extends HexUInt {
             if (error instanceof InvalidSecp256k1PrivateKey) {
                 throw error;
             }
-            this.throwInvalidDataType(
-                error,
+            throw new InvalidDataType(
                 'Address.ofPrivateKey',
                 'not a valid private key',
-                { privateKey: `${privateKey}`, error }
+                { privateKey: `${privateKey}` },
+                error
             );
         }
     }
@@ -136,11 +136,11 @@ class Address extends HexUInt {
             ).bytes;
             return Address.of(publicKeyHash.slice(12));
         } catch (error) {
-            this.throwInvalidDataType(
-                error,
+            throw new InvalidDataType(
                 'Address.ofPublicKey',
                 'not a valid public key',
-                { publicKey: `${publicKey}`, error }
+                { publicKey: `${publicKey}` },
+                error
             );
         }
     }
