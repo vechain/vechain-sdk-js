@@ -352,7 +352,11 @@ class FPN {
     public pow(that: FPN): FPN {
         if (this.isNaN() || that.isNaN()) return FPN.NaN;
         if (this.isInfinite())
-            return that.isNegative() ? FPN.ZERO : FPN.POSITIVE_INFINITY;
+            return that.isZero()
+                ? FPN.of(1)
+                : this.isNegative()
+                  ? FPN.ZERO
+                  : FPN.POSITIVE_INFINITY;
         if (that.isNegativeInfinite()) return FPN.ZERO;
         if (that.isPositiveInfinite()) return FPN.POSITIVE_INFINITY;
         if (that.isZero()) return FPN.of(1);
