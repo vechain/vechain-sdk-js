@@ -99,7 +99,6 @@ class Event<ABIType> {
         return this.event.signature;
     }
 
-    // TODO: review this method
     public decodeEventLog(data: { data: string; topics: string[] }): Result {
         const eventLogDecoded = this.event.decodeEventLog({
             data: Hex.of(data.data),
