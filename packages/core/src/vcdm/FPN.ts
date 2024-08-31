@@ -242,10 +242,28 @@ class FPN {
      * @return {boolean} `true` if this FPN is greater than `that` FPN, otherwise `false`.
      *
      * @remarks This method uses {@link comparedTo} internally.
+     *
+     * @see [bignummber.js isGreaterThan](https://mikemcl.github.io/bignumber.js/#gt)
      */
     public gt(that: FPN): boolean {
         const cmp = this.comparedTo(that);
         return cmp !== null && cmp > 0;
+    }
+
+    /**
+     * Returns `true` if the value of this FPN is greater or equal than `that` FPN`, otherwise returns `false`.
+     *
+     * @param {FPN} that - The FPN to compare against.
+     *
+     * @return {boolean} `true` if this FPN is greater or equal than `that` FPN, otherwise `false`.
+     *
+     * @remarks This method uses {@link comparedTo} internally.
+     *
+     * @see [bignumber.js isGreaterThanOrEqualTo](https://mikemcl.github.io/bignumber.js/#gte)
+     */
+    public gte(that: FPN): boolean {
+        const cmp = this.comparedTo(that);
+        return cmp !== null && cmp >= 0;
     }
 
     /**
