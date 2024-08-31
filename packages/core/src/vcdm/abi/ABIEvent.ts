@@ -20,9 +20,14 @@ type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
  */
 class ABIEvent extends ABI {
     private readonly eventAbiRepresentation: ViemABI;
-    public constructor(signature: string) {
-        super(undefined, undefined, signature);
-        this.eventAbiRepresentation = parseAbiItem([signature]);
+    public constructor(signature: string | ViemABI) {
+        if (signature instanceof String) {
+            super(undefined, undefined, signature as string);
+            this.eventAbiRepresentation = parseAbiItem([signature as string]);
+        } else {
+            super();
+            this.eventAbiRepresentation = signature as ViemABI;
+        }
     }
 
     /**
