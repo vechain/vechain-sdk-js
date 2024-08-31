@@ -334,7 +334,7 @@ describe('FPN class tests', () => {
             const actual = FPN.of(b).pow(FPN.of(e));
             const expected = b ** e;
             expect(actual.n).toBe(expected);
-            expect(FPN.of(-b).pow(FPN.of(e))).toBe(actual);
+            expect(FPN.of(-b).pow(FPN.of(e))).toEqual(actual);
         });
 
         test('±b ^ NaN', () => {
@@ -343,7 +343,7 @@ describe('FPN class tests', () => {
             const actual = FPN.of(b).pow(FPN.of(e));
             const expected = b ** e;
             expect(actual.n).toBe(expected);
-            expect(FPN.of(-b).pow(FPN.of(e))).toBe(actual);
+            expect(FPN.of(-b).pow(FPN.of(e))).toEqual(actual);
         });
 
         test('±b ^ -Infinity', () => {
@@ -352,7 +352,7 @@ describe('FPN class tests', () => {
             const actual = FPN.of(b).pow(FPN.of(e));
             const expected = b ** e;
             expect(actual.n).toBe(expected);
-            expect(FPN.of(-b).pow(FPN.of(e))).toBe(actual);
+            expect(FPN.of(-b).pow(FPN.of(e))).toEqual(actual);
         });
 
         test('±b ^ +Infinity', () => {
@@ -361,7 +361,7 @@ describe('FPN class tests', () => {
             const actual = FPN.of(b).pow(FPN.of(e));
             const expected = b ** e;
             expect(actual.n).toBe(expected);
-            expect(FPN.of(-b).pow(FPN.of(e))).toBe(actual);
+            expect(FPN.of(-b).pow(FPN.of(e))).toEqual(actual);
         });
 
         test('-Infinity ^ 0', () => {
@@ -449,10 +449,12 @@ describe('FPN class tests', () => {
             const e = -2;
             const actual = FPN.of(b).pow(FPN.of(e));
             const expected = BigNumber(b).pow(BigNumber(e));
-            // expect(actual.dp(16).n).toBe(expected.toNumber());
+            const fd = 16; // Fractional digits before divergence.
+            expect(actual.n.toFixed(fd)).toBe(expected.toNumber().toFixed(fd));
+            expect(FPN.of(-b).pow(FPN.of(e))).toEqual(actual);
         });
-        test('±b ^ +e', () => {});
 
+        test('±b ^ +e', () => {});
 
         test('power of < 1', () => {
             const b = FPN.of(4, 18n);

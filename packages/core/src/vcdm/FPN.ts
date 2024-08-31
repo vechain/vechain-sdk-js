@@ -53,7 +53,7 @@ class FPN {
     /**
      * Edge Flag denotes the {@link NaN} or {@link NEGATIVE_INFINITY} or {@link POSITIVE_INFINITY} value.
      *
-     * @remarks If `ef` is not 0, {@link fd} and {sv} are not meaningful.
+     * @remarks If `ef` is not zero, {@link fd} and {@link sv} are not meaningful.
      *
      * @private
      */
@@ -76,7 +76,7 @@ class FPN {
      *
      * @param {bigint} fd - Number of Fractional Digits (or decimal places).
      * @param {bigint} sv - Scaled Value.
-     * @param {number} [ef=0] - Edge Flag, default is 0.
+     * @param {number} [ef=0] - Edge Flag.
      */
     protected constructor(fd: bigint, sv: bigint, ef: number = 0) {
         this.fd = fd;
@@ -94,7 +94,7 @@ class FPN {
     }
 
     /**
-     * Compares this instance with the specified FPN instance.
+     * Compares this instance with `that` FPN instance.
      * * Returns a null if either instance is NaN;
      * * Returns 0 if this is equal to `that` FPN, including infinite with equal sign;
      * * Returns -1, if this is -Infinite or less than `that` FPN;,
@@ -135,7 +135,7 @@ class FPN {
      *
      * @return {FPN} The result of the division.
      *
-     * @remarks The precision in the higher of the two operands.
+     * @remarks The precision is the greater of the precision of the two operands.
      *
      * @see [bignumber.js dividedBy](https://mikemcl.github.io/bignumber.js/#div).
      */
@@ -209,7 +209,7 @@ class FPN {
      *
      * @return {FPN} The result of the division.
      *
-     * @remarks The precision in the higher of the two operands.
+     * @remarks The precision is the greater of the precision of the two operands.
      *
      * @see [bignumber.js dividedToIntegerBy](https://mikemcl.github.io/bignumber.js/#divInt).
      */
@@ -345,7 +345,7 @@ class FPN {
      *                     doesn't support not integer exponents).
      * @return {FPN} - The result of raising this fixed-point number to the power of the given exponent.
      *
-     * @remarks The precision in the higher of the two operands.
+     * @remarks The precision is the greater of the precision of the two operands.
      *
      * @see [bignumber.js exponentiatedBy](https://mikemcl.github.io/bignumber.js/#pow)
      */
@@ -354,7 +354,7 @@ class FPN {
         if (this.isInfinite())
             return that.isZero()
                 ? FPN.of(1)
-                : this.isNegative()
+                : that.isNegative()
                   ? FPN.ZERO
                   : FPN.POSITIVE_INFINITY;
         if (that.isNegativeInfinite()) return FPN.ZERO;
