@@ -38,7 +38,7 @@ class ABIEvent extends ABI {
     }): DecodeEventLogReturnType {
         try {
             return viemDecodeEventLog({
-                abi: this.eventAbiRepresentation,
+                abi: [this.eventAbiRepresentation],
                 data: event.data.toString() as ViemHex,
                 topics: event.topics.map((topic) => topic.toString()) as Topics
             });
@@ -52,7 +52,7 @@ class ABIEvent extends ABI {
         }
     }
 
-    // TODO: Add encodeEventLog method
+    /** DISCLAIMER: There is no equivalent to encodeEventLog in viem {@link https://viem.sh/docs/ethers-migration} */
 
     /**
      * Encode event log topics using the event's ABI.
@@ -80,6 +80,8 @@ class ABIEvent extends ABI {
         }
     }
 }
+
+// Backwards comapatibility, to be removed as part of #1184
 class Event<ABIType> {
     private readonly event: ABIEvent;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
