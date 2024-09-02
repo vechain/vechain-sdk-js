@@ -1,6 +1,8 @@
 import { InvalidOperation } from '@vechain/sdk-errors';
+import { type VeChainDataModel } from './VeChainDataModel';
+import { Txt } from './Txt';
 
-class FPN {
+class FPN implements VeChainDataModel<FPN> {
     /**
      * The default number of decimal places to use for fixed-point math.
      *
@@ -73,6 +75,13 @@ class FPN {
      */
     private readonly sv: bigint;
 
+    /**
+     * Returns the integer part of this FPN value.
+     *
+     * @return {bigint} the integer part of this FPN value.
+     *
+     * @throws {InvalidOperation} If the value is not finite.
+     */
     get bi(): bigint {
         if (this.isFinite()) {
             return this.sv / 10n ** this.fd;
@@ -80,8 +89,17 @@ class FPN {
         throw new InvalidOperation(
             'FPN.bi',
             'not finite value cannot cast to big integer',
-            { ef: this.ef, fd: this.fd, sv: this.sv }
+            { this: this.toString() }
         );
+    }
+
+    /**
+     * Returns the array of bytes representing the *Normalization Form Canonical Composition*
+     * [Unicode Equivalence](https://en.wikipedia.org/wiki/Unicode_equivalence)
+     * of this value expressed in decimal base.
+     */
+    get bytes(): Uint8Array {
+        return Txt.of(this.toString()).bytes;
     }
 
     get n(): number {
@@ -331,6 +349,10 @@ class FPN {
      */
     private static idiv(fd: bigint, dividend: bigint, divisor: bigint): bigint {
         return (dividend / divisor) * 10n ** fd;
+    }
+
+    public isEqual(that: FPN): boolean {
+        return this.eq(that);
     }
 
     /**
