@@ -381,6 +381,13 @@ class FPN {
         return this.ef === Number.NEGATIVE_INFINITY;
     }
 
+    /**
+     * Returns `true` if the sign of this FPN is positive, otherwise returns `false`.
+     *
+     * @return `true` if the sign of this FPN is positive, otherwise returns `false`.
+     *
+     * @see [bignumber.js isPositive](https://mikemcl.github.io/bignumber.js/#isPos)
+     */
     public isPositive(): boolean {
         return (this.isFinite() && this.sv >= 0n) || this.isPositiveInfinite();
     }
