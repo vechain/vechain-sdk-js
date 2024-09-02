@@ -445,6 +445,11 @@ class FPN {
     }
 
     public minus(that: FPN): FPN {
+        if (this.isNaN() || that.isNaN()) return FPN.NaN;
+        if (this.isNegativeInfinite())
+            return that.isNegativeInfinite() ? FPN.NaN : FPN.NEGATIVE_INFINITY;
+        if (this.isPositiveInfinite())
+            return that.isPositiveInfinite() ? FPN.NaN : FPN.POSITIVE_INFINITY;
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
         return new FPN(fd, this.dp(fd).sv - that.dp(fd).sv);
     }
@@ -627,8 +632,8 @@ class FPN {
         const ie = exp.substring(0, di); // Integer Expression.
         const fe = exp.substring(di + 1); // Fractional Expression.
         return (
-            sign * sf * BigInt(ie) + // Sign and Integer part
-            (sf * BigInt(fe)) / BigInt(10 ** fe.length) // Fractional part.
+            sign * sf * BigInt(ie) + // Integer part
+            (sign * (sf * BigInt(fe))) / BigInt(10 ** fe.length) // Fractional part.
         );
     }
 }

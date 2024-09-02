@@ -1233,11 +1233,116 @@ describe('FPN class tests', () => {
     });
 
     describe('minus method tests', () => {
-        test('positive result', () => {
-            const a = FPN.of(0.3);
-            const b = FPN.of(0.1);
-            const r = a.minus(b);
-            console.log(r);
+        test('NaN - ±n -> NaN', () => {
+            const l = NaN;
+            const r = 123.45;
+            const actual = FPN.of(l).minus(FPN.of(r));
+            const expected = BigNumber(l).minus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('±n - NaN -> NaN', () => {
+            const l = NaN;
+            const r = -123.45;
+            const actual = FPN.of(l).minus(FPN.of(r));
+            const expected = BigNumber(l).minus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('-Infinity - -Infinity -> NaN', () => {
+            const l = -Infinity;
+            const r = -Infinity;
+            const actual = FPN.of(l).minus(FPN.of(r));
+            const expected = BigNumber(l).minus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('-Infinity - +Infinity -> -Infinity', () => {
+            const l = -Infinity;
+            const r = +Infinity;
+            const actual = FPN.of(l).minus(FPN.of(r));
+            const expected = BigNumber(l).minus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(-Infinity);
+        });
+
+        test('-Infinity - ±n -> -Infinity', () => {
+            const l = -Infinity;
+            const r = 123.45;
+            const actual = FPN.of(l).minus(FPN.of(r));
+            const expected = BigNumber(l).minus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(-Infinity);
+            expect(actual.n).toBe(FPN.of(l).minus(FPN.of(-r)).n);
+        });
+
+        test('+Infinity - -Infinity -> +Infinity', () => {
+            const l = +Infinity;
+            const r = -Infinity;
+            const actual = FPN.of(l).minus(FPN.of(r));
+            const expected = BigNumber(l).minus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(+Infinity);
+        });
+
+        test('+Infinity - +Infinity -> NaN', () => {
+            const l = +Infinity;
+            const r = +Infinity;
+            const actual = FPN.of(l).minus(FPN.of(r));
+            const expected = BigNumber(l).minus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('+Infinity - ±n -> +Infinity', () => {
+            const l = +Infinity;
+            const r = 123.45;
+            const actual = FPN.of(l).minus(FPN.of(r));
+            const expected = BigNumber(l).minus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(+Infinity);
+            expect(actual.n).toBe(FPN.of(l).minus(FPN.of(-r)).n);
+        });
+
+        test('n - 0 -> n', () => {
+            const l = 123.45;
+            const r = 0;
+            const actual = FPN.of(l).minus(FPN.of(r));
+            const expected = BigNumber(l).minus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.eq(FPN.of(l))).toBe(true);
+        });
+
+        test('n - n -> 0', () => {
+            const l = 123.45;
+            const r = l;
+            const actual = FPN.of(l).minus(FPN.of(r));
+            const expected = BigNumber(l).minus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.eq(FPN.ZERO)).toBe(true);
+        });
+
+        test('l - r -> >0', () => {
+            const fd = 13;
+            const l = 123.45;
+            const r = 23.45678;
+            const actual = FPN.of(l).minus(FPN.of(r));
+            const expected = BigNumber(l).minus(BigNumber(r));
+            expect(actual.n.toFixed(fd)).toBe(expected.toNumber().toFixed(fd));
+            expect(actual.n).toBe(l - r);
+        });
+
+        test('l - r -> <0', () => {
+            const fd = 13;
+            const l = 123.45;
+            const r = -1234.5678;
+            const actual = FPN.of(l).minus(FPN.of(r));
+            const expected = BigNumber(l).minus(BigNumber(r));
+            expect(actual.n.toFixed(fd)).toBe(expected.toNumber().toFixed(fd));
+            expect(actual.n).toBe(l - r);
         });
     });
 
