@@ -854,6 +854,26 @@ describe('FPN class tests', () => {
         });
     });
 
+    describe('isNegativeInfinite method tests', () => {
+        test('NaN -> false', () => {
+            expect(FPN.of(NaN).isNegativeInfinite()).toBe(false);
+        });
+
+        test('-Infinite -> true', () => {
+            expect(FPN.of(-Infinity).isNegativeInfinite()).toBe(true);
+        });
+
+        test('+Infinite -> false', () => {
+            expect(FPN.of(Infinity).isNegativeInfinite()).toBe(false);
+        });
+
+        test('n -> false', () => {
+            expect(FPN.of(-123.45).isNegativeInfinite()).toBe(false);
+            expect(FPN.of(0).isNegativeInfinite()).toBe(false);
+            expect(FPN.of(123.45).isNegativeInfinite()).toBe(false);
+        });
+    });
+
     describe('lt method tests', () => {
         test('NaN < n -> false', () => {
             const l = NaN;

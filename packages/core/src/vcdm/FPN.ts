@@ -374,6 +374,9 @@ class FPN {
         return (this.isFinite() && this.sv < 0n) || this.isNegativeInfinite();
     }
 
+    /**
+     * Returns `true` if this FPN value is {@link NEGATIVE_INFINITY}, otherwise returns `false`.
+     */
     public isNegativeInfinite(): boolean {
         return this.ef === Number.NEGATIVE_INFINITY;
     }
