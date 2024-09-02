@@ -646,9 +646,19 @@ class FPN {
         return FPN.pow(fd, this.mul(base, base, fd), exponent - sf); // Recursive.
     }
 
+    /**
+     * Computes the square root of a given positive bigint value using a fixed-point iteration method.
+     *
+     * @param {bigint} value - The positive bigint value for which the square root is to be calculated.
+     * @param {bigint} fd - The iteration factor determinant.
+     *
+     * @return {bigint} The calculated square root of the input bigint value.
+     *
+     * @throws {RangeError} If the input value is negative.
+     */
     private static sqr(value: bigint, fd: bigint): bigint {
         if (value < 0n) {
-            throw new Error();
+            throw new RangeError(`Value must be positive`);
         }
         const sf = fd * 10n; // Scale Factor.
         let iteration = 0;
@@ -663,12 +673,27 @@ class FPN {
         return actualResult;
     }
 
+    /**
+     * Returns a FPN whose value is the square root of the value of this FPN
+     *
+     * Limit cases
+     * * √ NaN = NaN
+     * * +Infinite = +Infinite
+     * * -n = NaN
+     *
+     * @return {FPN} The square root of the number.
+     *
+     * @see [bignumber.js sqrt](https://mikemcl.github.io/bignumber.js/#sqrt)
+     */
     public sqrt(): FPN {
-        return new FPN(this.fd, FPN.sqr(this.sv, this.fd));
-    }
-
-    public squareRoot(): FPN {
-        return this.sqrt();
+        if (this.isNaN()) return FPN.NaN;
+        if (this.isPositiveInfinite()) return FPN.POSITIVE_INFINITY;
+        try {
+            return new FPN(this.fd, FPN.sqr(this.sv, this.fd));
+        } catch (e) {
+            if (e instanceof RangeError) return FPN.NaN;
+            else throw e;
+        }
     }
 
     /**

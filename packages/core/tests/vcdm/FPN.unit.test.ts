@@ -1690,6 +1690,46 @@ describe('FPN class tests', () => {
         });
     });
 
+    describe('sqrt method tests', () => {
+        test('√ NaN -> NaN', () => {
+            const n = NaN;
+            const actual = FPN.of(n).sqrt();
+            const expected = BigNumber(n).sqrt();
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('√ +Infinity -> +Infinity', () => {
+            const n = Infinity;
+            const actual = FPN.of(n).sqrt();
+            const expected = BigNumber(n).sqrt();
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(Infinity);
+        });
+        test('√ -n -> NaN', () => {
+            const n = -123.45;
+            const actual = FPN.of(n).sqrt();
+            const expected = BigNumber(n).sqrt();
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('√ n -> integer', () => {
+            const n = 16;
+            const actual = FPN.of(n).sqrt();
+            const expected = BigNumber(n).sqrt();
+            expect(actual.n).toBe(expected.toNumber());
+        });
+
+        test('√ n -> rational', () => {
+            const fd = 13;
+            const n = 3;
+            const actual = FPN.of(n).sqrt();
+            const expected = BigNumber(n).sqrt();
+            expect(actual.n.toFixed(fd)).toBe(expected.toNumber().toFixed(fd));
+        });
+    });
+
     describe('times method tests', () => {
         test('NaN * ±n -> NaN', () => {
             const l = NaN;
