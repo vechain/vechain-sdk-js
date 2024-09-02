@@ -944,6 +944,56 @@ describe('FPN class tests', () => {
         });
     });
 
+    describe('isZero method tests', () => {
+        test('NaN -> false', () => {
+            const n = NaN;
+            const actual = FPN.of(n).isZero();
+            const expected = BigNumber(n).isZero();
+            expect(actual).toBe(expected);
+            expect(actual).toBe(false);
+        });
+
+        test('-Infinite -> false', () => {
+            const n = -Infinity;
+            const actual = FPN.of(n).isZero();
+            const expected = BigNumber(n).isZero();
+            expect(actual).toBe(expected);
+            expect(actual).toBe(false);
+        });
+
+        test('+Infinite -> false', () => {
+            const n = Infinity;
+            const actual = FPN.of(n).isZero();
+            const expected = BigNumber(n).isZero();
+            expect(actual).toBe(expected);
+            expect(actual).toBe(false);
+        });
+
+        test('-n -> false', () => {
+            const n = -123.45;
+            const actual = FPN.of(n).isZero();
+            const expected = BigNumber(n).isZero();
+            expect(actual).toBe(expected);
+            expect(actual).toBe(false);
+        });
+
+        test('0 -> true', () => {
+            const n = 0;
+            const actual = FPN.of(n).isZero();
+            const expected = BigNumber(n).isZero();
+            expect(actual).toBe(expected);
+            expect(actual).toBe(true);
+        });
+
+        test('+n -> false', () => {
+            const n = 123.45;
+            const actual = FPN.of(n).isZero();
+            const expected = BigNumber(n).isZero();
+            expect(actual).toBe(expected);
+            expect(actual).toBe(false);
+        });
+    });
+
     describe('lt method tests', () => {
         test('NaN < n -> false', () => {
             const l = NaN;

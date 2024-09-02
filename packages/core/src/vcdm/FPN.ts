@@ -394,13 +394,22 @@ class FPN {
 
     /**
      * Returns `true` if this FPN value is {@link POSITIVE_INFINITY}, otherwise returns `false`.
+     *
+     * @return `true` if this FPN value is {@link POSITIVE_INFINITY}, otherwise returns `false`.
      */
     public isPositiveInfinite(): boolean {
         return this.ef === Number.POSITIVE_INFINITY;
     }
 
+    /**
+     * Returns `true` if the value of this FPN is zero or minus zero, otherwise returns `false`.
+     *
+     * @return `true` if the value of this FPN is zero or minus zero, otherwise returns `false`.
+     *
+     * [see bignumber.js isZero](https://mikemcl.github.io/bignumber.js/#isZ)
+     */
     public isZero(): boolean {
-        return this.sv === 0n;
+        return this.isFinite() && this.sv === 0n;
     }
 
     /**
