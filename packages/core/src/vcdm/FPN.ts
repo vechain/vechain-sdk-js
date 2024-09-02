@@ -352,6 +352,13 @@ class FPN {
         return false;
     }
 
+    /**
+     *  Returns `true` if the value of this FPN is `NaN`, otherwise returns `false`.
+     *
+     *  @return `true` if the value of this FPN is `NaN`, otherwise returns `false`.
+     *
+     *  @see [bignumber.js isNaN](https://mikemcl.github.io/bignumber.js/#isNaN)
+     */
     public isNaN(): boolean {
         return Number.isNaN(this.ef);
     }
@@ -374,6 +381,22 @@ class FPN {
 
     public isZero(): boolean {
         return this.sv === 0n;
+    }
+
+    /**
+     * Returns `true` if the value of this FPN is less than the value of `that` FPN, otherwise returns `false`.
+     *
+     * @param {FPN} that - The FPN to compare against.
+     *
+     * @return `true` if the value of this FPN is less than the value of `that` FPN, otherwise returns `false`.
+     *
+     * @remarks This method uses {@link comparedTo} internally.
+     *
+     * @see [bignumber.js isLessThan](https://mikemcl.github.io/bignumber.js/#lt)
+     */
+    public lt(that: FPN): boolean {
+        const cmp = this.comparedTo(that);
+        return cmp !== null && cmp < 0;
     }
 
     public minus(that: FPN): FPN {
