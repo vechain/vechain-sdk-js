@@ -1448,6 +1448,110 @@ describe('FPN class tests', () => {
         });
     });
 
+    describe('plus method tests', () => {
+        test('NaN + ±n -> NaN', () => {
+            const l = NaN;
+            const r = 123.45;
+            const actual = FPN.of(l).plus(FPN.of(r));
+            const expected = BigNumber(l).plus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('±n + NaN -> NaN', () => {
+            const l = NaN;
+            const r = -123.45;
+            const actual = FPN.of(l).plus(FPN.of(r));
+            const expected = BigNumber(l).plus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('-Infinity + -Infinity -> -Infinity', () => {
+            const l = -Infinity;
+            const r = -Infinity;
+            const actual = FPN.of(l).plus(FPN.of(r));
+            const expected = BigNumber(l).plus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(-Infinity);
+        });
+
+        test('-Infinity + +Infinity -> NaN', () => {
+            const l = -Infinity;
+            const r = +Infinity;
+            const actual = FPN.of(l).plus(FPN.of(r));
+            const expected = BigNumber(l).plus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('-Infinity + ±n -> -Infinity', () => {
+            const l = -Infinity;
+            const r = 123.45;
+            const actual = FPN.of(l).plus(FPN.of(r));
+            const expected = BigNumber(l).plus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(-Infinity);
+            expect(actual.n).toBe(FPN.of(l).plus(FPN.of(-r)).n);
+        });
+
+        test('+Infinity + -Infinity -> NaN', () => {
+            const l = +Infinity;
+            const r = -Infinity;
+            const actual = FPN.of(l).plus(FPN.of(r));
+            const expected = BigNumber(l).plus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('+Infinity + +Infinity -> Infinity', () => {
+            const l = +Infinity;
+            const r = +Infinity;
+            const actual = FPN.of(l).plus(FPN.of(r));
+            const expected = BigNumber(l).plus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(Infinity);
+        });
+
+        test('+Infinity + ±n -> +Infinity', () => {
+            const l = +Infinity;
+            const r = 123.45;
+            const actual = FPN.of(l).plus(FPN.of(r));
+            const expected = BigNumber(l).plus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(+Infinity);
+            expect(actual.n).toBe(FPN.of(l).plus(FPN.of(-r)).n);
+        });
+
+        test('n + 0 -> n', () => {
+            const l = 123.45;
+            const r = 0;
+            const actual = FPN.of(l).plus(FPN.of(r));
+            const expected = BigNumber(l).plus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.eq(FPN.of(l))).toBe(true);
+        });
+
+        test('n + -n -> 0', () => {
+            const l = 123.45;
+            const r = -l;
+            const actual = FPN.of(l).plus(FPN.of(r));
+            const expected = BigNumber(l).plus(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.eq(FPN.ZERO)).toBe(true);
+        });
+
+        test('l + r -> >0', () => {
+            const fd = 13;
+            const l = 0.1;
+            const r = 0.2;
+            const actual = FPN.of(l).plus(FPN.of(r));
+            const expected = BigNumber(l).plus(BigNumber(r));
+            expect(actual.n.toFixed(fd)).toBe(expected.toNumber().toFixed(fd));
+            expect(actual.n).toBe(l + r);
+        });
+    });
+
     describe('pow method tests', () => {
         test('NaN ^ ±e', () => {
             const b = NaN;
