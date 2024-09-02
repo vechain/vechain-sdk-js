@@ -534,10 +534,6 @@ class FPN {
         return (multiplicand * multiplicator) / 10n ** fd;
     }
 
-    public multipliedBy(that: FPN): FPN {
-        return this.times(that);
-    }
-
     public static of(
         exp: number,
         decimalPlaces: bigint = this.DEFAULT_FRACTIONAL_DECIMALS
@@ -643,6 +639,15 @@ class FPN {
     }
 
     public times(that: FPN): FPN {
+        if (this.isNaN() || that.isNaN()) return FPN.NaN;
+        if (this.isNegativeInfinite())
+            return that.isNegative()
+                ? FPN.POSITIVE_INFINITY
+                : FPN.NEGATIVE_INFINITY;
+        if (this.isPositiveInfinite())
+            return that.isNegative()
+                ? FPN.NEGATIVE_INFINITY
+                : FPN.POSITIVE_INFINITY;
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
         return new FPN(fd, FPN.mul(this.dp(fd).sv, that.dp(fd).sv, fd));
     }
