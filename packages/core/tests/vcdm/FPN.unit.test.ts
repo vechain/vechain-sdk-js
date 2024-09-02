@@ -1346,6 +1346,108 @@ describe('FPN class tests', () => {
         });
     });
 
+    describe('modulo method tests', () => {
+        test('NaN % n -> NaN', () => {
+            const l = NaN;
+            const r = 123.45;
+            const actual = FPN.of(l).modulo(FPN.of(r));
+            const expected = BigNumber(l).modulo(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('n % NaN -> NaN', () => {
+            const l = 123.45;
+            const r = NaN;
+            const actual = FPN.of(l).modulo(FPN.of(r));
+            const expected = BigNumber(l).modulo(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('-Infinite % -Infinite -> NaN', () => {
+            const l = -Infinity;
+            const r = -Infinity;
+            const actual = FPN.of(l).modulo(FPN.of(r));
+            const expected = BigNumber(l).modulo(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('-Infinite % +Infinite -> NaN', () => {
+            const l = -Infinity;
+            const r = Infinity;
+            const actual = FPN.of(l).modulo(FPN.of(r));
+            const expected = BigNumber(l).modulo(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('-Infinite % ±n -> NaN', () => {
+            const l = -Infinity;
+            const r = 123.45;
+            const actual = FPN.of(l).modulo(FPN.of(r));
+            const expected = BigNumber(l).modulo(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('+Infinite % -Infinite -> NaN', () => {
+            const l = Infinity;
+            const r = -Infinity;
+            const actual = FPN.of(l).modulo(FPN.of(r));
+            const expected = BigNumber(l).modulo(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('+Infinite % +Infinite -> NaN', () => {
+            const l = Infinity;
+            const r = Infinity;
+            const actual = FPN.of(l).modulo(FPN.of(r));
+            const expected = BigNumber(l).modulo(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('+Infinite % ±n -> NaN', () => {
+            const l = Infinity;
+            const r = 123.45;
+            const actual = FPN.of(l).modulo(FPN.of(r));
+            const expected = BigNumber(l).modulo(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('n % 0 -> 0', () => {
+            const l = 123.45;
+            const r = 0;
+            const actual = FPN.of(l).modulo(FPN.of(r));
+            const expected = BigNumber(l).modulo(BigNumber(r));
+            expect(actual.n).toBe(expected.toNumber());
+            expect(actual.n).toBe(NaN);
+        });
+
+        test('integer % ±1 -> 0', () => {
+            const l = 123;
+            const r = 1;
+            const actual = FPN.of(l).modulo(FPN.of(r));
+            const expected = BigNumber(l).modulo(BigNumber(r));
+            expect(actual).toEqual(FPN.of(expected.toNumber()));
+            expect(FPN.of(l).modulo(FPN.of(-r))).toEqual(actual);
+            expect(actual.isZero()).toBe(true);
+        });
+
+        test('n % ±1 -> 0', () => {
+            const l = 123.45;
+            const r = 0.6789;
+            const actual = FPN.of(l).modulo(FPN.of(r));
+            const expected = BigNumber(l).modulo(BigNumber(r));
+            expect(FPN.of(l).modulo(FPN.of(-r))).toEqual(actual);
+            expect(actual).toEqual(FPN.of(expected.toNumber()));
+        });
+    });
+
     describe('multipliedBy method tests', () => {
         test('negative auto scale', () => {
             const a = FPN.of(-3.5);

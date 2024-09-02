@@ -73,6 +73,25 @@ class FPN {
      */
     private readonly sv: bigint;
 
+    get bi(): bigint {
+        if (this.isFinite()) {
+            return this.sv / 10n ** this.fd;
+        }
+        throw new InvalidOperation(
+            'FPN.bi',
+            'not finite value cannot cast to big integer',
+            { ef: this.ef, fd: this.fd, sv: this.sv }
+        );
+    }
+
+    get n(): number {
+        if (this.isNaN()) return Number.NaN;
+        if (this.isNegativeInfinite()) return Number.NEGATIVE_INFINITY;
+        if (this.isPositiveInfinite()) return Number.POSITIVE_INFINITY;
+        if (this.isZero()) return 0;
+        return Number(this.sv) * 10 ** -Number(this.fd);
+    }
+
     /**
      * Returns the new Fixed-Point Number (FDN) instance having
      *
@@ -89,7 +108,7 @@ class FPN {
     /**
      * Returns a FPN whose value is the absolute value, i.e. the magnitude, of the value of this FPN.
      *
-     * @retrun the absolute value of this FPN.
+     * @return {FPN} the absolute value of this FPN.
      *
      * @see [bignumber.js absoluteValue](https://mikemcl.github.io/bignumber.js/#abs)
      */
@@ -130,7 +149,7 @@ class FPN {
 
     /**
      * Compares this instance with `that` FPN instance.
-     * * **Returns a null if either instance is NaN;**
+     * * **Returns `null` if either instance is NaN;**
      * * Returns 0 if this is equal to `that` FPN, including infinite with equal sign;
      * * Returns -1, if this is -Infinite or less than `that` FPN;,
      * * Returns 1 if this is +Infinite or greater than `that` FPN.
@@ -156,13 +175,13 @@ class FPN {
     /**
      * Returns a FPN whose value is the value of this FPN divided by `that` FPN.
      *
-     * Limit cases:
-     * - 0 / 0 = NaN
-     * - NaN / n = NaN
-     * - n / NaN = NaN
-     * - n / ±Infinite = 0
-     * - -n / 0 = -Infinite
-     * - +n / 0 = +Infinite
+     * Limit cases
+     * * 0 / 0 = NaN
+     * * NaN / n = NaN
+     * * n / NaN = NaN
+     * * n / ±Infinity = 0
+     * * -n / 0 = -Infinity
+     * * +n / 0 = +Infinity
      *
      * @param {FPN} that - The fixed-point number to divide by.
      *
@@ -272,13 +291,13 @@ class FPN {
      * Returns a fixed-point number whose value is the integer part of dividing the value of this fixed-point number
      * by `that` fixed point number.
      *
-     * Limit cases:
-     * - 0 / 0 = NaN
-     * - NaN / n = NaN
-     * - n / NaN = NaN
-     * - n / ±Infinite = 0
-     * - -n / 0 = -Infinite
-     * - +n / 0 = +Infinite
+     * Limit cases
+     * * 0 / 0 = NaN
+     * * NaN / n = NaN
+     * * n / NaN = NaN
+     * * n / ±Infinite = 0
+     * * -n / 0 = -Infinite
+     * * +n / 0 = +Infinite
      *
      * @param {FPN} that - The fixed-point number to divide by.
      *
@@ -417,7 +436,7 @@ class FPN {
      *
      * @param {FPN} that - The FPN to compare against.
      *
-     * @return `true` if the value of this FPN is less than the value of `that` FPN, otherwise returns `false`.
+     * @return {boolean} `true` if the value of this FPN is less than the value of `that` FPN, otherwise returns `false`.
      *
      * @remarks This method uses {@link comparedTo} internally.
      *
@@ -435,6 +454,9 @@ class FPN {
      * @param {FPN} that true` if the value of this FPN is less than or equal to the value of `that` FPN,
      * otherwise returns `false`.
      *
+     * @return {boolean} `true` if the value of this FPN is less than or equal to the value of `that` FPN,
+     * otherwise returns `false`.
+     *
      * @remarks This method uses {@link comparedTo} internally.
      *
      * @see [bignumber.js isLessThanOrEqualTo](https://mikemcl.github.io/bignumber.js/#lte)
@@ -444,6 +466,25 @@ class FPN {
         return cmp !== null && cmp <= 0;
     }
 
+    /**
+     * Returns a FPN whose value is the value of this FPN minus `that` FPN.
+     *
+     * Limit cases
+     * * NaN - n = NaN
+     * * n - NaN = NaN
+     * * -Infinity - -Infinity = NaN
+     * * -Infinity - n = -Infinity
+     * * +Infinity - +Infinity = NaN
+     * * +Infinity - n = +Infinity
+     *
+     * @param {FPN} that The fixed-point number to subtract.
+     *
+     * @return {FPN} The result of the subtraction. The return value is always exact and unrounded.
+     *
+     * @remarks The precision is the greater of the precision of the two operands.
+     *
+     * @see [bignumber.js minus](https://mikemcl.github.io/bignumber.js/#minus)
+     */
     public minus(that: FPN): FPN {
         if (this.isNaN() || that.isNaN()) return FPN.NaN;
         if (this.isNegativeInfinite())
@@ -452,6 +493,37 @@ class FPN {
             return that.isPositiveInfinite() ? FPN.NaN : FPN.POSITIVE_INFINITY;
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
         return new FPN(fd, this.dp(fd).sv - that.dp(fd).sv);
+    }
+
+    /**
+     * Returns a FPN whose value is the value of this FPN modulo `that` FPN,
+     * i.e. the integer remainder of dividing this FPN by `that`.
+     *
+     * Limit cases
+     * * NaN % n = NaN
+     * * n % NaN = NaN
+     * * ±Infinity % n = NaN
+     * * n % ±Infinity = NaN
+     *
+     * @param that {FPN} The fixed-point number to divide by.
+     *
+     * @return {FPN} the integer remainder of dividing this FPN by `that`.
+     *
+     * @remarks The precision is the greater of the precision of the two operands.
+     *
+     * @see [bignumber.js modulo](https://mikemcl.github.io/bignumber.js/#mod)
+     */
+    public modulo(that: FPN): FPN {
+        if (this.isNaN() || that.isNaN()) return FPN.NaN;
+        if (this.isInfinite() || that.isInfinite()) return FPN.NaN;
+        if (that.isZero()) return FPN.NaN;
+        const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
+        let modulo = this.abs().dp(fd).sv;
+        const divisor = that.abs().dp(fd).sv;
+        while (modulo >= divisor) {
+            modulo -= divisor;
+        }
+        return new FPN(fd, modulo);
     }
 
     private static mul(
@@ -464,14 +536,6 @@ class FPN {
 
     public multipliedBy(that: FPN): FPN {
         return this.times(that);
-    }
-
-    get n(): number {
-        if (this.isNaN()) return Number.NaN;
-        if (this.isNegativeInfinite()) return Number.NEGATIVE_INFINITY;
-        if (this.isPositiveInfinite()) return Number.POSITIVE_INFINITY;
-        if (this.isZero()) return 0;
-        return Number(this.sv) * 10 ** -Number(this.fd);
     }
 
     public static of(
@@ -492,7 +556,7 @@ class FPN {
     /**
      * Returns a FPN whose value is the value of this FPN raised to the power of `that` FPN.
      *
-     * Limit cases:
+     * Limit cases
      * - NaN ^ e = NaN
      * - b ^ NaN = NaN
      * - b ^ -Infinite = 0
