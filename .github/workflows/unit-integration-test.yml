@@ -1,10 +1,7 @@
-name: Unit tests
+name: Unit tests for node
 
 on:
   workflow_call:
-
-env:
-  GH_TOKEN: ${{ secrets.MY_TOKEN }}
 
 jobs:
     build:

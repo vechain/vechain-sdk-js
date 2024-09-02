@@ -1,4 +1,4 @@
-name: main-ci
+name: Main CI
 
 on:
     push:
