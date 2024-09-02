@@ -3,6 +3,9 @@ name: Unit tests
 on:
   workflow_call:
 
+env:
+  GH_TOKEN: ${{ secrets.MY_TOKEN }}
+
 jobs:
     build:
         name: Build & Lint
