@@ -363,6 +363,13 @@ class FPN {
         return Number.isNaN(this.ef);
     }
 
+    /**
+     * Returns `true` if the sign of this FPN is negative, otherwise returns `false`.
+     *
+     * @return `true` if the sign of this FPN is negative, otherwise returns `false`.
+     *
+     * @see [bignumber.js isNegative](https://mikemcl.github.io/bignumber.js/#isNeg)
+     */
     public isNegative(): boolean {
         return (this.isFinite() && this.sv < 0n) || this.isNegativeInfinite();
     }
@@ -397,6 +404,22 @@ class FPN {
     public lt(that: FPN): boolean {
         const cmp = this.comparedTo(that);
         return cmp !== null && cmp < 0;
+    }
+
+    /**
+     * Returns `true` if the value of this FPN is less than or equal to the value of `that` FPN,
+     * otherwise returns `false`.
+     *
+     * @param {FPN} that true` if the value of this FPN is less than or equal to the value of `that` FPN,
+     * otherwise returns `false`.
+     *
+     * @remarks This method uses {@link comparedTo} internally.
+     *
+     * @see [bignumber.js isLessThanOrEqualTo](https://mikemcl.github.io/bignumber.js/#lte)
+     */
+    public lte(that: FPN): boolean {
+        const cmp = this.comparedTo(that);
+        return cmp !== null && cmp <= 0;
     }
 
     public minus(that: FPN): FPN {
