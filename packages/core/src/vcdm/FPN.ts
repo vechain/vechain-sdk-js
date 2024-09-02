@@ -177,9 +177,9 @@ class FPN {
      *
      * Limit cases
      * * 0 / 0 = NaN
-     * * NaN / n = NaN
-     * * n / NaN = NaN
-     * * n / ±Infinity = 0
+     * * NaN / ±n = NaN
+     * * +n / NaN = NaN
+     * * +n / ±Infinity = 0
      * * -n / 0 = -Infinity
      * * +n / 0 = +Infinity
      *
@@ -293,9 +293,9 @@ class FPN {
      *
      * Limit cases
      * * 0 / 0 = NaN
-     * * NaN / n = NaN
-     * * n / NaN = NaN
-     * * n / ±Infinite = 0
+     * * NaN / ±n = NaN
+     * * +n / NaN = NaN
+     * * +n / ±Infinite = 0
      * * -n / 0 = -Infinite
      * * +n / 0 = +Infinite
      *
@@ -470,12 +470,12 @@ class FPN {
      * Returns a FPN whose value is the value of this FPN minus `that` FPN.
      *
      * Limit cases
-     * * NaN - n = NaN
-     * * n - NaN = NaN
+     * * NaN - ±n = NaN
+     * * ±n - NaN = NaN
      * * -Infinity - -Infinity = NaN
-     * * -Infinity - n = -Infinity
+     * * -Infinity - +n = -Infinity
      * * +Infinity - +Infinity = NaN
-     * * +Infinity - n = +Infinity
+     * * +Infinity - +n = +Infinity
      *
      * @param {FPN} that The fixed-point number to subtract.
      *
@@ -500,8 +500,8 @@ class FPN {
      * i.e. the integer remainder of dividing this FPN by `that`.
      *
      * Limit cases
-     * * NaN % n = NaN
-     * * n % NaN = NaN
+     * * NaN % ±n = NaN
+     * * ±n % NaN = NaN
      * * ±Infinity % n = NaN
      * * n % ±Infinity = NaN
      *
@@ -526,6 +526,15 @@ class FPN {
         return new FPN(fd, modulo);
     }
 
+    /**
+     * Multiplies two big integer values and divides by a factor of ten raised to a specified power.
+     *
+     * @param {bigint} multiplicand - The first number to be multiplied.
+     * @param {bigint} multiplicator - The second number to be multiplied.
+     * @param {bigint} fd - The power of ten by which the product is to be divided.
+     *
+     * @return {bigint} The result of the multiplication divided by ten raised to the specified power.
+     */
     private static mul(
         multiplicand: bigint,
         multiplicator: bigint,
@@ -553,13 +562,13 @@ class FPN {
      * Returns a FPN whose value is the value of this FPN raised to the power of `that` FPN.
      *
      * Limit cases
-     * - NaN ^ e = NaN
-     * - b ^ NaN = NaN
-     * - b ^ -Infinite = 0
-     * - b ^ 0 = 1
-     * - b ^ +Infinite = +Infinite
-     * - ±Infinite ^ -e = 0
-     * - ±Infinite ^ +e = +Infinite
+     * * NaN ^ e = NaN
+     * * b ^ NaN = NaN
+     * * b ^ -Infinite = 0
+     * * b ^ 0 = 1
+     * * b ^ +Infinite = +Infinite
+     * * ±Infinite ^ -e = 0
+     * * ±Infinite ^ +e = +Infinite
      *
      * @param {FPN} that - The exponent as a fixed-point number.
      *                     It can be negative, it can be not an integer value
@@ -640,6 +649,14 @@ class FPN {
 
     /**
      * Returns a FPN whose value is the value of this FPN multiplied by `that` FPN.
+     *
+     * Limits cases
+     * * NaN * n = NaN
+     * * n * NaN = NaN
+     * * -Infinite * -n = +Infinite
+     * * -Infinite * +n = -Infinite
+     * * +Infinite * -n = -Infinite
+     * * +Infinite * +n = +Infinite
      *
      * @param {FPN} that - The fixed-point number to multiply with this number.
      *
