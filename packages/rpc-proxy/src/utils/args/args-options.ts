@@ -27,9 +27,13 @@ import { Command, Option, type OptionValues } from 'commander';
  * rpc-proxy {-c|--configurationFile} <configuration_file_path> - Path to configuration file
  *
  * @param proxyVersion - Version of the proxy
+ * @param source - Source of the command line arguments to parse
  * @returns Command line arguments options
  */
-function getOptionsFromCommandLine(proxyVersion: string): OptionValues {
+function getOptionsFromCommandLine(
+    proxyVersion: string,
+    source: string[]
+): OptionValues {
     // Create the program to parse the command line arguments and options
     const program = new Command();
 
@@ -102,7 +106,7 @@ function getOptionsFromCommandLine(proxyVersion: string): OptionValues {
         )
 
         // Get the options from the command line arguments
-        .parse(process.argv);
+        .parse(source);
 
     // Return the options
     return program.opts();

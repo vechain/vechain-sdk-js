@@ -172,8 +172,6 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
         configFile.verbose !== undefined &&
         typeof configFile.verbose !== 'boolean'
     ) {
-        console.log(configFile.verbose);
-        console.log(typeof configFile.verbose);
         throw new InvalidConfigurationFile(
             '_checkIfConfigurationFileHasCorrectStructure()',
             `Invalid verbose flag in configuration file: ${absolutePath}. Verbose flag must be a boolean`,
