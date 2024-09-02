@@ -89,6 +89,8 @@ class FPN {
     /**
      * Returns a FPN whose value is the absolute value, i.e. the magnitude, of the value of this FPN.
      *
+     * @retrun the absolute value of this FPN.
+     *
      * @see [bignumber.js absoluteValue](https://mikemcl.github.io/bignumber.js/#abs)
      */
     public abs(): FPN {
@@ -306,7 +308,7 @@ class FPN {
      * @param {bigint} dividend - The number to be divided.
      * @param {bigint} divisor - The number by which dividend is divided.
      *
-     *  @return {bigint} - The scaled result of the integer division.
+     * @return {bigint} - The scaled result of the integer division.
      */
     private static idiv(fd: bigint, dividend: bigint, divisor: bigint): bigint {
         return (dividend / divisor) * 10n ** fd;
@@ -317,6 +319,8 @@ class FPN {
      *
      * The only possible non-finite values of a FPN are {@link NaN}, {@link NEGATIVE_INFINITY} and {@link POSITIVE_INFINITY}.
      *
+     * @return `true` if the value of this FPN is a finite number, otherwise returns `false`.
+     *
      * @see [bignumber.js isFinite](https://mikemcl.github.io/bignumber.js/#isF)
      */
     public isFinite(): boolean {
@@ -326,9 +330,26 @@ class FPN {
     /**
      * Return `true` if the value of this FPN is {@link NEGATIVE_INFINITY} and {@link POSITIVE_INFINITY},
      * otherwise returns false.
+     *
+     * @return true` if the value of this FPN is {@link NEGATIVE_INFINITY} and {@link POSITIVE_INFINITY},
      */
     public isInfinite(): boolean {
         return this.isNegativeInfinite() || this.isPositiveInfinite();
+    }
+
+    /**
+     * Returns `true` if the value of this FPN is an integer,
+     * otherwise returns `false`.
+     *
+     * @return `true` if the value of this FPN is an integer.
+     *
+     * @see [bignumber.js isInteger](https://mikemcl.github.io/bignumber.js/#isInt)
+     */
+    public isInteger(): boolean {
+        if (this.isFinite()) {
+            return this.sv % 10n ** this.fd === 0n;
+        }
+        return false;
     }
 
     public isNaN(): boolean {
@@ -389,11 +410,10 @@ class FPN {
             return new FPN(decimalPlaces, -1n, Number.NEGATIVE_INFINITY);
         if (exp === Number.POSITIVE_INFINITY)
             return new FPN(decimalPlaces, 1n, Number.POSITIVE_INFINITY);
-        return new FPN(decimalPlaces, this.nToSV(exp, decimalPlaces));
-    }
-
-    private static nToSV(n: number, fd: bigint): bigint {
-        return BigInt(Math.round(n * 10 ** Number(fd)));
+        return new FPN(
+            decimalPlaces,
+            this.txtToSV(exp.toString(), decimalPlaces)
+        );
     }
 
     /**
@@ -516,6 +536,32 @@ class FPN {
             return FPN.trimEnd(str.substring(0, str.length - sub.length), sub);
         }
         return str;
+    }
+
+    private static txtToSV(
+        exp: string,
+        fd: bigint,
+        decimalSeparator = '.'
+    ): bigint {
+        const fc = exp.charAt(0); // First Character.
+        let sign = 1n;
+        if (fc === '-') {
+            sign = -1n;
+            exp = exp.substring(1);
+        } else if (fc === '+') {
+            exp = exp.substring(1);
+        }
+        const sf = 10n ** fd; // Scale Factor.
+        const di = exp.lastIndexOf(decimalSeparator); // Decimal Index.
+        if (di < 0) {
+            return sign * sf * BigInt(exp); // Signed Integer.
+        }
+        const ie = exp.substring(0, di); // Integer Expression.
+        const fe = exp.substring(di + 1); // Fractional Expression.
+        return (
+            sign * sf * BigInt(ie) + // Sign and Integer part
+            (sf * BigInt(fe)) / BigInt(10 ** fe.length) // Fractional part.
+        );
     }
 }
 

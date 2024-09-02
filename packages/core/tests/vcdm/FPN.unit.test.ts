@@ -731,8 +731,7 @@ describe('FPN class tests', () => {
 
     describe(`isInfinite method tests`, () => {
         test('NaN -> false', () => {
-            const n = NaN;
-            const actual = FPN.of(n).isInfinite();
+            const actual = FPN.of(NaN).isInfinite();
             expect(actual).toBe(false);
         });
 
@@ -743,8 +742,7 @@ describe('FPN class tests', () => {
         });
 
         test('+Infinite -> true', () => {
-            const n = Infinity;
-            const actual = FPN.of(n).isInfinite();
+            const actual = FPN.of(Infinity).isInfinite();
             expect(actual).toBe(true);
         });
 
@@ -752,6 +750,48 @@ describe('FPN class tests', () => {
             const n = 0;
             const actual = FPN.of(n).isInfinite();
             expect(actual).toBe(false);
+        });
+    });
+
+    describe('isInteger method tests', () => {
+        test('NaN -> false', () => {
+            const n = NaN;
+            const actual = FPN.of(n).isInteger();
+            const expected = BigNumber(n).isInteger();
+            expect(actual).toBe(expected);
+            expect(actual).toBe(false);
+        });
+
+        test('-Infinite -> false', () => {
+            const n = Infinity;
+            const actual = FPN.of(n).isInteger();
+            const expected = BigNumber(n).isInteger();
+            expect(actual).toBe(expected);
+            expect(actual).toBe(false);
+        });
+
+        test('+Infinite -> false', () => {
+            const n = Infinity;
+            const actual = FPN.of(n).isInteger();
+            const expected = BigNumber(n).isInteger();
+            expect(actual).toBe(expected);
+            expect(actual).toBe(false);
+        });
+
+        test('not integer -> false', () => {
+            const n = 123.45;
+            const actual = FPN.of(n).isInteger();
+            const expected = BigNumber(n).isInteger();
+            expect(actual).toBe(expected);
+            expect(actual).toBe(false);
+        });
+
+        test('integer -> true', () => {
+            const n = 12345;
+            const actual = FPN.of(n).isInteger();
+            const expected = BigNumber(n).isInteger();
+            expect(actual).toBe(expected);
+            expect(actual).toBe(true);
         });
     });
 
