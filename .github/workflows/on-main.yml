@@ -16,7 +16,3 @@ jobs:
     unit-integration-test-browser:
       uses: ./.github/workflows/unit-integration-test-browser.yml
       secrets: inherit
-    sonar-scan:
-        uses: ./.github/workflows/sonar.yml
-        secrets: inherit
-        needs: unit-integration-test

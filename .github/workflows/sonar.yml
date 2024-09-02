@@ -1,10 +1,9 @@
 name: Sonar Scan
 on:
   workflow_run:
-    workflows: [Build]
+    workflows: [Unit tests]
     types: 
       - completed
-  workflow_call:
 
 jobs:
   sonar-scan:
