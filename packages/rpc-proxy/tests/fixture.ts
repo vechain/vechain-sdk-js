@@ -9,10 +9,21 @@ const _configFilesDirectory = path.join(__dirname, 'config-files-fixtures');
  * Default configuration file fixture.
  * This is the default configuration file.
  */
-const defaultConfigurationFilePathFixture = path.join(
-    _configFilesDirectory,
-    'default-proxy-config.json'
-);
+const correctConfigurationFilePathFixture = [
+    path.join(
+        _configFilesDirectory,
+        'correct-proxy-config-accounts-mnemonic.json'
+    ),
+    path.join(
+        _configFilesDirectory,
+        'correct-proxy-config-accounts-list-of-private-keys.json'
+    ),
+    path.join(
+        _configFilesDirectory,
+        'correct-proxy-config-delegator-private-key.json'
+    ),
+    path.join(_configFilesDirectory, 'correct-proxy-config-delegator-url.json')
+];
 
 /**
  * Invalid configuration file fixture.
@@ -20,7 +31,7 @@ const defaultConfigurationFilePathFixture = path.join(
  */
 const invalidJSONConfigurationFilePathFixture = path.join(
     _configFilesDirectory,
-    'invalid-json-proxy-config'
+    'invalid-json-format-proxy-config'
 );
 
 /**
@@ -39,11 +50,75 @@ const invalidParametersConfigurationFilePathFixture = {
     ],
     'invalid-url': [
         path.join(_configFilesDirectory, 'invalid-url-proxy-config.json')
+    ],
+    'invalid-accounts': [
+        path.join(
+            _configFilesDirectory,
+            'invalid-accounts-list-of-private-keys-proxy-config-1.json'
+        ),
+        path.join(
+            _configFilesDirectory,
+            'invalid-accounts-list-of-private-keys-proxy-config-2.json'
+        ),
+        path.join(
+            _configFilesDirectory,
+            'invalid-accounts-mnemonics-proxy-config-1.json'
+        ),
+        path.join(
+            _configFilesDirectory,
+            'invalid-accounts-mnemonics-proxy-config-2.json'
+        ),
+        path.join(
+            _configFilesDirectory,
+            'invalid-accounts-mnemonics-proxy-config-3.json'
+        ),
+        path.join(
+            _configFilesDirectory,
+            'invalid-accounts-mnemonics-proxy-config-4.json'
+        ),
+        path.join(
+            _configFilesDirectory,
+            'invalid-accounts-mnemonics-proxy-config-5.json'
+        )
+    ],
+    'invalid-delegator': [
+        path.join(
+            _configFilesDirectory,
+            'invalid-delegator-proxy-config-1.json'
+        ),
+        path.join(
+            _configFilesDirectory,
+            'invalid-delegator-proxy-config-2.json'
+        ),
+        path.join(
+            _configFilesDirectory,
+            'invalid-delegator-proxy-config-3.json'
+        )
+    ],
+    'invalid-verbose': [
+        path.join(
+            _configFilesDirectory,
+            'invalid-verbose-flag-proxy-config-1.json'
+        )
+    ],
+    'invalid-enable-delegation': [
+        path.join(
+            _configFilesDirectory,
+            'invalid-enable-delegation-proxy-config-1.json'
+        )
     ]
 };
 
+/**
+ * Invalid semantic configuration file fixtures.
+ */
+const invalidSemanticConfigurationFilePathFixture = [
+    path.join(_configFilesDirectory, 'invalid-semantic-proxy-config-1.json')
+];
+
 export {
-    defaultConfigurationFilePathFixture,
+    correctConfigurationFilePathFixture,
     invalidJSONConfigurationFilePathFixture,
-    invalidParametersConfigurationFilePathFixture
+    invalidParametersConfigurationFilePathFixture,
+    invalidSemanticConfigurationFilePathFixture
 };

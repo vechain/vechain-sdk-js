@@ -4,9 +4,10 @@ import {
     getConfigObjectFromFile
 } from '../../../src/utils';
 import {
-    defaultConfigurationFilePathFixture,
+    correctConfigurationFilePathFixture,
     invalidJSONConfigurationFilePathFixture,
-    invalidParametersConfigurationFilePathFixture
+    invalidParametersConfigurationFilePathFixture,
+    invalidSemanticConfigurationFilePathFixture
 } from '../../fixture';
 import {
     InvalidConfigurationFile,
@@ -23,28 +24,29 @@ describe('Configuration file validator', () => {
      */
     describe('configurationFile - correct cases', () => {
         /**
-         * Should be able to parse a valid configuration file
+         * Should be able to parse valid configuration files
          */
-        test('Should be able to parse a valid configuration file', () => {
-            expect(() => {
-                checkValidConfigurationFile(
-                    defaultConfigurationFilePathFixture
-                );
-            }).not.toThrow();
+        test('Should be able to parse valid configuration files', () => {
+            correctConfigurationFilePathFixture.forEach((filePath) => {
+                expect(() => {
+                    checkValidConfigurationFile(filePath);
+                }).not.toThrow();
+            });
         });
-        /**
-         * Should be able to load the configuration file
-         */
-        test('Should be able to load the configuration file', () => {
-            const config = getConfigObjectFromFile(
-                defaultConfigurationFilePathFixture
-            );
-            expect(config).toBeDefined();
 
-            // Check the properties
-            expect(config.url).toBeDefined();
-            expect(config.port).toBeDefined();
-            expect(config.accounts).toBeDefined();
+        /**
+         * Should be able to load configuration files
+         */
+        test('Should be able to load configuration files', () => {
+            correctConfigurationFilePathFixture.forEach((filePath) => {
+                const config = getConfigObjectFromFile(filePath);
+                expect(config).toBeDefined();
+
+                // Check the properties
+                expect(config.url).toBeDefined();
+                expect(config.port).toBeDefined();
+                expect(config.accounts).toBeDefined();
+            });
         });
     });
 
@@ -100,6 +102,69 @@ describe('Configuration file validator', () => {
                         checkValidConfigurationFile(filePath);
                     }).toThrowError(InvalidConfigurationFile);
                 });
+            });
+
+            /**
+             * Should not be able to parse a configuration file with invalid accounts
+             */
+            test('Should not be able to parse a configuration file with invalid accounts', () => {
+                invalidParametersConfigurationFilePathFixture[
+                    'invalid-accounts'
+                ].forEach((filePath) => {
+                    expect(() => {
+                        checkValidConfigurationFile(filePath);
+                    }).toThrowError(InvalidConfigurationFile);
+                });
+            });
+
+            /**
+             * Should not be able to parse a configuration file with invalid delegator
+             */
+            test('Should not be able to parse a configuration file with invalid delegator', () => {
+                invalidParametersConfigurationFilePathFixture[
+                    'invalid-delegator'
+                ].forEach((filePath) => {
+                    expect(() => {
+                        checkValidConfigurationFile(filePath);
+                    }).toThrowError(InvalidConfigurationFile);
+                });
+            });
+
+            /**
+             * Should not be able to parse a configuration file with invalid verbose
+             */
+            test('Should not be able to parse a configuration file with invalid verbose', () => {
+                invalidParametersConfigurationFilePathFixture[
+                    'invalid-verbose'
+                ].forEach((filePath) => {
+                    expect(() => {
+                        checkValidConfigurationFile(filePath);
+                    }).toThrowError(InvalidConfigurationFile);
+                });
+            });
+
+            /**
+             * Should not be able to parse a configuration file with invalid enableDelegation
+             */
+            test('Should not be able to parse a configuration file with invalid enableDelegation', () => {
+                invalidParametersConfigurationFilePathFixture[
+                    'invalid-enable-delegation'
+                ].forEach((filePath) => {
+                    expect(() => {
+                        checkValidConfigurationFile(filePath);
+                    }).toThrowError(InvalidConfigurationFile);
+                });
+            });
+        });
+
+        /**
+         * Should not be able to parse a configuration file with invalid semantic
+         */
+        test('Should not be able to parse a configuration file with invalid semantic', () => {
+            invalidSemanticConfigurationFilePathFixture.forEach((filePath) => {
+                expect(() => {
+                    checkValidConfigurationFile(filePath);
+                }).toThrowError(InvalidConfigurationFile);
             });
         });
     });
