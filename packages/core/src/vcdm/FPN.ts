@@ -638,6 +638,17 @@ class FPN {
         return this.sqrt();
     }
 
+    /**
+     * Returns a FPN whose value is the value of this FPN multiplied by `that` FPN.
+     *
+     * @param {FPN} that - The fixed-point number to multiply with this number.
+     *
+     * @return {FPN} a FPN whose value is the value of this FPN multiplied by `that` FPN.
+     *
+     * @remarks The precision is the greater of the precision of the two operands.
+     *
+     * @see [bignumber.js multipliedBy](https://mikemcl.github.io/bignumber.js/#times)
+     */
     public times(that: FPN): FPN {
         if (this.isNaN() || that.isNaN()) return FPN.NaN;
         if (this.isNegativeInfinite())
