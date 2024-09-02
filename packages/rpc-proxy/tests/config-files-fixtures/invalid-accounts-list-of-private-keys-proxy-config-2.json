@@ -1,0 +1,8 @@
+{
+  "url": "https://testnet.vechain.org",
+  "port": 10,
+  "accounts": [
+    "01234"
+  ],
+  "enableDelegation": false
+}

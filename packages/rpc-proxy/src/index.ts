@@ -28,7 +28,10 @@ function startProxy(): void {
     const defaultConfiguration: Config = defaultProxyConfig as Config;
 
     // Get the command line arguments options. This will be used to parse the command line arguments
-    const options = getOptionsFromCommandLine(packageJson.version);
+    const options = getOptionsFromCommandLine(
+        packageJson.version,
+        process.argv
+    );
 
     // Parse the SEMANTIC of the arguments and throw an error if the options are not valid
     const config = parseAndGetFinalConfig(options, defaultConfiguration);
