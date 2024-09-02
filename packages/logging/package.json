@@ -25,7 +25,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
+    "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts",
     "lint": "eslint --ext .ts src --ext .ts tests",
     "format": "prettier --write src/**/*.ts tests/**/*.ts",
     "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",

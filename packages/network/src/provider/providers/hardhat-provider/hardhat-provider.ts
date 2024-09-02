@@ -1,6 +1,10 @@
 import { VeChainProvider } from '../vechain-provider';
 import type { EIP1193RequestArguments } from '../../eip1193';
-import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
+import {
+    JSONRPCInternalError,
+    stringifyData,
+    VechainSDKError
+} from '@vechain/sdk-errors';
 import {
     type BuildHardhatErrorFunction,
     type JsonRpcRequest,
@@ -149,7 +153,7 @@ class HardhatVeChainProvider extends VeChainProvider {
             }
 
             return result;
-        } catch (e) {
+        } catch (error) {
             // Debug the error
             if (this.debug) {
                 VeChainSDKLogger('error').log(
@@ -164,10 +168,18 @@ class HardhatVeChainProvider extends VeChainProvider {
                 );
             }
 
+            if (error instanceof VechainSDKError) {
+                // Throw the error
+                throw this.buildHardhatErrorFunctionCallback(
+                    `Error on request ${args.method}: ${error.innerError}`,
+                    error
+                );
+            }
+
             // Throw the error
             throw this.buildHardhatErrorFunctionCallback(
-                `Error on request - ${args.method}`,
-                e as Error
+                `Error on request ${args.method}`,
+                error as Error
             );
         }
     }

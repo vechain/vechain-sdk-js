@@ -39,13 +39,8 @@ describe('Test HttpClient class on Solo node', () => {
             if (error instanceof InvalidHTTPRequest) {
                 expect(error.message).toBe(
                     `Method 'HttpClient.http()' failed.` +
-                        `\n-Reason: 'Invalid URL: http://localhost:8669/error-test-path'` +
-                        `\n-Parameters: \n\t{"method":"GET","url":"http://localhost:8669/error-test-path","message":"Request failed"}` +
-                        `\n-Internal error: ` +
-                        `\n\tMethod 'HttpClient.http()' failed.` +
-                        `\n-Reason: 'Invalid URL: http://localhost:8669/error-test-path'` +
-                        `\n-Parameters: \n\t{"method":"GET","url":"http://localhost:8669/error-test-path","status":404,"message":"404 page not found\\n"}` +
-                        `\n-Internal error: \n\tNo internal error given`
+                        `\n-Reason: 'Request failed with status 404 and message 404 page not found'` +
+                        `\n-Parameters: \n\t{\n  "method": "GET",\n  "url": "http://localhost:8669/error-test-path"\n}`
                 );
             }
         }
@@ -68,13 +63,8 @@ describe('Test HttpClient class on Solo node', () => {
             if (error instanceof InvalidHTTPRequest) {
                 expect(error.message).toBe(
                     `Method 'HttpClient.http()' failed.` +
-                        `\n-Reason: 'Invalid URL: http://localhost:8669/transactions'` +
-                        `\n-Parameters: \n\t{"method":"POST","url":"http://localhost:8669/transactions","message":"Request failed"}` +
-                        `\n-Internal error: ` +
-                        `\n\tMethod 'HttpClient.http()' failed.` +
-                        `\n-Reason: 'Invalid URL: http://localhost:8669/transactions'` +
-                        `\n-Parameters: \n\t{"method":"POST","url":"http://localhost:8669/transactions","status":400,"message":"bad tx: chain tag mismatch\\n"}` +
-                        `\n-Internal error: \n\tNo internal error given`
+                        `\n-Reason: 'Request failed with status 400 and message bad tx: chain tag mismatch'` +
+                        `\n-Parameters: \n\t{\n  "method": "POST",\n  "url": "http://localhost:8669/transactions"\n}`
                 );
             }
         }

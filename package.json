@@ -16,9 +16,7 @@
     "workspaces": [
         "packages/*",
         "docs",
-        "apps/sdk-nextjs-integration",
-        "apps/sdk-cloudflare-integration",
-        "apps/sdk-node-integration"
+        "apps/*"
     ],
     "packageManager": "yarn@1.22.22",
     "scripts": {
@@ -27,7 +25,6 @@
         "postinstall": "husky",
         "build": "turbo build",
         "pre-release": "ts-node scripts/pre-release.ts",
-        "post-release": "ts-node scripts/post-release.ts",
         "test-rpc-proxy": "ts-node scripts/test-rpc-proxy.ts",
         "generate:apidocs": "typedoc --options typedoc.json --logLevel Error",
         "generate:apidocs-debug": "typedoc --options typedoc.json --logLevel Verbose --plugin typedoc-plugin-missing-exports --validation.notDocumented",
@@ -72,7 +69,7 @@
         "jest-runner-groups": "^2.2.0",
         "nyc": "^17.0.0",
         "prettier": "^3.3.3",
-        "ts-jest": "^29.2.4",
+        "ts-jest": "^29.2.5",
         "tsup": "^8.2.4",
         "turbo": "^2.0.12",
         "typedoc": "^0.26.6",
