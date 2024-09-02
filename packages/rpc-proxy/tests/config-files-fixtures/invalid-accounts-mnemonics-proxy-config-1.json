@@ -1,0 +1,10 @@
+{
+  "url": "https://testnet.vechain.org",
+  "port": 10,
+  "accounts": {
+    "mnemonic": "INVALID_MNEMONIC",
+    "count": 10,
+    "initialIndex": 0
+  },
+  "enableDelegation": false
+}

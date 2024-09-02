@@ -1,4 +1,4 @@
-name: Run unit tests
+name: Unit tests for browser
 
 on:
   workflow_call:
@@ -8,6 +8,7 @@ jobs:
         name: Build & Lint
         runs-on: ubuntu-latest
         strategy:
+            fail-fast: false
             matrix:
                 node: [18, lts/*] #add 'latest' when turbo issue is solved
         steps:

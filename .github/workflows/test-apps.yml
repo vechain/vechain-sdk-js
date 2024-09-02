@@ -22,23 +22,6 @@ jobs:
             - name: Build packages
               run: yarn build
 
-            - name: Install & Patch apps
-              run: |
-                # Absolute path to the 'apps' directory
-                apps_directory="$(pwd)/apps"
-                current_app_directory="$apps_directory/sdk-hardhat-integration"
-            
-                if [ -d "$current_app_directory" ]; then
-                  # LOG
-                  echo "Running yarn in $current_app_directory"
-                
-                  # Navigate to the directory using absolute path
-                  cd "$current_app_directory"
-
-                  # Install dependencies
-                  yarn install
-                fi
-
             - name: Test apps
               run: |
                   # Absolute path to the 'apps' directory

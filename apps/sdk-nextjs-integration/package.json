@@ -1,7 +1,7 @@
 {
   "name": "vechain-sdk-nextjs",
   "description": "A Next.js sample app using the VeChain SDK",
-  "version": "1.0.0-beta.29",
+  "version": "1.0.0-beta.30",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -12,8 +12,8 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@vechain/sdk-core": "1.0.0-beta.29",
-    "@vechain/sdk-network": "1.0.0-beta.29",
+    "@vechain/sdk-core": "1.0.0-beta.30",
+    "@vechain/sdk-network": "1.0.0-beta.30",
     "install": "^0.13.0",
     "next": "14",
     "react": "^18",
@@ -25,12 +25,12 @@
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
     "@types/jest": "^29.5.12",
-    "@types/node": "^20",
+    "@types/node": "^22",
     "@types/react": "^18.3.4",
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
-    "eslint-config-next": "14.2.5",
+    "eslint-config-next": "14.2.7",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "postcss": "^8",

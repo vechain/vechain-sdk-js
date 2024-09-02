@@ -1,6 +1,6 @@
 {
   "name": "sdk-cloudflare-integration",
-  "version": "1.0.0-beta.29",
+  "version": "1.0.0-beta.30",
   "author": "vechain Foundation",
   "keywords": [],
   "license": "MIT",
@@ -12,9 +12,9 @@
     "@cloudflare/vitest-pool-workers": "^0.4.17",
     "@cloudflare/workers-types": "^4.20240725.0",
     "vitest": "1.5.0",
-    "wrangler": "^3.67.1"
+    "wrangler": "^3.72.3"
   },
   "dependencies": {
-    "@vechain/sdk-core": "1.0.0-beta.29"
+    "@vechain/sdk-core": "1.0.0-beta.30"
   }
 }

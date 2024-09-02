@@ -1,4 +1,4 @@
-name: Run Build & Lint
+name: Build and Lint
 
 on:
     workflow_call:

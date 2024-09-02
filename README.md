@@ -1,7 +1,7 @@
 <div align="center">
   <h1><code>vechain-sdk-js</code></h1>
   <p>
-    <strong>The official JavaScript SDK for vechain.</strong>
+    <strong>The official JavaScript SDK for VeChain.</strong>
   </p>
   <p>
     <a href="https://github.com/vechain/vechain-sdk-js/actions/workflows/on-main.yml"><img src="https://github.com/vechain/vechain-sdk-js/actions/workflows/on-main.yml/badge.svg" alt="main-ci"></a>
@@ -269,7 +269,6 @@ The VeChain SDK uses `Changesets CLI`. To publish a new release:
 ``` bash
 yarn pre-release X.Y.Z
 yarn changeset publish
-yarn post-release X.Y.Z
 ```
 Finally, update also the [documentation](https://github.com/vechain/vechain-docs).
 

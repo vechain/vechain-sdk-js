@@ -1,4 +1,4 @@
-name: Run unit tests
+name: Unit tests for node
 
 on:
   workflow_call:
@@ -8,6 +8,7 @@ jobs:
         name: Build & Lint
         runs-on: ubuntu-latest
         strategy:
+            fail-fast: false
             matrix:
                 node: [18, lts/*] #add 'latest' when turbo issue is solved
         steps:
@@ -57,7 +58,7 @@ jobs:
 
             - name: Archive coverage
               if: matrix.node == 'lts/*'
-              uses: actions/upload-artifact@v4
+              uses: actions/upload-artifact@v4.3.0
               with:
                 name: coverage-results
                 path: |
@@ -65,7 +66,7 @@ jobs:
             
             - name: Post unit test results to slack
               if: always()  && github.ref == 'refs/heads/main' && (steps.unit-test.outcome == 'failure')
-              uses: slackapi/slack-github-action@v1.26.0
+              uses: slackapi/slack-github-action@v1.27.0
               with:
                 payload: |
                   {

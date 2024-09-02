@@ -9,8 +9,6 @@ import { VechainSDKError } from '../sdk-error';
 class InvalidHTTPRequest extends VechainSDKError<{
     method: string;
     url: string;
-    message?: string;
-    status?: number;
 }> {}
 
 export { InvalidHTTPRequest };

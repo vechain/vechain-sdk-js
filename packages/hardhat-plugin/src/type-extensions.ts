@@ -9,6 +9,7 @@ import { type vechain_sdk_core_ethers as ethers } from '@vechain/sdk-core';
 // To extend one of Hardhat's types, you need to import the module where it has been defined, and redeclare it.
 import 'hardhat/types/config';
 import 'hardhat/types/runtime';
+// eslint-disable-next-line import/no-restricted-paths
 import { type HardhatEthersHelpers } from '@nomicfoundation/hardhat-ethers/types';
 
 /**

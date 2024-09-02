@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-logging",
-  "version": "1.0.0-beta.29",
+  "version": "1.0.0-beta.30",
   "description": "This module provides functionality to logging data for vechain-sdk",
   "author": "vechain Foundation",
   "license": "MIT",
@@ -25,7 +25,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
+    "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts",
     "lint": "eslint --ext .ts src --ext .ts tests",
     "format": "prettier --write src/**/*.ts tests/**/*.ts",
     "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
@@ -34,6 +34,6 @@
     "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
   },
   "dependencies": {
-    "@vechain/sdk-errors": "1.0.0-beta.29"
+    "@vechain/sdk-errors": "1.0.0-beta.30"
   }
 }

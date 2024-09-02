@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-ethers-adapter",
-  "version": "1.0.0-beta.29",
+  "version": "1.0.0-beta.30",
   "description": "This module serves as a crucial bridge between the standard Ethereum tooling provided by Hardhat and the unique features of the vechain thor blockchain",
   "author": "vechain Foundation",
   "license": "MIT",
@@ -27,7 +27,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
+    "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts",
     "lint": "eslint --ext .ts src --ext .ts tests",
     "format": "prettier --write src/**/*.ts tests/**/*.ts",
     "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
@@ -35,11 +35,11 @@
     "test": "rm -rf ./coverage && jest --coverage --coverageDirectory=coverage --group=integration --group=unit"
   },
   "dependencies": {
-    "@vechain/sdk-core": "1.0.0-beta.29",
-    "@vechain/sdk-network": "1.0.0-beta.29",
-    "@vechain/sdk-errors": "1.0.0-beta.29"
+    "@vechain/sdk-core": "1.0.0-beta.30",
+    "@vechain/sdk-network": "1.0.0-beta.30",
+    "@vechain/sdk-errors": "1.0.0-beta.30"
   },
   "devDependencies": {
-    "@nomicfoundation/hardhat-ethers": "^3.0.6"
+    "@nomicfoundation/hardhat-ethers": "^3.0.7"
   }
 }

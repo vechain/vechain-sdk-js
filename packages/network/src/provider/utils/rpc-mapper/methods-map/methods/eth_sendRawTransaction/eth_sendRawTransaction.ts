@@ -49,16 +49,16 @@ const ethSendRawTransaction = async (
             );
 
         return sentTransaction.id;
-    } catch (e) {
+    } catch (error) {
         throw new JSONRPCInternalError(
             'eth_sendRawTransaction()',
             -32603,
             'Method "eth_sendRawTransaction" failed.',
             {
                 params: stringifyData(params),
-                url: thorClient.httpClient.baseURL,
-                innerError: stringifyData(e)
-            }
+                url: thorClient.httpClient.baseURL
+            },
+            error
         );
     }
 };

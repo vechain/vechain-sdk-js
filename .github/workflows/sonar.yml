@@ -1,6 +1,9 @@
 name: Sonar Scan
 on:
-  workflow_call:
+  workflow_run:
+    workflows: [PR Checks, Main CI]
+    types:
+      - completed
 
 jobs:
   sonar-scan:
@@ -13,8 +16,10 @@ jobs:
           fetch-depth: 0
 
       - name: Download coverage report
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v4.1.8
         with:
+          run-id: ${{ github.event.workflow_run.id }}
+          github-token: ${{ github.token }}
           name: coverage-results
           path: coverage
 

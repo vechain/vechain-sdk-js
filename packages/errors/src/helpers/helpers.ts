@@ -27,7 +27,7 @@ const stringifyData = (data: unknown): string => {
     };
 
     // Return the stringified data
-    return JSON.stringify(data, getCircularReplacer());
+    return JSON.stringify(data, getCircularReplacer(), 2);
 };
 
 /**
@@ -71,7 +71,7 @@ function createErrorMessage<TErrorDataType>(
         `Method '${methodName}' failed.` +
         `\n-Reason: '${errorMessage}'` +
         `\n-Parameters: \n\t${stringifyData(inputData)}` +
-        `\n-Internal error: \n\t${innerError?.message !== undefined ? innerError.message : 'No internal error given'}`
+        `${innerError?.message !== undefined ? `\n-Internal error: \n\t${innerError.message}` : ''}`
     );
 }
 

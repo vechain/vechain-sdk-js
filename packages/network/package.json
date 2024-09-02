@@ -1,6 +1,6 @@
 {
   "name": "@vechain/sdk-network",
-  "version": "1.0.0-beta.29",
+  "version": "1.0.0-beta.30",
   "description": "This module allows to connect you seamlessly to the VeChainThor blockchain",
   "author": "vechain Foundation",
   "license": "MIT",
@@ -29,7 +29,7 @@
   "scripts": {
     "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose up -d --wait && echo '\nThor solo node started ...'",
     "stop-thor-solo": "echo 'Stopping thor solo node ...' && docker compose down && echo 'Thor solo node stopped ...'",
-    "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
+    "build": "rm -rf ./dist && tsup-node src/index.ts --format cjs,esm --dts",
     "lint": "eslint --ext .ts src --ext .ts tests",
     "format": "prettier --write src/**/*.ts tests/**/*.ts solo-seeding/**/*.ts",
     "test:unit": "rm -rf ./coverageUnit && jest --coverage --coverageDirectory=coverageUnit --group=unit",
@@ -42,9 +42,9 @@
   },
   "dependencies": {
     "@types/ws": "^8.5.12",
-    "@vechain/sdk-core": "1.0.0-beta.29",
-    "@vechain/sdk-errors": "1.0.0-beta.29",
-    "@vechain/sdk-logging": "1.0.0-beta.29",
+    "@vechain/sdk-core": "1.0.0-beta.30",
+    "@vechain/sdk-errors": "1.0.0-beta.30",
+    "@vechain/sdk-logging": "1.0.0-beta.30",
     "@vechain/vebetterdao-contracts": "^1.0.0",
     "abitype": "^1.0.6",
     "isomorphic-ws": "^5.0.0",
