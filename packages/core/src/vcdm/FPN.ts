@@ -222,12 +222,7 @@ class FPN implements VeChainDataModel<FPN> {
                   ? FPN.NEGATIVE_INFINITY
                   : FPN.POSITIVE_INFINITY;
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
-        try {
-            return new FPN(fd, FPN.div(fd, this.dp(fd).sv, that.dp(fd).sv));
-        } catch (e) {
-            if (e instanceof RangeError) return FPN.NaN;
-            else throw e;
-        }
+        return new FPN(fd, FPN.div(fd, this.dp(fd).sv, that.dp(fd).sv));
     }
 
     /**
@@ -657,7 +652,6 @@ class FPN implements VeChainDataModel<FPN> {
                   : FPN.POSITIVE_INFINITY;
         if (that.isNegativeInfinite()) return FPN.ZERO;
         if (that.isPositiveInfinite()) return FPN.POSITIVE_INFINITY;
-        if (that.isZero()) return FPN.of(1);
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
         return new FPN(fd, FPN.pow(fd, this.dp(fd).sv, that.dp(fd).sv));
     }
@@ -676,7 +670,7 @@ class FPN implements VeChainDataModel<FPN> {
             return FPN.pow(fd, FPN.div(fd, sf, base), -exponent); // Recursive.
         }
         if (exponent === 0n) {
-            return 1n;
+            return 1n * sf;
         }
         if (exponent === sf) {
             return base;
@@ -729,8 +723,7 @@ class FPN implements VeChainDataModel<FPN> {
         try {
             return new FPN(this.fd, FPN.sqr(this.sv, this.fd));
         } catch (e) {
-            if (e instanceof RangeError) return FPN.NaN;
-            else throw e;
+            return FPN.NaN;
         }
     }
 
