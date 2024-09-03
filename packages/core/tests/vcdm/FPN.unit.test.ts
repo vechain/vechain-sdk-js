@@ -1778,7 +1778,7 @@ describe('FPN class tests', () => {
             const l = 123.45;
             const r = -l;
             const actualUp = FPN.of(l, 7n).plus(FPN.of(r, 5n));
-            const actualDn = FPN.of(l, 7n).plus(FPN.of(r, 5n));
+            const actualDn = FPN.of(l, 5n).plus(FPN.of(r, 7n));
             const expected = BigNumber(l).plus(BigNumber(r));
             expect(actualUp.n).toBe(expected.toNumber());
             expect(actualUp.eq(FPN.ZERO)).toBe(true);
