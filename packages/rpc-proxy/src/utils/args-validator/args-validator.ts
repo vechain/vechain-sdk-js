@@ -3,6 +3,8 @@ import { checkValidConfigurationFile } from '../config-validator';
 import {
     isValidAccountsAsListOfPrivateKeys,
     isValidCount,
+    isValidDelegatorPrivateKey,
+    isValidDelegatorUrl,
     isValidMnemonic,
     isValidPort,
     isValidUrl
@@ -246,80 +248,59 @@ const ArgsValidator = {
         }
 
         return null;
-    }
+    },
 
     /**
-     * ********* START: TEMPORARY COMMENT *********
-     * This method will be implemented in the future.
-     * ********* END: TEMPORARY COMMENT ********
-     *
      * Delegate configuration
      * Validate 'delegatorPrivateKey' configuration field.
      *
      * @param delegatorPrivateKey Delegator private key to validate
      * @returns Delegator private key if provided AND valid, null otherwise
      */
-    // delegatorPrivateKey: (delegatorPrivateKey: string): string | null => {
-    //     if (delegatorPrivateKey !== undefined && delegatorPrivateKey !== null) {
-    //         if (
-    //             !secp256k1.isValidPrivateKey(Hex.of(delegatorPrivateKey).bytes)
-    //         ) {
-    //             throw new InvalidCommandLineArguments(
-    //                 'ArgsValidator.delegatorPrivateKey()',
-    //                 'An invalid delegator private key provided.',
-    //                 {
-    //                     flag: '-dp , --delegatorPrivateKey',
-    //                     value: 'Value will not be shown for security reasons'
-    //                 }
-    //             );
-    //         }
-    //         console.log(
-    //             `[rpc-proxy]: Delegator private key provided with command line options`
-    //         );
-    //
-    //         return delegatorPrivateKey;
-    //     } else {
-    //         console.log(
-    //             '[rpc-proxy]: No url provided with command line arguments. Default port will be used.'
-    //         );
-    //     }
-    //     return null;
-    // }
+    delegatorPrivateKey: (delegatorPrivateKey: string): string => {
+        if (
+            !isValidDelegatorPrivateKey(delegatorPrivateKey) ||
+            delegatorPrivateKey === ''
+        ) {
+            throw new InvalidCommandLineArguments(
+                'ArgsValidator.delegatorPrivateKey()',
+                'An invalid delegator private key provided.',
+                {
+                    flag: '-dp , --delegatorPrivateKey',
+                    value: 'Value will not be shown for security reasons'
+                }
+            );
+        }
+        console.log(
+            `[rpc-proxy]: Delegator private key provided with command line options`
+        );
+
+        return delegatorPrivateKey;
+    },
 
     /*
-     * ********* START: TEMPORARY COMMENT *********
-     * This method will be implemented in the future.
-     * ********* END: TEMPORARY COMMENT ********
-     *
      * Validate 'delgatorUrl' configuration field
      *
      * @param delegatorUrl Delegator URL to validate
      * @returns Delegator URL if provided AND valid, null otherwise
      */
-    // delegatorUrl: (delegatorUrl: string): string | null => {
-    //     if (delegatorUrl !== undefined && delegatorUrl !== null) {
-    //         if (!isValidUrl(delegatorUrl)) {
-    //             throw new InvalidCommandLineArguments(
-    //                 'ArgsValidator.delegatorUrl()',
-    //                 'Invalid delegator url provided. The parameter must be a valid url',
-    //                 {
-    //                     flag: '-du , --delegatorUrl',
-    //                     value: delegatorUrl
-    //                 }
-    //             );
-    //         }
-    //         console.log(
-    //             `[rpc-proxy]: Delegator url provided with command line options: ${delegatorUrl}`
-    //         );
-    //
-    //         return delegatorUrl;
-    //     } else {
-    //         console.log(
-    //             '[rpc-proxy]: No delegator url provided with command line arguments. Default port will be used.'
-    //         );
-    //     }
-    //     return null;
-    // }
+    delegatorUrl: (delegatorUrl: string): string => {
+        if (!isValidDelegatorUrl(delegatorUrl) || delegatorUrl === '') {
+            throw new InvalidCommandLineArguments(
+                'ArgsValidator.delegatorUrl()',
+                'Invalid delegator url provided. The parameter must be a valid url',
+                {
+                    flag: '-du , --delegatorUrl',
+                    value: delegatorUrl
+                }
+            );
+        }
+        console.log(
+            `[rpc-proxy]: Delegator url provided with command line options: ${delegatorUrl}`
+        );
+
+        return delegatorUrl;
+    }
 };
 
 export { ArgsValidator };

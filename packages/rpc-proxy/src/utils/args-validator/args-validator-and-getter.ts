@@ -5,6 +5,7 @@ import {
     getConfigObjectFromFile
 } from '../config-validator';
 import { ArgsValidator } from './args-validator';
+import { InvalidCommandLineArguments } from '@vechain/sdk-errors';
 
 /**
  * Main args validator AND getter object.
@@ -128,13 +129,9 @@ const ArgsValidatorAndGetter = {
         }
 
         return currentConfiguration;
-    }
+    },
 
     /**
-     * ********* START: TEMPORARY COMMENT *********
-     * This method will be implemented in the future.
-     * ********* END: TEMPORARY COMMENT ********
-     *
      * Validate 'delegation' configuration fields
      *
      * @param options Command line arguments options
@@ -142,43 +139,59 @@ const ArgsValidatorAndGetter = {
      * @returns Configuration object
      * @throws {InvalidCommandLineArguments}
      */
-    // delegation: (
-    //     options: OptionValues,
-    //     currentConfiguration: Config
-    // ): Config => {
-    //     // Both delegation fields are provided - throw an error
-    //     if (
-    //         options.delegatorPrivateKey !== undefined &&
-    //         options.delegatorUrl !== undefined &&
-    //         options.delegatorPrivateKey !== null &&
-    //         options.delegatorUrl !== null
-    //     ) {
-    //         throw new InvalidCommandLineArguments(
-    //             'ArgsValidatorAndGetter.delegation()',
-    //             'Both delegator private key and delegator URL are provided. Only one can be provided',
-    //             {
-    //                 flag: '{-dp , --delegatorPrivateKey}, {-du , --delegatorUrl}',
-    //                 value: `{value not provided for security reason} , {${options.delegatorUrl as string}}`
-    //             }
-    //         );
-    //     }
-    //
-    //     // Delegation is made with a private key
-    //     if (
-    //         options.delegatePrivateKey !== undefined &&
-    //         options.delegatePrivateKey !== null
-    //     ) {
-    //     }
-    //
-    //     // Delegation is made with a delegator URL
-    //     if (
-    //         options.delegatorUrl !== undefined &&
-    //         options.delegatorUrl !== null
-    //     ) {
-    //     }
-    //
-    //     return currentConfiguration;
-    // }
+    delegation: (
+        options: OptionValues,
+        currentConfiguration: Config
+    ): Config => {
+        // Both delegation fields are provided - throw an error
+        if (
+            options.delegatorPrivateKey !== undefined &&
+            options.delegatorUrl !== undefined &&
+            options.delegatorPrivateKey !== null &&
+            options.delegatorUrl !== null
+        ) {
+            throw new InvalidCommandLineArguments(
+                'ArgsValidatorAndGetter.delegation()',
+                'Both delegator private key and delegator URL are provided. Only one can be provided',
+                {
+                    flag: '{-dp , --delegatorPrivateKey}, {-du , --delegatorUrl}',
+                    value: `{value not provided for security reason} , {${options.delegatorUrl as string}}`
+                }
+            );
+        }
+
+        // Delegation is made with a private key
+        if (
+            options.delegatorPrivateKey !== undefined &&
+            options.delegatorPrivateKey !== null
+        ) {
+            return {
+                ...currentConfiguration,
+                delegator: {
+                    delegatorPrivateKey: ArgsValidator.delegatorPrivateKey(
+                        options.delegatorPrivateKey as string
+                    )
+                }
+            };
+        }
+
+        // Delegation is made with a delegator URL
+        if (
+            options.delegatorUrl !== undefined &&
+            options.delegatorUrl !== null
+        ) {
+            return {
+                ...currentConfiguration,
+                delegator: {
+                    delegatorUrl: ArgsValidator.delegatorUrl(
+                        options.delegatorUrl as string
+                    )
+                }
+            };
+        }
+
+        return currentConfiguration;
+    }
 };
 
 export { ArgsValidatorAndGetter };

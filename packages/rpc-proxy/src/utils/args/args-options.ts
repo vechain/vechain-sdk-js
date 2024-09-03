@@ -79,20 +79,20 @@ function getOptionsFromCommandLine(
         )
 
         // Enable delegation boolean
-        // .addOption(new Option('-e, --enableDelegation', 'Enable delegation'))
+        .addOption(new Option('-e, --enableDelegation', 'Enable delegation'))
 
         // Delegator configuration (private key)
-        // .addOption(
-        //     new Option(
-        //         '-dp, --delegatorPrivateKey <delegatorPrivateKey>',
-        //         'Delegator private key'
-        //     )
-        // )
+        .addOption(
+            new Option(
+                '-dp, --delegatorPrivateKey <delegatorPrivateKey>',
+                'Delegator private key'
+            )
+        )
 
         // Delegator configuration (url)
-        // .addOption(
-        //     new Option('-du, --delegatorUrl <delegatorUrl>', 'Delegator URL')
-        // )
+        .addOption(
+            new Option('-du, --delegatorUrl <delegatorUrl>', 'Delegator URL')
+        )
 
         // Enable verbose logging
         .addOption(new Option('-v, --verbose', 'Enable verbose logging'))

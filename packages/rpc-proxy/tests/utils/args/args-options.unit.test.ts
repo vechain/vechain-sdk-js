@@ -131,6 +131,80 @@ describe('Args options tests', () => {
         });
 
         /**
+         * Should be able to parse the enable delegation option
+         */
+        test('Should be able to parse the enable delegation option', () => {
+            [
+                // Normal syntax
+                ['path', 'program', '--enableDelegation'],
+                // Short syntax
+                ['path', 'program', '-e']
+            ].forEach((args) => {
+                const enableDelegationOption = getOptionsFromCommandLine(
+                    '1.0.0',
+                    args
+                );
+
+                expect(enableDelegationOption).toBeDefined();
+                expect(enableDelegationOption.enableDelegation).toBe(true);
+            });
+        });
+
+        /**
+         * Should be able to parse the delegator private key option
+         */
+        test('Should be able to parse the delegator private key option', () => {
+            [
+                // Normal syntax
+                [
+                    'path',
+                    'program',
+                    '--delegatorPrivateKey',
+                    '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ],
+                // Short syntax
+                [
+                    'path',
+                    'program',
+                    '-dp',
+                    '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ]
+            ].forEach((args) => {
+                const delegatorPrivateKeyOption = getOptionsFromCommandLine(
+                    '1.0.0',
+                    args
+                );
+
+                expect(delegatorPrivateKeyOption).toBeDefined();
+                expect(delegatorPrivateKeyOption.delegatorPrivateKey).toBe(
+                    '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                );
+            });
+        });
+
+        /**
+         * Should be able to parse the delegator URL option
+         */
+        test('Should be able to parse the delegator URL option', () => {
+            [
+                // Normal syntax
+                ['path', 'program', '--delegatorUrl', 'http://localhost:8080'],
+                // Short syntax
+                ['path', 'program', '-du', 'http://localhost:8080']
+            ].forEach((args) => {
+                const delegatorUrlOption = getOptionsFromCommandLine(
+                    '1.0.0',
+                    args
+                );
+
+                expect(delegatorUrlOption).toBeDefined();
+                expect(delegatorUrlOption.delegatorUrl).toBe(
+                    'http://localhost:8080'
+                );
+            });
+        });
+
+        /**
          * Should be able to parse the configuration file option
          */
         test('Should be able to parse the configuration file option', () => {

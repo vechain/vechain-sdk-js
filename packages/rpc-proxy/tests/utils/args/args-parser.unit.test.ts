@@ -186,6 +186,69 @@ describe('Args parser tests', () => {
         });
 
         /**
+         * Should be able to parse the enableDelegation option from command line arguments AND get the configuration
+         */
+        test('Should be able to get the enableDelegation option from command line arguments AND get the configuration', () => {
+            [
+                // Normal syntax
+                ['path', 'program', '--enableDelegation'],
+                // Short syntax
+                ['path', 'program', '-e']
+            ].forEach((args) => {
+                // Get options
+                const options = getOptionsFromCommandLine('1.0.0', args);
+
+                // Get the configuration
+                const configuration = parseAndGetFinalConfig(
+                    options,
+                    defaultConfiguration
+                );
+                expect(configuration.enableDelegation).toBe(true);
+            });
+        });
+
+        /**
+         * Should be able to delegation options from command line arguments (delegatorPrivateKey and delegatorUrl fields) AND get the configuration
+         */
+        test('Should be able to get the delegation options from command line arguments AND get the configuration', () => {
+            [
+                // Delegator private key
+
+                // Normal syntax
+                [
+                    'path',
+                    'program',
+                    '--delegatorPrivateKey',
+                    '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ],
+                // Short syntax
+                [
+                    'path',
+                    'program',
+                    '-dp',
+                    '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ],
+
+                // Delegator URL
+
+                // Normal syntax
+                ['path', 'program', '--delegatorUrl', 'http://localhost:8080'],
+                // Short syntax
+                ['path', 'program', '-du', 'http://localhost:8080']
+            ].forEach((args) => {
+                // Get options
+                const options = getOptionsFromCommandLine('1.0.0', args);
+
+                // Get the configuration
+                const configuration = parseAndGetFinalConfig(
+                    options,
+                    defaultConfiguration
+                );
+                expect(configuration).toBeDefined();
+            });
+        });
+
+        /**
          * Should be able to parse the configuration file option from command line arguments AND get the configuration
          */
         test('Should be able to get the configuration file from command line arguments AND get the configuration', () => {
@@ -505,6 +568,66 @@ describe('Args parser tests', () => {
                     '-mc',
                     ''
                 ]
+            ].forEach((args) => {
+                // Get options
+                const options = getOptionsFromCommandLine('1.0.0', args);
+
+                // Throw the error
+                expect(() =>
+                    parseAndGetFinalConfig(options, defaultConfiguration)
+                ).toThrowError(InvalidCommandLineArguments);
+            });
+        });
+
+        /**
+         * Should NOT be able to parse delegation options from command line arguments (delegatorPrivateKey and delegatorUrl fields) AND get the configuration
+         */
+        test('Should be NOT able to parse delegation options from command line arguments AND get the configuration', () => {
+            [
+                // Both delegation fields are provided
+
+                // Normal syntax
+                [
+                    'path',
+                    'program',
+                    '--delegatorPrivateKey',
+                    '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
+                    '--delegatorUrl',
+                    'http://localhost:8080'
+                ],
+                // Short syntax
+                [
+                    'path',
+                    'program',
+                    '-dp',
+                    '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
+                    '-du',
+                    'http://localhost:8080'
+                ],
+
+                // Invalid fields
+
+                // Normal syntax
+                ['path', 'program', '--delegatorPrivateKey', 'INVALID'],
+                // Short syntax
+                ['path', 'program', '-dp', 'INVALID'],
+
+                // Normal syntax
+                ['path', 'program', '--delegatorUrl', 'INVALID'],
+                // Short syntax
+                ['path', 'program', '-du', 'INVALID'],
+
+                // Empty fields
+
+                // Normal syntax
+                ['path', 'program', '--delegatorPrivateKey', ''],
+                // Short syntax
+                ['path', 'program', '-dp', ''],
+
+                // Normal syntax
+                ['path', 'program', '--delegatorUrl', ''],
+                // Short syntax
+                ['path', 'program', '-du', '']
             ].forEach((args) => {
                 // Get options
                 const options = getOptionsFromCommandLine('1.0.0', args);

@@ -54,11 +54,23 @@ function parseAndGetFinalConfig(
             configuration.verbose = options.verbose as boolean;
         }
 
-        // // B.4 - Get and validate accounts field
+        // B.5 - Get and validate accounts field
         configuration = ArgsValidatorAndGetter.accounts(options, configuration);
 
-        // // B.5 - Get and validate mnemonic field
+        // B.6 - Get and validate mnemonic field
         configuration = ArgsValidatorAndGetter.mnemonicFields(
+            options,
+            configuration
+        );
+
+        // B.7 - Enable delegation
+        if (options.enableDelegation !== undefined) {
+            configuration.enableDelegation =
+                options.enableDelegation as boolean;
+        }
+
+        // B.8 - Get and validate delegator private key field
+        configuration = ArgsValidatorAndGetter.delegation(
             options,
             configuration
         );
