@@ -24,7 +24,7 @@ function _checkConfigurationFileExists(filePath: string): void {
     const absolutePath = path.resolve(filePath);
 
     // Throw an error if the configuration file does not exist
-    if (!fs.existsSync(absolutePath)) {
+    if (!fs.existsSync(absolutePath) || filePath === '') {
         throw new InvalidConfigurationFilePath(
             '_checkConfigurationFileExists()',
             `Configuration file not found: ${absolutePath}`,
@@ -198,16 +198,17 @@ function _checkIfConfigurationFileHasCorrectStructure(filePath: string): void {
     // NOTE: Here we know all the fields are valid. So we can check the semantics of the fields.
 
     // Delegation cannot be enabled without a delegator
-    if (configFile.enableDelegation as boolean) {
-        if (configFile.delegator === undefined) {
-            throw new InvalidConfigurationFile(
-                '_checkIfConfigurationFileHasCorrectStructure()',
-                `Invalid configuration file: ${absolutePath}. Delegator configuration must be removed when enableDelegation is false`,
-                {
-                    filePath
-                }
-            );
-        }
+    if (
+        (configFile.enableDelegation as boolean) &&
+        configFile.delegator === undefined
+    ) {
+        throw new InvalidConfigurationFile(
+            '_checkIfConfigurationFileHasCorrectStructure()',
+            `Invalid configuration file: ${absolutePath}. Delegator configuration must be removed when enableDelegation is false`,
+            {
+                filePath
+            }
+        );
     }
 }
 
