@@ -5,6 +5,7 @@ import {
     getConfigObjectFromFile
 } from '../config-validator';
 import { ArgsValidator } from './args-validator';
+import { InvalidCommandLineArguments } from '@vechain/sdk-errors';
 
 /**
  * Main args validator AND getter object.
@@ -50,21 +51,19 @@ const ArgsValidatorAndGetter = {
      * @throws {InvalidCommandLineArguments}
      */
     port: (options: OptionValues, currentConfiguration: Config): Config => {
-        const field = ArgsValidator.port(options.port as string);
-        if (field !== null) {
+        const port = ArgsValidator.port(
+            options.port as string | null | undefined
+        );
+        if (port !== null) {
             return {
                 ...currentConfiguration,
-                port: field
+                port
             } satisfies Config;
         }
         return currentConfiguration;
     },
 
     /**
-     * ********* START: TEMPORARY COMMENT *********
-     * This method will be implemented in the future.
-     * ********* END: TEMPORARY COMMENT ********
-     *
      * Validate 'url' configuration field
      *
      * @param options Command line arguments options
@@ -73,21 +72,17 @@ const ArgsValidatorAndGetter = {
      * @throws {InvalidCommandLineArguments}
      */
     url: (options: OptionValues, currentConfiguration: Config): Config => {
-        const field = ArgsValidator.url(options.url as string);
-        if (field !== null) {
+        const url = ArgsValidator.url(options.url as string | null | undefined);
+        if (url !== null) {
             return {
                 ...currentConfiguration,
-                url: field
+                url
             } satisfies Config;
         }
         return currentConfiguration;
-    }
+    },
 
     /**
-     * ********* START: TEMPORARY COMMENT *********
-     * This method will be implemented in the future.
-     * ********* END: TEMPORARY COMMENT ********
-     *
      * Validate 'accounts' configuration field
      *
      * @param options Command line arguments options
@@ -95,22 +90,20 @@ const ArgsValidatorAndGetter = {
      * @returns Configuration object
      * @throws {InvalidCommandLineArguments}
      */
-    // accounts: (options: OptionValues, currentConfiguration: Config): Config => {
-    //     const field = ArgsValidator.accounts(options.accounts as string);
-    //     if (field !== null) {
-    //         return {
-    //             ...currentConfiguration,
-    //             accounts: field
-    //         } satisfies Config;
-    //     }
-    //     return currentConfiguration;
-    // }
+    accounts: (options: OptionValues, currentConfiguration: Config): Config => {
+        const accounts = ArgsValidator.accounts(
+            options.accounts as string | null | undefined
+        );
+        if (accounts !== null) {
+            return {
+                ...currentConfiguration,
+                accounts
+            } satisfies Config;
+        }
+        return currentConfiguration;
+    },
 
     /**
-     * ********* START: TEMPORARY COMMENT *********
-     * This method will be implemented in the future.
-     * ********* END: TEMPORARY COMMENT ********
-     *
      * Validate 'mnemonic' configuration field
      *
      * @param options Command line arguments options
@@ -118,78 +111,27 @@ const ArgsValidatorAndGetter = {
      * @returns Configuration object
      * @throws {InvalidCommandLineArguments}
      */
-    // mnemonic: (options: OptionValues, currentConfiguration: Config): Config => {
-    //     const mnemonicToUse = ArgsValidator.mnemonic(
-    //         options.mnemonic as string
-    //     );
-    //
-    //     // Mnemonic count must be provided if mnemonic is provided
-    //     if (
-    //         mnemonicToUse !== null &&
-    //         (options.mnemonicCount === undefined ||
-    //             options.mnemonicCount === null)
-    //     ) {
-    //         throw new InvalidCommandLineArguments(
-    //             'ArgsValidatorAndGetter.mnemonic()',
-    //             'No mnemonic count provided. A mnemonic count must be provided',
-    //             {
-    //                 flag: '-mc , --mnemonicCount',
-    //                 value: 'not provided'
-    //             }
-    //         );
-    //     }
-    //
-    //     // Mnemonic initial index must be provided if mnemonic is provided
-    //     if (
-    //         mnemonicToUse !== null &&
-    //         (options.mnemonicInitialIndex === undefined ||
-    //             options.mnemonicInitialIndex === null)
-    //     ) {
-    //         throw new InvalidCommandLineArguments(
-    //             'ArgsValidatorAndGetter.mnemonic()',
-    //             'No mnemonic initial index provided. A mnemonic initial index must be provided',
-    //             {
-    //                 flag: '-mi , --mnemonicInitialIndex',
-    //                 value: 'not provided'
-    //             }
-    //         );
-    //     }
-    //
-    //     // @note: This field must be provided otherwise previous validation fails!
-    //     if (
-    //         options.mnemonicCount !== undefined &&
-    //         options.mnemonicCount !== null &&
-    //         options.mnemonicInitialIndex !== undefined &&
-    //         options.mnemonicInitialIndex !== null
-    //     ) {
-    //         const field2 = ArgsValidator.mnemonicCount(
-    //             options.mnemonicCount as string
-    //         );
-    //
-    //         // @note: This field must be provided otherwise previous validation fails!
-    //         const field3 = ArgsValidator.mnemonicInitialIndex(
-    //             options.mnemonicInitialIndex as string
-    //         );
-    //
-    //         if (mnemonicToUse !== null) {
-    //             return {
-    //                 ...currentConfiguration,
-    //                 accounts: {
-    //                     mnemonic: mnemonicToUse,
-    //                     count: field2,
-    //                     initialIndex: field3
-    //                 }
-    //             } satisfies Config;
-    //         }
-    //     }
-    //     return currentConfiguration;
-    // }
+    mnemonicFields: (
+        options: OptionValues,
+        currentConfiguration: Config
+    ): Config => {
+        const accounts = ArgsValidator.mnemonicFields(
+            options.mnemonic as string | null | undefined,
+            options.mnemonicCount as string | null | undefined,
+            options.mnemonicInitialIndex as string | null | undefined
+        );
+
+        if (accounts !== null) {
+            return {
+                ...currentConfiguration,
+                accounts
+            } satisfies Config;
+        }
+
+        return currentConfiguration;
+    },
 
     /**
-     * ********* START: TEMPORARY COMMENT *********
-     * This method will be implemented in the future.
-     * ********* END: TEMPORARY COMMENT ********
-     *
      * Validate 'delegation' configuration fields
      *
      * @param options Command line arguments options
@@ -197,43 +139,59 @@ const ArgsValidatorAndGetter = {
      * @returns Configuration object
      * @throws {InvalidCommandLineArguments}
      */
-    // delegation: (
-    //     options: OptionValues,
-    //     currentConfiguration: Config
-    // ): Config => {
-    //     // Both delegation fields are provided - throw an error
-    //     if (
-    //         options.delegatorPrivateKey !== undefined &&
-    //         options.delegatorUrl !== undefined &&
-    //         options.delegatorPrivateKey !== null &&
-    //         options.delegatorUrl !== null
-    //     ) {
-    //         throw new InvalidCommandLineArguments(
-    //             'ArgsValidatorAndGetter.delegation()',
-    //             'Both delegator private key and delegator URL are provided. Only one can be provided',
-    //             {
-    //                 flag: '{-dp , --delegatorPrivateKey}, {-du , --delegatorUrl}',
-    //                 value: `{value not provided for security reason} , {${options.delegatorUrl as string}}`
-    //             }
-    //         );
-    //     }
-    //
-    //     // Delegation is made with a private key
-    //     if (
-    //         options.delegatePrivateKey !== undefined &&
-    //         options.delegatePrivateKey !== null
-    //     ) {
-    //     }
-    //
-    //     // Delegation is made with a delegator URL
-    //     if (
-    //         options.delegatorUrl !== undefined &&
-    //         options.delegatorUrl !== null
-    //     ) {
-    //     }
-    //
-    //     return currentConfiguration;
-    // }
+    delegation: (
+        options: OptionValues,
+        currentConfiguration: Config
+    ): Config => {
+        // Both delegation fields are provided - throw an error
+        if (
+            options.delegatorPrivateKey !== undefined &&
+            options.delegatorUrl !== undefined &&
+            options.delegatorPrivateKey !== null &&
+            options.delegatorUrl !== null
+        ) {
+            throw new InvalidCommandLineArguments(
+                'ArgsValidatorAndGetter.delegation()',
+                'Both delegator private key and delegator URL are provided. Only one can be provided',
+                {
+                    flag: '{-dp , --delegatorPrivateKey}, {-du , --delegatorUrl}',
+                    value: `{value not provided for security reason} , {${options.delegatorUrl as string}}`
+                }
+            );
+        }
+
+        // Delegation is made with a private key
+        if (
+            options.delegatorPrivateKey !== undefined &&
+            options.delegatorPrivateKey !== null
+        ) {
+            return {
+                ...currentConfiguration,
+                delegator: {
+                    delegatorPrivateKey: ArgsValidator.delegatorPrivateKey(
+                        options.delegatorPrivateKey as string
+                    )
+                }
+            };
+        }
+
+        // Delegation is made with a delegator URL
+        if (
+            options.delegatorUrl !== undefined &&
+            options.delegatorUrl !== null
+        ) {
+            return {
+                ...currentConfiguration,
+                delegator: {
+                    delegatorUrl: ArgsValidator.delegatorUrl(
+                        options.delegatorUrl as string
+                    )
+                }
+            };
+        }
+
+        return currentConfiguration;
+    }
 };
 
 export { ArgsValidatorAndGetter };
