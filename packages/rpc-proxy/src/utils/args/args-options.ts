@@ -58,25 +58,25 @@ function getOptionsFromCommandLine(
             )
         )
 
-        // Accounts to use for signing transactions (HD WALLET MNEUMONIC)
-        // .addOption(
-        //     new Option(
-        //         '-m, --mnemonic <mnemonic>',
-        //         'Mnemonic to use for signing transactions'
-        //     )
-        // )
-        // .addOption(
-        //     new Option(
-        //         '-mc, --mnemonicCount <count>',
-        //         'Number of accounts to derive from the mnemonic'
-        //     )
-        // )
-        // .addOption(
-        //     new Option(
-        //         '-mi, --mnemonicInitialIndex <index>',
-        //         'Initial index to start deriving accounts from the mnemonic'
-        //     )
-        // )
+        // Accounts to use for signing transactions (HD WALLET MNEMONIC)
+        .addOption(
+            new Option(
+                '-m, --mnemonic <mnemonic>',
+                'Mnemonic to use for signing transactions'
+            )
+        )
+        .addOption(
+            new Option(
+                '-mc, --mnemonicCount <count>',
+                'Number of accounts to derive from the mnemonic'
+            )
+        )
+        .addOption(
+            new Option(
+                '-mi, --mnemonicInitialIndex <index>',
+                'Initial index to start deriving accounts from the mnemonic'
+            )
+        )
 
         // Enable delegation boolean
         // .addOption(new Option('-e, --enableDelegation', 'Enable delegation'))

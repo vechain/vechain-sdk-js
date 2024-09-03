@@ -23,13 +23,13 @@ describe('Args parser tests', () => {
     );
 
     /**
-     * Parse command line arguments - positive test cases
+     * Parse command line arguments AND get the configuration - positive test cases
      */
-    describe('Parse command line arguments - positive cases', () => {
+    describe('Parse command line arguments AND get the configuration - positive cases', () => {
         /**
-         * Should be able to parse empty command line arguments (default configuration)
+         * Should be able to parse empty command line arguments (default configuration) AND get the configuration
          */
-        test('Should be able to parse empty command line arguments', () => {
+        test('Should be able to parse empty command line arguments AND get the configuration', () => {
             const options = getOptionsFromCommandLine('1.0.0', [
                 'path',
                 'program'
@@ -43,9 +43,9 @@ describe('Args parser tests', () => {
         });
 
         /**
-         * Should be able to parse the port option from command line arguments
+         * Should be able to parse the port option from command line arguments AND get the configuration
          */
-        test('Should be able to get the port from command lime arguments', () => {
+        test('Should be able to get the port from command lime arguments AND get the configuration', () => {
             [
                 // Normal syntax
                 ['path', 'program', '--port', '10'],
@@ -65,9 +65,9 @@ describe('Args parser tests', () => {
         });
 
         /**
-         * Should be able to parse the url option from command line arguments
+         * Should be able to parse the url option from command line arguments AND get the configuration
          */
-        test('Should be able to get the url from command line arguments', () => {
+        test('Should be able to get the url from command line arguments AND get the configuration', () => {
             [
                 // Normal syntax
                 ['path', 'program', '--url', 'http://localhost:8080'],
@@ -87,9 +87,9 @@ describe('Args parser tests', () => {
         });
 
         /**
-         * Should be able to parse the verbose option from command line arguments
+         * Should be able to parse the verbose option from command line arguments AND get the configuration
          */
-        test('Should be able to get the verbose option from command line arguments', () => {
+        test('Should be able to get the verbose option from command line arguments AND get the configuration', () => {
             [
                 // Normal syntax
                 ['path', 'program', '--verbose'],
@@ -109,9 +109,9 @@ describe('Args parser tests', () => {
         });
 
         /**
-         * Should be able to parse the accounts (as a list of private keys) option from command line arguments
+         * Should be able to parse the accounts (as a list of private keys) option from command line arguments AND get the configuration
          */
-        test('Should be able to get the accounts from command line arguments', () => {
+        test('Should be able to get the accounts from command line arguments AND get the configuration', () => {
             [
                 // Normal syntax
                 [
@@ -145,9 +145,50 @@ describe('Args parser tests', () => {
         });
 
         /**
-         * Should be able to parse the configuration file option from command line arguments
+         * Should be able to parse the mnemonic field from command line arguments AND get the configuration
          */
-        test('Should be able to get the configuration file from command line arguments', () => {
+        test('Should be able to get the mnemonic field from command line arguments AND get the configuration', () => {
+            [
+                // Normal syntax
+                [
+                    'path',
+                    'program',
+                    '--mnemonic',
+                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
+                    '--mnemonicInitialIndex',
+                    '1',
+                    '--mnemonicCount',
+                    '2'
+                ],
+                // Short syntax
+                [
+                    'path',
+                    'program',
+                    '-m',
+                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
+                    '-mi',
+                    '1',
+                    '-mc',
+                    '2'
+                ]
+            ].forEach((args) => {
+                // Get options
+                const options = getOptionsFromCommandLine('1.0.0', args);
+
+                // Get the configuration
+                const configuration = parseAndGetFinalConfig(
+                    options,
+                    defaultConfiguration
+                );
+
+                console.log(configuration);
+            });
+        });
+
+        /**
+         * Should be able to parse the configuration file option from command line arguments AND get the configuration
+         */
+        test('Should be able to get the configuration file from command line arguments AND get the configuration', () => {
             [
                 // Normal syntax
                 [
@@ -182,13 +223,13 @@ describe('Args parser tests', () => {
     });
 
     /**
-     * Parse command line arguments - negative test cases
+     * Parse command line arguments AND get the configuration - negative test cases
      */
-    describe('Parse command line arguments - negative cases', () => {
+    describe('Parse command line arguments AND get the configuration - negative cases', () => {
         /**
-         * Should NOT be able to parse an invalid port option from command line arguments
+         * Should NOT be able to parse an invalid port option from command line arguments AND get the configuration
          */
-        test('Should NOT be able to parse an invalid port option from command line arguments', () => {
+        test('Should NOT be able to parse an invalid port option from command line arguments AND get the configuration', () => {
             [
                 // Normal syntax
                 ['path', 'program', '--port', '-1'],
@@ -214,9 +255,9 @@ describe('Args parser tests', () => {
         });
 
         /**
-         * Should NOT be able to parse the url option from command line arguments
+         * Should NOT be able to parse the url option from command line arguments AND get the configuration
          */
-        test('Should be NOT able to parse an invalid url from command line arguments', () => {
+        test('Should be NOT able to parse an invalid url from command line arguments AND get the configuration', () => {
             [
                 // Normal syntax
                 ['path', 'program', '--url', 'INVALID'],
@@ -238,9 +279,9 @@ describe('Args parser tests', () => {
         });
 
         /**
-         * Should NOT be able to parse the accounts (as a list of private keys) option from command line arguments
+         * Should NOT be able to parse the accounts (as a list of private keys) option from command line arguments AND get the configuration
          */
-        test('Should be NOT able to parse an invalid accounts from command line arguments', () => {
+        test('Should be NOT able to parse an invalid accounts from command line arguments AND get the configuration', () => {
             [
                 // Normal syntax
                 ['path', 'program', '--accounts', `INVALID`],
@@ -276,9 +317,209 @@ describe('Args parser tests', () => {
         });
 
         /**
-         * Should NOT be able to parse the configuration file option from command line arguments
+         * Should NOT be able to parse mnemonic fields from command line arguments AND get the configuration
+         * All edge cases (invalid mnemonic, invalid initial index, invalid count OR missing mnemonic, missing initial index, missing count)
          */
-        test('Should be NOT able to parse an invalid configuration file from command line arguments', () => {
+        test('Should be NOT able to parse invalid mnemonic fields from command line arguments AND get the configuration', () => {
+            [
+                // Missing fields
+
+                // Normal syntax
+                [
+                    'path',
+                    'program',
+                    '--mnemonic',
+                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
+                    '--mnemonicInitialIndex',
+                    '1'
+                ],
+                // Short syntax
+                [
+                    'path',
+                    'program',
+                    '-m',
+                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
+                    '-mi',
+                    '1'
+                ],
+
+                // Normal syntax
+                [
+                    'path',
+                    'program',
+                    '--mnemonic',
+                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
+                    '--mnemonicInitialIndex',
+                    '1'
+                ],
+                // Short syntax
+                [
+                    'path',
+                    'program',
+                    '-m',
+                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
+                    '-mi',
+                    '1'
+                ],
+
+                // Normal syntax
+                [
+                    'path',
+                    'program',
+                    '--mnemonic',
+                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse'
+                ],
+                // Short syntax
+                [
+                    'path',
+                    'program',
+                    '-m',
+                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse'
+                ],
+
+                // Normal syntax
+                ['path', 'program', '--mnemonicInitialIndex', '1'],
+                // Short syntax
+                ['path', 'program', '-mi', '1'],
+
+                // Wrong format
+
+                // Normal syntax
+                [
+                    'path',
+                    'program',
+                    '--mnemonic',
+                    'INVALID',
+                    '--mnemonicInitialIndex',
+                    '1',
+                    '--mnemonicCount',
+                    '2'
+                ],
+                // Short syntax
+                ['path', 'program', '-m', 'INVALID', '-mi', '1', '-mc', '2'],
+
+                // Normal syntax
+                [
+                    'path',
+                    'program',
+                    '--mnemonic',
+                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
+                    '--mnemonicInitialIndex',
+                    '-1',
+                    '--mnemonicCount',
+                    '2'
+                ],
+                // Short syntax
+                [
+                    'path',
+                    'program',
+                    '-m',
+                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
+                    '-mi',
+                    '-1',
+                    '-mc',
+                    '2'
+                ],
+
+                // Normal syntax
+                [
+                    'path',
+                    'program',
+                    '--mnemonic',
+                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
+                    '--mnemonicInitialIndex',
+                    '1',
+                    '--mnemonicCount',
+                    '-2'
+                ],
+                // Short syntax
+                [
+                    'path',
+                    'program',
+                    '-m',
+                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
+                    '-mi',
+                    '1',
+                    '-mc',
+                    '-2'
+                ],
+
+                // Empty fields
+
+                // Normal syntax
+                [
+                    'path',
+                    'program',
+                    '--mnemonic',
+                    '',
+                    '--mnemonicInitialIndex',
+                    '1',
+                    '--mnemonicCount',
+                    '2'
+                ],
+                // Short syntax
+                ['path', 'program', '-m', '', '-mi', '1', '-mc', '2'],
+
+                // Normal syntax
+                [
+                    'path',
+                    'program',
+                    '--mnemonic',
+                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
+                    '--mnemonicInitialIndex',
+                    '',
+                    '--mnemonicCount',
+                    '2'
+                ],
+                // Short syntax
+                [
+                    'path',
+                    'program',
+                    '-m',
+                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
+                    '-mi',
+                    '',
+                    '-mc',
+                    '2'
+                ],
+
+                // Normal syntax
+                [
+                    'path',
+                    'program',
+                    '--mnemonic',
+                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
+                    '--mnemonicInitialIndex',
+                    '1',
+                    '--mnemonicCount',
+                    ''
+                ],
+                // Short syntax
+                [
+                    'path',
+                    'program',
+                    '-m',
+                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
+                    '-mi',
+                    '1',
+                    '-mc',
+                    ''
+                ]
+            ].forEach((args) => {
+                // Get options
+                const options = getOptionsFromCommandLine('1.0.0', args);
+
+                // Throw the error
+                expect(() =>
+                    parseAndGetFinalConfig(options, defaultConfiguration)
+                ).toThrowError(InvalidCommandLineArguments);
+            });
+        });
+
+        /**
+         * Should NOT be able to parse the configuration file option from command line arguments AND get the configuration
+         */
+        test('Should be NOT able to parse an invalid configuration file from command line arguments AND get the configuration', () => {
             [
                 // Normal syntax
                 ['path', 'program', '--configurationFile', `INVALID`],

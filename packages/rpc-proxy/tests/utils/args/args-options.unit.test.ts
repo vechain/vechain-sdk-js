@@ -62,6 +62,75 @@ describe('Args options tests', () => {
         });
 
         /**
+         * Should be able to parse the account option (as a list of private keys)
+         */
+        test('Should be able to parse the account option', () => {
+            [
+                // Normal syntax
+                [
+                    'path',
+                    'program',
+                    '--accounts',
+                    '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158 7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ],
+                // Short syntax
+                [
+                    'path',
+                    'program',
+                    '-a',
+                    '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158 7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ]
+            ].forEach((args) => {
+                const accountOption = getOptionsFromCommandLine('1.0.0', args);
+
+                expect(accountOption).toBeDefined();
+                expect(accountOption.accounts).toEqual(
+                    '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158 7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                );
+            });
+        });
+
+        /**
+         * Should be able to parse the mnemonic options
+         * (mnemonic, mnemonicIndex, mnemonicCount)
+         */
+        test('Should be able to parse the mnemonic options', () => {
+            [
+                // Normal syntax
+                [
+                    'path',
+                    'program',
+                    '--mnemonic',
+                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
+                    '--mnemonicInitialIndex',
+                    '1',
+                    '--mnemonicCount',
+                    '2'
+                ],
+                // Short syntax
+                [
+                    'path',
+                    'program',
+                    '-m',
+                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse',
+                    '-mi',
+                    '1',
+                    '-mc',
+                    '2'
+                ]
+            ].forEach((args) => {
+                const mnemonicOption = getOptionsFromCommandLine('1.0.0', args);
+
+                expect(mnemonicOption).toBeDefined();
+                expect(mnemonicOption.mnemonic).toBe(
+                    'expire pair material agent north ostrich fortune level cousin snow mixture nurse'
+                );
+                expect(mnemonicOption.mnemonicInitialIndex).toBe('1');
+                expect(mnemonicOption.mnemonicCount).toBe('2');
+            });
+        });
+
+        /**
          * Should be able to parse the configuration file option
          */
         test('Should be able to parse the configuration file option', () => {

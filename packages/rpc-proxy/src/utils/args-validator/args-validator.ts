@@ -2,6 +2,8 @@ import { InvalidCommandLineArguments } from '@vechain/sdk-errors';
 import { checkValidConfigurationFile } from '../config-validator';
 import {
     isValidAccountsAsListOfPrivateKeys,
+    isValidCount,
+    isValidMnemonic,
     isValidPort,
     isValidUrl
 } from '../validators';
@@ -146,108 +148,105 @@ const ArgsValidator = {
             );
         }
         return null;
-    }
+    },
 
     /*
-     * ********* START: TEMPORARY COMMENT *********
-     * This method will be implemented in the future.
-     * ********* END: TEMPORARY COMMENT ********
+     * Validate mnemonic configuration fields
      *
-     * Validate 'mnemonic' configuration field
-     *
-     * @param mnemonic Mnemonic to validate
-     * @returns Mnemonic if provided AND valid, null otherwise
-     * @throws {InvalidCommandLineArguments}
-     */
-    // mnemonic: (mnemonic?: string | null): string | null => {
-    //     if (mnemonic !== undefined && mnemonic !== null) {
-    //         try {
-    //             HDNode.fromMnemonic(mnemonic.split(' '));
-    //         } catch (e) {
-    //             throw new InvalidCommandLineArguments(
-    //                 'ArgsValidator.mnemonic()',
-    //                 'An invalid account mnemonic is present in the configuration file',
-    //                 {
-    //                     flag: '-m , --mnemonic',
-    //                     value: 'Value will not be shown for security reasons'
-    //                 }
-    //             );
-    //         }
-    //         return mnemonic;
-    //     } else {
-    //         console.log(
-    //             '[rpc-proxy]: No mnemonic provided with command line arguments. Default port will be used.'
-    //         );
-    //     }
-    //
-    //     return null;
-    // }
-
-    /**
-     * ********* START: TEMPORARY COMMENT *********
-     * This method will be implemented in the future.
-     * ********* END: TEMPORARY COMMENT ********
-     *
-     * Validate 'mnemonicCount' configuration field
-     *
+     * @param mnemonic The mnemonic to validate
      * @param mnemonicCount Mnemonic count to validate
-     * @returns Mnemonic count if provided AND valid, null otherwise
+     * @param mnemonicIndex Mnemonic index to validate
+     * @returns Mnemonic, mnemonic count, and mnemonic index if provided AND valid, null otherwise
      * @throws {InvalidCommandLineArguments}
      */
-    // mnemonicCount: (mnemonicCount: string): number => {
-    //     const mnemonicCountAsNumber = Number(mnemonicCount.toString());
-    //
-    //     if (
-    //         isNaN(mnemonicCountAsNumber) ||
-    //         !Number.isInteger(mnemonicCountAsNumber) ||
-    //         mnemonicCountAsNumber < 0
-    //     ) {
-    //         throw new InvalidCommandLineArguments(
-    //             'ArgsValidator.mnemonicCount()',
-    //             'Invalid mnemonicCount provided. A port must be an integer',
-    //             {
-    //                 flag: '-mc , --mnemonicCount',
-    //                 value: mnemonicCount
-    //             }
-    //         );
-    //     }
-    //
-    //     return mnemonicCountAsNumber;
-    // }
+    mnemonicFields: (
+        mnemonic?: string | null,
+        mnemonicCount?: string | null,
+        mnemonicInitialIndex?: string | null
+    ): {
+        mnemonic: string;
+        count: number;
+        initialIndex: number;
+    } | null => {
+        // Check the fields (valid or not)
+        const isMnemonicValid =
+            mnemonic !== undefined && mnemonic !== null
+                ? isValidMnemonic(mnemonic)
+                : false;
 
-    /**
-     * ********* START: TEMPORARY COMMENT *********
-     * This method will be implemented in the future.
-     * ********* END: TEMPORARY COMMENT ********
-     *
-     * Validate 'mnemonicInitialIndex' configuration field
-     *
-     * @param mnemonicInitialIndex Mnemonic initial index to validate
-     * @returns Mnemonic initial index if provided AND valid, null otherwise
-     * @throws {InvalidCommandLineArguments}
-     */
-    // mnemonicInitialIndex: (mnemonicInitialIndex: string): number => {
-    //     const mnemonicInitialIndexAsNumber = Number(
-    //         mnemonicInitialIndex.toString()
-    //     );
-    //
-    //     if (
-    //         isNaN(mnemonicInitialIndexAsNumber) ||
-    //         !Number.isInteger(mnemonicInitialIndexAsNumber) ||
-    //         mnemonicInitialIndexAsNumber < 0
-    //     ) {
-    //         throw new InvalidCommandLineArguments(
-    //             'ArgsValidator.mnemonicInitialIndex()',
-    //             'Invalid mnemonicInitialIndex provided. A port must be an integer',
-    //             {
-    //                 flag: '-mi , --mnemonicInitialIndex',
-    //                 value: mnemonicInitialIndex
-    //             }
-    //         );
-    //     }
-    //
-    //     return mnemonicInitialIndexAsNumber;
-    // }
+        const isMnemonicCountValid =
+            mnemonicCount !== undefined && mnemonicCount !== null
+                ? isValidCount(Number(mnemonicCount)) && mnemonicCount !== ''
+                : false;
+
+        const isMnemonicInitialIndexValid =
+            mnemonicInitialIndex !== undefined && mnemonicInitialIndex !== null
+                ? isValidCount(Number(mnemonicInitialIndex)) &&
+                  mnemonicInitialIndex !== ''
+                : false;
+
+        // Check if at least one field is valid
+        const isAtLeastOneFieldValid =
+            isMnemonicCountValid ||
+            isMnemonicInitialIndexValid ||
+            isMnemonicValid;
+
+        // Check if all fields are valid
+        const areAllFieldsValid =
+            isMnemonicValid &&
+            isMnemonicCountValid &&
+            isMnemonicInitialIndexValid;
+
+        // If there is at least one field valid, ALL fields must be valid
+        if (isAtLeastOneFieldValid) {
+            // All fields are valid, we can return the configuration
+            if (areAllFieldsValid) {
+                return {
+                    mnemonic: mnemonic as string,
+                    count: Number(mnemonicCount),
+                    initialIndex: Number(mnemonicInitialIndex)
+                };
+            }
+
+            // Some field is missing/invalid. Check which one is invalid and throw an error
+            if (!isMnemonicValid) {
+                throw new InvalidCommandLineArguments(
+                    'ArgsValidator.mnemonicFields()',
+                    'Invalid mnemonic provided. The parameter must be a valid mnemonic',
+                    {
+                        flag: '-m , --mnemonic',
+                        value: 'Value will not be shown for security reasons'
+                    }
+                );
+            }
+            if (!isMnemonicCountValid) {
+                throw new InvalidCommandLineArguments(
+                    'ArgsValidator.mnemonicFields()',
+                    'Invalid count provided. The parameter must be an integer',
+                    {
+                        flag: '-mc , --mnemonicCount',
+                        value: String(mnemonicCount)
+                    }
+                );
+            }
+            if (!isMnemonicInitialIndexValid) {
+                throw new InvalidCommandLineArguments(
+                    'ArgsValidator.mnemonicFields()',
+                    'Invalid initial index provided. The parameter must be an integer',
+                    {
+                        flag: '-mi , --mnemonicInitialIndex',
+                        value: String(mnemonicInitialIndex)
+                    }
+                );
+            }
+        } else {
+            console.log(
+                '[rpc-proxy]: No mnemonic provided with command line arguments. Default port will be used.'
+            );
+        }
+
+        return null;
+    }
 
     /**
      * ********* START: TEMPORARY COMMENT *********

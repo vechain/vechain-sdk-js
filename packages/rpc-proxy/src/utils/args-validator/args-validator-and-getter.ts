@@ -50,7 +50,9 @@ const ArgsValidatorAndGetter = {
      * @throws {InvalidCommandLineArguments}
      */
     port: (options: OptionValues, currentConfiguration: Config): Config => {
-        const port = ArgsValidator.port(options.port as string);
+        const port = ArgsValidator.port(
+            options.port as string | null | undefined
+        );
         if (port !== null) {
             return {
                 ...currentConfiguration,
@@ -69,7 +71,7 @@ const ArgsValidatorAndGetter = {
      * @throws {InvalidCommandLineArguments}
      */
     url: (options: OptionValues, currentConfiguration: Config): Config => {
-        const url = ArgsValidator.url(options.url as string);
+        const url = ArgsValidator.url(options.url as string | null | undefined);
         if (url !== null) {
             return {
                 ...currentConfiguration,
@@ -88,7 +90,9 @@ const ArgsValidatorAndGetter = {
      * @throws {InvalidCommandLineArguments}
      */
     accounts: (options: OptionValues, currentConfiguration: Config): Config => {
-        const accounts = ArgsValidator.accounts(options.accounts as string);
+        const accounts = ArgsValidator.accounts(
+            options.accounts as string | null | undefined
+        );
         if (accounts !== null) {
             return {
                 ...currentConfiguration,
@@ -96,13 +100,9 @@ const ArgsValidatorAndGetter = {
             } satisfies Config;
         }
         return currentConfiguration;
-    }
+    },
 
     /**
-     * ********* START: TEMPORARY COMMENT *********
-     * This method will be implemented in the future.
-     * ********* END: TEMPORARY COMMENT ********
-     *
      * Validate 'mnemonic' configuration field
      *
      * @param options Command line arguments options
@@ -110,72 +110,25 @@ const ArgsValidatorAndGetter = {
      * @returns Configuration object
      * @throws {InvalidCommandLineArguments}
      */
-    // mnemonic: (options: OptionValues, currentConfiguration: Config): Config => {
-    //     const mnemonicToUse = ArgsValidator.mnemonic(
-    //         options.mnemonic as string
-    //     );
-    //
-    //     // Mnemonic count must be provided if mnemonic is provided
-    //     if (
-    //         mnemonicToUse !== null &&
-    //         (options.mnemonicCount === undefined ||
-    //             options.mnemonicCount === null)
-    //     ) {
-    //         throw new InvalidCommandLineArguments(
-    //             'ArgsValidatorAndGetter.mnemonic()',
-    //             'No mnemonic count provided. A mnemonic count must be provided',
-    //             {
-    //                 flag: '-mc , --mnemonicCount',
-    //                 value: 'not provided'
-    //             }
-    //         );
-    //     }
-    //
-    //     // Mnemonic initial index must be provided if mnemonic is provided
-    //     if (
-    //         mnemonicToUse !== null &&
-    //         (options.mnemonicInitialIndex === undefined ||
-    //             options.mnemonicInitialIndex === null)
-    //     ) {
-    //         throw new InvalidCommandLineArguments(
-    //             'ArgsValidatorAndGetter.mnemonic()',
-    //             'No mnemonic initial index provided. A mnemonic initial index must be provided',
-    //             {
-    //                 flag: '-mi , --mnemonicInitialIndex',
-    //                 value: 'not provided'
-    //             }
-    //         );
-    //     }
-    //
-    //     // @note: This field must be provided otherwise previous validation fails!
-    //     if (
-    //         options.mnemonicCount !== undefined &&
-    //         options.mnemonicCount !== null &&
-    //         options.mnemonicInitialIndex !== undefined &&
-    //         options.mnemonicInitialIndex !== null
-    //     ) {
-    //         const field2 = ArgsValidator.mnemonicCount(
-    //             options.mnemonicCount as string
-    //         );
-    //
-    //         // @note: This field must be provided otherwise previous validation fails!
-    //         const field3 = ArgsValidator.mnemonicInitialIndex(
-    //             options.mnemonicInitialIndex as string
-    //         );
-    //
-    //         if (mnemonicToUse !== null) {
-    //             return {
-    //                 ...currentConfiguration,
-    //                 accounts: {
-    //                     mnemonic: mnemonicToUse,
-    //                     count: field2,
-    //                     initialIndex: field3
-    //                 }
-    //             } satisfies Config;
-    //         }
-    //     }
-    //     return currentConfiguration;
-    // }
+    mnemonicFields: (
+        options: OptionValues,
+        currentConfiguration: Config
+    ): Config => {
+        const accounts = ArgsValidator.mnemonicFields(
+            options.mnemonic as string | null | undefined,
+            options.mnemonicCount as string | null | undefined,
+            options.mnemonicInitialIndex as string | null | undefined
+        );
+
+        if (accounts !== null) {
+            return {
+                ...currentConfiguration,
+                accounts
+            } satisfies Config;
+        }
+
+        return currentConfiguration;
+    }
 
     /**
      * ********* START: TEMPORARY COMMENT *********
