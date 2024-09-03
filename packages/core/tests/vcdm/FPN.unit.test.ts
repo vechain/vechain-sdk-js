@@ -2,6 +2,10 @@ import { describe, expect, test } from '@jest/globals';
 import { FPN } from '../../src';
 import { BigNumber } from 'bignumber.js';
 
+/**
+ * Test FPN class.
+ * @group unit/vcdm
+ */
 describe('FPN class tests', () => {
     describe('abs method tests', () => {
         test('n < 0', () => {

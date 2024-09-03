@@ -102,6 +102,9 @@ class FPN implements VeChainDataModel<FPN> {
         return Txt.of(this.toString()).bytes;
     }
 
+    /**
+     * Return this value approximated as {@link number}.
+     */
     get n(): number {
         if (this.isNaN()) return Number.NaN;
         if (this.isNegativeInfinite()) return Number.NEGATIVE_INFINITY;
@@ -268,6 +271,8 @@ class FPN implements VeChainDataModel<FPN> {
      * @return {boolean} `true` if the FPN numbers are equal, otherwise `false`.
      *
      * @remarks This method uses {@link comparedTo} internally.
+     *
+     * @see [bigbumber.js isEqualTo](https://mikemcl.github.io/bignumber.js/#eq)
      */
     public eq(that: FPN): boolean {
         return this.comparedTo(that) === 0;
@@ -351,6 +356,17 @@ class FPN implements VeChainDataModel<FPN> {
         return (dividend / divisor) * 10n ** fd;
     }
 
+    /**
+     * Returns `true `if the value of thisFPN is equal to the value of `that` FPN, otherwise returns `false`.
+     *
+     * As with JavaScript, `NaN` does not equal `NaN`.
+     *
+     * @param {FPN} that - The FPN to compare against.
+     *
+     * @return {boolean} `true` if the FPN numbers are equal, otherwise `false`.
+     *
+     * @remarks This method uses {@link eq} internally.
+     */
     public isEqual(that: FPN): boolean {
         return this.eq(that);
     }
