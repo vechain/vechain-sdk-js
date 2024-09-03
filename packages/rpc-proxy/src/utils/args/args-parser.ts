@@ -1,6 +1,7 @@
 import { type OptionValues } from 'commander';
 import { type Config } from '../../types';
 import { ArgsValidatorAndGetter } from '../args-validator';
+import { InvalidCommandLineArguments } from '@vechain/sdk-errors';
 
 /**
  * Parse the semantic of the arguments.
@@ -74,6 +75,24 @@ function parseAndGetFinalConfig(
             options,
             configuration
         );
+
+        // C - Evaluate the semantic of the arguments.
+        // NOTE: Here we know all the fields are valid. So we can check the semantics of the fields.
+
+        // Delegation cannot be enabled without a delegator
+        if (
+            (configuration.enableDelegation as boolean) &&
+            configuration.delegator === undefined
+        ) {
+            throw new InvalidCommandLineArguments(
+                '_checkIfConfigurationFileHasCorrectStructure()',
+                `Invalid configuration: Delegation cannot be enabled without a delegator`,
+                {
+                    flag: '--enableDelegation , --delegatorPrivateKey, --delegatorUrl',
+                    value: `${options.enableDelegation}, Not provided, Not provided`
+                }
+            );
+        }
     }
 
     // Return the configuration

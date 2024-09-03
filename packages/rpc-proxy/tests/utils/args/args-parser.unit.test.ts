@@ -191,9 +191,21 @@ describe('Args parser tests', () => {
         test('Should be able to get the enableDelegation option from command line arguments AND get the configuration', () => {
             [
                 // Normal syntax
-                ['path', 'program', '--enableDelegation'],
+                [
+                    'path',
+                    'program',
+                    '--enableDelegation',
+                    '--delegatorPrivateKey',
+                    '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ],
                 // Short syntax
-                ['path', 'program', '-e']
+                [
+                    'path',
+                    'program',
+                    '-e',
+                    '-dp',
+                    '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ]
             ].forEach((args) => {
                 // Get options
                 const options = getOptionsFromCommandLine('1.0.0', args);
@@ -627,7 +639,12 @@ describe('Args parser tests', () => {
                 // Normal syntax
                 ['path', 'program', '--delegatorUrl', ''],
                 // Short syntax
-                ['path', 'program', '-du', '']
+                ['path', 'program', '-du', ''],
+
+                // Enable delegation without the delegator
+
+                // Normal syntax
+                ['path', 'program', '--enableDelegation']
             ].forEach((args) => {
                 // Get options
                 const options = getOptionsFromCommandLine('1.0.0', args);
