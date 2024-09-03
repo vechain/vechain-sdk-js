@@ -1,5 +1,4 @@
-import { type ThorClient } from '../../../../../../thor-client';
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Method eth_newPendingTransactionFilter implementation
@@ -10,25 +9,18 @@ import { FunctionNotImplemented } from '@vechain/sdk-errors';
  * * params[0]: ...
  * * params[1]: ...
  * * params[n]: ...
- * @throws {FunctionNotImplemented}
  */
-const ethNewPendingTransactionFilter = async (
-    thorClient: ThorClient,
-    params: unknown[]
-): Promise<void> => {
+const ethNewPendingTransactionFilter = async (): Promise<void> => {
     // To avoid eslint error
     await Promise.resolve(0);
 
     // Not implemented yet
-    throw new FunctionNotImplemented(
-        'eth_newPendingTransactionFilter',
-        'Method "eth_newPendingTransactionFilter" has not been implemented yet.',
-        {
-            functionName: 'eth_newPendingTransactionFilter',
-            thorClient,
-            params
-        }
-    );
+    VeChainSDKLogger('warning').log({
+        title: 'eth_newPendingTransactionFilter',
+        messages: [
+            'Method "eth_newPendingTransactionFilter" has not been implemented yet.'
+        ]
+    });
 };
 
 export { ethNewPendingTransactionFilter };

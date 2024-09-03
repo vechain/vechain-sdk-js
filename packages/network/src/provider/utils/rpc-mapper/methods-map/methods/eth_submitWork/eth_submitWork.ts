@@ -1,5 +1,4 @@
-import { type ThorClient } from '../../../../../../thor-client';
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Method eth_submitWork implementation
@@ -10,25 +9,16 @@ import { FunctionNotImplemented } from '@vechain/sdk-errors';
  * * params[0]: ...
  * * params[1]: ...
  * * params[n]: ...
- * @throws {FunctionNotImplemented}
  */
-const ethSubmitWork = async (
-    thorClient: ThorClient,
-    params: unknown[]
-): Promise<void> => {
+const ethSubmitWork = async (): Promise<void> => {
     // To avoid eslint error
     await Promise.resolve(0);
 
     // Not implemented yet
-    throw new FunctionNotImplemented(
-        'eth_submitWork',
-        'Method "eth_submitWork" has not been implemented yet.',
-        {
-            functionName: 'eth_submitWork',
-            thorClient,
-            params
-        }
-    );
+    VeChainSDKLogger('warning').log({
+        title: 'eth_submitWork',
+        messages: ['Method "eth_submitWork" has not been implemented yet.']
+    });
 };
 
 export { ethSubmitWork };

@@ -1,5 +1,4 @@
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
-import { type ThorClient } from '../../../../../../thor-client';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Method debug_getBadBlocks implementation
@@ -10,25 +9,16 @@ import { type ThorClient } from '../../../../../../thor-client';
  * * params[0]: ...
  * * params[1]: ...
  * * params[n]: ...
- * @throws {FunctionNotImplemented}
  */
-const debugGetBadBlocks = async (
-    thorClient: ThorClient,
-    params: unknown[]
-): Promise<void> => {
+const debugGetBadBlocks = async (): Promise<void> => {
     // To avoid eslint error
     await Promise.resolve(0);
 
     // Not implemented yet
-    throw new FunctionNotImplemented(
-        'debug_getBadBlocks',
-        'Method "debug_getBadBlocks" has not been implemented yet.',
-        {
-            functionName: 'debug_getBadBlocks',
-            thorClient,
-            params
-        }
-    );
+    VeChainSDKLogger('warning').log({
+        title: 'debug_getBadBlocks',
+        messages: ['Method "debug_getBadBlocks" has not been implemented yet.']
+    });
 };
 
 export { debugGetBadBlocks };
