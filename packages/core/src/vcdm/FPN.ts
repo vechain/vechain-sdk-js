@@ -597,6 +597,35 @@ class FPN implements VeChainDataModel<FPN> {
     }
 
     /**
+     * Returns a FPN whose value is the value of this FPN plus `that` FPN.
+     *
+     * Limit cases
+     * * NaN + ±n = NaN
+     * * ±n + NaN = NaN
+     * * -Infinity + -Infinity = -Infinity
+     * * -Infinity + +Infinity = NaN
+     * * +Infinity + -Infinity = NaN
+     * * +Infinity + +Infinity = +Infinity
+     *
+     * @param {FPN} that - The fixed-point number to add to the current number.
+     *
+     * @return {FPN} The result of the addition. The return value is always exact and unrounded.
+     *
+     * @remarks The precision is the greater of the precision of the two operands.
+     *
+     * @see [bignumber.js plus](https://mikemcl.github.io/bignumber.js/#plus)
+     */
+    public plus(that: FPN): FPN {
+        if (this.isNaN() || that.isNaN()) return FPN.NaN;
+        if (this.isNegativeInfinite())
+            return that.isPositiveInfinite() ? FPN.NaN : FPN.NEGATIVE_INFINITY;
+        if (this.isPositiveInfinite())
+            return that.isNegativeInfinite() ? FPN.NaN : FPN.POSITIVE_INFINITY;
+        const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
+        return new FPN(fd, this.dp(fd).sv + that.dp(fd).sv);
+    }
+
+    /**
      * Returns a FPN whose value is the value of this FPN raised to the power of `that` FPN.
      *
      * Limit cases
@@ -631,35 +660,6 @@ class FPN implements VeChainDataModel<FPN> {
         if (that.isZero()) return FPN.of(1);
         const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
         return new FPN(fd, FPN.pow(fd, this.dp(fd).sv, that.dp(fd).sv));
-    }
-
-    /**
-     * Returns a FPN whose value is the value of this FPN plus `that` FPN.
-     *
-     * Limit cases
-     * * NaN + ±n = NaN
-     * * ±n + NaN = NaN
-     * * -Infinity + -Infinity = -Infinity
-     * * -Infinity + +Infinity = NaN
-     * * +Infinity + -Infinity = NaN
-     * * +Infinity + +Infinity = +Infinity
-     *
-     * @param {FPN} that - The fixed-point number to add to the current number.
-     *
-     * @return {FPN} The result of the addition. The return value is always exact and unrounded.
-     *
-     * @remarks The precision is the greater of the precision of the two operands.
-     *
-     * @see [bignumber.js plus](https://mikemcl.github.io/bignumber.js/#plus)
-     */
-    public plus(that: FPN): FPN {
-        if (this.isNaN() || that.isNaN()) return FPN.NaN;
-        if (this.isNegativeInfinite())
-            return that.isPositiveInfinite() ? FPN.NaN : FPN.NEGATIVE_INFINITY;
-        if (this.isPositiveInfinite())
-            return that.isNegativeInfinite() ? FPN.NaN : FPN.POSITIVE_INFINITY;
-        const fd = this.fd > that.fd ? this.fd : that.fd; // Max common fractional decimals.
-        return new FPN(fd, this.dp(fd).sv + that.dp(fd).sv);
     }
 
     /**
