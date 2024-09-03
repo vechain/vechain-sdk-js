@@ -24,7 +24,7 @@ function _checkConfigurationFileExists(filePath: string): void {
     const absolutePath = path.resolve(filePath);
 
     // Throw an error if the configuration file does not exist
-    if (!fs.existsSync(absolutePath)) {
+    if (!fs.existsSync(absolutePath) || filePath === '') {
         throw new InvalidConfigurationFilePath(
             '_checkConfigurationFileExists()',
             `Configuration file not found: ${absolutePath}`,

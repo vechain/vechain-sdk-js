@@ -1,6 +1,10 @@
 import { InvalidCommandLineArguments } from '@vechain/sdk-errors';
 import { checkValidConfigurationFile } from '../config-validator';
-import { isValidPort, isValidUrl } from '../validators';
+import {
+    isValidAccountsAsListOfPrivateKeys,
+    isValidPort,
+    isValidUrl
+} from '../validators';
 
 /**
  * Main args validator.
@@ -25,8 +29,9 @@ const ArgsValidator = {
             configurationFilePath !== undefined &&
             configurationFilePath !== null
         ) {
-            // Check if the configuration file is valid: It exists and is a valid JSON
-            checkValidConfigurationFile(configurationFilePath);
+            if (configurationFilePath === '')
+                // Check if the configuration file is valid: It exists and is a valid JSON
+                checkValidConfigurationFile(configurationFilePath);
 
             console.log(
                 `[rpc-proxy]: Configuration file provided ${configurationFilePath}`
@@ -52,7 +57,7 @@ const ArgsValidator = {
         if (port !== undefined && port !== null) {
             const portAsNumber = Number(port.toString());
 
-            if (!isValidPort(portAsNumber)) {
+            if (!isValidPort(portAsNumber) || port === '') {
                 throw new InvalidCommandLineArguments(
                     'ArgsValidator.port()',
                     'Invalid port provided. The parameter must be an integer',
@@ -84,7 +89,7 @@ const ArgsValidator = {
      */
     url: (url?: string | null): string | null => {
         if (url !== undefined && url !== null) {
-            if (!isValidUrl(url)) {
+            if (!isValidUrl(url) || url === '') {
                 throw new InvalidCommandLineArguments(
                     'ArgsValidator.url()',
                     'Invalid url provided. The parameter must be a valid url',
@@ -105,51 +110,43 @@ const ArgsValidator = {
             );
         }
         return null;
-    }
+    },
 
     /**
-     * ********* START: TEMPORARY COMMENT *********
-     * This method will be implemented in the future.
-     * ********* END: TEMPORARY COMMENT ********
-     *
      * Validate 'accounts' configuration field
      *
      * @param accounts Accounts to validate
      * @returns Accounts as a list of private keys, if provided AND valid, null otherwise
      * @throws {InvalidCommandLineArguments}
      */
-    // accounts: (accounts?: string | null): string[] | null => {
-    //     if (accounts !== undefined && accounts !== null) {
-    //         const accountsList: string[] = accounts.split(' ');
-    //
-    //         accountsList
-    //             .map(
-    //                 (accountPrivateKeyAsString) =>
-    //                     Hex.of(accountPrivateKeyAsString).bytes
-    //             )
-    //             .forEach((privateKey: Uint8Array) => {
-    //                 if (
-    //                     !secp256k1.isValidPrivateKey(Hex.of(privateKey).bytes)
-    //                 ) {
-    //                     throw new InvalidCommandLineArguments(
-    //                         'ArgsValidator.accounts()',
-    //                         'An invalid account private key provided.',
-    //                         {
-    //                             flag: '-a , --accounts',
-    //                             value: 'Value will not be shown for security reasons'
-    //                         }
-    //                     );
-    //                 }
-    //             });
-    //
-    //         return accountsList;
-    //     } else {
-    //         console.log(
-    //             '[rpc-proxy]: No accounts provided with command line arguments. Default port will be used.'
-    //         );
-    //     }
-    //     return null;
-    // }
+    accounts: (accounts?: string | null): string[] | null => {
+        if (accounts !== undefined && accounts !== null) {
+            const accountsList: string[] = accounts.split(' ');
+
+            if (Array.isArray(accountsList)) {
+                if (
+                    !isValidAccountsAsListOfPrivateKeys(accountsList) ||
+                    accounts === ''
+                ) {
+                    throw new InvalidCommandLineArguments(
+                        'ArgsValidator.accounts()',
+                        'Invalid accounts provided. The parameter must be an array of valid private keys',
+                        {
+                            flag: '-a , --accounts',
+                            value: 'Value will not be shown for security reasons (check your command line arguments)'
+                        }
+                    );
+                }
+
+                return accountsList;
+            }
+        } else {
+            console.log(
+                '[rpc-proxy]: No accounts provided with command line arguments. Default port will be used.'
+            );
+        }
+        return null;
+    }
 
     /*
      * ********* START: TEMPORARY COMMENT *********

@@ -109,6 +109,42 @@ describe('Args parser tests', () => {
         });
 
         /**
+         * Should be able to parse the accounts (as a list of private keys) option from command line arguments
+         */
+        test('Should be able to get the accounts from command line arguments', () => {
+            [
+                // Normal syntax
+                [
+                    'path',
+                    'program',
+                    '--accounts',
+                    '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158 7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ],
+                // Short syntax
+                [
+                    'path',
+                    'program',
+                    '-a',
+                    '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158 7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ]
+            ].forEach((args) => {
+                // Get options
+                const options = getOptionsFromCommandLine('1.0.0', args);
+
+                // // Get the configuration
+                const configuration = parseAndGetFinalConfig(
+                    options,
+                    defaultConfiguration
+                );
+
+                expect(configuration.accounts).toEqual([
+                    '8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158',
+                    '7f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158'
+                ]);
+            });
+        });
+
+        /**
          * Should be able to parse the configuration file option from command line arguments
          */
         test('Should be able to get the configuration file from command line arguments', () => {
@@ -161,7 +197,11 @@ describe('Args parser tests', () => {
                 // Normal syntax
                 ['path', 'program', '--port', 'INVALID'],
                 // Short syntax
-                ['path', 'program', '-p', 'INVALID']
+                ['path', 'program', '-p', 'INVALID'],
+                // Normal syntax
+                ['path', 'program', '--port', ''],
+                // Short syntax
+                ['path', 'program', '-p', '']
             ].forEach((args) => {
                 // Get options
                 const options = getOptionsFromCommandLine('1.0.0', args);
@@ -174,14 +214,18 @@ describe('Args parser tests', () => {
         });
 
         /**
-         * Should be able to parse the url option from command line arguments
+         * Should NOT be able to parse the url option from command line arguments
          */
         test('Should be NOT able to parse an invalid url from command line arguments', () => {
             [
                 // Normal syntax
                 ['path', 'program', '--url', 'INVALID'],
                 // Short syntax
-                ['path', 'program', '-u', 'INVALID']
+                ['path', 'program', '-u', 'INVALID'],
+                // Normal syntax
+                ['path', 'program', '--url', ''],
+                // Short syntax
+                ['path', 'program', '-u', '']
             ].forEach((args) => {
                 // Get options
                 const options = getOptionsFromCommandLine('1.0.0', args);
@@ -194,14 +238,56 @@ describe('Args parser tests', () => {
         });
 
         /**
-         * Should be able to parse the configuration file option from command line arguments
+         * Should NOT be able to parse the accounts (as a list of private keys) option from command line arguments
+         */
+        test('Should be NOT able to parse an invalid accounts from command line arguments', () => {
+            [
+                // Normal syntax
+                ['path', 'program', '--accounts', `INVALID`],
+                // Short syntax
+                ['path', 'program', '-a', `INVALID`],
+                // Normal syntax
+                [
+                    'path',
+                    'program',
+                    '--accounts',
+                    `8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158 INVALID`
+                ],
+                // Short syntax
+                [
+                    'path',
+                    'program',
+                    '-a',
+                    `8f9290cc44c5fd2b95fe21d6ad6fe5fa9c177e1cd6f3b4c96a97b13e09eaa158 INVALID`
+                ],
+                // Normal syntax
+                ['path', 'program', '--accounts', ''],
+                // Short syntax
+                ['path', 'program', '-a', '']
+            ].forEach((args) => {
+                // Get options
+                const options = getOptionsFromCommandLine('1.0.0', args);
+
+                // Throw the error
+                expect(() =>
+                    parseAndGetFinalConfig(options, defaultConfiguration)
+                ).toThrowError(InvalidCommandLineArguments);
+            });
+        });
+
+        /**
+         * Should NOT be able to parse the configuration file option from command line arguments
          */
         test('Should be NOT able to parse an invalid configuration file from command line arguments', () => {
             [
                 // Normal syntax
                 ['path', 'program', '--configurationFile', `INVALID`],
                 // Short syntax
-                ['path', 'program', '-c', `INVALID`]
+                ['path', 'program', '-c', `INVALID`],
+                // Normal syntax
+                ['path', 'program', '--configurationFile', ''],
+                // Short syntax
+                ['path', 'program', '-c', '']
             ].forEach((args) => {
                 // Get options
                 const options = getOptionsFromCommandLine('1.0.0', args);

@@ -50,21 +50,17 @@ const ArgsValidatorAndGetter = {
      * @throws {InvalidCommandLineArguments}
      */
     port: (options: OptionValues, currentConfiguration: Config): Config => {
-        const field = ArgsValidator.port(options.port as string);
-        if (field !== null) {
+        const port = ArgsValidator.port(options.port as string);
+        if (port !== null) {
             return {
                 ...currentConfiguration,
-                port: field
+                port
             } satisfies Config;
         }
         return currentConfiguration;
     },
 
     /**
-     * ********* START: TEMPORARY COMMENT *********
-     * This method will be implemented in the future.
-     * ********* END: TEMPORARY COMMENT ********
-     *
      * Validate 'url' configuration field
      *
      * @param options Command line arguments options
@@ -73,21 +69,17 @@ const ArgsValidatorAndGetter = {
      * @throws {InvalidCommandLineArguments}
      */
     url: (options: OptionValues, currentConfiguration: Config): Config => {
-        const field = ArgsValidator.url(options.url as string);
-        if (field !== null) {
+        const url = ArgsValidator.url(options.url as string);
+        if (url !== null) {
             return {
                 ...currentConfiguration,
-                url: field
+                url
             } satisfies Config;
         }
         return currentConfiguration;
-    }
+    },
 
     /**
-     * ********* START: TEMPORARY COMMENT *********
-     * This method will be implemented in the future.
-     * ********* END: TEMPORARY COMMENT ********
-     *
      * Validate 'accounts' configuration field
      *
      * @param options Command line arguments options
@@ -95,16 +87,16 @@ const ArgsValidatorAndGetter = {
      * @returns Configuration object
      * @throws {InvalidCommandLineArguments}
      */
-    // accounts: (options: OptionValues, currentConfiguration: Config): Config => {
-    //     const field = ArgsValidator.accounts(options.accounts as string);
-    //     if (field !== null) {
-    //         return {
-    //             ...currentConfiguration,
-    //             accounts: field
-    //         } satisfies Config;
-    //     }
-    //     return currentConfiguration;
-    // }
+    accounts: (options: OptionValues, currentConfiguration: Config): Config => {
+        const accounts = ArgsValidator.accounts(options.accounts as string);
+        if (accounts !== null) {
+            return {
+                ...currentConfiguration,
+                accounts
+            } satisfies Config;
+        }
+        return currentConfiguration;
+    }
 
     /**
      * ********* START: TEMPORARY COMMENT *********

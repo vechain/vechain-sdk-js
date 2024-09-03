@@ -54,13 +54,9 @@ function parseAndGetFinalConfig(
             configuration.verbose = options.verbose as boolean;
         }
 
-        // ********* START: TEMPORARY COMMENT *********
-        // The below methods will be implemented in the future.
-        // ********* END: TEMPORARY COMMENT ********
-
         // // B.4 - Get and validate accounts field
-        // configuration = ArgsValidatorAndGetter.accounts(options, configuration);
-        //
+        configuration = ArgsValidatorAndGetter.accounts(options, configuration);
+
         // // B.5 - Get and validate mnemonic field
         // configuration = ArgsValidatorAndGetter.mnemonic(options, configuration);
     }

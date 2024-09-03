@@ -51,12 +51,12 @@ function getOptionsFromCommandLine(
         .addOption(new Option('-p, --port <port>', 'Port to run the proxy on'))
 
         // Accounts to use for signing transactions (LIST OF PRIVATE KEYS)
-        // .addOption(
-        //     new Option(
-        //         '-a, --accounts <accounts>',
-        //         'List of accounts private keys to use for signing transactions'
-        //     )
-        // )
+        .addOption(
+            new Option(
+                '-a, --accounts <accounts>',
+                'List of accounts private keys to use for signing transactions'
+            )
+        )
 
         // Accounts to use for signing transactions (HD WALLET MNEUMONIC)
         // .addOption(
