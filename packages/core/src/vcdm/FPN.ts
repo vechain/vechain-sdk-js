@@ -582,7 +582,7 @@ class FPN implements VeChainDataModel<FPN> {
     }
 
     public static of(
-        exp: number,
+        exp: bigint | number | string,
         decimalPlaces: bigint = this.DEFAULT_FRACTIONAL_DECIMALS
     ): FPN {
         if (Number.isNaN(exp)) return new FPN(decimalPlaces, 0n, Number.NaN);
