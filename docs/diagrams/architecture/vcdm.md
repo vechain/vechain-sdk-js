@@ -25,9 +25,41 @@ classDiagram
     }
     class Contract
     class Currency {
-        <<interface>>
+       +string code
     }
     class ExternallyOwnedAccount
+    class FPN {
+        +FPN NaN$
+        +FPN NEGATIVE_INFINITY$
+        +FPN POSITIVE_INFINITY$
+        +FPN ZERO$
+        +FPN abs()
+        +null|number comparedTo(FPN that)
+        +FPN div(FPN that)
+        +FPN dp(bigint|number decimalPlaces)
+        +boolean eq(FPN that)
+        +boolean gt(FPN that)
+        +boolean gte(FPN that)
+        +FPN idiv(FPN that)
+        +boolean isFinite()
+        +boolean isInfinite()
+        +boolean isInteger()
+        +boolean isNaN()
+        +boolean isNegative()
+        +boolean isNegativeInfinite()
+        +boolean isPositive()
+        +boolean isPositiveInfinite()
+        +boolean isZero()
+        +boolean lt(FPN that)
+        +boolean lte(FPN that)
+        +FPN minus(FPN that)
+        +FPN modulo(FPN that)
+        +FPN of(bigint|number|string exp)$
+        +FPN plus(FPN that)
+        +FPN pow(FPN that)
+        +FPN sqrt()
+        +FPN times(FPN that)
+    }
     class Hash {
         <<interface>>
     }
@@ -83,6 +115,7 @@ classDiagram
     Account "1" ..|> "1" Address : has
     Account "1" ..|> "1" Currency : has
     Account <|-- Contract
+    FPN <|-- Currency
     Hash <|.. Blake2b256
     Hash <|.. Keccak256
     Hash <|.. Sha256
@@ -98,6 +131,7 @@ classDiagram
     Txt <|-- Revision
     Txt <|-- Mnemonic
     VeChainDataModel <|.. BloomFilter
+    VeChainDataModel <|.. FPN
     VeChainDataModel <|.. Hex
     VeChainDataModel <|.. Txt
 ```

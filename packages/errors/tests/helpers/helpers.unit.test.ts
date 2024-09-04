@@ -73,14 +73,7 @@ describe('Error package helpers unit tests', () => {
         });
 
         /**
-         * NEW Error builder function
-         *
-         * ----- START: TEMPORARY COMMENT -----
-         * Remove previous tests when the new function is implemented
-         * ----- END: TEMPORARY COMMENT -----
-         */
-        /**
-         * An error message is built
+         * Error message builder function
          */
         test('Should be able to build an error message', () => {
             const errorMessage = createErrorMessage(
