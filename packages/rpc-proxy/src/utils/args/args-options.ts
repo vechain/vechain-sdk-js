@@ -1,10 +1,6 @@
 import { Command, Option, type OptionValues } from 'commander';
 
 /**
- * ********* START: TEMPORARY COMMENT *********
- * Some of the options are commented out because they are not implemented yet.
- * ********* END: TEMPORARY COMMENT ********
- *
  * Get the command line arguments options
  *
  * Options:
