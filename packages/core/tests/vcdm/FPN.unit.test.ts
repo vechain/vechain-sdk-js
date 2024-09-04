@@ -1913,17 +1913,20 @@ describe('FPN class tests', () => {
             expect(actual.n).toBe(expected);
         });
 
-        test('±b ^ -e', () => {
+        test('b ^ -e - scale test', () => {
             const b = 3;
             const e = -2;
-            const actual = FPN.of(b).pow(FPN.of(e));
+            const actualUp = FPN.of(b, 25n).pow(FPN.of(e, 15n));
+            const actualDn = FPN.of(b, 15n).pow(FPN.of(e, 25n));
             const expected = BigNumber(b).pow(BigNumber(e));
             const fd = 16; // Fractional digits before divergence.
-            expect(actual.n.toFixed(fd)).toBe(expected.toNumber().toFixed(fd));
-            expect(FPN.of(-b).pow(FPN.of(e))).toEqual(actual);
+            expect(actualUp.n.toFixed(fd)).toBe(
+                expected.toNumber().toFixed(fd)
+            );
+            expect(actualUp.eq(actualDn)).toBe(true);
         });
 
-        test('±b ^ +e', () => {
+        test('±b ^ +e - scale test', () => {
             const b = 0.7;
             const e = -2;
             const actual = FPN.of(b).pow(FPN.of(e));

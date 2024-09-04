@@ -235,7 +235,7 @@ class FPN implements VeChainDataModel<FPN> {
      * @return {bigint} - The result of the division, adjusted by the given factor fd.
      */
     private static div(fd: bigint, dividend: bigint, divisor: bigint): bigint {
-        return divisor === 1n ? dividend : (10n ** fd * dividend) / divisor;
+        return (10n ** fd * dividend) / divisor;
     }
 
     /**
@@ -639,6 +639,8 @@ class FPN implements VeChainDataModel<FPN> {
      * @return {FPN} - The result of raising this fixed-point number to the power of the given exponent.
      *
      * @remarks The precision is the greater of the precision of the two operands.
+     * @remarks In fixed-precision math, the comparisons between powers of operands having different fractional
+     * precision can lead to differences.
      *
      * @see [bignumber.js exponentiatedBy](https://mikemcl.github.io/bignumber.js/#pow)
      */
