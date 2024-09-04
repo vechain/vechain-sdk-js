@@ -36,8 +36,6 @@ function startProxy(): void {
     // Parse the SEMANTIC of the arguments and throw an error if the options are not valid
     const config = parseAndGetFinalConfig(options, defaultConfiguration);
 
-    console.log(`[rpc-proxy]: Using configuration ${JSON.stringify(config)}`);
-
     // Log the RPC Proxy start
     console.log('[rpc-proxy]: Starting VeChain RPC Proxy');
 
