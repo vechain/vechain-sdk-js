@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     RPCMethodsMap,
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Mapper integration tests for 'debug_getRawHeader' method
@@ -34,31 +34,15 @@ describe('RPC Mapper - debug_getRawHeader method tests', () => {
          * Positive case 1 - ... Description ...
          */
         test('debug_getRawHeader - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.debug_getRawHeader
-                    ]([-1])
-            ).rejects.toThrowError(FunctionNotImplemented);
-        });
-    });
+            const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
 
-    /**
-     * debug_getRawHeader RPC call tests - Negative cases
-     */
-    describe('debug_getRawHeader - Negative cases', () => {
-        /**
-         * Negative case 1 - ... Description ...
-         */
-        test('debug_getRawHeader - negative case 1', async () => {
             // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.debug_getRawHeader
-                    ](['SOME_RANDOM_PARAM'])
-            ).rejects.toThrowError(FunctionNotImplemented);
+            await RPCMethodsMap(thorClient)[RPC_METHODS.debug_getRawHeader]([
+                -1
+            ]);
+
+            expect(logSpy).toHaveBeenCalled();
+            logSpy.mockRestore();
         });
     });
 });

@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     RPCMethodsMap,
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Mapper integration tests for 'debug_getRawReceipts' method
@@ -33,32 +33,16 @@ describe('RPC Mapper - debug_getRawReceipts method tests', () => {
         /**
          * Positive case 1 - ... Description ...
          */
-        test('debug_getRawReceipts - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.debug_getRawReceipts
-                    ]([-1])
-            ).rejects.toThrowError(FunctionNotImplemented);
-        });
-    });
+        test('debug_getBadBlocks - positive case 1', async () => {
+            const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
 
-    /**
-     * debug_getRawReceipts RPC call tests - Negative cases
-     */
-    describe('debug_getRawReceipts - Negative cases', () => {
-        /**
-         * Negative case 1 - ... Description ...
-         */
-        test('debug_getRawReceipts - negative case 1', async () => {
             // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.debug_getRawReceipts
-                    ](['SOME_RANDOM_PARAM'])
-            ).rejects.toThrowError(FunctionNotImplemented);
+            await RPCMethodsMap(thorClient)[RPC_METHODS.debug_getRawReceipts]([
+                -1
+            ]);
+
+            expect(logSpy).toHaveBeenCalled();
+            logSpy.mockRestore();
         });
     });
 });
