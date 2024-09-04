@@ -114,7 +114,7 @@ class FPN implements VeChainDataModel<FPN> {
     }
 
     /**
-     * Returns the new Fixed-Point Number (FDN) instance having
+     * Returns the new Fixed-Point Number (FPN) instance having
      *
      * @param {bigint} fd - Number of Fractional Digits (or decimal places).
      * @param {bigint} sv - Scaled Value.
