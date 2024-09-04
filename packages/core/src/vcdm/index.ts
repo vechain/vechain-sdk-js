@@ -2,6 +2,7 @@ export * from './account';
 export * from './Address';
 export * from './BloomFilter';
 export * from './Currency';
+export * from './FPN';
 export * from './Hash';
 export * from './Hex';
 export * from './HexInt';

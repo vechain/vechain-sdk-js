@@ -54,6 +54,13 @@ describe('ThorId class tests.', () => {
             expect(tid.isEqual(exp)).toBe(true);
         });
 
+        test('Return a ThorId instance if the passed argument is a HexUint instance', () => {
+            const exp = HexUInt.of(ThorIdFixture.valid.bytes);
+            const tid = ThorId.of(exp);
+            expect(tid).toBeInstanceOf(ThorId);
+            expect(tid.isEqual(exp)).toBe(true);
+        });
+
         test('Throw an error if the passed argument is a negative bigint', () => {
             expect(() => ThorId.of(-1)).toThrow(InvalidDataType);
         });
