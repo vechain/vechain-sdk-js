@@ -1,46 +1,51 @@
-import * as n_bip32 from '@scure/bip32';
-import * as n_bip39 from '@scure/bip39';
-import * as n_utils from '@noble/curves/abstract/utils';
+import * as s_bip32 from '@scure/bip32';
+import * as s_bip39 from '@scure/bip39';
+import * as nc_utils from '@noble/curves/abstract/utils';
+import { base58 } from '@scure/base';
+import { secp256k1 } from '../secp256k1';
+import { Sha256 } from '../hash';
+import { VET_DERIVATION_PATH, X_PRIV_PREFIX, X_PUB_PREFIX } from '../utils';
 import {
     InvalidHDNode,
     InvalidHDNodeMnemonic,
     InvalidSecp256k1PrivateKey
 } from '@vechain/sdk-errors';
-import { base58 } from '@scure/base';
-import { secp256k1 } from '../secp256k1';
-import { Sha256 } from '../hash';
-import { VET_DERIVATION_PATH, X_PRIV_PREFIX, X_PUB_PREFIX } from '../utils';
 
-class HDNode extends n_bip32.HDKey {
+class HDNode extends s_bip32.HDKey {
     /**
-     * Creates a [BIP32 Hierarchical Deterministic Key](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
-     * {@link bip32.HDKey} node
-     * from [BIP39 Mnemonic Words](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki) and from it
-     * derives a child HDKey node based on the given derivation path.
-     *
-     * Secure audit function.
-     * - [n_bip32](https://github.com/paulmillr/scure-bip32).
-     * - [n_bip39](https://github.com/paulmillr/scure-bip39)
+     * Creates a
+     * [BIP32 Hierarchical Deterministic Key](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
+     * node wallet from
+     * [BIP39 Mnemonic Words](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki)
+     * and from it derives a child node based on the given derivation path.
      *
      * @param {string[]} words - An array of words representing the mnemonic.
      * @param {string} path - The derivation path to derive the child node.
+     *
      * Default value is {@link VET_DERIVATION_PATH}.
-     * @return {bip32.HDKey} - An instance of n_bip32.HDKey representing the derived child node.
-     * @throws {InvalidHDNodeMnemonic,InvalidHDNode}
+     * @return {bip32.HDKey} - An instance of s_bip32.HDKey representing the derived child node.
+     *
+     * @throws {InvalidHDNode} If `path` is not valid to derive a node wallet.
+     * @throws {InvalidHDNodeMnemonic} If `words` is an invalid array mnemonic.
+     *
+     * @remarks Security auditable method, depends on
+     * * [s_bip32.HDKey.derive](https://github.com/paulmillr/scure-bip32);
+     * * [s_bip32.HDKey.fromMasterSeed](https://github.com/paulmillr/scure-bip32);
+     * * [s_bip39.mnemonicToSeedSync](https://github.com/paulmillr/scure-bip39)
      */
     public static fromMnemonic(
         words: string[],
         path: string = VET_DERIVATION_PATH
     ): HDNode {
-        let master: n_bip32.HDKey;
+        let master: s_bip32.HDKey;
         try {
-            master = n_bip32.HDKey.fromMasterSeed(
-                n_bip39.mnemonicToSeedSync(words.join(' ').toLowerCase())
+            master = s_bip32.HDKey.fromMasterSeed(
+                s_bip39.mnemonicToSeedSync(words.join(' ').toLowerCase())
             );
         } catch (error) {
             // The error masks any mnemonic words leak.
             throw new InvalidHDNodeMnemonic(
-                'HDNode.fromMnemonic()',
+                'HDNode.fromMnemonic',
                 'Invalid mnemonic words given as input.',
                 undefined,
                 error
@@ -50,7 +55,7 @@ class HDNode extends n_bip32.HDKey {
             return master.derive(path) as HDNode;
         } catch (error) {
             throw new InvalidHDNode(
-                'HDNode.fromMnemonic()',
+                'HDNode.fromMnemonic',
                 'Invalid derivation path given as input.',
                 { derivationPath: path },
                 error
@@ -59,16 +64,19 @@ class HDNode extends n_bip32.HDKey {
     }
 
     /**
-     * Creates a [BIP32 Hierarchical Deterministic Key](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
-     * {@link bip32.HDKey} node from a private key and chain code.
+     * Creates a
+     * [BIP32 Hierarchical Deterministic Key](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
+     * node wallet from a private key and chain code.
      *
      * Secure audit function.
      * - [base58](https://github.com/paulmillr/scure-base)
-     * - [n_bip32](https://github.com/paulmillr/scure-bip32).
+     * - [s_bip32](https://github.com/paulmillr/scure-bip32).
      *
      * @param {Uint8Array} privateKey The private key.
      * @param {Uint8Array} chainCode The chain code.
-     * @returns {bip32.HDKey} The `n_bip32.HDKey` object.
+     *
+     * @returns Returns the node wallet from `privateKey` and `chainCode`.
+     *
      * @throws {InvalidSecp256k1PrivateKey}
      */
     public static fromPrivateKey(
@@ -76,7 +84,7 @@ class HDNode extends n_bip32.HDKey {
         chainCode: Uint8Array
     ): HDNode {
         if (privateKey.length === 32) {
-            const header = n_utils.concatBytes(
+            const header = nc_utils.concatBytes(
                 X_PRIV_PREFIX,
                 chainCode,
                 Uint8Array.of(0),
@@ -87,9 +95,9 @@ class HDNode extends n_bip32.HDKey {
                 0,
                 4
             );
-            const expandedPrivateKey = n_utils.concatBytes(header, checksum);
+            const expandedPrivateKey = nc_utils.concatBytes(header, checksum);
             try {
-                return n_bip32.HDKey.fromExtendedKey(
+                return s_bip32.HDKey.fromExtendedKey(
                     base58.encode(expandedPrivateKey)
                 ) as HDNode;
             } catch (error) {
@@ -116,7 +124,7 @@ class HDNode extends n_bip32.HDKey {
      *
      * @param {Uint8Array} publicKey - The public key bytes.
      * @param {Uint8Array} chainCode - The chain code bytes.
-     * @returns {bip32.HDKey} - The `n_bip32.HDKey` object.
+     * @returns {bip32.HDKey} - The `s_bip32.HDKey` object.
      * @throws {InvalidHDNode}
      */
     public static fromPublicKey(
@@ -124,7 +132,7 @@ class HDNode extends n_bip32.HDKey {
         chainCode: Uint8Array
     ): HDNode {
         if (chainCode.length === 32) {
-            const header = n_utils.concatBytes(
+            const header = nc_utils.concatBytes(
                 X_PUB_PREFIX,
                 chainCode,
                 secp256k1.compressPublicKey(publicKey)
@@ -133,9 +141,9 @@ class HDNode extends n_bip32.HDKey {
                 0,
                 4
             );
-            const expandedPublicKey = n_utils.concatBytes(header, checksum);
+            const expandedPublicKey = nc_utils.concatBytes(header, checksum);
             try {
-                return n_bip32.HDKey.fromExtendedKey(
+                return s_bip32.HDKey.fromExtendedKey(
                     base58.encode(expandedPublicKey)
                 ) as HDNode;
             } catch (error) {
