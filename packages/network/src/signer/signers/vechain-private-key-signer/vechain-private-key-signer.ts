@@ -4,12 +4,12 @@ import {
     Hex,
     HexUInt,
     Keccak256,
+    secp256k1,
     Transaction,
+    type TransactionBody,
     TransactionHandler,
     Txt,
-    secp256k1,
-    vechain_sdk_core_ethers,
-    type TransactionBody
+    vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
 import {
     InvalidSecp256k1PrivateKey,
@@ -114,10 +114,6 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
     }
 
     /**
-     * --- START: TEMPORARY COMMENT ---
-     * Probably add in the future with vechain_sdk_core_ethers.TransactionRequest as a return type
-     * --- END: TEMPORARY COMMENT ---
-     *
      *  Sends %%transactionToSend%% to the Network. The ``signer.populateTransaction(transactionToSend)``
      *  is called first to ensure all necessary properties for the
      *  transaction to be valid have been populated first.
