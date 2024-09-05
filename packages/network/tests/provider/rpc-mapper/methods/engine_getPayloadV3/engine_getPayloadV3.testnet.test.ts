@@ -37,7 +37,7 @@ describe('RPC Mapper - engine_getPayloadV1 method tests', () => {
             const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
 
             // NOT IMPLEMENTED YET!
-            await RPCMethodsMap(thorClient)[RPC_METHODS.engine_getPayloadV1]([
+            await RPCMethodsMap(thorClient)[RPC_METHODS.engine_getPayloadV3]([
                 -1
             ]);
 
