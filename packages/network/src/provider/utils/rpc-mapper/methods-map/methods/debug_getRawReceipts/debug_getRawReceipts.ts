@@ -10,10 +10,7 @@ import { VeChainSDKLogger } from '@vechain/sdk-logging';
  * * params[1]: ...
  * * params[n]: ...
  */
-const debugGetRawReceipts = async (): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
-
+const debugGetRawReceipts = async (): Promise<'METHOD NOT IMPLEMENTED'> => {
     // Not implemented yet
     VeChainSDKLogger('warning').log({
         title: 'debug_getRawReceipts',
@@ -21,6 +18,9 @@ const debugGetRawReceipts = async (): Promise<void> => {
             'Method "debug_getRawReceipts" has not been implemented yet.'
         ]
     });
+
+    // To avoid eslint error
+    return await Promise.resolve('METHOD NOT IMPLEMENTED');
 };
 
 export { debugGetRawReceipts };

@@ -1,4 +1,4 @@
-import type { ThorClient } from '../../../../../../thor-client';
+import { type ThorClient } from '../../../../../../thor-client';
 import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
 
 /**

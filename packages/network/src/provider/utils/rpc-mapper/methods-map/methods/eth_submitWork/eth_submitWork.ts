@@ -10,15 +10,15 @@ import { VeChainSDKLogger } from '@vechain/sdk-logging';
  * * params[1]: ...
  * * params[n]: ...
  */
-const ethSubmitWork = async (): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
-
+const ethSubmitWork = async (): Promise<'METHOD NOT IMPLEMENTED'> => {
     // Not implemented yet
     VeChainSDKLogger('warning').log({
         title: 'eth_submitWork',
         messages: ['Method "eth_submitWork" has not been implemented yet.']
     });
+
+    // To avoid eslint error
+    return await Promise.resolve('METHOD NOT IMPLEMENTED');
 };
 
 export { ethSubmitWork };

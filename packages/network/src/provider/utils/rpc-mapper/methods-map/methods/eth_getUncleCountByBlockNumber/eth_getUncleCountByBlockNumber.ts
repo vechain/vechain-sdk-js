@@ -1,4 +1,5 @@
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
+
 /**
  * RPC Method eth_getUncleCountByBlockNumber implementation
  *
@@ -9,17 +10,18 @@ import { VeChainSDKLogger } from '@vechain/sdk-logging';
  * * params[1]: ...
  * * params[n]: ...
  */
-const ethGetUncleCountByBlockNumber = async (): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
+const ethGetUncleCountByBlockNumber =
+    async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+        // Not implemented yet
+        VeChainSDKLogger('warning').log({
+            title: 'eth_getUncleCountByBlockNumber',
+            messages: [
+                'Method "eth_getUncleCountByBlockNumber" has not been implemented yet.'
+            ]
+        });
 
-    // Not implemented yet
-    VeChainSDKLogger('warning').log({
-        title: 'eth_getUncleCountByBlockNumber',
-        messages: [
-            'Method "eth_getUncleCountByBlockNumber" has not been implemented yet.'
-        ]
-    });
-};
+        // To avoid eslint error
+        return await Promise.resolve('METHOD NOT IMPLEMENTED');
+    };
 
 export { ethGetUncleCountByBlockNumber };
