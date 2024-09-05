@@ -5,7 +5,8 @@ import { Hex, Keccak256 } from '@vechain/sdk-core';
  * RPC Method web3_sha3 implementation
  *
  * @link [web3_sha3](https://docs.alchemy.com/reference/web3-sha3)
- *
+ * @param params - The standard array of rpc call parameters.
+ *                * params[0]: The data to hash.
  * @returns A string representing the current client version.
  */
 const web3Sha3 = async (params: unknown[]): Promise<string> => {
