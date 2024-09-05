@@ -19,11 +19,11 @@ class NodesModule {
      *
      * @returns A promise that resolves to the list of connected peers.
      */
-    public async getNodes(): Promise<ConnectedPeer | null> {
+    public async getNodes(): Promise<ConnectedPeer[] | null> {
         return (await this.thor.httpClient.http(
             'GET',
             thorest.nodes.get.NODES()
-        )) as ConnectedPeer | null;
+        )) as ConnectedPeer[] | null;
     }
 
     /**
@@ -36,10 +36,7 @@ class NodesModule {
      * But what if the node's disk is full, and it's not writing the new blocks to its database? In this case the node is off-sync even
      * though it's technically alive and connected
      * @returns A boolean indicating whether the node is healthy.
-     * @throws {InvalidDataTypeError} - if the timestamp key does not exist in the response from the API call to the node
-     * @throws {InvalidDataTypeError} - if the timestamp key exists in the response from the API call to the node but the value is not a number
-     * @throws {InvalidDataTypeError} - if the response from the API call to the node is not an object
-     * @throws {InvalidDataTypeError} - if the response from the API call to the node is null or undefined
+     * @throws {InvalidDataTypeError}
      */
     public async isHealthy(): Promise<boolean> {
         /**

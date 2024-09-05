@@ -36,6 +36,7 @@ enum RPC_METHODS {
     debug_traceCall = 'debug_traceCall',
     evm_mine = 'evm_mine',
     web3_sha3 = 'web3_sha3',
+    net_peerCount = 'net_peerCount',
 
     /**
      * TO BE IMPLEMENTED METHODS:
@@ -57,7 +58,6 @@ enum RPC_METHODS {
     eth_sign = 'eth_sign',
     eth_submitWork = 'eth_submitWork',
     net_listening = 'net_listening',
-    net_peerCount = 'net_peerCount',
     parity_nextNonce = 'parity_nextNonce',
     eth_newFilter = 'eth_newFilter',
     eth_newBlockFilter = 'eth_newBlockFilter',
