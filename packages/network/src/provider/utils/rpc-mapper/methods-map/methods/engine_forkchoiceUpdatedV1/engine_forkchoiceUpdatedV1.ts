@@ -10,17 +10,18 @@ import { VeChainSDKLogger } from '@vechain/sdk-logging';
  * * params[1]: ...
  * * params[n]: ...
  */
-const engineForkchoiceUpdatedV1 = async (): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
+const engineForkchoiceUpdatedV1 =
+    async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+        // Not implemented yet
+        VeChainSDKLogger('warning').log({
+            title: 'engine_forkchoiceUpdatedV1',
+            messages: [
+                'Method "engine_forkchoiceUpdatedV1" has not been implemented yet.'
+            ]
+        });
 
-    // Not implemented yet
-    VeChainSDKLogger('warning').log({
-        title: 'engine_forkchoiceUpdatedV1',
-        messages: [
-            'Method "engine_forkchoiceUpdatedV1" has not been implemented yet.'
-        ]
-    });
-};
+        // To avoid eslint error
+        return await Promise.resolve('METHOD NOT IMPLEMENTED');
+    };
 
 export { engineForkchoiceUpdatedV1 };
