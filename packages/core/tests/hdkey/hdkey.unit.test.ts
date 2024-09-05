@@ -12,24 +12,59 @@ import {
     type WordlistSizeType,
     ZERO_BYTES
 } from '../../src';
-import { addresses, words, wrongDerivationPath, wrongWords } from './fixture';
+
+const HDKeyFixture = {
+    /**
+     * Addresses generated from the mnemonic above
+     */
+    addresses: [
+        '0x339Fb3C438606519E2C75bbf531fb43a0F449A70',
+        '0x5677099D06Bc72f9da1113aFA5e022feEc424c8E',
+        '0x86231b5CDCBfE751B9DdCD4Bd981fC0A48afe921',
+        '0xd6f184944335f26Ea59dbB603E38e2d434220fcD',
+        '0x2AC1a0AeCd5C80Fb5524348130ab7cf92670470A'
+    ],
+
+    /**
+     * Correct mnemonic
+     */
+    words: 'ignore empty bird silly journey junior ripple have guard waste between tenant'.split(
+        ' '
+    ),
+
+    /**
+     * Wrong mnemonic
+     */
+    wrongWords:
+        'ignore empty bird silly journey junior ripple have guard waste between'.split(
+            ' '
+        ),
+
+    /**
+     * Wrong derivation path fixture.
+     */
+    wrongDerivationPath: '0/1/4/2/4/h'
+};
 
 /**
  * Mnemonic tests
- * @group unit/hdnode
+ * @group unit/hdkey
  */
 describe('HDNode', () => {
     describe('fromMnemonic', () => {
         test('fromMnemonic - invalid - path', () => {
             expect(() =>
-                HDKey.fromMnemonic(words, wrongDerivationPath)
+                HDKey.fromMnemonic(
+                    HDKeyFixture.words,
+                    HDKeyFixture.wrongDerivationPath
+                )
             ).toThrowError(InvalidHDKey);
         });
 
         test('fromMnemonic - invalid - word list', () => {
-            expect(() => HDKey.fromMnemonic(wrongWords)).toThrowError(
-                InvalidHDKeyMnemonic
-            );
+            expect(() =>
+                HDKey.fromMnemonic(HDKeyFixture.wrongWords)
+            ).toThrowError(InvalidHDKeyMnemonic);
         });
 
         test('fromMnemonic - invalid - word list leak check', () => {
@@ -51,7 +86,7 @@ describe('HDNode', () => {
         });
 
         test('fromMnemonic - valid - address sequence', () => {
-            const root = HDKey.fromMnemonic(words);
+            const root = HDKey.fromMnemonic(HDKeyFixture.words);
             for (let i = 0; i < 5; i++) {
                 const child = root.deriveChild(i);
                 expect(child.publicKey).toBeDefined();
@@ -59,13 +94,13 @@ describe('HDNode', () => {
                     Address.ofPublicKey(
                         child.publicKey as Uint8Array
                     ).toString()
-                ).toEqual(addresses[i]);
+                ).toEqual(HDKeyFixture.addresses[i]);
                 // do we need <child>.address?
             }
         });
 
         test('fromMnemonic - valid - public key sequence', () => {
-            const root = HDKey.fromMnemonic(words);
+            const root = HDKey.fromMnemonic(HDKeyFixture.words);
             for (let i = 0; i < 5; i++) {
                 const child = root.deriveChild(i);
                 expect(child.privateKey).toBeDefined();
@@ -76,10 +111,10 @@ describe('HDNode', () => {
         });
 
         test('fromMnemonic - valid - word list - case insensitive', () => {
-            const reference = HDKey.fromMnemonic(words);
+            const reference = HDKey.fromMnemonic(HDKeyFixture.words);
             expect(reference.publicKey).toBeDefined();
             const lowercase = HDKey.fromMnemonic(
-                words.map((w) => w.toLowerCase())
+                HDKeyFixture.words.map((w) => w.toLowerCase())
             );
             expect(lowercase.publicKey).toBeDefined();
             expect(
@@ -92,7 +127,7 @@ describe('HDNode', () => {
                 ).toString()
             );
             const uppercase = HDKey.fromMnemonic(
-                words.map((w) => w.toUpperCase())
+                HDKeyFixture.words.map((w) => w.toUpperCase())
             );
             expect(uppercase.publicKey).toBeDefined();
             expect(
@@ -141,7 +176,7 @@ describe('HDNode', () => {
         });
 
         test('derivePrivateKey - valid - address sequence', () => {
-            const root = HDKey.fromMnemonic(words);
+            const root = HDKey.fromMnemonic(HDKeyFixture.words);
             expect(root.privateKey).toBeDefined();
             expect(root.chainCode).toBeDefined();
             const extendedRoot = HDKey.fromPrivateKey(
@@ -154,12 +189,12 @@ describe('HDNode', () => {
                     Address.ofPublicKey(
                         child.publicKey as Uint8Array
                     ).toString()
-                ).toEqual(addresses[i]);
+                ).toEqual(HDKeyFixture.addresses[i]);
             }
         });
 
         test('derivePrivateKey - valid - public key sequence', () => {
-            const root = HDKey.fromMnemonic(words);
+            const root = HDKey.fromMnemonic(HDKeyFixture.words);
             expect(root.privateKey).toBeDefined();
             expect(root.chainCode).toBeDefined();
             const extendedRoot = HDKey.fromPrivateKey(
@@ -190,7 +225,7 @@ describe('HDNode', () => {
         });
 
         test(`derivePublicKey - valid - address sequence, no private key`, () => {
-            const root = HDKey.fromMnemonic(words);
+            const root = HDKey.fromMnemonic(HDKeyFixture.words);
             expect(root.publicKey).toBeDefined();
             expect(root.chainCode).toBeDefined();
             const extendedRoot = HDKey.fromPublicKey(
@@ -205,7 +240,7 @@ describe('HDNode', () => {
                     Address.ofPublicKey(
                         child.publicKey as Uint8Array
                     ).toString()
-                ).toEqual(addresses[i]);
+                ).toEqual(HDKeyFixture.addresses[i]);
             }
         });
     });
