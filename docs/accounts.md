@@ -57,7 +57,7 @@ console.log('Mnemonic words', randomMnemonic);
 
 // 2 - Create BIP32 HD node from mnemonic words
 
-const hdnode = HDNode.fromMnemonic(randomMnemonic);
+const hdnode = HDKey.fromMnemonic(randomMnemonic);
 
 // 3 - Derive 5 child private keys
 
@@ -100,7 +100,7 @@ const chainCode = Hex.of(
 
 // 2 - Create BIP32 HD node from xpub
 
-const hdnode = HDNode.fromPublicKey(xpub, chainCode);
+const hdnode = HDKey.fromPublicKey(xpub, chainCode);
 
 // 3 - Derive 5 child public keys
 

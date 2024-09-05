@@ -10,6 +10,7 @@ import {
 } from '@vechain/sdk-errors';
 import { HexUInt } from '../vcdm/HexUInt';
 import { Sha256 } from '../hash';
+import { FPN } from '../vcdm';
 
 /**
  * This class extends the
@@ -205,6 +206,52 @@ class HDKey extends s_bip32.HDKey {
             'Invalid chain code given as input. Length must be exactly 32 bytes.',
             { chainCode }
         );
+    }
+
+    /**
+     * Checks if derivation path single component is valid
+     *
+     * @param component - Derivation path single component to check
+     * @param index - Derivation path single component index
+     *
+     * @returns `true`` if derivation path single component is valid, otherwise `false`.
+     *
+     */
+    private static isDerivationPathComponentValid(
+        component: string,
+        index: number
+    ): boolean {
+        // Zero component can be "m" or "number" or "number'", other components can be only "number" or "number'"
+        return (
+            // m
+            (index === 0 ? component === 'm' : false) ||
+            // "number"
+            FPN.isIntegerExpression(component) ||
+            // "number'"
+            (FPN.isIntegerExpression(component.slice(0, -1)) &&
+                component.endsWith("'"))
+        );
+    }
+
+    /**
+     * Checks if derivation path is valid.
+     *
+     * @param derivationPath - Derivation path to check.
+     *
+     * @returns `true` if derivation path is valid, otherwise `false`.
+     */
+    public static isDerivationPathValid(derivationPath: string): boolean {
+        // Split derivation path into parts
+        const pathComponents = derivationPath.split('/');
+
+        // Check each component
+        for (let i = 0; i < pathComponents.length; i++) {
+            // If single component is not valid, return false
+            if (!this.isDerivationPathComponentValid(pathComponents[i], i))
+                return false;
+        }
+
+        return true;
     }
 }
 

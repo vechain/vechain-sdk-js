@@ -1,4 +1,4 @@
-import { Address, HDNode, Mnemonic } from '@vechain/sdk-core';
+import { Address, HDKey, Mnemonic } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // START_SNIPPET: Bip32Snippet
@@ -12,7 +12,7 @@ console.log('Mnemonic words', randomMnemonic);
 
 // 2 - Create BIP32 HD node from mnemonic words
 
-const hdnode = HDNode.fromMnemonic(randomMnemonic);
+const hdnode = HDKey.fromMnemonic(randomMnemonic);
 
 // 3 - Derive 5 child private keys
 

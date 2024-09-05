@@ -43,15 +43,37 @@ const HDKeyFixture = {
     /**
      * Wrong derivation path fixture.
      */
-    wrongDerivationPath: '0/1/4/2/4/h'
+    wrongDerivationPath: '0/1/4/2/4/h',
+
+    /**
+     * Correct validation paths fixtures
+     */
+    correctValidationPaths: [
+        HDKey.VET_DERIVATION_PATH,
+        'm/0/1/2/3/4',
+        "m/0'/1'/2'/3'/4'",
+        "m/0'/1'/2'/3'/4",
+        "m/0'/1'/2/3'/4'"
+    ],
+
+    /**
+     * Incorrect validation paths fixtures
+     */
+    incorrectValidationPaths: [
+        'a',
+        'm/0/b',
+        'incorrect',
+        'inco/rre/01/ct',
+        '0/1/4/2/4/h'
+    ]
 };
 
 /**
  * Mnemonic tests
  * @group unit/hdkey
  */
-describe('HDNode', () => {
-    describe('fromMnemonic', () => {
+describe('HDKey class tests', () => {
+    describe('fromMnemonic method tests', () => {
         test('fromMnemonic - invalid - path', () => {
             expect(() =>
                 HDKey.fromMnemonic(
@@ -162,20 +184,20 @@ describe('HDNode', () => {
         });
     });
 
-    describe('derivePrivateKey', () => {
-        test('derivePrivateKey - invalid - chain code', () => {
+    describe('fromPrivateKey method tests', () => {
+        test('fromPrivateKey - invalid - chain code', () => {
             expect(() =>
                 HDKey.fromPrivateKey(ZERO_BYTES(32), ZERO_BYTES(31))
             ).toThrowError(InvalidSecp256k1PrivateKey);
         });
 
-        test('derivePrivateKey - invalid - private key', () => {
+        test('fromPrivateKey - invalid - private key', () => {
             expect(() =>
                 HDKey.fromPrivateKey(ZERO_BYTES(31), ZERO_BYTES(32))
             ).toThrowError(InvalidSecp256k1PrivateKey);
         });
 
-        test('derivePrivateKey - valid - address sequence', () => {
+        test('fromPrivateKey - valid - address sequence', () => {
             const root = HDKey.fromMnemonic(HDKeyFixture.words);
             expect(root.privateKey).toBeDefined();
             expect(root.chainCode).toBeDefined();
@@ -193,7 +215,7 @@ describe('HDNode', () => {
             }
         });
 
-        test('derivePrivateKey - valid - public key sequence', () => {
+        test('fromPrivateKey - valid - public key sequence', () => {
             const root = HDKey.fromMnemonic(HDKeyFixture.words);
             expect(root.privateKey).toBeDefined();
             expect(root.chainCode).toBeDefined();
@@ -211,20 +233,20 @@ describe('HDNode', () => {
         });
     });
 
-    describe('derivePublicKey', () => {
-        test('derivePublicKey - invalid - chain code', () => {
+    describe('fromPublicKey', () => {
+        test('fromPublicKey - invalid - chain code', () => {
             expect(() =>
                 HDKey.fromPublicKey(ZERO_BYTES(32), ZERO_BYTES(31))
             ).toThrowError(InvalidHDKey);
         });
 
-        test('derivePublicKey - invalid - public key', () => {
+        test('fromPublicKey - invalid - public key', () => {
             expect(() =>
                 HDKey.fromPublicKey(ZERO_BYTES(31), ZERO_BYTES(32))
             ).toThrowError(InvalidHDKey);
         });
 
-        test(`derivePublicKey - valid - address sequence, no private key`, () => {
+        test(`fromPublicKey - valid - address sequence, no private key`, () => {
             const root = HDKey.fromMnemonic(HDKeyFixture.words);
             expect(root.publicKey).toBeDefined();
             expect(root.chainCode).toBeDefined();
@@ -242,6 +264,20 @@ describe('HDNode', () => {
                     ).toString()
                 ).toEqual(HDKeyFixture.addresses[i]);
             }
+        });
+    });
+
+    describe('isDerivationPathValid method tests', () => {
+        test('isDerivationPathValid -> false', () => {
+            HDKeyFixture.incorrectValidationPaths.forEach((path) => {
+                expect(HDKey.isDerivationPathValid(path)).toEqual(false);
+            });
+        });
+
+        test('isDerivationPath -> true', () => {
+            HDKeyFixture.correctValidationPaths.forEach((path) => {
+                expect(HDKey.isDerivationPathValid(path)).toEqual(true);
+            });
         });
     });
 });

@@ -1,4 +1,4 @@
-import { Address, Hex, HDNode } from '@vechain/sdk-core';
+import { Address, Hex, HDKey } from '@vechain/sdk-core';
 
 // START_SNIPPET: PubKeySnippet
 
@@ -14,7 +14,7 @@ const chainCode = Hex.of(
 
 // 2 - Create BIP32 HD node from xpub
 
-const hdnode = HDNode.fromPublicKey(xpub, chainCode);
+const hdnode = HDKey.fromPublicKey(xpub, chainCode);
 
 // 3 - Derive 5 child public keys
 
