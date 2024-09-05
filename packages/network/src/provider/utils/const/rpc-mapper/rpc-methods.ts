@@ -48,6 +48,14 @@ enum RPC_METHODS {
 
     /**
      * STATUS:
+     * * Implemented in web3-providers-connex: False
+     * * Required for hardhat: False (BUT WE MUST INVESTIGATE BETTER) -> @see https://github.com/vechain/vechain-sdk/issues/462
+     * * Possible to implement: True
+     */
+    web3_sha3 = 'web3_sha3',
+
+    /**
+     * STATUS:
      * * Implemented in web3-providers-connex: False (ONLY LISTED `EthJsonRpcMethods`array in `src/common.ts` file)
      * * Required for hardhat: False -> @see https://github.com/vechain/vechain-sdk/issues/462
      * * Possible to implement: TO UNDERSTAND
