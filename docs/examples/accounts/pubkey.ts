@@ -14,12 +14,12 @@ const chainCode = Hex.of(
 
 // 2 - Create BIP32 HD node from xpub
 
-const hdnode = HDKey.fromPublicKey(xpub, chainCode);
+const hdKey = HDKey.fromPublicKey(xpub, chainCode);
 
 // 3 - Derive 5 child public keys
 
 for (let i = 0; i < 5; i++) {
-    const child = hdnode.deriveChild(i);
+    const child = hdKey.deriveChild(i);
 
     console.log(`children ${i}`, Address.ofPublicKey(child.publicKey));
     // children 0 0x...
@@ -27,5 +27,9 @@ for (let i = 0; i < 5; i++) {
     // ...
     // children 4 0x...
 }
+
+// 4 - Wipe private data to avoid any hack.
+
+hdKey.wipePrivateData();
 
 // END_SNIPPET: PubKeySnippet

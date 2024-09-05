@@ -79,13 +79,15 @@ for (let i = 0; i < 5; i++) {
 
 An extended public key (xpub) is derived from an HD wallet's master public key (often referred to as an extended private key, xprv). It represents a point in the HD wallet's key derivation path from which child public keys can be derived, but not private keys. This allows for the creation of a "watch-only" wallet, where the ability to generate transactions is restricted, enhancing security.
 
-### HDNode Instance
+### HDKey Instance
 
-In the context of hierarchical deterministic wallets, an HDNode instance represents a node in the hierarchical tree structure of keys. This node can be derived from a parent node using specific derivation paths. HDNode instances encapsulate information such as the private key, public key, chain code, and index, allowing for secure and efficient key derivation.
+In the context of hierarchical deterministic wallets, an HDKey instance represents a node in the hierarchical tree structure of keys.
+This key can be derived from a parent key using specific derivation paths.
+HDKey instances encapsulate information such as the private key, public key, chain code, and index, allowing for secure and efficient key derivation.
 
 ### From Public Key
 
-Generating an HDNode instance from an extended public key (xpub) allows developers to derive child public keys for purposes such as address generation, transaction monitoring, or building hierarchical structures within the wallet. This functionality is particularly useful in scenarios where the private keys are stored securely offline, and only public keys are exposed to the network for enhanced security.
+Generating an HDKey instance from an extended public key (xpub) allows developers to derive child public keys for purposes such as address generation, transaction monitoring, or building hierarchical structures within the wallet. This functionality is particularly useful in scenarios where the private keys are stored securely offline, and only public keys are exposed to the network for enhanced security.
 
 ```typescript { name=pubkey, category=example }
 // 1 - Create HD node from xpub (extended private key) and chain code
@@ -100,12 +102,12 @@ const chainCode = Hex.of(
 
 // 2 - Create BIP32 HD node from xpub
 
-const hdnode = HDKey.fromPublicKey(xpub, chainCode);
+const hdKey = HDKey.fromPublicKey(xpub, chainCode);
 
 // 3 - Derive 5 child public keys
 
 for (let i = 0; i < 5; i++) {
-    const child = hdnode.deriveChild(i);
+    const child = hdKey.deriveChild(i);
 
     console.log(`children ${i}`, Address.ofPublicKey(child.publicKey));
     // children 0 0x...
@@ -113,6 +115,10 @@ for (let i = 0; i < 5; i++) {
     // ...
     // children 4 0x...
 }
+
+// 4 - Wipe private data to avoid any hack.
+
+hdKey.wipePrivateData();
 ```
 
 ## Keystore
