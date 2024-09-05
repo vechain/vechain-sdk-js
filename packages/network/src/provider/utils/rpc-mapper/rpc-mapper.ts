@@ -228,188 +228,184 @@ const RPCMethodsMap = (
             return await evmMine(thorClient);
         },
 
-        [RPC_METHODS.eth_coinbase]: async (params) => {
-            await ethCoinbase(thorClient, params);
+        [RPC_METHODS.eth_coinbase]: async () => {
+            await ethCoinbase();
         },
 
-        [RPC_METHODS.eth_feeHistory]: async (params) => {
-            await ethFeeHistory(thorClient, params);
+        [RPC_METHODS.eth_feeHistory]: async () => {
+            await ethFeeHistory();
         },
 
-        [RPC_METHODS.eth_getBlockTransactionCountByHash]: async (params) => {
-            await ethGetBlockTransactionCountByHash(thorClient, params);
+        [RPC_METHODS.eth_getBlockTransactionCountByHash]: async () => {
+            await ethGetBlockTransactionCountByHash();
         },
 
-        [RPC_METHODS.eth_getBlockTransactionCountByNumber]: async (params) => {
-            await ethGetBlockTransactionCountByNumber(thorClient, params);
+        [RPC_METHODS.eth_getBlockTransactionCountByNumber]: async () => {
+            await ethGetBlockTransactionCountByNumber();
         },
 
-        [RPC_METHODS.eth_getTransactionByBlockHashAndIndex]: async (params) => {
-            await ethGetTransactionByBlockHashAndIndex(thorClient, params);
+        [RPC_METHODS.eth_getTransactionByBlockHashAndIndex]: async () => {
+            await ethGetTransactionByBlockHashAndIndex();
         },
 
-        [RPC_METHODS.eth_getTransactionByBlockNumberAndIndex]: async (
-            params
-        ) => {
-            await ethGetTransactionByBlockNumberAndIndex(thorClient, params);
+        [RPC_METHODS.eth_getTransactionByBlockNumberAndIndex]: async () => {
+            await ethGetTransactionByBlockNumberAndIndex();
         },
 
-        [RPC_METHODS.eth_getUncleByBlockHashAndIndex]: async (params) => {
-            await ethGetUncleByBlockHashAndIndex(thorClient, params);
+        [RPC_METHODS.eth_getUncleByBlockHashAndIndex]: async () => {
+            await ethGetUncleByBlockHashAndIndex();
         },
 
-        [RPC_METHODS.eth_getUncleByBlockNumberAndIndex]: async (params) => {
-            await ethGetUncleByBlockNumberAndIndex(thorClient, params);
+        [RPC_METHODS.eth_getUncleByBlockNumberAndIndex]: async () => {
+            await ethGetUncleByBlockNumberAndIndex();
         },
 
-        [RPC_METHODS.eth_getUncleCountByBlockHash]: async (params) => {
-            await ethGetUncleCountByBlockHash(thorClient, params);
+        [RPC_METHODS.eth_getUncleCountByBlockHash]: async () => {
+            await ethGetUncleCountByBlockHash();
         },
 
-        [RPC_METHODS.eth_getUncleCountByBlockNumber]: async (params) => {
-            await ethGetUncleCountByBlockNumber(thorClient, params);
+        [RPC_METHODS.eth_getUncleCountByBlockNumber]: async () => {
+            await ethGetUncleCountByBlockNumber();
         },
 
-        [RPC_METHODS.eth_getWork]: async (params) => {
-            await ethGetWork(thorClient, params);
+        [RPC_METHODS.eth_getWork]: async () => {
+            await ethGetWork();
         },
 
-        [RPC_METHODS.eth_mining]: async (params) => {
-            await ethMining(thorClient, params);
+        [RPC_METHODS.eth_mining]: async () => {
+            await ethMining();
         },
 
-        [RPC_METHODS.eth_hashrate]: async (params) => {
-            await ethHashrate(thorClient, params);
+        [RPC_METHODS.eth_hashrate]: async () => {
+            await ethHashrate();
         },
 
-        [RPC_METHODS.eth_protocolVersion]: async (params) => {
-            await ethProtocolVersion(thorClient, params);
+        [RPC_METHODS.eth_protocolVersion]: async () => {
+            await ethProtocolVersion();
         },
 
         [RPC_METHODS.eth_requestAccounts]: async (): Promise<string[]> => {
             return await ethRequestAccounts(provider);
         },
 
-        [RPC_METHODS.eth_sign]: async (params) => {
-            await ethSign(thorClient, params);
+        [RPC_METHODS.eth_sign]: async () => {
+            await ethSign();
         },
 
-        [RPC_METHODS.eth_submitWork]: async (params) => {
-            await ethSubmitWork(thorClient, params);
+        [RPC_METHODS.eth_submitWork]: async () => {
+            await ethSubmitWork();
         },
 
-        [RPC_METHODS.net_listening]: async (params) => {
-            await netListening(thorClient, params);
+        [RPC_METHODS.net_listening]: async () => {
+            await netListening();
         },
 
-        [RPC_METHODS.net_peerCount]: async (params) => {
-            await netPeerCount(thorClient, params);
+        [RPC_METHODS.net_peerCount]: async () => {
+            await netPeerCount();
         },
 
-        [RPC_METHODS.parity_nextNonce]: async (params) => {
-            await parityNextNonce(thorClient, params);
+        [RPC_METHODS.parity_nextNonce]: async () => {
+            await parityNextNonce();
         },
 
-        [RPC_METHODS.eth_newFilter]: async (params) => {
-            await ethNewFilter(thorClient, params);
+        [RPC_METHODS.eth_newFilter]: async () => {
+            await ethNewFilter();
         },
 
-        [RPC_METHODS.eth_newBlockFilter]: async (params) => {
-            await ethNewBlockFilter(thorClient, params);
+        [RPC_METHODS.eth_newBlockFilter]: async () => {
+            await ethNewBlockFilter();
         },
 
-        [RPC_METHODS.eth_newPendingTransactionFilter]: async (params) => {
-            await ethNewPendingTransactionFilter(thorClient, params);
+        [RPC_METHODS.eth_newPendingTransactionFilter]: async () => {
+            await ethNewPendingTransactionFilter();
         },
 
-        [RPC_METHODS.eth_getFilterLogs]: async (params) => {
-            await ethGetFilterLogs(thorClient, params);
+        [RPC_METHODS.eth_getFilterLogs]: async () => {
+            await ethGetFilterLogs();
         },
 
-        [RPC_METHODS.eth_getFilterChanges]: async (params) => {
-            await ethGetFilterChanges(thorClient, params);
+        [RPC_METHODS.eth_getFilterChanges]: async () => {
+            await ethGetFilterChanges();
         },
 
-        [RPC_METHODS.eth_uninstallFilter]: async (params) => {
-            await ethUninstallFilter(thorClient, params);
+        [RPC_METHODS.eth_uninstallFilter]: async () => {
+            await ethUninstallFilter();
         },
 
-        [RPC_METHODS.debug_getBadBlocks]: async (params) => {
-            await debugGetBadBlocks(thorClient, params);
+        [RPC_METHODS.debug_getBadBlocks]: async () => {
+            await debugGetBadBlocks();
         },
 
-        [RPC_METHODS.debug_getRawBlock]: async (params) => {
-            await debugGetRawBlock(thorClient, params);
+        [RPC_METHODS.debug_getRawBlock]: async () => {
+            await debugGetRawBlock();
         },
 
-        [RPC_METHODS.debug_getRawHeader]: async (params) => {
-            await debugGetRawHeader(thorClient, params);
+        [RPC_METHODS.debug_getRawHeader]: async () => {
+            await debugGetRawHeader();
         },
 
-        [RPC_METHODS.debug_getRawReceipts]: async (params) => {
-            await debugGetRawReceipts(thorClient, params);
+        [RPC_METHODS.debug_getRawReceipts]: async () => {
+            await debugGetRawReceipts();
         },
 
-        [RPC_METHODS.debug_getRawTransaction]: async (params) => {
-            await debugGetRawTransaction(thorClient, params);
+        [RPC_METHODS.debug_getRawTransaction]: async () => {
+            await debugGetRawTransaction();
         },
 
-        [RPC_METHODS.engine_exchangeCapabilities]: async (params) => {
-            await engineExchangeCapabilities(thorClient, params);
+        [RPC_METHODS.engine_exchangeCapabilities]: async () => {
+            await engineExchangeCapabilities();
         },
 
-        [RPC_METHODS.engine_exchangeTransitionConfigurationV1]: async (
-            params
-        ) => {
-            await engineExchangeTransitionConfigurationV1(thorClient, params);
+        [RPC_METHODS.engine_exchangeTransitionConfigurationV1]: async () => {
+            await engineExchangeTransitionConfigurationV1();
         },
 
-        [RPC_METHODS.engine_forkchoiceUpdatedV1]: async (params) => {
-            await engineForkchoiceUpdatedV1(thorClient, params);
+        [RPC_METHODS.engine_forkchoiceUpdatedV1]: async () => {
+            await engineForkchoiceUpdatedV1();
         },
 
-        [RPC_METHODS.engine_forkchoiceUpdatedV2]: async (params) => {
-            await engineForkchoiceUpdatedV2(thorClient, params);
+        [RPC_METHODS.engine_forkchoiceUpdatedV2]: async () => {
+            await engineForkchoiceUpdatedV2();
         },
 
-        [RPC_METHODS.engine_forkchoiceUpdatedV3]: async (params) => {
-            await engineForkchoiceUpdatedV3(thorClient, params);
+        [RPC_METHODS.engine_forkchoiceUpdatedV3]: async () => {
+            await engineForkchoiceUpdatedV3();
         },
 
-        [RPC_METHODS.engine_getPayloadBodiesByHashV1]: async (params) => {
-            await engineGetPayloadBodiesByHashV1(thorClient, params);
+        [RPC_METHODS.engine_getPayloadBodiesByHashV1]: async () => {
+            await engineGetPayloadBodiesByHashV1();
         },
 
-        [RPC_METHODS.engine_getPayloadBodiesByRangeV1]: async (params) => {
-            await engineGetPayloadBodiesByRangeV1(thorClient, params);
+        [RPC_METHODS.engine_getPayloadBodiesByRangeV1]: async () => {
+            await engineGetPayloadBodiesByRangeV1();
         },
 
-        [RPC_METHODS.engine_getPayloadV1]: async (params) => {
-            await engineGetPayloadV1(thorClient, params);
+        [RPC_METHODS.engine_getPayloadV1]: async () => {
+            await engineGetPayloadV1();
         },
 
-        [RPC_METHODS.engine_getPayloadV2]: async (params) => {
-            await engineGetPayloadV2(thorClient, params);
+        [RPC_METHODS.engine_getPayloadV2]: async () => {
+            await engineGetPayloadV2();
         },
 
-        [RPC_METHODS.engine_getPayloadV3]: async (params) => {
-            await engineGetPayloadV3(thorClient, params);
+        [RPC_METHODS.engine_getPayloadV3]: async () => {
+            await engineGetPayloadV3();
         },
 
-        [RPC_METHODS.engine_newPayloadV1]: async (params) => {
-            await engineNewPayloadV1(thorClient, params);
+        [RPC_METHODS.engine_newPayloadV1]: async () => {
+            await engineNewPayloadV1();
         },
 
-        [RPC_METHODS.engine_newPayloadV2]: async (params) => {
-            await engineNewPayloadV2(thorClient, params);
+        [RPC_METHODS.engine_newPayloadV2]: async () => {
+            await engineNewPayloadV2();
         },
 
-        [RPC_METHODS.engine_newPayloadV3]: async (params) => {
-            await engineNewPayloadV3(thorClient, params);
+        [RPC_METHODS.engine_newPayloadV3]: async () => {
+            await engineNewPayloadV3();
         },
 
-        [RPC_METHODS.eth_createAccessList]: async (params) => {
-            await ethCreateAccessList(thorClient, params);
+        [RPC_METHODS.eth_createAccessList]: async () => {
+            await ethCreateAccessList();
         },
 
         [RPC_METHODS.eth_getBlockReceipts]: async (
@@ -418,16 +414,16 @@ const RPCMethodsMap = (
             return await ethGetBlockReceipts(thorClient, params);
         },
 
-        [RPC_METHODS.eth_getProof]: async (params) => {
-            await ethGetProof(thorClient, params);
+        [RPC_METHODS.eth_getProof]: async () => {
+            await ethGetProof();
         },
 
-        [RPC_METHODS.eth_maxPriorityFeePerGas]: async (params) => {
-            await ethMaxPriorityFeePerGas(thorClient, params);
+        [RPC_METHODS.eth_maxPriorityFeePerGas]: async () => {
+            await ethMaxPriorityFeePerGas();
         },
 
-        [RPC_METHODS.eth_signTransaction]: async (params) => {
-            await ethSignTransaction(thorClient, params);
+        [RPC_METHODS.eth_signTransaction]: async () => {
+            await ethSignTransaction();
         }
     };
 };

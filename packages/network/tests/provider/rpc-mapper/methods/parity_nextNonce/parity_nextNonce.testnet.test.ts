@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     RPCMethodsMap,
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Mapper integration tests for 'parity_nextNonce' method
@@ -34,31 +34,13 @@ describe('RPC Mapper - parity_nextNonce method tests', () => {
          * Positive case 1 - ... Description ...
          */
         test('parity_nextNonce - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.parity_nextNonce
-                    ]([-1])
-            ).rejects.toThrowError(FunctionNotImplemented);
-        });
-    });
+            const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
 
-    /**
-     * parity_nextNonce RPC call tests - Negative cases
-     */
-    describe('parity_nextNonce - Negative cases', () => {
-        /**
-         * Negative case 1 - ... Description ...
-         */
-        test('parity_nextNonce - negative case 1', async () => {
             // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.parity_nextNonce
-                    ](['SOME_RANDOM_PARAM'])
-            ).rejects.toThrowError(FunctionNotImplemented);
+            await RPCMethodsMap(thorClient)[RPC_METHODS.parity_nextNonce]([-1]);
+
+            expect(logSpy).toHaveBeenCalled();
+            logSpy.mockRestore();
         });
     });
 });

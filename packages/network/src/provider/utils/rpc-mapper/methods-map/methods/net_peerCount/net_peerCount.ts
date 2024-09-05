@@ -1,5 +1,4 @@
-import { type ThorClient } from '../../../../../../thor-client';
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Method net_peerCount implementation
@@ -10,25 +9,16 @@ import { FunctionNotImplemented } from '@vechain/sdk-errors';
  * * params[0]: ...
  * * params[1]: ...
  * * params[n]: ...
- * @throws {FunctionNotImplemented}
  */
-const netPeerCount = async (
-    thorClient: ThorClient,
-    params: unknown[]
-): Promise<void> => {
+const netPeerCount = async (): Promise<void> => {
     // To avoid eslint error
     await Promise.resolve(0);
 
     // Not implemented yet
-    throw new FunctionNotImplemented(
-        'net_peerCount',
-        'Method "net_peerCount" has not been implemented yet.',
-        {
-            functionName: 'net_peerCount',
-            thorClient,
-            params
-        }
-    );
+    VeChainSDKLogger('warning').log({
+        title: 'net_peerCount',
+        messages: ['Method "net_peerCount" has not been implemented yet.']
+    });
 };
 
 export { netPeerCount };

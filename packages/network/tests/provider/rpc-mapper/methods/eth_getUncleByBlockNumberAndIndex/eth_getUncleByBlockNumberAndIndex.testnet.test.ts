@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     RPCMethodsMap,
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Mapper integration tests for 'eth_getUncleByBlockNumberAndIndex' method
@@ -34,31 +34,15 @@ describe('RPC Mapper - eth_getUncleByBlockNumberAndIndex method tests', () => {
          * Positive case 1 - ... Description ...
          */
         test('eth_getUncleByBlockNumberAndIndex - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.eth_getUncleByBlockNumberAndIndex
-                    ]([-1])
-            ).rejects.toThrowError(FunctionNotImplemented);
-        });
-    });
+            const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
 
-    /**
-     * eth_getUncleByBlockNumberAndIndex RPC call tests - Negative cases
-     */
-    describe('eth_getUncleByBlockNumberAndIndex - Negative cases', () => {
-        /**
-         * Negative case 1 - ... Description ...
-         */
-        test('eth_getUncleByBlockNumberAndIndex - negative case 1', async () => {
             // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.eth_getUncleByBlockNumberAndIndex
-                    ](['SOME_RANDOM_PARAM'])
-            ).rejects.toThrowError(FunctionNotImplemented);
+            await RPCMethodsMap(thorClient)[
+                RPC_METHODS.eth_getUncleByBlockNumberAndIndex
+            ]([-1]);
+
+            expect(logSpy).toHaveBeenCalled();
+            logSpy.mockRestore();
         });
     });
 });

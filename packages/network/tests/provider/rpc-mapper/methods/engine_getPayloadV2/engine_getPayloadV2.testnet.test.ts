@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     RPCMethodsMap,
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Mapper integration tests for 'engine_getPayloadV2' method
@@ -27,38 +27,22 @@ describe('RPC Mapper - engine_getPayloadV2 method tests', () => {
     });
 
     /**
-     * engine_getPayloadV2 RPC call tests - Positive cases
+     * engine_getPayloadV1 RPC call tests - Positive cases
      */
     describe('engine_getPayloadV2 - Positive cases', () => {
         /**
          * Positive case 1 - ... Description ...
          */
         test('engine_getPayloadV2 - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.engine_getPayloadV2
-                    ]([-1])
-            ).rejects.toThrowError(FunctionNotImplemented);
-        });
-    });
+            const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
 
-    /**
-     * engine_getPayloadV2 RPC call tests - Negative cases
-     */
-    describe('engine_getPayloadV2 - Negative cases', () => {
-        /**
-         * Negative case 1 - ... Description ...
-         */
-        test('engine_getPayloadV2 - negative case 1', async () => {
             // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.engine_getPayloadV2
-                    ](['SOME_RANDOM_PARAM'])
-            ).rejects.toThrowError(FunctionNotImplemented);
+            await RPCMethodsMap(thorClient)[RPC_METHODS.engine_getPayloadV2]([
+                -1
+            ]);
+
+            expect(logSpy).toHaveBeenCalled();
+            logSpy.mockRestore();
         });
     });
 });
