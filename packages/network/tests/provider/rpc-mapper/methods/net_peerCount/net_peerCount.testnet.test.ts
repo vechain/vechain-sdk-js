@@ -5,7 +5,6 @@ import {
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Mapper integration tests for 'net_peerCount' method
@@ -31,16 +30,13 @@ describe('RPC Mapper - net_peerCount method tests', () => {
      */
     describe('net_peerCount - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Should be able to get the peer count
          */
-        test('net_peerCount - positive case 1', async () => {
-            const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
-
-            // NOT IMPLEMENTED YET!
-            await RPCMethodsMap(thorClient)[RPC_METHODS.net_peerCount]([-1]);
-
-            expect(logSpy).toHaveBeenCalled();
-            logSpy.mockRestore();
+        test('Should be able to get the peer count', async () => {
+            const peers = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.net_peerCount
+            ]([]);
+            expect(peers).toBeGreaterThanOrEqual(0);
         });
     });
 });

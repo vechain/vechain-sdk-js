@@ -1,24 +1,26 @@
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
+import type { ThorClient } from '../../../../../../thor-client';
+import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
 
 /**
  * RPC Method net_peerCount implementation
  *
  * @param thorClient - The thor client instance to use.
- * @param params - The standard array of rpc call parameters.
- * @note:
- * * params[0]: ...
- * * params[1]: ...
- * * params[n]: ...
  */
-const netPeerCount = async (): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
-
-    // Not implemented yet
-    VeChainSDKLogger('warning').log({
-        title: 'net_peerCount',
-        messages: ['Method "net_peerCount" has not been implemented yet.']
-    });
+const netPeerCount = async (thorClient: ThorClient): Promise<number> => {
+    try {
+        const peers = await thorClient.nodes.getNodes();
+        return peers !== null ? peers.length : 0;
+    } catch (e) {
+        throw new JSONRPCInternalError(
+            'eth_netPeerCount',
+            -32603,
+            'Method "eth_netPeerCount" failed.',
+            {
+                url: thorClient.httpClient.baseURL,
+                innerError: stringifyData(e)
+            }
+        );
+    }
 };
 
 export { netPeerCount };

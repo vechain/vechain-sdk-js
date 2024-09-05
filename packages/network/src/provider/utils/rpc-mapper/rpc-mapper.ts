@@ -301,8 +301,8 @@ const RPCMethodsMap = (
             await netListening();
         },
 
-        [RPC_METHODS.net_peerCount]: async () => {
-            await netPeerCount();
+        [RPC_METHODS.net_peerCount]: async (): Promise<number> => {
+            return await netPeerCount(thorClient);
         },
 
         [RPC_METHODS.parity_nextNonce]: async () => {
