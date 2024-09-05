@@ -3,13 +3,13 @@ import * as s_bip39 from '@scure/bip39';
 import * as nc_utils from '@noble/curves/abstract/utils';
 import { base58 } from '@scure/base';
 import { secp256k1 } from '../secp256k1';
-import { Sha256 } from '../hash';
-import { VET_DERIVATION_PATH, X_PRIV_PREFIX, X_PUB_PREFIX } from '../utils';
 import {
     InvalidHDKey,
     InvalidHDKeyMnemonic,
     InvalidSecp256k1PrivateKey
 } from '@vechain/sdk-errors';
+import { HexUInt } from '../vcdm/HexUInt';
+import { Sha256 } from '../hash';
 
 /**
  * This class extends the
@@ -21,6 +21,29 @@ import {
  * @extends s_bip32.HDKey
  */
 class HDKey extends s_bip32.HDKey {
+    /**
+     * Prefix for extended private key
+     */
+    public static readonly EXTENDED_PRIVATE_KEY_PREFIX = HexUInt.of(
+        '0488ade4000000000000000000'
+    ).bytes;
+
+    /**
+     * Prefix for extended public key
+     */
+    public static readonly EXTENDED_PUBLIC_KEY_PREFIX = HexUInt.of(
+        '0488b21e000000000000000000'
+    ).bytes;
+
+    /**
+     * Default VET derivation path.
+     *
+     * See
+     * [SLIP-0044 : Registered coin types for BIP-0044](https://github.com/satoshilabs/slips/blob/master/slip-0044.md)
+     * for more info.
+     */
+    public static readonly VET_DERIVATION_PATH = "m/44'/818'/0'/0";
+
     /**
      * Creates a
      * [BIP32 Hierarchical Deterministic Key](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
@@ -44,7 +67,7 @@ class HDKey extends s_bip32.HDKey {
      */
     public static fromMnemonic(
         words: string[],
-        path: string = VET_DERIVATION_PATH
+        path: string = this.VET_DERIVATION_PATH
     ): HDKey {
         let master: s_bip32.HDKey;
         try {
@@ -96,7 +119,7 @@ class HDKey extends s_bip32.HDKey {
     ): HDKey {
         if (privateKey.length === 32) {
             const header = nc_utils.concatBytes(
-                X_PRIV_PREFIX,
+                this.EXTENDED_PRIVATE_KEY_PREFIX,
                 chainCode,
                 Uint8Array.of(0),
                 privateKey
@@ -153,7 +176,7 @@ class HDKey extends s_bip32.HDKey {
     ): HDKey {
         if (chainCode.length === 32) {
             const header = nc_utils.concatBytes(
-                X_PUB_PREFIX,
+                this.EXTENDED_PUBLIC_KEY_PREFIX,
                 chainCode,
                 secp256k1.compressPublicKey(publicKey)
             );

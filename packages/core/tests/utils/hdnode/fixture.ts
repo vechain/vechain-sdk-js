@@ -1,10 +1,10 @@
-import { VET_DERIVATION_PATH } from '../../../src';
+import { HDKey } from '../../../src/hdkey/HDKey';
 
 /**
  * Correct validation paths fixtures
  */
 const correctValidationPaths: string[] = [
-    VET_DERIVATION_PATH,
+    HDKey.VET_DERIVATION_PATH,
     'm/0/1/2/3/4',
     "m/0'/1'/2'/3'/4'",
     "m/0'/1'/2'/3'/4",
