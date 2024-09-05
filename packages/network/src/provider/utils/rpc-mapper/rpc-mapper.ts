@@ -72,7 +72,8 @@ import {
     netPeerCount,
     netVersion,
     parityNextNonce,
-    web3ClientVersion
+    web3ClientVersion,
+    web3Sha3
 } from './methods-map';
 import { RPC_METHODS } from '../const';
 import {
@@ -424,6 +425,10 @@ const RPCMethodsMap = (
 
         [RPC_METHODS.eth_signTransaction]: async () => {
             await ethSignTransaction();
+        },
+
+        [RPC_METHODS.web3_sha3]: async (params): Promise<string> => {
+            return await web3Sha3(params);
         }
     };
 };
