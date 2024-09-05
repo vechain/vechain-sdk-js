@@ -1,6 +1,9 @@
 import * as nh_sha256 from '@noble/hashes/sha256';
 import { InvalidOperation } from '@vechain/sdk-errors';
-import { Hex, HexUInt, Txt, type Hash } from '../index';
+import { HexUInt } from '../HexUInt';
+import { type Hash } from './Hash';
+import { Hex } from '../Hex';
+import { Txt } from '../Txt';
 
 /**
  * Represents the result of an [SHA256](https://en.wikipedia.org/wiki/SHA-2) hash operation.
