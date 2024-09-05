@@ -1,6 +1,6 @@
 import {
     Address,
-    HDNode,
+    HDKey,
     secp256k1,
     VET_DERIVATION_PATH
 } from '@vechain/sdk-core';
@@ -50,7 +50,7 @@ class ProviderInternalHDWallet extends ProviderInternalBaseWallet {
         super(
             [...Array(count).keys()].map((path: number) => {
                 // Convert the private key to a buffer
-                const privateKeyBuffer = HDNode.fromMnemonic(
+                const privateKeyBuffer = HDKey.fromMnemonic(
                     mnemonic,
                     derivationPath
                 ).deriveChild(path + initialIndex).privateKey as Buffer;

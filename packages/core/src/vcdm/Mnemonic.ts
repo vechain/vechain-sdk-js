@@ -6,11 +6,11 @@ import {
 import { wordlist } from '@scure/bip39/wordlists/english';
 import {
     InvalidDataType,
-    InvalidHDNode,
-    InvalidHDNodeMnemonic,
+    InvalidHDKey,
+    InvalidHDKeyMnemonic,
     InvalidOperation
 } from '@vechain/sdk-errors';
-import { HDNode } from '../hdnode';
+import { HDKey } from '../hdkey';
 import { Address } from './Address';
 import { type VeChainDataModel } from './VeChainDataModel';
 
@@ -137,22 +137,22 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
      *
      * @returns {Uint8Array} - The derived private key as a Uint8Array.
      *
-     * @throws {InvalidHDNode}
+     * @throws {InvalidHDKey}
      *
      * @remarks Security auditable method, depends on
-     * * {@link HDNode}.
+     * * {@link HDKey}.
      */
     public static toPrivateKey(
         words: string[],
         path: string = 'm/0'
     ): Uint8Array {
-        const root = HDNode.fromMnemonic(words);
+        const root = HDKey.fromMnemonic(words);
         // Any exception involving mnemonic words is thrown before this point: words are not leaked next.
         try {
             // Derived from root, private key is always available.
             return root.derive(path).privateKey as Uint8Array;
         } catch (error) {
-            throw new InvalidHDNode(
+            throw new InvalidHDKey(
                 'mnemonic.derivePrivateKey()',
                 'Invalid derivation path given as input.',
                 { derivationPath: path },
@@ -197,7 +197,7 @@ class Mnemonic implements VeChainDataModel<Mnemonic> {
             }
             return generateMnemonic(wordlist, strength).split(' ');
         } catch (error) {
-            throw new InvalidHDNodeMnemonic(
+            throw new InvalidHDKeyMnemonic(
                 'Mnemonic.of',
                 'error while generating mnemonic',
                 { wordlistSize },

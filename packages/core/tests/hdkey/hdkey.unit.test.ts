@@ -1,12 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
 import {
-    InvalidHDNode,
-    InvalidHDNodeMnemonic,
+    InvalidHDKey,
+    InvalidHDKeyMnemonic,
     InvalidSecp256k1PrivateKey
 } from '@vechain/sdk-errors';
 import {
     Address,
-    HDNode,
+    HDKey,
     mnemonic,
     secp256k1,
     type WordlistSizeType,
@@ -22,13 +22,13 @@ describe('HDNode', () => {
     describe('fromMnemonic', () => {
         test('fromMnemonic - invalid - path', () => {
             expect(() =>
-                HDNode.fromMnemonic(words, wrongDerivationPath)
-            ).toThrowError(InvalidHDNode);
+                HDKey.fromMnemonic(words, wrongDerivationPath)
+            ).toThrowError(InvalidHDKey);
         });
 
         test('fromMnemonic - invalid - word list', () => {
-            expect(() => HDNode.fromMnemonic(wrongWords)).toThrowError(
-                InvalidHDNodeMnemonic
+            expect(() => HDKey.fromMnemonic(wrongWords)).toThrowError(
+                InvalidHDKeyMnemonic
             );
         });
 
@@ -38,7 +38,7 @@ describe('HDNode', () => {
                     ' '
                 );
             try {
-                HDNode.fromMnemonic(words);
+                HDKey.fromMnemonic(words);
                 expect(true).toBeFalsy();
             } catch (error) {
                 (error as Error)
@@ -51,7 +51,7 @@ describe('HDNode', () => {
         });
 
         test('fromMnemonic - valid - address sequence', () => {
-            const root = HDNode.fromMnemonic(words);
+            const root = HDKey.fromMnemonic(words);
             for (let i = 0; i < 5; i++) {
                 const child = root.deriveChild(i);
                 expect(child.publicKey).toBeDefined();
@@ -65,7 +65,7 @@ describe('HDNode', () => {
         });
 
         test('fromMnemonic - valid - public key sequence', () => {
-            const root = HDNode.fromMnemonic(words);
+            const root = HDKey.fromMnemonic(words);
             for (let i = 0; i < 5; i++) {
                 const child = root.deriveChild(i);
                 expect(child.privateKey).toBeDefined();
@@ -76,9 +76,9 @@ describe('HDNode', () => {
         });
 
         test('fromMnemonic - valid - word list - case insensitive', () => {
-            const reference = HDNode.fromMnemonic(words);
+            const reference = HDKey.fromMnemonic(words);
             expect(reference.publicKey).toBeDefined();
-            const lowercase = HDNode.fromMnemonic(
+            const lowercase = HDKey.fromMnemonic(
                 words.map((w) => w.toLowerCase())
             );
             expect(lowercase.publicKey).toBeDefined();
@@ -91,7 +91,7 @@ describe('HDNode', () => {
                     reference.publicKey as Uint8Array
                 ).toString()
             );
-            const uppercase = HDNode.fromMnemonic(
+            const uppercase = HDKey.fromMnemonic(
                 words.map((w) => w.toUpperCase())
             );
             expect(uppercase.publicKey).toBeDefined();
@@ -109,9 +109,7 @@ describe('HDNode', () => {
         test('fromMnemonic - valid - word list - multiple lengths', () => {
             new Array<WordlistSizeType>(12, 15, 18, 21, 24).forEach(
                 (length: WordlistSizeType) => {
-                    const hdKey = HDNode.fromMnemonic(
-                        mnemonic.generate(length)
-                    );
+                    const hdKey = HDKey.fromMnemonic(mnemonic.generate(length));
                     expect(hdKey.privateKey).toBeDefined();
                     expect(
                         secp256k1.isValidPrivateKey(
@@ -132,21 +130,21 @@ describe('HDNode', () => {
     describe('derivePrivateKey', () => {
         test('derivePrivateKey - invalid - chain code', () => {
             expect(() =>
-                HDNode.fromPrivateKey(ZERO_BYTES(32), ZERO_BYTES(31))
+                HDKey.fromPrivateKey(ZERO_BYTES(32), ZERO_BYTES(31))
             ).toThrowError(InvalidSecp256k1PrivateKey);
         });
 
         test('derivePrivateKey - invalid - private key', () => {
             expect(() =>
-                HDNode.fromPrivateKey(ZERO_BYTES(31), ZERO_BYTES(32))
+                HDKey.fromPrivateKey(ZERO_BYTES(31), ZERO_BYTES(32))
             ).toThrowError(InvalidSecp256k1PrivateKey);
         });
 
         test('derivePrivateKey - valid - address sequence', () => {
-            const root = HDNode.fromMnemonic(words);
+            const root = HDKey.fromMnemonic(words);
             expect(root.privateKey).toBeDefined();
             expect(root.chainCode).toBeDefined();
-            const extendedRoot = HDNode.fromPrivateKey(
+            const extendedRoot = HDKey.fromPrivateKey(
                 root.privateKey as Uint8Array,
                 root.chainCode as Uint8Array
             );
@@ -161,10 +159,10 @@ describe('HDNode', () => {
         });
 
         test('derivePrivateKey - valid - public key sequence', () => {
-            const root = HDNode.fromMnemonic(words);
+            const root = HDKey.fromMnemonic(words);
             expect(root.privateKey).toBeDefined();
             expect(root.chainCode).toBeDefined();
-            const extendedRoot = HDNode.fromPrivateKey(
+            const extendedRoot = HDKey.fromPrivateKey(
                 root.privateKey as Uint8Array,
                 root.chainCode as Uint8Array
             );
@@ -181,21 +179,21 @@ describe('HDNode', () => {
     describe('derivePublicKey', () => {
         test('derivePublicKey - invalid - chain code', () => {
             expect(() =>
-                HDNode.fromPublicKey(ZERO_BYTES(32), ZERO_BYTES(31))
-            ).toThrowError(InvalidHDNode);
+                HDKey.fromPublicKey(ZERO_BYTES(32), ZERO_BYTES(31))
+            ).toThrowError(InvalidHDKey);
         });
 
         test('derivePublicKey - invalid - public key', () => {
             expect(() =>
-                HDNode.fromPublicKey(ZERO_BYTES(31), ZERO_BYTES(32))
-            ).toThrowError(InvalidHDNode);
+                HDKey.fromPublicKey(ZERO_BYTES(31), ZERO_BYTES(32))
+            ).toThrowError(InvalidHDKey);
         });
 
         test(`derivePublicKey - valid - address sequence, no private key`, () => {
-            const root = HDNode.fromMnemonic(words);
+            const root = HDKey.fromMnemonic(words);
             expect(root.publicKey).toBeDefined();
             expect(root.chainCode).toBeDefined();
-            const extendedRoot = HDNode.fromPublicKey(
+            const extendedRoot = HDKey.fromPublicKey(
                 root.publicKey as Uint8Array,
                 root.chainCode as Uint8Array
             );
