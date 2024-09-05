@@ -3,7 +3,7 @@ import {
     InvalidHDNode,
     InvalidSecp256k1PrivateKey
 } from '@vechain/sdk-errors';
-import { Keccak256 } from '../hash';
+import { Keccak256 } from './hash';
 import { HDNode } from '../hdnode';
 import { secp256k1 } from '../secp256k1';
 import { Hex } from './Hex';

@@ -1,8 +1,7 @@
 import { CertificateSignature } from '@vechain/sdk-errors';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
-import { Blake2b256 } from '../hash';
+import { Blake2b256, Address, Hex, Txt } from '../vcdm';
 import { secp256k1 } from '../secp256k1';
-import { Address, Hex, Txt } from '../vcdm';
 import { type Certificate } from './types';
 
 /**

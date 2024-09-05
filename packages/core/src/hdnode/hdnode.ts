@@ -8,7 +8,7 @@ import {
 } from '@vechain/sdk-errors';
 import { base58 } from '@scure/base';
 import { secp256k1 } from '../secp256k1';
-import { Sha256 } from '../hash';
+import { Sha256 } from '../vcdm';
 import { VET_DERIVATION_PATH, X_PRIV_PREFIX, X_PUB_PREFIX } from '../utils';
 
 /**

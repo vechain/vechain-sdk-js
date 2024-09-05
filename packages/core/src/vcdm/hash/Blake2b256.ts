@@ -1,6 +1,6 @@
 import { blake2b as nh_blake2b } from '@noble/hashes/blake2b';
 import { InvalidOperation } from '@vechain/sdk-errors';
-import { Hex, HexUInt, Txt, type Hash } from '../vcdm';
+import { Hex, HexUInt, Txt, type Hash } from '../index';
 /**
  * Represents the result of an [BLAKE](https://en.wikipedia.org/wiki/BLAKE_(hash_function)) [BlAKE2B 256](https://www.blake2.net/) hash operation.
  *

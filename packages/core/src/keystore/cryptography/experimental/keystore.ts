@@ -7,9 +7,8 @@ import { ctr } from '@noble/ciphers/aes';
 import * as n_utils from '@noble/curves/abstract/utils';
 import { scrypt } from '@noble/hashes/scrypt';
 import { InvalidKeystoreParams, stringifyData } from '@vechain/sdk-errors';
-import { Keccak256 } from '../../../hash';
+import { Keccak256, Address, Hex } from '../../../vcdm';
 import { secp256k1 } from '../../../secp256k1';
-import { Address, Hex } from '../../../vcdm';
 import { type Keystore, type KeystoreAccount } from '../../types';
 
 /**
