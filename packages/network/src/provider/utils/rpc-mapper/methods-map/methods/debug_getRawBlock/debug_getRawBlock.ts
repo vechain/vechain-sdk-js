@@ -1,5 +1,4 @@
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
-import { type ThorClient } from '../../../../../../thor-client';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Method debug_getRawBlock implementation
@@ -10,25 +9,16 @@ import { type ThorClient } from '../../../../../../thor-client';
  * * params[0]: ...
  * * params[1]: ...
  * * params[n]: ...
- * @throws {FunctionNotImplemented}
  */
-const debugGetRawBlock = async (
-    thorClient: ThorClient,
-    params: unknown[]
-): Promise<void> => {
+const debugGetRawBlock = async (): Promise<void> => {
     // To avoid eslint error
     await Promise.resolve(0);
 
     // Not implemented yet
-    throw new FunctionNotImplemented(
-        'debug_getRawBlock',
-        'Method "debug_getRawBlock" has not been implemented yet.',
-        {
-            functionName: 'debug_getRawBlock',
-            thorClient,
-            params
-        }
-    );
+    VeChainSDKLogger('warning').log({
+        title: 'debug_getRawBlock',
+        messages: ['Method "debug_getRawBlock" has not been implemented yet.']
+    });
 };
 
 export { debugGetRawBlock };

@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     RPCMethodsMap,
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Mapper integration tests for 'eth_getFilterLogs' method
@@ -34,31 +34,15 @@ describe('RPC Mapper - eth_getFilterLogs method tests', () => {
          * Positive case 1 - ... Description ...
          */
         test('eth_getFilterLogs - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.eth_getFilterLogs
-                    ]([-1])
-            ).rejects.toThrowError(FunctionNotImplemented);
-        });
-    });
+            const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
 
-    /**
-     * eth_getFilterLogs RPC call tests - Negative cases
-     */
-    describe('eth_getFilterLogs - Negative cases', () => {
-        /**
-         * Negative case 1 - ... Description ...
-         */
-        test('eth_getFilterLogs - negative case 1', async () => {
             // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.eth_getFilterLogs
-                    ](['SOME_RANDOM_PARAM'])
-            ).rejects.toThrowError(FunctionNotImplemented);
+            await RPCMethodsMap(thorClient)[RPC_METHODS.eth_getFilterLogs]([
+                -1
+            ]);
+
+            expect(logSpy).toHaveBeenCalled();
+            logSpy.mockRestore();
         });
     });
 });
