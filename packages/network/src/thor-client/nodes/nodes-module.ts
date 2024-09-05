@@ -19,11 +19,11 @@ class NodesModule {
      *
      * @returns A promise that resolves to the list of connected peers.
      */
-    public async getNodes(): Promise<ConnectedPeer | null> {
+    public async getNodes(): Promise<ConnectedPeer[] | null> {
         return (await this.thor.httpClient.http(
             'GET',
             thorest.nodes.get.NODES()
-        )) as ConnectedPeer | null;
+        )) as ConnectedPeer[] | null;
     }
 
     /**
