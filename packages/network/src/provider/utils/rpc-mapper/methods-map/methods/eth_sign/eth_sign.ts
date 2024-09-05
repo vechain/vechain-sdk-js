@@ -10,15 +10,15 @@ import { VeChainSDKLogger } from '@vechain/sdk-logging';
  * * params[1]: ...
  * * params[n]: ...
  */
-const ethSign = async (): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
-
+const ethSign = async (): Promise<'METHOD NOT IMPLEMENTED'> => {
     // Not implemented yet
     VeChainSDKLogger('warning').log({
         title: 'eth_sign',
         messages: ['Method "eth_sign" has not been implemented yet.']
     });
+
+    // To avoid eslint error
+    return await Promise.resolve('METHOD NOT IMPLEMENTED');
 };
 
 export { ethSign };

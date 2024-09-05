@@ -10,10 +10,7 @@ import { VeChainSDKLogger } from '@vechain/sdk-logging';
  * * params[1]: ...
  * * params[n]: ...
  */
-const ethCreateAccessList = async (): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
-
+const ethCreateAccessList = async (): Promise<'METHOD NOT IMPLEMENTED'> => {
     // Not implemented yet
     VeChainSDKLogger('warning').log({
         title: 'eth_createAccessList',
@@ -21,6 +18,9 @@ const ethCreateAccessList = async (): Promise<void> => {
             'Method "eth_createAccessList" has not been implemented yet.'
         ]
     });
+
+    // To avoid eslint error
+    return await Promise.resolve('METHOD NOT IMPLEMENTED');
 };
 
 export { ethCreateAccessList };

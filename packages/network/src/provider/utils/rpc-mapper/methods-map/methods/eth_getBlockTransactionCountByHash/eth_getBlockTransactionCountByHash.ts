@@ -10,17 +10,18 @@ import { VeChainSDKLogger } from '@vechain/sdk-logging';
  * * params[1]: ...
  * * params[n]: ...
  */
-const ethGetBlockTransactionCountByHash = async (): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
+const ethGetBlockTransactionCountByHash =
+    async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+        // Not implemented yet
+        VeChainSDKLogger('warning').log({
+            title: 'eth_getBlockTransactionCountByHash',
+            messages: [
+                'Method "eth_getBlockTransactionCountByHash" has not been implemented yet.'
+            ]
+        });
 
-    // Not implemented yet
-    VeChainSDKLogger('warning').log({
-        title: 'eth_getBlockTransactionCountByHash',
-        messages: [
-            'Method "eth_getBlockTransactionCountByHash" has not been implemented yet.'
-        ]
-    });
-};
+        // To avoid eslint error
+        return await Promise.resolve('METHOD NOT IMPLEMENTED');
+    };
 
 export { ethGetBlockTransactionCountByHash };

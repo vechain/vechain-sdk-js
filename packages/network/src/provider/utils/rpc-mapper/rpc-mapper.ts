@@ -229,185 +229,227 @@ const RPCMethodsMap = (
             return await evmMine(thorClient);
         },
 
-        [RPC_METHODS.eth_coinbase]: async () => {
-            await ethCoinbase();
-        },
+        [RPC_METHODS.eth_coinbase]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethCoinbase();
+            },
 
-        [RPC_METHODS.eth_feeHistory]: async () => {
-            await ethFeeHistory();
-        },
+        [RPC_METHODS.eth_feeHistory]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethFeeHistory();
+            },
 
-        [RPC_METHODS.eth_getBlockTransactionCountByHash]: async () => {
-            await ethGetBlockTransactionCountByHash();
-        },
+        [RPC_METHODS.eth_getBlockTransactionCountByHash]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethGetBlockTransactionCountByHash();
+            },
 
-        [RPC_METHODS.eth_getBlockTransactionCountByNumber]: async () => {
-            await ethGetBlockTransactionCountByNumber();
-        },
+        [RPC_METHODS.eth_getBlockTransactionCountByNumber]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethGetBlockTransactionCountByNumber();
+            },
 
-        [RPC_METHODS.eth_getTransactionByBlockHashAndIndex]: async () => {
-            await ethGetTransactionByBlockHashAndIndex();
-        },
+        [RPC_METHODS.eth_getTransactionByBlockHashAndIndex]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethGetTransactionByBlockHashAndIndex();
+            },
 
-        [RPC_METHODS.eth_getTransactionByBlockNumberAndIndex]: async () => {
-            await ethGetTransactionByBlockNumberAndIndex();
-        },
+        [RPC_METHODS.eth_getTransactionByBlockNumberAndIndex]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethGetTransactionByBlockNumberAndIndex();
+            },
 
-        [RPC_METHODS.eth_getUncleByBlockHashAndIndex]: async () => {
-            await ethGetUncleByBlockHashAndIndex();
-        },
+        [RPC_METHODS.eth_getUncleByBlockHashAndIndex]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethGetUncleByBlockHashAndIndex();
+            },
 
-        [RPC_METHODS.eth_getUncleByBlockNumberAndIndex]: async () => {
-            await ethGetUncleByBlockNumberAndIndex();
-        },
+        [RPC_METHODS.eth_getUncleByBlockNumberAndIndex]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethGetUncleByBlockNumberAndIndex();
+            },
 
-        [RPC_METHODS.eth_getUncleCountByBlockHash]: async () => {
-            await ethGetUncleCountByBlockHash();
-        },
+        [RPC_METHODS.eth_getUncleCountByBlockHash]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethGetUncleCountByBlockHash();
+            },
 
-        [RPC_METHODS.eth_getUncleCountByBlockNumber]: async () => {
-            await ethGetUncleCountByBlockNumber();
-        },
+        [RPC_METHODS.eth_getUncleCountByBlockNumber]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethGetUncleCountByBlockNumber();
+            },
 
-        [RPC_METHODS.eth_getWork]: async () => {
-            await ethGetWork();
-        },
+        [RPC_METHODS.eth_getWork]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethGetWork();
+            },
 
-        [RPC_METHODS.eth_mining]: async () => {
-            await ethMining();
-        },
+        [RPC_METHODS.eth_mining]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethMining();
+            },
 
-        [RPC_METHODS.eth_hashrate]: async () => {
-            await ethHashrate();
-        },
+        [RPC_METHODS.eth_hashrate]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethHashrate();
+            },
 
-        [RPC_METHODS.eth_protocolVersion]: async () => {
-            await ethProtocolVersion();
-        },
+        [RPC_METHODS.eth_protocolVersion]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethProtocolVersion();
+            },
 
         [RPC_METHODS.eth_requestAccounts]: async (): Promise<string[]> => {
             return await ethRequestAccounts(provider);
         },
 
-        [RPC_METHODS.eth_sign]: async () => {
-            await ethSign();
+        [RPC_METHODS.eth_sign]: async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+            return await ethSign();
         },
 
-        [RPC_METHODS.eth_submitWork]: async () => {
-            await ethSubmitWork();
+        [RPC_METHODS.eth_submitWork]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethSubmitWork();
+            },
+
+        [RPC_METHODS.net_listening]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await netListening();
+            },
+
+        [RPC_METHODS.net_peerCount]: async (): Promise<number> => {
+            return await netPeerCount(thorClient);
         },
 
-        [RPC_METHODS.net_listening]: async () => {
-            await netListening();
-        },
+        [RPC_METHODS.parity_nextNonce]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await parityNextNonce();
+            },
 
-        [RPC_METHODS.net_peerCount]: async () => {
-            await netPeerCount();
-        },
+        [RPC_METHODS.eth_newFilter]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethNewFilter();
+            },
 
-        [RPC_METHODS.parity_nextNonce]: async () => {
-            await parityNextNonce();
-        },
+        [RPC_METHODS.eth_newBlockFilter]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethNewBlockFilter();
+            },
 
-        [RPC_METHODS.eth_newFilter]: async () => {
-            await ethNewFilter();
-        },
+        [RPC_METHODS.eth_newPendingTransactionFilter]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethNewPendingTransactionFilter();
+            },
 
-        [RPC_METHODS.eth_newBlockFilter]: async () => {
-            await ethNewBlockFilter();
-        },
+        [RPC_METHODS.eth_getFilterLogs]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethGetFilterLogs();
+            },
 
-        [RPC_METHODS.eth_newPendingTransactionFilter]: async () => {
-            await ethNewPendingTransactionFilter();
-        },
+        [RPC_METHODS.eth_getFilterChanges]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethGetFilterChanges();
+            },
 
-        [RPC_METHODS.eth_getFilterLogs]: async () => {
-            await ethGetFilterLogs();
-        },
+        [RPC_METHODS.eth_uninstallFilter]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethUninstallFilter();
+            },
 
-        [RPC_METHODS.eth_getFilterChanges]: async () => {
-            await ethGetFilterChanges();
-        },
+        [RPC_METHODS.debug_getBadBlocks]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await debugGetBadBlocks();
+            },
 
-        [RPC_METHODS.eth_uninstallFilter]: async () => {
-            await ethUninstallFilter();
-        },
+        [RPC_METHODS.debug_getRawBlock]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await debugGetRawBlock();
+            },
 
-        [RPC_METHODS.debug_getBadBlocks]: async () => {
-            await debugGetBadBlocks();
-        },
+        [RPC_METHODS.debug_getRawHeader]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await debugGetRawHeader();
+            },
 
-        [RPC_METHODS.debug_getRawBlock]: async () => {
-            await debugGetRawBlock();
-        },
+        [RPC_METHODS.debug_getRawReceipts]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await debugGetRawReceipts();
+            },
 
-        [RPC_METHODS.debug_getRawHeader]: async () => {
-            await debugGetRawHeader();
-        },
+        [RPC_METHODS.debug_getRawTransaction]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await debugGetRawTransaction();
+            },
 
-        [RPC_METHODS.debug_getRawReceipts]: async () => {
-            await debugGetRawReceipts();
-        },
+        [RPC_METHODS.engine_exchangeCapabilities]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await engineExchangeCapabilities();
+            },
 
-        [RPC_METHODS.debug_getRawTransaction]: async () => {
-            await debugGetRawTransaction();
-        },
+        [RPC_METHODS.engine_exchangeTransitionConfigurationV1]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await engineExchangeTransitionConfigurationV1();
+            },
 
-        [RPC_METHODS.engine_exchangeCapabilities]: async () => {
-            await engineExchangeCapabilities();
-        },
+        [RPC_METHODS.engine_forkchoiceUpdatedV1]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await engineForkchoiceUpdatedV1();
+            },
 
-        [RPC_METHODS.engine_exchangeTransitionConfigurationV1]: async () => {
-            await engineExchangeTransitionConfigurationV1();
-        },
+        [RPC_METHODS.engine_forkchoiceUpdatedV2]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await engineForkchoiceUpdatedV2();
+            },
 
-        [RPC_METHODS.engine_forkchoiceUpdatedV1]: async () => {
-            await engineForkchoiceUpdatedV1();
-        },
+        [RPC_METHODS.engine_forkchoiceUpdatedV3]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await engineForkchoiceUpdatedV3();
+            },
 
-        [RPC_METHODS.engine_forkchoiceUpdatedV2]: async () => {
-            await engineForkchoiceUpdatedV2();
-        },
+        [RPC_METHODS.engine_getPayloadBodiesByHashV1]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await engineGetPayloadBodiesByHashV1();
+            },
 
-        [RPC_METHODS.engine_forkchoiceUpdatedV3]: async () => {
-            await engineForkchoiceUpdatedV3();
-        },
+        [RPC_METHODS.engine_getPayloadBodiesByRangeV1]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await engineGetPayloadBodiesByRangeV1();
+            },
 
-        [RPC_METHODS.engine_getPayloadBodiesByHashV1]: async () => {
-            await engineGetPayloadBodiesByHashV1();
-        },
+        [RPC_METHODS.engine_getPayloadV1]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await engineGetPayloadV1();
+            },
 
-        [RPC_METHODS.engine_getPayloadBodiesByRangeV1]: async () => {
-            await engineGetPayloadBodiesByRangeV1();
-        },
+        [RPC_METHODS.engine_getPayloadV2]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await engineGetPayloadV2();
+            },
 
-        [RPC_METHODS.engine_getPayloadV1]: async () => {
-            await engineGetPayloadV1();
-        },
+        [RPC_METHODS.engine_getPayloadV3]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await engineGetPayloadV3();
+            },
 
-        [RPC_METHODS.engine_getPayloadV2]: async () => {
-            await engineGetPayloadV2();
-        },
+        [RPC_METHODS.engine_newPayloadV1]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await engineNewPayloadV1();
+            },
 
-        [RPC_METHODS.engine_getPayloadV3]: async () => {
-            await engineGetPayloadV3();
-        },
+        [RPC_METHODS.engine_newPayloadV2]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await engineNewPayloadV2();
+            },
 
-        [RPC_METHODS.engine_newPayloadV1]: async () => {
-            await engineNewPayloadV1();
-        },
+        [RPC_METHODS.engine_newPayloadV3]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await engineNewPayloadV3();
+            },
 
-        [RPC_METHODS.engine_newPayloadV2]: async () => {
-            await engineNewPayloadV2();
-        },
-
-        [RPC_METHODS.engine_newPayloadV3]: async () => {
-            await engineNewPayloadV3();
-        },
-
-        [RPC_METHODS.eth_createAccessList]: async () => {
-            await ethCreateAccessList();
-        },
+        [RPC_METHODS.eth_createAccessList]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethCreateAccessList();
+            },
 
         [RPC_METHODS.eth_getBlockReceipts]: async (
             params
@@ -415,17 +457,20 @@ const RPCMethodsMap = (
             return await ethGetBlockReceipts(thorClient, params);
         },
 
-        [RPC_METHODS.eth_getProof]: async () => {
-            await ethGetProof();
-        },
+        [RPC_METHODS.eth_getProof]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethGetProof();
+            },
 
-        [RPC_METHODS.eth_maxPriorityFeePerGas]: async () => {
-            await ethMaxPriorityFeePerGas();
-        },
+        [RPC_METHODS.eth_maxPriorityFeePerGas]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethMaxPriorityFeePerGas();
+            },
 
-        [RPC_METHODS.eth_signTransaction]: async () => {
-            await ethSignTransaction();
-        },
+        [RPC_METHODS.eth_signTransaction]:
+            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+                return await ethSignTransaction();
+            },
 
         [RPC_METHODS.web3_sha3]: async (params): Promise<string> => {
             return await web3Sha3(params);
