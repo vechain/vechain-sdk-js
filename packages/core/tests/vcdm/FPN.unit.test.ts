@@ -1010,6 +1010,28 @@ describe('FPN class tests', () => {
         });
     });
 
+    describe('isIntegerExpression method tests', () => {
+        test('not integer -> false', () => {
+            const exp = '123.45';
+            expect(FPN.isIntegerExpression(exp)).toBe(false);
+        });
+
+        test('negative with - -> true', () => {
+            const exp = '-12345';
+            expect(FPN.isIntegerExpression(exp)).toBe(true);
+        });
+
+        test('positive with + -> true', () => {
+            const exp = '+12345';
+            expect(FPN.isIntegerExpression(exp)).toBe(true);
+        });
+
+        test('positive without + -> true', () => {
+            const exp = '12345';
+            expect(FPN.isIntegerExpression(exp)).toBe(true);
+        });
+    });
+
     describe(`isNaN method tests`, () => {
         test('NaN -> true', () => {
             const n = NaN;

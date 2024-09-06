@@ -4,7 +4,7 @@ export * from './bloom';
 export * from './certificate';
 export * from './contract';
 export * from './data';
-export * from './hdnode';
+export * from './hdkey';
 export * from './http';
 export * from './keystore';
 export * from './poll';

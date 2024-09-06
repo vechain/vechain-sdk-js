@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { InvalidHDNode } from '@vechain/sdk-errors';
+import { InvalidHDKey } from '@vechain/sdk-errors';
 import {
     Address,
     mnemonic,
@@ -62,7 +62,7 @@ describe('Mnemonic', () => {
         test('toPrivateKey - wrong path', () => {
             expect(() =>
                 Mnemonic.toPrivateKey(words, wrongDerivationPath)
-            ).toThrowError(InvalidHDNode);
+            ).toThrowError(InvalidHDKey);
         });
     });
 

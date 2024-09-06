@@ -50,6 +50,14 @@ class FPN implements VeChainDataModel<FPN> {
     );
 
     /**
+     * Regular expression pattern for matching integers expressed as base 10 strings.
+     *
+     * @type {RegExp}
+     * @constant
+     */
+    private static readonly REGEX_INTEGER: RegExp = /^[-+]?\d+$/;
+
+    /**
      * Represents the zero constant.
      */
     public static readonly ZERO = new FPN(0n, 0n, 0);
@@ -402,6 +410,18 @@ class FPN implements VeChainDataModel<FPN> {
             return this.sv % 10n ** this.fd === 0n;
         }
         return false;
+    }
+
+    /**
+     * Checks if a given string expression is an integer,
+     * considering `-` for negative and `+` optional for positive values.
+     *
+     * @param {string} exp - The string expression to be tested.
+     *
+     * @return {boolean} True if the expression is an integer, false otherwise.
+     */
+    public static isIntegerExpression(exp: string): boolean {
+        return this.REGEX_INTEGER.test(exp);
     }
 
     /**

@@ -6,7 +6,7 @@
 import { type HardhatUserConfig, type HttpNetworkConfig } from 'hardhat/types';
 
 import '../../../src/index';
-import { VET_DERIVATION_PATH } from '@vechain/sdk-core';
+import { HDKey } from '@vechain/sdk-core';
 
 /**
  * Simple configuration for testing
@@ -22,7 +22,7 @@ const vechainTestNetwork: HttpNetworkConfig = {
     accounts: {
         mnemonic:
             'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
-        path: VET_DERIVATION_PATH,
+        path: HDKey.VET_DERIVATION_PATH,
         count: 3,
         initialIndex: 0,
         passphrase: 'VeChainThor'

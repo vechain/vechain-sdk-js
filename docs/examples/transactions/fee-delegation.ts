@@ -1,7 +1,7 @@
 import {
     Address,
     clauseBuilder,
-    HDNode,
+    HDKey,
     Mnemonic,
     networkInfo,
     type TransactionBody,
@@ -59,7 +59,7 @@ const body: TransactionBody = {
 
 // 4 - Create private keys of sender and delegate
 
-const nodeDelegate = HDNode.fromMnemonic(Mnemonic.of());
+const nodeDelegate = HDKey.fromMnemonic(Mnemonic.of());
 const delegatorPrivateKey = nodeDelegate.privateKey;
 
 // 5 - Get address of delegate

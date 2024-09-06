@@ -1,10 +1,10 @@
 import {
     InvalidDataType,
-    InvalidHDNode,
+    InvalidHDKey,
     InvalidSecp256k1PrivateKey
 } from '@vechain/sdk-errors';
 import { Keccak256 } from '../hash';
-import { HDNode } from '../hdnode';
+import { HDKey } from '../hdkey';
 import { secp256k1 } from '../secp256k1';
 import { Hex } from './Hex';
 import { HexUInt } from './HexUInt';
@@ -153,7 +153,7 @@ class Address extends HexUInt {
      *
      * Secure audit function.
      * - {@link bip32.HDKey}(https://github.com/paulmillr/scure-bip32)
-     * - {@link HDNode}
+     * - {@link HDKey}
      *
      * @example `m/0` (default)
      * @example `m/0/2`
@@ -162,21 +162,21 @@ class Address extends HexUInt {
      * @param {string[]} mnemonic - Mnemonic used to generate the HD node.
      * @param {string} [path='m/0'] - The derivation path from the current node.
      * @return {Address} - The derived address.
-     * @throws {InvalidHDNode}
+     * @throws {InvalidHDKey}
      *
      */
     public static ofMnemonic(
         mnemonic: string[],
         path: string = 'm/0'
     ): Address {
-        const root = HDNode.fromMnemonic(mnemonic);
+        const root = HDKey.fromMnemonic(mnemonic);
         try {
             // Public key is always available.
             return Address.ofPublicKey(
                 root.derive(path).publicKey as Uint8Array
             );
         } catch (error) {
-            throw new InvalidHDNode(
+            throw new InvalidHDKey(
                 'mnemonic.deriveAddress()',
                 'Invalid derivation path given as input.',
                 { derivationPath: path },
