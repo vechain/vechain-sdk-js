@@ -53,7 +53,11 @@ const ethGetTransactionByBlockHashAndIndex = async (
             RPC_METHODS.eth_chainId
         ]([])) as string;
 
-        return transactionsFormatter.formatToRPCStandard(tx, chainId, 1);
+        return transactionsFormatter.formatToRPCStandard(
+            tx,
+            chainId,
+            Number(index)
+        );
     } catch (e) {
         throw new JSONRPCInternalError(
             'eth_getTransactionByBlockHashAndIndex()',
