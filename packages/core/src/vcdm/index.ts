@@ -3,7 +3,7 @@ export * from './Address';
 export * from './BloomFilter';
 export * from './Currency';
 export * from './FPN';
-export * from './Hash';
+export * from './hash';
 export * from './Hex';
 export * from './HexInt';
 export * from './HexUInt';

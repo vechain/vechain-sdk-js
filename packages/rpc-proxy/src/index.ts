@@ -11,7 +11,7 @@ import {
     ThorClient,
     VeChainProvider
 } from '@vechain/sdk-network';
-import { Address, secp256k1, VET_DERIVATION_PATH } from '@vechain/sdk-core';
+import { Address, HDKey, secp256k1 } from '@vechain/sdk-core';
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
 import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
 import express, { type Express, type Request, type Response } from 'express';
@@ -69,7 +69,7 @@ function startProxy(): void {
               config.accounts.mnemonic.split(' '),
               config.accounts.count,
               config.accounts.initialIndex,
-              VET_DERIVATION_PATH,
+              HDKey.VET_DERIVATION_PATH,
               { delegator: config.delegator }
           );
     const provider = new VeChainProvider(

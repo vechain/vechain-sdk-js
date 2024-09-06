@@ -44,6 +44,7 @@ classDiagram
         +boolean isFinite()
         +boolean isInfinite()
         +boolean isInteger()
+        +boolean isIntegerExpression(string exp)$
         +boolean isNaN()
         +boolean isNegative()
         +boolean isNegativeInfinite()

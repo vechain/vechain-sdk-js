@@ -5,7 +5,7 @@ import {
     UnavailableTransactionField
 } from '@vechain/sdk-errors';
 import { type RLPValidObject } from '../encoding';
-import { Blake2b256 } from '../hash';
+import { Blake2b256 } from '../vcdm/hash/Blake2b256';
 import { secp256k1 } from '../secp256k1';
 import {
     BLOCK_REF_LENGTH,

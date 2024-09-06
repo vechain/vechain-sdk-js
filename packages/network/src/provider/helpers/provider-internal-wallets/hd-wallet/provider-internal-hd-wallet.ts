@@ -1,9 +1,4 @@
-import {
-    Address,
-    HDNode,
-    secp256k1,
-    VET_DERIVATION_PATH
-} from '@vechain/sdk-core';
+import { Address, HDKey, secp256k1 } from '@vechain/sdk-core';
 import { type SignTransactionOptions } from '../../../../thor-client';
 import { ProviderInternalBaseWallet } from '../base-wallet';
 
@@ -41,7 +36,7 @@ class ProviderInternalHDWallet extends ProviderInternalBaseWallet {
         mnemonic: string[],
         count: number = 1,
         initialIndex: number = 0,
-        derivationPath: string = VET_DERIVATION_PATH,
+        derivationPath: string = HDKey.VET_DERIVATION_PATH,
         options?: {
             delegator?: SignTransactionOptions;
         }
@@ -50,7 +45,7 @@ class ProviderInternalHDWallet extends ProviderInternalBaseWallet {
         super(
             [...Array(count).keys()].map((path: number) => {
                 // Convert the private key to a buffer
-                const privateKeyBuffer = HDNode.fromMnemonic(
+                const privateKeyBuffer = HDKey.fromMnemonic(
                     mnemonic,
                     derivationPath
                 ).deriveChild(path + initialIndex).privateKey as Buffer;
