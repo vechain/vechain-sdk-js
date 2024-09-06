@@ -1,5 +1,5 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { Hex } from '../vcdm/Hex';
+import { Hex } from '../vcdm';
 import { SIGNATURE_LENGTH } from '../utils';
 import { randomBytes as _randomBytes } from '@noble/hashes/utils';
 import { secp256k1 as n_secp256k1 } from '@noble/curves/secp256k1';

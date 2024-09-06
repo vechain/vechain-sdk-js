@@ -1,5 +1,5 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { Blake2b256 } from '../hash';
+import { Blake2b256 } from './hash/Blake2b256';
 import { Hex } from './Hex';
 import { InvalidDataType, InvalidOperation } from '@vechain/sdk-errors';
 import { type VeChainDataModel } from './VeChainDataModel';

@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { bytesToHex } from '@noble/hashes/utils';
 import { InvalidOperation } from '@vechain/sdk-errors';
-import { Hex, sha256, Sha256 } from '../../src';
+import { Hex, sha256, Sha256 } from '../../../src';
 import { CONTENT, NO_CONTENT } from './fixture';
 
 // Hex on purpose because it must be equal to the returned HexUInt hash.

@@ -9,7 +9,7 @@ import {
     InvalidSecp256k1PrivateKey
 } from '@vechain/sdk-errors';
 import { HexUInt } from '../vcdm/HexUInt';
-import { Sha256 } from '../hash';
+import { Sha256 } from '../vcdm/hash/Sha256';
 import { FPN } from '../vcdm';
 
 /**
