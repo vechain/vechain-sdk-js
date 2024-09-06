@@ -1,7 +1,7 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { NUMERIC_REGEX, ZERO_BYTES } from '../const';
 import { Hex, Txt } from '../../vcdm';
 import { InvalidDataType } from '@vechain/sdk-errors';
+import { ZERO_BYTES } from '../const';
 
 /**
  * Decodes a hexadecimal string representing a bytes32 value into a string.
@@ -76,20 +76,7 @@ const encodeBytes32String = (
     }
 };
 
-/**
- * Checks whether the provided string is a valid decimal numeric string.
- *
- * @param {string} value - The value to check.
- * @returns {boolean} - Returns true if the value is numeric, false otherwise.
- *
- * @see {@link NUMERIC_REGEX}
- */
-const isNumeric = (value: string): boolean => {
-    return NUMERIC_REGEX.test(value);
-};
-
 export const dataUtils = {
     decodeBytes32String,
-    encodeBytes32String,
-    isNumeric
+    encodeBytes32String
 };

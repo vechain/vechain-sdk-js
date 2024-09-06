@@ -46,11 +46,12 @@ classDiagram
         +boolean isInteger()
         +boolean isIntegerExpression(string exp)$
         +boolean isNaN()
+        +boolean isNaturalExpression(string exp)$
         +boolean isNegative()
         +boolean isNegativeInfinite()
+        +boolean isNumberExpression(string exp)$
         +boolean isPositive()
         +boolean isPositiveInfinite()
-        +boolean isUnsignedIntegerExpression(string exp)$
         +boolean isZero()
         +boolean lt(FPN that)
         +boolean lte(FPN that)

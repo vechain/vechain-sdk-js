@@ -58,12 +58,20 @@ class FPN implements VeChainDataModel<FPN> {
     private static readonly REGEX_INTEGER: RegExp = /^[-+]?\d+$/;
 
     /**
-     * Regular expression pattern for matching unsigned integers expressed as base 10 strings.
+     * Regular expression for matching numeric values expressed as base 10 strings.
+     *
+     * @constant {RegExp} NUMERIC_REGEX
+     */
+    private static readonly REGEX_NUMBER =
+        /(^[-+]?\d+(\.\d+)?)$|(^[-+]?\.\d+)$/;
+
+    /**
+     * Regular expression pattern for matching natural numbers expressed as base 10 strings.
      *
      * @type {RegExp}
      * @constant
      */
-    private static readonly REGEX_UINTEGER: RegExp = /^\d+$/;
+    private static readonly REGEX_NATURAL: RegExp = /^\d+$/;
 
     /**
      * Represents the zero constant.
@@ -421,12 +429,13 @@ class FPN implements VeChainDataModel<FPN> {
     }
 
     /**
-     * Checks if a given string expression is an integer,
+     * Checks if a given string expression is an integer in base 10 notation,
      * considering `-` for negative and `+` optional for positive values.
      *
      * @param {string} exp - The string expression to be tested.
      *
-     * @return {boolean} True if the expression is an integer, false otherwise.
+     * @return {boolean} `true` if the expression is an integer,
+     * `false` otherwise.
      */
     public static isIntegerExpression(exp: string): boolean {
         return this.REGEX_INTEGER.test(exp);
@@ -441,6 +450,19 @@ class FPN implements VeChainDataModel<FPN> {
      */
     public isNaN(): boolean {
         return Number.isNaN(this.ef);
+    }
+
+    /**
+     * Checks if a given string expression is a natural (unsigned positive integer)
+     * number in base 10 notation.
+     *
+     * @param {string} exp - The string expression to be tested.
+     *
+     * @return {boolean} `true` if the expression is a natural number,
+     * `false` otherwise.
+     */
+    public static isNaturalExpression(exp: string): boolean {
+        return this.REGEX_NATURAL.test(exp);
     }
 
     /**
@@ -462,6 +484,29 @@ class FPN implements VeChainDataModel<FPN> {
     }
 
     /**
+     * Checks if a given string expression is a number in base 10 notation,
+     * considering `-` for negative and `+` optional for positive values.
+     *
+     * The method returns `true` for the following cases.
+     * - Whole numbers:
+     *   - Positive whole numbers, optionally signed: 1, +2, 3, ...
+     *   - Negative whole numbers: -1, -2, -3, ...
+     * - Decimal numbers:
+     *   - Positive decimal numbers, optionally signed: 1.0, +2.5, 3.14, ...
+     *   - Negative decimal numbers: -1.0, -2.5, -3.14, ...
+     *   - Decimal numbers without whole part:
+     *     - Positive decimal numbers, optionally signed: .1, +.5, .75, ...
+     *     - Negative decimal numbers: -.1, -.5, -.75, ...
+     *
+     * @param exp - The string expression to be checked.
+     *
+     * @return `true` is `exp` represents a number, otherwise `false`.
+     */
+    public static isNumberExpression(exp: string): boolean {
+        return FPN.REGEX_NUMBER.test(exp);
+    }
+
+    /**
      * Returns `true` if the sign of this FPN is positive, otherwise returns `false`.
      *
      * @return `true` if the sign of this FPN is positive, otherwise returns `false`.
@@ -479,18 +524,6 @@ class FPN implements VeChainDataModel<FPN> {
      */
     public isPositiveInfinite(): boolean {
         return this.ef === Number.POSITIVE_INFINITY;
-    }
-
-    /**
-     * Checks if a given string expression is an unsigned positive integer.
-     *
-     * @param {string} exp - The string expression to be tested.
-     *
-     * @return {boolean} True if the expression is an unsigned positive integer,
-     * false otherwise.
-     */
-    public static isUnsignedIntegerExpression(exp: string): boolean {
-        return this.REGEX_UINTEGER.test(exp);
     }
 
     /**
