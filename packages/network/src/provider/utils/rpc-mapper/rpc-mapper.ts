@@ -263,10 +263,14 @@ const RPCMethodsMap = (
             );
         },
 
-        [RPC_METHODS.eth_getTransactionByBlockNumberAndIndex]:
-            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
-                return await ethGetTransactionByBlockNumberAndIndex();
-            },
+        [RPC_METHODS.eth_getTransactionByBlockNumberAndIndex]: async (
+            params
+        ): Promise<TransactionRPC | null> => {
+            return await ethGetTransactionByBlockNumberAndIndex(
+                thorClient,
+                params
+            );
+        },
 
         [RPC_METHODS.eth_getUncleByBlockHashAndIndex]:
             async (): Promise<'METHOD NOT IMPLEMENTED'> => {
