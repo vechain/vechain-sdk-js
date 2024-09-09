@@ -1,4 +1,7 @@
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
+import { type ThorClient } from '../../../../../../thor-client';
+import { type BlocksRPC, type TransactionRPC } from '../../../../formatter';
+import { RPCMethodsMap } from '../../../rpc-mapper';
+import { RPC_METHODS } from '../../../../const';
 
 /**
  * RPC Method eth_getTransactionByBlockNumberAndIndex implementation
@@ -10,18 +13,27 @@ import { VeChainSDKLogger } from '@vechain/sdk-logging';
  * * params[1]: ...
  * * params[n]: ...
  */
-const ethGetTransactionByBlockNumberAndIndex =
-    async (): Promise<'METHOD NOT IMPLEMENTED'> => {
-        // Not implemented yet
-        VeChainSDKLogger('warning').log({
-            title: 'eth_getTransactionByBlockNumberAndIndex',
-            messages: [
-                'Method "eth_getTransactionByBlockNumberAndIndex" has not been implemented yet.'
-            ]
-        });
+const ethGetTransactionByBlockNumberAndIndex = async (
+    thorClient: ThorClient,
+    params: unknown[]
+): Promise<TransactionRPC | null> => {
+    const [blockHash, index] = params as [string, string];
 
-        // To avoid eslint error
-        return await Promise.resolve('METHOD NOT IMPLEMENTED');
-    };
+    // Get the block containing the transactions
+    const block = (await RPCMethodsMap(thorClient)[
+        RPC_METHODS.eth_getBlockByNumber
+    ]([blockHash, false])) as BlocksRPC;
+
+    for (let i = 0; i < block.transactions.length; i++) {
+        const transaction = (await RPCMethodsMap(thorClient)[
+            RPC_METHODS.eth_getTransactionByHash
+        ]([block.transactions[i]])) as TransactionRPC;
+        if (transaction.transactionIndex === index) {
+            return transaction;
+        }
+    }
+
+    return null;
+};
 
 export { ethGetTransactionByBlockNumberAndIndex };

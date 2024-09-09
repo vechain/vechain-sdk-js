@@ -6,6 +6,7 @@ import {
     ThorClient
 } from '../../../../../src';
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
+import { invalidEthGetTransactionByBlockNumberAndIndexTestCases } from './fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_getTransactionByBlockNumberAndIndex' method
@@ -44,5 +45,25 @@ describe('RPC Mapper - eth_getTransactionByBlockNumberAndIndex method tests', ()
             expect(logSpy).toHaveBeenCalled();
             logSpy.mockRestore();
         });
+    });
+
+    /**
+     * eth_getTransactionByBlockNumberAndIndex RPC call tests - Negative cases
+     */
+    describe('eth_getTransactionByBlockNumberAndIndex - Negative cases', () => {
+        /**
+         * Test cases where the rpc method call throws an error
+         */
+        invalidEthGetTransactionByBlockNumberAndIndexTestCases.forEach(
+            ({ description, params, expectedError }) => {
+                test(description, async () => {
+                    await expect(
+                        RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_getTransactionByBlockHashAndIndex
+                        ](params)
+                    ).rejects.toThrowError(expectedError);
+                });
+            }
+        );
     });
 });
