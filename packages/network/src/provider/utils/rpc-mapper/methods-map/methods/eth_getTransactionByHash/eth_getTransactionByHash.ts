@@ -53,6 +53,7 @@ const ethGetTransactionByHash = async (
 
         // Get the index of the transaction in the block
         const txIndex = getTransactionIndexIntoBlock(block, hash);
+        console.log('txIndex', txIndex);
 
         // Get the chain id
         const chainId = (await RPCMethodsMap(thorClient)[
