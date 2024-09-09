@@ -8,6 +8,13 @@ import {
     InvalidSecp256k1Signature
 } from '@vechain/sdk-errors';
 
+/**
+ * The Secp256k1 class provides cryptographic utilities for the
+ * [SECP256K1](https://en.bitcoin.it/wiki/Secp256k1)
+ * [elliptic curve](https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm),
+ * including compressing and inflating public keys,
+ * generating private keys, and validating message hashes and private keys.
+ */
 // eslint-disable-next-line @typescript-eslint/no-extraneous-class
 class Secp256k1 {
     /**

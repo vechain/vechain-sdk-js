@@ -43,7 +43,7 @@ const body: TransactionBody = {
 };
 
 // Create private key
-const privateKey = await secp256k1.generatePrivateKey();
+const privateKey = await Secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 
@@ -98,7 +98,7 @@ const body: TransactionBody = {
 };
 
 // Create private key
-const privateKey = await secp256k1.generatePrivateKey();
+const privateKey = await Secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 
@@ -217,7 +217,7 @@ const body: TransactionBody = {
 
 // 3 - Create private key
 
-const privateKey = await secp256k1.generatePrivateKey();
+const privateKey = await Secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 
@@ -283,7 +283,7 @@ const txBBody: TransactionBody = {
 };
 
 // Define the senders private key
-const senderPrivateKey = await secp256k1.generatePrivateKey();
+const senderPrivateKey = await Secp256k1.generatePrivateKey();
 
 // To define transaction B as dependant on transaction A
 // We need to sign transaction A, and then get its Id
