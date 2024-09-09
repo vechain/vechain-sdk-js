@@ -50,6 +50,7 @@ classDiagram
         +boolean isNegativeInfinite()
         +boolean isPositive()
         +boolean isPositiveInfinite()
+        +boolean isUnsignedIntegerExpression(string exp)$
         +boolean isZero()
         +boolean lt(FPN that)
         +boolean lte(FPN that)

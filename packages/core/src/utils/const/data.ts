@@ -7,14 +7,6 @@
 const ZERO_BYTES = (size: number): Uint8Array => new Uint8Array(size);
 
 /**
- * Regular expression pattern for matching integers expressed as base 10 strings.
- *
- * @type {RegExp}
- * @constant
- */
-const INTEGER_REGEX: RegExp = /^\d+$/;
-
-/**
  * Regular expression for matching numeric values expressed as base 10 strings.
  *
  * The regular expression matches the following numeric patterns:
@@ -32,4 +24,4 @@ const INTEGER_REGEX: RegExp = /^\d+$/;
  */
 const NUMERIC_REGEX = /(^-?\d+(\.\d+)?)$|(^-?\.\d+)$/;
 
-export { INTEGER_REGEX, NUMERIC_REGEX, ZERO_BYTES };
+export { NUMERIC_REGEX, ZERO_BYTES };

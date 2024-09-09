@@ -1,6 +1,5 @@
-import { dataUtils } from '../../../utils';
 import { InvalidRLP } from '@vechain/sdk-errors';
-import { Hex } from '../../../vcdm';
+import { FPN, Hex, HexUInt } from '../../../vcdm';
 import { type RLPInput } from '../types';
 
 /**
@@ -67,7 +66,7 @@ const _validateNumericKindNumber = (num: number, context: string): void => {
  * Validates a string to ensure it represents a valid non-negative integer.
  *
  * @remarks
- * The input string can represent an integer in either decimal or hexadecimal format.
+ * The input string can represent an unsigned integer in either decimal or hexadecimal format.
  *
  * @param str - A string expected to represent a non-negative integer.
  * @param context - A string indicating the context, for creating meaningful error messages.
@@ -76,11 +75,11 @@ const _validateNumericKindNumber = (num: number, context: string): void => {
  * @private
  */
 const _validateNumericKindString = (str: string, context: string): void => {
-    const isHex = Hex.isValid0x(str);
-    const isDecimal = dataUtils.isDecimalString(str);
+    const isHexUInt = HexUInt.isValid0x(str);
+    const isDecimal = FPN.isUnsignedIntegerExpression(str);
 
     // Ensure the string is either a hex or decimal number.
-    if (!isHex && !isDecimal) {
+    if (!isHexUInt && !isDecimal) {
         throw new InvalidRLP(
             '_validateNumericKindString()',
             `Validation error: String in ${context} must represent a non-negative integer in hex or decimal format.`,
@@ -94,7 +93,7 @@ const _validateNumericKindString = (str: string, context: string): void => {
     }
 
     // Ensure hex numbers are of a valid length.
-    if (isHex && str.length <= 2) {
+    if (isHexUInt && str.length <= 2) {
         throw new InvalidRLP(
             '_validateNumericKindString()',
             `Validation error: Hex string number in ${context} must be of valid length.`,
