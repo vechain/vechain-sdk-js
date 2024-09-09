@@ -5,7 +5,6 @@ import {
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Mapper integration tests for 'net_listening' method
@@ -31,16 +30,13 @@ describe('RPC Mapper - net_listening method tests', () => {
      */
     describe('net_listening - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Should be able to gety if the node is listening
          */
-        test('net_listening - positive case 1', async () => {
-            const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
-
-            // NOT IMPLEMENTED YET!
-            await RPCMethodsMap(thorClient)[RPC_METHODS.net_listening]([-1]);
-
-            expect(logSpy).toHaveBeenCalled();
-            logSpy.mockRestore();
+        test('Should be able to get if the node is listening', async () => {
+            const peers = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.net_listening
+            ]([]);
+            expect(peers).toBeDefined();
         });
     });
 });

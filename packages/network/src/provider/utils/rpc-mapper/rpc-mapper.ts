@@ -239,15 +239,20 @@ const RPCMethodsMap = (
                 return await ethFeeHistory();
             },
 
-        [RPC_METHODS.eth_getBlockTransactionCountByHash]:
-            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
-                return await ethGetBlockTransactionCountByHash();
-            },
+        [RPC_METHODS.eth_getBlockTransactionCountByHash]: async (
+            params
+        ): Promise<number> => {
+            return await ethGetBlockTransactionCountByHash(thorClient, params);
+        },
 
-        [RPC_METHODS.eth_getBlockTransactionCountByNumber]:
-            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
-                return await ethGetBlockTransactionCountByNumber();
-            },
+        [RPC_METHODS.eth_getBlockTransactionCountByNumber]: async (
+            params
+        ): Promise<number> => {
+            return await ethGetBlockTransactionCountByNumber(
+                thorClient,
+                params
+            );
+        },
 
         [RPC_METHODS.eth_getTransactionByBlockHashAndIndex]:
             async (): Promise<'METHOD NOT IMPLEMENTED'> => {
@@ -316,10 +321,9 @@ const RPCMethodsMap = (
                 return await ethSubmitWork();
             },
 
-        [RPC_METHODS.net_listening]:
-            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
-                return await netListening();
-            },
+        [RPC_METHODS.net_listening]: async (): Promise<boolean> => {
+            return await netListening(thorClient);
+        },
 
         [RPC_METHODS.net_peerCount]: async (): Promise<number> => {
             return await netPeerCount(thorClient);
