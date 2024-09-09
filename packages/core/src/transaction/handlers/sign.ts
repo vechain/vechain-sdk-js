@@ -1,4 +1,5 @@
-import { secp256k1 } from '../../secp256k1';
+import { Address } from '../../vcdm';
+import { Secp256k1 } from '../../secp256k1';
 import { Transaction } from '../transaction';
 import {
     InvalidSecp256k1PrivateKey,
@@ -6,7 +7,6 @@ import {
     NotDelegatedTransaction
 } from '@vechain/sdk-errors';
 import { type TransactionBody } from '../types';
-import { Address } from '../../vcdm';
 
 /**
  * Sign a transaction with a given private key
@@ -21,7 +21,7 @@ function sign(
     signerPrivateKey: Buffer
 ): Transaction {
     // Check if the private key is valid
-    if (!secp256k1.isValidPrivateKey(signerPrivateKey)) {
+    if (!Secp256k1.isValidPrivateKey(signerPrivateKey)) {
         throw new InvalidSecp256k1PrivateKey(
             `TransactionHandler.sign()`,
             "Invalid private key used to sign the transaction. Ensure it's a valid secp256k1 private key.",
@@ -40,7 +40,7 @@ function sign(
         );
 
     // Sign transaction
-    const signature = secp256k1.sign(
+    const signature = Secp256k1.sign(
         transactionToSign.getSignatureHash(),
         signerPrivateKey
     );
@@ -66,7 +66,7 @@ function signWithDelegator(
     // Invalid private keys (signer and delegator)
 
     // Check if the private key of the signer is valid
-    if (!secp256k1.isValidPrivateKey(signerPrivateKey)) {
+    if (!Secp256k1.isValidPrivateKey(signerPrivateKey)) {
         throw new InvalidSecp256k1PrivateKey(
             `TransactionHandler.signWithDelegator()`,
             "Invalid signer private key used to sign the transaction. Ensure it's a valid secp256k1 private key.",
@@ -74,7 +74,7 @@ function signWithDelegator(
         );
     }
     // Check if the private key of the delegator is valid
-    if (!secp256k1.isValidPrivateKey(delegatorPrivateKey)) {
+    if (!Secp256k1.isValidPrivateKey(delegatorPrivateKey)) {
         throw new InvalidSecp256k1PrivateKey(
             `TransactionHandler.signWithDelegator()`,
             "Invalid delegator private key used to sign the transaction. Ensure it's a valid secp256k1 private key.",
@@ -95,12 +95,12 @@ function signWithDelegator(
     const transactionHash = transactionToSign.getSignatureHash();
     const delegatedHash = transactionToSign.getSignatureHash(
         Address.ofPublicKey(
-            Buffer.from(secp256k1.derivePublicKey(signerPrivateKey))
+            Secp256k1.derivePublicKey(signerPrivateKey)
         ).toString()
     );
     const signature = Buffer.concat([
-        secp256k1.sign(transactionHash, signerPrivateKey),
-        secp256k1.sign(delegatedHash, delegatorPrivateKey)
+        Secp256k1.sign(transactionHash, signerPrivateKey),
+        Secp256k1.sign(delegatedHash, delegatorPrivateKey)
     ]);
 
     // Return new signed transaction

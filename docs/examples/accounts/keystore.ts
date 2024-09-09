@@ -1,11 +1,11 @@
-import { keystore, secp256k1 } from '@vechain/sdk-core';
+import { keystore, Secp256k1 } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // START_SNIPPET: KeystoreSnippet
 
 // 1 - Create private key using Secp256k1
 
-const privateKey = await secp256k1.generatePrivateKey();
+const privateKey = await Secp256k1.generatePrivateKey();
 
 // @NOTE you can use BIP 39 too!
 // const words = Mnemonic.of()

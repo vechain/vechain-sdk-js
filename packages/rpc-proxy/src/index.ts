@@ -11,7 +11,7 @@ import {
     ThorClient,
     VeChainProvider
 } from '@vechain/sdk-network';
-import { Address, HDKey, secp256k1 } from '@vechain/sdk-core';
+import { Address, HDKey, Secp256k1 } from '@vechain/sdk-core';
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
 import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
 import express, { type Express, type Request, type Response } from 'express';
@@ -56,7 +56,7 @@ function startProxy(): void {
                   return {
                       privateKey: privateKeyBuffer,
                       publicKey: Buffer.from(
-                          secp256k1.derivePublicKey(privateKeyBuffer)
+                          Secp256k1.derivePublicKey(privateKeyBuffer)
                       ),
                       address: Address.ofPrivateKey(privateKeyBuffer).toString()
                   };

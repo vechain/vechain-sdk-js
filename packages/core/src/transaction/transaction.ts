@@ -1,12 +1,12 @@
+import { Address, Hex } from '../vcdm';
+import { Blake2b256 } from '../vcdm/hash/Blake2b256';
 import {
     InvalidSecp256k1Signature,
     InvalidTransactionField,
     NotDelegatedTransaction,
     UnavailableTransactionField
 } from '@vechain/sdk-errors';
-import { type RLPValidObject } from '../encoding';
-import { Blake2b256 } from '../vcdm/hash/Blake2b256';
-import { secp256k1 } from '../secp256k1';
+import { Secp256k1 } from '../secp256k1';
 import {
     BLOCK_REF_LENGTH,
     SIGNATURE_LENGTH,
@@ -15,7 +15,7 @@ import {
     TransactionUtils,
     UNSIGNED_TRANSACTION_RLP
 } from '../utils';
-import { Address, Hex } from '../vcdm';
+import { type RLPValidObject } from '../encoding';
 import { type TransactionBody } from './types';
 
 /**
@@ -125,7 +125,7 @@ class Transaction {
         );
 
         // Recover public key
-        const delegatorPublicKey = secp256k1.recover(
+        const delegatorPublicKey = Secp256k1.recover(
             this.getSignatureHash(this.origin),
             signatureSliced
         );
@@ -249,7 +249,7 @@ class Transaction {
         const signatureSliced = (this.signature as Buffer).subarray(0, 65);
 
         // Recover public key
-        const originPublicKey = secp256k1.recover(
+        const originPublicKey = Secp256k1.recover(
             this.getSignatureHash(),
             signatureSliced
         );

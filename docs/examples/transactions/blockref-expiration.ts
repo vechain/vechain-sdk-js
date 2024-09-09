@@ -1,5 +1,5 @@
 import {
-    secp256k1,
+    Secp256k1,
     TransactionUtils,
     TransactionHandler,
     networkInfo,
@@ -36,7 +36,7 @@ const body: TransactionBody = {
 
 // 3 - Create private key
 
-const privateKey = await secp256k1.generatePrivateKey();
+const privateKey = await Secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 

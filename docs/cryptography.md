@@ -51,14 +51,14 @@ Secp256k1 is mainly used for generating public and private key pairs in cryptogr
 ```typescript { name=secp256k1, category=example }
 // 1 - Generate a private key.
 
-const privateKey = await secp256k1.generatePrivateKey();
+const privateKey = await Secp256k1.generatePrivateKey();
 console.log('Private key:', Hex.of(privateKey).toString());
 // Private key: ...SOME_PRIVATE_KEY...
 
 // 2 - Derive the public key and address from private key.
 //     By default, the key is returned in compressed form.
 
-const publicKey = secp256k1.derivePublicKey(privateKey);
+const publicKey = Secp256k1.derivePublicKey(privateKey);
 const userAddress = Address.ofPublicKey(Buffer.from(publicKey)).toString();
 console.log('User address:', userAddress);
 // User address: 0x...SOME_ADDRESS...
@@ -69,7 +69,7 @@ const messageToSign = Txt.of('hello world');
 const hash = Keccak256.of(messageToSign.bytes);
 console.log(`Hash: ${hash.toString()}`);
 
-const signature = secp256k1.sign(hash.bytes, privateKey);
+const signature = Secp256k1.sign(hash.bytes, privateKey);
 console.log('Signature:', Hex.of(signature).toString());
 // Signature: ...SOME_SIGNATURE...
 ```
