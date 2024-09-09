@@ -34,7 +34,7 @@ describe('RPC Mapper - net_peerCount method tests', () => {
          * Test case where request fails
          */
         test('Should throw `JSONRPCInternalError` when request fails', async () => {
-            // Mock the getBlock method to throw error
+            // Mock the getNodes method to throw error
             jest.spyOn(thorClient.nodes, 'getNodes').mockRejectedValue(
                 new Error()
             );
