@@ -15,9 +15,9 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
  * @note:
- * * params[0]: ...
- * * params[1]: ...
- * * params[n]: ...
+ * * params[0]: block parameter, a hexadecimal block number (or best, latest, finalized).
+ * * params[1]: transaction index position, a hexadecimal of the integer representing the position in the block.
+ * @returns A transaction object, or null when no transaction was found.
  */
 const ethGetTransactionByBlockNumberAndIndex = async (
     thorClient: ThorClient,
