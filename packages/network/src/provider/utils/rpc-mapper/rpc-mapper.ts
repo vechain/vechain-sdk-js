@@ -312,10 +312,9 @@ const RPCMethodsMap = (
                 return await ethSubmitWork();
             },
 
-        [RPC_METHODS.net_listening]:
-            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
-                return await netListening();
-            },
+        [RPC_METHODS.net_listening]: async (): Promise<boolean> => {
+            return await netListening(thorClient);
+        },
 
         [RPC_METHODS.net_peerCount]: async (): Promise<number> => {
             return await netPeerCount(thorClient);
