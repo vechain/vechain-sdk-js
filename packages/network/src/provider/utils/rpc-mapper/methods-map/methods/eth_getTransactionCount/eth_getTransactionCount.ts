@@ -1,5 +1,5 @@
 import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
-import { Hex, Address, secp256k1 } from '@vechain/sdk-core';
+import { Hex, Address, Secp256k1 } from '@vechain/sdk-core';
 import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
@@ -41,7 +41,7 @@ const ethGetTransactionCount = async (params: unknown[]): Promise<string> => {
     }
 
     // Return a random number
-    return Hex.of(secp256k1.randomBytes(6)).toString();
+    return Hex.of(Secp256k1.randomBytes(6)).toString();
 };
 
 export { ethGetTransactionCount };

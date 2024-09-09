@@ -1,4 +1,4 @@
-import { Hex, mnemonic, secp256k1 } from '@vechain/sdk-core';
+import { Hex, mnemonic, Secp256k1 } from '@vechain/sdk-core';
 
 /**
  * Check if the url field is valid
@@ -32,7 +32,7 @@ function isValidPort(port: number): boolean {
 function isValidAccountsAsListOfPrivateKeys(accounts: string[]): boolean {
     return accounts.every((account) => {
         if (Hex.isValid(account)) {
-            return secp256k1.isValidPrivateKey(Hex.of(account).bytes);
+            return Secp256k1.isValidPrivateKey(Hex.of(account).bytes);
         }
         return false;
     });

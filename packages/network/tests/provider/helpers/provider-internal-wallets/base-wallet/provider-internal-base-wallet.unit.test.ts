@@ -1,4 +1,4 @@
-import { Hex, secp256k1, ZERO_ADDRESS } from '@vechain/sdk-core';
+import { Hex, Secp256k1, ZERO_ADDRESS } from '@vechain/sdk-core';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { accountsFixture } from './fixture';
 import { describe, expect, test } from '@jest/globals';
@@ -168,7 +168,7 @@ describe('Base wallet tests', () => {
             const delegators: SignTransactionOptions[] = [
                 {
                     delegatorPrivateKey: Hex.of(
-                        await secp256k1.generatePrivateKey()
+                        await Secp256k1.generatePrivateKey()
                     ).digits
                 },
                 {

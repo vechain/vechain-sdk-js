@@ -6,7 +6,7 @@ import {
     TESTNET_URL,
     THOR_SOLO_ACCOUNTS
 } from '../src';
-import { secp256k1 } from '@vechain/sdk-core';
+import { Secp256k1 } from '@vechain/sdk-core';
 
 /**
  * Main network instance fixture
@@ -36,7 +36,7 @@ const THOR_SOLO_ACCOUNTS_BASE_WALLET: ProviderInternalBaseWallet =
         THOR_SOLO_ACCOUNTS.map((account) => ({
             privateKey: Buffer.from(account.privateKey, 'hex'),
             publicKey: Buffer.from(
-                secp256k1.derivePublicKey(
+                Secp256k1.derivePublicKey(
                     Buffer.from(account.privateKey, 'hex')
                 )
             ),
@@ -54,7 +54,7 @@ const THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR = (
         THOR_SOLO_ACCOUNTS.map((account) => ({
             privateKey: Buffer.from(account.privateKey, 'hex'),
             publicKey: Buffer.from(
-                secp256k1.derivePublicKey(
+                Secp256k1.derivePublicKey(
                     Buffer.from(account.privateKey, 'hex')
                 )
             ),

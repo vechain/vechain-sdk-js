@@ -1,14 +1,14 @@
+import { Keccak256 } from './hash/Keccak256';
+import { HDKey } from '../hdkey';
+import { Hex } from './Hex';
+import { HexUInt } from './HexUInt';
+import { Secp256k1 } from '../secp256k1';
+import { Txt } from './Txt';
 import {
     InvalidDataType,
     InvalidHDKey,
     InvalidSecp256k1PrivateKey
 } from '@vechain/sdk-errors';
-import { Keccak256 } from './hash/Keccak256';
-import { HDKey } from '../hdkey';
-import { secp256k1 } from '../secp256k1';
-import { Hex } from './Hex';
-import { HexUInt } from './HexUInt';
-import { Txt } from './Txt';
 
 /**
  * Represents a VeChain Address as unsigned integer.
@@ -95,7 +95,7 @@ class Address extends HexUInt {
      * @returns {Address} The converted address.
      *
      * @remarks Security auditable method, depends on
-     * * {@link secp256k1.derivePublicKey}.
+     * * {@link Secp256k1.derivePublicKey}.
      */
     public static ofPrivateKey(
         privateKey: Uint8Array,
@@ -103,7 +103,7 @@ class Address extends HexUInt {
     ): Address {
         try {
             return Address.ofPublicKey(
-                secp256k1.derivePublicKey(privateKey, isCompressed)
+                Secp256k1.derivePublicKey(privateKey, isCompressed)
             );
         } catch (error) {
             if (error instanceof InvalidSecp256k1PrivateKey) {
@@ -126,11 +126,11 @@ class Address extends HexUInt {
      * @returns {Address} The converted address.
      *
      * @remarks Security auditable method, depends on
-     * * {@link secp256k1.inflatePublicKey}.
+     * * {@link Secp256k1.inflatePublicKey}.
      */
     public static ofPublicKey(publicKey: Uint8Array): Address {
         try {
-            const publicKeyInflated = secp256k1.inflatePublicKey(publicKey);
+            const publicKeyInflated = Secp256k1.inflatePublicKey(publicKey);
             const publicKeyHash = Keccak256.of(
                 publicKeyInflated.slice(1)
             ).bytes;

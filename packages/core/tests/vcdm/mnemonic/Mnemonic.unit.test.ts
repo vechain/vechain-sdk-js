@@ -4,7 +4,7 @@ import {
     Address,
     mnemonic,
     Mnemonic,
-    secp256k1,
+    Secp256k1,
     type WordlistSizeType
 } from '../../../src';
 import { Hex } from '../../../src/vcdm/Hex';
@@ -74,7 +74,8 @@ describe('Mnemonic', () => {
                 (length) => {
                     [
                         customRandomGeneratorWithXor,
-                        secp256k1.randomBytes,
+                        // eslint-disable-next-line @typescript-eslint/unbound-method
+                        Secp256k1.randomBytes,
                         undefined
                     ].forEach((randomGenerator) => {
                         // Generate mnemonic words of expected length
@@ -91,7 +92,7 @@ describe('Mnemonic', () => {
                         expect(Mnemonic.toPrivateKey(words)).toBeDefined();
                         expect(Mnemonic.toPrivateKey(words).length).toEqual(32);
                         expect(
-                            secp256k1.isValidPrivateKey(
+                            Secp256k1.isValidPrivateKey(
                                 Mnemonic.toPrivateKey(words)
                             )
                         ).toEqual(true);
