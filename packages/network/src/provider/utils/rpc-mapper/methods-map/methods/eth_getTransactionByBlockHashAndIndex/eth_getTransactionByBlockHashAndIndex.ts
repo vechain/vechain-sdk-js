@@ -11,6 +11,7 @@ import {
 } from '../../../../formatter';
 import { RPCMethodsMap } from '../../../rpc-mapper';
 import { RPC_METHODS } from '../../../../const';
+import { Hex } from '@vechain/sdk-core';
 
 /**
  * RPC Method eth_getTransactionByBlockHashAndIndex implementation
@@ -56,7 +57,7 @@ const ethGetTransactionByBlockHashAndIndex = async (
         return transactionsFormatter.formatToRPCStandard(
             tx,
             chainId,
-            Number(index)
+            Hex.of(index).n
         );
     } catch (e) {
         throw new JSONRPCInternalError(
