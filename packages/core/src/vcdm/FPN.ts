@@ -58,6 +58,14 @@ class FPN implements VeChainDataModel<FPN> {
     private static readonly REGEX_INTEGER: RegExp = /^[-+]?\d+$/;
 
     /**
+     * Regular expression pattern for matching unsigned integers expressed as base 10 strings.
+     *
+     * @type {RegExp}
+     * @constant
+     */
+    private static readonly REGEX_UINTEGER: RegExp = /^\d+$/;
+
+    /**
      * Represents the zero constant.
      */
     public static readonly ZERO = new FPN(0n, 0n, 0);
@@ -471,6 +479,18 @@ class FPN implements VeChainDataModel<FPN> {
      */
     public isPositiveInfinite(): boolean {
         return this.ef === Number.POSITIVE_INFINITY;
+    }
+
+    /**
+     * Checks if a given string expression is an unsigned positive integer.
+     *
+     * @param {string} exp - The string expression to be tested.
+     *
+     * @return {boolean} True if the expression is an unsigned positive integer,
+     * false otherwise.
+     */
+    public static isUnsignedIntegerExpression(exp: string): boolean {
+        return this.REGEX_UINTEGER.test(exp);
     }
 
     /**
