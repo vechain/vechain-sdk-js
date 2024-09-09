@@ -1205,6 +1205,28 @@ describe('FPN class tests', () => {
         });
     });
 
+    describe('isUnsignedIntegerExpression method tests', () => {
+        test('not integer -> false', () => {
+            const exp = '123.45';
+            expect(FPN.isUnsignedIntegerExpression(exp)).toBe(false);
+        });
+
+        test('negative with - -> false', () => {
+            const exp = '-12345';
+            expect(FPN.isUnsignedIntegerExpression(exp)).toBe(false);
+        });
+
+        test('positive with + -> false', () => {
+            const exp = '+12345';
+            expect(FPN.isUnsignedIntegerExpression(exp)).toBe(false);
+        });
+
+        test('positive without + -> true', () => {
+            const exp = '12345';
+            expect(FPN.isUnsignedIntegerExpression(exp)).toBe(true);
+        });
+    });
+
     describe('isZero method tests', () => {
         test('NaN -> false', () => {
             const n = NaN;

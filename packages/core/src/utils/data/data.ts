@@ -1,7 +1,6 @@
-import * as n_utils from '@noble/curves/abstract/utils';
-import { Hex } from '../../vcdm/Hex';
-import { INTEGER_REGEX, NUMERIC_REGEX, ZERO_BYTES } from '../const';
-import { Txt } from '../../vcdm';
+import * as nc_utils from '@noble/curves/abstract/utils';
+import { NUMERIC_REGEX, ZERO_BYTES } from '../const';
+import { Hex, Txt } from '../../vcdm';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
 /**
@@ -65,8 +64,8 @@ const encodeBytes32String = (
 
         const pad = ZERO_BYTES(32 - valueInBytes.length);
         return zeroPadding === 'left'
-            ? Hex.of(n_utils.concatBytes(pad, valueInBytes)).toString()
-            : Hex.of(n_utils.concatBytes(valueInBytes, pad)).toString();
+            ? Hex.of(nc_utils.concatBytes(pad, valueInBytes)).toString()
+            : Hex.of(nc_utils.concatBytes(valueInBytes, pad)).toString();
     } catch (e) {
         throw new InvalidDataType(
             'dataUtils.encodeBytes32String()',
@@ -75,18 +74,6 @@ const encodeBytes32String = (
             e
         );
     }
-};
-
-/**
- * Checks whether the given string is a decimal number.
- *
- * @param {string} data - The string to be checked.
- * @returns {boolean} - True if the string represents a decimal number, false otherwise.
- *
- * @see {@link INTEGER_REGEX}
- */
-const isDecimalString = (data: string): boolean => {
-    return INTEGER_REGEX.test(data);
 };
 
 /**
@@ -104,6 +91,5 @@ const isNumeric = (value: string): boolean => {
 export const dataUtils = {
     decodeBytes32String,
     encodeBytes32String,
-    isDecimalString,
     isNumeric
 };
