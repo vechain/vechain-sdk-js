@@ -12,7 +12,8 @@ const ethGetBlockByHashTestCases = [
             '0x000000000b2bce3c70bc649a02749e8687721b09ed2e15997f466536b20bb127',
             false
         ],
-        expected: zeroBlock
+        expected: zeroBlock,
+        expectedTransactionsLength: 0
     },
     {
         description: 'Should get block zero block with transaction details',
@@ -20,7 +21,9 @@ const ethGetBlockByHashTestCases = [
             '0x000000000b2bce3c70bc649a02749e8687721b09ed2e15997f466536b20bb127',
             true
         ],
-        expected: zeroBlock // Because genesis block doesn't have any transactions on testnet
+        // Because genesis block doesn't have any transactions on testnet
+        expected: zeroBlock,
+        expectedTransactionsLength: 0
     },
     {
         description: 'Should get block which has transactions with details',
@@ -28,7 +31,17 @@ const ethGetBlockByHashTestCases = [
             '0x010b7a6d6f04407ac2f72e505ff83d49db8d01607f8af41f508b2ca7eca0d450',
             true
         ],
-        expected: blockWithTransactionsExpanded
+        expected: blockWithTransactionsExpanded,
+        expectedTransactionsLength: 3
+    },
+    {
+        description: 'Should get null if block does not exist',
+        params: [
+            '0x00000000000000000000000000083d49db800000000000000000000000000000',
+            true
+        ],
+        expected: null,
+        expectedTransactionsLength: 0
     }
 ];
 
