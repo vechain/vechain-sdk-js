@@ -1135,6 +1135,62 @@ describe('FPN class tests', () => {
         });
     });
 
+    describe('isNumberExpression method tests', () => {
+        describe('Return true', () => {
+            test('±natural -> true', () => {
+                expect(FPN.isNumberExpression('0')).toBe(true);
+                expect(FPN.isNumberExpression('-1.5')).toBe(true);
+                expect(FPN.isNumberExpression('+1')).toBe(true);
+            });
+
+            test('±rational -> true', () => {
+                expect(FPN.isNumberExpression('-32412341234.543563463')).toBe(
+                    true
+                );
+                expect(
+                    FPN.isNumberExpression('1.54523532463463642352342354645363')
+                ).toBe(true);
+                expect(FPN.isNumberExpression('+123.45')).toBe(true);
+            });
+
+            test('±|0 < n < 1| without `0` prefix -> true', () => {
+                expect(FPN.isNumberExpression('.52434234')).toBe(true);
+                expect(FPN.isNumberExpression('-.52434234')).toBe(true);
+                expect(FPN.isNumberExpression('+.52434234')).toBe(true);
+            });
+        });
+
+        describe('Return false', () => {
+            test('empty -> false', () => {
+                expect(FPN.isNumberExpression('')).toBeFalsy();
+            });
+            test('dot only -> false', () => {
+                expect(FPN.isNumberExpression('.')).toBe(false);
+            });
+
+            test('dot without fractional part -> false', () => {
+                expect(FPN.isNumberExpression('1.')).toBe(false);
+            });
+
+            test('illegal char -> false', () => {
+                expect(FPN.isNumberExpression('1,6')).toBe(false);
+                expect(FPN.isNumberExpression('1,6,7')).toBe(false);
+                expect(FPN.isNumberExpression('1.6,7')).toBe(false);
+                expect(FPN.isNumberExpression('1.6,7')).toBe(false);
+                expect(FPN.isNumberExpression('1,6.7')).toBe(false);
+                expect(FPN.isNumberExpression('1,6,7.8')).toBe(false);
+                expect(FPN.isNumberExpression('0x152')).toBe(false);
+            });
+
+            test('multiple dots', () => {
+                expect(FPN.isNumberExpression('1.6.')).toBe(false);
+                expect(FPN.isNumberExpression('1.6.7')).toBe(false);
+                expect(FPN.isNumberExpression('1.6.7.')).toBe(false);
+                expect(FPN.isNumberExpression('-1.5.6')).toBe(false);
+            });
+        });
+    });
+
     describe('isPositive method tests', () => {
         test('NaN -> false', () => {
             const n = NaN;
@@ -1205,25 +1261,25 @@ describe('FPN class tests', () => {
         });
     });
 
-    describe('isUnsignedIntegerExpression method tests', () => {
+    describe('isNaturalExpression method tests', () => {
         test('not integer -> false', () => {
             const exp = '123.45';
-            expect(FPN.isUnsignedIntegerExpression(exp)).toBe(false);
+            expect(FPN.isNaturalExpression(exp)).toBe(false);
         });
 
         test('negative with - -> false', () => {
             const exp = '-12345';
-            expect(FPN.isUnsignedIntegerExpression(exp)).toBe(false);
+            expect(FPN.isNaturalExpression(exp)).toBe(false);
         });
 
         test('positive with + -> false', () => {
             const exp = '+12345';
-            expect(FPN.isUnsignedIntegerExpression(exp)).toBe(false);
+            expect(FPN.isNaturalExpression(exp)).toBe(false);
         });
 
         test('positive without + -> true', () => {
             const exp = '12345';
-            expect(FPN.isUnsignedIntegerExpression(exp)).toBe(true);
+            expect(FPN.isNaturalExpression(exp)).toBe(true);
         });
     });
 
