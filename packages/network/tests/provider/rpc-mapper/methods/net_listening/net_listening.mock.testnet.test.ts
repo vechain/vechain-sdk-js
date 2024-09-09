@@ -8,11 +8,11 @@ import {
 import { JSONRPCInternalError } from '@vechain/sdk-errors';
 
 /**
- * RPC Mapper integration tests for 'net_peerCount' method
+ * RPC Mapper integration tests for 'net_listening' method
  *
- * @group integration/rpc-mapper/methods/net_peerCount
+ * @group integration/rpc-mapper/methods/net_listening
  */
-describe('RPC Mapper - net_peerCount method tests', () => {
+describe('RPC Mapper - net_listening method tests', () => {
     /**
      * Thor client instance
      */
@@ -27,21 +27,21 @@ describe('RPC Mapper - net_peerCount method tests', () => {
     });
 
     /**
-     * net_peerCount RPC call tests - Negative cases
+     * net_listening RPC call tests - Negative cases
      */
     describe('Negative cases', () => {
         /**
          * Test case where request fails
          */
         test('Should throw `JSONRPCInternalError` when request fails', async () => {
-            // Mock the getNodes method to throw error
-            jest.spyOn(thorClient.nodes, 'getNodes').mockRejectedValue(
+            // Mock the getBlock method to throw error
+            jest.spyOn(thorClient.nodes, 'isHealthy').mockRejectedValue(
                 new Error()
             );
 
             await expect(
                 async () =>
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.net_peerCount](
+                    await RPCMethodsMap(thorClient)[RPC_METHODS.net_listening](
                         []
                     )
             ).rejects.toThrowError(JSONRPCInternalError);
