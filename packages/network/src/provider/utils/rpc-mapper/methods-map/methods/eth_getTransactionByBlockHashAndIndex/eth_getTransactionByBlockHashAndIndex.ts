@@ -5,13 +5,9 @@ import {
     stringifyData
 } from '@vechain/sdk-errors';
 import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
-import {
-    type TransactionRPC,
-    transactionsFormatter
-} from '../../../../formatter';
+import { type BlocksRPC, type TransactionRPC } from '../../../../formatter';
 import { RPCMethodsMap } from '../../../rpc-mapper';
 import { RPC_METHODS } from '../../../../const';
-import { Hex } from '@vechain/sdk-core';
 
 /**
  * RPC Method eth_getTransactionByBlockHashAndIndex implementation
@@ -40,25 +36,23 @@ const ethGetTransactionByBlockHashAndIndex = async (
         );
 
     try {
-        const [hash, index] = params as [string, string];
+        const [blockHash, index] = params as [string, string];
 
-        // Get the VeChainThor transaction
-        const tx = await thorClient.transactions.getTransaction(hash, {
-            head: index
-        });
+        // Get the block containing the transactions
+        const block = (await RPCMethodsMap(thorClient)[
+            RPC_METHODS.eth_getBlockByHash
+        ]([blockHash, false])) as BlocksRPC;
 
-        if (tx === null) return null;
+        for (let i = 0; i < block.transactions.length; i++) {
+            const transaction = (await RPCMethodsMap(thorClient)[
+                RPC_METHODS.eth_getTransactionByHash
+            ]([block.transactions[i]])) as TransactionRPC;
+            if (transaction.transactionIndex === index) {
+                return transaction;
+            }
+        }
 
-        // Get the chain id
-        const chainId = (await RPCMethodsMap(thorClient)[
-            RPC_METHODS.eth_chainId
-        ]([])) as string;
-
-        return transactionsFormatter.formatToRPCStandard(
-            tx,
-            chainId,
-            Hex.of(index).n
-        );
+        return null;
     } catch (e) {
         throw new JSONRPCInternalError(
             'eth_getTransactionByBlockHashAndIndex()',
