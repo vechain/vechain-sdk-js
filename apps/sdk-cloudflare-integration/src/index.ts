@@ -1,7 +1,7 @@
 import {
     clauseBuilder,
     networkInfo,
-    secp256k1,
+    Secp256k1,
     TransactionHandler,
     TransactionUtils
 } from '@vechain/sdk-core';
@@ -31,7 +31,7 @@ export default {
         };
 
         // Create private key
-        const privateKey = await secp256k1.generatePrivateKey();
+        const privateKey = await Secp256k1.generatePrivateKey();
 
         // 4 - Sign transaction
         const signedTransaction = TransactionHandler.sign(
