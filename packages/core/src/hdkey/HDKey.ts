@@ -226,9 +226,9 @@ class HDKey extends s_bip32.HDKey {
             // m
             (index === 0 ? component === 'm' : false) ||
             // "number"
-            FPN.isUnsignedIntegerExpression(component) ||
+            FPN.isNaturalExpression(component) ||
             // "number'"
-            (FPN.isUnsignedIntegerExpression(component.slice(0, -1)) &&
+            (FPN.isNaturalExpression(component.slice(0, -1)) &&
                 component.endsWith("'"))
         );
     }
