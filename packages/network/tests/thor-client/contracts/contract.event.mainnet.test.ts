@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { MAINNET_URL, ThorClient } from '../../../src';
 
-import { X2EarnRewardsPool } from '@vechain/vebetterdao-contracts';
+import { B3TR, X2EarnRewardsPool } from '@vechain/vebetterdao-contracts';
+import { unitsUtils } from '@vechain/sdk-core';
 
 describe('ThorClient - ERC20 Contracts', () => {
     // ThorClient instance
@@ -28,5 +29,30 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         expect(events).toBeDefined();
         expect(events.length).toBeGreaterThan(0);
+    }, 30000);
+
+    test('Should filter EVearn distribute rewards events', async () => {
+        const B3TRContract = thorMainnetClient.contracts.load(
+            B3TR.address,
+            B3TR.abi
+        );
+
+        const events = await B3TRContract.filters
+            .Transfer({
+                from: '0x190ab784b0b68deec7e831502dd65fdd1d2a8f99'
+            })
+            .get({ order: 'desc', options: { offset: 0, limit: 1000 } });
+
+        let amount: bigint = 0n;
+
+        for (const event of events) {
+            if (event?.decodedData !== undefined) {
+                amount += event.decodedData[2] as unknown as bigint;
+            }
+        }
+
+        console.log('Total B3TR transferred:', unitsUtils.formatVET(amount));
+        expect(events.length).toBeGreaterThan(0);
+        console.log(events[0]);
     }, 30000);
 });
