@@ -535,7 +535,7 @@ class FPN implements VeChainDataModel<FPN> {
      * false otherwise.
      */
     public static isUnsignedIntegerExpression(exp: string): boolean {
-        return this.REGEX_UINTEGER.test(exp);
+        return this.REGEX_NATURAL.test(exp);
     }
 
     /**
