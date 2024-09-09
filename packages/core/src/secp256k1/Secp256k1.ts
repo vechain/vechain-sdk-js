@@ -23,13 +23,6 @@ class Secp256k1 {
     private static readonly COMPRESSED_PREFIX = 2;
 
     /**
-     * The maximum permitted value for a private key in hexadecimal representation.
-     */
-    private static readonly PRIVATE_KEY_MAX_VALUE = HexUInt.of(
-        'fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141'
-    ).bytes;
-
-    /**
      * Represents the fixed length of the cryptographic signature.
      * The value is set to 65, which is the size in bytes
      * required for a 520-bit signature.
