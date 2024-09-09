@@ -5,8 +5,10 @@ import {
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
-import { invalidEthGetTransactionByBlockNumberAndIndexTestCases } from './fixture';
+import {
+    ethGetTransactionByBlockNumberAndIndexTestCases,
+    invalidEthGetTransactionByBlockNumberAndIndexTestCases
+} from './fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_getTransactionByBlockNumberAndIndex' method
@@ -32,19 +34,19 @@ describe('RPC Mapper - eth_getTransactionByBlockNumberAndIndex method tests', ()
      */
     describe('eth_getTransactionByBlockNumberAndIndex - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Test cases where the rpc method call does not throw an error
          */
-        test('eth_getTransactionByBlockNumberAndIndex - positive case 1', async () => {
-            const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
-
-            // NOT IMPLEMENTED YET!
-            await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_getTransactionByBlockNumberAndIndex
-            ]([-1]);
-
-            expect(logSpy).toHaveBeenCalled();
-            logSpy.mockRestore();
-        });
+        ethGetTransactionByBlockNumberAndIndexTestCases.forEach(
+            ({ description, params, expected }) => {
+                test(description, async () => {
+                    const rpcCall =
+                        await RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_getTransactionByBlockNumberAndIndex
+                        ](params);
+                    expect(rpcCall).toStrictEqual(expected);
+                });
+            }
+        );
     });
 
     /**
@@ -59,7 +61,7 @@ describe('RPC Mapper - eth_getTransactionByBlockNumberAndIndex method tests', ()
                 test(description, async () => {
                     await expect(
                         RPCMethodsMap(thorClient)[
-                            RPC_METHODS.eth_getTransactionByBlockHashAndIndex
+                            RPC_METHODS.eth_getTransactionByBlockNumberAndIndex
                         ](params)
                     ).rejects.toThrowError(expectedError);
                 });
