@@ -56,7 +56,7 @@ interface ContractClause {
 /**
  * Represents the options to define a custom gas calculation when calling executeTransaction or executeMultipleClausesTransaction methods.
  */
-interface ContracrtGasOptions {
+interface ContractGasOptions {
     gas?: string | number;
     gasLimit?: string;
     gasPrice?: string;
@@ -68,5 +68,5 @@ export type {
     ContractCallOptions,
     ContractCallResult,
     ContractClause,
-    ContracrtGasOptions
+    ContractGasOptions
 };
