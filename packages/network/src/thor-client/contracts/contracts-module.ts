@@ -7,6 +7,7 @@ import {
     type InterfaceAbi
 } from '@vechain/sdk-core';
 import type {
+    ContracrtGasOptions,
     ContractCallOptions,
     ContractCallResult,
     ContractClause,
@@ -161,7 +162,8 @@ class ContractsModule {
         contractAddress: string,
         functionFragment: FunctionFragment,
         functionData: unknown[],
-        options?: ContractTransactionOptions
+        options?: ContractTransactionOptions,
+        gas?: ContracrtGasOptions
     ): Promise<SendTransactionResult> {
         // Sign the transaction
         const id = await signer.sendTransaction({
@@ -173,7 +175,11 @@ class ContractsModule {
                     functionData,
                     options?.value ?? 0
                 )
-            ]
+            ],
+            gas: gas?.gas,
+            gasLimit: gas?.gasLimit,
+            gasPrice: gas?.gasPrice,
+            gasPriceCoef: gas?.gasPriceCoef
         });
 
         return {
@@ -190,10 +196,15 @@ class ContractsModule {
      */
     public async executeMultipleClausesTransaction(
         clauses: ContractClause[],
-        signer: VeChainSigner
+        signer: VeChainSigner,
+        gas?: ContracrtGasOptions
     ): Promise<SendTransactionResult> {
         const id = await signer.sendTransaction({
-            clauses: clauses.map((clause) => clause.clause)
+            clauses: clauses.map((clause) => clause.clause),
+            gas: gas?.gas,
+            gasLimit: gas?.gasLimit,
+            gasPrice: gas?.gasPrice,
+            gasPriceCoef: gas?.gasPriceCoef
         });
 
         return {
