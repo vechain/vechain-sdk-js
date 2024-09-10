@@ -1,6 +1,6 @@
-import { Address, Mnemonic } from '../../../src';
+import { Address, FPN, Mnemonic } from '../../../src';
 import { Account } from '../../../src/vcdm/account';
-import { type Currency } from '../../../src/vcdm/Currency';
+import { type Currency } from '../../../src/vcdm/currency/Currency';
 
 // Use actual Currency subclasses once they are implemented.
 const mockCurrency: Currency = {
@@ -9,7 +9,8 @@ const mockCurrency: Currency = {
     code: 'VET',
     n: 0,
     isEqual: jest.fn().mockReturnValue(true),
-    bytes: new Uint8Array(0)
+    bytes: new Uint8Array(0),
+    value: FPN.of(0)
 };
 
 /**
