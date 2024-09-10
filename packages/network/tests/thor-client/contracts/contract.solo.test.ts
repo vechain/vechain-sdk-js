@@ -17,6 +17,8 @@ import {
     multipleClausesTestCases,
     OWNER_RESTRICTION_ABI,
     OWNER_RESTRICTION_BYTECODE,
+    sampleTwoValuesReturnAbi,
+    sampleTwoValuesReturnBytecode,
     testingContractEVMExtensionTestCases,
     testingContractNegativeTestCases,
     testingContractTestCases
@@ -438,6 +440,28 @@ describe('ThorClient - Contracts', () => {
         ).toEqual([BigInt(1000)]);
     }, 10000);
 
+    test('deploy a contract that returns two values', async () => {
+        const twoValuesReturnContractFactory =
+            thorSoloClient.contracts.createContractFactory(
+                sampleTwoValuesReturnAbi,
+                sampleTwoValuesReturnBytecode,
+                signer
+            );
+
+        const twoValuesReturnContract =
+            await twoValuesReturnContractFactory.startDeployment();
+
+        const deployedTwoValuesReturnContractContract =
+            await twoValuesReturnContract.waitForDeployment();
+
+        const resultA = await deployedTwoValuesReturnContractContract.read.a();
+
+        const resultB = await deployedTwoValuesReturnContractContract.read.b();
+
+        console.log('resultA', resultA);
+        console.log('resultB', resultB);
+    }, 10000);
+
     /**
      * Test case for deploying a contract with ownership restrictions.
      */
@@ -633,9 +657,8 @@ describe('ThorClient - Contracts', () => {
 
         await expect(async () => {
             await contract.filters;
-        }).rejects.toThrow("Event with name then not found in ABI");
+        }).rejects.toThrow('Event with name then not found in ABI');
     });
-
 
     filterContractEventsTestCases.forEach(
         ({
