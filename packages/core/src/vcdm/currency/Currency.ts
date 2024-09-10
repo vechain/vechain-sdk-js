@@ -1,9 +1,10 @@
-import { type VeChainDataModel } from './VeChainDataModel';
+import { type VeChainDataModel } from '../VeChainDataModel';
+import { type FPN } from '../FPN';
 
 export interface Currency extends VeChainDataModel<Currency> {
-    get bi(): bigint;
-
     get code(): string;
+
+    get value(): FPN;
 }
 
 // class Wei<Digits> implements Currency<Digits.wei> {
