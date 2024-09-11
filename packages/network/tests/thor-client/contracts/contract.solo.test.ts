@@ -414,7 +414,7 @@ describe('ThorClient - Contracts', () => {
         expect(contractFilter.criteriaSet[0].criteria.topic4).toBeDefined();
     }, 10000);
 
-    test('deploy the deposit contract and call the deposit method', async () => {
+    test('Deploy the deposit contract and call the deposit method', async () => {
         const depositContractFactory =
             thorSoloClient.contracts.createContractFactory(
                 depositContractAbi,
@@ -440,7 +440,7 @@ describe('ThorClient - Contracts', () => {
         ).toEqual([BigInt(1000)]);
     }, 10000);
 
-    test('deploy a contract that returns two values', async () => {
+    test('Deploy a contract that returns two values', async () => {
         const twoValuesReturnContractFactory =
             thorSoloClient.contracts.createContractFactory(
                 sampleTwoValuesReturnAbi,
@@ -454,18 +454,18 @@ describe('ThorClient - Contracts', () => {
         const deployedTwoValuesReturnContractContract =
             await twoValuesReturnContract.waitForDeployment();
 
-        const resultA = await deployedTwoValuesReturnContractContract.read.a();
-
+        const [firstResultA, firstResultB] = await deployedTwoValuesReturnContractContract.read.a();
         const resultB = await deployedTwoValuesReturnContractContract.read.b();
 
-        console.log('resultA', resultA);
-        console.log('resultB', resultB);
+        expect(firstResultA).toEqual(1n);
+        expect(firstResultB).toEqual('a');
+        expect(resultB).toEqual([]);
     }, 10000);
 
     /**
      * Test case for deploying a contract with ownership restrictions.
      */
-    test('deploy the ownership restricted contract and call it', async () => {
+    test('Deploy the ownership restricted contract and call it', async () => {
         const contractFactory = thorSoloClient.contracts.createContractFactory(
             OWNER_RESTRICTION_ABI,
             OWNER_RESTRICTION_BYTECODE,
