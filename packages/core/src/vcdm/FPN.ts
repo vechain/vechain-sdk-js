@@ -85,19 +85,19 @@ class FPN implements VeChainDataModel<FPN> {
      *
      * @private
      */
-    private readonly ef: number;
+    protected readonly ef: number;
 
     /**
      * Fractional Digits or decimal places.
      * @private
      */
-    private readonly fd: bigint;
+    protected readonly fd: bigint;
 
     /**
      * Scaled Value = value * 10 ^ {@link fd}.
      * @private
      */
-    private readonly sv: bigint;
+    protected readonly sv: bigint;
 
     /**
      * Returns the integer part of this FPN value.
@@ -853,7 +853,7 @@ class FPN implements VeChainDataModel<FPN> {
             const digits =
                 this.sv < 0n ? (-this.sv).toString() : this.sv.toString();
             const padded = digits.padStart(Number(this.fd), '0');
-            const decimals = padded.slice(Number(-this.fd));
+            const decimals = this.fd > 0 ? padded.slice(Number(-this.fd)) : '';
             const integers = padded.slice(0, padded.length - decimals.length);
             const integersShow = integers.length < 1 ? '0' : integers;
             const decimalsShow = FPN.trimEnd(decimals);
