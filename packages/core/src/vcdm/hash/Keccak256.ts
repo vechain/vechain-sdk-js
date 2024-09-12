@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-restricted-paths
 import { keccak_256 as nh_keccak_256 } from '@noble/hashes/sha3';
 import { InvalidOperation } from '@vechain/sdk-errors';
 import { Hex, Txt, type Hash } from '../index';

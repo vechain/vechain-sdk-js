@@ -1,5 +1,4 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
-// eslint-disable-next-line import/no-restricted-paths
 import * as nh_utils from '@noble/hashes/utils';
 import {
     InvalidOperation,
