@@ -1,4 +1,5 @@
 import * as s_bip32 from '@scure/bip32';
+// eslint-disable-next-line import/no-restricted-paths
 import * as s_bip39 from '@scure/bip39';
 import * as nc_utils from '@noble/curves/abstract/utils';
 import { base58 } from '@scure/base';
@@ -11,6 +12,8 @@ import {
     InvalidHDKeyMnemonic,
     InvalidSecp256k1PrivateKey
 } from '@vechain/sdk-errors';
+
+/**
 
 /**
  * This class extends the

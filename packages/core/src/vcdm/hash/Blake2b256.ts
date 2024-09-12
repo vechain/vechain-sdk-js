@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/no-restricted-paths
 import { blake2b as nh_blake2b } from '@noble/hashes/blake2b';
 import { InvalidOperation } from '@vechain/sdk-errors';
 import { Hex, Txt, type Hash } from '../index';

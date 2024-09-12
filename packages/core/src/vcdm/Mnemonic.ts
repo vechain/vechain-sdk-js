@@ -2,7 +2,9 @@ import {
     entropyToMnemonic,
     generateMnemonic,
     validateMnemonic
+    // eslint-disable-next-line import/no-restricted-paths
 } from '@scure/bip39';
+// eslint-disable-next-line import/no-restricted-paths
 import { wordlist } from '@scure/bip39/wordlists/english';
 import {
     InvalidDataType,
