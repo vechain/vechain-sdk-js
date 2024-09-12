@@ -9,6 +9,7 @@ import { InvalidKeystoreParams, stringifyData } from '@vechain/sdk-errors';
 import { Keccak256 } from '../../../vcdm/hash/Keccak256';
 import { Secp256k1 } from '../../../secp256k1';
 import { ctr } from '@noble/ciphers/aes';
+// eslint-disable-next-line import/no-restricted-paths
 import { scrypt } from '@noble/hashes/scrypt';
 import { type Keystore, type KeystoreAccount } from '../../types';
 
