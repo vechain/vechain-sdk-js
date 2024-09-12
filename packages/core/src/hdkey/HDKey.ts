@@ -14,8 +14,6 @@ import {
 } from '@vechain/sdk-errors';
 
 /**
-
-/**
  * This class extends the
  * [BIP32 Hierarchical Deterministic Key](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki)
  * [HDKey](https://github.com/paulmillr/scure-bip32) class
