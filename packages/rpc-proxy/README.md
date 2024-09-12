@@ -14,7 +14,6 @@ To install the RPC proxy, use the following command:
 
 ``` bash
 yarn add @vechain/sdk-rpc-proxy
-rpc-proxy
 ```
 
 ## Usage
@@ -22,20 +21,20 @@ rpc-proxy
 The RPC proxy is simple to use. To start it, run:
 
 ``` bash
-rpc-proxy
+npx rpc-proxy
 ```
 
 By default, the proxy is configured to be used with a solo node running on your local machine. If you want to change the
 default behavior, create a config.json file and pass it to the command when launching the RPC Proxy:
 
 ``` bash
-rpc-proxy -c <json config file>
+npx rpc-proxy -c <json config file>
 ```
 
 Or:
 
 ``` bash
-rpc-proxy --configurationFile <json config file>
+npx rpc-proxy --configurationFile <json config file>
 ```
 
 ## CLI Options
