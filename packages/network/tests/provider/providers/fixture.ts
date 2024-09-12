@@ -1,4 +1,4 @@
-import { Quantity, unitsUtils } from '@vechain/sdk-core';
+import { Quantity, Units, unitsUtils } from '@vechain/sdk-core';
 import { zeroBlock } from '../rpc-mapper/methods/eth_getBlockByNumber/fixture';
 import {
     validTransactionDetailTestnet,
@@ -44,7 +44,7 @@ const providerMethodsTestCasesSolo = [
             'Should be able to call eth_getBalance of an address with balance more than 0 VET',
         method: 'eth_getBalance',
         params: [THOR_SOLO_ACCOUNTS[0].address, 'latest'],
-        expected: Quantity.of(unitsUtils.parseVET('500000000')).toString()
+        expected: Quantity.of(Units.parseEther('500000000').bi).toString()
     },
     {
         description: 'Should be able to call eth_getCode of a smart contract',

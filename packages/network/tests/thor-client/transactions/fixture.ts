@@ -1,7 +1,7 @@
 import {
     coder,
     networkInfo,
-    type TransactionBody,
+    type TransactionBody, Units,
     unitsUtils
 } from '@vechain/sdk-core';
 import {
@@ -29,7 +29,7 @@ const transfer1VTHOClause = {
     value: '0',
     data: coder.encodeFunctionInput(BUILT_IN_CONTRACTS.ENERGY_ABI, 'transfer', [
         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-        unitsUtils.parseVET('1')
+        Units.parseEther('1').bi
     ])
 };
 
@@ -41,7 +41,7 @@ const transfer1VTHOClauseWithValueAsANumber = {
     value: 0,
     data: coder.encodeFunctionInput(BUILT_IN_CONTRACTS.ENERGY_ABI, 'transfer', [
         TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-        unitsUtils.parseVET('1')
+        Units.parseEther('1').bi
     ])
 };
 
@@ -214,7 +214,7 @@ const buildTransactionBodyClausesTestCases = [
             },
             {
                 to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                value: unitsUtils.parseVET('1').toString(),
+                value: Units.parseEther('1').toString(),
                 data: '0x'
             }
         ],
@@ -300,7 +300,7 @@ const buildTransactionBodyClausesTestCases = [
             },
             {
                 to: 'params.test-sdk.vet',
-                value: unitsUtils.parseVET('1').toString(),
+                value: Units.parseEther('1').toString(),
                 data: '0x'
             }
         ],

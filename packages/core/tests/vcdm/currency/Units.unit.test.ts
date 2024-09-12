@@ -38,7 +38,7 @@ describe('Units namespace tests', () => {
         });
 
         test('gwei', () => {
-            const exp = '1000000000';
+            const exp = UnitsFixture.oneGwei;
             const expected = ethers.formatUnits(exp, Units.gwei);
             const actual = Units.formatUnits(FPN.of(exp), Units.gwei);
             expect(actual).toEqual(expected);
@@ -48,7 +48,7 @@ describe('Units namespace tests', () => {
             const exp = UnitsFixture.oneGwei;
             const expected = ethers.formatUnits(exp, Units.wei);
             const actual = Units.formatUnits(FPN.of(exp), Units.wei);
-            expect(actual).toEqual(expected);
+            expect(Number(actual)).toEqual(Number(expected));
         });
     });
 

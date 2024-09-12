@@ -1,5 +1,5 @@
 // Specify the path to your Solidity contract file
-import { coder, ERC721_ABI, unitsUtils, VTHO_ADDRESS } from '../../src';
+import { coder, ERC721_ABI, Units, unitsUtils, VTHO_ADDRESS } from '../../src';
 import { generateRandomValidAddress } from '../fixture';
 import {
     InvalidAbiDataToEncodeOrDecode,
@@ -95,7 +95,7 @@ const transferTokenClausesTestCases = [
     {
         tokenAddress: VTHO_ADDRESS,
         recipientAddress,
-        amount: unitsUtils.parseVET('1'),
+        amount: Units.parseEther('1'),
         expected: {
             to: VTHO_ADDRESS,
             value: 0,
@@ -107,7 +107,7 @@ const transferTokenClausesTestCases = [
     {
         tokenAddress: VTHO_ADDRESS,
         recipientAddress,
-        amount: unitsUtils.parseVET('500000000'),
+        amount: Units.parseEther('500000000'),
         expected: {
             to: VTHO_ADDRESS,
             value: 0,
@@ -187,7 +187,7 @@ const transferVETtestCases = [
     },
     {
         recipientAddress,
-        amount: unitsUtils.parseVET('1'),
+        amount: Units.parseEther('1'),
         clauseOptions: undefined,
         expected: {
             to: recipientAddress,
@@ -197,7 +197,7 @@ const transferVETtestCases = [
     },
     {
         recipientAddress,
-        amount: unitsUtils.parseVET('500000000'),
+        amount: Units.parseEther('500000000'),
         clauseOptions: undefined,
         expected: {
             to: recipientAddress,

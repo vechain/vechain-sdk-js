@@ -27,7 +27,7 @@ import {
     type FunctionFragment,
     type TransactionClause,
     TransactionHandler,
-    unitsUtils
+    unitsUtils, Units
 } from '@vechain/sdk-core';
 
 const TIMEOUT = 15000; // 15-second timeout
@@ -294,7 +294,7 @@ describe('Subscriptions Solo network tests', () => {
         // Trigger the smart contract function that emits the event
         const clause: TransactionClause = {
             to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-            value: unitsUtils.parseVET('1').toString(),
+            value: Units.parseEther('1').toString(),
             data: '0x'
         };
         const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);

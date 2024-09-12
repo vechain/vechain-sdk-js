@@ -5,7 +5,7 @@ import {
     networkInfo,
     Transaction,
     TransactionHandler,
-    unitsUtils,
+    Units,
     ZERO_ADDRESS
 } from '@vechain/sdk-core';
 import {
@@ -31,7 +31,7 @@ const CLAUSES_VTHO = THOR_SOLO_ACCOUNTS.slice(0, 10).map((account) => ({
     value: 0,
     data: coder.encodeFunctionInput(BUILT_IN_CONTRACTS.ENERGY_ABI, 'transfer', [
         account.address,
-        unitsUtils.parseVET('500000000')
+        Units.parseEther('500000000').bi
     ])
 }));
 
@@ -44,7 +44,7 @@ const CLAUSES_VTHO = THOR_SOLO_ACCOUNTS.slice(0, 10).map((account) => ({
  */
 const CLAUSES_VET = THOR_SOLO_ACCOUNTS.slice(0, 10).map((account) => ({
     to: account.address,
-    value: `0x${unitsUtils.parseVET('500000000').toString(16)}`,
+    value: `0x${Units.parseEther('500000000').bi.toString(16)}`,
     data: '0x'
 }));
 
@@ -463,11 +463,11 @@ const seedThorSolo = async (): Promise<void> => {
         );
 
         expect(BigInt(accountInfo.balance)).toBeGreaterThanOrEqual(
-            unitsUtils.parseVET('500000000')
+            Units.parseEther('500000000').bi
         );
 
         expect(BigInt(accountInfo.energy)).toBeGreaterThanOrEqual(
-            unitsUtils.parseVET('500000000')
+            Units.parseEther('500000000').bi
         );
     }
 

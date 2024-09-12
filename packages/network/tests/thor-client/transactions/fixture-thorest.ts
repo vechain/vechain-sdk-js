@@ -1,7 +1,7 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { TEST_ACCOUNTS, ZERO_ADDRESS } from '../../fixture';
 import { BUILT_IN_CONTRACTS } from '../../../src';
-import { coder, dataUtils, unitsUtils } from '@vechain/sdk-core';
+import { coder, dataUtils, Units, unitsUtils } from '@vechain/sdk-core';
 
 /**
  * Transaction details function fixture.
@@ -240,7 +240,7 @@ const simulateTransaction = {
                                 [
                                     TEST_ACCOUNTS.TRANSACTION
                                         .TRANSACTION_RECEIVER.address,
-                                    unitsUtils.parseVET('1')
+                                    Units.parseEther('1').bi
                                 ]
                             )
                         }
@@ -474,7 +474,7 @@ const simulateTransaction = {
                             [
                                 TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
                                     .address,
-                                unitsUtils.parseVET('1')
+                                Units.parseEther('1').bi
                             ]
                         )
                     }

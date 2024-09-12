@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import { TEST_ACCOUNTS, TESTING_CONTRACT_ADDRESS } from '../../fixture';
-import { unitsUtils } from '@vechain/sdk-core';
+import { Units, unitsUtils } from '@vechain/sdk-core';
 import { TESTING_CONTRACT_BYTECODE } from './fixture';
 import { THOR_SOLO_URL, ThorClient } from '../../../src';
 
@@ -41,7 +41,7 @@ describe('ThorClient - Accounts Module', () => {
                 '500000000.0'
             );
             expect(Number(accountBefore.energy)).toBeGreaterThan(
-                unitsUtils.parseVET('500000000')
+                Units.parseEther('500000000').bi
             );
 
             const currentBlock =
