@@ -8,6 +8,10 @@ const UnitsFixture = {
     oneEther: '1000000000000000000'
 };
 
+/**
+ * Test Account class.
+ * @group unit/vcdm
+ */
 describe('Units namespace tests', () => {
     describe('formatEther method tests', () => {
         test('integer result should append .0', () => {
