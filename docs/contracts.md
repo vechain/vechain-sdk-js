@@ -12,6 +12,31 @@ VeChain uses clauses to interact with smart contracts. A clause is a single oper
 > ⚠️ **Warning:**
 > To execute the clauses, you need to build a transaction and sign it with a wallet. The signed transaction can then be sent to the blockchain. This process is covered ahead in the documentation.
 
+### Transfer VET and VTHO clauses
+
+The following example shows you how to build clauses to transfer the two main token of Vechain, the token VET and the energy token VTHO (the one used to pay for transaction fees)
+
+```typescript { name=contract-clauses, category=example }
+import { clauseBuilder, VTHO_ADDRESS } from '@vechain/sdk-core';
+
+// build some example clauses
+
+// 1. Transfer vet
+
+const transferVetClause = clauseBuilder.transferVET(
+    '0xf02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
+    300n
+);
+
+// 2. Transfer VTHO
+
+const transferVTHOClause = clauseBuilder.transferToken(
+    VTHO_ADDRESS,
+    '0xf02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
+    300n
+);
+
+```
 
 ### Deploying a Smart Contract Clause
 
@@ -102,7 +127,7 @@ const setValueClause = contract.clause.setValue(123);
 
 ## Multi-Clause Contract Interaction
 
-Now that we have seen how to build a clause, let's see how to send it to the blockchain. Vechain allows multiple clauses in a single transaction, enabling interactions with multiple contracts or operations.
+Now that we have seen how to build clauses, let's see how to send it to the blockchain. Vechain allows multiple clauses in a single transaction, enabling interactions with multiple contracts or operations.
 
 ### Multiple Clauses in a Single Transaction
 
@@ -124,61 +149,8 @@ expect(multipleClausesResult[2]).toEqual(['ST']);
 expect(multipleClausesResult[3]).toEqual([18n]);
 ```
 
-## Multi-Clause Event Filtering
-
-Filter events from different contracts in a single call using contract addresses and event signatures.
-
-```typescript { name=contract-event-filter, category=example }
-const contractEventExample = await setupEventExampleContract();
-
-await (await contractEventExample.transact.setValue(3000n)).wait();
-
-const transferCriteria = contractErc20.criteria.Transfer({
-    to: '0x9e7911de289c3c856ce7f421034f66b6cde49c39'
-});
-
-const valueCriteria = contractEventExample.criteria.ValueSet();
-
-const events = await thorSoloClient.logs.filterEventLogs({
-    criteriaSet: [transferCriteria, valueCriteria]
-});
-
-console.log(events);
-
-// Asserting that I'm filtering a previous transfer event and the new value set event
-expect(events.map((x) => x.decodedData)).toEqual([
-    [
-        '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
-        '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
-        10000n
-    ],
-    ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
-]);
-```
-
-### Grouping Events by Topic Hash
-
-Use `filterGroupedEventLogs` to group events by topic hash, useful for categorizing events. The result is an array of arrays, one for each criterion.
-
-```typescript { name=contract-event-filter, category=example }
-const groupedEvents = await thorSoloClient.logs.filterGroupedEventLogs({
-    criteriaSet: [transferCriteria, valueCriteria]
-});
-
-// Asserting that I'm filtering a previous transfer event and the new value set event
-expect(groupedEvents[0].map((x) => x.decodedData)).toEqual([
-    [
-        '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
-        '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
-        10000n
-    ]
-]);
-
-expect(groupedEvents[1].map((x) => x.decodedData)).toEqual([
-    ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
-]);
-```
-
+> ⚠️ **Warning:**
+> The example above shows a multi clause read call. It's also possible to execute multi clause transactions with the method executeMultipleClausesTransaction, but you need to build a signer first. Please refer to the signer section for more information
 
 
 ## Commenting Contract Invocations

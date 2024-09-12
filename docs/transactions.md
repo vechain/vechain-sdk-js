@@ -6,6 +6,10 @@ description: Transactions related functions.
 
 Vechain SDK provides comprehensive support for handling transactions. Developers can initialize a transaction by assembling the transaction body, adding clauses, and finally signing and sending the transaction. 
 
+> ⚠️ **Warning:**
+> All the examples listed below refers to low level transaction building. The Vechain SDK provides you built-in methods to sign and send transactions. Please refer to the contracts section for more information.
+
+
 To break it down:
 
 1. **Initializing a Transaction**: Developers can create a transaction by specifying the necessary details in the transaction body. This includes setting the chain tag, block reference, expiration, gas price coefficient, gas limit, and other relevant transaction parameters.

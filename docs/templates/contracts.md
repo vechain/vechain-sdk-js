@@ -12,6 +12,11 @@ VeChain uses clauses to interact with smart contracts. A clause is a single oper
 > ⚠️ **Warning:**
 > To execute the clauses, you need to build a transaction and sign it with a wallet. The signed transaction can then be sent to the blockchain. This process is covered ahead in the documentation.
 
+### Transfer VET and VTHO clauses
+
+The following example shows you how to build clauses to transfer the two main token of Vechain, the token VET and the energy token VTHO (the one used to pay for transaction fees)
+
+[example](examples/contracts/contract-clauses.ts)
 
 ### Deploying a Smart Contract Clause
 
@@ -41,7 +46,7 @@ or you can load the contract using the thor client and then you can build the cl
 
 ## Multi-Clause Contract Interaction
 
-Now that we have seen how to build a clause, let's see how to send it to the blockchain. Vechain allows multiple clauses in a single transaction, enabling interactions with multiple contracts or operations.
+Now that we have seen how to build clauses, let's see how to send it to the blockchain. Vechain allows multiple clauses in a single transaction, enabling interactions with multiple contracts or operations.
 
 ### Multiple Clauses in a Single Transaction
 
@@ -49,18 +54,8 @@ In the following example we will see how to execute multiple read operations to 
 
 [ERC20MultiClausesReadSnippet](examples/contracts/contract-create-ERC20-token.ts)
 
-## Multi-Clause Event Filtering
-
-Filter events from different contracts in a single call using contract addresses and event signatures.
-
-[ERC20FilterMultipleEventCriteriaSnippet](examples/contracts/contract-event-filter.ts)
-
-### Grouping Events by Topic Hash
-
-Use `filterGroupedEventLogs` to group events by topic hash, useful for categorizing events. The result is an array of arrays, one for each criterion.
-
-[ERC20FilterGroupedMultipleEventCriteriaSnippet](examples/contracts/contract-event-filter.ts)
-
+> ⚠️ **Warning:**
+> The example above shows a multi clause read call. It's also possible to execute multi clause transactions with the method executeMultipleClausesTransaction, but you need to build a signer first. Please refer to the signer section for more information
 
 
 ## Commenting Contract Invocations
