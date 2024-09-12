@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-restricted-paths
 import * as nh_sha256 from '@noble/hashes/sha256';
 import { InvalidOperation } from '@vechain/sdk-errors';
 import { Hex, Txt, type Hash } from '../index';
