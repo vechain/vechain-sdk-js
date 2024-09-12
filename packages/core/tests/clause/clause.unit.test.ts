@@ -125,7 +125,7 @@ describe('Contract', () => {
                     const clause = clauseBuilder.transferToken(
                         tokenAddress,
                         recipientAddress,
-                        amount.toString(),
+                        amount.toString()
                     );
 
                     expect(clause.to).toBe(tokenAddress);
