@@ -1,8 +1,7 @@
 import { InvalidOperation } from '@vechain/sdk-errors';
 import { type Address } from '../Address';
-import { type Currency } from '../currency/Currency';
+import { type Currency } from '../currency';
 import { type VeChainDataModel } from '../VeChainDataModel';
-import { type FPN } from '../FPN';
 
 type AccountType = 'EOA' | 'Contract';
 
@@ -13,7 +12,7 @@ type AccountType = 'EOA' | 'Contract';
  */
 class Account implements VeChainDataModel<Account> {
     public readonly address: Address;
-    public readonly balance: Currency<FPN>;
+    public readonly balance: Currency;
     // Replace the string array with a Transaction class #1162
     public readonly transactions: string[];
 
@@ -21,7 +20,7 @@ class Account implements VeChainDataModel<Account> {
 
     constructor(
         address: Address,
-        balance: Currency<FPN>,
+        balance: Currency,
         type: AccountType = 'EOA',
         transactions?: string[]
     ) {

@@ -1,5 +1,5 @@
 import { BigNumber } from 'bignumber.js';
-import { Hex } from '../../vcdm/Hex';
+import { Hex } from '../../vcdm';
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { type WEI_UNITS } from './types';
 

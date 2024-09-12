@@ -1,5 +1,4 @@
 import { FPN } from '../FPN';
-import { Wei } from './Wei';
 
 enum Units {
     wei = 0,
@@ -13,20 +12,28 @@ enum Units {
 
 // eslint-disable-next-line @typescript-eslint/no-namespace
 namespace Units {
-    export function formatUnits(fpn: FPN, unit: Units): string {
-        return fpn.dp(BigInt(unit)).toString();
+    /**
+     * Converts a value in Wei to Ether and formats it as a string.
+     *
+     * @param {FPN} wei - The value in Wei to be converted to Ether.
+     * @return {string} The formatted string representing the value in Ether.
+     */
+    export function formatEther(wei: FPN): string {
+        return formatUnits(wei, Units.ether);
     }
 
-    export function parseUnits(exp: string, unit: Units): Wei {
-        const decimalPlaces = BigInt(unit);
-        const scaleFactor = FPN.of(10n ** decimalPlaces, 0n);
-        const value = FPN.of(exp, decimalPlaces);
-        return Wei.of(value.times(scaleFactor).bi);
+    export function formatUnits(value: FPN, unit: Units = Units.ether): string {
+        const fpn = value.div(FPN.of(10n ** BigInt(unit)));
+        return fpn.isInteger() ? `${fpn}.0` : `${fpn}`;
     }
 
-    export function parseVET(exp: string): Wei {
+    export function parseUnits(exp: string, unit: Units = Units.ether): FPN {
+        return FPN.of(exp).times(FPN.of(10n ** BigInt(unit)));
+    }
+
+    export function parseEther(exp: string): FPN {
         return parseUnits(exp, Units.ether);
     }
 }
-//
+
 export { Units };
