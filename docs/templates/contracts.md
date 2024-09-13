@@ -1,105 +1,75 @@
-# Contracts in vechain
+# VeChain Contracts Interaction
 
-This document provides a comprehensive guide on constructing contract transactions using the VeChain SDK, specifically focusing on deploying smart contracts and calling contract functions. The aim is to furnish developers with the knowledge to seamlessly integrate these transactions into their blockchain applications on vechain.
+The following sections provide detailed information on interacting with VeChain smart contracts using the VeChain SDK.
 
-## Deploying a Smart Contract
+## Building clauses
 
-### Overview
 
-Deploying a smart contract is a foundational step in leveraging the VeChain blockchain for decentralized applications. This section delves into the process of creating a deployment clause, which is essential for initiating a smart contract on the network.
+VeChain uses clauses to interact with smart contracts. A clause is a single operation that can be executed on the blockchain. The VeChain SDK provides a `ClauseBuilder` class to create clauses for various operations.
+
+
+
+> ⚠️ **Warning:**
+> To execute the clauses, you need to build a transaction and sign it with a wallet. The signed transaction can then be sent to the blockchain. This process is covered ahead in the documentation.
+
+### Transfer VET and VTHO clauses
+
+The following example shows you how to build clauses to transfer the two main token of VeChain, the token VET and the energy token VTHO (the one used to pay for transaction fees)
+
+[example](examples/contracts/contract-clauses.ts)
+
+### Deploying a Smart Contract Clause
+
+#### Steps:
+
+1. **Clause Construction**: Use `clauseBuilder.deployContract` from `@vechain/sdk-core` to construct a deployment clause.
+2. **Smart Contract Bytecode**: Pass the compiled contract's bytecode to deploy it.
+3. **Clause Building**: create the deployment clause
 
 [ContractDeploySnippet](examples/contracts/contract-deploy.ts)
 
-### Process Breakdown
+### Calling a Contract Function Clause
 
-1. **Clause Construction**: The deployment of a smart contract begins with the construction of a deployment clause. The VeChain SDK offers a dedicated function, `clauseBuilder.deployContract`, found within the `@vechain/sdk-core` package, for this purpose.
+### Steps:
 
-2. **Smart Contract Bytecode**: The bytecode of the smart contract, contained within the `contractBytecode` variable, encapsulates the compiled contract code that will be deployed to the blockchain.
-
-3. **Invocation**: By invoking the `clauseBuilder.deployContract` function with the contract's bytecode, a clause object is generated. This clause object is a structured representation of the deployment request, ready to be broadcast to the VeChain network.
-
-### Conclusion
-
-The deployment example elucidates the utilization of the VeChain SDK to construct a deployment clause, a crucial component for deploying smart contracts on the VeChain blockchain.
-
-## Calling a Contract Function
-
-### Overview
-
-After deploying a smart contract, interacting with its functions is the next step. This section guides you through the creation of a clause tailored for calling a specific function within a deployed smart contract.
+1. **Understand the ABI**: The ABI (JSON format) defines contract functions and parameters.
+2. **Clause Creation**: Use `clauseBuilder.functionInteraction` to create a clause for function calls.
+3. **Clause Building**: Build the clause, e.g., calling `setValue(123)` to modify the contract state.
 
 [ContractFunctionCallSnippet](examples/contracts/contract-function-call.ts)
 
-### Process Breakdown
 
-1. **Understanding the ABI**: The ABI (Application Binary Interface) of the smart contract, usually defined in JSON format, describes the contract's functions and their respective parameters. This interface is pivotal for ensuring proper interaction with the contract's functions.
+or you can load the contract using the thor client and then you can build the clause using the contract object.
 
-2. **Clause Creation for Function Calls**: Utilizing the `clauseBuilder.functionInteraction` function from the `@vechain/sdk-core` package, a clause is crafted for the specific purpose of invoking a function on the smart contract.
+[ContractObjectFunctionCallSnippet](examples/contracts/contract-function-call.ts)
 
-3. **Function Invocation**: In this example, the function `setValue` within the smart contract is invoked with a parameter of `123`. This action demonstrates how to interact with a function, altering the state within the smart contract based on the function's logic.
-
-## Commenting Contract Invocations
-
-### Overview
-
-When using the SDK with wallets, adding comments to operations can be beneficial. These comments inform users who are signing transactions about the nature and purpose of the transactions they are authorizing.
-
-Below is an example of how to add comments to operations:
-
-[TransferCommentSnippet](examples/contracts/contract-transfer-ERC20-token.ts)
-
-## Adding revision on read functions
-
-### Overview
-
-If you want to specify the revision on read functions, you can do it in the same way as adding a comment. Instead of a comment, specify the revision. You can use 'best' or 'finalized' as the revision options.
-
-### Conclusion
-
-This section highlights the methodology for constructing a clause that facilitates interaction with a deployed smart contract's functions on the VeChain network, thereby enabling developers to manipulate and query smart contract states efficiently.
-
-This document, designed to be both informative and practical, equips developers with the necessary tools and knowledge to effectively interact with smart contracts on the VeChain blockchain, from deployment to function invocation.
-
-## Delegating a Contract Call
-
-### Overview
-
-VeChain allows for the delegation of contract calls, enabling developers to execute contract functions in which the fees are payed by the delegator.
-
-Here is an example of how to delegate a contract call:
-
-[ERC20FunctionCallDelegatedSnippet](examples/contracts/contract-delegation-ERC20.ts)
 
 ## Multi-Clause Contract Interaction
 
-### Multiple clauses read
+Now that we have seen how to build clauses, let's see how to send it to the blockchain. VeChain allows multiple clauses in a single transaction, enabling interactions with multiple contracts or operations.
 
-VeChain supports the execution of multiple clauses in a single transaction, allowing developers to interact with multiple contracts or perform multiple operations within a single transaction.
+### Multiple Clauses in a Single Transaction
 
-Here is an example of how to interact with multiple read clauses in a single transaction:
+In the following example we will see how to execute multiple read operations to get information regarding a deployed ERC20 token contract.
 
 [ERC20MultiClausesReadSnippet](examples/contracts/contract-create-ERC20-token.ts)
 
-
-## Multi-Clause Event filtering
-
-### Overview
-
-VeChain allows developers to filter multiple events from diffent contracts in a single call, enabling efficient event monitoring and processing.
-
-To do so, developers needs the contract address and the event signature.
-
-Here is an example of how to filter multiple events from different contracts:
-
-[ERC20FilterMultipleEventCriteriaSnippet](examples/contracts/contract-event-filter.ts)
+> ⚠️ **Warning:**
+> The example above shows a multi clause read call. It's also possible to execute multi clause transactions with the method executeMultipleClausesTransaction, but you need to build a signer first. Please refer to the signer section for more information
 
 
-### Grouping events by topic hash
+## Commenting Contract Invocations
 
-It's possible to group events by topic hash, which can be useful for differentiating between events from different contracts or for categorizing events based on specific criteria.
+Add comments to operations when using wallets, helping users understand transaction details during signing.
 
-In the example below, we will use the method *filterGroupedEventLogs* to distinguish the transfer criteria from the value criteria.
+[TransferCommentSnippet](examples/contracts/contract-transfer-ERC20-token.ts)
 
-The results is an array composed of two arrays, one for each criteria.
+## Specifying Revisions in Read Functions
 
-[ERC20FilterGroupedMultipleEventCriteriaSnippet](examples/contracts/contract-event-filter.ts
+You can specify revisions (`best` or `finalized`) for read functions, similar to adding comments.
+
+## Delegating a Contract Call
+
+VeChain supports delegated contract calls where fees are paid by the delegator.
+
+[ERC20FunctionCallDelegatedSnippet](examples/contracts/contract-delegation-ERC20.ts)
