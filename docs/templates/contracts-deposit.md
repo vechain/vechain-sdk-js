@@ -1,6 +1,6 @@
 # Deposit Contract
 
-The code illustrates the deployment of a deposit contract, executing a deposit transaction, and querying the balance associated with a specific address.
+This example illustrates the deployment of a deposit contract, executing a deposit transaction, and querying the balance associated with a specific address.
 
 ## Contract Deployment and Interaction
 
