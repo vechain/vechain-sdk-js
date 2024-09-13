@@ -90,6 +90,10 @@ please, follow the instructions below.
 2. Navigate to the project directory.
 3. Run `yarn install` to install all dependencies.
 
+### Official Documentation
+
+Explore the full documentation and access example use cases by visiting the [VeChain SDK Documentation](https://docs.vechain.org/developer-resources/sdks-and-providers/sdk)
+
 ### Commands
 
 - **Build**: Execute `yarn build` to build the project.
