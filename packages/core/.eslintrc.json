@@ -9,7 +9,6 @@
                         "target": "./src",
                         "from": [
                             "../constant",
-                            "../core",
                             "../errors",
                             "../ethers-adapter",
                             "../hardhat-plugin",
