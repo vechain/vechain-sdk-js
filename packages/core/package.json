@@ -39,7 +39,7 @@
   "dependencies": {
     "@ethereumjs/rlp": "^5.0.2",
     "@noble/ciphers": "^0.6.0",
-    "@scure/bip32": "^1.4.0",
+    "@scure/bip32": "^1.5.0",
     "@scure/bip39": "^1.4.0",
     "@types/elliptic": "^6.4.18",
     "@vechain/sdk-errors": "1.0.0-beta.31",
