@@ -47,7 +47,7 @@ const ethGetBalance = async (
             revision: getCorrectBlockNumberRPCToVeChain(block)
         });
 
-        return accountDetails.balance;
+        return accountDetails.energy;
     } catch (e) {
         throw new JSONRPCInternalError(
             'eth_getBalance()',
