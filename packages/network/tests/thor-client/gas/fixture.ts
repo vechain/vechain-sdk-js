@@ -1,4 +1,4 @@
-import { coder, Units, unitsUtils } from '@vechain/sdk-core';
+import { coder, Units } from '@vechain/sdk-core';
 import { BUILT_IN_CONTRACTS } from '../../../src';
 import {
     TEST_ACCOUNTS,
@@ -59,7 +59,7 @@ const estimateGasTestCases = {
                 },
                 {
                     to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                    value: Units.parseUnits('1000000000').toString(),
+                    value: Units.parseEther('1000000000').toString(),
                     data: '0x'
                 }
             ],
@@ -85,7 +85,7 @@ const estimateGasTestCases = {
                         [
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
                                 .address,
-                            unitsUtils.parseVET('1')
+                            Units.parseEther('1').bi
                         ]
                     )
                 },
@@ -117,7 +117,7 @@ const estimateGasTestCases = {
                         [
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
                                 .address,
-                            Units.parseEther('1')
+                            Units.parseEther('1').bi
                         ]
                     )
                 },
@@ -130,7 +130,7 @@ const estimateGasTestCases = {
                         [
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
                                 .address,
-                            Units.parseEther('1')
+                            Units.parseEther('1').bi
                         ]
                     )
                 },
@@ -143,7 +143,7 @@ const estimateGasTestCases = {
                         [
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
                                 .address,
-                            Units.parseEther('1000000000')
+                            Units.parseEther('1000000000').bi
                         ]
                     )
                 }

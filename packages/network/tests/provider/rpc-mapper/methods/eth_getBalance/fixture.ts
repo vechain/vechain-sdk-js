@@ -1,4 +1,4 @@
-import { Hex, Quantity, ZERO_BYTES, unitsUtils, Units } from '@vechain/sdk-core';
+import { Hex, Quantity, ZERO_BYTES, Units } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams

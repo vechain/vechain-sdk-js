@@ -1,8 +1,8 @@
 import {
     coder,
     networkInfo,
-    type TransactionBody, Units,
-    unitsUtils
+    Units,
+    type TransactionBody
 } from '@vechain/sdk-core';
 import {
     TEST_ACCOUNTS,

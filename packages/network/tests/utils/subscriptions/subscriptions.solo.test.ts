@@ -27,7 +27,7 @@ import {
     type FunctionFragment,
     type TransactionClause,
     TransactionHandler,
-    unitsUtils, Units
+    Units
 } from '@vechain/sdk-core';
 
 const TIMEOUT = 15000; // 15-second timeout

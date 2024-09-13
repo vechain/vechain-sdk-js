@@ -1,4 +1,4 @@
-import { clauseBuilder, Units, unitsUtils } from '@vechain/sdk-core';
+import { clauseBuilder, Units } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams

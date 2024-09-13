@@ -6,7 +6,7 @@ import {
     ThorClient
 } from '../../../../../src';
 import { JSONRPCInternalError } from '@vechain/sdk-errors';
-import { clauseBuilder, Units, unitsUtils } from '@vechain/sdk-core';
+import { clauseBuilder, Units } from '@vechain/sdk-core';
 
 /**
  * RPC Mapper integration tests for 'eth_estimateGas' method with Solo Network and mocked functionality

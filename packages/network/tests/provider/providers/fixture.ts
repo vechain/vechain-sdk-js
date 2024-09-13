@@ -1,4 +1,4 @@
-import { Quantity, Units, unitsUtils } from '@vechain/sdk-core';
+import { Quantity, Units } from '@vechain/sdk-core';
 import { zeroBlock } from '../rpc-mapper/methods/eth_getBlockByNumber/fixture';
 import {
     validTransactionDetailTestnet,
