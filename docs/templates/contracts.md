@@ -46,7 +46,7 @@ or you can load the contract using the thor client and then you can build the cl
 
 ## Multi-Clause Contract Interaction
 
-Now that we have seen how to build clauses, let's see how to send it to the blockchain. Vechain allows multiple clauses in a single transaction, enabling interactions with multiple contracts or operations.
+Now that we have seen how to build clauses, let's see how to send it to the blockchain. VeChain allows multiple clauses in a single transaction, enabling interactions with multiple contracts or operations.
 
 ### Multiple Clauses in a Single Transaction
 

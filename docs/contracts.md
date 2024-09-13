@@ -14,7 +14,7 @@ VeChain uses clauses to interact with smart contracts. A clause is a single oper
 
 ### Transfer VET and VTHO clauses
 
-The following example shows you how to build clauses to transfer the two main token of Vechain, the token VET and the energy token VTHO (the one used to pay for transaction fees)
+The following example shows you how to build clauses to transfer the two main token of VeChain, the token VET and the energy token VTHO (the one used to pay for transaction fees)
 
 ```typescript { name=contract-clauses, category=example }
 import { clauseBuilder, VTHO_ADDRESS } from '@vechain/sdk-core';
@@ -127,7 +127,7 @@ const setValueClause = contract.clause.setValue(123);
 
 ## Multi-Clause Contract Interaction
 
-Now that we have seen how to build clauses, let's see how to send it to the blockchain. Vechain allows multiple clauses in a single transaction, enabling interactions with multiple contracts or operations.
+Now that we have seen how to build clauses, let's see how to send it to the blockchain. VeChain allows multiple clauses in a single transaction, enabling interactions with multiple contracts or operations.
 
 ### Multiple Clauses in a Single Transaction
 
