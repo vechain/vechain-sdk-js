@@ -14,7 +14,7 @@ VeChain uses clauses to interact with smart contracts. A clause is a single oper
 
 ### Transfer VET and VTHO clauses
 
-The following example shows you how to build clauses to transfer the two main token of Vechain, the token VET and the energy token VTHO (the one used to pay for transaction fees)
+The following example shows you how to build clauses to transfer the two main token of VeChain, the token VET and the energy token VTHO (the one used to pay for transaction fees)
 
 [example](examples/contracts/contract-clauses.ts)
 
