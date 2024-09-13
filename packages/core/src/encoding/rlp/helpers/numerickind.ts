@@ -76,8 +76,7 @@ const _validateNumericKindNumber = (num: number, context: string): void => {
  */
 const _validateNumericKindString = (str: string, context: string): void => {
     const isHexUInt = HexUInt.isValid0x(str);
-    const isDecimal = FPN.isUnsignedIntegerExpression(str);
-
+    const isDecimal = FPN.isNaturalExpression(str);
     // Ensure the string is either a hex or decimal number.
     if (!isHexUInt && !isDecimal) {
         throw new InvalidRLP(

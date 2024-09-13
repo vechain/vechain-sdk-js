@@ -5,7 +5,10 @@ import {
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
+import {
+    ethGetTransactionByBlockHashAndIndexTestCases,
+    invalidEthGetTransactionByBlockHashAndIndexTestCases
+} from './fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_getTransactionByBlockHashAndIndex' method
@@ -31,18 +34,38 @@ describe('RPC Mapper - eth_getTransactionByBlockHashAndIndex method tests', () =
      */
     describe('eth_getTransactionByBlockHashAndIndex - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Test cases where the rpc method call does not throw an error
          */
-        test('eth_getTransactionByBlockHashAndIndex - positive case 1', async () => {
-            const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
+        ethGetTransactionByBlockHashAndIndexTestCases.forEach(
+            ({ description, params, expected }) => {
+                test(description, async () => {
+                    const rpcCall =
+                        await RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_getTransactionByBlockHashAndIndex
+                        ](params);
+                    expect(rpcCall).toStrictEqual(expected);
+                });
+            }
+        );
+    });
 
-            // NOT IMPLEMENTED YET!
-            await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_getTransactionByBlockHashAndIndex
-            ]([-1]);
-
-            expect(logSpy).toHaveBeenCalled();
-            logSpy.mockRestore();
-        });
+    /**
+     * eth_getTransactionByBlockHashAndIndex RPC call tests - Negative cases
+     */
+    describe('eth_getTransactionByBlockHashAndIndex - Negative cases', () => {
+        /**
+         * Test cases where the rpc method call throws an error
+         */
+        invalidEthGetTransactionByBlockHashAndIndexTestCases.forEach(
+            ({ description, params, expectedError }) => {
+                test(description, async () => {
+                    await expect(
+                        RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_getTransactionByBlockHashAndIndex
+                        ](params)
+                    ).rejects.toThrowError(expectedError);
+                });
+            }
+        );
     });
 });

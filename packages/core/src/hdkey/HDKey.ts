@@ -2,15 +2,15 @@ import * as s_bip32 from '@scure/bip32';
 import * as s_bip39 from '@scure/bip39';
 import * as nc_utils from '@noble/curves/abstract/utils';
 import { base58 } from '@scure/base';
-import { secp256k1 } from '../secp256k1';
+import { HexUInt } from '../vcdm/HexUInt';
+import { FPN } from '../vcdm';
+import { Secp256k1 } from '../secp256k1';
+import { Sha256 } from '../vcdm/hash/Sha256';
 import {
     InvalidHDKey,
     InvalidHDKeyMnemonic,
     InvalidSecp256k1PrivateKey
 } from '@vechain/sdk-errors';
-import { HexUInt } from '../vcdm/HexUInt';
-import { Sha256 } from '../vcdm/hash/Sha256';
-import { FPN } from '../vcdm';
 
 /**
  * This class extends the
@@ -167,7 +167,7 @@ class HDKey extends s_bip32.HDKey {
      *
      * @remarks Security auditable method, depends on
      * * [base58.encode](https://github.com/paulmillr/scure-base);
-     * * {@link secp256k1.compressPublicKey};
+     * * {@link Secp256k1.compressPublicKey};
      * * {@link Sha256};
      * * [s_bip32.HDKey.fromExtendedKey](https://github.com/paulmillr/scure-bip32).
      */
@@ -179,7 +179,7 @@ class HDKey extends s_bip32.HDKey {
             const header = nc_utils.concatBytes(
                 this.EXTENDED_PUBLIC_KEY_PREFIX,
                 chainCode,
-                secp256k1.compressPublicKey(publicKey)
+                Secp256k1.compressPublicKey(publicKey)
             );
             const checksum = Sha256.of(Sha256.of(header).bytes).bytes.subarray(
                 0,
@@ -226,9 +226,9 @@ class HDKey extends s_bip32.HDKey {
             // m
             (index === 0 ? component === 'm' : false) ||
             // "number"
-            FPN.isUnsignedIntegerExpression(component) ||
+            FPN.isNaturalExpression(component) ||
             // "number'"
-            (FPN.isUnsignedIntegerExpression(component.slice(0, -1)) &&
+            (FPN.isNaturalExpression(component.slice(0, -1)) &&
                 component.endsWith("'"))
         );
     }

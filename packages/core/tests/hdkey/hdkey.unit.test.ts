@@ -8,9 +8,9 @@ import {
     Address,
     HDKey,
     mnemonic,
-    secp256k1,
-    type WordlistSizeType,
-    ZERO_BYTES
+    Secp256k1,
+    ZERO_BYTES,
+    type WordlistSizeType
 } from '../../src';
 
 const HDKeyFixture = {
@@ -127,7 +127,7 @@ describe('HDKey class tests', () => {
                 const child = root.deriveChild(i);
                 expect(child.privateKey).toBeDefined();
                 expect(child.publicKey).toEqual(
-                    secp256k1.derivePublicKey(child.privateKey as Uint8Array)
+                    Secp256k1.derivePublicKey(child.privateKey as Uint8Array)
                 );
             }
         });
@@ -169,13 +169,13 @@ describe('HDKey class tests', () => {
                     const hdKey = HDKey.fromMnemonic(mnemonic.generate(length));
                     expect(hdKey.privateKey).toBeDefined();
                     expect(
-                        secp256k1.isValidPrivateKey(
+                        Secp256k1.isValidPrivateKey(
                             hdKey.privateKey as Uint8Array
                         )
                     ).toBeTruthy();
                     expect(hdKey.publicKey).toBeDefined();
                     expect(hdKey.publicKey).toEqual(
-                        secp256k1.derivePublicKey(
+                        Secp256k1.derivePublicKey(
                             hdKey.privateKey as Uint8Array
                         )
                     );
@@ -227,7 +227,7 @@ describe('HDKey class tests', () => {
                 const child = extendedRoot.deriveChild(i);
                 expect(child.privateKey).toBeDefined();
                 expect(child.publicKey).toEqual(
-                    secp256k1.derivePublicKey(child.privateKey as Uint8Array)
+                    Secp256k1.derivePublicKey(child.privateKey as Uint8Array)
                 );
             }
         });

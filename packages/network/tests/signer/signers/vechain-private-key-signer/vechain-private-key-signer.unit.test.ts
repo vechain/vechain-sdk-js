@@ -6,7 +6,7 @@ import {
     jest,
     test
 } from '@jest/globals';
-import { Address, Hex, HexUInt, secp256k1, Txt } from '@vechain/sdk-core';
+import { Address, Hex, HexUInt, Secp256k1, Txt } from '@vechain/sdk-core';
 import { ethers } from 'ethers';
 import {
     TESTNET_URL,
@@ -238,7 +238,7 @@ describe('VeChain base signer tests', () => {
                 Buffer.from(Hex.of(eip712TestCases.invalid.privateKey).bytes),
                 provider
             );
-            jest.spyOn(secp256k1, 'sign').mockImplementationOnce(() => {
+            jest.spyOn(Secp256k1, 'sign').mockImplementationOnce(() => {
                 throw Error();
             });
             await expect(

@@ -4,8 +4,8 @@ import {
     Address,
     HexUInt,
     keystore,
-    type Keystore,
-    secp256k1
+    Secp256k1,
+    type Keystore
 } from '../../src';
 import { encryptionPassword } from './fixture';
 import {
@@ -32,7 +32,7 @@ import {
          */
         test('encrypt', async () => {
             // Generate a random private key
-            const privateKey = await secp256k1.generatePrivateKey();
+            const privateKey = await Secp256k1.generatePrivateKey();
 
             //  Create keystore
             const myKeystore = await keystore.encrypt(
@@ -69,7 +69,7 @@ import {
          */
         test('decrypt', async () => {
             // Generate a random private key
-            const privateKey = await secp256k1.generatePrivateKey();
+            const privateKey = await Secp256k1.generatePrivateKey();
 
             //  Create keystore
             const myKeystore = await keystore.encrypt(
@@ -94,7 +94,7 @@ import {
          */
         test('decrypt with invalid password', async () => {
             // Generate a random private key
-            const privateKey = await secp256k1.generatePrivateKey();
+            const privateKey = await Secp256k1.generatePrivateKey();
 
             //  Create keystore
             const myKeystore = await keystore.encrypt(
@@ -117,7 +117,7 @@ import {
          */
         test('decrypt invalid keystore', async () => {
             // Generate a random private key
-            const privateKey = await secp256k1.generatePrivateKey();
+            const privateKey = await Secp256k1.generatePrivateKey();
 
             //  Create keystore
             const myKeystore = await keystore.encrypt(
@@ -150,7 +150,7 @@ import {
          */
         test('validation', async () => {
             // Generate a random private key
-            const privateKey = await secp256k1.generatePrivateKey();
+            const privateKey = await Secp256k1.generatePrivateKey();
 
             //  Create keystore
             const myKeystore = await keystore.encrypt(

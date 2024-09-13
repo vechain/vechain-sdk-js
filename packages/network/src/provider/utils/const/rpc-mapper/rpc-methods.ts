@@ -26,6 +26,10 @@ enum RPC_METHODS {
     eth_getTransactionByHash = 'eth_getTransactionByHash',
     eth_getTransactionCount = 'eth_getTransactionCount',
     eth_getTransactionReceipt = 'eth_getTransactionReceipt',
+    eth_getTransactionByBlockNumberAndIndex = 'eth_getTransactionByBlockNumberAndIndex',
+    eth_getTransactionByBlockHashAndIndex = 'eth_getTransactionByBlockHashAndIndex',
+    eth_getBlockTransactionCountByHash = 'eth_getBlockTransactionCountByHash',
+    eth_getBlockTransactionCountByNumber = 'eth_getBlockTransactionCountByNumber',
     eth_sendTransaction = 'eth_sendTransaction',
     eth_syncing = 'eth_syncing',
     net_version = 'net_version',
@@ -37,16 +41,13 @@ enum RPC_METHODS {
     evm_mine = 'evm_mine',
     web3_sha3 = 'web3_sha3',
     net_peerCount = 'net_peerCount',
+    net_listening = 'net_listening',
 
     /**
      * TO BE IMPLEMENTED METHODS:
      */
     eth_coinbase = 'eth_coinbase',
     eth_feeHistory = 'eth_feeHistory',
-    eth_getBlockTransactionCountByHash = 'eth_getBlockTransactionCountByHash',
-    eth_getBlockTransactionCountByNumber = 'eth_getBlockTransactionCountByNumber',
-    eth_getTransactionByBlockHashAndIndex = 'eth_getTransactionByBlockHashAndIndex',
-    eth_getTransactionByBlockNumberAndIndex = 'eth_getTransactionByBlockNumberAndIndex',
     eth_getUncleByBlockHashAndIndex = 'eth_getUncleByBlockHashAndIndex',
     eth_getUncleByBlockNumberAndIndex = 'eth_getUncleByBlockNumberAndIndex',
     eth_getUncleCountByBlockHash = 'eth_getUncleCountByBlockHash',
@@ -57,7 +58,6 @@ enum RPC_METHODS {
     eth_protocolVersion = 'eth_protocolVersion',
     eth_sign = 'eth_sign',
     eth_submitWork = 'eth_submitWork',
-    net_listening = 'net_listening',
     parity_nextNonce = 'parity_nextNonce',
     eth_newFilter = 'eth_newFilter',
     eth_newBlockFilter = 'eth_newBlockFilter',

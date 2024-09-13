@@ -130,7 +130,7 @@ Through the use of mnemonics and keystore, VeChainSDK ensures secure and user-fr
 ```typescript { name=keystore, category=example }
 // 1 - Create private key using Secp256k1
 
-const privateKey = await secp256k1.generatePrivateKey();
+const privateKey = await Secp256k1.generatePrivateKey();
 
 // @NOTE you can use BIP 39 too!
 // const words = Mnemonic.of()

@@ -1,4 +1,4 @@
-import { Address, HDKey, secp256k1 } from '@vechain/sdk-core';
+import { Address, HDKey, Secp256k1 } from '@vechain/sdk-core';
 import { type SignTransactionOptions } from '../../../../thor-client';
 import { ProviderInternalBaseWallet } from '../base-wallet';
 
@@ -54,7 +54,7 @@ class ProviderInternalHDWallet extends ProviderInternalBaseWallet {
                 return {
                     privateKey: privateKeyBuffer,
                     publicKey: Buffer.from(
-                        secp256k1.derivePublicKey(privateKeyBuffer)
+                        Secp256k1.derivePublicKey(privateKeyBuffer)
                     ),
                     address: Address.ofPrivateKey(privateKeyBuffer).toString()
                 };

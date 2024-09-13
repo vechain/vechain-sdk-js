@@ -5,7 +5,8 @@ import {
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
+import { ethGetBlockByHashTestCases } from '../eth_getBlockByHash/fixture';
+import { invalideEthGetBlockTransactionCountByHashTestCases } from './fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_getBlockTransactionCountByNumber' method
@@ -31,18 +32,42 @@ describe('RPC Mapper - eth_getBlockTransactionCountByNumber method tests', () =>
      */
     describe('eth_getBlockTransactionCountByNumber - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * eth_getBlockTransactionCountByNumber RPC method positive test cases
          */
-        test('eth_getBlockTransactionCountByNumber - positive case 1', async () => {
-            const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
+        ethGetBlockByHashTestCases.forEach(
+            ({ description, params, expectedTransactionsLength }) => {
+                test(description, async () => {
+                    // Call RPC function
+                    const rpcCall = await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_getBlockTransactionCountByNumber
+                    ]([params[0]]);
 
-            // NOT IMPLEMENTED YET!
-            await RPCMethodsMap(thorClient)[
-                RPC_METHODS.eth_getBlockTransactionCountByNumber
-            ]([-1]);
+                    // Compare the result with the expected value
+                    expect(rpcCall).toStrictEqual(expectedTransactionsLength);
+                });
+            }
+        );
+    });
 
-            expect(logSpy).toHaveBeenCalled();
-            logSpy.mockRestore();
-        });
+    /**
+     * eth_getBlockTransactionCountByNumber RPC call tests - Negative cases
+     */
+    describe('eth_getBlockTransactionCountByNumber - Negative cases', () => {
+        /**
+         * Invalid eth_getBlockTransactionCountByNumber RPC method test cases
+         */
+        invalideEthGetBlockTransactionCountByHashTestCases.forEach(
+            ({ description, params, expectedError }) => {
+                test(description, async () => {
+                    // Call RPC function
+                    await expect(
+                        async () =>
+                            await RPCMethodsMap(thorClient)[
+                                RPC_METHODS.eth_getBlockTransactionCountByNumber
+                            ](params)
+                    ).rejects.toThrowError(expectedError);
+                });
+            }
+        );
     });
 });
