@@ -14,7 +14,6 @@
     "RPC",
     "proxy"
   ],
-  "private": false,
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -44,6 +43,7 @@
     "commander": "^12.1.0",
     "cors": "^2.8.5",
     "express": "^4.20.0",
+    "testcontainers": "^10.13.1",
     "tsup": "^8.2.4",
     "typescript": "^5.5.4"
   },
