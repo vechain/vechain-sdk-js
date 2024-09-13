@@ -43,7 +43,7 @@
     "@vechain/sdk-network": "1.0.0-beta.30",
     "commander": "^12.1.0",
     "cors": "^2.8.5",
-    "express": "^4.19.2",
+    "express": "^4.20.0",
     "tsup": "^8.2.4",
     "typescript": "^5.5.4"
   },
