@@ -1,5 +1,5 @@
 // Specify the path to your Solidity contract file
-import { coder, ERC721_ABI, Units, unitsUtils, VTHO_ADDRESS } from '../../src';
+import { coder, ERC721_ABI, FPN, Units, VTHO_ADDRESS } from '../../src';
 import { generateRandomValidAddress } from '../fixture';
 import {
     InvalidAbiDataToEncodeOrDecode,
@@ -119,7 +119,7 @@ const transferTokenClausesTestCases = [
     {
         tokenAddress: VTHO_ADDRESS,
         recipientAddress,
-        amount: Number(unitsUtils.parseUnits('1', 2)),
+        amount: FPN.of(100),
         expected: {
             to: VTHO_ADDRESS,
             value: 0,
@@ -137,7 +137,7 @@ const invalidTransferTokenClausesTestCases = [
     {
         tokenAddress: VTHO_ADDRESS,
         recipientAddress,
-        amount: Number(unitsUtils.parseUnits('-1', 2)),
+        amount: -100,
         expectedError: InvalidDataType
     },
     {
@@ -207,7 +207,7 @@ const transferVETtestCases = [
     },
     {
         recipientAddress,
-        amount: Number(unitsUtils.parseUnits('1', 2)),
+        amount: 100,
         clauseOptions: undefined,
         expected: {
             to: recipientAddress,
@@ -282,10 +282,10 @@ const invalidNFTtestCases = [
 /**
  * Invalid Test cases for building clauses for transferring VET.
  */
-const invalidTransferVETtestCases = [
+const invalidTransferVETTestCases = [
     {
         recipientAddress,
-        amount: Number(unitsUtils.parseUnits('-1', 2)),
+        amount: -100,
         expectedError: InvalidDataType
     },
     {
@@ -318,5 +318,5 @@ export {
     transferVETtestCases,
     transferNFTtestCases,
     invalidNFTtestCases,
-    invalidTransferVETtestCases
+    invalidTransferVETTestCases
 };

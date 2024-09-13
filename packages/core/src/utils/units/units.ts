@@ -218,6 +218,7 @@ function formatUnits(
  *
  * @see {formatUnits}
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const formatVET = (value: bigint | number | string): string => {
     return formatUnits(value, VET_DECIMAL_EXPONENT);
 };
@@ -285,13 +286,14 @@ function parseUnits(
  *
  * @see {parseUnits}
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const parseVET = (value: string): bigint => {
     return parseUnits(value, VET_DECIMAL_EXPONENT);
 };
 
 export const unitsUtils = {
-    formatUnits,
-    formatVET,
-    parseUnits,
-    parseVET
+    formatUnits
+    // formatVET,
+    // parseUnits
+    // parseVET
 };

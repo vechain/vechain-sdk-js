@@ -4,7 +4,7 @@ import {
     exampleContractBytecode,
     invalidNFTtestCases,
     invalidTransferTokenClausesTestCases,
-    invalidTransferVETtestCases,
+    invalidTransferVETTestCases,
     transferNFTtestCases,
     transferTokenClausesTestCases,
     transferVETtestCases
@@ -221,7 +221,7 @@ describe('Contract', () => {
         /**
          * Invalid transfer VET clause builder test cases.
          */
-        invalidTransferVETtestCases.forEach(
+        invalidTransferVETTestCases.forEach(
             ({ recipientAddress, amount, expectedError }) => {
                 test(`Build a clause to transfer ${amount} VET`, () => {
                     expect(() => {
