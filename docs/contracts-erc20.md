@@ -61,8 +61,9 @@ expect(receipt.reverted).toEqual(false);
 
 const balance = await contract.read.balanceOf(deployerAccount.address);
 
-// Asserting that the initial balance of the deployer is the expected amount (1e24)
-expect(balance).toEqual([unitsUtils.parseUnits('1', 24)]);
+const expectedBalance = Units.parseUnits('1000000', Units.ether).bi;
+// Asserting that the initial balance of the deployer is the expected amount (1e24 wei = 1e6 ether)
+expect(balance).toEqual([expectedBalance]);
 ```
 
 

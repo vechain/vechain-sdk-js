@@ -98,12 +98,10 @@ Below is an example of how to add comments to operations:
 ```typescript { name=contract-transfer-erc20-token, category=example }
 // Transfer tokens to another address with a comment
 
-const decimals = await contract.read.decimals();
-
 await contract.transact.transfer(
     { comment: 'Transferring 100 ERC20 tokens' },
     '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-    unitsUtils.parseUnits('100', decimals[0] as bigint)
+    Units.parseEther('100').bi
 );
 ```
 
@@ -192,7 +190,7 @@ const multipleClausesResult =
         contract.clause.decimals()
     ]);
 
-expect(multipleClausesResult[0]).toEqual([unitsUtils.parseUnits('1', 24)]);
+expect(multipleClausesResult[0]).toEqual([expectedBalance]);
 expect(multipleClausesResult[1]).toEqual(['SampleToken']);
 expect(multipleClausesResult[2]).toEqual(['ST']);
 expect(multipleClausesResult[3]).toEqual([18n]);
