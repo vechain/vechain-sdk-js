@@ -114,7 +114,9 @@ class Event<ABIType> {
             if (typeof abi === 'string') {
                 const stringAbi =
                     abi.indexOf('event') === 0 ? abi : `event ${abi}`;
-                this.event = new ABIEvent(stringAbi);
+                this.event = new ABIEvent(
+                    stringAbi.replace(' list', '').replace('tuple', '')
+                );
             } else {
                 this.event = new ABIEvent(abi as ViemABI);
             }
@@ -157,7 +159,9 @@ class Event<ABIType> {
                 topics: data.topics.map((topic) => Hex.of(topic))
             });
 
-            if (eventLogDecoded.args instanceof Object) {
+            if (eventLogDecoded.args === undefined) {
+                return [] as unknown as Result;
+            } else if (eventLogDecoded.args instanceof Object) {
                 return Object.values(eventLogDecoded.args) as Result;
             }
 

@@ -36,7 +36,7 @@ class ABIFunction extends ABI {
     public decodeData(data: Hex): DecodeFunctionDataReturnType {
         try {
             return decodeFunctionData({
-                abi: this.signature,
+                abi: [this.signature],
                 data: data.toString() as ViemHex
             });
         } catch (error) {
@@ -61,7 +61,7 @@ class ABIFunction extends ABI {
     ): EncodeFunctionDataReturnType {
         try {
             return encodeFunctionData({
-                abi: this.signature,
+                abi: [this.signature],
                 args: dataToEncode
             });
         } catch (e) {
@@ -91,7 +91,7 @@ class ABIFunction extends ABI {
     public decodeResult(data: Hex): DecodeFunctionResultReturnType {
         try {
             return decodeFunctionResult({
-                abi: this.signature,
+                abi: [this.signature],
                 data: data.toString() as ViemHex
             });
         } catch (error) {
@@ -125,7 +125,9 @@ class Function<ABIType> {
             if (typeof abi === 'string') {
                 const stringAbi =
                     abi.indexOf('function') === 0 ? abi : `function ${abi}`;
-                this.function = new ABIFunction(stringAbi);
+                this.function = new ABIFunction(
+                    stringAbi.replace(' list', '').replace('tuple', '')
+                );
             } else {
                 this.function = new ABIFunction(abi as ViemABI);
             }
@@ -171,6 +173,12 @@ class Function<ABIType> {
     public decodeInput(data: BytesLike): Result {
         try {
             const dataDecoded = this.function.decodeData(Hex.of(data));
+            if (dataDecoded.args === undefined) {
+                return [] as unknown as Result;
+            } else if (dataDecoded.args instanceof Object) {
+                return Object.values(dataDecoded.args) as Result;
+            }
+
             return dataDecoded as unknown as Result;
         } catch (e) {
             throw new InvalidAbiDataToEncodeOrDecode(
