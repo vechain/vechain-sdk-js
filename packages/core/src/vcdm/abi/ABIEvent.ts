@@ -68,7 +68,7 @@ class ABIEvent extends ABI {
     ): EncodeEventTopicsReturnType {
         try {
             return encodeEventTopics({
-                abi: this.signature,
+                abi: [this.signature],
                 args: valuesToEncode
             });
         } catch (e) {
