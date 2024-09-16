@@ -4,6 +4,7 @@ import {
     InvalidAbiSignatureFormat
 } from '@vechain/sdk-errors';
 import {
+    type AbiEvent,
     type DecodeEventLogReturnType,
     encodeEventTopics,
     type EncodeEventTopicsReturnType,
@@ -66,17 +67,26 @@ class ABIEvent extends ABI {
     public encodeFilterTopics<TValue>(
         valuesToEncode: TValue[]
     ): EncodeEventTopicsReturnType {
+        const abiEvent = this.signature as unknown as AbiEvent;
+        if (abiEvent.inputs.length < valuesToEncode.length) {
+            throw new InvalidAbiDataToEncodeOrDecode(
+                'ABIEvent.encodeEventLog',
+                'Encoding failed: Data format is invalid. Number of values to encode is greater than the inputs.',
+                { valuesToEncode }
+            );
+        }
+
         try {
             return encodeEventTopics({
                 abi: [this.signature],
                 args: valuesToEncode
             });
-        } catch (e) {
+        } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIEvent.encodeEventLog',
                 'Encoding failed: Data format is invalid. Event topics values must be correctly formatted for ABI-compliant encoding.',
                 { valuesToEncode },
-                e
+                error
             );
         }
     }
