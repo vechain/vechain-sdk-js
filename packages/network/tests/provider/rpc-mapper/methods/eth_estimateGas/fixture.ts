@@ -1,4 +1,4 @@
-import { clauseBuilder, unitsUtils } from '@vechain/sdk-core';
+import { clauseBuilder, Units } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams
@@ -13,7 +13,7 @@ const positiveCasesFixtures = [
         input: [
             clauseBuilder.transferVET(
                 '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-                unitsUtils.parseVET('1000')
+                Units.parseEther('1000').bi
             ),
             'latest'
         ],

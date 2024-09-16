@@ -4,7 +4,11 @@ description: Transactions related functions.
 
 # Transactions
 
-Vechain SDK provides comprehensive support for handling transactions. Developers can initialize a transaction by assembling the transaction body, adding clauses, and finally signing and sending the transaction. 
+VeChain SDK provides comprehensive support for handling transactions. Developers can initialize a transaction by assembling the transaction body, adding clauses, and finally signing and sending the transaction. 
+
+> ⚠️ **Warning:**
+> All the examples listed below refers to low level transaction building. The VeChain SDK provides you built-in methods to sign and send transactions. Please refer to the contracts section for more information.
+
 
 To break it down:
 
@@ -21,7 +25,7 @@ In this example a simple transaction with a single clause is created, signed, en
 const clauses: TransactionClause[] = [
     clauseBuilder.transferVET(
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        unitsUtils.parseVET('10000')
+        Units.parseEther('10000').bi
     )
 ];
 
@@ -71,12 +75,12 @@ Clauses allow to send multiple payloads to different recipients within a single 
 const clauses: TransactionClause[] = [
     clauseBuilder.transferVET(
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        unitsUtils.parseVET('10000')
+        Units.parseEther('10000').bi
     ),
     clauseBuilder.transferToken(
         VTHO_ADDRESS,
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        unitsUtils.parseUnits('10000', 18) // 10000 VTHO
+        Units.parseUnits('10000', Units.ether).bi // 10000 VTHO, `ether` is the 10e18 magnitude in this context.
     )
 ];
 
@@ -137,7 +141,7 @@ const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL, {
 const clauses: TransactionClause[] = [
     clauseBuilder.transferVET(
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        unitsUtils.parseVET('10000')
+        Units.parseEther('10000').bi
     )
 ];
 
@@ -198,7 +202,7 @@ Using the _BlockRef_ and _Expiration_ fields a transaction can be set to be proc
 const clauses: TransactionClause[] = [
     clauseBuilder.transferVET(
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        unitsUtils.parseVET('1000')
+        Units.parseEther('1000').bi
     )
 ];
 
@@ -244,13 +248,13 @@ A transaction can be set to only be processed after another transaction, therefo
 const txAClauses: TransactionClause[] = [
     clauseBuilder.transferVET(
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        unitsUtils.parseVET('1000')
+        Units.parseEther('1000').bi
     )
 ];
 const txBClauses: TransactionClause[] = [
     clauseBuilder.transferVET(
         '0x7ccadeea14dd6727845b58f8aa7aad0f41a002a2',
-        unitsUtils.parseVET('1')
+        Units.parseEther('1').bi
     )
 ];
 
@@ -332,7 +336,7 @@ const transaction1 = {
     clauses: [
         clauseBuilder.transferVET(
             '0xb717b660cd51109334bd10b2c168986055f58c1a',
-            unitsUtils.parseVET('1')
+            Units.parseEther('1').bi
         )
     ],
     // Please note - this field one of the optional fields that may be passed (see SimulateTransactionOptions),
@@ -420,7 +424,7 @@ const transaction = {
     clauses: [
         clauseBuilder.transferVET(
             '0xb717b660cd51109334bd10b2c168986055f58c1a',
-            unitsUtils.parseVET('1')
+            Units.parseEther('1').bi
         )
     ],
     simulateTransactionOptions: {
@@ -520,7 +524,7 @@ const transaction = {
     clauses: [
         clauseBuilder.transferVET(
             '0xb717b660cd51109334bd10b2c168986055f58c1a',
-            unitsUtils.parseVET('1')
+            Units.parseEther('1').bi
         )
     ],
     simulateTransactionOptions: {
@@ -629,7 +633,7 @@ const transaction = {
     clauses: [
         clauseBuilder.transferVET(
             '0xb717b660cd51109334bd10b2c168986055f58c1a',
-            unitsUtils.parseVET('1')
+            Units.parseEther('1').bi
         )
     ],
     simulateTransactionOptions: {
@@ -706,14 +710,14 @@ const simulatedTx: TransactionSimulationResult[] =
         {
             to: '0x0000000000000000000000000000456e65726779',
             value: '0',
-            data: coder.encodeFunctionInput(energy_abi, 'transfer', [
+            data: coder.encodeFunctionInput(energyABI, 'transfer', [
                 '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-                unitsUtils.parseVET('1000000000')
+                Units.parseEther('1000000000').bi
             ])
         }
     ]);
 
-const revertReason = await thorSoloClient.transactions.decodeRevertReason(
+const revertReason = thorSoloClient.transactions.decodeRevertReason(
     simulatedTx[0].data
 );
 ```

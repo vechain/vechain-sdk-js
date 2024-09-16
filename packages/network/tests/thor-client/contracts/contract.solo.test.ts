@@ -17,6 +17,8 @@ import {
     multipleClausesTestCases,
     OWNER_RESTRICTION_ABI,
     OWNER_RESTRICTION_BYTECODE,
+    sampleTwoValuesReturnAbi,
+    sampleTwoValuesReturnBytecode,
     testingContractEVMExtensionTestCases,
     testingContractNegativeTestCases,
     testingContractTestCases
@@ -412,7 +414,7 @@ describe('ThorClient - Contracts', () => {
         expect(contractFilter.criteriaSet[0].criteria.topic4).toBeDefined();
     }, 10000);
 
-    test('deploy the deposit contract and call the deposit method', async () => {
+    test('Deploy the deposit contract and call the deposit method', async () => {
         const depositContractFactory =
             thorSoloClient.contracts.createContractFactory(
                 depositContractAbi,
@@ -438,10 +440,32 @@ describe('ThorClient - Contracts', () => {
         ).toEqual([BigInt(1000)]);
     }, 10000);
 
+    test('Deploy a contract that returns two values', async () => {
+        const twoValuesReturnContractFactory =
+            thorSoloClient.contracts.createContractFactory(
+                sampleTwoValuesReturnAbi,
+                sampleTwoValuesReturnBytecode,
+                signer
+            );
+
+        const twoValuesReturnContract =
+            await twoValuesReturnContractFactory.startDeployment();
+
+        const deployedTwoValuesReturnContractContract =
+            await twoValuesReturnContract.waitForDeployment();
+
+        const [firstResultA, firstResultB] = await deployedTwoValuesReturnContractContract.read.a();
+        const resultB = await deployedTwoValuesReturnContractContract.read.b();
+
+        expect(firstResultA).toEqual(1n);
+        expect(firstResultB).toEqual('a');
+        expect(resultB).toEqual([]);
+    }, 10000);
+
     /**
      * Test case for deploying a contract with ownership restrictions.
      */
-    test('deploy the ownership restricted contract and call it', async () => {
+    test('Deploy the ownership restricted contract and call it', async () => {
         const contractFactory = thorSoloClient.contracts.createContractFactory(
             OWNER_RESTRICTION_ABI,
             OWNER_RESTRICTION_BYTECODE,
@@ -633,9 +657,8 @@ describe('ThorClient - Contracts', () => {
 
         await expect(async () => {
             await contract.filters;
-        }).rejects.toThrow("Event with name then not found in ABI");
+        }).rejects.toThrow('Event with name then not found in ABI');
     });
-
 
     filterContractEventsTestCases.forEach(
         ({

@@ -4,7 +4,7 @@ import { Header } from '@/components';
 import { explorerUrl, thorClient } from '@/const';
 import { type Transfer } from '@/types';
 import { reduceHexStringSize } from '@/utils';
-import { addressUtils, unitsUtils } from '@vechain/sdk-core';
+import { addressUtils, FPN, Units } from '@vechain/sdk-core';
 import {
     type CompressedBlockDetail,
     type FilterTransferLogsOptions
@@ -144,7 +144,9 @@ export default function TransferLogs(): JSX.Element {
                                     <p
                                         data-testid={`transfer-amount-${transfer.amount}`}
                                     >
-                                        {unitsUtils.formatVET(transfer.amount)}
+                                        {Units.formatEther(
+                                            FPN.of(transfer.amount)
+                                        )}
                                     </p>
                                 </td>
                                 <td className="px-4 py-2">

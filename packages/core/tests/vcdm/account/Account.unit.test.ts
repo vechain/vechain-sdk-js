@@ -1,15 +1,9 @@
-import { Address, FPN, Mnemonic } from '../../../src';
-import { Account } from '../../../src/vcdm/account';
-import { type Currency } from '../../../src/vcdm/currency/Currency';
+import { Address, FPN, Mnemonic, Txt, Account } from '../../../src';
+import { type Currency } from '../../../src';
 
 // Use actual Currency subclasses once they are implemented.
 const mockCurrency: Currency = {
-    compareTo: jest.fn().mockReturnValue(0),
-    bi: 0n,
-    code: 'VET',
-    n: 0,
-    isEqual: jest.fn().mockReturnValue(true),
-    bytes: new Uint8Array(0),
+    code: Txt.of('VET'),
     value: FPN.of(0)
 };
 
@@ -64,7 +58,7 @@ describe('Account class tests', () => {
             const address = Address.ofMnemonic(mnemonic);
             const account = new Account(address, balance);
             expect(account.toString()).toBe(
-                `EOA Address: ${address.toString()} Balance: 0`
+                `EOA Address: ${address.toString()} Balance: 0 VET`
             );
         });
     });

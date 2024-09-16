@@ -4,7 +4,7 @@ import {
     exampleContractBytecode,
     invalidNFTtestCases,
     invalidTransferTokenClausesTestCases,
-    invalidTransferVETtestCases,
+    invalidTransferVETTestCases,
     transferNFTtestCases,
     transferTokenClausesTestCases,
     transferVETtestCases
@@ -125,7 +125,7 @@ describe('Contract', () => {
                     const clause = clauseBuilder.transferToken(
                         tokenAddress,
                         recipientAddress,
-                        amount
+                        amount.toString()
                     );
 
                     expect(clause.to).toBe(tokenAddress);
@@ -160,7 +160,7 @@ describe('Contract', () => {
                 test(`Build a clause to transfer ${amount} VET`, () => {
                     const clause = clauseBuilder.transferVET(
                         recipientAddress,
-                        amount,
+                        amount.toString(),
                         clauseOptions
                     );
 
@@ -221,7 +221,7 @@ describe('Contract', () => {
         /**
          * Invalid transfer VET clause builder test cases.
          */
-        invalidTransferVETtestCases.forEach(
+        invalidTransferVETTestCases.forEach(
             ({ recipientAddress, amount, expectedError }) => {
                 test(`Build a clause to transfer ${amount} VET`, () => {
                     expect(() => {

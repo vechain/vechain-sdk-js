@@ -1,4 +1,4 @@
-import { ERC20_ABI, unitsUtils } from '@vechain/sdk-core';
+import { ERC20_ABI, Units } from '@vechain/sdk-core';
 import {
     type Contract,
     ProviderInternalBaseWallet,
@@ -72,12 +72,10 @@ expect(transactionReceiptTransfer.reverted).toEqual(false);
 
 // Transfer tokens to another address with a comment
 
-const decimals = await contract.read.decimals();
-
 await contract.transact.transfer(
     { comment: 'Transferring 100 ERC20 tokens' },
     '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-    unitsUtils.parseUnits('100', decimals[0] as bigint)
+    Units.parseEther('100').bi
 );
 
 // END_SNIPPET: TransferCommentSnippet

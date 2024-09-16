@@ -12,7 +12,6 @@ import {
     getContractFactoryFromArtifact,
     getSigner,
     getSigners
-    // eslint-disable-next-line import/no-restricted-paths
 } from '@nomicfoundation/hardhat-ethers/internal/helpers';
 
 // Custom provider for ethers
@@ -25,7 +24,6 @@ import { vechain_sdk_core_ethers as ethers } from '@vechain/sdk-core';
 // Import needed to extend the hardhat environment
 import './type-extensions';
 
-// eslint-disable-next-line import/no-restricted-paths
 import { HardhatEthersProvider } from '@nomicfoundation/hardhat-ethers/internal/hardhat-ethers-provider';
 import { contractAdapter, factoryAdapter } from '@vechain/sdk-ethers-adapter';
 import { type FactoryOptions } from '@nomicfoundation/hardhat-ethers/src/types';

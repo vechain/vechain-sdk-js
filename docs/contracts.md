@@ -1,12 +1,50 @@
-# Contracts in vechain
+# VeChain Contracts Interaction
 
-This document provides a comprehensive guide on constructing contract transactions using the VeChain SDK, specifically focusing on deploying smart contracts and calling contract functions. The aim is to furnish developers with the knowledge to seamlessly integrate these transactions into their blockchain applications on vechain.
+The following sections provide detailed information on interacting with VeChain smart contracts using the VeChain SDK.
 
-## Deploying a Smart Contract
+## Building clauses
 
-### Overview
 
-Deploying a smart contract is a foundational step in leveraging the VeChain blockchain for decentralized applications. This section delves into the process of creating a deployment clause, which is essential for initiating a smart contract on the network.
+VeChain uses clauses to interact with smart contracts. A clause is a single operation that can be executed on the blockchain. The VeChain SDK provides a `ClauseBuilder` class to create clauses for various operations.
+
+
+
+> ⚠️ **Warning:**
+> To execute the clauses, you need to build a transaction and sign it with a wallet. The signed transaction can then be sent to the blockchain. This process is covered ahead in the documentation.
+
+### Transfer VET and VTHO clauses
+
+The following example shows you how to build clauses to transfer the two main token of VeChain, the token VET and the energy token VTHO (the one used to pay for transaction fees)
+
+```typescript { name=contract-clauses, category=example }
+import { clauseBuilder, VTHO_ADDRESS } from '@vechain/sdk-core';
+
+// build some example clauses
+
+// 1. Transfer vet
+
+const transferVetClause = clauseBuilder.transferVET(
+    '0xf02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
+    300n
+);
+
+// 2. Transfer VTHO
+
+const transferVTHOClause = clauseBuilder.transferToken(
+    VTHO_ADDRESS,
+    '0xf02f557c753edf5fcdcbfe4c1c3a448b3cc84d54',
+    300n
+);
+
+```
+
+### Deploying a Smart Contract Clause
+
+#### Steps:
+
+1. **Clause Construction**: Use `clauseBuilder.deployContract` from `@vechain/sdk-core` to construct a deployment clause.
+2. **Smart Contract Bytecode**: Pass the compiled contract's bytecode to deploy it.
+3. **Clause Building**: create the deployment clause
 
 ```typescript { name=contract-deploy, category=example }
 // 1 - Init contract bytecode to deploy
@@ -18,27 +56,17 @@ const contractBytecode =
 const clause = clauseBuilder.deployContract(contractBytecode);
 ```
 
-### Process Breakdown
+### Calling a Contract Function Clause
 
-1. **Clause Construction**: The deployment of a smart contract begins with the construction of a deployment clause. The VeChain SDK offers a dedicated function, `clauseBuilder.deployContract`, found within the `@vechain/sdk-core` package, for this purpose.
+### Steps:
 
-2. **Smart Contract Bytecode**: The bytecode of the smart contract, contained within the `contractBytecode` variable, encapsulates the compiled contract code that will be deployed to the blockchain.
-
-3. **Invocation**: By invoking the `clauseBuilder.deployContract` function with the contract's bytecode, a clause object is generated. This clause object is a structured representation of the deployment request, ready to be broadcast to the VeChain network.
-
-### Conclusion
-
-The deployment example elucidates the utilization of the VeChain SDK to construct a deployment clause, a crucial component for deploying smart contracts on the VeChain blockchain.
-
-## Calling a Contract Function
-
-### Overview
-
-After deploying a smart contract, interacting with its functions is the next step. This section guides you through the creation of a clause tailored for calling a specific function within a deployed smart contract.
+1. **Understand the ABI**: The ABI (JSON format) defines contract functions and parameters.
+2. **Clause Creation**: Use `clauseBuilder.functionInteraction` to create a clause for function calls.
+3. **Clause Building**: Build the clause, e.g., calling `setValue(123)` to modify the contract state.
 
 ```typescript { name=contract-function-call, category=example }
 // 1 - Init a simple contract ABI
-const contractABI = stringifyData([
+const contractABI = [
     {
         constant: false,
         inputs: [
@@ -67,7 +95,7 @@ const contractABI = stringifyData([
         stateMutability: 'view',
         type: 'function'
     }
-]);
+] as const;
 
 // 2 - Create a clause to call setValue(123)
 const clause = clauseBuilder.functionInteraction(
@@ -79,53 +107,73 @@ const clause = clauseBuilder.functionInteraction(
 );
 ```
 
-### Process Breakdown
 
-1. **Understanding the ABI**: The ABI (Application Binary Interface) of the smart contract, usually defined in JSON format, describes the contract's functions and their respective parameters. This interface is pivotal for ensuring proper interaction with the contract's functions.
+or you can load the contract using the thor client and then you can build the clause using the contract object.
 
-2. **Clause Creation for Function Calls**: Utilizing the `clauseBuilder.functionInteraction` function from the `@vechain/sdk-core` package, a clause is crafted for the specific purpose of invoking a function on the smart contract.
+```typescript { name=contract-function-call, category=example }
+// 1 - Build the thor client and load the contract
 
-3. **Function Invocation**: In this example, the function `setValue` within the smart contract is invoked with a parameter of `123`. This action demonstrates how to interact with a function, altering the state within the smart contract based on the function's logic.
+const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
+
+const contract = thorSoloClient.contracts.load(
+    '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
+    contractABI
+);
+
+// 2 - Create a clause to call setValue(123)
+const setValueClause = contract.clause.setValue(123);
+```
+
+
+## Multi-Clause Contract Interaction
+
+Now that we have seen how to build clauses, let's see how to send it to the blockchain. VeChain allows multiple clauses in a single transaction, enabling interactions with multiple contracts or operations.
+
+### Multiple Clauses in a Single Transaction
+
+In the following example we will see how to execute multiple read operations to get information regarding a deployed ERC20 token contract.
+
+```typescript { name=contract-create-erc20-token, category=example }
+// Reading data from multiple clauses in a single call
+const multipleClausesResult =
+    await thorSoloClient.contracts.executeMultipleClausesCall([
+        contract.clause.totalSupply(),
+        contract.clause.name(),
+        contract.clause.symbol(),
+        contract.clause.decimals()
+    ]);
+
+expect(multipleClausesResult[0]).toEqual([expectedBalance]);
+expect(multipleClausesResult[1]).toEqual(['SampleToken']);
+expect(multipleClausesResult[2]).toEqual(['ST']);
+expect(multipleClausesResult[3]).toEqual([18n]);
+```
+
+> ⚠️ **Warning:**
+> The example above shows a multi clause read call. It's also possible to execute multi clause transactions with the method executeMultipleClausesTransaction, but you need to build a signer first. Please refer to the signer section for more information
+
 
 ## Commenting Contract Invocations
 
-### Overview
-
-When using the SDK with wallets, adding comments to operations can be beneficial. These comments inform users who are signing transactions about the nature and purpose of the transactions they are authorizing.
-
-Below is an example of how to add comments to operations:
+Add comments to operations when using wallets, helping users understand transaction details during signing.
 
 ```typescript { name=contract-transfer-erc20-token, category=example }
 // Transfer tokens to another address with a comment
 
-const decimals = await contract.read.decimals();
-
 await contract.transact.transfer(
     { comment: 'Transferring 100 ERC20 tokens' },
     '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-    unitsUtils.parseUnits('100', decimals[0] as bigint)
+    Units.parseEther('100').bi
 );
 ```
 
-## Adding revision on read functions
+## Specifying Revisions in Read Functions
 
-### Overview
-
-If you want to specify the revision on read functions, you can do it in the same way as adding a comment. Instead of a comment, specify the revision. You can use 'best' or 'finalized' as the revision options.
-
-### Conclusion
-
-This section highlights the methodology for constructing a clause that facilitates interaction with a deployed smart contract's functions on the VeChain network, thereby enabling developers to manipulate and query smart contract states efficiently.
-
-This document, designed to be both informative and practical, equips developers with the necessary tools and knowledge to effectively interact with smart contracts on the VeChain blockchain, from deployment to function invocation.
+You can specify revisions (`best` or `finalized`) for read functions, similar to adding comments.
 
 ## Delegating a Contract Call
 
-### Overview
-
-VeChain allows for the delegation of contract calls, enabling developers to execute contract functions in which the fees are payed by the delegator.
-
-Here is an example of how to delegate a contract call:
+VeChain supports delegated contract calls where fees are paid by the delegator.
 
 ```typescript { name=contract-delegation-erc20, category=example }
 const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL);
@@ -174,93 +222,3 @@ const transactionReceiptTransfer =
 expect(transactionReceiptTransfer.reverted).toEqual(false);
 ```
 
-## Multi-Clause Contract Interaction
-
-### Multiple clauses read
-
-VeChain supports the execution of multiple clauses in a single transaction, allowing developers to interact with multiple contracts or perform multiple operations within a single transaction.
-
-Here is an example of how to interact with multiple read clauses in a single transaction:
-
-```typescript { name=contract-create-erc20-token, category=example }
-// Reading data from multiple clauses in a single call
-const multipleClausesResult =
-    await thorSoloClient.contracts.executeMultipleClausesCall([
-        contract.clause.totalSupply(),
-        contract.clause.name(),
-        contract.clause.symbol(),
-        contract.clause.decimals()
-    ]);
-
-expect(multipleClausesResult[0]).toEqual([unitsUtils.parseUnits('1', 24)]);
-expect(multipleClausesResult[1]).toEqual(['SampleToken']);
-expect(multipleClausesResult[2]).toEqual(['ST']);
-expect(multipleClausesResult[3]).toEqual([18n]);
-```
-
-
-## Multi-Clause Event filtering
-
-### Overview
-
-VeChain allows developers to filter multiple events from diffent contracts in a single call, enabling efficient event monitoring and processing.
-
-To do so, developers needs the contract address and the event signature.
-
-Here is an example of how to filter multiple events from different contracts:
-
-```typescript { name=contract-event-filter, category=example }
-const contractEventExample = await setupEventExampleContract();
-
-await (await contractEventExample.transact.setValue(3000n)).wait();
-
-const transferCriteria = contractErc20.criteria.Transfer({
-    to: '0x9e7911de289c3c856ce7f421034f66b6cde49c39'
-});
-
-const valueCriteria = contractEventExample.criteria.ValueSet();
-
-const events = await thorSoloClient.logs.filterEventLogs({
-    criteriaSet: [transferCriteria, valueCriteria]
-});
-
-console.log(events);
-
-// Asserting that I'm filtering a previous transfer event and the new value set event
-expect(events.map((x) => x.decodedData)).toEqual([
-    [
-        '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
-        '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
-        10000n
-    ],
-    ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
-]);
-```
-
-
-### Grouping events by topic hash
-
-It's possible to group events by topic hash, which can be useful for differentiating between events from different contracts or for categorizing events based on specific criteria.
-
-In the example below, we will use the method *filterGroupedEventLogs* to distinguish the transfer criteria from the value criteria.
-
-The results is an array composed of two arrays, one for each criteria.
-
-```typescript { name=contract-event-filter, category=example }
-const groupedEvents = await thorSoloClient.logs.filterGroupedEventLogs({
-    criteriaSet: [transferCriteria, valueCriteria]
-});
-
-// Asserting that I'm filtering a previous transfer event and the new value set event
-expect(groupedEvents[0].map((x) => x.decodedData)).toEqual([
-    [
-        '0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54',
-        '0x9E7911de289c3c856ce7f421034F66b6Cde49C39',
-        10000n
-    ]
-]);
-
-expect(groupedEvents[1].map((x) => x.decodedData)).toEqual([
-    ['0xF02f557c753edf5fcdCbfE4c1c3a448B3cC84D54', 3000n]
-]);
-```
