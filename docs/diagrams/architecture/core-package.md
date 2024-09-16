@@ -28,8 +28,10 @@ C4Context
                 System(Address, "Address class", "Handle all address related operations.")
                 System(BloomFilter, "BloomFilter class", "Handle all Bloom filter related operations.")
                 Boundary(currency, "Currency module") {
-                    System(Currency, "Currency", "Define currency operations.")
+                    System(Coin, "Coin class", "Implements currency properties and base methods common to currencies.")
                     System(Units, "Units", "Format and parse currency units (magnitude).")
+                    System(VET, "VET class", "Represent VET monetary amounts.")
+                    System(VTHO, "VTHO class", "Represent VTHO monetary amounts.")
                 }
                 System(FPN, "FPN class", "Handle all Fixed Point Number math.")
                 Boundary(hash, "Hash module") {
