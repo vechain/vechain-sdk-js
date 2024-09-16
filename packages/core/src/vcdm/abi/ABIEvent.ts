@@ -173,9 +173,12 @@ class Event<ABIType> {
     public encodeFilterTopics<TValue>(
         valuesToEncode: TValue[]
     ): Array<string | undefined> {
-        return this.event.encodeFilterTopics(
+        const encodedTopics = this.event.encodeFilterTopics(
             valuesToEncode
         ) as unknown as Array<string | undefined>;
+        return encodedTopics.map((topic) =>
+            topic === null ? undefined : topic
+        );
     }
 }
 
