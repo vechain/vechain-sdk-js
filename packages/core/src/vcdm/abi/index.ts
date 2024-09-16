@@ -1,10 +1,10 @@
-import { fragment } from '../../abi';
 import { ethersAbi } from './ABI';
 import { Event } from './ABIEvent';
+import { Function } from './ABIFunction';
 
 const abi = {
     ...ethersAbi,
-    ...fragment.Function,
+    Function,
     Event
 };
 
