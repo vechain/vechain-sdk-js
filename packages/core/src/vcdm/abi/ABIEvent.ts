@@ -54,7 +54,7 @@ class ABIEvent extends ABI {
         }
     }
 
-    /** DISCLAIMER: There is no equivalent to encodeEventLog in viem {@link https://viem.sh/docs/ethers-migration} */
+    /** DISCLAIMER: There is no equivalent to encodeEventLog in viem {@link https://viem.sh/docs/ethers-migration} Discussion started here {@link https://github.com/wevm/viem/discussions/2676} */
 
     /**
      * Encode event log topics using the event's ABI.
