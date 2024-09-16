@@ -661,6 +661,10 @@ class FPN implements VeChainDataModel<FPN> {
         return (multiplicand * multiplicator) / 10n ** fd;
     }
 
+    public negate(): FPN {
+        return new FPN(this.fd, -this.sv, this.ef);
+    }
+
     /**
      * Constructs a new instance of FPN (Fixed Point Number) parsing the
      * `exp` numeric expression in base 10 and representing the value with the

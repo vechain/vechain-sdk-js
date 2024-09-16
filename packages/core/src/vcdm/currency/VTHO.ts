@@ -11,12 +11,20 @@ import { type FPN } from '../FPN';
  */
 class VTHO extends Coin {
     /**
+     * The code for VET is the sequence of Unicode
+     * - U+1D64D - mathematical double strike capital letter 'V',
+     * - U+0054 - Latin capital letter 'T',
+     * - U+0048 - Latin capital letter 'H',
+     * - U+004F - Latin capital letter 'O'.
+     */
+    public static readonly CODE = Txt.of('𝕍THO');
+    /**
      * Create a new instance with the given `value`.
      *
      * @param {FPN} value - The value to be used for initializing the instance.
      */
     protected constructor(value: FPN) {
-        super(Txt.of('𝕍THO'), value);
+        super(VTHO.CODE, value);
     }
 
     /**
