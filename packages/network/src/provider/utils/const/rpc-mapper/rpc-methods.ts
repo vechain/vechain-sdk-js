@@ -42,14 +42,18 @@ enum RPC_METHODS {
     web3_sha3 = 'web3_sha3',
     net_peerCount = 'net_peerCount',
     net_listening = 'net_listening',
+    eth_getUncleByBlockNumberAndIndex = 'eth_getUncleByBlockNumberAndIndex',
+    eth_getUncleByBlockHashAndIndex = 'eth_getUncleByBlockHashAndIndex',
+    txpool_inspect = 'txpool_inspect',
+    txpool_contentFrom = 'txpool_contentFrom',
+    txpool_content = 'txpool_content',
+    txpool_status = 'txpool_status',
 
     /**
      * TO BE IMPLEMENTED METHODS:
      */
     eth_coinbase = 'eth_coinbase',
     eth_feeHistory = 'eth_feeHistory',
-    eth_getUncleByBlockHashAndIndex = 'eth_getUncleByBlockHashAndIndex',
-    eth_getUncleByBlockNumberAndIndex = 'eth_getUncleByBlockNumberAndIndex',
     eth_getUncleCountByBlockHash = 'eth_getUncleCountByBlockHash',
     eth_getUncleCountByBlockNumber = 'eth_getUncleCountByBlockNumber',
     eth_getWork = 'eth_getWork',

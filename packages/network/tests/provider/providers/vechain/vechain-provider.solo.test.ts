@@ -7,7 +7,12 @@ import {
     deployERC721Contract,
     waitForMessage
 } from '../helpers';
-import { coder, type FunctionFragment } from '@vechain/sdk-core';
+import {
+    clauseBuilder,
+    coder,
+    type TransactionClause,
+    type FunctionFragment
+} from '@vechain/sdk-core';
 import {
     ProviderInternalBaseWallet,
     type SubscriptionEvent,
@@ -307,13 +312,25 @@ describe('VeChain provider tests - solo', () => {
             [TEST_ACCOUNT.address, 100]
         );
 
+        const clauses = clauseBuilder.functionInteraction(
+            erc721Contract.address,
+            coder
+                .createInterface(erc721Contract.abi)
+                .getFunction('mintItem') as FunctionFragment,
+            [TEST_ACCOUNT.address]
+        ) as TransactionClause;
+
+        const gas = await thorClient.gas.estimateGas([clauses]);
+
         await thorClient.contracts.executeTransaction(
             (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,
             erc721Contract.address,
             coder
                 .createInterface(erc721Contract.abi)
                 .getFunction('mintItem') as FunctionFragment,
-            [TEST_ACCOUNT.address]
+            [TEST_ACCOUNT.address],
+            {},
+            { gas: gas.totalGas }
         );
 
         results = (await eventPromise) as SubscriptionEvent[];
