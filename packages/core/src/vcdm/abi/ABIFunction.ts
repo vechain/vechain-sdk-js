@@ -1,14 +1,11 @@
 import { InvalidAbiDataToEncodeOrDecode } from '@vechain/sdk-errors';
 import {
-    type AbiFunction,
     decodeFunctionData,
     type DecodeFunctionDataReturnType,
     decodeFunctionResult,
     type DecodeFunctionResultReturnType,
     encodeFunctionData,
     type EncodeFunctionDataReturnType,
-    parseAbiItem,
-    toFunctionSignature,
     type Abi as ViemABI,
     type Hex as ViemHex
 } from 'viem';
@@ -21,17 +18,7 @@ import { ABI } from './ABI';
  */
 class ABIFunction extends ABI {
     public constructor(signature: string | ViemABI) {
-        if (typeof signature === 'string') {
-            super(undefined, undefined, signature);
-            this.abiRepresentation = parseAbiItem([signature]);
-        } else {
-            super(
-                undefined,
-                undefined,
-                toFunctionSignature(signature as unknown as AbiFunction)
-            );
-            this.abiRepresentation = signature;
-        }
+        super(undefined, undefined, signature);
     }
 
     /**
@@ -44,7 +31,7 @@ class ABIFunction extends ABI {
     public decodeData(data: Hex): DecodeFunctionDataReturnType {
         try {
             return decodeFunctionData({
-                abi: this.abiRepresentation as ViemABI,
+                abi: this.signature,
                 data: data.toString() as ViemHex
             });
         } catch (error) {
@@ -69,7 +56,7 @@ class ABIFunction extends ABI {
     ): EncodeFunctionDataReturnType {
         try {
             return encodeFunctionData({
-                abi: this.abiRepresentation as ViemABI,
+                abi: this.signature,
                 args: dataToEncode
             });
         } catch (e) {
@@ -99,7 +86,7 @@ class ABIFunction extends ABI {
     public decodeResult(data: Hex): DecodeFunctionResultReturnType {
         try {
             return decodeFunctionResult({
-                abi: this.abiRepresentation as ViemABI,
+                abi: this.signature,
                 data: data.toString() as ViemHex
             });
         } catch (error) {

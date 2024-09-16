@@ -361,8 +361,6 @@ describe('Abi - Function & Event', () => {
                         expect(myEvent.signature('sighash')).toBeDefined();
                         expect(myEvent.signature('json')).toBeDefined();
 
-                        console.log('LLEGA3', myEvent);
-
                         // Verify signature hash
                         expect(myEvent.signatureHash()).toBe(
                             eventFormat.signatureHash

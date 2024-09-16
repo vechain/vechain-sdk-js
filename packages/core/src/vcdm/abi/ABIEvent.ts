@@ -1,11 +1,8 @@
 import { InvalidAbiDataToEncodeOrDecode } from '@vechain/sdk-errors';
 import {
-    type AbiEvent,
     type DecodeEventLogReturnType,
     encodeEventTopics,
     type EncodeEventTopicsReturnType,
-    parseAbiItem,
-    toEventSignature,
     type Abi as ViemABI,
     decodeEventLog as viemDecodeEventLog,
     type Hex as ViemHex
@@ -22,17 +19,7 @@ type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
  */
 class ABIEvent extends ABI {
     public constructor(signature: string | ViemABI) {
-        if (typeof signature === 'string') {
-            super(undefined, undefined, signature);
-            this.abiRepresentation = parseAbiItem([signature]);
-        } else {
-            super(
-                undefined,
-                undefined,
-                toEventSignature(signature as unknown as AbiEvent)
-            );
-            this.abiRepresentation = signature;
-        }
+        super(undefined, undefined, signature);
     }
 
     /**
@@ -48,7 +35,7 @@ class ABIEvent extends ABI {
     }): DecodeEventLogReturnType {
         try {
             return viemDecodeEventLog({
-                abi: [this.abiRepresentation],
+                abi: [this.signature],
                 data: event.data.toString() as ViemHex,
                 topics: event.topics.map((topic) => topic.toString()) as Topics
             });
@@ -77,7 +64,7 @@ class ABIEvent extends ABI {
     ): EncodeEventTopicsReturnType {
         try {
             return encodeEventTopics({
-                abi: this.abiRepresentation as ViemABI,
+                abi: this.signature,
                 args: valuesToEncode
             });
         } catch (e) {
@@ -111,7 +98,7 @@ class Event<ABIType> {
     }
 
     public signature(_formatType: FormatType): string {
-        return this.event.signature;
+        return this.event.stringSignature;
     }
 
     public decodeEventLog(data: { data: string; topics: string[] }): Result {

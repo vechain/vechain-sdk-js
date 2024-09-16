@@ -6,8 +6,12 @@ import { ParamType } from 'ethers';
 import {
     decodeAbiParameters,
     encodeAbiParameters,
+    parseAbiItem,
     parseAbiParameters,
     toFunctionHash,
+    toFunctionSignature,
+    type AbiEvent,
+    type AbiFunction,
     type AbiParameter,
     type Abi as ViemABI
 } from 'viem';
@@ -22,9 +26,8 @@ import { type VeChainDataModel } from '../VeChainDataModel';
 class ABI implements VeChainDataModel<ABI> {
     private readonly types: readonly AbiParameter[];
     private readonly values: unknown[];
-    // TODO: It should be a single element, see how it can be parsed to string
-    protected abiRepresentation?: ViemABI;
-    public readonly signature: string;
+    protected readonly signature: ViemABI;
+    public readonly stringSignature: string = '';
     /**
      * ABI constructor from types, values or signature.
      *
@@ -35,12 +38,27 @@ class ABI implements VeChainDataModel<ABI> {
     public constructor(
         types: string | AbiParameter[] = [],
         values: unknown[] = [],
-        signature: string = ''
+        signature: string | ViemABI = ''
     ) {
         this.types =
             typeof types === 'string' ? parseAbiParameters(types) : types;
         this.values = values;
-        this.signature = signature;
+        switch (typeof signature) {
+            case 'string':
+                this.stringSignature = signature;
+                break;
+            case 'object':
+                this.stringSignature = toFunctionSignature(
+                    signature as unknown as AbiFunction | AbiEvent
+                );
+                break;
+            default:
+                this.stringSignature = '';
+        }
+        this.signature =
+            signature !== '' && typeof signature === 'string'
+                ? parseAbiItem([signature])
+                : (signature as ViemABI);
     }
 
     /**
@@ -49,7 +67,7 @@ class ABI implements VeChainDataModel<ABI> {
      * @remarks Wrapper for {@link toFunctionHash}.
      **/
     public get signatureHash(): string {
-        return toFunctionHash(this.signature ?? this.abiRepresentation);
+        return toFunctionHash(this.stringSignature);
     }
 
     /**
@@ -71,7 +89,7 @@ class ABI implements VeChainDataModel<ABI> {
             }
         });
         // We do not check abiRepresentation because it is generated from the signature.
-        return this.signature.localeCompare(that.signature);
+        return this.stringSignature.localeCompare(that.stringSignature);
     }
 
     /**
