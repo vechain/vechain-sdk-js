@@ -1,5 +1,4 @@
-import { type ThorClient } from '../../../../../../thor-client';
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Method engine_newPayloadV1 implementation
@@ -10,25 +9,16 @@ import { FunctionNotImplemented } from '@vechain/sdk-errors';
  * * params[0]: ...
  * * params[1]: ...
  * * params[n]: ...
- * @throws {FunctionNotImplemented}
  */
-const engineNewPayloadV1 = async (
-    thorClient: ThorClient,
-    params: unknown[]
-): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
-
+const engineNewPayloadV1 = async (): Promise<'METHOD NOT IMPLEMENTED'> => {
     // Not implemented yet
-    throw new FunctionNotImplemented(
-        'engine_newPayloadV1',
-        'Method "engine_newPayloadV1" has not been implemented yet.',
-        {
-            functionName: 'engine_newPayloadV1',
-            thorClient,
-            params
-        }
-    );
+    VeChainSDKLogger('warning').log({
+        title: 'engine_newPayloadV1',
+        messages: ['Method "engine_newPayloadV1" has not been implemented yet.']
+    });
+
+    // To avoid eslint error
+    return await Promise.resolve('METHOD NOT IMPLEMENTED');
 };
 
 export { engineNewPayloadV1 };

@@ -1,5 +1,4 @@
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
-import { type ThorClient } from '../../../../../../thor-client';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Method debug_getRawReceipts implementation
@@ -10,25 +9,18 @@ import { type ThorClient } from '../../../../../../thor-client';
  * * params[0]: ...
  * * params[1]: ...
  * * params[n]: ...
- * @throws {FunctionNotImplemented}
  */
-const debugGetRawReceipts = async (
-    thorClient: ThorClient,
-    params: unknown[]
-): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
-
+const debugGetRawReceipts = async (): Promise<'METHOD NOT IMPLEMENTED'> => {
     // Not implemented yet
-    throw new FunctionNotImplemented(
-        'debug_getRawReceipts',
-        'Method "debug_getRawReceipts" has not been implemented yet.',
-        {
-            functionName: 'debug_getRawReceipts',
-            thorClient,
-            params
-        }
-    );
+    VeChainSDKLogger('warning').log({
+        title: 'debug_getRawReceipts',
+        messages: [
+            'Method "debug_getRawReceipts" has not been implemented yet.'
+        ]
+    });
+
+    // To avoid eslint error
+    return await Promise.resolve('METHOD NOT IMPLEMENTED');
 };
 
 export { debugGetRawReceipts };

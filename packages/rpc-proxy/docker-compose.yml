@@ -1,0 +1,33 @@
+services:
+  thor-solo:
+    container_name: thor-solo
+    image: ${THOR_IMAGE:-ghcr.io/vechain/thor:master-latest}
+    ports:
+      - "8669:8669"
+    command:
+      - solo
+      - --genesis=/node/config/genesis.json
+      - --on-demand
+      - --api-addr=0.0.0.0:8669
+      - --api-cors=*
+      - --txpool-limit-per-account=256
+      - --cache=1024
+      - --verbosity=9
+      - --persist
+    volumes:
+      - type: bind
+        source: ./config
+        target: /node/config
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+          memory: 2048M
+
+  rpc-proxy:
+    build: .
+    container_name: rpc-proxy
+    depends_on:
+      - thor-solo
+    ports:
+      - "8545:8545"

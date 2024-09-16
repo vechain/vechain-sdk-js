@@ -1,5 +1,4 @@
-import { type ThorClient } from '../../../../../../thor-client';
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Method eth_hashrate implementation
@@ -10,25 +9,16 @@ import { FunctionNotImplemented } from '@vechain/sdk-errors';
  * * params[0]: ...
  * * params[1]: ...
  * * params[n]: ...
- * @throws {FunctionNotImplemented}
  */
-const ethHashrate = async (
-    thorClient: ThorClient,
-    params: unknown[]
-): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
-
+const ethHashrate = async (): Promise<'METHOD NOT IMPLEMENTED'> => {
     // Not implemented yet
-    throw new FunctionNotImplemented(
-        'ethHashrate',
-        'Method "ethHashrate" has not been implemented yet.',
-        {
-            functionName: 'ethHashrate',
-            thorClient,
-            params
-        }
-    );
+    VeChainSDKLogger('warning').log({
+        title: 'eth_hashrate',
+        messages: ['Method "eth_hashrate" has not been implemented yet.']
+    });
+
+    // To avoid eslint error
+    return await Promise.resolve('METHOD NOT IMPLEMENTED');
 };
 
 export { ethHashrate };

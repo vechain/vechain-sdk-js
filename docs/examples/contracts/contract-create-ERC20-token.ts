@@ -6,7 +6,7 @@ import {
     VeChainProvider,
     type VeChainSigner
 } from '@vechain/sdk-network';
-import { ERC20_ABI, unitsUtils } from '@vechain/sdk-core';
+import { ERC20_ABI, Units } from '@vechain/sdk-core';
 import { expect } from 'expect';
 
 // ERC20 contract bytecode
@@ -54,8 +54,9 @@ expect(receipt.reverted).toEqual(false);
 
 const balance = await contract.read.balanceOf(deployerAccount.address);
 
-// Asserting that the initial balance of the deployer is the expected amount (1e24)
-expect(balance).toEqual([unitsUtils.parseUnits('1', 24)]);
+const expectedBalance = Units.parseUnits('1000000', Units.ether).bi;
+// Asserting that the initial balance of the deployer is the expected amount (1e24 wei = 1e6 ether)
+expect(balance).toEqual([expectedBalance]);
 
 // END_SNIPPET: CreateERC20TokenSnippet
 
@@ -70,7 +71,7 @@ const multipleClausesResult =
         contract.clause.decimals()
     ]);
 
-expect(multipleClausesResult[0]).toEqual([unitsUtils.parseUnits('1', 24)]);
+expect(multipleClausesResult[0]).toEqual([expectedBalance]);
 expect(multipleClausesResult[1]).toEqual(['SampleToken']);
 expect(multipleClausesResult[2]).toEqual(['ST']);
 expect(multipleClausesResult[3]).toEqual([18n]);

@@ -1,11 +1,11 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     RPCMethodsMap,
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Mapper integration tests for 'engine_exchangeCapabilities' method
@@ -34,31 +34,15 @@ describe('RPC Mapper - engine_exchangeCapabilities method tests', () => {
          * Positive case 1 - ... Description ...
          */
         test('engine_exchangeCapabilities - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.engine_exchangeCapabilities
-                    ]([-1])
-            ).rejects.toThrowError(FunctionNotImplemented);
-        });
-    });
+            const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
 
-    /**
-     * engine_exchangeCapabilities RPC call tests - Negative cases
-     */
-    describe('engine_exchangeCapabilities - Negative cases', () => {
-        /**
-         * Negative case 1 - ... Description ...
-         */
-        test('engine_exchangeCapabilities - negative case 1', async () => {
             // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.engine_exchangeCapabilities
-                    ](['SOME_RANDOM_PARAM'])
-            ).rejects.toThrowError(FunctionNotImplemented);
+            await RPCMethodsMap(thorClient)[
+                RPC_METHODS.engine_exchangeCapabilities
+            ]([-1]);
+
+            expect(logSpy).toHaveBeenCalled();
+            logSpy.mockRestore();
         });
     });
 });

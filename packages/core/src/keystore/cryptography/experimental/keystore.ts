@@ -3,13 +3,13 @@
  * [JSON Keystore v3 Wallet](https://ethereum.org/en/developers/docs/data-structures-and-encoding/web3-secret-storage)
  * encryption, decryption, and validation functionality.
  */
-import { ctr } from '@noble/ciphers/aes';
 import * as n_utils from '@noble/curves/abstract/utils';
-import { scrypt } from '@noble/hashes/scrypt';
-import { InvalidKeystoreParams, stringifyData } from '@vechain/sdk-errors';
-import { Keccak256 } from '../../../hash';
-import { secp256k1 } from '../../../secp256k1';
 import { Address, Hex } from '../../../vcdm';
+import { InvalidKeystoreParams, stringifyData } from '@vechain/sdk-errors';
+import { Keccak256 } from '../../../vcdm/hash/Keccak256';
+import { Secp256k1 } from '../../../secp256k1';
+import { ctr } from '@noble/ciphers/aes';
+import { scrypt } from '@noble/hashes/scrypt';
 import { type Keystore, type KeystoreAccount } from '../../types';
 
 /**
@@ -194,7 +194,7 @@ function decodeScryptParams(keystore: Keystore): ScryptParams {
 function encodeScryptParams(options: EncryptOptions): ScryptParams {
     // Use or generate the salt.
     const salt =
-        options.salt ?? secp256k1.randomBytes(KEYSTORE_CRYPTO_PARAMS_DKLEN);
+        options.salt ?? Secp256k1.randomBytes(KEYSTORE_CRYPTO_PARAMS_DKLEN);
     // Override the scrypt password-based key derivation function parameters,
     let N = SCRYPT_PARAMS.N;
     let r = SCRYPT_PARAMS.r;
@@ -310,8 +310,8 @@ function encrypt(privateKey: Uint8Array, password: Uint8Array): Keystore {
  * - {@link Keccak256.of}
  * - `password` wiped after use.
  * - `privateKey` wiped after use.
- * - {@link secp256k1.derivePublicKey}.
- * - {@link secp256k1.randomBytes}.
+ * - {@link Secp256k1.derivePublicKey}.
+ * - {@link Secp256k1.randomBytes}.
  * - [scrypt](https://github.com/paulmillr/noble-hashes/?tab=readme-ov-file#scrypt).
  *
  * @param privateKey - The private key to encrypt, the memory location is wiped after use.
@@ -341,7 +341,7 @@ function encryptKeystore(
             dkLen: kdf.dkLen
         });
         // Override initialization vector.
-        const iv = options.iv ?? secp256k1.randomBytes(16);
+        const iv = options.iv ?? Secp256k1.randomBytes(16);
         if (iv.length !== 16)
             throw new InvalidKeystoreParams(
                 '(EXPERIMENTAL) keystore.encryptKeystore()',
@@ -350,7 +350,7 @@ function encryptKeystore(
             );
 
         // Override the uuid.
-        const uuidRandom = options.uuid ?? secp256k1.randomBytes(16);
+        const uuidRandom = options.uuid ?? Secp256k1.randomBytes(16);
 
         if (uuidRandom.length !== 16)
             throw new InvalidKeystoreParams(

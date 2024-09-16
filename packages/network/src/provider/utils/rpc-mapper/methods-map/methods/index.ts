@@ -17,6 +17,7 @@ export * from './eth_getTransactionReceipt';
 export * from './eth_sendTransaction';
 export * from './eth_syncing';
 export * from './web3_clientVersion';
+export * from './web3_sha3';
 export * from './eth_subscribe';
 export * from './eth_unsubscribe';
 export * from './debug_traceTransaction';

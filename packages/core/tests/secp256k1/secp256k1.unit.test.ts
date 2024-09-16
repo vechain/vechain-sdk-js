@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { secp256k1, ZERO_BYTES } from '../../src';
+import { Secp256k1, ZERO_BYTES } from '../../src';
 import {
     invalidMessageHashes,
     messageHashBuffer,
@@ -18,114 +18,114 @@ import {
 
 /**
  * Secp256k1 tests
- * @group unit/secp256k1
+ * @group unit/Secp256k1
  */
-describe('secp256k1', () => {
-    describe('secp256k1 - compressPublicKey', () => {
-        test('secp256k1 - compressPublicKey - from compressed', () => {
+describe('Secp256k1 class tests', () => {
+    describe('Secp256k1 - compressPublicKey', () => {
+        test('Secp256k1 - compressPublicKey - from compressed', () => {
             expect(
-                secp256k1.compressPublicKey(publicKeyCompressed)
+                Secp256k1.compressPublicKey(publicKeyCompressed)
             ).toStrictEqual(publicKeyCompressed);
         });
 
-        test('secp256k1 - compressPublicKey - from uncompressed', () => {
+        test('Secp256k1 - compressPublicKey - from uncompressed', () => {
             expect(
-                secp256k1.compressPublicKey(publicKeyUncompressed)
+                Secp256k1.compressPublicKey(publicKeyUncompressed)
             ).toStrictEqual(publicKeyCompressed);
         });
     });
 
-    describe('secp256k1 - derivePublicKey', () => {
-        test('secp256k1 - derivePublicKey - compressed', () => {
-            expect(secp256k1.derivePublicKey(privateKey)).toStrictEqual(
-                secp256k1.compressPublicKey(publicKeyUncompressed)
+    describe('Secp256k1 - derivePublicKey', () => {
+        test('Secp256k1 - derivePublicKey - compressed', () => {
+            expect(Secp256k1.derivePublicKey(privateKey)).toStrictEqual(
+                Secp256k1.compressPublicKey(publicKeyUncompressed)
             );
         });
 
-        test('secp256k1 - derivePublicKey - uncompressed', () => {
-            expect(secp256k1.derivePublicKey(privateKey, false)).toStrictEqual(
+        test('Secp256k1 - derivePublicKey - uncompressed', () => {
+            expect(Secp256k1.derivePublicKey(privateKey, false)).toStrictEqual(
                 publicKeyUncompressed
             );
         });
 
-        test('secp256k1 - derivePublicKey - error', () => {
+        test('Secp256k1 - derivePublicKey - error', () => {
             expect(() =>
-                secp256k1.derivePublicKey(ZERO_BYTES(32))
+                Secp256k1.derivePublicKey(ZERO_BYTES(32))
             ).toThrowError(InvalidSecp256k1PrivateKey);
         });
     });
 
-    describe('secp256k1 - generatePublicKey', () => {
-        test('secp256k1 - generatePrivateKey', async () => {
-            const randomPrivateKey = await secp256k1.generatePrivateKey();
+    describe('Secp256k1 - generatePublicKey', () => {
+        test('Secp256k1 - generatePrivateKey', async () => {
+            const randomPrivateKey = await Secp256k1.generatePrivateKey();
             // Length of private key should be 32 bytes
             expect(randomPrivateKey.length).toBe(32);
             // Private key should be valid
-            expect(secp256k1.isValidPrivateKey(randomPrivateKey)).toBe(true);
+            expect(Secp256k1.isValidPrivateKey(randomPrivateKey)).toBe(true);
         });
     });
 
-    describe('secp256k1 - inflatePublicKey', () => {
-        test('secp256k1 - inflatePublicKey - compressed', () => {
+    describe('Secp256k1 - inflatePublicKey', () => {
+        test('Secp256k1 - inflatePublicKey - compressed', () => {
             expect(
-                secp256k1.inflatePublicKey(publicKeyCompressed)
+                Secp256k1.inflatePublicKey(publicKeyCompressed)
             ).toStrictEqual(publicKeyUncompressed);
         });
 
-        test('secp256k1 - inflatePublicKey - uncompressed', () => {
+        test('Secp256k1 - inflatePublicKey - uncompressed', () => {
             expect(
-                secp256k1.inflatePublicKey(publicKeyUncompressed)
+                Secp256k1.inflatePublicKey(publicKeyUncompressed)
             ).toStrictEqual(publicKeyUncompressed);
         });
     });
 
-    describe('secp256k1 - isValidMessageHash', () => {
-        test('secp256k1 - isValidMessageHash - true', () => {
+    describe('Secp256k1 - isValidMessageHash', () => {
+        test('Secp256k1 - isValidMessageHash - true', () => {
             validMessageHashes.forEach((messageHash: Uint8Array) => {
-                expect(secp256k1.isValidMessageHash(messageHash)).toBe(true);
+                expect(Secp256k1.isValidMessageHash(messageHash)).toBe(true);
             });
         });
 
-        test('secp256k1 - isValidMessageHash - false', () => {
+        test('Secp256k1 - isValidMessageHash - false', () => {
             invalidMessageHashes.forEach((messageHash: Uint8Array) => {
-                expect(secp256k1.isValidMessageHash(messageHash)).toBe(false);
+                expect(Secp256k1.isValidMessageHash(messageHash)).toBe(false);
             });
         });
     });
 
-    describe('secp256k1 - isValidPrivateKey', () => {
-        test('secp256k1 - isValidPrivateKey - true', () => {
+    describe('Secp256k1 - isValidPrivateKey', () => {
+        test('Secp256k1 - isValidPrivateKey - true', () => {
             validPrivateKeys.forEach((privateKey: Uint8Array) => {
-                expect(secp256k1.isValidPrivateKey(privateKey)).toBe(true);
+                expect(Secp256k1.isValidPrivateKey(privateKey)).toBe(true);
             });
         });
 
-        test('secp256k1 - isValidPrivateKey - false', () => {
+        test('Secp256k1 - isValidPrivateKey - false', () => {
             validPrivateKeys.forEach((privateKey: Uint8Array) => {
-                expect(secp256k1.isValidPrivateKey(privateKey)).toBe(true);
+                expect(Secp256k1.isValidPrivateKey(privateKey)).toBe(true);
             });
         });
     });
 
-    describe('secp256k1 - sign', () => {
-        test('secp256k1 - sign - success', () => {
-            expect(secp256k1.sign(messageHashBuffer, privateKey)).toStrictEqual(
+    describe('Secp256k1 - sign', () => {
+        test('Secp256k1 - sign - success', () => {
+            expect(Secp256k1.sign(messageHashBuffer, privateKey)).toStrictEqual(
                 signature
             );
         });
 
-        test('secp256k1 - sign - failure - invalid message hash', () => {
+        test('Secp256k1 - sign - failure - invalid message hash', () => {
             expect(() =>
-                secp256k1.sign(
+                Secp256k1.sign(
                     Buffer.from('some_invalid_stuff', 'hex'),
                     privateKey
                 )
             ).toThrowError(InvalidSecp256k1MessageHash);
         });
 
-        test('secp256k1 - sign - failure - invalid private key', () => {
+        test('Secp256k1 - sign - failure - invalid private key', () => {
             expect(() =>
-                secp256k1.sign(
+                Secp256k1.sign(
                     messageHashBuffer,
                     Buffer.from(
                         'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
@@ -136,54 +136,54 @@ describe('secp256k1', () => {
         });
     });
 
-    describe('secp256k1 - randomBytes', () => {
-        test('secp256k1 - randomBytes - without parameters', () => {
-            const result = secp256k1.randomBytes();
+    describe('Secp256k1 - randomBytes', () => {
+        test('Secp256k1 - randomBytes - without parameters', () => {
+            const result = Secp256k1.randomBytes();
             expect(result.length).toBeGreaterThan(0);
         });
 
-        test('secp256k1 - randomBytes - with param', () => {
-            const result = secp256k1.randomBytes(16);
+        test('Secp256k1 - randomBytes - with param', () => {
+            const result = Secp256k1.randomBytes(16);
             expect(result.length).toBe(16);
         });
 
-        test('secp256k1 - randomBytes - with param', () => {
-            expect(() => secp256k1.randomBytes(28)).toBeDefined();
+        test('Secp256k1 - randomBytes - with param', () => {
+            expect(() => Secp256k1.randomBytes(28)).toBeDefined();
         });
     });
 
-    describe('secp256k1 - recover', () => {
-        test('secp256k1 - recover - success', () => {
+    describe('Secp256k1 - recover', () => {
+        test('Secp256k1 - recover - success', () => {
             expect(
-                secp256k1.recover(messageHashBuffer, signature)
+                Secp256k1.recover(messageHashBuffer, signature)
             ).toStrictEqual(publicKeyUncompressed);
         });
 
-        test('secp256k1 - recover - invalid message hash', () => {
+        test('Secp256k1 - recover - invalid message hash', () => {
             expect(() =>
-                secp256k1.recover(
+                Secp256k1.recover(
                     Buffer.from('some_invalid_stuff', 'hex'),
                     signature
                 )
             ).toThrowError(InvalidSecp256k1MessageHash);
         });
 
-        test('secp256k1 - recover - invalid signature', () => {
+        test('Secp256k1 - recover - invalid signature', () => {
             // Invalid signature
             expect(() =>
-                secp256k1.recover(
+                Secp256k1.recover(
                     messageHashBuffer,
                     Buffer.from('some_invalid_stuff', 'hex')
                 )
             ).toThrowError(InvalidSecp256k1Signature);
         });
 
-        test('secp256k1 - recover - failure', () => {
+        test('Secp256k1 - recover - failure', () => {
             // Invalid signature recovery
             const invalidSignatureRecovery = new Uint8Array(signature);
             invalidSignatureRecovery[64] = 8;
             expect(() =>
-                secp256k1.recover(
+                Secp256k1.recover(
                     messageHashBuffer,
                     Buffer.from(invalidSignatureRecovery)
                 )

@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     RPCMethodsMap,
@@ -31,34 +30,13 @@ describe('RPC Mapper - net_listening method tests', () => {
      */
     describe('net_listening - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Should be able to gety if the node is listening
          */
-        test('net_listening - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.net_listening]([
-                        -1
-                    ])
-            ).rejects.toThrowError(FunctionNotImplemented);
-        });
-    });
-
-    /**
-     * net_listening RPC call tests - Negative cases
-     */
-    describe('net_listening - Negative cases', () => {
-        /**
-         * Negative case 1 - ... Description ...
-         */
-        test('net_listening - negative case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.net_listening]([
-                        'SOME_RANDOM_PARAM'
-                    ])
-            ).rejects.toThrowError(FunctionNotImplemented);
+        test('Should be able to get if the node is listening', async () => {
+            const peers = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.net_listening
+            ]([]);
+            expect(peers).toBeDefined();
         });
     });
 });

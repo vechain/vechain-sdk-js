@@ -3,7 +3,7 @@ import {
     Address,
     Blake2b256,
     certificate,
-    secp256k1,
+    Secp256k1,
     type Certificate
 } from '@vechain/sdk-core';
 
@@ -11,8 +11,8 @@ import {
 
 // 1 - Generate a private key and address for the signer
 
-const privateKey = await secp256k1.generatePrivateKey();
-const publicKey = secp256k1.derivePublicKey(privateKey);
+const privateKey = await Secp256k1.generatePrivateKey();
+const publicKey = Secp256k1.derivePublicKey(privateKey);
 const signerAddress = Address.ofPublicKey(Buffer.from(publicKey)).toString();
 
 // 2 - Create a certificate
@@ -31,7 +31,7 @@ const cert: Certificate = {
 // 3 - Sign certificate
 
 const jsonStr = certificate.encode(cert);
-const signature = secp256k1.sign(Blake2b256.of(jsonStr).bytes, privateKey);
+const signature = Secp256k1.sign(Blake2b256.of(jsonStr).bytes, privateKey);
 
 // Add 0x to signature
 cert.signature = Hex.of(signature).toString();

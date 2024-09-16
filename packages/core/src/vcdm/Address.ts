@@ -1,14 +1,14 @@
-import {
-    InvalidDataType,
-    InvalidHDNode,
-    InvalidSecp256k1PrivateKey
-} from '@vechain/sdk-errors';
-import { Keccak256 } from '../hash';
-import { HDNode } from '../hdnode';
-import { secp256k1 } from '../secp256k1';
+import { Keccak256 } from './hash/Keccak256';
+import { HDKey } from '../hdkey';
 import { Hex } from './Hex';
 import { HexUInt } from './HexUInt';
+import { Secp256k1 } from '../secp256k1';
 import { Txt } from './Txt';
+import {
+    InvalidDataType,
+    InvalidHDKey,
+    InvalidSecp256k1PrivateKey
+} from '@vechain/sdk-errors';
 
 /**
  * Represents a VeChain Address as unsigned integer.
@@ -95,7 +95,7 @@ class Address extends HexUInt {
      * @returns {Address} The converted address.
      *
      * @remarks Security auditable method, depends on
-     * * {@link secp256k1.derivePublicKey}.
+     * * {@link Secp256k1.derivePublicKey}.
      */
     public static ofPrivateKey(
         privateKey: Uint8Array,
@@ -103,7 +103,7 @@ class Address extends HexUInt {
     ): Address {
         try {
             return Address.ofPublicKey(
-                secp256k1.derivePublicKey(privateKey, isCompressed)
+                Secp256k1.derivePublicKey(privateKey, isCompressed)
             );
         } catch (error) {
             if (error instanceof InvalidSecp256k1PrivateKey) {
@@ -126,11 +126,11 @@ class Address extends HexUInt {
      * @returns {Address} The converted address.
      *
      * @remarks Security auditable method, depends on
-     * * {@link secp256k1.inflatePublicKey}.
+     * * {@link Secp256k1.inflatePublicKey}.
      */
     public static ofPublicKey(publicKey: Uint8Array): Address {
         try {
-            const publicKeyInflated = secp256k1.inflatePublicKey(publicKey);
+            const publicKeyInflated = Secp256k1.inflatePublicKey(publicKey);
             const publicKeyHash = Keccak256.of(
                 publicKeyInflated.slice(1)
             ).bytes;
@@ -153,7 +153,7 @@ class Address extends HexUInt {
      *
      * Secure audit function.
      * - {@link bip32.HDKey}(https://github.com/paulmillr/scure-bip32)
-     * - {@link HDNode}
+     * - {@link HDKey}
      *
      * @example `m/0` (default)
      * @example `m/0/2`
@@ -162,21 +162,21 @@ class Address extends HexUInt {
      * @param {string[]} mnemonic - Mnemonic used to generate the HD node.
      * @param {string} [path='m/0'] - The derivation path from the current node.
      * @return {Address} - The derived address.
-     * @throws {InvalidHDNode}
+     * @throws {InvalidHDKey}
      *
      */
     public static ofMnemonic(
         mnemonic: string[],
         path: string = 'm/0'
     ): Address {
-        const root = HDNode.fromMnemonic(mnemonic);
+        const root = HDKey.fromMnemonic(mnemonic);
         try {
             // Public key is always available.
             return Address.ofPublicKey(
                 root.derive(path).publicKey as Uint8Array
             );
         } catch (error) {
-            throw new InvalidHDNode(
+            throw new InvalidHDKey(
                 'mnemonic.deriveAddress()',
                 'Invalid derivation path given as input.',
                 { derivationPath: path },

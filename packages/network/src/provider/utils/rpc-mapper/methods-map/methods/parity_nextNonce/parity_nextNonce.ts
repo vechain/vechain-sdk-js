@@ -1,5 +1,4 @@
-import { type ThorClient } from '../../../../../../thor-client';
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Method parity_nextNonce implementation
@@ -10,25 +9,16 @@ import { FunctionNotImplemented } from '@vechain/sdk-errors';
  * * params[0]: ...
  * * params[1]: ...
  * * params[n]: ...
- * @throws {FunctionNotImplemented}
  */
-const parityNextNonce = async (
-    thorClient: ThorClient,
-    params: unknown[]
-): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
-
+const parityNextNonce = async (): Promise<'METHOD NOT IMPLEMENTED'> => {
     // Not implemented yet
-    throw new FunctionNotImplemented(
-        'parity_nextNonce',
-        'Method "parity_nextNonce" has not been implemented yet.',
-        {
-            functionName: 'parity_nextNonce',
-            thorClient,
-            params
-        }
-    );
+    VeChainSDKLogger('warning').log({
+        title: 'parity_nextNonce',
+        messages: ['Method "parity_nextNonce" has not been implemented yet.']
+    });
+
+    // To avoid eslint error
+    return await Promise.resolve('METHOD NOT IMPLEMENTED');
 };
 
 export { parityNextNonce };

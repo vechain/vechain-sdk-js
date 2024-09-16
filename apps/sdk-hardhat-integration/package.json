@@ -1,7 +1,7 @@
 {
   "name": "vechain-sdk-hardhat-integration",
   "description": "An example app of how to use the vechain-sdk-hardhat-plugin to interact with the VeChainThor blockchain",
-  "version": "1.0.0-beta.30",
+  "version": "1.0.0-beta.31",
   "main": "index.js",
   "author": "vechain Foundation",
   "keywords": [],
@@ -17,17 +17,17 @@
     "interact-erc721": "npx hardhat run scripts/erc721/interact.ts --network vechain_testnet"
   },
   "dependencies": {
-    "@vechain/sdk-core": "1.0.0-beta.30",
-    "@vechain/sdk-hardhat-plugin": "1.0.0-beta.30",
-    "@vechain/sdk-logging": "1.0.0-beta.30",
-    "@openzeppelin/contracts": "^5.0.2"
+    "@openzeppelin/contracts": "^5.0.2",
+    "@vechain/sdk-core": "1.0.0-beta.31",
+    "@vechain/sdk-hardhat-plugin": "1.0.0-beta.31",
+    "@vechain/sdk-logging": "1.0.0-beta.31"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
-    "@nomicfoundation/hardhat-ethers": "^3.0.0",
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
     "@nomicfoundation/hardhat-network-helpers": "^1.0.0",
     "@nomicfoundation/hardhat-toolbox": "^4.0.0",
-    "@nomicfoundation/hardhat-verify": "^2.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.10",
     "@typechain/ethers-v6": "^0.5.0",
     "@typechain/hardhat": "^9.0.0",
     "@types/chai": "^4.2.0",

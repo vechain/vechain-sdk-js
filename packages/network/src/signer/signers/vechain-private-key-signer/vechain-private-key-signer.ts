@@ -4,12 +4,12 @@ import {
     Hex,
     HexUInt,
     Keccak256,
+    Secp256k1,
     Transaction,
+    type TransactionBody,
     TransactionHandler,
     Txt,
-    secp256k1,
-    vechain_sdk_core_ethers,
-    type TransactionBody
+    vechain_sdk_core_ethers
 } from '@vechain/sdk-core';
 import {
     InvalidSecp256k1PrivateKey,
@@ -47,10 +47,10 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         provider: AvailableVeChainProviders | null
     ) {
         // Assert if the transaction can be signed
-        if (!secp256k1.isValidPrivateKey(privateKey)) {
+        if (!Secp256k1.isValidPrivateKey(privateKey)) {
             throw new InvalidSecp256k1PrivateKey(
                 `VeChainPrivateKeySigner.constructor()`,
-                "Invalid private key used to sign initialize the signer. Ensure it's a valid secp256k1 private key.",
+                "Invalid private key used to sign initialize the signer. Ensure it's a valid Secp256k1 private key.",
                 undefined
             );
         }
@@ -114,10 +114,6 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
     }
 
     /**
-     * --- START: TEMPORARY COMMENT ---
-     * Probably add in the future with vechain_sdk_core_ethers.TransactionRequest as a return type
-     * --- END: TEMPORARY COMMENT ---
-     *
      *  Sends %%transactionToSend%% to the Network. The ``signer.populateTransaction(transactionToSend)``
      *  is called first to ensure all necessary properties for the
      *  transaction to be valid have been populated first.
@@ -169,7 +165,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                     typeof message === 'string'
                         ? Txt.of(message).bytes
                         : message;
-                const sign = secp256k1.sign(
+                const sign = Secp256k1.sign(
                     Keccak256.of(
                         n_utils.concatBytes(
                             this.MESSAGE_PREFIX,
@@ -214,7 +210,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                         value
                     )
                 ).bytes;
-                const sign = secp256k1.sign(
+                const sign = Secp256k1.sign(
                     hash,
                     new Uint8Array(this.privateKey)
                 );
@@ -302,7 +298,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
         );
 
         // Sign transaction with origin private key
-        const originSignature = secp256k1.sign(
+        const originSignature = Secp256k1.sign(
             unsignedTx.getSignatureHash(),
             originPrivateKey
         );

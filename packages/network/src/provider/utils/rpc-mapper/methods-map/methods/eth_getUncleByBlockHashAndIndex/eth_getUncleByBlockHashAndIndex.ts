@@ -1,5 +1,4 @@
-import { type ThorClient } from '../../../../../../thor-client';
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
+import { VeChainSDKLogger } from '@vechain/sdk-logging';
 
 /**
  * RPC Method eth_getUncleByBlockHashAndIndex implementation
@@ -10,25 +9,19 @@ import { FunctionNotImplemented } from '@vechain/sdk-errors';
  * * params[0]: ...
  * * params[1]: ...
  * * params[n]: ...
- * @throws {FunctionNotImplemented}
  */
-const ethGetUncleByBlockHashAndIndex = async (
-    thorClient: ThorClient,
-    params: unknown[]
-): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
+const ethGetUncleByBlockHashAndIndex =
+    async (): Promise<'METHOD NOT IMPLEMENTED'> => {
+        // Not implemented yet
+        VeChainSDKLogger('warning').log({
+            title: 'eth_getUncleByBlockHashAndIndex',
+            messages: [
+                'Method "eth_getUncleByBlockHashAndIndex" has not been implemented yet.'
+            ]
+        });
 
-    // Not implemented yet
-    throw new FunctionNotImplemented(
-        'eth_getUncleByBlockHashAndIndex',
-        'Method "eth_getUncleByBlockHashAndIndex" has not been implemented yet.',
-        {
-            functionName: 'eth_getUncleByBlockHashAndIndex',
-            thorClient,
-            params
-        }
-    );
-};
+        // To avoid eslint error
+        return await Promise.resolve('METHOD NOT IMPLEMENTED');
+    };
 
 export { ethGetUncleByBlockHashAndIndex };

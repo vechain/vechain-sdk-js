@@ -1,6 +1,7 @@
 import { type OptionValues } from 'commander';
 import { type Config } from '../../types';
 import { ArgsValidatorAndGetter } from '../args-validator';
+import { InvalidCommandLineArguments } from '@vechain/sdk-errors';
 
 /**
  * Parse the semantic of the arguments.
@@ -54,15 +55,44 @@ function parseAndGetFinalConfig(
             configuration.verbose = options.verbose as boolean;
         }
 
-        // ********* START: TEMPORARY COMMENT *********
-        // The below methods will be implemented in the future.
-        // ********* END: TEMPORARY COMMENT ********
+        // B.5 - Get and validate accounts field
+        configuration = ArgsValidatorAndGetter.accounts(options, configuration);
 
-        // // B.4 - Get and validate accounts field
-        // configuration = ArgsValidatorAndGetter.accounts(options, configuration);
-        //
-        // // B.5 - Get and validate mnemonic field
-        // configuration = ArgsValidatorAndGetter.mnemonic(options, configuration);
+        // B.6 - Get and validate mnemonic field
+        configuration = ArgsValidatorAndGetter.mnemonicFields(
+            options,
+            configuration
+        );
+
+        // B.7 - Enable delegation
+        if (options.enableDelegation !== undefined) {
+            configuration.enableDelegation =
+                options.enableDelegation as boolean;
+        }
+
+        // B.8 - Get and validate delegator private key field
+        configuration = ArgsValidatorAndGetter.delegation(
+            options,
+            configuration
+        );
+
+        // C - Evaluate the semantic of the arguments.
+        // NOTE: Here we know all the fields are valid. So we can check the semantics of the fields.
+
+        // Delegation cannot be enabled without a delegator
+        if (
+            (configuration.enableDelegation as boolean) &&
+            configuration.delegator === undefined
+        ) {
+            throw new InvalidCommandLineArguments(
+                '_checkIfConfigurationFileHasCorrectStructure()',
+                `Invalid configuration: Delegation cannot be enabled without a delegator`,
+                {
+                    flag: '--enableDelegation , --delegatorPrivateKey, --delegatorUrl',
+                    value: `${options.enableDelegation}, Not provided, Not provided`
+                }
+            );
+        }
     }
 
     // Return the configuration

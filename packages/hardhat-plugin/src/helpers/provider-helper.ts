@@ -5,7 +5,7 @@ import {
     type ProviderInternalWallet
 } from '@vechain/sdk-network';
 import { JSONRPCInternalError } from '@vechain/sdk-errors';
-import { Address, secp256k1 } from '@vechain/sdk-core';
+import { Address, Secp256k1 } from '@vechain/sdk-core';
 import {
     type HardhatNetworkAccountsConfig,
     type HttpNetworkAccountsConfig,
@@ -58,7 +58,7 @@ const createWalletFromHardhatNetworkConfig = (
                     return {
                         privateKey: privateKeyBuffer,
                         publicKey: Buffer.from(
-                            secp256k1.derivePublicKey(privateKeyBuffer)
+                            Secp256k1.derivePublicKey(privateKeyBuffer)
                         ),
                         address:
                             Address.ofPrivateKey(privateKeyBuffer).toString()

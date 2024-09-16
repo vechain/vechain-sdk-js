@@ -324,10 +324,6 @@ interface VeChainSigner {
     ) => Promise<string>;
 
     /**
-     * --- START: TEMPORARY COMMENT ---
-     * Probably add in the future with vechain_sdk_core_ethers.TransactionRequest as a return type
-     * --- END: TEMPORARY COMMENT ---
-     *
      *  Sends %%transactionToSend%% to the Network. The ``signer.populateTransaction(transactionToSend)``
      *  is called first to ensure all necessary properties for the
      *  transaction to be valid have been populated first.

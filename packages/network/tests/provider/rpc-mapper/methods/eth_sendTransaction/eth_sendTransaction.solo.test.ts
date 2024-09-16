@@ -19,7 +19,7 @@ import {
     JSONRPCInternalError,
     JSONRPCInvalidParams
 } from '@vechain/sdk-errors';
-import { secp256k1 } from '@vechain/sdk-core';
+import { Secp256k1 } from '@vechain/sdk-core';
 
 /**
  * RPC Mapper integration tests for 'eth_sendTransaction' method
@@ -269,7 +269,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                             'hex'
                         ),
                         publicKey: Buffer.from(
-                            secp256k1.derivePublicKey(
+                            Secp256k1.derivePublicKey(
                                 Buffer.from(
                                     THOR_SOLO_ACCOUNTS[0].privateKey,
                                     'hex'

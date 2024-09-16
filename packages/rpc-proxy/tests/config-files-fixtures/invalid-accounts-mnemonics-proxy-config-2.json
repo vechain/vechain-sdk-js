@@ -1,0 +1,10 @@
+{
+  "url": "https://testnet.vechain.org",
+  "port": 10,
+  "accounts": {
+    "mnemonic": "expire pair material agent north ostrich fortune level cousin snow mixture nurse",
+    "count": -1,
+    "initialIndex": 0
+  },
+  "enableDelegation": false
+}

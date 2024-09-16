@@ -14,7 +14,6 @@
                             "../ethers-adapter",
                             "../hardhat-plugin",
                             "../logging",
-                            "../network",
                             "../rpc-proxy"
                         ],
                         "message": "Please import using @vechain/sdk-<the-module>"

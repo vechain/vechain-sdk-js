@@ -1,5 +1,5 @@
 import {
-    secp256k1,
+    Secp256k1,
     type WordListRandomGeneratorSizeInBytes
 } from '../../../src';
 
@@ -17,8 +17,8 @@ const words =
 const customRandomGeneratorWithXor = (
     numberOfBytes: WordListRandomGeneratorSizeInBytes
 ): Uint8Array => {
-    const r1 = secp256k1.randomBytes(numberOfBytes);
-    const r2 = secp256k1.randomBytes(numberOfBytes);
+    const r1 = Secp256k1.randomBytes(numberOfBytes);
+    const r2 = Secp256k1.randomBytes(numberOfBytes);
     return r1.map((byte, index) => byte ^ r2[index]);
 };
 

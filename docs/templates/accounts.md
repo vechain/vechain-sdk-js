@@ -38,13 +38,15 @@ This hierarchy provides several advantages, including:
 
 An extended public key (xpub) is derived from an HD wallet's master public key (often referred to as an extended private key, xprv). It represents a point in the HD wallet's key derivation path from which child public keys can be derived, but not private keys. This allows for the creation of a "watch-only" wallet, where the ability to generate transactions is restricted, enhancing security.
 
-### HDNode Instance
+### HDKey Instance
 
-In the context of hierarchical deterministic wallets, an HDNode instance represents a node in the hierarchical tree structure of keys. This node can be derived from a parent node using specific derivation paths. HDNode instances encapsulate information such as the private key, public key, chain code, and index, allowing for secure and efficient key derivation.
+In the context of hierarchical deterministic wallets, an HDKey instance represents a node in the hierarchical tree structure of keys.
+This key can be derived from a parent key using specific derivation paths.
+HDKey instances encapsulate information such as the private key, public key, chain code, and index, allowing for secure and efficient key derivation.
 
 ### From Public Key
 
-Generating an HDNode instance from an extended public key (xpub) allows developers to derive child public keys for purposes such as address generation, transaction monitoring, or building hierarchical structures within the wallet. This functionality is particularly useful in scenarios where the private keys are stored securely offline, and only public keys are exposed to the network for enhanced security.
+Generating an HDKey instance from an extended public key (xpub) allows developers to derive child public keys for purposes such as address generation, transaction monitoring, or building hierarchical structures within the wallet. This functionality is particularly useful in scenarios where the private keys are stored securely offline, and only public keys are exposed to the network for enhanced security.
 
 [PubKeySnippet](examples/accounts/pubkey.ts)
 

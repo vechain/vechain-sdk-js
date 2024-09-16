@@ -1,12 +1,12 @@
 import {
     clauseBuilder,
     networkInfo,
-    secp256k1,
+    Secp256k1,
     type TransactionBody,
     type TransactionClause,
     TransactionHandler,
     TransactionUtils,
-    unitsUtils,
+    Units,
     VTHO_ADDRESS
 } from '@vechain/sdk-core';
 import { expect } from 'expect';
@@ -18,12 +18,12 @@ import { expect } from 'expect';
 const clauses: TransactionClause[] = [
     clauseBuilder.transferVET(
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        unitsUtils.parseVET('10000')
+        Units.parseEther('10000').bi
     ),
     clauseBuilder.transferToken(
         VTHO_ADDRESS,
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        unitsUtils.parseUnits('10000', 18) // 10000 VTHO
+        Units.parseUnits('10000', Units.ether).bi // 10000 VTHO, `ether` is the 10e18 magnitude in this context.
     )
 ];
 
@@ -45,7 +45,7 @@ const body: TransactionBody = {
 };
 
 // Create private key
-const privateKey = await secp256k1.generatePrivateKey();
+const privateKey = await Secp256k1.generatePrivateKey();
 
 // 4 - Sign transaction
 

@@ -1,4 +1,4 @@
-import { VET_DERIVATION_PATH } from '@vechain/sdk-core';
+import { HDKey } from '@vechain/sdk-core';
 import { JSONRPCInternalError } from '@vechain/sdk-errors';
 
 /**
@@ -91,7 +91,7 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
             accounts: {
                 mnemonic:
                     'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
-                path: VET_DERIVATION_PATH,
+                path: HDKey.VET_DERIVATION_PATH,
                 count: 2,
                 initialIndex: 0
             }
@@ -109,7 +109,7 @@ const createWalletFromHardhatNetworkConfigPositiveCasesFixture = [
             accounts: {
                 mnemonic:
                     'vivid any call mammal mosquito budget midnight expose spirit approve reject system',
-                path: VET_DERIVATION_PATH,
+                path: HDKey.VET_DERIVATION_PATH,
                 count: 2,
                 initialIndex: 0
             },

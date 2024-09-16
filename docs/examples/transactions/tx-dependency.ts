@@ -1,11 +1,11 @@
 import {
     networkInfo,
-    secp256k1,
+    Secp256k1,
     TransactionUtils,
     TransactionHandler,
     type TransactionClause,
     type TransactionBody,
-    unitsUtils,
+    Units,
     clauseBuilder
 } from '@vechain/sdk-core';
 import { expect } from 'expect';
@@ -17,13 +17,13 @@ import { expect } from 'expect';
 const txAClauses: TransactionClause[] = [
     clauseBuilder.transferVET(
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        unitsUtils.parseVET('1000')
+        Units.parseEther('1000').bi
     )
 ];
 const txBClauses: TransactionClause[] = [
     clauseBuilder.transferVET(
         '0x7ccadeea14dd6727845b58f8aa7aad0f41a002a2',
-        unitsUtils.parseVET('1')
+        Units.parseEther('1').bi
     )
 ];
 
@@ -56,7 +56,7 @@ const txBBody: TransactionBody = {
 };
 
 // Define the senders private key
-const senderPrivateKey = await secp256k1.generatePrivateKey();
+const senderPrivateKey = await Secp256k1.generatePrivateKey();
 
 // To define transaction B as dependant on transaction A
 // We need to sign transaction A, and then get its Id

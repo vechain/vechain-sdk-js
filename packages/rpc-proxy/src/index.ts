@@ -11,7 +11,7 @@ import {
     ThorClient,
     VeChainProvider
 } from '@vechain/sdk-network';
-import { Address, secp256k1, VET_DERIVATION_PATH } from '@vechain/sdk-core';
+import { Address, HDKey, Secp256k1 } from '@vechain/sdk-core';
 import { VeChainSDKLogger } from '@vechain/sdk-logging';
 import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
 import express, { type Express, type Request, type Response } from 'express';
@@ -28,7 +28,10 @@ function startProxy(): void {
     const defaultConfiguration: Config = defaultProxyConfig as Config;
 
     // Get the command line arguments options. This will be used to parse the command line arguments
-    const options = getOptionsFromCommandLine(packageJson.version);
+    const options = getOptionsFromCommandLine(
+        packageJson.version,
+        process.argv
+    );
 
     // Parse the SEMANTIC of the arguments and throw an error if the options are not valid
     const config = parseAndGetFinalConfig(options, defaultConfiguration);
@@ -53,7 +56,7 @@ function startProxy(): void {
                   return {
                       privateKey: privateKeyBuffer,
                       publicKey: Buffer.from(
-                          secp256k1.derivePublicKey(privateKeyBuffer)
+                          Secp256k1.derivePublicKey(privateKeyBuffer)
                       ),
                       address: Address.ofPrivateKey(privateKeyBuffer).toString()
                   };
@@ -66,7 +69,7 @@ function startProxy(): void {
               config.accounts.mnemonic.split(' '),
               config.accounts.count,
               config.accounts.initialIndex,
-              VET_DERIVATION_PATH,
+              HDKey.VET_DERIVATION_PATH,
               { delegator: config.delegator }
           );
     const provider = new VeChainProvider(
@@ -88,7 +91,7 @@ function startProxy(): void {
     app.listen(config.port, () => {
         console.log(`[rpc-proxy]: Proxy is running on port ${config.port}`);
     }).on('error', (err: Error) => {
-        console.error(`[rpc-proxy]: Error starting proxy: ${err.message}`);
+        console.error(`[rpc-proxy]: Error starting proxy ${err.message}`);
     });
 
     function handleRequest(req: Request, res: Response): void {

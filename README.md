@@ -1,7 +1,7 @@
 <div align="center">
   <h1><code>vechain-sdk-js</code></h1>
   <p>
-    <strong>The official JavaScript SDK for vechain.</strong>
+    <strong>The official JavaScript SDK for VeChain.</strong>
   </p>
   <p>
     <a href="https://github.com/vechain/vechain-sdk-js/actions/workflows/on-main.yml"><img src="https://github.com/vechain/vechain-sdk-js/actions/workflows/on-main.yml/badge.svg" alt="main-ci"></a>
@@ -89,6 +89,10 @@ please, follow the instructions below.
 1. Clone your forked repository.
 2. Navigate to the project directory.
 3. Run `yarn install` to install all dependencies.
+
+### Official Documentation
+
+Explore the full documentation and access example use cases by visiting the [VeChain SDK Documentation](https://docs.vechain.org/developer-resources/sdks-and-providers/sdk)
 
 ### Commands
 

@@ -66,7 +66,7 @@ class Hex implements VeChainDataModel<Hex> {
      * * {@link NEGATIVE} `-1` if negative,
      * * {@link POSITIVE} `1` if positive.
      */
-    public readonly sign;
+    public readonly sign: number;
 
     /**
      * Creates a new instance of this class to represent the value

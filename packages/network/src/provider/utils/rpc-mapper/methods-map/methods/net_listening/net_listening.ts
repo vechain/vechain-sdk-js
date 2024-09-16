@@ -1,34 +1,25 @@
-import { type ThorClient } from '../../../../../../thor-client';
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
+import { JSONRPCInternalError, stringifyData } from '@vechain/sdk-errors';
+import type { ThorClient } from '../../../../../../thor-client';
 
 /**
  * RPC Method net_listening implementation
  *
  * @param thorClient - The thor client instance to use.
- * @param params - The standard array of rpc call parameters.
- * @note:
- * * params[0]: ...
- * * params[1]: ...
- * * params[n]: ...
- * @throws {FunctionNotImplemented}
  */
-const netListening = async (
-    thorClient: ThorClient,
-    params: unknown[]
-): Promise<void> => {
-    // To avoid eslint error
-    await Promise.resolve(0);
-
-    // Not implemented yet
-    throw new FunctionNotImplemented(
-        'net_listening',
-        'Method "net_listening" has not been implemented yet.',
-        {
-            functionName: 'net_listening',
-            thorClient,
-            params
-        }
-    );
+const netListening = async (thorClient: ThorClient): Promise<boolean> => {
+    try {
+        return await thorClient.nodes.isHealthy();
+    } catch (e) {
+        throw new JSONRPCInternalError(
+            'net_listening',
+            -32603,
+            'Method "net_listening" failed.',
+            {
+                url: thorClient.httpClient.baseURL,
+                innerError: stringifyData(e)
+            }
+        );
+    }
 };
 
 export { netListening };

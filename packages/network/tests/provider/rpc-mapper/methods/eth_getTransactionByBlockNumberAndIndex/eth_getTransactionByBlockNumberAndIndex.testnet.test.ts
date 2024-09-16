@@ -1,11 +1,14 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     RPCMethodsMap,
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
+import {
+    ethGetTransactionByBlockNumberAndIndexTestCases,
+    invalidEthGetTransactionByBlockNumberAndIndexTestCases
+} from './fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_getTransactionByBlockNumberAndIndex' method
@@ -31,17 +34,19 @@ describe('RPC Mapper - eth_getTransactionByBlockNumberAndIndex method tests', ()
      */
     describe('eth_getTransactionByBlockNumberAndIndex - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Test cases where the rpc method call does not throw an error
          */
-        test('eth_getTransactionByBlockNumberAndIndex - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.eth_getTransactionByBlockNumberAndIndex
-                    ]([-1])
-            ).rejects.toThrowError(FunctionNotImplemented);
-        });
+        ethGetTransactionByBlockNumberAndIndexTestCases.forEach(
+            ({ description, params, expected }) => {
+                test(description, async () => {
+                    const rpcCall =
+                        await RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_getTransactionByBlockNumberAndIndex
+                        ](params);
+                    expect(rpcCall).toStrictEqual(expected);
+                });
+            }
+        );
     });
 
     /**
@@ -49,16 +54,18 @@ describe('RPC Mapper - eth_getTransactionByBlockNumberAndIndex method tests', ()
      */
     describe('eth_getTransactionByBlockNumberAndIndex - Negative cases', () => {
         /**
-         * Negative case 1 - ... Description ...
+         * Test cases where the rpc method call throws an error
          */
-        test('eth_getTransactionByBlockNumberAndIndex - negative case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.eth_getTransactionByBlockNumberAndIndex
-                    ](['SOME_RANDOM_PARAM'])
-            ).rejects.toThrowError(FunctionNotImplemented);
-        });
+        invalidEthGetTransactionByBlockNumberAndIndexTestCases.forEach(
+            ({ description, params, expectedError }) => {
+                test(description, async () => {
+                    await expect(
+                        RPCMethodsMap(thorClient)[
+                            RPC_METHODS.eth_getTransactionByBlockNumberAndIndex
+                        ](params)
+                    ).rejects.toThrowError(expectedError);
+                });
+            }
+        );
     });
 });

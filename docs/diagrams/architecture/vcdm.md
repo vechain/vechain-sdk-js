@@ -25,9 +25,46 @@ classDiagram
     }
     class Contract
     class Currency {
-        <<interface>>
+       +Txt code
+       +FPN value
     }
     class ExternallyOwnedAccount
+    class FPN {
+        +FPN NaN$
+        +FPN NEGATIVE_INFINITY$
+        +FPN POSITIVE_INFINITY$
+        +FPN ZERO$
+        +FPN abs()
+        +null|number comparedTo(FPN that)
+        +FPN div(FPN that)
+        +FPN dp(bigint|number decimalPlaces)
+        +boolean eq(FPN that)
+        +boolean gt(FPN that)
+        +boolean gte(FPN that)
+        +FPN idiv(FPN that)
+        +boolean isFinite()
+        +boolean isInfinite()
+        +boolean isInteger()
+        +boolean isIntegerExpression(string exp)$
+        +boolean isNaN()
+        +boolean isNaturalExpression(string exp)$
+        +boolean isNegative()
+        +boolean isNegativeInfinite()
+        +boolean isNumberExpression(string exp)$
+        +boolean isPositive()
+        +boolean isPositiveInfinite()
+        +boolean isUnsignedIntegerExpression(string exp)$
+        +boolean isZero()
+        +boolean lt(FPN that)
+        +boolean lte(FPN that)
+        +FPN minus(FPN that)
+        +FPN modulo(FPN that)
+        +FPN of(bigint|number|string exp)$
+        +FPN plus(FPN that)
+        +FPN pow(FPN that)
+        +FPN sqrt()
+        +FPN times(FPN that)
+    }
     class Hash {
         <<interface>>
     }
@@ -71,7 +108,21 @@ classDiagram
         +boolean isValid0x(string exp)
         +ThorID of(bigint|number|string|Uint8Array|HexInt exp)$
     }
-    class VeChainDataModel{
+    class Units {
+        <<enumeration>>
+        +0 wei$
+        +3 kwei$
+        +6 mwei$
+        +9 gwei$
+        +12 szabo$
+        +15 finney$
+        +18 ether$
+        +string formatEther(FPN wei)$
+        +string formatUnit(FPN wei, Units unit)$
+        +FPN parseEther(string: ether)$
+        +FPN parseUnit(string exp, Unit unit)$
+    }
+    class VeChainDataModel {
         <<interface>>
       +bigint bi
       +Uint8Array bytes
@@ -80,9 +131,17 @@ classDiagram
       +boolean isEqual(~T~ that)
       +boolean isNumber()
     }
+    class VET {
+    }
+    class VTHO {
+    }
     Account "1" ..|> "1" Address : has
     Account "1" ..|> "1" Currency : has
     Account <|-- Contract
+    Currency <|.. VET
+    Currency <|.. VTHO
+    FPN <|-- VET
+    FPN <|-- VTHO
     Hash <|.. Blake2b256
     Hash <|.. Keccak256
     Hash <|.. Sha256
@@ -98,6 +157,7 @@ classDiagram
     Txt <|-- Revision
     Txt <|-- Mnemonic
     VeChainDataModel <|.. BloomFilter
+    VeChainDataModel <|.. FPN
     VeChainDataModel <|.. Hex
     VeChainDataModel <|.. Txt
 ```

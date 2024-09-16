@@ -1,11 +1,14 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     RPCMethodsMap,
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
+import {
+    ethGetBlockByHashTestCases,
+    invalidEthGetBlockByHashTestCases
+} from '../eth_getBlockByHash/fixture';
 
 /**
  * RPC Mapper integration tests for 'eth_getBlockTransactionCountByHash' method
@@ -31,17 +34,21 @@ describe('RPC Mapper - eth_getBlockTransactionCountByHash method tests', () => {
      */
     describe('eth_getBlockTransactionCountByHash - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * eth_getBlockTransactionCountByHash RPC method positive test cases
          */
-        test('eth_getBlockTransactionCountByHash - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
+        ethGetBlockByHashTestCases.forEach(
+            ({ description, params, expectedTransactionsLength }) => {
+                test(description, async () => {
+                    // Call RPC function
+                    const rpcCall = await RPCMethodsMap(thorClient)[
                         RPC_METHODS.eth_getBlockTransactionCountByHash
-                    ]([-1])
-            ).rejects.toThrowError(FunctionNotImplemented);
-        });
+                    ]([params[0]]);
+
+                    // Compare the result with the expected value
+                    expect(rpcCall).toStrictEqual(expectedTransactionsLength);
+                });
+            }
+        );
     });
 
     /**
@@ -49,16 +56,20 @@ describe('RPC Mapper - eth_getBlockTransactionCountByHash method tests', () => {
      */
     describe('eth_getBlockTransactionCountByHash - Negative cases', () => {
         /**
-         * Negative case 1 - ... Description ...
+         * Invalid eth_getBlockByHash RPC method test cases
          */
-        test('eth_getBlockTransactionCountByHash - negative case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[
-                        RPC_METHODS.eth_getBlockTransactionCountByHash
-                    ](['SOME_RANDOM_PARAM'])
-            ).rejects.toThrowError(FunctionNotImplemented);
-        });
+        invalidEthGetBlockByHashTestCases.forEach(
+            ({ description, params, expectedError }) => {
+                test(description, async () => {
+                    // Call RPC function
+                    await expect(
+                        async () =>
+                            await RPCMethodsMap(thorClient)[
+                                RPC_METHODS.eth_getBlockTransactionCountByHash
+                            ]([params[0]])
+                    ).rejects.toThrowError(expectedError);
+                });
+            }
+        );
     });
 });

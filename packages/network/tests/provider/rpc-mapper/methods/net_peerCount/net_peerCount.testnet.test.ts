@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { FunctionNotImplemented } from '@vechain/sdk-errors';
 import {
     RPC_METHODS,
     RPCMethodsMap,
@@ -31,34 +30,13 @@ describe('RPC Mapper - net_peerCount method tests', () => {
      */
     describe('net_peerCount - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Should be able to get the peer count
          */
-        test('net_peerCount - positive case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.net_peerCount]([
-                        -1
-                    ])
-            ).rejects.toThrowError(FunctionNotImplemented);
-        });
-    });
-
-    /**
-     * net_peerCount RPC call tests - Negative cases
-     */
-    describe('net_peerCount - Negative cases', () => {
-        /**
-         * Negative case 1 - ... Description ...
-         */
-        test('net_peerCount - negative case 1', async () => {
-            // NOT IMPLEMENTED YET!
-            await expect(
-                async () =>
-                    await RPCMethodsMap(thorClient)[RPC_METHODS.net_peerCount]([
-                        'SOME_RANDOM_PARAM'
-                    ])
-            ).rejects.toThrowError(FunctionNotImplemented);
+        test('Should be able to get the peer count', async () => {
+            const peers = await RPCMethodsMap(thorClient)[
+                RPC_METHODS.net_peerCount
+            ]([]);
+            expect(peers).toBeGreaterThanOrEqual(0);
         });
     });
 });

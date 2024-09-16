@@ -4,8 +4,7 @@ import {
     decodeBytes32StringTestCases,
     encodeBytes32StringTestCases,
     invalidDecodeBytes32StringTestCases,
-    invalidEncodeBytes32StringTestCases,
-    isNumericTestCases
+    invalidEncodeBytes32StringTestCases
 } from './fixture';
 import { stringifyData } from '@vechain/sdk-errors';
 
@@ -74,21 +73,5 @@ describe('dataUtils', () => {
                 });
             }
         );
-    });
-
-    /**
-     * Verification of numbers in string format
-     */
-    describe('isNumeric', () => {
-        /**
-         * Test cases for isNumeric function.
-         */
-        isNumericTestCases.forEach(({ value, expected }) => {
-            test(`should return ${expected} for ${stringifyData(
-                value
-            )}`, () => {
-                expect(dataUtils.isNumeric(value)).toBe(expected);
-            });
-        });
     });
 });

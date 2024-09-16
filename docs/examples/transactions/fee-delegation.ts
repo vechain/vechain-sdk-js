@@ -1,13 +1,13 @@
 import {
     Address,
     clauseBuilder,
-    HDNode,
+    HDKey,
     Mnemonic,
     networkInfo,
     type TransactionBody,
     type TransactionClause,
     TransactionHandler,
-    unitsUtils
+    Units
 } from '@vechain/sdk-core';
 import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
 import { expect } from 'expect';
@@ -31,7 +31,7 @@ const thorSoloClient = ThorClient.fromUrl(THOR_SOLO_URL, {
 const clauses: TransactionClause[] = [
     clauseBuilder.transferVET(
         '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-        unitsUtils.parseVET('10000')
+        Units.parseEther('10000').bi
     )
 ];
 
@@ -59,7 +59,7 @@ const body: TransactionBody = {
 
 // 4 - Create private keys of sender and delegate
 
-const nodeDelegate = HDNode.fromMnemonic(Mnemonic.of());
+const nodeDelegate = HDKey.fromMnemonic(Mnemonic.of());
 const delegatorPrivateKey = nodeDelegate.privateKey;
 
 // 5 - Get address of delegate

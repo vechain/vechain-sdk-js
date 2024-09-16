@@ -78,92 +78,6 @@ const prefixedAndUnprefixedStrings: Array<{
 ];
 
 /**
- * Test cases for isNumeric function.
- */
-const isNumericTestCases = [
-    {
-        value: '0',
-        expected: true
-    },
-    {
-        value: '1',
-        expected: true
-    },
-    {
-        value: '1.54523532463463642352342354645363',
-        expected: true
-    },
-    {
-        value: '.52434234',
-        expected: true
-    },
-    {
-        value: '32412341234.543563463',
-        expected: true
-    },
-    {
-        value: '1,6',
-        expected: false
-    },
-    {
-        value: '1.6.7',
-        expected: false
-    },
-    {
-        value: '1.6,7',
-        expected: false
-    },
-    {
-        value: '1,6,7',
-        expected: false
-    },
-    {
-        value: '1,6.7',
-        expected: false
-    },
-    {
-        value: '1.6,7.8',
-        expected: false
-    },
-    {
-        value: '1.',
-        expected: false
-    },
-    {
-        value: '.',
-        expected: false
-    },
-    {
-        value: '1.6.',
-        expected: false
-    },
-    {
-        value: '1.6.7',
-        expected: false
-    },
-    {
-        value: '1.6.7.',
-        expected: false
-    },
-    {
-        value: '-1.5',
-        expected: true
-    },
-    {
-        value: '-1.5.6',
-        expected: false
-    },
-    {
-        value: '0x152',
-        expected: false
-    },
-    {
-        value: '',
-        expected: false
-    }
-];
-
-/**
  * Test cases for encodeBytes32String function.
  */
 const encodeBytes32StringTestCases: Array<{
@@ -276,7 +190,6 @@ export {
     validThorIDs,
     invalidThorIDs,
     prefixedAndUnprefixedStrings,
-    isNumericTestCases,
     encodeBytes32StringTestCases,
     invalidEncodeBytes32StringTestCases,
     decodeBytes32StringTestCases,

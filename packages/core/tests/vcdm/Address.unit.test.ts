@@ -84,7 +84,7 @@ describe('Address class tests', () => {
                 expect(e).toBeInstanceOf(InvalidSecp256k1PrivateKey);
                 if (e instanceof InvalidSecp256k1PrivateKey) {
                     expect(e.message).toBe(
-                        `Method 'secp256k1.derivePublicKey()' failed.` +
+                        `Method 'Secp256k1.derivePublicKey' failed.` +
                             `\n-Reason: 'Invalid private key given as input. Ensure it is a valid 32-byte secp256k1 private key.'` +
                             `\n-Parameters: \n\tundefined`
                     );
