@@ -28,7 +28,8 @@ C4Context
                 System(Address, "Address class", "Handle all address related operations.")
                 System(BloomFilter, "BloomFilter class", "Handle all Bloom filter related operations.")
                 Boundary(currency, "Currency module") {
-                    System(Currency, "Currency", "Handle all currency related operations.")
+                    System(Currency, "Currency", "Define currency operations.")
+                    System(Units, "Units", "Format and parse currency units (magnitude).")
                 }
                 System(FPN, "FPN class", "Handle all Fixed Point Number math.")
                 Boundary(hash, "Hash module") {

@@ -1,4 +1,4 @@
-import { InvalidOperation } from '@vechain/sdk-errors';
+import { InvalidDataType, InvalidOperation } from '@vechain/sdk-errors';
 import { type VeChainDataModel } from './VeChainDataModel';
 import { Txt } from './Txt';
 
@@ -85,19 +85,19 @@ class FPN implements VeChainDataModel<FPN> {
      *
      * @private
      */
-    private readonly ef: number;
+    protected readonly ef: number;
 
     /**
      * Fractional Digits or decimal places.
      * @private
      */
-    private readonly fd: bigint;
+    protected readonly fd: bigint;
 
     /**
      * Scaled Value = value * 10 ^ {@link fd}.
      * @private
      */
-    private readonly sv: bigint;
+    protected readonly sv: bigint;
 
     /**
      * Returns the integer part of this FPN value.
@@ -661,19 +661,38 @@ class FPN implements VeChainDataModel<FPN> {
         return (multiplicand * multiplicator) / 10n ** fd;
     }
 
+    /**
+     * Constructs a new instance of FPN (Fixed Point Number) parsing the
+     * `exp` numeric expression in base 10 and representing the value with the
+     * precision of `decimalPlaces` fractional decimal digits.
+     *
+     * @param {bigint|number|string} exp The value to represent.
+     * It can be a bigint, number, or string representation of the number.
+     * @param {bigint} [decimalPlaces=this.DEFAULT_FRACTIONAL_DECIMALS] The
+     * number of fractional decimal digits to be used to represent the value.
+     *
+     * @return {FPN} A new instance of FPN with the given parameters.
+     *
+     * @throws {InvalidDataType} If `exp` is not a numeric expression.
+     */
     public static of(
         exp: bigint | number | string,
         decimalPlaces: bigint = this.DEFAULT_FRACTIONAL_DECIMALS
     ): FPN {
-        if (Number.isNaN(exp)) return new FPN(decimalPlaces, 0n, Number.NaN);
-        if (exp === Number.NEGATIVE_INFINITY)
-            return new FPN(decimalPlaces, -1n, Number.NEGATIVE_INFINITY);
-        if (exp === Number.POSITIVE_INFINITY)
-            return new FPN(decimalPlaces, 1n, Number.POSITIVE_INFINITY);
-        return new FPN(
-            decimalPlaces,
-            this.txtToSV(exp.toString(), decimalPlaces)
-        );
+        try {
+            if (Number.isNaN(exp))
+                return new FPN(decimalPlaces, 0n, Number.NaN);
+            if (exp === Number.NEGATIVE_INFINITY)
+                return new FPN(decimalPlaces, -1n, Number.NEGATIVE_INFINITY);
+            if (exp === Number.POSITIVE_INFINITY)
+                return new FPN(decimalPlaces, 1n, Number.POSITIVE_INFINITY);
+            return new FPN(
+                decimalPlaces,
+                this.txtToSV(exp.toString(), decimalPlaces)
+            );
+        } catch (e) {
+            throw new InvalidDataType('FPN.of', 'not a number', { exp }, e);
+        }
     }
 
     /**
@@ -853,7 +872,7 @@ class FPN implements VeChainDataModel<FPN> {
             const digits =
                 this.sv < 0n ? (-this.sv).toString() : this.sv.toString();
             const padded = digits.padStart(Number(this.fd), '0');
-            const decimals = padded.slice(Number(-this.fd));
+            const decimals = this.fd > 0 ? padded.slice(Number(-this.fd)) : '';
             const integers = padded.slice(0, padded.length - decimals.length);
             const integersShow = integers.length < 1 ? '0' : integers;
             const decimalsShow = FPN.trimEnd(decimals);

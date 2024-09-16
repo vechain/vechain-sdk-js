@@ -16,7 +16,6 @@
     "certificate",
     "bloom"
   ],
-  "private": false,
   "main": "dist/index.js",
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
@@ -46,11 +45,11 @@
     "@vechain/sdk-logging": "1.0.0-beta.31",
     "bignumber.js": "^9.1.2",
     "blakejs": "^1.2.1",
-    "elliptic": "^6.5.7",
     "ethers": "6.13.2",
     "fast-json-stable-stringify": "^2.1.0"
   },
   "devDependencies": {
+    "bignumber.js": "^9.1.2",
     "thor-devkit": "^2.0.9"
   }
 }

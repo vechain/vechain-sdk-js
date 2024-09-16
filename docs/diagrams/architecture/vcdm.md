@@ -25,7 +25,8 @@ classDiagram
     }
     class Contract
     class Currency {
-       +string code
+       +Txt code
+       +FPN value
     }
     class ExternallyOwnedAccount
     class FPN {
@@ -107,7 +108,21 @@ classDiagram
         +boolean isValid0x(string exp)
         +ThorID of(bigint|number|string|Uint8Array|HexInt exp)$
     }
-    class VeChainDataModel{
+    class Units {
+        <<enumeration>>
+        +0 wei$
+        +3 kwei$
+        +6 mwei$
+        +9 gwei$
+        +12 szabo$
+        +15 finney$
+        +18 ether$
+        +string formatEther(FPN wei)$
+        +string formatUnit(FPN wei, Units unit)$
+        +FPN parseEther(string: ether)$
+        +FPN parseUnit(string exp, Unit unit)$
+    }
+    class VeChainDataModel {
         <<interface>>
       +bigint bi
       +Uint8Array bytes
@@ -116,10 +131,17 @@ classDiagram
       +boolean isEqual(~T~ that)
       +boolean isNumber()
     }
+    class VET {
+    }
+    class VTHO {
+    }
     Account "1" ..|> "1" Address : has
     Account "1" ..|> "1" Currency : has
     Account <|-- Contract
-    FPN <|-- Currency
+    Currency <|.. VET
+    Currency <|.. VTHO
+    FPN <|-- VET
+    FPN <|-- VTHO
     Hash <|.. Blake2b256
     Hash <|.. Keccak256
     Hash <|.. Sha256
