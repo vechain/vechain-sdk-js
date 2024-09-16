@@ -13,12 +13,7 @@ import {
     type Abi as ViemABI,
     type Hex as ViemHex
 } from 'viem';
-import {
-    type BytesLike,
-    abi as ethersAbi,
-    type FormatType,
-    type Result
-} from '../../abi';
+import { type BytesLike, type FormatType, type Result } from '../../abi';
 import { Hex } from '../Hex';
 import { ABI } from './ABI';
 
@@ -125,8 +120,6 @@ class Function<ABIType> {
     ];
 
     private readonly function: ABIFunction;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private readonly ethersFunction: any;
     constructor(abi: ABIType) {
         try {
             if (typeof abi === 'string') {
@@ -136,7 +129,6 @@ class Function<ABIType> {
             } else {
                 this.function = new ABIFunction(abi as ViemABI);
             }
-            this.ethersFunction = new ethersAbi.Function(abi);
         } catch (error) {
             throw new InvalidAbiFragment(
                 'abi.Function constructor',
