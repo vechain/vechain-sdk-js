@@ -8,7 +8,8 @@ import {
     encodeAbiParameters,
     parseAbiParameters,
     toFunctionHash,
-    type AbiParameter
+    type AbiParameter,
+    type Abi as ViemABI
 } from 'viem';
 import { fragment, type BytesLike } from '../../abi';
 import { Hex } from '../Hex';
@@ -21,6 +22,8 @@ import { type VeChainDataModel } from '../VeChainDataModel';
 class ABI implements VeChainDataModel<ABI> {
     private readonly types: readonly AbiParameter[];
     private readonly values: unknown[];
+    // TODO: It should be a single element, see how it can be parsed to string
+    protected abiRepresentation?: ViemABI;
     public readonly signature: string;
     /**
      * ABI constructor from types, values or signature.
@@ -46,7 +49,7 @@ class ABI implements VeChainDataModel<ABI> {
      * @remarks Wrapper for {@link toFunctionHash}.
      **/
     public get signatureHash(): string {
-        return toFunctionHash(this.signature);
+        return toFunctionHash(this.signature ?? this.abiRepresentation);
     }
 
     /**

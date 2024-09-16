@@ -1,5 +1,6 @@
 import { InvalidAbiDataToEncodeOrDecode } from '@vechain/sdk-errors';
 import {
+    type AbiFunction,
     decodeFunctionData,
     type DecodeFunctionDataReturnType,
     decodeFunctionResult,
@@ -7,6 +8,7 @@ import {
     encodeFunctionData,
     type EncodeFunctionDataReturnType,
     parseAbiItem,
+    toFunctionSignature,
     type Abi as ViemABI,
     type Hex as ViemHex
 } from 'viem';
@@ -18,16 +20,17 @@ import { ABI } from './ABI';
  * @extends ABI
  */
 class ABIFunction extends ABI {
-    private readonly functionAbiRepresentation: ViemABI;
     public constructor(signature: string | ViemABI) {
-        if (signature instanceof String) {
-            super(undefined, undefined, signature as string);
-            this.functionAbiRepresentation = parseAbiItem([
-                signature as string
-            ]);
+        if (typeof signature === 'string') {
+            super(undefined, undefined, signature);
+            this.abiRepresentation = parseAbiItem([signature]);
         } else {
-            super();
-            this.functionAbiRepresentation = signature as ViemABI;
+            super(
+                undefined,
+                undefined,
+                toFunctionSignature(signature as unknown as AbiFunction)
+            );
+            this.abiRepresentation = signature;
         }
     }
 
@@ -41,7 +44,7 @@ class ABIFunction extends ABI {
     public decodeData(data: Hex): DecodeFunctionDataReturnType {
         try {
             return decodeFunctionData({
-                abi: this.functionAbiRepresentation,
+                abi: this.abiRepresentation as ViemABI,
                 data: data.toString() as ViemHex
             });
         } catch (error) {
@@ -66,7 +69,7 @@ class ABIFunction extends ABI {
     ): EncodeFunctionDataReturnType {
         try {
             return encodeFunctionData({
-                abi: this.functionAbiRepresentation,
+                abi: this.abiRepresentation as ViemABI,
                 args: dataToEncode
             });
         } catch (e) {
@@ -96,7 +99,7 @@ class ABIFunction extends ABI {
     public decodeResult(data: Hex): DecodeFunctionResultReturnType {
         try {
             return decodeFunctionResult({
-                abi: this.functionAbiRepresentation,
+                abi: this.abiRepresentation as ViemABI,
                 data: data.toString() as ViemHex
             });
         } catch (error) {

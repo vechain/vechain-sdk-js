@@ -1,9 +1,11 @@
 import { InvalidAbiDataToEncodeOrDecode } from '@vechain/sdk-errors';
 import {
+    type AbiEvent,
     type DecodeEventLogReturnType,
     encodeEventTopics,
     type EncodeEventTopicsReturnType,
     parseAbiItem,
+    toEventSignature,
     type Abi as ViemABI,
     decodeEventLog as viemDecodeEventLog,
     type Hex as ViemHex
@@ -19,14 +21,17 @@ type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
  * @extends ABI
  */
 class ABIEvent extends ABI {
-    private readonly eventAbiRepresentation: ViemABI;
     public constructor(signature: string | ViemABI) {
-        if (signature instanceof String) {
-            super(undefined, undefined, signature as string);
-            this.eventAbiRepresentation = parseAbiItem([signature as string]);
+        if (typeof signature === 'string') {
+            super(undefined, undefined, signature);
+            this.abiRepresentation = parseAbiItem([signature]);
         } else {
-            super();
-            this.eventAbiRepresentation = signature as ViemABI;
+            super(
+                undefined,
+                undefined,
+                toEventSignature(signature as unknown as AbiEvent)
+            );
+            this.abiRepresentation = signature;
         }
     }
 
@@ -43,7 +48,7 @@ class ABIEvent extends ABI {
     }): DecodeEventLogReturnType {
         try {
             return viemDecodeEventLog({
-                abi: [this.eventAbiRepresentation],
+                abi: [this.abiRepresentation],
                 data: event.data.toString() as ViemHex,
                 topics: event.topics.map((topic) => topic.toString()) as Topics
             });
@@ -72,7 +77,7 @@ class ABIEvent extends ABI {
     ): EncodeEventTopicsReturnType {
         try {
             return encodeEventTopics({
-                abi: this.eventAbiRepresentation,
+                abi: this.abiRepresentation as ViemABI,
                 args: valuesToEncode
             });
         } catch (e) {
@@ -92,7 +97,12 @@ class Event<ABIType> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private readonly ethersEvent: any;
     constructor(abi: ABIType) {
-        this.event = new ABIEvent(abi as unknown as string);
+        if (typeof abi === 'string') {
+            const stringAbi = abi.indexOf('event') === 0 ? abi : `event ${abi}`;
+            this.event = new ABIEvent(stringAbi);
+        } else {
+            this.event = new ABIEvent(abi as ViemABI);
+        }
         this.ethersEvent = new ethersAbi.Event(abi);
     }
 
