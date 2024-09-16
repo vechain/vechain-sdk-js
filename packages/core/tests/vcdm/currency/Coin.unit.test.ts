@@ -76,7 +76,7 @@ describe('Coin class tests', () => {
 
             test('Return false because value', () => {
                 const a: Coin = VET.of(CoinFixure.value) as Coin;
-                const b: Coin = VET.of(CoinFixure.value.negate()) as Coin;
+                const b: Coin = VET.of(CoinFixure.value.negated()) as Coin;
                 expect(b.isEqual(a)).toBe(false);
             });
 

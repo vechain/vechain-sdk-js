@@ -60,6 +60,7 @@ classDiagram
         +boolean lte(FPN that)
         +FPN minus(FPN that)
         +FPN modulo(FPN that)
+        +FPN negated()
         +FPN of(bigint|number|string exp)$
         +FPN plus(FPN that)
         +FPN pow(FPN that)

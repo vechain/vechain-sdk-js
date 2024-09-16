@@ -661,7 +661,15 @@ class FPN implements VeChainDataModel<FPN> {
         return (multiplicand * multiplicator) / 10n ** fd;
     }
 
-    public negate(): FPN {
+    /**
+     * Returns a new instance of FPN whose value is the value of this FPN value
+     * negated, i.e. multiplied by -1.
+     *
+     * @see [bignumber.js negated](https://mikemcl.github.io/bignumber.js/#neg)
+     */
+    public negated(): FPN {
+        if (this.isNegativeInfinite()) return FPN.POSITIVE_INFINITY;
+        if (this.isPositiveInfinite()) return FPN.NEGATIVE_INFINITY;
         return new FPN(this.fd, -this.sv, this.ef);
     }
 
