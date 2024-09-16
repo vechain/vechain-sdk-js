@@ -92,7 +92,7 @@ class ABIEvent extends ABI {
     }
 }
 
-// Backwards comapatibility, this entire nested class should be removed as part of #1184
+// Backwards compatibility, this entire nested class should be removed as part of #1184
 class Event<ABIType> {
     /**
      * Allowed formats for the signature.
