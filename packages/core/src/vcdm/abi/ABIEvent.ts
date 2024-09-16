@@ -1,4 +1,7 @@
-import { InvalidAbiDataToEncodeOrDecode } from '@vechain/sdk-errors';
+import {
+    InvalidAbiDataToEncodeOrDecode,
+    InvalidAbiFragment
+} from '@vechain/sdk-errors';
 import {
     type DecodeEventLogReturnType,
     encodeEventTopics,
@@ -84,13 +87,26 @@ class Event<ABIType> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private readonly ethersEvent: any;
     constructor(abi: ABIType) {
-        if (typeof abi === 'string') {
-            const stringAbi = abi.indexOf('event') === 0 ? abi : `event ${abi}`;
-            this.event = new ABIEvent(stringAbi);
-        } else {
-            this.event = new ABIEvent(abi as ViemABI);
+        try {
+            if (typeof abi === 'string') {
+                const stringAbi =
+                    abi.indexOf('event') === 0 ? abi : `event ${abi}`;
+                this.event = new ABIEvent(stringAbi);
+            } else {
+                this.event = new ABIEvent(abi as ViemABI);
+            }
+            this.ethersEvent = new ethersAbi.Event(abi);
+        } catch (error) {
+            throw new InvalidAbiFragment(
+                'abi.Event constructor',
+                'Initialization failed: Cannot create Event fragment. Event format is invalid.',
+                {
+                    type: 'event',
+                    fragment: abi
+                },
+                error
+            );
         }
-        this.ethersEvent = new ethersAbi.Event(abi);
     }
 
     public signatureHash(): string {
@@ -102,16 +118,25 @@ class Event<ABIType> {
     }
 
     public decodeEventLog(data: { data: string; topics: string[] }): Result {
-        const eventLogDecoded = this.event.decodeEventLog({
-            data: Hex.of(data.data),
-            topics: data.topics.map((topic) => Hex.of(topic))
-        });
+        try {
+            const eventLogDecoded = this.event.decodeEventLog({
+                data: Hex.of(data.data),
+                topics: data.topics.map((topic) => Hex.of(topic))
+            });
 
-        if (eventLogDecoded.args instanceof Object) {
-            return Object.values(eventLogDecoded.args) as Result;
+            if (eventLogDecoded.args instanceof Object) {
+                return Object.values(eventLogDecoded.args) as Result;
+            }
+
+            return eventLogDecoded as unknown as Result;
+        } catch (error) {
+            throw new InvalidAbiDataToEncodeOrDecode(
+                'abi.Event.decodeEventLog()',
+                'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
+                { data },
+                error
+            );
         }
-
-        return eventLogDecoded as unknown as Result;
     }
 
     public encodeEventLog<TValue>(dataToEncode: TValue[]): {
