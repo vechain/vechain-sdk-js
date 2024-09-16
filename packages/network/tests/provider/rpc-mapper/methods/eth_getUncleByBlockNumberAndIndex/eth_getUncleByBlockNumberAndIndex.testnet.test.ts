@@ -5,7 +5,7 @@ import {
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
+import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_getUncleByBlockNumberAndIndex' method
@@ -31,18 +31,48 @@ describe('RPC Mapper - eth_getUncleByBlockNumberAndIndex method tests', () => {
      */
     describe('eth_getUncleByBlockNumberAndIndex - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Should return uncle block at the given block number and index
          */
-        test('eth_getUncleByBlockNumberAndIndex - positive case 1', async () => {
-            const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
-
-            // NOT IMPLEMENTED YET!
-            await RPCMethodsMap(thorClient)[
+        test('Should return uncle block at the given block number and index', async () => {
+            const uncleBlock = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_getUncleByBlockNumberAndIndex
-            ]([-1]);
+            ](['latest', '0x0']);
 
-            expect(logSpy).toHaveBeenCalled();
-            logSpy.mockRestore();
+            expect(uncleBlock).toStrictEqual({});
+        });
+    });
+
+    /**
+     * eth_getUncleByBlockNumberAndIndex RPC call tests - Negative cases
+     */
+    describe('eth_getUncleByBlockNumberAndIndex - Negative cases', () => {
+        /**
+         * Should NOT be able to return uncle block at the given block number and index with invalid params
+         */
+        test('Should NOT be able to return uncle block at the given block number and index with invalid params', async () => {
+            // No params
+            await expect(
+                async () =>
+                    await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_getUncleByBlockNumberAndIndex
+                    ]([])
+            ).rejects.toThrowError(JSONRPCInvalidParams);
+
+            // Only 1 param
+            await expect(
+                async () =>
+                    await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_getUncleByBlockNumberAndIndex
+                    ](['latest'])
+            ).rejects.toThrowError(JSONRPCInvalidParams);
+
+            // Invalid params
+            await expect(
+                async () =>
+                    await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_getUncleByBlockNumberAndIndex
+                    ](['latest', 1])
+            ).rejects.toThrowError(JSONRPCInvalidParams);
         });
     });
 });

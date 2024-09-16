@@ -1,27 +1,41 @@
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
+import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
+import { ThorId } from '@vechain/sdk-core';
 
 /**
  * RPC Method eth_getUncleByBlockHashAndIndex implementation
  *
+ * @link [eth_getUncleByBlockHashAndIndex](https://docs.infura.io/api/networks/ethereum/json-rpc-methods/eth_getunclebyblockhashandindex)
+ *
+ * @note
+ *  * Standard RPC method `eth_getUncleByBlockHashAndIndex` support following block numbers: hex number of block, 'earliest', 'latest', 'safe', 'finalized', 'pending'. (@see https://ethereum.org/en/developers/docs/apis/json-rpc#default-block)
+ *  * Currently, VeChain only supports hex number of block, 'latest' and 'finalized'.
+ *  * We return a constant empty object for now.
+ *
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
- * @note:
- * * params[0]: ...
- * * params[1]: ...
- * * params[n]: ...
+ *                 * params[0]: The block number to get as a hex string or "latest" or "finalized".
+ *                 * params[1]: A hexadecimal equivalent of the integer indicating the uncle's index position.
+ * @returns The uncle block at the given block number and index.
+ * @throws {JSONRPCInvalidParams}
  */
-const ethGetUncleByBlockHashAndIndex =
-    async (): Promise<'METHOD NOT IMPLEMENTED'> => {
-        // Not implemented yet
-        VeChainSDKLogger('warning').log({
-            title: 'eth_getUncleByBlockHashAndIndex',
-            messages: [
-                'Method "eth_getUncleByBlockHashAndIndex" has not been implemented yet.'
-            ]
-        });
+const ethGetUncleByBlockHashAndIndex = async (
+    params: unknown[]
+): Promise<object> => {
+    // Input validation
+    if (
+        params.length !== 2 ||
+        typeof params[0] !== 'string' ||
+        !ThorId.isValid(params[0]) ||
+        typeof params[1] !== 'string'
+    )
+        throw new JSONRPCInvalidParams(
+            'eth_getUncleByBlockHashAndIndex',
+            -32602,
+            'Invalid input params for "eth_getUncleByBlockHashAndIndex" method. See https://docs.infura.io/api/networks/ethereum/json-rpc-methods/eth_getunclebyblockhashandindex for details.',
+            { params }
+        );
 
-        // To avoid eslint error
-        return await Promise.resolve('METHOD NOT IMPLEMENTED');
-    };
+    return await Promise.resolve({});
+};
 
 export { ethGetUncleByBlockHashAndIndex };

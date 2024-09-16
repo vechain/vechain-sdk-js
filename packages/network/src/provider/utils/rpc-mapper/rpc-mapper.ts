@@ -87,6 +87,10 @@ import {
 import { ethRequestAccounts } from './methods-map/methods/eth_requestAccounts';
 import { type VeChainProvider } from '../../providers';
 import { type ThorClient } from '../../../thor-client';
+import { txPoolInspect } from './methods-map/methods/txpool_inspect';
+import { txPoolContent } from './methods-map/methods/txpool_content';
+import { txPoolContentFrom } from './methods-map/methods/txpool_contentFrom';
+import { txPoolStatus } from './methods-map/methods/txpool_status';
 
 /**
  * Map of RPC methods to their implementations with the SDK.
@@ -272,15 +276,17 @@ const RPCMethodsMap = (
             );
         },
 
-        [RPC_METHODS.eth_getUncleByBlockHashAndIndex]:
-            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
-                return await ethGetUncleByBlockHashAndIndex();
-            },
+        [RPC_METHODS.eth_getUncleByBlockHashAndIndex]: async (
+            params
+        ): Promise<object> => {
+            return await ethGetUncleByBlockHashAndIndex(params);
+        },
 
-        [RPC_METHODS.eth_getUncleByBlockNumberAndIndex]:
-            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
-                return await ethGetUncleByBlockNumberAndIndex();
-            },
+        [RPC_METHODS.eth_getUncleByBlockNumberAndIndex]: async (
+            params
+        ): Promise<object> => {
+            return await ethGetUncleByBlockNumberAndIndex(params);
+        },
 
         [RPC_METHODS.eth_getUncleCountByBlockHash]:
             async (): Promise<'METHOD NOT IMPLEMENTED'> => {
@@ -486,6 +492,22 @@ const RPCMethodsMap = (
 
         [RPC_METHODS.web3_sha3]: async (params): Promise<string> => {
             return await web3Sha3(params);
+        },
+
+        [RPC_METHODS.txpool_inspect]: async (): Promise<object> => {
+            return await txPoolInspect();
+        },
+
+        [RPC_METHODS.txpool_content]: async (): Promise<object> => {
+            return await txPoolContent();
+        },
+
+        [RPC_METHODS.txpool_contentFrom]: async (params): Promise<object> => {
+            return await txPoolContentFrom(params);
+        },
+
+        [RPC_METHODS.txpool_status]: async (): Promise<object> => {
+            return await txPoolStatus();
         }
     };
 };
