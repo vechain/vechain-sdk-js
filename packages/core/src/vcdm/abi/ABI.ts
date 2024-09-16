@@ -88,7 +88,6 @@ class ABI implements VeChainDataModel<ABI> {
                 return 1;
             }
         });
-        // We do not check abiRepresentation because it is generated from the signature.
         return this.stringSignature.localeCompare(that.stringSignature);
     }
 
