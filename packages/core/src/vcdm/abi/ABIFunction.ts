@@ -207,7 +207,7 @@ class Function<ABIType> {
     public decodeOutput(data: BytesLike): Result {
         try {
             const resultDecoded = this.function.decodeResult(Hex.of(data));
-            return resultDecoded as Result;
+            return [resultDecoded] as Result;
         } catch (e) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'abi.Function.decodeOutput()',
