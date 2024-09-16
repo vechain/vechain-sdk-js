@@ -205,17 +205,8 @@ class Function<ABIType> {
      * ```
      */
     public decodeOutput(data: BytesLike): Result {
-        try {
-            const resultDecoded = this.function.decodeResult(Hex.of(data));
-            return [resultDecoded] as Result;
-        } catch (e) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'abi.Function.decodeOutput()',
-                'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
-                { data },
-                e
-            );
-        }
+        const resultDecoded = this.function.decodeResult(Hex.of(data));
+        return [resultDecoded] as Result;
     }
 
     /**
@@ -226,16 +217,7 @@ class Function<ABIType> {
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
     public encodeInput<TValue>(dataToEncode?: TValue[]): string {
-        try {
-            return this.function.encodeData(dataToEncode as TValue[]);
-        } catch (e) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'abi.Function.encodeInput()',
-                'Encoding failed: Data format is invalid. Function data does not match the expected format for ABI type encoding.',
-                { dataToEncode },
-                e
-            );
-        }
+        return this.function.encodeData(dataToEncode as TValue[]);
     }
 }
 
