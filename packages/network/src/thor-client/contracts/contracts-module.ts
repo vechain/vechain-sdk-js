@@ -11,7 +11,8 @@ import type {
     ContractCallOptions,
     ContractCallResult,
     ContractClause,
-    ContractTransactionOptions
+    ContractTransactionOptions,
+    DelegationOptions
 } from './types';
 import {
     type SendTransactionResult,
@@ -197,14 +198,16 @@ class ContractsModule {
     public async executeMultipleClausesTransaction(
         clauses: ContractClause[],
         signer: VeChainSigner,
-        gas?: ContractGasOptions
+        gas?: ContractGasOptions,
+        delegation?: DelegationOptions
     ): Promise<SendTransactionResult> {
         const id = await signer.sendTransaction({
             clauses: clauses.map((clause) => clause.clause),
             gas: gas?.gas,
             gasLimit: gas?.gasLimit,
             gasPrice: gas?.gasPrice,
-            gasPriceCoef: gas?.gasPriceCoef
+            gasPriceCoef: gas?.gasPriceCoef,
+            reserved: delegation
         });
 
         return {

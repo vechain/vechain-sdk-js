@@ -63,10 +63,22 @@ interface ContractGasOptions {
     gasPriceCoef?: number;
 }
 
+interface DelegationOptions {
+    /**
+     * Tx feature bits
+     */
+    features?: number;
+    /**
+     * Unused
+     */
+    unused?: Buffer[];
+}
+
 export type {
     ContractTransactionOptions,
     ContractCallOptions,
     ContractCallResult,
     ContractClause,
-    ContractGasOptions
+    ContractGasOptions,
+    DelegationOptions
 };
