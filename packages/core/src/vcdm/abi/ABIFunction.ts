@@ -143,7 +143,8 @@ class Function<ABIType> {
     }
 
     public signatureHash(): string {
-        return this.function.signatureHash;
+        // This is a selector in Ethers
+        return this.function.signatureHash.substring(0, 10);
     }
 
     public signature(formatType: FormatType): string {
