@@ -1,4 +1,4 @@
-import { coder, unitsUtils } from '@vechain/sdk-core';
+import { coder, Units } from '@vechain/sdk-core';
 import { BUILT_IN_CONTRACTS } from '../../../src';
 import {
     TEST_ACCOUNTS,
@@ -26,7 +26,7 @@ const estimateGasTestCases = {
                         [
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
                                 .address,
-                            unitsUtils.parseVET('1000000000')
+                            Units.parseEther('1000000000').bi
                         ]
                     )
                 }
@@ -53,13 +53,13 @@ const estimateGasTestCases = {
                         [
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
                                 .address,
-                            unitsUtils.parseVET('1000000000')
+                            Units.parseEther('1000000000').bi
                         ]
                     )
                 },
                 {
                     to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                    value: unitsUtils.parseVET('1000000000').toString(),
+                    value: Units.parseEther('1000000000').toString(),
                     data: '0x'
                 }
             ],
@@ -85,13 +85,13 @@ const estimateGasTestCases = {
                         [
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
                                 .address,
-                            unitsUtils.parseVET('1')
+                            Units.parseEther('1').bi
                         ]
                     )
                 },
                 {
                     to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                    value: unitsUtils.parseVET('1000000000').toString(),
+                    value: Units.parseEther('1000000000').toString(),
                     data: '0x'
                 }
             ],
@@ -117,7 +117,7 @@ const estimateGasTestCases = {
                         [
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
                                 .address,
-                            unitsUtils.parseVET('1')
+                            Units.parseEther('1').bi
                         ]
                     )
                 },
@@ -130,7 +130,7 @@ const estimateGasTestCases = {
                         [
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
                                 .address,
-                            unitsUtils.parseVET('1')
+                            Units.parseEther('1').bi
                         ]
                     )
                 },
@@ -143,7 +143,7 @@ const estimateGasTestCases = {
                         [
                             TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER
                                 .address,
-                            unitsUtils.parseVET('1000000000')
+                            Units.parseEther('1000000000').bi
                         ]
                     )
                 }
@@ -227,7 +227,7 @@ const estimateGasTestCases = {
                 },
                 {
                     to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                    value: unitsUtils.parseVET('1').toString(),
+                    value: Units.parseEther('1').toString(),
                     data: '0x'
                 }
             ],
@@ -261,7 +261,7 @@ const estimateGasTestCases = {
             clauses: [
                 {
                     to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                    value: unitsUtils.parseVET('1').toString(),
+                    value: Units.parseEther('1').toString(),
                     data: '0x'
                 }
             ],
@@ -280,12 +280,12 @@ const estimateGasTestCases = {
             clauses: [
                 {
                     to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                    value: unitsUtils.parseVET('1').toString(),
+                    value: Units.parseEther('1').toString(),
                     data: '0x'
                 },
                 {
                     to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                    value: unitsUtils.parseVET('1').toString(),
+                    value: Units.parseEther('1').toString(),
                     data: '0x'
                 }
             ],
@@ -316,7 +316,7 @@ const invalidEstimateGasTestCases = [
         clauses: [
             {
                 to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                value: unitsUtils.parseVET('1').toString(),
+                value: Units.parseEther('1').toString(),
                 data: '0x'
             }
         ],
@@ -329,7 +329,7 @@ const invalidEstimateGasTestCases = [
         clauses: [
             {
                 to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                value: unitsUtils.parseVET('1').toString(),
+                value: Units.parseEther('1').toString(),
                 data: '0x'
             }
         ],
@@ -342,7 +342,7 @@ const invalidEstimateGasTestCases = [
         clauses: [
             {
                 to: TEST_ACCOUNTS.TRANSACTION.TRANSACTION_RECEIVER.address,
-                value: unitsUtils.parseVET('1').toString(),
+                value: Units.parseEther('1').toString(),
                 data: '0x'
             }
         ],

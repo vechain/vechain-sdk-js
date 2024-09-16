@@ -1,6 +1,6 @@
 import { InvalidOperation } from '@vechain/sdk-errors';
 import { type Address } from '../Address';
-import { type Currency } from '../currency/Currency';
+import { type Currency } from '../currency';
 import { type VeChainDataModel } from '../VeChainDataModel';
 
 type AccountType = 'EOA' | 'Contract';
@@ -92,15 +92,19 @@ class Account implements VeChainDataModel<Account> {
      * @override {@link VeChainDataModel#compareTo}
      */
     public compareTo(that: Account): number {
-        const typeCompareTo = this.type.localeCompare(that.type);
-        if (typeCompareTo !== 0) {
-            return typeCompareTo;
+        const typeDiff = this.type.localeCompare(that.type);
+        if (typeDiff === 0) {
+            const addressDiff = this.address.compareTo(that.address);
+            if (addressDiff === 0) {
+                const codeDiff = this.balance.code.compareTo(that.balance.code);
+                if (codeDiff === 0) {
+                    return this.balance.value.compareTo(that.balance.value);
+                }
+                return codeDiff;
+            }
+            return addressDiff;
         }
-        const addressCompareTo = this.address.compareTo(that.address);
-        if (addressCompareTo !== 0) {
-            return addressCompareTo;
-        }
-        return this.balance.compareTo(that.balance);
+        return typeDiff;
     }
 
     /**
@@ -120,7 +124,7 @@ class Account implements VeChainDataModel<Account> {
      * @returns {string} A string representation of the account.
      */
     public toString(): string {
-        return `${this.type} Address: ${this.address.toString()} Balance: ${this.balance.bi.toString()}`;
+        return `${this.type} Address: ${this.address.toString()} Balance: ${this.balance.value} ${this.balance.code}`;
     }
 }
 

@@ -1,4 +1,4 @@
-import { coder, unitsUtils } from '@vechain/sdk-core';
+import { coder, Units } from '@vechain/sdk-core';
 import { stringifyData } from '@vechain/sdk-errors';
 import {
     THOR_SOLO_URL,
@@ -12,7 +12,7 @@ import { expect } from 'expect';
  *
  * @link see [energy.sol](https://docs.vechain.org/developer-resources/built-in-contracts#energy-sol)
  */
-const energy_abi = stringifyData([
+const energyABI = stringifyData([
     {
         constant: true,
         inputs: [],
@@ -280,14 +280,14 @@ const simulatedTx: TransactionSimulationResult[] =
         {
             to: '0x0000000000000000000000000000456e65726779',
             value: '0',
-            data: coder.encodeFunctionInput(energy_abi, 'transfer', [
+            data: coder.encodeFunctionInput(energyABI, 'transfer', [
                 '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-                unitsUtils.parseVET('1000000000')
+                Units.parseEther('1000000000').bi
             ])
         }
     ]);
 
-const revertReason = await thorSoloClient.transactions.decodeRevertReason(
+const revertReason = thorSoloClient.transactions.decodeRevertReason(
     simulatedTx[0].data
 );
 

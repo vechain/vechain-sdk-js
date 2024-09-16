@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import { BigNumber } from 'bignumber.js';
 import { FPN, Txt } from '../../src';
-import { InvalidOperation } from '@vechain/sdk-errors';
+import { InvalidDataType, InvalidOperation } from '@vechain/sdk-errors';
 
 /**
  * Test FPN class.
@@ -346,6 +346,11 @@ describe('FPN class tests', () => {
             const fpn = FPN.of(exp);
             expect(fpn).toBeInstanceOf(FPN);
             expect(fpn.n).toBe(Number(exp));
+        });
+
+        test('of an illegal expression throws exception', () => {
+            const exp = 'abracadabra';
+            expect(() => FPN.of(exp)).toThrow(InvalidDataType);
         });
     });
 

@@ -227,7 +227,7 @@ const latestBlock = await thorSoloClient.blocks.getBestBlockCompressed();
 const clauses = [
     clauseBuilder.transferVET(
         '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-        unitsUtils.parseVET('10000')
+        Units.parseEther('10000').bi
     )
 ];
 
@@ -331,7 +331,7 @@ const latestBlock = await thorSoloClient.blocks.getBestBlockCompressed();
 const clauses = [
     clauseBuilder.transferVET(
         '0x9e7911de289c3c856ce7f421034f66b6cde49c39',
-        unitsUtils.parseVET('10000')
+        Units.parseEther('10000').bi
     )
 ];
 
