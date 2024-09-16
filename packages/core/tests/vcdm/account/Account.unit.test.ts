@@ -1,18 +1,12 @@
-import { Address, FPN, Mnemonic, Txt, Account } from '../../../src';
-import { type Currency } from '../../../src';
-
-// Use actual Currency subclasses once they are implemented.
-const mockCurrency: Currency = {
-    code: Txt.of('VET'),
-    value: FPN.of(0)
-};
+import { Address, FPN, Mnemonic, Account } from '../../../src';
+import { VET } from '../../../src/vcdm/currency/VET';
 
 /**
  * Test Account class.
  * @group unit/vcdm
  */
 describe('Account class tests', () => {
-    const balance = mockCurrency;
+    const balance = VET.of(FPN.of(0));
     const mnemonic = Mnemonic.of();
     describe('Construction tests', () => {
         test('Return an Account instance if the passed arguments are valid', () => {
@@ -58,7 +52,7 @@ describe('Account class tests', () => {
             const address = Address.ofMnemonic(mnemonic);
             const account = new Account(address, balance);
             expect(account.toString()).toBe(
-                `EOA Address: ${address.toString()} Balance: 0 VET`
+                `EOA Address: ${address.toString()} Balance: ${balance.toString()}`
             );
         });
     });
