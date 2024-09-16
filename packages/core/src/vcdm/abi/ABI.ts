@@ -33,7 +33,7 @@ class ABI implements VeChainDataModel<ABI> {
      *
      * @param {string | AbiParameter[]} types - A list of ABI types representing the types of the values.
      * @param {unknown[]} values - An array of values according to the specified ABI types.
-     * @param {string} signature - The signature of the ABI item (Function, Event).
+     * @param {string | ViemABI} signature - The signature of the ABI item (Function, Event).
      **/
     public constructor(
         types: string | AbiParameter[] = [],
