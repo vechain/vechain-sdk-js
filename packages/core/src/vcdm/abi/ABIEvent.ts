@@ -1,6 +1,7 @@
 import {
     InvalidAbiDataToEncodeOrDecode,
-    InvalidAbiFragment
+    InvalidAbiFragment,
+    InvalidAbiSignatureFormat
 } from '@vechain/sdk-errors';
 import {
     type DecodeEventLogReturnType,
@@ -81,8 +82,20 @@ class ABIEvent extends ABI {
     }
 }
 
-// Backwards comapatibility, to be removed as part of #1184
+// Backwards comapatibility, this entire nested class should be removed as part of #1184
 class Event<ABIType> {
+    /**
+     * Allowed formats for the signature.
+     *
+     * @private
+     */
+    private readonly allowedSignatureFormats = [
+        'sighash',
+        'minimal',
+        'full',
+        'json'
+    ];
+
     private readonly event: ABIEvent;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private readonly ethersEvent: any;
@@ -113,7 +126,17 @@ class Event<ABIType> {
         return this.event.signatureHash;
     }
 
-    public signature(_formatType: FormatType): string {
+    public signature(formatType: FormatType): string {
+        // If the formatType is not included in the allowed formats, throw an error.
+        if (!this.allowedSignatureFormats.includes(formatType)) {
+            throw new InvalidAbiSignatureFormat(
+                'getSignature()',
+                'Initialization failed: Cannot create Function fragment. Function format is invalid.',
+                {
+                    signatureFormat: formatType
+                }
+            );
+        }
         return this.event.stringSignature;
     }
 
