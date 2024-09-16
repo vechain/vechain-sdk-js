@@ -27,7 +27,7 @@ class ABI implements VeChainDataModel<ABI> {
     private readonly types: readonly AbiParameter[];
     private readonly values: unknown[];
     protected readonly signature: ViemABI;
-    public readonly stringSignature: string = '';
+    public readonly stringSignature: string;
     /**
      * ABI constructor from types, values or signature.
      *
