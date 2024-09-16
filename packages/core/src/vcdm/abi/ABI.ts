@@ -56,7 +56,7 @@ class ABI implements VeChainDataModel<ABI> {
                 this.stringSignature = '';
         }
         this.signature =
-            signature !== '' && typeof signature === 'string'
+            typeof signature === 'string' && signature !== ''
                 ? parseAbiItem([signature])
                 : (signature as ViemABI);
     }
