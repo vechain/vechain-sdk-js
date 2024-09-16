@@ -1,6 +1,6 @@
 import { expect } from 'expect';
 import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
-import { clauseBuilder, unitsUtils } from '@vechain/sdk-core';
+import { clauseBuilder, Units } from '@vechain/sdk-core';
 import { stringifyData } from '@vechain/sdk-errors';
 
 // START_SNIPPET: SimulationSnippet
@@ -16,7 +16,7 @@ const transaction1 = {
     clauses: [
         clauseBuilder.transferVET(
             '0xb717b660cd51109334bd10b2c168986055f58c1a',
-            unitsUtils.parseVET('1')
+            Units.parseEther('1').bi
         )
     ],
     // Please note - this field one of the optional fields that may be passed (see SimulateTransactionOptions),

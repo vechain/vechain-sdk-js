@@ -1,8 +1,4 @@
-import {
-    clauseBuilder,
-    TransactionHandler,
-    unitsUtils
-} from '@vechain/sdk-core';
+import { clauseBuilder, TransactionHandler, Units } from '@vechain/sdk-core';
 import {
     ProviderInternalBaseWallet,
     signerUtils,
@@ -62,7 +58,7 @@ const transaction = {
     clauses: [
         clauseBuilder.transferVET(
             '0xb717b660cd51109334bd10b2c168986055f58c1a',
-            unitsUtils.parseVET('1')
+            Units.parseEther('1').bi
         )
     ],
     simulateTransactionOptions: {
