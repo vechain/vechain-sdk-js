@@ -3,6 +3,7 @@ import {
     InvalidAbiFragment,
     InvalidAbiSignatureFormat
 } from '@vechain/sdk-errors';
+import { FunctionFragment } from 'ethers';
 import {
     decodeFunctionData,
     type DecodeFunctionDataReturnType,
@@ -15,18 +16,13 @@ import {
 } from 'viem';
 import { type BytesLike, type FormatType, type Result } from '../../abi';
 import { Hex } from '../Hex';
-import { ABI } from './ABI';
-import { FunctionFragment } from 'ethers';
+import { ABIItem } from './ABIItem';
 
 /**
  * Represents a function call in the Function ABI.
  * @extends ABI
  */
-class ABIFunction extends ABI {
-    public constructor(signature: string | ViemABI) {
-        super(undefined, undefined, signature);
-    }
-
+class ABIFunction extends ABIItem {
     /**
      * Decode data using the function's ABI.
      *

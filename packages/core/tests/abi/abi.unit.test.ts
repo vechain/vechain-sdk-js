@@ -1,5 +1,13 @@
 import { describe, expect, test } from '@jest/globals';
 import {
+    InvalidAbiDataToEncodeOrDecode,
+    InvalidAbiFragment,
+    InvalidAbiSignatureFormat,
+    stringifyData
+} from '@vechain/sdk-errors';
+import { type ethers, ParamType } from 'ethers';
+import { abi, type FormatType } from '../../src';
+import {
     encodedDecodedInvalidValues,
     encodedDecodedValues,
     encodedParams,
@@ -9,15 +17,6 @@ import {
     simpleParametersDataForFunction2,
     topicsEventTestCases
 } from './fixture';
-import { type FormatType } from '../../src';
-import { abi } from '../../src';
-import { type ethers, ParamType } from 'ethers';
-import {
-    InvalidAbiDataToEncodeOrDecode,
-    InvalidAbiFragment,
-    InvalidAbiSignatureFormat,
-    stringifyData
-} from '@vechain/sdk-errors';
 
 /**
  * ABI tests - encode & decode

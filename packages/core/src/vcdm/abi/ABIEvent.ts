@@ -3,6 +3,7 @@ import {
     InvalidAbiFragment,
     InvalidAbiSignatureFormat
 } from '@vechain/sdk-errors';
+import { ethers } from 'ethers';
 import {
     type AbiEvent,
     type DecodeEventLogReturnType,
@@ -19,8 +20,7 @@ import {
     type Result
 } from '../../abi';
 import { Hex } from '../Hex';
-import { ABI } from './ABI';
-import { ethers } from 'ethers';
+import { ABIItem } from './ABIItem';
 
 type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
 
@@ -28,11 +28,7 @@ type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
  * Represents a function call in the Event ABI.
  * @extends ABI
  */
-class ABIEvent extends ABI {
-    public constructor(signature: string | ViemABI) {
-        super(undefined, undefined, signature);
-    }
-
+class ABIEvent extends ABIItem {
     /**
      * Decode event log data using the event's ABI.
      *
