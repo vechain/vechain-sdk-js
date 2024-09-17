@@ -177,7 +177,13 @@ class ContractsModule {
             gas: options?.gas,
             gasLimit: options?.gasLimit,
             gasPrice: options?.gasPrice,
-            gasPriceCoef: options?.gasPriceCoef
+            gasPriceCoef: options?.gasPriceCoef,
+            nonce: options?.nonce,
+            value: options?.value,
+            dependsOn: options?.dependsOn,
+            expiration: options?.expiration,
+            chainTag: options?.chainTag,
+            blockRef: options?.blockRef
         });
 
         return {
@@ -203,7 +209,12 @@ class ContractsModule {
             gasLimit: options?.gasLimit,
             gasPrice: options?.gasPrice,
             gasPriceCoef: options?.gasPriceCoef,
-
+            nonce: options?.nonce,
+            value: options?.value,
+            dependsOn: options?.dependsOn,
+            expiration: options?.expiration,
+            chainTag: options?.chainTag,
+            blockRef: options?.blockRef
         });
 
         return {
