@@ -5,7 +5,7 @@ import { cert, certPrivateKey } from './fixture';
 import { describe, expect, test } from '@jest/globals';
 import { privateKey } from '../secp256k1/fixture';
 import {
-    CertificateSignature,
+    CertificateSignatureMismatch,
     InvalidSecp256k1PrivateKey
 } from '@vechain/sdk-errors';
 import {
@@ -133,7 +133,7 @@ describe('certificate', () => {
             };
             expect(() => {
                 _certificate.verify(invalidCert);
-            }).toThrowError(CertificateSignature);
+            }).toThrowError(CertificateSignatureMismatch);
         });
 
         test('invalid - because invalid signature format', () => {
@@ -143,7 +143,7 @@ describe('certificate', () => {
             };
             expect(() => {
                 _certificate.verify(invalidCert);
-            }).toThrowError(CertificateSignature);
+            }).toThrowError(CertificateSignatureMismatch);
         });
 
         test('invalid - undefined signature', () => {
@@ -153,7 +153,7 @@ describe('certificate', () => {
             };
             expect(() => {
                 _certificate.verify(invalidCert);
-            }).toThrowError(CertificateSignature);
+            }).toThrowError(CertificateSignatureMismatch);
         });
 
         test('invalid - illegal signer address', () => {
@@ -165,7 +165,7 @@ describe('certificate', () => {
             };
             expect(() => {
                 _certificate.verify(invalidCert);
-            }).toThrowError(CertificateSignature);
+            }).toThrowError(CertificateSignatureMismatch);
         });
 
         test('invalid - tampered purpose', () => {
@@ -177,7 +177,7 @@ describe('certificate', () => {
             };
             expect(() => {
                 _certificate.verify(invalidCert);
-            }).toThrowError(CertificateSignature);
+            }).toThrowError(CertificateSignatureMismatch);
         });
 
         test('invalid - tampered payload', () => {
@@ -192,7 +192,7 @@ describe('certificate', () => {
             };
             expect(() => {
                 _certificate.verify(invalidCert);
-            }).toThrowError(CertificateSignature);
+            }).toThrowError(CertificateSignatureMismatch);
         });
 
         test('invalid - tampered domain', () => {
@@ -204,7 +204,7 @@ describe('certificate', () => {
             };
             expect(() => {
                 _certificate.verify(invalidCert);
-            }).toThrowError(CertificateSignature);
+            }).toThrowError(CertificateSignatureMismatch);
         });
 
         test('invalid - tampered timestamp', () => {
@@ -216,7 +216,7 @@ describe('certificate', () => {
             };
             expect(() => {
                 _certificate.verify(invalidCert);
-            }).toThrowError(CertificateSignature);
+            }).toThrowError(CertificateSignatureMismatch);
         });
 
         test('valid - additional property', () => {

@@ -6,7 +6,17 @@ import {
     Secp256k1,
     type CertificateData
 } from '../../src';
-import { InvalidDataType } from '@vechain/sdk-errors';
+import {
+    CertificateSignatureMismatch,
+    InvalidDataType,
+    InvalidSecp256k1PrivateKey
+} from '@vechain/sdk-errors';
+import {
+    blake2b256 as tdk_blake2b256,
+    Certificate as tdk_certificate,
+    secp256k1,
+    secp256k1 as tdk_secp256k1
+} from 'thor-devkit';
 
 const CertificateFixturePrivateKey = HexUInt.of(
     '7582be841ca040aa940fff6c05773129e135623e41acce3e0b8ba520dc1ae26a'
@@ -23,9 +33,25 @@ const CertificateFixture: CertificateData = {
     signer: Address.ofPublicKey(
         Secp256k1.derivePublicKey(CertificateFixturePrivateKey)
     )
-        .toString()
-        .toLowerCase()
+        .toString() // Checksum case.
+        .toLowerCase() // Normalized form for certificates to be byte encoded.
 };
+
+class ExtendedCertificate extends Certificate {
+    readonly extended: string;
+
+    constructor(certificate: Certificate, extended: string) {
+        super(
+            certificate.domain,
+            certificate.payload,
+            certificate.purpose,
+            certificate.timestamp,
+            certificate.signer,
+            certificate.signature
+        );
+        this.extended = extended;
+    }
+}
 
 /**
  * Test certificate class
@@ -145,7 +171,117 @@ describe('Certificate class tests', () => {
         });
     });
 
-    describe('sign method tests', () => {});
+    describe('sign method tests', () => {
+        test('Throw if illegal private key', () => {
+            expect(() => {
+                Certificate.of(CertificateFixture).sign(
+                    HexUInt.of('c0ffee').bytes
+                );
+            }).toThrow(InvalidSecp256k1PrivateKey);
+        });
 
-    describe('verify method tests', () => {});
+        test('Return signed certificate', () => {
+            expect(
+                Certificate.of(CertificateFixture)
+                    .sign(CertificateFixturePrivateKey)
+                    .isSigned()
+            ).toBe(true);
+        });
+
+        test('Return different signatures for base and extended class objects', () => {
+            const base = Certificate.of(CertificateFixture);
+            const baseSigned = base.sign(CertificateFixturePrivateKey);
+            const pimp = new ExtendedCertificate(base, 'extended property');
+            const pimpSigned = pimp.sign(CertificateFixturePrivateKey);
+            expect(pimpSigned.signature).not.toBe(baseSigned.signature);
+        });
+
+        test('thor-dev-kit compatible', () => {
+            const expected = {
+                ...CertificateFixture,
+                // thor-dev-kit doesn't support UTF8 NFC encoding: content is ASCII.
+                payload: { ...CertificateFixture.payload, content: 'fyi' }
+            };
+            const expectedSignature = HexUInt.of(
+                tdk_secp256k1.sign(
+                    tdk_blake2b256(tdk_certificate.encode(expected)),
+                    Buffer.from(CertificateFixturePrivateKey)
+                )
+            ).toString();
+            const actual = Certificate.of(expected).sign(
+                CertificateFixturePrivateKey
+            );
+            expect(actual.signature).toEqual(expectedSignature);
+        });
+
+        test('thor-dev-kit not compatible if content not NFC normalized', () => {
+            const expectedSignature = HexUInt.of(
+                tdk_secp256k1.sign(
+                    tdk_blake2b256(tdk_certificate.encode(CertificateFixture)),
+                    Buffer.from(CertificateFixturePrivateKey)
+                )
+            ).toString();
+            const actual = Certificate.of(CertificateFixture).sign(
+                CertificateFixturePrivateKey
+            );
+            expect(actual.signature).not.toEqual(expectedSignature);
+        });
+    });
+
+    describe('verify method tests', () => {
+        test('match', () => {
+            Certificate.of(CertificateFixture)
+                .sign(CertificateFixturePrivateKey)
+                .verify();
+        });
+
+        test('mismatch <- signer', () => {
+            const signed = Certificate.of(CertificateFixture).sign(
+                CertificateFixturePrivateKey
+            );
+            const tamperKey = secp256k1.generatePrivateKey();
+            const tamper = Certificate.of({
+                ...CertificateFixture,
+                signer: Address.ofPublicKey(
+                    Secp256k1.derivePublicKey(tamperKey)
+                ).toString(),
+                signature: signed.signature
+            });
+            expect(() => {
+                tamper.verify();
+            }).toThrow(CertificateSignatureMismatch);
+        });
+
+        test('mismatch <- signature', () => {
+            const tamperKey = secp256k1.generatePrivateKey();
+            const tamper = Certificate.of(CertificateFixture).sign(tamperKey);
+            expect(() => {
+                tamper.verify();
+            }).toThrow(CertificateSignatureMismatch);
+        });
+
+        test('mismatch <- no signature', () => {
+            const unsigned = Certificate.of(CertificateFixture);
+            expect(() => {
+                unsigned.verify();
+            }).toThrow(CertificateSignatureMismatch);
+        });
+
+        test('mismatch <- tamper content', () => {
+            const signed = Certificate.of(CertificateFixture).sign(
+                CertificateFixturePrivateKey
+            );
+            const tamper = Certificate.of({
+                ...signed,
+                payload: {
+                    type: 'data',
+                    content: 'dummy'
+                },
+                signature: signed.signature
+            });
+            expect(() => {
+                tamper.verify();
+            }).toThrow(CertificateSignatureMismatch);
+        });
+    });
 });

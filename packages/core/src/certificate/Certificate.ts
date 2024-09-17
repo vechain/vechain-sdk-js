@@ -1,7 +1,10 @@
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Address, Blake2b256, HexUInt, Txt } from '../vcdm';
 import { Secp256k1 } from '../secp256k1';
-import { CertificateSignature, InvalidDataType } from '@vechain/sdk-errors';
+import {
+    CertificateSignatureMismatch,
+    InvalidDataType
+} from '@vechain/sdk-errors';
 import { type CertificateData } from './types';
 
 class Certificate implements CertificateData {
@@ -17,7 +20,7 @@ class Certificate implements CertificateData {
     readonly signer: string;
     readonly signature?: string | undefined;
 
-    constructor(
+    protected constructor(
         purpose: string,
         payload: { type: string; content: string },
         domain: string,
@@ -70,21 +73,21 @@ class Certificate implements CertificateData {
         );
     }
 
-    public static of(certifiable: CertificateData): Certificate {
+    public static of(data: CertificateData): Certificate {
         try {
             return new Certificate(
-                certifiable.purpose,
-                certifiable.payload,
-                certifiable.domain,
-                certifiable.timestamp,
-                certifiable.signer,
-                certifiable.signature
+                data.purpose,
+                data.payload,
+                data.domain,
+                data.timestamp,
+                data.signer,
+                data.signature
             );
         } catch (e) {
             throw new InvalidDataType(
                 'Certificate.of',
                 'invalid certificate data',
-                { certifiable },
+                { certifiable: data },
                 e
             );
         }
@@ -111,18 +114,18 @@ class Certificate implements CertificateData {
                     HexUInt.of(this.signature as string).bytes
                 )
             );
-            if (signer.toString().toLowerCase() === this.signer) return;
-            throw new CertificateSignature(
+            if (signer.toString().toLowerCase() !== this.signer)
+                throw new CertificateSignatureMismatch(
+                    'Certificate.verify',
+                    "signature doesn't match with signer's public key",
+                    { certificate: this }
+                );
+        } else
+            throw new CertificateSignatureMismatch(
                 'Certificate.verify',
-                "signature doesn't match with signer's public key",
+                'signature missing',
                 { certificate: this }
             );
-        }
-        throw new CertificateSignature(
-            'Certificate.verify',
-            'signature missing',
-            { certificate: this }
-        );
     }
 }
 

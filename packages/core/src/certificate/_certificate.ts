@@ -1,4 +1,4 @@
-import { CertificateSignature } from '@vechain/sdk-errors';
+import { CertificateSignatureMismatch } from '@vechain/sdk-errors';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Address, Hex, Txt, Blake2b256 } from '../vcdm';
 import { Secp256k1 } from '../secp256k1';
@@ -98,14 +98,14 @@ function sign(cert: CertificateData, privateKey: Uint8Array): CertificateData {
  *
  * @param {CertificateData} cert - The certificate to verify.
  *                             Any instance extending the {@link CertificateData} interface is supported.
- * @throws {CertificateSignature}
+ * @throws {CertificateSignatureMismatch}
  *
  * @see {encode}
  */
 function verify(cert: CertificateData): void {
     // The certificate must be signed.
     if (cert.signature === undefined || cert.signature === null) {
-        throw new CertificateSignature(
+        throw new CertificateSignatureMismatch(
             'certificate.verify()',
             "Verification failed: certificate's signature is missing.",
             { cert }
@@ -115,7 +115,7 @@ function verify(cert: CertificateData): void {
     // Invalid hexadecimal as signature.
     // PROVISIONAL: until 1119 Certificate OOP
     if (!Hex.isValid0x(cert.signature) || cert.signature.length % 2 !== 0) {
-        throw new CertificateSignature(
+        throw new CertificateSignatureMismatch(
             'certificate.verify()',
             'Verification failed: signature format is invalid.',
             { cert }
@@ -132,7 +132,7 @@ function verify(cert: CertificateData): void {
 
     // The signer's must match the signer property of certificate.
     if (signer !== cert.signer?.toLowerCase()) {
-        throw new CertificateSignature(
+        throw new CertificateSignatureMismatch(
             'certificate.verify()',
             "Verification failed: signature does not correspond to the signer's public key.",
             { cert }
