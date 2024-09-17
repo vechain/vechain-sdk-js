@@ -213,11 +213,19 @@ class Function<ABIType> {
      */
     public decodeOutput(data: BytesLike): Result {
         const resultDecoded = this.function.decodeResult(Hex.of(data));
-        if (
-            this.functionAbi instanceof FunctionFragment &&
-            this.functionAbi.outputs.length > 1
-        ) {
-            return resultDecoded as Result;
+        if (this.functionAbi instanceof FunctionFragment) {
+            if (this.functionAbi.outputs.length > 1) {
+                return this.function.parseObjectValues(
+                    resultDecoded as object
+                ) as Result;
+            } else if (
+                this.functionAbi.outputs.length === 1 &&
+                this.functionAbi.outputs[0].type === 'tuple'
+            ) {
+                return [
+                    this.function.parseObjectValues(resultDecoded as object)
+                ] as Result;
+            }
         }
         return [resultDecoded] as Result;
     }

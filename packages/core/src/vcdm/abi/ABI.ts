@@ -206,7 +206,7 @@ class ABI implements VeChainDataModel<ABI> {
      * @param {object} obj - The object to parse.
      * @returns {unknown[]} An array of values from the object, with nested arrays for nested objects.
      */
-    private parseObjectValues(obj: object): unknown[] {
+    public parseObjectValues(obj: object): unknown[] {
         const values: unknown[] = [];
 
         const recursiveParse = (currentObj: object): unknown[] => {
