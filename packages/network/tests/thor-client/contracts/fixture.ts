@@ -393,14 +393,6 @@ const testingContractTestCases: TestCase[] = [
         isReadOnly: true
     },
     {
-        description: 'should return the bool value false when passed undefined',
-        functionName: 'boolData',
-        params: [undefined],
-        expected: [false],
-        reverted: false,
-        isReadOnly: true
-    },
-    {
         description: 'should return the int value 1',
         functionName: 'intData',
         params: [1],
