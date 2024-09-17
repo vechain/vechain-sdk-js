@@ -237,8 +237,8 @@ class Function<ABIType> {
      * @returns Encoded data.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public encodeInput<TValue>(dataToEncode: TValue[]): string {
-        return this.function.encodeData(dataToEncode);
+    public encodeInput<TValue>(dataToEncode?: TValue[]): string {
+        return this.function.encodeData(dataToEncode as TValue[]);
     }
 }
 

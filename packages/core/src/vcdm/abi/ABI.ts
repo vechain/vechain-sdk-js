@@ -15,7 +15,7 @@ import {
     type AbiParameter,
     type Abi as ViemABI
 } from 'viem';
-import { fragment, type BytesLike } from '../../abi';
+import { Event as EthersEvent, type BytesLike } from '../../abi';
 import { Hex } from '../Hex';
 import { type VeChainDataModel } from '../VeChainDataModel';
 
@@ -267,7 +267,7 @@ class ABI implements VeChainDataModel<ABI> {
 }
 
 const ethersAbi = {
-    ...fragment,
+    EthersEvent,
     encode: <ValueType>(type: string | ParamType, value: ValueType): string =>
         ABI.of(
             type instanceof ParamType

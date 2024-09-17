@@ -1,7 +1,7 @@
-import { Interface as EthersInterface, type InterfaceAbi } from 'ethers';
 import { InvalidAbiDataToEncodeOrDecode } from '@vechain/sdk-errors';
+import { Interface as EthersInterface, type InterfaceAbi } from 'ethers';
 import type { BytesLike, Interface, Log, Result } from '../abi';
-import { abi } from '../abi';
+import { abi } from '../vcdm';
 
 /**
  * Creates a new Interface instance from an ABI fragment.

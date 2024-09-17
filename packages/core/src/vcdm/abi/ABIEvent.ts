@@ -13,7 +13,7 @@ import {
     type Hex as ViemHex
 } from 'viem';
 import {
-    abi as ethersAbi,
+    Event as EthersEvent,
     type EventFragment,
     type FormatType,
     type Result
@@ -127,7 +127,7 @@ class Event<ABIType> {
             } else {
                 this.event = new ABIEvent(abi as ViemABI);
             }
-            this.ethersEvent = new ethersAbi.Event(abi);
+            this.ethersEvent = new EthersEvent(abi);
             this.fragment = ethers.EventFragment.from(abi);
         } catch (error) {
             throw new InvalidAbiFragment(

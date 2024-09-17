@@ -1,13 +1,14 @@
-import { abi, coder, type FunctionFragment } from '../abi';
+import { InvalidDataType } from '@vechain/sdk-errors';
+import { type FunctionFragment } from '../abi';
+import { coder } from '../contract/coder';
 import {
     type ClauseOptions,
     type ExtendedTransactionClause,
     type TransactionClause
 } from '../transaction';
-import type { DeployParams } from './types';
 import { ERC721_ABI, VIP180_ABI } from '../utils';
-import { InvalidDataType } from '@vechain/sdk-errors';
-import { Address } from '../vcdm';
+import { Address, abi } from '../vcdm';
+import type { DeployParams } from './types';
 
 /**
  * Builds a clause for deploying a smart contract.
