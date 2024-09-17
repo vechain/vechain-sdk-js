@@ -159,7 +159,7 @@ classDiagram
         +VTHO of(FPN value)$
     }
     ABI <|-- ABIItem
-    ABIItem <|-- ABIFunction
+    ABIItem <|-- ABIEvent
     ABIItem <|-- ABIFunction
     Account "1" ..|> "1" Address : has
     Account "1" ..|> "1" Currency : has
