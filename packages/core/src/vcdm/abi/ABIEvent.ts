@@ -12,9 +12,15 @@ import {
     decodeEventLog as viemDecodeEventLog,
     type Hex as ViemHex
 } from 'viem';
-import { abi as ethersAbi, type FormatType, type Result } from '../../abi';
+import {
+    abi as ethersAbi,
+    type EventFragment,
+    type FormatType,
+    type Result
+} from '../../abi';
 import { Hex } from '../Hex';
 import { ABI } from './ABI';
+import { ethers } from 'ethers';
 
 type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
 
@@ -109,6 +115,7 @@ class Event<ABIType> {
     private readonly event: ABIEvent;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private readonly ethersEvent: any;
+    public readonly fragment: EventFragment;
     constructor(abi: ABIType) {
         try {
             if (typeof abi === 'string') {
@@ -121,6 +128,7 @@ class Event<ABIType> {
                 this.event = new ABIEvent(abi as ViemABI);
             }
             this.ethersEvent = new ethersAbi.Event(abi);
+            this.fragment = ethers.EventFragment.from(abi);
         } catch (error) {
             throw new InvalidAbiFragment(
                 'abi.Event constructor',
