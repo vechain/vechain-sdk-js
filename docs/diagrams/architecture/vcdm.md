@@ -9,6 +9,7 @@ classDiagram
     }
     class ABIItem {
         <<abstract>>
+        +string signatureHash()
     }
     class ABIFunction {
         +DecodeFunctionDataReturnType decodeData(Hex data)
