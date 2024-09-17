@@ -109,8 +109,7 @@ class Event<ABIType> {
     ];
 
     private readonly event: ABIEvent;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    private readonly ethersEvent: any;
+    private readonly ethersEvent: EthersEvent<ABIType>;
     public readonly fragment: EventFragment;
     constructor(abi: ABIType) {
         try {
@@ -184,7 +183,6 @@ class Event<ABIType> {
         data: string;
         topics: string[];
     } {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         return this.ethersEvent.encodeEventLog(dataToEncode);
     }
 
