@@ -10,7 +10,7 @@ import { ABI } from './ABI';
 
 /**
  * Represents an ABI (Application Binary Interface) item.
- * @extends VeChainDataModel
+ * @extends ABI
  */
 abstract class ABIItem extends ABI {
     protected readonly signature: ViemABI;

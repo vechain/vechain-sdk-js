@@ -14,7 +14,7 @@ import { Hex } from '../Hex';
 import { type VeChainDataModel } from '../VeChainDataModel';
 
 /**
- * Represents an ABI (Application Binary Interface) item.
+ * Represents an ABI (Application Binary Interface).
  * @extends VeChainDataModel
  */
 class ABI implements VeChainDataModel<ABI> {
