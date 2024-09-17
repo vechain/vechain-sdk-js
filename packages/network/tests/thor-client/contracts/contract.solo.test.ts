@@ -454,7 +454,8 @@ describe('ThorClient - Contracts', () => {
         const deployedTwoValuesReturnContractContract =
             await twoValuesReturnContract.waitForDeployment();
 
-        const [firstResultA, firstResultB] = await deployedTwoValuesReturnContractContract.read.a();
+        const [firstResultA, firstResultB] =
+            await deployedTwoValuesReturnContractContract.read.a();
         const resultB = await deployedTwoValuesReturnContractContract.read.b();
 
         expect(firstResultA).toEqual(1n);
