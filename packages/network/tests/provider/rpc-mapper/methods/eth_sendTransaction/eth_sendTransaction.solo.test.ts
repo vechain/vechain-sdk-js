@@ -104,7 +104,7 @@ describe('RPC Mapper - eth_sendTransaction method tests', () => {
                                     .sender.address,
                                 to: THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE
                                     .receiver.address,
-                                value: '0x111'
+                                value
                             }
                         ]
                     })) as string;

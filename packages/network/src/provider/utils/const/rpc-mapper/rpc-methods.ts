@@ -48,6 +48,7 @@ enum RPC_METHODS {
     txpool_contentFrom = 'txpool_contentFrom',
     txpool_content = 'txpool_content',
     txpool_status = 'txpool_status',
+    eth_signTransaction = 'eth_signTransaction',
 
     /**
      * TO BE IMPLEMENTED METHODS:
@@ -90,8 +91,7 @@ enum RPC_METHODS {
     eth_createAccessList = 'eth_createAccessList',
     eth_getBlockReceipts = 'eth_getBlockReceipts',
     eth_getProof = 'eth_getProof',
-    eth_maxPriorityFeePerGas = 'eth_maxPriorityFeePerGas',
-    eth_signTransaction = 'eth_signTransaction'
+    eth_maxPriorityFeePerGas = 'eth_maxPriorityFeePerGas'
 }
 
 export { RPC_METHODS };
