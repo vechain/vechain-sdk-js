@@ -9,7 +9,7 @@ const UnitsFixture = {
 };
 
 /**
- * Test Account class.
+ * Test Units class.
  * @group unit/vcdm
  */
 describe('Units namespace tests', () => {
