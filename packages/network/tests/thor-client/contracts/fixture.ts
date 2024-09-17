@@ -498,7 +498,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the passed enum',
         functionName: 'enumData',
         params: [ExampleEnum.SMALL],
-        expected: [BigInt(ExampleEnum.SMALL)],
+        expected: [ExampleEnum.SMALL],
         reverted: false,
         isReadOnly: true
     },
@@ -523,7 +523,7 @@ const testingContractTestCases: TestCase[] = [
             [123n, 456n, 789n],
             [123n, 456n, 789n, 323n, 123n],
             [10n, 'test'],
-            BigInt(ExampleEnum.SMALL)
+            ExampleEnum.SMALL
         ],
         reverted: false,
         isReadOnly: true
@@ -532,7 +532,7 @@ const testingContractTestCases: TestCase[] = [
         description: 'should return the passed multiple int values',
         functionName: 'multipleIntData',
         params: [1, 222, 333, 287274, 390343843, 123223663],
-        expected: [1n, 222n, 333n, 287274n, 390343843n, 123223663n],
+        expected: [1, 222, 333, 287274n, 390343843n, 123223663n],
         reverted: false,
         isReadOnly: true
     }
