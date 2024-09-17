@@ -18,8 +18,8 @@ import {
     decodeEventLog as viemDecodeEventLog,
     type Hex as ViemHex
 } from 'viem';
-import { Event as EthersEvent } from '../../abi';
 import { Hex } from '../Hex';
+import { ABIEthersEvent } from './ABIEthersEvent';
 import { ABIItem } from './ABIItem';
 
 type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
@@ -109,7 +109,7 @@ class Event<ABIType> {
     ];
 
     private readonly event: ABIEvent;
-    private readonly ethersEvent: EthersEvent<ABIType>;
+    private readonly ethersEvent: ABIEthersEvent<ABIType>;
     public readonly fragment: EventFragment;
     constructor(abi: ABIType) {
         try {
@@ -122,7 +122,7 @@ class Event<ABIType> {
             } else {
                 this.event = new ABIEvent(abi as ViemABI);
             }
-            this.ethersEvent = new EthersEvent(abi);
+            this.ethersEvent = new ABIEthersEvent(abi);
             this.fragment = ethers.EventFragment.from(abi);
         } catch (error) {
             throw new InvalidAbiFragment(

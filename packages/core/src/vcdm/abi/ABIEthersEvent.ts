@@ -4,12 +4,13 @@ import {
 } from '@vechain/sdk-errors';
 import { ethers, type EventFragment, type Interface } from 'ethers';
 
+/** DISCLAIMER: To be removed once this discussion is addressed {@link https://github.com/wevm/viem/discussions/2676} */
 /**
- * Represents an event call in the Event/Function ABI.
+ * Represents an event call in the Event ABI.
  *
  * @template ABIType - The ABI fragment type.
  */
-class Event<ABIType> {
+class ABIEthersEvent<ABIType> {
     /**
      * The main fragment handled by ethers.js.
      */
@@ -67,4 +68,4 @@ class Event<ABIType> {
     }
 }
 
-export { Event };
+export { ABIEthersEvent };
