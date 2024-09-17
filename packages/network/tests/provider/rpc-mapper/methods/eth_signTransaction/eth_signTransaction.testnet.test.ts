@@ -97,7 +97,7 @@ describe('RPC Mapper - eth_signTransaction method tests', () => {
                     expect(Hex.isValid0x(signedTransaction)).toBe(true);
                 }
             }
-        });
+        }, 8000);
     });
 
     /**
