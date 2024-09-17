@@ -233,6 +233,7 @@ class ABI implements VeChainDataModel<ABI> {
     }
 }
 
+// Backwards compatibility, ethersAbi should be removed as part of #1184
 const ethersAbi = {
     EthersEvent,
     encode: <ValueType>(type: string | ParamType, value: ValueType): string =>

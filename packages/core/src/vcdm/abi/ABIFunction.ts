@@ -20,7 +20,7 @@ import { ABIItem } from './ABIItem';
 
 /**
  * Represents a function call in the Function ABI.
- * @extends ABI
+ * @extends ABIItem
  */
 class ABIFunction extends ABIItem {
     /**

@@ -26,7 +26,7 @@ type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
 
 /**
  * Represents a function call in the Event ABI.
- * @extends ABI
+ * @extends ABIItem
  */
 class ABIEvent extends ABIItem {
     /**
