@@ -51,6 +51,24 @@ interface TransactionBodyOptions {
     expiration?: number;
 
     /**
+     * Transaction gas.
+     */
+    gas?: string | number;
+
+    /**
+     *  The maximum amount of gas to allow this transaction to consume.
+     */
+    gasLimit?: string;
+
+    /**
+     *  The gas price to use for legacy transactions or transactions on
+     *  legacy networks.
+     *
+     *  Most of the time the ``max*FeePerGas`` is preferred.
+     */
+    gasPrice?: string;
+
+    /**
      * Coefficient used to calculate the gas price for the transaction.
      * Value must be between 0 and 255.
      */

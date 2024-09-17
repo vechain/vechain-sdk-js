@@ -14,7 +14,6 @@ import type {
     ContractCallOptions,
     ContractCallResult,
     ContractClause,
-    ContractGasOptions,
     ContractTransactionOptions
 } from './types';
 
@@ -156,8 +155,7 @@ class ContractsModule {
         contractAddress: string,
         functionFragment: FunctionFragment,
         functionData: unknown[],
-        options?: ContractTransactionOptions,
-        gas?: ContractGasOptions
+        options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
         // Sign the transaction
         const id = await signer.sendTransaction({
@@ -170,10 +168,16 @@ class ContractsModule {
                     options?.value ?? 0
                 )
             ],
-            gas: gas?.gas,
-            gasLimit: gas?.gasLimit,
-            gasPrice: gas?.gasPrice,
-            gasPriceCoef: gas?.gasPriceCoef
+            gas: options?.gas,
+            gasLimit: options?.gasLimit,
+            gasPrice: options?.gasPrice,
+            gasPriceCoef: options?.gasPriceCoef,
+            nonce: options?.nonce,
+            value: options?.value,
+            dependsOn: options?.dependsOn,
+            expiration: options?.expiration,
+            chainTag: options?.chainTag,
+            blockRef: options?.blockRef
         });
 
         return {
@@ -191,14 +195,20 @@ class ContractsModule {
     public async executeMultipleClausesTransaction(
         clauses: ContractClause[],
         signer: VeChainSigner,
-        gas?: ContractGasOptions
+        options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
         const id = await signer.sendTransaction({
             clauses: clauses.map((clause) => clause.clause),
-            gas: gas?.gas,
-            gasLimit: gas?.gasLimit,
-            gasPrice: gas?.gasPrice,
-            gasPriceCoef: gas?.gasPriceCoef
+            gas: options?.gas,
+            gasLimit: options?.gasLimit,
+            gasPrice: options?.gasPrice,
+            gasPriceCoef: options?.gasPriceCoef,
+            nonce: options?.nonce,
+            value: options?.value,
+            dependsOn: options?.dependsOn,
+            expiration: options?.expiration,
+            chainTag: options?.chainTag,
+            blockRef: options?.blockRef
         });
 
         return {

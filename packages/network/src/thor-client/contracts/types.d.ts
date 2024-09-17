@@ -53,20 +53,9 @@ interface ContractClause {
     functionFragment: vechain_sdk_core_ethers.FunctionFragment;
 }
 
-/**
- * Represents the options to define a custom gas calculation when calling executeTransaction or executeMultipleClausesTransaction methods.
- */
-interface ContractGasOptions {
-    gas?: string | number;
-    gasLimit?: string;
-    gasPrice?: string;
-    gasPriceCoef?: number;
-}
-
 export type {
     ContractTransactionOptions,
     ContractCallOptions,
     ContractCallResult,
-    ContractClause,
-    ContractGasOptions
+    ContractClause
 };
