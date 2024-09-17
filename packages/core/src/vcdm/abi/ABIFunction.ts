@@ -16,6 +16,7 @@ import {
 import { type BytesLike, type FormatType, type Result } from '../../abi';
 import { Hex } from '../Hex';
 import { ABI } from './ABI';
+import { FunctionFragment } from 'ethers';
 
 /**
  * Represents a function call in the Function ABI.
@@ -120,6 +121,7 @@ class Function<ABIType> {
     ];
 
     private readonly function: ABIFunction;
+    private readonly functionAbi: ABIType;
     constructor(abi: ABIType) {
         try {
             if (typeof abi === 'string') {
@@ -128,9 +130,14 @@ class Function<ABIType> {
                 this.function = new ABIFunction(
                     stringAbi.replace(' list', '').replace('tuple', '')
                 );
+            } else if (abi instanceof FunctionFragment) {
+                this.function = new ABIFunction(
+                    abi.format('full').replace(' list', '').replace('tuple', '')
+                );
             } else {
                 this.function = new ABIFunction(abi as ViemABI);
             }
+            this.functionAbi = abi;
         } catch (error) {
             throw new InvalidAbiFragment(
                 'abi.Function constructor',
@@ -206,6 +213,12 @@ class Function<ABIType> {
      */
     public decodeOutput(data: BytesLike): Result {
         const resultDecoded = this.function.decodeResult(Hex.of(data));
+        if (
+            this.functionAbi instanceof FunctionFragment &&
+            this.functionAbi.outputs.length > 1
+        ) {
+            return resultDecoded as Result;
+        }
         return [resultDecoded] as Result;
     }
 
