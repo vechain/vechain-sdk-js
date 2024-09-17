@@ -329,7 +329,6 @@ describe('VeChain provider tests - solo', () => {
                 .createInterface(erc721Contract.abi)
                 .getFunction('mintItem') as FunctionFragment,
             [TEST_ACCOUNT.address],
-            {},
             { gas: gas.totalGas }
         );
 
