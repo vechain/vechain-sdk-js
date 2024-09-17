@@ -5,7 +5,7 @@
  * Certificates are primarily used for purposes like attestation, validation, and verification of data authenticity.
  * They are used as proofs of authenticity and origin for data exchanged within the VeChain ecosystem.
  */
-interface Certificate {
+interface CertificateData {
     /**
      * The purpose field indicates the intended use or context of the certificate.
      * For example, it could be used for identification, verification, or attestation.
@@ -46,4 +46,4 @@ interface Certificate {
     signature?: string;
 }
 
-export type { Certificate };
+export type { CertificateData };

@@ -1,6 +1,6 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { Hex } from '../../src/vcdm/Hex';
-import { certificate, type Certificate } from '../../src';
+import { Hex } from '../../src';
+import { _certificate, type CertificateData } from '../../src';
 import { cert, certPrivateKey } from './fixture';
 import { describe, expect, test } from '@jest/globals';
 import { privateKey } from '../secp256k1/fixture';
@@ -14,7 +14,7 @@ import {
     secp256k1 as tdk_secp256k1
 } from 'thor-devkit';
 
-function isEqualEnough(cert: Certificate, other: Certificate): boolean {
+function isEqualEnough(cert: CertificateData, other: CertificateData): boolean {
     return (
         cert.purpose === other.purpose &&
         cert.payload.type === other.payload.type &&
@@ -45,7 +45,7 @@ describe('certificate', () => {
                 )
             ).toString();
             expect(tdkSignature).toEqual(
-                certificate.sign(tdkCompatibleCert, certPrivateKey).signature
+                _certificate.sign(tdkCompatibleCert, certPrivateKey).signature
             );
         });
 
@@ -58,28 +58,28 @@ describe('certificate', () => {
                 )
             ).toString();
             expect(tdkSignature).not.toEqual(
-                certificate.sign(cert, certPrivateKey).signature
+                _certificate.sign(cert, certPrivateKey).signature
             );
         });
 
         test('invalid - illegal private key', () => {
             expect(() => {
-                certificate.sign(cert, n_utils.hexToBytes('c0ffeec1b8'));
+                _certificate.sign(cert, n_utils.hexToBytes('c0ffeec1b8'));
             }).toThrowError(InvalidSecp256k1PrivateKey);
         });
 
         test('valid - challenge signer case sensitivity', () => {
             const hCert = { ...cert, signer: cert.signer.toUpperCase() };
             const lCert = { ...cert, signer: cert.signer.toLowerCase() };
-            const signedCert = certificate.sign(cert, privateKey);
-            const hSignedCert = certificate.sign(hCert, privateKey);
-            const lSignedCert = certificate.sign(lCert, privateKey);
+            const signedCert = _certificate.sign(cert, privateKey);
+            const hSignedCert = _certificate.sign(hCert, privateKey);
+            const lSignedCert = _certificate.sign(lCert, privateKey);
             expect(signedCert.signature).toEqual(hSignedCert.signature);
             expect(signedCert.signature).toEqual(lSignedCert.signature);
         });
 
         test('valid - challenge utf8 normalization', () => {
-            const signedCert = certificate.sign(cert, certPrivateKey);
+            const signedCert = _certificate.sign(cert, certPrivateKey);
             expect(isEqualEnough(cert, signedCert)).toBeTruthy();
             expect(signedCert.signature).toBeDefined();
         });
@@ -90,8 +90,8 @@ describe('certificate', () => {
                 extended: 'property',
                 signature: '0x00'
             };
-            const signedCert = certificate.sign(cert, certPrivateKey);
-            const signedExtendedCertificate = certificate.sign(
+            const signedCert = _certificate.sign(cert, certPrivateKey);
+            const signedExtendedCertificate = _certificate.sign(
                 extendedCert,
                 certPrivateKey
             );
@@ -120,19 +120,19 @@ describe('certificate', () => {
                 signature: tdkSignature
             };
             expect(() => {
-                certificate.verify(tdkSignedCert);
+                _certificate.verify(tdkSignedCert);
             }).not.toThrowError();
         });
 
         test('invalid - illegal signer address', () => {
-            const signedCert = certificate.sign(cert, certPrivateKey);
+            const signedCert = _certificate.sign(cert, certPrivateKey);
             const invalidCert = {
                 ...cert,
                 signer: '0xC1b8C0fFeE',
                 signature: signedCert.signature
             };
             expect(() => {
-                certificate.verify(invalidCert);
+                _certificate.verify(invalidCert);
             }).toThrowError(CertificateSignature);
         });
 
@@ -142,7 +142,7 @@ describe('certificate', () => {
                 signature: 'C0fFeE'
             };
             expect(() => {
-                certificate.verify(invalidCert);
+                _certificate.verify(invalidCert);
             }).toThrowError(CertificateSignature);
         });
 
@@ -152,36 +152,36 @@ describe('certificate', () => {
                 signature: undefined
             };
             expect(() => {
-                certificate.verify(invalidCert);
+                _certificate.verify(invalidCert);
             }).toThrowError(CertificateSignature);
         });
 
         test('invalid - illegal signer address', () => {
-            const signedCert = certificate.sign(cert, certPrivateKey);
+            const signedCert = _certificate.sign(cert, certPrivateKey);
             const invalidCert = {
                 ...cert,
                 signer: '0xC1b8C0fFeE',
                 signature: signedCert.signature
             };
             expect(() => {
-                certificate.verify(invalidCert);
+                _certificate.verify(invalidCert);
             }).toThrowError(CertificateSignature);
         });
 
         test('invalid - tampered purpose', () => {
-            const signedCert = certificate.sign(cert, certPrivateKey);
+            const signedCert = _certificate.sign(cert, certPrivateKey);
             const invalidCert = {
                 ...cert,
                 purpose: 'tamper',
                 signature: signedCert.signature
             };
             expect(() => {
-                certificate.verify(invalidCert);
+                _certificate.verify(invalidCert);
             }).toThrowError(CertificateSignature);
         });
 
         test('invalid - tampered payload', () => {
-            const signedCert = certificate.sign(cert, certPrivateKey);
+            const signedCert = _certificate.sign(cert, certPrivateKey);
             const invalidCert = {
                 ...cert,
                 payload: {
@@ -191,50 +191,50 @@ describe('certificate', () => {
                 signature: signedCert.signature
             };
             expect(() => {
-                certificate.verify(invalidCert);
+                _certificate.verify(invalidCert);
             }).toThrowError(CertificateSignature);
         });
 
         test('invalid - tampered domain', () => {
-            const signedCert = certificate.sign(cert, certPrivateKey);
+            const signedCert = _certificate.sign(cert, certPrivateKey);
             const invalidCert = {
                 ...cert,
                 domain: 'tampered',
                 signature: signedCert.signature
             };
             expect(() => {
-                certificate.verify(invalidCert);
+                _certificate.verify(invalidCert);
             }).toThrowError(CertificateSignature);
         });
 
         test('invalid - tampered timestamp', () => {
-            const signedCert = certificate.sign(cert, certPrivateKey);
+            const signedCert = _certificate.sign(cert, certPrivateKey);
             const invalidCert = {
                 ...cert,
                 timestamp: cert.timestamp + 1,
                 signature: signedCert.signature
             };
             expect(() => {
-                certificate.verify(invalidCert);
+                _certificate.verify(invalidCert);
             }).toThrowError(CertificateSignature);
         });
 
         test('valid - additional property', () => {
-            const signedCert = certificate.sign(cert, certPrivateKey);
+            const signedCert = _certificate.sign(cert, certPrivateKey);
             const ectendedCert = {
                 ...cert,
                 extendedProperty: 'extended property',
                 signature: signedCert.signature
             };
             expect(() => {
-                certificate.verify(ectendedCert);
+                _certificate.verify(ectendedCert);
             }).not.toThrowError();
         });
 
         test('valid - happy path', () => {
-            const signedCert = certificate.sign(cert, certPrivateKey);
+            const signedCert = _certificate.sign(cert, certPrivateKey);
             expect(() => {
-                certificate.verify(signedCert);
+                _certificate.verify(signedCert);
             }).not.toThrowError();
         });
     });
