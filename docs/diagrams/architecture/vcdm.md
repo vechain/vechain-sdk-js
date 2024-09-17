@@ -23,10 +23,11 @@ classDiagram
         +BloomFilter join(BloomFilter other)
         +BloomFilter of(Hex[]|Uint8Array[] ...keys)$
     }
+    class Coin
     class Contract
     class Currency {
-       +Txt code
-       +FPN value
+        +Txt code
+        +FPN value
     }
     class ExternallyOwnedAccount
     class FPN {
@@ -59,6 +60,7 @@ classDiagram
         +boolean lte(FPN that)
         +FPN minus(FPN that)
         +FPN modulo(FPN that)
+        +FPN negated()
         +FPN of(bigint|number|string exp)$
         +FPN plus(FPN that)
         +FPN pow(FPN that)
@@ -132,14 +134,17 @@ classDiagram
       +boolean isNumber()
     }
     class VET {
+        +VET of(FPN value)$
     }
     class VTHO {
+        +VTHO of(FPN value)$
     }
     Account "1" ..|> "1" Address : has
     Account "1" ..|> "1" Currency : has
     Account <|-- Contract
-    Currency <|.. VET
-    Currency <|.. VTHO
+    Coin <|-- VET
+    Coin <|-- VTHO
+    Currency <|.. Coin
     FPN <|-- VET
     FPN <|-- VTHO
     Hash <|.. Blake2b256
@@ -157,6 +162,7 @@ classDiagram
     Txt <|-- Revision
     Txt <|-- Mnemonic
     VeChainDataModel <|.. BloomFilter
+    VeChainDataModel <|.. Currency
     VeChainDataModel <|.. FPN
     VeChainDataModel <|.. Hex
     VeChainDataModel <|.. Txt
