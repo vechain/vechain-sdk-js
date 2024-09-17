@@ -325,7 +325,6 @@ class TransactionsModule {
             expiration: options?.expiration ?? 32,
             gas,
             gasPriceCoef: options?.gasPriceCoef ?? 0,
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access
             nonce: options?.nonce ?? Hex.random(8).toString(),
             reserved:
                 options?.isDelegated === true ? { features: 1 } : undefined

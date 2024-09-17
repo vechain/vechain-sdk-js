@@ -7,12 +7,10 @@ import {
     type InterfaceAbi
 } from '@vechain/sdk-core';
 import type {
-    ContractGasOptions,
     ContractCallOptions,
     ContractCallResult,
     ContractClause,
-    ContractTransactionOptions,
-    DelegationOptions
+    ContractTransactionOptions
 } from './types';
 import {
     type SendTransactionResult,
@@ -163,8 +161,7 @@ class ContractsModule {
         contractAddress: string,
         functionFragment: FunctionFragment,
         functionData: unknown[],
-        options?: ContractTransactionOptions,
-        gas?: ContractGasOptions
+        options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
         // Sign the transaction
         const id = await signer.sendTransaction({
@@ -177,10 +174,10 @@ class ContractsModule {
                     options?.value ?? 0
                 )
             ],
-            gas: gas?.gas,
-            gasLimit: gas?.gasLimit,
-            gasPrice: gas?.gasPrice,
-            gasPriceCoef: gas?.gasPriceCoef
+            gas: options?.gas,
+            gasLimit: options?.gasLimit,
+            gasPrice: options?.gasPrice,
+            gasPriceCoef: options?.gasPriceCoef
         });
 
         return {
@@ -198,16 +195,15 @@ class ContractsModule {
     public async executeMultipleClausesTransaction(
         clauses: ContractClause[],
         signer: VeChainSigner,
-        gas?: ContractGasOptions,
-        delegation?: DelegationOptions
+        options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
         const id = await signer.sendTransaction({
             clauses: clauses.map((clause) => clause.clause),
-            gas: gas?.gas,
-            gasLimit: gas?.gasLimit,
-            gasPrice: gas?.gasPrice,
-            gasPriceCoef: gas?.gasPriceCoef,
-            reserved: delegation
+            gas: options?.gas,
+            gasLimit: options?.gasLimit,
+            gasPrice: options?.gasPrice,
+            gasPriceCoef: options?.gasPriceCoef,
+
         });
 
         return {
