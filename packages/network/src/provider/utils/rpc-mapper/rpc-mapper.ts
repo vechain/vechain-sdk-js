@@ -485,10 +485,9 @@ const RPCMethodsMap = (
                 return await ethMaxPriorityFeePerGas();
             },
 
-        [RPC_METHODS.eth_signTransaction]:
-            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
-                return await ethSignTransaction();
-            },
+        [RPC_METHODS.eth_signTransaction]: async (params): Promise<string> => {
+            return await ethSignTransaction(thorClient, params, provider);
+        },
 
         [RPC_METHODS.web3_sha3]: async (params): Promise<string> => {
             return await web3Sha3(params);
