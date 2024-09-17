@@ -1,5 +1,5 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { type FunctionFragment } from '../abi';
+import { type FunctionFragment } from 'ethers';
 import { coder } from '../contract/coder';
 import {
     type ClauseOptions,

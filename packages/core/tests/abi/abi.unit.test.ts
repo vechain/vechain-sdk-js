@@ -5,8 +5,8 @@ import {
     InvalidAbiSignatureFormat,
     stringifyData
 } from '@vechain/sdk-errors';
-import { type ethers, ParamType } from 'ethers';
-import { abi, type FormatType } from '../../src';
+import { ParamType, type ethers, type FormatType } from 'ethers';
+import { abi } from '../../src';
 import {
     encodedDecodedInvalidValues,
     encodedDecodedValues,

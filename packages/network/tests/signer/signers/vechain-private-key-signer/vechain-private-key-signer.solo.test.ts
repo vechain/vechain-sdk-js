@@ -3,10 +3,10 @@ import {
     Address,
     clauseBuilder,
     coder,
-    type FunctionFragment,
     HexUInt,
     TransactionHandler
 } from '@vechain/sdk-core';
+import { type FunctionFragment } from 'ethers';
 import {
     ProviderInternalBaseWallet,
     signerUtils,

@@ -2,8 +2,7 @@ import {
     InvalidAbiDataToEncodeOrDecode,
     InvalidAbiFragment
 } from '@vechain/sdk-errors';
-import { ethers } from 'ethers';
-import { type EventFragment, type Interface } from './types';
+import { ethers, type EventFragment, type Interface } from 'ethers';
 
 /**
  * Represents an event call in the Event/Function ABI.

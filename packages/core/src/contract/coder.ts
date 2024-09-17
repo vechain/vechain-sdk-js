@@ -1,6 +1,12 @@
 import { InvalidAbiDataToEncodeOrDecode } from '@vechain/sdk-errors';
-import { Interface as EthersInterface, type InterfaceAbi } from 'ethers';
-import type { BytesLike, Interface, Log, Result } from '../abi';
+import {
+    Interface as EthersInterface,
+    type BytesLike,
+    type Interface,
+    type InterfaceAbi,
+    type LogDescription,
+    type Result
+} from 'ethers';
 import { abi } from '../vcdm';
 
 /**
@@ -179,14 +185,14 @@ function decodeEventLog(
  * @param interfaceABI - The ABI (Application Binary Interface) of the contract.
  * @param {string} data - The hexadecimal string of the data field in the log.
  * @param {string[]} topics - An array of hexadecimal strings representing the topics of the log.
- * @returns {Log | null} - A `Log` object representing the decoded log or null if decoding fails.
+ * @returns {LogDescription | null} - A `Log` object representing the decoded log or null if decoding fails.
  * @throws {InvalidAbiDataToEncodeOrDecode}
  */
 function parseLog(
     interfaceABI: InterfaceAbi,
     data: string,
     topics: string[]
-): Log | null {
+): LogDescription | null {
     try {
         const contractInterface = createInterface(interfaceABI);
         return contractInterface.parseLog({ topics, data });

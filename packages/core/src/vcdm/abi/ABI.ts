@@ -2,14 +2,14 @@ import {
     InvalidAbiDataToEncodeOrDecode,
     InvalidOperation
 } from '@vechain/sdk-errors';
-import { ParamType } from 'ethers';
+import { ParamType, type BytesLike } from 'ethers';
 import {
     decodeAbiParameters,
     encodeAbiParameters,
     parseAbiParameters,
     type AbiParameter
 } from 'viem';
-import { Event as EthersEvent, type BytesLike } from '../../abi';
+import { Event as EthersEvent } from '../../abi';
 import { Hex } from '../Hex';
 import { type VeChainDataModel } from '../VeChainDataModel';
 

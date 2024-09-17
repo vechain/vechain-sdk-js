@@ -1,18 +1,12 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
 
-import { JSONRPCMethodNotFound } from '@vechain/sdk-errors';
-import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
-import {
-    deployERC20Contract,
-    deployERC721Contract,
-    waitForMessage
-} from '../helpers';
 import {
     clauseBuilder,
     coder,
-    type TransactionClause,
-    type FunctionFragment
+    type TransactionClause
 } from '@vechain/sdk-core';
+import { JSONRPCMethodNotFound } from '@vechain/sdk-errors';
+import { type FunctionFragment } from 'ethers';
 import {
     ProviderInternalBaseWallet,
     type SubscriptionEvent,
@@ -21,6 +15,12 @@ import {
     VeChainProvider,
     type VeChainSigner
 } from '../../../../src';
+import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
+import {
+    deployERC20Contract,
+    deployERC721Contract,
+    waitForMessage
+} from '../helpers';
 
 /**
  *VeChain provider tests - Solo Network

@@ -3,7 +3,12 @@ import {
     InvalidAbiFragment,
     InvalidAbiSignatureFormat
 } from '@vechain/sdk-errors';
-import { ethers } from 'ethers';
+import {
+    ethers,
+    type EventFragment,
+    type FormatType,
+    type Result
+} from 'ethers';
 import {
     type AbiEvent,
     type DecodeEventLogReturnType,
@@ -13,12 +18,7 @@ import {
     decodeEventLog as viemDecodeEventLog,
     type Hex as ViemHex
 } from 'viem';
-import {
-    Event as EthersEvent,
-    type EventFragment,
-    type FormatType,
-    type Result
-} from '../../abi';
+import { Event as EthersEvent } from '../../abi';
 import { Hex } from '../Hex';
 import { ABIItem } from './ABIItem';
 

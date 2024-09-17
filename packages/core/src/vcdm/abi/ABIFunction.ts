@@ -3,7 +3,12 @@ import {
     InvalidAbiFragment,
     InvalidAbiSignatureFormat
 } from '@vechain/sdk-errors';
-import { FunctionFragment } from 'ethers';
+import {
+    type BytesLike,
+    type FormatType,
+    FunctionFragment,
+    type Result
+} from 'ethers';
 import {
     decodeFunctionData,
     type DecodeFunctionDataReturnType,
@@ -14,7 +19,6 @@ import {
     type Abi as ViemABI,
     type Hex as ViemHex
 } from 'viem';
-import { type BytesLike, type FormatType, type Result } from '../../abi';
 import { Hex } from '../Hex';
 import { ABIItem } from './ABIItem';
 

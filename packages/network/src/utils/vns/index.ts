@@ -1,10 +1,7 @@
-import { NetworkContracts } from './addresses';
+import { Address, ZERO_ADDRESS } from '@vechain/sdk-core';
+import { type FunctionFragment } from 'ethers';
 import { type ThorClient } from '../../thor-client';
-import {
-    Address,
-    type FunctionFragment,
-    ZERO_ADDRESS
-} from '@vechain/sdk-core';
+import { NetworkContracts } from './addresses';
 
 /**
  * Returns a single address or null for a name resolved at vet.domains
