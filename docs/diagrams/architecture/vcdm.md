@@ -1,5 +1,24 @@
 ```mermaid
 classDiagram
+    class ABI {
+        +ABI of(string|AbiParameter[] types,unknown[] values)$
+        +ABI ofEncoded(string|AbiParameter[] types,string|Uint8Array[] dataEncoded)$
+        +unknown[] parseObjectValues(object obj)
+        +ReturnType getFirstDecodedValue<ReturnType>(object obj)
+        +Hex toHex()
+    }
+    class ABIItem {
+        <<abstract>>
+    }
+    class ABIFunction {
+        +DecodeFunctionDataReturnType decodeData(Hex data)
+        +EncodeFunctionDataReturnType encodeData<TValue>(TValue[] dataToEncode)
+        +DecodeFunctionResultReturnType decodeResult(Hex data)
+    }
+    class ABIEvent {
+        +DecodeEventLogReturnType decodeEventLog(event)
+        +EncodeEventTopicsReturnType encodeFilterTopics<TValue>(TValue[] event)
+    }
     class Account {
         #address: Address
         #balance: Currency
@@ -29,7 +48,6 @@ classDiagram
         +Txt code
         +FPN value
     }
-    class ExternallyOwnedAccount
     class FPN {
         +FPN NaN$
         +FPN NEGATIVE_INFINITY$
@@ -139,6 +157,9 @@ classDiagram
     class VTHO {
         +VTHO of(FPN value)$
     }
+    ABI <|-- ABIItem
+    ABIItem <|-- ABIFunction
+    ABIItem <|-- ABIFunction
     Account "1" ..|> "1" Address : has
     Account "1" ..|> "1" Currency : has
     Account <|-- Contract
@@ -161,6 +182,7 @@ classDiagram
     String <|-- Txt
     Txt <|-- Revision
     Txt <|-- Mnemonic
+    VeChainDataModel <|.. ABI
     VeChainDataModel <|.. BloomFilter
     VeChainDataModel <|.. Currency
     VeChainDataModel <|.. FPN

@@ -21,11 +21,10 @@ class ABI implements VeChainDataModel<ABI> {
     private readonly types: readonly AbiParameter[];
     private readonly values: unknown[];
     /**
-     * ABI constructor from types, values or signature.
+     * ABI constructor from types and values.
      *
      * @param {string | AbiParameter[]} types - A list of ABI types representing the types of the values.
      * @param {unknown[]} values - An array of values according to the specified ABI types.
-     * @param {string | ViemABI} signature - The signature of the ABI item (Function, Event).
      **/
     public constructor(
         types: string | AbiParameter[] = [],
