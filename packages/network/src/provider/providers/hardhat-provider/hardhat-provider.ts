@@ -68,10 +68,7 @@ class HardhatVeChainProvider extends VeChainProvider {
      * @param method - The method to call.
      * @param params - The parameters to pass to the method.
      */
-    async send(
-        method: string,
-        params?: unknown[] | undefined
-    ): Promise<unknown> {
+    async send(method: string, params?: unknown[]): Promise<unknown> {
         return await this.request({
             method,
             params

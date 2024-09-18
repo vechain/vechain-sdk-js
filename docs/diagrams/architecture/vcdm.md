@@ -86,9 +86,6 @@ classDiagram
         +FPN sqrt()
         +FPN times(FPN that)
     }
-    class Hash {
-        <<interface>>
-    }
     class Hex {
         +Hex abs
         +number sign
@@ -169,9 +166,6 @@ classDiagram
     Currency <|.. Coin
     FPN <|-- VET
     FPN <|-- VTHO
-    Hash <|.. Blake2b256
-    Hash <|.. Keccak256
-    Hash <|.. Sha256
     Hex <|-- HexInt
     HexInt <|-- HexUInt
     HexUInt <|-- Address

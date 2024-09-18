@@ -1,7 +1,5 @@
-import { type Coin, FPN, Txt } from '../../../src';
-import { VET } from '../../../src/vcdm/currency/VET';
+import { type Coin, FPN, Txt, VET, VTHO } from '../../../src';
 import { expect } from '@jest/globals';
-import { VTHO } from '../../../src/vcdm/currency/VTHO';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
 const CoinFixure = {

@@ -36,10 +36,7 @@ describe('Hardhat factory adapter tests', () => {
         expect(thorClient).toBeDefined();
 
         provider.thorClient.transactions.waitForTransaction = jest.fn(
-            async (
-                _txID: string,
-                _options?: WaitForTransactionOptions | undefined
-            ) => {
+            async (_txID: string, _options?: WaitForTransactionOptions) => {
                 return await Promise.resolve(null);
             }
         );

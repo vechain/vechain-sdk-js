@@ -1,5 +1,5 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
-import { HexUInt } from '../vcdm/HexUInt';
+import { HexUInt } from '../vcdm';
 import { randomBytes as nh_randomBytes } from '@noble/hashes/utils';
 import { secp256k1 as nc_secp256k1 } from '@noble/curves/secp256k1';
 import {
@@ -110,7 +110,8 @@ class Secp256k1 {
     public static async generatePrivateKey(): Promise<Uint8Array> {
         try {
             return nc_secp256k1.utils.randomPrivateKey();
-        } catch (error) {
+            //  eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (e) {
             // Generate an ECDSA key pair
             const cryptoKey = await global.crypto.subtle.generateKey(
                 {
@@ -199,10 +200,11 @@ class Secp256k1 {
      *  * {@link global.crypto.getRandomValues};
      * * [nh_randomBytes](https://github.com/paulmillr/noble-hashes).
      */
-    public static randomBytes(bytesLength?: number | undefined): Uint8Array {
+    public static randomBytes(bytesLength?: number): Uint8Array {
         try {
             return nh_randomBytes(bytesLength);
-        } catch (error) {
+            //  eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (e) {
             return global.crypto.getRandomValues(
                 new Uint8Array(bytesLength ?? 32)
             );
