@@ -3,41 +3,40 @@ import {
     toFunctionHash,
     toFunctionSignature,
     type AbiEvent,
-    type AbiFunction,
-    type Abi as ViemABI
+    type AbiFunction
 } from 'viem';
 import { ABI } from './ABI';
+
+type ABIItemType = AbiFunction | AbiEvent;
 
 /**
  * Represents an ABI (Application Binary Interface) item.
  * @extends ABI
  */
 abstract class ABIItem extends ABI {
-    protected readonly signature: ViemABI;
+    protected readonly signature: ABIItemType;
     public readonly stringSignature: string;
     /**
      * ABIItem constructor from item (Event, Function...) signature.
      *
      * @param {string | ViemABI} signature - The signature of the ABI item (Function, Event...).
      **/
-    public constructor(signature: string | ViemABI) {
+    public constructor(signature: string | ABIItemType) {
         super();
         switch (typeof signature) {
             case 'string':
                 this.stringSignature = signature;
                 break;
             case 'object':
-                this.stringSignature = toFunctionSignature(
-                    signature as unknown as AbiFunction | AbiEvent
-                );
+                this.stringSignature = toFunctionSignature(signature);
                 break;
             default:
                 this.stringSignature = '';
         }
         this.signature =
-            typeof signature === 'string' && signature !== ''
+            typeof signature === 'string'
                 ? parseAbiItem([signature])
-                : (signature as ViemABI);
+                : signature;
     }
 
     /**
@@ -64,4 +63,4 @@ abstract class ABIItem extends ABI {
     }
 }
 
-export { ABIItem };
+export { ABIItem, type ABIItemType };
