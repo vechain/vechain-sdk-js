@@ -18,7 +18,8 @@ class Certificate implements CertificateData {
     readonly domain: string;
     readonly timestamp: number;
     readonly signer: string;
-    readonly signature?: string | undefined;
+
+    signature?: string | undefined;
 
     protected constructor(
         purpose: string,
@@ -93,22 +94,15 @@ class Certificate implements CertificateData {
         }
     }
 
-    public sign(privateKey: Uint8Array): Certificate {
-        return new Certificate(
-            this.purpose,
-            this.payload,
-            this.domain,
-            this.timestamp,
-            this.signer,
-            HexUInt.of(
-                Secp256k1.sign(
-                    Blake2b256.of(
-                        Certificate.encode({ ...this, signature: undefined })
-                    ).bytes,
-                    privateKey
-                )
-            ).toString()
-        );
+    public sign(privateKey: Uint8Array): this {
+        this.signature = undefined;
+        this.signature = HexUInt.of(
+            Secp256k1.sign(
+                Blake2b256.of(Certificate.encode(this)).bytes,
+                privateKey
+            )
+        ).toString();
+        return this;
     }
 
     public verify(): void {

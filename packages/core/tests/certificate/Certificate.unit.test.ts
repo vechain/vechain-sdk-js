@@ -4,7 +4,8 @@ import {
     Certificate,
     HexUInt,
     Secp256k1,
-    type CertificateData
+    type CertificateData,
+    Hex
 } from '../../src';
 import {
     CertificateSignatureMismatch,
@@ -17,6 +18,7 @@ import {
     secp256k1,
     secp256k1 as tdk_secp256k1
 } from 'thor-devkit';
+import { cert, certPrivateKey } from './fixture';
 
 const CertificateFixturePrivateKey = HexUInt.of(
     '7582be841ca040aa940fff6c05773129e135623e41acce3e0b8ba520dc1ae26a'
@@ -235,6 +237,16 @@ describe('Certificate class tests', () => {
                 .verify();
         });
 
+        test('match for extended class objects', () => {
+            const base = Certificate.of(CertificateFixture).sign(
+                CertificateFixturePrivateKey
+            );
+            const pimp = new ExtendedCertificate(base, 'extended property');
+            pimp.sign(CertificateFixturePrivateKey).verify();
+            base.verify();
+            expect(base.signature).not.toEqual(pimp.signature);
+        });
+
         test('mismatch <- signer', () => {
             const signed = Certificate.of(CertificateFixture).sign(
                 CertificateFixturePrivateKey
@@ -282,6 +294,26 @@ describe('Certificate class tests', () => {
             expect(() => {
                 tamper.verify();
             }).toThrow(CertificateSignatureMismatch);
+        });
+
+        test('thor-dev-kit compatible', () => {
+            const unsigned = {
+                ...cert,
+                // thor-dev-kit doesn't support UTF8 NFC encoding: content is ASCII.
+                payload: { ...cert.payload, content: 'fyi' }
+            };
+            const tdkSignature = Hex.of(
+                tdk_secp256k1.sign(
+                    tdk_blake2b256(tdk_certificate.encode(unsigned)),
+                    Buffer.from(certPrivateKey)
+                )
+            ).toString();
+            const signed = {
+                ...unsigned,
+                signature: tdkSignature
+            };
+            tdk_certificate.verify(signed);
+            Certificate.of(signed).verify();
         });
     });
 });
