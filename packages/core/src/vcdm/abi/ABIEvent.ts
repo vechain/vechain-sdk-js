@@ -10,7 +10,6 @@ import {
     type Result
 } from 'ethers';
 import {
-    type AbiEvent,
     type DecodeEventLogReturnType,
     encodeEventTopics,
     type EncodeEventTopicsReturnType,
@@ -20,7 +19,7 @@ import {
 } from 'viem';
 import { Hex } from '../Hex';
 import { ABIEthersEvent } from './ABIEthersEvent';
-import { ABIItem } from './ABIItem';
+import { ABIItem, type ABIItemType } from './ABIItem';
 
 type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
 
@@ -42,7 +41,7 @@ class ABIEvent extends ABIItem {
     }): DecodeEventLogReturnType {
         try {
             return viemDecodeEventLog({
-                abi: [this.signature],
+                abi: [this.signature] as ViemABI,
                 data: event.data.toString() as ViemHex,
                 topics: event.topics.map((topic) => topic.toString()) as Topics
             });
@@ -69,7 +68,7 @@ class ABIEvent extends ABIItem {
     public encodeFilterTopics<TValue>(
         valuesToEncode: TValue[]
     ): EncodeEventTopicsReturnType {
-        const abiEvent = this.signature as unknown as AbiEvent;
+        const abiEvent = this.signature;
         if (abiEvent.inputs.length < valuesToEncode.length) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIEvent.encodeEventLog',
@@ -80,7 +79,7 @@ class ABIEvent extends ABIItem {
 
         try {
             return encodeEventTopics({
-                abi: [this.signature],
+                abi: [abiEvent],
                 args: valuesToEncode
             });
         } catch (error) {
@@ -120,7 +119,7 @@ class Event<ABIType> {
                     stringAbi.replace(' list', '').replace('tuple', '')
                 );
             } else {
-                this.event = new ABIEvent(abi as ViemABI);
+                this.event = new ABIEvent(abi as ABIItemType);
             }
             this.ethersEvent = new ABIEthersEvent(abi);
             this.fragment = ethers.EventFragment.from(abi);
