@@ -1,5 +1,17 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
+    Address,
+    clauseBuilder,
+    coder,
+    HexUInt,
+    TransactionHandler
+} from '@vechain/sdk-core';
+import {
+    InvalidSecp256k1PrivateKey,
+    JSONRPCInvalidParams
+} from '@vechain/sdk-errors';
+import { type FunctionFragment } from 'ethers';
+import {
     ProviderInternalBaseWallet,
     signerUtils,
     TESTNET_URL,
@@ -13,19 +25,7 @@ import {
     THOR_SOLO_ACCOUNTS_BASE_WALLET,
     THOR_SOLO_ACCOUNTS_BASE_WALLET_WITH_DELEGATOR
 } from '../../../fixture';
-import {
-    Address,
-    HexUInt,
-    clauseBuilder,
-    coder,
-    type FunctionFragment,
-    TransactionHandler
-} from '@vechain/sdk-core';
 import { signTransactionTestCases } from './fixture';
-import {
-    InvalidSecp256k1PrivateKey,
-    JSONRPCInvalidParams
-} from '@vechain/sdk-errors';
 
 /**
  *VeChain base signer tests - testnet
