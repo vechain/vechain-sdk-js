@@ -10,6 +10,7 @@ import {
     type Result
 } from 'ethers';
 import {
+    type AbiEvent,
     type DecodeEventLogReturnType,
     encodeEventTopics,
     type EncodeEventTopicsReturnType,
@@ -19,7 +20,7 @@ import {
 } from 'viem';
 import { Hex } from '../Hex';
 import { ABIEthersEvent } from './ABIEthersEvent';
-import { ABIItem, type ABIItemType } from './ABIItem';
+import { ABIItem } from './ABIItem';
 
 type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
 
@@ -28,6 +29,10 @@ type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
  * @extends ABIItem
  */
 class ABIEvent extends ABIItem {
+    public constructor(signature: string | AbiEvent) {
+        super(signature);
+    }
+
     /**
      * Decode event log data using the event's ABI.
      *
@@ -119,7 +124,7 @@ class Event<ABIType> {
                     stringAbi.replace(' list', '').replace('tuple', '')
                 );
             } else {
-                this.event = new ABIEvent(abi as ABIItemType);
+                this.event = new ABIEvent(abi as AbiEvent);
             }
             this.ethersEvent = new ABIEthersEvent(abi);
             this.fragment = ethers.EventFragment.from(abi);

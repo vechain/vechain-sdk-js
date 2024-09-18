@@ -10,6 +10,7 @@ import {
     type Result
 } from 'ethers';
 import {
+    type AbiFunction,
     decodeFunctionData,
     type DecodeFunctionDataReturnType,
     decodeFunctionResult,
@@ -19,13 +20,17 @@ import {
     type Hex as ViemHex
 } from 'viem';
 import { Hex } from '../Hex';
-import { ABIItem, type ABIItemType } from './ABIItem';
+import { ABIItem } from './ABIItem';
 
 /**
  * Represents a function call in the Function ABI.
  * @extends ABIItem
  */
 class ABIFunction extends ABIItem {
+    public constructor(signature: string | AbiFunction) {
+        super(signature);
+    }
+
     /**
      * Decode data using the function's ABI.
      *
@@ -134,7 +139,7 @@ class Function<ABIType> {
                     abi.format('full').replace(' list', '').replace('tuple', '')
                 );
             } else {
-                this.function = new ABIFunction(abi as ABIItemType);
+                this.function = new ABIFunction(abi as AbiFunction);
             }
             this.functionAbi = abi;
         } catch (error) {

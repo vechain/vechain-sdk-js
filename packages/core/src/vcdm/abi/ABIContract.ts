@@ -1,14 +1,17 @@
 import { InvalidAbiDataToEncodeOrDecode } from '@vechain/sdk-errors';
 import {
     getAbiItem,
+    type AbiEvent,
+    type AbiFunction,
+    type DecodeEventLogReturnType,
     type DecodeFunctionDataReturnType,
     type DecodeFunctionResultReturnType,
     type Abi as ViemABI
 } from 'viem';
 import { type Hex } from '../Hex';
 import { ABI } from './ABI';
+import { ABIEvent, Event as EthersEvent } from './ABIEvent';
 import { ABIFunction } from './ABIFunction';
-import { type ABIItemType } from './ABIItem';
 
 class ABIContract extends ABI {
     private readonly abi: ViemABI;
@@ -34,7 +37,7 @@ class ABIContract extends ABI {
                 abi: this.abi,
                 name: functionName
             });
-            const functionAbi = new ABIFunction(functionAbiItem as ABIItemType);
+            const functionAbi = new ABIFunction(functionAbiItem as AbiFunction);
 
             return functionAbi.encodeData(functionData);
         } catch (error) {
@@ -63,7 +66,7 @@ class ABIContract extends ABI {
                 abi: this.abi,
                 name: functionName
             });
-            const functionAbi = new ABIFunction(functionAbiItem as ABIItemType);
+            const functionAbi = new ABIFunction(functionAbiItem as AbiFunction);
 
             return functionAbi.decodeData(encodedFunctionInput);
         } catch (error) {
@@ -100,7 +103,7 @@ class ABIContract extends ABI {
                 abi: this.abi,
                 name: functionName
             });
-            const functionAbi = new ABIFunction(functionAbiItem as ABIItemType);
+            const functionAbi = new ABIFunction(functionAbiItem as AbiFunction);
 
             return functionAbi.decodeResult(encodedFunctionOutput);
         } catch (error) {
@@ -108,6 +111,66 @@ class ABIContract extends ABI {
                 'ABIContract.decodeFunctionOutput()',
                 'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
                 { functionName, encodedFunctionOutput },
+                error
+            );
+        }
+    }
+
+    /**
+     * Encodes event log data based on the provided event name, and data to encode.
+     * @param {string} eventName - The name of the event to be encoded.
+     * @param {unknown[]} eventArgs - An array of data to be encoded in the event log.
+     * @returns An object containing the encoded data and topics.
+     * @throws {InvalidAbiDataToEncodeOrDecode}
+     */
+    public encodeEventLog(
+        eventName: string,
+        eventArgs: unknown[]
+    ): { data: string; topics: string[] } {
+        try {
+            const eventAbiItem = getAbiItem({
+                abi: this.abi,
+                name: eventName
+            });
+            /** This should be an ABIEvent once this discussion is resolved {@link https://github.com/wevm/viem/discussions/2676} */
+            const eventAbi = new EthersEvent(eventAbiItem as AbiEvent);
+            return eventAbi.encodeEventLog(eventArgs);
+        } catch (error) {
+            throw new InvalidAbiDataToEncodeOrDecode(
+                'ABIContract.encodeEventLog()',
+                `Encoding failed: Data format is invalid. Event data does not match the expected format for ABI type encoding.`,
+                { eventName, dataToEncode: eventArgs },
+                error
+            );
+        }
+    }
+
+    /**
+     * Decodes event log data based on the provided event name, and data/topics to decode.
+     * @param {string} eventName - The name of the event to be decoded.
+     * @param eventToDecode - An object containing the data and topics to be decoded.
+     * @returns {DecodeEventLogReturnType} The decoded data of the event log.
+     * @throws {InvalidAbiDataToEncodeOrDecode}
+     */
+    public decodeEventLog(
+        eventName: string,
+        eventToDecode: {
+            data: Hex;
+            topics: Hex[];
+        }
+    ): DecodeEventLogReturnType {
+        try {
+            const eventAbiItem = getAbiItem({
+                abi: this.abi,
+                name: eventName
+            });
+            const eventAbi = new ABIEvent(eventAbiItem as AbiEvent);
+            return eventAbi.decodeEventLog(eventToDecode);
+        } catch (error) {
+            throw new InvalidAbiDataToEncodeOrDecode(
+                'ABIContract.encodeEventLog()',
+                `Encoding failed: Data format is invalid. Event data does not match the expected format for ABI type encoding.`,
+                { eventName, dataToDecode: eventToDecode },
                 error
             );
         }
