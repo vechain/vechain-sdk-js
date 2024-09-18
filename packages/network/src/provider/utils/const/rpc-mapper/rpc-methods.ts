@@ -49,6 +49,8 @@ enum RPC_METHODS {
     txpool_content = 'txpool_content',
     txpool_status = 'txpool_status',
     eth_signTransaction = 'eth_signTransaction',
+    debug_traceBlockByHash = 'debug_traceBlockByHash',
+    debug_traceBlockByNumber = 'debug_traceBlockByNumber',
 
     /**
      * TO BE IMPLEMENTED METHODS:
