@@ -1,15 +1,14 @@
 import { keccak_256 as nh_keccak_256 } from '@noble/hashes/sha3';
 import { InvalidOperation } from '@vechain/sdk-errors';
-import { Hex, Txt, type Hash } from '../index';
+import { Hex, Txt } from '../index';
 import { HexUInt } from '../HexUInt';
 
 /**
  * Represents the result of an [SHA-3](https://en.wikipedia.org/wiki/SHA-3) [KECCAK 256](https://keccak.team/keccak.html) hash operation.
  *
  * @extends HexUInt
- * @implements Hash
  */
-class Keccak256 extends HexUInt implements Hash {
+class Keccak256 extends HexUInt {
     /**
      * Generates the [SHA-3](https://en.wikipedia.org/wiki/SHA-3) [KECCAK 256](https://keccak.team/keccak.html) hash of the given input.
      *

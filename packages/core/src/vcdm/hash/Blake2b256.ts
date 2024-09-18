@@ -1,15 +1,14 @@
 import { blake2b as nh_blake2b } from '@noble/hashes/blake2b';
 import { InvalidOperation } from '@vechain/sdk-errors';
-import { Hex, Txt, type Hash } from '../index';
+import { Hex, Txt } from '../index';
 import { HexUInt } from '../HexUInt';
 
 /**
  * Represents the result of an [BLAKE](https://en.wikipedia.org/wiki/BLAKE_(hash_function)) [BlAKE2B 256](https://www.blake2.net/) hash operation.
  *
  * @extends HexUInt
- * @implements Hash
  */
-class Blake2b256 extends HexUInt implements Hash {
+class Blake2b256 extends HexUInt {
     /**
      * Generates the [BLAKE](https://en.wikipedia.org/wiki/BLAKE_(hash_function)) [BLAKE2B 256](https://www.blake2.net/) hash of the given input.
      *

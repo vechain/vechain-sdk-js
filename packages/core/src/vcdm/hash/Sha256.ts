@@ -1,6 +1,6 @@
 import * as nh_sha256 from '@noble/hashes/sha256';
 import { InvalidOperation } from '@vechain/sdk-errors';
-import { Hex, Txt, type Hash } from '../index';
+import { Hex, Txt } from '../index';
 import { HexUInt } from '../HexUInt';
 
 /**
@@ -9,7 +9,7 @@ import { HexUInt } from '../HexUInt';
  * @extends HexUInt
  * @implements Hash
  */
-class Sha256 extends HexUInt implements Hash {
+class Sha256 extends HexUInt {
     /**
      * Generates the [SHA 256](https://en.wikipedia.org/wiki/SHA-2) hash of the given input.
      *

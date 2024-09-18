@@ -5,7 +5,7 @@ export * from './certificate';
 export * from './clause';
 export * from './contract';
 export * from './encoding';
-export * from './vcdm/hash/Hash';
+export * from './vcdm/hash';
 export * from './hdkey';
 export * from './keystore';
 export * from './secp256k1';
