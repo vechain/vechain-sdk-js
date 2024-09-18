@@ -4,9 +4,8 @@
  * encryption, decryption, and validation functionality.
  */
 import * as n_utils from '@noble/curves/abstract/utils';
-import { Address, Hex } from '../../../vcdm';
+import { Address, Hex, Keccak256 } from '../../../vcdm';
 import { InvalidKeystoreParams, stringifyData } from '@vechain/sdk-errors';
-import { Keccak256 } from '../../../vcdm/hash/Keccak256';
 import { Secp256k1 } from '../../../secp256k1';
 import { ctr } from '@noble/ciphers/aes';
 import { scrypt } from '@noble/hashes/scrypt';
@@ -561,7 +560,8 @@ function isValid(keystore: Keystore): boolean {
         ) {
             return true;
         }
-    } catch (error) {} // Return false if parsing fails.
+        //  eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (e) {} // Return false if parsing fails.
     return false;
 }
 

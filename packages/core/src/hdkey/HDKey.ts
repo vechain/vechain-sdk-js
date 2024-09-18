@@ -2,10 +2,9 @@ import * as s_bip32 from '@scure/bip32';
 import * as s_bip39 from '@scure/bip39';
 import * as nc_utils from '@noble/curves/abstract/utils';
 import { base58 } from '@scure/base';
+import { FPN, Sha256 } from '../vcdm';
 import { HexUInt } from '../vcdm/HexUInt';
-import { FPN } from '../vcdm';
 import { Secp256k1 } from '../secp256k1';
-import { Sha256 } from '../vcdm/hash/Sha256';
 import {
     InvalidHDKey,
     InvalidHDKeyMnemonic,
@@ -135,7 +134,8 @@ class HDKey extends s_bip32.HDKey {
                 return s_bip32.HDKey.fromExtendedKey(
                     base58.encode(expandedPrivateKey)
                 ) as HDKey;
-            } catch (error) {
+                //  eslint-disable-next-line @typescript-eslint/no-unused-vars
+            } catch (e) {
                 throw new InvalidSecp256k1PrivateKey(
                     'HDNode.fromPrivateKey',
                     'Invalid private key path given as input.',
@@ -161,7 +161,7 @@ class HDKey extends s_bip32.HDKey {
      * @param {Uint8Array} publicKey The public key bytes.
      * @param {Uint8Array} chainCode The chain code bytes.
      *
-     * @returns {bip32.HDKey} Returns the hierarchical deterministic key from `public` and `chainCode`.
+     * @returns {HDKey} Returns the hierarchical deterministic key from `public` and `chainCode`.
      *
      * @throws {InvalidHDKey} if the `publicKey` is invalid.
      *
@@ -169,7 +169,7 @@ class HDKey extends s_bip32.HDKey {
      * * [base58.encode](https://github.com/paulmillr/scure-base);
      * * {@link Secp256k1.compressPublicKey};
      * * {@link Sha256};
-     * * [s_bip32.HDKey.fromExtendedKey](https://github.com/paulmillr/scure-bip32).
+     * * [HDKey.fromExtendedKey](https://github.com/paulmillr/scure-bip32).
      */
     public static fromPublicKey(
         publicKey: Uint8Array,

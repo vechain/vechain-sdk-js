@@ -179,6 +179,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                 sign[sign.length - 1] += 27;
                 resolve(Hex.of(sign).toString());
             } catch (e) {
+                //  eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                 reject(e);
             }
         });
@@ -218,6 +219,7 @@ class VeChainPrivateKeySigner extends VeChainAbstractSigner {
                 sign[sign.length - 1] += 27;
                 resolve(Hex.of(sign).toString());
             } catch (e) {
+                //  eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                 reject(e);
             }
         });
