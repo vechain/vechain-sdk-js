@@ -2,6 +2,7 @@ import { InvalidAbiDataToEncodeOrDecode } from '@vechain/sdk-errors';
 import {
     getAbiItem,
     type DecodeFunctionDataReturnType,
+    type DecodeFunctionResultReturnType,
     type Abi as ViemABI
 } from 'viem';
 import { type Hex } from '../Hex';
@@ -70,6 +71,43 @@ class ABIContract extends ABI {
                 'ABIContract.decodeFunctionInput()',
                 'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
                 { functionName, encodedFunctionInput },
+                error
+            );
+        }
+    }
+
+    /**
+     * Decodes the output from a contract function using the specified ABI and function name.
+     * It takes the encoded function output and attempts to decode it according to the ABI definition.
+     *
+     * @param {string} functionName - The name of the function in the contract to decode the output for.
+     * @param {Hex} encodedFunctionOutput - The encoded output data from the contract function.
+     * @returns {DecodeFunctionResultReturnType} - The decoded output, which provides a user-friendly way
+     * to interact with the decoded data.
+     * @throws {InvalidAbiDataToEncodeOrDecode}
+     *
+     * @example
+     * // Example of decoding output for a function called "getValue":
+     * const decodedOutput = decodeFunctionOutput('getValue', encodedValue);
+     *
+     */
+    public decodeFunctionOutput(
+        functionName: string,
+        encodedFunctionOutput: Hex
+    ): DecodeFunctionResultReturnType {
+        try {
+            const functionAbiItem = getAbiItem({
+                abi: this.abi,
+                name: functionName
+            });
+            const functionAbi = new ABIFunction(functionAbiItem as ABIItemType);
+
+            return functionAbi.decodeResult(encodedFunctionOutput);
+        } catch (error) {
+            throw new InvalidAbiDataToEncodeOrDecode(
+                'ABIContract.decodeFunctionOutput()',
+                'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
+                { functionName, encodedFunctionOutput },
                 error
             );
         }
