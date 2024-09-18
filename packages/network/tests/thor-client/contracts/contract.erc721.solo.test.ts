@@ -1,6 +1,7 @@
 // Global variable to hold contract address
-import { erc721ContractBytecode, erc721ContractTestCases } from './fixture';
 import { beforeAll, describe, expect, test } from '@jest/globals';
+import { coder, ERC721_ABI } from '@vechain/sdk-core';
+import { type FunctionFragment, type LogDescription } from 'ethers';
 import {
     THOR_SOLO_URL,
     ThorClient,
@@ -10,12 +11,7 @@ import {
     type VeChainSigner
 } from '../../../src';
 import { TEST_ACCOUNTS } from '../../fixture';
-import {
-    coder,
-    ERC721_ABI,
-    type FunctionFragment,
-    type Log
-} from '@vechain/sdk-core';
+import { erc721ContractBytecode, erc721ContractTestCases } from './fixture';
 
 /**
  * Tests for the ERC721 Contract, specifically focusing on NFT contract-related functionality.
@@ -135,7 +131,7 @@ describe('ThorClient - ERC721 Contracts', () => {
 
     function decodeResultOutput(
         result: TransactionReceipt
-    ): Array<Array<Log | null>> {
+    ): Array<Array<LogDescription | null>> {
         return result?.outputs.map((output) => {
             return output.events.map((event) => {
                 return coder.parseLog(ERC721_ABI, event.data, event.topics);

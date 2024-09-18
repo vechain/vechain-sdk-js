@@ -24,11 +24,11 @@ import {
     HexUInt,
     clauseBuilder,
     coder,
-    type FunctionFragment,
     type TransactionClause,
     TransactionHandler,
     Units
 } from '@vechain/sdk-core';
+import { type FunctionFragment } from 'ethers';
 
 const TIMEOUT = 15000; // 15-second timeout
 

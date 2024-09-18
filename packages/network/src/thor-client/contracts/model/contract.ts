@@ -1,20 +1,19 @@
+import { coder } from '@vechain/sdk-core';
+import { InvalidAbiFragment } from '@vechain/sdk-errors';
 import {
-    coder,
+    type Abi,
+    type ExtractAbiEventNames,
+    type ExtractAbiFunctionNames
+} from 'abitype';
+import {
     type EventFragment,
     type FunctionFragment,
     type InterfaceAbi
-} from '@vechain/sdk-core';
-import type { TransactionReceipt } from '../../transactions';
+} from 'ethers';
+import { type VeChainSigner } from '../../../signer';
 import { type ThorClient } from '../../thor-client';
+import type { TransactionReceipt } from '../../transactions';
 import type { ContractCallOptions, ContractTransactionOptions } from '../types';
-import { InvalidAbiFragment } from '@vechain/sdk-errors';
-import {
-    type ContractFunctionClause,
-    type ContractFunctionCriteria,
-    type ContractFunctionFilter,
-    type ContractFunctionRead,
-    type ContractFunctionTransact
-} from './types';
 import {
     getClauseProxy,
     getCriteriaProxy,
@@ -23,11 +22,12 @@ import {
     getTransactProxy
 } from './contract-proxy';
 import {
-    type Abi,
-    type ExtractAbiEventNames,
-    type ExtractAbiFunctionNames
-} from 'abitype';
-import { type VeChainSigner } from '../../../signer';
+    type ContractFunctionClause,
+    type ContractFunctionCriteria,
+    type ContractFunctionFilter,
+    type ContractFunctionRead,
+    type ContractFunctionTransact
+} from './types';
 
 /**
  * A class representing a smart contract deployed on the blockchain.

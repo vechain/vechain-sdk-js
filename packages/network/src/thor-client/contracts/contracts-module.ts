@@ -1,28 +1,21 @@
+import { abi, clauseBuilder, coder, dataUtils } from '@vechain/sdk-core';
+import { type Abi } from 'abitype';
+import { type FunctionFragment, type InterfaceAbi } from 'ethers';
+import { type VeChainSigner } from '../../signer';
+import { BUILT_IN_CONTRACTS } from '../../utils';
+import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
+import { type ThorClient } from '../thor-client';
 import {
-    abi,
-    clauseBuilder,
-    coder,
-    dataUtils,
-    type FunctionFragment,
-    type InterfaceAbi
-} from '@vechain/sdk-core';
+    type SendTransactionResult,
+    type SimulateTransactionOptions
+} from '../transactions';
+import { Contract, ContractFactory } from './model';
 import type {
-    ContractGasOptions,
     ContractCallOptions,
     ContractCallResult,
     ContractClause,
     ContractTransactionOptions
 } from './types';
-import {
-    type SendTransactionResult,
-    type SimulateTransactionOptions
-} from '../transactions';
-import { type ThorClient } from '../thor-client';
-import { Contract, ContractFactory } from './model';
-import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
-import { type VeChainSigner } from '../../signer';
-import { type Abi } from 'abitype';
-import { BUILT_IN_CONTRACTS } from '../../utils';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.
@@ -162,8 +155,7 @@ class ContractsModule {
         contractAddress: string,
         functionFragment: FunctionFragment,
         functionData: unknown[],
-        options?: ContractTransactionOptions,
-        gas?: ContractGasOptions
+        options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
         // Sign the transaction
         const id = await signer.sendTransaction({
@@ -176,10 +168,16 @@ class ContractsModule {
                     options?.value ?? 0
                 )
             ],
-            gas: gas?.gas,
-            gasLimit: gas?.gasLimit,
-            gasPrice: gas?.gasPrice,
-            gasPriceCoef: gas?.gasPriceCoef
+            gas: options?.gas,
+            gasLimit: options?.gasLimit,
+            gasPrice: options?.gasPrice,
+            gasPriceCoef: options?.gasPriceCoef,
+            nonce: options?.nonce,
+            value: options?.value,
+            dependsOn: options?.dependsOn,
+            expiration: options?.expiration,
+            chainTag: options?.chainTag,
+            blockRef: options?.blockRef
         });
 
         return {
@@ -197,14 +195,20 @@ class ContractsModule {
     public async executeMultipleClausesTransaction(
         clauses: ContractClause[],
         signer: VeChainSigner,
-        gas?: ContractGasOptions
+        options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
         const id = await signer.sendTransaction({
             clauses: clauses.map((clause) => clause.clause),
-            gas: gas?.gas,
-            gasLimit: gas?.gasLimit,
-            gasPrice: gas?.gasPrice,
-            gasPriceCoef: gas?.gasPriceCoef
+            gas: options?.gas,
+            gasLimit: options?.gasLimit,
+            gasPrice: options?.gasPrice,
+            gasPriceCoef: options?.gasPriceCoef,
+            nonce: options?.nonce,
+            value: options?.value,
+            dependsOn: options?.dependsOn,
+            expiration: options?.expiration,
+            chainTag: options?.chainTag,
+            blockRef: options?.blockRef
         });
 
         return {

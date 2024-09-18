@@ -1,11 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
-import {
-    deployERC20Contract,
-    deployERC721Contract,
-    waitForMessage
-} from '../helpers';
-import { coder, type FunctionFragment } from '@vechain/sdk-core';
+import { coder } from '@vechain/sdk-core';
+import { type FunctionFragment } from 'ethers';
 import {
     HardhatVeChainProvider,
     ProviderInternalBaseWallet,
@@ -15,6 +10,12 @@ import {
     type VeChainProvider,
     type VeChainSigner
 } from '../../../../src';
+import { providerMethodsTestCasesSolo, TEST_ACCOUNT } from '../fixture';
+import {
+    deployERC20Contract,
+    deployERC721Contract,
+    waitForMessage
+} from '../helpers';
 
 /**
  *VeChain provider tests - Solo Network

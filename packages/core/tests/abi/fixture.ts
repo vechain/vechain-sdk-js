@@ -264,7 +264,8 @@ const topicsEventTestCases = [
         valuesToEncode: [fromRandomAddress], // Missing `to` parameter
         expectedTopics: [
             '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
-            `0x000000000000000000000000${fromRandomAddress.slice(2)}` // Should return only signature and topic1
+            `0x000000000000000000000000${fromRandomAddress.slice(2)}`, // Should return only signature and topic1
+            undefined // This the indexed address `to`
         ]
     },
     {

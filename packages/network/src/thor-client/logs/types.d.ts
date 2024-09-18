@@ -1,6 +1,6 @@
 /* --- Input options start --- */
 
-import type { EventFragment, Result } from '@vechain/sdk-core';
+import type { EventFragment, Result } from 'ethers';
 
 /**
  * Range interface for specifying a range of data.
@@ -256,16 +256,16 @@ interface TransferLogs extends Transfer {
 /* --- Responses Outputs end --- */
 
 export type {
-    FilterEventLogsOptions,
     Event,
-    EventLogs,
-    FilterTransferLogsOptions,
-    FilterRawEventLogsOptions,
-    Transfer,
-    TransferLogs,
     EventCriteria,
+    EventDisplayOrder,
+    EventLogs,
     FilterCriteria,
-    Range,
+    FilterEventLogsOptions,
+    FilterRawEventLogsOptions,
+    FilterTransferLogsOptions,
     PaginationOptions,
-    EventDisplayOrder
+    Range,
+    Transfer,
+    TransferLogs
 };
