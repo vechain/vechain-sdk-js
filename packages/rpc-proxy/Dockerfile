@@ -25,4 +25,4 @@ COPY --from=builder /app/package.json /app/
 COPY --from=builder /app/node_modules /app/node_modules
 
 # Set the default command to use node to run the app
-CMD ["node", "dist/index.js"]
+CMD ["node", "dist/index.js", "-c", "config.json"]
