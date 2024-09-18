@@ -22,6 +22,41 @@ class ABIContract extends ABI {
     }
 
     /**
+     * Creates an ABIContract instance from a viem ABI.
+     * @param {ViemABI} abi representation of the contract.
+     * @returns New instance of ABIContract.
+     */
+    public static ofAbi(abi: ViemABI): ABIContract {
+        return new ABIContract(abi);
+    }
+
+    /**
+     * Returns the function with the given name.
+     * @param {string} name The function's name.
+     * @returns {ABIFunction} The function with the given name.
+     */
+    public getFunction(name: string): ABIFunction {
+        const functionAbiItem = getAbiItem({
+            abi: this.abi,
+            name
+        });
+        return new ABIFunction(functionAbiItem as AbiFunction);
+    }
+
+    /**
+     * Returns the event with the given name.
+     * @param {string} name The event's name.
+     * @returns {ABIEvent} The event with the given name.
+     */
+    public getEvent(name: string): ABIEvent {
+        const eventAbiItem = getAbiItem({
+            abi: this.abi,
+            name
+        });
+        return new ABIEvent(eventAbiItem as AbiEvent);
+    }
+
+    /**
      * Encode function data that can be used to send a transaction.
      * @param {string} functionName The name of the function defined in the ABI.
      * @param {unknown[]} functionData The data to pass to the function.
