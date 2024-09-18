@@ -11363,7 +11363,7 @@ vfile@^6.0.0:
     "@types/unist" "^3.0.0"
     vfile-message "^4.0.0"
 
-viem@^2.21.9:
+viem@^2.19.3, viem@^2.21.9:
   version "2.21.9"
   resolved "https://registry.yarnpkg.com/viem/-/viem-2.21.9.tgz#5676f81b07286ad88852a239e1eeb18c7f9b40a6"
   integrity sha512-fWPDX2ABEo/mLiDN+wsmYJDJk0a/ZCafquxInR2+HZv/7UTgHbLgjZs4SotpEeFAYjgVThJ7A9TPmrRjaaYqvw==
