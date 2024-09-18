@@ -46,7 +46,7 @@ describe('RPC Mapper - debug_traceBlockByHash method tests', () => {
                     debugTraceBlockByHashFixtureElement.expected
                 );
             }
-        }, 10000);
+        }, 30000);
     });
 
     /**

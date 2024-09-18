@@ -52,7 +52,7 @@ describe('RPC Mapper - debug_traceBlockByNumber method tests', () => {
                     debugTraceBlockByNumberFixtureElement.expected
                 );
             }
-        }, 10000);
+        }, 30000);
     });
 
     /**
