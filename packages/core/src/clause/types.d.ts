@@ -1,4 +1,4 @@
-import { type ParamType } from '../abi';
+import { type ParamType } from 'ethers';
 
 /**
  * Represents the parameters required for deployment.

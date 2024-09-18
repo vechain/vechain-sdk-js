@@ -1,3 +1,19 @@
+import { abi, clauseBuilder } from '@vechain/sdk-core';
+import { InvalidTransactionField } from '@vechain/sdk-errors';
+import type {
+    Abi,
+    AbiEvent,
+    AbiParametersToPrimitiveTypes,
+    ExtractAbiEventNames,
+    ExtractAbiFunction,
+    ExtractAbiFunctionNames
+} from 'abitype';
+import { type VeChainSigner } from '../../../signer';
+import { type FilterCriteria } from '../../logs';
+import { type SendTransactionResult } from '../../transactions';
+import { type ContractCallResult, type ContractClause } from '../types';
+import { type Contract } from './contract';
+import { ContractFilter } from './contract-filter';
 import {
     type ClauseAdditionalOptions,
     type ClauseComment,
@@ -9,22 +25,6 @@ import {
     type ContractFunctionTransact,
     type TransactionValue
 } from './types';
-import { type SendTransactionResult } from '../../transactions';
-import { type Contract } from './contract';
-import { InvalidTransactionField } from '@vechain/sdk-errors';
-import { clauseBuilder, fragment } from '@vechain/sdk-core';
-import { type ContractCallResult, type ContractClause } from '../types';
-import { ContractFilter } from './contract-filter';
-import { type VeChainSigner } from '../../../signer';
-import { type FilterCriteria } from '../../logs';
-import type {
-    Abi,
-    AbiEvent,
-    AbiParametersToPrimitiveTypes,
-    ExtractAbiEventNames,
-    ExtractAbiFunction,
-    ExtractAbiFunctionNames
-} from 'abitype';
 
 /**
  * Creates a Proxy object for reading contract state, allowing for the dynamic invocation of contract read operations.
@@ -252,7 +252,7 @@ function buildCriteria<TAbi extends Abi>(
     args: unknown[]
 ): FilterCriteria {
     // Create the VeChain sdk event fragment starting from the contract ABI event fragment
-    const eventFragment = new fragment.Event(contract.getEventFragment(prop));
+    const eventFragment = new abi.Event(contract.getEventFragment(prop));
 
     // Create a map of encoded filter topics for the event
     const topics = new Map<number, string | undefined>(
@@ -446,9 +446,9 @@ function extractArgsArray<TAbi extends Abi>(
 }
 
 export {
-    getReadProxy,
-    getTransactProxy,
-    getFilterProxy,
     getClauseProxy,
-    getCriteriaProxy
+    getCriteriaProxy,
+    getFilterProxy,
+    getReadProxy,
+    getTransactProxy
 };

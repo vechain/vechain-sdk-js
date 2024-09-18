@@ -46,7 +46,8 @@
     "bignumber.js": "^9.1.2",
     "blakejs": "^1.2.1",
     "ethers": "6.13.2",
-    "fast-json-stable-stringify": "^2.1.0"
+    "fast-json-stable-stringify": "^2.1.0",
+    "viem": "^2.19.3"
   },
   "devDependencies": {
     "bignumber.js": "^9.1.2",
