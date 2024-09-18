@@ -11363,10 +11363,10 @@ vfile@^6.0.0:
     "@types/unist" "^3.0.0"
     vfile-message "^4.0.0"
 
-viem@^2.19.3:
-  version "2.21.7"
-  resolved "https://registry.yarnpkg.com/viem/-/viem-2.21.7.tgz#c933fd3adb6f771e5c5fe2b4d7a14d8701ddc32f"
-  integrity sha512-PFgppakInuHX31wHDx1dzAjhj4t6Po6WrWtutDi33z2vabIT0Wv8qT6tl7DLqfLy2NkTqfN2mdshYLeoI5ZHvQ==
+viem@^2.21.9:
+  version "2.21.9"
+  resolved "https://registry.yarnpkg.com/viem/-/viem-2.21.9.tgz#5676f81b07286ad88852a239e1eeb18c7f9b40a6"
+  integrity sha512-fWPDX2ABEo/mLiDN+wsmYJDJk0a/ZCafquxInR2+HZv/7UTgHbLgjZs4SotpEeFAYjgVThJ7A9TPmrRjaaYqvw==
   dependencies:
     "@adraffy/ens-normalize" "1.10.0"
     "@noble/curves" "1.4.0"
