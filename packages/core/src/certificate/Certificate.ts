@@ -115,7 +115,7 @@ class Certificate implements CertificateData {
         domain: string,
         timestamp: number,
         signer: string,
-        signature?: string | undefined
+        signature?: string
     ) {
         if (Number.isSafeInteger(timestamp) && timestamp >= 0) {
             if (Address.isValid(signer)) {
