@@ -298,7 +298,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         expect(contractRead[0]).toEqual(['SampleToken']);
         expect(contractRead[1]).toEqual(['ST']);
-        expect(contractRead[2]).toEqual([BigInt(18)]);
+        expect(contractRead[2]).toEqual([18]);
     }, 10000);
 
     /**
@@ -325,7 +325,7 @@ describe('ThorClient - ERC20 Contracts', () => {
 
         expect(contractRead[0]).toEqual(['SampleToken']);
         expect(contractRead[1]).toEqual(['ST']);
-        expect(contractRead[2]).toEqual([BigInt(18)]);
+        expect(contractRead[2]).toEqual([18]);
     }, 10000);
 
     /**

@@ -1,27 +1,21 @@
+import { abi, clauseBuilder, coder, dataUtils } from '@vechain/sdk-core';
+import { type Abi } from 'abitype';
+import { type FunctionFragment, type InterfaceAbi } from 'ethers';
+import { type VeChainSigner } from '../../signer';
+import { BUILT_IN_CONTRACTS } from '../../utils';
+import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
+import { type ThorClient } from '../thor-client';
 import {
-    abi,
-    clauseBuilder,
-    coder,
-    dataUtils,
-    type FunctionFragment,
-    type InterfaceAbi
-} from '@vechain/sdk-core';
+    type SendTransactionResult,
+    type SimulateTransactionOptions
+} from '../transactions';
+import { Contract, ContractFactory } from './model';
 import type {
     ContractCallOptions,
     ContractCallResult,
     ContractClause,
     ContractTransactionOptions
 } from './types';
-import {
-    type SendTransactionResult,
-    type SimulateTransactionOptions
-} from '../transactions';
-import { type ThorClient } from '../thor-client';
-import { Contract, ContractFactory } from './model';
-import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
-import { type VeChainSigner } from '../../signer';
-import { type Abi } from 'abitype';
-import { BUILT_IN_CONTRACTS } from '../../utils';
 
 /**
  * Represents a module for interacting with smart contracts on the blockchain.

@@ -1,10 +1,6 @@
 import * as nc_utils from '@noble/curves/abstract/utils';
 import * as nh_utils from '@noble/hashes/utils';
-import {
-    InvalidOperation,
-    InvalidDataType,
-    type ObjectErrorData
-} from '@vechain/sdk-errors';
+import { InvalidDataType, InvalidOperation } from '@vechain/sdk-errors';
 import { type VeChainDataModel } from './VeChainDataModel';
 
 /**
@@ -333,28 +329,6 @@ class Hex implements VeChainDataModel<Hex> {
         throw new InvalidDataType('Hex.random', 'bytes argument not > 0', {
             bytes
         });
-    }
-
-    /**
-     * Error handler for Hex and its subclasses so we do not hide them.
-     * To be used only for nested errors.
-     *
-     * @param error - The error to handle from the subclass.
-     * @param methodName - The name of the method that threw the error.
-     * @param {string} errorMessage - The error message to throw.
-     * @param {ObjectErrorData} data - The data to include in the error.
-     * @throws {InvalidDataType} - Throws an error with the given message and data.
-     */
-    protected static throwInvalidDataType(
-        error: unknown,
-        methodName: string,
-        errorMessage: string,
-        data: ObjectErrorData
-    ): never {
-        if (error instanceof InvalidDataType) {
-            throw error;
-        }
-        throw new InvalidDataType(methodName, errorMessage, data, error);
     }
 
     /**
