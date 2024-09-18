@@ -91,6 +91,8 @@ import { txPoolInspect } from './methods-map/methods/txpool_inspect';
 import { txPoolContent } from './methods-map/methods/txpool_content';
 import { txPoolContentFrom } from './methods-map/methods/txpool_contentFrom';
 import { txPoolStatus } from './methods-map/methods/txpool_status';
+import { debugTraceBlockByHash } from './methods-map/methods/debug_traceBlockByHash';
+import { debugTraceBlockByNumber } from './methods-map/methods/debug_traceBlockByNumber';
 
 /**
  * Map of RPC methods to their implementations with the SDK.
@@ -507,6 +509,32 @@ const RPCMethodsMap = (
 
         [RPC_METHODS.txpool_status]: async (): Promise<object> => {
             return await txPoolStatus();
+        },
+
+        [RPC_METHODS.debug_traceBlockByHash]: async (
+            params
+        ): Promise<
+            Array<{
+                txHash: string;
+                result:
+                    | TracerReturnTypeRPC<'call'>
+                    | TracerReturnTypeRPC<'prestate'>;
+            }>
+        > => {
+            return await debugTraceBlockByHash(thorClient, params);
+        },
+
+        [RPC_METHODS.debug_traceBlockByNumber]: async (
+            params
+        ): Promise<
+            Array<{
+                txHash: string;
+                result:
+                    | TracerReturnTypeRPC<'call'>
+                    | TracerReturnTypeRPC<'prestate'>;
+            }>
+        > => {
+            return await debugTraceBlockByNumber(thorClient, params);
         }
     };
 };
