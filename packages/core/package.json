@@ -37,7 +37,7 @@
   },
   "dependencies": {
     "@ethereumjs/rlp": "^5.0.2",
-    "@noble/ciphers": "^0.6.0",
+    "@noble/ciphers": "^1.0.0",
     "@scure/bip32": "^1.4.0",
     "@scure/bip39": "^1.4.0",
     "@types/elliptic": "^6.4.18",
@@ -46,7 +46,8 @@
     "bignumber.js": "^9.1.2",
     "blakejs": "^1.2.1",
     "ethers": "6.13.2",
-    "fast-json-stable-stringify": "^2.1.0"
+    "fast-json-stable-stringify": "^2.1.0",
+    "viem": "^2.19.3"
   },
   "devDependencies": {
     "bignumber.js": "^9.1.2",

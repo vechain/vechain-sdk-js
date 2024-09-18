@@ -1,19 +1,19 @@
 import {
     clauseBuilder,
     type DeployParams,
-    type InterfaceAbi,
     TransactionHandler
 } from '@vechain/sdk-core';
-import type { ContractTransactionOptions } from '../types';
-import { type ThorClient } from '../../thor-client';
-import { Contract } from './contract';
 import {
     CannotFindTransaction,
     ContractDeploymentFailed
 } from '@vechain/sdk-errors';
-import { type SendTransactionResult } from '../../transactions';
-import { signerUtils, type VeChainSigner } from '../../../signer';
 import { type Abi } from 'abitype';
+import { type InterfaceAbi } from 'ethers';
+import { signerUtils, type VeChainSigner } from '../../../signer';
+import { type ThorClient } from '../../thor-client';
+import { type SendTransactionResult } from '../../transactions';
+import type { ContractTransactionOptions } from '../types';
+import { Contract } from './contract';
 
 /**
  * A factory class for deploying smart contracts to a blockchain using a ThorClient.

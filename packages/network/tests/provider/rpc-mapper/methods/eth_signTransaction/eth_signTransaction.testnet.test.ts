@@ -66,38 +66,43 @@ describe('RPC Mapper - eth_signTransaction method tests', () => {
      * eth_signTransaction RPC call tests - Positive cases
      */
     describe('eth_signTransaction - Positive cases', () => {
+        const timeout = 10000; // 10 seconds
         /**
          * Should be able to sign transactions
          */
-        test('Should be able to sign transactions', async () => {
-            // Sign with the delegator OR not
-            for (const delegated of [true, false]) {
-                // Value field of the transaction objects to sign
-                for (const value of ['0x111', '0x222', '0x333']) {
-                    // Get the provider to use depending on delegated or not
-                    const providerToUse = delegated
-                        ? providerWithDelegator
-                        : provider;
+        test(
+            'Should be able to sign transactions',
+            async () => {
+                // Sign with the delegator OR not
+                for (const delegated of [true, false]) {
+                    // Value field of the transaction objects to sign
+                    for (const value of ['0x111', '0x222', '0x333']) {
+                        // Get the provider to use depending on delegated or not
+                        const providerToUse = delegated
+                            ? providerWithDelegator
+                            : provider;
 
-                    // Send a transaction
-                    const signedTransaction = (await providerToUse.request({
-                        method: RPC_METHODS.eth_signTransaction,
-                        params: [
-                            {
-                                from: THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE
-                                    .sender.address,
-                                to: THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE
-                                    .receiver.address,
-                                value
-                            }
-                        ]
-                    })) as string;
+                        // Send a transaction
+                        const signedTransaction = (await providerToUse.request({
+                            method: RPC_METHODS.eth_signTransaction,
+                            params: [
+                                {
+                                    from: THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE
+                                        .sender.address,
+                                    to: THOR_SOLO_ACCOUNTS_ETH_SEND_TRANSACTION_FIXTURE
+                                        .receiver.address,
+                                    value
+                                }
+                            ]
+                        })) as string;
 
-                    // Signed transaction should be a hex string
-                    expect(Hex.isValid0x(signedTransaction)).toBe(true);
+                        // Signed transaction should be a hex string
+                        expect(Hex.isValid0x(signedTransaction)).toBe(true);
+                    }
                 }
-            }
-        }, 8000);
+            },
+            timeout
+        );
     });
 
     /**

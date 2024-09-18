@@ -74,6 +74,6 @@ const multipleClausesResult =
 expect(multipleClausesResult[0]).toEqual([expectedBalance]);
 expect(multipleClausesResult[1]).toEqual(['SampleToken']);
 expect(multipleClausesResult[2]).toEqual(['ST']);
-expect(multipleClausesResult[3]).toEqual([18n]);
+expect(multipleClausesResult[3]).toEqual([18]);
 
 // END_SNIPPET: ERC20MultiClausesReadSnippet

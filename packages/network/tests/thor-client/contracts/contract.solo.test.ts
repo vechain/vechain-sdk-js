@@ -2,6 +2,29 @@
 
 import { beforeEach, describe, expect, test } from '@jest/globals';
 import {
+    Address,
+    coder,
+    type DeployParams
+} from '@vechain/sdk-core';
+import {
+    CannotFindTransaction,
+    ContractDeploymentFailed,
+    InvalidTransactionField
+} from '@vechain/sdk-errors';
+import {
+    type FunctionFragment
+} from 'ethers';
+import {
+    Contract,
+    type ContractFactory,
+    THOR_SOLO_URL,
+    ThorClient,
+    type TransactionReceipt,
+    VeChainPrivateKeySigner,
+    VeChainProvider,
+    type VeChainSigner
+} from '../../../src';
+import {
     TEST_ACCOUNTS,
     TESTING_CONTRACT_ABI,
     TESTING_CONTRACT_ADDRESS
@@ -23,27 +46,6 @@ import {
     testingContractNegativeTestCases,
     testingContractTestCases
 } from './fixture';
-import {
-    Address,
-    coder,
-    type DeployParams,
-    type FunctionFragment
-} from '@vechain/sdk-core';
-import {
-    Contract,
-    type ContractFactory,
-    THOR_SOLO_URL,
-    ThorClient,
-    type TransactionReceipt,
-    VeChainPrivateKeySigner,
-    VeChainProvider,
-    type VeChainSigner
-} from '../../../src';
-import {
-    CannotFindTransaction,
-    ContractDeploymentFailed,
-    InvalidTransactionField
-} from '@vechain/sdk-errors';
 
 /**
  * Tests for the ThorClient class, specifically focusing on contract-related functionality.
@@ -454,7 +456,8 @@ describe('ThorClient - Contracts', () => {
         const deployedTwoValuesReturnContractContract =
             await twoValuesReturnContract.waitForDeployment();
 
-        const [firstResultA, firstResultB] = await deployedTwoValuesReturnContractContract.read.a();
+        const [firstResultA, firstResultB] =
+            await deployedTwoValuesReturnContractContract.read.a();
         const resultB = await deployedTwoValuesReturnContractContract.read.b();
 
         expect(firstResultA).toEqual(1n);
