@@ -1,6 +1,5 @@
 import * as n_utils from '@noble/curves/abstract/utils';
-import { Hex } from '../../src';
-import { _certificate, type CertificateData } from '../../src';
+import { _certificate, Hex, type CertificateData } from '../../src';
 import { cert, certPrivateKey } from './fixture';
 import { describe, expect, test } from '@jest/globals';
 import { privateKey } from '../secp256k1/fixture';

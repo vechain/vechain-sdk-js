@@ -1,3 +1,3 @@
 export * from './Certificate';
+export * from './CertificateData';
 export * from './_certificate';
-export * from './types.d';

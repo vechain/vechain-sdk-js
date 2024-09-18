@@ -2,7 +2,7 @@ import { CertificateSignatureMismatch } from '@vechain/sdk-errors';
 import fastJsonStableStringify from 'fast-json-stable-stringify';
 import { Address, Hex, Txt, Blake2b256 } from '../vcdm';
 import { Secp256k1 } from '../secp256k1';
-import { type CertificateData } from './types';
+import { type CertificateData } from './CertificateData';
 
 /**
  * Encodes a certificate object to an array of bytes of its JSON representation after the following
