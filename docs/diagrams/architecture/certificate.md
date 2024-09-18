@@ -2,7 +2,7 @@
 classDiagram
     class Certificate {
         +boolean isSigned()
-        +Certificate of(CertificateData certifiable)$
+        +Certificate of(CertificateData data)$
         +Certificate sign(Uint8Array privateKey)
         +void verify()
     }
