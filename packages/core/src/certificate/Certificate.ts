@@ -62,8 +62,8 @@ class Certificate implements CertificateData {
             );
     }
 
-    protected encode(): Uint8Array {
-        return Txt.of(fastJsonStableStringify(this)).bytes;
+    protected static encode(object: unknown): Uint8Array {
+        return Txt.of(fastJsonStableStringify(object)).bytes;
     }
 
     public isSigned(): boolean {
@@ -101,29 +101,35 @@ class Certificate implements CertificateData {
             this.timestamp,
             this.signer,
             HexUInt.of(
-                Secp256k1.sign(Blake2b256.of(this.encode()).bytes, privateKey)
+                Secp256k1.sign(
+                    Blake2b256.of(
+                        Certificate.encode({ ...this, signature: undefined })
+                    ).bytes,
+                    privateKey
+                )
             ).toString()
         );
     }
 
     public verify(): void {
-        if (this.isSigned()) {
-            const signer = Address.ofPublicKey(
-                Secp256k1.recover(
-                    Blake2b256.of(this.encode()).bytes,
-                    HexUInt.of(this.signature as string).bytes
-                )
-            );
-            if (signer.toString().toLowerCase() !== this.signer)
-                throw new CertificateSignatureMismatch(
-                    'Certificate.verify',
-                    "signature doesn't match with signer's public key",
-                    { certificate: this }
-                );
-        } else
+        if (!this.isSigned())
             throw new CertificateSignatureMismatch(
                 'Certificate.verify',
                 'signature missing',
+                { certificate: this }
+            );
+        const signer = Address.ofPublicKey(
+            Secp256k1.recover(
+                Blake2b256.of(
+                    Certificate.encode({ ...this, signature: undefined })
+                ).bytes,
+                HexUInt.of(this.signature as string).bytes
+            )
+        );
+        if (signer.toString().toLowerCase() !== this.signer)
+            throw new CertificateSignatureMismatch(
+                'Certificate.verify',
+                "signature doesn't match with signer's public key",
                 { certificate: this }
             );
     }

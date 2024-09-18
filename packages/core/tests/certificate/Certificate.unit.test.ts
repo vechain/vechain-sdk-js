@@ -197,18 +197,18 @@ describe('Certificate class tests', () => {
         });
 
         test('thor-dev-kit compatible', () => {
-            const expected = {
+            const unsigned = {
                 ...CertificateFixture,
                 // thor-dev-kit doesn't support UTF8 NFC encoding: content is ASCII.
                 payload: { ...CertificateFixture.payload, content: 'fyi' }
             };
             const expectedSignature = HexUInt.of(
                 tdk_secp256k1.sign(
-                    tdk_blake2b256(tdk_certificate.encode(expected)),
+                    tdk_blake2b256(tdk_certificate.encode(unsigned)),
                     Buffer.from(CertificateFixturePrivateKey)
                 )
             ).toString();
-            const actual = Certificate.of(expected).sign(
+            const actual = Certificate.of(unsigned).sign(
                 CertificateFixturePrivateKey
             );
             expect(actual.signature).toEqual(expectedSignature);
