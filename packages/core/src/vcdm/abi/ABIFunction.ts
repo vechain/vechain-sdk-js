@@ -16,11 +16,10 @@ import {
     type DecodeFunctionResultReturnType,
     encodeFunctionData,
     type EncodeFunctionDataReturnType,
-    type Abi as ViemABI,
     type Hex as ViemHex
 } from 'viem';
 import { Hex } from '../Hex';
-import { ABIItem } from './ABIItem';
+import { ABIItem, type ABIItemType } from './ABIItem';
 
 /**
  * Represents a function call in the Function ABI.
@@ -135,7 +134,7 @@ class Function<ABIType> {
                     abi.format('full').replace(' list', '').replace('tuple', '')
                 );
             } else {
-                this.function = new ABIFunction(abi as ViemABI);
+                this.function = new ABIFunction(abi as ABIItemType);
             }
             this.functionAbi = abi;
         } catch (error) {
