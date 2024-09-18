@@ -40,16 +40,50 @@ class ABIEvent extends ABIItem {
      * @returns Decoding results.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
+    public static parseLog(
+        abi: ViemABI,
+        data: Hex,
+        topics: Hex[]
+    ): DecodeEventLogReturnType {
+        try {
+            return viemDecodeEventLog({
+                abi,
+                data: data.toString() as ViemHex,
+                topics: topics.map((topic) => topic.toString()) as Topics
+            });
+        } catch (error) {
+            throw new InvalidAbiDataToEncodeOrDecode(
+                'ABIEvent.parseLog',
+                'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
+                {
+                    data: {
+                        abi,
+                        data,
+                        topics
+                    }
+                },
+                error
+            );
+        }
+    }
+
+    /**
+     * Decode event log data using the event's ABI.
+     *
+     * @param event - Event to decode.
+     * @returns Decoding results.
+     * @throws {InvalidAbiDataToEncodeOrDecode}
+     */
     public decodeEventLog(event: {
         data: Hex;
         topics: Hex[];
     }): DecodeEventLogReturnType {
         try {
-            return viemDecodeEventLog({
-                abi: [this.signature] as ViemABI,
-                data: event.data.toString() as ViemHex,
-                topics: event.topics.map((topic) => topic.toString()) as Topics
-            });
+            return ABIEvent.parseLog(
+                [this.signature],
+                event.data,
+                event.topics
+            );
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIEvent.decodeEventLog',

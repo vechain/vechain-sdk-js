@@ -175,6 +175,32 @@ class ABIContract extends ABI {
             );
         }
     }
+
+    /**
+     * Decodes a VeChain log based on the ABI definition.
+     *
+     * This method takes raw `data` and `topics` from a VeChain log and attempts
+     * to decode them using the contract's ABI definition. If the decoding is successful,
+     * it returns a log object representing the decoded information. If the decoding fails,
+     * it throws a custom error with detailed information.
+     *
+     * @param {Hex} data - The hexadecimal string of the data field in the log.
+     * @param {Hex[]} topics - An array of hexadecimal strings representing the topics of the log.
+     * @returns {DecodeEventLogReturnType} - A log object representing the decoded log or null if decoding fails.
+     * @throws {InvalidAbiDataToEncodeOrDecode}
+     */
+    public parseLog(data: Hex, topics: Hex[]): DecodeEventLogReturnType {
+        try {
+            return ABIEvent.parseLog(this.abi, data, topics);
+        } catch (e) {
+            throw new InvalidAbiDataToEncodeOrDecode(
+                'ABIContract.parseLog()',
+                `Decoding failed: Data must be a valid hex string encoding a compliant ABI type.`,
+                { data, topics },
+                e
+            );
+        }
+    }
 }
 
 export { ABIContract };
