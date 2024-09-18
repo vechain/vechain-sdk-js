@@ -1,5 +1,12 @@
 import { describe, expect, test } from '@jest/globals';
 import {
+    type ClauseOptions,
+    type DeployParams,
+    type ExtendedTransactionClause,
+    ABIContract,
+    clauseBuilder
+} from '../../src';
+import {
     exampleContractAbi,
     exampleContractBytecode,
     invalidNFTtestCases,
@@ -9,14 +16,6 @@ import {
     transferTokenClausesTestCases,
     transferVETtestCases
 } from './fixture';
-import {
-    type DeployParams,
-    clauseBuilder,
-    type ClauseOptions,
-    type ExtendedTransactionClause
-} from '../../src';
-import { coder } from '../../src';
-import { type FunctionFragment } from 'ethers';
 /**
  * Unit tests for building transaction clauses.
  * @group unit/clause
@@ -68,9 +67,7 @@ describe('Contract', () => {
     test('Build a clause to call a contract function', () => {
         const clause = clauseBuilder.functionInteraction(
             '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-            coder
-                .createInterface(exampleContractAbi)
-                .getFunction('set') as FunctionFragment,
+            ABIContract.ofAbi(exampleContractAbi).getFunction('set'),
             [1]
         );
 
@@ -82,9 +79,7 @@ describe('Contract', () => {
     test('Build a clause to call a contract function with a comment', () => {
         const clause = clauseBuilder.functionInteraction(
             '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-            coder
-                .createInterface(exampleContractAbi)
-                .getFunction('set') as FunctionFragment,
+            ABIContract.ofAbi(exampleContractAbi).getFunction('set'),
             [1],
             undefined,
             { comment: 'Setting the value to 1' }
@@ -100,9 +95,7 @@ describe('Contract', () => {
     test('Build a clause to call a contract function with comments and abi', () => {
         const clause = clauseBuilder.functionInteraction(
             '0x742d35Cc6634C0532925a3b844Bc454e4438f44e',
-            coder
-                .createInterface(exampleContractAbi)
-                .getFunction('set') as FunctionFragment,
+            ABIContract.ofAbi(exampleContractAbi).getFunction('set'),
             [1],
             undefined,
             { comment: 'Setting the value to 1', includeABI: true }

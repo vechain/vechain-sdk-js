@@ -29,6 +29,8 @@ type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
  * @extends ABIItem
  */
 class ABIEvent extends ABIItem {
+    public constructor(signature: string);
+    public constructor(signature: AbiEvent);
     public constructor(signature: string | AbiEvent) {
         super(signature);
     }

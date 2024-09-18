@@ -47,7 +47,7 @@ const exampleContractAbi = [
         stateMutability: 'nonpayable',
         type: 'function'
     }
-];
+] as const;
 
 /**
  * Generates a random valid address.

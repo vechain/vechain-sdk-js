@@ -1,23 +1,24 @@
+import { expect } from '@jest/globals';
 import {
+    ABIFunction,
+    ABIItem,
     clauseBuilder,
     coder,
-    type FunctionFragment,
     networkInfo,
     Transaction,
     TransactionHandler,
     Units,
     ZERO_ADDRESS
 } from '@vechain/sdk-core';
+import { stringifyData } from '@vechain/sdk-errors';
 import {
     BUILT_IN_CONTRACTS,
     THOR_SOLO_ACCOUNTS,
     THOR_SOLO_URL
 } from '@vechain/sdk-network';
-import { ThorClient } from '../src';
-import { expect } from '@jest/globals';
-import { TESTING_CONTRACT_BYTECODE } from './const';
 import * as ethers from 'ethers';
-import { stringifyData } from '@vechain/sdk-errors';
+import { ThorClient } from '../src';
+import { TESTING_CONTRACT_BYTECODE } from './const';
 
 /**
  * Constructs clauses for transferring VTHO tokens.
@@ -205,7 +206,10 @@ const seedVnsSolo = async (): Promise<void> => {
                     clauses: [
                         clauseBuilder.functionInteraction(
                             vnsRegistry,
-                            'function setSubnodeOwner(bytes32 node, bytes32 label, address owner)' as unknown as FunctionFragment,
+                            ABIItem.ofSignature(
+                                ABIFunction,
+                                'function setSubnodeOwner(bytes32 node, bytes32 label, address owner)'
+                            ),
                             [
                                 '0x0000000000000000000000000000000000000000000000000000000000000000',
                                 ethers.id(tld),
@@ -214,7 +218,10 @@ const seedVnsSolo = async (): Promise<void> => {
                         ),
                         clauseBuilder.functionInteraction(
                             vnsRegistry,
-                            'function setSubnodeOwner(bytes32 node, bytes32 label, address owner)' as unknown as FunctionFragment,
+                            ABIItem.ofSignature(
+                                ABIFunction,
+                                'function setSubnodeOwner(bytes32 node, bytes32 label, address owner)'
+                            ),
                             [
                                 '0x0000000000000000000000000000000000000000000000000000000000000000',
                                 ethers.id('reverse'),
@@ -223,7 +230,10 @@ const seedVnsSolo = async (): Promise<void> => {
                         ),
                         clauseBuilder.functionInteraction(
                             vnsRegistry,
-                            'function setSubnodeOwner(bytes32 node, bytes32 label, address owner)' as unknown as FunctionFragment,
+                            ABIItem.ofSignature(
+                                ABIFunction,
+                                'function setSubnodeOwner(bytes32 node, bytes32 label, address owner)'
+                            ),
                             [
                                 ethers.namehash('reverse'),
                                 ethers.id('addr'),
@@ -281,7 +291,10 @@ const seedVnsSolo = async (): Promise<void> => {
                     clauses: [
                         clauseBuilder.functionInteraction(
                             vnsReverseRegistrar,
-                            'function setDefaultResolver(address resolver)' as unknown as FunctionFragment,
+                            ABIItem.ofSignature(
+                                ABIFunction,
+                                'function setDefaultResolver(address resolver)'
+                            ),
                             [vnsPublicResolver]
                         )
                     ]
@@ -334,22 +347,34 @@ const seedVnsSolo = async (): Promise<void> => {
                     clauses: [
                         clauseBuilder.functionInteraction(
                             vnsRegistrar,
-                            'function register(bytes32 id, address owner)' as unknown as FunctionFragment,
+                            ABIItem.ofSignature(
+                                ABIFunction,
+                                'function register(bytes32 id, address owner)'
+                            ),
                             [ethers.id(name), address]
                         ),
                         clauseBuilder.functionInteraction(
                             vnsRegistry,
-                            'function setResolver(bytes32 node, address resolver)' as unknown as FunctionFragment,
+                            ABIItem.ofSignature(
+                                ABIFunction,
+                                'function setResolver(bytes32 node, address resolver)'
+                            ),
                             [ethers.namehash(fullName), vnsPublicResolver]
                         ),
                         clauseBuilder.functionInteraction(
                             vnsPublicResolver,
-                            'function setAddr(bytes32 node, address addr)' as unknown as FunctionFragment,
+                            ABIItem.ofSignature(
+                                ABIFunction,
+                                'function setAddr(bytes32 node, address addr)'
+                            ),
                             [ethers.namehash(fullName), address]
                         ),
                         clauseBuilder.functionInteraction(
                             vnsReverseRegistrar,
-                            'function setNameForAddr(address addr, address owner, address resolver, string name)' as unknown as FunctionFragment,
+                            ABIItem.ofSignature(
+                                ABIFunction,
+                                'function setNameForAddr(address addr, address owner, address resolver, string name)'
+                            ),
                             [address, address, vnsPublicResolver, fullName]
                         )
                     ]
@@ -381,7 +406,10 @@ const seedVnsSolo = async (): Promise<void> => {
                     clauses: [
                         clauseBuilder.functionInteraction(
                             vnsRegistry,
-                            'function setSubnodeOwner(bytes32 node, bytes32 label, address owner)' as unknown as FunctionFragment,
+                            ABIItem.ofSignature(
+                                ABIFunction,
+                                'function setSubnodeOwner(bytes32 node, bytes32 label, address owner)'
+                            ),
                             [
                                 ethers.namehash(`${parentName}.${tld}`),
                                 ethers.id(name),
@@ -390,12 +418,18 @@ const seedVnsSolo = async (): Promise<void> => {
                         ),
                         clauseBuilder.functionInteraction(
                             vnsRegistry,
-                            'function setResolver(bytes32 node, address resolver)' as unknown as FunctionFragment,
+                            ABIItem.ofSignature(
+                                ABIFunction,
+                                'function setResolver(bytes32 node, address resolver)'
+                            ),
                             [ethers.namehash(fullName), vnsPublicResolver]
                         ),
                         clauseBuilder.functionInteraction(
                             vnsPublicResolver,
-                            'function setAddr(bytes32 node, address addr)' as unknown as FunctionFragment,
+                            ABIItem.ofSignature(
+                                ABIFunction,
+                                'function setAddr(bytes32 node, address addr)'
+                            ),
                             [ethers.namehash(fullName), address]
                         )
                     ]

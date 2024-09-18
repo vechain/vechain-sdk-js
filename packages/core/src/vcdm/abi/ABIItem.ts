@@ -39,6 +39,40 @@ abstract class ABIItem extends ABI {
                 : signature;
     }
 
+    public static ofSignature<T extends ABIItem>(
+        ABIItemConstructor: new (signature: string) => T,
+        signature: string
+    ): T;
+
+    public static ofSignature<T extends ABIItem>(
+        ABIItemConstructor: new (signature: ABIItemType) => T,
+        signature: ABIItemType
+    ): T;
+
+    /**
+     * Returns and instance of an ABIItem from a signature.
+     * @param ABIItemConstructor ABIItem constructor.
+     * @param {string | ABIItemType} signature Signature of the ABIIItem.
+     * @returns {T} An instance of the ABIItem.
+     */
+    public static ofSignature<T extends ABIItem>(
+        ABIItemConstructor: new (signature: string | ABIItemType) => T,
+        signature: string | ABIItemType
+    ): T {
+        return new ABIItemConstructor(signature);
+    }
+
+    /**
+     * Returns a string representation of a JSON object or a string.
+     * @param {'json' | 'string'} formatType Either JSON or String
+     * @returns The string representation of the ABI item.
+     */
+    public format(formatType: 'json' | 'string' = 'string'): string {
+        return formatType === 'json'
+            ? JSON.stringify(this.signature)
+            : this.stringSignature;
+    }
+
     /**
      * The signature hash of the ABI.
      * @returns {string} The signature hash of the ABI.

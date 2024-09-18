@@ -1,6 +1,13 @@
-import { abi, clauseBuilder, coder, dataUtils } from '@vechain/sdk-core';
+import {
+    abi,
+    ABIContract,
+    clauseBuilder,
+    dataUtils,
+    Hex,
+    type ABIFunction
+} from '@vechain/sdk-core';
 import { type Abi } from 'abitype';
-import { type FunctionFragment, type InterfaceAbi } from 'ethers';
+import { type InterfaceAbi } from 'ethers';
 import { type VeChainSigner } from '../../signer';
 import { BUILT_IN_CONTRACTS } from '../../utils';
 import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
@@ -74,7 +81,7 @@ class ContractsModule {
      * Executes a read-only call to a smart contract function, simulating the transaction to obtain the result.
      *
      * @param contractAddress - The address of the smart contract to interact with.
-     * @param functionFragment - The function fragment, including the name and types of the function to be called, derived from the contract's ABI.
+     * @param functionAbi - The function ABI, including the name and types of the function to be called, derived from the contract's ABI.
      * @param functionData - An array of arguments to be passed to the smart contract function, corresponding to the function's parameters.
      * @param contractCallOptions - (Optional) Additional options for the contract call, such as the sender's address, gas limit, and gas price, which can affect the simulation's context.
      * @returns A promise that resolves to the decoded output of the smart contract function call, the format of which depends on the function's return types.
@@ -83,7 +90,7 @@ class ContractsModule {
      */
     public async executeCall(
         contractAddress: string,
-        functionFragment: FunctionFragment,
+        functionAbi: ABIFunction,
         functionData: unknown[],
         contractCallOptions?: ContractCallOptions
     ): Promise<ContractCallResult | string> {
@@ -93,9 +100,7 @@ class ContractsModule {
                 {
                     to: contractAddress,
                     value: '0',
-                    data: new abi.Function(functionFragment).encodeInput(
-                        functionData
-                    )
+                    data: functionAbi.encodeData(functionData)
                 }
             ],
             contractCallOptions
@@ -110,9 +115,10 @@ class ContractsModule {
              */
             return decodeRevertReason(response[0].data) ?? '';
         } else {
-            return new abi.Function(functionFragment).decodeOutput(
-                response[0].data
-            );
+            // TODO: Replace by decodeOutput?
+            return functionAbi.decodeResult(Hex.of(response[0].data)) as
+                | ContractCallResult
+                | string;
         }
     }
 
@@ -153,7 +159,7 @@ class ContractsModule {
     public async executeTransaction(
         signer: VeChainSigner,
         contractAddress: string,
-        functionFragment: FunctionFragment,
+        functionAbi: ABIFunction,
         functionData: unknown[],
         options?: ContractTransactionOptions
     ): Promise<SendTransactionResult> {
@@ -163,7 +169,7 @@ class ContractsModule {
                 // Build a clause to interact with the contract function
                 clauseBuilder.functionInteraction(
                     contractAddress,
-                    functionFragment,
+                    functionAbi,
                     functionData,
                     options?.value ?? 0
                 )
@@ -230,9 +236,7 @@ class ContractsModule {
     public async getBaseGasPrice(): Promise<unknown> {
         return await this.executeCall(
             BUILT_IN_CONTRACTS.PARAMS_ADDRESS,
-            coder
-                .createInterface(BUILT_IN_CONTRACTS.PARAMS_ABI)
-                .getFunction('get') as FunctionFragment,
+            ABIContract.ofAbi(BUILT_IN_CONTRACTS.PARAMS_ABI).getFunction('get'),
             [dataUtils.encodeBytes32String('base-gas-price', 'left')]
         );
     }

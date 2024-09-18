@@ -19,7 +19,7 @@ const ENERGY_ADDRESS = '0x0000000000000000000000000000456e65726779';
  *
  * @link see [params.sol](https://docs.vechain.org/developer-resources/built-in-contracts#params-sol)
  */
-const PARAMS_ABI = stringifyData([
+const PARAMS_ABI = [
     {
         constant: false,
         inputs: [
@@ -88,7 +88,7 @@ const PARAMS_ABI = stringifyData([
         name: 'Set',
         type: 'event'
     }
-]);
+] as const;
 
 /**
  * ABI of the Energy built-in contract. (VTHO)

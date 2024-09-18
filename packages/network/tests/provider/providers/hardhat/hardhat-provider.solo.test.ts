@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, test } from '@jest/globals';
-import { coder } from '@vechain/sdk-core';
+import { ABIContract, coder } from '@vechain/sdk-core';
 import { type FunctionFragment } from 'ethers';
 import {
     HardhatVeChainProvider,
@@ -303,9 +303,7 @@ describe('Hardhat provider tests', () => {
         await thorClient.contracts.executeTransaction(
             (await provider.getSigner(TEST_ACCOUNT.address)) as VeChainSigner,
             erc20Contract.address,
-            coder
-                .createInterface(erc20Contract.abi)
-                .getFunction('transfer') as FunctionFragment,
+            ABIContract.ofAbi(erc20Contract.abi).getFunction('transfer'),
             [TEST_ACCOUNT.address, 100]
         );
 

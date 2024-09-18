@@ -1,19 +1,13 @@
 /* eslint-disable */
 
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import {
-    Address,
-    coder,
-    type DeployParams
-} from '@vechain/sdk-core';
+import { Address, coder, type DeployParams } from '@vechain/sdk-core';
 import {
     CannotFindTransaction,
     ContractDeploymentFailed,
     InvalidTransactionField
 } from '@vechain/sdk-errors';
-import {
-    type FunctionFragment
-} from 'ethers';
+import { type FunctionFragment } from 'ethers';
 import {
     Contract,
     type ContractFactory,

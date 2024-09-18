@@ -1,13 +1,12 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { type FunctionFragment } from 'ethers';
-import { coder } from '../contract/coder';
 import {
     type ClauseOptions,
     type ExtendedTransactionClause,
     type TransactionClause
 } from '../transaction';
 import { ERC721_ABI, VIP180_ABI } from '../utils';
-import { Address, abi } from '../vcdm';
+import { ABIContract, Address, abi } from '../vcdm';
+import { type ABIFunction } from '../vcdm/abi/ABIFunction';
 import type { DeployParams } from './types';
 
 /**
@@ -62,7 +61,7 @@ function deployContract(
  */
 function functionInteraction(
     contractAddress: string,
-    functionFragment: FunctionFragment,
+    functionAbi: ABIFunction,
     args: unknown[],
     value = 0,
     clauseOptions?: ClauseOptions
@@ -70,7 +69,7 @@ function functionInteraction(
     const transactionClause: TransactionClause = {
         to: contractAddress,
         value,
-        data: new abi.Function(functionFragment).encodeInput(args)
+        data: functionAbi.encodeData(args)
     };
 
     if (clauseOptions !== undefined) {
@@ -79,7 +78,7 @@ function functionInteraction(
             comment: clauseOptions.comment,
             abi:
                 clauseOptions.includeABI === true
-                    ? functionFragment.format('json')
+                    ? functionAbi.format('json')
                     : undefined
         } satisfies ExtendedTransactionClause;
     } else {
@@ -108,9 +107,7 @@ function transferToken(
     try {
         return functionInteraction(
             tokenAddress,
-            coder
-                .createInterface(VIP180_ABI)
-                .getFunction('transfer') as FunctionFragment,
+            ABIContract.ofAbi(VIP180_ABI).getFunction('transfer'),
             [recipientAddress, BigInt(amount)],
             undefined,
             clauseOptions
@@ -220,13 +217,12 @@ function transferNFT(
         );
     }
 
-    const functionFragment = coder
-        .createInterface(ERC721_ABI)
-        .getFunction('transferFrom') as FunctionFragment;
+    const functionAbi =
+        ABIContract.ofAbi(ERC721_ABI).getFunction('transferFrom');
 
     return functionInteraction(
         contractAddress,
-        functionFragment,
+        functionAbi,
         [senderAddress, recipientAddress, tokenId],
         undefined,
         clauseOptions

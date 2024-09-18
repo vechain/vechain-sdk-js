@@ -1,7 +1,8 @@
 import { ethersAbi } from './ABI';
 import { ABIContract } from './ABIContract';
 import { Event } from './ABIEvent';
-import { Function } from './ABIFunction';
+import { ABIFunction, Function } from './ABIFunction';
+import { ABIItem } from './ABIItem';
 
 const abi = {
     ...ethersAbi,
@@ -9,4 +10,4 @@ const abi = {
     Event
 };
 
-export { abi, ABIContract };
+export { abi, ABIContract, ABIFunction, ABIItem };

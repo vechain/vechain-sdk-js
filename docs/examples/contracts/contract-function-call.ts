@@ -1,6 +1,5 @@
-import { clauseBuilder, coder } from '@vechain/sdk-core';
+import { ABIContract, clauseBuilder } from '@vechain/sdk-core';
 import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
-import { type FunctionFragment } from 'ethers';
 import { expect } from 'expect';
 
 // START_SNIPPET: ContractFunctionCallSnippet
@@ -40,9 +39,7 @@ const contractABI = [
 // 2 - Create a clause to call setValue(123)
 const clause = clauseBuilder.functionInteraction(
     '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed', // just a sample deployed contract address
-    coder
-        .createInterface(contractABI)
-        .getFunction('setValue') as FunctionFragment,
+    ABIContract.ofAbi(contractABI).getFunction('setValue'),
     [123]
 );
 

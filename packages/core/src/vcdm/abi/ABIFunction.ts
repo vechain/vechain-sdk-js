@@ -27,6 +27,8 @@ import { ABIItem } from './ABIItem';
  * @extends ABIItem
  */
 class ABIFunction extends ABIItem {
+    public constructor(signature: string);
+    public constructor(signature: AbiFunction);
     public constructor(signature: string | AbiFunction) {
         super(signature);
     }
