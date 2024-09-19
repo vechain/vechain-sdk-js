@@ -21,7 +21,7 @@ import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
  *
  * @param thorClient - ThorClient instance.
  * @param params - The standard array of rpc call parameters.
- *                * params[0]: The transaction call object.
+ *                 * params[0]: The transaction call object.
  *                 * params[1]: A string representing a block number, or one of the string tags latest, earliest, or pending.
  * @returns A hexadecimal of the estimate of the gas for the given transaction.
  * @throws {JSONRPCInvalidParams, JSONRPCInternalError}
