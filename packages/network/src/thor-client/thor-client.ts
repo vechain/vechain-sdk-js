@@ -9,7 +9,7 @@ import { HttpClient, type IHttpClient } from '../utils';
 import { DebugModule } from './debug';
 
 /**
- * The `ThorClient` class serves as an interface to interact with the VeChain Thor blockchain.
+ * The `ThorClient` class serves as an interface to interact with the VeChainThor blockchain.
  * It provides various methods.
  * Essentially, it can be considered a layer on top of the `ThorestClient`.
  */
