@@ -35,7 +35,7 @@ const ethSignTransaction = async (
         throw new JSONRPCInvalidParams(
             'eth_signTransaction',
             -32602,
-            `Invalid input params for "eth_sendTransaction" method. See ${RPC_DOCUMENTATION_URL} for details.`,
+            `Invalid input params for "eth_signTransaction" method. See ${RPC_DOCUMENTATION_URL} for details.`,
             { params }
         );
 
@@ -52,7 +52,7 @@ const ethSignTransaction = async (
     // From field is required
     if ((params[0] as TransactionObjectInput).from === undefined) {
         throw new JSONRPCInvalidParams(
-            'eth_sendTransaction',
+            'eth_signTransaction',
             -32602,
             'From field is required in the transaction object.',
             { provider }
@@ -72,9 +72,9 @@ const ethSignTransaction = async (
         return await signer.signTransaction(transaction);
     } catch (error) {
         throw new JSONRPCInternalError(
-            'eth_sendTransaction()',
+            'eth_signTransaction()',
             -32603,
-            'Method "eth_sendTransaction" failed.',
+            'Method "eth_signTransaction" failed.',
             {
                 params: stringifyData(params),
                 url: thorClient.httpClient.baseURL
