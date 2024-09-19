@@ -87,6 +87,12 @@ import {
 import { ethRequestAccounts } from './methods-map/methods/eth_requestAccounts';
 import { type VeChainProvider } from '../../providers';
 import { type ThorClient } from '../../../thor-client';
+import { txPoolInspect } from './methods-map/methods/txpool_inspect';
+import { txPoolContent } from './methods-map/methods/txpool_content';
+import { txPoolContentFrom } from './methods-map/methods/txpool_contentFrom';
+import { txPoolStatus } from './methods-map/methods/txpool_status';
+import { debugTraceBlockByHash } from './methods-map/methods/debug_traceBlockByHash';
+import { debugTraceBlockByNumber } from './methods-map/methods/debug_traceBlockByNumber';
 
 /**
  * Map of RPC methods to their implementations with the SDK.
@@ -272,15 +278,17 @@ const RPCMethodsMap = (
             );
         },
 
-        [RPC_METHODS.eth_getUncleByBlockHashAndIndex]:
-            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
-                return await ethGetUncleByBlockHashAndIndex();
-            },
+        [RPC_METHODS.eth_getUncleByBlockHashAndIndex]: async (
+            params
+        ): Promise<object> => {
+            return await ethGetUncleByBlockHashAndIndex(params);
+        },
 
-        [RPC_METHODS.eth_getUncleByBlockNumberAndIndex]:
-            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
-                return await ethGetUncleByBlockNumberAndIndex();
-            },
+        [RPC_METHODS.eth_getUncleByBlockNumberAndIndex]: async (
+            params
+        ): Promise<object> => {
+            return await ethGetUncleByBlockNumberAndIndex(params);
+        },
 
         [RPC_METHODS.eth_getUncleCountByBlockHash]:
             async (): Promise<'METHOD NOT IMPLEMENTED'> => {
@@ -479,13 +487,54 @@ const RPCMethodsMap = (
                 return await ethMaxPriorityFeePerGas();
             },
 
-        [RPC_METHODS.eth_signTransaction]:
-            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
-                return await ethSignTransaction();
-            },
+        [RPC_METHODS.eth_signTransaction]: async (params): Promise<string> => {
+            return await ethSignTransaction(thorClient, params, provider);
+        },
 
         [RPC_METHODS.web3_sha3]: async (params): Promise<string> => {
             return await web3Sha3(params);
+        },
+
+        [RPC_METHODS.txpool_inspect]: async (): Promise<object> => {
+            return await txPoolInspect();
+        },
+
+        [RPC_METHODS.txpool_content]: async (): Promise<object> => {
+            return await txPoolContent();
+        },
+
+        [RPC_METHODS.txpool_contentFrom]: async (params): Promise<object> => {
+            return await txPoolContentFrom(params);
+        },
+
+        [RPC_METHODS.txpool_status]: async (): Promise<object> => {
+            return await txPoolStatus();
+        },
+
+        [RPC_METHODS.debug_traceBlockByHash]: async (
+            params
+        ): Promise<
+            Array<{
+                txHash: string;
+                result:
+                    | TracerReturnTypeRPC<'call'>
+                    | TracerReturnTypeRPC<'prestate'>;
+            }>
+        > => {
+            return await debugTraceBlockByHash(thorClient, params);
+        },
+
+        [RPC_METHODS.debug_traceBlockByNumber]: async (
+            params
+        ): Promise<
+            Array<{
+                txHash: string;
+                result:
+                    | TracerReturnTypeRPC<'call'>
+                    | TracerReturnTypeRPC<'prestate'>;
+            }>
+        > => {
+            return await debugTraceBlockByNumber(thorClient, params);
         }
     };
 };

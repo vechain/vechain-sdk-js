@@ -212,6 +212,7 @@ class FPN implements VeChainDataModel<FPN> {
     public comparedTo(that: FPN): null | number {
         try {
             return this.compareTo(that);
+            //  eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             return null;
         }
@@ -527,18 +528,6 @@ class FPN implements VeChainDataModel<FPN> {
     }
 
     /**
-     * Checks if a given string expression is an unsigned positive integer.
-     *
-     * @param {string} exp - The string expression to be tested.
-     *
-     * @return {boolean} True if the expression is an unsigned positive integer,
-     * false otherwise.
-     */
-    public static isUnsignedIntegerExpression(exp: string): boolean {
-        return this.REGEX_NATURAL.test(exp);
-    }
-
-    /**
      * Returns `true` if the value of this FPN is zero or minus zero, otherwise returns `false`.
      *
      * @return `true` if the value of this FPN is zero or minus zero, otherwise returns `false`.
@@ -659,6 +648,18 @@ class FPN implements VeChainDataModel<FPN> {
         fd: bigint
     ): bigint {
         return (multiplicand * multiplicator) / 10n ** fd;
+    }
+
+    /**
+     * Returns a new instance of FPN whose value is the value of this FPN value
+     * negated, i.e. multiplied by -1.
+     *
+     * @see [bignumber.js negated](https://mikemcl.github.io/bignumber.js/#neg)
+     */
+    public negated(): FPN {
+        if (this.isNegativeInfinite()) return FPN.POSITIVE_INFINITY;
+        if (this.isPositiveInfinite()) return FPN.NEGATIVE_INFINITY;
+        return new FPN(this.fd, -this.sv, this.ef);
     }
 
     /**
@@ -828,6 +829,7 @@ class FPN implements VeChainDataModel<FPN> {
         if (this.isPositiveInfinite()) return FPN.POSITIVE_INFINITY;
         try {
             return new FPN(this.fd, FPN.sqr(this.sv, this.fd));
+            //  eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             return FPN.NaN;
         }

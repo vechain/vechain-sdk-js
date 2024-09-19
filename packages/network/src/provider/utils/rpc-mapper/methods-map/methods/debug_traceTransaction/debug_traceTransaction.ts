@@ -86,10 +86,7 @@ const debugTraceTransaction = async (
             tracerToUse
         )) as TraceReturnType<'call'> | TraceReturnType<'prestate'>;
 
-        return debugFormatter.formatToRPCStandard(
-            tracerToUse as 'call' | 'prestate',
-            trace
-        );
+        return debugFormatter.formatToRPCStandard(tracerToUse, trace);
     } catch (e) {
         throw new JSONRPCInternalError(
             'debug_traceTransaction()',

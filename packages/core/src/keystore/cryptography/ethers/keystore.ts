@@ -1,9 +1,8 @@
 /**
  * Implements the JSON Keystore v3 Wallet encryption, decryption, and validation functionality.
  */
-import { Address } from '../../../vcdm';
+import { Address, Hex } from '../../../vcdm';
 import { ethers } from 'ethers';
-import { Hex } from '../../../vcdm/Hex';
 import { SCRYPT_PARAMS } from './const';
 import { Secp256k1 } from '../../../secp256k1';
 import {
@@ -81,6 +80,7 @@ async function decrypt(
             stringifyData(keystore),
             password
         )) as KeystoreAccount;
+        //  eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
         throw new InvalidKeystoreParams(
             'keystore.decrypt()',

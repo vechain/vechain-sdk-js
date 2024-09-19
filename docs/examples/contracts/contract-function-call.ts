@@ -1,7 +1,7 @@
-import { clauseBuilder, coder, type FunctionFragment } from '@vechain/sdk-core';
-import { expect } from 'expect';
-import { stringifyData } from '@vechain/sdk-errors';
+import { clauseBuilder, coder } from '@vechain/sdk-core';
 import { THOR_SOLO_URL, ThorClient } from '@vechain/sdk-network';
+import { type FunctionFragment } from 'ethers';
+import { expect } from 'expect';
 
 // START_SNIPPET: ContractFunctionCallSnippet
 

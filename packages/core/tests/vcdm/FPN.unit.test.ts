@@ -1795,6 +1795,34 @@ describe('FPN class tests', () => {
         });
     });
 
+    describe('negated', () => {
+        test('NaN -> NaN', () => {
+            expect(FPN.NaN.negated().isNaN()).toBe(true);
+        });
+
+        test('-Infinity -> +Infinity', () => {
+            expect(
+                FPN.NEGATIVE_INFINITY.negated().isEqual(FPN.POSITIVE_INFINITY)
+            ).toBe(true);
+        });
+
+        test('+Infinity -> -Infinity', () => {
+            expect(
+                FPN.POSITIVE_INFINITY.negated().isEqual(FPN.NEGATIVE_INFINITY)
+            ).toBe(true);
+        });
+
+        test('±0 -> ±0', () => {
+            const n = FPN.ZERO;
+            expect(n.negated().isEqual(n)).toBe(true);
+        });
+
+        test('±n -> ±n', () => {
+            const n = -123.45;
+            expect(FPN.of(n).negated().isEqual(FPN.of(-n)));
+        });
+    });
+
     describe('plus method tests', () => {
         test('NaN + ±n -> NaN', () => {
             const l = NaN;

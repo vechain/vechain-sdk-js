@@ -1,5 +1,25 @@
 ```mermaid
 classDiagram
+    class ABI {
+        +ABI of(string|AbiParameter[] types,unknown[] values)$
+        +ABI ofEncoded(string|AbiParameter[] types,string|Uint8Array[] dataEncoded)$
+        +unknown[] parseObjectValues(object obj)
+        +ReturnType getFirstDecodedValue<ReturnType>(object obj)
+        +Hex toHex()
+    }
+    class ABIItem {
+        <<abstract>>
+        +string signatureHash()
+    }
+    class ABIFunction {
+        +DecodeFunctionDataReturnType decodeData(Hex data)
+        +EncodeFunctionDataReturnType encodeData<TValue>(TValue[] dataToEncode)
+        +DecodeFunctionResultReturnType decodeResult(Hex data)
+    }
+    class ABIEvent {
+        +DecodeEventLogReturnType decodeEventLog(event)
+        +EncodeEventTopicsReturnType encodeFilterTopics<TValue>(TValue[] event)
+    }
     class Account {
         #address: Address
         #balance: Currency
@@ -29,7 +49,6 @@ classDiagram
         +Txt code
         +FPN value
     }
-    class ExternallyOwnedAccount
     class FPN {
         +FPN NaN$
         +FPN NEGATIVE_INFINITY$
@@ -60,14 +79,12 @@ classDiagram
         +boolean lte(FPN that)
         +FPN minus(FPN that)
         +FPN modulo(FPN that)
+        +FPN negated()
         +FPN of(bigint|number|string exp)$
         +FPN plus(FPN that)
         +FPN pow(FPN that)
         +FPN sqrt()
         +FPN times(FPN that)
-    }
-    class Hash {
-        <<interface>>
     }
     class Hex {
         +Hex abs
@@ -138,6 +155,9 @@ classDiagram
     class VTHO {
         +VTHO of(FPN value)$
     }
+    ABI <|-- ABIItem
+    ABIItem <|-- ABIEvent
+    ABIItem <|-- ABIFunction
     Account "1" ..|> "1" Address : has
     Account "1" ..|> "1" Currency : has
     Account <|-- Contract
@@ -146,9 +166,6 @@ classDiagram
     Currency <|.. Coin
     FPN <|-- VET
     FPN <|-- VTHO
-    Hash <|.. Blake2b256
-    Hash <|.. Keccak256
-    Hash <|.. Sha256
     Hex <|-- HexInt
     HexInt <|-- HexUInt
     HexUInt <|-- Address
@@ -160,6 +177,7 @@ classDiagram
     String <|-- Txt
     Txt <|-- Revision
     Txt <|-- Mnemonic
+    VeChainDataModel <|.. ABI
     VeChainDataModel <|.. BloomFilter
     VeChainDataModel <|.. Currency
     VeChainDataModel <|.. FPN

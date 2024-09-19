@@ -42,14 +42,21 @@ enum RPC_METHODS {
     web3_sha3 = 'web3_sha3',
     net_peerCount = 'net_peerCount',
     net_listening = 'net_listening',
+    eth_getUncleByBlockNumberAndIndex = 'eth_getUncleByBlockNumberAndIndex',
+    eth_getUncleByBlockHashAndIndex = 'eth_getUncleByBlockHashAndIndex',
+    txpool_inspect = 'txpool_inspect',
+    txpool_contentFrom = 'txpool_contentFrom',
+    txpool_content = 'txpool_content',
+    txpool_status = 'txpool_status',
+    eth_signTransaction = 'eth_signTransaction',
+    debug_traceBlockByHash = 'debug_traceBlockByHash',
+    debug_traceBlockByNumber = 'debug_traceBlockByNumber',
 
     /**
      * TO BE IMPLEMENTED METHODS:
      */
     eth_coinbase = 'eth_coinbase',
     eth_feeHistory = 'eth_feeHistory',
-    eth_getUncleByBlockHashAndIndex = 'eth_getUncleByBlockHashAndIndex',
-    eth_getUncleByBlockNumberAndIndex = 'eth_getUncleByBlockNumberAndIndex',
     eth_getUncleCountByBlockHash = 'eth_getUncleCountByBlockHash',
     eth_getUncleCountByBlockNumber = 'eth_getUncleCountByBlockNumber',
     eth_getWork = 'eth_getWork',
@@ -86,8 +93,7 @@ enum RPC_METHODS {
     eth_createAccessList = 'eth_createAccessList',
     eth_getBlockReceipts = 'eth_getBlockReceipts',
     eth_getProof = 'eth_getProof',
-    eth_maxPriorityFeePerGas = 'eth_maxPriorityFeePerGas',
-    eth_signTransaction = 'eth_signTransaction'
+    eth_maxPriorityFeePerGas = 'eth_maxPriorityFeePerGas'
 }
 
 export { RPC_METHODS };
