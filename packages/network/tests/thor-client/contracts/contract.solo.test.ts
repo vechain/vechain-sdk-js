@@ -520,13 +520,13 @@ describe('ThorClient - Contracts', () => {
             'set the value in the contract to 123'
         );
         expect(clauseSet1.clause.abi).toEqual(
-            '{"type":"function","name":"set","constant":false,"payable":false,"inputs":[{"type":"uint256","name":"x"}],"outputs":[]}'
+            '{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"x\",\"type\":\"uint256\"}],\"name\":\"set\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}'
         );
         expect(clauseSet2.clause.comment).toBe(
             'set the value in the contract to 321'
         );
         expect(clauseSet2.clause.abi).toEqual(
-            '{"type":"function","name":"set","constant":false,"payable":false,"inputs":[{"type":"uint256","name":"x"}],"outputs":[]}'
+            '{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"x\",\"type\":\"uint256\"}],\"name\":\"set\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}'
         );
     }, 10000);
 
@@ -556,7 +556,11 @@ describe('ThorClient - Contracts', () => {
         );
 
         expect(clauseSet1.clause.abi).toEqual(
-            '{"type":"function","name":"set","constant":false,"payable":false,"inputs":[{"type":"uint256","name":"x"}],"outputs":[]}'
+            '{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"x\",\"type\":\"uint256\"}],\"name\":\"set\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}'
+        );
+
+        expect(clauseSet2.clause.abi).toEqual(
+            '{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"x\",\"type\":\"uint256\"}],\"name\":\"set\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}'
         );
     }, 10000);
 
