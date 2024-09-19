@@ -50,7 +50,10 @@ describe('vnsUtils', () => {
             ).rejects.toThrow();
             expect(executeCall).toHaveBeenCalledWith(
                 '0xc403b8EA53F707d7d4de095f0A20bC491Cf2bc94',
-                'function getAddresses(string[] names) returns (address[] addresses)',
+                ABIItem.ofSignature(
+                    ABIFunction,
+                    'function getAddresses(string[] names) returns (address[] addresses)'
+                ),
                 [names]
             );
         });
