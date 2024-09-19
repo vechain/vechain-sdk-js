@@ -8,7 +8,6 @@
                     {
                         "target": "./src",
                         "from": [
-                            "../constant",
                             "../core",
                             "../ethers-adapter",
                             "../hardhat-plugin",

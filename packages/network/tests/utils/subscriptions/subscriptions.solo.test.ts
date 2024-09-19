@@ -107,6 +107,7 @@ describe('Subscriptions Solo network tests', () => {
 
                 ws.onerror = (error: Event) => {
                     clearTimeout(timeout); // Clear the timeout in case of an error
+                    //  eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                     reject(error); // Reject the promise with the error
                 };
             });
@@ -182,6 +183,7 @@ describe('Subscriptions Solo network tests', () => {
 
                         resolve(true); // Resolve the promise when a message is received
                     } catch (error) {
+                        //  eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                         reject(error); // Reject the promise on error
                     } finally {
                         ws.close(); // Ensure WebSocket is closed
@@ -189,6 +191,7 @@ describe('Subscriptions Solo network tests', () => {
                 };
 
                 ws.onerror = (error: Event) => {
+                    //  eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                     reject(error); // Reject the promise on WebSocket error
                 };
             });
@@ -280,6 +283,7 @@ describe('Subscriptions Solo network tests', () => {
 
                     resolve(true); // Resolve the promise when a message is received
                 } catch (error) {
+                    //  eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                     reject(error); // Reject the promise on error
                 } finally {
                     ws.close(); // Ensure WebSocket is closed
@@ -287,6 +291,7 @@ describe('Subscriptions Solo network tests', () => {
             };
 
             ws.onerror = (error: Event) => {
+                //  eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                 reject(error); // Reject the promise on WebSocket error
             };
         });

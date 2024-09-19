@@ -30,6 +30,9 @@
         "@typescript-eslint/non-nullable-type-assertion-style": "off",
         "@typescript-eslint/no-invalid-void-type": "off",
         "@typescript-eslint/restrict-template-expressions": "off",
+        "@typescript-eslint/ban-types": "off",
+        "@typescript-eslint/no-throw-literal": "off",
+        "@typescript-eslint/lines-between-class-members": "off",
         "prettier/prettier": ["error", { "singleQuote": true, "trailingComma": "none", "tabWidth": 4 }],
         "no-warning-comments": "warn",
         "no-multi-str": "off"

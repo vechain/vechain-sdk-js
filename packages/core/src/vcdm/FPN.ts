@@ -212,6 +212,7 @@ class FPN implements VeChainDataModel<FPN> {
     public comparedTo(that: FPN): null | number {
         try {
             return this.compareTo(that);
+            //  eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             return null;
         }
@@ -840,6 +841,7 @@ class FPN implements VeChainDataModel<FPN> {
         if (this.isPositiveInfinite()) return FPN.POSITIVE_INFINITY;
         try {
             return new FPN(this.fd, FPN.sqr(this.sv, this.fd));
+            //  eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (e) {
             return FPN.NaN;
         }
