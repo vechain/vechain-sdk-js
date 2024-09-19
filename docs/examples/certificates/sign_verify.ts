@@ -1,11 +1,4 @@
-import {
-    Hex,
-    Address,
-    Blake2b256,
-    certificate,
-    Secp256k1,
-    type Certificate
-} from '@vechain/sdk-core';
+import { Address, Certificate, Secp256k1 } from '@vechain/sdk-core';
 
 // START_SNIPPET: SignVerifySnippet
 
@@ -17,7 +10,7 @@ const signerAddress = Address.ofPublicKey(Buffer.from(publicKey)).toString();
 
 // 2 - Create a certificate
 
-const cert: Certificate = {
+const certificate = Certificate.of({
     purpose: 'identification',
     payload: {
         type: 'text',
@@ -26,17 +19,13 @@ const cert: Certificate = {
     domain: 'localhost',
     timestamp: 1545035330,
     signer: signerAddress
-};
+});
 
 // 3 - Sign certificate
 
-const jsonStr = certificate.encode(cert);
-const signature = Secp256k1.sign(Blake2b256.of(jsonStr).bytes, privateKey);
-
-// Add 0x to signature
-cert.signature = Hex.of(signature).toString();
+certificate.sign(privateKey);
 
 // Verify certificate
-certificate.verify(cert);
+certificate.verify();
 
 // END_SNIPPET: SignVerifySnippet

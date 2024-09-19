@@ -9,7 +9,9 @@ C4Context
     Boundary(core, "core", "package") {
         Boundary(core_modules, "Core modules") {
             System(abi, "ABI module", "Handle all ABI related operations.")
-            System(certificate, "Certificate module", "Handle all certificate related operations.")
+            Boundary(certificate+module, "Certificate module") {
+                System(Certificate, "Certificate class", "Handle all certificate related operations.")
+            }
             System(clause, "Clause", "Handles all clause related operations.")
             System(contract, "Smart contract module", "Handle all smart contract related operations.")
             System(encoding, "RLP encoding module", "Handle RLP encoding related operations.")
