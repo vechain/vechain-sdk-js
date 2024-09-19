@@ -66,8 +66,8 @@ class ABIFunction extends ABIItem {
         try {
             return Hex.of(
                 encodeFunctionData({
-                    abi: [this.signature]
-                    // args: dataToEncode
+                    abi: [this.signature],
+                    args: dataToEncode
                 })
             );
         } catch (e) {
