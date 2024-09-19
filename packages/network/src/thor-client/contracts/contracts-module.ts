@@ -1,5 +1,4 @@
 import {
-    abi,
     ABIContract,
     clauseBuilder,
     dataUtils,
@@ -7,7 +6,6 @@ import {
     type ABIFunction
 } from '@vechain/sdk-core';
 import { type Abi } from 'abitype';
-import { type InterfaceAbi } from 'ethers';
 import { type VeChainSigner } from '../../signer';
 import { BUILT_IN_CONTRACTS } from '../../utils';
 import { decodeRevertReason } from '../gas/helpers/decode-evm-error';
@@ -48,12 +46,7 @@ class ContractsModule {
         bytecode: string,
         signer: VeChainSigner
     ): ContractFactory<TAbi> {
-        return new ContractFactory<TAbi>(
-            abi as InterfaceAbi,
-            bytecode,
-            signer,
-            this.thor
-        );
+        return new ContractFactory<TAbi>(abi, bytecode, signer, this.thor);
     }
 
     /**
@@ -69,12 +62,7 @@ class ContractsModule {
         abi: Tabi,
         signer?: VeChainSigner
     ): Contract<Tabi> {
-        return new Contract<Tabi>(
-            address,
-            abi as InterfaceAbi,
-            this.thor,
-            signer
-        );
+        return new Contract<Tabi>(address, abi, this.thor, signer);
     }
 
     /**
@@ -137,9 +125,10 @@ class ContractsModule {
             options
         );
         return response.map((res, index) => {
-            return new abi.Function(
-                clauses[index].functionFragment
-            ).decodeOutput(res.data);
+            // TODO: Replace by decodeOutput?
+            return clauses[index].functionAbi.decodeResult(Hex.of(res.data)) as
+                | ContractCallResult
+                | string;
         });
     }
 

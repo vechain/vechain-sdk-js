@@ -1,10 +1,11 @@
 import type {
-    TransactionBodyOptions,
+    SignTransactionOptions,
     SimulateTransactionOptions,
-    SignTransactionOptions
+    TransactionBodyOptions
 } from '../transactions';
 
 import type {
+    ABIFunction,
     ClauseOptions,
     ExtendedTransactionClause,
     vechain_sdk_core_ethers
@@ -50,12 +51,12 @@ type ContractCallResult = vechain_sdk_core_ethers.Result;
  */
 interface ContractClause {
     clause: ExtendedTransactionClause;
-    functionFragment: vechain_sdk_core_ethers.FunctionFragment;
+    functionAbi: ABIFunction;
 }
 
 export type {
-    ContractTransactionOptions,
     ContractCallOptions,
     ContractCallResult,
-    ContractClause
+    ContractClause,
+    ContractTransactionOptions
 };

@@ -1,6 +1,7 @@
 import { InvalidAbiDataToEncodeOrDecode } from '@vechain/sdk-errors';
 import {
     getAbiItem,
+    parseAbi,
     type AbiEvent,
     type AbiFunction,
     type DecodeEventLogReturnType,
@@ -28,6 +29,15 @@ class ABIContract extends ABI {
      */
     public static ofAbi(abi: ViemABI): ABIContract {
         return new ABIContract(abi);
+    }
+
+    /**
+     * Creates an ABIContract instance from an ABI string.
+     * @param {string} abi representation of the contract.
+     * @returns New instance of ABIContract.
+     */
+    public static ofStringAbi(abi: string): ABIContract {
+        return new ABIContract(parseAbi([abi]));
     }
 
     /**

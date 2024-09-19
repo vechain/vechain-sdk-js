@@ -1,15 +1,14 @@
-import { coder } from '@vechain/sdk-core';
+import {
+    ABIContract,
+    type ABIEvent,
+    type ABIFunction
+} from '@vechain/sdk-core';
 import { InvalidAbiFragment } from '@vechain/sdk-errors';
 import {
     type Abi,
     type ExtractAbiEventNames,
     type ExtractAbiFunctionNames
 } from 'abitype';
-import {
-    type EventFragment,
-    type FunctionFragment,
-    type InterfaceAbi
-} from 'ethers';
 import { type VeChainSigner } from '../../../signer';
 import { type ThorClient } from '../../thor-client';
 import type { TransactionReceipt } from '../../transactions';
@@ -35,7 +34,7 @@ import {
 class Contract<TAbi extends Abi> {
     readonly thor: ThorClient;
     readonly address: string;
-    readonly abi: InterfaceAbi;
+    readonly abi: Abi;
     private signer?: VeChainSigner;
 
     readonly deployTransactionReceipt: TransactionReceipt | undefined;
@@ -91,7 +90,7 @@ class Contract<TAbi extends Abi> {
      */
     constructor(
         address: string,
-        abi: InterfaceAbi,
+        abi: Abi,
         thor: ThorClient,
         signer?: VeChainSigner,
         transactionReceipt?: TransactionReceipt
@@ -192,28 +191,28 @@ class Contract<TAbi extends Abi> {
     }
 
     /**
-     * Retrieves the function fragment for the specified function name.
+     * Retrieves the function ABI for the specified function name.
      * @param prop - The name of the function.
      * @private
      * @throws {InvalidAbiFragment}
      *
      */
-    public getFunctionFragment(prop: string | symbol): FunctionFragment {
-        const functionFragment = coder
-            .createInterface(this.abi)
-            .getFunction(prop.toString());
+    public getFunctionAbi(prop: string | symbol): ABIFunction {
+        const functionAbi = ABIContract.ofAbi(this.abi).getFunction(
+            prop.toString()
+        );
 
-        if (functionFragment == null) {
+        if (functionAbi == null) {
             throw new InvalidAbiFragment(
-                'Contract.getFunctionFragment()',
+                'Contract.getFunctionAbi()',
                 `Function '${prop.toString()}' not found in contract ABI.`,
                 {
-                    type: 'event',
+                    type: 'function',
                     fragment: prop
                 }
             );
         }
-        return functionFragment;
+        return functionAbi;
     }
 
     /**
@@ -222,14 +221,14 @@ class Contract<TAbi extends Abi> {
      * @return The event fragment for the specified event name.
      * @throws {InvalidAbiFragment}
      */
-    public getEventFragment(eventName: string | symbol): EventFragment {
-        const eventFragment = coder
-            .createInterface(this.abi)
-            .getEvent(eventName.toString());
+    public getEventAbi(eventName: string | symbol): ABIEvent {
+        const eventAbi = ABIContract.ofAbi(this.abi).getEvent(
+            eventName.toString()
+        );
 
-        if (eventFragment == null) {
+        if (eventAbi == null) {
             throw new InvalidAbiFragment(
-                'Contract.getEventFragment()',
+                'Contract.getEventAbi()',
                 `Function '${eventName.toString()}' not found in contract ABI.`,
                 {
                     type: 'event',
@@ -237,7 +236,7 @@ class Contract<TAbi extends Abi> {
                 }
             );
         }
-        return eventFragment;
+        return eventAbi;
     }
 }
 

@@ -1,4 +1,4 @@
-import { type vechain_sdk_core_ethers } from '@vechain/sdk-core';
+import { type AbiEvent } from 'abitype';
 /* --------- Event types start --------- */
 
 /**
@@ -50,7 +50,7 @@ interface EventAbi {
  *
  * @see [Ethers Event Fragment](https://docs.ethers.org/v6/api/abi/abi-coder/#EventFragment)
  */
-type EventFragment = vechain_sdk_core_ethers.EventFragment;
+type EventFragment = AbiEvent;
 
 /**
  * An event represented as a string, an EventAbi object or an ethers EventFragment object.
@@ -121,9 +121,9 @@ interface VETtransfersSubscriptionOptions {
 /* --- Input options end --- */
 
 export type {
-    EventSubscriptionOptions,
-    EventLike,
     BlockSubscriptionOptions,
-    VETtransfersSubscriptionOptions,
-    EventFragment
+    EventFragment,
+    EventLike,
+    EventSubscriptionOptions,
+    VETtransfersSubscriptionOptions
 };

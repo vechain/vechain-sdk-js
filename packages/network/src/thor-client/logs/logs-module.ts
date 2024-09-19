@@ -1,3 +1,7 @@
+import { abi, Hex, type ABIEvent } from '@vechain/sdk-core';
+import { type Result } from 'ethers';
+import { thorest } from '../../utils';
+import { type ThorClient } from '../thor-client';
 import {
     type EventLogs,
     type FilterEventLogsOptions,
@@ -5,9 +9,6 @@ import {
     type FilterTransferLogsOptions,
     type TransferLogs
 } from './types';
-import { type EventFragment, thorest } from '../../utils';
-import { type ThorClient } from '../thor-client';
-import { abi } from '@vechain/sdk-core';
 
 /**
  * The `LogsClient` class provides methods to interact with log-related endpoints
@@ -49,22 +50,33 @@ class LogsModule {
         filterOptions: FilterEventLogsOptions
     ): Promise<EventLogs[]> {
         // Extract raw event logs and fragments from filter options
-        const fragments = filterOptions.criteriaSet?.map(
-            (c) => c.eventFragment
-        );
+        const eventAbis = filterOptions.criteriaSet?.map((c) => c.eventAbi);
 
         const eventLogs = await this.getRawEventLogs(filterOptions);
 
         const result: EventLogs[] = [];
 
-        if (fragments !== undefined) {
-            const uniqueFragments = this.removeDuplicatedFragments(fragments);
+        if (eventAbis !== undefined) {
+            const uniqueEventAbis = this.removeDuplicatedAbis(eventAbis);
 
             eventLogs.forEach((log) => {
-                const eventFragment = new abi.Event(
-                    uniqueFragments.get(log.topics[0])
-                );
-                log.decodedData = eventFragment.decodeEventLog(log);
+                // TODO: Replace by abi.Event implementation of decodeEventLog?
+                const rawDecodedData = uniqueEventAbis
+                    .get(log.topics[0])
+                    ?.decodeEventLog({
+                        data: Hex.of(log.data),
+                        topics: log.topics.map((topic) => Hex.of(topic))
+                    });
+
+                if (rawDecodedData?.args === undefined) {
+                    log.decodedData = [] as unknown as Result;
+                } else if (rawDecodedData.args instanceof Object) {
+                    log.decodedData = Object.values(
+                        rawDecodedData.args
+                    ) as Result;
+                } else {
+                    log.decodedData = rawDecodedData as unknown as Result;
+                }
                 result.push(log);
             });
         }
@@ -83,23 +95,21 @@ class LogsModule {
         filterOptions: FilterEventLogsOptions
     ): Promise<EventLogs[][]> {
         // Extract raw event logs and fragments from filter options
-        const fragments = filterOptions.criteriaSet?.map(
-            (c) => c.eventFragment
-        );
+        const eventAbis = filterOptions.criteriaSet?.map((c) => c.eventAbi);
 
         const eventLogs = await this.getRawEventLogs(filterOptions);
 
         const result = new Map<string, EventLogs[]>();
 
-        if (fragments !== undefined) {
-            const uniqueFragments = this.removeDuplicatedFragments(fragments);
+        if (eventAbis !== undefined) {
+            const uniqueEventAbis = this.removeDuplicatedAbis(eventAbis);
 
             // Initialize the result map with empty arrays for each unique fragment
-            uniqueFragments.forEach((f) => result.set(f.topicHash, []));
+            uniqueEventAbis.forEach((f) => result.set(f.signatureHash, []));
 
             eventLogs.forEach((log) => {
                 const eventFragment = new abi.Event(
-                    uniqueFragments.get(log.topics[0])
+                    uniqueEventAbis.get(log.topics[0])
                 );
                 log.decodedData = eventFragment.decodeEventLog(log);
                 result.get(log.topics[0])?.push(log);
@@ -139,18 +149,16 @@ class LogsModule {
      * @param fragments - An array of event fragments.
      * @private Returns a map of unique fragments.
      */
-    private removeDuplicatedFragments(
-        fragments: EventFragment[]
-    ): Map<string, EventFragment> {
-        const uniqueFragments = new Map<string, EventFragment>();
+    private removeDuplicatedAbis(eventAbis: ABIEvent[]): Map<string, ABIEvent> {
+        const uniqueEventAbis = new Map<string, ABIEvent>();
 
-        fragments.forEach((obj) => {
-            if (!uniqueFragments.has(obj.topicHash)) {
-                uniqueFragments.set(obj.topicHash, obj);
+        eventAbis.forEach((obj) => {
+            if (!uniqueEventAbis.has(obj.signatureHash)) {
+                uniqueEventAbis.set(obj.signatureHash, obj);
             }
         });
 
-        return uniqueFragments;
+        return uniqueEventAbis;
     }
 
     /**

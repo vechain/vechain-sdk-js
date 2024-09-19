@@ -354,12 +354,12 @@ describe('ThorClient - Contracts', () => {
 
         // The get function fragment call should fail because the function does not exist
         expect(() =>
-            loadedContract.getFunctionFragment('notExistingFunction')
+            loadedContract.getFunctionAbi('notExistingFunction')
         ).toThrow();
 
         // The get event fragment call should fail because the event does not exist
         expect(() =>
-            loadedContract.getEventFragment('notExistingFunction')
+            loadedContract.getEventAbi('notExistingFunction')
         ).toThrow();
     }, 10000);
 

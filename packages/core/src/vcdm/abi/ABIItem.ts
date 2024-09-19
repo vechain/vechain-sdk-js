@@ -74,8 +74,8 @@ abstract class ABIItem extends ABI {
     }
 
     /**
-     * The signature hash of the ABI.
-     * @returns {string} The signature hash of the ABI.
+     * The signature hash of the ABIItem.
+     * @returns {string} The signature hash of the ABIItem.
      * @remarks Wrapper for {@link toFunctionHash}.
      **/
     public get signatureHash(): string {
@@ -83,11 +83,10 @@ abstract class ABIItem extends ABI {
     }
 
     /**
-     * Compares the current ABI instance with another ABI instance.
-     * @param that The ABI to compare with.
-     * @returns {number} A non-zero number if the current ABI is different to the other ABI or zero if they are equal.
+     * Compares the current ABIItem instance with another ABIItem instance.
+     * @param {ABIItem} that The item to compare with.
+     * @returns {number} A non-zero number if the current ABIItem is different to the other ABI or zero if they are equal.
      * @override {@link VeChainDataModel#compareTo}
-     * @remark The comparison is done by comparing the types and values of the ABI instances.
      **/
     public compareTo(that: ABIItem): number {
         if (super.compareTo(that) !== 0) {
