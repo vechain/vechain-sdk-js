@@ -1,8 +1,9 @@
 {
   "name": "vechain-sdk-nextjs",
-  "description": "A Next.js sample app using the VeChain SDK",
+  "description": "An example app of how to integrate the VeChain SDK with Next.js",
   "version": "1.0.0-beta.31",
-  "private": true,
+  "author": "VeChain Foundation",
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",

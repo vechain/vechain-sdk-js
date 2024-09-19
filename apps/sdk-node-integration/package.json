@@ -1,10 +1,11 @@
 {
   "name": "sdk-user",
-  "description": "A node sample app using the VeChain SDK",
+  "description": "An example app of how to integrate the VeChain SDK with Node.js",
   "version": "1.0.0-beta.31",
   "main": "dist/index.js",
   "types": "src/index.ts",
   "license": "MIT",
+  "author": "VeChain Foundation",
   "scripts": {
     "build": "rm -rf ./dist && tsup src/index.ts --format cjs,esm --dts",
     "start": "yarn build && node dist/index.js",

@@ -528,18 +528,6 @@ class FPN implements VeChainDataModel<FPN> {
     }
 
     /**
-     * Checks if a given string expression is an unsigned positive integer.
-     *
-     * @param {string} exp - The string expression to be tested.
-     *
-     * @return {boolean} True if the expression is an unsigned positive integer,
-     * false otherwise.
-     */
-    public static isUnsignedIntegerExpression(exp: string): boolean {
-        return this.REGEX_NATURAL.test(exp);
-    }
-
-    /**
      * Returns `true` if the value of this FPN is zero or minus zero, otherwise returns `false`.
      *
      * @return `true` if the value of this FPN is zero or minus zero, otherwise returns `false`.
