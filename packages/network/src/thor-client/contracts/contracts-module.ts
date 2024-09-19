@@ -103,7 +103,7 @@ class ContractsModule {
              */
             return decodeRevertReason(response[0].data) ?? '';
         } else {
-            // Returning ethers format (array of anonymous values)
+            // Returning ethers format (array of anonymous values). To be removed with #1184
             // The viem format is a single value/JSON object (ABIFunction#decodeResult)
             return functionAbi.decodeEthersOutput(Hex.of(response[0].data));
         }
@@ -123,7 +123,7 @@ class ContractsModule {
             clauses.map((clause) => clause.clause),
             options
         );
-        // Returning ethers format (array of anonymous values)
+        // Returning ethers format (array of anonymous values). To be removed with #1184
         // The viem format is a single value/JSON object (ABIFunction#decodeResult)
         return response.map((res, index) =>
             clauses[index].functionAbi.decodeEthersOutput(Hex.of(res.data))
