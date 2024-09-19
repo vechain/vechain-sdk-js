@@ -1,27 +1,30 @@
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
+import { ThorId } from '@vechain/sdk-core';
+import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
+import { RPC_DOCUMENTATION_URL } from '../../../../../../utils';
 
 /**
  * RPC Method eth_getUncleCountByBlockHash implementation
  *
- * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
- * @note:
- * * params[0]: ...
- * * params[1]: ...
- * * params[n]: ...
+ *                 * params[0]: The block hash to get as a hex string.
  */
-const ethGetUncleCountByBlockHash =
-    async (): Promise<'METHOD NOT IMPLEMENTED'> => {
-        // Not implemented yet
-        VeChainSDKLogger('warning').log({
-            title: 'eth_getUncleCountByBlockHash',
-            messages: [
-                'Method "eth_getUncleCountByBlockHash" has not been implemented yet.'
-            ]
-        });
+const ethGetUncleCountByBlockHash = async (
+    params: unknown[]
+): Promise<number> => {
+    // Input validation
+    if (
+        params.length !== 1 ||
+        typeof params[0] !== 'string' ||
+        !ThorId.isValid(params[0])
+    )
+        throw new JSONRPCInvalidParams(
+            'eth_getUncleCountByBlockHash',
+            -32602,
+            `Invalid input params for "eth_getUncleCountByBlockHash" method. See ${RPC_DOCUMENTATION_URL} for details.`,
+            { params }
+        );
 
-        // To avoid eslint error
-        return await Promise.resolve('METHOD NOT IMPLEMENTED');
-    };
+    return await Promise.resolve(0);
+};
 
 export { ethGetUncleCountByBlockHash };
