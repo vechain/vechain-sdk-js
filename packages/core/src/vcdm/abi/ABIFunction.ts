@@ -26,10 +26,12 @@ import { ABIItem } from './ABIItem';
  * @extends ABIItem
  */
 class ABIFunction extends ABIItem {
+    private readonly functionSignature: AbiFunction;
     public constructor(signature: string);
     public constructor(signature: AbiFunction);
     public constructor(signature: string | AbiFunction) {
         super(signature);
+        this.functionSignature = this.signature as AbiFunction;
     }
 
     /**
@@ -108,6 +110,24 @@ class ABIFunction extends ABIItem {
                 error
             );
         }
+    }
+
+    /**
+     * Decodes a function output following the ethers format.
+     * @param {Hex} data The data to be decoded
+     * @returns {Result} The decoded data
+     */
+    public decodeEthersOutput(data: Hex): Result {
+        const resultDecoded = this.decodeResult(data);
+        if (this.functionSignature.outputs.length > 1) {
+            return this.parseObjectValues(resultDecoded as object) as Result;
+        } else if (
+            this.functionSignature.outputs.length === 1 &&
+            this.functionSignature.outputs[0].type === 'tuple'
+        ) {
+            return [this.parseObjectValues(resultDecoded as object)] as Result;
+        }
+        return [resultDecoded] as Result;
     }
 }
 
@@ -200,39 +220,6 @@ class Function<ABIType> {
                 e
             );
         }
-    }
-
-    /**
-     * Decodes the output data from a transaction based on ABI (Application Binary Interface) specifications.
-     * This method attempts to decode the given byte-like data into a readable format using the contract's interface.
-     *
-     * @param data - The `BytesLike` data to be decoded, typically representing the output of a contract function call.
-     * @returns A `Result` object containing the decoded data.
-     * @throws {InvalidAbiDataToEncodeOrDecode}
-     *
-     * @example
-     * ```typescript
-     *   const decoded = contractInstance.decodeOutput(rawTransactionOutput);
-     *   console.log('Decoded Output:', decoded);
-     * ```
-     */
-    public decodeOutput(data: BytesLike): Result {
-        const resultDecoded = this.function.decodeResult(Hex.of(data));
-        if (this.functionAbi instanceof FunctionFragment) {
-            if (this.functionAbi.outputs.length > 1) {
-                return this.function.parseObjectValues(
-                    resultDecoded as object
-                ) as Result;
-            } else if (
-                this.functionAbi.outputs.length === 1 &&
-                this.functionAbi.outputs[0].type === 'tuple'
-            ) {
-                return [
-                    this.function.parseObjectValues(resultDecoded as object)
-                ] as Result;
-            }
-        }
-        return [resultDecoded] as Result;
     }
 
     /**

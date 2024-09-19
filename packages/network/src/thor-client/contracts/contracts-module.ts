@@ -103,10 +103,9 @@ class ContractsModule {
              */
             return decodeRevertReason(response[0].data) ?? '';
         } else {
-            // TODO: Replace by decodeOutput?
-            return functionAbi.decodeResult(Hex.of(response[0].data)) as
-                | ContractCallResult
-                | string;
+            // Returning ethers format (array of anonymous values)
+            // The viem format is a single value/JSON object (ABIFunction#decodeResult)
+            return functionAbi.decodeEthersOutput(Hex.of(response[0].data));
         }
     }
 
@@ -124,12 +123,11 @@ class ContractsModule {
             clauses.map((clause) => clause.clause),
             options
         );
-        return response.map((res, index) => {
-            // TODO: Replace by decodeOutput?
-            return clauses[index].functionAbi.decodeResult(Hex.of(res.data)) as
-                | ContractCallResult
-                | string;
-        });
+        // Returning ethers format (array of anonymous values)
+        // The viem format is a single value/JSON object (ABIFunction#decodeResult)
+        return response.map((res, index) =>
+            clauses[index].functionAbi.decodeEthersOutput(Hex.of(res.data))
+        );
     }
 
     /**
