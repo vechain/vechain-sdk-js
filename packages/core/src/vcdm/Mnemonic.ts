@@ -25,6 +25,13 @@ type WordlistSizeType = 12 | 15 | 18 | 21 | 24;
  */
 type WordListRandomGeneratorSizeInBytes = 16 | 20 | 24 | 28 | 32;
 
+/**
+ * The Mnemonic class provides functionality related to mnemonic phrases, including encoding to bytes,
+ * generating, validating, and deriving keys from mnemonic words based on the BIP39 standard.
+ * It implements the VeChainDataModel interface.
+ *
+ * @implements VeChainDataModel
+ */
 class Mnemonic implements VeChainDataModel<Mnemonic> {
     /**
      * A TextEncoder instance used for encoding text to bytes.
