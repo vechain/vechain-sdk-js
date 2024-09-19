@@ -9,6 +9,7 @@ import {
     type FilterTransferLogsOptions,
     type TransferLogs
 } from './types';
+import { InvalidAbiFragment } from '@vechain/sdk-errors';
 
 /**
  * The `LogsClient` class provides methods to interact with log-related endpoints
@@ -60,13 +61,20 @@ class LogsModule {
             const uniqueEventAbis = this.removeDuplicatedAbis(eventAbis);
 
             eventLogs.forEach((log) => {
+                const eventAbi = uniqueEventAbis.get(log.topics[0]);
+                if (eventAbi === undefined || eventAbi === null) {
+                    throw new InvalidAbiFragment(
+                        'LogsModule.filterEventLogs',
+                        'Topic not found in the provided ABIs.',
+                        { type: 'event', fragment: log.topics[0] }
+                    );
+                }
+
                 // TODO: Replace by abi.Event implementation of decodeEventLog?
-                const rawDecodedData = uniqueEventAbis
-                    .get(log.topics[0])
-                    ?.decodeEventLog({
-                        data: Hex.of(log.data),
-                        topics: log.topics.map((topic) => Hex.of(topic))
-                    });
+                const rawDecodedData = eventAbi.decodeEventLog({
+                    data: Hex.of(log.data),
+                    topics: log.topics.map((topic) => Hex.of(topic))
+                });
 
                 if (rawDecodedData?.args === undefined) {
                     log.decodedData = [] as unknown as Result;
@@ -108,13 +116,19 @@ class LogsModule {
             uniqueEventAbis.forEach((f) => result.set(f.signatureHash, []));
 
             eventLogs.forEach((log) => {
+                const eventAbi = uniqueEventAbis.get(log.topics[0]);
+                if (eventAbi === undefined || eventAbi === null) {
+                    throw new InvalidAbiFragment(
+                        'LogsModule.filterGroupedEventLogs',
+                        'Topic not found in the provided ABIs.',
+                        { type: 'event', fragment: log.topics[0] }
+                    );
+                }
                 // TODO: Replace by abi.Event implementation of decodeEventLog?
-                const rawDecodedData = uniqueEventAbis
-                    .get(log.topics[0])
-                    ?.decodeEventLog({
-                        data: Hex.of(log.data),
-                        topics: log.topics.map((topic) => Hex.of(topic))
-                    });
+                const rawDecodedData = eventAbi.decodeEventLog({
+                    data: Hex.of(log.data),
+                    topics: log.topics.map((topic) => Hex.of(topic))
+                });
 
                 if (rawDecodedData?.args === undefined) {
                     log.decodedData = [] as unknown as Result;
