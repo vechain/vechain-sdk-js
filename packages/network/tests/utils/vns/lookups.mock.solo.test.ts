@@ -7,6 +7,7 @@ import {
     test
 } from '@jest/globals';
 import { TESTNET_URL, ThorClient, vnsUtils } from '../../../src';
+import { ABIFunction, ABIItem } from '@vechain/sdk-core';
 
 /**
  * vnsUtils vet.domains tests
@@ -102,7 +103,7 @@ describe('vnsUtils', () => {
     });
 
     describe('lookupAddresses(string[])', () => {
-        test('Should use the correct resolveUtils based on the passed thor client', async () => {
+        test('Should throw an error and call executeCall', async () => {
             const addresses = [
                 '0x0000000000000000000000000000456E65726779',
                 '0x625fCe8dd8E2C05e82e77847F3da06AF6e55A7AF'
@@ -120,7 +121,10 @@ describe('vnsUtils', () => {
             ).rejects.toThrow();
             expect(executeCall).toHaveBeenCalledWith(
                 '0xc403b8EA53F707d7d4de095f0A20bC491Cf2bc94',
-                'function getNames(address[] addresses) returns (string[] names)',
+                ABIItem.ofSignature(
+                    ABIFunction,
+                    'function getNames(address[] addresses) returns (string[] names)'
+                ),
                 [addresses]
             );
         });
