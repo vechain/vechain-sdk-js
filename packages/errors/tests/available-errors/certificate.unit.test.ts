@@ -1,5 +1,5 @@
 import { describe, expect, test } from '@jest/globals';
-import { CertificateSignature, VechainSDKError } from '../../src';
+import { CertificateSignatureMismatch, VechainSDKError } from '../../src';
 
 /**
  * Available errors test - Certificate
@@ -7,13 +7,13 @@ import { CertificateSignature, VechainSDKError } from '../../src';
  */
 describe('Error package Available errors test - Certificate', () => {
     /**
-     * CertificateSignature
+     * CertificateSignatureMismatch
      */
-    test('CertificateSignature', () => {
+    test('CertificateSignatureMismatch', () => {
         // Inner error
         [undefined, new Error('error')].forEach((innerError) => {
             expect(() => {
-                throw new CertificateSignature(
+                throw new CertificateSignatureMismatch(
                     'method',
                     'message',
                     { data: 'data' },

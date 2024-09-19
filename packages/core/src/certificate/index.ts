@@ -1,2 +1,2 @@
-export * from './certificate';
-export * from './types.d';
+export * from './Certificate';
+export * from './CertificateData';
