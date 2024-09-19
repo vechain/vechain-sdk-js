@@ -51,14 +51,14 @@ enum RPC_METHODS {
     eth_signTransaction = 'eth_signTransaction',
     debug_traceBlockByHash = 'debug_traceBlockByHash',
     debug_traceBlockByNumber = 'debug_traceBlockByNumber',
+    eth_getUncleCountByBlockHash = 'eth_getUncleCountByBlockHash',
+    eth_getUncleCountByBlockNumber = 'eth_getUncleCountByBlockNumber',
 
     /**
      * TO BE IMPLEMENTED METHODS:
      */
     eth_coinbase = 'eth_coinbase',
     eth_feeHistory = 'eth_feeHistory',
-    eth_getUncleCountByBlockHash = 'eth_getUncleCountByBlockHash',
-    eth_getUncleCountByBlockNumber = 'eth_getUncleCountByBlockNumber',
     eth_getWork = 'eth_getWork',
     eth_mining = 'eth_mining',
     eth_hashrate = 'eth_hashrate',

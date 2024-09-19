@@ -5,7 +5,7 @@ import {
     TESTNET_URL,
     ThorClient
 } from '../../../../../src';
-import { VeChainSDKLogger } from '@vechain/sdk-logging';
+import { JSONRPCInvalidParams } from '@vechain/sdk-errors';
 
 /**
  * RPC Mapper integration tests for 'eth_getUncleCountByBlockNumber' method
@@ -31,18 +31,40 @@ describe('RPC Mapper - eth_getUncleCountByBlockNumber method tests', () => {
      */
     describe('eth_getUncleCountByBlockNumber - Positive cases', () => {
         /**
-         * Positive case 1 - ... Description ...
+         * Should return uncle block count at the given block number
          */
-        test('eth_getUncleCountByBlockNumber - positive case 1', async () => {
-            const logSpy = jest.spyOn(VeChainSDKLogger('warning'), 'log');
-
-            // NOT IMPLEMENTED YET!
-            await RPCMethodsMap(thorClient)[
+        test('Should return uncle block count at the given block number', async () => {
+            const uncleBlock = await RPCMethodsMap(thorClient)[
                 RPC_METHODS.eth_getUncleCountByBlockNumber
-            ]([-1]);
+            ](['latest']);
 
-            expect(logSpy).toHaveBeenCalled();
-            logSpy.mockRestore();
+            expect(uncleBlock).toStrictEqual(0);
+        });
+    });
+
+    /**
+     * eth_getUncleCountByBlockNumber RPC call tests - Negative cases
+     */
+    describe('eth_getUncleCountByBlockNumber - Negative cases', () => {
+        /**
+         * Should NOT be able to return uncle block count at the given block number
+         */
+        test('Should NOT be able to return uncle block count at the given block number', async () => {
+            // No params
+            await expect(
+                async () =>
+                    await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_getUncleCountByBlockNumber
+                    ]([])
+            ).rejects.toThrowError(JSONRPCInvalidParams);
+
+            // Invalid params
+            await expect(
+                async () =>
+                    await RPCMethodsMap(thorClient)[
+                        RPC_METHODS.eth_getUncleCountByBlockNumber
+                    ](['latest', 1])
+            ).rejects.toThrowError(JSONRPCInvalidParams);
         });
     });
 });
