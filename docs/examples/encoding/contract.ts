@@ -1,12 +1,11 @@
-import { coder } from '@vechain/sdk-core';
+import { ABIContract } from '@vechain/sdk-core';
 import { expect } from 'expect';
-import { stringifyData } from '@vechain/sdk-errors';
 
 // START_SNIPPET: ContractSnippet
 
 // 1 - Create a new function
 
-const contractABI = stringifyData([
+const contractABI = [
     {
         constant: false,
         inputs: [
@@ -35,14 +34,18 @@ const contractABI = stringifyData([
         stateMutability: 'view',
         type: 'function'
     }
-]);
+] as const;
 
 // 2 - Encode the function input, ready to be used to send a tx
-const encodedData = coder.encodeFunctionInput(contractABI, 'setValue', [123]);
+const encodedData = ABIContract.ofAbi(contractABI).encodeFunctionInput(
+    'setValue',
+    [123]
+);
 
 // 3 - Decode the function input data
 const decodedData = String(
-    coder.decodeFunctionInput(contractABI, 'setValue', encodedData)[0]
+    ABIContract.ofAbi(contractABI).decodeFunctionInput('setValue', encodedData)
+        .args[0]
 ); // decode the function input data
 
 // END_SNIPPET: ContractSnippet
