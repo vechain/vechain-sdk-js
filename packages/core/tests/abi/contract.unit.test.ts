@@ -11,6 +11,7 @@ import {
     contractStorageABI,
     ValueChangedEventData
 } from './fixture';
+import { encodeFunctionResult } from 'viem';
 
 /**
  * Contract tests - encode & decode
@@ -208,14 +209,19 @@ describe('Contract interface for ABI encoding/decoding', () => {
      */
     test('decode a function output successfully', () => {
         const functionName = 'getValue';
-        const encodedFunctionOutput =
-            contractStorageAbi.encodeFunctionInput(functionName);
+        const mockReturnValue = 'test';
+        const encodedFunctionOutput = encodeFunctionResult({
+            abi: contractStorageABI,
+            functionName,
+            result: mockReturnValue
+        });
 
         const decodedOutput = contractStorageAbi.decodeFunctionOutput(
             functionName,
-            encodedFunctionOutput
+            Hex.of(encodedFunctionOutput)
         );
         expect(decodedOutput).toBeDefined();
+        expect(decodedOutput).toEqual(mockReturnValue);
     });
 
     /**
@@ -223,13 +229,17 @@ describe('Contract interface for ABI encoding/decoding', () => {
      */
     test('fail to decode a function due to wrong function name', () => {
         const functionName = 'getValue';
-        const encodedFunctionOutput =
-            contractStorageAbi.encodeFunctionInput(functionName);
+        const mockReturnValue = 'test';
+        const encodedFunctionOutput = encodeFunctionResult({
+            abi: contractStorageABI,
+            functionName,
+            result: mockReturnValue
+        });
 
         expect(() =>
             contractStorageAbi.decodeFunctionOutput(
                 'invalidFunctionName',
-                encodedFunctionOutput
+                Hex.of(encodedFunctionOutput)
             )
         ).toThrowError(InvalidAbiDataToEncodeOrDecode);
     });

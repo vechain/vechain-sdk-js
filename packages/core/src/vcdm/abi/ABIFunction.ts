@@ -101,7 +101,6 @@ class ABIFunction extends ABIItem {
                 data: data.toString() as ViemHex
             });
         } catch (error) {
-            console.log('LLEGA', this.signature, data.toString(), error);
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIFunction.decodeResult',
                 'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
