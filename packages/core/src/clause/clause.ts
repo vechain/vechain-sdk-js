@@ -69,7 +69,7 @@ function functionInteraction(
     const transactionClause: TransactionClause = {
         to: contractAddress,
         value,
-        data: functionAbi.encodeData(args)
+        data: functionAbi.encodeData(args).toString()
     };
 
     if (clauseOptions !== undefined) {

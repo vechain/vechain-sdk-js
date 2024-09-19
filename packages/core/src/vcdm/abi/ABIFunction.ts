@@ -16,7 +16,6 @@ import {
     decodeFunctionResult,
     type DecodeFunctionResultReturnType,
     encodeFunctionData,
-    type EncodeFunctionDataReturnType,
     type Hex as ViemHex
 } from 'viem';
 import { Hex } from '../Hex';
@@ -60,17 +59,17 @@ class ABIFunction extends ABIItem {
      * Encode data using the function's ABI.
      *
      * @param dataToEncode - Data to encode.
-     * @returns Encoded data.
+     * @returns {Hex} Encoded data.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public encodeData<TValue>(
-        dataToEncode: TValue[]
-    ): EncodeFunctionDataReturnType {
+    public encodeData<TValue>(dataToEncode?: TValue[]): Hex {
         try {
-            return encodeFunctionData({
-                abi: [this.signature],
-                args: dataToEncode
-            });
+            return Hex.of(
+                encodeFunctionData({
+                    abi: [this.signature]
+                    // args: dataToEncode
+                })
+            );
         } catch (e) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIFunction.encodeInput',
@@ -102,6 +101,7 @@ class ABIFunction extends ABIItem {
                 data: data.toString() as ViemHex
             });
         } catch (error) {
+            console.log('LLEGA', this.signature, data.toString(), error);
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIFunction.decodeResult',
                 'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
@@ -244,7 +244,7 @@ class Function<ABIType> {
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
     public encodeInput<TValue>(dataToEncode?: TValue[]): string {
-        return this.function.encodeData(dataToEncode as TValue[]);
+        return this.function.encodeData(dataToEncode as TValue[]).toString();
     }
 }
 

@@ -24,6 +24,11 @@ import { ABIItem } from './ABIItem';
 
 type Topics = [] | [signature: ViemHex, ...args: ViemHex[]];
 
+interface ABIEventData {
+    data: Hex;
+    topics: Hex[];
+}
+
 /**
  * Represents a function call in the Event ABI.
  * @extends ABIItem
@@ -76,10 +81,7 @@ class ABIEvent extends ABIItem {
      * @returns Decoding results.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
-    public decodeEventLog(event: {
-        data: Hex;
-        topics: Hex[];
-    }): DecodeEventLogReturnType {
+    public decodeEventLog(event: ABIEventData): DecodeEventLogReturnType {
         try {
             return ABIEvent.parseLog(
                 [this.signature],
@@ -238,4 +240,4 @@ class Event<ABIType> {
     }
 }
 
-export { ABIEvent, Event };
+export { ABIEvent, Event, type ABIEventData };

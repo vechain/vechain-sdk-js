@@ -9,9 +9,9 @@ import {
     type DecodeFunctionResultReturnType,
     type Abi as ViemABI
 } from 'viem';
-import { type Hex } from '../Hex';
+import { Hex } from '../Hex';
 import { ABI } from './ABI';
-import { ABIEvent, Event as EthersEvent } from './ABIEvent';
+import { ABIEvent, Event as EthersEvent, type ABIEventData } from './ABIEvent';
 import { ABIFunction } from './ABIFunction';
 
 class ABIContract extends ABI {
@@ -70,13 +70,13 @@ class ABIContract extends ABI {
      * Encode function data that can be used to send a transaction.
      * @param {string} functionName The name of the function defined in the ABI.
      * @param {unknown[]} functionData The data to pass to the function.
-     * @returns {string} The encoded data that can be used to send a transaction.
+     * @returns {Hex} The encoded data in hexadecimal that can be used to send a transaction.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
     public encodeFunctionInput(
         functionName: string,
-        functionData: unknown[]
-    ): string {
+        functionData?: unknown[]
+    ): Hex {
         try {
             const functionAbiItem = getAbiItem({
                 abi: this.abi,
@@ -171,7 +171,7 @@ class ABIContract extends ABI {
     public encodeEventLog(
         eventName: string,
         eventArgs: unknown[]
-    ): { data: string; topics: string[] } {
+    ): ABIEventData {
         try {
             const eventAbiItem = getAbiItem({
                 abi: this.abi,
@@ -179,7 +179,11 @@ class ABIContract extends ABI {
             });
             /** This should be an ABIEvent once this discussion is resolved {@link https://github.com/wevm/viem/discussions/2676} */
             const eventAbi = new EthersEvent(eventAbiItem as AbiEvent);
-            return eventAbi.encodeEventLog(eventArgs);
+            const { data, topics } = eventAbi.encodeEventLog(eventArgs);
+            return {
+                data: Hex.of(data),
+                topics: topics.map((topic) => Hex.of(topic))
+            };
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIContract.encodeEventLog()',
@@ -193,16 +197,13 @@ class ABIContract extends ABI {
     /**
      * Decodes event log data based on the provided event name, and data/topics to decode.
      * @param {string} eventName - The name of the event to be decoded.
-     * @param eventToDecode - An object containing the data and topics to be decoded.
+     * @param {ABIEventData} eventToDecode - An object containing the data and topics to be decoded.
      * @returns {DecodeEventLogReturnType} The decoded data of the event log.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
     public decodeEventLog(
         eventName: string,
-        eventToDecode: {
-            data: Hex;
-            topics: Hex[];
-        }
+        eventToDecode: ABIEventData
     ): DecodeEventLogReturnType {
         try {
             const eventAbiItem = getAbiItem({

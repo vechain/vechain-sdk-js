@@ -443,7 +443,7 @@ const encodedDecodedInvalidValues = [
     }
 ];
 
-const contractABI = stringifyData([
+const contractABI = [
     {
         constant: false,
         inputs: [
@@ -472,9 +472,9 @@ const contractABI = stringifyData([
         stateMutability: 'view',
         type: 'function'
     }
-]);
+] as const;
 
-const contractABIWithEvents = stringifyData([
+const contractABIWithEvents = [
     {
         constant: false,
         inputs: [
@@ -520,9 +520,9 @@ const contractABIWithEvents = stringifyData([
         name: 'ValueChanged',
         type: 'event'
     }
-]);
+] as const;
 
-const contractStorageABI = stringifyData([
+const contractStorageABI = [
     {
         inputs: [],
         name: 'getValue',
@@ -549,7 +549,7 @@ const contractStorageABI = stringifyData([
         stateMutability: 'nonpayable',
         type: 'function'
     }
-]);
+] as const;
 
 export const encodedParams =
     '0x000000000000000000000000000000000000000000000000000000000000007b00000000000000000000000000000000000000000000000000000000000000ea';
