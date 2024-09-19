@@ -1,4 +1,4 @@
-import { abi, Hex, type ABIEvent } from '@vechain/sdk-core';
+import { Hex, type ABIEvent } from '@vechain/sdk-core';
 import { type Result } from 'ethers';
 import { thorest } from '../../utils';
 import { type ThorClient } from '../thor-client';
@@ -108,10 +108,23 @@ class LogsModule {
             uniqueEventAbis.forEach((f) => result.set(f.signatureHash, []));
 
             eventLogs.forEach((log) => {
-                const eventFragment = new abi.Event(
-                    uniqueEventAbis.get(log.topics[0])
-                );
-                log.decodedData = eventFragment.decodeEventLog(log);
+                // TODO: Replace by abi.Event implementation of decodeEventLog?
+                const rawDecodedData = uniqueEventAbis
+                    .get(log.topics[0])
+                    ?.decodeEventLog({
+                        data: Hex.of(log.data),
+                        topics: log.topics.map((topic) => Hex.of(topic))
+                    });
+
+                if (rawDecodedData?.args === undefined) {
+                    log.decodedData = [] as unknown as Result;
+                } else if (rawDecodedData.args instanceof Object) {
+                    log.decodedData = Object.values(
+                        rawDecodedData.args
+                    ) as Result;
+                } else {
+                    log.decodedData = rawDecodedData as unknown as Result;
+                }
                 result.get(log.topics[0])?.push(log);
             });
         }

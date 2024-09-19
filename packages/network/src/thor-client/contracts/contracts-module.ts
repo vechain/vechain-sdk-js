@@ -88,7 +88,7 @@ class ContractsModule {
                 {
                     to: contractAddress,
                     value: '0',
-                    data: functionAbi.encodeData(functionData)
+                    data: functionAbi.encodeData(functionData).toString()
                 }
             ],
             contractCallOptions

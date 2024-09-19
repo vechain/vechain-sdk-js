@@ -1,5 +1,3 @@
-import { stringifyData } from '@vechain/sdk-errors';
-
 /**
  * Address of the Params built-in contract.
  *
@@ -95,7 +93,7 @@ const PARAMS_ABI = [
  *
  * @link see [energy.sol](https://docs.vechain.org/developer-resources/built-in-contracts#energy-sol)
  */
-const ENERGY_ABI = stringifyData([
+const ENERGY_ABI = [
     {
         constant: true,
         inputs: [],
@@ -352,7 +350,7 @@ const ENERGY_ABI = stringifyData([
         name: 'Approval',
         type: 'event'
     }
-]);
+] as const;
 
 /**
  * Built-in contracts.

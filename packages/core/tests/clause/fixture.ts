@@ -229,10 +229,13 @@ const transferNFTtestCases = [
         expected: {
             to: contractAddress,
             value: 0,
-            data: ABIContract.ofAbi(ERC721_ABI).encodeFunctionInput(
-                'transferFrom',
-                [senderAddress, recipientAddress, '0']
-            )
+            data: ABIContract.ofAbi(ERC721_ABI)
+                .encodeFunctionInput('transferFrom', [
+                    senderAddress,
+                    recipientAddress,
+                    '0'
+                ])
+                .toString()
         }
     }
 ];

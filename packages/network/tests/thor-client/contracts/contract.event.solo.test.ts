@@ -278,7 +278,7 @@ describe('ThorClient - ERC20 Contracts', () => {
                     criteriaSet: [
                         {
                             criteria: transferCriteria.criteria,
-                            eventFragment: approvalCriteria.eventFragment
+                            eventAbi: approvalCriteria.eventAbi
                         }
                     ]
                 })

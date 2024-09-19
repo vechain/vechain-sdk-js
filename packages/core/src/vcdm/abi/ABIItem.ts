@@ -14,7 +14,7 @@ type ABIItemType = AbiFunction | AbiEvent;
  * @extends ABI
  */
 abstract class ABIItem extends ABI {
-    protected readonly signature: ABIItemType;
+    public readonly signature: ABIItemType;
     public readonly stringSignature: string;
     /**
      * ABIItem constructor from item (Event, Function...) signature.

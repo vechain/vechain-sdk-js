@@ -1,7 +1,4 @@
-import {
-    InvalidAbiDataToEncodeOrDecode,
-    stringifyData
-} from '@vechain/sdk-errors';
+import { InvalidAbiDataToEncodeOrDecode } from '@vechain/sdk-errors';
 import { Address, HexUInt } from '../../src';
 import { Hex } from '../../src/vcdm/Hex';
 import { generateRandomValidAddress } from '../fixture';

@@ -1,13 +1,12 @@
 /* eslint-disable */
 
 import { beforeEach, describe, expect, test } from '@jest/globals';
-import { Address, coder, type DeployParams } from '@vechain/sdk-core';
+import { ABIContract, Address, type DeployParams } from '@vechain/sdk-core';
 import {
     CannotFindTransaction,
     ContractDeploymentFailed,
     InvalidTransactionField
 } from '@vechain/sdk-errors';
-import { type FunctionFragment } from 'ethers';
 import {
     Contract,
     type ContractFactory,
@@ -575,9 +574,9 @@ describe('ThorClient - Contracts', () => {
             test(description, async () => {
                 const response = await thorSoloClient.contracts.executeCall(
                     TESTING_CONTRACT_ADDRESS,
-                    coder
-                        .createInterface(TESTING_CONTRACT_ABI)
-                        .getFunction(functionName) as FunctionFragment,
+                    ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                        functionName
+                    ),
                     params
                 );
 
@@ -594,9 +593,9 @@ describe('ThorClient - Contracts', () => {
             test(description, async () => {
                 const response = await thorSoloClient.contracts.executeCall(
                     TESTING_CONTRACT_ADDRESS,
-                    coder
-                        .createInterface(TESTING_CONTRACT_ABI)
-                        .getFunction(functionName) as FunctionFragment,
+                    ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                        functionName
+                    ),
                     params
                 );
                 expect(response).toBe(expected);
@@ -612,9 +611,9 @@ describe('ThorClient - Contracts', () => {
             test(description, async () => {
                 const response = await thorSoloClient.contracts.executeCall(
                     TESTING_CONTRACT_ADDRESS,
-                    coder
-                        .createInterface(TESTING_CONTRACT_ABI)
-                        .getFunction(functionName) as FunctionFragment,
+                    ABIContract.ofAbi(TESTING_CONTRACT_ABI).getFunction(
+                        functionName
+                    ),
                     params
                 );
                 expect(response).toEqual(expected);
