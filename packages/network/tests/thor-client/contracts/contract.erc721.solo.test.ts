@@ -1,7 +1,7 @@
 // Global variable to hold contract address
 import { beforeAll, describe, expect, test } from '@jest/globals';
 import { ABIContract, ERC721_ABI, Hex } from '@vechain/sdk-core';
-import { type DecodeEventLogReturnType } from 'viem';
+import { type Result } from 'ethers';
 import {
     THOR_SOLO_URL,
     ThorClient,
@@ -119,7 +119,7 @@ describe('ThorClient - ERC721 Contracts', () => {
                             result as TransactionReceipt
                         );
 
-                        expect(logDescriptions[0][0]?.args).toEqual(expected);
+                        expect(logDescriptions[0][0]).toEqual(expected);
                     }
                 },
                 10000
@@ -127,12 +127,11 @@ describe('ThorClient - ERC721 Contracts', () => {
         }
     );
 
-    function decodeResultOutput(
-        result: TransactionReceipt
-    ): DecodeEventLogReturnType[][] {
+    function decodeResultOutput(result: TransactionReceipt): Result[][] {
         return result?.outputs.map((output) => {
             return output.events.map((event) => {
-                return ABIContract.ofAbi(ERC721_ABI).parseLog(
+                // Modify when addressing #1184
+                return ABIContract.ofAbi(ERC721_ABI).parseEthersLog(
                     Hex.of(event.data),
                     event.topics.map((topic) => Hex.of(topic))
                 );

@@ -2,6 +2,7 @@ import {
     InvalidAbiDataToEncodeOrDecode,
     InvalidAbiFragment
 } from '@vechain/sdk-errors';
+import { type Result } from 'ethers';
 import {
     getAbiItem,
     parseAbi,
@@ -271,6 +272,26 @@ class ABIContract extends ABI {
                 e
             );
         }
+    }
+
+    /**
+     * DISCLAIMER: This method will be eventually deprecated in favour of viem via #1184.
+     *
+     * Parses the log data and topics into an ethers format.
+     *
+     * @param {Hex} data - The hexadecimal string of the data field in the log.
+     * @param {Hex[]} topics - An array of hexadecimal strings representing the topics of the log.
+     * @deprecated
+     */
+    public parseEthersLog(data: Hex, topics: Hex[]): Result {
+        const eventLogDecoded = this.parseLog(data, topics);
+        if (eventLogDecoded.args === undefined) {
+            return [] as unknown as Result;
+        } else if (eventLogDecoded.args instanceof Object) {
+            return Object.values(eventLogDecoded.args) as Result;
+        }
+
+        return eventLogDecoded as unknown as Result;
     }
 }
 

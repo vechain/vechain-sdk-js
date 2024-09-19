@@ -113,9 +113,11 @@ class ABIFunction extends ABIItem {
     }
 
     /**
+     * DISCLAIMER: This method will be eventually deprecated in favour of viem via #1184.
      * Decodes a function output following the ethers format.
      * @param {Hex} data The data to be decoded
      * @returns {Result} The decoded data
+     * @deprecated
      */
     public decodeEthersOutput(data: Hex): Result {
         const resultDecoded = this.decodeResult(data);
