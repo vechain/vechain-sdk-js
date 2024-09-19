@@ -13,7 +13,7 @@ import { ThorId } from '@vechain/sdk-core';
  *
  * @param thorClient - The thor client instance to use.
  * @param params - The standard array of rpc call parameters.
- *                 * params[0]: The block number to get as a hex string or "latest" or "finalized".
+ *                 * params[0]: The block hash to get as a hex string.
  *                 * params[1]: A hexadecimal equivalent of the integer indicating the uncle's index position.
  * @returns The uncle block at the given block number and index.
  * @throws {JSONRPCInvalidParams}
