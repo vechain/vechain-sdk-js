@@ -19,14 +19,14 @@ FROM node:20.17.0-alpine3.20 AS runner
 # Set the working directory in the final stage
 WORKDIR /app
 
-# Create a new user to run the app so we do not use root
-RUN adduser -D rpc-proxy-user
-USER rpc-proxy-user
-
 # Copy only the built files and essential runtime files from the builder stage
 COPY --from=builder /app/dist /app/dist
 COPY --from=builder /app/package.json /app/
 COPY --from=builder /app/node_modules /app/node_modules
+
+# Create a new user to run the app so we do not use root
+RUN adduser -D rpc-proxy-user
+USER rpc-proxy-user
 
 # Set the default command to use node to run the app
 CMD ["node", "dist/index.js", "-c", "config.json"]
