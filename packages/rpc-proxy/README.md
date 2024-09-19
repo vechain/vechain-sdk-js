@@ -64,7 +64,7 @@ So you can run the rpc-proxy with:
 - `-p, --port <port>`: The port on which the proxy server will run.
     - -e.g.- `npx rpc-proxy -p 8545` OR `rpc-proxy --port 8545`
 
-- `-u, --url <url>`: The URL of the VeChain Thor node.
+- `-u, --url <url>`: The URL of the VeChainThor node.
     - -e.g.- `npx rpc-proxy -u http://testnet.vechain.org` OR `rpc-proxy --url http://testnet.vechain.org`
 
 - `-v, --verbose`: Whether to enable verbose logging.
@@ -101,7 +101,7 @@ So you can run the rpc-proxy with:
 
 The `config.json` file is used to configure the proxy server. It contains the following fields:
 
-- `url`: The URL of the VeChain Thor node.
+- `url`: The URL of the VeChainThor node.
 - `port`: The port of the proxy server.
 - `accounts`: The accounts that the proxy server will use to sign transactions (can be a mnemonic or an array of private
   keys).

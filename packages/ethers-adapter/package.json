@@ -1,8 +1,8 @@
 {
   "name": "@vechain/sdk-ethers-adapter",
   "version": "1.0.0-beta.31",
-  "description": "This module serves as a crucial bridge between the standard Ethereum tooling provided by Hardhat and the unique features of the vechain thor blockchain",
-  "author": "vechain Foundation",
+  "description": "This module serves as a crucial bridge between the standard Ethereum tooling provided by Hardhat and the unique features of the VeChainThor blockchain",
+  "author": "VeChain Foundation",
   "license": "MIT",
   "homepage": "https://github.com/vechain/vechain-sdk-js",
   "repository": {
@@ -12,8 +12,7 @@
   "keywords": [
     "VeChain",
     "ethers",
-    "adapter",
-    "hardhat-plugin"
+    "adapter"
   ],
   "main": "dist/index.js",
   "module": "dist/index.mjs",

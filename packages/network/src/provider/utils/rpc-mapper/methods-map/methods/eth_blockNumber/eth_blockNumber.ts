@@ -12,7 +12,7 @@ import { type ThorClient } from '../../../../../../thor-client';
  */
 const ethBlockNumber = async (thorClient: ThorClient): Promise<string> => {
     try {
-        // 'best' is the alias for 'latest' in VeChain Thorest
+        // 'best' is the alias for 'latest' in VeChainThorest
         const latestBlock = await thorClient.blocks.getBestBlockCompressed();
 
         return latestBlock?.number !== undefined
