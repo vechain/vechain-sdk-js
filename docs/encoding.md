@@ -13,7 +13,7 @@ Vechain SDK provides functionality to interact with smart contracts on the VeCha
 ```typescript { name=abi, category=example }
 // 1 - Create a simple function to encode into ABI
 
-const simpleAbiFunction = new abi.Function({
+const simpleAbiFunction = new ABIFunction({
     constant: false,
     inputs: [
         {
@@ -43,7 +43,7 @@ const simpleAbiFunction = new abi.Function({
 
 // 2 - Encode function
 
-const encodedFunction = simpleAbiFunction.encodeInput([1, 'foo']);
+const encodedFunction = simpleAbiFunction.encodeData([1, 'foo']).toString();
 ```
 
 ## Contract
