@@ -3,7 +3,6 @@ import {
     type ABIEvent,
     type ABIFunction
 } from '@vechain/sdk-core';
-import { InvalidAbiFragment } from '@vechain/sdk-errors';
 import {
     type Abi,
     type ExtractAbiEventNames,
@@ -193,50 +192,22 @@ class Contract<TAbi extends Abi> {
     /**
      * Retrieves the function ABI for the specified function name.
      * @param prop - The name of the function.
-     * @private
+     * @return The function ABI for the specified event name.
      * @throws {InvalidAbiFragment}
      *
      */
     public getFunctionAbi(prop: string | symbol): ABIFunction {
-        const functionAbi = ABIContract.ofAbi(this.abi).getFunction(
-            prop.toString()
-        );
-
-        if (functionAbi == null) {
-            throw new InvalidAbiFragment(
-                'Contract.getFunctionAbi()',
-                `Function '${prop.toString()}' not found in contract ABI.`,
-                {
-                    type: 'function',
-                    fragment: prop
-                }
-            );
-        }
-        return functionAbi;
+        return ABIContract.ofAbi(this.abi).getFunction(prop.toString());
     }
 
     /**
      * Retrieves the event fragment for the specified event name.
      * @param eventName - The name of the event.
-     * @return The event fragment for the specified event name.
+     * @return The event ABI for the specified event name.
      * @throws {InvalidAbiFragment}
      */
     public getEventAbi(eventName: string | symbol): ABIEvent {
-        const eventAbi = ABIContract.ofAbi(this.abi).getEvent(
-            eventName.toString()
-        );
-
-        if (eventAbi == null) {
-            throw new InvalidAbiFragment(
-                'Contract.getEventAbi()',
-                `Function '${eventName.toString()}' not found in contract ABI.`,
-                {
-                    type: 'event',
-                    fragment: eventName
-                }
-            );
-        }
-        return eventAbi;
+        return ABIContract.ofAbi(this.abi).getEvent(eventName.toString());
     }
 }
 
