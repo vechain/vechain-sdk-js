@@ -18,7 +18,6 @@ import {
     secp256k1,
     secp256k1 as tdk_secp256k1
 } from 'thor-devkit';
-import { cert, certPrivateKey } from './fixture';
 
 const CertificateFixturePrivateKey = HexUInt.of(
     '7582be841ca040aa940fff6c05773129e135623e41acce3e0b8ba520dc1ae26a'
@@ -298,14 +297,14 @@ describe('Certificate class tests', () => {
 
         test('thor-dev-kit compatible', () => {
             const unsigned = {
-                ...cert,
+                ...CertificateFixture,
                 // thor-dev-kit doesn't support UTF8 NFC encoding: content is ASCII.
-                payload: { ...cert.payload, content: 'fyi' }
+                payload: { ...CertificateFixture.payload, content: 'fyi' }
             };
             const tdkSignature = Hex.of(
                 tdk_secp256k1.sign(
                     tdk_blake2b256(tdk_certificate.encode(unsigned)),
-                    Buffer.from(certPrivateKey)
+                    Buffer.from(CertificateFixturePrivateKey)
                 )
             ).toString();
             const signed = {
