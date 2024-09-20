@@ -24,5 +24,9 @@ COPY --from=builder /app/dist /app/dist
 COPY --from=builder /app/package.json /app/
 COPY --from=builder /app/node_modules /app/node_modules
 
+# Create a new user to run the app so we do not use root
+RUN adduser -D rpc-proxy-user
+USER rpc-proxy-user
+
 # Set the default command to use node to run the app
 CMD ["node", "dist/index.js", "-c", "config.json"]
