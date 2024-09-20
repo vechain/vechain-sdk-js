@@ -1,17 +1,23 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { type Address, Hex, type VET } from '../vcdm';
+import { abi, type Address, type VET } from '../vcdm';
+import { Hex } from '../vcdm/Hex';
 import { type ClauseOptions, type TransactionClause } from '../transaction';
+import type { DeployParams } from './DeployParams';
 
 class Clause implements TransactionClause {
-    to: string | null;
-    value: string | number;
-    data: string;
-    comment?: string;
-    abi?: string;
+    private static readonly NO_VALUE = 0;
 
-    constructor(
-        to: string,
-        value: string,
+    private static readonly NO_DATA = Hex.PREFIX;
+
+    readonly to: string | null;
+    readonly value: string | number;
+    readonly data: string;
+    readonly comment?: string;
+    readonly abi?: string;
+
+    protected constructor(
+        to: string | null,
+        value: string | number,
         data: string,
         comment?: string,
         abi?: string
@@ -23,6 +29,21 @@ class Clause implements TransactionClause {
         this.abi = abi;
     }
 
+    public static deployContract(
+        contractBytecode: string,
+        deployParams?: DeployParams,
+        clauseOptions?: ClauseOptions
+    ): Clause {
+        const data =
+            deployParams !== null && deployParams !== undefined
+                ? contractBytecode +
+                  abi
+                      .encodeParams(deployParams.types, deployParams.values)
+                      .replace(Hex.PREFIX, '')
+                : contractBytecode;
+        return new Clause(null, Clause.NO_VALUE, data, clauseOptions?.comment);
+    }
+
     public static transferVET(
         to: Address,
         amount: VET,
@@ -32,7 +53,7 @@ class Clause implements TransactionClause {
             return new Clause(
                 to.toString().toLowerCase(),
                 Hex.PREFIX + amount.wei.toString(Hex.RADIX),
-                Hex.PREFIX,
+                Clause.NO_DATA,
                 clauseOptions?.comment
             );
         }
