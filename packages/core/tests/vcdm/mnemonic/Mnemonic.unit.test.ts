@@ -16,7 +16,7 @@ import {
 } from './fixture';
 
 /**
- * Mnemonic tests
+ * Test Mnemonic class.
  * @group unit/vcdm
  */
 describe('Mnemonic', () => {
