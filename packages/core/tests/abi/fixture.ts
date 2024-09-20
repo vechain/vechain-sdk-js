@@ -37,7 +37,6 @@ const functions = [
         },
         full: 'function f1(uint256 a1, string a2) returns (address r1, bytes r2)',
         minimal: 'function f1(uint256,string) returns (address,bytes)',
-        sighash: 'f1(uint256,string)',
         signatureHash: '0x27fcbb2f',
         jsonStringifiedAbi:
             '{"type":"function","name":"f1","constant":false,"payable":false,"inputs":[{"type":"uint256","name":"a1"},{"type":"string","name":"a2"}],"outputs":[{"type":"address","name":"r1"},{"type":"bytes","name":"r2"}]}',
@@ -85,7 +84,6 @@ const functions = [
         },
         full: 'function nodes() returns ((address master, address endorsor, bytes32 identity, bool active)[])',
         minimal: 'function nodes() returns ((address,address,bytes32,bool)[])',
-        sighash: 'nodes()',
         signatureHash: '0x5db82fa0',
         jsonStringifiedAbi:
             '{"type":"function","name":"nodes","constant":false,"payable":false,"inputs":[],"outputs":[{"type":"tuple[]","name":"list","components":[{"type":"address","name":"master"},{"type":"address","name":"endorsor"},{"type":"bytes32","name":"identity"},{"type":"bool","name":"active"}]}]}',
@@ -146,7 +144,6 @@ const events = [
         },
         full: 'event E1(uint256 indexed a1, string a2)',
         minimal: 'event E1(uint256 indexed,string)',
-        sighash: 'E1(uint256,string)',
         signatureHash:
             '0x47b78f0ec63d97830ace2babb45e6271b15a678528e901a9651e45b65105e6c2',
         jsonStringifiedAbi:
@@ -176,7 +173,6 @@ const events = [
         },
         full: 'event E2(uint256 indexed a1, string a2)',
         minimal: 'event E2(uint256 indexed,string)',
-        sighash: 'E2(uint256,string)',
         signatureHash:
             '0xed4f58f68ac84ec75a04444d287e454e22772efca5f47aca53950d7a135e6dab',
         jsonStringifiedAbi:
