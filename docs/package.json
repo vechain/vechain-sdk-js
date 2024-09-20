@@ -1,16 +1,14 @@
 {
   "name": "docs",
   "version": "1.0.0-beta.31",
-  "description": "Documentation for the SDK with examples",
-  "author": "vechain Foundation",
+  "description": "Official documentation for the VeChain TypeScript SDK with examples",
+  "author": "VeChain Foundation",
   "license": "MIT",
   "keywords": [
     "VeChain",
-    "thor",
     "documentation",
     "example"
   ],
-  "private": true,
   "type": "module",
   "scripts": {
     "start-thor-solo": "echo 'Starting thor solo node ...' && docker compose up -d --wait && echo '\nThor solo node started ...'",

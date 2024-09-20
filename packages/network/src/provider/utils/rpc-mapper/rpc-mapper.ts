@@ -290,15 +290,17 @@ const RPCMethodsMap = (
             return await ethGetUncleByBlockNumberAndIndex(params);
         },
 
-        [RPC_METHODS.eth_getUncleCountByBlockHash]:
-            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
-                return await ethGetUncleCountByBlockHash();
-            },
+        [RPC_METHODS.eth_getUncleCountByBlockHash]: async (
+            params
+        ): Promise<number> => {
+            return await ethGetUncleCountByBlockHash(params);
+        },
 
-        [RPC_METHODS.eth_getUncleCountByBlockNumber]:
-            async (): Promise<'METHOD NOT IMPLEMENTED'> => {
-                return await ethGetUncleCountByBlockNumber();
-            },
+        [RPC_METHODS.eth_getUncleCountByBlockNumber]: async (
+            params
+        ): Promise<number> => {
+            return await ethGetUncleCountByBlockNumber(params);
+        },
 
         [RPC_METHODS.eth_getWork]:
             async (): Promise<'METHOD NOT IMPLEMENTED'> => {
