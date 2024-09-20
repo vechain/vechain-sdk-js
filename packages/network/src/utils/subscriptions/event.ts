@@ -35,9 +35,7 @@ const getEventSubscriptionUrl = (
     const ev = new ABIEvent(eventInput);
 
     // Encode the indexed parameters to construct the topic filters
-    const encodedTopics = ev.encodeFilterTopics(
-        indexedValues ?? []
-    ) as unknown as Array<string | undefined>;
+    const encodedTopics = ev.encodeFilterTopicsNoNull(indexedValues ?? []);
 
     return thorest.subscriptions.get.EVENT(baseURL, {
         position: options?.blockID,

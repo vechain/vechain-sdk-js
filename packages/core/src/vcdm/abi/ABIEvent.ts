@@ -167,6 +167,24 @@ class ABIEvent extends ABIItem {
             );
         }
     }
+
+    /**
+     * Encode event log topics using the event's ABI, replacing null values with undefined.
+     * @param valuesToEncode - values to encode as topics. Non-indexed values are ignored.
+     *                         Only the values of the indexed parameters are needed.
+     * @returns Encoded topics array.
+     * @throws {InvalidAbiDataToEncodeOrDecode}
+     */
+    public encodeFilterTopicsNoNull<TValue>(
+        valuesToEncode: TValue[]
+    ): Array<string | undefined> {
+        const encodedTopics = this.encodeFilterTopics(
+            valuesToEncode
+        ) as unknown as Array<string | undefined>;
+        return encodedTopics.map((topic) =>
+            topic === null ? undefined : topic
+        );
+    }
 }
 
 // Backwards compatibility, this entire nested class should be removed as part of #1184
