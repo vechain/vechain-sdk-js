@@ -1,4 +1,4 @@
-import { clauseBuilder, Units } from '@vechain/sdk-core';
+import { Address, VET, Clause } from '@vechain/sdk-core';
 import {
     JSONRPCInternalError,
     JSONRPCInvalidParams
@@ -11,10 +11,11 @@ const positiveCasesFixtures = [
     {
         description: 'Simple transfer.',
         input: [
-            clauseBuilder.transferVET(
-                '0x7567d83b7b8d80addcb281a71d54fc7b3364ffed',
-                Units.parseEther('1000').bi
-            ),
+            VET.of(1000).transferTo(Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed')),
+            // Clause.transferVET(
+            //     Address.of('0x7567d83b7b8d80addcb281a71d54fc7b3364ffed'),
+            //     VET.of(1000)
+            // ),
             'latest'
         ],
         expected: '0x5208'

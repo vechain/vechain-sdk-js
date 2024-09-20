@@ -74,7 +74,6 @@ classDiagram
         +boolean isNumberExpression(string exp)$
         +boolean isPositive()
         +boolean isPositiveInfinite()
-        +boolean isUnsignedIntegerExpression(string exp)$
         +boolean isZero()
         +boolean lt(FPN that)
         +boolean lte(FPN that)
@@ -152,11 +151,12 @@ classDiagram
     }
     class VET {
         +bigint wei
-        +VET of(FPN value)$
+        +VET of(bigint|number|string|FPN value)$
+        +Cluase transferTo(Address: address)
     }
     class VTHO {
         +bigint wei
-        +VTHO of(FPN value)$
+        +VTHO of(bigint|number|string|FPN value)$
     }
     ABI <|-- ABIItem
     ABIItem <|-- ABIEvent

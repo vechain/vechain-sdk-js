@@ -2,6 +2,8 @@ import { Coin } from './Coin';
 import { Txt } from '../Txt';
 import { FPN } from '../FPN';
 import { Units } from './Units';
+import { type Address } from '../Address';
+import { Clause } from '../../clause';
 
 /**
  * Represents a
@@ -47,6 +49,8 @@ class VET extends Coin {
      * @param {Units} unit - The unit for the value.
      *                       Defaults to {@link Units.ether} if not provided.
      * @return A new VET instance with the provided value and unit.
+     *
+     * @throws {InvalidDataType} If `value` is not a numeric expression.
      */
     public static of(
         value: bigint | number | string | FPN,
@@ -54,6 +58,16 @@ class VET extends Coin {
     ): VET {
         const fpn = value instanceof FPN ? value : FPN.of(value);
         return new VET(fpn.div(FPN.of(10n ** (VET.WEI_FD - BigInt(unit)))));
+    }
+
+    /**
+     * Return the {@link Cluase} to move this amount of VET to the `address`.
+     *
+     * @param address to move this amount of VET.
+     * @return the {@link Cluase} to move this amount of VET to the `address`.
+     */
+    public transferTo(address: Address): Clause {
+        return Clause.transferVET(address, this);
     }
 }
 
