@@ -2,13 +2,12 @@ import { describe, expect, test } from '@jest/globals';
 import {
     InvalidAbiDataToEncodeOrDecode,
     InvalidAbiFragment,
-    InvalidAbiSignatureFormat,
     InvalidDataType,
     stringifyData
 } from '@vechain/sdk-errors';
-import { ParamType, type ethers, type FormatType } from 'ethers';
-import { type AbiEvent } from 'viem';
-import { abi, ABIEvent, Hex } from '../../src';
+import { ParamType, type ethers } from 'ethers';
+import { type AbiEvent, type AbiFunction } from 'viem';
+import { abi, ABIEvent, ABIFunction, Hex } from '../../src';
 import {
     encodedDecodedInvalidValues,
     encodedDecodedValues,
@@ -161,12 +160,6 @@ describe('Abi - Function & Event', () => {
                             encodingTestsInputs:
                                 fixtureFunction.encodingTestsInputs,
                             signatureHash: fixtureFunction.signatureHash
-                        },
-                        {
-                            format: fixtureFunction.sighash,
-                            encodingTestsInputs:
-                                fixtureFunction.encodingTestsInputs,
-                            signatureHash: fixtureFunction.signatureHash
                         }
                     ];
                 })
@@ -175,33 +168,23 @@ describe('Abi - Function & Event', () => {
                     functionMultiformat.forEach((functionFormat) => {
                         // Create a function from the format without any problems
                         expect(
-                            () => new abi.Function(functionFormat.format)
+                            () =>
+                                new ABIFunction(
+                                    functionFormat.format as AbiFunction
+                                )
                         ).not.toThrowError(InvalidAbiFragment);
 
                         // Create a function from the format without any problems
-                        const myFunction = new abi.Function(
-                            functionFormat.format
+                        const myFunction = new ABIFunction(
+                            functionFormat.format as AbiFunction
                         );
 
                         // Expect to have a signature in each format
-                        expect(myFunction.signature('full')).toBeDefined();
-                        expect(myFunction.signature('minimal')).toBeDefined();
-                        expect(myFunction.signature('sighash')).toBeDefined();
-                        expect(myFunction.signature('json')).toBeDefined();
-
-                        // Expect to have a signature in each format
-                        ['full', 'minimal', 'json', 'sighash'].forEach(
-                            (sigFormat: string) => {
-                                expect(() =>
-                                    myFunction.signature(
-                                        sigFormat as FormatType
-                                    )
-                                ).toBeDefined();
-                            }
-                        );
+                        expect(myFunction.format()).toBeDefined();
+                        expect(myFunction.format('json')).toBeDefined();
 
                         // Verify signature hash
-                        expect(myFunction.signatureHash()).toBe(
+                        expect(myFunction.signatureHash).toBe(
                             functionFormat.signatureHash
                         );
 
@@ -210,15 +193,16 @@ describe('Abi - Function & Event', () => {
                             (encodingInput) => {
                                 // Encoded input from each format
                                 const encoded =
-                                    myFunction.encodeInput(encodingInput);
+                                    myFunction.encodeData(encodingInput);
 
                                 expect(encoded).toBeDefined();
 
                                 // Decode input
-                                const decoded = myFunction.decodeInput(encoded);
+                                const decoded = myFunction.decodeData(encoded);
 
                                 // Encoded input will be equal to decoded input
-                                expect(decoded).toStrictEqual(encodingInput);
+                                const expected = decoded.args ?? [];
+                                expect(expected).toStrictEqual(encodingInput);
                             }
                         );
                     });
@@ -264,7 +248,7 @@ describe('Abi - Function & Event', () => {
          * Invalid function
          */
         test('Invalid function', () => {
-            expect(() => new abi.Function('INVALID_VALUE')).toThrowError(
+            expect(() => new ABIFunction('INVALID_VALUE')).toThrowError(
                 InvalidAbiFragment
             );
         });
@@ -273,27 +257,16 @@ describe('Abi - Function & Event', () => {
          * Invalid decode and encode
          */
         test('Invalid decode and encode', () => {
-            const myFunction = new abi.Function(functions[0].full);
+            const myFunction = new ABIFunction(functions[0].full);
 
             // Encode
-            expect(() =>
-                myFunction.encodeInput([1, 2, 'INVALID'])
-            ).toThrowError(InvalidAbiDataToEncodeOrDecode);
-
-            // Decode
-            expect(() => myFunction.decodeInput('INVALID')).toThrowError(
+            expect(() => myFunction.encodeData([1, 2, 'INVALID'])).toThrowError(
                 InvalidAbiDataToEncodeOrDecode
             );
-        });
 
-        /**
-         * Invalid sighash
-         */
-        test('Invalid signature format type', () => {
-            const myFunction = new abi.Function(functions[0].full);
-            const invalidFormat = 'invalid' as FormatType;
-            expect(() => myFunction.signature(invalidFormat)).toThrowError(
-                InvalidAbiSignatureFormat
+            // Decode
+            expect(() => myFunction.decodeData(Hex.of('INVALID'))).toThrowError(
+                InvalidDataType
             );
         });
     });

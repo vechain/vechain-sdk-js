@@ -1,14 +1,8 @@
 import {
     InvalidAbiDataToEncodeOrDecode,
-    InvalidAbiFragment,
-    InvalidAbiSignatureFormat
+    InvalidAbiFragment
 } from '@vechain/sdk-errors';
-import {
-    type BytesLike,
-    type FormatType,
-    FunctionFragment,
-    type Result
-} from 'ethers';
+import { type Result } from 'ethers';
 import {
     type AbiFunction,
     decodeFunctionData,
@@ -44,6 +38,15 @@ class ABIFunction extends ABIItem {
                 error
             );
         }
+    }
+
+    /**
+     * Get the function selector.
+     * @returns {string} The function selector.
+     * @override {@link ABIItem#signatureHash}
+     */
+    public get signatureHash(): string {
+        return super.signatureHash.substring(0, 10);
     }
 
     /**
@@ -144,108 +147,4 @@ class ABIFunction extends ABIItem {
         return [resultDecoded] as Result;
     }
 }
-
-// Backwards compatibility, this entire nested class should be removed as part of #1184
-class Function<ABIType> {
-    /**
-     * Allowed formats for the signature.
-     *
-     * @private
-     */
-    private readonly allowedSignatureFormats = [
-        'sighash',
-        'minimal',
-        'full',
-        'json'
-    ];
-
-    private readonly function: ABIFunction;
-    private readonly functionAbi: ABIType;
-    constructor(abi: ABIType) {
-        try {
-            if (typeof abi === 'string') {
-                const stringAbi =
-                    abi.indexOf('function') === 0 ? abi : `function ${abi}`;
-                this.function = new ABIFunction(
-                    stringAbi.replace(' list', '').replace('tuple', '')
-                );
-            } else if (abi instanceof FunctionFragment) {
-                this.function = new ABIFunction(
-                    abi.format('full').replace(' list', '').replace('tuple', '')
-                );
-            } else {
-                this.function = new ABIFunction(abi as AbiFunction);
-            }
-            this.functionAbi = abi;
-        } catch (error) {
-            throw new InvalidAbiFragment(
-                'abi.Function constructor',
-                'Initialization failed: Cannot create Function fragment. Function format is invalid.',
-                {
-                    type: 'function',
-                    fragment: abi
-                },
-                error
-            );
-        }
-    }
-
-    public signatureHash(): string {
-        // This is a selector in Ethers
-        return this.function.signatureHash.substring(0, 10);
-    }
-
-    public signature(formatType: FormatType): string {
-        // If the formatType is not included in the allowed formats, throw an error.
-        if (!this.allowedSignatureFormats.includes(formatType)) {
-            throw new InvalidAbiSignatureFormat(
-                'getSignature()',
-                'Initialization failed: Cannot create Function fragment. Function format is invalid.',
-                {
-                    signatureFormat: formatType
-                }
-            );
-        }
-        return this.function.stringSignature;
-    }
-
-    /**
-     * Decode data using the function's ABI.
-     *
-     * @param data - Data to decode.
-     * @returns Decoding results.
-     * @throws {InvalidAbiDataToEncodeOrDecode}
-     */
-    public decodeInput(data: BytesLike): Result {
-        try {
-            const dataDecoded = this.function.decodeData(Hex.of(data));
-            if (dataDecoded.args === undefined) {
-                return [] as unknown as Result;
-            } else if (dataDecoded.args instanceof Object) {
-                return Object.values(dataDecoded.args) as Result;
-            }
-
-            return dataDecoded as unknown as Result;
-        } catch (e) {
-            throw new InvalidAbiDataToEncodeOrDecode(
-                'abi.Function.decodeInput()',
-                'Decoding failed: Data must be a valid hex string encoding a compliant ABI type.',
-                { data },
-                e
-            );
-        }
-    }
-
-    /**
-     * Encode data using the function's ABI.
-     *
-     * @param dataToEncode - Data to encode.
-     * @returns Encoded data.
-     * @throws {InvalidAbiDataToEncodeOrDecode}
-     */
-    public encodeInput<TValue>(dataToEncode?: TValue[]): string {
-        return this.function.encodeData(dataToEncode as TValue[]).toString();
-    }
-}
-
-export { ABIFunction, Function };
+export { ABIFunction };

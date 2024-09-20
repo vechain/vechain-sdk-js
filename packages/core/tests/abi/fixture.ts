@@ -83,9 +83,8 @@ const functions = [
             stateMutability: 'nonpayable',
             type: 'function'
         },
-        full: 'function nodes() returns (tuple(address master, address endorsor, bytes32 identity, bool active)[] list)',
-        minimal:
-            'function nodes() returns (tuple(address,address,bytes32,bool)[])',
+        full: 'function nodes() returns ((address master, address endorsor, bytes32 identity, bool active)[])',
+        minimal: 'function nodes() returns ((address,address,bytes32,bool)[])',
         sighash: 'nodes()',
         signatureHash: '0x5db82fa0',
         jsonStringifiedAbi:

@@ -33,7 +33,7 @@ class ABIEthersEvent<ABIType> {
             this.iface = new ethers.Interface([this.fragment]);
         } catch (e) {
             throw new InvalidAbiFragment(
-                'abi.Event constructor',
+                'ABIEthersEvent constructor',
                 'Initialization failed: Cannot create Event fragment. Event format is invalid.',
                 {
                     type: 'event',
@@ -59,7 +59,7 @@ class ABIEthersEvent<ABIType> {
             return this.iface.encodeEventLog(this.fragment, dataToEncode);
         } catch (e) {
             throw new InvalidAbiDataToEncodeOrDecode(
-                'abi.Event.encodeEventLog()',
+                'ABIEthersEvent.encodeEventLog()',
                 'Encoding failed: Data format is invalid. Event data does not match the expected format for ABI type encoding.',
                 { dataToEncode },
                 e
