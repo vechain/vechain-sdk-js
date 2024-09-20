@@ -254,13 +254,11 @@ function buildCriteria<TAbi extends Abi>(
     // Create the VeChain sdk event ABI
     const eventAbi = contract.getEventAbi(prop);
 
-    const topicsEncoded = eventAbi.encodeFilterTopics(args) as unknown as Array<
-        string | undefined
-    >;
-
     // Create a map of encoded filter topics for the event
     const topics = new Map<number, string | undefined>(
-        topicsEncoded.map((topic, index) => [index, topic])
+        eventAbi
+            .encodeFilterTopicsNoNull(args)
+            .map((topic, index) => [index, topic])
     );
 
     // Create the criteria set for the contract filter
