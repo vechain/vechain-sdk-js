@@ -10,15 +10,31 @@ classDiagram
     class ABIItem {
         <<abstract>>
         +string signatureHash()
+        +string format('json' | 'string' formatType)
+        +string ofSignature(new (signature: string) => T ABIItemConstructor, string signature)$
+    }
+    class ABIContract {
+        +ABIContract ofAbi(ViemABI abi)$
+        +ABIContract ofStringAbi(string abi)$
+        +ABIFunction getFunction(string name)
+        +ABIEvent getEvent(string name)
+        +Hex encodeFunctionInput(string functionName, unknown[] functionData)
+        +DecodeFunctionDataReturnType decodeFunctionInput(string functionName, Hex encodedFunctionInput)
+        +DecodeFunctionResultReturnType decodeFunctionOutput(string functionName, Hex encodedFunctionOutput)
+        +ABIEventData encodeEventLog(string eventName, unknown[] eventArgs)
+        +DecodeEventLogReturnType decodeEventLog(string eventName, ABIEventData eventToDecode)
+        +DecodeEventLogReturnType parseLog(Hex data, Hex[] topics)
     }
     class ABIFunction {
         +DecodeFunctionDataReturnType decodeData(Hex data)
-        +EncodeFunctionDataReturnType encodeData<TValue>(TValue[] dataToEncode)
+        +Hex encodeData<TValue>(TValue[] dataToEncode)
         +DecodeFunctionResultReturnType decodeResult(Hex data)
     }
     class ABIEvent {
-        +DecodeEventLogReturnType decodeEventLog(event)
+        +DecodeEventLogReturnType parseLog(ViemABI abi, Hex data, Hex[] topics)$
+        +DecodeEventLogReturnType decodeEventLog(ABIEventData event)
         +EncodeEventTopicsReturnType encodeFilterTopics<TValue>(TValue[] event)
+        +ABIEventData encodeEventLog<TValue>(TValue[] dataToEncode)
     }
     class Account {
         #address: Address
@@ -155,6 +171,7 @@ classDiagram
     class VTHO {
         +VTHO of(FPN value)$
     }
+    ABI <|-- ABIContract
     ABI <|-- ABIItem
     ABIItem <|-- ABIEvent
     ABIItem <|-- ABIFunction

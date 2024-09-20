@@ -89,7 +89,7 @@ class ABIFunction extends ABIItem {
             );
         } catch (e) {
             throw new InvalidAbiDataToEncodeOrDecode(
-                'ABIFunction.encodeInput',
+                'ABIFunction.encodeData',
                 'Encoding failed: Data format is invalid. Function data does not match the expected format for ABI type encoding.',
                 { dataToEncode },
                 e

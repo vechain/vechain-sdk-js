@@ -1,9 +1,9 @@
 name: PR Checks
 
 on:
-  push:
+  pull_request:
     branches:
-      - 'feat/1108-contract-class'
+      - main
 
 jobs:
     doc-examples:
