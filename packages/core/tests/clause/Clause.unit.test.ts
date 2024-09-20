@@ -1,6 +1,6 @@
 import { describe, expect } from '@jest/globals';
 import { Address, FPN, Units, VET, type TransactionClause } from '../../src';
-import { Clause } from '../../src/clause/Cluase';
+import { Clause } from '../../src';
 import { InvalidDataType } from '@vechain/sdk-errors';
 
 const ClauseFixture = {
@@ -39,16 +39,18 @@ describe('Clause class tests', () => {
             const expected = {
                 to: ClauseFixture.to,
                 value: `0x1`,
-                data: '0x'
+                data: '0x',
+                comment: 'Transferring 1 wei.'
             } satisfies TransactionClause;
             const actual = Clause.transferVET(
                 Address.of(expected.to),
-                VET.of(1, Units.wei)
+                VET.of(1, Units.wei),
+                { comment: expected.comment }
             ) as TransactionClause;
             expect(actual).toEqual(expected);
         });
 
-        test('Return clause <- 100 wei VET', () => {
+        test('Return clause <- 100 wei', () => {
             const expected = {
                 to: ClauseFixture.to,
                 value: `0x64`,
