@@ -12,8 +12,7 @@ import {
 import {
     type DeployParams,
     clauseBuilder,
-    type ClauseOptions,
-    type ExtendedTransactionClause
+    type ClauseOptions
 } from '../../src';
 import { coder } from '../../src';
 import { type FunctionFragment } from 'ethers';
@@ -88,7 +87,7 @@ describe('Contract', () => {
             [1],
             undefined,
             { comment: 'Setting the value to 1' }
-        ) as ExtendedTransactionClause;
+        );
 
         expect(clause.to).toBe('0x742d35Cc6634C0532925a3b844Bc454e4438f44e');
         expect(clause.value).toBe(0);
@@ -106,7 +105,7 @@ describe('Contract', () => {
             [1],
             undefined,
             { comment: 'Setting the value to 1', includeABI: true }
-        ) as ExtendedTransactionClause;
+        );
 
         expect(clause.to).toBe('0x742d35Cc6634C0532925a3b844Bc454e4438f44e');
         expect(clause.value).toBe(0);

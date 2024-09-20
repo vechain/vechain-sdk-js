@@ -4,6 +4,7 @@ import { FPN } from '../FPN';
 import { Units } from './Units';
 import { type Address } from '../Address';
 import { Clause } from '../../clause';
+import type { ClauseOptions } from '../../transaction';
 
 /**
  * Represents a
@@ -61,13 +62,14 @@ class VET extends Coin {
     }
 
     /**
-     * Return the {@link Cluase} to move this amount of VET to the `address`.
+     * Transfers a specified amount of VET to the given address.
      *
-     * @param address to move this amount of VET.
-     * @return the {@link Cluase} to move this amount of VET to the `address`.
+     * @param {Address} address The recipient's address to which the VET will be transferred.
+     * @param {ClauseOptions} clauseOptions  Optional parameters that modify the behavior of the transaction.
+     * @return {Clause} A Clause object representing the transfer transaction.
      */
-    public transferTo(address: Address): Clause {
-        return Clause.transferVET(address, this);
+    public transferTo(address: Address, clauseOptions?: ClauseOptions): Clause {
+        return Clause.transferVET(address, this, clauseOptions);
     }
 }
 

@@ -33,21 +33,6 @@ interface TransactionClause {
 }
 
 /**
- * Extended type for transaction clause that includes wallet related properties.
- */
-// interface ExtendedTransactionClause extends TransactionClause {
-//     /**
-//      * Optional comment for the clause, helpful for displaying what the clause is doing.
-//      */
-//     comment?: string;
-//
-//     /**
-//      * Optional ABI for the contract method invocation.
-//      */
-//     abi?: string;
-// }
-
-/**
  * Options for creating a clause.
  */
 interface ClauseOptions {

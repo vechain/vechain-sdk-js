@@ -152,7 +152,7 @@ classDiagram
     class VET {
         +bigint wei
         +VET of(bigint|number|string|FPN value)$
-        +Cluase transferTo(Address: address)
+        +Cluase transferTo(Address: address, ClauseOptions?: clauseOptions)
     }
     class VTHO {
         +bigint wei
