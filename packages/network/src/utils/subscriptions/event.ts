@@ -1,6 +1,5 @@
 import { ABIEvent } from '@vechain/sdk-core';
 import { type AbiEvent } from 'abitype';
-import { parseAbiItem } from 'viem';
 import { thorest } from '../thorest';
 import { type EventLike, type EventSubscriptionOptions } from './types';
 
@@ -27,12 +26,10 @@ const getEventSubscriptionUrl = (
     indexedValues?: unknown[],
     options?: EventSubscriptionOptions
 ): string => {
-    const eventInput =
-        event instanceof String
-            ? parseAbiItem([event as string])
-            : (event as AbiEvent);
-
-    const ev = new ABIEvent(eventInput);
+    const ev =
+        typeof event === 'string'
+            ? new ABIEvent(event)
+            : new ABIEvent(event as AbiEvent);
 
     // Encode the indexed parameters to construct the topic filters
     const encodedTopics = ev.encodeFilterTopicsNoNull(indexedValues ?? []);

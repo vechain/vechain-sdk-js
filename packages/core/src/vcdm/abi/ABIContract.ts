@@ -13,9 +13,9 @@ import {
     type DecodeFunctionResultReturnType,
     type Abi as ViemABI
 } from 'viem';
-import { Hex } from '../Hex';
+import { type Hex } from '../Hex';
 import { ABI } from './ABI';
-import { ABIEvent, Event as EthersEvent, type ABIEventData } from './ABIEvent';
+import { ABIEvent, type ABIEventData } from './ABIEvent';
 import { ABIFunction } from './ABIFunction';
 
 class ABIContract extends ABI {
@@ -191,7 +191,7 @@ class ABIContract extends ABI {
      * Encodes event log data based on the provided event name, and data to encode.
      * @param {string} eventName - The name of the event to be encoded.
      * @param {unknown[]} eventArgs - An array of data to be encoded in the event log.
-     * @returns An object containing the encoded data and topics.
+     * @returns {ABIEventData} An object containing the encoded data and topics.
      * @throws {InvalidAbiDataToEncodeOrDecode}
      */
     public encodeEventLog(
@@ -203,13 +203,8 @@ class ABIContract extends ABI {
                 abi: this.abi,
                 name: eventName
             });
-            /** This should be an ABIEvent once this discussion is resolved {@link https://github.com/wevm/viem/discussions/2676} */
-            const eventAbi = new EthersEvent(eventAbiItem as AbiEvent);
-            const { data, topics } = eventAbi.encodeEventLog(eventArgs);
-            return {
-                data: Hex.of(data),
-                topics: topics.map((topic) => Hex.of(topic))
-            };
+            const eventAbi = new ABIEvent(eventAbiItem as AbiEvent);
+            return eventAbi.encodeEventLog(eventArgs);
         } catch (error) {
             throw new InvalidAbiDataToEncodeOrDecode(
                 'ABIContract.encodeEventLog()',

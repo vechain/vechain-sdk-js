@@ -3,10 +3,12 @@ import {
     InvalidAbiDataToEncodeOrDecode,
     InvalidAbiFragment,
     InvalidAbiSignatureFormat,
+    InvalidDataType,
     stringifyData
 } from '@vechain/sdk-errors';
 import { ParamType, type ethers, type FormatType } from 'ethers';
-import { abi } from '../../src';
+import { type AbiEvent } from 'viem';
+import { abi, ABIEvent, Hex } from '../../src';
 import {
     encodedDecodedInvalidValues,
     encodedDecodedValues,
@@ -334,12 +336,6 @@ describe('Abi - Function & Event', () => {
                             encodingTestsInputs:
                                 fixtureEvent.encodingTestsInputs,
                             signatureHash: fixtureEvent.signatureHash
-                        },
-                        {
-                            format: fixtureEvent.sighash,
-                            encodingTestsInputs:
-                                fixtureEvent.encodingTestsInputs,
-                            signatureHash: fixtureEvent.signatureHash
                         }
                     ];
                 })
@@ -348,20 +344,20 @@ describe('Abi - Function & Event', () => {
                     eventMultiformat.forEach((eventFormat) => {
                         // Create an event from the format without any problems
                         expect(
-                            () => new abi.Event(eventFormat.format)
+                            () => new ABIEvent(eventFormat.format as AbiEvent)
                         ).not.toThrowError();
 
                         // Create an event from the format without any problems
-                        const myEvent = new abi.Event(eventFormat.format);
+                        const myEvent = new ABIEvent(
+                            eventFormat.format as AbiEvent
+                        );
 
                         // Expect to have a signature in each format
-                        expect(myEvent.signature('full')).toBeDefined();
-                        expect(myEvent.signature('minimal')).toBeDefined();
-                        expect(myEvent.signature('sighash')).toBeDefined();
-                        expect(myEvent.signature('json')).toBeDefined();
+                        expect(myEvent.format()).toBeDefined();
+                        expect(myEvent.format('json')).toBeDefined();
 
                         // Verify signature hash
-                        expect(myEvent.signatureHash()).toBe(
+                        expect(myEvent.signatureHash).toBe(
                             eventFormat.signatureHash
                         );
 
@@ -375,7 +371,8 @@ describe('Abi - Function & Event', () => {
                                 expect(encoded).toBeDefined();
 
                                 // // Decode output
-                                const decoded = myEvent.decodeEventLog(encoded);
+                                const decoded =
+                                    myEvent.decodeEthersEventLog(encoded);
 
                                 // Encoded input will be equal to decoded output
                                 expect(decoded).toStrictEqual(encodingInput);
@@ -389,7 +386,7 @@ describe('Abi - Function & Event', () => {
          * Invalid event
          */
         test('Invalid event', () => {
-            expect(() => new abi.Event('INVALID_VALUE')).toThrowError(
+            expect(() => new ABIEvent('INVALID_VALUE')).toThrowError(
                 InvalidAbiFragment
             );
         });
@@ -398,7 +395,7 @@ describe('Abi - Function & Event', () => {
          * Invalid decode and encode
          */
         test('Invalid decode and encode', () => {
-            const myEvent = new abi.Event(events[0].full);
+            const myEvent = new ABIEvent(events[0].full);
 
             // Encode
             expect(() =>
@@ -408,21 +405,10 @@ describe('Abi - Function & Event', () => {
             // Decode
             expect(() =>
                 myEvent.decodeEventLog({
-                    data: 'INVALID',
-                    topics: ['INVALID_1', 'INVALID_2']
+                    data: Hex.of('INVALID'),
+                    topics: [Hex.of('INVALID_1'), Hex.of('INVALID_2')]
                 })
-            ).toThrowError(InvalidAbiDataToEncodeOrDecode);
-        });
-
-        /**
-         * Invalid sighash
-         */
-        test('Invalid signature format type', () => {
-            const myEvent = new abi.Event(events[0].full);
-            const invalidFormat = 'invalid' as FormatType;
-            expect(() => myEvent.signature(invalidFormat)).toThrowError(
-                InvalidAbiSignatureFormat
-            );
+            ).toThrowError(InvalidDataType);
         });
 
         /**
@@ -433,9 +419,12 @@ describe('Abi - Function & Event', () => {
                 test(`Encode Event topics - ${
                     typeof event === 'string' ? event : stringifyData(event)
                 }`, () => {
-                    const ev = new abi.Event(event);
+                    const ev =
+                        typeof event === 'string'
+                            ? new ABIEvent(event)
+                            : new ABIEvent(event as AbiEvent);
 
-                    const topics = ev.encodeFilterTopics(valuesToEncode);
+                    const topics = ev.encodeFilterTopicsNoNull(valuesToEncode);
 
                     expect(topics).toStrictEqual(expectedTopics);
                 });
@@ -448,7 +437,10 @@ describe('Abi - Function & Event', () => {
         invalidTopicsEventTestCases.forEach(
             ({ event, valuesToEncode, expectedError }) => {
                 test(`Encode Event topics - ${stringifyData(event)}`, () => {
-                    const ev = new abi.Event(event);
+                    const ev =
+                        typeof event === 'string'
+                            ? new ABIEvent(event)
+                            : new ABIEvent(event as AbiEvent);
 
                     expect(() =>
                         ev.encodeFilterTopics(valuesToEncode)

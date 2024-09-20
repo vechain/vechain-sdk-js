@@ -30,8 +30,20 @@ class ABIFunction extends ABIItem {
     public constructor(signature: string);
     public constructor(signature: AbiFunction);
     public constructor(signature: string | AbiFunction) {
-        super(signature);
-        this.functionSignature = this.signature as AbiFunction;
+        try {
+            super(signature);
+            this.functionSignature = this.signature as AbiFunction;
+        } catch (error) {
+            throw new InvalidAbiFragment(
+                'ABIFunction constructor',
+                'Initialization failed: Cannot create Function ABI. Function format is invalid.',
+                {
+                    type: 'function',
+                    fragment: signature
+                },
+                error
+            );
+        }
     }
 
     /**

@@ -1,4 +1,4 @@
-import { type ABIEvent } from '@vechain/sdk-core';
+import { Hex, type ABIEvent } from '@vechain/sdk-core';
 import { InvalidAbiFragment } from '@vechain/sdk-errors';
 import { thorest } from '../../utils';
 import { type ThorClient } from '../thor-client';
@@ -69,8 +69,8 @@ class LogsModule {
                     );
                 }
                 log.decodedData = eventAbi.decodeEthersEventLog({
-                    data: log.data,
-                    topics: log.topics
+                    data: Hex.of(log.data),
+                    topics: log.topics.map((topic) => Hex.of(topic))
                 });
                 result.push(log);
             });
@@ -113,8 +113,8 @@ class LogsModule {
                 }
 
                 log.decodedData = eventAbi.decodeEthersEventLog({
-                    data: log.data,
-                    topics: log.topics
+                    data: Hex.of(log.data),
+                    topics: log.topics.map((topic) => Hex.of(topic))
                 });
                 result.get(log.topics[0])?.push(log);
             });
