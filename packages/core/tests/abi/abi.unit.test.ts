@@ -1,7 +1,7 @@
 import { describe, expect, test } from '@jest/globals';
 import {
     InvalidAbiDataToEncodeOrDecode,
-    InvalidAbiFragment,
+    InvalidAbiItem,
     InvalidDataType,
     stringifyData
 } from '@vechain/sdk-errors';
@@ -172,7 +172,7 @@ describe('Abi - Function & Event', () => {
                                 new ABIFunction(
                                     functionFormat.format as AbiFunction
                                 )
-                        ).not.toThrowError(InvalidAbiFragment);
+                        ).not.toThrowError(InvalidAbiItem);
 
                         // Create a function from the format without any problems
                         const myFunction = new ABIFunction(
@@ -249,7 +249,7 @@ describe('Abi - Function & Event', () => {
          */
         test('Invalid function', () => {
             expect(() => new ABIFunction('INVALID_VALUE')).toThrowError(
-                InvalidAbiFragment
+                InvalidAbiItem
             );
         });
 
@@ -360,7 +360,7 @@ describe('Abi - Function & Event', () => {
          */
         test('Invalid event', () => {
             expect(() => new ABIEvent('INVALID_VALUE')).toThrowError(
-                InvalidAbiFragment
+                InvalidAbiItem
             );
         });
 

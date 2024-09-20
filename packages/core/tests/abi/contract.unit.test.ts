@@ -36,9 +36,9 @@ describe('Contract interface for ABI encoding/decoding', () => {
     });
 
     /**
-     * Test the encoding of a function fragment.
+     * Test the encoding of a function ABI.
      */
-    test('get a function fragment and encode it', () => {
+    test('get a function ABI and encode it', () => {
         expect(
             contractAbi.encodeFunctionInput('setValue', [123])
         ).toBeDefined();
@@ -46,9 +46,9 @@ describe('Contract interface for ABI encoding/decoding', () => {
     });
 
     /**
-     * Test the encoding of a function fragment with the custom encoding function data method.
+     * Test the encoding of a function ABI with the custom encoding function data method.
      */
-    test('get a function fragment and encode it', () => {
+    test('get a function ABI and encode it', () => {
         expect(contractAbi.encodeFunctionInput('setValue', [123])).toEqual(
             contractAbi.getFunction('setValue').encodeData([123])
         );
@@ -68,9 +68,9 @@ describe('Contract interface for ABI encoding/decoding', () => {
     });
 
     /**
-     * Test the decoding of a function fragment data with the custom decoding data method
+     * Test the decoding of a function ABI data with the custom decoding data method
      */
-    test('decode a function fragment data', () => {
+    test('decode a function ABI data', () => {
         const encodedData = contractAbi.encodeFunctionInput('setValue', [123]);
         const functionInputDecoded = contractAbi.decodeFunctionInput(
             'setValue',
@@ -94,9 +94,9 @@ describe('Contract interface for ABI encoding/decoding', () => {
     });
 
     /**
-     * Test the encoding of an event fragment with the custom encoding method in contract.
+     * Test the encoding of an event ABI with the custom encoding method in contract.
      */
-    test('get an event fragment and encode it', () => {
+    test('get an event ABI and encode it', () => {
         expect(
             contractAbiWithEvents.encodeEventLog('ValueChanged', [
                 ValueChangedEventData.sender,
@@ -122,7 +122,7 @@ describe('Contract interface for ABI encoding/decoding', () => {
     /**
      * Test the decoding of an encoded event with the custom decoding method in contract.
      */
-    test('get an event fragment and decode it', () => {
+    test('get an event ABI and decode it', () => {
         const encodedEventLog = contractAbiWithEvents.encodeEventLog(
             'ValueChanged',
             [ValueChangedEventData.sender, ValueChangedEventData.value]

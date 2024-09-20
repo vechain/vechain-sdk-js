@@ -50,7 +50,7 @@ function deployContract(
  * Builds a clause for interacting with a smart contract function.
  *
  * @param contractAddress - The address of the smart contract.
- * @param functionFragment - The function fragment to interact with.
+ * @param functionAbi - The function ABI to interact with.
  * @param args - The input data for the function.
  *
  * @param value - The amount of VET to send with the transaction.

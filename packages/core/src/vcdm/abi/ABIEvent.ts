@@ -1,6 +1,6 @@
 import {
     InvalidAbiDataToEncodeOrDecode,
-    InvalidAbiFragment
+    InvalidAbiItem
 } from '@vechain/sdk-errors';
 import { type Result } from 'ethers';
 import {
@@ -36,12 +36,12 @@ class ABIEvent extends ABIItem {
             super(signature);
             this.ethersEvent = new ABIEthersEvent(signature);
         } catch (error) {
-            throw new InvalidAbiFragment(
+            throw new InvalidAbiItem(
                 'ABIEvent constructor',
                 'Initialization failed: Cannot create Event ABI. Event format is invalid.',
                 {
                     type: 'event',
-                    fragment: signature
+                    value: signature
                 },
                 error
             );

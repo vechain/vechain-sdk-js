@@ -1,4 +1,6 @@
 import { beforeEach, describe, expect, test } from '@jest/globals';
+import { ERC20_ABI } from '@vechain/sdk-core';
+import { InvalidAbiItem } from '@vechain/sdk-errors';
 import {
     THOR_SOLO_URL,
     ThorClient,
@@ -12,8 +14,6 @@ import {
     eventExampleAbi,
     eventExampleBytecode
 } from './fixture';
-import { InvalidAbiFragment } from '@vechain/sdk-errors';
-import { ERC20_ABI } from '@vechain/sdk-core';
 
 /**
  * Tests for the ThorClient class, specifically focusing on ERC20 contract-related functionality.
@@ -237,7 +237,7 @@ describe('ThorClient - ERC20 Contracts', () => {
     /**
      * Tests the listening to ERC20 contract operations using a blockchain client.
      */
-    test('listen to ERC20 contract operations building the criterias and failing to decode the event logs due to wrong event fragment', async () => {
+    test('listen to ERC20 contract operations building the criterias and failing to decode the event logs due to wrong event ABI', async () => {
         // Deploy the ERC20 contract
         let factory = thorSoloClient.contracts.createContractFactory(
             ERC20_ABI,
@@ -282,7 +282,7 @@ describe('ThorClient - ERC20 Contracts', () => {
                         }
                     ]
                 })
-        ).rejects.toThrowError(InvalidAbiFragment);
+        ).rejects.toThrowError(InvalidAbiItem);
     }, 30000);
 
     /**

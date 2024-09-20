@@ -1,5 +1,5 @@
 import { Hex, type ABIEvent } from '@vechain/sdk-core';
-import { InvalidAbiFragment } from '@vechain/sdk-errors';
+import { InvalidAbiItem } from '@vechain/sdk-errors';
 import { thorest } from '../../utils';
 import { type ThorClient } from '../thor-client';
 import {
@@ -42,14 +42,14 @@ class LogsModule {
     }
 
     /**
-     * Filters event logs based on the provided criteria and decodes them using the provided fragments.
+     * Filters event logs based on the provided criteria and decodes them using the provided ABI items.
      * The decoded data is added to the event logs as a new property.
      * @param filterOptions - An object specifying filtering criteria for event logs.
      */
     public async filterEventLogs(
         filterOptions: FilterEventLogsOptions
     ): Promise<EventLogs[]> {
-        // Extract raw event logs and fragments from filter options
+        // Extract raw event logs and ABI items from filter options
         const eventAbis = filterOptions.criteriaSet?.map((c) => c.eventAbi);
 
         const eventLogs = await this.getRawEventLogs(filterOptions);
@@ -62,10 +62,10 @@ class LogsModule {
             eventLogs.forEach((log) => {
                 const eventAbi = uniqueEventAbis.get(log.topics[0]);
                 if (eventAbi === undefined || eventAbi === null) {
-                    throw new InvalidAbiFragment(
+                    throw new InvalidAbiItem(
                         'LogsModule.filterEventLogs',
                         'Topic not found in the provided ABIs.',
-                        { type: 'event', fragment: log.topics[0] }
+                        { type: 'event', value: log.topics[0] }
                     );
                 }
                 log.decodedData = eventAbi.decodeEthersEventLog({
@@ -80,7 +80,7 @@ class LogsModule {
     }
 
     /**
-     * Filters event logs based on the provided criteria and decodes them using the provided fragments.
+     * Filters event logs based on the provided criteria and decodes them using the provided ABI items.
      * The decoded data is added to the event logs as a new property.
      * The result is an array of event logs grouped by the event topic hash.
      * @param filterOptions
@@ -89,7 +89,7 @@ class LogsModule {
     public async filterGroupedEventLogs(
         filterOptions: FilterEventLogsOptions
     ): Promise<EventLogs[][]> {
-        // Extract raw event logs and fragments from filter options
+        // Extract raw event logs and ABI items from filter options
         const eventAbis = filterOptions.criteriaSet?.map((c) => c.eventAbi);
 
         const eventLogs = await this.getRawEventLogs(filterOptions);
@@ -99,16 +99,16 @@ class LogsModule {
         if (eventAbis !== undefined) {
             const uniqueEventAbis = this.removeDuplicatedAbis(eventAbis);
 
-            // Initialize the result map with empty arrays for each unique fragment
+            // Initialize the result map with empty arrays for each unique ABI item
             uniqueEventAbis.forEach((f) => result.set(f.signatureHash, []));
 
             eventLogs.forEach((log) => {
                 const eventAbi = uniqueEventAbis.get(log.topics[0]);
                 if (eventAbi === undefined || eventAbi === null) {
-                    throw new InvalidAbiFragment(
+                    throw new InvalidAbiItem(
                         'LogsModule.filterGroupedEventLogs',
                         'Topic not found in the provided ABIs.',
-                        { type: 'event', fragment: log.topics[0] }
+                        { type: 'event', value: log.topics[0] }
                     );
                 }
 
@@ -149,9 +149,9 @@ class LogsModule {
     }
 
     /**
-     * Removes duplicated fragments from the provided array. Fragments are considered duplicated if they have the same topic hash.
-     * @param fragments - An array of event fragments.
-     * @private Returns a map of unique fragments.
+     * Removes duplicated ABI items from the provided array. Fragments are considered duplicated if they have the same topic hash.
+     * @param eventAbis - An array of event ABI items.
+     * @private Returns a map of unique ABI items.
      */
     private removeDuplicatedAbis(eventAbis: ABIEvent[]): Map<string, ABIEvent> {
         const uniqueEventAbis = new Map<string, ABIEvent>();

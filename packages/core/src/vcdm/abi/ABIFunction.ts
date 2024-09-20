@@ -1,6 +1,6 @@
 import {
     InvalidAbiDataToEncodeOrDecode,
-    InvalidAbiFragment
+    InvalidAbiItem
 } from '@vechain/sdk-errors';
 import { type Result } from 'ethers';
 import {
@@ -28,12 +28,12 @@ class ABIFunction extends ABIItem {
             super(signature);
             this.functionSignature = this.signature as AbiFunction;
         } catch (error) {
-            throw new InvalidAbiFragment(
+            throw new InvalidAbiItem(
                 'ABIFunction constructor',
                 'Initialization failed: Cannot create Function ABI. Function format is invalid.',
                 {
                     type: 'function',
-                    fragment: signature
+                    value: signature
                 },
                 error
             );

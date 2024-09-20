@@ -47,7 +47,7 @@ type ContractCallOptions = SimulateTransactionOptions & ClauseOptions;
 type ContractCallResult = vechain_sdk_core_ethers.Result;
 
 /**
- * Represents a contract clause, which includes the clause and the corresponding function fragment.
+ * Represents a contract clause, which includes the clause and the corresponding function ABI.
  */
 interface ContractClause {
     clause: ExtendedTransactionClause;

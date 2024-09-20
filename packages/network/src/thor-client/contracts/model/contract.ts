@@ -193,7 +193,7 @@ class Contract<TAbi extends Abi> {
      * Retrieves the function ABI for the specified function name.
      * @param prop - The name of the function.
      * @return The function ABI for the specified event name.
-     * @throws {InvalidAbiFragment}
+     * @throws {InvalidAbiItem}
      *
      */
     public getFunctionAbi(prop: string | symbol): ABIFunction {
@@ -201,10 +201,10 @@ class Contract<TAbi extends Abi> {
     }
 
     /**
-     * Retrieves the event fragment for the specified event name.
+     * Retrieves the event ABI for the specified event name.
      * @param eventName - The name of the event.
      * @return The event ABI for the specified event name.
-     * @throws {InvalidAbiFragment}
+     * @throws {InvalidAbiItem}
      */
     public getEventAbi(eventName: string | symbol): ABIEvent {
         return ABIContract.ofAbi(this.abi).getEvent(eventName.toString());

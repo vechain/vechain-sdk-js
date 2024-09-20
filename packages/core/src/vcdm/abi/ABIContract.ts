@@ -1,6 +1,6 @@
 import {
     InvalidAbiDataToEncodeOrDecode,
-    InvalidAbiFragment
+    InvalidAbiItem
 } from '@vechain/sdk-errors';
 import { type Result } from 'ethers';
 import {
@@ -48,7 +48,7 @@ class ABIContract extends ABI {
      * Returns the function with the given name.
      * @param {string} name The function's name.
      * @returns {ABIFunction} The function with the given name.
-     * @throws {InvalidAbiFragment}
+     * @throws {InvalidAbiItem}
      */
     public getFunction(name: string): ABIFunction {
         const functionAbiItem = getAbiItem({
@@ -56,12 +56,12 @@ class ABIContract extends ABI {
             name
         });
         if (functionAbiItem === null || functionAbiItem === undefined) {
-            throw new InvalidAbiFragment(
+            throw new InvalidAbiItem(
                 'ABIContract.getFunction()',
                 `Function '${name}' not found in contract ABI.`,
                 {
                     type: 'function',
-                    fragment: name
+                    value: name
                 }
             );
         }
@@ -72,7 +72,7 @@ class ABIContract extends ABI {
      * Returns the event with the given name.
      * @param {string} name The event's name.
      * @returns {ABIEvent} The event with the given name.
-     * @throws {InvalidAbiFragment}
+     * @throws {InvalidAbiItem}
      */
     public getEvent(name: string): ABIEvent {
         const eventAbiItem = getAbiItem({
@@ -80,12 +80,12 @@ class ABIContract extends ABI {
             name
         });
         if (eventAbiItem === null || eventAbiItem === undefined) {
-            throw new InvalidAbiFragment(
+            throw new InvalidAbiItem(
                 'ABIContract.getEvent()',
                 `Function '${name}' not found in contract ABI.`,
                 {
                     type: 'event',
-                    fragment: name
+                    value: name
                 }
             );
         }

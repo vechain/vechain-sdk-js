@@ -135,7 +135,7 @@ class ContractsModule {
      *
      * @param signer - The signer used for signing the transaction.
      * @param contractAddress - The address of the smart contract.
-     * @param functionFragment - The function fragment, including the name and types of the function to be called, derived from the contract's ABI.
+     * @param functionAbi - The function ABI, including the name and types of the function to be called, derived from the contract's ABI.
      * @param functionData - The input data for the function.
      * @param options - (Optional) An object containing options for the transaction body. Includes all options of the `buildTransactionBody` method
      *                  besides `isDelegated`.

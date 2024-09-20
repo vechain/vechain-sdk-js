@@ -251,7 +251,7 @@ function buildCriteria<TAbi extends Abi>(
     prop: string | symbol,
     args: unknown[]
 ): FilterCriteria {
-    // Create the VeChain sdk event fragment starting from the contract ABI event fragment
+    // Create the VeChain sdk event ABI
     const eventAbi = contract.getEventAbi(prop);
 
     const topicsEncoded = eventAbi.encodeFilterTopics(args) as unknown as Array<

@@ -351,12 +351,12 @@ describe('ThorClient - Contracts', () => {
             deployedContractAbi
         );
 
-        // The get function fragment call should fail because the function does not exist
+        // The get function ABI call should fail because the function does not exist
         expect(() =>
             loadedContract.getFunctionAbi('notExistingFunction')
         ).toThrow();
 
-        // The get event fragment call should fail because the event does not exist
+        // The get event ABI call should fail because the event does not exist
         expect(() =>
             loadedContract.getEventAbi('notExistingFunction')
         ).toThrow();

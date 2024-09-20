@@ -1,6 +1,6 @@
 import {
     InvalidAbiDataToEncodeOrDecode,
-    InvalidAbiFragment
+    InvalidAbiItem
 } from '@vechain/sdk-errors';
 import { ethers, type EventFragment, type Interface } from 'ethers';
 
@@ -25,19 +25,19 @@ class ABIEthersEvent<ABIType> {
      * Creates a new Event instance from an ABI fragment.
      *
      * @param source - ABI fragment to use.
-     * @throws {InvalidAbiFragment}
+     * @throws {InvalidAbiItem}
      */
     constructor(source: ABIType) {
         try {
             this.fragment = ethers.EventFragment.from(source);
             this.iface = new ethers.Interface([this.fragment]);
         } catch (e) {
-            throw new InvalidAbiFragment(
+            throw new InvalidAbiItem(
                 'ABIEthersEvent constructor',
                 'Initialization failed: Cannot create Event fragment. Event format is invalid.',
                 {
                     type: 'event',
-                    fragment: source
+                    value: source
                 },
                 e
             );

@@ -14,7 +14,7 @@ Vechain SDK provides functionality to interact with smart contracts on the VeCha
 
 ## Contract
 
-The contract interface is used to provide a higher level of abstraction to allow direct interaction with a smart contract. To create a contract interface is necessary to have a compatible smart contract ABI.VeChain SDK provides a full implementation of the Contract interface as well as some methods to encode directly a specific fragment of the smart contract (until now only functions and events fragments are supported). Encoding and decoding are based on the ABI one.
+The contract interface is used to provide a higher level of abstraction to allow direct interaction with a smart contract. To create a contract interface is necessary to have a compatible smart contract ABI.VeChain SDK provides a full implementation of the Contract interface as well as some methods to encode directly a specific ABI item of the smart contract (until now only function and event ABIs are supported). Encoding and decoding are based on the ABI one.
 
 [ContractSnippet](examples/encoding/contract.ts)
 
