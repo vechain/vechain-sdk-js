@@ -1,5 +1,5 @@
-import { Hex, type ABIEvent } from '@vechain/sdk-core';
-import { type Result } from 'ethers';
+import { type ABIEvent } from '@vechain/sdk-core';
+import { InvalidAbiFragment } from '@vechain/sdk-errors';
 import { thorest } from '../../utils';
 import { type ThorClient } from '../thor-client';
 import {
@@ -9,7 +9,6 @@ import {
     type FilterTransferLogsOptions,
     type TransferLogs
 } from './types';
-import { InvalidAbiFragment } from '@vechain/sdk-errors';
 
 /**
  * The `LogsClient` class provides methods to interact with log-related endpoints
@@ -69,22 +68,10 @@ class LogsModule {
                         { type: 'event', fragment: log.topics[0] }
                     );
                 }
-
-                // TODO: Replace by abi.Event implementation of decodeEventLog?
-                const rawDecodedData = eventAbi.decodeEventLog({
-                    data: Hex.of(log.data),
-                    topics: log.topics.map((topic) => Hex.of(topic))
+                log.decodedData = eventAbi.decodeEthersEventLog({
+                    data: log.data,
+                    topics: log.topics
                 });
-
-                if (rawDecodedData?.args === undefined) {
-                    log.decodedData = [] as unknown as Result;
-                } else if (rawDecodedData.args instanceof Object) {
-                    log.decodedData = Object.values(
-                        rawDecodedData.args
-                    ) as Result;
-                } else {
-                    log.decodedData = rawDecodedData as unknown as Result;
-                }
                 result.push(log);
             });
         }
@@ -124,21 +111,11 @@ class LogsModule {
                         { type: 'event', fragment: log.topics[0] }
                     );
                 }
-                // TODO: Replace by abi.Event implementation of decodeEventLog?
-                const rawDecodedData = eventAbi.decodeEventLog({
-                    data: Hex.of(log.data),
-                    topics: log.topics.map((topic) => Hex.of(topic))
-                });
 
-                if (rawDecodedData?.args === undefined) {
-                    log.decodedData = [] as unknown as Result;
-                } else if (rawDecodedData.args instanceof Object) {
-                    log.decodedData = Object.values(
-                        rawDecodedData.args
-                    ) as Result;
-                } else {
-                    log.decodedData = rawDecodedData as unknown as Result;
-                }
+                log.decodedData = eventAbi.decodeEthersEventLog({
+                    data: log.data,
+                    topics: log.topics
+                });
                 result.get(log.topics[0])?.push(log);
             });
         }

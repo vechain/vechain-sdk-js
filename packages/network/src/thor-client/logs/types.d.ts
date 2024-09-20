@@ -1,7 +1,6 @@
 /* --- Input options start --- */
 
-import { type ABIEvent } from '@vechain/sdk-core';
-import type { Result } from 'ethers';
+import { type ABIEvent, type vechain_sdk_core_ethers } from '@vechain/sdk-core';
 
 /**
  * Range interface for specifying a range of data.
@@ -241,7 +240,7 @@ interface EventLogs extends Event {
     /**
      * The decoded data from the event.
      */
-    decodedData?: Result[];
+    decodedData?: vechain_sdk_core_ethers.Result[];
 }
 
 /**
