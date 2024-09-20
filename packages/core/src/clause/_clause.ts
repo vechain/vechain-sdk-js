@@ -1,11 +1,7 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
 import { type FunctionFragment } from 'ethers';
 import { coder } from '../contract';
-import {
-    type ClauseOptions,
-    type ExtendedTransactionClause,
-    type TransactionClause
-} from '../transaction';
+import { type ClauseOptions, type TransactionClause } from '../transaction';
 import { ERC721_ABI, VIP180_ABI } from '../utils';
 import { Address, abi } from '../vcdm';
 import type { DeployParams } from './DeployParams';
@@ -23,7 +19,7 @@ function deployContract(
     contractBytecode: string,
     deployParams?: DeployParams,
     clauseOptions?: ClauseOptions
-): TransactionClause | ExtendedTransactionClause {
+): TransactionClause {
     let encodedParams = '';
     if (deployParams != null) {
         encodedParams = abi
@@ -41,7 +37,7 @@ function deployContract(
         return {
             ...transactionClause,
             comment: clauseOptions.comment
-        } satisfies ExtendedTransactionClause;
+        } satisfies TransactionClause;
     } else {
         return transactionClause;
     }
@@ -66,7 +62,7 @@ function functionInteraction(
     args: unknown[],
     value = 0,
     clauseOptions?: ClauseOptions
-): TransactionClause | ExtendedTransactionClause {
+): TransactionClause {
     const transactionClause: TransactionClause = {
         to: contractAddress,
         value,
@@ -81,7 +77,7 @@ function functionInteraction(
                 clauseOptions.includeABI === true
                     ? functionFragment.format('json')
                     : undefined
-        } satisfies ExtendedTransactionClause;
+        } satisfies TransactionClause;
     } else {
         return transactionClause;
     }
@@ -104,7 +100,7 @@ function transferToken(
     recipientAddress: string,
     amount: number | bigint | string,
     clauseOptions?: ClauseOptions
-): TransactionClause | ExtendedTransactionClause {
+): TransactionClause {
     try {
         return functionInteraction(
             tokenAddress,
@@ -138,7 +134,7 @@ function transferVET(
     recipientAddress: string,
     amount: number | bigint | string,
     clauseOptions?: ClauseOptions
-): TransactionClause | ExtendedTransactionClause {
+): TransactionClause {
     try {
         const bnAmount = BigInt(amount);
 
@@ -161,7 +157,7 @@ function transferVET(
             return {
                 ...transactionClause,
                 comment: clauseOptions.comment
-            } satisfies ExtendedTransactionClause;
+            } satisfies TransactionClause;
         } else {
             return transactionClause;
         }
@@ -195,7 +191,7 @@ function transferNFT(
     recipientAddress: string,
     tokenId: string,
     clauseOptions?: ClauseOptions
-): TransactionClause | ExtendedTransactionClause {
+): TransactionClause {
     if (tokenId === '') {
         throw new InvalidDataType(
             'transferNFT()',
