@@ -149,7 +149,7 @@ class LogsModule {
     }
 
     /**
-     * Removes duplicated ABI items from the provided array. Fragments are considered duplicated if they have the same topic hash.
+     * Removes duplicated ABI items from the provided array. ABI items are considered duplicated if they have the same topic hash.
      * @param eventAbis - An array of event ABI items.
      * @private Returns a map of unique ABI items.
      */
