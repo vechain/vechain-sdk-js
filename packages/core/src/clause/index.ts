@@ -1,2 +1,2 @@
-export * from './clause';
-export * from './types.d';
+export * from './_clause';
+export * from './DeployParams';

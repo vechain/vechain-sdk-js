@@ -1,6 +1,7 @@
 import { Coin } from './Coin';
 import { Txt } from '../Txt';
-import { type FPN } from '../FPN';
+import { FPN } from '../FPN';
+import { Units } from './Units';
 
 /**
  * Represents a
@@ -17,6 +18,19 @@ class VET extends Coin {
      * - U+0054 - Latin capital letter 'T'.
      */
     public static readonly CODE = Txt.of('𝕍ΞT');
+
+    /**
+     * Wei fractional digits to express this value.
+     */
+    private static readonly WEI_FD = 18n;
+
+    /**
+     * Represents this monetary amount in terms of {@link Units.wei}.
+     *
+     * @type {bigint}
+     */
+    public readonly wei: bigint = this.value.dp(VET.WEI_FD).sv;
+
     /**
      * Create a new instance with the given `value`.
      *
@@ -27,13 +41,19 @@ class VET extends Coin {
     }
 
     /**
-     * Return a new instance of VET using the provided FPN `value`.
+     * Return a new VET instance with the specified value and unit.
      *
-     * @param {FPN} value - The FPN value to be used for creating a VET instance.
-     * @return {VET} The newly created instance of VET.
+     * @param {FPN} value - The numerical value for the VET instance.
+     * @param {Units} unit - The unit for the value.
+     *                       Defaults to {@link Units.ether} if not provided.
+     * @return A new VET instance with the provided value and unit.
      */
-    public static of(value: FPN): VET {
-        return new VET(value);
+    public static of(
+        value: bigint | number | string | FPN,
+        unit: Units = Units.ether
+    ): VET {
+        const fpn = value instanceof FPN ? value : FPN.of(value);
+        return new VET(fpn.div(FPN.of(10n ** (VET.WEI_FD - BigInt(unit)))));
     }
 }
 

@@ -50,6 +50,7 @@ classDiagram
         +FPN value
     }
     class FPN {
+        +bigint sv
         +FPN NaN$
         +FPN NEGATIVE_INFINITY$
         +FPN POSITIVE_INFINITY$
@@ -150,9 +151,11 @@ classDiagram
       +boolean isNumber()
     }
     class VET {
+        +bigint wei
         +VET of(FPN value)$
     }
     class VTHO {
+        +bigint wei
         +VTHO of(FPN value)$
     }
     ABI <|-- ABIItem

@@ -97,7 +97,7 @@ class FPN implements VeChainDataModel<FPN> {
      * Scaled Value = value * 10 ^ {@link fd}.
      * @private
      */
-    protected readonly sv: bigint;
+    public readonly sv: bigint;
 
     /**
      * Returns the integer part of this FPN value.
