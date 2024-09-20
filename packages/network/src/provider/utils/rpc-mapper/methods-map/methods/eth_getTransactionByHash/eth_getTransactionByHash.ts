@@ -44,9 +44,7 @@ const ethGetTransactionByHash = async (
         // Get the VeChainThor transaction
         const tx = await thorClient.transactions.getTransaction(hash);
 
-        console.log('tx', tx);
         if (tx === null) return null;
-        console.log('tx.meta.blockID', tx.meta.blockID);
 
         // Get the block containing the transaction
         const block = (await RPCMethodsMap(thorClient)[
