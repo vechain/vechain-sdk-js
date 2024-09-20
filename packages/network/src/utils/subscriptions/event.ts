@@ -1,4 +1,6 @@
-import { abi, vechain_sdk_core_ethers } from '@vechain/sdk-core';
+import { ABIEvent } from '@vechain/sdk-core';
+import { type AbiEvent } from 'abitype';
+import { parseAbiItem } from 'viem';
 import { thorest } from '../thorest';
 import { type EventLike, type EventSubscriptionOptions } from './types';
 
@@ -8,7 +10,7 @@ import { type EventLike, type EventSubscriptionOptions } from './types';
  * @param baseURL - The URL of the node to request the subscription from.
  * @param event - The event to subscribe to.
  *                Can be an event object or a string representing an event.
- *                @see [Ethers Format Types](https://docs.ethers.org/v5/api/utils/abi/interface/#Interface--formatting)
+ *                @see [Viem Parse ABI Item](https://viem.sh/docs/abi/parseAbiItem.html)
  *
  * @param indexedValues - The values of the indexed parameters to construct the topic filters.
  * @param options - (optional) other optional parameters for the request.
@@ -25,15 +27,17 @@ const getEventSubscriptionUrl = (
     indexedValues?: unknown[],
     options?: EventSubscriptionOptions
 ): string => {
-    // If the event is an ethers' EventFragment, format it to a 'full' event string
-    if (vechain_sdk_core_ethers.EventFragment.isFragment(event)) {
-        event = event.format('full');
-    }
+    const eventInput =
+        event instanceof String
+            ? parseAbiItem([event as string])
+            : (event as AbiEvent);
 
-    const ev = new abi.Event(event);
+    const ev = new ABIEvent(eventInput);
 
     // Encode the indexed parameters to construct the topic filters
-    const encodedTopics = ev.encodeFilterTopics(indexedValues ?? []);
+    const encodedTopics = ev.encodeFilterTopics(
+        indexedValues ?? []
+    ) as unknown as Array<string | undefined>;
 
     return thorest.subscriptions.get.EVENT(baseURL, {
         position: options?.blockID,

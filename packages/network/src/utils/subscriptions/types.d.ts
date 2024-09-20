@@ -1,4 +1,4 @@
-import { type AbiEvent } from 'abitype';
+import { type AbiEvent } from 'viem';
 /* --------- Event types start --------- */
 
 /**
@@ -51,7 +51,7 @@ interface EventAbi {
  *
  * @see [AbiEvent](https://abitype.dev/api/types#abievent)
  */
-type EventLike = string | EventAbi | AbiEvent;
+type EventLike = string | AbiEvent | EventAbi;
 
 /* --------- Event types end --------- */
 
