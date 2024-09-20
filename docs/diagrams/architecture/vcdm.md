@@ -7,12 +7,6 @@ classDiagram
         +ReturnType getFirstDecodedValue<ReturnType>(object obj)
         +Hex toHex()
     }
-    class ABIItem {
-        <<abstract>>
-        +string signatureHash()
-        +string format('json' | 'string' formatType)
-        +string ofSignature(new (signature: string) => T ABIItemConstructor, string signature)$
-    }
     class ABIContract {
         +ABIContract ofAbi(ViemABI abi)$
         +ABIContract ofStringAbi(string abi)$
@@ -25,16 +19,22 @@ classDiagram
         +DecodeEventLogReturnType decodeEventLog(string eventName, ABIEventData eventToDecode)
         +DecodeEventLogReturnType parseLog(Hex data, Hex[] topics)
     }
-    class ABIFunction {
-        +DecodeFunctionDataReturnType decodeData(Hex data)
-        +Hex encodeData<TValue>(TValue[] dataToEncode)
-        +DecodeFunctionResultReturnType decodeResult(Hex data)
-    }
     class ABIEvent {
         +DecodeEventLogReturnType parseLog(ViemABI abi, Hex data, Hex[] topics)$
         +DecodeEventLogReturnType decodeEventLog(ABIEventData event)
         +EncodeEventTopicsReturnType encodeFilterTopics<TValue>(TValue[] event)
         +ABIEventData encodeEventLog<TValue>(TValue[] dataToEncode)
+    }
+    class ABIFunction {
+        +DecodeFunctionDataReturnType decodeData(Hex data)
+        +Hex encodeData<TValue>(TValue[] dataToEncode)
+        +DecodeFunctionResultReturnType decodeResult(Hex data)
+    }
+    class ABIItem {
+        <<abstract>>
+        +string signatureHash()
+        +string format('json' | 'string' formatType)
+        +string ofSignature(new (signature: string) => T ABIItemConstructor, string signature)$
     }
     class Account {
         #address: Address
