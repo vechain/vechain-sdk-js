@@ -150,11 +150,13 @@ classDiagram
       +boolean isNumber()
     }
     class VET {
+        +Txt CODE$
         +bigint wei
         +VET of(bigint|number|string|FPN value)$
         +Cluase transferTo(Address: address, ClauseOptions?: clauseOptionsre)
     }
     class VTHO {
+        +Txt CODE$
         +bigint wei
         +VTHO of(bigint|number|string|FPN value)$
     }

@@ -1,6 +1,6 @@
 import { Coin } from './Coin';
-import { Txt } from '../Txt';
 import { FPN } from '../FPN';
+import { Txt } from '../Txt';
 import { Units } from './Units';
 import { type Address } from '../Address';
 import { Clause } from '../../clause';
@@ -37,7 +37,7 @@ class VET extends Coin {
     /**
      * Create a new instance with the given `value`.
      *
-     * @param {FPN} value - The value to be used for initializing the instance.
+     * @param {FPN} value The value to be used for initializing the instance.
      */
     protected constructor(value: FPN) {
         super(VET.CODE, value);
@@ -46,10 +46,10 @@ class VET extends Coin {
     /**
      * Return a new VET instance with the specified value and unit.
      *
-     * @param {FPN} value - The numerical value for the VET instance.
-     * @param {Units} unit - The unit for the value.
-     *                       Defaults to {@link Units.ether} if not provided.
-     * @return A new VET instance with the provided value and unit.
+     * @param {bigint | number | string | FPN} value The numerical value for the VET instance.
+     * @param {Units} unit The unit for the value.
+     *                     Defaults to {@link Units.ether} if not provided.
+     * @return {VET} A new VET instance with the provided value and unit.
      *
      * @throws {InvalidDataType} If `value` is not a numeric expression.
      */

@@ -1,10 +1,12 @@
 import { InvalidDataType } from '@vechain/sdk-errors';
-import { abi, type Address, FPN, type HexUInt, VET } from '../vcdm';
+import { abi, type Address, FPN, type HexUInt, VET, type VTHO } from '../vcdm';
 import { Hex } from '../vcdm/Hex';
 import { HexInt } from '../vcdm/HexInt';
 import { type ClauseOptions, type TransactionClause } from '../transaction';
 import type { DeployParams } from './DeployParams';
 import type { FunctionFragment } from 'ethers';
+import { coder } from '../contract';
+import { VIP180_ABI } from '../utils';
 
 class Clause implements TransactionClause {
     private static readonly FORMAT_TYPE = 'json';
@@ -12,6 +14,8 @@ class Clause implements TransactionClause {
     private static readonly NO_VALUE = Hex.PREFIX + '0';
 
     private static readonly NO_DATA = Hex.PREFIX;
+
+    private static readonly TRANSFER_TOKEN_FUNCTION = 'transfer';
 
     readonly to: string | null;
     readonly value: string;
@@ -68,6 +72,34 @@ class Clause implements TransactionClause {
                       .replace(Hex.PREFIX, '')
                 : contractBytecode.digits;
         return new Clause(null, Clause.NO_VALUE, data, clauseOptions?.comment);
+    }
+
+    public static transferToken(
+        tokenAddress: Address,
+        to: Address,
+        amount: VTHO,
+        clauseOptions?: ClauseOptions
+    ): Clause {
+        try {
+            return this.callFunction(
+                tokenAddress,
+                coder
+                    .createInterface(VIP180_ABI)
+                    .getFunction(
+                        Clause.TRANSFER_TOKEN_FUNCTION
+                    ) as FunctionFragment,
+                [to.toString().toLowerCase(), amount.wei],
+                undefined,
+                clauseOptions
+            );
+        } catch (e) {
+            throw new InvalidDataType(
+                'Clause.transferToken',
+                'not positive integer amount',
+                { amount: `${amount.value}` },
+                e
+            );
+        }
     }
 
     public static transferVET(
